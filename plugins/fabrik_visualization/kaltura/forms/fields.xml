@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="connection"
+			 description="CONNECTIONONLYFABRIKTABLES">
+			<field name="kaltura_connection" type="connections" label="Connection" />
+		</fieldset>
+
+		<fieldset repeatcontrols="1" repeat="1"
+			>
+			
+			<field name="kaltura_table"
+				observe="params__kaltura_connection" 
+				type="fabriktables"
+				connection_in_repeat="false" label="table" />
+				
+			<field name="kaltura_video"
+				type="element"
+				connection="params__kaltura_connection"
+				connection_in_repeat="false"
+				table="params__kaltura_table" label="VIDEOELEMENT"
+				description="VIDEOELEMENTDESC" />
+				
+			<field name="kaltura_partnerid" type="text" 
+				label="PARTENERID" description="PARTENERIDDESC" />
+				
+			<field name="kaltura_sub_partnerid" type="text" 
+				label="SUBPARTENERID" description="SUBPARTENERIDDESC" />
+				
+			<field name="kaltura_webservice_secret" type="text" 
+				label="WEBSERVICESECRET" description="WEBSERVICESECRETDESC" />
+				
+			<field name="kaltura_admin_secret" type="text" 
+				label="ADMINSECRET" description="ADMINSECRETDESC" />
+
+		</fieldset>
+	</fields>
+</form>	

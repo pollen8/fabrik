@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-js">
+			<field name="jsfile" 
+				type="filelist" 
+				repeat="true"
+				directory="plugins/fabrik_form/js/scripts/" 
+				hide_default="1" 
+				label="PLG_FORM_JS_FILE_LABEL" description="PLG_FORM_JS_FILE_DESC" />
+		</fieldset>
+	</fields>
+</form>

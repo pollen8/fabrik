@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-validationrule-notempty">
+			<field type="text"
+				name="notempty-message" 
+				size="30" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_LABEL" 
+				description="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_DESC" />
+				
+			<field type="textarea" 
+				cols="30" 
+				rows="5" 
+				name="notempty-validation_condition"
+				repeat="true" 
+				label="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_LABEL" description="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_DESC"/>
+		</fieldset>
+	</fields>
+</form>

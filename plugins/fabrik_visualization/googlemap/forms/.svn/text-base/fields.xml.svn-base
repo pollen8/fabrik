@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+
+		<fieldset name="opts" repeatcontrols="1" repeat="1">
+		
+			<field name="googlemap_connection" type="connections" label="Connection"
+				description="CONNECTIONONLYFABRIKTABLES" />
+				
+			<field name="googlemap_table"
+				type="fabriktables" 
+				observe="params_googlemap_connection"
+				connection_in_repeat="false"
+				label="COM_FABRIK_LIST" />
+				
+			<field name="fb_gm_detailtemplate"
+				type="textarea" 
+				rows="8" cols="40" 
+				label="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_DESC" />
+				
+			<field name="fb_gm_iconimage"	
+				type="filelist" 
+				hide_none="1" 
+				directory="media/com_fabrik/images"
+				filter=".png|.jpg|.gif|.jpeg"
+				label="PLG_VISUALIZATION_GOOGLEMAP_ICON_LABEL" 
+				description="PLG_VISUALIZATION_GOOGLEMAP_ICON_DESC" />
+				
+			<field name="fb_gm_iconimage2" 
+				type="element"
+				connection="params_googlemap_connection"
+				connection_in_repeat="false" 
+				table="params_googlemap_table" 
+				label="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_DESC" />
+				
+			<field name="fb_gm_icon_letter" 
+				size="1" type="text" 
+				label="PLG_VISUALIZATION_GOOGLEMAP_ICON_LETTER_LABEL" 
+				description="PLG_VISUALIZATION_GOOGLEMAP_ICON_LETTER_DESC" />
+				
+			<field name="fb_gm_polyline_element" 
+				type="element"
+				connection="params_googlemap_connection"
+				connection_in_repeat="false"
+				table="params_googlemap_table"
+				label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_ELEMENT_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_ELEMENT_DESC" />
+				
+			<field name="fb_gm_polyline_width" 
+				type="text" size="3"
+				default="10" 
+				label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_DESC" />
+				
+			<field name="fb_gm_polyline_colour" 
+				type="text" size="7"
+				default="#CCFFFF" 
+				label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_DESC" />
+		</fieldset>
+
+		<fieldset name="rest" repeat="0">
+				
+			<field name="fb_gm_maptype" 
+				type="list" default="G_NORMAL_MAP"
+				label="PLG_VISUALIZATION_GOOGLEMAP_TYPE_LABEL">
+					<option value="G_NORMAL_MAP">Normal</option>
+					<option value="G_SATELLITE_MAP">Satelite</option>
+					<option value="G_HYBRID_MAP">Hybrid</option>
+			</field>
+			
+			<field name="fb_gm_zoomlevel" 
+				type="text" 
+				size="2" default="4"
+				label="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_DESC" />
+				
+			<field name="fb_gm_center" 
+				type="radio" 
+				default="middle"
+				label="PLG_VISUALIZATION_GOOGLEMAP_CENTER_ON_LABEL">
+					<option value="middle">PLG_VISUALIZATION_GOOGLEMAP_MIDDLE</option>
+					<option value="lastmarker">PLG_VISUALIZATION_GOOGLEMAP_LAST_MARKER</option>
+					<option value="userslocation">PLG_VISUALIZATION_GOOGLEMAP_USERS_LOCATION</option>
+			</field>
+			
+			<field name="fb_gm_mapwidth" 
+				type="text" 
+				size="3" default="600"
+				label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL" />
+				
+			<field name="fb_gm_mapheight" 
+				type="text" 
+				size="3" default="300"
+				label="PLG_VISUALIZATION_GOOGLEMAP_HEIGHT_LABEL" />
+				
+			<field name="fb_gm_layout" label="template" type="folderlist"
+				directory="/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/" />
+				
+		</fieldset>
+		
+		<fieldset name="controls" label="PLG_VISUALIZATION_GOOGLEMAP_CONTROLS_HEADING">
+		
+			<field name="fb_gm_zoom"
+				type="radio" default="1"
+				label="PLG_VIZ_GOOGLEMAP_ZOOM_LABEL"
+				description="PLG_VIZ_GOOGLEMAP_ZOOM_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fb_gm_zoom_control_style" 
+				type="list" default="DEFAULT"
+				label="PLG_VIZ_GOOGLEMAP_ZOOM_CONTROL_STYLE_LABEL" 
+				description="PLG_VIZ_GOOGLEMAP_ZOOM_CONTROL_STYLE_DESC">
+				<option value="0">Default</option>
+				<option value="1">Small</option>
+				<option value="2">Large</option>
+			</field>
+
+			<field name="fb_gm_scalecontrol" 
+				type="radio" default="0"
+				label="PLG_VISUALIZATION_GOOGLEMAP_SCALE_CONTROL_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_SCALE_CONTROL_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fb_gm_maptypecontrol" type="radio" default="0"
+				label="PLG_VISUALIZATION_GOOGLEMAP_TYPE_CONTROL_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_TYPE_CONTROL_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fb_gm_overviewcontrol" 
+				type="radio" default="0"
+				label="PLG_VISUALIZATION_GOOGLEMAP_OVERVIEW_CONTROL_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_OVERVIEW_CONTROL_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
+		</fieldset>
+		
+		<fieldset name="ajax" label="PLG_VISUALIZATION_GOOGLEMAP_AJAX_REFRESH_HEADING">
+		
+			<field name="fb_gm_ajax_refresh" 
+				type="radio" default="0"
+				label="PLG_VISUALIZATION_GOOGLEMAP_AJAX_REFRESH_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_AJAX_REFRESH_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fb_gm_ajax_refresh_center" 
+				type="radio" default="1"
+				label="PLG_VISUALIZATION_GOOGLEMAP_AJAX_REFRESH_CENTRE_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_AJAX_REFRESH_CENTRE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fb_gm_ajax_refresh_rate"
+				size="6" type="text"
+				default="10000" label="PLG_VISUALIZATION_GOOGLEMAP_REFRESH_RATE_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_REFRESH_RATE_DESC" />
+				
+		</fieldset>
+
+		<fieldset name="clustering" label="PLG_VISUALIZATION_GOOGLEMAP_CLUSTERING_HEADING">
+		
+			<field name="fb_gm_clustering" 
+				type="radio" default="0"
+				label="PLG_VISUALIZATION_GOOGLEMAP_CLUSTERING_ON_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_CLUSTERING_ON_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fb_gm_cluster_splits"
+				type="text" size="10"
+				default="10,50" label="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_SPLIT_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_SPLIT_DESC" />
+				
+			<field name="fb_gm_cluster_icon_increment" 
+				type="text" size="3"
+				default="5" label="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_ICON_INCREMENT_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_ICON_INCREMENT_DESC" />
+				
+		</fieldset>
+
+		<fieldset name="advanced" label="PLG_VISUALIZATION_GOOGLEMAP_ADVANCED_HEADING">
+		
+			<field name="fb_gm_markermax"
+				type="text" 
+				label="PLG_VISUALIZATION_GOOGLEMAP_MARKER_MAX_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_MARKER_MAX_DESC" />
+				
+			<field name="fb_gm_use_cookies" 
+				type="radio" default="1"
+				label="PLG_VISUALIZATION_GOOGLEMAP_USE_COOKIES_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_USE_COOKIES_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+		</fieldset>
+	</fields>
+</form>	

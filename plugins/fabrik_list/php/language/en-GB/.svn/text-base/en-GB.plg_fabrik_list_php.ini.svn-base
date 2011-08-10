@@ -1,0 +1,13 @@
+;
+; Fabrik 3 
+; Copyright (C) 2005 - 2010 Pollen 8 Design Ltd. All rights reserved.
+; License http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL, see LICENSE.php
+; Note : All ini files need to be saved as UTF-8 - No BOM
+
+PLG_FABRIK_LIST_PHP_ACCESS_LABEL="Access"
+PLG_FABRIK_LIST_PHP_BUTTON_LABEL_LABEL="Button label"
+PLG_FABRIK_LIST_PHP_FILE_LABEL="PHP file"
+PLG_FABRIK_LIST_PHP_FILE_DESC="File to run, located in plugins/fabrik_list/php/scripts"
+PLG_FABRIK_LIST_PHP_CODE_LABEL="PHP Code"
+PLG_FABRIK_LIST_PHP_CODE_DESC="If no file selected then the PHP code entered here will be evaulated"
+PLG_FABRIK_LIST_PHP_SUCCESS_MSG_LABEL="Success message"

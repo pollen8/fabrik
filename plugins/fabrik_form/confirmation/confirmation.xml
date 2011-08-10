@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
+	<name>Confirmation</name>
+	<author>Rob Clayburn</author>
+	<creationDate>Aug 2008</creationDate>
+	<copyright>(C) 2005-2010 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0</version>
+	<description>Asks the user to validate the data before submitting to the database</description>
+	<files>
+		<filename plugin="confirmation">confirmation.php</filename>
+		<filename>index.html</filename>
+		<folder>language</folder>
+	</files>
+
+</extension>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_cron" method="upgrade">
+	<name>GCal Sync</name>
+	<author>Hugh Messenger</author>
+	<creationDate>Jan 2009</creationDate>
+	<copyright>(C) 2005-2010 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>hugh.messenger@gmail.com</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0</version>
+	<description>GCal Sync</description>
+	<files>
+		<filename plugin="gcalsync">gcalsync.php</filename>
+		<filename>admingcalsync.js</filename>
+		<folder>forms</folder>
+		<filename>index.html</filename>
+		<folder>language</folder>
+	</files>
+	
+</extension>

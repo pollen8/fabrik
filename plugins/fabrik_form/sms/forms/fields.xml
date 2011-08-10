@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-sms">
+			<field name="sms-gateway" 
+				label="PLG_FORM_SMS_GATEWAY_LABEL" 
+				description="PLG_FORM_SMS_GATEWAY_DESC" 
+				type="filelist" 
+				hide_none="true" 
+				hide_default="true" 
+				directory="plugins/fabrik_form/sms/gateway" />
+				
+			<field name="sms-username" 
+				type="text" 
+				size="30" 
+				default="" 
+				label="PLG_FORM_SMS_USERNAME_LABEL"/>
+				
+			<field name="sms-password" 
+				type="text" 
+				size="30" 
+				default="" label="PLG_FORM_SMS_PASSWORD_LABEL"/>
+				
+			<field name="sms-to" 
+				type="text" 
+				default="" 
+				size="30"  
+				label="PLG_FORM_SMS_MOBILE_LABEL" 
+				description="PLG_FORM_SMS_MOBILE_DESC" />
+				
+			<field name="sms-from" 
+				type="text" 
+				default="" 
+				size="30"  
+				label="PLG_FORM_SMS_SENDERS_MOBILE_NUM_LABEL" 
+				description="SENDERS_MOBILE_NUM_DESC" />
+		</fieldset>
+	</fields>
+</form>
+	

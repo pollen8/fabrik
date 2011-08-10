@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_validationrule" method="upgrade">
+	<name>Greater than or less than</name>
+	<author>Rob Clayburn</author>
+	<creationDate>April 2009</creationDate>
+	<copyright>(C) 2005-2010 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0</version>
+	<description>Test if this elements value is greater than or less than another value</description>
+	<files>
+		<filename plugin="isgreaterorlessthan">isgreaterorlessthan.php</filename>
+		<filename>index.html</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+	</files>
+</extension>

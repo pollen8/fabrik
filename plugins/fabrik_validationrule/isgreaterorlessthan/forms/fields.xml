@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-validationrule-isgreaterorlessthan">
+			<field type="text" 
+				name="isgreaterorlessthan-message" 
+				size="30" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_GTLT_ERROR_LABEL"
+				description="PLG_VALIDATIONRULE_GTLT_ERROR_DESC" />
+				
+			<field name="isgreaterorlessthan-greaterthan" 
+				type="radio" default="0" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_GTLT_GREATER_THAN_OR_LESS_THAN_LABEL" 
+				description="PLG_VALIDATIONRULE_GTLT_GREATER_THAN_OR_LESS_THAN_DESC">
+					<option value="0">PLG_VALIDATIONRULE_GTLT_LESS_THAN</option>
+					<option value="1">PLG_VALIDATIONRULE_GTLT_GREATER_THAN</option>
+			</field>
+			
+			<field name="isgreaterorlessthan-comparewith" 
+				type="listfields"
+				repeat="true"
+				label="PLG_VALIDATIONRULE_GTLT_ELEMENT_LABEL" 
+				description="PLG_VALIDATIONRULE_GTLT_ELEMENT_DESC"/>
+				
+			<field type="textarea" 
+				cols="30" rows="5" 
+				repeat="true"
+				name="isgreaterorlessthan-validation_condition" 
+				label="PLG_VALIDATIONRULE_GTLT_CONDITION_LABEL" 
+				description="PLG_VALIDATIONRULE_GTLT_CONDITION_DESC"/>
+				
+		</fieldset>
+	</fields>
+</form>

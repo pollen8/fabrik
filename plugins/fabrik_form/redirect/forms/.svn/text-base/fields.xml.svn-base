@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-redirect">
+			<field name="jump_page" 
+				type="text" 
+				size="40" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_JUMPPAGE_LABEL" 
+				description="PLG_FORM_REDIRECT_JUMPPAGE_LABEL"/>
+				
+			<field name="append_jump_url" 
+				type="radio" 
+				default="0" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_APPENDJUMPURL_LABEL" 
+				description="PLG_FORM_REDIRECT_APPENDJUMPURL_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="thanks_message" 
+				type="textarea" 
+				repeat="true"
+				rows="8" 
+				cols="60" 
+				label="PLG_FORM_REDIRECT_THANKSMSG_LABEL" 
+				description="PLG_FORM_REDIRECT_THANKSMSG_DESC" />
+				
+			<field name="save_insession" 
+				type="radio" 
+				default="0" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_SAVEINSESSION_LABEL" 
+				description="PLG_FORM_REDIRECT_SAVEINSESSION_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="redirect_conditon" 
+				type="textarea" 
+				cols="60" 
+				repeat="true"
+				rows="5" 
+				label="PLG_FORM_REDIRECT_CONDITION_LABEL" 
+				description="PLG_FORM_REDIRECT_CONDITION_DESC" />
+		</fieldset>
+	</fields>
+</form>

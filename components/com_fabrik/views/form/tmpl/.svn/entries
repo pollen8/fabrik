@@ -1,0 +1,95 @@
+10
+
+dir
+5571
+http://fabrik.unfuddle.com/svn/fabrik_fabrik2/fabrik3/trunk/components/com_fabrik/views/form/tmpl
+http://fabrik.unfuddle.com/svn/fabrik_fabrik2
+
+
+
+2011-08-01T12:57:24.064404Z
+5525
+rob
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+5a4c691c-288c-451f-b78b-f9805f0daa74
+
+default.xml
+file
+
+
+
+
+2011-04-15T20:39:23.000000Z
+639c250c13296c01418b4b1dc4d1a6ab
+2011-03-05T15:47:02.079119Z
+4846
+rob
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1693
+
+default
+dir
+
+default_rtl
+dir
+
+mint
+dir
+
+admin
+dir
+
+contacts_custom
+dir
+
+f3
+dir
+
+tabs
+dir
+
+labels-above
+dir
+
+no-labels
+dir
+
+bluesky
+dir
+
+iwebkit
+dir
+

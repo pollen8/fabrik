@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-list-download">
+			<field name="download_access" 
+				type="accesslevel" 
+				default="1"
+				repeat="true"
+				label="COM_FABRIK_ACCESS" />
+				
+			<field name="download_button_label" 
+				type="text"
+				repeat="true"
+				label="PLG_FABRIK_LIST_DOWNLOAD_BUTTON_LABEL" size="30" />
+				
+			<field name="download_table" 
+				type="text" 
+				size="35" 
+				repeat="true"
+				label="PLG_FABRIK_LIST_DOWNLOAD_TABLE_LABEL" 
+				description="PLG_FABRIK_LIST_DOWNLOAD_TABLED_ESC" />
+				  
+			<field name="download_fk" 
+				type="text" 
+				size="35" 
+				repeat="true"
+				label="PLG_FABRIK_LIST_DOWNLOAD_DOWNLOAD_FK_LABEL" 
+				description="PLG_FABRIK_LIST_DOWNLOAD_DOWNLOAD_FK_DESC" />
+				  
+			<field name="download_file" 
+				type="text" 
+				size="35" 
+				repeat="true"
+				label="PLG_FABRIK_LIST_DOWNLOAD_FILE_LABEL" 
+				description="PLG_FABRIK_LIST_DOWNLOAD_FILE_DESC" />
+				  
+			<field name="download_width" 
+				type="text" 
+				size="4" 
+				repeat="true"
+				label="PLG_FABRIK_LIST_DOWNLOAD_WIDTH_LABEL" 
+				description="PLG_FABRIK_LIST_DOWNLOAD_WIDTH_DESC" />
+				  
+			<field name="download_height" 
+				type="text" 
+				size="4" 
+				repeat="true"
+				label="PLG_FABRIK_LIST_DOWNLOAD_HEIGHT_LABEL" 
+				description="PLG_FABRIK_LIST_DOWNLOAD_HEIGHT_DESC" />
+				  
+			<field name="download_image_library" 
+				type="imagelibs" 
+				repeat="true"
+				label="PLG_FABRIK_LIST_IMAGE_LIBRARY_LABEL" />
+		</fieldset>
+	</fields>
+</form>

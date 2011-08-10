@@ -1,0 +1,35 @@
+; 
+; Fabrik 3
+; Copyright (C) 2005 - 2010 Pollen 8 Design Ltd. All rights reserved.
+; License http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL, see LICENSE.php
+; Note : All ini files need to be saved as UTF-8 - No BOM
+
+PLG_ELEMENT_SLIDESHOW_CONNECTION_LABEL="Connection"
+PLG_ELEMENT_SLIDESHOW_NORMAL="Normal"
+PLG_ELEMENT_SLIDESHOW_KEN_BURNS="Ken burns"
+PLG_ELEMENT_SLIDESHOW_PUSH="Push"
+PLG_ELEMENT_SLIDESHOW_FOLD="Fold"
+PLG_ELEMENT_SLIDESHOW_TYPE_LABLE="Tipo de Presentación de diapositivas"
+PLG_ELEMENT_SLIDESHOW_TYPE_DESC="Tipo de Presentación de diapositivas usada, actualmente las opciones son normal y efectos Ken Burns (pan/zoom). Se añadirán otros tipos en el futuro."
+PLG_ELEMENT_SLIDESHOW_THUMBNAILS_LABEL="Usar miniaturas"
+PLG_ELEMENT_SLIDESHOW_THUMBNAILS_DESC="Mostrar una lista desplazable de miniaturas bajo la imagen principal. Si se elije Sí, las miniaturas se almacenarán en una subcarpeta llamada 'thumbs' (dentro de la carpeta en la que se almacena la imagen principal), con el mismo nombre que la imagen principal. Ésto se consigue normalmente configurando correctamente las opciones de Creación de miniaturas en un elemento de carga de archivo de Fabrik."
+PLG_ELEMENT_SLIDESHOW_TABLE_LABEL="Tabla de imágenes"
+PLG_ELEMENT_SLIDESHOW_TABLE_DESC="La tabla en la que se almacenan los nombres de las imágenes. Normalmente será una tabla de Fabrik con un elemento de carga, unida a la tabla de este formulario mediante un elemento de unión."
+PLG_ELEMENT_SLIDESHOW_FK_LABEL="Elemento CE"
+PLG_ELEMENT_SLIDESHOW_FK_DESC="Elemento de la tabla de imágenes que contenga la clave externa (p.e. un elemento de unión que apunte a la clave primaria de la tabla de este formulario)"
+PLG_ELEMENT_SLIDESHOW_FILE_LABEL="Elemento de archivo"
+PLG_ELEMENT_SLIDESHOW_FILE_DESC="Elemento de la tabla de imágenes que almacena el nombre de la imagen (debe ser una ruta relativa con respecto a la raíz de Joomla!, p.e. images/stories/miscosas/goo.jpg). Normalmente será un elemento de carga de Fabrik."
+PLG_ELEMENT_SLIDESHOW_CAPTION_LABEL="Elemento de leyenda"
+PLG_ELEMENT_SLIDESHOW_CAPTION_DESC="Opcional. Elemento de la tabla de imágenes que almacena la leyenda de la imagen."
+PLG_ELEMENT_SLIDESHOW_HEIGHT_LABEL="Altura"
+PLG_ELEMENT_SLIDESHOW_HEIGHT_DESC="Altura de la presentación de diapositivas (en px). Por omisión 400."
+PLG_ELEMENT_SLIDESHOW_WIDTH_LABEL="Anchura"
+PLG_ELEMENT_SLIDESHOW_WIDTH_DESC="Anchura de la presentación de diapositivas (en px). Por omisión 300."
+PLG_ELEMENT_SLIDESHOW_DELAY_LABEL="Retardo"
+PLG_ELEMENT_SLIDESHOW_DELAY_DESC="Retardo entre cambios de diapositivas, en milisegundos. Por omisión 5000 (5 segundos)."
+PLG_ELEMENT_SLIDESHOW_DURATION_LABEL="Duración"
+PLG_ELEMENT_SLIDESHOW_DURATION_DESC="Duración del efecto de transición, en milisegundos. Por omisión 2000 (2 segundos)."
+PLG_ELEMENT_SLIDESHOW_ZOOM_LABEL="Ampliación"
+PLG_ELEMENT_SLIDESHOW_ZOOM_DESC="Valor de ampliación para el tipo de presentación Ken Burns, tiene que ser un entero entre 0 y 100. Por omisión 50."
+PLG_ELEMENT_SLIDESHOW_PAN_LABEL="Desplazamiento"
+PLG_ELEMENT_SLIDESHOW_PAN_DESC="Valor de desplazamiento del tipo de presentación Ken Burns, tiene que ser un entero entre 0 y 100. Por omisión 50."

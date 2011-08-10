@@ -1,0 +1,2 @@
+You can add custom filetypes, or override the default handling of filetypes by creating files here.  For instance, to modify the way you display mp3's, you would copy the mp3.php from the folder above, and change the 'require' to include a different model.  You would probably then copy models/audio.php to (say) models/myaudio.php, require that from your custom/mp3.php, and modify myaudio.php to do what you need.
+

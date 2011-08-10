@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_visualization" method="upgrade">
+	<name>Kaltura</name>
+	<author>Rob Clayburn</author>
+	<creationDate>April 2009</creationDate>
+	<copyright>(C) 2005-2010 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0</version>
+	<description>Show kaltura gallery</description>
+	<files>
+		<filename plugin="kaltura">kaltura.php</filename>
+		<folder>controllers</folder>
+		<folder>langauge</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+		<folder>forms</folder>
+		<filename>index.html</filename>
+	</files>
+</extension>

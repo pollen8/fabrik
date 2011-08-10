@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-validationrule-emailexists">
+			<field type="text" 
+				name="emailexists-message" 
+				size="30" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_EMAILEXISTS_ERROR_LABEL"
+				description="PLG_VALIDATIONRULE_EMAILEXISTS_ERROR_DESC" />
+				
+			<field type="textarea" 
+				cols="30" rows="5" 
+				repeat="true"
+				name="emailexists-validation_condition" 
+				label="PLG_VALIDATIONRULE_EMAILEXISTS_CONDTION_LABEL" 
+				description="PLG_VALIDATIONRULE_EMAILEXISTS_CONDTION_DESC"/>
+				
+			<field name="emailexists_or_not" 
+				type="radio" 
+				repeat="true"
+				default="fail_if_exist" 
+				label="PLG_VALIDATIONRULE_EXISTS_OR_NOT_LABEL" 
+				description="PLG_VALIDATIONRULE_EXISTS_OR_NOT_DESC">
+					<option value="fail_if_exists">PLG_VALIDATIONRULE_FAIL_IF_EXISTS</option>
+					<option value="fail_if_not_exists">PLG_VALIDATIONRULE_FAIL_IF_DOES_NOT_EXISTS</option>
+			</field>
+			
+		</fieldset>
+		
+	</fields>
+</form>

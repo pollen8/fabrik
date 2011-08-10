@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_element" method="upgrade">
+	<name>user</name>
+	<author>Rob Clayburn</author>
+	<creationDate>Jan 2007</creationDate>
+	<copyright>(C) 2005-2007 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>2.0</version>
+	<description>Renders the current users username in a hidden field</description>
+	<files>
+		<filename plugin="user">user.php</filename>
+		<filename>index.html</filename>
+		<filename>user.js</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+	</files>
+	
+</extension>

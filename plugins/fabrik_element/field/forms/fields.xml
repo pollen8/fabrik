@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-element-field" label="field">
+		
+			<field name="width" 
+				type="text" size="3"
+				label="PLG_ELEMENT_FIELD_WIDTH_LABEL"/>
+				
+			<field name="hidden" 
+				type="radio"
+				default="0"
+				label="PLG_ELEMENT_FIELD_HIDDEN_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
+			<field name="eval" 
+				type="radio"
+				default="0"
+				label="PLG_ELEMENT_FIELD_EVAL_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field name="default"
+				type="textarea"
+				cols="45"
+				rows="6"
+				label="PLG_ELEMENT_FIELD_DEFAULT_LABEL" />
+			
+		</fieldset>
+	</fields>
+	
+	<fields name="params">
+		<fieldset name="plg-element-field-params">
+		
+			<field name="password"
+				type="radio"
+				default="0"
+				label="PLG_ELEMENT_FIELD_PASSWORD_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="maxlength" 
+				type="maxlength" 
+				size="3" 
+				default="255" 
+				label="PLG_ELEMENT_FIELD_MAX_LENGTH_LABEL" />
+				
+			<field name="text_format" 
+				type="radio"
+				default="text"
+				label="PLG_ELEMENT_FIELD_FORMAT_LABEL"
+				description="PLG_ELEMENT_FIELD_FORMAT_DESC">
+					<option value="text">PLG_ELEMENT_FIELD_TEXT</option>
+					<option value="integer">PLG_ELEMENT_FIELD_INTEGER</option>
+					<option value="decimal">PLG_ELEMENT_FIELD_WIDTH_DECIMAL</option>
+			</field>
+			
+			<field name="integer_length" 
+				type="text"
+				default="6"
+				label="PLG_ELEMENT_FIELD_INTEGER_LENGTH_LABEL"
+				description="PLG_ELEMENT_FIELD_INTEGER_LENGTH_DESC" />
+				
+			<field name="decimal_length"
+				type="text"
+				default="2"
+				label="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_LABEL"
+				description="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_DESC" />
+				
+			<field name="text_format_string"
+				type="text"
+				label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL"
+				description="PLG_ELEMENT_FIELD_FORMAT_STRING_DESC" />
+			
+			<field name="guess_linktype" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_FIELD_GUESS_LINK_TYPE_LABEL" 
+				description="PLG_ELEMENT_FIELD_GUESS_LINK_TYPE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="disable" 
+				type="radio" default="0" 
+				label="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_LABEL" 
+				description="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="readonly" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_FIELD_READ_ONLY_LABEL" 
+				description="PLG_ELEMENT_FIELD_READ_ONLY_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="autocomplete" 
+				type="radio" 
+				default="1" 
+				label="PLG_ELEMENT_FIELD_AUTOCOMPLETE_LABEL" 
+				description="PLG_ELEMENT_FIELD_AUTOCOMPLETE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
+		</fieldset>
+
+		</fields>
+</form>

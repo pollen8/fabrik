@@ -1,0 +1,4 @@
+PLG_VALIDATIONRULE_AREUNIQUE_ERROR_LABEL="Error message"
+PLG_VALIDATIONRULE_AREUNIQUE_ERROR_DESC="The text that is shown next to the element if the validation fails"
+PLG_VALIDATIONRULE_AREUNIQUE_OTHER_FIELD_LABEL="Compare against element"
+PLG_VALIDATIONRULE_AREUNIQUE_OTHER_FIELD_DESC="The (short) element name of the other field to validate as unique"

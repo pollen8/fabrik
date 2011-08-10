@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-kunena">
+			<field name="kunena_category" 
+				type="sql" 
+				repeat="true"
+				query="SELECT id AS value, name  FROM #__fb_categories WHERE published = 1" value_field="name" 
+				label="PLG_FORM_KUNENA_CATEGORY_LABEL" 
+				description="PLG_FORM_KUNENA_CATEGORY_DESC"/>
+				
+			<field name="kunena_title" 
+				type="text"
+				repeat="true" 
+				label="PLG_FORM_KUNENA_TITLE_LABELTile" 
+				description="PLG_FORM_KUNENA_TITLE_DESC"/>
+				
+			<field name="kunena_content" 
+				type="textarea" 
+				repeat="true"
+				label="PLG_FORM_KUNENA_CONTENT_LABEL" 
+				rows="6" 
+				cols="30" 
+				description="PLG_FORM_KUNENA_CONTENT_DESC"/>
+		</fieldset>	
+	</fields>
+</form>

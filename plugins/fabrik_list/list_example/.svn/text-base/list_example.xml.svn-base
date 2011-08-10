@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_list" method="upgrade">
+	<name>Table - Example</name>
+	<author>Rob Clayburn</author>
+	<creationDate>August 2008</creationDate>
+	<copyright>(C) 2005-2008 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>2.0</version>
+	<description>Example list plugin</description>
+	<files>
+		<filename plugin="list_example">list_example.php</filename>
+		<filename>index.html</filename>
+		<filename>list_example.js</filename>
+		<folder>forms</folder>
+	</files>
+</extension>

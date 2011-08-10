@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields>
+	
+		<fieldset name="plg-element-textarea" addfieldpath="/administrator/components/com_fabrik/models/fields">
+			<field name="width" 
+				type="text" size="3"
+				default="40" 
+				label="PLG_ELEMENT_TEXTAREA_WIDTH_LABEL" />
+				
+			<field name="height" 
+				type="text" 
+				default="6" size="3" 
+				label="PLG_ELEMENT_TEXTAREA_HEIGHT_LABEL" />
+				
+			<field name="eval" 
+				type="radio"
+				default="0"
+				label="PLG_ELEMENT_TEXTAREA_EVAL_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+				
+			<field name="default" 
+				type="textarea"
+				cols="45"
+				rows="6"
+				label="PLG_ELEMENT_TEXTAREA_DEFAULT_LABEL"/>
+		</fieldset>
+		
+	</fields>
+	<fields name="params">
+		<fieldset name="plg-textarea-extra" addfieldpath="/administrator/components/com_fabrik/models/fields">
+			<field name="use_wysiwyg" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_LABEL" 
+				description="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="textarea-showmax" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_TEXTAREA_SHOW_MAX_LIMIT_LABEL" 
+				description="PLG_ELEMENT_TEXTAREA_SHOW_MAX_LIMIT_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="textarea-maxlength" 
+				type="text" 
+				size="5" 
+				default="255" 
+				label="PLG_ELEMENT_TEXTAREA_MAXLENGTH_LABEL" 
+				description="PLG_ELEMENT_TEXTAREA_MAXLENGTH_DESC"/>
+			
+			<field name="textarea-tagify" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_TEXTAREA_TAGIFY_LABEL" 
+				description="PLG_ELEMENT_TEXTAREA_TAGIFY_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="textarea_tagifyurl" 
+				type="text" 
+				size="40" 
+				label="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_LABEL" 
+				description="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_DESC" />
+			
+			<field name="textarea-truncate" 
+				type="text" 
+				default="0" size="3" 
+				label="PLG_ELEMENT_TEXTAREA_TRUNCATE_LABEL" 
+				description="PLG_ELEMENT_TEXTAREA_TRUNCATE_DESC" />
+					
+		</fieldset>
+	</fields>
+</form>

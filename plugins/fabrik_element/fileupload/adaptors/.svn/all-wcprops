@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/fabrik_fabrik2/!svn/ver/5344/fabrik3/trunk/plugins/fabrik_element/fileupload/adaptors
+END
+filesystemstorage.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/5344/fabrik3/trunk/plugins/fabrik_element/fileupload/adaptors/filesystemstorage.php
+END
+amazons3storage.php
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/fabrik_fabrik2/!svn/ver/5344/fabrik3/trunk/plugins/fabrik_element/fileupload/adaptors/amazons3storage.php
+END

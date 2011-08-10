@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_element" method="upgrade">
+	<name>yes/no</name>
+	<author>Rob Clayburn</author>
+	<creationDate>Dec 2006</creationDate>
+	<copyright>(C) 2005-2006 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0</version>
+	<description>Renders yes / no radio buttons</description>
+	<files>
+		<filename plugin="yesno">yesno.php</filename>
+		<folder>forms</folder>
+		<folder>images</folder>
+		<folder>language</folder>
+		<filename>yesno.js</filename>
+		<filename>index.html</filename>
+	</files>
+	
+</extension>

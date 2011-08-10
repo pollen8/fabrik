@@ -1,0 +1,12 @@
+; 
+; Joomla! Project
+; Copyright (C) 2005 - 2010 Pollen 8 Design Ltd. All rights reserved.
+; License http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL, see LICENSE.php
+; Note : All ini files need to be saved as UTF-8 - No BOM
+
+PLG_VALIDATIONRULE_EMAILEXISTS_ERROR_LABEL="Error message"
+PLG_VALIDATIONRULE_EMAILEXISTS_ERROR_DESC="The text that is shown next to the element if the validation fails"
+PLG_VALIDATIONRULE_EXISTS_OR_NOT_LABEL="Existe o No"
+PLG_VALIDATIONRULE_EXISTS_OR_NOT_DESC="Seleccione si se generará un error si la dirección de correo existe en la tabla de usuarios de Joomla! o no."
+PLG_VALIDATIONRULE_FAIL_IF_EXISTS="Fail if email exists"
+PLG_VALIDATIONRULE_FAIL_IF_DOES_NOT_EXISTS="Fail if email does not exist"

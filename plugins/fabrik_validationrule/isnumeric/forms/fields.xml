@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-validationrule-isnumeric">
+			<field type="text" 
+				name="isnumeric-message" 
+				size="30" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_ISNUMERIC_ERROR_LABEL"
+				description="PLG_VALIDATIONRULE_ISNUMERIC_ERROR_DESC" />
+				
+			<field type="textarea" 
+				cols="30" rows="5" 
+				repeat="true"
+				name="isnumeric-validation_condition" 
+				label="PLG_VALIDATIONRULE_ISNUMERIC_CONDITION_LABEL" 
+				description="PLG_VALIDATIONRULE_ISNUMERIC_CONDITION_DESC"/>
+				
+			<field name="isnumeric-allow_empty" 
+				type="radio" 
+				default="0" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_ISNUMERIC_ALLOW_EMPTY_LABEL" 
+				description="PLG_VALIDATIONRULE_ISNUMERIC_ALLOW_EMPTY_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+		</fieldset>
+	</fields>
+</form>

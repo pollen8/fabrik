@@ -1,0 +1,32 @@
+.fabrikslider-line{
+	width:250px;
+	height:14px;
+	clear:left;
+	background: url(images/area.png) repeat-x center center;
+}
+
+.fabrikslider-line .knob{
+	width:15px;
+	height:15px;
+	background: url(images/slider.png) no-repeat center center;
+	cursor: pointer;
+}
+
+ul.slider-labels, ul.slider-labels li{
+	padding:0 !important;
+	margin:0 !important;
+}
+
+ul.slider-labels li{
+	float:left;
+	color:#aaa;
+}
+
+.clearslider_cont{
+	width:30px;
+	float:left;
+}
+
+.slider_cont{
+	float:left;
+}

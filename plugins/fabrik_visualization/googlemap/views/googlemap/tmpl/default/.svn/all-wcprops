@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/fabrik_fabrik2/!svn/ver/5289/fabrik3/trunk/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/default
+END
+default_filter.php
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/fabrik_fabrik2/!svn/ver/5250/fabrik3/trunk/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/default/default_filter.php
+END
+default_static.php
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/fabrik_fabrik2/!svn/ver/5250/fabrik3/trunk/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/default/default_static.php
+END
+template.css
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/fabrik_fabrik2/!svn/ver/5289/fabrik3/trunk/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/default/template.css
+END
+default_sidebar.php
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/fabrik_fabrik2/!svn/ver/5250/fabrik3/trunk/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/default/default_sidebar.php
+END
+default.php
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/fabrik_fabrik2/!svn/ver/5289/fabrik3/trunk/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/default/default.php
+END

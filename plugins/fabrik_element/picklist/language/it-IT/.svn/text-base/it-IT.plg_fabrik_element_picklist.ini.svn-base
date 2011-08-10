@@ -1,0 +1,19 @@
+;
+; Fabrik 3 
+; Copyright (C) 2005-2010 Pollen 8 Design Ltd. All rights reserved.
+; License http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL, see LICENSE.php
+; Note : All ini files need to be saved as UTF-8 - No BOM
+
+PLG_ELEMENT_PICKLIST_EDIT_DROPDOWN_LABEL="Permetti aggiunta opzioni"
+PLG_ELEMENT_PICKLIST_EDIT_DROPDOWN_DESC="Permette all'utente di aggiungere sotto opzioni al picker"
+PLG_ELEMENT_PICKLIST_ONLY_ADD_LABEL_LABEL="Aggiunta singolo valore-etichetta"
+PLG_ELEMENT_PICKLIST_ONLY_ADD_LABEL_DESC="Se selezionato viene mostrato un capo all'aggiunta di una nuova sotto opzione. Questo valore verrà utilizzato sia per il valore che per l'etichetta. Se NON selezionato verranno mostrati due campi distinti per il valore e per l'etichetta."
+PLG_ELEMENT_PICKLIST_SAVE_NEW_ADDITIONS_LABEL="Salva nuove aggiunte"
+PLG_ELEMENT_PICKLIST_SAVE_NEW_ADDITIONS_DESC="Se attivato le opzioni aggiunti dall'utente saranno dipsonibili per tutti alla selezione"
+PLG_ELEMENT_PICKLIST_HOVER_COLOUR_LABEL="Colore Hover"
+PLG_ELEMENT_PICKLIST_HOVER_COLOUR_DESCRIPTION="Valore esadecimale (es. #ff0000) al passaggio sulle voci del picklist"
+PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_LABEL="Colore di background di Hover"
+PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_DESCRIPTION="Valore esadecimale (es. #ff0000) al trascinamento delle voci del picklist al di fuori della lista."
+
+;front end
+PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL="Please enter a value and/or label"

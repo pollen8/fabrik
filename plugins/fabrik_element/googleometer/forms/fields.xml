@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-element-googleometer" label="field">
+		
+			<field name="googleometer_element" 
+				type="listfields" 
+				valueformat="id"
+				label="PLG_ELEMENT_GOOGLEOMETER_ELEMENT_LABEL" 
+				description="PLG_ELEMENT_GOOGLEOMETER_ELEMENT_DESC"/>
+				
+			<field name="googleometer_width" 
+				type="text" 
+				size="3" default="200" 
+				label="PLG_ELEMENT_GOOGLEOMETER_WIDTH_LABEL" 
+				description="PLG_ELEMENT_GOOGLEOMETER_WIDTH_DESC" />
+				
+			<field name="googleometer_height" 
+				type="text" 
+				size="3" default="125" 
+				label="PLG_ELEMENT_GOOGLEOMETER_HEIGHT_LABEL" 
+				description="PLG_ELEMENT_GOOGLEOMETER_HEIGHT_DESC" />
+				
+			<field name="googleometer_label" 
+				type="text" 
+				size="20"
+				label="PLG_ELEMENT_GOOGLEOMETER_LABEL_LABEL" 
+				description="PLG_ELEMENT_GOOGLEOMETER_LABEL_DESC" />
+					
+		</fieldset>
+
+		</fields>
+</form>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields>
+		<fieldset name="plg-element-user">
+			<field name="hidden" 
+				type="radio" 
+				default="0"
+				label="PLG_ELEMENT_USER_HIDDEN_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+		</fieldset>
+	</fields>
+	
+	<fields name="params">
+		<fieldset name="plg-element-user-params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		
+			<field name="my_table_data" 
+				type="list" 
+				default="0" 
+				label="PLG_ELEMENT_USER_DISPLAY_DATA_LABEL" 
+				description="PLG_ELEMENT_USER_DISPLAY_DATA_DESC">
+					<option value="id">ID</option>
+					<option value="name">Name</option>
+					<option value="username">User Name</option>
+					<option value="email">Email</option>
+					<option value="usertype">User Type</option>
+					<option value="block">Block</option>
+					<option value="sendEmail">Send Email</option>
+					<option value="gid">Group ID</option>
+					<option value="registerDate">Registered Date</option>
+					<option value="lastvisitDate">Last Visit Date</option>
+					<option value="activation">Activation</option>
+			</field>
+			
+			<field name="update_on_edit" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_USER_UPDATE_ON_EDIT_LABEL" 
+				description="PLG_ELEMENT_USER_UPDATE_ON_EDIT_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="user_noselectionlabel" 
+				type="text" 
+				size="35"
+				label="PLG_ELEMENT_USER_NO_SELECTION_LABEL_LABEL"
+				description="PLG_ELEMENT_USER_NO_SELECTION_LABEL_DESC" /> 
+				
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist version="0" xmlns="http://xspf.org/ns/0/">
+<trackList>
+<track><location>http://yourdomain.com/music/Never Is Enough.mp3</location><creator>Barenaked Ladies</creator><title>Never Is Enough</title><meta rel="http://geekkid.net/type/">audio</meta></track>
+<track><location>http://yourdomain.com/music/E-Pro.mp3</location><creator>Beck</creator><title>E-Pro</title></track>
+<track><location>http://yourdomain.com/jukebox/xplaylist.xml</location><creator>The Who</creator><title>Babba o' Riley</title></track>
+</trackList>
+</playlist>

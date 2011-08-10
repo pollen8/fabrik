@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-validationrule-userexists">
+			<field type="text" 
+				name="userexists-message" 
+				size="30" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_USEREXISTS_ERROR_LABEL"
+				description="PLG_VALIDATIONRULE_USEREXISTS_ERROR_DESC" />
+				
+			<field type="textarea" 
+				cols="30" rows="5"
+				repeat="true"
+				name="userexists-validation_condition"
+				label="PLG_VALIDATIONRULE_USEREXISTS_CONDITION_LABEL"
+				description="PLG_VALIDATIONRULE_USEREXISTS_CONDITION_DESC"/>
+				
+			<field name="userexists_or_not" 
+				type="radio" 
+				default="fail_if_exist"
+				repeat="true" 
+				label="PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_LABEL" 
+				description="PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_DESC">
+					<option value="fail_if_exists">PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_EXISTS</option>
+					<option value="fail_if_not_exists">PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_NOT_EXISTS</option>
+			</field>
+			
+		</fieldset>
+	</fields>
+</form>

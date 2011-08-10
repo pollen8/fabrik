@@ -1,0 +1,28 @@
+; 
+; Fabrik 2.0
+; Copyright (C) 2005 - 2010 Pollen 8 Design Ltd. All rights reserved.
+; License http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL, see LICENSE.php
+; Note : All ini files need to be saved as UTF-8 - No BOM
+
+PLG_ELEMENT_CDD_CONNECTION_LABEL="Connection"
+PLG_ELEMENT_CDD_TABLE_LABEL="Table"
+PLG_ELEMENT_CDD_TABLE_DESC="Cargar lista desplegable en cascada con datos de esta tabla."
+PLG_ELEMENT_CDD_ID_LABEL="Id"
+PLG_ELEMENT_CDD_ID_DESC="Los valores de estos campos serán usados como los valores de la lista desplegable."
+PLG_ELEMENT_CDD_LABEL_LABEL="Label"
+PLG_ELEMENT_CDD_LABEL_DESC="Los valores de estos campos serán usados como los textos de la lista desplegable."
+PLG_ELEMENT_CDD_LABEL_CONCAT_LABEL="or CONCAT label"
+PLG_ELEMENT_CDD_LABEL_CONCAT_DESC="OPTIONAL MySQL CONCAT statement to use instead of individual element, such as `{thistable}.last_name, ', ', {thistable}.first_name`.  Leave blank to use the element selected in the above dropdown.  Use the {thistable} placeholder to ensure correct table name is used (which might have a _N suffix if more than one join is used to the same table)"
+PLG_ELEMENT_CDD_WATCH_LABEL="Vigilar el elemento"
+PLG_ELEMENT_CDD_WATCH_DESC="El nombre del elemento a vigilar. Cuando el valor de este elemento cambie, la opción en la lista despegable en cascada se actualizará"
+PLG_ELEMENT_CDD_KEY_LABEL="Clave foránea"
+PLG_ELEMENT_CDD_KEY_DESC="El campo de la tabla de la lista que debe contener el mismo valor que el "elemento vigilado" seleccionado."
+PLG_ELEMENT_CDD_WHERE_LABEL="Dónde consultar"
+PLG_ELEMENT_CDD_WHERE_DESC="Use esto para filtrar los resultados mostrados en la lista desplegable, use la versión corta del nombre del elemento. (ej: active=1)"
+PLG_ELEMENT_CDD_HIDDEN="Hidden"
+PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_LABEL="Mostrar 'Por favor seleccione'"
+PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_DESC="Si es seleccionado 'No', no se mostrará la opción 'por favor seleccione' en el tope de la lista."
+PLG_ELEMENT_CDD_EVAL_LABEL="Eval"
+PLG_ELEMENT_CDD_DEFAULT_LABEL="Default"
+PLG_ELEMENT_CDD_READONLY_LINK_LABEL="Read only link"
+PLG_ELEMENT_CDD_READONLY_LINK_DESC=""

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension
+	type="module"
+	version="1.6.0"
+	client="site"
+	method="upgrade">
+	<name>Fabrik form</name>
+	<author>Rob Clayburn</author>
+	<creationDate>Feb 2011</creationDate>
+	<copyright>(C) 2006 Pollen 8 Design Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0 Alpha</version>
+	<description>This module shows a Fabrik form.</description>
+	<files>
+		<filename module="mod_fabrik_form">mod_fabrik_form.php</filename>
+		<filename>index.html</filename>
+		<filename>mod_fabrik_form.xml</filename>
+	</files>
+	
+	<config>
+		<fields name="params">
+			<fieldset name="advanced" addfieldpath="/administrator/components/com_fabrik/models/fields">
+				<field name="moduleclass_sfx" type="text" 
+					label="MOD_FABRIK_FORM_CLASS_SUFFIX_LABEL"
+					description="MOD_FABRIK_FORM_CLASS_SUFFIX_DESC" />
+					
+				<field name="@spacer" type="spacer" label="" />
+				
+				<field name="formid" 
+					type="formlist" default="0" 
+					label="MOD_FABRIK_FORM_FORM_LABEL" 
+					description="MOD_FABRIK_FORM_FORM_DESC" />
+					
+				<field name="row_id" 
+					type="text" size="4" default="0" label="MOD_FABRIK_FORM_ROW_ID_LABEL" 
+					description="MOD_FABRIK_FORM_ROW_ID_DESC" />
+					
+				<field name="template" 
+					type="folderlist" directory="/components/com_fabrik/views/form/tmpl" 
+					hide_none="1" hide_default="0" default="default" 
+					label="MOD_FABRIK_FORM_TEMPLATE_LABEL" 
+					description="MOD_FABRIK_FORM_TEMPLATE_DESC" />
+					
+				<field name="formmodule_useajax" 
+					type="radio" default="1" 
+					label="MOD_FABRIK_FORM_AJAX_LABEL" description="MOD_FABRIK_FORM_AJAX_DESC">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
+			</fieldset>
+		</fields>
+	</config>
+</extension>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-cron-geocode">
+			
+			<field name="geocode_gmap_key" 
+				type="text" 
+				size="100" 
+				label="PLG_CRON_GEOCODE_GMAP_KEY_LABEL" 
+				description="PLG_CRON_GEOCODE_GMAP_KEY_DESC" />
+						
+			<field name="geocode_map_element" 
+				type="element" 
+				connection="params_connection" 
+				table="params_table" 
+				label="PLG_CRON_GEOCODE_MAP_LABEL" 
+				description="PLG_CRON_GEOCODE_MAP_DESC"/>
+				
+			<field name="geocode_addr1_element" 
+				type="element" 
+				connection="params_connection" 
+				table="params_table" 
+				label="PLG_CRON_GEOCODE_ADDR1_LABEL" 
+				description="PLG_CRON_GEOCODE_ADDR1_DESC"/>
+				
+			<field name="geocode_addr2_element" 
+				type="element" 
+				connection="params_connection" 
+				table="params_table" 
+				label="PLG_CRON_GEOCODE_ADDR2_LABEL" 
+				description="PLG_CRON_GEOCODE_ADDR2_DESC"/>
+				
+			<field name="geocode_city_element" 
+				type="element" 
+				connection="params_connection" 
+				table="params_table" 
+				label="PLG_CRON_GEOCODE_CITY_LABEL" 
+				description="PLG_CRON_GEOCODE_CITY_DESC"/>
+				
+			<field name="geocode_state_element"
+				type="element" 
+				connection="params_connection" 
+				table="params_table" 
+				label="PLG_CRON_GEOCODE_STATE_LABEL" 
+				description="PLG_CRON_GEOCODE_STATE_DESC"/>
+				
+			<field name="geocode_zip_element" 
+				type="element" 
+				connection="params_connection" 
+				table="params_table" 
+				label="PLG_CRON_GEOCODE_ZIP_LABEL" 
+				description="PLG_CRON_GEOCODE_ZIP_DESC"/>
+				
+			<field name="geocode_country_element" 
+				type="element" 
+				connection="params_connection" 
+				table="params_table" 
+				label="PLG_CRON_GEOCODE_COUNTRY_LABEL" 
+				description="PLG_CRON_GEOCODE_COUNTRY_DESC"/>
+				
+			<field name="geocode_is_empty" 
+				type="text" 
+				size="30" 
+				label="PLG_CRON_GEOCODE_IS_EMPTY_LABEL" 
+				description="PLG_CRON_GEOCODE_IS_EMPTY_DESC" />
+				
+			<field name="geocode_zoom_level" 
+				type="text" 
+				default="4" size="2" 
+				label="PLG_CRON_GEOCODE_ZOOM_LABEL" 
+				description="PLG_CRON_GEOCODE_ZOOM_DESC" />
+			
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_validationrule" method="upgrade">
+	<name>Example</name>
+	<author>Rob Clayburn</author>
+	<creationDate>Oct 2007</creationDate>
+	<copyright>(C) 2005-2010 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0</version>
+	<description>Enter a description here</description>
+	<files>
+		<filename plugin="example">example.php</filename>
+		<filename>index.html</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+	</files>
+</extension>

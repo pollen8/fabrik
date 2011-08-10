@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/fabrik_fabrik2/!svn/ver/5571/fabrik3/trunk/components/com_fabrik/views/list
+END
+view.fabrikfeed.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/fabrik_fabrik2/!svn/ver/5538/fabrik3/trunk/components/com_fabrik/views/list/view.fabrikfeed.php
+END
+view.feed.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/fabrik_fabrik2/!svn/ver/5538/fabrik3/trunk/components/com_fabrik/views/list/view.feed.php
+END
+view.html.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/fabrik_fabrik2/!svn/ver/5554/fabrik3/trunk/components/com_fabrik/views/list/view.html.php
+END
+view.yql.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/views/list/view.yql.php
+END
+view.pdf.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/fabrik_fabrik2/!svn/ver/5554/fabrik3/trunk/components/com_fabrik/views/list/view.pdf.php
+END
+view.raw.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/fabrik_fabrik2/!svn/ver/5469/fabrik3/trunk/components/com_fabrik/views/list/view.raw.php
+END
+view.csv.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/fabrik_fabrik2/!svn/ver/5520/fabrik3/trunk/components/com_fabrik/views/list/view.csv.php
+END

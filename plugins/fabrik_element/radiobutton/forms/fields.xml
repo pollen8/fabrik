@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-element-radiobutton">
+			<field name="radio_element_before_label" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_RADIO_ELEMENT_BEFORE_LABEL_LABEL" 
+				description="PLG_ELEMENT_RADIO_ELEMENT_BEFORE_LABEL_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="options_per_row" 
+				type="width" 
+				default="4" 
+				label="PLG_ELEMENT_RADIO_OPTIONS_PER_ROW_LABEL" />
+				
+			<field name="sub_options"
+				type="suboptions"
+				label="COM_FABRIK_SUBOPTIONS" />
+				
+		</fieldset>
+		
+		<fieldset name="plg-radiobutton-add">
+			<field name="allow_frontend_addtoradio" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_RADIO_ADD_OPTION_LABEL" 
+				description="PLG_ELEMENT_RADIO_ADD_OPTION_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="rad-allowadd-onlylabel" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_RADIO_ONLY_ADD_LABEL_LABEL" 
+				description="PLG_ELEMENT_RADIO_ONLY_ADD_LABEL_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="rad-savenewadditions" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_RADIO_SAVE_NEW_ADDITIONS_LABEL" 
+				description="PLG_ELEMENT_RADIO_SAVE_NEW_ADDITIONS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+		</fieldset>
+	</fields>
+</form>

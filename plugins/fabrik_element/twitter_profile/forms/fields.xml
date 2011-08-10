@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+
+	<fields>
+		<fieldset name="plg-element-twitter_profile" addfieldpath="/administrator/components/com_fabrik/models/fields">
+			
+			<field name="width" 
+				type="text" size="3"
+				label="PLG_ELEMENT_TWITTER_PROFILE_WIDTH_LABEL"/>
+				
+			<field name="hidden" 
+				type="radio" 
+				default="0"
+				label="PLG_ELEMENT_TWITTER_PROFILE_HIDDEN_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
+			<field name="eval" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_TWITTER_PROFILE_EVAL_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+				
+			<field name="default" 
+				type="textarea"
+				cols="45"
+				rows="6"
+				label="PLG_ELEMENT_TWITTER_PROFILE_DEFAULT_LABEL" />
+				
+		</fieldset>
+	</fields>
+	<fields name="params">
+	
+		<fieldset name="plg-element-twitter_profile" label="Template" addfieldpath="/administrator/components/com_fabrik/models/fields">
+			
+			<field name="twitter_profile_template" 
+				type="textarea" 
+				rows="3" 
+				cols="60" 
+				label="PLG_ELEMENT_TWITTER_PROFILE_TEMPLATE_LABEL" 
+				description="PLG_ELEMENT_TWITTER_PROFILE_TEMPLATE_DESC" />
+				
+		</fieldset>
+	</fields>
+</form>

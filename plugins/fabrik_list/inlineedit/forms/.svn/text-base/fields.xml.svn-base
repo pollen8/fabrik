@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	
+		<fieldset name="plg-list-inlineedit">
+			<field name="inline_access"
+				type="accesslevel"
+				repeat="true"
+				label="PLG_LIST_INLINE_ACCESS_LABEL" />
+			
+			<field name="inline_editable_elements"
+				type="textarea"
+				cols="40"
+				rows="6"
+				repeat="true"
+				label="PLG_LIST_INLINE_EDITABLE_ELEMENTS_LABEL"
+				description="PLG_LIST_INLINE_EDITABLE_ELEMENTS_DESC" />
+			
+			<field name="inline_edit_event"
+				type="list"
+				repeat="true"
+				default="dblclick"
+				label="PLG_LIST_INLINE_EDIT_EVENT_LABEL"
+				description="PLG_LIST_INLINE_EDIT_EVENT_DESC">
+					<option value="click">Click</option>
+					<option value="dblclick">Double click</option>	
+			</field> 
+			
+			<field name="inline_tab_save"
+				type="radio"
+				repeat="true"
+				default="0"
+				label="PLG_LIST_INLINE_TAB_SAVE_LABEL"
+				description="PLG_LIST_INLINE_TAB_SAVE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field name="inline_show_cancel"
+				type="radio"
+				repeat="true"
+				default="1"
+				label="PLG_LIST_INLINE_SHOW_CANCEL_LABEL"
+				description="PLG_LIST_INLINE_SHOW_CANCEL_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field name="inline_show_save"
+				type="radio"
+				repeat="true"
+				default="1"
+				label="PLG_LIST_INLINE_SHOW_SAVE_LABEL"
+				description="PLG_LIST_INLINE_SHOW_SAVE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+		
+		</fieldset>
+	</fields>
+</form>

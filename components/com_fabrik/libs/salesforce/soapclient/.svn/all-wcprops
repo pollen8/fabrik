@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient
+END
+SforceEmail.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceEmail.php
+END
+SforceProcessRequest.php
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceProcessRequest.php
+END
+SforceFieldTypes.php
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceFieldTypes.php
+END
+SforceBaseClient.php
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceBaseClient.php
+END
+SforcePartnerClient.php
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforcePartnerClient.php
+END
+partner.wsdl.xml
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/partner.wsdl.xml
+END
+SforceMetaObject.php
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceMetaObject.php
+END
+SforceEnterpriseClient.php
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceEnterpriseClient.php
+END
+SforceMetadataClient.php
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceMetadataClient.php
+END
+enterprise.wsdl.xml
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/enterprise.wsdl.xml
+END
+metadata.wsdl.xml
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/metadata.wsdl.xml
+END
+ProxySettings.php
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/ProxySettings.php
+END
+SforceHeaderOptions.php
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/components/com_fabrik/libs/salesforce/soapclient/SforceHeaderOptions.php
+END

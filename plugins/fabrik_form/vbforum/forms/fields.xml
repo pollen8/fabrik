@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-form-vbforum">
+		
+			<field name="vb_forum_field" 
+				type="listfields" 
+				onlytablefields="0" 
+				default="forum" 
+				label="PLG_FABRIK_FORM_VBFORUM_FORUM_LABEL" 
+				description="PLG_FABRIK_FORM_VBFORUM_FORUM_DESC"/>
+				
+			<field name="vb_path" 
+				type="text"
+				label="PLG_FABRIK_FORM_VBFORUM_PATH_LABEL" 
+				description="PLG_FABRIK_FORM_VBFORUM_PATH_DESC"/>
+				
+			<field name="vb_parent" 
+				type="text" 
+				label="PLG_FABRIK_FORM_PARENT_FORUM_ID_LABEL" 
+				description="PLG_FABRIK_FORM_PARENT_FORUM_ID_DESC"/>
+		</fieldset>
+	</fields>
+</form>

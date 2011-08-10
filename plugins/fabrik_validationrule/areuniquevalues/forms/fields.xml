@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-validationrule-areuniquevalues">
+		<field type="text" 
+			name="areuniquevalues-message" 
+			size="30" 
+			repeat="true"
+			label="PLG_VALIDATIONRULE_AREUNIQUE_ERROR_LABEL"
+			description="PLG_VALIDATIONRULE_AREUNIQUE_ERROR_DESC" />
+			
+		<field type="text" 
+			name="areuniquevalues-otherfield" 
+			size="30" 
+			repeat="true"
+			label="PLG_VALIDATIONRULE_AREUNIQUE_OTHER_FIELD_LABEL"
+			description="PLG_VALIDATIONRULE_AREUNIQUE_OTHER_FIELD_DESC" />
+			
+		</fieldset>
+	</fields>
+</form>

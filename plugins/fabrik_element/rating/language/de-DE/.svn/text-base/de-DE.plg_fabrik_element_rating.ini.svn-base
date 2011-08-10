@@ -1,0 +1,23 @@
+;
+; Fabrik 3 
+; Copyright (C) 2005-2010 Pollen 8 Design Ltd. All rights reserved.
+; License http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL, see LICENSE.php
+; Note : All ini files need to be saved as UTF-8 - No BOM
+
+PLG_ELEMENT_RATING_ONE="Eins"
+PLG_ELEMENT_RATING_TWO="Zwei"
+PLG_ELEMENT_RATING_THREE="Drei"
+PLG_ELEMENT_RATING_FOUR="Vier"
+PLG_ELEMENT_RATING_FIVE="Fünf"
+PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETALS_VIEW="Only accessible in details view"
+PLG_ELEMENT_RATING_RATE_IN_FORM_LABEL="Bewertung im Formular"
+PLG_ELEMENT_RATING_RATE_IN_FORM_DESC="Erlaubt dem Benutzer den Eintrag auch während des Bearbeitens zu bewerten"
+PLG_ELEMENT_RATING_NO_RATING_OPTION_FIRST_LABEL="Die Option Keine Bewertung zuerst"
+PLG_ELEMENT_RATING_NO_RATING_OPTION_FIRST_DESC="Soll die 'Keine Bewertung' Option am Anfang oder Ende der Sterne Angezeigt werden?"
+PLG_ELEMENT_RATING_IMAGE_FILE_TYPE_LABEL="Bild Datei Typ"
+PLG_ELEMENT_RATING_IMAGE_FILE_TYPE_DESC="Die Bewertungs Sterne als pngs oder gifs rendern"
+PLG_ELEMENT_RATING_MODE_LABEL="Bewertungs Modus"
+PLG_ELEMENT_RATING_MODE_DESC="Wenn auf 'Benutzer Bewertung' eingestellt können alle Benutzer den Eintrag Bewerten und der durchschnittliche Wert wird angezeigt. Wenn auf 'Ersteller Bewertung' eingestellt kann der Ersteller/Bearbeiter des Eintrages die Bewertung ändern und diese Bewertung wird als durchschnittliche Angezeigt."
+
+;front end
+PLG_ELEMENT_RATING_NO_RATING="Keine Bewertung"

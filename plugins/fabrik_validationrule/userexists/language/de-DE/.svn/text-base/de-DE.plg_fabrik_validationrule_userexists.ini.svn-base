@@ -1,0 +1,14 @@
+; 
+; Joomla! Project
+; Copyright (C) 2005 - 2010 Pollen 8 Design Ltd. All rights reserved.
+; License http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL, see LICENSE.php
+; Note : All ini files need to be saved as UTF-8 - No BOM
+
+PLG_VALIDATIONRULE_USEREXISTS_ERROR_LABEL="Error message"
+PLG_VALIDATIONRULE_USEREXISTS_ERROR_DESC="The text that is shown next to the element if the validation fails"
+PLG_VALIDATIONRULE_USEREXISTS_CONDITION_LABEL="Condition"
+PLG_VALIDATIONRULE_USEREXISTS_CONDITION_DESC="PHP code that returns true if the validation is to be run"
+PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_LABEL="Fail validation when";
+PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_DESC=""
+PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_EXISTS="Fail if username exists"
+PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_NOT_EXISTS="Fail if username does not exist"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-element-captcha">
+			<field name="captcha-showloggedin" type="radio" default="0" label="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_LABEL" description="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_DESC">
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</field>
+			<field name="captcha-method" type="radio" default="standard" label="PLG_ELEMENT_CAPTCHA_METHOD_LABEL" description="">
+				<option value="standard">Standard</option>
+				<option value="recaptcha">Recaptcha</option>
+			</field>
+		</fieldset>
+	
+		<fieldset name="plg-captcha-standard">
+			<field name="captcha-width" type="text" size="3" default="120" label="PLG_ELEMENT_CAPTCHA_WIDTH_LABEL" description=""/>
+			<field name="captcha-height" type="text" size="3" default="40" label="PLG_ELEMENT_CAPTCHA_HEIGHT_LABEL" description=""/>
+			<field name="captcha-chars" type="text" size="3" default="6" label="PLG_ELEMENT_CAPTCHA_NUMBER_OF_CHARS_LABEL" description=""/>
+		</fieldset>
+		
+		<fieldset name="plg-captcha-recaptcha">
+			<field name="recaptcha_publickey" type="text" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_LABEL" description="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_DESC" size="30" />
+			<field name="recaptcha_privatekey" type="text" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_LABEL" descripton="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_DESC" size="30" default="" />
+		</fieldset>
+
+	</fields>
+</form>

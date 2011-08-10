@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-element-fblike" label="field">
+		
+			<field name="opengraph_applicationid" 
+				type="text" 
+				label="PLG_ELEMENT_FBLIKE_APPLICATION_ID_LABEL" 
+				description="PLG_ELEMENT_FBLIKE_APPLICATION_ID_DESC" />
+				
+			<field name="fblike_url" 
+				type="text" 
+				label="PLG_ELEMENT_FBLIKE_URL_LABEL" 
+				description="PLG_ELEMENT_FBLIKE_URL_DESC" />
+				
+			<field name="fblike_layout" 
+				type="list" default="standard"
+				label="PLG_ELEMENT_FBLIKE_LAYOUT_LABEL"
+				description="PLG_ELEMENT_FBLIKE_LAYOUT_DESC">
+					<option value="standard">standard</option>
+					<option value="button_count">button_count</option>
+			</field>
+			
+			<field name="fblike_showfaces" 
+				default="false" 
+				type="radio" 
+				label="PLG_ELEMENT_FBLIKE_SHOW_FACES_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fblike_width" 
+				type="text" size="3" 
+				default="300" label="PLG_ELEMENT_FBLIKE_WIDTH_LABEL" />
+				
+			<field name="fblike action" 
+				type="list" 
+				default="like" 
+				label="PLG_ELEMENT_FBLIKE_ACTION_LABEL">
+					<option value="like">like</option>
+					<option value="recommend">recommend</option>
+			</field>
+
+			<field name="fblike_font" 
+				type="list" default="arial" 
+				label="PLG_ELEMENT_FBLIKE_FONT_LABEL">
+					<option value="arial">arial</option>
+					<option value="lucida grande">lucida grande</option>
+					<option value="segoe ui">segoe ui</option>
+					<option value="tahoma">tahoma</option>
+					<option value="trebuchet ms">trebuchet ms</option>
+					<option value="verdana">verdana</option>
+			</field>
+			
+			<field name="fblike_colorscheme" 
+				default="light" type="list" 
+				label="PLG_ELEMENT_FBLIKE_COLOR_SCHEME_LABEL">
+					<option value="light">light</option>
+					<option value="dark">dark</option>
+			</field>
+					
+		</fieldset>
+
+	</fields>
+</form>
