@@ -1,0 +1,215 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/fabrik_fabrik2/!svn/ver/5563/fabrik3/trunk/administrator/components/com_fabrik/models/fields
+END
+element.php
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/fabrik_fabrik2/!svn/ver/5550/fabrik3/trunk/administrator/components/com_fabrik/models/fields/element.php
+END
+formdatabasename.php
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/formdatabasename.php
+END
+swaplist.js
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/swaplist.js
+END
+visaulizationlist.php
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/fabrik_fabrik2/!svn/ver/5071/fabrik3/trunk/administrator/components/com_fabrik/models/fields/visaulizationlist.php
+END
+tables.js
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/fabrik_fabrik2/!svn/ver/5563/fabrik3/trunk/administrator/components/com_fabrik/models/fields/tables.js
+END
+formlist.php
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/fabrik_fabrik2/!svn/ver/5383/fabrik3/trunk/administrator/components/com_fabrik/models/fields/formlist.php
+END
+fabrikmodalrepeat.js
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/fabrik_fabrik2/!svn/ver/5482/fabrik3/trunk/administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js
+END
+suboptions.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/5550/fabrik3/trunk/administrator/components/com_fabrik/models/fields/suboptions.php
+END
+swaplist.php
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/fabrik_fabrik2/!svn/ver/5550/fabrik3/trunk/administrator/components/com_fabrik/models/fields/swaplist.php
+END
+tables.php
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/fabrik_fabrik2/!svn/ver/5550/fabrik3/trunk/administrator/components/com_fabrik/models/fields/tables.php
+END
+popupforms.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/popupforms.php
+END
+toggleoptionsradio.php
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/fabrik_fabrik2/!svn/ver/5515/fabrik3/trunk/administrator/components/com_fabrik/models/fields/toggleoptionsradio.php
+END
+fabrikmodalrepeat.php
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/fabrik_fabrik2/!svn/ver/5550/fabrik3/trunk/administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.php
+END
+element.js
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/fabrik_fabrik2/!svn/ver/5053/fabrik3/trunk/administrator/components/com_fabrik/models/fields/element.js
+END
+uploadsize.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/4839/fabrik3/trunk/administrator/components/com_fabrik/models/fields/uploadsize.php
+END
+sql2.php
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/fabrik_fabrik2/!svn/ver/4844/fabrik3/trunk/administrator/components/com_fabrik/models/fields/sql2.php
+END
+repeatgroup.js
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/5053/fabrik3/trunk/administrator/components/com_fabrik/models/fields/repeatgroup.js
+END
+factedlinks.php
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/fabrik_fabrik2/!svn/ver/5066/fabrik3/trunk/administrator/components/com_fabrik/models/fields/factedlinks.php
+END
+listfields.js
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/listfields.js
+END
+grouplist.php
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/grouplist.php
+END
+toggleoptionslist.php
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/fabrik_fabrik2/!svn/ver/5515/fabrik3/trunk/administrator/components/com_fabrik/models/fields/toggleoptionslist.php
+END
+fabriktables.php
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/fabrik_fabrik2/!svn/ver/5550/fabrik3/trunk/administrator/components/com_fabrik/models/fields/fabriktables.php
+END
+suboptions.js
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/fabrik_fabrik2/!svn/ver/5215/fabrik3/trunk/administrator/components/com_fabrik/models/fields/suboptions.js
+END
+pluginlist.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/5243/fabrik3/trunk/administrator/components/com_fabrik/models/fields/pluginlist.php
+END
+imagelibs.php
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/imagelibs.php
+END
+recursivefolderlist.php
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/recursivefolderlist.php
+END
+hiddenparams.php
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/hiddenparams.php
+END
+listfields.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/fabrik_fabrik2/!svn/ver/5550/fabrik3/trunk/administrator/components/com_fabrik/models/fields/listfields.php
+END
+autocreategroup.php
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/autocreategroup.php
+END
+fabriktables.js
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/fabrik_fabrik2/!svn/ver/5563/fabrik3/trunk/administrator/components/com_fabrik/models/fields/fabriktables.js
+END
+ascendingdescending.php
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/ascendingdescending.php
+END
+specificordering.php
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/specificordering.php
+END
+connections.php
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/fabrik_fabrik2/!svn/ver/5458/fabrik3/trunk/administrator/components/com_fabrik/models/fields/connections.php
+END
+index.html
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/fields/index.html
+END
+packagelist.php
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/fabrik_fabrik2/!svn/ver/5255/fabrik3/trunk/administrator/components/com_fabrik/models/fields/packagelist.php
+END

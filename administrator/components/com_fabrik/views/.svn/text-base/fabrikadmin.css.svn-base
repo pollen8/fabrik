@@ -1,0 +1,56 @@
+.addButton {
+	background: #efefef url(../images/add.png) no-repeat scroll 5px center;
+	border: 1px dotted #CCCCCC;
+	display: block;
+	height: 23px;
+	line-height: 23px;
+	padding-left: 23px;
+	padding-right: 20px;
+	width: 1em;
+}
+
+.repeatGroup {
+	border-top:1px dotted #666;
+	margin:10px 0;
+}
+	
+.removeButton {
+	background: transparent url(../images/remove.png) no-repeat 5px center;
+	border: 1px dotted #CCCCCC;
+	display: block;
+	height: 23px;
+	line-height: 23px;
+	padding-left: 23px;
+	padding-right: 25px;
+	width: 1em;
+	/** for repeatgroups */
+	clear:left;
+}
+
+.removeButton:hover{
+	background: #ffffee url(../images/remove.png) no-repeat 5px center;
+}
+
+.addButton:hover{
+	background: #ffffee url(../images/add.png) no-repeat 5px center;
+}
+
+ul.subelements {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	margin-bottom:7px;
+}
+
+ul.subelements table:hover{
+	background-color:#ffffee;
+}
+
+
+
+.handle {
+	background: #E4E4E4 url(../images/vert-drag.png) no-repeat center center;
+	margin:3px 2.5%;
+	cursor: move;
+	width: 5%;
+}

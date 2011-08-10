@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<name>Visualization Edit Form</name>
+	
+	<fieldset name="details" addfieldpath="/administrator/components/com_fabrik/models/fields">
+				
+		<field name="id"
+			type="text" 
+			class="readonly"
+			size="10"
+			default="0"
+			readonly="true" 
+			label="COM_FABRIK_ID_LABEL" />
+			
+		<field name="asset_id" type="hidden" label="" filter="unset" />
+		
+		<field name="label" 
+			type="text" 
+			size="35"
+			required="true"
+			label="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_LABEL" 
+			description="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_DESC" />
+			
+		<field name="introduction" 
+			type="textarea" 
+			rows="3" cols="30" 
+			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
+			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
+			
+		<field name="plugin" 
+			type="pluginlist" 
+			plugin="fabrik_visualization" 
+			required="true"
+			label="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_LABEL" 
+			description="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_DESC"/>
+			
+		</fieldset>
+	<fieldset name="publishing" >
+		
+		<field name="published" 
+			type="radio" 
+			default="0" 
+			label="JPUBLISHED">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+		
+		<field name="created_by" 
+			type="user"
+			label="COM_FABRIK_FIELD_AUTHOR_LABEL"
+			description="COM_FABRIK_FIELD_AUTHOR_DESC" />
+			
+		<field name="access" 
+			type="accesslevel"
+			label="JFIELD_ACCESS_LABEL" 
+			description="JFIELD_ACCESS_DESC" />
+
+		<field name="created" 
+			type="calendar"
+			label="COM_FABRIK_FIELD_CREATE_DATE_LABEL" />
+			
+		<field name="publish_up"
+			type="calendar"
+			label="COM_FABRIK_FIELD_START_PUBLISHING_LABEL" />
+			
+		<field name="publish_down"
+			type="calendar"
+			label="COM_FABRIK_FIELD_FINISH_PUBLSHING_LABEL" />
+			
+	</fieldset>
+	
+</form>

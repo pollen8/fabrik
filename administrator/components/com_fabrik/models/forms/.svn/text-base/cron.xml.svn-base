@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<name>Scheduled Tasks Edit Form</name>
+
+	<fieldset name="details" label="details">
+				
+		<field name="id" 
+			type="text" 
+			default="0" 
+			required="true"
+			readonly="true" 
+			class="readonly"
+			label="JGLOBAL_FIELD_ID_LABEL" 
+			description ="JGLOBAL_FIELD_ID_DESC" />
+			
+		<field name="label"
+			type="text"
+			required="true"
+			label="COM_FABRIK_CRON_FIELD_LABEL_LABEL" />
+			
+		<field name="lastrun"
+			type="calendar"
+			label="COM_FABRIK_CRON_FIELD_LAST_RUN_LABEL" />
+		
+		<field name="published" 
+			type="radio" 
+			default="0" 
+			label="JSTATUS">
+				<option value="0">JPUBLISHED</option>
+				<option value="1">JUNPUBLISHED</option>
+		</field>
+		
+		<field name="log" 
+			type="radio"
+			default="0"
+			label="COM_FABRIK_CRON_FIELD_LOG_EVENTS_LABEL"
+			description="COM_FABRIK_LOG_CRON_EVENTS_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+		
+		<field name="plugin" 
+			type="pluginlist" 
+			plugin="fabrik_cron" 
+			required="true"
+			label="COM_FABRIK_FIELD_CRON_PLUGIN_LABEL" 
+			description="COM_FABRIK_FIELD_CRON_PLUGIN_DESC"/>
+		
+	</fieldset>
+	
+	<fields name="params">
+	<fieldset name="run" label="run">
+	
+		<field name="frequency"
+			type="text"
+			size="3"
+			required="true"
+			default="5"
+			label="COM_FABRIK_CRON_FIELD_EVERY_LABEL"
+			description="COM_FABRIK_CRON_FIELD_EVERY_DESC" />
+			
+		<field name="unit"
+			type="list"
+			default="minute"
+			label="COM_FABRIK_CRON_FIELD_UNIT_LABEL"
+			description="COM_FABRIK_CRON_FIELD_UNIT_DESC">
+				<option value="second">COM_FABRIK_CRON_SECOND</option>
+				<option value="minute">COM_FABRIK_CRON_MINUTE</option>
+				<option value="hour">COM_FABRIK_CRON_HOUR</option>
+				<option value="day">COM_FABRIK_CRON_DAY</option>
+				<option value="week">COM_FABRIK_CRON_WEEK</option>
+				<option value="month">COM_FABRIK_CRON_MONTH</option>
+				<option value="year">COM_FABRIK_CRON_YEAR</option>
+			</field>
+			
+	</fieldset>
+	
+	<fieldset name="connection" label="connection" >
+		
+		<field name="connection" 
+			type="connections" 
+			label="COM_FABRIK_CRON_FIELD_CONNECTION_LABEL"
+			description="COM_FABRIK_CRON_FIELD_CONNECTION_DESC" />
+			
+		<field name="table" 
+			type="fabriktables" 
+			observe="params_connection" 
+			label="COM_FABRIK_CRON_FIELD_TABLE_LABEL"/>
+			
+	</fieldset>
+</fields>
+</form>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<access component="com_fabrik">
+	<section name="component">
+		<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />
+		<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />
+		<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />
+		<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />
+		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
+		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" />
+		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
+	</section>
+
+	<section name="list">
+		<action name="core.view" title="COM_FABRIK_ACCESS_VIEW" description="COM_FABRIK_ACCESS_VIEW_DESC" />
+		<action name="core.viewdetails" title="COM_FABRIK_ACCESS_VIEW_DETAILS" description="COM_FABRIK_ACCESS_VIEW_DETAILS_DESC" />
+		<action name="core.edit" title="COM_FABRIK_ACCESS_EDIT" description="COM_FABRIK_ACCESS_EDIT_DESC" />
+		<action name="core.add" title="COM_FABRIK_ACCESS_ADD" description="COM_FABRIK_ACCESS_ADD_DESC" />
+		<action name="core.delete" title="COM_FABRIK_ACCESS_DELETE" description="COM_FABRIK_ACCESS_DELETE_DESC" />
+		<action name="core.drop" title="COM_FABRIK_ACCESS_DROP" description="COM_FABRIK_ACCESS_DROP_DESC" />
+	</section>
+	
+	<section name="element">
+		<action name="core.editable" title="COM_FABRIK_ACCESS_EDITABLE_ELEMENT" description="COM_FABRIK_ACCESS_EDITABLE_ELEMENT_DESC" />
+		<action name="core.viewable" title="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT" description="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT_DESC" />
+	</section>
+</access>

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/fabrik_fabrik2/!svn/ver/5563/fabrik3/trunk/administrator/components/com_fabrik/models/forms
+END
+cron.xml
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/fabrik_fabrik2/!svn/ver/5037/fabrik3/trunk/administrator/components/com_fabrik/models/forms/cron.xml
+END
+visualization.xml
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/fabrik_fabrik2/!svn/ver/5052/fabrik3/trunk/administrator/components/com_fabrik/models/forms/visualization.xml
+END
+validationrule.xml
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/forms/validationrule.xml
+END
+form.xml
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/fabrik_fabrik2/!svn/ver/5344/fabrik3/trunk/administrator/components/com_fabrik/models/forms/form.xml
+END
+element.xml
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/fabrik_fabrik2/!svn/ver/5563/fabrik3/trunk/administrator/components/com_fabrik/models/forms/element.xml
+END
+import.xml
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/fabrik_fabrik2/!svn/ver/5477/fabrik3/trunk/administrator/components/com_fabrik/models/forms/import.xml
+END
+list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/fabrik_fabrik2/!svn/ver/5525/fabrik3/trunk/administrator/components/com_fabrik/models/forms/list.xml
+END
+package.xml
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/fabrik_fabrik2/!svn/ver/5037/fabrik3/trunk/administrator/components/com_fabrik/models/forms/package.xml
+END
+confirmlistdelete.xml
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/models/forms/confirmlistdelete.xml
+END
+group.xml
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/fabrik_fabrik2/!svn/ver/5563/fabrik3/trunk/administrator/components/com_fabrik/models/forms/group.xml
+END
+connection.xml
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/fabrik_fabrik2/!svn/ver/5037/fabrik3/trunk/administrator/components/com_fabrik/models/forms/connection.xml
+END

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/fabrik_fabrik2/!svn/ver/5563/fabrik3/trunk/administrator/components/com_fabrik/views
+END
+import.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/fabrik_fabrik2/!svn/ver/5438/fabrik3/trunk/administrator/components/com_fabrik/views/import.php
+END
+package.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/views/package.php
+END
+admincck.js
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/fabrik_fabrik2/!svn/ver/5554/fabrik3/trunk/administrator/components/com_fabrik/views/admincck.js
+END
+pluginmanager.js
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/views/pluginmanager.js
+END
+connection.php
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/views/connection.php
+END
+visualization.php
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/fabrik_fabrik2/!svn/ver/5515/fabrik3/trunk/administrator/components/com_fabrik/views/visualization.php
+END
+cron.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/fabrik_fabrik2/!svn/ver/5515/fabrik3/trunk/administrator/components/com_fabrik/views/cron.php
+END
+namespace.js
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/fabrik_fabrik2/!svn/ver/5053/fabrik3/trunk/administrator/components/com_fabrik/views/namespace.js
+END
+index.html
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/views/index.html
+END
+fabrikadmin.css
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/fabrik_fabrik2/!svn/ver/5053/fabrik3/trunk/administrator/components/com_fabrik/views/fabrikadmin.css
+END
+home.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/fabrik_fabrik2/!svn/ver/4800/fabrik3/trunk/administrator/components/com_fabrik/views/home.php
+END
