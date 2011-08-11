@@ -35,8 +35,6 @@ var FbForm = new Class( {
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
-		this.delGroupJS = $H({});
-		this.duplicateGroupJS = $H({});
 		//this.listenTo = $A([]);
 		this.bufferedEvents = $A([]);
 		this.duplicatedGroups = $H({});
@@ -970,14 +968,6 @@ var FbForm = new Class( {
 		});
 	},
 
-	addGroupJS : function(groupId, e, js) {
-		if (e == 'delete') {
-			this.delGroupJS.set(groupId, js);
-		} else {
-			this.duplicateGroupJS.set(groupId, js);
-		}
-	},
-
 	deleteGroup : function(event) {
 		if (!this.runPlugins('onDeleteGroup', event)) {
 			return;
@@ -1006,7 +996,7 @@ var FbForm = new Class( {
 		} else {
 
 			var toel = subGroup.getPrevious();
-			var js = this.delGroupJS.get(i);
+			//var js = this.delGroupJS.get(i);
 
 			var myFx = new Fx.Tween(subGroup, {'property':'opacity',
 				duration : 300,
@@ -1042,7 +1032,6 @@ var FbForm = new Class( {
 							delete this.formElements[oldKey];
 						}
 					}.bind(this));
-					eval(js);
 				}.bind(this)
 			}).start(1, 0);
 			if (toel) {
@@ -1122,7 +1111,6 @@ var FbForm = new Class( {
 		}
 		if (event) event.stop();
 		var i = event.target.findClassUp('fabrikGroup').id.replace('group', '');
-		var js = this.duplicateGroupJS.get(i);
 		var group = document.id('group' + i);
 		var c = this.repeatGroupMarkers.get(i);
 		if (c >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
@@ -1290,7 +1278,6 @@ var FbForm = new Class( {
 		 */
 		//c = c + 1;
 		clone.fade(1);
-		eval(js);
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above
 		this.runPlugins('onDuplicateGroupEnd', event, i, c);

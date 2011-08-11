@@ -314,10 +314,10 @@ class fabrikViewForm extends JView
 		$actions = trim(implode("\n", $jsActions));
 		//end new
 
-		$params =& $model->getParams();
-		$listModel =& $model->getlistModel();
-		$table 			=& $listModel->getTable();
-		$form				=& $model->getForm();
+		$params = $model->getParams();
+		$listModel = $model->getlistModel();
+		$table =$listModel->getTable();
+		$form = $model->getForm();
 		FabrikHelperHTML::mocha();
 
 		$bkey = $model->_editable ? 'form_'. $model->getId() : 'details_'. $model->getId();
@@ -340,22 +340,21 @@ class fabrikViewForm extends JView
 
 		$opts = new stdClass();
 
-		$opts->admin 					= $app->isAdmin();
-		$opts->ajax 					= $model->isAjax();
+		$opts->admin = $app->isAdmin();
+		$opts->ajax = $model->isAjax();
 		$opts->ajaxValidation = $params->get('ajax_validations');
-		$opts->primaryKey 		= $key;
-		$opts->error 					= @$form->origerror;
-		$opts->pages 					= $model->getPages();
+		$opts->primaryKey = $key;
+		$opts->error = @$form->origerror;
+		$opts->pages = $model->getPages();
 		$opts->plugins	= array();
 		$opts->multipage_save = (bool)$model->saveMultiPage();
-		$opts->editable 			= $model->_editable;
-		$opts->start_page 		= $start_page;
+		$opts->editable = $model->_editable;
+		$opts->start_page = $start_page;
 		$opts->inlineMessage = (bool)$this->isMambot;
 		//$$$rob dont int this as keys may be string
-		$opts->rowid          = $model->_rowId;
+		$opts->rowid = $model->_rowId;
 		//3.0 needed for ajax requests
 		$opts->listid = (int)$this->get('ListModel')->getId();
-
 
 		$imgs = new stdClass();
 		$imgs->alert = FabrikHelperHTML::image('alert.png', 'form', $this->tmpl, '', true);
@@ -401,7 +400,6 @@ class fabrikViewForm extends JView
 		});";
 		//instantaite js objects for each element
 
-		$groupstr = '';
 		$vstr = "\n";
 
 		$str .= "$startJs";
@@ -453,21 +451,9 @@ class fabrikViewForm extends JView
 			}
 			$str .= implode(",\n", $aObjs);
 			$str .= "],";
-			$groupParams =& $groupModel->getParams();
-			$addJs 			= str_replace('"', "'",  $groupParams->get('repeat_group_js_add'));
-			$addJs 			= str_replace(array("\n", "\r"), "",  $addJs);
-			$delJs 			= str_replace('"', "'",  $groupParams->get('repeat_group_js_delete'));
-			$gdelJs 		= str_replace(array("\n", "\r"), "",  $delJs);
-			if ($delJs !== '') {
-				$groupstr .= "$bkey.addGroupJS($groupModel->getId(), 'delete', \"$delJs\");\n";
-			}
-			if ($addJs !== '') {
-				$groupstr .= "$bkey.addGroupJS($groupModel->getId(), 'add', \"$addJs\");\n";
-			}
 		}
 		$str = FabrikString::rtrimword($str, ',');
 		$str .= "});\n";
-		$str .= $groupstr;
 		$str .=  $actions;
 		$str .= $vstr;
 		$str .= $endJs;

@@ -482,7 +482,6 @@ class JForm
 		if (empty($elements)) {
 			return $fields;
 		}
-echo "<pre>getGroup elements";print_r($elements);
 		// Build the result array from the found field elements.
 		foreach ($elements as $element)
 		{

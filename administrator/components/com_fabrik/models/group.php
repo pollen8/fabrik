@@ -110,11 +110,14 @@ class FabrikModelGroup extends FabModelAdmin
 			$data['created_by'] = $user->get('id');
 			$data['created_by_alias'] = $user->get('username');
 			$data['created'] = JFactory::getDate()->toMySQL();
+			
 		}
 		$makeJoin = ($data['params']['repeat_group_button'] == 1);
 		$data['params'] = json_encode($data['params']);
 		$return = parent::save($data);
+		$data['id'] = $this->setState($this->getName().'.id');
 		if ($return) {
+			$this->makeFormGroup($data);
 			if ($makeJoin) {
 				$return = $this->makeJoinedGroup($data);
 				//update for the is_join change
@@ -124,6 +127,24 @@ class FabrikModelGroup extends FabModelAdmin
 			}
 		}
 		return $return;
+	}
+	
+	/**
+	 *clears old form group entries if found and adds new ones
+	 * @param array $data
+	 */
+	
+	protected function makeFormGroup($data)
+	{
+		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
+		$query->delete('#__{package}_formgroup')->where("form_id = ".(int)$data['form'].' AND group_id = '.(int)$data['id']);
+		$db->setQuery($query);
+		$db->query();
+		$item = FabTable::getInstance('FormGroup', 'FabrikTable');
+		$item->form_id = $data['form'];
+		$item->group_id = $data['id'];
+		$item->store();
 	}
 
 	/**
@@ -166,7 +187,6 @@ class FabrikModelGroup extends FabModelAdmin
 		$db->setQuery("show tables");
 		$newTableName = $list->db_table_name.'_'.$data['id'].'_repeat';
 		$existingTables = $db->loadResultArray();
-
 		if (!in_array($newTableName, $existingTables)) {
 			// no existing repeat group table found so lets create it
 			$query = "CREATE TABLE IF NOT EXISTS ".$db->nameQuote($newTableName)." (".implode(",", $names).")";
@@ -174,7 +194,6 @@ class FabrikModelGroup extends FabModelAdmin
 			if (!$db->query()) {
 				JError::raiseError(500, $db->getErrorMsg());
 			}
-
 			//create id and parent_id elements
 			$listModel->makeIdElement($data['id']);
 			$listModel->makeFkElement($data['id']);
@@ -207,7 +226,6 @@ class FabrikModelGroup extends FabModelAdmin
 			//repeat table already created - lets check its structure matches the group elements
 			$db->setQuery("DESCRIBE $newTableName");
 			$existingFields = $db->loadObjectList('Field');
-
 			$newFields = array_diff(array_keys($names), array_keys($existingFields));
 			if (!empty($newFields)) {
 				$lastfield = array_pop($existingFields);

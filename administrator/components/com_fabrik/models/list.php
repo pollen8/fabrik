@@ -1077,8 +1077,6 @@ class FabrikModelList extends FabModelAdmin
 		$opts = new stdClass();
 		$opts->repeat_group_button = 0;
 		$opts->repeat_group_show_first = 1;
-		$opts->repeat_group_js_add = '';
-		$opts->repeat_group_js_delete ='';
 		$group->params = json_encode($opts);
 
 		$group->is_join = ($isJoin == true) ? 1 : 0;
@@ -1208,56 +1206,13 @@ class FabrikModelList extends FabModelAdmin
 	 *
 	 * replaces the table column names with a safer name - ie removes white
 	 * space and none alpha numeric characters
+	 * @depreciated fabrik3.0
 	 */
 
 	private function makeSafeTableColumns()
 	{
 		//going to test allowing non safe names - as they should be quoted when accessed
 		return;
-/*
-		if (!$this->getFEModel()->canAlterFields()) {
-			return;
-		}
-		$form = $this->getFormModel();
-		$groups = $form->getGroupsHiarachy();
-		$db = $this->getFEModel()->getDb();
-		$post = JRequest::get('post');
-		$tableName = ($post['jform']['db_table_name'] != '') ? $post['jform']['db_table_name'] : $post['jform']['_database_name'];
-		$origColNames = $this->getFEModel()->getDBFields($tableName);
-		foreach ($origColNames as $origColName) {
-			$colName = strtolower($origColName->Field);
-			$type = $origColName->Type;
-			$fbConfig =& JComponentHelper::getParams('com_fabrik');
-			if ($fbConfig->get('use_wip', false)) {
-				// $$$ was causing some problems for a site that was foolishly using - in columns names
-				$newColName = preg_replace("/[^A-Za-z0-9-]/", "_", $colName);
-			}
-			else {
-				$newColName = preg_replace("/[^A-Za-z0-9]/", "_", $colName);
-			}
-
-
-			if ($colName != $newColName) {
-				// $$$rob - if we change an underlying column name, then we need to also alter the coresponding
-				// element name itself, otherwise things go hinky!
-				foreach ($groups as $groupModel) {
-					$elementModels =& $groupModel->getMyElements();
-					foreach ($elementModels as $elementModel) {
-						$element =& $elementModel->getElement();
-						if ($element->name == $colName) {
-							$element->name = $newColName;
-							$element->store();
-						}
-
-					}
-				}
-				$sql = "ALTER TABLE ".FabrikString::safeColName($tableName)." CHANGE ".FabrikString::safeColName($colName)." ".FabrikString::safeColName($newColName)." $type";
-				$db->setQuery($sql);
-				if (!$db->query()) {
-					JError::raiseWarning(500, $db->getErrorMsg());
-				}
-			}
-		}*/
 	}
 
 	/**

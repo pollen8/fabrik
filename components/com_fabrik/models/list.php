@@ -391,9 +391,8 @@ class FabrikFEModelList extends JModelForm {
 		$nav =& $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
 
 		JDEBUG ? $_PROFILER->mark('query run and data loaded') : null;
-		if ($fbConfig->get('use_wip')) {
-			$this->translateData($this->_data);
-		}
+		//@TODO test in J1.7
+		//	$this->translateData($this->_data);
 		if ($fabrikDb->getErrorNum() != 0) {
 			JError::raiseNotice(500,  'getData: ' . $fabrikDb->getErrorMsg());
 		}
@@ -6415,11 +6414,7 @@ class FabrikFEModelList extends JModelForm {
 		$params =& $this->getParams();
 		$fbConfig =& JComponentHelper::getParams('com_fabrik');
 		$display = $params->get('join-display', '');
-		if ($display == '') {
-			$merge = $fbConfig->get('use_wip', false);
-		} else {
-			$merge = $display == 'merge' ? true : false;
-		}
+		$merge = $display == 'merge' ? true : false;
 		return $merge;
 	}
 

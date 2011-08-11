@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<name>Group Edit Form</name>
-	
+	<fields  addfieldpath="/administrator/components/com_fabrik/models/fields">
 	<fieldset name="details">
 	
 		<field name="id" 
@@ -26,6 +26,11 @@
 			label="COM_FABRIK_FIELD_TITLE_LABEL"
 			description="COM_FABRIK_FIELD_TITLE_DESC"  />
 		
+		<field name="form"
+			type="formlist" 
+			label="COM_FABRIK_FIELD_GROUP_FORM_LABEL" 
+			description="COM_FABRIK_FIELD_GROUP_FORM_DESC" />
+		
 		<field name="published" type="list" label="JSTATUS"
 			description="JFIELD_PUBLISHED_DESC" class="inputbox"
 			filter="intval" size="1" default="1" >
@@ -34,18 +39,12 @@
 			<option value="-2">JTRASHED</option>
 		</field>
 			
-		<field name="css" 
-			type="textarea"
-			rows="3" cols="6" 
-			label="COM_FABRIK_FIELD_CSS_LABEL"
-			description="COM_FABRIK_FIELD_CSS_DESC" />
-		
-		<field name="is_join"
+		<field name="is_join" label=""
 			type="hidden"
 			default="0" />
 			
 	</fieldset>
-	
+	</fields>
 	<fields name="params">
 		<fieldset name="pagination">
 			
@@ -61,12 +60,6 @@
 		
 		<fieldset name="details2" >
 		
-			<field name="group_columns" 
-				type="text" 
-				default="1" 
-				label="COM_FABRIK_COLUMNS_LABEL" 
-				description="COM_FABRIK_COLUMNS_DESC" />
-				
 			<field name="repeat_group_button" 
 				type="radio" 
 				default="0" 
@@ -75,7 +68,14 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
+			<field name="group_columns" 
+				type="text" 
+				default="1" 
+				size="2"
+				label="COM_FABRIK_COLUMNS_LABEL" 
+				description="COM_FABRIK_COLUMNS_DESC" />
+							
 			<field name="repeat_max"
 				type="text"
 				label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL"
@@ -93,20 +93,6 @@
 					<option value="2">Details Only</option>
 			</field>
 			
-			<field name="repeat_group_js_add"
-				type="textarea"
-				rows="8"
-				cols="60"
-				label="COM_FABRIK_CUSTOM_JS_ADD_LABEL"
-				description="COM_FABRIK_CUSTOM_JS_ADD_DESC" />
-				
-			<field name="repeat_group_js_delete"
-				type="textarea"
-				rows="8"
-				cols="60"
-				label="COM_FABRIK_CUSTOM_JS_DEL_LABEL"
-				description="COM_FABRIK_CUSTOM_JS_DEL_DESC" />
-				
 			<field name="random"
 				type="radio"
 				default="0"

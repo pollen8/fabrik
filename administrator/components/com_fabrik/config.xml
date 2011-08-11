@@ -29,13 +29,6 @@
 			<option value="1">JYES</option>
 		</field>
 
-		<field name="remove_tables_on_unistall" menu="hide" type="radio"
-			default="1" label="COM_FABRIK_REMOVE_TABLES_ON_UNISTALL_LABEL"
-			description="COM_FABRIK_REMOVE_TABLES_ON_UNISTALL_DESC">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-
 	</fieldset>
 
 	<fieldset name="forms" label="COM_FABRIK_FORMS">
@@ -69,22 +62,9 @@
 			<option value="1">JYES</option>
 		</field>
 
-		<field name="compress_js" type="list" default="none"
-			label="COM_FABRIK_COMPRESS_JS_LABEL" description="COM_FABRIK_COMPRESS_JS_DESC">
-			<option value="none">None</option>
-			<option value="jsmin">JS Min</option>
-			<option value="packer">Dean Edwards packer</option>
-		</field>
-
 	</fieldset>
 
 	<fieldset name="debug" label="COM_FABRIK_DEBUGGING">
-
-		<field name="use_wip" menu="hide" type="radio" default="0"
-			label="COM_FABRIK_USE_WORK_IN_PROGRESS_LABEL" description="COM_FABRIK_USE_WORK_IN_PROGRESS_DESC">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
 
 		<field name="use_fabrikdebug" type="radio" default="0"
 			label="COM_FABRIK_FABRIK_DEBUG_LABEL" description="COM_FABRIK_FABRIK_DEBUG_DESC">

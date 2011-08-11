@@ -61,11 +61,6 @@ $panels = array(
 
 );
 
-if ($fbConfig->get('use_wip')) {
-	$panels[] = 	array('heading'=>JText::_('COM_FABRIK_WIP'),
-		'fieldset'=>array('wip'));
-}
-
 echo JHtml::_('sliders.start','list-sliders-'.$this->item->id, array('useCookie'=>1));
 
 foreach ($panels as $panel) {

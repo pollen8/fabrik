@@ -60,8 +60,6 @@ class Com_FabrikInstallerScript
 		$opts = new stdClass();
 		$opts->fbConf_wysiwyg_label = 0;
 		$opts->fbConf_alter_existing_db_cols = 0;
-		$opts->remove_tables_on_unistall = 1;
-		$opts->compress_js = 'none';
 		$opts->spoofcheck_on_formsubmission = 0;
 
 		if ($row && ($row->params == '{}' || $row->params == '')) {

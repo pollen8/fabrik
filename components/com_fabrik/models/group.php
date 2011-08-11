@@ -359,11 +359,7 @@ class FabrikFEModelGroup extends FabModel{
 		}
 		$group->editable = $this->_editable;
 		$group->canRepeat = $params->get('repeat_group_button', '0');
-		$addJs 				= str_replace('"', "'",  $params->get('repeat_group_js_add'));
-		$group->addJs = str_replace(array("\n", "\r"), "",  $addJs);
-		$delJs 				= str_replace('"', "'",  $params->get('repeat_group_js_delete'));
-		$group->delJs = str_replace(array("\n", "\r"), "",  $delJs);
-		$showGroup 		= $params->def('repeat_group_show_first', '1');
+		$showGroup = $params->def('repeat_group_show_first', '1');
 
 		$pages =& $formModel->getPages();
 
@@ -374,8 +370,8 @@ class FabrikFEModelGroup extends FabModel{
 		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage]) && !in_array($groupTable->id, $pages[$startpage]) || $showGroup == 0) {
 			$groupTable->css .= ";display:none;";
 		}
-		$group->css 		= trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
-		$group->id 			= $groupTable->id;
+		$group->css = trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
+		$group->id = $groupTable->id;
 
 		if (JString::stristr($groupTable->label , "{Add/Edit}")) {
 			$replace = ((int)$formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
@@ -383,7 +379,7 @@ class FabrikFEModelGroup extends FabModel{
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->_data, false);
 
-		$group->name		= $groupTable->name;
+		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->_editable) ? 1 : 0;
 		$group->maxRepeat = (int)$params->get('repeat_max');
 		return $group;
@@ -399,7 +395,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	function copy()
 	{
-		$elements =& $this->getMyElements();
+		$elements = $this->getMyElements();
 		$group = $this->getGroup();
 		//newGroupNames set in table copy
 		$newNames = JRequest::getVar('newGroupNames', array());
@@ -416,7 +412,7 @@ class FabrikFEModelGroup extends FabModel{
 			$newElements[$origElementId] =  $copy->id;
 		}
 		$this->elements = null;
-		$elements =& $this->getMyElements();
+		$elements = $this->getMyElements();
 
 		//create form group
 		$formid = isset($this->_newFormid) ? $this->_newFormid : $this->getFormModel()->getId();
