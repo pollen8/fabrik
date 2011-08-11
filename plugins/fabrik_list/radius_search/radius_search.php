@@ -392,7 +392,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		$opts->steps = (int)$params->get('radius_max', 100);
 		$opts->unit = $params->get('radius_unit', 'km');
 		$opts->value = $this->getValue();
-		$opts->listid = $model->get('id');
+		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FabRadiusSearch($opts)";
 		return true;

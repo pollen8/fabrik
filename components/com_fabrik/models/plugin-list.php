@@ -56,6 +56,8 @@ class plgFabrik_List extends FabrikPlugin
 		JText::script('COM_FABRIK_PLEASE_SELECT_A_ROW');
 		return true;
 	}
+	
+
 
 	/**
 	 * onGetData method
@@ -91,12 +93,12 @@ class plgFabrik_List extends FabrikPlugin
 	 * (this object will then be json encoded by the plugin and passed
 	 * to it's js class
 	 * @return object language
+	 * @depreciated since 3.0
 	 */
 
 	function _getLang()
 	{
 		$lang = new stdClass();
-		$lang->selectrow = JText::_('COM_FABRIK_PLEASE_SELECT_A_ROW');
 		return $lang;
 	}
 

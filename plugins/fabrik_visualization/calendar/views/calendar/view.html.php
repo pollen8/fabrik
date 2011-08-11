@@ -12,28 +12,24 @@ class fabrikViewCalendar extends JView
 	{
 		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
-		$Itemid	= $app->getMenu('site')->getActive()->id;
+		$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
 		JHTML::_('behavior.calendar');
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		FabrikHelperHTML::mocha();
 		FabrikHelperHTML::loadCalendar();
-		$model		= &$this->getModel();
+		$model = &$this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);
 		$this->row =& $model->getVisualization();
 		$model->setListIds();
 		$this->assign('containerId', $this->get('ContainerId'));
-    $this->assignRef('filters', $this->get('Filters'));
-    $this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
-    $this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->assignRef('filters', $this->get('Filters'));
+		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
+		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$calendar =& $model->_row;
 		$this->calName = $model->getCalName();
-		$config		=& JFactory::getConfig();
-		$document =& JFactory::getDocument();
 
 		$canAdd = $this->get('CanAdd');
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
@@ -51,7 +47,6 @@ class fabrikViewCalendar extends JView
 		$params =& $model->getParams();
 
 		//Get the active menu item
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$urlfilters = JRequest::get('get');
 		unset($urlfilters['option']);
 		unset($urlfilters['view']);
@@ -64,8 +59,8 @@ class fabrikViewCalendar extends JView
 		}
 		$urls = new stdClass();
 		//dont JRoute as its wont load with sef?
-		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid='. $Itemid. '&id='.$id;
-		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid='. $Itemid . '&id='.$id;
+		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid='.$Itemid.'&id='.$id;
+		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid='.$Itemid.'&id='.$id;
 
 		$user 		=& JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0 ) ? $model->getLegend() : '';
@@ -159,8 +154,7 @@ class fabrikViewCalendar extends JView
 
 	function chooseaddevent()
 	{
-		$document =& JFactory::getDocument();
-		$view->_layout 	= 'chooseaddevent';
+		$view->_layout = 'chooseaddevent';
 		// include language
 		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin =& $pluginManager->getPlugIn('calendar', 'visualization');
@@ -176,7 +170,7 @@ class fabrikViewCalendar extends JView
 
 		if ($o != null) {
 			$listid = $o->id;
-			$options[] 			= JHTML::_('select.option', $listid, JText::_('PLG_VISUALIZATION_CALENDAR_STANDARD_EVENT'));
+			$options[] = JHTML::_('select.option', $listid, JText::_('PLG_VISUALIZATION_CALENDAR_STANDARD_EVENT'));
 		}
 
 		$model->getEvents();

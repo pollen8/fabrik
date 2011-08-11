@@ -4,7 +4,9 @@
 
 var FbListPlugin = new Class({
 	Implements:[Events, Options],
-	options : {},
+	options : {
+		requireChecked:true
+	},
 	initialize: function(options) {
 		this.setOptions(options);
 		head.ready(function() {
@@ -26,13 +28,21 @@ var FbListPlugin = new Class({
 		}
 		buttons.addEvent('click', function(e) {
 			e.stop();
+			var row, chx;
+			//if the row button is clicked check its associated checkbox
+			if (row = e.target.findClassUp('fabrik_row')) {
+				if(chx = row.getElement('input[name^=ids]')){
+					chx.set('checked', true);
+				}
+			}
+			//check that at least one checkbox is checked
 			var ok = false;
 			this.listform.getElements('input[name^=ids]').each( function(c) {
 				if(c.checked) {
 					ok = true;
 				}
 			});
-			if(!ok && this.requireChecked) {
+			if(!ok && this.options.requireChecked) {
 				alert(Joomla.JText._('COM_FABRIK_PLEASE_SELECT_A_ROW'));
 				return;
 			}

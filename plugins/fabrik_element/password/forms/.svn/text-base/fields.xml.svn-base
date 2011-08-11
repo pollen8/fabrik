@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-password">
-			<field name="maxlength" type="text" size="3" default="255" label="PLG_ELEMENT_PASSWORD_MAXLENGTH_LABEL" description=""/>
-		</fieldset>
-	</fields>
-</form>

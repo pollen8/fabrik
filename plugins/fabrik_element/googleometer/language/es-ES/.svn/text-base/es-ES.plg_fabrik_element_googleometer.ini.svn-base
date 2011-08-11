@@ -1,8 +1,0 @@
-PLG_ELEMENT_GOOGLEOMETER_ELEMENT_LABEL="Elemento"
-PLG_ELEMENT_GOOGLEOMETER_ELEMENT_DESC="El elemento que contiene los datos que quiere que google mida - debería ser un elemento que contenga valores enteros"
-PLG_ELEMENT_GOOGLEOMETER_WIDTH_LABEL="Anchura"
-PLG_ELEMENT_GOOGLEOMETER_WIDTH_DESC="Anchura del gráfico"
-PLG_ELEMENT_GOOGLEOMETER_HEIGHT_LABEL="Altura"
-PLG_ELEMENT_GOOGLEOMETER_HEIGHT_DESC="Altura del gráfico"
-PLG_ELEMENT_GOOGLEOMETER_LABEL_LABEL="Etiqueta"
-PLG_ELEMENT_GOOGLEOMETER_LABEL_DESC="La etiqueta mostrada junto al medidor del gráfico"

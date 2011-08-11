@@ -108,8 +108,9 @@ class plgFabrik_ListExample extends plgFabrik_List {
 
 	function onLoadJavascriptInstance($formid)
 	{
+		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = new stdClass();
-		$opts->listid = $model->get('id');
+		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
 		return "new fbTableExample('$formid', $opts)";
 	}

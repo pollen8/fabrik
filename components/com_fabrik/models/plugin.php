@@ -43,6 +43,11 @@ class FabrikPlugin extends JPlugin
 	{
 		$this->_id = $id;
 	}
+	
+	function getName()
+	{
+		return $this->name;
+	}
 
 	/**
 	 * Constructor

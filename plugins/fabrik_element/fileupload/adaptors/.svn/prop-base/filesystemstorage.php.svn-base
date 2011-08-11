@@ -1,6 +1,0 @@
-K 13
-svn:mergeinfo
-V 230
-/branches/advancedsearch/components/com_fabrik/plugins/element/fabrikfileupload/adaptors/filesystemstorage.php:1688-1776
-/trunk/components/com_fabrik/plugins/element/fabrikfileupload/adaptors/filesystemstorage.php:2-1603,2689-2715
-END

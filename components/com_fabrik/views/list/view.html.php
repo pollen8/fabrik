@@ -21,11 +21,11 @@ class FabrikViewList extends JView{
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
-		$model =& $this->getModel();
-		$item =& $model->getTable();
+		$model = $this->getModel();
+		$item = $model->getTable();
 		$listid = $model->getId();
-		$formModel =& $model->getFormModel();
-		$elementsNotInTable =& $formModel->getElementsNotInTable();
+		$formModel = $model->getFormModel();
+		$elementsNotInTable = $formModel->getElementsNotInTable();
 
 		if ($model->requiresSlimbox()) {
 			FabrikHelperHTML::slimbox();
@@ -53,12 +53,12 @@ class FabrikViewList extends JView{
 		$this->_row = new stdClass();
 		$script = '';
 
-		$opts 						= new stdClass();
-		$opts->admin 			= $app->isAdmin();
-		$opts->ajax 	= (int)$model->isAjax();
+		$opts = new stdClass();
+		$opts->admin = $app->isAdmin();
+		$opts->ajax = (int)$model->isAjax();
 		$opts->filterMethod = $this->filter_action;
-		$opts->form 			= 'listform_' . $listid;
-		$opts->headings 	= $model->_jsonHeadings();
+		$opts->form = 'listform_' . $listid;
+		$opts->headings = $model->_jsonHeadings();
 		$labels = $this->headings;
 		foreach ($labels as &$l) {
 			$l = strip_tags($l);
@@ -82,13 +82,13 @@ class FabrikViewList extends JView{
 			$this->_row->id = '';
 			$this->_row->class = 'fabrik_row';
 			require(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_row.php');
-    	$opts->rowtemplate = ob_get_contents();
+			$opts->rowtemplate = ob_get_contents();
 			ob_end_clean();
 		}
 		//$$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
-		$opts->winid			= JRequest::getVar('winid', '');
-		$opts 						= json_encode($opts);
+		$opts->winid = JRequest::getVar('winid', '');
+		$opts = json_encode($opts);
 
 		JText::script('COM_FABRIK_PREV');
 		JText::script('COM_FABRIK_SELECT_ROWS_FOR_DELETION');
@@ -125,17 +125,12 @@ class FabrikViewList extends JView{
 		$script .= "\n" . "var list = new FbList($listid,";
 		$script .= $opts;
 		$script .= "\n" . ");";
-		//$script .= "\n" . "list.addListenTo('form_".$model->getFormModel()->get('id')."');";
-		//$script .= "\n" . "list.addListenTo('list_{$listid}');";
 		$script .= "\n" . "Fabrik.addBlock('list_{$listid}', list);";
 
 		//add in plugin objects
-		$params =& $model->getParams();
-		//
-		$activePlugins = $params->get('plugins');
+		$params = $model->getParams();
+		//$activePlugins = $params->get('plugins');
 		$pluginManager =& $model->getPluginManager();
-		//$plugins = $pluginManager->getPlugInGroup('list');
-		//$aObjs = array();
 		$c = 0;
 
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
@@ -148,8 +143,6 @@ class FabrikViewList extends JView{
 		//@since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
 		$this->assign('pluginBeforeList', $pluginManager->_data);
-
-		//test
 
 		$script = "
 		head.ready(function() {

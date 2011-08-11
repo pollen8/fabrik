@@ -637,7 +637,7 @@ EOD;
 				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){'.$onLoad.'}' : '';
 				echo '<script type="text/javascript">Asset.javascript(\''.COM_FABRIK_LIVESITE.$file.'\', {'.$opts.'});</script>';
 			} else {
-				JFactory::getDocument()->addScriptDeclaration('head.js("'.COM_FABRIK_LIVESITE.$file.'");');
+				JFactory::getDocument()->addScriptDeclaration('head.js("'.COM_FABRIK_LIVESITE.$file.'");'."\n");
 				if ($onLoad !== '') {
 					$onLoad = "head.ready(function() {\n " . $onLoad . "});\n";
 					FabrikHelperHTML::addScriptDeclaration($onLoad);

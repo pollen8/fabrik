@@ -57,7 +57,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	{
 		$viewName = 'calendar';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model	= &$this->getModel($viewName);
+		$model = &$this->getModel($viewName);
 		$id = JRequest::getInt('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)), 'get');
 		$model->setId($id);
 		echo $model->getEvents();
@@ -86,7 +86,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$listid = JRequest::getInt('listid');
 		$viewName = 'calendar';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model	= &$this->getModel($viewName);
+		$model = &$this->getModel($viewName);
 		$id = JRequest::getInt('visualizationid', $usersConfig->get('visualizationid', 0));
 		$model->setId($id);
 		$model->setupEvents();

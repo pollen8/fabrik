@@ -51,6 +51,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
+		parent::onLoadJavascriptInstance($params, $model, $args);
 		FabrikHelperHTML::addStyleDeclaration('.focusClass{border:1px solid red !important;}');
 		FabrikHelperHTML::script('media/com_fabrik/js/element.js');
 		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
@@ -71,9 +72,9 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 			}
 		}
 		$opts = new stdClass();
-		$opts->elements 		= $els;
-		$opts->listid 			= $model->getId();
-		$opts->focusClass 	= 'focusClass';
+		$opts->elements = $els;
+		$opts->listid = $model->getId();
+		$opts->focusClass = 'focusClass';
 		$opts->editEvent = $params->get('inline_edit_event', 'dblclick');
 		$opts->tabSave = $params->get('inline_tab_save', false);
 		$opts->showCancel = $params->get('inline_show_cancel', true);

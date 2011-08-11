@@ -181,9 +181,10 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
+		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = new stdClass();
 		$opts->name = $this->_getButtonName();
-		$opts->listid = $model->get('id');
+		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new fbTableDownload($opts)";
 		return true;
@@ -196,7 +197,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 			//$storageType = $params->get('fileupload_storage_type', 'filesystemstorage');
 			$storageType = 'filesystemstorage';
 			require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_element'.DS.'fileupload'.DS.'adaptors'.DS.$storageType.'.php');
-			$this->storage = new $storageType( $params);
+			$this->storage = new $storageType($params);
 		}
 		return $this->storage;
 	}

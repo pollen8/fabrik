@@ -190,7 +190,11 @@ class FabrikFEModelPluginmanager extends JModel{
 
 		$dispatcher = JDispatcher::getInstance();
 		if ($className != '') {
-			require_once(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.$className.'.php');
+			if (JFile::exists(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.$className.'.php')) {
+				require_once(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.$className.'.php');
+			} else {
+				require_once(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.'models'.DS.$className.'.php');
+			}
 		}
 		$class = 'plgFabrik_'.JString::ucfirst($group).JString::ucfirst($className);
 		$conf = array();

@@ -96,9 +96,10 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
+		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = new stdClass();
 		$opts->name = $this->_getButtonName();
-		$opts->listid = $model->get('id');
+		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new fbTableRunPHP($opts)";
 		return true;

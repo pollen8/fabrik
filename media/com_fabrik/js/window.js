@@ -143,12 +143,9 @@ Fabrik.Window = new Class({
 			}).post();
 			break;
 		case 'iframe':
-		
-			//var h = this.contentEl.getScrollSize().y < window.getHeight() ? this.contentEl.getScrollSize().y : window.getHeight();
 			var h = this.options.height - 40;
 			var w = this.contentEl.getScrollSize().x + 40 < window.getWidth() ? this.contentEl.getScrollSize().x + 40 : window.getWidth();
-
-
+			this.window.getElement('.itemContent').empty();
 			this.iframeEl = new Element('iframe', {
 			'id': this.options.id + '_iframe',
 			'name': this.options.id + '_iframe',
@@ -162,6 +159,7 @@ Fabrik.Window = new Class({
 				'height': h+'px',
 				'width': w
 			}
+			
 		}).injectInside(this.window.getElement('.itemContent'));
 	
 			this.iframeEl.addEvent('load', function(e) {

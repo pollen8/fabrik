@@ -124,9 +124,10 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
+		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = new stdClass();
 		$opts->name = $this->_getButtonName();
-		$opts->listid = $model->get('id');
+		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListFilterView($opts)";
 		return true;
