@@ -3,18 +3,19 @@
  */
 var Autofill =  new Class({
 	
-	getOptions:function(){
-		return {
-			'observe':''
-		};
+	Implements:[Events, Options],
+	
+	options: {
+		'observe':'',
+		'trigger':'',
+		cnn:0,
+		table:0,
+		map:'',
+		editOrig:false
 	},
 	
-	initialize: function(options, lang) {
-		this.setOptions(this.getOptions(), options);
-		this.lang = Object.extend({
-			'norecordsfound':'no records found'
-		}, arguments[1] || {});
-	
+	initialize: function(options) {
+		this.setOptions(options);	
 		head.ready(function() {
 			(function(){this.setUp()}.bind(this)).delay(1000);
 		}.bind(this))
@@ -24,18 +25,33 @@ var Autofill =  new Class({
 	{
 		try{
   		this.form = eval('form_' + this.options.formid);
-  	}catch(err){
+  	}catch(err) {
 			//form_x not found (detailed view perhaps)
   		return;
   	}
 		var evnt = this.lookUp.bind(this);
 		this.element = this.form.formElements.get(this.options.observe);
-		this.form.dispatchEvent('', this.options.observe, 'blur', evnt);
+		//if its a joined element
+		if (!this.element) {
+			var regex = new RegExp (this.options.observe);
+			var k = Object.keys(this.form.formElements);
+			var ii = k.each(function(i){
+			if(i.test(regex)){
+				this.element = this.form.formElements.get(i);
+			}
+			}.bind(this));
+		}
+		if (this.options.trigger == '') {
+			var elEvnt = $(this.options.observe).getTag() == 'select' ? 'change' : 'blur';
+			this.form.dispatchEvent('', this.options.observe, elEvnt, evnt);
+		}else{
+			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
+		}
 	},
 	
 	// perform ajax lookup when the observer element is blurred
 	
-	lookUp: function(){
+	lookUp: function() {
 		
 		if(!confirm(Joomla.JText._('PLG_FORM_AUTOFILL_DO_UPDATE'))){
 			return;
@@ -54,7 +70,10 @@ var Autofill =  new Class({
 			'g':'form',
 			'v':v, 
 			'formid':formid,
-			'observe':observe
+			'observe':observe,
+			'cnn':this.options.cnn,
+			'table':this.options.table,
+			'map':this.options.map
 			},
 		onComplete: function(json){
 			Fabrik.loader.stop();
@@ -78,6 +97,9 @@ var Autofill =  new Class({
 				}
 			}
 		}.bind(this));
+		if (this.options.editOrig === true) {
+			this.form.getForm().getElement('input[name=rowid]').value = json.__pk_val;
+		}
 	}
 	
 });
