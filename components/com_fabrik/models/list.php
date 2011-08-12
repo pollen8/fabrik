@@ -4426,7 +4426,10 @@ class FabrikFEModelList extends JModelForm {
 		$primaryKey = str_replace("`", "", $primaryKey);
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
 		if (!$this->_importingCSV) {
-			$oRecord->$primaryKey = $rowId;
+			//if its a repeat group which is also the primary group $primaryKey was not set.
+			if ($primaryKey) {
+				$oRecord->$primaryKey = $rowId;
+			}
 		}
 
 		if ($origRowId == '' || $origRowId == 0) {

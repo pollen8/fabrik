@@ -52,18 +52,18 @@ class FabrikControllerForm extends JControllerForm
 	}
 
 	/**
-	 *
 	 * handle saving posted form data from the admin pages
 	 */
+	
 	function process()
 	{
 		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 
-		$document =& JFactory::getDocument();
-		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
-		$viewType	= $document->getType();
-		$view 		= &$this->getView( $viewName, $viewType);
+		$document = JFactory::getDocument();
+		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$viewType = $document->getType();
+		$view = &$this->getView( $viewName, $viewType);
 
 		if (!JError::isError($model)) {
 			$view->setModel( $model, true);
@@ -76,7 +76,7 @@ class FabrikControllerForm extends JControllerForm
 		$model->_rowId = JRequest::getVar('rowid', '');
 
 		// Check for request forgeries
-		$fbConfig =& JComponentHelper::getParams('com_fabrik');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
 			JRequest::checkToken() or die('Invalid Token');
 		}
@@ -112,8 +112,7 @@ class FabrikControllerForm extends JControllerForm
 
 		//check if any plugin has created a new validation error
 		if (!empty( $model->_arErrors)) {
-			$pluginManager 	=& $model->getPluginManager();
-			$pluginManager->runPlugins('onError', $model);
+			$model->getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}

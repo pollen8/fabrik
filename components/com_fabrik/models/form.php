@@ -1034,7 +1034,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$dv = array_values($dv);
 					}
 				}
-				echo "<pre>";print_r($data);echo "</pre>";
 				//$$$rob moved till just before join table data saved
 				//$data = $oTable->removeTableNameFromSaveData($data, $split='___');
 				$groups =& $this->getGroupsHiarachy();
@@ -1061,7 +1060,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						//set repeat count
 						$repeatTotals[$oJoin->group_id] = count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 					}else{
-						echo "Not a repeat element (el id = $oJoin->element_id)<br>";
+						// "Not a repeat element (el id = $oJoin->element_id)<br>";
 					}
 					//$elementModel->getElement()->group_id = -1;
 					//copy the repeating element into the join group
@@ -1122,7 +1121,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 						$paramKey = $listModel->getTable()->db_table_name.'___params';
 						$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
-						echo "repeat group count = $repeatedGroupCount <br>";
 						for ($c = 0; $c < $repeatedGroupCount; $c++) {
 							//get the data for each group and record it seperately
 							$repData = array();

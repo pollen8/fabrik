@@ -174,16 +174,20 @@ class FabrikModelGroup extends FabModelAdmin
 		$names['parent_id'] = "parent_id INT(6)";
 		foreach ($elements as $element) {
 			$fname = $element->getElement()->name;
-			$str = FabrikString::safeColName($fname);
-			$field = JArrayHelper::getValue($fields, $fname);
-			if (is_object($field)) {
-				$str .= " ".$field->Type." ";
-				if ($field->Null == 'NO') {
-					$str .= "NOT NULL ";
+			// if we are making a repeat group from the primary group then we dont want to 
+			// overwrite the repeat group tables id definition with that of the main tables 
+			if (!array_key_exists($fname, $names)) {
+				$str = FabrikString::safeColName($fname);
+				$field = JArrayHelper::getValue($fields, $fname);
+				if (is_object($field)) {
+					$str .= " ".$field->Type." ";
+					if ($field->Null == 'NO') {
+						$str .= "NOT NULL ";
+					}
+					$names[$fname] = $str;
+				} else {
+					$names[$fname] = $db->nameQuote($fname).' '.$element->getFieldDescription();
 				}
-				$names[$fname] = $str;
-			} else {
-				$names[$fname] = $db->nameQuote($fname).' '.$element->getFieldDescription();
 			}
 
 		}
