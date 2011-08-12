@@ -113,6 +113,9 @@ class FabrikModelGroup extends FabModelAdmin
 			
 		}
 		$makeJoin = ($data['params']['repeat_group_button'] == 1);
+		if ($makeJoin) {
+			$data['is_join'] = 1;
+		}
 		$data['params'] = json_encode($data['params']);
 		$return = parent::save($data);
 		$data['id'] = $this->setState($this->getName().'.id');
