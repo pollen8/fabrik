@@ -267,6 +267,7 @@ class FabrikModelList extends FabModelAdmin
 		JText::script('COM_FABRIK_JOIN_TYPE');
 		JText::script('COM_FABRIK_FROM_COLUMN');
 		JText::script('COM_FABRIK_TO_COLUMN');
+		JText::script('COM_FABRIK_REPEAT_GROUP_BUTTON_LABEL');
 
 		$joinTypeOpts = array();
 		$joinTypeOpts[] = array('inner', JText::_('INNER JOIN'));
@@ -307,15 +308,15 @@ class FabrikModelList extends FabModelAdmin
 
 		oAdminTable = new ListForm($opts);
 	oAdminTable.watchJoins();\n";
-
 		for ($i = 0; $i < count($joins); $i ++) {
+			$joinGroupParams = json_decode($joins[$i]->params);
 			$j = $joins[$i];
 			$joinFormFields = json_encode($j->joinFormFields);
 			$joinToFields =  json_encode($j->joinToFields);
+			$repeat = $joinGroupParams->repeat_group_button == 1 ? 1 :0;
 			$js .= "	oAdminTable.addJoin('{$j->group_id}','{$j->id}','{$j->join_type}','{$j->table_join}',";
-			$js .= "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields);\n";
+			$js .= "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields, $repeat);\n";
 		}
-
 		$js .= "var aPlugins = [];\n";
 		foreach ($abstractPlugins as $abstractPlugin) {
 			$js .= "aPlugins.push(".$abstractPlugin['js'].");\n";
@@ -325,7 +326,7 @@ class FabrikModelList extends FabModelAdmin
 			$js .= "controller.addAction('".$plugin['html']."', '".$plugin['plugin']."', '".@$plugin['location']."', '".@$plugin['event']."', false);\n";
 		}
 
-		$js .= "	oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);\n";
+		$js .= "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);\n";
 
 		$form = $this->getForm();
 
@@ -374,7 +375,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$item->id);
+		$query->select('*')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
 		$db->setQuery($query);
 		$joins = $db->loadObjectList();
 		$fabrikDb = $this->getFEModel()->getDb();
@@ -702,6 +703,7 @@ class FabrikModelList extends FabModelAdmin
 		$tableKey				= JArrayHelper::getValue($params, 'table_key', array());
 		$joinTableKey		= JArrayHelper::getValue($params, 'table_join_key', array());
 		$groupIds				= JArrayHelper::getValue($params, 'group_id', array());
+		$repeats = JArrayHelper::getValue($params, 'join_repeat', array());
 		$jc = count($joinTypes);
 
 		for ($i = 0; $i < $jc ; $i++) {
@@ -719,9 +721,8 @@ class FabrikModelList extends FabModelAdmin
 				}
 			}
 			$this->getFEModel()->addIndex($tableKey[$i], 'join', 'INDEX', $size);
-			echo $existingJoin ? "existing " : " new";
 			if (!$existingJoin) {
-				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i]);
+				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
 			} else {
 				/* load in the exisitng join
 				 * if the table_join has changed we need to create a new join
@@ -733,13 +734,21 @@ class FabrikModelList extends FabModelAdmin
 				$join =& $joinModel->getJoin();
 
 				if ($join->table_join != $joinTable[$i]) {
-					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i]);
+					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
 				} else {
 					//the talbe_join has stayed the same so we simply update the join info
 					$join->table_key = str_replace('`', '', $tableKey[$i]);
 					$join->table_join_key = $joinTableKey[$i];
 					$join->join_type = $joinTypes[$i];
 					$join->store();
+					//update group 
+					$group = $this->getTable('Group');
+					$group->load($join->group_id);
+					$gparams = json_decode($group->params);
+					$gparams->repeat_group_button =  $repeats[$i] == 1 ? 1 : 0;
+					$group->params = json_encode($gparams);
+					$group->store();
+		
 					$aOldJoinsToKeep[] = $joinIds[$i];
 				}
 			}
@@ -766,18 +775,18 @@ class FabrikModelList extends FabModelAdmin
 	 * @param string join type
 	 * @param string join to table
 	 * @param string join table
+	 * @param bool is the group a repeat
 	 */
 
-	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom)
+	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
 	{
-		echo "makeNewJoin: $tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom<br>";
-		$db 	=& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$formModel 	=& $this->getFormModel();
 		$aData = array(
 			"name" => $this->getTable()->label ."- [" .$joinTable. "]",
 			"label" =>  $joinTable,
 		);
-		$groupId = $this->createLinkedGroup($aData, true);
+		$groupId = $this->createLinkedGroup($aData, true, $isRepeat);
 		$origTable = JRequest::getVar('db_table_name');
 		$_POST['jform']['db_table_name'] = $joinTable;
 		$this->createLinkedElements($groupId);
@@ -1060,22 +1069,23 @@ class FabrikModelList extends FabModelAdmin
 	 * @access private
 	 * @param array group data
 	 * @param bol is the group a join default false
+	 * @param bol is the group repeating
 	 * @return int group id
 	 */
 
-	private function createLinkedGroup($data, $isJoin = false)
+	private function createLinkedGroup($data, $isJoin = false, $isRepeat = false)
 	{
 		$user = JFactory::getUser();
 		$createdate = JFactory::getDate();
 		$group = $this->getTable('Group');
 		$group->bind($data);
-		$group->created 					= $createdate->toMySQL();
-		$group->created_by 				= $user->get('id');
-		$group->created_by_alias 	= $user->get('username');
-		$group->published					= 1;
+		$group->created = $createdate->toMySQL();
+		$group->created_by = $user->get('id');
+		$group->created_by_alias = $user->get('username');
+		$group->published = 1;
 
 		$opts = new stdClass();
-		$opts->repeat_group_button = 0;
+		$opts->repeat_group_button =  $isRepeat ? 1 : 0;
 		$opts->repeat_group_show_first = 1;
 		$group->params = json_encode($opts);
 
