@@ -15,16 +15,16 @@ var Autofill =  new Class({
 	},
 	
 	initialize: function(options) {
-		this.setOptions(options);	
-		head.ready(function() {
-			(function(){this.setUp()}.bind(this)).delay(1000);
-		}.bind(this))
+		this.setOptions(options);
+		window.addEvent('fabrik.form.elements.added', function(form){
+			this.setUp(form);	
+		}.bind(this));
 	},
 	
-	setUp: function()
+	setUp: function(form)
 	{
 		try{
-  		this.form = eval('form_' + this.options.formid);
+  		this.form = form;//eval('form_' + this.options.formid);
   	}catch(err) {
 			//form_x not found (detailed view perhaps)
   		return;
@@ -42,7 +42,7 @@ var Autofill =  new Class({
 			}.bind(this));
 		}
 		if (this.options.trigger == '') {
-			var elEvnt = $(this.options.observe).getTag() == 'select' ? 'change' : 'blur';
+			var elEvnt = $(this.options.observe).get('tag') == 'select' ? 'change' : 'blur';
 			this.form.dispatchEvent('', this.options.observe, elEvnt, evnt);
 		}else{
 			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
@@ -52,20 +52,19 @@ var Autofill =  new Class({
 	// perform ajax lookup when the observer element is blurred
 	
 	lookUp: function() {
-		
 		if(!confirm(Joomla.JText._('PLG_FORM_AUTOFILL_DO_UPDATE'))){
 			return;
 		}
 		Fabrik.loader.start(Joomla.JText._('PLG_FORM_AUTOFILL_SEARCHING'), 'form_' + this.options.formid);
 		
-		var v = this.element.get('value');
+		var v = this.element.getValue();
 		var formid = this.options.formid;
 		var observe = this.options.observe;
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax';
 		
 		var myAjax = new Request({url:url, method:'post', 
 		'data':{
-			'plugin':'fabrikautofill',
+			'plugin':'autofill',
 			'method':'ajax_getAutoFill',
 			'g':'form',
 			'v':v, 
@@ -76,7 +75,7 @@ var Autofill =  new Class({
 			'map':this.options.map
 			},
 		onComplete: function(json){
-			Fabrik.loader.stop();
+			Fabrik.loader.stop('', 'form_' + this.options.formid);
 			this.updateForm(json);
 		}.bind(this)}).send();
 	},
@@ -103,6 +102,3 @@ var Autofill =  new Class({
 	}
 	
 });
-
-Autofill.implement(new Events);
-Autofill.implement(new Options);

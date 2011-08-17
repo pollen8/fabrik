@@ -463,7 +463,7 @@ var FbForm = new Class( {
 				}
 			}.bind(this));
 		}.bind(this));
-		window.fireEvent('fabrik.form.elements.added');
+		window.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
 	addElement : function(oEl, elId, gid) {

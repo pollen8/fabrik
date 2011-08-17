@@ -39,21 +39,21 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
 		JText::script('PLG_FORM_AUTOFILL_NORECORDS_FOUND');
-		FabrikHelperHTML::addScriptDeclaration("var autofill = new Autofill($opts);");
+		FabrikHelperHTML::addScriptDeclaration("head.ready(function(){var autofill = new Autofill($opts);});");
 	}
 
 	/**
 	 * called via ajax to get the first match record
 	 * @return string json object of record data
 	 */
-	function ajax_getAutoFill()
+	function onajax_getAutoFill()
 	{
 		$params = $this->getParams();
 		$cnn = (int)JRequest::getInt('cnn');
 		$element 		= JRequest::getVar('observe');
 		$value 			= JRequest::getVar('v');
 		JRequest::setVar('resetfilters', 1);
-		
+
 		if ($cnn === 0 || $cnn == -1) { //no connection selected so query current forms' table data
 			$formid 		= JRequest::getInt('formid');
 			JRequest::setVar($element, $value, 'get');
@@ -68,7 +68,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 
 		}
 		$nav	=& $listModel->getPagination(1, 0, 1);
-		$listModel->_outPutFormat = 'raw';
+		$listModel->set('_outPutFormat', 'raw');
 		$data = $listModel->getData();
 		$data = $data[0];
 		if (empty($data)) {
