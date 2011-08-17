@@ -100,9 +100,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function getRawColumn($useStep = true)
 	{
-		$join 		= $this->getJoin();
-		$element 	= $this->getElement();
-		$k = isset($join->keytable ) ? $join->keytable : $join->join_from_table;
+		$join = $this->getJoin();
+		$element = $this->getElement();
+		$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
 		$name = $element->name . "_raw";
 		return $useStep ? $k."___".$name : FabrikString::safeColName("$k.$name");
 	}
@@ -121,7 +121,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (array_key_exists((int)$useStep, $this->joinLabelCols)) {
 			return $this->joinLabelCols[$useStep];
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$db = $this->getDb();
 		$join =& $this->getJoin();
 		if (($params->get('join_val_column_concat') != '') && JRequest::getVar('overide_join_val_column_concat') != 1) {
@@ -132,7 +132,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$label = FabrikString::shortColName($join->_params->get('join-label'));
 		if ($label == '') {
-			echo '<pre>';print_r($join);exit;
 			JError::raiseWarning(500, 'Could not find the join label for '.$this->getElement()->name . ' try unlinking and saving it');
 			$label = $this->getElement()->name;
 		}
@@ -165,8 +164,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (isset($this->_join)) {
 			return $this->_join;
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
+		if ($element->published == 0){
+			return false;
+		}
 		$listModel =& $this->getlistModel();
 		$table =& $listModel->getTable();
 		$joins =& $listModel->getJoins();
@@ -181,8 +183,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 		}
 		//	default fall back behaviour - shouldnt get used
-echo 'database join: big error loading join! shouldnt get here';exit;
-		if (!is_null($this->_join)) {
+		echo 'database join: big error loading join! shouldnt get here';exit;
+	/*	if (!is_null($this->_join)) {
 			return $this->_join;
 		}
 		$join =& FabTable::getInstance('Join', 'FabrikTable');
@@ -211,7 +213,7 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 			$join->_params = new fabrikParams($join->params);
 		}
 		$this->_join = $join;
-		return $join;
+		return $join;*/
 	}
 
 	/**
@@ -220,7 +222,7 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 
 	function getJoins()
 	{
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		if (!isset($this->_aJoins)) {
 			$sql = "SELECT * FROM #__{package}_joins WHERE element_id = ".(int)$this->_id." ORDER BY id";
 			$db->setQuery($sql);
@@ -319,7 +321,7 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 	function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
 	{
 		$element = $this->getElement();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$showBoth = $params->get('show_both_with_radio_dbjoin', '0');
 		$this->_joinDb =& $this->getDb();
 
@@ -333,7 +335,7 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 			$tmp = array_merge($tmp, $aDdObjs);
 		}
 		$this->addSpaceToEmptyLabels($tmp);
-		$displayType 	= $params->get('database_join_display_type', 'dropdown');
+		$displayType = $params->get('database_join_display_type', 'dropdown');
 		if ($displayType == 'dropdown' && $params->get('database_join_show_please_select', true)) {
 			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue') , $this->_getSelectLabel()));
 		}
@@ -342,8 +344,7 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 
 	protected function _getSelectLabel()
 	{
-		$params 		=& $this->getParams();
-		return $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		return $this->getParams()->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
 	}
 
 	/**
@@ -358,8 +359,8 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 	{
 		// $$$ hugh - adding 'where when' so can control whether to apply WHERE either on
 		// new, edit or both (1, 2 or 3)
-		$params 			=& $this->getParams();
-		$wherewhen  = $params->get('database_join_where_when', '3');
+		$params = $this->getParams();
+		$wherewhen = $params->get('database_join_where_when', '3');
 		$isnew = JRequest::getInt('rowid', 0) === 0;
 		if ($isnew && $wherewhen == '2') {
 			return false;
@@ -388,13 +389,13 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 
 	function _buildQuery($data = array(), $incWhere = true)
 	{
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		if (isset($this->_sql[$incWhere])) {
 			return $this->_sql[$incWhere];
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
-		$formModel =& $this->getForm();
+		$formModel = $this->getForm();
 
 		$where = $this->_buildQueryWhere($data, $incWhere);
 		//$$$rob not sure these should be used anyway?
@@ -432,10 +433,10 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 	function _buildQueryWhere($data = array(), $incWhere = true)
 	{
 		$where = '';
-		$listModel 	=& $this->getlistModel();
-		$params 			=& $this->getParams();
-		$element 			= $this->getElement();
-		$whereaccess  = $params->get('database_join_where_access', 26);
+		$listModel = $this->getlistModel();
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$whereaccess = $params->get('database_join_where_access', 26);
 
 		if ($this->mustApplyWhere($whereaccess, $element->id) && $incWhere) {
 			$where = $params->get('database_join_where_sql');
@@ -480,14 +481,14 @@ echo 'database join: big error loading join! shouldnt get here';exit;
 
 	function _getValColumn()
 	{
-		$params =& $this->getParams();
-		$join =& $this->getJoin();
+		$params = $this->getParams();
+		$join = $this->getJoin();
 		if ($params->get('join_val_column_concat') == '') {
 			return $params->get('join_val_column');
 		} else {
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('join_val_column_concat'));
 			$w = new FabrikWorker();
-			$val 			= $w->parseMessageForPlaceHolder($val, array(), false);
+			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 			return "CONCAT(" . $val . ")";
 		}
 	}

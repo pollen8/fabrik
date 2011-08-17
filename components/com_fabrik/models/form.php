@@ -1931,8 +1931,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// FIXME - next line had been commented out, causing undefined warning for $rawval
 						// on following line.  Not sure if getrawColumn is right thing to use here tho,
 						// like, it adds filed quotes, not sure if we need them.
-						$rawval = $elementModel->getRawColumn($useStep);
-						$aEls[] = JHTML::_('select.option', $rawval, $label . "(raw)");
+						if ($elementModel->getElement()->published != 0) {
+							$rawval = $elementModel->getRawColumn($useStep);
+							$aEls[] = JHTML::_('select.option', $rawval, $label . "(raw)");
+						}
 					}
 				}
 				$aEls[] = JHTML::_('select.option', $val, $label);
