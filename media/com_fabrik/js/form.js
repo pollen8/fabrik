@@ -103,7 +103,7 @@ var FbForm = new Class( {
 
 				this.form.getElement(b).addEvent('click', function(e) {
 					myAjax.options.data.rowid = this.form.getElement('input[name=rowid]').value;
-					new Event(e).stop();
+					e.stop();
 					Fabrik.loader.start('loading', this.options.inlineMessage);
 					myAjax.send();
 				}.bind(this));
@@ -258,7 +258,7 @@ var FbForm = new Class( {
 	watchClearSession : function() {
 		if (this.form && this.form.getElement('.clearSession')) {
 			this.form.getElement('.clearSession').addEvent('click', function(e) {
-				new Event(e).stop();
+				e.stop();
 				this.form.getElement('input[name=task]').value = 'removeSession';
 				this.clearForm();
 				this.form.submit();
@@ -336,7 +336,7 @@ var FbForm = new Class( {
 		else {
 			this.changePage(dir);
 		}
-		var event = new Event(e).stop();
+		e.stop();
 	},
 
 	saveGroupsToDb : function() {
@@ -556,13 +556,12 @@ var FbForm = new Class( {
 
 	// as well as being called from watchValidation can be called from other
 	// element js actions, e.g. date picker closing
-	doElementValidation : function(event, subEl, replacetxt) {
+	doElementValidation : function(e, subEl, replacetxt) {
 		if (this.options.ajaxValidation == false) {
 			return;
 		}
 		replacetxt = typeOf(replacetxt) === 'null' ? '_time' : replacetxt;
-		if (typeOf(event) == 'event' || typeOf(event) == 'object') { // type object in
-			var e = new Event(event);
+		if (typeOf(e) == 'event' || typeOf(e) == 'object') { // type object in
 			var id = e.target.id;
 			// for elements with subelements eg checkboxes radiobuttons
 			if (subEl == true) {
@@ -571,7 +570,7 @@ var FbForm = new Class( {
 		} else {
 			// hack for closing date picker where it seems the event object isnt
 			// available
-			id = event;
+			id = e;
 		}
 		// for elements with subelements eg checkboxes radiobuttons
 		/*if (subEl == true) {
@@ -594,7 +593,7 @@ var FbForm = new Class( {
 				return;
 			}
 		}
-		if (!this.runPlugins('onStartElementValidation', event)) {
+		if (!this.runPlugins('onStartElementValidation', e)) {
 			return;
 		}
 		el.setErrorMessage(Joomla.JText._('COM_FABRIK_VALIDATING'), 'fabrikValidating');
@@ -746,7 +745,9 @@ var FbForm = new Class( {
 		}
 		if (this.options.ajax) {
 			$A([apply, submit]).each(function(btn){
-				btn.addEvent('click', this.doSubmit.bindWithEvent(this, [btn]));
+				if (typeOf(btn) !== 'null') {
+					btn.addEvent('click', this.doSubmit.bindWithEvent(this, [btn]));
+				}
 			}.bind(this));
 			
 		}
@@ -968,11 +969,11 @@ var FbForm = new Class( {
 		});
 	},
 
-	deleteGroup : function(event) {
-		if (!this.runPlugins('onDeleteGroup', event)) {
+	deleteGroup : function(e) {
+		if (!this.runPlugins('onDeleteGroup', e)) {
 			return;
 		}
-		var e = new Event(event).stop();
+		e.stop();
 		var group = e.target.findClassUp('fabrikGroup');
 		// find which repeat group was deleted
 		var delIndex = 0;
@@ -1105,12 +1106,12 @@ var FbForm = new Class( {
 
 	/* duplicates the groups sub group and places it at the end of the group */
 
-	duplicateGroup : function(event) {
-		if (!this.runPlugins('onDuplicateGroup', event)) {
+	duplicateGroup : function(e) {
+		if (!this.runPlugins('onDuplicateGroup', e)) {
 			return;
 		}
-		if (event) event.stop();
-		var i = event.target.findClassUp('fabrikGroup').id.replace('group', '');
+		if (e) e.stop();
+		var i = e.target.findClassUp('fabrikGroup').id.replace('group', '');
 		var group = document.id('group' + i);
 		var c = this.repeatGroupMarkers.get(i);
 		if (c >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
@@ -1280,7 +1281,7 @@ var FbForm = new Class( {
 		clone.fade(1);
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above
-		this.runPlugins('onDuplicateGroupEnd', event, i, c);
+		this.runPlugins('onDuplicateGroupEnd', e, i, c);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 		this.unwatchGroupButtons();
 		this.watchGroupButtons();
