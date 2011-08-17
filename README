@@ -1,1 +1,13 @@
 Fabrik is Joomla application builder
+
+Installation
+
+Check out the files into your Joomla installations root directory.
+Log into your Joomla administration control panel
+Go to Extensions->Extension manager
+Press the discover link
+Press 'purge cache' and then 'Discover'
+Select the Fabrik package and press install.
+
+Please check that the installed plugins are published before using fabrik.
+ 
