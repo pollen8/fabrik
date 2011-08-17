@@ -542,14 +542,12 @@ EOD;
 	public function framework(){
 		static $added;
 		if (!$added) {
-			FabrikHelperHTML::script('media/system/js/mootools-core.js');
-			FabrikHelperHTML::script('media/system/js/mootools-more.js');
-			FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js', true);
-			FabrikHelperHTML::script('media/com_fabrik/js/art.js', true);
-			FabrikHelperHTML::script('media/com_fabrik/js/icons.js', true);
-			FabrikHelperHTML::script('media/com_fabrik/js/icongen.js', true);
-			FabrikHelperHTML::script('media/com_fabrik/js/fabrik.js', true);
-			FabrikHelperHTML::script('media/com_fabrik/js/tips/floatingtips.js', true);
+			$src = array('media/system/js/mootools-core.js', 'media/system/js/mootools-more.js',
+			'media/com_fabrik/js/mootools-ext.js', 'media/com_fabrik/js/art.js',
+			'media/com_fabrik/js/icons.js', 'media/com_fabrik/js/icongen.js',
+			'media/com_fabrik/js/fabrik.js', 'media/com_fabrik/js/tips/floatingtips.js'
+			);
+			FabrikHelperHTML::script($src, true);
 			FabrikHelperHTML::styleSheet('media/com_fabrik/css/fabrik.css');
 			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
 			$added = true;
