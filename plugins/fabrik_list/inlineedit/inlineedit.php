@@ -61,6 +61,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		$pels = $params->get('inline_editable_elements');
 		$use = trim($pels) == '' ? array() : explode(",", $pels);
 		$els = array();
+		$srcs = array();
 		foreach ($elements as $key => $val) {
 			$key = FabrikString::safeColNameToArrayKey($key);
 			if (empty($use) || in_array($key, $use)) {
@@ -68,9 +69,10 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 				$els[$key]->elid = $val->_id;
 				$els[$key]->plugin = $val->getElement()->plugin;
 				//load in all element js classes
-				$val->formJavascriptClass();
+				$val->formJavascriptClass($src);
 			}
 		}
+		FabrikHelperHTML::script($srcs, true);
 		$opts = new stdClass();
 		$opts->elements = $els;
 		$opts->listid = $model->getId();
