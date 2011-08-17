@@ -11,7 +11,7 @@ var tablesElement = new Class({
 		this.setOptions(options);
 		this.updateMeEvent = this.updateMe.bindWithEvent(this);
 		//if loading in a form plugin then the connect is not yet avaiable in the dom
-		if(typeOf($(this.options.conn)) === false) {
+		if(typeOf($(this.options.conn)) === 'null') {
 			this.periodical = this.getCnn.periodical(500, this);
 		}else{
 			this.setUp();
@@ -24,7 +24,7 @@ var tablesElement = new Class({
 	},
 	
 	getCnn:function(){
-		if(typeOf($(this.options.conn)) === false) {
+		if(typeOf($(this.options.conn)) === 'null') {
 			return;
 		}
 		this.setUp();

@@ -10,7 +10,7 @@ var ListFieldsElement = new Class({
 		this.el = el;
 		this.setOptions(options);
 		this.updateMeEvent = this.updateMe.bindWithEvent(this);
-		if(typeOf($(this.options.conn) === false)) {
+		if(typeOf($(this.options.conn)) === 'null') {
 			this.cnnperiodical = this.getCnn.periodical(500, this);
 		}else{
 			this.setUp();
@@ -22,7 +22,7 @@ var ListFieldsElement = new Class({
 	},
 	
 	getCnn:function(){
-		if(typeOf($(this.options.conn)) === false) {
+		if(typeOf($(this.options.conn)) === 'null') {
 			return;
 		}
 		this.setUp();

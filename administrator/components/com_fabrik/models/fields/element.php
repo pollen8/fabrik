@@ -48,8 +48,8 @@ class JFormFieldElement extends JFormFieldList
 			$fabrikelements = array();
 		}
 
-		$c = ElementHelper::getRepeatCounter($this);
-
+		//$c = ElementHelper::getRepeatCounter($this);
+		$c = $this->form->repeatCounter;
 		$table = $this->element['table'];
 
 		//$conn = ($c === false || $this->element['connection_in_repeat'] == 'false') ?  $this->element['connection'] :  $this->element['connection'] . '-' . $c;

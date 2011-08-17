@@ -22,7 +22,7 @@ var elementElement = new Class({
 	},
 
 	ready : function() {
-		if (typeOf($(this.options.conn)) === false) {
+		if (typeOf($(this.options.conn)) === 'null') {
 			return false;
 		}
 		if (typeOf(Fabrik.model.fields.fabriktable) === 'undefined') {
@@ -46,7 +46,11 @@ var elementElement = new Class({
 	},
 
 	setUp : function() {
-		this.el = $(this.el);
+		var s = this.el;
+		this.el = document.id(this.el);
+		if (typeOf(this.el) == 'null') {
+			fconsole('element didnt find me, ', s);
+		}
 		Fabrik.model.fields.fabriktable[this.options.table].registerElement(this);
 	},
 

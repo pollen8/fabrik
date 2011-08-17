@@ -16,7 +16,7 @@ var fabriktablesElement = new Class({
 		this.waitingElements = $H({}); // keyed on specific element options
 		// if loading in a form plugin then the connect is not yet avaiable in the
 		// dom
-		if (typeOf($(this.options.conn)) === false) {
+		if (typeOf($(this.options.conn)) === 'null') {
 			this.periodical = this.getCnn.periodical(500, this);
 		} else {
 			this.setUp();
@@ -24,7 +24,7 @@ var fabriktablesElement = new Class({
 	},
 
 	getCnn : function() {
-		if (typeOf($(this.options.conn)) === false) {
+		if (typeOf($(this.options.conn)) === 'null') {
 			return;
 		}
 		this.setUp();
@@ -52,7 +52,7 @@ var fabriktablesElement = new Class({
 
 	updateMe : function(e) {
 		if (e) {
-			new Event(e).stop();
+			e.stop();
 		}
 		var cid = $(this.options.conn).get('value');
 		// keep repeating the perioical untill the cnn drop down is completed

@@ -51,7 +51,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$fabriktables = array();
 		}
 		$connectionDd = $this->element['observe'];
-		$db			= & FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo();
 
 		$id = $this->id;
 		$fullName = $this->name;
@@ -66,12 +66,12 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$rows = array(JHTML::_('select.option', '', JText::_('COM_FABRIK_SELECT_A_CONNECTION_FIRST'), 'value', 'text'));
 		}
 		return $rows;
-
 	}
 
 	function getInput()
 	{
-		$c = ElementHelper::getRepeatCounter($this);
+		//$c = ElementHelper::getRepeatCounter($this);
+		$c = $this->form->repeatCounter;
 		$repeat = ElementHelper::getRepeat($this);
 		$connectionDd = $this->element['observe'];
 		if (!isset($fabriktables)) {

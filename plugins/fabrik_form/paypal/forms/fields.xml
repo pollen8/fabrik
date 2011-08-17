@@ -90,7 +90,7 @@
 			<field name="paypal_return_url" 
 				type="text" 
 				repeat="true"
-				label="PLG_FORM_PAYPAL_PAYPAL_RETURN_URL_LABEL" 
+				label="PLG_FORM_PAYPAL_RETURN_URL_LABEL" 
 				description="PLG_FORM_PAYPAL_RETURN_URL_DESC" />
 				
 			<field name="paypal_return_msg" 
@@ -101,7 +101,7 @@
 				label="PLG_FORM_PAYPAL_RETURN_MSG_LABEL" 
 				description="PLG_FORM_PAYPAL_RETURN_MSG_DESC" />
 
-			<field name="@spacer" repeat="true" type="spacer" />
+			<field name="@spacer" repeat="true" type="spacer" label="" />
 			
 			<field name="paypal_subs_connection" 
 				type="connections"
@@ -110,7 +110,7 @@
 				description="PLG_FORM_PAYPAL_SUBS_CONNECTION_DESC"/>
 				
 			<field name="paypal_subs_table" 
-				observe="params__paypal_subs_connection" 
+				observe="params_paypal_subs_connection" 
 				repeat="true"
 				type="fabriktables" 
 				label="PLG_FORM_PAYPAL_SUBS_DATA_TABLE_LABEL" 
@@ -119,8 +119,8 @@
 			<field name="paypal_subs_id" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_subs_connection" 
-				table="params__paypal_subs_table" 
+				connection="params_paypal_subs_connection" 
+				table="params_paypal_subs_table" 
 				label="PLG_FORM_PAYPAL_SUBS_DATA_ID_LABEL" 
 				description="PLG_FORM_PAYPAL_SUBS_DATA_ID_DESC"/>
 				
@@ -133,16 +133,16 @@
 			<field name="paypal_subs_duration" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_subs_connection" 
-				table="params__paypal_subs_table" 
+				connection="params_paypal_subs_connection" 
+				table="params_paypal_subs_table" 
 				label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_LABEL" 
 				description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_DESC"/>
 				
 			<field name="paypal_subs_duration_period" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_subs_connection" 
-				table="params__paypal_subs_table" 
+				connection="params_paypal_subs_connection" 
+				table="params_paypal_subs_table" 
 				label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_LABEL" 
 				description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_DESC"/>
 				
@@ -150,7 +150,7 @@
 				type="text" 
 				repeat="true"
 				label="PLG_FORM_PAYPAL_SUBS_DATA_INVOICE_LABEL" 
-				description="PLG_FORM_PAYPAL_SUBS_DATAI_NVOICE_DESC"/>
+				description="PLG_FORM_PAYPAL_SUBS_DATA_INVOICE_DESC"/>
 				
 			<field name="paypal_subs_recurring" 
 				type="text" 
@@ -159,7 +159,7 @@
 				description="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_DESC">
 			</field>
 	
-			<field name="@spacer" repeat="true" type="spacer" />
+			<field name="@spacer" repeat="true" type="spacer" label="" />
 			
 			<field name="paypal_shipping_cost" 
 				type="textarea" 
@@ -195,7 +195,7 @@
 				description="PLG_FORM_PAYPAL_SHIPPING_DATA_CONNECTION_DESC"/>
 				
 			<field name="paypal_shippingdata_table" 
-				observe="params__paypal_shippingdata_connection" 
+				observe="params_paypal_shippingdata_connection" 
 				type="fabriktables"
 				repeat="true" 
 				label="PLG_FORM_PAYPAL_SHIPPING_DATA_TABLE_LABEL" 
@@ -203,69 +203,70 @@
 				
 			<field name="paypal_shippingdata_id" 
 				type="element" 
-				connection="params__paypal_shippingdata_connection"
+				connection="params_paypal_shippingdata_connection"
 				repeat="true" 
-				table="params__paypal_shippingdata_table" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_DATA_ID_LABEL" 
 				description="PLG_FORM_PAYPAL_SHIPPING_DATA_ID_DESC"/>
 				
 			<field name="paypal_shippingdata_firstname" 
 				type="element" 
-				connection="params__paypal_shippingdata_connection"
+				connection="params_paypal_shippingdata_connection"
 				repeat="true" 
-				table="params__paypal_shippingdata_table" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_FIRSTNAME_LABEL" 
 				description="PLG_FORM_PAYPAL_SHIPPING_FIRSTNAME_DESC"/>
 				
 			<field name="paypal_shippingdata_lastname" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_shippingdata_connection" 
-				table="paypal_shippingdata_table" 
+				connection="params_paypal_shippingdata_connection" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_LASTNAME_LABEL" 
 				description="PLG_FORM_PAYPAL_SHIPPING_LASTNAME_DESC"/>
 				
 			<field name="paypal_shippingdata_address1" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_shippingdata_connection" 
-				table="params__paypal_shippingdata_table" 
+				connection="params_paypal_shippingdata_connection" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_ADDRESS1_LABEL" description=""/>
 				
 			<field name="paypal_shippingdata_address2" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_shippingdata_connection" 
-				table="params__paypal_shippingdata_table" 
+				connection="params_paypal_shippingdata_connection" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_ADDRESS2_LABEL" description=""/>
 				
 			<field name="paypal_shippingdata_zip" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_shippingdata_connection" 
-				table="params__paypal_shippingdata_table" 
-				label="PLG_FORM_PAYPAL_SHIPPING_ZIP" description=""/>
+				connection="params_paypal_shippingdata_connection" 
+				table="params_paypal_shippingdata_table" 
+				label="PLG_FORM_PAYPAL_SHIPPING_ZIP_LABEL"
+				description=""/>
 				
 			<field name="paypal_shippingdata_state" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_shippingdata_connection" 
-				table="params__paypal_shippingdata_table" 
+				connection="params_paypal_shippingdata_connection" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_STATE_LABEL" 
 				description="PLG_FORM_PAYPAL_SHIPPING_STATE_DESC"/>
 				
 			<field name="paypal_shippingdata_city" 
 				type="element"
 				repeat="true"
-				connection="params__paypal_shippingdata_connection" 
-				table="params__params__paypal_shippingdata_table" 
+				connection="params_paypal_shippingdata_connection" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_CITY_LABEL" description=""/>
 				
 			<field name="paypal_shippingdata_country" 
 				type="element"
 				repeat="true" 
-				connection="params__paypal_shippingdata_connection" 
-				table="params__paypal_shippingdata_table" 
+				connection="params_paypal_shippingdata_connection" 
+				table="params_paypal_shippingdata_table" 
 				label="PLG_FORM_PAYPAL_SHIPPING_COUNTRY_LABEL" 
 				description="PLG_FORM_PAYPAL_SHIPPING_COUNTRY_DESC"/>
 				
@@ -279,7 +280,7 @@
 					<option value="1">JYES</option>
 			</field>
 	
-			<field name="@spacer" type="spacer" />
+			<field name="@spacer" type="spacer" label="" />
 	
 			<field name="paypal_ipn_element"
 				type="listfields" 
@@ -335,7 +336,7 @@
 				label="PLG_FORM_PAYPAL_PHP_FILE_LABEL" 
 				description="PLG_FORM_PAYPAL_PHP_FILE_DESC" />
 				
-			<field name="@spacer" type="spacer" repeat="true"/>
+			<field name="@spacer" type="spacer" repeat="true" label="" />
 
 			<field name="paypal_conditon" 
 				type="textarea" 
@@ -378,7 +379,7 @@
 			<field name="paypal_test_site" 
 				type="text" 
 				repeat="true"
-				label="PLG_FORM_PAYPA_TEST_SITE_LABEL" 
+				label="PLG_FORM_PAYPAL_TEST_SITE_LABEL" 
 				description="PLG_FORM_PAYPAL_TEST_SITE_DESC" />
 				
 			<field name="paypal_test_site_qs" 

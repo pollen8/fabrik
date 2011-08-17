@@ -18,7 +18,7 @@
 				description="PLG_FORM_LIMIT_CONNECTION_DESC" />
 						
 			<field name="limit_table" 
-				observe="params__limit_connection" 
+				observe="params_limit_connection" 
 				type="fabriktables"
 				repeat="true" 
 				label="PLG_FORM_LIMIT_TABLE_LABEL" 
@@ -27,16 +27,16 @@
 			<field name="limit_user"
 				 type="element"
 				 repeat="true" 
-				 connection="params__limit_connection" 
-				 table="params__limit_table" 
+				 connection="params_limit_connection" 
+				 table="params_limit_table" 
 				 label="PLG_FORM_LIMIT_USER_ELEMENT_LABEL" 
 				 description="PLG_FORM_LIMIT_USER_ELEMENT_DESC"/>
 				 
 			<field name="limit_max" 
 				type="element"
 				repeat="true" 
-				connection="params__limit_connection" 
-				table="params__limit_table" 
+				connection="params_limit_connection" 
+				table="params_limit_table" 
 				label="PLG_FORM_LIMIT_MAX_ELEMENT_LABEL" 
 				description="PLG_FORM_LIMIT_MAX_ELEMENT_DESC"/>
 		
