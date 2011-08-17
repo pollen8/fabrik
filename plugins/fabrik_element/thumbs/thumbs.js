@@ -1,15 +1,15 @@
 var FbThumbs =  new Class({
-	Extends:FbElement,
+	Extends : FbElement,
 	initialize: function(element, options, thumb) {
-		this.field = $(element);
+		this.field = document.id(element);
 		this.imagepath = Fabrik.liveSite +'plugins/fabrik_element/thumbs/images/';
 		this.parent(element, options);
 
-   	this.element = $(element + '_div');
+   	this.element = document.id(element + '_div');
 		this.thumb = thumb;
 		this.spinner = new Asset.image(Fabrik.liveSite+'media/com_fabrik/images/ajax-loader.gif', {	'alt':'loading','class':'ajax-loader'});
-		this.thumbup = $('thumbup');
-		this.thumbdown = $('thumbdown');
+		this.thumbup = document.id('thumbup');
+		this.thumbdown = document.id('thumbdown');
     this.thumbup.addEvent('mouseover', function(e){
     	this.thumbup.setStyle('cursor', 'pointer');
       this.thumbup.src = this.imagepath + "thumb_up_in.gif";

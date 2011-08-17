@@ -133,7 +133,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
+	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @param object element
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */

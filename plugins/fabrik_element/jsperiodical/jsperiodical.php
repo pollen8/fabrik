@@ -86,13 +86,13 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
+	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts =& $this->getElementJSOptions($repeatCounter);
 		$opts->code = $params->get('jsperiod_code');

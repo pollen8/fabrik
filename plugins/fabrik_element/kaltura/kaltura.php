@@ -187,10 +187,10 @@ return '<div id="'.$id.'"></div>';
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass()
+	function formJavascriptClass(&$srcs)
 	{
 		FabrikHelperHTML::script('media/com_fabrik/js/swfobject.js', false);
-		parent::formJavascriptClass();
+		parent::formJavascriptClass($srcs);
 	}
 
 }

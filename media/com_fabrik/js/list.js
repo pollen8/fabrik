@@ -221,7 +221,7 @@ var FbList = new Class({
 		//means that there is an issue if table contains no data
 		if (typeOf(this.options.rowtemplate) === 'string'){
 	  	var r = this.list.getElement('.fabrik_row');
-			if (window.ie && $type(r) !== false) {
+			if (window.ie && typeOf(r) !== 'null') {
 				this.options.rowtemplate = r;
 			}
 		}

@@ -60,7 +60,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass()
+	function formJavascriptClass(&$srcs)
 	{
 		static $jsloaded;
 		if (!isset($jsloaded)) {
@@ -68,7 +68,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			$params =& $this->getParams();
 
 			$document->addScript("http://www.openlayers.org/api/OpenLayers.js");
-			parent::formJavascriptClass();
+			parent::formJavascriptClass($srcs);
 			FabrikHelperHTML::script('components/com_fabrik/libs/openlayers/openlayers_ext.js', true);
 
 			if ($params->get('fb_osm_virtualearthlayers')) {

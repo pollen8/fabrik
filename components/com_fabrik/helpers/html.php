@@ -32,8 +32,6 @@ class FabrikHelperHTML
 
 	function mocha($selector='', $params = array())
 	{
-		FabrikHelperHTML::script('media/com_fabrik/window.js', true);
-
 		static $modals;
 		static $mocha;
 		$script = '';
@@ -611,7 +609,7 @@ EOD;
 
 	/**
 	 * wrapper for JHTML::Script()
-	 * @param string file to load
+	 * @param mixed, string or array of files to load
 	 * @param bool should mootools be loaded
 	 * @param string optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 */
@@ -630,19 +628,24 @@ EOD;
 			$head = true;
 			JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
 		}
-
-		if (JFile::exists(COM_FABRIK_BASE.$file)) {
-			if (JRequest::getCmd('format') == 'raw') {
-				//raw docs dont have a head
-				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){'.$onLoad.'}' : '';
-				echo '<script type="text/javascript">Asset.javascript(\''.COM_FABRIK_LIVESITE.$file.'\', {'.$opts.'});</script>';
-			} else {
-				JFactory::getDocument()->addScriptDeclaration('head.js("'.COM_FABRIK_LIVESITE.$file.'");'."\n");
-				if ($onLoad !== '') {
-					$onLoad = "head.ready(function() {\n " . $onLoad . "});\n";
-					FabrikHelperHTML::addScriptDeclaration($onLoad);
+		$file = (array)$file;
+		$src = array();
+		foreach ($file as $f) {
+			if (JFile::exists(COM_FABRIK_BASE.$f)) {
+				if (JRequest::getCmd('format') == 'raw') {
+					$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){'.$onLoad.'}' : '';
+					echo '<script type="text/javascript">Asset.javascript(\''.COM_FABRIK_LIVESITE.$f.'\', {'.$opts.'});</script>';
+				} else {
+					$src[] = "'".COM_FABRIK_LIVESITE.$f."'";
 				}
 			}
+		}
+		if ($onLoad !== '') {
+			$onLoad = "head.ready(function() {\n " . $onLoad . "});\n";
+			FabrikHelperHTML::addScriptDeclaration($onLoad);
+		}
+		if (!empty($src)) {
+			JFactory::getDocument()->addScriptDeclaration('head.js('.implode(', ', array_unique($src)).');'."\n");
 		}
 	}
 
@@ -701,7 +704,7 @@ EOD;
 		// Attach tooltips to document
 		//force the zindex to 9999 so that it appears above the popup window.
 		//$event = (JRequest::getVar('tmpl') == 'component') ? 'load' : 'domready';
-		$tooltipInit = 'head.ready(function() {if($type('.$selectorPrefix.') !== false && '.$selectorPrefix.'.getElements(\''.$selector.'\').length !== 0) {window.JTooltips = new Tips('.$selectorPrefix.'.getElements(\''.$selector.'\'), '.$options.');$$(".tool-tip").setStyle("z-index", 999999);}});';
+		$tooltipInit = 'head.ready(function() {if(typeOf('.$selectorPrefix.') !== \'null\' && '.$selectorPrefix.'.getElements(\''.$selector.'\').length !== 0) {window.JTooltips = new Tips('.$selectorPrefix.'.getElements(\''.$selector.'\'), '.$options.');$$(".tool-tip").setStyle("z-index", 999999);}});';
 		FabrikHelperHTML::addScriptDeclaration($tooltipInit);
 
 		// Set static array

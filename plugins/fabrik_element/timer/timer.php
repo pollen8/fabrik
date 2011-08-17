@@ -109,7 +109,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
+	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 

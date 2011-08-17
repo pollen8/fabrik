@@ -2844,6 +2844,9 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	}
 
 	/**
+	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
 	 *
 	 * get the class to manage the form element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
@@ -2851,7 +2854,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	 * to ensure that the file is loaded only once
 	 */
 
-	function formJavascriptClass($script = '', $location = '')
+	function formJavascriptClass(&$srcs, $script = '')
 	{
 		static $elementclasses;
 
@@ -2862,10 +2865,9 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		if ($script == '') {
 			$script = 'plugins/fabrik_element/'.$this->getElement()->plugin.'/'.$this->getElement()->plugin.'.js';
 		}
-		$signature = serialize($script.$location);
-		if (empty($elementclasses[$signature])) {
-			FabrikHelperHTML::script($location.$script, true);
-			$elementclasses[$signature] = 1;
+		if (empty($elementclasses[$script])) {
+			$srcs[] = $script;
+			$elementclasses[$script] = 1;
 		}
 	}
 

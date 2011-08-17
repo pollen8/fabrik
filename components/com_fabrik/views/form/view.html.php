@@ -277,9 +277,8 @@ class fabrikViewForm extends JView
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED')) {
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
-			FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js', true);
-			FabrikHelperHTML::script('media/com_fabrik/js/form.js', true);
-			FabrikHelperHTML::script('media/com_fabrik/js/element.js', true);
+			$srcs = array('media/com_fabrik/js/mootools-ext.js', 'media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js');
+
 		}
 
 		$aWYSIWYGNames = array();
@@ -302,7 +301,7 @@ class fabrikViewForm extends JView
 				$element =& $elementModel->getElement();
 				if (!in_array($element->plugin, $aLoadedElementPlugins)) {
 					$aLoadedElementPlugins[] = $element->plugin;
-					$elementModel->formJavascriptClass();
+					$elementModel->formJavascriptClass($srcs);
 				}
 				$eventMax = ($groupModel->_repeatTotal == 0) ? 1 : $groupModel->_repeatTotal;
 				for ($c = 0; $c < $eventMax; $c ++) {
@@ -310,6 +309,8 @@ class fabrikViewForm extends JView
 				}
 			}
 		}
+
+		FabrikHelperHTML::script($srcs, true);
 		//new
 		$actions = trim(implode("\n", $jsActions));
 		//end new

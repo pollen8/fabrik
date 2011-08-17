@@ -63,6 +63,7 @@ class plgFabrik_ListCopy extends plgFabrik_List {
 	 * @param object table model
 	 * @return string message
 	 */
+
 	function process(&$params, &$model)
 	{
 		$ids	= JRequest::getVar('ids', array(), 'method', 'array');

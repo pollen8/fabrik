@@ -1192,23 +1192,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * load in the elements js class
-	 *
-	 */
-
-	function formJavascriptClass()
-	{
-		parent::formJavascriptClass();
-		//$$$rob if we allow the popup form we have to load in all the js files now -
-		//same principal as for the calendar viz
-		//30/07/2011 testing commenting this out since head.js implementation
-		/*$params = $this->getParams();
-		if ($params->get('fabrikdatabasejoin_frontend_add') == 1) {
-			$this->getlistModel()->getPluginManager()->loadJs();
-		}*/
-	}
-
-	/**
 	 * create an instance of the elements js class
 	 * @param int group repeat counter
 	 * @return string js call
@@ -1578,6 +1561,19 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$a[] =array($repeatName, $fvRepeatName);
 		}
 		return $a;
+	}
+
+	/**
+	 * @param array already loaded plugin scripts
+	 * load the javascript class that manages interaction with the form element
+	 * should only be called once
+	 * @since 3.0
+	 */
+
+	function formJavascriptClass(&$srcs)
+	{
+		plgFabrik_Element::formJavascriptClass($srcs, 'media/com_fabrik/js/window.js');
+		parent::formJavascriptClass($srcs);
 	}
 }
 ?>

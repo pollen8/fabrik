@@ -247,16 +247,15 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass()
+	function formJavascriptClass(&$srcs)
 	{
-		plgFabrik_Element::formJavascriptClass('databasejoin.js', 'plugins/fabrik_element/databasejoin/', true);
-		parent::formJavascriptClass();
+		plgFabrik_Element::formJavascriptClass($srcs, 'plugins/fabrik_element/databasejoin/databasejoin.js');
+		parent::formJavascriptClass($srcs);
 	}
 
 	protected function _getSelectLabel()
 	{
-		$params 		=& $this->getParams();
-		return $params->get('user_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
+		return $this->getParams()->get('user_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
 	}
 
 	/**

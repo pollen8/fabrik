@@ -165,16 +165,15 @@ Overlay = new Class({
 if(typeof(Fabrik)==="undefined"){
 	var Fabrik={};
 	Fabrik.Windows = {};
-	head.ready(function() {
-		Fabrik.tips = new FloatingTips('.fabrikTip', {html:true});
-	});
-	Fabrik.iconGen = new IconGenerator({scale:0.5});
-	Fabrik.overlay = new Overlay();
 	Fabrik.loader = new Loader();
 	Fabrik.blocks = {};
-	
 	Fabrik.addBlock = function(blockid, block){
 		Fabrik.blocks[blockid] = block;
 	}
-	
 }
+	
+head.ready(function() {
+	Fabrik.tips = new FloatingTips('.fabrikTip', {html:true});
+	Fabrik.iconGen = new IconGenerator({scale:0.5});
+	Fabrik.overlay = new Overlay();
+});

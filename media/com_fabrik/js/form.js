@@ -35,7 +35,6 @@ var FbForm = new Class( {
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
-		//this.listenTo = $A([]);
 		this.bufferedEvents = $A([]);
 		this.duplicatedGroups = $H({});
 		this.clickDeleteGroup = this.deleteGroup.bindWithEvent(this);
@@ -248,7 +247,6 @@ var FbForm = new Class( {
 				break;
 			case 'slide toggle':
 				fx.slide.toggle();
-				// fxElement.toggleClass('fabrikHide');
 				break;
 		}
 		fx.lastMethod = method;
@@ -378,8 +376,6 @@ var FbForm = new Class( {
 			return;
 		}
 		this.currentPage = this.currentPage.toInt();
-		// hide all error messages ($$$ rob why would we want to do that? - commneting out)
-		// this.form.getElements('.fabrikError').addClass('fabrikHide');
 		if (this.currentPage + dir >= 0 && this.currentPage + dir < this.options.pages.getKeys().length) {
 			this.currentPage = this.currentPage + dir;
 			if (!this.pageGroupsVisible()) {
@@ -545,7 +541,6 @@ var FbForm = new Class( {
 		}
 		if (document.id(id).className == 'fabrikSubElementContainer') {
 			// check for things like radio buttons & checkboxes
-
 			document.id(id).getElements('.fabrikinput').each(function(i) {
 				i.addEvent(triggerEvent, this.doElementValidation.bindWithEvent(this, [ true ]));
 			}.bind(this));
@@ -733,7 +728,6 @@ var FbForm = new Class( {
 			return;
 		}
 		var apply = this._getButton('apply');
-		console.log('apply');
 		if (this.form.getElement('input[name=delete]')) {
 			this.form.getElement('input[name=delete]').addEvent('click', function(e) {
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE'))) {
@@ -880,7 +874,6 @@ var FbForm = new Class( {
 				k = k.substring(0, k.length - 2);
 				if (!arrayCounters.has(k)) {
 					// rob for ajax validation on repeat element this is required to be set to 0
-					// arrayCounters.set(k, 1);
 					arrayCounters.set(k, 0);
 				} else {
 					arrayCounters.set(k, arrayCounters.get(k) + 1);
@@ -997,7 +990,6 @@ var FbForm = new Class( {
 		} else {
 
 			var toel = subGroup.getPrevious();
-			//var js = this.delGroupJS.get(i);
 
 			var myFx = new Fx.Tween(subGroup, {'property':'opacity',
 				duration : 300,
@@ -1010,7 +1002,6 @@ var FbForm = new Class( {
 						if (typeOf(e.element) !== 'null') {
 							if(typeOf(document.id(e.element.id)) === 'null') {
 								e.decloned(i);
-								//this.formElements.remove(k);
 								delete this.formElements.k;
 							}
 						}
@@ -1036,7 +1027,6 @@ var FbForm = new Class( {
 				}.bind(this)
 			}).start(1, 0);
 			if (toel) {
-				// !! added
 				// Only scroll the window if the previous element is not visible
 				var win_scroll = $(window).getScroll().y;
 				var obj = toel.getCoordinates();
@@ -1045,11 +1035,8 @@ var FbForm = new Class( {
 				// scroll down just enough to show it.
 				if (obj.top < win_scroll) {
 					var new_win_scroll = obj.top;
-
 					this.winScroller.scrollTo(0, new_win_scroll);
 				}
-				// !! removed
-				// this.winScroller.toElement(toel);
 			}
 		}
 		// update the hidden field containing number of repeat groups
@@ -1152,10 +1139,6 @@ var FbForm = new Class( {
 				// for all instances of the call to findClassUp use el.element rather
 				// than input (HMM SEE LINE 912 - PERHAPS WE CAN REVERT TO USING INPUT
 				// NOW?)
-				// var testid = (hasSubElements) ?
-				// input.findClassUp('fabrikSubElementContainer').id : input.id
-				// var testid = (hasSubElements) ?
-				// el.element.findClassUp('fabrikSubElementContainer').id : input.id;
 				var testid = (hasSubElements) ? input.findClassUp('fabrikSubElementContainer').id : input.id;
 
 				if (el.options.element == testid) {
@@ -1189,7 +1172,6 @@ var FbForm = new Class( {
 						var bits = $A(el.element.id.split('_'));
 						bits.splice(bits.length - 1, 1, c);
 						input.id = bits.join('_');
-						// input.id = el.element.id + '_' + c;
 
 						// update labels for non sub elements
 						var l = input.findClassUp('fabrikElementContainer').getElement('label');
@@ -1213,8 +1195,6 @@ var FbForm = new Class( {
 					var bits = $A(el.options.element.split('_'));
 					bits.splice(bits.length - 1, 1, c);
 					subElementContainer.id = bits.join('_');
-					
-					//subElementContainer.id = el.options.element + '_' + c;
 				}
 				var origelid = el.options.element;
 				// clone js element controller, set form to be passed by reference and
@@ -1239,13 +1219,6 @@ var FbForm = new Class( {
 			}
 		}.bind(this));
 
-		// add new element controllers to form
-
-		// $$$ hugh - had to move the cloned() loop to before addElements() is
-		// called, to fix
-		// issue with CDD element, where the cloned() method sets an option to tell
-		// attachedToForm()
-		// (which is called from addElement()) it needs to update the cascade.
 		newElementControllers.each(function(newEl) {
 			newEl.cloned(c);
 		});
@@ -1253,9 +1226,7 @@ var FbForm = new Class( {
 		o[i] = newElementControllers;
 		this.addElements(o);
 
-		// !! added
 		// Only scroll the window if the new element is not visible
-		// var win_size = window.getSize().y;
 		var win_size = window.getHeight();
 		var win_scroll = $(window).getScroll().y;
 		var obj = clone.getCoordinates();
@@ -1267,17 +1238,11 @@ var FbForm = new Class( {
 
 			this.winScroller.scrollTo(0, new_win_scroll);
 		}
-		// !! removed
-		// this.winScroller.toElement(clone);
 
 		var myFx = new Fx.Tween(clone, { 'property' : 'opacity', 
 			duration : 500
 		}).set(0);
-		/*
-		 * // $$$ hugh - moved this a few lines up there ^^
-		 * newElementControllers.each( function(newEl) { newEl.cloned(c); });
-		 */
-		//c = c + 1;
+
 		clone.fade(1);
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above

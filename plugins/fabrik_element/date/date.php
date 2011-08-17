@@ -542,16 +542,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass($theme = 'default')
+	function formJavascriptClass(&$srcs)
 	{
 		$params = $this->getParams();
 		$theme = $params->get('date_theme', 'default');
 		FabrikHelperHTML::loadCalendar($theme);
-		parent::formJavascriptClass();
+		parent::formJavascriptClass($srcs);
 	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
+	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 

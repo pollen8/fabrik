@@ -17,8 +17,8 @@ var FbElement =  new Class({
 		options.element = element;
 		this.strElement = element;
 		this.setOptions(options);
-		if($(element)){
-			this.element = $(element);
+		if(document.id(element)){
+			this.element = document.id(element);
 		}
 		this.setorigId();
 		
@@ -55,7 +55,7 @@ var FbElement =  new Class({
 		//use this in mocha forms whose elements (such as database jons) arent loaded
 		//when the class is ini'd
 		if(typeOf(this.element) === 'null'){
-			this.element = $(this.options.element); 
+			this.element = document.id(this.options.element); 
 		}
 		return this.element;
 	},

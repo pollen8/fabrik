@@ -120,14 +120,11 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass()
+	function formJavascriptClass(&$srcs)
 	{
-		$document =& JFactory::getDocument();
-		$params =& $this->getParams();
-		//$src = "http://maps.google.com/maps?file=api&amp;v=2&amp;key=" . $params->get('fb_gm_key');
-		$src = "http://maps.google.com/maps/api/js?sensor=".$params->get('fb_gm_sensor', 'false');
-		$document->addScript($src);
-		parent::formJavascriptClass();
+		$src = "http://maps.google.com/maps/api/js?sensor=".$this->getParams()->get('fb_gm_sensor', 'false');
+		JFactory::getDocument()->addScript($src);
+		parent::formJavascriptClass($srcs);
 	}
 
 	/**

@@ -212,8 +212,9 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass()
+	function formJavascriptClass(&$srcs)
 	{
+		// @FIXME the js paths are not right for fabrik3
 		$params =& $this->getParams();
 		$document =& JFactory::getDocument();
 		$params = $this->getParams();
@@ -239,7 +240,7 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 				break;
 		}
 		JHTML::stylesheet('slideshow.css', 'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'libs'.DS.'slideshow2'.DS.'css'.DS);
-		parent::formJavascriptClass();
+		parent::formJavascriptClass($srcs);
 	}
 
 }
