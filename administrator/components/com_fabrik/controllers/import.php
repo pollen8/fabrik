@@ -171,7 +171,7 @@ class FabrikControllerImport extends FabControllerForm
 		} else {
 			JRequest::setVar('fabrik_list', $id);
 			$msg = $model->makeTableFromCSV();
-			$this->setRedirect('index.php?option=com_fabrik&view=table&listid='.$id."&Itemid=".$Itemid, $msg);
+			$this->setRedirect('index.php?option=com_fabrik&task=list.view&cid=='.$id, $msg);
 		}
 	}
 }

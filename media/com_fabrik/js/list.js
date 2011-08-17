@@ -9,6 +9,7 @@ var FbListPlugin = new Class({
 	},
 	initialize: function(options) {
 		this.setOptions(options);
+		this.result = true; //set this to false in window.fireEvents to stop current action (eg stop ordering when fabrik.list.order run)
 		head.ready(function() {
 			this.listform = this.getList().getForm();
 			this.watchButton();
@@ -99,7 +100,7 @@ var FbListFilter = new Class({
 		if(typeOf(c) !== 'null'){
 			c.removeEvents();
 			c.addEvent('click', function(e){
-				new Event(e).stop();
+				e.stop();
 				this.container.getElements('.fabrik_filter').each(function(f){
 					if(f.get('tag') == 'select'){
 						f.selectedIndex = 0;
@@ -167,7 +168,7 @@ var FbListFilter = new Class({
  
 var FbList = new Class({
 	
-	Implements:[Options, Events, Plugins],
+	Implements:[Options, Events],
 	
 	options:{
     'admin': false,
@@ -450,9 +451,7 @@ var FbList = new Class({
 		var hs = document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc');
 		hs.removeEvents('click');
 		hs.each(function(h){
-			h.addEvent('click', function(event){
-				var e = new Event(event);
-				
+			h.addEvent('click', function(e){
 				var orderdir = '';
 				var newOrderClass = '';
 				// $$$ rob in pageadaycalendar.com h was null so reset to e.target
@@ -491,7 +490,7 @@ var FbList = new Class({
 				e = f.get('tag') == 'select' ? 'change' : 'blur';
 				f.removeEvent(e);
 				f.addEvent(e, function(e){
-					new Event(e).stop();
+					e.stop();
 					this.submit('list.filter');
 				}.bind(this));
 			}.bind(this));
@@ -505,7 +504,6 @@ var FbList = new Class({
 			}
 		}
 		document.id(this.options.form).getElements('.fabrik_filter').addEvent('keydown', function(e){
-			e = new Event(e);
 			if (e.code == 13) {
 				e.stop();
 				this.submit('list.filter');
@@ -618,7 +616,9 @@ var FbList = new Class({
   fabrikNav: function(limitStart){
     this.form.getElement('#limitstart' + this.id).value = limitStart;
     // cant do filter as that resets limitstart to 0
-    if(!this.runPlugins('onNavigate', null)){
+    window.fireEvent('fabrik.list.navigate', [this, limitStart]);
+    if(!this.result){
+    	this.result = true;
     	return false;
     }
     this.submit('list.view');
@@ -628,11 +628,12 @@ var FbList = new Class({
   fabrikNavOrder: function(orderby, orderdir){
   	this.form.orderby.value = orderby;
     this.form.orderdir.value = orderdir;
-    if(!this.runPlugins('onOrder', null)){
+    window.fireEvent('fabrik.list.order', [this, orderby, orderdir]);
+    if (!this.result){
+    	this.result = true;
     	return false;
     }
-    window.fireEvent('fabrik.table.order', [orderby, orderdir]);
-    this.submit('list.order');
+		this.submit('list.order');
   },
   
   removeRows: function(rowids){
@@ -822,8 +823,7 @@ var FbList = new Class({
     if (typeOf(checkAll) !== 'null') {
     	// IE wont fire an event on change until the checkbxo is blurred!
       checkAll.addEvent('click', function(e){
-      	var event = new Event(e);
-   	  	var c = document.id(event.target); 
+   	  	var c = document.id(e.target); 
         var chkBoxes = this.list.findClassUp('fabrikList').getElements('input[name^=ids]');
 				var c = !c.checked ? '' : 'checked';
         for (var i = 0; i < chkBoxes.length; i++) {
@@ -852,7 +852,9 @@ var FbList = new Class({
     if (limitBox) {
     	limitBox.removeEvents();
       limitBox.addEvent('change', function(e){
-      	if(!this.runPlugins('onLimit', e)){
+      	var res = window.fireEvent('fabrik.list.limit', [this]);
+      	if(!this.result){
+      		this.result = true;
       		return false;
       	}
       	this.submit('list.filter');
@@ -890,10 +892,8 @@ var FbList = new Class({
     }
     
 		if(document.id('fabrik__swaptable')){
-			document.id('fabrik__swaptable').addEvent('change', function(event){
-				var e = new Event(event);
-				var v = e.target;
-				window.location = 'index.php?option=com_fabrik&task=list.view&cid=' + v.get('value');
+			document.id('fabrik__swaptable').addEvent('change', function(e){
+				window.location = 'index.php?option=com_fabrik&task=list.view&cid=' + e.target.get('value');
 			}.bind(this));
 		}
 		if(this.options.ajax){
