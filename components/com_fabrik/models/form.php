@@ -2796,7 +2796,6 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		if (JRequest::getVar('newFormLabel', '') !== '') {
 			$form->label = JRequest::getVar('newFormLabel');
 		}
-		echo "<pre>";//print_r($form);
 		$res = $form->store();
 		if (!$res) {
 			JError::raiseError(500, $form->getErrorMsg());
@@ -2820,6 +2819,9 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 			$plugin = $pluginManager->getElementPlugin($newId);
 			$plugin->finalCopyCheck($newElements);
 		}
+		//update the model's table to the copied one
+		$this->_form = $form;
+		$this->setId($form->id);
 		return $form;
 	}
 

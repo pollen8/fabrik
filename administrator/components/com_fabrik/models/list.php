@@ -1035,7 +1035,6 @@ class FabrikModelList extends FabModelAdmin
 
 			$form = $this->getTable('Form');
 			$item =& $this->getTable('List');
-			echo "<pre>";print_r($item);exit;
 			$form->label = $item->label;
 			$form->record_in_database = 1;
 
@@ -1166,7 +1165,6 @@ class FabrikModelList extends FabModelAdmin
 				return;
 			}
 			$item->form_id = $formModel->getTable()->id;
-
 			$createdate = JFactory::getDate();
 			$createdate = $createdate->toMySQL();
 			$item->label = $post['names'][$pk]['listLabel'];

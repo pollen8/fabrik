@@ -445,7 +445,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 
 		$elementModel = $this->getElementPluginModel($data);
-		
+
 		$elementModel->getElement()->bind($data);
 		if ($data['id'] === 0) {
 			//have to forcefully set group id otherwise listmodel id is blank
@@ -468,7 +468,6 @@ class FabrikModelElement extends JModelAdmin
 			$joinTblId = (int)$db->loadResult();
 			$ignore = array($data['id']);
 			if ($joinTblId === 0) {
-				echo '<pre>';print_r($listModel);
 				if ($listModel->fieldExists($data['name'], $ignore)) {
 					$this->setError(JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
 				}
