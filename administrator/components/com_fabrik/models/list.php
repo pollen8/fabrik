@@ -45,9 +45,10 @@ class FabrikModelList extends FabModelAdmin
 	public function getTable($type = 'List', $prefix = 'FabrikTable', $config = array())
 	{
 		$sig = $type.$prefix.implode('.', $config);
-		//if (!array_key_exists($sig, $this->tables)) {
+		if (!array_key_exists($sig, $this->tables)) {
 			$config['dbo'] = FabriKWorker::getDbo();
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
+		}
 		return $this->tables[$sig];
 	}
 
@@ -1026,14 +1027,15 @@ class FabrikModelList extends FabModelAdmin
 		if ($formid == 0) {
 			// $$$ rob required otherwise the JTable is loaed with db_table_name as a property
 			//which then generates an error - not sure why its loaded like that though?
-			// 18/08/2011 - could be due to the Form table class having it in its bind method - (have now commented that out)
+			// 18/08/2011 - could be due to the Form table class having it in its bind method - (have now overridden form table store() to remove thoes two params)
 			$this->formModel->getForm();
 			jimport('joomla.utilities.date');
 			$createdate = JFactory::getDate();
 			$createdate = $createdate->toMySQL();
 
 			$form = $this->getTable('Form');
-			$item =& $this->getTable();
+			$item =& $this->getTable('List');
+			echo "<pre>";print_r($item);exit;
 			$form->label = $item->label;
 			$form->record_in_database = 1;
 

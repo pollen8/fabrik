@@ -44,12 +44,18 @@ class FabrikTableForm extends FabTable
 			$registry->loadArray($array['params']);
 			$array['params'] = (string)$registry;
 		}
-		// $$$ rob - 18/08/2011 erm right! don't think we want these now do we! means binding to the form will not be storable
-		// if it turns out they are needed then we should override store() to remove them first.
-
-		//$this->db_table_name = $array['db_table_name'];
-		//$this->connection_id = $array['connection_id'];
+		//needed for form edit view where we see the database table anme and connection id
+		$this->db_table_name = $array['db_table_name'];
+		$this->connection_id = $array['connection_id'];
 		return parent::bind($array, $ignore);
+	}
+
+	public function store($updateNulls = false)
+	{
+		//we don't want these to be stored - generates an sql error
+		unset($this->db_table_name);
+		unset($this->connection_id);
+		return parent::store($updateNulls);
 	}
 
 	/**
