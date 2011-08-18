@@ -16,7 +16,6 @@ class FabrikViewElement extends JView
 {
 
 	var $_id 				= null;
-	var $isMambot 	= null;
 
 	function setId($id)
 	{
@@ -36,7 +35,7 @@ class FabrikViewElement extends JView
 		$elementid = JRequest::getVar('elid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
-		$plugin =& $pluginManager->getPlugIn($className, 'element');
+		$plugin = $pluginManager->getPlugIn($className, 'element');
 		if (JError::isError($plugin)) {
 			JError::handleMessage($plugin);
 			return;
@@ -44,7 +43,7 @@ class FabrikViewElement extends JView
 		$plugin->setId($elementid);
 		$data = array();
 		$repeatCounter = 0;
-		$groupModel =& $plugin->getGroup();
+		$groupModel = $plugin->getGroup();
 		$srcs = array();
 		$plugin->formJavascriptClass($srcs);
 		FabrikHelperHTML::script($srcs, true);

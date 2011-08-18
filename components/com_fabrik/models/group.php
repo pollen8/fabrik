@@ -402,7 +402,7 @@ class FabrikFEModelGroup extends FabModel{
 		if (array_key_exists($group->id, $newNames)) {
 			$group->name = $newNames[$group->id];
 		}
-		$group->id = 0;
+		$group->id = null;
 		$group->store();
 
 		$newElements = array();

@@ -2789,14 +2789,19 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		//array key = old id value new id
 		$this->groupidmap = array();
 		$groups = $this->getGroups();
-		$form =& $this->getForm();
-		$form->id = 0;
+		$this->_form = null;
+		$form = $this->getTable();
+		$form->id = false;
 		// rob newFormLabel set in table copy
 		if (JRequest::getVar('newFormLabel', '') !== '') {
 			$form->label = JRequest::getVar('newFormLabel');
 		}
-		$form->store();
-
+		echo "<pre>";//print_r($form);
+		$res = $form->store();
+		if (!$res) {
+			JError::raiseError(500, $form->getErrorMsg());
+			return false;
+		}
 		$newElements = array();
 		foreach ($groups as $group) {
 			$oldid = $group->_id;
@@ -2810,7 +2815,6 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 
 		$pluginManager =& $this->getPluginManager();
 
-		$elementModel = JModel::getInstance('Element', 'FabrikFEModel');
 		//@TODO something not right here when copying a cascading dropdown element in a join group
 		foreach ($newElements as $origId => $newId) {
 			$plugin = $pluginManager->getElementPlugin($newId);

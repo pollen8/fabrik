@@ -87,6 +87,42 @@ class FabrikViewList extends JView
 	}
 
 	/**
+	 * see if the user wants to rename the list/form/groups
+	 * @param string $tpl
+	 */
+
+	public function confirmCopy($tpl = null)
+	{
+		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		$lists = array();
+		$model= $this->getModel();
+		foreach ($cid as $id)
+		{
+			$model->setId($id);
+			$table =& $model->getTable();
+			$formModel = $model->getFormModel();
+			$row = new stdClass();
+			$row->id = $id;
+			$row->formid = $table->form_id;
+			$row->label = $table->label;
+			$row->formlabel = $formModel->getForm()->label;
+			$groups = $formModel->getGroupsHiarachy();
+			$row->groups = array();
+			foreach ($groups as $group) {
+				$grouprow = new stdClass();
+				$g = $group->getGroup();
+				$grouprow->id = $g->id;
+				$grouprow->name = $g->name;
+				$row->groups[] = $grouprow;
+			}
+			$lists[] = $row;
+		}
+		$this->assign('lists', $lists);
+		FabrikViewList::addConfirmCopyToolbar();
+		parent::display($tpl);
+	}
+
+	/**
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
@@ -147,6 +183,22 @@ class FabrikViewList extends JView
 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_LINKED_ELEMENTS'), 'list.png');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
+		JToolBarHelper::divider();
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT');
+	}
+
+	/**
+	 * Add the page title and toolbar.
+	 *
+	 * @since   3.0
+	 */
+
+	protected function addConfirmCopyToolbar()
+	{
+		JRequest::setVar('hidemainmenu', true);
+		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_COPY'), 'list.png');
+		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
+		JToolBarHelper::save('list.doCopy', 'JTOOLBAR_SAVE');
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT');
 	}

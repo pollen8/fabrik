@@ -1030,8 +1030,8 @@ class plgFabrik_Element extends FabrikPlugin
 		$app = JFactory::getApplication();
 		$rule	= FabTable::getInstance('Element', 'FabrikTable');
 		if ($rule->load((int)$id)) {
-			$rule->id	= 0;
-			$rule->label	= $copytxt . $rule->label;
+			$rule->id = null;
+			$rule->label = $copytxt . $rule->label;
 			if (!is_null($groupid)) {
 				$rule->group_id = $groupid;
 			}

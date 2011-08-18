@@ -45,10 +45,9 @@ class FabrikModelList extends FabModelAdmin
 	public function getTable($type = 'List', $prefix = 'FabrikTable', $config = array())
 	{
 		$sig = $type.$prefix.implode('.', $config);
-		if (!array_key_exists($sig, $this->tables)) {
+		//if (!array_key_exists($sig, $this->tables)) {
 			$config['dbo'] = FabriKWorker::getDbo();
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
-		}
 		return $this->tables[$sig];
 	}
 
@@ -741,14 +740,14 @@ class FabrikModelList extends FabModelAdmin
 					$join->table_join_key = $joinTableKey[$i];
 					$join->join_type = $joinTypes[$i];
 					$join->store();
-					//update group 
+					//update group
 					$group = $this->getTable('Group');
 					$group->load($join->group_id);
 					$gparams = json_decode($group->params);
 					$gparams->repeat_group_button =  $repeats[$i] == 1 ? 1 : 0;
 					$group->params = json_encode($gparams);
 					$group->store();
-		
+
 					$aOldJoinsToKeep[] = $joinIds[$i];
 				}
 			}
@@ -1023,10 +1022,12 @@ class FabrikModelList extends FabModelAdmin
 		$config	= JFactory::getConfig();
 		$user	= JFactory::getUser();
 		$this->getFormModel();
-		// $$$ rob required otherwise the JTable is loaed with db_table_name as a property
-		//which then generates an error - not sure why its loaded like that though?
-		$this->formModel->getForm();
+
 		if ($formid == 0) {
+			// $$$ rob required otherwise the JTable is loaed with db_table_name as a property
+			//which then generates an error - not sure why its loaded like that though?
+			// 18/08/2011 - could be due to the Form table class having it in its bind method - (have now commented that out)
+			$this->formModel->getForm();
 			jimport('joomla.utilities.date');
 			$createdate = JFactory::getDate();
 			$createdate = $createdate->toMySQL();
@@ -1054,7 +1055,10 @@ class FabrikModelList extends FabModelAdmin
 		} else {
 			$this->setState('list.form_id', $formid);
 			$this->formModel->setId($formid);
-			$this->formModel->copy();
+			$this->formModel->getTable();
+			if (!$this->formModel->copy()) {
+				return JError::raiseError(500, $form->getError());
+			}
 		}
 		$this->formModel->getForm();
 		return $this->formModel;
@@ -1144,19 +1148,26 @@ class FabrikModelList extends FabModelAdmin
 
 	public function copy()
 	{
-		$db =& FabrikWorker::getDbo();
-		$user =& JFactory::getUser();
+		$db = FabrikWorker::getDbo();
+		$user = JFactory::getUser();
 		$pks = JRequest::getVar('cid', array(), 'default', 'array');
+		$post = JRequest::get('post');
 		foreach ($pks as $i => $pk) {
-
 			$item =& $this->getTable();
 			$item->load($pk);
-			$item->id = 0;
-			$formModel =& $this->createLinkedForm($item->form_id);
+			$item->id = null;
+			JRequest::setVar('newFormLabel', $post['names'][$pk]['formLabel']);
+
+			JRequest::setVar('newGroupNames', $post['names'][$pk]['groupNames']);
+			$formModel = $this->createLinkedForm($item->form_id);
+			if (!$formModel) {
+				return;
+			}
 			$item->form_id = $formModel->getTable()->id;
 
 			$createdate = JFactory::getDate();
 			$createdate = $createdate->toMySQL();
+			$item->label = $post['names'][$pk]['listLabel'];
 			$item->created = $createdate;
 			$item->modified = $db->getNullDate();
 			$item->modified_by = $user->get('id');

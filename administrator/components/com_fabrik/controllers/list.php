@@ -38,20 +38,55 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
+	 * set up a confirmation screen asking about renaming the list you want to cpy
+	 */
+
+	public function copy()
+	{
+		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		$model = JModel::getInstance('list', 'FabrikFEModel');
+		if (count($cid) > 0)
+		{
+			$viewType	= JFactory::getDocument()->getType();
+			$view = $this->getView($this->view_item, $viewType, '');
+			$view->setModel($model, true);
+			$view->confirmCopy('confirm_copy');
+		}
+		else {
+			return JError::raiseWarning(500, JText::_('NO ITEMS SELECTED'));
+		}
+	}
+
+	/**
+	 * actually copy the list
+	 */
+
+	public function doCopy()
+	{
+				// Check for request forgeries
+		JRequest::checkToken() or die('Invalid Token');
+		$model = $this->getModel();
+		$model->copy();
+		$ntext = $this->text_prefix.'_N_ITEMS_COPIED';
+		$this->setMessage(JText::plural($ntext, count(JRequest::getVar('cid'))));
+		$this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_list, false));
+	}
+
+	/**
 	 * show the lists data in the admin
 	 */
 
 	public function view()
 	{
-		$document =& JFactory::getDocument();
-		$cid	= JRequest::getVar('cid', array(0), 'method', 'array');
+		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
 		if(is_array($cid)){$cid = $cid[0];}
 		$cid = JRequest::getInt('listid', $cid);
 		// grab the model and set its id
 		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);
-		$viewType	= $document->getType();
+		$viewType	= JFactory::getDocument()->getType();
 		//use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
 
@@ -75,9 +110,9 @@ class FabrikControllerList extends FabControllerForm
 		$formModel = $model->getFormModel();
 		$viewType	= $document->getType();
 		$viewLayout	= JRequest::getCmd('layout', 'linked_elements');
-		$view = & $this->getView( $this->view_item, $viewType, '');
-		$view->setModel( $model, true);
-		$view->setModel( $formModel);
+		$view = & $this->getView($this->view_item, $viewType, '');
+		$view->setModel($model, true);
+		$view->setModel($formModel);
 		// Set the layout
 		$view->setLayout($viewLayout);
 		$view->showLinkedElements();

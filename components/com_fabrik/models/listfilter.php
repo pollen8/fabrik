@@ -304,7 +304,6 @@ class FabrikFEModelListfilter extends FabModel {
 		if (isset($registry->_registry['com_fabrik']['data']->$tid->plugins)) {
 			unset($registry->_registry['com_fabrik']['data']->$tid->plugins);
 		}
-
 		$key = 'com_fabrik.'.$tid.'.searchall';
 		$v = $app->setUserState($key, '');
 
@@ -693,10 +692,10 @@ class FabrikFEModelListfilter extends FabModel {
 	private function getPostFilterArray()
 	{
 		if (!isset($this->request)) {
-			$list =& $this->listModel->getTable();
+			$item =& $this->listModel->getTable();
 			$request 	= JRequest::get('post');
-			if (array_key_exists('fabrik___filter', $request) && array_key_exists('list_'.$list->id, $request['fabrik___filter'])) {
-				$this->request = $request['fabrik___filter']['list_'.$list->id];
+			if (array_key_exists('fabrik___filter', $request) && array_key_exists('list_'.$item->id, $request['fabrik___filter'])) {
+				$this->request = $request['fabrik___filter']['list_'.$item->id];
 			} else {
 				$this->request = array();
 			}
@@ -715,6 +714,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$elements =& $this->listModel->getElements('id');
 		$filterkeys = array_keys($filters);
 		$values = JArrayHelper::getValue($request, 'value', array());
+		$searchTypes = JArrayHelper::getValue($filters, 'search_type', array());
 		$usedMerges = array();
 		if (!empty($request) && array_key_exists('key', $request)) {
 			$keyints = array_keys($request['key']);

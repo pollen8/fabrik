@@ -36,16 +36,19 @@ class FabrikTableForm extends FabTable
 	 * @see		JTable:bind
 	 * @since	1.5
 	 */
+
 	public function bind($array, $ignore = '')
 	{
-
 		if (isset($array['params']) && is_array($array['params'])) {
 			$registry = new JRegistry();
 			$registry->loadArray($array['params']);
 			$array['params'] = (string)$registry;
 		}
-		$this->db_table_name = $array['db_table_name'];
-		$this->connection_id = $array['connection_id'];
+		// $$$ rob - 18/08/2011 erm right! don't think we want these now do we! means binding to the form will not be storable
+		// if it turns out they are needed then we should override store() to remove them first.
+
+		//$this->db_table_name = $array['db_table_name'];
+		//$this->connection_id = $array['connection_id'];
 		return parent::bind($array, $ignore);
 	}
 
