@@ -375,7 +375,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('*')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
+		$query->select('*, j.id AS id')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
 		$db->setQuery($query);
 		$joins = $db->loadObjectList();
 		$fabrikDb = $this->getFEModel()->getDb();
@@ -655,7 +655,6 @@ class FabrikModelList extends FabModelAdmin
 				$feModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
 			}
 		}
-
 		if (JFolder::exists(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements')) {
 			if ($params->get('allow-data-translation')) {
 				if (!$this->makeJoomfishXML()) {
@@ -666,15 +665,12 @@ class FabrikModelList extends FabModelAdmin
 				$this->removeJoomfishXML();
 			}
 		}
-
 		$pkName = $row->getKeyName();
-
 		if (isset($row->$pkName)) {
 			$this->setState($this->getName().'.id', $row->$pkName);
 		}
 		$this->setState($this->getName().'.new', $isNew);
 		return true;
-
 	}
 
 	/**
@@ -682,7 +678,7 @@ class FabrikModelList extends FabModelAdmin
 	 * @param array data
 	 */
 
-	private function updateJoins(&$data)
+	private function updateJoins($data)
 	{
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
@@ -690,6 +686,7 @@ class FabrikModelList extends FabModelAdmin
 		if ((int)$this->getState('list.id') === 0) {
 			return;
 		}
+
 		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$this->getState('list.id'));
 		$db->setQuery($query);
 		$aOldJoins = $db->loadObjectList();
@@ -705,7 +702,6 @@ class FabrikModelList extends FabModelAdmin
 		$groupIds				= JArrayHelper::getValue($params, 'group_id', array());
 		$repeats = JArrayHelper::getValue($params, 'join_repeat', array());
 		$jc = count($joinTypes);
-
 		for ($i = 0; $i < $jc ; $i++) {
 			$existingJoin = false;
 			foreach ($aOldJoins as $oOldJoin) {
@@ -736,7 +732,7 @@ class FabrikModelList extends FabModelAdmin
 				if ($join->table_join != $joinTable[$i]) {
 					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
 				} else {
-					//the talbe_join has stayed the same so we simply update the join info
+					//the table_join has stayed the same so we simply update the join info
 					$join->table_key = str_replace('`', '', $tableKey[$i]);
 					$join->table_join_key = $joinTableKey[$i];
 					$join->join_type = $joinTypes[$i];
@@ -753,6 +749,7 @@ class FabrikModelList extends FabModelAdmin
 				}
 			}
 		}
+
 		/* remove non exisiting joins */
 		if (is_array($aOldJoins)) {
 			foreach ($aOldJoins as $oOldJoin) {
@@ -1255,7 +1252,6 @@ class FabrikModelList extends FabModelAdmin
 		$tableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $tableName);
 		$aPriKey = $feModel->getPrimaryKeyAndExtra($tableName);
 
-
 		if (!$aPriKey) { // no primary key set so we should set it
 			$this->addKey($fieldName, $autoIncrement, $type);
 		} else {
@@ -1293,7 +1289,6 @@ class FabrikModelList extends FabModelAdmin
 		$type      = $autoIncrement != true ? $type : 'INT(6)';
 		//$table     =& $this->getTable();
 		//$table->load($this->getState('list.id'));
-		$post = JRequest::get('post');
 		$tableName = ($post['jform']['db_table_name'] != '') ? $post['jform']['db_table_name'] : $post['jform']['_database_name'];
 		$tableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $tableName);
 		$tableName = FabrikString::safeColName($tableName);

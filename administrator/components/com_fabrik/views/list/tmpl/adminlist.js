@@ -99,7 +99,7 @@ var ListForm = new Class({
 	
 	addAJoin:function(e){
 		this.addJoin();
-		new Event(e).stop();
+		e.stop();
 	},
 	
 	watchTableDd: function(){

@@ -43,7 +43,7 @@ class FabrikPlugin extends JPlugin
 	{
 		$this->_id = $id;
 	}
-	
+
 	function getName()
 	{
 		return $this->name;
@@ -131,7 +131,7 @@ class FabrikPlugin extends JPlugin
 			//bind data for repeat groups
 			$repeatDataMax = 1;
 			if ($repeat) {
-				
+
 				$opts = new stdClass();
 				$opts->repeatmin = (isset($fieldset->repeatmin)) ? $fieldset->repeatmin : 1;
 				$repeatScript[] = "new FbRepeatGroup('$fieldset->name', ".json_encode($opts). ");";
@@ -198,7 +198,7 @@ class FabrikPlugin extends JPlugin
 	 * @param object original params $params
 	 * @param int plugin $repeatCounter
 	 */
-	
+
 	function setParams(&$params, $repeatCounter)
 	{
 		$opts = $params->toArray();
@@ -328,21 +328,26 @@ class FabrikPlugin extends JPlugin
 	{
 		$db = FabrikWorker::getDbo();
 		$cid = JRequest::getInt('cid', -1);
+		$rows = array();
 		$showFabrikLists = JRequest::getVar('showf', false);
 		if ($showFabrikLists) {
-			$sql = "SELECT id, label FROM #__{package}_lists WHERE connection_id = $cid ORDER BY label ASC";
-			$db->setQuery($sql);
-			$rows = $db->loadObjectList();
+			if ($cid !== 0) {
+				$sql = "SELECT id, label FROM #__{package}_lists WHERE connection_id = $cid ORDER BY label ASC";
+				$db->setQuery($sql);
+				$rows = $db->loadObjectList();
+			}
 			$default = new stdClass;
 			$default->id = '';
 			$default->label = JText::_('COM_FABRIK_PLEASE_SELECT');
 			array_unshift($rows, $default);
 		} else {
-			$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
-			$cnn->setId($cid);
-			$db =& $cnn->getDb();
-			$db->setQuery("SHOW TABLES");
-			$rows = (array)$db->loadResultArray();
+			if ($cid !== 0) {
+				$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
+				$cnn->setId($cid);
+				$db = $cnn->getDb();
+				$db->setQuery("SHOW TABLES");
+				$rows = (array)$db->loadResultArray();
+			}
 			array_unshift($rows, '');
 		}
 		echo json_encode($rows);
