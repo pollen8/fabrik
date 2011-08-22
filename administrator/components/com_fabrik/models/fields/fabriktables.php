@@ -71,13 +71,13 @@ class JFormFieldFabrikTables extends JFormFieldList
 	function getInput()
 	{
 		//$c = ElementHelper::getRepeatCounter($this);
-		$c = $this->form->repeatCounter;
+		$c = isset($this->form->repeatCounter) ? (int)$this->form->repeatCounter : 0;
 		$repeat = ElementHelper::getRepeat($this);
 		$connectionDd = $this->element['observe'];
 		if (!isset($fabriktables)) {
 			$fabriktables = array();
 		}
-
+		$script = array();
 		if ($connectionDd != '' && !array_key_exists($this->id, $fabriktables)) {
 			if ($this->form->repeat) {
 				//in repeat fieldset/group
@@ -95,7 +95,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$opts->container = 'test';
 			$opts = json_encode($opts);
 
-			$script = array();
+
 			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";
 			$script[] = "Fabrik.model.fields.fabriktable['$this->id'] = p;";
 			//$script[] = "Fabrik.adminElements['$this->id'] = p;";

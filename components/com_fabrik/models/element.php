@@ -1160,6 +1160,8 @@ class plgFabrik_Element extends FabrikPlugin
 				$element->column .= "clear:both;";
 			}
 			$element->column .= '" ';
+		} else {
+			$element->column .=  ' style="clear:both;"';
 		}
 		$element->element_ro = $this->_getROElement($model->_data, $c);
 

@@ -548,7 +548,7 @@ EOD;
 			'media/com_fabrik/js/fabrik.js', 'media/com_fabrik/js/tips/floatingtips.js'
 			);
 			FabrikHelperHTML::script($src, true);
-			FabrikHelperHTML::styleSheet('media/com_fabrik/css/fabrik.css');
+			FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
 			$added = true;
 		}
