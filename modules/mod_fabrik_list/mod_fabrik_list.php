@@ -9,17 +9,21 @@
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
+
+//load front end language file as well
+$lang = JFactory::getLanguage();
+$lang->load('com_fabrik', JPATH_BASE.DS.'components'.DS.'com_fabrik');
+
+if (!defined('COM_FABRIK_FRONTEND')) {
+	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+}
+
 jimport('joomla.filesystem.file');
-$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php' : JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'defines.php';
-require_once($defines);
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
 JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
 
 $app = JFactory::getApplication();
-//load front end language file as well
-$lang = JFactory::getLanguage();
-$lang->load('com_fabrik', JPATH_BASE.DS.'components'.DS.'com_fabrik');
 
 require_once(COM_FABRIK_FRONTEND.DS.'controller.php');
 require_once(COM_FABRIK_FRONTEND.DS.'controllers'.DS.'list.php');

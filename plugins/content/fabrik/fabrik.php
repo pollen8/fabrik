@@ -59,6 +59,10 @@ class plgContentFabrik extends JPlugin
 		$lang =& JFactory::getLanguage();
 		$lang->load('com_fabrik', JPATH_BASE.DS.'components'.DS.'com_fabrik');
 
+		if (!defined('COM_FABRIK_FRONTEND')) {
+			JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+		}
+
 		// Get plugin info
 		$plugin =& JPluginHelper::getPlugin('content', 'fabrik');
 		// $$$ hugh had to rename this, it was stomping on com_content and friends $params
@@ -72,8 +76,6 @@ class plgContentFabrik extends JPlugin
 			return true;
 		}
 
-		$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php' : JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'defines.php';
-		require_once($defines);
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
 		// $$$ hugh - having to change this to use {[]}
 		$regex = "/{" .$botRegex ."\s*.*?}/i";

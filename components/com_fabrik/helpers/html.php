@@ -9,8 +9,9 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.filesystem.file');
-$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php' : JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'defines.php';
-require_once($defines);
+if (!defined('COM_FABRIK_FRONTEND')) {
+	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+}
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');//leave in as for some reason content plguin isnt loading the fabrikworker class
 /**

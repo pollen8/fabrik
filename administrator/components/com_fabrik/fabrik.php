@@ -13,17 +13,21 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik')) {
 	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
+//load front end language file as well
+$lang =& JFactory::getLanguage();
+$lang->load('com_fabrik', JPATH_SITE.'/components/com_fabrik');
+
 jimport('joomla.filesystem.file');
-$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php' : JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'defines.php';
-require_once($defines);
 JHtml::_('script', 'media/com_fabrik/js/head.js');
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 
 // Include dependancies
 jimport('joomla.application.component.controller');
-//load front end language file as well
-$lang =& JFactory::getLanguage();
-$lang->load('com_fabrik', COM_FABRIK_FRONTEND);
+
+// System plugin check
+if (!defined('COM_FABRIK_FRONTEND')) {
+	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+}
 
 // Execute the task.
 $controller	= &JController::getInstance('Fabrik');

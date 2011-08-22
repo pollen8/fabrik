@@ -9,11 +9,13 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+
 jimport('joomla.application.component.helper');
 jimport('joomla.filesystem.file');
 
-$defines = JFile::exists(JPATH_COMPONENT.DS.'user_defines.php') ? JPATH_COMPONENT.DS.'user_defines.php' : JPATH_COMPONENT.DS.'defines.php';
-require_once($defines);
+if (!defined('COM_FABRIK_FRONTEND')) {
+	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+}
 require_once(JPATH_COMPONENT.DS.'controller.php');
 
 //test for YQL & XML document type

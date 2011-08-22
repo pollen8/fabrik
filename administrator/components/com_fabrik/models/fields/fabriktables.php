@@ -10,7 +10,9 @@
 defined('JPATH_BASE') or die();
 
 //required for menus
+echo '<br>fabriktables: '.JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'html.php';
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'html.php');
+return;
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'params.php');
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'string.php');
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'parent.php');
@@ -72,7 +74,6 @@ class JFormFieldFabrikTables extends JFormFieldList
 	{
 		//$c = ElementHelper::getRepeatCounter($this);
 		$c = isset($this->form->repeatCounter) ? (int)$this->form->repeatCounter : 0;
-		$repeat = ElementHelper::getRepeat($this);
 		$connectionDd = $this->element['observe'];
 		if (!isset($fabriktables)) {
 			$fabriktables = array();

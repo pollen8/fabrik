@@ -43,4 +43,5 @@
 	<extension name="Fabrik Visualization - media" element="media" type="plugin" folder="fabrik_visualization" version="3.0.1" detailsurl="http://fabrikar.com/update/fabrik/plg_visualization_media.xml" />
 	<extension name="Fabrik Visualization - slideshow" element="slideshow" type="plugin" folder="fabrik_visualization" version="3.0.1" detailsurl="http://fabrikar.com/update/fabrik/plg_visualization_slideshow.xml" />
 		
+	<extension name="System - fabrik" element="fabrik" type="plugin" folder="system" version="3.0.0" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrik.xml" />
 </extensionset>

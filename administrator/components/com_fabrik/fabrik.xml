@@ -55,7 +55,6 @@
 		<folder>fabrikfeed</folder>
 		<folder>dbdriver</folder>
 		<file>controller.php</file>
-		<file>defines.php</file>
 		<file>fabrik.php</file>
 		<file>router.php</file>
 		<file>user_ajax_example.php</file>

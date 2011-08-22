@@ -19,6 +19,8 @@
 		<file type="module" id="mod_fabrik_form" client="site">mod_fabrik_form_{version}.zip</file>
 		<file type="module" id="mod_fabrik_list" client="site">mod_fabrik_list_{version}.zip</file>
 		
+		<file type="plugin"	id="system_fabrik" group="system">plg_system_fabrik_{version}.zip</file>
+		
 		<file type="plugin"	id="cron_email"	group="fabrik_cron">plg_fabrik_cron_email_{version}.zip</file>
 		<file type="plugin"	id="cron_php"	group="fabrik_cron">plg_fabrik_cron_php_{version}.zip</file>
 		
