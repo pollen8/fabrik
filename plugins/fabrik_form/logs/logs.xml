@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
-	<name>Logs</name>
+	<name>Fabrik Form - logs</name>
 	<author>Peamak</author>
 	<creationDate>Jul 2009</creationDate>
 	<copyright>(C) 2005-2009 fabrikar.com</copyright>

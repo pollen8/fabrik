@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_visualization" method="upgrade">
-	<name>fusion_gantt_chart</name>
+	<name>Fabrik Visualization - fusion_gantt_chart</name>
 	<author>Rob Clayburn</author>
 	<creationDate>Feb 2010</creationDate>
 	<copyright>(C) 2010 fabrikar.com</copyright>

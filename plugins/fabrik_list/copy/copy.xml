@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_list" method="upgrade">
-	<name>Copy</name>
+	<name>Fabrik List - copy</name>
 	<author>Rob Clayburn</author>
 	<creationDate>July 2008</creationDate>
 	<copyright>(C) 2005-2010 fabrikar.com</copyright>

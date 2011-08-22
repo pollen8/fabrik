@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_element" method="upgrade">
-	<name>YouTube video</name>
+	<name>Fabrik Element - YouTube video</name>
 	<author>peamak</author>
 	<creationDate>Jul 2009</creationDate>
 	<copyright>(C)2005 - 2010 fabrikar.com</copyright>

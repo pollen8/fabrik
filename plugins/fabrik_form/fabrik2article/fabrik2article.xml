@@ -3,7 +3,7 @@
          type="plugin"
          group="fabrik_form"
          method="upgrade">
-  <name>Fabrik2Article</name>
+  <name>Fabrik Form - Fabrik2Article</name>
   <author>Pieter-Jan de Vries</author>
   <creationDate>March 2009</creationDate>
   <copyright>(C) 2009 obix.nl</copyright>

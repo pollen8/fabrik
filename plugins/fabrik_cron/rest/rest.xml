@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_cron" method="upgrade">
-	<name>Rest</name>
+	<name>Fabrik Cron - rest</name>
 	<author>Rob Clayburn</author>
 	<creationDate>Jan 2011</creationDate>
 	<copyright>(C) 2005-2011 fabrikar.com</copyright>

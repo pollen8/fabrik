@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
-	<name>Redirect</name>
+	<name>Fabrik Form - redirect</name>
 	<author>Rob Clayburn</author>
 	<creationDate>March 2007</creationDate>
 	<copyright>(C) 2005-2007 fabrikar.com</copyright>

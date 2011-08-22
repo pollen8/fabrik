@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_element" method="upgrade">
-	<name>dropdown</name>
+	<name>Fabrik Element - dropdown</name>
 	<author>Rob Clayburn</author>
 	<creationDate>Jan 2007</creationDate>
 	<copyright>(C) 2005-2007 fabrikar.com</copyright>

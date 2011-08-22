@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_validationrule" method="upgrade">
-	<name>Is email</name>
+	<name>Fabrik Validation - is email</name>
 	<author>Rob Clayburn</author>
 	<creationDate>Jan 2008</creationDate>
 	<copyright>(C) 2005-2010 fabrikar.com</copyright>

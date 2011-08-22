@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_list" method="upgrade">
-	<name>Filter View</name>
+	<name>Fabrik List - filter view</name>
 	<author>Rob Clayburn</author>
 	<creationDate>July 2011	</creationDate>
 	<copyright>(C) 2005-2011 fabrikar.com</copyright>

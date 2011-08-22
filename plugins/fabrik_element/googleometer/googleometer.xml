@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_element" method="upgrade">
-	<name>google o meter</name>
+	<name>Fabrik Element - google o meter</name>
 	<author>Rob Clayburn</author>
 	<creationDate>July 2009</creationDate>
 	<copyright>(C) 2005-2009 fabrikar.com</copyright>

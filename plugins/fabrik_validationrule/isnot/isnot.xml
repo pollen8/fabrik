@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_validationrule" method="upgrade">
-	<name>Is not</name>
+	<name>Fabrik Validation - is not</name>
 	<author>Hugh Messenger</author>
 	<creationDate>Nov 2008</creationDate>
 	<copyright>(C) 2005-2010 fabrikar.com</copyright>

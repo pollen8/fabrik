@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
-	<name>Process image exif info</name>
+	<name>Fabrik Form - process image exif info</name>
 	<author>Hugh Messenger</author>
 	<creationDate>March 2009</creationDate>
 	<copyright>(C) 2005-20010 fabrikar.com</copyright>
