@@ -18,7 +18,7 @@ Fabrik.getWindow = (function(opts){
 				break;
 		}
 	}
-	
+	return Fabrik.Windows[opts.id];
 })
 
 Fabrik.Window = new Class({
@@ -196,7 +196,9 @@ Fabrik.Window = new Class({
 	close:function(e)
 	{
 		if(e){e.stop()};
-		Fabrik.overlay.hide();
+		if(Fabrik.overlay){
+			Fabrik.overlay.hide();
+		}
 		//cant destroy as we want to be able to reuse them (see crop in fileupload element)
 		this.window.fade('hide');
 	},

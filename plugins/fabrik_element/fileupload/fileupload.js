@@ -179,7 +179,6 @@ var FbFileUpload = new Class({
 		});
 
 		this.uploader.bind('FileUploaded', function(up, file, response) {
-			debugger;
 			response = JSON.decode(response.response);
 			if (this.options.crop) {
 				$(file.id).getElement('.plupload_resize').show();
@@ -304,7 +303,6 @@ var ImageWidget = new Class({
 		el.injectInside(document.body).hide();
 
 		(function() {
-			debugger;
 			if (!this.images.has(filepath)) {
 				var show = false;
 				params = params ? params : new CloneObject(this.imageDefault, true, []);
@@ -391,8 +389,8 @@ var ImageWidget = new Class({
 				$('modalOverlay').hide();
 			}
 		};
-
 		this.showWin();
+		
 		this.images = $H({});
 		var parent = this;
 		CANVAS.init({

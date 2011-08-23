@@ -170,10 +170,12 @@ if(typeof(Fabrik)==="undefined"){
 	Fabrik.addBlock = function(blockid, block){
 		Fabrik.blocks[blockid] = block;
 	}
+	//was in head.ready but that cause js error for fileupload in admin when it wanted to 
+	//build its window.
+	Fabrik.iconGen = new IconGenerator({scale:0.5});
 }
 	
 head.ready(function() {
 	Fabrik.tips = new FloatingTips('.fabrikTip', {html:true});
-	Fabrik.iconGen = new IconGenerator({scale:0.5});
 	Fabrik.overlay = new Overlay();
 });

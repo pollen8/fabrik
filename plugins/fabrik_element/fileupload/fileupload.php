@@ -102,6 +102,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$p =& $this->getParams();
+		$id = $this->getHTMLId($repeatCounter);
 		if ((int)$p->get('fileupload_crop', 0) == 1) {
 			//FabrikHelperHTML::script('media/com_fabrik/js/mcl-min.js', false);
 
@@ -1278,7 +1279,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	protected function plupload($str, $repeatCounter, $values)
 	{
-		FabrikHelperHTML::stylesheet('media/com_fabrik/css/fabrikslider.css');
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'media/com_fabrik/css/slider.css');
 		$id = $this->getHTMLId($repeatCounter);
 		$params =& $this->getParams();
 		$runtimes = $params->get('ajax_runtime', 'html5');
@@ -1364,7 +1365,7 @@ zoom:
 
 		$w = (int)$params->get('ajax_dropbox_width', 300);
 		$h = (int)$params->get('ajax_dropbox_hight', 200);
-		FabrikHelperHTML::stylesheet('plugins/fabrik_element/fileupload/plupload/css/plupload.queue.css');
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'plugins/fabrik_element/fileupload/plupload/css/plupload.queue.css');
 		FabrikHelperHTML::addStyleDeclaration(".dropList{background:#aaa; width:".$w."px; height:".$h."px;}");
 		return $pstr;
 	}
