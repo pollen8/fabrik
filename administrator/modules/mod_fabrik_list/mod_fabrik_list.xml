@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension
+	type="module"
+	version="1.7.0"
+	client="administrator"
+	method="upgrade">
+	<name>Fabrik list (admin)</name>
+	<author>Rob Clayburn</author>
+	<creationDate>Feb 2011</creationDate>
+	<copyright>(C) 2006 Pollen 8 Design Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0 Alpha</version>
+	<description>This module shows a Fabrik list.</description>
+	<files>
+		<filename module="mod_fabrik_list">mod_fabrik_list.php</filename>
+		<filename>listmodule.js</filename>
+		<filename>index.html</filename>
+		<filename>mod_fabrik_list.xml</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="advanced" addfieldpath="/administrator/components/com_fabrik/models/fields">
+				<field name="moduleclass_sfx" 
+					type="text"
+					label="MOD_FABRIK_LIST_CLASS_SUFFIX_LABEL"
+					description="MOD_FABRIK_LIST_CLASS_SUFFIX_DESC" />
+					
+				<field name="@spacer" type="spacer" label="" description="" />
+				
+				<field name="list_id" 
+					type="fabriktables" 
+					label="MOD_FABRIK_LIST_LIST_LABEL" 
+					description="MOD_FABRIK_LIST_LIST_DESC" />
+				
+				<field name="useajax" 
+					type="radio" default="0" 
+					label="MOD_FABRIK_LIST_AJAX_LABEL"
+					description="MOD_FABRIK_LIST_AJAX_DESC">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
+				<field name="radomizerecords" 
+					type="radio" default="0" 
+					label="MOD_FABRIK_LIST_RANDOMIZE_LABEL">
+					description="MOD_FABRIK_LIST_RANDOMIZE_DESC"
+						<option value="0">JNo</option>
+						<option value="1">JYES</option>
+				</field>
+				
+				<field name="limit" 
+					type="text" size="4" default="0" 
+					label="MOD_FABRIK_LIST_LIMIT_LABEL" 
+					description="MOD_FABRIK_LIST_LIMIT_DESC" />
+					
+				<field name="fabriklayout" 
+					type="folderlist" 
+					directory="/components/com_fabrik/views/list/tmpl/" 
+					default="default" 
+					label="MOD_FABRIK_LIST_TEMPLATE_LABEL" 
+					descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>
