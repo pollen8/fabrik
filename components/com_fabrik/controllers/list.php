@@ -51,11 +51,11 @@ class FabrikControllerList extends JController
 		$viewType	= $document->getType();
 
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 		$view->setLayout($layout);
 		// Push a model into the view
 		if (is_null($model)) {
-			$model = &$this->getModel($modelName, 'FabrikFEModel');
+			$model = $this->getModel($modelName, 'FabrikFEModel');
 		}
 		if (!JError::isError($model) && is_object($model)) {
 			$view->setModel($model, true);
@@ -67,9 +67,9 @@ class FabrikControllerList extends JController
 
 		$post = JRequest::get('post');
 		//build unique cache id on url, post and user id
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
-		$cache =& JFactory::getCache('com_fabrik', 'view');
+		$cache = JFactory::getCache('com_fabrik', 'view');
 		// f3 cache with raw view gives error
 		if (in_array(JRequest::getCmd('format'), array('raw', 'csv'))) {
 			$view->display();

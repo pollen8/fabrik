@@ -27,6 +27,11 @@
 	-moz-border-radius: 6px;
 }
 
+.fbPackageStatus{
+	position:absolute;
+	top:50%;
+}
+
 /****************************************/
 /****** window styling ******************/
 /****************************************/

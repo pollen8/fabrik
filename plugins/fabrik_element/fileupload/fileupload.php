@@ -210,7 +210,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$params =& $this->getParams();
 		$format = $params->get('ul_export_encode_csv', 'base64');
-		return $this->encodeFile( $data, $format);
+		return $this->encodeFile($data, $format);
 	}
 
 	/**
@@ -289,7 +289,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * Display the file in the table
 	 *
-	 * @param strng $data
+	 * @param string $data
 	 * @param array $oAllRowsData
 	 * @param int repeat group count
 	 * @return string
@@ -300,6 +300,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$this->_repeatGroupCounter = $i;
 		$element = $this->getElement();
 		$params =& $this->getParams();
+		// not sure but after update from 2.1 to 3 for podion data was an object
+		if (is_object($data)) {
+			$data  = $data->file;
+		}
 		$data = FabrikWorker::JSONtoData($data);
 		if (is_array($data) && !empty($data)) {
 			//crop stuff needs to be removed from data to get correct file path
@@ -316,7 +320,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$formid = $formModel->_id;
 			$rowid = $oAllRowsData->__pk_val;
 			$elementid = $this->_id;
-			$title = basename( $data);
+			$title = basename($data);
 			if ($params->get('fu_title_element') == '') {
 				$title_name = $this->getFullName(true, true, false ) . '__title';
 			} else {
@@ -361,9 +365,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	function requiresLightBox()
 	{
 		$params =& $this->getParams();
-		if (JRequest::getCmd('view') == 'list' && $params->get('fu_show_image_in_table')  == '0') {
+		//wont load it if in admin module with this condition. Testing returning true as some thing else is not right with it either.
+		/*if (JRequest::getCmd('view') == 'list' && $params->get('fu_show_image_in_table')  == '0') {
 			return false;
-		}
+		}*/
 		return true;
 	}
 

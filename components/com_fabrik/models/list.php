@@ -5737,14 +5737,18 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * make the create sql statement for the table
+	 * @param bool ad 'if not exists' to query
+	 * @param string table to get sql for(leave out to use models table)
 	 * @return string sql to drop & or create table
 	 */
 
-	function getCreateTableSQL($addIfNotExists = false)
+	function getCreateTableSQL($addIfNotExists = false, $table = null)
 	{
 		$addIfNotExists = $addIfNotExists ? 'IF NOT EXISTS ' : '';
-		$table 	= $this->getGenericTableName();
-		$fields 	=  $this->getDBFields();
+		if (is_null($table)) {
+			$table 	= $this->getGenericTableName();
+		}
+		$fields 	=  $this->getDBFields($table);
 		$primaryKey = "";
 		$sql 		= "";
 		$table = FabrikString::safeColName($table);
@@ -5752,17 +5756,17 @@ class FabrikFEModelList extends JModelForm {
 			$sql .= "CREATE TABLE $addIfNotExists" .  $table ." (\n";
 			foreach ($fields as $field) {
 				$field->Field = FabrikString::safeColName($field->Field);
-				if ($field->Key == 'PRI') {
+				if ($field->Key == 'PRI' && $field->Extra == 'auto_increment') {
 					$primaryKey = "PRIMARY KEY ($field->Field)";
 				}
 
 				$sql .=	"$field->Field ";
 
-				if ($field->Key == 'PRI') {
+				/*if ($field->Key == 'PRI') {
 					$sql .= ' INT(6) ';
-				} else {
+				} else {*/
 					$sql .= ' ' . $field->Type . ' ';
-				}
+				//}
 				if ($field->Null == '') {
 					$sql .= " NOT NULL ";
 				}
@@ -5774,16 +5778,30 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 				if ($field->Key == 'PRI') {
-					$sql .= " AUTO_INCREMENT ";
+					print_r($field);
+
+					//$sql .= " AUTO_INCREMENT ";
+					//$sql .= $field->Extra;
 				}
 
 				$sql .= $field->Extra . ",\n";
 			}
 			if ($primaryKey == '') {
-				$sql = rtrim($sql,",\n");
+				$sql = rtrim($sql, ",\n");
 			}
 			$sql .= $primaryKey . ");";
 		}
+		//echo $sql;exit;
+		if ($table == '`pod_fabrik_notification_ratings`') {
+			$db = $this->getDb();
+			$db->setQuery("SHOW INDEX FROM ". $table);
+			$keys = $db->loadObjectList();
+			print_r($keys);
+			echo $sql;exit;
+		}
+		if ($table == '`pod_fabrik_digg`') {
+						echo $sql;
+					}
 		return $sql;
 	}
 
@@ -6163,13 +6181,14 @@ class FabrikFEModelList extends JModelForm {
 
 	function requiresSlimbox()
 	{
+
 		$form =& $this->getFormModel();
 		$groups =& $form->getGroupsHiarachy();
 		foreach ($groups as $group) {
 			$elements =& $group->getPublishedElements();
 			foreach ($elements as $elementModel) {
 				$element =& $elementModel->getElement();
-				if (isset($element->show_in_table_summary) && $element->show_in_table_summary && $elementModel->requiresLightBox()) {
+				if ($element->show_in_list_summary && $elementModel->requiresLightBox()) {
 					return true;
 				}
 			}
@@ -6650,13 +6669,10 @@ class FabrikFEModelList extends JModelForm {
 	public function getTmpl()
 	{
 		$app = JFactory::getApplication();
-		$item =& $this->getTable();
-		$params =& $this->getParams();
+		$item = $this->getTable();
+		$params = $this->getParams();
 		if ($app->isAdmin()) {
-			$tmpl = $params->get('admin_template');
-			if ($tmpl == -1 || $tmpl == '') {
-				$tmpl = JRequest::getVar('layout', $item->template);
-			}
+			$tmpl = JRequest::getVar('layout', $params->get('admin_template'));
 		} else {
 			$tmpl = JRequest::getVar('layout', $item->template);
 		}

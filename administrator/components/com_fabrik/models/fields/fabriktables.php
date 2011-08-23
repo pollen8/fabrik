@@ -10,9 +10,7 @@
 defined('JPATH_BASE') or die();
 
 //required for menus
-echo '<br>fabriktables: '.JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'html.php';
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'html.php');
-return;
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'params.php');
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'string.php');
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'parent.php');

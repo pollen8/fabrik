@@ -101,7 +101,7 @@ class FabrikModelElements extends FabModelList
 		LEFT JOIN #__{package}_formgroup as fg ON fg.group_id = ee.group_id
 		LEFT JOIN #__{package}_lists AS ll ON ll.form_id = fg.form_id
 		WHERE jj.list_id != 0
-		AND ee.id = e.id)  AS full_element_name";
+		AND ee.id = e.id AND ee.group_id <> 0)  AS full_element_name";
 
 		$query->select('u.name AS editor, '.$fullname.', g.name AS group_name, l.db_table_name');
 

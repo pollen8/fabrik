@@ -48,12 +48,11 @@ $useajax			= intval($params->get('useajax', 0));
 $random 			= intval($params->get('radomizerecords', 0));
 $limit				= intval($params->get('limit', 0));
 $layout				=  $params->get('fabriklayout', 'default');
-//if ($layout != '') {
-  JRequest::setVar('layout', $layout);
-//}
+
+JRequest::setVar('layout', $layout);
 if ($limit !== 0) {
-  $app->setUserState('com_fabrik.list'.$listId.'.list.limitlength'.$listId, $limit);
-  JRequest::setVar('limit', $limit);
+	$app->setUserState('com_fabrik.list'.$listId.'.limitlength', $limit);
+	JRequest::setVar('limit', $limit);
 }
 
 /*this all works fine for a list
@@ -61,85 +60,27 @@ if ($limit !== 0) {
  */
 $moduleclass_sfx	= $params->get('moduleclass_sfx', '');
 //if (!$useajax) {
-  $listId = intval($params->get( 'list_id', 1 ));
+$listId = intval($params->get( 'list_id', 1 ));
 
-  $viewName = 'list';
-  $viewType	= $document->getType();
-  $controller = new FabrikControllerList();
+$viewName = 'list';
+$viewType	= $document->getType();
+$controller = new FabrikControllerList();
 
-  // Set the default view name from the Request
-  $view = clone($controller->getView($viewName, $viewType));
+// Set the default view name from the Request
+$view = clone($controller->getView($viewName, $viewType));
 
-  // Push a model into the view
-  $model	= $controller->getModel($viewName, 'FabrikFEModel');
-  $model->setId($listId);
-  $model->randomRecords = $random;
-  if (!JError::isError($model)) {
-    $view->setModel($model, true);
-  }
-  $view->isMambot = true;
-  // Display the view
-  $view->assign('error', $controller->getError());
-  $view->setId($listId);
-  echo $view->display();
-  // $$$ rob commented out as I think we should be able to do this via simply setting ajax filter/nav = on
-  // need to implement it though!
-/*} else {
- *
+// Push a model into the view
+$model	= $controller->getModel($viewName, 'FabrikFEModel');
+$model->setId($listId);
+$model->randomRecords = $random;
+if (!JError::isError($model)) {
+	$view->setModel($model, true);
+}
+$view->isMambot = true;
+// Display the view
+$view->assign('error', $controller->getError());
+$view->setId($listId);
+echo $view->display();
 
-  $document =& JFactory::getDocument();
-
-  $viewName	= 'Package';
-
-  $viewType	= $document->getType();
-
-  $controller =& new FabrikControllerPackage();
-
-  // Set the default view name from the Request
-  $view = &$controller->getView($viewName, $viewType);
-
-  // $$$ rob used so we can test if form is in package when determining its action url
-	$view->_id = -1;
-
-  //if the view is a package create and assign the list and form views
-  $listView = &$controller->getView('List', $viewType);
-  $listModel =& $controller->getModel('List', 'FabrikFEModel');
-
-  $listModel->_randomRecords = $random;
-  $listView->setModel($listModel, true);
-  $view->_listView =& $listView;
-
-  $view->_formView = &$controller->getView('Form', $viewType);
-  $formModel =& $controller->getModel('Form', 'FabrikFEModel');
-
-  $view->_formView->setModel($formModel, true);
-
-  // Push a model into the view
-  $model	= &$controller->getModel($viewName, 'FabrikFEModel');
-  $package =& $model->getPackage();
-  $package->lists = $listId;
-  $package->template = 'module';
-
-  if (!JError::isError($model)) {
-    $view->setModel($model, true);
-  }
-  $view->isMambot = true;
-  // Display the view
-  $view->assign('error', $this->getError());
-
-  //force the module layout for the package
-
-  //push some data into the model
-  $divid = "fabrikModule_list_$listId";
-  echo "<div id=\"$divid\">";
-  echo $view->display();
-  echo "</div>";
-
-  FabrikHelperHTML::script('modules/mod_fabrik_list/listmodule.js', true);
-  $fbConfig =& JComponentHelper::getParams('com_fabrik');
-  $script  = "var listModule = new fabrikTableModule('$divid', {});\n";
-  $script .= "Fabrik.addBlock('$divid', listModule);\n";
-  $document->addScriptDeclaration($script);
-}*/
 JRequest::setVar('layout', $origLayout);
 ?>

@@ -298,7 +298,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$jointable = $this->getJoinModel()->getJoin()->table_join;
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
-		$table =& $this->getTableModel()->getTable();
+		$table =& $this->getListModel()->getTable();
 		$fullElName = $db->nameQuote("$dbtable" . "___" . $this->_element->name);
 		return "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE parent_id = " . $table->db_primary_key . ") AS $fullElName";
 	}
@@ -3674,8 +3674,8 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	public function encryptColumn()
 	{
 		$secret = JFactory::getConfig()->getValue('secret');
-		$tableModel =& $this->getTableModel();
-		$db =& $tableModel->getDb();
+		$listModel =& $this->getListModel();
+		$db =& $listModel->getDb();
 		$tbl = $this->actualTableName();
 		$name = $this->getElement()->name;
 		$db->setQuery("UPDATE $tbl SET ".$name." = AES_ENCRYPT($name, '$secret')");
@@ -3691,8 +3691,8 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	{
 		// @TODO this query looks right but when going from encrypted blob to decrypted field the values are set to null
 		$secret = JFactory::getConfig()->getValue('secret');
-		$tableModel =& $this->getTableModel();
-		$db =& $tableModel->getDb();
+		$listModel =& $this->getListModel();
+		$db =& $listModel->getDb();
 		$tbl = $this->actualTableName();
 		$name = $this->getElement()->name;
 		$db->setQuery("UPDATE $tbl SET ".$name." = AES_DECRYPT($name, '$secret')");

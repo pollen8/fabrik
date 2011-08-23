@@ -256,7 +256,7 @@ class FabrikViewList extends JView{
 		{
 			require_once(JPATH_ROOT.DS.'includes'.DS.'application.php');
 		}
-		$menus	= &JSite::getMenu();
+		$menus = JSite::getMenu();
 		$menu	= $menus->getActive();
 
 		// because the application sets a default page title, we need to get it

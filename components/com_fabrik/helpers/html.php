@@ -510,14 +510,12 @@ EOD;
 
 	function keepalive()
 	{
-		//headjs testing not doing this for now
-		return;
-
-
 		//test since 2.0b3 dont do anything if loading from mocha win
 		if (JRequest::getVar('tmpl') == 'component') {
 			return;
 		}
+		JHtml::_('behavior.keepalive');
+		return;
 		//end test
 		JHtml::_('behavior.framework');
 
@@ -904,6 +902,9 @@ EOD;
 			$helperpaths[$type] = array();
 			$app = JFactory::getApplication();
 			$template = $app->getTemplate();
+			if ($app->isAdmin()) {
+				$helperpaths[$type][] = JPATH_SITE."/administrator/templates/$template/images/";
+			}
 			$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/%s/images/";
 			$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/images/";
 			$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/images/";
