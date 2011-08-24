@@ -67,6 +67,8 @@ class FabrikViewElement extends JView
 			$this->elements = $this->get('Elements');
 		}
 
+		$this->assign('parent', $this->get('Parent'));
+
 		parent::display($tpl);
 	}
 

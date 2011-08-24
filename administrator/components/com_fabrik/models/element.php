@@ -1001,4 +1001,30 @@ class FabrikModelElement extends JModelAdmin
 		$origTableName = $listModel->getTable()->db_table_name;
 		return $origTableName . "_repeat_" . str_replace('`', '', $row->name);
 	}
+
+	/**
+	 * gets the elemetns parent element
+	 * @return mixed 0 if no parent, object if exists.
+	 */
+
+	public function getParent()
+	{
+		$item = $this->getItem();
+		$item->parent_id = (int)$item->parent_id;
+		if ($item->parent_id === 0) {
+			$parent = 0;
+		} else {
+			$db = FabrikWorker::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('*')->from('#__fabrik_elements')->where('id = '.(int)$item->parent_id);
+			$db->setQuery($query);
+			$parent = $db->loadObject();
+			if (is_null($parent)) {
+				//perhaps the parent element was deleted?
+				$parent = 0;
+				$item->parent_id = 0;
+			}
+		}
+		return $parent;
+	}
 }

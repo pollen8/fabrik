@@ -67,8 +67,8 @@ var fabrikAdminElement = new Class({
 	},
 	
 	deleteJS: function(e){
-		var event = new Event(e).stop();
-		$(event.target).up(3).dispose();
+		e.stop();
+		e.target.up(3).dispose();
 	},
 	
 	addJavascript: function(opt){
@@ -135,11 +135,9 @@ var fabrikAdminElement = new Class({
 		}
 		if($('swapToParent')){
 			$('swapToParent').addEvent('click', function(e){
-				e = new Event(e);
-				var el = $(e.target);
 				var f = document.adminForm;
-				f.task.value = 'parentredirect';
-				var to = el.className.replace('element_', '');;
+				f.task.value = 'element.parentredirect';
+				var to = e.target.className.replace('element_', '');;
 				f.redirectto.value = to;
 				f.submit();
 			});

@@ -28,6 +28,27 @@ JFactory::getDocument()->addScriptDeclaration($this->js);
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 <?php //?>
+<?php if ($this->item->parent_id != 0) {
+	?>
+	<div id="system-message">
+	<dl>
+		<dd class="notice">
+		<ul>
+			<li>
+				<?php echo JText::_('COM_FABRIK_ELEMENT_PROPERTIES_LINKED_TO') ?>:
+			</li>
+			<li>
+				<a href="#" id="swapToParent" class="element_<?php echo $this->parent->id ?>"><?php echo $this->parent->label ?></a>
+			</li>
+			<li>
+				<label><input id="unlink" name="unlink" id="unlinkFromParent" type="checkbox"> <?php echo JText::_('COM_FABRIK_UNLINK') ?></label>
+			</li>
+		</ul>
+		</dd>
+	</dl>
+	</div>
+<?php }?>
+<div id="elementFormTable">
 	<div class="width-40 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
@@ -65,5 +86,7 @@ JFactory::getDocument()->addScriptDeclaration($this->js);
 	</div>
 
 	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="redirectto" value="" />
 	<?php echo JHtml::_('form.token'); ?>
+	</div>
 </form>

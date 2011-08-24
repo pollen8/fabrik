@@ -59,7 +59,7 @@ class FabrikControllerElement extends FabControllerForm
 
 		return $this;
 	}
-	
+
 	/**
 	 * Gets the URL arguments to append to a list redirect.
 	 *
@@ -145,6 +145,26 @@ class FabrikControllerElement extends FabControllerForm
 			$app->setUserState('com_fabrik.redirect', null);
 		}
 		return $ok;
+	}
+
+	/**
+	 * when you go from a child to parent element, check in child before redirect
+	 */
+
+	function parentredirect()
+	{
+		JRequest::checkToken() or die('Invalid Token');
+		$post = JRequest::get('post');
+		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		$id = (int)JArrayHelper::getValue($post['jform'], 'id', 0);
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$className 			= JRequest::getVar('plugin', 'field', 'post');
+		$elementModel 	= $pluginManager->getPlugIn($className, 'element');
+		$elementModel->setId($id);
+		$row =& $elementModel->getElement();
+		$row->checkin();
+		$to = JRequest::getInt('redirectto');
+		$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id='. $to);
 	}
 
 }
