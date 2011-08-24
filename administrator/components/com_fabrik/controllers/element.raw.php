@@ -27,6 +27,8 @@ class FabrikControllerElement extends JControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_ELEMENT';
 
+	protected $default_view = 'element';
+
 	/**
 	 * called via ajax to load in a given plugin's HTML settings
 	 */
@@ -38,6 +40,19 @@ class FabrikControllerElement extends JControllerForm
 		$model->setState('element.id', JRequest::getInt('id'));
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
+	}
+
+	public function save()
+	{
+		$listModel =& $this->getModel('list', 'FabrikFEModel');
+		$listModel->setId(JRequest::getInt('listid'));
+		$rowId = JRequest::getVar('rowid');
+		$key = JRequest::getVar('element');
+		$key = array_pop(explode("___", $key));
+		$value = JRequest::getVar('value');
+		$listModel->storeCell($rowId, $key, $value);
+		$this->mode = 'readonly';
+		$this->display();
 	}
 
 }

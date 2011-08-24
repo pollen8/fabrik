@@ -46,6 +46,7 @@ class FabrikViewElement extends JView
 		$groupModel = $plugin->getGroup();
 		$srcs = array();
 		$plugin->formJavascriptClass($srcs);
+		echo "srcs = ";print_r($srcs);
 		FabrikHelperHTML::script($srcs, true);
 		$html = '<script>';
 		$html .= $plugin->elementJavascript($repeatCounter);

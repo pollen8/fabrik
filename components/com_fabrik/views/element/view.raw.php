@@ -30,7 +30,14 @@ class FabrikViewElement extends JView{
 
 	function display($tpl = null)
 	{
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
+		$elementid = JRequest::getVar('elid');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$className = JRequest::getVar('plugin');
+		$plugin =& $pluginManager->getPlugIn($className, 'element');
+		$plugin->setId($elementid);
+		$plugin->inLineEdit();
+
+		/*require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
 		$model = JModel::getInstance('Element', 'FabrikFEModel');
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
@@ -50,13 +57,18 @@ class FabrikViewElement extends JView{
 			}
 			$plugin->_editable = false;
 		} else {
-			$plugin->_editable = true;//$model->_editable;
+			$plugin->_editable = true;
 		}
 		$groupModel =& $plugin->getGroup();
 
 		$repeatCounter = 0;
 		$html = '';
 		$key = $plugin->getFullName();
+
+		$template = JFactory::getApplication()->getTemplate();
+			echo "add path : "  . JPATH_SITE."/administrator/templates/$template/images/" . "<br><br>";
+			FabrikHelperHTML::addPath(JPATH_SITE."/administrator/templates/$template/images/", 'image', 'list');
+
 		//@TODO add acl checks here
 		if ($plugin->canToggleValue() && JRequest::getVar('task') !== 'element.save'){
 			// ok for yes/no elements activating them (double clicking in cell)
@@ -99,18 +111,21 @@ class FabrikViewElement extends JView{
 				$html .= "<a href=\"#\" class=\"inline-cancel\"><img src=\"".COM_FABRIK_LIVESITE."media/com_fabrik/images/del.png\" alt=\"".JText::_('CANCEL')."\" /></a>";
 			}
 			$html .= "</div>";
-			$html .= "\n
-			<script type=\"text/javasript\">";
-			$html .= "Fabrik.inlineedit_$elementid = ".$plugin->elementJavascript($repeatCounter).";\n";
-			$html .="Fabrik.inlineedit_$elementid.select();
+
+			$onLoad = "Fabrik.inlineedit_$elementid = ".$plugin->elementJavascript($repeatCounter).";\n".
+			"Fabrik.inlineedit_$elementid.select();
 			Fabrik.inlineedit_$elementid.focus();";
-			$html .= "</script>\n";
+
+			$srcs = array();
+			$plugin->formJavascriptClass($srcs);
+			FabrikHelperHTML::script($srcs, true, $onLoad);
+
 		} else {
 			$html .= "\n<script type=\"text/javasript\">";
 			$html .= $doCalcs;
 			$html .= "</script>\n";
 		}
-		echo $html;
+		echo $html;*/
 	}
 
 }

@@ -637,7 +637,7 @@ EOD;
 				}
 			}
 		}
-		if ($onLoad !== '') {
+		if ($onLoad !== '' && JRequest::getCmd('format') != 'raw') {
 			$onLoad = "head.ready(function() {\n " . $onLoad . "});\n";
 			FabrikHelperHTML::addScriptDeclaration($onLoad);
 		}

@@ -44,48 +44,10 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	/*function renderListData($data, $oAllRowsData)
 	{
-		$data = explode(GROUPSPLITTER, $data);
-		for ($i=0; $i <count($data); $i++) {
-			$data[$i] =  $this->_renderListData($data[$i], $oAllRowsData);
-		}
-		$data = implode(GROUPSPLITTER, $data);
-		return parent::renderListData($data, $oAllRowsData);
 	}
 
 	function _renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
-		//check if the data is in csv format, if so then the element is a multi drop down
-		if (strstr($data, ',') && $params->get('multiple', 0) == 1) {
-			$aData = explode(',', $data);
-			$sLabels = '';
-			foreach ($aData as $tmpVal) {
-				if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
-					$sLabels .= $this->_replaceWithIcons($tmpVal). "<br />";
-				} else {
-					$sLabels .= $this->getLabelForValue($tmpVal). "<br />";
-				}
-			}
-			return FabrikString::rtrimword( $sLabels, "<br />");
-		} else {
-			//$$$rob ok it shouldnt ever been in an array but with specific access settings the data can be
-			//stored as ' 	1|-|'
-			$data2 = explode(GROUPSPLITTER2, $data);
-
-			// $$$ rob if emtpy data revert to the default value
-			if (count($data2) == 1 && $data2[0] == '') {
-				$data2 = $this->getDefaultValue();
-			}
-			foreach ($data2 as $data) {
-				if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
-					$icon = $this->_replaceWithIcons($data);
-					return $this->iconsSet == true ? $icon : $this->getLabelForValue($data);
-				} else {
-					return $this->getLabelForValue($data);
-				}
-			}
-		}
-		return $data;
 	}*/
 
 	/**
@@ -446,12 +408,16 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	 * @return array (value condition)
 	 */
 
-	function getFilterValue($value, $condition, $eval )
+	function getFilterValue($value, $condition, $eval)
 	{
 		$value = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
 		return $return;
 	}
 
+	public function canToggleValue()
+	{
+		return true;
+	}
 }
 ?>

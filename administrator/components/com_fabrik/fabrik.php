@@ -29,6 +29,9 @@ if (!defined('COM_FABRIK_FRONTEND')) {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
 
+//load in front end model path
+JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
+
 // Execute the task.
 $controller	= &JController::getInstance('Fabrik');
 

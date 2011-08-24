@@ -11,7 +11,7 @@ var FbListInlineEdit = new Class({
 			'alt':'save',
 			'class':''
 		});
-		this.cancelbutton = new Asset.image(Fabrik.liveSite+'media/com_fabrik/images/action_delete.png', {
+		this.cancelbutton = new Asset.image(Fabrik.liveSite+'media/com_fabrik/images/delete.png', {
 			'alt':'delete',
 			'class':''
 		});
@@ -28,6 +28,10 @@ var FbListInlineEdit = new Class({
 		window.addEvent('fabrik.table.clearrows', function(){
 			this.cancel();			
 		}.bind(this));
+		
+		window.addEvent('fabrik.list.inlineedit.stopEditing', function(){
+			this.stopEditing();
+		}.bind(this))
 		
 		window.addEvent('fabrik.table.updaterows', function(){
 			this.watchCells();
@@ -296,7 +300,7 @@ var FbListInlineEdit = new Class({
 	edit: function(e, td) {
 		//only one field can be edited at a time
 		if (this.inedit) {
-			return false;
+			return;
 		}
 		if (!this.canEdit(td)){
 			return false;
@@ -306,7 +310,8 @@ var FbListInlineEdit = new Class({
 		}
 		var element = this.getElementName(td);
 		var rowid = td.findClassUp('fabrik_row').id.replace('list_' + this.list.id + '_row_', '');
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.display&format=raw';
+		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.display&format=raw';
+		var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
 		var opts = this.options.elements[element];
 		if(typeOf(opts) === 'null'){
 			return;
@@ -316,7 +321,7 @@ var FbListInlineEdit = new Class({
 		this.defaults[rowid+'.'+opts.elid] = td.innerHTML;
 		
 		var data = this.getDataFromTable(td);
-		if (typeOf(this.editors[opts.elid]) === 'null') {
+		if (typeOf(this.editors[opts.elid]) === 'null' || typeOf(Fabrik['inlineedit_'+opts.elid]) == 'null') {
 			td.empty().adopt(this.spinner);
 			new Request({
 				'evalScripts' :function(script, text){
@@ -332,7 +337,6 @@ var FbListInlineEdit = new Class({
 					'listid':this.options.listid,
 					'inlinesave':this.options.showSave,
 					'inlinecancel':this.options.showCancel
-					
 				},
 
 				'onComplete':function(r){
@@ -375,7 +379,6 @@ var FbListInlineEdit = new Class({
 	
 	getDataFromTable: function(td)
 	{
-		debugger;
 		var groupedData = Fabrik.blocks['list_'+this.options.listid].options.data;
 		var element = this.getElementName(td);
 		var ref = td.findClassUp('fabrik_row').id;
@@ -434,7 +437,8 @@ var FbListInlineEdit = new Class({
 		this.inedit = false;
 		e.stop();
 		var element = this.getElementName(td);
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.save&format=raw';
+		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.save&format=raw';
+		var url = 'index.php?option=com_fabrik&task=element.save&format=raw';
 		var opts = this.options.elements[element];
 		var row = this.editing.findClassUp('fabrik_row');
 		var rowid = row.id.replace('list_'+this.list.id + '_row_', '');
@@ -459,6 +463,7 @@ var FbListInlineEdit = new Class({
 			'rowid':rowid,
 			'listid':this.options.listid
 		};
+		data[eObj.token]  = 1;
 		data[k] = value;
 		new Request({url:url,
 			'data':data,
@@ -468,6 +473,15 @@ var FbListInlineEdit = new Class({
 			}.bind(this)
 		}).send();
 		this.editing = null;
+	},
+	
+	stopEditing: function(e) {
+		var td = this.editing;
+		if (td !== false) {
+			td.removeClass(this.options.focusClass);
+		}
+		this.editing = null;
+		this.inedit = false;
 	},
 	
 	cancel: function(e) {
@@ -483,13 +497,12 @@ var FbListInlineEdit = new Class({
 		}
 		var td = this.editing;
 		if (td !== false) {
-			td.removeClass(this.options.focusClass);
+			//td.removeClass(this.options.focusClass);
 			var element = this.getElementName(td);
 			var opts = this.options.elements[element];
 			var c = this.defaults[rowid+'.'+opts.elid];
 			td.set('html',c);
 		}
-		this.editing = null;
-		this.inedit = false;
+		this.stopEditing();
 	}
 });

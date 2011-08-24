@@ -211,8 +211,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	function renderListData($data, $oAllRowsData)
 	{
 		$element = $this->getElement();
-		$params 	=& $this->getParams();
-		$listModel =& $this->getListModel();
+		$params = $this->getParams();
+		$listModel = $this->getListModel();
 		$multiple = $params->get('multiple', 0) || $this->isJoin();
 		$sLabels 	= array();
 		//repeat group data
@@ -221,7 +221,6 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$useIcon = $params->get('icon_folder', 0);
 		foreach ($gdata as $i => $data) {
 			$lis = array();
-			//$vals = explode(GROUPSPLITTER2, $data);
 			$vals = FabrikWorker::JSONtoData($data, true);
 			foreach ($vals as $val) {
 				$l = $useIcon ? $this->_replaceWithIcons($val) : $val;
@@ -263,6 +262,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
+		$data = (array)$data;
 		if (!isset($this->defaults)) {
 			$this->defaults = array();
 		}
