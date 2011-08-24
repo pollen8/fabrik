@@ -502,7 +502,7 @@ class plgContentFabrik extends JPlugin
 			$this->pluginVizName = array();
 		}
 		if (!array_key_exists($id, $this->pluginVizName)) {
-			$db = JFactory::getDbo();
+			$db = FabrikWorker::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('plugin')->from('#__{package}_visualizations')->where('id = '.(int)$id);
 			$db->setQuery($query);
