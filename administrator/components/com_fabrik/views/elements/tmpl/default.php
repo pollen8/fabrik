@@ -59,6 +59,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 	<table class="adminlist">
 		<thead>
 			<tr>
+				<th width="2%"></th>
 				<th width="2%"><?php echo JHTML::_( 'grid.sort', 'JGRID_HEADING_ID', 'e.id', $listDirn, $listOrder); ?></th>
 				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="checkAll(this);" /> </th>
 				<th width="15%" >
@@ -108,6 +109,16 @@ $saveOrder	= $listOrder == 'e.ordering';
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
+				<td>
+				<?php if ($item->parent_id != 0) {
+					echo "<a href='index.php?option=com_fabrik&task=element.edit&id=".$item->parent_id."'>"
+					. JHTML::image('media/com_fabrik/images/child_element.png', JText::_('COM_FABRIK_LINKED_ELEMENT'), 'title="'.JText::_('COM_FABRIK_LINKED_ELEMENT').'"')
+					.'</a>&nbsp';
+				}else{
+					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="'.JText::_('COM_FABRIK_PARENT_ELEMENT').'"').'&nbsp;';
+				}?>
+				<?php echo $row->id; ?>
+					</td>
 					<td><?php echo $item->id; ?></td>
 					<td><?php echo JHtml::_('grid.id', $i, $item->id); ?></td>
 					<td>
