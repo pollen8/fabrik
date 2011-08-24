@@ -67,6 +67,9 @@ class FabrikViewList extends JView
 			foreach ($orderdirs as $orderdir) {
 				$this->order_dir[] = JHTML::_( 'select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', $orderdir);
 			}
+			if (empty($this->order_dir)) {
+				$this->order_dir[] = JHTML::_( 'select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', '');
+			}
 			$this->group_by = $formModel->getElementList('group_by', $this->item->group_by, true, false, false);
 		}
 		parent::display($tpl);
