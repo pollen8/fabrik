@@ -692,12 +692,12 @@ class FabrikFEModelList extends JModelForm {
 							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">'.$row->fabrik_edit.'</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
-						if ($params->get('editlink')) {
+						if ($this->canViewDetails() && $params->get('detaillink') == 1) {
 							$row->fabrik_view = $viewLink;
 							$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">'.$row->fabrik_view.'</li>';
 						}
 					} else {
-						if ($this->canViewDetails()) {
+						if ($this->canViewDetails() && $params->get('detaillink') == '1') {
 							if (empty($this->_aLinkElements)) {
 								$viewLinkAdded = true;
 								$row->fabrik_view = $viewLink;
@@ -708,8 +708,7 @@ class FabrikFEModelList extends JModelForm {
 						}
 					}
 				}
-
-				if ($this->canViewDetails() && $params->get('detaillink') == '1' && !$viewLinkAdded) {
+				if ($this->canViewDetails() && !$viewLinkAdded && $params->get('detaillink') == '1') {
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
 					$row->fabrik_view = $viewLink;
