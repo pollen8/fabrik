@@ -114,7 +114,7 @@ class FabrikModelConnection extends JModelAdmin
 	{
 
 		$session = JFactory::getSession();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Connection', 'FabrikFEModel');
 		$model->setId($data['id']);
 

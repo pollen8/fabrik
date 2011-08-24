@@ -36,7 +36,7 @@ class FabrikControllerImport extends FabControllerForm
 	{
 		$user =& JFactory::getUser();
 		$c = 0;
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$listModel = &$this->getModel('List', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('list_id'));
 		$listModel->getTable();
@@ -117,7 +117,7 @@ class FabrikControllerImport extends FabControllerForm
 	{
 		//called when creating new elements from csv import into existing list
 		$session =& JFactory::getSession();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = &$this->getModel('Importcsv', 'FabrikFEModel');
 		$model->data = $session->get('com_fabrik.csvdata');
 		$headings = $session->get('com_fabrik.matchedHeadings');
@@ -151,7 +151,7 @@ class FabrikControllerImport extends FabControllerForm
 
 	public function doimport()
 	{
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = &$this->getModel('Importcsv', 'FabrikFEModel');
 		if (!$model->import()){
 			$this->display();

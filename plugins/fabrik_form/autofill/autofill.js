@@ -42,8 +42,12 @@ var Autofill =  new Class({
 			}.bind(this));
 		}
 		if (this.options.trigger == '') {
-			var elEvnt = $(this.options.observe).get('tag') == 'select' ? 'change' : 'blur';
-			this.form.dispatchEvent('', this.options.observe, elEvnt, evnt);
+			if (typeOf($(this.options.observe)) !== 'null') {
+				var elEvnt = $(this.options.observe).get('tag') == 'select' ? 'change' : 'blur';
+				this.form.dispatchEvent('', this.options.observe, elEvnt, evnt);
+			}else{
+				fconsole('autofill - couldnt find element to observe');
+			}
 		}else{
 			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
 		}
@@ -55,7 +59,7 @@ var Autofill =  new Class({
 		if(!confirm(Joomla.JText._('PLG_FORM_AUTOFILL_DO_UPDATE'))){
 			return;
 		}
-		Fabrik.loader.start(Joomla.JText._('PLG_FORM_AUTOFILL_SEARCHING'), 'form_' + this.options.formid);
+		Fabrik.loader.start('form_' + this.options.formid, Joomla.JText._('PLG_FORM_AUTOFILL_SEARCHING'));
 		
 		var v = this.element.getValue();
 		var formid = this.options.formid;
@@ -75,7 +79,7 @@ var Autofill =  new Class({
 			'map':this.options.map
 			},
 		onComplete: function(json){
-			Fabrik.loader.stop('', 'form_' + this.options.formid);
+			Fabrik.loader.stop('form_' + this.options.formid);
 			this.updateForm(json);
 		}.bind(this)}).send();
 	},

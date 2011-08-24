@@ -137,7 +137,7 @@ class FabrikModelPackage extends JModelAdmin
 
 	public function export($ids = array())
 	{
-		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
+		//JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 		jimport('joomla.filesystem.archive');
 		foreach ($ids as $id) {
 			$row = $this->getTable();
@@ -460,7 +460,7 @@ class FabrikModelPackage extends JModelAdmin
 		foreach ($lookups->visualization as $vid) {
 			$vrow = FabTable::getInstance('Visualization', 'FabrikTable');
 			$vrow->load($vid);
-			$modelpaths = JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$vrow->plugin.DS.'models');
+			//$modelpaths = JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$vrow->plugin.DS.'models');
 			$visModel = JModel::getInstance($vrow->plugin, 'fabrikModel');
 			$visModel->setId($vid);
 			$visModel->setListIds();

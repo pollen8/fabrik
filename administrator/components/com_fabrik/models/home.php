@@ -230,7 +230,7 @@ class FabrikModelHome extends JModelAdmin
 		$db->query();
 		echo $db->getErrorMsg();
 		echo "<li>Groups added to 'Contact Us' form</li>";
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$list = $this->getTable('List');
 		$list->label = "Contact Us Data";
@@ -289,7 +289,7 @@ class FabrikModelHome extends JModelAdmin
 
 	public function dropData()
 	{
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$connModel 	=& JModel::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
 		$db = FabrikWorker::getDbo();

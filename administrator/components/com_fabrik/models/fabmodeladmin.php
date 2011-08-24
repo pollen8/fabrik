@@ -30,7 +30,7 @@ abstract class FabModelAdmin extends JModelAdmin
 		$dispatcher = &JDispatcher::getInstance();
 		$plugins = JArrayHelper::getValue($item->params, 'plugins', array());
 		$return = array();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		//@todo prob wont work for any other model that extends this class except for the form/list model
 		switch (get_class($this)) {
@@ -40,7 +40,7 @@ abstract class FabModelAdmin extends JModelAdmin
 			default:
 				$class = 'form';
 		}
-		$feModel = JModel::getInstance($class, 'fabrikFEModel');
+		$feModel = JModel::getInstance($class, 'FabrikFEModel');
 		$feModel->setId($this->getState($class.'.id'));
 
 		foreach ($plugins as $x => $plugin) {

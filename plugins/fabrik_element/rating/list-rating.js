@@ -18,7 +18,6 @@ var FbRatingList = new Class({
 		if (this.options.mode == 'creator-rating') {
 			return;
 		}
-		this.spinner = Fabrik.loader.getSpinner();
 		this.col = $$('.fabrik_row___' + id);
 		this.origRating = {};
 		this.col.each(function(tr) {
@@ -66,7 +65,7 @@ var FbRatingList = new Class({
 		e.stop();
 		this.rating = this._getRating(star);
 		var ratingmsg = star.findClassUp('fabrik_element').getElement('.ratingMessage');
-		this.spinner.inject(ratingmsg);
+		Fabrik.loader.start(ratingmsg);
 		var row = $(star).findClassUp('fabrik_row');
 		var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
 		var data = {
@@ -83,7 +82,7 @@ var FbRatingList = new Class({
 				r = r.toInt();
 				this.rating = r;
 				ratingmsg.set('html', this.rating);
-				this.spinner.dispose();
+				Fabrik.loader.stop(ratingmsg);
 				star.findClassUp('fabrik_element').getElements('img').each(function(i, x) {
 					i.src(x < r) ? this.options.insrc : this.options.outsrc;
 				}.bind(this));

@@ -22,7 +22,8 @@ class plgFabrik_FormExif extends plgFabrik_Form {
 	var $map_field = '';
 	var $upload_field = '';
 
-	function exifToNumber($value, $format) {
+	function exifToNumber($value, $format)
+	{
 		$spos = JString::strpos($value, '/');
 		if ($spos === false) {
 			return sprintf($format, $value);
@@ -35,7 +36,8 @@ class plgFabrik_FormExif extends plgFabrik_Form {
 		}
 	}
 
-	function exifToCoordinate($reference, $coordinate) {
+	function exifToCoordinate($reference, $coordinate)
+	{
 		if ($reference == 'S' || $reference == 'W')
 			$prefix = '-';
 		else
@@ -49,7 +51,6 @@ class plgFabrik_FormExif extends plgFabrik_Form {
 	function getCoordinates($filename) {
 		if (extension_loaded('exif')) {
 			$exif = exif_read_data($filename, 'EXIF');
-
 			if (isset($exif['GPSLatitudeRef']) && isset($exif['GPSLatitude']) &&
 				isset($exif['GPSLongitudeRef']) && isset($exif['GPSLongitude'])) {
 				return array (
@@ -61,18 +62,16 @@ class plgFabrik_FormExif extends plgFabrik_Form {
 		return false;
 	}
 
-	function coordinate2DMS($coordinate, $pos, $neg) {
+	function coordinate2DMS($coordinate, $pos, $neg)
+	{
 		$sign = $coordinate >= 0 ? $pos : $neg;
-
 		$coordinate = abs($coordinate);
 		$degree = intval($coordinate);
 		$coordinate = ($coordinate - $degree) * 60;
 		$minute = intval($coordinate);
 		$second = ($coordinate - $minute) * 60;
-
 		return sprintf("%s %d&#xB0; %02d&#x2032; %05.2f&#x2033;", $sign, $degree, $minute, $second);
 	}
-
 
  	/**
  	 * process the plugin, called when form is submitted
@@ -81,25 +80,25 @@ class plgFabrik_FormExif extends plgFabrik_Form {
  	 * @param object form
  	 */
 
- 	function onBeforeStore( &$params, &$formModel )
+ 	function onBeforeStore(&$params, &$formModel)
  	{
 		// Initialize some variables
 		$db			= & FabrikWorker::getDbo();
 
 		$data =& $formModel->_formData;
 
-		// Check for request forgeries
-		JRequest::checkToken() or jexit('Invalid Token');
+		$elementModel =& JModel::getInstance('element', 'FabrikModel');
 
-		$elementModel =& JModel::getInstance('element','FabrikModel');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$plugin =& $pluginManager->getPlugIn('field', 'element');
+		$plugin->setId($params->get('exif_map_field'));
 
-		$elementModel->setId($params->get('exif_map_field'));
-		$element =& $elementModel->getElement(true);
-		$this->map_field = $elementModel->getFullName();
+		$element =& $plugin->getElement(true);
+		$this->map_field = $plugin->getFullName();
 
-		$elementModel->setId($params->get('exif_upload_field'));
-		$element =& $elementModel->getElement(true);
-		$this->upload_field = $elementModel->getFullName();
+		$plugin->setId($params->get('exif_upload_field'));
+		$element =& $plugin->getElement(true);
+		$this->upload_field = $plugin->getFullName();
 
 		$file_path = JPATH_SITE.DS.$data[$this->upload_field];
 		if (JFile::exists($file_path)) {

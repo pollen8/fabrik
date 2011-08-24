@@ -526,7 +526,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->toggler = $id.'_cal-picker';
 		$opts->theme = $params->get('date_theme', 'default');
 		//define default date so that its in an easily understandable format for the calendar (as field may be formatted as d/m/Y)
-		$opts->defaultDate = $this->getValue($this->_data);
+		$opts->defaultDate = $this->getValue(@$this->_data);
 		$opts->format = $params->get('date_form_format');
 		if ($opts->defaultDate == '') {
 			$opts->defaultDate = JFactory::getDate()->toFormat($opts->format);

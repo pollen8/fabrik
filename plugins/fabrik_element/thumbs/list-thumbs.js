@@ -15,7 +15,7 @@ var FbThumbsList = new Class({
 	
 	initialize: function(id, options){
 		this.setOptions(options);
-		this.spinner = Fabrik.loader.getSpinner();
+		//this.spinner = Fabrik.loader.getSpinner();
 		this.col = $$('.' + id);
 		this.origThumbUp = {};
 		this.origThumbDown = {};
@@ -71,7 +71,7 @@ var FbThumbsList = new Class({
 		var row = e.findClassUp('fabrik_row');
 		var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
 		var count_thumb = $('count_thumb' + thumb + rowid);
-		this.spinner.inject(count_thumb);
+		Fabrik.loader.start(count_thumb);
 		this.thumb = thumb;
 
 		var data = {
@@ -90,6 +90,7 @@ var FbThumbsList = new Class({
 				var thumbup = row.getElements('.thumbup');
 				var thumbdown = row.getElements('.thumbdown');
 				this.spinner.dispose();
+				Fabrik.loader.stop(count_thumb);
 				//r = r.split(this.options.splitter2);
 				r = JSON.decode(r);
 				if (r.error) {

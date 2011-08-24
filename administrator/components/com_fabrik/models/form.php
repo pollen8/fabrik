@@ -101,10 +101,10 @@ class FabrikModelForm extends FabModelAdmin
 
 		$plugins = JPluginHelper::getPlugin('fabrik_form');
 
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
-		$feFormModel = JModel::getInstance('form', 'fabrikFEModel');
+		$feFormModel = JModel::getInstance('form', 'FabrikFEModel');
 		$feFormModel->setId($this->getState('form.id'));
 
 		foreach ($plugins as $x => $plugin) {
@@ -135,7 +135,7 @@ class FabrikModelForm extends FabModelAdmin
 		$abstractPlugins = $this->getAbstractPlugins();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		JText::script('COM_FABRIK_ACTION');
@@ -241,7 +241,7 @@ class FabrikModelForm extends FabModelAdmin
 		$this->_makeFormGroups($data, $currentGroups);
 
 		if ($record_in_database == '1') {
-			JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+			//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 			$listModel = JModel::getInstance('List', 'FabrikFEModel');
 			$listModel->loadFromFormId($data['id']);
 			$table =& $listModel->getTable();
@@ -366,7 +366,7 @@ class FabrikModelForm extends FabModelAdmin
 		$db = FabrikWorker::getDbo();
 		$cid		= JRequest::getVar('cid', null, 'post', 'array');
 		$formId = $cid[0];
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formId);
 		$form = $model->getForm();

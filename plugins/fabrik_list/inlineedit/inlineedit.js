@@ -6,7 +6,7 @@ var FbListInlineEdit = new Class({
 		this.defaults = {};
 		this.editors = {};
 		this.inedit = false;
-		this.spinner = Fabrik.loader.getSpinner();
+		//this.spinner = Fabrik.loader.getSpinner();
 		this.addbutton = new Asset.image(Fabrik.liveSite+'media/com_fabrik/images/action_check.png', {
 			'alt':'save',
 			'class':''
@@ -322,7 +322,8 @@ var FbListInlineEdit = new Class({
 		
 		var data = this.getDataFromTable(td);
 		if (typeOf(this.editors[opts.elid]) === 'null' || typeOf(Fabrik['inlineedit_'+opts.elid]) == 'null') {
-			td.empty().adopt(this.spinner);
+			//td.empty().adopt(this.spinner);
+			Fabrik.loader.start(td);
 			new Request({
 				'evalScripts' :function(script, text){
 						this.javascript = script;
@@ -340,6 +341,7 @@ var FbListInlineEdit = new Class({
 				},
 
 				'onComplete':function(r){
+					Fabrik.loader.stop(td);
 					//don't use evalScripts = true as we reuse the js when tabbing to the next element. 
 					// so instead set evalScripts to a function to store the js in this.javascript.
 					//Previously js was wrapped in delay
@@ -358,7 +360,6 @@ var FbListInlineEdit = new Class({
 				}.bind(this)
 			}).send();
 		} else {
-			debugger;
 			//testing trying to re-use old form
 			this.javascript;
 			var html = this.editors[opts.elid].stripScripts(function(script){
@@ -369,10 +370,14 @@ var FbListInlineEdit = new Class({
 			//make a new instance of the element js class which will use the new html
 			$exec(this.javascript);
 			//tell the element obj to update its value
-			Fabrik['inlineedit_'+opts.elid].update(data);
-			Fabrik['inlineedit_'+opts.elid].select();
-			this.watchControls(td);
-			this.setFocus(td);
+			///triggered from element model
+			window.addEvent('fabrik.list.inlineedit.setData', function(){
+				Fabrik['inlineedit_'+opts.elid].update(data);
+				Fabrik['inlineedit_'+opts.elid].select();
+				this.watchControls(td);
+				this.setFocus(td);	
+			}.bind(this));
+			
 		}
 		return true;
 	},
@@ -385,8 +390,8 @@ var FbListInlineEdit = new Class({
 		var v = false;
 		this.vv = [];
 		// $$$rob $H needed when group by applied
-		$H(groupedData).each(function(data){
-			
+		//$H(groupedData).each(function(data){
+		groupedData.each(function(data){
 			if (typeOf(data) == 'array') {//groued by data in forecasting slotenweb app. Where groupby table plugin applied to data.
 				for(var i  =0; i < data.length; i++) {
 					if (data[i].id === ref) {
@@ -400,7 +405,7 @@ var FbListInlineEdit = new Class({
 			}
 		}.bind(this));
 		if (this.vv.length > 0) {
-			v = this.vv[0].data[element];
+			v = this.vv[0].data[element+'_raw'];
 		}
 		return v;
 	},

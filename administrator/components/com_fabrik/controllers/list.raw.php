@@ -33,7 +33,7 @@ class FabrikControllerList extends JControllerForm
 
 	public function ajax_loadTableDropDown()
 	{
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$db = FabrikWorker::getDbo();
 		$conn = JRequest::getInt('conn', 1);
 		$oCnn = JModel::getInstance('Connection', 'FabrikFEModel');

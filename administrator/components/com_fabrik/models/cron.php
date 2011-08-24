@@ -94,7 +94,7 @@ class FabrikModelCron extends JModelAdmin
 		}
 		JPluginHelper::importPlugin('fabrik_cron');
 
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		if ($plugin == '') {

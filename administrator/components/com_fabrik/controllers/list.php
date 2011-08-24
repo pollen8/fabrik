@@ -44,7 +44,7 @@ class FabrikControllerList extends FabControllerForm
 	public function copy()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('list', 'FabrikFEModel');
 		if (count($cid) > 0)
 		{
@@ -83,7 +83,7 @@ class FabrikControllerList extends FabControllerForm
 		if(is_array($cid)){$cid = $cid[0];}
 		$cid = JRequest::getInt('listid', $cid);
 		// grab the model and set its id
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);
 		$viewType	= JFactory::getDocument()->getType();
@@ -104,7 +104,7 @@ class FabrikControllerList extends FabControllerForm
 	{
 		$document =& JFactory::getDocument();
 		$cid	= JRequest::getVar('cid', array(0), 'method', 'array');
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);
 		$formModel = $model->getFormModel();
@@ -136,7 +136,7 @@ class FabrikControllerList extends FabControllerForm
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
 		$model->setId($id);
@@ -152,7 +152,7 @@ class FabrikControllerList extends FabControllerForm
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
 		$model->setId($id);
@@ -171,7 +171,7 @@ class FabrikControllerList extends FabControllerForm
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
 		$model->setId($listid);
@@ -214,7 +214,7 @@ class FabrikControllerList extends FabControllerForm
 
 	function doempty()
 	{
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = &$this->getModel('list', 'FabrikFEModel');
 		$model->truncate();
 		$listid = JRequest::getInt('listid');

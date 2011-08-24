@@ -39,7 +39,7 @@ class FabrikControllerConnection extends JControllerForm
 		$cid	= JRequest::getVar('cid', array(0), 'method', 'array');
 		$cid	= array((int)$cid[0]);
 		$link = 'index.php?option=com_fabrik&view=connections';
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		foreach ($cid as $id) {
 			$model = JModel::getInstance('Connection', 'FabrikFEModel');
 			$model->setId($id);

@@ -113,12 +113,12 @@ div.calendar{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
-	
+
 	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
 		'#D7D7D7', endColorstr = '#F3F3F3' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
-		
+
 	border-bottom: 1px solid #B7B7B7;
 	border-top: 1px solid #FFFFFF;
 	color: #777777;
@@ -255,7 +255,7 @@ div.calendar{
 	float:left;
 	padding:2px 6px 0 6px;
 	border-left:1px solid #999;
-	height:17px;
+	min-height:17px;
 	margin-top:2px;
 	margin-bottom:2px;
 

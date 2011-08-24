@@ -10,7 +10,7 @@ class FabrikModelUpgrade extends JModel
 
 	public function __construct($config = array())
 	{
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		if (!$this->shouldUpgrade()) {
 			JFactory::getApplication()->enqueueMessage('Already updated');
 			return parent::__construct($config);

@@ -223,7 +223,7 @@ class FabrikModelList extends FabModelAdmin
 	protected function getCnn()
 	{
 		$item = $this->getItem();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$connModel 	=& JModel::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
 		$connModel->getConnection($item->connection_id);
@@ -240,7 +240,7 @@ class FabrikModelList extends FabModelAdmin
 		$connModel = $this->getCnn();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		JText::script('COM_FABRIK_ACTION');
 		JText::script('COM_FABRIK_DO');
@@ -405,10 +405,9 @@ class FabrikModelList extends FabModelAdmin
 
 		$plugins = JPluginHelper::getPlugin('fabrik_list');
 
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
-		$feListModel = JModel::getInstance('list', 'fabrikFEModel');
+		$feListModel = JModel::getInstance('List', 'FabrikFEModel');
 		$feListModel->setId($this->getState('list.id'));
 
 		foreach ($plugins as $x => $plugin) {
@@ -447,7 +446,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		if (is_null($this->formModel)) {
 			$config = array();
-			JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+			//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 			$config['dbo'] = FabrikWorker::getDbo();
 			$this->formModel = JModel::getInstance('Form', 'FabrikFEModel', $config);
 			$this->formModel->setDbo($config['dbo']);
@@ -471,7 +470,7 @@ class FabrikModelList extends FabModelAdmin
 	public function getFEModel()
 	{
 		if (is_null($this->feListModel)) {
-			JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+			//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 			$this->feListModel = JModel::getInstance('List', 'FabrikFEModel');
 			$this->feListModel->setState('list.id', $this->getState('list.id'));
 		}

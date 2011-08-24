@@ -156,7 +156,7 @@ class FabrikModelElement extends JModelAdmin
 		if (is_null($formrow)) {
 			$aEls[] = $aGroups[] = JText::_('COM_FABRIK_GROUP_MUST_BE_IN_A_FORM');
 		} else {
-			JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+			//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 
 			$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 			$formModel->setId($formrow->form_id);
@@ -271,7 +271,7 @@ class FabrikModelElement extends JModelAdmin
 		//trigger the validation dispatcher to get the validation rules html
 		$plugins = JPluginHelper::getPlugin('fabrik_validationrule');
 
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		foreach ($plugins as $x => $plugin) {
 
@@ -304,7 +304,7 @@ class FabrikModelElement extends JModelAdmin
 		$validations = JArrayHelper::getValue($item->params, 'validations', array());
 		$plugins = JArrayHelper::getValue($validations, 'plugin', array());
 		$return = array();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		$pluginData = empty($item->params) ? array() : (array)$item->params;
@@ -344,7 +344,7 @@ class FabrikModelElement extends JModelAdmin
 		$abstractPlugins = $this->getAbstractPlugins();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		$opts = new stdClass();
@@ -396,7 +396,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		JRequest::setvar('view', 'element');
 		JPluginHelper::importPlugin('fabrik_element', $plugin);
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		if ($plugin == '') {
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
@@ -472,7 +472,7 @@ class FabrikModelElement extends JModelAdmin
 					$this->setError(JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
 				}
 			} else {
-				$joinListModel = JModel::getInstance('list', 'fabrikFEModel');
+				$joinListModel = JModel::getInstance('list', 'FabrikFEModel');
 				$joinListModel->setId($joinTblId);
 				$joinEls = $joinListModel->getElements();
 
@@ -505,7 +505,7 @@ class FabrikModelElement extends JModelAdmin
 
 	private function getElementPluginModel($data)
 	{
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager	= JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$id	= $data['id'];
 		$elementModel = $pluginManager->getPlugIn($data['plugin'], 'element');
@@ -839,7 +839,7 @@ class FabrikModelElement extends JModelAdmin
 	public function delete($cids)
 	{
 		// Initialize variables
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager	= JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$drops = JRequest::getVar('drop');
 		foreach ($cids as $id) {
@@ -878,7 +878,7 @@ class FabrikModelElement extends JModelAdmin
 	function copy()
 	{
 		$cid = JRequest::getVar('cid', null, 'post', 'array');
-		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
+		//JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 		JArrayHelper::toInteger($cid);
 		$names = JRequest::getVar('name', null, 'post', 'array');
 		$db = FabrikWorker::getDbo();

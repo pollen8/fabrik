@@ -63,62 +63,36 @@ Loader = new Class({
 	initialize:function(options){
 		this.setOptions(options);
 		head.ready(function() {
-			var i = this.getSpinner();
-			var s = new Element('span');
-			this.modal = new Element('div', {'class':'fbPackageStatus'}).adopt(i).adopt(s);
-			this.modal.inject(document.body);	
-			
-			this.fx = new Fx.Tween(this.modal, {
-			'duration': 350,
-			property:'opacity',
-			'link':'cancel',
-			transition: Fx.Transitions.Sine.easeInOut
-			});
-			this.fx.set(0);
+			this.spinners = {};			
 		}.bind(this));
 	},
 	
-	getSpinner: function(){
-		return new Element('img', {'src':Fabrik.liveSite + this.options.tmpl + 'ajax-loader.gif'});
-	},
-	
-	start: function(msg, inline){
-		msg = [msg, 'loading'].pick();
+	getSpinner: function(inline, msg){
+		msg = msg ? msg : 'loading';
 		if (typeOf(document.id(inline)) == 'null') {
 			inline = false;
 		}
 		var inline = inline ? inline : false;
-		this.modal.getElement('span').set('text', msg);
-		if (!inline){
-			this.modal.id = 'fbPackageLoader';
-			this.modal.keepCenter();
-			Fabrik.overlay.show();
-			this.fx.start(1);
-		}else {
-			this.getSpinner().inject(document.id(inline), 'after');
-			this.modal.id = '';
+		var target = inline ? inline : document.body;
+		if (!this.spinners[inline]) {
+			this.spinners[inline] = new Spinner(target, {'message':msg});
 		}
+		return this.spinners[inline];
 	},
 	
-	stop: function(msg, inline, keepOverlay){
-		keepOverlay = keepOverlay ? keepOverlay : false;
-		if (typeOf(document.id(inline)) == 'null') {
-			//this.modal.hide();
-			this.fx.set(0);
-			if (!keepOverlay) {
-				Fabrik.overlay.hide();
-			}
-		}else{
-			document.id(inline).getNext().destroy();
-		}
-		
+	start: function(inline, msg){
+		this.getSpinner(inline, msg).position().show();
+	},
+	
+	stop: function(inline, msg, keepOverlay){
+		this.getSpinner(inline, msg).hide();
 	}
 });
 
 /**
  * semi transparent bg to use as overlay when displaying windows.
  */
-
+/*
 Overlay = new Class({
 	
 	initialize:function(){
@@ -158,7 +132,7 @@ Overlay = new Class({
 		this.fx.start(0.6);
 	}
 });
-
+*/
 /**
  * create the Fabrik name space
  */
@@ -177,5 +151,5 @@ if(typeof(Fabrik)==="undefined"){
 	
 head.ready(function() {
 	Fabrik.tips = new FloatingTips('.fabrikTip', {html:true});
-	Fabrik.overlay = new Overlay();
+	//Fabrik.overlay = new Overlay();
 });

@@ -117,7 +117,6 @@ $saveOrder	= $listOrder == 'e.ordering';
 				}else{
 					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="'.JText::_('COM_FABRIK_PARENT_ELEMENT').'"').'&nbsp;';
 				}?>
-				<?php echo $row->id; ?>
 					</td>
 					<td><?php echo $item->id; ?></td>
 					<td><?php echo JHtml::_('grid.id', $i, $item->id); ?></td>

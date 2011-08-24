@@ -85,7 +85,7 @@ echo "
 	float:left;
 	padding:2px 6px 0 6px;
 	border-left:1px solid #999;
-	height:17px;
+	min-height:17px;
 	margin-top:2px;
 	margin-bottom:2px;
 }

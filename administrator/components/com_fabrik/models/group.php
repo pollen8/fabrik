@@ -110,7 +110,7 @@ class FabrikModelGroup extends FabModelAdmin
 			$data['created_by'] = $user->get('id');
 			$data['created_by_alias'] = $user->get('username');
 			$data['created'] = JFactory::getDate()->toMySQL();
-			
+
 		}
 		$makeJoin = ($data['params']['repeat_group_button'] == 1);
 		if ($makeJoin) {
@@ -131,12 +131,12 @@ class FabrikModelGroup extends FabModelAdmin
 		}
 		return $return;
 	}
-	
+
 	/**
 	 *clears old form group entries if found and adds new ones
 	 * @param array $data
 	 */
-	
+
 	protected function makeFormGroup($data)
 	{
 		$db = FabrikWorker::getDbo();
@@ -160,7 +160,7 @@ class FabrikModelGroup extends FabModelAdmin
 
 	public function makeJoinedGroup(&$data)
 	{
-		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
+		//JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 		$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($data['id']);
 		$listModel = $groupModel->getListModel();
@@ -174,8 +174,8 @@ class FabrikModelGroup extends FabModelAdmin
 		$names['parent_id'] = "parent_id INT(6)";
 		foreach ($elements as $element) {
 			$fname = $element->getElement()->name;
-			// if we are making a repeat group from the primary group then we dont want to 
-			// overwrite the repeat group tables id definition with that of the main tables 
+			// if we are making a repeat group from the primary group then we dont want to
+			// overwrite the repeat group tables id definition with that of the main tables
 			if (!array_key_exists($fname, $names)) {
 				$str = FabrikString::safeColName($fname);
 				$field = JArrayHelper::getValue($fields, $fname);

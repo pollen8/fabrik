@@ -34,7 +34,7 @@ class FabrikControllerForm extends JControllerForm
 	function view()
 	{
 		$document =& JFactory::getDocument();
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType	= $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
@@ -54,10 +54,10 @@ class FabrikControllerForm extends JControllerForm
 	/**
 	 * handle saving posted form data from the admin pages
 	 */
-	
+
 	function process()
 	{
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 
 		$document = JFactory::getDocument();

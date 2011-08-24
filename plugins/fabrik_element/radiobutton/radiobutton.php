@@ -392,9 +392,9 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	function getValidationWatchElements($repeatCounter)
 	{
-		$id 			= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$ar = array(
-			'id' 			=> $id,
+			'id'=> $id,
 			'triggerEvent' => 'click'
 			);
 			return array($ar);
@@ -417,7 +417,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	public function canToggleValue()
 	{
-		return true;
+		return count($this->getSubOptionValues()) < 3 ? true : false;
 	}
 }
 ?>

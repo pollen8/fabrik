@@ -3822,6 +3822,8 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 		//@TODO add acl checks here
 		$task = JRequest::getVar('task');
+		$saving = ($task == 'element.save' || $task == 'save') ? true : false;
+		$htmlid = $this->getHTMLId($repeatCounter);
 		if ($this->canToggleValue() && ($task !== 'element.save' && $task !== 'save')) {
 			// ok for yes/no elements activating them (double clicking in cell)
 			// should simply toggle the stored value and return the new html to show
@@ -3850,39 +3852,39 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$listModel->doCalculations();
 		$doCalcs = "\nFabrik.blocks['table_".$listid."'].updateCals(".json_encode($listModel->getCalculations()).")";
 
-		// so not an element with toggle values, so load up the form widget to enable user
-		// to select/enter a new value
-		//wrap in fabriKElement div to ensure element js code works
-		$html .= "<div class=\"fabrikElementContainer\">";
-		$html .= "<div class=\"fabrikElement\">";
-		if ($task !== 'element.save' && $task !== 'save') {
-			//render form element
-			$html .= $this->_getElement($data, $repeatCounter, $groupModel);
-		} else {
-			// render list view
-			$html .= $this->renderListData($data[$key], $data);
-		}
-		$htmlid = $this->getHTMLId($repeatCounter);
-		$html .= "</div></div>";
-		if(JRequest::getVar('task') !== 'element.save') {
-			$html .= "<div class=\"ajax-controls\">";
-			if (JRequest::getBool('inlinesave') == true) {
-				$html .= "<a href=\"#\" class=\"inline-save\"><img src=\"".COM_FABRIK_LIVESITE."media/com_fabrik/images/action_check.png\" alt=\"".JText::_('SAVE')."\" /></a>";
-			}
-			if (JRequest::getBool('inlinecancel') == true) {
-				$html .= "<a href=\"#\" class=\"inline-cancel\"><img src=\"".COM_FABRIK_LIVESITE."media/com_fabrik/images/del.png\" alt=\"".JText::_('CANCEL')."\" /></a>";
-			}
-			$html .= "</div>";
+		if(!$saving) {
+			// so not an element with toggle values, so load up the form widget to enable user
+			// to select/enter a new value
+			//wrap in fabriKElement div to ensure element js code works
 
+			$html .= "<div class=\"floating-tip\" style=\"position:absolute\">
+			<ul class=\"fabrikElementContainer\">";
+			$html .= "<li class=\"fabrikElement\">";
+			$html .= $this->_getElement($data, $repeatCounter, $groupModel);
+			$html .= "</li>";
+			if (JRequest::getBool('inlinesave') && JRequest::getBool('inlinecancel')) {
+				$html .= "<li class=\"ajax-controls\">";
+				if (JRequest::getBool('inlinesave') == true) {
+					$html .= "<a href=\"#\" class=\"inline-save\"><img src=\"".COM_FABRIK_LIVESITE."media/com_fabrik/images/action_check.png\" alt=\"".JText::_('SAVE')."\" /></a>";
+				}
+				if (JRequest::getBool('inlinecancel') == true) {
+					$html .= "<a href=\"#\" class=\"inline-cancel\"><img src=\"".COM_FABRIK_LIVESITE."media/com_fabrik/images/del.png\" alt=\"".JText::_('CANCEL')."\" /></a>";
+				}
+				$html .= "</li>";
+			}
+			$html .= "</ul>";
+			$html .= "</div>";
 			$onLoad = "Fabrik.inlineedit_$elementid = ".$this->elementJavascript($repeatCounter).";\n".
 			"Fabrik.inlineedit_$elementid.select();
 			Fabrik.inlineedit_$elementid.focus();
-			Fabrik.inlineedit_$elementid.token = '".JUtility::getToken()."';";
+			Fabrik.inlineedit_$elementid.token = '".JUtility::getToken()."';\n";
 
+			$onLoad .= "window.fireEvent('fabrik.list.inlineedit.setData');\n";
 			$srcs = array();
 			$this->formJavascriptClass($srcs);
 			FabrikHelperHTML::script($srcs, true, $onLoad);
 		} else {
+			$html .= $this->renderListData($data[$key], $data);
 			$html .= "\n<script type=\"text/javasript\">";
 			$html .= $doCalcs;
 			$html .= "</script>\n";

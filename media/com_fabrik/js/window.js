@@ -31,7 +31,7 @@ Fabrik.Window = new Class({
 		container:false,
 		loadMethod:'html',
 		contentURL:'',
-		createShowOverLay:true,
+		createShowOverLay:false,
 		width:300,
 		height:300,
 		onContentLoaded: (function(){})
@@ -43,7 +43,7 @@ Fabrik.Window = new Class({
 	{
 		this.setOptions(opts);
 		if(this.options.createShowOverLay){
-			Fabrik.overlay.show();
+			//Fabrik.overlay.show();
 		}
 		this.makeWindow();
 	},
@@ -133,11 +133,13 @@ Fabrik.Window = new Class({
 			break;
 		case 'xhr':
 			var u = this.window.getElement('.itemContent');
+			Fabrik.loader.start(u);
 			new Request.HTML({
 				'url':this.options.contentURL,
 				'data':{'fabrik_window_id':this.options.id},
 				'update':u,
 				onSuccess:function(){
+					Fabrik.loader.stop(u);
 					this.fireEvent('onContentLoaded', [this]);
 				}.bind(this)
 			}).post();
@@ -196,16 +198,18 @@ Fabrik.Window = new Class({
 	close:function(e)
 	{
 		if(e){e.stop()};
+		/*
 		if(Fabrik.overlay){
-			Fabrik.overlay.hide();
-		}
+					Fabrik.overlay.hide();
+				}*/
+		
 		//cant destroy as we want to be able to reuse them (see crop in fileupload element)
 		this.window.fade('hide');
 	},
 	
 	open:function(e){
 		if(e){e.stop()};
-		Fabrik.overlay.show();
+		//Fabrik.overlay.show();
 		this.window.fade('show');
 	},
 	
@@ -253,9 +257,9 @@ Fabrik.RedirectWindow = new Class({
 			}
 		}
 		this.setOptions(opts);
-		if(this.options.createShowOverLay){
-			Fabrik.overlay.show();
-		}
+		//if(this.options.createShowOverLay){
+			//Fabrik.overlay.show();
+		//}
 		this.makeWindow();
 	}
 })

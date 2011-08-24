@@ -93,7 +93,7 @@ var FbForm = new Class( {
 					method : this.options.ajaxmethod,
 					data : editopts,
 					onComplete : function(r) {
-						Fabrik.loader.stop(null, this.options.inlineMessage);
+						Fabrik.loader.stop('form_'+this.id);
 						r = JSON.decode(r);
 						this.update(r);
 						this.form.getElement('input[name=rowid]').value = r.post.rowid;
@@ -103,7 +103,7 @@ var FbForm = new Class( {
 				this.form.getElement(b).addEvent('click', function(e) {
 					myAjax.options.data.rowid = this.form.getElement('input[name=rowid]').value;
 					e.stop();
-					Fabrik.loader.start('loading', this.options.inlineMessage);
+					Fabrik.loader.start('form_'+this.id, Joomla.JText._('COM_FABRIK_LOADING'));
 					myAjax.send();
 				}.bind(this));
 			}
@@ -301,7 +301,7 @@ var FbForm = new Class( {
 			var url = Fabrik.liveSite
 				+ 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id='
 				+ this.id;
-			Fabrik.loader.start('validating', this.options.inlineMessage);
+			Fabrik.loader.start('form_'+this.id, 'validating');
 	
 			// only validate the current groups elements, otherwise validations on
 			// other pages cause the form to show an error.
@@ -321,7 +321,7 @@ var FbForm = new Class( {
 				method :this.options.ajaxmethod,
 				data :d,
 				onComplete : function(r) {
-					Fabrik.loader.stop(null, this.options.inlineMessage);
+					Fabrik.loader.stop('form_'+this.id);
 					r = JSON.decode(r);
 					if (this._showGroupError(r, d) == false) {
 						this.changePage(dir);
@@ -350,7 +350,7 @@ var FbForm = new Class( {
 		this.form.getElement('input[name=task]').value = 'savepage';
 
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
-		Fabrik.loader.start('saving page', this.options.inlineMessage);
+		Fabrik.loader.start('form_'+this.id, 'saving page');
 		var data = this.getFormData();
 		new Request({
 			url:url,
@@ -365,7 +365,7 @@ var FbForm = new Class( {
 				if (this.options.ajax) {
 					window.fireEvent('fabrik.form.submitted', json);
 				}
-				Fabrik.loader.stop(null, this.options.inlineMessage);
+				Fabrik.loader.stop('form_'+this.id);
 			}.bind(this)
 		}).send();
 	},
@@ -764,7 +764,7 @@ var FbForm = new Class( {
 			if (this.options.ajax) {
 				//do ajax val only if onSubmit val ok
 				if (this.form) {
-					Fabrik.loader.start(Joomla.JText._('COM_FABRIK_LOADING'), this.options.inlineMessage);
+					Fabrik.loader.start('form_'+this.id, Joomla.JText._('COM_FABRIK_LOADING'));
 					this.elementsBeforeSubmit(e);
 					// get all values from the form
 					var data = $H(this.getFormData());
@@ -807,7 +807,7 @@ var FbForm = new Class( {
 							if (errfound === false) {
 								var keepOverlay = btn.name == 'apply' ? true : false;
 								//keepOverlay -works but is hdiden afterwards
-								Fabrik.loader.stop(null, this.options.inlineMessage, keepOverlay);
+								Fabrik.loader.stop('form_'+this.id, keepOverlay);
 								var saved_msg = $defined(json.msg) ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 								if (json.baseRedirect !== true) {
 									if ($defined(json.url)) {
@@ -829,7 +829,7 @@ var FbForm = new Class( {
 								}
 							} else {
 								// stop spinner
-								Fabrik.loader.stop(Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'), this.options.inlineMessage);
+								Fabrik.loader.stop('form_'+this.id, Joomla.JText._('COM_FABRIK_VALIDATION_ERROR') );
 							}
 						}.bind(this)
 					}).send();

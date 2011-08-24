@@ -644,7 +644,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if (JRequest::getCmd('format') == 'raw') {
 			ini_set('display_errors', 0);
 		}
-
 		@set_time_limit(300);
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
 		$form						=& $this->getForm();
@@ -673,6 +672,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 
 		$this->setFormData();
+
 
 		if (in_array(false, $pluginManager->runPlugins('onBeforeStore', $this))) {
 			return false;

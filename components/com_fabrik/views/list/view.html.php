@@ -73,6 +73,7 @@ class FabrikViewList extends JView{
 		$opts->isGrouped = $this->isGrouped;
 		$opts->formels		= $elementsNotInTable;
 		$opts->actionMethod = $model->getParams()->get('actionMethod');
+		$opts->data = $data;
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 

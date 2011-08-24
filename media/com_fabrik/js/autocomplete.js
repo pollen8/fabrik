@@ -25,9 +25,9 @@ var FbAutocomplete = new Class({
 		this.element = typeOf($(element)) == "null" ? document.getElement(element) : $(element);
 		
 		this.buildMenu();
-		this.spinner = Fabrik.loader.getSpinner();
-		this.spinner.inject(this.getInputElement(), 'after');
-		this.spinner.fade('hide'); // f3 - dont hide()
+		//this.spinner = Fabrik.loader.getSpinner();
+		//this.spinner.inject(this.getInputElement(), 'after');
+		//this.spinner.fade('hide'); // f3 - dont hide()
 		this.getInputElement().setProperty('autocomplete', 'off');
 		this.doSearch = this.search.bindWithEvent(this);
 		this.getInputElement().addEvent('keyup', this.doSearch);
@@ -47,7 +47,8 @@ var FbAutocomplete = new Class({
 				this.populateMenu(this.cache[v]);
 				this.openMenu();
 			}else{
-				this.spinner.fade('in'); //f3 fx used now
+				Fabrik.loader.start(this.getInputElement());
+				//this.spinner.fade('in'); //f3 fx used now
 				if(this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
@@ -57,7 +58,8 @@ var FbAutocomplete = new Class({
 		  		value: v
 		  	},
 				onComplete: function(e){
-					this.spinner.fade('out');
+					//this.spinner.fade('out');
+					Fabrik.loader.stop(this.getInputElement());
 					this.completeAjax(e, v);
 					//this.completeAjax.bindWithEvent(this, [v])
 				}.bind(this)
@@ -70,7 +72,8 @@ var FbAutocomplete = new Class({
 	completeAjax:function(r, v){
 		r = JSON.decode(r);
 		this.cache[v] = r;
-		this.spinner.fade('out'); //f3 fx now used
+		Fabrik.loader.stop(this.getInputElement());
+		//this.spinner.fade('out'); //f3 fx now used
 		this.populateMenu(r);
 		this.openMenu();
 	},
@@ -215,7 +218,8 @@ var FbCddAutocomplete = new Class({
 				this.populateMenu(this.cache[key]);
 				this.openMenu();
 			}else{
-				this.spinner.fade('in'); //f3 fx now used
+				Fabrik.loader.start(this.getInputElement());
+				//this.spinner.fade('in'); //f3 fx now used
 				if(this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
