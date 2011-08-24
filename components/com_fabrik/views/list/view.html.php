@@ -281,15 +281,18 @@ class FabrikViewList extends JView{
 		if (!$this->isMambot) {
 			$document->setTitle($w->parseMessageForPlaceHolder($params->get('page_title'), $_REQUEST));
 		}
+		/** depreciated (keep incase ppl use them in old tmpls**/
 		$this->table 					= new stdClass();
 		$this->table->label 	= $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
 		$this->table->intro 	= $w->parseMessageForPlaceHolder($item->introduction);
 		$this->table->id			= $item->id;
 		$this->table->db_table_name = $item->db_table_name;
-		$this->group_by				= $item->group_by;
+		/** end **/
+		$this->assign('list', $this->table);
+		$this->group_by	= $item->group_by;
 		$this->form = new stdClass();
 		$this->form->id = $item->id;
-		$this->formid = 'listform_' . $item->id;
+		$this->formid = 'listform_'.$item->id;
 		$form = $model->getFormModel();
 		$this->table->action = $this->get('TableAction');
 		$this->showCSV 				= $model->canCSVExport();
@@ -306,8 +309,8 @@ class FabrikViewList extends JView{
 			$this->pdfLink = FabrikHelperHTML::pdfIcon($model, $params);
 		}
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
-		$this->csvImportLink 	= $this->showCSVImport ? JRoute::_("index.php?option=com_fabrik&view=import&filetype=csv&listid=" . $item->id) : '';
-		$this->showAdd 				= $model->canAdd();
+		$this->csvImportLink = $this->showCSVImport ? JRoute::_("index.php?option=com_fabrik&view=import&filetype=csv&listid=" . $item->id) : '';
+		$this->showAdd = $model->canAdd();
 		if ($this->showAdd) {
 			if ($params->get('show-table-add', 1)) {
 				$this->assign('addRecordLink', $this->get('AddRecordLink'));

@@ -2351,7 +2351,6 @@ class FabrikFEModelList extends JModelForm {
 			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
 			$this->_access->add = in_array($this->getParams()->get('allow_add'), $groups);
-			//$this->_access->add = $user->authorise('core.add', 'com_fabrik.list.'.$this->getTable()->id);
 		}
 		return $this->_access->add;
 	}

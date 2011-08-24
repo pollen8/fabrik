@@ -25,7 +25,6 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	function renderListData($data, $oAllRowsData)
 	{
 		$params =& $this->getParams();
-		$this->_guessLinkType($data, $oAllRowsData, 0);
 		$data = $this->numberFormat($data);
 		$format = $params->get('text_format_string');
 		if ($format  != '') {
@@ -34,6 +33,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		if ($params->get('password') == "1") {
 			$data = str_pad('', strlen($data), '*');
 		}
+		$this->_guessLinkType($data, $oAllRowsData, 0);
 		return parent::renderListData($data, $oAllRowsData);
 	}
 
@@ -80,16 +80,14 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		if ($element->hidden == '1') {
 			$type = "hidden";
 		}
+		// $$$ hugh - if the form just failed validation, number formatted fields will already
+		// be formatted, so we need to un-format them before formatting them!
+		$value = $this->numberFormat($this->unNumberFormat($value));
 		if (!$this->_editable) {
 			$this->_guessLinkType($value, $data, $repeatCounter);
-			if ($params->get('field_use_number_format', false)) {
-				$thousand_sep = $params->get('field_thousand_sep', ',');
-				$decimal_sep = $params->get('field_decimal_sep', '.');
-				$decimal_length = (int)$params->get('decimal_length', 2);
-				$value = number_format($value, $decimal_length, $decimal_sep, $thousand_sep);
-			}
+			//$value = $this->numberFormat($value);
 			$format = $params->get('text_format_string');
-			if ($format  != '') {
+			if ($format != '') {
 				//$value =  eval(sprintf($format,$value));
 				//not sure why this was being evald??
 				$value =  sprintf($format, $value);
@@ -100,7 +98,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$bits['class']		= "fabrikinput inputbox $type";
+		$bits['class'] = "fabrikinput inputbox $type";
 		$bits['type']		= $type;
 		$bits['name']		= $name;
 		$bits['id']			= $id;
@@ -143,8 +141,11 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	 * format guess link type
 	 *
 	 * @param string $value
+	 * @param array data
+	 * @param int repeat counter
 	 */
-	function _guessLinkType(&$value, $data, $repeatCounter)
+
+	function _guessLinkType(&$value, $data, $repeatCounter = 0)
 	{
 		$params =& $this->getParams();
 		$guessed = false;
@@ -230,6 +231,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	/**
 	 * @return array key=>value options
 	 */
+
 	function getJoomfishOptions()
 	{
 		$params = $this->getParams();
@@ -257,5 +259,50 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		return true;
 	}
 
+	/**
+	 *  can be overwritten in add on classes
+	 * @param mixed thie elements posted form data
+	 * @param array posted form data
+	 */
+
+	function storeDatabaseFormat($val, $data)
+	{
+		if (is_array($val)) {
+			foreach ($val as $k => $v) {
+				$val[$k] = $this->_indStoreDatabaseFormat($v);
+			}
+			$val = implode(GROUPSPLITTER, $val);
+		}
+		else {
+			$val = $this->_indStoreDatabaseFormat($val);
+		}
+		return $val;
+	}
+
+	function _indStoreDatabaseFormat($val) {
+		return $this->unNumberFormat($val);
+	}
+	
+	protected function getAvgQuery(&$tableModel, $label = "'calc'")
+	{
+		$params = $this->getParams();
+		$format = $params->get('text_format', 'text');
+		$decimal_places = $format == 'decimal' ? $params->get('decimal_length', '0') : '0';
+		$table 			=& $tableModel->getTable();
+		$joinSQL 		= $tableModel->_buildQueryJoin();
+		$whereSQL 	= $tableModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
+		$groupModel =& $this->getGroup();
+		if ($groupModel->isJoin()) {
+			//element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
+			return "SELECT ROUND(AVG($name), $decimal_places) AS value, $label AS label FROM ".FabrikString::safeColName($table->db_table_name)." $joinSQL $whereSQL";
+		} else {
+			// need to do first query to get distinct records as if we are doing left joins the sum is too large
+			return "SELECT ROUND(AVG(value), $decimal_places) AS value, label
+FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FROM ".FabrikString::safeColName($table->db_table_name)." $joinSQL $whereSQL) AS t";
+		}
+
+	}
+	
 }
 ?>

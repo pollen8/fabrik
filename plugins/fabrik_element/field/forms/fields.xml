@@ -70,7 +70,25 @@
 				default="2"
 				label="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_LABEL"
 				description="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_DESC" />
-				
+			
+			<field name="field_use_number_format" 
+				type="radio" default="0" 
+				label="PLG_ELEMENT_FIELD_USE_NUMBER_FORMAT_LABEL" 
+				description="PLG_ELEMENT_FIELD_USE_NUMBER_FORMAT_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+		
+			<field name="field_thousand_sep" 
+				type="text" size="3" default="," 
+				label="PLG_ELEMENT_FIELD_THOUSAND_SEP_LABEL" 
+				description="PLG_ELEMENT_FIELD_THOUSAND_SEP_DESC" />
+		
+			<field name="field_decimal_sep" 
+				type="text" size="3" default="." 
+				label="PLG_ELEMENT_FIELD_DECIMAL_SEP_LABEL" 
+				description="PLG_ELEMENT_FIELD_DECIMAL_SEP_DESC" />
+			
 			<field name="text_format_string"
 				type="text"
 				label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL"

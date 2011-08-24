@@ -322,6 +322,26 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * @since 2.1.1
+	 * used in form model setJoinData.
+	 * @return array of element names to search data in to create join data array
+	 * can be overridden in element - see database join for example
+	 */
+
+	public function getJoinDataNames()
+	{
+		$group =& $this->getGroup()->getGroup();
+		$name = $this->getFullName(false, true, false);
+		$fv_name = 'join['.$group->join_id.']['.$name.']';
+		$rawname = $name."_raw";
+		$fv_rawname = 'join['.$group->join_id.']['.$rawname.']';
+		return array(
+		array($name, $fv_name),
+		array($rawname, $fv_rawname)
+		);
+	}
+
+	/**
 	 * can be overwritten in the plugin class - see database join element for example
 	 * @param array
 	 * @param array
@@ -404,7 +424,6 @@ class plgFabrik_Element extends FabrikPlugin
 			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
 			$this->_access->view = in_array($this->getParams()->get('view_access'), $groups);
-			//$this->_access->view = $user->authorise('core.viewable', 'com_fabrik.element.'.$this->getElement()->id);
 		}
 		return $this->_access->view;
 	}
@@ -421,7 +440,6 @@ class plgFabrik_Element extends FabrikPlugin
 			$user = JFactory::getUser();
 			$groups = $user->getAuthorisedViewLevels();
 			$this->_access->use = in_array($this->getElement()->access, $groups);
-			//$this->_access->use = $user->authorise('core.editable', 'com_fabrik.element.'.$this->getElement()->id);
 		}
 		return $this->_access->use;
 	}
@@ -440,7 +458,6 @@ class plgFabrik_Element extends FabrikPlugin
 			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
 			$this->_access->filter = in_array($this->getParams()->get('filter_access'), $groups);
-			//$this->_access->filter = $user->authorise('core.filter', 'com_fabrik.element.'.$this->getElement()->id);
 		}
 		return $this->_access->filter;
 	}
@@ -936,9 +953,9 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			$join =& $joinModel->getJoin();
 			if ($includeJoinString) {
-				$fullName = 'join[' . $join->id . '][' . $join->table_join . $thisStep . $element->name . ']';
+				$fullName = 'join['.$join->id.']['.$join->table_join.$thisStep.$element->name.']';
 			} else {
-				$fullName =  $join->table_join . $thisStep . $element->name;
+				$fullName = $join->table_join.$thisStep.$element->name;
 			}
 		} else {
 			//$$$rob this is a HUGH query strain e.g. 20 - 50 odd extra select * from jos_fabrik_lists where id = x!
@@ -1141,7 +1158,7 @@ class plgFabrik_Element extends FabrikPlugin
 		if ($elementTable->name != $this->_foreignKey) {
 			$l = $this->getLabel($c, $tmpl);
 			$w = new FabrikWorker();
-			$element->label	= $w->parseMessageForPlaceHolder($l, $model->_data);
+			$element->label = $w->parseMessageForPlaceHolder($l, $model->_data);
 		}
 		$element->errorTag = $this->addErrorHTML($c, $tmpl);
 		$groupParams =& $groupModel->getParams();
@@ -3310,7 +3327,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 	function isExactMatch($val)
 	{
-		$element			= $this->getElement();
+		$element = $this->getElement();
 		$filterExactMatch = isset($val['match'])? $val['match'] : $element->filter_exact_match;
 		$group =& $this->getGroup();
 		if (!$group->isJoin() && $group->canRepeat()) {
@@ -3548,7 +3565,28 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		}
 		return number_format((float)$data, $decimal_length, $decimal_sep, $thousand_sep);
 	}
-
+	
+	/**
+	 * strip number format from a number value
+	 * @param mixed (double/int) $data
+	 * @return string formatted number
+	 */
+	function unNumberFormat($val)
+	{
+		$params = $this->getParams();
+		if (!$params->get('field_use_number_format', false)) {
+			return $val;
+		}
+		// might think about rounding to decimal_length, but for now let MySQL do it
+		$decimal_length = (int)$params->get('decimal_length', 2);
+		// swap dec and thousand seps back to Normal People Decimal Format!
+		$decimal_sep = $params->get('field_decimal_sep', '.');
+		$thousand_sep = $params->get('field_thousand_sep', ',');
+		$val = str_replace($thousand_sep, '', $val);
+		$val = str_replace($decimal_sep, '.', $val);
+		return $val;
+	}
+	
 	/**
 	 *
 	 * Recursively get all linked children of an element
