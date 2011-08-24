@@ -60,7 +60,7 @@ if ($limit !== 0) {
  */
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 //if (!$useajax) {
-$listId = intval($params->get( 'list_id', 1));
+$listId = intval($params->get('list_id', 1));
 
 $viewName = 'list';
 $viewType	= $document->getType();
@@ -72,6 +72,7 @@ $view = clone($controller->getView($viewName, $viewType));
 // Push a model into the view
 $model	= $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
+$model->set('ajax', $useajax);
 $model->randomRecords = $random;
 if (!JError::isError($model)) {
 	$view->setModel($model, true);

@@ -28,6 +28,10 @@ var FbAutocomplete = new Class({
 		//this.spinner = Fabrik.loader.getSpinner();
 		//this.spinner.inject(this.getInputElement(), 'after');
 		//this.spinner.fade('hide'); // f3 - dont hide()
+		if (!this.getInputElement()){
+			fconsole('autocomplete didnt find input element');
+			return;
+		}
 		this.getInputElement().setProperty('autocomplete', 'off');
 		this.doSearch = this.search.bindWithEvent(this);
 		this.getInputElement().addEvent('keyup', this.doSearch);

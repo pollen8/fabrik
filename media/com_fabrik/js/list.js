@@ -488,9 +488,12 @@ var FbList = new Class({
 			document.id(this.options.form).getElements('.fabrik_filter').each(function(f){
 				e = f.get('tag') == 'select' ? 'change' : 'blur';
 				f.removeEvent(e);
+				f.store('initialvalue', f.get('value'));
 				f.addEvent(e, function(e){
 					e.stop();
-					this.submit('list.filter');
+					if (e.target.retrieve('initialvalue') !== e.target.get('value')) {
+						this.submit('list.filter');
+					}
 				}.bind(this));
 			}.bind(this));
 		}else{
@@ -669,7 +672,7 @@ var FbList = new Class({
 	updateRows: function(){
 		new Request.JSON({'url':Fabrik.liveSite+'index.php?option=com_fabrik&view=list&format=raw&listid='+this.id, onSuccess: function(json){
 			this._updateRows(json);
-			window.fireEvent('fabrik.list.update', [this, json]);
+			//window.fireEvent('fabrik.list.update', [this, json]);
 		}.bind(this)
 		}).send();
 		
@@ -683,7 +686,7 @@ var FbList = new Class({
 				key = "." + key;
 				try{
 					if (typeOf(header.getElement(key)) !== 'null') {
-					header.getElement(key).set('html',data);
+					header.getElement(key).set('html', data);
 					}
 				}catch(err){
 					fconsole(err);
@@ -769,6 +772,7 @@ var FbList = new Class({
 			}catch(err){
 				fconsole('mediabox scan:'+err);
 			}
+			window.fireEvent('fabrik.list.update', [this, data]);
 		}
 		 this.stripe();
 		 Fabrik.loader.stop('listform_'+this.id);
