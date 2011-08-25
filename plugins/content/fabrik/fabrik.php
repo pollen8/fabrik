@@ -36,7 +36,7 @@ class plgContentFabrik extends JPlugin
 
 	public function plgContentFabrik(&$subject, $params = null)
 	{
-		parent::__construct( $subject, $params);
+		parent::__construct($subject, $params);
 	}
 
 	/**

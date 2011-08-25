@@ -139,7 +139,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * Enter description here ...
-	 * @param unknown_type $tableid
+	 * @param unknown_type $listid
 	 * @param unknown_type $formid
 	 * @param unknown_type $row_id
 	 * @param unknown_type $ids
@@ -155,10 +155,13 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$db = FabrikWorker::getDbo();
 			$elementid = $this->getElement()->id;
 			// do this  query so that table view only needs one query to load up all ratings
-			$query = "SELECT row_id, user_id FROM #__fabrik_ratings WHERE rating <> -1 AND listid = ".(int)$listid." AND formid = ".(int)$formid." AND element_id = ".(int)$elementid;
+			$query = "SELECT row_id, user_id FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int)$listid." AND formid = ".(int)$formid." AND element_id = ".(int)$elementid;
 			$query .= " AND row_id IN (".implode(',', $ids) .") GROUP BY row_id";
 			$db->setQuery($query);
 			$this->creatorIds = $db->loadObjectList('row_id');
+			if (!$this->creatorIds) {
+				JError::raiseNotice(500, $db->getErrorMsg());
+			}
 		}
 		return array_key_exists($row_id, $this->creatorIds) ? $this->creatorIds[$row_id]->user_id : 0;
 	}
@@ -299,7 +302,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	private function getCookieName($listid, $row_id)
 	{
-		$cookieName =  "rating-table_{$listid}_row_{$row_id}".$_SERVER['REMOTE_ADDR'];
+		$cookieName = "rating-table_{$listid}_row_{$row_id}".$_SERVER['REMOTE_ADDR'];
 		jimport('joomla.utilities.utility');
 		return JUtility::getHash($cookieName);
 	}
