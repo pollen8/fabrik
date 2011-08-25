@@ -4446,6 +4446,8 @@ class FabrikFEModelList extends JModelForm {
 			$q = JDEBUG ? $fabrikDb->getQuery() : '';
 			return JError::raiseWarning(500, 'Store row failed: ' . $q  . "<br>" . $fabrikDb->getErrorMsg());
 		} else {
+			// Clean the cache.
+			JFactory::getCache('com_fabrik')->clean();
 			// $$$ rob new as if you update a record the insertid() returns 0
 			$this->lastInsertId = ($rowId == '' || $rowId == 0) ?$fabrikDb->insertid() : $rowId;
 			return true;

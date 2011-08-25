@@ -34,6 +34,11 @@ class FabrikViewElement extends JView
 		$plugin =& $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$plugin->inLineEdit();
+
+		$task = JRequest::getVar('task');
+		if ($task !== 'element.save' && $task !== 'save') {
+			JFactory::getCache('com_fabrik')->clean();
+		}
 	}
 
 }

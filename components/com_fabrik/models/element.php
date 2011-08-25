@@ -3818,7 +3818,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$key = $this->getFullName();
 
 		$template = JFactory::getApplication()->getTemplate();
-			FabrikHelperHTML::addPath(JPATH_SITE."/administrator/templates/$template/images/", 'image', 'list');
+		FabrikHelperHTML::addPath(JPATH_SITE."/administrator/templates/$template/images/", 'image', 'list');
 
 		//@TODO add acl checks here
 		$task = JRequest::getVar('task');
