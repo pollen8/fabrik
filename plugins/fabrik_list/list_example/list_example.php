@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
-class plgFabrik_ListExample extends plgFabrik_List {
+class plgFabrik_ListList_Example extends plgFabrik_List {
 
 	var $_counter = null;
 
@@ -25,7 +25,7 @@ class plgFabrik_ListExample extends plgFabrik_List {
 	 *
 	 */
 
-	function onFiltersGot(&$params, &$model ) {
+	function onFiltersGot(&$params, &$model) {
 
 	}
 
@@ -34,10 +34,8 @@ class plgFabrik_ListExample extends plgFabrik_List {
 	 *
 	 */
 
-	function onMakeFilters(&$params, &$model ) {
+	function onMakeFilters(&$params, &$model) {
 	}
-
-
 
 		/**
 	 * do the plugin action
