@@ -10,15 +10,15 @@
 			>
 			
 			<field name="kaltura_table"
-				observe="params__kaltura_connection" 
+				observe="params_kaltura_connection" 
 				type="fabriktables"
 				connection_in_repeat="false" label="table" />
 				
 			<field name="kaltura_video"
 				type="element"
-				connection="params__kaltura_connection"
+				connection="params_kaltura_connection"
 				connection_in_repeat="false"
-				table="params__kaltura_table" label="VIDEOELEMENT"
+				table="params_kaltura_table" label="VIDEOELEMENT"
 				description="VIDEOELEMENTDESC" />
 				
 			<field name="kaltura_partnerid" type="text" 

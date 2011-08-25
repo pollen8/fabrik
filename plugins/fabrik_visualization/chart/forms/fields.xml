@@ -38,7 +38,7 @@
 			<field name="x_axis_label" 
 				type="element" 
 				connection_in_repeat="false" 
-				connection="params__chart_connection" 
+				connection="params_chart_connection" 
 				table="params_chart_table" 
 				label="PLG_VISUALIZATION_CHART_AXIS_LABEL_LABEL" 
 				description="PLG_VISUALIZATION_CHART_AXIS_LABEL_DESC" />

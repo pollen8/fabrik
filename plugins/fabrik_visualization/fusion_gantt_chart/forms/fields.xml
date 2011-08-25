@@ -12,7 +12,7 @@
 				type="fabriktables"
 				connection_in_repeat="false"
 				repeat="0"
-				observe="params__fusion_gantt_chart_connection"
+				observe="params_fusion_gantt_chart_connection"
 				label="PLG_VISUALIZATION_GANTT_TABLE_LABEL" />
 				
 		</fieldset>
@@ -23,8 +23,8 @@
 				type="element"
 				connection_in_repeat="false"
 				include_calculations="1"
-				connection="params__fusion_gantt_chart_connection"
-				table="params__fusion_gantt_chart_table"
+				connection="params_fusion_gantt_chart_connection"
+				table="params_fusion_gantt_chart_table"
 				label="PLG_VISUALIZATION_GANNT_PROCESS_LABEL"
 				description="PLG_VISUALIZATION_GANNT_PROCESS_DESC" />
 
@@ -41,8 +41,8 @@
 				type="element"
 				connection_in_repeat="false"
 				include_calculations="1"
-				connection="params__fusion_gantt_chart_connection"
-				table="params__fusion_gantt_chart_table"
+				connection="params_fusion_gantt_chart_connection"
+				table="params_fusion_gantt_chart_table"
 				label="PLG_VISUALIZATION_GANNT_STARTDATE_ELEMENT_LABEL"
 				description="PLG_VISUALIZATION_GANNT_STARTDATE_ELEMENT_DESC" />
 				
@@ -50,8 +50,8 @@
 				type="element"
 				connection_in_repeat="false"
 				include_calculations="1"
-				connection="params__fusion_gantt_chart_connection"
-				table="params__fusion_gantt_chart_table"
+				connection="params_fusion_gantt_chart_connection"
+				table="params_fusion_gantt_chart_table"
 				label="PLG_VISUALIZATION_GANNT_ENDDATE_ELEMENT_LABEL"
 				description="PLG_VISUALIZATION_GANNT_ENDDATE_ELEMENT_DESC" />
 				
@@ -59,8 +59,8 @@
 				type="element"
 				connection_in_repeat="false"
 				include_calculations="1"
-				connection="params__fusion_gantt_chart_connection"
-				table="params__fusion_gantt_chart_table"
+				connection="params_fusion_gantt_chart_connection"
+				table="params_fusion_gantt_chart_table"
 				label="PLG_VISUALIZATION_GANNT_LABEL_ELEMENT_LABEL"
 				description="PLG_VISUALIZATION_GANNT_LABEL_ELEMENT_DESC" />
 				
@@ -68,8 +68,8 @@
 				type="element"
 				connection_in_repeat="false"
 				include_calculations="1"
-				connection="params__fusion_gantt_chart_connection"
-				table="params__fusion_gantt_chart_table"
+				connection="params_fusion_gantt_chart_connection"
+				table="params_fusion_gantt_chart_table"
 				label="PLG_VISUALIZATION_GANNT_HOVER_ELEMENT_LABEL"
 				description="PLG_VISUALIZATION_GANNT_HOVER_ELEMENT_DESC" />
 				
@@ -77,8 +77,8 @@
 				type="element"
 				connection_in_repeat="false"
 				include_calculations="1"
-				connection="params__fusion_gantt_chart_connection"
-				table="params__fusion_gantt_chart_table"
+				connection="params_fusion_gantt_chart_connection"
+				table="params_fusion_gantt_chart_table"
 				label="PLG_VISUALIZATION_GANNT_MILESTONE_ELEMENT_LABEL"
 				description="PLG_VISUALIZATION_GANNT_MILESTONE_ELEMENT_DESC" />
 				
@@ -86,8 +86,8 @@
 				type="element"
 				connection_in_repeat="false"
 				include_calculations="1"
-				connection="params__fusion_gantt_chart_connection"
-				table="params__fusion_gantt_chart_table"
+				connection="params_fusion_gantt_chart_connection"
+				table="params_fusion_gantt_chart_table"
 				label="PLG_VISUALIZATION_GANNT_CONNECTION_ELEMENT_LABEL"
 				description="PLG_VISUALIZATION_GANNT_CONNECTION_ELEMENT_DESC" />
 				
