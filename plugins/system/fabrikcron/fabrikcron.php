@@ -183,18 +183,6 @@ class plgSystemFabrikcron extends JPlugin
 	}
 
 	/**
-	* @since 3.0
-	 * need to call this here otherwise you get class exists error
-	 */
-
-	function onAfterInitialise()
-	{
-		jimport('joomla.filesystem.file');
-		$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php' : JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'defines.php';
-		require_once( $defines );
-	}
-
-	/**
 	 * perform the actual cron after the page has rendered
 	 */
 
