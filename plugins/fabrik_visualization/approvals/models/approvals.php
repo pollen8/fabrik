@@ -14,53 +14,19 @@ jimport('joomla.application.component.model');
 
 require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
 
-class fabrikModelApprovals extends FabrikModelVisualization {
-
-	/** @var object form model for standard add event form **/
-	var $_formModel = null;
-
-	/** @var array filters from url*/
-	var $filters = array();
-
-
-	/**
-	 * constructor
-	 */
-
-	function __construct()
-	{
-		parent::__construct();
-	}
+class fabrikModelApprovals extends FabrikFEModelVisualization {
 
 	function getHTML()
 	{
-		$params =& $this->getPluginParams();
-		$ids = $params->get('approvals_table', array(), '_default', 'array');
-		$approveEls = $params->get('approvals_approve_element', array(), '_default', 'array');
+		$params =& $this->getParams();
+		$ids = (array)$params->get('approvals_table');
+		$approveEls = (array)$params->get('approvals_approve_element');
 		$str = array();
 		for ($x = 0; $x < count($ids); $x++) {
-			$str[] = "{fabrik view=table id=".$ids[$x]." ". $approveEls[$x]."=0 resetfilters=1}";
+			$str[] = "{fabrik view=list id=".$ids[$x]." ". $approveEls[$x]."=0 resetfilters=1}";
 		}
 		return implode("\n", $str);
 	}
 
-
-/*	function getParams()
-	{
-		if (!isset($this->_params)) {
-			$v =& $this->getVisualization();
-			$this->_params = new fabrikParams($v->attribs, JPATH_SITE . '/administrator/components/com_fabrik/xml/connection.xml', 'component');
-		}
-		return $this->_params;
-	}
-
-	function getVizName()
-	{
-		if(is_null($this->vizName)) {
-			$item =& $this->_row;
-			$this->vizName = "oCalendar{$item->id}";
-		}
-		return $this->vizName;
-	}*/
 }
 ?>

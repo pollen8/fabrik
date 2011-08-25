@@ -8,7 +8,7 @@ $row =& $this->row;
 ?>
 
 
-<div id="<?php echo $this->containerId;?>" style="border:1px sold;margin:5px;">
+<div id="<?php echo $this->containerId;?>" class="fabrik_visualization" style="border:1px sold;margin:5px;">
 	<h1><?php echo $row->label;?></h1>
 	<div class='calendar-message'>
 

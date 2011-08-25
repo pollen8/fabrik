@@ -267,7 +267,7 @@ class FabrikFEModelVisualization extends JModel
 	function getParams()
 	{
 		if (is_null($this->_params)) {
-			$v =& $this->getVisualization();
+			$v = $this->getVisualization();
 			$this->_params = new fabrikParams($v->params);
 		}
 		return $this->_params;
@@ -278,6 +278,4 @@ class FabrikFEModelVisualization extends JModel
 		return $this->getState('id');
 	}
 }
-
-
 ?>

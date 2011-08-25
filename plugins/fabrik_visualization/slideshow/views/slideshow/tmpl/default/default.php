@@ -3,7 +3,7 @@
 defined('_JEXEC') or die();
 $row = $this->row;
 ?>
-<div id="slideshow_viz_<?php echo $row->id;?>">
+<div id="slideshow_viz_<?php echo $row->id;?>" class="fabrik_visualization">
 	<h1><?php echo $row->label;?></h1>
 	<?php echo $this->loadTemplate( 'filter'); ?>
 	<div><?php echo $row->intro_text;?></div>

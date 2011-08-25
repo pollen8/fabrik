@@ -3,7 +3,7 @@
 defined('_JEXEC') or die();
 $row = $this->row;
 ?>
-<div id="<?php echo $this->containerId;?>">
+<div id="<?php echo $this->containerId;?>" class="fabrik_visualization">
 	<h1><?php echo $row->label;?></h1>
 	<br/>
 	<p><?php echo $row->intro_text;?></p>

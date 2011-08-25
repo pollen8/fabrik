@@ -55,23 +55,26 @@ $query = $db->getQuery(true);
 $query->select('plugin')->from('#__{package}_visualizations')->where('id = '.(int)$id);
 $db->setQuery($query);
 $name = $db->loadResult();
-$path = COM_FABRIK_FRONTEND.DS.'plugins'.DS.'visualization'.DS.$name.DS.'controllers'.DS.$name.'.php';
+$path = JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$name.DS.'controllers'.DS.$name.'.php';
 if (file_exists($path)) {
 	require_once $path;
-}else{
+} else {
 	JError::raiseNotice(400, 'could not load viz:'.$name);
 	return;
 }
 $controllerName = 'FabrikControllerVisualization'.$name;
 $controller = new $controllerName();
-$controller->addViewPath(COM_FABRIK_FRONTEND.DS.'plugins'.DS.'visualization'.DS.$name.DS.'views');
+$controller->addViewPath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$name.DS.'views');
 $controller->addViewPath(COM_FABRIK_FRONTEND.DS.'views');
 
 //add the model path
-$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'plugins'.DS.'visualization'.DS.$name.DS.'models');
+$modelpaths = JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$name.DS.'models');
 $modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 
+$origId = JRequest::getInt('visualizationid');
+JRequest::setVar('visualizationid', $id);
 $controller->display();
+JRequest::setVar('visualizationid', $origId);
 /*
 $viewType	= $document->getType();
 

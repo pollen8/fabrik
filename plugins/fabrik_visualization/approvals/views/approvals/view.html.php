@@ -25,13 +25,13 @@ class fabrikViewApprovals extends JView
 
 		$this->assignRef('params', $this->get('PluginParams'));
 		$tmpl = $this->params->get('approvals_layout', $tmpl);
-		$tmplpath = COM_FABRIK_FRONTEND.DS.'plugins'.DS.'visualization'.DS.'approvals'.DS.'views'.DS.'approvals'.DS.'tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.'approvals'.DS.'views'.DS.'approvals'.DS.'tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);
 
 		$ab_css_file = $tmplpath.DS."template.css";
 
 		if (file_exists($ab_css_file)) {
-			JHTML::stylesheet('template.css', 'components/com_fabrik/plugins/visualization/approvals/views/approvals/tmpl/'.$tmpl.'/', true);
+			JHTML::stylesheet('/plugins/fabrik_visualization/approvals/views/approvals/tmpl/'.$tmpl.'/template.css');
 		}
 
 		$text = $this->loadTemplate();
