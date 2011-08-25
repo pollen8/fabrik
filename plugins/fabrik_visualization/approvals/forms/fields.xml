@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		
+		<fieldset name="plg-visualization-approvals-params" addfieldpath="/administrator/components/com_fabrik/models/fields" repeatcontrols="1" repeat="1" repeatmin="1">
+			
+			<field name="approvals_connection" 
+				type="connections"
+				label="PLG_VIZ_APPROVALS_CONNECTION_LABEL"
+				description="PLG_VIZ_APPROVALS_CONNECTION_DESC" />
+				
+			<field name="approvals_table"
+				type="fabriktables"
+				connection_in_repeat="true"
+				observe="params_approvals_connection"
+				label="PLG_VIZ_APPROVALS_TABLE_LABEL"
+				description="PLG_VIZ_APPROVALS_TABLE_DESC"/>
+				
+			<field name="approvals_approve_element"
+				type="element"
+				connection_in_repeat="true"
+				connection="params_approvals_connection"
+				table="params_approvals_table"
+				label="PLG_VIZ_APPROVALS_APPROVE_ELEMENT_LABEL"
+				description="PLG_VIZ_APPROVALS_APPROVE_ELEMENT_DESC"/>
+				
+			</fieldset>
+		</fields>
+	</form>
