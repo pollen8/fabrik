@@ -50,12 +50,12 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 	{
 		$params = $this->getParams();
 		$cnn = (int)JRequest::getInt('cnn');
-		$element 		= JRequest::getVar('observe');
-		$value 			= JRequest::getVar('v');
+		$element = JRequest::getVar('observe');
+		$value = JRequest::getVar('v');
 		JRequest::setVar('resetfilters', 1);
 
 		if ($cnn === 0 || $cnn == -1) { //no connection selected so query current forms' table data
-			$formid 		= JRequest::getInt('formid');
+			$formid = JRequest::getInt('formid');
 			JRequest::setVar($element, $value, 'get');
 			$model = JModel::getInstance('form', 'FabrikFEModel');
 			$model->setId($formid);
@@ -93,7 +93,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 			} else {
 				$newdata = $data[0];
 			}
-			echo json_encode($data[0]);
+			echo json_encode($newdata);
 		}
 	}
 

@@ -41,7 +41,6 @@ class FabrikViewConnections extends JView
 		}
 
 		$this->addToolbar();
-		//require_once JPATH_COMPONENT .'/models/fields/bannerclient.php';
 		parent::display($tpl);
 	}
 

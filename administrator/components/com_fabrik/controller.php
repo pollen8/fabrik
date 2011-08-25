@@ -46,7 +46,9 @@ class FabrikController extends JController
 
 	protected function createModel($name, $prefix = '', $config = array())
 	{
-		$db = FabrikWorker::getDbo();
+		// use true so that we always use the Joomla db when in admin.
+		// otherwise if alt cnn set to default that is loaded and the fabrik tables are not found
+		$db = FabrikWorker::getDbo(true);
 		$config['dbo'] = $db;
 		$r = parent::createModel($name, $prefix, $config);
 		return $r;

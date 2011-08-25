@@ -38,7 +38,7 @@ class FabrikModelConnection extends JModelAdmin
 		// not sure if we should be loading JTable or FabTable here
 		// issue with using Fabtable is that it will always load the cached verion of the cnn
 		// which might cause issues when migrating from test to live sites???
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabriKWorker::getDbo(true);
 		return FabTable::getInstance($type, $prefix, $config);
 
 	}

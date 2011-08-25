@@ -46,7 +46,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$sig = $type.$prefix.implode('.', $config);
 		if (!array_key_exists($sig, $this->tables)) {
-			$config['dbo'] = FabriKWorker::getDbo();
+			$config['dbo'] = FabriKWorker::getDbo(true);
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
 		}
 		return $this->tables[$sig];
@@ -60,6 +60,7 @@ class FabrikModelList extends FabModelAdmin
 	 * @return	mixed	A JForm object on success, false on failure
 	 * @since	1.6
 	 */
+
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.

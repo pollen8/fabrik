@@ -825,22 +825,28 @@ class FabrikWorker {
 		 *
 		 * @return JDatabase object
 		 */
-		public static function getDbo()
+		public static function getDbo($loadJoomlaDb = false)
 		{
 			if (!self::$database) {
 				JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-				$cn = JTable::getInstance('Connection', 'FabrikTable');
-				$cn->load(array('default'=> 1));
-				$conf				= JFactory::getConfig();
-				$host 			= $cn->host;
-				$user 			= $cn->user;
-				$password 	= $cn->password;
-				$database		= $cn->database;
-				if (defined('KOOWA')) {
-					$dbprefix = '';
+				$conf	= JFactory::getConfig();
+
+				if (!$loadJoomlaDb) {
+					$cn = JTable::getInstance('Connection', 'FabrikTable');
+					$cn->load(array('default'=> 1));
+
+					$host 			= $cn->host;
+					$user 			= $cn->user;
+					$password 	= $cn->password;
+					$database		= $cn->database;
 				} else {
-					$dbprefix = $conf->getValue('config.dbprefix');
+					$host 		= $conf->getValue('config.host');
+					$user 		= $conf->getValue('config.user');
+					$password = $conf->getValue('config.password');
+					$database	= $conf->getValue('config.db');
 				}
+				$dbprefix = $conf->getValue('config.dbprefix');
+
 				$driver 		= $conf->getValue('config.dbtype');
 				//test for sawpping db table names
 				$driver .= '_fab';

@@ -50,7 +50,7 @@ class FabrikModelPackage extends JModelAdmin
 
 	public function getTable($type = 'Package', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabriKWorker::getDbo(true);
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 

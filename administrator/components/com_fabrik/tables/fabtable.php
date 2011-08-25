@@ -27,7 +27,7 @@ class FabTable extends JTable
 
 	public static function getInstance($type, $prefix = 'JTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabriKWorker::getDbo(true);
 		return parent::getInstance($type, $prefix, $config);
 	}
 

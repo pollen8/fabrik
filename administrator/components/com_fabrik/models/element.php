@@ -84,7 +84,7 @@ class FabrikModelElement extends JModelAdmin
 
 	public function __construct($config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabriKWorker::getDbo(true);
 		parent::__construct($config);
 	}
 
@@ -99,7 +99,7 @@ class FabrikModelElement extends JModelAdmin
 	 */
 	public function getTable($type = 'Element', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabriKWorker::getDbo(true);
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 

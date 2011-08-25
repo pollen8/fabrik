@@ -16,13 +16,13 @@ class FabModelList extends JModelList
 {
 	/**
 	 * Constructor.
-	 * Ensure that we use te fabrik db model for the dbo
+	 * Ensure that we use the fabrik db model for the dbo
 	 * @param	array	An optional associative array of configuration settings.
 	 */
 
 	public function __construct($config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabriKWorker::getDbo(true);
 		parent::__construct($config);
 	}
 
