@@ -299,7 +299,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$dbtable = $this->actualTableName();
 		$listModel =& $this->getlistModel();
 		$table 		=& $listModel->getTable();
-		$fullElName = "$dbtable" . "___" . $this->_element->name;
+		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->_element->name);
 		$str = FabrikString::safeColName($fullElName)." AS ".$db->nameQuote($fullElName);
 		if ($table->db_primary_key == $fullElName) {
 			array_unshift($aFields, $fullElName);

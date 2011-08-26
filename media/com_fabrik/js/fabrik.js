@@ -90,50 +90,6 @@ Loader = new Class({
 });
 
 /**
- * semi transparent bg to use as overlay when displaying windows.
- */
-/*
-Overlay = new Class({
-	
-	initialize:function(){
-		this.overlay = new Element('div', {'id':'fabrikOverlay', 'styles':{'background-color':'#000'}});
-		this.overlay.addEvent('click', this.hide.bindWithEvent(this));
-		head.ready(function() {
-			this.overlay.inject(document.body);	
-			this.fx = new Fx.Tween(this.overlay, {
-			'duration': 350,
-			'property':'opacity',
-			'link':'cancel',
-			transition: Fx.Transitions.Sine.easeInOut
-			});
-			this.overlay.keepCenter();
-			this.fx.set(0);
-		}.bind(this));
-	},
-	
-	fade:function(dir){
-		dir = dir ? dir : 'out';
-		if (dir == 'out') {
-			this.fx.start(0).chain(function(){
-				this.hide();
-			}.bind(this));
-		} else {
-			this.show();
-		}
-	},
-	
-	hide:function(){
-		this.fx.set(0);
-		window.fireEvent('fabrik.overlay.hide');
-	},
-	
-	show:function(){
-		this.overlay.show();
-		this.fx.start(0.6);
-	}
-});
-*/
-/**
  * create the Fabrik name space
  */
 if(typeof(Fabrik)==="undefined"){

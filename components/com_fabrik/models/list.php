@@ -1932,17 +1932,7 @@ class FabrikFEModelList extends JModelForm {
 		$gkeys = array_keys($groups);
 		foreach ($gkeys as $x) {
 			$groupModel = $groups[$x];
-			// $$$ rob depreciated
-			/*$table_name = $table->db_table_name;
-			$group =& $groupModel->getGroup();
-			if ($groupModel->isJoin()) {
-			foreach ($aJoinObjs as $join) {
-			//also ignore any joins that are elements
-			if (array_key_exists('group_id', $join) && $join->group_id == $group->id && $join->element_id == 0) {
-			$table_name =  $join->table_join;
-			}
-			}
-			}*/
+
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$method = "getAsField_" . $this->_outPutFormat;
@@ -1968,7 +1958,6 @@ class FabrikFEModelList extends JModelForm {
 			$str = FabrikString::safeColName($table->db_primary_key)." AS __pk_val";
 			$this->fields[] = $str;
 		}
-
 
 		$this->_group_by_added = false;
 		//if the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)

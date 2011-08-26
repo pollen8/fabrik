@@ -63,7 +63,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$connection =& $listModel->getConnection();
 		//make sure same connection as this table
-		$fullElName = $table . "___" . $element->name;
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . "___" . $element->name);
 		if ($params->get('join_conn_id') == $connection->get('_id') || $element->plugin != 'databasejoin') {
 			$join =& $this->getJoin();
 			$joinTableName = $join->table_join_alias;
@@ -86,15 +86,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$k2 = $this->getJoinLabelColumn();
 
 			if (JArrayHelper::getValue($opts, 'inc_raw', true)) {
-				$aFields[]				= "$k AS `$fullElName" . "_raw`";
-				$aAsFields[]			= "`$fullElName". "_raw`";
+				$aFields[]				= "$k AS ".$db->nameQuote($fullElName."_raw");
+				$aAsFields[]			= $db->nameQuote($fullElName."_raw");
 			}
-			$aFields[] 				= "$k2 AS `$fullElName`";
-			$aAsFields[] 			= "`$fullElName`";
+			$aFields[] 				= "$k2 AS ".$db->nameQuote($fullElName);
+			$aAsFields[] 			= $db->nameQuote($fullElName);
 
 		} else {
-			$aFields[] 		= "`$table`.`$element->name` AS `$fullElName`";
-			$aAsFields[] 	= "`$fullElName`";
+			$aFields[] 		= $db->nameQuote($table).'.'.$db->nameQuote($element->name).' AS '.$db->nameQuote($fullElName);
+			$aAsFields[] 	= $db->nameQuote($fullElName);
 		}
 	}
 

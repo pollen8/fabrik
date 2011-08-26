@@ -474,9 +474,9 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$listModel =& $this->getlistModel();
 		$table 		=& $listModel->getTable();
 
-		$fullElName = "$dbtable" . "___" . $this->_element->name;
+		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->_element->name);
 		$dbtable = $db->nameQuote($dbtable);
-		$str 				= $dbtable.".".$db->nameQuote($this->_element->name)." AS ".$db->nameQuote($fullElName);
+		$str = $dbtable.".".$db->nameQuote($this->_element->name)." AS ".$db->nameQuote($fullElName);
 		if ($table->db_primary_key == $fullElName) {
 			array_unshift($aFields, $fullElName);
 			array_unshift($aAsFields, $fullElName);

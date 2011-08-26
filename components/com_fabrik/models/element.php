@@ -353,7 +353,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
 		$table =& $this->getListModel()->getTable();
-		$fullElName = $db->nameQuote("$dbtable" . "___" . $this->_element->name);
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote("$dbtable" . "___" . $this->_element->name));
 		$k = $db->nameQuote($dbtable).".".$db->nameQuote($this->_element->name);
 		$secret = JFactory::getConfig()->getValue('secret');
 		if ($this->encryptMe()) {
@@ -367,7 +367,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$jkey = "AES_DECRYPT($jkey, '".$secret."')";
 			}
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
-			$fullElName = $db->nameQuote("$jointable" . "___" . $this->_element->name);
+			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote("$jointable" . "___" . $this->_element->name));
 			$str = $this->_buildQueryElementConcat($jkey);
 
 		} else {
@@ -1604,7 +1604,8 @@ class plgFabrik_Element extends FabrikPlugin
 						$fxadded[$jsAct->js_e_trigger] = true;
 					}
 					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, JRequest::get('post'));
-					$js = "if (this.getValue() $jsAct->js_e_condition '$jsAct->js_e_value') {";
+					//$js = "if (this.getValue() $jsAct->js_e_condition '$jsAct->js_e_value') {";
+					$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
 					$js .= $jsControllerKey.".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
 					$js .= "}";
 					$js = addslashes($js);

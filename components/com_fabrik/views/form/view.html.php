@@ -272,7 +272,7 @@ class fabrikViewForm extends JView
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
 		$jsControllerKey = $model->_editable ? 'form_'. $model->getId() : 'details_'. $model->getId();
-		$allJsActions = $model->getJsActions();
+		$allJsActions = $this->get('JsActions');
 
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED')) {
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);

@@ -271,8 +271,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		$element 	= $this->getElement();
 		$params 	= $this->getParams();
 
-		$fullElName = $table . "___" . $element->name;
-
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . "___" . $element->name);
 
 		//check if main database is the same as the elements database
 		if ($this->inJDb()) {

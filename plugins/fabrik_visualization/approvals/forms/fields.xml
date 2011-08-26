@@ -24,6 +24,21 @@
 				label="PLG_VIZ_APPROVALS_APPROVE_ELEMENT_LABEL"
 				description="PLG_VIZ_APPROVALS_APPROVE_ELEMENT_DESC"/>
 				
+			<field name="approvals_title_element"
+				type="element"
+				connection_in_repeat="true"
+				connection="params_approvals_connection"
+				table="params_approvals_table"
+				label="PLG_VIZ_APPROVALS_TITLE_ELEMENT_LABEL"
+				description="PLG_VIZ_APPROVALS_TITLE_ELEMENT_DESC"/>
+				
+			<field name="approvals_user_element"
+				type="element"
+				connection_in_repeat="true"
+				connection="params_approvals_connection"
+				table="params_approvals_table"
+				label="PLG_VIZ_APPROVALS_USER_ELEMENT_LABEL"
+				description="PLG_VIZ_APPROVALS_USER_ELEMENT_DESC"/>
 			</fieldset>
 		</fields>
 	</form>

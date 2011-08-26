@@ -179,7 +179,8 @@ var FbForm = new Class( {
 				transition : Fx.Transitions.Sine.easeInOut
 			};
 			this.fx.elements[k] = {};
-			this.fx.elements[k].css = fxdiv.effect('opacity', opts);
+			//'opacity',
+			this.fx.elements[k].css = new Fx.Morph(fxdiv, opts);
 			if (typeOf(fxdiv) !== 'null' && (method == 'slide in' || method == 'slide out' || method == 'slide toggle')) {
 				this.fx.elements[k]['slide'] = new Fx.Slide(fxdiv, opts);
 			} else {
@@ -227,12 +228,13 @@ var FbForm = new Class( {
 				fxElement.removeClass('fabrikHide');
 				if (fx.css.lastMethod !== 'fadein') {
 					fx.css.element.show();
-					fx.css.start(0, 1);
+					//fx.css.start(0, 1);
+					fx.css.start({'opacity': [0, 1]});
 				}
 				break;
 			case 'fadeout':
 				if (fx.css.lastMethod !== 'fadeout') {
-					fx.css.start(1, 0).chain(function() {
+					fx.css.start({'opacity': [1, 0]}).chain(function() {
 						fx.css.element.hide();
 						fxElement.addClass('fabrikHide');
 					});

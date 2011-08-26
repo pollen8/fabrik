@@ -17,7 +17,7 @@ class fabrikViewApprovals extends JView
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);
 		$this->assignRef('row', $this->get('Visualization'));
-		$this->assign('html', $this->get('HTML'));
+		$this->assign('rows', $this->get('Rows'));
 
 		$this->assign('containerId', $this->get('ContainerId'));
 

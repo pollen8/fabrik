@@ -3,7 +3,9 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-// Import library dependencies
+//depreciated?
+
+/*// Import library dependencies
 jimport('joomla.application.component.helper');
 
 class FabrikCacheHelper
@@ -18,5 +20,5 @@ class FabrikCacheHelper
 		return $query;
 	}
 
-}
+}*/
 ?>

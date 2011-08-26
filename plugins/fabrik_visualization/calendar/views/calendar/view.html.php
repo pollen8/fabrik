@@ -155,7 +155,6 @@ class fabrikViewCalendar extends JView
 	function chooseaddevent()
 	{
 		$view->_layout = 'chooseaddevent';
-		// include language
 		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin =& $pluginManager->getPlugIn('calendar', 'visualization');
 		$model =& $this->getModel();

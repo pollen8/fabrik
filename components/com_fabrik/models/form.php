@@ -347,22 +347,21 @@ class FabrikFEModelForm extends FabModelForm
 				// which we should now be doing ... and getParent() causes an extra table lookup for every child
 				// element on the form.
 				$aJsActions[$elementModel->getElement()->id] = array();
-				$aElIds[] = $elementModel->getElement()->id;
+				$aElIds[] = (int)$elementModel->getElement()->id;
 			}
 		}
 		if (!empty($aElIds)) {
-			$sql = 'SELECT * FROM #__{package}_jsactions WHERE element_id IN (' . implode(',', $aElIds) . ')';
-			$db->setQuery($sql);
+			$query = $db->getQuery(true);
+			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN ('.implode(',', $aElIds).')');
+			$db->setQuery($query);
 			$res = $db->loadObjectList();
 		} else {
 			$res = array();
 		}
 		if (is_array($res)) {
 			foreach ($res as $r) {
-
 				//merge the js attribs back into the array
-				$j->loadINI($r->params);
-				$a = $j->toArray();
+				$a = json_decode($r->params);
 				foreach ($a as $k=>$v) {
 					$r->$k = $v;
 				}
