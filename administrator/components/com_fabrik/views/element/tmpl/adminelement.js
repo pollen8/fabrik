@@ -25,7 +25,7 @@ var fabrikAdminElement = new Class({
 		this.eEvents = ['hide', 'show', 'fadeout', 'fadein', 'slide in', 'slide out', 'slide toggle'];
 		this.eTrigger = this.options.elements;
 		this.eConditions = ['<', '<=', '==', '>=', '>', '!='];
-		if (typeOf($('addJavascript')) == false) {
+		if (typeOf(document.id('addJavascript')) == false) {
 			fconsole('add js button not found');
 		} else {
 			$('addJavascript').addEvent('click', function(e){
@@ -37,12 +37,12 @@ var fabrikAdminElement = new Class({
 			this.addJavascript(opt);
 		}.bind(this));
 		
-		$('jform_plugin').addEvent('change', this.changePlugin.bindWithEvent(this));
+		document.id('jform_plugin').addEvent('change', this.changePlugin.bindWithEvent(this));
 	},
 	
 	changePlugin: function(e){
 		e.stop();
-		$('plugin-container').empty().adopt(
+		document.id('plugin-container').empty().adopt(
 		new Element('span').set('text', 'Loading....')
 		);
 		var myAjax = new Request({
@@ -60,7 +60,7 @@ var fabrikAdminElement = new Class({
 			},
 			'update':$('plugin-container'),
 			'onComplete':function(r){
-				$('plugin-container').set('html', r);
+				document.id('plugin-container').set('html', r);
 				$exec(this.script);
 			}.bind(this)
 		}).send();
@@ -75,7 +75,8 @@ var fabrikAdminElement = new Class({
 		if(typeOf(opt) !== 'object'){
 			opt = {'params':{js_code:'',js_action:'',js_e_event:'',js_e_trigger:'',js_e_condition:'',js_e_value:'', code:''}};
 		}
-		code = new Element('textarea', {'rows':8,'cols':40,'name':'jform[js_code][]','class':'inputbox'}).appendText(opt.code);
+		opt.code = opt.code ? opt.code : '';
+		code = new Element('textarea', {'rows':8,'cols':40,'name':'jform[js_code][]','class':'inputbox'}).set('text', opt.code);
 		action = this._makeSel(this.jsCounter, 'jform[js_action][]', this.jsactions, opt.action);
 		var evs = this._makeSel(this.jsCounter, 'js_e_event[]',this.eEvents, opt.params.js_e_event, Joomla.JText._('COM_FABRIK_SELECT_DO'));
 		var triggers = this._makeSel(this.jsCounter, 'js_e_trigger[]',this.eTrigger, opt.params.js_e_trigger, Joomla.JText._('COM_FABRIK_SELECT_ON'));
@@ -99,14 +100,14 @@ var fabrikAdminElement = new Class({
 		);
 		var div = new Element('div');
 		content.inject(div);
-		div.inject($('javascriptActions'));
+		div.inject(document.id('javascriptActions'));
 		this.jsCounter ++;
 	},
 	
 	watchPluginDd: function(){
 		$('jform_plugin').addEvent('change', function(e){
 			e.stop();
-			var opt = $(e.target).get('value');
+			var opt = e.target.get('value');
 			$$('.elementSettings').each(function(tab){
 				if(opt == tab.id.replace('page-', '')){
 					tab.setStyles({display:'block'});
@@ -115,15 +116,15 @@ var fabrikAdminElement = new Class({
 				}
 			});
 		});
-		if($('page-'+this.options.plugin)){
-			$('page-'+this.options.plugin).setStyles({display:'block'});
+		if(document.id('page-'+this.options.plugin)){
+			document.id('page-'+this.options.plugin).setStyles({display:'block'});
 		};
 	},
 	
 	setParentViz: function(){
 		if (this.options.parentid.toInt() !== 0) {
 			myFX = new Fx.Tween('elementFormTable', {property:'opacity', duration: 500, wait: false}).set(0);
-			$('unlink').addEvent('click', function(e){
+			document.id('unlink').addEvent('click', function(e){
 				var s = (this.checked) ? "" : "readonly";
 				if (this.checked) {
 					myFX.start(0, 1);
@@ -133,8 +134,8 @@ var fabrikAdminElement = new Class({
 				}
 			});
 		}
-		if($('swapToParent')){
-			$('swapToParent').addEvent('click', function(e){
+		if(document.id('swapToParent')){
+			document.id('swapToParent').addEvent('click', function(e){
 				var f = document.adminForm;
 				f.task.value = 'element.parentredirect';
 				var to = e.target.className.replace('element_', '');;
@@ -146,7 +147,6 @@ var fabrikAdminElement = new Class({
 	
 	getPluginTop:function(plugin, loc, when){
 		return new Element('tr').adopt(
-		
 			new Element('td').adopt([
 				new Element('input', {'value':Joomla.JText._('COM_FABRIK_ACTION'), 'size':1,'readonly':true, 'class':'readonly'}),
 				this._makeSel('inputbox elementtype', 'jform[validationrule][plugin][]', this.plugins, plugin)
