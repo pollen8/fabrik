@@ -112,18 +112,20 @@ class FabrikModelForm extends FabModelAdmin
 			$data = array();
 
 			$o = $pluginManager->getPlugIn($plugin->name, 'Form');
+			if ($o !== false) {
+				$o->getJForm()->model = $feFormModel;
 
-			$o->getJForm()->model = $feFormModel;
+				// $$$ rob 0 was $x below but that rendered first set of plugins with indexes 1,2,3
+				// think they should all be indexed 0
+				$str = $o->onRenderAdminSettings($data, 0);
+				$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
+				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
 
-			// $$$ rob 0 was $x below but that rendered first set of plugins with indexes 1,2,3
-			// think they should all be indexed 0
-			$str = $o->onRenderAdminSettings($data, 0);
-			$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
-			$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-
-			$attr = "class=\"inputbox elementtype\"";
-			$rules[$plugin->name] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
+				$attr = "class=\"inputbox elementtype\"";
+				$rules[$plugin->name] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
+			}
 		}
+
 		asort($rules);
 		$this->abstractPlugins = $rules;
 		return $rules;

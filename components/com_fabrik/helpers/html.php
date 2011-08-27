@@ -297,25 +297,80 @@ EOD;
 	 * @param string $theme
 	 */
 
-	function loadCalendar($theme = 'default')
+function loadCalendar()
 	{
+		JHtml::_('behavior.calendar');
+		/*return;
 		static $calendarLoaded;
-		if (!is_array($calendarLoaded)) {
-			$calendarLoaded = array();
-		}
 
 		// Only load once
-		if (isset($calendarLoaded[$theme])) {
+		if ($calendarLoaded) {
 			return;
 		}
 
-		$calendarLoaded[$theme] = true;
-		if (JDEBUG) {
-			FabrikHelperHTML::script('plugins/fabrik_element/date/calendar-eightysix/js/calendar-eightysix-v1.1.js', true);
-		} else {
-			FabrikHelperHTML::script('plugins/fabrik_element/date/calendar-eightysix/js/compressed/calendar-eightysix-v1.1.js', true);
+		$calendarLoaded = true;
+
+		$document = JFactory::getDocument();
+		// $$$ hugh - if 'raw' and we output the JS stuff, it screws things up by echo'ing stuff ahead
+		// of the raw view display() method's JSON echo
+		if ($document->getType() == 'raw') {
+			return;
 		}
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'plugins/fabrik_element/date/calendar-eightysix/css/calendar-eightysix-v1.1-'.$theme.'.css');
+
+		$config = &JFactory::getConfig();
+		$debug = $config->getValue('config.debug');
+
+		FabrikHelperHTML::stylesheet('calendar-jos.css', 'media/system/css/', array(' title' => JText::_('green') ,' media' => 'all'));
+		// $$$ hugh - need to just use JHTML::script() for these, to avoid recursion issues if anything else
+		// includes these files, and Fabrik is using merged JS, which means page ends up with two copies,
+		// causing a "too much recursion" error (calendar.js overrides some date object functions)
+		FabrikHelperHTML::script('calendar.js', 'media/system/js/');
+		FabrikHelperHTML::script('calendar-setup.js', 'media/system/js/');
+		//JHTML::script('calendar.js', 'media/system/js/');
+		//JHTML::script('calendar-setup.js', 'media/system/js/');
+		$translation = FabrikHelperHTML::_calendartranslation();
+		if ($translation) {
+			FabrikHelperHTML::addScriptDeclaration($translation);
+		}
+*/
+	}
+
+	/**
+	 * Internal method to translate the JavaScript Calendar
+	 *
+	 * @return	string	JavaScript that translates the object
+	 * @since	1.5
+	 */
+	function _calendartranslation()
+	{
+		static $jsscript = 0;
+
+		/*
+		 * 		Calendar._TT["ABOUT"] =
+		 "DHTML Date/Time Selector\n" +
+		 "(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" +
+		 "For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
+		 "Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
+		 "\n\n" +
+		 "Date selection:\n" +
+		 "- Use the \xab, \xbb buttons to select year\n" +
+		 "- Use the " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " buttons to select month\n" +
+		 "- Hold mouse button on any of the above buttons for faster selection.";
+		 Calendar._TT["ABOUT_TIME"] = "\n\n" +
+		 "Time selection:\n" +
+		 "- Click on any of the time parts to increase it\n" +
+		 "- or Shift-click to decrease it\n" +
+		 "- or click and drag for faster selection.";
+		 */
+		if($jsscript == 0)
+		{
+			$return = 'Calendar._DN = new Array ("'.JText::_('Sunday').'", "'.JText::_('Monday').'", "'.JText::_('Tuesday').'", "'.JText::_('Wednesday').'", "'.JText::_('Thursday').'", "'.JText::_('Friday').'", "'.JText::_('Saturday').'", "'.JText::_('Sunday').'");Calendar._SDN = new Array ("'.JText::_('Sun').'", "'.JText::_('Mon').'", "'.JText::_('Tue').'", "'.JText::_('Wed').'", "'.JText::_('Thu').'", "'.JText::_('Fri').'", "'.JText::_('Sat').'", "'.JText::_('Sun').'"); Calendar._FD = 0;	Calendar._MN = new Array ("'.JText::_('January').'", "'.JText::_('February').'", "'.JText::_('March').'", "'.JText::_('April').'", "'.JText::_('May').'", "'.JText::_('June').'", "'.JText::_('July').'", "'.JText::_('August').'", "'.JText::_('September').'", "'.JText::_('October').'", "'.JText::_('November').'", "'.JText::_('December').'");	Calendar._SMN = new Array ("'.JText::_('January_short').'", "'.JText::_('February_short').'", "'.JText::_('March_short').'", "'.JText::_('April_short').'", "'.JText::_('May_short').'", "'.JText::_('June_short').'", "'.JText::_('July_short').'", "'.JText::_('August_short').'", "'.JText::_('September_short').'", "'.JText::_('October_short').'", "'.JText::_('November_short').'", "'.JText::_('December_short').'");Calendar._TT = {};Calendar._TT["INFO"] = "'.JText::_('About the calendar').'";
+		Calendar._TT["PREV_YEAR"] = "'.JText::_('Prev. year (hold for menu)').'";Calendar._TT["PREV_MONTH"] = "'.JText::_('Prev. month (hold for menu)').'";	Calendar._TT["GO_TODAY"] = "'.JText::_('Go Today').'";Calendar._TT["NEXT_MONTH"] = "'.JText::_('Next month (hold for menu)').'";Calendar._TT["NEXT_YEAR"] = "'.JText::_('Next year (hold for menu)').'";Calendar._TT["SEL_DATE"] = "'.JText::_('Select date').'";Calendar._TT["DRAG_TO_MOVE"] = "'.JText::_('Drag to move').'";Calendar._TT["PART_TODAY"] = "'.JText::_('(Today)').'";Calendar._TT["DAY_FIRST"] = "'.JText::_('Display %s first').'";Calendar._TT["WEEKEND"] = "0,6";Calendar._TT["CLOSE"] = "'.JText::_('Close').'";Calendar._TT["TODAY"] = "'.JText::_('Today').'";Calendar._TT["TIME_PART"] = "'.JText::_('(Shift-)Click or drag to change value').'";Calendar._TT["DEF_DATE_FORMAT"] = "'.JText::_('%Y-%m-%d').'"; Calendar._TT["TT_DATE_FORMAT"] = "'.JText::_('%a, %b %e').'";Calendar._TT["WK"] = "'.JText::_('wk').'";Calendar._TT["TIME"] = "'.JText::_('Time:').'";';
+			$jsscript = 1;
+			return $return;
+		} else {
+			return false;
+		}
 	}
 
 	/**

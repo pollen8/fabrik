@@ -193,7 +193,11 @@ class FabrikFEModelPluginmanager extends JModel{
 			if (JFile::exists(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.$className.'.php')) {
 				require_once(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.$className.'.php');
 			} else {
-				require_once(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.'models'.DS.$className.'.php');
+				if (JFile::exists((JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.'models'.DS.$className.'.php'))) {
+					require_once(JPATH_PLUGINS.DS.'fabrik_'.strtolower($group).DS.$className.DS.'models'.DS.$className.'.php');
+				} else {
+					return false;
+				}
 			}
 		}
 		$class = 'plgFabrik_'.JString::ucfirst($group).JString::ucfirst($className);
