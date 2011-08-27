@@ -8,7 +8,7 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 		
-		window.addEvent('fabrik.form.submitted', function(form){
+		window.addEvent('fabrik.form.submit.start', function(form, json){
 			this.onSubmit(form);
 		}.bind(this))
 		if (this.options.ajax_upload == 1 && this.options.editable !== false) {

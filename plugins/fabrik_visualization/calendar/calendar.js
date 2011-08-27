@@ -53,7 +53,7 @@ var fabrikCalendar = new Class({
 				win.fitToContent();
 			}.bind(this)
 		};
-		window.addEvent('fabrik.form.submitted', function(json){
+		window.addEvent('fabrik.form.submitted', function(form, json){
 			debugger;
 			//Fabrik.Windows['chooseeventwin'].close();
 			//this.addEvForm(json);

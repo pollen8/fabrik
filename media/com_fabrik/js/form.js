@@ -344,7 +344,7 @@ var FbForm = new Class( {
 		if (this.options.multipage_save !== true) {
 			return;
 		}
-		window.fireEvent('fabrik.form.groups.save', [this]);
+		window.fireEvent('fabrik.form.groups.save.start', [this]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -370,7 +370,7 @@ var FbForm = new Class( {
 				this.form.getElement('input[name=format]').value = orig;
 				this.form.getElement('input[name=task]').value = origprocess;
 				if (this.options.ajax) {
-					window.fireEvent('fabrik.form.submitted', json);
+					window.fireEvent('fabrik.form.groups.save.end', [form, r]);
 				}
 				Fabrik.loader.stop('form_'+this.id);
 			}.bind(this)
@@ -768,7 +768,7 @@ var FbForm = new Class( {
 	},
 
 	doSubmit : function(e, btn) {
-		window.fireEvent('fabrik.form.submitted', [this, e, btn]);
+		window.fireEvent('fabrik.form.submit.start', [this, e, btn]);
 		this.elementsBeforeSubmit(e);
 		if (this.result === false) {
 			this.result = true;
@@ -850,14 +850,12 @@ var FbForm = new Class( {
 				}).send();
 			}
 		}
-		else {
-			window.fireEvent('fabrik.form.submitend', [this, e]);
-			if (this.result === false) {
-				this.result = true;
-				e.stop();
-				// update global status error
-				this.updateMainError();
-			}
+		window.fireEvent('fabrik.form.submit.end', [this]);
+		if (this.result === false) {
+			this.result = true;
+			e.stop();
+			// update global status error
+			this.updateMainError();
 		}
 	},
 
@@ -1265,14 +1263,14 @@ var FbForm = new Class( {
 		clone.fade(1);
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above
-		window.fireEvent('fabrik.form.group.delete,end', [this, e, i, c]);
+		window.fireEvent('fabrik.form.group.delete.end', [this, e, i, c]);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 		this.unwatchGroupButtons();
 		this.watchGroupButtons();
 	},
 
 	update : function(o) {
-		window.fireEvent('fabrik.form.update', [this]);
+		window.fireEvent('fabrik.form.update', [this, o.data]);
 		if (this.result === false) {
 			this.result = true;
 			return;
