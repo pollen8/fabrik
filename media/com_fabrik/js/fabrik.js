@@ -1,34 +1,4 @@
 /**
- * DEPRECIATED USE window.fireEvent instead
- * implemented by lists and forms 
- */
-var Plugins = new Class({
-	
-	runPlugins : function(func, event) {
-		var args = $A(arguments).filter(function(a, k) {
-			return k > 1;
-		});
-		var ret = true;
-		// ie wierdness with multple table plugins in content article?
-		if (typeOf(this.options) == 'null'){
-			return true;
-		}
-		this.plugins.each( function(plugin) {
-			if (typeOf(plugin) !== 'null' && typeOf(plugin[func]) != 'null') {
-				if (plugin[func](event, args) == false) {
-					ret = false;
-				}
-			}
-		});
-		return ret;
-	},
-	
-	addPlugin : function(plugin) {
-			this.plugins.push(plugin);
-	}
-});
-
-/**
  * keeps the element posisiton in the center even when scroll/resizing
  */
 

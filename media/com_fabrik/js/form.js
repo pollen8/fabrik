@@ -4,7 +4,7 @@
 
 var FbForm = new Class( {
 
-	Implements:[Options, Events, Plugins],
+	Implements:[Options, Events],
 	
 	options:{
 		'admin':false,
