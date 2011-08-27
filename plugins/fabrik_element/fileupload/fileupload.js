@@ -7,6 +7,10 @@ var FbFileUpload = new Class({
 		if (this.options.folderSelect == 1 && this.options.editable == 1) {
 			this.ajaxFolder();
 		}
+		
+		window.addEvent('fabrik.form.submitted', function(form){
+			this.onSubmit(form);
+		}.bind(this))
 		if (this.options.ajax_upload == 1 && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
@@ -154,7 +158,7 @@ var FbFileUpload = new Class({
 					}) ];
 					this.droplist.adopt(new Element('li', {
 						id : file.id,
-						class : 'plupload_delete'
+						'class' : 'plupload_delete'
 					}).adopt(innerli));
 				}
 			}.bind(this));
@@ -193,16 +197,16 @@ var FbFileUpload = new Class({
 				name : this.options.elementName + '[crop][' + response.filepath + ']',
 				'id' : 'coords_' + file.id,
 				'value' : JSON.encode(file.params)
-			}).injectAfter(this.pluploadContainer);
+			}).inject(this.pluploadContainer, 'after');
 			var idvalue = $pick(file.recordid, '0');
 			new Element('input', {
 				'type' : 'hidden',
 				name : this.options.elementName + '[id][' + response.filepath + ']',
 				'id' : 'id_' + file.id,
 				'value' : idvalue
-			}).injectAfter(this.pluploadContainer);
+			}).inject(this.pluploadContainer, 'after');
 
-			$(file.id).removeClass('plupload_file_action').addClass('plupload_done');
+			document.id(file.id).removeClass('plupload_file_action').addClass('plupload_done');
 		}.bind(this));
 
 		// (4) UPLOAD FILES FIRE STARTER
@@ -253,9 +257,10 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	onsubmit : function() {
+	onSubmit : function(form) {
 		if (!this.allUploaded()) {
 			alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
+			form.result = false;
 			return false;
 		}
 		if (this.options.crop) {

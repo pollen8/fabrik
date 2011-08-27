@@ -655,7 +655,7 @@ class FabrikFEModelList extends JModelForm {
 						$fkey = $join->table_join_alias.'___'.$join->table_key."_raw";
 						if (isset($row->$fkey)) {
 							$fKeyVal= $row->$fkey;
-							$pkcheck .= '<input type="checkbox" class="fabrik_joinedkey" value="'.$fKeyVal.'" name="'.$join->table_join_alias.'['.$row->__pk_val.']">'."\n";
+							$pkcheck .= '<input type="checkbox" class="fabrik_joinedkey" value="'.$fKeyVal.'" name="'.$join->table_join_alias.'['.$row->__pk_val.']" />'."\n";
 						}
 					}
 				}
@@ -1924,9 +1924,9 @@ class FabrikFEModelList extends JModelForm {
 		$this->fields = array();
 		$this->asfields = array();
 		$db = FabrikWorker::getDbo();
-		$form 			=& $this->getFormModel();
-		$table 			=& $this->getTable();
-		$aJoinObjs 	=& $this->getJoins();
+		$form 			= $this->getFormModel();
+		$table 			= $this->getTable();
+		$aJoinObjs 	= $this->getJoins();
 		$this->_temp_db_key_addded = false;
 		$groups =& $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
@@ -6724,8 +6724,9 @@ class FabrikFEModelList extends JModelForm {
 		$base = JURI::base();
 		$base .= strpos($base, '?') ? '&' : '?';
 		$qs = $_SERVER['QUERY_STRING'];
-		$url = $base.FabrikString::removeQSVar($qs, 'group_by');
-		$url .= strpos($url, '?') ? '&' : '?';
+		$qs = urlencode(FabrikString::removeQSVar($qs, 'group_by'));
+		$url = $base.$qs;
+		$url .= strpos($url, '?') ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
 		foreach($h as $key => $v) {

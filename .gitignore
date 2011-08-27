@@ -4,6 +4,7 @@
 *.txt
 *.php
 *.xml
+*.jpg
 cache/*
 administrator/*
 !administrator/components/com_fabrik/*

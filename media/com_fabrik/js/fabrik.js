@@ -1,4 +1,5 @@
 /**
+ * DEPRECIATED USE window.fireEvent instead
  * implemented by lists and forms 
  */
 var Plugins = new Class({
