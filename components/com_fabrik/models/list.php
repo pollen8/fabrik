@@ -1621,10 +1621,10 @@ class FabrikFEModelList extends JModelForm {
 
 	function _buildQueryWhere($incFilters = true, $query = false)
 	{
-		$where = !$query ? 'WHERE ' : '';
+		$sig = !$query ? 'string' : 'query';
 		$db = FabrikWorker::getDbo();
-		if (isset($this->_whereSQL[$where])) {
-			return $this->_whereSQL[$where][$incFilters];
+		if (isset($this->_whereSQL[$sig])) {
+			return $this->_whereSQL[$sig][$incFilters];
 		}
 		$filters =& $this->getFilterArray();
 		$params =& $this->getParams();
@@ -1678,11 +1678,11 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$addWhere = $query == false ? true : false;
 		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, $addWhere);
-		$this->_whereSQL[$where] = array('0' => $sqlNoFilter, '1' => $sql);
+		$this->_whereSQL[$sig] = array('0' => $sqlNoFilter, '1' => $sql);
 		if (!$query) {
-			return $this->_whereSQL[$where][$incFilters];
+			return $this->_whereSQL[$sig][$incFilters];
 		} else {
-			$query->where($this->_whereSQL[$where][$incFilters]);
+			$query->where($this->_whereSQL[$sig][$incFilters]);
 			return $query;
 		}
 	}
@@ -5222,7 +5222,8 @@ class FabrikFEModelList extends JModelForm {
 		if ($this->getParams()->get('delete-joined-rows', false) == false) {
 			$nav =& $this->getPagination($c, 0, $c);
 		}
-		$this->_whereSQL[true] = " WHERE " . $key . " IN (" . $val . ")";
+		echo $val;
+		$this->_whereSQL['string'][true] = " WHERE ".$key." IN (".$val.")";
 		// $$$ hugh - need to clear cached data, 'cos we called getTotalRecords from the controller, which now
 		// calls getData(), and will have cached all rows on this page, not just the ones being deleted, which means
 		// things like form and element onDelete plugins will get handed a whole page of rows, not just the ones
