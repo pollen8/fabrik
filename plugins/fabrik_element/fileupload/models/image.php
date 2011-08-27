@@ -86,19 +86,23 @@ class imageRender{
 		$file = $model->storage->getFileUrl($file);
 
 		$fullSize = $file;
+		$width = $params->get('fu_main_max_width');
+		$height = $params->get('fu_main_max_height');
 		if (!$this->fullImageInRecord($params)) {
 
-			$width = $params->get('thumb_max_width');
-			$height = $params->get('thumb_max_height');
-			$file = $model->storage->_getThumb($file);
+			if ($params->get('fileupload_crop')) {
+				$width = $params->get('fileupload_crop_width');
+				$height = $params->get('fileupload_crop_height');
+				$file = $model->storage->_getCropped($fullSize);
+			} else {
+				$width = $params->get('thumb_max_width');
+				$height = $params->get('thumb_max_height');
+				$file = $model->storage->_getThumb($file);
+			}
 		}
-		if ($params->get('fileupload_crop')) {
-			$width = $params->get('fileupload_crop_width');
-			$height = $params->get('fileupload_crop_height');
-			$file = $model->storage->_getCropped($fullSize);
-		}
+
 		if ($model->isJoin()) {
-			$this->output .= '<div class="fabrikGalleryImage" style="width:'.$width.'px;height:'.$height.'px;display: table-cell; vertical-align: middle;text-align: center;">';
+			$this->output .= '<div class="fabrikGalleryImage" style="width:'.$width.'px;height:'.$height.'px; vertical-align: middle;text-align: center;">';
 		}
 		$img = "<img class=\"fabrikLightBoxImage\" src=\"$file\" alt=\"". strip_tags($element->label) . "\" />";
 		if ($params->get('make_link', true) && !$this->fullImageInRecord($params)) {

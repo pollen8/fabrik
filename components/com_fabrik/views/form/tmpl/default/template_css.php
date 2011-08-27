@@ -12,6 +12,19 @@ echo "
 	list-style:none;
 }
 
+#form_$c .fabrikSubElementContainer,
+#details_$c .fabrikSubElementContainer{
+	display:-moz-box;
+	display:box;
+	display:-webkit-box;
+}
+
+#details_$c .fabrikGalleryImage{
+	border:1px solid #ccc;
+	margin:5px;
+	padding:5px;
+}
+
 .floating-tip {
 	background-color: black;
 	padding: 5px 15px;

@@ -2,6 +2,9 @@ var FbPassword = new Class({
 	Extends : FbElement,
 	initialize : function(element, options) {
 		this.parent(element, options);
+		if (!this.options.editable) {
+			return;
+		}
 		if (this.element) {
 			this.element.addEvent('keyup', this.passwordChanged.bindWithEvent(this))
 		}
@@ -28,15 +31,15 @@ var FbPassword = new Class({
 		var enoughRegex = new RegExp("(?=.{6,}).*", "g");
 		var pwd = this.element;
 		if (pwd.value.length == 0) {
-			strength.innerHTML = Joomla.JText._('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
+			strength.set('text', Joomla.JText._('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD'));
 		} else if (false == enoughRegex.test(pwd.value)) {
-			strength.innerHTML = Joomla.JText._('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
+			strength.set('text', Joomla.JText._('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS'));
 		} else if (strongRegex.test(pwd.value)) {
-			strength.innerHTML = '<span style="color:green">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_STRONG') + '</span>';
+			strength.set('html', '<span style="color:green">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_STRONG') + '</span>');
 		} else if (mediumRegex.test(pwd.value)) {
-			strength.innerHTML = '<span style="color:orange">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_MEDIUM') + '</span>';
+			strength.set('html', '<span style="color:orange">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_MEDIUM') + '</span>');
 		} else {
-			strength.innerHTML = '<span style="color:red">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_WEAK') + '</span>';
+			strength.set('html', '<span style="color:red">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_WEAK') + '</span>');
 		}
 	},
 

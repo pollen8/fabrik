@@ -221,11 +221,16 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * get the elements form model
-	 *
+	 * @deprecated use getFormModel
 	 * @return object form model
 	 */
 
-	function &getForm()
+	function getForm()
+	{
+		return $this->getFormModel();
+	}
+
+	function getFormModel()
 	{
 		if (is_null($this->_form)) {
 			$listModel = $this->getListModel();
@@ -235,11 +240,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$this->_form->getForm();
 		}
 		return $this->_form;
-	}
 
-	function getFormModel()
-	{
-		return $this->getForm();
 	}
 
 	/**
