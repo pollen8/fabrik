@@ -142,14 +142,14 @@ class FabrikFEModelConnection extends JModel {
 		if (!isset($dbs)) {
 			$dbs = array();
 		}
-
+		$cn = $this->getConnection();
 		$session = JFactory::getSession();
 		if (JRequest::getCmd('task') == 'test') {
 			$session->clear('fabrik.connection.'.$cn->id);
 			$this->_connection = null;
+			$cn = $this->getConnection();
 		}
 
-		$cn = $this->getConnection();
 		if (!array_key_exists($cn->id, $dbs)) {
 			//$$$rob lets see if we have an exact config match with J db if so just return that
 			$conf = JFactory::getConfig();

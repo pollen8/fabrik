@@ -326,11 +326,11 @@ class FabrikPlugin extends JPlugin
 	 */
 	function ajax_tables()
 	{
-		$db = FabrikWorker::getDbo();
 		$cid = JRequest::getInt('cid', -1);
 		$rows = array();
 		$showFabrikLists = JRequest::getVar('showf', false);
 		if ($showFabrikLists) {
+			$db = FabrikWorker::getDbo(true);
 			if ($cid !== 0) {
 				$sql = "SELECT id, label FROM #__{package}_lists WHERE connection_id = $cid ORDER BY label ASC";
 				$db->setQuery($sql);
