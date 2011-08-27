@@ -24,7 +24,7 @@ class FabrikViewList extends JView{
 		$table = $model->getTable();
 		$params = $model->getParams();
 		$model->render();
-		$this->emptyDataMessage = $params->get('empty_data_msg');
+		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$rowid = JRequest::getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data =& $model->getData();

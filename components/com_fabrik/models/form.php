@@ -2050,7 +2050,6 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		if (in_array(false, $res)) {
 			return false;
 		}
-
 		$this->_reduceDataForXRepeatedJoins();
 
 		JDEBUG ? $_PROFILER->mark('formmodel render end') : null;
@@ -2083,6 +2082,11 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 
 	function getData()
 	{
+		//if already set return it. If not was causing issues with the juser form plugin
+		// when it tried to modify the form->_data info, from within its onLoad method, when sync user option turned on.
+		if (isset($this->_data)) {
+			return $this->_data;
+		}
 		global $_PROFILER;
 		$this->_data = array();
 		$data = array(FArrayHelper::toObject(JRequest::get('request')));
@@ -2095,10 +2099,10 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 			$data = JRequest::get('request');
 		} else {
 
-			$listModel 	=& $this->getListModel();
-			$fabrikDb   	=& $listModel->getDb();
+			$listModel = $this->getListModel();
+			$fabrikDb = $listModel->getDb();
 			JDEBUG ? $_PROFILER->mark('formmodel getData: db created') : null;
-			$table 				=& $listModel->getTable();
+			$table = $listModel->getTable();
 			JDEBUG ? $_PROFILER->mark('formmodel getData: table row loaded') : null;
 			$this->_aJoinObjs 	=& $listModel->getJoins();
 			JDEBUG ? $_PROFILER->mark('formmodel getData: joins loaded') : null;

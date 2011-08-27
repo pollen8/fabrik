@@ -48,7 +48,9 @@ class JFormFieldListfields extends JFormFieldList
 		$bits = array();
 		$c = ElementHelper::getRepeatCounter($this);
 		$connection = $this->element['connection'];
-		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'tableelement');
+		// 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
+		//else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
+		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int)JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		switch ($controller)
 		{

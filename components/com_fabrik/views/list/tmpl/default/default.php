@@ -18,35 +18,36 @@ if ($this->showFilters) {
 	echo $this->loadTemplate('filter');
 }?>
 
-<div class="fabrikDataContainer" style="<?php echo $this->tableStyle?>">
+<div class="fabrikDataContainer">
 
 <?php foreach ($this->pluginBeforeList as $c) {
-			echo $c;
-			}?>
-			<div class="boxflex">
-			<table class="fabrikList" id="list_<?php echo $this->table->id;?>" >
-
-<!-- not sure what this is for but should be in tbody or thead
- 			<tr class="fabrikHide">
-<?php foreach($this->headings as $key=>$heading) {?>
-	<td></td>
-	<?php }?>
-</tr>
- -->
- <tfoot>
-	<tr class="fabrik___heading">
-		<td colspan="<?php echo count($this->headings);?>">
-			<?php echo $this->nav;?>
-		</td>
-	</tr>
- </tfoot>
-	<?php
-	$gCounter = 0;
-	foreach ($this->rows as $groupedby => $group) {
-		if ($gCounter == 0) {
-			echo '<thead>'.$this->headingstmpl.'</thead>';
-		}
-		if ($this->isGrouped) {
+	echo $c;
+}?>
+	<div class="boxflex">
+		<table class="fabrikList" id="list_<?php echo $this->table->id;?>" >
+		 <tfoot>
+			<tr class="fabrik___heading">
+				<td colspan="<?php echo count($this->headings);?>">
+					<?php echo $this->nav;?>
+				</td>
+			</tr>
+		 </tfoot>
+		 <thead style="<?php echo $this->emptyStyle?>">
+		 	<tr>
+		 		<td colspan="<?php echo $this->colCount;?>">
+		 			<div class="emptyDataMessage">
+						<?php echo $this->emptyDataMessage; ?>
+					</div>
+				</td>
+		 	</tr>
+		 </thead>
+			<?php
+			$gCounter = 0;
+			foreach ($this->rows as $groupedby => $group) {
+			if ($gCounter == 0) {
+				echo '<thead>'.$this->headingstmpl.'</thead>';
+			}
+			if ($this->isGrouped) {
 			?>
 			<tbody>
 			<tr class="fabrik_groupheading">
@@ -62,7 +63,9 @@ if ($this->showFilters) {
 			<tbody class="fabrik_groupdata">
 			<tr>
 				<td colspan="<?php echo count($this->headings)?>">
-				<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>"><?php echo $this->emptyDataMessage; ?></div>
+					<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
+						<?php echo $this->emptyDataMessage; ?>
+					</div>
 				</td>
 			</tr>
 <?php
@@ -81,16 +84,13 @@ if ($this->showFilters) {
 				}
 				?>
 				</tr>
-		</tbody>
-<?php }
-$gCounter++;
-	}?>
+			</tbody>
+			<?php }
+			$gCounter++;
+			}?>
 		</table>
-			<?php
-
-	print_r($this->hiddenFields);
-?>
-		</div>
+		<?php	print_r($this->hiddenFields);?>
+	</div>
 </div>
 
 </form>

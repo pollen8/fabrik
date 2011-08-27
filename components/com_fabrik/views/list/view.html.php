@@ -340,7 +340,6 @@ class FabrikViewList extends JView{
 		$this->assign('showFilters', (count($this->filters) > 0 && $params->get('show-table-filters', 1)) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
 
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
-
 		$this->assignRef('groupheadings', $groupHeadings);
 		$this->assignRef('calculations', $this->_getCalculations($this->headings));
 		$this->assign('isGrouped', !($this->get('groupBy') == ''));

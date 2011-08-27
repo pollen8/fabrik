@@ -5276,6 +5276,7 @@ class FabrikFEModelList extends JModelForm {
 				$elementModel->onDeleteRows($rows);
 			}
 		}
+		$pluginManager 	= $this->getPluginManager();
 
 		// $$$ hugh - added onDeleteRowsForm plugin (needed it so fabrikjuser form plugin can delete users)
 		// NOTE - had to call it onDeleteRowsForm rather than onDeleteRows, otherwise runPlugins() automagically
@@ -5283,13 +5284,11 @@ class FabrikFEModelList extends JModelForm {
 		// from runPlugins() 'cos it won't pass it the $rows it needs.  So i have to sidestep the issue by using
 		// a different trigger name.  Added a default onDeleteRowsForm() to plugin-form.php, and implemented
 		// (and tested) user deletion in fabrikjuser.php using this trigger.  All seems to work.  7/28/2009
-		$formModel =& $this->getFormModel();
-		$pluginManager 	=& $formModel->getPluginManager();
-		if (in_array(false, $pluginManager->runPlugins('onDeleteRowsForm', $formModel, 'form', $rows))) {
+
+		if (in_array(false, $pluginManager->runPlugins('onDeleteRowsForm', $this->getFormModel(), 'form', $rows))) {
 			return;
 		}
 
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginManager->getPlugInGroup('list');
 		if (in_array(false, $pluginManager->runPlugins('onDeleteRows', $this, 'list'))) {
 			return;
