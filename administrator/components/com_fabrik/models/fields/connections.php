@@ -42,8 +42,8 @@ class JFormFieldConnections extends JFormFieldList
 		// Initialize variables.
 		$options = array();
 
-		$db		= FabrikWorker::getDbo();
-		$query	= $db->getQuery(true);
+		$db	= FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
 
 		$query->select('id AS value, description AS text, `default`');
 		$query->from('#__fabrik_connections AS c');

@@ -268,7 +268,7 @@ class FabrikModelHome extends JModelAdmin
 
 	public function reset()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$prefix = '#__{package}_';
 		$tables = array('cron', 'elements',
 		'formgroup', 'forms', 'form_sessions', 'groups', 'joins',
@@ -289,10 +289,9 @@ class FabrikModelHome extends JModelAdmin
 
 	public function dropData()
 	{
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-		$connModel 	=& JModel::getInstance('Connection', 'FabrikFEModel');
+		$connModel = JModel::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select("connection_id, db_table_name")->from('#__{package}_lists');
 		$db->setQuery($query);

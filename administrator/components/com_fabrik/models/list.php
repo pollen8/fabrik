@@ -374,7 +374,7 @@ class FabrikModelList extends FabModelAdmin
 		if ((int)$item->id === 0) {
 			return array();
 		}
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*, j.id AS id')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
 		$db->setQuery($query);
@@ -447,8 +447,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		if (is_null($this->formModel)) {
 			$config = array();
-			//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-			$config['dbo'] = FabrikWorker::getDbo();
+			$config['dbo'] = FabrikWorker::getDbo(true);
 			$this->formModel = JModel::getInstance('Form', 'FabrikFEModel', $config);
 			$this->formModel->setDbo($config['dbo']);
 
@@ -504,7 +503,6 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$this->populateState();
 		$app = JFactory::getApplication();
-		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
 		$date = JFactory::getDate();
@@ -680,7 +678,7 @@ class FabrikModelList extends FabModelAdmin
 
 	private function updateJoins($data)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		// if we are creating a new list then don't update any joins - can result in groups and elements being removed.
 		if ((int)$this->getState('list.id') === 0) {
@@ -777,8 +775,7 @@ class FabrikModelList extends FabModelAdmin
 
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
 	{
-		$db = FabrikWorker::getDbo();
-		$formModel 	=& $this->getFormModel();
+		$formModel = $this->getFormModel();
 		$aData = array(
 			"name" => $this->getTable()->label ."- [" .$joinTable. "]",
 			"label" =>  $joinTable,
@@ -814,7 +811,7 @@ class FabrikModelList extends FabModelAdmin
 
 	private function createLinkedElements($groupId, $aSpecificElements = array())
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$user = JFactory::getUser();
 		$config	= JFactory::getConfig();
 		$createdate = JFactory::getDate();
@@ -1146,7 +1143,7 @@ class FabrikModelList extends FabModelAdmin
 
 	public function copy()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$user = JFactory::getUser();
 		$pks = JRequest::getVar('cid', array(), 'default', 'array');
 		$post = JRequest::get('post');
@@ -1193,7 +1190,7 @@ class FabrikModelList extends FabModelAdmin
 
 	function copyJoins($fromid, $toid, $groupidmap)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$fromid);
 		$db->setQuery($query);
@@ -1390,9 +1387,9 @@ class FabrikModelList extends FabModelAdmin
 
 	private function makeJoomfishXML()
 	{
-		$config =& JFactory::getConfig();
-		$db =& FabrikWorker::getDbo();
-		$elements =& $this->getElements();
+		$config = JFactory::getConfig();
+		$db = FabrikWorker::getDbo(true);
+		$elements = $this->getElements();
 
 		//get all database join elements and check if we need to create xml files for them
 
@@ -1469,7 +1466,6 @@ class FabrikModelList extends FabModelAdmin
 
 		$feModel = $this->getFEModel();
 		$fabrikDatabase = $feModel->getDb();
-		$db = FabrikWorker::getDbo();
 		$dbconfigprefix = JApplication::getCfg("dbprefix");
 		// Iterate the items to delete each one.
 		foreach ($pks as $i => $pk) {
@@ -1539,7 +1535,7 @@ class FabrikModelList extends FabModelAdmin
 
 	private function deleteAssociatedForm(&$table)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$form = $this->getTable('form');
 		$form->load($table->form_id);
@@ -1554,19 +1550,22 @@ class FabrikModelList extends FabModelAdmin
 
 	private function deleteAssociatedGroups(&$form, $deleteElements = false)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		//get group ids
 		if ((int)$form->id === 0) {
 			return false;
 		}
-		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' .(int)$form->id);
+		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = '.(int)$form->id);
 		$db->setQuery($query);
 		$groupids = (array)$db->loadResultArray();
 
 		//delete groups
-		if (!empty($groupids)) {
-			$query->clear();
+		$groupModel = JModel::getInstance('Group', 'FabrikModel');
+		$groupModel->delete($groupids);
+		//if (!empty($groupids)) {
+
+		/*	$query->clear();
 			$query->delete()->from('#__{package}_groups')->where('id IN (' . implode(',', $groupids) . ')');
 			$db->setQuery($query);
 			$db->query();
@@ -1576,6 +1575,7 @@ class FabrikModelList extends FabModelAdmin
 			$query->delete()->from('#__{package}_formgroups')->where('group_id IN (' . implode(',', $groupids) . ')');
 			$db->setQuery($query);
 
+			// @todo move this into group model
 			if ($deleteElements) {
 				//get the element ids
 				$query->clear();
@@ -1590,12 +1590,13 @@ class FabrikModelList extends FabModelAdmin
 				$db->query();
 
 				//delete js actions
+				// @todo move this into element model.
 				$query->clear();
 				$query->delete()->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $elementids) . ')');
 				$db->setQuery($query);
 				$db->query();
-			}
-		}
+			}*/
+		//}
 		return $form;
 	}
 

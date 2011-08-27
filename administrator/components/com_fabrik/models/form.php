@@ -226,7 +226,7 @@ class FabrikModelForm extends FabModelAdmin
 		$formid = $this->getState($this->getName().'.id');
 		$isnew = $this->getState($this->getName().'.new');
 
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$currentGroups = $data['current_groups'];
 		$record_in_database = $data['record_in_database'];
 		$createGroup = $data['_createGroup'];
@@ -311,9 +311,9 @@ class FabrikModelForm extends FabModelAdmin
 	protected function _makeFormGroups($data, $currentGroups)
 	{
 		$formid = $this->getState($this->getName().'.id');
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->delete('#__{package}_formgroup')->where("form_id = " . (int)$formid);
+		$query->delete('#__{package}_formgroup')->where("form_id = ".(int)$formid);
 		$db->setQuery($query);
 		// delete the old form groups
 		if (!$db->query()) {
@@ -350,10 +350,9 @@ class FabrikModelForm extends FabModelAdmin
 			return array();
 		}
 		JArrayHelper::toInteger($ids);
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('form_id')->from('#__{package}_lists')->where('id IN ('. implode(',', $ids).')');
-		echo $query;
 		return $db->setQuery($query)->loadResultArray();
 	}
 
@@ -363,8 +362,7 @@ class FabrikModelForm extends FabModelAdmin
 
 	public function updateDatabase()
 	{
-		$db = FabrikWorker::getDbo();
-		$cid		= JRequest::getVar('cid', null, 'post', 'array');
+		$cid = JRequest::getVar('cid', null, 'post', 'array');
 		$formId = $cid[0];
 		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
@@ -372,7 +370,6 @@ class FabrikModelForm extends FabModelAdmin
 		$form = $model->getForm();
 		//use this in case there is not table view linked to the form
 		if ($form->record_in_database == 1) {
-
 			//there is a table view linked to the form so lets load it
 			$listModel  = JModel::getInstance('List', 'FabrikFEModel');
 			$listModel->loadFromFormId($formId);

@@ -9,7 +9,7 @@ $row =& $this->row;
 
 
 <div id="<?php echo $this->containerId;?>" class="fabrik_visualization">
-	<?php if ($this->params->get('show-title', 1)) {?>
+	<?php if ($this->params->get('show-title', 0)) {?>
 		<h1><?php echo $row->label;?></h1>
 	<?php }?>
 	<table class="fabrikList">
@@ -31,9 +31,21 @@ $row =& $this->row;
 					<td><?php echo $row->title?></td>
 					<td><?php echo $row->user?></td>
 					<td>
-					<a href="#" class="approvalTip" title="test">
-						<?php echo FabrikHelperHTML::image('attention2.png', 'list', '');?>
-					</a>
+						<a href="#" class="approvalTip">
+							<?php echo FabrikHelperHTML::image('attention2.png', 'list', '');?>
+						</a>
+						<ul class="floating-tip" style="display:none">
+							<li>
+								<a class="approve" href="index.php?index.php?option=com_fabrik&format=raw&view=visualization&visualizationid=<?php echo $this->id?>&plugintask=approve&listid=<?php echo $row->listid?>&rowid=<?php echo $row->rowid?>">
+									<?php echo FabrikHelperHTML::image('approve.png', 'visualization', '');?><span>approve</span>
+								</a>
+							</li>
+							<li>
+								<a class="disapprove"  href="index.php?index.php?option=com_fabrik&format=raw&view=visualization&visualizationid=<?php echo $this->id?>&plugintask=disapprove&listid=<?php echo $row->listid?>&rowid=<?php echo $row->rowid?>">
+									<?php echo FabrikHelperHTML::image('disapprove.png', 'visualization', '');?><span>disapprove</span>
+									</a>
+							</li>
+						</ul>
 					</td>
 					<td>
 					<a href="<?php echo $row->view?>">
@@ -47,8 +59,6 @@ $row =& $this->row;
 </div>
 <script type="text/javascript">
 head.ready(function() {
-	new FloatingTips('.approvalTip', {html:true, position:'right',
-		balloon: true, 'className':'approvalTip',
-		arrowSize:12});
+
 });
 </script>

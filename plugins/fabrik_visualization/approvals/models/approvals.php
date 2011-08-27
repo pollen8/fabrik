@@ -60,6 +60,8 @@ $formModel->getForm();
 			} else {
 				foreach ($rows as &$row) {
 					$row->view = 'index.php?option=com_fabrik&task=form.view&formid=.'.$formModel->getId().'&rowid='.$row->pk;
+					$row->rowid = $row->pk;
+					$row->listid = $ids[$x];
 				}
 				$this->rows  = array_merge($this->rows, $rows);
 			}

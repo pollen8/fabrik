@@ -72,7 +72,7 @@ class JFormFieldSwapList extends JFormFieldList
 
 	public function getGroupList()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(group_id)')->from('#__{package}_formgroup');
 		$db->setQuery($query);
@@ -98,7 +98,7 @@ class JFormFieldSwapList extends JFormFieldList
 
 	public function getCurrentGroupList()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('fg.group_id AS value, g.name AS text');
 		$query->from('#__{package}_formgroup AS fg');

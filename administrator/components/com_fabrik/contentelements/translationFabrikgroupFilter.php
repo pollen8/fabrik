@@ -51,7 +51,7 @@ class translationFabrikGroupFilter extends translationFilter
  * @return unknown
  */
 	function _createfilterHTML(){
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 
 		if (!$this->filterField) return "";
 		$groupOptions=array();

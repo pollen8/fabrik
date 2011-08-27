@@ -172,7 +172,7 @@ class FabrikModelLists extends FabModelList
 	{
 		$cid	= JRequest::getVar('cid', array(), 'post', 'array');
 		JArrayHelper::toInteger($cid);
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id IN('.implode(',', $cid).')');
 		$db->setQuery($query);

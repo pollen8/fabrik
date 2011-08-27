@@ -25,7 +25,7 @@ JHtml::_('behavior.formvalidation');
 		$id = $cid[0];
 	}
 	if (($id !== 0)) {
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('label')->from('#__{package}_lists')->where('id = '.$id);
 		$db->setQuery($query);

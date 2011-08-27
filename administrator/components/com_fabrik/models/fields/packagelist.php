@@ -38,7 +38,7 @@ class JFormFieldPackageList extends JFormFieldList
 
 	function getOptions()
 	{
-		$db	= & FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select("id AS value, CONCAT(label, '(', version , ')') AS ".FabrikString::safeColName(text));
 		$query->from("#__{package}_packages");

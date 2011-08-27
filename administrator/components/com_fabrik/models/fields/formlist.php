@@ -41,7 +41,7 @@ class JFormFieldFormList extends JFormFieldList
 
 	function getOptions()
 	{
-		$db	= FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select("id AS value, label AS ".FabrikString::safeColName('text'));
 		$query->from("#__{package}_forms");

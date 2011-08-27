@@ -47,7 +47,7 @@ class JFormFieldGroupList extends JFormFieldList
 		// Initialize variables.
 		$options = array();
 
-		$db		= FabrikWorker::getDbo();
+		$db		= FabrikWorker::getDbo(true);
 		$query	= $db->getQuery(true);
 
 		$query->select('id AS value, name AS text');

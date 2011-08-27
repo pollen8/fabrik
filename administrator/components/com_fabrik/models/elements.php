@@ -215,7 +215,7 @@ class FabrikModelElements extends FabModelList
 
 	public function getPluginOptions()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$user = JFactory::getUser();
 		$levels = implode(',', $user->getAuthorisedViewLevels());
 		$query = $db->getQuery(true);

@@ -142,7 +142,7 @@ class FabrikModelElement extends JModelAdmin
 
 	public function getElements()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$item = $this->getItem();
 		$aEls = array();
 		$aGroups = array();
@@ -239,7 +239,7 @@ class FabrikModelElement extends JModelAdmin
 
 	function getJsEvents()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$id = (int)$this->getItem()->id;
 		$query->select('*')->from('#__{package}_jsactions')->where('element_id = '.$id);
@@ -435,7 +435,7 @@ class FabrikModelElement extends JModelAdmin
 		if (!$ok) {
 			return false;
 		}
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 
 		// validate name
 		//$data['name'] = str_replace('-', '_', $data['name']);
@@ -670,7 +670,7 @@ class FabrikModelElement extends JModelAdmin
 
 	private function addElementToOtherDbTables($elementModel, $row)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$list = $elementModel->getListModel()->getTable();
 		$origElid = $row->id;
 		$tmpgroupModel =& $elementModel->getGroup();
@@ -718,7 +718,7 @@ class FabrikModelElement extends JModelAdmin
 			//new element so don't update child ids
 			return;
 		}
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where("parent_id = ".(int)$row->id);
 		$db->setQuery($query);
@@ -781,7 +781,7 @@ class FabrikModelElement extends JModelAdmin
 	protected function updateJavascript($data)
 	{
 		$id = $data['id'];
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$db->setQuery("DELETE FROM #__{package}_jsactions WHERE element_id = ".(int)$id);
 		$db->query();
 		$post = JRequest::get('post');
@@ -824,12 +824,11 @@ class FabrikModelElement extends JModelAdmin
 			return array();
 		}
 		JArrayHelper::toInteger($ids);
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN ('. implode(',', $ids).')');
 		return $db->setQuery($query)->loadResultArray();
 	}
-
 
 	/**
 	 *  potentially drop fields then remove element record
@@ -839,31 +838,24 @@ class FabrikModelElement extends JModelAdmin
 	public function delete($cids)
 	{
 		// Initialize variables
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-		$pluginManager	= JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$drops = JRequest::getVar('drop');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$drops = (array)JRequest::getVar('drop');
 		foreach ($cids as $id) {
 			$drop = array_key_exists($id, $drops) && $drops[$id][0] == '1';
 			if ((int)$id === 0) {
 				continue;
 			}
-			//$query = $this->_db->getQuery(true);
-			//$query->select('plugin')->from('#__{package}_elements')->where("id = ". (int)$id);
-			//$this->_db->setQuery($query);
-			//$pluginClass = $this->_db->loadResult();
-			//$pluginModel 	=& $pluginManager->getPlugIn($pluginClass, 'element');
-			//$pluginModel->setId($id);
 			$pluginModel = $pluginManager->getElementPlugin($id);
 			$pluginModel->onRemove($drop);
-			$element =& $pluginModel->getElement();
+			$element = $pluginModel->getElement();
 			if ($drop) {
-				$listModel =& $pluginModel->getListModel();
-				$table =& $listModel->getTable();
+				$listModel = $pluginModel->getListModel();
+				$table = $listModel->getTable();
 				// $$$ hugh - might be a tableless form!
 				if (!empty($table->id)) {
-					$tableDb =& $listModel->getDb();
-					$tableDb->setQuery("ALTER TABLE ".$this->_db->nameQuote($table->db_table_name)." DROP ".$this->_db->nameQuote($element->name));
-					$tableDb->query();
+					$db = $listModel->getDb();
+					$db->setQuery("ALTER TABLE ".$db->nameQuote($table->db_table_name)." DROP ".$db->nameQuote($element->name));
+					$db->query();
 				}
 			}
 		}
@@ -878,10 +870,9 @@ class FabrikModelElement extends JModelAdmin
 	function copy()
 	{
 		$cid = JRequest::getVar('cid', null, 'post', 'array');
-		//JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 		JArrayHelper::toInteger($cid);
 		$names = JRequest::getVar('name', null, 'post', 'array');
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$rule	= $this->getTable('element');
 		$join	= $this->getTable('join');
 		$jsaction	= $this->getTable('jsaction');
@@ -964,7 +955,7 @@ class FabrikModelElement extends JModelAdmin
 		//remove previous join records if found
 		if ((int)$element->id !== 0) {
 			$sql = "DELETE FROM #__{fabrik}_joins WHERE element_id = ".(int)$row->id;
-			$jdb = FabrikWorker::getDbo();;
+			$jdb = FabrikWorker::getDbo(true);;
 			$jdb->setQuery($sql);
 			$jdb->query();
 		}
@@ -1014,9 +1005,9 @@ class FabrikModelElement extends JModelAdmin
 		if ($item->parent_id === 0) {
 			$parent = 0;
 		} else {
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
-			$query->select('*')->from('#__fabrik_elements')->where('id = '.(int)$item->parent_id);
+			$query->select('*')->from('#__{package}_elements')->where('id = '.(int)$item->parent_id);
 			$db->setQuery($query);
 			$parent = $db->loadObject();
 			if (is_null($parent)) {

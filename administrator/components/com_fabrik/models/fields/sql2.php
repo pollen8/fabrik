@@ -39,8 +39,6 @@ class JFormFieldSQL2 extends JFormFieldList
 	{
 		$db	= FabrikWorker::getDbo();
 		$db->setQuery($this->element['query']);
-		//$this->name = explode('[', $this->name);
-		//$this->name = str_replace(']', '', $this->name[2]);
 		$key = $this->element['key_field'] ? $this->element['key_field'] : 'value';
 		$val = $this->element['value_field'] ? $this->element['value_field'] : $this->name;
 		if ($this->element['add_select']) {

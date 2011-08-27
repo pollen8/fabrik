@@ -32,13 +32,13 @@ class JElementRepeatTables extends JElement
 
 	function fetchElement($name, $value, &$node, $control_name)
 	{
-		$db			= & FabrikWorker::getDbo();
-		$document =& JFactory::getDocument();
+		$db	= FabrikWorker::getDbo(true);
+		$document = JFactory::getDocument();
 		$query = $db->getQuery(true);
 		$query->select("id AS value, label AS ".$db->nameQuote($name))->from("#__{package}_lists")->order("value DESC");
 		$db->setQuery($query);
 		$newname = trim($name, "[]");
-		$id 			= ElementHelper::getId($this, $control_name, $name);
+		$id = ElementHelper::getId($this, $control_name, $name);
 		$fullName = ElementHelper::getFullName($this, $control_name, $name);
 		$list =  JHTML::_( 'select.genericlist', $db->loadObjectList(), $fullName, 'class="repeattable inputbox"', 'value', $name, $value, $id);
 		$list = "<div id='" . $control_name.$name . "_container'>" . $list . "</div>";

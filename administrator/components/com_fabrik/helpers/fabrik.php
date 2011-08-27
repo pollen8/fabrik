@@ -31,7 +31,7 @@ class FabrikHelper
 	{
 		$config =& JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
-		$db =& FabrikWorker::getDbo();
+		$db =& FabrikWorker::getDbo(true);
 		// Handle never unpublish date
 		if (trim($strdate) == JText::_('Never') || trim($strdate) == '' || trim($strdate) == $db->getNullDate())
 		{

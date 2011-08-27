@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 JHtml::_('behavior.formvalidation');
-$db = FabrikWorker::getDbo();
+$db = FabrikWorker::getDbo(true);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">

@@ -159,7 +159,10 @@ var FloatingTips = new Class({
 		
 		tip.set('morph', o.fx).store('position', pos);
 		tip.setStyles({ 'top': pos.y, 'left': pos.x });
-		
+
+		tip.addEvent('mouseleave', function(e){
+			this.hide(elem);
+		}.bind(this));
 		return tip;
 		
 	},

@@ -40,7 +40,7 @@ class JFormFieldTables extends JFormFieldList
 	{
 		$connectionDd = $this->element['observe'];
 		$options = array();
-		$db		= FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo(true);
 		if ($connectionDd == '') {
 			//we are not monitoring a connection drop down so load in all tables
 			$query = "SHOW TABLES";

@@ -57,7 +57,6 @@ class FabrikViewVisualization {
 		FabrikHelperHTML::script('administrator/components/com_fabrik/views/adminvisualization.js', true);
 		FabrikHelperHTML::tips();
 		JFilterOutput::objectHTMLSafe($row);
-		$db =& FabrikWorker::getDbo();
 		jimport('joomla.html.pane');
 		$pane	=& JPane::getInstance();
 		$editor =& JFactory::getEditor();

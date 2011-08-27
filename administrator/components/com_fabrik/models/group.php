@@ -250,4 +250,39 @@ class FabrikModelGroup extends FabModelAdmin
 		return true;
 	}
 
+	public function delete(&$pks)
+	{
+		if (empty($pks)) {
+			return true;
+		}
+		if (parent::delete($pks)) {
+			if ($this->deleteFormGroups($pks)) {
+				return $this->deleteElements($pks);
+			}
+		}
+		return false;
+	}
+
+	public function deleteElements($pks)
+	{
+		$db = FabrikWorker::getDbo(true);
+		JArrayHelper::toInteger($pks);
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__{package}_elements')->where('group_id IN ('.implode(',', $pks).')');
+		$db->setQuery($query);
+		$elids = $db->loadResultArray();
+		$elementModel = JModel::getInstance('Element', 'FabrikModel');
+		return $elementModel->delete($elids);
+	}
+
+	public function deleteFormGroups($pks)
+	{
+		$db = FabrikWorker::getDbo(true);
+		JArrayHelper::toInteger($pks);
+		$query = $db->getQuery(true);
+		$query->delete('#__{package}_formgroup')->where('group_id IN ('.implode(',', $pks).')');
+		$db->setQuery($query);
+		return $db->query();
+	}
+
 }

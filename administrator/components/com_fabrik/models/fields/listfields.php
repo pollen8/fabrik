@@ -42,7 +42,6 @@ class JFormFieldListfields extends JFormFieldList
 			$this->results = array();
 		}
 
-		$db = FabrikWorker::getDbo();
 		$controller = JRequest::getVar('view');
 		$aEls = array();
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode("|", $this->element['filter']);

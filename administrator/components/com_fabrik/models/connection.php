@@ -92,7 +92,7 @@ class FabrikModelConnection extends JModelAdmin
 
 	function setDefault($id)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->update('#__fabrik_connections')->set($db->nameQuote('default')." = 0");
 		$db->setQuery($query);

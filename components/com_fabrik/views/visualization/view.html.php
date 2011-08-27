@@ -36,7 +36,7 @@ class FabrikViewVisualization extends JView{
 		// @FIXME cant set params directly like this, but I think plugin model setParams() is not right
 		$plugin->_params = $pluginParams;
 		$tmpl = $plugin->getParams()->get('calendar_layout', $tmpl);
-		$plugin->$pluginTask( $this);
+		$plugin->$pluginTask($this);
 		$this->plugin =& $plugin;
 		$viewName = $this->getName();
 		$this->addTemplatePath($this->_basePath.DS.'plugins'.DS.$this->_name.DS.$plugin->_name.DS.'tmpl'.DS.$tmpl);

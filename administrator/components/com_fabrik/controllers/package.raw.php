@@ -38,7 +38,7 @@ class FabrikControllerPackage extends JControllerForm
 
 	function dolist()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$list = JRequest::getCmd('list', 'form');
 		$selected = JRequest::getVar('selected');

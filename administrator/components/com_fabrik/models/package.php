@@ -255,7 +255,7 @@ class FabrikModelPackage extends JModelAdmin
 		$lookups = $this->getInstallItems($row);
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$lists = $lookups->list;
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		foreach ($lookups->visualization as $vid) {
@@ -338,7 +338,7 @@ class FabrikModelPackage extends JModelAdmin
 
 	protected function rowsToInsert($table, $rows, &$return)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		foreach ($rows as $row) {
 			$fmtsql = 'INSERT INTO '.$db->nameQuote($table).' (%s) VALUES (%s) ';
 			$fields = array();
@@ -418,7 +418,7 @@ class FabrikModelPackage extends JModelAdmin
 	{
 		$sql = '';
 		$config = JFactory::getConfig();
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		//create the sql for the cloned fabrik meta data tables
 		foreach ($this->tables as $table) {
 			$db->setQuery('SHOW CREATE TABLE ' . $table);

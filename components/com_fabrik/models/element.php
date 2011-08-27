@@ -2374,19 +2374,28 @@ and converts them into
 
 	/**
 	 * called from admin element controller when element is removed
-	 * @abstract
 	 * @bool has the user elected to drop column?
 	 * @return bool save ok or not
 	 */
 
 	function onRemove($drop = false)
 	{
+		//delete js actions
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$id =(int)$this->getElement()->id;
+		$query->delete()->from('#__{package}_jsactions')->where('element_id ='.$id);
+		$db->setQuery($query);
+		if (!$db->query()) {
+			JError::raiseNotice(500, 'didnt delete js actions for element '.$id);
+		}
+
 		if ($this->isRepeatElement()) {
-			$listModel =& $this->getListModel();
-			$db =& $listModel->getDb();
+			$listModel = $this->getListModel();
+			$db = $listModel->getDb();
 			$tableName = $db->nameQuote($this->getRepeatElementTableName());
 			$db->setQuery("DROP TABLE $tableName");
-			$db->query();
+			return $db->query();
 		}
 		return true;
 	}

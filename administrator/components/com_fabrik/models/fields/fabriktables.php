@@ -51,7 +51,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$fabriktables = array();
 		}
 		$connectionDd = $this->element['observe'];
-		$db	= FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo(true);
 
 		$id = $this->id;
 		$fullName = $this->name;

@@ -41,7 +41,7 @@ class JFormFieldPopupforms extends JFormFieldList
 		// Initialize variables.
 		$options = array();
 
-		$db		= FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo();
 		$query	= $db->getQuery(true);
 		$query->select('f.id AS value, f.label AS text, l.id AS listid');
 		$query->from('#__fabrik_forms AS f');
