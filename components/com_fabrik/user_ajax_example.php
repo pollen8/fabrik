@@ -3,7 +3,7 @@
 /**
  * @package  fabrik
  * @version 905 | fabrik_cheesegrits | 2008-05-19 21:21:05 +0200 (Mon, 19 May 2008
- * @Copyright (C) Rob Clayburn
+ * @Copyright (C) Hugh Messenger
  * @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
