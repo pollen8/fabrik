@@ -292,9 +292,6 @@ class FabrikModelForm extends FabModelAdmin
 				$table->created_by		= $data['created_by'];
 				$table->params = $listModel->getDefaultParams();
 				$res = $table->store();
-				if ($res) {
-					$listModel->createCacheQuery();
-				}
 			} else {
 				//update existing table
 				$listModel->ammendTable($formModel, $dbTableName);
