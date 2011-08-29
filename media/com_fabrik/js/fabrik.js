@@ -1,3 +1,53 @@
+Request.HTML = new Class({
+
+	Extends: Request,
+	
+	options: {
+		update: false,
+		append: false,
+		evalScripts: true,
+		filter: false,
+		headers: {
+			Accept: 'text/html, application/xml, text/xml, */*'
+		}
+	},
+	success: function(text){
+		var options = this.options, response = this.response;
+		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+		var urls = [];
+		for (x=0;x<srcs.length;x++) {
+			if(srcs[x].contains('src="')) {
+				var m = srcs[x].match(/src=\"([\s\S]*?)\"/);
+				if (m[1]){
+					urls.push(m[1])
+				}
+			}
+		}
+		scriptadd = "head.js('"+urls.join("','")+"');\n";
+		response.html = text.stripScripts(function(script){
+			response.javascript = script;
+		});
+		Browser.exec(scriptadd);
+		var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+		if (match) response.html = match[1];
+		var temp = new Element('div').set('html', response.html);
+
+		response.tree = temp.childNodes;
+		response.elements = temp.getElements('*');
+
+		if (options.filter) response.tree = response.elements.filter(options.filter);
+		if (options.update) document.id(options.update).empty().set('html', response.html);
+		else if (options.append) document.id(options.append).adopt(temp.getChildren());
+		if (options.evalScripts){
+			//response.javascript = "(function(){"+response.javascript+"}).delay(6000)";
+			Browser.exec(response.javascript);
+			
+		}
+
+		this.onSuccess(response.tree, response.elements, response.html, response.javascript);
+	}
+	});
+
 /**
  * keeps the element posisiton in the center even when scroll/resizing
  */
@@ -18,6 +68,7 @@ Element.implement({
 		this.setStyles({left:l, top:t});
 	}
 })
+
 /**
  * loading aninimation class, either inline next to an element or 
  * full screen

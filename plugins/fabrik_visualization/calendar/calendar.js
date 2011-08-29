@@ -54,7 +54,6 @@ var fabrikCalendar = new Class({
 			}.bind(this)
 		};
 		window.addEvent('fabrik.form.submitted', function(form, json){
-			debugger;
 			//Fabrik.Windows['chooseeventwin'].close();
 			//this.addEvForm(json);
 			this.ajax.updateEvents.send();

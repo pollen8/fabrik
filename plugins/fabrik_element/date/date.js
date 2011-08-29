@@ -33,7 +33,6 @@ var FbDateTime = new Class({
 				if (e.target.hasClass('timeField')) {
 					this.element.findClassUp('fabrikElementContainer').getElement('.timeButton').fireEvent('click');
 				} else {
-					debugger;
 					this.options.calendarSetup.inputField = e.target.id;
 					this.options.calendarSetup.button = this.element.id + "_img";
 					this.addEventToCalOpts();

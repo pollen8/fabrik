@@ -48,7 +48,7 @@ var Suboptions = new Class({
 	   						type:'text', name:this.name+'[sub_values][]', id:'sub_value_'+this.counter, 
 	   						size:20, value:sValue, events:{
 	   						'change':function(e){
-	   							console.log('need to set this chb boxes value to the value field if selected, or set to blank')
+	   							fconsole('need to set this chb boxes value to the value field if selected, or set to blank')
 	   						}
 	   					}})
 	   				),

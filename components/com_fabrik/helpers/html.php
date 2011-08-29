@@ -594,23 +594,40 @@ function loadCalendar()
 	public function framework(){
 		static $added;
 		if (!$added) {
-			$src = array('media/system/js/mootools-core.js', 'media/system/js/mootools-more.js',
-			'media/com_fabrik/js/mootools-ext.js', 'media/com_fabrik/js/art.js',
-			'media/com_fabrik/js/icons.js', 'media/com_fabrik/js/icongen.js',
-			'media/com_fabrik/js/fabrik.js', 'media/com_fabrik/js/tips/floatingtips.js'
-			);
-			FabrikHelperHTML::script($src, true);
+
+			$config = JFactory::getConfig();
+			$debug = $config->get('debug');
+			$uncompressed	= $debug ? '-uncompressed' : '';
+
+			$src = array();
+			if (JRequest::getInt('ajax') !== 1 && JRequest::getVar('tmpl') !== 'component') {
+				$src[] = 'media/system/js/mootools-core'.$uncompressed.'.js';
+				$src[] = 'media/system/js/mootools-more'.$uncompressed.'.js';
+			}
+
+			$src[] = 'media/com_fabrik/js/mootools-ext.js';
+			$src[] = 'media/com_fabrik/js/art.js';
+			$src[] = 'media/com_fabrik/js/icons.js';
+			$src[] =  'media/com_fabrik/js/icongen.js';
+			$src[] = 'media/com_fabrik/js/fabrik.js';
+			$src[] = 'media/com_fabrik/js/tips/floatingtips.js';
+
 			FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
+			FabrikHelperHTML::script($src, true, "window.fireEvent('fabrik.framework.loaded');");
 			$added = true;
 		}
 	}
 
+	/**
+	 * @deprecated use ::framework instead
+	 */
+
 	function mootools()
 	{
 		if (!FabrikHelperHTML::inAjaxLoadedPage()) {
-			JHtml::_('behavior.framework');
-			JHtml::_('behavior.framework', true);
+			//JHtml::_('behavior.framework');
+			//JHtml::_('behavior.framework', true);
 		}
 	}
 
@@ -670,28 +687,34 @@ function loadCalendar()
 			return;
 		}
 		if ($framework) {
-			FabrikHelperHTML::mootools();
+			//FabrikHelperHTML::mootools();
 		}
 
 		static $head;
 		if (!$head) {
 			$head = true;
+			if (JRequest::getInt('ajax') !== 1 && JRequest::getVar('tmpl') !== 'component') {
 			JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
+			}
 		}
 		$file = (array)$file;
 		$src = array();
 		foreach ($file as $f) {
-			if (JFile::exists(COM_FABRIK_BASE.$f)) {
-				if (JRequest::getCmd('format') == 'raw') {
-					$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){'.$onLoad.'}' : '';
-					echo '<script type="text/javascript">Asset.javascript(\''.COM_FABRIK_LIVESITE.$f.'\', {'.$opts.'});</script>';
-				} else {
-					$src[] = "'".COM_FABRIK_LIVESITE.$f."'";
+			if (!(stristr($f, 'http://') || stristr($f, 'https://'))) {
+				if (!JFile::exists(COM_FABRIK_BASE.DS.$f)) {
+					continue;
 				}
+			}
+			$f = stristr($f, 'http://') || stristr($f, 'https://')? $f : COM_FABRIK_LIVESITE.$f;
+			if (JRequest::getCmd('format') == 'raw') {
+				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){'.$onLoad.'}' : '';
+				echo '<script type="text/javascript">Asset.javascript(\''.$f.'\', {'.$opts.'});</script>';
+			} else {
+				$src[] = "'".$f."'";
 			}
 		}
 		if ($onLoad !== '' && JRequest::getCmd('format') != 'raw') {
-			$onLoad = "head.ready(function() {\n " . $onLoad . "});\n";
+			$onLoad = "head.ready(function() {\n " . $onLoad . "\n});\n";
 			FabrikHelperHTML::addScriptDeclaration($onLoad);
 		}
 		if (!empty($src)) {
@@ -732,7 +755,7 @@ function loadCalendar()
 		}
 
 		// Include mootools framework
-		JHtml::_('behavior.framework');
+		//JHtml::_('behavior.framework');
 
 		$sig = md5(serialize(array($selector,$params)));
 		if (isset($tips[$sig]) && ($tips[$sig])) {

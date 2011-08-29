@@ -44,15 +44,17 @@ var FbForm = new Class( {
 		this.fx = {};
 		this.fx.elements = [];
 		this.fx.validations = {};
-		head.ready(function() {
 		 this.setUpAll()
-		}.bind(this));	
 	},
 	
 	setUpAll: function()
 	{
 		this.setUp();
-		this.winScroller = new Fx.Scroll(window);
+		window.addEvent('domready', function() {
+		if (typeOf(Fx.Scroll) !== 'class') {
+			this.winScroller = new Fx.Scroll(window);
+		}
+	});
 		this.watchAddOptions();
 		$H(this.options.hiddenGroup).each(function(v, k){
 			if(v == true && typeOf(document.id('group'+k)) !== 'null'){

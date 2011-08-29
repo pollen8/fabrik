@@ -111,7 +111,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	{
 		$params =& $this->getParams();
 		$element = $this->getElement();
-		if ($params->get('use_wysiwyg', 0)) {
+		if ($params->get('use_wysiwyg', 0) && JRequest::getInt('ajax') !== 1) {
 			return preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
 		} else {
 			return false;
@@ -160,12 +160,24 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 			$bits['class'] .= " elementErrorHighlight";
 		}
 		if ($params->get('use_wysiwyg')) {
-			$editor = JFactory::getEditor();
-			$str = $editor->display($name, $value, $name, $cols, $rows, $cols, $rows);
+
+			if (JRequest::getVar('ajax') == 1) {
+
+				//$bits['class'] .= " mce_editable";
+				$str = "<textarea ";
+				foreach ($bits as $key => $val) {
+					$str .="$key=\"$val\" ";
+				}
+				$str .= "name=\"$name\" id=\"". $id. "\" cols=\"$cols\" rows=\"$rows\">".$value."</textarea>\n";
+
+			} else {
+				$editor = JFactory::getEditor();
+				$str = $editor->display($name, $value, $name, $cols, $rows, $cols, $rows);
+			}
 		} else {
 
-		if ($params->get('disable')) {
-			  $bits['class'] .= " disabled";
+			if ($params->get('disable')) {
+				$bits['class'] .= " disabled";
 				$bits['disabled'] = 'disabled';
 			}
 
@@ -206,7 +218,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		$params =& $this->getParams();
 		if ($params->get('use_wysiwyg')) {
 			// $$$ rob need to use the NAME as the ID when wysiwyg end in joined group
-			$id		 	= $this->getHTMLName($repeatCounter);
+			$id	= $this->getHTMLName($repeatCounter);
 			if ($this->_inDetailedView) {
 				$id .= "_ro";
 			}
@@ -215,13 +227,13 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		$opts =& $this->getElementJSOptions($repeatCounter);
 		$opts->max = $params->get('textarea-maxlength');
-		$opts->wysiwyg = $params->get('use_wysiwyg') ? true: false;
+		$opts->wysiwyg = ($params->get('use_wysiwyg') && JRequest::getInt('ajax') != 1) ? true: false;
 		$opts->deleteOverflow = $params->get('delete_overflow', true) ? true : false;
 		$opts = json_encode($opts);
 		return "new FbTextarea('$id', $opts)";
 	}
 
-		/**
+	/**
 	 * can be overwritten in adddon class
 	 *
 	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
