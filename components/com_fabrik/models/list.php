@@ -4375,7 +4375,7 @@ class FabrikFEModelList extends JModelForm {
 
 								//test for backslashed quotes
 								if (get_magic_quotes_gpc()) {
-									if (!$elementModel->_is_upload) {
+									if (!$elementModel->isUpload()) {
 										$val = stripslashes($val);
 									}
 								}

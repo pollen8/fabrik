@@ -40,7 +40,7 @@ class FabrikHelperHTML
 		$document = JFactory::getDocument();
 		// Load the necessary files if they haven't yet been loaded
 		if (!isset($mocha)) {
-			FabrikHelperHTML::script('media/com_fabrik/js/window.js', true);
+			$mocha = true;
 		}
 
 		if (!isset($modals)) {
@@ -53,9 +53,7 @@ class FabrikHelperHTML
 		}
 
 		$script .= "head.ready(function() {";
-		if (!isset($mocha)) {
-			$mocha = true;
-		}
+
 		if ($selector == '') {
 			return;
 		}
@@ -84,7 +82,6 @@ class FabrikHelperHTML
 		$opts->width 				= 500;
 		$opts->height 			= 150;
 		$opts 							= json_encode($opts);
-		FabrikHelperHTML::script('media/com_fabrik/js/advanced-search.js');
 
 		$script .= <<<EOD
 
@@ -590,6 +587,7 @@ function loadCalendar()
 		FabrikHelperHTML::addScriptDeclaration($script);
 		return;
 	}
+
 	/**
 	 */
 
@@ -814,6 +812,7 @@ function loadCalendar()
 	/**
 	 * create html for ajax folder browser (used by fileupload and image elements)
 	 * @param array folders
+	 * @param string start path
 	 * @return string html snippet
 	 */
 

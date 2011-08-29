@@ -29,15 +29,15 @@ class pdfRender{
 			 	return false;
 			 }
 			 else {
-			 	$thumb_url = $model->storage->_getThumb($file);
-			 	$thumb_file = $model->storage->urlToPath($thumb_url);
+			 	$thumb_url = $model->getStorage()->_getThumb($file);
+			 	$thumb_file = $model->getStorage()->urlToPath($thumb_url);
 			 	$thumb_url_info = pathinfo($thumb_url);
 			 	if (strtolower($thumb_url_info['extension'] == 'pdf')) {
 			 		$thumb_url = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '.' . $this->pdf_thumb_type;
 					$thumb_file_info = pathinfo($thumb_file);
 					$thumb_file = $thumb_file_info['dirname'] . DS . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
 			 	}
-			 	if ($model->storage->exists($thumb_file)) {
+			 	if ($model->getStorage()->exists($thumb_file)) {
 			 		return $thumb_url;
 			 	}
 			 	// if file specific thumb doesn't exist, try the generic per-type image in media folder

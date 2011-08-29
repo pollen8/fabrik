@@ -38,11 +38,29 @@ class JFormFieldSQL2 extends JFormFieldList
 	function getOptions()
 	{
 		$db	= FabrikWorker::getDbo();
+
+		$check = $this->element['checkexists'] ? (bool)$this->element['checkexists'] : false;
+		if ($check) {
+			$q = explode(" ", $this->element['query']);
+			$i = array_search('FROM', $q);
+			if (!$i) {
+				$i = array_search('from', $q);
+			}
+			$i++;
+			$tbl = $db->replacePrefix($q[$i]);
+
+			$db->setQuery("SHOW TABLES");
+			$rows = $db->loadResultArray();
+			$found = in_array($tbl, $rows) ? true : false;
+			if (!$found) {
+				return array(JHTML::_('select.option', $tbl.' not found', ''));
+			}
+		}
 		$db->setQuery($this->element['query']);
 		$key = $this->element['key_field'] ? $this->element['key_field'] : 'value';
 		$val = $this->element['value_field'] ? $this->element['value_field'] : $this->name;
 		if ($this->element['add_select']) {
-		  $rows = array(JHTML::_( 'select.option', '', '- '.JText::_('Do not use').' -'));
+		  $rows = array(JHTML::_('select.option', ''));
 		  $rows = array_merge($rows, (array)$db->loadObjectList());
 		} else {
 		   $rows = $db->loadObjectList();

@@ -44,9 +44,14 @@ class FabrikTableForm extends FabTable
 			$registry->loadArray($array['params']);
 			$array['params'] = (string)$registry;
 		}
+
 		//needed for form edit view where we see the database table anme and connection id
-		$this->db_table_name = $array['db_table_name'];
-		$this->connection_id = $array['connection_id'];
+		if (array_key_exists('db_table_name', $array)) {
+			$this->db_table_name = $array['db_table_name'];
+		}
+		if (array_key_exists('connection_id', $array)) {
+			$this->connection_id = $array['connection_id'];#
+		}
 		return parent::bind($array, $ignore);
 	}
 

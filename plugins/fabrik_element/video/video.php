@@ -21,7 +21,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	/** @var array allowed file extensions*/
 	var $_aDefaultFileTypes = array('.mov', '.qtif', '.mp4');
 
-	var $_is_upload = true;
+	protected $_is_upload = true;
 
 	/**
 	 * shows the data formatted for the table view

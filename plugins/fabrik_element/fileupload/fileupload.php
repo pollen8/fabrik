@@ -82,6 +82,63 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
+	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 *
+	 * get the class to manage the form element
+	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * to ensure that the file is loaded only once
+	 */
+
+	function formJavascriptClass(&$srcs, $script = '')
+	{
+		$params = $this->getParams();
+		if ($params->get('ajax_upload')) {
+
+			$prefix = JDEBUG ? '' : '.min';
+			$runtimes = $params->get('ajax_runtime', 'html5');
+			parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload'.$prefix.'.js');
+
+			if(strstr($runtimes, 'html5')) {
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.html5'.$prefix.'.js');
+			}
+			if(strstr($runtimes, 'html4')) {
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.html4'.$prefix.'.js');
+			}
+			if(strstr($runtimes, 'gears')) {
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/gears_init.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.gears'.$prefix.'.js');
+			}
+
+			if(strstr($runtimes, 'flash')) {
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.flash'.$prefix.'.js');
+			}
+			if(strstr($runtimes, 'silverlight')) {
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.silverlight'.$prefix.'.js');
+			}
+			if(strstr($runtimes, 'browserplus')) {
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.browserplus'.$prefix.'.js');
+			}
+		}
+		parent::formJavascriptClass($srcs, $script);
+		static $elementclasses;
+
+		if (!isset($elementclasses)) {
+			$elementclasses = array();
+		}
+		//load up the default scipt
+		if ($script == '') {
+			$script = 'plugins/fabrik_element/'.$this->getElement()->plugin.'/'.$this->getElement()->plugin.'.js';
+		}
+		if (empty($elementclasses[$script])) {
+			$srcs[] = $script;
+			$elementclasses[$script] = 1;
+		}
+	}
+
+	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
@@ -1243,12 +1300,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
+	 * @depreciated
 	 * load the required plupload runtime engines
 	 * @param string $runtimes
 	 */
 
 	protected function pluploadLRuntimes($runtimes)
 	{
+		return ;
 		FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.min.js');
 		FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.js');
 
@@ -1287,7 +1346,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params =& $this->getParams();
 		$runtimes = $params->get('ajax_runtime', 'html5');
-		$this->pluploadLRuntimes($runtimes);
+		//$this->pluploadLRuntimes($runtimes);
 
 		$pstr = '<!-- UPLOAD CONTAINER -->
 		<div id="'.$id.'-widgetcontainer">';
