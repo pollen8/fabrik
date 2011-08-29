@@ -611,6 +611,7 @@ function loadCalendar()
 			$src[] =  'media/com_fabrik/js/icongen.js';
 			$src[] = 'media/com_fabrik/js/fabrik.js';
 			$src[] = 'media/com_fabrik/js/tips/floatingtips.js';
+			$src[] = 'media/com_fabrik/js/window.js';
 
 			FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
