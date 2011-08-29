@@ -1949,21 +1949,24 @@ and converts them into
 		$elName 			= $this->getFullName(false, true, false);
 		$params =& $this->getParams();
 		$elName2 		= $this->getFullName(false, false, false);
-		$ids 				= $listModel->getColumnData($elName2);
-		//for ids that are text with apostrophes in
-		for ($x=count($ids) -1; $x >= 0; $x--) {
-			if ($ids[$x] == '') {
-				unset($ids[$x]);
-			} else {
-				$ids[$x] = addslashes($ids[$x]);
+		if (!$this->isJoin()) {
+			$ids = $listModel->getColumnData($elName2);
+			//for ids that are text with apostrophes in
+			for ($x=count($ids) -1; $x >= 0; $x--) {
+				if ($ids[$x] == '') {
+					unset($ids[$x]);
+				} else {
+					$ids[$x] = addslashes($ids[$x]);
+				}
 			}
 		}
+		$incjoin = $this->isJoin() ? false : $incjoin;
 		//filter the drop downs lists if the table_view_own_details option is on
 		//other wise the lists contain data the user should not be able to see
 		// note, this should now use the prefilter data to filter the list
 
 		// check if the elements group id is on of the table join groups if it is then we swap over the table name
-		$fromTable = $origTable;
+		$fromTable = $this->isJoin() ?  $this->getJoinModel()->getJoin()->table_join : $origTable;
 		$joinStr = $incjoin ? $listModel->_buildQueryJoin() : $this->_buildFilterJoin();
 		$groupBy = $incjoin ? "GROUP BY ".$params->get('filter_groupby', 'text')." ASC" : '';
 		foreach ($listModel->getJoins() as $aJoin) {
@@ -1977,10 +1980,10 @@ and converts them into
 		}
 		$elName = FabrikString::safeColName($elName);
 		if ($label == '') {
-			$label = $elName;
+			$label = $this->isJoin() ? $this->getElement()->name : $elName;
 		}
 		if ($id == '') {
-			$id = $elName;
+			$id = $this->isJoin() ? 'id' : $elName;
 		}
 		if ($this->encryptMe()) {
 			$secret = JFactory::getConfig()->getValue('secret');
@@ -1996,8 +1999,10 @@ and converts them into
 		} else {
 			$sql = "SELECT DISTINCT($label) AS " . $fabrikDb->nameQuote('text') . ", $id AS " . $fabrikDb->nameQuote('value') . " FROM ". $fabrikDb->nameQuote($fromTable). " $joinStr\n";
 		}
-		$sql .= "WHERE $id IN ('" . implode("','", $ids) . "')"
-		. "\n  $groupBy";
+		if (!$this->isJoin()) {
+			$sql .= "WHERE $id IN ('" . implode("','", $ids) . "')";
+		}
+		$sql .= "\n  $groupBy";
 
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
