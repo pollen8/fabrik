@@ -83,7 +83,7 @@ class imageRender{
 		$title = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
 		$element =& $model->getElement();
 
-		$file = $model->storage->getFileUrl($file);
+		$file = $model->getStorage()->getFileUrl($file);
 
 		$fullSize = $file;
 		$width = $params->get('fu_main_max_width');
@@ -93,11 +93,11 @@ class imageRender{
 			if ($params->get('fileupload_crop')) {
 				$width = $params->get('fileupload_crop_width');
 				$height = $params->get('fileupload_crop_height');
-				$file = $model->storage->_getCropped($fullSize);
+				$file = $model->getStorage()->_getCropped($fullSize);
 			} else {
 				$width = $params->get('thumb_max_width');
 				$height = $params->get('thumb_max_height');
-				$file = $model->storage->_getThumb($file);
+				$file = $model->getStorage()->_getThumb($file);
 			}
 		}
 
