@@ -1,3 +1,8 @@
+/** call back method when maps api is loaded*/
+function googlemapload(){
+	window.fireEvent('google.map.loaded');
+}
+
 var FbGoogleMap = new Class({
 	Extends : FbElement,
 
@@ -34,7 +39,8 @@ var FbGoogleMap = new Class({
 				fconsole('Geo locaiton functionality not available');
 			}
 		}
-		switch (this.options.maptype) {
+		window.addEvent('google.map.loaded', function(){
+			switch (this.options.maptype) {
 			default:
 			case 'G_NORMAL_MAP':
 				this.options.maptype = google.maps.MapTypeId.ROADMAP;
@@ -49,7 +55,6 @@ var FbGoogleMap = new Class({
 				this.options.maptype = google.maps.MapTypeId.TERRAIN;
 				break;
 		}
-		head.ready(function() {
 			this.makeMap();
 		}.bind(this));
 	},
@@ -63,6 +68,7 @@ var FbGoogleMap = new Class({
 	},
 
 	makeMap : function() {
+		
 		if (typeOf(this.element) === 'null') {
 			return;
 		}

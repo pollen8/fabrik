@@ -6,6 +6,10 @@
 	display:block;
 }
 
+div.calendar{
+	z-index:99999;
+}
+
 #fabrikOverlay{
   background-color: #000000;
   cursor: pointer;

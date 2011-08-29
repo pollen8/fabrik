@@ -6,9 +6,7 @@ echo "
 	margin-left: 10px;
 }
 
-#form_$c .fabrikSubElementContainer {
-	margin-left: 100px;
-}
+
 
 #form_$c .fabrikLabel {
 	width: 100px;

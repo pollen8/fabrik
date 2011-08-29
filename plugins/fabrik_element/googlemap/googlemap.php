@@ -123,7 +123,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	function formJavascriptClass(&$srcs)
 	{
 		$src = "http://maps.google.com/maps/api/js?sensor=".$this->getParams()->get('fb_gm_sensor', 'false');
-		JFactory::getDocument()->addScript($src);
+		$src .= "&callback=googlemapload";
+		parent::formJavascriptClass($srcs, $src);
 		parent::formJavascriptClass($srcs);
 	}
 

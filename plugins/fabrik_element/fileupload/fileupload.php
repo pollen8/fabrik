@@ -1296,22 +1296,23 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if ($params->get('fileupload_crop', 0)) {
 			$pstr .= '
 		<canvas id="'.$id.'-widget" width="400" height="400"></canvas>
-<div class="zoom" style="float:left;margin-top:10px;">
+<div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:200px">
 zoom:
 	<div class="fabrikslider-line" style="width: 100px;float:left;">
 		<div class="knob"></div>
 	</div>
 	<input name="zoom-val" value="" size="3" />
 </div>
-<div class="rotate" style="float:left;clear:left;margin-top:10px;">'.JText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE').':
+<div class="rotate" style="float:left;margin-top:10px;width:200px">'.JText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE').':
 	<div class="fabrikslider-line" style="width: 100px;float:left;">
 		<div class="knob"></div>
 	</div>
 	<input name="rotate-val" value="" size="3" />
-	<div  style="text-align: right;float:right; width: 205px">
+
+</div>
+<div  style="text-align: right;float:right;margin-top:10px; width: 205px">
 	<input type="button" class="button" name="close-crop" value="'.JText::_('CLOSE').'" />
 	</div>
-</div>
 </div>';
 		}
 		$pstr .= '

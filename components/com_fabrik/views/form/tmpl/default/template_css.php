@@ -207,12 +207,13 @@ margin:0;
 	cursor:pointer;
 }
 #form_$c .leftCol,
-#details_$c .leftCol{
+#details_$c .leftCol,
+#form_$c .fabrikSubLabel{
 	width: 130px;
 	float:left;
 }
 #details_$c .leftCol{
-color:#999;
+	color:#999;
 }
 
 #form_$c .fabrikElement {
@@ -267,9 +268,7 @@ color:#999;
 	padding-right: 5px;
 }
 
-#form_$c .fabrikSubElementContainer {
-	margin-left: 100px;
-}
+
 
 #form_$c .fabrikLabel {
 	min-height:1px; /*for elements with no label txt*/

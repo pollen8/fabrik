@@ -22,6 +22,9 @@ define("COM_FABRIK_EXCEL_CSV_DELIMITER", ";");
 /** @var string separator used in repeat elements/groups IS USED IN F3 */
 define ("GROUPSPLITTER", "//..*..//");
 
+//override JHTML
+//JHTML::addIncludePath(JPATH_SITE.'/components/com_fabrik/helpers/');
+
 //Register the element class with the loader
 JLoader::register('JElement', JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_fabrik'.DS.'element.php');
 
