@@ -31,7 +31,7 @@ class plgFabrik_Element extends FabrikPlugin
 	var $_editable = null;
 
 	/** @var bol */
-	var $_is_upload = 0;
+	protected $_is_upload = 0;
 
 	/** @var bol */
 	var $_recordInDatabase = 1;

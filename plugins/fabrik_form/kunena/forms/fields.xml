@@ -3,16 +3,18 @@
 	<fields name="params">
 		<fieldset name="plg-form-kunena">
 			<field name="kunena_category" 
-				type="sql" 
+				type="sql2" 
 				repeat="true"
-				query="SELECT id AS value, name  FROM #__fb_categories WHERE published = 1" value_field="name" 
+				checkexists="true"
+				query="SELECT id AS value, name AS text FROM #__kunena_categories WHERE published = 1"
+				value_field="name" 
 				label="PLG_FORM_KUNENA_CATEGORY_LABEL" 
 				description="PLG_FORM_KUNENA_CATEGORY_DESC"/>
 				
 			<field name="kunena_title" 
 				type="text"
 				repeat="true" 
-				label="PLG_FORM_KUNENA_TITLE_LABELTile" 
+				label="PLG_FORM_KUNENA_TITLE_LABEL" 
 				description="PLG_FORM_KUNENA_TITLE_DESC"/>
 				
 			<field name="kunena_content" 

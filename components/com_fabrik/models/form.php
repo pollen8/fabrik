@@ -562,7 +562,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		foreach ($groups as $groupModel) {
 			$elementModels =& $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
-				if ($elementModel->_is_upload == '1') {
+				if ($elementModel->isUpload()) {
 					return "multipart/form-data";
 				}
 			}

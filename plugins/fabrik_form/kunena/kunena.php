@@ -34,6 +34,7 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 
 	function onBeforeStore( &$params, &$formModel )
 	{
+		return;
 		jimport('joomla.filesystem.file');
 		$files[]  = COM_FABRIK_BASE.'administrator'.DS.'components'.DS.'com_kunena'.DS.'language'.DS.'kunena.english.php';
 		$files[] = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'class.kunena.php';
