@@ -41,7 +41,6 @@ class FabrikHelperHTML
 		// Load the necessary files if they haven't yet been loaded
 		if (!isset($mocha)) {
 			$mocha = true;
-			FabrikHelperHTML::script('media/com_fabrik/js/window.js', true);
 		}
 
 		if (!isset($modals)) {

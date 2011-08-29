@@ -28,7 +28,7 @@ var FbFileUpload = new Class({
 					});
 					$(file.id).getElement('.plupload_file_status').set('text', '100%');
 				}.bind(this));
-				this.uploader.trigger('Init');
+				//this.uploader.trigger('Init'); //no as this creates a second div interface
 				// hack to reposition the hidden input field over the 'ad' button
 				var c = $(this.options.element + '_container');
 				var diff = $(this.options.element + '_browseButton').getPosition().y - c.getPosition().y;
