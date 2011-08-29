@@ -2268,9 +2268,21 @@ and converts them into
 				$query = " DAYOFYEAR($key) >= DAYOFYEAR($value) ";
 				break;
 			default:
-				$query = " $key $condition $value ";
+				if ($this->isJoin()) {
+					// query the joined table concatanating into one field
+					$jointable = $this->getJoinModel()->getJoin()->table_join;
+					$pk = $this->getListModel()->getTable()->db_primary_key;
+					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
+					$value = str_replace("'", '', $value);
+					$query = "($key = '$value' OR $key LIKE '$value".GROUPSPLITTER."%' OR
+					$key LIKE '".GROUPSPLITTER."$value".GROUPSPLITTER."%' OR
+					$key LIKE '%".GROUPSPLITTER."$value')";
+				} else {
+					$query = " $key $condition $value ";
+				}
 				break;
 		}
+		//echo $query;exit;
 		return $query;
 	}
 
