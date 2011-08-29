@@ -188,6 +188,9 @@ class Com_FabrikInstallerScript
 
 	function postflight($type, $parent)
 	{
+		$db = JFactory::getDbo();
+		$db->setQuery("UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik'))");
+		$db->query();
 		$this->fixmMenuComponentId();
 		if ($type !== 'update') {
 			if (!$this->setConnection()) {
@@ -214,9 +217,7 @@ class Com_FabrikInstallerScript
 here to install sample data</a></p>
 	  ';
 
-			$db = JFactory::getDbo();
-			$db->setQuery("UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik'))");
-			$db->query();
+
 			// An example of setting a redirect to a new location after the install is completed
 			//$parent->getParent()->set('redirect_url', 'http://www.google.com');
 

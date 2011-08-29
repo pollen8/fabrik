@@ -1596,6 +1596,9 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$app =& JFactory::getApplication();
 		$params =& $this->getParams();
+		if (!$this->getRequiredFiltersFound()) {
+			return true;
+		}
 		switch ($params->get('require-filter', 0)) {
 			case 0:
 			default:
