@@ -38,9 +38,8 @@ class plgFabrik_List extends FabrikPlugin
 			return true;
 		}
 		$params =& $this->getParams();
-		$access = $params->get($aclParam);
-		$name = $this->_getButtonName();
-		return FabrikWorker::getACL($access, $name);
+		$groups = JFactory::getUser()->authorisedLevels();
+		return in_array($params->get($aclParam), $groups);
 	}
 
 	/**
@@ -56,7 +55,7 @@ class plgFabrik_List extends FabrikPlugin
 		JText::script('COM_FABRIK_PLEASE_SELECT_A_ROW');
 		return true;
 	}
-	
+
 
 
 	/**

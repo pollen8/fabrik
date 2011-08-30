@@ -87,7 +87,6 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$access = $params->get('updatecol_access');
 		$name = $this->_getButtonName();
 		$canuse = FabrikWorker::getACL($access, $name);
-		echo $canuse ? 'can use': 'cant user';
 		return $canuse;
 	}
 
