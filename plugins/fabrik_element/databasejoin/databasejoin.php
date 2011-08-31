@@ -586,8 +586,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$joinId = '';
 			$joinGroupId = '';
 		}
-		$tmp =& $this->_getOptions($data);
-
+		// $$$ rob dont load in all options for autocomplete as slows loading on large data sets
+		$tmp = ($displayType == 'auto-complete' && $this->_editable) ? array() : $this->_getOptions($data, $repeatCounter);
 		/*get the default value */
 		$w = new FabrikWorker();
 

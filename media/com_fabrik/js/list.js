@@ -366,8 +366,7 @@ var FbList = new Class({
 					e.stop();
 					e.target.disabled = true;
 					new Element('div', {'id': 'csvmsg'}).set('html',Joomla.JText._('COM_FABRIK_LOADING')+' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> '+Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/> '+Joomla.JText._('COM_FABRIK_SAVING_TO')+' <span id="csvfile"></span>').inject(e.target, 'before');
-					var url = 'index.php?option=com_fabrik&view=list&format=csv&listid='+this.id;
-					this.triggerCSVImport(0, url);
+					this.triggerCSVImport(0);
 				}.bind(this)
 				
 			}})
@@ -380,27 +379,42 @@ var FbList = new Class({
 		return c;
 	},
 	
-	triggerCSVImport:function(start, url){
-		var opts = {};
-		if (typeOf(document.id('exportcsv')) !== 'null') {
-			$A(['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel']).each(function(v){
-				var inputs = document.id('exportcsv').getElements('input[name=' + v + ']');
-				if (inputs.length > 0) {
-					opts[v] = inputs.filter(function(i){
-						return i.checked;
-					})[0].value;
+	triggerCSVImport:function(start, opts, fields){
+		var url = 'index.php?option=com_fabrik&view=list&format=csv&listid='+this.id;
+		if (start !== 0) {
+			opts = this.csvopts;
+			fields = this.csvfields;
+		}else{
+			if (!opts) {
+				var opts = {};
+				if (typeOf(document.id('exportcsv')) !== 'null') {
+					$A(['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel']).each(function(v){
+						var inputs = document.id('exportcsv').getElements('input[name=' + v + ']');
+						if (inputs.length > 0) {
+							opts[v] = inputs.filter(function(i){
+								return i.checked;
+							})[0].value;
+						}
+					});
 				}
-			});
-			// selected fields
-			var fields = {};
-			document.id('exportcsv').getElements('input[name^=field]').each(function(i){
-				if(i.checked){
-					var k = i.name.replace('fields[', '').replace(']', '');
-					fields[k] = i.get('value');
+			}
+			//selected fields
+			if (!fields) {
+				var fields = {};
+				if (typeOf(document.id('exportcsv')) !== 'null') {
+					document.id('exportcsv').getElements('input[name^=field]').each(function(i){
+						if(i.checked){
+							var k = i.name.replace('fields[', '').replace(']', '');
+							fields[k] = i.get('value');
+						}
+					});
 				}
-			});
+			}
+			opts['fields'] = fields;
+			this.csvopts = opts;
+			this.csvfields = fields;
 		}
-		opts['fields'] = fields;
+		
 		var thisurl = url +'&start='+start;
 		var myAjax = new Request.JSON({
 			url:thisurl,
@@ -414,7 +428,7 @@ var FbList = new Class({
 					if (typeOf(document.id('csvtotal')) !== 'null') document.id('csvtotal').set('text', res.total);
 					if (typeOf(document.id('csvfile')) !== 'null') document.id('csvfile').set('text', res.file);
 					if (res.count < res.total) {
-						this.triggerCSVImport(res.count, url);
+						this.triggerCSVImport(res.count);
 					}else{
 						var finalurl = Fabrik.liveSite+'index.php?option=com_fabrik&view=list&format=csv&listid='+this.id+'&start='+res.count;
 						var msg = Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
