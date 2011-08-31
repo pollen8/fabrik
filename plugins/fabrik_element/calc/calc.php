@@ -301,7 +301,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	 * @see components/com_fabrik/models/plgFabrik_Element#renderListData($data, $oAllRowsData)
 	 */
 
-	function renderListData_csv($data, $col, &$thisRow)
+	function renderListData_csv($data, &$thisRow)
 	{
 		$val = $this->renderListData($data, $thisRow);
 		$raw = $col . '_raw';
