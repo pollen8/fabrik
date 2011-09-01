@@ -156,8 +156,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 							<?php if ($listDirn == 'asc') : ?>
 								<span><?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i-1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
 								<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i+1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
-							<?php elseif ($listDirn == 'desc') :
-							echo $this->items[$i-1]->group_id;?>
+							<?php elseif ($listDirn == 'desc') :?>
 								<span><?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i-1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
 								<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i+1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
 							<?php endif; ?>

@@ -1029,4 +1029,18 @@ class FabrikModelElement extends JModelAdmin
 		}
 		return $parent;
 	}
+
+	/**
+	 * A protected method to get a set of ordering conditions.
+	 *
+	 * @param   object  $table  A JTable object.
+	 *
+	 * @return  array  An array of conditions to add to ordering queries.
+	 * @since   Fabrik 3.0b
+	 */
+
+	protected function getReorderConditions($table)
+	{
+		return array('group_id = '.$table->group_id);
+	}
 }
