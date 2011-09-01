@@ -332,7 +332,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	public function getJoinDataNames()
 	{
-		$group =& $this->getGroup()->getGroup();
+		$group = $this->getGroup()->getGroup();
 		$name = $this->getFullName(false, true, false);
 		$fv_name = 'join['.$group->join_id.']['.$name.']';
 		$rawname = $name."_raw";
@@ -354,7 +354,7 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
-		$table =& $this->getListModel()->getTable();
+		$table = $this->getListModel()->getTable();
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote("$dbtable" . "___" . $this->_element->name));
 		$k = $db->nameQuote($dbtable).".".$db->nameQuote($this->_element->name);
 		$secret = JFactory::getConfig()->getValue('secret');
@@ -3711,6 +3711,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	}
 
 	/**
+	 * preciated@de
 	 * fabrik3: moved to  Admin Element Model
 	 * @return string table name
 	 */
@@ -3730,6 +3731,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	}
 
 	/**
+	 * @depreciated
 	 * fabrik3: moved to  Admin Element Model
 	 * if repeated element we need to make a joined db table to store repeated data in
 	 */
