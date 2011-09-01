@@ -208,9 +208,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$params =& $this->getParams();
 		$field = $params->get('fb_gm_geocode_' . $which_field, false);
 		if ($field) {
-			$pluginManager = $this->getFormModel()->getPluginManager();
-			$elementModel = $pluginManager->getElementPlugin($field);
-			//$elementModel->setId($field);
+			$elementModel = $this->getPluginManager()->getElementPlugin($field);
 			return $elementModel->getHTMLId($repeatCounter);
 		}
 		return false;

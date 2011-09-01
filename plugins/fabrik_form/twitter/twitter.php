@@ -243,12 +243,9 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$data = $this->getEmailData();
 		$twitter_msg_field_id = $params->get('twitter_msg_field', '');
 		if ($twitter_msg_field_id != '') {
-			$elementModel =& JModel::getInstance('element','FabrikModel');
-
-			$elementModel->setId($twitter_msg_field_id);
-			$element =& $elementModel->getElement(true);
+			$elementModel = $this->formModel->getPluginManager()->getElementPlugin($twitter_msg_field_id);
+			$element = $elementModel->getElement(true);
 			$twitter_msg_field = $elementModel->getFullName(false, true, false);
-
 			$msg = $data[$twitter_msg_field];
 		} else {
 			$w = new FabrikWorker();
@@ -293,7 +290,6 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
 		$_SESSION['oauth_callback_confirmed'] = $request_token['oauth_callback_confirmed'];
 
-		//$_SESSION['msg'] = $this->getMessage($params);
 		/* If last connection failed don't display authorization link. */
 		switch ($connection->http_code) {
 			case 200:

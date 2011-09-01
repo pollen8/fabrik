@@ -33,16 +33,14 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 
 	/**
+	 * @depreciated
 	 * get an element model
 	 * @return object element model
 	 */
 
 	private function getElementModel()
 	{
-		if (!isset($this->_elementModel)) {
-			$this->_elementModel =& JModel::getInstance('element','FabrikModel');
-		}
-		return $this->_elementModel;
+		return false;
 	}
 
 	/**

@@ -1504,7 +1504,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$params =& $this->getParams();
 		$validations = $params->get('validations', '', '_default', 'array');
 		$usedPlugins = JArrayHelper::getValue($validations, 'plugin', array());
-		$pluginManager = $this->getFormModel()->getPluginManager();
+		$pluginManager = $this->getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
 		$this->_aValidations = array();
@@ -3937,6 +3937,15 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 			$html .= "</script>\n";
 		}
 		echo $html;
+	}
+
+	/**
+	 * since 3.0b
+	 * Shortcut to get plugin manager
+	 */
+	public function getPluginManager()
+	{
+		return $this->getFormModel()->getPluginManager();
 	}
 }
 ?>

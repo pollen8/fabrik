@@ -100,8 +100,6 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$this->formModel =& $formModel;
 			$data = $this->getEmailData();
 			$post = JRequest::get('post');
-			$elementModel =& JModel::getInstance('element','FabrikModel');
-			$element =& $elementModel->getElement(true);
 			$listModel =& $formModel->getTable();
 
 			if ($ext == 'csv') {
@@ -114,47 +112,20 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				$sep_compare = '<br/>';
 				$sep_2compare = '<br/>';
 			}
-			//var_dump($listModel); exit;
 				foreach ($data as $key => $val) {
+					if (($val != $formModel->_origData->$key) && (isset($formModel->_origData->$key)) && (isset($val)) && (substr($key, -4, 4) != '_raw')) {
+						$id_elementModel = $formModel->getPluginManager()->getElementPlugin($key);
+						$id_element =& $id_elementModel->getElement(true);
+						$formModel->_formData[$id_element->name] = $formModel->_fullFormData['rowid'];
+						$formModel->_formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
+						$test = $id_element->name->$key;
+							$result_compare .= JText::_('PLG_FORM_LOG_COMPARE_DATA_CHANGE_ON').' '.$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_FROM').' '.$formModel->_origData->$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_TO').' '.$val.' '.$sep_2compare;
 
-					 /* if (is_array($val)) {
-						foreach ($val as $v) {
-							if (is_array($v)) {
-								foreach ($v as $nval) {
-									if (($nval[0] != $formModel->_origData->$key) && (isset($formModel->_origData->$key)) && (isset($nval[0])) && (substr($key, -4, 4) != '_raw')) {
-										$result_compare .= JText::_('PLG_FORM_LOG_COMPARE_DATA_CHANGE_ON').' '.$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_FROM').' '.$formModel->_origData->$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_TO').' '.$nval[0].' '.$sep_2compare;
-									}
-								}
-							}else{
-								if (($val[0] != $formModel->_origData->$key) && (isset($formModel->_origData->$key)) && (isset($val[0])) && (substr($key, -4, 4) != '_raw')) {
-									$result_compare .= JText::_('PLG_FORM_LOG_COMPARE_DATA_CHANGE_ON').' '.$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_FROM').' '.$formModel->_origData->$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_TO').' '.$val[0].' '.$sep_2compare;
-								}
-							}
-						}
-					  } else {*/
-							if (($val != $formModel->_origData->$key) && (isset($formModel->_origData->$key)) && (isset($val)) && (substr($key, -4, 4) != '_raw')) {
-								$id_elementModel =& JModel::getInstance('element','FabrikModel');
-								$id_elementModel->setId($key);
-								$id_element =& $id_elementModel->getElement(true);
-								$formModel->_formData[$id_element->name] = $formModel->_fullFormData['rowid'];
-								$formModel->_formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
-								$test = $id_element->name->$key;
-									$result_compare .= JText::_('PLG_FORM_LOG_COMPARE_DATA_CHANGE_ON').' '.$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_FROM').' '.$formModel->_origData->$key.' '.$sep_compare.JText::_('PLG_FORM_LOG_COMPARE_DATA_TO').' '.$val.' '.$sep_2compare;
-
-							}
-					 // }
-
+					}
 				}
 
 		}
 
-
-		// Defining the date to use - Not used anymore as logs should really only record the current time_date
-		/*if ($date_element != '') {
-			$this->date_field 			= $this->getFieldName( $params, 'logs_date_field');
-			$date = $data[$this->date_field];
-		} else
-		*/
 		if ($date_now != '') {
 		  	$date = date("$date_now");
 		} else {
