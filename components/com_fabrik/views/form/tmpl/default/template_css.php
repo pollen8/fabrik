@@ -8,7 +8,7 @@ echo "
 	list-style:none;
 }
 
-#form_$c  .fabrikForm .fabrikGroup ul{
+#form_$c .fabrikForm .fabrikGroup ul{
 	list-style:none;
 }
 
@@ -24,6 +24,22 @@ echo "
 	margin:5px;
 	padding:5px;
 }
+
+/* START: align google map sub elements vertically */
+
+.googlemap .fabrikSubElementContainer{
+	-moz-box-orient:vertical;
+	-webkit-box-orient:vertical;
+	box-orient:vertical;
+}
+
+.googlemap .fabrikSubElementContainer > div{
+	-mox-box-flex: 1;
+	-webkit-box-flex: 1;
+	box-flex: 1;
+}
+
+/* END: align google map sub elements vertically */
 
 .floating-tip {
 	background-color: black;

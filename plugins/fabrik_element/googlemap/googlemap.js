@@ -1,6 +1,8 @@
 /** call back method when maps api is loaded*/
 function googlemapload(){
-	window.fireEvent('google.map.loaded');
+	window.addEvent('domready', function(){
+		window.fireEvent('google.map.loaded');	
+	})
 }
 
 var FbGoogleMap = new Class({
@@ -68,7 +70,6 @@ var FbGoogleMap = new Class({
 	},
 
 	makeMap : function() {
-		
 		if (typeOf(this.element) === 'null') {
 			return;
 		}
@@ -102,7 +103,7 @@ var FbGoogleMap = new Class({
     				style: zoomControlStyle
   				}
 			};
-			this.map = new google.maps.Map($(this.element).getElement('.map'), mapOpts);
+			this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
 			
 			
 			var point = new google.maps.LatLng(this.options.lat, this.options.lon);
@@ -116,36 +117,36 @@ var FbGoogleMap = new Class({
 				opts.draggable = false;
 			}
 			if (this.options.latlng == true) {
-				$(this.element).getElement('.lat').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
-				$(this.element).getElement('.lng').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
+				document.id(this.element).getElement('.lat').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
+				document.id(this.element).getElement('.lng').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
 			}
 
 			if (this.options.latlng_dms == true) {
-				$(this.element).getElement('.latdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
-				$(this.element).getElement('.lngdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
+				document.id(this.element).getElement('.latdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
+				document.id(this.element).getElement('.lngdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
 			}
 
 			this.marker = new google.maps.Marker(opts);
 
 			if (this.options.latlng == true) {
-				$(this.element.id).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
-				$(this.element.id).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
+				document.id(this.element.id).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
+				document.id(this.element.id).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
 			}
 
 			if (this.options.latlng_dms == true) {
-				$(this.element.id).getElement('.latdms').value = this.latDecToDMS();
-				$(this.element.id).getElement('.lngdms').value = this.lngDecToDMS();
+				document.id(this.element.id).getElement('.latdms').value = this.latDecToDMS();
+				document.id(this.element.id).getElement('.lngdms').value = this.lngDecToDMS();
 			}
 
 			google.maps.event.addListener(this.marker, "dragend", function() {
 				this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 				if (this.options.latlng == true) {
-					$(this.element).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
-					$(this.element).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
+					document.id(this.element).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
+					document.id(this.element).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
 				}
 				if (this.options.latlng_dms == true) {
-					$(this.element).getElement('.latdms').value = this.latDecToDMS();
-					$(this.element).getElement('.lngdms').value = this.lngDecToDMS();
+					document.id(this.element).getElement('.latdms').value = this.latDecToDMS();
+					document.id(this.element).getElement('.lngdms').value = this.lngDecToDMS();
 				}
 			}.bind(this));
 			google.maps.event.addListener(this.map, "zoom_changed", function(oldLevel, newLevel) {
@@ -156,12 +157,12 @@ var FbGoogleMap = new Class({
 					this.marker.setPosition(this.map.getCenter());
 					this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 					if (this.options.latlng == true) {
-						$(this.element).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
-						$(this.element).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
+						document.id(this.element).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
+						document.id(this.element).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
 					}
 					if (this.options.latlng_dms == true) {
-						$(this.element).getElement('.latdms').value = this.latDecToDMS();
-						$(this.element).getElement('.lngdms').value = this.lngDecToDMS();
+						document.id(this.element).getElement('.latdms').value = this.latDecToDMS();
+						document.id(this.element).getElement('.lngdms').value = this.lngDecToDMS();
 					}
 				}.bind(this));
 			}
@@ -170,20 +171,20 @@ var FbGoogleMap = new Class({
 	},
 
 	updateFromLatLng : function() {
-		var lat = $(this.element.id).getElement('.lat').get('value').replace('° N', '').toFloat();
-		var lng = $(this.element.id).getElement('.lng').get('value').replace('° E', '').toFloat();
+		var lat = document.id(this.element.id).getElement('.lat').get('value').replace('° N', '').toFloat();
+		var lng = document.id(this.element.id).getElement('.lng').get('value').replace('° E', '').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);
 		this.marker.setPosition(pnt);
 		this.map.setCenter(pnt, this.map.getZoom());
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
-		$(this.element).getElement('.latdms').value = this.latDecToDMS();
-		$(this.element).getElement('.lngdms').value = this.lngDecToDMS();
+		document.id(this.element).getElement('.latdms').value = this.latDecToDMS();
+		document.id(this.element).getElement('.lngdms').value = this.lngDecToDMS();
 	},
 
 	updateFromDMS : function() {
-		var latdms = $(this.element.id).getElement('.latdms').get('value').replace('S', '-');
+		var latdms = document.id(this.element.id).getElement('.latdms').get('value').replace('S', '-');
 		latdms = latdms.replace('N', '');
-		var lngdms = $(this.element.id).getElement('.lngdms').get('value').replace('W', '-');
+		var lngdms = document.id(this.element.id).getElement('.lngdms').get('value').replace('W', '-');
 		lngdms = lngdms.replace('E', '');
 
 		var latdms_d_ms = latdms.split('°');
@@ -210,8 +211,8 @@ var FbGoogleMap = new Class({
 		this.marker.setPosition(pnt);
 		this.map.setCenter(pnt, this.map.getZoom());
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
-		$(this.element).getElement('.lat').value = latdms_topnt + '° N';
-		$(this.element).getElement('.lng').value = lngdms_topnt + '° E';
+		document.id(this.element).getElement('.lat').value = latdms_topnt + '° N';
+		document.id(this.element).getElement('.lng').value = lngdms_topnt + '° E';
 	},
 
 	latDecToDMS : function() {
@@ -272,17 +273,16 @@ var FbGoogleMap = new Class({
 
 	},
 
-	geoCode : function(event) {
-		var e = new Event(event);
+	geoCode : function(e) {
 		this.geocoder = new google.maps.Geocoder();
 		var address = '';
 		if (this.options.geocode == '2') {
 			this.options.geocode_fields.each(function(field) {
-				address += $(field).value + ',';
+				address += document.id(field).value + ',';
 			});
 			address = address.slice(0, -1);
 		} else {
-			address = $(this.element.id).getElement('.geocode_input').value;
+			address = document.id(this.element.id).getElement('.geocode_input').value;
 		}
 		this.geocoder.geocode({'address': address}, function(results, status) {
 			if (!status == google.maps.GeocoderStatus.OK || results.length == 0) {
@@ -292,12 +292,12 @@ var FbGoogleMap = new Class({
 				this.map.setCenter(results[0].geometry.location, this.map.getZoom());
 				this.field.value = results[0].geometry.location + ":" + this.map.getZoom();
 				if (this.options.latlng == true) {
-					$(this.element.id).getElement('.lat').value = results[0].geometry.location.lat() + '° N';
-					$(this.element.id).getElement('.lng').value = results[0].geometry.location.lng() + '° E';
+					document.id(this.element.id).getElement('.lat').value = results[0].geometry.location.lat() + '° N';
+					document.id(this.element.id).getElement('.lng').value = results[0].geometry.location.lng() + '° E';
 				}
 				if (this.options.latlng_dms == true) {
-					$(this.element.id).getElement('.latdms').value = this.latDecToDMS();
-					$(this.element.id).getElement('.lngdms').value = this.lngDecToDMS();
+					document.id(this.element.id).getElement('.latdms').value = this.latDecToDMS();
+					document.id(this.element.id).getElement('.lngdms').value = this.lngDecToDMS();
 				}
 			}
 		}.bind(this));
@@ -310,21 +310,21 @@ var FbGoogleMap = new Class({
 		if (this.options.geocode == '2') {
 			if (this.options.geocode_event != 'button') {
 				this.options.geocode_fields.each(function(field) {
-					if (typeOf($(field)) !== 'null') {
-						$(field).addEvent('keyup', this.geoCode.bindWithEvent(this));
+					if (typeOf(document.id(field)) !== 'null') {
+						document.id(field).addEvent('keyup', this.geoCode.bindWithEvent(this));
 					}
 				}.bind(this));
 			} else {
 				if (this.options.geocode_event == 'button') {
-					$(this.element).getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+					document.id(this.element).getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
 				}
 			}
 		}
-		if (this.options.geocode == '1' && $(this.element).getElement('.geocode_input')) {
+		if (this.options.geocode == '1' && document.id(this.element).getElement('.geocode_input')) {
 			if (this.options.geocode_event == 'button') {
-				$(this.element.id).getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+				document.id(this.element.id).getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
 			} else {
-				$(this.element.id).getElement('.geocode_input').addEvent('keyup', this.geoCode.bindWithEvent(this));
+				document.id(this.element.id).getElement('.geocode_input').addEvent('keyup', this.geoCode.bindWithEvent(this));
 			}
 		}
 	},
@@ -391,7 +391,6 @@ var FbGoogleMap = new Class({
 	 * NOTE that this stuff is very specific to the Fabrik tabs template, using J!'s tabs.
 	 */
     doTab: function(event) {
-    	//var e = new Event(event);
     	(function() {
     		//this.map.checkResize();
     		google.maps.event.trigger(this.map, 'resize');
