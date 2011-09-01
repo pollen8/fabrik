@@ -706,7 +706,7 @@ private function addElementToOtherDbTables($elementModel, $row)
 		// $$$ hugh - we use $row after this, so we need to work on a copy, otherwise
 		// (for instance) we redirect to the wrong copy of the element
 		$rowcopy = clone($row);
-		foreach ($othertables as $t) {
+		foreach ($othertables as $listid => $t) {
 			$rowcopy->id = 0;
 			$rowcopy->parent_id = $origElid;
 			$rowcopy->group_id = $t->group_id;
@@ -719,6 +719,7 @@ private function addElementToOtherDbTables($elementModel, $row)
 				$join->id = 0;
 				unset($join->id);
 				$join->element_id = $rowcopy->id;
+				$join->list_id = $listid;
 				//$join->group_id = $rowcopy->group_id;
 				$join->store();
 			}
