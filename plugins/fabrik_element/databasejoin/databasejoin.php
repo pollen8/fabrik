@@ -182,6 +182,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_join;
 			}
 		}
+		echo "<pre>";print_r($element);print_r($joins);echo "</pre>";
 		//	default fall back behaviour - shouldnt get used
 		echo 'database join: big error loading join! shouldnt get here';exit;
 	/*	if (!is_null($this->_join)) {

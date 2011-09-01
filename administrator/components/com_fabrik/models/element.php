@@ -402,7 +402,11 @@ class FabrikModelElement extends JModelAdmin
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
 		} else {
 			$plugin = $pluginManager->getPlugIn($plugin, 'Element');
-			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item));
+			if (!is_object($plugin)) {
+				JError::raiseNotice(500, 'Could not load plugin:' . $plugin);
+			} else {
+				$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item));
+			}
 		}
 		return $str;
 	}

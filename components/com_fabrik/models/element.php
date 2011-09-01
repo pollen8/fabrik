@@ -1793,21 +1793,21 @@ class plgFabrik_Element extends FabrikPlugin
 		//takes rows which may be in format :
 		/*
 		 *  [0] => stdClass Object
-        (
-            [text] => ["1"]
-            [value] => ["1"]
-        )
-and converts them into
-    [0] => JObject Object
-        (
-            [_errors:protected] => Array
-                (
-                )
+		 (
+		 [text] => ["1"]
+		 [value] => ["1"]
+		 )
+		 and converts them into
+		 [0] => JObject Object
+		 (
+		 [_errors:protected] => Array
+		 (
+		 )
 
-            [value] => 1
-            [text] => 1
-            [disable] =>
-        )
+		 [value] => 1
+		 [text] => 1
+		 [disable] =>
+		 )
 		 */
 		$allvalues = array();
 		foreach ($rows as $row) {
@@ -3113,11 +3113,30 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		}
 
 		if (is_array($data) && count($data) > 1) {
+			//if we are storing info as json the data will contain an array of objects
+			if (is_object($data[0])) {
+				foreach ($data as &$o) {
+					$this->convertDataToString($o);
+				}
+			}
 			return "<ul class=\"fabrikRepeatData\"><li>".implode("</li><li>", $data) . "</li></ul>";
 		} else {
 			return empty($data) ? '' : $data[0];
 		}
 	}
+
+	protected function convertDataToString(&$o)
+	{
+		if (is_object($o)) {
+			$s = '<ul>';
+			foreach ($o as $k=>$v) {
+				$s .= '<li>'.$v.'</li>';
+			}
+			$s .= '</ul>';
+			$o = $s;
+		}
+	}
+
 
 	function renderTableData_csv($data, $oAllRowsData)
 	{
