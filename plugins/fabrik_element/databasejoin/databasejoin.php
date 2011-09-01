@@ -1364,10 +1364,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$element = $this->getElement();
 		$maskbits = 4;
 		$post	= JRequest::get('post', $maskbits);
-		if ($post['details']['plugin'] != 'databasejoin') {
-			$db =& FabrikWorker::getDbo();
-			$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =" . $post['id']);
-			$db->query();
+		//on new or on copy? details not found?
+		if (array_key_exists('detals', $post)) {
+			if ($post['details']['plugin'] != 'databasejoin') {
+				$db =& FabrikWorker::getDbo();
+				$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =" . $post['id']);
+				$db->query();
+			}
 		}
 	}
 

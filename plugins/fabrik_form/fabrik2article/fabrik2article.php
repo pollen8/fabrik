@@ -27,9 +27,10 @@ class plgFabrik_FormFabrik2Article extends plgFabrik_Form {
 
 	function onDeleteRowsForm(&$params, &$formModel, &$groups)
 	{
+		$this->formModel = $formModel;
 		if ($params->get('fabrik2article_article_id_element') != '' && $params->get('fabrik2article_delete_article', false))
 		{
-			$articleidfield 		= $this->_getFieldName($params, 'fabrik2article_article_id_element');
+			$articleidfield = $this->_getFieldName($params, 'fabrik2article_article_id_element');
 			$f2c = new FabrikControllerArticle();
 			$f2c->setFormModel($formModel);
 			$f2c->setParameters($params);
@@ -79,12 +80,9 @@ class plgFabrik_FormFabrik2Article extends plgFabrik_Form {
 	 * @return string element full name
 	 */
 
-	private function _getFieldName( $params, $pname )
+	private function _getFieldName($params, $pname)
 	{
-		//$params =& $this->getParams();
-		$el = $params->get($pname);
-		$elementModel =& $this->getElementModel();
-		$elementModel->setId($params->get($pname));
+		$elementModel = $this->formModel->getPluginManager()->getElementPlugin($params->get($pname));
 		$element =& $elementModel->getElement(true);
 		return $elementModel->getFullName();
 	}

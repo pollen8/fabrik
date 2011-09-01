@@ -197,7 +197,7 @@ class FabrikModelElement extends JModelAdmin
 		// Initialise variables.
 		$dispatcher	= JDispatcher::getInstance();
 		$user		= JFactory::getUser();
-		$table		= $this->getTable();
+		$item		= $this->getTable();
 		$pks		= (array) $pks;
 
 		// Include the content plugins for the change of state event.
@@ -205,8 +205,8 @@ class FabrikModelElement extends JModelAdmin
 
 		// Access checks.
 		foreach ($pks as $i => $pk) {
-			if ($table->load($pk)) {
-				if (!$this->canEditState($table)) {
+			if ($item->load($pk)) {
+				if (!$this->canEditState($item)) {
 					// Prune items that you can't change.
 					unset($pks[$i]);
 					JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
@@ -215,8 +215,8 @@ class FabrikModelElement extends JModelAdmin
 		}
 
 		// Attempt to change the state of the records.
-		if (!$table->addToListView($pks, $value, $user->get('id'))) {
-			$this->setError($table->getError());
+		if (!$item->addToListView($pks, $value, $user->get('id'))) {
+			$this->setError($item->getError());
 			return false;
 		}
 
@@ -225,7 +225,7 @@ class FabrikModelElement extends JModelAdmin
 		// Trigger the onContentChangeState event.
 		$result = $dispatcher->trigger($this->event_change_state, array($context, $pks, $value));
 		if (in_array(false, $result, true)) {
-			$this->setError($table->getError());
+			$this->setError($item->getError());
 			return false;
 		}
 
@@ -415,10 +415,10 @@ class FabrikModelElement extends JModelAdmin
 	 * called when the table is saved
 	 * here we are hacking various repeat data into the params
 	 * data stored as a json object
-	 * @param $table
+	 * @param $item
 	 */
 
-	function prepareTable($table) {
+	function prepareTable($item) {
 
 	}
 
@@ -539,14 +539,14 @@ class FabrikModelElement extends JModelAdmin
 			$elementModel->getElement()->group_id = $data['group_id'];
 		}
 		$listModel =& $elementModel->getListModel();
-		$table =& $listModel->getTable();
+		$item =& $listModel->getTable();
 
 		//are we updating the name of the primary key element?
-		if ($row->name === FabrikString::shortColName($table->db_primary_key)) {
+		if ($row->name === FabrikString::shortColName($item->db_primary_key)) {
 			if ($name !== $row->name) {
 				//yes we are so update the table
-				$table->db_primary_key = str_replace($row->name, $name, $table->db_primary_key);
-				$table->store();
+				$item->db_primary_key = str_replace($row->name, $name, $item->db_primary_key);
+				$item->store();
 			}
 		}
 
@@ -609,12 +609,6 @@ class FabrikModelElement extends JModelAdmin
 		$origName = JRequest::getVar('name_orig', '', 'post', 'cmd');
 
 		list($update, $q, $oldName, $newdesc, $origDesc) = $listModel->shouldUpdateElement($elementModel, $origName);
-		// If new, check if the element's db table is used by other tables and if so add the element
-		// to each of those tables' groups
-
-		if ($new) {
-			$this->addElementToOtherDbTables($elementModel, $row);
-		}
 
 		$this->createRepeatElement($elementModel, $row);
 		if ($update) {
@@ -662,6 +656,15 @@ class FabrikModelElement extends JModelAdmin
 		$return = parent::save($data);
 		if ($return) {
 			$elementModel->_id = $this->getState($this->getName().'.id');
+
+			// If new, check if the element's db table is used by other tables and if so add the element
+			// to each of those tables' groups
+
+			if ($new) {
+				$row->id = $elementModel->_id;
+				$this->addElementToOtherDbTables($elementModel, $row);
+			}
+
 			if (!$elementModel->onSave($data)) {
 				$this->setError(JText::_('COM_FABRIK_ERROR_SAVING_ELEMENT_PLUGIN_OPTIONS'));
 				return false;
@@ -681,11 +684,11 @@ class FabrikModelElement extends JModelAdmin
 		if ($tmpgroupModel->isJoin()) {
 			$dbname = $tmpgroupModel->getJoinModel()->getJoin()->table_join;
 		} else {
-			$dbname = $table->db_table_name;
+			$dbname = $list->db_table_name;
 		}
 
 		$query = $db->getQuery(true);
-		$query->select("DISTINCT(t.id), db_table_name, l.id, l.label, l.form_id, l.label AS form_label, g.id AS group_id");
+		$query->select("DISTINCT(l.id), db_table_name, l.id, l.label, l.form_id, l.label AS form_label, g.id AS group_id");
 		$query->from("#__{package}_lists AS l");
 		$query->join('INNER', '#__{package}_forms AS f ON l.form_id = f.id');
 		$query->join('LEFT', '#__{package}_formgroup AS fg ON f.id = fg.form_id');
@@ -695,6 +698,9 @@ class FabrikModelElement extends JModelAdmin
 		$db->setQuery($query);
 		// $$$ rob load keyed on table id to avoid creating element in every one of the table's group
 		$othertables = $db->loadObjectList('id');
+		if (!$othertables) {
+			JError::raiseError(500, $db->getErrorMsg());
+		}
 		if (!empty($othertables)) {
 			// $$$ hugh - we use $row after this, so we need to work on a copy, otherwise
 			// (for instance) we redirect to the wrong copy of the element
@@ -729,19 +735,19 @@ class FabrikModelElement extends JModelAdmin
 		$objs = $db->loadObjectList();
 		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
 		foreach ($objs as $obj) {
-			$table = FabTable::getInstance('Element', 'FabrikTable');
-			$table->load($obj->id);
+			$item = FabTable::getInstance('Element', 'FabrikTable');
+			$item->load($obj->id);
 			foreach ($row as $key=>$val) {
 				if (!in_array($key, $ignore)) {
 					// $$$rob - i can't replicate bug #138 but this should fix things anyway???
 					if ($key == 'name') {
 						$val = str_replace("`", "", $val);
 					}
-					$table->$key = $val;
+					$item->$key = $val;
 				}
 			}
-			if (!$table->store()) {
-				JError::raiseWarning(500, $table->getError());
+			if (!$item->store()) {
+				JError::raiseWarning(500, $item->getError());
 			}
 		}
 		return true;
@@ -854,11 +860,11 @@ class FabrikModelElement extends JModelAdmin
 			$element = $pluginModel->getElement();
 			if ($drop) {
 				$listModel = $pluginModel->getListModel();
-				$table = $listModel->getTable();
+				$item = $listModel->getTable();
 				// $$$ hugh - might be a tableless form!
-				if (!empty($table->id)) {
+				if (!empty($item->id)) {
 					$db = $listModel->getDb();
-					$db->setQuery("ALTER TABLE ".$db->nameQuote($table->db_table_name)." DROP ".$db->nameQuote($element->name));
+					$db->setQuery("ALTER TABLE ".$db->nameQuote($item->db_table_name)." DROP ".$db->nameQuote($element->name));
 					$db->query();
 				}
 			}
@@ -920,6 +926,7 @@ class FabrikModelElement extends JModelAdmin
 						$join->store();
 					}
 				}
+				echo "Id =  $rule->id";
 				$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($rule));
 				$elementModel->getElement();
 				$listModel =& $elementModel->getListModel();

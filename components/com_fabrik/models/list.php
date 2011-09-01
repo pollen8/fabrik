@@ -2574,12 +2574,12 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = FabrikWorker::getDbo();
 		$return 		= array(false, '', '', '', '', false);
-		$element 		=& $elementModel->getElement();
-		$pluginManager =& $this->getPluginManager();
-		$basePlugIn =& $pluginManager->getPlugIn($element->plugin, 'element');
-		$fbConfig 	=& JComponentHelper::getParams('com_fabrik');
+		$element 		= $elementModel->getElement();
+		$pluginManager = $this->getPluginManager();
+		$basePlugIn = $pluginManager->getPlugIn($element->plugin, 'element');
+		$fbConfig 	= JComponentHelper::getParams('com_fabrik');
 		$fabrikDb 	= $this->getDb();
-		$group 			=& $elementModel->getGroup();
+		$group 			= $elementModel->getGroup();
 		$dropKey = false;
 		//$$$ rob - replaced this with getting the table from the group as if we moved the element
 		//from one group to another $this->getTable gives you the old group's table, where as we want
@@ -2667,15 +2667,14 @@ class FabrikFEModelList extends JModelForm {
 			$existingfields = array_keys($dbdescriptions);
 
 			$lastfield = $existingfields[count($existingfields)-1];
-			$element->name = FabrikString::safeColName($element->name);
 			$tableName = FabrikString::safeColName($tableName);
 			$lastfield = FabrikString::safeColName($lastfield);
 
 			// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
 			//if (empty($origColName) || !in_array(strtolower($origColName ), $existingfields)) {
-			if (empty($origColName) || !in_array(($origColName), $existingfields)) {
+			if (empty($element->name) || !in_array($element->name, $existingfields)) {
 				if (!$altered) {
-					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastfield");
+					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN ".FabrikString::safeColName($element->name)." $objtype AFTER $lastfield");
 					if (!$fabrikDb->query()) {
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
 					}
@@ -2685,15 +2684,15 @@ class FabrikFEModelList extends JModelForm {
 				// really want to do this
 				if ($this->canAlterFields()) {
 					if ($origColName == null) {
-						$origColName = $element->name;
+						$origColName = $fabrikDb->nameQuote($element->name);
 					} else {
 						$origColName = $fabrikDb->nameQuote($origColName);
 					}
 					if (strtolower($objtype) == 'blob') {
 						$dropKey = true;
 					}
-					$q = "ALTER TABLE $tableName CHANGE $origColName $element->name $objtype ";
-					if ($primaryKey == $fabrikDb->NameQuote($tableName) . "." . $element->name && $table->auto_inc) {
+					$q = "ALTER TABLE $tableName CHANGE $origColName ".FabrikString::safeColName($element->name)." $objtype ";
+					if ($primaryKey == $fabrikDb->NameQuote($tableName) . "." . FabrikString::safeColName($element->name) && $table->auto_inc) {
 						if (!strstr($q, 'NOT NULL AUTO_INCREMENT')) {
 							$q .= " NOT NULL AUTO_INCREMENT ";
 						}
@@ -2756,7 +2755,6 @@ class FabrikFEModelList extends JModelForm {
 			// it'll always create a new colum.
 			// if (!in_array(strtolower($name ), $existingfields) || !in_array(strtolower($origColName ), $existingfields)) {
 			if (empty($origColName) || !in_array(strtolower($origColName), $existingfields)) {
-
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastfield");
 				if (!$fabrikDb->query()) {
 					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
@@ -5783,13 +5781,10 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$sql .= $primaryKey . ");";
 		}
-		//echo $sql;exit;
 		if ($table == '`pod_fabrik_notification_ratings`') {
 			$db = $this->getDb();
 			$db->setQuery("SHOW INDEX FROM ". $table);
 			$keys = $db->loadObjectList();
-			print_r($keys);
-			echo $sql;exit;
 		}
 		if ($table == '`pod_fabrik_digg`') {
 			echo $sql;

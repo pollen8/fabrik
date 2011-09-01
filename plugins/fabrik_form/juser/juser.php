@@ -33,17 +33,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 
 	/**
-	 * @depreciated
-	 * get an element model
-	 * @return object element model
-	 */
-
-	private function getElementModel()
-	{
-		return false;
-	}
-
-	/**
 	 * get the element full name for the element id
 	 * @param plugin params
 	 * @param int element id
