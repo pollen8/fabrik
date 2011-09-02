@@ -544,10 +544,16 @@ class plgContentFabrik extends JPlugin
 				$controller = new FabrikControllerForm();
 				break;
 			case 'list':
-				if (!array_key_exists('list', $this->controllers)) {
-					$this->controllers['list'] = new FabrikControllerList();
+				// $$$ hugh - had to add [$id] for cases where we have multiple plugins with different tableid's
+				if (array_key_exists('list', $this->controllers)) {
+					if (!array_key_exists($id, $this->controllers['list'])) {
+						$this->controllers['list'][$id] = new FabrikControllerList();
+					}
 				}
-				$controller = new FabrikControllerList();
+				else {
+					$this->controllers['list'][$id] = new FabrikControllerList();
+				}
+				$controller = $this->controllers['list'][$id];
 				break;
 			case 'package':
 				$controller = new FabrikControllerPackage();
