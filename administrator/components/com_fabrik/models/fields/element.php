@@ -48,11 +48,8 @@ class JFormFieldElement extends JFormFieldList
 			$fabrikelements = array();
 		}
 
-		//$c = ElementHelper::getRepeatCounter($this);
 		$c = $this->form->repeatCounter;
 		$table = $this->element['table'];
-
-		//$conn = ($c === false || $this->element['connection_in_repeat'] == 'false') ?  $this->element['connection'] :  $this->element['connection'] . '-' . $c;
 
 		$include_calculations = (int)$this->element['include_calculations'];
 		$published = (int)$this->element['published'];
@@ -65,11 +62,11 @@ class JFormFieldElement extends JFormFieldList
 			$opts = new stdClass();
 			if ($this->form->repeat) {
 				//in repeat fieldset/group
-				$conn =  $this->element['connection'] . '-' . $this->form->repeatCounter;
-				$opts->table = 'jform_' . $table . "-" .$this->form->repeatCounter;
+				$conn =  $this->element['connection'].'-'.$this->form->repeatCounter;
+				$opts->table = 'jform_'.$table.'-'.$this->form->repeatCounter;
 			} else {
-				$conn = ($c === false || $this->element['connection_in_repeat'] == 'false') ?  $this->element['connection'] :  $this->element['connection'] . '-' . $c;
-				$opts->table = ($c === false) ? 'jform_' . $table : 'jform_' . $table . "-" .$c;
+				$conn = ($c === false || $this->element['connection_in_repeat'] == 'false') ?  $this->element['connection'] :  $this->element['connection'].'-'.$c;
+				$opts->table = ($c === false || $this->element['connection_in_repeat'] == 'false') ? 'jform_'.$table : 'jform_'.$table.'-'.$c;
 			}
 
 			$opts->published = $published;

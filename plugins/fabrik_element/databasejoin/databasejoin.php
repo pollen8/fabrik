@@ -259,7 +259,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return array option values
 	 */
 
-	function &_getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
+	function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
 	{
 		$params =& $this->getParams();
 		// @TODO - if a calc elemenmt has be loaded before us, _optionVals will have been set,
@@ -270,7 +270,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_optionVals;
 			}
 		}
-		$db =& $this->getDb();
+		$db = $this->getDb();
 		$sql = $this->_buildQuery($data, $incWhere);
 		if (!$sql) {
 			$this->_optionVals = array();
@@ -329,7 +329,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$col	= $element->name;
 		$tmp = array();
 
-		$aDdObjs =& $this->_getOptionVals($data, $repeatCounter, $incWhere);
+		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere);
 
 		$table = $this->getlistModel()->getTable()->db_table_name;
 		if (is_array($aDdObjs)) {
@@ -839,12 +839,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
-		$groupModel =& $this->_group;
+		$params = $this->getParams();
+		$groupModel = $this->_group;
 		$labeldata = array();
 		if (!$groupModel->isJoin() && $groupModel->canRepeat()) {
-			$opts =& $this->_getOptionVals();
-			$name =$this->getFullName(false, true, false) ."_raw";
+			$opts = $this->_getOptionVals();
+			$name = $this->getFullName(false, true, false) ."_raw";
 			//if coming from fabrikemail plugin oAllRowsdata is empty
 			if (isset($oAllRowsData->$name)) {
 				$data = $oAllRowsData->$name;
@@ -1068,10 +1068,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getJoinValueColumn()
 	{
-		$params 		=& $this->getParams();
-		$join =& $this->getJoin();
+		$params = $this->getParams();
+		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
-		return $db->nameQuote($join->table_join_alias).'.'.$db->nameQuote($params->get('join_key_column'));
+		// @TODO seems to me that actually table_join_alias is incorrect when the element is rendered as a checkbox?
+		/*if ($this->isJoin()) {
+			echo "<pre>";print_r($join);print_r($this->getElement());echo "</pre>";
+			return $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_key_column'));
+		} else {*/
+			return $db->nameQuote($join->table_join_alias).'.'.$db->nameQuote($params->get('join_key_column'));
+		//}
 	}
 
 	/**
@@ -1225,10 +1231,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function elementJavascriptOpts($repeatCounter)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
 		$opts = $this->_getOptionVals();
-		$data 			=& $this->_form->_data;
+		$data = $this->_form->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$arVals = $this->getSubOptionValues();
 		$arTxt 	= $this->getSubOptionLabels();
@@ -1553,7 +1559,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @since 2.1.1
 	 * used in form model setJoinData.
 	 * @return array of element names to search data in to create join data array
-	 * in this case append with teh repeatnums data for checkboxes rendered in repeat groups
+	 * in this case append with the repeatnums data for checkboxes rendered in repeat groups
 	 */
 
 	public function getJoinDataNames()
