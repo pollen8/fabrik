@@ -823,9 +823,15 @@ class FabrikWorker {
 		 * Returns the global {@link JDatabase} object, only creating it
 		 * if it doesn't already exist.
 		 *
+		 * @param bool force (if true) the loadiing of the main J database,
+		 * needed in admin to connect to J db whilst still using fab db drivers "{package}" replacement text
+		 *
+		 * @param mixed, if null then loads the fabrik default connection, if an int then loads the specified connection by its id
+		 *
 		 * @return JDatabase object
 		 */
-		public static function getDbo($loadJoomlaDb = false)
+
+		public static function getDbo($loadJoomlaDb = false, $cnnId = null)
 		{
 			if (!self::$database) {
 				JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
@@ -833,8 +839,11 @@ class FabrikWorker {
 
 				if (!$loadJoomlaDb) {
 					$cn = JTable::getInstance('Connection', 'FabrikTable');
-					$cn->load(array('default'=> 1));
-
+					if (is_null($cnnId)) {
+						$cn->load(array('default'=> 1));
+					} else {
+						$cn->load((int)$cnnId);
+					}
 					$host 			= $cn->host;
 					$user 			= $cn->user;
 					$password 	= $cn->password;
