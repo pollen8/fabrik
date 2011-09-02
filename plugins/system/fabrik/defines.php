@@ -6,6 +6,10 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+// could be that the sys plugin is installed but fabrik not
+if (!JFolder::exists('components/com_fabrik/')) {
+	return;
+}
 define("COM_FABRIK_BASE",  str_replace(DS.'administrator', '', JPATH_BASE).DS);
 define("COM_FABRIK_FRONTEND",  COM_FABRIK_BASE.'components'.DS.'com_fabrik');
 define("COM_FABRIK_LIVESITE",  str_replace('/administrator', '', JURI::base()));
@@ -32,6 +36,7 @@ if (JRequest::getCmd('option') != 'com_menus') {
 	JLoader::import('components.com_fabrik.classes.formfield', JPATH_SITE.DS.'administrator', 'administrator.');
 	JLoader::import('components.com_fabrik.classes.form', JPATH_SITE.DS.'administrator', 'administrator.');
 }
+
 
 require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables'.DS.'fabtable.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'fabrik.php');

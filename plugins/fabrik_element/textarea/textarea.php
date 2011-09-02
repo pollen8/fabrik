@@ -91,6 +91,9 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 					$data[$i] = nl2br($data[$i]);
 				}
 			} else {
+				if (is_object($data)) {
+					$this->convertDataToString($data);
+				}
 				$data = nl2br($data);
 			}
 		}

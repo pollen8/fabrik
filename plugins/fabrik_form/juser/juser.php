@@ -33,19 +33,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 
 	/**
-	 * get an element model
-	 * @return object element model
-	 */
-
-	private function getElementModel()
-	{
-		if (!isset($this->_elementModel)) {
-			$this->_elementModel =& JModel::getInstance('element','FabrikModel');
-		}
-		return $this->_elementModel;
-	}
-
-	/**
 	 * get the element full name for the element id
 	 * @param plugin params
 	 * @param int element id

@@ -15,7 +15,11 @@ var Suboptions = new Class({
 			var chx = this.options.sub_initial_selection.indexOf(v) == -1 ? '' : "checked='checked'";
 			this.addSubElement(v, this.options.sub_labels[x], chx);
 		}.bind(this));
-		$('adminForm').addEvent('submit', this.onSave.bindWithEvent(this));
+		$('adminForm').addEvent('submit', function(e){
+			if(!this.onSave()){
+				e.stop();
+			}
+		}.bind(this));
 	},
 	
 	addOption: function(e) {

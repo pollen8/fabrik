@@ -67,6 +67,8 @@ class imageHelper
 		$matches[1]='';
 		if (preg_match("/GD Version[ \t]*(<[^>]+>[ \t]*)+([^<>]+)/s", $output, $matches)) {
 			$gdversion = $matches[2];
+		} else {
+			return $gd;
 		}
 		if (function_exists('imagecreatetruecolor') && function_exists('imagecreatefromjpeg')) {
 			$gd['gd2'] = "GD: " . $gdversion;

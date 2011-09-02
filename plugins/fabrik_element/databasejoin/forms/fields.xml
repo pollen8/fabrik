@@ -69,13 +69,13 @@
 			
 		<field name="join_val_column_concat" 
 			type="text" 
-			size="35" 
+			size="70" 
 			label="PLG_ELEMENT_DBJOIN_OR_CONCAT_LABEL_LABEL" 
 			description="PLG_ELEMENT_DBJOIN_OR_CONCAT_LABEL_DESC" />
 			
 		<field name="database_join_where_sql" 
 			type="text" 
-			size="35" 
+			size="70" 
 			default="" 
 			label="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_LABEL" 
 			description="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_DESC" />

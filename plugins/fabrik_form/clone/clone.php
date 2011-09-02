@@ -29,23 +29,21 @@ class plgFabrik_FormClone extends plgFabrik_Form {
 	 * @returns bol
 	 */
 
-	function onAfterProcess($params, &$formModel )
+	function onAfterProcess($params, &$formModel)
 	{
 		return $this->_process($params, $formModel);
 	}
 
-	private function _process(&$params, &$formModel )
+	private function _process(&$params, &$formModel)
 	{
 		$clone_times_field_id = $params->get('clone_times_field', '');
 		$clone_batchid_field_id = $params->get('clone_batchid_field', '');
 		if ($clone_times_field_id != '') {
-			$elementModel =& JModel::getInstance('element','FabrikModel');
-			$elementModel->setId($clone_times_field_id);
-			$element =& $elementModel->getElement(true);
+			$elementModel = $formModel->getPluginManager()->getElementPlugin($clone_times_field_id);
+			$element = $elementModel->getElement(true);
 			if ($clone_batchid_field_id != '') {
-				$id_elementModel =& JModel::getInstance('element','FabrikModel');
-				$id_elementModel->setId($clone_batchid_field_id);
-				$id_element =& $id_elementModel->getElement(true);
+				$elementModel = $this->getPluginManager()->getElementPlugin($clone_batchid_field_id);
+				$id_element = $id_elementModel->getElement(true);
 				$formModel->_formData[$id_element->name] = $formModel->_fullFormData['rowid'];
 				$formModel->_formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
 				$listModel = $formModel->getlistModel();

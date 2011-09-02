@@ -33,22 +33,20 @@ class plgFabrik_FormVbForum extends plgFabrik_Form {
 
 	function onBeforeStore( &$params, &$formModel )
 	{
-		//chdir("c:/xampp/htdocs/vblogetin2");// JPATH_BASE
 		global $vbulletin;
 		define(VB_AREA, 'fabrik');
 		define(THIS_SCRIPT, 'fabrik');
 
 		// Initialize some variables
-		$db			= & FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo();
 
-		$data =& $formModel->_formData;
+		$data = $formModel->_formData;
 
 		// Check for request forgeries
 		JRequest::checkToken() or jexit('Invalid Token');
 
-		$elementModel =& JModel::getInstance('element','FabrikModel');
+		$elementModel = $formModel->getPluginManager()->getElementPlugin($params->get('vb_forum_field'));
 
-		$elementModel->setId($params->get('vb_forum_field'));
 		$element =& $elementModel->getElement(true);
 		$this->map_forum_field = $elementModel->getFullName();
 

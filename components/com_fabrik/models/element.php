@@ -332,7 +332,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	public function getJoinDataNames()
 	{
-		$group =& $this->getGroup()->getGroup();
+		$group = $this->getGroup()->getGroup();
 		$name = $this->getFullName(false, true, false);
 		$fv_name = 'join['.$group->join_id.']['.$name.']';
 		$rawname = $name."_raw";
@@ -354,7 +354,7 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
-		$table =& $this->getListModel()->getTable();
+		$table = $this->getListModel()->getTable();
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote("$dbtable" . "___" . $this->_element->name));
 		$k = $db->nameQuote($dbtable).".".$db->nameQuote($this->_element->name);
 		$secret = JFactory::getConfig()->getValue('secret');
@@ -1504,7 +1504,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$params =& $this->getParams();
 		$validations = $params->get('validations', '', '_default', 'array');
 		$usedPlugins = JArrayHelper::getValue($validations, 'plugin', array());
-		$pluginManager =& $this->getForm()->getPluginManager();
+		$pluginManager = $this->getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
 		$this->_aValidations = array();
@@ -1793,21 +1793,21 @@ class plgFabrik_Element extends FabrikPlugin
 		//takes rows which may be in format :
 		/*
 		 *  [0] => stdClass Object
-        (
-            [text] => ["1"]
-            [value] => ["1"]
-        )
-and converts them into
-    [0] => JObject Object
-        (
-            [_errors:protected] => Array
-                (
-                )
+		 (
+		 [text] => ["1"]
+		 [value] => ["1"]
+		 )
+		 and converts them into
+		 [0] => JObject Object
+		 (
+		 [_errors:protected] => Array
+		 (
+		 )
 
-            [value] => 1
-            [text] => 1
-            [disable] =>
-        )
+		 [value] => 1
+		 [text] => 1
+		 [disable] =>
+		 )
 		 */
 		$allvalues = array();
 		foreach ($rows as $row) {
@@ -1949,21 +1949,24 @@ and converts them into
 		$elName 			= $this->getFullName(false, true, false);
 		$params =& $this->getParams();
 		$elName2 		= $this->getFullName(false, false, false);
-		$ids 				= $listModel->getColumnData($elName2);
-		//for ids that are text with apostrophes in
-		for ($x=count($ids) -1; $x >= 0; $x--) {
-			if ($ids[$x] == '') {
-				unset($ids[$x]);
-			} else {
-				$ids[$x] = addslashes($ids[$x]);
+		if (!$this->isJoin()) {
+			$ids = $listModel->getColumnData($elName2);
+			//for ids that are text with apostrophes in
+			for ($x=count($ids) -1; $x >= 0; $x--) {
+				if ($ids[$x] == '') {
+					unset($ids[$x]);
+				} else {
+					$ids[$x] = addslashes($ids[$x]);
+				}
 			}
 		}
+		$incjoin = $this->isJoin() ? false : $incjoin;
 		//filter the drop downs lists if the table_view_own_details option is on
 		//other wise the lists contain data the user should not be able to see
 		// note, this should now use the prefilter data to filter the list
 
 		// check if the elements group id is on of the table join groups if it is then we swap over the table name
-		$fromTable = $origTable;
+		$fromTable = $this->isJoin() ?  $this->getJoinModel()->getJoin()->table_join : $origTable;
 		$joinStr = $incjoin ? $listModel->_buildQueryJoin() : $this->_buildFilterJoin();
 		$groupBy = $incjoin ? "GROUP BY ".$params->get('filter_groupby', 'text')." ASC" : '';
 		foreach ($listModel->getJoins() as $aJoin) {
@@ -1977,10 +1980,10 @@ and converts them into
 		}
 		$elName = FabrikString::safeColName($elName);
 		if ($label == '') {
-			$label = $elName;
+			$label = $this->isJoin() ? $this->getElement()->name : $elName;
 		}
 		if ($id == '') {
-			$id = $elName;
+			$id = $this->isJoin() ? 'id' : $elName;
 		}
 		if ($this->encryptMe()) {
 			$secret = JFactory::getConfig()->getValue('secret');
@@ -1996,8 +1999,10 @@ and converts them into
 		} else {
 			$sql = "SELECT DISTINCT($label) AS " . $fabrikDb->nameQuote('text') . ", $id AS " . $fabrikDb->nameQuote('value') . " FROM ". $fabrikDb->nameQuote($fromTable). " $joinStr\n";
 		}
-		$sql .= "WHERE $id IN ('" . implode("','", $ids) . "')"
-		. "\n  $groupBy";
+		if (!$this->isJoin()) {
+			$sql .= "WHERE $id IN ('" . implode("','", $ids) . "')";
+		}
+		$sql .= "\n  $groupBy";
 
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
@@ -2263,9 +2268,21 @@ and converts them into
 				$query = " DAYOFYEAR($key) >= DAYOFYEAR($value) ";
 				break;
 			default:
-				$query = " $key $condition $value ";
+				if ($this->isJoin()) {
+					// query the joined table concatanating into one field
+					$jointable = $this->getJoinModel()->getJoin()->table_join;
+					$pk = $this->getListModel()->getTable()->db_primary_key;
+					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
+					$value = str_replace("'", '', $value);
+					$query = "($key = '$value' OR $key LIKE '$value".GROUPSPLITTER."%' OR
+					$key LIKE '".GROUPSPLITTER."$value".GROUPSPLITTER."%' OR
+					$key LIKE '%".GROUPSPLITTER."$value')";
+				} else {
+					$query = " $key $condition $value ";
+				}
 				break;
 		}
+		//echo $query;exit;
 		return $query;
 	}
 
@@ -3096,11 +3113,30 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		}
 
 		if (is_array($data) && count($data) > 1) {
+			//if we are storing info as json the data will contain an array of objects
+			if (is_object($data[0])) {
+				foreach ($data as &$o) {
+					$this->convertDataToString($o);
+				}
+			}
 			return "<ul class=\"fabrikRepeatData\"><li>".implode("</li><li>", $data) . "</li></ul>";
 		} else {
 			return empty($data) ? '' : $data[0];
 		}
 	}
+
+	protected function convertDataToString(&$o)
+	{
+		if (is_object($o)) {
+			$s = '<ul>';
+			foreach ($o as $k=>$v) {
+				$s .= '<li>'.$v.'</li>';
+			}
+			$s .= '</ul>';
+			$o = $s;
+		}
+	}
+
 
 	function renderTableData_csv($data, $oAllRowsData)
 	{
@@ -3675,6 +3711,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	}
 
 	/**
+	 * preciated@de
 	 * fabrik3: moved to  Admin Element Model
 	 * @return string table name
 	 */
@@ -3694,6 +3731,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	}
 
 	/**
+	 * @depreciated
 	 * fabrik3: moved to  Admin Element Model
 	 * if repeated element we need to make a joined db table to store repeated data in
 	 */
@@ -3901,6 +3939,15 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 			$html .= "</script>\n";
 		}
 		echo $html;
+	}
+
+	/**
+	 * since 3.0b
+	 * Shortcut to get plugin manager
+	 */
+	public function getPluginManager()
+	{
+		return $this->getFormModel()->getPluginManager();
 	}
 }
 ?>

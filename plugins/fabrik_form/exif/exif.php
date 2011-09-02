@@ -83,21 +83,16 @@ class plgFabrik_FormExif extends plgFabrik_Form {
  	function onBeforeStore(&$params, &$formModel)
  	{
 		// Initialize some variables
-		$db			= & FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo();
+		$data = $formModel->_formData;
 
-		$data =& $formModel->_formData;
+		$plugin = $formModel->getPluginManager()->getElementPlugin($params->get('exif_map_field'));
 
-		$elementModel =& JModel::getInstance('element', 'FabrikModel');
-
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin =& $pluginManager->getPlugIn('field', 'element');
-		$plugin->setId($params->get('exif_map_field'));
-
-		$element =& $plugin->getElement(true);
+		$element = $plugin->getElement(true);
 		$this->map_field = $plugin->getFullName();
 
 		$plugin->setId($params->get('exif_upload_field'));
-		$element =& $plugin->getElement(true);
+		$element = $plugin->getElement(true);
 		$this->upload_field = $plugin->getFullName();
 
 		$file_path = JPATH_SITE.DS.$data[$this->upload_field];

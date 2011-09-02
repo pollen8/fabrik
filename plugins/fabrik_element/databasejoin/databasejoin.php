@@ -43,8 +43,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
-		if ($this->isJoin()) {
-			//return parent::getAsField_html($aFields, $aAsFields, $opts);
+		if ($this->isJoin()) {// $$$ rob was commented out - but  meant that the SELECT GROUP_CONCAT subquery was never user
+			return parent::getAsField_html($aFields, $aAsFields, $opts);
 		}
 		$table = $this->actualTableName();
 		$params =& $this->getParams();
@@ -63,7 +63,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$connection =& $listModel->getConnection();
 		//make sure same connection as this table
-		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . "___" . $element->name);
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $table."___".$element->name);
 		if ($params->get('join_conn_id') == $connection->get('_id') || $element->plugin != 'databasejoin') {
 			$join =& $this->getJoin();
 			$joinTableName = $join->table_join_alias;
@@ -81,7 +81,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			//$k = isset($join->keytable ) ? $join->keytable : $join->join_from_table;
 			//$k = FabrikString::safeColName("`$join->keytable`.`$element->name`");
 			$keytable = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-			$k = FabrikString::safeColName("`$keytable`.`$element->name`");
+			$k = FabrikString::safeColName($keytable.'.'.$element->name);
 
 			$k2 = $this->getJoinLabelColumn();
 
@@ -182,6 +182,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_join;
 			}
 		}
+		echo "<pre>";print_r($element);print_r($joins);echo "</pre>";
 		//	default fall back behaviour - shouldnt get used
 		echo 'database join: big error loading join! shouldnt get here';exit;
 	/*	if (!is_null($this->_join)) {
@@ -586,8 +587,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$joinId = '';
 			$joinGroupId = '';
 		}
-		$tmp =& $this->_getOptions($data);
-
+		// $$$ rob dont load in all options for autocomplete as slows loading on large data sets
+		$tmp = ($displayType == 'auto-complete' && $this->_editable) ? array() : $this->_getOptions($data, $repeatCounter);
 		/*get the default value */
 		$w = new FabrikWorker();
 
@@ -1363,10 +1364,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$element = $this->getElement();
 		$maskbits = 4;
 		$post	= JRequest::get('post', $maskbits);
-		if ($post['details']['plugin'] != 'databasejoin') {
-			$db =& FabrikWorker::getDbo();
-			$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =" . $post['id']);
-			$db->query();
+		//on new or on copy? details not found?
+		if (array_key_exists('detals', $post)) {
+			if ($post['details']['plugin'] != 'databasejoin') {
+				$db =& FabrikWorker::getDbo();
+				$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =" . $post['id']);
+				$db->query();
+			}
 		}
 	}
 
@@ -1516,17 +1520,20 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	protected function _buildQueryElementConcat($jkey)
 	{
-		$join =& $this->getJoinModel()->getJoin();
+		$join = $this->getJoinModel()->getJoin();
 		$jointable = $join->table_join;
 		$params = $this->getParams();
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
-		$table =& $this->getListModel()->getTable();
-		$jkey = $params->get('join_db_name').'.'.$params->get('join_val_column');
+		$item = $this->getListModel()->getTable();
+
+		// $$$ rob gave error when using concat label as join_val_column empty.
+		//$jkey = $params->get('join_db_name').'.'.$params->get('join_val_column');
+		$jkey = $this->_getValColumn();
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable
 		LEFT JOIN ".$params->get('join_db_name')." ON "
-		.$params->get('join_db_name').".".$params->get('join_key_column')." = $jointable.".$this->_element->name." WHERE parent_id = " . $table->db_primary_key . ") AS $fullElName";
+		.$params->get('join_db_name').".".$params->get('join_key_column')." = $jointable.".$this->_element->name." WHERE parent_id = " . $item->db_primary_key . ") AS $fullElName";
 		return $sql;
 	}
 

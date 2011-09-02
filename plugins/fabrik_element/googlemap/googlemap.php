@@ -208,8 +208,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$params =& $this->getParams();
 		$field = $params->get('fb_gm_geocode_' . $which_field, false);
 		if ($field) {
-			$elementModel =& JModel::getInstance('element', 'FabrikModel');
-			$elementModel->setId($field);
+			$elementModel = $this->getPluginManager()->getElementPlugin($field);
 			return $elementModel->getHTMLId($repeatCounter);
 		}
 		return false;
@@ -419,40 +418,41 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 			if ($element->hidden == '1') {
 				return $this->getHiddenField($name, $data[$name], $id);
 			}
-			$str = "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
+			$str = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 			//if its not editable and theres no val don't show the map
 			if ((!$this->_editable && $val !='') || $this->_editable) {
-				if ($this->_editable && $params->get('fb_gm_geocode') == '1') {
-					$str .= "<div style=\"margin-bottom:5px\"><input class=\"geocode_input inputbox\" style=\"margin-right:5px\"/>";
+				if ($this->_editable && $params->get('fb_gm_geocode') != '0') {
+					$str .= '<div style="margin-bottom:5px">';
 				}
-				else if ($this->_editable && $params->get('fb_gm_geocode') == '2') {
-					$str .= "<div>";
+				if ($this->_editable && $params->get('fb_gm_geocode') == 1) {
+					$str .= '<input class="geocode_input inputbox" style="margin-right:5px"/>';
 				}
+
 				if ($params->get('fb_gm_geocode') != '0' && $params->get('fb_gm_geocode_event', 'button') == 'button' && $this->_editable) {
-					$str .= "<input class=\"button geocode\" type=\"button\" value=\"" . JText::_('PLG_ELEMENT_GOOGLEMAP_GEOCODE') . "\" />";
+					$str .= '<input class="button geocode" type="button" value="'.JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE').'" />';
 				}
 				if ($this->_editable && $params->get('fb_gm_geocode') != '0') {
 					$str .= '</div>';
 				}
-				$str .= "<div class=\"map\" style=\"width:{$w}px; height:{$h}px\"></div>";
-				$str .= "<input type=\"hidden\" class=\"fabrikinput\" name=\"$name\" value=\"".htmlspecialchars($val, ENT_QUOTES)."\" />";
+				$str .= '<div class="map" style="width:'.$w.'px; height:'.$h.'px"></div>';
+				$str .= '<input type="hidden" class="fabrikinput" name="'.$name.'" value="'.htmlspecialchars($val, ENT_QUOTES).'" />';
 				if (($this->_editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng') == '1') {
 					$arrloc = explode(',', $val);
 					$arrloc[0] = str_replace("(", "", $arrloc[0]);
 					$arrloc[1] = array_key_exists(1, $arrloc ) ? str_replace(")", "", array_shift(explode(":", $arrloc[1]))) : '';
 					$edit = $this->_editable ? '' : 'disabled="true"';
-					$str .= "<div class=\"coord\" style=\"margin-top:5px;\">
-					<input $edit size=\"23\" value=\"$arrloc[0] ° N\" style=\"margin-right:5px\" class=\"inputbox lat\"/>
-					<input $edit size=\"23\" value=\"$arrloc[1] ° E\"  class=\"inputbox lng\"/></div>";
+					$str .= '<div class="coord" style="margin-top:5px;">
+					<input '.$edit.' size="23" value="'.$arrloc[0].' ° N" style="margin-right:5px" class="inputbox lat"/>
+					<input '.$edit.' size="23" value="'.$arrloc[1].' ° E"  class="inputbox lng"/></div>';
 				}
 				if (($this->_editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng_dms') == '1') {
 					$dms = $this->_strToDMS($val);
 					$edit = $this->_editable ? '' : 'disabled="true"';
-					$str .= "<div class=\"coord_dms\" style=\"margin-top:5px;\">
-					<input $edit size=\"23\" value=\"".$dms->coords[0]."\" style=\"margin-right:5px\" class=\"latdms\"/>
-					<input $edit size=\"23\" value=\"".$dms->coords[1]."\"  class=\"lngdms\"/></div>";
+					$str .= '<div class="coord" style="margin-top:5px;">
+					<input '.$edit.' size=\"23\" value="'.$dms->coords[0].'" style="margin-right:5px" class="latdms"/>
+					<input '.$edit.' size=\"23\" value="'.$dms->coords[1].'"  class="lngdms"/></div>';
 				}
-				$str .= "</div>";
+				$str .= '</div>';
 			} else {
 				$str .= JText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
 			}
