@@ -823,7 +823,7 @@ class FabrikWorker {
 		 * Returns the global {@link JDatabase} object, only creating it
 		 * if it doesn't already exist.
 		 *
-		 * @param bool force (if true) the loadiing of the main J database,
+		 * @param bool force (if true) the loading of the main J database,
 		 * needed in admin to connect to J db whilst still using fab db drivers "{package}" replacement text
 		 *
 		 * @param mixed, if null then loads the fabrik default connection, if an int then loads the specified connection by its id
