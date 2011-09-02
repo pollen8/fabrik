@@ -36,6 +36,7 @@
 			<field name="cascadingdropdown_table" 
 				observe="params_cascadingdropdown_connection" 
 				type="fabriktables" 
+				connection_in_repeat="false"
 				label="PLG_ELEMENT_CDD_TABLE_LABEL" 
 				description="PLG_ELEMENT_CDD_TABLE_DESC"/>
 				
@@ -43,6 +44,7 @@
 				type="element" 
 				excludejoined="1" 
 				showintable="true" 
+				connection_in_repeat="false"
 				connection="params_cascadingdropdown_connection" 
 				table="params_cascadingdropdown_table" 
 				label="PLG_ELEMENT_CDD_ID_LABEL" 
@@ -51,6 +53,7 @@
 			<field name="cascadingdropdown_label" 
 				type="element" 
 				excludejoined="1" 
+				connection_in_repeat="false"
 				connection="params_cascadingdropdown_connection" 
 				table="params_cascadingdropdown_table" 
 				label="PLG_ELEMENT_CDD_LABEL_LABEL" 
@@ -72,6 +75,7 @@
 			<field name="cascadingdropdown_key" 
 				type="element" 
 				connection="params_cascadingdropdown_connection" 
+				connection_in_repeat="false"
 				table="params_cascadingdropdown_table" 
 				label="PLG_ELEMENT_CDD_KEY_LABEL" 
 				description="PLG_ELEMENT_CDD_KEY_DESC"/>
