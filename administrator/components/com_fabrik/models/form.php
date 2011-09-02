@@ -229,7 +229,7 @@ class FabrikModelForm extends FabModelAdmin
 		$isnew = $this->getState($this->getName().'.new');
 
 		$db = FabrikWorker::getDbo(true);
-		$currentGroups = $data['current_groups'];
+		$currentGroups = (array)JArrayHelper::getValue($data, 'current_groups');
 		$record_in_database = $data['record_in_database'];
 		$createGroup = $data['_createGroup'];
 		$form =& $this->getForm();
