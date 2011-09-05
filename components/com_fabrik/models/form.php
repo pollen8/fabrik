@@ -392,7 +392,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 			$db->setQuery($sql);
 			$groups = $db->loadObjectList('group_id');
-			if (!$groups) {
+			if ($db->getErrorNum() != 0) {
 				JError::raiseError(500, $db->getErrorMsg());
 			}
 			$this->_publishedformGroups = $this->mergeGroupsWithJoins($groups);
