@@ -3516,8 +3516,8 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		//needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->_id = JRequest::getInt('element_id');
 		$this->getElement(true);
-		$listModel =& $this->getListModel();
-		$db =& $listModel->getDb();
+		$listModel = $this->getListModel();
+		$db = $listModel->getDb();
 		$name = $this->getFullName(false, false, false);
 		// $$$ rob - previous method to make query did not take into account prefilters on main table
 		$tableName = $listModel->getTable()->db_table_name;
@@ -3525,12 +3525,11 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$where = trim($listModel->_buildQueryWhere(false));
 		$where .= ($where == '') ? ' WHERE ' : ' AND ';
 		$join = $listModel->_buildQueryJoin();
-		$where .= "$name LIKE " . $db->Quote(addslashes(JRequest::getVar('value').'%'));
+		$where .= "$name LIKE " . $db->Quote(addslashes('%'.JRequest::getVar('value').'%'));
 		$query = "SELECT DISTINCT($name) AS value, $name AS text FROM $tableName $join $where";
 		$query = $listModel->pluginQuery($query);
-
 		$db->setQuery($query);
-		$tmp =& $db->loadObjectList();
+		$tmp = $db->loadObjectList();
 		foreach ($tmp as &$t) {
 			$this->toLabel($t->text);
 		}
