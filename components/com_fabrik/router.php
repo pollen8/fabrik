@@ -97,12 +97,7 @@ function fabrikBuildRoute(&$query) {
 		$segments[] = $query['fabriklayout'];
 		unset($query['fabriklayout']);
 	};
-		//test
-	if (isset($query['Itemid']) && ($view == 'form' || $view == 'details')) {
-		//$segments[] = $query['Itemid'];
-		//don't unset as with sef urls and extensions on
-		//unset($query['Itemid']);
-	};
+
 	return $segments;
 }
 
@@ -116,15 +111,13 @@ function fabrikParseRoute($segments)
 	switch ($segments[0]) { //view (controller not passed into segments)
 		case 'form':
 		case 'details':
-			$vars['task'] 		= 'view';
+			// 3.0 task no longer user
+			//$vars['task'] 		= 'view';
 			$vars['formid'] 	= JArrayHelper::getValue($segments, 1, 0);
 			// $$$ rob no longer passing in listid - no need and makes sef urls tidier
 			//$vars['listid'] 	= JArrayHelper::getValue($segments, 2, 0);
 			$vars['rowid'] 		= JArrayHelper::getValue($segments, 2, 0);
-			//test
 			$vars['view'] 		= $segments[0];
-			$vars['Itemid'] 	= JArrayHelper::getValue($segments, 3);
-
 			break;
 		case 'table':
 		case 'list':
@@ -142,6 +135,9 @@ function fabrikParseRoute($segments)
 			$vars['id'] 			= JArrayHelper::getValue($segments, 1, 0);;
 			$vars['format'] 	= JArrayHelper::getValue($segments, 2, 'html');
 			break;
+		default:
+			echo "ahk no view!";
+			exit;
 	}
 	return $vars;
 }
