@@ -621,7 +621,7 @@ class FabrikFEModelList extends JModelForm {
 		$sql = "SELECT id, label, db_table_name FROM #__{package}_lists";
 		$db->setQuery($sql);
 		$aTableNames = $db->loadObjectList('label');
-		if (!$aTableNames) {
+		if ($db->getErrorNum()) {
 			JError::raiseError(500, $db->getErrorMsg());
 		}
 		$cx = count($data);
@@ -2556,7 +2556,7 @@ class FabrikFEModelList extends JModelForm {
 			$tbl =FabrikString::safeColName($tbl);
 			$db->setQuery("DESCRIBE ".$tbl);
 			$this->_dbFields[$sig] = $db->loadObjectList($key);
-			if (!$this->_dbFields[$sig]) {
+			if ($db->getErrorNum()) {
 				JError::raiseWarning(500, $db->getErrorMsg());
 				$this->_dbFields[$sig] = array();
 			}
@@ -3409,7 +3409,7 @@ class FabrikFEModelList extends JModelForm {
 
 					$db->setQuery($query);
 					$this->_joinsToThisKey = $db->loadObjectList();
-					if (is_null($this->_joinsToThisKey)) {
+					if ($db->getErrorNum()) {
 						$this->_joinsToThisKey = array();
 						JError::raiseWarning(500,  'getJoinsToThisKey: ' . $db->getErrorMsg());
 					}
@@ -5424,7 +5424,7 @@ class FabrikFEModelList extends JModelForm {
 			$groupsql = "SELECT group_id FROM #__{package}_formgroup WHERE form_id = ".(int)$formModel->id;
 			$db->setQuery($groupsql);
 			$groups = $db->loadObjectList();
-			if (!$groups) {
+			if ($db->getErrorNum()) {
 				JError::raiseWarning(500,  'ammendTable: ' . $db->getErrorMsg());
 			}
 			$arGroups = array();
