@@ -606,12 +606,12 @@ class FabrikFEModelList extends JModelForm {
 
 	function addSelectBoxAndLinks(&$data)
 	{
-		$table 		=& $this->getTable();
-		$app 			= JFactory::getApplication();
-		$db 			= FabrikWorker::getDbo();
-		$params 	=& $this->getParams();
+		$item = $this->getTable();
+		$app = JFactory::getApplication();
+		$db = FabrikWorker::getDbo(true);
+		$params = $this->getParams();
 		$nextview = ($this->canEdit()) ? "form" : "details";
-		$tmpKey 	= '__pk_val';
+		$tmpKey = '__pk_val';
 
 		$factedlinks = $params->get('factedlinks');
 
@@ -621,6 +621,9 @@ class FabrikFEModelList extends JModelForm {
 		$sql = "SELECT id, label, db_table_name FROM #__{package}_lists";
 		$db->setQuery($sql);
 		$aTableNames = $db->loadObjectList('label');
+		if (!$aTableNames) {
+			JError::raiseError(500, $db->getErrorMsg());
+		}
 		$cx = count($data);
 		$viewLinkAdded = false;
 
@@ -728,7 +731,7 @@ class FabrikFEModelList extends JModelForm {
 						continue;
 					}
 					$join = $joinsToThisKey[$ii];
-					$linkedTable 	= $factedlinks->linkedlist->$keys[$f];
+					$linkedTable = $factedlinks->linkedlist->$keys[$f];
 					$popupLink = $factedlinks->linkedlist_linktype->$keys[$f];
 					$linkedListText = $factedlinks->linkedlisttext->$keys[$f];
 					if ($linkedTable != '0') {
@@ -1926,7 +1929,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$this->fields = array();
 		$this->asfields = array();
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$form 			= $this->getFormModel();
 		$table 			= $this->getTable();
 		$aJoinObjs 	= $this->getJoins();
@@ -2426,7 +2429,7 @@ class FabrikFEModelList extends JModelForm {
 			$form =& $this->getFormModel();
 			$form->getGroupsHiarachy();
 			$ids = $form->getElementIds();
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$id = (int)$this->getId();
 			$sql = "SELECT * FROM #__{package}_joins WHERE list_id = ".$id;
 			if (!empty($ids)) {
@@ -3371,7 +3374,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		if (is_null($this->_joinsToThisKey)) {
 			$this->_joinsToThisKey = array();
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$table =& $this->getTable();
 			if ($table->id == 0) {
 				$this->_joinsToThisKey = array();
