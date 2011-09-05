@@ -18,7 +18,7 @@ $lang->load('com_fabrik', JPATH_BASE.DS.'components'.DS.'com_fabrik');
 if (!defined('COM_FABRIK_FRONTEND')) {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
-
+FabrikHelperHTML::framework();
 require_once(COM_FABRIK_FRONTEND.DS.'controllers'.DS.'form.php');
 
 //$$$rob looks like including the view does something to the layout variable
