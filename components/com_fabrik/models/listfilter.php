@@ -723,7 +723,7 @@ class FabrikFEModelListfilter extends FabModel {
 			// thus the filters may be keyed non-sequentially. Use $keyints rather than count($request[$key]) to ensure
 			// that $key is found
 
-			$ajaxPost = JRequest::getVar('HTTP_X_REQUESTED_WITH', '', 'server');
+			$ajaxPost = strtolower(JRequest::getVar('HTTP_X_REQUESTED_WITH', '', 'server'));
 			foreach ($keyints as $i) {
 				$value = JArrayHelper::getValue($values, $i, '');
 				if ($ajaxPost == 'xmlhttprequest') {
