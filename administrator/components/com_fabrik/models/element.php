@@ -699,7 +699,7 @@ private function addElementToOtherDbTables($elementModel, $row)
 	$db->setQuery($query);
 	// $$$ rob load keyed on table id to avoid creating element in every one of the table's group
 	$othertables = $db->loadObjectList('id');
-	if (!$othertables) {
+	if ($db->getErrorNum() != 0) {
 		JError::raiseError(500, $db->getErrorMsg());
 	}
 	if (!empty($othertables)) {

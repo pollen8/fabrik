@@ -66,7 +66,7 @@ class FabrikModelUpgrade extends JModel
 		foreach ($updates as $update) {
 			$db->setQuery("SELECT * FROM $update");
 			$rows = $db->loadObjectList();
-			if (!$rows) {
+			if ($db->getErrorNum()) {
 				JError::raiseError(500, $db->getErrorMsg());
 			}
 			foreach ($rows as $row) {
