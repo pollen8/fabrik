@@ -9,8 +9,8 @@
 		</li>
 	<?php }?>
 
-	<!--  remove this if you always want to show the filters, this button toggles their visibility -->
-	<?php if (!empty($this->filters)) {?>
+	<?php
+	if ($this->showFilters && $this->params->get('show-table-filters') == 2) {?>
 		<li>
 			<a href="#" class="toggleFilters">
 				<?php echo FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, JText::_('COM_FABRIK_FILTER'));?>
@@ -30,10 +30,7 @@
 				<?php
 				}?>
 			</ul>
-
 		</li>
-
-
 
 	<?php if ($this->showCSV) {?>
 		<li class="csvExportButton">
