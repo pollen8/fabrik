@@ -28,8 +28,23 @@ class FabrikControllerVisualization extends JControllerForm
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';
 
 	/**
-	 * called via ajax to load in a given plugin's HTML settings
+	 * called via ajax to perform viz ajax task (defined by plugintask method)
 	 */
+
+	public function display()
+	{
+		$document = JFactory::getDocument();
+		$id = JRequest::getInt('visualizationid');
+		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
+		$viz->load($id);
+		$modelpaths = JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viz->plugin.DS.'models');
+		$model = $this->getModel($viz->plugin);
+		$model->setId($id);
+		$pluginTask = JRequest::getVar('plugintask', '', 'request');
+		if ($pluginTask !== '') {
+			echo $model->$pluginTask();
+		}
+	}
 
 	public function getPluginHTML()
 	{
