@@ -1774,7 +1774,7 @@ class plgFabrik_Element extends FabrikPlugin
 				break;
 
 			case "auto-complete":
-				$default			= stripslashes($default);
+				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
 				$return = "<input type=\"hidden\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$id\"  />";
 				$return .= "<input type=\"text\" name=\"$v-auto-complete\" class=\"inputbox fabrik_filter autocomplete-trigger\" size=\"$size\" value=\"$default\" id=\"$id-auto-complete\"  />";
@@ -2085,7 +2085,7 @@ and converts them into
 	protected function getFilterCondition()
 	{
 		if ($this->getElement()->filter_type == 'auto-complete') {
-			$cond = 'begins';
+			$cond = 'contains';
 		} else {
 			$match = $this->isExactMatch(array('match' => $this->getElement()->filter_exact_match));
 			$cond = ($match == 1) ? '=' : 'contains';
