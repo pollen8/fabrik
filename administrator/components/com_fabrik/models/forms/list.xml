@@ -238,12 +238,13 @@
 		<fieldset name="filters">
 		
 			<field name="show-table-filters" 
-				type="radio" 
+				type="list" 
 				default="1" 
 				label="COM_FABRIK_FIELD_SHOW_TABLE_FILTERS_LABEL" 
 				description="COM_FABRIK_FIELD_SHOW_TABLE_FILTERS_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
+					<option value="2">COM_FABRIK_TOGGLE</option>
 			</field>
 			
 			<field name="advanced-filter" 
