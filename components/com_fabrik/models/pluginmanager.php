@@ -251,7 +251,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			$db->setQuery($query);
 			$elements = (array)$db->loadObjectList();
 
-			if ($db->getErrorNum() != 0) {
+			if ($db->getErrorNum()) {
 				JError::raiseError(500, $db->getErrorMsg());
 			}
 
