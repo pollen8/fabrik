@@ -6725,7 +6725,8 @@ class FabrikFEModelList extends JModelForm {
 
 	public function getGroupByHeadings()
 	{
-		$base = JURI::base();
+		$base	= JURI::getInstance();
+		$base = $base->toString(array('scheme', 'user', 'pass', 'host', 'port', 'path'));
 		$base .= strpos($base, '?') ? '&' : '?';
 		$qs = $_SERVER['QUERY_STRING'];
 		$qs = urlencode(FabrikString::removeQSVar($qs, 'group_by'));
@@ -6733,6 +6734,7 @@ class FabrikFEModelList extends JModelForm {
 		$url .= strpos($url, '?') ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
+		$a[$url] = 'none';
 		foreach($h as $key => $v) {
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions'))) {
 				$thisurl = $url.'group_by='.$key;
