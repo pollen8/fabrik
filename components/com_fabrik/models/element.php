@@ -1654,7 +1654,25 @@ class plgFabrik_Element extends FabrikPlugin
 				return '';
 			}
 			if (array_key_exists('elementid', $filters)) {
-				$k = $normal == true ? array_search($elid, $filters['elementid']) : $counter;
+			// $$$ hugh - if we have one or more pre-filters on the same element that has a normal filter,
+				// the following line doesn't work.  So in 'normal' mode we need to get all the keys,
+				// and find the 'normal' one.
+				//$k = $normal == true ? array_search($elid, $filters['elementid']) : $counter;
+				$k = false;
+				if ($normal) {
+					$keys = array_keys($filters['elementid'], $elid);
+					foreach($keys as $key) {
+						// $$$ rob 05/09/2011 - just testing for 'normal' is not enough as there are several search_types - ie I've added a test for
+						//querystring filters as without that the search values were not being shown in ranged filter fields
+						if ($filters['search_type'][$key] == 'normal' || $filters['search_type'][$key] == 'querystring') {
+							$k = $key;
+							continue;
+						}
+					}
+				}
+				else {
+					$k = $count;
+				}
 				//is there a filter with this elements name
 				if ($k !== false) {
 					// $$$ rob comment out if statement as otherwise no value returned on advanced filters
