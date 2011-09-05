@@ -379,7 +379,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	function getPublishedGroups()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups)) {
 			$params =& $this->getParams();
 			$sql = "SELECT *, fg.group_id AS group_id, RAND() AS rand_order FROM #__{package}_formgroup AS fg
@@ -392,6 +392,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 			$db->setQuery($sql);
 			$groups = $db->loadObjectList('group_id');
+			if (!$groups) {
+				JError::raiseError(500, $db->getErrorMsg());
+			}
 			$this->_publishedformGroups = $this->mergeGroupsWithJoins($groups);
 		}
 		return $this->_publishedformGroups;
@@ -421,7 +424,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	private function mergeGroupsWithJoins($groups)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$form =& $this->getForm();
 		if ($form->record_in_database) {
 			$listModel = $this->getListModel();
@@ -2841,6 +2844,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 
 	public function getRelatedTables()
 	{
+		$db = FabrikWorker::getDbo(true);
 		$links = array();
 		$params =& $this->getParams();
 		if (!$params->get('show-referring-table-releated-data', false)) {
@@ -2870,7 +2874,9 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		$sql = "SELECT id, label, db_table_name FROM #__{package}_lists";
 		$db->setQuery($sql);
 		$aTableNames = $db->loadObjectList('label');
-
+		if (!$aTableNames) {
+			JError::raiseError(500, $db->getErrorMsg());
+		}
 		foreach ($joinsToThisKey as $element) {
 			$qsKey	= $this->getListModel()->getTable()->db_table_name . "___" . $element->name;
 			$val 		= JRequest::getVar($qsKey);
@@ -3231,7 +3237,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 			$this->_linkedFabrikLists = array();
 		}
 		if (!array_key_exists($table, $this->_linkedFabrikLists)) {
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			if (trim($table == '')) {
 				return array();
 			} else {
@@ -3240,6 +3246,9 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 				$db->setQuery($query);
 			}
 			$this->_linkedFabrikLists[$table] = $db->loadResultArray();
+			if (!$this->_linkedFabrikLists[$table]) {
+				JError::raiseError(500, $db->getErrorMsg());
+			}
 		}
 		return $this->_linkedFabrikLists[$table];
 	}
