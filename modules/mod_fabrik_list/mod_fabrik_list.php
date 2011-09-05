@@ -17,7 +17,7 @@ $lang->load('com_fabrik', JPATH_BASE.DS.'components'.DS.'com_fabrik');
 if (!defined('COM_FABRIK_FRONTEND')) {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
-
+FabrikHelperHTML::framework();
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
