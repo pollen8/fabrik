@@ -392,7 +392,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 			$db->setQuery($sql);
 			$groups = $db->loadObjectList('group_id');
-			if ($db->getErrorNum() != 0) {
+			if ($db->getErrorNum()) {
 				JError::raiseError(500, $db->getErrorMsg());
 			}
 			$this->_publishedformGroups = $this->mergeGroupsWithJoins($groups);
@@ -480,7 +480,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function getFormGroups($excludeUnpublished = true)
 	{
 		$params =& $this->getParams();
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$sql = "SELECT *, #__{package}_groups.params AS gparams, #__{package}_elements.id as element_id
 		, #__{package}_groups.name as group_name, RAND() AS rand_order FROM #__{package}_formgroup
 		LEFT JOIN #__{package}_groups
@@ -498,6 +498,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		$db->setQuery($sql);
 		$groups = $db->loadObjectList();
+		if ($db->getErrorNum()) {
+			JError::raiseError(500, $db->getErrorMsg());
+		}
 		$this->_elements = $groups;
 		return $groups;
 	}
@@ -2874,7 +2877,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		$sql = "SELECT id, label, db_table_name FROM #__{package}_lists";
 		$db->setQuery($sql);
 		$aTableNames = $db->loadObjectList('label');
-		if (!$aTableNames) {
+		if ($db->getErrorNum()) {
 			JError::raiseError(500, $db->getErrorMsg());
 		}
 		foreach ($joinsToThisKey as $element) {
@@ -2931,9 +2934,9 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 	 */
 	function getAction()
 	{
-		$app	= &JFactory::getApplication();
+		$app = JFactory::getApplication();
 		// Get the router
-		$router = &$app->getRouter();
+		$router = $app->getRouter();
 		if ($app->isAdmin()) {
 			$action = JArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
 			$action =  str_replace("&", "&amp;", $action);
@@ -3246,7 +3249,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 				$db->setQuery($query);
 			}
 			$this->_linkedFabrikLists[$table] = $db->loadResultArray();
-			if (!$this->_linkedFabrikLists[$table]) {
+			if ($db->getErrorNum()) {
 				JError::raiseError(500, $db->getErrorMsg());
 			}
 		}
