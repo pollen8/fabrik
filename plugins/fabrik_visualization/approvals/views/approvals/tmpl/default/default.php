@@ -34,18 +34,20 @@ $row =& $this->row;
 						<a href="#" class="approvalTip">
 							<?php echo FabrikHelperHTML::image('attention2.png', 'list', '');?>
 						</a>
-						<ul class="floating-tip" style="display:none">
+						<div class="floating-tip" style="display:none">
+						<ul>
 							<li>
-								<a class="approve" href="index.php?index.php?option=com_fabrik&format=raw&view=visualization&visualizationid=<?php echo $this->id?>&plugintask=approve&listid=<?php echo $row->listid?>&rowid=<?php echo $row->rowid?>">
+								<a class="approve" href="index.php?option=com_fabrik&format=raw&task=visualization.display&visualizationid=<?php echo $this->id?>&plugintask=approve&listid=<?php echo $row->listid?>&rowid=<?php echo $row->rowid?>">
 									<?php echo FabrikHelperHTML::image('approve.png', 'visualization', '');?><span>approve</span>
 								</a>
 							</li>
 							<li>
-								<a class="disapprove"  href="index.php?index.php?option=com_fabrik&format=raw&view=visualization&visualizationid=<?php echo $this->id?>&plugintask=disapprove&listid=<?php echo $row->listid?>&rowid=<?php echo $row->rowid?>">
+								<a class="disapprove"  href="index.php?option=com_fabrik&format=raw&task=visualization.display&visualizationid=<?php echo $this->id?>&plugintask=disapprove&listid=<?php echo $row->listid?>&rowid=<?php echo $row->rowid?>">
 									<?php echo FabrikHelperHTML::image('disapprove.png', 'visualization', '');?><span>disapprove</span>
 									</a>
 							</li>
 						</ul>
+						</div>
 					</td>
 					<td>
 					<a href="<?php echo $row->view?>">
