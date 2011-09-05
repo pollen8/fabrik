@@ -102,15 +102,14 @@ class FabrikControllerList extends FabControllerForm
 
 	public function showLinkedElements()
 	{
-		$document =& JFactory::getDocument();
-		$cid	= JRequest::getVar('cid', array(0), 'method', 'array');
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		$document = JFactory::getDocument();
+		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
-		$model->setState('list.id', $cid);
+		$model->setState('list.id', $cid[0]);
 		$formModel = $model->getFormModel();
 		$viewType	= $document->getType();
 		$viewLayout	= JRequest::getCmd('layout', 'linked_elements');
-		$view = & $this->getView($this->view_item, $viewType, '');
+		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 		$view->setModel($formModel);
 		// Set the layout
