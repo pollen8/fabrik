@@ -833,7 +833,11 @@ class FabrikWorker {
 
 		public static function getDbo($loadJoomlaDb = false, $cnnId = null)
 		{
+			$sig = (int)$loadJoomlaDb.'.'.$cnnId;
 			if (!self::$database) {
+				self::$database = array();
+			}
+			if (!array_key_exists($sig, self::$database)) {
 				JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
 				$conf	= JFactory::getConfig();
 
@@ -861,10 +865,9 @@ class FabrikWorker {
 				$driver .= '_fab';
 				$debug 			= $conf->getValue('config.debug');
 				$options		= array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $dbprefix);
-
-				self::$database = JDatabase::getInstance($options);
+				self::$database[$sig] = JDatabase::getInstance($options);
 			}
-			return self::$database;
+			return self::$database[$sig];
 		}
 
 		/**
