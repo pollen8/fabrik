@@ -239,7 +239,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			if (empty($groupIds)) { //new form
 				return array();
 			}
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('*, e.name AS name, e.id AS id, e.published AS published, e.label AS label, e.plugin, e.params AS params, e.access AS access');
 			$query->from('#__{package}_elements AS e');
@@ -250,6 +250,11 @@ class FabrikFEModelPluginmanager extends JModel{
 			$query->order("group_id, e.ordering");
 			$db->setQuery($query);
 			$elements = (array)$db->loadObjectList();
+
+			if ($db->getErrorNum() != 0) {
+				JError::raiseError(500, $db->getErrorMsg());
+			}
+
 			//dont assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
 			//$dispatcher =& JDispatcher::getInstance();
 			$dispatcher = new JDispatcher();
