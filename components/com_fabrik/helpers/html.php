@@ -612,6 +612,8 @@ function loadCalendar()
 			//	$src[] = 'media/system/js/mootools-more'.$uncompressed.'.js';
 			}
 
+			JHtml::_('behavior.framework', true);
+
 			$src[] = 'media/com_fabrik/js/mootools-ext.js';
 			$src[] = 'media/com_fabrik/js/art.js';
 			$src[] = 'media/com_fabrik/js/icons.js';
