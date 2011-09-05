@@ -284,11 +284,14 @@ EOD;
 
 	function tableList($sel = '')
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id, label')->from('#__{package}_lists')->where('published = 1');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+		if ($db->getErrorNum()) {
+			JError::raiseError(500, $db->getErrorMsg());
+		}
 		return JHTML::_('select.genericlist', $rows, 'fabrik__swaptable', 'class="inputbox" size="1" ', 'id', 'label', $sel);
 	}
 
@@ -602,9 +605,11 @@ function loadCalendar()
 			$uncompressed	= $debug ? '-uncompressed' : '';
 
 			$src = array();
+			//loading here as well as normal J behavior call makes document.body not found for gmap element when
+			// rendered in the form
 			if (JRequest::getInt('ajax') !== 1 && JRequest::getVar('tmpl') !== 'component') {
-				$src[] = 'media/system/js/mootools-core'.$uncompressed.'.js';
-				$src[] = 'media/system/js/mootools-more'.$uncompressed.'.js';
+			//	$src[] = 'media/system/js/mootools-core'.$uncompressed.'.js';
+			//	$src[] = 'media/system/js/mootools-more'.$uncompressed.'.js';
 			}
 
 			$src[] = 'media/com_fabrik/js/mootools-ext.js';
