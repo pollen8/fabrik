@@ -99,7 +99,7 @@ var FloatingTips = new Class({
 		} else { 
 			return null;
 		}
-		
+		cwr.store('trigger', elem);
 		var body = document.id(document.body);
 		tip.setStyles({ 'position': 'absolute', 'opacity': 0 }).inject(body);
 		
