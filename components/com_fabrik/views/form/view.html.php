@@ -32,19 +32,19 @@ class fabrikViewForm extends JView
 		$app = JFactory::getApplication();
 		$w = new FabrikWorker();
 		$config = JFactory::getConfig();
-		$model =& $this->getModel('form');
+		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
 		FabrikHelperHTML::mootools();
 
 		$model->isMambot = $this->isMambot;
-		$form =& $model->getForm();
+		$form = $model->getForm();
 		if ($model->render() === false) {
 			return false;
 		}
 		$this->isMultiPage = $model->isMultiPage();
 		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $model->_getFormPluginHTML();
 
-		$listModel =& $model->getlistModel();
+		$listModel = $model->getlistModel();
 		$table = $listModel->noTable() ? null : $listModel->getTable();
 		if (!$model->canPublish()) {
 			if (!$app->isAdmin()) {
@@ -62,7 +62,7 @@ class fabrikViewForm extends JView
 			$joins =& $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
 		}
-		$params =& $model->getParams();
+		$params = $model->getParams();
 		$this->setTitle($w, $params);
 		FabrikHelperHTML::debug($params->get('note'), 'note');
 		$params->def('icons', $app->getCfg('icons'));
@@ -75,10 +75,10 @@ class fabrikViewForm extends JView
 		$form->action = $this->get('Action');
 
 		$form->formid = $model->_editable ? "form_".$model->getId() : 'details_' . $model->getId();
-		$form->name 	= "form_".$model->getId();
+		$form->name = "form_".$model->getId();
 
 		$form->origerror = $form->error;
-		$form->error  = count($model->_arErrors) > 0 ? $form->error : '';
+		$form->error = count($model->_arErrors) > 0 ? $form->error : '';
 
 		$this->_addButtons();
 		JDEBUG ? $_PROFILER->mark('form view before validation classes loaded') : null;
@@ -95,7 +95,7 @@ class fabrikViewForm extends JView
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);
 		JDEBUG ? $_PROFILER->mark('form view before group view got') : null;
-		$this->groups =& $model->getGroupView($tmpl);
+		$this->groups = $model->getGroupView($tmpl);
 		//$this->assignRef('groups', $this->get('GroupView'));
 		JDEBUG ? $_PROFILER->mark('form view after group view got') : null;
 		$this->assignRef('data', $model->data);
@@ -108,8 +108,6 @@ class fabrikViewForm extends JView
 		JDEBUG ? $_PROFILER->mark('form view: after cck') : null;
 		//force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND.DS.'views';
-
-
 
 		$this->_addJavascript($listModel->getId());
 		JDEBUG ? $_PROFILER->mark('form view: after add js') : null;
@@ -159,7 +157,7 @@ class fabrikViewForm extends JView
 
 	private function setMessage()
 	{
-		$model =& $this->getModel();
+		$model = $this->getModel();
 		if (!$model->isMultiPage()) {
 			$this->assign('message', '');
 			return;
@@ -189,7 +187,7 @@ class fabrikViewForm extends JView
 		$app = JFactory::getApplication();
 		$title = '';
 		if ($app->getName() !== 'administrator') {
-			$menus	= &JSite::getMenu();
+			$menus	= JSite::getMenu();
 			$menu	= $menus->getActive();
 			//if there is a menu item available AND the form is not rendered in a content plugin or module
 			if (is_object($menu) && !$this->isMambot) {
@@ -213,8 +211,7 @@ class fabrikViewForm extends JView
 			$params->set('show_page_title', 0);
 		}
 
-		$model		=& $this->getModel();
-		$document = JFactory::getDocument();
+		$model = $this->getModel();
 		if (!$this->isMambot) {
 			$title = $model->getPageTitle($params->get('page_title'));
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
@@ -227,8 +224,8 @@ class fabrikViewForm extends JView
 
 	protected function _addButtons()
 	{
-		$model		=& $this->getModel();
-		$params 	=& $model->getParams();
+		$model = $this->getModel();
+		$params	= $model->getParams();
 		$this->showEmail = $params->get('email', 0);
 		$this->emailLink = '';
 		$this->printLink = '';
@@ -265,9 +262,9 @@ class fabrikViewForm extends JView
 
 	protected function _addJavascript($tableId)
 	{
-		$app 				= JFactory::getApplication();
-		$document 	= JFactory::getDocument();
-		$model 			=& $this->getModel();
+		$app = JFactory::getApplication();
+		$document = JFactory::getDocument();
+		$model = $this->getModel();
 
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
@@ -286,19 +283,19 @@ class fabrikViewForm extends JView
 		// skips a group
 		$groups = $model->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$res = $elementModel->useEditor();
 				if ($res !== false) {
 					$aWYSIWYGNames[] = $res;
 				}
-				$eparams =& $elementModel->getParams();
+				$eparams = $elementModel->getParams();
 				//load in once the element js class files
 				// $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
 				// which we should now be doing ... and getParent() causes an extra table lookup for every child
 				// element on the form.
 				//$element =& $elementModel->getParent();
-				$element =& $elementModel->getElement();
+				$element = $elementModel->getElement();
 				if (!in_array($element->plugin, $aLoadedElementPlugins)) {
 					$aLoadedElementPlugins[] = $element->plugin;
 					$elementModel->formJavascriptClass($srcs);
@@ -317,7 +314,7 @@ class fabrikViewForm extends JView
 
 		$params = $model->getParams();
 		$listModel = $model->getlistModel();
-		$table =$listModel->getTable();
+		$table = $listModel->getTable();
 		$form = $model->getForm();
 		FabrikHelperHTML::mocha();
 
@@ -482,7 +479,7 @@ class fabrikViewForm extends JView
 		}
 ";
 		FabrikHelperHTML::addScriptDeclaration($str);
-		$pluginManager =& $model->getPluginManager();
+		$pluginManager = $model->getPluginManager();
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 		FabrikHelperHTML::mootools();
 	}
@@ -492,10 +489,10 @@ class fabrikViewForm extends JView
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid	= $menuItem ? $menuItem->id : 0;
-		$model 	    =& $this->getModel();
-		$listModel =& $model->getListModel();
+		$model = $this->getModel();
+		$listModel = $model->getListModel();
 		$canDelete = $listModel->canDelete($model->_data);
-		$params     =& $model->getParams();
+		$params = $model->getParams();
 		$task = 'form.process';
 		$reffer = JRequest::getVar('HTTP_REFERER', '', 'server');
 		// $$$rob - if returning from a failed validation then we should use the fabrik_referrer post var
@@ -586,7 +583,7 @@ class fabrikViewForm extends JView
 		jimport('joomla.utilities.simplecrypt');
 		jimport('joomla.utilities.utility');
 		$crypt = new JSimpleCrypt();
-		$formModel =& $this->getModel();
+		$formModel = $this->getModel();
 		$get = JRequest::get('get');
 		foreach ($get as $key => $input) {
 			// 	$$$ rob test if passing in _raw value via qs -used in fabsubs
@@ -623,7 +620,7 @@ class fabrikViewForm extends JView
 		jimport('joomla.utilities.simplecrypt');
 		jimport('joomla.utilities.utility');
 		$crypt = new JSimpleCrypt();
-		$formModel =& $this->getModel();
+		$formModel = $this->getModel();
 		$fields = array();
 		foreach ($this->get('readOnlyVals') as $key => $input) {
 			$repeatGroup = $input['repeatgroup'];
