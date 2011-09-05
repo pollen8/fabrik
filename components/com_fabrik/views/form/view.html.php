@@ -277,7 +277,7 @@ class fabrikViewForm extends JView
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED')) {
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
-			$srcs = array('media/com_fabrik/js/mootools-ext.js', 'media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js');
+			$srcs = array('media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js');
 
 		}
 
