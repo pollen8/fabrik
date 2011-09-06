@@ -1171,7 +1171,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$w = floor((100- ($colcount * 6)) / $colcount) ."%";
 			if ($widths != '') {
 				$widths = explode(',', $widths);
-				$w = JArrayHelper::getValue($widths, $elCount, $w);
+				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
 			}
 			$element->column = ' style="margin-right:1%;float:left;width:'.$w.';';
 			if ($elCount % $colcount == 0) {
@@ -1179,7 +1179,7 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			$element->column .= '" ';
 		} else {
-			$element->column .=  ' style="clear:both;"';
+			$element->column .= ' style="clear:both;"';
 		}
 		$element->element_ro = $this->_getROElement($model->_data, $c);
 

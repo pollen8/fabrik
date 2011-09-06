@@ -75,7 +75,12 @@
 				size="2"
 				label="COM_FABRIK_COLUMNS_LABEL" 
 				description="COM_FABRIK_COLUMNS_DESC" />
-							
+		
+			<field name="group_column_widths" 
+				type="text" default="44%,44%" 
+				label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" 
+				description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" />
+			
 			<field name="repeat_max"
 				type="text"
 				label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL"
