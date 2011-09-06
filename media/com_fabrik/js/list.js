@@ -1022,7 +1022,7 @@ var FbGroupedToggler = new Class({
 	initialize: function(container) {
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function(e){
 			e.stop();
-			var img = e.target.get('tag') === 'a' ? e.target.getElement('img') : e.target;
+			var img = e.target.getParent('.fabrik_groupheading').getElement('img');
 			var state = img.retrieve('showgroup', true);
 			var h = img.findClassUp('fabrik_groupheading');
 			var rows = h.getParent().getNext();
