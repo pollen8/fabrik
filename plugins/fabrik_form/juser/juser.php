@@ -17,8 +17,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormJUser extends plgFabrik_Form {
 
-	protected $_pluginManager = null;
-
 	var $_counter = null;
 
 	var $namefield = '';
@@ -43,20 +41,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 	{
 		$elementModel = $this->getPluginManager()->getElementPlugin($params->get($pname));
 		return $elementModel->getFullName();
-	}
-
-	/**
-	 * @since 3.0
-	 * get the plugin manager
-	 * @return plugin manager
-	 */
-
-	protected function getPluginManager()
-	{
-		if (!isset($this->_pluginManager)) {
-			$this->_pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		}
-		return $this->_pluginManager;
 	}
 
 	/**
