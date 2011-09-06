@@ -243,10 +243,9 @@ class FabrikModelForm extends FabModelAdmin
 		$this->_makeFormGroups($data, $currentGroups);
 
 		if ($record_in_database == '1') {
-			//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 			$listModel = JModel::getInstance('List', 'FabrikFEModel');
-			$listModel->loadFromFormId($data['id']);
-			$table =& $listModel->getTable();
+			$listModel->loadFromFormId($formid);
+			$table = $listModel->getTable();
 			if ($isnew) {
 				$dbTableName = $data['db_table_name'];
 			} else {
@@ -263,8 +262,8 @@ class FabrikModelForm extends FabModelAdmin
 			$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 
 			$formModel->setId($formid);
-
-			if (!$listModel->databaseTableExists($dbTableName, $defaultDb)) {
+			$dbTableExists = $listModel->databaseTableExists($dbTableName, $defaultDb);
+			if (!$dbTableExists) {
 				// @TODO - need to sanitize table name (get rid of non alphanumeirc or _),
 				// just not sure whether to do it here, or above (before we test for existinance)
 				// $$$ hugh - for now, just do it here, after we test for the 'unsanitized', as
@@ -277,8 +276,10 @@ class FabrikModelForm extends FabModelAdmin
 				}
 				//need to pass the correct database obj here
 				$listModel->createDBTable($formModel, $dbTableName, $defaultDb);
-
-				$connection =& $listModel->getConnection();
+			}
+			if (!$dbTableExists || $isnew)
+			{
+				$connection = $listModel->getConnection();
 				$table->id = null;
 				$table->label 				= $data['label'];
 				$table->form_id 			= $formid;
@@ -403,6 +404,24 @@ class FabrikModelForm extends FabModelAdmin
 		$data['params'] = $params;
 		return $data;
 	}
+
+/**
+ *  potentially drop fields then remove element record
+ * @param array $cids to delete
+ */
+
+public function delete($cids)
+{
+	$res = parent::delete($cids);
+	if ($res) {
+		foreach ($cids as $cid) {
+			$item = FabTable::getInstance('FormGroup', 'FabrikTable');
+			$item->load(array('form_id'=> $cid));
+			$item->delete();
+		}
+	}
+	return $res;
+}
 
 }
 ?>
