@@ -1100,8 +1100,9 @@ var FbListActions = new Class({
 			ul.fade(0.6);
 			var r = ul.findClassUp('fabrik_row') ? ul.findClassUp('fabrik_row') : ul.findClassUp('fabrik___heading');
 			if (r) {
+				// $$$ hugh - for some strange reason, if we use 1 the object disappears in Chrome and Safari!
 				r.addEvents({'mouseenter':function(e){
-					ul.fade(1);
+					ul.fade(0.99);
 				},
 				'mouseleave':function(e){
 					ul.fade(0.6);
