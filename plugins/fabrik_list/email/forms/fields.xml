@@ -3,7 +3,11 @@
 	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
 		<fieldset name="plg-list-email">
 				
-			<field name="emailtable_access" type="accesslevel" default="1" label="ACCESS"/>
+			<field name="emailtable_access"
+				type="accesslevel"
+				default="1"
+				repeat="true"
+				label="COM_FABRIK_ACCESS"/>
 		
 			<field name="emailtable_button_location" type="list" default="bottom"
 				repeat="true"
