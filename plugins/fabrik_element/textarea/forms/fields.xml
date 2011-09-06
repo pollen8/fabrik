@@ -31,6 +31,13 @@
 	</fields>
 	<fields name="params">
 		<fieldset name="plg-textarea-extra" addfieldpath="/administrator/components/com_fabrik/models/fields">
+			
+			<field name="textarea_placeholder"
+				type="text"
+				size="60"
+				label="PLG_ELEMENT_TEXTAREA_PLACEHOLDER_LABEL"
+				description="PLG_ELEMENT_TEXTAREA_PLACEHOLDER_DESC" />
+				
 			<field name="use_wysiwyg" 
 				type="radio" 
 				default="0" 
@@ -67,7 +74,7 @@
 			
 			<field name="textarea_tagifyurl" 
 				type="text" 
-				size="40" 
+				size="60" 
 				label="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_LABEL" 
 				description="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_DESC" />
 			

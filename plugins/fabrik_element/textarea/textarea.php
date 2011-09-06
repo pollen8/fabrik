@@ -24,8 +24,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	protected function tagify($data)
 	{
 		$name = $this->getFullName(false, true, false);
-		$params =& $this->getParams();
-		$listModel =& $this->getlistModel();
+		$params = $this->getParams();
+		$listModel = $this->getlistModel();
 		$filters = $listModel->getFilterArray();
 		$fkeys = JArrayHelper::getValue($filters, 'key', array());
 
@@ -154,6 +154,9 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 				$value = $this->tagify($value);
 			}
 			return $value;
+		}
+		if ($params->get('textarea_placeholder') !== '') {
+			$bits['placeholder'] = $params->get('textarea_placeholder');
 		}
 		$bits['class'] = "fabrikinput inputbox";
 		if (isset($this->_elementError) && $this->_elementError != '') {
