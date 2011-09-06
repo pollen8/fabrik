@@ -743,7 +743,7 @@ class FabrikFEModelList extends JModelForm {
 
 						$recordCounts =& $this->getRecordCounts($join, $pks);
 						$count = 0;
-						$linkKey = '';
+						$linkKey = $recordCounts['linkKey'];
 						if (is_array($recordCounts)) {
 							if (array_key_exists($val, $recordCounts)) {
 								$count = $recordCounts[$val]->total;
@@ -756,9 +756,11 @@ class FabrikFEModelList extends JModelForm {
 							}
 						}
 						$join->list_id = array_key_exists($join->listlabel, $aTableNames) ?  $aTableNames[$join->listlabel]->id : '';
+						/*
 						$linkLabel = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
 						$linkKey .= '_raw';
-						$group[$i]->$key = $this->viewDataLink($popupLink, $join->list_id, $row, $linkKey, $val, $count, $linkLabel);
+						*/
+						$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
 					}
 					$f ++;
 				}
@@ -779,7 +781,7 @@ class FabrikFEModelList extends JModelForm {
 								$linkKey = @$join->db_table_name . "___" . @$join->name;
 								$gkey = $linkKey . "_form_heading";
 								$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$keys[$f], JArrayHelper::fromObject($row));
-								$group[$i]->$gkey = $this->viewFormLink($popupLink, $join->list_id, $join->form_id, $row, $linkKey, $val, false, $linkLabel);
+								$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 							}
 						}
 						$f ++;
@@ -924,7 +926,7 @@ class FabrikFEModelList extends JModelForm {
 	function viewFormLink($popUp = false, $element, $row = null, $key = '', $val = '', $usekey = false, $f = 0)
 	{
 		$params =& $this->getParams();
-		$listid = $element->table_id;
+		$listid = $element->list_id;
 		$formid = $element->form_id;
 		$linkedFormText = $params->get('linkedformtext', '', '_default', 'array');
 		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedFormText, $f), JArrayHelper::fromObject($row));
@@ -1024,7 +1026,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function viewDataLink($popUp = false, $element, $row = null, $key = '', $val = '', $count = 0, $f)
 	{
-		$listid = $element->table_id;
+		$listid = $element->list_id;
 		$app = JFactory::getApplication();
 		$params =& $this->getParams();
 		$linkedTableText = $params->get('linkedtabletext', '', '_default', 'array');
