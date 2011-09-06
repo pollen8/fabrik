@@ -2868,10 +2868,11 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		$linksToForms =&  $referringTable->getLinksToThisKey();
 
 		$row =& $this->getData();
-		$linkedLists						= $tableParams->get('linkedlist');
-		$aExisitngLinkedForms 	= $tableParams->get('linkedform', '', '_default', 'array');
-		$linkedform_linktype 		= $tableParams->get('linkedform_linktype', '', '_default', 'array');
-		$linkedtable_linktype 	= $tableParams->get('linkedtable_linktype', '', '_default', 'array');
+		$factedLinks = $tableParams->get('factedlinks');
+		$linkedLists = $factedLinks->linkedlist;
+		$aExisitngLinkedForms = $factedLinks->linkedform;
+		$linkedform_linktype = $factedLinks->linkedform_linktype;
+		$linkedtable_linktype = $factedLinks->linkedlist_linktype;
 		$f = 0;
 
 		$sql = "SELECT id, label, db_table_name FROM #__{package}_lists";
@@ -2881,24 +2882,33 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 			JError::raiseError(500, $db->getErrorMsg());
 		}
 		foreach ($joinsToThisKey as $element) {
-			$qsKey	= $this->getListModel()->getTable()->db_table_name . "___" . $element->name;
+			//$qsKey	= $this->getListModel()->getTable()->db_table_name . "___" . $element->name;
+			$qsKey	= $referringTable->getTable()->db_table_name . "___" . $element->name;
+					
 			$val 		= JRequest::getVar($qsKey);
 			if ($val == '') {
 				//default to row id if we are coming from a main link (and not a related data link)
-				$val = JRequest::getVar($qsKey . "_raw", JRequest::getVar('rowid'));
+				$val = JRequest::getVar($qsKey . "_raw", '');
+				if (empty($val)) {
+					$thisKey = $this->getListModel()->getTable()->db_table_name . "___" . $element->join_key_column . "_raw";
+					$val = $this->_data[$thisKey];
+					if (empty($val)) {
+						$val = JRequest::getVar('rowid');
+					}
+				}
 			}
-			$linkedTable 	= JArrayHelper::getValue($linkedTables, $f, false);
+			$key = $element->list_id.'-'.$element->form_id.'-'.$element->element_id;
 
-			if ($linkedTable != false) {
+			if (isset($linkedLists->$key)) {
 				// $$$ hugh - changed to use _raw as key, see:
 				// http://fabrikar.com/forums/showthread.php?t=20020
 				$linkKey = $element->db_table_name . "___" . $element->name;
 				$linkKeyRaw = $linkKey . "_raw";
-				$popUpLink 		= JArrayHelper::getValue($linkedtable_linktype, $f, false);
+				$popUpLink 		= JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$recordCounts =& $referringTable->getRecordCounts($element);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
-				$element->list_id = (array_key_exists($element->tablelabel, $aTableNames)) ?  $aTableNames[$element->tablelabel]->id : '';
-				$links[$element->list_id][] = $referringTable->viewDataLink($popUpLink, $element->list_id, null, $linkKey, $val, $count, $f);
+				//$element->list_id = (array_key_exists($element->listlabel, $aTableNames)) ?  $aTableNames[$element->tablelabel]->id : '';
+				$links[$element->list_id][] = $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
 
 			$f ++;
@@ -2906,8 +2916,8 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		$f = 0;
 		//create columns containing links which point to forms assosciated with this table
 		foreach ($linksToForms as $element) {
-			$linkedForm 	= JArrayHelper::getValue($aExisitngLinkedForms, $f, false);
-			$popUpLink 		= JArrayHelper::getValue($linkedform_linktype, $f, false);
+			$linkedForm 	= $aExisitngLinkedForms->$key;
+			$popUpLink 		= $linkedform_linktype->$key;
 
 			if ($linkedForm !== '0') {
 				if (is_object($element)) {
