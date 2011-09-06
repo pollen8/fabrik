@@ -62,10 +62,10 @@ class plgSystemFabrikcron extends JPlugin
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
 		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		//get all active tasks
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$now = JRequest::getVar('fabrikcron_run', false);
 
-		$log =& JTable::getInstance('Log', 'Table');
+		$log = FabTable::getInstance('Log', 'FabrikTable');
 
 		if (!$now) {
 
@@ -108,7 +108,7 @@ class plgSystemFabrikcron extends JPlugin
 		$db->setQuery("UPDATE #__{package}_cron SET published='2' WHERE id IN (" . implode(',', $ids) . ")");
 		$db->query();
 
-		$pluginManager	= JModel::getInstance('Pluginmanager', 'FabrikModel');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 
 		foreach ($rows as $row) {
