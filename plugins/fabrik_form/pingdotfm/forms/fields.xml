@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-pingdotfm">
+			<field name="ping_userapikey" 
+					type="text" size="30" 
+					label="PLG_FORM_PING_FM_USER_APIKEY_LABEL"
+					description="PLG_FORM_PING_FM_USER_APIKEY_DESC"/>
+					
+			<field name="ping_title_field" 
+				type="listfields" 
+				onlytablefields="0" 
+				label="PLG_FORM_PING_FM_TITLEFIELD_LABEL" 
+				description="PLG_FORM_PING_FM_TITLEFIELD_DESC"/>
+				
+			<field name="ping_title_tmpl"
+				type="textarea"
+				rows="6" cols="30"
+				label="PLG_FORM_PING_FM_TITLETMPL_LABEL"
+				description="PLG_FORM_PING_FM_TITLETMPL_DESC"/>
+			
+			<field name="ping_msg_field" 
+				type="listfields" 
+				onlytablefields="0"
+				label="PLG_FORM_PING_FM_MSGFIELD_LABEL"
+				description="PLG_FORM_PING_FM_MSGFIELD_DESC"/>
+			
+			<field name="ping_msg_tmpl"
+				type="textarea"
+				cols="30" rows="6"
+				label="PLG_FORM_PING_FM_MSGTMPL_LABEL"
+				description="PLG_FORM_PING_FM_MSGTMPL_DESC"/>
+			
+			<field name="ping_method" 
+				type="list"
+				default="status"
+				label="PLG_FORM_PING_FM_METHOD_LABEL"
+				description="PLG_FORM_PING_FM_METHOD_DESC">
+				<option value="status">Status</option>
+				<option value="microblog">Micro-blog</option>
+				<option value="blog">Blog</option>
+			</field>
+			
+			<field name="ping_method_field" 
+				type="listfields"
+				onlytablefields="0"
+				label="PLG_FORM_PING_FM_METHODFIELD_LABEL"
+				description="PLG_FORM_PING_FM_METHODFIELD_DESC"/>
+			
+			<field name="ping_show_success_msg" 
+				type="radio" default="0"
+				label="PLG_FORM_PING_FM_SHOW_SUCCESSMSG_LABEL"
+				description="PLG_FORM_PING_FM_SHOW_SUCCESSMSG_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="ping_condition" 
+				type="textarea"
+				cols="30" rows="6"
+				label="PLG_FORM_PING_FM_CONDITION_LABEL" 
+				description="PLG_FORM_PING_FM_CONDITION_DESC" />
+			
+		</fieldset>
+	</fields>
+</form>
