@@ -4,7 +4,7 @@
 	version="1.7.0"
 	client="administrator"
 	method="upgrade">
-	<name>Fabrik list (admin)</name>
+	<name>Fabrik List Admin Module</name>
 	<author>Rob Clayburn</author>
 	<creationDate>Feb 2011</creationDate>
 	<copyright>(C) 2006 Pollen 8 Design Ltd. All rights reserved.</copyright>
