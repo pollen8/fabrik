@@ -854,10 +854,9 @@ var FbList = new Class({
   watchNav: function(e){
   	var limitBox = this.form.getElement('#limit'+ this.id);
     if (limitBox) {
-    	limitBox.removeEvents();
       limitBox.addEvent('change', function(e){
       	var res = window.fireEvent('fabrik.list.limit', [this]);
-      	if(!this.result){
+      	if(this.result === false){
       		this.result = true;
       		return false;
       	}
