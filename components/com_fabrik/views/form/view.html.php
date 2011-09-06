@@ -556,7 +556,6 @@ class fabrikViewForm extends JView
 		}
 		$format = $model->isAjax() ? 'raw' : 'html';
 		$aHiddenFields .= "<input type=\"hidden\" name=\"format\" value=\"$format\" />";
-		$aHiddenFields .= "<input type=\"hidden\" name=\"fabrik_senderBlock\"  value=\"form_" .$form->id . "\" />";
 
 		$groups =& $model->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
