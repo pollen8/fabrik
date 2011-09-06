@@ -35,15 +35,15 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 	 * @returns bol
 	 */
 
-	function onAfterProcess( $params, &$formModel )
+	function onAfterProcess($params, &$formModel)
 	{
-		return $this->_process( $params, $formModel);
+		return $this->_process($params, $formModel);
 	}
 
-	private function _process( &$params, &$formModel )
+	private function _process(&$params, &$formModel)
 	{
 		$app = JFactory::getApplication();
-		$this->formModel =& $formModel;
+		$this->formModel =$formModel;
 		jimport('joomla.filesystem.file');
 		$w = new FabrikWorker();
 		$data = $this->getEmailData();
@@ -54,8 +54,9 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		include_once('PHPingFM.php');
 		$ping = new PHPingFM($apiKeys['dev'], $apiKeys['user']);
 		// Validate Keys
+
 		if ($ping->validate() === false) {
-			JError::raiseNotice(JText::_('Ping.fm Error'), "Invalid Key");
+			JError::raiseNotice(500, JText::_('Ping.fm Error'). ": Invalid Key");
 			return;
 		}
 
@@ -74,25 +75,23 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		else {
 			$method = $params->get('ping_method', 'status');
 		}
-
 		// Title & Msg fields
 		$pingTitleFieldId = $params->get('ping_title_field', '');
 		$pingMsgFieldId = $params->get('ping_msg_field', '');
 
 		// Title (optional)
 		if ($pingTitleFieldId != '') { // Use field
+
 			$elementModel = $this->getPluginManager()->getElementPlugin($pingTitleFieldId);
-			$element = $elementModel->getElement(true);
 			$pingTitleField = $elementModel->getFullName(false, true, false);
 
 			$title = $data[$pingTitleField];
 		} else { // Use template
 			$title = $w->parseMessageForPlaceHolder($params->get('ping_title_tmpl'), $data);
 		}
-
 		// 'blog' method requires a title
 		if ($method == 'blog' && trim($title) == '') {
-			JError::raiseNotice(JText::_('Ping.fm Error'), "The 'blog' posting method requires a title.");
+			JError::raiseNotice(500, JText::_('Ping.fm Error'). ". The 'blog' posting method requires a title.");
 			return;
 		}
 
@@ -100,7 +99,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		$myServices = $ping->services();
 		$okServices = false;
 		if (empty($myServices)) { // No service enabled
-			JError::raiseNotice(JText::_('Ping.fm Error'), "You must enable at least one service in your Ping.fm account");
+			JError::raiseNotice(500, JText::_('Ping.fm Error'). " You must enable at least one service in your Ping.fm account");
 			return;
 		}
 		else { // Verify at least one service accepts the selected method
@@ -160,7 +159,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 				}
 			}
 			else {
-				JError::raiseNotice(JText::_('Ping.fm Error'), "Failed updating Ping.fm");
+				JError::raiseNotice(500, JText::_('Ping.fm Error'). " Failed updating Ping.fm");
 			}
 		}
 		return true;
