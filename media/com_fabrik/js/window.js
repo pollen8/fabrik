@@ -94,7 +94,7 @@ Fabrik.Window = new Class({
 			var ch = this.options.height-30;
 			cw = this.options.width ;
 			this.contentWrapperEl.setStyles({'height':ch+'px', 'width':cw+'px'});
-			this.window.adopt([this.handle, this.contentEl]);
+			this.window.adopt([this.handle, this.contentWrapperEl]);
 		}else{
 			this.window.adopt([this.handle, this.contentWrapperEl, draggerC]);
 			this.window.makeResizable({'handle':dragger,
