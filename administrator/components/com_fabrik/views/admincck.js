@@ -39,10 +39,5 @@ var adminCCK = new Class({
 		var tag = "{fabrik view=" + view + " id=" + this.options.formid + " rowid=" + json.rowid + " layout=" + tmpl + "}";
 		window.parent.jInsertEditorText(tag, this.options.ename);
 		window.parent.document.getElementById('sbox-window').close();
-	},
-
-/* @todo : use window.add/fireEvent
-	receiveMessage : function(senderBlock, task, taskStatus, json) {
-		this.insertTag(json);
-	}*/
+	}
 });

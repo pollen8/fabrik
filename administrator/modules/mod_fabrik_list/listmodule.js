@@ -108,15 +108,4 @@ var fabrikTableModule = new Class({
 			var e = new Event(event).stop();
 		}.bind(this));
 	}
-	/* @todo window.addEvent/fireEvent now,
-	
-	receiveMessage: function(senderBlock, task, taskStatus, json)
-	{
-		if(task == 'updateRows'){
-			this.blocks[0].getElements('.fabrik___viewrowlink').removeEvents('click');
-			this.watchViewLinks();
-			this.blocks[0].getElements('.fabrik___rowlink').removeEvents('click');
-			this.watchEditLinks();
-		}
-	}*/
 });
