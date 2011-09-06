@@ -1361,11 +1361,7 @@ var FbForm = new Class( {
 			}
 		}.bind(this));
 	},
-/*
-	addListenTo : function(blockId) {
-		this.listenTo.push(blockId);
-	},
-*/
+
 	clearForm : function() {
 		this.getForm();
 		if (!this.form) {
@@ -1380,38 +1376,5 @@ var FbForm = new Class( {
 		// reset errors
 		this.form.getElements('.fabrikError').empty();
 		this.form.getElements('.fabrikError').addClass('fabrikHide');
-	}/*,
-
-	receiveMessage : function(senderBlock, task, taskStatus, data) {
-		if (this.listenTo.indexOf(senderBlock) != -1) {
-			if (task == 'processForm') {
-
-			}
-			// a row from the table has been loaded
-			if (task == 'update') {
-				this.update(data);
-			}
-			if (task == 'clearForm') {
-				this.clearForm();
-			}
-		}
-		// a form has been submitted which contains data that should be updated in
-		// this
-		// form
-		// currently for updating database join drop downs, data is used just as a
-		// test to see if the dd needs
-		// updating. If found a new ajax call is made from within the dd to update
-		// itself
-		// $$$ hugh - moved showErrors() so it only runs if data.errors has content
-		if (task == 'updateRows' && typeOf(data) !== 'null') {
-			if ($H(data.errors).getKeys().length === 0) {
-				if (typeOf(data.data) !== 'null') {
-					this.appendInfo(data);
-					this.update(data, true);
-				}
-			} else {
-				this.showErrors(data);
-			}
-		}
-	}*/
+	}
 });

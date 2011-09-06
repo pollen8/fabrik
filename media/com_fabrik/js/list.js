@@ -721,9 +721,14 @@ var FbList = new Class({
 			this.setRowTemplate();
 			// $$$ rob was $H(data.data) but that wasnt working ????
 			//testing with $H back in again for grouped by data? Yeah works for grouped data!!
+			debugger;
 			var gdata = this.options.isGrouped ? $H(data.data) : data.data;
+			var gcounter = 0;
 			gdata.each(function(groupData, groupKey){
+				var tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
+				gcounter++;
 				for(i=0;i<groupData.length;i++){
+					
 					if (typeOf(this.options.rowtemplate) == 'string') {
 						var container =(!this.options.rowtemplate.match(/\<tr/)) ? 'div' : 'table';
 						var thisrowtemplate = new Element(container);
@@ -748,10 +753,10 @@ var FbList = new Class({
 					if (typeOf(this.options.rowtemplate) === 'string') {
 						var c = thisrowtemplate.getElement('.fabrik_row').clone();
 						c.id = row.id;
-				  	c.inject(this.tbody);
+				  	c.inject(tbody);
 				  }else{
 						var r = thisrowtemplate.getElement('.fabrik_row');
-						r.inject(this.tbody);
+						r.inject(tbody);
 						thisrowtemplate.empty();
 					}
 					counter ++;
@@ -928,34 +933,6 @@ var FbList = new Class({
 		}
     this.watchCheckAll();
   },
-  /*
-  // @todo use window.fire/addEvent
-  addListenTo: function(blockId){
-    this.listenTo.push(blockId);
-  },
-  
-  receiveMessage: function(senderBlock, task, taskStatus, data){
-    if (this.listenTo.indexOf(senderBlock) != -1) {
-      switch (task) {
-        case 'delete':
-        	this.updateRows();
-          break;
-        case 'processForm':
-          this.addRows(data);
-          break;
-        case 'navigate':
-        case 'list.filter':
-        case 'updateRows':
-        case 'order':
-        case 'doPlugin':
-        	// only update rows if no errors returned
-        	if ($H(data.errors).getKeys().length === 0){
-          	this.updateRows();
-          }
-          break;
-      }
-    }
-  },*/
  
   /** currently only called from element raw view when using inline edit plugin
    *  might need to use for ajax nav as well?
