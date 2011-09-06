@@ -4757,14 +4757,14 @@ class FabrikFEModelList extends JModelForm {
 		$o->feed_date= '';
 		$o->rsslimit= 150;
 		$o->rsslimitmax= 2500;
-		$o->csv_import_frontend= 0;
-		$o->csv_export_frontend = 0;
+		$o->csv_import_frontend= 3;
+		$o->csv_export_frontend = 3;
 		$o->csvfullname = 0;
-		$o->access = 0;
-		$o->allow_view_details = 0;
-		$o->allow_edit_details = 0;
-		$o->allow_add = 0;
-		$o->allow_delete = 0;
+		$o->access = 1;
+		$o->allow_view_details = 1;
+		$o->allow_edit_details = 1;
+		$o->allow_add = 1;
+		$o->allow_delete = 1;
 		$o->group_by_order = '';
 		$o->group_by_order_dir = 'ASC';
 		$o->prefilter_query = '';
@@ -4791,25 +4791,29 @@ class FabrikFEModelList extends JModelForm {
 	 * Create a table to store the forms' data depending upon what groups are assigned to the form
 	 * @param object form model
 	 * @param string table name - taken from the table oject linked to the form
-	 * @param obj tables database object NOT USED!!!!
+	 * @param obj list database object NOT USED!!!!
 	 */
 
-	function createDBTable(&$formModel, $dbTableName = null, $tableDatabase = null)
+	function createDBTable(&$formModel, $dbTableName = null, $fabrikDb = null)
 	{
-		$db = FabrikWorker::getDbo();
-		$tableDatabase = $this->getDb();
-		$user  	= JFactory::getUser();
+		$db = FabrikWorker::getDbo(true);
+		$fabrikDb = $this->getDb();
+		$user	= JFactory::getUser();
 		$config = JFactory::getConfig();
 		if (is_null($dbTableName)) {
 			$dbTableName = $this->getTable()->db_table_name;
 		}
 		$sql = "CREATE TABLE IF NOT EXISTS ".$db->nameQuote($dbTableName)." ( ";
 
-		$query = $db->getQuery(true);
-		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = '.(int)$formModel->id);
-		$db->setQuery($query);
-		$groupIds = $db->loadResultArray();
-
+		$post = JRequest::get('post');
+		if ($post['jform']['id'] == 0) {
+			$groupIds = $post['jform']['current_groups'];
+		} else {
+			$query = $db->getQuery(true);
+			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = '.(int)$formModel->id);
+			$db->setQuery($query);
+			$groupIds = $db->loadResultArray();
+		}
 		/* create elements for the internal id and time_date fields */
 		if ($this->makeIdElement($groupIds[0]) === false) {
 			return false;
@@ -4821,12 +4825,10 @@ class FabrikFEModelList extends JModelForm {
 		//reset form and plugin manager to load up newly created elements
 		$formModel->groups = null;
 		$formModel->_loadGroupIds();
-		$pluginManager =& $formModel->getPluginManager();
+		$pluginManager = $formModel->getPluginManager();
 		unset($pluginManager->formplugins);
 		$aGroups = $formModel->getGroupsHiarachy();
 		$arAddedObj = array();
-		//these two should be real elements not hacked in here
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		foreach ($aGroups as $groupModel) {
 			$elementModels =& $groupModel->getMyElements();
 			foreach ($elementModels as $elementModel) {
@@ -4849,9 +4851,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$sql .= " primary key (id))";
 		$sql .= " ENGINE = MYISAM ";
-		$tableDatabase->setQuery($sql);
-		if (!$tableDatabase->query()) {
-			JError::raiseError(500, $tableDatabase->getErrorMsg());
+		$fabrikDb->setQuery($sql);
+		if (!$fabrikDb->query()) {
+			JError::raiseError(500, $fabrikDb->getErrorMsg());
 			return false;
 		}
 		return true;
@@ -4969,11 +4971,10 @@ class FabrikFEModelList extends JModelForm {
 
 	function _updateFormId($formId)
 	{
-		$db = FabrikWorker::getDbo();
-		$table =& $this->getTable();
-		$table->form_id = $formId;
-		if (!$table->store()) {
-			return JError::raiseWarning(500, $db->getError());
+		$item = $this->getTable();
+		$item->form_id = $formId;
+		if (!$item->store()) {
+			return JError::raiseWarning(500, $item->getError());
 		}
 	}
 
@@ -5020,7 +5021,7 @@ class FabrikFEModelList extends JModelForm {
 		if (trim($preSQL) != '') {
 			$db = FabrikWorker::getDbo();
 			$w = new FabrikWorker();
-			$w->replaceRequest( $preSQL);
+			$w->replaceRequest($preSQL);
 			$preSQL = $w->parseMessageForPlaceHolder($preSQL);
 			$db->setQuery($preSQL);
 			$q = $db->loadObjectList();
@@ -5029,7 +5030,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		if (isset($q)) {
-			foreach ( $q as $key=>$val) {
+			foreach ($q as $key=>$val) {
 				if (substr($key, 0, 1) != '_') {
 					$found = false;
 					for ($i=0; $i < count($selValue); $i++) {
@@ -5292,7 +5293,7 @@ class FabrikFEModelList extends JModelForm {
 				$elementModel->onDeleteRows($rows);
 			}
 		}
-		$pluginManager 	= $this->getPluginManager();
+		$pluginManager = $this->getPluginManager();
 
 		// $$$ hugh - added onDeleteRowsForm plugin (needed it so fabrikjuser form plugin can delete users)
 		// NOTE - had to call it onDeleteRowsForm rather than onDeleteRows, otherwise runPlugins() automagically
@@ -5402,9 +5403,9 @@ class FabrikFEModelList extends JModelForm {
 	 * @param object database connection object
 	 */
 
-	function ammendTable(&$formModel = null, $tableName = null, $tableDatabase = null)
+	function ammendTable(&$formModel = null, $tableName = null, $fabrikDb = null)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$user = JFactory::getUser();
 		$table =& $this->getTable();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -5415,9 +5416,9 @@ class FabrikFEModelList extends JModelForm {
 		if (is_null($tableName)) {
 			$tableName = $table->db_table_name;
 		}
-		if (is_null($tableDatabase) || !is_object($tableDatabase)) {
-			//$tableDatabase = $db;
-			$tableDatabase = $this->getDb();
+		if (is_null($fabrikDb) || !is_object($fabrikDb)) {
+			//$fabrikDb = $db;
+			$fabrikDb = $this->getDb();
 		}
 		$dbdescriptions = $this->getDBFields($tableName);
 		$existingfields = array();
@@ -5479,9 +5480,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 		if ($ammend) {
 			$sql .= implode(', ', $sql_add);
-			$tableDatabase->setQuery($sql);
-			if (!$tableDatabase->query()) {
-				return JError::raiseWarning(500, 'amend table: ' . $tableDatabase->getErrorMsg());
+			$fabrikDb->setQuery($sql);
+			if (!$fabrikDb->query()) {
+				return JError::raiseWarning(500, 'amend table: ' . $fabrikDb->getErrorMsg());
 			}
 		}
 	}

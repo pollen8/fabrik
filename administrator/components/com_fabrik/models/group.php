@@ -139,7 +139,10 @@ class FabrikModelGroup extends FabModelAdmin
 
 	protected function makeFormGroup($data)
 	{
-		$db = FabrikWorker::getDbo();
+		if ($data['form'] == '') {
+			return;
+		}
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_formgroup')->where("form_id = ".(int)$data['form'].' AND group_id = '.(int)$data['id']);
 		$db->setQuery($query);
