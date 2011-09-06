@@ -13,7 +13,8 @@
 			
 			<field name="options_per_row" 
 				type="width" 
-				default="4" 
+				default="4"
+				size="2"
 				label="PLG_ELEMENT_RADIO_OPTIONS_PER_ROW_LABEL" />
 				
 			<field name="sub_options"

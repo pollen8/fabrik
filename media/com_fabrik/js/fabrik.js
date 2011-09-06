@@ -84,9 +84,7 @@ Loader = new Class({
 	
 	initialize:function(options){
 		this.setOptions(options);
-		head.ready(function() {
-			this.spinners = {};			
-		}.bind(this));
+		this.spinners = {};			
 	},
 	
 	getSpinner: function(inline, msg){
