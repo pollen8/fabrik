@@ -12,8 +12,14 @@ echo "
 	width:100%;
 }
 #listform_$c .fabrik_buttons{
-height:2.5em;
-	text-align:right;
+	height:2.5em;
+	display:-webkit-box;
+	display:-moz-box;
+	display:-box;
+	-webkit-box-pack:end;
+	-moz-box-pack:end;
+	box-pack:end;
+	width:100%;
 }
 
 #listform_$c a,
@@ -59,7 +65,6 @@ height:2.5em;
 	position:relative;
 }
 
-#listform_$c table.fabrikList,
 .advancedSeach_$c table {
 	border-collapse: collapse;
 	margin-top: 10px;
@@ -213,11 +218,10 @@ div.calendar{
 /*****************************************************/
 /********** default action formatting ****************/
 /*****************************************************/
-
 #listform_$c .fabrik_row ul.fabrik_action,
 #listform_$c ul.fabrik_action,
 .advancedSeach_$c ul.fabrik_action{
-	list-style:none !important;
+list-style:none;
 	border:1px solid #999;
 	padding:0;
 	text-align:left;
@@ -233,11 +237,14 @@ div.calendar{
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
+
 	display:-moz-box;
-	/* chrome: causes images in menu not to be displayed
-	display:-webkit-box;*/
+	display:-webkit-box;
 	display:box;
-	float:right;
+
+	-webkit-box-pack:end;
+	-moz-box-pack:end;
+	box-pack:end;
 }
 
 #listform_$c .fabrik_row ul.fabrik_action span,
@@ -252,7 +259,6 @@ div.calendar{
 #listform_$c .fabrik_row .fabrik_action li,
 #listform_$c .fabrik_action li,
 .advancedSeach_$c .fabrik_action li{
-	float:left;
 	padding:2px 6px 0 6px;
 	border-left:1px solid #999;
 	min-height:17px;
