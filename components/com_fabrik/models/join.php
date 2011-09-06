@@ -44,7 +44,7 @@ class FabrikFEModelJoin extends FabModel{
 	function getJoin()
 	{
 		if (!isset($this->_join)) {
-			$this->_join = &FabTable::getInstance('join', 'FabrikTable');
+			$this->_join = FabTable::getInstance('join', 'FabrikTable');
 			if (isset($this->_data)) {
 				$this->_join->bind($this->_data);
 			} else {
@@ -63,7 +63,7 @@ class FabrikFEModelJoin extends FabModel{
 	function getJoinFromKey($key, $id)
 	{
 		if (!isset($this->_join)) {
-			$db =& JFactory::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$this->_join = FabTable::getInstance('join', 'FabrikTable');
 			$this->_join->load(array($key => $id));
 		}
