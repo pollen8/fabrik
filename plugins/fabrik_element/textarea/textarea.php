@@ -186,6 +186,9 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 				$bits['class'] .= " disabled";
 				$bits['disabled'] = 'disabled';
 			}
+			if ($params->get('textarea-showmax')) {
+				$bits['maxlength'] = $params->get('textarea-maxlength');
+			}
 
 			$str = "<textarea ";
 			foreach ($bits as $key => $val) {
