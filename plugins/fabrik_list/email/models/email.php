@@ -49,8 +49,8 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	{
 		$params = $this->getParams();
 		$access = $params->get('emailtable_access');
-		$canuse = FabrikWorker::getACL($access, $name);
 		$name = $this->_getButtonName();
+		$canuse = FabrikWorker::getACL($access, $name);
 		if ($canuse) {
 			return "<a href=\"#\" class=\"listplugin $name\"/>".$params->get('email_button_label',  JText::_('PLG_LIST_EMAIL_EMAIL'))."</a>";
 		}
