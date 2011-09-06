@@ -1028,11 +1028,13 @@ class FabrikFEModelList extends JModelForm {
 
 	function viewDataLink($popUp = false, $element, $row = null, $key = '', $val = '', $count = 0, $f)
 	{
+		$elKey = $element->list_id.'-'.$element->form_id.'-'.$element->element_id;
 		$listid = $element->list_id;
 		$app = JFactory::getApplication();
 		$params =& $this->getParams();
-		$linkedTableText = $params->get('linkedtabletext', '', '_default', 'array');
-		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedTableText, $f), JArrayHelper::fromObject($row));
+		$factedLinks = $params->get('factedlinks');
+		$linkedListText = $factedLinks->linkedlisttext->$elKey;
+		$label = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
 
 		$Itemid	= $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
 
@@ -1061,7 +1063,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$label = '('.$count.') '.$label;
 		if ($app->isAdmin()) {
-			$bits[] = "task=viewTable";
+			$bits[] = "task=list.view";
 			$bits[] = "cid=$listid";
 		} else {
 			$bits[] = "view=list";
@@ -3391,7 +3393,8 @@ class FabrikFEModelList extends JModelForm {
 				$query->select(
 					"db_table_name,
 					name, plugin, l.label AS listlabel, l.id as list_id, \n
-					el.id AS element_id, el.label AS element_label, f.id AS form_id"
+					el.id AS element_id, el.label AS element_label, f.id AS form_id,
+					el.params AS element_params"
 					);
 					$query->from('#__{package}_elements AS el');
 					$query->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = el.group_id');
@@ -3414,6 +3417,10 @@ class FabrikFEModelList extends JModelForm {
 					if ($db->getErrorNum()) {
 						$this->_joinsToThisKey = array();
 						JError::raiseWarning(500,  'getJoinsToThisKey: ' . $db->getErrorMsg());
+					}
+					foreach ($this->_joinsToThisKey as $join) {
+						$element_params = json_decode($join->element_params);
+						$join->join_key_column = $element_params->join_key_column;
 					}
 			}
 		}
