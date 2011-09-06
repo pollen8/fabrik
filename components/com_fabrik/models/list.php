@@ -2399,7 +2399,7 @@ class FabrikFEModelList extends JModelForm {
 			$form->getGroupsHiarachy();
 			$ignore = array('plgFabrik_ElementCascadingdropdown');
 			$ids = $form->getElementIds($ignore);
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$id = (int)$this->getId();
 			$sql = "SELECT * FROM #__{package}_joins WHERE list_id = ".$id;
 			if (!empty($ids)) {
