@@ -2920,7 +2920,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 						//$val = JRequest::getVar($linkKey . "_raw");
 						$val = JRequest::getVar($qsKey . "_raw", JRequest::getVar('rowid'));
 					}
-					$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element->list_id, $element->form_id, null, $linkKey, $val, false, '');
+					$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
 				}
 			}
 			$f ++;
