@@ -48,6 +48,10 @@ class JFormFieldFormList extends JFormFieldList
 		$query->order("value DESC");
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+		$o = new stdClass();
+		$o->value = '';
+		$o->text = '';
+		array_unshift($rows, $o);
 		return $rows;
 	}
 

@@ -1,10 +1,10 @@
 <?php
 /*
- * Form Model
+ * Admin Form Model
  *
  * @package Joomla.Administrator
  * @subpackage Fabrik
- * @since		1.6
+ * @since	1.6
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -133,12 +133,9 @@ class FabrikModelForm extends FabModelAdmin
 
 	public function getJs()
 	{
-
 		$abstractPlugins = $this->getAbstractPlugins();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		JText::script('COM_FABRIK_ACTION');
 		JText::script('COM_FABRIK_SELECT_DO');
@@ -330,7 +327,6 @@ class FabrikModelForm extends FabModelAdmin
 				$group_id = (int)$group_id;
 				$query = $db->getQuery(true);
 				$query->insert('#__{package}_formgroup')->set(array('form_id ='.(int)$formid, 'group_id = '.$group_id, 'ordering = '.$orderid));
-				//$sql = "INSERT INTO #__{package}_formgroup (form_id, group_id, ordering) VALUES (" . (int)$formid . ",$group_id, $orderid)";
 				$db->setQuery($query);
 				if (!$db->query()) {
 					JError::raiseError(500, $db->stderr());
@@ -367,7 +363,6 @@ class FabrikModelForm extends FabModelAdmin
 	{
 		$cid = JRequest::getVar('cid', null, 'post', 'array');
 		$formId = $cid[0];
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formId);
 		$form = $model->getForm();
@@ -409,7 +404,7 @@ class FabrikModelForm extends FabModelAdmin
 	}
 
 /**
- *  potentially drop fields then remove element record
+ *  delete form and form groups
  * @param array $cids to delete
  */
 
