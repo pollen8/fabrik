@@ -65,7 +65,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		//make sure same connection as this table
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $table."___".$element->name);
 		if ($params->get('join_conn_id') == $connection->get('_id') || $element->plugin != 'databasejoin') {
-			$join =& $this->getJoin();
+			$join = $this->getJoin();
+			if (!$join) {
+				return false;
+			}
 			$joinTableName = $join->table_join_alias;
 
 			$tables = $this->getForm()->getLinkedFabrikLists($params->get('join_db_name'));
@@ -101,6 +104,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	public function getRawColumn($useStep = true)
 	{
 		$join = $this->getJoin();
+		if (!$join) {
+			return;
+		}
 		$element = $this->getElement();
 		$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
 		$name = $element->name . "_raw";
@@ -174,47 +180,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$joins =& $listModel->getJoins();
 		foreach ($joins as $join) {
 			if ($join->element_id == $element->id) {
-				// $$$ rob now done in listModel
-				/*if (!isset($join->_params)) {
-					$join->_params = new fabrikParams($join->params);
-				}*/
 				$this->_join = $join;
 				return $this->_join;
 			}
 		}
-		echo "<pre>";print_r($element);print_r($joins);echo "</pre>";
-		//	default fall back behaviour - shouldnt get used
-		echo 'database join: big error loading join! shouldnt get here';exit;
-	/*	if (!is_null($this->_join)) {
-			return $this->_join;
-		}
-		$join =& FabTable::getInstance('Join', 'FabrikTable');
-		$groupModel =& $this->_group;
-		$element = $this->getElement();
-		if ($groupModel->isJoin()) {
-
-			$joinModel =& $groupModel->getJoinModel();
-			$j =& $joinModel->getJoin();
-
-			//$table = $j->join_from_table;
-			$join->join_from_table = $j->table_join;
-		} else {
-			$join->join_from_table = $table->db_table_name;
-		}
-
-		$params =& $this->getParams();
-
-		$join->join_type 		= 'LEFT';
-		$join->_name 					= $element->name;
-		$join->table_join 			= $params->get('join_db_name');
-		$join->table_join_key 	= $params->get('join_key_column');
-		$join->table_key 			= $element->name;
-		$join->table_join_alias = $join->table_join;
-		if (!isset($join->_params)) {
-			$join->_params = new fabrikParams($join->params);
-		}
-		$this->_join = $join;
-		return $join;*/
+		JError::raiseNotice(500, 'unable to process db join element id:'. $element->id);
+		return false;
 	}
 
 	/**
