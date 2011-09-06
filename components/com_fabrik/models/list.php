@@ -4028,7 +4028,7 @@ class FabrikFEModelList extends JModelForm {
 					if ($linkedTable != '0') {
 						$prefix = $join->element_id."___".$linkedTable;
 						$aTableHeadings[$prefix . "_list_heading"] = empty($heading) ? $join->listlabel . " " . JText::_('COM_FABRIK_LIST') : $heading;
-						$headingClass[$prefix . "_list_heading"] = array('class' => 'fabrik_ordercell '.$prefix.'_list_heading fabrik___heading related', 'style' => '');
+						$headingClass[$prefix . "_list_heading"] = array('class' => 'fabrik_ordercell '.$prefix.'_list_heading related', 'style' => '');
 						$cellClass[$prefix . "_list_heading"] = array('class' => $prefix.'_list_heading fabrik_element related');
 					}
 				}
@@ -4043,7 +4043,7 @@ class FabrikFEModelList extends JModelForm {
 					$heading = $factedlinks->linkedformheader->$key;
 					$prefix	= $join->db_table_name . "___" . $join->name;
 					$aTableHeadings[$prefix . "_form_heading"] = empty($heading) ? $join->listlabel . " " . JText::_('COM_FABRIK_FORM') : $heading;
-					$headingClass[$prefix . "_form_heading"] = array('class' => 'fabrik_ordercell '.$prefix.'_form_heading fabrik___heading related', 'style' => '');
+					$headingClass[$prefix . "_form_heading"] = array('class' => 'fabrik_ordercell '.$prefix.'_form_heading related', 'style' => '');
 					$cellClass[$prefix . "_form_heading"] = array('class' => $prefix.'_form_heading fabrik_element related');
 				}
 				$f ++;
