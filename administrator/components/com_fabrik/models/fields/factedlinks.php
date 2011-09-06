@@ -56,9 +56,10 @@ class JFormFieldFactedlinks extends JFormFieldList
 		$f = 0;
 		$listreturn = array();
 		$formreturn = array();
-		$listreturn[] = "<h4>".JText::_('COM_FABRIK_LISTS')."</h4><table class=\"adminlist\">
+		$listreturn[] = "<h4>".JText::_('COM_FABRIK_LISTS')."</h4><table class=\"adminlist linkedLists\">
 					<thead>
 					<tr>
+						<th></th>
 						<th>".JText::_('COM_FABRIK_LIST')."</th>
 						<th>".JText::_('COM_FABRIK_LINK_TO_LIST')."</th>
 						<th>".JText::_('COM_FABRIK_HEADING')."</th>
@@ -67,9 +68,10 @@ class JFormFieldFactedlinks extends JFormFieldList
 					</tr>
 				</thead>
 				<tbody>";
-		$formreturn[] = "<h4>".JText::_('COM_FABRIK_FORMS')."</h4><table class=\"adminlist\">
+		$formreturn[] = "<h4>".JText::_('COM_FABRIK_FORMS')."</h4><table class=\"adminlist linkedForms\">
 					<thead>
 					<tr>
+						<th></th>
 						<th>".JText::_('COM_FABRIK_LIST')."</th>
 						<th>".JText::_('COM_FABRIK_LINK_TO_FORM')."</th>
 						<th>".JText::_('COM_FABRIK_HEADING')."</th>
@@ -85,6 +87,7 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$hover = JText::_('ELEMENT') . ': ' . $linkedList->element_label . " [$linkedList->plugin]";
 
 			$listreturn[] = "<tr class=\"row".($f % 2)."\">";
+			$listreturn[] = "<td class=\"handle\"></td>";
 			$listreturn[] = "<td>".JHTML::_('tooltip', $hover, $label, 'tooltip.png', $label);
 
 			$yeschecked = JArrayHelper::getValue($linkedLists, $key, 0) != '0' ? 'checked="checked"' : $checked = '';
@@ -116,6 +119,7 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$nochecked = $yeschecked == '' ? 'checked="checked"' : $checked = '';
 
 			$formreturn[] = "<tr class=\"row".($f % 2)."\">";
+			$formreturn[] = "<td class=\"handle\"></td>";
 			$formreturn[] = "<td>".JHTML::_('tooltip', $hover, $label, 'tooltip.png', $label);
 			$formreturn[] = "<td>";
 			$formreturn[] = '<label><input name="'.$this->name.'[linkedform][' . $key . ']" value="0" ' .$nochecked . ' type="radio" />' . JText::_('JNO') . '</label>';

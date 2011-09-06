@@ -46,10 +46,8 @@ ul.subelements table:hover{
 	background-color:#ffffee;
 }
 
-
-
 .handle {
-	background: #E4E4E4 url(../images/vert-drag.png) no-repeat center center;
+	background: #E4E4E4 url(../images/vert-drag.png) no-repeat center center !important;
 	margin:3px 2.5%;
 	cursor: move;
 	width: 5%;
