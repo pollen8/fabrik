@@ -70,9 +70,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
 		if (is_array($this->_form->_data)) {
-			$data 	=& $this->_form->_data;
+			$data = $this->_form->_data;
 		}
-		$value 	= $this->getValue($data, $repeatCounter);
+		$value	= $this->getValue($data, $repeatCounter);
 		$type = $params->get('password') == "1" ?"password" : "text";
 		if (isset($this->_elementError) && $this->_elementError != '') {
 			$type .= " elementErrorHighlight";
@@ -90,7 +90,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			if ($format != '') {
 				//$value =  eval(sprintf($format,$value));
 				//not sure why this was being evald??
-				$value =  sprintf($format, $value);
+				$value = sprintf($format, $value);
 			}
 			if ($params->get('password') == "1") {
 				$value = str_pad('', strlen($value), '*');
@@ -102,6 +102,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		$bits['type']		= $type;
 		$bits['name']		= $name;
 		$bits['id']			= $id;
+		if ($params->get('placeholder') !== '') {
+			$bits['placeholder'] = $params->get('placeholder');
+		}
 		if ($params->get('autocomplete', 1) == 0) {
 			$bits['autocomplete'] = 'off';
 		}
@@ -110,13 +113,13 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		//so add false flag to ensure its encoded once only
 		// $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
 		if (version_compare( phpversion(), '5.2.3', '<')) {
-			$bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 		}
 		else {
-			$bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
+			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
 		}
-		$bits['size']		= $size;
-		$bits['maxlength']	= $maxlength;
+		$bits['size'] = $size;
+		$bits['maxlength'] = $maxlength;
 
 		//cant be used with hidden element types
 		if ($element->hidden != '1') {
@@ -282,7 +285,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	function _indStoreDatabaseFormat($val) {
 		return $this->unNumberFormat($val);
 	}
-	
+
 	protected function getAvgQuery(&$tableModel, $label = "'calc'")
 	{
 		$params = $this->getParams();
@@ -303,6 +306,6 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		}
 
 	}
-	
+
 }
 ?>

@@ -6,7 +6,7 @@
 			<field name="width" 
 				type="text" size="3"
 				label="PLG_ELEMENT_FIELD_WIDTH_LABEL"/>
-				
+			
 			<field name="hidden" 
 				type="radio"
 				default="0"
@@ -35,6 +35,12 @@
 	<fields name="params">
 		<fieldset name="plg-element-field-params">
 		
+		<field name="placeholder"
+				type="text"
+				size="60"
+				label="PLG_ELEMENT_FIELD_PLACEHOLDER_LABEL"
+				description="PLG_ELEMENT_FIELD_PLACEHOLDER_DESC" />
+				
 			<field name="password"
 				type="radio"
 				default="0"
