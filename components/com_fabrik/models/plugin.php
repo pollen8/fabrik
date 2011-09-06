@@ -36,6 +36,8 @@ class FabrikPlugin extends JPlugin
 
 	var $_counter;
 
+	protected $_pluginManager = null;
+
 	/** @var object jform */
 	public $jform = null;
 
@@ -609,6 +611,20 @@ class FabrikPlugin extends JPlugin
 			$ret .= chr($byte[$i]);
 		}
 		return $ret;
+	}
+
+	/**
+	 * @since 3.0
+	 * get the plugin manager
+	 * @return plugin manager
+	 */
+
+	protected function getPluginManager()
+	{
+		if (!isset($this->_pluginManager)) {
+			$this->_pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		}
+		return $this->_pluginManager;
 	}
 }
 ?>
