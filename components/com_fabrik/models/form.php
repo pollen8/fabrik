@@ -2898,7 +2898,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 				$recordCounts =& $referringTable->getRecordCounts($element);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 				$element->list_id = (array_key_exists($element->tablelabel, $aTableNames)) ?  $aTableNames[$element->tablelabel]->id : '';
-				$links[$element->list_id][] = $referringTable->viewDataLink($popUpLink, $element->list_id, null, $linkKeyRaw, $val, $count, $element->tablelabel);
+				$links[$element->list_id][] = $referringTable->viewDataLink($popUpLink, $element->list_id, null, $linkKey, $val, $count, $f);
 			}
 
 			$f ++;
@@ -2920,7 +2920,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 						//$val = JRequest::getVar($linkKey . "_raw");
 						$val = JRequest::getVar($qsKey . "_raw", JRequest::getVar('rowid'));
 					}
-					$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element->list_id, $element->form_id, null, $linkKey, $val, false, '');
+					$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
 				}
 			}
 			$f ++;
