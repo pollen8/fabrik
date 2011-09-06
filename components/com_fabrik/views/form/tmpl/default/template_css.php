@@ -40,6 +40,14 @@ echo "
 }
 
 /* END: align google map sub elements vertically */
+/* START : radio button sub element alignments */
+
+#form_$c .radiobutton .fabrikSubElementContainer{
+	display:block;
+	margin-left:130px;
+}
+
+/* END : radio button sub element alignments */
 
 .floating-tip {
 	background-color: black;
