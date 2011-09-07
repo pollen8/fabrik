@@ -60,30 +60,7 @@ var fabrikCalendar = new Class({
 			Fabrik.Windows['addeventwin'].close();
 		}.bind(this));
 	},
-/*
- * @TODO should all be handled via window.fireEvent/addEvent
- 
-	addListenTo: function(blockId){
-		this.listenTo.push(blockId);
-	},
-	
-	receiveMessage: function(senderBlock, task, taskStatus, json ){
-		if(this.listenTo.indexOf(senderBlock) != -1 ){
-			if(task == 'updateRows'){
-				var formId = senderBlock.replace("form_", "");
-				this.removeFormEvents(formId);
-				this.ajax.updateEvents.send();
-				Fabrik.Windows['addeventwin'].close();
-				this.showMessage('Event added');
-			}
-			if(task == 'addEvForm'){
-				Fabrik.Windows['chooseeventwin'].close();
-				this.addEvForm(json);
-			}
-		}		
-		this.showView();
-	},
-	*/
+
 	removeFormEvents: function(formId){
 		this.entries.each(function(entry, k){
 			if(typeof(entry) != 'undefined' && entry.formid == formId) {
