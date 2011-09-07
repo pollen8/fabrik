@@ -32,8 +32,8 @@ var FbListPlugin = new Class({
 			var row, chx;
 			//if the row button is clicked check its associated checkbox
 			if (row = e.target.getParent('.fabrik_row')) {
-				this.listform.getElements('input[name^=ids]').set('checked', false);
 				if(chx = row.getElement('input[name^=ids]')){
+					this.listform.getElements('input[name^=ids]').set('checked', false);
 					chx.set('checked', true);
 				}
 			}
