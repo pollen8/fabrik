@@ -32,17 +32,11 @@ class plgFabrik_ValidationruleUserExists extends plgFabrik_Validationrule
 
 	function validate($data, &$element, $c)
 	{
-		$params =& $this->getParams();
-		$ornot = $params->get('userexists_or_not');
-		$condition = $params->get('userexists-validation_condition');
-		$condition = $condition[$c];
-		if ($condition !== '') {
-			if (@eval($condition)) {
-				return true;
-			}
-		}
-
-		$ornot = $ornot[$c];
+		$params = $this->getParams();
+		$c = trim((string)$c);
+		//as ornot is a radio button it gets json encoded/decoded as an object
+		$ornot = (object)$params->get('userexists_or_not');
+		$ornot = isset($ornot->$c) ? $ornot->$c : 'fail_if_exists';
 		jimport('joomla.user.helper');
 		$id = 0;
 		if (!$id = JUserHelper::getUserId($data)) {
