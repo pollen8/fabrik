@@ -8,10 +8,6 @@
 */
 
 
-/**
- *
- *
- */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
@@ -40,19 +36,16 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		if (empty($data)) {
 			return false;
 		}
-		$params =& $this->getParams();
-		$ornot = $params->get('emailexists_or_not');
-		$ornot = $ornot[$c];
-		$condition = $params->get('emailexists-validation_condition');
-		$condition = $condition[$c];
-		if ($condition !== '') {
-			if (@eval($condition)) {
-				return true;
-			}
-		}
+		$params = $this->getParams();
+		//as ornot is a radio button it gets json encoded/decoded as an object
+		$ornot = (object)$params->get('emailexists_or_not');
+		$ornot = isset($ornot->$c) ? $ornot->$c : 'fail_if_exists';
+		
 		jimport('joomla.user.helper');
-		$db = FabrikWorker::getDbo();
-		$db->setQuery("SELECT id FROM #__users WHERE email = '$data'");
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__users')->where('email = '.$db->quote($data));
+		$db->setQuery($query);
 		$result = $db->loadResult();
 		if (!$result) {
 			if ($ornot == 'fail_if_exists') {
