@@ -57,8 +57,9 @@ class plgFabrik_List extends FabrikPlugin
 	{
 		if ($this->canUse()) {
 			$name = $this->_getButtonName();
-			$img = FabrikHelperHTML::image($this->_buttonPrefix.'.png', 'list', '',  $this->buttonLabel());
-			return "<a href=\"#\" class=\"$name listplugin\"/>".$img."</a>";
+			$label = $this->buttonLabel();
+			$img = FabrikHelperHTML::image($this->_buttonPrefix.'.png', 'list', '',  $label);
+			return "<a href=\"#\" class=\"$name listplugin\"/>".$img."<span>".$label.'</span></a>';
 		}
 		return '';
 	}
