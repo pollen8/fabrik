@@ -18,8 +18,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
 class plgFabrik_ListRadius_search extends plgFabrik_List {
 
-	var $_counter = null;
-
 	/** @var array place coordinates **/
 	var $placeCoordinates = null;
 

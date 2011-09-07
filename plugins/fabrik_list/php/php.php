@@ -19,26 +19,19 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
 class plgFabrik_ListPhp extends plgFabrik_List {
 
-	//@TODO this doesnt work if you have a module on the same page pointing to the same table
 
-	var $_counter = null;
-
-	var $_buttonPrefix = 'tablephp';
-
+	protected $_buttonPrefix = 'php';
 
 	function button()
 	{
 		return "run php";
 	}
-
-	function button_result()
+	
+	protected function buttonLabel()
 	{
-		$params =& $this->getParams();
-		if ($this->canUse()) {
-			$name = $this->_getButtonName();
-			return "<a href=\"#\" class=\"$name listplugin\"/>".$params->get('table_php_button_label')."</a>";
-		}
+		return $this->getParams()->get('table_php_button_label', parent::buttonLabel());
 	}
+
 
 	/**
 	 * (non-PHPdoc)
@@ -82,7 +75,7 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 	function process_result()
 	{
 		$params =& $this->getParams();
-		$msg = $params->get('table_php_msg', JText::_('Code run'));
+		$msg = $params->get('table_php_msg', JText::_('PLG_LIST_PHP_CODE_RUN'));
 		return $msg;
 	}
 

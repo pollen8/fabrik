@@ -18,11 +18,8 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
 class plgFabrik_ListList_Example extends plgFabrik_List {
 
-	var $_counter = null;
-
 	/**
 	 * called when the active table filter array is loaded
-	 *
 	 */
 
 	function onFiltersGot(&$params, &$model) {

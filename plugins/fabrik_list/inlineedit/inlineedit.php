@@ -18,8 +18,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
 class plgFabrik_ListInlineedit extends plgFabrik_List {
 
-	var $_counter = null;
-
 	/**
 	 * (non-PHPdoc)
 	 * @see FabrikModelTablePlugin::getAclParam()

@@ -4014,13 +4014,13 @@ class FabrikFEModelList extends JModelForm {
 				if ($this->deletePossible()) {
 					$headingButtons[] = $this->deleteButton();
 				}
-				$listplugins = $pluginManager->getPlugInGroup('list');
-				foreach ($listplugins as $plugin) {
-					if ($plugin->canSelectRows()) {
-						$headingButtons[] = $plugin->button_result();
-					}
+				$return = $pluginManager->runPlugins('button', $this, 'list');
+				$res = $pluginManager->_data;
+				foreach ($res as &$r) {
+					$r = '<li>'.$r.'</li>';
 				}
-				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? 'ohh here sir' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
+				$headingButtons = array_merge($headingButtons, $res);
+				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
 				
 				
 				$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');

@@ -19,17 +19,15 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 class plgFabrik_ListUpdate_col extends plgFabrik_List
 {
 
-	var $_counter = null;
+	protected $_buttonPrefix = 'update_col';
 
-	var $_buttonPrefix = 'update_col';
+	protected $_sent = 0;
 
-	var $_sent = 0;
+	protected $_notsent = 0;
 
-	var $_notsent = 0;
+	protected $_row_count = 0;
 
-	var $_row_count = 0;
-
-	var $msg = null;
+	protected $msg = null;
 
 
 	function button()
@@ -37,34 +35,12 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		return "update records";
 	}
 
-	/**
-	 * renders button at bottom of the page
-	 * @param int plugin render order
-	 */
 
-	function button_result()
+	protected function buttonLabel()
 	{
-		$params =& $this->getParams();
-		$loc = $params->get('updatecol_button_location', 'bottom');
-		if (($loc == 'bottom' || $loc == 'both') && $this->canUse()) {
-			return $this->getButton();
-		} else {
-			return '';
-		}
+		return $this->getParams()->get('button_label', parent::buttonLabel());
 	}
-
-	protected function getButton()
-	{
-		$params =& $this->getParams();
-		$access = $params->get('updatecol_access');
-		$name = $this->_getButtonName();
-		$canuse = FabrikWorker::getACL($access, $name);
-		if ($canuse) {
-			return "<a href=\"#\" class=\"listplugin $name\"/>".$params->get('button_label', 'update')."</a>";
-		}
-		return '';
-	}
-
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see FabrikModelTablePlugin::getAclParam()
@@ -83,11 +59,9 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 	function canSelectRows()
 	{
-		$params =& $this->getParams();
-		$access = $params->get('updatecol_access');
+		$access = $this->getParams()->get('updatecol_access');
 		$name = $this->_getButtonName();
-		$canuse = FabrikWorker::getACL($access, $name);
-		return $canuse;
+		return FabrikWorker::getACL($access, $name);
 	}
 
 	/**
@@ -98,7 +72,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 	function process(&$params, &$model, $opts = array())
 	{
-		$db =& $model->getDb();
+		$db = $model->getDb();
 		$user =& JFactory::getUser();
 		$update = json_decode($params->get('update_col_updates'));
 		if (!$update) {
@@ -110,13 +84,13 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$dateCol = $params->get('update_date_element');
 		$userCol = $params->get('update_user_element');
 
-		$table =& $model->getTable();
+		$item = $model->getTable();
 		// array_unique for left joined table data
 		$ids = array_unique(JRequest::getVar('ids', array(), 'method', 'array'));
 		JArrayHelper::toInteger($ids);
 		$this->_row_count = count($ids);
 		$ids	= implode(',', $ids);
-		$model->_pluginQueryWhere[] = $table->db_primary_key . ' IN ( '.$ids.')';
+		$model->_pluginQueryWhere[] = $item->db_primary_key . ' IN ( '.$ids.')';
 		$data =& $model->getData();
 
 		//$$$servantek reordered the update process in case the email routine wants to kill the updates
@@ -143,7 +117,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			// so we're only doing one query to grab all involved emails.
 			if ($emailWhich == 'user') {
 				$userids_emails = array();
-				$query = 'SELECT #__users.id AS id, #__users.email AS email FROM #__users LEFT JOIN ' . $tbl . ' ON #__users.id = ' . $emailColumn . ' WHERE ' . $table->db_primary_key . ' IN ('.$ids.')';
+				$query = 'SELECT #__users.id AS id, #__users.email AS email FROM #__users LEFT JOIN ' . $tbl . ' ON #__users.id = ' . $emailColumn . ' WHERE ' . $item->db_primary_key . ' IN ('.$ids.')';
 				$db->setQuery($query);
 				$results = $db->loadObjectList();
 				foreach ($results as $result) {
@@ -182,7 +156,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		}
 		//$$$servantek reordered the update process in case the email routine wants to kill the updates
 		if (!empty($dateCol)) {
-			$date =& JFactory::getDate();
+			$date = JFactory::getDate();
 			$this->_process($model, $dateCol, $date->toMySQL());
 		}
 
@@ -245,21 +219,11 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		return true;
 	}
 
-
 	function _getColName()
 	{
 		$params = $this->getParams();
 		$col = $params->get('coltoupdate');
 		return $col.'-'.$this->renderOrder;
-	}
-
-	/**
-	 * get the position for the button
-	 */
-
-	protected function getRenderLocation()
-	{
-		return $this->getParams()->get('updatecol_button_location', 'bottom');
 	}
 
 }

@@ -34,7 +34,7 @@ class FabrikPlugin extends JPlugin
 	/** @var int order that the plugin is rendered */
 	var $renderOrder = null;
 
-	var $_counter;
+	protected $_counter;
 
 	protected $_pluginManager = null;
 

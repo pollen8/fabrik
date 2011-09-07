@@ -18,22 +18,11 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
 class plgFabrik_ListCopy extends plgFabrik_List {
 
-	var $_counter = null;
-
-	var $_buttonPrefix = 'copy';
+	protected $_buttonPrefix = 'copy';
 
 	function button()
 	{
 		return "copy records";
-	}
-
-	function button_result()
-	{
-		if ($this->canUse()) {
-			$name = $this->_getButtonName();
-			return "<a href=\"#\" class=\"$name listplugin\"/>".JText::_('PLG_LIST_COPY')."</a>";
-		}
-		return '';
 	}
 
 	/**

@@ -24,8 +24,8 @@
 				type="text" 
 				size="35" 
 				repeat="true"
-				label="PLG_FABRIK_LIST_DOWNLOAD_DOWNLOAD_FK_LABEL" 
-				description="PLG_FABRIK_LIST_DOWNLOAD_DOWNLOAD_FK_DESC" />
+				label="PLG_FABRIK_LIST_DOWNLOAD_FK_LABEL" 
+				description="PLG_FABRIK_LIST_DOWNLOAD_FK_DESC" />
 				  
 			<field name="download_file" 
 				type="text" 

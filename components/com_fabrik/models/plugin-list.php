@@ -17,9 +17,9 @@ class plgFabrik_List extends FabrikPlugin
 	/** determines if the plugin requires mocha to be loaded */
 	var $useMocha = false;
 
-	var $_buttonPrefix = '';
+	protected $_buttonPrefix = '';
 
-	var $jsInstance = null;
+	protected $jsInstance = null;
 
 	/**
 	 * get the parameter name that defines the plugins acl access
@@ -40,6 +40,27 @@ class plgFabrik_List extends FabrikPlugin
 		$params =& $this->getParams();
 		$groups = JFactory::getUser()->authorisedLevels();
 		return in_array($params->get($aclParam), $groups);
+	}
+	
+	public function canSelectRows()
+	{
+		return false;
+	}
+	
+	protected function buttonLabel()
+	{
+		$s = strtoupper($this->_buttonPrefix);
+		return JText::_('PLG_LIST_'.$s.'_'.$s);
+	}
+	
+	public function button_result()
+	{
+		if ($this->canUse()) {
+			$name = $this->_getButtonName();
+			$img = FabrikHelperHTML::image($this->_buttonPrefix.'.png', 'list', '',  $this->buttonLabel());
+			return "<a href=\"#\" class=\"$name listplugin\"/>".$img."</a>";
+		}
+		return '';
 	}
 
 	/**

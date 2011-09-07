@@ -16,7 +16,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	var $useMocha = true;
 
-	var $_buttonPrefix = 'emailtable';
+	protected $_buttonPrefix = 'email';
 
 	var $name = "plgFabrik_ListEmail";
 
@@ -43,14 +43,10 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	{
 		return "email records";
 	}
-
-	function button_result()
+	
+	protected function buttonLabel()
 	{
-		$params = $this->getParams();
-		if ($this->canUse()) {
-			$name = $this->_getButtonName();
-			return "<a href=\"#\" class=\"$name listplugin\"/>".$params->get('email_button_label', JText::_('PLG_LIST_EMAIL_EMAIL'))."</a>";
-		}
+		return $this->getParams()->get('email_button_label', parent::buttonLabel());
 	}
 
 	/**

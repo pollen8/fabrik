@@ -18,23 +18,18 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
 class plgFabrik_ListDownload extends plgFabrik_List {
 
-	var $_counter = null;
-
-	var $_buttonPrefix = 'download';
+	protected $_buttonPrefix = 'download';
 
 	function button()
 	{
 		return "download files";
 	}
-
-	function button_result()
+	
+	protected function buttonLabel()
 	{
-		$params =& $this->getParams();
-		if ($this->canUse()) {
-			$name = $this->_getButtonName();
-			return "<a href=\"#\" class=\"$name listplugin\"/>".$params->get('download_button_label')."</a>";
-		}
+		return $this->getParams()->get('download_button_label', parent::buttonLabel());
 	}
+
 
 	/**
 	 * (non-PHPdoc)

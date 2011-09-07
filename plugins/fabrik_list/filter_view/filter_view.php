@@ -18,9 +18,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 
 class plgFabrik_ListFilter_view extends plgFabrik_List {
 
-	var $_counter = null;
-
-	var $_buttonPrefix = 'filter_view';
+	protected $_buttonPrefix = 'filter_view';
 
 	/**
 	 * (non-PHPdoc)
