@@ -34,7 +34,7 @@ class FabrikViewElement extends JView
 
 	public function display($tpl = null)
 	{
-		//echo 'display';exit;
+		FabrikHelperHTML::framework();
 		if ($this->getLayout() == 'confirmupdate') {
 			$this->confirmupdate();
 			return;
@@ -47,10 +47,8 @@ class FabrikViewElement extends JView
 		$this->pluginFields = $this->get('PluginHTML');
 
 		$this->js = $this->get('Js');
-		//$this->validations 	= $this->get('Validations');
 
 		$this->jsevents		= $this->get('JsEvents');
-		//$this->activeValidations = $this->get('ActiveValidations');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

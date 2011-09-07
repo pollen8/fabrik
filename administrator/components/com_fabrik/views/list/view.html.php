@@ -30,6 +30,7 @@ class FabrikViewList extends JView
 	 */
 	public function display($tpl = null)
 	{
+		FabrikHelperHTML::framework();
 		// Initialiase variables.
 		$this->form		= $this->get('Form');
 

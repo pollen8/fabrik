@@ -31,6 +31,7 @@ class FabrikViewCron extends JView
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
+		FabrikHelperHTML::framework();
 		$this->form		= $this->get('Form');
 		$this->item		= $this->get('Item');
 		$this->state	= $this->get('State');
