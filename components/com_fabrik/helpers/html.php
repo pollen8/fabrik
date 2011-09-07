@@ -25,6 +25,24 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');//leave in as for
 class FabrikHelperHTML
 {
 
+	protected static $framework = null;
+
+	protected static $modals = array();
+
+	protected static $tips = array();
+
+	protected static $jsscript = false;
+
+	protected static $ajaxCssFiles = array();
+
+	protected static $debug = null;
+
+	protected static $autocomplete = null;
+
+	protected static $facebookgraphapi = null;
+
+	protected static $helperpaths = array();
+
 	/**
 	 * load up mocha window code - should be run in ajax loaded pages as well
 	 * might be an issue in that we may be re-observing some links when loading in mocha - need to check
@@ -33,22 +51,12 @@ class FabrikHelperHTML
 
 	function mocha($selector='', $params = array())
 	{
-		static $modals;
-		static $mocha;
 		$script = '';
 
 		$document = JFactory::getDocument();
-		// Load the necessary files if they haven't yet been loaded
-		if (!isset($mocha)) {
-			$mocha = true;
-		}
-
-		if (!isset($modals)) {
-			$modals = array();
-		}
 
 		$sig = md5(serialize(array($selector,$params)));
-		if (isset($modals[$sig]) && ($modals[$sig])) {
+		if (isset(self::$modals[$sig]) && (self::$modals[$sig])) {
 			return;
 		}
 
@@ -104,8 +112,7 @@ EOD;
 
 		FabrikHelperHTML::addScriptDeclaration($script);
 
-		// Set static array
-		$modals[$sig] = true;
+		self::$modals[$sig] = true;
 		return;
 	}
 
@@ -343,7 +350,6 @@ function loadCalendar()
 	 */
 	function _calendartranslation()
 	{
-		static $jsscript = 0;
 
 		/*
 		 * 		Calendar._TT["ABOUT"] =
@@ -362,11 +368,11 @@ function loadCalendar()
 		 "- or Shift-click to decrease it\n" +
 		 "- or click and drag for faster selection.";
 		 */
-		if($jsscript == 0)
+		if(self::$jsscript == 0)
 		{
 			$return = 'Calendar._DN = new Array ("'.JText::_('Sunday').'", "'.JText::_('Monday').'", "'.JText::_('Tuesday').'", "'.JText::_('Wednesday').'", "'.JText::_('Thursday').'", "'.JText::_('Friday').'", "'.JText::_('Saturday').'", "'.JText::_('Sunday').'");Calendar._SDN = new Array ("'.JText::_('Sun').'", "'.JText::_('Mon').'", "'.JText::_('Tue').'", "'.JText::_('Wed').'", "'.JText::_('Thu').'", "'.JText::_('Fri').'", "'.JText::_('Sat').'", "'.JText::_('Sun').'"); Calendar._FD = 0;	Calendar._MN = new Array ("'.JText::_('January').'", "'.JText::_('February').'", "'.JText::_('March').'", "'.JText::_('April').'", "'.JText::_('May').'", "'.JText::_('June').'", "'.JText::_('July').'", "'.JText::_('August').'", "'.JText::_('September').'", "'.JText::_('October').'", "'.JText::_('November').'", "'.JText::_('December').'");	Calendar._SMN = new Array ("'.JText::_('January_short').'", "'.JText::_('February_short').'", "'.JText::_('March_short').'", "'.JText::_('April_short').'", "'.JText::_('May_short').'", "'.JText::_('June_short').'", "'.JText::_('July_short').'", "'.JText::_('August_short').'", "'.JText::_('September_short').'", "'.JText::_('October_short').'", "'.JText::_('November_short').'", "'.JText::_('December_short').'");Calendar._TT = {};Calendar._TT["INFO"] = "'.JText::_('About the calendar').'";
 		Calendar._TT["PREV_YEAR"] = "'.JText::_('Prev. year (hold for menu)').'";Calendar._TT["PREV_MONTH"] = "'.JText::_('Prev. month (hold for menu)').'";	Calendar._TT["GO_TODAY"] = "'.JText::_('Go Today').'";Calendar._TT["NEXT_MONTH"] = "'.JText::_('Next month (hold for menu)').'";Calendar._TT["NEXT_YEAR"] = "'.JText::_('Next year (hold for menu)').'";Calendar._TT["SEL_DATE"] = "'.JText::_('Select date').'";Calendar._TT["DRAG_TO_MOVE"] = "'.JText::_('Drag to move').'";Calendar._TT["PART_TODAY"] = "'.JText::_('(Today)').'";Calendar._TT["DAY_FIRST"] = "'.JText::_('Display %s first').'";Calendar._TT["WEEKEND"] = "0,6";Calendar._TT["CLOSE"] = "'.JText::_('Close').'";Calendar._TT["TODAY"] = "'.JText::_('Today').'";Calendar._TT["TIME_PART"] = "'.JText::_('(Shift-)Click or drag to change value').'";Calendar._TT["DEF_DATE_FORMAT"] = "'.JText::_('%Y-%m-%d').'"; Calendar._TT["TT_DATE_FORMAT"] = "'.JText::_('%a, %b %e').'";Calendar._TT["WK"] = "'.JText::_('wk').'";Calendar._TT["TIME"] = "'.JText::_('Time:').'";';
-			$jsscript = 1;
+			self::$jsscript = 1;
 			return $return;
 		} else {
 			return false;
@@ -387,19 +393,15 @@ function loadCalendar()
 	function stylesheet($file, $attribs = array())
 	{
 		if ((JRequest::getVar('format') == 'raw' || JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1) {
-			static $ajaxCssFiles;
-			if (!is_array($ajaxCssFiles)) {
-				$ajaxCssFiles = array();
-			}
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
 			// $$$rob TEST!!!! - this may mess up stuff
 			//send an inline script back which will inject the css file into the doc head
 			// note your ajax call must have 'evalScripts':true set in its properties
-			if (!in_array($file, $ajaxCssFiles)) {
+			if (!in_array($file, self::$ajaxCssFiles)) {
 				// $$$ rob added COM_FABRIK_LIVESITE to make full path name other wise style sheets gave 404 error
 				// when loading from site with sef urls.
 				echo "<script type=\"text/javascript\">var v = new Asset.css('{$file}', {});</script>\n";
-				$ajaxCssFiles[] = $file;
+				self::$ajaxCssFiles[] = $file;
 			}
 		} else {
 			// $$$ rob 27/04/2011 changed from JHTML::styleSheet as that doesn't work loading
@@ -595,8 +597,7 @@ function loadCalendar()
 	 */
 
 	public function framework(){
-		static $added;
-		if (!$added) {
+		if (!self::$framework) {
 
 			$config = JFactory::getConfig();
 			$debug = $config->get('debug');
@@ -612,6 +613,10 @@ function loadCalendar()
 
 			JHtml::_('behavior.framework', true);
 
+			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
+				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
+			}
+
 			$src[] = 'media/com_fabrik/js/mootools-ext.js';
 			$src[] = 'media/com_fabrik/js/art.js';
 			$src[] = 'media/com_fabrik/js/icons.js';
@@ -623,7 +628,7 @@ function loadCalendar()
 			FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
 			FabrikHelperHTML::script($src, true, "window.fireEvent('fabrik.framework.loaded');");
-			$added = true;
+			self::$framework = true;
 		}
 	}
 
@@ -633,10 +638,7 @@ function loadCalendar()
 
 	function mootools()
 	{
-		if (!FabrikHelperHTML::inAjaxLoadedPage()) {
-			//JHtml::_('behavior.framework');
-			//JHtml::_('behavior.framework', true);
-		}
+		FabrikHelperHTML::framework();
 	}
 
 	/**
@@ -695,16 +697,9 @@ function loadCalendar()
 			return;
 		}
 		if ($framework) {
-			//FabrikHelperHTML::mootools();
+			FabrikHelperHTML::framework();
 		}
 
-		static $head;
-		if (!$head) {
-			$head = true;
-			if (JRequest::getInt('ajax') !== 1 && JRequest::getVar('tmpl') !== 'component') {
-			JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
-			}
-		}
 		$file = (array)$file;
 		$src = array();
 		foreach ($file as $f) {
@@ -756,17 +751,9 @@ function loadCalendar()
 
 	function tips($selector='.hasTip', $params = array(), $selectorPrefix = 'document')
 	{
-		static $tips;
-
-		if (!isset($tips)) {
-			$tips = array();
-		}
-
-		// Include mootools framework
-		//JHtml::_('behavior.framework');
 
 		$sig = md5(serialize(array($selector,$params)));
-		if (isset($tips[$sig]) && ($tips[$sig])) {
+		if (isset(self::$tips[$sig]) && (self::$tips[$sig])) {
 			return;
 		}
 
@@ -788,8 +775,7 @@ function loadCalendar()
 		$tooltipInit = 'head.ready(function() {if(typeOf('.$selectorPrefix.') !== \'null\' && '.$selectorPrefix.'.getElements(\''.$selector.'\').length !== 0) {window.JTooltips = new Tips('.$selectorPrefix.'.getElements(\''.$selector.'\'), '.$options.');$$(".tool-tip").setStyle("z-index", 999999);}});';
 		FabrikHelperHTML::addScriptDeclaration($tooltipInit);
 
-		// Set static array
-		$tips[$sig] = true;
+		self::$tips[$sig] = true;
 		return;
 	}
 
@@ -819,10 +805,9 @@ function loadCalendar()
 			echo $content;
 		}
 		echo "</div>";
-		static $debug;
 
-		if (!isset($debug)) {
-			$debug = true;
+		if (!isset(self::$debug)) {
+			self::$debug = true;
 			$document = JFactory::getDocument();
 			$style = ".fabrikDebugOutputTitle{padding:5px;background:#efefef;color:#333;border:1px solid #999;cursor:pointer}";
 			$style .= ".fabrikDebugOutput{padding:5px;background:#efefef;color:#999;}";
@@ -921,18 +906,16 @@ function loadCalendar()
 	 */
 
 	public function autoCompleteScript() {
-		static $autocomplete;
-		if (!isset($autocomplete)) {
-			$autocomplete = true;
+		if (!isset(self::$autocomplete)) {
+			self::$autocomplete = true;
 			FabrikHelperHTML::script('media/com_fabrik/js/autocomplete.js');
 		}
 	}
 
 	public function facebookGraphAPI($appid, $locale = 'en_US', $meta = array())
 	{
-		static $facebookgraphapi;
-		if (!isset($facebookgraphapi)) {
-			$facebookgraphapi = true;
+		if (!isset(self::$facebookgraphapi)) {
+			self::$facebookgraphapi = true;
 			return "<div id=\"fb-root\"></div>
 <script>
   window.fbAsyncInit = function() {
@@ -979,27 +962,23 @@ function loadCalendar()
 
 	public function addPath($path = '', $type = 'image', $view = 'form', $highPriority = true)
 	{
-		static $helperpaths;
-		if (!isset($helperpaths)) {
-			$helperpaths = array();
-		}
-		if (!array_key_exists($type, $helperpaths)) {
-			$helperpaths[$type] = array();
+		if (!array_key_exists($type, self::$helperpaths)) {
+			self::$helperpaths[$type] = array();
 			$app = JFactory::getApplication();
 			$template = $app->getTemplate();
 			if ($app->isAdmin()) {
-				$helperpaths[$type][] = JPATH_SITE."/administrator/templates/$template/images/";
+				self::$helperpaths[$type][] = JPATH_SITE."/administrator/templates/$template/images/";
 			}
-			$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/%s/images/";
-			$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/images/";
-			$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/images/";
-			$helperpaths[$type][] = COM_FABRIK_FRONTEND."views/$view/tmpl/%s/images/";
-			$helperpaths[$type][] = COM_FABRIK_BASE."media/com_fabrik/images/";
+			self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/%s/images/";
+			self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/images/";
+			self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/images/";
+			self::$helperpaths[$type][] = COM_FABRIK_FRONTEND."views/$view/tmpl/%s/images/";
+			self::$helperpaths[$type][] = COM_FABRIK_BASE."media/com_fabrik/images/";
 		}
-		if (!array_key_exists($path, $helperpaths[$type]) && $path !== '') {
-			$highPriority ? array_unshift($helperpaths[$type], $path) : $helperpaths[$type][] =  $path;
+		if (!array_key_exists($path, self::$helperpaths[$type]) && $path !== '') {
+			$highPriority ? array_unshift(self::$helperpaths[$type], $path) : self::$helperpaths[$type][] =  $path;
 		}
-		return $helperpaths[$type];
+		return self::$helperpaths[$type];
 	}
 
 	/**
