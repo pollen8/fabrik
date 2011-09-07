@@ -17,11 +17,23 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	var $useMocha = true;
 
 	var $_buttonPrefix = 'emailtable';
-
- function onPopupwin(){
-	echo ' hre lklfsd k popupwin';
-}
-
+	
+	var $name = "plgFabrik_ListEmail";
+	
+	 function onPopupwin(){
+		echo ' hre lklfsd k popupwin';
+	}
+	
+	/**
+	* determine if the table plugin is a button and can be activated only when rows are selected
+	*
+	* @return bol
+	*/
+	function canSelectRows()
+	{
+		return $this->canUse();
+	}
+	
 	function getAclParam()
 	{
 		return 'emailtable_access';
