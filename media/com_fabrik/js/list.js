@@ -12,14 +12,12 @@ var FbListPlugin = new Class({
 		this.result = true; //set this to false in window.fireEvents to stop current action (eg stop ordering when fabrik.list.order run)
 		head.ready(function() {
 			this.listform = this.getList().getForm();
-			
-			var l = this.getList().getForm().getElement('input[name=listid]');
+			var l = this.listform .getElement('input[name=listid]');
 			// in case its in a viz
 			if(typeOf(l) === 'null'){
 				return;
 			};
 			this.listid = l.value;
-			
 			this.watchButton();
 		}.bind(this));
 	},
@@ -1043,6 +1041,12 @@ var FbListActions = new Class({
 		this.setUpSubMenus();
 		this.method = method;
 		
+		window.addEvent('keydown', function(e){
+			if (e.key == 'esc'){
+				this.closeWidgets();
+			}
+		}.bind(this));
+		
 		window.addEvent('fabrik.list.update', function(list, json){
 			this.observe();
 		}.bind(this));
@@ -1152,13 +1156,12 @@ var FbListActions = new Class({
 	},
 	
 	toggleWidget: function(e, c, sauron){
+		if (e.target.name == 'checkAll') {
+			return;
+		}
 		sauron = sauron ? sauron : false;
 		if(e.target.checked) {
-			this.actions.each(function(a){
-				if (a !== c) {
-					a.fade('out');
-				}
-			}.bind(this));
+			this.closeWidgets(c);
 			this.toggleRowSpecific(c, sauron);
 			var xOffset = 10;
 			//is the checkbox right on the rhside of the screen?
@@ -1171,5 +1174,13 @@ var FbListActions = new Class({
 		}else{
 			c.fade('out');
 		}
+	},
+	
+	closeWidgets: function(c){
+		this.actions.each(function(a){
+			if (a !== c && !a.hasClass('neverToggle')) {
+				a.fade('out');
+			}
+		}.bind(this));
 	}
 });
