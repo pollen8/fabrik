@@ -31,11 +31,16 @@ var ListForm = new Class({
 		if(document.id('addAJoin')){
 			document.id('addAJoin').addEvent('click', this.addAJoinClick);
 		}
-		var rows = document.getElement('table.linkedLists').getElement('tbody');
-		new Sortables(rows, {'handle': '.handle'});
+		if (document.getElement('table.linkedLists')) {
+			var rows = document.getElement('table.linkedLists').getElement('tbody');
+			new Sortables(rows, {'handle': '.handle'});
+		}
 
-		var rows = document.getElement('table.linkedForms').getElement('tbody');
-		new Sortables(rows, {'handle': '.handle'});
+		if (document.getElement('table.linkedForms')) {
+			var rows = document.getElement('table.linkedForms').getElement('tbody');
+			new Sortables(rows, {'handle': '.handle'});
+		}
+		
 		this.joinCounter = 0;
 		this.watchOrderButtons();
 		this.watchDbName();
