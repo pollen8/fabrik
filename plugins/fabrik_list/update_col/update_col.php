@@ -42,7 +42,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	 * @param int plugin render order
 	 */
 
-	function button_result($c)
+	function button_result()
 	{
 		$params =& $this->getParams();
 		$loc = $params->get('updatecol_button_location', 'bottom');

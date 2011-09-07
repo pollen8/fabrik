@@ -27,7 +27,7 @@ class plgFabrik_ListCopy extends plgFabrik_List {
 		return "copy records";
 	}
 
-	function button_result($c)
+	function button_result()
 	{
 		if ($this->canUse()) {
 			$name = $this->_getButtonName();

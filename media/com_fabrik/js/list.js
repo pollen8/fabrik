@@ -37,6 +37,7 @@ var FbListPlugin = new Class({
 					chx.set('checked', true);
 				}
 			}
+			
 			//check that at least one checkbox is checked
 			var ok = false;
 			this.listform.getElements('input[name^=ids]').each( function(c) {
@@ -44,13 +45,19 @@ var FbListPlugin = new Class({
 					ok = true;
 				}
 			});
+			//heading button pressed so check all checkboxes
+			if (row = e.target.getParent('.fabrik___heading') && ok === false) {
+				this.listform.getElements('input[name^=ids]').set('checked', true);
+				this.listform.getElement('input[name=checkAll]').set('checked', true);
+				ok = true;
+			}
 			if(!ok && this.options.requireChecked) {
 				alert(Joomla.JText._('COM_FABRIK_PLEASE_SELECT_A_ROW'));
 				return;
 			}
 			var n = this.options.name.split('-');
-			this.list.getForm().getElement('input[name=fabrik_listplugin_name]').value = n[0];
-			this.list.getForm().getElement('input[name=fabrik_listplugin_renderOrder]').value = n.getLast();
+			this.listform.getElement('input[name=fabrik_listplugin_name]').value = n[0];
+			this.listform.getElement('input[name=fabrik_listplugin_renderOrder]').value = n.getLast();
 			this.buttonAction();
 		}.bind(this));
 	},

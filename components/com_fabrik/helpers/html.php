@@ -598,7 +598,6 @@ function loadCalendar()
 
 	public function framework(){
 		if (!self::$framework) {
-
 			$config = JFactory::getConfig();
 			$debug = $config->get('debug');
 			$uncompressed	= $debug ? '-uncompressed' : '';
@@ -695,9 +694,6 @@ function loadCalendar()
 	{
 		if (empty($file)) {
 			return;
-		}
-		if ($framework) {
-			FabrikHelperHTML::framework();
 		}
 
 		$file = (array)$file;

@@ -17,13 +17,13 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	var $useMocha = true;
 
 	var $_buttonPrefix = 'emailtable';
-	
+
 	var $name = "plgFabrik_ListEmail";
-	
+
 	 function onPopupwin(){
 		echo ' hre lklfsd k popupwin';
 	}
-	
+
 	/**
 	* determine if the table plugin is a button and can be activated only when rows are selected
 	*
@@ -33,7 +33,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	{
 		return $this->canUse();
 	}
-	
+
 	function getAclParam()
 	{
 		return 'emailtable_access';
@@ -44,38 +44,13 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		return "email records";
 	}
 
-	function button_result($c)
-	{
-		if ($this->canUse()) {
-			$params =& $this->getParams();
-			$loc = $params->get('emailtable_button_location', 'bottom');
-			if ($loc == 'bottom' || $loc == 'both') {
-				return $this->getButton();
-			} else {
-				return '';
-			}
-		}
-	}
-
-	protected function getButton()
+	function button_result()
 	{
 		$params = $this->getParams();
-		$access = $params->get('emailtable_access');
-		$name = $this->_getButtonName();
-		$canuse = FabrikWorker::getACL($access, $name);
-		if ($canuse) {
-			return "<a href=\"#\" class=\"listplugin $name\"/>".$params->get('email_button_label',  JText::_('PLG_LIST_EMAIL_EMAIL'))."</a>";
+		if ($this->canUse()) {
+			$name = $this->_getButtonName();
+			return "<a href=\"#\" class=\"$name listplugin\"/>".$params->get('email_button_label', JText::_('PLG_LIST_EMAIL_EMAIL'))."</a>";
 		}
-		return '';
-	}
-
-	/**
-	 * get the position for the button
-	 */
-
-	protected function getRenderLocation()
-	{
-		return $this->getParams()->get('emailtable_button_location', 'bottom');
 	}
 
 	/**
@@ -102,7 +77,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	{
 		//$this->_type = 'table';
 		$this->_id = JRequest::getInt('id');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$renderOrder = JRequest::getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type');
 		$toType = is_array($toType) ? $toType[$renderOrder] : $toType;
@@ -126,7 +101,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	public function getSubject()
 	{
 		$renderOrder = JRequest::getInt('renderOrder');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$var = $params->get('email_subject');
 		return is_array($var) ? $var[$renderOrder] : $var;
 	}
@@ -134,7 +109,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	public function getMessage()
 	{
 		$renderOrder = JRequest::getInt('renderOrder');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$var = $params->get('email_message');
 		return is_array($var) ? $var[$renderOrder] : $var;
 	}
@@ -145,7 +120,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	 * @param bool $allData
 	 * @return array rows:
 	 */
-	
+
 	public function getRecords($key = 'ids', $allData = false)
 	{
 		$ids = (array)JRequest::getVar($key, array());
@@ -155,7 +130,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 			jexit();
 		}
 		$renderOrder = JRequest::getInt('renderOrder');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$model = $this->listModel;
 		$pk = $model->getTable()->db_primary_key;
 		$pk2 = FabrikString::safeColNameToArrayKey($pk).'_raw';
@@ -225,7 +200,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		$listModel->setId(JRequest::getInt('id', 0));
 		$w = new FabrikWorker();
 		$config = JFactory::getConfig();
-		
+
 		$params =& $this->getParams();
 		$to = JRequest::getVar('order_by');
 		$renderOrder = JRequest::getInt('renderOrder');

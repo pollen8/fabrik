@@ -3910,21 +3910,22 @@ class FabrikFEModelList extends JModelForm {
 
 	function getHeadings()
 	{
-		$table =& $this->getTable();
-		$table->order_dir = strtolower($table->order_dir);
+		$item = $this->getTable();
+		$item->order_dir = strtolower($item->order_dir);
 		$aTableHeadings = array();
 		$headingClass	= array();
 		$cellClass = array();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		$w = new FabrikWorker();
 		$session = JFactory::getSession();
 		$formModel = $this->getFormModel();
 		$linksToForms = $this->getLinksToThisKey();
-		$groups =& $formModel->getGroupsHiarachy();
+		$groups = $formModel->getGroupsHiarachy();
+		$pluginManager = $this->getPluginManager();
 		$groupHeadings = array();
 
-		$orderbys = json_decode($table->order_by, true);
+		$orderbys = json_decode($item->order_by, true);
 
 		foreach ($groups as $groupModel) {
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
@@ -3970,7 +3971,7 @@ class FabrikFEModelList extends JModelForm {
 
 					if ($class === '') {
 						if (in_array($key, $orderbys)) {
-							if ($table->order_dir === 'desc') {
+							if ($item->order_dir === 'desc') {
 								$class = "class=\"fabrikorder-desc\"";
 								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, JText::_('COM_FABRIK_ORDER'));
 							}
@@ -4008,11 +4009,20 @@ class FabrikFEModelList extends JModelForm {
 
 			// 3.0 actions now go in one column
 			if ($this->actionHeading == true) {
+				$headingButtons = array();
+				
 				if ($this->deletePossible()) {
-					$aTableHeadings['fabrik_actions'] = '<ul class="fabrik_action">'.$this->deleteButton().'</ul>';
-				} else {
-					$aTableHeadings['fabrik_actions'] = '';
+					$headingButtons[] = $this->deleteButton();
 				}
+				$listplugins = $pluginManager->getPlugInGroup('list');
+				foreach ($listplugins as $plugin) {
+					if ($plugin->canSelectRows()) {
+						$headingButtons[] = $plugin->button_result();
+					}
+				}
+				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? 'ohh here sir' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
+				
+				
 				$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
 				$cellClass['fabrik_actions'] = array('class' => 'fabrik_actions fabrik_element'); //needed for ajax filter/nav
 			}
@@ -4081,8 +4091,8 @@ class FabrikFEModelList extends JModelForm {
 		if (empty($usedPlugins)) {
 			return false;
 		}
-		$pluginManager =& $this->getPluginManager();
-		$tableplugins =& $pluginManager->getPlugInGroup('list');
+		$pluginManager = $this->getPluginManager();
+		$listplugins = $pluginManager->getPlugInGroup('list');
 		$v = in_array(true, $pluginManager->runPlugins('canSelectRows', $this, 'list'));
 		if ($v) {
 			$this->canSelectRows = true;

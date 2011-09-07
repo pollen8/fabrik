@@ -27,7 +27,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		return "download files";
 	}
 
-	function button_result($c)
+	function button_result()
 	{
 		$params =& $this->getParams();
 		if ($this->canUse()) {
