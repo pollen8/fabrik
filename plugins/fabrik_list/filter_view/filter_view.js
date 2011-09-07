@@ -1,7 +1,7 @@
 var FbListFilterView = new Class({
 	Extends : FbListPlugin,
 	initialize : function(options) {
-		this.setOptions(options);
+		this.parent(options);
 		this.groupbyMenus = {};
 		document.getElement('.filter_view').getElements('ul.floating-tip').each(function(ul){
 			var c = ul.clone();
@@ -21,8 +21,6 @@ var FbListFilterView = new Class({
 		}).setStyles()
 		document.getElements('.fabrik_filter_view').addEvent('click:relay(a)', function(e){
 			var href = e.target.get('href'); 
-			
 		})
-			
 	}
 });

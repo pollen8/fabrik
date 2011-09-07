@@ -12,6 +12,14 @@ var FbListPlugin = new Class({
 		this.result = true; //set this to false in window.fireEvents to stop current action (eg stop ordering when fabrik.list.order run)
 		head.ready(function() {
 			this.listform = this.getList().getForm();
+			
+			var l = this.getList().getForm().getElement('input[name=listid]');
+			// in case its in a viz
+			if(typeOf(l) === 'null'){
+				return;
+			};
+			this.listid = l.value;
+			
 			this.watchButton();
 		}.bind(this));
 	},

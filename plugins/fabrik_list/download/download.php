@@ -181,7 +181,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
-		$this->jsInstance = "new fbTableDownload($opts)";
+		$this->jsInstance = "new FbListDownload($opts)";
 		return true;
 	}
 

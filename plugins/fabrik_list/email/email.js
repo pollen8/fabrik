@@ -4,16 +4,9 @@ var FbListEmail = new Class({
 	
 	initialize: function(options) {
 	this.parent(options);
-		head.ready(function() {
-			var l = this.getList().getForm().getElement('input[name=listid]');
-			// in case its in a viz
-			if(typeOf(l) === 'null'){
-				return;
-			};
-			this.listid = l.value;
-		}.bind(this));
 	},
-	makePopUp: function() {
+
+	buttonAction:function(){
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&controller=list.email&task=popupwin&tmpl=component&iframe=1&id='+this.listid+'renderOrder='+this.options.renderOrder;
 		this.listform.getElements('input[name^=ids]').each(function(id) {
 			if(id.get('value') !== false && id.checked !== false) {
@@ -37,10 +30,6 @@ var FbListEmail = new Class({
 			}
 		};
 		Fabrik.getWindow(this.windowopts);
-	},
-	
-	buttonAction:function(){
-		this.makePopUp();
 	}
 
 });

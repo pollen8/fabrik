@@ -94,7 +94,7 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
-		$this->jsInstance = "new fbTableRunPHP($opts)";
+		$this->jsInstance = "new FbListPHP($opts)";
 		return true;
 	}
 

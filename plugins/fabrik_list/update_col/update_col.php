@@ -73,7 +73,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	function process(&$params, &$model, $opts = array())
 	{
 		$db = $model->getDb();
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$update = json_decode($params->get('update_col_updates'));
 		if (!$update) {
 			return false;

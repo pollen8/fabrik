@@ -1,7 +1,6 @@
-var fbTableList_example = new Class({
+var FbListExample = new Class({
 	Extends:FbListPlugin,
 	initialize: function(options) {
-		this.setOptions(options);
-	
+		this.parent(options);
 	}
 });

@@ -107,7 +107,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 		$opts = new stdClass();
 		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
-		return "new fbTableExample('$formid', $opts)";
+		return "new FbListExample('$formid', $opts)";
 	}
 
 }

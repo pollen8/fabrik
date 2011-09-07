@@ -392,7 +392,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		$opts->value = $this->getValue();
 		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
-		$this->jsInstance = "new FabRadiusSearch($opts)";
+		$this->jsInstance = "new FbListRadiusSearch($opts)";
 		return true;
 	}
 

@@ -1,7 +1,7 @@
-var FabRadiusSearch = new Class({
+var FbListRadiusSearch = new Class({
 	Extends : FbListPlugin,
 	initialize : function(element, options) {
-		this.options = options;
+		this.parent(options);
 		head.ready(function() {
 
 			this.element = $(element).getElement('.radus_search');

@@ -56,8 +56,8 @@ class plgFabrik_ListCopy extends plgFabrik_List {
 	function process(&$params, &$model)
 	{
 		$ids	= JRequest::getVar('ids', array(), 'method', 'array');
-		$table =& $model->getTable();
-		$formModel =& $model->getForm();
+		$item = $model->getTable();
+		$formModel = $model->getFormModel();
 		$origPost = JRequest::get('post', 2);
 		JRequest::set(array(), 'post');
 		foreach ($ids as $id) {
@@ -99,7 +99,7 @@ class plgFabrik_ListCopy extends plgFabrik_List {
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
-		$this->jsInstance = "new fbTableCopy($opts)";
+		$this->jsInstance = "new FbListCopy($opts)";
 		return true;
 	}
 
