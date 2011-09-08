@@ -76,14 +76,12 @@ var FbFileUpload = new Class({
 		var c = this.element.findClassUp('fabrikSubElementContainer');
 		this.container = c;
 		if (this.options.crop == 1) {
-			this.widget = new ImageWidget(c.getElement('canvas'), {
-				'cropdim' : {
+			this.widget = new ImageWidget(c.getElement('canvas'), {'cropdim' : {
 					w : this.options.cropwidth,
 					h : this.options.cropheight,
-					x : this.options.cropwidth / 2,
-					y : this.options.cropheight / 2
-				}
-			});
+					x: this.options.cropwidth / 2,
+					y: this.options.cropheight/2
+				}});
 		}
 		this.pluploadContainer = c.getElement('.plupload_container');
 		this.pluploadFallback = c.getElement('.plupload_fallback');
@@ -214,7 +212,6 @@ var FbFileUpload = new Class({
 			e.stop();
 			this.uploader.start();
 		}.bind(this));
-
 		// (5) KICK-START PLUPLOAD
 		this.uploader.init();
 	},
@@ -315,9 +312,9 @@ var ImageWidget = new Class({
 				var s = el.getDimensions(true);
 				var imagew = s.width;
 				var imageh = s.height;
-				// var imagex = imagew / 2;
+				//var imagex = imagew / 2;
 				var imagex = params.imagedim.x;
-				// var imagey = imageh / 2;
+				//var imagey = imageh / 2;
 				var imagey = params.imagedim.y;
 			} else {
 				show = true;
@@ -330,7 +327,9 @@ var ImageWidget = new Class({
 
 			var i = this.images.get(filepath);
 			this.scaleSlide.set(i.scale);
-			this.rotateSlide.set(i.rotation);
+			if (this.rotateSlide) {
+				this.rotateSlide.set(i.rotation);
+			}
 			this.cropperCanvas.x = i.cropdim.x;
 			this.cropperCanvas.y = i.cropdim.y;
 			this.cropperCanvas.w = i.cropdim.w;
@@ -355,6 +354,10 @@ var ImageWidget = new Class({
 		this.win = Fabrik.getWindow(this.windowopts);
 		if (typeOf(CANVAS) !== 'null' && typeOf(CANVAS.ctxEl) !== 'null') {
 			CANVAS.ctxPos = $(CANVAS.ctxEl).getPosition();
+		}
+		if($type(CANVAS.threads) !== false) {
+			//fixes issue where sometime canvas thread is not started/running so nothing is drawn
+			CANVAS.threads.myThread.start();
 		}
 	},
 
@@ -395,7 +398,6 @@ var ImageWidget = new Class({
 			}
 		};
 		this.showWin();
-		
 		this.images = $H({});
 		var parent = this;
 		CANVAS.init({
@@ -494,7 +496,7 @@ var ImageWidget = new Class({
 						try {
 							ctx.drawImage(parent.img, w * -0.5, h * -0.5, w, h);
 						} catch (err) {
-							fconsole(err);
+							fconsole(err, parent.img, w * -0.5, h * -0.5, w, h);
 						}
 					}
 					ctx.restore();
@@ -549,10 +551,10 @@ var ImageWidget = new Class({
 			events : {
 				onDraw : function(ctx) {
 					/*
-					 * calculate dimensions locally because they are have to be translated
-					 * in order to use translate and rotate with the desired effect:
-					 * rotate the item around its visual center
-					 */
+ 					* calculate dimensions locally because they are have to be translated
+ 					* in order to use translate and rotate with the desired effect:
+ 					* rotate the item around its visual center
+ 					*/
 
 					var w = this.w;
 					var h = this.h;
@@ -569,8 +571,8 @@ var ImageWidget = new Class({
 					ctx.restore();
 
 					/*
-					 * used to determine the whether the mouse is over an item or not.
-					 */
+ 					* used to determine the whether the mouse is over an item or not.
+ 					*/
 
 					if ($type(parent.img) != false && parent.images.get(parent.activeFilePath)) {
 						parent.images.get(parent.activeFilePath).cropdim = {

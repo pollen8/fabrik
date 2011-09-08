@@ -101,8 +101,8 @@
 				label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_FORM_LABEL" 
 				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_FORM_DESC">
 					<option value="0">JNO</option>
-					<option value="1">PLG_ELEMENT_THUMBNAIL</option>
-					<option value="2">PLG_ELEMENT_FULL_SIZED</option>	
+					<option value="1">PLG_ELEMENT_FILEUPLOAD_THUMBNAIL</option>
+					<option value="2">PLG_ELEMENT_FILEUPLOAD_FULL_SIZED</option>	
 			</field>
 			
 			<field name="fu_show_image_in_email" 
@@ -304,9 +304,62 @@
 				type="text"
 				default="0"
 				size="4"
-				label="PLG_ELEMENT_FILUPLOAD_AJAX_CHUNK_SIZE_LABEL"
-				description="PLG_ELEMENT_FILUPLOAD_AJAX_CHUNK_SIZE_DESC" />
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_LABEL"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_DESC" />
 				
+		</fieldset>
+		
+		<fieldset group="plg-fileupload-downloads">
+			<field name="fu_use_download_script" type="list" default="0" 
+				label="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_LABEL" 
+				description="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_DESC">
+					<option value="0">No</option>
+					<option value="1">Table View Only</option>
+					<option value="2">Detail View Only</option>
+					<option value="3">Both</option>
+				</field>
+				<field name="fu_download_acl"
+					type="tablefields"
+					filter="fabrikaccess"
+					label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_LABEL"
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_DESC"
+					/>
+					
+				<field name="fu_download_noaccess_image"
+					type="imagelist" 
+					hide_none="1" directory="/images/stories" 
+					label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_LABEL" 
+					description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_DESC" />
+					
+				<field name="fu_download_noaccess_url"
+					type="text" 
+					label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_LINK_LABEL" 
+					description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_LINK_DESC" />
+					
+				<field name="fu_download_access_image"
+					type="imagelist" 
+					hide_none="1" directory="/images/stories" 
+					label="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_LABEL" 
+					description="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_DESC" />
+				
+				
+				<field name="fu_download_email" type="text" size="20" 
+					label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_EMAIL_LABEL"
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_EMAIL_DESC" />
+					
+				<field name="fu_download_hit_counter" 
+					type="listfields" 
+					valueformat="tableelement" 
+					label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_LABEL"
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_DESC" />
+					
+				<field name="fu_download_log" 
+					type="radio" default="0" 
+					label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_LABEL" 
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_DESC">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
 		</fieldset>
 		
 		<fieldset name="plg-fileupload-export" label="PLG_ELEMENT_FILEUPLOAD_EXPORT">

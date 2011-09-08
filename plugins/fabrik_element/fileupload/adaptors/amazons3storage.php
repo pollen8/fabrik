@@ -28,7 +28,8 @@ class amazons3storage extends storageAdaptor{
 	function getBucketName()
 	{
 		$params = $this->getParams();
-		return $params->get('fileupload_aws_bucketname', 'robclayburnsfabrik');
+		$w = new FabrikWorker();
+		return $w->parseMessageForPlaceHolder( $params->get('fileupload_aws_bucketname', 'robclayburnsfabrik') );
 	}
 
 	function getLocation()
@@ -93,14 +94,15 @@ class amazons3storage extends storageAdaptor{
 	{
 		$filepath = str_replace("\\", '/', $filepath);
 		$bucket = $this->getBucketName();
+		$acl = $this->getAcl();
 		if (!$this->bucketExists())
 		{
-			$this->s3->putBucket( $bucket, S3::ACL_PUBLIC_READ, $this->getLocation());
+			$this->s3->putBucket($bucket, $acl, $this->getLocation());
 		}
 		// $$$ rob avoid urls like http://bucket.s3.amazonaws.com//home/users/path/to/file/Chrysanthemum.jpg
 		$filepath = ltrim($filepath, '/');
 		//move the file
-		if ($this->s3->putObjectFile( $tmpFile, $bucket, $filepath, S3::ACL_PUBLIC_READ)) {
+		if ($this->s3->putObjectFile($tmpFile, $bucket, $filepath, $acl)) {
 
 			$this->uploadedFilePath = $this->getS3BaseURL() . str_replace(" ", "%20", $filepath);
 			return true;
@@ -127,6 +129,37 @@ class amazons3storage extends storageAdaptor{
 		}else{
 			return false;
 		}
+	}
+	
+	function read($file) {
+		$file = $this->urlToPath($file);
+		$file = str_replace("%20", " ", $file);
+		$file = str_replace("\\", '/', $file);
+		$bucket = $this->getBucketName();
+		$s3object =  $this->s3->getObject($bucket, $file);
+		if ($s3object === false) {
+			return false;
+		}
+		return $s3object->body;
+	}
+
+	protected function getAcl()
+	{
+		$params =& $this->getParams();
+		$acl = $params->get('fileupload_amazon_acl', 2);
+		switch ($acl) {
+			case 1:
+				$acl = S3::ACL_PRIVATE;
+				break;
+			case 2:
+			default:
+				$acl = S3::ACL_PUBLIC_READ;
+				break;
+			case 3:
+				$acl = S3::ACL_PUBLIC_READ_WRITE;
+				break;
+		}
+		return $acl;
 	}
 
 	/**
@@ -172,18 +205,18 @@ class amazons3storage extends storageAdaptor{
 		// $$$peamak: add random filename
 		$params = $this->getParams();
 		if ($params->get('random_filename') == 1) {
-	 				$length = $params->get('length_random_filename');
-					$key = "";
-					$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
-					$i = 0;
-						while ($i < $length) {
-							$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
-							$key .= $char;
-							$i++;
-						}
-				$file_e = JFile::getExt($filename);
-				$file_f = preg_replace('/.'.$file_e.'$/', '', $filename);
-				$filename = $file_f.'_'.$key.'.'.$file_e;
+			$length = $params->get('length_random_filename');
+			$key = "";
+			$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
+			$i = 0;
+			while ($i < $length) {
+				$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+				$key .= $char;
+				$i++;
+			}
+			$file_e = JFile::getExt($filename);
+			$file_f = preg_replace('/.'.$file_e.'$/', '', $filename);
+			$filename = $file_f.'_'.$key.'.'.$file_e;
 
 		}
 		return $filename;
@@ -280,6 +313,45 @@ class amazons3storage extends storageAdaptor{
 	{
 		//not applicable
 		return;
+	}
+	
+	/**
+	 * Get file info in getid3 format
+	 * @param $filepath
+	 * return array
+	 */
+	function getFileInfo($filepath) {
+		$bucket = $this->getBucketName();
+		$s3Info = $this->s3->getObjectInfo($bucket, $filepath);
+		if ($s3Info === false) {
+			return false;
+		}
+		$thisFileInfo = array(
+			'filesize' => $s3Info['size'],
+			'mime_type' => $s3Info['type'],
+			'filename' => basename($filepath)
+		);
+		return $thisFileInfo;
+	}
+	
+	function getFullPath($filepath) {
+		$filepath = $this->urlToPath($filepath);
+		$filepath = str_replace("%20", " ", $filepath);
+		$filepath = str_replace("\\", '/', $filepath);
+		return $filepath;
+	}
+	
+	function preRenderPath($filepath) {
+		$params =& $this->getParams();
+		if ($lifetime = (int)$params->get('fileupload_amazon_auth_url', 0)) {
+			$file = $this->urlToPath($filepath);
+			$file = str_replace("%20", " ", $file);
+			$file = str_replace("\\", '/', $file);
+			$bucket = $this->getBucketName();
+			$hostbucket = !$this->ssl;
+			$filepath =  $this->s3->getAuthenticatedURL($bucket, $file, $lifetime, $hostbucket, $this->ssl);			
+		}
+		return $filepath;
 	}
 }
 

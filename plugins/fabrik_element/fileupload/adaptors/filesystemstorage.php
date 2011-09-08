@@ -55,18 +55,18 @@ class filesystemstorage extends storageAdaptor{
 		// $$$peamak: add random filename
 		$params = $this->getParams();
 		if ($params->get('random_filename') == 1) {
-	 				$length = $params->get('length_random_filename');
-					$key = "";
-					$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
-					$i = 0;
-						while ($i < $length) {
-							$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
-							$key .= $char;
-							$i++;
-						}
-				$file_e = JFile::getExt($filename_o);
-				$file_f = preg_replace('/.'.$file_e.'$/', '', $filename_o);
-				$filename = $file_f.'_'.$key.'.'.$file_e;
+			$length = $params->get('length_random_filename');
+			$key = "";
+			$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
+			$i = 0;
+			while ($i < $length) {
+				$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+				$key .= $char;
+				$i++;
+			}
+			$file_e = JFile::getExt($filename_o);
+			$file_f = preg_replace('/.'.$file_e.'$/', '', $filename_o);
+			$filename = $file_f.'_'.$key.'.'.$file_e;
 		} else {
 			$filename = $filename_o;
 		}
@@ -78,7 +78,7 @@ class filesystemstorage extends storageAdaptor{
 		JFile::delete($filepath);
 	}
 
-		/**
+	/**
 	 * Moves an uploaded file to a destination folder
 	 *
 	 * @param string $src The name of the php (temporary) uploaded file
@@ -130,7 +130,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 *
-	 * get the path to the smaller file
+	 * get the path (relative to site root?) to the smaller file
 	 * @param string large file path
 	 * @param string type (thumb or crop)
 	 */
@@ -166,10 +166,10 @@ class filesystemstorage extends storageAdaptor{
 
 		//$$$ rob wasnt working when getting thumb path on upload
 		$typeDir = $type == 'thumb' ? $params->get('thumb_dir') : $params->get('fileupload_crop_dir');
-		$thumbdir = str_replace($match, $replace,$typeDir );
+		$thumbdir = str_replace($match, $replace, $typeDir);
 		$ulDir = $w->parseMessageForPlaceHolder($ulDir);
 		$thumbdir = $w->parseMessageForPlaceHolder($thumbdir);
-		$file = str_replace($ulDir, $thumbdir , $file);
+		$file = str_replace($ulDir, $thumbdir, $file);
 		$file = $w->parseMessageForPlaceHolder($file);
 		$f = basename($file);
 		$dir = dirname($file);
@@ -205,6 +205,53 @@ class filesystemstorage extends storageAdaptor{
 	function finalFilePathParse(&$filepath)
 	{
 		$filepath = str_replace(JPATH_SITE, '', $filepath);
+	}
+
+	/**
+	 * Get file info using getid3
+	 * @param $filepath
+	 * return array
+	 */
+	function getFileInfo($filepath) {
+		if ($this->exists($filepath)) {
+			// $$$ hugh - turn of E_DEPRECATED to avoid warnings about eregi() in getid3
+			// LOL!  E_DEPRECATED only available in 5.3.0+, pitches Notice in anything earlier.  :)
+			if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+				$current_level = error_reporting();
+	    		error_reporting($current_level & ~E_DEPRECATED);
+			}
+	    	/*
+			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.php');
+			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.lib.php');
+
+			getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'extension.cache.mysql.php', __FILE__, true);
+			$config =& JFactory::getConfig();
+			$host =  $config->getValue('host');
+			$database = $config->getValue('db');
+			$username = $config->getValue('user');
+			$password = $config->getValue('password');
+			$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
+			$getID3->encoding = 'UTF-8';
+			// Analyze file and store returned data in $ThisFileInfo
+			$thisFileInfo = $getID3->analyze($filepath);
+			*/
+			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'phpmimetypeclass'.DS.'class.mime.php');
+			$mime = new MIMETypes();
+			$thisFileInfo['filesize'] = filesize($filepath);
+			$thisFileInfo['filename'] = basename($filepath);
+			$thisFileInfo['mime_type'] = $mime->getMimeType($filepath);
+			return $thisFileInfo;
+		}
+		else {
+			return false;
+		}
+	}
+
+	function getFullPath($filepath) {
+		if (!(preg_match('#^' . COM_FABRIK_BASE . '#', $filepath))) {
+			return COM_FABRIK_BASE.DS.$filepath;
+		}
+		return $filepath;
 	}
 }
 ?>

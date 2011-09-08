@@ -811,7 +811,7 @@ class FabrikWorker {
 			if ($jsonEncode) {
 				$msg = json_encode($msg);
 			}
-			$log = JTable::getInstance('log', 'Table');
+			$log = FabTable::getInstance('log', 'FabrikTable');
 			$log->message_type = $type;
 			$log->message = $msg;
 			$log->store();

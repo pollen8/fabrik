@@ -25,16 +25,16 @@ class imageHelper
 	/** @var object image manipulation lib, sepecific to library */
 	var $_lib = null;
 
-	function getLibs()
+	public function getLibs()
 	{
 		$libs = array();
 		$gds = imageHelper::_testGD();
 		foreach ($gds as $key=>$val) {
-			$libs[] = JHTML::_('select.option',$key, $val);
+			$libs[] = JHTML::_('select.option', $key, $val);
 		}
 		$im = imageHelper::_testImagemagick();
 		foreach ($im as $key=>$val) {
-			$libs[] = JHTML::_('select.option',$key, $val);
+			$libs[] = JHTML::_('select.option', $key, $val);
 		}
 		return $libs;
 	}
@@ -163,31 +163,90 @@ class imageGD extends image
 	}
 
 	/**
+	 * create a gd image from a fle
+	 * @param string $source
+	 * @return image.
+	 */
 
-	 * Enter description here ...
+	protected function imageCreateFrom($source)
+	{
+		$ext = strtolower(JFile::getExt($source));
+		switch ($ext) {
+			case 'jpg':
+			case 'jpeg':
+				$source = imagecreatefromjpeg($source);
+				break;
+			case 'png':
+				$source = imagecreatefrompng($source);
+				break;
+			case 'gif':
+				$source = imagecreatefromgif($source);
+				break;
+		}
+		return $source;
+	}
+
+	/**
+	 * convert an image object into a file
+	 * @param string $destCropFile
+	 * @param image object
+	 */
+
+	public function imageToFile($destCropFile, $image)
+	{
+		$ext = strtolower(JFile::getExt($destCropFile));
+		ob_start();
+		switch ($ext) {
+			case 'jpg':
+			case 'jpeg':
+				$source = imagejpeg($image, null, 100);
+				break;
+			case 'png':
+				$source = imagepng($image, null);
+				break;
+			case 'gif':
+				$source = imagegif($image, null);
+				break;
+		}
+		$image_p = ob_get_contents();
+		ob_end_clean();
+		JFile::write($destCropFile, $image_p);
+	}
+
+	/**
+	 * Rotate an image
 	 * @param string $source
 	 * @param string $dest
 	 * @param double $degrees
 	 * @return array(image object, rotated images width, rotated images height)
 	 */
+
 	public function rotate($source, $dest = '', $degrees = 0)
 	{
-		$source = imagecreatefromjpeg($source);
+		$source = $this->imageCreateFrom($source);
+
 		// Rotates the image
 		$rotate = imagerotate($source, $degrees, 0);
-
+		if ($rotate === false) {
+			JError::raiseNotice(500, 'Image rotation failed');
+		}
 		if ($dest != '') {
-			ob_start();
-			imagejpeg($rotate, "", 100);
-			$rotate = ob_get_contents();
-			ob_end_clean();
-			JFile::write($dest, $rotate);
+			$this->imageToFile($dest, $rotate);
 			list($width, $height) = getimagesize($dest);
 		}
 		return array($rotate, $width, $height);
 	}
 
-	function scale($file, $dest = '', $percentage = 100, $destX = 0, $destY = 0)
+	/**
+	 * scale an image
+	 * @param unknown_type $file
+	 * @param unknown_type $dest
+	 * @param unknown_type $percentage
+	 * @param unknown_type $destX
+	 * @param unknown_type $destY
+	 */
+
+	public function scale($file, $dest = '', $percentage = 100, $destX = 0, $destY = 0)
 	{
 		list($image, $header) = $this->imageFromFile($file);
 
@@ -201,11 +260,7 @@ class imageGD extends image
 		imagecopyresampled($image_p, $image, $destX, $destY, 0, 0, $new_width, $new_height, $width, $height);
 
 		if ($dest != '') {
-			ob_start();
-			imagejpeg($image_p, "", 100);
-			$image_p = ob_get_contents();
-			ob_end_clean();
-			JFile::write($dest, $image_p);
+			$this->imageToFile($dest, $image_p);
 		}
 		return $image_p;
 	}
@@ -220,7 +275,7 @@ class imageGD extends image
 	 * @param bol save the resized image
 	 */
 
-	function resize($maxWidth, $maxHeight, $origFile, $destFile)
+	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
 	{
 		/* check if the file exists*/
 		if (!$this->storage->exists($origFile)) {
@@ -232,21 +287,6 @@ class imageGD extends image
 			return $img;
 		}
 		$ext = strtolower(end(explode('.', $origFile)));
-		/*if ($ext == 'jpg' || $ext == 'jpeg') {
-			$img = @imagecreatefromjpeg($origFile);
-			$header = "image/jpeg";
-			} else if ($ext == 'png') {
-			$img = @imagecreatefrompng($origFile);
-			$header = "image/png";
-			// Only if your version of GD includes GIF support
-			} else if ($ext == 'gif') {
-			if (function_exists(imagecreatefromgif)) {
-			$img = @imagecreatefromgif( $origFile);
-			$header = "image/gif";
-			} else {
-			return JError::raiseWarning(21,"imagecreate from gif not available");
-			}
-			}*/
 		/* If an image was successfully loaded, test the image for size*/
 		if ($img) {
 			/* Get image size and scale ratio*/
@@ -287,14 +327,43 @@ class imageGD extends image
 	 * @param int cropped image height
 	 * @param int destination x coord of destination point
 	 * @param int destination y coord of destination point
+	 * @param string hex background colour
 	 */
 
-	public function crop($origFile, $destFile, $srcX, $srcY, $dstW, $dstH, $dstX = 0, $dstY = 0)
+	public function crop($origFile, $destFile, $srcX, $srcY, $dstW, $dstH, $dstX = 0, $dstY = 0, $bg = '#FFFFFF')
 	{
-		list($origImg, $header) = $this->imageFromFile($origFile);
+		/*list($origImg, $header) = $this->imageFromFile($origFile);
 		$destImg = imagecreatetruecolor($dstW, $dstH);
 		$srcW = imagesx($destImg);
 		$srcH = imagesy($destImg);
+		imagecopyresampled($destImg, $origImg, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH);
+		$this->writeImg($destImg, $destFile, $header);*/
+		//convert hex to rgb colours.
+		list($r, $g, $b) =sscanf($bg, '#%2x%2x%2x');
+
+		//$destImg = imagecreatetruecolor($dstW, $dstH);
+		list($origImg, $header) = $this->imageFromFile($origFile);
+		$destImg = imagecreatetruecolor($dstW, $dstH);
+
+		$bg = imagecolorallocate($destImg, $r, $g, $b);
+		// Draw a bg rectangle
+		imagefilledrectangle($destImg, 0 , 0 , (int)$dstW, (int)$dstH , $bg );
+
+		$this->writeImg($destImg, $destFile, $header);
+		$srcW = imagesx($destImg);
+		$srcH = imagesy($destImg);
+
+		$origW = imagesx($origImg);
+		$origH = imagesy($origImg);
+
+		//if the orig image is smaller than the destination then increase its canvas and fill it with the bg
+		if ($origW < $srcW || $origH < $srcH) {
+			$srcBg = imagecreatetruecolor($srcW, $srcH);
+			imagefilledrectangle($srcBg, 0 , 0 , (int)$srcW, (int)$srcH , $bg);
+			imagecopyresampled($srcBg, $origImg, 0, 0, 0, 0, $origW, $origH, $origW, $origH);
+			$origImg = $srcBg;
+		}
+
 		imagecopyresampled($destImg, $origImg, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH);
 		$this->writeImg($destImg, $destFile, $header);
 	}
@@ -498,14 +567,18 @@ class imageIM extends image
 				if (strtolower($destinfo['extension']) == 'pdf') {
 					// rebuild $destFile with valid image extension
 					// NOTE - changed $destFile arg to pass by reference OOOPS can't do that!
-					$destFile = $destinfo['dirname'] . DS . $destinfo['filename'] . '.' . $pdf_thumb_type;
+
+					// $$$ rob 04/08/2011 wont work in php 5.1
+					//$destFile = $destinfo['dirname'] . DS . $destinfo['filename'] . '.' . $pdf_thumb_type;
+					$thumb_file = JFile::stripExt($destFile).'.'.$pdf_thumb_type;
+
 				}
 				// Now just load it, set format, resize, save and garbage collect.
 				// Hopefully IM will call the right delagate (ghostscript) to load the PDF.
-				$im = new Imagick( $pdf_file);
-				$im->setImageFormat( $pdf_thumb_type);
-				$im->thumbnailImage( $maxWidth, $maxHeight, true);
-				$im->writeImage( $destFile);
+				$im = new Imagick($pdf_file);
+				$im->setImageFormat($pdf_thumb_type);
+				$im->thumbnailImage($maxWidth, $maxHeight, true);
+				$im->writeImage($destFile);
 				$im->destroy();
 			}
 			else {
@@ -530,7 +603,6 @@ class imageIM extends image
 			if (!MagickReadImage($resource, $origFile)) {
 				echo "ERROR!";
 				print_r(MagickGetException($resource));
-			}else{
 			}
 			$resource = MagickTransformImage($resource, '0x0', $maxWidth . 'x' . $maxWidth);
 			$this->_thumbPath = $destFile;
