@@ -5386,7 +5386,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$db->setQuery("TRUNCATE ".$db->nameQuote($item->db_table_name));
 		$db->query();
-		// 3.0 clear filters (resets limitstart so that subsequently added records are shown.)
+		// 3.0 clear filters (resets limitstart so that subsequently added records are shown)
 		$this->getFilterModel()->clearFilters();
 	}
 
