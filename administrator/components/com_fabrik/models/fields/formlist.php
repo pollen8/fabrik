@@ -54,5 +54,17 @@ class JFormFieldFormList extends JFormFieldList
 		array_unshift($rows, $o);
 		return $rows;
 	}
+	
+	protected function getInput()
+	{
+		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('form_id')
+		->from('#__{package}_formgroup')
+		->where('group_id = '.(int)$this->form->getValue('id'));
+		$db->setQuery($query);
+		$this->value = $db->loadResult();
+		return parent::getInput();
+	}
 
 }
