@@ -24,6 +24,13 @@ var FbElement =  new Class({
 		
 	},
 	
+	get: function(v){
+		switch (v) {
+			case 'value':
+				return this.getValue(); 
+			}
+	},
+	
 	attachedToForm: function()
 	{
 		this.alertImage = new Asset.image(this.form.options.images.alert);

@@ -210,12 +210,10 @@ var FbForm = new Class( {
 		if (!fx) {
 			return;
 		}
-		var fxElement = groupfx ? fx.css.element : fx.css.element.findClassUp('fabrikElementContainer');
+		var fxElement = groupfx ? fx.css.element : fx.css.element.getParent('.fabrikElementContainer');
 		switch (method) {
 			case 'show':
-				fxElement.removeClass('fabrikHide');
-				fx.css.set(1);
-				fx.css.element.show();
+				fxElement.fade('show').removeClass('fabrikHide');
 				if (groupfx) {
 					// strange fix for ie8
 					// http://fabrik.unfuddle.com/projects/17220/tickets/by_number/703?cycle=true
@@ -223,15 +221,12 @@ var FbForm = new Class( {
 				}
 				break;
 			case 'hide':
-				fxElement.addClass('fabrikHide');
-				fx.css.set(0);
-				fx.css.element.hide();
+				fxElement.fade('hide').addClass('fabrikHide');
 				break;
 			case 'fadein':
 				fxElement.removeClass('fabrikHide');
 				if (fx.css.lastMethod !== 'fadein') {
 					fx.css.element.show();
-					//fx.css.start(0, 1);
 					fx.css.start({'opacity': [0, 1]});
 				}
 				break;

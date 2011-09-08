@@ -335,7 +335,11 @@ class FabrikFEModelForm extends FabModelForm
 
 	function getJsActions()
 	{
-		$db = FabrikWorker::getDbo();
+		if (isset($this->jsActions)) {
+			return $this->jsActions;
+		}
+		$this->jsActions = array();
+		$db = FabrikWorker::getDbo(true);
 		$j = new JRegistry();
 		$aJsActions = array();
 		$aElIds = array();
@@ -355,6 +359,9 @@ class FabrikFEModelForm extends FabModelForm
 			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN ('.implode(',', $aElIds).')');
 			$db->setQuery($query);
 			$res = $db->loadObjectList();
+			if ($db->getErrorNum()) {
+				JError::raiseError(500, $db->getErrorMsg());
+			} 
 		} else {
 			$res = array();
 		}
@@ -366,10 +373,10 @@ class FabrikFEModelForm extends FabModelForm
 					$r->$k = $v;
 				}
 				unset($r->params);
-				$aJsActions[$r->element_id][] = $r;
+				$this->jsActions[$r->element_id][] = $r;
 			}
 		}
-		return $aJsActions;
+		return $this->jsActions;
 	}
 
 	/**

@@ -269,7 +269,6 @@ class fabrikViewForm extends JView
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
 		$jsControllerKey = $model->_editable ? 'form_'. $model->getId() : 'details_'. $model->getId();
-		$allJsActions = $this->get('JsActions');
 
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED')) {
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
@@ -302,7 +301,7 @@ class fabrikViewForm extends JView
 				}
 				$eventMax = ($groupModel->_repeatTotal == 0) ? 1 : $groupModel->_repeatTotal;
 				for ($c = 0; $c < $eventMax; $c ++) {
-					$jsActions[] = $elementModel->getFormattedJSActions($allJsActions, $jsControllerKey, $c);
+					$jsActions[] = $elementModel->getFormattedJSActions($jsControllerKey, $c);
 				}
 			}
 		}
