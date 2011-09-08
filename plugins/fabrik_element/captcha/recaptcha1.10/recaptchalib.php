@@ -124,7 +124,7 @@ src="http://api.recaptcha.net/js/recaptcha_ajax.js"></script> ';
         
         $str .= '  <div id="'.$id.'"></div> ';
         
-        $document =& JFactory::getDocument();
+        $document = JFactory::getDocument();
         FabrikHelperHTML::addScriptDeclaration(
         'window.addEvent("load", function() {
         Recaptcha.create("'.$pubkey.'",

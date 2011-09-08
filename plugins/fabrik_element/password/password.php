@@ -141,8 +141,8 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
-		$formparams =& $this->getForm()->getParams();
+		$opts = $this->getElementJSOptions($repeatCounter);
+		$formparams = $this->getForm()->getParams();
 		$opts->ajax_validation =  $formparams->get('ajax_validations');
 		$opts = json_encode($opts);
 		$lang = new stdClass();

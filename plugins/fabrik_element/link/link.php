@@ -26,8 +26,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$listModel =& $this->getlistModel();
-		$params =& $this->getParams();
+		$listModel = $this->getlistModel();
+		$params = $this->getParams();
 		$target = $params->get('link_target', '');
 		$smart_link = $params->get('link_smart_link', false);
 		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox')) {
@@ -55,8 +55,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	{
 		//$data = explode(GROUPSPLITTER2, $data);
 		$data = FabrikWorker::JSONtoData($data, true);
-		$listModel =& $this->getlistModel();
-		$params =& $this->getParams();
+		$listModel = $this->getlistModel();
+		$params = $this->getParams();
 		if (is_array($data)) {
 			if (count($data) == 1) { $data[1] = $data[0];}
 			if (empty($data[1]) && empty($data[0])) {
@@ -196,7 +196,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		// not sure if we really want to do it here, or only when rendering?
 		// $$$ hugh - quit normalizing links.
 		$return = '';
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if (is_array($val)) {
 			if ($params->get('use_bitly')) {
 				require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'bitly'.DS.'bitly.php');
@@ -243,15 +243,15 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	function elementJavascript($repeatCounter)
 	{
-		$listModel =& $this->getlistModel();
-		$params =& $this->getParams();
+		$listModel = $this->getlistModel();
+		$params = $this->getParams();
 		$target = $params->get('link_target', '');
 		$smart_link = $params->get('link_smart_link', false);
 		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox')) {
 			FabrikHelperHTML::slimbox();
 		}
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbLink('$id', $opts)";
 	}
@@ -269,7 +269,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		//$data = explode(GROUPSPLITTER2, $this->getValue($data, $c));
 		$data = (array)json_decode($this->getValue($data, $c, true));
 		$name = $this->getFullName(false, true, false);
-		$group =& $this->getGroup();
+		$group = $this->getGroup();
 		if ($group->canRepeat()) {
 			// $$$ rob - I've not actually tested this bit!
 			if (!array_key_exists($name, $values)) {
@@ -294,7 +294,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	{
 		if (!isset($this->_default)) {
 			$w = new FabrikWorker();
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$link = $params->get('link_default_url');
 			// $$$ hugh - no idea what this was here for, but it was causing some BIZARRE bugs!
 			//$formdata = $this->getForm()->getData();
@@ -331,7 +331,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			$this->defaults = array();
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
-			$groupModel =& $this->getGroup();
+			$groupModel = $this->getGroup();
 			$group			=& $groupModel->getGroup();
 			$joinid			= $group->join_id;
 			$formModel 	=& $this->_form;

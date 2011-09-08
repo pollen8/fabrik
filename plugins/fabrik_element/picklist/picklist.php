@@ -109,7 +109,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	function onStoreRow(&$data)
 	{
 		$element = $this->getElement();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
 			$added = stripslashes($data[$element->name . '_additions']);
 			if (trim($added) == '') {

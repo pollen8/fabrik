@@ -16,7 +16,7 @@ class storageAdaptor{
 
 	function __construct(&$params)
 	{
-		$this->params =& $params;
+		$this->params = $params;
 	}
 
 	function &getParams()

@@ -27,7 +27,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	function &getParams()
 	{
-		$params =& parent::getParams();
+		$params = parent::getParams();
 		if (empty($params->join_db_name)) {
 			$params->set('join_db_name', '#__users');
 		}
@@ -166,7 +166,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				return;
 			}
 		}
-		$element =& $this->getElement();
+		$element = $this->getElement();
 		// $$$ rob if in joined data then $data['rowid'] isnt set - use JRequest var instead
 		//if ($data['rowid'] == 0 && !in_array($element->name, $data)) {
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
@@ -187,7 +187,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 		// $$$ hugh - so how come we don't do the same thing on a new row?  Seems inconsistant to me?
 		else {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			if ($params->get('update_on_edit',0)) {
 				if (!$this->canUse() || $this->getElement()->hidden == 1) {
 					$user		=& JFactory::getUser();
@@ -278,7 +278,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			//it is so continue as if it were a database join
 			//make sure same connection as this table
 
-			$join =& $this->getJoin();
+			$join = $this->getJoin();
 			//$$$ rob in csv import keytable not set
 			$k = isset($join->keytable ) ? $join->keytable : $join->join_from_table;
 			$k = FabrikString::safeColName("`$k`.`$element->name`");
@@ -313,7 +313,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		}
 		$element = $this->getElement();
 		//load join based on this element id
-		$join =& FabTable::getInstance('Join', 'FabrikTable');
+		$join = FabTable::getInstance('Join', 'FabrikTable');
 		$key = array('element_id' => $data['id']);
 		$join->load($key);
 		if ($join->element_id ==  0) {
@@ -349,7 +349,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	function getDefaultValue($data = array() )
 	{
 		if (!isset($this->_default)) {
-			$user =& JFactory::getUser();
+			$user = JFactory::getUser();
 			$this->_default = $user->get('id');
 		}
 		return $this->_default;
@@ -397,13 +397,13 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	  // just forgot to get rid of it.
 			/*if($this->_inRepeatGroup && $this->_inJoin &&  $this->_repeatGroupTotal == $repeatCounter && $this->_editable) {
 
-			$user =& JFactory::getUser();
+			$user = JFactory::getUser();
 			// $$$ hugh - need to actually set $this->default
 			$element = $this->getElement();
 			$element->default = $user->get('id');
 			return $element->default;
 			}else{
-			$user =& JFactory::getUser();
+			$user = JFactory::getUser();
 			// $$$ hugh - need to actually set $this->default
 			$element = $this->getElement();
 			$element->default = $user->get('id');
@@ -451,7 +451,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		$default = $this->getDefaultFilterVal($normal, $counter);
 
 		$tabletype = $params->get('my_table_data', 'username');
-		$join =& $this->getJoin();
+		$join = $this->getJoin();
 		$joinTableName  	=  FabrikString::safeColName($join->table_join_alias);
 		// if filter type isn't set was blowing up in switch below 'cos no $rows
 		// so added '' to this test.  Should probably set $element->filter_type to a default somewhere.
@@ -510,7 +510,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	{
 		$params 			=& $this->getParams();
 		$joinTable 	= FabrikString::safeColName($params->get('join_db_name'));
-		$join =& $this->getJoin();
+		$join = $this->getJoin();
 		$joinTableName  	=  FabrikString::safeColName($join->table_join_alias);
 		$joinKey		= $this->getJoinValueColumn();
 		$elName 			= FabrikString::safeColName($this->getFullName(false, true, false));
@@ -534,7 +534,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		}
 		$element = $this->getElement();
 		// $$$ hugh - we need to use the join alias, not hard code #__users
-		$join =& $this->getJoin();
+		$join = $this->getJoin();
 		$joinTableName  =  $join->table_join_alias;
 		if (empty($joinTableName)) {
 			$joinTableName = '#__users';
@@ -555,7 +555,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			$this->encryptFieldName($key);
 			return "$key $condition $value";
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		if ($type != 'prefilter') {
 			switch ($element->filter_type) {
@@ -605,7 +605,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	{
 		$key = $this->getFullName(false, true, false) . "_raw";
 		$user  		=& JFactory::getUser((int)$data[$key]);
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$displayParam = $params->get('my_table_data', 'username');
 		return $user->get($displayParam);
 	}
@@ -613,8 +613,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	function getJoinValueColumn()
 	{
 		$params 		=& $this->getParams();
-		$join =& $this->getJoin();
-		$db =& FabrikWorker::getDbo();
+		$join = $this->getJoin();
+		$db = FabrikWorker::getDbo();
 		return $db->nameQuote($join->table_join_alias).'.id';
 	}
 
@@ -639,9 +639,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	public function onCopyRow($val)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('update_on_edit')) {
-			$user =& JFactory::getUser();
+			$user = JFactory::getUser();
 			$val = $user->get('id');
 		}
 		return $val;
@@ -655,9 +655,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	public function onSaveAsCopy($val)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('update_on_copy', false)) {
-			$user =& JFactory::getUser();
+			$user = JFactory::getUser();
 			$val = $user->get('id');
 		}
 		return $val;

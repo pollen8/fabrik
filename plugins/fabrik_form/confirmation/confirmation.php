@@ -65,7 +65,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 
 	protected function clearSession($id)
 	{
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$session->clear('com_fabrik.form.'.$id.'.session.on');
 		$session->clear('com_fabrik.form.'.$id.'.session.hash');
 	}
@@ -96,15 +96,15 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		$this->runAway = true;
 
 		// Initialize some variables
-		$form =& $formModel->getForm();
+		$form = $formModel->getForm();
 		//save the posted form data to the form session, for retrival later
- 		$sessionModel =& JModel::getInstance('Formsession', 'FabrikModel');
+ 		$sessionModel = JModel::getInstance('Formsession', 'FabrikModel');
 		$sessionModel->setFormId($formModel->get('id'));
 		$sessionModel->setRowId(0);
 		$sessionModel->savePage($formModel);
 
 		// tell the form model that it's data is loaded from the session
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$session->set('com_fabrik.form.'.$formModel->_id.'.session.on', true);
 		$session->set('com_fabrik.form.'.$formModel->_id.'.session.hash', $sessionModel->getHash());
 
@@ -114,7 +114,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		$formModel->_editable = false;
 
 		//clear out unwanted buttons
-		$formParams =& $formModel->getParams();
+		$formParams = $formModel->getParams();
 		$formParams->set('reset_button', 0);
 		$formParams->set('goback_button', 0);
 
@@ -123,9 +123,9 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		JRequest::setVar('fabrik_confirmation', 1);
 
 		//set the element access to read only??
-		$groups =& $formModel->getGroupsHiarachy();
+		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$elementModel->getElement()->access = 26;
 			}

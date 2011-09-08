@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 $db = FabrikWorker::getDbo();
-$user =& JFactory::getUser();
+$user = JFactory::getUser();
 
 $ids = JRequest::getVar('ids', array());
 $sql = "SELECT id, title FROM eadtu_project WHERE id IN (" . implode(',', $ids) . ")";

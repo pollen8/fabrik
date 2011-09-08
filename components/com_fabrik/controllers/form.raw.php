@@ -73,7 +73,7 @@ class FabrikControllerForm extends JController
     //only allow cached pages for users not logged in.
     return $view->display();
     if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0) {
-      $cache =& JFactory::getCache('com_fabrik', 'view');
+      $cache = JFactory::getCache('com_fabrik', 'view');
       return $cache->get($view, 'display');
     } else {
       return $view->display();
@@ -101,7 +101,7 @@ class FabrikControllerForm extends JController
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
 		// Check for request forgeries
-		$fbConfig =& JComponentHelper::getParams('com_fabrik');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
 			JRequest::checkToken() or die('Invalid Token');
 		}

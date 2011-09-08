@@ -38,7 +38,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 	}
 
 	function getPlaylist() {
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		$mediaElement 	= $params->get('media_media_elementList');
 		$mediaElement .= '_raw';
@@ -52,10 +52,10 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 
 		$listid 		= $params->get('media_table');
 
-		$listModel =& JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listid);
-		$list =& $listModel->getTable();
-		$form =& $listModel->getFormModel();
+		$list = $listModel->getTable();
+		$form = $listModel->getFormModel();
 		//remove filters?
 		// $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
 		// session state/defaults when it calls getPagination, which is then returned as a cached
@@ -119,12 +119,12 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 
 	function getImageJSData()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$listid 		= $params->get('slideshow_viz_table');
-		$listModel =& JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listid);
-		$table =& $listModel->getTable();
-		$form =& $listModel->getFormModel();
+		$table = $listModel->getTable();
+		$form = $listModel->getFormModel();
 		$nav			=& $listModel->getPagination(0, 0, 0);
 		$listModel->render();
 		$alldata = $listModel->getData();
@@ -176,7 +176,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 
 	function getJS()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$str = "head.ready(function() {\n";
 		$viz = $this->getVisualization();
 
@@ -211,7 +211,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
  	{
  	  $params 		=& $this->getParams();
  	  $listids 	= $params->get('slideshow_viz_table', array(), '_default', 'array');
- 	  $listModels =& $this->getlistModels($listids);
+ 	  $listModels = $this->getlistModels($listids);
  	  $filters = array();
  	  foreach ($listModels as $listModel) {
  	    $filters[$listModel->getTable()->label] = $listModel->getFilters();
@@ -222,7 +222,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->listids = $params->get('slideshow_viz_table', array(), '_default', 'array');
 		}
 	}

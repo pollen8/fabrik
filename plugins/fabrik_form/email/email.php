@@ -54,7 +54,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		$config					= JFactory::getConfig();
 		$db 						= JFactory::getDbo();
 
-		$this->formModel =& $formModel;
+		$this->formModel = $formModel;
 		$formParams			= $formModel->getParams();
 		$emailTemplate	= JPath::clean(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'form'.DS.'fabrikemail'.DS.'tmpl'.DS . $params->get('email_template', ''));
 
@@ -153,7 +153,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		$subject = preg_replace_callback( '/&#([0-9a-fx]+);/mi', array($this, 'replace_num_entity'), $subject);
 
 		$attach_type = $params->get('email_attach_type', '');
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$attach_fname = $config->getValue('config.tmp_path').DS.uniqid().'.'.$attach_type;
 		/* Send email*/
 
@@ -219,10 +219,10 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	{
 		//get attachments
 		$pluginManager = $this->formModel->getPluginManager();
-		$data =& $this->getEmailData();
-		$groups =& $this->formModel->getGroupsHiarachy();
+		$data = $this->getEmailData();
+		$groups = $this->formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 
 				$elName = $elementModel->getFullName(false, true, false);
@@ -323,12 +323,12 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 	protected function _getTextEmail()
 	{
-		$data =& $this->getEmailData();
-		$config =& JFactory::getConfig();
+		$data = $this->getEmailData();
+		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
 		$message = "";
 		$pluginManager =$this->formModel->getPluginManager();
-		$groupModels =& $this->formModel->getGroupsHiarachy();
+		$groupModels = $this->formModel->getGroupsHiarachy();
 		foreach ($groupModels as &$groupModel) {
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as &$elementModel) {

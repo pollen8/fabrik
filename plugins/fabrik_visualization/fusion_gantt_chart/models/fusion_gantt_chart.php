@@ -22,10 +22,10 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		// Include PHP Class
 		include(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'visualization'.DS.'fusion_gantt_chart'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
 		// Add JS to page header
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$document->addScript($this->srcBase."fusion_gantt_chart/FCCharts/FusionCharts.js");
 
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = $params->get('fusion_gantt_chart_width');
 		$h = $params->get('fusion_gantt_chart_height');
 
@@ -44,9 +44,9 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 
 
 		$listid = $params->get('fusion_gantt_chart_table');
-		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
-		$db =& $listModel->getDB();
+		$db = $listModel->getDB();
 		$table = $listModel->getTable()->db_table_name;
 		$process = $params->get('fusion_gantt_chart_process');
 		$processraw = $process.'_raw';
@@ -77,7 +77,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		}
 
 		$listModel->asfields = $fields;
-		$nav =& $listModel->getPagination(0, 0, 0);
+		$nav = $listModel->getPagination(0, 0, 0);
 		$data = $listModel->getData();
 		$data = $data[0];
 
@@ -160,7 +160,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->listids = $params->get('fusion_gantt_chart_table', array(), '_default', 'array');
 		}
 	}

@@ -17,7 +17,7 @@ class Textopoly extends JObject{
   
   function process($message = '')
   {
-    $params =& $this->getParams();
+    $params = $this->getParams();
     $username = $params->get('sms-username');
  	  $password = $params->get('sms-password');
  	  $smsto	  = $params->get('sms-to');

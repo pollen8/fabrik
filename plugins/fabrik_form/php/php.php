@@ -211,7 +211,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 			// $$$ hugh - give them some way of getting at form data
 			// (I'm never sure if $_REQUEST is 'safe', i.e. if it has post-validation data)
 			global $fabrikFormData, $fabrikFormDataWithTableName;
-			// for some reason, =& wasn't working??
+			// for some reason, = wasn't working??
 			$fabrikFormData = $this->_data;
 			$fabrikFormDataWithTableName = $formModel->_formDataWithtableName;
 			$php_file = JFilterInput::clean($params->get('form_php_file'), 'CMD');

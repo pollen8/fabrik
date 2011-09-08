@@ -47,7 +47,7 @@ class imageRender{
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
 		if (JRequest::getVar('view') == 'list') {
-			$listModel =& $model->getlistModel();
+			$listModel = $model->getlistModel();
 			if (array_key_exists($title_name, $oAllRowsData)) {
 				$title = $oAllRowsData->$title_name;
 
@@ -56,7 +56,7 @@ class imageRender{
 		else {
 			if (is_object($model->_form)) {
 				if (is_array($model->_form->_data)) {
-					$group =& $model->getGroup();
+					$group = $model->getGroup();
 					if ($group->isJoin()) {
 						$join_id = $group->getGroup()->join_id;
 						if (isset($model->_form->_data['join'])) {
@@ -81,7 +81,7 @@ class imageRender{
 		$bits = FabrikWorker::JSONtoData($title, true);
 		$title = JArrayHelper::getValue($bits, $model->_repeatGroupCounter, $title);
 		$title = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
-		$element =& $model->getElement();
+		$element = $model->getElement();
 
 		$file = $model->getStorage()->getFileUrl($file);
 

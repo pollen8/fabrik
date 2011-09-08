@@ -84,7 +84,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 			$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 		}
 		else {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			if ($params->get('ip_update_on_edit', 0)) {
 				$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 				$data[$element->name . '_raw'] = $_SERVER['REMOTE_ADDR'];

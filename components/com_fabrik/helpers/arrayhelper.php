@@ -21,7 +21,7 @@ class FArrayHelper extends JArrayHelper
 			if ($pathNodes < 0) {
 				$pathNodes = 0;
 			}
-			$ns =& $array;
+			$ns = $array;
 			for ($i = 0; $i <= $pathNodes; $i ++)
 			{
 				// If any node along the registry path does not exist, create it
@@ -29,11 +29,11 @@ class FArrayHelper extends JArrayHelper
 				if (!isset($ns[$nodes[$i]])) {
 					$ns[$nodes[$i]] = array();
 				}
-				$ns =& $ns[$nodes[$i]];
+				$ns = $ns[$nodes[$i]];
 			}
 			$ns = $val;
 
-			$ns =& $array;
+			$ns = $array;
 			for ($i = 0; $i <= $pathNodes; $i ++)
 			{
 				// If any node along the registry path does not exist, create it
@@ -41,7 +41,7 @@ class FArrayHelper extends JArrayHelper
 				if (!isset($ns[$nodes[$i]])) {
 					$ns[$nodes[$i]] = array();
 				}
-				$ns =& $ns[$nodes[$i]];
+				$ns = $ns[$nodes[$i]];
 			}
 			$ns = $val;
 		} else {

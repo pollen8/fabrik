@@ -45,7 +45,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 				$arSelected = $data[$name];
 			}
 		}
-		$gtree =& $this->getOpts();
+		$gtree = $this->getOpts();
 		if (!$this->_editable) {
 			return $this->renderListData($arSelected[0], null);
 		}
@@ -80,7 +80,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 		}
 		return $options;
 
-		/*$acl =& JFactory::getACL();
+		/*$acl = JFactory::getACL();
 		$gtree = $acl->get_group_children_tree( null, 'USERS', false);
 		$optAll = array(JHTML::_('select.option', '30', ' - Everyone'), JHTML::_('select.option', "26", 'Nobody'));
 		return array_merge($gtree, $optAll);*/
@@ -88,7 +88,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$gtree =& $this->getOpts();
+		$gtree = $this->getOpts();
 		$filter = & JFilterInput::getInstance(null, null, 1, 1);
 		foreach ($gtree as $o) {
 			if ($o->value == $data) {
@@ -102,7 +102,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	 */
 	function getFieldDescription()
 	{
-		$p =& $this->getParams();
+		$p = $this->getParams();
 		if ($this->encryptMe()) {
 			return 'BLOB';
 		}
@@ -117,7 +117,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbAccess('$id', $opts)";
 	}

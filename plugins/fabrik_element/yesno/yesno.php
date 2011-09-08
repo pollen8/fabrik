@@ -47,7 +47,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	function getDefaultValue($data)
 	{
 		if (!isset($this->_default)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->_default = $params->get('yesno_default', 0);
 		}
 		return $this->_default;
@@ -155,8 +155,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$params =& $this->getParams();
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$params = $this->getParams();
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbYesno('$id', $opts)";
 	}

@@ -32,8 +32,8 @@ class plgFabrik_ValidationruleAkismet extends plgFabrik_Validationrule
 
 	function validate($data, &$elementModel, $c)
 	{
-		$params =& $this->getParams();
-		$user =& JFactory::getUser();
+		$params = $this->getParams();
+		$user = JFactory::getUser();
 		if ($params->get('akismet-key') != '')
 		{
 			$username = $user->get('username') != '' ? $user->get('username') : $this->_randomSring();

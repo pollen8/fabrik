@@ -45,8 +45,8 @@ class fabrikViewForm extends JView
       $model->setId($this->_id);
     }
 
-    $form =& $model->getForm();
-    $data =& $model->render();
+    $form = $model->getForm();
+    $data = $model->render();
     list($this->plugintop, $this->pluginbottom ) = $model->_getFormPluginHTML();
 
     if (!$model->canPublish()) {
@@ -71,7 +71,7 @@ class fabrikViewForm extends JView
 		$document->setName($w->parseMessageForPlaceHolder($this->get('PageTitle'), JArrayHelper::fromObject($data)));
 		//$document->_engine->DefOrientation = 'L';
 
-		$params =& $model->getParams();
+		$params = $model->getParams();
     $params->def('icons', $app->getCfg('icons'));
     $pop = JRequest::getVar('tmpl') == 'component' ? 1 : 0;
     $params->set('popup', $pop);

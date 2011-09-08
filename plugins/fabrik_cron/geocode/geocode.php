@@ -32,10 +32,10 @@ class plgFabrik_CronGeocode extends FabrikPlugin {
 	 */
 	function process(&$data, &$listModel)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		// grab the table model and find table name and PK
-		$table =& $listModel->getTable();
+		$table = $listModel->getTable();
 		$table_name 		= $table->db_table_name;
 		$primary_key = $table->db_primary_key;
 		$primary_key_element = FabrikString::shortColName($table->db_primary_key);
@@ -155,9 +155,9 @@ class plgFabrik_CronGeocode extends FabrikPlugin {
 	{
 		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
 		$this->getRow();
-		$pluginParams =& $this->getParams();
+		$pluginParams = $this->getParams();
 
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		?>
 		<div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
 		<b>NOTES</b>

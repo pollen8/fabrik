@@ -21,14 +21,14 @@ class fabrikViewCalendar extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);
-		$this->row =& $model->getVisualization();
+		$this->row = $model->getVisualization();
 		$model->setListIds();
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
-		$calendar =& $model->_row;
+		$calendar = $model->_row;
 		$this->calName = $model->getCalName();
 
 		$canAdd = $this->get('CanAdd');
@@ -38,13 +38,13 @@ class fabrikViewCalendar extends JView
 		}
 		$this->assign('canAdd', $canAdd);
 
-		$fbConfig =& JComponentHelper::getParams('com_fabrik');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 		FabrikHelperHTML::script('media/com_fabrik/js/element.js', true);
 		FabrikHelperHTML::script('media/com_fabrik/js/form.js', true);
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
 		FabrikHelperHTML::script('plugins/fabrik_visualization/calendar/calendar.js', true);
-		$params =& $model->getParams();
+		$params = $model->getParams();
 
 		//Get the active menu item
 		$urlfilters = JRequest::get('get');
@@ -75,7 +75,7 @@ class fabrikViewCalendar extends JView
 		$options->canAdd = $canAdd;
 
 		$options->tmpl = $tmpl;
-		//$formView =& $this->_formView;
+		//$formView = $this->_formView;
 
 		$o = $model->getAddStandardEventFormInfo();
 
@@ -85,12 +85,12 @@ class fabrikViewCalendar extends JView
 			//$options->formid = $o->form_id;
 		}
 
-		//$formModel =& $formView->getModel();
-		//$form =& $formModel->getForm();
+		//$formModel = $formView->getModel();
+		//$form = $formModel->getForm();
 
 		//$$$rob @TODO not sure this is need - it isnt in the timeline viz
 		$model->setRequestFilters();
-		$options->filters =& $model->filters;
+		$options->filters = $model->filters;
 		// end not sure
 		$options->Itemid = $Itemid;
 		$options->show_day 				= $params->get('show_day', true);
@@ -128,7 +128,7 @@ class fabrikViewCalendar extends JView
 		/*if ($o != null) {
 			$str .="  $this->calName.addListenTo('form_{$o->form_id}');\n";
 		}
-		$fids =& $model->getLinkedFormIds();
+		$fids = $model->getLinkedFormIds();
 		foreach ($fids as $fid) {
 			$str .= "  $this->calName.addListenTo('form_$fid');\n";
 		}*/
@@ -137,7 +137,7 @@ class fabrikViewCalendar extends JView
 		FabrikHelperHTML::addScriptDeclaration($str);
 		$viewName = $this->getName();
 
-		$pluginParams =& $model->getPluginParams();
+		$pluginParams = $model->getPluginParams();
 		$this->assignRef('params', $pluginParams);
 		$tmpl = $pluginParams->get('calendar_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'calendar'.DS.'views'.DS.'calendar'.DS.'tmpl'.DS.$tmpl;
@@ -155,14 +155,14 @@ class fabrikViewCalendar extends JView
 	function chooseaddevent()
 	{
 		$view->_layout = 'chooseaddevent';
-		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin =& $pluginManager->getPlugIn('calendar', 'visualization');
-		$model =& $this->getModel();
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
+		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
 
-		$rows =& $model->getEventLists();
-		$o =& $model->getAddStandardEventFormInfo();
+		$rows = $model->getEventLists();
+		$o = $model->getAddStandardEventFormInfo();
 
 		$options = array();
 		$options[] = JHTML::_('select.option', '', JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_SELECT'));
@@ -173,7 +173,7 @@ class fabrikViewCalendar extends JView
 		}
 
 		$model->getEvents();
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$prefix = $config->getValue('config.dbprefix');
 
 		$this->_eventTypeDd = JHTML::_('select.genericlist', array_merge($options, $rows), 'event_type', 'class="inputbox" size="1" ', 'value', 'text', '', 'fabrik_event_type');

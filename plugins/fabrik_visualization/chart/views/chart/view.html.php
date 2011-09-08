@@ -19,14 +19,14 @@ class fabrikViewChart extends JView
 		$model = &$this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
-		$this->row =& $model->getVisualization();
+		$this->row = $model->getVisualization();
 		$model->setListIds();
 
 		if ($this->row->published == 0) {
 			JError::raiseWarning(500, JText::_('ALERTNOTAUTH'));
 			return '';
 		}
-		$calendar =& $model->_row;
+		$calendar = $model->_row;
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
 		if ($this->requiredFiltersFound) {
 			$this->assign('chart', $this->get('Chart'));
@@ -34,14 +34,14 @@ class fabrikViewChart extends JView
 			$this->assign('chart', '');
 		}
 		$viewName = $this->getName();
-		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin =& $pluginManager->getPlugIn('calendar', 'visualization');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
     $this->assignRef('filters', $this->get('Filters'));
     $this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
     $this->assign('filterFormURL', $this->get('FilterFormURL'));
 
-		$pluginParams =& $model->getPluginParams();
+		$pluginParams = $model->getPluginParams();
 		$this->assignRef('params', $pluginParams);
 		$tmpl = $pluginParams->get('chart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'chart'.DS.'views'.DS.'chart'.DS.'tmpl'.DS.$tmpl;

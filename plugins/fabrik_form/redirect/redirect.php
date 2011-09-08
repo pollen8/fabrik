@@ -40,13 +40,13 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$sshowsystemmsg = (array)$session->get($context.'showsystemmsg', array());
 
 		$app = JFactory::getApplication();
-		$this->formModel =& $formModel;
+		$this->formModel = $formModel;
 		$w = new FabrikWorker();
 		$this->_data = new stdClass();
 
 		$this->_data->append_jump_url = $params->get('append_jump_url');
 		$this->_data->save_in_session = $params->get('save_insession');
-		$form =& $formModel->getForm();
+		$form = $formModel->getForm();
 
 		$this->data 		= array_merge($this->getEmailData(), $formModel->_formData);
 		$this->_data->jump_page 			= $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
@@ -108,7 +108,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 
 	function displayThanks($title = '', $message = '')
 	{
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
 		$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
 		$title = (array)$session->get($context.'title', $title);
@@ -186,9 +186,9 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$reserved = array('format','view','layout','task');
 		$queryvars = array();
 		if ($this->_data->append_jump_url == '1') {
-			$groups =& $formModel->getGroupsHiarachy();
+			$groups = $formModel->getGroupsHiarachy();
 			foreach ($groups as $group) {
-				$elements =& $group->getPublishedElements();
+				$elements = $group->getPublishedElements();
 				if ($group->isJoin()) {
 					$tmpData = $formModel->_fullFormData['join'][$group->getGroup()->join_id];
 				} else {
@@ -200,7 +200,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 					if (array_key_exists($name, $tmpData)) {
 						$this->_appendQS($queryvars, $name, $tmpData[$name]);
 					} else {
-						$element =& $elementModel->getElement();
+						$element = $elementModel->getElement();
 						if (array_key_exists($element->name, $tmpData)) {
 							$this->_appendQS($queryvars, $element->name, $tmpData[$element->name]);
 						}
@@ -265,9 +265,9 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 				}
 				*/
 
-			$groups =& $formModel->getGroupsHiarachy();
+			$groups = $formModel->getGroupsHiarachy();
 			foreach ($groups as $group) {
-				$elements =& $group->getPublishedElements();
+				$elements = $group->getPublishedElements();
 				foreach ($elements as $element) {
 
 					if ($group->isJoin()) {
@@ -318,7 +318,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 				}
 			}
 
-			$session =& JFactory::getSession();
+			$session = JFactory::getSession();
 			$registry	=& $session->get('registry');
 
 			//clear registry search form entries
@@ -329,7 +329,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 			}
 			//$session->destroy();
 
-			$listModel =& $formModel->getlistModel();
+			$listModel = $formModel->getlistModel();
 			//check for special fabrik_list_filter_all element!
 			$searchAll = JRequest::getVar($listModel->getTable()->db_table_name .'___fabrik_list_filter_all');
 

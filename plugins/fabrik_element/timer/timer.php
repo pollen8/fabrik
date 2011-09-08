@@ -115,9 +115,9 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 	function elementJavascript($repeatCounter)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->autostart = $params->get('timer_autostart', false);
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_TIMER_START');
@@ -186,7 +186,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 		$sum = 0;
 		foreach ($data as $d) {
 			if ($d != '') {
-				$date =& JFactory::getDate($d);
+				$date = JFactory::getDate($d);
 				$sum += $this->toSeconds($date);
 			}
 		}

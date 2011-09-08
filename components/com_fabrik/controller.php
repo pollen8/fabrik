@@ -78,7 +78,7 @@ class FabrikController extends JController
 		$user = JFactory::getUser();
 
 		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0) {
-			$cache =& JFactory::getCache('com_fabrik', 'view');
+			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display');
 		} else {
 			return $view->display();

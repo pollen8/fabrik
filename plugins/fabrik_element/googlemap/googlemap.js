@@ -1,7 +1,11 @@
 /** call back method when maps api is loaded*/
 function googlemapload(){
 	window.addEvent('domready', function(){
-		window.fireEvent('google.map.loaded');	
+		if (document.body){
+		window.fireEvent('google.map.loaded');
+		}else{
+			console.log('no body');
+		}	
 	})
 }
 

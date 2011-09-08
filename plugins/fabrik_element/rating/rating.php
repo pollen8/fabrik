@@ -38,8 +38,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$user =& JFactory::getUser();
-		$params =& $this->getParams();
+		$user = JFactory::getUser();
+		$params = $this->getParams();
 		$ext = $params->get('rating-pngorgif', '.png');
 		$imagepath = JUri::root().'/plugins/fabrik_element/rating/images/';
 		$data = FabrikWorker::JSONtoData($data, true);
@@ -91,11 +91,11 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	private function _renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('rating-mode') == 'creator-rating') {
 			return $data;
 		} else {
-			$list =& $this->getlistModel()->getTable();
+			$list = $this->getlistModel()->getTable();
 			$listid = $list->id;
 			$formid = $list->form_id;
 			$ids = JArrayHelper::getColumn($this->getListModel()->getData(), '__pk_val');
@@ -121,7 +121,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		}
 		if (!isset($this->avgs)) {
 			JArrayHelper::toInteger($ids);
-			$db =& FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo();
 			$elementid = $this->getElement()->id;
 			// do this  query so that table view only needs one query to load up all ratings
 			$query = "SELECT row_id, AVG(rating) AS r, COUNT(rating) AS total FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int)$listid." AND formid = ".(int)$formid." AND element_id = ".(int)$elementid;
@@ -178,7 +178,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	protected function canRate($row_id = null, $ids = array())
 	{
 		//if (!isset($this->canRate)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			if ($params->get('rating-mode') == 'user-rating') {
 				$this->canRate = true;
 				return true;
@@ -263,7 +263,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	function storeDatabaseFormat($val, $data, $key)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$listid = JRequest::getInt('listid');
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
@@ -291,8 +291,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		if (JRequest::getVar('mode') == 'creator-rating') {
 			// @todo FIX for joins as well
 			//store in elements table as well
-			$db =& $listModel->getDb();
-			$element =& $this->getElement();
+			$db = $listModel->getDb();
+			$element = $this->getElement();
 			$db->setQuery("UPDATE $list->db_table_name SET $element->name = $rating WHERE $list->db_primary_key = " . $db->Quote($row_id));
 			$db->query();
 		}
@@ -317,10 +317,10 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	private function doRating($listid, $formid, $row_id, $rating)
 	{
-		$db =& FabrikWorker::getDbo();
-		$config =& JFactory::getConfig();
+		$db = FabrikWorker::getDbo();
+		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
-		$date =& JFactory::getDate('now', $tzoffset);
+		$date = JFactory::getDate('now', $tzoffset);
 		$strDate = $db->Quote($date->toMySQL());
 		$userid = $db->Quote($this->getStoreUserId($listid, $row_id));
 		$elementid = $this->getElement()->id;
@@ -332,7 +332,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	private function getStoreUserId($listid, $row_id)
 	{
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$userid = (int)$user->get('id');
 		if ($userid === 0) {
 			$hash = $this->getCookieName($listid, $row_id);
@@ -353,8 +353,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	function elementJavascript($repeatCounter)
 	{
-		$user =& JFactory::getUser();
-		$params =& $this->getParams();
+		$user = JFactory::getUser();
+		$params = $this->getParams();
 		if (JRequest::getVar('view') == 'form' && $params->get('rating-rate-in-form', true) == 0) {
 			return;
 		}
@@ -397,11 +397,11 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	function elementListJavascript()
 	{
-		$user =& JFactory::getUser();
-		$params =& $this->getParams();
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
+		$params = $this->getParams();
+		$user = JFactory::getUser();
 		$id = $this->getHTMLId();
-		$list =& $this->getlistModel()->getTable();
+		$list = $this->getlistModel()->getTable();
 		$ext = $params->get('rating-pngorgif', '.png');
 
 		$opts = new stdClass();
@@ -426,7 +426,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$filter_build = $params->get('filter_build_method', 0);
 		if ($filter_build == 0) {
 			$filter_build = $usersConfig->get('filter_build_method');

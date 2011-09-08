@@ -1,5 +1,5 @@
 <div class="fabrik_buttons">
-	<ul class="fabrik_action"><?php if ($this->showAdd) {?>
+	<ul class="fabrik_action neverToggle"><?php if ($this->showAdd) {?>
 		<li class="addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
 				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl, JText::_('COM_FABRIK_ADD'));?>

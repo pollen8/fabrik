@@ -105,13 +105,13 @@ class FabrikFEModelVisualization extends JModel
 
 	protected function &getlistModel($id)
 	{
-		$lists =& $this->getlistModels();
+		$lists = $this->getlistModels();
 		return $lists[$id];
 	}
 
 	function getGalleryTableId()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		return $params->get('gallery_category_table');
 	}
 
@@ -127,8 +127,8 @@ class FabrikFEModelVisualization extends JModel
 
 	function getFilters()
 	{
-		$params =& $this->getParams();
-		$listModels =& $this->getlistModels();
+		$params = $this->getParams();
+		$listModels = $this->getlistModels();
 		$filters = array();
 		foreach ($listModels as $listModel) {
 			$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'vizualization', $this->getVisualization()->id);
@@ -177,9 +177,9 @@ class FabrikFEModelVisualization extends JModel
 
 	function getRequireFilterMsg()
 	{
-		$listModels =& $this->getlistModels();
+		$listModels = $this->getlistModels();
 		foreach ($listModels as $model) {
-			$params =& $model->getParams();
+			$params = $model->getParams();
 
 			$filters	=& $model->getFilterArray();
 
@@ -206,7 +206,7 @@ class FabrikFEModelVisualization extends JModel
 
 	function getRequiredFiltersFound()
 	{
-		$listModels =& $this->getListModels();
+		$listModels = $this->getListModels();
 		$filters = array();
 		foreach ($listModels as $listModel) {
 			if (!$listModel->getRequiredFiltersFound()) {
@@ -224,7 +224,7 @@ class FabrikFEModelVisualization extends JModel
 	function getPluginJsClasses()
 	{
 		$str = array();
-		$listModels =& $this->getListModels();
+		$listModels = $this->getListModels();
 		foreach ($listModels as $model) {
 			$str[] = $model->getPluginJsClasses();
 		}
@@ -239,7 +239,7 @@ class FabrikFEModelVisualization extends JModel
 	function getPluginJsObjects()
 	{
 		$str = array();
-		$listModels =& $this->getListModels();
+		$listModels = $this->getListModels();
 		foreach ($listModels as $model) {
 			$tmp = $model->getPluginJsObjects($this->getContainerId());
 			foreach ($tmp as $t) {

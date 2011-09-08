@@ -22,14 +22,14 @@ class FabrikViewList extends JView{
 
 		$model->setId(JRequest::getVar('listid', $usersConfig->get('listid')));
 		$model->render();
-		$table =& $model->getTable();
+		$table = $model->getTable();
 
 		$document->title = $table->label;
 		$document->description = $table->introduction;
 		$document->copyright = '';
 		$document->listid = $table->id;
 
-		$document->items =& $model->getData();
+		$document->items = $model->getData();
 
 	}
 }

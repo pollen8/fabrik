@@ -20,8 +20,8 @@ class FabrikViewList extends JView{
 	{
 		$app = JFactory::getApplication();
 		$Itemid	= $app->getMenu('site')->getActive()->id;
-		$model =& $this->getModel();
-		$table =& $model->getTable();
+		$model = $this->getModel();
+		$table = $model->getTable();
 		FabrikHelperHTML::slimbox();
 		FabrikHelperHTML::mocha();
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
@@ -82,10 +82,10 @@ class FabrikViewList extends JView{
 		$script .= "\n" . "Fabrik.addBlock('list_".$model->getId()."', list);";
 
 		//add in plugin objects
-		$params =& $model->getParams();
+		$params = $model->getParams();
 		$activePlugins = $params->get('plugin', array(), '_default', 'array');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
-		$plugins =& $pluginManager->getPlugInGroup('list');
+		$plugins = $pluginManager->getPlugInGroup('list');
 
 		FabrikHelperHTML::addScriptDeclaration($script);
 		//reset data back to original settings
@@ -126,11 +126,11 @@ class FabrikViewList extends JView{
 			$document->setTitle($w->parseMessageForPlaceHolder($table->label, $_REQUEST));
 		}
 		$document->setName($w->parseMessageForPlaceHolder($table->label, $_REQUEST));
-		$data =& $model->getData();
+		$data = $model->getData();
 
 		//add in some styling short cuts
 		$c 		= 0;
-		$form =& $model->getForm();
+		$form = $model->getForm();
 		$nav 	=& $model->getPagination();
 
 		foreach ($data as $groupk => $group) {
@@ -148,13 +148,13 @@ class FabrikViewList extends JView{
 				$c = 1-$c;
 			}
 		}
-		$groups =& $form->getGroupsHiarachy();
+		$groups = $form->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
-				$e =& $elementModel->getElement();
+				$e = $elementModel->getElement();
 				$elementModel->setContext($groupModel, $form, $model);
-				$elparams =& $elementModel->getParams();
+				$elparams = $elementModel->getParams();
 				$col 	= $elementModel->getFullName(false, true, false);
 				$col .= "_raw";
 				$rowclass = $elparams->get('use_as_row_class');
@@ -167,13 +167,13 @@ class FabrikViewList extends JView{
 				}
 			}
 		}
-		$this->rows =& $data;
+		$this->rows = $data;
 		reset($this->rows);
 		$firstRow = current($this->rows); //cant use numeric key '0' as group by uses groupd name as key
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow))) ? true : false;
 		$this->tableStyle = $this->nodata ? 'display:none' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
-		$params =& $model->getParams();
+		$params = $model->getParams();
 
 		if (!$model->canPublish()) {
 			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');

@@ -256,7 +256,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			}
 
 			//dont assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
-			//$dispatcher =& JDispatcher::getInstance();
+			//$dispatcher = JDispatcher::getInstance();
 			$dispatcher = new JDispatcher();
 			$groupModels = $form->getGroups();
 			$group = 'element';
@@ -272,7 +272,7 @@ class FabrikFEModelPluginmanager extends JModel{
 				 $pluginModel->_xmlPath = COM_FABRIK_FRONTEND.DS.'plugins'.DS.$group.DS.$element->plugin.DS.$element->plugin.'.xml';
 
 				 $pluginModel->setId($element->id);
-				 $groupModel =& $groupModels[$element->group_id];
+				 $groupModel = $groupModels[$element->group_id];
 
 				 $lang->load('plg_'.$folder.'_'.$element->plugin, $client->path.'/plugins/'.$folder.'/'.$element->plugin, null, false, false)
 				 ||	$lang->load('plg_'.$folder.'_'.$element->plugin, $client->path.'/plugins/'.$folder.'/'.$element->plugin, $lang->getDefault(), false, false);
@@ -335,7 +335,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			$tmethod = 'onForm'.FabrikString::ltrimword($method, 'on');
 			$this->runPlugins($tmethod, $oRequest->getListModel(), 'list');
 		}
-		$params =& $oRequest->getParams();
+		$params = $oRequest->getParams();
 		//$this->getPlugInGroup($type);
 		$return = array();
 		$usedPlugins = (array)$params->get('plugins');
@@ -346,9 +346,9 @@ class FabrikFEModelPluginmanager extends JModel{
 		if ($type != 'list') {
 
 			if (method_exists($oRequest, 'getGroupsHiarachy')) {
-				$groups =& $oRequest->getGroupsHiarachy();
+				$groups = $oRequest->getGroupsHiarachy();
 				foreach ($groups as $groupModel) {
-					$elementModels =& $groupModel->getPublishedElements();
+					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $elementModel) {
 						if (method_exists($elementModel, $method)) {
 							$elementModel->$method($oRequest);
@@ -374,15 +374,15 @@ class FabrikFEModelPluginmanager extends JModel{
 				$plugin->renderOrder = $c;
 				if (method_exists($plugin, $method)) {
 					$modelTable = $oRequest->getTable();
-					$pluginParams =& $plugin->setParams($params, $c);
+					$pluginParams = $plugin->setParams($params, $c);
 
 					$location = JArrayHelper::getValue($usedLocations, $c);
 					$event = JArrayHelper::getValue($usedEvents, $c);
 					if ($plugin->canUse($oRequest, $location, $event) && method_exists($plugin, $method)) {
 						$pluginArgs = array();
 						if (func_num_args() > 3) {
-							$t =& func_get_args();
-							$pluginArgs =& array_splice($t, 3);
+							$t = func_get_args();
+							$pluginArgs = array_splice($t, 3);
 						}
 						$preflightMethod = $method."_preflightCheck";
 						$preflightCheck = method_exists($plugin, $preflightMethod) ? $plugin->$preflightMethod($pluginParams, $oRequest, $pluginArgs) : true;
@@ -427,7 +427,7 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	function pluginExists($group, $plugin)
 	{
-		$plugins =& $this->loadPlugInGroup($group);
+		$plugins = $this->loadPlugInGroup($group);
 		if (in_array($plugin, array_keys($plugins))) {
 			return true;
 		}

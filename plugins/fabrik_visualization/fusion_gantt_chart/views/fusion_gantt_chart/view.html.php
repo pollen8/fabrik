@@ -19,7 +19,7 @@ class fabrikViewFusion_gantt_chart extends JView
 		$model		= &$this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
-		$this->row =& $model->getVisualization();
+		$this->row = $model->getVisualization();
 		$model->setListIds();
 
 
@@ -32,12 +32,12 @@ class fabrikViewFusion_gantt_chart extends JView
 			$this->assign('chart', $this->get('Chart'));
 		}
 		$viewName = $this->getName();
-		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin =& $pluginManager->getPlugIn('calendar', 'visualization');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
     $this->assignRef('filters', $this->get('Filters'));
     $this->assign('showFilters', JRequest::getInt('showfilters', 1));
-		$pluginParams =& $model->getPluginParams();
+		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fusion_gantt_chart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusion_gantt_chart'.DS.'views'.DS.'fusion_gantt_chart'.DS.'tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);

@@ -53,7 +53,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 	private function getFieldValue($params, $pname, $data)
 	{
 		$elementModel = $this->getPluginManager()->getElementPlugin($params->get($pname));
-		$group =& $elementModel->getGroup();
+		$group = $elementModel->getGroup();
 		if ($group->isJoin()) {
 			$data = $data['join'][$group->getGroup()->join_id];
 		}
@@ -88,7 +88,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 				}
 				//@TODO - $$$rob - the $import test below only checks if the LAST query ran ok - should check ALL
 				// Display synchonization result
-				$app =& JFactory::getApplication();
+				$app = JFactory::getApplication();
 				if ($import) {
 					$app->enqueueMessage(JText::sprintf('%s user(s) successfully synchronized from #__users to %s', $count, $tableName));
 				} else {
@@ -203,10 +203,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$usertype_max = (int)$params->get('juser_usertype_max', 1);
 
 		// load in the com_user language file
-		$lang =& JFactory::getLanguage();
+		$lang = JFactory::getLanguage();
 		$lang->load('com_user');
 
-		$data =& $formModel->_formData;
+		$data = $formModel->_formData;
 
 		// Check for request forgeries
 		JRequest::checkToken() or jexit('Invalid Token');
@@ -320,7 +320,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		}
 
 		//$$$tom get password field to use in $origdata object if editing user and not changing password
-		$origdata =& $formModel->_origData;
+		$origdata = $formModel->_origData;
 		$pwfield = $this->passwordfield;
 
 		$post['username']	= $this->usernamevalue;
@@ -519,7 +519,7 @@ echo "<pre>";print_r($user);;
 
 	function onAfterProcess($params, $formModel)
 	{
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		if ((int)$user->get('id') !== 0) {
 			return;
 		}
@@ -551,7 +551,7 @@ echo "<pre>";print_r($user);;
 			//preform the login action
 			$error = $app->login($credentials, $options);
 
-			$session =& JFactory::getSession();
+			$session = JFactory::getSession();
 			$context = 'com_fabrik.form.'.$formModel->_id.'.juser.';
 			$w = new FabrikWorker();
 			if (!JError::isError($error))

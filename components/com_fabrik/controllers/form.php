@@ -107,7 +107,7 @@ class FabrikControllerForm extends JController
 		$viewType	= $document->getType();
 		$view 		= &$this->getView($viewName, $viewType);
 		$model		= &$this->getModel('form', 'FabrikFEModel');
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);
 		}
@@ -117,7 +117,7 @@ class FabrikControllerForm extends JController
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
 		// Check for request forgeries
-		$fbConfig =& JComponentHelper::getParams('com_fabrik');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
 			JRequest::checkToken() or die('Invalid Token');
 		}
@@ -201,7 +201,7 @@ class FabrikControllerForm extends JController
 
 	protected function getRedirectMessage($model)
 	{
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$registry	=& $session->get('registry');
 		$formdata = $session->get('com_fabrik.form.data');
 		//$$$ rob 30/03/2011 if using as a search form don't show record added message
@@ -285,7 +285,7 @@ class FabrikControllerForm extends JController
 		if (!$incSession) {
 			return $url;
 		}
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
 		$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
 		//if the redirect plug-in has set a url use that in preference to the default url
@@ -331,7 +331,7 @@ class FabrikControllerForm extends JController
 	function savepage()
 	{
 		$model		=& $this->getModel('Formsession', 'FabrikFEModel');
-		$formModel =& $this->getModel('Form', 'FabrikFEModel');
+		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$formModel->setId(JRequest::getInt('formid'));
 		$model->savePage($formModel);
 	}
@@ -343,7 +343,7 @@ class FabrikControllerForm extends JController
 
 	function removeSession()
 	{
-		$sessionModel =& $this->getModel('formsession', 'FabrikFEModel');
+		$sessionModel = $this->getModel('formsession', 'FabrikFEModel');
 		$sessionModel->setFormId(JRequest::getInt('formid', 0));
 		$sessionModel->setRowId(JRequest::getInt('rowid', 0));
 		$sessionModel->remove();
@@ -355,7 +355,7 @@ class FabrikControllerForm extends JController
 	 */
 	function paginate()
 	{
-		$model =& $this->getModel('Form', 'FabrikFEModel');
+		$model = $this->getModel('Form', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('formid'));
 		$model->paginateRowId(JRequest::getVar('dir'));
 		$this->display();

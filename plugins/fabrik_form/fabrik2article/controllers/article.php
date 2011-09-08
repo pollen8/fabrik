@@ -46,7 +46,7 @@ class FabrikControllerArticle extends JController {
     }
 
     function execute() {
-        $model =& $this->getModel('Article');
+        $model = $this->getModel('Article');
         $parVal = $this->_params->get('fabrik2article_article_id_element');
         if (empty($parVal)) {
             JError::raiseWarning('ERROR_CODE', JText::_(PARAM_ARTICLE_ID_NOT_SET));
@@ -65,7 +65,7 @@ class FabrikControllerArticle extends JController {
         $model->setCategoryId($this->_params->get('fabrik2article_category', 0));
         $model->setFormModel($this->_formModel);
 
-        $view =& $this->getView('Article');
+        $view = $this->getView('Article');
         $view->setModel($model, true);
 		$view->addSkipElement($model->getArticlePublishElement());
         $view->setTemplate($this->_params->get('fabrik2article_template', 'default'));

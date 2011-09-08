@@ -60,14 +60,14 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 	function process(&$params, &$model)
 	{
 		$ids	= JRequest::getVar('ids', array(), 'method', 'array');
-		//$params =& $model->getParams();
+		//$params = $model->getParams();
 		$download_table = $params->get('download_table');
 		$download_fk = $params->get('download_fk');
 		$download_file = $params->get('download_file');
 		$download_width = $params->get('download_width');
 		$download_height = $params->get('download_height');
 		$download_resize = ($download_width || $download_height) ? true : false;
-		$table =& $model->getTable();
+		$table = $model->getTable();
 		$filelist = array();
 		$zip_err = '';
 
@@ -102,7 +102,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 			if ($download_resize) {
 				ini_set('max_execution_time', 300);
 				require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'image.php');
-				$storage =& $this->getStorage();
+				$storage = $this->getStorage();
 				$download_image_library = $params->get('download_image_library');
 				$oImage 		= imageHelper::loadLib( $download_image_library);
 				$oImage->setStorage($storage);
@@ -188,7 +188,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 	function getStorage()
 	{
 		if (!isset($this->storage)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			//$storageType = $params->get('fileupload_storage_type', 'filesystemstorage');
 			$storageType = 'filesystemstorage';
 			require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_element'.DS.'fileupload'.DS.'adaptors'.DS.$storageType.'.php');

@@ -26,7 +26,7 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$data = $this->format($data);
 		return parent::renderListData($data, $oAllRowsData);
 	}
@@ -44,7 +44,7 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 
 		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'twitter'.DS.'class.twitter.php');
 		$twitter = new twitter();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		static $error;
 		$tmpl = $params->get('twitter_profile_template');
 		$tmpl = str_replace('{screen_name}', $screenName, $tmpl);
@@ -144,7 +144,7 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbTwitter_profile('$id', $opts)";
 	}

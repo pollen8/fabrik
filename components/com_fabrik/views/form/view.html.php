@@ -59,7 +59,7 @@ class fabrikViewForm extends JView
 		}
 		JDEBUG ? $_PROFILER->mark('form view before join group ids got') : null;
 		if (!$listModel->noTable()) {
-			$joins =& $listModel->getJoins();
+			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
 		}
 		$params = $model->getParams();
@@ -279,7 +279,7 @@ class fabrikViewForm extends JView
 		}
 
 		$aWYSIWYGNames = array();
-		// $$$ hugh - yeat another one where if we =&, the $groups array pointer get buggered up and it
+		// $$$ hugh - yeat another one where if we =, the $groups array pointer get buggered up and it
 		// skips a group
 		$groups = $model->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
@@ -294,7 +294,7 @@ class fabrikViewForm extends JView
 				// $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
 				// which we should now be doing ... and getParent() causes an extra table lookup for every child
 				// element on the form.
-				//$element =& $elementModel->getParent();
+				//$element = $elementModel->getParent();
 				$element = $elementModel->getElement();
 				if (!in_array($element->plugin, $aLoadedElementPlugins)) {
 					$aLoadedElementPlugins[] = $element->plugin;
@@ -401,7 +401,7 @@ class fabrikViewForm extends JView
 		$vstr = "\n";
 
 		$str .= "$startJs";
-		$groups =& $model->getGroupsHiarachy();
+		$groups = $model->getGroupsHiarachy();
 
 		// $$$ rob in php5.2.6 (and possibly elsewhere) $groups's elements havent been updated
 		// to contain the default value used by the element
@@ -416,12 +416,12 @@ class fabrikViewForm extends JView
 				continue;
 			}
 			$aObjs = array();
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			// $$$ rob if _repeatTotal is 0 we still want to add the js objects as the els are only hidden
 			$max = $groupModel->_repeatTotal > 0 ? $groupModel->_repeatTotal : 1;
 			$str .= $groupModel->getGroup()->id . ":[";
 			foreach ($elementModels as $elementModel) {
-				$element =& $elementModel->getElement();
+				$element = $elementModel->getElement();
 				if ($element->published == 0) {
 					continue;
 				}
@@ -437,7 +437,7 @@ class fabrikViewForm extends JView
 							$aObjs[] = $ref;
 						}
 
-						$validations =& $elementModel->getValidations();
+						$validations = $elementModel->getValidations();
 						if (!empty($validations) && $elementModel->_editable) {
 							$watchElements = $elementModel->getValidationWatchElements($c);
 							foreach ($watchElements as $watchElement) {
@@ -557,7 +557,7 @@ class fabrikViewForm extends JView
 		$format = $model->isAjax() ? 'raw' : 'html';
 		$aHiddenFields .= "<input type=\"hidden\" name=\"format\" value=\"$format\" />";
 
-		$groups =& $model->getGroupsHiarachy();
+		$groups = $model->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			$group 	=& $groupModel->getGroup();
 			$c 			= $groupModel->_repeatTotal;
@@ -590,7 +590,7 @@ class fabrikViewForm extends JView
 				$key = FabrikString::rtrimword($key, '_raw');
 			}
 			if ($formModel->hasElement($key)) {
-				$elementModel =& $formModel->getElement($key);
+				$elementModel = $formModel->getElement($key);
 				if (!$elementModel->canUse()) {
 					$input = (is_array($input) && array_key_exists('value', $input)) ? $input['value'] : $input;
 					// $$$ hugh - need to check if $value is an array, 'cos if it isn't, like when presetting

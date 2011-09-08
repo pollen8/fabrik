@@ -112,8 +112,8 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$csv->SkipEmptyRows(TRUE); // Will skip empty rows. TRUE by default. (Shown here for example only).
 		$csv->TrimFields(TRUE); // Remove leading and trailing \s and \t. TRUE by default.
 
-		$model =& $this->getlistModel();
-		$tableParams =& $model->getParams();
+		$model = $this->getlistModel();
+		$tableParams = $model->getParams();
 		$mode = $tableParams->get('csvfullname');
 
 		while ($arr_data = $csv->NextLine()) {
@@ -168,16 +168,16 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	function findExistingElements()
 	{
-		$model =& $this->getlistModel();
+		$model = $this->getlistModel();
 		$model->getFormGroupElementData();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginManager->getPlugInGroup('list');
 		$aUsedElements = array();
-		$formModel =& $model->getFormModel();
-		$tableParams =& $model->getParams();
+		$formModel = $model->getFormModel();
+		$tableParams = $model->getParams();
 		$mode = $tableParams->get('csvfullname');
 		$intKey = 0;
-		$groups =& $formModel->getGroupsHiarachy();
+		$groups = $formModel->getGroupsHiarachy();
 
 
 		$elementMap = array();
@@ -187,9 +187,9 @@ class FabrikFEModelImportcsv extends JModelForm{
 			$found = false;
 			foreach ($groups as $groupModel) {
 
-				$elementModels =& $groupModel->getMyElements();
+				$elementModels = $groupModel->getMyElements();
 				foreach ($elementModels as $elementModel) {
-					$element =& $elementModel->getElement();
+					$element = $elementModel->getElement();
 
 
 					switch($mode) {
@@ -208,7 +208,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 						if (!array_key_exists($hkey, $this->matchedHeadings)) {
 							/** heading found in table */
 							$this->matchedHeadings[$hkey] = $element->name;
-							$this->aUsedElements[strtolower($heading )] =& $elementModel;
+							$this->aUsedElements[strtolower($heading )] = $elementModel;
 							$elementMap[$intKey] = clone($elementModel);
 							$rawMap[$intKey] = false;
 							$found = true;
@@ -220,7 +220,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 						if (!array_key_exists($hkey, $this->matchedHeadings)) {
 							/** heading found in table */
 							$this->matchedHeadings[$hkey] = $element->name ."_raw";
-							$this->aUsedElements[strtolower($heading) ."_raw"] =& $elementModel;
+							$this->aUsedElements[strtolower($heading) ."_raw"] = $elementModel;
 							$found = true;
 							$elementMap[$intKey] = clone($elementModel);
 							$rawMap[$intKey] = true;
@@ -236,7 +236,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 			$intKey ++;
 		}
 		foreach ($elementMap as $key => $elementModel) {
-			$element =& $elementModel->getElement();
+			$element = $elementModel->getElement();
 			$elementModel->prepareCSVData($this->data, $key, $rawMap[$key]);
 		}
 	}
@@ -249,15 +249,15 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	protected function defaultsToAdd()
 	{
-		$model =& $this->getListModel();
+		$model = $this->getListModel();
 		$elements = $model->getElements();
 		$defaultsToAdd = array();
 		$elementKeys = array_keys($elements);
 		foreach ($elementKeys as $e) {
 			$e2 = str_replace('`', '', $e);
 			if (!array_key_exists($e2, $this->matchedHeadings)) {
-				$elementModel =& $elements[$e];
-				$defaultsToAdd[FabrikString::safeColNameToArrayKey($e)] =& $elementModel;
+				$elementModel = $elements[$e];
+				$defaultsToAdd[FabrikString::safeColNameToArrayKey($e)] = $elementModel;
 			}
 		}
 		return $defaultsToAdd;
@@ -297,7 +297,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 		$this->addedCount = 0;
 		$updatedCount = 0;
-		$joins =& $this->getJoins();
+		$joins = $this->getJoins();
 		// $$$ rob we are no longer removing the element joins from $joins
 		// so lets see if any of $joins are table joins.
 		$tableJoinsFound = false;
@@ -425,8 +425,8 @@ class FabrikFEModelImportcsv extends JModelForm{
 				}
 			}
 		}
-		$formModel =& $model->getFormModel();
-		$groups =& $formModel->getGroupsHiarachy();
+		$formModel = $model->getFormModel();
+		$groups = $formModel->getGroupsHiarachy();
 
 		$groupids = array();
 		foreach ($groups as $group) {
@@ -479,8 +479,8 @@ class FabrikFEModelImportcsv extends JModelForm{
 	{
 		$origData = $aRow;
 		$overWrite	= JRequest::getInt('overwrite', 0, 'post');
-		$joins =& $this->getJoins();
-		$groups =& $formModel->getGroups();
+		$joins = $this->getJoins();
+		$groups = $formModel->getGroups();
 		if (!empty($joins)) {
 
 			//a new record that will need to be inserted
@@ -503,7 +503,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 				if ((int)$join->element_id != 0) {
 					continue;
 				}
-				$keys =& $this->getJoinPkRecords($join);
+				$keys = $this->getJoinPkRecords($join);
 				if ($overWrite && in_array($pkVal, $keys)) { // not sure 2nd test is right here
 					$origData[$join->table_key] = $pkVal;
 					$updatedCount ++;
@@ -535,13 +535,13 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	function getJoinPkRecords($join)
 	{
-		$model =& $this->getlistModel();
-		$formModel =& $model->getFormModel();
+		$model = $this->getlistModel();
+		$formModel = $model->getFormModel();
 		if (!isset($this->joinpkids)) {
 			$this->joinpkids = array();
 		}
 		if (!array_key_exists($join->id, $this->joinpkids)) {
-			$db =& $model->getDb();
+			$db = $model->getDb();
 			$db->setQuery("SELECT $join->table_key FROM $join->table_join");
 			$this->joinpkids[$join->id] = $db->loadResultArray();
 		}
@@ -556,7 +556,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 	function getJoins()
 	{
 		if (!isset($this->joins)) {
-			$model =& $this->getlistModel();
+			$model = $this->getlistModel();
 			//move the join table data into their own array space
 			$this->joins 	=& $model->getJoins();
 			foreach ($this->joins as $j => $join) {

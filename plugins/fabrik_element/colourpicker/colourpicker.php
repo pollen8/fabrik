@@ -60,11 +60,11 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
-		$data =& $this->_form->_data;
+		$data = $this->_form->_data;
 		$value = $this->getValue($data, $repeatCounter);
 		$vars = explode(",", $value);
 		$vars = array_pad( $vars, 3, 0);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$c = new stdClass();
 		// 14/06/2011 changed over to color param object from ind colour settings
 		$c->red = (int)$vars[0];
@@ -106,7 +106,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 	 */
 	function getFieldDescription()
 	{
-		$p =& $this->getParams();
+		$p = $this->getParams();
 		if ($this->encryptMe()) {
 			return 'BLOB';
 		}

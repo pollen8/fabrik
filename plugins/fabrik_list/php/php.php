@@ -74,7 +74,7 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 
 	function process_result()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$msg = $params->get('table_php_msg', JText::_('PLG_LIST_PHP_CODE_RUN'));
 		return $msg;
 	}

@@ -131,7 +131,7 @@ class FabrikViewList extends JView{
 		//add in plugin objects
 		$params = $model->getParams();
 		//$activePlugins = $params->get('plugins');
-		$pluginManager =& $model->getPluginManager();
+		$pluginManager = $model->getPluginManager();
 		$c = 0;
 
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
@@ -158,7 +158,7 @@ class FabrikViewList extends JView{
 
 	protected function getElementJs()
 	{
-		$model =& $this->getModel();
+		$model = $this->getModel();
 		$model->getElementJs();
 	}
 
@@ -194,7 +194,7 @@ class FabrikViewList extends JView{
 
 		$c = 0;
 		$form = $model->getFormModel();
-		$nav =& $this->get('Pagination');
+		$nav = $this->get('Pagination');
 		foreach ($data as $groupk => $group) {
 			$last_pk = '';
 			$last_i = 0;
@@ -212,9 +212,9 @@ class FabrikViewList extends JView{
 				$num_rows++;
 			}
 		}
-		$groups =& $form->getGroupsHiarachy();
+		$groups = $form->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$elementModel->setContext($groupModel, $form, $model);
 				$col = $elementModel->getFullName(false, true, false);
@@ -234,7 +234,7 @@ class FabrikViewList extends JView{
 				}
 			}
 		}
-		$this->rows =& $data;
+		$this->rows = $data;
 		reset($this->rows);
 
 		$firstRow = current($this->rows); //cant use numeric key '0' as group by uses groupd name as key
@@ -333,7 +333,7 @@ class FabrikViewList extends JView{
 		$this->assignRef('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters start') : null;
-		$this->filters =& $model->getFilters('listform_'. $item->id);
+		$this->filters = $model->getFilters('listform_'. $item->id);
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
 		//$form->getGroupsHiarachy();
@@ -482,8 +482,8 @@ class FabrikViewList extends JView{
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
-		$model =& $this->getModel();
-		$item =& $model->getTable();
+		$model = $this->getModel();
+		$item = $model->getTable();
 
 		$reffer = str_replace('&', '&amp;', JRequest::getVar('REQUEST_URI', '', 'server'));
 		$this->hiddenFields = array();

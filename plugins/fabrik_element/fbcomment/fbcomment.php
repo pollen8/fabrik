@@ -31,7 +31,7 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$str = FabrikHelperHTML::facebookGraphAPI( $params->get('opengraph_applicationid'));
 		//$id = $params->get('fbcomment_uniqueid');
 		$href= $params->get('fbcomment_href');
@@ -52,7 +52,7 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbComment('$id', $opts)";
 	}

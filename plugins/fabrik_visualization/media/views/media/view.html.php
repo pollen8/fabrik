@@ -19,23 +19,23 @@ class fabrikViewMedia extends JView
 		$model		= &$this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
-		$this->row =& $model->getVisualization();
+		$this->row = $model->getVisualization();
 		$model->setListIds();
 
 		if ($this->row->published == 0) {
 			JError::raiseWarning(500, JText::_('ALERTNOTAUTH'));
 			return '';
 		}
-		$calendar =& $model->_row;
+		$calendar = $model->_row;
 		$this->media = $model->getMedia();
 
 		$viewName = $this->getName();
-		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin =& $pluginManager->getPlugIn('calendar', 'visualization');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
-		$pluginParams =& $model->getPluginParams();
+		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('media_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'media'.DS.'views'.DS.'media'.DS.'tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);

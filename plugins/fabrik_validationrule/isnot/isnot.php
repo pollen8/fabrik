@@ -36,7 +36,7 @@ class plgFabrik_ValidationruleIsNot extends plgFabrik_Validationrule
 		if (is_array($data)) {
 			$data = implode('', $data);
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
 		$isnot = $isnot[$c];
 		$isnot = explode('|', $isnot);

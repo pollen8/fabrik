@@ -99,7 +99,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	{
 		FabrikHelperHTML::script('plugins/fabrik_element/digg/table-fabrikdigg.js');
 		$opts = new stdClass();
-		$digg =& $this->getDigg();
+		$digg = $this->getDigg();
 		$opts->livesite = COM_FABRIK_LIVESITE;
 		$opts->row_id = JRequest::getInt('rowid');
 		$opts->voteType = 'comment';
@@ -121,9 +121,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	protected function _internal(&$params, &$formModel)
 	{
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$this->inJDb = $formModel->getTableModel()->inJDb();
-		$this->formModel =& $formModel;
+		$this->formModel = $formModel;
 		JHTML::stylesheet('/plugins/fabrik_form/comment/comments.css');
 		FabrikHelperHTML::script('/plugins/fabrik_form/comment/comments.js');
 		FabrikHelperHTML::script('/plugins/fabrik_form/comment/inlineedit.js');
@@ -134,8 +134,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 			$digopts ="{}";
 		}
 
-		$db =& FabrikWorker::getDbo();
-		$user =& JFactory::getUser();
+		$db = FabrikWorker::getDbo();
+		$user = JFactory::getUser();
 		$data = '<div id="fabrik-comments">';
 		$rowid = JRequest::getVar('rowid');
 		if (strstr($rowid, ':')) {
@@ -143,7 +143,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 			$rowid = array_shift(explode(':', $rowid));
 		}
 
-		$comments =& $this->getComments($formModel->get('id'), $rowid);
+		$comments = $this->getComments($formModel->get('id'), $rowid);
 
 		$data .= "<h3><a href=\"#\" name=\"comments\">";
 		if (empty($comments)) {
@@ -203,7 +203,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function getAddCommentForm($params, $reply_to = 0, $master = false)
 	{
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$anonymous = $params->get('comment-internal-anonymous');
 		if ($user->get('id') == 0 && $anonymous == 0) {
 			return;
@@ -343,7 +343,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function writeComment(&$params, $comment )
 	{
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$name = (int)$comment->annonymous == 0 ? $comment->name : JText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$data = "<div class=\"metadata\">\n$name " . JText::_('PLG_FORM_COMMENT_WROTE_ON') . " <small>".JHTML::date($comment->time_date). "</small>\n";
 
@@ -360,7 +360,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 			$data .= "\n</div>";
 		}
 		if ($this->doDigg()) {
-			$digg =& $this->getDigg();
+			$digg = $this->getDigg();
 			$digg->_editable = true;
 			$digg->commentDigg = true;
 			$digg->commentId = $comment->id;
@@ -431,7 +431,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function onUpdateComment()
 	{
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$id = JRequest::getInt('comment_id');
 		$comment = $db->Quote(JRequest::getVar('comment'));
 		$db->setQuery("UPDATE #__{package}_comments SET comment = $comment WHERE id = $id");
@@ -442,7 +442,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	{
 		$formModel = JModel::getInstance('form', 'FabrikFEModel');
 		$formModel->setId(JRequest::getVar('formid'));
-		$this->formModel =& $formModel;
+		$this->formModel = $formModel;
 		return $this->formModel;
 	}
 	/**
@@ -451,8 +451,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function onAddComment()
 	{
-		$db =& FabrikWorker::getDbo();
-		$user =& JFactory::getUser();
+		$db = FabrikWorker::getDbo();
+		$user = JFactory::getUser();
 		$row = FabTable::getInstance('comment', 'FabrikTable');// new TableComment($db);
 		$row->bind( JRequest::get('request'));
 		$row->ipaddress = $_SERVER['REMOTE_ADDR'];
@@ -470,11 +470,11 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		//load up the correct params for the plugin -
 		//first load all form params
 		$formModel = $this->setFormModel();
-		$params =& $formModel->getParams();
+		$params = $formModel->getParams();
 		$tmp = array();
 		$this->renderOrder = JRequest::getVar('renderOrder', 2);
 		//then map that data (for correct render order) onto this plugins params
-		$params =& $this->setParams($params, $this->renderOrder);
+		$params = $this->setParams($params, $this->renderOrder);
 		$res = $row->store();
 		if ($res === false) {
 			echo $row->getError();
@@ -506,9 +506,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function addNotificationEvent($row, $formModel)
 	{
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$event = $db->Quote('COMMENT_ADDED');
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$user_id = (int)$user->get('id');
 		$ref = $db->Quote($formModel->getlistModel()->getTable()->id.'.'.$formModel->get('id').'.'.JRequest::getVar('rowid'));
 		$date = $db->Quote(JFactory::getDate()->toMySQL());
@@ -527,15 +527,15 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function saveNotificationToPlugin($row, $comments, $formModel)
 	{
-		$db =& FabrikWorker::getDbo();
-		$user =& JFactory::getUser();
+		$db = FabrikWorker::getDbo();
+		$user = JFactory::getUser();
 		$user_id = (int)$user->get('id');
 		$label = $db->Quote(JRequest::getVar('label'));
 		$ref = $db->Quote($formModel->getlistModel()->getTable()->id.'.'.$formModel->get('id').'.'.JRequest::getVar('rowid'));
 		$db->setQuery("INSERT INTO #__{package}_notification (`reason`, `user_id`, `reference`, `label`) VALUES ('commentor', $user_id, $ref, $label)");
 		$db->query();
 
-		$params =& $formModel->getParams();
+		$params = $formModel->getParams();
 		if ($params->get('comment-notify-admins') == 1) {
 		$rows = $this->getAdminInfo();
 
@@ -562,7 +562,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	private function doDigg()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		return $params->get('comment-digg') && $this->formModel->getPluginManager()->pluginExists('element', 'digg');
 	}
 
@@ -575,9 +575,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function sentNotifications($row, $comments, $formModel)
 	{
-		$db =& FabrikWorker::getDbo();
-		$user =& JFactory::getUser();
-		$app =& JFactory::getApplication();
+		$db = FabrikWorker::getDbo();
+		$user = JFactory::getUser();
+		$app = JFactory::getApplication();
 		$sentto = array();
 		$title = JText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED_TITLE');
 		$message = JText::_('PLG_FORM_COMMENT_NEW_COMMENT_ADDED');
@@ -594,8 +594,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 			}
 		}
 		//notify original poster (hack for ideenbus
-		$listModel =& $formModel->getlistModel();
-		$rowdata =& $listModel->getRow($row->row_id);
+		$listModel = $formModel->getlistModel();
+		$rowdata = $listModel->getRow($row->row_id);
 		if (!in_array($rowdata->ide_idea___email_raw, $sentto)) {
 			JUtility::sendMail($app->getCfg( 'mailfrom'), $app->getCfg( 'fromname'), $rowdata->ide_idea___email_raw, $title, $message, true);
 			$sentto[] = $rowdata->ide_idea___email_raw;
@@ -621,7 +621,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	{
 		$commentid = JRequest::getInt('commentid');
 		//TableComment
-		$c =& FabTable::getInstance('Comment', 'FabrikTable');
+		$c = FabTable::getInstance('Comment', 'FabrikTable');
 		$c->load($commentid);
 		echo "<a href=\"mailto:$c->email\">$c->email</a>";
 	}

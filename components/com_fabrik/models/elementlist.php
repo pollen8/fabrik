@@ -269,7 +269,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$valueKey = $repeatCounter . serialize($opts);
 		if (!array_key_exists($valueKey, $this->defaults)) {
 			$default = '';
-			$groupModel =& $this->_group;
+			$groupModel = $this->_group;
 			$group			=& $groupModel->getGroup();
 			$joinid			= $group->join_id;
 			$formModel 	=& $this->getForm();
@@ -322,7 +322,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				$default = JArrayHelper::getValue($data, $name);
 			}
 			$element->default = $default;
-			$formModel =& $this->getForm();
+			$formModel = $this->getForm();
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
 				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);

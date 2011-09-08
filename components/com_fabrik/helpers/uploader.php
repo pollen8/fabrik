@@ -18,7 +18,7 @@ class uploader extends JObject
 
 	function uploader(&$oForm)
 	{
-		$this->_form =& $oForm;
+		$this->_form = $oForm;
 	}
 
 	/**
@@ -28,9 +28,9 @@ class uploader extends JObject
 
 	function upload()
 	{
-		$groups =& $this->_form->getGroupsHiarachy();
+		$groups = $this->_form->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				if ($elementModel->isUpload()) {
 					$elementModel->processUpload();

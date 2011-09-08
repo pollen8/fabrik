@@ -44,7 +44,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function &getEventLists()
 	{
 		if (is_null($this->_eventLists)) {
-			$db =& FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo();
 			$params	= $this->getPluginParams();
 			$lists = (array)$params->get('calendar_table');
 			JArrayHelper::toInteger($lists);
@@ -64,26 +64,26 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 				$rows[$i]->label_element = $labels[$i];
 				$rows[$i]->colour = $colours[$i];
 			}
-			$this->_eventLists =& $rows;
+			$this->_eventLists = $rows;
 		}
 		return $this->_eventLists;
 	}
 
 	function getAddStandardEventFormId()
 	{
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$prefix = $config->getValue('config.dbprefix');
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$db->setQuery("SELECT form_id FROM #__{package}_tables WHERE db_table_name = '{$prefix}fabrik_calendar_events' AND private = '1'");
 		return $db->loadResult();
 	}
 
 	function getAddStandardEventFormInfo()
 	{
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$prefix = $config->getValue('config.dbprefix');
-		$params =& $this->getParams();
-		$db =& FabrikWorker::getDbo();
+		$params = $this->getParams();
+		$db = FabrikWorker::getDbo();
 		$db->setQuery("SELECT form_id, id FROM #__{package}_tables WHERE db_table_name = '{$prefix}fabrik_calendar_events' AND private = '1'");
 		$o = $db->loadObject();
 		if (is_object($o)) {
@@ -132,7 +132,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function setupEvents()
 	{
 		if (is_null($this->_events)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$tables = (array)$params->get('calendar_table');
 			$table_label = (array)$params->get('calendar_label_element');
 			$table_startdate = (array)$params->get('calendar_startdate_element');
@@ -140,10 +140,10 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 			$colour	= (array)$params->get('colour');
 			$this->_events = array();
 			for ($i=0; $i<count($tables); $i++) {
-				$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+				$listModel = JModel::getInstance('list', 'FabrikFEModel');
 				if ($tables[$i] != 'undefined') {
 					$listModel->setId($tables[$i]);
-					$table =& $listModel->getTable();
+					$table = $listModel->getTable();
 					$endDate = JArrayHelper::getValue($table_enddate, $i, '');
 					$startDate = JArrayHelper::getValue($table_startdate, $i, '');
 
@@ -206,13 +206,13 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function setRequestFilters()
 	{
 		$this->setupEvents();
-		$request =& JRequest::get('request');
-		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+		$request = JRequest::get('request');
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 
 		foreach ($this->_events as $tableId	 => $record) {
 			$listModel->setId($tableId);
-			$table =& $listModel->getTable();
-			$formModel =& $listModel->getFormModel();
+			$table = $listModel->getTable();
+			$formModel = $listModel->getFormModel();
 			foreach ($request as $key=>$val) {
 				if ($formModel->hasElement($key)) {
 					$o = new stdClass();
@@ -231,10 +231,10 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function getCanAdd()
 	{
 		if (!isset($this->canAdd)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$tables = $params->get('calendar_table', array(), '_default',  'array');
 			foreach ($tables as $tid) {
-				$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+				$listModel = JModel::getInstance('list', 'FabrikFEModel');
 				$listModel->setId($tid);
 				if (!$listModel->canAdd()) {
 					$this->canAdd = false;
@@ -257,7 +257,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$Itemid	= @(int)$app->getMenu('site')->getActive()->id;
 		$session 		=& JFactory::getSession();
 		$db					=& FabrikWorker::getDbo();
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$tzoffset = (int)$config->getValue('config.offset');
 
 		$this->setupEvents();
@@ -266,14 +266,14 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$aLegend 		= "$this->calName.addLegend([";
 		$jsevents 	= array();
 		foreach ($this->_events as $tableId	=> $record) {
-			$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($tableId);
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 
 			$els = $listModel->getElements();
 			foreach ($record as $data) {
 
-				$db =& $listModel->getDb();
+				$db = $listModel->getDb();
 				$startdate = trim($data['startdate']) !== '' ? FabrikString::safeColName($data['startdate']) : "''";
 				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
 				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
@@ -334,7 +334,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 				}
 			}
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$addEvent = json_encode($jsevents);
 		return $addEvent;
 	}
@@ -343,7 +343,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function getLegend()
 	{
 		$db		=& FabrikWorker::getDbo();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$this->setupEvents();
 		$tables 			= $params->get('calendar_table', '', '_default',  'array');
 		$colour 		= $params->get('colour', '#ccccff', '_default',  'array');
@@ -351,9 +351,9 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();
 		foreach ($this->_events as $tableId	 => $record) {
-			$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($tableId);
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 			foreach ($record as $data) {
 				$rubbish = $table->db_table_name . '___';
 				$colour 	= FabrikString::ltrimword($data['colour'], $rubbish);
@@ -367,7 +367,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function getCalName()
 	{
 		if(is_null($this->calName)) {
-			$calendar =& $this->_row;
+			$calendar = $this->_row;
 			$this->calName = "oCalendar{$calendar->id}";
 		}
 		return $this->calName;
@@ -386,11 +386,11 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	{
 		$id = (int)JRequest::getVar('id');
 		$listid = JRequest::getInt('listid');
-		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
-		$list =& $listModel->getTable();
-		$tableDb =& $listModel->getDb();
-		$db =& FabrikWorker::getDbo();
+		$list = $listModel->getTable();
+		$tableDb = $listModel->getDb();
+		$db = FabrikWorker::getDbo();
 		$db->setQuery("SELECT db_table_name FROM #__{package}_lists WHERE id = $listid");
 		$tablename = $db->loadResult();
 		$tableDb->setQuery("DELETE FROM ".FabrikString::safeColName($tablename)." WHERE $list->db_primary_key = $id");

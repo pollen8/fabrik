@@ -47,7 +47,7 @@ class plgFabrik_FormVbForum extends plgFabrik_Form {
 
 		$elementModel = $formModel->getPluginManager()->getElementPlugin($params->get('vb_forum_field'));
 
-		$element =& $elementModel->getElement(true);
+		$element = $elementModel->getElement(true);
 		$this->map_forum_field = $elementModel->getFullName();
 
 		$this->vb_parent_forum = $params->get('vb_parent', '');

@@ -3,7 +3,7 @@
 defined('_JEXEC') or die('Restricted Access');
 
 /*
-$model =& $this->getModel();
+$model = $this->getModel();
 $css_files = $model->getArticleCss('default');
 foreach ($css_files as $css_file) {
 	echo '<link rel="stylesheet" href="' . $css_file . '" type="text/css" />';

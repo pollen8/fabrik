@@ -58,7 +58,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$this->defaults = array();
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
-			$groupModel =& $this->_group;
+			$groupModel = $this->_group;
 			$group			=& $groupModel->getGroup();
 			$joinid			= $group->join_id;
 			$formModel 	=& $this->getForm();
@@ -131,7 +131,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	{
 		//$data = explode(GROUPSPLITTER, $data);
 		$data = json_decode($data, true);
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$selectImage_root_folder = ltrim($selectImage_root_folder, '/');
@@ -164,8 +164,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function storeDatabaseFormat($val, $data)
 	{
-		$groupModel =& $this->getGroup();
-		$params =& $this->getParams();
+		$groupModel = $this->getGroup();
+		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
 
 		$key = $this->getFullName(false, true, false);
@@ -215,7 +215,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function renderListData_rss($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
 		return "<img src='" . COM_FABRIK_LIVESITE  . 'images/stories/' . $selectImage_root_folder . '/'. $data . "' />";
 	}
@@ -321,7 +321,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
 		$selRoot = COM_FABRIK_LIVESITE.'images/stories/'.$params->get('selectImage_root_folder', '');
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rootPath = 'images/stories/'.$params->get('selectImage_root_folder', '');
 		$opts->canSelect = $params->get('image_front_end_select', false);
 		$opts->id = $element->id;
@@ -344,7 +344,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		 * accessing (and hance slowing down to a crawl the loading of this page)
 		 * then put the folders in the $ignoreFolders array
 		 */
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$images 	= array();
 		$folders 	= array();
 		$path 		= $params->get('imagepath', '/');
@@ -367,8 +367,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	function renderAdminSettings(&$lists)
 	{
 		return;
-		$params =& $this->getParams();
-		$pluginParams =& $this->getPluginParams();
+		$params = $this->getParams();
+		$pluginParams = $this->getPluginParams();
 		$this->getAdminLists( $lists);
 		?>
 <script language="javascript" type="text/javascript">

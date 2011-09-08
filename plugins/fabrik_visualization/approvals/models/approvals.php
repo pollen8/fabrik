@@ -18,7 +18,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 
 	function getRows()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$ids = (array)$params->get('approvals_table');
 		$approveEls = (array)$params->get('approvals_approve_element');
 		$titles = (array)$params->get('approvals_title_element');
@@ -81,7 +81,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 
 	protected function decide($v)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$ids = (array)$params->get('approvals_table');
 		$approveEls = (array)$params->get('approvals_approve_element');
 		foreach ($ids as $key => $listid) {

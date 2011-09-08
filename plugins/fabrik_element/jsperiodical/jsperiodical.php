@@ -23,7 +23,7 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$format = $params->get('text_format_string');
 		if ($format  != '') {
 			 $str = sprintf($format, $data);
@@ -94,7 +94,7 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->code = $params->get('jsperiod_code');
 		$opts->period = $params->get('jsperiod_period');
 		$opts = json_encode($opts);

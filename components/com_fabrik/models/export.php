@@ -77,9 +77,9 @@ class FabrikFEModelExport {
 	 	$templatePath = JPATH_SITE . '/components/com_fabrik/tmpl/form/';
 	 	$aFiles = array();
 	 	foreach ($this->_aTables as $listModel) {
-	 		$table =& $listModel->getTable();
-	 		$formModel =& $listModel->getForm();
-	 		$form =& $formModel->getForm();
+	 		$table = $listModel->getTable();
+	 		$formModel = $listModel->getForm();
+	 		$form = $formModel->getForm();
 	 		if (!in_array('table/' . $table->template, $aFiles)) {
 	 			$aFiles[] = 'table/' . $table->template;
 	 		}
@@ -144,8 +144,8 @@ class FabrikFEModelExport {
 
 		$aTableObjs = array();
 
-		$tables =& $this->packageModel->_tables;
-		$forms =& $this->packageModel->_forms;
+		$tables = $this->packageModel->_tables;
+		$forms = $this->packageModel->_forms;
 		if ($this->fabrikData) {
 
 			$strXML .= "<tables>\n";
@@ -185,7 +185,7 @@ class FabrikFEModelExport {
 
 				$i = 0;
 				foreach ($groups as $groupModel) {
-					$group =& $groupModel->getGroup();
+					$group = $groupModel->getGroup();
 					$vars = get_object_vars($group);
 					$strXML .= "\t<group form_id=\"" . $listModel->_oForm->_id  ."\" ordering=\"" . $i  ."\">\n";
 					foreach ($vars as $key=>$val) {
@@ -197,9 +197,9 @@ class FabrikFEModelExport {
 						}
 					}
 					$strXML .= "\t</group>\n";
-					$elementModels =& $groupModel->getPublishedElements();
+					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $elementModel) {
-						$element =& $elementModel->getElement();
+						$element = $elementModel->getElement();
 						$vars = get_object_vars($element);
 						$strElementXML .= "\t<element>\n";
 						foreach ($vars as $key=>$val) {
@@ -325,7 +325,7 @@ class FabrikFEModelExport {
 		$id 	= $this->tableIds[0];
 		$listModel->setId($id);
 		$listModel->_outPutFormat = 'csv';
-		$table =& $listModel->getTable();
+		$table = $listModel->getTable();
 		header('Content-Type: text/plain');
 		header('Content-Disposition: attachment; filename="' . $table->label . '-export.csv"');
 		$aTable 	= JArrayHelper::fromObject($table);

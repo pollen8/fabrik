@@ -17,7 +17,7 @@ class fabrikViewFusionchart extends JView
 		$model = &$this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
-		$this->row =& $model->getVisualization();
+		$this->row = $model->getVisualization();
 		$model->setListIds();
 
 		if ($this->row->published == 0) {
@@ -32,13 +32,13 @@ class fabrikViewFusionchart extends JView
 		}
 
 		$viewName = $this->getName();
-		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin =& $pluginManager->getPlugIn('calendar', 'visualization');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
-		$pluginParams =& $model->getPluginParams();
+		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fusionchart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusionchart'.DS.'views'.DS.'fusionchart'.DS.'tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);

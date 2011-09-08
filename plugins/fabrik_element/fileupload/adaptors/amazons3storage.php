@@ -27,7 +27,7 @@ class amazons3storage extends storageAdaptor{
 
 	function getBucketName()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		return $params->get('fileupload_aws_bucketname', 'robclayburnsfabrik');
 	}
 
@@ -79,7 +79,7 @@ class amazons3storage extends storageAdaptor{
 	private function bucketExists()
 	{
 		$bucket = $this->getBucketName();
-		$buckets =& $this->s3->listBuckets();
+		$buckets = $this->s3->listBuckets();
 		if (!is_array($buckets)) {
 			return false;
 		}
@@ -170,7 +170,7 @@ class amazons3storage extends storageAdaptor{
 	function cleanName($filename, $repeatGroupCounter)
 	{
 		// $$$peamak: add random filename
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('random_filename') == 1) {
 	 				$length = $params->get('length_random_filename');
 					$key = "";
@@ -216,7 +216,7 @@ class amazons3storage extends storageAdaptor{
 
 	function _getThumb($file)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = new FabrikWorker();
 
 		$ulDir = COM_FABRIK_BASE.$params->get('ul_directory');
@@ -244,7 +244,7 @@ class amazons3storage extends storageAdaptor{
 
 	function _getCropped( $file )
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = new FabrikWorker();
 
 		$ulDir = COM_FABRIK_BASE.$params->get('ul_directory');

@@ -394,7 +394,7 @@ class FabrikWorker {
 
 		function replaceRequest(&$msg)
 		{
-			$request =& JRequest::get('request');
+			$request = JRequest::get('request');
 			foreach ($request as $key => $val) {
 				if (is_string($val)) {
 					// $$$ hugh - escape the key so preg_replace won't puke if key contains /
@@ -488,7 +488,7 @@ class FabrikWorker {
 				$bits = explode('->', str_replace(array('{', '}'), '', $match));
 				$userid = JRequest::getInt(JArrayHelper::getValue($bits, 1));
 				if ($userid !== 0) {
-					$user =& JFactory::getUser($userid);
+					$user = JFactory::getUser($userid);
 					$val = $user->get(JArrayHelper::getValue($bits, 2));
 					$msg = str_replace($match, $val, $msg);
 				}
@@ -811,7 +811,7 @@ class FabrikWorker {
 			if ($jsonEncode) {
 				$msg = json_encode($msg);
 			}
-			$log =& JTable::getInstance('log', 'Table');
+			$log = JTable::getInstance('log', 'Table');
 			$log->message_type = $type;
 			$log->message = $msg;
 			$log->store();

@@ -80,7 +80,7 @@ class plgFabrik_ValidationruleRegex extends plgFabrik_Validationrule
 		if (is_array($data)) {
 			$data = implode('', $data);
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$domatch = $params->get('regex-match');
 		$domatch = $domatch[$c];
 		if ($domatch) {

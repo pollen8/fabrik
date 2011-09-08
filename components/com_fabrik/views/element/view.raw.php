@@ -33,7 +33,7 @@ class FabrikViewElement extends JView{
 		$elementid = JRequest::getVar('elid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
-		$plugin =& $pluginManager->getPlugIn($className, 'element');
+		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$plugin->inLineEdit();
 	}

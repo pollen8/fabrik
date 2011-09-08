@@ -48,7 +48,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 	function getChart()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$this->calc_prefixmap = array('sum___' => 'sums', 'avg___' => 'avgs', 'med___' => 'medians', 'cnt___' => 'count');
 		$w = (int)$params->get('chart_width', 200);
 		$h = (int)$params->get('chart_height', 200);
@@ -206,7 +206,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 	protected function getColours()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$fillGraphs = $params->get('fill_line_graph');
 		$chartColours = $params->get('chart_colours', array(), '_default', 'array');
 		$gcolours = array();
@@ -228,7 +228,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 	protected function horizontalBarChart($c, $gdata, $gsums)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$chds_override		= $params->get('chart_chds', '');
 		$chds_override 		= trim(str_replace('|',',',$chds_override),'|');
 		$axisLabels = implode("|", $this->getAxisLabels($c));
@@ -263,7 +263,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 	protected function defaultChart($c, $gdata, $gsums)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$minmax = $this->getMinMax($gdata, $gsums);
 		$measurement_unit = JArrayHelper::getValue($measurement_units, $c, '');
 		$chds_override		= $params->get('chart_chds', '');
@@ -303,7 +303,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 			$tmodels = array();
 
 			$this->tableData = array();
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$listid = $params->get('chart_table', array(), '_default', 'array');
 			$chartWheres = $params->get('chart_where', array(), '_default', 'array');
 
@@ -311,15 +311,15 @@ class fabrikModelChart extends FabrikFEModelVisualization
 			foreach ($listid as $lid) {
 				if (!array_key_exists($lid, $tmodels)) {
 					$listModel = null;
-					$listModel =& JModel::getInstance('List', 'FabrikFEModel');
+					$listModel = JModel::getInstance('List', 'FabrikFEModel');
 					$listModel->setId($lid);
 					$tmodels[$lid] = $listModel;
 				} else {
 					$listModel = $tmodels[$lid];
 				}
 
-				$list =& $listModel->getTable();
-				$form =& $listModel->getForm();
+				$list = $listModel->getTable();
+				$form = $listModel->getForm();
 
 				// $$$ hugh - testing hack to let plugins add WHERE clauses
 				if (array_key_exists($c, $chartWheres) && !empty($chartWheres[$c])) {
@@ -353,7 +353,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		if (isset($this->axisLabels)) {
 			return $this->axisLabels;
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$graph =$params->get('graph_type');
 		$chartElements 	= $params->get('chart_elementList', array(), '_default', 'array');
 		$x_axis_label 	= $params->get('x_axis_label', array(), '_default', 'array');
@@ -430,7 +430,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	{
 		if (!isset($this->calcfound)) {
 			$this->calcfound = false;
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$chartElements = $params->get('chart_elementList', array(), '_default', 'array');
 			$listid = $params->get('chart_table', array(), '_default', 'array');
 			$calc_prefixes = array('sum___', 'avg___', 'med___', 'cnt___');
@@ -453,10 +453,10 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 	protected function pieChart($c, $gdata, $gsums)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$legends = $params->get('graph_show_legend', '');
 		$fillGraphs = false;
-		$axisLabels =& $this->getAxisLabels($c);
+		$axisLabels = $this->getAxisLabels($c);
 		if ($c > 1) {
 			// mutiple table/elements, so use the sums
 			// need to scale our data into percentages
@@ -506,7 +506,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->listids = $params->get('chart_table', array(), '_default', 'array');
 		}
 	}

@@ -34,7 +34,7 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 		if (is_array($data)) {
 			$data = implode('', $data);
 		}
- 		$params =& $this->getParams();
+ 		$params = $this->getParams();
  		$formdata = $element->getForm()->_formData;
  		$cond = $params->get('isgreaterorlessthan-greaterthan');
  		$cond = $cond[$c] == '1' ? '>' : '<';

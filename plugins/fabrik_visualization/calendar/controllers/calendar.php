@@ -93,14 +93,14 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		if (array_key_exists($listid, $model->_events)) {
 			$datefield = $model->_events[$listid][0]['startdate'];
 		} else {
-			$config =& JFactory::getConfig();
+			$config = JFactory::getConfig();
 			$prefix = $config->getValue('config.dbprefix');
 			$datefield = $prefix.'fabrik_calendar_events___start_date';
 		}
 		$rowid = JRequest::getInt('rowid');
-		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
-		$table =& $listModel->getTable();
+		$table = $listModel->getTable();
 		JRequest::setVar('view', 'form');
 		JRequest::setVar('formid', $table->form_id);
 		JRequest::setVar('tmpl', 'component');

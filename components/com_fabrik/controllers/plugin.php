@@ -90,13 +90,13 @@ class FabrikControllerPlugin extends JController
 		$c = 0;
 		foreach ($rows as $row) {
 			//load in the plugin
-			$plugin =& $pluginManager->getPlugIn($row->plugin, 'cron');
+			$plugin = $pluginManager->getPlugIn($row->plugin, 'cron');
 			$plugin->setId($row->id);
-			$params =& $plugin->getParams();
+			$params = $plugin->getParams();
 
 			$thisListModel = clone($listModel);
 			$thisListModel->setId($params->get('table'));
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 			// $$$ hugh @TODO - really think we need to add two more options to the cron plugins
 			// 1) "Load rows?" because it really may not be practical to load ALL rows into $data
 			// on large tables, and the plugin itself may not need all data.
@@ -104,7 +104,7 @@ class FabrikControllerPlugin extends JController
 			// jobs, as they are run with access of whoever happened to hit the page at the time
 			// the cron was due to run, so it's pot luck as to what pre-filters get applied.
 			$total 						= $thisListModel->getTotalRecords();
-			$nav =& $thisListModel->getPagination($total, 0, $total);
+			$nav = $thisListModel->getPagination($total, 0, $total);
 			$data  = $thisListModel->getData();
 			// $$$ hugh - added table model param, in case plugin wants to do further table processing
 			$c = $c + $plugin->process($data, $thisListModel);

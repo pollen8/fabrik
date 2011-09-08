@@ -35,7 +35,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 	protected function getChartParams()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$strParam = 'caption='.$params->get('fusionchart_caption', '');
 
 		// Graph attributes
@@ -242,7 +242,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 	protected function setChartMessages(&$FC)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		// Graph Messages
 		if ($params->get('fusionchart_message_loading')) {
 			$FC->setChartMessage("PBarLoadingText=".$params->get('fusionchart_message_loading', 'Please Wait.The chart is loading...'));
@@ -260,10 +260,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		// Include PHP Class
 		require_once($this->pathBase.'fusionchart'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
 		// Add JS to page header
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$document->addScript($this->srcBase."fusionchart/FCcharts/FusionCharts.js");
 
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$calc_prefixes = array('sum___', 'avg___', 'med___', 'cnt___');
 		$calc_prefixmap = array('sum___' => 'sums', 'avg___' => 'avgs', 'med___' => 'medians', 'cnt___' => 'count');
 		$w = $params->get('fusionchart_width');
@@ -307,15 +307,15 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		foreach ($listid as $tid) {
 		  if (!array_key_exists($tid, $tmodels)) {
 				$listModel = null;
-				$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+				$listModel = JModel::getInstance('list', 'FabrikFEModel');
 				$listModel->setId($tid);
 				$tmodels[$tid] = $listModel;
 		  } else {
 		    $listModel = $tmodels[$tid];
 		  }
 
-			$table =& $listModel->getTable();
-			$form =& $listModel->getForm();
+			$table = $listModel->getTable();
+			$form = $listModel->getForm();
 			//remove filters?
 			// $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
 			// session state/defaults when it calls getPagination, which is then returned as a cached
@@ -697,7 +697,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->listids = $params->get('fusionchart_table', array(), '_default', 'array');
 		}
 	}

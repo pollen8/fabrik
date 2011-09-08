@@ -69,9 +69,9 @@ class FabrikControllerVisualization extends JController
 		} else {
 			$post = JRequest::get('post');
 			//build unique cache id on url, post and user id
-			$user =& JFactory::getUser();
+			$user = JFactory::getUser();
 			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
-			$cache =& JFactory::getCache('com_fabrik', 'view');
+			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
 		}
 	}

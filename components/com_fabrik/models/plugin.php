@@ -230,10 +230,10 @@ class FabrikPlugin extends JPlugin
 	function &_loadParams()
 	{
 		if (!isset($this->attribs)) {
-			$row =& $this->getRow();
-			$a =& $row->params;
+			$row = $this->getRow();
+			$a = $row->params;
 		} else {
-			$a =& $this->params;
+			$a = $this->params;
 		}
 		if (!isset($this->_params)) {
 			$this->_params = new fabrikParams($a, $this->_xmlPath, 'component');
@@ -244,7 +244,7 @@ class FabrikPlugin extends JPlugin
 	function getRow()
 	{
 		if (!isset($this->_row)) {
-			$this->_row =& $this->getTable($this->_type);
+			$this->_row = $this->getTable($this->_type);
 			$this->_row->load($this->_id);
 		}
 		return $this->_row;
@@ -377,7 +377,7 @@ class FabrikPlugin extends JPlugin
 			$cid = JRequest::getVar('cid', -1);
 			$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
 			$cnn->setId($cid);
-			$db =& $cnn->getDb();
+			$db = $cnn->getDb();
 			if ($tid != '') {
 				$db->setQuery("DESCRIBE ".$db->nameQuote($tid));
 
@@ -387,7 +387,7 @@ class FabrikPlugin extends JPlugin
 						$c = new stdClass();
 						$c->value = $r->Field;
 						$c->label = $r->Field;
-						$arr[] = $c; //dont use =&
+						$arr[] = $c; //dont use =
 					}
 				}
 			}
@@ -397,7 +397,7 @@ class FabrikPlugin extends JPlugin
 			//$keyType 2 = tablename___elementname
 			$model = JModel::getInstance('List', 'FabrikFEModel');
 			$model->setId($tid);
-			$table =& $model->getTable();
+			$table = $model->getTable();
 			$groups = $model->getFormGroupElementData();
 			$published = JRequest::getVar('published', false);
 			$showintable = JRequest::getVar('showintable', false);
@@ -406,17 +406,17 @@ class FabrikPlugin extends JPlugin
 					if (JRequest::getVar('excludejoined') == 1) {
 						continue;
 					}
-					$joinModel =& $groupModel->getJoinModel();
-					$join =& $joinModel->getJoin();
+					$joinModel = $groupModel->getJoinModel();
+					$join = $joinModel->getJoin();
 				}
 				if ($published == true) {
-					$elementModels =& $groups[$g]->getPublishedElements();
+					$elementModels = $groups[$g]->getPublishedElements();
 				} else {
-					$elementModels =& $groups[$g]->getMyElements();
+					$elementModels = $groups[$g]->getMyElements();
 				}
 
 				foreach ($elementModels as $e => $eVal) {
-					$element =& $eVal->getElement();
+					$element = $eVal->getElement();
 					if ($showintable == true && $element->show_in_list_summary == 0) {
 						continue;
 					}
@@ -435,32 +435,32 @@ class FabrikPlugin extends JPlugin
 						$label = $join->table_join.'.'.$label;
 					}
 					$c->label = $label;
-					$arr[] = $c; //dont use =&
+					$arr[] = $c; //dont use =
 					if ($incCalculations) {
-						$params =& $eVal->getParams();
+						$params = $eVal->getParams();
 						if ($params->get('sum_on', 0)) {
 							$c = new stdClass();
 							$c->value = 'sum___'.$v;
 							$c->label = JText::_('COM_FABRIK_SUM') . ": " .$label;
-							$arr[] = $c; //dont use =&
+							$arr[] = $c; //dont use =
 						}
 						if ($params->get('avg_on', 0)) {
 							$c = new stdClass();
 							$c->value = 'avg___'.$v;
 							$c->label = JText::_('COM_FABRIK_AVERAGE') . ": " .$label;
-							$arr[] = $c; //dont use =&
+							$arr[] = $c; //dont use =
 						}
 						if ($params->get('median_on', 0)) {
 							$c = new stdClass();
 							$c->value = 'med___'.$v;
 							$c->label = JText::_('COM_FABRIK_MEDIAN') . ": " .$label;
-							$arr[] = $c; //dont use =&
+							$arr[] = $c; //dont use =
 						}
 						if ($params->get('count_on', 0)) {
 							$c = new stdClass();
 							$c->value = 'cnt___'.$v;
 							$c->label = JText::_('COM_FABRIK_COUNT') . ": " .$label;
-							$arr[] = $c; //dont use =&
+							$arr[] = $c; //dont use =
 						}
 					}
 				}
@@ -509,7 +509,7 @@ class FabrikPlugin extends JPlugin
 
 	public function queryStringActivated()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if (!$params->get('require_qs')) {
 			// querystring not required so plugin should be activated
 			return true;
@@ -541,7 +541,7 @@ class FabrikPlugin extends JPlugin
 		if (is_null($data)) {
 			$data = $this->data;
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$condition = $params->get($paramName);
 		if (trim($condition) == '') {
 			return true;

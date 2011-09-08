@@ -281,7 +281,7 @@ class S3 {
 			return false;
 		}
 		$input = array('size' => $bufferSize, 'md5sum' => $md5sum);
-		$input['fp'] =& $resource;
+		$input['fp'] = $resource;
 		return $input;
 	}
 
@@ -308,7 +308,7 @@ class S3 {
 
 		// Data
 		if (isset($input['fp']))
-			$rest->fp =& $input['fp'];
+			$rest->fp = $input['fp'];
 		elseif (isset($input['file']))
 			$rest->fp = @fopen($input['file'], 'rb');
 		elseif (isset($input['data']))
@@ -333,7 +333,7 @@ class S3 {
 		// Content-Type
 		if (!isset($input['type'])) {
 			if (isset($requestHeaders['Content-Type']))
-				$input['type'] =& $requestHeaders['Content-Type'];
+				$input['type'] = $requestHeaders['Content-Type'];
 			elseif (isset($input['file']))
 				$input['type'] = self::__getMimeType($input['file']);
 			else
@@ -405,7 +405,7 @@ class S3 {
 		$rest = new S3Request('GET', $bucket, $uri);
 		if ($saveTo !== false) {
 			if (is_resource($saveTo))
-				$rest->fp =& $saveTo;
+				$rest->fp = $saveTo;
 			else
 				if (($rest->fp = @fopen($saveTo, 'wb')) !== false)
 					$rest->file = realpath($saveTo);

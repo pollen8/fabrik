@@ -127,7 +127,7 @@ class fabrikParams extends JParameter
 		//remove any occurance of a mos_ prefix
 		$type = str_replace('mos_', '', $type);
 
-		$element =& $this->loadElement($type);
+		$element = $this->loadElement($type);
 
 		// error happened
 		if ($element === false)
@@ -253,7 +253,7 @@ class fabrikParams extends JParameter
 				$return .= '<div class="repeatGroup" id="'.$this->_identifier . 'group-'.$x.'">';
 				////new
 				//$this->_counter_override = $x;
-				$params =& $this->getParams($name, $group, 'array', $x);
+				$params = $this->getParams($name, $group, 'array', $x);
 
 				$html = array();
 				$html[] = '<table width="100%" class="paramlist admintable" cellspacing="1">';

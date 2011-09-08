@@ -27,7 +27,7 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
 
  	function process($params, &$oForm)
  	{
- 	  $this->formModel =& $oForm;
+ 	  $this->formModel = $oForm;
  	  $message = $this->_getMessage();
  	  $aData 		= $oForm->_formData;
  	  $gateway = $this->getInstance();
@@ -37,11 +37,11 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	function getInstance()
  	{
  	  if (!isset($this->gateway)) {
- 	    $params =& $this->getParams();
+ 	    $params = $this->getParams();
  	    $gateway = JFilterInput::clean($params->get('sms-gateway', 'Kapow'), 'CMD');
       require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_form'.DS.'sms'.DS.'gateway'.DS.strtolower($gateway));
  	    $this->gateway = new $gateway();
- 	    $this->gateway->params =& $params;
+ 	    $this->gateway->params = $params;
  	  }
  	  return $this->gateway;
  	}
@@ -83,7 +83,7 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
 
  	function _getMessage()
  	{
- 	  $config =& JFactory::getConfig();
+ 	  $config = JFactory::getConfig();
  	  $data = $this->formModel->_formData;
  	  $arDontEmailThesKeys = array();
  	  /*remove raw file upload data from the email*/
@@ -92,11 +92,11 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	  }
  	  $message = "";
  	  $pluginManager = $this->formModel->getPluginManager();
- 	  $groups =& $this->formModel->getGroupsHiarachy();
+ 	  $groups = $this->formModel->getGroupsHiarachy();
  	  foreach ($groups as $groupModel) {
- 	    $elementModels =& $groupModel->getPublishedElements();
+ 	    $elementModels = $groupModel->getPublishedElements();
  	    foreach ($elementModels as $elementModel) {
- 	      $element =& $elementModel->getElement();
+ 	      $element = $elementModel->getElement();
  	      $element->label = strip_tags($element->label);
  	      if (!array_key_exists($element->name, $data)) {
  	        $elName = $element->getFullName();
@@ -107,7 +107,7 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	      if (!in_array($key, $arDontEmailThesKeys)) {
  	        if (array_key_exists($elName, $data)) {
  	          $val = stripslashes($data[$elName]);
- 	          $params =& $elementModel->getParams();
+ 	          $params = $elementModel->getParams();
  	          if (method_exists($elementModel, 'getEmailValue')) {
  	            $val = $elementModel->getEmailValue($val);
  	          } else {

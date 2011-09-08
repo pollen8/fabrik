@@ -64,11 +64,11 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 				return;
 			}
 		}
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$w = new FabrikWorker();
 
-		$this->formModel =& $formModel;
-		$form =& $formModel->getForm();
+		$this->formModel = $formModel;
+		$form = $formModel->getForm();
 
 		//getEmailData returns correctly formatted {tablename___elementname} keyed results
 		//_formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms

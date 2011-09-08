@@ -5,7 +5,7 @@ defined('_JEXEC') or die();
 $data = $listModel->getData();
 $data = $data[0][0];
 
-$db =& FabrikWorker::getDbo();
+$db = FabrikWorker::getDbo();
 
 $location = $db->Quote("(".$data->gate_user___latitude .",".$data->gate_user___longitude."):4");
 $time = $db->Quote($data->gate_user___time_stamp_raw);

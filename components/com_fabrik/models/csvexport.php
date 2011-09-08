@@ -27,7 +27,7 @@ class FabrikFEModelCSVExport {
 
 	function writeFile($total)
 	{
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		// f3 turn off error reporting as this is an ajax call
 		error_reporting(0);
 		jimport('joomla.filesystem.file');
@@ -72,7 +72,7 @@ class FabrikFEModelCSVExport {
 		$incRaw = JRequest::getVar('incraw', true);
 		$incData = JRequest::getVar('inctabledata', true);
 
-		$data =& $this->model->getData();
+		$data = $this->model->getData();
 		$exportFormat = $this->model->getParams()->get('csvfullname');
 		$shortkey = FabrikString::shortColName($table->db_primary_key);
 
@@ -278,19 +278,19 @@ class FabrikFEModelCSVExport {
 
 	function getHeadings()
 	{
-		$table 	    =& $this->model->getTable();
+		$table 	    = $this->model->getTable();
 		$params 		=& $this->model->getParams();
 		$hformat 		= $params->get('csvfullname');
 		$data 			=& $this->model->getData();
 		$headings 	= array();
-		$g =& current($data);
+		$g = current($data);
 		if (empty($g)) {
 			return $g;
 		}
 		$selectedFields = JRequest::getVar('fields');
-		$r =& current($g);
-		$formModel =& $this->model->getFormModel();
-		$groups =& $formModel->getGroupsHiarachy();
+		$r = current($g);
+		$formModel = $this->model->getFormModel();
+		$groups = $formModel->getGroupsHiarachy();
 		$h = array();
 		if (!is_object($r)) {
 			return new stdClass();
@@ -303,9 +303,9 @@ class FabrikFEModelCSVExport {
 		foreach ($r as $heading => $value) {
 			$found = false;
 			foreach ($groups as $groupModel) {
-				$elementModels =& $groupModel->getPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel) {
-					$element =& $elementModel->getElement();
+					$element = $elementModel->getElement();
 					$fullname = $elementModel->getFullName(false, true, false);
 
 					if ($fullname == $heading || $fullname . "_raw" == $heading) {
@@ -386,7 +386,7 @@ class FabrikFEModelCSVExport {
 	 */
 	function removePkVal()
 	{
-		$data =& $this->model->getData();
+		$data = $this->model->getData();
 		foreach ($data as $group) {
 			foreach ($group as $row) {
 				unset($row->__pk_val);

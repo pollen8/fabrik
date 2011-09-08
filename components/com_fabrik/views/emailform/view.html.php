@@ -26,8 +26,8 @@ class fabrikViewEmailform extends JView
 	function display()
 	{
 		FabrikHelperHTML::framework();
-		$model =& $this->getModel('form');
-		$post =& JRequest::get('post');
+		$model = $this->getModel('form');
+		$post = JRequest::get('post');
 		if (!array_key_exists('youremail', $post)) {
 			FabrikHelperHTML::emailForm( $model);
 		} else {

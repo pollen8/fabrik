@@ -40,7 +40,7 @@
 	</table>
 <?php } // end show filters ?>
 <br style="clear:right" />
-<?php $fbConfig =& JComponentHelper::getParams('com_fabrik');
+<?php $fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($fbConfig->get('use_fabrikdebug', false) == 1) {?>
 <label>
 <?php $checked = JRequest::getVar('fabrikdebug', 0) == 1 ? 'checked="checked"' : '';?>

@@ -37,15 +37,15 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 		$titles = $params->get('coverflow_title', array(), '_default', 'array');
 		$subtitles = $params->get('coverflow_subtitle', array(), '_default', 'array');
 
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 
 		$listids = $params->get('coverflow_table', array(), '_default', 'array');
 		$eventdata = array();
 		foreach ($listids as $listid) {
- 			$listModel =& JModel::getInstance('List', 'FabrikFEModel');
+ 			$listModel = JModel::getInstance('List', 'FabrikFEModel');
 	 		$listModel->setId($listid);
-	 		$list =& $listModel->getTable();
-			$nav =& $listModel->getPagination(0, 0, 0);
+	 		$list = $listModel->getTable();
+			$nav = $listModel->getPagination(0, 0, 0);
 
 			$image =  $images[$c];
 			$title =  $titles[$c];
@@ -55,7 +55,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 
 			if ($listModel->canView() || $listModel->canEdit()) {
 
-				$elements =& $listModel->getElements();
+				$elements = $listModel->getElements();
 				$imageElement = JArrayHelper::getValue($elements, FabrikString::safeColName($image));
 				$action = $app->isAdmin() ? "task" : "view";
 				$nextview = $listModel->canEdit() ? "form" : "details";
@@ -98,7 +98,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->listids = $params->get('coverflow_table', array(), '_default', 'array');
 		}
 	}

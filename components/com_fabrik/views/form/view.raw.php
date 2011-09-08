@@ -42,7 +42,7 @@ class fabrikViewForm extends JView
 		$form 	=& $model->getForm();
 		$model->render();
 
-		$listModel =& $model->_table;
+		$listModel = $model->_table;
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 		if (!$model->canPublish()) {
 			if (!$app->isAdmin()) {
@@ -57,11 +57,11 @@ class fabrikViewForm extends JView
 		}
 
 		if (is_object($listModel)) {
-			$joins =& $listModel->getJoins();
+			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
 		}
 
-		$params =& $model->getParams();
+		$params = $model->getParams();
 		$params->def('icons', $app->getCfg('icons'));
 		$pop = (JRequest::getVar('tmpl') == 'component') ? 1 : 0;
 		$params->set('popup', $pop);
@@ -71,13 +71,13 @@ class fabrikViewForm extends JView
 			$model->_editable = false;
 		}
 
-		$groups =& $model->getGroupsHiarachy();
+		$groups = $model->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
 		$JSONarray = array();
 		$JSONHtml = array();
 
 		for ($i = 0; $i < count($gkeys); $i ++) {
-			$groupModel =& $groups[$gkeys[$i]];
+			$groupModel = $groups[$gkeys[$i]];
 			$groupTable 	=& $groupModel->getGroup();
 			$group 				= new stdClass();
 			$groupParams 	=& $groupModel->getParams();
@@ -90,8 +90,8 @@ class fabrikViewForm extends JView
 			if ($groupModel->canRepeat()) {
 				if ($groupModel->isJoin()) {
 
-					$joinModel =& $groupModel->getJoinModel();
-					$joinTable =& $joinModel->getJoin();
+					$joinModel = $groupModel->getJoinModel();
+					$joinTable = $joinModel->getJoin();
 
 					$foreignKey  = '';
 					if (is_object($joinTable)) {
@@ -99,7 +99,7 @@ class fabrikViewForm extends JView
 						//need to duplicate this perhaps per the number of times
 						//that a repeat group occurs in the default data?
 						if (isset($model->_data['join']) && array_key_exists($joinTable->id, $model->_data['join'])) {
-							$elementModels =& $groupModel->getPublishedElements();
+							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
@@ -113,7 +113,7 @@ class fabrikViewForm extends JView
 					}
 				} else {
 					// repeat groups which arent joins
-					$elementModels =& $groupModel->getPublishedElements();
+					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
 						if (array_key_exists($smallerElHTMLName."_raw", $model->_data)) {
@@ -137,7 +137,7 @@ class fabrikViewForm extends JView
 			for ($c = 0; $c < $repeatGroup; $c++) {
 				$aSubGroupElements = array();
 				$elCount = 0;
-				$elementModels =& $groupModel->getPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel) {
 					if (!$model->_editable) {
 						// $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that

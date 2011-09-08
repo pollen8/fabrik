@@ -37,8 +37,8 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 
 	private function _process(&$params, &$formModel )
 	{
-		$user =& JFactory::getUser();
-		$db =& FabrikWorker::getDbo();
+		$user = JFactory::getUser();
+		$db = FabrikWorker::getDbo();
 		if ($params->get('limit_allow_anonymous')) {
 			return true;
 		}
@@ -52,7 +52,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 			$limit = (int)$params->get('limit_length');
 		} else {
 			//look up the limit from the table spec'd in the admin params
-			$listModel =& JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModel::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$max = $db->NameQuote(FabrikString::shortColName($params->get('limit_max')));
 			$userfield = $db->NameQuote(FabrikString::shortColName($params->get('limit_user')));
@@ -61,9 +61,9 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 
 		}
 		$field = $params->get('limit_userfield');
-		$listModel =& $formModel->getlistModel();
-		$list =& $listModel->getTable();
-		$db =& $listModel->getDb();
+		$listModel = $formModel->getlistModel();
+		$list = $listModel->getTable();
+		$db = $listModel->getDb();
 		$db->setQuery("SELECT COUNT($field) FROM $list->db_table_name WHERE $field = " . (int)$user->get('id'));
 
 		$c = $db->loadResult();
@@ -73,7 +73,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 			JError::raiseNotice(1, $msg);
 			return false;
 		} else {
-			$app =& JFactory::getApplication();
+			$app = JFactory::getApplication();
 			$app->enqueueMessage(JText::sprintf('ENTRIES_LEFT_MESSAGE', $limit - $c, $limit));
 		}
 		return true;
@@ -89,7 +89,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 		// @TODO not working
 
 		/*FabrikHelperHTML::script('plugins/fabrik_form/limit/admin.js', true);
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$children = $params->getChildren();
 
 		$opts = $this->getAdminJsOpts();
@@ -97,7 +97,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 			$type = $node->attributes('type');
 			//remove any occurance of a mos_ prefix
 			$type = str_replace('mos_', '', $type);
-			$element =& $params->loadElement($type);
+			$element = $params->loadElement($type);
 			$repeat 	= $element->getRepeat();
 			$c = $element->getRepeatCounter();
 			if ($type == 'fabriktables') {

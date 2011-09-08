@@ -27,7 +27,7 @@ class FabrikViewList extends JView{
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$rowid = JRequest::getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
-		$data =& $model->getData();
+		$data = $model->getData();
 		$nav = $model->getPagination();
 		$c = 0;
 		foreach ($data as $groupk => $group) {
@@ -69,10 +69,10 @@ class FabrikViewList extends JView{
 
 	private function getTmpl()
 	{
-		$app =& JFactory::getApplication();
-		$model =& $this->getModel();
-		$table =& $model->getTable();
-		$params =& $model->getParams();
+		$app = JFactory::getApplication();
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$params = $model->getParams();
 		if ($app->isAdmin()) {
 			$tmpl = $params->get('admin_template');
 			if ($tmpl == -1 || $tmpl == '') {

@@ -31,7 +31,7 @@ class plgFabrik_ElementFblikebox extends plgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$str = FabrikHelperHTML::facebookGraphAPI( $params->get('opengraph_applicationid'));
 		$pageid = $params->get('fblikebox_pageid', 0);
 		$stream = $params->get('fblikebox_stream', 1) == 1 ? 'true' : 'false';
@@ -52,7 +52,7 @@ class plgFabrik_ElementFblikebox extends plgFabrik_Element {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbLikebox('$id', $opts)";
 	}

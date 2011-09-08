@@ -24,7 +24,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization {
 	{
 		$app = JFactory::getApplication();
 		$Itemid	= @$app->getMenu('site')->getActive()->id;
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = $params->get('media_width');
 		$h = $params->get('media_height');
 		$return = '';
@@ -40,7 +40,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization {
 
 	function getPlaylist()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		$mediaElement	= $params->get('media_media_elementList');
 		$mediaElement .= '_raw';
@@ -54,16 +54,16 @@ class fabrikModelMedia extends FabrikFEModelVisualization {
 
 		$listid = $params->get('media_table');
 
-		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
-		$list =& $listModel->getTable();
-		$form =& $listModel->getForm();
+		$list = $listModel->getTable();
+		$form = $listModel->getForm();
 		//remove filters?
 		// $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
 		// session state/defaults when it calls getPagination, which is then returned as a cached
 		// object if we call getPagination after render().  So call it first, then render() will
 		// get our cached pagination, rather than vice versa.
-		$nav =& $listModel->getPagination(0, 0, 0);
+		$nav = $listModel->getPagination(0, 0, 0);
 		$listModel->render();
 		$alldata = $listModel->getData();
 		$document = JFactory::getDocument();
@@ -122,7 +122,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization {
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->listids = $params->get('media_table', array(), '_default', 'array');
 		}
 	}

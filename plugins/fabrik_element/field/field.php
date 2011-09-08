@@ -24,7 +24,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$data = $this->numberFormat($data);
 		$format = $params->get('text_format_string');
 		if ($format  != '') {
@@ -150,7 +150,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	function _guessLinkType(&$value, $data, $repeatCounter = 0)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$guessed = false;
 		if ($params->get('guess_linktype') == '1') {
 			jimport('joomla.mail.helper');
@@ -195,7 +195,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbField('$id', $opts)";
 	}
@@ -210,7 +210,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		if ($this->encryptMe()) {
 			return 'BLOB';
 		}
-		$group =& $this->getGroup();
+		$group = $this->getGroup();
 		if ($group->isJoin() == 0 && $group->canRepeat()) {
 			return "TEXT";
 		}
@@ -295,7 +295,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		$joinSQL 		= $tableModel->_buildQueryJoin();
 		$whereSQL 	= $tableModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
-		$groupModel =& $this->getGroup();
+		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin()) {
 			//element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 			return "SELECT ROUND(AVG($name), $decimal_places) AS value, $label AS label FROM ".FabrikString::safeColName($table->db_table_name)." $joinSQL $whereSQL";

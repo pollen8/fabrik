@@ -75,14 +75,14 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 	function elementJavascript($repeatCounter)
 	{
 		$id 				= $this->getHTMLId($repeatCounter);
-		$params     =& $this->getParams();
+		$params     = $this->getParams();
 		$element 		= $this->getElement();
 		$data 			=& $this->_form->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$path		= JPATH_ROOT.DS.$params->get('fbfbfolder_path');
 		$folders	= JFolder::folders($path);
-		$params =& $this->getParams();
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$params = $this->getParams();
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->defaultVal = $element->default;
 		$opts->data 			= $folders;
 		$opts = json_encode($opts);

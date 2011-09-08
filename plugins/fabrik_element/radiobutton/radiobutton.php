@@ -69,7 +69,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	protected function getReadOnlyOutput($value, $label)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
 			$label = $this->_replaceWithIcons($value);
 		}
@@ -204,7 +204,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$data 			=& $this->_form->_data;
 		$arVals 		= $this->getSubOptionValues();
 		$arTxt 			= $this->getSubOptionLabels();
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 
 		$opts->value    = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal  = $this->getDefaultValue($data);
@@ -311,7 +311,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	function onStoreRow($data)
 	{
 		$element = $this->getElement();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('rad-savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
 			$added = stripslashes($data[$element->name . '_additions']);
 			if (trim($added) == '') {

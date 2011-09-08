@@ -6,7 +6,7 @@ jimport('joomla.mail.helper');
 JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabsubs'.DS.'tables');
 require_once(JPATH_ROOT.DS.'fabrik_plugins'.DS.'form'.DS.'paypal'.DS.'scripts'.DS.'fabrikar_subs.php');
 
-$db =& FabrikWorker::getDbo();
+$db = FabrikWorker::getDbo();
 
 $db->setQuery("SELECT *,
 CASE
@@ -32,7 +32,7 @@ CASE
 $expiration_mails = $db->loadObjectList('emailday');
 
 
-$config =& JFactory::getConfig();
+$config = JFactory::getConfig();
 $sitename = $config->getValue('sitename');
 $mailfrom = $config->getValue('mailfrom');
 $fromname = $config->getValue('fromname');
@@ -130,9 +130,9 @@ INNER JOIN fabsubs_plans AS p ON p.id = s.plan
  ");
 
 	$ipn = new fabrikPayPalIPN();
-	$rows =& $db->loadObjectList();
+	$rows = $db->loadObjectList();
 	$now = JFactory::getDate()->toMySQL();
-	$sub =& FabTable::getInstance('Subscriptions', 'FabrikTable');
+	$sub = FabTable::getInstance('Subscriptions', 'FabrikTable');
 	foreach ($rows as $row) {
 		$sub->load($row->subid);
 		$sub->status = 'Expired';

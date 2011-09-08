@@ -29,7 +29,7 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 	 */
 
 	function render($data, $repeatCounter = 0) {
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$id 	= $this->getHTMLId($repeatCounter);
 		if ($this->_editable) {
 			return '<div id="'.$id.'"></div>';
@@ -77,14 +77,14 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 		$valueKey = $repeatCounter . serialize($opts);
 		if (!array_key_exists($valueKey, $this->defaults)) {
 			$element = $this->getElement();
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$watch = $params->get('display_observe', '');
 			if (!empty($watch)) {
 				$watchid = $this->_getWatchId();
-				$elementModel =& $this->_getObserverElement();
+				$elementModel = $this->_getObserverElement();
 				if (get_class($elementModel) == 'FabrikModelFabrikDatabasejoin') {
-					$join =& $elementModel->getJoin();
-					$elDb =& $elementModel->getDb();
+					$join = $elementModel->getJoin();
+					$elDb = $elementModel->getDb();
 					$elKey = FabrikString::safeColName($this->_getWatchKey());
 					$elText = FabrikString::safeColName($this->_getWatchText());
 					$elVal = $elementModel->getValue($data, $repeatCounter);
@@ -105,7 +105,7 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 			if ($value === '') { //query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
-			$formModel =& $this->getForm();
+			$formModel = $this->getForm();
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
 				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -119,7 +119,7 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 	{
 		$listModel 	=& $this->getlistModel();
 		$fabrikDb 		=& $listModel->getDb();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$slideshow_thumbnails = $params->get('slideshow_thumbnails', false);
 		$slideshow_table = $params->get('slideshow_table', '');
 		$fabrikDb->setQuery("SELECT db_table_name FROM #__{package}_tables WHERE id = $slideshow_table");
@@ -129,7 +129,7 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 	    $slideshow_caption = $params->get('slideshow_caption', '');
 		$slideshow_fk = FabrikString::safeColName($slideshow_fk);
 		$slideshow_field  = FabrikString::safeColName($slideshow_file);
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$rowid = JRequest::getInt('rowid');
 		if ($rowid == '-1') {
 			$usekey = JRequest::getInt('rowid');
@@ -183,11 +183,11 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 
 	function elementJavascript($repeatCounter)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$use_thumbs = $params->get('slideshow_thumbnails', 0);
 		$use_captions = $params->get('slideshow_caption', '') == '' ? 'false' : 'true';
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->slideshow_data = $slideshow_data = $this->getImageJSData($repeatCounter);
 		$opts->id = $this->_id;
 		$opts->html_id = $html_id = $this->getHTMLId($repeatCounter);
@@ -215,8 +215,8 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 	function formJavascriptClass(&$srcs)
 	{
 		// @FIXME the js paths are not right for fabrik3
-		$params =& $this->getParams();
-		$document =& JFactory::getDocument();
+		$params = $this->getParams();
+		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$slideshow_type = $params->get('slideshow_type', 1);
 		$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'libs'.DS.'slideshow2'.DS.'js'.DS.'slideshow.js';

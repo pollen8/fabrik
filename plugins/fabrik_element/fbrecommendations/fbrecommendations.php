@@ -31,7 +31,7 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$str = FabrikHelperHTML::facebookGraphAPI( $params->get('opengraph_applicationid'));
 		$domain = $params->get('fbrecommendations_domain');
 		$width = $params->get('fbrecommendations_width', 300);
@@ -52,7 +52,7 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbRecommendations('$id', $opts)";
 	}

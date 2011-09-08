@@ -96,7 +96,7 @@ class FabrikModelArticle extends FabrikModelForm {
     }
 
     function _selectSectionId($categoryId) {
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$sql =
             'SELECT '
                 . $db->nameQuote('section')
@@ -164,9 +164,9 @@ class FabrikModelArticle extends FabrikModelForm {
 
 	function saveArticle() {
 		// Initialize variables
-		$db =& FabrikWorker::getDbo();
-		$user =& JFactory::getUser();
-		$dispatcher =& JDispatcher::getInstance();
+		$db = FabrikWorker::getDbo();
+		$user = JFactory::getUser();
+		$dispatcher = JDispatcher::getInstance();
 		JPluginHelper::importPlugin('content');
 
         $this->_postFabrikDataAsArticleData();
@@ -202,9 +202,9 @@ class FabrikModelArticle extends FabrikModelForm {
 			$row->created 	.= ' 00:00:00';
 		}
 
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
-		$date =& JFactory::getDate($row->created, $tzoffset);
+		$date = JFactory::getDate($row->created, $tzoffset);
 		$row->created = $date->toMySQL();
 
 		// Append time if not added to publish date
@@ -212,7 +212,7 @@ class FabrikModelArticle extends FabrikModelForm {
 			$row->publish_up .= ' 00:00:00';
 		}
 
-		$date =& JFactory::getDate($row->publish_up, $tzoffset);
+		$date = JFactory::getDate($row->publish_up, $tzoffset);
 		$row->publish_up = $date->toMySQL();
 
 		// Handle never unpublish date
@@ -225,7 +225,7 @@ class FabrikModelArticle extends FabrikModelForm {
 			if (strlen(trim($row->publish_down )) <= 10) {
 				$row->publish_down .= ' 00:00:00';
 			}
-			$date =& JFactory::getDate($row->publish_down, $tzoffset);
+			$date = JFactory::getDate($row->publish_down, $tzoffset);
 			$row->publish_down = $date->toMySQL();
 		}
 
@@ -335,7 +335,7 @@ class FabrikModelArticle extends FabrikModelForm {
             $this->_formModel->_formData[$articleIdElementName] = $this->_articleId;
             $this->_formModel->_formData[$articleIdElementName . '_raw'] = $this->_articleId;
             $listModel = $this->_formModel->getlistModel();
-            $listModel->_oForm =& $this->_formModel;
+            $listModel->_oForm = $this->_formModel;
             $primaryKey = FabrikString::shortColName($listModel->getTable()->db_primary_key);
             $this->_formModel->_formData[$primaryKey] = $this->_formModel->_fullFormData['rowid'];
             $this->_formModel->_formData[$primaryKey . '_raw'] = $this->_formModel->_fullFormData['rowid'];
@@ -404,7 +404,7 @@ class FabrikModelArticle extends FabrikModelForm {
 
 	function getArticleCss($tmpl = 'default')
 	{
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$cssFiles = array();
 		/* check for a custom css file */
 		$cssFiles[] = JURI::root(true) .'/media/com_fabrik/css/form.css';

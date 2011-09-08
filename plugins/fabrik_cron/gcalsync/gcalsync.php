@@ -46,7 +46,7 @@ class plgFabrik_CronGcalsync extends FabrikPlugin {
 	public function process(&$data, &$listModel)
 	{
 		//jimport('joomla.mail.helper');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$gcal_url = $params->get('gcal_sync_gcal_url');
 		$matches = array();
 		// this matches a standard GCal URL, found under the Google "Calender Details" tab, using the XML button.
@@ -61,7 +61,7 @@ class plgFabrik_CronGcalsync extends FabrikPlugin {
 			$gcal_email = urldecode($gcal_user);
 
 			// grab the table model and find table name and PK
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 			$table_name 		= $table->db_table_name;
 
 			// for now, we have to read the table ourselves.  We can't rely on the $data passed to us
@@ -147,7 +147,7 @@ class plgFabrik_CronGcalsync extends FabrikPlugin {
 			$event_ids = array();
 			foreach ($eventFeed as $key => $event) {
 				$short_id = $this->_getGcalShortId($event->id->text);
-				$gcal_event_ids[$short_id] =& $eventFeed[$key];
+				$gcal_event_ids[$short_id] = $eventFeed[$key];
 			}
 
 			// run through our table data, and build an array of our events indexed by the Google ID
@@ -158,10 +158,10 @@ class plgFabrik_CronGcalsync extends FabrikPlugin {
 				if (is_array($group)) {
 					foreach ($group as $rkey => $row) {
 						if ($row->$gcal_id_element) {
-							$our_event_ids[$row->$gcal_id_element] =& $mydata[$gkey][$rkey];
+							$our_event_ids[$row->$gcal_id_element] = $mydata[$gkey][$rkey];
 						}
 						else {
-							$our_upload_ids[] =& $mydata[$gkey][$rkey];
+							$our_upload_ids[] = $mydata[$gkey][$rkey];
 						}
 					}
 				}
@@ -189,7 +189,7 @@ class plgFabrik_CronGcalsync extends FabrikPlugin {
 			if ($gcal_sync_upload == 'both' || $gcal_sync_upload == 'to') {
 				// Grab the tzOffset.  Note that gcal want +/-XX (like -06)
 				// but J! gives us +/-X (like -6) so we sprintf it to the right format
-				$config =& JFactory::getConfig();
+				$config = JFactory::getConfig();
 				$tzOffset = (int)$config->getValue('config.offset');
 				$tzOffset = sprintf('%+03d', $tzOffset);
 				// loop thru the array we built earlier of events we have that aren't in gcal
@@ -265,9 +265,9 @@ class plgFabrik_CronGcalsync extends FabrikPlugin {
 	{
 		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
 		$this->getRow();
-		$pluginParams =& $this->getParams();
+		$pluginParams = $this->getParams();
 
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		?>
 		<div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
 		<b>NOTES</b>

@@ -91,7 +91,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$this->_row_count = count($ids);
 		$ids	= implode(',', $ids);
 		$model->_pluginQueryWhere[] = $item->db_primary_key . ' IN ( '.$ids.')';
-		$data =& $model->getData();
+		$data = $model->getData();
 
 		//$$$servantek reordered the update process in case the email routine wants to kill the updates
 		$emailColID = $params->get('update_email_element', '');
@@ -101,17 +101,17 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			$message = $params->get('update_email_msg');
 			$subject = $params->get('update_email_subject');
 			$eval = $params->get('eval', 0);
-			$config =& JFactory::getConfig();
+			$config = JFactory::getConfig();
 			$from = $config->getValue('mailfrom');
 			$fromname = $config->getValue('fromname');
 			$elementModel = $model->getPluginManager()->getElementPlugin($emailColID);
-			$emailElement =& $elementModel->getElement(true);
+			$emailElement = $elementModel->getElement(true);
 			$emailField = $elementModel->getFullName(false, true, false);
 			$emailColumn = $elementModel->getFullName(false, false, false);
 			$emailFieldRaw = $emailField . '_raw';
 			$emailWhich = $emailElement->plugin == 'user' ? 'user' : 'field';
 			$tbl = array_shift(explode('.', $emailColumn));
-			$db =& JFactory::getDBO();
+			$db = JFactory::getDBO();
 			$aids = explode(',', $ids);
 			// if using a user element, build a lookup list of emails from jos_users,
 			// so we're only doing one query to grab all involved emails.

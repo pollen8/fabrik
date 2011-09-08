@@ -17,12 +17,12 @@ class fabrikModelCronnotification extends fabrikModelPlugin {
 
 	function getUserNotifications()
 	{
-		$user =& JFactory::getUser();
-		$db =& FabrikWorker::getDbo();
+		$user = JFactory::getUser();
+		$db = FabrikWorker::getDbo();
 		$sql = "SELECT * FROM #__{package}_notification WHERE user_id = " . $user->get('id');
 		$db->setQuery($sql);
 		$rows = $db->loadObjectList();
-		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		foreach ($rows as &$row) {
 			/*
 			 * {observer_name, creator_name, event, record url
@@ -51,7 +51,7 @@ class fabrikModelCronnotification extends fabrikModelPlugin {
 		JRequest::checkToken() or die('Invalid Token');
 		$ids = JRequest::getVar('cid', array());
 		JArrayHelper::toInteger($ids);
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$db->setQuery("DELETE FROM #__{package}_notification WHERE id IN (".implode(',', $ids).")");
 		$db->query();
 	}

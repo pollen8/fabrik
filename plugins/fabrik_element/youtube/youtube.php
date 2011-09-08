@@ -25,7 +25,7 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		// ------------------ Construct embedded player
 
 		// Player size
@@ -267,7 +267,7 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbYouTube('$id', $opts)";
 	}

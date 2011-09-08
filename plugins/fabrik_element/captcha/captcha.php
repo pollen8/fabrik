@@ -42,8 +42,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	function getLabel($repeatCounter, $tmpl = '')
 	{
-		$user =& JFactory::getUser();
-		$params =& $this->getParams();
+		$user = JFactory::getUser();
+		$params = $this->getParams();
 		if ($user->id != 0) {
 			if ($params->get('captcha-showloggedin', 0) == 0) {
 				return '';
@@ -54,8 +54,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	function isHidden()
 	{
-		$user =& JFactory::getUser();
-		$params =& $this->getParams();
+		$user = JFactory::getUser();
+		$params = $this->getParams();
 		if ($user->id != 0) {
 			if ($params->get('captcha-showloggedin', 0) == 0) {
 				return true;
@@ -72,8 +72,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	function canView()
 	{
-		$user =& JFactory::getUser();
-		$params =& $this->getParams();
+		$user = JFactory::getUser();
+		$params = $this->getParams();
 		if ($user->id != 0) {
 			if ($params->get('captcha-showloggedin', 0) == 0) {
 				return false;
@@ -90,8 +90,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	function canUse()
 	{
-		$user =& JFactory::getUser();
-		$params =& $this->getParams();
+		$user = JFactory::getUser();
+		$params = $this->getParams();
 		if ($user->id != 0) {
 			if ($params->get('captcha-showloggedin', 0) == 0) {
 				return false;
@@ -112,7 +112,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		$id				= $this->getHTMLId($repeatCounter);
 		$element 	= $this->getElement();
 		$params 	= $this->getParams();
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 
 		if ($params->get('captcha-method') == 'recaptcha') {
 
@@ -183,7 +183,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	function validate($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		if ($user->get('id') !== 0) {
 			if ($params->get('captcha-showloggedin', 0) == 0) {
 				return true;
@@ -239,10 +239,10 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	function elementJavascript($repeatCounter)
 	{
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		if ($user->id == 0) {
 			$id = $this->getHTMLId($repeatCounter);
-			$opts =& $this->getElementJSOptions($repeatCounter);
+			$opts = $this->getElementJSOptions($repeatCounter);
 			$opts = json_encode($opts);
 			return "new FbCaptcha('$id', $opts)";
 		}

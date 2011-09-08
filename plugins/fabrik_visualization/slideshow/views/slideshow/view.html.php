@@ -15,7 +15,7 @@ class fabrikViewSlideshow extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 
-		$this->row =& $model->getVisualization();
+		$this->row = $model->getVisualization();
 		$model->setListIds();
 
 		if ($this->row->published == 0) {
@@ -24,12 +24,12 @@ class fabrikViewSlideshow extends JView
 		}
 		$this->assign('js', $this->get('JS'));
 		$viewName = $this->getName();
-		$pluginManager =& JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin =& $pluginManager->getPlugIn('slideshow', 'visualization');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
-		$pluginParams =& $model->getPluginParams();
+		$pluginParams = $model->getPluginParams();
 		$this->assignRef('params', $pluginParams);
 		$tmpl = $pluginParams->get('slideshow_viz_layout', $tmpl);
 		$tmplpath = $model->pathBase.'slideshow'.DS.'views'.DS.'slideshow'.DS.'tmpl'.DS.$tmpl;

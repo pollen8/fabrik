@@ -154,16 +154,16 @@ class plgFabrik_Form extends FabrikPlugin
 		//Now instead the pk value is taken from the tableModel->lastInsertId and inserted at the end of this method
 		//$model->render();
 
-		$listModel =& $model->_table;
+		$listModel = $model->_table;
 		$table = is_object($listModel ) ? $listModel->getTable() : null;
 
 		$model->_editable = false;
 		if (is_object($listModel)) {
-			$joins =& $listModel->getJoins();
+			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
 		}
 
-		$params =& $model->getParams();
+		$params = $model->getParams();
 
 		$this->emailData = array();
 
@@ -179,8 +179,8 @@ class plgFabrik_Form extends FabrikPlugin
 			if ($groupModel->canRepeat()) {
 				if ($groupModel->isJoin()) {
 
-					$joinModel =& $groupModel->getJoinModel();
-					$joinTable =& $joinModel->getJoin();
+					$joinModel = $groupModel->getJoinModel();
+					$joinTable = $joinModel->getJoin();
 					$foreignKey  = '';
 					if (is_object($joinTable)) {
 						$foreignKey = $joinTable->table_join_key;
@@ -189,7 +189,7 @@ class plgFabrik_Form extends FabrikPlugin
 						//if (array_key_exists($joinTable->id, $model->_data['join'])) {
 						if (array_key_exists($joinTable->id, $model->_formDataWithTableName['join'])) {
 
-							$elementModels =& $groupModel->getPublishedElements();
+							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
@@ -203,7 +203,7 @@ class plgFabrik_Form extends FabrikPlugin
 					}
 				} else {
 					// repeat groups which arent joins
-					$elementModels =& $groupModel->getPublishedElements();
+					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
 						if (is_array($model->_formDataWithTableName)) {
@@ -220,17 +220,17 @@ class plgFabrik_Form extends FabrikPlugin
 				}
 			}
 			$groupModel->_repeatTotal = $repeatGroup;
-			$group =& $groupModel->getGroup();
+			$group = $groupModel->getGroup();
 			$aSubGroups = array();
 			for ($c = 0; $c < $repeatGroup; $c++) {
 				$aSubGroupElements = array();
-				$elementModels =& $groupModel->getPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
 
 				foreach ($elementModels as $elementModel) {
 					//force reload?
 					$elementModel->defaults = null;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
-					$element =& $elementModel->getElement();
+					$element = $elementModel->getElement();
 
 					$k			= $elementModel->getFullName(false, true, false);
 					$key 				= $elementModel->getFullName(true, true, false);
@@ -269,7 +269,7 @@ class plgFabrik_Form extends FabrikPlugin
 					// selected FK value.
 
 					// $$$ rob in repeat join groups this isnt really efficient as you end up reformatting the data $c times
-					$elementModel->_form->_data =& $model->_formDataWithTableName;
+					$elementModel->_form->_data = $model->_formDataWithTableName;
 					$this->emailData[$k] = $elementModel->getEmailValue($this->emailData[$k."_raw"], $model->_formDataWithTableName, $c);
 					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin) {
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k.'_raw'] = $this->emailData[$k.'_raw'];

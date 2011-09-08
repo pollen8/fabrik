@@ -24,7 +24,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	function renderListData($data, $oAllRowsData)
 	{
 		$str = '';
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = $params->get('fb_gm_table_mapwidth');
 		$h = $params->get('fb_gm_table_mapheight');
 		$z = $params->get('fb_gm_table_zoomlevel');
@@ -64,8 +64,8 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	{
 		static $jsloaded;
 		if (!isset($jsloaded)) {
-			$document =& JFactory::getDocument();
-			$params =& $this->getParams();
+			$document = JFactory::getDocument();
+			$params = $this->getParams();
 
 			$document->addScript("http://www.openlayers.org/api/OpenLayers.js");
 			parent::formJavascriptClass($srcs);
@@ -112,7 +112,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$layers->yahoo 				= $params->get('fb_osm_yahoolayers');
 		$layers->google 			= $params->get('fb_osm_gmlayers');
 
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 
 		$opts->lon 				= $o->coords[0];
 		$opts->lat 				= $o->coords[1];
@@ -145,7 +145,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	{
 		static $usestatic;
 		if (!isset($usestatic)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			//requires you to have installed the pda plugin
 			//http://joomup.com/blog/2007/10/20/pdaplugin-joomla-15/
 			if (array_key_exists('ispda', $GLOBALS) && $GLOBALS['ispda'] == 1) {
@@ -223,7 +223,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$layers->yahoo 				= $params->get('fb_osm_yahoolayers');
 		$layers->google 			= $params->get('fb_osm_gmlayers');
 
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 
 		$opts->lon 				= $o->coords[0];
 		$opts->lat 				= $o->coords[1];
@@ -295,9 +295,9 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$dbtable = $this->actualTableName();
-		$listModel =& $this->getlistModel();
+		$listModel = $this->getlistModel();
 		$table 		=& $listModel->getTable();
 		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->_element->name);
 		$str = FabrikString::safeColName($fullElName)." AS ".$db->nameQuote($fullElName);
@@ -341,10 +341,10 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
 			$name 			= $this->getHTMLName($repeatCounter);
-			$groupModel =& $this->_group;
+			$groupModel = $this->_group;
 			$formModel 	=& $this->_form;
 			$element		= $this->getElement();
-			$listModel =& $this->getlistModel();
+			$listModel = $this->getlistModel();
 			$params 		=& $this->getParams();
 
 			// $$$rob - if no search form data submitted for the search element then the default

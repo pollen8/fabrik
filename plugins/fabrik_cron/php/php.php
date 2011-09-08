@@ -32,7 +32,7 @@ class plgFabrik_Cronphp extends FabrikPlugin {
 	 */
 	function process(&$data, &$listModel)
 	{
-	  $params =& $this->getParams();
+	  $params = $this->getParams();
 	  $file = JFilterInput::clean($params->get('cronphp_file'), 'CMD');
 	  require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_cron'.DS.'php'.DS.'scripts'.DS.$file);
 	}
@@ -45,9 +45,9 @@ class plgFabrik_Cronphp extends FabrikPlugin {
 	{
 		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
 		$this->getRow();
-		$pluginParams =& $this->getParams();
+		$pluginParams = $this->getParams();
 
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		?>
 		<div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
 

@@ -38,7 +38,7 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbButton('$id', $opts)";
 		return $str;

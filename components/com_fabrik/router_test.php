@@ -121,8 +121,8 @@ function fabrikParseRoute($segments)
 	//vars are what Joomla then uses for its $_REQUEST array
 	$vars = array();
 	//Get the active menu item
-	$menu =& JSite::getMenu();
-	$item =& $menu->getActive();
+	$menu = JSite::getMenu();
+	$item = $menu->getActive();
 
 	switch ($segments[0]) { //view (controller not passed into segments)
 		case 'form':

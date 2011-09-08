@@ -26,9 +26,9 @@ class FabrikControllerImport extends JController
 	function display()
 	{
 		$this->listid = JRequest::getVar('listid', 0);
-		$listModel =& $this->getModel('list', 'FabrikFEModel');
+		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$listModel->setId($this->listid);
-		$this->table =& $listModel->getTable();
+		$this->table = $listModel->getTable();
 		$document = JFactory::getDocument();
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType	= $document->getType();

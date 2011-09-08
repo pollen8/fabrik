@@ -111,7 +111,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	function onStoreRow($data)
 	{
 		$element = $this->getElement();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		if ($params->get('dd-savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
 			$added = stripslashes($data[$element->name . '_additions']);
@@ -152,13 +152,13 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$data =& $this->_form->_data;
+		$data = $this->_form->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$arVals = $this->getSubOptionValues();
 		$arTxt 	= $this->getSubOptionLabels();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->allowadd = $params->get('allow_frontend_addtodropdown', false) ? true : false;
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
@@ -182,7 +182,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	function getTitlePart($data, $repeatCounter = 0, $opts = array())
 	{
 		$val = $this->getValue($data, $repeatCounter, $opts);
-		$element =& $this->getElement();
+		$element = $this->getElement();
 		$labels = explode('|', $element->sub_labels);
 		$values = explode('|',  $element->sub_values);
 		$str = '';
@@ -205,7 +205,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	function getDefaultValue($data = array())
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		if (!isset($this->_default)) {
 			if ($this->getElement()->default != '') {
@@ -260,7 +260,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		foreach ($selected as &$s) {
 			$s = str_replace("'", "", $s);
 		}
-		$element =& $this->getElement();
+		$element = $this->getElement();
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$return = array();
@@ -307,7 +307,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			}
 		}
 		$this->encryptFieldName($key);
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('multiple')) {
 			$originalValue = trim($value, "'");
 			return " ($key $condition $value OR $key LIKE \"$originalValue',%\"".

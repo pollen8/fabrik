@@ -31,7 +31,7 @@ class plgFabrik_FormFirefox_contacts extends plgFabrik_Form {
 
 	function onLoad( $params, &$formModel )
 	{
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$document->addScriptDeclaration("head.ready(function() {
 		if(navigator.people) {
 			navigator.people.find();

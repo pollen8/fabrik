@@ -89,7 +89,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	public function getAllowAttachment()
 	{
 		$renderOrder = JRequest::getInt('renderOrder');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$allow = $params->get('emailtable_allow_attachment');
 		return $allow[$renderOrder];
 	}
@@ -197,7 +197,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		$w = new FabrikWorker();
 		$config = JFactory::getConfig();
 
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$to = JRequest::getVar('order_by');
 		$renderOrder = JRequest::getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type', 'list');
@@ -209,7 +209,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		$message = JRequest::getVar('message', '', 'post', 'string', 4);
 		$data = $this->getRecords('recordids', true);
 		if ($fromUser) {
-			$my =& JFactory::getUser();
+			$my = JFactory::getUser();
 			$from = $my->get('email');
 			$fromname = $my->get('name');
 		} else {

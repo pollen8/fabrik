@@ -42,7 +42,7 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		if (is_array($data)) {
 			$data = implode('', $data);
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$otherfield = $params->get('areuniquevalues-otherfield', '_default','array', $c);
 		$otherfield = $otherfield[$c];
 		$element 			=& $elementModel->getElement();

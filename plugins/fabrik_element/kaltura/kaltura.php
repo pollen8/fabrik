@@ -29,7 +29,7 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element {
 		$id = $this->getHTMLId();
 		$id .= "_" . $oAllRowsData->__pk_val;
 		FabrikHelperHTML::script('media/com_fabrik/js/swfobject.js', false);
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$partnerid = $params->get('kaltura_partnerid');
 		?>
 
@@ -71,11 +71,11 @@ return '<div id="'.$id.'"></div>';
 	private function getKalturaFlashVars()
 	{
 		if (!isset($this->kalturaFlashVars)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$partnerid = $params->get('kaltura_partnerid');
 			$subpartnerid = $params->get('kaltura_sub_partnerid');
-			$user =& $this->getKalturaUser();
-			$ksession =& $this->getKalturaSession();
+			$user = $this->getKalturaUser();
+			$ksession = $this->getKalturaSession();
 
 			$flashVars = array();
 			$flashVars["partnerId"] 	= $partnerid;
@@ -93,10 +93,10 @@ return '<div id="'.$id.'"></div>';
 	private function getKalturaSession()
 	{
 		if (!isset($this->kalturaSession)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$secret = $params->get('kaltura_webservice_secret');
-			$client =& $this->getKalturaClient();
-			$user =& $this->getKalturaUser();
+			$client = $this->getKalturaClient();
+			$user = $this->getKalturaUser();
 			$this->kalturaSession = $client->startSession($user, $secret, false);
 		}
 		return $this->kalturaSession;
@@ -109,7 +109,7 @@ return '<div id="'.$id.'"></div>';
 	private function getKalturaConfig()
 	{
 		if (!isset($this->kalturaConfig)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$partnerid = $params->get('kaltura_partnerid');
 			$subpartnerid = $params->get('kaltura_sub_partnerid');
 			$secret = $params->get('kaltura_webservice_secret');
@@ -138,7 +138,7 @@ return '<div id="'.$id.'"></div>';
 	private function getKalturaClient()
 	{
 		if (!isset($this->kalturaClient)) {
-			$conf =& $this->getKalturaConfig();
+			$conf = $this->getKalturaConfig();
 			$this->kalturaClient = new KalturaClient($conf);
 		}
 		return $this->kalturaClient;
@@ -168,7 +168,7 @@ return '<div id="'.$id.'"></div>';
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->id = $element->id;
 
 		$uploader = new stdClass();

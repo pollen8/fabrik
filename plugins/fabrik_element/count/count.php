@@ -25,7 +25,7 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	 */
 	public function getGroupByQuery()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		return $params->get('count_groupbyfield');
 	}
 
@@ -40,7 +40,7 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
 		if (JRequest::getVar('c') != 'form') {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote($dbtable . "___".$this->_element->name));
 			$r = "COUNT(".$params->get('count_field', '*').")";
 			$aFields[] 	= "$r AS $fullElName";
@@ -149,7 +149,7 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbCount('$id', $opts)";
 	}

@@ -69,7 +69,7 @@ if (!function_exists('shFetchRowName')) {
 	  $database = FabrikWorker::getDbo();
 	  $listModel = JModel::getInstance('View', 'FabrikFEModel');
 	  $listModel->setId($listid);
-	  $table =& $listModel->getTable();
+	  $table = $listModel->getTable();
 	  $db_primary_key = $table->db_primary_key;
 	  $db_primary_key = explode('.', $db_primary_key);
 	  $db_table = $db_primary_key[0];

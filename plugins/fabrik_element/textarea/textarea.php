@@ -78,7 +78,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	function renderListData($data, $oAllRowsData)
 	{
 		$data = parent::renderListData($data, $oAllRowsData);
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		if ($params->get('textarea-tagify') == true) {
 			$data = $this->tagify( $data);
@@ -112,7 +112,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	function useEditor()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
 		if ($params->get('use_wysiwyg', 0) && JRequest::getInt('ajax') !== 1) {
 			return preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
@@ -224,7 +224,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	function elementJavascript($repeatCounter)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('use_wysiwyg')) {
 			// $$$ rob need to use the NAME as the ID when wysiwyg end in joined group
 			$id	= $this->getHTMLName($repeatCounter);
@@ -234,7 +234,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		} else {
 			$id = $this->getHTMLId($repeatCounter);
 		}
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->max = $params->get('textarea-maxlength');
 		$opts->wysiwyg = ($params->get('use_wysiwyg') && JRequest::getInt('ajax') != 1) ? true: false;
 		$opts->deleteOverflow = $params->get('delete_overflow', true) ? true : false;
@@ -253,7 +253,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	function validate($data, $repeatCounter = 0)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if (!$params->get('textarea-showmax', false)) {
 			return true;
 		}

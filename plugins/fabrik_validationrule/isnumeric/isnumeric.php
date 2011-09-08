@@ -35,7 +35,7 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 		if (is_array($data)) {
 			$data = implode('', $data);
 		}
- 		$params =& $this->getParams();
+ 		$params = $this->getParams();
 		$allow_empty = $params->get('isnumeric-allow_empty');
 		$allow_empty = $allow_empty[$c];
 		if ($allow_empty == '1' and empty( $data)) {

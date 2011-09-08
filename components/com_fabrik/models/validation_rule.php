@@ -50,10 +50,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	function shouldValidate($data, $c)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$post	= JRequest::get('post');
-		$v = $params->get($this->_pluginName .'-validation_condition', '', '_default', 'array', $c);
-
+		$v = (array)$params->get($this->_pluginName .'-validation_condition');
 		if (!array_key_exists($c, $v)) {
 			return true;
 		}
@@ -61,7 +60,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		if ($condition == '') {
 			return true;
 		}
-
+		
 		$w = new FabrikWorker();
 
 		// $$$ rob merge join data into main array so we can access them in parseMessageForPlaceHolder()
@@ -75,13 +74,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		}
 
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $post));
-		// $$$ hugh - this screws things up if it's more than one line of code.
-		/*
-		if (substr(strtolower($condition ), 0, 6) !== 'return') {
-			$condition = "return $condition";
-		}
-		*/
-
+		
 		$res = @eval($condition);
 		if (is_null($res)) {
 			return true;

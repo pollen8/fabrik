@@ -30,7 +30,7 @@ class FabrikViewList extends JView{
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
 		JRequest::setVar('incfilters', 0);
-		$table =& $model->getTable();
+		$table = $model->getTable();
 		$model->render();
 		$params	=& $model->getParams();
 
@@ -38,18 +38,18 @@ class FabrikViewList extends JView{
 			return '';
 		}
 
-		$formModel =& $model->getForm();
-		$form =& $formModel->getForm();
+		$formModel = $model->getForm();
+		$form = $formModel->getForm();
 
 		$aJoinsToThisKey = $model->getJoinsToThisKey();
 		/* get headings */
 		$aTableHeadings = array();
-		$groupModels =& $formModel->getGroupsHiarachy();
+		$groupModels = $formModel->getGroupsHiarachy();
 
 		$titleEl = $params->get('feed_title');
 		$dateEl = $params->get('feed_date');
 		foreach ($groupModels as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$element = $elementModel->getElement();
 				if ($element->id == $titleEl) {
@@ -58,7 +58,7 @@ class FabrikViewList extends JView{
 				if ($element->id == $dateEl) {
 					$dateEl = $elementModel->getFullName(false, true, false);
 				}
-				$elParams =& $elementModel->getParams();
+				$elParams = $elementModel->getParams();
 
 				if ($elParams->get('show_in_rss_feed') == '1') {
 					$heading = $element->label;
@@ -105,7 +105,7 @@ class FabrikViewList extends JView{
 			}
 		}
 		$w = new FabrikWorker();
-		$rows =& $model->getData();
+		$rows = $model->getData();
 
 		$document->title = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
 		$document->description = $w->parseMessageForPlaceHolder($table->introduction);
@@ -139,7 +139,7 @@ class FabrikViewList extends JView{
 				//used for content not in dl
 				//ok for feed gator you cant have the same item title so we'll take the first value from the table (asume its the pk and use that to append to the item title)'
 				$title = '';
-				$item =& new JFabrikFeedItem();
+				$item = new JFabrikFeedItem();
 
 				$enclosures = array();
 				foreach ($aTableHeadings as $heading=>$dbcolname) {

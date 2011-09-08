@@ -80,7 +80,7 @@ class plgFabrik_ValidationruleSpecialChars extends plgFabrik_Validationrule
 		if (is_array($data)) {
 			$data = implode('', $data);
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$domatch = $params->get('specialchars-match');
 		$domatch = $domatch[$c];
 		if ($domatch) {
@@ -97,7 +97,7 @@ class plgFabrik_ValidationruleSpecialChars extends plgFabrik_Validationrule
 
 	function replace($data, &$element, $c)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$domatch = $params->get('specialchars-match', '_default','array', $c);
 		$domatch = $domatch[$c];
 		if (!$domatch) {

@@ -381,7 +381,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$db = FabrikWorker::getDbo(true);
 		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$sql = "SELECT *, fg.group_id AS group_id, RAND() AS rand_order FROM #__{package}_formgroup AS fg
 INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
  WHERE fg.form_id = ".(int)$this->getId()." AND published = 1";
@@ -479,7 +479,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function getFormGroups($excludeUnpublished = true)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$db = FabrikWorker::getDbo(true);
 		$sql = "SELECT *, #__{package}_groups.params AS gparams, #__{package}_elements.id as element_id
 		, #__{package}_groups.name as group_name, RAND() AS rand_order FROM #__{package}_formgroup
@@ -589,7 +589,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		foreach ($groups as $groupModel) {
 			$elementModels =& $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
-				$params =& $elementModel->getParams();
+				$params = $elementModel->getParams();
 				if (method_exists($elementModel, $method)) {
 					$elementModel->$method($params, $data);
 				}
@@ -953,19 +953,19 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function processToDB()
 	{
-		$listModel			=& $this->getListModel();
+		$listModel = $this->getListModel();
 		$listModel->setBigSelects();
-		$table					=& $listModel->getTable();
-		$origTableName 	= $table->db_table_name;
-		$origTableKey		= $table->db_primary_key;
+		$item = $listModel->getTable();
+		$origTableName 	= $item->db_table_name;
+		$origTableKey		= $item->db_primary_key;
 		$pluginManager 	=& $this->getPluginManager();
 
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->_formData)) {
 			$this->_rowId = '';
-			//$$$rob dont pass in $table->db_primary_key directly into safeColName as its then
+			//$$$rob dont pass in $item->db_primary_key directly into safeColName as its then
 			//modified permanently by this function
-			$k = $table->db_primary_key;
+			$k = $item->db_primary_key;
 			$k = FabrikString::safeColNameToArrayKey($k);
 			$origid = $this->_formData[$k];
 			$this->_formData[$k] = '';
@@ -995,11 +995,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$u = str_replace("rowid=$origid", "rowid=$insertId", $_SERVER['HTTP_REFERER']);
 			JRequest::setVar('fabrik_referrer', $u);
 		}
-		$tmpKey 	= str_replace("`", "", $table->db_primary_key);
+		$tmpKey 	= str_replace("`", "", $item->db_primary_key);
 		$joinKeys[$tmpKey] = $insertId;
 		$tmpKey 	= str_replace(".", "___", $tmpKey);
 		$this->_formData[$tmpKey] 	= $insertId;
-		$this->_formData[FabrikString::shortColName($table->db_primary_key)] = $insertId;
+		$this->_formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
 		$this->_fullFormData[$tmpKey] = $insertId; //need for things like the redirect plugin
 		$this->_fullFormData['rowid'] = $insertId;
 		$this->_formData['rowid'] = $insertId;
@@ -1048,9 +1048,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if ((int)$oJoin->group_id !== 0 && $oJoin->params->type !== 'repeatElement') {
 					$joinGroup = $groups[$oJoin->group_id];
 					//find the primary key for the join table
-					// $$$ rob - looks like  $table isn't a reference to $listModel->_table -go figure?? (php5.2.5 lax) Also reason why Hugh thought we
+					// $$$ rob - looks like  $item isn't a reference to $listModel->_table -go figure?? (php5.2.5 lax) Also reason why Hugh thought we
 					// needed to pass in the table name to the storeRow() function.
-					//$table->db_table_name 	= $oJoin->table_join;
+					//$item->db_table_name 	= $oJoin->table_join;
 					$listModel->getTable()->db_table_name = $oJoin->table_join;
 				} else {
 					//repeat element join
@@ -1150,19 +1150,19 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 							//find the primary key for the join table
 
-							$table->db_table_name 	= $oJoin->table_join;
-							// $$$ rob - erm is $fields needed -perhaps just pass $table->db_table_name into getPrimaryKeyAndExtra?
-							$fields 				= $listModel->getDBFields($table->db_table_name);
+							$item->db_table_name 	= $oJoin->table_join;
+							// $$$ rob - erm is $fields needed -perhaps just pass $item->db_table_name into getPrimaryKeyAndExtra?
+							$fields 				= $listModel->getDBFields($item->db_table_name);
 							$aKey 					= $listModel->getPrimaryKeyAndExtra();
 							$aKey = $aKey[0];
-							$table->db_primary_key = $aKey['colname'];
-							$joinRowId = $repData[$table->db_primary_key];
+							$item->db_primary_key = $aKey['colname'];
+							$joinRowId = $repData[$item->db_primary_key];
 
 							$aDeleteRecordId = $joinDb->Quote($repData[$oJoin->table_join_key]);
 							//$$$ hugh - need to give it the table name!!
-							// $$$ rob no no no this is not the issue, on SOME setups $table is NOT a reference to $listModel->_table - this is where the issue is
+							// $$$ rob no no no this is not the issue, on SOME setups $item is NOT a reference to $listModel->_table - this is where the issue is
 							// not passing in the correct table name - see notes line 720 for explaination
-							// $listModel->storeRow($repData, $joinRowId, true, $table->db_table_name);
+							// $listModel->storeRow($repData, $joinRowId, true, $item->db_table_name);
 
 							$listModel->storeRow($repData, $joinRowId, true, $joinGroupTable);
 							if ((int)$joinRowId === 0) {
@@ -1188,7 +1188,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							if (!$data) {
 								$query->delete($oJoin->table_join)->where("$oJoin->table_join_key = $aDeleteRecordId");
 							} else {
-								$query->delete($oJoin->table_join)->where("!($table->db_primary_key IN (" . implode(',', $aUpdatedRecordIds) . ")) AND ($oJoin->table_join_key = $aDeleteRecordId)");
+								$query->delete($oJoin->table_join)->where("!($item->db_primary_key IN (" . implode(',', $aUpdatedRecordIds) . ")) AND ($oJoin->table_join_key = $aDeleteRecordId)");
 							}
 						}
 						$joinDb->setQuery($query);
@@ -1238,23 +1238,23 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$data[$fullforeginKey] = $fkVal;
 							$data[$fullforeginKey . "_raw"] = $fkVal;
 						}
-						if ($table->db_primary_key == '') {
+						if ($item->db_primary_key == '') {
 							return JError::raiseWarning(500, JText::_('COM_FABRIK_MUST_SELECT_PRIMARY_KEY'));
 						}
-						$joinRowId = $data[$table->db_table_name . '___' . $table->db_primary_key];
+						$joinRowId = $data[$item->db_table_name . '___' . $item->db_primary_key];
 
 						$data = $listModel->removeTableNameFromSaveData($data);
 
 						//try to catch an pk val when the db_primary_key is in the short format
 						// $$$ rob - think the primary key will always been in the short format as we got the
-						//JOIN tables pk (ie $table->db_primary_key) direct from the db description
+						//JOIN tables pk (ie $item->db_primary_key) direct from the db description
 						//if (is_null($joinRowId)) {
-						//	$joinRowId 				= $data[$table->db_primary_key];
+						//	$joinRowId 				= $data[$item->db_primary_key];
 						//}
 						//$$$ hugh - need to give it the table name!!
-						// $$$ rob no no no this is not the issue, on SOME setups $table is NOT a reference to $listModel->_table - this is where the issue is
+						// $$$ rob no no no this is not the issue, on SOME setups $item is NOT a reference to $listModel->_table - this is where the issue is
 						// not passing in the correct table name - see notes line 720 for explaination
-						// $listModel->storeRow($repData, $joinRowId, true, $table->db_table_name);
+						// $listModel->storeRow($repData, $joinRowId, true, $item->db_table_name);
 						$listModel->storeRow($data, $joinRowId, true, $joinGroupTable);
 
 						// $$$ Les: shouldn't we store the row id of the newly stored row back in data?????
@@ -1282,9 +1282,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$this->_formData[$fk . '_raw'] = $pkVal; // because storeRow takes _raw if the key exists, which it does
 
 							//reset the table's values to the main table
-							// $$$ rob same issues as above with $table not being a reference to $listModel->_table
-							//$table->db_table_name = $origTableName;
-							//$table->db_primary_key = $origTableKey;
+							// $$$ rob same issues as above with $item not being a reference to $listModel->_table
+							//$item->db_table_name = $origTableName;
+							//$item->db_primary_key = $origTableKey;
 							$listModel->getTable()->db_table_name = $origTableName;
 							$listModel->getTable()->db_primary_key = $origTableKey;
 							$listModel->storeRow($this->_formData, $insertId);
@@ -1332,7 +1332,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			foreach ($elementModels as $elementModel) {
 				$element =& $elementModel->getElement();
 				$element->label = strip_tags($element->label);
-				$params =& $elementModel->getParams();
+				$params = $elementModel->getParams();
 
 				//check if the data gets inserted on update
 				$v = $elementModel->getValue($data);
@@ -1406,7 +1406,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		$listModel = $this->getListModel();
 		$listModel->setFormModel($this);
-		$table =& $listModel->getTable();
+		$item =& $listModel->getTable();
 		$listModel->storeRow($this->_formData, $rowId);
 		$usekey = JRequest::getVar('usekey', '');
 		if (!empty($usekey)) {
@@ -1962,11 +1962,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$limit = $dir == 1 ? 'LIMIT 2' : '';
 		$listModel =& $this->getListModel();
 		$order = $listModel->_buildQueryOrder();
-		$table =& $listModel->getTable();
+		$item =& $listModel->getTable();
 		$rowid = JRequest::getInt('rowid');
-		$db->setQuery(" SELECT $table->db_primary_key AS ".FabrikString::safeColNameToArrayKey($table->db_primary_key)
-		." FROM $table->db_table_name
-WHERE $table->db_primary_key $c $rowid $order $limit");
+		$db->setQuery(" SELECT $item->db_primary_key AS ".FabrikString::safeColNameToArrayKey($item->db_primary_key)
+		." FROM $item->db_table_name
+WHERE $item->db_primary_key $c $rowid $order $limit");
 
 		$ids = $db->loadResultArray();
 		if ($dir == 1) {
@@ -2075,9 +2075,9 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		}
 		$listModel 	=& $this->getListModel();
 		$fabrikDb   	=& $listModel->getDb();
-		$table = $listModel->getTable();
-		$k = $fabrikDb->nameQuote($table->db_primary_key);
-		$fabrikDb->setQuery("SELECT MAX($k) FROM ".FabrikString::safeColName($table->db_table_name) . $listModel->_buildQueryWhere());
+		$item = $listModel->getTable();
+		$k = $fabrikDb->nameQuote($item->db_primary_key);
+		$fabrikDb->setQuery("SELECT MAX($k) FROM ".FabrikString::safeColName($item->db_table_name) . $listModel->_buildQueryWhere());
 		return $fabrikDb->loadResult();
 	}
 
@@ -2108,7 +2108,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
 			JDEBUG ? $_PROFILER->mark('formmodel getData: db created') : null;
-			$table = $listModel->getTable();
+			$item = $listModel->getTable();
 			JDEBUG ? $_PROFILER->mark('formmodel getData: table row loaded') : null;
 			$this->_aJoinObjs 	=& $listModel->getJoins();
 			JDEBUG ? $_PROFILER->mark('formmodel getData: joins loaded') : null;
@@ -2242,7 +2242,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 
 	function saveMultiPage()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$session =& JFactory::getSession();
 		//set in plugins such as confirmation plugin
 		if ($session->has('com_fabrik.form.'.$this->getId().'.session.on')) {
@@ -2351,7 +2351,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 
 	function getSessionData()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$this->sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
 		$this->sessionModel->setFormId($this->getId());
 		$this->sessionModel->setRowId($this->_rowId);
@@ -2377,7 +2377,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 			return;
 		}
 		$listModel = $this->getListModel();
-		$table = $listModel->getTable();
+		$item = $listModel->getTable();
 
 		$sql = $listModel->_buildQuerySelect();
 		$sql .= $listModel->_buildQueryJoin();
@@ -2388,7 +2388,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		if ($usekey != '') {
 			$usekey = explode('|', $usekey);
 			foreach ($usekey as &$tmpk) {
-				$tmpk = !strstr($tmpk, '.') ? $table->db_table_name.'.'.$tmpk : $tmpk;
+				$tmpk = !strstr($tmpk, '.') ? $item->db_table_name.'.'.$tmpk : $tmpk;
 				$tmpk = FabrikString::safeColName($tmpk);
 			}
 			if (!is_array($this->_rowId)) {
@@ -2418,7 +2418,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 				$sql .= implode(" AND ", $parts);
 				$sql .= ")";
 			} else {
-				$sql .= " $table->db_primary_key = ". $db->Quote($this->_rowId);
+				$sql .= " $item->db_primary_key = ". $db->Quote($this->_rowId);
 			}
 		} else {
 			if ($viewpk != '') {
@@ -2541,7 +2541,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 	{
 		$groups =& $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$params =& $groupModel->getParams();
+			$params = $groupModel->getParams();
 			if ($params->get('split_page')) {
 				return true;
 			}
@@ -2565,7 +2565,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 		$groups = $this->getGroupsHiarachy(); //dont use & as this buggers up in PHP 5.2.0
 		$c = 0;
 		foreach ($groups as $groupModel) {
-			$params =& $groupModel->getParams();
+			$params = $groupModel->getParams();
 			if ($params->get('split_page') && $c != 0 && $groupModel->canView()) {
 				$pageCounter ++;
 			}
@@ -2849,7 +2849,7 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 	{
 		$db = FabrikWorker::getDbo(true);
 		$links = array();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if (!$params->get('show-referring-table-releated-data', false)) {
 			return $links;
 		}

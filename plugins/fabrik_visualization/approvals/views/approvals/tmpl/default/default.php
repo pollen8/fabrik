@@ -4,7 +4,7 @@ defined('_JEXEC') or die();
 //@TODO if we ever get calendars inside packages then the ids will need to be
 //replaced with classes contained within a distinct id
 
-$row =& $this->row;
+$row = $this->row;
 ?>
 
 

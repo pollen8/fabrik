@@ -64,7 +64,7 @@ class FabrikFEModelFormsession extends FabModel {
 		//place them back in the array
 		//$post = JRequest::get('post');
 		//$$$ rob test as things like db joins had no raw data.
-		$post =& $formModel->setFormData();
+		$post = $formModel->setFormData();
 		$formModel->copyToRaw($post);
 		$fabrik_vars = JArrayHelper::getValue($post, 'fabrik_vars', array());
 		$querystring = JArrayHelper::getValue($fabrik_vars, 'querystring', array());
@@ -91,7 +91,7 @@ class FabrikFEModelFormsession extends FabModel {
 		}
 		// $$$ hugh - if we're saving the formdata in the session, we should set 'session.on'
 		// as per The New Way we're doing redirects, etc.  
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$session->set('com_fabrik.form.'.$this->getFormId().'.session.on', true);
 	}
 
@@ -106,7 +106,7 @@ class FabrikFEModelFormsession extends FabModel {
 		if ($this->_useCookie === false) {
 			return;
 		}
-		$crypt =& $this->getCrypt();
+		$crypt = $this->getCrypt();
 		$lifetime = time() + 365*24*60*60;
 		$user = JFactory::getUser();
 		$key = (int)$user->get('id').":".$this->getFormId().":".$this->getRowId();
@@ -153,7 +153,7 @@ class FabrikFEModelFormsession extends FabModel {
 	function load()
 	{
 		$user = JFactory::getUser();
-		$row =& $this->getTable('Formsession', 'FabrikTable');
+		$row = $this->getTable('Formsession', 'FabrikTable');
 		$row->data = '';
 		$hash = '';
 		if ((int)$user->get('id') !== 0) {
@@ -162,7 +162,7 @@ class FabrikFEModelFormsession extends FabModel {
 			$this->statusid = _FABRIKFORMSESSION_LOADED_FROM_TABLE;
 		} else {
 			if ($this->canUseCookie()) {
-				$crypt =& $this->getCrypt();
+				$crypt = $this->getCrypt();
 				$cookiekey = $this->getCookieKey();
 				$cookieval = JArrayHelper::getValue($_COOKIE, $cookiekey, '');
 				if ($cookieval !== '') {
@@ -181,7 +181,7 @@ class FabrikFEModelFormsession extends FabModel {
 			$row->data = '';
 		}
 		$this->last_page = $row->last_page;
-		$this->row =& $row;
+		$this->row = $row;
 		return $row;
 	}
 
@@ -191,7 +191,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 */
 	protected function getCookieKey()
 	{
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$key = (int)$user->get('id').":".$this->getFormId().":".$this->getRowId();
 		return $key;
 	}
@@ -205,7 +205,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	protected function canUseCookie()
 	{
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$formid = $this->getFormId();
 		if ($session->has('com_fabrik.form.'.$formid.'.session.on')) {
 			return true;
@@ -220,7 +220,7 @@ class FabrikFEModelFormsession extends FabModel {
 	{
 		// $$$ hugh - need to clear the 'session.on'.  If we're zapping the stored
 		// session form data, doesn't matter who or what set 'session.on' ... it ain't there any more.
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$session->clear('com_fabrik.form.'.$this->getFormId().'.session.on');
 		$user = JFactory::getUser();
 		$row 		=& $this->getTable('Formsession', 'FabrikTable');
@@ -229,7 +229,7 @@ class FabrikFEModelFormsession extends FabModel {
 			$hash 	= $this->getHash();
 		} else {
 			if ($this->_useCookie) {
-				$crypt =& $this->getCrypt();
+				$crypt = $this->getCrypt();
 				$cookiekey = (int)$user->get('id').":".$this->getFormId().":".$this->getRowId();
 				$cookieval = JArrayHelper::getValue($_COOKIE, $cookiekey, '');
 				if ($cookieval !== '') {
@@ -237,7 +237,7 @@ class FabrikFEModelFormsession extends FabModel {
 				}
 			}
 		}
-		$db =& $row->getDBO();
+		$db = $row->getDBO();
 		//$row->set('_tbl_key', 'hash');
 		//$k = $row->getKeyName();
 		//$row->$k = $hash;
@@ -246,7 +246,7 @@ class FabrikFEModelFormsession extends FabModel {
 				' WHERE '.$row->getKeyName().' = '. $db->Quote($hash);
 		$db->setQuery($query);
 		$this->removeCookie();
-		$this->row =& $row;
+		$this->row = $row;
 		if ($db->query())
 		{
 			return true;

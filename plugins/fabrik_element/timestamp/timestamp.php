@@ -39,7 +39,7 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 		$name 		= $this->getHTMLName($repeatCounter);
 		$id				= $this->getHTMLId($repeatCounter);
 		$oDate 	= JFactory::getDate();
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
 		$oDate->setOffset($tzoffset);
 		$params 	=& $this->getParams();

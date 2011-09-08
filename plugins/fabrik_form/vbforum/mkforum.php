@@ -18,7 +18,7 @@ $forum_parent = $vbulletin->input->clean_gpc('p', 'forum_parent', TYPE_UINT);
 if ($forum_name && $forum_parent)
 {
 	require_once(DIR . '/includes/functions_bigthree.php');
-	$dataman =& datamanager_init('Forum', $vbulletin, ERRTYPE_ARRAY);
+	$dataman = datamanager_init('Forum', $vbulletin, ERRTYPE_ARRAY);
 	$dataman->set('title', $forum_name);
 	$dataman->set('title_clean', $forum_name);
 	$dataman->set('parentid', $forum_parent);

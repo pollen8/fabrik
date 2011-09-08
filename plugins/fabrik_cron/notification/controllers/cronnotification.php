@@ -29,7 +29,7 @@ class FabrikControllerCroncronnotification extends JController
 	 */
 	function display()
 	{
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 
 		$viewName = 'cronnotification';
 

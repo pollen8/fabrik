@@ -37,20 +37,20 @@ class FabrikViewList extends JView{
 			return '';
 		}
 
-		$formModel =& $model->getForm();
-		$form =& $formModel->getForm();
+		$formModel = $model->getForm();
+		$form = $formModel->getForm();
 
 		$aJoinsToThisKey = $model->getJoinsToThisKey();
 		/* get headings */
 		$aTableHeadings = array();
-		$groupModels =& $formModel->getGroupsHiarachy();
+		$groupModels = $formModel->getGroupsHiarachy();
 		foreach ($groupModels as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$element = $elementModel->getElement();
-				$elParams =& $elementModel->getParams();
+				$elParams = $elementModel->getParams();
 
-				//$elParams =& new fabrikParams($oElement->attribs, $mosConfig_absolute_path . '/administrator/components/com_fabrik/xml/element.xml', 'component');
+				//$elParams = new fabrikParams($oElement->attribs, $mosConfig_absolute_path . '/administrator/components/com_fabrik/xml/element.xml', 'component');
 				if ($elParams->get('show_in_rss_feed') == '1') {
 					$heading = $element->label;
 					if ($elParams->get('show_label_in_rss_feed') == '1') {
@@ -84,7 +84,7 @@ class FabrikViewList extends JView{
 
 		$dateCol = $params->get('feed_date', '');
 		$w = new FabrikWorker();
-		$rows =& $model->getData();
+		$rows = $model->getData();
 		$document->title = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
 		$document->description = $w->parseMessageForPlaceHolder($table->introduction);
 		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid='.$table->id.'&Itemid='.$Itemid);
@@ -119,7 +119,7 @@ class FabrikViewList extends JView{
 				//used for content not in dl
 				//ok for feed gator you cant have the same item title so we'll take the first value from the table (asume its the pk and use that to append to the item title)'
 				$title = '';
-				$item =& new JFeedItem();
+				$item = new JFeedItem();
 
 				foreach ($aTableHeadings as $heading=>$dbcolname) {
 					if ($title == '') {

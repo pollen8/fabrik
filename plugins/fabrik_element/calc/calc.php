@@ -23,7 +23,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	{
 		if (!isset($this->_default)) {
 			$w = new FabrikWorker();
-			$element =& $this->getElement();
+			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->default, $data, true, true);
 			if ($element->eval == "1") {
 				$default = @eval($default);
@@ -37,10 +37,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	private function _getV($data, $repeatCounter)
 	{
 		$w = new FabrikWorker();
-		$groupModel =& $this->getGroup();
+		$groupModel = $this->getGroup();
 		$joinid = $groupModel->getGroup()->join_id;
 		$name = $this->getFullName(false, true, false);
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		// $$$ hugh - if we don't do this, we get the cached default from the previous repeat
 		if ($repeatCounter > 0) {
 			unset($this->_default);
@@ -55,7 +55,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			//$default = $this->getDefaultValue($data, $repeatCounter);
 			$this->swapValuesForLabels($data);
 			// $$$ hugh need to remove repeated joined data which is not part of this repeatCount
-			$groupModel =& $this->getGroup();
+			$groupModel = $this->getGroup();
 			if ($groupModel->isJoin()) {
 				if ($groupModel->canRepeat()) {
 					$joinid = $groupModel->getGroup()->join_id;
@@ -145,13 +145,13 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$this->defaults = array();
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
-			$element =& $this->getElement();
+			$element = $this->getElement();
 			$element->default = $this->_getV($data, $repeatCounter);
 			if ($element->default === '') { //query string for joined data
 				// $$$ rob commented out as $name not defined and not sure what t should be
 				//$element->default = JArrayHelper::getValue($data, $name);
 			}
-			$formModel =& $this->getForm();
+			$formModel = $this->getForm();
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
 				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -173,13 +173,13 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	public function preProcess($c)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = new FabrikWorker();
-		$form =& $this->getForm();
+		$form = $this->getForm();
 		$d = $form->_formData;
 		$joindata = JArrayHelper::getValue($d, 'join', array());
 		$calc =  $params->get('calc_calculation');
-		$group =& $this->getGroup();
+		$group = $this->getGroup();
 		$joinid = $group->getGroup()->join_id;
 
 		foreach ($joindata as $joinid => $thisJoindata) {
@@ -222,7 +222,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$this->swapValuesForLabels($d);
 
 		// $$$ hugh - add $data same-same as $d, for consistency so user scripts know where data is
-		$data =& $d;
+		$data = $d;
 		$calc = @eval($w->parseMessageForPlaceHolder($calc, $d));
 		FabrikWorker::logEval($calc, 'Caught exception on eval of ' . $this->getElement()->name . '::preProcess(): %s');
 		$form->updateFormData($key, $calc);
@@ -234,7 +234,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$groups = $this->getForm()->getGroupsHiarachy();
 		foreach (array_keys($groups) as $gkey) {
 			$group = $groups[$gkey];
-			$elementModels =& $group->getPublishedElements();
+			$elementModels = $group->getPublishedElements();
 			for ($j=0; $j < count($elementModels); $j++) {
 				$elementModel = $elementModels[$j];
 				$elkey = $elementModel->getFullName(false, true, false);
@@ -260,7 +260,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	function renderListData($element_data, &$thisRow)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$format = trim($params->get('calc_format_string'));
 		// $$$ hugh - the 'calculated value' bit is for legacy data that was created
 		// before we started storing a value when row is saved
@@ -273,14 +273,14 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		else {
 			$element = $this->getElement();
 			$cal = $params->get('calc_calculation', '');
-			$listModel =& $this->getlistModel();
-			$formModel =& $this->getFormModel();
+			$listModel = $this->getlistModel();
+			$formModel = $this->getFormModel();
 			$data = JArrayHelper::fromObject($thisRow);
 			$data['rowid'] = $data['__pk_val'];
 			$data['fabrik'] = $formModel->getId();
 			// $$$ hugh - trying to standardize on $data so scripts know where data is,
 			// need $d here for backward compat
-			$d =& $data;
+			$d = $data;
 			$res = $listModel->parseMessageForRowHolder($cal, $data, true);
 			$res = @eval($res);
 			FabrikWorker::logEval($res, 'Caught exception on eval in '.$element->name.'::renderListData() : %s');
@@ -355,8 +355,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
-		$params =& $this->getParams();
+		$opts = $this->getElementJSOptions($repeatCounter);
+		$params = $this->getParams();
 		$calc = $params->get('calc_calculation');
 		$obs = explode(',', $params->get('calc_ajax_observe'));
 		if(preg_match_all("/{[^}\s]+}/i", $calc, $matches) !== 0){
@@ -387,7 +387,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
-		$data =& $d;
+		$data = $d;
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
 		$c = @eval($calc);
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
@@ -426,7 +426,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
 			$name = $this->getFullName(false, false, false);
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 			$joinSQL = $listModel->_buildQueryJoin();
 			$whereSQL = $listModel->_buildQueryWhere();
 			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
@@ -447,7 +447,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
 			$name = $this->getFullName(false, false, false);
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 			$joinSQL = $listModel->_buildQueryJoin();
 			$whereSQL = $listModel->_buildQueryWhere();
 			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";

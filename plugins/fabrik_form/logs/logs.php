@@ -97,10 +97,10 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		if( $params->get('compare_data') == 1 ) {
 
 
-			$this->formModel =& $formModel;
+			$this->formModel = $formModel;
 			$data = $this->getEmailData();
 			$post = JRequest::get('post');
-			$listModel =& $formModel->getTable();
+			$listModel = $formModel->getTable();
 
 			if ($ext == 'csv') {
 				$sep_compare = '';
@@ -115,7 +115,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				foreach ($data as $key => $val) {
 					if (($val != $formModel->_origData->$key) && (isset($formModel->_origData->$key)) && (isset($val)) && (substr($key, -4, 4) != '_raw')) {
 						$id_elementModel = $formModel->getPluginManager()->getElementPlugin($key);
-						$id_element =& $id_elementModel->getElement(true);
+						$id_element = $id_elementModel->getElement(true);
 						$formModel->_formData[$id_element->name] = $formModel->_fullFormData['rowid'];
 						$formModel->_formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
 						$test = $id_element->name->$key;
@@ -425,8 +425,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					$rdb = '#__{package}_log';
 				} else {
 					$db_suff = $params->get('record_in');
-					$this->formModel =& $formModel;
-					$form =& $formModel->getForm();
+					$this->formModel = $formModel;
+					$form = $formModel->getForm();
 					$fid = $form->id;
 					$db->setQuery("SELECT `db_table_name` FROM `#__{package}_tables` WHERE `form_id` = '$fid'");
 					$tname = $db->loadResult();

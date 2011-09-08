@@ -111,7 +111,7 @@ class image
 
 	function setStorage(&$storage)
 	{
-		$this->storage =& $storage;
+		$this->storage = $storage;
 	}
 
 	function GetImgType($filename)

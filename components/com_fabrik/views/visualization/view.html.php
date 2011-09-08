@@ -16,14 +16,14 @@ class FabrikViewVisualization extends JView{
 	function display($tmpl = 'default')
 	{
 		FabrikHelperHTML::framework();
-		$model =& $this->getModel();
+		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
-		$visualization =& $model->getVisualization();
-		$pluginParams =& $model->getPluginParams();
+		$visualization = $model->getVisualization();
+		$pluginParams = $model->getPluginParams();
 
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
-		$plugin =& $pluginManager->getPlugIn($visualization->plugin, 'visualization');
+		$plugin = $pluginManager->getPlugIn($visualization->plugin, 'visualization');
 		$plugin->_row = $visualization;
 		if ($visualization->published == 0) {
 			return JError::raiseWarning(500, JText::_('COM_FABRIK_SORRY_THIS_VISUALIZATION_IS_UNPUBLISHED'));
@@ -37,7 +37,7 @@ class FabrikViewVisualization extends JView{
 		$plugin->_params = $pluginParams;
 		$tmpl = $plugin->getParams()->get('calendar_layout', $tmpl);
 		$plugin->$pluginTask($this);
-		$this->plugin =& $plugin;
+		$this->plugin = $plugin;
 		$viewName = $this->getName();
 		$this->addTemplatePath($this->_basePath.DS.'plugins'.DS.$this->_name.DS.$plugin->_name.DS.'tmpl'.DS.$tmpl);
 		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'visualization'.DS.$plugin->_name.DS.$tmpl);

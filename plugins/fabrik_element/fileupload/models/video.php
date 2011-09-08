@@ -43,7 +43,7 @@ class videoRender
 		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.lib.php');
 			
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'extension.cache.mysql.php', __FILE__, true);
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$host =  $config->getValue('host');
 		$database = $config->getValue('db');
 		$username = $config->getValue('user');

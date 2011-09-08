@@ -29,7 +29,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 	function getLabel($repeatCounter = 0, $tmpl = '')
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('display_showlabel', true)) {
 			return parent::getLabel($repeatCounter, $tmpl);
 		}
@@ -46,7 +46,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 		if ($view == 'form' && ! ( $this->canUse() || $this->canView())) {
 		  return '';
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$elementid = "fb_el_" . $elementHTMLId;
 		$this->_form->loadValidationRuleClasses();
 		$str = '';
@@ -56,7 +56,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 		if ($this->canView()) {
 		  $str .= "<div class=\"fabrikLabel fabrikPluginElementDisplayLabel";
-		  $validations =& $this->getValidations();
+		  $validations = $this->getValidations();
 		  if ($this->_editable) {
 			foreach ($validations as $validation) {
 			  $vid = $validation->_pluginName;
@@ -93,7 +93,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	 */
 
 	function render($data, $repeatCounter = 0) {
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if (!$params->get('display_showlabel', true)) {
 			return '';
 		}
@@ -115,7 +115,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	function getValue($data, $repeatCounter = 0, $opts = array() )
 	{
 		$element = $this->getElement();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		// $$$rob - if no search form data submitted for the search element then the default
 		// selection was being applied instead
 		if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
@@ -126,7 +126,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 		if ($value === '') { //query string for joined data
 			$value = JArrayHelper::getValue($data, $value);
 		}
-		$formModel =& $this->getForm();
+		$formModel = $this->getForm();
 		//stops this getting called from form validation code as it messes up repeated/join group validations
 		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
 			$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);

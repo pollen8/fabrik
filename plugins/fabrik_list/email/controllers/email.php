@@ -54,9 +54,9 @@ class FabrikControllerListemail extends JController
 		// Set the default view name from the Request
 		$view = &$this->getView($viewName, $viewType);
 
-		$listModel =& $this->getModel('List', 'FabrikFEModel');
+		$listModel = $this->getModel('List', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('id'));
-		$formModel =& $listModel->getFormModel();
+		$formModel = $listModel->getFormModel();
 		// Push a model into the view
 		
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');

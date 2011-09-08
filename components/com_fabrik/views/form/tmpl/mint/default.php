@@ -1,7 +1,7 @@
 <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
 <?php } ?>
-<?php $form =& $this->form;
+<?php $form = $this->form;
 echo $form->startTag;
 if ($this->params->get('show-title', 1)) {?>
 <h1><?php echo $form->label;?></h1>

@@ -53,7 +53,7 @@ class filesystemstorage extends storageAdaptor{
 		// replace any non-alnum chars (except _ and - and .) with _
 		$filename_o = preg_replace( '#[^a-zA-Z0-9_\-\.]#', '_', $filename);
 		// $$$peamak: add random filename
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('random_filename') == 1) {
 	 				$length = $params->get('length_random_filename');
 					$key = "";
@@ -138,7 +138,7 @@ class filesystemstorage extends storageAdaptor{
 	function _getSmallerFile($file, $type)
 	{
 
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = new FabrikWorker();
 
 		//$$$ rob wasnt working when getting thumb path on upload

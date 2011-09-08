@@ -90,7 +90,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 	{
 
 		$db = FabrikWorker::getDbo();
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$userid = $user->get('id');
 
 		$ref = $this->getRef();
@@ -113,7 +113,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		if ($params->get('notification_ajax', 0) == 1) {
 			return;
 		}
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$userid = $user->get('id');
 		$notify = JRequest::getInt('fabrik_notification', 0);
 		if ($userid == 0) {
@@ -130,7 +130,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		$date = $db->Quote($date->toMySQL());
 		$ref = $this->getRef();
 		$msg = $notify ? JText::_('PLG_CRON_NOTIFICATION_ADDED') : JText::_('PLG_CRON_NOTIFICATION_REMOVED');
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$app->enqueueMessage($msg);
 		$db->setQuery("INSERT INTO #__{package}_notification_event (`reference`, `event`, `user_id`, `date_time`) VALUES ($ref, $event, $userid, $date)");
 		$db->query();

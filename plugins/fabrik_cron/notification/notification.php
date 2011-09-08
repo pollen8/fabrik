@@ -33,7 +33,7 @@ class plgFabrik_Cronnotification extends FabrikPlugin {
 	function process(&$data)
 	{
 
-		$db =& FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 
 		$sql = "SELECT n.*, e.event AS event, e.id AS event_id,
 		n.user_id AS observer_id, observer_user.name AS observer_name, observer_user.email AS observer_email,
@@ -49,7 +49,7 @@ class plgFabrik_Cronnotification extends FabrikPlugin {
 		$db->setQuery($sql);
 		$rows = $db->loadObjectList();
 
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$email_from = $config->getValue('mailfrom');
 		$sitename = $config->getValue('sitename');
 		$sent = array();
@@ -91,9 +91,9 @@ class plgFabrik_Cronnotification extends FabrikPlugin {
 	{
 		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
 		$this->getRow();
-		$pluginParams =& $this->getParams();
+		$pluginParams = $this->getParams();
 
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		?>
 <div id="page-<?php echo $this->_name;?>" class="pluginSettings"
 	style="display: none"><?php

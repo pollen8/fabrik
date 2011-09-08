@@ -113,7 +113,7 @@ class FabrikFEModelConnection extends JModel {
 				if (is_a($connProperties, '__PHP_Incomplete_Class') || JArrayHelper::getValue($connProperties, 'id') == '') {
 					$session->clear($key);
 				} else {
-					$this->_connection =& FabTable::getInstance('connection', 'FabrikTable');
+					$this->_connection = FabTable::getInstance('connection', 'FabrikTable');
 					$this->_connection->bind($connProperties);
 					return $this->_connection;
 				}
@@ -404,7 +404,7 @@ class FabrikFEModelConnection extends JModel {
 			$row->load(array('default'=> 1));
 			$this->_defaultConnection = $row;
 		}
-		$this->_connection =& $this->_defaultConnection;
+		$this->_connection = $this->_defaultConnection;
 		return $this->_defaultConnection;
 	}
 }

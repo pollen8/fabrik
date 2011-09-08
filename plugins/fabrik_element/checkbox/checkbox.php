@@ -38,7 +38,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		$params 	=& $this->getParams();
 		$split_str = $params->get('options_split_str', GROUPSPLITTER2);
-		$listModel =& $this->getListModel();
+		$listModel = $this->getListModel();
 		$element 	= $this->getElement();
 		$values 	= $this->getSubOptionValues();
 		$labels 	= $this->getSubOptionLabels();
@@ -165,7 +165,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	function onStoreRow($data)
 	{
 		$element = $this->getElement();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($params->get('chk-savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
 			$added = stripslashes($data[$element->name . '_additions']);
 			if (trim($added) == '') {
@@ -203,7 +203,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	function elementJavascript($repeatCounter)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 
@@ -211,7 +211,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$arTxt 	= (array)$this->getSubOptionLabels();
 		$data 		=& $this->_form->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 
 		$opts->value    = $arSelected;
 		$opts->defaultVal  = $this->getDefaultValue($data);
@@ -233,7 +233,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	function getEmptyDataValue(&$data)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
 		if (!array_key_exists($element->name, $data)) {
 			$data[$element->name] = $params->get('sub_default_value');

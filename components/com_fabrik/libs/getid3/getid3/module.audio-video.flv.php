@@ -33,7 +33,7 @@
 //                                                             //
 //  * version 0.6 (24 May 2009)                                //
 //  Better parsing of files with h264 video                    //
-//    by Evgeny Moysevich <moysevichØgmail*com>                //
+//    by Evgeny Moysevich <moysevichï¿½gmail*com>                //
 //                                                             //
 //  * version 0.6.1 (30 May 2011)                              //
 //    prevent infinite loops in expGolombUe()                  //
@@ -135,7 +135,7 @@ class getid3_flv extends getid3_handler
 						$FLVvideoHeader = fread($this->getid3->fp, 11);
 
 						if ($info['flv']['video']['videoCodec'] == GETID3_FLV_VIDEO_H264) {
-							// this code block contributed by: moysevichØgmail*com
+							// this code block contributed by: moysevichï¿½gmail*com
 
 							$AVCPacketType = getid3_lib::BigEndian2Int(substr($FLVvideoHeader, 0, 1));
 							if ($AVCPacketType == H264_AVC_SEQUENCE_HEADER) {
@@ -161,7 +161,7 @@ class getid3_flv extends getid3_handler
 									}
 								}
 							}
-							// end: moysevichØgmail*com
+							// end: moysevichï¿½gmail*com
 
 						} elseif ($info['flv']['video']['videoCodec'] == GETID3_FLV_VIDEO_H263) {
 
@@ -368,7 +368,7 @@ class AMFStream {
 	var $pos;
 
 	function AMFStream(&$bytes) {
-		$this->bytes =& $bytes;
+		$this->bytes = $bytes;
 		$this->pos = 0;
 	}
 
@@ -451,7 +451,7 @@ class AMFReader {
 	var $stream;
 
 	function AMFReader(&$stream) {
-		$this->stream =& $stream;
+		$this->stream = $stream;
 	}
 
 	function readData() {

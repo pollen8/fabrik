@@ -58,7 +58,7 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 			$postfile = KUNENA_PATH_TEMPLATE_DEFAULT .DS. 'post.php';
 		}
 		$w = new FabrikWorker();
-		$fbSession =& CKunenaSession::getInstance();
+		$fbSession = CKunenaSession::getInstance();
 
 
 		$catid =$params->get('kunena_category', 0);

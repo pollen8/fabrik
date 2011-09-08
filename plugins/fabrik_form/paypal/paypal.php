@@ -47,17 +47,17 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 	function onAfterProcess(&$params, &$formModel)
 	{
-		$app =& JFactory::getApplication();
-		$data =& $formModel->_fullFormData;
+		$app = JFactory::getApplication();
+		$data = $formModel->_fullFormData;
 		$this->data 		= $data;
 		if (!$this->shouldProcess($params)) {
 			return true;
 		}
 		$this->formModel = $formModel;
-		$emailData =& $this->getEmailData();
+		$emailData = $this->getEmailData();
 		$w = new FabrikWorker();
 
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$userid = $user->get('id');
 
 		$ipn = $this->getIPNHandler($params);
@@ -135,7 +135,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 			$name = $params->get('paypal_subs_name', '');
 
 
-			$subDb =& $subTable->getDb();
+			$subDb = $subTable->getDb();
 			$subDb->setQuery("SELECT *, $durationEl AS p3, $durationPerEl AS t3, " . $subDb->Quote($item_raw) . " AS item_number  FROM ".$subTable->getTable()->db_table_name." WHERE $idEl = " . $subDb->Quote($item_raw));
 			$sub = $subDb->loadObject();
 			if (is_object($sub)) {
@@ -333,7 +333,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		// - instead a session var is set (com_fabrik.form.X.redirect.url)
 		// as the preferred redirect url
 
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$context = 'com_fabrik.form.'.$formModel->_id.'.redirect.';
 
 		// $$$ hugh - fixing issue with new redirect, which now needs to be an array.
@@ -345,7 +345,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 		/// log the info
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-		$log =& JTable::getInstance('log', 'Table');
+		$log = JTable::getInstance('log', 'Table');
 		$log->message_type = 'fabrik.paypal.onAfterProcess';
 		$msg = new stdClass();
 		$msg->opt = $opts;
@@ -363,15 +363,15 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getInt('rowid');
 		JModel::addIncludePath( COM_FABRIK_FRONTEND.DS.'models');
-		$formModel =& JModel::getInstance('Form', 'FabrikModel');
+		$formModel = JModel::getInstance('Form', 'FabrikModel');
 		$formModel->setId($formid);
-		$params =& $formModel->getParams();
+		$params = $formModel->getParams();
 		$ret_msg = $params->get('paypal_return_msg', array(), '_default', 'array');
 		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
 		if ($ret_msg) {
 			$w = new FabrikWorker();
-			$listModel =& $formModel->getlistModel();
-			$row =& $listModel->getRow($rowid);
+			$listModel = $formModel->getlistModel();
+			$row = $listModel->getRow($rowid);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
 			if (stristr($ret_msg,'[show_all]')) {
 				$all_data = array();
@@ -397,9 +397,9 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 	function ipn()
 	{
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-		$log =& JTable::getInstance('log', 'Table');
+		$log = JTable::getInstance('log', 'Table');
 		$log->referring_url = $_SERVER['REQUEST_URI'];
 		$log->message_type = 'fabrik.ipn.start';
 		$log->message = FastJSON::encode($_REQUEST);
@@ -411,12 +411,12 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 		//pretty sure they are added but double add
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
-		$formModel =& JModel::getInstance('Form', 'FabrikModel');
+		$formModel = JModel::getInstance('Form', 'FabrikModel');
 		$formModel->setId($formid);
-		$listModel =& $formModel->getlistModel();
-		$params =& $formModel->getParams();
-		$table =& $listModel->getTable();
-		$db =& $listModel->getDb();
+		$listModel = $formModel->getlistModel();
+		$params = $formModel->getParams();
+		$table = $listModel->getTable();
+		$db = $listModel->getDb();
 
 		// $$$ hugh
 		// @TODO shortColName won't handle joined data, need to fix this to use safeColName

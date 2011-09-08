@@ -52,10 +52,10 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		FabrikHelperHTML::addStyleDeclaration('.focusClass{border:1px solid red !important;}');
 		FabrikHelperHTML::script('media/com_fabrik/js/element.js');
-		$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getVar('listid'));
 
-		$elements =& $model->getElements('filtername');
+		$elements = $model->getElements('filtername');
 		$pels = $params->get('inline_editable_elements');
 		$use = trim($pels) == '' ? array() : explode(",", $pels);
 		$els = array();

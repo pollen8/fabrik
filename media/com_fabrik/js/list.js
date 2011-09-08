@@ -1040,12 +1040,14 @@ var FbListActions = new Class({
 		this.actions = [];
 		this.setUpSubMenus();
 		this.method = method;
-		
-		window.addEvent('keydown', function(e){
-			if (e.key == 'esc'){
-				this.closeWidgets();
-			}
-		}.bind(this));
+		console.log(this.method);
+		if (this.method == 'floating') {
+			window.addEvent('keydown', function(e){
+				if (e.key == 'esc'){
+					this.closeWidgets();
+				}
+			}.bind(this));
+		}
 		
 		window.addEvent('fabrik.list.update', function(list, json){
 			this.observe();
@@ -1108,18 +1110,23 @@ var FbListActions = new Class({
 	},
 	
 	setUpFloating: function(){
+		console.log(		this.list);
 		this.list.form.getElements('ul.fabrik_action').each(function(ul){
 			if(ul.findClassUp('fabrik_row')) {
-				ul.addClass('floating-tip');
-				var c = ul.clone().inject(document.body, 'inside');
-				this.actions.push(c);
-				c.fade('out');
-				c.addClass('fabrik_row');
-				c.setStyle('position', 'absolute');
-				ul.findClassUp('fabrik_row').getElement('input[type=checkbox]').addEvent('click', function(e){
-					this.toggleWidget(e, c);
-				}.bind(this));
-				ul.dispose();
+				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
+					ul.addClass('floating-tip');
+					var c = ul.clone().inject(document.body, 'inside');
+					this.actions.push(c);
+					c.fade('out');
+					c.addClass('fabrik_row');
+					c.setStyle('position', 'absolute');
+					console.log(ul);
+					
+					i.addEvent('click', function(e){
+						this.toggleWidget(e, c);
+					}.bind(this));
+					ul.dispose();
+				}
 			}
 		}.bind(this));
 		

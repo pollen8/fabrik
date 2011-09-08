@@ -31,7 +31,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$meta = array();
 		$config = JFactory::getConfig();
 		$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
@@ -56,7 +56,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$meta = array();
 		$formModel = $this->getForm();
 		$config = JFactory::getConfig();
@@ -114,7 +114,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 
 	protected function _render($url)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		if ($url !== '') {
 			if (!strstr($url, COM_FABRIK_LIVESITE)) {
 				// $$$ rob doesnt work with sef urls as $url already contains site folder.
@@ -145,7 +145,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbLike('$id', $opts)";
 	}

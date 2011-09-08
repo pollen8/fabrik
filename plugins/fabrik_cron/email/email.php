@@ -34,7 +34,7 @@ class plgFabrik_Cronemail extends FabrikPlugin {
 	{
 		$app = JFactory::getApplication();
 		jimport('joomla.mail.helper');
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$msg = $params->get('message');
 		$to = $params->get('to');
 		$w = new FabrikWorker();
@@ -71,9 +71,9 @@ class plgFabrik_Cronemail extends FabrikPlugin {
 		$field = $params->get('cronemail-updatefield');
 		if (!empty( $updates) && trim($field ) != '') {
 			//do any update found
-			$listModel =& JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($params->get('table'));
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 
 			$connection = $params->get('connection');
 			$field = $params->get('cronemail-updatefield');
@@ -81,7 +81,7 @@ class plgFabrik_Cronemail extends FabrikPlugin {
 
 			$field = str_replace("___", ".", $field);
 			$query = "UPDATE $table->db_table_name set $field = " . $fabrikDb->Quote($value) . " WHERE $table->db_primary_key IN (" . implode(',', $updates) . ")";
-			$fabrikDb =& $listModel->getDb();
+			$fabrikDb = $listModel->getDb();
 			$fabrikDb->setQuery($query);
 			$fabrikDb->query();
 		}
@@ -96,9 +96,9 @@ class plgFabrik_Cronemail extends FabrikPlugin {
 	{
 		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
 		$this->getRow();
-		$pluginParams =& $this->getParams();
+		$pluginParams = $this->getParams();
 
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		?>
 		<div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
 		<?php

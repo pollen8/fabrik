@@ -24,7 +24,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	function renderListData($data, $oAllRowsData)
 	{
 		$str = '';
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$w = $params->get('fb_gm_table_mapwidth');
 		$h = $params->get('fb_gm_table_mapheight');
 		$z = $params->get('fb_gm_table_zoomlevel');
@@ -139,7 +139,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		static $geoJs;
 		if (!isset($geoJs)) {
 			$document = JFactory::getDocument();
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			if ($params->get('fb_gm_defaultloc')) {
 				$document->addScript("http://code.google.com/apis/gears/gears_init.js");
 				FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
@@ -204,8 +204,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function _getGeocodeFieldId($which_field, $repeatCounter = 0)
 	{
-		$listModel =& $this->getlistModel();
-		$params =& $this->getParams();
+		$listModel = $this->getlistModel();
+		$params = $this->getParams();
 		$field = $params->get('fb_gm_geocode_' . $which_field, false);
 		if ($field) {
 			$elementModel = $this->getPluginManager()->getElementPlugin($field);
@@ -225,7 +225,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	{
 		static $usestatic;
 		if (!isset($usestatic)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			//requires you to have installed the pda plugin
 			//http://joomup.com/blog/2007/10/20/pdaplugin-joomla-15/
 			if (array_key_exists('ispda', $GLOBALS) && $GLOBALS['ispda'] == 1) {
@@ -471,8 +471,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
-		$db =& FabrikWorker::getDbo();
-		$listModel =& $this->getlistModel();
+		$db = FabrikWorker::getDbo();
+		$listModel = $this->getlistModel();
 		$table 		=& $listModel->getTable();
 
 		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->_element->name);
@@ -498,7 +498,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			// $$$ hugh - added parens around lat,long for consistancy!
 			$this->_default = '(' . $params->get('fb_gm_lat') . ',' . $params->get('fb_gm_long') . ')' . ':' . $params->get('fb_gm_zoomlevel');
 		}
@@ -571,7 +571,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 						if (isset($data[$fullName ][0])) {
 							/* if not its a file upload el */
-							$value = $data[$fullName ][0];
+							$value = $data[$fullName][0];
 						}
 					} else {
 						$value = $data[$fullName];
@@ -579,7 +579,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 				}
 			}
 			if ($value === '') { //query string for joined data
-				$value = JArrayHelper::getValue($data, $name);
+				$value = JArrayHelper::getValue($data, $fullName);
 			}
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {

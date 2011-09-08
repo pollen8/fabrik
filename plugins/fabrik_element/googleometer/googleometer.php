@@ -50,7 +50,7 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element {
 	}
 
 	private function getDataElement() {
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$elementid = (int)$params->get('googleometer_element');
 		$element = $this->getlistModel()->getPluginManager()->getPlugIn('', 'element');
 		$element->setId($elementid);
@@ -59,9 +59,9 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element {
 
 	private function getRange()
 	{
-		$listModel =& $this->getlistModel();
-		$fabrikdb =& $listModel->getDb();
-		$db =& FabrikWorker::getDbo();
+		$listModel = $this->getlistModel();
+		$fabrikdb = $listModel->getDb();
+		$db = FabrikWorker::getDbo();
 		$element = $this->getDataElement();
 		$elementShortName = $element->getElement()->name;
 
@@ -92,7 +92,7 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element {
 
 	function _renderListData($data, $range) {
 		$options = array();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$options['chartsize'] = 'chs='.$params->get('googleometer_width', 200).'x'.$params->get('googleometer_height', 125);
 		$options['charttype'] = 'cht=gom';
 		$options['value'] = 'chd=t:'.$data;

@@ -48,7 +48,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	{
 		$this->formModel = JModel::getInstance('form', 'fabrikModel');
 		$this->formModel->setId($id);
-		$form =& $this->formModel->getForm();
+		$form = $this->formModel->getForm();
 		$row = $this->getRow();
 		$row->params = $form->params;
 		return $this->formModel;
@@ -61,11 +61,11 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 	public function tweet()
 	{
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		global $_SESSION;
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$this->buildModel(JRequest::getInt('formid'));
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		$renderOrder = JRequest::getInt('renderOrder');
 
@@ -104,9 +104,9 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 	function sendTweet($params, $connection)
 	{
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		/* If method is set change API call made. Test is called by default. */
 		$content = $connection->get('account/rate_limit_status');
 		echo "Current API hits remaining: {$content->remaining_hits}.";
@@ -117,7 +117,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		/* Get logged in user to help with tests. */
 		$user = $connection->get('account/verify_credentials');
 		$msg = $_SESSION['msg'];
-		$data =& JFactory::getDate();
+		$data = JFactory::getDate();
 
 		$parameters = array('status' => $msg);
 		$status = $connection->post('statuses/update', $parameters);
@@ -141,7 +141,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	{
 		global $_SESSION;
 		$this->formModel = $formModel;
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 
 		$session->set('com_fabrik.form.twitter.showmessage', $params->get('twitter-show-success-msg', 0));
 		$_SESSION['msg'] = $this->getMessage($params);
@@ -263,7 +263,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 	public function authenticateAdmin()
 	{
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$formModel = $this->buildModel(JRequest::getInt('formid'));
 		$params = $this->getParams();
 		$consumer_key = JRequest::getVar('twitter_consumer_key');
@@ -317,9 +317,9 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 	public function updateAdmin()
 	{
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$this->buildModel(JRequest::getInt('formid'));
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		$renderOrder = JRequest::getInt('renderOrder');
 
@@ -334,9 +334,9 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
 
 		//save the access token to the element params
-		$formModel =& JModel::getInstance('Form', 'FabrikModel');
+		$formModel = JModel::getInstance('Form', 'FabrikModel');
 		$formModel->setId(JRequest::getInt('formid'));
-		$row =& $formModel->getForm();
+		$row = $formModel->getForm();
 
 		$params = $formModel->getParams();
 		$opts = $params->toArray();
@@ -371,7 +371,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 			JError::raiseWarning(500, $row->getError());
 		}
 
-		$lang =& JFactory::getLanguage();
+		$lang = JFactory::getLanguage();
 		$langfile = 'com_fabrik.plg.form.fabriktwitter';
 		$lang->load($langfile, JPATH_ADMINISTRATOR, null, true);
 
@@ -379,7 +379,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 		echo JText::_('PLG_FORM_TWITTER_CREDITIALS_SAVED');
 		JHTML::_('behavior.mootools');
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$script=
 		implode("\n", $js).
 		"

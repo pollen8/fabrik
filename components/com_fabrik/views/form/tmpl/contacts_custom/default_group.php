@@ -10,8 +10,8 @@
  * This code sets up your first group.
  */
 	reset($this->groups);
-	$this->group =& current($this->groups);
-	$this->elements =& $this->group->elements;
+	$this->group = current($this->groups);
+	$this->elements = $this->group->elements;
 ?>
 
 <?php
@@ -33,7 +33,7 @@
  *
  * The important thing is the two PHP lines for each element:
  *
- *    $this->element =& $this->elements['short_element_name'];
+ *    $this->element = $this->elements['short_element_name'];
  *    echo $this->loadTemplate('element');
  *
  * ... which is what actually renders each individual element.  Note
@@ -44,21 +44,21 @@
 ?>
 		<div class="example">
 			<?php
-			$this->element =& $this->elements['first_name'];
+			$this->element = $this->elements['first_name'];
 			echo $this->loadTemplate('element');
 			?>
 		</div>
 
 		<div class="example">
 			<?php
-			$this->element =& $this->elements['last_name'];
+			$this->element = $this->elements['last_name'];
 			echo $this->loadTemplate('element');
 			?>
 		</div>
 
 		<div class="example">
 			<?php
-			$this->element =& $this->elements['email'];
+			$this->element = $this->elements['email'];
 			echo $this->loadTemplate('element');
 			?>
 		</div>
@@ -71,8 +71,8 @@
  * each group you want to work with, you need to put this chunk of code
  * to set up $this->group for the display code.
  */
-	$this->group =& next($this->groups);
-	$this->elements =& $this->group->elements;
+	$this->group = next($this->groups);
+	$this->elements = $this->group->elements;
 ?>
 
 	<fieldset class="fabrikGroup" id="group<?php echo $this->group->id;?>" style="<?php echo $this->group->css;?>">
@@ -80,7 +80,7 @@
 
                 <div class="example">
                         <?php
-                        $this->element =& $this->elements['message'];
+                        $this->element = $this->elements['message'];
                         echo $this->loadTemplate('element');
                         ?>
                 </div>

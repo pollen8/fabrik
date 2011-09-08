@@ -36,7 +36,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		if (!$this->getRequiredFiltersFound()){
 			return '';
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$str = "head.ready(function() {";
 		$viz = $this->getVisualization();
 
@@ -78,7 +78,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$this->listids = $params->get('googlemap_table', array(), '_default', 'array');
 		}
 	}
@@ -90,10 +90,10 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	function getPolyline()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$lines = array();
 		$polyelements = $params->get('fb_gm_polyline_element', array(), '_default', 'array');
-		$listModels =& $this->getlistModels();
+		$listModels = $this->getlistModels();
 		$c = 0;
 		foreach ($listModels as $listModel) {
 			$k = FabrikString::safeColName(FabrikString::rtrimword( $polyelements[$c], '[]'));
@@ -101,10 +101,10 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 				$c++;
 				continue;
 			}
-			$mapsElements =& $listModel->getElementsOfType('fabrikgooglemap');
+			$mapsElements = $listModel->getElementsOfType('fabrikgooglemap');
 
 			$coordColumn = $mapsElements[0]->getFullName(false, false, false);
-			$table =& $listModel->getTable();
+			$table = $listModel->getTable();
 			$where = $listModel->_buildQueryWhere();
 			$join = $tableModel->_buildQueryJoin();
 			$db = $listModel->getDb();
@@ -181,9 +181,9 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$k = 0;
 		foreach ($listids as $listid) {
 			$template = JArrayHelper::getValue($templates, $c, '');
-			$listModel =& $this->getlistModel($listid);
-			$table =& $listModel->getTable();
-			$mapsElements =& $listModel->getElementsOfType('googlemap');
+			$listModel = $this->getlistModel($listid);
+			$table = $listModel->getTable();
+			$mapsElements = $listModel->getElementsOfType('googlemap');
 
 			if (empty($mapsElements)) {
 				JError::raiseError(500, JText::_('No google map element present in this table'));
@@ -364,8 +364,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	function getStaticMap()
 	{
-		$params =& $this->getParams();
-		$icons =& $this->getJSIcons();
+		$params = $this->getParams();
+		$icons = $this->getJSIcons();
 		$iconstr = '';
 		$lat = 0;
 		$lon = 0;
@@ -414,7 +414,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	public function getShowSideBar()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		// KLM layers side bar?
 		if ((int)$params->get('fb_gm_use_overlays', 0) === 1 &&  (int)$params->get('fb_gm_use_overlays_sidebar', 0) > 0) {
 			return true;
@@ -427,7 +427,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	public function getGroupTemplates()
 	{
-		$models =& $this->getListModels();
+		$models = $this->getListModels();
 		$groupbyTemplates = array();
 		foreach ($models as $model) {
 			$id = $model->getTable()->id;

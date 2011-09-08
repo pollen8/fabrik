@@ -124,7 +124,7 @@ EOD;
 	function emailForm($formModel, $template='')
 	{
 		$document = JFactory::getDocument();
-		$form =& $formModel->getForm();
+		$form = $formModel->getForm();
 		$document->setTitle($form->label);
 		$document->addStyleSheet("templates/'. $template .'/css/template_css.css");
 		//$url = JRoute::_('index.php?option=com_fabrik&view=emailform&tmpl=component');
@@ -199,8 +199,8 @@ EOD;
 	{
 		$app = JFactory::getApplication();
 		$config	= JFactory::getConfig();
-		$form =& $formModel->getForm();
-		$table =& $formModel->getTable();
+		$form = $formModel->getForm();
+		$table = $formModel->getTable();
 		if ($params->get('print')) {
 			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
 			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&tmpl=component&view=details&formid=". $form->id . "&listid=" . $table->id . "&rowid=" . $rowid.'&iframe=1&print=1';
@@ -723,7 +723,7 @@ function loadCalendar()
 
 	function slimbox()
 	{
-		$fbConfig =& JComponentHelper::getParams('com_fabrik');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($fbConfig->get('include_lightbox_js', 1) == 0) {
 			return;
 		}
@@ -783,7 +783,7 @@ function loadCalendar()
 
 	function debug($content, $title = 'output:')
 	{
-		$config =& JComponentHelper::getParams('com_fabrik');
+		$config = JComponentHelper::getParams('com_fabrik');
 		if ($config->get('use_fabrikdebug') == 0) {
 			return;
 		}
@@ -926,7 +926,7 @@ function loadCalendar()
   }());
 </script>";
 		}
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$data = array('custom'=>array());
 		$typeFound = false;
 		foreach ($meta as $k => $v) {

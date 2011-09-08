@@ -29,7 +29,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 
 		return parent::renderListData($data, $oAllRowsData);
 	}
@@ -100,9 +100,9 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 
 	function elementJavascript($repeatCounter)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->steps = (int)$params->get('slider-steps', 100);
 		$data 		=& $this->_form->_data;
 		$opts->value = $this->getValue($data, $repeatCounter);

@@ -26,7 +26,7 @@ class fabrikModelKaltura extends FabrikFEModelVisualization {
 	{
 		if (!isset($this->kalturaConfig))
 		{
-			$params =& $this->getParams();
+			$params = $this->getParams();
 			$partner_id = $params->get('kaltura_partnerid');
 			$subp_id = $params->get('kaltura_sub_partnerid');
 			$this->kalturaConfig = new KalturaConfiguration($partner_id , $subp_id);
@@ -42,8 +42,8 @@ class fabrikModelKaltura extends FabrikFEModelVisualization {
 
 	function getData()
 	{
-		$params =& $this->getParams();
-		$conf =& $this->getKalturaConfig();
+		$params = $this->getParams();
+		$conf = $this->getKalturaConfig();
 
 		$user = new KalturaSessionUser();
 		$user->userId = "1";

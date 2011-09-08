@@ -227,7 +227,7 @@ class FabrikFEModelPackage extends FabModel
 				$viewModel = &JModel::getInstance('view', 'FabrikFEModel');
 				$viewModel->setId($id);
 				$this->_tables[] = $viewModel->getTable();
-				$formModel =& $viewModel->getFormModel();
+				$formModel = $viewModel->getFormModel();
 				$this->_forms[] = $formModel->getForm();
 			}
 		}

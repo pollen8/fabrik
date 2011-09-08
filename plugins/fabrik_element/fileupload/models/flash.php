@@ -35,13 +35,13 @@ class flashRender{
 	function render(&$model, &$params, $file)
 	{
 
-		$fbConfig =& JComponentHelper::getParams('com_fabrik');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		ini_set('display_errors', true);
 		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.lib.php');
 
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'extension.cache.mysql.php', __FILE__, true);
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$host =  $config->getValue('host');
 		$database = $config->getValue('db');
 		$username = $config->getValue('user');
@@ -68,7 +68,7 @@ class flashRender{
 		// $$$ hugh - if they've enabled thumbnails, for Flash content we'll take that to mean they don't
 		// want to play the content inline in the table, and use mediabox (if available) to open it instead.
 		if (!$model->_inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false)) {
-			$element =& $model->getElement();
+			$element = $model->getElement();
 
 			// @TODO - work out how to do thumbnails
 			// $$$ hugh - thought about using thumbed-down embedded Flash as

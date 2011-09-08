@@ -49,8 +49,8 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 
 	function _renderListData($data, $oAllRowsData)
 	{
-		$document =& JFactory::getDocument();
-		$params =& $this->getParams();
+		$document = JFactory::getDocument();
+		$params = $this->getParams();
 		$str = $data;
 		if($params->get('fbVideoShowVideoInTable') == true) {
 			if($data != '') {
@@ -69,7 +69,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 
 	function renderPopup()
 	{
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$format 	= JRequest::getVar('format', '');
 		//when loaded via ajax adding scripts into the doc head wont load them
 		echo "<script type='text/javascript'>";
@@ -79,7 +79,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		require( JPATH_ROOT.DS.'plugins'.DS.'fabrik_element'.DS.'video'.DS.'video.js');
 		echo "</script>";
 
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$value = JRequest::getVar('data');
 		$loop 					= ($params->get('fbVideoLoop', 0) == 1) ? 'true' : 'false';
 		$autoplay 			= ($params->get('fbVideoAutoPlay', 0) == 1) ? 'true' : 'false';
@@ -174,7 +174,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		$f 				= str_replace("\\", "/", $element->default);
 		$value 		= ($element->default != '') ? COM_FABRIK_LIVESITE . $f : '';
 
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->file = $value;
 		$opts->width = $params->get('fbVideoWidth', 300);
 		$opts->height= $params->get('fbVideoHeight', 300);
@@ -196,7 +196,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 
 	function processUpload()
 	{
-		$aData =& JRequest::get('post');
+		$aData = JRequest::get('post');
 		$elName = $this->getFullName( true,  true, false);
 		if (strstr($elName, 'join')) {
 			$elTempName = str_replace('join', '', $elName);

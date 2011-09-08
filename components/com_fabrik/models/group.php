@@ -97,7 +97,7 @@ class FabrikFEModelGroup extends FabModel{
 		if (!is_null($this->canView)) {
 			return $this->canView;
 		}
-		$elementModels =& $this->getPublishedElements();
+		$elementModels = $this->getPublishedElements();
 		$this->canView = false;
 		foreach ($elementModels as $elementModel) {
 			// $$$ hugh - added canUse() check, corner case, see:
@@ -156,14 +156,14 @@ class FabrikFEModelGroup extends FabModel{
 	{
 		// elements should generally have already been loaded via the pluginmanager getFormPlugins() method
 		if (!isset($this->elements)) {
-			$group =& $this->getGroup();
+			$group = $this->getGroup();
 			$this->elements = array();
-			$form =& $this->getFormModel();
-			$pluginManager =& $form->getPluginManager();
-			$allGroups =& $pluginManager->getFormPlugins($this->_form);
+			$form = $this->getFormModel();
+			$pluginManager = $form->getPluginManager();
+			$allGroups = $pluginManager->getFormPlugins($this->_form);
 			if (empty($this->elements)) {
 				//horrible hack for when saving group
-				$this->elements =& $allGroups[$this->_id]->elements;
+				$this->elements = $allGroups[$this->_id]->elements;
 			}
 		}
 		return $this->elements;
@@ -263,7 +263,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	public function canRepeat()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		return $params->get('repeat_group_button');
 	}
 
@@ -286,7 +286,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	public function getJoinModel()
 	{
-		$group =& $this->getGroup();
+		$group = $this->getGroup();
 		if (is_null($this->_joinModel)) {
 			$this->_joinModel = JModel::getInstance('Join', 'FabrikFEModel');
 			$this->_joinModel->setId($group->join_id);
@@ -349,7 +349,7 @@ class FabrikFEModelGroup extends FabModel{
 		}
 		if ($this->_editable) {
 			//if all of the groups elements are not editable then set the group to uneditable
-			$elements =& $this->getPublishedElements();
+			$elements = $this->getPublishedElements();
 			$editable = false;
 			foreach ($elements as $element) {
 				if ($element->canUse()) {
@@ -364,7 +364,7 @@ class FabrikFEModelGroup extends FabModel{
 		$group->canRepeat = $params->get('repeat_group_button', '0');
 		$showGroup = $params->def('repeat_group_show_first', '1');
 
-		$pages =& $formModel->getPages();
+		$pages = $formModel->getPages();
 
 		$startpage = isset($formModel->sessionModel->last_page) ? $formModel->sessionModel->last_page: 0;
 		// $$$ hugh - added array_key_exists for (I think!) corner case where group properties have been

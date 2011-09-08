@@ -36,7 +36,7 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
 		if (is_array($data)) {
 			$data = implode('', $data);
 		}
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$domatch = $params->get('php-match');
 		$domatch = $domatch[$c];
 		if ($domatch) {
@@ -58,7 +58,7 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
 
  	function replace($data, &$element, $c)
  	{
- 		$params =& $this->getParams();
+ 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
 		$domatch = $domatch[$c];
 		if (!$domatch) {

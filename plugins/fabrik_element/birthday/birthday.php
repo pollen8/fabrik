@@ -48,7 +48,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
 		if (is_array($this->_form->_data)) {
-			$data =& $this->_form->_data;
+			$data = $this->_form->_data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_day_format', 'd.m.Y');
@@ -173,9 +173,9 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			$this->defaults = array();
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
-			$groupModel =& $this->getGroup();
+			$groupModel = $this->getGroup();
 			$joinid = $groupModel->getGroup()->join_id;
-			$formModel =& $this->getForm();
+			$formModel = $this->getForm();
 
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
@@ -256,7 +256,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 	function storeDatabaseFormat($val, $data)
 	{
-		$groupModel =& $this->getGroup();
+		$groupModel = $this->getGroup();
 		if ($groupModel->canRepeat()) {
 			if (is_array($val)) {
 				$res = array();
@@ -282,7 +282,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		//$d = mktime(0, 0, 0, $val[1]['month'], $val[0]['day'], $val[2]['year']);
 		//$d = mktime(0, 0, 0, $val[1], $val[0], $val[2]);
 		$d = $val[2].'-'.$val[1].'-'.$val[0];
-		//$date =& JFactory::getDate($d);
+		//$date = JFactory::getDate($d);
 		return $d; //return $date->toMySQL();
 	}
 
@@ -315,7 +315,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbBirthday('$id', $opts)";
 	}
@@ -324,14 +324,14 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	{
 		$db = FabrikWorker::getDbo();
 		$aNullDates = array('0000-00-000000-00-00','0000-00-00 00:00:00','0000-00-00','', $db->getNullDate());
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'), JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
 		$monthnumbers = array('01','02','03','04','05','06','07','08','09','10','11','12');
 		$daysys = array('01','02','03','04','05','06','07','08','09');
 		$daysimple = array('1','2','3','4','5','6','7','8','9');
 		$jubileum = array('0','25','75');
 
-		$groupModel =& $this->getGroup();
+		$groupModel = $this->getGroup();
 		$data = $groupModel->canRepeat() ? json_decode($data) : array($data);
 		$data = (array)$data;
 		$ft = $params->get('table_day_format', 'd.m.Y');

@@ -20,7 +20,7 @@ class FabrikViewList extends JView{
 		$model = JModel::getInstance('list', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$model->set('_outPutFormat', 'csv');
-		$exporter->model =& $model;
+		$exporter->model = $model;
 		JRequest::setVar('limitstart'.$model->getId(), JRequest::getInt('start', 0));
 		JRequest::setVar('limit'.$model->getId(), $exporter->_getStep());
 

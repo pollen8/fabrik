@@ -90,15 +90,15 @@ class FabrikControllerPlugin extends JController
 		$c = 0;
 		foreach ($rows as $row) {
 			//load in the plugin
-			$plugin =& $pluginManager->getPlugIn($row->plugin, 'cron');
+			$plugin = $pluginManager->getPlugIn($row->plugin, 'cron');
 			$plugin->setId($row->id);
-			$params =& $plugin->getParams();
+			$params = $plugin->getParams();
 
 			$thisViewModel = clone($viewModel);
 			$thisViewModel->setId($params->get('table'));
-			$table =& $viewModel->getTable();
+			$table = $viewModel->getTable();
 			$total 						= $thisViewModel->getTotalRecords();
-			$nav =& $thisViewModel->getPagination($total, 0, $total);
+			$nav = $thisViewModel->getPagination($total, 0, $total);
 			$data  = $thisViewModel->getData();
 			// $$$ hugh - added table model param, in case plugin wants to do further table processing
 			$c = $c + $plugin->process($data, $thisViewModel);

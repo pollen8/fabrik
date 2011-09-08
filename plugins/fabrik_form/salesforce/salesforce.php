@@ -51,7 +51,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 	{
 		@ini_set("soap.wsdl_cache_enabled", "0");
 
-		$client =& $this->client();
+		$client = $this->client();
 		$userName = $params->get('salesforce_username');
 		$password = $params->get('salesforce_password');
 		$token = $params->get('salesforce_token');
@@ -90,7 +90,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		$sObject->type = $updateObject; // Salesforce Table or object that you will perform the upsert on
 		$sObject->fields = $submission;
 		array_push($sObjects, $sObject);
-		$app =& JFactory::getApplication();
+		$app = JFactory::getApplication();
 		if ($params->get('salesforce_allowupsert', 0)) {
 			$result = $this->upsert($client, $sObjects, $customkey);
 		} else {

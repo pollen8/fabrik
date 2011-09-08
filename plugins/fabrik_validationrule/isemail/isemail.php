@@ -38,7 +38,7 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 		//decode as it can be posted via ajax
 		$email = urldecode($email);
 
- 		$params =& $this->getParams();
+ 		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
 		$allow_empty = $allow_empty[$c];
 		if ($allow_empty == '1' and empty($email)) {
