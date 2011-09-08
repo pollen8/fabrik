@@ -4815,7 +4815,8 @@ class FabrikFEModelList extends JModelForm {
 		$sql = "CREATE TABLE IF NOT EXISTS ".$db->nameQuote($dbTableName)." ( ";
 
 		$post = JRequest::get('post');
-		if ($post['jform']['id'] == 0) {
+		if ($post['jform']['id'] == 0 && array_key_exists('current_groups', $post['jform'])) {
+			//saving a new form
 			$groupIds = $post['jform']['current_groups'];
 		} else {
 			$query = $db->getQuery(true);
