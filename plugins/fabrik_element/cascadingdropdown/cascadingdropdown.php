@@ -595,7 +595,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				JError::raiseWarning(500, 'Unable to get table for cascading dropdown (ignore if creating a new element)');
 				return false;
 			}
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('db_table_name')->from('#__{package}_lists')->where('id = '.(int)$id);
 			$db->setQuery($query);
@@ -757,7 +757,6 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	function onSave($data)
 	{
-		$db = FabrikWorker::getDbo();
 		$params = json_decode($data['params']);
 		if (!$this->canEncrypt() && !empty($params->encrypt)) {
 			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
@@ -770,19 +769,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			return false;
 		}
 		$table_join_key = str_replace("{$table_join}___", "", $params->cascadingdropdown_id);
-		$join_label 		= str_replace("{$table_join}___", "", $params->cascadingdropdown_label);
+		$join_label = str_replace("{$table_join}___", "", $params->cascadingdropdown_label);
 		//load join based on this element id
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		//$origKey = $join->getKeyName();
-
 		$join->load(array('element_id' => $this->_id));
 
-		$join->table_join 		= $table_join;
+		$join->table_join = $table_join;
 
-		$join->join_type 			= 'left';
-		$join->group_id 			= $data['group_id'];
+		$join->join_type = 'left';
+		$join->group_id = $data['group_id'];
 		$join->element_id = $element->id;
-		$join->table_key 			= str_replace('`', '', $element->name);
+		$join->table_key = str_replace('`', '', $element->name);
 		$join->table_join_key = $table_join_key;
 		$join->join_from_table = '';
 
@@ -810,7 +807,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	function getValidationWatchElements($repeatCounter)
 	{
-		$id 			= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$ar = array(
 			'id' 			=> $id,
 			'triggerEvent' => 'change'

@@ -589,6 +589,9 @@ class FabrikFEModelListfilter extends FabModel {
 			if (substr($key, -5, 5) == '_raw`') {
 				$raw = 1;
 			}
+			if (!array_key_exists($key, $elements)) {
+				continue;
+			}
 			$elementModel = $elements[$key];
 			if (!is_a($elementModel, 'plgFabrik_Element')) {
 				//check if raw key available

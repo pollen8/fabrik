@@ -168,7 +168,7 @@ class FabrikFEModelForm extends FabModelForm
 	function &getParams()
 	{
 		if (!isset($this->_params)) {
-			$form =& $this->getForm();
+			$form = $this->getForm();
 			$this->_params = new fabrikParams($form->params, JPATH_SITE . '/administrator/components/com_fabrik/xml/form.xml', 'component');
 		}
 		return $this->_params;
@@ -181,11 +181,11 @@ class FabrikFEModelForm extends FabModelForm
 
 	function checkAccessFromListSettings()
 	{
-		$form =& $this->getForm();
+		$form = $this->getForm();
 		if ($form->record_in_database == 0) {
 			return 2;
 		}
-		$listModel =& $this->getListModel();
+		$listModel = $this->getListModel();
 		if (!is_object($listModel)) {
 			return 2;
 		}
@@ -291,11 +291,11 @@ class FabrikFEModelForm extends FabModelForm
 		} else {
 			$title = ($title == "") ? $label : $title . " ";
 		}
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
-				$element =& $elementModel->getElement();
+				$element = $elementModel->getElement();
 				if ($element->use_in_page_title == '1') {
 					$default = $elementModel->getTitlePart($this->_data);
 					$s = is_array($default) ? implode(', ', $default) . " " : $default . " ";
@@ -315,7 +315,7 @@ class FabrikFEModelForm extends FabModelForm
 	function getJoinGroupIds($joins)
 	{
 		$arJoinGroupIds = array();
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			foreach ($joins as $join) {
 				if ($join->element_id == 0 && $groupModel->getGroup()->id == $join->group_id) {
@@ -339,9 +339,9 @@ class FabrikFEModelForm extends FabModelForm
 		$j = new JRegistry();
 		$aJsActions = array();
 		$aElIds = array();
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				// $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
 				// which we should now be doing ... and getParent() causes an extra table lookup for every child
@@ -406,7 +406,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function getGroupIds()
 	{
-		$groups =& $this->getPublishedGroups();
+		$groups = $this->getPublishedGroups();
 		return array_keys($groups);
 	}
 
@@ -425,7 +425,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	private function mergeGroupsWithJoins($groups)
 	{
 		$db = FabrikWorker::getDbo(true);
-		$form =& $this->getForm();
+		$form = $this->getForm();
 		if ($form->record_in_database) {
 			$listModel = $this->getListModel();
 			$listid = (int)$listModel->getId();
@@ -451,7 +451,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function getGroups()
 	{
 		if (!isset($this->groups)) {
-			$listModel =& $this->getListModel();
+			$listModel = $this->getListModel();
 			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 			$groupdata = $this->getPublishedGroups();
 			foreach ($groupdata as $id => $groupd) {
@@ -459,7 +459,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$thisGroup->setId($id);
 				$thisGroup->setContext($this, $listModel);
 				// $$ rob 25/02/2011 this was doing a query per group - pointless as we bind $groupd to $row afterwards
-				//$row =& $thisGroup->getGroup();
+				//$row = $thisGroup->getGroup();
 				$row = & FabTable::getInstance('Group', 'FabrikTable');
 				$row->bind($groupd);
 				$thisGroup->_group = $row;
@@ -520,8 +520,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (!isset($this->groups)) {
 			$this->getGroups();
-			$pluginManager =& $this->getPluginManager();
-			$this->groups =& $pluginManager->getFormPlugins($this);
+			$pluginManager = $this->getPluginManager();
+			$this->groups = $pluginManager->getFormPlugins($this);
 		}
 		return $this->groups;
 	}
@@ -535,12 +535,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (!isset($this->_elementsNotInTable)) {
 			$this->_elementsNotInTable = array();
-			$groups =& $this->getGroupsHiarachy();
+			$groups = $this->getGroupsHiarachy();
 			foreach ($groups as $group) {
-				$elements =& $group->getPublishedElements();
+				$elements = $group->getPublishedElements();
 				foreach ($elements as $elementModel) {
 					if ($elementModel->canView() || $elementModel->canUse()) {
-						$element =& $elementModel->getElement();
+						$element = $elementModel->getElement();
 						if (!isset($element->show_in_list_summary) || !$element->show_in_list_summary) {
 							$this->_elementsNotInTable[] = $element;
 						}
@@ -564,9 +564,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function getFormEncType()
 	{
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				if ($elementModel->isUpload()) {
 					return "multipart/form-data";
@@ -585,9 +585,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function runElementPlugins($method, $data)
 	{
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$params = $elementModel->getParams();
 				if (method_exists($elementModel, $method)) {
@@ -624,7 +624,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$this->_origData = array(new stdClass());
 		}else{
 			$listModel	=& $this->getListModel();
-			$fabrikDb   =& $listModel->getDb();
+			$fabrikDb   = $listModel->getDb();
 			$sql 				= $this->_buildQuery();
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
@@ -716,7 +716,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	protected function _doUpload()
 	{
-		$oUploader =& $this->getUploader();
+		$oUploader = $this->getUploader();
 		$oUploader->upload();
 		if ($oUploader->moveError) {
 			return false;
@@ -745,25 +745,25 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if ($pathNodes < 0) {
 				$pathNodes = 0;
 			}
-			$ns =& $this->_formData;
+			$ns = $this->_formData;
 			for ($i = 0; $i <= $pathNodes; $i ++) {
 				// If any node along the registry path does not exist, create it
 				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
 				if (!isset($ns[$nodes[$i]])) {
 					$ns[$nodes[$i]] = array();
 				}
-				$ns =& $ns[$nodes[$i]];
+				$ns = $ns[$nodes[$i]];
 			}
 			$ns = $val;
 
-			$ns =& $this->_fullFormData;
+			$ns = $this->_fullFormData;
 			for ($i = 0; $i <= $pathNodes; $i ++) {
 				// If any node along the registry path does not exist, create it
 				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
 				if (!isset($ns[$nodes[$i]])) {
 					$ns[$nodes[$i]] = array();
 				}
-				$ns =& $ns[$nodes[$i]];
+				$ns = $ns[$nodes[$i]];
 			}
 			$ns = $val;
 
@@ -776,7 +776,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if ($pathNodes < 0) {
 					$pathNodes = 0;
 				}
-				$ns =& $this->_formData;
+				$ns = $this->_formData;
 				for ($i = 0; $i <= $pathNodes; $i ++)
 				{
 					// If any node along the registry path does not exist, create it
@@ -784,11 +784,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (!isset($ns[$nodes[$i]])) {
 						$ns[$nodes[$i]] = array();
 					}
-					$ns =& $ns[$nodes[$i]];
+					$ns = $ns[$nodes[$i]];
 				}
 				$ns = $val;
 
-				$ns =& $this->_fullFormData;
+				$ns = $this->_fullFormData;
 				for ($i = 0; $i <= $pathNodes; $i ++)
 				{
 					// If any node along the registry path does not exist, create it
@@ -796,7 +796,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (!isset($ns[$nodes[$i]])) {
 						$ns[$nodes[$i]] = array();
 					}
-					$ns =& $ns[$nodes[$i]];
+					$ns = $ns[$nodes[$i]];
 				}
 				$ns = $val;
 			}
@@ -905,13 +905,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// group.  For some reason, the array pointer gets stuck and it keeps igterating through
 		// the first group forever.  This seems to happen only with getGroupsHierachy, we've
 		// run across this before.  Still no idea what is going on.
-		//$groups =& $this->getGroupsHiarachy();
+		//$groups = $this->getGroupsHiarachy();
 		$groups = $this->getGroupsHiarachy();
 		//curerntly this is just used by calculation elements
 		foreach ($groups as $groupModel) {
-			$group =& $groupModel->getGroup();
+			$group = $groupModel->getGroup();
 			$repeatedGroupCount = JArrayHelper::getValue($repeatTotals, $group->id, 0, 'int');
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			for ($c = 0; $c < $repeatedGroupCount; $c ++) {
 				foreach ($elementModels as $elementModel) {
 					$elementModel->preProcess($c);
@@ -928,14 +928,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	protected function removeEmptyNoneJoinedGroupData(&$data)
 	{
 		$repeats = JArrayHelper::getValue($data, 'fabrik_repeat_group', array());
-		$groups =& $this->getGroups();
+		$groups = $this->getGroups();
 		foreach ($repeats as $groupid => $c) {
 			if ($c == 0) {
 				$group = $groups[$groupid];
 				if ($group->isJoin()) {
 					continue;
 				}
-				$elements =& $group->getPublishedElements();
+				$elements = $group->getPublishedElements();
 				foreach ($elements as $elementModel) {
 					$name = $elementModel->getElement()->name;
 					$data[$name] = '';
@@ -956,9 +956,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$listModel = $this->getListModel();
 		$listModel->setBigSelects();
 		$item = $listModel->getTable();
-		$origTableName 	= $item->db_table_name;
-		$origTableKey		= $item->db_primary_key;
-		$pluginManager 	=& $this->getPluginManager();
+		$origTableName = $item->db_table_name;
+		$origTableKey	= $item->db_primary_key;
+		$pluginManager = $this->getPluginManager();
 
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->_formData)) {
@@ -976,7 +976,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		 no longer stores the results - do this after the main form data has been
 		 saved and u have an id to use
 		 for the foreign key value*/
-		$aPreProcessedJoins =& $listModel->preProcessJoin();
+		$aPreProcessedJoins = $listModel->preProcessJoin();
 
 		$joinKeys = array();
 		//needed for plugins that are run after the data is submitted to the db
@@ -1041,7 +1041,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 				//$$$rob moved till just before join table data saved
 				//$data = $oTable->removeTableNameFromSaveData($data, $split='___');
-				$groups =& $this->getGroupsHiarachy();
+				$groups = $this->getGroupsHiarachy();
 
 				$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
 				// 3.0 test on repeatElement param type
@@ -1073,7 +1073,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$idElementModel = $pluginManager->getPlugIn('internalid', 'element');
 					$idElementModel->getElement()->name = 'id';
 					$idElementModel->getElement()->group_id = $elementModel->getGroup()->getGroup()->id;
-					$idElementModel->_group =& $elementModel->getGroup();
+					$idElementModel->_group = $elementModel->getGroup();
 					$idElementModel->_group = $elementModel->_group;
 					$idElementModel->_aFullNames['id1_1__1_'] = $oJoin->table_join.'___id';
 					$joinGroup->publishedElements[] = $idElementModel;
@@ -1081,7 +1081,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$parentElement = $pluginManager->getPlugIn('field', 'element');
 					$parentElement->getElement()->name = 'parent_id';
 					$parentElement->getElement()->group_id = $elementModel->getGroup()->getGroup()->id;
-					$parentElement->_group =& $elementModel->getGroup();
+					$parentElement->_group = $elementModel->getGroup();
 					$parentElement->_group = $elementModel->_group;
 					$parentElement->_aFullNames['parent_id1_1__1_'] = $oJoin->table_join.'___parent_id';
 					$joinGroup->publishedElements[] = $parentElement;
@@ -1092,14 +1092,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$listModel->getTable()->db_table_name = $oJoin->table_join;
 				}
 
-				$joinGroupTable =& $joinGroup->getGroup();
+				$joinGroupTable = $joinGroup->getGroup();
 
 				// $$$ rob - erm is $fields needed?
 				$fields = $listModel->getDBFields($listModel->getTable()->db_table_name);
 				$aKey = $listModel->getPrimaryKeyAndExtra();
 				$aKey = $aKey[0];
 				$listModel->getTable()->db_primary_key = $aKey['colname'];
-				$joinDb =& $listModel->getDb();
+				$joinDb = $listModel->getDb();
 
 				//back on track
 				if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data)) {
@@ -1118,7 +1118,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						//find out how many repeated groups were entered
 
 						$repeatedGroupCount = JArrayHelper::getValue($repeatTotals, $oJoin->group_id, 0, 'int');
-						$elementModels =& $joinGroup->getPublishedElements();
+						$elementModels = $joinGroup->getPublishedElements();
 
 						$aUpdatedRecordIds = array();
 						$joinCnn 				=& $listModel->getConnection();
@@ -1325,12 +1325,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function _removeIgnoredData(&$data)
 	{
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			$groupTable = $groupModel->getGroup();
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
-				$element =& $elementModel->getElement();
+				$element = $elementModel->getElement();
 				$element->label = strip_tags($element->label);
 				$params = $elementModel->getParams();
 
@@ -1357,17 +1357,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function submitToDatabase($rowId = '0')
 	{
 		$this->getGroupsHiarachy();
-		$pluginManager =& $this->getPluginManager();
+		$pluginManager = $this->getPluginManager();
 		/*
 		 *check if there is table data that is not posted by the form
 		 * (ie if no checkboxes were selected)
 		 */
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		$listModel = $this->getListModel();
 		$listModel->encrypt = array();
 		foreach ($groups as $groupModel) {
 			$group = $groupModel->getGroup();
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$element = $elementModel->getElement();
 
@@ -1390,11 +1390,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if ($elementModel->encryptMe()) {
 					$listModel->encrypt[] = $element->name;
 				}
-				/*$plugin =& $pluginManager->getPlugIn($element->plugin, 'element');
-				 $plugin->_element =& $element;*/
+				/*$plugin = $pluginManager->getPlugIn($element->plugin, 'element');
+				 $plugin->_element = $element;*/
 
 				if ($groupModel->isJoin()) {
-					$tmpdata =& $this->_formData['join'][$group->join_id];
+					$tmpdata = $this->_formData['join'][$group->join_id];
 					//maybe no joined data added so test before doing onstorerow
 					if (is_array($tmpdata)) {
 						$elementModel->onStoreRow($tmpdata);
@@ -1406,7 +1406,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		$listModel = $this->getListModel();
 		$listModel->setFormModel($this);
-		$item =& $listModel->getTable();
+		$item = $listModel->getTable();
 		$listModel->storeRow($this->_formData, $rowId);
 		$usekey = JRequest::getVar('usekey', '');
 		if (!empty($usekey)) {
@@ -1452,10 +1452,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function loadValidationRuleClasses()
 	{
 		if (is_null($this->_validationRuleClasses)) {
-			$pluginManager =& $this->getPluginManager();
-			$oValidationRules =& $pluginManager->getPlugInGroup('validationrule');
+			$pluginManager = $this->getPluginManager();
+			$validationRules = $pluginManager->getPlugInGroup('validationrule');
 			$classes = array();
-			foreach ($oValidationRules as $rule) {
+			foreach ($validationRules as $rule) {
 				$classes[$rule->name] = $rule->name;
 			}
 			$this->_validationRuleClasses = $classes;
@@ -1475,16 +1475,16 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars'])) {
-			$groups =& $this->getGroupsHiarachy();
+			$groups = $this->getGroupsHiarachy();
 			$gkeys = array_keys($groups);
 			jimport('joomla.utilities.simplecrypt');
 			$crypt = new JSimpleCrypt();
 			$w = new FabrikWorker();
 			foreach ($gkeys as $g) {
 				$groupModel = $groups[$g];
-				$elementModels =& $groupModel->getPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel) {
-					$element =& $elementModel->getElement();
+					$element = $elementModel->getElement();
 					foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted) {
 						if ($elementModel->getFullName(false, true, false) == $key) {
 							// 	$$$ rob - dont test for !canUse() as confirmation plugin dynamically sets this
@@ -1526,13 +1526,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 */
 	function copyToRaw(&$post)
 	{
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
-				$elName2					= $elementModel->getFullName(false, true, false);
+				$elName2 = $elementModel->getFullName(false, true, false);
 				if ($groupModel->isJoin()) {
-					$joinModel =& $groupModel->getJoinModel();
+					$joinModel = $groupModel->getJoinModel();
 					if (array_key_exists('join', $post) && array_key_exists($joinModel->_id, $post['join'])) {
 
 						if ($groupModel->canRepeat()) {
@@ -1567,12 +1567,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
 		$pluginManager 		= JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$oValidationRules =& $pluginManager->getPlugInGroup('validationrule');
+		$oValidationRules = $pluginManager->getPlugInGroup('validationrule');
 		//$post	=& JRequest::get('post', 4); //4 allows html
 		// $$$ rob added coptToRow here so that calcs run in setFormData, element preProcess()
 		//can access raw values
 		//$this->copyToRaw( $_REQUEST);
-		$post =& $this->setFormData();
+		$post = $this->setFormData();
 		//contains any data modified by the validations
 		$this->_modifiedValidationData = array();
 		$w = new FabrikWorker();
@@ -1588,7 +1588,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		// $$$ rob for PHP 5.2.1 (and potential up to before 5.2.6) $post is not fully associated with _formData -
 		// so the above copToRaw does not update $this->_formData.
-		$this->_formData =& $post;
+		$this->_formData = $post;
 		$this->callElementPreprocess();
 
 		// $$$ hugh - add in any encrypted stuff, in case we fail validation ...
@@ -1609,19 +1609,19 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$elDbVals = array();
 
 			if ($groupModel->isJoin()) {
-				$joinModel =& $groupModel->getJoinModel();
+				$joinModel = $groupModel->getJoinModel();
 			}
 
 			foreach ($elementModels as $elementModel) {
 				$elDbVals = array();
-				$element =& $elementModel->getElement();
+				$element = $elementModel->getElement();
 
-				$validation_rules =& $elementModel->getValidations();
+				$validation_rules = $elementModel->getValidations();
 				// $$ rob incorrect for ajax validation on joined elements
-				//$elName 					= $elementModel->getFullName(true, true, false);
+				//$elName = $elementModel->getFullName(true, true, false);
 				$elName = JRequest::getBool('fabrik_ajax') ? $elementModel->getHTMLId(0) : $elementModel->getFullName(true, true, false);
 				$this->_arErrors[$elName] = array();
-				$elName2					= $elementModel->getFullName(false, true, false);
+				$elName2 = $elementModel->getFullName(false, true, false);
 				// $$$rob fix notice on validation of multipage forms
 				if (!array_key_exists($groupCounter, $repeatTotals)) {
 					$repeatTotals[$groupCounter] = 1;
@@ -1670,8 +1670,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 
 					foreach ($validation_rules as $plugin) {
-						$plugin->_formModel =& $this;
-						$plugin->_listModel =& $this->getListModel();
+						$plugin->_formModel = $this;
+						$plugin->_listModel = $this->getListModel();
 						if ($plugin->shouldValidate($form_data, $pluginc)) {
 							if (!$plugin->validate($form_data, $elementModel, $pluginc, $c)) {
 								$this->_arErrors[$elName][$c][] = $w->parseMessageForPlaceHolder($plugin->getMessage($pluginc));
@@ -1830,10 +1830,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function canPublish()
 	{
 		$db = FabrikWorker::getDbo();
-		$form =& $this->getForm();
+		$form = $this->getForm();
 		$nullDate = (method_exists($db, 'getNullDate')) ? $db->getNullDate() : $this->getNullDate();
-		$publishup =& JFactory::getDate($form->publish_up)->toUnix();
-		$publishdown =& JFactory::getDate($form->publish_down)->toUnix();
+		$publishup = JFactory::getDate($form->publish_up)->toUnix();
+		$publishdown = JFactory::getDate($form->publish_down)->toUnix();
 		$now		=& JFactory::getDate()->toUnix();
 		if ($form->published == '1') {
 			if ($now >= $publishup || $form->publish_up == '' || $form->publish_up == $nullDate) {
@@ -1873,9 +1873,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function getElementIds($ignore = array())
 	{
 		$aEls = array();
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel) {
 				$class = get_class($elementModel);
 				if (!in_array($class, $ignore)) {
@@ -1899,13 +1899,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array())
 	{
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
 		$step =( $useStep ) ? "___" : ".";
 		$gkeys = array_keys($groups);
 		foreach ($gkeys as $gid) {
-			$groupModel =& $groups[$gid];
-			$elementModels =& $groupModel->getMyElements();
+			$groupModel = $groups[$gid];
+			$elementModels = $groupModel->getMyElements();
 			if ($groupModel->isJoin()) {
 				$prefix = $groupModel->getJoinModel()->getJoin()->table_join . ".";
 			} else {
@@ -1913,7 +1913,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 
 			foreach ($elementModels as $elementModel) {
-				$el =& $elementModel->getElement();
+				$el = $elementModel->getElement();
 				if (!empty($filter) && !in_array($el->plugin, $filter)) {
 					continue;
 				}
@@ -1960,9 +1960,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$db = FabrikWorker::getDbo();
 		$c = $dir == 1 ? '>=' : '<=';
 		$limit = $dir == 1 ? 'LIMIT 2' : '';
-		$listModel =& $this->getListModel();
+		$listModel = $this->getListModel();
 		$order = $listModel->_buildQueryOrder();
-		$item =& $listModel->getTable();
+		$item = $listModel->getTable();
 		$rowid = JRequest::getInt('rowid');
 		$db->setQuery(" SELECT $item->db_primary_key AS ".FabrikString::safeColNameToArrayKey($item->db_primary_key)
 		." FROM $item->db_table_name
@@ -2001,7 +2001,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		}
 		$usersConfig 	=& JComponentHelper::getParams('com_fabrik');
 		$user 				= JFactory::getUser();
-		$pluginManager =& $this->getPluginManager();
+		$pluginManager = $this->getPluginManager();
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
 		// the request rowid for the mambot as that value is destinded for the component
 		if ($this->isMambot && JRequest::getCmd('option') == 'com_fabrik') {
@@ -2045,7 +2045,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->_listModel = null;
 		@set_time_limit(300);
 
-		$pluginManager =& $this->getPluginManager();
+		$pluginManager = $this->getPluginManager();
 
 		$this->_rowId = $this->getRowId();
 
@@ -2096,9 +2096,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		global $_PROFILER;
 		$this->_data = array();
 		$data = array(FArrayHelper::toObject(JRequest::get('request')));
-		$form =& $this->getForm();
+		$form = $this->getForm();
 
-		$aGroups =& $this->getGroupsHiarachy();
+		$aGroups = $this->getGroupsHiarachy();
 		JDEBUG ? $_PROFILER->mark('formmodel getData: groups loaded') : null;
 		if (!$form->record_in_database) {
 			FabrikHelperHTML::debug($data, 'form:getData from $_REQUEST');
@@ -2223,12 +2223,12 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				}
 			}
 
-			$this->_listModel =& $listModel;
+			$this->_listModel = $listModel;
 		}
 		//Test to allow {$my->id}'s to be evald from query strings
 		$w = new FabrikWorker();
 		$data = $w->parseMessageForPlaceHolder($data);
-		$this->_data =& $data;
+		$this->_data = $data;
 		FabrikHelperHTML::debug($data, 'form:data');
 		JDEBUG ? $_PROFILER->mark('queryselect: getData() end') : null;
 		return $this->_data;
@@ -2243,7 +2243,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	function saveMultiPage()
 	{
 		$params = $this->getParams();
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		//set in plugins such as confirmation plugin
 		if ($session->has('com_fabrik.form.'.$this->getId().'.session.on')) {
 			return true;
@@ -2288,16 +2288,16 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 		if ($this->_rowId != '') {
 
-			$groups =& $this->getGroupsHiarachy();
+			$groups = $this->getGroupsHiarachy();
 			foreach ($groups as $groupModel) {
 				if ($groupModel->isJoin()) {
-					$group =& $groupModel->getGroup();
+					$group = $groupModel->getGroup();
 					//$$$ rob - if loading data from session then the join structure is already in place so dont overwrite
 					if (array_key_exists($group->join_id, $data[0]->join)) {
 						continue;
 					}
 					$data[0]->join[$group->join_id] = array();
-					$elementModels =& $groupModel->getMyElements();
+					$elementModels = $groupModel->getMyElements();
 					foreach ($elementModels as $elementModel) {
 						$name = $elementModel->getFullName(false, true, false);
 						$fv_name = 'join[' . $group->join_id . '][' . $name . ']';
@@ -2467,14 +2467,14 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 	function hasElement($searchName, $checkInt = false)
 	{
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getMyElements();
+			$elementModels = $groupModel->getMyElements();
 			if (!is_array($groupModel->elements)) {
 				continue;
 			}
 			foreach ($groupModel->elements as $elementModel) {
-				$element =& $elementModel->getElement();
+				$element = $elementModel->getElement();
 				if ($checkInt) {
 					if ($searchName == $element->id) {
 						$this->_currentElement = $elementModel;
@@ -2539,7 +2539,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 	function isMultiPage()
 	{
-		$groups =& $this->getGroupsHiarachy();
+		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			$params = $groupModel->getParams();
 			if ($params->get('split_page')) {
@@ -2590,9 +2590,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	{
 		if (is_null($this->ajax)) {
 			$this->ajax = JRequest::getBool('ajax', false);
-			$groups =& $this->getGroupsHiarachy();
+			$groups = $this->getGroupsHiarachy();
 			foreach ($groups as $groupModel) {
-				$elementModels =& $groupModel->getPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel) {
 					if ($elementModel->requiresAJAXSubmit()) {
 						$this->ajax = true;
@@ -2633,7 +2633,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	function _reduceDataForXRepeatedJoins()
 	{
 		$groups = $this->getGroupsHiarachy();
-		$listModel =& $this->getListModel();
+		$listModel = $this->getListModel();
 		foreach ($groups as $groupModel) {
 			if ($groupModel->canRepeat() && $groupModel->isJoin()) {
 
@@ -2702,9 +2702,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 	function _getFormPluginHTML()
 	{
-		$pluginManager =& $this->getPluginManager();
-		$formPlugins =& $pluginManager->getPlugInGroup('form');
-		$form =& $this->getForm();
+		$pluginManager = $this->getPluginManager();
+		$formPlugins = $pluginManager->getPlugInGroup('form');
+		$form = $this->getForm();
 
 		$pluginManager->runPlugins('getBottomContent', $this, 'form');
 		$pluginbottom = implode("<br />", array_filter($pluginManager->_data));
@@ -2744,7 +2744,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$remove = ((int)$this->_rowId === 0) ? 'edit' : 'new';
 		$match = "/{".$match.":\s*.*?}/i";
 		$remove = "/{".$remove.":\s*.*?}/i";
-		$intro =& $this->getForm()->intro;
+		$intro = $this->getForm()->intro;
 		$intro = preg_replace_callback( $match, array($this, '_getIntro'), $intro);
 		$intro = preg_replace($remove, '', $intro);
 		$intro = str_replace('[','{', $intro);
@@ -2821,7 +2821,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		}
 		//need to do finalCopyCheck() on form elements
 
-		$pluginManager =& $this->getPluginManager();
+		$pluginManager = $this->getPluginManager();
 
 		//@TODO something not right here when copying a cascading dropdown element in a join group
 		foreach ($newElements as $origId => $newId) {
@@ -2854,7 +2854,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			return $links;
 		}
 
-		$listModel =& $this->getListModel();
+		$listModel = $this->getListModel();
 		//
 		$referringTable = JModel::getInstance('List', 'FabrikFEModel');
 		// $$$ rob - not sure that referring_table is anything other than the form's table id
@@ -2862,12 +2862,12 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$tid = JRequest::getInt('referring_table', JRequest::getInt('listid', $listModel->getTable()->id));
 		$referringTable->setId($tid);
 		$tmpKey 	= '__pk_val';
-		$tableParams =& $referringTable->getParams();
-		$table =& $referringTable->getTable();
-		$joinsToThisKey =& $referringTable->getJoinsToThisKey();
-		$linksToForms =&  $referringTable->getLinksToThisKey();
+		$tableParams = $referringTable->getParams();
+		$table = $referringTable->getTable();
+		$joinsToThisKey = $referringTable->getJoinsToThisKey();
+		$linksToForms =  $referringTable->getLinksToThisKey();
 
-		$row =& $this->getData();
+		$row = $this->getData();
 		$factedLinks = $tableParams->get('factedlinks');
 		$linkedLists = $factedLinks->linkedlist;
 		$aExisitngLinkedForms = $factedLinks->linkedform;
@@ -2905,7 +2905,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$linkKey = $element->db_table_name . "___" . $element->name;
 				$linkKeyRaw = $linkKey . "_raw";
 				$popUpLink 		= JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
-				$recordCounts =& $referringTable->getRecordCounts($element);
+				$recordCounts = $referringTable->getRecordCounts($element);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 				//$element->list_id = (array_key_exists($element->listlabel, $aTableNames)) ?  $aTableNames[$element->tablelabel]->id : '';
 				$links[$element->list_id][] = $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
@@ -3014,7 +3014,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 	function _makeJoinIdElement(&$groupTable )
 	{
-		$listModel =& $this->getListModel();
+		$listModel = $this->getListModel();
 		$joinId = $this->_aJoinGroupIds[$groupTable->id];
 		$element 			= new stdClass();
 		//add in row id for join data
@@ -3105,7 +3105,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			if ($groupModel->canRepeat()) {
 				if ($groupModel->isJoin()) {
 
-					$joinTable =& $groupModel->getJoinModel()->getJoin();
+					$joinTable = $groupModel->getJoinModel()->getJoin();
 					$foreignKey  = '';
 					if (is_object($joinTable)) {
 						$fullFk = $joinTable->table_join . "___" . $joinTable->table_join_key;
@@ -3122,7 +3122,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 						//$this->_data['join'] = array();
 						//}
 						if (is_array($origData) && array_key_exists($joinTable->id, $origData['join']) && !empty($origData['join'][$joinTable->id])) {
-							$elementModels =& $groupModel->getPublishedElements();
+							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);

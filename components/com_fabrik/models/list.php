@@ -2482,7 +2482,6 @@ class FabrikFEModelList extends JModelForm {
 			$opts = json_decode($join->params);
 			if (isset($opts->type) && $opts->type == 'repeatElement') {
 				//if ($join->list_id != 0 && $join->element_id != 0) {
-
 				$join->canUse = false;
 			}
 			$tablejoin = str_replace('#__', $prefix, $join->table_join);

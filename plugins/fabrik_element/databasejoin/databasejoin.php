@@ -194,10 +194,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getJoins()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		if (!isset($this->_aJoins)) {
-			$sql = "SELECT * FROM #__{package}_joins WHERE element_id = ".(int)$this->_id." ORDER BY id";
-			$db->setQuery($sql);
+			$query = $db->getQuery(true);
+			$query->select('*')->from('#__{package}_joins')->where('element_id = '.(int)$this->_id)->orderby('id');
+			$db->setQuery($query);
 			$this->_aJoins = $db->LoadObjectList();
 		}
 		return $this->_aJoins;
@@ -205,20 +206,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getJoinsToThisKey(&$table)
 	{
-		$db = FabrikWorker::getDbo();
-		$sql = "SELECT *, t.label AS tablelabel FROM #__{package}_elements AS el " .
-		"LEFT JOIN #__{package}_formgroup AS fg
-				ON fg.group_id = el.group_id
-				LEFT JOIN #__{package}_forms AS f
-				ON f.id = fg.form_id
-				LEFT JOIN #__{package}_tables AS t
-				ON t.form_id = f.id " .
-		"WHERE " .
-		" plugin = 'databasejoin' AND" .
-		" join_db_name = ".$db->Quote($table->db_table_name)." " .
-		"AND join_conn_id = ".(int)$table->connection_id;
-
-		$db->setQuery($sql);
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select('*, t.label AS tablelabel')->from('#__{package}_elements AS el')
+		->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = el.group_id')
+		->join('LEFT', '#__{package}_forms AS f ON f.id = fg.form_id')
+		->join('LEFT', ' #__{package}_tables AS t ON t.form_id = f.id')
+		->where('plugin = '.$db->Quote('databasejoin').' AND join_db_name = '.$db->Quote($table->db_table_name).' AND join_conn_id = '.(int)$table->connection_id);
+		$db->setQuery($query);
 		return $db->loadObjectList();
 	}
 	/**
@@ -384,6 +379,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($key == '' || $val == '') {
 			return false;
 		}
+		$query = $db->getQuery(true);
 		$sql = "SELECT DISTINCT($key) AS value, $val AS text";
 		$desc = $params->get('join_desc_column');
 		if ($desc !== '') {
