@@ -79,7 +79,7 @@ var FbElement =  new Class({
 	
 	hasSubElements: function(){
 		this._getSubElements();
-		if(typeOf(this.subElements) === 'array'){
+		if(typeOf(this.subElements) === 'array' || typeOf(this.subElements) === 'elements'){
 			return this.subElements.length > 0 ? true : false;
 		}
 		return false;
