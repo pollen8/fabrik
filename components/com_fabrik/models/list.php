@@ -5358,8 +5358,8 @@ class FabrikFEModelList extends JModelForm {
 	function drop()
 	{
 		$db = $this->getDb();
-		$table = $this->getTable();
-		$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($table->db_table_name);
+		$item = $this->getTable();
+		$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($item->db_table_name);
 		$db->setQuery($sql);
 		if (!$db->query()) {
 			return JError::raiseWarning(JText::_($db->getErrorMsg()));
@@ -5370,8 +5370,21 @@ class FabrikFEModelList extends JModelForm {
 	function truncate()
 	{
 		$db = $this->getDb();
-		$table = $this->getTable();
-		$db->setQuery("TRUNCATE ".$db->nameQuote($table->db_table_name));
+		$item = $this->getTable();
+		$groupModels = $this->getFormGroupElementData();
+		//remove any groups that were set to be repeating and hence were storing in their own db table.
+		foreach ($groupModels as $groupModel) {
+			if ($groupModel->isJoin()) {
+				$joinModel = $groupModel->getJoinModel();
+				$join = $joinModel->getJoin();
+				$joinParams = json_decode($join->params);
+				if (isset($joinParams->type) && $joinParams->type == 'group') {
+					$db->setQuery("TRUNCATE ".$db->nameQuote($joinModel->getJoin()->table_join));
+					$db->query();
+				}
+			}
+		}
+		$db->setQuery("TRUNCATE ".$db->nameQuote($item->db_table_name));
 		$db->query();
 		// 3.0 clear filters (resets limitstart so that subsequently added records are shown.)
 		$this->getFilterModel()->clearFilters();
