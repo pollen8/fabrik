@@ -100,7 +100,7 @@ var FbRadio = new Class({
 
 	_getSubElements : function() {
 		if (!this.element) {
-			this.subElements = $A();
+			this.subElements = $A([]);
 		} else {
 			this.subElements = this.element.getElements('input');
 		}
@@ -115,7 +115,7 @@ var FbRadio = new Class({
 			this._getSubElements();
 			this.subElements.each(function(el) {
 				el.addEvent(action, function(e) {
-					eval(js);
+					$type(js) === 'function' ? js.delay(0) : eval(js);
 				});
 			});
 		}
