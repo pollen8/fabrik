@@ -700,6 +700,13 @@ class FabrikModelList extends FabModelAdmin
 		$groupIds				= JArrayHelper::getValue($params, 'group_id', array());
 		$repeats = JArrayHelper::getValue($params, 'join_repeat', array());
 		$jc = count($joinTypes);
+		//test for repeat elements to eusure their join isnt removed from here
+		foreach ($aOldJoins as $oldJoin) {
+			$oldParams = json_decode($oldJoin->params);
+			if ($oldParams->type == 'repeatElement') {
+				$aOldJoinsToKeep[] = $oldJoin->id;
+			}
+		}
 		for ($i = 0; $i < $jc ; $i++) {
 			$existingJoin = false;
 			foreach ($aOldJoins as $oOldJoin) {
@@ -708,7 +715,7 @@ class FabrikModelList extends FabModelAdmin
 				}
 			}
 			//$$$rob make an index on the join element (fk)
-			$els =& $this->getFEModel()->getElements();
+			$els = $this->getFEModel()->getElements();
 			foreach ($els as $el) {
 				if ($el->getElement()->name == $tableKey[$i]) {
 					$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
@@ -747,7 +754,6 @@ class FabrikModelList extends FabModelAdmin
 				}
 			}
 		}
-
 		/* remove non exisiting joins */
 		if (is_array($aOldJoins)) {
 			foreach ($aOldJoins as $oOldJoin) {
