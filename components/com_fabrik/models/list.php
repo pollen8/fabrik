@@ -4257,13 +4257,12 @@ class FabrikFEModelList extends JModelForm {
 				}
 				$elements = $groupModel->getPublishedElements();
 				$c = count($elements);
-
 				for($x = 0; $x < $c; $x ++){
 					$elementModel = $elements[$x];
 					if ($elementModel->isJoin()) {
 						$joinModel = $elementModel->getJoinModel();
 						$join = $joinModel->getJoin();
-						if (!array_key_exists( $join->id, $this->_joinsToProcess )) {
+						if (!array_key_exists($join->id, $this->_joinsToProcess)) {
 							$this->_joinsToProcess[$join->element_id] = array( "join" => $join, "elements" => array($elementModel) );
 						} else {
 							$this->_joinsToProcess[$join->element_id]["elements"][] = $elementModel;

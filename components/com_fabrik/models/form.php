@@ -736,7 +736,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function updateFormData($key, $val, $update_raw = false, $override_ro = false)
 	{
-
 		if (strstr($key, '.')) {
 
 			$nodes = explode('.', $key);
@@ -745,25 +744,25 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if ($pathNodes < 0) {
 				$pathNodes = 0;
 			}
-			$ns = $this->_formData;
+			$ns =& $this->_formData;
 			for ($i = 0; $i <= $pathNodes; $i ++) {
 				// If any node along the registry path does not exist, create it
 				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
 				if (!isset($ns[$nodes[$i]])) {
 					$ns[$nodes[$i]] = array();
 				}
-				$ns = $ns[$nodes[$i]];
+				$ns =& $ns[$nodes[$i]];
 			}
 			$ns = $val;
-
-			$ns = $this->_fullFormData;
+			
+			$ns =& $this->_fullFormData;
 			for ($i = 0; $i <= $pathNodes; $i ++) {
 				// If any node along the registry path does not exist, create it
 				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
 				if (!isset($ns[$nodes[$i]])) {
 					$ns[$nodes[$i]] = array();
 				}
-				$ns = $ns[$nodes[$i]];
+				$ns =& $ns[$nodes[$i]];
 			}
 			$ns = $val;
 
@@ -776,7 +775,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if ($pathNodes < 0) {
 					$pathNodes = 0;
 				}
-				$ns = $this->_formData;
+				$ns =& $this->_formData;
 				for ($i = 0; $i <= $pathNodes; $i ++)
 				{
 					// If any node along the registry path does not exist, create it
@@ -784,7 +783,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (!isset($ns[$nodes[$i]])) {
 						$ns[$nodes[$i]] = array();
 					}
-					$ns = $ns[$nodes[$i]];
+					$ns =& $ns[$nodes[$i]];
 				}
 				$ns = $val;
 
@@ -796,7 +795,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (!isset($ns[$nodes[$i]])) {
 						$ns[$nodes[$i]] = array();
 					}
-					$ns = $ns[$nodes[$i]];
+					$ns =& $ns[$nodes[$i]];
 				}
 				$ns = $val;
 			}
@@ -894,7 +893,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		$session = JFactory::getSession();
 		$session->set('com_fabrik.form.data', $this->_formData);
-
 		return $this->_formData;
 	}
 
@@ -1058,12 +1056,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$joinGroup = JModel::getInstance('Group', 'FabrikFEModel');
 					$joinGroup->getGroup()->id = -1;
 					$joinGroup->getGroup()->is_join = 1;
-
+echo "<pre>";print_r($data);
 					//set join groups repeat to that of the elements options
 					if ($elementModel->isJoin()) {
 						$joinGroup->getParams()->set('repeat_group_button', 1);
 						//set repeat count
-						$repeatTotals[$oJoin->group_id] = count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
+						if ($elementModel->getGroup()->isJoin()) {
+							//repeat element in a repeat group :S
+							$groupJoin = $elementModel->getGroup()->getJoinModel();
+							$groupKeyVals = $this->_formData['join'][$groupJoin->getId()][$groupJoin->getPrimaryKey().'_raw'];
+							for ($r = 0; $r < count($data[$oJoin->table_join.'___id']); $r ++) {
+								$repeatTotals['el'.$elementModel->getId()][$r] =  count($data[$oJoin->table_join.'___id'][$r]);
+							}
+						} else {
+							$repeatTotals[$oJoin->group_id] = count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
+						}
 					}else{
 						// "Not a repeat element (el id = $oJoin->element_id)<br>";
 					}
