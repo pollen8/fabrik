@@ -1561,15 +1561,15 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 *create the js code to observe the elements js actions
-	 * @param array all javascript events for the form key'd on element id
 	 * @param string either form_ or _details
 	 * @param int repeat counter
 	 * @return string js events
 	 */
 
-	function getFormattedJSActions($allJsActions, $jsControllerKey, $repeatCount)
+	function getFormattedJSActions($jsControllerKey, $repeatCount)
 	{
 		$jsStr = '';
+		$allJsActions = $this->getFormModel()->getJsActions();
 		// $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
 		// which we should now be doing ... and getParent() causes an extra table lookup for every child
 		// element on the form.
@@ -1594,7 +1594,7 @@ class plgFabrik_Element extends FabrikPlugin
 				//build wysiwyg code
 				if (isset($jsAct->js_e_event) && $jsAct->js_e_event != '') {
 					// $$$ rob get the correct element id based on the repeat counter
-					$triggerEl = $this->getForm()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
+					$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
 					if (is_object($triggerEl)) {
 						$triggerid = 'element_'.$triggerEl->getHTMLId($repeatCount);
 					} else {
