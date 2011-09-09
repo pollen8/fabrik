@@ -57,18 +57,11 @@
 			description="PLG_FABRIK_FORM_JUSER_USERTYPE_FIELD_DESC"/>
 			
 		<field name="juser_field_default_group" 
-			type="accesslevel" 
+			type="usergroup" 
 			default="1"
 			repeat="true" 
 			label="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_LABEL" 
 			description="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_DESC"/>
-			
-		<field name="juser_usertype_max"
-			type="accesslevel"
-			default="1" 
-			repeat="true" 
-			label="PLG_FABRIK_FORM_JUSER_USERTYPE_MAX"
-			description="PLG_FABRIK_FORM_JUSER_USERTYPE_MAX_DESC" />
 			
 		<field name="juser_delete_user" 
 			type="radio" 

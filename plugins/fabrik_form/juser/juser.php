@@ -179,6 +179,11 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 	function onBeforeStore(&$params, &$formModel)
 	{
 		$app = JFactory::getApplication();
+		$config = JFactory::getConfig();
+		$lang = JFactory::getLanguage();
+		//load up com_users lang - used in email text
+		$lang->load('com_users');
+
 		//if the fabrik table is set to be jos_users and the this plugin is used
 		//we need to alter the form model to tell it not to store the main row
 		// but to still store any joined rows
@@ -200,7 +205,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$siteURL = JURI::base();
 		$bypassActivation	= $params->get('juser_bypass_activation', false);
 		$bypassRegistration	= $params->get('juser_bypass_registration', true);
-		$usertype_max = (int)$params->get('juser_usertype_max', 1);
 
 		// load in the com_user language file
 		$lang = JFactory::getLanguage();
@@ -217,7 +221,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		if ($params->get('juser_field_userid') != '') {
 			$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
 			if (!empty($formModel->_rowId)) {
-				$original_id = (int)$data[$this->useridfield];
+				$original_id = (int)$formModel->_formData[$this->useridfield];
 			}
 		}
 		else {
@@ -227,110 +231,95 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		// Create a new JUser object
 		$user = new JUser($original_id);
-		$original_gid = $user->get('gid');
+		$originalGroups = $user->getAuthorisedGroups();
 
 		// Are we dealing with a new user which we need to create?
 		$isNew 	= ($user->get('id') < 1);
-
-		//$post = JRequest::get('post');
 
 		if ($isNew && $usersConfig->get('allowUserRegistration') == '0' && !$bypassRegistration) {
 			JError::raiseError(403, JText::_('Access Forbidden - Registration not enabled'));
 			return false;
 		}
 		//new
-		$post = array();
+		$data = array();
 
 		$this->passwordfield 	= $this->getFieldName($params, 'juser_field_password');
-		$this->passwordvalue  = $this->getFieldValue($params, 'juser_field_password', $data);
+		$this->passwordvalue  = $this->getFieldValue($params, 'juser_field_password', $formModel->_formData);
 
 		$this->namefield 			= $this->getFieldName($params, 'juser_field_name');
-		$this->namevalue  		= $this->getFieldValue($params, 'juser_field_name', $data);
+		$this->namevalue  		= $this->getFieldValue($params, 'juser_field_name', $formModel->_formData);
 
 		$this->usernamefield 	= $this->getFieldName($params, 'juser_field_username');
-		$this->usernamevalue  = $this->getFieldValue($params, 'juser_field_username', $data);
+		$this->usernamevalue  = $this->getFieldValue($params, 'juser_field_username', $formModel->_formData);
 
 		$this->emailfield 		= $this->getFieldName($params, 'juser_field_email');
-		$this->emailvalue  		= $this->getFieldValue($params, 'juser_field_email', $data);
+		$this->emailvalue  		= $this->getFieldValue($params, 'juser_field_email', $formModel->_formData);
 
-		$post['id'] = $original_id;
+		$data['id'] = $original_id;
 
+		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
+		$defaultGroup = (int)$params->get('juser_field_default_group');
 		if (!$isNew) {
-			// for now, don't allow changing f GIDthru JUser plugin!
-			// $post['gid'] = $original_gid;
-			// $$$ hugh - let's allow gid to be changed as long as it doesn't
-			// exceed the currently logged on user's level
-			// yes, i know this duplicates codce from below, for now I'm just noodling around
 			if ($params->get('juser_field_usertype') != '') {
-				$this->gidfield 		= $this->getFieldName($params, 'juser_field_usertype');
-				$post['gid'] = JArrayHelper::getValue($data, $this->gidfield, 1);
-				if (is_array($post['gid'])) {
-					$post['gid'] = $post['gid'][0];
+				
+				$data['gid'] = JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
+				if (is_array($data['gid'])) {
+					$data['gid'] = $data['gid'][0];
 				}
-				$post['gid'] = (int)$post['gid'];
-				if ($post['gid'] > $me->get('gid')) {
-					$post['gid'] = $me->get('gid');
+				$data['gid'] = (int)$data['gid'];
+				if (!in_arary($data['gid'], $me->getAuthorisedGroups())) {
+					$data['gid'] = array_pop($me->getAuthorisedGroups());
 				}
 			}
 			else {
 				// if editing an existing user and no gid field being used,
-				// use existing gid.
-				$post['gid'] = $original_gid;
+				// use default group id
+				$data['gid'] = $defaultGroup;
 			}
 		}
 		else {
 			if ($params->get('juser_field_usertype') != '') {
-				$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
-				$post['gid'] = JArrayHelper::getValue($data, $this->gidfield, 1);
-				if (is_array($post['gid'])) {
-					$post['gid'] = $post['gid'][0];
+				$data['gid'] = JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
+				if (is_array($data['gid'])) {
+					$data['gid'] = $data['gid'][0];
 				}
 			}
 			else {
-				$post['gid'] = 1;
+				$data['gid'] = $defaultGroup;
 			}
 		}
-		$post['gid'] = (int)$post['gid'];
-		if ($post['gid'] === 0) {
-			$post['gid'] = 1;
+		$data['gid'] = (int)$data['gid'];
+		if ($data['gid'] === 0) {
+			$data['gid'] = $defaultGroup;
 		}
-		// $$$ hugh - added 'usertype_max' param, as a safety net to prevent GID's being
-		// set to arbitrarily high values thru spoofing.
-
-		if ($post['gid'] > $usertype_max && $post['gid'] != $original_gid) {
-			//$post['gid'] = $usertype_max;
-			$msg = JText::_('Attempting to set usertype above allowed level!');
-			$app->enqueueMessage($msg, 'message');
-			return false;
-		}
-
+		
 		if ($params->get('juser_field_block') != '') {
 			$this->blockfield = $this->getFieldName($params, 'juser_field_block');
-			$blocked = JArrayHelper::getValue($data, $this->blockfield, '');
+			$blocked = JArrayHelper::getValue($formModel->_formData, $this->blockfield, '');
 			if (is_array($blocked)) {
 				// probably a dropdown
-				$post['block'] = (int)$blocked[0];
+				$data['block'] = (int)$blocked[0];
 			}
 			else {
-				$post['block'] = (int)$blocked;
+				$data['block'] = (int)$blocked;
 			}
 		}
 		else {
-			$post['block'] = 0;
+			$data['block'] = 0;
 		}
 
 		//$$$tom get password field to use in $origdata object if editing user and not changing password
 		$origdata = $formModel->_origData;
 		$pwfield = $this->passwordfield;
 
-		$post['username']	= $this->usernamevalue;
-		$post['password']	= $this->passwordvalue;
-		$post['password2']	= $this->passwordvalue;
-		$post['name'] = $this->namevalue;
+		$data['username']	= $this->usernamevalue;
+		$data['password']	= $this->passwordvalue;
+		$data['password2']	= $this->passwordvalue;
+		$data['name'] = $this->namevalue;
 		$name = $this->namevalue;
-		$post['email'] = $this->emailvalue;
+		$data['email'] = $this->emailvalue;
 
-		$ok = $this->check($post, $formModel, $params);
+		$ok = $this->check($data, $formModel, $params);
 		if (!$ok) {
 			// @TODO - add some error reporting
 			return false;
@@ -348,98 +337,42 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			if ($useractivation == '1' && !$bypassActivation)
 			{
 				jimport('joomla.user.helper');
-				$user->set('activation', md5(JUserHelper::genRandomPassword()));
-				$user->set('block', '1');
+				$data['activation'] = JUtility::getHash(JUserHelper::genRandomPassword());
+				$data['block'] = 1;
 			}
 		}
 
 		// Check that username is not greater than 150 characters
-		$username = $post['username'];
+		$username = $data['username'];
 		if (strlen($username) > 150) {
 			$username = substr($username, 0, 150);
 			$user->set('username', $username);
 		}
 
 		// Check that password is not greater than 100 characters
-		if (strlen($post[ 'password' ]) > 100) {
-			$post['password'] = substr($post[ 'password' ], 0, 100);
+		if (strlen($data['password']) > 100) {
+			$data['password'] = substr($data['password'], 0, 100);
 		}
 
 		// end new
-		if (!$user->bind($post))
+		if (!$user->bind($data))
 		{
-			echo "error";
-			echo "<pre>";print_r($user);exit;
 			$app->enqueueMessage(JText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 			$app->enqueueMessage($user->getError(), 'error');
 			return false;
 		}
-	/* think following is done in user->save();
-		//$objectID 	= $acl->get_object_id('users', $user->get('id'), 'ARO');
-		//$groups 	= $acl->get_object_groups($objectID, 'ARO');
-		//$this_group = strtolower($acl->get_group_name($groups[0], 'ARO'));
-
-		if (!$isNew) {
-
-
-			if ($user->get('id') == $me->get('id') && $user->get('block') == 1) {
-				$msg = JText::_('You cannot block Yourself!');
-				$app->enqueueMessage($msg, 'message');
-				return false;
-			}
-			else if (( $this_group == 'super administrator') && $user->get('block') == 1) {
-				$msg = JText::_('You cannot block a Super Administrator');
-				$app->enqueueMessage($msg, 'message');
-				return false;
-			}
-			else if (( $this_group == 'administrator') && ($me->get('gid') == 24) && $user->get('block') == 1 )
-			{
-				$msg = JText::_('WARNBLOCK');
-				$app->enqueueMessage($msg, 'message');
-				return false;
-			}
-			else if (( $this_group == 'super administrator') && ($me->get('gid') != 25 ) )
-			{
-				$msg = JText::_('You cannot edit a super administrator account');
-				$app->enqueueMessage($msg, 'message');
-				return false;
-			}
-
-
-			$iAmSuperAdmin	= $me->authorise('core.admin');
-			// if group has been changed and where original group was Speical
-			if ($user->get('gid') != $original_gid && $iAmSuperAdmin) {
-				$db = FabrikWorker::getDbo();
-				// count number of active super admins
-				$query = 'SELECT COUNT( id )'
-				. ' FROM #__users'
-				. ' WHERE gid = 25'
-				. ' AND block = 0'
-				;
-				$db->setQuery($query);
-				$count = $db->loadResult();
-
-				if ($count <= 1 ) {
-					// disallow change if only one Super Admin exists
-					$this->setRedirect('index.php?option=com_users', JText::_('WARN_ONLY_SUPER'));
-					return false;
-				}
-			}
-		}*/
 
 		/*
 		 * Lets save the JUser object
 		 */
 		if (!$user->save())
 		{
-			echo "err!";
-			echo "<pre>";print_r($user);;exit;
 			$app->enqueueMessage(JText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 			$app->enqueueMessage($user->getError(), 'error');
 			return false;
 		}
 		//assign user to a group
-		JUserHelper::addUserToGroup($user->get('id'), $post['gid']);
+		JUserHelper::addUserToGroup($user->get('id'), $data['gid']);
 		$session = &JFactory::getSession();
 		JRequest::setVar('newuserid', $user->id);
 		JRequest::setVar('newuserid', $user->id, 'cookie');
@@ -453,33 +386,111 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		if ($isNew)
 		{
-			$adminEmail = $me->get('email');
-			$adminName	= $me->get('name');
-
-			$subject 	= sprintf(JText::_('PLG_FABRIK_FORM_JUSER_ACCOUNT_DETAILS_FOR'), $name, $SiteName);
-			$subject 	= html_entity_decode($subject, ENT_QUOTES);
-
-			if ($useractivation == 1 && !$bypassActivation) {
-
-				$message = sprintf(JText::_('PLG_FABRIK_FORM_JUSER_SEND_MSG_ACTIVATE'), $name, $SiteName, $siteURL."index.php?option=com_user&task=activate&activation=".$user->get('activation'), $siteURL, $username, $user->password_clear);
-			} else if ($params->get('juser_bypass_accountdetails', 0) != 1) { //$$$tom adding Bypass Joomla's "Account details for..." email
-				$message = sprintf(JText::_('PLG_FABRIK_FORM_JUSER_SEND_MSG'), $name, $SiteName, $siteURL);
-			}
-
-			$message = html_entity_decode($message, ENT_QUOTES);
-
-			if ($MailFrom != '' && $FromName != '')
+			
+			// Compile the notification mail values.
+			$data = $user->getProperties();
+			$data['fromname']	= $config->get('fromname');
+			$data['mailfrom']	= $config->get('mailfrom');
+			$data['sitename']	= $config->get('sitename');
+			$data['siteurl']	= JUri::base();
+			
+			$uri = JURI::getInstance();
+			$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
+			
+			// Handle account activation/confirmation emails.
+			if ($useractivation == 2 && !$bypassActivation)
 			{
-				$adminName 	= $FromName;
-				$adminEmail = $MailFrom;
+				// Set the link to confirm the user email.
+				$data['activate'] = $base.JRoute::_('index.php?option=com_users&task=registration.activate&token='.$data['activation'], false);
+			
+				$emailSubject	= JText::sprintf(
+							'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+				$data['name'],
+				$data['sitename']
+				);
+			
+				$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY',
+				$data['name'],
+				$data['sitename'],
+				$data['siteurl'].'index.php?option=com_users&task=registration.activate&token='.$data['activation'],
+				$data['siteurl'],
+				$data['username'],
+				$data['password_clear']
+				);
 			}
-			if ($message) { //$$$tom see comment above about bypassing Joomla's email
-				JUtility::sendMail($adminEmail, $adminName, $user->get('email'), $subject, $message);
+			else if ($useractivation == 1 && !$bypassActivation)
+			{
+				// Set the link to activate the user account.
+				$data['activate'] = $base.JRoute::_('index.php?option=com_users&task=registration.activate&token='.$data['activation'], false);
+			
+				$emailSubject	= JText::sprintf(
+							'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+				$data['name'],
+				$data['sitename']
+				);
+			
+				$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY',
+				$data['name'],
+				$data['sitename'],
+				$data['siteurl'].'index.php?option=com_users&task=registration.activate&token='.$data['activation'],
+				$data['siteurl'],
+				$data['username'],
+				$data['password_clear']
+				);
+			} else {
+			
+				$emailSubject	= JText::sprintf(
+							'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+				$data['name'],
+				$data['sitename']
+				);
+			
+				$emailBody = JText::sprintf(
+							'COM_USERS_EMAIL_REGISTERED_BODY',
+				$data['name'],
+				$data['sitename'],
+				$data['siteurl']
+				);
 			}
-		}
-echo "<pre>";print_r($user);;
+
+			// Send the registration email.
+			$return = JUtility::sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+			
+			// Check for an error.
+			if ($return !== true) {
+				$this->setError(JText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
+			
+				// Send a system message to administrators receiving system mails
+				$db = JFactory::getDBO();
+				$q = "SELECT id
+							FROM #__users
+							WHERE block = 0
+							AND sendEmail = 1";
+				$db->setQuery($q);
+				$sendEmail = $db->loadResultArray();
+				if (count($sendEmail) > 0) {
+					$jdate = new JDate();
+					// Build the query to add the messages
+					$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
+								VALUES ";
+					$messages = array();
+					foreach ($sendEmail as $userid) {
+						$messages[] = "(".$userid.", ".$userid.", '".$jdate->toMySQL()."', '".JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')."', '".JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])."')";
+					}
+					$q .= implode(',', $messages);
+					$db->setQuery($q);
+					$db->query();
+				}
+				return false;
+			}
+			
+		} 
+
 		// If updating self, load the new user object into the session
-		if ($user->get('id') == $me->get('id'))
+		// FIXME - doesnt work in J1.7??
+		/* if ($user->get('id') == $me->get('id'))
 		{
 			// Get an ACL object
 			$acl = &JFactory::getACL();
@@ -500,7 +511,7 @@ echo "<pre>";print_r($user);;
 			// Set the usertype based on the ACL group name
 			$user->set('usertype', $grp->name);
 			$session->set('user', $user);
-		}
+		} */
 		if (!empty($this->useridfield)) {
 			$formModel->updateFormData($this->useridfield, $user->get('id'), true);
 		}
