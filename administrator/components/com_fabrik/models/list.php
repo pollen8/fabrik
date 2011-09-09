@@ -470,7 +470,6 @@ class FabrikModelList extends FabModelAdmin
 	public function getFEModel()
 	{
 		if (is_null($this->feListModel)) {
-			//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 			$this->feListModel = JModel::getInstance('List', 'FabrikFEModel');
 			$this->feListModel->setState('list.id', $this->getState('list.id'));
 		}
@@ -701,10 +700,13 @@ class FabrikModelList extends FabModelAdmin
 		$repeats = JArrayHelper::getValue($params, 'join_repeat', array());
 		$jc = count($joinTypes);
 		//test for repeat elements to eusure their join isnt removed from here
+		
 		foreach ($aOldJoins as $oldJoin) {
-			$oldParams = json_decode($oldJoin->params);
-			if ($oldParams->type == 'repeatElement') {
-				$aOldJoinsToKeep[] = $oldJoin->id;
+			if ($oldJoin->params !== '') {
+				$oldParams = json_decode($oldJoin->params);
+				if ($oldParams->type == 'repeatElement') {
+					$aOldJoinsToKeep[] = $oldJoin->id;
+				}
 			}
 		}
 		for ($i = 0; $i < $jc ; $i++) {
@@ -732,7 +734,7 @@ class FabrikModelList extends FabModelAdmin
 				 */
 				$joinModel->setId($joinIds[$i]);
 				$joinModel->_join = null;
-				$join =& $joinModel->getJoin();
+				$join = $joinModel->getJoin();
 
 				if ($join->table_join != $joinTable[$i]) {
 					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
@@ -888,8 +890,10 @@ class FabrikModelList extends FabModelAdmin
 					foreach ($elementModels as $elementModel) {
 						$ecount++;
 						$element = $elementModel->getElement();
-						$copy = $elementModel->copyRow($element->id, '', $groupId);
-						$newElements[$element->id] = $copy->id;
+						$copy = $elementModel->copyRow($element->id, $element->label, $groupId);
+						if (!Jerror::isError($copy)) {
+							$newElements[$element->id] = $copy->id;
+						}
 					}
 
 				}
@@ -1475,8 +1479,9 @@ class FabrikModelList extends FabModelAdmin
 		$dbconfigprefix = JApplication::getCfg("dbprefix");
 		// Iterate the items to delete each one.
 		foreach ($pks as $i => $pk) {
-
+			$feModel->setId($pk);
 			if ($table->load($pk)) {
+				$feModel->set('table', $table);
 				if ($this->canDelete($table)) {
 					$context = $this->option.'.'.$this->name;
 
@@ -1524,8 +1529,9 @@ class FabrikModelList extends FabModelAdmin
 					if (strncasecmp($table->db_table_name, $dbconfigprefix, strlen($dbconfigprefix))==0) {
 						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbconfigprefix), 'notice');
 					} else {
-						$fabrikDatabase->setQuery("DROP " . $table->db_table_name);
-						$fabrikDatabase->query();
+						$feModel->drop();
+						//$fabrikDatabase->setQuery("DROP " . $table->db_table_name);
+						//$fabrikDatabase->query();
 						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_DROPPED', $table->db_table_name));
 					}
 				} else {

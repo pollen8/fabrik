@@ -44,7 +44,6 @@ class FabrikControllerList extends FabControllerForm
 	public function copy()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('list', 'FabrikFEModel');
 		if (count($cid) > 0)
 		{
@@ -64,7 +63,7 @@ class FabrikControllerList extends FabControllerForm
 
 	public function doCopy()
 	{
-				// Check for request forgeries
+		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$model = $this->getModel();
 		$model->copy();
@@ -83,7 +82,6 @@ class FabrikControllerList extends FabControllerForm
 		if(is_array($cid)){$cid = $cid[0];}
 		$cid = JRequest::getInt('listid', $cid);
 		// grab the model and set its id
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);
 		$viewType	= JFactory::getDocument()->getType();
@@ -120,17 +118,14 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * actally delete the requested lists forms etc
-	 * // $$$ rob refractored to FabControllerForm
+	 * // $$$ rob refractored to FabControllerAdmin
 	 */
 
 	/*public function dodelete()
 	 {
-		$model = $this->getModel();
-		$cid	= JRequest::getVar('cid', array(0), 'method', 'array');
-		$model->delete($cid);
-		$this->setRedirect('index.php?option=com_fabrik&view='.$this->view_item);
 		}
 		*/
+	
 	public function order()
 	{
 		// Check for request forgeries
@@ -170,7 +165,6 @@ class FabrikControllerList extends FabControllerForm
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
 		$model->setId($listid);
@@ -213,8 +207,7 @@ class FabrikControllerList extends FabControllerForm
 
 	function doempty()
 	{
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-		$model = &$this->getModel('list', 'FabrikFEModel');
+		$model = $this->getModel('list', 'FabrikFEModel');
 		$model->truncate();
 		$listid = JRequest::getInt('listid');
 		$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=list&cid=$listid", 'post');

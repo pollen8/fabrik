@@ -509,7 +509,6 @@ function validate($form, $data)
 
 private function getElementPluginModel($data)
 {
-	//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 	$pluginManager	= JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 	$id	= $data['id'];
 	$elementModel = $pluginManager->getPlugIn($data['plugin'], 'element');
@@ -895,54 +894,14 @@ function copy()
 	$cid = JRequest::getVar('cid', null, 'post', 'array');
 	JArrayHelper::toInteger($cid);
 	$names = JRequest::getVar('name', null, 'post', 'array');
-	$db = FabrikWorker::getDbo(true);
+	//$db = FabrikWorker::getDbo(true);
 	$rule	= $this->getTable('element');
-	$join	= $this->getTable('join');
-	$jsaction	= $this->getTable('jsaction');
 	foreach ($cid as $id => $groupid) {
-		$name = $names[$id];
 		if ($rule->load((int)$id)) {
-
-			$rule->name = JArrayHelper::getValue($names, $id, $rule->name);
-			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
-			$groupModel->setId($groupid);
-			$groupTable = $groupModel->getListModel();
-			if ($groupTable->fieldExists($rule->name)) {
-				JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
-				return false;
-			}
-
-			$rule->id	= 0;
-
-			$rule->name = $name;
-			$rule->group_id = $groupid;
-			if (!$rule->store()) {
-				return JError::raiseWarning($rule->getError());
-			}
-			//get js actions
-			$query = $db->getQuery(true);
-			$query->select('id')->from('#__{package}_jsactions')->where($db->nameQuote('element_id') . ' = ' . (int)$id);
-			$db->setQuery($query);
-			$jsids = $db->loadResultArray();
-			foreach ($jsids as $jsid) {
-				$jsaction->load($jsid);
-				$jsaction->id = 0;
-				$jsaction->element_id = $rule->id;
-				$jsaction->store();
-			}
-			//copy joins if neccesary
-			$join->load(array('element_id' =>$id));
-			if ($join->id !== 0) {
-				$join->id = 0;
-				$join->element_id = $rule->id;
-				if ($join->table_join != '') {
-					$join->store();
-				}
-			}
-			echo "Id =  $rule->id";
+			$name = JArrayHelper::getValue($names, $id, $rule->name);
 			$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($rule));
-			$elementModel->getElement();
-			$listModel =& $elementModel->getListModel();
+			$elementModel->copyRow($id, $rule->label, $groupid, $name);
+			$listModel = $elementModel->getListModel();
 			$res = $listModel->shouldUpdateElement($elementModel);
 			$this->addElementToOtherDbTables($elementModel, $rule);
 		}
@@ -975,6 +934,9 @@ public function createRepeatElement($elementModel, $row)
 		$name = $db->nameQuote($row->name);
 		$db->setQuery("CREATE TABLE IF NOT EXISTS ".$db->nameQuote($tableName)." ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), $name $desc, ".$db->nameQuote('params')." TEXT );");
 		$db->query();
+		if ($db->getErrorNum() != 0) {
+			JError::raiseError(500, $db->getErrorMsg());
+		}
 	}
 	//remove previous join records if found
 	if ((int)$row->id !== 0) {

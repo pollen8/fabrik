@@ -62,8 +62,9 @@ var fabriktablesElement = new Class({
 		if ($(this.el.id + '_loader')) {
 			$(this.el.id + '_loader').setStyle('display', 'inline');
 		}
-		var url = this.options.livesite
-				+ 'index.php?option=com_fabrik&format=raw&view=plugin&&task=pluginAjax&g=element&plugin=field&method=ajax_tables&showf=1&cid=' + cid;
+	/*	var url = this.options.livesite
+				+ 'index.php?option=com_fabrik&format=raw&view=plugin&&task=pluginAjax&g=element&plugin=field&method=ajax_tables&showf=1&cid=' + cid;*/
+		var url = 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&g=element&plugin=field&method=ajax_tables&showf=1&cid=' + cid;
 		var myAjax = new Request({
 			url : url,
 			method : 'get',
