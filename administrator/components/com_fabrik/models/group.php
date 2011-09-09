@@ -118,7 +118,8 @@ class FabrikModelGroup extends FabModelAdmin
 		}
 		$data['params'] = json_encode($data['params']);
 		$return = parent::save($data);
-		$data['id'] = $this->setState($this->getName().'.id');
+		
+		$data['id'] = $this->getState($this->getName().'.id');
 		if ($return) {
 			$this->makeFormGroup($data);
 			if ($makeJoin) {
