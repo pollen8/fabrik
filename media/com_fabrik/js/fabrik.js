@@ -15,19 +15,22 @@ Request.HTML = new Class({
 		var options = this.options, response = this.response;
 		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
 		var urls = [];
-		for (x=0;x<srcs.length;x++) {
-			if(srcs[x].contains('src="')) {
-				var m = srcs[x].match(/src=\"([\s\S]*?)\"/);
-				if (m[1]){
-					urls.push(m[1])
+		if (typeOf(srcs) !== 'null') {
+			for (x=0;x<srcs.length;x++) {
+				if(srcs[x].contains('src="')) {
+					var m = srcs[x].match(/src=\"([\s\S]*?)\"/);
+					if (m[1]){
+						urls.push(m[1])
+					}
 				}
 			}
+			scriptadd = "head.js('"+urls.join("','")+"');\n";
+			Browser.exec(scriptadd);
 		}
-		scriptadd = "head.js('"+urls.join("','")+"');\n";
 		response.html = text.stripScripts(function(script){
 			response.javascript = script;
 		});
-		Browser.exec(scriptadd);
+		
 		var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
 		if (match) response.html = match[1];
 		var temp = new Element('div').set('html', response.html);
