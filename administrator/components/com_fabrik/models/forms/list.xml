@@ -54,7 +54,8 @@
 		
 		<field name="rows_per_page" 
 			type="text" 
-			size="3" 
+			size="3"
+			default="10"
 			label="COM_FABRIK_FIELD_ROWS_PER_PAGE_LABEL"
 			description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC" />
 	
