@@ -2,33 +2,37 @@
  * @author Robert
  */
 
-var FbForm = new Class( {
+/*jshint mootools: true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
 
-	Implements:[Options, Events],
+var FbForm = new Class({
+
+	Implements: [Options, Events],
 	
-	options:{
-		'admin':false,
-		'ajax':false,
-		'primaryKey':null,
-		'error':'',
-		'delayedEvents':false,
-		'updatedMsg':'Form saved',
-		'pages':[],
-		'start_page':0,
-		'ajaxValidation':false,
-		'customJsAction':'',
-		'plugins':[],
-		'ajaxmethod':'post',
-		'inlineMessage':true,
-		'images':{
-			'alert':'',
-			'action_check':'',
-			'ajax_loader':''
+	options: {
+		'admin': false,
+		'ajax': false,
+		'primaryKey': null,
+		'error': '',
+		'delayedEvents': false,
+		'updatedMsg': 'Form saved',
+		'pages': [],
+		'start_page': 0,
+		'ajaxValidation': false,
+		'customJsAction': '',
+		'plugins': [],
+		'ajaxmethod': 'post',
+		'inlineMessage': true,
+		'images': {
+			'alert': '',
+			'action_check': '',
+			'ajax_loader': ''
 		}
 	},
 	
-	initialize : function(id, options) {
+	initialize: function (id, options) {
 		this.id = id;
+		debugger;
 		this.result = true; //set this to false in window.fireEvents to stop current action (eg stop form submission)
 		this.setOptions(options);
 		this.plugins = this.options.plugins;
@@ -44,21 +48,20 @@ var FbForm = new Class( {
 		this.fx = {};
 		this.fx.elements = [];
 		this.fx.validations = {};
-		 this.setUpAll()
+		this.setUpAll();
 	},
 	
-	setUpAll: function()
-	{
+	setUpAll: function () {
 		this.setUp();
-		window.addEvent('domready', function() {
-		if (typeOf(Fx.Scroll) !== 'class') {
-			this.winScroller = new Fx.Scroll(window);
-		}
-	});
+		window.addEvent('domready', function () {
+			if (typeOf(Fx.Scroll) !== 'class') {
+				this.winScroller = new Fx.Scroll(window);
+			}
+		});
 		this.watchAddOptions();
-		$H(this.options.hiddenGroup).each(function(v, k){
-			if(v == true && typeOf(document.id('group'+k)) !== 'null'){
-				var subGroup = document.id('group'+k).getElement('.fabrikSubGroup');
+		$H(this.options.hiddenGroup).each(function (v, k) {
+			if (v === true && typeOf(document.id('group' + k)) !== 'null') {
+				var subGroup = document.id('group' + k).getElement('.fabrikSubGroup');
 				this.subGroups.set(k, subGroup.cloneWithIds());
 				this.hideLastGroup(k, subGroup);
 			}
@@ -68,7 +71,7 @@ var FbForm = new Class( {
 		// dont ever decrease this value when deleteing a group as it will cause all sorts of
 		// reference chaos with cascading dropdowns etc
 		this.repeatGroupMarkers = $H({});
-		this.form.getElements('.fabrikGroup').each(function(group) {
+		this.form.getElements('.fabrikGroup').each(function (group) {
 			var id = group.id.replace('group', '');
 			var c = group.getElements('.fabrikSubGroup').length;
 			this.repeatGroupMarkers.set(id, c);
@@ -80,14 +83,13 @@ var FbForm = new Class( {
 			option : 'com_fabrik',
 			'view' : v,
 			'controller' : 'form',
-			'task' : 'getNextRecord',
 			'fabrik' : this.id,
 			'rowid' : this.form.getElement('input[name=rowid]').value,
 			'format' : 'raw',
 			'task' : 'paginate',
 			'dir' : 1
 		};
-		[ '.previous-record', '.next-record' ].each(function(b, dir) {
+		[ '.previous-record', '.next-record' ].each(function (b, dir) {
 			editopts.dir = dir;
 			if (this.form.getElement(b)) {
 
@@ -95,40 +97,40 @@ var FbForm = new Class( {
 					url : 'index.php',
 					method : this.options.ajaxmethod,
 					data : editopts,
-					onComplete : function(r) {
-						Fabrik.loader.stop('form_'+this.id);
+					onComplete : function (r) {
+						Fabrik.loader.stop('form_' + this.id);
 						r = JSON.decode(r);
 						this.update(r);
 						this.form.getElement('input[name=rowid]').value = r.post.rowid;
 					}.bind(this)
 				});
 
-				this.form.getElement(b).addEvent('click', function(e) {
+				this.form.getElement(b).addEvent('click', function (e) {
 					myAjax.options.data.rowid = this.form.getElement('input[name=rowid]').value;
 					e.stop();
-					Fabrik.loader.start('form_'+this.id, Joomla.JText._('COM_FABRIK_LOADING'));
+					Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_LOADING'));
 					myAjax.send();
 				}.bind(this));
 			}
 		}.bind(this));
 	},
 
-	watchAddOptions : function() {
+	watchAddOptions : function () {
 		this.fx.addOptions = [];
-		this.getForm().getElements('.addoption').each( function(d) {
+		this.getForm().getElements('.addoption').each(function (d) {
 			var a = d.getParent().getElement('.toggle-addoption');
 			var mySlider = new Fx.Slide(d, {
-				duration :500
+				duration : 500
 			});
 			mySlider.hide();
-				a.addEvent('click', function(e) {
-					e.stop();
-					mySlider.toggle();
+			a.addEvent('click', function (e) {
+				e.stop();
+				mySlider.toggle();
 			});
 		});
 	},
 
-	setUp : function() {
+	setUp : function () {
 		this.form = this.getForm();
 		this.watchGroupButtons();
 		if (this.options.editable) {
@@ -138,23 +140,24 @@ var FbForm = new Class( {
 		this.watchClearSession();
 	},
 
-	getForm : function() {
+	getForm : function () {
 		this.form = document.id(this.getBlock());
 		return this.form;
 	},
 
-	getBlock : function() {
-		return this.options.editable == true ? 'form_' + this.id : 'details_' + this.id;
+	getBlock : function () {
+		return this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
 	},
 
 	// id is the element or group to apply the fx TO, triggered from another
 	// element
-	addElementFX : function(id, method) {
+	addElementFX : function (id, method) {
+		var c, k, fxdiv;
 		id = id.replace('fabrik_trigger_', '');
-		if (id.slice(0, 6) == 'group_') {
+		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
-			var k = id;
-			var c = $(id);
+			k = id;
+			c = $(id);
 		} else {
 			id = id.slice(8, id.length);
 			k = 'element' + id;
@@ -169,8 +172,8 @@ var FbForm = new Class( {
 			// multi column rows, so get the li's content and put it inside a div which
 			// is injected into c
 			// apply fx to div rather than li - damn im good
-			if ((c).get('tag') == 'li') {
-				var fxdiv = new Element('div').adopt(c.getChildren());
+			if ((c).get('tag') === 'li') {
+				fxdiv = new Element('div').adopt(c.getChildren());
 				c.empty();
 				fxdiv.inject(c);
 			} else {
@@ -184,78 +187,80 @@ var FbForm = new Class( {
 			this.fx.elements[k] = {};
 			//'opacity',
 			this.fx.elements[k].css = new Fx.Morph(fxdiv, opts);
-			if (typeOf(fxdiv) !== 'null' && (method == 'slide in' || method == 'slide out' || method == 'slide toggle')) {
-				this.fx.elements[k]['slide'] = new Fx.Slide(fxdiv, opts);
+			if (typeOf(fxdiv) !== 'null' && (method === 'slide in' || method === 'slide out' || method === 'slide toggle')) {
+				this.fx.elements[k].slide = new Fx.Slide(fxdiv, opts);
 			} else {
-				this.fx.elements[k]['slide'] = null;
+				this.fx.elements[k].slide = null;
 			}
 		}
 	},
 
-	doElementFX : function(id, method) {
+	doElementFX : function (id, method) {
+		var k, groupfx, fx, fxElement;
 		id = id.replace('fabrik_trigger_', '');
-		if (id.slice(0, 6) == 'group_') {
+		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
 			// wierd fix?
-			if (id.slice(0, 6) == 'group_')
+			if (id.slice(0, 6) === 'group_') {
 				id = id.slice(6, id.length);
-			var k = id;
-			var groupfx = true;
+			}
+			k = id;
+			groupfx = true;
 		} else {
 			groupfx = false;
 			id = id.slice(8, id.length);
 			k = 'element' + id;
 		}
-		var fx = this.fx.elements[k];
+		fx = this.fx.elements[k];
 		if (!fx) {
 			return;
 		}
-		var fxElement = groupfx ? fx.css.element : fx.css.element.getParent('.fabrikElementContainer');
+		fxElement = groupfx ? fx.css.element : fx.css.element.getParent('.fabrikElementContainer');
 		switch (method) {
-			case 'show':
-				fxElement.fade('show').removeClass('fabrikHide');
-				if (groupfx) {
-					// strange fix for ie8
-					// http://fabrik.unfuddle.com/projects/17220/tickets/by_number/703?cycle=true
-					document.id(id).getElements('.fabrikinput').setStyle('opacity', '1');
-				}
-				break;
-			case 'hide':
-				fxElement.fade('hide').addClass('fabrikHide');
-				break;
-			case 'fadein':
-				fxElement.removeClass('fabrikHide');
-				if (fx.css.lastMethod !== 'fadein') {
-					fx.css.element.show();
-					fx.css.start({'opacity': [0, 1]});
-				}
-				break;
-			case 'fadeout':
-				if (fx.css.lastMethod !== 'fadeout') {
-					fx.css.start({'opacity': [1, 0]}).chain(function() {
-						fx.css.element.hide();
-						fxElement.addClass('fabrikHide');
-					});
-				}
-				break;
-			case 'slide in':
-				fx.slide.slideIn();
-				break;
-			case 'slide out':
-				fx.slide.slideOut();
-				fxElement.removeClass('fabrikHide');
-				break;
-			case 'slide toggle':
-				fx.slide.toggle();
-				break;
+		case 'show':
+			fxElement.fade('show').removeClass('fabrikHide');
+			if (groupfx) {
+				// strange fix for ie8
+				// http://fabrik.unfuddle.com/projects/17220/tickets/by_number/703?cycle=true
+				document.id(id).getElements('.fabrikinput').setStyle('opacity', '1');
+			}
+			break;
+		case 'hide':
+			fxElement.fade('hide').addClass('fabrikHide');
+			break;
+		case 'fadein':
+			fxElement.removeClass('fabrikHide');
+			if (fx.css.lastMethod !== 'fadein') {
+				fx.css.element.show();
+				fx.css.start({'opacity': [0, 1]});
+			}
+			break;
+		case 'fadeout':
+			if (fx.css.lastMethod !== 'fadeout') {
+				fx.css.start({'opacity': [1, 0]}).chain(function () {
+					fx.css.element.hide();
+					fxElement.addClass('fabrikHide');
+				});
+			}
+			break;
+		case 'slide in':
+			fx.slide.slideIn();
+			break;
+		case 'slide out':
+			fx.slide.slideOut();
+			fxElement.removeClass('fabrikHide');
+			break;
+		case 'slide toggle':
+			fx.slide.toggle();
+			break;
 		}
 		fx.lastMethod = method;
 		window.fireEvent('fabrik.form.doelementfx', [this]);
 	},
 
-	watchClearSession : function() {
+	watchClearSession : function () {
 		if (this.form && this.form.getElement('.clearSession')) {
-			this.form.getElement('.clearSession').addEvent('click', function(e) {
+			this.form.getElement('.clearSession').addEvent('click', function (e) {
 				e.stop();
 				this.form.getElement('input[name=task]').value = 'removeSession';
 				this.clearForm();
@@ -264,21 +269,21 @@ var FbForm = new Class( {
 		}
 	},
 
-	createPages : function() {
+	createPages : function () {
 		if (this.options.pages.getKeys().length > 1) {
 			// wrap each page in its own div
-			this.options.pages.each(function(page, i) {
+			this.options.pages.each(function (page, i) {
 				var p = new Element('div', {
 					'class' : 'page',
 					'id' : 'page_' + i
 				});
 				p.inject(document.id('group' + page[0]), 'before');
-				page.each(function(group) {
+				page.each(function (group) {
 					p.adopt(document.id('group' + group));
 				});
 			});
 			var submit = this._getButton('submit');
-			if (submit && this.options.rowid == '') {
+			if (submit && this.options.rowid === '') {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
 			}
@@ -290,18 +295,16 @@ var FbForm = new Class( {
 		}
 	},
 
-	_doPageNav : function(e, dir) {
+	_doPageNav : function (e, dir) {
 		if (this.options.editable) {
 			this.form.getElement('.fabrikMainError').addClass('fabrikHide');
 			//if tip shown at bottom of long page and next page shorter we need to move the tip to
 			//the top of the page to avoid large space appearing at the bottom of the page.
-			if(typeOf(document.getElement('.tool-tip')) !== 'null'){
+			if (typeOf(document.getElement('.tool-tip')) !== 'null') {
 				document.getElement('.tool-tip').setStyle('top', 0);
 			}
-			var url = Fabrik.liveSite
-				+ 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id='
-				+ this.id;
-			Fabrik.loader.start('form_'+this.id, 'validating');
+			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
+			Fabrik.loader.start('form_' + this.id, 'validating');
 	
 			// only validate the current groups elements, otherwise validations on
 			// other pages cause the form to show an error.
@@ -317,13 +320,13 @@ var FbForm = new Class( {
 			d = this._prepareRepeatsForAjax(d);
 
 			var myAjax = new Request({
-				'url':url,
-				method :this.options.ajaxmethod,
-				data :d,
-				onComplete : function(r) {
-					Fabrik.loader.stop('form_'+this.id);
+				'url': url,
+				method: this.options.ajaxmethod,
+				data: d,
+				onComplete: function (r) {
+					Fabrik.loader.stop('form_' + this.id);
 					r = JSON.decode(r);
-					if (this._showGroupError(r, d) == false) {
+					if (this._showGroupError(r, d) === false) {
 						this.changePage(dir);
 						this.saveGroupsToDb();
 					}
@@ -337,7 +340,7 @@ var FbForm = new Class( {
 		e.stop();
 	},
 
-	saveGroupsToDb : function() {
+	saveGroupsToDb : function () {
 		if (this.options.multipage_save !== true) {
 			return;
 		}
@@ -352,13 +355,13 @@ var FbForm = new Class( {
 		this.form.getElement('input[name=task]').value = 'savepage';
 
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
-		Fabrik.loader.start('form_'+this.id, 'saving page');
+		Fabrik.loader.start('form_' + this.id, 'saving page');
 		var data = this.getFormData();
 		new Request({
-			url:url,
-			method : this.options.ajaxmethod,
-			data : data,
-			onComplete : function(r) {
+			url: url,
+			method: this.options.ajaxmethod,
+			data: data,
+			onComplete : function (r) {
 				window.fireEvent('fabrik.form.groups.save.completed', [this]);
 				if (this.result === false) {
 					this.result = true;
@@ -367,14 +370,14 @@ var FbForm = new Class( {
 				this.form.getElement('input[name=format]').value = orig;
 				this.form.getElement('input[name=task]').value = origprocess;
 				if (this.options.ajax) {
-					window.fireEvent('fabrik.form.groups.save.end', [form, r]);
+					window.fireEvent('fabrik.form.groups.save.end', [this, r]);
 				}
-				Fabrik.loader.stop('form_'+this.id);
+				Fabrik.loader.stop('form_' + this.id);
 			}.bind(this)
 		}).send();
 	},
 
-	changePage : function(dir) {
+	changePage : function (dir) {
 		this.changePageDir = dir;
 		window.fireEvent('fabrik.form.page.change', [this]);
 		if (this.result === false) {
@@ -399,10 +402,10 @@ var FbForm = new Class( {
 		}
 	},
 
-	pageGroupsVisible : function() {
+	pageGroupsVisible : function () {
 		var visible = false;
-		this.options.pages.get(this.currentPage).each(function(gid) {
-			if (document.id('group' + gid).getStyle('display') != 'none') {
+		this.options.pages.get(this.currentPage).each(function (gid) {
+			if (document.id('group' + gid).getStyle('display') !== 'none') {
 				visible = true;
 			}
 		});
@@ -412,19 +415,19 @@ var FbForm = new Class( {
 	/**
 	 * hide all groups except those in the active page
 	 */
-	hideOtherPages : function() {
-		this.options.pages.each(function(gids, i) {
-			if (i != this.currentPage) {
+	hideOtherPages : function () {
+		this.options.pages.each(function (gids, i) {
+			if (i !== this.currentPage) {
 				document.id('page_' + i).setStyle('display', 'none');
 			}
 		}.bind(this));
 	},
 
-	setPageButtons : function() {
+	setPageButtons : function () {
 		var submit = this._getButton('submit');
 		var prev = this.form.getElement('.fabrikPagePrevious');
-		var next =this.form.getElement('.fabrikPageNext');
-		if (this.currentPage == this.options.pages.getKeys().length - 1) {
+		var next = this.form.getElement('.fabrikPageNext');
+		if (this.currentPage === this.options.pages.getKeys().length - 1) {
 			if (typeOf(submit) !== 'null') {
 				submit.disabled = "";
 				submit.setStyle('opacity', 1);
@@ -432,7 +435,7 @@ var FbForm = new Class( {
 			next.disabled = "disabled";
 			next.setStyle('opacity', 0.5);
 		} else {
-			if (typeOf(submit) !== 'null' && this.options.rowid == '') {
+			if (typeOf(submit) !== 'null' && this.options.rowid === '') {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
 			}
@@ -448,10 +451,10 @@ var FbForm = new Class( {
 		}
 	},
 
-	addElements : function(a) {
+	addElements : function (a) {
 		a = $H(a);
-		a.each(function(elements, gid) {
-			elements.each(function(el) {
+		a.each(function (elements, gid) {
+			elements.each(function (el) {
 				if (typeOf(el) !== 'null') {
 					this.addElement(el, el.options.element, gid);
 				}
@@ -460,13 +463,13 @@ var FbForm = new Class( {
 		// $$$ hugh - moved attachedToForm calls out of addElement to separate loop, to fix forward reference issue,
 		// i.e. calc element adding events to other elements which come after itself, which won't be in formElements
 		// yet if we do it in the previous loop ('cos the previous loop is where elements get added to formElements)
-		a.each(function(elements) {
-			elements.each(function(el) {
+		a.each(function (elements) {
+			elements.each(function (el) {
 				if (typeOf(el) !== 'null') {
 					try {
 						el.attachedToForm();
 					} catch (err) {
-						fconsole(el.options.element + ' attach to form:' + err );
+						fconsole(el.options.element + ' attach to form:' + err);
 					}
 				}
 			}.bind(this));
@@ -474,7 +477,7 @@ var FbForm = new Class( {
 		window.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
-	addElement : function(oEl, elId, gid) {
+	addElement : function (oEl, elId, gid) {
 		elId = elId.replace('[]', '');
 		var ro = elId.substring(elId.length - 3, elId.length) === '_ro';
 		oEl.form = this;
@@ -497,10 +500,10 @@ var FbForm = new Class( {
 	// we have to buffer the events in a pop up window as
 	// the dom inserted when the window loads appears after the ajax evalscripts
 
-	dispatchEvent : function(elementType, elementId, action, js) {
+	dispatchEvent : function (elementType, elementId, action, js) {
 		if (!this.options.delayedEvents) {
 			var el = this.formElements.get(elementId);
-			if (el && js != '') {
+			if (el && js !== '') {
 				el.addNewEvent(action, js);
 			}
 		} else {
@@ -508,15 +511,15 @@ var FbForm = new Class( {
 		}
 	},
 
-	bufferEvent : function(elementType, elementId, action, js) {
+	bufferEvent : function (elementType, elementId, action, js) {
 		this.bufferedEvents.push([ elementType, elementId, action, js ]);
 	},
 
 	// call this after the popup window has loaded
-	processBufferEvents : function() {
+	processBufferEvents : function () {
 		this.setUp();
 		this.options.delayedEvents = false;
-		this.bufferedEvents.each(function(r) {
+		this.bufferedEvents.each(function (r) {
 			// refresh the element ref
 			var elementId = r[1];
 			var el = this.formElements.get(elementId);
@@ -525,12 +528,12 @@ var FbForm = new Class( {
 		}.bind(this));
 	},
 
-	action : function(task, element) {
+	action : function (task, el) {
 		var oEl = this.formElements.get(el);
 		eval('oEl.' + task + '()');
 	},
 
-	triggerEvents : function(el) {
+	triggerEvents : function (el) {
 		this.formElements.get(el).fireEvents(arguments[1]);
 	},
 
@@ -543,13 +546,13 @@ var FbForm = new Class( {
 	 *          parent element id - eg for datetime's time field this is the date
 	 *          fields id
 	 */
-	watchValidation : function(id, triggerEvent) {
-		if (this.options.ajaxValidation == false) {
+	watchValidation : function (id, triggerEvent) {
+		if (this.options.ajaxValidation === false) {
 			return;
 		}
-		if (document.id(id).className == 'fabrikSubElementContainer') {
+		if (document.id(id).className === 'fabrikSubElementContainer') {
 			// check for things like radio buttons & checkboxes
-			document.id(id).getElements('.fabrikinput').each(function(i) {
+			document.id(id).getElements('.fabrikinput').each(function (i) {
 				i.addEvent(triggerEvent, this.doElementValidation.bindWithEvent(this, [ true ]));
 			}.bind(this));
 			return;
@@ -559,15 +562,16 @@ var FbForm = new Class( {
 
 	// as well as being called from watchValidation can be called from other
 	// element js actions, e.g. date picker closing
-	doElementValidation : function(e, subEl, replacetxt) {
-		if (this.options.ajaxValidation == false) {
+	doElementValidation : function (e, subEl, replacetxt) {
+		var id;
+		if (this.options.ajaxValidation === false) {
 			return;
 		}
 		replacetxt = typeOf(replacetxt) === 'null' ? '_time' : replacetxt;
-		if (typeOf(e) == 'event' || typeOf(e) == 'object') { // type object in
-			var id = e.target.id;
+		if (typeOf(e) === 'event' || typeOf(e) === 'object') { // type object in
+			id = e.target.id;
 			// for elements with subelements eg checkboxes radiobuttons
-			if (subEl == true) {
+			if (subEl === true) {
 				id = document.id(e.target).findClassUp('fabrikSubElementContainer').id;
 			}
 		} else {
@@ -576,13 +580,13 @@ var FbForm = new Class( {
 			id = e;
 		}
 		// for elements with subelements eg checkboxes radiobuttons
-		/*if (subEl == true) {
+		/*if (subEl === true) {
 			id = $(e.target).findClassUp('fabrikSubElementContainer').id;
 		}*/
-		if(typeOf(document.id(id)) === 'null') {
+		if (typeOf(document.id(id)) === 'null') {
 			return;
 		}
-		if(document.id(id).getProperty('readonly') === true || document.id(id).getProperty('readonly') == 'readonly') {
+		if (document.id(id).getProperty('readonly') === true || document.id(id).getProperty('readonly') === 'readonly') {
 			// stops date element being validated
 			// return;
 		}
@@ -614,14 +618,14 @@ var FbForm = new Class( {
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&form_id=' + this.id;
 		var myAjax = new Request({
-			url:url,
-			method :this.options.ajaxmethod,
-			data :d,
-			onComplete :this._completeValidaton.bindWithEvent(this, [ id, origid ])
+			url: url,
+			method: this.options.ajaxmethod,
+			data: d,
+			onComplete: this._completeValidaton.bindWithEvent(this, [ id, origid ])
 		}).send();
 	},
 
-	_completeValidaton : function(r, id, origid) {
+	_completeValidaton : function (r, id, origid) {
 		r = JSON.decode(r);
 		window.fireEvent('fabrik.form.elemnet.validation.complete', [this, r, id, origid]);
 		if (this.result === false) {
@@ -629,7 +633,7 @@ var FbForm = new Class( {
 			return;
 		}
 		var el = this.formElements.get(id);
-		if ((r.modified[origid] != undefined)) {
+		if ((r.modified[origid] !== undefined)) {
 			el.update(r.modified[origid]);
 		}
 		if (typeOf(r.errors[origid]) !== 'null') {
@@ -639,7 +643,7 @@ var FbForm = new Class( {
 		}
 	},
 
-	_prepareRepeatsForAjax : function(d) {
+	_prepareRepeatsForAjax : function (d) {
 		this.getForm();
 		//ensure we are dealing with a simple object
 		if (typeOf(d) === 'hash') {
@@ -647,7 +651,7 @@ var FbForm = new Class( {
 		}
 		//data should be key'd on the data stored in the elements name between []'s which is the group id
 		this.form.getElements('input[name^=fabrik_repeat_group]').each(
-				function(e) {
+				function (e) {
 					var c = e.name.match(/\[(.*)\]/)[1];
 					d['fabrik_repeat_group[' + c + ']'] = e.get('value');
 				}
@@ -655,12 +659,13 @@ var FbForm = new Class( {
 		return d;
 	},
 
-	_showGroupError : function(r, d) {
+	_showGroupError : function (r, d) {
+		var tmperr;
 		var gids = $A(this.options.pages.get(this.currentPage.toInt()));
 		var err = false;
-		$H(d).each(function(v, k) {
+		$H(d).each(function (v, k) {
 			k = k.replace(/\[(.*)\]/, '');// for dropdown validations
-			if(this.formElements.has(k)){
+			if (this.formElements.has(k)) {
 				var el = this.formElements.get(k);
 				if (gids.contains(el.groupid.toInt())) {
 					if (r.errors[k]) {
@@ -673,10 +678,10 @@ var FbForm = new Class( {
 						}
 						if (msg !== '') {
 							tmperr = this._showElementError(r.errors[k], k);
-							if (err == false) {
+							if (err === false) {
 								err = tmperr;
 							}
-						}else{
+						} else {
 							el.setErrorMessage('', '');
 						}
 					}
@@ -692,7 +697,7 @@ var FbForm = new Class( {
 		return err;
 	},
 
-	_showElementError : function(r, id) {
+	_showElementError : function (r, id) {
 		// r should be the errors for the specific element, down to its repeat group
 		// id.
 		var msg = '';
@@ -700,29 +705,31 @@ var FbForm = new Class( {
 			msg = r.flatten().join('<br />');
 		}
 		var classname = (msg === '') ? 'fabrikSuccess' : 'fabrikError';
-		if (msg === '')
+		if (msg === '') {
 			msg = Joomla.JText._('COM_FABRIK_SUCCESS');
+		}
 		this.formElements.get(id).setErrorMessage(msg, classname);
 		return (classname === 'fabrikSuccess') ? false : true;
 	},
 
-	updateMainError : function() {
+	updateMainError : function () {
+		var myfx, activeValidations;
 		var mainEr = this.form.getElement('.fabrikMainError');
-		mainEr.set('html',this.options.error);
-		var activeValidations = this.form.getElements('.fabrikError').filter(
-				function(e, index) {
+		mainEr.set('html', this.options.error);
+		activeValidations = this.form.getElements('.fabrikError').filter(
+				function (e, index) {
 			return !e.hasClass('fabrikMainError');
 		});
 		if (activeValidations.length > 0 && mainEr.hasClass('fabrikHide')) {
 			mainEr.removeClass('fabrikHide');
-			var myfx = new Fx.Tween(mainEr, {property:'opacity',
-				duration : 500
+			myfx = new Fx.Tween(mainEr, {property: 'opacity',
+				duration: 500
 			}).start(0, 1);
 		}
 		if (activeValidations.length === 0) {
-			myfx = new Fx.Tween(mainEr, {property:'opacity',
-				duration : 500,
-				onComplete : function() {
+			myfx = new Fx.Tween(mainEr, {property: 'opacity',
+				duration: 500,
+				onComplete: function () {
 					mainEr.addClass('fabrikHide');
 				}
 			}).start(1, 0);
@@ -730,22 +737,22 @@ var FbForm = new Class( {
 	},
 	
 	/** @since 3.0 get a form button name */
-	_getButton : function(name){
-		var b = this.form.getElement('input[type=button][name='+name+']');
+	_getButton : function (name) {
+		var b = this.form.getElement('input[type=button][name=' + name + ']');
 		if (!b) {
-			b = this.form.getElement('input[type=submit][name='+name+']');
+			b = this.form.getElement('input[type=submit][name=' + name + ']');
 		} 
 		return b;
 	},
 
-	watchSubmit : function() {
+	watchSubmit : function () {
 		var submit = this._getButton('submit');
 		if (!submit) {
 			return;
 		}
 		var apply = this._getButton('apply');
 		if (this.form.getElement('input[name=delete]')) {
-			this.form.getElement('input[name=delete]').addEvent('click', function(e) {
+			this.form.getElement('input[name=delete]').addEvent('click', function (e) {
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE'))) {
 					this.form.getElement('input[name=task]').value = 'delete';
 				} else {
@@ -754,7 +761,7 @@ var FbForm = new Class( {
 			}.bind(this));
 		}
 		if (this.options.ajax) {
-			$A([apply, submit]).each(function(btn){
+			$A([apply, submit]).each(function (btn) {
 				if (typeOf(btn) !== 'null') {
 					btn.addEvent('click', this.doSubmit.bindWithEvent(this, [btn]));
 				}
@@ -764,7 +771,7 @@ var FbForm = new Class( {
 		this.form.addEvent('submit', this.doSubmit.bindWithEvent(this));
 	},
 
-	doSubmit : function(e, btn) {
+	doSubmit : function (e, btn) {
 		window.fireEvent('fabrik.form.submit.start', [this, e, btn]);
 		this.elementsBeforeSubmit(e);
 		if (this.result === false) {
@@ -775,12 +782,12 @@ var FbForm = new Class( {
 		}
 		//insert a hidden element so we can reload the last page if validation vails
 		if (this.options.pages.getKeys().length > 1) {
-			this.form.adopt(new Element('input', {'name':'currentPage','value':this.currentPage.toInt(), 'type':'hidden'}));
+			this.form.adopt(new Element('input', {'name': 'currentPage', 'value': this.currentPage.toInt(), 'type': 'hidden'}));
 		}
 		if (this.options.ajax) {
 			//do ajax val only if onSubmit val ok
 			if (this.form) {
-				Fabrik.loader.start('form_'+this.id, Joomla.JText._('COM_FABRIK_LOADING'));
+				Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_LOADING'));
 				this.elementsBeforeSubmit(e);
 				// get all values from the form
 				var data = $H(this.getFormData());
@@ -788,14 +795,14 @@ var FbForm = new Class( {
 				data.fabrik_ajax = '1';
 				data.format = 'raw';
 				var myajax = new Request.JSON({
-					'url' : this.form.action,
-					'data' : data,
-					'method' : this.options.ajaxmethod,
-					onError : function(text, error){
+					'url': this.form.action,
+					'data': data,
+					'method': this.options.ajaxmethod,
+					onError: function (text, error) {
 						fconsole(text);
 					},
 					
-					onComplete  : function(json, txt) {
+					onComplete : function (json, txt) {
 						if (typeOf(json) === 'null') {
 							// stop spinner
 							fconsole('error in returned json', json, txt);
@@ -803,36 +810,35 @@ var FbForm = new Class( {
 						}
 						// process errors if there are some
 						var errfound = false;
-						if (json.errors != undefined) {
+						if (json.errors !== undefined) {
 							// for every element of the form update error message
-							$H(json.errors).each(function(errors, key) {
+							$H(json.errors).each(function (errors, key) {
 								// replace join[id][label] with join___id___label
 								key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
 								if (this.formElements.has(key) && errors.flatten().length > 0) {
 									errfound = true;
 									this._showElementError(errors, key);
 								}
-								;
 							}.bind(this));
 						}
 						// update global status error
 						this.updateMainError();
 
 						if (errfound === false) {
-							var keepOverlay = btn.name == 'apply' ? true : false;
+							var keepOverlay = btn.name === 'apply' ? true : false;
 							//keepOverlay -works but is hdiden afterwards
-							Fabrik.loader.stop('form_'+this.id, keepOverlay);
-							var saved_msg = $defined(json.msg) ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
+							Fabrik.loader.stop('form_' + this.id, keepOverlay);
+							var saved_msg = json.msg !== undefined ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
-								if ($defined(json.url)) {
-									Fabrik.getWindow({'id':'redirect', 'type':'redirect', contentURL:json.url, caller:this.getBlock(), 'height':400});
-								}else{
+								if (json.url !== undefined) {
+									Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': 400});
+								} else {
 									alert(saved_msg);
 								}
 							}
 							//query the list to get the updated data
 							window.fireEvent('fabrik.form.submitted', [this, json]);
-							if (btn.name !=='apply') {
+							if (btn.name !== 'apply') {
 								this.clearForm();
 								//if the form was loaded in a Fabrik.Window close the window.
 								if (Fabrik.Windows[this.options.fabrik_window_id]) {
@@ -841,7 +847,7 @@ var FbForm = new Class( {
 							}
 						} else {
 							// stop spinner
-							Fabrik.loader.stop('form_'+this.id, Joomla.JText._('COM_FABRIK_VALIDATION_ERROR') );
+							Fabrik.loader.stop('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
 						}
 					}.bind(this)
 				}).send();
@@ -856,8 +862,8 @@ var FbForm = new Class( {
 		}
 	},
 
-	elementsBeforeSubmit : function(e) {
-		this.formElements.each(function(el, key) {
+	elementsBeforeSubmit : function (e) {
+		this.formElements.each(function (el, key) {
 			if (!el.onsubmit()) {
 				e.stop();
 			}
@@ -870,13 +876,13 @@ var FbForm = new Class( {
 	// items
 	// available
 
-	getFormData : function() {
+	getFormData : function () {
 		this.getForm();
 		var s = this.form.toQueryString();
 		var h = {};
 		s = s.split('&');
 		var arrayCounters = $H({});
-		s.each(function(p) {
+		s.each(function (p) {
 			p = p.split('=');
 			var k = p[0];
 			// $$$ rob deal with checkboxes
@@ -896,19 +902,19 @@ var FbForm = new Class( {
 		// toQueryString() doesn't add in empty data - we need to know that for the
 		// validation on multipages
 		var elKeys = this.formElements.getKeys();
-		this.formElements.each(function(el, key) {
+		this.formElements.each(function (el, key) {
 			//fileupload data not included in querystring
-			if (el.plugin == 'fabrikfileupload') {
+			if (el.plugin === 'fabrikfileupload') {
 				h[key] = el.get('value');
 			}
 			if (typeOf(h[key]) === 'null') {
 				// search for elementname[*] in existing data (search for * as datetime
 				// elements aren't keyed numerically)
 				var found = false;
-				$H(h).each(function(val, dataKey) {
+				$H(h).each(function (val, dataKey) {
 					dataKey = unescape(dataKey); // 3.0 ajax submission [] are escaped
 					dataKey = dataKey.replace(/\[(.*)\]/, '');
-					if (dataKey == key) {
+					if (dataKey === key) {
 						found = true;
 					}
 				}.bind(this));
@@ -927,9 +933,9 @@ var FbForm = new Class( {
 	// up trying to submit the form. So, this func does what the commented out code in
 	// getFormData used to do, and only fecthes actual form element data.
 
-	getFormElementData : function() {
+	getFormElementData : function () {
 		var h = {};
-		this.formElements.each(function(el, key) {
+		this.formElements.each(function (el, key) {
 			if (el.element) {
 				h[key] = el.getValue();
 				h[key + '_raw'] = h[key];
@@ -938,41 +944,41 @@ var FbForm = new Class( {
 		return h;
 	},
 
-	watchGroupButtons : function() {
+	watchGroupButtons : function () {
 		this.unwatchGroupButtons();
-		this.form.getElements('.deleteGroup').each(function(g, i) {
+		this.form.getElements('.deleteGroup').each(function (g, i) {
 			g.addEvent('click', this.clickDeleteGroup);
 		}.bind(this));
-		this.form.getElements('.addGroup').each(function(g, i) {
+		this.form.getElements('.addGroup').each(function (g, i) {
 			g.addEvent('click', this.clickDuplicateGroup);
 		}.bind(this));
-		this.form.getElements('.fabrikSubGroup').each(function(subGroup) {
+		this.form.getElements('.fabrikSubGroup').each(function (subGroup) {
 			var r = subGroup.getElement('.fabrikGroupRepeater');
 			if (r) {
-				subGroup.addEvent('mouseenter', function(e) {
+				subGroup.addEvent('mouseenter', function (e) {
 					r.fade(1);
 				});
-				subGroup.addEvent('mouseleave', function(e) {
+				subGroup.addEvent('mouseleave', function (e) {
 					r.fade(0.2);
 				});
 			}
 		});
 	},
 
-	unwatchGroupButtons : function() {
-		this.form.getElements('.deleteGroup').each(function(g, i) {
+	unwatchGroupButtons : function () {
+		this.form.getElements('.deleteGroup').each(function (g, i) {
 			g.removeEvent('click', this.clickDeleteGroup);
 		}.bind(this));
-		this.form.getElements('.addGroup').each(function(g, i) {
+		this.form.getElements('.addGroup').each(function (g, i) {
 			g.removeEvent('click', this.clickDuplicateGroup);
 		}.bind(this));
-		this.form.getElements('.fabrikSubGroup').each(function(subGroup) {
+		this.form.getElements('.fabrikSubGroup').each(function (subGroup) {
 			subGroup.removeEvents('mouseenter');
 			subGroup.removeEvents('mouseleave');
 		});
 	},
 
-	deleteGroup : function(e) {
+	deleteGroup : function (e) {
 		window.fireEvent('fabrik.form.group.delete', [this, e]);
 		if (this.result === false) {
 			this.result = true;
@@ -982,14 +988,14 @@ var FbForm = new Class( {
 		var group = e.target.findClassUp('fabrikGroup');
 		// find which repeat group was deleted
 		var delIndex = 0;
-		group.getElements('.deleteGroup').each(function(b, x) {
+		group.getElements('.deleteGroup').each(function (b, x) {
 			if (b.getElement('img') === e.target) {
 				delIndex = x;
 			}
 		}.bind(this));
 		var i = group.id.replace('group', '');
 		delete this.duplicatedGroups.i;
-		if(document.id('fabrik_repeat_group_' + i + '_counter').value == '0') {
+		if (document.id('fabrik_repeat_group_' + i + '_counter').value === '0') {
 			return;
 		}
 		var subgroups = group.getElements('.fabrikSubGroup');
@@ -1003,16 +1009,16 @@ var FbForm = new Class( {
 
 			var toel = subGroup.getPrevious();
 
-			var myFx = new Fx.Tween(subGroup, {'property':'opacity',
-				duration : 300,
-				onComplete : function() {
+			var myFx = new Fx.Tween(subGroup, {'property': 'opacity',
+				duration: 300,
+				onComplete: function () {
 					if (subgroups.length > 1) {
 						subGroup.dispose();
 					}
 
-					this.formElements.each(function(e, k) {
+					this.formElements.each(function (e, k) {
 						if (typeOf(e.element) !== 'null') {
-							if(typeOf(document.id(e.element.id)) === 'null') {
+							if (typeOf(document.id(e.element.id)) === 'null') {
 								e.decloned(i);
 								delete this.formElements.k;
 							}
@@ -1022,15 +1028,15 @@ var FbForm = new Class( {
 					subgroups = group.getElements('.fabrikSubGroup');// minus the removed
 																														// group
 					var nameMap = {};
-					this.formElements.each(function(e, k) {
-						if (e.groupid == i) {
+					this.formElements.each(function (e, k) {
+						if (e.groupid === i) {
 							nameMap[k] = e.decreaseName(delIndex);
 						}
 					}.bind(this));
 					// ensure that formElements' keys are the same as their object's ids
 					// otherwise delete first group, add 2 groups - ids/names in last
 					// added group are not updated
-					$H(nameMap).each(function(newKey, oldKey) {
+					$H(nameMap).each(function (newKey, oldKey) {
 						if (oldKey !== newKey) {
 							this.formElements[newKey] = this.formElements[oldKey];
 							delete this.formElements[oldKey];
@@ -1056,18 +1062,18 @@ var FbForm = new Class( {
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
 	},
 
-	hideLastGroup : function(groupid, subGroup) {
+	hideLastGroup : function (groupid, subGroup) {
 		var sge = subGroup.getElement('.fabrikSubGroupElements');
 		sge.setStyle('display', 'none');
-		new Element('div', { 'class' :'fabrikNotice' }).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA')).inject(sge, 'after');
+		new Element('div', {'class': 'fabrikNotice'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA')).inject(sge, 'after');
 	},
 
-	isFirstRepeatSubGroup : function(group) {
+	isFirstRepeatSubGroup : function (group) {
 		var subgroups = group.getElements('.fabrikSubGroup');
-		return subgroups.length == 1 && subgroups[0].getElement('.fabrikNotice');
+		return subgroups.length === 1 && subgroups[0].getElement('.fabrikNotice');
 	},
 
-	getSubGroupToClone : function(groupid) {
+	getSubGroupToClone : function (groupid) {
 		var group = document.id('group' + groupid);
 		var subgroup = group.getElement('.fabrikSubGroup');
 		if (!subgroup) {
@@ -1092,11 +1098,11 @@ var FbForm = new Class( {
 		return clone;
 	},
 
-	repeatGetChecked : function(group) {
+	repeatGetChecked : function (group) {
 		// /stupid fix for radio buttons loosing their checked value
 		var tocheck = [];
-		group.getElements('.fabrikinput').each(function(i) {
-			if (i.type == 'radio' && i.getProperty('checked')) {
+		group.getElements('.fabrikinput').each(function (i) {
+			if (i.type === 'radio' && i.getProperty('checked')) {
 				tocheck.push(i);
 			}
 		});
@@ -1105,18 +1111,21 @@ var FbForm = new Class( {
 
 	/* duplicates the groups sub group and places it at the end of the group */
 
-	duplicateGroup : function(e) {
+	duplicateGroup : function (e) {
+		var subElementContainer;
 		window.fireEvent('fabrik.form.group.duplicate', [this, e]);
 		if (this.result === false) {
 			this.result = true;
 			return;
 		}
-		if (e) e.stop();
+		if (e) {
+			e.stop();
+		}
 		var i = e.target.findClassUp('fabrikGroup').id.replace('group', '');
 		var group = document.id('group' + i);
 		var c = this.repeatGroupMarkers.get(i);
 		if (c >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
-			return ;
+			return;
 		}
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() + 1;
 
@@ -1133,7 +1142,7 @@ var FbForm = new Class( {
 		var tocheck = this.repeatGetChecked(group);
 
 		group.appendChild(clone);
-		tocheck.each(function(i) {
+		tocheck.each(function (i) {
 			i.setProperty('checked', true);
 		});
 		// remove values and increment ids
@@ -1142,11 +1151,11 @@ var FbForm = new Class( {
 		var hasSubElements = false;
 		var inputs = clone.getElements('.fabrikinput');
 		var lastinput = null;
-		this.formElements.each(function(el) {
+		this.formElements.each(function (el) {
 			var formElementFound = false;
 			subElementContainer = null;
 			var subElementCounter = -1;
-			inputs.each(function(input) {
+			inputs.each(function (input) {
 
 				hasSubElements = el.hasSubElements();
 
@@ -1155,7 +1164,7 @@ var FbForm = new Class( {
 				// NOW?)
 				var testid = (hasSubElements) ? input.findClassUp('fabrikSubElementContainer').id : input.id;
 
-				if (el.options.element == testid) {
+				if (el.options.element === testid) {
 					lastinput = input;
 					formElementFound = true;
 
@@ -1199,7 +1208,7 @@ var FbForm = new Class( {
 			}.bind(this));
 	
 			if (formElementFound) {
-				if (hasSubElements && typeOf(subElementContainer) !== 'null' ) {
+				if (hasSubElements && typeOf(subElementContainer) !== 'null') {
 					// if we are checking subelements set the container id after they have all
 					// been processed
 					// otherwise if check only works for first subelement and no further
@@ -1220,7 +1229,7 @@ var FbForm = new Class( {
 				newEl.options.repeatCounter = c;
 				newEl.origId = origelid;
 				
-				if (hasSubElements && typeOf(subElementContainer) !== 'null' ) {
+				if (hasSubElements && typeOf(subElementContainer) !== 'null') {
 					newEl.element = document.id(subElementContainer);
 					newEl.options.element = subElementContainer.id;
 					newEl._getSubElements();
@@ -1233,7 +1242,7 @@ var FbForm = new Class( {
 			}
 		}.bind(this));
 
-		newElementControllers.each(function(newEl) {
+		newElementControllers.each(function (newEl) {
 			newEl.cloned(c);
 		});
 		var o = {};
@@ -1266,7 +1275,7 @@ var FbForm = new Class( {
 		this.watchGroupButtons();
 	},
 
-	update : function(o) {
+	update : function (o) {
 		window.fireEvent('fabrik.form.update', [this, o.data]);
 		if (this.result === false) {
 			this.result = true;
@@ -1281,11 +1290,11 @@ var FbForm = new Class( {
 				rowidel.value = data.rowid;
 			}
 		}
-		this.formElements.each( function(el, key) {
+		this.formElements.each(function (el, key) {
 			// if updating from a detailed view with prev/next then data's key is in
 			// _ro format
 			if (typeOf(data[key]) === 'null') {
-				if (key.substring(key.length - 3, key.length) == '_ro') {
+				if (key.substring(key.length - 3, key.length) === '_ro') {
 					key = key.substring(0, key.length - 3);
 				}
 			}
@@ -1297,7 +1306,7 @@ var FbForm = new Class( {
 			if (typeOf(data[key]) === 'null') {
 				// only update blanks if the form is updating itself
 				// leaveEmpties set to true when this form is called from updateRows
-				if (o.id == this.id && !leaveEmpties) {
+				if (o.id === this.id && !leaveEmpties) {
 					el.update('');
 				}
 			} else {
@@ -1306,24 +1315,24 @@ var FbForm = new Class( {
 		}.bind(this));
 	},
 
-	reset : function() {
-		this.addedGroups.each(function(subgroup){
+	reset : function () {
+		this.addedGroups.each(function (subgroup) {
 			subgroup.remove();
 		});
 		this.addedGroups = [];
 		window.fireEvent('fabrik.form.reset', [this]);
-		if (this.result == false) {
+		if (this.result === false) {
 			this.result = true;
 			return;
 		}
-		this.formElements.each(function(el, key) {
+		this.formElements.each(function (el, key) {
 			el.reset();
 		}.bind(this));
 	},
 
-	showErrors : function(data) {
+	showErrors : function (data) {
 		var d = null;
-		if (data.id == this.id) {
+		if (data.id === this.id) {
 			// show errors
 			var errors = new Hash(data.errors);
 			if (errors.getKeys().length > 0) {
@@ -1331,12 +1340,12 @@ var FbForm = new Class( {
 					this.form.getElement('.fabrikMainError').set('html', this.options.error);
 					this.form.getElement('.fabrikMainError').removeClass('fabrikHide');
 				}
-				errors.each(function(a, key) {
+				errors.each(function (a, key) {
 					if (typeOf(document.id(key + '_error')) !== 'null') {
 						var e = document.id(key + '_error');
 						var msg = new Element('span');
-						for ( var x = 0; x < a.length; x++) {
-							for ( var y = 0; y < a[x].length; y++) {
+						for (var x = 0; x < a.length; x++) {
+							for (var y = 0; y < a[x].length; y++) {
 								d = new Element('div').appendText(a[x][y]).inject(e);
 							}
 						}
@@ -1349,21 +1358,21 @@ var FbForm = new Class( {
 	},
 
 	/** add additional data to an element - e.g database join elements */
-	appendInfo : function(data) {
-		this.formElements.each(function(el, key) {
+	appendInfo : function (data) {
+		this.formElements.each(function (el, key) {
 			if (el.appendInfo) {
 				el.appendInfo(data, key);
 			}
 		}.bind(this));
 	},
 
-	clearForm : function() {
+	clearForm : function () {
 		this.getForm();
 		if (!this.form) {
 			return;
 		}
-		this.formElements.each(function(el, key) {
-			if (key == this.options.primaryKey) {
+		this.formElements.each(function (el, key) {
+			if (key === this.options.primaryKey) {
 				this.form.getElement('input[name=rowid]').value = '';
 			}
 			el.update('');
