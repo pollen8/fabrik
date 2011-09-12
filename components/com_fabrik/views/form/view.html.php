@@ -388,7 +388,7 @@ class fabrikViewForm extends JView
 		//$$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
 		$str ="head.ready(function() {
-		$bkey = new FbForm(".$model->getId().", $opts);\n";
+		window.$bkey = new FbForm(".$model->getId().", $opts);\n";
 		//$str .= "$bkey.addListenTo('list_" . $listModel->getId() . "');\n";
 		//$str .= "$bkey.addListenTo('form_" . $model->getId() . "');\n";
 		$str .= "if(typeOf(Fabrik) !== 'null') {\n";
