@@ -10,7 +10,8 @@ administrator/*
 !administrator/components/com_fabrik/*
 cache/*
 components/*
-!components/com_fabrik/*
+!components/com_fabrik
+`!components/com_fabrik/*
 images/*
 includes/*
 language/*
