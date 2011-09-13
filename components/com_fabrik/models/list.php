@@ -4009,7 +4009,7 @@ class FabrikFEModelList extends JModelForm {
 			// 3.0 actions now go in one column
 			if ($this->actionHeading == true) {
 				$headingButtons = array();
-				
+
 				if ($this->deletePossible()) {
 					$headingButtons[] = $this->deleteButton();
 				}
@@ -4020,8 +4020,8 @@ class FabrikFEModelList extends JModelForm {
 				}
 				$headingButtons = array_merge($headingButtons, $res);
 				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
-				
-				
+
+
 				$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
 				$cellClass['fabrik_actions'] = array('class' => 'fabrik_actions fabrik_element'); //needed for ajax filter/nav
 			}
@@ -4030,6 +4030,9 @@ class FabrikFEModelList extends JModelForm {
 			$joinsToThisKey = $this->getJoinsToThisKey();
 			$f = 0;
 			foreach ($joinsToThisKey as $join) {
+				if ($join === false) {
+					continue;
+				}
 				$key = $join->list_id.'-'.$join->form_id.'-'.$join->element_id;
 				if (is_object($join) && isset($factedlinks->linkedlist->$key)) {
 					$linkedTable 	= $factedlinks->linkedlist->$key;
@@ -4046,6 +4049,9 @@ class FabrikFEModelList extends JModelForm {
 
 			$f = 0;
 			foreach ($linksToForms as $join) {
+				if ($join === false) {
+					continue;
+				}
 				$key = $join->list_id.'-'.$join->form_id.'-'.$join->element_id;
 				$linkedForm = $factedlinks->linkedform->$key;
 				if ($linkedForm != '0') {
@@ -5376,13 +5382,13 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return '';
 	}
-	
+
 	/**
-	 * get an array of join models relating to the groups which were set to be repeating and thus thier data 
+	 * get an array of join models relating to the groups which were set to be repeating and thus thier data
 	 * stored in a separate db table
 	 * @return array join models.
 	 */
-	
+
 	protected function getInternalRepeatJoins()
 	{
 		$return = array();
