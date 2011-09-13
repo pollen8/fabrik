@@ -700,7 +700,7 @@ class FabrikModelList extends FabModelAdmin
 		$repeats = JArrayHelper::getValue($params, 'join_repeat', array());
 		$jc = count($joinTypes);
 		//test for repeat elements to eusure their join isnt removed from here
-		
+
 		foreach ($aOldJoins as $oldJoin) {
 			if ($oldJoin->params !== '') {
 				$oldParams = json_decode($oldJoin->params);
@@ -789,7 +789,8 @@ class FabrikModelList extends FabModelAdmin
 			"label" =>  $joinTable,
 		);
 		$groupId = $this->createLinkedGroup($aData, true, $isRepeat);
-		$origTable = JRequest::getVar('db_table_name');
+		//$origTable = JRequest::getVar('db_table_name');
+		$origTable = JArrayHelper::getValue(JRequest::getVar('jform'), 'db_table_name');
 		$_POST['jform']['db_table_name'] = $joinTable;
 		$this->createLinkedElements($groupId);
 		$_POST['jform']['db_table_name'] = $origTable;
