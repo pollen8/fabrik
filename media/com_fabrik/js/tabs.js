@@ -1,15 +1,15 @@
-Tabs = new Class({
-	initialize : function(el, tabs, editable) {
+var Tabs = new Class({
+	initialize : function (el, tabs, editable) {
 		this.editable = editable;
-		this.iconGen = new IconGenerator({scale:0.5});
+		this.iconGen = new IconGenerator({scale: 0.5});
 		this.el = $(el);
 		this.tabs = $H({});
 		this.build(tabs);
 	},
 	
-	build : function(tabs) {
+	build: function (tabs) {
 		window.fireEvent('fabrik.history.off', this);
-		if(this.editable){
+		if (this.editable) {
 			
 			var a = new Element('a', {
 				'href' : '#',
@@ -18,33 +18,35 @@ Tabs = new Class({
 				}
 			});
 			
-			art = this.iconGen.create(icon['plus'], {fill:{color:['#40B53E', '#378F36']}});
+			art = this.iconGen.create(icon.plus, {fill: {color: ['#40B53E', '#378F36']}});
 			art.inject(a);
 			
 			this.el.adopt(new Element('li', {
-				'class' : 'add',
-				'events' : {
-					'click' : this.addWindow.bindWithEvent(this)
+				'class': 'add',
+				'events': {
+					'click': this.addWindow.bindWithEvent(this)
 				}
 			}).adopt([new Element('span').set('text', 'add'), a]));
 		}
-		tabs.each(function(t) {
+		tabs.each(function (t) {
 			this.add(t);
 		}.bind(this));
 		this.setActive(tabs[0]);
-		(function() {
+		var fn = function () {
 			window.fireEvent('fabrik.history.on', this);
-		}).delay(500);
+		};
+		fn.delay(500);
 	},
 
-	remove : function(e) {
-		if (typeOf(e) == 'event') {
-			var n = e.target.findUp('li').getElement('span').get('text').trim();
+	remove: function (e) {
+		var n;
+		if (typeOf(e) === 'event') {
+			n = e.target.findUp('li').getElement('span').get('text').trim();
 			e.stop();
 		} else {
 			n = e;
 		}
-		if(confirm('Delete tab?')){
+		if (confirm('Delete tab?')) {
 			if (this.tabs.getLength() <= 1) {
 				alert('you can not remove all tabs');
 				return;
@@ -58,7 +60,7 @@ Tabs = new Class({
 		}
 	},
 
-	addWindow : function(e) {
+	addWindow: function (e) {
 
 		var c = new Element('form');
 		c.adopt(new Element('input', {
@@ -67,40 +69,40 @@ Tabs = new Class({
 			'class' : 'button',
 			'type' : 'button',
 			'events' : {
-				'click' : function(e) {
+				'click' : function (e) {
 					var name = e.target.getParent().getElement('input[name=label]').get('value');
-					if (name == '') {
+					if (name === '') {
 						alert('please supply a tab label');
 						return false;
 					}
 					this.add(name);
-					Fabrik.Windows[this.windowopts.id].close()
+					Fabrik.Windows[this.windowopts.id].close();
 				}.bind(this)
 			},
 			'value' : 'add'
 		}));
 		this.windowopts = {
-			'id' : 'addTab',
-			'type':'modal',
-			title : 'Add',
-			content : c,
-			width : 200,
-			height : 150,
-			'minimizable' : false,
-			'collapsible' : true
+			'id': 'addTab',
+			'type': 'modal',
+			title: 'Add',
+			content: c,
+			width: 200,
+			height: 150,
+			'minimizable': false,
+			'collapsible': true
 		};
 		var mywin = Fabrik.getWindow(this.windowopts);
 	},
 
-	add : function(t) {
+	add: function (t) {
 		var li = new Element('li', {
 			
-			'events' : {
-				'click' : function(e) {
+			'events': {
+				'click': function (e) {
 					this.setActive(li);
 				}.bind(this),
 				
-				'mouseover':function(e){
+				'mouseover': function (e) {
 					window.fireEvent('fabrik.tab.hover', [ t ]);
 				}
 			}
@@ -108,38 +110,38 @@ Tabs = new Class({
 		li.adopt(new Element('span').set('text', t + ' '));
 		
 		var a = new Element('a', {
-			'href' : '#',
-			'events' : {
-				'click' : this.remove.bindWithEvent(this)
+			'href': '#',
+			'events': {
+				'click': this.remove.bindWithEvent(this)
 			}
 		});
 		
-		if(this.editable){
-			art = this.iconGen.create(icon['cross']);
+		if (this.editable) {
+			art = this.iconGen.create(icon.cross);
 			art.inject(a);
 			li.adopt(a);
 		}
 		li.store('ref', t);
-		if(this.editable){
+		if (this.editable) {
 			var add = this.el.getElement('li.add');
 			li.inject(add, 'before');
-		}else{
+		} else {
 			li.inject(this.el, 'inside');
 		}
 		this.setActive(li);
 		this.tabs[t] = li;
-		window.fireEvent('fabrik.history.add', [ this, this.remove, t, this.add, t ]);
-		window.fireEvent('fabrik.tab.add', [ this, t ]);
+		window.fireEvent('fabrik.history.add', [this, this.remove, t, this.add, t]);
+		window.fireEvent('fabrik.tab.add', [this, t]);
 	},
 
-	setActive : function(a) {
-		var tname = typeOf(a) == 'string' ? a : a.retrieve('ref');
+	setActive: function (a) {
+		var tname = typeOf(a) === 'string' ? a : a.retrieve('ref');
 		var active = a;
 		window.fireEvent('fabrik.tab.click', tname);
-		this.tabs.each(function(t) {
+		this.tabs.each(function (t) {
 			t.removeClass('active');
 			t.addClass('inactive');
-			if(t.retrieve('ref') == tname){
+			if (t.retrieve('ref') === tname) {
 				active = t;
 			}
 		});
@@ -147,7 +149,7 @@ Tabs = new Class({
 		active.removeClass('inactive');
 	},
 
-	reorder : function() {
+	reorder: function () {
 
 	}
 });

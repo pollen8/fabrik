@@ -17,7 +17,7 @@ JHtml::_('behavior.keepalive');
 
 $fbConfig =& JComponentHelper::getParams('com_fabrik');
 FabrikHelperHTML::mocha();
-FabrikHelperHTML::script('media/com_fabrik/js/art.js', true);
+FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js', true);
 FabrikHelperHTML::script('media/com_fabrik/js/icons.js', true);
 FabrikHelperHTML::script('media/com_fabrik/js/icongen.js', true);
 FabrikHelperHTML::script('media/com_fabrik/js/canvas.js', true);

@@ -79,7 +79,7 @@
 				
 			<field name="make_link" 
 				type="radio" 
-				default="0" 
+				default="1" 
 				label="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_LABEL" 
 				description="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_DESC">
 					<option value="0">JNO</option>

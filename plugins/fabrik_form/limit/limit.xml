@@ -11,7 +11,6 @@
 	<description>Limits the number of times a user can submit a form</description>
 	<files>
 		<filename plugin="limit">limit.php</filename>
-		<filename>admin.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

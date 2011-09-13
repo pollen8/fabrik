@@ -99,27 +99,27 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 			$prefix = JDEBUG ? '' : '.min';
 			$runtimes = $params->get('ajax_runtime', 'html5');
-			parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload'.$prefix.'.js');
+			parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload'.$prefix.'.js');
 
 			if(strstr($runtimes, 'html5')) {
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.html5'.$prefix.'.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.html5'.$prefix.'.js');
 			}
 			if(strstr($runtimes, 'html4')) {
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.html4'.$prefix.'.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.html4'.$prefix.'.js');
 			}
 			if(strstr($runtimes, 'gears')) {
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/gears_init.js');
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.gears'.$prefix.'.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/gears_init.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.gears'.$prefix.'.js');
 			}
 
 			if(strstr($runtimes, 'flash')) {
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.flash'.$prefix.'.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash'.$prefix.'.js');
 			}
 			if(strstr($runtimes, 'silverlight')) {
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.silverlight'.$prefix.'.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.silverlight'.$prefix.'.js');
 			}
 			if(strstr($runtimes, 'browserplus')) {
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/plupload/js/plupload.browserplus'.$prefix.'.js');
+				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.browserplus'.$prefix.'.js');
 			}
 		}
 		parent::formJavascriptClass($srcs, $script);
@@ -150,10 +150,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if ((int)$params->get('fileupload_crop', 0) == 1) {
 			//FabrikHelperHTML::script('media/com_fabrik/js/mcl-min.js', false);
 
-			$src = array('media/com_fabrik/js/mcl/CANVAS.js', 'media/com_fabrik/js/mcl/CanvasItem.js',
-			'media/com_fabrik/js/mcl/Cmorph.js', 'media/com_fabrik/js/mcl/Layer.js',
-			'media/com_fabrik/js/mcl/LayerHash.js', 'media/com_fabrik/js/mcl/Thread.js',
-			'media/com_fabrik/js/canvas-extra.js'
+			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
+			'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js',
+			'media/com_fabrik/js/lib/mcl/LayerHash.js', 'media/com_fabrik/js/lib/mcl/Thread.js',
+			'media/com_fabrik/js/lib/canvas-extra.js'
 			);
 			FabrikHelperHTML::script($src, true);
 		}
@@ -1466,27 +1466,27 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	protected function pluploadLRuntimes($runtimes)
 	{
 		return ;
-		FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.min.js');
-		FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.js');
+		FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/plupload/js/plupload.min.js');
+		FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/plupload/js/plupload.js');
 
 		if(strstr($runtimes, 'html5')) {
-			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.html5.min.js');
+			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/plupload/js/plupload.html5.min.js');
 		}
 		if(strstr($runtimes, 'html4')) {
-			FabrikHelperHTML::script('components/com_fabrik/plugins/element/fabrikfileupload/plupload/js/plupload.html4.min.js');
+			FabrikHelperHTML::script('components/com_fabrik/plugins/element/fabrikfileupload/lib/plupload/js/plupload.html4.min.js');
 		}
 		if(strstr($runtimes, 'gears')) {
-			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/gears_init.js');
-			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.gears.min.js');
+			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/plupload/js/gears_init.js');
+			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/plupload/js/plupload.gears.min.js');
 		}
 		if(strstr($runtimes, 'flash')) {
-			FabrikHelperHTML::script('plugins/element/fileupload/plupload/js/plupload.flash.min.js');
+			FabrikHelperHTML::script('plugins/element/fileupload/lib/plupload/js/plupload.flash.min.js');
 		}
 		if(strstr($runtimes, 'silverlight')) {
-			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.silverlight.min.js');
+			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/plupload/js/plupload.silverlight.min.js');
 		}
 		if(strstr($runtimes, 'browserplus')) {
-			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/plupload/js/plupload.browserplus.min.js');
+			FabrikHelperHTML::script('plugins/fabrik_element/fileupload/lib/plupload/js/plupload.browserplus.min.js');
 		}
 	}
 
@@ -1587,7 +1587,7 @@ zoom:
 
 		$w = (int)$params->get('ajax_dropbox_width', 300);
 		$h = (int)$params->get('ajax_dropbox_hight', 200);
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'plugins/fabrik_element/fileupload/plupload/css/plupload.queue.css');
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
 		FabrikHelperHTML::addStyleDeclaration(".dropList{background:#aaa; width:".$w."px; height:".$h."px;}");
 		return $pstr;
 	}

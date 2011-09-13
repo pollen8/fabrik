@@ -1,10 +1,10 @@
 var fbVisCoverflow = new Class({
-	Implements:[Options],
-	options:{},
-	initialize: function(json, options) {
+	Implements: [Options],
+	options: {},
+	initialize: function (json, options) {
 		json = eval(json);
 		this.setOptions(options);
-	head.ready(function() {
+		head.ready(function () {
 
 			widget = Runway.createOrShowInstaller(
 			    document.getElementById("coverflow"),
@@ -14,11 +14,11 @@ var fbVisCoverflow = new Class({
 			        // backgroundColorTop: "#fff",
 			        
 			        // event handlers
-			        onReady: function() {
+			        onReady: function () {
 			            widget.setRecords(json);
 			        }
 			    }
 			);
-		}.bind(this))
+		}.bind(this));
 	}
 });

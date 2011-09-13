@@ -32,7 +32,6 @@ var FbForm = new Class({
 	
 	initialize: function (id, options) {
 		this.id = id;
-		debugger;
 		this.result = true; //set this to false in window.fireEvents to stop current action (eg stop form submission)
 		this.setOptions(options);
 		this.plugins = this.options.plugins;
@@ -530,7 +529,7 @@ var FbForm = new Class({
 
 	action : function (task, el) {
 		var oEl = this.formElements.get(el);
-		eval('oEl.' + task + '()');
+		Browser.exec('oEl.' + task + '()');
 	},
 
 	triggerEvents : function (el) {

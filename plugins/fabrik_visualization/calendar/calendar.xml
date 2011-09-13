@@ -14,7 +14,6 @@
 		<filename plugin="calendar">calendar.js</filename>
 		<filename>calendar.php</filename>
 		<filename>index.html</filename>
-		<filename>admincalendar.js</filename>
 		<folder>forms</folder>
 		<folder>controllers</folder>
 		<folder>models</folder>

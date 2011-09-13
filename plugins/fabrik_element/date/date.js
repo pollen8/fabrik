@@ -1,6 +1,6 @@
 var FbDateTime = new Class({
 	Extends: FbElement,
-	initialize: function(element, options) {
+	initialize: function (element, options) {
 		this.parent(element, options);
 		this.setOptions(element, options);
 		this.hour = '0';
@@ -11,12 +11,12 @@ var FbDateTime = new Class({
 		this.startElement = element;
 		this.setUp = false;
 		this.watchButtons();
-		if (this.options.typing == false) {
+		if (this.options.typing === false) {
 			this.disableTyping();
 		}
 	},
 
-	disableTyping : function() {
+	disableTyping : function () {
 		if (typeOf(this.element) === 'null') {
 			fconsole(element + ': not date element container - is this a custom template with a missing $element->containerClass div/li surrounding the element?');
 			return;
@@ -25,9 +25,9 @@ var FbDateTime = new Class({
 		// subelement container
 		// and get it when checking the validations - cool or what?
 		this.element.setProperty('readonly', 'readonly');
-		this.element.getElements('.fabrikinput').each(function(f) {
-			f.addEvent('focus', function(e) {
-				if(typeOf(e) == 'null'){
+		this.element.getElements('.fabrikinput').each(function (f) {
+			f.addEvent('focus', function (e) {
+				if (typeOf(e) === 'null') {
 					return;
 				}
 				if (e.target.hasClass('timeField')) {
@@ -42,23 +42,23 @@ var FbDateTime = new Class({
 		}.bind(this));
 	},
 
-	getValue : function() {
+	getValue : function () {
 		if (!this.options.editable) {
 			return this.options.value;
 		}
 		this.getElement();
 		var v = this.element.getElement('.fabrikinput').get('value');
 		// @TODO use relative class name to get time value
-		if (this.options.showtime == true && this.timeElement) {
+		if (this.options.showtime === true && this.timeElement) {
 			v += ' ' + this.timeElement.get('value');
 		}
 		return (v);
 	},
 
-	watchButtons : function() {
+	watchButtons : function () {
 		if ($(this.options.element + '_cal_img')) {
 			// $(this.options.element + '_cal_img').removeEvents('click');
-			$(this.options.element + '_cal_img').addEvent('click', function(e) {
+			$(this.options.element + '_cal_img').addEvent('click', function (e) {
 				this.showCalendar('y-mm-dd', e);
 			}.bind(this));
 		}
@@ -79,9 +79,9 @@ var FbDateTime = new Class({
 		}
 	},
 
-	addNewEvent : function(action, js) {
+	addNewEvent : function (action, js) {
 		// this._getSubElements();
-		if (action == 'load') {
+		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
 		} else {
@@ -89,13 +89,13 @@ var FbDateTime = new Class({
 				this.element = $(this.strElement);
 			}
 			if (action === 'change') {
-				window.addEvent('fabrik.date.select', function(){
+				window.addEvent('fabrik.date.select', function () {
 					typeOf(js) === 'function' ? js.delay(0) : eval(js);
 				});
 			}
-			this.element.getElements('input').each(function(i) {
-				i.addEvent(action, function(e) {
-					if(typeOf(e) == 'event') {
+			this.element.getElements('input').each(function (i) {
+				i.addEvent(action, function (e) {
+					if (typeOf(e) === 'event') {
 						e.stop();
 					}
 					typeOf(js) === 'function' ? js.delay(0) : eval(js);
@@ -104,7 +104,7 @@ var FbDateTime = new Class({
 		}
 	},
 
-	update : function(val) {
+	update : function (val) {
 		this.fireEvents([ 'change' ]);
 		if (typeOf(val) === 'null' || val === false) {
 			return;
@@ -129,7 +129,7 @@ var FbDateTime = new Class({
 		this.stateTime();
 	},
 
-	showCalendar : function(format, e) {
+	showCalendar : function (format, e) {
 		if (window.ie) {
 			// when scrolled down the page the offset of the calendar is wrong - this
 			// fixes it
@@ -143,7 +143,7 @@ var FbDateTime = new Class({
 		}
 	},
 
-	getAbsolutePos : function(el) {
+	getAbsolutePos : function (el) {
 		var r = {
 			x : el.offsetLeft,
 			y : el.offsetTop
@@ -156,7 +156,7 @@ var FbDateTime = new Class({
 		return r;
 	},
 
-	setAbsolutePos : function(el) {
+	setAbsolutePos : function (el) {
 		var r = this.getAbsolutePos(el);
 		this.dropdown.setStyles({
 			position : 'absolute',
@@ -165,7 +165,7 @@ var FbDateTime = new Class({
 		});
 	},
 
-	makeDropDown : function() {
+	makeDropDown : function () {
 		var h = null;
 		var handle = new Element('div', {
 			styles : {
@@ -191,39 +191,39 @@ var FbDateTime = new Class({
 		});
 
 		d.appendChild(handle);
-		for ( var i = 0; i < 24; i++) {
+		for (var i = 0; i < 24; i++) {
 			h = new Element('div', {
-				styles : {
-					width : '20px',
-					'float' : 'left',
-					'cursor' : 'pointer',
-					'background-color' : '#ffffff',
-					'margin' : '1px',
-					'text-align' : 'center'
+				styles: {
+					width: '20px',
+					'float': 'left',
+					'cursor': 'pointer',
+					'background-color': '#ffffff',
+					'margin': '1px',
+					'text-align': 'center'
 				}
 			});
 			h.innerHTML = i;
 			h.className = 'fbdateTime-hour';
 			d.appendChild(h);
-			$(h).addEvent('click', function(event) {
+			$(h).addEvent('click', function (event) {
 				var e = new Event(event);
 				this.hour = $(e.target).innerHTML;
 				this.stateTime();
 				this.setActive();
 			}.bind(this));
-			$(h).addEvent('mouseover', function(event) {
+			$(h).addEvent('mouseover', function (event) {
 				var e = new Event(event);
 				var h = $(e.target);
-				if (this.hour != h.innerHTML) {
+				if (this.hour !== h.innerHTML) {
 					e.target.setStyles({
 						background : '#cbeefb'
 					});
 				}
 			}.bind(this));
-			$(h).addEvent('mouseout', function(event) {
+			$(h).addEvent('mouseout', function (event) {
 				var e = new Event(event);
 				var h = $(e.target);
-				if (this.hour != h.innerHTML) {
+				if (this.hour !== h.innerHTML) {
 					h.setStyles({
 						background : this.buttonBg
 					});
@@ -251,25 +251,25 @@ var FbDateTime = new Class({
 			h.innerHTML = ':' + (i * 5);
 			h.className = 'fbdateTime-minute';
 			d2.appendChild(h);
-			$(h).addEvent('click', function(e) {
+			$(h).addEvent('click', function (e) {
 				e = new Event(e);
 				this.minute = this.formatMinute(e.target.innerHTML);
 				this.stateTime();
 				this.setActive();
 			}.bind(this));
-			h.addEvent('mouseover', function(event) {
+			h.addEvent('mouseover', function (event) {
 				var e = new Event(event);
 				var h = $(e.target);
-				if (this.minute != this.formatMinute(h.innerHTML)) {
+				if (this.minute !== this.formatMinute(h.innerHTML)) {
 					e.target.setStyles({
 						background : '#cbeefb'
 					});
 				}
 			}.bind(this));
-			h.addEvent('mouseout', function(event) {
+			h.addEvent('mouseout', function (event) {
 				var e = new Event(event);
 				var h = $(e.target);
-				if (this.minute != this.formatMinute(h.innerHTML)) {
+				if (this.minute !== this.formatMinute(h.innerHTML)) {
 					e.target.setStyles({
 						background : this.buttonBg
 					});
@@ -278,11 +278,11 @@ var FbDateTime = new Class({
 		}
 		d.appendChild(d2);
 
-		document.addEvent('click', function(event) {
+		document.addEvent('click', function (event) {
 			if (this.timeActive) {
 				var e = new Event(event);
 				var t = $(e.target);
-				if (t != this.timeButton && t != this.timeElement) {
+				if (t !== this.timeButton && t !== this.timeElement) {
 					if (!t.within(this.dropdown)) {
 						this.hideTime();
 					}
@@ -294,15 +294,15 @@ var FbDateTime = new Class({
 		return d;
 	},
 
-	toggleTime : function() {
-		if (this.dropdown.style.display == 'none') {
+	toggleTime : function () {
+		if (this.dropdown.style.display === 'none') {
 			this.doShowTime();
 		} else {
 			this.hideTime();
 		}
 	},
 
-	doShowTime : function() {
+	doShowTime : function () {
 		this.dropdown.setStyles({
 			'display' : 'block'
 		});
@@ -310,7 +310,7 @@ var FbDateTime = new Class({
 		window.fireEvent('fabrik.date.showtime', this);
 	},
 
-	hideTime : function() {
+	hideTime : function () {
 		this.timeActive = false;
 		this.dropdown.setStyles({
 			'display' : 'none'
@@ -320,18 +320,18 @@ var FbDateTime = new Class({
 		window.fireEvent('fabrik.date.select', this);
 	},
 
-	formatMinute : function(m) {
+	formatMinute : function (m) {
 		m = m.replace(':', '');
-		if (m.length == 1) {
+		if (m.length === 1) {
 			m = '0' + m;
 		}
 		return m;
 	},
 
-	stateTime : function() {
+	stateTime : function () {
 		if (this.timeElement) {
 			var newv = this.hour + ':' + this.minute;
-			var changed = this.timeElement.value != newv;
+			var changed = this.timeElement.value !== newv;
 			this.timeElement.value = newv;
 			if (changed) {
 				this.fireEvents([ 'change' ]);
@@ -339,22 +339,22 @@ var FbDateTime = new Class({
 		}
 	},
 
-	showTime : function() {
+	showTime : function () {
 		this.setAbsolutePos(this.timeElement); // need to recall if using tabbed
 		// form
 		this.toggleTime();
 		this.setActive();
 	},
 
-	setActive : function() {
+	setActive : function () {
 		var hours = this.dropdown.getElements('.fbdateTime-hour');
-		hours.each(function(e) {
+		hours.each(function (e) {
 			e.setStyles({
 				backgroundColor : this.buttonBg
 			});
 		}, this);
 		var mins = this.dropdown.getElements('.fbdateTime-minute');
-		mins.each(function(e) {
+		mins.each(function (e) {
 			e.setStyles({
 				backgroundColor : this.buttonBg
 			});
@@ -367,11 +367,11 @@ var FbDateTime = new Class({
 		});
 	},
 	
-	addEventToCalOpts:function(){
+	addEventToCalOpts: function () {
 		var form = this.form;
 		var elid = this.element.id;
 		var el = this;
-		var onclose = (function(e) {
+		var onclose = function (e) {
 			window.fireEvent('fabrik.date.close', this);
 			this.hide();
 			try {
@@ -379,30 +379,29 @@ var FbDateTime = new Class({
 			} catch (err) {
 				fconsole(err);
 			}
-			;
-		});
-		var onselect = (function(calendar, date) {
+		};
+		var onselect = function (calendar, date) {
 			elementid = calendar.params.inputField.id.replace('_cal', '');
 			calendar.params.inputField.value = date;
 			window.fireEvent('fabrik.date.select', this);
 			if (calendar.dateClicked) {
 				calendar.callCloseHandler();
 			}
-		});
+		};
 		
-		var datechange = (function(date) {
-			try{
+		var datechange = function (date) {
+			try {
 				return disallowDate(this, date);
-			}catch(err) {
+			} catch (err) {
 				//fconsole(err);
 			}
-		});
+		};
 		this.options.calendarSetup.onClose = onclose;
 		this.options.calendarSetup.onSelect = onselect;
 		this.options.calendarSetup.dateStatusFunc = datechange;
 	},
 
-	cloned : function(c) {
+	cloned : function (c) {
 		this.setUp = false;
 		this.hour = 0;
 		this.watchButtons();
@@ -413,7 +412,7 @@ var FbDateTime = new Class({
 		this.options.calendarSetup.inputField = datefield.id;
 		this.options.calendarSetup.button = this.element.id + "_img";
 		
-		if (this.options.typing == false) {
+		if (this.options.typing === false) {
 			this.disableTyping();
 		}
 		this.addEventToCalOpts();
@@ -423,7 +422,7 @@ var FbDateTime = new Class({
 
 /// you can add custom events with:
 	/*
-	 * window.addEvent('fabrik.date.select', function(){
+	 * window.addEvent('fabrik.date.select', function () {
 		console.log('trigger custom date event');
 	})
  */

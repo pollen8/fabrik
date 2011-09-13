@@ -1,23 +1,23 @@
 var FbFileUpload = new Class({
 	Extends : FbFileElement,
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.plugin = 'fileupload';
 		this.parent(element, options);
 		this.toppath = this.options.dir;
-		if (this.options.folderSelect == 1 && this.options.editable == 1) {
+		if (this.options.folderSelect === 1 && this.options.editable === 1) {
 			this.ajaxFolder();
 		}
 		
-		window.addEvent('fabrik.form.submit.start', function(form, json){
+		window.addEvent('fabrik.form.submit.start', function (form, json) {
 			this.onSubmit(form);
-		}.bind(this))
-		if (this.options.ajax_upload == 1 && this.options.editable !== false) {
+		}.bind(this));
+		if (this.options.ajax_upload === 1 && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
 			if (this.options.files.getLength() !== 0) {
 				this.uploader.trigger('FilesAdded', this.options.files);
 				this.startbutton.addClass('plupload_disabled');
-				this.options.files.each(function(file) {
+				this.options.files.each(function (file) {
 					var response = {
 						'filepath' : file.path,
 						uri : file.url
@@ -37,7 +37,7 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	cloned : function() {
+	cloned : function () {
 		// replaced cloned image with default image
 		if (typeOf(this.element.findClassUp('fabrikElement')) === 'null') {
 			return;
@@ -48,10 +48,10 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	decloned : function(groupid) {
+	decloned : function (groupid) {
 		var f = $('form_' + this.form.id);
 		var i = f.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
-		if ($type(i) == false) {
+		if ($type(i) === false) {
 			new Element('input', {
 				'type' : 'hidden',
 				'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
@@ -60,7 +60,7 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	update : function(val) {
+	update : function (val) {
 		if (this.element) {
 			var i = this.element.getElement('img');
 			if (typeOf(i) !== 'null') {
@@ -69,18 +69,18 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	watchAjax : function() {
+	watchAjax : function () {
 		if (this.options.editable === false) {
 			return;
 		}
 		var c = this.element.findClassUp('fabrikSubElementContainer');
 		this.container = c;
-		if (this.options.crop == 1) {
+		if (this.options.crop === 1) {
 			this.widget = new ImageWidget(c.getElement('canvas'), {'cropdim' : {
-					w : this.options.cropwidth,
-					h : this.options.cropheight,
+					w: this.options.cropwidth,
+					h: this.options.cropheight,
 					x: this.options.cropwidth / 2,
-					y: this.options.cropheight/2
+					y: this.options.cropheight / 2
 				}});
 		}
 		this.pluploadContainer = c.getElement('.plupload_container');
@@ -88,39 +88,38 @@ var FbFileUpload = new Class({
 		this.droplist = c.getElement('.plupload_filelist');
 		this.startbutton = c.getElement('.plupload_start');
 		this.uploader = new plupload.Uploader({
-			runtimes : this.options.ajax_runtime,
-			browse_button : this.element.id + '_browseButton',
-			container : this.element.id + '_container',
-			drop_element : this.element.id + '_dropList',
-			url : Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id='
-					+ this.options.elid,
-			max_file_size : this.options.max_file_size + 'kb',
-			unique_names : false,
-			flash_swf_url : 'plugins/element/fileupload/plupload/js/plupload.flash.swf',
-			silverlight_xap_url : 'plugins/element/fileupload/plupload/js/plupload.silverlight.xap',
-			chunk_size : this.options.ajax_chunk_size + 'kb',
-			multipart : true
+			runtimes: this.options.ajax_runtime,
+			browse_button: this.element.id + '_browseButton',
+			container: this.element.id + '_container',
+			drop_element: this.element.id + '_dropList',
+			url: Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
+			max_file_size: this.options.max_file_size + 'kb',
+			unique_names: false,
+			flash_swf_url: 'plugins/element/fileupload/plupload/js/plupload.flash.swf',
+			silverlight_xap_url: 'plugins/element/fileupload/plupload/js/plupload.silverlight.xap',
+			chunk_size: this.options.ajax_chunk_size + 'kb',
+			multipart: true
 		});
 
 		// (1) INIT ACTIONS
-		this.uploader.bind('Init', function(up, params) {
+		this.uploader.bind('Init', function (up, params) {
 			// FORCEFULLY NUKE GRACEFUL DEGRADING FALLBACK ON INIT
 			this.pluploadFallback.destroy();
 			this.pluploadContainer.removeClass("fabrikHide");
 		}.bind(this));
 
-		this.uploader.bind('FilesRemoved', function(up, files) {
+		this.uploader.bind('FilesRemoved', function (up, files) {
 		});
 
 		// (2) ON FILES ADDED ACTION
-		this.uploader.bind('FilesAdded', function(up, files) {
+		this.uploader.bind('FilesAdded', function (up, files) {
 			var txt = this.droplist.getElement('.plupload_droptext');
 			if ($type(txt) !== false) {
 				txt.destroy();
 			}
 			var count = this.droplist.getElements('li').length;
 			this.startbutton.removeClass('plupload_disabled');
-			files.each(function(file, idx) {
+			files.each(function (file, idx) {
 				if (count >= this.options.ajax_max) {
 					alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED'));
 				} else {
@@ -163,15 +162,15 @@ var FbFileUpload = new Class({
 		}.bind(this));
 
 		// (3) ON FILE UPLOAD PROGRESS ACTION
-		this.uploader.bind('UploadProgress', function(up, file) {
+		this.uploader.bind('UploadProgress', function (up, file) {
 			$(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
 		});
 
-		this.uploader.bind('Error', function(up, err) {
+		this.uploader.bind('Error', function (up, err) {
 			fconsole('Error:' + err);
 		});
 
-		this.uploader.bind('ChunkUploaded', function(up, file, response) {
+		this.uploader.bind('ChunkUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
 			if ($type(response) !== false) {
 				if (response.error) {
@@ -180,7 +179,7 @@ var FbFileUpload = new Class({
 			}
 		});
 
-		this.uploader.bind('FileUploaded', function(up, file, response) {
+		this.uploader.bind('FileUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
 			if (this.options.crop) {
 				$(file.id).getElement('.plupload_resize').show();
@@ -208,7 +207,7 @@ var FbFileUpload = new Class({
 		}.bind(this));
 
 		// (4) UPLOAD FILES FIRE STARTER
-		c.getElement('.plupload_start').addEvent('click', function(e) {
+		c.getElement('.plupload_start').addEvent('click', function (e) {
 			e.stop();
 			this.uploader.start();
 		}.bind(this));
@@ -216,17 +215,16 @@ var FbFileUpload = new Class({
 		this.uploader.init();
 	},
 
-	pluploadRemoveFile : function(e) {
+	pluploadRemoveFile : function (e) {
 		e.stop();
 		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
 		var f = e.target.getParent().getParent().getElement('.plupload_file_name span').get('text');
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&&task=plugin.pluginAjax&plugin=fileupload&method=ajax_deleteFile&element_id='
-				+ this.options.id;
+		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&&task=plugin.pluginAjax&plugin=fileupload&method=ajax_deleteFile&element_id=' + this.options.id;
 		new Request({
-			url : url,
-			data : {
-				'file' : f,
-				'recordid' : id
+			url: url,
+			data: {
+				'file': f,
+				'recordid': id
 			}
 		}).send();
 		var li = e.target.findClassUp('plupload_delete');
@@ -239,14 +237,14 @@ var FbFileUpload = new Class({
 			$('coords_alreadyuploaded_' + this.options.id + '_' + id).destroy();
 		}
 		/*
-		 * if (this.droplist.getChildren().length == 0) {
+		 * if (this.droplist.getChildren().length === 0) {
 		 * this.startbutton.addClass('plupload_disabled'); this.droplist.adopt(new
 		 * Element('li', { 'class' : 'plupload_droptext' }).set('text',
 		 * Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE'))); }
 		 */
 	},
 
-	pluploadResize : function(e) {
+	pluploadResize : function (e) {
 		e.stop();
 		var a = e.target;
 		if (this.options.crop) {
@@ -254,28 +252,28 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	onSubmit : function(form) {
+	onSubmit : function (form) {
 		if (!this.allUploaded()) {
 			alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
 			form.result = false;
 			return false;
 		}
 		if (this.options.crop) {
-			this.widget.images.each(function(image, key) {
+			this.widget.images.each(function (image, key) {
 				key = key.split('\\').getLast();
 				var f = document.getElements('input[name*=' + key + ']');
-				var f = f[1];
+				f = f[1];
 				f.value = JSON.encode(image);
 			});
 		}
 		return true;
 	},
 
-	allUploaded : function() {
+	allUploaded : function () {
 		var uploaded = true;
 		if (this.uploader) {
-			this.uploader.files.each(function(file) {
-				if (file.loaded == 0) {
+			this.uploader.files.each(function (file) {
+				if (file.loaded === 0) {
 					uploaded = false;
 				}
 			}.bind(this));
@@ -286,9 +284,9 @@ var FbFileUpload = new Class({
 
 var ImageWidget = new Class({
 
-	setImage : function(uri, filepath, params) {
+	setImage : function (uri, filepath, params) {
 		this.activeFilePath = filepath;
-		if (this.img && this.img.src == uri) {
+		if (this.img && this.img.src === uri) {
 			this.showWin();
 			return;
 		}
@@ -304,28 +302,29 @@ var ImageWidget = new Class({
 		}
 		el.injectInside(document.body).hide();
 
-		(function() {
+		(function () {
+			var show, imagew, imageh, imagex, imagey, i;
 			if (!this.images.has(filepath)) {
-				var show = false;
+				show = false;
 				params = params ? params : new CloneObject(this.imageDefault, true, []);
 				this.images.set(filepath, params);
 				var s = el.getDimensions(true);
-				var imagew = s.width;
-				var imageh = s.height;
+				imagew = s.width;
+				imageh = s.height;
 				//var imagex = imagew / 2;
-				var imagex = params.imagedim.x;
+				imagex = params.imagedim.x;
 				//var imagey = imageh / 2;
-				var imagey = params.imagedim.y;
+				imagey = params.imagedim.y;
 			} else {
 				show = true;
-				var i = this.images.get(filepath);
+				i = this.images.get(filepath);
 				imagew = 400;
 				imageh = 400;
 				imagex = i.imagedim.x;
 				imagey = i.imagedim.y;
 			}
 
-			var i = this.images.get(filepath);
+			i = this.images.get(filepath);
 			this.scaleSlide.set(i.scale);
 			if (this.rotateSlide) {
 				this.rotateSlide.set(i.rotation);
@@ -350,50 +349,50 @@ var ImageWidget = new Class({
 
 	},
 
-	showWin : function() {
+	showWin : function () {
 		this.win = Fabrik.getWindow(this.windowopts);
 		if (typeOf(CANVAS) !== 'null' && typeOf(CANVAS.ctxEl) !== 'null') {
 			CANVAS.ctxPos = $(CANVAS.ctxEl).getPosition();
 		}
-		if($type(CANVAS.threads) !== false) {
+		if ($type(CANVAS.threads) !== false) {
 			//fixes issue where sometime canvas thread is not started/running so nothing is drawn
 			CANVAS.threads.myThread.start();
 		}
 	},
 
-	initialize : function(canvas, opts) {
+	initialize : function (canvas, opts) {
 		this.canvas = canvas;
 
 		this.imageDefault = {
-			'rotation' : 0,
-			'scale' : 100,
-			'imagedim' : {
-				x : 200,
-				y : 200,
-				w : 400,
-				h : 400
+			'rotation': 0,
+			'scale': 100,
+			'imagedim': {
+				x: 200,
+				y: 200,
+				w: 400,
+				h: 400
 			},
-			'cropdim' : {
-				x : 75,
-				y : 25,
-				w : 150,
-				h : 50
+			'cropdim': {
+				x: 75,
+				y: 25,
+				w: 150,
+				h: 50
 			}
 		};
 
 		$extend(this.imageDefault, opts);
 
 		this.windowopts = {
-			'id' : this.canvas.id + '-mocha',
-			'type':'modal',
-			title : 'Crop and scale',
-			content : this.canvas.getParent(),
-			loadMethod : 'html',
-			width : 420,
-			height : 500,
-			storeOnClose : true,
+			'id': this.canvas.id + '-mocha',
+			'type': 'modal',
+			title: 'Crop and scale',
+			content: this.canvas.getParent(),
+			loadMethod: 'html',
+			width: 420,
+			height: 500,
+			storeOnClose: true,
 			createShowOverLay: false,
-			onClose : function() {
+			onClose : function () {
 				$('modalOverlay').hide();
 			}
 		};
@@ -401,29 +400,29 @@ var ImageWidget = new Class({
 		this.images = $H({});
 		var parent = this;
 		CANVAS.init({
-			canvasElement : $(this.canvas.id),
-			enableMouse : true,
-			cacheCtxPos : false
+			canvasElement: $(this.canvas.id),
+			enableMouse: true,
+			cacheCtxPos: false
 		});
 
 		CANVAS.layers.add(new Layer({
-			id : 'bg-layer'
+			id: 'bg-layer'
 		}));
 		CANVAS.layers.add(new Layer({
-			id : 'image-layer'
+			id: 'image-layer'
 		}));
 		CANVAS.layers.add(new Layer({
-			id : 'overlay-layer'
+			id: 'overlay-layer'
 		}));
 		CANVAS.layers.add(new Layer({
-			id : 'crop-layer'
+			id: 'crop-layer'
 		}));
 
 		var bg = new CanvasItem({
-			id : 'bg',
-			scale : 1,
-			events : {
-				onDraw : function(ctx) {
+			id: 'bg',
+			scale: 1,
+			events: {
+				onDraw: function (ctx) {
 					ctx.fillStyle = "#DFDFDF";
 					ctx.fillRect(0, 0, 400 / this.scale, 400 / this.scale);
 				}
@@ -433,18 +432,18 @@ var ImageWidget = new Class({
 		CANVAS.layers.get('bg-layer').add(bg);
 
 		var overlay = new CanvasItem({
-			id : 'overlay',
-			events : {
-				onDraw : function(ctx) {
+			id: 'overlay',
+			events: {
+				onDraw: function (ctx) {
 					this.withinCrop = true;
 					if (this.withinCrop) {
 						var top = {
-							x : 0,
-							y : 0
+							x: 0,
+							y: 0
 						};
 						var bottom = {
-							x : 400,
-							y : 400
+							x: 400,
+							y: 400
 						};
 						ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
 						var cropper = parent.cropperCanvas;
@@ -460,29 +459,29 @@ var ImageWidget = new Class({
 		CANVAS.layers.get('overlay-layer').add(overlay);
 
 		this.imgCanvas = new CanvasItem({
-			id : 'imgtocrop',
-			w : 400,
-			h : 400,
-			x : 200,
-			y : 200,
-			interactive : true,
-			rotation : 0,
-			scale : 1,
-			offset : [ 0, 0 ],
-			events : {
-				onMousemove : function(x, y) {
+			id: 'imgtocrop',
+			w: 400,
+			h: 400,
+			x: 200,
+			y: 200,
+			interactive: true,
+			rotation: 0,
+			scale: 1,
+			offset: [ 0, 0 ],
+			events: {
+				onMousemove: function (x, y) {
 					if (this.dragging) {
 						var w = this.w * this.scale;
 						var h = this.h * this.scale;
-						this.x = x - this.offset[0] + w * .5;
-						this.y = y - this.offset[1] + h * .5;
+						this.x = x - this.offset[0] + w * 0.5;
+						this.y = y - this.offset[1] + h * 0.5;
 					}
 				},
-				onDraw : function(ctx) {
+				onDraw : function (ctx) {
 					var w = this.w * this.scale;
 					var h = this.h * this.scale;
-					var x = this.x - w * .5;
-					var y = this.y - h * .5;
+					var x = this.x - w * 0.5;
+					var y = this.y - h * 0.5;
 
 					// standard Canvas rotation operation
 					ctx.save();
@@ -500,7 +499,7 @@ var ImageWidget = new Class({
 						}
 					}
 					ctx.restore();
-					if ($type(parent.img) != false && parent.images.get(parent.activeFilePath)) {
+					if ($type(parent.img) !== false && parent.images.get(parent.activeFilePath)) {
 						parent.images.get(parent.activeFilePath).imagedim = {
 							x : this.x,
 							y : this.y,
@@ -512,23 +511,23 @@ var ImageWidget = new Class({
 					this.setDims(x, y, w, h);
 				},
 
-				onMousedown : function(x, y) {
+				onMousedown : function (x, y) {
 					CANVAS.setDrag(this);
 					this.offset = [ x - this.dims[0], y - this.dims[1] ];
 					this.dragging = true;
 				},
 
-				onMouseup : function() {
+				onMouseup : function () {
 					CANVAS.clearDrag();
 					this.dragging = false;
 				},
 
-				onMouseover : function() {
+				onMouseover : function () {
 					parent.overImg = true;
 					document.body.style.cursor = "move";
 				},
 
-				onMouseout : function() {
+				onMouseout : function () {
 					parent.overImg = false;
 					if (!parent.overCrop) {
 						document.body.style.cursor = "default";
@@ -541,25 +540,25 @@ var ImageWidget = new Class({
 
 		// add an item
 		this.cropperCanvas = new CanvasItem({
-			id : 'item',
-			x : 175,
-			y : 175,
-			w : 150,
-			h : 50,
-			interactive : true,
-			offset : [ 0, 0 ],
-			events : {
-				onDraw : function(ctx) {
+			id: 'item',
+			x: 175,
+			y: 175,
+			w: 150,
+			h: 50,
+			interactive: true,
+			offset: [ 0, 0 ],
+			events: {
+				onDraw: function (ctx) {
 					/*
- 					* calculate dimensions locally because they are have to be translated
- 					* in order to use translate and rotate with the desired effect:
- 					* rotate the item around its visual center
- 					*/
+					 * calculate dimensions locally because they are have to be translated
+					 * in order to use translate and rotate with the desired effect:
+					 * rotate the item around its visual center
+					 */
 
 					var w = this.w;
 					var h = this.h;
-					var x = this.x - w * .5;
-					var y = this.y - h * .5;
+					var x = this.x - w * 0.5;
+					var y = this.y - h * 0.5;
 
 					// standard Canvas rotation operation
 
@@ -571,10 +570,10 @@ var ImageWidget = new Class({
 					ctx.restore();
 
 					/*
- 					* used to determine the whether the mouse is over an item or not.
- 					*/
+					 * used to determine the whether the mouse is over an item or not.
+					 */
 
-					if ($type(parent.img) != false && parent.images.get(parent.activeFilePath)) {
+					if ($type(parent.img) !== false && parent.images.get(parent.activeFilePath)) {
 						parent.images.get(parent.activeFilePath).cropdim = {
 							x : this.x,
 							y : this.y,
@@ -585,36 +584,36 @@ var ImageWidget = new Class({
 					this.setDims(x, y, w, h);
 				},
 
-				onMousedown : function(x, y) {
+				onMousedown : function (x, y) {
 					CANVAS.setDrag(this);
 					this.offset = [ x - this.dims[0], y - this.dims[1] ];
 					this.dragging = true;
 					overlay.withinCrop = true;
 				},
 
-				onMousemove : function(x, y) {
+				onMousemove : function (x, y) {
 					document.body.style.cursor = "move";
 					if (this.dragging) {
 						var w = this.w;
 						var h = this.h;
-						this.x = x - this.offset[0] + w * .5;
-						this.y = y - this.offset[1] + h * .5;
+						this.x = x - this.offset[0] + w * 0.5;
+						this.y = y - this.offset[1] + h * 0.5;
 					}
 				},
 
-				onMouseup : function() {
+				onMouseup : function () {
 					CANVAS.clearDrag();
 					this.dragging = false;
 					overlay.withinCrop = false;
 				},
 
-				onMouseover : function() {
+				onMouseover : function () {
 					this.hover = true;
 					parent.overCrop = true;
 
 				},
 
-				onMouseout : function() {
+				onMouseout : function () {
 					if (!parent.overImg) {
 						document.body.style.cursor = "default";
 					}
@@ -628,7 +627,7 @@ var ImageWidget = new Class({
 
 		CANVAS.addThread(new Thread({
 			id : 'myThread',
-			onExec : function() {
+			onExec : function () {
 				if (typeOf(CANVAS.ctxEl) !== 'null') {
 					CANVAS.clear().draw();
 				}
@@ -639,9 +638,9 @@ var ImageWidget = new Class({
 		this.scaleField = w.getElement('input[name=zoom-val]');
 		this.scaleSlide = new Slider(w.getElement('.fabrikslider-line'), w.getElement('.knob'), {
 			range : [ 20, 300 ],
-			onChange : function(pos) {
+			onChange : function (pos) {
 				this.imgCanvas.scale = pos / 100;
-				if ($type(this.img) != false) {
+				if ($type(this.img) !== false) {
 					try {
 						this.images.get(this.activeFilePath).scale = pos;
 					} catch (err) {
@@ -652,16 +651,16 @@ var ImageWidget = new Class({
 			}.bind(this)
 		}).set(100);
 
-		this.scaleField.addEvent('keyup', function(e) {
+		this.scaleField.addEvent('keyup', function (e) {
 			this.scaleSlide.set($(e.target).get('value'));
 		}.bind(this));
 
 		var r = w.getElement('.rotate');
 		this.rotateField = r.getElement('input[name=rotate-val]');
 		this.rotateSlide = new Slider(r.getElement('.fabrikslider-line'), r.getElement('.knob'), {
-			onChange : function(pos) {
+			onChange : function (pos) {
 				this.imgCanvas.rotation = pos;
-				if ($type(this.img) != false) {
+				if ($type(this.img) !== false) {
 					try {
 						this.images.get(this.activeFilePath).rotation = pos;
 					} catch (err) {
@@ -672,11 +671,11 @@ var ImageWidget = new Class({
 			}.bind(this),
 			steps : 360
 		}).set(0);
-		this.rotateField.addEvent('keyup', function(e) {
+		this.rotateField.addEvent('keyup', function (e) {
 			this.rotateSlide.set($(e.target).get('value'));
 		}.bind(this));
 
-		w.getElement('input[name=close-crop]').addEvent('click', function(e) {
+		w.getElement('input[name=close-crop]').addEvent('click', function (e) {
 			this.win.close();
 		}.bind(this));
 		this.win.close();

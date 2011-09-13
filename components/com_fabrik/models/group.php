@@ -411,7 +411,7 @@ class FabrikFEModelGroup extends FabModel{
 		$newElements = array();
 		foreach ($elements as $element) {
 			$origElementId = $element->getElement()->id;
-			$copy = $element->copyRow($origElementId, '', $group->id);
+			$copy = $element->copyRow($origElementId, $element->getElement()->label, $group->id);
 			$newElements[$origElementId] =  $copy->id;
 		}
 		$this->elements = null;

@@ -258,10 +258,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 	function getFusionchart()
 	{
 		// Include PHP Class
-		require_once($this->pathBase.'fusionchart'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
+		require_once($this->pathBase.'fusionchart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
 		// Add JS to page header
 		$document = JFactory::getDocument();
-		$document->addScript($this->srcBase."fusionchart/FCcharts/FusionCharts.js");
+		$document->addScript($this->srcBase."fusionchart/lib/FCcharts/FusionCharts.js");
 
 		$params = $this->getParams();
 		$calc_prefixes = array('sum___', 'avg___', 'med___', 'cnt___');
@@ -275,7 +275,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$FC = new FusionCharts("$chartType","$w","$h");
 		//$FC->JSC["debugmode"]=true;
 		// Define path to FC's SWF
-		$FC->setSWFPath($this->srcBase."fusionchart/FCcharts/");
+		$FC->setSWFPath($this->srcBase."fusionchart/lib/FCcharts/");
 
 		$this->setChartMessages($FC);
 

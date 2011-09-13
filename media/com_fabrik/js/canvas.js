@@ -1,4 +1,4 @@
-Canvas = new Class({
+var Canvas = new Class({
 
 	Implements : [ Options ],
 
@@ -9,21 +9,21 @@ Canvas = new Class({
 		editable: false
 	},
 
-	initialize : function(opts) {
+	initialize: function (opts) {
 		this.setOptions(opts);
 		window.addEvent('fabrik.page.insert', this.insertPage.bindWithEvent(this));
-		this.iconGen = new IconGenerator({scale:0.5});
+		this.iconGen = new IconGenerator({scale: 0.5});
 		this.pages = new Pages(this.options.pagecontainer, this.options.editable);
 		this.tabs = new Tabs(this.options.tabelement, this.options.tabs, this.options.editable);
 	},
 	
-	setup : function() {
+	setup: function () {
 		this.pages.fromJSON(this.options.layout);
 	},
 	
-	setDrags:function(){
-		$('typeList').getElements('li').each(function(li) {
-			li.addEvent('mousedown', function(e) {
+	setDrags: function () {
+		$('typeList').getElements('li').each(function (li) {
+			li.addEvent('mousedown', function (e) {
 				var clone = li.clone().setStyles(li.getCoordinates()) // this returns an
 				// object with
 				// left/top/bottom/right, so its perfect
@@ -31,24 +31,23 @@ Canvas = new Class({
 				.store('type', li.retrieve('type')).setStyles({
 					'opacity' : 0.7,
 					'position' : 'absolute'
-				}).addEvent('emptydrop', function() {
+				}).addEvent('emptydrop', function () {
 					li.dispose();
-					drop.removeEvents();
 				}).inject(document.body);
 
 				var drag = clone.makeDraggable({
 					droppables : this.drops,
 
-					onComplete : function() {
+					onComplete : function () {
 						this.detach();
 					},
-					onEnter : function(el, over) {
+					onEnter : function (el, over) {
 						over.tween('background-color', '#98B5C1');
 					},
-					onLeave : function(el, over) {
+					onLeave : function (el, over) {
 						over.tween('background-color', '#fff');
 					},
-					onDrop : function(el, over) {
+					onDrop : function (el, over) {
 
 						if (over) {
 							
@@ -67,7 +66,7 @@ Canvas = new Class({
 		}.bind(this));
 	},
 	
-	setDrops:function(e){
+	setDrops: function (e) {
 		this.options.tabs = this.tabs.tabs.getKeys();
 		this.drops = this.pages.getHTMLPages();
 	}

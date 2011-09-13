@@ -32,3 +32,8 @@ tests/*
 templates/*
 tmp/*
 transfer/*
+/templates
+/tmp
+/transfer
+/tests
+/cache

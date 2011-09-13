@@ -23,6 +23,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
  * @subpackage	Fabrik
  * @since 1.5
  */
+
 class FabrikControllerPlugin extends JController
 {
 

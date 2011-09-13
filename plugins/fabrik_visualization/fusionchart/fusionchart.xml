@@ -12,14 +12,12 @@
 	
 	<files>
 		<filename plugin="fusionchart">fusionchart.js</filename>
-		<filename>adminfusionchart.js</filename>
 		<filename>index.html</filename>
-		<folder>views</folder>
-		<folder>models</folder>
-		<folder>FCcharts</folder>
-		<folder>FCclass</folder>
-		<folder>language</folder>
 		<folder>forms</folder>
+		<folder>language</folder>
+		<folder>lib</folder>
+		<folder>models</folder>
+		<folder>views</folder>
 	</files>
 
 </extension>

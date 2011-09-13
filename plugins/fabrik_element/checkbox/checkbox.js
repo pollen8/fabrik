@@ -1,16 +1,16 @@
 var FbCheckBox = new Class({
 	Extends: FbElement,
-	initialize: function(element, options) {
+	initialize: function (element, options) {
 		this.plugin = 'fabrikcheckbox';
 		this.parent(element, options);
 		this._getSubElements();
 	},
 	
-	watchAddToggle : function() {
+	watchAddToggle : function () {
 		var c = this.getContainer();
 		var d = c.getElement('div.addoption');
 		var a = c.getElement('.toggle-addoption');
-		if(this.mySlider){
+		if (this.mySlider) {
 			//copied in repeating group so need to remove old slider html first
 			var clone = d.clone();
 			var fe = c.getElement('.fabrikElement');
@@ -23,23 +23,24 @@ var FbCheckBox = new Class({
 			duration : 500
 		});
 		this.mySlider.hide();
-		a.addEvent('click', function(e) {
+		a.addEvent('click', function (e) {
 			e.stop();
 			this.mySlider.toggle();
 		}.bind(this));
 	},
 	
-	watchAdd:function(){
-		if(this.options.allowadd == true && this.options.editable !== false) {
+	watchAdd: function () {
+		var val;
+		if (this.options.allowadd === true && this.options.editable !== false) {
 			var id = this.options.element;
 			var c = this.getContainer();
-			c.getElement('input[type=button]').addEvent( 'click', function(e) {
+			c.getElement('input[type=button]').addEvent('click', function (e) {
 				var l = c.getElement('input[name=addPicklistLabel]');
 				var v = c.getElement('input[name=addPicklistValue]');
 				var label = l.value;
-				if(v) {
-					var val = v.value;
-				}else{
+				if (v) {
+					val = v.value;
+				} else {
 					val = label;
 				}
 				if (val === '' || label === '') {
@@ -67,30 +68,30 @@ var FbCheckBox = new Class({
 		}
 	},
 	
-	getValue: function() {
-		if(!this.options.editable) {
+	getValue: function () {
+		if (!this.options.editable) {
 			return this.options.value;
 		}
 		var ret = [];
-		if(!this.options.editable) {
+		if (!this.options.editable) {
 			return this.options.value;
 		}
-		this._getSubElements().each( function(el) {
-			if(el.checked) {
+		this._getSubElements().each(function (el) {
+			if (el.checked) {
 				ret.push(el.get('value'));
 			}
 		});
 		return ret;
 	},
 	
-	addNewEvent: function(action, js) {
-		if(action == 'load') {
+	addNewEvent: function (action, js) {
+		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
-		}else{
+		} else {
 			this._getSubElements();
-			this.subElements.each( function(el) {
-				el.addEvent(action, function(e) {
+			this.subElements.each(function (el) {
+				el.addEvent(action, function (e) {
 					eval(js);
 				});
 			});
@@ -99,36 +100,36 @@ var FbCheckBox = new Class({
 	
 		//get the sub element which are the checkboxes themselves
 	
-	_getSubElements: function() {
-		if(!this.element) {
+	_getSubElements: function () {
+		if (!this.element) {
 			this.subElements = $A();
-		}else{
+		} else {
 			this.subElements = this.element.getElements('input');
 		}
 		return this.subElements;
 	},
 	
-	update: function(val) {
-		if(typeOf(val) == 'string') {
+	update: function (val) {
+		if (typeOf(val) === 'string') {
 			//val = val.split(this.options.splitter);
 			val = JSON.decode(val);
 		}
 		if (!this.options.editable) {
 			this.element.innerHTML = '';
-			if(val === '') {
+			if (val === '') {
 				return;
 			}
 			var h = $H(this.options.data);
-			val.each(function(v) {
+			val.each(function (v) {
 				this.element.innerHTML += h.get(v) + "<br />";	
 			}.bind(this));
 			return;
 		}
 		this._getSubElements();
-		this.subElements.each( function(el) {
+		this.subElements.each(function (el) {
 			var chx = false;
-			val.each(function(v) {
-				if(v == el.value) {
+			val.each(function (v) {
+				if (v === el.value) {
 					chx = true;
 				}
 			}.bind(this));
@@ -136,8 +137,8 @@ var FbCheckBox = new Class({
 		}.bind(this));
 	},
 	
-	cloned:function(){
-		if(this.options.allowadd === true && this.options.editable !== false) {
+	cloned: function () {
+		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.watchAddToggle();
 			this.watchAdd();
 		}

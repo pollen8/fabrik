@@ -1,6 +1,6 @@
-var FbSlider = new Class( {
+var FbSlider = new Class({
 	Extends : FbElement,
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.parent(element, options);
 		this.plugin = 'fabrikslider';
 		if (typeOf(this.options.value) === 'null') {
@@ -8,7 +8,7 @@ var FbSlider = new Class( {
 		}
 		this.options.value = this.options.value.toInt();
 		if (this.options.editable === true) {
-			head.ready(function() {
+			head.ready(function () {
 				if (typeOf(this.element) === 'null') {
 					return;
 				}
@@ -17,7 +17,7 @@ var FbSlider = new Class( {
 				this.mySlide = new Slider(this.element
 						.getElement('.fabrikslider-line'), this.element
 						.getElement('.knob'), {
-					onChange : function(pos) {
+					onChange : function (pos) {
 						output.value = pos;
 						this.options.value = pos;
 						output2.set('text', pos);
@@ -31,7 +31,7 @@ var FbSlider = new Class( {
 				output2.set('text', this.options.value);
 				var clear = this.element.getElement('.clearslider');
 				if (typeOf(clear) !== 'null') {
-					clear.addEvent('click', function(e) {
+					clear.addEvent('click', function (e) {
 						this.mySlide.set(0);
 						output.value = '';
 						output2.set('text', '');
@@ -42,22 +42,22 @@ var FbSlider = new Class( {
 		}
 	},
 	
-	getValue: function(){
+	getValue: function () {
 		return this.options.value;
 	},
 	
-	callChange: function()
+	callChange: function ()
 	{
 		typeOf(this.changejs) === 'function' ? this.changejs.delay(0) :	eval(this.changejs);
 	},
 	
-	addNewEvent: function(action, js) {
-		if (action == 'load') {
+	addNewEvent: function (action, js) {
+		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
 			return;
 		}
-		if (action == 'change') {
+		if (action === 'change') {
 			this.changejs = js;
 		}
 	}

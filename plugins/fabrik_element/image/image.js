@@ -4,7 +4,7 @@
 
 var FbImage = new Class({
 	Extends : FbElement,
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.plugin = 'image';
 		this.folderlist = [];
 		this.parent(element, options);
@@ -20,7 +20,7 @@ var FbImage = new Class({
 				}
 				this.imageDir.addEvent('change', this.showImage.bindWithEvent(this));
 			}
-			if (this.options.canSelect == true) {
+			if (this.options.canSelect === true) {
 				this.addEvent('onBrowse', this.changeFolder);
 				this.ajaxFolder();
 				this.element = this.hiddenField;
@@ -29,7 +29,7 @@ var FbImage = new Class({
 		}
 	},
 
-	getMyElements : function() {
+	getMyElements : function () {
 		var element = this.options.element;
 		this.image = $(element).findClassUp('fabrikSubElementContainer').getElement('.imagedisplayor');
 		this.folderDir = $(element).findClassUp('fabrikSubElementContainer').getElement('.folderselector');
@@ -37,20 +37,20 @@ var FbImage = new Class({
 		// this.hiddenField is set in FbFileElement
 	},
 
-	cloned : function(c) {
+	cloned : function (c) {
 		this.getMyElements();
 		this.ajaxFolder();
 	},
 
-	hasSubElements : function() {
+	hasSubElements : function () {
 		return true;
 	},
 
-	getFolderPath : function() {
+	getFolderPath : function () {
 		return this.options.rootPath + this.folderlist.join('/');
 	},
 
-	changeFolder : function(e) {
+	changeFolder : function (e) {
 		var folder = this.imageDir;
 		this.selectedFolder = this.getFolderPath();
 		folder.empty();
@@ -62,9 +62,9 @@ var FbImage = new Class({
 				'folder' : this.selectedFolder
 			},
 
-			onComplete : function(r) {
+			onComplete : function (r) {
 				var newImages = eval(r);
-				newImages.each(function(opt) {
+				newImages.each(function (opt) {
 					folder.adopt(new Element('option', {
 						'value' : opt.value
 					}).appendText(opt.text));
@@ -74,7 +74,7 @@ var FbImage = new Class({
 		}).send();
 	},
 
-	showImage : function(e) {
+	showImage : function (e) {
 		if (this.imageDir) {
 			if (this.imageDir.options.length === 0) {
 				this.image.src = '';
@@ -88,7 +88,7 @@ var FbImage = new Class({
 		}
 	},
 
-	getValue : function() {
+	getValue : function () {
 		return this.folderlist.join('/') + '/' + this.selectedImage;// this.hiddenField.value;
 	}
 });

@@ -219,27 +219,27 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$slideshow_type = $params->get('slideshow_type', 1);
-		$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'libs'.DS.'slideshow2'.DS.'js'.DS.'slideshow.js';
+		$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.js';
 		$document->addScript($src);
 		switch ($slideshow_type) {
 			case 1:
 				break;
 			case 2:
-				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'libs'.DS.'slideshow2'.DS.'js'.DS.'slideshow.kenburns.js';
+				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.kenburns.js';
 				$document->addScript($src);
 				break;
 			case 3:
-				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'libs'.DS.'slideshow2'.DS.'js'.DS.'slideshow.push.js';
+				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.push.js';
 				$document->addScript($src);
 				break;
 			case 4:
-				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'libs'.DS.'slideshow2'.DS.'js'.DS.'slideshow.fold.js';
+				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.fold.js';
 				$document->addScript($src);
 				break;
 			default:
 				break;
 		}
-		JHTML::stylesheet('slideshow.css', 'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'libs'.DS.'slideshow2'.DS.'css'.DS);
+		JHTML::stylesheet('slideshow.css', 'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'css'.DS);
 		parent::formJavascriptClass($srcs);
 	}
 

@@ -1,14 +1,14 @@
 var FbOpenStreetMap = new Class({
-	Extends:FbElement,
+	Extends: FbElement,
 	
-	options:{
-		'lat':0,
-		'lon':0,
-		'zoomlevel':'13',
-		'drag':0
+	options: {
+		'lat': 0,
+		'lon': 0,
+		'zoomlevel': '13',
+		'drag': 0
 	},
 	
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.parent(element, options);
 		this.element_map = element + "_map";
 
@@ -17,42 +17,42 @@ var FbOpenStreetMap = new Class({
 		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 		OpenLayers.Util.onImageLoadErrorColor = "transparent";
 	
-		head.ready(function() {
+		head.ready(function () {
 	
 			var opts = {};
 			this.map = new OpenLayers.Map(this.element_map, opts);
 	
 			switch (this.options.defaultLayer) {
-				case 'openlayers':
-					this.openLayers();
-					break;
-				case 'yahoo':
-					this.yahoo();
-					break;
-				case 'google':
-					this.google();
-					break;
-				case 'virtualearth':
-					this.virtualEarth();
-					break;
+			case 'openlayers':
+				this.openLayers();
+				break;
+			case 'yahoo':
+				this.yahoo();
+				break;
+			case 'google':
+				this.google();
+				break;
+			case 'virtualearth':
+				this.virtualEarth();
+				break;
 			}
 			
-			if (this.options.defaultLayer != 'openlayers') {
+			if (this.options.defaultLayer !== 'openlayers') {
 				this.openLayers();
 			}
 			
 			/** create Google layers*/
-			if (this.options.layers.google == 1 && this.options.defaultLayer != 'google') {
+			if (this.options.layers.google === 1 && this.options.defaultLayer !== 'google') {
 				this.google();
 			}
 
 			/** create Virtual Earth layers */
-			if (this.options.layers.virtualEarth == 1 && this.options.defaultLayer != 'virtualearth') {
+			if (this.options.layers.virtualEarth === 1 && this.options.defaultLayer !== 'virtualearth') {
 				this.virtualEarth();
 			}
 
 			/** create Yahoo layer */
-			if (this.options.layers.yahoo == 1 && this.options.defaultLayer != 'yahoo') {
+			if (this.options.layers.yahoo === 1 && this.options.defaultLayer !== 'yahoo') {
 				this.yahoo();
 			}
 			
@@ -62,22 +62,21 @@ var FbOpenStreetMap = new Class({
 			this.addMarker();
 			this.map.addControl(new OpenLayers.Control.LayerSwitcher());
 	    
-	    controls = {
-	        drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': this.dragComplete.bindWithEvent(this)})
-	    };
+			var controls = {
+					drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': this.dragComplete.bindWithEvent(this)})
+				};
 
-	    for(var key in controls) {
-	        this.map.addControl(controls[key]);
-	    }
-	    if(this.options.editable == true){
-		    controls.drag.activate();
-		    this.map.addControl(new OpenLayers.Control.MousePosition());
-	    }
-
+			for (var key in controls) {
+				this.map.addControl(controls[key]);
+			}
+			if (this.options.editable === true) {
+				controls.drag.activate();
+				this.map.addControl(new OpenLayers.Control.MousePosition());
+			}
 		}.bind(this));
 	},
 	
-	dragComplete: function(marker){
+	dragComplete: function (marker) {
 		var m = marker.lonlat;
 		var str = m.toShortString() + ":" + this.map.getZoom();
 		this.element.value = str;
@@ -85,12 +84,12 @@ var FbOpenStreetMap = new Class({
 
 
 
-	getLonLat : function(lon, lat) {
+	getLonLat : function (lon, lat) {
 		var lonlat = new OpenLayers.LonLat(parseFloat(lon), parseFloat(lat));
 		return lonlat;
 	},
 	
-	addMarker : function() {
+	addMarker : function () {
 		this.markers = new OpenLayers.Layer.Markers("");
 		this.map.addLayer(this.markers);
 		var point = this.getLonLat(this.options.lon, this.options.lat);
@@ -101,12 +100,12 @@ var FbOpenStreetMap = new Class({
 		this.markers.addMarker(marker);
 	},
 	
-	openLayers : function() {
+	openLayers : function () {
 		layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Open streetmap");
 		this.map.addLayer(layerTilesAtHome);
 	},
 	
-	yahoo : function() {
+	yahoo : function () {
 		var layers = [];
 		layers.push(new OpenLayers.Layer.Yahoo("Yahoo", {}));
 		layers.push(new OpenLayers.Layer.Yahoo("Yahoo Satellite", {
@@ -118,7 +117,7 @@ var FbOpenStreetMap = new Class({
 		this.map.addLayers(layers);
 	},
 	
-	google : function() {
+	google : function () {
 		var layers = [];
 		layers.push(new OpenLayers.Layer.Google("Google Streets", {}));
 		layers.push(new OpenLayers.Layer.Google("Google Satellite", {
@@ -130,7 +129,7 @@ var FbOpenStreetMap = new Class({
 		this.map.addLayers(layers);
 	},
 	
-	virtualEarth : function() {
+	virtualEarth : function () {
 		var layers = [];
 		layers.push(new OpenLayers.Layer.VirtualEarth("Virtual Earth Roads", {
 			'type' : VEMapStyle.Road

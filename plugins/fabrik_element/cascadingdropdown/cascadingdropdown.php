@@ -29,7 +29,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		if ($params->get('cdd_display_type') == 'auto-complete') {
 			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'fabrikcascadingdropdown');
 		}
-		FabrikHelperHTML::script('media/com_fabrik/js/Event.mock.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/lib/Event.mock.js');
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->showPleaseSelect = $params->get('cascadingdropdown_showpleaseselect', true);
 		$opts->watch = $this->_getWatchId($repeatCounter);
@@ -364,6 +364,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	{
 		if (!isset($this->watchElement)) {
 			$watch = $this->getParams()->get('cascadingdropdown_observe');
+			if ($watch == '') {
+				JError::raiseError(500, 'No watch element set up for cdd'.$this->getElement()->id);
+			}
 			$this->watchElement = $this->getForm()->getElement($watch, true);
 		}
 		return $this->watchElement;
@@ -827,6 +830,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	function finalCopyCheck($elementMap)
 	{
 		$element = $this->getElement();
+		unset($this->_params);
 		$params = $this->getParams();
 		$oldObeserveId = $params->get('cascadingdropdown_observe');
 		if (!array_key_exists($oldObeserveId, $elementMap)) {
@@ -835,7 +839,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$newObserveId = $elementMap[$oldObeserveId];
 		$params->set('cascadingdropdown_observe', $newObserveId);
 		// 	save params
-		$element->params = json_encode($params);
+		$element->params = $params->toString();
 		if (!$element->store()) {
 			return JError::raiseWarning(500, $element->getError());
 		}

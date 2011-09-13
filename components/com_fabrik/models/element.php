@@ -1035,29 +1035,41 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * copy a n element table row
+	 * copy an element table row
 	 *
 	 * @param int $id
 	 * @param string $copytxt
 	 * @param int $groupid
+	 * @parma string $name
 	 * @return mixed error or new row
 	 */
 
-	function copyRow($id, $copytxt = 'Copy of ', $groupid = null)
+	function copyRow($id, $copytxt = 'Copy of %s', $groupid = null, $name = null)
 	{
 		$app = JFactory::getApplication();
 		$rule	= FabTable::getInstance('Element', 'FabrikTable');
 		if ($rule->load((int)$id)) {
 			$rule->id = null;
-			$rule->label = $copytxt . $rule->label;
+			$rule->label = sprintf($copytxt, $rule->label);
 			if (!is_null($groupid)) {
 				$rule->group_id = $groupid;
 			}
+			if (!is_null($name)) {
+				$rule->name = $name;
+			}
 
+			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+			$groupModel->setId($groupid);
+			$groupListModel = $groupModel->getListModel();
+			if ($groupListModel->fieldExists($rule->name)) {
+				return JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+			}
 			$date = JFactory::getDate();
 			$date->setOffset($app->getCfg('offset'));
 			$rule->created = $date->toMySQL();
-
+			if (strstr($rule->params, '_duplicate')) {
+				echo "<pre>";print_r($rule);exit;
+			}
 			$params = $rule->params == '' ? new stdClass() : json_decode($rule->params);
 			$params->parent_linked = 1;
 			$rule->params = json_encode($params);
@@ -1066,6 +1078,7 @@ class plgFabrik_Element extends FabrikPlugin
 			if (!$rule->store()) {
 				return JError::raiseWarning($rule->getError());
 			}
+			//echo "<pre>";print_r($rule);exit;
 		}
 		else {
 			return JError::raiseWarning(500, $rule->getError());
@@ -1082,7 +1095,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 
 		//copy js events
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_jsactions')->where('element_id = '. (int)$id);
 		$db->setQuery($query);
@@ -1520,8 +1533,6 @@ class plgFabrik_Element extends FabrikPlugin
 				$plugIn = new $class($dispatcher, $conf);
 
 				$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
-				//$oPlugin->_params = new fabrikParams($element->params);
-				//$this->_aValidations[] = $oPlugin;
 				$plugIn->elementModel = $this;
 				$this->_aValidations[] = $plugIn;
 				$c ++;
@@ -3120,8 +3131,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$data = FabrikWorker::JSONtoData($data, true);
-		for ($i=0; $i < count($data); $i++) {
-			$d = $data[$i];
+		foreach ($data as $i => $d) {
 			if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
 				$d = $this->_replaceWithIcons($d);
@@ -3131,6 +3141,12 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		}
 
 		if (is_array($data) && count($data) > 1) {
+			if (!array_key_exists(0, $data)){
+				//occurs if we have created a list from an exisitng table whose data contains json objects (e.g. jos_users.params)
+				$obj = JArrayHelper::toObject($data);
+				$data = array();
+				$data[0] = $obj;
+			}
 			//if we are storing info as json the data will contain an array of objects
 			if (is_object($data[0])) {
 				foreach ($data as &$o) {

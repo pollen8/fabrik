@@ -1,6 +1,6 @@
-var FbPicklist = new Class( {
+var FbPicklist = new Class({
 	Extends : FbElement,
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.plugin = 'fabrikpicklist';
 		this.parent(element, options);
 		if (this.options.allowadd === true) {
@@ -9,18 +9,18 @@ var FbPicklist = new Class( {
 		// hovercolor: this.options.bghovercolour,
 		var dropcolour = $(this.options.element + '_fromlist').getStyle(
 				'background-color');
-		this.sortable = new Sortables( [ '#' + this.element.id + '_fromlist',
+		this.sortable = new Sortables([ '#' + this.element.id + '_fromlist',
 				'#' + this.element.id + '_tolist' ], {
 			clone : true,
 			revert : true,
 			opacity : 0.7,
 			hovercolor : '#ffddff',
-			onComplete : function() {
+			onComplete : function () {
 				// alert(this.serialize());
 				this.setData();
 			}.bind(this),
-			onStart : function() {
-				this.drag.addEvent('onEnter', function(element, droppable) {
+			onStart : function () {
+				this.drag.addEvent('onEnter', function (element, droppable) {
 					if (this.lists.contains(droppable)) {
 						var hoverFx = new Fx.Tween(droppable, {
 							wait : false,
@@ -29,11 +29,11 @@ var FbPicklist = new Class( {
 						hoverFx.start('background-color', this.options.hovercolor);
 
 						if (this.lists.contains(this.drag.overed)) {
-							this.drag.overed.addEvent('mouseleave', function() {
+							this.drag.overed.addEvent('mouseleave', function () {
 								var hoverFx = new Fx.Tween(droppable, {
-											wait : false,
-											duration : 600
-										});
+									wait : false,
+									duration : 600
+								});
 								hoverFx.start('background-color', dropcolour);
 							});
 						}
@@ -43,9 +43,9 @@ var FbPicklist = new Class( {
 		});
 	},
 
-	setData : function() {
+	setData : function () {
 		var v = document.id(this.options.element + '_tolist').getElements('li').map(
-				function(item, index) {
+				function (item, index) {
 					return item.id
 							.replace(this.options.element + '_value_', '');
 				}.bind(this));
@@ -53,17 +53,18 @@ var FbPicklist = new Class( {
 		this.element.value = JSON.encode(v);
 	},
 
-	watchAdd : function() {
+	watchAdd : function () {
 		var id = this.element.id;
 		if (!document.id(this.element.id + '_dd_add_entry')) {
 			return;
 		}
 		document.id(this.element.id + '_dd_add_entry').addEvent(
 				'click',
-				function(e) {
+				function (e) {
+					var val;
 					var label = document.id(id + '_ddLabel').value;
 					if (document.id(id + '_ddVal')) {
-						var val = document.id(id + '_ddVal').value;
+						val = document.id(id + '_ddVal').value;
 					} else {
 						val = label;
 					}

@@ -1,18 +1,18 @@
 var SliderField = new Class({
-	initialize : function(field, slider) {
+	initialize : function (field, slider) {
 		this.field = $(field);
 		this.slider = slider;
 		this.eventChange = this.update.bindWithEvent(this);
 		this.field.addEvent("change", this.eventChange);
 	},
 
-	destroy : function() {
+	destroy : function () {
 		this.field.removeEvent("change", this.eventChange);
 	},
 
-	update : function() {
+	update : function () {
 		if (!this.options.editable) {
-			this.element.innerHTML = val;
+			this.element.set('html', val);
 			return;
 		}
 		this.slider.set(this.field.value.toInt());
@@ -22,16 +22,16 @@ var SliderField = new Class({
 var ColourPicker = new Class({
 	Extends: FbElement,
 	
-	options : {
-		closeImage : 'plugins/fabrik_element/colourpicker/images/close.gif',
-		handleImage : 'plugins/fabrik_element/colourpicker/images/handle.gif',
-		trackImage : 'plugins/fabrik_element/colourpicker/images/track.gif',
-		red : 0,
-		green : 0,
-		blue : 0
+	options: {
+		closeImage: 'plugins/fabrik_element/colourpicker/images/close.gif',
+		handleImage: 'plugins/fabrik_element/colourpicker/images/handle.gif',
+		trackImage: 'plugins/fabrik_element/colourpicker/images/track.gif',
+		red: 0,
+		green: 0,
+		blue: 0
 	},
 	
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.plugin = 'colourpicker';
 		this.parent(element, options);
 
@@ -47,8 +47,9 @@ var ColourPicker = new Class({
 		this.showCloseIcon = true;
 		// create the table to hold the scroller
 		this.table = new Element('table', {
-			'styles' : {
-				'float' : 'right','margin-right':'2px'
+			'styles': {
+				'float': 'right',
+				'margin-right': '2px'
 			}
 		});
 		this.tbody = new Element('tbody');
@@ -57,8 +58,8 @@ var ColourPicker = new Class({
 		if (this.showCloseIcon) {
 			var closeIcon = this.createCloseIcon(element);
 			this.widget.appendChild(closeIcon);
-		}else{
-			new Element('div', {'class':'handle','styles':{'width':'375px','text-align':'right','clear':'both'}}).inject(this.widget);
+		} else {
+			new Element('div', {'class': 'handle', 'styles': {'width': '375px', 'text-align': 'right', 'clear': 'both'}}).inject(this.widget);
 		}
 		if (this.showSwatch) {
 			this.createColourSwatch(element);
@@ -73,21 +74,21 @@ var ColourPicker = new Class({
 		for (var i = 0; i < aColours.length; i++) {
 			var col = aColours[i];
 			var opts = {
-				steps : 255,
-				'color' : col,
-				max : 255,
-				offset : 1,
-				onChange : function(pos) {
-					window.fireEvent('fabrik.colourpicker.slider', [this, this.options.color, pos])
+				steps: 255,
+				'color': col,
+				max: 255,
+				offset: 1,
+				onChange: function (pos) {
+					window.fireEvent('fabrik.colourpicker.slider', [this, this.options.color, pos]);
 				}
 			};
 			this.sliderRefs.push(element + col + 'track');
 			this[col + "Slider"] = new Slider($(element + col + 'track'), $(element + col + 'handle'), opts);
 		}
-		window.addEvent('fabrik.colourpicker.slider', function(o, col, pos){
-			if(this.sliderRefs.contains(o.element.id)) {
+		window.addEvent('fabrik.colourpicker.slider', function (o, col, pos) {
+			if (this.sliderRefs.contains(o.element.id)) {
 				this.options.colour[col] = pos;
-				this.update(this.options.colour.red+','+this.options.colour.green+','+this.options.colour.blue);
+				this.update(this.options.colour.red + ',' + this.options.colour.green + ',' + this.options.colour.blue);
 			}
 			
 		}.bind(this));
@@ -101,47 +102,47 @@ var ColourPicker = new Class({
 			var closeButton = this.createCloseButton(element, 'Close');
 			this.widget.appendChild(closeButton);
 		}
-		var d = new Drag.Move(this.widget, {'handle':this.widget.getElement('.handle')});
+		var d = new Drag.Move(this.widget, {'handle': this.widget.getElement('.handle')});
 		this.update(this.options.value);
 	},
 
-	createColourSwatch : function(element) {
+	createColourSwatch : function (element) {
 		var j;
 		this.fUpdateFromSwatch = this.updateFromSwatch.bindWithEvent(this);
 		var swatchDiv = new Element('div', {
-			'styles' : {
-				'float' : 'left',
-				'margin-left':'5px',
-				'class' : 'swatchBackground'
+			'styles': {
+				'float': 'left',
+				'margin-left': '5px',
+				'class': 'swatchBackground'
 			}
 		});
 
 		for (var i = 0; i < this.options.swatch.length; i++) {
 			var swatchLine = new Element('div', {
-				'styles' : {
-					'width' : '160px'
+				'styles': {
+					'width': '160px'
 				}
 			});
 			var line = this.options.swatch[i];
 			j = 0;
-			$H(line).each(function(colname, colour){
+			$H(line).each(function (colname, colour) {
 				var swatchId = element + 'swatch-' + i + '-' + j;
 				swatchLine.adopt(new Element('div', {
-					'id' : swatchId,
-					'styles' : {
-						'float' : 'left',
-						'width' : '10px',
-						'cursor' : 'crosshair',
-						'height' : '10px',
-						'background-color' : 'rgb(' + colour + ')'
+					'id': swatchId,
+					'styles': {
+						'float': 'left',
+						'width': '10px',
+						'cursor': 'crosshair',
+						'height': '10px',
+						'background-color': 'rgb(' + colour + ')'
 					},
-					'class':colname,
-					'events':{
-						'click':this.fUpdateFromSwatch,
-						'mouseenter':this.showColourName.bindWithEvent(this),
-						'mouseleave':this.clearColourName.bindWithEvent(this)
+					'class': colname,
+					'events': {
+						'click': this.fUpdateFromSwatch,
+						'mouseenter': this.showColourName.bindWithEvent(this),
+						'mouseleave': this.clearColourName.bindWithEvent(this)
 					}
-				}))
+				}));
 				j++;
 			}.bind(this));
 			
@@ -150,7 +151,7 @@ var ColourPicker = new Class({
 		this.widget.adopt(swatchDiv);
 	},
 
-	updateFromSwatch : function(e) {
+	updateFromSwatch : function (e) {
 		e.stop();
 		var c = new Color(e.target.getStyle('background-color'));
 		this.options.colour.red = c.red;
@@ -160,30 +161,29 @@ var ColourPicker = new Class({
 		this.updateAll(this.options.colour.red, this.options.colour.green, this.options.colour.blue);
 	},
 	
-	showColourName:function(e){
-		var e = new Event(e);
+	showColourName: function (e) {
 		this.colourName = e.target.className;
 		e.target.findClassUp('colourpicker-widget').getElement('.colourName').set('text', this.colourName);
 	},
 	
-	clearColourName:function(e){
+	clearColourName: function (e) {
 		e.target.findClassUp('colourpicker-widget').getElement('.colourName').set('text', '');
 	},
 
-	updateOutputs : function() {
+	updateOutputs : function () {
 		var c = new Color([this.options.colour.red, this.options.colour.green, this.options.colour.blue]);
-		this.outputs['backgrounds'].each( function(output) {
+		this.outputs.backgrounds.each(function (output) {
 			output.setStyle('background-color', c);
 		});
-		this.outputs['foregrounds'].each( function(output) {
+		this.outputs.foregrounds.each(function (output) {
 			output.setStyle('background-color', c);
 		});
-		this.element.value = c.red+','+c.green+','+c.blue;
+		this.element.value = c.red + ',' + c.green + ',' + c.blue;
 	},
 
-	update : function(val) {
-		if (this.options.editable == false) {
-			this.element.innerHTML = val;
+	update : function (val) {
+		if (this.options.editable === false) {
+			this.element.set('html', val);
 			return;
 		}
 		if (typeOf(val) === 'null') {
@@ -194,7 +194,7 @@ var ColourPicker = new Class({
 		this.updateAll(val[0], val[1], val[2]);
 	},
 
-	updateAll : function(red, green, blue) {
+	updateAll : function (red, green, blue) {
 		red = red ? red.toInt() : 0;
 		green = green ? green.toInt() : 0;
 		blue = blue ? blue.toInt() : 0;
@@ -210,49 +210,49 @@ var ColourPicker = new Class({
 		this.updateOutputs();
 	},
 
-	setOutputs : function(output) {
+	setOutputs : function (output) {
 		this.outputs = {};
-		this.outputs.backgrounds = (this.element.findClassUp('fabrikElementContainer').getElements('.colourpicker_bgoutput'));
-		this.outputs.foregrounds = (this.element.findClassUp('fabrikElementContainer').getElements('.colourpicker_output'));
-		this.outputs.backgrounds.each(function(i){
+		this.outputs.backgrounds = (this.element.getParent('.fabrikElementContainer').getElements('.colourpicker_bgoutput'));
+		this.outputs.foregrounds = (this.element.getParent('.fabrikElementContainer').getElements('.colourpicker_output'));
+		this.outputs.backgrounds.each(function (i) {
 			i.addEvent('click', this.toggleWidget.bindWithEvent(this));
 		}.bind(this));
-		this.outputs.foregrounds.each(function(i){
+		this.outputs.foregrounds.each(function (i) {
 			i.addEvent('click', this.toggleWidget.bindWithEvent(this));
 		}.bind(this));
 	},
 	
-	toggleWidget: function(e){
+	toggleWidget: function (e) {
 		e.stop();
 		this.widget.toggle();
 	},
 	
-	updateFromField:function(evt, col){
+	updateFromField: function (evt, col) {
 		var val = evt.target.value.toInt();
 		if (isNaN(val)) {
 			val = 0;
 		} else {
 			this.options.colour[col] = val;
-			this.update(this.options.colour.red+','+this.options.colour.green+','+this.options.colour.blue);
+			this.update(this.options.colour.red + ',' + this.options.colour.green + ',' + this.options.colour.blue);
 		}
 	},
 
-	createCloseButton : function(picker, sClose) {
+	createCloseButton : function (picker, sClose) {
 		var div = new Element('div', {
-			'styles' : {
-				'width' : '375px',
-				'text-align' : 'right',
-				'clear' : 'right'
+			'styles': {
+				'width': '375px',
+				'text-align': 'right',
+				'clear': 'right'
 			}
 		});
-		div.adopt(new Element('span', {'class':'colourName', 'styles':{'padding-right':'20px'}}));
+		div.adopt(new Element('span', {'class': 'colourName', 'styles': {'padding-right': '20px'}}));
 		picker = $(picker);
 		var input = new Element('input', {
-			'class' : 'button',
-			'value' : sClose,
-			'type' : 'button',
-			'events' : {
-				'click' : function() {
+			'class': 'button',
+			'value': sClose,
+			'type': 'button',
+			'events': {
+				'click': function () {
 					this.widget.toggle();
 				}.bind(this)
 			}
@@ -261,61 +261,62 @@ var ColourPicker = new Class({
 		return div;
 	},
 
-	createCloseIcon : function(picker) {
+	createCloseIcon : function (picker) {
 		//todo replace clos img with art svn icon
-		var div = new Element('div', {'class':'handle',
-			'styles' : {
-				'margin' : '0 0 10px 0',
-				'background-color':'#333333',
-				'cursor':'move',
-				'text-align' : 'right',
-				'clear' : 'both',
-				'height':'13px'
+		var div = new Element('div', {'class': 'handle',
+			'styles': {
+				'margin': '0 0 10px 0',
+				'background-color': '#333333',
+				'cursor': 'move',
+				'text-align': 'right',
+				'clear': 'both',
+				'height': '13px'
 			}
 		}).adopt(new Element('img', {
-			'src' : this.options.closeImage,
-			'styles' : {
-				'float':'right',
-				'cursor' : 'pointer'
-			},
-			'events' : {
-				'click' : function(e) {
-					e.target.getParent().parentNode.hide();
-					e.stop();
+				'src': this.options.closeImage,
+				'styles': {
+					'float': 'right',
+					'cursor': 'pointer'
+				},
+				'events': {
+					'click': function (e) {
+						e.target.getParent().parentNode.hide();
+						e.stop();
+					}
 				}
-			}
-		}));
+			})
+		);
 		return div;
 	},
 
-	createColourSlideHTML : function(element, colour, label, value) {
+	createColourSlideHTML : function (element, colour, label, value) {
 
 		var Track = new Element('div', {
-			'id' : element + colour + 'track',
-			'styles' : {
-				'height' : '5px',
-				'width' : '123px',
-				'background':'url("'+ this.options.trackImage + '") repeat-x scroll center center transparent'
+			'id': element + colour + 'track',
+			'styles': {
+				'height': '5px',
+				'width': '123px',
+				'background': 'url("' + this.options.trackImage + '") repeat-x scroll center center transparent'
 			}
 		});
 
 		var sliderDiv = new Element('div', {
-			'id' : element + colour + 'handle',
-			'styles' : {
-				'width' : '11px',
-				'height' : '21px',
-				'top' : '-15px'
+			'id': element + colour + 'handle',
+			'styles': {
+				'width': '11px',
+				'height': '21px',
+				'top': '-15px'
 			}
 		}).adopt(new Element('img', {
 			'src' : this.options.handleImage
 		}));
 
 		var sliderField = new Element('input', {
-			'type' : 'text',
-			'id' : element + colour + 'redField',
-			'size' : '3',
-			'class' : 'input ' + colour+'SliderField',
-			'value' : value
+			'type': 'text',
+			'id': element + colour + 'redField',
+			'size': '3',
+			'class': 'input ' + colour + 'SliderField',
+			'value': value
 		});
 
 		var tr1 = new Element('tr').adopt([new Element('td').appendText(label), new Element('td').adopt([Track.adopt(sliderDiv)]),

@@ -1,6 +1,6 @@
 var FbListDownload = new Class({
 	Extends : FbListPlugin,
-	initialize : function(options) {
+	initialize : function (options) {
 		this.parent(options);
 	}
 });

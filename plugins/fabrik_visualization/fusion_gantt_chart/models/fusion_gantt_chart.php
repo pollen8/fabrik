@@ -20,10 +20,10 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 	function getChart()
 	{
 		// Include PHP Class
-		include(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'visualization'.DS.'fusion_gantt_chart'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
+		include(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'visualization'.DS.'fusion_gantt_chart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
 		// Add JS to page header
 		$document = JFactory::getDocument();
-		$document->addScript($this->srcBase."fusion_gantt_chart/FCCharts/FusionCharts.js");
+		$document->addScript($this->srcBase."fusion_gantt_chart/lib/FCCharts/FusionCharts.js");
 
 		$params = $this->getParams();
 		$w = $params->get('fusion_gantt_chart_width');
@@ -33,7 +33,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$FC = new FusionCharts("GANTT","$w","$h");
 
 		// Define path to FC's SWF
-		$FC->setSWFPath($this->srcBase."fusion_gantt_chart/FCCharts/");
+		$FC->setSWFPath($this->srcBase."fusion_gantt_chart/lib/FCCharts/");
 
 
 		$FC->setChartParam('dateFormat', 'yyyy-mm-dd');

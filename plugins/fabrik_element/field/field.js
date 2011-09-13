@@ -1,15 +1,15 @@
 var FbField = new Class({
 	Extends: FbElement,
-	initialize: function(element, options) {
+	initialize: function (element, options) {
 		this.plugin = 'fabrikfield';
 		this.parent(element, options);
 	},
 	
-	select:function(){
+	select: function () {
 		this.element.select();
 	},
 	
-	focus:function(){
+	focus: function () {
 		this.element.focus();
 	}
 });

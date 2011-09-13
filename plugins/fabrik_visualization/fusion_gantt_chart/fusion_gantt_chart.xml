@@ -12,8 +12,7 @@
 	<files>
 		<filename plugin="fusion_gantt_chart">index.html</filename>
 		<folder>controllers</folder>
-		<folder>FCCharts</folder>
-		<folder>FCclass</folder>
+		<folder>lib</folder>
 		<folder>language</folder>
 		<folder>models</folder>
 		<folder>views</folder>

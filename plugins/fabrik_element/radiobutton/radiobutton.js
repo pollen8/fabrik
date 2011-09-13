@@ -1,6 +1,6 @@
 var FbRadio = new Class({
 	Extends : FbElement,
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.plugin = 'fabrikradiobutton';
 		this.parent(element, options);
 		this._getSubElements();
@@ -10,7 +10,7 @@ var FbRadio = new Class({
 		}
 	},
 
-	watchAddToggle : function() {
+	watchAddToggle : function () {
 		var c = this.getContainer();
 		var d = c.getElement('div.addoption');
 
@@ -28,22 +28,23 @@ var FbRadio = new Class({
 			duration : 500
 		});
 		this.mySlider.hide();
-		a.addEvent('click', function(e) {
+		a.addEvent('click', function (e) {
 			new Event(e).stop();
 			this.mySlider.toggle();
 		}.bind(this));
 	},
 
-	watchAdd : function() {
+	watchAdd : function () {
+		var val;
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			var id = this.options.element;
 			var c = this.getContainer();
-			c.getElement('input[type=button]').addEvent('click', function(event) {
+			c.getElement('input[type=button]').addEvent('click', function (event) {
 				var l = c.getElement('input[name=addPicklistLabel]');
 				var v = c.getElement('input[name=addPicklistValue]');
 				var label = l.value;
 				if (v) {
-					var val = v.value;
+					val = v.value;
 				} else {
 					val = label;
 				}
@@ -70,12 +71,12 @@ var FbRadio = new Class({
 		}
 	},
 
-	getValue : function() {
+	getValue : function () {
 		if (!this.options.editable) {
 			return this.options.value;
 		}
 		var v = '';
-		this._getSubElements().each(function(sub) {
+		this._getSubElements().each(function (sub) {
 			if (sub.checked) {
 				v = sub.get('value');
 				return v;
@@ -85,12 +86,12 @@ var FbRadio = new Class({
 		return v;
 	},
 
-	setValue : function(v) {
+	setValue : function (v) {
 		if (!this.options.editable) {
 			return;
 		}
-		this._getSubElements().each(function(sub) {
-			if (sub.value == v) {
+		this._getSubElements().each(function (sub) {
+			if (sub.value === v) {
 				sub.checked = 'checked';
 			}
 		});
@@ -98,7 +99,7 @@ var FbRadio = new Class({
 
 	// get the sub element which are the checkboxes themselves
 
-	_getSubElements : function() {
+	_getSubElements : function () {
 		if (!this.element) {
 			this.subElements = $A([]);
 		} else {
@@ -107,21 +108,21 @@ var FbRadio = new Class({
 		return this.subElements;
 	},
 
-	addNewEvent : function(action, js) {
-		if (action == 'load') {
+	addNewEvent : function (action, js) {
+		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
 		} else {
 			this._getSubElements();
-			this.subElements.each(function(el) {
-				el.addEvent(action, function(e) {
+			this.subElements.each(function (el) {
+				el.addEvent(action, function (e) {
 					$type(js) === 'function' ? js.delay(0) : eval(js);
 				});
 			});
 		}
 	},
 
-	update : function(val) {
+	update : function (val) {
 		if (!this.options.editable) {
 			if (val === '') {
 				this.element.innerHTML = '';
@@ -131,15 +132,15 @@ var FbRadio = new Class({
 			return;
 		} else {
 			var els = this._getSubElements();
-			if (typeOf(val) == 'array') {
-				els.each(function(el) {
+			if (typeOf(val) === 'array') {
+				els.each(function (el) {
 					if (val.contains(el.value)) {
 						el.setProperty('checked', 'checked');
 					}
 				});
 			} else {
-				els.each(function(el) {
-					if (el.value == val) {
+				els.each(function (el) {
+					if (el.value === val) {
 						el.setProperty('checked', 'checked');
 					}
 				});
@@ -147,7 +148,7 @@ var FbRadio = new Class({
 		}
 	},
 
-	cloned : function() {
+	cloned : function () {
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.watchAddToggle();
 			this.watchAdd();

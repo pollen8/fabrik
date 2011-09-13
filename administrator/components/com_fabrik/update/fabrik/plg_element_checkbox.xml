@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+	
+	<update>
+		<name>Fabrik Element: Checkbox</name>
+		<description>Fabrik Element: Checkbox</description>
+		<element>plg_element_checkbox</element>
+		<type>plugin</type>
+		<folder>fabrik_element</folder>
+		<version>3.0b</version>
+		<downloads>
+			<downloadurl type="full" format="zip">http://fabrikar.com/media/downloads/plg_element_checkbox_3.0b.zip</downloadurl>
+		</downloads>
+		<maintainer>Rob Clayburn</maintainer>
+		<maintainerurl>http://pollen-8.co.uk</maintainerurl>
+		<targetplatform name="joomla" version="1.7" />
+	</update>
+
+</updates>

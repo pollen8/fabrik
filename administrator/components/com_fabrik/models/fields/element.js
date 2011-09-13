@@ -1,14 +1,14 @@
 var elementElement = new Class({
 
-	Implements : [ Options, Events ],
+	Implements: [Options, Events],
 	
 	options : {
-		'plugin' : 'chart',
-		'excludejoined' : 0,
-		'value' : ''
+		'plugin': 'chart',
+		'excludejoined': 0,
+		'value': ''
 	},
 	
-	initialize : function(el, options) {
+	initialize : function (el, options) {
 		this.el = el;
 		this.setOptions(options);
 		// this.updateMeEvent = this.updateMe.bindAsEventListener(this);
@@ -21,7 +21,7 @@ var elementElement = new Class({
 		}
 	},
 
-	ready : function() {
+	ready : function () {
 		if (typeOf($(this.options.conn)) === 'null') {
 			return false;
 		}
@@ -31,13 +31,13 @@ var elementElement = new Class({
 		if (Object.getLength(Fabrik.model.fields.fabriktable) === 0) {
 			return false;
 		}
-		if (Object.keys(Fabrik.model.fields.fabriktable).indexOf(this.options.table) == -1) {
+		if (Object.keys(Fabrik.model.fields.fabriktable).indexOf(this.options.table) === -1) {
 			return false;
 		}
 		return true;
 	},
 
-	getCnn : function() {
+	getCnn : function () {
 		if (!this.ready()) {
 			return;
 		}
@@ -45,26 +45,26 @@ var elementElement = new Class({
 		clearInterval(this.cnnperiodical);
 	},
 
-	setUp : function() {
+	setUp : function () {
 		var s = this.el;
 		this.el = document.id(this.el);
-		if (typeOf(this.el) == 'null') {
+		if (typeOf(this.el) === 'null') {
 			fconsole('element didnt find me, ', s);
 		}
 		Fabrik.model.fields.fabriktable[this.options.table].registerElement(this);
 	},
 
-	getOpts : function() {
+	getOpts : function () {
 		return $H({
-			'calcs' : this.options.include_calculations,
-			'showintable' : this.options.showintable,
-			'published' : this.options.published,
-			'excludejoined' : this.options.excludejoined
+			'calcs': this.options.include_calculations,
+			'showintable': this.options.showintable,
+			'published': this.options.published,
+			'excludejoined': this.options.excludejoined
 		});
 	},
 
 	// only called from repeat viz admin interface i think
-	cloned : function(newid, counter) {
+	cloned : function (newid, counter) {
 		this.el = newid;
 		var t = this.options.table.split('-');
 		t.pop();

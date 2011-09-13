@@ -184,7 +184,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_join;
 			}
 		}
-		JError::raiseNotice(500, 'unable to process db join element id:'. $element->id);
+		JError::raiseError(500, 'unable to process db join element id:'. $element->id);
 		return false;
 	}
 

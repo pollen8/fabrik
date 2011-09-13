@@ -5352,25 +5352,40 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * drop the table containing the fabriktables data
+	 * drop the table containing the fabriktables data and drop any internal joins db tables.
 	 */
 
 	function drop()
 	{
 		$db = $this->getDb();
-		$item = $this->getTable();
+		$item = $this->getTable(true);
 		$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($item->db_table_name);
 		$db->setQuery($sql);
 		if (!$db->query()) {
-			return JError::raiseWarning(JText::_($db->getErrorMsg()));
+			echo $db->getErrorMsg();exit;
+			return JError::raiseError(500, 'drop:'. JText::_($db->getErrorMsg()));
+		}
+		//remove any groups that were set to be repeating and hence were storing in their own db table.
+		$joinModels = $this->getInternalRepeatJoins();
+		foreach ($joinModels as $joinModel) {
+			$db->setQuery("DROP TABLE IF EXISTS ".$db->nameQuote($joinModel->getJoin()->table_join));
+			$db->query();
+			if ($db->getErrorNum()) {
+				JError::raiseError(500,  'drop internal group tables: ' . $db->getErrorMsg());
+			}
 		}
 		return '';
 	}
-
-	function truncate()
+	
+	/**
+	 * get an array of join models relating to the groups which were set to be repeating and thus thier data 
+	 * stored in a separate db table
+	 * @return array join models.
+	 */
+	
+	protected function getInternalRepeatJoins()
 	{
-		$db = $this->getDb();
-		$item = $this->getTable();
+		$return = array();
 		$groupModels = $this->getFormGroupElementData();
 		//remove any groups that were set to be repeating and hence were storing in their own db table.
 		foreach ($groupModels as $groupModel) {
@@ -5379,10 +5394,26 @@ class FabrikFEModelList extends JModelForm {
 				$join = $joinModel->getJoin();
 				$joinParams = json_decode($join->params);
 				if (isset($joinParams->type) && $joinParams->type == 'group') {
-					$db->setQuery("TRUNCATE ".$db->nameQuote($joinModel->getJoin()->table_join));
-					$db->query();
+					$return[] = $joinModel;
 				}
 			}
+		}
+		return $return;
+	}
+
+	/**
+	 * truncate the main db table and any internal joined groups
+	 */
+
+	function truncate()
+	{
+		$db = $this->getDb();
+		$item = $this->getTable();
+		//remove any groups that were set to be repeating and hence were storing in their own db table.
+		$joinModels = $this->getInternalRepeatJoins();
+		foreach ($joinModels as $joinModel) {
+			$db->setQuery("TRUNCATE ".$db->nameQuote($joinModel->getJoin()->table_join));
+			$db->query();
 		}
 		$db->setQuery("TRUNCATE ".$db->nameQuote($item->db_table_name));
 		$db->query();

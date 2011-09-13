@@ -372,7 +372,7 @@ class fabrikViewForm extends JView
 		$opts->hiddenGroup = $hidden;
 		$opts->maxRepeat = $maxRepeat;
 		//$$$ rob 26/04/2011 joomfish translations of password validation error messages
-		$opts->lang = FabrikWorker::getJoomfishLang();
+		//$opts->lang = FabrikWorker::getJoomfishLang();
 
 		$opts = json_encode($opts);
 
@@ -388,9 +388,7 @@ class fabrikViewForm extends JView
 		//$$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
 		$str ="head.ready(function() {
-		$bkey = new FbForm(".$model->getId().", $opts);\n";
-		//$str .= "$bkey.addListenTo('list_" . $listModel->getId() . "');\n";
-		//$str .= "$bkey.addListenTo('form_" . $model->getId() . "');\n";
+		window.$bkey = new FbForm(".$model->getId().", $opts);\n";
 		$str .= "if(typeOf(Fabrik) !== 'null') {\n";
 		$str .= "Fabrik.addBlock('$bkey', $bkey);\n";
 		$str .= "}\n

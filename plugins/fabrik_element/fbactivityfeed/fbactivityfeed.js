@@ -1,7 +1,7 @@
 var FbActivityfeed = new Class({
-	Extends:FbElement,
-	initialize: function(element, options) {
+	Extends: FbElement,
+	initialize: function (element, options) {
 		this.plugin = 'fbActivityfeed';
-		this.parent(element, options)
+		this.parent(element, options);
 	}
 });

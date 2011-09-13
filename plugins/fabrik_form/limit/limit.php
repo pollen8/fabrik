@@ -88,7 +88,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 	{
 		// @TODO not working
 
-		/*FabrikHelperHTML::script('plugins/fabrik_form/limit/admin.js', true);
+		/*
 		$params = $this->getParams();
 		$children = $params->getChildren();
 

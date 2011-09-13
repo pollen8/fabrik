@@ -1,0 +1,1 @@
+Fabrik={};Fabrik.model={fields:{fabriktable:{},element:{}}};

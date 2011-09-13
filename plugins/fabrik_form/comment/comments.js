@@ -1,69 +1,68 @@
 var FabrikComment = new Class({
 	
-	Implements:[Options, Events],
+	Implements: [Options, Events],
 	
-	getOptions: function() {
+	getOptions: function () {
 		return {
-			'formid':0,
-			'rowid':0,
-			'livesite':'',
-			'label':''
+			'formid': 0,
+			'rowid': 0,
+			'label': ''
 		};
 	},
 
-	initialize: function(element, options) {
+	initialize: function (element, options) {
 		this.element = $(element);
-		if(typeOf(this.element) === 'null') {
+		if (typeOf(this.element) === 'null') {
 			return;
 		}
 
 		this.setOptions(this.getOptions(), options);
 		this.fx = {};
 		this.fx.toggleForms = $H();
-		this.spinner = new Element('img', {'styles':{'display':'none'},	'src':this.options.livesite+'media/com_fabrik/images/ajax-loader.gif'});
+		this.spinner = new Element('img', {'styles': {'display': 'none'},	'src': Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif'});
 		this.doAjaxDeleteComplete = this.deleteComplete.bindWithEvent(this);
 		this.ajax = {};
 		var url = Fabrik.liveSite + 'index.php';
 		this.ajax.deleteComment = new Request({
-			'url' : url, 
-			'method':'get',
-			'data':{
-				'option':'com_fabrik',
-				'format':'raw',
-				'view':'plugin',
-				'task':'pluginAjax',
-				'plugin':'comment',
-				'method':'deleteComment',
-				'g':'form',
-				'formid':this.options.formid,
-				'rowid':this.options.rowid
+			'url': url, 
+			'method': 'get',
+			'data': {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'view': 'plugin',
+				'task': 'pluginAjax',
+				'plugin': 'comment',
+				'method': 'deleteComment',
+				'g': 'form',
+				'formid': this.options.formid,
+				'rowid': this.options.rowid
 			},
-			'onComplete':this.doAjaxDeleteComplete
+			'onComplete': this.doAjaxDeleteComplete
 		});
 		this.ajax.updateComment = new Request({
-			'url':url + '?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&plugin=comment&method=updateComment&g=form', 
-			'method':'post',
-			'data':{
-				'formid':this.options.formid,
-				'rowid':this.options.rowid
+			'url': url + '?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&plugin=comment&method=updateComment&g=form', 
+			'method': 'post',
+			'data': {
+				'formid': this.options.formid,
+				'rowid': this.options.rowid
 			}
 		});
 		this.watchReply();
 		this.watchInput();
 	},
 
-	ajaxComplete: function(d) {
+	ajaxComplete: function (d) {
 		d = JSON.decode(d);
 		var depth = (d.depth.toInt() * 20) + 'px';
 		var id = 'comment_' + d.id;
-		var li = new Element('li', {'id':id, styles:{'margin-left':depth}
+		var li = new Element('li', {'id': id, styles: {'margin-left': depth}
 		}).set('html', d.content);
 		if (this.currentLi.get('tag') === 'li') {
 			li.inject(this.currentLi, 'after');
 		} else {
 			li.inject(this.currentLi);
 		}
-		var fx = new Fx.Tween(li, {'property':'opacity', duration:5000});
+		var fx = new Fx.Tween(li, {'property': 'opacity', duration: 5000});
 		fx.set(0);
 		fx.start(0, 100);
 
@@ -72,7 +71,7 @@ var FabrikComment = new Class({
 			alert(d.message.title, d.message.message);
 		}
 		//for update
-		if(this.spinner) {
+		if (this.spinner) {
 			this.spinner.setStyle('display', 'none');
 		}
 		this.watchInput();
@@ -83,30 +82,30 @@ var FabrikComment = new Class({
 	// CAN THE LIST BE ADDED TO //
 	// ***************************//
 
-	watchInput : function() {
+	watchInput : function () {
 		var url = Fabrik.liveSite + 'index.php';
 
 		this.ajax.addComment = new Request({
-			'url' : url, 
-			'method' : 'get',
-			'data' : {
-				'option' : 'com_fabrik',
-				'format' : 'raw',
-				'view' : 'plugin',
-				'task' : 'pluginAjax',
-				'plugin' : 'comment',
-				'method' : 'addComment',
-				'g' : 'form',
-				'formid' : this.options.formid,
-				'rowid' : this.options.rowid,
-				'label' : this.options.label
+			'url': url, 
+			'method': 'get',
+			'data': {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'view': 'plugin',
+				'task': 'pluginAjax',
+				'plugin': 'comment',
+				'method': 'addComment',
+				'g': 'form',
+				'formid': this.options.formid,
+				'rowid': this.options.rowid,
+				'label': this.options.label
 			},
-			'onComplete' : function(r){
-				this.ajaxComplete(r)
+			'onComplete': function (r) {
+				this.ajaxComplete(r);
 			}.bind(this)
 		});
 
-		this.element.getElements('.replyform').each(function(f) {
+		this.element.getElements('.replyform').each(function (f) {
 			var input = f.getElement('textarea');
 			if (!input) {
 				return;
@@ -118,21 +117,21 @@ var FabrikComment = new Class({
 		}.bind(this));
 	},
 
-	testInput : function(e) {
+	testInput : function (e) {
 		if (e.target.get('value') === Joomla.JText._('PLG_FORM_COMMENT_TYPE_A_COMMENT_HERE')) {
 			e.target.value = '';
 		}
 	},
 	
-	updateDigg:function() {
-		if(typeOf(this.digg) !== 'null') {
+	updateDigg: function () {
+		if (typeOf(this.digg) !== 'null') {
 			this.digg.removeEvents();
 			this.digg.addEvents();
 		}
 	},
 
 	// check details and then submit the form
-	doInput : function(e) {
+	doInput : function (e) {
 		var event = new Event(e);
 		this.spinner.inject($(event.target), 'after');
 		var replyform = $(event.target).findClassUp('replyform');
@@ -172,14 +171,14 @@ var FabrikComment = new Class({
 			this.ajax.addComment.options.data.name = namestr;
 		}
 
-		var comment_plugin_notify = replyform.getElements('input[name^=comment-plugin-notify]').filter(function(i) {
+		var comment_plugin_notify = replyform.getElements('input[name^=comment-plugin-notify]').filter(function (i) {
 			return i.checked;
 		});
 
 		var email = replyform.getElement('input[name=email]');
 		if (email) {
 			var emailstr = email.get('value');
-			if (emailstr == '') {
+			if (emailstr === '') {
 				this.spinner.setStyle('display', 'none');
 				alert(Joomla.JText._('PLG_FORM_COMMENT_ENTER_EMAIL_BEFORE_POSTNG'));
 				return;
@@ -197,8 +196,8 @@ var FabrikComment = new Class({
 			this.ajax.addComment.options.data.rating = replyform.getElement('select[name=rating]').get('value');
 		}
 		if (replyform.getElement('input[name^=annonymous]')) {
-			var sel = replyform.getElements('input[name^=annonymous]').filter(function(i) {
-				return i.checked == true;
+			var sel = replyform.getElements('input[name^=annonymous]').filter(function (i) {
+				return i.checked === true;
 			});
 			this.ajax.addComment.options.data.annonymous = sel[0].get('value');
 		}
@@ -209,7 +208,7 @@ var FabrikComment = new Class({
 		this.element.getElement('textarea').value = '';
 	},
 
-	saveComment : function(div) {
+	saveComment : function (div) {
 		var id = div.findClassUp('comment').id.replace('comment-', '');
 		
 		
@@ -223,8 +222,9 @@ var FabrikComment = new Class({
 	},
 
 	// toggle fx the reply forms - recalled each time a comment is added via ajax
-	watchReply : function() {
-		this.element.getElements('.replybutton').each(function(a) {
+	watchReply : function () {
+		this.element.getElements('.replybutton').each(function (a) {
+			var fx;
 			a.removeEvents();
 			var commentform = a.getParent().getParent().getNext();
 			if (typeOf(commentform) === 'null') {
@@ -234,15 +234,15 @@ var FabrikComment = new Class({
 			if (typeOf(commentform) !== 'null') {
 				var li = a.findClassUp('comment').findUp('li');
 				if (window.ie) {
-					var fx = new Fx.Slide(commentform, 'opacity', {
+					fx = new Fx.Slide(commentform, 'opacity', {
 						duration : 5000
 					});
 
 				} else {
 					if (this.fx.toggleForms.has(li.id)) {
-						var fx = this.fx.toggleForms.get(li.id);
+						fx = this.fx.toggleForms.get(li.id);
 					} else {
-						var fx = new Fx.Slide(commentform, 'opacity', {
+						fx = new Fx.Slide(commentform, 'opacity', {
 							duration : 5000
 						});
 						this.fx.toggleForms.set(li.id, fx);
@@ -250,16 +250,16 @@ var FabrikComment = new Class({
 				}
 
 				fx.hide();
-				a.addEvent('click', function(e) {
+				a.addEvent('click', function (e) {
 					e = new Event(e).stop();
 					fx.toggle();
 				}.bind(this));
 			}
 		}.bind(this));
 		// watch delete comment buttons
-		this.element.getElements('.del-comment').each(function(a) {
+		this.element.getElements('.del-comment').each(function (a) {
 			a.removeEvents();
-			a.addEvent('click', function(e) {
+			a.addEvent('click', function (e) {
 				var event = new Event(e);
 				this.ajax.deleteComment.options.data.comment_id = $(event.target).findClassUp('comment').id.replace('comment-', '');
 				this.ajax.deleteComment.send();
@@ -270,13 +270,13 @@ var FabrikComment = new Class({
 		// if admin watch inline edit
 		if (this.options.admin) {
 
-			this.element.getElements('.comment-content').each(function(a) {
+			this.element.getElements('.comment-content').each(function (a) {
 				a.removeEvents();
-				a.addEvent('click', function(e) {
+				a.addEvent('click', function (e) {
 					a.inlineEdit({
 						'defaultval' : '',
 						'type' : 'textarea',
-						'onComplete' : function(editing, oldcontent, newcontent){
+						'onComplete' : function (editing, oldcontent, newcontent) {
 								this.saveComment(editing);
 							}.bind(this)
 					});
@@ -298,7 +298,7 @@ var FabrikComment = new Class({
 							'formid' : this.options.formid,
 							'rowid' : this.options.rowid
 						},
-						'onComplete' : function(r) {
+						'onComplete' : function (r) {
 							c.getElements('.info').dispose();
 							new Element('span', {
 								'class' : 'info'
@@ -312,7 +312,7 @@ var FabrikComment = new Class({
 		}
 	},
 
-	deleteComplete : function(r) {
+	deleteComplete : function (r) {
 		var c = $('comment_' + r);
 		var fx = new Fx.Morph(c, {
 			duration : 1000,
@@ -321,7 +321,7 @@ var FabrikComment = new Class({
 		fx.start({
 			'opacity' : 0,
 			'height' : 0
-		}).chain(function() {
+		}).chain(function () {
 			c.dispose();
 		});
 	}

@@ -1,3 +1,3 @@
 Fabrik = {};
 //various Joomla element plugins used to control JForm elements
-Fabrik.model = {'fields': {'fabriktable':{}, 'element':{}}};
+Fabrik.model = {'fields': {'fabriktable': {}, 'element': {}}};

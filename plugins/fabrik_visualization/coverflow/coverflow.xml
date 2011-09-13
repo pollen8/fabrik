@@ -14,6 +14,7 @@
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>controllers</folder>
+		<folder>lib</folder>
 		<folder>models</folder>
 		<folder>views</folder>
 	</files>

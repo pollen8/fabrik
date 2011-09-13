@@ -2,26 +2,26 @@ var AdminVisualization = new Class({
 	
 	Implements: [Options, Events],
 	
-	options:{},
+	options: {},
 	
-	initialize: function(options, lang){
+	initialize: function (options, lang) {
 		this.setOptions(options);
 		this.watchSelector();
 	},
 	
-	watchSelector: function(){
-		$('jform_plugin').addEvent('change', function(e){
+	watchSelector: function () {
+		$('jform_plugin').addEvent('change', function (e) {
 			e.stop();
 			var myAjax = new Request.HTML({
-				url:'index.php',
+				url: 'index.php',
 				'data': {
-					'option':'com_fabrik',
-					'task':'visualization.getPluginHTML',
-					'format':'raw',
-					'plugin':e.target.get('value')
+					'option': 'com_fabrik',
+					'task': 'visualization.getPluginHTML',
+					'format': 'raw',
+					'plugin': e.target.get('value')
 				},
-				'update':document.id('plugin-container')
+				'update': document.id('plugin-container')
 			}).send();
 		});
 	}
-})
+});

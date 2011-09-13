@@ -1,14 +1,14 @@
 var fabriktablesElement = new Class({
 
-	Implements : [ Options, Events ],
+	Implements: [Options, Events],
 
-	options : {
-		conn : null,
-		connInRepeat : true,
-		container : ''
+	options: {
+		conn: null,
+		connInRepeat: true,
+		container: ''
 	},
 
-	initialize : function(el, options) {
+	initialize : function (el, options) {
 		this.el = el;
 		this.setOptions(options);
 		this.elements = [];
@@ -23,7 +23,7 @@ var fabriktablesElement = new Class({
 		}
 	},
 
-	getCnn : function() {
+	getCnn : function () {
 		if (typeOf($(this.options.conn)) === 'null') {
 			return;
 		}
@@ -31,26 +31,26 @@ var fabriktablesElement = new Class({
 		clearInterval(this.periodical);
 	},
 
-	registerElement : function(el) {
+	registerElement : function (el) {
 		this.elements.push(el);
 		this.updateElements();
 	},
 
-	setUp : function() {
+	setUp : function () {
 		this.el = $(this.el);
-		if (typeOf($(this.options.conn)) == 'null') {
+		if (typeOf($(this.options.conn)) === 'null') {
 			return;
 		}
 		$(this.options.conn).addEvent('change', this.updateMe.bindWithEvent(this));
 		this.el.addEvent('change', this.updateElements.bindWithEvent(this));
 		// see if there is a connection selected
 		var v = $(this.options.conn).get('value');
-		if (v != '' && v != -1) {
+		if (v !== '' && v !== -1) {
 			this.updateMe();
 		}
 	},
 
-	updateMe : function(e) {
+	updateMe : function (e) {
 		if (e) {
 			e.stop();
 		}
@@ -68,19 +68,19 @@ var fabriktablesElement = new Class({
 		var myAjax = new Request({
 			url : url,
 			method : 'get',
-			onComplete : function(r) {
+			onComplete : function (r) {
 				var opts = JSON.decode(r);
 				if (typeOf(opts) !== 'null') {
-					if(opts.err){
+					if (opts.err) {
 						alert(opts.err);
-					}else{
+					} else {
 						this.el.empty();
-						opts.each(function(opt) {
+						opts.each(function (opt) {
 							// var o = {'value':opt.value};//wrong for calendar
 							var o = {
 								'value' : opt.id
 							};
-							if (opt.id == this.options.value) {
+							if (opt.id === this.options.value) {
 								o.selected = 'selected';
 							}
 							new Element('option', o).appendText(opt.label).inject(this.el);
@@ -95,8 +95,8 @@ var fabriktablesElement = new Class({
 		}).send();
 	},
 
-	updateElements : function() {
-		this.elements.each(function(element) {
+	updateElements : function () {
+		this.elements.each(function (element) {
 			var opts = element.getOpts();
 			var table = this.el.get('value');
 			if (table === '') {
@@ -109,11 +109,11 @@ var fabriktablesElement = new Class({
 				$(element.el.id + '_loader').setStyle('display', '');
 			}
 			var key = opts.getValues().toString() + ',' + table;
-			if(!this.waitingElements.has(key)){
+			if (!this.waitingElements.has(key)) {
 				this.waitingElements[key] = $H({});
 			}
-			if (this.elementLists[key] != undefined) {
-				if (this.elementLists[key] == '') {
+			if (this.elementLists[key] !== undefined) {
+				if (this.elementLists[key] === '') {
 					// delay update
 					this.waitingElements[key][element.el.id] = element;
 				} else {
@@ -124,22 +124,19 @@ var fabriktablesElement = new Class({
 
 				var cid = $(this.options.conn).get('value');
 				this.elementLists.set(key, '');
-				var url = this.options.livesite
-						+ 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=visualization&plugin=chart&method=ajax_fields&k=2&t=' + table + '&cid='
-						+ cid;
-
+				var url = this.options.livesite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=visualization&plugin=chart&method=ajax_fields&k=2&t=' + table + '&cid=' + cid;
 				var ajaxopts = {};
-				opts.each(function(v, k) {
+				opts.each(function (v, k) {
 					ajaxopts[k] = v;
 				});
 				var myAjax = new Request({
 					url : url,
 					method : 'get',
 					'data' : ajaxopts,
-					onComplete : function(r) {
+					onComplete : function (r) {
 						this.elementLists.set(key, r);
 						this.updateElementOptions(r, element);
-						this.waitingElements.get(key).each(function(el, i) {
+						this.waitingElements.get(key).each(function (el, i) {
 							this.updateElementOptions(r, el);
 							this.waitingElements[key].erase(i);
 						}.bind(this));
@@ -149,7 +146,7 @@ var fabriktablesElement = new Class({
 		}.bind(this));
 	},
 
-	updateElementOptions : function(r, element) {
+	updateElementOptions : function (r, element) {
 		var table = $(this.el).get('value');
 		var key = element.getOpts().getValues().toString() + ',' + table;
 		var opts = eval(r);
@@ -157,16 +154,16 @@ var fabriktablesElement = new Class({
 		var o = {
 			'value' : ''
 		};
-		if (element.options.value == '') {
+		if (element.options.value === '') {
 			o.selected = 'selected';
 		}
 		new Element('option', o).appendText('-').inject(element.el);
-		opts.each(function(opt) {
+		opts.each(function (opt) {
 			opt.value = opt.value.replace('[]', '');
 			var o = {
 				'value' : opt.value
 			};
-			if (opt.value == element.options.value) {
+			if (opt.value === element.options.value) {
 				o.selected = 'selected';
 			}
 			new Element('option', o).appendText(opt.label).inject(element.el);
@@ -176,8 +173,8 @@ var fabriktablesElement = new Class({
 		}
 	},
 	// only called from repeat viz admin interface i think
-	cloned : function(newid, counter) {
-		if (this.options.connInRepeat == true) {
+	cloned : function (newid, counter) {
+		if (this.options.connInRepeat === true) {
 			// table needs to update watch connection id
 			var cid = this.options.conn.split('-');
 			cid.pop();

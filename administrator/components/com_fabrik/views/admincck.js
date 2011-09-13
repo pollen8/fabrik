@@ -4,25 +4,25 @@ var adminCCK = new Class({
 
 	options : {},
 
-	initialize : function(options) {
+	initialize : function (options) {
 
 		this.setOptions(options);
 
 		this.form = Fabrik.blocks['form_' + this.options.formid];
 
 		new Element('fieldset').adopt([ new Element('legend').set('text', 'CCK'), new Element('table', {
-			'class' : 'paramlist admintable'
+			'class': 'paramlist admintable'
 		}).adopt(new Element('tbody').adopt([ new Element('tr').adopt([ new Element('td', {
-			'class' : 'paramlist_key'
+			'class': 'paramlist_key'
 		}).adopt(new Element('label', {
-			'for' : 'template'
-		}).set('html','template: ')), new Element('td', {
-			'class' : 'paramlist_value'
-		}).set('html',this.options.tmplList) ]), new Element('tr').adopt([ new Element('td', {
-			'class' : 'paramlist_key'
+			'for': 'template'
+		}).set('html', 'template: ')), new Element('td', {
+			'class': 'paramlist_value'
+		}).set('html', this.options.tmplList) ]), new Element('tr').adopt([ new Element('td', {
+			'class': 'paramlist_key'
 		}).set('text', 'view: '), new Element('td', {
-			'class' : 'paramlist_value'
-		}).set('html',this.options.viewList) ]) ])) ]).inject($('form_' + this.options.formid), 'before');
+			'class': 'paramlist_value'
+		}).set('html', this.options.viewList) ]) ])) ]).inject($('form_' + this.options.formid), 'before');
 
 		Fabrik.addBlock('cck', this);
 		this.form.options.ajax = true;
@@ -30,9 +30,9 @@ var adminCCK = new Class({
 		document.getElement('input[name=_packageId]').value = '-1';
 	},
 
-	insertTag : function(json) {
+	insertTag : function (json) {
 		var tmpl = $('fabrik_cck_template').get('value');
-		var view = document.getElements('input[name=fabrik_cck_view]').filter(function(v) {
+		var view = document.getElements('input[name=fabrik_cck_view]').filter(function (v) {
 			return v.checked;
 		});
 		view = view.length === 0 ? 'form' : view[0].get('value');

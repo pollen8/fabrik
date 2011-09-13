@@ -600,8 +600,7 @@ function loadCalendar()
 		if (!self::$framework) {
 			$config = JFactory::getConfig();
 			$debug = $config->get('debug');
-			$uncompressed	= $debug ? '-uncompressed' : '';
-
+			//$uncompressed	= $debug ? '-uncompressed' : '';
 			$src = array();
 			//loading here as well as normal J behavior call makes document.body not found for gmap element when
 			// rendered in the form
@@ -613,15 +612,15 @@ function loadCalendar()
 			JHtml::_('behavior.framework', true);
 
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
-				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
+				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 			}
 
 			$src[] = 'media/com_fabrik/js/mootools-ext.js';
-			$src[] = 'media/com_fabrik/js/art.js';
+			$src[] = 'media/com_fabrik/js/lib/art.js';
 			$src[] = 'media/com_fabrik/js/icons.js';
-			$src[] =  'media/com_fabrik/js/icongen.js';
+			$src[] = 'media/com_fabrik/js/icongen.js';
 			$src[] = 'media/com_fabrik/js/fabrik.js';
-			$src[] = 'media/com_fabrik/js/tips/floatingtips.js';
+			$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
 			$src[] = 'media/com_fabrik/js/window.js';
 
 			FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
@@ -696,6 +695,11 @@ function loadCalendar()
 			return;
 		}
 
+		$config = JFactory::getConfig();
+		$debug = $config->get('debug');
+		//$uncompressed	= $debug ? '-uncompressed' : '';
+		$ext = $debug || JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
+		
 		$file = (array)$file;
 		$src = array();
 		foreach ($file as $f) {
@@ -704,7 +708,16 @@ function loadCalendar()
 					continue;
 				}
 			}
-			$f = stristr($f, 'http://') || stristr($f, 'https://')? $f : COM_FABRIK_LIVESITE.$f;
+			if (stristr($f, 'http://') || stristr($f, 'https://')) {
+				$f = $f;
+			} else {
+				$compressedFile = str_replace('.js', $ext, $f);
+				
+				if (JFile::exists($compressedFile)) {
+					$f = $compressedFile;
+				}
+				$f = COM_FABRIK_LIVESITE.$f;
+			}
 			if (JRequest::getCmd('format') == 'raw') {
 				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){'.$onLoad.'}' : '';
 				echo '<script type="text/javascript">Asset.javascript(\''.$f.'\', {'.$opts.'});</script>';

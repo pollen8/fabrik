@@ -28,7 +28,7 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element {
 	{
 		$id = $this->getHTMLId();
 		$id .= "_" . $oAllRowsData->__pk_val;
-		FabrikHelperHTML::script('media/com_fabrik/js/swfobject.js', false);
+		FabrikHelperHTML::script('media/com_fabrik/js/lib/swfobject.js', false);
 		$params = $this->getParams();
 		$partnerid = $params->get('kaltura_partnerid');
 		?>
@@ -189,7 +189,6 @@ return '<div id="'.$id.'"></div>';
 
 	function formJavascriptClass(&$srcs)
 	{
-		FabrikHelperHTML::script('media/com_fabrik/js/swfobject.js', false);
 		parent::formJavascriptClass($srcs);
 	}
 

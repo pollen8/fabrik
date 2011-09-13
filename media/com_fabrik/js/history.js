@@ -1,12 +1,15 @@
-History = new Class({
-	initialize : function(undobutton, redobutton) {
+/*jshint mootools: true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+
+var History = new Class({
+	initialize: function (undobutton, redobutton) {
 		this.recording = true;
 		this.pointer = -1;
-		if($(undobutton)){
-		$(undobutton).addEvent('click', this.undo.bindWithEvent(this));
+		if ($(undobutton)) {
+			$(undobutton).addEvent('click', this.undo.bindWithEvent(this));
 		}
-		if($(redobutton)){
-		$(redobutton).addEvent('click', this.redo.bindWithEvent(this));
+		if ($(redobutton)) {
+			$(redobutton).addEvent('click', this.redo.bindWithEvent(this));
 		}
 		window.addEvent('fabrik.history.on', this.on.bindWithEvent(this));
 		window.addEvent('fabrik.history.off', this.off.bindWithEvent(this));
@@ -14,7 +17,7 @@ History = new Class({
 		this.history = $A([]);
 	},
 
-	undo : function() {
+	undo : function () {
 		if (this.pointer > -1) {
 			this.off();
 			var h = this.history[this.pointer];
@@ -22,14 +25,14 @@ History = new Class({
 			var p = h.undoparams;
 			var res = f.attempt(p, h.object);
 			this.on();
-			this.pointer--;
+			this.pointer --;
 		}
 
 	},
 
-	redo : function() {
+	redo : function () {
 		if (this.pointer < this.history.length - 1) {
-			this.pointer++;
+			this.pointer ++;
 			this.off();
 			var h = this.history[this.pointer];
 			var f = h.redofunc;
@@ -39,10 +42,10 @@ History = new Class({
 		}
 	},
 
-	add : function(obj, undofunc, undoparams, redofunc, redoparams) {
+	add : function (obj, undofunc, undoparams, redofunc, redoparams) {
 		if (this.recording) {
 			// remove history which is newer than current pointer location
-			newh = this.history.filter(function(h, x) {
+			var newh = this.history.filter(function (h, x) {
 				return x <= this.pointer;
 			}.bind(this));
 			this.history = newh;
@@ -57,11 +60,11 @@ History = new Class({
 		}
 	},
 
-	on : function() {
+	on : function () {
 		this.recording = true;
 	},
 
-	off : function() {
+	off : function () {
 		this.recording = false;
 	}
 });

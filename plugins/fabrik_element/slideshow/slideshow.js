@@ -1,63 +1,36 @@
-var FbSlideshow = FbElement.extend( {
-	initialize : function(element, options) {
-		var o = null;
+var FbSlideshow = FbElement.extend({
+	
+	initialize : function (element, options) {
 		this.plugin = 'slideshow';
 		this.parent(element, options);
-		if (this.options.slideshow_type == 1) {
-			// var slideshow_data = $H(this.options.slideshow_data);
-		this.slideshow = new Slideshow(this.options.html_id,
-				this.options.slideshow_data, {
-					controller : true,
-					delay : parseInt(this.options.slideshow_delay),
-					duration : parseInt(this.options.slideshow_duration),
-					height : parseInt(this.options.slideshow_height),
-					width : parseInt(this.options.slideshow_width),
-					hu : Fabrik.liveSite,
-					thumbnails : this.options.slideshow_thumbnails,
-					captions : this.options.slideshow_captions,
-					fast : true
-				});
-	} else if (this.options.slideshow_type == 2) {
-		// var slideshow_data = $H(this.options.slideshow_data);
-		this.slideshow = new Slideshow.KenBurns(this.options.html_id,
-				this.options.slideshow_data, {
-					controller : true,
-					delay : parseInt(this.options.slideshow_delay),
-					duration : parseInt(this.options.slideshow_duration),
-					height : parseInt(this.options.slideshow_height),
-					width : parseInt(this.options.slideshow_width),
-					hu : Fabrik.liveSite,
-					thumbnails : this.options.slideshow_thumbnails,
-					captions : this.options.slideshow_captions,
-					zoom : parseInt(this.options.slideshow_zoom),
-					pan : parseInt(this.options.slideshow_pan)
-				});
-	} else if (this.options.slideshow_type == 3) {
-		// var slideshow_data = $H(this.options.slideshow_data);
-		this.slideshow = new Slideshow.Push(this.options.html_id,
-				this.options.slideshow_data, {
-					controller : true,
-					delay : parseInt(this.options.slideshow_delay),
-					duration : parseInt(this.options.slideshow_duration),
-					height : parseInt(this.options.slideshow_height),
-					width : parseInt(this.options.slideshow_width),
-					hu : Fabrik.liveSite,
-					thumbnails : this.options.slideshow_thumbnails,
-					captions : this.options.slideshow_captions
-				});
-	} else if (this.options.slideshow_type == 4) {
-		// var slideshow_data = $H(this.options.slideshow_data);
-		this.slideshow = new Slideshow.Fold(this.options.html_id,
-				this.options.slideshow_data, {
-					controller : true,
-					delay : parseInt(this.options.slideshow_delay),
-					duration : parseInt(this.options.slideshow_duration),
-					height : parseInt(this.options.slideshow_height),
-					width : parseInt(this.options.slideshow_width),
-					hu : Fabrik.liveSite,
-					thumbnails : this.options.slideshow_thumbnails,
-					captions : this.options.slideshow_captions
-				});
+		var opts = {
+			controller: true,
+			delay: parseInt(this.options.slideshow_delay, 10),
+			duration: parseInt(this.options.slideshow_duration, 10),
+			height: parseInt(this.options.slideshow_height, 10),
+			width: parseInt(this.options.slideshow_width, 10),
+			hu: Fabrik.liveSite,
+			thumbnails: this.options.slideshow_thumbnails,
+			captions: this.options.slideshow_captions
+		};
+		switch (this.options.slideshow_type) {
+		case 1:
+			opts = Object.append(opts, {fast: true});
+			this.slideshow = new Slideshow(this.options.html_id, this.options.slideshow_data, opts);
+			break;
+		case 2:
+			opts = Object.append(opts, {
+				zoom : parseInt(this.options.slideshow_zoom, 10),
+				pan : parseInt(this.options.slideshow_pan, 10)
+			});
+			this.slideshow = new Slideshow.KenBurns(this.options.html_id, this.options.slideshow_data, opts);
+			break;
+		case 3:
+			this.slideshow = new Slideshow.Push(this.options.html_id, this.options.slideshow_data, opts);
+			break;
+		case 4:
+			this.slideshow = new Slideshow.Fold(this.options.html_id, this.options.slideshow_data, opts);
+			break;
+		}
 	}
-}
 });

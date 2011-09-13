@@ -1,8 +1,8 @@
 var FbListRadiusSearch = new Class({
 	Extends : FbListPlugin,
-	initialize : function(element, options) {
+	initialize : function (element, options) {
 		this.parent(options);
-		head.ready(function() {
+		head.ready(function () {
 
 			this.element = $(element).getElement('.radus_search');
 			if (typeOf(this.options.value) === 'null') {
@@ -10,10 +10,10 @@ var FbListRadiusSearch = new Class({
 			}
 			this.fx = new Fx.Slide(this.element.getElement('.radius_search_options'));
 			this.element.getElements('input[name^=radius_search_active]').addEvent('click', this.toggleActive.bindWithEvent(this));
-			var a = this.element.getElements('input[name^=radius_search_active]').filter(function(f) {
+			var a = this.element.getElements('input[name^=radius_search_active]').filter(function (f) {
 				return f.checked === true;
 			});
-			if (a[0].get('value') == '0') {
+			if (a[0].get('value') === '0') {
 				this.fx.slideOut();
 			}
 			this.element.getElements('input[name^=radius_search_type]').addEvent('click', this.toggleFields.bindWithEvent(this));
@@ -24,7 +24,7 @@ var FbListRadiusSearch = new Class({
 			var output = this.element.getElement('.radius_search_distance');
 			var output2 = this.element.getElement('.slider_output');
 			this.mySlide = new Slider(this.element.getElement('.fabrikslider-line'), this.element.getElement('.knob'), {
-				onChange : function(pos) {
+				onChange : function (pos) {
 					output.value = pos;
 					output2.set('text', pos + this.options.unit);
 				}.bind(this),
@@ -44,12 +44,12 @@ var FbListRadiusSearch = new Class({
 		}.bind(this));
 	},
 
-	setGeoCenter : function(p) {
+	setGeoCenter : function (p) {
 		this.geocenterpoint = p;
 		this.geoCenter(p);
 	},
 
-	geoCenter : function(p) {
+	geoCenter : function (p) {
 		if (typeOf(p) === 'null') {
 			alert(Joomla.JText._('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE'));
 		} else {
@@ -58,43 +58,43 @@ var FbListRadiusSearch = new Class({
 		}
 	},
 
-	geoCenterErr : function(p) {
+	geoCenterErr : function (p) {
 		fconsole('geo location error=' + p.message);
 	},
 
-	toggleActive : function(e) {
+	toggleActive : function (e) {
 		e = new Event(e);
 		switch (e.target.get('value')) {
-			case '1':
-				this.fx.slideIn();
-				break;
-			case '0':
-				this.fx.slideOut();
-				break;
+		case '1':
+			this.fx.slideIn();
+			break;
+		case '0':
+			this.fx.slideOut();
+			break;
 		}
 	},
 
-	toggleFields : function(e) {
+	toggleFields : function (e) {
 		switch (e.target.get('value')) {
-			case 'latlon':
-				this.element.getElement('.radius_search_place_container').setStyle('display', 'none');
-				this.element.getElement('.radius_search_coords_container').setStyle('display', '');
-				break;
-			case 'mylocation':
-				this.element.getElement('.radius_search_place_container').setStyle('display', 'none');
-				this.element.getElement('.radius_search_coords_container').setStyle('display', 'none');
-				this.setGeoCenter(this.geocenterpoint);
-				break;
-			case 'place':
-				this.element.getElement('.radius_search_place_container').setStyle('display', '');
-				this.element.getElement('.radius_search_coords_container').setStyle('display', 'none');
-				break;
+		case 'latlon':
+			this.element.getElement('.radius_search_place_container').setStyle('display', 'none');
+			this.element.getElement('.radius_search_coords_container').setStyle('display', '');
+			break;
+		case 'mylocation':
+			this.element.getElement('.radius_search_place_container').setStyle('display', 'none');
+			this.element.getElement('.radius_search_coords_container').setStyle('display', 'none');
+			this.setGeoCenter(this.geocenterpoint);
+			break;
+		case 'place':
+			this.element.getElement('.radius_search_place_container').setStyle('display', '');
+			this.element.getElement('.radius_search_coords_container').setStyle('display', 'none');
+			break;
 		}
 	},
 
-	clearFilter : function() {
-		this.element.getElements('input[name^=radius_search_active]').filter(function(f) {
-			return f.get('value') == '0';
+	clearFilter : function () {
+		this.element.getElements('input[name^=radius_search_active]').filter(function (f) {
+			return f.get('value') === '0';
 		}).getLast().checked = true;
 	}
 

@@ -11,11 +11,9 @@
 	<description>Slideshow Viz</description>
 	<files>
 		<filename plugin="slideshow">slideshow.php</filename>
-		<filename>adminslideshow.js</filename>
 		<folder>forms</folder>
 		<filename>index.html</filename>
 		<filename>slideshow.js</filename>
-		
 		<folder>controllers</folder>
 		<folder>language</folder>
 		<folder>models</folder>

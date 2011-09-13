@@ -1,11 +1,11 @@
-Pages = new Class({
-	initialize:function(container, editable){
+var Pages = new Class({
+	initialize: function (container, editable) {
 		this.editable = editable;
 		document.addEvent('mousedown', this.clearActive.bindWithEvent(this));
 		window.addEvent('fabrik.page.add', this.makeActive.bindWithEvent(this));
 		this.pages = $H({});
 		this.activePage = null;
-		this.container = $(container);
+		this.container = document.id(container);
 		window.addEvent('fabrik.tab.add', this.add.bindWithEvent(this));
 		window.addEvent('fabrik.tab.click', this.show.bindWithEvent(this));
 		window.addEvent('fabrik.tab.remove', this.remove.bindWithEvent(this));
@@ -13,28 +13,28 @@ Pages = new Class({
 	},
 	
 	/* todo perhaps makecive and clearActive should be a mixin? */
-	makeActive:function(c){
+	makeActive: function (c) {
 		this.clearActive();
 		c.addClass('active');
 		this.active = c;
 		var zindexes = document.getElements('.itemPlaceHolder').getStyle('z-index').sort();
-		var max = zindexes.getLast().toInt() +1;
-		document.getElements('.itemPlaceHolder').each(function(i){
+		var max = zindexes.getLast().toInt() + 1;
+		document.getElements('.itemPlaceHolder').each(function (i) {
 			i.setStyle('zindex', i.getStyle('z-index').toInt() - 1); 
 		});
 		c.setStyle('z-index', max);
 	},
 	
-	clearActive:function(){
+	clearActive: function () {
 		delete this.active;
 		document.getElements('.itemPlaceHolder').removeClass('active');
 	},
 	
-	moveItem:function(k, shift){
-		if(this.active && this.editable){
+	moveItem: function (k, shift) {
+		if (this.active && this.editable) {
 			shift = shift ? 10 : 0;
 			var p = this.active.getCoordinates(this.getActivePage().page);
-			switch(k){
+			switch (k) {
 			case 37: //left
 				this.active.setStyle('left', p.left - 2 - shift);
 				break;
@@ -51,7 +51,7 @@ Pages = new Class({
 		}
 	},
 	
-	add:function(tabs, t){
+	add: function (tabs, t) {
 		var page = new Page(t, this.editable);
 		this.container.adopt(page.page);
 		page.show();
@@ -59,64 +59,64 @@ Pages = new Class({
 		this.show();
 	},
 	
-	remove:function(tabs, t){
+	remove: function (tabs, t) {
 		t = t.retrieve('ref');
 		//this.pages[t].remove();
 		delete this.pages.t;
 		this.pages.erase(t);
 	},
 	
-	show:function(tab){
-		this.pages.each(function(page){
-			page.hide()
+	show: function (tab) {
+		this.pages.each(function (page) {
+			page.hide();
 		});
-		try{
-		this.pages[tab].show();
-		this.activePage = tab;
-		}catch(err){
-			var k = this.pages.getKeys();
-			if(k.length > 0){
-			tab = k[0];
+		try {
 			this.pages[tab].show();
 			this.activePage = tab;
+		} catch (err) {
+			var k = this.pages.getKeys();
+			if (k.length > 0) {
+				tab = k[0];
+				this.pages[tab].show();
+				this.activePage = tab;
 			}
 		}
 	},
 	
-	getHTMLPages:function(){
+	getHTMLPages: function () {
 		var r = [];
-		this.pages.each(function(p){
+		this.pages.each(function (p) {
 			r.push(p.page);
 		});
 		return r;
 	},
 	
-	getActivePage:function(){
-		if(!this.activePage){
+	getActivePage: function () {
+		if (!this.activePage) {
 			this.activePage = 0;
 		}
 		return this.pages[this.activePage];
 	},
 	
-	fromJSON:function(layout){
-		$H(layout).each(function(items, page){
-			if(this.pages[page]){
-				$H(items).each(function(item, id){
+	fromJSON: function (layout) {
+		$H(layout).each(function (items, page) {
+			if (this.pages[page]) {
+				$H(items).each(function (item, id) {
 					this.pages[page].insert(item.id, item.label, item.type, item.dimensions);
 				}.bind(this));
 			}
-		}.bind(this))
+		}.bind(this));
 	},
 	
-	toJSON:function(){
+	toJSON: function () {
 		var r = {};
-		this.pages.each(function(p, k){
+		this.pages.each(function (p, k) {
 			var o = {};
-			p.page.getElements('.itemPlaceHolder').each(function(e){
+			p.page.getElements('.itemPlaceHolder').each(function (e) {
 				p.page.show(); //needed to get coords
 				var type = e.id.split('_')[0];
 				var label = e.getElement('.handlelabel').get('text');
-				o[e.id] = {'dimensions':e.getCoordinates(p.page), 'label':label, 'type':type, 'id':e.id};
+				o[e.id] = {'dimensions': e.getCoordinates(p.page), 'label': label, 'type': type, 'id': e.id};
 			});
 			r[k.trim()] = o;
 		});
@@ -125,40 +125,40 @@ Pages = new Class({
 });
 
 Page = new Class({
-	initialize:function(t, editable){
+	initialize: function (t, editable) {
 		this.editable = editable;
-		this.page = Element('div', {'class':'page','styles':{'display':'none'}});
-		if(this.editable){
+		this.page = new Element('div', {'class': 'page', 'styles': {'display': 'none'}});
+		if (this.editable) {
 			window.addEvent('fabrik.item.resized', this.saveCoords.bindWithEvent(this));
 			window.addEvent('fabrik.item.moved', this.saveCoords.bindWithEvent(this));
 		}
 	},
 	
-	show:function(){
+	show: function () {
 		this.page.show();
 	},
 	
-	hide:function(){
+	hide: function () {
 		this.page.hide();
 	},
 	
-	remove:function(){
+	remove: function () {
 		this.page.destroy();
 	},
 	
-	removeItem:function(e, id){
+	removeItem: function (e, id) {
 		e.stop();
-		if(confirm('Do you really want to delete')){
+		if (confirm('Do you really want to delete')) {
 			$(id).destroy();
 			window.fireEvent('fabrik.page.block.delete', [id]);
 		}
 	},
 	
-	insert:function(id, label, type, dimensions){
+	insert: function (id, label, type, dimensions) {
 		window.fireEvent('fabrik.page.insert', [this, id, label, type, dimensions]);
 	},
 	
-	saveCoords:function(e){
+	saveCoords: function (e) {
 	}
 
 });
