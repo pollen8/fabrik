@@ -7,7 +7,7 @@
 *.jpg
 cache/*
 administrator/*
-!administrator/components/com_fabrik/*
+!administrator/components/com_fabrik/
 cache/*
 components/*
 !components/com_fabrik
@@ -26,7 +26,13 @@ plugins/*
 plugins/search/*
 !plugins/search/fabrik
 plugins/system/*
-!plugins/system/fabrikcron/
+!plugins/fabrik_element/
+!plugins/fabrik_form/
+!plugins/fabrik_list/
+!plugins/fabrik_cron/
+!plugins/fabrik_validationrule/
+!plugins/fabrik_visualization/
+!tttplugins/system/fabrikcron/
 robots.txt
 sql/*
 tests/*

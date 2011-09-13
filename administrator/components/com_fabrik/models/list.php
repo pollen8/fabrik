@@ -925,7 +925,7 @@ class FabrikModelList extends FabModelAdmin
 		$elementModel = new plgFabrik_Element($dispatcher);
 		$pluginManager = $this->getFormModel()->getPluginManager();
 		$user = JFactory::getUser();
-		$elementTypes = JRequest::getVar('elementtype', array(), 'default', 'array');
+		$elementTypes = JRequest::getVar('elementtype', array());
 		$fields = $fabrikDb->getTableFields(array($tableName));
 		$fields = $fields[$tableName];
 		$createdate = JFactory::getDate()->toMySQL();
@@ -933,7 +933,7 @@ class FabrikModelList extends FabModelAdmin
 		$ordering = 0;
 		// no existing fabrik table so we take a guess at the most
 		//relavent element types to  create
-		$elementLabels = JRequest::getVar('elementlabels', array(), 'default', 'array');
+		$elementLabels = JRequest::getVar('elementlabels', array());
 		foreach ($fields as $label => $type) {
 			$element = FabTable::getInstance('Element', 'FabrikTable');
 			if (array_key_exists($ordering, $elementTypes)) {
@@ -1155,7 +1155,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$db = FabrikWorker::getDbo(true);
 		$user = JFactory::getUser();
-		$pks = JRequest::getVar('cid', array(), 'default', 'array');
+		$pks = JRequest::getVar('cid', array());
 		$post = JRequest::get('post');
 		foreach ($pks as $i => $pk) {
 			$item =& $this->getTable();

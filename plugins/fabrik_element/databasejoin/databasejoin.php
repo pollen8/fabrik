@@ -707,15 +707,24 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	protected function getLinkedForms()
 	{
 		if (!isset($this->_linkedForms)) {
-			$db 			=& FabrikWorker::getDbo();
-			$params 	=& $this->getParams();
+			$db = FabrikWorker::getDbo(true);
+			$params = $this->getParams();
 			//forms for potential add record pop up form
-			$db->setQuery("SELECT f.id AS value, f.label AS text, l.id AS listid FROM
-			#__{package}_forms AS f LEFT JOIN #__{package}_lists As l
-			ON f.id = l.form_id
-			WHERE f.published = 1 AND l.db_table_name = '" . $params->get('join_db_name') . "'
-			ORDER BY f.label");
+			
+			$query = $db->getQuery(true);
+			$query->select('f.id AS value, f.label AS text, l.id AS listid')
+			->from('#__{package}_forms AS f')
+			->join('LEFT', '#__{package}_lists As l ON f.id = l.form_id')
+			->where('f.published = 1 AND l.db_table_name = '.$db->Quote($params->get('join_db_name')))
+			->order('f.label');
+			$db->setQuery($query);
+			
 			$this->_linkedForms = $db->loadObjectList('value');
+			
+			// Check for a database error.
+			if ($db->getErrorNum()) {
+				JError::raiseError(500, $db->getErrorMsg());
+			}
 		}
 		return $this->_linkedForms;
 	}
