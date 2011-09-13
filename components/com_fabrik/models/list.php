@@ -3458,7 +3458,7 @@ class FabrikFEModelList extends JModelForm {
 
 	public function getEmptyDataMsg()
 	{
-		if (isset($this->emptyMsg)){
+		if (isset($this->emptyMsg)) {
 			return $this->emptyMsg;
 		}
 		$params = $this->getParams();
@@ -3476,7 +3476,7 @@ class FabrikFEModelList extends JModelForm {
 		if (isset($this->requiredFilterFound)) {
 			return $this->requiredFilterFound;
 		}
-		$filters 	=& $this->getFilterArray();
+		$filters 	= $this->getFilterArray();
 		$elements = $this->getElements();
 
 		$required = array();
@@ -3529,7 +3529,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		if (!isset($this->viewfilters)) {
 			global $_PROFILER;
-			$params 	=& $this->getParams();
+			$params = $this->getParams();
 			$this->viewfilters = array();
 
 			JDEBUG ? $_PROFILER->mark('fabrik makeFilters start') : null;

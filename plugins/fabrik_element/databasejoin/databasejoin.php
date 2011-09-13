@@ -32,7 +32,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/** @var array linked form data */
 	var $_linkedForms = null;
-
+	
+	/** @var additionl where for auto-complete query */
+	var $_autocomplete_where = "";
 
 	/**
 	 * testing to see that if the aFields are passed by reference do they update the table object?
@@ -228,6 +230,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
 	{
 		$params = $this->getParams();
+		$db = $this->getDb();
+		// $$$ hugh - attempting to make sure we never do an uncontrained query for auto-complete
+		$displayType = $params->get('database_join_display_type', 'dropdown');
+		if ($displayType == 'auto-complete' && empty($this->_autocomplete_where)) {
+			$value = $this->getValue($data, $repeatCounter);
+			$this->_autocomplete_where = $this->getJoinValueColumn() . " = " . $db->Quote($value);
+		}
+		
 		// @TODO - if a calc elemenmt has be loaded before us, _optionVals will have been set,
 		// BUT using $incWhere as false.  So is this join has a WHERE clause, it's never getting run.
 		// So I'm adding the _sql[$incWhere] test to try and resolve this ...
@@ -236,7 +246,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_optionVals;
 			}
 		}
-		$db = $this->getDb();
+		
 		$sql = $this->_buildQuery($data, $incWhere);
 		if (!$sql) {
 			$this->_optionVals = array();
@@ -307,6 +317,43 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue') , $this->_getSelectLabel()));
 		}
 		return $tmp;
+	}
+	
+	protected function getOneOption($value, $data, $repeatCounter = 0) {
+		$params =& $this->getParams();
+		// @TODO - if a calc elemenmt has be loaded before us, _optionVals will have been set,
+		// BUT using $incWhere as false.  So is this join has a WHERE clause, it's never getting run.
+		// So I'm adding the _sql[$incWhere] test to try and resolve this ...
+		if (isset($this->_optionVals)) {
+			if (isset($this->_sql[2])) {
+				return $this->_optionVals;
+			}
+		}
+		$db =& $this->getDb();
+		$this->_autocomplete_where = $this->getJoinValueColumn() . " = " . $db->Quote($value);
+		$sql = $this->_buildQuery($data, 2);
+		if (!$sql) {
+			$this->_optionVals = array();
+		} else {
+			$db->setQuery($sql);
+			FabrikHelperHTML::debug($db->getQuery(), $this->getElement()->name .'databasejoin element: get one option query');
+			$this->_optionVals = $db->loadObjectList();
+			if ($db->getErrorNum() != 0) {
+				JError::raiseNotice(500,  $db->getErrorMsg());
+			}
+			FabrikHelperHTML::debug($this->_optionVals, 'databasejoin elements');
+			if (!is_array($this->_optionVals)) {
+				$this->_optionVals = array();
+			}
+	
+			$eval = $params->get('dabase_join_label_eval');
+			if (trim($eval) !== '') {
+				foreach ($this->_optionVals as &$opt) {
+					eval($eval);
+				}
+			}
+		}
+		return $this->_optionVals;
 	}
 
 	protected function _getSelectLabel()
@@ -412,7 +459,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$where = '';
 		}
 
-		if (isset($this->_autocomplete_where)) {
+		if (!empty($this->_autocomplete_where)) {
 			$where .= stristr($where, 'WHERE') ? " AND " . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
 		}
 		if ($where == '') {
@@ -555,7 +602,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$joinGroupId = '';
 		}
 		// $$$ rob dont load in all options for autocomplete as slows loading on large data sets
-		$tmp = ($displayType == 'auto-complete' && $this->_editable) ? array() : $this->_getOptions($data, $repeatCounter);
+		// $tmp = ($displayType == 'auto-complete' && $this->_editable) ? array() : $this->_getOptions($data, $repeatCounter);
+		// $$$ hugh - doesn't matter if editable, otherwise it just failsd on _getROElement().  Don't load for auto-complete, period.
+		// $tmp = ($displayType == 'auto-complete') ? array() : $this->_getOptions($data, $repeatCounter);
+		$tmp = $this->_getOptions($data, $repeatCounter);
 		/*get the default value */
 		$w = new FabrikWorker();
 
@@ -826,7 +876,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$data = $oAllRowsData->$name;
 			}
 			if (!is_array($data)) {
-				//$data = explode(GROUPSPLITTER, $data);
 				$data = json_decode($data, true);
 			}
 			foreach ($data as $d) {
@@ -1012,7 +1061,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$joinTableName = $join->table_join_alias;
 		if ($joinTable == '') { $joinTable = $joinTableName;}
 		// $$$ hugh - select all values for performance gain over selecting distinct records from recorded data
-		$sql 	= "SELECT DISTINCT( $joinVal ) AS text, $joinKey AS value \n FROM  ".$db->nameQuote($joinTable)." AS ".$db->nameQuote($joinTableName)." \n ";
+		$sql 	= "SELECT DISTINCT( $joinVal ) AS text, $joinKey AS value \n FROM  ".$fabrikDb->nameQuote($joinTable)." AS ".$fabrikDb->nameQuote($joinTableName)." \n ";
 		$where = $this->_buildQueryWhere();
 
 		//ensure table prefilter is applied to query
@@ -1350,8 +1399,19 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (array_key_exists('detals', $post)) {
 			if ($post['details']['plugin'] != 'databasejoin') {
 				$db = FabrikWorker::getDbo();
-				$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =" . $post['id']);
+				$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =".(int)$post['id']);
 				$db->query();
+				$db->setQuery("
+					SELECT j.id AS jid
+					FROM #__{package}_elements AS e
+					LEFT JOIN #__{package}_joins AS j ON j.element_id = e.id
+					WHERE e.parent_id = ".(int)$post['id']
+				);
+				$join_ids = $db->loadResultArray();
+				if (!empty($join_ids)) {
+					$db->setQuery("DELETE FROM #__fabrik_joins WHERE id IN (".implode(',', $join_ids).")");
+					$db->query();
+				}
 			}
 		}
 	}
@@ -1359,8 +1419,22 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	function onRemove($drop = false)
 	{
 		$db = FabrikWorker::getDbo();
-		$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id = " . $this->_id);
-		$db->query();
+		$orig_id = (int)$this->_id;
+		if (!empty($orig_id)) {
+			$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id = ".$orig_id);
+			$db->query();
+			$db->setQuery("
+				SELECT j.id AS jid
+				FROM #__{package}_elements AS e
+				LEFT JOIN #__{package}_joins AS j ON j.element_id = e.id
+				WHERE e.parent_id = $orig_id
+			");
+			$join_ids = $db->loadResultArray();
+			if (!empty($join_ids)) {
+				$db->setQuery("DELETE FROM #__fabrik_joins WHERE id IN (" . implode(',', $join_ids) . ")");
+			}
+		}
+		parent::onRemove($drop);
 	}
 
 	/**
