@@ -1,0 +1,1 @@
+var FbYesno=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikyesno";this.parent(b,a)}});
