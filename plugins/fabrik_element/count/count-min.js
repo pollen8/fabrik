@@ -1,0 +1,1 @@
+var FbCount=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikcount";this.parent(b,a)}});

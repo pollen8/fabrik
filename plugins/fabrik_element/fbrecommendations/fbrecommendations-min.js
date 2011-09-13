@@ -1,0 +1,1 @@
+var FbRecommendations=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fbRecommendations";this.parent(b,a)}});

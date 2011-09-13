@@ -1,0 +1,1 @@
+var FbTwitter_profile=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="twitter_profile";this.parent(b,a)}});

@@ -1,0 +1,1 @@
+var FbBirthday=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikcheckbox";this.parent(b,a)}});

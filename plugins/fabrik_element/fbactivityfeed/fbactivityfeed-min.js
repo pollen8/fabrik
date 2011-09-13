@@ -1,0 +1,1 @@
+var FbActivityfeed=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fbActivityfeed";this.parent(b,a)}});
