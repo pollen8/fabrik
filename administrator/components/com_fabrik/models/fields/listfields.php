@@ -80,7 +80,6 @@ class JFormFieldListfields extends JFormFieldList
 					$opts = new stdClass();
 					$opts->table = ($repeat) ? 'jform_' . $tableDd . "-" .$c : 'jform_' . $tableDd;
 
-					$opts->livesite = COM_FABRIK_LIVESITE;
 					$opts->conn = 'jform_' .$connectionDd;
 					$opts->value = $this->value;
 					$opts->repeat = $this->value;
