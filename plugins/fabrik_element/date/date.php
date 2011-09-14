@@ -319,9 +319,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$config = JFactory::getConfig();
 			$tzoffset = new DateTimeZone($config->get('offset'));
 			$hours = $tzoffset->getOffset($date) / (60 * 60);
+			$invert = false;
+			if ($hours < 0) {
+				$invert = true;
+				$hours = $hours * -1; //intervals can only be positive - set invert propery 
+			}
 			// 5.3 only
 			if (class_exists('DateInterval')) {
 				$dateInterval = new DateInterval('PT'.$hours.'H');
+				$dateInterval->invert = $invert;
 				$date->sub($dateInterval);
 			} else {
 				$date->modify('+'.$hours.' hour');

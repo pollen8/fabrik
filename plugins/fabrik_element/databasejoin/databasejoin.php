@@ -234,8 +234,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$ hugh - attempting to make sure we never do an uncontrained query for auto-complete
 		$displayType = $params->get('database_join_display_type', 'dropdown');
 		if ($displayType == 'auto-complete' && empty($this->_autocomplete_where)) {
-			$value = $this->getValue($data, $repeatCounter);
-			$this->_autocomplete_where = $this->getJoinValueColumn() . " = " . $db->Quote($value);
+			$value = (array)$this->getValue($data, $repeatCounter);
+			if (!empty($value)) {
+				$quoteV = array();
+				foreach ($value as $v) {
+					$quoteV[] = $db->Quote($v);
+				}
+				$this->_autocomplete_where = $this->getJoinValueColumn()." IN (".implode(', ', $quoteV).')';
+			}
 		}
 		
 		// @TODO - if a calc elemenmt has be loaded before us, _optionVals will have been set,
