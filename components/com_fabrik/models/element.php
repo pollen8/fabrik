@@ -221,7 +221,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * get the elements form model
-	 * @deprecated use getFormModel
+	 * @depreciated use getFormModel
 	 * @return object form model
 	 */
 
@@ -3295,18 +3295,27 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		return $rawval;
 	}
 
+	/**
+	 * store the element params
+	 * @return boolean
+	 */
+	
 	function storeAttribs()
 	{
 		$element = $this->getElement();
 		if (!$element) {
 			return false;
 		}
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$element->params = $this->getParams()->toString();
 		$query = $db->getQuery(true);
-		$query->update('#__{package}_elements')->set("params = " . $db->Quote($element->params))->where("id = " . (int)$element->id);
+		$query->update('#__{package}_elements')->set("params = ".$db->Quote($element->params))->where("id = ".(int)$element->id);
 		$db->setQuery($query);
-		return $db->query();
+		$res = $db->query();
+		if (!$res) {
+			JError::raiseError(500, $db->getErrorMsg());
+		}
+		return $res;
 	}
 
 	function getDefaultAttribs()
