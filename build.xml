@@ -4,7 +4,7 @@
 
 	<target name="fabrik.all" depends="js" >
 		<echo>workspace = ${WORKSPACE}</echo>
-		<echo message=" destination dir = ${cfg.destdir}, git files ${cfg.rootdir}" />
+		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
 		<input message="Component version:" addproperty="version" />
 		<antcall target="fabrik.refreshfiles" />
 		<antcall target="fabrik.zipcomponent" />
@@ -452,101 +452,101 @@
 		<mkdir dir="${cfg.destdir}/admin/" />
 
 		<copy todir="${cfg.destdir}/admin/">
-			<fileset dir="${cfg.rootdir}/administrator/components/com_fabrik/">
+			<fileset dir="${basedir}/administrator/components/com_fabrik/">
 				<exclude name="**/*.zip" />
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/site/" />
 		<copy todir="${cfg.destdir}/site/">
-			<fileset dir="${cfg.rootdir}/components/com_fabrik/">
+			<fileset dir="${basedir}/components/com_fabrik/">
 				<exclude name="**/*.zip" />
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/media/com_fabrik" />
 		<copy todir="${cfg.destdir}/media/com_fabrik">
-			<fileset dir="${cfg.rootdir}/media/com_fabrik">
+			<fileset dir="${basedir}/media/com_fabrik">
 				<exclude name="**/*.zip" />
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/site/fabrikfeed" />
 		<copy todir="${cfg.destdir}/site/fabrikfeed">
-			<fileset dir="${cfg.rootdir}/libraries/joomla/document/fabrikfeed">
+			<fileset dir="${basedir}/libraries/joomla/document/fabrikfeed">
 			</fileset>
 		</copy>
 		
 		<!-- copy over the database drivers -->
 		<mkdir dir="${cfg.destdir}/site/dbdriver" />
-		<copy file="${cfg.rootdir}/libraries/joomla/database/database/mysql_fab.php" todir="${cfg.destdir}/site/dbdriver" />
-		<copy file="${cfg.rootdir}/libraries/joomla/database/database/mysqli_fab.php" todir="${cfg.destdir}/site/dbdriver" />
+		<copy file="${basedir}/libraries/joomla/database/database/mysql_fab.php" todir="${cfg.destdir}/site/dbdriver" />
+		<copy file="${basedir}/libraries/joomla/database/database/mysqli_fab.php" todir="${cfg.destdir}/site/dbdriver" />
 
 		<mkdir dir="${cfg.destdir}/modules/mod_fabrik_form/" />
 		<copy todir="${cfg.destdir}/modules/mod_fabrik_form/">
-			<fileset dir="${cfg.rootdir}/modules/mod_fabrik_form/">
+			<fileset dir="${basedir}/modules/mod_fabrik_form/">
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/modules/mod_fabrik_list/" />
 		<copy todir="${cfg.destdir}/modules/mod_fabrik_list/">
-			<fileset dir="${cfg.rootdir}/modules/mod_fabrik_list/">
+			<fileset dir="${basedir}/modules/mod_fabrik_list/">
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/content" />
-		<copy file="${cfg.rootdir}/plugins/content/fabrik/fabrik.xml" todir="${cfg.destdir}/plugins/content" />
-		<copy file="${cfg.rootdir}/plugins/content/fabrik/fabrik.php" todir="${cfg.destdir}/plugins/content" />
+		<copy file="${basedir}/plugins/content/fabrik/fabrik.xml" todir="${cfg.destdir}/plugins/content" />
+		<copy file="${basedir}/plugins/content/fabrik/fabrik.php" todir="${cfg.destdir}/plugins/content" />
 
 		<mkdir dir="${cfg.destdir}/plugins/search" />
-		<copy file="${cfg.rootdir}/plugins/search/fabrik/fabrik.xml" todir="${cfg.destdir}/plugins/search" />
-		<copy file="${cfg.rootdir}/plugins/search/fabrik/fabrik.php" todir="${cfg.destdir}/plugins/search" />
+		<copy file="${basedir}/plugins/search/fabrik/fabrik.xml" todir="${cfg.destdir}/plugins/search" />
+		<copy file="${basedir}/plugins/search/fabrik/fabrik.php" todir="${cfg.destdir}/plugins/search" />
 
 		<mkdir dir="${cfg.destdir}/plugins/system" />
 		<mkdir dir="${cfg.destdir}/plugins/system/fabrikcron" />
-		<copy file="${cfg.rootdir}/plugins/system/fabrikcron/fabrikcron.xml" todir="${cfg.destdir}/plugins/system/fabrikcron" />
-		<copy file="${cfg.rootdir}/plugins/system/fabrikcron/fabrikcron.php" todir="${cfg.destdir}/plugins/system/fabrikcron" />
+		<copy file="${basedir}/plugins/system/fabrikcron/fabrikcron.xml" todir="${cfg.destdir}/plugins/system/fabrikcron" />
+		<copy file="${basedir}/plugins/system/fabrikcron/fabrikcron.php" todir="${cfg.destdir}/plugins/system/fabrikcron" />
 		
 		<mkdir dir="${cfg.destdir}/plugins/system/fabrik" />
 		<copy todir="${cfg.destdir}/plugins/system/fabrik">
-			<fileset dir="${cfg.rootdir}/plugins/system/fabrik">
+			<fileset dir="${basedir}/plugins/system/fabrik">
 			</fileset>
 		</copy>
 
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_cron" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_cron/">
-			<fileset dir="${cfg.rootdir}/plugins/fabrik_cron/">
+			<fileset dir="${basedir}/plugins/fabrik_cron/">
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_element" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_element/">
-			<fileset dir="${cfg.rootdir}/plugins/fabrik_element/">
+			<fileset dir="${basedir}/plugins/fabrik_element/">
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_form" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_form/">
-			<fileset dir="${cfg.rootdir}/plugins/fabrik_form/">
+			<fileset dir="${basedir}/plugins/fabrik_form/">
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_list" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_list/">
-			<fileset dir="${cfg.rootdir}/plugins/fabrik_list/">
+			<fileset dir="${basedir}/plugins/fabrik_list/">
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_validationrule" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_validationrule/">
-			<fileset dir="${cfg.rootdir}/plugins/fabrik_validationrule/">
+			<fileset dir="${basedir}/plugins/fabrik_validationrule/">
 			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_visualization" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_visualization/">
-			<fileset dir="${cfg.rootdir}/plugins/fabrik_visualization/">
+			<fileset dir="${basedir}/plugins/fabrik_visualization/">
 			</fileset>
 		</copy>
 	</target>
