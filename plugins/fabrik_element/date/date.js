@@ -342,7 +342,6 @@ var FbDateTime = new Class({
 	},
 
 	showTime: function () {
-		debugger;
 		this.setAbsolutePos(this.timeElement); // need to recall if using tabbed form
 		this.toggleTime();
 		this.setActive();
@@ -352,20 +351,20 @@ var FbDateTime = new Class({
 		var hours = this.dropdown.getElements('.fbdateTime-hour');
 		hours.each(function (e) {
 			e.setStyles({
-				backgroundColor : this.buttonBg
+				backgroundColor: this.buttonBg
 			});
 		}, this);
 		var mins = this.dropdown.getElements('.fbdateTime-minute');
 		mins.each(function (e) {
 			e.setStyles({
-				backgroundColor : this.buttonBg
+				backgroundColor: this.buttonBg
 			});
 		}, this);
 		hours[this.hour.toInt()].setStyles({
-			backgroundColor : this.buttonBgSelected
+			backgroundColor: this.buttonBgSelected
 		});
 		mins[this.minute / 5].setStyles({
-			backgroundColor : this.buttonBgSelected
+			backgroundColor: this.buttonBgSelected
 		});
 	},
 	
@@ -377,7 +376,7 @@ var FbDateTime = new Class({
 			window.fireEvent('fabrik.date.close', this);
 			this.hide();
 			try {
-				form.triggerEvents(elid, [ "blur", "click", "change" ], el);
+				form.triggerEvents(elid, ["blur", "click", "change"], el);
 			} catch (err) {
 				fconsole(err);
 			}
