@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_connections` (
 	`default` INT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_cron` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_cron` (
 	`lastrun` DATETIME NOT NULL,
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_elements` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_elements` (
 	`parent_id` MEDIUMINT(6) NOT NULL,
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_formgroup` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_formgroup` (
 	`group_id` INT(4) NOT NULL,
 	`ordering` INT(4) NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_forms` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_forms` (
 	`private` TINYINT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_form_sessions` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_form_sessions` (
 	`data` TEXT NOT NULL,
 	`time_date` TIMESTAMP NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_groups` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_groups` (
 	`private` TINYINT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_joins` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_joins` (
 	`group_id` INT(10) NOT NULL,
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_jsactions` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_jsactions` (
 	`code` TEXT NOT NULL,
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_lists` (
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_lists` (
 	`private` TINYINT(1) NOT NULL DEFAULT '0',
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_log` (
 	`id` INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_log` (
 	`message_source` VARCHAR(255) NOT NULL,
 	`message_type` CHAR(60) NOT NULL,
 	`message` TEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_packages` (
 	`id` INT NOT NULL AUTO_INCREMENT,
@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_packages` (
 	`template` VARCHAR(255) NOT NULL,
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_validations` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_validations` (
 	`checked_out_time` DATETIME, 
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__fabrik_visualizations` (
 	`id` INT(6) NOT NULL AUTO_INCREMENT,
@@ -242,5 +242,5 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_visualizations` (
 	`published` INT(1) NOT NULL,
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 				
