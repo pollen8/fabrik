@@ -334,7 +334,7 @@ var FbGoogleMapViz = new Class({
 			this.options.overlay_urls.each(function (overlay_url, k) {
 				this.options.overlays[k] = new GGeoXml(overlay_url);
 				this.map.addOverlay(this.options.overlays[k]);
-				this.options.overlay_events[k] = this.toggleOverlay.bindAsEventListener(this);
+				this.options.overlay_events[k] = this.toggleOverlay.bindWithEvent(this);
 				$('overlay_chbox_' + k).addEvent('click', this.options.overlay_events[k]);
 			}.bind(this));
 		}

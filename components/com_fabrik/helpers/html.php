@@ -997,10 +997,12 @@ function loadCalendar()
 	 * @param string type e.g. form/list/element
 	 * @param string tempalte folder name
 	 * @param string image alt text
+	 * @param array assoc list of properties
 	 */
 
-	public function image($file, $type = 'form', $tmpl = '', $alt = '', $srcOnly = false)
+	public function image($file, $type = 'form', $tmpl = '', $alt = '', $srcOnly = false, $properties = array())
 	{
+		
 		$app = JFactory::getApplication();
 		$template = $app->getTemplate();
 		$paths = FabrikHelperHTML::addPath('', 'image', $type);
@@ -1017,7 +1019,17 @@ function loadCalendar()
 		if ($srcOnly) {
 			return $src;
 		}
-		return $src == '' ? '' : "<img src=\"$src\" alt=\"$alt\" title=\"$alt\" />";
+		$bits = array();
+		$bits['alt'] = $alt;
+		$bits['title'] = $alt;
+		foreach ($properties as $key => $val) {
+			$bits[$key] = $val;
+		}
+		$p = '';
+		foreach ($bits as $key => $val) {
+			$p .= "$key=\"$val\" ";
+		}
+		return $src == '' ? '' : "<img src=\"$src\" $p/>";
 	}
 
 }
