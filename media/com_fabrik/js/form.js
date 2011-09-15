@@ -163,7 +163,7 @@ var FbForm = new Class({
 			if (!document.id(id)) {
 				return;
 			}
-			c = document.id(id).findClassUp('fabrikElementContainer');
+			c = document.id(id).getParent('.fabrikElementContainer');
 		}
 		if (c) {
 			// c will be the <li> element - you can't apply fx's to this as it makes the
@@ -571,7 +571,7 @@ var FbForm = new Class({
 			id = e.target.id;
 			// for elements with subelements eg checkboxes radiobuttons
 			if (subEl === true) {
-				id = document.id(e.target).findClassUp('fabrikSubElementContainer').id;
+				id = document.id(e.target).getParent('.fabrikSubElementContainer').id;
 			}
 		} else {
 			// hack for closing date picker where it seems the event object isnt
@@ -580,7 +580,7 @@ var FbForm = new Class({
 		}
 		// for elements with subelements eg checkboxes radiobuttons
 		/*if (subEl === true) {
-			id = $(e.target).findClassUp('fabrikSubElementContainer').id;
+			id = $(e.target).getParent('.fabrikSubElementContainer').id;
 		}*/
 		if (typeOf(document.id(id)) === 'null') {
 			return;
@@ -984,7 +984,7 @@ var FbForm = new Class({
 			return;
 		}
 		e.stop();
-		var group = e.target.findClassUp('fabrikGroup');
+		var group = e.target.getParent('.fabrikGroup');
 		// find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
@@ -999,7 +999,7 @@ var FbForm = new Class({
 		}
 		var subgroups = group.getElements('.fabrikSubGroup');
 
-		var subGroup = e.target.findClassUp('fabrikSubGroup');
+		var subGroup = e.target.getParent('.fabrikSubGroup');
 		this.subGroups.set(i, subGroup.clone());
 		if (subgroups.length <= 1) {
 			this.hideLastGroup(i, subGroup);
@@ -1120,7 +1120,7 @@ var FbForm = new Class({
 		if (e) {
 			e.stop();
 		}
-		var i = e.target.findClassUp('fabrikGroup').id.replace('group', '');
+		var i = e.target.getParent('.fabrikGroup').id.replace('group', '');
 		var group = document.id('group' + i);
 		var c = this.repeatGroupMarkers.get(i);
 		if (c >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
@@ -1161,7 +1161,7 @@ var FbForm = new Class({
 				// for all instances of the call to findClassUp use el.element rather
 				// than input (HMM SEE LINE 912 - PERHAPS WE CAN REVERT TO USING INPUT
 				// NOW?)
-				var testid = (hasSubElements) ? input.findClassUp('fabrikSubElementContainer').id : input.id;
+				var testid = (hasSubElements) ? input.getParent('.fabrikSubElementContainer').id : input.id;
 
 				if (el.options.element === testid) {
 					lastinput = input;
@@ -1173,15 +1173,15 @@ var FbForm = new Class({
 						// 942 - which in turn meant when we cleared the values we were
 						// clearing the orignal elements values
 						// not sure how this fits in with comments above which state we
-						// should use el.element.findClassUp('fabrikSubElementContainer');
+						// should use el.element.getParent('.fabrikSubElementContainer');
 						// REAL ISSUE WAS THAT inputs CONTAINED ADD OPTIONS
 						// (elementmodel->getAddOptionFields) WHICH HAD ELEMENTS WITH THE
 						// CLASS fabrikinput THIS CLASS IS RESERVERED FOR ACTUAL DATA
 						// ELEMENTS
 						// subElementContainer =
-						// el.element.findClassUp('fabrikSubElementContainer');
+						// el.element.getParent('.fabrikSubElementContainer');
 
-						subElementContainer = input.findClassUp('fabrikSubElementContainer');
+						subElementContainer = input.getParent('.fabrikSubElementContainer');
 						// clone the first inputs event to all subelements
 						input.cloneEvents(document.id(testid).getElement('input'));
 
@@ -1196,7 +1196,7 @@ var FbForm = new Class({
 						input.id = bits.join('_');
 
 						// update labels for non sub elements
-						var l = input.findClassUp('fabrikElementContainer').getElement('label');
+						var l = input.getParent('.fabrikElementContainer').getElement('label');
 						if (l) {
 							l.setProperty('for', input.id);
 						}

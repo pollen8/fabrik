@@ -496,7 +496,7 @@ var FbList = new Class({
 				var newOrderClass = '';
 				// $$$ rob in pageadaycalendar.com h was null so reset to e.target
 				h = document.id(e.target);
-				var td = h.findClassUp('fabrik_ordercell');
+				var td = h.getParent('.fabrik_ordercell');
 				if (h.tagName !== 'a') {
 					h = td.getElement('a');
 				}
@@ -571,7 +571,7 @@ var FbList = new Class({
 		if (this.options.ajax) {
 			this.list.addEvent('click:relay(.fabrik_edit)', function (e) {
 				e.stop();
-				var row = e.target.findClassUp('fabrik_row');
+				var row = e.target.getParent('.fabrik_row');
 				this.setActive(row);
 				var rowid = row.id.replace('list_' + this.id + '_row_', '');
 				var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
@@ -581,7 +581,7 @@ var FbList = new Class({
 
 			this.list.addEvent('click:relay(.fabrik_view)', function (e) {
 				e.stop();
-				var row = e.target.findClassUp('fabrik_row');
+				var row = e.target.getParent('.fabrik_row');
 				this.setActive(row);
 				var rowid = row.id.replace('list_' + this.id + '_row_', '');
 				var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
@@ -785,8 +785,8 @@ var FbList = new Class({
 				}
 			}.bind(this));
 
-			var fabrikDataContainer = this.list.findClassUp('fabrikDataContainer');
-			var emptyDataMessage = this.list.findClassUp('fabrikForm').getElement('.emptyDataMessage');
+			var fabrikDataContainer = this.list.getParent('.fabrikDataContainer');
+			var emptyDataMessage = this.list.getParent('.fabrikForm').getElement('.emptyDataMessage');
 			if (rowcounter === 0) {
 				if (typeOf(fabrikDataContainer) !== 'null') {
 					fabrikDataContainer.setStyle('display', 'none');
@@ -873,7 +873,7 @@ var FbList = new Class({
 			// IE wont fire an event on change until the checkbxo is blurred!
 			checkAll.addEvent('click', function (e) {
 				var c = document.id(e.target); 
-				var chkBoxes = this.list.findClassUp('fabrikList').getElements('input[name^=ids]');
+				var chkBoxes = this.list.getParent('.fabrikList').getElements('input[name^=ids]');
 				c = !c.checked ? '' : 'checked';
 				for (var i = 0; i < chkBoxes.length; i++) {
 					chkBoxes[i].checked = c;
@@ -921,7 +921,7 @@ var FbList = new Class({
 		var del = document.getElements('.fabrik_delete a');
 		if (del) {
 			del.addEvent('click', function (e) {
-				var r = e.target.findClassUp('fabrik_row');
+				var r = e.target.getParent('.fabrik_row');
 				if (r) {
 					var chx = r.getElement('input[type=checkbox][name*=id]');
 					if (typeOf(chx) !== 'null') {
@@ -1127,7 +1127,7 @@ var FbListActions = new Class({
 	
 	setUpFloating: function () {
 		this.list.form.getElements('ul.fabrik_action').each(function (ul) {
-			if (ul.findClassUp('fabrik_row')) {
+			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
 					ul.addClass('floating-tip');
 					var c = ul.clone().inject(document.body, 'inside');

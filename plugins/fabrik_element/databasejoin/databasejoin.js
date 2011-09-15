@@ -201,7 +201,7 @@ var FbDatabasejoin = new Class({
 							var v = r.data[this.options.key];
 							var l = r.data[this.options.label];
 							if (typeOf(l) !== 'null') {
-								labelfield = this.element.findClassUp('fabrikElement').getElement('.autocomplete-trigger');
+								labelfield = this.element.getParent('.fabrikElement').getElement('.autocomplete-trigger');
 								this.element.value = v;
 								labelfield.value = l;
 							}
@@ -257,7 +257,7 @@ var FbDatabasejoin = new Class({
 					}
 					break;
 				case 'auto-complete':
-					labelfield = this.element.findClassUp('fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
+					labelfield = this.element.getParent('.fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
 					this.element.value = v;
 					labelfield.value = l;
 					break;
@@ -357,7 +357,7 @@ var FbDatabasejoin = new Class({
 	
 	showDesc: function (e) {
 		var v = e.target.selectedIndex;
-		var c = this.element.findClassUp('fabrikElementContainer').getElement('.dbjoin-description');
+		var c = this.element.getParent('.fabrikElementContainer').getElement('.dbjoin-description');
 		var show = c.getElement('.description-' + v);
 		c.getElements('.notice').each(function (d) {
 			if (d === show) {

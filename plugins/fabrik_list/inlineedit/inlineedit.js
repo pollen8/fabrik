@@ -312,7 +312,7 @@ var FbListInlineEdit = new Class({
 			e.stop();
 		}
 		var element = this.getElementName(td);
-		var rowid = td.findClassUp('fabrik_row').id.replace('list_' + this.list.id + '_row_', '');
+		var rowid = td.getParent('.fabrik_row').id.replace('list_' + this.list.id + '_row_', '');
 		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.display&format=raw';
 		var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
 		var opts = this.options.elements[element];
@@ -388,7 +388,7 @@ var FbListInlineEdit = new Class({
 	getDataFromTable: function (td) {
 		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
 		var element = this.getElementName(td);
-		var ref = td.findClassUp('fabrik_row').id;
+		var ref = td.getParent('.fabrik_row').id;
 		var v = false;
 		this.vv = [];
 		// $$$rob $H needed when group by applied
@@ -447,7 +447,7 @@ var FbListInlineEdit = new Class({
 		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.save&format=raw';
 		var url = 'index.php?option=com_fabrik&task=element.save&format=raw';
 		var opts = this.options.elements[element];
-		var row = this.editing.findClassUp('fabrik_row');
+		var row = this.editing.getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.list.id + '_row_', '');
 		td.removeClass(this.options.focusClass);
 		//var eObj = eval('inlineedit_' + opts.elid);
@@ -498,7 +498,7 @@ var FbListInlineEdit = new Class({
 		if (typeOf(this.editing) !== 'element') {
 			return;
 		}
-		var row = this.editing.findClassUp('fabrik_row');
+		var row = this.editing.getParent('.fabrik_row');
 		if (row === false) {
 			return;
 		}

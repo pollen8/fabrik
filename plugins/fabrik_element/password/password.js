@@ -45,6 +45,6 @@ var FbPassword = new Class({
 
 	getConfirmationField: function () {
 		var name = this.element.name + '_check';
-		return this.element.findClassUp('fabrikElement').getElement('input[name=' + name + ']');
+		return this.element.getParent('.fabrikElement').getElement('input[name=' + name + ']');
 	}
 });

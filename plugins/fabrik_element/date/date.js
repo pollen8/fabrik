@@ -120,7 +120,7 @@ var FbDateTime = new Class({
 		// have to reget the time element as update is called (via reset) in
 		// duplicate group code
 		// before cloned() method called
-		this.timeElement = this.element.findClassUp('fabrikElementContainer').getElement('.timeField');
+		this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
 		var bits = val.split(" ");
 		var date = bits[0];
 		var time = (bits.length > 1) ? bits[1].substring(0, 5) : '00:00';

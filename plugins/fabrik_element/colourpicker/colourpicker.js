@@ -39,7 +39,7 @@ var ColourPicker = new Class({
 		this.options.handleImage = Fabrik.liveSite + this.options.handleImage;
 		this.options.trackImage = Fabrik.liveSite + this.options.trackImage;
 		this.element = $(element);
-		this.widget = this.element.findClassUp('fabrikSubElementContainer').getElement('.colourpicker-widget');
+		this.widget = this.element.getParent('.fabrikSubElementContainer').getElement('.colourpicker-widget');
 		this.setOutputs();
 		this.redField = null;
 		this.showSwatch = true;
@@ -163,11 +163,11 @@ var ColourPicker = new Class({
 	
 	showColourName: function (e) {
 		this.colourName = e.target.className;
-		e.target.findClassUp('colourpicker-widget').getElement('.colourName').set('text', this.colourName);
+		e.target.getParent('.colourpicker-widget').getElement('.colourName').set('text', this.colourName);
 	},
 	
 	clearColourName: function (e) {
-		e.target.findClassUp('colourpicker-widget').getElement('.colourName').set('text', '');
+		e.target.getParent('.colourpicker-widget').getElement('.colourName').set('text', '');
 	},
 
 	updateOutputs : function () {

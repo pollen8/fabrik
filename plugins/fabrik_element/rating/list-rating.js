@@ -25,7 +25,7 @@ var FbRatingList = new Class({
 
 			stars.each(function (star) {
 				star.addEvent('mouseover', function (e) {
-					this.origRating[tr.id] = star.findClassUp('fabrik_element').getElement('.ratingMessage').innerHTML.toInt();
+					this.origRating[tr.id] = star.getParent('.fabrik_element').getElement('.ratingMessage').innerHTML.toInt();
 					stars.each(function (ii) {
 						if (this._getRating(star) >= this._getRating(ii)) {
 							ii.src = this.options.insrc;
@@ -33,7 +33,7 @@ var FbRatingList = new Class({
 							ii.src = this.options.outsrc;
 						}
 					}.bind(this));
-					star.findClassUp('fabrik_element').getElement('.ratingMessage').innerHTML = star.alt;
+					star.getParent('.fabrik_element').getElement('.ratingMessage').innerHTML = star.alt;
 				}.bind(this));
 
 				star.addEvent('mouseout', function (e) {
@@ -44,7 +44,7 @@ var FbRatingList = new Class({
 							ii.src = this.options.outsrc;
 						}
 					}.bind(this));
-					star.findClassUp('fabrik_element').getElement('.ratingMessage').innerHTML = this.origRating[tr.id];
+					star.getParent('.fabrik_element').getElement('.ratingMessage').innerHTML = this.origRating[tr.id];
 				}.bind(this));
 			}.bind(this));
 
@@ -64,9 +64,9 @@ var FbRatingList = new Class({
 	doAjax : function (e, star) {
 		e.stop();
 		this.rating = this._getRating(star);
-		var ratingmsg = star.findClassUp('fabrik_element').getElement('.ratingMessage');
+		var ratingmsg = star.getParent('.fabrik_element').getElement('.ratingMessage');
 		Fabrik.loader.start(ratingmsg);
-		var row = $(star).findClassUp('fabrik_row');
+		var row = $(star).getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
 		var data = {
 			'row_id' : rowid,
@@ -83,7 +83,7 @@ var FbRatingList = new Class({
 				this.rating = r;
 				ratingmsg.set('html', this.rating);
 				Fabrik.loader.stop(ratingmsg);
-				star.findClassUp('fabrik_element').getElements('img').each(function (i, x) {
+				star.getParent('.fabrik_element').getElements('img').each(function (i, x) {
 					i.src(x < r) ? this.options.insrc : this.options.outsrc;
 				}.bind(this));
 			}.bind(this)

@@ -32,7 +32,7 @@ var FbGoogleMap = new Class({
 		'staticmap': 0,
 		'auto_center': false,
 		'center': 0,
-		'reverse_geocode' : false
+		'reverse_geocode': false
 	},
 	
 	initialize : function (element, options) {
@@ -473,9 +473,9 @@ var FbGoogleMap = new Class({
 	},
     
 	watchTab: function () {
-		var tab_dl = this.element.findClassUp('tabs');
+		var tab_dl = this.element.getParent('.tabs');
 		if (tab_dl) {
-			this.options.tab_dt = this.element.findClassUp('fabrikGroup').getPrevious();
+			this.options.tab_dt = this.element.getParent('.fabrikGroup').getPrevious();
 			if (!this.options.tab_dt.hasClass('open')) {
 				this.doTabBound = this.doTab.bindWithEvent(this);
 				this.options.tab_dt.addEvent('click', this.doTabBound);

@@ -121,7 +121,7 @@ var fabrikCalendar = new Class({
 				'click': function (e) {
 						e.stop();
 						var o = {};
-						var i = $(e.target).findClassUp('fabrikEvent').id.replace('fabrikEvent_', '').split('_');
+						var i = $(e.target).getParent('.fabrikEvent').id.replace('fabrikEvent_', '').split('_');
 						o.rowid = i[1];
 						o.listid = i[0];
 						this.addEvForm(o);					
@@ -138,7 +138,7 @@ var fabrikCalendar = new Class({
 	doPopupEvent: function (e, entry, label) {
 		var event = new Event(e);
 		var oldactive = this.activeHoverEvent;
-		this.activeHoverEvent = $(event.target).findClassUp('fabrikEvent');
+		this.activeHoverEvent = $(event.target).getParent('.fabrikEvent');
 		if (entry._canDelete === 0) {
 			this.popWin.getElement('.popupDelete').setStyle('display', 'none');
 		} else {

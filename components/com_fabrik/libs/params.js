@@ -69,7 +69,7 @@ var RepeatParams = new Class({
 					//var divs = this.el.getElements('.repeatGroup');
 					var divs = this.el.getParent().getElements('.repeatGroup');
 					if (divs.length -1 > this.opts.repeatMin){
-						$(e.target).findClassUp('repeatGroup').remove();
+						$(e.target).getParent('.repeatGroup').remove();
 					}
 					e.stop();
 					this.watchDeleteParamsGroup();

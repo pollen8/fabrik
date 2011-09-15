@@ -134,7 +134,7 @@ var FabrikComment = new Class({
 	doInput : function (e) {
 		var event = new Event(e);
 		this.spinner.inject($(event.target), 'after');
-		var replyform = $(event.target).findClassUp('replyform');
+		var replyform = $(event.target).getParent('.replyform');
 		if (replyform.id === 'master-comment-form') {
 			var lis = this.element.getElement('ul').getElements('li');
 			if (lis.length > 0) {
@@ -209,7 +209,7 @@ var FabrikComment = new Class({
 	},
 
 	saveComment : function (div) {
-		var id = div.findClassUp('comment').id.replace('comment-', '');
+		var id = div.getParent('.comment').id.replace('comment-', '');
 		
 		
 		this.ajax.updateComment.options.data.comment_id = id;
@@ -229,10 +229,10 @@ var FabrikComment = new Class({
 			var commentform = a.getParent().getParent().getNext();
 			if (typeOf(commentform) === 'null') {
 				// wierd ie7 ness?
-				commentform = a.findClassUp('comment').getElement('.replyform');
+				commentform = a.getParent('.comment').getElement('.replyform');
 			}
 			if (typeOf(commentform) !== 'null') {
-				var li = a.findClassUp('comment').findUp('li');
+				var li = a.getParent('.comment').findUp('li');
 				if (window.ie) {
 					fx = new Fx.Slide(commentform, 'opacity', {
 						duration : 5000
@@ -261,7 +261,7 @@ var FabrikComment = new Class({
 			a.removeEvents();
 			a.addEvent('click', function (e) {
 				var event = new Event(e);
-				this.ajax.deleteComment.options.data.comment_id = $(event.target).findClassUp('comment').id.replace('comment-', '');
+				this.ajax.deleteComment.options.data.comment_id = $(event.target).getParent('.comment').id.replace('comment-', '');
 				this.ajax.deleteComment.send();
 				this.updateDigg();
 				event.stop();

@@ -39,10 +39,10 @@ var FbFileUpload = new Class({
 
 	cloned : function () {
 		// replaced cloned image with default image
-		if (typeOf(this.element.findClassUp('fabrikElement')) === 'null') {
+		if (typeOf(this.element.getParent('.fabrikElement')) === 'null') {
 			return;
 		}
-		var i = this.element.findClassUp('fabrikElement').getElement('img');
+		var i = this.element.getParent('.fabrikElement').getElement('img');
 		if (i) {
 			i.src = Fabrik.liveSite + this.options.defaultImage;
 		}
@@ -73,7 +73,7 @@ var FbFileUpload = new Class({
 		if (this.options.editable === false) {
 			return;
 		}
-		var c = this.element.findClassUp('fabrikSubElementContainer');
+		var c = this.element.getParent('.fabrikSubElementContainer');
 		this.container = c;
 		if (this.options.crop === 1) {
 			this.widget = new ImageWidget(c.getElement('canvas'), {'cropdim' : {
@@ -227,7 +227,7 @@ var FbFileUpload = new Class({
 				'recordid': id
 			}
 		}).send();
-		var li = e.target.findClassUp('plupload_delete');
+		var li = e.target.getParent('.plupload_delete');
 		li.destroy();
 		// remove hidden fields as well
 		if ($('id_alreadyuploaded_' + this.options.id + '_' + id)) {

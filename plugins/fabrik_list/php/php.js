@@ -17,7 +17,7 @@ var FbListPHP = new Class({
 					}
 					hdata[row_index].rowid = c.value;
 					additional_data.split(',').each(function (elname) {
-						var cell_data = c.findClassUp('fabrik_row').getElements('td.fabrik_row___' + elname)[0].innerHTML;
+						var cell_data = c.getParent('.fabrik_row').getElements('td.fabrik_row___' + elname)[0].innerHTML;
 						hdata[row_index][elname] = cell_data;
 					});
 				}

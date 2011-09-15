@@ -185,7 +185,7 @@ var ListForm = new Class({
 					events: {
 						'click': function (e) {
 							e.stop();
-							e.target.findClassUp('adminform').getElement('tbody').slide('toggle');
+							e.target.getParent('.adminform').getElement('tbody').slide('toggle');
 						}
 					},
 					'styles': {

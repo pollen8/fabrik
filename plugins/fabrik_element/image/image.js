@@ -31,9 +31,9 @@ var FbImage = new Class({
 
 	getMyElements : function () {
 		var element = this.options.element;
-		this.image = $(element).findClassUp('fabrikSubElementContainer').getElement('.imagedisplayor');
-		this.folderDir = $(element).findClassUp('fabrikSubElementContainer').getElement('.folderselector');
-		this.imageDir = $(element).findClassUp('fabrikSubElementContainer').getElement('.imageselector');
+		this.image = $(element).getParent('.fabrikSubElementContainer').getElement('.imagedisplayor');
+		this.folderDir = $(element).getParent('.fabrikSubElementContainer').getElement('.folderselector');
+		this.imageDir = $(element).getParent('.fabrikSubElementContainer').getElement('.imageselector');
 		// this.hiddenField is set in FbFileElement
 	},
 

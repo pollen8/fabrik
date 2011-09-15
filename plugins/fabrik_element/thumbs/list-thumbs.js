@@ -20,7 +20,7 @@ var FbThumbsList = new Class({
 		this.origThumbUp = {};
 		this.origThumbDown = {};
 		this.col.each(function (tr) {
-			var row = tr.findClassUp('fabrik_row');
+			var row = tr.getParent('.fabrik_row');
 			if (row) {
 				var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
 				var thumbup = tr.getElements('.thumbup');
@@ -66,7 +66,7 @@ var FbThumbsList = new Class({
 	},
 
 	doAjax: function (e, thumb) {
-		var row = e.findClassUp('fabrik_row');
+		var row = e.getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
 		var count_thumb = $('count_thumb' + thumb + rowid);
 		Fabrik.loader.start(count_thumb);

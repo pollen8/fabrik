@@ -85,7 +85,7 @@ var FbRepeatGroup = new Class({
 				e.stop();
 				var count = this.getCounter();
 				if (count > this.options.repeatmin) {
-					var u = e.target.findClassUp('repeatGroup');
+					var u = e.target.getParent('.repeatGroup');
 					u.destroy();
 				}
 				this.rename(x);
