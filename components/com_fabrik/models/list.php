@@ -267,7 +267,7 @@ class FabrikFEModelList extends JModelForm {
 
 		//if table is rendered as a content plugin dont set the limits in the session
 		if ($app->scope == 'com_content') {
-			$limitLength = JRequest::getInt('limit'.$id, $table->rows_per_page);
+			$limitLength = JRequest::getInt('limit'.$id, $item->rows_per_page);
 			if (!$this->randomRecords) {
 				$limitStart	= JRequest::getInt('limitstart'.$id, $limitStart);
 			}
@@ -2306,7 +2306,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @return bol access allowed
 	 */
 
-	function canCSVImport()
+	public function canCSVImport()
 	{
 		if (!is_object($this->_access) || !array_key_exists('csvimport', $this->_access)) {
 			$user = JFactory::getUser();
@@ -2322,7 +2322,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @return bol access allowed
 	 */
 
-	function canCSVExport()
+	public function canCSVExport()
 	{
 		if (!is_object($this->_access) || !array_key_exists('csvexport', $this->_access)) {
 			$user = JFactory::getUser();
@@ -2330,6 +2330,22 @@ class FabrikFEModelList extends JModelForm {
 			$this->_access->csvexport = in_array($this->getParams()->get('csv_export_frontend'), $groups);
 		}
 		return $this->_access->csvexport;
+	}
+	
+	/**
+	* checks user access for front end group by
+	*
+	* @return bol access allowed
+	*/
+	
+	public function canGroupBy()
+	{
+		if (!is_object($this->_access) || !array_key_exists('groupby', $this->_access)) {
+			$user = JFactory::getUser();
+			$groups = $user->authorisedLevels();
+			$this->_access->groupby = in_array($this->getParams()->get('group_by_access'), $groups);
+		}
+		return $this->_access->groupby;
 	}
 
 	/**

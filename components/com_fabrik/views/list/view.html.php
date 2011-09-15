@@ -296,8 +296,9 @@ class FabrikViewList extends JView{
 		$this->formid = 'listform_'.$item->id;
 		$form = $model->getFormModel();
 		$this->table->action = $this->get('TableAction');
-		$this->showCSV 				= $model->canCSVExport();
-		$this->showCSVImport	= $model->canCSVImport();
+		$this->showCSV = $model->canCSVExport();
+		$this->showCSVImport = $model->canCSVImport();
+		$this->canGroupBy = $model->canGroupBy();
 		$this->assignRef('navigation', $nav);
 		$this->nav = JRequest::getInt('fabrik_show_nav', $params->get('show-table-nav', 1)) ? $nav->getListFooter($item->id, $this->get('tmpl')) : '';
 		$this->nav = '<div class="fabrikNav">'.$this->nav.'</div>';
@@ -424,7 +425,7 @@ class FabrikViewList extends JView{
 				$res = $modelCals['avgs'][$key. '_obj'];
 				foreach ($res as $k => $v) {
 					if ($k != 'calc') {
-						@$oCalcs->grouped[$k] .=  "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
 					}
 				}
 			}
@@ -434,7 +435,7 @@ class FabrikViewList extends JView{
 				$res = $modelCals['medians'][$key. '_obj'];
 				foreach ($res as $k => $v) {
 					if ($k != 'calc') {
-						@$oCalcs->grouped[$k] .=  "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
 					}
 				}
 			}
