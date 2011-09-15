@@ -170,6 +170,12 @@
 		</fieldset>
 		<fieldset name="grouping2" addfieldpath="/administrator/components/com_fabrik/models/fields">
 				
+				<field name="group_by_access" 
+					type="accesslevel" 
+					default="0" 
+					label="COM_FABRIK_FIELD_GROUP_BY_ACCESS_LABEL" 
+					description="COM_FABRIK_FIELD_GROUP_BY_ACCESS_DESC" />
+					
 				<field name="group_by_order" 
 					type="listfields" 
 					valueformat="tableelement" 

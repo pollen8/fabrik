@@ -19,6 +19,7 @@
 		</li>
 	<?php } ?>
 
+	<?php if ($this->canGroupBy) {?>
 		<li>
 			<a href="#" class="groupBy">
 				<?php echo FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, JText::_('COM_FABRIK_GROUP_BY'));?>
@@ -31,7 +32,7 @@
 				}?>
 			</ul>
 		</li>
-
+	<?php } ?>
 	<?php if ($this->showCSV) {?>
 		<li class="csvExportButton">
 			<a href="#">

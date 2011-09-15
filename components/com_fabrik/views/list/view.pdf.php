@@ -202,6 +202,7 @@ class FabrikViewList extends JView{
 		$this->table->action 	= JRoute::_($this->table->action);
 
 		$this->showCSV 				= $model->canCSVExport();
+		$this->canGroupBy = $model->canGroupBy();
 		$this->showCSVImport	= $model->canCSVImport();
 		$this->nav 						= $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->get('tmpl')) : '';
 		$this->fabrik_userid 	= $user->get('id');
