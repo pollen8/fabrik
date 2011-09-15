@@ -55,7 +55,7 @@ var ListFieldsElement = new Class({
 		}
 		clearInterval(this.periodical);
 		//var url = this.options.livesite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=field&method=ajax_fields&showall=true&cid=' + cid + '&t=' + tid;
-		var url = 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=field&method=ajax_fields&showall=true&cid=' + cid + '&t=' + tid;
+		var url = 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&g=element&plugin=field&method=ajax_fields&showall=true&cid=' + cid + '&t=' + tid;
 		var myAjax = new Request({
 			url: url,
 			method: 'get', 
