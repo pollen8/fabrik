@@ -562,7 +562,7 @@
 		<echo>load properties</echo>
 		<!--YUI Compressor location -->
 		<property name="yui.dir"
-			value="${basedir}/fabriK_build/yuicompressor/build/yuicompressor-2.4.6.jar" />
+			value="${basedir}/fabrik_build/yuicompressor/build/yuicompressor-2.4.6.jar" />
 		<!--Source JS dir -->
 		<property name="src.js.dir" value="${basedir}/media/com_fabrik/js" />
 		<!--Source CSS dir -->
