@@ -166,7 +166,9 @@ var FbCascadingdropdown = new Class({
 			this.ignoreAjax = true;
 		}
 		if (this.options.showDesc === true) {
-			this.element.addEvent('change', this.showDesc.bindAsEventListener(this));
+			this.element.addEvent('change', function () {
+				this.showDesc();
+			}.bind(this));
 		}
 		window.fireEvent('fabrik.cdd.update', this);
 	},
