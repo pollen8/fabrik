@@ -160,50 +160,50 @@ var FbGoogleMap = new Class({
 					document.id(this.element).getElement('.lngdms').value = this.lngDecToDMS();
 				}
 				if (this.options.reverse_geocode) {
-					this.geocoder.geocode({'latLng': this.marker.getPosition()}, function(results, status) {
-						if (status == google.maps.GeocoderStatus.OK) {
+					this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
+						if (status === google.maps.GeocoderStatus.OK) {
 							if (results[0]) {
 								//infowindow.setContent(results[1].formatted_address);
 								//infowindow.open(map, marker);
-								alert(results[0].formatted_address);
-								results[0].address_components.each(function(component) {
-									component.types.each(function(type) {
-										if (type == 'street_number') {
+								//alert(results[0].formatted_address);
+								results[0].address_components.each(function (component) {
+									component.types.each(function (type) {
+										if (type === 'street_number') {
 											if (this.options.reverse_geocode_fields.route) {
 												$(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
 											}
 										}
-										else if (type == 'route') {
+										else if (type === 'route') {
 											if (this.options.reverse_geocode_fields.route) {
 												$(this.options.reverse_geocode_fields.route).value += component.long_name;
 											}
 										}
-										else if (type == 'street_address') {
+										else if (type === 'street_address') {
 											if (this.options.reverse_geocode_fields.route) {
 												$(this.options.reverse_geocode_fields.route).value = component.long_name;
 											}
 										}	
-										else if (type == 'neighborhood') {
+										else if (type === 'neighborhood') {
 											if (this.options.reverse_geocode_fields.neighborhood) {
 												$(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
 											}
 										}	
-										else if (type == 'locality') {
+										else if (type === 'locality') {
 											if (this.options.reverse_geocode_fields.city) {
 												$(this.options.reverse_geocode_fields.locality).value = component.long_name;
 											}
 										}
-										else if (type == 'administrative_area_level_1') {
+										else if (type === 'administrative_area_level_1') {
 											if (this.options.reverse_geocode_fields.state) {
 												$(this.options.reverse_geocode_fields.state).value = component.long_name;
 											}
 										}
-										else if (type == 'postal_code') {
+										else if (type === 'postal_code') {
 											if (this.options.reverse_geocode_fields.zip) {
 												$(this.options.reverse_geocode_fields.zip).value = component.long_name;
 											}
 										}
-										else if (type == 'country') {
+										else if (type === 'country') {
 											if (this.options.reverse_geocode_fields.country) {
 												$(this.options.reverse_geocode_fields.country).value = component.long_name;
 											}
@@ -214,8 +214,8 @@ var FbGoogleMap = new Class({
 							else {
 								alert("No results found");
 							}
-				        } else {
-				        	alert("Geocoder failed due to: " + status);
+						} else {
+							alert("Geocoder failed due to: " + status);
 				        }
 					}.bind(this));						
 				}
