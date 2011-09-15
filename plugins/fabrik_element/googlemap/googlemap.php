@@ -196,6 +196,15 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 				}
 			}
 		}
+		$opts->reverse_geocode = $params->get('fb_gm_reverse_geocode', '0') == '0' ? false : true;
+		if ($opts->reverse_geocode) {
+			foreach (array('route' => 'addr1','neighborhood' => 'addr2','locality' => 'city','administrative_area_level_1' => 'state','postal_code' => 'zip','country' => 'country') as $google_field => $which_field) {
+				$field_id = '';
+				if ($field_id = $this->_getGeocodeFieldId($which_field, $repeatCounter)) {
+					$opts->reverse_geocode_fields[$google_field] = $field_id;
+				}
+			}
+		}
 		$opts->center = $params->get('fb_gm_defaultloc', 0);
 		$opts = json_encode($opts);
 

@@ -32,7 +32,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/** @var array linked form data */
 	var $_linkedForms = null;
-	
+
 	/** @var additionl where for auto-complete query */
 	var $_autocomplete_where = "";
 
@@ -243,7 +243,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$this->_autocomplete_where = $this->getJoinValueColumn()." IN (".implode(', ', $quoteV).')';
 			}
 		}
-		
+
 		// @TODO - if a calc elemenmt has be loaded before us, _optionVals will have been set,
 		// BUT using $incWhere as false.  So is this join has a WHERE clause, it's never getting run.
 		// So I'm adding the _sql[$incWhere] test to try and resolve this ...
@@ -252,7 +252,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_optionVals;
 			}
 		}
-		
+
 		$sql = $this->_buildQuery($data, $incWhere);
 		if (!$sql) {
 			$this->_optionVals = array();
@@ -323,43 +323,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue') , $this->_getSelectLabel()));
 		}
 		return $tmp;
-	}
-	
-	protected function getOneOption($value, $data, $repeatCounter = 0) {
-		$params =& $this->getParams();
-		// @TODO - if a calc elemenmt has be loaded before us, _optionVals will have been set,
-		// BUT using $incWhere as false.  So is this join has a WHERE clause, it's never getting run.
-		// So I'm adding the _sql[$incWhere] test to try and resolve this ...
-		if (isset($this->_optionVals)) {
-			if (isset($this->_sql[2])) {
-				return $this->_optionVals;
-			}
-		}
-		$db =& $this->getDb();
-		$this->_autocomplete_where = $this->getJoinValueColumn() . " = " . $db->Quote($value);
-		$sql = $this->_buildQuery($data, 2);
-		if (!$sql) {
-			$this->_optionVals = array();
-		} else {
-			$db->setQuery($sql);
-			FabrikHelperHTML::debug($db->getQuery(), $this->getElement()->name .'databasejoin element: get one option query');
-			$this->_optionVals = $db->loadObjectList();
-			if ($db->getErrorNum() != 0) {
-				JError::raiseNotice(500,  $db->getErrorMsg());
-			}
-			FabrikHelperHTML::debug($this->_optionVals, 'databasejoin elements');
-			if (!is_array($this->_optionVals)) {
-				$this->_optionVals = array();
-			}
-	
-			$eval = $params->get('dabase_join_label_eval');
-			if (trim($eval) !== '') {
-				foreach ($this->_optionVals as &$opt) {
-					eval($eval);
-				}
-			}
-		}
-		return $this->_optionVals;
 	}
 
 	protected function _getSelectLabel()
@@ -611,6 +574,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $tmp = ($displayType == 'auto-complete' && $this->_editable) ? array() : $this->_getOptions($data, $repeatCounter);
 		// $$$ hugh - doesn't matter if editable, otherwise it just failsd on _getROElement().  Don't load for auto-complete, period.
 		// $tmp = ($displayType == 'auto-complete') ? array() : $this->_getOptions($data, $repeatCounter);
+		// $$$ hugh - moved the auto-complete handling into _getOptionVals, so doesn't matter here any more
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		/*get the default value */
 		$w = new FabrikWorker();
@@ -766,7 +730,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$db = FabrikWorker::getDbo(true);
 			$params = $this->getParams();
 			//forms for potential add record pop up form
-			
+
 			$query = $db->getQuery(true);
 			$query->select('f.id AS value, f.label AS text, l.id AS listid')
 			->from('#__{package}_forms AS f')
@@ -774,9 +738,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			->where('f.published = 1 AND l.db_table_name = '.$db->Quote($params->get('join_db_name')))
 			->order('f.label');
 			$db->setQuery($query);
-			
+
 			$this->_linkedForms = $db->loadObjectList('value');
-			
+
 			// Check for a database error.
 			if ($db->getErrorNum()) {
 				JError::raiseError(500, $db->getErrorMsg());
