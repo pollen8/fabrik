@@ -44,3 +44,4 @@ transfer/*
 /transfer
 /tests
 /cache
+fabrik_build/output/
