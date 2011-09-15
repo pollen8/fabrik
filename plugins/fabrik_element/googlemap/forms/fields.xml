@@ -109,10 +109,10 @@
 			<field name="fb_gm_defaultloc"
 				type="radio"
 				default="0"
-				label="PLG_ELEMENT_GOOGLEMAP_DEFAULT_LOCATION_LABEL"
-				description="PLG_ELEMENT_GOOGLEMAP_DEFAULT_LOCATION_DESC">
-					<option value="0">PLG_ELEMENT_GOOGLEMAP_COORDS</option>
-					<option value="1">PLG_ELMENET_GOOGLEMAP_GEOLOC</option>
+				label="PLG_ELEMENT_GOOGLE_MAP_DEFAULT_LOCATION_LABEL"
+				description="PLG_ELEMENT_GOOGLE_MAP_DEFAULT_LOCATION_DESC">
+					<option value="0">PLG_ELEMENT_GOOGLE_MAP_COORDS</option>
+					<option value="1">PLG_ELMENET_GOOGLE_MAP_GEOLOC</option>
 			</field>
 			
 			<field name="fb_gm_lat" 
@@ -138,6 +138,15 @@
 					<option value="1">JYES</option>
 					<option value="2">PLG_ELEMENT_GOOGLE_MAP_USE_ELEMENTS</option>
 			</field>
+			
+			<param name="fb_gm_reverse_geocode"
+				type="radio"
+				default="0"
+				label="PLG_ELEMENT_GOOGLE_MAP_REVERSE_GEOCODE_LABEL"
+				description="PLG_ELEMENT_GOOGLE_MAP_REVERSE_GEOCODE_DESC">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+			</param>
 			
 			<field name="fb_gm_geocode_addr1" 
 				type="listfields" 
