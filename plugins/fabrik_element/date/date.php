@@ -231,8 +231,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$str .= $this->calendar($date, $name, $id ."_cal", $format, $calopts, $repeatCounter);
 		if ($params->get('date_showtime', 0)) {
 			$timelength = strlen($timeformat);
+			FabrikHelperHTML::addPath(COM_FABRIK_BASE.'plugins/fabrik_element/date/images/');
 			$str .= "\n<input class=\"inputbox fabrikinput timeField\" $readonly size=\"$timelength\" value=\"$time\" name=\"$timeElName\" />";
-			$str .= "\n".'<img src="'.COM_FABRIK_LIVESITE.'plugins/fabrik_element/kdate/images/time.gif" alt="time" class="timeButton" />';
+			$str .= "\n".FabrikHelperHTML::image('time.gif', 'form', @$this->tmpl, JText::_('PLG_ELEMENT_DATE_TIME'), false, array('class' => 'timeButton'))
+			;
 		}
 		$str .= "</div>";
 		return $str;
