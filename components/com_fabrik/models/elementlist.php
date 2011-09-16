@@ -228,13 +228,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					$l = $this->getLabelForValue($val);
 					$l = $this->_replaceWithIcons($l);
 				}
+				$l = $this->rollover($l, $oAllRowsData, 'list');
 				$l = $listModel->_addLink($l, $this, $oAllRowsData, $i);
 				if (trim($l) !== '') {
 					$lis[] =  $multiple ? "<li>$l</li>" : $l;
 				}
 			}
 			if (!empty($lis)) {
-				$uls[] = $multiple ? '<ul class="fabrikRepeatData">'.implode(' ',$lis).'</ul>' : implode(' ', $lis);
+				$uls[] = $multiple ? '<ul class="fabrikRepeatData">'.implode(' ', $lis).'</ul>' : implode(' ', $lis);
 			}
 		}
 		//$$$rob if only one repeat group data then dont bother encasing it in a <ul>

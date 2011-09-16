@@ -28,6 +28,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	var $pluginParams = null;
 
 	var $_rule = null;
+	
+	/** @var string if true validation uses its own icon, if not reverts to string value */
+	protected $icon = true;
 
 	/**
 	 * validate the elements data against the rule
@@ -111,7 +114,6 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		return $this->_rule;
 	}
 
-
 	/**
 	 * get the warning message
 	 *
@@ -125,5 +127,29 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		return $v[$c];
 	}
 
+	/**
+	 * gets the validation rule icon
+	 * @param object element model
+	 * @param int $c repeat group counter
+	 * @param string $tmpl =
+	 */
+	
+	public function getIcon($elementModel, $c = 0, $tmpl = '')
+	{
+		$name = $this->icon === true ? $this->_pluginName : $this->icon;
+		return FabrikHelperHTML::image($name.'.png', 'form', $tmpl, $this->getLabel($elementModel, $c));
+	}
+	
+	/**
+	 * gets the hover/alt text that appears over the validation rule icon in the form
+	 * @param object element model
+	 * @param int repeat group counter
+	 * @return string label
+	 */
+	
+	protected function getLabel($elementModel, $c)
+	{
+		return JText::_('PLG_VALIDATIONRULE_'.strtoupper($this->_pluginName).'_LABEL');
+	}
 }
 ?>

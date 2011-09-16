@@ -48,7 +48,7 @@ class FabrikViewElement extends JView
 
 		$this->js = $this->get('Js');
 
-		$this->jsevents		= $this->get('JsEvents');
+		$this->jsevents	= $this->get('JsEvents');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

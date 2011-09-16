@@ -98,8 +98,6 @@ class fabrikViewForm extends JView
     }
     $this->showEmail = $params->get('email', 0);
 
-    $model->loadValidationRuleClasses();
-
     $this->assignRef('groups', $this->get('GroupView'));
 
     $this->assignRef('params', $params);

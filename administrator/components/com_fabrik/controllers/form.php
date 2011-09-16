@@ -34,7 +34,6 @@ class FabrikControllerForm extends JControllerForm
 	function view()
 	{
 		$document =& JFactory::getDocument();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType	= $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');

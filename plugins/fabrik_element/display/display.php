@@ -39,12 +39,12 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 		$element->label = $this->getValue(array());
 		$elementHTMLId = $this->getHTMLId();
 		if ($element->hidden) {
-		  return '';
+			return '';
 		}
 		$task = JRequest::getVar('task', '', 'default');
 		$view = JRequest::getVar('view', '', 'form');
 		if ($view == 'form' && ! ( $this->canUse() || $this->canView())) {
-		  return '';
+			return '';
 		}
 		$params = $this->getParams();
 		$elementid = "fb_el_" . $elementHTMLId;
@@ -55,32 +55,32 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 
 		if ($this->canView()) {
-		  $str .= "<div class=\"fabrikLabel fabrikPluginElementDisplayLabel";
-		  $validations = $this->getValidations();
-		  if ($this->_editable) {
-			foreach ($validations as $validation) {
+			$str .= "<div class=\"fabrikLabel fabrikPluginElementDisplayLabel";
+			$validations = $this->getValidations();
+			if ($this->_editable) {
+				foreach ($validations as $validation) {
 			  $vid = $validation->_pluginName;
 			  if (array_key_exists($vid, $this->_form->_validationRuleClasses)) {
-				if ($this->_form->_validationRuleClasses[$vid] != '') {
-				  $str .= " " . $this->_form->_validationRuleClasses[$vid];
-				}
+			  	if ($this->_form->_validationRuleClasses[$vid] != '') {
+					  $str .= " " . $this->_form->_validationRuleClasses[$vid];
+			  	}
 			  }
+				}
 			}
-		  }
-		  if ($rollOver != '::') {
-			$str .= " fabrikHover";
-		  }
-		  $str .= "\" id=\"$elementid" . "_text\">";
-		  if ($bLabel) {
-			$str .= "<label for=\"$elementHTMLId\">";
-		  }
+			if ($rollOver != '::') {
+				$str .= " fabrikHover";
+			}
+			$str .= "\" id=\"$elementid" . "_text\">";
+			if ($bLabel) {
+				$str .= "<label for=\"$elementHTMLId\">";
+			}
 
 
-		  $str .= ($rollOver != '::') ? "<span class='hasTip' title='$rollOver'>{$element->label}</span>" : $element->label;
-		  if ($bLabel) {
-			$str .= "</label>";
-		  }
-		  $str .= "</div>\n";
+			$str .= ($rollOver != '::') ? "<span class='hasTip' title='$rollOver'>{$element->label}</span>" : $element->label;
+			if ($bLabel) {
+				$str .= "</label>";
+			}
+			$str .= "</div>\n";
 		}
 		return $str;
 	}
@@ -92,17 +92,16 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	 * @return string returns element html
 	 */
 
-	function render($data, $repeatCounter = 0) {
+	function render($data, $repeatCounter = 0)
+	{
 		$params = $this->getParams();
 		if (!$params->get('display_showlabel', true)) {
 			return '';
 		}
-		$id 	= $this->getHTMLId($repeatCounter);
-		$value =  $this->getValue($data, $repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$value = $this->getValue($data, $repeatCounter);
 		return "<div class=\"fabrikSubElementContainer\" id=\"$id\">$value</div>";
 	}
-
-
 
 	/**
 	 * draws the form element
@@ -121,9 +120,10 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 		if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
 			$value = '';
 		} else {
-			$value    = $this->getDefaultValue($data);
+			$value = $this->getDefaultValue($data);
 		}
-		if ($value === '') { //query string for joined data
+		if ($value === '') {
+			//query string for joined data
 			$value = JArrayHelper::getValue($data, $value);
 		}
 		$formModel = $this->getForm();

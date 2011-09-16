@@ -176,6 +176,21 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
+	 * load in the actual plugin objects for a given group
+	 * @param string $group
+	 */
+	
+	public function getPlugInGroupPlugins($group)
+	{
+		$plugins = $this->getPlugInGroup($group);
+		$r = array();
+		foreach ($plugins as $plugin) {
+			$r[] = $this->loadPlugIn($plugin->name, $group);
+		}
+		return $r;
+	}
+	
+	/**
 	 * @param string plugin name e.g. fabrikfield
 	 * @param string plugin type element/ form or table
 	 * @return mixed false if not loaded - otherwise plugin object

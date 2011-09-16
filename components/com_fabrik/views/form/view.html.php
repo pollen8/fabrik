@@ -54,6 +54,7 @@ class fabrikViewForm extends JView
 		}
 
 		$this->assign('access', $model->checkAccessFromListSettings());
+		
 		if ($this->access == 0) {
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
@@ -69,11 +70,11 @@ class fabrikViewForm extends JView
 		$params->set('popup', (JRequest::getVar('tmpl') == 'component') ? 1 : 0);
 
 		$this->editable = $model->_editable;
-
+		
 		$form->label = $this->get('label');
 		$form->intro = $this->get('Intro');
 		$form->action = $this->get('Action');
-
+		
 		$form->formid = $model->_editable ? "form_".$model->getId() : 'details_' . $model->getId();
 		$form->name = "form_".$model->getId();
 
@@ -82,8 +83,7 @@ class fabrikViewForm extends JView
 
 		$this->_addButtons();
 		JDEBUG ? $_PROFILER->mark('form view before validation classes loaded') : null;
-		$model->loadValidationRuleClasses();
-
+		
 		$t = ($model->_editable)? $form->form_template : $form->view_only_template;
 		if ($this->isMambot) {
 			// need to do this otherwise when viewing form in form module and in category/blog content page
@@ -92,17 +92,18 @@ class fabrikViewForm extends JView
 		} else {
 			$form->form_template = JRequest::getVar('layout', $t);
 		}
+		
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);
 		JDEBUG ? $_PROFILER->mark('form view before group view got') : null;
+		
 		$this->groups = $model->getGroupView($tmpl);
-		//$this->assignRef('groups', $this->get('GroupView'));
 		JDEBUG ? $_PROFILER->mark('form view after group view got') : null;
 		$this->assignRef('data', $model->data);
 		$this->assignRef('modeldata', $model->_data);
 		$this->assignRef('params', $params);
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
-
+		
 		//cck in admin?
 		$this->cck();
 		JDEBUG ? $_PROFILER->mark('form view: after cck') : null;

@@ -69,6 +69,7 @@ height:2.5em;
 .advancedSeach_$c td, .advancedSeach_$c th {
 	padding: 5px;
 	border-bottom: 2px solid #e6e8e9;
+	vertical-align:top;
 }
 
 /** bump calendar above mocha window in mootools 1.2**/

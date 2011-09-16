@@ -271,21 +271,24 @@ public function getAbstractPlugins()
 	//trigger the validation dispatcher to get the validation rules html
 	$plugins = JPluginHelper::getPlugin('fabrik_validationrule');
 
-	//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 	$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+	
+	$item = $this->getItem();
+	foreach ($item as $key => $val) {
+		if ($key !== 'params') {
+			$data[$key] = $val;
+		}
+	}
+	
 	foreach ($plugins as $x => $plugin) {
-
-		$data = array();
-
 		$o = $pluginManager->getPlugIn($plugin->name, 'Validationrule');
 		$str = $o->onRenderAdminSettings($data, 0);
 		$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
 		$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-
 		$attr = "class=\"inputbox elementtype\"";
-		$this->abstractPlugins[] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
+		$this->abstractPlugins[$plugin->name] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
 	}
-
+	ksort($this->abstractPlugins);
 	return $this->abstractPlugins;
 }
 
@@ -304,15 +307,18 @@ public function getPlugins()
 	$validations = JArrayHelper::getValue($item->params, 'validations', array());
 	$plugins = JArrayHelper::getValue($validations, 'plugin', array());
 	$return = array();
-	//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 	$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-
 	$pluginData = empty($item->params) ? array() : (array)$item->params;
 	$locations = JArrayHelper::getValue($item->params, 'plugin_locations');
 	$events = JArrayHelper::getValue($item->params, 'plugin_locations');
 	foreach ($plugins as $x => $plugin) {
 
 		$data = array();
+		foreach ($item as $key => $val) {
+			if ($key !== 'params') {
+				$data[$key] = $val;
+			}
+		}
 		//get the current data for repeated validation
 		foreach ($pluginData as $key => $values) {
 			if ($key == 'plugin') {

@@ -221,7 +221,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * get the elements form model
-	 * @depreciated use getFormModel
+	 * @deprecated use getFormModel
 	 * @return object form model
 	 */
 
@@ -829,12 +829,10 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$params = $this->getParams();
 		$elementid = "fb_el_" . $elementHTMLId;
-		$this->getForm()->loadValidationRuleClasses();
 		$str = '';
 
 		if ($this->canView() || $this->canUse()) {
 			$labelClass = "fabrikLabel ";
-			//	$str .= "<div class=\"fabrikLabel";
 			if (empty($element->label)) {
 				$labelClass .= " fabrikEmptyLabel";
 			}
@@ -842,7 +840,6 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($params->get('rollover') !== '') {
 				$labelClass .= " fabrikHover";
 			}
-			//$str .= "\" id=\"$elementid" . "_text\">";
 			if ($bLabel && !$this->isHidden()) {
 				$str .= "<label for=\"$elementHTMLId\" class=\"$labelClass\">";
 			}
@@ -850,16 +847,10 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($params->get('rollover') !== '') {
 				$l .= FabrikHelperHTML::image('questionmark.png', 'form', $tmpl);
 			}
-
 			if ($this->_editable) {
 				$validations = $this->getValidations();
 				foreach ($validations as $validation) {
-					$vid = $validation->_pluginName;
-					if (array_key_exists($vid, $this->_form->_validationRuleClasses)) {
-						if ($this->_form->_validationRuleClasses[$vid] != '') {
-							$l .= FabrikHelperHTML::image($this->_form->_validationRuleClasses[$vid].'.png', 'form', $tmpl);
-						}
-					}
+					$l .= $validation->getIcon($this, $repeatCounter, $tmpl);
 				}
 			}
 			$model = $this->getFormModel();
@@ -868,7 +859,6 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($bLabel && !$this->isHidden()) {
 				$str .= "</label>";
 			}
-			//$str .= "</div>\n";
 		}
 		return $str;
 	}
@@ -894,10 +884,13 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @return string label with tip
 	 */
 
-	private function rollover($txt, $data = array(), $mode = 'form')
+	protected function rollover($txt, $data = array(), $mode = 'form')
 	{
+		if (is_object($data)) {
+			$data = JArrayHelper::fromObject($data);
+		}
 		$params = $this->getParams();
-		if (($mode == 'form' && ($this->getForm()->_editable || $params->get('labelindetails', true))) || $params->get('labelintable', false)) {
+		if (($mode == 'form' && ($this->getForm()->_editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false)) {
 			$w = new FabrikWorker();
 			$text =  $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
 			$rollOver = trim(JText::_($text));
@@ -1078,7 +1071,6 @@ class plgFabrik_Element extends FabrikPlugin
 			if (!$rule->store()) {
 				return JError::raiseWarning($rule->getError());
 			}
-			//echo "<pre>";print_r($rule);exit;
 		}
 		else {
 			return JError::raiseWarning(500, $rule->getError());
@@ -1253,7 +1245,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	function stockResults($element, &$aElements, &$namedData, &$aSubGroupElements)
 	{
-		$elHTMLName  = $this->getFullName(true, true);
+		$elHTMLName = $this->getFullName(true, true);
 		$aElements[$this->getElement()->name] = $element;
 		$namedData[$elHTMLName] = $element;
 		if ($elHTMLName) {
@@ -1508,7 +1500,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @return array validation objects
 	 */
 
-	protected function loadValidations()
+	public function getValidations()
 	{
 		if (isset($this->_aValidations)) {
 			return $this->_aValidations;
@@ -1537,19 +1529,6 @@ class plgFabrik_Element extends FabrikPlugin
 				$this->_aValidations[] = $plugIn;
 				$c ++;
 			}
-		}
-		return $this->_aValidations;
-	}
-
-	/**
-	 * get validation rules
-	 * @return array validation rule objects
-	 */
-
-	function getValidations()
-	{
-		if (is_null($this->_aValidations)) {
-			$this->loadValidations();
 		}
 		return $this->_aValidations;
 	}
@@ -3136,7 +3115,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
 				$d = $this->_replaceWithIcons($d);
 			}
-			$d = $this->rollover($d, $oAllRowsData, 'table');
+			$d = $this->rollover($d, $oAllRowsData, 'list');
 			$d = $listModel->_addLink($d, $this, $oAllRowsData, $i);
 		}
 
@@ -3153,10 +3132,11 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 					$this->convertDataToString($o);
 				}
 			}
-			return "<ul class=\"fabrikRepeatData\"><li>".implode("</li><li>", $data) . "</li></ul>";
+			$r = "<ul class=\"fabrikRepeatData\"><li>".implode("</li><li>", $data) . "</li></ul>";
 		} else {
-			return empty($data) ? '' : $data[0];
+			$r = empty($data) ? '' : $data[0];
 		}
+		return $r;
 	}
 
 	protected function convertDataToString(&$o)

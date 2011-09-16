@@ -42,10 +42,10 @@ class FabrikViewVisualization extends JView{
 		$this->addTemplatePath($this->_basePath.DS.'plugins'.DS.$this->_name.DS.$plugin->_name.DS.'tmpl'.DS.$tmpl);
 		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'visualization'.DS.$plugin->_name.DS.$tmpl);
 
-		$ab_css_file = JPATH_SITE."/components/com_fabrik/plugins/".$viewName."/".$plugin->_name."/tmpl/$tmpl/template.css";
+		$ab_css_file = JPATH_SITE."/plugins/fabrik_visualization/".$plugin->_name."/tmpl/$tmpl/template.css";
 		if (JFile::exists($ab_css_file))
 		{
-			JHTML::stylesheet('template.css', 'components/com_fabrik/plugins/'.$viewName.'/'.$plugin->_name.'/tmpl/'.$tmpl.'/', true);
+			JHTML::stylesheet('template.css', 'plugins/fabrik_visualization/'.$plugin->_name.'/tmpl/'.$tmpl.'/', true);
 		}
 		echo parent::display();
 	}

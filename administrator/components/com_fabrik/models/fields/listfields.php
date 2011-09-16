@@ -58,9 +58,7 @@ class JFormFieldListfields extends JFormFieldList
 				//@TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
 				$connectionDd = ($c === false) ? $connection :  $connection . '-' . $c;
 				if ($connection == '') {
-					//$paths = JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 					$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
-
 					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0) : $this->form->getValue('group_id');
 					$groupModel->setId($groupId);
 					$optskey = $valueformat == 'tableelement' ? 'name' : 'id';

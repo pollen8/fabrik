@@ -6,15 +6,14 @@
 			name="areuniquevalues-message" 
 			size="30" 
 			repeat="true"
-			label="PLG_VALIDATIONRULE_AREUNIQUE_ERROR_LABEL"
-			description="PLG_VALIDATIONRULE_AREUNIQUE_ERROR_DESC" />
+			label="PLG_VALIDATIONRULE_AREUNIQUEVALUES_ERROR_LABEL"
+			description="PLG_VALIDATIONRULE_AREUNIQUEVALUES_ERROR_DESC" />
 			
-		<field type="text" 
+		<field type="listfields" 
 			name="areuniquevalues-otherfield" 
-			size="30" 
 			repeat="true"
-			label="PLG_VALIDATIONRULE_AREUNIQUE_OTHER_FIELD_LABEL"
-			description="PLG_VALIDATIONRULE_AREUNIQUE_OTHER_FIELD_DESC" />
+			label="PLG_VALIDATIONRULE_AREUNIQUEVALUES_OTHER_FIELD_LABEL"
+			description="PLG_VALIDATIONRULE_AREUNIQUEVALUES_OTHER_FIELD_DESC" />
 			
 		</fieldset>
 	</fields>

@@ -234,6 +234,9 @@ class FabrikFEModelForm extends FabModelForm
 		if (JRequest::getVar('mjmarkup') == 'iphone') {
 			$tmpl = 'iwebkit';
 		}
+		if (!JFolder::exists(JPATH_SITE."/components/com_fabrik/views/form/tmpl/".$tmpl)) {
+			$tmpl = 'default';
+		}
 		return $tmpl;
 	}
 
@@ -1460,6 +1463,7 @@ echo "<pre>";print_r($data);
 
 	/**
 	 * get the class names for each of the validation rules
+	 * @deprecated (was only used in element label)
 	 * @return array (validaionruleid => classname )
 	 */
 
@@ -3098,17 +3102,18 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if (isset($this->groupView)) {
 			return $this->groupView;
 		}
+		
 		$this->groupView = array();
 		$this->readOnlyVals = array();
 		// $$$ hugh - temp foreach fix
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $gkey => $groupModel) {
-			$groupTable 	=& $groupModel->getGroup();
-			$group 				= $groupModel->getGroupProperties($this);
-			$groupParams 	=& $groupModel->getParams();
-			$aElements 		= array();
+			$groupTable = $groupModel->getGroup();
+			$group = $groupModel->getGroupProperties($this);
+			$groupParams = $groupModel->getParams();
+			$aElements = array();
 			//check if group is acutally a table join
-
+			
 			if (array_key_exists($groupTable->id, $this->_aJoinGroupIds)) {
 				$aElements[] = $this->_makeJoinIdElement($groupTable);
 			}
@@ -3117,6 +3122,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			$foreignKey = null;
 			$startHidden = false;
 			if ($groupModel->canRepeat()) {
+				echo "can repeat gorup <br>";
 				if ($groupModel->isJoin()) {
 
 					$joinTable = $groupModel->getJoinModel()->getJoin();
@@ -3193,6 +3199,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$elementModels = $groupModel->getPublishedElements();
 
 				foreach ($elementModels as $elementModel) {
+					
 					$elementModel->tmpl = $tmpl;
 					//$$$rob test don't include the element in the form is we can't use and edit it
 					//test for captcha element when user logged in
@@ -3204,16 +3211,17 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					if (!$this->_editable && !$elementModel->canView()) {
 						continue;
 					}
-
+					
 					//fabrik3.0 : if the element cant be seen or used then dont add it?
 					if (!$elementModel->canUse() && !$elementModel->canView()) {
 						continue;
 					}
+					
 					$elementModel->_foreignKey = $foreignKey;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
-
+					
 					$element = $elementModel->preRender($c, $elCount, $tmpl);
-
+					
 					if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
 					{
 						// $$$ hugh - $this->data doesn't seem to always have what we need in it, but $data does.
@@ -3230,7 +3238,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					}
 					if ($element && !$element->hidden) {
 						$elCount ++;
-					}
+					} 
 				}
 				//if its a repeatable group put in subgroup
 				if ($groupModel->canRepeat()) {

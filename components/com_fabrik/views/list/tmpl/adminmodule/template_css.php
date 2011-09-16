@@ -57,6 +57,12 @@ height:2.5em;
 	margin-top: 10px;
 }
 
+#listform_$c table.fabrikList td,table.fabrikList th,
+.advancedSeach_$c td, .advancedSeach_$c th {
+	padding: 5px;
+	border-bottom: 2px solid #e6e8e9;
+	vertical-align:top;
+}
 
 /** bump calendar above mocha window in mootools 1.2**/
 div.calendar{
