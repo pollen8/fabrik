@@ -198,6 +198,7 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	public function loadPlugIn($className = '', $group)
 	{
+		echo "load plugin $className, $group<br>";
 		if ($group == 'table'){
 			$group = 'list';
 		}

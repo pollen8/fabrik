@@ -72,13 +72,10 @@ class FabrikViewList extends JView{
 		$lang->select_rows =  JText::_('COM_FABRIK_SELECT_ROWS_FOR_DELETION');
 		$lang = json_encode($lang);
 
-		//$inpackage = $model->_inPackage ? 1 : 0;
 
 		$script .= "\n" . "var list = new FbList(".$model->getId().",";
 		$script .= $opts.",".$lang;
 		$script .= "\n" . ");";
-		//$script .= "\n" . "list.addListenTo('form_".$model->_oForm->getId()."');";
-		//$script .= "\n" . "list.addListenTo('list_".$model->getId()."');";
 		$script .= "\n" . "Fabrik.addBlock('list_".$model->getId()."', list);";
 
 		//add in plugin objects

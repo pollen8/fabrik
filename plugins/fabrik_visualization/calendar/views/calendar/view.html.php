@@ -15,6 +15,9 @@ class fabrikViewCalendar extends JView
 		$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
 		JHTML::_('behavior.calendar');
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
+		$pluginManager = FabrikWorker::getPluginManager();
+		//needed to load the language file!
+		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		FabrikHelperHTML::mocha();
 		FabrikHelperHTML::loadCalendar();
 		$model = &$this->getModel();
@@ -62,10 +65,10 @@ class fabrikViewCalendar extends JView
 		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid='.$Itemid.'&id='.$id;
 		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid='.$Itemid.'&id='.$id;
 
-		$user 		=& JFactory::getUser();
+		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0 ) ? $model->getLegend() : '';
 		$tmpl = $params->get('calendar_layout', 'default');
-		$pluginManager->loadJS();
+		//$pluginManager->loadJS();
 		$options = new stdClass();
 		$options->url = $urls;
 		$options->eventLists = $this->get('eventLists');
@@ -75,7 +78,6 @@ class fabrikViewCalendar extends JView
 		$options->canAdd = $canAdd;
 
 		$options->tmpl = $tmpl;
-		//$formView = $this->_formView;
 
 		$o = $model->getAddStandardEventFormInfo();
 

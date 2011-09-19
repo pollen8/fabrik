@@ -44,7 +44,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function &getEventLists()
 	{
 		if (is_null($this->_eventLists)) {
-			$db = FabrikWorker::getDbo();
+			$this->_eventLists = array();
+			$db = FabrikWorker::getDbo(true);
 			$params	= $this->getPluginParams();
 			$lists = (array)$params->get('calendar_table');
 			JArrayHelper::toInteger($lists);
@@ -55,7 +56,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 			$db->setQuery("SELECT id AS value, label AS text FROM #__{package}_lists WHERE id IN ('" . implode("','", $lists) . "')");
 			$rows = $db->loadObjectList();
-			for ($i=0; $i<count($rows);$i++) {
+			for ($i = 0; $i < count($rows); $i++) {
 				if (!isset($colours[$i])) {
 					$colours[$i] = '';
 				}
