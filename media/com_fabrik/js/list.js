@@ -788,9 +788,11 @@ var FbList = new Class({
 			var fabrikDataContainer = this.list.getParent('.fabrikDataContainer');
 			var emptyDataMessage = this.list.getParent('.fabrikForm').getElement('.emptyDataMessage');
 			if (rowcounter === 0) {
+				/*
 				if (typeOf(fabrikDataContainer) !== 'null') {
 					fabrikDataContainer.setStyle('display', 'none');
 				}
+				*/
 				if (typeOf(emptyDataMessage) !== 'null') {
 					emptyDataMessage.setStyle('display', '');
 				}

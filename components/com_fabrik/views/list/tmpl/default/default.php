@@ -32,6 +32,7 @@ if ($this->showFilters) {
 				</td>
 			</tr>
 		 </tfoot>
+		 <!--
 		 <thead style="<?php echo $this->emptyStyle?>">
 		 	<tr>
 		 		<td colspan="<?php echo $this->colCount;?>">
@@ -41,6 +42,7 @@ if ($this->showFilters) {
 				</td>
 		 	</tr>
 		 </thead>
+		 -->
 			<?php
 			$gCounter = 0;
 			foreach ($this->rows as $groupedby => $group) {
