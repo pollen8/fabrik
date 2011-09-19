@@ -1744,7 +1744,6 @@ class FabrikModelList extends FabModelAdmin
 
 	function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'))
 	{
-		$formModel = $this->getFormModel();
 		$db = FabrikWorker::getDbo(true);
 		$fabrikDb = $this->getDb();
 		$user	= JFactory::getUser();
@@ -1760,7 +1759,8 @@ class FabrikModelList extends FabModelAdmin
 			$groupIds = $post['jform']['current_groups'];
 		} else {
 			$query = $db->getQuery(true);
-			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = '.(int)$formModel->id);
+			$formid = (int)$this->get('form.id', $this->getFormModel()->id);
+			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = '.$formid);
 			$db->setQuery($query);
 			$groupIds = $db->loadResultArray();
 		}
@@ -1768,7 +1768,7 @@ class FabrikModelList extends FabModelAdmin
 		foreach ($fields as $name => $plugin) {
 			//installation demo data sets 2 groud ids
 			if (is_string($plugin)) {
-				$plugin = array('plugin' => $plugin, 'groupid' => $groupIds[0]);
+				$plugin = array('plugin' => $plugin, 'group_id' => $groupIds[0]);
 			}
 			$plugin['ordering'] = $i;
 			$element = $this->makeElement($name, $plugin);
@@ -1797,9 +1797,9 @@ class FabrikModelList extends FabModelAdmin
 				$objtype = $elementModel->getFieldDescription();
 				if ($objname != "" && !is_null($objtype)) {
 					if (JString::stristr($objtype, 'not null')) {
-						$lines[] = $db->nameQuote($objname) . " $objtype";
+						$lines[] = $fabrikDb->nameQuote($objname) . " $objtype";
 					} else {
-						$lines[] = $db->nameQuote($objname) . " $objtype null";
+						$lines[] = $fabrikDb->nameQuote($objname) . " $objtype null";
 					}
 				}
 			}
@@ -1833,7 +1833,6 @@ class FabrikModelList extends FabModelAdmin
 		$element = $pluginMananger->loadPlugIn($data['plugin'], 'element');
 		$item = $element->getDefaultProperties();
 		$item->id = null;
-		print_r($data);
 		$item->name = $item->label = $name;
 		$item->bind($data);
 		if (!$item->store()) {

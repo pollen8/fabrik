@@ -241,18 +241,14 @@ class FabrikModelForm extends FabModelAdmin
 
 		if ($record_in_database == '1') {
 			$listModel = JModel::getInstance('List', 'FabrikModel');
-			$listModel->loadFromFormId($formid);
-			$item = $listModel->getItem();
-			echo "<pre>";print_r($item);exit;
+			$item = $listModel->loadFromFormId($formid);
 			if ($isnew) {
 				$dbTableName = $data['db_table_name'];
 			} else {
 				$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
 			}
 
-			/* $formModel = JModel::getInstance('Form', 'FabrikFEModel');
-			$formModel->setId($formid); */
-			
+		
 			$dbTableExists = $listModel->databaseTableExists($dbTableName);
 			if (!$dbTableExists) {
 				// @TODO - need to sanitize table name (get rid of non alphanumeirc or _),
@@ -265,6 +261,7 @@ class FabrikModelForm extends FabModelAdmin
 				if ($listModel->databaseTableExists($dbTableName)) {
 					return JError::raiseWarning(500, JText::_("COM_FABRIK_DB_TABLE_ALREADY_EXISTS"));
 				}
+				$listModel->set('form.id', $formid);
 				$listModel->createDBTable($dbTableName);
 			}
 			if (!$dbTableExists || $isnew)
@@ -281,6 +278,7 @@ class FabrikModelForm extends FabModelAdmin
 				$item->published 		= $data['published'];
 				$item->created				= $data['created'];
 				$item->created_by		= $data['created_by'];
+				$item->access = $data['published'];
 				$item->params = $listModel->getDefaultParams();
 				$res = $item->store();
 			} else {
