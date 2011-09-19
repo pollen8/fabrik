@@ -1869,8 +1869,8 @@ zoom:
 		}
 		//$element = $this->getElement();
 		$storage = $this->getStorage();
-		$elName = $this->getFullName(true, true, false);
-		$elName .= '_raw';
+		$elName = $this->getFullName(false, true, false);
+		//$elName .= '_raw';
 		$filepath = $row->$elName;
 		//$filepath = explode(GROUPSPLITTER,$filepath);
 		$filepath = FabrikWorker::JSONtoData($filepath, true);
@@ -2000,7 +2000,7 @@ zoom:
 	* @param mixed value to copy into new record
 	* @return mixed value to copy into new record
 	*/
-	
+
 	public function onSaveAsCopy($val)
 	{
 		if (empty($val)) {
@@ -2017,7 +2017,7 @@ zoom:
 		}
 		return $val;
 	}
-	
+
 	/**
 	 * is the element a repeating element
 	 * @return bool

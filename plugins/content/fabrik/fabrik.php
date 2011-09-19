@@ -543,6 +543,9 @@ class plgContentFabrik extends JPlugin
 			case 'form':
 				$controller = new FabrikControllerForm();
 				break;
+			case 'details':
+				$controller = new FabrikControllerDetails();
+				break;
 			case 'list':
 				// $$$ hugh - had to add [$id] for cases where we have multiple plugins with different tableid's
 				if (array_key_exists('list', $this->controllers)) {
@@ -575,6 +578,7 @@ class plgContentFabrik extends JPlugin
 	{
 		require_once(COM_FABRIK_FRONTEND.DS.'controller.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'controllers/form.php');
+		require_once(COM_FABRIK_FRONTEND.DS.'controllers/details.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'controllers/package.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'controllers/list.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'parent.php');
