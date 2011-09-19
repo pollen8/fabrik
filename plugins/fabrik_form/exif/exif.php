@@ -86,7 +86,7 @@ class plgFabrik_FormExif extends plgFabrik_Form {
 		$db	= FabrikWorker::getDbo();
 		$data = $formModel->_formData;
 
-		$plugin = $formModel->getPluginManager()->getElementPlugin($params->get('exif_map_field'));
+		$plugin = FabrikWorker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
 
 		$element = $plugin->getElement(true);
 		$this->map_field = $plugin->getFullName();

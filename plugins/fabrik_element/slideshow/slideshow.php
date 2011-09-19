@@ -108,7 +108,7 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 			$formModel = $this->getForm();
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
-				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			$this->defaults[$valueKey] = $value;
 		}

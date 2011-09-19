@@ -932,22 +932,20 @@ public function createRepeatElement($elementModel, $row)
 	$row->name = str_replace('`', '', $row->name);
 	$listModel = $elementModel->getListModel();
 	$tableName = $this->getRepeatElementTableName($elementModel, $row);
-	if (!$listModel->databaseTableExists($tableName)) {
-		//create db table!
-		$formModel = $elementModel->getForm();
-		$db = $listModel->getDb();
-		$desc = $elementModel->getFieldDescription();
-		$name = $db->nameQuote($row->name);
-		$db->setQuery("CREATE TABLE IF NOT EXISTS ".$db->nameQuote($tableName)." ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), $name $desc, ".$db->nameQuote('params')." TEXT );");
-		$db->query();
-		if ($db->getErrorNum() != 0) {
-			JError::raiseError(500, $db->getErrorMsg());
-		}
+	//create db table!
+	$formModel = $elementModel->getForm();
+	$db = $listModel->getDb();
+	$desc = $elementModel->getFieldDescription();
+	$name = $db->nameQuote($row->name);
+	$db->setQuery("CREATE TABLE IF NOT EXISTS ".$db->nameQuote($tableName)." ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), $name $desc, ".$db->nameQuote('params')." TEXT );");
+	$db->query();
+	if ($db->getErrorNum() != 0) {
+		JError::raiseError(500, $db->getErrorMsg());
 	}
 	//remove previous join records if found
 	if ((int)$row->id !== 0) {
 		$sql = "DELETE FROM #__{fabrik}_joins WHERE element_id = ".(int)$row->id;
-		$jdb = FabrikWorker::getDbo(true);;
+		$jdb = FabrikWorker::getDbo(true);
 		$jdb->setQuery($sql);
 		$jdb->query();
 	}

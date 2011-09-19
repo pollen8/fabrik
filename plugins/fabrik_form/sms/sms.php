@@ -91,7 +91,7 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	    $arDontEmailThesKeys[] = $key;
  	  }
  	  $message = "";
- 	  $pluginManager = $this->formModel->getPluginManager();
+ 	  $pluginManager = FabrikWorker::getPluginManager();
  	  $groups = $this->formModel->getGroupsHiarachy();
  	  foreach ($groups as $groupModel) {
  	    $elementModels = $groupModel->getPublishedElements();

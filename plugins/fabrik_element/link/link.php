@@ -383,7 +383,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			$element->default = $default;
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
-				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			if (is_array($element->default)) {
 				//$element->default = implode(GROUPSPLITTER2, $element->default);

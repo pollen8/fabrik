@@ -243,7 +243,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$data = $this->getEmailData();
 		$twitter_msg_field_id = $params->get('twitter_msg_field', '');
 		if ($twitter_msg_field_id != '') {
-			$elementModel = $this->formModel->getPluginManager()->getElementPlugin($twitter_msg_field_id);
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($twitter_msg_field_id);
 			$element = $elementModel->getElement(true);
 			$twitter_msg_field = $elementModel->getFullName(false, true, false);
 			$msg = $data[$twitter_msg_field];

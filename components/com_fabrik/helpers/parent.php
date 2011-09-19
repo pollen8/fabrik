@@ -41,6 +41,10 @@ if (!function_exists('array_combine'))
 class FabrikWorker {
 
 	public static $database = null;
+	
+	public static $connection = null;
+	
+	public static $pluginManager = null;
 
 	protected $finalformat = null;
 
@@ -869,6 +873,55 @@ class FabrikWorker {
 			}
 			return self::$database[$sig];
 		}
+		
+		/**
+		 * @since 3.0b
+		 * helper function get get a connection
+		 * @param mixed - a list table or connection id 
+		 */
+
+		public function getConnection($item = null)
+		{
+			$jform = JRequest::getVar('jform', array(), 'post');
+			if (is_object($item)) {
+				$item = is_null($item->connection_id) ? JArrayHelper::getValue($jform, 'connection_id', -1) : $item->connection_id;
+			}
+			$connId = (int)$item;
+			$config = JFactory::getConfig();
+			if (!self::$connection) {
+				self::$connection = array();
+			}
+			if (!array_key_exists($connId, self::$connection)) {
+				$connectionModel = JModel::getInstance('connection', 'FabrikFEModel');
+				$connectionModel->setId($connId);
+				if ($connId === -1) {
+					//-1 for creating new table
+					$connectionModel->loadDefaultConnection();
+					$connectionModel->setId($connectionModel->getConnection()->id);
+				}
+				$connection = $connectionModel->getConnection();
+				self::$connection[$connId] = $connectionModel;
+			
+				if (JError::isError(self::$connection[$connId])) {
+					JError::handleEcho(self::$connection[$connId]);
+				}
+			}
+			return self::$connection[$connId];
+		}
+		
+	/**
+	 * get the plugin manager
+	 * @since 3.0b
+	 * @return object plugin manager
+	 */
+
+	public function getPluginManager()
+	{
+		if (!self::$pluginManager) {
+			self::$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		}
+		return self::$pluginManager;
+	}
 
 		/**
 		 * takes a string which may or may not be json and returns either string/array/object
@@ -908,6 +961,7 @@ class FabrikWorker {
 			}
 			return true;
 		}
+	
 }
 
 ?>

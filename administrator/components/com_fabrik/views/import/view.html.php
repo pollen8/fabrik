@@ -18,6 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage	com_fabrik
  * @since		1.6
  */
+
 class FabrikViewImport extends JView
 {
 
@@ -40,14 +41,15 @@ class FabrikViewImport extends JView
 	{
 		JRequest::setVar('hidemainmenu', true);
 		$this->chooseElementTypesToolBar();
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$this->assign('data', $session->get('com_fabrik.csvdata'));
 		$this->assign('matchedHeadings', $session->get('com_fabrik.matchedHeadings'));
 		$this->assign('newHeadings', $this->get('NewHeadings'));
 		$this->assign('headings', $this->get('Headings'));
-		$pluginManager =& $this->getModel('pluginmanager');
+		$pluginManager = $this->getModel('pluginmanager');
 		$this->assign('table', $this->get('ListModel')->getTable());
 		$this->assign('elementTypes', $pluginManager->getElementTypeDd('field', 'plugin[]'));
+		$this->assign('sample', $this->get('Sample'));
 		parent::display('chooseElementTypes');
 	}
 

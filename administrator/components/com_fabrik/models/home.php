@@ -107,7 +107,9 @@ class FabrikModelHome extends JModelAdmin
 
 	public function installSampleData()
 	{
-		$db = FabrikWorker::getDbo();
+		$cnn = FabrikWorker::getConnection();
+		$defaulDb = $cnn->getDb();
+		$db = FabrikWorker::getDbo(true);
 		$group = $this->getTable('Group');
 		$config = JFactory::getConfig();
 
@@ -115,7 +117,6 @@ class FabrikModelHome extends JModelAdmin
 		echo "<div style='text-align:left;border:1px dotted #cccccc;padding:10px;'>" .
 		"<h3>Installing data...</h3><ol>";
 
-		//$group = FabTable::getInstance('Group', 'Table');
 		$group->name = "Contact Details";
 		$group->label = "Contact Details";
 		$group->published = 1;
@@ -125,54 +126,10 @@ class FabrikModelHome extends JModelAdmin
 		$groupId = $db->insertid();
 
 		$sql = "DROP TABLE IF EXISTS $dbTableName;";
-		$db->setQuery($sql);
-		$db->query();
+		$defaulDb->setQuery($sql);
+		$defaulDb->query();
 
 		echo "<li>Group 'Contact Details' created</li>";
-
-		$element = $this->getTable('Element');
-		$element->label = "First Name";
-		$element->name = "first_name";
-		$element->plugin = "field";
-		$element->show_in_list_summary = 1;
-		$element->link_to_detail = 1;
-		$element->width = 30;
-		$element->group_id = $groupId;
-		$element->published = 1;
-		$element->ordering = 1;
-		if (!$element->store()) {
-			return JError::raiseWarning(500, $element->getError());
-		}
-
-		echo "<li>Element 'First Name' added to group 'Contact Details'</li>";
-
-		$element = $this->getTable('Element');
-		$element->label = "Last Name";
-		$element->name = "last_name";
-		$element->plugin = "field";
-		$element->show_in_list_summary = 1;
-		$element->width = 30;
-		$element->link_to_detail = 1;
-		$element->group_id = $groupId;
-		$element->published = 1;
-		$element->ordering = 2;
-		if (!$element->store()) {
-			return JError::raiseWarning(500, $element->getError());
-		}
-		echo "<li>Element 'Last Name' added to group 'Contact Details'</li>";
-
-		$element = $this->getTable('Element');
-		$element->label = "Email";
-		$element->show_in_list_summary = 1;
-		$element->name = "email";
-		$element->plugin = "field";
-		$element->width = 30;
-		$element->group_id = $groupId;
-		$element->published = 1;
-		$element->ordering = 3;
-		if (!$element->store()) {
-			return JError::raiseWarning(500, $element->getError());
-		}
 		echo "<li>Element 'Email' added to group 'Contact Details'</li>";
 
 		$group = $this->getTable('Group');
@@ -186,19 +143,7 @@ class FabrikModelHome extends JModelAdmin
 		$group2Id = $db->insertid();
 		echo "<li>Group 'Your Enquiry' created</li>";
 
-		$element = $this->getTable('Element');
-		$element->label = "Message";
-		$element->name = "message";
-		$element->plugin = "textarea";
-		$element->show_in_list_summary = 0;
-		$element->width = 30;
-		$element->height = 10;
-		$element->published = 1;
-		$element->ordering = 1;
-		$element->group_id = $group2Id;
-		if (!$element->store()) {
-			return JError::raiseWarning(500, $element->getError());
-		}
+	
 		echo "<li>Element 'Message' added to group 'Your Enquiry'</li>";
 
 		$form = $this->getTable('Form');
@@ -221,28 +166,32 @@ class FabrikModelHome extends JModelAdmin
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int)$formId, 'group_id='.(int)$groupId, 'ordering=0'));
 		$db->setQuery($query);
-		$db->query();
-		echo $db->getErrorMsg();
+		if (!$db->query()) {
+			echo $db->getErrorMsg();
+			exit;
+		}
 
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int)$formId, 'group_id='.(int)$group2Id, 'ordering=1'));
 		$db->setQuery($query);
-		$db->query();
-		echo $db->getErrorMsg();
+		if (!$db->query()) {
+			echo $db->getErrorMsg();
+			exit;
+		}
 		echo "<li>Groups added to 'Contact Us' form</li>";
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModel::getInstance('List', 'FabrikModel');
 		$list = $this->getTable('List');
 		$list->label = "Contact Us Data";
 		$list->introduction = "This table stores the data submitted in the contact us for";
 		$list->form_id = $formId;
-		$list->connection_id = 1;
+		$list->connection_id = $cnn->getConnection()->id;
 		$list->db_table_name = $dbTableName;
 		// store without name quotes as that's db specific
 		$list->db_primary_key = $dbTableName.'.id';
 		$list->auto_inc = 1;
 		$list->published = 1;
-		$list->params = json_encode($listModel->getDefaultParams());
+		$list->rows_per_page = 10;
+		$list->params = $listModel->getDefaultParams();
 		$list->template = 'default';
 
 		if (!$list->store()) {
@@ -253,13 +202,21 @@ class FabrikModelHome extends JModelAdmin
 			JError::raiseError(500, $form->getError());
 		}
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
-		//echo "seeting form model id to " . $form->id;
 		$formModel->setId($form->id);
 		$formModel->_form = $form;
 
-		$listModel->setId($list->id);
-		$listModel->getTable();
-		$listModel->createDBTable($formModel, $list->db_table_name, $db);
+		$listModel->setState('list.id', $list->id);
+		$listModel->getItem();
+		
+		$elements = array(
+			'id' => array('plugin' => 'internalid', 'label' => 'id', 'group_id' => $groupId),
+			'first_name' => array('plugin' => 'field', 'label' => 'First Name', 'group_id' => $groupId),
+			'last_name' => array('plugin' => 'field', 'label' => 'Last Name', 'group_id' => $groupId),
+			'email' => array('plugin' => 'field', 'label' => 'Email', 'group_id' => $groupId),
+			'message' => array('plugin' => 'textarea', 'group_id' => $group2Id)
+		);
+		
+		return $listModel->createDBTable($list->db_table_name, $elements);
 	}
 
 	/**

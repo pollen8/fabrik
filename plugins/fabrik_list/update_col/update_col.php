@@ -104,7 +104,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			$config = JFactory::getConfig();
 			$from = $config->getValue('mailfrom');
 			$fromname = $config->getValue('fromname');
-			$elementModel = $model->getPluginManager()->getElementPlugin($emailColID);
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
 			$emailElement = $elementModel->getElement(true);
 			$emailField = $elementModel->getFullName(false, true, false);
 			$emailColumn = $elementModel->getFullName(false, false, false);

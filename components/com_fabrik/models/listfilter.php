@@ -851,7 +851,7 @@ class FabrikFEModelListfilter extends FabModel {
 		}
 		$this->listModel->tmpFilters = $filters;
 		FabrikHelperHTML::debug($filters, 'filter array: before onGetPostFilter');
-		$this->listModel->getPluginManager()->runPlugins('onGetPostFilter', $this->listModel, 'list', $filters);
+		FabrikWorker::getPluginManager()->runPlugins('onGetPostFilter', $this->listModel, 'list', $filters);
 		FabrikHelperHTML::debug($filters, 'filter array: after onGetPostFilter');
 		$filters = $this->listModel->tmpFilters;
 	}
@@ -1030,7 +1030,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 	public function getPluginFilterKeys()
 	{
-		$pluginManager = $this->listModel->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onGetFilterKey', $this->listModel, 'list');
 		return $pluginManager->_data;
 	}

@@ -241,7 +241,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			//@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
-				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			$this->defaults[$repeatCounter] = $value;
 		}

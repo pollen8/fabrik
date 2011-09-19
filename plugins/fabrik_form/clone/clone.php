@@ -39,10 +39,10 @@ class plgFabrik_FormClone extends plgFabrik_Form {
 		$clone_times_field_id = $params->get('clone_times_field', '');
 		$clone_batchid_field_id = $params->get('clone_batchid_field', '');
 		if ($clone_times_field_id != '') {
-			$elementModel = $formModel->getPluginManager()->getElementPlugin($clone_times_field_id);
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_times_field_id);
 			$element = $elementModel->getElement(true);
 			if ($clone_batchid_field_id != '') {
-				$elementModel = $this->getPluginManager()->getElementPlugin($clone_batchid_field_id);
+				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_batchid_field_id);
 				$id_element = $id_elementModel->getElement(true);
 				$formModel->_formData[$id_element->name] = $formModel->_fullFormData['rowid'];
 				$formModel->_formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];

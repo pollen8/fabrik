@@ -240,26 +240,20 @@ class FabrikModelForm extends FabModelAdmin
 		$this->_makeFormGroups($data, $currentGroups);
 
 		if ($record_in_database == '1') {
-			$listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModel::getInstance('List', 'FabrikModel');
 			$listModel->loadFromFormId($formid);
-			$table = $listModel->getTable();
+			$item = $listModel->getItem();
+			echo "<pre>";print_r($item);exit;
 			if ($isnew) {
 				$dbTableName = $data['db_table_name'];
 			} else {
-				$dbTableName = $table->db_table_name == '' ? $data['database_name'] : $table->db_table_name;
+				$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
 			}
 
-			// @TODO - sanitize table name, but not sure whether to do it here, or after the databaseTableExists() call.
-			//$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $dbTableName);
-
-			// @TODO - allow user to select connection when saving form
-
-			$defaultDb = $listModel->getDb();
-
-			$formModel = JModel::getInstance('Form', 'FabrikFEModel');
-
-			$formModel->setId($formid);
-			$dbTableExists = $listModel->databaseTableExists($dbTableName, $defaultDb);
+			/* $formModel = JModel::getInstance('Form', 'FabrikFEModel');
+			$formModel->setId($formid); */
+			
+			$dbTableExists = $listModel->databaseTableExists($dbTableName);
 			if (!$dbTableExists) {
 				// @TODO - need to sanitize table name (get rid of non alphanumeirc or _),
 				// just not sure whether to do it here, or above (before we test for existinance)
@@ -268,31 +262,30 @@ class FabrikModelForm extends FabModelAdmin
 				// BUT ... as we're potentially changing the table name after testing for existance
 				// we need to test again.
 				$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $dbTableName);
-				if ($listModel->databaseTableExists($dbTableName, $defaultDb)) {
+				if ($listModel->databaseTableExists($dbTableName)) {
 					return JError::raiseWarning(500, JText::_("COM_FABRIK_DB_TABLE_ALREADY_EXISTS"));
 				}
-				//need to pass the correct database obj here
-				$listModel->createDBTable($formModel, $dbTableName, $defaultDb);
+				$listModel->createDBTable($dbTableName);
 			}
 			if (!$dbTableExists || $isnew)
 			{
-				$connection = $listModel->getConnection();
-				$table->id = null;
-				$table->label 				= $data['label'];
-				$table->form_id 			= $formid;
-				$table->connection_id = $connection->getConnection()->id;
-				$table->db_table_name	= $dbTableName;
+				$connection = FabrikWorker::getConnection(-1);
+				$item->id = null;
+				$item->label 				= $data['label'];
+				$item->form_id 			= $formid;
+				$item->connection_id = $connection->getConnection()->id;
+				$item->db_table_name	= $dbTableName;
 				// store key without nameQuotes as thats db specific *which we no longer want
-				$table->db_primary_key = $dbTableName.'.id';
-				$table->auto_inc 			= 1;
-				$table->published 		= $data['published'];
-				$table->created				= $data['created'];
-				$table->created_by		= $data['created_by'];
-				$table->params = $listModel->getDefaultParams();
-				$res = $table->store();
+				$item->db_primary_key = $dbTableName.'.id';
+				$item->auto_inc 			= 1;
+				$item->published 		= $data['published'];
+				$item->created				= $data['created'];
+				$item->created_by		= $data['created_by'];
+				$item->params = $listModel->getDefaultParams();
+				$res = $item->store();
 			} else {
 				//update existing table
-				$listModel->ammendTable($formModel, $dbTableName);
+				$listModel->ammendTable();
 				// $$$ rob no longer in front end model?
 				//$listModel->makeSafeTableColumns();
 			}
@@ -366,11 +359,11 @@ class FabrikModelForm extends FabModelAdmin
 		//use this in case there is not table view linked to the form
 		if ($form->record_in_database == 1) {
 			//there is a table view linked to the form so lets load it
-			$listModel  = JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModel::getInstance('List', 'FabrikModel');
 			$listModel->loadFromFormId($formId);
 			$dbExisits = $listModel->databaseTableExists();
 			if (!$dbExisits) {
-				$listModel->createDBTable($model);
+				$listModel->createDBTable();
 			} else {
 				$listModel->ammendTable();
 			}

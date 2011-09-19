@@ -164,11 +164,10 @@ class FabrikModelGroup extends FabModelAdmin
 
 	public function makeJoinedGroup(&$data)
 	{
-		//JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 		$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($data['id']);
 		$listModel = $groupModel->getListModel();
-		$pluginManager = $listModel->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$db = $listModel->getDb();
 		$list = $listModel->getTable();
 		$elements = (array)$groupModel->getMyElements();

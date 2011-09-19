@@ -31,6 +31,18 @@
 				<option value="1">JYES</option>
 		</field>
 		
+		<field name="inPutFormat"
+			type="radio" default="csv"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC">
+				<option value="csv">CSV</option>
+				<option value="fabrikexcel">COM_FABRIK_FABRIK_EXCEL_IMPORT_FORMAT</option>
+				<option value="excel">COM_FABRIK_EXCEL_IMPORT_FORMAT</option>
+			</field>
+	</fieldset>
+	
+	<fieldset name="format">
+		
 		<field name="field_delimiter"
 			type="text"
 			size="2" default=","
@@ -48,14 +60,7 @@
 			label="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_LABEL"
 			description="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_DESC" />
 			
-		<field name="inPutFormat"
-			type="radio" default="csv"
-			label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL"
-			description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC">
-				<option value="csv">CSV</option>
-				<option value="fabrikexcel">COM_FABRIK_FABRIK_EXCEL_IMPORT_FORMAT</option>
-				<option value="excel">COM_FABRIK_EXCEL_IMPORT_FORMAT</option>
-			</field>
+		
 	</fieldset>
 	
 	<fieldset name="creation">

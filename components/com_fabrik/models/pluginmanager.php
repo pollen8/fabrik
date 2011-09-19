@@ -90,7 +90,7 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	function _getList()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		if (is_null($this->_group)) {
 			$this->_group = 'element';
 		}
@@ -160,7 +160,7 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * @param string plugin name e.g. fabrikfield
-	 * @param string plugin type element/ form or table
+	 * @param string plugin type element/ form or list
 	 */
 
 	function getPlugIn($className = '', $group)
@@ -196,7 +196,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	 * @return mixed false if not loaded - otherwise plugin object
 	 */
 
-	protected function loadPlugIn($className = '', $group)
+	public function loadPlugIn($className = '', $group)
 	{
 		if ($group == 'table'){
 			$group = 'list';

@@ -150,8 +150,7 @@ class FabrikControllerDetails extends JController
 		$defaultAction = $model->process();
 		//check if any plugin has created a new validation error
 		if (!empty($model->_arErrors)) {
-			$pluginManager 	=& $model->getPluginManager();
-			$pluginManager->runPlugins('onError', $model);
+			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}

@@ -82,7 +82,7 @@ class plgFabrik_FormFabrik2Article extends plgFabrik_Form {
 
 	private function _getFieldName($params, $pname)
 	{
-		$elementModel = $this->formModel->getPluginManager()->getElementPlugin($params->get($pname));
+		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
 		$element = $elementModel->getElement(true);
 		return $elementModel->getFullName();
 	}

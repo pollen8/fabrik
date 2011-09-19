@@ -52,7 +52,7 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element {
 	private function getDataElement() {
 		$params = $this->getParams();
 		$elementid = (int)$params->get('googleometer_element');
-		$element = $this->getlistModel()->getPluginManager()->getPlugIn('', 'element');
+		$element = FabrikWorker::getPluginManager()->getPlugIn('', 'element');
 		$element->setId($elementid);
 		return $element;
 	}

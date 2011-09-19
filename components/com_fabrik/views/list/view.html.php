@@ -131,7 +131,7 @@ class FabrikViewList extends JView{
 		//add in plugin objects
 		$params = $model->getParams();
 		//$activePlugins = $params->get('plugins');
-		$pluginManager = $model->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$c = 0;
 
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');

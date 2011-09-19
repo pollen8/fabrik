@@ -39,7 +39,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 	private function getFieldName($params, $pname)
 	{
-		$elementModel = $this->getPluginManager()->getElementPlugin($params->get($pname));
+		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
 		return $elementModel->getFullName();
 	}
 
@@ -52,7 +52,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 	private function getFieldValue($params, $pname, $data)
 	{
-		$elementModel = $this->getPluginManager()->getElementPlugin($params->get($pname));
+		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
 		$group = $elementModel->getGroup();
 		if ($group->isJoin()) {
 			$data = $data['join'][$group->getGroup()->join_id];

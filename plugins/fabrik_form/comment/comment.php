@@ -404,7 +404,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	protected function getDigg()
 	{
 		if (!isset($this->digg)) {
-			$this->digg = $this->formModel->getPluginManager()->getPlugIn('digg', 'element');
+			$this->digg = FabrikWorker::getPluginManager()->getPlugIn('digg', 'element');
 		}
 		return $this->digg;
 	}
@@ -557,13 +557,13 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function notificationPluginInstalled($formModel)
 	{
-		return $formModel->getPluginManager()->pluginExists('cron', 'notification');
+		return FabrikWorker::getPluginManager()->pluginExists('cron', 'notification');
 	}
 
 	private function doDigg()
 	{
 		$params = $this->getParams();
-		return $params->get('comment-digg') && $this->formModel->getPluginManager()->pluginExists('element', 'digg');
+		return $params->get('comment-digg') && FabrikWorker::getPluginManager()->pluginExists('element', 'digg');
 	}
 
 	/**

@@ -45,7 +45,7 @@ class plgFabrik_FormVbForum extends plgFabrik_Form {
 		// Check for request forgeries
 		JRequest::checkToken() or jexit('Invalid Token');
 
-		$elementModel = $formModel->getPluginManager()->getElementPlugin($params->get('vb_forum_field'));
+		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get('vb_forum_field'));
 
 		$element = $elementModel->getElement(true);
 		$this->map_forum_field = $elementModel->getFullName();

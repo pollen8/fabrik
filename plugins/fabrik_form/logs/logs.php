@@ -114,7 +114,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			}
 				foreach ($data as $key => $val) {
 					if (($val != $formModel->_origData->$key) && (isset($formModel->_origData->$key)) && (isset($val)) && (substr($key, -4, 4) != '_raw')) {
-						$id_elementModel = $formModel->getPluginManager()->getElementPlugin($key);
+						$id_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($key);
 						$id_element = $id_elementModel->getElement(true);
 						$formModel->_formData[$id_element->name] = $formModel->_fullFormData['rowid'];
 						$formModel->_formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];

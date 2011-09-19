@@ -77,5 +77,20 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 	{
 
 	}
+	
+	/**
+	 * load a new set of default properites and params for the element
+	 * @return object element (id = 0)
+	 */
+	
+	public function getDefaultProperties()
+	{
+		$item = parent::getDefaultProperties();
+		$item->primary_key = true;
+		$item->width = 3;
+		$item->hidden = 1;
+		$item->auto_increment	= 1;
+		return $item;
+	}
 }
 ?>

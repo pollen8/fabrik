@@ -217,7 +217,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$params = $this->getParams();
 		$field = $params->get('fb_gm_geocode_' . $which_field, false);
 		if ($field) {
-			$elementModel = $this->getPluginManager()->getElementPlugin($field);
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
 			return $elementModel->getHTMLId($repeatCounter);
 		}
 		return false;
@@ -592,7 +592,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 			}
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
-				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			/** ensure that the data is a string **/
 			if (is_array($value)) {

@@ -12,8 +12,6 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.modelform');
 
-//require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'import.php');
-
 class FabrikFEModelImportcsv extends JModelForm{
 
 	/** @var array of cleaned heading names */
@@ -29,22 +27,51 @@ class FabrikFEModelImportcsv extends JModelForm{
 	/** @var array of table's join objects */
 	var $joins = null;
 
-	/** @var object table object to import into */
-	var $table = null;
+	/** @var object list model to import into */
+	public $listModel = null;
 
 	var $updatedCount = 0;
+	
+	protected $_csvFile = null;
+	
+	protected $fieldDelimiter = null;
 
 
 	public function import()
 	{
-		if (!$this->checkUpload()) {
+		/* if (!$this->checkUpload()) {
 			return false;
-		}
-		$userfile = JRequest::getVar('jform', null, 'files');
-		$this->readCSV($userfile['name']['userfile']);
+		} */
+		$this->readCSV($this->getCSVFileName());
 		$this->findExistingElements();
 		return true;
 	}
+	
+	/**
+	 * gets the name of the csv file from the uploaded jform
+	 * @return string csv file name
+	 */
+	
+	protected function getCSVFileName()
+	{
+		if (is_null($this->_csvFile)) {
+			$session = JFactory::getSession();
+			if ($session->has('com_fabrik.csv.filename')) {
+				$this->_csvFile = $session->get('com_fabrik.csv.filename');
+			} else {
+				$userfile = JRequest::getVar('jform', null, 'files');
+				$this->_csvFile = $userfile['name']['userfile'];
+				$session->set('com_fabrik.csv.filename', $this->_csvFile);
+			}
+		}
+		return $this->_csvFile;
+	}
+	
+	/**
+	 * loads the Joomla form for importing the csv file
+	 * @param areray $data
+	 * @param bool $loadData
+	 */
 	
 	public function getForm($data = array(), $loadData = true)
 	{
@@ -79,7 +106,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$to = JPath::clean(COM_FABRIK_BASE.'media'.DS.$userfile['name']['userfile']);
 
 		$resultdir = JFile::upload($userfile['tmp_name']['userfile'], $to);
-		if ($resultdir == false) {
+		if ($resultdir == false && !JFile::exists($to)) {
 			JError::raiseWarning(500, JText::_('Upload Error'));
 			return false;
 		}
@@ -91,6 +118,33 @@ class FabrikFEModelImportcsv extends JModelForm{
 		}
 		return true;
 	}
+	
+	/**
+	 * get the field delimiter from post 
+	 * and set in session 'com_fabrik.csv.fielddelimiter' for later use 
+	 */
+	
+	protected function getFieldDelimiter()
+	{
+		if (is_null($this->fieldDelimiter)) {
+			$session = JFactory::getSession();
+			if ($session->has('com_fabrik.csv.fielddelimiter')) {
+				$this->fieldDelimiter = $session->get('com_fabrik.csv.fielddelimiter');
+			} else {
+				$tabDelimiter = JArrayHelper::getValue($data, 'tabdelimited');
+				$data = $this->getFormData();
+				$this->fieldDelimiter = $tabDelimiter == 1 ? "\t" : JArrayHelper::getValue($data, 'field_delimiter', ',');
+				$session->set('com_fabrik.csv.fielddelimiter', $this->fieldDelimiter);
+			}
+		}
+	
+		return $this->fieldDelimiter;
+	}
+	
+	protected function getFormData()
+	{
+		return array_key_exists('jform', $_POST) ? JRequest::getVar('jform') : JRequest::get('post');
+	}
 
 	/**
 	 * read the CSV file, store results in $this->headings and $this->data
@@ -98,16 +152,13 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	function readCSV($userfile_name)
 	{
-		$baseDir = JPath::clean(COM_FABRIK_BASE.'media');
+		$baseDir = $this->getBaseDir();
 		$this->headings = array();
 		$this->data = array();
-		$data = array_key_exists('jform', $_POST) ? JRequest::getVar('jform') : JRequest::get('post');
-		$tabDelimiter = JArrayHelper::getValue($data, 'tabdelimited');
-		$field_delimiter = $tabDelimiter == 1 ? "\t" : JArrayHelper::getValue($data, 'field_delimiter', ',');
+		$data = $this->getFormData();
+		$field_delimiter = $this->getFieldDelimiter();
 		$text_delimiter = stripslashes(JArrayHelper::getValue($data, 'text_delimiter', '"'));
-
 		$csv = new csv_bv($baseDir . '/' . $userfile_name, $field_delimiter, $text_delimiter, '\\');
-
 		$csv->inPutFormat = JArrayHelper::getValue($data, 'inPutFormat', 'csv');
 		$csv->SkipEmptyRows(TRUE); // Will skip empty rows. TRUE by default. (Shown here for example only).
 		$csv->TrimFields(TRUE); // Remove leading and trailing \s and \t. TRUE by default.
@@ -147,23 +198,60 @@ class FabrikFEModelImportcsv extends JModelForm{
 			}
 		}
 		fclose($csv->mHandle);
-		$session = JFactory::getSession();
-		$session->set('com_fabrik.csvdata', $this->data);
-		$session->set('com_fabrik.matchedHeadings', $this->matchedHeadings);
-		JFile::delete($baseDir.'/'.$userfile_name);
+	}
+	
+	public function getSample()
+	{
+		return $this->data[0];
 	}
 
 	/**
-	 * get the table model
+	 * @deprecated
+	 * possibly setting large data in the session is a bad idea
+	 */
+	public function setSession()
+	{
+		$session = JFactory::getSession();
+		$session->set('com_fabrik.csvdata', $this->data);
+		$session->set('com_fabrik.matchedHeadings', $this->matchedHeadings);
+	}
+
+	protected function getBaseDir()
+	{
+		return JPath::clean(COM_FABRIK_BASE.'media');
+	}
+	
+	/**
+	 * deletes the csv file and removes its path from the session
+	 */
+
+	public function removeCSVFile()
+	{
+		$baseDir = $this->getBaseDir();
+		$userfile_name = $this->getCSVFileName();
+		JFile::delete($baseDir.'/'.$userfile_name);
+		$this->clearSession();
+	}
+	
+	public function clearSession()
+	{
+		$session = JFactory::getSession();
+		$session->clear('com_fabrik.csv.filename');
+		$session->clear('com_fabrik.csv.fielddelimiter');
+	}
+	
+	/**
+	 * get the list model
 	 * @return object table model
 	 */
+	
 	function getlistModel()
 	{
-		if (!isset($this->table)) {
-			$this->table = JModel::getInstance('List', 'FabrikFEModel');
-			$this->table->setId(JRequest::getInt('listid'));
+		if (!isset($this->listModel)) {
+			$this->listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$this->listModel->setId(JRequest::getInt('listid'));
 		}
-		return $this->table;
+		return $this->listModel;
 	}
 
 	function findExistingElements()
@@ -265,17 +353,29 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	/**
 	 * Insert data into a fabrik table
+	 * @deprecated use insertData instead
 	 * @return unknown
 	 */
 
 	function makeTableFromCSV()
 	{
+		return $this->insertData();
+	}
+	
+	/**
+	* Insert data into a fabrik table
+	* @return unknown
+	*/
+	
+	public function insertData()
+	{
 		$user = JFactory::getUser();
-		$dropData = JRequest::getInt('drop_data', 0, 'post');
-		$overWrite = JRequest::getInt('overwrite', 0, 'post');
+		$jform = JRequest::getVar('jform');
+		$dropData = (int)JArrayHelper::getValue($jform, 'drop_data', 0);
+		$overWrite = (int)JArrayHelper::getValue($jform, 'overwrite', 0);
 		$model = $this->getlistModel();
 		$model->_importingCSV = true;
-		$model->getTable();
+		$item = $model->getTable();
 		$formModel = $model->getFormModel();
 
 		if ($dropData) {
@@ -313,7 +413,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 			$aRow = array();
 			$pkVal = null;
 			$i =0;
-			foreach ($this->matchedHeadings  as $headingKey => $heading) {
+			foreach ($this->matchedHeadings as $headingKey => $heading) {
 
 				switch ($csvFullName) {
 					case 0:
@@ -384,7 +484,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 			}
 			if (!$tableJoinsFound) {
 				$formModel->_formData = $aRow;
-				$model->getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
+				FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
 				$formModel->processToDB();
 			} else {
 				//merge multi line csv into one entry & defer till we've passed everything
@@ -394,6 +494,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		if ($tableJoinsFound) {
 			$this->insertJoinedData($joindata);
 		}
+		$this->removeCSVFile();
 		$elementsCreated = count($this->newHeadings);
 		$this->updatedCount = $updatedCount;
 		if ($elementsCreated == 0) {
@@ -456,7 +557,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 			//how many repeated records to insert.
 			JRequest::setVar('fabrik_repeat_group', $fabrik_repeat_group);
 			$formModel->_formData = $data;
-			$model->getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
+			FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
 			$formModel->processToDB();
 		}
 	}

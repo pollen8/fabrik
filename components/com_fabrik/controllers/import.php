@@ -25,6 +25,7 @@ class FabrikControllerImport extends JController
 
 	function display()
 	{
+		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
 		$this->listid = JRequest::getVar('listid', 0);
 		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$listModel->setId($this->listid);
@@ -33,26 +34,32 @@ class FabrikControllerImport extends JController
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType	= $document->getType();
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
-		$model = &$this->getModel('Importcsv', 'FabrikFEModel');
+		$view = $this->getView($viewName, $viewType);
+		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$view->setModel($model, true);
 		$view->display();
 	}
 
+	/**
+	* perform the file upload and set the session state
+	* Unlike back end import if there are unmatched headings we bail out
+	* @return null
+	*/
+	
 	function doimport()
 	{
-		$model = &$this->getModel('Importcsv', 'FabrikFEModel');
-		if (!$model->import()){
+		$model = $this->getModel('Importcsv', 'FabrikFEModel');
+		if (!$model->checkUpload()) {
 			$this->display();
 			return;
 		}
 		$id = $model->getListModel()->getId();
-
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType = $document->getType();
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
+		$model->import();
 		$Itemid = JRequest::getInt('Itemid');
 		if (!empty($model->newHeadings)) {
 			//as opposed to admin you can't alter table structure with a CSV import
@@ -61,7 +68,7 @@ class FabrikControllerImport extends JController
 			$this->setRedirect("index.php?option=com_fabrik&view=import&fietype=csv&listid=".$id."&Itemid=".$Itemid);
 		} else {
 			JRequest::setVar('fabrik_list', $id);
-			$msg = $model->makeTableFromCSV();
+			$msg = $model->insertData();
 			$this->setRedirect('index.php?option=com_fabrik&view=list&listid='.$id."&resetfilters=1&Itemid=".$Itemid, $msg);
 		}
 	}

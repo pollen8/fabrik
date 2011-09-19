@@ -30,28 +30,23 @@ JHtml::_('behavior.formvalidation');
 		$db->setQuery($query);
 		$list = $db->loadResult();
 		print_r($list);
-	}?>
+	}
+	$fieldsets = array('details');
+	$fieldsets[] = $id === 0 ? 'creation' : 'append';
+	$fieldsets[] = 'format';
+	?>
 		<input type="hidden" name="listid" value="<?php echo $id ;?>" />
-
+<?php foreach ($fieldsets as $fieldset) {?>
 	<fieldset class="adminform">
 		<ul>
-		<?php foreach ($this->form->getFieldset('details') as $field) :?>
+		<?php foreach ($this->form->getFieldset($fieldset) as $field) :?>
 			<li>
 				<?php echo $field->label; ?><?php echo $field->input; ?>
 			</li>
 			<?php endforeach; ?>
 		</ul>
 	</fieldset>
-	<?php $more = $id === 0 ? 'creation' : 'append';?>
-	<fieldset class="adminform">
-		<ul>
-		<?php foreach ($this->form->getFieldset($more) as $field) :?>
-			<li>
-				<?php echo $field->label; ?><?php echo $field->input; ?>
-			</li>
-			<?php endforeach; ?>
-		</ul>
-	</fieldset>
+	<?php }?>
 
 	<input type="hidden" name="task" value="import.doimport" />
   	<?php echo JHTML::_('form.token');

@@ -776,7 +776,7 @@ class plgFabrik_Element extends FabrikPlugin
 			//@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
 			//stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
-				$formModel->getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
+				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			$this->defaults[$repeatCounter] = $value;
 		}
@@ -1509,7 +1509,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$validations = $params->get('validations', '', '_default', 'array');
 		$usedPlugins = JArrayHelper::getValue($validations, 'plugin', array());
-		$pluginManager = $this->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
 		$this->_aValidations = array();
@@ -2559,7 +2559,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$split = $splitSum == '' ? false : true;
 		$calcLabel 	= $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 		if ($split) {
-			$pluginManager = $this->getForm()->getPluginManager();
+			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitSum);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
 			$splitName = FabrikString::safeColName($splitName);
@@ -2589,15 +2589,15 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 	function avg(&$listModel)
 	{
-		$db 				=& $listModel->getDb();
-		$params 		=& $this->getParams();
-		$splitAvg		= $params->get('avg_split', '');
-		$table 			=& $listModel->getTable();
+		$db = $listModel->getDb();
+		$params	= $this->getParams();
+		$splitAvg	= $params->get('avg_split', '');
+		$table = $listModel->getTable();
 		$calcLabel = $params->get('avg_label', JText::_('COM_FABRIK_AVERAGE'));
 		$split = $splitAvg == '' ? false : true;
 		if ($split) {
-			$pluginManager 	=& $this->getForm()->getPluginManager();
-			$plugin 				=& $pluginManager->getElementPlugin($splitAvg);
+			$pluginManager = FabrikWorker::getPluginManager();
+			$plugin = $pluginManager->getElementPlugin($splitAvg);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getAvgQuery($listModel, $splitName) . " GROUP BY label";
@@ -2639,7 +2639,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$calcLabel = $params->get('median_label', JText::_('COM_FABRIK_MEDIAN'));
 		$results = array();
 		if ($split) {
-			$pluginManager = $this->getForm()->getPluginManager();
+			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitMedian);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
 			$splitName = FabrikString::safeColName($splitName);
@@ -2678,17 +2678,17 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 	function count(&$listModel)
 	{
-		$db 				=& $listModel->getDb();
-		$table 			=& $listModel->getTable(true);
-		$element 		= $this->getElement();
-		$params 		=& $this->getParams();
+		$db	= $listModel->getDb();
+		$table = $listModel->getTable(true);
+		$element = $this->getElement();
+		$params = $this->getParams();
 		$calcLabel = $params->get('count_label', JText::_('COM_FABRIK_COUNT'));
-		$splitCount 	= $params->get('count_split', '');
+		$splitCount = $params->get('count_split', '');
 		$split = $splitCount == '' ? false : true;
 		if ($split) {
-			$pluginManager = $this->getForm()->getPluginManager();
-			$plugin 			= $pluginManager->getElementPlugin($splitCount);
-			$name 				= $plugin->getFullName(false, true, false);
+			$pluginManager = FabrikWorker::getPluginManager();
+			$plugin = $pluginManager->getElementPlugin($splitCount);
+			$name = $plugin->getFullName(false, true, false);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getCountQuery($listModel, $splitName) . " GROUP BY label ";
@@ -3298,6 +3298,33 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		return $res;
 	}
 
+	/**
+	 * load a new set of default properites and params for the element
+	 * can be overridden in plugin class
+	 * @return object element (id = 0)
+	 */
+	
+	public function getDefaultProperties()
+	{
+		$user = JFactory::getUser();
+		$now = JFactory::getDate()->toMySQL();
+		$this->setId(0);
+		$item = $this->getElement();
+		$item->plugin = $this->_name;
+		$item->params = $this->getDefaultAttribs();
+		$item->created = $now;
+		$item->created_by = $user->get('id');
+		$item->created_by_alias = $user->get('username');
+		$item->published = '1';
+		$item->show_in_list_summary = '1';
+		$item->link_to_detail = '1';
+		return $item;
+	}
+	
+	/**
+	 * get a json encoded string of the element default parameters
+	 * @return string
+	 */
 	function getDefaultAttribs()
 	{
 		$o = new stdClass();
@@ -3965,11 +3992,12 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 	/**
 	 * since 3.0b
+	 * @deprecated
 	 * Shortcut to get plugin manager
 	 */
 	public function getPluginManager()
 	{
-		return $this->getFormModel()->getPluginManager();
+		return FabrikWorker::getPluginManager();
 	}
 }
 ?>

@@ -218,7 +218,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	function addAttachments($params)
 	{
 		//get attachments
-		$pluginManager = $this->formModel->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$data = $this->getEmailData();
 		$groups = $this->formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
@@ -327,7 +327,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
 		$message = "";
-		$pluginManager =$this->formModel->getPluginManager();
+		$pluginManager =FabrikWorker::getPluginManager();
 		$groupModels = $this->formModel->getGroupsHiarachy();
 		foreach ($groupModels as &$groupModel) {
 			$elementModels = $groupModel->getPublishedElements();

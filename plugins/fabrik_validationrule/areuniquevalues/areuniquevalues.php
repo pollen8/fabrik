@@ -89,7 +89,7 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		$params = $this->getParams();
 		$otherfield = (array)$params->get('areuniquevalues-otherfield', array());
 		$otherfield = $otherfield[$c];
-		return $elementModel->getPluginManager()->getElementPlugin($otherfield);
+		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 
 	/**

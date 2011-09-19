@@ -375,7 +375,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 	function updateevent()
 	{
-		$oPluginManager = $this->_formModel->getPluginManager();
+		$oPluginManager = FabrikWorker::getPluginManager();
 	}
 
 	/**

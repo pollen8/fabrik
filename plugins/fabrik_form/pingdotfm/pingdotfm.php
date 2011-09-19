@@ -63,7 +63,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		// Use Method field?
 		$pingMethodFieldId = $params->get('ping_method_field', '');
 		if ($pingMethodFieldId != '') {
-			$elementModel = $this->getPluginManager()->getElementPlugin($pingMethodFieldId);
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingMethodFieldId);
 			$element = $elementModel->getElement(true);
 			$pingMethodField = $elementModel->getFullName(false, true, false);
 			$method = $data[$pingMethodField];
@@ -82,7 +82,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		// Title (optional)
 		if ($pingTitleFieldId != '') { // Use field
 
-			$elementModel = $this->getPluginManager()->getElementPlugin($pingTitleFieldId);
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingTitleFieldId);
 			$pingTitleField = $elementModel->getFullName(false, true, false);
 
 			$title = $data[$pingTitleField];
@@ -117,7 +117,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 
 		// Body
 		if ($pingMsgFieldId != '') { // Use field
-			$elementModel = $this->getPluginManager()->getElementPlugin($pingMsgFieldId);
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingMsgFieldId);
 			$element = $elementModel->getElement(true);
 
 			$pingMsgField = $elementModel->getFullName(false, true, false);

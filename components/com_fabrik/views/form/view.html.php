@@ -477,7 +477,7 @@ class fabrikViewForm extends JView
 		}
 ";
 		FabrikHelperHTML::addScriptDeclaration($str);
-		$pluginManager = $model->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 		FabrikHelperHTML::mootools();
 	}

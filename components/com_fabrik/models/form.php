@@ -530,8 +530,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (!isset($this->groups)) {
 			$this->getGroups();
-			$pluginManager = $this->getPluginManager();
-			$this->groups = $pluginManager->getFormPlugins($this);
+			$this->groups = FabrikWorker::getPluginManager()->getFormPlugins($this);
 		}
 		return $this->groups;
 	}
@@ -609,16 +608,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get the plugin manager
-	 *
+	 * @deprecated use return FabrikWorker::getPluginManager(); instead since 3.0b
 	 * @return object plugin manager
 	 */
 
 	function getPluginManager()
 	{
-		if (!isset($this->_pluginManager)) {
+		return FabrikWorker::getPluginManager();
+		/* if (!isset($this->_pluginManager)) {
 			$this->_pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		}
-		return $this->_pluginManager;
+		return $this->_pluginManager; */
 	}
 
 	/**
@@ -632,10 +632,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (JRequest::getInt('rowid') == 0) {
 			$this->_origData = array(new stdClass());
-		}else{
-			$listModel	=& $this->getListModel();
-			$fabrikDb   = $listModel->getDb();
-			$sql 				= $this->_buildQuery();
+		} else {
+			$listModel = $this->getListModel();
+			$fabrikDb = $listModel->getDb();
+			$sql = $this->_buildQuery();
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
 		}
@@ -661,9 +661,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		@set_time_limit(300);
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
-		$form						=& $this->getForm();
-		$pluginManager 	=& $this->getPluginManager();
-		$params 				=& $this->getParams();
+		$form	= $this->getForm();
+		$pluginManager = FabrikWorker::getPluginManager();
+		$params = $this->getParams();
 
 		$sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($this->getId());
@@ -966,7 +966,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$item = $listModel->getTable();
 		$origTableName = $item->db_table_name;
 		$origTableKey	= $item->db_primary_key;
-		$pluginManager = $this->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->_formData)) {
@@ -1374,7 +1374,7 @@ echo "<pre>";print_r($data);
 	function submitToDatabase($rowId = '0')
 	{
 		$this->getGroupsHiarachy();
-		$pluginManager = $this->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		/*
 		 *check if there is table data that is not posted by the form
 		 * (ie if no checkboxes were selected)
@@ -1425,6 +1425,7 @@ echo "<pre>";print_r($data);
 		$listModel->setFormModel($this);
 		$item = $listModel->getTable();
 		$listModel->storeRow($this->_formData, $rowId);
+		
 		$usekey = JRequest::getVar('usekey', '');
 		if (!empty($usekey)) {
 			return $listModel->lastInsertId;
@@ -1470,8 +1471,7 @@ echo "<pre>";print_r($data);
 	function loadValidationRuleClasses()
 	{
 		if (is_null($this->_validationRuleClasses)) {
-			$pluginManager = $this->getPluginManager();
-			$validationRules = $pluginManager->getPlugInGroup('validationrule');
+			$validationRules = FabrikWorker::getPluginManager()->getPlugInGroup('validationrule');
 			$classes = array();
 			foreach ($validationRules as $rule) {
 				$classes[$rule->name] = $rule->name;
@@ -1743,8 +1743,7 @@ echo "<pre>";print_r($data);
 		JRequest::setVar('join', $joindata, 'post');
 
 		if (!empty($this->_arErrors)) {
-			$pluginManager 	=& $this->getPluginManager();
-			$pluginManager->runPlugins('onError', $this);
+			FabrikWorker::getPluginManager()->runPlugins('onError', $this);
 		}
 		FabrikHelperHTML::debug($this->_arErrors, 'form:errors');
 		return $ok;
@@ -2017,9 +2016,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if (isset($this->_rowId)) {
 			return $this->_rowId;
 		}
-		$usersConfig 	=& JComponentHelper::getParams('com_fabrik');
-		$user 				= JFactory::getUser();
-		$pluginManager = $this->getPluginManager();
+		$usersConfig 	= JComponentHelper::getParams('com_fabrik');
+		$user = JFactory::getUser();
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
 		// the request rowid for the mambot as that value is destinded for the component
 		if ($this->isMambot && JRequest::getCmd('option') == 'com_fabrik') {
@@ -2046,7 +2044,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$this->_rowId = $this->getMaxRowId();
 				break;
 		}
-		$pluginManager->runPlugins('onSetRowId', $this);
+		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
 		return $this->_rowId;
 	}
 
@@ -2062,20 +2060,15 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		// $$$rob required in paolo's site when rendering modules with ajax option turned on
 		$this->_listModel = null;
 		@set_time_limit(300);
-
-		$pluginManager = $this->getPluginManager();
-
 		$this->_rowId = $this->getRowId();
-
 		JDEBUG ? $_PROFILER->mark('formmodel render: getData start') : null;
 		$data = $this->getData();
 		JDEBUG ? $_PROFILER->mark('formmodel render: getData end') : null;
-		$res = $pluginManager->runPlugins('onLoad', $this);
+		$res = FabrikWorker::getPluginManager()->runPlugins('onLoad', $this);
 		if (in_array(false, $res)) {
 			return false;
 		}
 		$this->_reduceDataForXRepeatedJoins();
-
 		JDEBUG ? $_PROFILER->mark('formmodel render end') : null;
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
@@ -2720,7 +2713,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 	function _getFormPluginHTML()
 	{
-		$pluginManager = $this->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$formPlugins = $pluginManager->getPlugInGroup('form');
 		$form = $this->getForm();
 
@@ -2839,7 +2832,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		}
 		//need to do finalCopyCheck() on form elements
 
-		$pluginManager = $this->getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 
 		//@TODO something not right here when copying a cascading dropdown element in a join group
 		foreach ($newElements as $origId => $newId) {

@@ -89,7 +89,7 @@ class FabrikControllerForm extends JControllerForm
 
 		//check if any plugin has created a new validation error
 		if (!empty($model->_arErrors)) {
-			$model->getPluginManager()->runPlugins('onError', $model);
+			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}
