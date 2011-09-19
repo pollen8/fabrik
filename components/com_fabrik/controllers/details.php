@@ -63,6 +63,8 @@ class FabrikControllerDetails extends JController
 
 		// Push a model into the view
 		$model	= &$this->getModel($modelName, 'FabrikFEModel');
+		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
+
 		//if errors made when submitting from a J plugin they are stored in the session
 		//lets get them back and insert them into the form model
 		if (!empty($model->_arErrors)) {
