@@ -3110,7 +3110,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$data = FabrikWorker::JSONtoData($data, true);
-		foreach ($data as $i => $d) {
+		foreach ($data as $i => &$d) {
 			if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
 				$d = $this->_replaceWithIcons($d);
@@ -3279,7 +3279,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	 * store the element params
 	 * @return boolean
 	 */
-	
+
 	function storeAttribs()
 	{
 		$element = $this->getElement();
