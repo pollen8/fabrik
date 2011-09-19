@@ -46,10 +46,16 @@ class FabrikHelperHTML
 	/**
 	 * load up mocha window code - should be run in ajax loaded pages as well
 	 * might be an issue in that we may be re-observing some links when loading in mocha - need to check
+	 * @deprecated use windows() instead
 	 * @param string element select to auto create windows for  - was default = a.modal
 	 */
 
 	function mocha($selector='', $params = array())
+	{
+		FabrikHelperHTML::windows($selector, $params);
+	}
+	
+	function windows($selector='', $params = array())
 	{
 		$script = '';
 
@@ -96,7 +102,7 @@ class FabrikHelperHTML
   $$('$selector').each(function(el) {
     el.addEvent('click', function(e) {
     	var opts = $opts;
-    	new Event(e).stop();
+    	e.stop();
       opts2 = JSON.decode(el.get('rel'));
       Object.extend(opts, opts2 || {});
       opts.contentURL = el.href;
