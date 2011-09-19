@@ -52,7 +52,7 @@ class FabrikViewList extends JView{
 		}
 
 		// $$$ hugh - heading[3] doesn't exist any more?  Trying [0] instead.
-		$d = array('id' => $table->id, 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
+		$d = array('id' => (int)$table->id, 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
 		'headings' => $this->headings,
 			'formid'=> $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
