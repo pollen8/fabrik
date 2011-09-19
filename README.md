@@ -10,6 +10,8 @@ Press the discover link
 Press 'purge cache' and then 'Discover'
 Select the Fabrik package and press install.
 
+If you have already installed the fabrik component and want to install additional plugins, select those plugins and press install.
+
 Please check that the installed plugins are published before using fabrik.
 
 Upgrading
