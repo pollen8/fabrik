@@ -539,7 +539,9 @@ class fabrikViewForm extends JView
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->_rowId != '' ?	"<input type=\"submit\" class=\"button\" name=\"Copy\" value=\"" . $params->get('copy_button_label') . "\" />\n" : '';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable ? "<input type=\"button\" class=\"button\" name=\"apply\" value=\"" . $params->get('apply_button_label') . "\" />\n" : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0 ? "<input type=\"submit\" value=\"" . $params->get('delete_button_label', 'Delete') . "\" class=\"button\" name=\"delete\" />" : '';
-		$gobackaction = $model->isAjax() ? '': "onclick=\"history.back();\"";
+		//$gobackaction = $model->isAjax() ? '': "onclick=\"history.back();\"";
+		// guess we have to leave this choice up to the form creator to show/hide the button 
+		$gobackaction = "onclick=\"history.back();\"";
 		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	"<input type=\"button\" class=\"button\" name=\"Goback\" $gobackaction value=\"" . $params->get('goback_button_label') . "\" />\n" : '';
 		if ($model->_editable) {
 			$button = $model->isAjax() ? "button" : "submit";
