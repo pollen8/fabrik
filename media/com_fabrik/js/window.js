@@ -126,6 +126,7 @@ Fabrik.Window = new Class({
 	},
 	
 	loadContent: function () {
+		var u;
 		switch (this.options.loadMethod) {
 		
 		case 'html':
@@ -137,7 +138,7 @@ Fabrik.Window = new Class({
 			this.fireEvent('onContentLoaded', [this]);
 			break;
 		case 'xhr':
-			var u = this.window.getElement('.itemContent');
+			u = this.window.getElement('.itemContent');
 			Fabrik.loader.start(u);
 			new Request.HTML({
 				'url': this.options.contentURL,
@@ -152,7 +153,7 @@ Fabrik.Window = new Class({
 		case 'iframe':
 			var h = this.options.height - 40;
 			var w = this.contentEl.getScrollSize().x + 40 < window.getWidth() ? this.contentEl.getScrollSize().x + 40 : window.getWidth();
-			var u = this.window.getElement('.itemContent');
+			u = this.window.getElement('.itemContent');
 			Fabrik.loader.start(u);
 			
 			this.iframeEl = new Element('iframe', {
