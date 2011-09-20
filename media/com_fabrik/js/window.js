@@ -152,7 +152,9 @@ Fabrik.Window = new Class({
 		case 'iframe':
 			var h = this.options.height - 40;
 			var w = this.contentEl.getScrollSize().x + 40 < window.getWidth() ? this.contentEl.getScrollSize().x + 40 : window.getWidth();
-			this.window.getElement('.itemContent').empty();
+			var u = this.window.getElement('.itemContent');
+			Fabrik.loader.start(u);
+			
 			this.iframeEl = new Element('iframe', {
 				'id': this.options.id + '_iframe',
 				'name': this.options.id + '_iframe',
@@ -167,8 +169,10 @@ Fabrik.Window = new Class({
 					'width': w
 				}
 			}).injectInside(this.window.getElement('.itemContent'));
-	
+			this.iframeEl.hide();
 			this.iframeEl.addEvent('load', function (e) {
+				Fabrik.loader.stop(this.window.getElement('.itemContent'));
+				this.iframeEl.show();
 				this.fireEvent('onContentLoaded', [this]);
 			}.bind(this));
 			break;
@@ -176,14 +180,12 @@ Fabrik.Window = new Class({
 	},
 	
 	drawWindow: function () {
+		this.contentWrapperEl.setStyle('height', this.window.getDimensions().height - this.handle.getDimensions().height - 25);
+		this.contentWrapperEl.setStyle('width', this.window.getDimensions().width - 2);
 		// Resize iframe when window is resized
 		if (this.options.loadMethod === 'iframe') {
-			// @TODO this is foobarred
 			this.iframeEl.setStyle('height', this.contentWrapperEl.offsetHeight - 40);
 			this.iframeEl.setStyle('width', this.contentWrapperEl.offsetWidth - 10);
-		} else {
-			this.contentWrapperEl.setStyle('height', this.window.getDimensions().height - this.handle.getDimensions().height - 25);
-			this.contentWrapperEl.setStyle('width', this.window.getDimensions().width - 2);
 		}
 	},
 	
