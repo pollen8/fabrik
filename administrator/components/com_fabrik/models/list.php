@@ -604,7 +604,6 @@ class FabrikModelList extends FabModelAdmin
 			$row->auto_inc = stristr($fields[$key]->Extra, 'auto_increment') ? true : false;
 		}
 		if (!$row->store()) {
-			echo "error: ".$row->getError();exit;
 			$this->setError($row->getError());
 			return false;
 		}
@@ -757,7 +756,7 @@ class FabrikModelList extends FabModelAdmin
 			}
 			$this->getFEModel()->addIndex($tableKey[$i], 'join', 'INDEX', $size);
 			if (!$existingJoin) {
-				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
+				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i][0]);
 			} else {
 				/* load in the exisitng join
 				 * if the table_join has changed we need to create a new join
@@ -769,7 +768,7 @@ class FabrikModelList extends FabModelAdmin
 				$join = $joinModel->getJoin();
 
 				if ($join->table_join != $joinTable[$i]) {
-					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
+					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i][0]);
 				} else {
 					//the table_join has stayed the same so we simply update the join info
 					$join->table_key = str_replace('`', '', $tableKey[$i]);
@@ -780,7 +779,7 @@ class FabrikModelList extends FabModelAdmin
 					$group = $this->getTable('Group');
 					$group->load($join->group_id);
 					$gparams = json_decode($group->params);
-					$gparams->repeat_group_button =  $repeats[$i] == 1 ? 1 : 0;
+					$gparams->repeat_group_button =  $repeats[$i][0] == 1 ? 1 : 0;
 					$group->params = json_encode($gparams);
 					$group->store();
 
@@ -821,12 +820,14 @@ class FabrikModelList extends FabModelAdmin
 			"label" =>  $joinTable,
 		);
 		$groupId = $this->createLinkedGroup($aData, true, $isRepeat);
+		
 		//$origTable = JRequest::getVar('db_table_name');
 		$origTable = JArrayHelper::getValue(JRequest::getVar('jform'), 'db_table_name');
 		$_POST['jform']['db_table_name'] = $joinTable;
 		$this->createLinkedElements($groupId);
 		$_POST['jform']['db_table_name'] = $origTable;
 		$join = $this->getTable('Join');
+		$join->id = null;
 		$join->list_id 		= $this->getState('list.id');
 		$join->join_from_table = $joinTableFrom;
 		$join->table_join 		= $joinTable;
@@ -846,11 +847,9 @@ class FabrikModelList extends FabModelAdmin
 	 *
 	 * @access private
 	 * @param int group id
-	 * @param (deprecicated can't see that we use this) array of element objects - if this is not empty then we've come from the csv import and the elements
-	 * have already been defined, use this instead of the field analysis to create correctly typed elements
 	 */
 
-	private function createLinkedElements($groupId, $aSpecificElements = array())
+	private function createLinkedElements($groupId)
 	{
 		$db = FabrikWorker::getDbo(true);
 		$user = JFactory::getUser();
@@ -867,33 +866,6 @@ class FabrikModelList extends FabModelAdmin
 		$groupTable = FabTable::getInstance('Group', 'FabrikTable');
 		$groupTable->load($groupId);
 
-		/*if (!empty($aSpecificElements)) {
-			//we're asking the method to create predefined elements - e.g. when installing sample data.
-		foreach ($aSpecificElements as $elementModel) {
-		$element =& $elementModel->getElement();
-		if ($element->label == 'id') {
-		$element->hidden = 1;
-		$element->primary_key = 1;
-		$element->auto_increment = 1;
-		} else {
-		$element->hidden = 0;
-		}
-		$element->name = strtolower(str_replace(' ', '', $element->name));
-		$element->group_id = $groupId;
-		$element->created = $createdate;
-		$element->created_by = $user->get('id');
-		$element->created_by_alias = $user->get('username');
-		$element->published = 1;
-		$element->show_in_list_summary = 1;
-		$element->width = 30;
-		$element->height = 6;
-		$element->ordering = 99999;
-		$element->params = $elementModel->getDefaultAttribs();
-		$element->store();
-		$where = " group_id = '" . $element->group_id . "'";
-		$element->reorder($where);
-		}
-		} else {*/
 		//here we're importing directly from the database schema
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('db_table_name = '.$db->Quote($tableName));
@@ -904,12 +876,12 @@ class FabrikModelList extends FabModelAdmin
 
 		if ($id) {
 			//a fabrik table already exists - so we can copy the formatting of its elements
-			$groupTableModel = JModel::getInstance('list', 'FabrikFEModel');
+			$groupListModel = JModel::getInstance('list', 'FabrikFEModel');
 
-			$groupTableModel->setId($id);
-			$table = $groupTableModel->getTable();
+			$groupListModel->setId($id);
+			$groupListModel->getTable();
 			//$this->formModel = null; //reset form so that it loads new table form
-			$groups = $groupTableModel->getFormGroupElementData();
+			$groups = $groupListModel->getFormGroupElementData();
 			$newElements = array();
 			$ecount = 0;
 			foreach ($groups as $groupModel) {
@@ -942,7 +914,6 @@ class FabrikModelList extends FabModelAdmin
 			//no previously found fabrik list
 			$this->makeElementsFromFields($groupId, $tableName);
 		}
-		//	}
 	}
 
 	/**
@@ -1121,6 +1092,7 @@ class FabrikModelList extends FabModelAdmin
 		$createdate = JFactory::getDate();
 		$group = $this->getTable('Group');
 		$group->bind($data);
+		$group->id = null;
 		$group->created = $createdate->toMySQL();
 		$group->created_by = $user->get('id');
 		$group->created_by_alias = $user->get('username');
@@ -1140,6 +1112,7 @@ class FabrikModelList extends FabModelAdmin
 		//create form group
 		$formid = $this->getState('list.form_id');
 		$formGroup = $this->getTable('FormGroup');
+		$formGroup->id = null;
 		$formGroup->form_id = $formid;
 		$formGroup->group_id = $group->id;
 		$formGroup->ordering = 999999;
@@ -1893,12 +1866,7 @@ class FabrikModelList extends FabModelAdmin
 		$formModel = $this->getFormModel();
 		$tableName = $table->db_table_name;
 		$fabrikDb = $this->getDb();
-		$dbdescriptions = $this->getDBFields($tableName);
-		$existingfields = array();
-		//@TODO: test (was strtolower($dbdescription->Field))  if this is going to cause issues, think fields should be case insenitvely compared as some joomla core fields are mixed case
-		foreach ($dbdescriptions as $dbdescription) {
-			$existingfields[] = strtolower($dbdescription->Field);
-		}
+		$existingfields = array_map('strtolower', array_keys($fabrikDb->getTableColumns($tableName)));
 		$lastfield = $existingfields[count($existingfields)-1];
 		$sql = "ALTER TABLE ".$db->nameQuote($tableName)." ";
 		$sql_add = array();

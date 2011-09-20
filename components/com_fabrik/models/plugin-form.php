@@ -219,7 +219,7 @@ class plgFabrik_Form extends FabrikPlugin
 					}
 				}
 			}
-			$groupModel->_repeatTotal = $repeatGroup;
+			$groupModel->repeatTotal = $repeatGroup;
 			$group = $groupModel->getGroup();
 			$aSubGroups = array();
 			for ($c = 0; $c < $repeatGroup; $c++) {

@@ -210,7 +210,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$element = $this->getElement();
 			$group_id = $element->group_id;
 		}
-		if (is_null($this->_group) || $this->_group->_id != $group_id) {
+		if (is_null($this->_group) || $this->_group->getId() != $group_id) {
 			$model = JModel::getInstance('Group', 'FabrikFEModel');
 			$model->setId($group_id);
 			$model->getGroup();
@@ -359,14 +359,14 @@ class plgFabrik_Element extends FabrikPlugin
 		$k = $db->nameQuote($dbtable).".".$db->nameQuote($this->_element->name);
 		$secret = JFactory::getConfig()->getValue('secret');
 		if ($this->encryptMe()) {
-			$k = "AES_DECRYPT($k, '".$secret."')";
+			$k = "AES_DECRYPT($k, ".$db->Quote($secret).")";
 		}
 
 		if ($this->isJoin()) {
 
 			$jkey = $this->_element->name;
 			if ($this->encryptMe()) {
-				$jkey = "AES_DECRYPT($jkey, '".$secret."')";
+				$jkey = "AES_DECRYPT($jkey, ".$db->Quote($secret).")";
 			}
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote("$jointable" . "___" . $this->_element->name));
@@ -384,7 +384,7 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			$k = $db->nameQuote($dbtable).".".$db->nameQuote($this->_element->name);
 			if ($this->encryptMe()) {
-				$k = "AES_DECRYPT($k, '".$secret."')";
+				$k = "AES_DECRYPT($k, ".$db->Quote($secret).")";
 			}
 
 			if ($this->isJoin()) {
@@ -1054,8 +1054,11 @@ class plgFabrik_Element extends FabrikPlugin
 			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 			$groupModel->setId($groupid);
 			$groupListModel = $groupModel->getListModel();
-			if ($groupListModel->fieldExists($rule->name)) {
-				return JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+			// $$$ rob - if its a joined group then it can have the same element names
+			if ((int)$groupModel->getGroup()->is_join === 0) {
+				if ($groupListModel->fieldExists($rule->name)) {
+					return JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+				}
 			}
 			$date = JFactory::getDate();
 			$date->setOffset($app->getCfg('offset'));
@@ -1086,7 +1089,7 @@ class plgFabrik_Element extends FabrikPlugin
 		//copy js events
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__{package}_jsactions')->where('element_id = '. (int)$id);
+		$query->select('id')->from('#__{package}_jsactions')->where('element_id = '.(int)$id);
 		$db->setQuery($query);
 		$actions = $db->loadResultArray();
 		foreach ($actions as $id) {

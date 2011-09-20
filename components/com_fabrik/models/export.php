@@ -187,7 +187,7 @@ class FabrikFEModelExport {
 				foreach ($groups as $groupModel) {
 					$group = $groupModel->getGroup();
 					$vars = get_object_vars($group);
-					$strXML .= "\t<group form_id=\"" . $listModel->_oForm->_id  ."\" ordering=\"" . $i  ."\">\n";
+					$strXML .= "\t<group form_id=\"".$listModel->getFormModel()->getId()."\" ordering=\"" . $i  ."\">\n";
 					foreach ($vars as $key=>$val) {
 						//dont insert join_id as this isnt in the group table
 						if ($key != "join_id") {

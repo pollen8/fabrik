@@ -14,13 +14,6 @@ jimport('joomla.application.component.view');
 class fabrikViewForm extends JView
 {
 
-  var $_id 			= null;
-
-  function setId($id)
-  {
-    $this->_id = $id;
-  }
-
   /**
    * main setup routine for displaying the form/detail view
    * @param string template
@@ -28,22 +21,15 @@ class fabrikViewForm extends JView
 
   function display($tpl = null)
   {
-		$app 			= JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$document = JFactory::getDocument();
-    $config		= JFactory::getConfig();
+    $config	= JFactory::getConfig();
     $w = new FabrikWorker();
-    $model		=& $this->getModel();
+    $model = $this->getModel();
     $model->_editable = false;
 
     //Get the active menu item
     $usersConfig = JComponentHelper::getParams('com_fabrik');
-
-    if (!isset($this->_id)) {
-      $model->setId($usersConfig->get('formid', JRequest::getInt('formid')));
-    } else {
-      //when in a package the id is set from the package view
-      $model->setId($this->_id);
-    }
 
     $form = $model->getForm();
     $data = $model->render();
@@ -68,7 +54,8 @@ class fabrikViewForm extends JView
       $joins = $model->_table->getJoins();
       $model->getJoinGroupIds($joins);
     }
-		$document->setName($w->parseMessageForPlaceHolder($this->get('PageTitle'), JArrayHelper::fromObject($data)));
+    //as J1.7 doesnt have a pdf view we cant setName on raw doc type
+		//$document->setName($w->parseMessageForPlaceHolder($this->get('PageTitle'), JArrayHelper::fromObject($data)));
 		//$document->_engine->DefOrientation = 'L';
 
 		$params = $model->getParams();

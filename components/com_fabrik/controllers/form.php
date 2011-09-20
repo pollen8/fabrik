@@ -76,7 +76,7 @@ class FabrikControllerForm extends JController
 
 		// Workaround for token caching
 
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv'))) {
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf'))) {
 			$view->display();
 		} else {
 			$user = JFactory::getUser();

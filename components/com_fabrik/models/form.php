@@ -322,7 +322,7 @@ class FabrikFEModelForm extends FabModelForm
 		foreach ($groups as $groupModel) {
 			foreach ($joins as $join) {
 				if ($join->element_id == 0 && $groupModel->getGroup()->id == $join->group_id) {
-					$arJoinGroupIds[$groupModel->_id] = $join->id;
+					$arJoinGroupIds[$groupModel->getId()] = $join->id;
 				}
 			}
 		}
@@ -2583,7 +2583,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				if (!isset($this->pages->$pageCounter)) {
 					$this->pages->$pageCounter = array();
 				}
-				array_push( $this->pages->$pageCounter, $groupModel->_id);
+				array_push( $this->pages->$pageCounter, $groupModel->getId());
 			}
 			$c ++;
 		}
@@ -2807,7 +2807,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	{
 		//array key = old id value new id
 		$this->groupidmap = array();
-		$groups = $this->getGroups();
+		$groupModels = $this->getGroups();
 		$this->_form = null;
 		$form = $this->getTable();
 		$form->id = false;
@@ -2821,13 +2821,13 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			return false;
 		}
 		$newElements = array();
-		foreach ($groups as $group) {
-			$oldid = $group->_id;
+		foreach ($groupModels as $groupModel) {
+			$oldid = $groupModel->getId();
 			// $$$rob use + rather than array_merge to preserve keys
-			$group->_newFormid = $form->id;
-			$newElements = $newElements + $group->copy();
+			$groupModel->_newFormid = $form->id;
+			$newElements = $newElements + $groupModel->copy();
 
-			$this->groupidmap[$oldid] = $group->getGroup()->id;
+			$this->groupidmap[$oldid] = $groupModel->getGroup()->id;
 		}
 		//need to do finalCopyCheck() on form elements
 
@@ -3182,7 +3182,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					}
 				}
 			}
-			$groupModel->_repeatTotal =  $startHidden ? 0 : $repeatGroup;
+			$groupModel->repeatTotal = $startHidden ? 0 : $repeatGroup;
 			$aSubGroups = array();
 			for ($c = 0; $c < $repeatGroup; $c++) {
 				$aSubGroupElements = array();
@@ -3191,6 +3191,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 				foreach ($elementModels as $elementModel) {
 					
+					// $$$ rob ensure that the element is associated with the correct form (could occur if n plugins rendering form
+					// and detailed views of the same form.
+					$elementModel->_form = $this;
 					$elementModel->tmpl = $tmpl;
 					//$$$rob test don't include the element in the form is we can't use and edit it
 					//test for captcha element when user logged in

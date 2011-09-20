@@ -107,7 +107,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		FabrikHelperHTML::addPath(JPATH_SITE.'/plugins/fabrik_element/digg/images/', 'image', 'form', false);
 		$opts->imageover = FabrikHelperHTML::image("heart-off.png", 'form', $this->tmpl, '', true);
 		$opts->imageout = FabrikHelperHTML::image("heart.png", 'form', $this->tmpl, '', true);
-		$opts->formid = $this->formModel->_id;
+		$opts->formid = $this->formModel->getId();
 		$opts->listid = $this->formModel->getListModel()->getTable()->id;
 		$opts = json_encode($opts);
 		return $opts;
@@ -194,7 +194,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		var comments = new FabrikComment('fabrik-comments', $opts);";
 
 		if ($this->doDigg()) {
-			$script .= "\n comments.digg = new FbDiggTable(".$this->formModel->_id.", $digopts);";
+			$script .= "\n comments.digg = new FbDiggTable(".$this->formModel->getId().", $digopts);";
 		}
 		$script .= "\n});";
 		FabrikHelperHTML::addScriptDeclaration($script);
@@ -369,7 +369,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 			}
 			JRequest::setVar('commentId', $comment->id);
 			$id = "digg_".$comment->id;
-			$data .= "<div id=\"$id\"class=\"digg fabrik_row fabrik_row___".$this->formModel->_id."\">\n".$digg->render(array())."\n</div>\n";
+			$data .= "<div id=\"$id\"class=\"digg fabrik_row fabrik_row___".$this->formModel->getId()."\">\n".$digg->render(array())."\n</div>\n";
 		}
 		$data .= "</div>\n";
 		$data .= "<div class=\"comment\" id=\"comment-$comment->id\">
@@ -695,7 +695,7 @@ var idcomments_post_url;");
 		if (JFile::exists($jcomments)) {
 			require_once($jcomments);
 			$this->_data = '<div id="jcomments" style="clear: both;">
-                    '.JComments::showComments(JRequest::getVar('rowid'), "com_fabrik_{$formModel->_id}").'
+                    '.JComments::showComments(JRequest::getVar('rowid'), "com_fabrik_{$formModel->getId()}").'
                     </div>';
 		}
 		else {

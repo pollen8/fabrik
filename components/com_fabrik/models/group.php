@@ -36,14 +36,14 @@ class FabrikFEModelGroup extends FabModel{
 	/** @var array of published element plugins */
 	var $publishedElements = null;
 
-	/** @var array of published element plugins shown in the table */
-	var $publishedTableElements = null;
+	/** @var array of published element plugins shown in the list */
+	protected $publishedListElements = null;
 
 	/** @var int how many times the group's data is repeated */
-	var $_repeatTotal = null;
+	public $repeatTotal = null;
 
 	/** @var array of form ids that the group is in (maximum of one value)*/
-	var $_formsIamIn = null;
+	protected $_formsIamIn = null;
 
 	/** @var bol can the group be viewed (set to false if no elements are visible in the group**/
 	var $canView = null;
@@ -67,7 +67,7 @@ class FabrikFEModelGroup extends FabModel{
 	function setId($id)
 	{
 		// Set new group ID
-		$this->_id		= $id;
+		$this->_id = $id;
 		$this->id = $id;
 	}
 
@@ -81,7 +81,7 @@ class FabrikFEModelGroup extends FabModel{
 		if (is_null($this->_group)) {
 			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
 			$this->_group = FabTable::getInstance('Group', 'FabrikTable');
-			$this->_group->load($this->_id);
+			$this->_group->load($this->getId());
 		}
 		return $this->_group;
 	}
@@ -117,10 +117,10 @@ class FabrikFEModelGroup extends FabModel{
 	 * @param object table model
 	 */
 
-	function setContext(&$formModel, &$listModel)
+	function setContext($formModel, $listModel)
 	{
-		$this->_form 		=& $formModel;
-		$this->_table 	=& $listModel;
+		$this->_form 	= $formModel;
+		$this->_table = $listModel;
 	}
 
 	/**
@@ -133,7 +133,7 @@ class FabrikFEModelGroup extends FabModel{
 	{
 		if (!isset($this->_formsIamIn)) {
 			$db = FabrikWorker::getDbo(true);
-			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int)$this->_id;
+			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int)$this->getId();
 			$db->setQuery($sql);
 			$this->_formsIamIn = $db->loadResultArray();
 			if (!$db->query()) {
@@ -163,7 +163,7 @@ class FabrikFEModelGroup extends FabModel{
 			$allGroups = $pluginManager->getFormPlugins($this->_form);
 			if (empty($this->elements)) {
 				//horrible hack for when saving group
-				$this->elements = $allGroups[$this->_id]->elements;
+				$this->elements = $allGroups[$this->getId()]->elements;
 			}
 		}
 		return $this->elements;
@@ -188,7 +188,7 @@ class FabrikFEModelGroup extends FabModel{
 	}
 
 	/**
-	 * DEPRECIATED
+	 * @deprecated
 	 * alias to getFormModel
 	 * get the groups form model
 	 * @return object form model
@@ -241,19 +241,19 @@ class FabrikFEModelGroup extends FabModel{
 		return $this->publishedElements;
 	}
 
-	public function getPublishedTableElements()
+	public function getPublishedListElements()
 	{
-		if (!isset($this->publishedTableElements)) {
-			$this->publishedTableElements = array();
+		if (!isset($this->publishedListElements)) {
+			$this->publishedListElements = array();
 			$elements = $this->getMyElements();
 			foreach ($elements as $elementModel) {
 				$element = $elementModel->getElement();
 				if ($element->published == 1 && $element->show_in_list_summary && $elementModel->canView()) {
-					$this->publishedTableElements[] = $elementModel;
+					$this->publishedListElements[] = $elementModel;
 				}
 			}
 		}
-		return $this->publishedTableElements;
+		return $this->publishedListElements;
 	}
 	/*
 	 * is the group a repeat group
@@ -312,7 +312,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	function &loadParams()
 	{
-		$this->_params =  new fabrikParams($this->_group->params);
+		$this->_params = new fabrikParams($this->_group->params);
 		return $this->_params;
 	}
 
@@ -339,10 +339,10 @@ class FabrikFEModelGroup extends FabModel{
 
 	function getGroupProperties(&$formModel)
 	{
-		$w				= new FabrikWorker();
-		$group				= new stdClass();
-		$groupTable		=& $this->getGroup();
-		$params				=& $this->getParams();
+		$w = new FabrikWorker();
+		$group = new stdClass();
+		$groupTable	= $this->getGroup();
+		$params	= $this->getParams();
 
 		if (!isset($this->_editable)) {
 			$this->_editable = $formModel->_editable;

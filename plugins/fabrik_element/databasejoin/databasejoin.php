@@ -351,17 +351,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		else if (!$isnew && $wherewhen == '1') {
 			return false;
 		}
-
-		// prefilters with JACL are applied to a single group only
-		// not a group and groups beneath them (think author, registered)
-		// so if JACL on then prefilters work in the inverse in that they are only applied
-		// to the group selected
-
-		if (defined('_JACL')) {
-			return FabrikWorker::getACL($gid, 'dbjoinwhere' . $ref);
-		} else {
-			return FabrikWorker::getACL($gid, 'dbjoinwhere' . $ref, '<=');
-		}
+		return in_array($gid, JFactory::getUser()->authorisedLevels());
 	}
 
 	/**
@@ -563,9 +553,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			JError::raiseWarning(JText::sprintf('PLG_ELEMENT_DBJOIN_DB_CONN_ERR', $element->name));
 			return '';
 		}
-		if (isset($formModel->_aJoinGroupIds[$groupModel->_id])) {
-			$joinId = $formModel->_aJoinGroupIds[$groupModel->_id];
-			$joinGroupId = $groupModel->_id;
+		if (isset($formModel->_aJoinGroupIds[$groupModel->getId()])) {
+			$joinId = $formModel->_aJoinGroupIds[$groupModel->getId()];
+			$joinGroupId = $groupModel->getId();
 		} else {
 			$joinId = '';
 			$joinGroupId = '';

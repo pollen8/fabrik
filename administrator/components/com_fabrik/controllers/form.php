@@ -91,7 +91,7 @@ class FabrikControllerForm extends JControllerForm
 				}
 				if ($this->_isMambot) {
 					//store errors in session
-					$_SESSION['fabrik']['mambot_errors'][$model->_id] = $model->_arErrors;
+					$_SESSION['fabrik']['mambot_errors'][$model->getId()] = $model->_arErrors;
 					JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
 					// $$$ hugh - testing way of preserving form values after validation fails with form plugin
 					// might as well use the 'savepage' mechanism, as it's already there!

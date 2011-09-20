@@ -162,7 +162,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		//otherwise get authorization url from user to use ther own account
 
 
-		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->_id;
+		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
 		$callback .= "&renderOrder=".$this->renderOrder;
 
 		/* Build TwitterOAuth object with client credentials. */
@@ -192,8 +192,8 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	public function getEmailData()
 	{
 		$data = parent::getEmailData();
-		$data['fabrik_editurl'] = JRoute::_(COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$this->formModel->_id."&amp;rowid=".JRequest::getVar('rowid'));
-		$data['fabrik_viewurl'] = JRoute::_(COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=".$this->formModel->_id."&amp;rowid=".JRequest::getVar('rowid'));
+		$data['fabrik_editurl'] = JRoute::_(COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$this->formModel->getId()."&amp;rowid=".JRequest::getVar('rowid'));
+		$data['fabrik_viewurl'] = JRoute::_(COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=".$this->formModel->getId()."&amp;rowid=".JRequest::getVar('rowid'));
 		//$$$ rob fabrik_viewurl/fabrik_editurl desribed in help text as fabrik_edit_url/fabrik_view_url.
 		$data['fabrik_edit_url'] = $data['fabrik_editurl'];
 		$data['fabrik_view_url'] = $data['fabrik_viewurl'];
@@ -275,7 +275,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$consumer_secret = (array)$params->get('twitter_consumer_secret');
 		$consumer_secret = $consumer_secret[$counter];
 
-		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&tmpl=component&g=form&method=updateAdmin&element_id='.(int)$this->row->id.'&formid='.$formModel->_id;
+		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&tmpl=component&g=form&method=updateAdmin&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
 		$callback .= "&repeatCounter=". JRequest::getInt('repeatCounter');
 
 		/* Build TwitterOAuth object with client credentials. */
@@ -284,7 +284,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		/* Get temporary credentials. */
 		$request_token = $connection->getRequestToken($callback);
 		/* Save temporary credentials to session. */
-		//$session->set('com_fabrik.form.'.$formModel->_id.'.twitter.request_token', $request_token);
+		//$session->set('com_fabrik.form.'.$formModel->getId().'.twitter.request_token', $request_token);
 
 		$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
 		$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
