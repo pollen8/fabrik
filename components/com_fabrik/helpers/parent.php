@@ -409,33 +409,6 @@ class FabrikWorker {
 		}
 
 		/**
-		 * get an ACL group
-		 * @deprecated
-		 * @param $val
-		 * @param $cond string >= decides if we are matching above or below a certain acl level (only 4 native J acl)
-		 * @return unknown_type
-		 */
-
-		function getACLGroups($val, $cond = '>=')
-		{
-			return;
-		}
-
-		/**
-		 * determine if you can use a thing
-		 * uses JACL if available
-		 * @param object access id
-		 * @param string access object identifier
-		 * @param string acl direction (inclusive or exclusive - not tested for JACL integration )
-		 */
-
-		function getACL($a, $key, $cond = '>=')
-		{
-			//@TODO for Joomla 1.6 /1.7 perhaps?
-			return true;
-		}
-
-		/**
 		 * PRIVATE:
 		 * called from parseMessageForPlaceHolder to iterate through string to replace
 		 * {placeholder} with user ($my) data
