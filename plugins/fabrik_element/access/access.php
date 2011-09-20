@@ -79,11 +79,6 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}
 		return $options;
-
-		/*$acl = JFactory::getACL();
-		$gtree = $acl->get_group_children_tree( null, 'USERS', false);
-		$optAll = array(JHTML::_('select.option', '30', ' - Everyone'), JHTML::_('select.option', "26", 'Nobody'));
-		return array_merge($gtree, $optAll);*/
 	}
 
 	function renderListData($data, $oAllRowsData)

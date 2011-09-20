@@ -118,7 +118,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$access = JArrayHelper::getValue($filters, 'access', array());
 		foreach ($access as $key => $selAccess) {
 			$i = $filters['key'][$key];
-			if (!FabrikWorker::getACL($selAccess, $i)) {
+			if (!in_array($selAccess, JFactory::getUser()->authorisedLevels())) {
 				$filters['sqlCond'][$key] = '1=1';
 			}
 		}

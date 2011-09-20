@@ -61,7 +61,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	{
 		$access = $this->getParams()->get('updatecol_access');
 		$name = $this->_getButtonName();
-		return FabrikWorker::getACL($access, $name);
+		return in_array($access, JFactory::getUser()->authorisedLevels());
 	}
 
 	/**

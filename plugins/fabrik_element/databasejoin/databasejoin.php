@@ -351,17 +351,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		else if (!$isnew && $wherewhen == '1') {
 			return false;
 		}
-
-		// prefilters with JACL are applied to a single group only
-		// not a group and groups beneath them (think author, registered)
-		// so if JACL on then prefilters work in the inverse in that they are only applied
-		// to the group selected
-
-		if (defined('_JACL')) {
-			return FabrikWorker::getACL($gid, 'dbjoinwhere' . $ref);
-		} else {
-			return FabrikWorker::getACL($gid, 'dbjoinwhere' . $ref, '<=');
-		}
+		return in_array($gid, JFactory::getUser()->authorisedLevels());
 	}
 
 	/**

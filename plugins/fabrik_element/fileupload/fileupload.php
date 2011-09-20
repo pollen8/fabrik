@@ -1424,7 +1424,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		$aclEl = str_replace('.', '___', $params->get('fu_download_acl', ''));
 		if (!empty($aclEl)) {
-			$canDownload = FabrikWorker::getACL($data[$aclEl], 'filedownload');
+			$canDownload = in_array($data[$aclEl], JFactory::getUser()->authorisedLevels());
 			if (!$canDownload) {
 				$img = $params->get('fu_download_noaccess_image');
 				return $img == '' ? '' : "<img src=\"images/stories/$img\" alt=\"".JText::_('DOWNLOAD NO PERMISSION')."\" />";

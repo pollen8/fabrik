@@ -409,31 +409,14 @@ class FabrikWorker {
 		}
 
 		/**
-		 * 	DEPRECIATED??
 		 * get an ACL group
+		 * @deprecated
 		 * @param $val
 		 * @param $cond string >= decides if we are matching above or below a certain acl level (only 4 native J acl)
 		 * @return unknown_type
 		 */
 
 		function getACLGroups($val, $cond = '>=')
-		{
-			return;
-		}
-
-		/**
-		 * set an ACL value
-		 * @param $action
-		 * @param $task
-		 * @param $coponent
-		 * @param $userGroup
-		 * @param $a
-		 * @param $b
-		 * @param $c
-		 * @return unknown_type
-		 */
-
-		function setACL($action, $task, $coponent, $userGroup, $a=null, $b=null, $c=null)
 		{
 			return;
 		}
