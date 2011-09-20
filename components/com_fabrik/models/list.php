@@ -2813,6 +2813,10 @@ class FabrikFEModelList extends JModelForm {
 
 	public function canAlterFields()
 	{
+		$listid = $this->getId();
+		if (empty($listid)) {
+			return false;
+		}
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
 		$alter = $params->get('alter_existing_db_cols', 'notset');

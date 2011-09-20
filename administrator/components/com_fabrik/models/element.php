@@ -564,8 +564,8 @@ function save($data)
 
 	//only update the element name if we can alter existing columns, otherwise the name and
 	//field name become out of sync
-	$listid = $listModel->getId();
-	if (empty($listid) || ($listModel->_canAlterFields() || $id == 0)) {
+	
+	if ($listModel->canAlterFields() || $id == 0) {
 		$data['name'] = $name;
 	} else {
 		$data['name'] = JRequest::getVar('name_orig', '', 'post', 'cmd');
