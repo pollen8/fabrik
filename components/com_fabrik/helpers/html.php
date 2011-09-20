@@ -104,9 +104,8 @@ class FabrikHelperHTML
     	var opts = $opts;
     	e.stop();
       opts2 = JSON.decode(el.get('rel'));
-      Object.extend(opts, opts2 || {});
+      opts = Object.merge(opts, opts2 || {});
       opts.contentURL = el.href;
-
       opts.onContentLoaded = function() {
   			Fabrik.Windows[opts.id].fitToContent()
 			};
