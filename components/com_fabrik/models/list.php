@@ -108,6 +108,7 @@ class FabrikFEModelList extends JModelForm {
 	var $_group_by_added = false;
 	var $_pluginQueryWhere = array();
 	var $_pluginQueryGroupBy = array();
+	var $grouptemplates = array();
 
 	/** @var bol is the table a view **/
 	var $_isview = null;
@@ -2339,13 +2340,13 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $this->_access->csvexport;
 	}
-	
+
 	/**
 	* checks user access for front end group by
 	*
 	* @return bol access allowed
 	*/
-	
+
 	public function canGroupBy()
 	{
 		if (!is_object($this->_access) || !array_key_exists('groupby', $this->_access)) {
@@ -2652,7 +2653,7 @@ class FabrikFEModelList extends JModelForm {
 
 		$altered = false;
 		if (!array_key_exists($element->name, $dbdescriptions)) {
-			
+
 			if ($origColName == '') {
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN ".FabrikString::safeColName($element->name)." $objtype AFTER $lastfield");
 				if (!$fabrikDb->query()) {
@@ -2701,7 +2702,7 @@ class FabrikFEModelList extends JModelForm {
 
 		// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
 		//if (empty($origColName) || !in_array(strtolower($origColName ), $existingfields)) {
-		
+
 		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
 		//if (empty($element->name) || !in_array($element->name, $existingfields)) {
 		if (empty($origColName) || !in_array($origColName, $existingfields)) {

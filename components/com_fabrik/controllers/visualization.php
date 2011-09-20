@@ -28,6 +28,8 @@ class FabrikControllerVisualization extends JController
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
 	var $cacheId = 0;
 
+	var $viz_id = 0;
+
 	/**
 	 * Display the view
 	 */
@@ -73,6 +75,32 @@ class FabrikControllerVisualization extends JController
 			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
+		}
+	}
+
+	/**
+	* Override of j!'s getView
+	*
+	* Method to get a reference to the current view and load it if necessary.
+	*
+	* @param   string  $name    The view name. Optional, defaults to the controller name.
+	* @param   string  $type    The view type. Optional.
+	* @param   string  $prefix  The class prefix. Optional.
+	* @param   array   $config  Configuration array for view. Optional.
+	*
+	*/
+
+	public function getView($name = '', $type = '', $prefix = '', $config = array())
+	{
+		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
+		if ($viewName == '') {
+			$id = JRequest::getInt('id');
+			$viz = FabTable::getInstance('Visualization', 'FabrikTable');
+			$viz->load(JRequest::getInt('id'));
+			$viewName = $viz->plugin;
+			$this->addViewPath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'views');
+			$modelpaths = JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'models');
+			return parent::getView($viewName, $type, $prefix, $config);
 		}
 	}
 

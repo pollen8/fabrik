@@ -3,6 +3,7 @@ var FbGoogleMapViz = new Class({
 	options: {
 		'lat': 0,
 		'lon': 0,
+		'clustering': false,
 		'maptypecontrol': '0',
 		'overviewcontrol': '0',
 		'scalecontrol': '0',
@@ -94,9 +95,12 @@ var FbGoogleMapViz = new Class({
 			});
 			this.bounds = new google.maps.LatLngBounds();
 			
-			if (this.options.clustering === 1) {
+			/*
+			if (this.options.clustering) {
 				this.markerMgr = new MarkerManager(this.map, {trackMarkers: true, maxZoom: 15});
 			}
+			*/
+			
 			this.addIcons();
 			this.addOverlays();
 			
@@ -168,9 +172,6 @@ var FbGoogleMapViz = new Class({
 	},
 	
 	addIcons: function () {
-		if (this.options.clustering === 1) {
-			//this.markerMgr.clearMarkers();
-		}
 		this.markers = [];
 		this.options.icons.each(function (i) {
 			this.bounds.extend(new google.maps.LatLng(i[0], i[1]));
@@ -178,7 +179,7 @@ var FbGoogleMapViz = new Class({
 		}.bind(this));
 	  
 		this.renderGroupedSideBar();
-		if (this.options.clustering === 2) {
+		if (this.options.clustering) {
 			// Using MarkerClusterer, http://gmaps-utility-library.googlecode.com/svn/trunk/markerclusterer/1.0/docs/reference.html
 			// @TODO - add a way of providing user defined styles
 			// The following just duplicates some code in markerclusterer.js which builds their default styles array.
@@ -188,7 +189,7 @@ var FbGoogleMapViz = new Class({
 			var i = 0;
 			for (i = 1; i <= 5; ++i) {
 				styles.push({
-					'url': this.options.livesite + "components/com_fabrik/libs/googlemaps/markerclusterer/1.0/images/m" + i + ".png",
+					'url': this.options.livesite + "components/com_fabrik/libs/googlemaps/markerclusterer/images/m" + i + ".png",
 					'height': sizes[i - 1],
 					'width': sizes[i - 1]
 				});
@@ -214,12 +215,14 @@ var FbGoogleMapViz = new Class({
 			}
 			this.cluster = new MarkerClusterer(this.map, this.clusterMarkers, {'splits': this.options.cluster_splits, 'icon_increment': this.options.icon_increment, maxZoom: zoom, gridSize: size, styles: styles});
 		}
+		/*
 		if (this.options.clustering === 1) {
 			google.maps.event.addListener(this.markerMgr, 'loaded', function () {
 				this.markerMgr.addMarkers(this.markers, 0, 15);
 				this.markerMgr.refresh();
 			}.bind(this));
 		}
+		*/
 		/* this.cluster=new ClusterMarker(this.map, { markers:this.clusterMarkers, 'splits':this.options.cluster_splits, 'icon_increment':this.options.icon_increment});
 		this.cluster.fitMapToMarkers();
 		this.map.savePosition();	//	enables the large map control centre button to return the map to initial view*/
@@ -283,13 +286,9 @@ var FbGoogleMapViz = new Class({
 			this.periodCounter = 0;
 			this.timer = this.slimboxFunc.periodical(1000, this); //adds the number of seconds at the Site.
 		}.bind(this));
-		if (this.options.clustering === 1) {
-			//this.markerMgr.addMarker(marker, 0, 15);
-		} else {
-			if (this.options.clustering === 2) {
-				this.clusterMarkers.push(marker);
-				this.clusterMarkerCursor ++;
-			}
+		if (this.options.clustering) {
+			this.clusterMarkers.push(marker);
+			this.clusterMarkerCursor ++;
 		}
 		this.periodCounter ++;
 		return marker;

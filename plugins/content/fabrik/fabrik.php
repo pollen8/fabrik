@@ -284,14 +284,6 @@ class plgContentFabrik extends JPlugin
 			return;
 		}
 
-		$document 	= JFactory::getDocument();
-		$viewType		= $document->getType();
-		$controller = $this->_getController($viewName, $id);
-		$view 			=& $this->_getView($controller, $viewName, $id);
-		$model 			=& $this->_getModel($controller, $viewName, $id);
-		if (!$model) {
-			return;
-		}
 		$origid = JRequest::getVar('id');
 		$origView = JRequest::getVar('view');
 
@@ -305,6 +297,16 @@ class plgContentFabrik extends JPlugin
 		// $$$ hugh - at least make the $origid available for certain corner cases, like ...
 		// http://fabrikar.com/forums/showthread.php?p=42960#post42960
 		JRequest::setVar('origid', $origid, 'GET', false);
+
+		$document 	= JFactory::getDocument();
+		$viewType		= $document->getType();
+		$controller = $this->_getController($viewName, $id);
+		$view 			=& $this->_getView($controller, $viewName, $id);
+		$model 			=& $this->_getModel($controller, $viewName, $id);
+		if (!$model) {
+			return;
+		}
+
 
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);
@@ -481,9 +483,11 @@ class plgContentFabrik extends JPlugin
 	protected function _getView(&$controller, $viewName, $id)
 	{
 		$viewType	= JFactory::getDocument()->getType();
+		/*
 		if ($viewName == 'visualization') {
 			$viewName = $this->_getPluginVizName($id);
 		}
+		*/
 		if ($viewName == 'details') {
 			$viewName = 'form';
 		}
@@ -528,8 +532,9 @@ class plgContentFabrik extends JPlugin
 		}
 		switch ($viewName) {
 			case 'visualization':
+				/*
 				$name = $this->_getPluginVizName($id);
-				$path = COM_FABRIK_FRONTEND.DS.'plugins'.DS.'visualization'.DS.$name.DS.'controllers'.DS.$name.'.php';
+				$path = COM_FABRIK_BASE.'plugins'.DS.'fabrik_visualization'.DS.$name.DS.'controllers'.DS.$name.'.php';
 				if (file_exists($path)) {
 					require_once $path;
 				}
@@ -541,6 +546,8 @@ class plgContentFabrik extends JPlugin
 				//add the model path
 				$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'plugins'.DS.'visualization'.DS.$name.DS.'models');
 				$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
+				*/
+				$controller = new FabrikControllerVisualization();
 				break;
 			case 'form':
 				$controller = new FabrikControllerForm();
@@ -583,6 +590,7 @@ class plgContentFabrik extends JPlugin
 		require_once(COM_FABRIK_FRONTEND.DS.'controllers/details.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'controllers/package.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'controllers/list.php');
+		require_once(COM_FABRIK_FRONTEND.DS.'controllers/visualization.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'parent.php');
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');

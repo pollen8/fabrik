@@ -184,7 +184,9 @@ class FabrikFEModelVisualization extends JModel
 			$filters	=& $model->getFilterArray();
 
 			$ftypes = JArrayHelper::getValue($filters, 'search_type', array());
-			for ($i = count($ftypes) - 1; $i >= 0; $i--) {
+
+			//for ($i = count($ftypes) - 1; $i >= 0; $i--) {
+			foreach ($ftypes as $i => $v) {
 				if ($ftypes[$i] == 'prefilter') {
 					unset($ftypes[$i]);
 				}
