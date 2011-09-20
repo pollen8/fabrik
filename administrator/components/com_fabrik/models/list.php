@@ -1893,12 +1893,7 @@ class FabrikModelList extends FabModelAdmin
 		$formModel = $this->getFormModel();
 		$tableName = $table->db_table_name;
 		$fabrikDb = $this->getDb();
-		$dbdescriptions = $this->getDBFields($tableName);
-		$existingfields = array();
-		//@TODO: test (was strtolower($dbdescription->Field))  if this is going to cause issues, think fields should be case insenitvely compared as some joomla core fields are mixed case
-		foreach ($dbdescriptions as $dbdescription) {
-			$existingfields[] = strtolower($dbdescription->Field);
-		}
+		$existingfields = array_map('strtolower', array_keys($fabrikDb->getTableColumns($tableName)));
 		$lastfield = $existingfields[count($existingfields)-1];
 		$sql = "ALTER TABLE ".$db->nameQuote($tableName)." ";
 		$sql_add = array();
