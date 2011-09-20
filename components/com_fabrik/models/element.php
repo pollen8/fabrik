@@ -359,14 +359,14 @@ class plgFabrik_Element extends FabrikPlugin
 		$k = $db->nameQuote($dbtable).".".$db->nameQuote($this->_element->name);
 		$secret = JFactory::getConfig()->getValue('secret');
 		if ($this->encryptMe()) {
-			$k = "AES_DECRYPT($k, '".$secret."')";
+			$k = "AES_DECRYPT($k, ".$db->Quote($secret).")";
 		}
 
 		if ($this->isJoin()) {
 
 			$jkey = $this->_element->name;
 			if ($this->encryptMe()) {
-				$jkey = "AES_DECRYPT($jkey, '".$secret."')";
+				$jkey = "AES_DECRYPT($jkey, ".$db->Quote($secret).")";
 			}
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote("$jointable" . "___" . $this->_element->name));
@@ -384,7 +384,7 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			$k = $db->nameQuote($dbtable).".".$db->nameQuote($this->_element->name);
 			if ($this->encryptMe()) {
-				$k = "AES_DECRYPT($k, '".$secret."')";
+				$k = "AES_DECRYPT($k, ".$db->Quote($secret).")";
 			}
 
 			if ($this->isJoin()) {
