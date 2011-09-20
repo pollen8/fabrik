@@ -130,6 +130,11 @@ Fabrik.Window = new Class({
 		switch (this.options.loadMethod) {
 		
 		case 'html':
+			if (typeOf(this.options.content) === 'null') {
+				fconsole('no content option set for window.html');
+				this.close();
+				return;
+			}
 			if (typeOf(this.options.content) === 'element') {
 				this.options.content.inject(this.contentEl.empty());
 			} else {
@@ -216,15 +221,6 @@ Fabrik.Window = new Class({
 			e.stop();
 		}
 		this.window.fade('show');
-	},
-	
-	showSpinner: function ()
-	{
-		fconsole('need to do show spinner for window.js');
-	},
-	
-	hideSpinner: function () {
-		fconsole('need to do hide spinner for window.js');
 	}
 	
 });
