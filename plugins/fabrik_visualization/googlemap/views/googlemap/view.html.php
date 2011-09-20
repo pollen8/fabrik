@@ -10,6 +10,7 @@ class fabrikViewGooglemap extends JView
 
 	function display($tmpl = 'default')
 	{
+		FabrikHelperHTML::framework();
 		FabrikHelperHTML::slimbox();
 		$document = JFactory::getDocument();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -49,10 +50,11 @@ class fabrikViewGooglemap extends JView
 
 			FabrikHelperHTML::script('plugins/fabrik_visualization/googlemap/googlemap.js', true);
 
-			if($this->params->get('fb_gm_clustering') == 1) {
-				FabrikHelperHTML::script('http://google-maps-utility-library-v3.googlecode.com/svn/tags/markermanager/1.0/src/markermanager.js', true);
-			}else if ($this->params->get('fb_gm_clustering') == 2) {
-				FabrikHelperHTML::script('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_packed.js', true);
+			if ((int)$this->params->get('fb_gm_clustering', '0') == 1) {
+				FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markerclusterer/src/markerclusterer.js', true);
+				//FabrikHelperHTML::script('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js', true);
+				//FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js', true);
+
 			} else {
 				//doesnt work in v3
 				//FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js', true);

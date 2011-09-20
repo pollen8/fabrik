@@ -28,18 +28,20 @@ var FbDatabasejoin = new Class({
 			}.bind(this));
 		}
 		
-		this.watchSelect();
-		
-		if (this.options.showDesc === true) {
-			this.element.addEvent('change', this.showDesc.bindWithEvent(this));
-		}
-		if (this.options.displayType === 'checkbox') {
-			// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
-			document.getElements('input[name*=' + this.options.elementName + '___' + this.options.elementShortName + ']').each(function (i, k) {
-				i.addEvent('click', function (e) {
-					document.getElements('input[name*=' + this.options.elementName + '___id]')[k].checked = i.checked;
+		if (this.options.editable) {
+			this.watchSelect();
+			
+			if (this.options.showDesc === true) {
+				this.element.addEvent('change', this.showDesc.bindWithEvent(this));
+			}
+			if (this.options.displayType === 'checkbox') {
+				// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
+				document.getElements('input[name*=' + this.options.elementName + '___' + this.options.elementShortName + ']').each(function (i, k) {
+					i.addEvent('click', function (e) {
+						document.getElements('input[name*=' + this.options.elementName + '___id]')[k].checked = i.checked;
+					}.bind(this));
 				}.bind(this));
-			}.bind(this));
+			}
 		}
 	},
 	

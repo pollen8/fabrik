@@ -53,7 +53,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$opts->ajax_refresh = $params->get('fb_gm_ajax_refresh', 0);
 		$opts->ajax_refresh_center = $params->get('fb_gm_ajax_refresh_center', 1);
 		$opts->maptype = $params->get('fb_gm_maptype');
-		$opts->clustering = $params->get('fb_gm_clustering');
+		$opts->clustering = (bool)$params->get('fb_gm_clustering', '0') == '1';
 		$opts->cluster_splits = $params->get('fb_gm_cluster_splits');
 		$opts->icon_increment = $params->get('fb_gm_cluster_icon_increment');
 		$opts->refresh_rate = $params->get('fb_gm_ajax_refresh_rate');

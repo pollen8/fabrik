@@ -54,7 +54,7 @@ class FabrikHelperHTML
 	{
 		FabrikHelperHTML::windows($selector, $params);
 	}
-	
+
 	function windows($selector='', $params = array())
 	{
 		$script = '';
@@ -707,7 +707,7 @@ function loadCalendar()
 		$debug = $config->get('debug');
 		//$uncompressed	= $debug ? '-uncompressed' : '';
 		$ext = $debug || JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
-		
+
 		$file = (array)$file;
 		$src = array();
 		foreach ($file as $f) {
@@ -720,7 +720,7 @@ function loadCalendar()
 				$f = $f;
 			} else {
 				$compressedFile = str_replace('.js', $ext, $f);
-				
+
 				if (JFile::exists($compressedFile)) {
 					$f = $compressedFile;
 				}
@@ -817,9 +817,9 @@ function loadCalendar()
 		echo "<div class=\"fabrikDebugOutputTitle\">$title</div>";
 		echo "<div class=\"fabrikDebugOutput fabrikDebugHidden\">";
 		if (is_object($content) || is_array($content)) {
-			echo "<pre>";print_r($content);echo "</pre>";
+			echo "<pre>" . htmlspecialchars(print_r($content, true)) . "</pre>";
 		} else {
-			echo $content;
+			echo htmlspecialchars($content);
 		}
 		echo "</div>";
 
@@ -1010,7 +1010,7 @@ function loadCalendar()
 
 	public function image($file, $type = 'form', $tmpl = '', $alt = '', $srcOnly = false, $properties = array())
 	{
-		
+
 		$app = JFactory::getApplication();
 		$template = $app->getTemplate();
 		$paths = FabrikHelperHTML::addPath('', 'image', $type);
