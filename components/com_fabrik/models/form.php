@@ -2129,7 +2129,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					$srow = $this->getSessionData();
 					$this->sessionModel->last_page = 0;
 					if ($srow->data != '') {
-						$data = FArrayHelper::toObject(unserialize($srow->data ), 'stdClass', false);
+						$data = FArrayHelper::toObject(unserialize($srow->data), 'stdClass', false);
 						JFilterOutput::objectHTMLSafe( $data);
 						$data = array($data);
 						FabrikHelperHTML::debug($data, 'form:getData from session (form in Mambot and errors)');
@@ -2228,7 +2228,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					if (($this->isMambot || $this->saveMultiPage()) && (!empty($data) && is_object($data[0]))) {
 						$data = JArrayHelper::fromObject($data[0]);
 					}else{
-						$data = JRequest::get('request');
+						// $$$ rob was causing notices when adding record with joined groups as $data[0]->join unset if we just use request
+						//$data = JRequest::get('request');
+						$data = JArrayHelper::fromObject($data[0]);
 					}
 				}
 			}

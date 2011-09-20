@@ -88,7 +88,7 @@ class FabrikHelperHTML
 		//set default values which can be overwritten in <a>'s rel attribute
 
 		$opts 							= new stdClass();
-		$opts->id 					= 'mocha-advancedsearch';
+		$opts->id 					= 'fabwin';
 		$opts->title 				= JText::_('COM_FABRIK_ADVANCED_SEARCH');
 		$opts->loadMethod 	= 'xhr';
 		$opts->minimizable 	= false;
@@ -99,14 +99,16 @@ class FabrikHelperHTML
 
 		$script .= <<<EOD
 
-  $$('$selector').each(function(el) {
+  $$('$selector').each(function(el, i) {
     el.addEvent('click', function(e) {
     	var opts = $opts;
     	e.stop();
       opts2 = JSON.decode(el.get('rel'));
-      Object.extend(opts, opts2 || {});
+      opts = Object.merge(opts, opts2 || {});
       opts.contentURL = el.href;
-
+      if (opts.id === 'fabwin') {
+      	opts.id += i;
+      }
       opts.onContentLoaded = function() {
   			Fabrik.Windows[opts.id].fitToContent()
 			};

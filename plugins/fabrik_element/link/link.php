@@ -35,8 +35,18 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		}
 		//$data = explode(GROUPSPLITTER, $data);
 		$data = FabrikWorker::JSONtoData($data, true);
-		for ($i=0; $i < count($data); $i++) {
-			$data[$i] = $this->_renderListData($data[$i], $oAllRowsData);
+		
+		if (!empty($data)) {
+			$keys = array_keys($data);
+			//single entry
+			if (in_array('label', $keys)) {
+				$data = $this->_renderListData($data, $oAllRowsData);
+			} else {
+				for ($i = 0; $i < count($data); $i++) {
+					echo "i = $i";exit;
+					$data[$i] = $this->_renderListData($data[$i], $oAllRowsData);
+				}
+			}
 		}
 		//$data = implode(GROUPSPLITTER, $data);
 		$data = json_encode($data);
@@ -53,32 +63,33 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	function _renderListData($data, $oAllRowsData)
 	{
-		//$data = explode(GROUPSPLITTER2, $data);
-		$data = FabrikWorker::JSONtoData($data, true);
+		if (is_string($data)) {
+			$data = FabrikWorker::JSONtoData($data, true);
+		}
 		$listModel = $this->getlistModel();
 		$params = $this->getParams();
 		if (is_array($data)) {
-			if (count($data) == 1) { $data[1] = $data[0];}
-			if (empty($data[1]) && empty($data[0])) {
+			if (count($data) == 1) { $data['label'] = $data['link'];}
+			if (empty($data['label']) && empty($data['link'])) {
 				return '';
 			}
 			$target = $params->get('link_target', '');
 			if ($listModel->getOutPutFormat() != 'rss') {
-				if (empty($data[1])) {
-					$link = $data[0];
+				if (empty($data['label'])) {
+					$link = $data['link'];
 				}
 				else {
 					$smart_link = $params->get('link_smart_link', false);
 					if ($smart_link || $target == 'mediabox') {
-						$smarts = $this->_getSmartLinkType( $data[1]);
-						$link = "<a href=\"" . $data[1] . "\" rel=\"lightbox[" . $smarts['type'] . " " . $smarts['width'] . " " . $smarts['height'] . "]\">" . $data[0] . "</a>";
+						$smarts = $this->_getSmartLinkType($data['link']);
+						$link = '<a href="'.$data['link'].'" rel="lightbox['.$smarts['type'].' '.$smarts['width'].' '.$smarts['height'].']">'.$data['label'].'</a>';
 					}
 					else {
-						$link = "<a href=\"" . $data[1] . "\" target=\"" .$target . "\">" . $data[0] . "</a>";
+						$link = '<a href="'.$data['link'].'" target="'.$target.'">'.$data['label'].'</a>';
 					}
 				}
 			} else {
-				$link = $data[1];
+				$link = $data['link'];
 			}
 			$w = new FabrikWorker();
 			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($oAllRowsData));
@@ -93,31 +104,23 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	 * @return string returns element html
 	 */
 
-	function render($data, $repeatCounter = 0) {
-		$name 			= $this->getHTMLName($repeatCounter);
-
-		$id 				= $this->getHTMLId($repeatCounter);
-		$params 		=& $this->getParams();
-		$element 		= $this->getElement();
-		$size 			= $element->width;
-		$maxlength 	= $params->get('maxlength');
+	function render($data, $repeatCounter = 0)
+	{
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$size = $element->width;
+		$maxlength = $params->get('maxlength');
 		if ($maxlength == "0" or $maxlength == "") {
 			$maxlength = $size;
 		}
-		$value 			= $this->getValue($data, $repeatCounter);
-		$sizeInfo 	=  " size=\"$size\" maxlength=\"$maxlength\"";
+		$value = $this->getValue($data, $repeatCounter);
+		$sizeInfo = " size=\"$size\" maxlength=\"$maxlength\"";
 		if ($value == "") {
 			$value = array('label'=>'', 'link'=>'');
 		}else{
 			if (!is_array($value)) {
-				/*$tmpvalue = explode(GROUPSPLITTER2, $value);
-				$value = array();
-				$value['label'] = $tmpvalue[0];
-				/*if (count($tmpvalue) > 1) {
-					$value['link'] = $tmpvalue[1];
-				} else {
-					$value['link'] = $tmpvalue[0];
-				}*/
 				$value = FabrikWorker::JSONtoData($value, true);
 			}
 		}
@@ -171,7 +174,6 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	protected function _getEmailValue($value)
 	{
 		if (is_string($value)) {
-			//$value = explode(GROUPSPLITTER2, $value);
 			$value = FabrikWorker::JSONtoData($value, true);
 			$value['label'] = JArrayHelper::getValue($value, 0);
 			$value['link'] = JArrayHelper::getValue($value, 1);
@@ -224,15 +226,12 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 							$v = $bitly->shorten($v);
 						}
 					}
-					//$return .= $v .GROUPSPLITTER2;
 				}
 			}
 		} else {
 			$return = $val;
 		}
 		$return = json_encode($val);
-		/*$return = FabrikString::rtrimword($return, GROUPSPLITTER);
-		$return = FabrikString::rtrimword($return, GROUPSPLITTER2);*/
 		return $return;
 	}
 
@@ -266,7 +265,6 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	function getValuesToEncrypt(&$values, $data, $c)
 	{
-		//$data = explode(GROUPSPLITTER2, $this->getValue($data, $c));
 		$data = (array)json_decode($this->getValue($data, $c, true));
 		$name = $this->getFullName(false, true, false);
 		$group = $this->getGroup();

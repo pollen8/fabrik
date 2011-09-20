@@ -253,14 +253,18 @@ class FabrikModelGroup extends FabModelAdmin
 		return true;
 	}
 
-	public function delete(&$pks)
+	public function delete(&$pks, $deleteElements = false)
 	{
 		if (empty($pks)) {
 			return true;
 		}
 		if (parent::delete($pks)) {
 			if ($this->deleteFormGroups($pks)) {
-				return $this->deleteElements($pks);
+				if ($deleteElements) {
+					return $this->deleteElements($pks);
+				} else {
+					return true;
+				}
 			}
 		}
 		return false;
