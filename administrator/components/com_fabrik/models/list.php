@@ -757,7 +757,7 @@ class FabrikModelList extends FabModelAdmin
 			}
 			$this->getFEModel()->addIndex($tableKey[$i], 'join', 'INDEX', $size);
 			if (!$existingJoin) {
-				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
+				$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i][0]);
 			} else {
 				/* load in the exisitng join
 				 * if the table_join has changed we need to create a new join
@@ -769,7 +769,7 @@ class FabrikModelList extends FabModelAdmin
 				$join = $joinModel->getJoin();
 
 				if ($join->table_join != $joinTable[$i]) {
-					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i]);
+					$this->makeNewJoin($tableKey[$i], $joinTableKey[$i], $joinTypes[$i], $joinTable[$i], $joinTableFrom[$i], $repeats[$i][0]);
 				} else {
 					//the table_join has stayed the same so we simply update the join info
 					$join->table_key = str_replace('`', '', $tableKey[$i]);
@@ -780,7 +780,7 @@ class FabrikModelList extends FabModelAdmin
 					$group = $this->getTable('Group');
 					$group->load($join->group_id);
 					$gparams = json_decode($group->params);
-					$gparams->repeat_group_button =  $repeats[$i] == 1 ? 1 : 0;
+					$gparams->repeat_group_button =  $repeats[$i][0] == 1 ? 1 : 0;
 					$group->params = json_encode($gparams);
 					$group->store();
 
