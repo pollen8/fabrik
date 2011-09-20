@@ -671,7 +671,7 @@
 				label="COM_FABRIK_DELETE_JOINED_ROWS_LABEL"
 				description="COM_FABRIK_DELETE_JOINED_ROWS_DESC">
 					<option value="0">JNO</option>
-					<option value="1">JNO</option>
+					<option value="1">JYES</option>
 		</field>
 			
 		</fieldset>
