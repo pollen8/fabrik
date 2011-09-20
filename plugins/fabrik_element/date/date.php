@@ -300,7 +300,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		//3.0 produces a double offset in timezone
 		//$date = JFactory::getDate($datebits['timestamp']);
 		$date = $orig;
-		if (!$params->get('date_showtime', 0)) {
+		if (!$params->get( 'date_showtime', 0 ) || $store_as_local) {
 			$this->_resetToGMT = false;
 		}
 		$date = $this->toMySQLGMT($date);
@@ -324,7 +324,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$invert = false;
 			if ($hours < 0) {
 				$invert = true;
-				$hours = $hours * -1; //intervals can only be positive - set invert propery 
+				$hours = $hours * -1; //intervals can only be positive - set invert propery
 			}
 			// 5.3 only
 			if (class_exists('DateInterval')) {
