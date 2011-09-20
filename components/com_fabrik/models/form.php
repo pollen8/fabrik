@@ -1066,7 +1066,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$joinGroup = JModel::getInstance('Group', 'FabrikFEModel');
 					$joinGroup->getGroup()->id = -1;
 					$joinGroup->getGroup()->is_join = 1;
-echo "<pre>";print_r($data);
 					//set join groups repeat to that of the elements options
 					if ($elementModel->isJoin()) {
 						$joinGroup->getParams()->set('repeat_group_button', 1);
@@ -3115,7 +3114,6 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			$foreignKey = null;
 			$startHidden = false;
 			if ($groupModel->canRepeat()) {
-				echo "can repeat gorup <br>";
 				if ($groupModel->isJoin()) {
 
 					$joinTable = $groupModel->getJoinModel()->getJoin();

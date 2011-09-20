@@ -188,31 +188,13 @@ class FabrikFEModelCSVExport {
 		$filepath = $this->getFilePath();
 		$document = JFactory::getDocument();
 		$document->setMimeEncoding('application/zip');
-//echo "start";
 		if (JFile::exists($filepath)) {
-			$handle = fopen($filepath, 'rb');
-	//		echo "size = ".filesize($filepath);;
-			//$stream = JFactory::getStream();
-			//$str = JFile::read($filepath);
-			//echo "Here";
-			//
-			
-			//$str = $stream->read($handle);
-			/*   $handle = fopen($filepath, 'r');
-			 $str = '';
-			while (!feof($handle)) {
-				$str = stream_get_line($handle, 10, "\n");
-				//JResponse::appendBody($str);
-				echo $str;
-			}
-			fclose($handle); */
-			//$str = stream_copy_to_stream($filepath, )
+			$str = JFile::read($filepath);
 		} else {
 			// if we cant find the file then dont try to auto download it
 			return false;
 		}
-//exit;
-		//echo JResponse::toString(false);exit;
+
 		//// Set the response to indicate a file download
 		//JResponse::setHeader('Content-Type', 'application/zip');
 		JResponse::setHeader('Content-Disposition', 'attachment; filename="'.$filename.'"');
@@ -220,15 +202,9 @@ class FabrikFEModelCSVExport {
 		// xls formatting for accents
 		JResponse::setHeader('Content-Type', 'application/vnd.ms-excel');
 		JResponse::setHeader('charset', 'UTF-16LE');
-		
-		JResponse::setHeader('Content-Length', (string)(filesize($filepath)));
-		//JResponse::setBody($str);
-		//echo JResponse::toString(false);
-		
-		fpassthru($handle);
-		
-		//JFile::delete($filepath);
-		exit;
+		JResponse::setBody($str);
+		echo JResponse::toString(false);
+		JFile::delete($filepath);
 	}
 
 	/**

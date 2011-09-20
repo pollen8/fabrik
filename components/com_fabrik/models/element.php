@@ -1060,9 +1060,6 @@ class plgFabrik_Element extends FabrikPlugin
 			$date = JFactory::getDate();
 			$date->setOffset($app->getCfg('offset'));
 			$rule->created = $date->toMySQL();
-			if (strstr($rule->params, '_duplicate')) {
-				echo "<pre>";print_r($rule);exit;
-			}
 			$params = $rule->params == '' ? new stdClass() : json_decode($rule->params);
 			$params->parent_linked = 1;
 			$rule->params = json_encode($params);
@@ -2290,7 +2287,6 @@ class plgFabrik_Element extends FabrikPlugin
 				}
 				break;
 		}
-		//echo $query;exit;
 		return $query;
 	}
 
