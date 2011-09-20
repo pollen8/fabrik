@@ -52,7 +52,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$arTxt = $this->getSubOptionLabels();
 		$multiple = $params->get('multiple', 0);
 		$multisize = $params->get('dropdown_multisize', 3);
-		$selected = $this->getValue($data, $repeatCounter);
+		$selected = (array)$this->getValue($data, $repeatCounter);
 		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ? " elementErrorHighlight" : '';
 		$attribs 	= 'class="fabrikinput inputbox'.$errorCSS."\"";
 
@@ -65,7 +65,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		foreach ($arVals as $tmpval) {
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES); //for values like '1"'
 			$opts[] = JHTML::_('select.option', $tmpval, JArrayHelper::getValue($arTxt, $i));
-			if (is_array($selected) && in_array($tmpval, $selected)) {
+			if (in_array($tmpval, $selected)) {
 				if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
 					$aRoValues[] = $this->_replaceWithIcons( $tmpval);
 				} else {
@@ -77,17 +77,9 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		//if we have added an option that hasnt been saved to the database. Note you cant have
 		// it not saved to the database and asking the user to select a value and label
 		if ($params->get('allow_frontend_addtodropdown', false) && !empty($selected)) {
-			// $$$ hugh - no idea why but sometimes $selected is an int, not an array
-			if (is_array($selected)) {
-				foreach ($selected as $sel) {
-					if (!in_array($sel, $arVals) && $sel !== '') {
-						$opts[] = JHTML::_('select.option', $sel, $sel);
-					}
-				}
-			}
-			else {
-				if (!in_array($selected, $arVals) && $selected !== '') {
-					$opts[] = JHTML::_('select.option', $selected, $selected);
+			foreach ($selected as $sel) {
+				if (!in_array($sel, $arVals) && $sel !== '') {
+					$opts[] = JHTML::_('select.option', $sel, $sel);
 				}
 			}
 		}

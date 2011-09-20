@@ -522,7 +522,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			if (!empty($validations)) {
 				//if we have a validation on the element run it when the calendar closes itself
 				//this ensures that alert messages are removed if the new data meets validation criteria
-				$script .= 'form_'.$formModel->_id.'.doElementValidation(\''.$subElContainerId.'\');' . "\n";
+				$script .= 'form_'.$formModel->getId().'.doElementValidation(\''.$subElContainerId.'\');' . "\n";
 			}
 			$script .= "});\n"; //end onclose function
 
