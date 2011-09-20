@@ -383,7 +383,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	 * delete an event
 	 */
 
-	function deleteEvent()
+	public function deleteEvent()
 	{
 		$id = (int)JRequest::getVar('id');
 		$listid = JRequest::getInt('listid');
@@ -391,8 +391,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
 		$tableDb = $listModel->getDb();
-		$db = FabrikWorker::getDbo();
-		$db->setQuery("SELECT db_table_name FROM #__{package}_lists WHERE id = $listid");
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select('db_table_name')
+		->from('#__{package}_lists')
+		->where('id = '.$listid);
+		$db->setQuery($query);
 		$tablename = $db->loadResult();
 		$tableDb->setQuery("DELETE FROM ".FabrikString::safeColName($tablename)." WHERE $list->db_primary_key = $id");
 		$tableDb->query();
