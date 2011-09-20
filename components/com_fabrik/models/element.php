@@ -1054,8 +1054,11 @@ class plgFabrik_Element extends FabrikPlugin
 			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 			$groupModel->setId($groupid);
 			$groupListModel = $groupModel->getListModel();
-			if ($groupListModel->fieldExists($rule->name)) {
-				return JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+			// $$$ rob - if its a joined group then it can have the same element names
+			if ((int)$groupModel->getGroup()->is_join === 0) {
+				if ($groupListModel->fieldExists($rule->name)) {
+					return JError::raiseWarning(500, JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
+				}
 			}
 			$date = JFactory::getDate();
 			$date->setOffset($app->getCfg('offset'));
@@ -1086,7 +1089,7 @@ class plgFabrik_Element extends FabrikPlugin
 		//copy js events
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__{package}_jsactions')->where('element_id = '. (int)$id);
+		$query->select('id')->from('#__{package}_jsactions')->where('element_id = '.(int)$id);
 		$db->setQuery($query);
 		$actions = $db->loadResultArray();
 		foreach ($actions as $id) {
