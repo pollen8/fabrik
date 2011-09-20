@@ -142,7 +142,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		}
 
 		// Add link to record
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&view=details&fabrik=".$formModel->_id;
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&view=details&fabrik=".$formModel->getId();
 		if (JRequest::getVar('usekey')) {
 			$viewURL .= "&usekey=".JRequest::getVar('usekey');
 		}

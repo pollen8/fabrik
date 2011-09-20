@@ -377,7 +377,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				return "";
 			}
 			$formModel = $this->getForm();
-			$formid = $formModel->_id;
+			$formid = $formModel->getId();
 			$rowid = $oAllRowsData->__pk_val;
 			$elementid = $this->_id;
 			$title = basename($data);

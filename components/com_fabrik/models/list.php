@@ -492,7 +492,7 @@ class FabrikFEModelList extends JModelForm {
 			if (($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv' || $this->_outPutFormat == 'feed') {
 				$elementModels = $groupModel->getPublishedElements();
 			} else {
-				$elementModels = $groupModel->getPublishedTableElements();
+				$elementModels = $groupModel->getPublishedListElements();
 			}
 			foreach ($elementModels as $elementModel) {
 				$e = $elementModel->getElement();
@@ -3653,7 +3653,7 @@ class FabrikFEModelList extends JModelForm {
 						// $$$ rob in facted browsing somehow (not sure how!) some elements from the facted table get inserted into elementModels
 						// with their form id set - so test if its been set and if its not the same as the current form id
 						// if so then ignore
-						if (isset($element->form_id) && (int)$element->form_id !== 0 && $element->form_id !== $this->getFormModel()->_id) {
+						if (isset($element->form_id) && (int)$element->form_id !== 0 && $element->form_id !== $this->getFormModel()->getId()) {
 							continue;
 						}
 						//force the correct group model into the element model to ensure no wierdness in getting the element name
@@ -3951,7 +3951,7 @@ class FabrikFEModelList extends JModelForm {
 		foreach ($groups as $groupModel) {
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
-			$elementModels = $groupModel->getPublishedTableElements();
+			$elementModels = $groupModel->getPublishedListElements();
 			foreach ($elementModels as $key => $elementModel) {
 				$viewLinkAdded = false;
 				$element = $elementModel->getElement();
@@ -6308,13 +6308,12 @@ class FabrikFEModelList extends JModelForm {
 
 	function noTable()
 	{
-		return empty($this->_id);
+		$id = $this->getId();
+		return empty($id);
 	}
 
 	/**
-	 *
 	 * save an individual element value to the fabrik db
-	 *
 	 * @param string $rowId
 	 * @param string $key
 	 * @param string $value
@@ -6486,7 +6485,7 @@ class FabrikFEModelList extends JModelForm {
 			if (($params->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv' || $this->_outPutFormat == 'feed') {
 				$elementModels = $groupModel->getPublishedElements();
 			} else {
-				$elementModels = $groupModel->getPublishedTableElements();
+				$elementModels = $groupModel->getPublishedListElements();
 			}
 			foreach ($elementModels as $elementModel) {
 				$elementModel->tmpl = $tmpl;

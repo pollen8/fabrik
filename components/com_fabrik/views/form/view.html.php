@@ -18,7 +18,7 @@ class fabrikViewForm extends JView
 
 	var $repeatableJoinGroupCount = 0;
 
-	var $access = null;
+	public $access = null;
 
 	/**
 	 * main setup routine for displaying the form/detail view
@@ -54,7 +54,6 @@ class fabrikViewForm extends JView
 		}
 
 		$this->assign('access', $model->checkAccessFromListSettings());
-		
 		if ($this->access == 0) {
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
@@ -300,7 +299,7 @@ class fabrikViewForm extends JView
 					$aLoadedElementPlugins[] = $element->plugin;
 					$elementModel->formJavascriptClass($srcs);
 				}
-				$eventMax = ($groupModel->_repeatTotal == 0) ? 1 : $groupModel->_repeatTotal;
+				$eventMax = ($groupModel->repeatTotal == 0) ? 1 : $groupModel->repeatTotal;
 				for ($c = 0; $c < $eventMax; $c ++) {
 					$jsActions[] = $elementModel->getFormattedJSActions($jsControllerKey, $c);
 				}
@@ -415,8 +414,8 @@ class fabrikViewForm extends JView
 			}
 			$aObjs = array();
 			$elementModels = $groupModel->getPublishedElements();
-			// $$$ rob if _repeatTotal is 0 we still want to add the js objects as the els are only hidden
-			$max = $groupModel->_repeatTotal > 0 ? $groupModel->_repeatTotal : 1;
+			// $$$ rob if repeatTotal is 0 we still want to add the js objects as the els are only hidden
+			$max = $groupModel->repeatTotal > 0 ? $groupModel->repeatTotal : 1;
 			$str .= $groupModel->getGroup()->id . ":[";
 			foreach ($elementModels as $elementModel) {
 				$element = $elementModel->getElement();
@@ -542,27 +541,27 @@ class fabrikViewForm extends JView
 		//$gobackaction = $model->isAjax() ? '': "onclick=\"history.back();\"";
 		// guess we have to leave this choice up to the form creator to show/hide the button 
 		$gobackaction = "onclick=\"history.back();\"";
-		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	"<input type=\"button\" class=\"button\" name=\"Goback\" $gobackaction value=\"" . $params->get('goback_button_label') . "\" />\n" : '';
+		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" '.$gobackaction.' value="'.$params->get('goback_button_label').'" />'."\n" : '';
 		if ($model->_editable) {
 			$button = $model->isAjax() ? "button" : "submit";
 			$form->submitButton = '';
-			$form->submitButton .= "<input type=\"$button\" class=\"button\" name=\"submit\" value=\"" . $form->submit_button_label ."\" />\n ";
+			$form->submitButton .= '<input type="'.$button.'" class="button" name="submit" value="'.$form->submit_button_label.'" />'."\n";
 		} else {
 			$form->submitButton = '';
 		}
 		if ($this->isMultiPage) {
-			$form->submitButton .= "<input type=\"button\" class=\"fabrikPagePrevious button\" name=\"fabrikPagePrevious\" value=\"" . JText::_('COM_FABRIK_PREVIOUS') ."\" />\n";
-			$form->submitButton .= "<input type=\"button\" class=\"fabrikPageNext button\" name=\"fabrikPageNext\" value=\"" . JText::_('COM_FABRIK_NEXT') ."\" />\n";
+			$form->submitButton .= '<input type="button" class="fabrikPagePrevious button" name="fabrikPagePrevious" value="'.JText::_('COM_FABRIK_PREVIOUS').'" />'."\n";
+			$form->submitButton .= '<input type="button" class="fabrikPageNext button" name="fabrikPageNext" value="'.JText::_('COM_FABRIK_NEXT').'" />'."\n";
 		}
 		$format = $model->isAjax() ? 'raw' : 'html';
-		$aHiddenFields .= "<input type=\"hidden\" name=\"format\" value=\"$format\" />";
+		$aHiddenFields .= '<input type="hidden" name="format" value="'.$format.'" />';
 
 		$groups = $model->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$group 	=& $groupModel->getGroup();
-			$c 			= $groupModel->_repeatTotal;
+			$group = $groupModel->getGroup();
+			$c = $groupModel->repeatTotal;
 			//used for validations
-			$aHiddenFields .= "<input type=\"hidden\" name=\"fabrik_repeat_group[$group->id]\" value=\"" . $c . "\" id=\"fabrik_repeat_group_" . $group->id . "_counter\" />";
+			$aHiddenFields .= '<input type="hidden" name="fabrik_repeat_group['.$group->id.']" value="'.$c.'" id="fabrik_repeat_group_'.$group->id.'_counter" />';
 		}
 
 		$this->_cryptQueryString($aHiddenFields);

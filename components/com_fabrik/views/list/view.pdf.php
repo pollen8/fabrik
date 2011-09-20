@@ -19,74 +19,147 @@ class FabrikViewList extends JView{
 	protected function getManagementJS($data = array())
 	{
 		$app = JFactory::getApplication();
-		$Itemid	= $app->getMenu('site')->getActive()->id;
+		$menuItem = $app->getMenu('site')->getActive();
+		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
 		$model = $this->getModel();
-		$table = $model->getTable();
-		FabrikHelperHTML::slimbox();
-		FabrikHelperHTML::mocha();
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
+		$item = $model->getTable();
+		$listid = $model->getId();
+		$formModel = $model->getFormModel();
+		$elementsNotInTable = $formModel->getElementsNotInTable();
 
-		$tmpl = JRequest::getVar('layout', $table->template);
-
-		// check for a custom css file and include it if it exists
-		$ab_css_file = JPATH_SITE.DS."components".DS."com_fabrik".DS."views".DS."list".DS."tmpl".DS.$tmpl.DS."template.css";
-		if (file_exists($ab_css_file)) {
-			JHTML::stylesheet('template.css', 'components/com_fabrik/views/table/tmpl/'.$tmpl . '/');
+		if ($model->requiresSlimbox()) {
+			FabrikHelperHTML::slimbox();
 		}
+		if ($model->requiresMocha()) {
+			FabrikHelperHTML::mocha();
+		}
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
+		$tmpl = $this->get('tmpl');
+		$this->assign('tmpl', $tmpl);
 
+		$this->get('ListCss');
 		// check for a custom js file and include it if it exists
 		$aJsPath = JPATH_SITE.DS."components".DS."com_fabrik".DS."views".DS."list".DS."tmpl".DS.$tmpl.DS."javascript.js";
-		if (file_exists($aJsPath)) {
-			FabrikHelperHTML::script('components/com_fabrik/views/table/tmpl/'.$tmpl . '/javascript.js', true);
+		if (JFile::exists($aJsPath)) {
+			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/'.$tmpl.'/javascript.js', true);
 		}
 
-		// temporarily set data to load requierd info for js templates
-
-		$origRows 	= $this->rows;
+		$origRows = $this->rows;
 		$this->rows = array(array());
 
-		$tmpItemid = (!isset($Itemid)) ?  0 : $Itemid;
+		$tmpItemid = !isset($Itemid) ?  0 : $Itemid;
 
 		$this->_c = 0;
 		$this->_row = new stdClass();
-
 		$script = '';
 
-		$opts 				= new stdClass();
-		$opts->admin 		= $app->isAdmin();
-		$opts->ajax 	= $model->isAjax();
+		$opts = new stdClass();
+		$opts->admin = $app->isAdmin();
+		$opts->ajax = (int)$model->isAjax();
 		$opts->filterMethod = $this->filter_action;
-		$opts->form 		= 'listform_' . $model->getId();
-		$opts->headings 	= $model->_jsonHeadings();
-		$opts->labels 		= $this->headings;
-		$opts->primaryKey 	= $table->db_primary_key;
-		$opts->data 		= $data;
+		$opts->form = 'listform_' . $listid;
+		$opts->headings = $model->_jsonHeadings();
+		$labels = $this->headings;
+		foreach ($labels as &$l) {
+			$l = strip_tags($l);
+		}
+		$opts->labels 		= $labels;
+		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid 		= $tmpItemid;
-		$opts->formid 		= $model->_oForm->getId();
+		$opts->formid 		= $model->getFormModel()->getId();
 		$opts->canEdit 		= $model->canEdit() ? "1" : "0";
 		$opts->canView 		= $model->canView() ? "1" : "0";
-		$opts->page 		= JRoute::_('index.php');
-		$opts 				= json_encode($opts);
+		$opts->page 			= JRoute::_('index.php');
+		$opts->isGrouped = $this->isGrouped;
+		$opts->formels		= $elementsNotInTable;
+		$opts->actionMethod = $model->getParams()->get('actionMethod');
+		$opts->data = $data;
+		//if table data starts as empty then we need the html from the row
+		// template otherwise we can't add a row to the table
 
-		$lang = new stdClass();
-		$lang->select_rows =  JText::_('COM_FABRIK_SELECT_ROWS_FOR_DELETION');
-		$lang = json_encode($lang);
+		if ($model->isAjax()) {
+			ob_start();
+			$this->_row = new stdClass();
+			$this->_row->id = '';
+			$this->_row->class = 'fabrik_row';
+			require(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_row.php');
+			$opts->rowtemplate = ob_get_contents();
+			ob_end_clean();
+		}
+		//$$$rob if you are loading a table in a window from a form db join select record option
+		// then we want to know the id of the window so we can set its showSpinner() method
+		$opts->winid = JRequest::getVar('winid', '');
+		$opts = json_encode($opts);
 
+		JText::script('COM_FABRIK_PREV');
+		JText::script('COM_FABRIK_SELECT_ROWS_FOR_DELETION');
+		JText::script('JYES');
+		JText::script('JNO');
+		JText::script('COM_FABRIK_SELECT_COLUMNS_TO_EXPORT');
+		JText::script('COM_FABRIK_INCLUDE_FILTERS');
+		JText::script('COM_FABRIK_INCLUDE_DATA');
+		JText::script('COM_FABRIK_INCLUDE_RAW_DATA');
+		JText::script('COM_FABRIK_INLCUDE_CALCULATIONS');
+		JText::script('COM_FABRIK_EXPORT');
+		JText::script('COM_FABRIK_START');
+		JText::script('COM_FABRIK_NEXT');
+		JText::script('COM_FABRIK_END');
+		JText::script('COM_FABRIK_PAGE');
+		JText::script('COM_FABRIK_OF');
+		JText::script('COM_FABRIK_LOADING');
+		JText::script('COM_FABRIK_RECORDS');
+		JText::script('COM_FABRIK_SAVING_TO');
+		JText::script('COM_FABRIK_CONFIRM_DROP');
+		JText::script('COM_FABRIK_CONFIRM_DELETE');
+		JText::script('COM_FABRIK_NO_RECORDS');
+		JText::script('COM_FABRIK_CSV_COMPLETE');
+		JText::script('COM_FABRIK_CSV_DOWNLOAD_HERE');
+		JText::script('COM_FABRIK_CONFIRM_DELETE');
+		JText::script('COM_FABRIK_CSV_DOWNLOADING');
+		JText::script('COM_FABRIK_FILE_TYPE');
+		//keyboard short cuts
+		JText::script('COM_FABRIK_LIST_SHORTCUTS_ADD');
+		JText::script('COM_FABRIK_LIST_SHORTCUTS_EDIT');
+		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
+		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
-		$script .= "\n" . "var list = new FbList(".$model->getId().",";
-		$script .= $opts.",".$lang;
+		$script .= "\n" . "var list = new FbList($listid,";
+		$script .= $opts;
 		$script .= "\n" . ");";
-		$script .= "\n" . "Fabrik.addBlock('list_".$model->getId()."', list);";
+		$script .= "\n" . "Fabrik.addBlock('list_{$listid}', list);";
 
 		//add in plugin objects
 		$params = $model->getParams();
-		$activePlugins = $params->get('plugin', array(), '_default', 'array');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
-		$plugins = $pluginManager->getPlugInGroup('list');
+		//$activePlugins = $params->get('plugins');
+		$pluginManager = FabrikWorker::getPluginManager();
+		$c = 0;
 
+		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
+		$aObjs = $pluginManager->_data;
+
+		$script .= "\nlist.addPlugins([\n";
+		$script .= "  " . implode(",\n  ", $aObjs);
+		$script .= "\n]);\n";
+
+		//@since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
+		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
+		$this->assign('pluginBeforeList', $pluginManager->_data);
+
+		$script = "
+		head.ready(function() {
+		".$model->filterJs."
+		$script
+		})";
 		FabrikHelperHTML::addScriptDeclaration($script);
+		$this->getElementJs();
 		//reset data back to original settings
 		$this->rows = $origRows;
+	}
+	
+	protected function getElementJs()
+	{
+		$model = $this->getModel();
+		$model->getElementJs();
 	}
 
 	/**
@@ -99,7 +172,7 @@ class FabrikViewList extends JView{
 	{
 		global $_PROFILER;
 		$app = JFactory::getApplication();
-		$Itemid	= $app->getMenu('site')->getActive()->id;
+		$Itemid	= @$app->getMenu('site')->getActive()->id;
 		// turn off deprecated warnings in 5.3 or greater,
 		// or J!'s PDF lib throws warnings about set_magic_quotes_runtime()
 		if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
@@ -115,20 +188,20 @@ class FabrikViewList extends JView{
 		//this gets the component settings
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
-		$table			=& $model->getTable();
+		$item = $model->getTable();
 		$model->render();
 
 		$w = new FabrikWorker();
 		if (!$this->isMambot) {
-			$document->setTitle($w->parseMessageForPlaceHolder($table->label, $_REQUEST));
+			$document->setTitle($w->parseMessageForPlaceHolder($item->label, $_REQUEST));
 		}
-		$document->setName($w->parseMessageForPlaceHolder($table->label, $_REQUEST));
+		//$document->setName($w->parseMessageForPlaceHolder($item->label, $_REQUEST));
 		$data = $model->getData();
 
 		//add in some styling short cuts
 		$c 		= 0;
-		$form = $model->getForm();
-		$nav 	=& $model->getPagination();
+		$form = $model->getFormModel();
+		$nav 	= $model->getPagination();
 
 		foreach ($data as $groupk => $group) {
 			$last_pk = '';
@@ -139,7 +212,7 @@ class FabrikViewList extends JView{
 				$o->data = $data[$groupk][$i];
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
-				$o->id = "list_".$table->id."_row_".@$o->data->__pk_val;
+				$o->id = "list_".$item->id."_row_".@$o->data->__pk_val;
 				$o->class = "fabrik_row oddRow".$c;
 				$data[$groupk][$i] = $o;
 				$c = 1-$c;
@@ -183,11 +256,11 @@ class FabrikViewList extends JView{
 		}
 
 		$this->table 					= new stdClass();
-		$this->table->label 	= $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
-		$this->table->intro 	= $w->parseMessageForPlaceHolder($table->introduction);
-		$this->table->id			= $table->id;
-		$this->group_by				= $table->group_by;
-		$this->formid = 'listform_' . $table->id;
+		$this->table->label 	= $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
+		$this->table->intro 	= $w->parseMessageForPlaceHolder($item->introduction);
+		$this->table->id			= $item->id;
+		$this->group_by				= $item->group_by;
+		$this->formid = 'listform_' . $item->id;
 		$page = $model->isAjax() ? "index.php?format=raw" : "index.php?";
 		$this->table->action 	=  $page . str_replace('&', '&amp;', JRequest::getVar('QUERY_STRING', 'index.php?option=com_fabrik', 'server'));
 
@@ -204,13 +277,13 @@ class FabrikViewList extends JView{
 		$this->nav 						= $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->get('tmpl')) : '';
 		$this->fabrik_userid 	= $user->get('id');
 		$this->canDelete 			= $model->canDelete() ? true : false;
-		$this->deleteButton 	= $model->canDelete() ?  "<input class='button' type='button' onclick=\"$jsdelete\" value='" . JText::_('COM_FABRIK_DELETE') . "' name='delete'/>" : '';
+		//$this->deleteButton 	= $model->canDelete() ?  "<input class='button' type='button' onclick=\"$jsdelete\" value='" . JText::_('COM_FABRIK_DELETE') . "' name='delete'/>" : '';
 
 		$this->showPDF = false;
 		$this->pdfLink = false;
 
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
-		$this->csvImportLink = $this->showCSVImport ? JRoute::_("index.php?option=com_fabrik&view=import&filetype=csv&listid=" . $table->id) : '';
+		$this->csvImportLink = $this->showCSVImport ? JRoute::_("index.php?option=com_fabrik&view=import&filetype=csv&listid=" . $item->id) : '';
 		$this->showAdd = $model->canAdd();
 		if ($this->showAdd) {
 			if ($params->get('show-table-add', 1)) {
@@ -238,13 +311,14 @@ class FabrikViewList extends JView{
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
 		$form->getGroupsHiarachy();
+		$this->filters = $model->getFilters('listform_'. $item->id);
 		$this->assign('showFilters', (count($this->filters) > 0 && $params->get('show-table-filters', 1)) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
 
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->calculations 	= $this->_getCalculations($this->headings);
 
-		$this->assign('isGrouped', $table->group_by);
+		$this->assign('isGrouped', $item->group_by);
 		$this->assign('colCount', count($this->headings));
 		$this->assignRef('grouptemplates', $model->grouptemplates);
 		$this->assignRef('params', $params);
@@ -263,7 +337,7 @@ class FabrikViewList extends JView{
 
 		$tmpl = $params->get('pdf_template');
 		if ($tmpl == -1) {
-			$tmpl = JRequest::getVar('layout', $table->template);
+			$tmpl = JRequest::getVar('layout', $item->template);
 		}
 
 		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
@@ -298,84 +372,85 @@ class FabrikViewList extends JView{
 	 *
 	 */
 
-	protected function _getCalculations($aCols )
+protected function _getCalculations($aCols)
 	{
-
 		$aData = array();
 		$found = false;
 		$model = $this->getModel();
+		$modelCals = $model->getCalculations();
+
 		foreach ($aCols as $key=>$val) {
 			$calc = '';
 			$res = '';
 			$oCalcs = new stdClass();
 			$oCalcs->grouped = array();
 
-			if (array_key_exists($key, $model->_aRunCalculations['sums'])) {
+			if (array_key_exists($key, $modelCals['sums'])) {
 				$found = true;
-				$res = $model->_aRunCalculations['sums'][$key];
-				$calc .= JText::_('COM_FABRIK_SUM') . ": " . $res . "<br />";
+				$res = $modelCals['sums'][$key];
+				$calc .= $res;
 				$tmpKey = str_replace(".", "___", $key) . "_calc_sum";
 				$oCalcs->$tmpKey = $res;
 			}
-			if (array_key_exists($key . '_obj', $model->_aRunCalculations['sums'])) {
+			if (array_key_exists($key . '_obj', $modelCals['sums'])) {
 				$found = true;
-				$res = $model->_aRunCalculations['sums'][$key. '_obj'];
-				foreach ($res as $k=>$v) {
+				$res = $modelCals['sums'][$key. '_obj'];
+				foreach ($res as $k => $v) {
 					if ($k != 'calc') {
-						@$oCalcs->grouped[$k] .= JText::_('COM_FABRIK_SUM') . ": " . $v->value . "<br />";
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
 					}
 				}
 			}
 
-			if (array_key_exists($key, $model->_aRunCalculations['avgs'])) {
+			if (array_key_exists($key, $modelCals['avgs'])) {
 				$found = true;
-				$res = $model->_aRunCalculations['avgs'][$key];
-				$calc .= JText::_('COM_FABRIK_AVERAGE') . ": " . $res . "<br />";
+				$res = $modelCals['avgs'][$key];
+				$calc .= $res;
 				$tmpKey = str_replace(".", "___", $key) . "_calc_average";
 				$oCalcs->$tmpKey = $res;
 			}
 
-			if (array_key_exists($key . '_obj', $model->_aRunCalculations['avgs'])) {
+			if (array_key_exists($key . '_obj', $modelCals['avgs'])) {
 				$found = true;
-				$res = $model->_aRunCalculations['avgs'][$key. '_obj'];
-				foreach ($res as $k=>$v) {
+				$res = $modelCals['avgs'][$key. '_obj'];
+				foreach ($res as $k => $v) {
 					if ($k != 'calc') {
-						@$oCalcs->grouped[$k] .=  JText::_('COM_FABRIK_AVERAGE') . ": " . $v->value . "<br />";
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
 					}
 				}
 			}
 
-			if (array_key_exists($key. '_obj', $model->_aRunCalculations['medians'])) {
+			if (array_key_exists($key. '_obj', $modelCals['medians'])) {
 				$found = true;
-				$res = $model->_aRunCalculations['medians'][$key. '_obj'];
-				foreach ($res as $k=>$v) {
+				$res = $modelCals['medians'][$key. '_obj'];
+				foreach ($res as $k => $v) {
 					if ($k != 'calc') {
-						@$oCalcs->grouped[$k] .=  JText::_('COM_FABRIK_MEDIAN') . ": " . $v->value . "<br />";
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
 					}
 				}
 			}
 
-			if (array_key_exists($key, $model->_aRunCalculations['medians'])) {
+			if (array_key_exists($key, $modelCals['medians'])) {
 				$found = true;
-				$res = $model->_aRunCalculations['medians'][$key];
-				$calc .= JText::_('COM_FABRIK_MEDIAN') . ": " . $res . "<br />";
+				$res = $modelCals['medians'][$key];
+				$calc .= $res;
 				$tmpKey = str_replace(".", "___", $key) . "_calc_median";
 				$oCalcs->$tmpKey = $res;
 			}
 
-			if (array_key_exists($key. '_obj', $model->_aRunCalculations['count'])) {
+			if (array_key_exists($key. '_obj', $modelCals['count'])) {
 				$found = true;
-				$res = $model->_aRunCalculations['count'][$key. '_obj'];
-				foreach ($res as $k=>$v) {
+				$res = $modelCals['count'][$key. '_obj'];
+				foreach ($res as $k => $v) {
 					if ($k != 'calc') {
-						@$oCalcs->grouped[$k] .=  JText::_('COM_FABRIK_COUNT') . ": " . $v->value . "<br />";
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
 					}
 				}
 			}
 
-			if (array_key_exists($key, $model->_aRunCalculations['count'])) {
-				$res = $model->_aRunCalculations['count'][$key];
-				$calc .= JText::_('COM_FABRIK_COUNT') . ": " . $res . "<br />";
+			if (array_key_exists($key, $modelCals['count'])) {
+				$res = $modelCals['count'][$key];
+				$calc .= $res;
 				$tmpKey = str_replace(".", "___", $key) . "_calc_count";
 				$oCalcs->$tmpKey = $res;
 				$found = true;

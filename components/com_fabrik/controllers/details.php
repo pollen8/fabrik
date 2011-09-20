@@ -14,7 +14,6 @@ jimport('joomla.application.component.controller');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-//require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'cache.php');
 
 /**
  * Fabrik Details Controller
@@ -62,7 +61,6 @@ class FabrikControllerDetails extends JController
 		$view = &$this->getView($viewName, $viewType);
 
 		// Push a model into the view
-		$model	= &$this->getModel($modelName, 'FabrikFEModel');
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
 
 		//if errors made when submitting from a J plugin they are stored in the session
@@ -79,11 +77,15 @@ class FabrikControllerDetails extends JController
 		// Display the view
 		$view->assign('error', $this->getError());
 
-		$user = JFactory::getUser();
-		$post = JRequest::get('post');
-		$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
-		$cache = JFactory::getCache('com_fabrik', 'view');
-		echo $cache->get($view, 'display', $cacheid);
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf'))) {
+			$view->display();
+		} else {
+			$user = JFactory::getUser();
+			$post = JRequest::get('post');
+			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cache = JFactory::getCache('com_fabrik', 'view');
+			echo $cache->get($view, 'display', $cacheid);
+		}
 	}
 
 	/**

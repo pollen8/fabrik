@@ -329,6 +329,8 @@ class plgContentFabrik extends JPlugin
 				$model->ajax = true;
 				$model->setId($id);
 
+				//unset($model->groupView);
+				unset($model->groups);
 				//set default values set in plugin declaration
 				// - note cant check if the form model has the key' as its not yet loaded
 				$this->_setRequest($unused);

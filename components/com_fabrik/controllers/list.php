@@ -71,7 +71,7 @@ class FabrikControllerList extends JController
 		$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache = JFactory::getCache('com_fabrik', 'view');
 		// f3 cache with raw view gives error
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv'))) {
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf'))) {
 			$view->display();
 		} else {
 			$cache->get($view, 'display', $cacheid);

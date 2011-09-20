@@ -47,11 +47,11 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 			return;
 		}
 		$opts = new stdClass();
-		$opts->listid = $formModel->getListModel()->_id;
-		$opts->fabrik = $formModel->_id;
+		$opts->listid = $formModel->getListModel()->getId();
+		$opts->fabrik = $formModel->getId();
 		$opts->rowid = $formModel->_rowId;
 		$opts->senderBlock = JRequest::getCmd('view') == 'form' ? 'form_' : 'details_';
-		$opts->senderBlock .= $formModel->_id;
+		$opts->senderBlock .= $formModel->getId();
 		$opts = json_encode($opts);
 		$id = uniqid('fabrik_notification');
 		if ($params->get('notification_ajax', 0) == 1) {
@@ -64,7 +64,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		}
 		//see if the checkbox should be checked
 		$db = FabrikWorker::getDbo();
-		$ref =$this->getRef($formModel->getListModel()->_id);
+		$ref =$this->getRef($formModel->getListModel()->getId());
 		$db->setQuery("SELECT COUNT(id) FROM #__{package}_notification WHERE user_id = ".(int)$user->get('id') . " AND reference = $ref");
 		$found = $db->loadResult();
 		$checked = $found ? "checked=\"checked\"" : "";

@@ -81,7 +81,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	{
 		$this->runAway = false;
 		if (!$this->shouldProcess($params)) {
-			$this->clearSession($formModel->_id);
+			$this->clearSession($formModel->getId());
 			return true;
 		}
 		if (JRequest::getVar('fabrik_confirmation') == 2) {
@@ -105,8 +105,8 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 
 		// tell the form model that it's data is loaded from the session
 		$session = JFactory::getSession();
-		$session->set('com_fabrik.form.'.$formModel->_id.'.session.on', true);
-		$session->set('com_fabrik.form.'.$formModel->_id.'.session.hash', $sessionModel->getHash());
+		$session->set('com_fabrik.form.'.$formModel->getId().'.session.on', true);
+		$session->set('com_fabrik.form.'.$formModel->getId().'.session.hash', $sessionModel->getHash());
 
 		//set an error so we can reshow the same form for confirmation purposes
 		$formModel->_arErrors['confirmation_required'] = true;

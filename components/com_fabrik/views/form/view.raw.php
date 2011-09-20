@@ -14,32 +14,19 @@ jimport('joomla.application.component.view');
 class fabrikViewForm extends JView
 {
 
-	var $_id 			= null;
-
-	function setId($id)
-	{
-		$this->_id = $id;
-	}
-
+	public $access = null;
+	
 	function display($tpl = null)
 	{
-		$app 			= JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$w = new FabrikWorker();
-		$config		= JFactory::getConfig();
-		$model		=& $this->getModel('form', 'FabrikFEModel');
+		$config	= JFactory::getConfig();
+		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
 
 		//Get the active menu item
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-
-		if (!isset($this->_id)) {
-			$model->setId($usersConfig->get('formid', JRequest::getInt('formid')));
-		} else {
-			//when in a package the id is set from the package view
-			$model->setId($this->_id);
-		}
-
-		$form 	=& $model->getForm();
+		$form = $model->getForm();
 		$model->render();
 
 		$listModel = $model->_table;
@@ -51,11 +38,11 @@ class fabrikViewForm extends JView
 			}
 		}
 
-		$access = $model->checkAccessFromListSettings();
-		if ($access == 0) {
+		$this->assign('access', $model->checkAccessFromListSettings());
+		if ($this->access == 0) {
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
-
+		
 		if (is_object($listModel)) {
 			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
@@ -131,7 +118,7 @@ class fabrikViewForm extends JView
 				}
 			}
 
-			$groupModel->_repeatTotal = $repeatGroup;
+			$groupModel->repeatTotal = $repeatGroup;
 
 			$aSubGroups = array();
 			for ($c = 0; $c < $repeatGroup; $c++) {

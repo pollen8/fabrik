@@ -563,7 +563,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$error = $app->login($credentials, $options);
 
 			$session = JFactory::getSession();
-			$context = 'com_fabrik.form.'.$formModel->_id.'.juser.';
+			$context = 'com_fabrik.form.'.$formModel->getId().'.juser.';
 			$w = new FabrikWorker();
 			if (!JError::isError($error))
 			{

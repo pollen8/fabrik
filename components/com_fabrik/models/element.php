@@ -210,7 +210,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$element = $this->getElement();
 			$group_id = $element->group_id;
 		}
-		if (is_null($this->_group) || $this->_group->_id != $group_id) {
+		if (is_null($this->_group) || $this->_group->getId() != $group_id) {
 			$model = JModel::getInstance('Group', 'FabrikFEModel');
 			$model->setId($group_id);
 			$model->getGroup();
