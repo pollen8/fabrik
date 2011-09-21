@@ -741,12 +741,12 @@ class FabrikFEModelListfilter extends FabModel {
 				$key = JArrayHelper::getValue($request['key'], $i);
 				$elid = JArrayHelper::getValue($request['elementid'], $i);
 				if ($key == '') {
-					return;
+					continue;
 				}
 				// index is the filter index for a previous filter that uses the same element id
 				if (!in_array($elid, $usedMerges)) {
 					$index = array_key_exists('elementid', $filters) ? array_search($elid, (array)$filters['elementid']) : false;
-				}else {
+				} else {
 					$index = false;
 				}
 				if ($index !== false) {
@@ -774,7 +774,7 @@ class FabrikFEModelListfilter extends FabModel {
 						$this->clearAFilter($filters, $index);
 					}
 					// $$$ rob - regardless of whether the filter was added by search all or not - don't overwrite it with post filter
-					return;
+					continue;
 				}
 				$elementModel = $elements[$elid];
 				if (!is_a($elementModel, 'plgFabrik_Element')) {

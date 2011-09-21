@@ -1756,7 +1756,7 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob keys may no longer be in asc order as we may have filtered out some in _buildQueryPrefilterWhere()
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
 
-		foreach ($vkeys as $i) {
+		while (list($vkey, $i) = each($vkeys)) {
 			//for ($i = 0; $i < count(JArrayHelper::getValue($filters, 'key', array())); $i ++) {
 			// $$$rob - prefilter with element that is not published so ignore
 			$condition = strtoupper(JArrayHelper::getValue($filters['condition'], $i, ''));
@@ -1770,7 +1770,10 @@ class FabrikFEModelList extends JModelForm {
 			if ($filters['search_type'][$i] != 'prefilter' && $type == 'prefilter') {
 				continue;
 			}
-			$n = $i +1;
+			$n = current($vkeys);
+			if ($n === false) {
+				$n = -1; //end of array
+			}
 			$gstart = "";
 			$gend = "";
 			if ($condition == 'IS NULL' || $condition == 'IS NOT NULL') {
