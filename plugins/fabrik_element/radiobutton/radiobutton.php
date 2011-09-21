@@ -381,7 +381,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 			}
 			return true;
 		}
-		return false;
+		return $data === '';
 	}
 
 	/**
