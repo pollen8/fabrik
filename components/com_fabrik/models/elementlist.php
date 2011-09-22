@@ -346,5 +346,24 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	{
 		return $this->getlistModel()->inJDb();
 	}
+	
+	/**
+	* format the read only output for the page
+	* @param string $value
+	* @param string label
+	* @return string value
+	*/
+	
+	protected function getReadOnlyOutput($value, $label)
+	{
+		$params = $this->getParams();
+		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
+				$icon = $this->_replaceWithIcons($value);
+				if ($this->iconsSet) {
+					$label = $icon;
+				}
+		}
+		return $label;
+	}
 
 }

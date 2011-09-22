@@ -282,7 +282,7 @@ class plgFabrik_Element extends FabrikPlugin
 				return $img;
 			}
 		}
-		$this->iconsSet =false;
+		$this->iconsSet = false;
 		return $data;
 	}
 
@@ -526,7 +526,8 @@ class plgFabrik_Element extends FabrikPlugin
 	function storeDatabaseFormat($val, $data)
 	{
 		if (is_array($val) && count($val) === 1) {
-			$val = $val[0];
+			//$val = $val[0];
+			$val = array_shift($val);
 		}
 		if (is_array($val) || is_object($val)) {
 			return json_encode($val);

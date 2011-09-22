@@ -108,7 +108,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 		$options_per_row = intval( $params->get('ck_options_per_row', 0)); // 0 for one line
 
-		$selected = $this->getValue($data, $repeatCounter);
+		$selected = (array)$this->getValue($data, $repeatCounter);
 		$aRoValues = array();
 		if ($options_per_row > 0) {
 			$percentageWidth = floor(floatval(100) / $options_per_row) - 2;
@@ -123,13 +123,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 			$label = "<span>".$arTxt[$ii]."</span>";
 			$value = htmlspecialchars($arVals[$ii], ENT_QUOTES); //for values like '1"'
 			$chx = "<input type=\"checkbox\" class=\"fabrikinput checkbox\" name=\"$thisname\" value=\"".$value."\" ";
-			if (is_array($selected ) and in_array($arVals[$ii], $selected)) {
-
-				if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
-					$aRoValues[] = $this->_replaceWithIcons($arVals[$ii]);
-				} else {
-					$aRoValues[] = $arTxt[$ii];
-				}
+			if (in_array($arVals[$ii], $selected)) {
+				$aRoValues[] = $this->getReadOnlyOutput($arVals[$ii],  $arTxt[$ii]);
 				$chx .= " checked=\"checked\" />\n";
 			} else {
 				$chx .= " />\n";
@@ -139,7 +134,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 				$str .= "</div> <!-- end row div -->\n";
 			}
 		}
-
 
 		if (!$this->_editable) {
 			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
@@ -345,6 +339,25 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$value = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
 		return $return;
+	}
+	
+	/**
+	*  can be overwritten in add on classes
+	* @param mixed thie elements posted form data
+	* @param array posted form data
+	*/
+	
+	function storeDatabaseFormat($val, $data)
+	{
+		if (is_array($val)) {
+			// ensure that array is incremental numeric key -otherwise json_encode turns it into an object
+			$val = array_values($val);
+		}
+		if (is_array($val) || is_object($val)) {
+			return json_encode($val);
+		} else {
+			return $val;
+		}
 	}
 
 }

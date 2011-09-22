@@ -45,7 +45,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$name 		= $this->getHTMLName($repeatCounter);
 		$id 			= $this->getHTMLId($repeatCounter);
 		$element 	= $this->getElement();
-		$params 	=& $this->getParams();
+		$params 	= $this->getParams();
 		$allowAdd = $params->get('allow_frontend_addtodropdown', false);
 
 		$arVals = $this->getSubOptionValues();
@@ -63,14 +63,11 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$aRoValues 	= array();
 		$opts 			= array();
 		foreach ($arVals as $tmpval) {
+			$tmpLabel = JArrayHelper::getValue($arTxt, $i);
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES); //for values like '1"'
-			$opts[] = JHTML::_('select.option', $tmpval, JArrayHelper::getValue($arTxt, $i));
+			$opts[] = JHTML::_('select.option', $tmpval, $tmpLabel);
 			if (in_array($tmpval, $selected)) {
-				if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
-					$aRoValues[] = $this->_replaceWithIcons( $tmpval);
-				} else {
-					$aRoValues[] = $arTxt[$i];
-				}
+				$aRoValues[] = $this->getReadOnlyOutput($tmpval, $tmpLabel);
 			}
 			$i ++;
 		}

@@ -118,7 +118,7 @@ var FbCheckBox = new Class({
 	update: function (val) {
 		if (typeOf(val) === 'string') {
 			//val = val.split(this.options.splitter);
-			val = JSON.decode(val);
+			val = val === '' ? [] : JSON.decode(val);
 		}
 		if (!this.options.editable) {
 			this.element.innerHTML = '';
