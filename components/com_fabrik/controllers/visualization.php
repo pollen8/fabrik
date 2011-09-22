@@ -28,8 +28,6 @@ class FabrikControllerVisualization extends JController
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
 	var $cacheId = 0;
 
-	var $viz_id = 0;
-
 	/**
 	 * Display the view
 	 */
@@ -42,14 +40,7 @@ class FabrikControllerVisualization extends JController
 		if ($viewName == '') {
 			// if we are using a url like http://localhost/fabrik3.0.x/index.php?option=com_fabrik&view=visualization&id=6
 			// then we need to ascertain which viz to use
-			$id = JRequest::getInt('id');
-			$viz = FabTable::getInstance('Visualization', 'FabrikTable');
-
-			$viz->load(JRequest::getInt('id'));
-			$viewName = $viz->plugin;
-			$this->addViewPath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'views');
-			//add the model path
-			$modelpaths = JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'models');
+			$viewName = $this->getViewName();
 		}
 		$viewType	= $document->getType();
 
@@ -77,6 +68,21 @@ class FabrikControllerVisualization extends JController
 			$cache->get($view, 'display', $cacheid);
 		}
 	}
+	
+	/**
+	 * if loading via id then we want to get the view name and add the plugin view and model paths
+	 * @return string view name
+	 */
+	
+	protected function getViewName()
+	{
+		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
+		$viz->load(JRequest::getInt('id'));
+		$viewName = $viz->plugin;
+		$this->addViewPath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'views');
+		JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'models');
+		return $viewName;
+	}
 
 	/**
 	* Override of j!'s getView
@@ -93,15 +99,8 @@ class FabrikControllerVisualization extends JController
 	public function getView($name = '', $type = '', $prefix = '', $config = array())
 	{
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
-		if ($viewName == '') {
-			$id = JRequest::getInt('id');
-			$viz = FabTable::getInstance('Visualization', 'FabrikTable');
-			$viz->load(JRequest::getInt('id'));
-			$viewName = $viz->plugin;
-			$this->addViewPath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'views');
-			$modelpaths = JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'models');
-			return parent::getView($viewName, $type, $prefix, $config);
-		}
+		$viewName = $viewName == '' ? $this->getViewName() : $name;
+		return parent::getView($viewName, $type, $prefix, $config);
 	}
 
 }
