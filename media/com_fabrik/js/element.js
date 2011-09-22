@@ -20,6 +20,7 @@ var FbElement =  new Class({
 		this.plugin = '';
 		options.element = element;
 		this.strElement = element;
+		this.loadEvents = []; // need to store these for use if the form is reset
 		this.setOptions(options);
 		if (document.id(element)) {
 			this.element = document.id(element);
@@ -93,13 +94,26 @@ var FbElement =  new Class({
 		return ['form'];
 	},
 	
+	runLoadEvent : function (js, delay) {
+		delay = delay ? delay : 0;
+		//should use eval and not Browser.exec to maintain reference to 'this'
+		if (typeOf(js) === 'function') {
+			js.delay(delay);
+		} else {
+			if (delay === 0) {
+				eval(js);
+			} else {
+				(function () {
+					eval(js);
+				}.bind(this)).delay(delay);
+			}
+		}
+	},
+	
 	addNewEvent: function (action, js) {
 		if (action === 'load') {
-			if (typeOf(js) === 'function') {
-				js.delay(0);
-			} else {
-				Browser.exec(js);
-			}
+			this.loadEvents.push(js);
+			this.runLoadEvent(js);
 		} else {
 			if (!this.element) {
 				this.element = $(this.strElement);
@@ -164,7 +178,12 @@ var FbElement =  new Class({
 	
 	reset: function ()
 	{
-		this.update(this.options.defaultVal);
+		this.loadEvents.each(function (js) {
+			this.runLoadEvent(js, 100);
+		}.bind(this));
+		if (this.options.editable === true) {
+			this.update(this.options.defaultVal);
+		}
 	},
 	
 	clear: function ()
