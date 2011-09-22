@@ -267,6 +267,9 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		foreach ($this->_events as $tableId	=> $record) {
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($tableId);
+			if (!$listModel->canView()) {
+				continue;
+			}
 			$table = $listModel->getTable();
 
 			$els = $listModel->getElements();
