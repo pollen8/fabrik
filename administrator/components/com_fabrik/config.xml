@@ -15,6 +15,10 @@
 			<option value="1">COM_FABRIK_SHOW_DATA_RECORDED_IN_TABLE</option>
 			<option value="2">COM_FABRIK_SHOW_ALL_OPTIONS</option>
 		</field>
+		
+		<field name="filter_list_max" type="text" default="100"
+			label="COM_FABRIK_FILTER_LIST_MAX_LABEL" description="COM_FABRIK_FILTER_LIST_MAX_DESC" />
+		
 
 		<field name="enable_single_sorting" type="radio" default="0"
 			label="COM_FABRIK_ENABLE_SINGLE_ORDERING_LABEL" description="COM_FABRIK_ENABLE_SINGLE_ORDERING_DESC">
