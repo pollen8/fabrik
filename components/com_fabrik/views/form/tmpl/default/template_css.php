@@ -259,11 +259,6 @@ margin:0;
 	background: #EFE7B8;
 }
 
-/** for checkboxes etc with multiple columns, the error was too squashed */
-#form_$c .fabrikError .fabrikSubElementContainer{
-	margin-top: 20px;
-}
-
 #form_$c .fabrikErrorMessage{
 	padding-right: 5px;
 }

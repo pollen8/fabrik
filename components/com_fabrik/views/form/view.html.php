@@ -77,6 +77,9 @@ class fabrikViewForm extends JView
 		$form->formid = $model->_editable ? "form_".$model->getId() : 'details_' . $model->getId();
 		$form->name = "form_".$model->getId();
 
+		if ($form->error === '') {
+			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
+		}
 		$form->origerror = $form->error;
 		$form->error = count($model->_arErrors) > 0 ? $form->error : '';
 
