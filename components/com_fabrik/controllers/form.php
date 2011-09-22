@@ -265,9 +265,14 @@ class FabrikControllerForm extends JController
 					//return to the page that called the form
 					$url = urldecode(JRequest::getVar('fabrik_referrer', 'index.php', 'post'));
 				}
-				$Itemid	= $app->getMenu('site')->getActive()->id;
+				$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
 				if ($url == '') {
-					$url = "index.php?option=com_fabrik&Itemid=$Itemid";
+					if ($Itemid !== 0) {
+						$url = "index.php?option=com_fabrik&Itemid=$Itemid";
+					} else {
+						//no menu link so redirect back to list view
+						$url = "index.php?option=com_fabrik&view=list&listid=".JRequest::getInt('listid');
+					}
 				}
 			}
 			$config	= JFactory::getConfig();
