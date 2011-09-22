@@ -34,7 +34,6 @@ class fabrikViewForm extends JView
 		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
-		FabrikHelperHTML::mootools();
 
 		$model->isMambot = $this->isMambot;
 		$form = $model->getForm();
@@ -478,7 +477,6 @@ class fabrikViewForm extends JView
 		FabrikHelperHTML::addScriptDeclaration($str);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
-		FabrikHelperHTML::mootools();
 	}
 
 	protected function _loadTmplBottom(&$form)
