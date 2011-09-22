@@ -128,6 +128,9 @@ class FabrikModelGroup extends FabModelAdmin
 				if ($return) {
 					$return = parent::save($data);
 				}
+			} else {
+				$data['is_join'] =  0;
+				$return = parent::save($data);
 			}
 		}
 		return $return;
@@ -208,33 +211,15 @@ class FabrikModelGroup extends FabModelAdmin
 			$listModel->makeIdElement($data['id']);
 			$listModel->makeFkElement($data['id']);
 
-			// create the join as well
-			//create fabrik join
-			$data = array('list_id' => $list->id,
-			'element_id' => 0,
-			'join_from_table' => $list->db_table_name,
-			'table_join' => $newTableName,
-			'table_key' => FabrikString::shortColName($list->db_primary_key),
-			'table_join_key' => 'parent_id',
-			'join_type' => 'left',
-			'group_id' => $data['id']
-			);
-
-			$opts = new stdClass();
-			$opts->type = 'group';
-			$data['params'] = json_encode($opts);
-			$join = $this->getTable('join');
-			$join->bind($data);
-			$join->store();
+			
 		} else {
 			if (trim($list->db_table_name) == '') {
 				//new group not attached to a form
 				$this->setError(JText::_('COM_FABRIK_GROUP_CANT_MAKE_JOIN_NO_DB_TABLE'));
 				return false;
 			}
-			$newTableName = $db->nameQuote($newTableName);
 			//repeat table already created - lets check its structure matches the group elements
-			$db->setQuery("DESCRIBE $newTableName");
+			$db->setQuery("DESCRIBE ".$db->nameQuote($newTableName));
 			$existingFields = $db->loadObjectList('Field');
 			$newFields = array_diff(array_keys($names), array_keys($existingFields));
 			if (!empty($newFields)) {
@@ -242,13 +227,36 @@ class FabrikModelGroup extends FabModelAdmin
 				$lastfield = $lastfield->Field;
 				foreach ($newFields as $newField) {
 					$info = $names[$newField];
-					$db->setQuery("ALTER TABLE $newTableName ADD COLUMN $info AFTER $lastfield");
+					$db->setQuery("ALTER TABLE ".$db->nameQuote($newTableName)." ADD COLUMN $info AFTER $lastfield");
 					if (!$db->query()) {
 						JError::raiseError(500, $db->getErrorMsg());
 					}
 				}
 			}
 		}
+		// create the join as well
+		//create fabrik join (was prevously only when creating new db table, but that gave issue when you
+		//toggled on/off the group repeat property)
+		
+		$jdata = array('list_id' => $list->id,
+					'element_id' => 0,
+					'join_from_table' => $list->db_table_name,
+					'table_join' => $newTableName,
+					'table_key' => FabrikString::shortColName($list->db_primary_key),
+					'table_join_key' => 'parent_id',
+					'join_type' => 'left',
+					'group_id' => $data['id']
+		);
+		//load the matching join if found.
+		$join = $this->getTable('join');
+		$join->load($jdata);
+		
+		$opts = new stdClass();
+		$opts->type = 'group';
+		$jdata['params'] = json_encode($opts);
+		$join->bind($jdata);
+		//update or save a new join
+		$join->store();
 		$data['is_join'] =  1;
 		return true;
 	}
