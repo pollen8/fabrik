@@ -57,6 +57,9 @@ var FbForm = new Class({
 				this.winScroller = new Fx.Scroll(window);
 			}
 		});
+		if (this.options.ajax) {
+			this.stopEnterSubmitting();
+		}
 		this.watchAddOptions();
 		$H(this.options.hiddenGroup).each(function (v, k) {
 			if (v === true && typeOf(document.id('group' + k)) !== 'null') {
@@ -1379,5 +1382,23 @@ var FbForm = new Class({
 		// reset errors
 		this.form.getElements('.fabrikError').empty();
 		this.form.getElements('.fabrikError').addClass('fabrikHide');
+	},
+	
+	stopEnterSubmitting: function () {
+		var inputs = this.form.getElements('input.fabrikinput');
+		inputs.each(function (el, i) {
+			el.addEvent('keypress',function (e) {
+				if (e.key === 'enter') { 
+					e.stop(); 
+					if (inputs[i + 1]) {
+						inputs[i + 1].focus();
+					}
+					//last one?
+					if (i === inputs.length-1) {
+						this._getButton('submit').focus(); 
+					}
+				}
+			}.bind(this));
+		}.bind(this));
 	}
 });
