@@ -109,6 +109,12 @@ var FbCheckBox = new Class({
 		return this.subElements;
 	},
 	
+	numChecked: function () {
+		return this._getSubElements().filter(function (c) {
+			return c.checked;
+		}).length;
+	},
+	
 	update: function (val) {
 		if (typeOf(val) === 'string') {
 			//val = val.split(this.options.splitter);
