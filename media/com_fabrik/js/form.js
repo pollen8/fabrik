@@ -52,11 +52,7 @@ var FbForm = new Class({
 	
 	setUpAll: function () {
 		this.setUp();
-		window.addEvent('domready', function () {
-			if (typeOf(Fx.Scroll) !== 'class') {
-				this.winScroller = new Fx.Scroll(window);
-			}
-		});
+		this.winScroller = new Fx.Scroll(window);
 		if (this.options.ajax) {
 			this.stopEnterSubmitting();
 		}
@@ -1055,7 +1051,7 @@ var FbForm = new Class({
 				// scroll down just enough to show it.
 				if (obj.top < win_scroll) {
 					var new_win_scroll = obj.top;
-					this.winScroller.scrollTo(0, new_win_scroll);
+					this.winScroller.start(0, new_win_scroll);
 				}
 			}
 		}
@@ -1164,7 +1160,8 @@ var FbForm = new Class({
 				// for all instances of the call to findClassUp use el.element rather
 				// than input (HMM SEE LINE 912 - PERHAPS WE CAN REVERT TO USING INPUT
 				// NOW?)
-				var testid = (hasSubElements) ? input.getParent('.fabrikSubElementContainer').id : input.id;
+				c = input.getParent('.fabrikSubElementContainer');
+				var testid = (hasSubElements && c) ? c.id : input.id;
 
 				if (el.options.element === testid) {
 					lastinput = input;
@@ -1260,8 +1257,7 @@ var FbForm = new Class({
 		// scroll up just enough to show it.
 		if (obj.bottom > (win_scroll + win_size)) {
 			var new_win_scroll = obj.bottom - win_size;
-
-			this.winScroller.scrollTo(0, new_win_scroll);
+			this.winScroller.start(0, new_win_scroll);
 		}
 
 		var myFx = new Fx.Tween(clone, { 'property' : 'opacity', 
