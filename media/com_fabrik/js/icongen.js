@@ -6,6 +6,7 @@ var IconGenerator = new Class({
 	Implements: [Options],
 	
 	options: {
+		rotate: 0,
 		scale: 1,
 		shadow: {
 			color: '#fff',
@@ -46,7 +47,7 @@ var IconGenerator = new Class({
 		icon.scale(opts.scale, opts.scale);
 	 
 		icon.fill(opts.fill.color[0], opts.fill.color[1]);
-		group.grab(iconShadow, icon);    
+		group.grab(iconShadow, icon);
 		group.rotate(opts.rotate, 16 * opts.scale, 16 * opts.scale);
 		group.inject(art);
 		return art;
