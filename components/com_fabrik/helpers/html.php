@@ -576,13 +576,12 @@ function loadCalendar()
 	function keepalive()
 	{
 		//test since 2.0b3 dont do anything if loading from mocha win
-		if (JRequest::getVar('tmpl') == 'component') {
+		if (!FabrikHelperHTML::inAjaxLoadedPage()) {
 			return;
 		}
 		JHtml::_('behavior.keepalive');
 		return;
 		//end test
-		JHtml::_('behavior.framework');
 
 		$config 	 = JFactory::getConfig();
 		$lifetime 	 = ( $config->getValue('lifetime') * 60000);
@@ -602,38 +601,33 @@ function loadCalendar()
 	}
 
 	/**
+	 * load Fabrik's framework (js and base css file)
 	 */
 
 	public function framework(){
 		if (!self::$framework) {
-			$config = JFactory::getConfig();
-			$debug = $config->get('debug');
-			//$uncompressed	= $debug ? '-uncompressed' : '';
 			$src = array();
-			//loading here as well as normal J behavior call makes document.body not found for gmap element when
-			// rendered in the form
-			if (JRequest::getInt('ajax') !== 1 && JRequest::getVar('tmpl') !== 'component') {
-			//	$src[] = 'media/system/js/mootools-core'.$uncompressed.'.js';
-			//	$src[] = 'media/system/js/mootools-more'.$uncompressed.'.js';
-			}
-
-			JHtml::_('behavior.framework', true);
-
+			
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
+				//loading framework, if in ajax loaded page:
+				// * makes document.body not found for gmap element when
+				// * removes previously added window.events
+				JHtml::_('behavior.framework', true);
+
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
+
+				$src[] = 'media/com_fabrik/js/mootools-ext.js';
+				$src[] = 'media/com_fabrik/js/lib/art.js';
+				$src[] = 'media/com_fabrik/js/icons.js';
+				$src[] = 'media/com_fabrik/js/icongen.js';
+				$src[] = 'media/com_fabrik/js/fabrik.js';
+				$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
+				$src[] = 'media/com_fabrik/js/window.js';
+	
+				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
+				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
+				FabrikHelperHTML::script($src, true, "window.fireEvent('fabrik.framework.loaded');");
 			}
-
-			$src[] = 'media/com_fabrik/js/mootools-ext.js';
-			$src[] = 'media/com_fabrik/js/lib/art.js';
-			$src[] = 'media/com_fabrik/js/icons.js';
-			$src[] = 'media/com_fabrik/js/icongen.js';
-			$src[] = 'media/com_fabrik/js/fabrik.js';
-			$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
-			$src[] = 'media/com_fabrik/js/window.js';
-
-			FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
-			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
-			FabrikHelperHTML::script($src, true, "window.fireEvent('fabrik.framework.loaded');");
 			self::$framework = true;
 		}
 	}
@@ -744,6 +738,7 @@ function loadCalendar()
 
 	function slimbox()
 	{
+		return;
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($fbConfig->get('include_lightbox_js', 1) == 0) {
 			return;
