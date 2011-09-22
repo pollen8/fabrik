@@ -4772,7 +4772,7 @@ class FabrikFEModelList extends JModelForm {
 
 	public function makeIdElement($groupId)
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginMananger = FabrikWorker::getPluginManager();
 		$element = $pluginMananger->getPlugIn('internalid', 'element');
 		$item = $element->getDefaultProperties();
 		$item->name = $item->label = 'id';
@@ -4792,7 +4792,7 @@ class FabrikFEModelList extends JModelForm {
 
 	public function makeFkElement($groupId)
 	{
-		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginMananger = FabrikWorker::getPluginManager();
 		$element = $pluginMananger->getPlugIn('field', 'element');
 		$item = $element->getDefaultProperties();
 		$item->name = $item->label = 'parent_id';
