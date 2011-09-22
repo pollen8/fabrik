@@ -119,7 +119,9 @@ var Loader = new Class({
 	},
 	
 	stop: function (inline, msg, keepOverlay) {
-		this.getSpinner(inline, msg).hide();
+		//dont keep the spinner once stop is called - causes issue when loading ajax form for 2nd time
+		this.getSpinner(inline, msg).destroy();
+		delete this.spinners[inline];
 	}
 });
 
@@ -141,5 +143,4 @@ if (typeof(Fabrik) === "undefined") {
 	
 head.ready(function () {
 	Fabrik.tips = new FloatingTips('.fabrikTip', {html: true});
-	//Fabrik.overlay = new Overlay();
 });

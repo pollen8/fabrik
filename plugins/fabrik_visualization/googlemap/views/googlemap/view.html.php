@@ -27,7 +27,7 @@ class fabrikViewGooglemap extends JView
 		$this->assignRef('params', $params);
 		$tmpl = $params->get('fb_gm_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'googlemap'.DS.'views'.DS.'googlemap'.DS.'tmpl'.DS.$tmpl;
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 
 		if ($params->get('fb_gm_center') == 'userslocation') {
 			$document->addScript('http://code.google.com/apis/gears/gears_init.js');
@@ -39,7 +39,6 @@ class fabrikViewGooglemap extends JView
 		.$this->get('PluginJsObjects')
 		."\n});";
 		FabrikHelperHTML::addScriptDeclaration($tableplugins);
-		JHTML::stylesheet('media/com_fabrik/css/table.css');
 		global $ispda;
 		if ($ispda == 1) { //pdabot
 		  $template = 'static';

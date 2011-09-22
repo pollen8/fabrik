@@ -11,10 +11,6 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-
 /**
  * Fabrik List Controller
  *
@@ -23,6 +19,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
  * @subpackage	Fabrik
  * @since 1.5
  */
+
 class FabrikControllerList extends JController
 {
 
@@ -121,7 +118,7 @@ class FabrikControllerList extends JController
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		$model = &$this->getModel('list', 'FabrikFEModel');
+		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = JRequest::getVar('ids', array(), 'request', 'array');
 
 		$listid = JRequest::getInt('listid');

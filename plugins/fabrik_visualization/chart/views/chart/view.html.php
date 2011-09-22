@@ -10,13 +10,11 @@ class fabrikViewChart extends JView
 
 	function display($tmpl = 'default')
 	{
-		JHTML::_('behavior.calendar');
+		FabrikHelperHTML::framework();
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 		FabrikHelperHTML::script('media/com_fabrik/js/advanced-search.js');
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-		FabrikHelperHTML::mocha();
-		FabrikHelperHTML::loadCalendar();
-		$model = &$this->getModel();
+		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
@@ -34,8 +32,8 @@ class fabrikViewChart extends JView
 			$this->assign('chart', '');
 		}
 		$viewName = $this->getName();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
+		$pluginManager = FabrikWorker::getPluginManager();
+		$plugin = $pluginManager->getPlugIn('chart', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
     $this->assignRef('filters', $this->get('Filters'));
     $this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);

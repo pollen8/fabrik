@@ -12,10 +12,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-
 class plgFabrik_Cronnotification extends FabrikPlugin {
 
 	var $_counter = null;

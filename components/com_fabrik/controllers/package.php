@@ -13,10 +13,6 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-
 class FabrikControllerPackage extends JController
 {
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/

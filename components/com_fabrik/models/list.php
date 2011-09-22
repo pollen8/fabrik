@@ -5079,7 +5079,6 @@ class FabrikFEModelList extends JModelForm {
 		if ($this->getParams()->get('delete-joined-rows', false) == false) {
 			$nav = $this->getPagination($c, 0, $c);
 		}
-		echo $val;
 		$this->_whereSQL['string'][true] = " WHERE ".$key." IN (".$val.")";
 		// $$$ hugh - need to clear cached data, 'cos we called getTotalRecords from the controller, which now
 		// calls getData(), and will have cached all rows on this page, not just the ones being deleted, which means

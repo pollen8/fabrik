@@ -10,6 +10,7 @@ class fabrikViewKaltura extends JView
 
 	function display($tmpl = 'default')
 	{
+		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
 		$params 	   	= $app->getParams('com_fabrik');
 		$document 		= JFactory::getDocument();

@@ -26,8 +26,8 @@ define("COM_FABRIK_EXCEL_CSV_DELIMITER", ";");
 /** @var string separator used in repeat elements/groups IS USED IN F3 */
 define ("GROUPSPLITTER", "//..*..//");
 
-//override JHTML
-//JHTML::addIncludePath(JPATH_SITE.'/components/com_fabrik/helpers/');
+//override JHTML -needed for framework overrde
+JHTML::addIncludePath(JPATH_SITE.'/components/com_fabrik/jhelpers/');
 
 //Register the element class with the loader
 JLoader::register('JElement', JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_fabrik'.DS.'element.php');
@@ -37,7 +37,6 @@ if (JRequest::getCmd('option') != 'com_menus') {
 	JLoader::import('components.com_fabrik.classes.form', JPATH_SITE.DS.'administrator', 'administrator.');
 }
 
-
 require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables'.DS.'fabtable.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'fabrik.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'arrayhelper.php');
@@ -45,6 +44,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'parent.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
+require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'element.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'elementlist.php');

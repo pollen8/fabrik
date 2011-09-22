@@ -79,7 +79,6 @@ class FabrikViewCron {
 			"
 		);
 		FabrikViewCron::setCronToolbar();
-		FabrikHelperHTML::loadCalendar();
 		?>
 		<form action="index.php" method="post" name="adminForm">
 		<div class="col100">

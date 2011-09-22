@@ -8,15 +8,11 @@ jimport('joomla.application.component.view');
 class fabrikViewMedia extends JView
 {
 
-
 	function display($tmpl = 'default')
 	{
-		JHTML::_('behavior.calendar');
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-		FabrikHelperHTML::mocha();
-		FabrikHelperHTML::loadCalendar();
-		$model		= &$this->getModel();
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
+		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
 		$this->row = $model->getVisualization();
@@ -30,8 +26,8 @@ class fabrikViewMedia extends JView
 		$this->media = $model->getMedia();
 
 		$viewName = $this->getName();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
+		$pluginManager = FabrikWorker::getPluginManager();
+		$plugin = $pluginManager->getPlugIn('media', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));

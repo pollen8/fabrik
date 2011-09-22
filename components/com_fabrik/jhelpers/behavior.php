@@ -60,7 +60,6 @@ abstract class JHtmlBehavior
 		if ($type != 'core' && empty($loaded['core'])) {
 			self::framework(false, $debug);
 		}
-		echo "<h1>loading frame work </h1>";
 		JHtml::_('script', 'system/mootools-'.$type.$uncompressed.'.js', false, true, false, false);
 		$loaded[$type] = true;
 

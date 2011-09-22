@@ -1387,14 +1387,14 @@ var FbForm = new Class({
 	stopEnterSubmitting: function () {
 		var inputs = this.form.getElements('input.fabrikinput');
 		inputs.each(function (el, i) {
-			el.addEvent('keypress',function (e) {
+			el.addEvent('keypress', function (e) {
 				if (e.key === 'enter') { 
 					e.stop(); 
 					if (inputs[i + 1]) {
 						inputs[i + 1].focus();
 					}
 					//last one?
-					if (i === inputs.length-1) {
+					if (i === inputs.length - 1) {
 						this._getButton('submit').focus(); 
 					}
 				}

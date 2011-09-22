@@ -10,8 +10,8 @@ class fabrikViewSlideshow extends JView
 
 	function display($tmpl = 'default')
 	{
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-		$model= &$this->getModel();
+		FabrikHelperHTML::framework();
+		$model= $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 
@@ -35,7 +35,7 @@ class fabrikViewSlideshow extends JView
 		$tmplpath = $model->pathBase.'slideshow'.DS.'views'.DS.'slideshow'.DS.'tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);
 
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 
 		if ($this->get('RequiredFiltersFound')) {
 		FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.js', true);

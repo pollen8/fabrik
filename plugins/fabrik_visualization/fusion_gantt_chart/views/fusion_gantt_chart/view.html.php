@@ -10,13 +10,10 @@ class fabrikViewFusion_gantt_chart extends JView
 
 	function display( $tmpl = 'default')
 	{
-		JHTML::_('behavior.calendar');
+		FabrikHelperHTML::framework();
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 		FabrikHelperHTML::script('media/com_fabrik/js/advanced-search.js');
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-		//FabrikHelperHTML::mocha(); // $$$ rob Huh? do we need this?
-		//FabrikHelperHTML::loadCalendar(); // $$$ rob Huh? do we need this?
-		$model		= &$this->getModel();
+		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
 		$this->row = $model->getVisualization();
@@ -32,8 +29,8 @@ class fabrikViewFusion_gantt_chart extends JView
 			$this->assign('chart', $this->get('Chart'));
 		}
 		$viewName = $this->getName();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
+		$pluginManager = FabrikWorker::getPluginManager();
+		$plugin = $pluginManager->getPlugIn('fusion_gantt_chart', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
     $this->assignRef('filters', $this->get('Filters'));
     $this->assign('showFilters', JRequest::getInt('showfilters', 1));

@@ -10,8 +10,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-
 class plgFabrik_ElementDate extends plgFabrik_Element
 {
 
@@ -493,7 +491,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null, $repeatCounter = 0)
 	{
-		//JHTML::_('behavior.calendar'); //load the calendar behavior
 		FabrikHelperHTML::loadcalendar();
 		if (is_array($attribs)) {
 			$attribs = JArrayHelper::toString($attribs);

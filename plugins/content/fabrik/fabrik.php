@@ -594,6 +594,7 @@ class plgContentFabrik extends JPlugin
 		require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'parent.php');
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
+		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
 		if ($view == 'details') {
 			$view = 'form';
 		}

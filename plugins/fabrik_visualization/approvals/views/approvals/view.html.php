@@ -10,8 +10,7 @@ class fabrikViewApprovals extends JView
 
 	function display($tmpl = 'default')
 	{
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-
+		FabrikHelperHTML::framework();
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));

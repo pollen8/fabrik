@@ -11,11 +11,6 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-//require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'cache.php');
-
 /**
  * Fabrik Plugin Controller
  *

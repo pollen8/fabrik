@@ -13,14 +13,10 @@ class fabrikViewCalendar extends JView
 		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
 		$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
-		JHTML::_('behavior.calendar');
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 		$pluginManager = FabrikWorker::getPluginManager();
 		//needed to load the language file!
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
-		FabrikHelperHTML::mocha();
-		FabrikHelperHTML::loadCalendar();
-		$model = &$this->getModel();
+		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);

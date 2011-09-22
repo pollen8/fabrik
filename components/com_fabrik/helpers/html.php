@@ -309,7 +309,7 @@ EOD;
 
 	/**
 	 * load the css and js files once only (using calendar-eightsix)
-	 * @param string $theme
+	 * @deprecated - behavior.calendar is loaded in framework();
 	 */
 
 function loadCalendar()
@@ -351,6 +351,7 @@ function loadCalendar()
 	}
 
 	/**
+	 * @deprecated
 	 * Internal method to translate the JavaScript Calendar
 	 *
 	 * @return	string	JavaScript that translates the object
@@ -608,6 +609,8 @@ function loadCalendar()
 		if (!self::$framework) {
 			$src = array();
 			
+			//required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
+			JHTML::_('behavior.calendar');
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
 				//loading framework, if in ajax loaded page:
 				// * makes document.body not found for gmap element when

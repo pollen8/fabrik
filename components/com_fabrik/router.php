@@ -108,7 +108,11 @@ function fabrikParseRoute($segments)
 	//Get the active menu item
 	$menu = JSite::getMenu();
 	$item = $menu->getActive();
-	switch ($segments[0]) { //view (controller not passed into segments)
+	$view = $segments[0];
+	if (strstr($view, '.')) {
+		$view = array_shift(explode('.', $view));
+	}
+	switch ($view) { //view (controller not passed into segments)
 		case 'form':
 		case 'details':
 			// 3.0 task no longer user
@@ -136,7 +140,7 @@ function fabrikParseRoute($segments)
 			$vars['format'] 	= JArrayHelper::getValue($segments, 2, 'html');
 			break;
 		default:
-			echo "ahk no view!";
+			echo "router: ahk no view! for " . $segments[0];
 			exit;
 	}
 	return $vars;
