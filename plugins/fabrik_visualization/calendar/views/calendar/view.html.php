@@ -43,9 +43,6 @@ class fabrikViewCalendar extends JView
 
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
-		FabrikHelperHTML::script('media/com_fabrik/js/element.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/form.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
 		FabrikHelperHTML::script('plugins/fabrik_visualization/calendar/calendar.js', true);
 		$params = $model->getParams();
 
@@ -64,7 +61,6 @@ class fabrikViewCalendar extends JView
 		//dont JRoute as its wont load with sef?
 		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid='.$Itemid.'&id='.$id;
 		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid='.$Itemid.'&id='.$id;
-
 		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0 ) ? $model->getLegend() : '';
 		$tmpl = $params->get('calendar_layout', 'default');
@@ -83,12 +79,7 @@ class fabrikViewCalendar extends JView
 
 		if ($o != null) {
 			$options->listid = $o->id;
-			//$formView->setId($o->form_id);
-			//$options->formid = $o->form_id;
 		}
-
-		//$formModel = $formView->getModel();
-		//$form = $formModel->getForm();
 
 		//$$$rob @TODO not sure this is need - it isnt in the timeline viz
 		$model->setRequestFilters();
@@ -127,13 +118,6 @@ class fabrikViewCalendar extends JView
 		"  $this->calName = new fabrikCalendar('calendar_$calendar->id');\n".
 		"  $this->calName.render($json);\n".
 		"  Fabrik.addBlock('calendar_" . $calendar->id . "', $this->calName);\n";
-		/*if ($o != null) {
-			$str .="  $this->calName.addListenTo('form_{$o->form_id}');\n";
-		}
-		$fids = $model->getLinkedFormIds();
-		foreach ($fids as $fid) {
-			$str .= "  $this->calName.addListenTo('form_$fid');\n";
-		}*/
 		$str .= $legend . "\n});\n";
 
 		FabrikHelperHTML::addScriptDeclaration($str);

@@ -31,7 +31,6 @@ var fabrikCalendar = new Class({
 		this.date = new Date();//date used to display currenlty viewed page of calendar
 		this.selectedDate = new Date(); //date used to highlight appropriate parts of calendar (doesnt change when you navigate around the calendar)
 		this.entries = $H();
-		//this.listenTo = $A([]);
 		this.droppables = {'month': [], 'week': [], 'day': []};
 		this.fx = {};
 		this.ajax = {};
@@ -41,7 +40,6 @@ var fabrikCalendar = new Class({
 		this.windowopts = {
 			'id': 'addeventwin',
 			title: 'add/edit event',
-			contentType: 'xhr',
 			loadMethod: 'xhr',
 			minimizable: false,
 			evalScripts: true,
@@ -82,7 +80,7 @@ var fabrikCalendar = new Class({
 		opts.left === opts.left ? opts.left : 0;
 		opts['margin-left'] === opts['margin-left'] ? opts['margin-left'] : 0;
 		opts.height = opts.height ? opts.height : 1;
-		var bg = (entry.colour !== '') ? entry.colour : this.options.entryColor;
+		var bg = (entry.colour !== '') ? entry.colour : this.options.colors.entryColor;
 
 		if (opts.startMin === 0) {
 			opts.startMin = opts.startMin + '0';
@@ -98,14 +96,16 @@ var fabrikCalendar = new Class({
 				'width': opts.width,
 				'cursor': 'pointer',
 				'margin-left': opts['margin-left'],
-				'height': opts.height + 'px',
-				'top': opts.top + 'px',
-				'left': opts.left + 'px',
+				'height': opts.height.toInt() + 'px',
+				'top': opts.top.toInt() + 'px',
 				'position': 'absolute',
 				'border': '1px solid #666666',
 				'overflow': 'auto',
 				'opacity': 0.6
 			};
+		if (opts.left) {
+			style.left = opts.left.toInt() + 'px';
+		}
 			
 		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id; 
 		var eventCont = new Element('div', {
@@ -136,9 +136,9 @@ var fabrikCalendar = new Class({
 	},
 	
 	doPopupEvent: function (e, entry, label) {
-		var event = new Event(e);
+		var loc;
 		var oldactive = this.activeHoverEvent;
-		this.activeHoverEvent = $(event.target).getParent('.fabrikEvent');
+		this.activeHoverEvent = e.target.hasClass('fabrikEvent') ? e.target : e.target.getParent('.fabrikEvent');
 		if (entry._canDelete === 0) {
 			this.popWin.getElement('.popupDelete').setStyle('display', 'none');
 		} else {
@@ -152,14 +152,17 @@ var fabrikCalendar = new Class({
 			this.popWin.getElement('.popupView').setStyle('display', 'none');
 		}
 		
-		var loc = this.activeHoverEvent.getCoordinates();
-		
+		if (this.activeHoverEvent) {
+			loc = this.activeHoverEvent.getCoordinates();
+		} else {
+			loc = {top: 0, left: 0};
+		}
 		// Barbara : added label in pop-up 
 		var popLabelElt = this.popup.getElement('div[class=popLabel]');
 		popLabelElt.empty();
 		
-		popLabelElt.appendText(label);
-		this.activeDay = $(event.target).getParent();
+		popLabelElt.set('text', label);
+		this.activeDay = e.target.getParent();
 		var newtop = loc.top - this.popWin.getSize().y;
 		var fxopts = {
 		    'opacity': [0, 1],
@@ -379,7 +382,6 @@ var fabrikCalendar = new Class({
 	},
 	
 	makeDragMonthEntry: function (item) {
-		//@TODO need to implement this correctly for 2.0RC1
 	},
 
 	showWeek: function ()
@@ -691,7 +693,6 @@ var fabrikCalendar = new Class({
 			o.id = '';
 			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.doubleclickdate;
 			o.listid = this.options.eventLists[0].value;
-			o.d = d;
 			this.addEvForm(o);
 		}
 	},
@@ -712,13 +713,12 @@ var fabrikCalendar = new Class({
 	
 	addEvForm: function (o)
 	{
-		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&Itemid=' + this.options.Itemid + '&listid=' + o.listid + '&rowid=' + o.rowid;
+		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
 		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
 		url += '&visualizationid=' + this.options.calendarId;
 		if (typeof(this.doubleclickdate) !== 'undefined') {
 			url += '&start_date=' + this.doubleclickdate;
 		}
-				
 		this.windowopts.type = 'window';
 		this.windowopts.contentURL = url;
 		this.windowopts.id = 'addeventwin';
@@ -914,7 +914,6 @@ var fabrikCalendar = new Class({
 						var hour = (i.length === 1) ? i + '0:00' : i + ':00';
 						tr.adopt(new Element('td', {'class': 'day'}).appendText(hour));
 					} else {
-						//'display': 'table-cell',
 						tr.adopt(new Element('td', {'class': 'day',
 						'styles': {
 							'width': '90px',
@@ -973,15 +972,14 @@ var fabrikCalendar = new Class({
 		this.popWin = this._makePopUpWin();
 		var d = this.options.urlfilters;
 		d.visualizationid = this.options.calendarId;
-		
 		this.ajax.updateEvents = new Request({url: this.options.url.add,
 		'data': d,
 		'evalScripts': true,
 		'onComplete': function (r) {
 			var text = r.stripScripts(true);
 			var json = JSON.decode(text);
-			//this.entries = $H();
 			this.addEntries(json);
+			this.showView();
 		}.bind(this)
 		});
 		
@@ -1111,12 +1109,8 @@ var fabrikCalendar = new Class({
 			d = d.split('-');
 			d2 = new Date();
 			m = (d[1]).toInt() - 1;
-			if (window.ie7) {
-				//setFullYear produced a stack overflow in ie7 go figure?
-				d2.setYear(d[0]);
-			} else {
-				d2.setFullYear(d[0]);
-			}
+			//setFullYear produced a stack overflow in ie7 go figure? and recursrive error in ff6 - reverting to setYear()
+			d2.setYear(d[0]);
 			d2.setMonth(m, d[2]);
 			d2.setDate(d[2]);	
 			d2.setHours(time[0].toInt());
@@ -1142,12 +1136,8 @@ var fabrikCalendar = new Class({
 				d = d.split('-');
 				d2 = new Date();
 				m = (d[1]).toInt() - 1;
-				if (window.ie7) {
-					//setFullYear produced a stack overflow in ie7 go figure?
-					d2.setYear(d[0]);
-				} else {
-					d2.setFullYear(d[0]);
-				}
+				//setFullYear produced a stack overflow in ie7 go figure? and recursrive error in ff6 - reverting to setYear()
+				d2.setYear(d[0]);
 				d2.setMonth(m, d[2]);
 				d2.setDate(d[2]);
 				d2.setHours(time[0].toInt());
@@ -1176,7 +1166,6 @@ var fabrikCalendar = new Class({
 	editEntry: function (e)
 	{
 		var o = {};
-		o.d = d;
 		o.id = this.options.formid;
 		var i = this.activeHoverEvent.id.replace('fabrikEvent_', '').split('_');
 		o.rowid = i[1];
@@ -1193,7 +1182,7 @@ var fabrikCalendar = new Class({
 	},
 	
 	removeEntry: function (eventId) {
-		this.entries.dispose(eventId);
+		this.entries.erase(eventId);
 		this.showView();
 	},
 	
