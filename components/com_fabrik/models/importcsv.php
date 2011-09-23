@@ -31,9 +31,9 @@ class FabrikFEModelImportcsv extends JModelForm{
 	public $listModel = null;
 
 	var $updatedCount = 0;
-	
+
 	protected $_csvFile = null;
-	
+
 	protected $fieldDelimiter = null;
 
 
@@ -46,12 +46,12 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$this->findExistingElements();
 		return true;
 	}
-	
+
 	/**
 	 * gets the name of the csv file from the uploaded jform
 	 * @return string csv file name
 	 */
-	
+
 	protected function getCSVFileName()
 	{
 		if (is_null($this->_csvFile)) {
@@ -59,20 +59,21 @@ class FabrikFEModelImportcsv extends JModelForm{
 			if ($session->has('com_fabrik.csv.filename')) {
 				$this->_csvFile = $session->get('com_fabrik.csv.filename');
 			} else {
-				$userfile = JRequest::getVar('jform', null, 'files');
-				$this->_csvFile = $userfile['name']['userfile'];
+				//$userfile = JRequest::getVar('jform', null, 'files');
+				//$this->_csvFile = $userfile['name']['userfile'];
+				$this->_csvFile = 'fabrik_csv_' . md5( uniqid() );
 				$session->set('com_fabrik.csv.filename', $this->_csvFile);
 			}
 		}
 		return $this->_csvFile;
 	}
-	
+
 	/**
 	 * loads the Joomla form for importing the csv file
 	 * @param areray $data
 	 * @param bool $loadData
 	 */
-	
+
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
@@ -108,24 +109,27 @@ class FabrikFEModelImportcsv extends JModelForm{
 			JError::raiseError(500, 'File must be a csv file');
 			return false;
 		}
-		
-		$to = JPath::clean(COM_FABRIK_BASE.'media'.DS.$userfile['name']['userfile']);
-		
+
+		$tmp_name = $this->getCSVFileName();
+		$tmp_dir = $this->getBaseDir();
+
+		$to = JPath::clean($tmp_dir.DS.$tmp_name);
+
 		$resultdir = JFile::upload($userfile['tmp_name']['userfile'], $to);
 		if ($resultdir == false && !JFile::exists($to)) {
 			JError::raiseWarning(500, JText::_('Upload Error'));
 			return false;
 		}
 
-		
+
 		return true;
 	}
-	
+
 	/**
-	 * get the field delimiter from post 
-	 * and set in session 'com_fabrik.csv.fielddelimiter' for later use 
+	 * get the field delimiter from post
+	 * and set in session 'com_fabrik.csv.fielddelimiter' for later use
 	 */
-	
+
 	protected function getFieldDelimiter()
 	{
 		if (is_null($this->fieldDelimiter)) {
@@ -139,10 +143,10 @@ class FabrikFEModelImportcsv extends JModelForm{
 				$session->set('com_fabrik.csv.fielddelimiter', $this->fieldDelimiter);
 			}
 		}
-	
+
 		return $this->fieldDelimiter;
 	}
-	
+
 	protected function getFormData()
 	{
 		return array_key_exists('jform', $_POST) ? JRequest::getVar('jform') : JRequest::get('post');
@@ -200,8 +204,10 @@ class FabrikFEModelImportcsv extends JModelForm{
 			}
 		}
 		fclose($csv->mHandle);
+		// $$$ hugh - remove the temp file, but don't clear session
+		$this->removeCSVFile(false);
 	}
-	
+
 	public function getSample()
 	{
 		return $this->data[0];
@@ -220,33 +226,41 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	protected function getBaseDir()
 	{
-		return JPath::clean(COM_FABRIK_BASE.'media');
+		$config = JFactory::getConfig();
+		$tmp_dir = $config->getValue('config.tmp_path');
+		return JPath::clean($tmp_dir);
+		//return JPath::clean(COM_FABRIK_BASE.'media');
 	}
-	
+
 	/**
-	 * deletes the csv file and removes its path from the session
+	 * deletes the csv file and optionally removes its path from the session
+	 * @bool clear session
 	 */
 
-	public function removeCSVFile()
+	public function removeCSVFile($clear_session = true)
 	{
 		$baseDir = $this->getBaseDir();
-		$userfile_name = $this->getCSVFileName();
-		JFile::delete($baseDir.'/'.$userfile_name);
-		$this->clearSession();
+		$userfile_path = $baseDir . DS . $this->getCSVFileName();
+		if (JFile::exists($userfile_path)) {
+			JFile::delete($userfile_path);
+		}
+		if ($clear_session) {
+			$this->clearSession();
+		}
 	}
-	
+
 	public function clearSession()
 	{
 		$session = JFactory::getSession();
 		$session->clear('com_fabrik.csv.filename');
 		$session->clear('com_fabrik.csv.fielddelimiter');
 	}
-	
+
 	/**
 	 * get the list model
 	 * @return object table model
 	 */
-	
+
 	function getlistModel()
 	{
 		if (!isset($this->listModel)) {
@@ -363,12 +377,12 @@ class FabrikFEModelImportcsv extends JModelForm{
 	{
 		return $this->insertData();
 	}
-	
+
 	/**
 	* Insert data into a fabrik table
 	* @return unknown
 	*/
-	
+
 	public function insertData()
 	{
 		$user = JFactory::getUser();
