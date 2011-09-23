@@ -121,7 +121,7 @@ var FbElement =  new Class({
 			if (this.element) {
 				this.element.addEvent(action, function (e) {
 					e.stop();
-					var r = typeOf(js) === 'function' ? js.delay(0) :	Browser.exec(js);
+					var r = typeOf(js) === 'function' ? js.delay(0) :	eval(js);
 				});
 				
 				this.element.addEvent('blur', function (e) {

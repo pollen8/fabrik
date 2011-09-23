@@ -5,11 +5,9 @@
 				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl, JText::_('COM_FABRIK_ADD'));?>
 				<span><?php echo JText::_('COM_FABRIK_ADD');?></span>
 			</a>
-
 		</li>
-	<?php }?>
-
-	<?php
+	<?php }
+	
 	if ($this->showFilters && $this->params->get('show-table-filters') == 2) {?>
 		<li>
 			<a href="#" class="toggleFilters">
@@ -17,9 +15,8 @@
 				<span><?php echo JText::_('COM_FABRIK_FILTER');?></span>
 			</a>
 		</li>
-	<?php } ?>
-
-	<?php if ($this->canGroupBy) {?>
+	<?php }
+	if ($this->canGroupBy) {?>
 		<li>
 			<a href="#" class="groupBy">
 				<?php echo FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, JText::_('COM_FABRIK_GROUP_BY'));?>
@@ -32,46 +29,41 @@
 				}?>
 			</ul>
 		</li>
-	<?php } ?>
-	<?php if ($this->showCSV) {?>
+	<?php }
+	 if ($this->showCSV) {?>
 		<li class="csvExportButton">
 			<a href="#">
 				<?php echo FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, JText::_('COM_FABRIK_EXPORT_TO_CSV'));?>
 				<span><?php echo JText::_('COM_FABRIK_EXPORT_TO_CSV');?></span>
 			</a>
 		</li>
-	<?php }?>
-
-	<?php if ($this->showCSVImport) {?>
+	<?php }
+	if ($this->showCSVImport) {?>
 	<li class="csvImportButton">
 			<a href="<?php echo $this->csvImportLink;?>">
 				<?php echo FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl, JText::_('COM_FABRIK_IMPORT_FROM_CSV'));?>
 				<span><?php echo JText::_('COM_FABRIK_IMPORT_FROM_CSV');?></span>
 			</a>
-
 		</li>
-	<?php }?>
-
-	<?php if ($this->showRSS) {?>
+	<?php }
+	if ($this->showRSS) {?>
 	<li class="feedButton">
 			<a href="<?php echo $this->rssLink;?>">
 				<?php echo FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, JText::_('COM_FABRIK_SUBSCRIBE_RSS'));?>
 				<span><?php echo JText::_('COM_FABRIK_SUBSCRIBE_RSS');?></span>
 			</a>
 		</li>
-	<?php }?>
-
-	<?php if ($this->showPDF) {
-	echo '<li>'.$this->pdfLink.'<li>';
-	}?>
-
-	<?php if ($this->emptyLink) {?>
+	<?php }
+	if ($this->showPDF) {
+		echo '<li>'.$this->pdfLink.'<li>';
+	}
+	if ($this->emptyLink) {?>
 		<li>
 		<a href="<?php echo $this->emptyLink?>" class="button doempty">
 		<?php echo FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, JText::_('COM_FABRIK_EMPTY'));?>
 		<span><?php echo JText::_('COM_FABRIK_EMPTY')?></span>
 		</a>
 		</li>
-	<?php }?>
-	</ul>
+<?php }?>
+</ul>
 </div>

@@ -61,22 +61,6 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * format the read only output for the page
-	 * @param string $value
-	 * @param string label
-	 * @return string value
-	 */
-
-	protected function getReadOnlyOutput($value, $label)
-	{
-		$params = $this->getParams();
-		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
-			$label = $this->_replaceWithIcons($value);
-		}
-		return $label;
-	}
-
-	/**
 	 * draws the form element
 	 * @param array data
 	 * @param int repeat group counter

@@ -536,26 +536,27 @@ var FbForm = new Class({
 	},
 
 	/**
-	 * @param string
-	 *          element id to observe
-	 * @param string
-	 *          error div for element
-	 * @param string
-	 *          parent element id - eg for datetime's time field this is the date
-	 *          fields id
+	 * @param string element id to observe
+	 * @param string event type to add
 	 */
+	
 	watchValidation : function (id, triggerEvent) {
 		if (this.options.ajaxValidation === false) {
 			return;
 		}
-		if (document.id(id).className === 'fabrikSubElementContainer') {
+		var el = document.id(id);
+		if (typeOf(el) === 'null') {
+			fconsole('watch validation failed, could not find element ' + id);
+			return;
+		}
+		if (el.className === 'fabrikSubElementContainer') {
 			// check for things like radio buttons & checkboxes
-			document.id(id).getElements('.fabrikinput').each(function (i) {
+			el.getElements('.fabrikinput').each(function (i) {
 				i.addEvent(triggerEvent, this.doElementValidation.bindWithEvent(this, [ true ]));
 			}.bind(this));
 			return;
 		}
-		document.id(id).addEvent(triggerEvent, this.doElementValidation.bindWithEvent(this, [ false ]));
+		el.addEvent(triggerEvent, this.doElementValidation.bindWithEvent(this, [ false ]));
 	},
 
 	// as well as being called from watchValidation can be called from other

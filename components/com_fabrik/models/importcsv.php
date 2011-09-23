@@ -103,19 +103,21 @@ class FabrikFEModelImportcsv extends JModelForm{
 		}
 		jimport('joomla.filesystem.file');
 
+		$allowed = array('txt', 'csv', 'tsv');
+		if (!in_array(JFile::getExt($userfile['name']['userfile']), $allowed)) {
+			JError::raiseError(500, 'File must be a csv file');
+			return false;
+		}
+		
 		$to = JPath::clean(COM_FABRIK_BASE.'media'.DS.$userfile['name']['userfile']);
-
+		
 		$resultdir = JFile::upload($userfile['tmp_name']['userfile'], $to);
 		if ($resultdir == false && !JFile::exists($to)) {
 			JError::raiseWarning(500, JText::_('Upload Error'));
 			return false;
 		}
 
-		$allowed = array('txt', 'csv', 'tsv');
-		if (!in_array(JFile::getExt($userfile['name']['userfile']), $allowed)) {
-			JError::raiseError(500, 'File must be a csv file');
-			return false;
-		}
+		
 		return true;
 	}
 	

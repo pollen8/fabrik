@@ -221,7 +221,7 @@ div.calendar{
 #listform_$c .fabrik_row ul.fabrik_action,
 #listform_$c ul.fabrik_action,
 .advancedSeach_$c ul.fabrik_action{
-list-style:none;
+	list-style:none;
 	border:1px solid #999;
 	padding:0;
 	text-align:left;
@@ -245,6 +245,11 @@ list-style:none;
 	-webkit-box-pack:end;
 	-moz-box-pack:end;
 	box-pack:end;
+}
+
+#listform_$c ul:empty
+{
+	border:0 !important;
 }
 
 #listform_$c .fabrik_row ul.fabrik_action span,
