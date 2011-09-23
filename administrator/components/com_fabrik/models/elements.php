@@ -93,6 +93,14 @@ class FabrikModelElements extends FabModelList
 		$this->filterByFormQuery($query, 'fg');
 
 		// Join over the users for the checked out user.
+
+		// $$$ hugh - altered this query as ...
+		// WHERE (jj.list_id != 0 AND jj.element_id = 0)
+		// ...instead of ...
+		// WHERE jj.list_id != 0
+		//... otherwioe we pick up repeat elements, as they have both table and element set
+		// and he query fails with "returns multiple values" for the fullname select
+
 		$fullname = "(SELECT DISTINCT(
 		IF( ISNULL(jj.table_join), CONCAT(ll.db_table_name, '___', ee.name), CONCAT(jj.table_join, '___', ee.name))
 		)
@@ -100,7 +108,7 @@ class FabrikModelElements extends FabModelList
 		LEFT JOIN #__{package}_joins AS jj ON jj.group_id = ee.group_id
 		LEFT JOIN #__{package}_formgroup as fg ON fg.group_id = ee.group_id
 		LEFT JOIN #__{package}_lists AS ll ON ll.form_id = fg.form_id
-		WHERE jj.list_id != 0
+		WHERE (jj.list_id != 0 AND jj.element_id = 0)
 		AND ee.id = e.id AND ee.group_id <> 0  LIMIT 1)  AS full_element_name";
 
 		$query->select('u.name AS editor, '.$fullname.', g.name AS group_name, l.db_table_name');
