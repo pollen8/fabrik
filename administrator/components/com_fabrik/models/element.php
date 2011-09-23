@@ -272,14 +272,14 @@ public function getAbstractPlugins()
 	$plugins = JPluginHelper::getPlugin('fabrik_validationrule');
 
 	$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-	
+
 	$item = $this->getItem();
 	foreach ($item as $key => $val) {
 		if ($key !== 'params') {
 			$data[$key] = $val;
 		}
 	}
-	
+
 	foreach ($plugins as $x => $plugin) {
 		$o = $pluginManager->getPlugIn($plugin->name, 'Validationrule');
 		$str = $o->onRenderAdminSettings($data, 0);
@@ -564,7 +564,7 @@ function save($data)
 
 	//only update the element name if we can alter existing columns, otherwise the name and
 	//field name become out of sync
-	
+
 	if ($listModel->canAlterFields() || $id == 0) {
 		$data['name'] = $name;
 	} else {
@@ -907,7 +907,8 @@ function copy()
 		if ($rule->load((int)$id)) {
 			$name = JArrayHelper::getValue($names, $id, $rule->name);
 			$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($rule));
-			$elementModel->copyRow($id, $rule->label, $groupid, $name);
+			$newrule = $elementModel->copyRow($id, $rule->label, $groupid, $name);
+			$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($newrule));
 			$listModel = $elementModel->getListModel();
 			$res = $listModel->shouldUpdateElement($elementModel);
 			$this->addElementToOtherDbTables($elementModel, $rule);
