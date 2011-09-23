@@ -35,7 +35,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param string data (should be in mySQL format already) - except if called from getEmailValue()
+	 * @param string data (should be in mySQL format already) - except if called from getEmailValue() 
 	 * @param string element name
 	 * @param object all the data in the tables current row
 	 * @return string formatted value
