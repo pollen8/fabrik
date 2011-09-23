@@ -78,7 +78,7 @@ echo "
 
 /** bump calendar above mocha window in mootools 1.2**/
 div.calendar{
-	z-index:115 !important;
+	z-index:10000 !important;
 }
 
 /** autocomplete container inject in doc body not iin #forn_$c */
