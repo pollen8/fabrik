@@ -1076,6 +1076,7 @@ class plgFabrik_Element extends FabrikPlugin
 			return JError::raiseWarning(500, $rule->getError());
 		}
 
+		// I thought we did this in an overridden element model method, like onCopy?
 		//if its a database join then add in a new join record
 		if (is_a($this, 'plgFabrik_ElementDatabasejoin')) {
 			$join = FabTable::getInstance('Join', 'FabrikTable');
@@ -3302,7 +3303,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	 * can be overridden in plugin class
 	 * @return object element (id = 0)
 	 */
-	
+
 	public function getDefaultProperties()
 	{
 		$user = JFactory::getUser();
@@ -3319,7 +3320,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$item->link_to_detail = '1';
 		return $item;
 	}
-	
+
 	/**
 	 * get a json encoded string of the element default parameters
 	 * @return string
