@@ -314,7 +314,7 @@ EOD;
 
 function loadCalendar()
 	{
-		JHtml::_('behavior.calendar');
+		//JHtml::_('behavior.calendar');
 		/*return;
 		static $calendarLoaded;
 
@@ -376,7 +376,7 @@ function loadCalendar()
 		 "- Click on any of the time parts to increase it\n" +
 		 "- or Shift-click to decrease it\n" +
 		 "- or click and drag for faster selection.";
-		 */
+		
 		if(self::$jsscript == 0)
 		{
 			$return = 'Calendar._DN = new Array ("'.JText::_('Sunday').'", "'.JText::_('Monday').'", "'.JText::_('Tuesday').'", "'.JText::_('Wednesday').'", "'.JText::_('Thursday').'", "'.JText::_('Friday').'", "'.JText::_('Saturday').'", "'.JText::_('Sunday').'");Calendar._SDN = new Array ("'.JText::_('Sun').'", "'.JText::_('Mon').'", "'.JText::_('Tue').'", "'.JText::_('Wed').'", "'.JText::_('Thu').'", "'.JText::_('Fri').'", "'.JText::_('Sat').'", "'.JText::_('Sun').'"); Calendar._FD = 0;	Calendar._MN = new Array ("'.JText::_('January').'", "'.JText::_('February').'", "'.JText::_('March').'", "'.JText::_('April').'", "'.JText::_('May').'", "'.JText::_('June').'", "'.JText::_('July').'", "'.JText::_('August').'", "'.JText::_('September').'", "'.JText::_('October').'", "'.JText::_('November').'", "'.JText::_('December').'");	Calendar._SMN = new Array ("'.JText::_('January_short').'", "'.JText::_('February_short').'", "'.JText::_('March_short').'", "'.JText::_('April_short').'", "'.JText::_('May_short').'", "'.JText::_('June_short').'", "'.JText::_('July_short').'", "'.JText::_('August_short').'", "'.JText::_('September_short').'", "'.JText::_('October_short').'", "'.JText::_('November_short').'", "'.JText::_('December_short').'");Calendar._TT = {};Calendar._TT["INFO"] = "'.JText::_('About the calendar').'";
@@ -386,6 +386,7 @@ function loadCalendar()
 		} else {
 			return false;
 		}
+		 */
 	}
 
 	/**
@@ -605,13 +606,17 @@ function loadCalendar()
 	 * load Fabrik's framework (js and base css file)
 	 */
 
-	public function framework(){
+	public function framework()
+	{
 		if (!self::$framework) {
 			$src = array();
-			
-			//required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
-			JHTML::_('behavior.calendar');
+
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
+				
+				//required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
+				//only load in main/first window - otherwise reloading it causes js errors related to calendar translations
+				JHTML::_('behavior.calendar');
+				
 				//loading framework, if in ajax loaded page:
 				// * makes document.body not found for gmap element when
 				// * removes previously added window.events
@@ -673,6 +678,11 @@ function loadCalendar()
 
 	function inAjaxLoadedPage()
 	{
+		//are we in fabrik or a content view, if not return false (things like com_config need to load in mootools)
+		$option = JRequest::getCmd('option');
+		if ($option !== 'com_fabrik' && $option !== 'com_content') {
+			return false;
+		}
 		if (class_exists('JSite')) {
 			$menus	= &JSite::getMenu();
 			$menu	= $menus->getActive();

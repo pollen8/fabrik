@@ -35,7 +35,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param string data (should be in mySQL format already)
+	 * @param string data (should be in mySQL format already) - except if called from getEmailValue() 
 	 * @param string element name
 	 * @param object all the data in the tables current row
 	 * @return string formatted value
@@ -43,6 +43,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
+		if ($data == '') {
+			return '';
+		}
 		//@TODO: deal with time options (currently can be defined in date_table_format param).
 
 		$config = JFactory::getConfig();
@@ -377,6 +380,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
+		if ($value == '') {
+			return '';
+		}
 		# $$$ hugh - need to convert to database format so we GMT-ified date
 		return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass());
 	}

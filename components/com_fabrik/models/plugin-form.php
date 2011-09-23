@@ -155,7 +155,7 @@ class plgFabrik_Form extends FabrikPlugin
 		//$model->render();
 
 		$listModel = $model->_table;
-		$table = is_object($listModel ) ? $listModel->getTable() : null;
+		$table = is_object($listModel) ? $listModel->getTable() : null;
 
 		$model->_editable = false;
 		if (is_object($listModel)) {
