@@ -58,7 +58,6 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		echo "<pre>";print_r($this->getFormModel()->getData());echo "</pre>";
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$value =  $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
