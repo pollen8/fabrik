@@ -697,14 +697,10 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
 			$groupModel = $this->getGroup();
-			$group			=& $groupModel->getGroup();
-			if ($this->isJoin()) {
-				$joinid = $this->getJoinModel()->getJoin()->id;
-			}else{
-				$joinid			= $group->join_id;
-			}
-			$formModel 	=& $this->getForm();
-			$element		= $this->getElement();
+			$group = $groupModel->getGroup();
+			$joinid = $this->isJoin() ? $this->getJoinModel()->getJoin()->id : $group->join_id;
+			$formModel = $this->getFormModel();
+			$element = $this->getElement();
 
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
@@ -1134,18 +1130,17 @@ class plgFabrik_Element extends FabrikPlugin
 		// think Hugh had this in for some wierd PHP5.x.x issue - but it makes long forms
 		// very unloadable - eg 103 queries compared to 49 queries, plus an additional second load time on the form
 		//$elementTable 	=& $this->getElement(true);
-		$elementTable 	= $this->getElement();
-
-		$element 				= new stdClass();
+		$elementTable = $this->getElement();
+		$element = new stdClass();
 		$element->startRow = false;
 		$element->endRow = false;
-		$elHTMLName			= $this->getFullName(true, true);
+		$elHTMLName	= $this->getFullName(true, true);
 
 		//if the element is in a join AND is the join's foreign key then we don't show the element
 
 		if ($elementTable->name == $this->_foreignKey) {
-			$element->label 	= '';
-			$element->error 	= '';
+			$element->label	= '';
+			$element->error	= '';
 			$this->_element->hidden = true;
 		} else {
 			//@TODO

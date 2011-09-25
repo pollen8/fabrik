@@ -30,59 +30,23 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	function getLabel($repeatCounter = 0, $tmpl = '')
 	{
 		$params = $this->getParams();
-		if ($params->get('display_showlabel', true)) {
-			return parent::getLabel($repeatCounter, $tmpl);
-		}
-		$bLabel = $this->get('hasLabel');
-
 		$element = $this->getElement();
-		$element->label = $this->getValue(array());
-		$elementHTMLId = $this->getHTMLId();
-		if ($element->hidden) {
-			return '';
+		if (!$params->get('display_showlabel', true)) {
+			$element->label = $this->getValue(array());
 		}
-		$task = JRequest::getVar('task', '', 'default');
-		$view = JRequest::getVar('view', '', 'form');
-		if ($view == 'form' && ! ( $this->canUse() || $this->canView())) {
-			return '';
-		}
-		$params = $this->getParams();
-		$elementid = "fb_el_" . $elementHTMLId;
-		$this->_form->loadValidationRuleClasses();
-		$str = '';
-
-		$rollOver = JText::_($params->get('hover_text_title')) . "::" . JText::_($params->get('rollover'));
-		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
-
-		if ($this->canView()) {
-			$str .= "<div class=\"fabrikLabel fabrikPluginElementDisplayLabel";
-			$validations = $this->getValidations();
-			if ($this->_editable) {
-				foreach ($validations as $validation) {
-			  $vid = $validation->_pluginName;
-			  if (array_key_exists($vid, $this->_form->_validationRuleClasses)) {
-			  	if ($this->_form->_validationRuleClasses[$vid] != '') {
-					  $str .= " " . $this->_form->_validationRuleClasses[$vid];
-			  	}
-			  }
-				}
-			}
-			if ($rollOver != '::') {
-				$str .= " fabrikHover";
-			}
-			$str .= "\" id=\"$elementid" . "_text\">";
-			if ($bLabel) {
-				$str .= "<label for=\"$elementHTMLId\">";
-			}
-
-
-			$str .= ($rollOver != '::') ? "<span class='hasTip' title='$rollOver'>{$element->label}</span>" : $element->label;
-			if ($bLabel) {
-				$str .= "</label>";
-			}
-			$str .= "</div>\n";
-		}
-		return $str;
+		return parent::getLabel($repeatCounter, $tmpl);
+	}
+	
+	/**
+	 * render the elements list value
+	 * @param unknown_type $data
+	 * @param unknown_type $oAllRowsData
+	 */
+	function renderListData($data, $oAllRowsData)
+	{
+		unset($this->_default);
+		$value = $this->getValue(JArrayHelper::fromObject($oAllRowsData));
+		return parent::renderListData($value, $oAllRowsData);
 	}
 
 	/**
@@ -94,39 +58,35 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
+		echo "<pre>";print_r($this->getFormModel()->getData());echo "</pre>";
 		$params = $this->getParams();
-		if (!$params->get('display_showlabel', true)) {
-			return '';
-		}
 		$id = $this->getHTMLId($repeatCounter);
-		$value = $this->getValue($data, $repeatCounter);
-		return "<div class=\"fabrikSubElementContainer\" id=\"$id\">$value</div>";
+		$value =  $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
+		return '<div class="fabrikSubElementContainer" id="'.$id.'">'.$value.'</div>';
 	}
 
 	/**
-	 * draws the form element
+	 * gets the value or default value 
 	 * @param array data
 	 * @param int repeat group counter
 	 * @param array options
 	 * @return string default value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array() )
+	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$element = $this->getElement();
 		$params = $this->getParams();
 		// $$$rob - if no search form data submitted for the search element then the default
 		// selection was being applied instead
-		if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
-			$value = '';
-		} else {
-			$value = $this->getDefaultValue($data);
-		}
+		//echo "<pre>";print_r($data);
+		$value =  JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+		//echo $value;exit;
 		if ($value === '') {
 			//query string for joined data
 			$value = JArrayHelper::getValue($data, $value);
 		}
-		$formModel = $this->getForm();
+		$formModel = $this->getFormModel();
 		//stops this getting called from form validation code as it messes up repeated/join group validations
 		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
 			FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
