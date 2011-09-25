@@ -18,6 +18,16 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	/** should the table render functions use html to display the data */
 	var $renderWithHTML = true;
 
+	public function setId($id)
+	{
+		parent::setId($id);
+		$params = $this->getParams();
+		//set elementlist params from radio params
+		$params->set('element_before_label', (bool)$params->get('radio_element_before_label', true));
+		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtoradio', false));
+		$params->set('allowadd-onlylabel', (bool)$params->get('rad-allowadd-onlylabel', true));
+	}
+	
 	/**
 	 * shows the data formatted for the csv data
 	 * @param string data
@@ -58,76 +68,6 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	protected function getSubOptionValues()
 	{
 		return parent::getSubOptionValues();
-	}
-
-	/**
-	 * draws the form element
-	 * @param array data
-	 * @param int repeat group counter
-	 * @return string returns element html
-	 */
-
-	function render($data, $repeatCounter = 0)
-	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
-		$element 	= $this->getElement();
-		$arVals 	= $this->getSubOptionValues();
-		$arTxt 		= $this->getSubOptionLabels();
-		$selected = (array)$this->getValue($data, $repeatCounter);
-		$options_per_row = intval($params->get('options_per_row', 0)); // 0 for one line
-		if ($options_per_row > 0) {
-			$percentageWidth = floor(floatval(100) / $options_per_row) - 2;
-			$div = "<div class=\"fabrik_subelement\" style=\"float:left;width:" . $percentageWidth . "%\">\n";
-		}
-		$str = "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
-		$aRoValues = array();
-
-		//if we have added an option that hasnt been saved to the database. Note you cant have
-		// it not saved to the database and asking the user to select a value and label
-		if ($params->get('allow_frontend_addtoradio', false) && !empty($selected)) {
-			foreach ($selected as $sel) {
-				if (!in_array($sel, $arVals)) {
-					if (!empty($sel)) {
-						$arVals[] = $sel;
-						$arTxt[] = $sel;
-					}
-				}
-			}
-		}
-		//$$$ rob removed subelement ids for repeat group validation & element js code
-		for ($ii = 0; $ii < count($arVals); $ii ++) {
-			if ($options_per_row > 0) {
-				$str .= $div;
-			}
-			if (in_array($arVals[$ii], $selected)) {
-				$aRoValues[] = $this->getReadOnlyOutput($arVals[$ii], $arTxt[$ii]);
-				$checked = "checked=\"checked\"";
-			} else {
-				$checked = "";
-			}
-			$value = htmlspecialchars($arVals[$ii], ENT_QUOTES); //for values like '1"'
-			$input = "<input class=\"fabrikinput\" type=\"radio\" name=\"$name\" value=\"$value\" $checked />";
-			if ($params->get('radio_element_before_label')  == '1') {
-				$str .= "<label>$input<span>$arTxt[$ii]</span></label>\n";
-			} else {
-				$str .= "<label><span>$arTxt[$ii]</span>$input</label>\n";
-			}
-			if ($options_per_row > 0) {
-				$str .= "</div> <!-- end row div -->\n";
-			}
-		}
-		if (!$this->_editable) {
-			return implode(',', $aRoValues);
-		}
-
-		$str .="</div>";
-		if ($params->get('allow_frontend_addtoradio', false)) {
-			$onlylabel = $params->get('rad-allowadd-onlylabel');
-			$str .= $this->getAddOptionFields($onlylabel, $repeatCounter);
-		}
-		return $str;
 	}
 
 	/**

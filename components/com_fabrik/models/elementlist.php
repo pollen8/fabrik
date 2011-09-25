@@ -20,6 +20,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	var $defaults = null;
 
 	protected $fieldDesc = 'TEXT';
+	
+	protected $inputType = 'radio';
 
 	/**
 	 * can be overwritten by plugin class
@@ -80,14 +82,13 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	function getFilter($counter = 0, $normal = true)
 	{
-
 		$element 	= $this->getElement();
 		$values 	= $this->getSubOptionValues();
 		$default 	= $this->getDefaultFilterVal($normal, $counter);
 		$elName 	= $this->getFullName(false, true, false);
 		$htmlid		= $this->getHTMLId() . 'value';
-		$table		=& $this->getlistModel()->getTable();
-		$params		=& $this->getParams();
+		$table		= $this->getlistModel()->getTable();
+		$params		= $this->getParams();
 		$v = 'fabrik___filter[list_'.$table->id.'][value]';
 		$v .= $normal ? '['.$counter.']' : '[]';
 
@@ -240,6 +241,54 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		}
 		//$$$rob if only one repeat group data then dont bother encasing it in a <ul>
 		return count($gdata) !== 1 ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
+	}
+	
+	/**
+	* draws the form element
+	* @param array data
+	* @param int repeat group counter
+	* @return string returns element html
+	*/
+	
+	public function render($data, $repeatCounter = 0)
+	{
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$values = $this->getSubOptionValues();
+		$labels = $this->getSubOptionLabels();
+		
+		
+		$selected = (array)$this->getValue($data, $repeatCounter);
+		if (!$this->_editable) {
+			$aRoValues = array();
+			for ($i = 0; $i < count($values); $i ++) {
+				if (in_array($values[$i], $selected)) {
+					$aRoValues[] = $this->getReadOnlyOutput($values[$i],  $labels[$i]);
+				}
+			}
+			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
+			return implode($splitter, $aRoValues);
+		}
+		
+		$optionsPerRow = (int)$this->getParams()->get('options_per_row', 0);
+		$elBeforeLabel = (bool)$this->getParams()->get('element_before_label', true);
+		//element_before_label
+		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow);
+		
+		array_unshift($grid, '<div class="fabrikSubElementContainer" id="'.$id.'">');
+		
+		$grid[] = '</div>';
+		if ($params->get('allow_frontend_addto', false)) {
+			$onlylabel = $params->get('allowadd-onlylabel');
+			$grid[] = $this->getAddOptionFields($onlylabel, $repeatCounter);
+		}
+		return implode("\n", $grid);
+	}
+	
+	protected function getElementBeforeLabel()
+	{
+		return (bool)$this->getParams()->get('radio_element_before_label', true);
 	}
 
 	/**

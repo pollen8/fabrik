@@ -144,6 +144,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	function render($data, $repeatCounter = 0)
 	{
+		$params = $this->getParams();
+		$params->set('options_per_row', 4);
 		return parent::render($data, $repeatCounter);
 	}
 
@@ -155,7 +157,6 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbYesno('$id', $opts)";
@@ -170,15 +171,13 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	function getFilter($counter = 0, $normal = true)
 	{
-		$table 				=& $this->getlistModel()->getTable();
-		$elName 			= $this->getFullName(false, true, false);
-		$htmlid				= $this->getHTMLId() . 'value';
-		$elName 			= FabrikString::safeColName($elName);
+		$table = $this->getlistModel()->getTable();
+		$elName = $this->getFullName(false, true, false);
+		$htmlid	= $this->getHTMLId() . 'value';
+		$elName = FabrikString::safeColName($elName);
 		$v = 'fabrik___filter[list_'.$table->id.'][value]';
 		$v .= ($normal) ? '['.$counter.']' : '[]';
-
-		$default 			=  $this->getDefaultFilterVal($normal, $counter);
-
+		$default = $this->getDefaultFilterVal($normal, $counter);
 		$rows = $this->filterValueList($normal);
 		$return 	 = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
 		if ($normal) {

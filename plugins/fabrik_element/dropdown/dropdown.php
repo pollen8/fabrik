@@ -19,6 +19,15 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	var $renderWithHTML = true;
 
 
+	public function setId($id)
+	{
+		parent::setId($id);
+		$params = $this->getParams();
+		//set elementlist params from dropdown params
+		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtodropdown', false));
+		$params->set('allowadd-onlylabel', (bool)$params->get('dd-allowadd-onlylabel', true));
+	}
+
 	/**
 	 * shows the data formatted for the csv data
 	 * @param string data
@@ -48,8 +57,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$params 	= $this->getParams();
 		$allowAdd = $params->get('allow_frontend_addtodropdown', false);
 
-		$arVals = $this->getSubOptionValues();
-		$arTxt = $this->getSubOptionLabels();
+		$values = $this->getSubOptionValues();
+		$labels = $this->getSubOptionLabels();
 		$multiple = $params->get('multiple', 0);
 		$multisize = $params->get('dropdown_multisize', 3);
 		$selected = (array)$this->getValue($data, $repeatCounter);
@@ -62,8 +71,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$i 					= 0;
 		$aRoValues 	= array();
 		$opts 			= array();
-		foreach ($arVals as $tmpval) {
-			$tmpLabel = JArrayHelper::getValue($arTxt, $i);
+		foreach ($values as $tmpval) {
+			$tmpLabel = JArrayHelper::getValue($labels, $i);
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES); //for values like '1"'
 			$opts[] = JHTML::_('select.option', $tmpval, $tmpLabel);
 			if (in_array($tmpval, $selected)) {
@@ -75,7 +84,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		// it not saved to the database and asking the user to select a value and label
 		if ($params->get('allow_frontend_addtodropdown', false) && !empty($selected)) {
 			foreach ($selected as $sel) {
-				if (!in_array($sel, $arVals) && $sel !== '') {
+				if (!in_array($sel, $values) && $sel !== '') {
 					$opts[] = JHTML::_('select.option', $sel, $sel);
 				}
 			}
@@ -84,10 +93,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		if (!$this->_editable) {
 			return implode(', ', $aRoValues);
 		}
-		if ($params->get('allow_frontend_addtodropdown', false)) {
-			$onlylabel = $params->get('dd-allowadd-onlylabel');
-			$str .= $this->getAddOptionFields($onlylabel, $repeatCounter);
-		}
+		$str .= $this->getAddOptionFields($repeatCounter);
 		return $str;
 	}
 
@@ -109,23 +115,23 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			}
 			$json = new Services_JSON();
 			$added = $json->decode($added);
-			$arVals = $this->getSubOptionValues();
-			$arTxt 	= $this->getSubOptionLabels();
+			$values = $this->getSubOptionValues();
+			$labels 	= $this->getSubOptionLabels();
 			$found = false;
 			foreach ($added as $obj) {
-				if (!in_array($obj->val, $arVals)) {
-					$arVals[] = $obj->val;
+				if (!in_array($obj->val, $values)) {
+					$values[] = $obj->val;
 					$found = true;
-					$arTxt[] = $obj->label;
+					$labels[] = $obj->label;
 				}
 			}
 			if ($found) {
 				// @TODO test if J1.6 / f3
-				//$element->sub_values = implode("|", $arVals);
-				//$element->sub_labels = implode("|", $arTxt);
+				//$element->sub_values = implode("|", $values);
+				//$element->sub_labels = implode("|", $labels);
 				$opts = $params->get('sub_options');
-				$opts->sub_values = $arVals;
-				$opts->sub_labels = $arTxt;
+				$opts->sub_values = $values;
+				$opts->sub_labels = $labels;
 				$element->params = json_encode($params);
 				$element->store();
 			}
@@ -143,8 +149,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$element = $this->getElement();
 		$data = $this->_form->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
-		$arVals = $this->getSubOptionValues();
-		$arTxt 	= $this->getSubOptionLabels();
+		$values = $this->getSubOptionValues();
+		$labels 	= $this->getSubOptionLabels();
 		$params = $this->getParams();
 
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -152,7 +158,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 
-		$opts->data = array_combine($arVals, $arTxt);
+		$opts->data = array_combine($values, $labels);
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
 		return "new FbDropdown('$id', $opts)";
@@ -320,8 +326,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$ar = array(
 			'id' 			=> $id,
 			'triggerEvent' => 'change'
-			);
-			return array($ar);
+		);
+		return array($ar);
 	}
 
 }

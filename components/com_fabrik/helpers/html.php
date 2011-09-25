@@ -624,6 +624,10 @@ function loadCalendar()
 
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
+				$navigator	= JBrowser::getInstance();
+				if ($navigator->getBrowser() == 'msie') {
+					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
+				}
 				$src[] = 'media/com_fabrik/js/mootools-ext.js';
 				$src[] = 'media/com_fabrik/js/lib/art.js';
 				$src[] = 'media/com_fabrik/js/icons.js';
@@ -631,7 +635,7 @@ function loadCalendar()
 				$src[] = 'media/com_fabrik/js/fabrik.js';
 				$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
 				$src[] = 'media/com_fabrik/js/window.js';
-	
+				
 				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
 				FabrikHelperHTML::script($src, true, "window.fireEvent('fabrik.framework.loaded');");
@@ -1046,6 +1050,43 @@ function loadCalendar()
 			$p .= "$key=\"$val\" ";
 		}
 		return $src == '' ? '' : "<img src=\"$src\" $p/>";
+	}
+	
+	public function grid($values, $labels, $selected, $name, $type="checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)
+	{
+		$items = array();
+		for ($i = 0; $i < count($values); $i ++) {
+			$item = array();
+			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . "[$i]" : $name;
+			$label = '<span>'.$labels[$i].'</span>';
+			$value = htmlspecialchars($values[$i], ENT_QUOTES); //for values like '1"'
+			$chx = '<input type="'.$type.'" class="fabrikinput '.$type.'" name="'.$thisname.'" value="'.$value.'" ';
+			$chx .= in_array($values[$i], $selected) ? ' checked="checked" />' : ' />';
+			$item[] = '<label>';
+			$item[] = $elementBeforeLabel  == '1' ? $chx.$label : $label.$chx;
+			$item[] = '</label>';
+			$items[] = implode("\n", $item);
+		}
+		$grid = array();
+		
+		if ($optionsPerRow > count($items)) {
+			$widthConstraint = ' style="width:'.(int)(100 / $optionsPerRow * count($items)).'%"';
+		} else {
+			$widthConstraint = '';
+		}
+		foreach ($items as $i => $s) {
+			if ($i == 0 || ($optionsPerRow === 0 || $i % $optionsPerRow === 0)) {
+				$grid[] = '<ul class="displayBox"'.$widthConstraint.'>';
+			}
+			$grid[] = '<li class="boxFlex">'.$s.'</li>';
+			if ($i !== 0 &&  ($optionsPerRow === 0 || $i % $optionsPerRow === $optionsPerRow - 1)) {
+				$grid[] = '</ul>';
+			}
+		}
+		if ($i !== 0 &&  ($optionsPerRow === 0 || $i % $optionsPerRow !== $optionsPerRow - 1)) {
+			$grid[] = '</ul>';
+		}
+		return $grid;
 	}
 
 }

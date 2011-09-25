@@ -3034,6 +3034,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$element->error = '';
 		$element->value = '';
 		$element->id = '';
+		$element->startRow = false;
+		$element->endRow = false;
+		$element->errorTag = '';
+		$element->column = '';
 		$element->className = '';
 		$element->containerClass = '';
 		foreach ($listModel->getJoins() as $oJoin) {

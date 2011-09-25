@@ -6,17 +6,12 @@ echo "
 #form_$c fieldset ul,
 #details_$c fieldset ul{
 	list-style:none;
+	padding:0;
+	margin:0;
 }
 
 #form_$c .fabrikForm .fabrikGroup ul{
 	list-style:none;
-}
-
-#form_$c .fabrikSubElementContainer,
-#details_$c .fabrikSubElementContainer{
-	display:-moz-box;
-	display:box;
-	display:-webkit-box;
 }
 
 #details_$c .fabrikGalleryImage{
@@ -40,14 +35,13 @@ echo "
 }
 
 /* END: align google map sub elements vertically */
-/* START : radio button sub element alignments */
+/* START : label spacing for chxbox, radios */
 
-#form_$c .radiobutton .fabrikSubElementContainer{
-	display:block;
-	margin-left:130px;
+#form_$c label span{
+	padding:0 4px;
 }
 
-/* END : radio button sub element alignments */
+/* END : label spacing for chxbox, radios */
 
 .floating-tip {
 	background-color: black;
@@ -68,19 +62,16 @@ echo "
 	display:inline;
 }
 
-#form_$c .fabrikForm .fabrikGroup ul,
-#form_$c .fabrikForm .fabrikGroup li{
-	padding:0;
-	margin:0;
-}
-
-
-#form_$c .fabrikForm .fabrikGroup ul li.fabrikElementContainer,
-#details_$c li.fabrikElementContainer,
-#form_$c li.fabrikElementContainer{
+#form_$c .fabrikForm .fabrikGroup ul .fabrikElementContainer,
+#details_$c .fabrikElementContainer,
+#form_$c .fabrikElementContainer{
 	padding:5px 10px;
 	margin-top:10px;
 	background:none !important;
+	display:-webkit-box;
+	display:-moz-box;
+	display:box;
+	width:50%;
 }
 
 #form_$c .fabrikActions{
@@ -89,10 +80,6 @@ echo "
 	padding-bottom:15px;
 }
 
-
-#form_$c .fabrikElement{
-	margin-right: 200px;
-}
 
 #form_$c .fabrikLabel{
 	/*ensures label text doesnt overrun validation icons*/
@@ -234,7 +221,6 @@ margin:0;
 #details_$c .leftCol,
 #form_$c .fabrikSubLabel{
 	width: 130px;
-	float:left;
 }
 #details_$c .leftCol{
 	color:#999;
@@ -242,7 +228,9 @@ margin:0;
 
 #form_$c .fabrikElement {
 	margin-left: 10px;
-	margin-right:0;
+	-webkit-box-flex:1;
+	-moz-box-flex:1;
+	box-flex:1;
 }
 
 #form_$c .addbutton {
@@ -251,15 +239,11 @@ margin:0;
 	margin-left:7px;
 }
 
-#details_$c .fabrikElementContainer{
-	/*clear:left;*/
-}
-
-#form_$c .fabrikError,#form_$c .fabrikNotice,#form_$c .fabrikValidating,#form_$c .fabrikSuccess{
-	margin: 0;
+#form_$c .fabrikError,
+#form_$c .fabrikNotice,
+#form_$c .fabrikValidating,
+#form_$c .fabrikSuccess{
 	font-weight: bold;
-	margin-bottom: 10px;
-	padding:7px;
 }
 
 #form_$c .fabrikMainError{
@@ -278,7 +262,7 @@ margin:0;
 }
 
 #form_$c .fabrikError,
-#form_$c .fabrikGroup li.fabrikError{
+#form_$c .fabrikGroup .fabrikError{
 	color: #c00;
 	background: #EFE7B8;
 }

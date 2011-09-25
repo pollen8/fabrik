@@ -12,11 +12,23 @@ defined('_JEXEC') or die();
 
 class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 {
-
+	
 	var $hasLabel = false;
-
+	
 	/** should the table render functions use html to display the data */
 	var $renderWithHTML = true;
+	
+	protected $inputType = 'checkbox';
+	
+	public function setId($id)
+	{
+		parent::setId($id);
+		$params = $this->getParams();
+		//set elementlist params from checkbox params
+		$params->set('options_per_row', $params->get('ck_options_per_row'));
+		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtocheckbox', false));
+		$params->set('allowadd-onlylabel', (bool)$params->get('chk-allowadd-onlylabel', true));
+	}
 
 	function renderListData_csv( $data, $oAllRowsData )
 	{
@@ -25,52 +37,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$this->renderWithHTML = true;
 		return $d;
 	}
-
-	/**
-	 * @depreciated moved to plgFabrik_ElementList
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
-	 */
-
-/*	function renderListData($data, $oAllRowsData)
-	{
-		$params 	=& $this->getParams();
-		$split_str = $params->get('options_split_str', GROUPSPLITTER2);
-		$listModel = $this->getListModel();
-		$element 	= $this->getElement();
-		$values 	= $this->getSubOptionValues();
-		$labels 	= $this->getSubOptionLabels();
-		//repeat group data
-		$gdata = explode(GROUPSPLITTER, $data);
-		$uls = array();
-		$useIcon = ($params->get('icon_folder') == -1 || $params->get('icon_folder') == '') ? false : true;
-		foreach ($gdata as $i => $data) {
-			$lis = array();
-			$vals = explode(GROUPSPLITTER2, $data);
-			foreach ($vals as $val) {
-				if ($useIcon) {
-					$l = $this->_replaceWithIcons($val);
-				}
-				if (!$this->iconsSet == true) {
-					$l = $this->getLabelForValue($val);
-					$l = $this->_replaceWithIcons( $l);
-				}
-				$l = $listModel->_addLink($l, $this, $oAllRowsData, $i);
-				if (trim($l) == '') { $l = '&nbsp';}
-				$lis[] = $this->renderWithHTML ? "<li>$l</li>" : $l;
-			}
-			if (!empty($lis)) {
-				if ($this->renderWithHTML) {
-					$uls[] = "<ul class=\"fabrikRepeatData\">".implode(" ", $lis)."</ul>";
-				} else {
-					$uls[] = implode($split_str, $lis);
-				}
-			}
-		}
-		return implode(" ", $uls);
-	}*/
 
 	/**
 	 * render raw data
@@ -83,71 +49,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	function renderRawTableData($data, $thisRow)
 	{
 		return json_encode($data);
-		/*if (is_array($data)) {
-			return implode(GROUPSPLITTER2, $data);
-		} else {
-			return $data;
-		}*/
-	}
-
-	/**
-	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
-	 */
-
-	function render($data, $repeatCounter = 0)
-	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$params 	=& $this->getParams();
-		$str 			= "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
-		$arVals 	= $this->getSubOptionValues();
-		$arTxt 		= $this->getSubOptionLabels();
-
-		$options_per_row = intval( $params->get('ck_options_per_row', 0)); // 0 for one line
-
-		$selected = (array)$this->getValue($data, $repeatCounter);
-		$aRoValues = array();
-		if ($options_per_row > 0) {
-			$percentageWidth = floor(floatval(100) / $options_per_row) - 2;
-			$div = "<div class=\"fabrik_subelement\" style=\"float:left;width:" . $percentageWidth . "%\">\n";
-		}
-
-		for ($ii = 0; $ii < count($arVals); $ii ++) {
-			if ($options_per_row > 0) {
-				$str .= $div;
-			}
-			$thisname = FabrikString::rtrimword($name, '[]') . "[$ii]";
-			$label = "<span>".$arTxt[$ii]."</span>";
-			$value = htmlspecialchars($arVals[$ii], ENT_QUOTES); //for values like '1"'
-			$chx = "<input type=\"checkbox\" class=\"fabrikinput checkbox\" name=\"$thisname\" value=\"".$value."\" ";
-			if (in_array($arVals[$ii], $selected)) {
-				$aRoValues[] = $this->getReadOnlyOutput($arVals[$ii],  $arTxt[$ii]);
-				$chx .= " checked=\"checked\" />\n";
-			} else {
-				$chx .= " />\n";
-			}
-			$str .= ($params->get('element_before_label')  == '1') ? "<label>".$chx.$label."</label>\n" : "<label>".$label.$chx."</label>\n";
-			if ($options_per_row > 0) {
-				$str .= "</div> <!-- end row div -->\n";
-			}
-		}
-
-		if (!$this->_editable) {
-			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
-			return implode($splitter, $aRoValues);
-		}
-		if ($options_per_row > 0) {
-			$str .= "<br />";
-		}
-		$str .="</div>";
-		if ($params->get('allow_frontend_addtocheckbox', false)) {
-			$onlylabel = $params->get('chk-allowadd-onlylabel');
-			$str .= $this->getAddOptionFields($onlylabel, $repeatCounter);
-		}
-		return $str;
 	}
 
 	/**
@@ -167,23 +68,23 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 			}
 			$json = new Services_JSON();
 			$added = $json->decode($added);
-			$arVals = $this->getSubOptionValues();
-			$arTxt 	= $this->getSubOptionLabels();
+			$values = $this->getSubOptionValues();
+			$labels 	= $this->getSubOptionLabels();
 			$found = false;
 			foreach ($added as $obj) {
-				if (!in_array($obj->val, $arVals)) {
-					$arVals[] = $obj->val;
+				if (!in_array($obj->val, $values)) {
+					$values[] = $obj->val;
 					$found = true;
-					$arTxt[] = $obj->label;
+					$labels[] = $obj->label;
 				}
 			}
 			if ($found) {
 				// @TODO test if J1.6 / f3
-				//$element->sub_values = implode("|", $arVals);
-				//$element->sub_labels = implode("|", $arTxt);
+				//$element->sub_values = implode("|", $values);
+				//$element->sub_labels = implode("|", $labels);
 				$opts = $params->get('sub_options');
-				$opts->sub_values = $arVals;
-				$opts->sub_labels = $arTxt;
+				$opts->sub_values = $values;
+				$opts->sub_labels = $labels;
 				$element->params = json_encode($params);
 				$element->store();
 			}
@@ -200,17 +101,13 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-
-		$arVals = (array)$this->getSubOptionValues();
-		$arTxt 	= (array)$this->getSubOptionLabels();
-		$data 		=& $this->_form->_data;
-		$arSelected = $this->getValue($data, $repeatCounter);
+		$values = (array)$this->getSubOptionValues();
+		$labels = (array)$this->getSubOptionLabels();
+		$data = $this->getFormModel()->_data;
 		$opts = $this->getElementJSOptions($repeatCounter);
-
-		$opts->value    = $arSelected;
-		$opts->defaultVal  = $this->getDefaultValue($data);
-
-		$opts->data 			= (empty($arVals) && empty($arTxt)) ? array() : array_combine($arVals, $arTxt);
+		$opts->value = $this->getValue($data, $repeatCounter);
+		$opts->defaultVal = $this->getDefaultValue($data);
+		$opts->data	= (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		$opts->allowadd = $params->get('allow_frontend_addtocheckbox', false);
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL');
@@ -242,11 +139,11 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	function prepareFilterVal($val)
 	{
-		$arVals = $this->getSubOptionValues();
-		$arTxt 	= $this->getSubOptionLabels();
-		for ($i=0; $i<count($arTxt); $i++) {
-			if (strtolower($arTxt[$i]) == strtolower($val)) {
-				$val =  $arVals[$i];
+		$values = $this->getSubOptionValues();
+		$labels 	= $this->getSubOptionLabels();
+		for ($i=0; $i<count($labels); $i++) {
+			if (strtolower($labels[$i]) == strtolower($val)) {
+				$val =  $values[$i];
 				return $val;
 			}
 		}
@@ -279,7 +176,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	function getValidationWatchElements($repeatCounter)
 	{
-		$id 			= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$ar = array(
 			'id' 			=> $id,
 			'triggerEvent' => 'click'

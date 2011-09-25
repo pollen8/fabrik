@@ -104,7 +104,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @param	int	element ID number
 	 */
 
-	function setId($id)
+	public function setId($id)
 	{
 		// Set new element ID
 		$this->_id = $id;
@@ -1137,6 +1137,8 @@ class plgFabrik_Element extends FabrikPlugin
 		$elementTable 	= $this->getElement();
 
 		$element 				= new stdClass();
+		$element->startRow = false;
+		$element->endRow = false;
 		$elHTMLName			= $this->getFullName(true, true);
 
 		//if the element is in a join AND is the join's foreign key then we don't show the element
@@ -1180,13 +1182,17 @@ class plgFabrik_Element extends FabrikPlugin
 				$widths = explode(',', $widths);
 				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
 			}
-			$element->column = ' style="margin-right:1%;float:left;width:'.$w.';';
-			if ($elCount % $colcount == 0) {
+			$element->column = ' style="float:left;width:'.$w.';';
+			if (($elCount % $colcount == 0) || $element->hidden) {
+				$element->startRow = true;
 				$element->column .= "clear:both;";
+			}
+			if (($elCount % $colcount === $colcount - 1) || $element->hidden) {
+				$element->endRow = true;
 			}
 			$element->column .= '" ';
 		} else {
-			$element->column .= ' style="clear:both;"';
+			$element->column .= ' style="clear:both;width:100%;"';
 		}
 		$element->element_ro = $this->_getROElement($model->_data, $c);
 
@@ -3196,8 +3202,12 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	 * @param int repeat group counter
 	 */
 
-	function getAddOptionFields($onlyfield, $repeatCounter)
+	function getAddOptionFields($repeatCounter)
 	{
+		$params = $this->getParams();
+		if (!$params->get('allow_frontend_addto')) {
+			return;
+		}
 		$id = $this->getHTMLId($repeatCounter);
 		$valueid = $id.'_ddVal';
 		$labelid = $id.'_ddLabel';
@@ -3208,7 +3218,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$str[] = '</a>';
 		$str[] = '<br style="clear:left"/>';
 		$str[] = '<div class="addoption"><div>'.JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE').'</div>';
-		if (!$onlyfield) {
+		if (!$params->get('allowadd-onlylabel')) {
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
 			$str[] = '<label for="'.$valueid.'">'.JText::_('COM_FABRIK_VALUE').'</label>';
 			$str[] = $value;

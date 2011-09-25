@@ -14,6 +14,15 @@ require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.
 
 class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 {
+
+	public function setId($id)
+	{
+		parent::setId($id);
+		$params = $this->getParams();
+		//set elementlist params from picklist params
+		$params->set('allow_frontend_addto', (bool)$params->get('allowadd', false));
+	}
+
 	/**
 	 * draws the form element
 	 * @param int repeat group counter
@@ -93,10 +102,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		if (!$this->_editable) {
 			return implode(', ', $aRoValues);
 		}
-		if ($params->get('allowadd', false)) {
-			$onlylabel = $params->get('allowadd-onlylabel');
-			$str .= $this->getAddOptionFields($onlylabel, $repeatCounter);
-		}
+		$str .= $this->getAddOptionFields($repeatCounter);
 		return $str;
 	}
 
@@ -148,12 +154,12 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	{
 		$id 				= $this->getHTMLId($repeatCounter);
 		$element 		= $this->getElement();
-		$data 			=& $this->_form->_data;
+		$data 			=& $this->getFormModel()->_data;
 		$arVals 		= $this->getSubOptionValues();
 		$arTxt 			= $this->getSubOptionLabels();
 		$params 		=& $this->getParams();
 
-		$opts 								=& $this->getElementJSOptions($repeatCounter);
+		$opts 								= $this->getElementJSOptions($repeatCounter);
 		$opts->allowadd 			= (bool)$params->get('allowadd', false);
 		$opts->defaultVal 		= $this->getValue($data, $repeatCounter);;
 		//$opts->data 					= array_combine($arVals, $arTxt);;
@@ -199,7 +205,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		return $return;
 	}
 
-/**
+	/**
 	 * build the filter query for the given element.
 	 * @param $key element name in format `tablename`.`elementname`
 	 * @param $condition =/like etc
@@ -214,13 +220,13 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$originalValue = trim($value, "'");
 		$this->encryptFieldName($key);
 		$str = ' ('.$key.' '.$condition.' '.$value.' OR '.$key.' LIKE \'%"'.$originalValue.'"%\')';
-	/*	switch ($condition) {
+		/*	switch ($condition) {
 			case '=':
-				$str = ' ('.$key.' '.$condition.' '.$value.' OR '.$key.' LIKE \'%"'.$originalValue.'"%\')';
-				break;
-			default:
-				$str = " $key $condition $value ";
-				break;
+		$str = ' ('.$key.' '.$condition.' '.$value.' OR '.$key.' LIKE \'%"'.$originalValue.'"%\')';
+		break;
+		default:
+		$str = " $key $condition $value ";
+		break;
 		}*/
 		return $str;
 	}
