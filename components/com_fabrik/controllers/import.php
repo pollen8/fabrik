@@ -40,15 +40,22 @@ class FabrikControllerImport extends JController
 	* Unlike back end import if there are unmatched headings we bail out
 	* @return null
 	*/
-	
+
 	function doimport()
 	{
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
+		$listModel =& $model->getListModel();
+
+		if (!$listModel->canCSVImport()) {
+			JError::raiseError(400, 'Naughty naughty!');
+			jexit;
+		}
+
 		if (!$model->checkUpload()) {
 			$this->display();
 			return;
 		}
-		$id = $model->getListModel()->getId();
+		$id = $listModel->getId();
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType = $document->getType();
