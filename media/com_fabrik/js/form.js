@@ -1117,7 +1117,7 @@ var FbForm = new Class({
 	/* duplicates the groups sub group and places it at the end of the group */
 
 	duplicateGroup : function (e) {
-		var subElementContainer;
+		var subElementContainer, container;
 		window.fireEvent('fabrik.form.group.duplicate', [this, e]);
 		if (this.result === false) {
 			this.result = true;
@@ -1167,8 +1167,8 @@ var FbForm = new Class({
 				// for all instances of the call to findClassUp use el.element rather
 				// than input (HMM SEE LINE 912 - PERHAPS WE CAN REVERT TO USING INPUT
 				// NOW?)
-				c = input.getParent('.fabrikSubElementContainer');
-				var testid = (hasSubElements && c) ? c.id : input.id;
+				container = input.getParent('.fabrikSubElementContainer');
+				var testid = (hasSubElements && container) ? container.id : input.id;
 
 				if (el.options.element === testid) {
 					lastinput = input;
@@ -1176,22 +1176,9 @@ var FbForm = new Class({
 
 					if (hasSubElements) {
 						subElementCounter++;
-						// the line below meant that we updated the orginal groups id @ line
-						// 942 - which in turn meant when we cleared the values we were
-						// clearing the orignal elements values
-						// not sure how this fits in with comments above which state we
-						// should use el.element.getParent('.fabrikSubElementContainer');
-						// REAL ISSUE WAS THAT inputs CONTAINED ADD OPTIONS
-						// (elementmodel->getAddOptionFields) WHICH HAD ELEMENTS WITH THE
-						// CLASS fabrikinput THIS CLASS IS RESERVERED FOR ACTUAL DATA
-						// ELEMENTS
-						// subElementContainer =
-						// el.element.getParent('.fabrikSubElementContainer');
-
 						subElementContainer = input.getParent('.fabrikSubElementContainer');
 						// clone the first inputs event to all subelements
 						input.cloneEvents(document.id(testid).getElement('input'));
-
 						// id set out side this each() function
 					} else {
 						input.cloneEvents(el.element);
@@ -1209,7 +1196,7 @@ var FbForm = new Class({
 						}
 					}
 
-					input.name = input.name.replace('[0]', '[' + (c) + ']');
+					input.name = input.name.replace('[0]', '[' + c + ']');
 				}
 			}.bind(this));
 	
@@ -1268,7 +1255,7 @@ var FbForm = new Class({
 		}
 
 		var myFx = new Fx.Tween(clone, { 'property' : 'opacity', 
-			duration : 500
+			duration: 500
 		}).set(0);
 
 		clone.fade(1);
