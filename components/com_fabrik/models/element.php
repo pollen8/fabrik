@@ -3415,26 +3415,6 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	}
 
 	/**
-	 * can be overridden in plugin
-	 * @return string joomfish translation type e.g. text/textarea/referenceid/titletext
-	 */
-
-	function getJoomfishTranslationType()
-	{
-		return 'text';
-	}
-
-	/**
-	 * can be overridden in plugin
-	 * @return bol is the content stored by this element translatable?
-	 */
-
-	function getJoomfishTranslatable()
-	{
-		return true;
-	}
-
-	/**
 	 * ca be overridden in plugin
 	 * @return array key=>value options
 	 */

@@ -13,7 +13,6 @@ jimport('joomla.application.component.modelform');
 
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'pagination.php');
 require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'joomfish.php');
 
 class FabrikFEModelList extends JModelForm {
 
@@ -373,6 +372,7 @@ class FabrikFEModelList extends JModelForm {
 
 		//set 2nd param to false in attempt to stop joomfish db adaptor from translating the orignal query
 		// fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
+		// $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
 		$this->_data = $fabrikDb->loadObjectList('', 'stdClass', false);
 		if ($fabrikDb->getErrorNum() != 0) {
 			jexit('getData:' . $fabrikDb->getErrorMsg());
@@ -405,6 +405,10 @@ class FabrikFEModelList extends JModelForm {
 		return $this->_data;
 	}
 
+	/**
+	 * @deprecated Joomfish not available in J1.7
+	 * @param unknown_type $data
+	 */
 	function translateData(&$data)
 	{
 		$params = $this->getParams();
