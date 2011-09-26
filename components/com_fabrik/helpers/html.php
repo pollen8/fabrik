@@ -1052,6 +1052,17 @@ function loadCalendar()
 		return $src == '' ? '' : "<img src=\"$src\" $p/>";
 	}
 	
+	/**
+	 * make a grid of items
+	 * @param array $values
+	 * @param array $labels
+	 * @param array $selected
+	 * @param string $name
+	 * @param string $type *checkbox/radio etc
+	 * @param bool $elementBeforeLabel
+	 * @param int $optionsPerRow
+	 */
+	
 	public function grid($values, $labels, $selected, $name, $type="checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)
 	{
 		$items = array();
@@ -1069,23 +1080,14 @@ function loadCalendar()
 		}
 		$grid = array();
 		
-		if ($optionsPerRow > count($items)) {
-			$widthConstraint = ' style="width:'.(int)(100 / $optionsPerRow * count($items)).'%"';
-		} else {
-			$widthConstraint = '';
-		}
+		$w = floor(100 / $optionsPerRow);
+		$widthConstraint = '';
+		$grid[] = '<ul>';
 		foreach ($items as $i => $s) {
-			if ($i == 0 || ($optionsPerRow === 0 || $i % $optionsPerRow === 0)) {
-				$grid[] = '<ul class="displayBox"'.$widthConstraint.'>';
-			}
-			$grid[] = '<li class="boxFlex">'.$s.'</li>';
-			if ($i !== 0 &&  ($optionsPerRow === 0 || $i % $optionsPerRow === $optionsPerRow - 1)) {
-				$grid[] = '</ul>';
-			}
+			$clear = ($i % $optionsPerRow == 0) ? 'clear:left;' : '';
+			$grid[] = '<li style="'.$clear.'float:left;width:'.$w.'%;padding:0;margin:0;">'.$s.'</li>';
 		}
-		if ($i !== 0 &&  ($optionsPerRow === 0 || $i % $optionsPerRow !== $optionsPerRow - 1)) {
-			$grid[] = '</ul>';
-		}
+		$grid[] = '</ul>';
 		return $grid;
 	}
 

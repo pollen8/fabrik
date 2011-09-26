@@ -48,6 +48,12 @@ var FbForm = new Class({
 		this.fx.elements = [];
 		this.fx.validations = {};
 		this.setUpAll();
+		if (Browser.firefox) {
+			//as firefox treats display:-moz-box as display:-moz-box-inline we have to programatically set their widths
+			this.getForm().getElements('.fabrikElementContainer > .displayBox').each(function (b) {
+				b.setStyle('width', b.getParent().getSize().x + 'px');
+			});
+		}
 	},
 	
 	setUpAll: function () {
