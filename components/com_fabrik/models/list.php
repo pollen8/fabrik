@@ -2487,7 +2487,7 @@ class FabrikFEModelList extends JModelForm {
 		$app = JFactory::getApplication();
 		$prefix = $app->getCfg('dbprefix');
 		$table = $this->getTable();
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$aliases = array($table->db_table_name);
 		$tableGroups = array();
 
