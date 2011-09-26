@@ -20,15 +20,15 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	var $name = "plgFabrik_ListEmail";
 
-	 function onPopupwin(){
+	function onPopupwin(){
 		echo ' hre lklfsd k popupwin';
 	}
 
 	/**
-	* determine if the table plugin is a button and can be activated only when rows are selected
-	*
-	* @return bol
-	*/
+	 * determine if the table plugin is a button and can be activated only when rows are selected
+	 *
+	 * @return bol
+	 */
 	function canSelectRows()
 	{
 		return $this->canUse();
@@ -43,7 +43,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	{
 		return "email records";
 	}
-	
+
 	protected function buttonLabel()
 	{
 		return $this->getParams()->get('email_button_label', parent::buttonLabel());
@@ -234,18 +234,24 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 					$mailto = $to;
 				}
 				if ($process) {
-					if (JMailHelper::isEmailAddress($mailto)) {
-						$thissubject = $w->parseMessageForPlaceholder($subject, $row);
-						$thismessage = $w->parseMessageForPlaceholder($message, $row);
-						$res = JUtility::sendMail($email_from, $email_from, $mailto, $thissubject, $thismessage, 1, $cc, $bcc, $this->filepath);
-						if ($res) {
-							$updated[] = $row->__pk_val;
-							$sent ++;
+					$mailtos = explode(',', $mailto);
+					foreach ($mailtos as $mailto) {
+						$mailto = $w->parseMessageForPlaceholder($mailto, $row);
+						if (JMailHelper::isEmailAddress($mailto)) {
+							$thissubject = $w->parseMessageForPlaceholder($subject, $row);
+							$thismessage = $w->parseMessageForPlaceholder($message, $row);
+							$res = JUtility::sendMail($email_from, $email_from, $mailto, $thissubject, $thismessage, 1, $cc, $bcc, $this->filepath);
+							if ($res) {
+								$sent ++;
+							} else {
+								$notsent ++;
+							}
 						} else {
 							$notsent ++;
 						}
-					} else {
-						$notsent ++;
+					}
+					if ($res) {
+						$updated[] = $row->__pk_val;
 					}
 				} else {
 					$notsent ++;
