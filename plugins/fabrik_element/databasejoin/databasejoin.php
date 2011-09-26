@@ -45,7 +45,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
-		if ($this->isJoin()) {// $$$ rob was commented out - but  meant that the SELECT GROUP_CONCAT subquery was never user
+		if ($this->isJoin()) {
+			// $$$ rob was commented out - but  meant that the SELECT GROUP_CONCAT subquery was never user
 			return parent::getAsField_html($aFields, $aAsFields, $opts);
 		}
 		$table = $this->actualTableName();
@@ -746,28 +747,32 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getFieldDescription()
 	{
-		$p = $this->getParams();
+		$params = $this->getParams();
 		if ($this->encryptMe()) {
 			return 'BLOB';
 		}
 		$table = $this->getlistModel();
 		$db = $table->getDb();
-		//if the element is in a non joined repeat group we should return varchar 255
-		$group = $this->getGroup();
-		if ($group->isJoin() == 0 && $group->canRepeat()) {
-			return "VARCHAR(255)";
-		}
+		
 		//lets see if we can get the field type of the field we are joining to
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		$join->load(array('element_id' =>$this->_id));
-		if($join->table_join == '') {
-			return "VARCHAR(255)";
+		if ((int)$this->_id !== 0) {
+			$join->load(array('element_id' => $this->_id));
+			if($join->table_join == '') {
+				return "VARCHAR(255)";
+			}
+			$dbName = $join->table_join;
+			$joinKey = $join->table_join_key;
+		} else {
+			$dbName = $params->get('join_db_name');
+			$joinKey = $params->get('join_key_column');
 		}
-		$db->setQuery("DESCRIBE $join->table_join");
+			
+		$db->setQuery("DESCRIBE $dbName");
 		$fields = $db->loadObjectList();
 		if (is_array($fields)) {
 			foreach ($fields as $field) {
-				if ($field->Field == $join->table_join_key) {
+				if ($field->Field == $joinKey) {
 					return $field->Type;
 				}
 			}
@@ -788,27 +793,27 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 */
 
 	/*function getEmailValue($value, $data, $c)
-	{
-		$tmp = $this->_getOptions($data);
-		if (is_array($value)){
-			foreach ($value as &$v2) {
-				foreach ($tmp as $v) {
-					if ($v->value == $v2) {
-						$v2 = $v->text;
-					}
-				}
-				$v2 = $this->renderListData($v2, new stdClass());
-			}
-			$val = $value;
-		}else {
-			foreach ($tmp as $v) {
-				if ($v->value == $value) {
-					$value = $v->text;
-				}
-			}
-			$val = $this->renderListData($value, new stdClass());
-		}
-		return $val;
+	 {
+	$tmp = $this->_getOptions($data);
+	if (is_array($value)){
+	foreach ($value as &$v2) {
+	foreach ($tmp as $v) {
+	if ($v->value == $v2) {
+	$v2 = $v->text;
+	}
+	}
+	$v2 = $this->renderListData($v2, new stdClass());
+	}
+	$val = $value;
+	}else {
+	foreach ($tmp as $v) {
+	if ($v->value == $value) {
+	$value = $v->text;
+	}
+	}
+	$val = $this->renderListData($value, new stdClass());
+	}
+	return $val;
 	}*/
 
 	/**
@@ -967,18 +972,18 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 */
 
 	/*public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
-	{
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$params = $this->getParams();
-		$filter_build = $params->get('filter_build_method', 0);
-		if ($filter_build == 0) {
-			$filter_build = $usersConfig->get('filter_build_method');
-		}
-		if ($filter_build == 2) {
-			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
-		} else {
-			return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
-		}
+	 {
+	$usersConfig = JComponentHelper::getParams('com_fabrik');
+	$params = $this->getParams();
+	$filter_build = $params->get('filter_build_method', 0);
+	if ($filter_build == 0) {
+	$filter_build = $usersConfig->get('filter_build_method');
+	}
+	if ($filter_build == 2) {
+	return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
+	} else {
+	return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+	}
 	}*/
 
 	/**
@@ -1006,8 +1011,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		/*
 		 * list of all tables that have been joined to -
-		 * if duplicated then we need to join using a table alias
-		 */
+		* if duplicated then we need to join using a table alias
+		*/
 		$listModel 	=& $this->getlistModel();
 		$table 				=& $listModel->getTable();
 		$origTable 		= $table->db_table_name;
@@ -1019,7 +1024,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$join = $this->getJoin();
 		$joinTableName = $join->table_join_alias;
-		if ($joinTable == '') { $joinTable = $joinTableName;}
+		if ($joinTable == '') {
+			$joinTable = $joinTableName;
+		}
 		// $$$ hugh - select all values for performance gain over selecting distinct records from recorded data
 		$sql 	= "SELECT DISTINCT( $joinVal ) AS text, $joinKey AS value \n FROM  ".$fabrikDb->nameQuote($joinTable)." AS ".$fabrikDb->nameQuote($joinTableName)." \n ";
 		$where = $this->_buildQueryWhere();
@@ -1058,10 +1065,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$db = FabrikWorker::getDbo();
 		// @TODO seems to me that actually table_join_alias is incorrect when the element is rendered as a checkbox?
 		/*if ($this->isJoin()) {
-			echo "<pre>";print_r($join);print_r($this->getElement());echo "</pre>";
-			return $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_key_column'));
+		echo "<pre>";print_r($join);print_r($this->getElement());echo "</pre>";
+		return $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_key_column'));
 		} else {*/
-			return $db->nameQuote($join->table_join_alias).'.'.$db->nameQuote($params->get('join_key_column'));
+		return $db->nameQuote($join->table_join_alias).'.'.$db->nameQuote($params->get('join_key_column'));
 		//}
 	}
 
@@ -1081,43 +1088,43 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		# used in prefilter dropdown in admin to allow users to prefilter on raw db join value
 
 		$params = $this->getParams();
-		$db = JFactory::getDBO();
-		if ($type == 'querystring') {
-			//$key2 = FabrikString::safeColNameToArrayKey($key);
-			// $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
-			// by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
-			// value if it was then we want to filter on the key and not the label
-			//if (!array_key_exists($key2, JRequest::get('get'))) {
-			if (!$this->_rawFilter) {
-				$k = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_val_column'));
-			} else {
-				$k = $key;
-			}
-			$this->encryptFieldName($k);
-			return "$k $condition $value";
-			//}
-		}
-		$this->encryptFieldName($key);
-		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter')) {
-			//$$$rob wasnt working for 2nd+ db join element to same table (where key =  `countries_0`.`label`)
-			//$k = '`'.$params->get('join_db_name'). "`.`" . $params->get('join_val_column').'`';
-			$str = "$key $condition $value";
+	$db = JFactory::getDBO();
+	if ($type == 'querystring') {
+		//$key2 = FabrikString::safeColNameToArrayKey($key);
+		// $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
+		// by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
+		// value if it was then we want to filter on the key and not the label
+		//if (!array_key_exists($key2, JRequest::get('get'))) {
+		if (!$this->_rawFilter) {
+			$k = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_val_column'));
 		} else {
+			$k = $key;
+		}
+		$this->encryptFieldName($k);
+		return "$k $condition $value";
+		//}
+	}
+	$this->encryptFieldName($key);
+	if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter')) {
+		//$$$rob wasnt working for 2nd+ db join element to same table (where key =  `countries_0`.`label`)
+		//$k = '`'.$params->get('join_db_name'). "`.`" . $params->get('join_val_column').'`';
+		$str = "$key $condition $value";
+	} else {
 
-			$group = $this->getGroup();
-			if (!$group->isJoin() && $group->canRepeat()) {
+		$group = $this->getGroup();
+		if (!$group->isJoin() && $group->canRepeat()) {
 
-				$fval = $this->getElement()->filter_exact_match ? $originalValue : $value;
+			$fval = $this->getElement()->filter_exact_match ? $originalValue : $value;
 
-				$str = " ($key = $fval OR $key LIKE \"$originalValue',%\"".
+			$str = " ($key = $fval OR $key LIKE \"$originalValue',%\"".
 				" OR $key LIKE \"%:'$originalValue',%\"".
 				" OR $key LIKE \"%:'$originalValue'\"".
 				" )";
-			} else {
-				$str = "$key $condition $value";
-			}
+		} else {
+			$str = "$key $condition $value";
 		}
-		return $str;
+	}
+	return $str;
 	}
 
 	/**
@@ -1200,7 +1207,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return "new FbDatabasejoin('$id', $opts)";
 	}
 
-		/**
+	/**
 	 * @since 3.0
 	 * get the class name for the element wrapping dom object
 	 * @return string of class names
@@ -1565,7 +1572,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return $str;
 	}
 
-/**
+	/**
 	 * @since 2.1.1
 	 * used in form model setJoinData.
 	 * @return array of element names to search data in to create join data array
@@ -1578,7 +1585,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($this->isJoin()) {
 			$element = $this->getElement();
 			$group = $this->getGroup()->getGroup();
-			 $join = $this->getJoinModel()->getJoin();
+			$join = $this->getJoinModel()->getJoin();
 			$repeatName = $join->table_join.'___repeatnum';
 			$fvRepeatName = 'join['.$group->join_id.']['.$repeatName.']';
 			$a[] =array($repeatName, $fvRepeatName);
