@@ -936,7 +936,7 @@ class FabrikFEModelList extends JModelForm {
 		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedFormText, $f), JArrayHelper::fromObject($row));
 		$app = JFactory::getApplication();
 		if (!$app->isAdmin()) {
-			$Itemid	= $app->getMenu('site')->getActive()->id;
+			$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
 		}
 		if (is_null($listid)) {
 			$list = $this->getTable();

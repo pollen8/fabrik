@@ -591,11 +591,11 @@ function save($data)
 
 	$datenow = new JDate();
 	if ($row->id != 0) {
-		$data['modified'] 		= $datenow->toMySQL();
-		$data['modified_by'] 	= $user->get('id');
+		$data['modified'] = $datenow->toMySQL();
+		$data['modified_by'] = $user->get('id');
 	} else {
-		$data['created'] 		= $datenow->toMySQL();
-		$data['created_by'] 	= $user->get('id');
+		$data['created'] = $datenow->toMySQL();
+		$data['created_by'] = $user->get('id');
 		$data['created_by_alias'] = $user->get('username');
 	}
 	$data['params'] = json_encode($params);
@@ -621,7 +621,7 @@ function save($data)
 
 		$origplugin = JRequest::getVar('plugin_orig');
 
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$prefix = $config->getValue('dbprefix');
 
 		$tablename = $listModel->getTable()->db_table_name;

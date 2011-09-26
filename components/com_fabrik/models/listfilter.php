@@ -586,8 +586,10 @@ class FabrikFEModelListfilter extends FabModel {
 				}
 			}
 			$raw = 0;
-			if (substr($key, -5, 5) == '_raw`') {
+			if (substr($oldkey, -4, 4) == '_raw') {
 				$raw = 1;
+				// withouth this line releated data links 'listname___elementname_raw=X' where not having their filter applied 
+				$key  = FabrikString::safeColName(FabrikString::rtrimword($oldkey, '_raw'));
 			}
 			if (!array_key_exists($key, $elements)) {
 				continue;
