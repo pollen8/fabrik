@@ -1476,9 +1476,9 @@ class FabrikModelList extends FabModelAdmin
 	{
 		// Initialise variables.
 		$dispatcher	= JDispatcher::getInstance();
-		$user		= JFactory::getUser();
-		$pks		= (array) $pks;
-		$table		= $this->getTable();
+		$user	= JFactory::getUser();
+		$pks = (array)$pks;
+		$table = $this->getTable();
 		$app = JFactory::getApplication();
 		// Include the content plugins for the on delete events.
 		JPluginHelper::importPlugin('content');
@@ -1494,7 +1494,18 @@ class FabrikModelList extends FabModelAdmin
 		foreach ($pks as $i => $pk) {
 			$feModel->setId($pk);
 			if ($table->load($pk)) {
-				$feModel->set('table', $table);
+				$feModel->set('_table', $table);
+				
+				if ($drop) {
+					if (strncasecmp($table->db_table_name, $dbconfigprefix, strlen($dbconfigprefix)) == 0) {
+						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbconfigprefix), 'notice');
+					} else {
+						$feModel->drop();
+						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_DROPPED', $table->db_table_name));
+					}
+				} else {
+					$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED', $table->db_table_name));
+				}
 				if ($this->canDelete($table)) {
 					$context = $this->option.'.'.$this->name;
 
@@ -1520,7 +1531,7 @@ class FabrikModelList extends FabModelAdmin
 					unset($pks[$i]);
 					return JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
 				}
-
+				
 				switch ($deleteDepth) {
 					case 0: //list only
 					default:
@@ -1538,16 +1549,6 @@ class FabrikModelList extends FabModelAdmin
 						break;
 				}
 
-				if ($drop) {
-					if (strncasecmp($table->db_table_name, $dbconfigprefix, strlen($dbconfigprefix))==0) {
-						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbconfigprefix), 'notice');
-					} else {
-						$feModel->drop();
-						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_DROPPED', $table->db_table_name));
-					}
-				} else {
-					$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED', $table->db_table_name));
-				}
 			} else {
 				$this->setError($table->getError());
 				return false;

@@ -5193,7 +5193,7 @@ class FabrikFEModelList extends JModelForm {
 	function drop()
 	{
 		$db = $this->getDb();
-		$item = $this->getTable(true);
+		$item = $this->getTable();
 		if ($item->db_table_name !== '') {
 			$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($item->db_table_name);
 			$db->setQuery($sql);
@@ -5205,7 +5205,8 @@ class FabrikFEModelList extends JModelForm {
 		$joinModels = $this->getInternalRepeatJoins();
 		foreach ($joinModels as $joinModel) {
 			if ($joinModel->getJoin()->table_join !== '') {
-				$db->setQuery("DROP TABLE IF EXISTS ".$db->nameQuote($joinModel->getJoin()->table_join));
+				$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($joinModel->getJoin()->table_join);
+				$db->setQuery($sql);
 				$db->query();
 				if ($db->getErrorNum()) {
 					JError::raiseError(500,  'drop internal group tables: ' . $db->getErrorMsg());
@@ -5221,7 +5222,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @return array join models.
 	 */
 
-	protected function getInternalRepeatJoins()
+	public function getInternalRepeatJoins()
 	{
 		$return = array();
 		$groupModels = $this->getFormGroupElementData();
