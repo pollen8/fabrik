@@ -107,45 +107,6 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	}
 
 	/**
-	 * trigger called when a row is stored
-	 * check if new options have been added and if so store them in the element for future use
-	 * @param array data to store
-	 */
-
-	function onStoreRow(&$data)
-	{
-		$element = $this->getElement();
-		$params = $this->getParams();
-		if ($params->get('savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
-			$added = stripslashes($data[$element->name . '_additions']);
-			if (trim($added) == '') {
-				return;
-			}
-			$added = json_decode($added);
-			$arVals = $this->getSubOptionValues();
-			$arTxt	= $this->getSubOptionLabels();
-			$d = is_array($data[$element->name]) ? $data[$element->name][0] : $data[$element->name];
-			$d = FabrikWorker::JSONtoData($d, true);
-			$found = false;
-			foreach ($added as $obj) {
-				if (!in_array($obj->val, $arVals)) {
-					$arVals[] = $obj->val;
-					$found = true;
-					$arTxt[] = $obj->label;
-				}
-			}
-			if ($found) {
-				$opts = $params->get('sub_options');
-				$opts->sub_values = $arVals;
-				$opts->sub_labels = $arTxt;
-				// $$$ rob dont json_encode this - the params object has its own toString() magic method
-				$element->params = (string)$params;
-				$element->store();
-			}
-		}
-	}
-
-	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */

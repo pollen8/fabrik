@@ -4,6 +4,7 @@ var FbCheckBox = new Class({
 		this.plugin = 'fabrikcheckbox';
 		this.parent(element, options);
 		this._getSubElements();
+		this.watchAdd();
 	},
 	
 	watchAddToggle : function () {
@@ -47,7 +48,7 @@ var FbCheckBox = new Class({
 					alert(Joomla.JText._('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL'));
 				}
 				else {
-					var r = this.subElements.getLast().findUp('div').clone();
+					var r = this.subElements.getLast().findUp('li').clone();
 					r.getElement('input').value = val;
 					var lastid = r.getElement('input').id.replace(id + '_', '').toInt();
 					lastid++;
@@ -55,7 +56,7 @@ var FbCheckBox = new Class({
 					r.getElement('input').id = id + '_' + lastid;
 					r.getElement('label').setProperty('for', id + '_' + lastid);
 					r.getElement('span').set('text', label);
-					r.inject(this.subElements.getLast().findUp('div'), 'after');
+					r.inject(this.subElements.getLast().findUp('li'), 'after');
 					this._getSubElements();
 					e.stop();
 					if (v) {
@@ -63,6 +64,7 @@ var FbCheckBox = new Class({
 					}
 					l.value = '';
 					this.addNewOption(val, label);
+					this.mySlider.toggle();
 				}
 			}.bind(this));
 		}

@@ -414,5 +414,42 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		}
 		return $label;
 	}
+	
+	/**
+	* trigger called when a row is stored
+	* check if new options have been added and if so store them in the element for future use
+	* @param array data to store
+	*/
+	
+	function onStoreRow($data)
+	{
+		$element = $this->getElement();
+		$params = $this->getParams();
+		if ($params->get('savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
+			$added = stripslashes($data[$element->name . '_additions']);
+			if (trim($added) == '') {
+				return;
+			}
+			$added = json_decode($added);
+			$values = $this->getSubOptionValues();
+			$labels = $this->getSubOptionLabels();
+			$found = false;
+			foreach ($added as $obj) {
+				if (!in_array($obj->val, $values)) {
+					$values[] = $obj->val;
+					$found = true;
+					$labels[] = $obj->label;
+				}
+			}
+			if ($found) {
+				$opts = $params->get('sub_options');
+				$opts->sub_values = $values;
+				$opts->sub_labels = $labels;
+				// $$$ rob dont json_encode this - the params object has its own toString() magic method
+				$element->params = (string)$params;
+				$element->store();
+			}
+		}
+	}
 
 }

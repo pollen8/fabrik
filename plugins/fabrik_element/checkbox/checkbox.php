@@ -28,6 +28,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$params->set('options_per_row', $params->get('ck_options_per_row'));
 		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtocheckbox', false));
 		$params->set('allowadd-onlylabel', (bool)$params->get('chk-allowadd-onlylabel', true));
+		$params->set('savenewadditions', (bool)$params->get('chk-savenewadditions', false));
 	}
 
 	function renderListData_csv( $data, $oAllRowsData )
@@ -52,46 +53,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 
 	/**
-	 * trigger called when a row is stored
-	 * check if new options have been added and if so store them in the element for future use
-	 * @param array data to store
-	 */
-
-	function onStoreRow($data)
-	{
-		$element = $this->getElement();
-		$params = $this->getParams();
-		if ($params->get('chk-savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
-			$added = stripslashes($data[$element->name . '_additions']);
-			if (trim($added) == '') {
-				return;
-			}
-			$json = new Services_JSON();
-			$added = $json->decode($added);
-			$values = $this->getSubOptionValues();
-			$labels 	= $this->getSubOptionLabels();
-			$found = false;
-			foreach ($added as $obj) {
-				if (!in_array($obj->val, $values)) {
-					$values[] = $obj->val;
-					$found = true;
-					$labels[] = $obj->label;
-				}
-			}
-			if ($found) {
-				// @TODO test if J1.6 / f3
-				//$element->sub_values = implode("|", $values);
-				//$element->sub_labels = implode("|", $labels);
-				$opts = $params->get('sub_options');
-				$opts->sub_values = $values;
-				$opts->sub_labels = $labels;
-				$element->params = json_encode($params);
-				$element->store();
-			}
-		}
-	}
-
-	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
@@ -108,7 +69,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data	= (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
-		$opts->allowadd = $params->get('allow_frontend_addtocheckbox', false);
+		$opts->allowadd = (bool)$params->get('allow_frontend_addtocheckbox', false);
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL');
 		return "new FbCheckBox('$id', $opts)";

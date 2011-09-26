@@ -1393,10 +1393,10 @@ class plgFabrik_Element extends FabrikPlugin
 		if (!is_array($this->_HTMLids)) {
 			$this->_HTMLids = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->_HTMLids)) {
+		if (!array_key_exists((int)$repeatCounter, $this->_HTMLids)) {
 			$groupModel = $this->getGroup();
 			$listModel = $this->getListModel();
-			$table 			=& $listModel->getTable();
+			$table = $listModel->getTable();
 			$groupTable = $groupModel->getGroup();
 			$element = $this->getElement();
 			if ($groupModel->isJoin() || $this->isJoin()) {

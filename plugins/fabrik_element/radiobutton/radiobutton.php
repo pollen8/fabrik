@@ -26,6 +26,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$params->set('element_before_label', (bool)$params->get('radio_element_before_label', true));
 		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtoradio', false));
 		$params->set('allowadd-onlylabel', (bool)$params->get('rad-allowadd-onlylabel', true));
+		$params->set('rad-savenewadditions', (bool)$params->get('rad-savenewadditions', false));
 	}
 	
 	/**
@@ -224,48 +225,6 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 			}
 		}
 		return $val;
-	}
-
-	/**
-	 * trigger called when a row is stored
-	 * check if new options have been added and if so store them in the element for future use
-	 * @param array data to store
-	 */
-
-	function onStoreRow($data)
-	{
-		$element = $this->getElement();
-		$params = $this->getParams();
-		if ($params->get('rad-savenewadditions') && array_key_exists($element->name . '_additions', $data)) {
-			$added = stripslashes($data[$element->name . '_additions']);
-			if (trim($added) == '') {
-				return;
-			}
-			$json = new Services_JSON();
-			$added = $json->decode($added);
-			$arVals = $this->getSubOptionValues();
-			$arTxt 	= $this->getSubOptionLabels();
-			$found = false;
-			foreach ($added as $obj) {
-				if (!in_array($obj->val, $arVals)) {
-					$arVals[] = $obj->val;
-					$found = true;
-					$arTxt[] = $obj->label;
-				}
-			}
-
-			if($found)
-			{
-				// @TODO test if J1.6 / f3
-				//$element->sub_values = implode("|", $arVals);
-				//$element->sub_labels = implode("|", $arTxt);
-				$opts = $params->get('sub_options');
-				$opts->sub_values = $arVals;
-				$opts->sub_labels = $arTxt;
-				$element->params = json_encode($params);
-				$element->store();
-			}
-		}
 	}
 
 	/**
