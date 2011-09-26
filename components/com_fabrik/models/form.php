@@ -852,7 +852,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * this will strip the html from the form data according to the
 	 * filter settings applied from article manager->parameters
 	 * see here - http://forum.joomla.org/index.php/topic,259690.msg1182219.html#msg1182219
-	 * still not working in J1.5.2 :(
 	 */
 
 	function &setFormData()
