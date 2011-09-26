@@ -876,6 +876,15 @@ public function delete($cids)
 		}
 		$pluginModel = $pluginManager->getElementPlugin($id);
 		$pluginModel->onRemove($drop);
+		if ($pluginModel->isRepeatElement()) {
+			$listModel = $pluginModel->getListModel();
+			$db = $listModel->getDb();
+			$tableName = $db->nameQuote($this->getRepeatElementTableName($pluginModel));
+			$db->setQuery("DROP TABLE $tableName");
+			if (!$db->query()) {
+				JError::raiseNotice(500, 'didnt drop joined db table '.$tableName);
+			}
+		}
 		$element = $pluginModel->getElement();
 		if ($drop) {
 			$listModel = $pluginModel->getListModel();
@@ -977,9 +986,12 @@ public function createRepeatElement($elementModel, $row)
  * @return string table name
  */
 
-protected function getRepeatElementTableName($elementModel, $row)
+protected function getRepeatElementTableName($elementModel, $row = null)
 {
 	$listModel =& $elementModel->getListModel();
+	if (is_null($row)) {
+		$row = $elementModel->getElement();
+	}
 	$origTableName = $listModel->getTable()->db_table_name;
 	return $origTableName . "_repeat_" . str_replace('`', '', $row->name);
 }

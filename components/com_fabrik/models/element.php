@@ -2416,14 +2416,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$db->setQuery($query);
 		if (!$db->query()) {
 			JError::raiseNotice(500, 'didnt delete js actions for element '.$id);
-		}
-
-		if ($this->isRepeatElement()) {
-			$listModel = $this->getListModel();
-			$db = $listModel->getDb();
-			$tableName = $db->nameQuote($this->getRepeatElementTableName());
-			$db->setQuery("DROP TABLE $tableName");
-			return $db->query();
+			return false;
 		}
 		return true;
 	}
@@ -3746,7 +3739,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	}
 
 	/**
-	 * preciated@de
+	 * @deprecated
 	 * fabrik3: moved to  Admin Element Model
 	 * @return string table name
 	 */
