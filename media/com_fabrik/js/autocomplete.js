@@ -13,7 +13,6 @@ var FbAutocomplete = new Class({
 		menuclass: 'auto-complete-container',
 		url: 'index.php',
 		max: 10,
-		container: 'fabrikElementContainer',
 		onSelection: Class.empty
 	},
 
@@ -28,9 +27,6 @@ var FbAutocomplete = new Class({
 		this.element = typeOf($(element)) === "null" ? document.getElement(element) : $(element);
 		
 		this.buildMenu();
-		//this.spinner = Fabrik.loader.getSpinner();
-		//this.spinner.inject(this.getInputElement(), 'after');
-		//this.spinner.fade('hide'); // f3 - dont hide()
 		if (!this.getInputElement()) {
 			fconsole('autocomplete didnt find input element');
 			return;
@@ -57,7 +53,6 @@ var FbAutocomplete = new Class({
 				this.openMenu();
 			} else {
 				Fabrik.loader.start(this.getInputElement());
-				//this.spinner.fade('in'); //f3 fx used now
 				if (this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
@@ -69,7 +64,6 @@ var FbAutocomplete = new Class({
 					onComplete: function (e) {
 						Fabrik.loader.stop(this.getInputElement());
 						this.completeAjax(e, v);
-						//this.completeAjax.bindWithEvent(this, [v])
 					}.bind(this)
 				}).send();
 			}
@@ -81,7 +75,6 @@ var FbAutocomplete = new Class({
 		r = JSON.decode(r);
 		this.cache[v] = r;
 		Fabrik.loader.stop(this.getInputElement());
-		//this.spinner.fade('out'); //f3 fx now used
 		this.populateMenu(r);
 		this.openMenu();
 	},
@@ -89,7 +82,6 @@ var FbAutocomplete = new Class({
 	buildMenu: function ()
 	{
 		this.menu = new Element('div', {'class': this.options.menuclass, 'styles': {'position': 'absolute'}}).adopt(new Element('ul'));
-		//this.menu.inject(this.element, 'after');
 		this.menu.inject(document.body);
 		this.menu.addEvent('mouseenter', function () {
 			this.mouseinsde = true;

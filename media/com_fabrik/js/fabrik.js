@@ -90,14 +90,7 @@ Element.implement({
 
 var Loader = new Class({
 	
-	Implements: [Options],
-	options: {
-		liveSite: '',
-		'tmpl': 'components/com_fabrik/views/package/tmpl/default/images/'
-	},
-	
 	initialize: function (options) {
-		this.setOptions(options);
 		this.spinners = {};			
 	},
 	
