@@ -23,7 +23,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 
 	var $_counter = null;
 
-	//
+	
 	function onLoad(&$params, &$formModel)
 	{
 		FabrikHelperHTML::script('plugins/fabrik_form/autofill/autofill.js');
@@ -46,6 +46,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 	 * called via ajax to get the first match record
 	 * @return string json object of record data
 	 */
+	
 	function onajax_getAutoFill()
 	{
 		$params = $this->getParams();
@@ -53,8 +54,8 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		$element = JRequest::getVar('observe');
 		$value = JRequest::getVar('v');
 		JRequest::setVar('resetfilters', 1);
-
-		if ($cnn === 0 || $cnn == -1) { //no connection selected so query current forms' table data
+		if ($cnn === 0 || $cnn == -1) {
+			//no connection selected so query current forms' table data
 			$formid = JRequest::getInt('formid');
 			JRequest::setVar($element, $value, 'get');
 			$model = JModel::getInstance('form', 'FabrikFEModel');
@@ -63,14 +64,16 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		} else {
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId(JRequest::getInt('table'));
-			$pk = $listModel->getTable()->db_primary_key;
-			JRequest::setVar($pk, $value, 'get');
+			//$pk = $listModel->getTable()->db_primary_key;
+			//JRequest::setVar($pk, $value, 'get');
 
 		}
-		$nav	=& $listModel->getPagination(1, 0, 1);
-		$listModel->set('_outPutFormat', 'raw');
-		$data = $listModel->getData();
-		$data = $data[0];
+		//$nav	=& $listModel->getPagination(1, 0, 1);
+		//$listModel->set('_outPutFormat', 'raw');
+		
+		$data = $listModel->getRow($value, true, true);
+		$data = array_shift($data);
+
 		if (empty($data)) {
 			echo  "{}";
 		} else {
@@ -81,17 +84,17 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 				foreach($map as $from => $to) {
 					$toraw = $to.'_raw';
 					$fromraw = $from.'_raw';
-					$newdata->$to = $data[0]->$from;
-				if (strstr($newdata->$to, GROUPSPLITTER2)) {
+					$newdata->$to = $data->$from;
+					/* if (strstr($newdata->$to, GROUPSPLITTER2)) {
 						$newdata->$to = explode(GROUPSPLITTER2, $newdata->$to);
-					}
-					$newdata->$toraw = $data[0]->$fromraw;
-				if (strstr($newdata->$toraw, GROUPSPLITTER2)) {
+					} */
+					$newdata->$toraw = $data->$fromraw;
+					/* if (strstr($newdata->$toraw, GROUPSPLITTER2)) {
 						$newdata->$toraw = explode(GROUPSPLITTER2, $newdata->$toraw);
-					}
+					} */
 				}
 			} else {
-				$newdata = $data[0];
+				$newdata = $data;
 			}
 			echo json_encode($newdata);
 		}

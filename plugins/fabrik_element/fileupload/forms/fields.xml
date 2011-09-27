@@ -319,7 +319,7 @@
 					<option value="3">Both</option>
 				</field>
 				<field name="fu_download_acl"
-					type="tablefields"
+					type="listfields"
 					filter="fabrikaccess"
 					label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_LABEL"
 					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_DESC"

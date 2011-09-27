@@ -12,7 +12,7 @@
 				 description="PLG_FORM_AUTOFILL_FIELD_TO_OBSERVE_DESC"/>
 			
 			<field name="autofill_trigger"
-				type="tablefields"
+				type="listfields"
 				repeat="true"
 				valueformat="tableelement" 
 				onlytablefields="0" 

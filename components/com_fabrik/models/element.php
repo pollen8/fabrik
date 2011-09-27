@@ -3129,7 +3129,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 			}
 			$r = "<ul class=\"fabrikRepeatData\"><li>".implode("</li><li>", $data) . "</li></ul>";
 		} else {
-			$r = empty($data) ? '' : $data[0];
+			$r = empty($data) ? '' : array_shift($data);
 		}
 		return $r;
 	}

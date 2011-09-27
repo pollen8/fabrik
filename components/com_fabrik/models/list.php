@@ -3379,7 +3379,7 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function getSlug($row)
 	{
-		return empty($row->slug) ? '' : str_replace(' ', '-', $row->slug);
+		return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
 	}
 
 	/**
@@ -5692,6 +5692,9 @@ class FabrikFEModelList extends JModelForm {
 		} else {
 			$rows = $fabrikDb->loadObjectList();
 			$formModel->setJoinData($rows);
+			if ($format == true) {
+				$this->formatData($rows);
+			}
 			$this->rows[$sig] = $rows[0];
 		}
 		return $this->rows[$sig];
