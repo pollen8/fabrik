@@ -451,6 +451,23 @@
 				label="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_LABEL" 
 				description="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_DESC" />
 				
+			<field name="list_search_elements" 
+				type="fabrikmodalrepeat" 
+				repeat="true"
+				label="COM_FABRIK_FIELD_SEARCH_ELEMENTS_LABEL"
+				description="COM_FABRIK_FIELD_SEARCH_ELEMENTS_DESC">
+				
+					<fields name="params">
+						<fieldset name="list_search_elements_modal" repeat="true">
+							<field name="search_elements" 
+								size="30"
+								type="listfields"
+								label="COM_FABRIK_SEARCH_ELEMENTS_LABEL"/>
+						
+						</fieldset>
+				</fields>
+				
+			</field>
 		</fieldset>
 	
 		<fieldset name="layout">

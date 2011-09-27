@@ -88,6 +88,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		if (!array_key_exists($modalid, $modalrepeat)) {
 			$modalrepeat[$modalid] = array();
 		}
+		if (!isset($this->form->repeatCounter)) {
+			$this->form->repeatCounter = 0;
+		}
 		if (!array_key_exists($this->form->repeatCounter, $modalrepeat[$modalid])) {
 			//if loaded as js template then we don't want to repeat this again. (fabrik)
 			$names = json_encode($names);
@@ -102,6 +105,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$str[] = "<a id=\"".$modalid."_button\" />".JText::_('JLIB_FORM_BUTTON_SELECT').'</a>';
 		$html[] = '	</div>';
 		$html[] = '</div>';
+		if (is_array($this->value)) {
+			$this->value = array_shift($this->value);
+		}
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		$str[] = "<input type=\"hidden\" name=\"$this->name\" id=\"$this->id\" value=\"$value\" />";
 

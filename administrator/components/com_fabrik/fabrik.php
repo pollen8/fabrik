@@ -30,7 +30,7 @@ if (!defined('COM_FABRIK_FRONTEND')) {
 }
 
 //load in front end model path
-JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
+//JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel'); moved to defines
 
 // Execute the task.
 $controller	= &JController::getInstance('Fabrik');

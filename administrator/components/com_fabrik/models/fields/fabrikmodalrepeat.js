@@ -8,7 +8,7 @@ var FabrikModalRepeat = new Class({
 		this.elid = el;
 		//if the parent field is inserted via js then we delay the loading untill the html is present
 		if (!this.ready()) {
-			this.timer = this.getEl.periodical(500, this);
+			this.timer = this.testReady.periodical(500, this);
 		} else {
 			this.setUp();
 		}
@@ -18,18 +18,21 @@ var FabrikModalRepeat = new Class({
 		return typeOf(document.id(this.elid)) === 'null' ? false : true;
 	},
 
-	getEl: function () {
+
+	testReady: function () {
 		if (!this.ready()) {
 			return;
 		}
-		this.button = document.id(this.elid + '_button');
-		this.el = document.id(this.elid).getElement('table');
-		this.field = document.id(this.field);
+		if (this.timer) {
+			clearInterval(this.timer);
+		}
 		this.setUp();
-		clearInterval(this.timer);
 	},
 
 	setUp: function () {
+		this.button = document.id(this.elid + '_button');
+		this.el = document.id(this.elid).getElement('table');
+		this.field = document.id(this.field);
 		this.button.addEvent('click', function (e) {
 			if (!this.setup) {
 				//seems that trying to inject a <form> as a string causes issues

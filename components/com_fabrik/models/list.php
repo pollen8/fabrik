@@ -354,7 +354,7 @@ class FabrikFEModelList extends JModelForm {
 		ini_set('mysql.trace_mode', 'off'); // needs to be off for FOUND_ROWS() to work
 		$fabrikDb = $this->getDb();
 		JDEBUG ? $_PROFILER->mark('query build start') : null;
-		$query 		= $this->_buildQuery();
+		$query = $this->_buildQuery();
 		JDEBUG ? $_PROFILER->mark('query build end') : null;
 
 		$this->setBigSelects();
@@ -5897,7 +5897,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @return array table element models
 	 */
 
-	function getElements($key = 0, $showInTable = true)
+	function getElements($key = 0, $showInTable = true, $onlyPublished = true)
 	{
 		if (!isset($this->elements)) {
 			$this->elements = array();
@@ -5906,7 +5906,6 @@ class FabrikFEModelList extends JModelForm {
 		if (!array_key_exists($sig, $this->elements)) {
 			$this->elements[$sig] = array();
 			$found = array();
-			$this->elements[$key] = array();
 			$groups = $this->getFormGroupElementData();
 			foreach (array_keys($groups) as $gid) {
 				//foreach ($groups as $groupModel) { // $$$ rob dont do this as for some reason only fist groups elements are got when applying filters
@@ -5914,7 +5913,7 @@ class FabrikFEModelList extends JModelForm {
 				$elementModels = $groupModel->getMyElements();
 				foreach ($elementModels as $elementModel) {
 					$element = $elementModel->getElement();
-					if ($element->published == 0) {
+					if ($element->published == 0 && $onlyPublished) {
 						continue;
 					}
 					switch ($key) {

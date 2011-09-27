@@ -626,7 +626,7 @@ class FabrikModelList extends FabModelAdmin
 		$map = array();
 		$groups = $this->getFormModel()->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
-			$elementModels =& $groupModel->getMyElements();
+			$elementModels = $groupModel->getMyElements();
 			foreach ($elementModels as $element) {
 				//int elements cant have a index size attrib
 				// $$$ hugh neither can DATETIME
@@ -664,22 +664,43 @@ class FabrikModelList extends FabModelAdmin
 				$feModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
 			}
 		}
-		if (JFolder::exists(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements')) {
-			if ($params->get('allow-data-translation')) {
-				if (!$this->makeJoomfishXML()) {
-					$this->setError(JTEXT::_( "Unable to make Joomfish XML file"));
-					return false;
-				}
-			} else {
-				$this->removeJoomfishXML();
-			}
+		$this->updateElements($row);
+		/* $$$rob - joomfish not available for j1.7
+		 if (JFolder::exists(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements')) {
+		if ($params->get('allow-data-translation')) {
+		if (!$this->makeJoomfishXML()) {
+		$this->setError(JTEXT::_( "Unable to make Joomfish XML file"));
+		return false;
 		}
+		} else {
+		$this->removeJoomfishXML();
+		}
+		} */
 		$pkName = $row->getKeyName();
 		if (isset($row->$pkName)) {
 			$this->setState($this->getName().'.id', $row->$pkName);
 		}
 		$this->setState($this->getName().'.new', $isNew);
 		return true;
+	}
+
+	/**
+	 * the list view now enables us to alter en-mass some element properties
+	 * @param unknown_type $row
+	 */
+	protected function updateElements($row)
+	{
+		$params = json_decode($row->params);
+		$searchElements = json_decode($params->list_search_elements[0])->search_elements;
+		$elementModels = $this->getFEModel()->getElements(0, false, false);
+		foreach ($elementModels as $elementModel) {
+			$element = $elementModel->getElement();
+			$elParams = $elementModel->getParams();
+			$s = (in_array($element->id, $searchElements)) ? 1 : 0;
+			$elParams->set('inc_in_search_all', $s);
+			$element->params = (string)$elParams;
+			$element->store();
+		}
 	}
 
 	/**
@@ -1495,7 +1516,7 @@ class FabrikModelList extends FabModelAdmin
 			$feModel->setId($pk);
 			if ($table->load($pk)) {
 				$feModel->set('_table', $table);
-				
+
 				if ($drop) {
 					if (strncasecmp($table->db_table_name, $dbconfigprefix, strlen($dbconfigprefix)) == 0) {
 						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbconfigprefix), 'notice');
@@ -1531,7 +1552,7 @@ class FabrikModelList extends FabModelAdmin
 					unset($pks[$i]);
 					return JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDIT_STATE_NOT_PERMITTED'));
 				}
-				
+
 				switch ($deleteDepth) {
 					case 0: //list only
 					default:
