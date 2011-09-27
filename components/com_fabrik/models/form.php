@@ -1581,8 +1581,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function validate()
 	{
+		if (JRequest::getVar('fabrik_ignorevalidation', 0) == 1) {
+			//put in when saving page of form
+			return true;
+		}
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
-		$pluginManager 		= JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$oValidationRules = $pluginManager->getPlugInGroup('validationrule');
 		//$post	=& JRequest::get('post', 4); //4 allows html
 		// $$$ rob added coptToRow here so that calcs run in setFormData, element preProcess()
@@ -1744,9 +1748,67 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			FabrikWorker::getPluginManager()->runPlugins('onError', $this);
 		}
 		FabrikHelperHTML::debug($this->_arErrors, 'form:errors');
+		$this->setErrors($this->_arErrors);
 		return $ok;
 	}
+	
+	/**
+	 * get form validation errors - if empty test session for errors
+	 * @return array errors
+	 */
+	
+	public function getErrors()
+	{
+		$session = JFactory::getSession();
+		if (empty($this->_arErrors)) {
+			$context = 'com_fabrik.form.'.$this->getId();
+			$this->_arErrors = $session->get($context.'.errors', array());
+		}
+		return $this->_arErrors;
+	}
+	
+	/**
+	* clear form validation errors
+	*/
+	
+	public function clearErrors()
+	{
+		$session = JFactory::getSession();
+		$context = 'com_fabrik.form.'.$this->getId();
+		$this->_arErrors = array();
+		$session->clear($context.'.errors');
+	}
+	
+	/**
+	* set form validation errors in session
+	* @param array errors
+	*/
+	
+	public function setErrors($errors)
+	{
+		$session = JFactory::getSession();
+		$context = 'com_fabrik.form.'.$this->getId().'.';
+		$session->set($context.'errors', $errors);
+		$session->set($context.'session.on', true);
+	}
 
+	public function getJsonErrors()
+	{
+		$data = array('modified' => $model->_modifiedValidationData, 'errors' => $model->_arErrors);
+		return json_encode($data);;
+	}
+	
+	/**
+  * should the form do a spoof check
+  * @return bool
+	 */
+	
+	public function spoofCheck()
+	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		return $this->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true));
+	}
+	
 	/**
 	 * get an instance of the uploader object
 	 *
@@ -3151,13 +3213,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 								if (JRequest::getCmd('task') !== 'process') {
 									$this->getSessionData();
 									if ($this->sessionModel->row->data === '') {
-										// $$$rob first and only group should be hidden. (someone saved a repeat group with no rows selected
-										//$fkData = $origData['join'][$joinTable->id][$fullFk];
-										//$startHidden = (count($fkData) === 1 &&  $fkData[0] == '') ? true : false;
-										// $$$ rob 27/09/2011 if any data entered then show the group (id may still be emtpy if creating a new record)
 										$startHidden = true;
 										foreach ($origData['join'][$joinTable->id] as $jData) {
-											if (empty($jData[0])) {
+											if (!empty($jData[0])) {
 												$startHidden = false;
 												continue;
 											}
@@ -3176,15 +3234,6 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-						// $$$ rob use the raw data if it exists
-						// otherwise if you have just one dbjoin el in a repeat group the data would contain
-						// the first label only.e.g.
-						//[table___dbjoin_raw] => 1//..*..//2
-						//[table___dbjoin_raw] => one
-						// you could argue that it should be:
-						//[table___dbjoin_raw] => one//..*..//two
-						// but it isnt at the moment
-
 						if (array_key_exists($smallerElHTMLName."_raw", $this->_data)) {
 							$d = $this->_data[$smallerElHTMLName."_raw"];
 						} else {

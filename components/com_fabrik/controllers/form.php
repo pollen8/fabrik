@@ -51,18 +51,11 @@ class FabrikControllerForm extends JController
 		$viewType	= $document->getType();
 
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view (may have been set in content plugin already
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
 
-		//if errors made when submitting from a J plugin they are stored in the session
-		//lets get them back and insert them into the form model
-		if (empty($model->_arErrors)) {
-			$context = 'com_fabrik.form.'.JRequest::getInt('formid');
-			$model->_arErrors = $session->get($context.'.errors', array());
-			$session->clear($context.'.errors');
-		}
 		if (!JError::isError($model) && is_object($model)) {
 			$view->setModel($model, true);
 		}
@@ -83,9 +76,9 @@ class FabrikControllerForm extends JController
 			$cache->get($view, 'display', $cacheid);
 			$contents = ob_get_contents();
 			ob_end_clean();
-			$token			= JUtility::getToken();
-			$search 		= '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
-			$replacement 	= '<input type="hidden" name="'.$token.'" value="1" />';
+			$token = JUtility::getToken();
+			$search = '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
+			$replacement = '<input type="hidden" name="'.$token.'" value="1" />';
 			echo preg_replace($search, $replacement, $contents);
 		}
 	}
@@ -96,14 +89,12 @@ class FabrikControllerForm extends JController
 
 	function process()
 	{
-
-		@set_time_limit(300);
+		$model = $this->getModel('form', 'FabrikFEModel');
 		$document = JFactory::getDocument();
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType	= $document->getType();
-		$view 		= &$this->getView($viewName, $viewType);
-		$model		= &$this->getModel('form', 'FabrikFEModel');
-		$session = JFactory::getSession();
+		$view = $this->getView($viewName, $viewType);
+		
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);
 		}
@@ -112,46 +103,37 @@ class FabrikControllerForm extends JController
 		$this->isMambot = JRequest::getVar('isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
+		
 		// Check for request forgeries
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
+		if ($model->spoofCheck()) {
 			JRequest::checkToken() or die('Invalid Token');
 		}
-		if (JRequest::getVar('fabrik_ignorevalidation', 0) != 1) { //put in when saving page of form
-			if (!$model->validate()) {
+		
+		if (!$model->validate()) {
 
-				//if its in a module with ajax or in a package
-				if (JRequest::getCmd('fabrik_ajax')) {
-					$data = array('modified' => $model->_modifiedValidationData);
-					//validating entire group when navigating form pages
-					$data['errors'] = $model->_arErrors;
-					echo json_encode($data);
-					return;
-				}
-				if ($this->isMambot) {
-					//store errors in session
-					$context = 'com_fabrik.form.'.$model->get('id').'.';
-					$session->set($context.'errors', $model->_arErrors);
-					// $$$ hugh - testing way of preserving form values after validation fails with form plugin
-					// might as well use the 'savepage' mechanism, as it's already there!
-					$session->set($context.'session.on', true);
-					$this->savepage();
-					$this->setRedirect($this->getRedirectURL($model, false));
-				} else {
-					// $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
-					// couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
-					// if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
-					if (JRequest::getCmd('usekey') !== '') {
-						JRequest::setVar('rowid', -1);
-					}
-					$view->display();
-				}
+			//if its in a module with ajax or in a package
+			if (JRequest::getCmd('fabrik_ajax')) {
+				echo $model->getJsonErrors();
 				return;
 			}
+			$this->savepage();
+			
+			if ($this->isMambot) {
+				$this->setRedirect($this->getRedirectURL($model, false));
+			} else {
+				// $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
+				// couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
+				// if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
+				if (JRequest::getCmd('usekey') !== '') {
+					JRequest::setVar('rowid', -1);
+				}
+				$view->display();
+			}
+			return;
 		}
 
 		//reset errors as validate() now returns ok validations as empty arrays
-		$model->_arErrors = array();
+		$model->clearErrors();
 
 		$model->process();
 		//check if any plugin has created a new validation error
@@ -330,7 +312,7 @@ class FabrikControllerForm extends JController
 
 	function savepage()
 	{
-		$model		=& $this->getModel('Formsession', 'FabrikFEModel');
+		$model = $this->getModel('Formsession', 'FabrikFEModel');
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$formModel->setId(JRequest::getInt('formid'));
 		$model->savePage($formModel);
