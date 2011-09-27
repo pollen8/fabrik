@@ -137,7 +137,11 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
 	{
 		$name = $this->icon === true ? $this->_pluginName : $this->icon;
-		return FabrikHelperHTML::image($name.'.png', 'form', $tmpl, $this->getLabel($elementModel, $c));
+		$label = $this->getLabel($elementModel, $c);
+		$str = "<a href=\"#\" class=\"fabrikTip\" title=\"".$label."\">";
+		$str .= FabrikHelperHTML::image($name.'.png', 'form', $tmpl, '');
+		$str .= "</a>";
+		return $str;
 	}
 	
 	/**
