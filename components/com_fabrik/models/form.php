@@ -3132,10 +3132,19 @@ WHERE $table->db_primary_key $c $rowid $order $limit");
 							} else {
 								// show empty groups if we are validating a posted form
 								if (JRequest::getCmd('task') !== 'process') {
-									$fkData = $origData['join'][$joinTable->id][$fullFk];
+									$this->getSessionData();
 									if ($this->sessionModel->row->data === '') {
 										// $$$rob first and only group should be hidden. (someone saved a repeat group with no rows selected
-										$startHidden = (count($fkData) === 1 &&  $fkData[0] == '') ? true : false;
+										//$fkData = $origData['join'][$joinTable->id][$fullFk];
+										//$startHidden = (count($fkData) === 1 &&  $fkData[0] == '') ? true : false;
+										// $$$ rob 27/09/2011 if any data entered then show the group (id may still be emtpy if creating a new record)
+										$startHidden = true;
+										foreach ($origData['join'][$joinTable->id] as $jData) {
+											if (empty($jData[0])) {
+												$startHidden = false;
+												continue;
+											}
+										}
 									}
 								}
 							}
