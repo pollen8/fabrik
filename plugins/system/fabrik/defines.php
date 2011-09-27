@@ -51,6 +51,8 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'elementlist.php');
 
 $app = JFactory::getApplication();
 if ($app->isAdmin()) {
+	//load in front end model path
+	JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
 	require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'fabrik.php');
 }
 ?>

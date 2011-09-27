@@ -18,7 +18,7 @@ class plgSearchFabrik extends JPlugin
 	function onContentSearchAreas()
 	{
 		// load plugin params info
-		$section	= $this->params->get('search_section_heading');
+		$section = $this->params->get('search_section_heading');
 		$areas = array(
 			'fabrik' => $section
 		);
@@ -39,6 +39,7 @@ class plgSearchFabrik extends JPlugin
 
 	function onContentSearch($text, $phrase='', $ordering='', $areas=null)
 	{
+		return plgSystemFabrik::onContentSearch($text, $phrase, $ordering, $areas);
 		global $_PROFILER;
 		JDEBUG ? $_PROFILER->mark('fabrik search start') : null;
 
