@@ -83,15 +83,6 @@
 					<option value="0">Sunday</option>
 					<option value="1">Monday</option>
 			</field>
-			
-			<field name="date_theme"
-				type="list"
-				label="PLG_ELEMENT_DATE_THEME_LABEL"
-				description="PLG_ELEMENT_DATE_THEME_DESC">
-					<option value="default">default</option>
-					<option value="osx-dashboard">OSX Dashboard</option>
-					<option value="vista">Vista</option>
-			</field>
 				
 			<field name="date_allow_typing_in_field" 
 				type="radio" 
