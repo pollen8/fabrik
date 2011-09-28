@@ -2344,6 +2344,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	{
 		$this->_joinDefaultData = array();
 
+		if (empty($data)) {
+			return;
+		}
 		if (!array_key_exists('join', $data[0])) {
 			$data[0]->join = array();
 		}
