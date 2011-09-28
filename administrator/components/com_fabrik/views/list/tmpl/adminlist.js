@@ -514,7 +514,7 @@ var adminFilters = new Class({
 		td3.adopt(
 			new Element('label').adopt([
 				new Element('span').set('text', Joomla.JText._('COM_FABRIK_TYPE')),
-				this._makeSel('inputbox elementtype', 'jform[params][filter-eval][' + this.counter + ']', evalopts, evaluate)
+				this._makeSel('inputbox elementtype', 'jform[params][filter-eval][]', evalopts, evaluate)
 			])
 		);
 

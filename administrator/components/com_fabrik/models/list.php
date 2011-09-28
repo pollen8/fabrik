@@ -243,7 +243,6 @@ class FabrikModelList extends FabModelAdmin
 		$connModel = $this->getCnn();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		JText::script('COM_FABRIK_ACTION');
 		JText::script('COM_FABRIK_DO');
@@ -335,7 +334,7 @@ class FabrikModelList extends FabModelAdmin
 		$afilterJoins	= $form->getValue('params.filter-join');
 
 		$afilterFields = $form->getValue('params.filter-fields');
-		$afilterConditions	= $form->getValue('params.filter-conditions');
+		$afilterConditions = $form->getValue('params.filter-conditions');
 		$afilterEval = $form->getValue('params.filter-eval');
 		$afilterValues= $form->getValue('params.filter-value');
 		$afilterAccess= $form->getValue('params.filter-access');
@@ -345,7 +344,7 @@ class FabrikModelList extends FabModelAdmin
 			$selFilter = $afilterFields[$i];
 			$grouped = $aGrouped[$i];
 			$selCondition = $afilterConditions[$i];
-			$filerEval = JArrayHelper::getValue($afilterEval, $i, '1');
+			$filerEval = (int)JArrayHelper::getValue($afilterEval, $i, '1');
 			if ($selCondition == '&gt;') {
 				$selCondition = '>';
 			}
@@ -360,7 +359,7 @@ class FabrikModelList extends FabModelAdmin
 			$selValue = json_encode($selValue);
 
 			if ($selFilter != '') {
-				$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', '$filerEval', '$grouped');\n";
+				$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 			}
 		}
 		$js .= "
