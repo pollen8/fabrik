@@ -39,10 +39,10 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 					<?php if ($group->editable) { ?>
 						<div class="fabrikGroupRepeater">
 							<a class="addGroup" href="#">
-								<img src="<?php echo COM_FABRIK_LIVESITE?>components/com_fabrik/views/form/tmpl/default/images/add.png" alt="<?php echo JText::_('COM_FABRIK_ADD_GROUP');?>" />
+								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD_GROUP'));?>
 							</a>
 							<a class="deleteGroup" href="#">
-								<img src="<?php echo COM_FABRIK_LIVESITE?>components/com_fabrik/views/form/tmpl/default/images/del.png" alt="<?php echo JText::_('COM_FABRIK_DELETE_GROUP');?>" />
+								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
 							</a>
 						</div>
 					<?php } ?>

@@ -51,7 +51,7 @@ class fabrikViewForm extends JView
 				return false;
 			}
 		}
-
+		$this->assign('rowid', $model->_rowId);
 		$this->assign('access', $model->checkAccessFromListSettings());
 		if ($this->access == 0) {
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
@@ -87,16 +87,8 @@ class fabrikViewForm extends JView
 		$this->_addButtons();
 		JDEBUG ? $_PROFILER->mark('form view before validation classes loaded') : null;
 		
-		$t = ($model->_editable)? $form->form_template : $form->view_only_template;
-		if ($this->isMambot) {
-			// need to do this otherwise when viewing form in form module and in category/blog content page
-			// you get a 500 error regarding layout default not found.
-			$form->form_template = JRequest::getVar('flayout', $t);
-		} else {
-			$form->form_template = JRequest::getVar('layout', $t);
-		}
-		
 		$tmpl = $this->get('tmpl');
+		
 		$this->assign('tmpl', $tmpl);
 		JDEBUG ? $_PROFILER->mark('form view before group view got') : null;
 		
@@ -150,8 +142,9 @@ class fabrikViewForm extends JView
 			$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
 			JRequest::setVar('option', $opt);
 		}
-		//$text = "<div id=\"fabrik\">$text</div>";
 		JDEBUG ? $_PROFILER->mark('form view display end') : null;
+		// allows you to use {placeholders} in form template.
+		$text = $w->parseMessageForPlaceHolder($text, $model->_data);
 		echo $text;
 	}
 
@@ -172,7 +165,7 @@ class fabrikViewForm extends JView
 			//see http://fabrikar.com/forums/showpost.php?p=73833&postcount=14
 			//if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
 			if ($model->sessionModel->last_page > 0) {
-				$message .= " <a href=\"#\" class=\"clearSession\">" . JText::_('COM_FABRIK_CLEAR') . "</a>";
+				$message .= " <a href=\"#\" class=\"clearSession\">".JText::_('COM_FABRIK_CLEAR')."</a>";
 			}
 		}
 

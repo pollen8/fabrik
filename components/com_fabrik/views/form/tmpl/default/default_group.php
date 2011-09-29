@@ -12,12 +12,5 @@
 		</div>
 		</div>
 	</li>
-<?php if (@$element->endRow) {
-//echo "</div>";
-}?>
 	<?php }?>
-	<?php if (!$element->endRow) {
-//echo "</div>";
-}?>
 </ul>
-
