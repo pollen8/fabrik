@@ -558,9 +558,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		"\n});"; //end domready function
 
 		FabrikHelperHTML::addScriptDeclaration($script);
-
+		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, 'calendar', false, array('id' => $id.'_img'));
 		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.
-				 '<img class="calendar" src="'.JURI::root(true).'/templates/system/images/calendar.png" alt="calendar" id="'.$id.'_img" />';
+		$img;
 	}
 
 	/**
