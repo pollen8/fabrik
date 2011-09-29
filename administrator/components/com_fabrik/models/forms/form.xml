@@ -174,6 +174,28 @@
 				
 		</fieldset>
 		
+		<fieldset name="admintemplates">
+		
+			<field name="admin_details_template" 
+				type="folderlist" 
+				directory="/components/com_fabrik/views/form/tmpl/" 
+				hide_none="1" 
+				hide_default="0" 
+				default="" 
+				label="COM_FABRIK_FIELD_ADMIN_DETAILS_TEMPLATE_LABEL" 
+				description="COM_FABRIK_FIELD_ADMIN_DETAILS_TEMPLATE_DESC" />
+				
+			<field name="admin_form_template" 
+				type="folderlist" 
+				directory="/components/com_fabrik/views/form/tmpl/" 
+				hide_none="1" 
+				hide_default="0" 
+				default="" 
+				label="COM_FABRIK_FIELD_ADMIN_FORM_TEMPLATE_LABEL" 
+				description="COM_FABRIK_FIELD_ADMIN_FORM_TEMPLATE_DESC" />
+		
+		</fieldset>
+		
 		<fieldset name="notes">
 		
 			<field type="textarea"

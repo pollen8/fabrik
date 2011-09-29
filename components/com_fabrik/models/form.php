@@ -225,11 +225,18 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function getTmpl()
 	{
-		$form = $this->getForm();
-		if ($this->_editable) {
-			$tmpl = $form->form_template == '' ? 'default' : $form->form_template;
-		} else {
-			$tmpl = $form->view_only_template == '' ? 'default' : $form->view_only_template;
+		$app = JFactory::getApplication();
+		$params = $this->getParams();
+		$item = $this->getForm();
+		if ($app->isAdmin()) {
+			$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
+		}
+		if ($tmpl == '') {
+			if ($this->_editable) {
+				$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+			} else {
+				$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+			}
 		}
 		if (JRequest::getVar('mjmarkup') == 'iphone') {
 			$tmpl = 'iwebkit';
@@ -237,6 +244,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (!JFolder::exists(JPATH_SITE."/components/com_fabrik/views/form/tmpl/".$tmpl)) {
 			$tmpl = 'default';
 		}
+		$item->form_template = $tmpl;
 		return $tmpl;
 	}
 
@@ -1072,7 +1080,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						if ($elementModel->getGroup()->isJoin()) {
 							//repeat element in a repeat group :S
 							$groupJoin = $elementModel->getGroup()->getJoinModel();
-							$groupKeyVals = $this->_formData['join'][$groupJoin->getId()][$groupJoin->getPrimaryKey().'_raw'];
+							//$groupKeyVals = $this->_formData['join'][$groupJoin->getId()][$groupJoin->getPrimaryKey().'_raw'];
 							for ($r = 0; $r < count($data[$oJoin->table_join.'___id']); $r ++) {
 								$repeatTotals['el'.$elementModel->getId()][$r] =  count($data[$oJoin->table_join.'___id'][$r]);
 							}
