@@ -14,13 +14,15 @@ div.calendar{
 .displayBox{
 	display:-webkit-box;
 	display:-moz-box;
-	/* ff needs to stipulate a width otherwise box-flex is not applied */
-	width:100%;
 	display:box;
 	moz-box-pack: center;
 	box-pack: center;
 }
 
+.mozilla .displayBox{
+		/* ff needs to stipulate a width otherwise box-flex is not applied */
+	width:100%;
+}
 .boxFlex{
 	-webkit-box-flex:1;
 	-moz-box-flex:1;
