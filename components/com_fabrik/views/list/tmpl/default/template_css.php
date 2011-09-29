@@ -54,12 +54,6 @@ echo "
 }
 
 
-#listform_$c .fabrikList .fabrikTag{
-	background: transparent url(../images/tag.png) no-repeat left;
-	padding: 3px 0.5em 0 19px;
-	line-height:2.1em;
-}
-
 #listform_$c .fabrikElementContainer{
 	/** for inline edit **/
 	position:relative;
