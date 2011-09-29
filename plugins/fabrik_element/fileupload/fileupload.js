@@ -11,7 +11,7 @@ var FbFileUpload = new Class({
 		window.addEvent('fabrik.form.submit.start', function (form, json) {
 			this.onSubmit(form);
 		}.bind(this));
-		if (this.options.ajax_upload === 1 && this.options.editable !== false) {
+		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
 			if (this.options.files.getLength() !== 0) {
@@ -51,7 +51,7 @@ var FbFileUpload = new Class({
 	decloned : function (groupid) {
 		var f = $('form_' + this.form.id);
 		var i = f.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
-		if ($type(i) === false) {
+		if (typeOf(i) === 'null') {
 			new Element('input', {
 				'type' : 'hidden',
 				'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
@@ -113,8 +113,9 @@ var FbFileUpload = new Class({
 
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
+			console.log(files);
 			var txt = this.droplist.getElement('.plupload_droptext');
-			if ($type(txt) !== false) {
+			if (typeOf(txt) !== 'null') {
 				txt.destroy();
 			}
 			var count = this.droplist.getElements('li').length;
@@ -139,7 +140,7 @@ var FbFileUpload = new Class({
 						events : {
 							'click' : this.pluploadResize.bindWithEvent(this)
 						}
-					});
+					}).set('html', this.options.resizeButton);
 					var filename = new Element('div', {
 						'class' : 'plupload_file_name'
 					}).adopt([ new Element('span').set('text', file.name), new Element('div', {
@@ -172,7 +173,7 @@ var FbFileUpload = new Class({
 
 		this.uploader.bind('ChunkUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
-			if ($type(response) !== false) {
+			if (typeOf(response) !== 'null') {
 				if (response.error) {
 					fconsole(response.error.message);
 				}
@@ -246,9 +247,9 @@ var FbFileUpload = new Class({
 
 	pluploadResize : function (e) {
 		e.stop();
-		var a = e.target;
+		var a = e.target.getParent();
 		if (this.options.crop) {
-			this.widget.setImage(e.target.href, e.target.retrieve('filepath'));
+			this.widget.setImage(a.href, a.retrieve('filepath'));
 		}
 	},
 
@@ -354,7 +355,7 @@ var ImageWidget = new Class({
 		if (typeOf(CANVAS) !== 'null' && typeOf(CANVAS.ctxEl) !== 'null') {
 			CANVAS.ctxPos = $(CANVAS.ctxEl).getPosition();
 		}
-		if ($type(CANVAS.threads) !== false) {
+		if (typeOf(CANVAS.threads) !== 'null') {
 			//fixes issue where sometime canvas thread is not started/running so nothing is drawn
 			CANVAS.threads.myThread.start();
 		}
@@ -490,8 +491,7 @@ var ImageWidget = new Class({
 
 					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
 					ctx.strokeRect(w * -0.5, h * -0.5, w, h);
-
-					if ($type(parent.img) !== false) {
+					if (typeOf(parent.img) !== 'null') {
 						try {
 							ctx.drawImage(parent.img, w * -0.5, h * -0.5, w, h);
 						} catch (err) {
@@ -499,7 +499,7 @@ var ImageWidget = new Class({
 						}
 					}
 					ctx.restore();
-					if ($type(parent.img) !== false && parent.images.get(parent.activeFilePath)) {
+					if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
 						parent.images.get(parent.activeFilePath).imagedim = {
 							x : this.x,
 							y : this.y,
@@ -573,7 +573,7 @@ var ImageWidget = new Class({
 					 * used to determine the whether the mouse is over an item or not.
 					 */
 
-					if ($type(parent.img) !== false && parent.images.get(parent.activeFilePath)) {
+					if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
 						parent.images.get(parent.activeFilePath).cropdim = {
 							x : this.x,
 							y : this.y,
@@ -640,7 +640,7 @@ var ImageWidget = new Class({
 			range : [ 20, 300 ],
 			onChange : function (pos) {
 				this.imgCanvas.scale = pos / 100;
-				if ($type(this.img) !== false) {
+				if (typeOf(this.img) !== 'null') {
 					try {
 						this.images.get(this.activeFilePath).scale = pos;
 					} catch (err) {
@@ -660,7 +660,7 @@ var ImageWidget = new Class({
 		this.rotateSlide = new Slider(r.getElement('.fabrikslider-line'), r.getElement('.knob'), {
 			onChange : function (pos) {
 				this.imgCanvas.rotation = pos;
-				if ($type(this.img) !== false) {
+				if (typeOf(this.img) !== 'null') {
 					try {
 						this.images.get(this.activeFilePath).rotation = pos;
 					} catch (err) {

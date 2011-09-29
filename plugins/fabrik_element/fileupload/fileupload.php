@@ -167,7 +167,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		$value = $this->getValue(array(), $repeatCounter);
 
-		$value = is_array($value) ? $value : explode(GROUPSPLITTER, $value);
+		//$value = is_array($value) ? $value : explode(GROUPSPLITTER, $value);
+		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
+		$value = $this->checkForSingleCropValue($value);
 
 		//repeat_image_repeat_image___params
 
@@ -183,7 +185,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		$oFiles = new stdClass();
 		$iCounter = 0;
-		for ($x=0; $x<count($value); $x++) {
+		for ($x = 0; $x < count($value); $x++) {
 			if ($value[$x] !== '') {
 				if (is_array($value[$x])) {
 					//from failed validation
@@ -199,16 +201,29 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						$iCounter++;
 					}
 				} else {
-					$parts = explode(DS, $value[$x]);
-					$o = new stdClass();
-					$o->id = 'alreadyuploaded_'.$element->id.'_'.$rawvalues[$x];
-					$o->name = array_pop($parts);
-					$o->path = $value[$x];
-					$o->url = $this->getStorage()->pathToURL($value[$x]);
-					$o->recordid = $rawvalues[$x];
-					$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
-					$oFiles->$iCounter = $o;
-					$iCounter++;
+					if (is_object($value[$x])) { //single crop image (not sure about the 0 settings in here)
+						$parts = explode(DS, $value[$x]->file);
+						$o = new stdClass();
+						$o->id = 'alreadyuploaded_'.$element->id.'_0';
+						$o->name = array_pop($parts);
+						$o->path = $value[$x]->file;
+						$o->url = $this->getStorage()->pathToURL($value[$x]->file);
+						$o->recordid = 0;
+						$o->params = json_decode($value[$x]->params);
+						$oFiles->$iCounter = $o;
+						$iCounter++;
+					} else {
+						$parts = explode(DS, $value[$x]);
+						$o = new stdClass();
+						$o->id = 'alreadyuploaded_'.$element->id.'_'.$rawvalues[$x];
+						$o->name = array_pop($parts);
+						$o->path = $value[$x];
+						$o->url = $this->getStorage()->pathToURL($value[$x]);
+						$o->recordid = $rawvalues[$x];
+						$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
+						$oFiles->$iCounter = $o;
+						$iCounter++;
+					}
 				}
 			}
 
@@ -220,8 +235,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->defaultImage = $params->get('default_image');
 		$opts->folderSelect = $params->get('upload_allow_folderselect', 0);
 		$opts->dir = JPATH_SITE.DS.$params->get('ul_directory');
-		$opts->ds = DS;
-		$opts->ajax_upload = $params->get('ajax_upload', false );
+		$opts->ajax_upload = (bool)$params->get('ajax_upload', false);
 		$opts->ajax_runtime = $params->get('ajax_runtime', 'html5');
 		$opts->max_file_size = $params->get('ul_max_file_size');
 		$opts->ajax_chunk_size = (int)$params->get('ajax_chunk_size', 0);
@@ -231,6 +245,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->cropheight = (int)$params->get('fileupload_crop_height');
 		$opts->ajax_max = (int)$params->get('ajax_max', 4);
 		$opts->dragdrop = true;
+		$opts->resizeButton = FabrikHelperHTML::image('resize.png', 'form', @$this->tmpl, JText::_('PLG_ELEMENT_FILEUPLOAD_RESIZE'));
 		$opts->files = $oFiles;
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
@@ -654,12 +669,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 			if ($this->getValue($post) != 'Array,Array') {
 				$raw = $this->getValue($post);
-				$crop = JArrayHelper::getValue($raw[0], 'crop');
-				$ids = JArrayHelper::getValue($raw[0], 'id');
+				$crop =(array)JArrayHelper::getValue($raw[0], 'crop');
+				$ids = (array)JArrayHelper::getValue($raw[0], 'id');
 			} else {
 				//single image
-				$crop = JArrayHelper::getValue($raw, 'crop');
-				$ids = JArrayHelper::getValue($raw, 'id');
+				$crop = (array)JArrayHelper::getValue($raw, 'crop');
+				$ids = (array)JArrayHelper::getValue($raw, 'id');
 			}
 			if ($raw == '') {
 				return true;
@@ -1334,17 +1349,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
-		//if its a single upload crop element
-		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1) {
-			$singleCropImg = json_decode($value);
-			if (empty($singleCropImg)) {
-				$value = '';
-			} else {
-				$singleCropImg = $singleCropImg[0];
-				$value = $singleCropImg->file;
-			}
-		}
-
+		$value = $this->checkForSingleCropValue($value);
+		$value = $value->file;		
 		$imagedata = array();
 	/* 	if (strstr($value, GROUPSPLITTER)) {
 			//crop stuff needs to be removed from data to get correct file path
@@ -1382,12 +1388,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		if (!$this->_editable) {
 			if ($render->output == '' && $params->get('default_image') != '') {
-				$render->output = "<img src=\"{$params->get('default_image')}\" alt=\"image\" />";
+				$render->output = '<img src="'.$params->get('default_image').'" alt="image" />';
 			}
 		}
 		if (!$this->_editable) {
-			$str 	= "<div class=\"fabrikSubElementContainer\">$str";
-			$str .= "</div>";
+			$str 	= '<div class="fabrikSubElementContainer">'.$str;
+			$str .= '</div>';
 			return $str;
 		} else {
 			// $$$ rob dont wrap readonly in subElementContainer as it stops dataConsideredEmpty() working when testing ro values
@@ -1403,15 +1409,30 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			} else {
 				$ulname = $name.'[ul_end_dir]';
 			}
-			$str .= "<input name=\"$ulname\" type=\"hidden\" class=\"folderpath\"/>";
+			$str .= '<input name="'.$ulname.'" type="hidden" class="folderpath"/>';
 		}
 
 		if ($params->get('ajax_upload')) {
 			$str = $render->output.$this->plupload($str, $repeatCounter, $values);
 		}
-		$str 	= "<div class=\"fabrikSubElementContainer\">$str";
-		$str .= "</div>";
+		$str 	= '<div class="fabrikSubElementContainer">'.$str;
+		$str .= '</div>';
 		return $str;
+	}
+	
+	protected function checkForSingleCropValue($value)
+	{
+		$params = $this->getParams();
+		//if its a single upload crop element
+		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1) {
+			$singleCropImg = $value;
+			if (empty($singleCropImg)) {
+				$value = '';
+			} else {
+				$singleCropImg = $singleCropImg[0];
+			}
+		}
+		return $value;
 	}
 
 	protected function downloadLink($value)

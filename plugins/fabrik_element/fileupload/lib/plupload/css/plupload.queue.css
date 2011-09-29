@@ -140,10 +140,9 @@ li.plupload_done a {
 }
 
 .plupload_resize{
-	background : url("../../../../../media/com_fabrik/images/resize.png") no-repeat scroll 0 0 transparent;
 	float:left;
 	height:16px;
-	width:16px;
+	width:16px; 
 	padding-right:5px;
 }
 .plupload_resize a{

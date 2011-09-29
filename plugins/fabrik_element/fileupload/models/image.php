@@ -104,9 +104,9 @@ class imageRender{
 		if ($model->isJoin()) {
 			$this->output .= '<div class="fabrikGalleryImage" style="width:'.$width.'px;height:'.$height.'px; vertical-align: middle;text-align: center;">';
 		}
-		$img = "<img class=\"fabrikLightBoxImage\" src=\"$file\" alt=\"". strip_tags($element->label) . "\" />";
+		$img = '<img class="fabrikLightBoxImage" src="'.$file.'" alt="'.strip_tags($element->label).'" />';
 		if ($params->get('make_link', true) && !$this->fullImageInRecord($params)) {
-			$this->output .=	"<a href=\"$fullSize\" rel=\"lightbox[]\" title=\"$title\">$img</a>";
+			$this->output .=	'<a href="'.$fullSize.'" rel="lightbox[]" title="'.$title.'">'.$img.'</a>';
 		}
 		else {
 			$this->output .= $img;
