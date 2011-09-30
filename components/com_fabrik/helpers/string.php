@@ -211,7 +211,7 @@ class FabrikString extends JString{
 			if($title !== '') {
 				$title .= "::";
 			}
-			$summary = "<span class=\"hasTip\" title=\"$title"."$orig\">$summary</span>";
+			$summary = "<span class=\"fabrikTip\" title=\"$title"."$orig\">$summary</span>";
 		}
 		return $summary;
 	}
