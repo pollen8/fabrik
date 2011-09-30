@@ -61,6 +61,22 @@
 					default="default" 
 					label="MOD_FABRIK_LIST_TEMPLATE_LABEL" 
 					descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" />
+					
+				<field name="list_elements" 
+					type="fabrikmodalrepeat" 
+					label="MOD_FABRIK_LIST_ELEMENTS_LABEL"
+					description="MOD_FABRIK_LIST_ELEMENTS_DESC">
+				
+					<fields name="params">
+						<fieldset name="list_elements_modal" repeat="true">
+							<field name="show_in_list" 
+								size="30"
+								type="listfields"
+								label="MOD_FABRIK_LIST_ELEMENTS_HEADING"/>
+						
+						</fieldset>
+				</fields>
+				</field>
 			</fieldset>
 		</fields>
 	</config>

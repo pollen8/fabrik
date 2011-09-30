@@ -98,9 +98,13 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				break;
 			case 'list':
+			case 'module':
 				$id = $this->form->getValue('id');
 				if (!isset($this->form->model)) {
-					JError::raiseNotice(500, 'Model not set in listfields field '. $this->id);
+					if ($controller !== 'module') {
+						//seems to work anyway in the admin module page - so lets not raise notice
+						JError::raiseNotice(500, 'Model not set in listfields field '. $this->id);
+					}
 					return;
 				}
 				$listModel = $this->form->model;

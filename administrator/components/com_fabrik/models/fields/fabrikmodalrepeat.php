@@ -46,8 +46,14 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		 */
 
 		$view = JRequest::getCmd('view');
+		if ($view == 'module') {
+			$view = 'list';
+			$id = (int)$this->form->getValue('params.list_id');
+		} else {
+			$id = JRequest::getInt('id');
+		}
 		$feModel = JModel::getInstance($view, 'FabrikFEModel');
-		$feModel->setId(JRequest::getInt('id'));
+		$feModel->setId($id);
 		$subForm->model = $feModel;
 		/*
 		 * end
@@ -96,7 +102,13 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$names = json_encode($names);
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
 			$script = str_replace("-", "", $modalid)." = new FabrikModalRepeat('$modalid', $names, '$this->id');";
-			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true, $script);
+			JHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true);
+			$document = JFactory::getDocument();
+			$document->addScriptDeclaration("window.addEvent('domready', function() {
+			".$script."
+			});");
+			//wont work when rendering in admin module page
+			//FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true, $script);
 		}
 		$close = "function(c){".$modalid.".onClose(c);}";
 

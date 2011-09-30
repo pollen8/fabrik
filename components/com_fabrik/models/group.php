@@ -245,15 +245,30 @@ class FabrikFEModelGroup extends FabModel{
 	{
 		if (!isset($this->publishedListElements)) {
 			$this->publishedListElements = array();
+		}
+		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
+		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
+		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
+		$sig = empty($showInList) ? 0 : implode('.', $showInList);
+		if (!array_key_exists($sig, $this->publishedListElements)) {
+			$this->publishedListElements[$sig] = array();
 			$elements = $this->getMyElements();
 			foreach ($elements as $elementModel) {
 				$element = $elementModel->getElement();
-				if ($element->published == 1 && $element->show_in_list_summary && $elementModel->canView()) {
-					$this->publishedListElements[] = $elementModel;
+				if ($element->published == 1 && $elementModel->canView()){
+					if (empty($showInList)) {
+						if ($element->show_in_list_summary) {
+							$this->publishedListElements[$sig][] = $elementModel;
+						}
+					} else {
+						if (in_array($element->id, $showInList)) {
+							$this->publishedListElements[$sig][] = $elementModel;
+						}
+					}
 				}
 			}
 		}
-		return $this->publishedListElements;
+		return $this->publishedListElements[$sig];
 	}
 	/*
 	 * is the group a repeat group

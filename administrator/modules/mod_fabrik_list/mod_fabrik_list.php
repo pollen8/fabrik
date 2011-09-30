@@ -24,7 +24,6 @@ JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
 
 $app = JFactory::getApplication();
 
-
 require_once(COM_FABRIK_FRONTEND.DS.'controller.php');
 require_once(COM_FABRIK_FRONTEND.DS.'controllers'.DS.'list.php');
 
@@ -44,6 +43,10 @@ require_once(COM_FABRIK_FRONTEND.DS.'controllers'.DS.'package.php');
 require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'form'.DS.'view.html.php');
 
 $listId	= intval($params->get('list_id', 1));
+$listels = json_decode($params->get('list_elements'));
+if (isset($listels->show_in_list)) {
+	JRequest::setVar('fabrik_show_in_list', $listels->show_in_list);
+}
 $useajax = intval($params->get('useajax', 0));
 $random = intval($params->get('radomizerecords', 0));
 $limit = intval($params->get('limit', 0));
@@ -94,7 +97,6 @@ if (in_array(JRequest::getCmd('format'), array('raw', 'csv'))) {
 	$cache->get($view, 'display', $cacheid);
 }
 
-//echo $view->display();
-
 JRequest::setVar('layout', $origLayout);
+JRequest::setVar('fabrik_show_in_list', null);
 ?>

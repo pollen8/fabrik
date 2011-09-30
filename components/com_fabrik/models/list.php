@@ -1943,9 +1943,9 @@ class FabrikFEModelList extends JModelForm {
 		$this->fields = array();
 		$this->asfields = array();
 		$db = FabrikWorker::getDbo(true);
-		$form 			= $this->getFormModel();
-		$table 			= $this->getTable();
-		$aJoinObjs 	= $this->getJoins();
+		$form = $this->getFormModel();
+		$table = $this->getTable();
+		$aJoinObjs = $this->getJoins();
 		$this->_temp_db_key_addded = false;
 		$groups = $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);

@@ -226,5 +226,16 @@ div.calendar{
 	border-radius: 0 6px 6px 0;
 }
 
+.floating-tip {
+	background-color: black;
+	padding: 5px 15px;
+	color: #dddddd;
+	font-weight: bold;
+	font-size: 11px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
 
 ";?>
