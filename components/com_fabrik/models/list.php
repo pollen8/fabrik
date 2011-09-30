@@ -4101,6 +4101,22 @@ class FabrikFEModelList extends JModelForm {
 		if ($this->canSelectRows()) {
 			$groupHeadings[''] = '';
 		}
+		
+		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
+		if (!empty($showInList)) {
+			//get full names of show in list elements
+			$showInListNames = array();
+			foreach ($showInList as $id) {
+				$showInListNames[] = $formModel->getElement($id, true)->getFullName(false, true, false);
+			}
+			//reorder elements
+			$newTableHeadings = array();
+			foreach ($showInListNames as $name) {
+				$newTableHeadings[$name] = $aTableHeadings[$name];
+			}
+			$aTableHeadings = $newTableHeadings;
+		}
+		
 		$args['tableHeadings'] = $aTableHeadings;
 		$args['groupHeadings'] = $groupHeadings;
 		$args['headingClass'] = $headingClass;
