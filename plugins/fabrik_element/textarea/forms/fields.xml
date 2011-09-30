@@ -83,7 +83,15 @@
 				default="0" size="3" 
 				label="PLG_ELEMENT_TEXTAREA_TRUNCATE_LABEL" 
 				description="PLG_ELEMENT_TEXTAREA_TRUNCATE_DESC" />
-					
+				
+			<field name="textarea-hover" type="radio"
+				default="1"
+				label="PLG_ELEMENT_TEXTAREA_SHOW_HOVER_LABEL"
+				description="PLG_ELEMENT_TEXTAREA_SHOW_HOVER_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+				
 		</fieldset>
 	</fields>
 </form>
