@@ -244,7 +244,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$str .= "<img src=\"$outsrc\" style=\"".$css."padding:3px;\" alt=\"$r\" class=\"starRating rate_$r\" />";
 		}
 
-		if (!$params->get('rating-nonefirst')) {
+		if (!$params->get('rating-nonefirst') && $this->canRate()) {
 			$str .= "<img src=\"$clearsrc\" style=\"".$css."padding:3px;\" alt=\"clear\" class=\"rate_-1\" />";
 		}
 		$str .= "<span class=\"ratingScore\">$this->avg</span>";
@@ -378,7 +378,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$opts->row_id 		= JRequest::getInt('rowid');
 		$opts->elid 			= $this->getElement()->id;
 		$opts->userid 		= (int)$user->get('id');
-		$opts->canRate 		= (int)$this->canRate();
+		$opts->canRate 		= (bool)$this->canRate();
 		$opts->mode				= $params->get('rating-mode');
 		$opts->view				= JRequest::getCmd('view');
 		$opts 						= json_encode($opts);

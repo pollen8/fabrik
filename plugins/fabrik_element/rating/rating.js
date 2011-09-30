@@ -3,13 +3,22 @@ var FbRating = new Class({
 	initialize : function (element, options, rating) {
 		this.field = $(element);
 		this.parent(element, options);
-		if (this.options.mode === 'creator-rating' && this.options.view === 'details') {
-			// deactivate if in detail view and only the record creator
-			// can rate
+		if (this.options.canRate === false) {
 			return;
 		}
-		this.element = $(element + '_div');
+		if (this.options.mode === 'creator-rating' && this.options.view === 'details') {
+			// deactivate if in detail view and only the record creator can rate
+			return;
+		}
 		this.rating = rating;
+		window.addEvent('fabrik.form.refresh', this.setup.bindAsEventListener(this));
+		this.setup(this.options.row_id);
+		this.setStars();
+	},
+	
+	setup : function (rowid) {
+		this.options.row_id = rowid;
+		this.element = document.id(this.options.element + '_div');
 		this.spinner = new Asset.image(Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif', {
 			'alt' : 'loading',
 			'class' : 'ajax-loader'
@@ -43,59 +52,62 @@ var FbRating = new Class({
 				this.setStars();
 			}.bind(this));
 		}.bind(this));
-
+		var clearButton = this.element.getElement('.rate_-1');
 		this.element.addEvent('mouseout', function (e) {
 			this.setStars();
 		}.bind(this));
 
 		this.element.addEvent('mouseover', function (e) {
-			this.element.getElement('.rate_-1').setStyles({
-				visibility : 'visible'
-			});
-		}.bind(this));
-
-		this.element.getElement('.rate_-1').addEvent('mouseover', function (e) {
-			e = new Event(e);
-			e.target.src = this.options.clearinsrc;
-			this.ratingMessage.innerHTML = Joomla.JText._('PLG_ELEMENT_RATING_NO_RATING');
-		}.bind(this));
-
-		this.element.getElement('.rate_-1').addEvent('mouseout', function (e) {
-			e = new Event(e);
-			if (this.rating !== -1) {
-				e.target.src = this.options.clearoutsrc;
+			if (typeOf(clearButton) !== 'null') {
+				clearButton.setStyles({
+					visibility : 'visible'
+				});
 			}
 		}.bind(this));
 
-		this.element.getElement('.rate_-1').addEvent('click', function (e) {
-			this.rating = -1;
-			this.field.value = '';
-			this.stars.each(function (ii) {
-				ii.src = this.options.outsrc;
+		if (typeOf(clearButton) !== 'null') {
+			clearButton.addEvent('mouseover', function (e) {
+				e.target.src = this.options.clearinsrc;
+				this.ratingMessage.set('html', Joomla.JText._('PLG_ELEMENT_RATING_NO_RATING'));
 			}.bind(this));
-			e = new Event(e);
-			this.element.getElement('.rate_-1').src = this.options.clearinsrc;
-			this.doAjax();
-		}.bind(this));
-		this.setStars();
+	
+			clearButton.addEvent('mouseout', function (e) {
+				if (this.rating !== -1) {
+					e.target.src = this.options.clearoutsrc;
+				}
+			}.bind(this));
 
+			clearButton.addEvent('click', function (e) {
+				this.rating = -1;
+				this.field.value = '';
+				this.stars.each(function (ii) {
+					ii.src = this.options.outsrc;
+				}.bind(this));
+				this.element.getElement('.rate_-1').src = this.options.clearinsrc;
+				this.doAjax();
+			}.bind(this));
+		}
+		this.setStars();
 	},
 
 	doAjax : function () {
+		if (this.options.canRate === false) {
+			return;
+		}
 		if (this.options.editable === false) {
 			this.spinner.inject(this.ratingMessage);
 			var data = {
-				'row_id' : this.options.row_id,
-				'elementname' : this.options.elid,
-				'userid' : this.options.userid,
-				'rating' : this.rating
+				'row_id': this.options.row_id,
+				'elementname': this.options.elid,
+				'userid': this.options.userid,
+				'rating': this.rating
 			};
 			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=rating&method=ajax_rate&element_id=' + this.options.elid;
 
 			var closeFn = new Request({
-				url : url,
-				'data' : data,
-				onComplete : function () {
+				url: url,
+				'data': data,
+				onComplete: function () {
 					this.spinner.dispose();
 				}.bind(this)
 			}).send();
@@ -110,22 +122,18 @@ var FbRating = new Class({
 	setStars : function () {
 		this.stars.each(function (ii) {
 			var starScore = this._getRating(ii);
-			if (starScore <= this.rating) {
-				ii.src = this.options.insrc;
-			} else {
-				ii.src = this.options.outsrc;
-			}
+			ii.src = starScore <= this.rating ? this.options.insrc : this.options.outsrc;
 		}.bind(this));
-		if (this.rating !== -1) {
-			this.element.getElement('.rate_-1').src = this.options.clearoutsrc;
-		} else {
-			this.element.getElement('.rate_-1').src = this.options.clearinsrc;
+		var clearButton = this.element.getElement('.rate_-1');
+		if (typeOf(clearButton) !== 'null') {
+			clearButton.src = this.rating !== -1 ? this.options.clearoutsrc : this.options.clearinsrc;
 		}
-
 	},
 
 	update : function (val) {
-		this.rating = val;
+		this.rating = val.toInt().round();
+		this.field.value = this.rating;
+		this.element.getElement('.ratingScore').setText(val);
 		this.setStars();
 	}
 });
