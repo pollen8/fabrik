@@ -531,7 +531,9 @@ class FabrikModelList extends FabModelAdmin
 		}
 
 		$filter	= new JFilterInput(null, null, 1, 1);
-		$introduction = JRequest::getVar('introduction', '', 'post', 'string', JREQUEST_ALLOWRAW);
+		//$introduction = JRequest::getVar('introduction', '', 'post', 'string', JREQUEST_ALLOWRAW);
+		$introduction = JArrayHelper::getValue(JRequest::getVar('jform', array(), 'post', 'array', JREQUEST_ALLOWRAW), 'introduction');
+
 		$row->introduction = $filter->clean($introduction);
 
 		$row->order_by = json_encode(JRequest::getVar('order_by', array(), 'post', 'array'));
