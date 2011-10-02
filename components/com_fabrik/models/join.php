@@ -35,6 +35,11 @@ class FabrikFEModelJoin extends FabModel{
 	{
 		$this->_id = $id;
 	}
+	
+	function getId()
+	{
+		return $this->_id;
+	}
 
 	function setData($d)
 	{
@@ -70,6 +75,13 @@ class FabrikFEModelJoin extends FabModel{
 		return $this->_join;
 	}
 
+	function getPrimaryKey($splitter = '___')
+	{
+		$join = $this->getJoin();
+		$pk = $join->table_join.$splitter.$join->table_join_key;
+		return $ok;
+	}
+	
 	/**
 	 * deletes the loaded join and then
 	 * removes all elements, groups & form group record

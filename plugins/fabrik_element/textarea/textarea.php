@@ -49,6 +49,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		// $$$ rbo 24/02/2011 remove duplicates from tags
 		$data = array_unique($data);
+		$icon = FabrikHelperHTML::image('tag.png', 'form', @$this->tmpl, 'tag');
 		foreach ($data as $d) {
 			$d = trim($d);
 			if ($d != '') {
@@ -62,7 +63,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 				} else {
 					$thisurl = str_replace('{tag}', urlencode($d), $url);
 				}
-				$tags[] = "<a href=\"$thisurl\" class=\"fabrikTag\">$d</a>";
+				$tags[] = '<a href="'.$thisurl.'" class="fabrikTag">'.$icon.$d.'</a>';
 			}
 		}
 		return implode(" ", $tags);
@@ -138,16 +139,16 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name		 	= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
-		$element	= $this->getElement();
+		$name	= $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
 		if ($element->hidden == '1') {
 			return $this->getHiddenField($name, $data[$name], $id);
 		}
-		$params 		=& $this->getParams();
-		$cols 			= $element->width;
-		$rows 			= $element->height;
-		$value 			= $this->getValue($data, $repeatCounter);
+		$params = $this->getParams();
+		$cols = $element->width;
+		$rows = $element->height;
+		$value = $this->getValue($data, $repeatCounter);
 		$bits = array();
 		if (!$this->_editable) {
 			if ($params->get('use_wysiwyg', 0) == 0) {

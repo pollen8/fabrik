@@ -193,12 +193,6 @@ section for dropdowns radio buttons etc**/
 clear:left;
 }
 
-#form_$c .fabrikForm .fabrikTag{
-	background: transparent url(../images/tag.png) no-repeat left;
-	padding: 3px 0.5em 0 19px;
-	line-height:2.1em;
-}
-
 /** bump calendar above mocha window in mootools 1.2**/
 #form_$c div.calendar{
 	z-index:115 !important;

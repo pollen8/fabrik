@@ -12,6 +12,7 @@ cache/*
 components/*
 !components/com_fabrik
 `!components/com_fabrik/*
+cli/*
 images/*
 includes/*
 language/*
