@@ -20,25 +20,6 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	protected $fieldSize = '1';
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
-	 */
-
-	function storeDatabaseFormat($val, $data)
-	{
-		$val = (array)$val;
-		$return = array();
-		foreach ($val as $v) {
-			//$str .= $v[0] . GROUPSPLITTER;
-			$return[] = $v[0];
-		}
-		//$str = FabrikString::rtrimword( $str, GROUPSPLITTER);
-		//	return $str;
-		return json_encode($val);
-	}
-
-	/**
 	 * this really does get just the default value (as defined in the element's settings)
 	 * @param array data to use as parsemessage for placeholder
 	 * @return unknown_type
@@ -55,14 +36,12 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	function renderListData($data, $oAllRowsData)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.'/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
-		$yessrc = FabrikHelperHTML::image("1.png", 'list', @$this->tmpl, '', true);
-		$nosrc = FabrikHelperHTML::image("0.png", 'list', @$this->tmpl, '', true);
+		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		//check if the data is in csv format, if so then the element is a multi drop down
 		if ($data == '1') {
-			return "<img src=\"$yessrc\" alt=\"" . JText::_('JYES') . "\" />" ;
+			return FabrikHelperHTML::image("1.png", 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
 		} else {
-			return "<img src=\"$nosrc\" alt=\"" . JText::_('JNO') . "\" />";
+			return FabrikHelperHTML::image("0.png", 'list', @$this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
 
@@ -76,13 +55,11 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	function renderListData_pdf($data, $oAllRowsData)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.'/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
-		$yessrc = FabrikHelperHTML::image("1_8bit.png", 'list', $this->tmpl, '', true);
-		$nosrc = FabrikHelperHTML::image("0_8bit.png", 'list', $this->tmpl, '', true);
+		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		if ($data == '1') {
-			return "<img src=\"$yessrc\" alt=\"" . JText::_('JYES') . "\" />" ;
+			return FabrikHelperHTML::image("1_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JYES')));
 		} else {
-			return "<img src=\"$nosrc\" alt=\"" . JText::_('JNO') . "\" />";
+			return FabrikHelperHTML::image("0_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
 
@@ -96,9 +73,9 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	function renderListData_csv($data, $oAllRowsData)
 	{
 		if ($data == '1') {
-			return  JText::_('JYES');
+			return JText::_('JYES');
 		} else {
-			return  JText::_('JNO');
+			return JText::_('JNO');
 		}
 	}
 
@@ -131,9 +108,9 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	protected function getReadOnlyOutput($value, $label)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.'/plugins/fabrik_element/yesno/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
 		$img = $value == '1' ?"1.png" : "0.png";
-		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, $label);
+		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
 	}
 
 	/**

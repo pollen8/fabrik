@@ -682,12 +682,12 @@ class FabrikFEModelList extends JModelForm {
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
 				$editLink = "<a class=\"fabrik__rowlink\" $editLinkAttribs href=\"$edit_link\" title=\"$editLabel\">".
-				FabrikHelperHTML::image('edit.png', 'list', '', $editLabel).
+				FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)).
 							'<span>'.$editLabel.'</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
 				$viewLink = "<a class=\"fabrik___rowlink\" $detailsLinkAttribs href=\"$link\" title=\"$viewLabel\">".
-				FabrikHelperHTML::image('view.png', 'list', '', $viewLabel).
+				FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel)).
 								'<span>'.$viewLabel.'</span></a>';
 
 				//3.0 actions now in list in one cell
@@ -823,7 +823,7 @@ class FabrikFEModelList extends JModelForm {
 	protected function deleteButton()
 	{
 		return '<li class="fabrik_delete"><a href="#" class="delete" title="'.JText::_('COM_FABRIK_DELETE').'">'.
-		FabrikHelperHTML::image('delete.png', 'list', '', JText::_('COM_FABRIK_DELETE')).
+		FabrikHelperHTML::image('delete.png', 'list', '', array('alt' => JText::_('COM_FABRIK_DELETE'))).
 		'<span>'.JText::_('COM_FABRIK_DELETE').'</span></a></li>';
 	}
 
@@ -3987,18 +3987,18 @@ class FabrikFEModelList extends JModelForm {
 						case "desc":
 							$orderDir = "-";
 							$class = "class=\"fabrikorder-desc\"";
-							$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, JText::_('COM_FABRIK_ORDER'));
+							$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
 							$orderDir = "desc";
 							$class = "class=\"fabrikorder-asc\"";
-							$img = FabrikHelperHTML::image('orderasc.png', 'list', $tmpl, JText::_('COM_FABRIK_ORDER'));
+							$img = FabrikHelperHTML::image('orderasc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "":
 						case "-":
 							$orderDir = "asc";
 							$class = "class=\"fabrikorder\"";
-							$img = FabrikHelperHTML::image('ordernone.png', 'list', $tmpl, JText::_('COM_FABRIK_ORDER'));
+							$img = FabrikHelperHTML::image('ordernone.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 					}
 
@@ -4006,7 +4006,7 @@ class FabrikFEModelList extends JModelForm {
 						if (in_array($key, $orderbys)) {
 							if ($item->order_dir === 'desc') {
 								$class = "class=\"fabrikorder-desc\"";
-								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, JText::_('COM_FABRIK_ORDER'));
+								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							}
 						}
 					}
@@ -5699,14 +5699,21 @@ class FabrikFEModelList extends JModelForm {
 		if (!$loadJoin) {
 			if ($format == true) {
 				$row = $fabrikDb->loadObject();
+				
 				$row = array($row);
 				$this->formatData($row);
 				$this->rows[$sig] = $row[0][0];
 			} else {
 				$this->rows[$sig] = $fabrikDb->loadObject();
 			}
+			if ($fabrikDb->getErrorNum()) {
+				JError::raiseError(500, $fabrikDb->getErrorMsg());
+			}
 		} else {
 			$rows = $fabrikDb->loadObjectList();
+			if ($fabrikDb->getErrorNum()) {
+				JError::raiseError(500, $fabrikDb->getErrorMsg());
+			}
 			$formModel->setJoinData($rows);
 			if ($format == true) {
 				$this->formatData($rows);

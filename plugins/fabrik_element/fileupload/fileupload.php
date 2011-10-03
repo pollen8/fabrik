@@ -245,7 +245,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->cropheight = (int)$params->get('fileupload_crop_height');
 		$opts->ajax_max = (int)$params->get('ajax_max', 4);
 		$opts->dragdrop = true;
-		$opts->resizeButton = FabrikHelperHTML::image('resize.png', 'form', @$this->tmpl, JText::_('PLG_ELEMENT_FILEUPLOAD_RESIZE'));
+		$opts->resizeButton = FabrikHelperHTML::image('resize.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_RESIZE')));
 		$opts->files = $oFiles;
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');

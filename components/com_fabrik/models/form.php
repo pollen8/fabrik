@@ -228,6 +228,7 @@ class FabrikFEModelForm extends FabModelForm
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$item = $this->getForm();
+		$tmpl = '';
 		if ($app->isAdmin()) {
 			$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
 		}

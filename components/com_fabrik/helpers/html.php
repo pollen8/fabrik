@@ -138,41 +138,46 @@ EOD;
 		//$url = JRoute::_('index.php?option=com_fabrik&view=emailform&tmpl=component');
 		?>
 <form method="post" action="index.php" name="frontendForm">
-<table>
-	<tr>
-		<td><label for="email"><?php echo JText::_('COM_FABRIK_YOUR_FRIENDS_EMAIL' ) ?>:</label>
-		</td>
-		<td><input type="text" size="25" name="email" id="email" /></td>
-	</tr>
-	<tr>
-		<td><label for="yourname"><?php echo JText::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
-		</td>
-		<td><input type="text" size="25" name="yourname" id="yourname" /></td>
-	</tr>
-	<tr>
-		<td><label for="youremail"><?php echo JText::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
-		</td>
-		<td><input type="text" size="25" name="youremail" id="youremail" /></td>
-	</tr>
-	<tr>
-		<td><label for="subject"><?php echo JText::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
-		</td>
-		<td><input type="text" size="40" maxlength="40" name="subject"
-			id="subject" /></td>
-	</tr>
-	<tr>
-		<td colspan="2"><input type="submit" name="submit" class="button"
-			value="<?php echo JText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
-		&nbsp;&nbsp; <input type="button" name="cancel"
-			value="<?php echo JText::_('COM_FABRIK_CANCEL'); ?>" class="button"
-			onclick="window.close();" /></td>
-	</tr>
-</table>
-<input name="referrer"
-	value="<?php echo JRequest::getVar('referrer' )?>" type="hidden" /> <input
-	type="hidden" name="option" value="com_fabrik" /> <input type="hidden"
-	name="view" value="emailform" /> <input type="hidden" name="tmpl"
-	value="component" /> <?php echo JHTML::_('form.token'); ?></form>
+	<table>
+		<tr>
+			<td><label for="email"><?php echo JText::_('COM_FABRIK_YOUR_FRIENDS_EMAIL' ) ?>:</label>
+			</td>
+			<td><input type="text" size="25" name="email" id="email" /></td>
+		</tr>
+		<tr>
+			<td><label for="yourname"><?php echo JText::_('COM_FABRIK_YOUR_NAME'); ?>:</label>
+			</td>
+			<td><input type="text" size="25" name="yourname" id="yourname" /></td>
+		</tr>
+		<tr>
+			<td><label for="youremail"><?php echo JText::_('COM_FABRIK_YOUR_EMAIL'); ?>:</label>
+			</td>
+			<td><input type="text" size="25" name="youremail" id="youremail" /></td>
+		</tr>
+		<tr>
+			<td><label for="subject"><?php echo JText::_('COM_FABRIK_MESSAGE_SUBJECT'); ?>:</label>
+			</td>
+			<td><input type="text" size="40" maxlength="40" name="subject"
+				id="subject" /></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" name="submit" class="button"
+				value="<?php echo JText::_('COM_FABRIK_SEND_EMAIL'); ?>" />
+				&nbsp;&nbsp; <input type="button" name="cancel"
+				value="<?php echo JText::_('COM_FABRIK_CANCEL'); ?>" class="button"
+				onclick="window.close();" /></td>
+		</tr>
+	</table>
+	<input name="referrer"
+		value="<?php echo JRequest::getVar('referrer' )?>" type="hidden" /> <input
+		type="hidden" name="option" value="com_fabrik" /> <input type="hidden"
+		name="view" value="emailform" /> <input type="hidden" name="tmpl"
+		value="component" />
+	
+	
+	
+	 <?php echo JHTML::_('form.token'); ?></form>
+
 		<?php
 	}
 
@@ -186,13 +191,15 @@ EOD;
 		$document = JFactory::getDocument();
 		$document->setTitle($config->getValue('sitename'));
 		?>
-<span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO')." $to";?></span>
+<span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO')." $to";?>
+</span>
 <br />
 <br />
 <br />
-<a href='javascript:window.close();'> <span class="small"><?php echo JText::_('COM_FABRIK_CLOSE_WINDOW');?></span>
-</a>
-		<?php
+<a href='javascript:window.close();'> <span class="small"><?php echo JText::_('COM_FABRIK_CLOSE_WINDOW');?>
+</span> </a>
+
+<?php
 	}
 
 	/**
@@ -312,15 +319,15 @@ EOD;
 	 * @deprecated - behavior.calendar is loaded in framework();
 	 */
 
-function loadCalendar()
+	function loadCalendar()
 	{
 		//JHtml::_('behavior.calendar');
 		/*return;
-		static $calendarLoaded;
+		 static $calendarLoaded;
 
 		// Only load once
 		if ($calendarLoaded) {
-			return;
+		return;
 		}
 
 		$calendarLoaded = true;
@@ -329,7 +336,7 @@ function loadCalendar()
 		// $$$ hugh - if 'raw' and we output the JS stuff, it screws things up by echo'ing stuff ahead
 		// of the raw view display() method's JSON echo
 		if ($document->getType() == 'raw') {
-			return;
+		return;
 		}
 
 		$config = &JFactory::getConfig();
@@ -345,9 +352,9 @@ function loadCalendar()
 		//JHTML::script('calendar-setup.js', 'media/system/js/');
 		$translation = FabrikHelperHTML::_calendartranslation();
 		if ($translation) {
-			FabrikHelperHTML::addScriptDeclaration($translation);
+		FabrikHelperHTML::addScriptDeclaration($translation);
 		}
-*/
+		*/
 	}
 
 	/**
@@ -362,31 +369,31 @@ function loadCalendar()
 
 		/*
 		 * 		Calendar._TT["ABOUT"] =
-		 "DHTML Date/Time Selector\n" +
-		 "(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" +
-		 "For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
-		 "Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
-		 "\n\n" +
-		 "Date selection:\n" +
-		 "- Use the \xab, \xbb buttons to select year\n" +
-		 "- Use the " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " buttons to select month\n" +
-		 "- Hold mouse button on any of the above buttons for faster selection.";
-		 Calendar._TT["ABOUT_TIME"] = "\n\n" +
-		 "Time selection:\n" +
-		 "- Click on any of the time parts to increase it\n" +
-		 "- or Shift-click to decrease it\n" +
-		 "- or click and drag for faster selection.";
-		
+		"DHTML Date/Time Selector\n" +
+		"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" +
+		"For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
+		"Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
+		"\n\n" +
+		"Date selection:\n" +
+		"- Use the \xab, \xbb buttons to select year\n" +
+		"- Use the " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " buttons to select month\n" +
+		"- Hold mouse button on any of the above buttons for faster selection.";
+		Calendar._TT["ABOUT_TIME"] = "\n\n" +
+		"Time selection:\n" +
+		"- Click on any of the time parts to increase it\n" +
+		"- or Shift-click to decrease it\n" +
+		"- or click and drag for faster selection.";
+
 		if(self::$jsscript == 0)
 		{
-			$return = 'Calendar._DN = new Array ("'.JText::_('Sunday').'", "'.JText::_('Monday').'", "'.JText::_('Tuesday').'", "'.JText::_('Wednesday').'", "'.JText::_('Thursday').'", "'.JText::_('Friday').'", "'.JText::_('Saturday').'", "'.JText::_('Sunday').'");Calendar._SDN = new Array ("'.JText::_('Sun').'", "'.JText::_('Mon').'", "'.JText::_('Tue').'", "'.JText::_('Wed').'", "'.JText::_('Thu').'", "'.JText::_('Fri').'", "'.JText::_('Sat').'", "'.JText::_('Sun').'"); Calendar._FD = 0;	Calendar._MN = new Array ("'.JText::_('January').'", "'.JText::_('February').'", "'.JText::_('March').'", "'.JText::_('April').'", "'.JText::_('May').'", "'.JText::_('June').'", "'.JText::_('July').'", "'.JText::_('August').'", "'.JText::_('September').'", "'.JText::_('October').'", "'.JText::_('November').'", "'.JText::_('December').'");	Calendar._SMN = new Array ("'.JText::_('January_short').'", "'.JText::_('February_short').'", "'.JText::_('March_short').'", "'.JText::_('April_short').'", "'.JText::_('May_short').'", "'.JText::_('June_short').'", "'.JText::_('July_short').'", "'.JText::_('August_short').'", "'.JText::_('September_short').'", "'.JText::_('October_short').'", "'.JText::_('November_short').'", "'.JText::_('December_short').'");Calendar._TT = {};Calendar._TT["INFO"] = "'.JText::_('About the calendar').'";
+		$return = 'Calendar._DN = new Array ("'.JText::_('Sunday').'", "'.JText::_('Monday').'", "'.JText::_('Tuesday').'", "'.JText::_('Wednesday').'", "'.JText::_('Thursday').'", "'.JText::_('Friday').'", "'.JText::_('Saturday').'", "'.JText::_('Sunday').'");Calendar._SDN = new Array ("'.JText::_('Sun').'", "'.JText::_('Mon').'", "'.JText::_('Tue').'", "'.JText::_('Wed').'", "'.JText::_('Thu').'", "'.JText::_('Fri').'", "'.JText::_('Sat').'", "'.JText::_('Sun').'"); Calendar._FD = 0;	Calendar._MN = new Array ("'.JText::_('January').'", "'.JText::_('February').'", "'.JText::_('March').'", "'.JText::_('April').'", "'.JText::_('May').'", "'.JText::_('June').'", "'.JText::_('July').'", "'.JText::_('August').'", "'.JText::_('September').'", "'.JText::_('October').'", "'.JText::_('November').'", "'.JText::_('December').'");	Calendar._SMN = new Array ("'.JText::_('January_short').'", "'.JText::_('February_short').'", "'.JText::_('March_short').'", "'.JText::_('April_short').'", "'.JText::_('May_short').'", "'.JText::_('June_short').'", "'.JText::_('July_short').'", "'.JText::_('August_short').'", "'.JText::_('September_short').'", "'.JText::_('October_short').'", "'.JText::_('November_short').'", "'.JText::_('December_short').'");Calendar._TT = {};Calendar._TT["INFO"] = "'.JText::_('About the calendar').'";
 		Calendar._TT["PREV_YEAR"] = "'.JText::_('Prev. year (hold for menu)').'";Calendar._TT["PREV_MONTH"] = "'.JText::_('Prev. month (hold for menu)').'";	Calendar._TT["GO_TODAY"] = "'.JText::_('Go Today').'";Calendar._TT["NEXT_MONTH"] = "'.JText::_('Next month (hold for menu)').'";Calendar._TT["NEXT_YEAR"] = "'.JText::_('Next year (hold for menu)').'";Calendar._TT["SEL_DATE"] = "'.JText::_('Select date').'";Calendar._TT["DRAG_TO_MOVE"] = "'.JText::_('Drag to move').'";Calendar._TT["PART_TODAY"] = "'.JText::_('(Today)').'";Calendar._TT["DAY_FIRST"] = "'.JText::_('Display %s first').'";Calendar._TT["WEEKEND"] = "0,6";Calendar._TT["CLOSE"] = "'.JText::_('Close').'";Calendar._TT["TODAY"] = "'.JText::_('Today').'";Calendar._TT["TIME_PART"] = "'.JText::_('(Shift-)Click or drag to change value').'";Calendar._TT["DEF_DATE_FORMAT"] = "'.JText::_('%Y-%m-%d').'"; Calendar._TT["TT_DATE_FORMAT"] = "'.JText::_('%a, %b %e').'";Calendar._TT["WK"] = "'.JText::_('wk').'";Calendar._TT["TIME"] = "'.JText::_('Time:').'";';
-			self::$jsscript = 1;
-			return $return;
+		self::$jsscript = 1;
+		return $return;
 		} else {
-			return false;
+		return false;
 		}
-		 */
+		*/
 	}
 
 	/**
@@ -502,7 +509,8 @@ function loadCalendar()
 							break;
 						}
 					} else {
-						if ($k == $obj) { //checkbox from db join
+						if ($k == $obj) {
+							//checkbox from db join
 							$extra .= $selectText;
 							$found = true;
 							break;
@@ -612,11 +620,11 @@ function loadCalendar()
 			$src = array();
 
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
-				
+
 				//required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
 				//only load in main/first window - otherwise reloading it causes js errors related to calendar translations
 				JHTML::_('behavior.calendar');
-				
+
 				//loading framework, if in ajax loaded page:
 				// * makes document.body not found for gmap element when
 				// * removes previously added window.events
@@ -635,7 +643,7 @@ function loadCalendar()
 				$src[] = 'media/com_fabrik/js/fabrik.js';
 				$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
 				$src[] = 'media/com_fabrik/js/window.js';
-				
+
 				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
 				FabrikHelperHTML::script($src, true, "window.fireEvent('fabrik.framework.loaded');");
@@ -668,7 +676,7 @@ function loadCalendar()
 	}
 
 	public function addStyleDeclaration($style) {
-	if (JRequest::getCmd('format') == 'raw') {
+		if (JRequest::getCmd('format') == 'raw') {
 			echo "<style type=\"text/css\">".$style."</script>";
 		} else {
 			JFactory::getDocument()->addStyleDeclaration($style);
@@ -1016,17 +1024,18 @@ function loadCalendar()
 	 * @param string file name
 	 * @param string type e.g. form/list/element
 	 * @param string tempalte folder name
-	 * @param string image alt text
-	 * @param array assoc list of properties
+	 * @param array assoc list of properties or string (if you just want to set the image alt tag)
+	 * @param bool src only (default false)
 	 */
 
-	public function image($file, $type = 'form', $tmpl = '', $alt = '', $srcOnly = false, $properties = array())
+	public function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
 	{
-
+		if (is_string($properties)) {
+			$properties = array('alt' => $properties);
+		}
 		$app = JFactory::getApplication();
 		$template = $app->getTemplate();
 		$paths = FabrikHelperHTML::addPath('', 'image', $type);
-		$alt = $alt == '' ? $file : $alt;
 		$src = '';
 		foreach ($paths as $path) {
 			$path = sprintf($path, $tmpl);
@@ -1040,8 +1049,6 @@ function loadCalendar()
 			return $src;
 		}
 		$bits = array();
-		$bits['alt'] = $alt;
-		$bits['title'] = $alt;
 		foreach ($properties as $key => $val) {
 			$bits[$key] = $val;
 		}
@@ -1051,7 +1058,7 @@ function loadCalendar()
 		}
 		return $src == '' ? '' : "<img src=\"$src\" $p/>";
 	}
-	
+
 	/**
 	 * make a grid of items
 	 * @param array $values
@@ -1062,7 +1069,7 @@ function loadCalendar()
 	 * @param bool $elementBeforeLabel
 	 * @param int $optionsPerRow
 	 */
-	
+
 	public function grid($values, $labels, $selected, $name, $type="checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)
 	{
 		$items = array();
@@ -1079,7 +1086,7 @@ function loadCalendar()
 			$items[] = implode("\n", $item);
 		}
 		$grid = array();
-		
+
 		$w = floor(100 / $optionsPerRow);
 		$widthConstraint = '';
 		$grid[] = '<ul>';

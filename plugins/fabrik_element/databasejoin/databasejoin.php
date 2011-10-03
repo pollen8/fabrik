@@ -647,12 +647,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 			if ($params->get('fabrikdatabasejoin_frontend_select') && $this->_editable) {
 				$str .= "<a href=\"#\" class=\"toggle-selectoption\" title=\"" . JText::_('COM_FABRIK_SELECT') . "\">".
-				FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, JText::_('COM_FABRIK_SELECT'))."</a>";
+				FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT')))."</a>";
 			}
 
 			if ($params->get('fabrikdatabasejoin_frontend_add') && $this->_editable) {
 				$str .= "<a href=\"#\" title=\"".JText::_('add option') ."\" class=\"toggle-addoption\">\n";
-				$str .= FabrikHelperHTML::image('action_add.png', 'form', @$this->tmpl, JText::_('COM_FABRIK_SELECT'))."</a>";
+				$str .= FabrikHelperHTML::image('action_add.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT')))."</a>";
 			}
 
 			$str .= ($displayType == "radio") ? "</div>" : '';

@@ -49,7 +49,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		// $$$ rbo 24/02/2011 remove duplicates from tags
 		$data = array_unique($data);
-		$icon = FabrikHelperHTML::image('tag.png', 'form', @$this->tmpl, 'tag');
+		$icon = FabrikHelperHTML::image('tag.png', 'form', @$this->tmpl, array('alt' => 'tag'));
 		foreach ($data as $d) {
 			$d = trim($d);
 			if ($d != '') {

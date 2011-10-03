@@ -47,8 +47,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 		$url = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='.$this->getElement()->id;
 		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/rating/images/', 'image', 'list', false);
-		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, '', true);
-		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, '', true);
+		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
+		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
 
 		$url .= '&amp;row_id='.$oAllRowsData->__pk_val;
 		$url .= '&amp;elementname='.$this->getElement()->id;
@@ -218,10 +218,10 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 		$imagepath = JUri::root().'/plugins/fabrik_element/rating/images/';
 
-		FabrikHelperHTML::addPath(JPATH_SITE.'/plugins/fabrik_element/rating/images/', 'image', 'form', false);
-		$insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, '', true);
-		$outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, '', true);
-		$clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, '', true);
+		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/rating/images/', 'image', 'form', false);
+		$insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
+		$outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
+		$clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
 		$str = "<div id=\"$id"."_div\" class=\"fabrikSubElementContainer\">";
 		if ($params->get('rating-nonefirst') && $this->canRate()) {
 			$str .= "<img src=\"$imagepath"."clear_rating_out$ext\" style=\"".$css."padding:3px;\" alt=\"clear\" class=\"rate_-1\" />";
@@ -371,10 +371,10 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 		$opts = new stdClass();
 		$ext 				= $params->get('rating-pngorgif', '.png');
-		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, '', true);
-		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, '', true);
-		$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, '', true);
-		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_in$ext", 'form', @$this->tmpl, '', true);
+		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
+		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
+		$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
+		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_in$ext", 'form', @$this->tmpl, array(), true);
 		$opts->row_id 		= JRequest::getInt('rowid');
 		$opts->elid 			= $this->getElement()->id;
 		$opts->userid 		= (int)$user->get('id');
@@ -409,9 +409,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$imagepath = JUri::root().'/plugins/fabrik_element/rating/images/';
 		$opts->imagepath = $imagepath;
 		$opts->elid = $this->getElement()->id;
-		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, '', true);
-		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, '', true);
-		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, '', true);
+		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
+		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
+		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
 		$opts->userid = (int)$user->get('id');
 		$opts->mode = $params->get('rating-mode');
 		$opts = json_encode($opts);
