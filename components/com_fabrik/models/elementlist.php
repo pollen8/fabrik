@@ -66,6 +66,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
   function getDefaultValue($data = array())
   {
+  	$params = $this->getParams();
+  	$opts = $params->get('sub_options');
     if (!isset($this->_default)) {
     	if (isset($opts->sub_initial_selection)) {
       	$this->_default = $this->getSubInitialSelection();
