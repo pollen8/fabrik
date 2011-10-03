@@ -304,6 +304,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	function renderListData_csv($data, &$thisRow)
 	{
 		$val = $this->renderListData($data, $thisRow);
+		$col = $this->getFullName(false, true, false);
 		$raw = $col . '_raw';
 		$thisRow->$raw = $val;
 		return $val;
