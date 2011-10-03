@@ -829,19 +829,21 @@ class plgFabrik_Element extends FabrikPlugin
 		$str = '';
 
 		if ($this->canView() || $this->canUse()) {
+			
+			$rollOver = $params->get('rollover') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
 			$labelClass = "fabrikLabel ";
 			if (empty($element->label)) {
 				$labelClass .= " fabrikEmptyLabel";
 			}
 
-			if ($params->get('rollover') !== '') {
+			if ($rollOver) {
 				$labelClass .= " fabrikHover";
 			}
 			if ($bLabel && !$this->isHidden()) {
 				$str .= "<label for=\"$elementHTMLId\" class=\"$labelClass\">";
 			}
 			$l = $element->label;
-			if ($params->get('rollover') !== '') {
+			if ($rollOver) {
 				$l .= FabrikHelperHTML::image('questionmark.png', 'form', $tmpl);
 			}
 			if ($this->_editable) {
@@ -852,7 +854,6 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			$model = $this->getFormModel();
 			$str .= $this->rollover($l, $model->_data);
-
 			if ($bLabel && !$this->isHidden()) {
 				$str .= "</label>";
 			}
@@ -887,15 +888,26 @@ class plgFabrik_Element extends FabrikPlugin
 			$data = JArrayHelper::fromObject($data);
 		}
 		$params = $this->getParams();
-		if (($mode == 'form' && ($this->getForm()->_editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false)) {
-			$w = new FabrikWorker();
-			$text =  $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
-			$rollOver = trim(JText::_($text));
-			$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
-			return ($rollOver != '') ? "<span class=\"fabrikTip\" title=\"$rollOver\">{$txt}</span>" : $txt;
+		$formModel = $this->getFormModel();
+		if ($formModel->getParams()->get('tiplocation', 'tip') == 'tip' && (($mode == 'form' && ($formModel->_editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false))) {
+			$rollOver = $this->getTip($data);
+			return ($rollOver != '') ? '<span class="fabrikTip" title="'.$rollOver.'">'.$txt.'</span>' : $txt;
 		} else {
 			return $txt;
 		}
+	}
+	
+	protected function getTip($data = null)
+	{
+		if (is_null($data)) {
+			$data = $this->getFormModel()->_data;
+		}
+		$params = $this->getParams();
+		$w = new FabrikWorker();
+		$tip = $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
+		$tip = trim(JText::_($tip));
+		$tip = htmlspecialchars($tip, ENT_QUOTES);
+		return $tip;
 	}
 
 	/**
@@ -921,11 +933,11 @@ class plgFabrik_Element extends FabrikPlugin
 
 	function getFullName($includeJoinString = true, $useStep = true, $incRepeatGroup = true)
 	{
-		$db					= FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo();
 		$groupModel = $this->getGroup();
-		$formModel 	=& $this->getForm();
+		$formModel 	= $this->getFormModel();
 		$listModel = $this->getListModel();
-		$element 		= $this->getElement();
+		$element = $this->getElement();
 
 		$key = $element->name . $groupModel->get('id') . "_" . $formModel->getId() . "_" .$includeJoinString . "_" . $useStep . "_" . $incRepeatGroup;
 		if (isset($this->_aFullNames[$key])) {
@@ -1214,6 +1226,32 @@ class plgFabrik_Element extends FabrikPlugin
 			if (!$this->canUse()) {
 				$element->containerClass .= ' fabrikHide';
 			}
+		}
+		//tips (if nto rendered as hovers)
+		$tip = '<div style="width:100%">'.$this->getTip().'</div>';
+		
+		switch ($model->getParams()->get('tiplocation')) {
+			default:
+			case 'tip':
+				$element->tipAbove = '';
+				$element->tipBelow = '';
+				$element->tipSide = '';
+				break;
+			case 'above':
+				$element->tipAbove = $tip;
+				$element->tipBelow = '';
+				$element->tipSide = '';
+				break;
+			case 'below':
+				$element->tipAbove = '';
+				$element->tipBelow = $tip;
+				$element->tipSide = '';
+				break;
+			case 'side':
+				$element->tipAbove = '';
+				$element->tipBelow = '';
+				$element->tipSide = $tip;
+				break;
 		}
 		return $element;
 	}
