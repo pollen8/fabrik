@@ -23,6 +23,7 @@ class FabrikModelList extends FabModelAdmin
 
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
+	/** @var object model - front end form model */
 	protected $formModel = null;
 
 	/** @var object model - front end table model */
@@ -589,7 +590,7 @@ class FabrikModelList extends FabModelAdmin
 				}
 			}
 		}
-
+		
 		// 	save params - this file no longer exists? do we use models/table.xml instead??
 		$params = new fabrikParams($row->params, JPATH_COMPONENT.DS.'xml'.DS.'table.xml');
 
@@ -610,6 +611,7 @@ class FabrikModelList extends FabModelAdmin
 			$row->db_primary_key = $row->db_primary_key == '' ? $row->db_table_name.".".$key : $row->db_primary_key;
 			$row->auto_inc = stristr($fields[$key]->Extra, 'auto_increment') ? true : false;
 		}
+		
 		if (!$row->store()) {
 			$this->setError($row->getError());
 			return false;
@@ -692,10 +694,13 @@ class FabrikModelList extends FabModelAdmin
 	protected function updateElements($row)
 	{
 		$params = json_decode($row->params);
+		if ($params->list_search_elements[0] === '') {
+			return;
+		}
 		$searchElements = json_decode($params->list_search_elements[0])->search_elements;
 		$elementModels = $this->getFEModel()->getElements(0, false, false);
 		foreach ($elementModels as $elementModel) {
-			$element = $elementModel->getElement();
+			$element = $elementModel->getElement(true); //true otherwise ordering set to 0!
 			$elParams = $elementModel->getParams();
 			$s = (in_array($element->id, $searchElements)) ? 1 : 0;
 			$elParams->set('inc_in_search_all', $s);
