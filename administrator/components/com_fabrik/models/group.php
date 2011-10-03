@@ -145,12 +145,21 @@ class FabrikModelGroup extends FabModelAdmin
 		}
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->delete('#__{package}_formgroup')->where("form_id = ".(int)$data['form'].' AND group_id = '.(int)$data['id']);
+		$formid = (int)$data['form'];
+		$id = (int)$data['id'];
+		//get max group order
+		$query->select('MAX(ordering)')->from('#__{package}_formgroup')->where('form_id = '.$formid);
+		$db->setQuery($query);
+		$next = (int)$db->loadResult() + 1;
+		
+		$query->clear();
+		$query->delete('#__{package}_formgroup')->where('form_id = '.$formid.' AND group_id = '.$id);
 		$db->setQuery($query);
 		$db->query();
 		$item = FabTable::getInstance('FormGroup', 'FabrikTable');
-		$item->form_id = $data['form'];
-		$item->group_id = $data['id'];
+		$item->form_id = $formid;
+		$item->group_id = $id;
+		$item->ordering = $next;
 		$item->store();
 	}
 
