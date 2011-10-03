@@ -2685,7 +2685,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				}
 			}
 		}
-		return $this->ajax;
+		return (bool)$this->ajax;
 	}
 
 	/**
