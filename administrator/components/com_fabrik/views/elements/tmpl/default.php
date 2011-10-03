@@ -17,6 +17,7 @@ $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
 $saveOrder	= $listOrder == 'e.ordering';
 
+
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=elements'); ?>" method="post" name="adminForm" id="adminForm">
 	<fieldset id="filter-bar">
@@ -161,7 +162,8 @@ $saveOrder	= $listOrder == 'e.ordering';
 								<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i+1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
 							<?php endif; ?>
 						<?php endif;?>
-						<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" class="text-area-order" />
+						<?php $disabled = $saveOrder ?  '' : 'disabled="disabled"'; ?>
+						<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" class="text-area-order" <?php echo $disabled?>/>
 					</td>
 				</tr>
 
