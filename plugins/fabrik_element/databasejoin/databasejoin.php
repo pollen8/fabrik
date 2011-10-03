@@ -541,10 +541,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($this->isJoin()) {
 			$this->hasSubElements = true;
 		}
-		$params 			=& $this->getParams();
-		$formModel		=& $this->getForm();
-		$groupModel 	=& $this->getGroup();
-		$element 			= $this->getElement();
+		$params = $this->getParams();
+		$formModel = $this->getForm();
+		$groupModel = $this->getGroup();
+		$element = $this->getElement();
 		$aGroupRepeats[$element->group_id] = $groupModel->canRepeat();
 
 		$displayType = $params->get('database_join_display_type', 'dropdown');
@@ -590,12 +590,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		//$$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 		//if ($this->canView()) {
 		if ($this->canUse()) {
-			$str = '';
+			$html = array();
 			/*if user can access the drop down*/
 			switch ($displayType) {
 				case 'dropdown':
 				default:
-					$str .= JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="1"', 'value', 'text', $default, $id);
+					$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="1"', 'value', 'text', $default, $id);
 					break;
 				case 'radio':
 					// $$$ rob 24/05/2011 - always set one value as selected for radio button if none already set
@@ -604,18 +604,18 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					}
 					// $$$ rob 24/05/2011 - add options per row
 					$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
-					$str .= "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
-					$str .= FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaultValue, 'value', 'text', $options_per_row);
+					$html[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
+					$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaultValue, 'value', 'text', $options_per_row);
 					break;
 				case 'checkbox':
 					$idname = $this->getFullName(false, true, false)."_id";
 					$defaults = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 					// $$$ rob 24/05/2011 - add options per row
 					$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
-					$str .= "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
+					$html[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 					//$joinids = $default == '' ? array() : explode(GROUPSPLITTER, $default);
 					$joinids = $default;
-					$str .= FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
+					$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
 					if ($this->isJoin() && $this->_editable) {
 						$join = $this->getJoin();
 						$joinidsName = 'join['.$join->id.']['.$join->table_join.'___id][]';
@@ -631,31 +631,31 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 							}
 							$tmpids[] = $o;
 						}
-						$str .= "<div class=\"fabrikHide\">";
-						$str .= FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $joinids, 'value', 'text', $options_per_row, $this->_editable);
-						$str .= "</div>";
+						$html[] = '<div class="fabrikHide">';
+						$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $joinids, 'value', 'text', $options_per_row, $this->_editable);
+						$html[] = '</div>';
 					}
 					$defaultLabel = $str;
 					break;
 				case 'auto-complete':
 					$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';
-					$str .= "<input type=\"text\" size=\"20\" name=\"{$autoCompleteName}\" id=\"{$id}-auto-complete\" value=\"$defaultLabel\" class=\"fabrikinput inputbox autocomplete-trigger\"/>";
-					$str .= "<input type=\"hidden\" size=\"20\" name=\"{$thisElName}\" id=\"{$id}\" value=\"".JArrayHelper::getValue($default, 0, '')."\"/>";
+					$html[] = '<input type="text" size="20" name="'.$autoCompleteName.'" id="'.$id.'-auto-complete" value="'.$defaultLabel.'" class="fabrikinput inputbox autocomplete-trigger"/>';
+					$html[] = '<input type="hidden" size="20" name="'.$thisElName.'" id="'.$id.'" value="'.JArrayHelper::getValue($default, 0, '').'"/>';
 					break;
 			}
 
 
 			if ($params->get('fabrikdatabasejoin_frontend_select') && $this->_editable) {
-				$str .= "<a href=\"#\" class=\"toggle-selectoption\" title=\"" . JText::_('COM_FABRIK_SELECT') . "\">".
+				$html[] = '<a href="#" class="toggle-selectoption" title="'.JText::_('COM_FABRIK_SELECT').'">'.
 				FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT')))."</a>";
 			}
 
 			if ($params->get('fabrikdatabasejoin_frontend_add') && $this->_editable) {
-				$str .= "<a href=\"#\" title=\"".JText::_('add option') ."\" class=\"toggle-addoption\">\n";
-				$str .= FabrikHelperHTML::image('action_add.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT')))."</a>";
+				$html[] = '<a href="#" title="'.JText::_('add option').'" class="toggle-addoption">';
+				$html[] = FabrikHelperHTML::image('action_add.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))).'</a>';
 			}
 
-			$str .= ($displayType == "radio") ? "</div>" : '';
+			$html[] = ($displayType == 'radio') ? '</div>' : '';
 		} else {
 			/* make a hidden field instead*/
 			//$$$ rob no - the readonly data should be made in form view _loadTmplBottom
@@ -678,17 +678,22 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			return $defaultLabel;
 		}
 		if ($params->get('join_desc_column') !== '') {
-			$str .= "<div class=\"dbjoin-description\">";
+			$html[] = '<div class="dbjoin-description">';
 			for ($i=0; $i < count($this->_optionVals); $i++) {
 				$opt = $this->_optionVals[$i];
 				$display = $opt->value == $default ? '' : 'none';
 				$c = $i+1;
-				$str .= "<div style=\"display:$display\" class=\"notice description-".$c."\">".$opt->description."</div>";
+				$html[] = '<div style="display:'.$display.'" class="notice description-'.$c.'">'.$opt->description.'</div>';
 			}
-			$str .= "</div>";
+			$html[] = '</div>';
 		}
-		return $str;
+		return implode("\n", $html);
 	}
+	
+/* 	function getDefaultValue($data = array())
+	{
+		return (array)parent::getDefaultValue();
+	} */
 
 	protected function getValueFullName($opts)
 	{

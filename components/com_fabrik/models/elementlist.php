@@ -67,7 +67,11 @@ class plgFabrik_ElementList extends plgFabrik_Element{
   function getDefaultValue($data = array())
   {
     if (!isset($this->_default)) {
-      $this->_default = $this->getSubInitialSelection();
+    	if (isset($opts->sub_initial_selection)) {
+      	$this->_default = $this->getSubInitialSelection();
+    	} else {
+    		$this->_default = parent::getDefaultValue($data);
+    	}
     }
     return $this->_default;
   }
@@ -316,14 +320,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		if (!isset($this->defaults)) {
 			$this->defaults = array();
 		}
-		$valueKey = $repeatCounter . serialize($opts);
+		$valueKey = $repeatCounter.serialize($opts);
 		if (!array_key_exists($valueKey, $this->defaults)) {
 			$default = '';
 			$groupModel = $this->_group;
-			$group			=& $groupModel->getGroup();
-			$joinid			= $group->join_id;
-			$formModel 	=& $this->getForm();
-			$element		= $this->getElement();
+			$group = $groupModel->getGroup();
+			$joinid	= $group->join_id;
+			$formModel = $this->getForm();
+			$element = $this->getElement();
 			// $$$rob - if no search form data submitted for the checkbox search element then the default
 			// selecton was being applied instead
 			$default = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
@@ -354,7 +358,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 						$default = JArrayHelper::getValue($a, $repeatCounter, $default);
 					}
 				} else {
-					if (array_key_exists($name, $data)) {
+					// $$$ rob - default should be an array (otherwise default options for database join element are not used)
+					/* if (array_key_exists($name, $data)) {
 						if (is_array($data[$name])) {
 							//occurs on form submission for fields at least
 							$default = $data[$name];
@@ -364,10 +369,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 							// was being returned as [62], then [[62]] etc.
 							$default = FabrikWorker::JSONtoData($data[$name], false);
 						}
-					}
+					} */
 				}
 			}
-
 			if ($default === '') { //query string for joined data
 				$default = JArrayHelper::getValue($data, $name);
 			}
