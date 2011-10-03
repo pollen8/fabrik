@@ -2666,9 +2666,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	}
 
 	/**
-	 * get the method that the form should use on submission
-	 *
-	 * @return string ajax/post
+	 * should the form submit via ajax or not?
+	 * @return bool
 	 */
 
 	function isAjax()

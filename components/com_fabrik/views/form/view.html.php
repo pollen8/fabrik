@@ -97,6 +97,7 @@ class fabrikViewForm extends JView
 		$this->assignRef('data', $model->data);
 		$this->assignRef('modeldata', $model->_data);
 		$this->assignRef('params', $params);
+		$this->assign('tipLocation', $params->get('tiplocation'));
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
 		
 		//cck in admin?
@@ -111,8 +112,8 @@ class fabrikViewForm extends JView
 		JDEBUG ? $_PROFILER->mark('form view: after tmpl bottom loaded') : null;
 
 		if ($model->_editable) {
-			$form->startTag = "<form action=\"{$form->action}\" class=\"fabrikForm\" method=\"post\" name=\"{$form->name}\" id=\"{$form->formid}\" enctype=\"{$model->getFormEncType()}\">";
-			$form->endTag = "</form>";
+			$form->startTag = '<form action="'.$form->action.'" class="fabrikForm" method="post" name="'.$form->name.'" id="'.$form->formid.'" enctype="'.$model->getFormEncType().'">';
+			$form->endTag = '</form>';
 		} else {
 			$form->startTag = '<div class="fabrikForm fabrikDetails" id="'.$form->formid.'">';
 			$form->endTag  = '</div>';
@@ -165,7 +166,7 @@ class fabrikViewForm extends JView
 			//see http://fabrikar.com/forums/showpost.php?p=73833&postcount=14
 			//if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
 			if ($model->sessionModel->last_page > 0) {
-				$message .= " <a href=\"#\" class=\"clearSession\">".JText::_('COM_FABRIK_CLEAR')."</a>";
+				$message .= ' <a href="#" class="clearSession">'.JText::_('COM_FABRIK_CLEAR').'</a>';
 			}
 		}
 
@@ -336,7 +337,7 @@ class fabrikViewForm extends JView
 
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = $model->isAjax();
-		$opts->ajaxValidation = $params->get('ajax_validations');
+		$opts->ajaxValidation = (bool)$params->get('ajax_validations');
 		$opts->primaryKey = $key;
 		$opts->error = @$form->origerror;
 		$opts->pages = $model->getPages();
@@ -492,27 +493,27 @@ class fabrikViewForm extends JView
 		$reffer =str_replace('&', '&amp;',  JRequest::getVar('fabrik_referrer', $reffer));
 
 		$this_rowid = is_array($model->_rowId)? implode('|', $model->_rowId) : $model->_rowId;
-		$aHiddenFields = "<input type=\"hidden\" name=\"listid\" value=\"" . $listModel->getId() . "\" />\n".
-		"<input type=\"hidden\" name=\"rowid\" value=\"" . $this_rowid . "\" />\n".
-		"<input type=\"hidden\" name=\"Itemid\" value=\"" . $Itemid . "\" />\n".
-		"<input type=\"hidden\" name=\"option\" value=\"com_fabrik\" />\n".
-    "<input type=\"hidden\" name=\"task\" value=\"$task\" />\n".
-    "<input type=\"hidden\" name=\"isMambot\" value=\"$this->isMambot\" />\n".
-		"<input type=\"hidden\" name=\"formid\" value=\"" . $model->get('id') . "\" />\n".
-		"<input type=\"hidden\" name=\"returntoform\" value=\"0\" />\n".
-		"<input type=\"hidden\" name=\"fabrik_referrer\" value=\"" . $reffer . "\" />\n".
-		"<input type=\"hidden\" name=\"fabrik_ajax\" value=\"" . (int)$model->isAjax() . "\" />\n";
+		$fields = array('<input type="hidden" name="listid" value="'.$listModel->getId().'" />',
+		'<input type="hidden" name="rowid" value="'.$this_rowid.'" />',
+		'<input type="hidden" name="Itemid" value="'.$Itemid.'" />',
+		'<input type="hidden" name="option" value="com_fabrik" />',
+    '<input type="hidden" name="task" value="'.$task.'" />',
+    '<input type="hidden" name="isMambot" value="'.$this->isMambot.'" />',
+		'<input type="hidden" name="formid" value="'.$model->get('id').'" />',
+		'<input type="hidden" name="returntoform" value="0" />',
+		'<input type="hidden" name="fabrik_referrer" value="'.$reffer.'" />',
+		'<input type="hidden" name="fabrik_ajax" value="'.(int)$model->isAjax().'" />');
 
-		$aHiddenFields .= "<input type=\"hidden\" name=\"_packageId\" value=\"$model->packageId\" />\n";
+		$fields[] = '<input type="hidden" name="_packageId" value="'.$model->packageId.'" />';
 
 		if ($usekey = JRequest::getVar('usekey')) {
 
 			// $$$rob v's been set from -1 to the actual row id - so ignore usekyey not sure if we should comment this out
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
 
-			$aHiddenFields .= "<input type=\"hidden\" name=\"usekey\" value=\"" . $usekey . "\" />\n";
+			$fields[] = '<input type="hidden" name="usekey" value="'.$usekey.'" />';
 			if (empty($model->_data)) {
-				$aHiddenFields .= "<input type=\"hidden\" name=\"usekey_newrecord\" value=\"1\" />\n";
+				$fields[] = '<input type="hidden" name="usekey_newrecord" value="1" />';
 			}
 		}
 		// $$$ hugh - testing a fix for pagination issue when submitting a 'search form'.
@@ -523,47 +524,47 @@ class fabrikViewForm extends JView
 		if (is_array($save_insessions)) {
 			foreach ($save_insessions as $save_insession) {
 				if ($save_insession == '1') {
-					$aHiddenFields .= "<input type=\"hidden\" name=\"limitstart\" value=\"0\" />\n";
+					$fields[] = '<input type="hidden" name="limitstart" value="0" />';
 					break;
 				}
 			}
 		}
-		$aHiddenFields .= JHTML::_('form.token');
+		$fields[] = JHTML::_('form.token');
 
-		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1" ?	"<input type=\"reset\" class=\"button\" name=\"Reset\" value=\"" . $params->get('reset_button_label') . "\" />\n" : '';
-		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->_rowId != '' ?	"<input type=\"submit\" class=\"button\" name=\"Copy\" value=\"" . $params->get('copy_button_label') . "\" />\n" : '';
+		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1" ?	'<input type="reset" class="button" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
+		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->_rowId != '' ?	'<input type="submit" class="button" name="Copy" value="'.$params->get('copy_button_label').'" />' : '';
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
-		$form->applyButton = $params->get('apply_button', 0) && $this->editable ? "<input type=\"$applyButtonType\" class=\"button\" name=\"apply\" value=\"" . $params->get('apply_button_label') . "\" />\n" : '';
-		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0 ? "<input type=\"submit\" value=\"" . $params->get('delete_button_label', 'Delete') . "\" class=\"button\" name=\"delete\" />" : '';
-		//$gobackaction = $model->isAjax() ? '': "onclick=\"history.back();\"";
+		$form->applyButton = $params->get('apply_button', 0) && $this->editable ? '<input type="'.$applyButtonType.'" class="button" name="apply" value="'.$params->get('apply_button_label').'" />' : '';
+		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0 ? '<input type="submit" value="'.$params->get('delete_button_label', 'Delete').'" class="button" name="delete" />' : '';
+		//$gobackaction = $model->isAjax() ? '': "onclick="history.back();"";
 		// guess we have to leave this choice up to the form creator to show/hide the button 
 		$gobackaction = "onclick=\"history.back();\"";
-		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" '.$gobackaction.' value="'.$params->get('goback_button_label').'" />'."\n" : '';
+		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" '.$gobackaction.' value="'.$params->get('goback_button_label').'" />' : '';
 		if ($model->_editable) {
 			$button = $model->isAjax() ? "button" : "submit";
 			$form->submitButton = '';
-			$form->submitButton .= '<input type="'.$button.'" class="button" name="submit" value="'.$form->submit_button_label.'" />'."\n";
+			$form->submitButton .= '<input type="'.$button.'" class="button" name="submit" value="'.$form->submit_button_label.'" />';
 		} else {
 			$form->submitButton = '';
 		}
 		if ($this->isMultiPage) {
-			$form->submitButton .= '<input type="button" class="fabrikPagePrevious button" name="fabrikPagePrevious" value="'.JText::_('COM_FABRIK_PREVIOUS').'" />'."\n";
-			$form->submitButton .= '<input type="button" class="fabrikPageNext button" name="fabrikPageNext" value="'.JText::_('COM_FABRIK_NEXT').'" />'."\n";
+			$form->submitButton .= '<input type="button" class="fabrikPagePrevious button" name="fabrikPagePrevious" value="'.JText::_('COM_FABRIK_PREVIOUS').'" />';
+			$form->submitButton .= '<input type="button" class="fabrikPageNext button" name="fabrikPageNext" value="'.JText::_('COM_FABRIK_NEXT').'" />';
 		}
 		$format = $model->isAjax() ? 'raw' : 'html';
-		$aHiddenFields .= '<input type="hidden" name="format" value="'.$format.'" />';
+		$fields[] = '<input type="hidden" name="format" value="'.$format.'" />';
 
 		$groups = $model->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			$group = $groupModel->getGroup();
 			$c = $groupModel->repeatTotal;
 			//used for validations
-			$aHiddenFields .= '<input type="hidden" name="fabrik_repeat_group['.$group->id.']" value="'.$c.'" id="fabrik_repeat_group_'.$group->id.'_counter" />';
+			$fields[] = '<input type="hidden" name="fabrik_repeat_group['.$group->id.']" value="'.$c.'" id="fabrik_repeat_group_'.$group->id.'_counter" />';
 		}
 
 		$this->_cryptQueryString($aHiddenFields);
 		$this->_cryptViewOnlyElements($aHiddenFields);
-		$this->hiddenFields = $aHiddenFields;
+		$this->hiddenFields = implode("\n", $fields);
 	}
 
 	/** $$$rob store all fabrik querystring vars as encrypted hidden fields
@@ -603,14 +604,14 @@ class fabrikViewForm extends JView
 					else {
 						$input = $crypt->encrypt($input);
 					}
-					$aHiddenFields .= "<input type=\"hidden\" name=\"fabrik_vars[querystring][$key]\" value=\"" . $input . "\" />\n";
+					$fields[] = '<input type="hidden" name="fabrik_vars[querystring]['.$key.']" value="'.$input.'" />';
 				}
 			}
 		}
 	}
 
 
-	protected function _cryptViewOnlyElements(&$aHiddenFields)
+	protected function _cryptViewOnlyElements(&$fields)
 	{
 		jimport('joomla.utilities.simplecrypt');
 		jimport('joomla.utilities.utility');
@@ -670,10 +671,10 @@ class fabrikViewForm extends JView
 			if (is_array($input)) {
 				for ($c = 0; $c < count($input); $c ++) {
 					$i = $input[$c];
-					$aHiddenFields .= "<input type=\"hidden\" name=\"fabrik_vars[querystring][$key][$c]\" value=\"" . $i . "\" />\n";
+					$fields[] = '<input type="hidden" name="fabrik_vars[querystring]['.$key.']['.$c.']" value="' . $i . '" />';
 				}
 			} else {
-				$aHiddenFields .= "<input type=\"hidden\" name=\"fabrik_vars[querystring][$key]\" value=\"" . $input . "\" />\n";
+				$fields[] = '<input type="hidden" name="fabrik_vars[querystring]['.$key.']" value="'.$input.'" />';
 			}
 		}
 	}

@@ -1228,8 +1228,10 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 		}
 		//tips (if nto rendered as hovers)
-		$tip = '<div style="width:100%">'.$this->getTip().'</div>';
-		
+		$tip = $this->getTip();
+		if ($tip !== '') { 
+			$tip = '<div class="fabrikInlineTip">'.FabrikHelperHTML::image('questionmark.png', 'form', $tmpl).$tip.'</div>';
+		}
 		switch ($model->getParams()->get('tiplocation')) {
 			default:
 			case 'tip':
