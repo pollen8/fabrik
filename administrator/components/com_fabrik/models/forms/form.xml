@@ -163,14 +163,14 @@
 		
 		<fieldset name="templates2">
 		
-			<field name="pdf_template" 
+		<!-- 	<field name="pdf_template" 
 				type="folderlist" 
 				directory="/components/com_fabrik/views/form/tmpl/" 
 				hide_none="0" 
 				hide_default="1" 
 				default="admin" 
 				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL" 
-				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" />
+				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" /> -->
 				
 		</fieldset>
 		
@@ -187,14 +187,14 @@
 		
 		<fieldset name="options">
 		
-			<field name="pdf" 
+		<!-- 	<field name="pdf" 
 				type="list" 
 				label="COM_FABRIK_FIELD_PDF_ICON_LABEL" 
 				description="COM_FABRIK_FIELD_PDF_ICON_DESC">
 					<option value="">JGLOBAL_USE_GLOBAL</option>
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
-			</field>
+			</field> -->
 			
 			<field name="print" 
 				type="list"
