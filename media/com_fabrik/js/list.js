@@ -921,9 +921,12 @@ var FbList = new Class({
 		}
 		//var del = this.form.getElement('input[name=delete]');
 		var del = document.getElements('.fabrik_delete a');
-		if (del) {
-			del.addEvent('click', function (e) {
+		//if (del) {
+		document.addEvent('click:relay(.fabrik_delete a)', function (e) {
 				var r = e.target.getParent('.fabrik_row');
+				if (!r) {
+					r = this.activeRow;
+				}
 				if (r) {
 					var chx = r.getElement('input[type=checkbox][name*=id]');
 					if (typeOf(chx) !== 'null') {
@@ -945,7 +948,7 @@ var FbList = new Class({
 					e.stop();
 				}
 			}.bind(this));
-		}
+		//}
     
 		if (document.id('fabrik__swaptable')) {
 			document.id('fabrik__swaptable').addEvent('change', function (e) {
@@ -1087,7 +1090,13 @@ var FbListActions = new Class({
 		this.actions.each(function (ul) {
 			//sub menus ie group by options
 			if (ul.getElement('ul')) {
+
 				var el = ul.getElement('ul');
+				var c = el.clone();
+				var trigger = el.getParent();
+				var tip = new FloatingTips(trigger, {showOn: 'click', position: 'bottom', html: true, content: c});
+				el.dispose();
+			/*	var el = ul.getElement('ul');
 				var c = el.clone();
 				c.inject(document.body);
 				c.fade('hide');
@@ -1101,7 +1110,7 @@ var FbListActions = new Class({
 					c.setStyle('left', trigger.getLeft() + trigger.getWidth() / 1.5);
 					c.fade('toggle');
 				});
-				el.dispose();
+				el.dispose();*/
 			}
 		});
 	},
@@ -1130,7 +1139,32 @@ var FbListActions = new Class({
 		this.list.form.getElements('ul.fabrik_action').each(function (ul) {
 			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
-					ul.addClass('floating-tip');
+					
+					var hideFn = function (e) {
+						if (!e.target.checked) {
+							this.hide(e, e.target);
+						}
+					};
+					
+					var showFn = function (e) {
+						if (e.target.checked) {
+							this.show(e.target);
+						}
+					};
+					
+					var c = function (el, o) {
+						this.activeRow = ul.getParent('.fabrik_row');
+						return ul.getParent();
+					}.bind(this.list);
+					
+				/*	var c = ul.getParent().clone();
+					c.getElement('ul').store('row', ul.getParent('.fabrik_row'));
+					console.log(c.getElement('ul'), c.getElement('ul').retrieve('row'));*/
+					
+					var tip = new FloatingTips(i, {html: true, showOn: 'click', hideOn: 'click', content: c, hideFn : hideFn, showFn: showFn});
+				//	ul.dispose();
+					
+					/*ul.addClass('floating-tip');
 					var c = ul.clone().inject(document.body, 'inside');
 					this.actions.push(c);
 					c.fade('out');
@@ -1139,7 +1173,7 @@ var FbListActions = new Class({
 					i.addEvent('click', function (e) {
 						this.toggleWidget(e, c);
 					}.bind(this));
-					ul.dispose();
+					ul.dispose();*/
 				}
 			}
 		}.bind(this));
