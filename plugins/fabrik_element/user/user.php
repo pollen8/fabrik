@@ -42,10 +42,10 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	function render($data, $repeatCounter = 0)
 	{
-		$element	= $this->getElement();
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
+		$element = $this->getElement();
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
 
 		// $$$ rob - if embedding a form inside a details view then rowid is true (for the detailed view) but we are still showing a new form
 		// instead take a look at the element form's _rowId;
@@ -57,7 +57,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			//set user to logged in user
 			if ($this->_editable) {
 				$user = JFactory::getUser();
-			}else{
+			} else {
 				$user = JFactory::getUser((int)$this->getValue($data, $repeatCounter));
 			}
 		} else {
@@ -69,7 +69,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			// $$$ hugh ... what a mess ... of course if it's a new form, $data doesn't exist ...
 			if (empty($data)) {
 				// if $data is empty, we must (?) be a new row, so just grab logged on user
-				$user  		= JFactory::getUser();
+				$user = JFactory::getUser();
 			}
 			else {
 				//$$$ rob - changed from $name to $id as if your element is in a repeat group name as "[]" at the end
@@ -88,7 +88,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				if ($uid === '') {
 					$uid = $this->getValue($data, $repeatCounter);
 				}
-				$user  = JFactory::getUser((int)$uid);
+				$user = JFactory::getUser((int)$uid);
 			}
 		}
 
@@ -107,7 +107,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				$str = parent::render($data, $repeatCounter);
 			}
 		} else {
-			$displayParam = $params->get('my_table_data', 'username');
+			$displayParam = $this->_getValColumn();
 			if (is_a($user, 'JUser')) {
 				$str = $user->get($displayParam);
 			} else {
@@ -335,10 +335,17 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		$o->$l = $join_label;
 		$o->type = 'element';
 		$join->params = json_encode($o);
-
-		//$join->attribs = "join-label=" . JArrayHelper::getValue($params, 'my_table_data', 'username') . "\n";
 		$join->store();
 		return true;
+	}
+	
+	protected function getJoinLabel()
+	{
+		$label = parent::getJoinLabel();
+		if ($label == 'gid') {
+			$label = 'username';
+		}
+		return $label;
 	}
 
 	/**
@@ -450,9 +457,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 
-		$tabletype = $params->get('my_table_data', 'username');
+		$tabletype = $this->_getValColumn();
 		$join = $this->getJoin();
-		$joinTableName  	=  FabrikString::safeColName($join->table_join_alias);
+		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 		// if filter type isn't set was blowing up in switch below 'cos no $rows
 		// so added '' to this test.  Should probably set $element->filter_type to a default somewhere.
 		if (in_array($element->filter_type, array('range', 'dropdown', ''))) {
@@ -565,7 +572,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					break;
 				case 'field':
 				default:
-					$tabletype = $params->get('my_table_data', 'username');
+					$tabletype = $this->_getValColumn();
 					break;
 			}
 			$k = '`' . $joinTableName . '`.`' . $tabletype.'`';
@@ -573,7 +580,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			if ($this->_rawFilter) {
 				$k = '`' . $joinTableName . '`.`id`';
 			}else{
-				$tabletype = $params->get('my_table_data', 'username');
+				$tabletype = $this->_getValColumn();
 				$k = '`' . $joinTableName . '`.`' . $tabletype.'`';
 			}
 		}
@@ -590,7 +597,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	function getDb()
 	{
-		return FabrikWorker::getDbo();
+		return FabrikWorker::getDbo(true);
 	}
 
 	/**
@@ -604,15 +611,27 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	function getEmailValue($value, $data, $c)
 	{
 		$key = $this->getFullName(false, true, false) . "_raw";
-		$user  		=& JFactory::getUser((int)$data[$key]);
+		$user = JFactory::getUser((int)$data[$key]);
+		return $this->getUserDisplayProperty($user);
+	}
+	
+	/**
+	 * @since 3.0b
+	 * get the user's property to show, if gid raise warning and revert to username (no gid in J1.7)
+	 * @param object $user
+	 */
+	
+	protected function getUserDisplayProperty($user)
+	{
+		static $displayMessage;
 		$params = $this->getParams();
-		$displayParam = $params->get('my_table_data', 'username');
+		$displayParam = $this->_getValColumn();
 		return $user->get($displayParam);
 	}
 
 	function getJoinValueColumn()
 	{
-		$params 		=& $this->getParams();
+		$params = $this->getParams();
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
 		return $db->nameQuote($join->table_join_alias).'.id';
@@ -672,7 +691,17 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	function _getValColumn()
 	{
-		return $this->getParams()->get('my_table_data', 'username');
+		static $displayMessage;
+		$params = $this->getParams();
+		$displayParam = $params->get('my_table_data', 'username');
+		if ($displayParam == 'gid') {
+			$displayParam == 'username';
+			if (!isset($displayMessage)) {
+				JError::raiseNotice(200, 'The user plugin (id = '. $this->getElement()->id.') uses the defunct gid property. Please edit it and change it');
+				$displayMessage = true;
+			}
+		}
+		return $displayParam;
 	}
 }
 ?>

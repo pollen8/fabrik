@@ -24,10 +24,8 @@
 					<option value="name">Name</option>
 					<option value="username">User Name</option>
 					<option value="email">Email</option>
-					<option value="usertype">User Type</option>
 					<option value="block">Block</option>
 					<option value="sendEmail">Send Email</option>
-					<option value="gid">Group ID</option>
 					<option value="registerDate">Registered Date</option>
 					<option value="lastvisitDate">Last Visit Date</option>
 					<option value="activation">Activation</option>

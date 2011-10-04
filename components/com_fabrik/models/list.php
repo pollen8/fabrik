@@ -1482,7 +1482,7 @@ class FabrikFEModelList extends JModelForm {
 
 		$selectedTables[] = $table->db_table_name;
 		$return = array();
-		$joins 	= ($this->get('includeCddInJoin', true) === false) ? $this->getJoinsNoCdd() : $this->getJoins();
+		$joins	= ($this->get('includeCddInJoin', true) === false) ? $this->getJoinsNoCdd() : $this->getJoins();
 		$tableGroups = array();
 		foreach ($joins as $join) {
 			//used to bypass user joins if the table connect isnt the Joomla
@@ -2004,7 +2004,6 @@ class FabrikFEModelList extends JModelForm {
 		return $this->_params;
 	}
 
-
 	/**
 	 * Method to set the table id
 	 *
@@ -2110,8 +2109,8 @@ class FabrikFEModelList extends JModelForm {
 		$publishdown = JFactory::getDate($item->publish_down);
 		$publishdown = $publishdown->toUnix();
 
-		$jnow		= JFactory::getDate();
-		$now		= $jnow->toUnix();
+		$jnow	= JFactory::getDate();
+		$now = $jnow->toUnix();
 		if ($item->published == '1') {
 			if ($now >= $publishup || $item->publish_up == '' || $item->publish_up == $nullDate) {
 				if ($now <= $publishdown || $item->publish_down == '' || $item->publish_down == $nullDate) {
@@ -2142,10 +2141,8 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$params = $this->getParams();
 		if (!is_object($this->_access) || !array_key_exists('allow_drop', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->allow_drop = in_array($this->getParams()->get('allow_drop'), $groups);
-			//$this->_access->allow_drop = $user->authorise('core.drop', 'com_fabrik.list.'.$this->getTable()->id);
 		}
 		return $this->_access->allow_drop;
 	}
@@ -2160,8 +2157,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$params = $this->getParams();
 		if (!is_object($this->_access) || !array_key_exists('viewdetails', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
 		}
 		return $this->_access->viewdetails;
@@ -2200,7 +2196,6 @@ class FabrikFEModelList extends JModelForm {
 			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
 			$this->_access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
-			//$this->_access->edit = $user->authorise('core.edit', 'com_fabrik.list.'.$this->getTable()->id);
 		}
 		return $this->_access->edit;
 	}
@@ -2292,10 +2287,8 @@ class FabrikFEModelList extends JModelForm {
 			return $canUserDo;
 		}
 		if (!is_object($this->_access) || !array_key_exists('delete', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
-			//$this->_access->delete = $user->authorise('core.delete', 'com_fabrik.list.'.$this->getTable()->id);
 		}
 		return $this->_access->delete;
 	}
@@ -2325,8 +2318,7 @@ class FabrikFEModelList extends JModelForm {
 	public function canCSVImport()
 	{
 		if (!is_object($this->_access) || !array_key_exists('csvimport', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->csvimport = in_array($this->getParams()->get('csv_import_frontend'), $groups);
 		}
 		return $this->_access->csvimport;
@@ -2341,8 +2333,7 @@ class FabrikFEModelList extends JModelForm {
 	public function canCSVExport()
 	{
 		if (!is_object($this->_access) || !array_key_exists('csvexport', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->csvexport = in_array($this->getParams()->get('csv_export_frontend'), $groups);
 		}
 		return $this->_access->csvexport;
@@ -2357,8 +2348,7 @@ class FabrikFEModelList extends JModelForm {
 	public function canGroupBy()
 	{
 		if (!is_object($this->_access) || !array_key_exists('groupby', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->groupby = in_array($this->getParams()->get('group_by_access'), $groups);
 		}
 		return $this->_access->groupby;
@@ -2374,8 +2364,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$params = $this->getParams();
 		if (!is_object($this->_access) || !array_key_exists('add', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->add = in_array($this->getParams()->get('allow_add'), $groups);
 		}
 		return $this->_access->add;
@@ -2389,9 +2378,7 @@ class FabrikFEModelList extends JModelForm {
 	function canView()
 	{
 		if (!is_object($this->_access) || !array_key_exists('view', $this->_access)) {
-			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
-			//$this->_access->view = $user->authorise('core.view', 'com_fabrik.list.'.$this->getTable()->id);
+			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->view = in_array($this->getTable()->access, $groups);
 		}
 		return $this->_access->view;
@@ -2499,9 +2486,13 @@ class FabrikFEModelList extends JModelForm {
 		foreach ($joins as &$join) {
 			$join->canUse = true;
 			if ($join->table_join == '#__users' || $join->table_join == $prefix . 'users') {
-				if ($db != $this->getDb()) {
-					$join->canUse = false;
-				}
+				//if ($db != $this->getDb()) {
+					$conf	= JFactory::getConfig();
+					$thisCn = $this->getConnection()->getConnection();
+					if (!($thisCn->host == $conf->getValue('config.host') && $thisCn->database == $conf->getValue('config.db'))) {
+						$join->canUse = false;
+					}
+				//}
 			}
 			// $$$ rob = check for repeat elements In table view we dont need to add the join
 			// as the element data is concatenated into one row. see elementModel::getAsField_html()

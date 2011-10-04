@@ -139,14 +139,21 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 			return "CONCAT(".$val.")";
 		}
+		$label = $this->getJoinLabel();
+		$joinTableName = $join->table_join_alias;
+		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName.'___'.$label :$db->nameQuote($joinTableName).'.'.$db->nameQuote($label);// "``.`$label`";
+		return $this->joinLabelCols[(int)$useStep];
+	}
+	
+	protected function getJoinLabel()
+	{
+		$join = $this->getJoin();
 		$label = FabrikString::shortColName($join->_params->get('join-label'));
 		if ($label == '') {
 			JError::raiseWarning(500, 'Could not find the join label for '.$this->getElement()->name . ' try unlinking and saving it');
 			$label = $this->getElement()->name;
 		}
-		$joinTableName = $join->table_join_alias;
-		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName.'___'.$label :$db->nameQuote($joinTableName).'.'.$db->nameQuote($label);// "``.`$label`";
-		return $this->joinLabelCols[(int)$useStep];
+		return $label;
 	}
 
 	/**
