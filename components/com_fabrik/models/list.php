@@ -3716,7 +3716,7 @@ class FabrikFEModelList extends JModelForm {
 		FabrikHelperHTML::mocha('a.popupwin');
 		$table = $this->getTable();
 		$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=".$table->id."&amp;nextview=".JRequest::getVar('view');
-		return "<a rel=\"{id:'advanced-search-win',width:690,loadMethod:'xhr',title:'".JText::_('COM_FABRIK_ADVANCED_SEARCH')."',maximizable:1}\" href=\"$url\" class=\"popupwin\">". JText::_('COM_FABRIK_ADVANCED_SEARCH') ."</a>";
+		return "<a rel=\"{id:'advanced-search-win',height:300,width:690,loadMethod:'xhr',title:'".JText::_('COM_FABRIK_ADVANCED_SEARCH')."',maximizable:1}\" href=\"$url\" class=\"popupwin\">". JText::_('COM_FABRIK_ADVANCED_SEARCH') ."</a>";
 	}
 
 	/**
