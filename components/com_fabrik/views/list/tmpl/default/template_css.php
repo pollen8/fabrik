@@ -22,6 +22,10 @@ echo "
 	width:100%;
 }
 
+#listform_$c table.fabrikList .groupdataMsg{
+	padding:0;
+}
+
 #listform_$c a,
 #listform_$c .fabrikDataContainer  a:hover{
 	border:0;

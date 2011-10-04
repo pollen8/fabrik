@@ -2,7 +2,7 @@
 	<ul class="fabrik_action neverToggle"><?php if ($this->showAdd) {?>
 		<li class="addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
-				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl, JText::_('COM_FABRIK_ADD'));?>
+				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl,  array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD')));?>
 				<span><?php echo JText::_('COM_FABRIK_ADD');?></span>
 			</a>
 		</li>
@@ -19,7 +19,7 @@
 	if ($this->canGroupBy) {?>
 		<li>
 			<a href="#" class="groupBy">
-				<?php echo FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, JText::_('COM_FABRIK_GROUP_BY'));?>
+				<?php echo FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl,  array('title' => JText::_('COM_FABRIK_GROUP_BY')));?>
 				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
 			</a>
 			<ul class="floating-tip">
@@ -33,7 +33,7 @@
 	 if ($this->showCSV) {?>
 		<li class="csvExportButton">
 			<a href="#">
-				<?php echo FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, JText::_('COM_FABRIK_EXPORT_TO_CSV'));?>
+				<?php echo FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_EXPORT_TO_CSV')));?>
 				<span><?php echo JText::_('COM_FABRIK_EXPORT_TO_CSV');?></span>
 			</a>
 		</li>
@@ -41,7 +41,7 @@
 	if ($this->showCSVImport) {?>
 	<li class="csvImportButton">
 			<a href="<?php echo $this->csvImportLink;?>">
-				<?php echo FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl, JText::_('COM_FABRIK_IMPORT_FROM_CSV'));?>
+				<?php echo FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_IMPORT_FROM_CSV')));?>
 				<span><?php echo JText::_('COM_FABRIK_IMPORT_FROM_CSV');?></span>
 			</a>
 		</li>
@@ -49,7 +49,7 @@
 	if ($this->showRSS) {?>
 	<li class="feedButton">
 			<a href="<?php echo $this->rssLink;?>">
-				<?php echo FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, JText::_('COM_FABRIK_SUBSCRIBE_RSS'));?>
+				<?php echo FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_SUBSCRIBE_RSS')));?>
 				<span><?php echo JText::_('COM_FABRIK_SUBSCRIBE_RSS');?></span>
 			</a>
 		</li>
