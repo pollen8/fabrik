@@ -6,6 +6,7 @@ var IconGenerator = new Class({
 	Implements: [Options],
 	
 	options: {
+		size: {width: 32, height: 32},
 		rotate: 0,
 		scale: 1,
 		shadow: {
@@ -28,7 +29,7 @@ var IconGenerator = new Class({
 		var opts = Object.clone(this.options);
 		Object.append(opts, options);
 
-		var art = new ART(32 * opts.scale, 32 * opts.scale);
+		var art = new ART(opts.size.width * opts.scale, opts.size.height * opts.scale);
 		var group = new ART.Group();
 	  
 	  // cache the path
@@ -40,13 +41,19 @@ var IconGenerator = new Class({
 
 		iconShadow.fill(opts.shadow.color);
 		iconShadow.translate(opts.shadow.translate.x, opts.shadow.translate.y);
-	  
+		
 		// create an icon with the gradient
 		icon = new ART.Shape(iconPath);
 	  
 		icon.scale(opts.scale, opts.scale);
 	 
 		icon.fill(opts.fill.color[0], opts.fill.color[1]);
+		
+		//test stroke (border)
+		if (options.stroke) {
+			icon.stroke(options.stroke.color, options.stroke.width);
+		}
+		
 		group.grab(iconShadow, icon);
 		group.rotate(opts.rotate, 16 * opts.scale, 16 * opts.scale);
 		group.inject(art);

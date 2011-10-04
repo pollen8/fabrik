@@ -70,10 +70,3 @@ $gCounter++;
 <?php echo $this->loadTemplate('buttons');?>
 </form>
 
-<script type="text/javascript">
-head.ready(function() {
-	new FloatingTips('.podionTipLeft', {html:true, position:'left',
-		balloon: true, 'className':'podionTip',
-		arrowSize:12});
-});
-</script>

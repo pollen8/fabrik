@@ -20,7 +20,7 @@
 				$file = $imgData[0]->file;
 				//title="'.basename($file).'"
 
-				echo '<a class="podionTipLeft" title="'.$title.'" rel="lightbox[]" href="http://www.podion.eu/dev2/'.$file.'">';
+				echo '<a class="fabrikTip" opts="{position:\'left\'}" title="'.$title.'" rel="lightbox[]" href="http://www.podion.eu/dev2/'.$file.'">';
 				//class="fabrikLightBoxImage"
 				echo FabrikHelperHTML::image('image.png', 'list', $this->tmpl, 'image');
 				echo '</a>';

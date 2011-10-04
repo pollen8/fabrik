@@ -33,7 +33,7 @@ $endTime = JFactory::getDate($this->modeldata['po_events___Event_date_end'])->fo
 			{po_events___Event_description_short}</li>
 			<li class="image">
 			<?php echo FabrikHelperHTML::image('image-grey.png', 'form', $this->tmpl, '');?>
-			<a href="#" class="fabrikTipLeft" title="<?php echo $img?>">
+			<a href="#" class="fabrikTip" opts="{position:'left'}" title="<?php echo $img?>">
 			<img src="../<?php echo $crop?>" alt="flyer" />
 			</a>
 			</li>

@@ -891,7 +891,9 @@ class plgFabrik_Element extends FabrikPlugin
 		$formModel = $this->getFormModel();
 		if ($formModel->getParams()->get('tiplocation', 'tip') == 'tip' && (($mode == 'form' && ($formModel->_editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false))) {
 			$rollOver = $this->getTip($data);
-			return ($rollOver != '') ? '<span class="fabrikTip" title="'.$rollOver.'">'.$txt.'</span>' : $txt;
+			$pos = $params->get('tiplocation', 'top');
+			$opts = "{position:'$pos'}";
+			return ($rollOver != '') ? '<span class="fabrikTip" opts="'.$opts.'" title="'.$rollOver.'">'.$txt.'</span>' : $txt;
 		} else {
 			return $txt;
 		}

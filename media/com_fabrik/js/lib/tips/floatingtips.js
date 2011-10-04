@@ -25,7 +25,7 @@ var FloatingTips = new Class({
 		content: 'title',
 		html: false,
 		balloon: true,
-		arrowSize: 6,
+		arrowSize: 32,
 		arrowOffset: 6,
 		distance: 3,
 		motion: 6,
@@ -49,12 +49,15 @@ var FloatingTips = new Class({
 
 	attach: function(elements) {
 		var s = this;
-		$$(elements).each(function(e) {
+		this.elements = $$(elements);
+		this.elements.each(function(e) {
 			evs = { };
 			evs[s.options.showOn] = function() { s.show(this); };
-			evs[s.options.hideOn] = function() { s.hide(this); };
+			evs[s.options.hideOn] = function(e) {
+				s.hide(e, this); };
 			e.addEvents(evs);
 		});
+		
 		return this;
 	},
 
@@ -69,7 +72,11 @@ var FloatingTips = new Class({
 		return this;
 	},
 	
-	hide: function(element) {
+	hide: function(e, element) {
+		if (this.elements.contains(e.target.getParent())) {
+			//stops the element from being hidden if mouse over trigger
+			return;
+		}
 		var tip = element.retrieve('floatingtip');
 		if (!tip) return this;
 		this._animate(tip, 'out');
@@ -78,11 +85,12 @@ var FloatingTips = new Class({
 	},
 	
 	_create: function(elem) {
-		
-		var o = this.options;
+		var o = Object.clone(this.options);
+		elOpts = elem.retrieve('options', JSON.decode(elem.get('opts')));
+		o = Object.merge(o, elOpts);
+		elem.removeProperty('opts');
 		var oc = o.content;
 		var opos = o.position;
-		
 		if (oc == 'title') {
 			oc = 'floatingtitle';
 			if (!elem.get('floatingtitle')) elem.setProperty('floatingtitle', elem.get('title'));
@@ -106,7 +114,9 @@ var FloatingTips = new Class({
 		if (o.balloon && !Browser.ie6) {
 			
 			var trg = new Element('div').addClass(o.className + '-triangle').setStyles({ 'margin': 0, 'padding': 0 });
-			var trgSt = { 'border-color': cwr.getStyle('background-color'), 'border-width': o.arrowSize, 'border-style': 'solid','width': 0, 'height': 0 };
+			trg.setStyle('z-index', tip.getStyle('z-index') -1);
+			var trgSt = {};
+			/*var trgSt = { 'border-color': cwr.getStyle('background-color'), 'border-width': o.arrowSize, 'border-style': 'solid','width': 0, 'height': 0 };
 			
 			switch (opos) {
 				case 'inside': 
@@ -125,8 +135,57 @@ var FloatingTips = new Class({
 				case 'left': case 'right': 
 					trgSt['border-top-color'] = trgSt['border-bottom-color'] = 'transparent';
 					trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize : o.arrowOffset; break;
+			}*/
+			var r = 0;
+			// @TODO - margin offsets only ok if arrowSize  = 32.
+			switch (opos) {
+			case 'inside': 
+			case 'top': 
+				r = 270;
+				trgSt['height'] = '20px';
+				trgSt['margin-top'] = '-10px';
+				trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2: o.arrowOffset;
+				break;
+			case 'right': 
+				r = 0;
+				trgSt['float'] = 'left';
+				trgSt['width'] = '20px';
+				trgSt['margin-left'] = '-20px';
+				trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+				break;
+			case 'bottom': r = 90;
+				trgSt['height'] = '20px';
+				trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2 : o.arrowOffset;
+				break;
+			case 'left': r = 180; 
+				trgSt['float'] = 'right';
+				trgSt['width'] = '20px';
+				trgSt['margin-right'] = '-10px';
+				trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+				break;
+		}
+		var scale = o.arrowSize/32;
+		var borderSize = cwr.getStyle('border-width').split(' ')[0].toInt();
+		var arrowStyle = {
+				size: {width: 32, height: 32},
+				scale: scale, 
+				rotate: r,
+				shadow: {
+					color: '#ccc',
+					translate: {x: 1, y: 1}
+				},
+				fill: {
+					color: [ cwr.getStyle('background-color'),  cwr.getStyle('background-color')]
+				}
+			};
+			if (borderSize !== 0) {
+				arrowStyle.stroke = {
+					color: cwr.getStyle('border-color').split(' ')[0],
+					width: borderSize,
+				}
 			}
-			
+			var arrow = Fabrik.iconGen.create(icon.arrowleft, arrowStyle);
+			arrow.inject(trg);
 			trg.setStyles(trgSt).inject(tip, (opos == 'top' || opos == 'inside') ? 'bottom' : 'top');
 			
 		}
@@ -159,9 +218,10 @@ var FloatingTips = new Class({
 		
 		tip.set('morph', o.fx).store('position', pos);
 		tip.setStyles({ 'top': pos.y, 'left': pos.x });
-
+		elem.store('options', o);
+		tip.store('options', o);
 		tip.addEvent('mouseleave', function(e){
-			this.hide(elem);
+			this.hide(e, elem);
 		}.bind(this));
 		return tip;
 		
@@ -172,11 +232,11 @@ var FloatingTips = new Class({
 		clearTimeout(tip.retrieve('timeout'));
 		tip.store('timeout', (function(t) { 
 			
-			var o = this.options, din = (d == 'in');
+			var o = tip.retrieve('options'), din = (d == 'in');
 			var m = { 'opacity': din ? 1 : 0 };
 			
 			if ((o.motionOnShow && din) || (o.motionOnHide && !din)) {
-				var pos = t.retrieve('position');
+				var pos =  t.retrieve('position');
 				if (!pos) return;
 				switch (o.position) {
 					case 'inside': 

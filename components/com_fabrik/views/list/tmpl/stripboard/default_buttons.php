@@ -53,7 +53,7 @@ echo '<li>'.$this->pdfLink.'<li>';
 <?php if ($this->emptyLink) {?>
 	<li>
 	<a href="<?php echo $this->emptyLink?>" class="button doempty"/>
-	<?php echo FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, JText::_('COM_FABRIK_EMPTY'));?>
+	<?php echo FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, array('alt' => JText::_('COM_FABRIK_EMPTY')));?>
 	<span><?php echo JText::_('COM_FABRIK_EMPTY')?></span>
 	</a>
 	</li>

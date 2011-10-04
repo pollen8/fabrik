@@ -136,6 +136,4 @@ if (typeof(Fabrik) === "undefined") {
 	
 head.ready(function () {
 	Fabrik.tips = new FloatingTips('.fabrikTip', {html: true});
-	new FloatingTips('.fabrikTipLeft', {html: true, position: 'left'});
-	
 });

@@ -1060,7 +1060,6 @@ var FbListActions = new Class({
 		this.actions = [];
 		this.setUpSubMenus();
 		this.method = method;
-		console.log(this.method);
 		if (this.method === 'floating') {
 			window.addEvent('keydown', function (e) {
 				if (e.key === 'esc') {
@@ -1137,8 +1136,6 @@ var FbListActions = new Class({
 					c.fade('out');
 					c.addClass('fabrik_row');
 					c.setStyle('position', 'absolute');
-					console.log(ul);
-					
 					i.addEvent('click', function (e) {
 						this.toggleWidget(e, c);
 					}.bind(this));

@@ -662,7 +662,7 @@ abstract class JHtmlBehavior
 		$script  = '';
 		$script .= 'function keepAlive() {
 		';
-		$script .=  '	debugger;
+		$script .=  '
 		var myAjax = new Request({method: "get", url: "index.php"}).send();
 		';
 		$script .=  '}';

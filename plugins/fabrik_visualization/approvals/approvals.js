@@ -34,9 +34,7 @@ var fbVisApprovals = new Class({
 					r.store('trigger', e);
 					return r;
 				},
-				hideOn: 'mousedown',
-				distance: -20,
-				arrowSize: 12
+				hideOn: 'mousedown'
 			});
 		}.bind(this));
 	}
