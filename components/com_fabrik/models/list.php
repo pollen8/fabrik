@@ -4092,7 +4092,6 @@ class FabrikFEModelList extends JModelForm {
 		if ($this->canSelectRows()) {
 			$groupHeadings[''] = '';
 		}
-		
 		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
 		if (!empty($showInList)) {
 			//get full names of show in list elements
@@ -4113,6 +4112,7 @@ class FabrikFEModelList extends JModelForm {
 		$args['headingClass'] = $headingClass;
 		$args['cellClass'] = $cellClass;
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
+		
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
 	}
 
@@ -4133,6 +4133,9 @@ class FabrikFEModelList extends JModelForm {
 			return true;
 		}
 		$params = $this->getParams();
+		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row))) {
+			return true;
+		}
 		$usedPlugins = (array)$params->get('plugins');
 		if (empty($usedPlugins)) {
 			return false;
@@ -4164,6 +4167,10 @@ class FabrikFEModelList extends JModelForm {
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
+		$params = $this->getParams();
+		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView())) {
+			return true;
+		}
 		$usedPlugins = (array)$params->get('plugin');
 		if (empty($usedPlugins)) {
 			$this->canSelectRows = false;
