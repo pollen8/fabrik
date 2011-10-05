@@ -56,7 +56,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 		$this->formModel = $formModel;
 		$formParams			= $formModel->getParams();
-		$emailTemplate	= JPath::clean(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'form'.DS.'fabrikemail'.DS.'tmpl'.DS . $params->get('email_template', ''));
+		$emailTemplate	= JPath::clean(JPATH_SITE.DS.'plugins'.DS.'fabrik_form'.DS.'email'.DS.'tmpl'.DS . $params->get('email_template', ''));
 
 		//$this->data = $this->getEmailData();
 		//getEmailData returns correctly formatted {tablename___elementname} keyed results
