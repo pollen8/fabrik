@@ -156,38 +156,38 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function elementJavascript($repeatCounter)
 	{
-		$params 	= $this->getParams();
-		$id 		= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$data 		=& $this->_form->_data;
-		$v 		= $this->getValue($data, $repeatCounter);
-		$zoomlevel      = $params->get('fb_gm_zoomlevel');
-		$o              = $this->_strToCoords($v, $zoomlevel);
-		$dms            = $this->_strToDMS($v);
-		$opts           = $this->getElementJSOptions($repeatCounter);
+		$params = $this->getParams();
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$data = $this->_form->_data;
+		$v = $this->getValue($data, $repeatCounter);
+		$zoomlevel = (int)$params->get('fb_gm_zoomlevel');
+		$o = $this->_strToCoords($v, $zoomlevel);
+		$dms = $this->_strToDMS($v);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$this->geoJs();
-		$opts->lat 		= (float)$o->coords[0];
-		$opts->lon 		= (float)$o->coords[1];
-		$opts->lat_dms 		= (float)$dms->coords[0];
+		$opts->lat = (float)$o->coords[0];
+		$opts->lon = (float)$o->coords[1];
+		$opts->lat_dms = (float)$dms->coords[0];
 		$opts->rowid = (int)JArrayHelper::getValue($data, 'rowid');
-		$opts->lon_dms 		= (float)$dms->coords[1];
-		$opts->zoomlevel 	= (int)$o->zoomlevel;
-		$opts->threeD 		= $params->get('fb_gm_3d');
-		$opts->control 		= $params->get('fb_gm_mapcontrol');
-		$opts->scalecontrol 	= $params->get('fb_gm_scalecontrol');
-		$opts->maptypecontrol 	= $params->get('fb_gm_maptypecontrol');
-		$opts->overviewcontrol 	= $params->get('fb_gm_overviewcontrol');
-		$opts->drag             = ($this->_form->_editable) ? true:false;
-		$opts->staticmap        = $this->_useStaticMap() ? true: false;
-		$opts->maptype          = $params->get('fb_gm_maptype');
-		$opts->key              = $params->get('fb_gm_key');
-		$opts->scrollwheel      = $params->get('fb_gm_scroll_wheel');
-		$opts->latlng           = $this->_editable ? $params->get('fb_gm_latlng', false ) : false;
-		$opts->latlng_dms       = $this->_editable ? $params->get('fb_gm_latlng_dms', false ) : false;
+		$opts->lon_dms = (float)$dms->coords[1];
+		$opts->zoomlevel = (int)$o->zoomlevel;
+		$opts->control = $params->get('fb_gm_mapcontrol');
+		$opts->scalecontrol = (bool)$params->get('fb_gm_scalecontrol');
+		$opts->maptypecontrol = (bool)$params->get('fb_gm_maptypecontrol');
+		$opts->overviewcontrol = (bool)$params->get('fb_gm_overviewcontrol');
+		$opts->drag = (bool)($this->_form->_editable);
+		$opts->staticmap = $this->_useStaticMap() ? true : false;
+		$opts->maptype = $params->get('fb_gm_maptype');
+		$opts->key = $params->get('fb_gm_key');
+		$opts->scrollwheel = (bool)$params->get('fb_gm_scroll_wheel');
+		$opts->streetView = (bool)$params->get('fb_gm_street_view');
+		$opts->latlng           = $this->_editable ? $params->get('fb_gm_latlng', false) : false;
+		$opts->latlng_dms       = $this->_editable ? $params->get('fb_gm_latlng_dms', false) : false;
 		$opts->geocode          = $params->get('fb_gm_geocode', false);
 		$opts->geocode_event 	= $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields	= array();
-		$opts->auto_center		= $params->get('fb_gm_auto_center', '0') == '0' ? false : true;
+		$opts->auto_center = (bool)$params->get('fb_gm_auto_center', false);
 		if ($opts->geocode == '2') {
 			foreach (array('addr1','addr2','city','state','zip','country') as $which_field) {
 				$field_id = '';
@@ -205,7 +205,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 				}
 			}
 		}
-		$opts->center = $params->get('fb_gm_defaultloc', 0);
+		$opts->center = (int)$params->get('fb_gm_defaultloc', 0);
 		$opts = json_encode($opts);
 
 		return "new FbGoogleMap('$id', $opts)";
