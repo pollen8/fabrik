@@ -84,7 +84,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$row->row_id = $this->getRowId();
 		$row->last_page = JRequest::getVar('page');
 		$row->referring_url  = $_SERVER['HTTP_REFERER'];
-		$row->data  = $data;
+		$row->data = $data;
 		$this->setCookie($hash);
 		if (!$row->store()) {
 			echo $row->getError();

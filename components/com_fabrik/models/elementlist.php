@@ -372,6 +372,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 							$default = FabrikWorker::JSONtoData($data[$name], false);
 						}
 					} */
+					if (array_key_exists($name, $data)) {
+						$default = $data[$name]; //put this back in for radio button after failed validation not picking up previously selected option
+					}
 				}
 			}
 			if ($default === '') { //query string for joined data
