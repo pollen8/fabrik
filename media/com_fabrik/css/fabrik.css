@@ -10,6 +10,11 @@ div.calendar{
 	z-index:99999;
 }
 
+/*** stoopid beez20 fix */
+
+#main .fabrikForm  a:hover{
+	color:#000 !important;
+}
 /**start: flexible box model short cuts **/
 .displayBox{
 	display:-webkit-box;
