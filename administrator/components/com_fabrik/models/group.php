@@ -129,7 +129,7 @@ class FabrikModelGroup extends FabModelAdmin
 					$return = parent::save($data);
 				}
 			} else {
-				$data['is_join'] =  0;
+				//$data['is_join'] =  0; // NO! none repeat joined groups were getting unset here - not right!
 				$return = parent::save($data);
 			}
 		}
