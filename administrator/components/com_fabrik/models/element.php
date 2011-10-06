@@ -156,16 +156,14 @@ public function getElements()
 	if (is_null($formrow)) {
 		$aEls[] = $aGroups[] = JText::_('COM_FABRIK_GROUP_MUST_BE_IN_A_FORM');
 	} else {
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formrow->form_id);
 
 		//get available element types
-		$groups =& $formModel->getGroupsHiarachy();
+		$groups = $formModel->getGroupsHiarachy();
 
 		foreach ($groups as $groupModel) {
-			$group =& $groupModel->getGroup();
+			$group = $groupModel->getGroup();
 			$o = new stdClass();
 			$o->label = $group->name;
 			$o->value = "fabrik_trigger_group_group".$group->id;
@@ -183,7 +181,8 @@ public function getElements()
 	asort($aEls);
 	$o = new StdClass();
 	$o->groups = $aGroups;
-	return array_values($aEls);
+	$o->elements = array_values($aEls);
+	return $o;
 }
 
 /**
