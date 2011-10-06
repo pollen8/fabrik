@@ -26,7 +26,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$params->set('element_before_label', (bool)$params->get('radio_element_before_label', true));
 		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtoradio', false));
 		$params->set('allowadd-onlylabel', (bool)$params->get('rad-allowadd-onlylabel', true));
-		$params->set('rad-savenewadditions', (bool)$params->get('rad-savenewadditions', false));
+		$params->set('savenewadditions', (bool)$params->get('rad-savenewadditions', false));
 	}
 	
 	/**
@@ -43,23 +43,6 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$this->renderWithHTML = true;
 		return $d;
 	}
-
-	/**
-	 * testing using elementlist.php's renderListData() method
-	 *
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
-	 */
-
-	/*function renderListData($data, $oAllRowsData)
-	{
-	}
-
-	function _renderListData($data, $oAllRowsData)
-	{
-	}*/
 
 	/**
 	 * get the radio buttons possible values
@@ -124,16 +107,14 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	function elementJavascript($repeatCounter)
 	{
-		$params 		=& $this->getParams();
-		$id 				= $this->getHTMLId($repeatCounter);
-		$data 			=& $this->_form->_data;
-		$arVals 		= $this->getSubOptionValues();
-		$arTxt 			= $this->getSubOptionLabels();
+		$params = $this->getParams();
+		$id = $this->getHTMLId($repeatCounter);
+		$data = $this->_form->_data;
+		$arVals = $this->getSubOptionValues();
+		$arTxt = $this->getSubOptionLabels();
 		$opts = $this->getElementJSOptions($repeatCounter);
-
-		$opts->value    = $this->getValue($data, $repeatCounter);
-		$opts->defaultVal  = $this->getDefaultValue($data);
-
+		$opts->value  = $this->getValue($data, $repeatCounter);
+		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
 		$opts = json_encode($opts);
@@ -148,17 +129,16 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	function getFilter($counter = 0, $normal = true)
 	{
-		$listModel  	= $this->getlistModel();
-		$groupModel		= $this->getGroup();
-		$table				=& $listModel->getTable();
-		$element			= $this->getElement();
-
-		$params 			=& $this->getParams();
-		$elName 			= $this->getFullName(false, true, false);
-		$htmlid				= $this->getHTMLId() . 'value';
+		$listModel = $this->getlistModel();
+		$groupModel	= $this->getGroup();
+		$table = $listModel->getTable();
+		$element = $this->getElement();
+		$params = $this->getParams();
+		$elName	= $this->getFullName(false, true, false);
+		$htmlid	= $this->getHTMLId() . 'value';
 		$v = 'fabrik___filter[list_'.$table->id.'][value]';
 		$v .= ($normal) ? '['.$counter.']' : '[]';
-		$values 	= $this->getSubOptionValues();
+		$values = $this->getSubOptionValues();
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 

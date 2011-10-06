@@ -264,8 +264,13 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		
-		
 		$selected = (array)$this->getValue($data, $repeatCounter);
+		//$$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the 
+		// values and labels.
+		if (!in_array($selected, $values)) {
+			$values = array_merge($values, $selected);
+			$labels = array_merge($labels, $selected);
+		}
 		if (!$this->_editable) {
 			$aRoValues = array();
 			for ($i = 0; $i < count($values); $i ++) {

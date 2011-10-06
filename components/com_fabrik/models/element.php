@@ -3249,7 +3249,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$str[] = '</a>';
 		$str[] = '<br style="clear:left"/>';
 		$str[] = '<div class="addoption"><div>'.JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE').'</div>';
-		if (!$params->get('allowadd-onlylabel')) {
+		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions')) {
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
 			$str[] = '<label for="'.$valueid.'">'.JText::_('COM_FABRIK_VALUE').'</label>';
 			$str[] = $value;
