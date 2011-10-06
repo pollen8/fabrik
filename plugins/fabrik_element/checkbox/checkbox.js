@@ -1,5 +1,5 @@
 var FbCheckBox = new Class({
-	Extends: FbElement,
+	Extends: FbElementList,
 	initialize: function (element, options) {
 		this.plugin = 'fabrikcheckbox';
 		this.parent(element, options);
@@ -86,21 +86,7 @@ var FbCheckBox = new Class({
 		return ret;
 	},
 	
-	addNewEvent: function (action, js) {
-		if (action === 'load') {
-			this.loadEvents.push(js);
-			this.runLoadEvent(js);
-		} else {
-			this._getSubElements();
-			this.subElements.each(function (el) {
-				el.addEvent(action, function (e) {
-					eval(js);
-				});
-			});
-		}
-	},
-	
-		//get the sub element which are the checkboxes themselves
+	//get the sub element which are the checkboxes themselves
 	
 	_getSubElements: function () {
 		if (!this.element) {

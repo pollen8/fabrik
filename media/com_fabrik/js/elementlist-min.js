@@ -1,0 +1,1 @@
+var FbElementList=new Class({Extends:FbElement,initialize:function(b,a){this.parent(b,a)},addNewEvent:function(action,js){if(action==="load"){this.loadEvents.push(js);this.runLoadEvent(js)}else{this._getSubElements();this.subElements.each(function(el){el.addEvent(action,function(e){$type(js)==="function"?js.delay(0):eval(js)})})}}});

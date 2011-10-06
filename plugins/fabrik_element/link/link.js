@@ -1,6 +1,6 @@
 var FbLink = new Class({
 
-	Extends: FbElement,
+	Extends: FbElementList,
 	initialize: function (element, options) {
 		this.plugin = 'fabrikLink';
 		this.parent(element, options);
@@ -19,18 +19,6 @@ var FbLink = new Class({
 		}
 	},
 
-	addNewEvent: function (action, js) {
-		if (action === 'load') {
-			this.loadEvents.push(js);
-			this.runLoadEvent(js);
-		} else {
-			this.subElements.each(function (el) {
-				el.addEvent(action, function (e) {
-					eval(js);
-				});
-			});
-		}
-	},
 	// get the sub element which are the fields themselves
 
 	_getSubElements: function () {
