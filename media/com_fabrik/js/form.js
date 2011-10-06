@@ -836,9 +836,7 @@ var FbForm = new Class({
 						this.updateMainError();
 
 						if (errfound === false) {
-							var keepOverlay = btn.name === 'apply' ? true : false;
-							//keepOverlay -works but is hdiden afterwards
-							Fabrik.loader.stop('form_' + this.id, keepOverlay);
+							Fabrik.loader.stop('form_' + this.id);
 							var saved_msg = json.msg !== undefined ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
 								if (json.url !== undefined) {

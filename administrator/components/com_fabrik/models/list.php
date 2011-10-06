@@ -1295,7 +1295,6 @@ class FabrikModelList extends FabModelAdmin
 		$tableName = ($post['jform']['db_table_name'] != '') ? $post['jform']['db_table_name'] : $post['jform']['_database_name'];
 		$tableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $tableName);
 		$aPriKey = $feModel->getPrimaryKeyAndExtra($tableName);
-
 		if (!$aPriKey) {
 			// no primary key set so we should set it
 			$this->addKey($fieldName, $autoIncrement, $type);
@@ -1332,8 +1331,6 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$db = $this->getFEModel()->getDb();
 		$type = $autoIncrement != true ? $type : 'INT(6)';
-		//$table     =& $this->getTable();
-		//$table->load($this->getState('list.id'));
 		$post = JRequest::get('post');
 		$tableName = ($post['jform']['db_table_name'] != '') ? $post['jform']['db_table_name'] : $post['jform']['_database_name'];
 		$tableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $tableName);
@@ -1344,7 +1341,6 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$sql = "ALTER TABLE ".$tableName." ADD PRIMARY KEY ($fieldName)";
 		/* add a primary key */
-
 		$db->setQuery($sql);
 		if (!$db->query()) {
 			return JError::raiseWarning(500, $db->getErrorMsg());

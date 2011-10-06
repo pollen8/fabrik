@@ -619,14 +619,26 @@ var FbList = new Class({
 		if (!this.list) {
 			return;
 		}
-		this.rows = this.list.getElements('.fabrik_row');
-		this.links = this.list.getElements('.fabrik___rowlink');
 		if (this.options.ajax) {
 			// if floatiing menus then edit out side of this.list (not tested with
 			// mutliple lists on the same page.
 			// if theres an issue with that we may need to inject the floating menu
 			// into the list container - issue with this
 			// may be that posistioning will be effected
+			
+			document.addEvent('click:relay(.fabrik___rowlink)', function (e) {
+				e.stop();
+				var row = e.target;
+				var url = row.get('href');
+				url += url.contains('?') ? '&' : '?';
+				url += 'tmpl=component&ajax=1';
+				Fabrik.getWindow({
+					'id': 'add.' + this.options.formid,
+					'title': 'Edit',
+					'loadMethod': 'xhr',
+					'contentURL': url
+				});
+			}.bind(this));
 			// this.list.addEvent('click:relay(.fabrik_edit)', function (e) {
 			document.addEvent('click:relay(.fabrik_edit)', function (e) {
 				e.stop();
