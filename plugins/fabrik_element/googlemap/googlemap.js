@@ -96,10 +96,6 @@ var FbGoogleMap = new Class({
 
 		if (!this.options.staticmap) {
 
-			//this.options.scalecontrol  = this.options.scalecontrol === '0' ? false : true;
-			//this.options.maptypecontrol = this.options.maptypecontrol  === '0' ? false : true;
-			//this.options.overviewcontrol = this.options.overviewcontrol === '0' ? false : true;
-			//this.options.scrollwheel = this.options.scrollwheel === '0' ? false : true;
 			var zoomControl =  this.options.control === '' ? false : true;
 			var zoomControlStyle = this.options.control === 'GSmallMapControl' ? google.maps.ZoomControlStyle.SMALL : google.maps.ZoomControlStyle.LARGE;
 		

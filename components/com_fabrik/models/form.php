@@ -1770,8 +1770,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$session = JFactory::getSession();
 		if (empty($this->_arErrors)) {
-			$context = 'com_fabrik.form.'.$this->getId();
-			$this->_arErrors = $session->get($context.'.errors', array());
+			$context = 'com_fabrik.form.'.$this->getId().'.';
+			$this->_arErrors = $session->get($context.'errors', array());
 		}
 		return $this->_arErrors;
 	}
@@ -1783,9 +1783,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function clearErrors()
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.'.$this->getId();
+		$context = 'com_fabrik.form.'.$this->getId().'.';
 		$this->_arErrors = array();
-		$session->clear($context.'.errors');
+		$session->clear($context.'errors');
+		//$session->set($context.'session.on', false);
 	}
 	
 	/**

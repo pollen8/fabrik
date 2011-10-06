@@ -255,6 +255,7 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 	-moz-box-shadow: 2px 2px 2px #aaa;
 	-webkit-box-shadow: 2px 2px 2px #aaa;
 }
+
 .floating-tip li:first-child{
 	-moz-border-radius: 6px 6px 0 0;
 	-webkit-border-radius: 6px 6px 0 0;

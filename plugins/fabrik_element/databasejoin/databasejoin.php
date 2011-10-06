@@ -642,7 +642,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $joinids, 'value', 'text', $options_per_row, $this->_editable);
 						$html[] = '</div>';
 					}
-					$defaultLabel = $str;
+					$defaultLabel = implode("\n", $html);
 					break;
 				case 'auto-complete':
 					$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';
