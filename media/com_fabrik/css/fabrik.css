@@ -10,6 +10,12 @@ div.calendar{
 	z-index:99999;
 }
 
+/*** stoopid beez20 fix */
+
+#main .fabrikForm  a:hover{
+	color:#000 !important;
+	background-color:transparent !important;
+}
 /**start: flexible box model short cuts **/
 .displayBox{
 	display:-webkit-box;
@@ -260,7 +266,7 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 	padding:5px 16px;
 }
 .floating-tip {
-	border:1px solid #333;
+	/* border:1px solid #333; */
 	padding:0;
 	text-align:left;
 	font-weight: bold;
@@ -273,6 +279,12 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 	-moz-box-shadow: 2px 2px 2px #aaa;
 	-webkit-box-shadow: 2px 2px 2px #aaa;
 }
+
+.floating-tip > span {
+	padding: 5px 15px;
+}
+
+
 .floating-tip li:first-child{
 	-moz-border-radius: 6px 6px 0 0;
 	-webkit-border-radius: 6px 6px 0 0;

@@ -64,7 +64,7 @@ if ($this->showFilters) {
 			<?php }?>
 			<tbody class="fabrik_groupdata">
 			<tr>
-				<td colspan="<?php echo count($this->headings)?>">
+				<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
 					<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 						<?php echo $this->emptyDataMessage; ?>
 					</div>

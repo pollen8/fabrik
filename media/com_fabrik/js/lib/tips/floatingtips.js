@@ -37,7 +37,9 @@ var FloatingTips = new Class({
 		hideDelay: 0,
 		className: 'floating-tip',
 		offset: {x: 0, y: 0},
-		fx: { 'duration': 'short' }
+		fx: { 'duration': 'short' },
+		hideFn: function(e, el) { this.hide(e, el);e.stop() },
+		showFn: function(e) { this.show(e.target);e.stop(); }
 	},
 
 	initialize: function(elements, options) {
@@ -49,14 +51,19 @@ var FloatingTips = new Class({
 
 	attach: function(elements) {
 		var s = this;
+		this.selector = elements;
 		this.elements = $$(elements);
 		this.elements.each(function(e) {
-			evs = { };
-			evs[s.options.showOn] = function() { s.show(this); };
-			evs[s.options.hideOn] = function(e) {
-				s.hide(e, this); };
-			e.addEvents(evs);
-		});
+			e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this));
+			e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
+			e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
+			window.addEvent('fabrik.tip.show', function(trigger){
+				var tip = e.retrieve('floatingtip');
+				if (trigger !== e && tip) {
+					this._animate(tip, 'out');
+				}
+			}.bind(this));
+		}.bind(this));
 		
 		return this;
 	},
@@ -69,13 +76,32 @@ var FloatingTips = new Class({
 		element.store('floatingtip', tip);
 		this._animate(tip, 'in');
 		this.fireEvent('show', [tip, element]);
+		window.fireEvent('fabrik.tip.show', [element]);
 		return this;
 	},
 	
 	hide: function(e, element) {
-		if (this.elements.contains(e.target.getParent())) {
-			//stops the element from being hidden if mouse over trigger
+		//console.log(e.target);
+		console.log(element);
+		if (!element) {
+			console.log('no el');
 			return;
+		}
+		var t = e.target.getParent('.' + this.options.className + '-wrapper');
+		var tt = e.target.getParent(this.selector);
+		var classTest = false;
+		if (e.target.get('tag') !== 'svg') {
+			if (typeOf(this.selector) === 'string') {
+				classTest = e.target.hasClass(this.selector.replace('.', ''));
+			} else {
+				classTest = e.target.hasClass(this.selector['class']);
+			}
+		}
+		//console.log(e.target, element, t);
+	
+		if (this.elements.contains(t) || this.elements.contains(tt) || classTest) {
+			//stops the element from being hidden if mouse over trigger
+			return this;
 		}
 		var tip = element.retrieve('floatingtip');
 		if (!tip) return this;
@@ -96,8 +122,18 @@ var FloatingTips = new Class({
 			if (!elem.get('floatingtitle')) elem.setProperty('floatingtitle', elem.get('title'));
 			elem.set('title', '');
 		}
-		
-		var cnt = (typeof(oc) == 'string' ? elem.get(oc) : oc(elem));
+		var cnt;
+		switch (typeOf(oc)) {
+		case 'string':
+			cnt = elem.get(oc)
+			break;
+		case 'element':
+			cnt = oc;
+			break;
+		default:
+			cnt = oc(elem);
+			break;
+		}
 		var cwr = new Element('div').addClass(o.className).setStyle('margin', 0);
 		var tip = new Element('div').addClass(o.className + '-wrapper').setStyles({ 'margin': 0, 'padding': 0, 'z-index': cwr.getStyle('z-index') }).adopt(cwr);
 		
@@ -107,6 +143,7 @@ var FloatingTips = new Class({
 		} else { 
 			return null;
 		}
+		
 		cwr.store('trigger', elem);
 		var body = document.id(document.body);
 		tip.setStyles({ 'position': 'absolute', 'opacity': 0 }).inject(body);
@@ -116,26 +153,7 @@ var FloatingTips = new Class({
 			var trg = new Element('div').addClass(o.className + '-triangle').setStyles({ 'margin': 0, 'padding': 0 });
 			trg.setStyle('z-index', tip.getStyle('z-index') -1);
 			var trgSt = {};
-			/*var trgSt = { 'border-color': cwr.getStyle('background-color'), 'border-width': o.arrowSize, 'border-style': 'solid','width': 0, 'height': 0 };
-			
-			switch (opos) {
-				case 'inside': 
-				case 'top': trgSt['border-bottom-width'] = 0; break;
-				case 'right': trgSt['border-left-width'] = 0; trgSt['float'] = 'left'; cwr.setStyle('margin-left', o.arrowSize); break;
-				case 'bottom': trgSt['border-top-width'] = 0; break;
-				case 'left': trgSt['border-right-width'] = 0; 
-					if (Browser.ie7) { trgSt['position'] = 'absolute'; trgSt['right'] = 0; } else { trgSt['float'] = 'right'; }
-					cwr.setStyle('margin-right', o.arrowSize); break;
-			}
-			
-			switch (opos) {
-				case 'inside': case 'top': case 'bottom': 
-					trgSt['border-left-color'] = trgSt['border-right-color'] = 'transparent';
-					trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize : o.arrowOffset; break;
-				case 'left': case 'right': 
-					trgSt['border-top-color'] = trgSt['border-bottom-color'] = 'transparent';
-					trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize : o.arrowOffset; break;
-			}*/
+		
 			var r = 0;
 			// @TODO - margin offsets only ok if arrowSize  = 32.
 			switch (opos) {
@@ -143,39 +161,40 @@ var FloatingTips = new Class({
 			case 'top': 
 				r = 270;
 				trgSt['height'] = '20px';
-				trgSt['margin-top'] = '-10px';
-				trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2: o.arrowOffset;
+				//trgSt['margin-top'] = '-10px';
+				//trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2: o.arrowOffset;
 				break;
 			case 'right': 
 				r = 0;
 				trgSt['float'] = 'left';
 				trgSt['width'] = '20px';
-				trgSt['margin-left'] = '-20px';
+				trgSt['margin-left'] = '-31px';
 				trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
 				break;
 			case 'bottom': r = 90;
-				trgSt['height'] = '20px';
-				trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2 : o.arrowOffset;
+				trgSt['height'] = '21px';
+				//trgSt['margin-top'] = '-21px';
+				//trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2 : o.arrowOffset;
 				break;
 			case 'left': r = 180; 
 				trgSt['float'] = 'right';
 				trgSt['width'] = '20px';
-				trgSt['margin-right'] = '-10px';
+				trgSt['margin-right'] = '-20px';
 				trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
 				break;
-		}
-		var scale = o.arrowSize/32;
-		var borderSize = cwr.getStyle('border-width').split(' ')[0].toInt();
-		var arrowStyle = {
+			}
+			var scale = o.arrowSize/32;
+			var borderSize = cwr.getStyle('border-width').split(' ')[0].toInt();
+			var bg = cwr.getStyle('background-color');
+			if (bg === 'transparent') {
+				bg = '#fff';
+			}
+			var arrowStyle = {
 				size: {width: 32, height: 32},
 				scale: scale, 
 				rotate: r,
-				shadow: {
-					color: '#ccc',
-					translate: {x: 1, y: 1}
-				},
 				fill: {
-					color: [ cwr.getStyle('background-color'),  cwr.getStyle('background-color')]
+					color: [ bg,  bg]
 				}
 			};
 			if (borderSize !== 0) {
@@ -183,6 +202,18 @@ var FloatingTips = new Class({
 					color: cwr.getStyle('border-color').split(' ')[0],
 					width: borderSize,
 				}
+			}
+			arrowStyle.translate = {x: 0, y: 0};
+			if (opos === 'bottom') {
+				arrowStyle.translate = {x: -11, y: 0};
+			}
+			var shadow = cwr.getStyle('box-shadow');
+			if (shadow !== 'none' && shadow !== '') {
+				var shadowBits = shadow.split(' ');
+				arrowStyle.shadow = {
+						color: shadowBits[0],
+						translate: {x: -1 * (shadowBits[1].toInt() + arrowStyle.translate.x), y: shadowBits[2].toInt() + arrowStyle.translate.y},
+					}
 			}
 			var arrow = Fabrik.iconGen.create(icon.arrowleft, arrowStyle);
 			arrow.inject(trg);
@@ -220,9 +251,13 @@ var FloatingTips = new Class({
 		tip.setStyles({ 'top': pos.y, 'left': pos.x });
 		elem.store('options', o);
 		tip.store('options', o);
-		tip.addEvent('mouseleave', function(e){
-			this.hide(e, elem);
+		
+		/*tip.addEvent('mouseleave', function(e){
+			this.hide(e, elem, 'tip');
 		}.bind(this));
+		*/
+
+		tip.addEvent('mouseleave', this.options.hideFn.bindWithEvent(this, [elem, 'tip']));
 		return tip;
 		
 	},

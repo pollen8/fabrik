@@ -46,7 +46,7 @@ var Flexie = (function (win, doc) {
 	// Scope public properties
 	var FLX = {},
 	
-	    // Each Flexie-modified DOM node gets a unique identifier
+	    // Each Flexie-modified DOM node gets a unique id
 	    FLX_DOM_ID = 0,
 	    FLX_DOM_ATTR = "data-flexie-id",
 	    FLX_PARENT_ATTR = "data-flexie-parent",

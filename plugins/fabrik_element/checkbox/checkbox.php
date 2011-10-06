@@ -161,10 +161,17 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$this->encryptFieldName($key);
 		switch ($condition) {
 			case '=':
-				$str = " ($key $condition $value OR $key LIKE \"$originalValue',%\"".
+				// $$$ rob 05/10/2011 no longer works with json encoded values
+			/* 	$str = " ($key $condition $value OR $key LIKE \"$originalValue',%\"".
 				" OR $key LIKE \"%:'$originalValue',%\"".
 				" OR $key LIKE \"%:'$originalValue'\"".
-				" )";
+				" )"; */
+				$db = FabrikWorker::getDbo();
+				$str = "($key $condition $value ".
+				" OR $key LIKE " . $db->Quote('["'.$originalValue.'"%') .
+				" OR $key LIKE " . $db->Quote('%"'.$originalValue.'"%') .
+				" OR $key LIKE " . $db->Quote('%"'.$originalValue.'"]') .")";
+				
 				break;
 			default:
 				$str = " $key $condition $value ";

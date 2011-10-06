@@ -9,20 +9,27 @@ var IconGenerator = new Class({
 		size: {width: 32, height: 32},
 		rotate: 0,
 		scale: 1,
+		fill: {
+			color: ['#C92804', '#9E1E04']
+		},
+		translate: {x: 0, y: 0}
+	},
+	
+	/*
+	 * can add:
+	 * 
 		shadow: {
 			color: '#fff',
 			translate: {x: 0, y: 1}
 		},
-		fill: {
-			color: ['#C92804', '#9E1E04']
-		}
-	},
+	 */
 
 	initialize: function (options) {
 		this.setOptions(options);
 	},
 	
 	create: function (icon, options) {
+		var iconShadow;
 		if (typeOf(options) !== 'object') {
 			options = {};
 		}
@@ -36,26 +43,34 @@ var IconGenerator = new Class({
 		var iconPath = new ART.Path(icon);
 	  
 	  // create the white shadow
-		var iconShadow = new ART.Shape(iconPath);
-		iconShadow.scale(opts.scale, opts.scale);
-
-		iconShadow.fill(opts.shadow.color);
-		iconShadow.translate(opts.shadow.translate.x, opts.shadow.translate.y);
-		
+		if (opts.shadow) {
+			iconShadow = new ART.Shape(iconPath);
+			iconShadow.scale(opts.scale, opts.scale);
+			iconShadow.fill(opts.shadow.color);
+			iconShadow.translate(opts.shadow.translate.x, opts.shadow.translate.y);
+		}
 		// create an icon with the gradient
 		icon = new ART.Shape(iconPath);
+		
 	  
 		icon.scale(opts.scale, opts.scale);
 	 
 		icon.fill(opts.fill.color[0], opts.fill.color[1]);
 		
+		
 		//test stroke (border)
 		if (options.stroke) {
 			icon.stroke(options.stroke.color, options.stroke.width);
 		}
+		icon.translate(opts.translate.x, opts.translate.y);
+		if (opts.shadow) {
+			group.grab(iconShadow, icon);
+		} else {
+			group.grab(icon);
+		}
 		
-		group.grab(iconShadow, icon);
 		group.rotate(opts.rotate, 16 * opts.scale, 16 * opts.scale);
+		
 		group.inject(art);
 		return art;
 	}

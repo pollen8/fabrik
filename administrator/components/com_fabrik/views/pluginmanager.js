@@ -13,20 +13,34 @@ var PluginManager = new Class({
 		var opts = [];
 		this.sel = sel;
 		opts.push(new Element('option', {'value': ''}).appendText(Joomla.JText._('COM_FABRIK_PLEASE_SELECT')));
-		pairs.each(function (pair) {
-			if (typeOf(pair) === 'object') {
-				v = pair.value ? pair.value : pair.name; //plugin list should be keyed on plugin name
-				l = pair.label ? pair.label : v;
-			} else {
-				v = l = pair;
-			}
-			if (v === this.sel) {
-				opts.push(new Element('option', {'value': v, 'selected': 'selected'}).set('text', l));
-			} else {
-				opts.push(new Element('option', {'value': v}).set('text', l));
-			}
-		}.bind(this));
+		if (typeOf(pairs) === 'object') {
+			$H(pairs).each(function (group, key) {
+				opts.push(new Element('optgroup', {'label': key}));
+				group.each(function (pair) {
+					opts = this._addSelOpt(opts, pair);
+				}.bind(this));
+			}.bind(this));
+		} else {
+			pairs.each(function (pair) {
+				opts = this._addSelOpt(opts, pair);
+			}.bind(this));
+		}
 		return new Element('select', {'class': c, 'name': name}).adopt(opts);
+	},
+	
+	_addSelOpt: function (opts, pair) {
+		if (typeOf(pair) === 'object') {
+			v = pair.value ? pair.value : pair.name; //plugin list should be keyed on plugin name
+			l = pair.label ? pair.label : v;
+		} else {
+			v = l = pair;
+		}
+		if (v === this.sel) {
+			opts.push(new Element('option', {'value': v, 'selected': 'selected'}).set('text', l));
+		} else {
+			opts.push(new Element('option', {'value': v}).set('text', l));
+		}
+		return opts;
 	},
 	
 	addPlugin: function (o) {

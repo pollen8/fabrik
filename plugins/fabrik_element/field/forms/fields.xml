@@ -4,7 +4,7 @@
 		<fieldset name="plg-element-field" label="field">
 		
 			<field name="width" 
-				type="text" size="3"
+				type="text" size="3" default="20"
 				label="PLG_ELEMENT_FIELD_WIDTH_LABEL"/>
 			
 			<field name="hidden" 

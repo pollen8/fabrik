@@ -55,7 +55,9 @@ class FabrikControllerForm extends JController
 
 		// Push a model into the view (may have been set in content plugin already
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
-
+		
+		//test for failed validation then page refresh
+		$model->clearErrors();
 		if (!JError::isError($model) && is_object($model)) {
 			$view->setModel($model, true);
 		}
@@ -90,10 +92,8 @@ class FabrikControllerForm extends JController
 	function process()
 	{
 		$model = $this->getModel('form', 'FabrikFEModel');
-		$document = JFactory::getDocument();
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
-		$viewType	= $document->getType();
-		$view = $this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 		
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);

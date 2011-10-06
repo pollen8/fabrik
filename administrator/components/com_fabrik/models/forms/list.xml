@@ -590,6 +590,16 @@
 					<option value="">COM_FABRIK_FIELD_ACTION_METHOD_INLINE</option>
 					<option value="floating">COM_FABRIK_FIELD_ACTION_METHOD_FLOATING</option>
 				</field>
+				
+				<field name="floatPos"
+					type="list" default="left"
+					label="COM_FABRIK_FIELD_FLOAT_POS_LABEL"
+					description="COM_FABRIK_FIELD_FLOAT_POS_DESC">
+						<option value="top">top</option>
+						<option value="right">right</option>
+						<option value="bottom">bottom</option>
+						<option value="left">left</option>
+				</field>
 	</fieldset>
 		
 		<fieldset name="prefilter">

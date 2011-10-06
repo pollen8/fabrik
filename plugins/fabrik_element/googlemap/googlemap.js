@@ -18,19 +18,20 @@ var FbGoogleMap = new Class({
 		'key': '',
 		'lon': 0,
 		'lon_dms': 0,
-		'threeD': false,
 		'zoomlevel': '13',
 		'control': '',
-		'maptypecontrol': '0',
-		'overviewcontrol': '0',
-		'scalecontrol': '0',
-		'drag': 0,
+		'maptypecontrol': false,
+		'overviewcontrol': false,
+		'scalecontrol': false,
+		'drag': false,
 		'maptype': 'G_NORMAL_MAP',
 		'geocode': false,
 		'latlng': false,
 		'latlng_dms': false,
-		'staticmap': 0,
+		'staticmap': false,
 		'auto_center': false,
+		'scrollwheel': false,
+		'streetView': false,
 		'center': 0,
 		'reverse_geocode': false
 	},
@@ -95,10 +96,6 @@ var FbGoogleMap = new Class({
 
 		if (!this.options.staticmap) {
 
-			this.options.scalecontrol  = this.options.scalecontrol === '0' ? false : true;
-			this.options.maptypecontrol = this.options.maptypecontrol  === '0' ? false : true;
-			this.options.overviewcontrol = this.options.overviewcontrol === '0' ? false : true;
-			this.options.scrollwheel = this.options.scrollwheel === '0' ? false : true;
 			var zoomControl =  this.options.control === '' ? false : true;
 			var zoomControlStyle = this.options.control === 'GSmallMapControl' ? google.maps.ZoomControlStyle.SMALL : google.maps.ZoomControlStyle.LARGE;
 		
@@ -110,11 +107,13 @@ var FbGoogleMap = new Class({
 					mapTypeControl: this.options.maptypecontrol,
 					overviewMapControl: this.options.overviewcontrol,
 					scrollwheel: this.options.scrollwheel,
+					streetViewControl: this.options.streetView,
 					zoomControl: true,
 					zoomControlOptions: {
 						style: zoomControlStyle
 					}
 				};
+			console.log(mapOpts);
 			this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
 			
 			var point = new google.maps.LatLng(this.options.lat, this.options.lon);
@@ -122,11 +121,8 @@ var FbGoogleMap = new Class({
 				map: this.map,
 				position: point
 			};
-			if (this.options.drag === 1) {
-				opts.draggable = true;
-			} else {
-				opts.draggable = false;
-			}
+			opts.draggable = this.options.drag;
+				
 			if (this.options.latlng === true) {
 				document.id(this.element).getElement('.lat').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
 				document.id(this.element).getElement('.lng').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));

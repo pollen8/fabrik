@@ -1866,7 +1866,8 @@ class plgFabrik_Element extends FabrikPlugin
 		foreach ($rows as $row) {
 			$allvalues[] = $row->value;
 		}
-		for ($j=count($rows)-1; $j>=0; $j--) {
+		$c = count($rows) - 1;
+		for ($j = $c; $j >= 0; $j--) {
 			$vals = FabrikWorker::JSONtoData($rows[$j]->value, true);
 			$txt = FabrikWorker::JSONtoData($rows[$j]->text, true);
 			if (is_array($vals)) {
@@ -1881,7 +1882,7 @@ class plgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
-				//unset($rows[$j]); // $$$ r4ob 01/08/2011 - caused empty list in advanced search on dropdown element
+				unset($rows[$j]); // $$$ r4ob 01/08/2011 - caused empty list in advanced search on dropdown element
 			}
 		}
 	}
@@ -1994,14 +1995,14 @@ class plgFabrik_Element extends FabrikPlugin
 
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$listModel  	= $this->getListModel();
-		$fabrikDb 		=& $listModel->getDb();
-		$table		=& $listModel->getTable();
-		$element 			= $this->getElement();
-		$origTable 		= $table->db_table_name;
-		$elName 			= $this->getFullName(false, true, false);
+		$listModel = $this->getListModel();
+		$fabrikDb = $listModel->getDb();
+		$table = $listModel->getTable();
+		$element = $this->getElement();
+		$origTable = $table->db_table_name;
+		$elName = $this->getFullName(false, true, false);
 		$params = $this->getParams();
-		$elName2 		= $this->getFullName(false, false, false);
+		$elName2 = $this->getFullName(false, false, false);
 		if (!$this->isJoin()) {
 			$ids = $listModel->getColumnData($elName2);
 			//for ids that are text with apostrophes in
@@ -3248,7 +3249,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 		$str[] = '</a>';
 		$str[] = '<br style="clear:left"/>';
 		$str[] = '<div class="addoption"><div>'.JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE').'</div>';
-		if (!$params->get('allowadd-onlylabel')) {
+		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions')) {
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
 			$str[] = '<label for="'.$valueid.'">'.JText::_('COM_FABRIK_VALUE').'</label>';
 			$str[] = $value;

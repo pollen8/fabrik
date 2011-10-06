@@ -11,6 +11,7 @@ echo "
 	- then you can right align the top buttons against it */
 	width:100%;
 }
+
 #listform_$c .fabrik_buttons{
 	height:2.5em;
 	display:-webkit-box;
@@ -20,6 +21,10 @@ echo "
 	-moz-box-pack:end;
 	box-pack:end;
 	width:100%;
+}
+
+#listform_$c table.fabrikList .groupdataMsg{
+	padding:0;
 }
 
 #listform_$c a,
@@ -297,7 +302,8 @@ div.calendar{
 	padding:5px 16px;
 }
 .floating-tip {
-	border:1px solid #333;
+background-color: #fff;
+	border:1px solid #999;
 	padding:0;
 	text-align:left;
 	font-weight: bold;

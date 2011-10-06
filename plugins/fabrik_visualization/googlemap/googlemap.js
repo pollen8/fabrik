@@ -4,17 +4,16 @@ var FbGoogleMapViz = new Class({
 		'lat': 0,
 		'lon': 0,
 		'clustering': false,
-		'maptypecontrol': '0',
-		'overviewcontrol': '0',
-		'scalecontrol': '0',
-		'livesite': '',
+		'maptypecontrol': false,
+		'overviewcontrol': false,
+		'scalecontrol': false,
 		'center': 'middle',
-		'ajax_refresh': 0,
+		'ajax_refresh': false,
 		'polyline': [],
 		'polylinewidth': [],
 		'polylinecolour': [],
 		'refresh_rate': 10000,
-		'use_cookies': '1',
+		'use_cookies': true,
 		'overlays': [],
 		'overlay_urls': [],
 		'overlay_labels': [],
@@ -33,7 +32,7 @@ var FbGoogleMapViz = new Class({
 		this.icons = [];
 		this.setOptions(options);
 		
-		if (this.options.ajax_refresh === 1) {
+		if (this.options.ajax_refresh) {
 			this.updater = new Request({url: 'index.php',
 				data : {
 					'option': 'com_fabrik',
@@ -48,7 +47,7 @@ var FbGoogleMapViz = new Class({
 				onSuccess: function (json) {
 					this.options.icons = JSON.decode(json);
 					this.addIcons();
-					if (this.options.ajax_refresh_center === 1) {
+					if (this.options.ajax_refresh_center) {
 						this.center();
 					}
 				}.bind(this)
@@ -108,7 +107,7 @@ var FbGoogleMapViz = new Class({
 			google.maps.event.addListener(this.map, "moveend", this.setCookies.bindWithEvent(this));
 			google.maps.event.addListener(this.map, "zoomend", this.setCookies.bindWithEvent(this));
 
-			if (this.options.use_cookies === '1') {
+			if (this.options.use_cookies) {
 				// $$$ jazzbass - get previous stored location
 				var mymapzoom = Cookie.read("mymapzoom_" + this.options.id);
 				var mymaplat = Cookie.read("mymaplat_" + this.options.id);
@@ -160,7 +159,7 @@ var FbGoogleMapViz = new Class({
 	},
 	
 	setCookies: function () {
-		if (this.options.use_cookies === '1') {
+		if (this.options.use_cookies) {
 			Cookie.write("mymapzoom_" + this.options.id, this.map.getZoom(), {duration: 7});
 			Cookie.write("mymaplat_" + this.options.id, this.map.getCenter().lat(), {duration: 7});
 			Cookie.write("mymaplng_" + this.options.id, this.map.getCenter().lng(), {duration: 7}); 
@@ -189,7 +188,7 @@ var FbGoogleMapViz = new Class({
 			var i = 0;
 			for (i = 1; i <= 5; ++i) {
 				styles.push({
-					'url': this.options.livesite + "components/com_fabrik/libs/googlemaps/markerclusterer/images/m" + i + ".png",
+					'url': Fabrik.liveSite + "/components/com_fabrik/libs/googlemaps/markerclusterer/images/m" + i + ".png",
 					'height': sizes[i - 1],
 					'width': sizes[i - 1]
 				});
@@ -216,7 +215,7 @@ var FbGoogleMapViz = new Class({
 			this.cluster = new MarkerClusterer(this.map, this.clusterMarkers, {'splits': this.options.cluster_splits, 'icon_increment': this.options.icon_increment, maxZoom: zoom, gridSize: size, styles: styles});
 		}
 		/*
-		if (this.options.clustering === 1) {
+		if (this.options.clustering) {
 			google.maps.event.addListener(this.markerMgr, 'loaded', function () {
 				this.markerMgr.addMarkers(this.markers, 0, 15);
 				this.markerMgr.refresh();
@@ -269,7 +268,7 @@ var FbGoogleMapViz = new Class({
 		if (img !== '') {
 			markerOptions.flat = true;
 			if (img.substr(0, 7) !== 'http://' && img.substr(0, 8) !== 'https://') {
-				markerOptions.icon = this.options.livesite + 'images/stories/' + img;
+				markerOptions.icon = Fabrik.liveSite + '/images/stories/' + img;
 			} else {
 				markerOptions.icon = img;
 			}

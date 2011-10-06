@@ -44,9 +44,7 @@ echo "
 /* END : label spacing for chxbox, radios */
 
 .floating-tip {
-	background-color: black;
-	padding: 5px 15px;
-	color: #dddddd;
+	background-color: #fff;
 	font-weight: bold;
 	font-size: 11px;
 	-moz-border-radius: 3px;
@@ -54,7 +52,7 @@ echo "
 	border-radius: 3px;
 }
 
-#form_$c  .linkedTables{
+#form_$c .linkedTables{
 	margin:0.6em 0;
 }
 

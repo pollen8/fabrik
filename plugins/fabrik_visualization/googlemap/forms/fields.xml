@@ -105,16 +105,16 @@
 		
 			<field name="fb_gm_zoom"
 				type="radio" default="1"
-				label="PLG_VIZ_GOOGLEMAP_ZOOM_LABEL"
-				description="PLG_VIZ_GOOGLEMAP_ZOOM_DESC">
+				label="PLG_VISUALIZATION_GOOGLEMAP_ZOOM_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_ZOOM_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
 			<field name="fb_gm_zoom_control_style" 
 				type="list" default="DEFAULT"
-				label="PLG_VIZ_GOOGLEMAP_ZOOM_CONTROL_STYLE_LABEL" 
-				description="PLG_VIZ_GOOGLEMAP_ZOOM_CONTROL_STYLE_DESC">
+				label="PLG_VISUALIZATION_GOOGLEMAP_ZOOM_CONTROL_STYLE_LABEL" 
+				description="PLG_VISUALIZATION_GOOGLEMAP_ZOOM_CONTROL_STYLE_DESC">
 				<option value="0">Default</option>
 				<option value="1">Small</option>
 				<option value="2">Large</option>

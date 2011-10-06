@@ -342,7 +342,7 @@ class fabrikViewForm extends JView
 		$opts->error = @$form->origerror;
 		$opts->pages = $model->getPages();
 		$opts->plugins	= array();
-		$opts->multipage_save = (bool)$model->saveMultiPage();
+		$opts->multipage_save = (int)$model->saveMultiPage();
 		$opts->editable = $model->_editable;
 		$opts->start_page = $start_page;
 		$opts->inlineMessage = (bool)$this->isMambot;

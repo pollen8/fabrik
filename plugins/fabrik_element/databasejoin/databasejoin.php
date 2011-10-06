@@ -642,7 +642,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $joinids, 'value', 'text', $options_per_row, $this->_editable);
 						$html[] = '</div>';
 					}
-					$defaultLabel = $str;
+					$defaultLabel = implode("\n", $html);
 					break;
 				case 'auto-complete':
 					$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';
@@ -1241,12 +1241,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$data = $this->_form->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$arVals = $this->getSubOptionValues();
-		$arTxt 	= $this->getSubOptionLabels();
+		$arTxt = $this->getSubOptionLabels();
 
-		$table 		= $params->get('join_db_name');
-		$opts 		=& $this->getElementJSOptions($repeatCounter);
-		$forms 		=& $this->getLinkedForms();
-		$popupform = $params->get('databasejoin_popupform');
+		$table = $params->get('join_db_name');
+		$opts = $this->getElementJSOptions($repeatCounter);
+		$forms = $this->getLinkedForms();
+		$popupform = (int)$params->get('databasejoin_popupform');
 		$popuplistid = (empty($popupform) || !isset($forms[$popupform])) ? '' : $forms[$popupform]->listid;
 		$opts->id 					= $this->_id;
 		$opts->key 					= $table . "___" . $params->get('join_key_column');
@@ -1261,7 +1261,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
 		$opts->displayType 	= $params->get('database_join_display_type', 'dropdown');
 		$opts->show_please_select = $params->get('database_join_show_please_select');
-		$opts->showDesc 		= $params->get('join_desc_column') === '' ? false: true;
+		$opts->showDesc 		= $params->get('join_desc_column') === '' ? false : true;
 		$opts->autoCompleteOpts = $opts->display_type == 'auto-complete' ? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'databasejoin') : null;
 		$opts->allowadd = $params->get('fabrikdatabasejoin_frontend_add', 0) == 0 ? false : true;
 		if ($this->isJoin()) {

@@ -48,10 +48,15 @@ var FbForm = new Class({
 		this.fx.elements = [];
 		this.fx.validations = {};
 		this.setUpAll();
+		this._setMozBoxWidths();
+	},
+	
+	_setMozBoxWidths: function () {
 		if (Browser.firefox) {
 			//as firefox treats display:-moz-box as display:-moz-box-inline we have to programatically set their widths
 			this.getForm().getElements('.fabrikElementContainer > .displayBox').each(function (b) {
-				b.setStyle('width', b.getParent().getSize().x + 'px');
+				var w = b.getParent().getSize().x === 0 ? 400 : b.getParent().getSize().x;
+				b.setStyle('width', w + 'px');
 			});
 		}
 	},
@@ -344,8 +349,8 @@ var FbForm = new Class({
 		e.stop();
 	},
 
-	saveGroupsToDb : function () {
-		if (this.options.multipage_save !== true) {
+	saveGroupsToDb: function () {
+		if (this.options.multipage_save === 0) {
 			return;
 		}
 		window.fireEvent('fabrik.form.groups.save.start', [this]);
@@ -381,7 +386,7 @@ var FbForm = new Class({
 		}).send();
 	},
 
-	changePage : function (dir) {
+	changePage: function (dir) {
 		this.changePageDir = dir;
 		window.fireEvent('fabrik.form.page.change', [this]);
 		if (this.result === false) {
@@ -398,6 +403,7 @@ var FbForm = new Class({
 
 		this.setPageButtons();
 		document.id('page_' + this.currentPage).setStyle('display', '');
+		this._setMozBoxWidths();
 		this.hideOtherPages();
 		window.fireEvent('fabrik.form.page.chage.end', [this]);
 		if (this.result === false) {
@@ -406,7 +412,7 @@ var FbForm = new Class({
 		}
 	},
 
-	pageGroupsVisible : function () {
+	pageGroupsVisible: function () {
 		var visible = false;
 		this.options.pages.get(this.currentPage).each(function (gid) {
 			if (document.id('group' + gid).getStyle('display') !== 'none') {
@@ -421,7 +427,7 @@ var FbForm = new Class({
 	 */
 	hideOtherPages : function () {
 		this.options.pages.each(function (gids, i) {
-			if (i !== this.currentPage) {
+			if (i.toInt() !== this.currentPage) {
 				document.id('page_' + i).setStyle('display', 'none');
 			}
 		}.bind(this));
@@ -830,9 +836,7 @@ var FbForm = new Class({
 						this.updateMainError();
 
 						if (errfound === false) {
-							var keepOverlay = btn.name === 'apply' ? true : false;
-							//keepOverlay -works but is hdiden afterwards
-							Fabrik.loader.stop('form_' + this.id, keepOverlay);
+							Fabrik.loader.stop('form_' + this.id);
 							var saved_msg = json.msg !== undefined ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
 								if (json.url !== undefined) {

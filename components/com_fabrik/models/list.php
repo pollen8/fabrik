@@ -4484,7 +4484,7 @@ class FabrikFEModelList extends JModelForm {
 			// Clean the cache.
 			JFactory::getCache('com_fabrik')->clean();
 			// $$$ rob new as if you update a record the insertid() returns 0
-			$this->lastInsertId = ($rowId == '' || $rowId == 0) ?$fabrikDb->insertid() : $rowId;
+			$this->lastInsertId = ($rowId == '' || $rowId == 0) ? $fabrikDb->insertid() : $rowId;
 			return true;
 		}
 	}
@@ -5565,11 +5565,11 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$addIfNotExists = $addIfNotExists ? 'IF NOT EXISTS ' : '';
 		if (is_null($table)) {
-			$table 	= $this->getGenericTableName();
+			$table = $this->getGenericTableName();
 		}
-		$fields 	=  $this->getDBFields($table);
+		$fields = $this->getDBFields($table);
 		$primaryKey = "";
-		$sql 		= "";
+		$sql = "";
 		$table = FabrikString::safeColName($table);
 		if (is_array($fields)) {
 			$sql .= "CREATE TABLE $addIfNotExists" .  $table ." (\n";
@@ -5609,14 +5609,6 @@ class FabrikFEModelList extends JModelForm {
 				$sql = rtrim($sql, ",\n");
 			}
 			$sql .= $primaryKey . ");";
-		}
-		if ($table == '`pod_fabrik_notification_ratings`') {
-			$db = $this->getDb();
-			$db->setQuery("SHOW INDEX FROM ". $table);
-			$keys = $db->loadObjectList();
-		}
-		if ($table == '`pod_fabrik_digg`') {
-			echo $sql;
 		}
 		return $sql;
 	}

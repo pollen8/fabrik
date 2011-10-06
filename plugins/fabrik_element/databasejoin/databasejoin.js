@@ -30,15 +30,18 @@ var FbDatabasejoin = new Class({
 		
 		if (this.options.editable) {
 			this.watchSelect();
-			
 			if (this.options.showDesc === true) {
 				this.element.addEvent('change', this.showDesc.bindWithEvent(this));
 			}
 			if (this.options.displayType === 'checkbox') {
 				// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
-				document.getElements('input[name*=' + this.options.elementName + '___' + this.options.elementShortName + ']').each(function (i, k) {
-					i.addEvent('click', function (e) {
-						document.getElements('input[name*=' + this.options.elementName + '___id]')[k].checked = i.checked;
+				var selector = 'input[name*=' + this.options.elementName + '___' + this.options.elementShortName + ']';
+				var idSelector = 'input[name*=' + this.options.elementName + '___id]';
+				this.element.addEvent('click:relay(' + selector + ')', function (i) {
+					this.element.getElements(selector).each(function (tmp, k) {
+						if (tmp === i.target) {
+							this.element.getElements(idSelector)[k].checked = i.target.checked;
+						}
 					}.bind(this));
 				}.bind(this));
 			}
@@ -238,7 +241,6 @@ var FbDatabasejoin = new Class({
 		var myajax = new Request.JSON({url: url,
 			'data': post,
 			onSuccess: function (r) {
-					
 				var v = r.data[this.options.key];
 				var l = r.data[this.options.label];
 					
@@ -263,6 +265,23 @@ var FbDatabasejoin = new Class({
 					this.element.value = v;
 					labelfield.value = l;
 					break;
+				case 'checkbox':
+					var chxs = this.element.getElements('> .fabrik_subelement');
+					var newchx = chxs.getLast().clone();
+					newchx.getElement('span').set('text', l);
+					newchx.getElement('input').set('value', v);
+					var last = chxs.length === 0 ? this.element : chxs.getLast();
+					newchx.inject(last, 'after');
+					
+					var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
+					var newid = ids.getLast().clone();
+					newid.getElement('span').set('text', l);
+					newid.getElement('input').set('value', 0); // to add a new join record set to 0
+					last = ids.length === 0 ? this.element.getElements('.fabrikHide') : ids.getLast();
+					newid.inject(last, 'after');
+					break;
+				case 'radio':
+				/* falls through */
 				default:
 					o = this.element.getElements('.fabrik_subelement').filter(function (o, x) {
 						if (o.get('value') === v) {

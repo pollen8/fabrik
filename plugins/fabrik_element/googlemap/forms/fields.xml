@@ -27,15 +27,6 @@
 				size="3" default="150" 
 				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL"/>
 				
-			<field name="fb_gm_3d" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_3D_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_3D_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
 			<field name="fb_gm_mapcontrol" type="list" 
 				default="GSmallZoomControl" 
 				label="PLG_ELEMENT_GOOGLE_MAP_CONTROL_LABEL" 
@@ -87,6 +78,14 @@
 					<option value="1">JYES</option>
 			</field>
 			
+			<field name="fb_gm_street_view" 
+				type="radio" default="0" 
+				label="PLG_ELEMENT_GOOGLE_MAP_STREET_VIEW_LABEL" 
+				description="PLG_ELEMENT_GOOGLE_MAP_STREET_VIEW_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="fb_gm_latlng" 
 				type="radio" default="0" 
 				label="PLG_ELEMENT_GOOGLE_MAP_LATLNG_LABEL" 
@@ -117,7 +116,8 @@
 			
 			<field name="fb_gm_lat" 
 				type="text" size="10" 
-				default="53.2224" 
+				default="53.2224"
+				label="PLG_ELEMENT_GOOGLE_MAP_LAT_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_LAT_DESC"/>
 				
 			<field name="fb_gm_long" 
@@ -161,7 +161,7 @@
 			<field name="fb_gm_geocode_city" 
 				type="listfields" 
 				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_CITY_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_CIT_YDESC"/>
+				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_CITY_DESC"/>
 				
 			<field name="fb_gm_geocode_state" 
 				type="listfields" 
