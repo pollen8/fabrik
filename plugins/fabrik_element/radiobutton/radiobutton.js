@@ -1,6 +1,6 @@
 var FbRadio = new Class({
-	Extends : FbElementList,
-	initialize : function (element, options) {
+	Extends: FbElementList,
+	initialize: function (element, options) {
 		this.plugin = 'fabrikradiobutton';
 		this.parent(element, options);
 		this._getSubElements();
@@ -10,10 +10,9 @@ var FbRadio = new Class({
 		}
 	},
 
-	watchAddToggle : function () {
+	watchAddToggle: function () {
 		var c = this.getContainer();
 		var d = c.getElement('div.addoption');
-
 		var a = c.getElement('.toggle-addoption');
 		if (this.mySlider) {
 			// copied in repeating group so need to remove old slider html first
@@ -34,7 +33,7 @@ var FbRadio = new Class({
 		}.bind(this));
 	},
 
-	watchAdd : function () {
+	watchAdd: function () {
 		var val;
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			var id = this.options.element;
@@ -71,7 +70,7 @@ var FbRadio = new Class({
 		}
 	},
 
-	getValue : function () {
+	getValue: function () {
 		if (!this.options.editable) {
 			return this.options.value;
 		}
@@ -86,7 +85,7 @@ var FbRadio = new Class({
 		return v;
 	},
 
-	setValue : function (v) {
+	setValue: function (v) {
 		if (!this.options.editable) {
 			return;
 		}
@@ -97,18 +96,8 @@ var FbRadio = new Class({
 		});
 	},
 
-	// get the sub element which are the checkboxes themselves
 
-	_getSubElements : function () {
-		if (!this.element) {
-			this.subElements = $A([]);
-		} else {
-			this.subElements = this.element.getElements('input');
-		}
-		return this.subElements;
-	},
-
-	update : function (val) {
+	update: function (val) {
 		if (!this.options.editable) {
 			if (val === '') {
 				this.element.innerHTML = '';
@@ -134,7 +123,7 @@ var FbRadio = new Class({
 		}
 	},
 
-	cloned : function () {
+	cloned: function () {
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.watchAddToggle();
 			this.watchAdd();

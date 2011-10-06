@@ -86,17 +86,6 @@ var FbCheckBox = new Class({
 		return ret;
 	},
 	
-	//get the sub element which are the checkboxes themselves
-	
-	_getSubElements: function () {
-		if (!this.element) {
-			this.subElements = $A();
-		} else {
-			this.subElements = this.element.getElements('input');
-		}
-		return this.subElements;
-	},
-	
 	numChecked: function () {
 		return this._getSubElements().filter(function (c) {
 			return c.checked;

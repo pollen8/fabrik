@@ -19,17 +19,6 @@ var FbLink = new Class({
 		}
 	},
 
-	// get the sub element which are the fields themselves
-
-	_getSubElements: function () {
-		if (!this.element) {
-			this.subElements = $A();
-		} else {
-			this.subElements = this.element.getElements('input');
-		}
-		return this.subElements;
-	},
-
 	getValue : function () {
 		var s = this._getSubElements();
 		var a = [];

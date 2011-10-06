@@ -13,7 +13,18 @@ var FbElementList =  new Class({
 		this.parent(element, options);
 	},
 	
-	addNewEvent : function (action, js) {
+	//get the sub element which are the checkboxes themselves
+	
+	_getSubElements: function () {
+		if (!this.element) {
+			this.subElements = $A();
+		} else {
+			this.subElements = this.element.getElements('input');
+		}
+		return this.subElements;
+	},
+	
+	addNewEvent: function (action, js) {
 		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
