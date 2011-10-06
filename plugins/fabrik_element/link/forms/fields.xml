@@ -3,7 +3,7 @@
 	<fields name="params">
 		<fieldset name="plg-element-link">
 			<field name="width" 
-				type="text" size="3"
+				type="text" size="3" default="20"
 				label="PLG_ELEMENT_LINK_WIDTH_LABEL"/>
 				
 			<field name="default" 
