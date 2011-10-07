@@ -29,14 +29,17 @@
 
 	<?php echo JHtml::_('sliders.panel',JText::_('COM_FABRIK_GROUP_LABEL_CSV'), 'csv'); ?>
 	<fieldset class="panelform">
+	<?php $fieldsets = array('csv', 'csvauto');
+	foreach ($fieldsets as $fieldset) {?>
 		<ul class="panelformlist">
-			<?php foreach($this->form->getFieldset('csv') as $field): ?>
+			<?php foreach($this->form->getFieldset($fieldset) as $field): ?>
 				<?php if (!$field->hidden): ?>
 					<li><?php echo $field->label; ?></li>
 				<?php endif; ?>
 				<li><?php echo $field->input; ?></li>
 			<?php endforeach; ?>
 		</ul>
+	<?php }?>
 	</fieldset>
 
 	<?php echo JHtml::_('sliders.panel',JText::_('COM_FABRIK_GROUP_LABEL_SEARCH'), 'search'); ?>

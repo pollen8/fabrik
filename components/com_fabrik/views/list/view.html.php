@@ -63,6 +63,7 @@ class FabrikViewList extends JView{
 		foreach ($labels as &$l) {
 			$l = strip_tags($l);
 		}
+		$listParams = $model->getParams();
 		$opts->labels 		= $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid 		= $tmpItemid;
@@ -72,8 +73,21 @@ class FabrikViewList extends JView{
 		$opts->page 			= JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
 		$opts->formels		= $elementsNotInTable;
-		$opts->actionMethod = $model->getParams()->get('actionMethod');
-		$opts->floatPos = $model->getParams()->get('floatPos');
+		$opts->actionMethod = $listParams->get('actionMethod');
+		$opts->floatPos = $listParams->get('floatPos');
+		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
+		$csvOpts = new stdClass();
+		$csvOpts->excel = (int)$listParams->get('csv_format');
+		$csvOpts->inctabledata = (int)$listParams->get('csv_include_data');
+		$csvOpts->incraw = (int)$listParams->get('csv_include_raw_data');
+		$csvOpts->inccalcs = (int)$listParams->get('csv_include_calculations');
+		$opts->csvOpts = $csvOpts;
+		
+		$opts->csvFields = $this->get('CsvFields');
+		$csvOpts->incfilters = 0;
+		//
+		//
+		//
 		$opts->data = $data;
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table

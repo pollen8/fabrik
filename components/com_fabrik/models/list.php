@@ -276,15 +276,18 @@ class FabrikFEModelList extends JModelForm {
 				$limitStart	= $app->getUserStateFromRequest($context.'limitstart', 'limitstart'.$id, $limitStart, 'int');
 			}
 		}
+		
 
 		if ($this->_outPutFormat == 'feed') {
-			$limitLength = JRequest::getVar('limit',  $params->get('rsslimit',150));
+			$limitLength = JRequest::getVar('limit',  $params->get('rsslimit', 150));
 			$maxLimit = $params->get('rsslimitmax', 2500);
 			if ($limitLength > $maxLimit) {
 				$limitLength = $maxLimit;
 			}
 		}
-
+		if ($limitStart < 0) {
+			$limitStart = 0;
+		}
 		$this->limitLength = $limitLength;
 		$this->limitStart = $limitStart;
 	}
@@ -6567,6 +6570,28 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		return $a;
+	}
+	
+	/**
+	 * @since 3.0b
+	 * get a list of elements to export in the csv file.
+	 * @return array full element names.
+	 */
+	
+	public function getCsvFields()
+	{
+		$params = $this->getParams();
+		$formModel = $this->getFormModel();
+		$csvFields = array();
+		if ($params->get('csv_elements') == '') {
+			$csvIds = array();
+		} else {
+			$csvIds = json_decode($params->get('csv_elements'))->show_in_csv;
+		}
+		foreach ($csvIds as $id) {
+			$csvFields[$formModel->getElement($id, true)->getFullName(false, true, false)] = 1;
+		}
+		return $csvFields;
 	}
 }
 ?>

@@ -216,7 +216,9 @@ var FbList = new Class({
 		'formels': [], // elements that only appear in the form
 		'data': [], // [{col:val, col:val},...] (depreciated)
 		'rowtemplate': '',
-		'floatPos': 'left'
+		'floatPos': 'left',
+		'csvChoose': false,
+		'csvOpts': {}
 	},
 
 	initialize: function (id, options) {
@@ -307,6 +309,26 @@ var FbList = new Class({
 	},
 
 	makeCSVExportForm: function () {
+		if (this.options.csvChoose) {
+			return this._csvExportForm();
+		} else {
+			return this._csvAutoStart();
+		}
+	},
+	
+	_csvAutoStart: function () {
+		var c = new Element('div', {
+			'id': 'csvmsg'
+		}).set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>');
+		
+		this.csvopts = this.options.csvOpts;
+		this.csvfields = this.options.csvFields;
+		
+		this.triggerCSVImport(-1);
+		return c;
+	},
+	
+	_csvExportForm: function () {
 		// cant build via dom as ie7 doesn't accept checked status
 		var rad = "<input type='radio' value='1' name='incfilters' checked='checked' />" + Joomla.JText._('JYES');
 		var rad2 = "<input type='radio' value='1' name='incraw' checked='checked' />" + Joomla.JText._('JYES');
@@ -439,8 +461,15 @@ var FbList = new Class({
 	triggerCSVImport: function (start, opts, fields) {
 		var url = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id;
 		if (start !== 0) {
-			opts = this.csvopts;
-			fields = this.csvfields;
+			if (start === -1) {
+				// not triggered from front end selections
+				start = 0;
+				opts = this.csvopts;
+				opts.fields = this.csvfields;
+			} else {
+				opts = this.csvopts;
+				fields = this.csvfields;
+			}
 		} else {
 			if (!opts) {
 				opts = {};
