@@ -29,7 +29,10 @@ class FabrikViewList extends JView{
 		//Get the active menu item
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
-		JRequest::setVar('incfilters', 0);
+		// $$$ hugh - modified this so you can enable QS filters on RSS links
+		// by setting &incfilters=1
+		JRequest::setVar('incfilters', JRequest::getInt('incfilters', 0));
+
 		$table = $model->getTable();
 		$model->render();
 		$params	=& $model->getParams();
