@@ -20,7 +20,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	var $defaults = null;
 
 	protected $fieldDesc = 'TEXT';
-	
+
 	protected $inputType = 'radio';
 
 	/**
@@ -59,24 +59,24 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		return $r;
 	}
 
-  /**
-   * this really does get just the default value (as defined in the element's settings)
-   * @return unknown_type
-   */
+	/**
+	 * this really does get just the default value (as defined in the element's settings)
+	 * @return unknown_type
+	 */
 
-  function getDefaultValue($data = array())
-  {
-  	$params = $this->getParams();
-  	$opts = $params->get('sub_options');
-    if (!isset($this->_default)) {
-    	if (isset($opts->sub_initial_selection)) {
-      	$this->_default = $this->getSubInitialSelection();
-    	} else {
-    		$this->_default = parent::getDefaultValue($data);
-    	}
-    }
-    return $this->_default;
-  }
+	function getDefaultValue($data = array())
+	{
+		$params = $this->getParams();
+		$opts = $params->get('sub_options');
+		if (!isset($this->_default)) {
+			if (isset($opts->sub_initial_selection)) {
+				$this->_default = $this->getSubInitialSelection();
+			} else {
+				$this->_default = parent::getDefaultValue($data);
+			}
+		}
+		return $this->_default;
+	}
 
 	/**
 	 * Get the table filter for the element
@@ -208,7 +208,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		echo json_encode($rows);
 	}
 
-/**
+	/**
 	 * shows the data formatted for the table view
 	 * @param string data
 	 * @param object all the data in the tables current row
@@ -248,14 +248,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		//$$$rob if only one repeat group data then dont bother encasing it in a <ul>
 		return count($gdata) !== 1 ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
 	}
-	
+
 	/**
-	* draws the form element
-	* @param array data
-	* @param int repeat group counter
-	* @return string returns element html
-	*/
-	
+	 * draws the form element
+	 * @param array data
+	 * @param int repeat group counter
+	 * @return string returns element html
+	 */
+
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
@@ -263,13 +263,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
-		
+
 		$selected = (array)$this->getValue($data, $repeatCounter);
-		//$$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the 
+		//$$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
-		if (!in_array($selected, $values)) {
-			$values = array_merge($values, $selected);
-			$labels = array_merge($labels, $selected);
+		$diff = array_diff($selected, $values);
+		if (!empty($diff)) {
+			$values = array_merge($values, $diff);
+			$labels = array_merge($labels, $diff);
 		}
 		if (!$this->_editable) {
 			$aRoValues = array();
@@ -281,14 +282,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
 			return implode($splitter, $aRoValues);
 		}
-		
+
 		$optionsPerRow = (int)$this->getParams()->get('options_per_row', 0);
 		$elBeforeLabel = (bool)$this->getParams()->get('element_before_label', true);
 		//element_before_label
 		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow);
-		
+
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="'.$id.'">');
-		
+
 		$grid[] = '</div>';
 		if ($params->get('allow_frontend_addto', false)) {
 			$onlylabel = $params->get('allowadd-onlylabel');
@@ -296,7 +297,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		}
 		return implode("\n", $grid);
 	}
-	
+
 	protected function getElementBeforeLabel()
 	{
 		return (bool)$this->getParams()->get('radio_element_before_label', true);
@@ -368,21 +369,22 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					// $$$ rob - default should be an array (otherwise default options for database join element are not used)
 					/* if (array_key_exists($name, $data)) {
 						if (is_array($data[$name])) {
-							//occurs on form submission for fields at least
-							$default = $data[$name];
-						} else {
-							//occurs when getting from the db
-							//$$$ rob changed to false below as when saving encrypted data a stored valued of 62
-							// was being returned as [62], then [[62]] etc.
-							$default = FabrikWorker::JSONtoData($data[$name], false);
-						}
+					//occurs on form submission for fields at least
+					$default = $data[$name];
+					} else {
+					//occurs when getting from the db
+					//$$$ rob changed to false below as when saving encrypted data a stored valued of 62
+					// was being returned as [62], then [[62]] etc.
+					$default = FabrikWorker::JSONtoData($data[$name], false);
+					}
 					} */
 					if (array_key_exists($name, $data)) {
 						$default = $data[$name]; //put this back in for radio button after failed validation not picking up previously selected option
 					}
 				}
 			}
-			if ($default === '') { //query string for joined data
+			if ($default === '') {
+				//query string for joined data
 				$default = JArrayHelper::getValue($data, $name);
 			}
 			$element->default = $default;
@@ -409,32 +411,32 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	{
 		return $this->getlistModel()->inJDb();
 	}
-	
+
 	/**
-	* format the read only output for the page
-	* @param string $value
-	* @param string label
-	* @return string value
-	*/
-	
+	 * format the read only output for the page
+	 * @param string $value
+	 * @param string label
+	 * @return string value
+	 */
+
 	protected function getReadOnlyOutput($value, $label)
 	{
 		$params = $this->getParams();
 		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
-				$icon = $this->_replaceWithIcons($value);
-				if ($this->iconsSet) {
-					$label = $icon;
-				}
+			$icon = $this->_replaceWithIcons($value);
+			if ($this->iconsSet) {
+				$label = $icon;
+			}
 		}
 		return $label;
 	}
-	
+
 	/**
-	* trigger called when a row is stored
-	* check if new options have been added and if so store them in the element for future use
-	* @param array data to store
-	*/
-	
+	 * trigger called when a row is stored
+	 * check if new options have been added and if so store them in the element for future use
+	 * @param array data to store
+	 */
+
 	function onStoreRow($data)
 	{
 		$element = $this->getElement();
@@ -465,18 +467,18 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			}
 		}
 	}
-	
+
 	/**
-	* @param array of scripts previously loaded (load order is important as we are loading via head.js
-	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	* current file
-	*
-	* get the class to manage the form element
-	* if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	* call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
-	* to ensure that the file is loaded only once
-	*/
-	
+	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 *
+	 * get the class to manage the form element
+	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * to ensure that the file is loaded only once
+	 */
+
 	function formJavascriptClass(&$srcs, $script = '')
 	{
 		$elementList = 'media/com_fabrik/js/elementlist.js';
