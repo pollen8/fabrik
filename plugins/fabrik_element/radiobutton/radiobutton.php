@@ -30,21 +30,6 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 	
 	/**
-	 * shows the data formatted for the csv data
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
-	 */
-
-	function renderListData_csv( $data, $oAllRowsData )
-	{
-		$this->renderWithHTML = false;
-		$d = $this->renderListData($data, $oAllRowsData);
-		$this->renderWithHTML = true;
-		return $d;
-	}
-
-	/**
 	 * get the radio buttons possible values
 	 * @return array of radio button values
 	 */

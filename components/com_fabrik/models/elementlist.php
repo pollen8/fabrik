@@ -242,11 +242,26 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				}
 			}
 			if (!empty($lis)) {
-				$uls[] = $multiple ? '<ul class="fabrikRepeatData">'.implode(' ', $lis).'</ul>' : implode(' ', $lis);
+				$uls[] = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $lis).'</ul>' : implode(' ', $lis);
 			}
 		}
 		//$$$rob if only one repeat group data then dont bother encasing it in a <ul>
-		return count($gdata) !== 1 ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
+		return (count($gdata) !== 1 && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
+	}
+	
+	/**
+	* shows the data formatted for the csv data
+	* @param string data
+	* @param object all the data in the tables current row
+	* @return string formatted value
+	*/
+	
+	function renderListData_csv($data, $oAllRowsData)
+	{
+		$this->renderWithHTML = false;
+		$d = $this->renderListData($data, $oAllRowsData);
+		$this->renderWithHTML = true;
+		return $d;
 	}
 
 	/**

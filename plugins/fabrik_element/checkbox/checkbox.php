@@ -31,14 +31,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$params->set('savenewadditions', (bool)$params->get('chk-savenewadditions', false));
 	}
 
-	function renderListData_csv( $data, $oAllRowsData )
-	{
-		$this->renderWithHTML = false;
-		$d = $this->renderListData($data, $oAllRowsData);
-		$this->renderWithHTML = true;
-		return $d;
-	}
-
 	/**
 	 * render raw data
 	 *
