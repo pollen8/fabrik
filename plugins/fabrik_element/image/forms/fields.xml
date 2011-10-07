@@ -2,6 +2,12 @@
 <form>
 	<fields name="params">
 		<fieldset name="plg-element-image" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		
+			<field name="imagepath" 
+				type="field"
+				label="PLG_ELEMENT_IMAGE_PATH_LABEL"
+				description="PLG_ELEMENT_IMAGE_PATH_DESC" />
+
 			<field name="image_front_end_select" type="list" default="0" label="PLG_ELEMENT_IMAGE_USER_SEL_IMAGE_LABEL" description="PLG_ELEMENT_IMAGE_USER_SEL_IMAGE_DESC">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>

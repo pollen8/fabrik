@@ -129,9 +129,16 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		//$data = explode(GROUPSPLITTER, $data);
 		$data = json_decode($data, true);
 		$params = $this->getParams();
+		if ($data === '' || empty($data)) {
+			//no data so default to image.
+			$data = $params->get('imagepath');
+			if (!strstr($data, '/')) {
+				//single file specified so find it in tmpl folder
+				$data = FabrikHelperHTML::image($data, 'list', @$this->tmpl, array(), false);
+			}
+		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$selectImage_root_folder = ltrim($selectImage_root_folder, '/');
