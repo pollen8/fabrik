@@ -72,7 +72,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		if (is_array($this->_form->_data)) {
 			$data = $this->_form->_data;
 		}
-		$value	= $this->getValue($data, $repeatCounter);
+		$value = $this->getValue($data, $repeatCounter);
 		$type = $params->get('password') == "1" ?"password" : "text";
 		if (isset($this->_elementError) && $this->_elementError != '') {
 			$type .= " elementErrorHighlight";

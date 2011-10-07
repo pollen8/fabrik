@@ -296,7 +296,7 @@ var FbDatabasejoin = new Class({
 							'class': 'fabrikinput',
 							'type': 'radio',
 							'checked': true,
-							'name': this.options.element,
+							'name': this.options.element + '[]',
 							'value': v
 						}), new Element('span').set('text', l)]));
 						opt.inject($(this.element.id).getElements('.fabrik_subelement').getLast(), 'after');
