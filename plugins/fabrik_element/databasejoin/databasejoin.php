@@ -144,7 +144,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName.'___'.$label :$db->nameQuote($joinTableName).'.'.$db->nameQuote($label);// "``.`$label`";
 		return $this->joinLabelCols[(int)$useStep];
 	}
-	
+
 	protected function getJoinLabel()
 	{
 		$join = $this->getJoin();
@@ -696,7 +696,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		return implode("\n", $html);
 	}
-	
+
 /* 	function getDefaultValue($data = array())
 	{
 		return (array)parent::getDefaultValue();
@@ -765,7 +765,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$table = $this->getlistModel();
 		$db = $table->getDb();
-		
+
 		//lets see if we can get the field type of the field we are joining to
 		$join = FabTable::getInstance('Join', 'FabrikTable');
 		if ((int)$this->_id !== 0) {
@@ -779,7 +779,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$dbName = $params->get('join_db_name');
 			$joinKey = $params->get('join_key_column');
 		}
-			
+
 		$db->setQuery("DESCRIBE $dbName");
 		$fields = $db->loadObjectList();
 		if (is_array($fields)) {
@@ -1496,7 +1496,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$c = FabrikString::safeColName($c);
 		}
 		$this->_autocomplete_where = $c.' LIKE '.$db->Quote('%'.JRequest::getVar('value').'%');
-		$tmp = $this->_getOptions(array(), 0, false);
+		// $$$ hugh - changed last arg (incwhere) to true, not sure why it was false
+		$tmp = $this->_getOptions(array(), 0, true);
 		echo json_encode($tmp);
 	}
 
