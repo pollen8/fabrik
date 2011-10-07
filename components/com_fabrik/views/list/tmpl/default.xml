@@ -7,13 +7,12 @@
 	</layout>
 	
 	<fields name="request">
-		<fieldset name="request"
-				addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="request" addfieldpath="/administrator/components/com_fabrik/models/fields">
 	
-				<field name="listid" type="fabriktables" 
-			label="List" 
-			description="The table id to show - if the view is set to view table" />
-				/>
+			<field name="listid" type="fabriktables" 
+				label="List" 
+				description="The list to show" />
+				
 			</fieldset>
 	</fields>
 	

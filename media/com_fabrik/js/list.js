@@ -282,30 +282,38 @@ var FbList = new Class({
 			height: 120,
 			content: ''
 		};
-
-		if (this.form.getElements('.csvExportButton')) {
-			this.form.getElements('.csvExportButton').each(function (b) {
-				if (b.hasClass('custom') === false) {
-					b.addEvent('click', function (e) {
-						var thisc = this.makeCSVExportForm();
-						this.form.getElements('.fabrik_filter').each(function (f) {
-							var fc = new Element('input', {
-								'type': 'hidden',
-								'name': f.name,
-								'id': f.id,
-								'value': f.get('value')
-							});
-							fc.inject(thisc);
+		if (this.options.view === 'csv') {
+			//for csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
+			this.openCSVWindow();
+		} else {
+			if (this.form.getElements('.csvExportButton')) {
+				this.form.getElements('.csvExportButton').each(function (b) {
+					if (b.hasClass('custom') === false) {
+						b.addEvent('click', function (e) {
+							this.openCSVWindow();
 						}.bind(this));
-						this.exportWindowOpts.content = thisc;
-						this.exportWindowOpts.onContentLoaded = function () {
-							this.fitToContent();
-						};
-						Fabrik.getWindow(this.exportWindowOpts);
-					}.bind(this));
-				}
-			}.bind(this));
+					}
+				}.bind(this));
+			}
 		}
+	},
+	
+	openCSVWindow: function () {
+		var thisc = this.makeCSVExportForm();
+		this.form.getElements('.fabrik_filter').each(function (f) {
+			var fc = new Element('input', {
+				'type': 'hidden',
+				'name': f.name,
+				'id': f.id,
+				'value': f.get('value')
+			});
+			fc.inject(thisc);
+		}.bind(this));
+		this.exportWindowOpts.content = thisc;
+		this.exportWindowOpts.onContentLoaded = function () {
+			this.fitToContent();
+		};
+		Fabrik.getWindow(this.exportWindowOpts);
 	},
 
 	makeCSVExportForm: function () {
@@ -1206,6 +1214,9 @@ var FbListActions = new Class({
 	},
 
 	setUpSubMenus: function () {
+		if (!this.list.form) {
+			return;
+		}
 		this.actions = this.list.form.getElements('ul.fabrik_action');
 		this.actions.each(function (ul) {
 			// sub menus ie group by options
