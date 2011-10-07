@@ -39,7 +39,7 @@ var FloatingTips = new Class({
 		offset: {x: 0, y: 0},
 		fx: { 'duration': 'short' },
 		hideFn: function(e, el) { this.hide(e, el);e.stop() },
-		showFn: function(e) { this.show(e.target);e.stop(); }
+		showFn: function(e, el) { this.show(el);e.stop(); }
 	},
 
 	initialize: function(elements, options) {
@@ -54,7 +54,7 @@ var FloatingTips = new Class({
 		this.selector = elements;
 		this.elements = $$(elements);
 		this.elements.each(function(e) {
-			e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this));
+			e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
 			e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
 			e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
 			window.addEvent('fabrik.tip.show', function(trigger){
@@ -81,8 +81,6 @@ var FloatingTips = new Class({
 	},
 	
 	hide: function(e, element) {
-		//console.log(e.target);
-		console.log(element);
 		if (!element) {
 			console.log('no el');
 			return;
@@ -97,7 +95,6 @@ var FloatingTips = new Class({
 				classTest = e.target.hasClass(this.selector['class']);
 			}
 		}
-		//console.log(e.target, element, t);
 	
 		if (this.elements.contains(t) || this.elements.contains(tt) || classTest) {
 			//stops the element from being hidden if mouse over trigger
@@ -208,11 +205,23 @@ var FloatingTips = new Class({
 				arrowStyle.translate = {x: -11, y: 0};
 			}
 			var shadow = cwr.getStyle('box-shadow');
+			var shadowColor, shadowX, shadowY, bits;
 			if (shadow !== 'none' && shadow !== '') {
-				var shadowBits = shadow.split(' ');
+				if (shadow.contains('rgb')) {
+					bits = shadow.split(')');
+					shadowColor = bits[0] + ')';
+					bits = bits[1].trim().split(' ');
+					shadowX = bits[0].toInt();
+					shadowY = bits[1].toInt();
+				} else {
+					bits = shadow.split(' ');
+					shadowColor = bits[0];
+					shadowX = bits[1].toInt();
+					shadowY = bits[2].toInt();
+				}
 				arrowStyle.shadow = {
-						color: shadowBits[0],
-						translate: {x: -1 * (shadowBits[1].toInt() + arrowStyle.translate.x), y: shadowBits[2].toInt() + arrowStyle.translate.y},
+						color: shadowColor,
+						translate: {x: -1 * (shadowX + arrowStyle.translate.x), y: shadowY + arrowStyle.translate.y},
 					}
 			}
 			var arrow = Fabrik.iconGen.create(icon.arrowleft, arrowStyle);
