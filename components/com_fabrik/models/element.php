@@ -829,7 +829,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str = '';
 
 		if ($this->canView() || $this->canUse()) {
-			
+
 			$rollOver = $params->get('rollover') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
 			$labelClass = "fabrikLabel ";
 			if (empty($element->label)) {
@@ -898,7 +898,7 @@ class plgFabrik_Element extends FabrikPlugin
 			return $txt;
 		}
 	}
-	
+
 	protected function getTip($data = null)
 	{
 		if (is_null($data)) {
@@ -1231,7 +1231,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		//tips (if nto rendered as hovers)
 		$tip = $this->getTip();
-		if ($tip !== '') { 
+		if ($tip !== '') {
 			$tip = '<div class="fabrikInlineTip">'.FabrikHelperHTML::image('questionmark.png', 'form', $tmpl).$tip.'</div>';
 		}
 		switch ($model->getParams()->get('tiplocation')) {
@@ -1871,18 +1871,21 @@ class plgFabrik_Element extends FabrikPlugin
 			$vals = FabrikWorker::JSONtoData($rows[$j]->value, true);
 			$txt = FabrikWorker::JSONtoData($rows[$j]->text, true);
 			if (is_array($vals)) {
-
+				$found = false;
 				for ($i=0; $i< count($vals); $i++) {
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
 					$txt2 = FabrikWorker::JSONtoData($txt[$i], true);
 					for ($jj=0; $jj<count($vals2); $jj++) {
 						if (!in_array($vals2[$jj], $allvalues)) {
+							$found = true;
 							$allvalues[] = $vals2[$jj];
 							$rows[] = JHTML::_('select.option', $vals2[$jj], $txt2[$jj]);
 						}
 					}
 				}
-				unset($rows[$j]); // $$$ r4ob 01/08/2011 - caused empty list in advanced search on dropdown element
+				if ($found) {
+					unset($rows[$j]); // $$$ r4ob 01/08/2011 - caused empty list in advanced search on dropdown element
+				}
 			}
 		}
 	}
