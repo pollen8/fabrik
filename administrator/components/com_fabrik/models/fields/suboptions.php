@@ -53,7 +53,7 @@ class JFormFieldSuboptions extends JFormField
 		$default->sub_initial_selection = array();
 		$opts = $this->value == '' ? json_encode($default) : json_encode($this->value);
 		$script = "new Suboptions('$this->name', $opts);";
-		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/suboptions.js', true, $script);
+		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/suboptions.js', $script);
 		$html = "<div style=\"float:left;width:100%\">
 
 <table style=\"width: 100%\">

@@ -340,6 +340,7 @@ class plgContentFabrik extends JPlugin
 				JRequest::setVar('flayout', JRequest::getVar('layout'));
 				JRequest::setVar('rowid', $rowid);
 				break;
+			case 'csv':
 			case 'list':
 				/// $$$ rob 15/02/2011 addded this as otherwise when you filtered on a table with multiple filter set up subsequent tables were showing
 				//the first tables data
@@ -458,6 +459,9 @@ class plgContentFabrik extends JPlugin
 		}
 		if ($viewName == 'details') {
 			$viewName = 'form';
+		}
+		if ($viewName == 'csv') {
+			$viewName = 'list';
 		}
 		$prefix= '';
 		if ($viewName == 'form' || $viewName == 'list') {
@@ -602,9 +606,11 @@ class plgContentFabrik extends JPlugin
 			JError::raiseError(500, 'Please specify a view in your fabrik {} code');
 		}
 		//$$$rob looks like including the view does something to the layout variable
-		$layout = JRequest::getVar('layout');
+		$layout = JRequest::getVar('layout', 'default');
 		require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.$view.DS.'view.html.php');
-		JRequest::setVar('layout', $layout);
+		if (!is_null($layout)) {
+			JRequest::setVar('layout', $layout);
+		}
 	}
 
 }

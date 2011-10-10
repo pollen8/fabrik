@@ -188,7 +188,7 @@ class FabrikPlugin extends JPlugin
 		}
 		if (!empty($repeatScript)) {
 			$repeatScript = implode("\n", $repeatScript);
-			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/repeatgroup.js', true, $repeatScript);
+			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/repeatgroup.js', $repeatScript);
 		}
 		return $str;
 	}

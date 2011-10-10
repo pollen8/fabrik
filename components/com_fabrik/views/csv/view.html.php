@@ -39,7 +39,7 @@ class fabrikViewCsv extends JView
 		$model = $this->getModel();
 		$listid = $model->getId();
 	
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 
 		$script = '';
 	

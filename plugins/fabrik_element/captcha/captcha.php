@@ -108,10 +108,10 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0) {
 		$session = JFactory::getSession();
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$params 	= $this->getParams();
+		$name = $this->getHTMLName($repeatCounter);
+		$id	= $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$params = $this->getParams();
 		$user = JFactory::getUser();
 
 		if ($params->get('captcha-method') == 'recaptcha') {
@@ -123,35 +123,33 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 			$lang = strtolower($params->get('recaptcha_lang', 'en'));
 			$error = null;
 			if ($user->id != 0 && $params->get('captcha-showloggedin', 0) == false) {
-				return "<input class=\"inputbox text\" type=\"hidden\" name=\"$name\" id=\"$id\" value=\"\" />\n";
+				return '<input class="inputbox text" type="hidden" name="'.$name.'" id="'.$id.'" value="" />';
 			} else {
-				$str = recaptcha_get_html($id, $publickey, $theme, $lang, $error);
-				return $str;
+				return recaptcha_get_html($id, $publickey, $theme, $lang, $error);
 			}
 		} else {
-			$size 		= $element->width;
+			$str = array();
+			$size = $element->width;
 			$height = $params->get('captcha-height', 40);
 			$width = $params->get('captcha-width', 40);
 			$characters = $params->get('captcha-chars', 6);
 			$code = $this->_generateCode($characters);
 
 			// $$$ hugh - code that generates image now in image.php
-
 			$session->set('com_fabrik.element.captach.security_code', $code);
-			$str = "<div class=\"fabrikSubElementContainer\">";
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
-			$str .= "<img src='" .COM_FABRIK_LIVESITE . "plugins/fabrik_element/captcha/image.php?width=$width&amp;height=$height&amp;font=" . $this->_font . "&amp;foo=" . rand() . "' alt='" . JText::_('security image') . "' />";
-			$str .= "<br />";
+			$str[] = '<img src="'.COM_FABRIK_LIVESITE.'plugins/fabrik_element/captcha/image.php?width='.$width.'&amp;height='.$height.'&amp;font='.$this->_font.'&amp;foo='.rand().'" alt="'.JText::_('security image').'" />';
+			$str[] = '<br />';
 
 			$value = $this->getValue($data, $repeatCounter);
-			$type = ($params->get('password') == "1" ) ? "password" : "text";
+			$type = ($params->get('password') == "1") ? "password" : "text";
 			if (isset($this->_elementError) && $this->_elementError != '') {
 				$type .= " elementErrorHighlight";
 			}
 			if ($element->hidden == '1') {
 				$type = "hidden";
 			}
-			$sizeInfo =  " size=\"$size\"";
+			$sizeInfo = " size=\"$size\"";
 			if (!$this->_editable) {
 				if ($element->hidden == '1') {
 					return "<!--" . stripslashes($value) . "-->";
@@ -159,15 +157,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 					return stripslashes($value);
 				}
 			}
-			/* no need to eval here as its done before hand i think ! */
-			if ($element->eval == "1" and !isset ( $data[$name])) {
-				$str .= "<input class=\"inputbox $type\" type=\"$type\" name=\"$name\" id=\"$id\" $sizeInfo value=\"\" />\n";
-			} else {
-				$value = stripslashes($value);
-				$str .= "<input class=\"inputbox $type\" type=\"$type\" name=\"$name\" $sizeInfo id=\"$id\" value=\"\" />\n";
-			}
-			$str .= "</div>";
-			return $str;
+			$str[] = '<input class="inputbox '.$type.'" type="'.$type.'" name="'.$name.'" id="'.$id.'" '.$sizeInfo.' value="" />';
+			return implode("\n", $str);
 		}
 	}
 
@@ -224,7 +215,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	function mustValidate()
 	{
-		$params 		=& $this->getParams();
+		$params = $this->getParams();
 		if (!$this->canUse() && !$this->canView()) {
 			return false;
 		}

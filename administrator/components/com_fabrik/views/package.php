@@ -130,15 +130,15 @@ class FabrikViewPackage {
 	* @param array lists
 	*/
 
-	function edit($row, $tables, $lists )
+	function edit($row, $tables, $lists)
 	{
 		JHtml::_('behavior.framework');
 		JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 		JRequest::setVar('hidemainmenu', 1);
 		jimport('joomla.html.pane');
-		$pane	=& JPane::getInstance();
+		$pane	= JPane::getInstance();
 		FabrikViewPackage::setPackageToolbar();
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/adminpackage.js', true);
+		FabrikHelperHTML::script('administrator/components/com_fabrik/views/adminpackage.js');
 		?>
 		<form action="index.php" method="post" name="adminForm">
 		<table style="width:100%;">

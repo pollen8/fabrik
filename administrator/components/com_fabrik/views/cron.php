@@ -52,8 +52,8 @@ class FabrikViewCron {
 	function edit($row, $params, $lists, &$pluginManager )
 		{
 		JRequest::setVar('hidemainmenu', 1);
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js', true);
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/admincron.js', true);
+		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+		FabrikHelperHTML::script('administrator/components/com_fabrik/views/admincron.js');
 		FabrikHelperHTML::tips();
 		$document =& JFactory::getDocument();
 		FabrikHelperHTML::addScriptDeclaration(

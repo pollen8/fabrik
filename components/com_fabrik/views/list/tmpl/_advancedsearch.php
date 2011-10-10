@@ -31,7 +31,7 @@ defined('_JEXEC') or die();
 
 		</tbody>
 		<thead>
-			<tr class="title">
+			<tr class="fabrik___heading title">
 				<th></th>
 				<th><?php echo JText::_('COM_FABRIK_ELEMENT')?></th>
 				<th><?php echo JText::_('COM_FABRIK_CONDITION')?></th>

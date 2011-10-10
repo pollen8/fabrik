@@ -21,8 +21,7 @@ var Autofill =  new Class({
 		}.bind(this));
 	},
 	
-	setUp: function (form)
-	{
+	setUp: function (form) {
 		try {
 			this.form = form;//eval('form_' + this.options.formid);
 		} catch (err) {

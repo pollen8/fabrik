@@ -101,7 +101,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$script = implode("\n", $script);
 
 			$fabriktables[$this->id] = true;
-			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabriktables.js', true, $script);
+			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabriktables.js', $script);
 		}
 
 		$html = parent::getInput();

@@ -55,7 +55,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		$opts = json_encode($opts);
 		$id = uniqid('fabrik_notification');
 		if ($params->get('notification_ajax', 0) == 1) {
-			FabrikHelperHTML::script('components/com_fabrik/plugins/form/fabriknotification/javascript.js', true);
+			FabrikHelperHTML::script('components/com_fabrik/plugins/form/fabriknotification/javascript.js');
 			$script = "head.ready(function() {
 				var notify = new Notify('$id', $opts);
  			});";

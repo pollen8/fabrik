@@ -38,19 +38,19 @@ class fabrikViewSlideshow extends JView
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 
 		if ($this->get('RequiredFiltersFound')) {
-		FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.js', true);
+		FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.js');
 			$slideshow_viz_type = $pluginParams->get('slideshow_viz_type', 1);
 			switch ($slideshow_viz_type) {
 				case 1:
 					break;
 				case 2:
-					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js', true);
+					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js');
 					break;
 				case 3:
-					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.push.js', true);
+					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.push.js');
 					break;
 				case 4:
-					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.fold.js', true);
+					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.fold.js');
 					break;
 				default:
 					break;
@@ -58,7 +58,7 @@ class fabrikViewSlideshow extends JView
 
 			JHTML::stylesheet('components/com_fabrik/libs/slideshow2/css/slideshow.css');
 
-			FabrikHelperHTML::script('plugins/fabrik_visualization/slideshow/slideshow.js', true);
+			FabrikHelperHTML::script('plugins/fabrik_visualization/slideshow/slideshow.js');
 		}
 		FabrikHelperHTML::addScriptDeclaration($this->js);
 

@@ -14,14 +14,14 @@ class fabrikViewPackage extends JView
 		$state = $this->get('State');
 		$item = $this->get('Item');
 		$document = JFactory::getDocument();
-		FabrikHelperHTML::script('media/com_fabrik/js/icons.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/icongen.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/canvas.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/history.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/keynav.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/tabs.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/pages.js', true);
-		FabrikHelperHTML::script('media/com_fabrik/js/frontpackage.js', true);
+		FabrikHelperHTML::script('media/com_fabrik/js/icons.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/canvas.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/history.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/keynav.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/tabs.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/pages.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/frontpackage.js');
 
 		FabrikHelperHTML::stylesheet('media/com_fabrik/css/package.css');
 		$canvas = $item->params->get('canvas');

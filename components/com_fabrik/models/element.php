@@ -1706,7 +1706,8 @@ class plgFabrik_Element extends FabrikPlugin
 					}
 				}
 				else {
-					$k = $count;
+					//$k = $count;
+					$k = $counter;
 				}
 				//is there a filter with this elements name
 				if ($k !== false) {
@@ -2992,7 +2993,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	function tableJavascriptClass()
 	{
 		$p = $this->getElement()->plugin;
-		FabrikHelperHTML::script('plugins/fabrik_element/'.$p.'/list-'.$p.'.js', false);
+		FabrikHelperHTML::script('plugins/fabrik_element/'.$p.'/list-'.$p.'.js');
 	}
 
 	/**
@@ -4005,7 +4006,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 			$onLoad .= "window.fireEvent('fabrik.list.inlineedit.setData');\n";
 			$srcs = array();
 			$this->formJavascriptClass($srcs);
-			FabrikHelperHTML::script($srcs, true, $onLoad);
+			FabrikHelperHTML::script($srcs, $onLoad);
 		} else {
 			$html .= $this->renderListData($data[$key], $data);
 			$html .= "\n<script type=\"text/javasript\">";

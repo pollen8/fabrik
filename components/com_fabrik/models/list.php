@@ -617,7 +617,7 @@ class FabrikFEModelList extends JModelForm {
 		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo(true);
 		$params = $this->getParams();
-		$nextview = ($this->canEdit()) ? "form" : "details";
+		$nextview = $this->canEdit() ? "form" : "details";
 		$tmpKey = '__pk_val';
 
 		$factedlinks = $params->get('factedlinks');
@@ -3600,6 +3600,7 @@ class FabrikFEModelList extends JModelForm {
 		$opts->container = $container;
 		$opts->type = $type;
 		$opts->id = $type === 'list' ? $this->getId() : $id; //only used in tables
+		$opts->advancedSearch = $this->getAdvancedSearchOpts();
 		$opts = json_encode($opts);
 		$fscript = "
 		var filter_{$container} = new FbListFilter($opts);\n";
@@ -3707,10 +3708,9 @@ class FabrikFEModelList extends JModelForm {
 
 	function getAdvancedSearchLink()
 	{
-		FabrikHelperHTML::mocha('a.popupwin');
 		$table = $this->getTable();
 		$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=".$table->id."&amp;nextview=".JRequest::getVar('view');
-		return "<a rel=\"{id:'advanced-search-win',height:300,width:690,loadMethod:'xhr',title:'".JText::_('COM_FABRIK_ADVANCED_SEARCH')."',maximizable:1}\" href=\"$url\" class=\"popupwin\">". JText::_('COM_FABRIK_ADVANCED_SEARCH') ."</a>";
+		return "<a href=\"$url\" class=\"advanced-search-link\">". JText::_('COM_FABRIK_ADVANCED_SEARCH') ."</a>";
 	}
 
 	/**
@@ -3735,15 +3735,26 @@ class FabrikFEModelList extends JModelForm {
 			$key = FabrikString::safeColName($e->getFullName(false, false, false));
 			$arr[$key] = array('id'=>$e->_id, 'plugin'=>$e->getElement()->plugin);
 		}
-		$opts->elementMap = $arr;
-		$opts = json_encode($opts);
-		$script = "head.ready(function() {new Fabrik.AdvancedSearch($opts);});";
-		FabrikHelperHTML::addScriptDeclaration($script);
+		$opts->elementMap = $arr; 
+		//$opts = json_encode($opts);
+		return $opts;
+		
+		
+		$script = "alert('create obj');
+		new AdvancedSearch($opts);";
+		//$script = "head.ready(function() {$script});";
+		//$script = "head.ready(function() {alert('test');});";
+		$script1 = "head.ready(function(){
+		alert('hread ready test');
+		})";
+		FabrikHelperHTML::addScriptDeclaration($script1);
+		return  $script;
 	}
 
 	private function getAdvancedSearchElementList()
 	{
 		$first = false;
+		$firstFilter = false;
 		$fieldNames[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
 		$elementModels = $this->getElements();
 		foreach ($elementModels as $elementModel) {

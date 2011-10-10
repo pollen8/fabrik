@@ -91,7 +91,8 @@ var FbListFilter = new Class({
 	options: {
 		'container': '',
 		'type': 'list',
-		'id': ''
+		'id': '',
+		'advancedSearch': {}
 	},
 
 	initialize: function (options) {
@@ -147,6 +148,26 @@ var FbListFilter = new Class({
 				} else {
 					this.container.getElement('form[name=filter]').submit();
 				}
+			}.bind(this));
+		}
+		if (advancedSearch = this.container.getElement('.advanced-search-link')) {
+			advancedSearch.addEvent('click', function (e) {
+				e.stop();
+				var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=_advancedsearch&listid=" + this.options.id;
+				this.windowopts = {
+					'id': 'advanced-search-win',
+					title: Joomla.JText._('COM_FABRIK_ADVANCED_SEARCH'),
+					loadMethod: 'xhr',
+					evalScripts: true,
+					contentURL: url,
+					width: 690,
+					height: 300,
+					y: this.options.popwiny,
+					onContentLoaded: function (win) {
+						new AdvancedSearch(this.options.advancedSearch);
+					}.bind(this)
+				};
+				var mywin = Fabrik.getWindow(this.windowopts);
 			}.bind(this));
 		}
 	},

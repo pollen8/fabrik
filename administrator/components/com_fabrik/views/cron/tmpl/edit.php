@@ -16,9 +16,9 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 $fbConfig =& JComponentHelper::getParams('com_fabrik');
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js', true);
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/cron/admincron.js', true);
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/cron/admincron.js');
 
 $opts = new stdClass();
 $opts->plugin = $this->item->plugin;

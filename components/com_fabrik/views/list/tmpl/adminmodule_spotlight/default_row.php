@@ -31,5 +31,3 @@
 		</td>
 	<?php }?>
 </tr>
-<?php
-$this->_c = 1-$this->_c;?>

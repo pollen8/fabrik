@@ -17,15 +17,15 @@ JHtml::_('behavior.keepalive');
 
 $fbConfig =& JComponentHelper::getParams('com_fabrik');
 FabrikHelperHTML::mocha();
-FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js', true);
-FabrikHelperHTML::script('media/com_fabrik/js/icons.js', true);
-FabrikHelperHTML::script('media/com_fabrik/js/icongen.js', true);
-FabrikHelperHTML::script('media/com_fabrik/js/canvas.js', true);
-FabrikHelperHTML::script('media/com_fabrik/js/history.js', true);
-FabrikHelperHTML::script('media/com_fabrik/js/keynav.js', true);
-FabrikHelperHTML::script('media/com_fabrik/js/tabs.js', true);
-FabrikHelperHTML::script('media/com_fabrik/js/pages.js', true);
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/package/adminpackage.js', true);
+FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js');
+FabrikHelperHTML::script('media/com_fabrik/js/icons.js',ue);
+FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
+FabrikHelperHTML::script('media/com_fabrik/js/canvas.js');
+FabrikHelperHTML::script('media/com_fabrik/js/history.js');
+FabrikHelperHTML::script('media/com_fabrik/js/keynav.js');
+FabrikHelperHTML::script('media/com_fabrik/js/tabs.js');
+FabrikHelperHTML::script('media/com_fabrik/js/pages.js');
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/package/adminpackage.js');
 JHTML::stylesheet('media/com_fabrik/css/package.css');
 ?>
 

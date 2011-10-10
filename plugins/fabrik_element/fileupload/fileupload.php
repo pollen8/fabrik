@@ -148,14 +148,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		if ((int)$params->get('fileupload_crop', 0) == 1) {
-			//FabrikHelperHTML::script('media/com_fabrik/js/mcl-min.js', false);
+			//FabrikHelperHTML::script('media/com_fabrik/js/mcl-min.js');
 
 			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
 			'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js',
 			'media/com_fabrik/js/lib/mcl/LayerHash.js', 'media/com_fabrik/js/lib/mcl/Thread.js',
 			'media/com_fabrik/js/lib/canvas-extra.js'
 			);
-			FabrikHelperHTML::script($src, true);
+			FabrikHelperHTML::script($src);
 		}
 
 		$element = $this->getElement();

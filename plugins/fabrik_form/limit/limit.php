@@ -31,7 +31,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 
 	function onLoad( $params, &$formModel )
 	{
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js', true);
+		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 		return $this->_process($params, $formModel);
 	}
 

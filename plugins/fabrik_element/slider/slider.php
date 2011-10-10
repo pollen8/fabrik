@@ -44,28 +44,28 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 	function render($data, $repeatCounter = 0)
 	{
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'media/com_fabrik/css/slider.css');
-		$name 			= $this->getHTMLName($repeatCounter);
-		$id 				= $this->getHTMLId($repeatCounter);
-		$params 		=& $this->getParams();
-		$width = $params->get('slider_width', 250);
-		$element 		= $this->getElement();
-		$val 				= $this->getValue($data, $repeatCounter);
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$width = (int)$params->get('slider_width', 250);
+		$element = $this->getElement();
+		$val = $this->getValue($data, $repeatCounter);
 		if (!$this->_editable) {
 			return $val;
 		}
-		$imagepath = COM_FABRIK_LIVESITE.'/plugins/fabrik_element/slider/images/';
 		$labels = array_filter(explode(',', $params->get('slider-labels')));
-		$str = "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
+		$str = array();
+		$str[] = '<div id="'.$id.'">';
 
 		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/slider/images/', 'image', 'form', false);
 		$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 		if ($params->get('slider-shownone')) {
-			$str .= "<div class=\"clearslider_cont\"><img src=\"$outsrc\" style=\"cursor:pointer;padding:3px;\" alt=\"clear\" class=\"clearslider\" /></div>";
+			$str[] = '<div class="clearslider_cont"><img src="'.$outsrc.'" style="cursor:pointer;padding:3px;" alt="'.JText::_('PLG_ELEMENT_SLIDER_CLEAR').'" class="clearslider" /></div>';
 		}
-		$str .="<div class=\"slider_cont\" style=\"width:{$width}px;\">\n";
+		$str[] = '<div class="slider_cont" style="width:'.$width.'px;">';
 		if (count($labels) > 0) {
 			$spanwidth = floor(($width - (2 * count($labels))) /count($labels));
-			$str .= "<ul class=\"slider-labels\" style=\"width:{$width}px;\">\n";
+			$str[] = '<ul class="slider-labels" style="width:'.$width.'px;">';
 			for ($i=0; $i < count($labels); $i++) {
 				if ($i == ceil(floor($labels)/2)) {
 					$align = 'center';
@@ -82,15 +82,18 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 						$align = 'right';
 						break;
 				}
-				$str .= "<li style=\"width:{$spanwidth}px;text-align:$align;\">".$labels[$i]."</li>\n";
+				$str[] = '<li style="width:'.$spanwidth.'px;text-align:'.$align.';">'.$labels[$i].'</li>';
 			}
-			$str .= "</ul>\n";
+			$str[] = '</ul>';
 		}
-		$str .= "<div class=\"fabrikslider-line\" style=\"width:{$width}px\">\n<div class=\"knob\"></div>\n</div>\n";
-		$str .= "<input type=\"hidden\" class=\"fabrikinput\"  name=\"$name\" value=\"$val\"/>\n";
-		$str .= "<div class=\"slider_output\">$val</div>\n";
-		$str .= "</div>";
-		return $str;
+		$str[] = '<div class="fabrikslider-line" style="width:'.$width.'px">';
+		$str[] = '<div class="knob"></div>';
+		$str[] = '</div>';
+		$str[] = '<input type="hidden" class="fabrikinput" name="'.$name.'" value="'.$val.'" />';
+		$str[] = '<div class="slider_output">'.$val.'</div>';
+		$str[] = '</div>';
+		$str[] = '</div>';
+		return implode("\n", $str);
 	}
 
 	/**

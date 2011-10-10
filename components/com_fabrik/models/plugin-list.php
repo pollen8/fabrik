@@ -213,8 +213,8 @@ class plgFabrik_List extends FabrikPlugin
 	{
 		$this->onGetFilterKey();
 		$p = $this->onGetFilterKey_result();
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
-		FabrikHelperHTML::script('plugins/fabrik_list/'.$p.'/'.$p.'.js', true);
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
+		FabrikHelperHTML::script('plugins/fabrik_list/'.$p.'/'.$p.'.js');
 	}
 
 }

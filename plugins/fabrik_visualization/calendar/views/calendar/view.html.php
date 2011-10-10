@@ -39,7 +39,7 @@ class fabrikViewCalendar extends JView
 
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
-		FabrikHelperHTML::script('plugins/fabrik_visualization/calendar/calendar.js', true);
+		FabrikHelperHTML::script('plugins/fabrik_visualization/calendar/calendar.js');
 		$params = $model->getParams();
 
 		//Get the active menu item

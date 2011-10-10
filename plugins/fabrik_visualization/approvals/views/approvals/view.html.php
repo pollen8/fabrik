@@ -34,7 +34,7 @@ class fabrikViewApprovals extends JView
 			JHTML::stylesheet('/plugins/fabrik_visualization/approvals/views/approvals/tmpl/'.$tmpl.'/template.css');
 		}
 
-		FabrikHelperHTML::script('plugins/fabrik_visualization/approvals/approvals.js', true, "var approvals = new fbVisApprovals('approvals_".$id."');");
+		FabrikHelperHTML::script('plugins/fabrik_visualization/approvals/approvals.js', "var approvals = new fbVisApprovals('approvals_".$id."');");
 
 		$text = $this->loadTemplate();
 		$opt = JRequest::getVar('option');

@@ -69,7 +69,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 				$val->formJavascriptClass($src);
 			}
 		}
-		FabrikHelperHTML::script($srcs, true);
+		FabrikHelperHTML::script($srcs);
 		$opts = new stdClass();
 		$opts->elements = $els;
 		$opts->listid = $model->getId();

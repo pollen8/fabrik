@@ -196,9 +196,9 @@ var FloatingTips = new Class({
 			};
 			if (borderSize !== 0) {
 				arrowStyle.stroke = {
-					color: cwr.getStyle('border-color').split(' ')[0],
-					width: borderSize,
-				}
+					'color': cwr.getStyle('border-color').split(' ')[0],
+					'width': borderSize,
+				};
 			}
 			arrowStyle.translate = {x: 0, y: 0};
 			if (opos === 'bottom') {
@@ -215,14 +215,14 @@ var FloatingTips = new Class({
 					shadowY = bits[1].toInt();
 				} else {
 					bits = shadow.split(' ');
-					shadowColor = bits[0];
+					shadowColor = Browser.ie ? bits[3] : bits[0];
 					shadowX = bits[1].toInt();
 					shadowY = bits[2].toInt();
 				}
 				arrowStyle.shadow = {
-						color: shadowColor,
-						translate: {x: -1 * (shadowX + arrowStyle.translate.x), y: shadowY + arrowStyle.translate.y},
-					}
+					'color': shadowColor,
+					'translate': {x: -1 * (shadowX + arrowStyle.translate.x), y: shadowY + arrowStyle.translate.y},
+				};
 			}
 			var arrow = Fabrik.iconGen.create(icon.arrowleft, arrowStyle);
 			arrow.inject(trg);

@@ -138,7 +138,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			$file = basename($f);
 			$folder = dirname($f);
 			$folder = FabrikString::ltrimword($folder, '/') .'/';
-			FabrikHelperHTML::script($folder.$file, true);
+			FabrikHelperHTML::script($folder.$file);
 		}
 	}
 

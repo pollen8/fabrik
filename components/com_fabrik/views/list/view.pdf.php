@@ -33,7 +33,7 @@ class FabrikViewList extends JView{
 		if ($model->requiresMocha()) {
 			FabrikHelperHTML::mocha();
 		}
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);
 
@@ -41,7 +41,7 @@ class FabrikViewList extends JView{
 		// check for a custom js file and include it if it exists
 		$aJsPath = JPATH_SITE.DS."components".DS."com_fabrik".DS."views".DS."list".DS."tmpl".DS.$tmpl.DS."javascript.js";
 		if (JFile::exists($aJsPath)) {
-			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/'.$tmpl.'/javascript.js', true);
+			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/'.$tmpl.'/javascript.js');
 		}
 
 		$origRows = $this->rows;

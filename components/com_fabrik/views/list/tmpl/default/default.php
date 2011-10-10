@@ -71,7 +71,6 @@ if ($this->showFilters) {
 				</td>
 			</tr>
 <?php
-			$this->_c = 0;
 			foreach ($group as $this->_row) {
 				echo $this->loadTemplate('row');
 		 	}

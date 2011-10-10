@@ -19,9 +19,9 @@ JHtml::_('behavior.keepalive');
 
 FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js');
 
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js', true);
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/pluginmanager.js', true);
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/element/tmpl/adminelement.js', true);
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/pluginmanager.js');
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/element/tmpl/adminelement.js');
 
 JFactory::getDocument()->addScriptDeclaration($this->js);
 ?>

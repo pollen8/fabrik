@@ -272,7 +272,8 @@ class fabrikViewForm extends JView
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
 			$srcs = array('media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js');
-
+			//searching for ajax load form bug
+			//$srcs = array();
 		}
 
 		$aWYSIWYGNames = array();
@@ -304,7 +305,6 @@ class fabrikViewForm extends JView
 			}
 		}
 
-		FabrikHelperHTML::script($srcs, true);
 		//new
 		$actions = trim(implode("\n", $jsActions));
 		//end new
@@ -324,7 +324,9 @@ class fabrikViewForm extends JView
 		$this->get('CustomJsAction');
 
 		$startJs = "head.ready(function() {\n";
+		$startJs= '';
 		$endJs = "});\n";
+		$endJs = '';
 		$start_page = isset($model->sessionModel->last_page) ? (int)$model->sessionModel->last_page : 0;
 		if ($start_page !== 0) {
 			$app->enqueueMessage(JText::_('COM_FABRIK_RESTARTING_MUTLIPAGE_FORM'));
@@ -376,34 +378,33 @@ class fabrikViewForm extends JView
 
 		$lang = new stdClass();
 
-		JText::script('COM_FABRIK_VALIDATING');
-		JText::script('COM_FABRIK_SUCCESS');
-		JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
-		JText::script('COM_FABRIK_VALIDATION_ERROR');
-		JText::script('COM_FABRIK_FORM_SAVED');
-		Jtext::script('COM_FABRIK_CONFIRM_DELETE');
-
+		if (!FabrikHelperHTML::inAjaxLoadedPage()) {
+			JText::script('COM_FABRIK_VALIDATING');
+			JText::script('COM_FABRIK_SUCCESS');
+			JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
+			JText::script('COM_FABRIK_VALIDATION_ERROR');
+			JText::script('COM_FABRIK_FORM_SAVED');
+			Jtext::script('COM_FABRIK_CONFIRM_DELETE');
+		}
+		
 		//$$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
-		$str ="head.ready(function() {
-		window.$bkey = new FbForm(".$model->getId().", $opts);\n";
-		$str .= "if(typeOf(Fabrik) !== 'null') {\n";
-		$str .= "Fabrik.addBlock('$bkey', $bkey);\n";
-		$str .= "}\n
-		});";
+		$script = array();
+		//$script[] = "head.ready(function() {";
+		$script[] = "window.$bkey = new FbForm(".$model->getId().", $opts);";
+		$script[] = "if(typeOf(Fabrik) !== 'null') {";
+		$script[] = "Fabrik.addBlock('$bkey', $bkey);";
+		$script[] = "}";
+		//$script[] = "});";
 		//instantaite js objects for each element
 
 		$vstr = "\n";
 
-		$str .= "$startJs";
+		$script[] = "$startJs";
 		$groups = $model->getGroupsHiarachy();
 
-		// $$$ rob in php5.2.6 (and possibly elsewhere) $groups's elements havent been updated
-		// to contain the default value used by the element
-		//foreach ($groups as $groupModel) {
-
-		//testing this one again as Ive updated getGroupsHiarchy
-		$str .= "{$bkey}.addElements({";
+		$script[] ="{$bkey}.addElements({";
+		$gs = array();
 		foreach ($groups as $groupModel) {
 			$showGroup = $groupModel->getParams()->get('repeat_group_show_first');
 			if ($showGroup == -1 || ($showGroup == 2 && $model->_editable)) {
@@ -414,7 +415,6 @@ class fabrikViewForm extends JView
 			$elementModels = $groupModel->getPublishedElements();
 			// $$$ rob if repeatTotal is 0 we still want to add the js objects as the els are only hidden
 			$max = $groupModel->repeatTotal > 0 ? $groupModel->repeatTotal : 1;
-			$str .= $groupModel->getGroup()->id . ":[";
 			foreach ($elementModels as $elementModel) {
 				$element = $elementModel->getElement();
 				if ($element->published == 0) {
@@ -442,42 +442,51 @@ class fabrikViewForm extends JView
 					}
 				}
 			}
-			$str .= implode(",\n", $aObjs);
-			$str .= "],";
+			$gs[] = $groupModel->getGroup()->id.':['.implode(",\n", $aObjs).']';
 		}
-		$str = FabrikString::rtrimword($str, ',');
-		$str .= "});\n";
-		$str .=  $actions;
-		$str .= $vstr;
-		$str .= $endJs;
-		$str .= "function submit_form() {";
+		$script[] = implode(", ", $gs);
+		$script[] ="});";
+		$script[] = $actions;
+		$script[] =$vstr;
+		$script[] =$endJs;
+		$script[] ="function submit_form() {";
 		if (!empty($aWYSIWYGNames)) {
 			jimport('joomla.html.editor');
 			$editor =JFactory::getEditor();
-			$str .= $editor->save('label');
+			$script[] =$editor->save('label');
 
 			foreach ($aWYSIWYGNames as $parsedName) {
-				$str .= $editor->save($parsedName);
+				$script[] =$editor->save($parsedName);
 			}
 		}
-		$str .="
-			return false;
-		}
+		$script[] = "\treturn false;";
+		$script[] = "}";
 
-		function submitbutton(button) {
-			if (button==\"cancel\") {
-				document.location = '".JRoute::_('index.php?option=com_fabrik&task=viewTable&cid='.$tableId). "';
-			}
-			if (button == \"cancelShowForm\") {
-				return false;
-			}
+		$script[] = "function submitbutton(button) {";
+		$script[] = "\tif (button==\"cancel\") {";
+		$script[] = "\t\tdocument.location = '".JRoute::_('index.php?option=com_fabrik&task=viewTable&cid='.$tableId). "';";
+		$script[] = "\t}";
+		$script[] = "\tif (button == \"cancelShowForm\") {";
+		$script[] = "\t\treturn false;";
+		$script[] = "\t}";
+		$script[] = "}";
+		
+		if (FabrikHelperHTML::inAjaxLoadedPage()) {
+			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', {html: true});";
 		}
-";
-		FabrikHelperHTML::addScriptDeclaration($str);
+		//echo "<pre>";print_r($script);echo "</pre>";
+		$str = implode("\n", $script);
+		FabrikHelperHTML::script($srcs, $str);
+		//FabrikHelperHTML::addScriptDeclaration($str);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 
+	/**
+	 * Enter description here ...
+	 * @param unknown_type $form
+	 */
+	
 	protected function _loadTmplBottom(&$form)
 	{
 		$app = JFactory::getApplication();
@@ -618,14 +627,15 @@ class fabrikViewForm extends JView
 		$crypt = new JSimpleCrypt();
 		$formModel = $this->getModel();
 		$fields = array();
-		foreach ($this->get('readOnlyVals') as $key => $input) {
-			$repeatGroup = $input['repeatgroup'];
-			$isJoin = $input['join'];
-			$input = $input['data'];
+		$ro = $this->get('readOnlyVals');
+		foreach ($ro as $key => $pair) {
+			$repeatGroup = $pair['repeatgroup'];
+			$isJoin = $pair['join'];
+			$input = $pair['data'];
 			// $$$ rob not sure this is correct now as I modified the readOnlyVals structure to contain info about if its in a group
 			// and it now contains the repeated group data
 			$input = (is_array($input) && array_key_exists('value', $input)) ? $input['value'] : $input;
-
+			
 			if ($repeatGroup) {
 				$ar = array();
 				$input = (array)$input;
@@ -655,26 +665,25 @@ class fabrikViewForm extends JView
 					$input = $crypt->encrypt($input);
 				}
 			}
-
-			$key = FabrikString::rtrimword($key, "[]");
+			
+			$safeKey = FabrikString::rtrimword($key, "[]");
 			// $$$ rob - no dont do below as it will strip out join names join[x][fullname] => join
 			//$key = preg_replace("/\[(.*)\]/", '', $key);
-			if (!array_key_exists($key, $fields)) {
-				$fields[$key] = $input;
+			if (!array_key_exists($safeKey, $fields)) {
+				$fields[$safeKey] = $input;
 			} else {
-				$fields[$key] = (array)$fields[$key];
-				$fields[$key][] = $input;
+				$fields[$safeKey] = (array)$fields[$safeKey];
+				$fields[$safeKey][] = $input;
 			}
 		}
-
-		foreach ($fields as $key => $input) {
+	 	foreach ($fields as $key => $input) {
 			if (is_array($input)) {
 				for ($c = 0; $c < count($input); $c ++) {
 					$i = $input[$c];
-					$fields[] = '<input type="hidden" name="fabrik_vars[querystring]['.$key.']['.$c.']" value="' . $i . '" />';
+					$fields[$key] = '<input type="hidden" name="fabrik_vars[querystring]['.$key.']['.$c.']" value="' . $i . '" />';
 				}
 			} else {
-				$fields[] = '<input type="hidden" name="fabrik_vars[querystring]['.$key.']" value="'.$input.'" />';
+				$fields[$key] = '<input type="hidden" name="fabrik_vars[querystring]['.$key.']" value="'.$input.'" />';
 			}
 		}
 	}

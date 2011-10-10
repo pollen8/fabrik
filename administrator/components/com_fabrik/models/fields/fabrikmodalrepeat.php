@@ -108,7 +108,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			".$script."
 			});");
 			//wont work when rendering in admin module page
-			//FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true, $script);
+			//FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 		}
 		$close = "function(c){".$modalid.".onClose(c);}";
 

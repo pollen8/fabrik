@@ -31,7 +31,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 		$w = new FabrikWorker();
 
  		$document->addScript("http://api.simile-widgets.org/runway/1.0/runway-api.js");
-		FabrikHelperHTML::script($this->srcBase.'coverflow/coverflow.js', true);
+		FabrikHelperHTML::script($this->srcBase.'coverflow/coverflow.js');
 		$c = 0;
 		$images = $params->get('coverflow_image', array(), '_default', 'array');
 		$titles = $params->get('coverflow_title', array(), '_default', 'array');

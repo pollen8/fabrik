@@ -33,7 +33,8 @@ class FabrikViewList extends JView{
 		if ($model->requiresMocha()) {
 			FabrikHelperHTML::mocha();
 		}
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', true);
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
+		FabrikHelperHTML::script('media/com_fabrik/js/advanced-search.js');
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);
 
@@ -41,7 +42,7 @@ class FabrikViewList extends JView{
 		// check for a custom js file and include it if it exists
 		$aJsPath = JPATH_SITE.DS."components".DS."com_fabrik".DS."views".DS."list".DS."tmpl".DS.$tmpl.DS."javascript.js";
 		if (JFile::exists($aJsPath)) {
-			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/'.$tmpl.'/javascript.js', true);
+			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/'.$tmpl.'/javascript.js');
 		}
 
 		$origRows = $this->rows;
@@ -49,7 +50,6 @@ class FabrikViewList extends JView{
 
 		$tmpItemid = !isset($Itemid) ?  0 : $Itemid;
 
-		$this->_c = 0;
 		$this->_row = new stdClass();
 		$script = '';
 
@@ -85,9 +85,7 @@ class FabrikViewList extends JView{
 		
 		$opts->csvFields = $this->get('CsvFields');
 		$csvOpts->incfilters = 0;
-		//
-		//
-		//
+
 		$opts->data = $data;
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
@@ -132,6 +130,7 @@ class FabrikViewList extends JView{
 		JText::script('COM_FABRIK_CONFIRM_DELETE');
 		JText::script('COM_FABRIK_CSV_DOWNLOADING');
 		JText::script('COM_FABRIK_FILE_TYPE');
+		JText::script('COM_FABRIK_ADVANCED_SEARCH');
 		//keyboard short cuts
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_ADD');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_EDIT');
@@ -145,7 +144,6 @@ class FabrikViewList extends JView{
 
 		//add in plugin objects
 		$params = $model->getParams();
-		//$activePlugins = $params->get('plugins');
 		$pluginManager = FabrikWorker::getPluginManager();
 		$c = 0;
 
@@ -544,9 +542,8 @@ class FabrikViewList extends JView{
 	{
 		$id = $this->getModel()->getState('list.id');
 		$this->assign('tmpl', $this->get('tmpl'));
-		FabrikHelperHTML::script('media/com_fabrik/js/advanced-search.js');
+		//advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
 		$this->assignRef('rows', $this->get('advancedSearchRows'));
-		$this->get('AdvancedSearchOpts');
 		$action = JRequest::getVar('HTTP_REFERER', 'index.php?option=com_fabrik', 'server');
 		$this->assign('action', $action);
 		$this->assign('listid', $id);

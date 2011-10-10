@@ -321,40 +321,6 @@ EOD;
 
 	function loadCalendar()
 	{
-		//JHtml::_('behavior.calendar');
-		/*return;
-		 static $calendarLoaded;
-
-		// Only load once
-		if ($calendarLoaded) {
-		return;
-		}
-
-		$calendarLoaded = true;
-
-		$document = JFactory::getDocument();
-		// $$$ hugh - if 'raw' and we output the JS stuff, it screws things up by echo'ing stuff ahead
-		// of the raw view display() method's JSON echo
-		if ($document->getType() == 'raw') {
-		return;
-		}
-
-		$config = &JFactory::getConfig();
-		$debug = $config->getValue('config.debug');
-
-		FabrikHelperHTML::stylesheet('calendar-jos.css', 'media/system/css/', array(' title' => JText::_('green') ,' media' => 'all'));
-		// $$$ hugh - need to just use JHTML::script() for these, to avoid recursion issues if anything else
-		// includes these files, and Fabrik is using merged JS, which means page ends up with two copies,
-		// causing a "too much recursion" error (calendar.js overrides some date object functions)
-		FabrikHelperHTML::script('calendar.js', 'media/system/js/');
-		FabrikHelperHTML::script('calendar-setup.js', 'media/system/js/');
-		//JHTML::script('calendar.js', 'media/system/js/');
-		//JHTML::script('calendar-setup.js', 'media/system/js/');
-		$translation = FabrikHelperHTML::_calendartranslation();
-		if ($translation) {
-		FabrikHelperHTML::addScriptDeclaration($translation);
-		}
-		*/
 	}
 
 	/**
@@ -366,34 +332,6 @@ EOD;
 	 */
 	function _calendartranslation()
 	{
-
-		/*
-		 * 		Calendar._TT["ABOUT"] =
-		"DHTML Date/Time Selector\n" +
-		"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" +
-		"For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
-		"Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
-		"\n\n" +
-		"Date selection:\n" +
-		"- Use the \xab, \xbb buttons to select year\n" +
-		"- Use the " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " buttons to select month\n" +
-		"- Hold mouse button on any of the above buttons for faster selection.";
-		Calendar._TT["ABOUT_TIME"] = "\n\n" +
-		"Time selection:\n" +
-		"- Click on any of the time parts to increase it\n" +
-		"- or Shift-click to decrease it\n" +
-		"- or click and drag for faster selection.";
-
-		if(self::$jsscript == 0)
-		{
-		$return = 'Calendar._DN = new Array ("'.JText::_('Sunday').'", "'.JText::_('Monday').'", "'.JText::_('Tuesday').'", "'.JText::_('Wednesday').'", "'.JText::_('Thursday').'", "'.JText::_('Friday').'", "'.JText::_('Saturday').'", "'.JText::_('Sunday').'");Calendar._SDN = new Array ("'.JText::_('Sun').'", "'.JText::_('Mon').'", "'.JText::_('Tue').'", "'.JText::_('Wed').'", "'.JText::_('Thu').'", "'.JText::_('Fri').'", "'.JText::_('Sat').'", "'.JText::_('Sun').'"); Calendar._FD = 0;	Calendar._MN = new Array ("'.JText::_('January').'", "'.JText::_('February').'", "'.JText::_('March').'", "'.JText::_('April').'", "'.JText::_('May').'", "'.JText::_('June').'", "'.JText::_('July').'", "'.JText::_('August').'", "'.JText::_('September').'", "'.JText::_('October').'", "'.JText::_('November').'", "'.JText::_('December').'");	Calendar._SMN = new Array ("'.JText::_('January_short').'", "'.JText::_('February_short').'", "'.JText::_('March_short').'", "'.JText::_('April_short').'", "'.JText::_('May_short').'", "'.JText::_('June_short').'", "'.JText::_('July_short').'", "'.JText::_('August_short').'", "'.JText::_('September_short').'", "'.JText::_('October_short').'", "'.JText::_('November_short').'", "'.JText::_('December_short').'");Calendar._TT = {};Calendar._TT["INFO"] = "'.JText::_('About the calendar').'";
-		Calendar._TT["PREV_YEAR"] = "'.JText::_('Prev. year (hold for menu)').'";Calendar._TT["PREV_MONTH"] = "'.JText::_('Prev. month (hold for menu)').'";	Calendar._TT["GO_TODAY"] = "'.JText::_('Go Today').'";Calendar._TT["NEXT_MONTH"] = "'.JText::_('Next month (hold for menu)').'";Calendar._TT["NEXT_YEAR"] = "'.JText::_('Next year (hold for menu)').'";Calendar._TT["SEL_DATE"] = "'.JText::_('Select date').'";Calendar._TT["DRAG_TO_MOVE"] = "'.JText::_('Drag to move').'";Calendar._TT["PART_TODAY"] = "'.JText::_('(Today)').'";Calendar._TT["DAY_FIRST"] = "'.JText::_('Display %s first').'";Calendar._TT["WEEKEND"] = "0,6";Calendar._TT["CLOSE"] = "'.JText::_('Close').'";Calendar._TT["TODAY"] = "'.JText::_('Today').'";Calendar._TT["TIME_PART"] = "'.JText::_('(Shift-)Click or drag to change value').'";Calendar._TT["DEF_DATE_FORMAT"] = "'.JText::_('%Y-%m-%d').'"; Calendar._TT["TT_DATE_FORMAT"] = "'.JText::_('%a, %b %e').'";Calendar._TT["WK"] = "'.JText::_('wk').'";Calendar._TT["TIME"] = "'.JText::_('Time:').'";';
-		self::$jsscript = 1;
-		return $return;
-		} else {
-		return false;
-		}
-		*/
 	}
 
 	/**
@@ -417,6 +355,7 @@ EOD;
 			if (!in_array($file, self::$ajaxCssFiles)) {
 				// $$$ rob added COM_FABRIK_LIVESITE to make full path name other wise style sheets gave 404 error
 				// when loading from site with sef urls.
+				
 				echo "<script type=\"text/javascript\">var v = new Asset.css('{$file}', {});</script>\n";
 				self::$ajaxCssFiles[] = $file;
 			}
@@ -585,29 +524,11 @@ EOD;
 
 	function keepalive()
 	{
-		//test since 2.0b3 dont do anything if loading from mocha win
-		if (!FabrikHelperHTML::inAjaxLoadedPage()) {
+		//test since 2.0b3 dont do anything if loading from Fabrik win
+		if (FabrikHelperHTML::inAjaxLoadedPage()) {
 			return;
 		}
 		JHtml::_('behavior.keepalive');
-		return;
-		//end test
-
-		$config 	 = JFactory::getConfig();
-		$lifetime 	 = ( $config->getValue('lifetime') * 60000);
-		$refreshTime =  ( $lifetime <= 60000 ) ? 30000 : $lifetime - 60000;
-		//refresh time is 1 minute less than the liftime assined in the configuration.php file
-
-		$document = JFactory::getDocument();
-		$script  = '';
-		$script .= 'function keepAlive() {';
-		$script .=  '	var myAjax = new Request( "index.php", { method: "get" }).send();';
-		$script .=  '}';
-		$script .= 	' head.ready(function() {';
-		$script .= 	'{ keepAlive.periodical('.$refreshTime.'); }';
-		$script .=  ');';
-		FabrikHelperHTML::addScriptDeclaration($script);
-		return;
 	}
 
 	/**
@@ -647,7 +568,7 @@ EOD;
 
 				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
-				FabrikHelperHTML::script($src, true, "window.fireEvent('fabrik.framework.loaded');");
+				FabrikHelperHTML::script($src, "window.fireEvent('fabrik.framework.loaded');");
 			}
 			self::$framework = true;
 		}
@@ -713,11 +634,10 @@ EOD;
 	/**
 	 * wrapper for JHTML::Script()
 	 * @param mixed, string or array of files to load
-	 * @param bool should mootools be loaded
 	 * @param string optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 */
 
-	function script($file, $framework = true, $onLoad = '')
+	function script($file, $onLoad = '')
 	{
 		if (empty($file)) {
 			return;
@@ -753,12 +673,18 @@ EOD;
 				$src[] = "'".$f."'";
 			}
 		}
-		if ($onLoad !== '' && JRequest::getCmd('format') != 'raw') {
-			$onLoad = "head.ready(function() {\n " . $onLoad . "\n});\n";
-			FabrikHelperHTML::addScriptDeclaration($onLoad);
+		if ($onLoad !== '' && JRequest::getCmd('format') != 'raw' && !empty($src)) {
+			//$onLoad = "head.ready(function() {\n " . $onLoad . "\n});\n";
+			//FabrikHelperHTML::addScriptDeclaration($onLoad);
+			if (FabrikHelperHTML::inAjaxLoadedPage()) {
+				$onLoad = "(function() { " . $onLoad . "})";
+			} else {
+				$onLoad = "(function() { head.ready(function() {" . $onLoad . "})})";
+			}
+			$src[] = $onLoad;
 		}
 		if (!empty($src)) {
-			JFactory::getDocument()->addScriptDeclaration('head.js('.implode(', ', array_unique($src)).');'."\n");
+			JFactory::getDocument()->addScriptDeclaration('head.js('.implode(",\n", array_unique($src)).');'."\n");
 		}
 	}
 
@@ -772,11 +698,11 @@ EOD;
 		if ($fbConfig->get('use_mediabox', false)) {
 			$folder = 'components/com_fabrik/libs/mediabox/';
 			JHTML::stylesheet('mediabox.css', $folder . 'css/');
-			FabrikHelperHTML::script($folder.'mediabox.js', true);
+			FabrikHelperHTML::script($folder.'mediabox.js');
 		}
 		else {
 			JHTML::stylesheet('slimbox.css', 'components/com_fabrik/libs/slimbox1.64/css/');
-			FabrikHelperHTML::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js', true);
+			FabrikHelperHTML::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js');
 		}
 	}
 
@@ -811,7 +737,7 @@ EOD;
 		//force the zindex to 9999 so that it appears above the popup window.
 		//$event = (JRequest::getVar('tmpl') == 'component') ? 'load' : 'domready';
 		$tooltipInit = 'head.ready(function() {if(typeOf('.$selectorPrefix.') !== \'null\' && '.$selectorPrefix.'.getElements(\''.$selector.'\').length !== 0) {window.JTooltips = new Tips('.$selectorPrefix.'.getElements(\''.$selector.'\'), '.$options.');$$(".tool-tip").setStyle("z-index", 999999);}});';
-		FabrikHelperHTML::addScriptDeclaration($tooltipInit);
+		//FabrikHelperHTML::addScriptDeclaration($tooltipInit);
 
 		self::$tips[$sig] = true;
 		return;

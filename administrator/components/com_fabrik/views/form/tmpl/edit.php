@@ -21,9 +21,9 @@ $fbConfig =& JComponentHelper::getParams('com_fabrik');
 
 $document = JFactory::getDocument();
 
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js', true);
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/pluginmanager.js', true);
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/form/tmpl/adminform.js', true);
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/pluginmanager.js');
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/form/tmpl/adminform.js');
 
 FabrikHelperHTML::addScriptDeclaration($this->js);
 ?>

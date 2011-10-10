@@ -83,7 +83,7 @@ class JFormFieldElement extends JFormFieldList
 			$script[] = "Fabrik.model.fields.element['$this->id'] = p;";
 			$script = implode("\n", $script);
 			$fabrikelements[$this->id] = true;
-			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/element.js', true, $script);
+			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/element.js', $script);
 		}
 		$return = parent::getInput();
 		$return .= '<img style="margin-left:10px;display:none" id="'.$this->id.'_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('COM_FABRIK_LOADING'). '" />';

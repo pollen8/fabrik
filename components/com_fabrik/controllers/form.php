@@ -106,7 +106,7 @@ class FabrikControllerForm extends JController
 		
 		// Check for request forgeries
 		if ($model->spoofCheck()) {
-			JRequest::checkToken() or die('Invalid Token');
+			//JRequest::checkToken() or die('Invalid Token');
 		}
 		
 		if (!$model->validate()) {
@@ -142,16 +142,15 @@ class FabrikControllerForm extends JController
 			$view->display();
 			return;
 		}
-
+		
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
-
+		
 		$url = $this->getRedirectURL($model);
 		$msg = $this->getRedirectMessage($model);
 		// @todo -should get handed off to the json view to do this
-		if (JRequest::getInt('fabrik_ajax') === 1) {
+		if (JRequest::getInt('fabrik_ajax') == 1) {
 			//let form.js handle the redirect logic (will also send out a
-
 			echo json_encode(array(
 				'msg' => $msg,
 				'url' => $url,
@@ -179,10 +178,10 @@ class FabrikControllerForm extends JController
 	protected function getRedirectMessage($model)
 	{
 		$session = JFactory::getSession();
-		$registry	=& $session->get('registry');
+		$registry	= $session->get('registry');
 		$formdata = $session->get('com_fabrik.form.data');
 		//$$$ rob 30/03/2011 if using as a search form don't show record added message
-		if ($registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id')) {
+		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id')) {
 			$msg = $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED'));
 		} else {
 			$msg = '';

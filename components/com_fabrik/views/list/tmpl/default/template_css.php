@@ -113,7 +113,8 @@ div.calendar{
 }
 
 #listform_$c .fabrik_groupheading,
-#listform_$c .fabrik___heading{
+#listform_$c .fabrik___heading,
+.advancedSeach_$c .fabrik___heading{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
@@ -214,6 +215,11 @@ div.calendar{
 	padding: 0;
 	margin: 0;
 }
+
+.advancedSeach_$c {
+	padding:10px;
+}
+
 /*****************************************************/
 /********** default action formatting ****************/
 /*****************************************************/
@@ -263,13 +269,22 @@ div.calendar{
 #listform_$c .fabrik_row .fabrik_action li,
 #listform_$c .fabrik_action li,
 .advancedSeach_$c .fabrik_action li{
-	padding:2px 6px 0 6px;
 	border-left:1px solid #999;
 	min-height:17px;
 	margin-top:2px;
 	margin-bottom:2px;
+}
 
+#listform_$c .fabrik_row .fabrik_action li a,
+#listform_$c .fabrik_action li a,
+.advancedSeach_$c .fabrik_action li a{
+	
+	
+}
 
+#listform_$c .fabrik_buttons li a{
+	display:block;
+	padding:2px 6px 0 6px;
 }
 
 #listform_$c .fabrik_row .fabrik_action li:first-child,

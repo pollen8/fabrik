@@ -12,15 +12,15 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
-FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js', true);
+FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
 $fbConfig =& JComponentHelper::getParams('com_fabrik');
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js', true);
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/visualization/adminvisualization.js', true);
+FabrikHelperHTML::script('administrator/components/com_fabrik/views/visualization/adminvisualization.js');
 
 $opts = new stdClass();
 $opts->plugin = $this->item->plugin;
