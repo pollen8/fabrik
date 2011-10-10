@@ -15,9 +15,6 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	var $hasLabel = false;
 
-	/** should the table render functions use html to display the data */
-	var $renderWithHTML = true;
-
 	public function setId($id)
 	{
 		parent::setId($id);

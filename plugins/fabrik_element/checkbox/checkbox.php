@@ -15,9 +15,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	
 	var $hasLabel = false;
 	
-	/** should the table render functions use html to display the data */
-	var $renderWithHTML = true;
-	
 	protected $inputType = 'checkbox';
 	
 	public function setId($id)

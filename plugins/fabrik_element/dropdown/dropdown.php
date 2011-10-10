@@ -15,10 +15,6 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	var $defaults = null;
 
-	/** should the table render functions use html to display the data */
-	var $renderWithHTML = true;
-
-
 	public function setId($id)
 	{
 		parent::setId($id);
@@ -27,21 +23,6 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtodropdown', false));
 		$params->set('allowadd-onlylabel', (bool)$params->get('dd-allowadd-onlylabel', true));
 		$params->get('savenewadditions', (bool)$params->get('dd-savenewadditions', false));
-	}
-
-	/**
-	 * shows the data formatted for the csv data
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
-	 */
-
-	function renderListData_csv($data, $oAllRowsData)
-	{
-		$this->renderWithHTML = false;
-		$d = $this->renderListData($data, $oAllRowsData);
-		$this->renderWithHTML = true;
-		return $d;
 	}
 
 	/**
