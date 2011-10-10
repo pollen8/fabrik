@@ -92,10 +92,10 @@
 				default="1"
 				label="COM_FABRIK_SHOW_GROUP_LABEL"
 				description="COM_FABRIK_SHOW_GROUP_DESC">
-					<option value="0">JHIDE</option>
-					<option value="1">JSHOW</option>
-					<option value="-1">Not shown</option>
-					<option value="2">Details Only</option>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+					<option value="-1">COM_FABRIK_YES_BUT_HIDDEN</option>
+					<option value="2">COM_FABRIK_DETAILS_VIEW_ONLY</option>
 			</field>
 			
 			<field name="random"
