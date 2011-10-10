@@ -22,6 +22,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	protected $fieldDesc = 'TEXT';
 
 	protected $inputType = 'radio';
+	
+	public $renderWithHTML = true;
 
 	/**
 	 * can be overwritten by plugin class
