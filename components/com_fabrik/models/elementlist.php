@@ -23,6 +23,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	protected $inputType = 'radio';
 	
+	/** @var bool - should the table render functions use html to display the data */
 	public $renderWithHTML = true;
 
 	/**

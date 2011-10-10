@@ -1804,7 +1804,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function getJsonErrors()
 	{
-		$data = array('modified' => $model->_modifiedValidationData, 'errors' => $model->_arErrors);
+		$data = array('modified' => $this->_modifiedValidationData, 'errors' => $this->_arErrors);
 		return json_encode($data);;
 	}
 	
