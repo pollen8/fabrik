@@ -149,10 +149,10 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 			if ($element->hidden == '1') {
 				$type = "hidden";
 			}
-			$sizeInfo = " size=\"$size\"";
+			$sizeInfo = ' size="'.$size.'"';
 			if (!$this->_editable) {
 				if ($element->hidden == '1') {
-					return "<!--" . stripslashes($value) . "-->";
+					return '<!-- '.stripslashes($value).' -->';
 				} else {
 					return stripslashes($value);
 				}
