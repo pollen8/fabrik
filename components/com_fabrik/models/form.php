@@ -2722,8 +2722,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		foreach ($groups as $groupModel) {
 			if ($groupModel->canRepeat() && $groupModel->isJoin()) {
 
-				$joinModel 	=& $groupModel->getJoinModel();
-				$tblJoin 		=& $joinModel->getJoin();
+				$joinModel = $groupModel->getJoinModel();
+				$tblJoin = $joinModel->getJoin();
 				// $$$ hugh - slightly modified these lines so we don't create $this->_data['join'] if there is no
 				// join data, because that then messes up code subsequent code that checks for empty($this->_data)
 				if (!isset($this->_data['join'])) {
@@ -2731,12 +2731,15 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					return;
 				}
 				if (!array_key_exists($tblJoin->id, $this->_data['join'])) {
-					//return;
+					continue;
+				}
+				
+				if ($tblJoin->table_join == '') {
 					continue;
 				}
 
-				$jdata 			=& $this->_data['join'][$tblJoin->id];
-				$db 				=& $listModel->getDb();
+				$jdata = $this->_data['join'][$tblJoin->id];
+				$db	= $listModel->getDb();
 				$db->setQuery("DESCRIBE ".$db->nameQuote($tblJoin->table_join));
 				$fields = $db->loadObjectList();
 				foreach ($fields as $f) {
