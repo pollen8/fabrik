@@ -42,7 +42,7 @@ var FbDateTime = new Class({
 		}.bind(this));
 	},
 
-	getValue : function () {
+	getValue: function () {
 		if (!this.options.editable) {
 			return this.options.value;
 		}
@@ -52,7 +52,7 @@ var FbDateTime = new Class({
 		if (this.options.showtime === true && this.timeElement) {
 			v += ' ' + this.timeElement.get('value');
 		}
-		return (v);
+		return v;
 	},
 
 	watchButtons : function () {
@@ -106,7 +106,8 @@ var FbDateTime = new Class({
 		}
 	},
 
-	update : function (val) {
+	update: function (val) {
+		var date;
 		this.fireEvents([ 'change' ]);
 		if (typeOf(val) === 'null' || val === false) {
 			return;
@@ -117,18 +118,25 @@ var FbDateTime = new Class({
 			}
 			return;
 		}
-		// have to reget the time element as update is called (via reset) in
-		// duplicate group code
-		// before cloned() method called
-		this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
-		var bits = val.split(" ");
-		var date = bits[0];
-		var time = (bits.length > 1) ? bits[1].substring(0, 5) : '00:00';
-		var timeBits = time.split(":");
-		this.hour = timeBits[0];
-		this.minute = timeBits[1];
+		
+		if (this.options.hidden) {
+			//if hidden but form set to show time format dont split up the time as we don't 
+			// have a time field to put it into
+			date = val;
+		} else {
+			// have to reget the time element as update is called (via reset) in
+			// duplicate group code
+			// before cloned() method called
+			this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
+			var bits = val.split(" ");
+			date = bits[0];
+			var time = (bits.length > 1) ? bits[1].substring(0, 5) : '00:00';
+			var timeBits = time.split(":");
+			this.hour = timeBits[0];
+			this.minute = timeBits[1];
+			this.stateTime();
+		}
 		this.element.getElement('.fabrikinput').value = date;
-		this.stateTime();
 	},
 
 	showCalendar : function (format, e) {
@@ -254,23 +262,20 @@ var FbDateTime = new Class({
 			h.className = 'fbdateTime-minute';
 			d2.appendChild(h);
 			$(h).addEvent('click', function (e) {
-				e = new Event(e);
 				this.minute = this.formatMinute(e.target.innerHTML);
 				this.stateTime();
 				this.setActive();
 			}.bind(this));
-			h.addEvent('mouseover', function (event) {
-				var e = new Event(event);
-				var h = $(e.target);
+			h.addEvent('mouseover', function (e) {
+				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
 					e.target.setStyles({
 						background : '#cbeefb'
 					});
 				}
 			}.bind(this));
-			h.addEvent('mouseout', function (event) {
-				var e = new Event(event);
-				var h = $(e.target);
+			h.addEvent('mouseout', function (e) {
+				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
 					e.target.setStyles({
 						background : this.buttonBg
@@ -280,10 +285,9 @@ var FbDateTime = new Class({
 		}
 		d.appendChild(d2);
 
-		document.addEvent('click', function (event) {
+		document.addEvent('click', function (e) {
 			if (this.timeActive) {
-				var e = new Event(event);
-				var t = $(e.target);
+				var t = e.target;
 				if (t !== this.timeButton && t !== this.timeElement) {
 					if (!t.within(this.dropdown)) {
 						this.hideTime();
@@ -407,7 +411,9 @@ var FbDateTime = new Class({
 		this.hour = 0;
 		this.watchButtons();
 		var button = this.element.getElement('img');
-		button.id = this.element.id + "_img";
+		if (button) {
+			button.id = this.element.id + "_img";
+		}
 		var datefield = this.element.getElement('input');
 		datefield.id = this.element.id + "_cal";
 		this.options.calendarSetup.inputField = datefield.id;
@@ -417,7 +423,9 @@ var FbDateTime = new Class({
 			this.disableTyping();
 		}
 		this.addEventToCalOpts();
-		Calendar.setup(this.options.calendarSetup);
+		if (this.options.hidden !== true) {
+			Calendar.setup(this.options.calendarSetup);
+		}
 	}
 });
 

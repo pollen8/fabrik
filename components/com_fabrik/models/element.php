@@ -2924,17 +2924,17 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 	function getElementJSOptions($repeatCounter)
 	{
-		$element 							= $this->getElement();
-		$opts 								= new stdClass();
-		$data 								=& $this->_form->_data;
-		$opts->repeatCounter 	= $repeatCounter;
+		$element = $this->getElement();
+		$opts = new stdClass();
+		$data = $this->_form->_data;
+		$opts->repeatCounter = $repeatCounter;
 		if ($this->canView() && !$this->canUse()) {
-			$opts->editable 			= false;
+			$opts->editable = false;
 		} else {
-			$opts->editable 			= $this->_editable;
+			$opts->editable = $this->_editable;
 		}
-		$opts->value 					= $this->getValue($data, $repeatCounter);
-		$opts->defaultVal 		= $this->getDefaultValue($data);
+		$opts->value = $this->getValue($data, $repeatCounter);
+		$opts->defaultVal = $this->getDefaultValue($data);
 		$validationEls = array();
 		$validations = $this->getValidations();
 		if (!empty($validations) && $this->_editable) {

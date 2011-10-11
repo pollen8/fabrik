@@ -197,7 +197,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$calopts['readonly'] = 'readonly';
 		}
 
-		$str = "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
+		$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 		if (!in_array($value, $aNullDates) && FabrikWorker::isDate($value)) {
 
 			$oDate = JFactory::getDate($value);
@@ -229,16 +229,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$date = '';
 			$time = '';
 		}
-		$str .= $this->calendar($date, $name, $id ."_cal", $format, $calopts, $repeatCounter);
-		if ($params->get('date_showtime', 0)) {
+		$this->formattedDate = $date;
+		$str[] = $this->calendar($date, $name, $id ."_cal", $format, $calopts, $repeatCounter);
+		if ($params->get('date_showtime', 0) && !$element->hidden) {
 			$timelength = strlen($timeformat);
 			FabrikHelperHTML::addPath(COM_FABRIK_BASE.'plugins/fabrik_element/date/images/', 'image', 'form', false);
-			$str .= "\n<input class=\"inputbox fabrikinput timeField\" $readonly size=\"$timelength\" value=\"$time\" name=\"$timeElName\" />";
-			$str .= "\n".FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton'))
+			$str[] = '<input class="inputbox fabrikinput timeField" '.$readonly.' size="'.$timelength.'" value="'.$time.'" name="'.$timeElName.'" />';
+			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton'))
 			;
 		}
-		$str .= "</div>";
-		return $str;
+		$str .= '</div>';
+		return implode("\n", $str);
 	}
 
 	/**
@@ -567,8 +568,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$script .= 'Calendar.setup('.$opts.');'.
 		'}'. //end if id
 		"\n});"; //end domready function
-
-		FabrikHelperHTML::addScriptDeclaration($script);
+		if (!$this->getElement()->hidden) {
+			FabrikHelperHTML::addScriptDeclaration($script);
+		}
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'id' => $id.'_img'));
 		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.
 		$img;
@@ -604,8 +606,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
+		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+		$opts->hidden = (bool)$this->getElement()->hidden;
+		if ($opts->hidden) {
+			// $$$ rob 11/10/2011 if its hidden we dont want the defaultval as mysql 
+			// format as its used by form.js duplcateGroup
+			// to set the value of the date element when its repeated.
+			$opts->defaultVal = $this->formattedDate;
+		}
 		$opts->showtime = $params->get('date_showtime', 0) ? true : false;
 		$opts->timelabel = JText::_('time');
 		$opts->typing = $params->get('date_allow_typing_in_field', true);
