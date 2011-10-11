@@ -22,9 +22,15 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 class plgFabrik_FormAutofill extends plgFabrik_Form {
 
 	var $_counter = null;
-
 	
-	function onLoad(&$params, &$formModel)
+	/**
+	 * need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
+	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
+	 * @param object $params
+	 * @param object $formModel
+	 */
+	
+	function onAfterJSLoad(&$params, &$formModel)
 	{
 		FabrikHelperHTML::script('plugins/fabrik_form/autofill/autofill.js');
 		$opts = new stdClass();
@@ -64,13 +70,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		} else {
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId(JRequest::getInt('table'));
-			//$pk = $listModel->getTable()->db_primary_key;
-			//JRequest::setVar($pk, $value, 'get');
-
 		}
-		//$nav	=& $listModel->getPagination(1, 0, 1);
-		//$listModel->set('_outPutFormat', 'raw');
-		
 		$data = $listModel->getRow($value, true, true);
 		$data = array_shift($data);
 
@@ -85,13 +85,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 					$toraw = $to.'_raw';
 					$fromraw = $from.'_raw';
 					$newdata->$to = $data->$from;
-					/* if (strstr($newdata->$to, GROUPSPLITTER2)) {
-						$newdata->$to = explode(GROUPSPLITTER2, $newdata->$to);
-					} */
 					$newdata->$toraw = $data->$fromraw;
-					/* if (strstr($newdata->$toraw, GROUPSPLITTER2)) {
-						$newdata->$toraw = explode(GROUPSPLITTER2, $newdata->$toraw);
-					} */
 				}
 			} else {
 				$newdata = $data;

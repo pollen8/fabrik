@@ -29,13 +29,13 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 	 * @returns bol
 	 */
 
-	function onLoad( $params, &$formModel )
+	function onLoad($params, &$formModel)
 	{
 		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 		return $this->_process($params, $formModel);
 	}
 
-	private function _process(&$params, &$formModel )
+	private function _process(&$params, &$formModel)
 	{
 		$user = JFactory::getUser();
 		$db = FabrikWorker::getDbo();

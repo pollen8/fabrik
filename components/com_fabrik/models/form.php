@@ -624,10 +624,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function getPluginManager()
 	{
 		return FabrikWorker::getPluginManager();
-		/* if (!isset($this->_pluginManager)) {
-			$this->_pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		}
-		return $this->_pluginManager; */
 	}
 
 	/**
@@ -2140,7 +2136,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		}
 		$this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $_PROFILER->mark('formmodel render end') : null;
-		// $$$ rob return res - if its false the the form will not load
+		// $$$ rob return res - if its false the the form will not load 
 		return $res;
 	}
 
@@ -2788,7 +2784,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	 *return array plugin top html, plugin bottom html (inside <form>) plugin end (after form)
 	 */
 
-	function _getFormPluginHTML()
+	public function getFormPluginHTML()
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$formPlugins = $pluginManager->getPlugInGroup('form');

@@ -41,7 +41,7 @@ class fabrikViewForm extends JView
 			return false;
 		}
 		$this->isMultiPage = $model->isMultiPage();
-		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $model->_getFormPluginHTML();
+		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $this->get('FormPluginHTML');
 
 		$listModel = $model->getlistModel();
 		$table = $listModel->noTable() ? null : $listModel->getTable();
@@ -474,6 +474,13 @@ class fabrikViewForm extends JView
 		if (FabrikHelperHTML::inAjaxLoadedPage()) {
 			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', {html: true});";
 		}
+		
+		
+		$res = FabrikWorker::getPluginManager()->runPlugins('onJSReady', $model);
+		if (in_array(false, $res)) {
+			return false;
+		}
+		
 		//echo "<pre>";print_r($script);echo "</pre>";
 		$str = implode("\n", $script);
 		FabrikHelperHTML::script($srcs, $str);

@@ -461,7 +461,7 @@ var FbForm = new Class({
 		}
 	},
 
-	addElements : function (a) {
+	addElements: function (a) {
 		a = $H(a);
 		a.each(function (elements, gid) {
 			elements.each(function (el) {

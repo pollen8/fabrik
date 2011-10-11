@@ -351,7 +351,6 @@ class FabrikFEModelPluginmanager extends JModel{
 			$this->runPlugins($tmethod, $oRequest->getListModel(), 'list');
 		}
 		$params = $oRequest->getParams();
-		//$this->getPlugInGroup($type);
 		$return = array();
 		$usedPlugins = (array)$params->get('plugins');
 		$usedLocations = (array)$params->get('plugin_locations');

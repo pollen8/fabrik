@@ -1,7 +1,7 @@
 /**
  * @author Robert
  */
-var Autofill =  new Class({
+var Autofill = new Class({
 	
 	Implements: [Events, Options],
 	

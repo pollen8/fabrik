@@ -33,7 +33,7 @@ class fabrikViewForm extends JView
 
     $form = $model->getForm();
     $data = $model->render();
-    list($this->plugintop, $this->pluginbottom ) = $model->_getFormPluginHTML();
+    list($this->plugintop, $this->pluginbottom) = $this->get('FormPluginHTML');
 
     if (!$model->canPublish()) {
       if (!$app->isAdmin()) {
