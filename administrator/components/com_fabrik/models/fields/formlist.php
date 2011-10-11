@@ -57,7 +57,7 @@ class JFormFieldFormList extends JFormFieldList
 	
 	protected function getInput()
 	{
-		$db = FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('form_id')
 		->from('#__{package}_formgroup')
