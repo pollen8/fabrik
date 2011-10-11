@@ -51,14 +51,12 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 * @access private
-	 *
 	 * @param string data
 	 * @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
-	function _renderListData($data, $oAllRowsData)
+	protected function _renderListData($data, $oAllRowsData)
 	{
 		if (is_string($data)) {
 			$data = FabrikWorker::JSONtoData($data, true);
@@ -113,10 +111,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			$maxlength = $size;
 		}
 		$value = $this->getValue($data, $repeatCounter);
-		$sizeInfo = " size=\"$size\" maxlength=\"$maxlength\"";
+		$sizeInfo = ' size="'.$size.'" maxlength="'.$maxlength.'"';
 		if ($value == "") {
 			$value = array('label'=>'', 'link'=>'');
-		}else{
+		} else {
 			if (!is_array($value)) {
 				$value = FabrikWorker::JSONtoData($value, true);
 			}
@@ -140,26 +138,27 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				$smart_link = $params->get('link_smart_link', false);
 				if ($smart_link || $target == 'mediabox') {
 					$smarts = $this->_getSmartLinkType( $value['link']);
-					return "<a href=\"" . $value['link'] . "\" rel=\"lightbox[" . $smarts['type'] . " " . $smarts['width'] . " " . $smarts['height'] . "]\">" . $value['label'] . "</a>";
+					return '<a href="'.$value['link'].'" rel="lightbox['.$smarts['type'].' '.$smarts['width'].' '.$smarts['height'].']">'.$value['label'].'</a>';
 				} else {
-					return "<a href=\"" . $value['link']. "\" target=\"".$target."\">"  . $value['label'] . "</a>";
+					return '<a href="'.$value['link'].'" target="'.$target.'">'.$value['label'].'</a>';
 				}
 			}
 		}
-		$errorCSS  = '';
+		$errorCSS = '';
 		if (isset($this->_elementError) && $this->_elementError != '') {
 			$errorCSS = " elementErrorHighlight";
 		}
-		$labelname = FabrikString::rtrimword( $name, "[]") . '[label]';
-		$linkname = FabrikString::rtrimword( $name, "[]") . '[link]';
+		$labelname = FabrikString::rtrimword( $name, "[]").'[label]';
+		$linkname = FabrikString::rtrimword( $name, "[]").'[link]';
 
-		$str = "<div class='fabrikSubElementContainer' id='$id'>";
-		$str .= JText::_('Label') . ":<br />";
-		$str .= "<input  class=\"fabrikinput inputbox$errorCSS\" name=\"$labelname\" $sizeInfo value=\"" . $value['label'] . "\" />\n";
-		$str .= "<br />" . JText::_('URL') . ":<br />";
-		$str .= "<input class=\"fabrikinput inputbox$errorCSS\" name=\"$linkname\" $sizeInfo value=\"" . $value['link'] . "\" />\n";
-		$str .="</div>";
-		return $str;
+		$str = array();
+		$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
+		$str[] = JText::_('PLG_ELEMENT_LINK_LABEL').':<br />';
+		$str[] = '<input class="fabrikinput inputbox'.$errorCSS.'" name="'.$labelname.'" '.$sizeInfo.' value="'.$value['label'].'" />';
+		$str[] = '<br />'.JText::_('PLG_ELEMENT_LINK_URL').':<br />';
+		$str[] = '<input class="fabrikinput inputbox'.$errorCSS.'" name="'.$linkname.'" '.$sizeInfo.' value="'.$value['link'].'" />';
+		$str[] = '</div>';
+		return implode("\n", $str);
 	}
 
 	/**
@@ -178,13 +177,13 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		if (is_array($value)) {
 			$w = new FabrikWorker();
 			$link 	= $w->parseMessageForPlaceHolder($value['link']);
-			$value = "<a href=\"" . $link . "\" >" . $value['label'] . "</a>";
+			$value = '<a href="'.$link.'" >'.$value['label'].'</a>';
 		}
 		return $value;
 	}
 
 	/**
-	 *  manupulates posted form data for insertion into database
+	 * manupulates posted form data for insertion into database
 	 * @param mixed thie elements posted form data
 	 * @param array posted form data
 	 */
@@ -201,9 +200,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'bitly'.DS.'bitly.php');
 				$login = $params->get('bitly_login');
 				$key = $params->get('bitly_apikey');
-				$bitly = new bitly( $login, $key);
+				$bitly = new bitly($login, $key);
 			}
-			foreach ($val as $key=> &$v) {
+			foreach ($val as $key => &$v) {
 				if (is_array($v)) {
 
 					if ($params->get('use_bitly')) {
@@ -285,7 +284,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	 * @return unknown}_type
 	 */
 
-	function getDefaultValue($data = array() )
+	function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default)) {
 			$w = new FabrikWorker();
@@ -320,17 +319,17 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	 * @return string default value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array() )
+	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		if (!isset($this->defaults)) {
 			$this->defaults = array();
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
 			$groupModel = $this->getGroup();
-			$group			=& $groupModel->getGroup();
-			$joinid			= $group->join_id;
-			$formModel 	=& $this->_form;
-			$element		= $this->getElement();
+			$group = $groupModel->getGroup();
+			$joinid = $group->join_id;
+			$formModel = $this->getFormModel();
+			$element = $this->getElement();
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
 			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
@@ -343,7 +342,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 			if ($groupModel->isJoin()) {
 				if ($groupModel->canRepeat()) {
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) &&  array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
 						$default = $data['join'][$joinid][$name][$repeatCounter];
 					}
 				} else {
@@ -391,13 +390,13 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 *
 	 * @param string url
 	 * @return string url
 	 */
-	function _getSmartLinkType ($link) {
+	
+	protected function _getSmartLinkType($link) {
 		/* $$$ hugh - not really sure how much of this is necessary, like setting different widths
-		 * and heights for different social video sites.  I copied the numbers from the examples page
+		 * and heights for different social video sites. I copied the numbers from the examples page
 		 * for mediabox: http://iaian7.com/webcode/mediaboxAdvanced
 		 */
 		$ret = array (
@@ -494,7 +493,6 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 *
 	 * Examples of where this would be overwritten include drop downs whos "please select" value might be "-1"
 	 * @param string data posted from form to check
 	 * @param int repeat group counter
