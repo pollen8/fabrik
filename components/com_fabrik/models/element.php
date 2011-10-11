@@ -1791,13 +1791,13 @@ class plgFabrik_Element extends FabrikPlugin
 			case "range":
 				$attribs = 'class="inputbox fabrik_filter" size="1" ';
 				$default1 = is_array($default) ? $default['value'][0] : '';
-				$return 	 = JText::_('COM_FABRIK_BETWEEN') . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
+				$return = JText::_('COM_FABRIK_BETWEEN') . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
 				$default1 = is_array($default) ? $default['value'][1] : '';
-				$return 	 .= "<br /> " . JText::_('and') . ' ' . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
+				$return .= "<br /> " . JText::_('and') . ' ' . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
 				break;
 
 			case "dropdown":
-				$return 	 = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $id);
+				$return = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $id);
 				break;
 
 			case "field":
@@ -2037,10 +2037,12 @@ class plgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
+		echo "label =$label <br>";
 		$elName = FabrikString::safeColName($elName);
 		if ($label == '') {
 			$label = $this->isJoin() ? $this->getElement()->name : $elName;
 		}
+		echo "label =$label <br>";
 		if ($id == '') {
 			$id = $this->isJoin() ? 'id' : $elName;
 		}
@@ -2065,6 +2067,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
+		echo $fabrikDb->getQuery();
+		//exit;
 		$rows = $fabrikDb->loadObjectList();
 		if ($fabrikDb->getErrorNum() != 0) {
 			JError::raiseNotice(500, 'filter query error: ' . $fabrikDb->getErrorMsg());

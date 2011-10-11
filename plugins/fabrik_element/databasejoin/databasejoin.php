@@ -117,6 +117,27 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
+	* create an array of label/values which will be used to populate the elements filter dropdown
+	* returns only data found in the table you are filtering on
+	* @param unknown_type $normal
+	* @param string $tableName
+	* @param string $label
+	* @param mixed $id
+	* @param bool $incjoin
+	* @return array filter value and labels
+	*/
+	
+	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	{
+		if ($this->isJoin()) {
+			$rows = array_values($this->checkboxRows());
+		} else {
+			$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+		}
+		return $rows;
+	}
+	
+	/**
 	 * get the field name to use as the column that contains the join's label data
 	 * @param bol use step in element name
 	 * @return string join label column either returns concat statement or quotes `tablename`.`elementname`
@@ -141,7 +162,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$label = $this->getJoinLabel();
 		$joinTableName = $join->table_join_alias;
-		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName.'___'.$label :$db->nameQuote($joinTableName).'.'.$db->nameQuote($label);// "``.`$label`";
+		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName.'___'.$label : $db->nameQuote($joinTableName).'.'.$db->nameQuote($label);
 		return $this->joinLabelCols[(int)$useStep];
 	}
 
@@ -150,7 +171,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$join = $this->getJoin();
 		$label = FabrikString::shortColName($join->_params->get('join-label'));
 		if ($label == '') {
-			JError::raiseWarning(500, 'Could not find the join label for '.$this->getElement()->name.' try unlinking and saving it');
+			if (!$this->isJoin()) {
+				JError::raiseWarning(500, 'Could not find the join label for '.$this->getElement()->name.' try unlinking and saving it');
+			}
 			$label = $this->getElement()->name;
 		}
 		return $label;
@@ -697,9 +720,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return implode("\n", $html);
 	}
 
-/* 	function getDefaultValue($data = array())
-	{
-		return (array)parent::getDefaultValue();
+	/* 	function getDefaultValue($data = array())
+	 {
+	return (array)parent::getDefaultValue();
 	} */
 
 	protected function getValueFullName($opts)
@@ -936,7 +959,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
 				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-				$return .= '<input type="text" name="'.$element->id-auto-complete.'" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$defaultLabel.'" id="'.$htmlid-auto-complete.'" />';
+				$return .= '<input type="text" name="'.$element->id.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$defaultLabel.'" id="'.$htmlid.'-auto-complete" />';
 				$return .= $this->filterHiddenFields();
 				FabrikHelperHTML::autoComplete($htmlid, $element->id, 'databasejoin');
 				break;
@@ -1021,18 +1044,22 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
+		if ($this->isJoin()) {
+			$rows = array_values($this->checkboxRows());
+			return $rows;
+		}
 		/*
 		 * list of all tables that have been joined to -
 		* if duplicated then we need to join using a table alias
 		*/
-		$listModel 	=& $this->getlistModel();
-		$table 				=& $listModel->getTable();
-		$origTable 		= $table->db_table_name;
-		$fabrikDb 		=& $listModel->getDb();
-		$params 			=& $this->getParams();
-		$joinTable 	= $params->get('join_db_name');
-		$joinKey		= $this->getJoinValueColumn();
-		$joinVal 		= $this->getJoinLabelColumn();
+		$listModel = $this->getlistModel();
+		$table = $listModel->getTable();
+		$origTable = $table->db_table_name;
+		$fabrikDb = $listModel->getDb();
+		$params = $this->getParams();
+		$joinTable = $params->get('join_db_name');
+		$joinKey = $this->getJoinValueColumn();
+		$joinVal = $this->getJoinLabelColumn();
 
 		$join = $this->getJoin();
 		$joinTableName = $join->table_join_alias;
@@ -1096,66 +1123,101 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
-		# $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
-		# used in prefilter dropdown in admin to allow users to prefilter on raw db join value
+		/* $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
+		 used in prefilter dropdown in admin to allow users to prefilter on raw db join value */
 
 		$params = $this->getParams();
-	$db = JFactory::getDBO();
-	if ($type == 'querystring') {
-		//$key2 = FabrikString::safeColNameToArrayKey($key);
-		// $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
-		// by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
-		// value if it was then we want to filter on the key and not the label
-		//if (!array_key_exists($key2, JRequest::get('get'))) {
-		if (!$this->_rawFilter) {
-			$k = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_val_column'));
-		} else {
-			$k = $key;
+		$db = JFactory::getDBO();
+		if ($type == 'querystring') {
+			//$key2 = FabrikString::safeColNameToArrayKey($key);
+			// $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
+			// by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
+			// value if it was then we want to filter on the key and not the label
+			//if (!array_key_exists($key2, JRequest::get('get'))) {
+			if (!$this->_rawFilter) {
+				$k = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_val_column'));
+			} else {
+				$k = $key;
+			}
+			$this->encryptFieldName($k);
+			return "$k $condition $value";
+			//}
 		}
-		$this->encryptFieldName($k);
-		return "$k $condition $value";
-		//}
-	}
-	$this->encryptFieldName($key);
-	if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter')) {
-		//$$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
-		//$k = '`'.$params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
-		$str = "$key $condition $value";
-	} else {
+		$this->encryptFieldName($key);
+		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter')) {
+			//$$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
+			//$k = '`'.$params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
+			$str = "$key $condition $value";
+		} else {
 
-		$group = $this->getGroup();
-		if (!$group->isJoin() && $group->canRepeat()) {
+			$group = $this->getGroup();
+			if (!$group->isJoin() && $group->canRepeat()) {
 
-			$fval = $this->getElement()->filter_exact_match ? $originalValue : $value;
+				$fval = $this->getElement()->filter_exact_match ? $originalValue : $value;
 
-			$str = " ($key = $fval OR $key LIKE \"$originalValue',%\"".
+				$str = " ($key = $fval OR $key LIKE \"$originalValue',%\"".
 				" OR $key LIKE \"%:'$originalValue',%\"".
 				" OR $key LIKE \"%:'$originalValue'\"".
 				" )";
-		} else {
-			if ($this->isJoin()) {
-				$db = $this->getDb();
-				$query = $db->getQuery(true);
-				$join = $this->getJoinModel()->getJoin();
-				$jointable = $db->nameQuote($join->table_join);
-				$shortName = $db->nameQuote($this->getElement()->name);
-				$to = $db->nameQuote($params->get('join_db_name'));
-				$key = $to.'.'.$db->nameQuote($params->get('join_key_column'));
-				$query->select('parent_id, '.$shortName)
-				->from($jointable)
-				->join('LEFT', $to.' ON '.$key.' = '.$jointable.'.'.$shortName)
-				->where($to.'.title '.$condition.' '.$value);
-				$db->setQuery($query);
-				$rows = $db->loadObjectList('parent_id');
-				if (!empty($rows)) {
-					$str = $this->getListModel()->getTable()->db_primary_key." IN (".implode(', ', array_keys($rows)).")";
-				}
 			} else {
-				$str = "$key $condition $value";
+				if ($this->isJoin()) {
+					$fType = $this->getElement()->filter_type; 
+					if ($fType == 'auto-complete' || $fType == 'field') {
+						$where = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_val_column'));
+					} else {
+						$where = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_key_column'));
+					}
+					
+					$rows = $this->checkboxRows('parent_id', $condition, $value, $where);
+					$joinIds = array_keys($rows);
+					if (!empty($rows)) {
+						$str = $this->getListModel()->getTable()->db_primary_key." IN (".implode(', ', $joinIds).")";
+					}
+				} else {
+					$str = "$key $condition $value";
+				}
 			}
 		}
+		return $str;
 	}
-	return $str;
+
+	/**
+	 * helper function to get an array of data from the checkbox joined db table.
+	 * Used for working out the filter sql and filter dropdown contents
+	 * @param string $groupBy - field name to key the results on - avoids duplicates
+	 * @param string $condition - if supplied then filters the list (must then supply $where and $value)
+	 * @param string $value - if supplied then filters the list (must then supply $where and $condtion)
+	 * @param string $where - if supplied then filters the list (must then supply $value and $condtion)
+	 * @return array rows
+	 */
+	
+	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null)
+	{
+		$params = $this->getParams();
+		$db = $this->getDb();
+		$query = $db->getQuery(true);
+		$join = $this->getJoinModel()->getJoin();
+		$jointable = $db->nameQuote($join->table_join);
+		$shortName = $db->nameQuote($this->getElement()->name);
+		if (is_null($groupBy)) {
+			$groupBy = 'value';
+		}
+		$to = $db->nameQuote($params->get('join_db_name'));
+		$key = $to.'.'.$db->nameQuote($params->get('join_key_column'));
+		
+		$label = $to.'.'.$db->nameQuote($params->get('join_val_column'));
+		$query->select('parent_id, '.$shortName.' AS value, '.$label.' AS text')
+		->from($jointable)
+		->join('LEFT', $to.' ON '.$key.' = '.$jointable.'.'.$shortName);
+		if (!is_null($condition) && !is_null($value)) {
+			if (is_null($where)) {
+				$where = $label;
+			}
+			$query->where($where.' '.$condition.' '.$value);
+		}
+		$db->setQuery($query);
+		$rows = $db->loadObjectList($groupBy);
+		return $rows;
 	}
 
 	/**
