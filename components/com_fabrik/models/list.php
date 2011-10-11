@@ -684,12 +684,12 @@ class FabrikFEModelList extends JModelForm {
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = "<a class=\"fabrik__rowlink\" $editLinkAttribs href=\"$edit_link\" title=\"$editLabel\">".
+				$editLink = '<a class="fabrik__rowlink" '.$editLinkAttribs.' href="'.$edit_link.'" title="'.$editLabel.'">'.
 				FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)).
 							'<span>'.$editLabel.'</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-				$viewLink = "<a class=\"fabrik___rowlink\" $detailsLinkAttribs href=\"$link\" title=\"$viewLabel\">".
+				$viewLink = '<a class="fabrik___rowlink" '.$detailsLinkAttribs.' href="'.$link.'" title="'.$viewLabel.'">'.
 				FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel)).
 								'<span>'.$viewLabel.'</span></a>';
 
@@ -994,11 +994,11 @@ class FabrikFEModelList extends JModelForm {
 			$opts->title = JText::_('COM_FABRIK_ADD');
 			$opts->evalScripts = 1;
 			$opts = json_encode($opts);
-			$link = "<a rel=\"$opts\" href=\"$url\" class=\"popupwin\" title=\"$label\">" . $label . "</a>";
+			$link = "<a rel=\"$opts\" href=\"$url\" class=\"popupwin\" title=\"$label\">".$label."</a>";
 		} else {
-			$link =  "<a href=\"$url\" title=\"$label\">" . $label . "</a>";
+			$link = '<a href="'.$url.'" title="'.$label.'">'.$label.'</a>';
 		}
-		$url = "<span class=\"addbutton\">$link</span></a>";
+		$url = '<span class="addbutton">'.$link.'</span></a>';
 		return $url;
 	}
 
@@ -1150,7 +1150,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		//try to remove any previously entered links
 		$data = preg_replace('/<a(.*?)>|<\/a>/', '', $data);
-		$data = "<a class=\"fabrik___rowlink\" href=\"$link\">$data</a>";
+		$data = '<a class="fabrik___rowlink" href="'.$link.'">'.$data.'</a>';
 		return $data;
 	}
 
@@ -3622,7 +3622,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$v = htmlspecialchars($v, ENT_QUOTES);
 			$o = new stdClass();
-			$o->filter = "<input size=\"20\" value=\"$v\" class=\"fabrik_filter\" name=\"fabrik_list_filter_all\" />";
+			$o->filter = '<input size="20" value="'.$v.'" class="fabrik_filter" name="fabrik_list_filter_all" />';
 			if ($params->get('search-mode-advanced') == 1) {
 				$opts = array();
 				$opts[] = JHTML::_('select.option', 'all', JText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
@@ -3710,7 +3710,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$table = $this->getTable();
 		$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=".$table->id."&amp;nextview=".JRequest::getVar('view');
-		return "<a href=\"$url\" class=\"advanced-search-link\">". JText::_('COM_FABRIK_ADVANCED_SEARCH') ."</a>";
+		return '<a href="'.$url.'" class="advanced-search-link">'.JText::_('COM_FABRIK_ADVANCED_SEARCH').'</a>';
 	}
 
 	/**
@@ -3725,8 +3725,8 @@ class FabrikFEModelList extends JModelForm {
 		$opts->conditionList = FabrikHelperHTML::conditonList($this->getId(), '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
-		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', "class=\"inputbox key\" size=\"1\" ",'value', 'text');
-		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', "class=\"inputbox\" size=\"1\" ",'value', 'text');
+		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
+		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
 		$opts->counter = count($this->getadvancedSearchRows()) - 1;
 		$elements = $this->getElements();
@@ -3800,9 +3800,10 @@ class FabrikFEModelList extends JModelForm {
 		$filters = $this->getFilterArray();
 		$advanced = array();
 		for ($i = 0; $i < count(JArrayHelper::getValue($filters, 'key', array())); $i++) {
-			if ($filters['search_type'][$i] == 'advanced') {
+			$searchType = JArrayHelper::getValue($filters['search_type'], $i);
+			if (!is_null($searchType) && $searchType == 'advanced') {
 				$tmp = array();
-				foreach (array_keys($filters ) as $k) {
+				foreach (array_keys($filters) as $k) {
 					if (array_key_exists($k, $advanced)) {
 						$advanced[$k][] = ($filters[$k][$i]);
 					} else {
@@ -3830,8 +3831,8 @@ class FabrikFEModelList extends JModelForm {
 		$elementModels = $this->getElements();
 
 		list($fieldNames, $firstFilter)  = $this->getAdvancedSearchElementList();
-		$type 		= "<input type=\"hidden\" name=\"fabrik___filter[list_{$this->getId()}][search_type][]\" value=\"advanced\" />";
-		$grouped 	= "<input type=\"hidden\" name=\"fabrik___filter[list_{$this->getId()}][grouped_to_previous][]\" value=\"0\" />";
+		$type 		= '<input type="hidden" name="fabrik___filter[list_'.$this->getId().'][search_type][]" value="advanced" />';
+		$grouped 	= '<input type="hidden" name="fabrik___filter[list_'.$this->getId().'][grouped_to_previous][]" value="0" />';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
@@ -3882,7 +3883,7 @@ class FabrikFEModelList extends JModelForm {
 
 				$value = trim(trim($value, '"'), "%");
 				if ($counter == 0) {
-					$join = JText::_('COM_FABRIK_WHERE') . "<input type=\"hidden\" value=\"WHERE\" name=\"fabrik___filter[list_{$this->getState('list.id')}][join][]\" />";
+					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="fabrik___filter[list_'.$this->getState('list.id').'][join][]" />';
 				} else {
 					$join = FabrikHelperHTML::conditonList($this->getId(), $join);
 				}
@@ -3892,8 +3893,8 @@ class FabrikFEModelList extends JModelForm {
 				JRequest::setVar($lineElname, array('value' => $value));
 				$filter = & $elementModel->getFilter($counter, false);
 				JRequest::setVar($lineElname, $orig);
-				$key = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', "class=\"inputbox key\" size=\"1\" ",'value', 'text', $key);
-				$jsSel = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', "class=\"inputbox\" size=\"1\" ",'value', 'text', $jsSel);
+				$key = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
+				$jsSel = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type, 'grouped' => $grouped);
 
 				$counter ++;
@@ -3901,9 +3902,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 
 		if ($counter == 0) {
-			$join = JText::_('COM_FABRIK_WHERE') . "<input type=\"hidden\" name=\"fabrik___filter[list_{$this->getId()}][join][]\" value=\"WHERE\" />";
-			$key = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', "class=\"inputbox key\" size=\"1\" ",'value', 'text', '');
-			$jsSel = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', "class=\"inputbox\" size=\"1\" ",'value', 'text', '');
+			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="fabrik___filter[list_'.$this->getId().'][join][]" value="WHERE" />';
+			$key = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', 'class="inputbox key" size="1" ','value', 'text', '');
+			$jsSel = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', 'class="inputbox" size="1" ','value', 'text', '');
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type, 'grouped' => $grouped);
 		}
 		$this->advancedSearchRows = $rows;
@@ -3991,18 +3992,18 @@ class FabrikFEModelList extends JModelForm {
 					switch ($orderDir) {
 						case "desc":
 							$orderDir = "-";
-							$class = "class=\"fabrikorder-desc\"";
+							$class = 'class="fabrikorder-desc"';
 							$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
 							$orderDir = "desc";
-							$class = "class=\"fabrikorder-asc\"";
+							$class = 'class="fabrikorder-asc"';
 							$img = FabrikHelperHTML::image('orderasc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "":
 						case "-":
 							$orderDir = "asc";
-							$class = "class=\"fabrikorder\"";
+							$class = 'class="fabrikorder"';
 							$img = FabrikHelperHTML::image('ordernone.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 					}
@@ -4010,7 +4011,7 @@ class FabrikFEModelList extends JModelForm {
 					if ($class === '') {
 						if (in_array($key, $orderbys)) {
 							if ($item->order_dir === 'desc') {
-								$class = "class=\"fabrikorder-desc\"";
+								$class = 'class="fabrikorder-desc"';
 								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							}
 						}
@@ -5343,7 +5344,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
-		$fieldDropDown = JHTML::_('select.genericlist',  $fieldNames, $selectListName, "class=\"$className\"  size=\"1\" ", 'value', 'text', $selected);
+		$fieldDropDown = JHTML::_('select.genericlist',  $fieldNames, $selectListName, 'class="'.$className.'" size="1" ', 'value', 'text', $selected);
 		return str_replace("\n", "", $fieldDropDown);
 	}
 

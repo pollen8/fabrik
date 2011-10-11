@@ -1133,7 +1133,26 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				" OR $key LIKE \"%:'$originalValue'\"".
 				" )";
 		} else {
-			$str = "$key $condition $value";
+			if ($this->isJoin()) {
+				$db = $this->getDb();
+				$query = $db->getQuery(true);
+				$join = $this->getJoinModel()->getJoin();
+				$jointable = $db->nameQuote($join->table_join);
+				$shortName = $db->nameQuote($this->getElement()->name);
+				$to = $db->nameQuote($params->get('join_db_name'));
+				$key = $to.'.'.$db->nameQuote($params->get('join_key_column'));
+				$query->select('parent_id, '.$shortName)
+				->from($jointable)
+				->join('LEFT', $to.' ON '.$key.' = '.$jointable.'.'.$shortName)
+				->where($to.'.title '.$condition.' '.$value);
+				$db->setQuery($query);
+				$rows = $db->loadObjectList('parent_id');
+				if (!empty($rows)) {
+					$str = "id IN (".implode(', ', array_keys($rows)).")";
+				}
+			} else {
+				$str = "$key $condition $value";
+			}
 		}
 	}
 	return $str;

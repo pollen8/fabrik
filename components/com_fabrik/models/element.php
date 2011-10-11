@@ -1718,8 +1718,9 @@ class plgFabrik_Element extends FabrikPlugin
 					//if its a search all filter dont use its value.
 					//if we did the next time the filter form is submitted its value is turned
 					//from a search all filter into an element filter
-					if (JArrayHelper::getValue($filters['search_type'], $k) != 'searchall') {
-						if ($filters['search_type'][$k] != 'prefilter') {
+					$searchType = JArrayHelper::getValue($filters['search_type'], $k);
+					if (!is_null($searchType) && $searchType != 'searchall') {
+						if ($searchType != 'prefilter') {
 							$default = $filters['origvalue'][$k];
 						}
 					}
