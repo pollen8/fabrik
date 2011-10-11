@@ -4640,7 +4640,8 @@ class FabrikFEModelList extends JModelForm {
 						//force a reload of the default value with $origdata
 						unset($elementModel->defaults);
 						$default = array();
-						foreach ($repeatGroupCounts as $groupId => $repeatCount) {
+						$repeatGroupCount = $repeatGroupCounts[$groupModel->getGroup()->id];
+						for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++) {
 							$def = $elementModel->getValue($origdata, $repeatCount);
 							// $$$ rob 26/04/2011 encodeing done at the end
 							//if its a dropdown radio etc
@@ -4657,7 +4658,6 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$gcounter ++;
 		}
-
 		$copy = JRequest::getBool('Copy');
 
 		//check crypted querystring vars (encrypted in form/view.html.php ) _cryptQueryString
