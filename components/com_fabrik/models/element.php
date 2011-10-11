@@ -1760,7 +1760,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	public function getFilter($counter = 0, $normal = true)
 	{
-		$listModel $this->getListModel();
+		$listModel = $this->getListModel();
 		$formModel = $listModel->getFormModel();
 		$dbElName	= $this->getFullName(false, false, false);
 		if (!$formModel->hasElement($dbElName)) {
