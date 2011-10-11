@@ -66,7 +66,7 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 			$code = $params->get('table_php_code');
 			@eval($code);
 		} else {
-			require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_list'.DS.'scripts'.DS.$file);
+			require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_list'.DS.'php'.DS.'scripts'.DS.$file);
 		}
 		return true;
 	}

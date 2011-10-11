@@ -78,9 +78,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 		$params = $this->getParams();
 		// $$$rob - if no search form data submitted for the search element then the default
 		// selection was being applied instead
-		//echo "<pre>";print_r($data);
-		$value =  JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
-		//echo $value;exit;
+		$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 		if ($value === '') {
 			//query string for joined data
 			$value = JArrayHelper::getValue($data, $value);

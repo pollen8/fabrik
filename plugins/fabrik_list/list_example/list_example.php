@@ -73,10 +73,6 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 		return "copy records";
 	}
 
-	function button_result()
-	{
-		return "<a href=\"#\" name=\"copy\" value=\"".JText::_('COPY') . "\" class=\"listplugin\"/>";
-	}
 
 	function canUse()
 	{

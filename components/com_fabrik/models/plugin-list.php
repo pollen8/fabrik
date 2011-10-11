@@ -78,8 +78,6 @@ class plgFabrik_List extends FabrikPlugin
 		return true;
 	}
 
-
-
 	/**
 	 * onGetData method
 	 *

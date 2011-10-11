@@ -17,8 +17,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 	public $hasSubElements = true;
 
-		protected $fieldDesc = 'DATE';
-
+	protected $fieldDesc = 'DATE';
 
 	/**
 	 * draws the form element
@@ -30,7 +29,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	function render($data, $repeatCounter = 0)
 	{
 		//Jaanus: needed also here to not to show 0000-00-00 in detail view;
-		//see also 58, added  && !in_array($value, $aNullDates) (same reason).
+		//see also 58, added && !in_array($value, $aNullDates) (same reason).
 		$db = JFactory::getDbo();
 		$aNullDates = array('0000-00-000000-00-00','0000-00-00 00:00:00','0000-00-00','', $db->getNullDate());
 		$name	= $this->getHTMLName($repeatCounter);
@@ -53,7 +52,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_day_format', 'd.m.Y');
 		if (!$this->_editable) {
-			if(!in_array($value, $aNullDates)) { //avoid 0000-00-00
+			if(!in_array($value, $aNullDates)) {
+				//avoid 0000-00-00
 				list($year,$month,$day) = explode('-',$value);
 				$daydisp = str_replace($daysys,$daysimple,$day);
 				$monthdisp = str_replace($monthnumbers,$monthlabels,$month);
@@ -145,15 +145,16 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			for ($i=$date; $i > $date - $firstYear; $i--) {
 				$years[] = JHTML::_('select.option', $i);
 			}
-			$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ? " elementErrorHighlight" : '';
+			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
 			$attribs 	= 'class="fabrikinput inputbox'.$errorCSS.'"';
-			$str = "<div class=\"fabrikSubElementContainer\" id=\"$id\">";
+			$str = array();
+			$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 			//$name already suffixed with [] as element hasSubElements = true
-			$str .= JHTML::_('select.genericlist', $days, $name, $attribs, 'value', 'text', $dayvalue);
-			$str .= ' / '.JHTML::_('select.genericlist', $months, $name, $attribs, 'value', 'text', $monthvalue);
-			$str .= ' / '.JHTML::_('select.genericlist', $years, $name, $attribs, 'value', 'text', $yearvalue);
-			$str .= "</div>";
-			return $str;
+			$str[] = JHTML::_('select.genericlist', $days, $name, $attribs, 'value', 'text', $dayvalue);
+			$str[] = ' / '.JHTML::_('select.genericlist', $months, $name, $attribs, 'value', 'text', $monthvalue);
+			$str[] = ' / '.JHTML::_('select.genericlist', $years, $name, $attribs, 'value', 'text', $yearvalue);
+			$str[] = '</div>';
+			return implode("\n", $str);
 		}
 	}
 
@@ -235,7 +236,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			if (is_array($value)) {
 				$value = implode(',', $value);
 			}
-			if ($value === '') { //query string for joined data
+			if ($value === '') {
+				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name, $value);
 			}
 			//@TODO perhaps we should change this to $element->value and store $element->default as the actual default value

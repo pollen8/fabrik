@@ -33,10 +33,10 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$params 	= $this->getParams();
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$params = $this->getParams();
 		$allowAdd = $params->get('allow_frontend_addtodropdown', false);
 
 		$values = $this->getSubOptionValues();
@@ -45,10 +45,10 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$multisize = $params->get('dropdown_multisize', 3);
 		$selected = (array)$this->getValue($data, $repeatCounter);
 		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ? " elementErrorHighlight" : '';
-		$attribs 	= 'class="fabrikinput inputbox'.$errorCSS."\"";
+		$attribs 	= 'class="fabrikinput inputbox'.$errorCSS.'"';
 
 		if ($multiple == "1") {
-			$attribs 	.= " multiple=\"multiple\" size=\"$multisize\" ";
+			$attribs 	.= ' multiple="multiple" size="'.$multisize.'" ';
 		}
 		$i 					= 0;
 		$aRoValues 	= array();
@@ -91,7 +91,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$data = $this->_form->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$values = $this->getSubOptionValues();
-		$labels 	= $this->getSubOptionLabels();
+		$labels = $this->getSubOptionLabels();
 		$params = $this->getParams();
 
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -265,7 +265,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array(
-			'id' 			=> $id,
+			'id' => $id,
 			'triggerEvent' => 'change'
 		);
 		return array($ar);

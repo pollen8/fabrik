@@ -169,7 +169,8 @@ class FabrikFEModelList extends JModelForm {
 
 	function processPlugin()
 	{
-		FabrikWorker::getPluginManager()->runPlugins('process', $this, 'list');
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('process', $this, 'list');
 		return $pluginManager->_data;
 	}
 

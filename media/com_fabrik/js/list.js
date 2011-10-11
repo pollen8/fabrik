@@ -37,11 +37,8 @@ var FbListPlugin = new Class({
 	clearFilter: Function.from(),
 
 	watchButton: function () {
-		var buttons = document.getElements('.' + this.options.name);
-		if (!buttons || buttons.length === 0) {
-			return;
-		}
-		buttons.addEvent('click', function (e) {
+		//do relay for floating menus
+		document.addEvent('click:relay(.' + this.options.name + ')', function (e) {
 			e.stop();
 			var row, chx;
 			// if the row button is clicked check its associated checkbox
@@ -1166,13 +1163,13 @@ var FbListKeys = new Class({
 					break;
 
 				case Joomla.JText._('COM_FABRIK_LIST_SHORTCUTS_EDIT'):
-					console.log('edit');
+					fconsole('edit');
 					break;
 				case Joomla.JText._('COM_FABRIK_LIST_SHORTCUTS_DELETE'):
-					console.log('delete');
+					fconsole('delete');
 					break;
 				case Joomla.JText._('COM_FABRIK_LIST_SHORTCUTS_FILTER'):
-					console.log('filter');
+					fconsole('filter');
 					break;
 				}
 			}

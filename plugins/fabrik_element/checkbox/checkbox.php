@@ -93,7 +93,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$labels 	= $this->getSubOptionLabels();
 		for ($i=0; $i<count($labels); $i++) {
 			if (strtolower($labels[$i]) == strtolower($val)) {
-				$val =  $values[$i];
+				$val = $values[$i];
 				return $val;
 			}
 		}
@@ -128,7 +128,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array(
-			'id' 			=> $id,
+			'id' => $id,
 			'triggerEvent' => 'click'
 			);
 			return array($ar);
@@ -196,7 +196,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 	
 	/**
-	*  can be overwritten in add on classes
+	* can be overwritten in add on classes
 	* @param mixed thie elements posted form data
 	* @param array posted form data
 	*/

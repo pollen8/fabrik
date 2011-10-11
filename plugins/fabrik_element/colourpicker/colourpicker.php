@@ -29,7 +29,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 		$str = '';
 		foreach ($data as $d) {
-			$str .= "<div style=\"width:15px;height:15px;background-color:rgb($d)\"></div>";
+			$str .= '<div style="width:15px;height:15px;background-color:rgb('.$d.')"></div>';
 		}
 		return $str;
 	}
@@ -42,7 +42,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 
 	function storeDatabaseFormat($val, $data)
 	{
-		$val =  parent::storeDatabaseFormat($val, $data);
+		$val = parent::storeDatabaseFormat($val, $data);
 		return $val;
 	}
 
@@ -88,17 +88,16 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 	function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
-		$id 	= $this->getHTMLId($repeatCounter);
-		$trackImage  = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/colourpicker/images/track.gif';
-		$handleImage = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/colourpicker/images/handle.gif';
+		$id = $this->getHTMLId($repeatCounter);
 		$value = $this->getValue($data, $repeatCounter);
-		$str 	= "<div class=\"fabrikSubElementContainer\">";
-		$str .= '<input type="hidden" name="' .$name . '" id="'.$id.'" /><div class="colourpicker_bgoutput" style="float:left;width:20px;height:20px;border:1px solid #333333;background-color:rgb('.$value.')"></div>';
+		$str = array();
+		$str[]	= '<div class="fabrikSubElementContainer">';
+		$str[] = '<input type="hidden" name="'.$name.'" id="'.$id.'" /><div class="colourpicker_bgoutput" style="float:left;width:20px;height:20px;border:1px solid #333333;background-color:rgb('.$value.')"></div>';
 		if ($this->_editable) {
-			$str .= '<div class="colourPickerBackground colourpicker-widget" style="color:#000;z-index:99999;left:200px;background-color:#EEEEEE;border:1px solid #333333;width:390px;padding:0 0 5px 0;"></div>';
+			$str[] = '<div class="colourPickerBackground colourpicker-widget" style="color:#000;z-index:99999;left:200px;background-color:#EEEEEE;border:1px solid #333333;width:390px;padding:0 0 5px 0;"></div>';
 		}
-		$str .= "</div>";
-		return $str;
+		$str[] = '</div>';
+		return implode("\n", $str);
 	}
 
 	/**
@@ -112,8 +111,6 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		}
 		return "VARCHAR(30)";
 	}
-
-
 
 }
 ?>

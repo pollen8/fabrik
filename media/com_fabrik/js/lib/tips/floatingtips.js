@@ -82,7 +82,6 @@ var FloatingTips = new Class({
 	
 	hide: function(e, element) {
 		if (!element) {
-			console.log('no el');
 			return;
 		}
 		var t = e.target.getParent('.' + this.options.className + '-wrapper');

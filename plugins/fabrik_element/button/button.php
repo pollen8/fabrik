@@ -21,11 +21,9 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		//if(!$this->_editable) { return; }
-		//testing without rel=[] option
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
 		$str = "<input type='button' class='fabrikinput button' id='$id' name='$name' value='$element->label' />";
 		return $str;
 	}
@@ -52,9 +50,9 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 
 	function getValidationWatchElements($repeatCounter)
 	{
-		$id 			= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$ar = array(
-			'id' 			=> $id,
+			'id' => $id,
 			'triggerEvent' => 'click'
 		);
 		return array($ar);

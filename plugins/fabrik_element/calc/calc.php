@@ -78,10 +78,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$rawname = $name . "_raw";
 		if ($groupModel->isJoin()) {
 			if ($groupModel->canRepeat()) {
-				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) &&  array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
 					$default = $data['join'][$joinid][$name][$repeatCounter];
 				}else{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) &&  array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
 						$default = $data['join'][$joinid][$name][$repeatCounter];
 					}
 				}
@@ -178,7 +178,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$form = $this->getForm();
 		$d = $form->_formData;
 		$joindata = JArrayHelper::getValue($d, 'join', array());
-		$calc =  $params->get('calc_calculation');
+		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
 		$joinid = $group->getGroup()->join_id;
 
@@ -254,7 +254,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	/**
 	 * shows the data formatted for the table view
 	 * @param string data
-	 * @param object  current row's data
+	 * @param object current row's data
 	 * @return string formatted value
 	 */
 
@@ -329,23 +329,21 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
+		$str = array();
 		if ($this->canView()) {
 			if (!$this->_editable) {
 				$value = $this->_replaceWithIcons($value);
-				$str = $value;
+				$str[] = $value;
 			}
 			else {
-				$str = "<input class=\"fabrikinput inputbox\" disabled=\"disabled\" name=\"$name\" id=\"$id\" value=\"$value\" size=\"$element->width\" />\n";
+				$str[] = '<input class="fabrikinput inputbox" disabled="disabled" name="'.$name.'" id="'.$id.'" value="'.$value.'" size="'.$element->width.'" />';
 			}
 		} else {
 			/* make a hidden field instead*/
-			$str = "<input type=\"hidden\" class=\"fabrikinput\" name=\"$name\" id=\"$id\" value=\"$value\" />";
+			$str[] = '<input type="hidden" class="fabrikinput" name="'.$name.'" id="'.$id.'" value="'.$value.'" />';
 		}
-		// $$$ hugh @TODO - for some reason this doesn't pick up use of https, so causes 'insecure content' warning
-		// in some browsers.  Tried the commented out alternative below, but doesn't seem to do it either.
-		$str .= " <img src=\"" . COM_FABRIK_LIVESITE . "media/com_fabrik/images/ajax-loader.gif\" class=\"loader\" alt=\"" . JText::_('Loading') . "\" style=\"display:none;padding-left:10px;\" />";
-		//$str .= " <img src=\"" . JRoute::_("media/com_fabrik/images/ajax-loader.gif") . "\" class=\"loader\" alt=\"" . JText::_('Loading') . "\" style=\"display:none;padding-left:10px;\" />";
-		return $str;
+		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
+		return implode("\n", $str);
 	}
 
 	/**
@@ -360,7 +358,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$params = $this->getParams();
 		$calc = $params->get('calc_calculation');
 		$obs = explode(',', $params->get('calc_ajax_observe'));
-		if(preg_match_all("/{[^}\s]+}/i", $calc, $matches) !== 0){
+		if (preg_match_all("/{[^}\s]+}/i", $calc, $matches) !== 0) {
 			$matches = $matches[0];
 			$obs = array_merge($obs, $matches);
 		}
@@ -401,7 +399,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	 * @return string sum result
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'" )
+	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
@@ -422,7 +420,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	 * @return string sql statement
 	 */
 
-	protected function getAvgQuery(&$listModel, $label = "'calc'" )
+	protected function getAvgQuery(&$listModel, $label = "'calc'")
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
@@ -443,7 +441,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	 * @return string sql statement
 	 */
 
-	protected function getMedianQuery(&$listModel, $label = "'calc'" )
+	protected function getMedianQuery(&$listModel, $label = "'calc'")
 	{
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
