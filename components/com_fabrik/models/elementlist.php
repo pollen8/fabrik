@@ -129,7 +129,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return = "<input type=\"text\" name=\"$v\" class=\"inputbox fabrik_filter\" size=\"$size\" value=\"$default\" id=\"$htmlid\" />";
+				$return = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
 
 			case 'auto-complete':
@@ -137,8 +137,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return = "<input type=\"hidden\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$htmlid\"  />";
-				$return .= "<input type=\"text\" name=\"$v-auto-complete\" class=\"inputbox fabrik_filter autocomplete-trigger\" size=\"$size\" value=\"$default\" id=\"$htmlid-auto-complete\" />";
+				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
 				FabrikHelperHTML::autoComplete($htmlid, $this->getElement()->id, $element->plugin);
 				break;
 		}

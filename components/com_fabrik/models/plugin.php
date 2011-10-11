@@ -149,7 +149,7 @@ class FabrikPlugin extends JPlugin
 			}
 
 
-			$id = isset($fieldset->name) ? " id=\"$fieldset->name\"" : "";
+			$id = isset($fieldset->name) ? ' id="'.$fieldset->name.'"' : '';
 			$str .= '<fieldset class="'.$class.'"'.$id.'>';
 
 			$form->repeat = $repeat;

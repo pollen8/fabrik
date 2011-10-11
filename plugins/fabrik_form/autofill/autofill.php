@@ -72,7 +72,6 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		//$listModel->set('_outPutFormat', 'raw');
 		
 		$data = $listModel->getRow($value, true, true);
-		echo "data = ";print_r($data);
 		$data = array_shift($data);
 
 		if (empty($data)) {
