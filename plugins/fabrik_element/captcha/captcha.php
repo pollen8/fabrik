@@ -174,13 +174,9 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	function validate($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$user = JFactory::getUser();
-		if ($user->get('id') !== 0) {
-			if ($params->get('captcha-showloggedin', 0) == 0) {
-				return true;
-			}
+		if (!$this->canUse()) {
+			return true;
 		}
-
 		if ($params->get('captcha-method') == 'recaptcha') {
 			$privatekey = $params->get('recaptcha_privatekey');
 			if (JRequest::getVar('recaptcha_response_field')) {
