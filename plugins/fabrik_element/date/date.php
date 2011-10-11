@@ -235,10 +235,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$timelength = strlen($timeformat);
 			FabrikHelperHTML::addPath(COM_FABRIK_BASE.'plugins/fabrik_element/date/images/', 'image', 'form', false);
 			$str[] = '<input class="inputbox fabrikinput timeField" '.$readonly.' size="'.$timelength.'" value="'.$time.'" name="'.$timeElName.'" />';
-			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton'))
-			;
+			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton'));
 		}
-		$str .= '</div>';
+		$str[] = '</div>';
 		return implode("\n", $str);
 	}
 
