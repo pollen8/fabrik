@@ -19,7 +19,7 @@ class fabrikViewMedia extends JView
 		$model->setListIds();
 
 		if ($this->row->published == 0) {
-			JError::raiseWarning(500, JText::_('ALERTNOTAUTH'));
+			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
 		$calendar = $model->_row;

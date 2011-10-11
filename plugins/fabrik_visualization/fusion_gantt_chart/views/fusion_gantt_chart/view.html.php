@@ -21,7 +21,7 @@ class fabrikViewFusion_gantt_chart extends JView
 
 
 		if ($this->row->state == 0) {
-			JError::raiseWarning(500, JText::_('ALERTNOTAUTH'));
+			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
