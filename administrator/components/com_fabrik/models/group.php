@@ -123,7 +123,11 @@ class FabrikModelGroup extends FabModelAdmin
 		if ($return) {
 			$this->makeFormGroup($data);
 			if ($makeJoin) {
-				$return = $this->makeJoinedGroup($data);
+				// $$$ rob added this check as otherwise toggling group from repeat 
+				// to norepeat back to repeat incorrectly created a 2nd join 
+				if (!$this->joinedGroupExists($data['id'])) {
+					$return = $this->makeJoinedGroup($data);
+				}
 				//update for the is_join change
 				if ($return) {
 					$return = parent::save($data);
@@ -135,9 +139,22 @@ class FabrikModelGroup extends FabModelAdmin
 		}
 		return $return;
 	}
+	
+	/**
+	 * check if a group id has an associated join already created
+	 * @param int group id
+	 * @return boolean
+	 */
+	
+	protected function joinedGroupExists($id)
+	{
+		$item = FabTable::getInstance('Group', 'FabrikTable');
+		$item->load($id);
+		return $item->join_id == '' ? false : true;
+	}
 
 	/**
-	 *clears old form group entries if found and adds new ones
+	 * clears old form group entries if found and adds new ones
 	 * @param array $data
 	 */
 
