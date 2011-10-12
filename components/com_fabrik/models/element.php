@@ -2037,12 +2037,10 @@ class plgFabrik_Element extends FabrikPlugin
 				}
 			}
 		}
-		echo "label =$label <br>";
 		$elName = FabrikString::safeColName($elName);
 		if ($label == '') {
 			$label = $this->isJoin() ? $this->getElement()->name : $elName;
 		}
-		echo "label =$label <br>";
 		if ($id == '') {
 			$id = $this->isJoin() ? 'id' : $elName;
 		}
@@ -2067,8 +2065,6 @@ class plgFabrik_Element extends FabrikPlugin
 
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
-		echo $fabrikDb->getQuery();
-		//exit;
 		$rows = $fabrikDb->loadObjectList();
 		if ($fabrikDb->getErrorNum() != 0) {
 			JError::raiseNotice(500, 'filter query error: ' . $fabrikDb->getErrorMsg());
