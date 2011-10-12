@@ -429,7 +429,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// the 'apply where beneath' and/or 'apply where when' feature, any custom ordering will not be applied
 		// if the 'where' is not being applied, which probably isn't what they want.
 		if (!JString::stristr($where, 'order by')) {
-			$sql .= "ORDER BY $orderby ASC ";
+			if (isset($this->orderBy)) {
+				$sql .= $this->orderBy;
+				unset($this->orderBy);
+			} else {
+				$sql .= "ORDER BY $orderby ASC ";
+			}
 		}
 		$this->_sql[$incWhere] = $sql;
 		return $this->_sql[$incWhere];
@@ -445,32 +450,22 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		if ($this->mustApplyWhere($whereaccess, $element->id) && $incWhere) {
 			$where = $params->get('database_join_where_sql');
-		}else {
+		} else {
 			$where = '';
 		}
-
+		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of _buildQuery()
+		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches)) {
+			$this->orderBy = $matches[0];
+			$where = str_replace($this->orderBy, '', $where);
+		}
 		if (!empty($this->_autocomplete_where)) {
 			$where .= stristr($where, 'WHERE') ? " AND ".$this->_autocomplete_where : ' WHERE '.$this->_autocomplete_where;
 		}
 		if ($where == '') {
 			return $where;
 		}
-
-		// $$$ hugh - this is screwing up queries with elements that contains the word "order"
-		// added the BY, which I think will fix it and do the same thing
-		//$order = preg_match('/(ORDER)(.*)/i', $where, $matches);
-		$order = preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches);
-		if ($order) {
-			$where = str_replace($matches[0], '', $where);
-		}
-		//$$$ rob think the autocomplete where should be applied regardless of access
-
-		if ($order) {
-			$where .= ' '.$matches[0];
-		}
 		$join = $this->getJoin();
 		$where = str_replace("{thistable}", $join->table_join_alias, $where);
-
 		$w = new FabrikWorker();
 		$data = is_array($data) ? $data : array();
 		$where = $w->parseMessageForPlaceHolder($where, $data, false);
