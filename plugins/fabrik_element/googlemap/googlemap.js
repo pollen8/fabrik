@@ -70,8 +70,8 @@ var FbGoogleMap = new Class({
 	},
 
 	getValue: function () {
-		if ($type(this.field) !== false) {
-			return this.field.getValue();
+		if (typeOf(this.field) !== 'null') {
+			return this.field.get('value');
 		}
 		return false;
 	},
@@ -113,7 +113,6 @@ var FbGoogleMap = new Class({
 						style: zoomControlStyle
 					}
 				};
-			console.log(mapOpts);
 			this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
 			
 			var point = new google.maps.LatLng(this.options.lat, this.options.lon);
