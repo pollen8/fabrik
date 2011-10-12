@@ -10,8 +10,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-
-
 if (!defined('COM_FABRIK_FRONTEND')) {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
