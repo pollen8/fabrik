@@ -1900,10 +1900,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	protected function reapplyFilterLabels(&$rows)
 	{
-		$element 	= $this->getElement();
+		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
-
 		foreach ($rows as &$row) {
 			$k = array_search($row->value, $values);
 			if ($k !== false) {

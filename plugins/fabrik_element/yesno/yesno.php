@@ -98,6 +98,28 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	{
 		return array(JText::_('JNO'), JText::_('JYES'));
 	}
+	
+	/**
+	* run after unmergeFilterSplits to ensure filter dropdown labels are correct
+	* @param array filter options
+	* @return null
+	*/
+	
+	protected function reapplyFilterLabels(&$rows)
+	{
+		$element = $this->getElement();
+		$values = $this->getSubOptionValues();
+		$labels = $this->getSubOptionLabels();
+		foreach ($rows as &$row) {
+			if ($row->value !== '') {
+				$k = array_search($row->value, $values);
+				if ($k !== false) {
+					$row->text = $labels[$k];
+				}
+			}
+		}
+		$rows = array_values($rows);
+	}
 
 	/**
 	 * format the read only output for the page
@@ -172,7 +194,10 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true )
 	{
-		$opt = array(JHTML::_('select.option', '', $this->filterSelectLabel()));
+		$o = new stdClass();
+		$o->value = '';
+		$o->text = $this->filterSelectLabel();
+		$opt = array($o);
 		$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
 		foreach ($rows as &$row) {
 			if ($row->value == 1) { $row->text = JText::_('JYES'); }
