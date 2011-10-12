@@ -19,8 +19,10 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 
 	function getChart()
 	{
-		// Include PHP Class
-		include(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'visualization'.DS.'fusion_gantt_chart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
+		// Include PHP Class#
+		if (!class_exists('FusionCharts')) { 
+			require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusion_gantt_chart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
+		}
 		// Add JS to page header
 		$document = JFactory::getDocument();
 		$document->addScript($this->srcBase."fusion_gantt_chart/lib/FCCharts/FusionCharts.js");
@@ -46,6 +48,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$listid = $params->get('fusion_gantt_chart_table');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
+		$formModel = $listModel->getFormModel();
 		$db = $listModel->getDB();
 		$table = $listModel->getTable()->db_table_name;
 		$process = $params->get('fusion_gantt_chart_process');
@@ -61,26 +64,18 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$connector = $params->get('fusion_gantt_chart_connector');
 		$connectorraw = $connector."_raw";
 		$fields = array();
-
-		$fields[] = FabrikString::safeColName($process)." AS " . $db->nameQuote($process);
-		$fields[] = FabrikString::safeColName($start)." AS " . $db->nameQuote($start);
-		$fields[] = FabrikString::safeColName($end)." AS " . $db->nameQuote($end);
-		$fields[] = FabrikString::safeColName($label)." AS " . $db->nameQuote($label);
-		if ($hover !== '') {
-			$fields[] = FabrikString::safeColName($hover)." AS " . $db->nameQuote($hover);
+		$names = array();
+		$uses = array($process, $start, $end, $label, $hover, $milestone, $connector);
+		foreach ($uses as $use) {
+			if ($use !== '') {
+				$formModel->getElement($use)->getAsField_html($fields, $names);
+			}
 		}
-		if ($milestone !== '') {
-			$fields[] = FabrikString::safeColName($milestone)." AS " . $db->nameQuote($milestone);
-		}
-		if ($connector !== '') {
-			$fields[] = FabrikString::safeColName($connector)." AS " . $db->nameQuote($connector);
-		}
-
+		
 		$listModel->asfields = $fields;
 		$nav = $listModel->getPagination(0, 0, 0);
 		$data = $listModel->getData();
 		$data = $data[0];
-
 		$mindate = null;
 		$maxdate = null;
 		$usedProcesses = array();
@@ -91,7 +86,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 
 		foreach ($data as $d) {
 			$hovertext = $hover == '' ? '' : $d->$hover;
-			$processid = $d->$processraw;
+			$processid = $process == '' ? 0 : $d->$processraw;
 			$startdate = JFactory::getDate($d->$startraw);
 			$enddate = JFactory::getDate($d->$endraw);
 			$strParam = "start=".$startdate->toFormat('%Y/%m/%d').";end=".$enddate->toFormat('%Y/%m/%d').";processId={$processid};id={$d->__pk_val};color=99cc00;alpha=60;topPadding=19;hoverText={$hovertext};";
@@ -106,7 +101,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 				$FC->addGanttConnector($d->$connectorraw, $d->__pk_val, "color=99cc00;thickness=2;");
 			}
 			#apply processes
-			if (!in_array($processid, $usedProcesses)) {
+			if (!in_array($processid, $usedProcesses) && $process !== '') {
 				$usedProcesses[] = $processid;
 				$FC->addGanttProcess($FC->encodeSpecialChars($d->$process), "id={$processid};");
 			}
