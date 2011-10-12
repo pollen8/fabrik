@@ -89,7 +89,11 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 			$processid = $process == '' ? 0 : $d->$processraw;
 			$startdate = JFactory::getDate($d->$startraw);
 			$enddate = JFactory::getDate($d->$endraw);
-			$strParam = "start=".$startdate->toFormat('%Y/%m/%d').";end=".$enddate->toFormat('%Y/%m/%d').";processId={$processid};id={$d->__pk_val};color=99cc00;alpha=60;topPadding=19;hoverText={$hovertext};";
+			$strParam = "start=".$startdate->toFormat('%Y/%m/%d').";end=".$enddate->toFormat('%Y/%m/%d').";";
+			if ($process !== '') {
+				$strParam = "processId={$processid};";
+			}
+			$strParam = "id={$d->__pk_val};color=99cc00;alpha=60;topPadding=19;hoverText={$hovertext};";
 			$strParam .="link={$d->fabrik_view_url};";
 			$FC->addGanttTask($FC->encodeSpecialChars($d->$label), $strParam);
 
