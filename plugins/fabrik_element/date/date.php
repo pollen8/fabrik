@@ -1528,5 +1528,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		return $month;
 	}
 
+	/**
+	* load a new set of default properites and params for the element
+	* @return object element (id = 0)
+	*/
+	
+	public function getDefaultProperties()
+	{
+		$item = parent::getDefaultProperties();
+		$item->hidden = 1;
+		return $item;
+	}
 }
 ?>

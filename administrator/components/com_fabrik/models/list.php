@@ -531,7 +531,6 @@ class FabrikModelList extends FabModelAdmin
 		}
 
 		$filter	= new JFilterInput(null, null, 1, 1);
-		//$introduction = JRequest::getVar('introduction', '', 'post', 'string', JREQUEST_ALLOWRAW);
 		$introduction = JArrayHelper::getValue(JRequest::getVar('jform', array(), 'post', 'array', JREQUEST_ALLOWRAW), 'introduction');
 
 		$row->introduction = $filter->clean($introduction);
@@ -1799,7 +1798,8 @@ class FabrikModelList extends FabModelAdmin
 		$element = $pluginMananger->loadPlugIn($data['plugin'], 'element');
 		$item = $element->getDefaultProperties();
 		$item->id = null;
-		$item->name = $item->label = $name;
+		$item->name = $name;
+		$item->label = str_replace('_', ' ', $name);
 		$item->bind($data);
 		if (!$item->store()) {
 			JError::raiseWarning(500, $item->getError());
