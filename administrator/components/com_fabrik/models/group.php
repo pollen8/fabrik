@@ -166,7 +166,7 @@ class FabrikModelGroup extends FabModelAdmin
 		$formid = (int)$data['form'];
 		$id = (int)$data['id'];
 		$item = FabTable::getInstance('FormGroup', 'FabrikTable');
-		$item->load(array('form_id' => $formid, 'group_id' => id));
+		$item->load(array('form_id' => $formid, 'group_id' => $id));
 		if ($item->id == '') {
 			//get max group order
 			$db = FabrikWorker::getDbo(true);
