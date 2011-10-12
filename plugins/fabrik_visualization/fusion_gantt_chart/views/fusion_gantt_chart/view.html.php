@@ -19,8 +19,7 @@ class fabrikViewFusion_gantt_chart extends JView
 		$this->row = $model->getVisualization();
 		$model->setListIds();
 
-
-		if ($this->row->state == 0) {
+		if ($this->row->published == 0) {  
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
