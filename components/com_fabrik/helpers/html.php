@@ -799,30 +799,31 @@ EOD;
 	function folderAjaxSelect($folders, $path = 'images')
 	{
 		$str = array();
-		$str[] = "<a href=\"#\" class=\"toggle\" title=\"".JText::_('COM_FABRIK_BROWSE_FOLDERS')."\">";
-		$str[] = "<img src=\"".COM_FABRIK_LIVESITE."/media/com_fabrik/images/control_play.png\" alt=\"".JText::_('COM_FABRIK_BROWSE_FOLDERS')."\"/>";
-		$str[] = "</a>";
-		$str[] = "<div class=\"folderselect-container\">";
-		$str[] = "<span class=\"breadcrumbs\"><a href=\"#\">" . JText::_('HOME') . "</a><span> / </span>";
+		$str[] = '<a href="#" class="toggle" title="'.JText::_('COM_FABRIK_BROWSE_FOLDERS').'">';
+		//$str[] = FabrikHelperHTML::image('control_play.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_BROWSE_FOLDERS')));
+		$str[] = FabrikHelperHTML::image('orderneutral.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_BROWSE_FOLDERS')));
+		$str[] = '</a>';
+		$str[] = '<div class="folderselect-container">';
+		$str[] = '<span class="breadcrumbs"><a href="#">'.JText::_('HOME').'</a><span> / </span>';
 		$i = 1;
 		$path = explode("/", $path);
 		foreach ($path as $p) {
-			$str[] = "<a href=\"#\" class=\"crumb".$i."\">" . $p . "</a><span> / </span>";
+			$str[] = '<a href="#" class="crumb'.$i.'">'.$p.'</a><span> / </span>';
 			$i ++;
 		}
-		$str[] = "</span>";
-		$str[] = "<ul class=\"folderselect\">";
+		$str[] = '</span>';
+		$str[] = '<ul class="folderselect">';
 		settype($folders, 'array');
 		foreach ($folders as $folder) {
 			if (trim($folder) != '') {
-				$str[] = "<li class=\"fileupload_folder\"><a href=\"#\">$folder</a></li>";
+				$str[] = '<li class="fileupload_folder"><a href="#">'.$folder.'</a></li>';
 			}
 		}
 		//for html validation
 		if (empty($folder)) {
-			$str[] =  "<li></li>";
+			$str[] =  '<li></li>';
 		}
-		$str[] = "</ul></div>";
+		$str[] = '</ul></div>';
 		return implode("\n", $str);
 	}
 
