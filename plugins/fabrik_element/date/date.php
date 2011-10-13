@@ -658,12 +658,12 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function getValidationWatchElements($repeatCounter)
 	{
-		$params 	=& $this->getParams();
-		$return		= array();
-		$elName 	= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$return	= array();
+		$elName = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$return[] = array(
-			'id' 			=> $id,
+			'id' => $id,
 			'triggerEvent' => 'blur'
 			);
 			return $return;
@@ -726,10 +726,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
 			$groupModel = $this->getGroup();
-			$group			=& $groupModel->getGroup();
-			$joinid			= $group->join_id;
-			$element		=& $this->getElement();
-			$params			=& $this->getParams();
+			$group = $groupModel->getGroup();
+			$joinid	= $group->join_id;
+			$element = $this->getElement();
+			$params	= $this->getParams();
 			$store_as_local = (int)$params->get('date_store_as_local', 0);
 			if ($params->get('date_alwaystoday', false)) {
 				//$value = JFactory::getDate()->toMySQL(false);
@@ -909,30 +909,30 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	 * Get the table filter for the element
-	 * @param int repeat group counter
+	 * Get the list filter for the element
+	 * @param int filter order
 	 * @param bol do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 * @return string filter html
 	 */
 
-	function &getFilter($counter, $normal = true)
+	function getFilter($counter, $normal = true)
 	{
-		$params 		=& $this->getParams();
+		$params = $this->getParams();
 		$listModel = $this->getListModel();
-		$table 			=& $listModel->getTable();
-		$element 		= $this->getElement();
-		$origTable 	= $table->db_table_name;
-		$fabrikDb 	=& $listModel->getDb();
-		$elName 			= $this->getFullName(false, true, false);
-		$elName2 		= $this->getFullName(false, false, false);
+		$table = $listModel->getTable();
+		$element = $this->getElement();
+		$origTable = $table->db_table_name;
+		$fabrikDb = $listModel->getDb();
+		$elName = $this->getFullName(false, true, false);
+		$elName2 = $this->getFullName(false, false, false);
 
-		$ids 			= $listModel->getColumnData($elName2);
-		$v = 'fabrik___filter[list_'.$table->id.'][value]['.$counter.']';
-
+		$ids = $listModel->getColumnData($elName2);
+		//$v = 'fabrik___filter[list_'.$table->id.'][value]['.$counter.']';
+		$v = 'fabrik___filter[list_'.$table->id.'][value]';
+		$v .= ($normal) ? '['.$counter.']' : '[]';
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
-
 		$format = $params->get('date_table_format', '%Y-%m-%d');
 
 		$fromTable = $origTable;
@@ -968,6 +968,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$rows = $this->filterValueList($normal);
 		}
 		$calOpts = array('class'=>'inputbox fabrik_filter', 'maxlength'=>'19', 'size'=>16);
+		$return = array();
 		switch ($element->filter_type)
 		{
 			case "range":
@@ -976,10 +977,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				if (empty($default)) {
 					$default = array('', '');
 				}
-				$v = 'fabrik___filter[table_'.$table->id.'][value]['.$counter.']';
-				$return = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN') .
+				//$v = 'fabrik___filter[list_'.$table->id.'][value]['.$counter.']';
+				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN') .
 				$this->calendar($default[0], $v.'[0]', $this->getHTMLId()."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
-				$return .= "<br />".JText::_('COM_FABRIK_DATE_RANGE_AND') .
+				$return[] = '<br />'.JText::_('COM_FABRIK_DATE_RANGE_AND') .
 				$this->calendar($default[1], $v.'[1]', $this->getHTMLId()."_filter_range_1".JRequest::getVar('task'), $format, $calOpts);
 
 				break;
@@ -1010,7 +1011,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
 
-				$return = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text', $default, $htmlid."_filter_range_0");
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text', $default, $htmlid."_filter_range_0");
 				break;
 			default:
 			case "field":
@@ -1023,7 +1024,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 				$default = htmlspecialchars($default);
 
-				$return = $this->calendar($default, $v, $htmlid."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
+				$return[] = $this->calendar($default, $v, $htmlid."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
 				break;
 
 			case 'auto-complete':
@@ -1031,8 +1032,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return = "<input type=\"hidden\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$htmlid\" />";
-				$return .= "<input type=\"text\" name=\"$v-auto-complete\" class=\"inputbox fabrik_filter autocomplete-trigger\" value=\"$default\" id=\"$htmlid-auto-complete\" />";
+				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+				$return[] = '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
 				$autoId = $htmlid;
 				if (!$normal) {
 					$autoId = '#advanced-search-table .autocomplete-trigger';
@@ -1041,11 +1042,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				break;
 		}
 		if ($normal) {
-			$return .= $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName);
 		} else {
-			$return .= $this->getAdvancedFilterHiddenFields();
+			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
-		return $return;
+		return implode("\n", $return);
 	}
 
 	/**
@@ -1099,11 +1100,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			return;
 		}
 		$params = $this->getParams();
-		$format 	= $params->get('date_form_format', '%Y-%m-%d %H:%S:%I');
+		$format = $params->get('date_form_format', '%Y-%m-%d %H:%S:%I');
 		//go through data and turn any dates into unix timestamps
-		for ($j=0; $j < count($data); $j++) {
+		for ($j = 0; $j < count($data); $j++) {
 			$orig_data = $data[$j][$key];
-			$date 	= JFactory::getDate($data[$j][$key]);
+			$date = JFactory::getDate($data[$j][$key]);
 			$data[$j][$key] = $date->toFormat($format, true);
 			// $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
 			// which we then change to 1999 using a tablecsv import script (don't ask!). But of course JDate doesn't
