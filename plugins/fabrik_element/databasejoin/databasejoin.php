@@ -777,11 +777,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($this->encryptMe()) {
 			return 'BLOB';
 		}
-		$table = $this->getlistModel();
-		$db = $table->getDb();
-
+		$db = $this->getDb();
 		//lets see if we can get the field type of the field we are joining to
 		$join = FabTable::getInstance('Join', 'FabrikTable');
+		echo "this id = $this->_id <br>";
 		if ((int)$this->_id !== 0) {
 			$join->load(array('element_id' => $this->_id));
 			if($join->table_join == '') {
@@ -794,8 +793,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$joinKey = $params->get('join_key_column');
 		}
 
-		$db->setQuery("DESCRIBE $dbName");
+		$db->setQuery("DESCRIBE ".$db->nameQuote($dbName));
 		$fields = $db->loadObjectList();
+		if (!$fields) {
+			echo $db->getErrorMsg();
+		}
 		if (is_array($fields)) {
 			foreach ($fields as $field) {
 				if ($field->Field == $joinKey) {
