@@ -425,9 +425,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 								$whereval = $data[$watch_raw];
 							}
 							else {
-								// $$$ hugh - if watched element has no value, we have been selecting all rows from CDD table
-								// but should probably select none.
-								$whereval = '';
+								// $$$ hugh ::sigh:: might be coming in via swapLabelsForvalues in pre_process phase
+								// and join array in data will have been flattened.  So try regular element name for watch.
+								$no_join_watch_raw = $elementModel->getFullName(false, true, false) . "_raw";
+								if (isset($data[$no_join_watch_raw])) {
+									$whereval = $data[$no_join_watch_raw];
+								}
+								else {
+									// $$$ hugh - if watched element has no value, we have been selecting all rows from CDD table
+									// but should probably select none.
+									$whereval = '';
+								}
 							}
 						}
 					}
