@@ -380,7 +380,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if ($value == '') {
+		if ((is_array($value) && empty($value)) || trim($value) == '') {
 			return '';
 		}
 		# $$$ hugh - need to convert to database format so we GMT-ified date
