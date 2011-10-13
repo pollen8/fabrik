@@ -1577,6 +1577,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 		}
 	}
+	
+	public function failedValidation()
+	{
+		return empty($this->_arErrors) ? false : true;
+	}
 
 	/**
 	 * validate the form

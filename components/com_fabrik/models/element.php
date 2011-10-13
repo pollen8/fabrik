@@ -1216,9 +1216,6 @@ class plgFabrik_Element extends FabrikPlugin
 				$element->element_raw = $element->value;
 			}
 		}
-		// @TODO - shouldn't we be using the dataConsideredEmpty method here?
-		// As not all elements are actually empty strings when "empty"?
-		//if ($element->element_ro == '') {
 		if ($this->dataConsideredEmpty($element->element_ro, $c)) {
 			$element->containerClass .= ' fabrikDataEmpty';
 

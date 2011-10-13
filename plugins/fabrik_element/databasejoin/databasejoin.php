@@ -634,7 +634,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					break;
 				case 'checkbox':
 					$idname = $this->getFullName(false, true, false)."_id";
-					$defaults = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+					$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 					// $$$ rob 24/05/2011 - add options per row
 					$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 					$html[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
@@ -715,15 +715,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return implode("\n", $html);
 	}
 
-	/* 	function getDefaultValue($data = array())
-	 {
-	return (array)parent::getDefaultValue();
-	} */
-
 	protected function getValueFullName($opts)
 	{
 		$name = $this->getFullName(false, true, false);
-		if (JArrayHelper::getValue($opts, 'valueFormat', 'raw') == 'raw') {
+		$params = $this->getParams();
+		if ($params->get('database_join_display_type') !== 'checkbox' && JArrayHelper::getValue($opts, 'valueFormat', 'raw') == 'raw') {
 			$name .= "_raw";
 		}
 		return $name;
