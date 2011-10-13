@@ -83,7 +83,7 @@ Fabrik.Window = new Class({
 			draggerC.adopt(dragger);
 		}
 		var label = new Element('span', {'class': hclass}).set('text', this.options.title);
-		this.handle = new Element('div', {'class': 'handle'}).adopt([label, del]);
+		this.handle = this.getHandle().adopt([label, del]);
 		
 		var bottomBarHeight = 15;
 		var topBarHeight = 15;
@@ -123,6 +123,10 @@ Fabrik.Window = new Class({
 			//bad idea - means opening windows are hidden if other code calls another window to hide
 			//this.window.hide();
 		}.bind(this));
+	},
+	
+	getHandle: function () {
+		return new Element('div', {'class': 'handle draggable'});
 	},
 	
 	loadContent: function () {
@@ -207,6 +211,10 @@ Fabrik.Window = new Class({
 		this.drawWindow();
 	},
 	
+	center: function () {
+		this.window.makeCenter();
+	},
+	
 	close: function (e)
 	{
 		if (e) {
@@ -227,7 +235,11 @@ Fabrik.Window = new Class({
 
 Fabrik.Modal = new Class({
 	Extends: Fabrik.Window,
-	modal: true
+	modal: true,
+	
+	getHandle: function () {
+		return new Element('div', {'class': 'handle'});
+	}
 });
 
 Fabrik.RedirectWindow = new Class({

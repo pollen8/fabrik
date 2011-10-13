@@ -185,7 +185,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$oFiles = new stdClass();
 		$iCounter = 0;
 		for ($x = 0; $x < count($value); $x++) {
-			if ($value[$x] !== '') {
+			if (array_key_exists($x, $value) && $value[$x] !== '') {
 				if (is_array($value[$x])) {
 					//from failed validation
 					foreach ($value[$x]['id'] as $tkey => $parts) {
@@ -212,16 +212,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						$oFiles->$iCounter = $o;
 						$iCounter++;
 					} else {
-						$parts = explode(DS, $value[$x]);
-						$o = new stdClass();
-						$o->id = 'alreadyuploaded_'.$element->id.'_'.$rawvalues[$x];
-						$o->name = array_pop($parts);
-						$o->path = $value[$x];
-						$o->url = $this->getStorage()->pathToURL($value[$x]);
-						$o->recordid = $rawvalues[$x];
-						$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
-						$oFiles->$iCounter = $o;
-						$iCounter++;
+							$parts = explode(DS, $value[$x]);
+							$o = new stdClass();
+							$o->id = 'alreadyuploaded_'.$element->id.'_'.$rawvalues[$x];
+							$o->name = array_pop($parts);
+							$o->path = $value[$x];
+							$o->url = $this->getStorage()->pathToURL($value[$x]);
+							$o->recordid = $rawvalues[$x];
+							$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
+							$oFiles->$iCounter = $o;
+							$iCounter++;
 					}
 				}
 			}
@@ -252,6 +252,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_RESIZE');
+		JText::script('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE');
+		JText::script('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
 		return "new FbFileUpload('$id', $opts)";
 	}
 

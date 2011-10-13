@@ -125,7 +125,6 @@ div.calendar{
 .handle {
 	border-radius: 7px 7px 0px 0px;
 	-moz-border-radius: 7px 7px 0px 0px;
-	cursor : move;
 	background: #ccc;
 	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
 	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
@@ -135,6 +134,10 @@ div.calendar{
 	background: -moz-linear-gradient(top, #eee, #ccc);
 	padding:4px 11px;
 	height:15px;
+}
+
+.draggable {
+	cursor : move;	
 }
 
 .close{

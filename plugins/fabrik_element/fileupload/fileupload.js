@@ -75,15 +75,13 @@ var FbFileUpload = new Class({
 		}
 		var c = this.element.getParent('.fabrikSubElementContainer');
 		this.container = c;
-		//if (this.options.crop === 1) {
-			this.widget = new ImageWidget(c.getElement('canvas'), {'cropdim' : {
-					w: this.options.cropwidth,
-					h: this.options.cropheight,
-					x: this.options.cropwidth / 2,
-					y: this.options.cropheight / 2,
-					crop: this.options.crop
-				}});
-		//}
+		this.widget = new ImageWidget(c.getElement('canvas'), {'cropdim' : {
+				w: this.options.cropwidth,
+				h: this.options.cropheight,
+				x: this.options.cropwidth / 2,
+				y: this.options.cropheight / 2,
+				crop: this.options.crop
+			}});
 		this.pluploadContainer = c.getElement('.plupload_container');
 		this.pluploadFallback = c.getElement('.plupload_fallback');
 		this.droplist = c.getElement('.plupload_filelist');
@@ -188,14 +186,12 @@ var FbFileUpload = new Class({
 
 		this.uploader.bind('FileUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
-			//if (this.options.crop) {
-				$(file.id).getElement('.plupload_resize').show();
-				var resizebutton = $(file.id).getElement('.plupload_resize').getElement('a');
-				resizebutton.href = response.uri;
-				resizebutton.id = 'resizebutton_' + file.id;
-				resizebutton.store('filepath', response.filepath);
-				this.widget.setImage(response.uri, response.filepath, file.params);
-			//}
+			$(file.id).getElement('.plupload_resize').show();
+			var resizebutton = $(file.id).getElement('.plupload_resize').getElement('a');
+			resizebutton.href = response.uri;
+			resizebutton.id = 'resizebutton_' + file.id;
+			resizebutton.store('filepath', response.filepath);
+			this.widget.setImage(response.uri, response.filepath, file.params);
 			new Element('input', {
 				'type' : 'hidden',
 				name : this.options.elementName + '[crop][' + response.filepath + ']',
@@ -254,9 +250,7 @@ var FbFileUpload = new Class({
 	pluploadResize : function (e) {
 		e.stop();
 		var a = e.target.getParent();
-		//if (this.options.crop) {
-			this.widget.setImage(a.href, a.retrieve('filepath'));
-		//}
+		this.widget.setImage(a.href, a.retrieve('filepath'));
 	},
 
 	onSubmit : function (form) {
@@ -332,15 +326,18 @@ var ImageWidget = new Class({
 			}
 
 			i = this.images.get(filepath);
-			this.scaleSlide.set(i.scale);
+			if (this.scaleSlide) {
+				this.scaleSlide.set(i.scale);
+			}
 			if (this.rotateSlide) {
 				this.rotateSlide.set(i.rotation);
 			}
-			this.cropperCanvas.x = i.cropdim.x;
-			this.cropperCanvas.y = i.cropdim.y;
-			this.cropperCanvas.w = i.cropdim.w;
-			this.cropperCanvas.h = i.cropdim.h;
-
+			if (this.cropperCanvas) {
+				this.cropperCanvas.x = i.cropdim.x;
+				this.cropperCanvas.y = i.cropdim.y;
+				this.cropperCanvas.w = i.cropdim.w;
+				this.cropperCanvas.h = i.cropdim.h;
+			}
 			this.imgCanvas.w = imagew;
 			this.imgCanvas.h = imageh;
 			this.imgCanvas.x = imagex;
@@ -392,7 +389,6 @@ var ImageWidget = new Class({
 		this.windowopts = {
 			'id': this.canvas.id + '-mocha',
 			'type': 'modal',
-			title: 'Crop and scale',
 			content: this.canvas.getParent(),
 			loadMethod: 'html',
 			width: 420,
@@ -402,8 +398,15 @@ var ImageWidget = new Class({
 			crop: opts.crop,
 			onClose : function () {
 				$('modalOverlay').hide();
+			},
+			onContentLoaded : function () {
+				this.center();
 			}
 		};
+		this.windowopts.title = opts.crop ? Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE') : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
+		/*if (opts.crop) {
+			windowopts.type = 'modal';
+		}*/
 		this.showWin();
 		this.images = $H({});
 		var parent = this;
@@ -419,13 +422,14 @@ var ImageWidget = new Class({
 		CANVAS.layers.add(new Layer({
 			id: 'image-layer'
 		}));
-		CANVAS.layers.add(new Layer({
-			id: 'overlay-layer'
-		}));
-		CANVAS.layers.add(new Layer({
-			id: 'crop-layer'
-		}));
-
+		if (opts.crop) {
+			CANVAS.layers.add(new Layer({
+				id: 'overlay-layer'
+			}));
+			CANVAS.layers.add(new Layer({
+				id: 'crop-layer'
+			}));
+		}
 		var bg = new CanvasItem({
 			id: 'bg',
 			scale: 1,
@@ -438,33 +442,34 @@ var ImageWidget = new Class({
 		});
 
 		CANVAS.layers.get('bg-layer').add(bg);
-
-		var overlay = new CanvasItem({
-			id: 'overlay',
-			events: {
-				onDraw: function (ctx) {
-					this.withinCrop = true;
-					if (this.withinCrop) {
-						var top = {
-							x: 0,
-							y: 0
-						};
-						var bottom = {
-							x: 400,
-							y: 400
-						};
-						ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-						var cropper = parent.cropperCanvas;
-						ctx.fillRect(top.x, top.y, bottom.x, cropper.y - (cropper.h / 2));// top
-						ctx.fillRect(top.x - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), top.x + cropper.x, cropper.h);// left
-						ctx.fillRect(top.x + cropper.x + cropper.w - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), bottom.x, cropper.h);// right
-						ctx.fillRect(top.x, top.y + (cropper.y + cropper.h) - (cropper.h / 2), bottom.x, bottom.y);// bottom
+		if (opts.crop) {
+			var overlay = new CanvasItem({
+				id: 'overlay',
+				events: {
+					onDraw: function (ctx) {
+						this.withinCrop = true;
+						if (this.withinCrop) {
+							var top = {
+								x: 0,
+								y: 0
+							};
+							var bottom = {
+								x: 400,
+								y: 400
+							};
+							ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+							var cropper = parent.cropperCanvas;
+							ctx.fillRect(top.x, top.y, bottom.x, cropper.y - (cropper.h / 2));// top
+							ctx.fillRect(top.x - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), top.x + cropper.x, cropper.h);// left
+							ctx.fillRect(top.x + cropper.x + cropper.w - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), bottom.x, cropper.h);// right
+							ctx.fillRect(top.x, top.y + (cropper.y + cropper.h) - (cropper.h / 2), bottom.x, bottom.y);// bottom
+						}
 					}
 				}
-			}
-		});
-
-		CANVAS.layers.get('overlay-layer').add(overlay);
+			});
+	
+			CANVAS.layers.get('overlay-layer').add(overlay);
+		}
 
 		this.imgCanvas = new CanvasItem({
 			id: 'imgtocrop',
@@ -545,93 +550,94 @@ var ImageWidget = new Class({
 
 		CANVAS.layers.get('image-layer').add(this.imgCanvas);
 
-		// add an item
-		this.cropperCanvas = new CanvasItem({
-			id: 'item',
-			x: 175,
-			y: 175,
-			w: 150,
-			h: 50,
-			interactive: true,
-			offset: [ 0, 0 ],
-			events: {
-				onDraw: function (ctx) {
-					/*
-					 * calculate dimensions locally because they are have to be translated
-					 * in order to use translate and rotate with the desired effect:
-					 * rotate the item around its visual center
-					 */
-
-					var w = this.w;
-					var h = this.h;
-					var x = this.x - w * 0.5;
-					var y = this.y - h * 0.5;
-
-					// standard Canvas rotation operation
-
-					ctx.save();
-					ctx.translate(this.x, this.y);
-
-					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
-					ctx.strokeRect(w * -0.5, h * -0.5, w, h);
-					ctx.restore();
-
-					/*
-					 * used to determine the whether the mouse is over an item or not.
-					 */
-
-					if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
-						parent.images.get(parent.activeFilePath).cropdim = {
-							x : this.x,
-							y : this.y,
-							w : w,
-							h : h
-						};
-					}
-					this.setDims(x, y, w, h);
-				},
-
-				onMousedown : function (x, y) {
-					CANVAS.setDrag(this);
-					this.offset = [ x - this.dims[0], y - this.dims[1] ];
-					this.dragging = true;
-					overlay.withinCrop = true;
-				},
-
-				onMousemove : function (x, y) {
-					document.body.style.cursor = "move";
-					if (this.dragging) {
+		if (opts.crop) {
+			// add an item
+			this.cropperCanvas = new CanvasItem({
+				id: 'item',
+				x: 175,
+				y: 175,
+				w: 150,
+				h: 50,
+				interactive: true,
+				offset: [ 0, 0 ],
+				events: {
+					onDraw: function (ctx) {
+						/*
+						 * calculate dimensions locally because they are have to be translated
+						 * in order to use translate and rotate with the desired effect:
+						 * rotate the item around its visual center
+						 */
+	
 						var w = this.w;
 						var h = this.h;
-						this.x = x - this.offset[0] + w * 0.5;
-						this.y = y - this.offset[1] + h * 0.5;
+						var x = this.x - w * 0.5;
+						var y = this.y - h * 0.5;
+	
+						// standard Canvas rotation operation
+	
+						ctx.save();
+						ctx.translate(this.x, this.y);
+	
+						this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
+						ctx.strokeRect(w * -0.5, h * -0.5, w, h);
+						ctx.restore();
+	
+						/*
+						 * used to determine the whether the mouse is over an item or not.
+						 */
+	
+						if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
+							parent.images.get(parent.activeFilePath).cropdim = {
+								x : this.x,
+								y : this.y,
+								w : w,
+								h : h
+							};
+						}
+						this.setDims(x, y, w, h);
+					},
+	
+					onMousedown : function (x, y) {
+						CANVAS.setDrag(this);
+						this.offset = [ x - this.dims[0], y - this.dims[1] ];
+						this.dragging = true;
+						overlay.withinCrop = true;
+					},
+	
+					onMousemove : function (x, y) {
+						document.body.style.cursor = "move";
+						if (this.dragging) {
+							var w = this.w;
+							var h = this.h;
+							this.x = x - this.offset[0] + w * 0.5;
+							this.y = y - this.offset[1] + h * 0.5;
+						}
+					},
+	
+					onMouseup : function () {
+						CANVAS.clearDrag();
+						this.dragging = false;
+						overlay.withinCrop = false;
+					},
+	
+					onMouseover : function () {
+						this.hover = true;
+						parent.overCrop = true;
+	
+					},
+	
+					onMouseout : function () {
+						if (!parent.overImg) {
+							document.body.style.cursor = "default";
+						}
+						parent.overCrop = false;
+						this.hover = false;
 					}
-				},
-
-				onMouseup : function () {
-					CANVAS.clearDrag();
-					this.dragging = false;
-					overlay.withinCrop = false;
-				},
-
-				onMouseover : function () {
-					this.hover = true;
-					parent.overCrop = true;
-
-				},
-
-				onMouseout : function () {
-					if (!parent.overImg) {
-						document.body.style.cursor = "default";
-					}
-					parent.overCrop = false;
-					this.hover = false;
 				}
-			}
-		});
-
-		CANVAS.layers.get('crop-layer').add(this.cropperCanvas);
-
+			});
+	
+			CANVAS.layers.get('crop-layer').add(this.cropperCanvas);
+		}
 		CANVAS.addThread(new Thread({
 			id : 'myThread',
 			onExec : function () {
