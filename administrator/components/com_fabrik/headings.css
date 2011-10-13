@@ -45,3 +45,7 @@
 	background-image:url(images/header/fabrik-element.png);
 }
 
+.pane-down{
+	overflow:auto !important;
+}
+
