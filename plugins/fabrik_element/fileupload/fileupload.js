@@ -259,14 +259,12 @@ var FbFileUpload = new Class({
 			form.result = false;
 			return false;
 		}
-		//if (this.options.crop) {
-			this.widget.images.each(function (image, key) {
-				key = key.split('\\').getLast();
-				var f = document.getElements('input[name*=' + key + ']');
-				f = f[1];
-				f.value = JSON.encode(image);
-			});
-		//}
+		this.widget.images.each(function (image, key) {
+			key = key.split('\\').getLast();
+			var f = document.getElements('input[name*=' + key + ']');
+			f = f[1];
+			f.value = JSON.encode(image);
+		});
 		return true;
 	},
 

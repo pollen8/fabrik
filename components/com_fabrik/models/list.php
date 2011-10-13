@@ -2605,13 +2605,13 @@ class FabrikFEModelList extends JModelForm {
 	public function shouldUpdateElement(&$elementModel, $origColName = null)
 	{
 		$db = FabrikWorker::getDbo();
-		$return 		= array(false, '', '', '', '', false);
-		$element 		= $elementModel->getElement();
+		$return = array(false, '', '', '', '', false);
+		$element = $elementModel->getElement();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$basePlugIn = $pluginManager->getPlugIn($element->plugin, 'element');
-		$fbConfig 	= JComponentHelper::getParams('com_fabrik');
-		$fabrikDb 	= $this->getDb();
-		$group 			= $elementModel->getGroup();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$fabrikDb = $this->getDb();
+		$group = $elementModel->getGroup();
 		$dropKey = false;
 		//$$$ rob - replaced this with getting the table from the group as if we moved the element
 		//from one group to another $this->getTable gives you the old group's table, where as we want
@@ -2650,6 +2650,7 @@ class FabrikFEModelList extends JModelForm {
 		if (is_null($objtype)) {
 			return $return;
 		}
+		echo "obj type after saving is $objtype<br>";;
 		$existingfields = array_keys($dbdescriptions);
 		$lastfield = $existingfields[count($existingfields)-1];
 		$tableName = FabrikString::safeColName($tableName);
@@ -2670,7 +2671,7 @@ class FabrikFEModelList extends JModelForm {
 			//return $return;
 		}
 		$thisFieldDesc = JArrayHelper::getValue($dbdescriptions, $origColName, new stdClass());
-
+echo "this filed desc =  ";print_r($thisFieldDesc);
 		// $$$ rob the Default property for timestamps when they are set to CURRENT_TIMESTAMP
 		// doesn't show up from getDBFields()  - so presuming a timestamp field will always default
 		// to the current timestamp (update of the field's data controller in the Extra property (on update CURRENT_TIMESTAMP)
@@ -2741,9 +2742,11 @@ class FabrikFEModelList extends JModelForm {
 				$return[2] = $origColName;
 				$return[3] = $objtype;
 				$return[5] = $dropKey;
+				echo "<pre>";print_r($return);echo "</pre>";exit;
 				return $return;
 			}
 		}
+		echo "<pre>";print_r($return);echo "</pre>";exit;
 		return $return;
 	}
 
