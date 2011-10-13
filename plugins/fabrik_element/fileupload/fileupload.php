@@ -1359,7 +1359,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
 		$value = $this->checkForSingleCropValue($value);
+<<<<<<< HEAD
 		$value = isset($value->file) ? $value->file : '';		
+=======
+		$value = $value->file;
+>>>>>>> d3932e0a9dbfd768614284b93093872c00ac19f3
 		$imagedata = array();
 	/* 	if (strstr($value, GROUPSPLITTER)) {
 			//crop stuff needs to be removed from data to get correct file path
