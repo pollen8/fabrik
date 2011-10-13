@@ -147,7 +147,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		if ((int)$params->get('fileupload_crop', 0) == 1) {
+		//if ((int)$params->get('fileupload_crop', 0) == 1) {
 			//FabrikHelperHTML::script('media/com_fabrik/js/mcl-min.js');
 
 			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
@@ -156,7 +156,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			'media/com_fabrik/js/lib/canvas-extra.js'
 			);
 			FabrikHelperHTML::script($src);
-		}
+		//}
 
 		$element = $this->getElement();
 		$paramsKey = $this->getFullName(false, true, false);
@@ -172,8 +172,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$value = $this->checkForSingleCropValue($value);
 
 		//repeat_image_repeat_image___params
-
-		$rawvalues = array_fill(0, count($value), 0);
+		$rawvalues = count($value) == 0 ? array() : array_fill(0, count($value), 0);
 		$fdata = $this->getForm()->_data;
 		$rawkey = $this->getFullName(false, true, false).'_raw';
 		$rawvalues = JArrayHelper::getValue($fdata, $rawkey, $rawvalues);
@@ -245,6 +244,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->cropheight = (int)$params->get('fileupload_crop_height');
 		$opts->ajax_max = (int)$params->get('ajax_max', 4);
 		$opts->dragdrop = true;
+		$opts->previewButton = FabrikHelperHTML::image('image.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_VIEW')));
 		$opts->resizeButton = FabrikHelperHTML::image('resize.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_RESIZE')));
 		$opts->files = $oFiles;
 		$opts = json_encode($opts);
@@ -1350,7 +1350,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
 		$value = $this->checkForSingleCropValue($value);
-		$value = $value->file;		
+		$value = isset($value->file) ? $value->file : '';		
 		$imagedata = array();
 	/* 	if (strstr($value, GROUPSPLITTER)) {
 			//crop stuff needs to be removed from data to get correct file path
@@ -1531,9 +1531,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		<div id="'.$id.'-widgetcontainer">';
 
 
-		if ($params->get('fileupload_crop', 0)) {
+		
 			$pstr .= '
-		<canvas id="'.$id.'-widget" width="400" height="400"></canvas>
+		<canvas id="'.$id.'-widget" width="400" height="400"></canvas>';
+			if ($params->get('fileupload_crop', 0)) {
+			$pstr .= '
 <div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:200px">
 zoom:
 	<div class="fabrikslider-line" style="width: 100px;float:left;">
@@ -1547,12 +1549,14 @@ zoom:
 	</div>
 	<input name="rotate-val" value="" size="3" />
 
-</div>
+</div>';
+			}
+			$pstr .= '
 <div  style="text-align: right;float:right;margin-top:10px; width: 205px">
 	<input type="button" class="button" name="close-crop" value="'.JText::_('CLOSE').'" />
 	</div>
 </div>';
-		}
+	
 		$pstr .= '
 
 		<div class="plupload_container fabrikHide" id="'.$id.'_container">

@@ -75,14 +75,15 @@ var FbFileUpload = new Class({
 		}
 		var c = this.element.getParent('.fabrikSubElementContainer');
 		this.container = c;
-		if (this.options.crop === 1) {
+		//if (this.options.crop === 1) {
 			this.widget = new ImageWidget(c.getElement('canvas'), {'cropdim' : {
 					w: this.options.cropwidth,
 					h: this.options.cropheight,
 					x: this.options.cropwidth / 2,
-					y: this.options.cropheight / 2
+					y: this.options.cropheight / 2,
+					crop: this.options.crop
 				}});
-		}
+		//}
 		this.pluploadContainer = c.getElement('.plupload_container');
 		this.pluploadFallback = c.getElement('.plupload_fallback');
 		this.droplist = c.getElement('.plupload_filelist');
@@ -113,7 +114,7 @@ var FbFileUpload = new Class({
 
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
-			console.log(files);
+			console.log(files, up);
 			var txt = this.droplist.getElement('.plupload_droptext');
 			if (typeOf(txt) !== 'null') {
 				txt.destroy();
@@ -140,7 +141,12 @@ var FbFileUpload = new Class({
 						events : {
 							'click' : this.pluploadResize.bindWithEvent(this)
 						}
-					}).set('html', this.options.resizeButton);
+					});
+					if (this.options.crop) {
+						a.set('html', this.options.resizeButton);
+					} else {
+						a.set('html', this.options.previewButton);
+					}
 					var filename = new Element('div', {
 						'class' : 'plupload_file_name'
 					}).adopt([ new Element('span').set('text', file.name), new Element('div', {
@@ -182,14 +188,14 @@ var FbFileUpload = new Class({
 
 		this.uploader.bind('FileUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
-			if (this.options.crop) {
+			//if (this.options.crop) {
 				$(file.id).getElement('.plupload_resize').show();
 				var resizebutton = $(file.id).getElement('.plupload_resize').getElement('a');
 				resizebutton.href = response.uri;
 				resizebutton.id = 'resizebutton_' + file.id;
 				resizebutton.store('filepath', response.filepath);
 				this.widget.setImage(response.uri, response.filepath, file.params);
-			}
+			//}
 			new Element('input', {
 				'type' : 'hidden',
 				name : this.options.elementName + '[crop][' + response.filepath + ']',
@@ -248,9 +254,9 @@ var FbFileUpload = new Class({
 	pluploadResize : function (e) {
 		e.stop();
 		var a = e.target.getParent();
-		if (this.options.crop) {
+		//if (this.options.crop) {
 			this.widget.setImage(a.href, a.retrieve('filepath'));
-		}
+		//}
 	},
 
 	onSubmit : function (form) {
@@ -259,14 +265,14 @@ var FbFileUpload = new Class({
 			form.result = false;
 			return false;
 		}
-		if (this.options.crop) {
+		//if (this.options.crop) {
 			this.widget.images.each(function (image, key) {
 				key = key.split('\\').getLast();
 				var f = document.getElements('input[name*=' + key + ']');
 				f = f[1];
 				f.value = JSON.encode(image);
 			});
-		}
+		//}
 		return true;
 	},
 
@@ -393,6 +399,7 @@ var ImageWidget = new Class({
 			height: 500,
 			storeOnClose: true,
 			createShowOverLay: false,
+			crop: opts.crop,
 			onClose : function () {
 				$('modalOverlay').hide();
 			}
@@ -635,46 +642,47 @@ var ImageWidget = new Class({
 		}));
 
 		var w = $(this.windowopts.id);
-		this.scaleField = w.getElement('input[name=zoom-val]');
-		this.scaleSlide = new Slider(w.getElement('.fabrikslider-line'), w.getElement('.knob'), {
-			range : [ 20, 300 ],
-			onChange : function (pos) {
-				this.imgCanvas.scale = pos / 100;
-				if (typeOf(this.img) !== 'null') {
-					try {
-						this.images.get(this.activeFilePath).scale = pos;
-					} catch (err) {
-						fconsole('didnt get active file path:' + ths.activeFilePath);
+		if (parent.windowopts.crop) {
+			this.scaleField = w.getElement('input[name=zoom-val]');
+			this.scaleSlide = new Slider(w.getElement('.fabrikslider-line'), w.getElement('.knob'), {
+				range : [ 20, 300 ],
+				onChange : function (pos) {
+					this.imgCanvas.scale = pos / 100;
+					if (typeOf(this.img) !== 'null') {
+						try {
+							this.images.get(this.activeFilePath).scale = pos;
+						} catch (err) {
+							fconsole('didnt get active file path:' + ths.activeFilePath);
+						}
 					}
-				}
-				this.scaleField.value = pos;
-			}.bind(this)
-		}).set(100);
+					this.scaleField.value = pos;
+				}.bind(this)
+			}).set(100);
 
-		this.scaleField.addEvent('keyup', function (e) {
-			this.scaleSlide.set($(e.target).get('value'));
-		}.bind(this));
+			this.scaleField.addEvent('keyup', function (e) {
+				this.scaleSlide.set($(e.target).get('value'));
+			}.bind(this));
 
-		var r = w.getElement('.rotate');
-		this.rotateField = r.getElement('input[name=rotate-val]');
-		this.rotateSlide = new Slider(r.getElement('.fabrikslider-line'), r.getElement('.knob'), {
-			onChange : function (pos) {
-				this.imgCanvas.rotation = pos;
-				if (typeOf(this.img) !== 'null') {
-					try {
-						this.images.get(this.activeFilePath).rotation = pos;
-					} catch (err) {
-						fconsole('rorate err' + this.activeFilePath);
+			var r = w.getElement('.rotate');
+			this.rotateField = r.getElement('input[name=rotate-val]');
+			this.rotateSlide = new Slider(r.getElement('.fabrikslider-line'), r.getElement('.knob'), {
+				onChange : function (pos) {
+					this.imgCanvas.rotation = pos;
+					if (typeOf(this.img) !== 'null') {
+						try {
+							this.images.get(this.activeFilePath).rotation = pos;
+						} catch (err) {
+							fconsole('rorate err' + this.activeFilePath);
+						}
 					}
-				}
-				this.rotateField.value = pos;
-			}.bind(this),
-			steps : 360
-		}).set(0);
-		this.rotateField.addEvent('keyup', function (e) {
-			this.rotateSlide.set($(e.target).get('value'));
-		}.bind(this));
-
+					this.rotateField.value = pos;
+				}.bind(this),
+				steps : 360
+			}).set(0);
+			this.rotateField.addEvent('keyup', function (e) {
+				this.rotateSlide.set($(e.target).get('value'));
+			}.bind(this));
+		}
 		w.getElement('input[name=close-crop]').addEvent('click', function (e) {
 			this.win.close();
 		}.bind(this));
