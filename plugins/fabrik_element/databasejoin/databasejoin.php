@@ -780,7 +780,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$db = $this->getDb();
 		//lets see if we can get the field type of the field we are joining to
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		echo "this id = $this->_id <br>";
 		if ((int)$this->_id !== 0) {
 			$join->load(array('element_id' => $this->_id));
 			if($join->table_join == '') {

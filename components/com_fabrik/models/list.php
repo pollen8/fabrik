@@ -2605,24 +2605,20 @@ class FabrikFEModelList extends JModelForm {
 	public function shouldUpdateElement(&$elementModel, $origColName = null)
 	{
 		$db = FabrikWorker::getDbo();
-		$return 		= array(false, '', '', '', '', false);
-		$element 		= $elementModel->getElement();
+		$return = array(false, '', '', '', '', false);
+		$element = $elementModel->getElement();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$basePlugIn = $pluginManager->getPlugIn($element->plugin, 'element');
-		$fbConfig 	= JComponentHelper::getParams('com_fabrik');
-		$fabrikDb 	= $this->getDb();
-		$group 			= $elementModel->getGroup();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$fabrikDb = $this->getDb();
+		$group = $elementModel->getGroup();
 		$dropKey = false;
 		//$$$ rob - replaced this with getting the table from the group as if we moved the element
 		//from one group to another $this->getTable gives you the old group's table, where as we want
 		// the new group's table
 		//$table 			=& $this->getTable();
 		$table = $group->getlistModel()->getTable();
-		// $$$ rob - if we are saving an element that wasn't attached to a group then we should
-		// get the table id from the group's table
-		if ($table->id == '') {
-			$table = $group->getlistModel()->getTable();
-		}
+		
 		// $$$ hugh - if this is a table-less form ... not much point going any
 		// further 'cos things will go BANG
 		if (empty($table->id)) {
