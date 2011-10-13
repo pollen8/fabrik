@@ -275,16 +275,13 @@ div.calendar{
 	margin-bottom:2px;
 }
 
-#listform_$c .fabrik_row .fabrik_action li a,
-#listform_$c .fabrik_action li a,
-.advancedSeach_$c .fabrik_action li a{
-	
-	
+#listform_$c .fabrik_buttons li{
+	margin:0;
 }
 
 #listform_$c .fabrik_buttons li a{
 	display:block;
-	padding:2px 6px 0 6px;
+	padding:4px 6px 2px 6px;
 }
 
 #listform_$c .fabrik_row .fabrik_action li:first-child,

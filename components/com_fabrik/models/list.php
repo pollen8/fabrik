@@ -136,6 +136,9 @@ class FabrikFEModelList extends JModelForm {
 
 	/** @var bool should a heading be added for action buttons (returns true if at least one row has buttons)*/
 	protected $actionHeading = false;
+	
+	/** @var array list of column data - used for filters */
+	protected $columnData = array();
 	/**
 	 * Constructor
 	 *
@@ -5851,30 +5854,33 @@ class FabrikFEModelList extends JModelForm {
 
 	function getColumnData($col)
 	{
-		$table = $this->getTable();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		$db = $this->getDb();
-		$el = $this->getFormModel()->getElement($col);
-		$col = FabrikString::safeColName($col);
-		$el->encryptFieldName($col);
-		$tablename =  $table->db_table_name;
-		$tablename = FabrikString::safeColName($tablename);
-		$query = "SELECT DISTINCT($col) FROM " . $tablename . ' ' . $this->_buildQueryJoin();
-		$query .= $this->_buildQueryWhere(false);
-		$query .= " LIMIT " . $fbConfig->get('filter_list_max', 100);
-		$query = $this->pluginQuery($query);
-		$db->setQuery($query);
-		if (!$res = $db->loadResultArray()) {
-			JError::raiseNotice(500, 'list model getCOlumn Data for '.$col.' failed');
+		if (!array_key_exists($col, $this->columnData)) {
+			$table = $this->getTable();
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			$db = $this->getDb();
+			$el = $this->getFormModel()->getElement($col);
+			$colQuoted = FabrikString::safeColName($col);
+			$el->encryptFieldName($colQuoted);
+			$tablename =  $table->db_table_name;
+			$tablename = FabrikString::safeColName($tablename);
+			$query = "SELECT DISTINCT($colQuoted) FROM " . $tablename . ' ' . $this->_buildQueryJoin();
+			$query .= $this->_buildQueryWhere(false);
+			$query .= " LIMIT " . $fbConfig->get('filter_list_max', 100);
+			$query = $this->pluginQuery($query);
+			$db->setQuery($query);
+			if (!$res = $db->loadResultArray()) {
+				JError::raiseNotice(500, 'list model getCOlumn Data for '.$colQuoted.' failed');
+			}
+			if ((int)$fbConfig->get('filter_list_max', 100) == count($res)) {
+				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $colQuoted));
+			}
+			FabrikHelperHTML::debug($query, 'filter:getColumnData query');
+			if (is_null($res)) {
+				$res = array();
+			}
+			$this->columnData[$col] = $res;
 		}
-		if ((int)$fbConfig->get('filter_list_max', 100) == count($res)) {
-			JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $col));
-		}
-		FabrikHelperHTML::debug($query, 'filter:getColumnData query');
-		if (is_null($res)) {
-			$res = array();
-		}
-		return $res;
+		return $this->columnData[$col];
 	}
 
 	/**

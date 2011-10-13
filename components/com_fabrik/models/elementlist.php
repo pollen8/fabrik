@@ -83,7 +83,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * Get the table filter for the element
-	 * @param int counter
+	 * @param int filter order
 	 * @param bol do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 * @return string filter html

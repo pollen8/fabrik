@@ -1656,6 +1656,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the default value for the table filter
 	 * @param bol is the filter a normal or advanced filter
+	 * @param int filter order
 	 */
 
 	function getDefaultFilterVal($normal = true, $counter = 0)
@@ -1753,6 +1754,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * can be overwritten by plugin class
 	 * Get the table filter for the element
+	 * @param int filter order
 	 * @param bol do we render as a normal filter or as an advanced searc filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 * @return string filter html

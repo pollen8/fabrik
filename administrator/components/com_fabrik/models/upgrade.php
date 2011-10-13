@@ -10,7 +10,6 @@ class FabrikModelUpgrade extends JModel
 
 	public function __construct($config = array())
 	{
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		if (!$this->shouldUpgrade()) {
 			JFactory::getApplication()->enqueueMessage('Already updated');
 			return parent::__construct($config);
@@ -32,24 +31,24 @@ class FabrikModelUpgrade extends JModel
 		$query->select('db_table_name, connection_id')->from('#__fabrik_tables');
 		$db->setQuery($query);
 		$tables = $db->loadObjectList('db_table_name') + $this->getFabrikTables();
-		$listModel 	= JModel::getInstance('List', 'FabrikFEModel');
-		$connModel 	= JModel::getInstance('Connection', 'FabrikFEModel');
-		foreach ($tables as $dbName => $table) {
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$connModel = JModel::getInstance('Connection', 'FabrikFEModel');
+		foreach ($tables as $dbName => $item) {
 			$connModel->setId($item->connection_id);
 			$connModel->getConnection($item->connection_id);
 			$cDb = $connModel->getDb();
 			$listModel->set('_oConn', $connModel);
 			//drop the bkup table
-			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->nameQuote('bkup_'.$table->db_table_name));
+			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
 			}
 			//create the bkup table (this method will also correctly copy table indexes
-			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->nameQuote('bkup_'.$table->db_table_name)." like ".$cDb->nameQuote($table->db_table_name));
+			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name)." like ".$cDb->nameQuote($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
 			}
-			$cDb->setQuery("INSERT INTO ".$cDb->nameQuote('bkup_'.$table->db_table_name)." select * from ".$cDb->nameQuote($table->db_table_name));
+			$cDb->setQuery("INSERT INTO ".$cDb->nameQuote('bkup_'.$item->db_table_name)." select * from ".$cDb->nameQuote($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
 			}
