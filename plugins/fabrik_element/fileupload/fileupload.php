@@ -1023,10 +1023,19 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if ($file['name'] != '') {
 				$files[] = $this->_processIndUpload($file, $myFileDir);
 			} else {
+				// $$$ hugh - fixing nasty bug where existing upload was getting wiped when editing an existing row and not uploading anything.
+				// I think this should work.  if we're not in a repeat group, then it doesn't matter how many rows were in origData, and hence
+				// how many rows are in $imagesToKeep ... if $imagesToKeep isn't empty, then we can assume a) it occurs at least once, and
+				// b) there was at least one row in $origData
+				if (!empty($imagesToKeep)) {
+					$files[] = $origData[0]->$name;
+				}
+				/*
 				// @todo not tested but commented code below produced warning as $i not set
 				if (array_key_exists($name, $imagesToKeep)) {
 					$files[$i] = $origData[$i]->$name;
 				}
+				*/
 				/*if (array_key_exists($i, $imagesToKeep)) {
 					$files[] = $imagesToKeep[$i];
 					}*/
@@ -1419,7 +1428,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$str .= '</div>';
 		return $str;
 	}
-	
+
 	protected function checkForSingleCropValue($value)
 	{
 		$params = $this->getParams();
