@@ -2685,9 +2685,7 @@ class FabrikFEModelList extends JModelForm {
 				$existingDef .= " ".$keydata[$k]['extra'];
 			}
 		}
-		if (is_null($objtype)) {
-			return $return;
-		}
+		
 		$lowerobjtype= strtolower(trim($objtype));
 		$lowerobjtype = str_replace(' not null', '', $lowerobjtype);
 		if ($element->name == $origColName && strtolower(trim($existingDef)) == $lowerobjtype) {
@@ -3339,7 +3337,8 @@ class FabrikFEModelList extends JModelForm {
 					if (isset($element->filter_type) && $element->filter_type <> '') {
 						if ($elementModel->canView() && $elementModel->canUseFilter() && $element->show_in_list_summary == '1') {
 							//if ($element->filter_type == 'range' || $element->filter_type == 'auto-complete') {
-							if ($element->filter_type == 'range') {
+							// $$$ rob does nooed to check autoc-ompelte otherwise submission occurs without the value selected.
+							if ($element->filter_type == 'range' || $element->filter_type == 'auto-complete') {
 								$this->_real_filter_action = 'submitform';
 								return $this->_real_filter_action;
 							}
