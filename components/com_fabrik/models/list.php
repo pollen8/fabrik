@@ -6603,7 +6603,9 @@ class FabrikFEModelList extends JModelForm {
 			$csvIds = json_decode($params->get('csv_elements'))->show_in_csv;
 		}
 		foreach ($csvIds as $id) {
-			$csvFields[$formModel->getElement($id, true)->getFullName(false, true, false)] = 1;
+			if ($id !== '') {
+				$csvFields[$formModel->getElement($id, true)->getFullName(false, true, false)] = 1;
+			}
 		}
 		return $csvFields;
 	}

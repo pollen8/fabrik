@@ -64,7 +64,7 @@ class FabrikViewList extends JView{
 			$l = strip_tags($l);
 		}
 		$listParams = $model->getParams();
-		$opts->labels 		= $labels;
+		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid 		= $tmpItemid;
 		$opts->formid 		= $model->getFormModel()->getId();

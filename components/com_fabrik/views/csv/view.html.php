@@ -30,6 +30,7 @@ class fabrikViewCsv extends JView
 			JError::raiseError(400, 'Naughty naughty!');
 			jexit;
 		}
+		$this->addTemplatePath(JPATH_SITE.'/components/com_fabrik/views/csv/tmpl');
 		parent::display($tpl);
 	}
 	
@@ -38,17 +39,20 @@ class fabrikViewCsv extends JView
 		$app = JFactory::getApplication();
 		$model = $this->getModel();
 		$listid = $model->getId();
-	
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
-
-		$script = '';
+		$script = array();
 	
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->_jsonHeadings();
 
+		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
+		$labels = $this->headings;
+		foreach ($labels as &$l) {
+			$l = strip_tags($l);
+		}
 		$listParams = $model->getParams();
+		$opts->labels = $labels;
 		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
 		$csvOpts = new stdClass();
 		$csvOpts->excel = (int)$listParams->get('csv_format');
@@ -72,22 +76,21 @@ class fabrikViewCsv extends JView
 		JText::script('COM_FABRIK_CONFIRM_DELETE');
 		JText::script('COM_FABRIK_CSV_DOWNLOADING');
 		JText::script('COM_FABRIK_FILE_TYPE');
-		
+		JText::script('COM_FABRIK_INCLUDE_FILTERS');
+		JText::script('COM_FABRIK_INCLUDE_RAW_DATA');
+		JText::script('COM_FABRIK_INCLUDE_DATA');
+		JText::script('COM_FABRIK_INLCUDE_CALCULATIONS');
+		JText::script('COM_FABRIK_EXPORT');
 		JText::script('COM_FABRIK_LOADING');
 		JText::script('COM_FABRIK_RECORDS');
+		JText::script('JNO');
+		JText::script('JYES');
 		JText::script('COM_FABRIK_SAVING_TO');
-
 	
-		$script .= "\n" . "var list = new FbList($listid,";
-		$script .= $opts;
-		$script .= "\n" . ");";
-		$script .= "\n" . "Fabrik.addBlock('list_'.$listid, list);";
+		$script[] = 'var list = new FbList('.$listid.','.$opts.');';
+		$script[] = 'Fabrik.addBlock(\'list_'.$listid.'\', list);';
 	
-	 	$script = "
-			head.ready(function() {
-		$script
-			})"; 
-		FabrikHelperHTML::addScriptDeclaration($script);
+	 	FabrikHelperHTML::script('media/com_fabrik/js/list.js', implode("\n", $script));
 	}
 }
 ?>
