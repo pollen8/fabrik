@@ -1167,7 +1167,7 @@ class FabrikFEModelList extends JModelForm {
 
 	public function linkHref($elementModel, $row, $repeatCounter = 0)
 	{
-		$element 	=& $elementModel->getElement();
+		$element = $elementModel->getElement();
 		$table = $this->getTable();
 		$params = $elementModel->getParams();
 		$customLink = $params->get('custom_link');
@@ -1186,7 +1186,7 @@ class FabrikFEModelList extends JModelForm {
 		} else {
 			$array = JArrayHelper::fromObject($row);
 			foreach ($array as $k => &$v) {
-				$v = json_decode($v, $true);
+				$v = json_decode($v, true);
 				if (is_array($v)) {
 					$v = JArrayHelper::getValue($v, $repeatCounter);
 				}
