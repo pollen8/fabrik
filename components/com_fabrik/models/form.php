@@ -703,11 +703,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if ($form->record_in_database == '1') {
 			$this->processToDB();
 		}
-
+		
 		// Clean the cache.
 		$cache = JFactory::getCache(JRequest::getCmd('option'));
 		$cache->clean();
-
+		
 		//$$$rob run this before as well as after onAfterProcess (ONLY for redirect plugin)
 		// so that any redirect urls are available for the plugin (e.g twitter)
 		$pluginManager->runPlugins('onLastProcess', $this);
@@ -1039,7 +1039,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$this->_formData['join'][$oJoin->id][$oJoin->table_join.'___'.$oJoin->table_key] = '';
 					$this->_formData['rowid'] = '';
 				}
-				$oJoin->params = json_decode($oJoin->params);
 				// $$$ rob 22/02/2011 could be a mutlfileupload with no images selected?
 				if (!array_key_exists($oJoin->id, $this->_formData['join'])) {
 					continue;
