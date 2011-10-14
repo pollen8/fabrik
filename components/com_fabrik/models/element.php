@@ -1679,8 +1679,8 @@ class plgFabrik_Element extends FabrikPlugin
 				$default = @$data[$elName]['value'];
 			}
 		}
-		$context = "com_fabrik.table" . $listModel->getId() . ".filter." . $elid;
-		$context .= $normal ? ".normal" : ".advanced";
+		$context = 'com_fabrik.table'.$listModel->getId().'.filter.'.$elid;
+		$context .= $normal ? '.normal' : '.advanced';
 		//we didnt find anything - lets check the filters
 		if ($default == '') {
 			if (empty($filters)) {
@@ -1803,7 +1803,7 @@ class plgFabrik_Element extends FabrikPlugin
 			default:
 				// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
 				//if (get_magic_quotes_gpc()) {
-				$default			= stripslashes($default);
+				$default = stripslashes($default);
 				//}
 				$default = htmlspecialchars($default);
 				$return = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$id.'" />';
