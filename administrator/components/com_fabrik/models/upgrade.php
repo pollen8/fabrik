@@ -89,9 +89,12 @@ class FabrikModelUpgrade extends JModel
 							$p->median_access = $this->mapACL($p->median_access);
 							$p->count_access = $this->mapACL($p->count_access);
 
-							$p->sub_values = explode('|', $row->sub_values);
-							$p->sub_labels = explode('|', $row->sub_labels);
-							$p->sub_initial_selection = explode('|', $row->sub_intial_selection);
+							$subOpts = new stdClass();
+		
+							$subOts->sub_values = explode('|', $row->sub_values);
+							$subOts->sub_labels = explode('|', $row->sub_labels);
+							$subOts->sub_initial_selection = explode('|', $row->sub_intial_selection);
+							$p->sub_options = $subOpts;
 							break;
 						case '#__fabrik_tables':
 							$row->access = $this->mapACL($row->access);
