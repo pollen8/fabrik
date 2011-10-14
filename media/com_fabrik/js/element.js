@@ -22,11 +22,14 @@ var FbElement =  new Class({
 		this.strElement = element;
 		this.loadEvents = []; // need to store these for use if the form is reset
 		this.setOptions(options);
-		if (document.id(element)) {
-			this.element = document.id(element);
+		this.setElement();
+	},
+	
+	setElement: function () {
+		if (document.id(this.options.element)) {
+			this.element = document.id(this.options.element);
+			this.setorigId();
 		}
-		this.setorigId();
-		
 	},
 	
 	get: function (v) {
@@ -37,6 +40,7 @@ var FbElement =  new Class({
 	
 	attachedToForm: function ()
 	{
+		this.setElement();
 		this.alertImage = new Asset.image(this.form.options.images.alert);
 		this.alertImage.setStyle('cursor', 'pointer');
 		this.successImage = new Asset.image(this.form.options.images.action_check);

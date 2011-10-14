@@ -2,7 +2,6 @@ var FbDateTime = new Class({
 	Extends: FbElement,
 	initialize: function (element, options) {
 		this.parent(element, options);
-		this.setOptions(element, options);
 		this.hour = '0';
 		this.plugin = 'fabrikdate';
 		this.minute = '00';
@@ -382,7 +381,7 @@ var FbDateTime = new Class({
 			try {
 				form.triggerEvents(elid, ["blur", "click", "change"], el);
 			} catch (err) {
-				fconsole(err);
+				//fconsole(err);
 			}
 		};
 		var onselect = function (calendar, date) {

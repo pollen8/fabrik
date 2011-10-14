@@ -207,7 +207,7 @@
 			</field>
 				
 			<field name="custom_link" 
-				size="30" type="text" 
+				size="70" type="text" 
 				label="COM_FABRIK_FIELD_CUSTOM_LINK_LABEL" 
 				description="COM_FABRIK_FIELD_CUSTOM_LINK_DESC" />
 				

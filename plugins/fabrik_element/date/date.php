@@ -547,7 +547,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				try{
 					form_'.$formModel->getId().'.triggerEvents(\''.$subElContainerId.'\', ["click", "focus", "change"], this);
 				}catch(err) {
-					fconsole(err);
+					//fconsole(err);
 				};
 			});';
 			//end onselect function
@@ -558,7 +558,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				try{
 					return disallowDate(this, date);
 				}catch(err) {
-					fconsole(err);
+					//fconsole(err);
 				}
 			});
 			';
