@@ -470,9 +470,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	function validate($data, $repeatCounter = 0)
 	{
-		$params 		=& $this->getParams();
+		$params = $this->getParams();
 		$groupModel = $this->_group;
-		$group 			=& $groupModel->getGroup();
+		$group = $groupModel->getGroup();
 		$this->_validationErr = '';
 		$errors = array();
 		$elName = $this->getFullName();
@@ -522,7 +522,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (!$this->_fileUploadSizeOK($myFileSize)) {
 			$ok = false;
 			$mySize = $myFileSize / 1000;
-			$errors[] = JText::sprintf('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE',  $params->get('ul_max_file_size'), $mySize);
+			$errors[] = JText::sprintf('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE', $params->get('ul_max_file_size'), $mySize);
 		}
 		$filepath = $this->_getFilePath( $repeatCounter);
 		jimport('joomla.filesystem.file');
@@ -1361,7 +1361,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
 		$value = $this->checkForSingleCropValue($value);
-		$value = isset($value->file) ? $value->file : '';		
+		if ($params->get('ajax_upload')) {
+			$value = isset($value->file) ? $value->file : '';
+		}
 		$imagedata = array();
 	/* 	if (strstr($value, GROUPSPLITTER)) {
 			//crop stuff needs to be removed from data to get correct file path
@@ -1384,7 +1386,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$render = new stdClass();
 		$render->output = '';
-		if (($params->get('fu_show_image') != '0' && !$params->get('ajax_upload')) || !$this->_editable) {
+		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->_editable) {
 			foreach ($values as $value) {
 
 				$render = $this->loadElement($value);
