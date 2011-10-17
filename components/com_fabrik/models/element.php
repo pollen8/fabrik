@@ -866,6 +866,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$err = $this->_getErrorMsg($repeatCounter);
 		$str = '<span class="fabrikErrorMessage">';
 		if ($err !== '') {
+			$err = '<span>'.$err.'</span>';
 			$str .= '<a href="#" class="fabrikTip" title="'.$err.'">'.
 			FabrikHelperHTML::image('alert.png', 'form', $tmpl).
 			'</a>';
