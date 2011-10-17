@@ -136,7 +136,7 @@ class FabrikFEModelList extends JModelForm {
 
 	/** @var bool should a heading be added for action buttons (returns true if at least one row has buttons)*/
 	protected $actionHeading = false;
-	
+
 	/** @var array list of column data - used for filters */
 	protected $columnData = array();
 	/**
@@ -280,7 +280,7 @@ class FabrikFEModelList extends JModelForm {
 				$limitStart	= $app->getUserStateFromRequest($context.'limitstart', 'limitstart'.$id, $limitStart, 'int');
 			}
 		}
-		
+
 
 		if ($this->_outPutFormat == 'feed') {
 			$limitLength = JRequest::getVar('limit',  $params->get('rsslimit', 150));
@@ -2618,7 +2618,7 @@ class FabrikFEModelList extends JModelForm {
 		// the new group's table
 		//$table 			=& $this->getTable();
 		$table = $group->getlistModel()->getTable();
-		
+
 		// $$$ hugh - if this is a table-less form ... not much point going any
 		// further 'cos things will go BANG
 		if (empty($table->id)) {
@@ -3735,11 +3735,11 @@ class FabrikFEModelList extends JModelForm {
 			$key = FabrikString::safeColName($e->getFullName(false, false, false));
 			$arr[$key] = array('id'=>$e->_id, 'plugin'=>$e->getElement()->plugin);
 		}
-		$opts->elementMap = $arr; 
+		$opts->elementMap = $arr;
 		//$opts = json_encode($opts);
 		return $opts;
-		
-		
+
+
 		$script = "alert('create obj');
 		new AdvancedSearch($opts);";
 		//$script = "head.ready(function() {$script});";
@@ -4121,13 +4121,13 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$aTableHeadings = $newTableHeadings;
 		}
-		
+
 		$args['tableHeadings'] = $aTableHeadings;
 		$args['groupHeadings'] = $groupHeadings;
 		$args['headingClass'] = $headingClass;
 		$args['cellClass'] = $cellClass;
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
-		
+
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
 	}
 
@@ -5704,7 +5704,7 @@ class FabrikFEModelList extends JModelForm {
 		if (!$loadJoin) {
 			if ($format == true) {
 				$row = $fabrikDb->loadObject();
-				
+
 				$row = array($row);
 				$this->formatData($row);
 				$this->rows[$sig] = $row[0][0];
@@ -6208,7 +6208,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$action = $page . implode("&amp;", $qs);
 		//limitstart gets added in the pageination model
-		$action = preg_replace("/limitstart{$this->getId()}=(.*)?(&|)/", "", $action);
+		//$action = preg_replace("/limitstart{$this->getId()}=(.*)?(&|)/", "", $action);
+		// $$$ hugh - oops, this pattern was removing to end of line, not just the limitstart, trying out fix
+		$action = preg_replace("/limitstart{$this->getId()}=(\d+)?(&amp;|)/", "", $action);
 		$action = FabrikString::rtrimword($action, "&");
 		$this->tableAction 	= JRoute::_($action);
 		return $this->tableAction;
@@ -6586,13 +6588,13 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $a;
 	}
-	
+
 	/**
 	 * @since 3.0b
 	 * get a list of elements to export in the csv file.
 	 * @return array full element names.
 	 */
-	
+
 	public function getCsvFields()
 	{
 		$params = $this->getParams();
