@@ -111,7 +111,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 				if (is_array($caldata)) {
 
 					foreach ($caldata as $k=>$o) {
-						$calculationData[] = $colElement->getCaclulationValue($o->value);
+						$calculationData[] = $colElement->getCalculationValue($o->value);
 					}
 				}
 
@@ -135,7 +135,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 						if (trim($row->$column) == '') {
 							$tmpgdata[] = - 1;
 						} else {
-							$tmpgdata[] =  $colElement->getCaclulationValue($row->$column);
+							$tmpgdata[] =  $colElement->getCalculationValue($row->$column);
 						}
 					}
 

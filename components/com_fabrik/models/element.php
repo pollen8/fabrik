@@ -3525,7 +3525,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	 * @return mixed
 	 */
 
-	public function getCaclulationValue($v)
+	public function getCalculationValue($v)
 	{
 		return (float)$v;
 	}
