@@ -3967,7 +3967,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 			$script = array();
 			$script[] = '<script type="text/javasript">';
-			$script[] = "window.fireEvent('fabrik.list.inlineedit.stopEditing');"; //makes the inlined editor stop editing the cell
+			$script[] = "Fabrik.fireEvent('fabrik.list.inlineedit.stopEditing');"; //makes the inlined editor stop editing the cell
 			$script[] = '</script>';
 
 			echo $html.implode("\n", $script);
@@ -4004,7 +4004,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 			Fabrik.inlineedit_$elementid.focus();
 			Fabrik.inlineedit_$elementid.token = '".JUtility::getToken()."';\n";
 
-			$onLoad .= "window.fireEvent('fabrik.list.inlineedit.setData');\n";
+			$onLoad .= "Fabrik.fireEvent('fabrik.list.inlineedit.setData');\n";
 			$srcs = array();
 			$this->formJavascriptClass($srcs);
 			FabrikHelperHTML::script($srcs, $onLoad);

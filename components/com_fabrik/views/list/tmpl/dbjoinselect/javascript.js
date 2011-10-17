@@ -40,7 +40,7 @@ var TableRowSelect = new Class({
 								'rowid':d.getLast(),
 								formid:this.formid
 							};
-						window.fireEvent('fabrik.list.row.selected', json);
+						Fabrik.fireEvent('fabrik.list.row.selected', json);
 					}.bind(this));
 				}.bind(this));
 			}

@@ -57,7 +57,7 @@ var FloatingTips = new Class({
 			e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
 			e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
 			e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
-			window.addEvent('fabrik.tip.show', function(trigger){
+			Fabrik.addEvent('fabrik.tip.show', function(trigger){
 				var tip = e.retrieve('floatingtip');
 				if (trigger !== e && tip) {
 					this._animate(tip, 'out');
@@ -76,7 +76,7 @@ var FloatingTips = new Class({
 		element.store('floatingtip', tip);
 		this._animate(tip, 'in');
 		this.fireEvent('show', [tip, element]);
-		window.fireEvent('fabrik.tip.show', [element]);
+		Fabrik.fireEvent('fabrik.tip.show', [element]);
 		return this;
 	},
 	

@@ -25,19 +25,19 @@ var FbListInlineEdit = new Class({
 			this.setUp();
 		}.bind(this));
 		
-		window.addEvent('fabrik.table.clearrows', function () {
+		Fabrik.addEvent('fabrik.table.clearrows', function () {
 			this.cancel();			
 		}.bind(this));
 		
-		window.addEvent('fabrik.list.inlineedit.stopEditing', function () {
+		Fabrik.addEvent('fabrik.list.inlineedit.stopEditing', function () {
 			this.stopEditing();
 		}.bind(this));
 		
-		window.addEvent('fabrik.table.updaterows', function () {
+		Fabrik.addEvent('fabrik.table.updaterows', function () {
 			this.watchCells();
 		}.bind(this));
 		
-		window.addEvent('fabrik.table.ini', function () {
+		Fabrik.addEvent('fabrik.table.ini', function () {
 			var table = Fabrik.blocks['list_' + this.options.listid];
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
@@ -374,7 +374,7 @@ var FbListInlineEdit = new Class({
 			$exec(this.javascript);
 			//tell the element obj to update its value
 			///triggered from element model
-			window.addEvent('fabrik.list.inlineedit.setData', function () {
+			Fabrik.addEvent('fabrik.list.inlineedit.setData', function () {
 				Fabrik['inlineedit_' + opts.elid].update(data);
 				Fabrik['inlineedit_' + opts.elid].select();
 				this.watchControls(td);
@@ -440,7 +440,7 @@ var FbListInlineEdit = new Class({
 	},
 	
 	save: function (e, td) {
-		window.fireEvent('fabrik.table.updaterows');
+		Fabrik.fireEvent('fabrik.table.updaterows');
 		this.inedit = false;
 		e.stop();
 		var element = this.getElementName(td);

@@ -79,13 +79,13 @@ var ColourPicker = new Class({
 				max: 255,
 				offset: 1,
 				onChange: function (pos) {
-					window.fireEvent('fabrik.colourpicker.slider', [this, this.options.color, pos]);
+					Fabrik.fireEvent('fabrik.colourpicker.slider', [this, this.options.color, pos]);
 				}
 			};
 			this.sliderRefs.push(element + col + 'track');
 			this[col + "Slider"] = new Slider($(element + col + 'track'), $(element + col + 'handle'), opts);
 		}
-		window.addEvent('fabrik.colourpicker.slider', function (o, col, pos) {
+		Fabrik.addEvent('fabrik.colourpicker.slider', function (o, col, pos) {
 			if (this.sliderRefs.contains(o.element.id)) {
 				this.options.colour[col] = pos;
 				this.update(this.options.colour.red + ',' + this.options.colour.green + ',' + this.options.colour.blue);

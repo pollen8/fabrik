@@ -59,7 +59,7 @@ class FabrikControllerPackage extends JControllerForm
 		echo "</ul>";
 
 		$script = "$('$list-additems').getElements('a').addEvent('click', function(e){
-			window.fireEvent('fabrik.package.item.selected', [e]);
+			Fabrik.fireEvent('fabrik.package.item.selected', [e]);
 		});";
 		FabrikHelperHTML::addScriptDeclaration($script);
 	}

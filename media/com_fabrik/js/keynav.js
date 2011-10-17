@@ -9,7 +9,7 @@ var KeyNav = new Class({
 			case 38: //up
 			case 39: //right
 			case 40: //down
-				window.fireEvent('fabrik.keynav', [e.code, e.shift]);
+				Fabrik.fireEvent('fabrik.keynav', [e.code, e.shift]);
 				e.stop();
 				break;
 			}

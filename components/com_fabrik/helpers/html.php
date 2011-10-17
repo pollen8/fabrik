@@ -176,7 +176,12 @@ EOD;
 	
 	
 	
+	
+	
+	
+	
 	 <?php echo JHTML::_('form.token'); ?></form>
+
 
 		<?php
 	}
@@ -198,6 +203,7 @@ EOD;
 <br />
 <a href='javascript:window.close();'> <span class="small"><?php echo JText::_('COM_FABRIK_CLOSE_WINDOW');?>
 </span> </a>
+
 
 <?php
 	}
@@ -355,7 +361,7 @@ EOD;
 			if (!in_array($file, self::$ajaxCssFiles)) {
 				// $$$ rob added COM_FABRIK_LIVESITE to make full path name other wise style sheets gave 404 error
 				// when loading from site with sef urls.
-				
+
 				echo "<script type=\"text/javascript\">var v = new Asset.css('{$file}', {});</script>\n";
 				self::$ajaxCssFiles[] = $file;
 			}
@@ -540,6 +546,11 @@ EOD;
 		if (!self::$framework) {
 			$src = array();
 
+			if (FabrikHelperHTML::inAjaxLoadedPage()) {
+				// 17/10/2011 (firefox) retesting loading this in ajax page as without it Class is not available? so form class doesnt load
+				JHtml::_('behavior.framework', true);
+			}
+				
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
 
 				//required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
@@ -548,7 +559,7 @@ EOD;
 
 				//loading framework, if in ajax loaded page:
 				// * makes document.body not found for gmap element when
-				// * removes previously added window.events
+				// * removes previously added window.events (17/10/2011 we're now using Fabrik.events - so this may no longer be an issue)
 				JHtml::_('behavior.framework', true);
 
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
@@ -568,7 +579,7 @@ EOD;
 
 				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
-				FabrikHelperHTML::script($src, "window.fireEvent('fabrik.framework.loaded');");
+				FabrikHelperHTML::script($src, "Fabrik.fireEvent('fabrik.framework.loaded');");
 			}
 			self::$framework = true;
 		}
@@ -677,9 +688,9 @@ EOD;
 			//$onLoad = "head.ready(function() {\n " . $onLoad . "\n});\n";
 			//FabrikHelperHTML::addScriptDeclaration($onLoad);
 			if (FabrikHelperHTML::inAjaxLoadedPage()) {
-				$onLoad = "(function() { " . $onLoad . "})";
+				$onLoad = "(function() {\n " . $onLoad . "\n //end load func \n})";
 			} else {
-				$onLoad = "(function() { head.ready(function() {" . $onLoad . "})})";
+				$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
 			}
 			$src[] = $onLoad;
 		}

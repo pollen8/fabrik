@@ -262,7 +262,7 @@ var FbList = new Class({
 			}
 		}
 		this.watchAll(false);
-		window.addEvent('fabrik.form.submitted', function () {
+		Fabrik.addEvent('fabrik.form.submitted', function () {
 			this.updateRows();
 		}.bind(this));
 	},
@@ -788,7 +788,7 @@ var FbList = new Class({
 				});
 			}
 			this.request.send();
-			window.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);
+			Fabrik.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);
 		} else {
 			this.form.submit();
 			Fabrik.loader.stop('listform_' + this.id);
@@ -799,7 +799,7 @@ var FbList = new Class({
 	fabrikNav: function (limitStart) {
 		this.form.getElement('#limitstart' + this.id).value = limitStart;
 		// cant do filter as that resets limitstart to 0
-		window.fireEvent('fabrik.list.navigate', [this, limitStart]);
+		Fabrik.fireEvent('fabrik.list.navigate', [this, limitStart]);
 		if (!this.result) {
 			this.result = true;
 			return false;
@@ -811,7 +811,7 @@ var FbList = new Class({
 	fabrikNavOrder: function (orderby, orderdir) {
 		this.form.orderby.value = orderby;
 		this.form.orderdir.value = orderdir;
-		window.fireEvent('fabrik.list.order', [this, orderby, orderdir]);
+		Fabrik.fireEvent('fabrik.list.order', [this, orderby, orderdir]);
 		if (!this.result) {
 			this.result = true;
 			return false;
@@ -853,7 +853,7 @@ var FbList = new Class({
 			'url': Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=raw&listid=' + this.id,
 			onSuccess: function (json) {
 				this._updateRows(json);
-				// window.fireEvent('fabrik.list.update', [this, json]);
+				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
 			}.bind(this)
 		}).send();
 	},
@@ -953,7 +953,7 @@ var FbList = new Class({
 				this.form.getElement('.fabrikNav').set('html', data.htmlnav);
 			}
 			this.watchAll(true);
-			window.fireEvent('fabrik.table.updaterows');
+			Fabrik.fireEvent('fabrik.table.updaterows');
 			try {
 				Slimbox.scanPage();
 			} catch (err) {
@@ -964,7 +964,7 @@ var FbList = new Class({
 			} catch (err2) {
 				fconsole('mediabox scan:' + err2);
 			}
-			window.fireEvent('fabrik.list.update', [this, data]);
+			Fabrik.fireEvent('fabrik.list.update', [this, data]);
 		}
 		this.stripe();
 		Fabrik.loader.stop('listform_' + this.id);
@@ -1047,7 +1047,7 @@ var FbList = new Class({
 		var limitBox = this.form.getElement('#limit' + this.id);
 		if (limitBox) {
 			limitBox.addEvent('change', function (e) {
-				var res = window.fireEvent('fabrik.list.limit', [this]);
+				var res = Fabrik.fireEvent('fabrik.list.limit', [this]);
 				if (this.result === false) {
 					this.result = true;
 					return false;
@@ -1060,7 +1060,7 @@ var FbList = new Class({
 			addRecord.removeEvents();
 			addRecord.addEvent('click', function (e) {
 				e.stop();
-				// top.window.fireEvent('fabrik.list.add', this);//for packages?
+				// top.Fabrik.fireEvent('fabrik.list.add', this);//for packages?
 				Fabrik.getWindow({
 					'id': 'add-' + this.id,
 					'title': 'Add',
@@ -1217,7 +1217,7 @@ var FbListActions = new Class({
 		this.list = list; // main list js object
 		this.actions = [];
 		this.setUpSubMenus();
-		window.addEvent('fabrik.list.update', function (list, json) {
+		Fabrik.addEvent('fabrik.list.update', function (list, json) {
 			this.observe();
 		}.bind(this));
 		this.observe();

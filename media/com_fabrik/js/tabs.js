@@ -8,7 +8,7 @@ var Tabs = new Class({
 	},
 	
 	build: function (tabs) {
-		window.fireEvent('fabrik.history.off', this);
+		Fabrik.fireEvent('fabrik.history.off', this);
 		if (this.editable) {
 			
 			var a = new Element('a', {
@@ -33,7 +33,7 @@ var Tabs = new Class({
 		}.bind(this));
 		this.setActive(tabs[0]);
 		var fn = function () {
-			window.fireEvent('fabrik.history.on', this);
+			Fabrik.fireEvent('fabrik.history.on', this);
 		};
 		fn.delay(500);
 	},
@@ -52,7 +52,7 @@ var Tabs = new Class({
 				return;
 			}
 			var t = this.tabs[n];
-			window.fireEvent('fabrik.tab.remove', [ this, t ]);
+			Fabrik.fireEvent('fabrik.tab.remove', [ this, t ]);
 			this.tabs.erase(n);
 			t.destroy();
 			var newkey = this.tabs.getKeys()[0];
@@ -103,7 +103,7 @@ var Tabs = new Class({
 				}.bind(this),
 				
 				'mouseover': function (e) {
-					window.fireEvent('fabrik.tab.hover', [ t ]);
+					Fabrik.fireEvent('fabrik.tab.hover', [ t ]);
 				}
 			}
 		});
@@ -130,14 +130,14 @@ var Tabs = new Class({
 		}
 		this.setActive(li);
 		this.tabs[t] = li;
-		window.fireEvent('fabrik.history.add', [this, this.remove, t, this.add, t]);
-		window.fireEvent('fabrik.tab.add', [this, t]);
+		Fabrik.fireEvent('fabrik.history.add', [this, this.remove, t, this.add, t]);
+		Fabrik.fireEvent('fabrik.tab.add', [this, t]);
 	},
 
 	setActive: function (a) {
 		var tname = typeOf(a) === 'string' ? a : a.retrieve('ref');
 		var active = a;
-		window.fireEvent('fabrik.tab.click', tname);
+		Fabrik.fireEvent('fabrik.tab.click', tname);
 		this.tabs.each(function (t) {
 			t.removeClass('active');
 			t.addClass('inactive');

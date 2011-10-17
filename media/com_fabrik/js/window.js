@@ -104,13 +104,13 @@ Fabrik.Window = new Class({
 			this.window.adopt([this.handle, this.contentWrapperEl, draggerC]);
 			this.window.makeResizable({'handle': dragger,
 				onDrag: function () {
-					window.fireEvent('fabrik.window.resized', this.window);
+					Fabrik.fireEvent('fabrik.window.resized', this.window);
 					this.drawWindow();
 				}.bind(this)
 			});
 			var dragOpts = {'handle': this.handle};
 			dragOpts.onComplete = function () {
-					window.fireEvent('fabrik.window.moved', this.window);
+					Fabrik.fireEvent('fabrik.window.moved', this.window);
 					this.drawWindow();
 				}.bind(this);
 			dragOpts.container = this.options.container ?	$(this.options.container) : null;
@@ -119,7 +119,7 @@ Fabrik.Window = new Class({
 
 		document.body.adopt(this.window);
 		this.loadContent();
-		window.addEvent('fabrik.overlay.hide', function () {
+		Fabrik.addEvent('fabrik.overlay.hide', function () {
 			//bad idea - means opening windows are hidden if other code calls another window to hide
 			//this.window.hide();
 		}.bind(this));

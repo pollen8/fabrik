@@ -210,7 +210,7 @@ var FbElement =  new Class({
 	//get the wrapper dom element that contains all of the elements dom objects
 	getContainer: function ()
 	{
-		return this.element.getParent('.fabrikElementContainer');
+		return typeOf(this.element) === 'null' ? false : this.element.getParent('.fabrikElementContainer');
 	},
 	
 	//get the dom element which shows the error messages

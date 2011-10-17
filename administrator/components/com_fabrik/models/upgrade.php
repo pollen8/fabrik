@@ -14,8 +14,9 @@ class FabrikModelUpgrade extends JModel
 			JFactory::getApplication()->enqueueMessage('Already updated');
 			return parent::__construct($config);
 		}
-		$this->backUp();
-		$this->upgrade();
+		if ($this->backUp()) {
+			$this->upgrade();
+		}
 		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
 		return parent::__construct($config);
 	}
@@ -42,17 +43,21 @@ class FabrikModelUpgrade extends JModel
 			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
+				return false;
 			}
 			//create the bkup table (this method will also correctly copy table indexes
 			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name)." like ".$cDb->nameQuote($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
+				return false;
 			}
 			$cDb->setQuery("INSERT INTO ".$cDb->nameQuote('bkup_'.$item->db_table_name)." select * from ".$cDb->nameQuote($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
+				return false;
 			}
 		}
+		return true;
 	}
 
 	/**

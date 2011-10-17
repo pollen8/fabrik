@@ -14,11 +14,11 @@ AdminPackage = new Class({
 		// only used to store newly added blocks
 		this.blocks = this.options.blocks;//{'form':[], 'list':[], 'visualization':[]}; 
 		this.makeBlockMenu();
-		window.addEvent('fabrik.tab.add', this.setDrops.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.tab.add', this.setDrops.bindWithEvent(this));
 		this.setDrops();
 		this.setDrags();
-		window.addEvent('fabrik.package.item.selected', this.addItem.bindWithEvent(this));
-		window.addEvent('fabrik.page.block.delete', this.deleteItem.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.package.item.selected', this.addItem.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.page.block.delete', this.deleteItem.bindWithEvent(this));
 		//this.history = new History('undo', 'redo');
 	},
 	
@@ -72,14 +72,14 @@ AdminPackage = new Class({
 		if (page.editable) {
 			c.makeResizable({'handle': dragger,
 				onComplete: function () {
-					window.fireEvent('fabrik.item.resized', c);
+					Fabrik.fireEvent('fabrik.item.resized', c);
 				}
 			});
 			c.makeDraggable({'handle': handle, 'container': $('packagepages')});
 		}
 		
 		c.addEvent('mousedown', function (e) {
-			window.fireEvent('fabrik.page.add', [c]);
+			Fabrik.fireEvent('fabrik.page.add', [c]);
 		});
 		page.page.adopt(c);
 	},
