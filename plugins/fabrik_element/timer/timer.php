@@ -201,7 +201,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	 * @return mixed
 	 */
 
-	public function getCaclulationValue($v)
+	public function getCalculationValue($v)
 	{
 		if ($v == '') {
 			return 0;

@@ -1679,17 +1679,5 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return $a;
 	}
 
-	/**
-	 * @param array already loaded plugin scripts
-	 * load the javascript class that manages interaction with the form element
-	 * should only be called once
-	 * @since 3.0
-	 */
-
-	function formJavascriptClass(&$srcs)
-	{
-		plgFabrik_Element::formJavascriptClass($srcs, 'media/com_fabrik/js/window.js');
-		parent::formJavascriptClass($srcs);
-	}
 }
 ?>

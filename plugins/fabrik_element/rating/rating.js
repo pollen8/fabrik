@@ -11,7 +11,7 @@ var FbRating = new Class({
 			return;
 		}
 		this.rating = rating;
-		window.addEvent('fabrik.form.refresh', this.setup.bindAsEventListener(this));
+		Fabrik.addEvent('fabrik.form.refresh', this.setup.bindAsEventListener(this));
 		this.setup(this.options.row_id);
 		this.setStars();
 	},

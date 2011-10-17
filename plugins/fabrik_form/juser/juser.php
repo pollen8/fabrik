@@ -483,7 +483,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 					$db->setQuery($q);
 					$db->query();
 				}
-				return false;
 			}
 			
 		} 

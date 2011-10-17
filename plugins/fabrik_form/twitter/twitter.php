@@ -13,7 +13,10 @@ defined('_JEXEC') or die();
 
 //require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
-require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'abraham-twitteroauth'.DS.'twitteroauth'.DS.'twitteroauth.php');
+
+if (!class_exists('TwitterOAuth')) {
+	require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'abraham-twitteroauth'.DS.'twitteroauth'.DS.'twitteroauth.php');
+}
 
 class plgFabrik_FormTwitter extends plgFabrik_Form {
 

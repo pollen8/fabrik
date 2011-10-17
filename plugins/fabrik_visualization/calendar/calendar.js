@@ -49,7 +49,7 @@ var fabrikCalendar = new Class({
 				win.fitToContent();
 			}.bind(this)
 		};
-		window.addEvent('fabrik.form.submitted', function (form, json) {
+		Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
 			//Fabrik.Windows['chooseeventwin'].close();
 			//this.addEvForm(json);
 			this.ajax.updateEvents.send();

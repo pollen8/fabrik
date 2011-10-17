@@ -264,7 +264,7 @@ var FbForm = new Class({
 			break;
 		}
 		fx.lastMethod = method;
-		window.fireEvent('fabrik.form.doelementfx', [this]);
+		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
 	},
 
 	watchClearSession : function () {
@@ -353,7 +353,7 @@ var FbForm = new Class({
 		if (this.options.multipage_save === 0) {
 			return;
 		}
-		window.fireEvent('fabrik.form.groups.save.start', [this]);
+		Fabrik.fireEvent('fabrik.form.groups.save.start', [this]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -371,7 +371,7 @@ var FbForm = new Class({
 			method: this.options.ajaxmethod,
 			data: data,
 			onComplete : function (r) {
-				window.fireEvent('fabrik.form.groups.save.completed', [this]);
+				Fabrik.fireEvent('fabrik.form.groups.save.completed', [this]);
 				if (this.result === false) {
 					this.result = true;
 					return;
@@ -379,7 +379,7 @@ var FbForm = new Class({
 				this.form.getElement('input[name=format]').value = orig;
 				this.form.getElement('input[name=task]').value = origprocess;
 				if (this.options.ajax) {
-					window.fireEvent('fabrik.form.groups.save.end', [this, r]);
+					Fabrik.fireEvent('fabrik.form.groups.save.end', [this, r]);
 				}
 				Fabrik.loader.stop('form_' + this.id);
 			}.bind(this)
@@ -388,7 +388,7 @@ var FbForm = new Class({
 
 	changePage: function (dir) {
 		this.changePageDir = dir;
-		window.fireEvent('fabrik.form.page.change', [this]);
+		Fabrik.fireEvent('fabrik.form.page.change', [this]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -405,7 +405,7 @@ var FbForm = new Class({
 		document.id('page_' + this.currentPage).setStyle('display', '');
 		this._setMozBoxWidths();
 		this.hideOtherPages();
-		window.fireEvent('fabrik.form.page.chage.end', [this]);
+		Fabrik.fireEvent('fabrik.form.page.chage.end', [this]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -484,7 +484,7 @@ var FbForm = new Class({
 				}
 			}.bind(this));
 		}.bind(this));
-		window.fireEvent('fabrik.form.elements.added', [this]);
+		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
 	addElement : function (oEl, elId, gid) {
@@ -611,7 +611,7 @@ var FbForm = new Class({
 				return;
 			}
 		}
-		window.fireEvent('fabrik.form.element.validaton.start', [this, el, e]);
+		Fabrik.fireEvent('fabrik.form.element.validaton.start', [this, el, e]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -638,7 +638,7 @@ var FbForm = new Class({
 
 	_completeValidaton : function (r, id, origid) {
 		r = JSON.decode(r);
-		window.fireEvent('fabrik.form.elemnet.validation.complete', [this, r, id, origid]);
+		Fabrik.fireEvent('fabrik.form.elemnet.validation.complete', [this, r, id, origid]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -783,7 +783,7 @@ var FbForm = new Class({
 	},
 
 	doSubmit : function (e, btn) {
-		window.fireEvent('fabrik.form.submit.start', [this, e, btn]);
+		Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
 		this.elementsBeforeSubmit(e);
 		if (this.result === false) {
 			this.result = true;
@@ -846,7 +846,7 @@ var FbForm = new Class({
 								alert(saved_msg);
 							}
 							//query the list to get the updated data
-							window.fireEvent('fabrik.form.submitted', [this, json]);
+							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
 							if (btn.name !== 'apply') {
 								this.clearForm();
 								//if the form was loaded in a Fabrik.Window close the window.
@@ -862,7 +862,7 @@ var FbForm = new Class({
 				}).send();
 			}
 		}
-		window.fireEvent('fabrik.form.submit.end', [this]);
+		Fabrik.fireEvent('fabrik.form.submit.end', [this]);
 		if (this.result === false) {
 			this.result = true;
 			e.stop();
@@ -988,7 +988,7 @@ var FbForm = new Class({
 	},
 
 	deleteGroup : function (e) {
-		window.fireEvent('fabrik.form.group.delete', [this, e]);
+		Fabrik.fireEvent('fabrik.form.group.delete', [this, e]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -1122,7 +1122,7 @@ var FbForm = new Class({
 
 	duplicateGroup : function (e) {
 		var subElementContainer, container;
-		window.fireEvent('fabrik.form.group.duplicate', [this, e]);
+		Fabrik.fireEvent('fabrik.form.group.duplicate', [this, e]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -1265,14 +1265,14 @@ var FbForm = new Class({
 		clone.fade(1);
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above
-		window.fireEvent('fabrik.form.group.delete.end', [this, e, i, c]);
+		Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, c]);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 		this.unwatchGroupButtons();
 		this.watchGroupButtons();
 	},
 
 	update : function (o) {
-		window.fireEvent('fabrik.form.update', [this, o.data]);
+		Fabrik.fireEvent('fabrik.form.update', [this, o.data]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -1316,7 +1316,7 @@ var FbForm = new Class({
 			subgroup.remove();
 		});
 		this.addedGroups = [];
-		window.fireEvent('fabrik.form.reset', [this]);
+		Fabrik.fireEvent('fabrik.form.reset', [this]);
 		if (this.result === false) {
 			this.result = true;
 			return;

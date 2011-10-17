@@ -61,6 +61,24 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$r = isset($opts->sub_initial_selection) ? (array)$opts->sub_initial_selection : array();
 		return $r;
 	}
+	
+	/**
+	* used in isempty validation rule
+	*
+	* @param array $data
+	* @return bol
+	*/
+	
+	function dataConsideredEmpty($data, $repeatCounter)
+	{
+		$data = (array)$data;
+		foreach ($data as $d) {
+			if ($d != '') {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * this really does get just the default value (as defined in the element's settings)
@@ -111,17 +129,19 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 		$attribs = 'class="inputbox fabrik_filter" size="1" ';
 		$size = $params->get('filter_length', 20);
+		$return = array();
 		switch ($element->filter_type)
 		{
 			case "range":
-				$default1 = is_array($default)? $default[0] : '';
-				$return 	 = JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
-				$default1 = is_array($default) ? $default[1] : '';
-				$return 	 .= JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1 , $element->name . "_filter_range_1");
+				if (!is_array($default)) {
+					$default = array('', '');
+				}
+				$return[] = JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default[0], $element->name . "_filter_range_0");
+				$return[] = JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default[1] , $element->name . "_filter_range_1");
 				break;
 			case "dropdown":
 			default:
-				$return = JHTML::_('select.genericlist', $rows, $v, $attribs, 'value', 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, $attribs, 'value', 'text', $default, $htmlid);
 				break;
 
 			case "field":
@@ -129,7 +149,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'" />';
+				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
 
 			case 'auto-complete':
@@ -137,17 +157,33 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
+				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+				$return[] = '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
 				FabrikHelperHTML::autoComplete($htmlid, $this->getElement()->id, $element->plugin);
 				break;
 		}
 		if ($normal) {
-			$return .= $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName);
 		} else {
-			$return .= $this->getAdvancedFilterHiddenFields();
+			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
-		return $return;
+		return implode("\n", $return);
+	}
+	
+	/**
+	* Examples of where this would be overwritten include timedate element with time field enabled
+	* @param int repeat group counter
+	* @return array html ids to watch for validation
+	*/
+	
+	function getValidationWatchElements($repeatCounter)
+	{
+		$id = $this->getHTMLId($repeatCounter);
+		$ar = array(
+				'id' => $id,
+				'triggerEvent' => 'click'
+		);
+		return array($ar);
 	}
 
 	/**
@@ -198,8 +234,17 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		return $rows;
 	}
 
-	function autocomplete_options()
+	/**
+	* from ajax call to get auto complete options
+	* @returns string json encoded optiosn
+	*/
+	
+	function onAutocomplete_options()
 	{
+		//needed for ajax update (since we are calling this method via dispatcher element is not set
+		$this->_id = JRequest::getInt('element_id');
+		$this->getElement(true);
+		$listModel = $this->getListModel();
 		$rows = $this->filterValueList(true);
 		$v = addslashes(JRequest::getVar('value'));
 		for ($i = count($rows)-1; $i >= 0; $i--) {

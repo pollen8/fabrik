@@ -127,7 +127,7 @@ var FbCascadingdropdown = new Class({
 				this.ingoreShowDesc = false;
 			}
 			this.ignoreAjax = false;
-			window.fireEvent('fabrik.cdd.update', this);
+			Fabrik.fireEvent('fabrik.cdd.update', this);
 		}.bind(this)}).send();
 	},
 	
@@ -170,7 +170,7 @@ var FbCascadingdropdown = new Class({
 				this.showDesc();
 			}.bind(this));
 		}
-		window.fireEvent('fabrik.cdd.update', this);
+		Fabrik.fireEvent('fabrik.cdd.update', this);
 	},
 	
 	showDesc: function (e) {

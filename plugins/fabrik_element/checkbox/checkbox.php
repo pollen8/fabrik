@@ -90,48 +90,14 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	function prepareFilterVal($val)
 	{
 		$values = $this->getSubOptionValues();
-		$labels 	= $this->getSubOptionLabels();
-		for ($i=0; $i<count($labels); $i++) {
+		$labels	= $this->getSubOptionLabels();
+		for ($i = 0; $i < count($labels); $i++) {
 			if (strtolower($labels[$i]) == strtolower($val)) {
 				$val = $values[$i];
 				return $val;
 			}
 		}
 		return $val;
-	}
-
-	/**
-	 * used in isempty validation rule
-	 *
-	 * @param array $data
-	 * @return bol
-	 */
-
-	function dataConsideredEmpty($data, $repeatCounter)
-	{
-		$data = (array)$data;
-		foreach ($data as $d) {
-			if ($d != '') {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
-	 * @return array html ids to watch for validation
-	 */
-
-	function getValidationWatchElements($repeatCounter)
-	{
-		$id = $this->getHTMLId($repeatCounter);
-		$ar = array(
-			'id' => $id,
-			'triggerEvent' => 'click'
-			);
-			return array($ar);
 	}
 
 	/**

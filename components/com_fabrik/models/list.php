@@ -1167,7 +1167,7 @@ class FabrikFEModelList extends JModelForm {
 
 	public function linkHref($elementModel, $row, $repeatCounter = 0)
 	{
-		$element 	=& $elementModel->getElement();
+		$element = $elementModel->getElement();
 		$table = $this->getTable();
 		$params = $elementModel->getParams();
 		$customLink = $params->get('custom_link');
@@ -1186,7 +1186,7 @@ class FabrikFEModelList extends JModelForm {
 		} else {
 			$array = JArrayHelper::fromObject($row);
 			foreach ($array as $k => &$v) {
-				$v = json_decode($v, $true);
+				$v = json_decode($v, true);
 				if (is_array($v)) {
 					$v = JArrayHelper::getValue($v, $repeatCounter);
 				}
@@ -2685,9 +2685,7 @@ class FabrikFEModelList extends JModelForm {
 				$existingDef .= " ".$keydata[$k]['extra'];
 			}
 		}
-		if (is_null($objtype)) {
-			return $return;
-		}
+		
 		$lowerobjtype= strtolower(trim($objtype));
 		$lowerobjtype = str_replace(' not null', '', $lowerobjtype);
 		if ($element->name == $origColName && strtolower(trim($existingDef)) == $lowerobjtype) {
@@ -3339,7 +3337,8 @@ class FabrikFEModelList extends JModelForm {
 					if (isset($element->filter_type) && $element->filter_type <> '') {
 						if ($elementModel->canView() && $elementModel->canUseFilter() && $element->show_in_list_summary == '1') {
 							//if ($element->filter_type == 'range' || $element->filter_type == 'auto-complete') {
-							if ($element->filter_type == 'range') {
+							// $$$ rob does nooed to check autoc-ompelte otherwise submission occurs without the value selected.
+							if ($element->filter_type == 'range' || $element->filter_type == 'auto-complete') {
 								$this->_real_filter_action = 'submitform';
 								return $this->_real_filter_action;
 							}
@@ -6606,7 +6605,9 @@ class FabrikFEModelList extends JModelForm {
 			$csvIds = json_decode($params->get('csv_elements'))->show_in_csv;
 		}
 		foreach ($csvIds as $id) {
-			$csvFields[$formModel->getElement($id, true)->getFullName(false, true, false)] = 1;
+			if ($id !== '') {
+				$csvFields[$formModel->getElement($id, true)->getFullName(false, true, false)] = 1;
+			}
 		}
 		return $csvFields;
 	}

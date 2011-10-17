@@ -16,7 +16,7 @@ var Autofill = new Class({
 	
 	initialize: function (options) {
 		this.setOptions(options);
-		window.addEvent('fabrik.form.elements.added', function (form) {
+		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
 			this.setUp(form);	
 		}.bind(this));
 	},

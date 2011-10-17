@@ -2,7 +2,6 @@ var FbDateTime = new Class({
 	Extends: FbElement,
 	initialize: function (element, options) {
 		this.parent(element, options);
-		this.setOptions(element, options);
 		this.hour = '0';
 		this.plugin = 'fabrikdate';
 		this.minute = '00';
@@ -91,7 +90,7 @@ var FbDateTime = new Class({
 				this.element = $(this.strElement);
 			}
 			if (action === 'change') {
-				window.addEvent('fabrik.date.select', function () {
+				Fabrik.addEvent('fabrik.date.select', function () {
 					typeOf(js) === 'function' ? js.delay(0) : eval(js);
 				});
 			}
@@ -313,7 +312,7 @@ var FbDateTime = new Class({
 			'display' : 'block'
 		});
 		this.timeActive = true;
-		window.fireEvent('fabrik.date.showtime', this);
+		Fabrik.fireEvent('fabrik.date.showtime', this);
 	},
 
 	hideTime: function () {
@@ -322,8 +321,8 @@ var FbDateTime = new Class({
 			'display': 'none'
 		});
 		this.form.doElementValidation(this.element.id);
-		window.fireEvent('fabrik.date.hidetime', this);
-		window.fireEvent('fabrik.date.select', this);
+		Fabrik.fireEvent('fabrik.date.hidetime', this);
+		Fabrik.fireEvent('fabrik.date.select', this);
 	},
 
 	formatMinute: function (m) {
@@ -377,18 +376,18 @@ var FbDateTime = new Class({
 		var elid = this.element.id;
 		var el = this;
 		var onclose = function (e) {
-			window.fireEvent('fabrik.date.close', this);
+			Fabrik.fireEvent('fabrik.date.close', this);
 			this.hide();
 			try {
 				form.triggerEvents(elid, ["blur", "click", "change"], el);
 			} catch (err) {
-				fconsole(err);
+				//fconsole(err);
 			}
 		};
 		var onselect = function (calendar, date) {
 			elementid = calendar.params.inputField.id.replace('_cal', '');
 			calendar.params.inputField.value = date;
-			window.fireEvent('fabrik.date.select', this);
+			Fabrik.fireEvent('fabrik.date.select', this);
 			if (calendar.dateClicked) {
 				calendar.callCloseHandler();
 			}
@@ -431,7 +430,7 @@ var FbDateTime = new Class({
 
 /// you can add custom events with:
 	/*
-	 * window.addEvent('fabrik.date.select', function () {
+	 * Fabrik.addEvent('fabrik.date.select', function () {
 		console.log('trigger custom date event');
 	})
  */

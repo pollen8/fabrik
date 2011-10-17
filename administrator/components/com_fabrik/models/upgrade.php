@@ -14,8 +14,9 @@ class FabrikModelUpgrade extends JModel
 			JFactory::getApplication()->enqueueMessage('Already updated');
 			return parent::__construct($config);
 		}
-		$this->backUp();
-		$this->upgrade();
+		if ($this->backUp()) {
+			$this->upgrade();
+		}
 		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
 		return parent::__construct($config);
 	}
@@ -42,17 +43,21 @@ class FabrikModelUpgrade extends JModel
 			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
+				return false;
 			}
 			//create the bkup table (this method will also correctly copy table indexes
 			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name)." like ".$cDb->nameQuote($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
+				return false;
 			}
 			$cDb->setQuery("INSERT INTO ".$cDb->nameQuote('bkup_'.$item->db_table_name)." select * from ".$cDb->nameQuote($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
+				return false;
 			}
 		}
+		return true;
 	}
 
 	/**
@@ -89,9 +94,12 @@ class FabrikModelUpgrade extends JModel
 							$p->median_access = $this->mapACL($p->median_access);
 							$p->count_access = $this->mapACL($p->count_access);
 
-							$p->sub_values = explode('|', $row->sub_values);
-							$p->sub_labels = explode('|', $row->sub_labels);
-							$p->sub_initial_selection = explode('|', $row->sub_intial_selection);
+							$subOpts = new stdClass();
+		
+							$subOts->sub_values = explode('|', $row->sub_values);
+							$subOts->sub_labels = explode('|', $row->sub_labels);
+							$subOts->sub_initial_selection = explode('|', $row->sub_intial_selection);
+							$p->sub_options = $subOpts;
 							break;
 						case '#__fabrik_tables':
 							$row->access = $this->mapACL($row->access);

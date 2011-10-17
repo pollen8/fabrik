@@ -121,18 +121,57 @@ var Loader = new Class({
 /**
  * create the Fabrik name space
  */
-if (typeof(Fabrik) === "undefined") {
-	var Fabrik = {};
-	Fabrik.Windows = {};
-	Fabrik.loader = new Loader();
-	Fabrik.blocks = {};
-	Fabrik.addBlock = function (blockid, block) {
-		Fabrik.blocks[blockid] = block;
-	};
-	//was in head.ready but that cause js error for fileupload in admin when it wanted to 
-	//build its window.
-	Fabrik.iconGen = new IconGenerator({scale: 0.5});
-}
+(function () {
+	if (typeof(Fabrik) === "undefined") {
+		
+		Fabrik = {};
+		Fabrik.events = {};
+		Fabrik.Windows = {};
+		Fabrik.loader = new Loader();
+		Fabrik.blocks = {};
+		Fabrik.addBlock = function (blockid, block) {
+			Fabrik.blocks[blockid] = block;
+		};
+		//was in head.ready but that cause js error for fileupload in admin when it wanted to 
+		//build its window.
+		Fabrik.iconGen = new IconGenerator({scale: 0.5});
+		
+		//events test: replacing window.addEvents as they are reset when you reload mootools in ajax window.
+		// need to load mootools in ajax window otherwise Fabrik classes dont correctly load
+		Fabrik.addEvent = function (type, fn) {
+			if (!Fabrik.events[type]) {
+				Fabrik.events[type] = [];
+			}
+			if (!Fabrik.events[type].contains(fn)) {
+				Fabrik.events[type].push(fn);
+			}
+		};
+		
+		Fabrik.addEvents = function (events) {
+			for (var event in events) {
+				Fabrik.addEvent(event, events[event]);
+			}
+			return this;
+		};
+		
+		Fabrik.fireEvent = function (type, args, delay) {
+			var events = Fabrik.events;
+			if (!events || !events[type]) {
+				return this;
+			}
+			args = Array.from(args);
+	
+			events[type].each(function (fn) {
+				if (delay) {
+					fn.delay(delay, this, args);
+				} else {
+					fn.apply(this, args);
+				}
+			}, this);
+			return this;
+		};
+	}
+}());
 	
 head.ready(function () {
 	Fabrik.tips = new FloatingTips('.fabrikTip', {html: true});

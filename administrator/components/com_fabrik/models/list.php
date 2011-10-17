@@ -381,12 +381,18 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('*, j.id AS id')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
+		$query->select('*, j.id AS id, j.params as jparams')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
 		$db->setQuery($query);
 		$joins = $db->loadObjectList();
 		$fabrikDb = $this->getFEModel()->getDb();
-		for ($i = 0; $i < count($joins); $i++) {
+		$c = count($joins);
+		for ($i = 0; $i < $c; $i++) {
 			$join =& $joins[$i];
+			$jparams = $join->jparams == '' ? new stdClass() : json_decode($join->jparams);
+			if (isset($jparams->type) && $jparams->type == 'element') {
+				unset($joins[$i]);
+				continue;
+			}
 			$fields = $fabrikDb->getTableFields(array($join->join_from_table, $join->table_join));
 			$join->joinFormFields = array_keys($fields[$join->join_from_table]);
 			$join->joinToFields = array_keys($fields[$join->table_join]);

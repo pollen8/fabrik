@@ -8,7 +8,7 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 		
-		window.addEvent('fabrik.form.submit.start', function (form, json) {
+		Fabrik.addEvent('fabrik.form.submit.start', function (form, json) {
 			this.onSubmit(form);
 		}.bind(this));
 		if (this.options.ajax_upload && this.options.editable !== false) {
@@ -259,12 +259,14 @@ var FbFileUpload = new Class({
 			form.result = false;
 			return false;
 		}
-		this.widget.images.each(function (image, key) {
-			key = key.split('\\').getLast();
-			var f = document.getElements('input[name*=' + key + ']');
-			f = f[1];
-			f.value = JSON.encode(image);
-		});
+		if (typeOf(this.widget) !== 'null') {
+			this.widget.images.each(function (image, key) {
+				key = key.split('\\').getLast();
+				var f = document.getElements('input[name*=' + key + ']');
+				f = f[1];
+				f.value = JSON.encode(image);
+			});
+		}
 		return true;
 	},
 

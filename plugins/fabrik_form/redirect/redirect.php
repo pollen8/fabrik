@@ -21,7 +21,6 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 
 	var $_counter = null;
 
-
 	/**
 	 * process the plugin, called afer form is submitted
 	 *
@@ -48,9 +47,9 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$this->_data->save_in_session = $params->get('save_insession');
 		$form = $formModel->getForm();
 
-		$this->data 		= array_merge($this->getEmailData(), $formModel->_formData);
-		$this->_data->jump_page 			= $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
-		$this->_data->thanks_message 	= $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
+		$this->data = array_merge($this->getEmailData(), $formModel->_formData);
+		$this->_data->jump_page = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
+		$this->_data->thanks_message = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
 		if (!$this->shouldRedirect($params)) {
 			//clear any sessoin redirects
 			unset($surl[$this->renderOrder]);
@@ -62,9 +61,6 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 			$session->set($context.'title', $stitle);
 			$session->set($context.'msg', $smsg);
 			$session->set($context.'showsystemmsg', $sshowsystemmsg);
-			/*$session->clear($context.'url');
-			 $session->clear($context.'title');
-			 $session->clear($context.'msg');*/
 			return true;
 		}
 		$this->_storeInSession($formModel);
@@ -95,7 +91,8 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	 * since 3.0 - called via ajax
 	 */
 
-	public function onDisplayThanks(){
+	public function onDisplayThanks()
+	{
 		$this->displayThanks();
 	}
 
@@ -139,7 +136,6 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	 * @param object form model
 	 * @return bol
 	 */
-
 
 	function customProcessResult($method, &$formModel)
 	{
@@ -214,12 +210,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		if (empty($queryvars)) {
 			return $jumpPage;
 		}
-		if (!strstr($jumpPage, "?")) {
-			$jumpPage .= "?";
-		}
-		else {
-			$jumpPage .= "&";
-		}
+		$jumpPage .= (!strstr($jumpPage, "?")) ? "?" : "&";
 		$jumpPage .= implode('&', $queryvars);
 		return $jumpPage;
 	}
@@ -249,8 +240,8 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	 */
 	function _storeInSession(&$formModel)
 	{
-		$app 			=& JFactory::getApplication();
-		$store 		= array();
+		$app = JFactory::getApplication();
+		$store = array();
 		if ($this->_data->save_in_session == '1') {
 			//@TODO - rob, you need to look at this, I really only put this in as a band-aid.
 			// $$$ hugh - we need to guesstimate the 'type', otherwise when the session data is processed
@@ -292,7 +283,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 							if (count($value) == 1 || $c == 0) {
 								$join = 'AND';
 								$grouped = false;
-							}else{
+							} else {
 								$join = 'OR';
 								$grouped = true;
 							}

@@ -866,6 +866,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$err = $this->_getErrorMsg($repeatCounter);
 		$str = '<span class="fabrikErrorMessage">';
 		if ($err !== '') {
+			$err = '<span>'.$err.'</span>';
 			$str .= '<a href="#" class="fabrikTip" title="'.$err.'">'.
 			FabrikHelperHTML::image('alert.png', 'form', $tmpl).
 			'</a>';
@@ -1679,8 +1680,8 @@ class plgFabrik_Element extends FabrikPlugin
 				$default = @$data[$elName]['value'];
 			}
 		}
-		$context = "com_fabrik.table" . $listModel->getId() . ".filter." . $elid;
-		$context .= $normal ? ".normal" : ".advanced";
+		$context = 'com_fabrik.table'.$listModel->getId().'.filter.'.$elid;
+		$context .= $normal ? '.normal' : '.advanced';
 		//we didnt find anything - lets check the filters
 		if ($default == '') {
 			if (empty($filters)) {
@@ -1803,7 +1804,7 @@ class plgFabrik_Element extends FabrikPlugin
 			default:
 				// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
 				//if (get_magic_quotes_gpc()) {
-				$default			= stripslashes($default);
+				$default = stripslashes($default);
 				//}
 				$default = htmlspecialchars($default);
 				$return = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$id.'" />';
@@ -3524,7 +3525,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 	 * @return mixed
 	 */
 
-	public function getCaclulationValue($v)
+	public function getCalculationValue($v)
 	{
 		return (float)$v;
 	}
@@ -3967,7 +3968,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 
 			$script = array();
 			$script[] = '<script type="text/javasript">';
-			$script[] = "window.fireEvent('fabrik.list.inlineedit.stopEditing');"; //makes the inlined editor stop editing the cell
+			$script[] = "Fabrik.fireEvent('fabrik.list.inlineedit.stopEditing');"; //makes the inlined editor stop editing the cell
 			$script[] = '</script>';
 
 			echo $html.implode("\n", $script);
@@ -4004,7 +4005,7 @@ FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FR
 			Fabrik.inlineedit_$elementid.focus();
 			Fabrik.inlineedit_$elementid.token = '".JUtility::getToken()."';\n";
 
-			$onLoad .= "window.fireEvent('fabrik.list.inlineedit.setData');\n";
+			$onLoad .= "Fabrik.fireEvent('fabrik.list.inlineedit.setData');\n";
 			$srcs = array();
 			$this->formJavascriptClass($srcs);
 			FabrikHelperHTML::script($srcs, $onLoad);

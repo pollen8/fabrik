@@ -11,9 +11,9 @@ var History = new Class({
 		if ($(redobutton)) {
 			$(redobutton).addEvent('click', this.redo.bindWithEvent(this));
 		}
-		window.addEvent('fabrik.history.on', this.on.bindWithEvent(this));
-		window.addEvent('fabrik.history.off', this.off.bindWithEvent(this));
-		window.addEvent('fabrik.history.add', this.add.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.history.on', this.on.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.history.off', this.off.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.history.add', this.add.bindWithEvent(this));
 		this.history = $A([]);
 	},
 

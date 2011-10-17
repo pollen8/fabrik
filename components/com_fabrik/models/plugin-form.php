@@ -142,8 +142,8 @@ class plgFabrik_Form extends FabrikPlugin
 		if (isset($this->emailData)) {
 			return $this->emailData;
 		}
-		$model		=& $this->formModel;
-		if (is_null($model->_formDataWithTableName)){
+		$model = $this->formModel;
+		if (is_null($model->_formDataWithTableName)) {
 			return array();
 		}
 		$model->isAjax();
@@ -171,7 +171,7 @@ class plgFabrik_Form extends FabrikPlugin
 		$groups = $model->getGroupsHiarachy();
 
 		foreach ($groups as $gkey => $groupModel) {
-			$groupParams 	=& $groupModel->getParams();
+			$groupParams = $groupModel->getParams();
 			//check if group is acutally a table join
 
 			$repeatGroup = 1;
@@ -232,12 +232,12 @@ class plgFabrik_Form extends FabrikPlugin
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 					$element = $elementModel->getElement();
 
-					$k			= $elementModel->getFullName(false, true, false);
-					$key 				= $elementModel->getFullName(true, true, false);
+					$k = $elementModel->getFullName(false, true, false);
+					$key = $elementModel->getFullName(true, true, false);
 					//used for working out if the element should behave as if it was
 					//in a new form (joined grouped) even when editing a record
 					$elementModel->_inRepeatGroup = $groupModel->canRepeat();
-					$elementModel->_inJoin 				= $groupModel->isJoin();
+					$elementModel->_inJoin = $groupModel->isJoin();
 					$elementModel->_editable 	= false;
 
 					if ($elementModel->_inJoin) {
@@ -256,7 +256,7 @@ class plgFabrik_Form extends FabrikPlugin
 							$rawval = JArrayHelper::getValue($model->_formDataWithTableName, $k."_raw", '');
 							if ($rawval == '') {
 								$this->emailData[$k."_raw"] = $model->_formDataWithTableName[$key];
-							}else{
+							} else {
 								// things like the user element only have their raw value filled in at this point
 								// so don't overwrite that with the blank none-raw value
 								// the none-raw value is add in getEmailValue()
@@ -291,10 +291,11 @@ class plgFabrik_Form extends FabrikPlugin
 
 	protected function getAdminInfo()
 	{
-		$db = JFactory::getDBO();
-		$query = 'SELECT id, name, email, sendEmail' .
-					' FROM #__users' .
-					' WHERE LOWER(usertype) = "super administrator" AND sendEmail = "1"';
+		$db = JFactory::getDBO(true);
+		$query = $db->getQuery();
+		$query->select(' id, name, email, sendEmail')
+		->from('#__users')
+		->where('WHERE sendEmail = "1"');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		return $rows;

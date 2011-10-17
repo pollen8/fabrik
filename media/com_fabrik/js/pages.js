@@ -2,14 +2,14 @@ var Pages = new Class({
 	initialize: function (container, editable) {
 		this.editable = editable;
 		document.addEvent('mousedown', this.clearActive.bindWithEvent(this));
-		window.addEvent('fabrik.page.add', this.makeActive.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.page.add', this.makeActive.bindWithEvent(this));
 		this.pages = $H({});
 		this.activePage = null;
 		this.container = document.id(container);
-		window.addEvent('fabrik.tab.add', this.add.bindWithEvent(this));
-		window.addEvent('fabrik.tab.click', this.show.bindWithEvent(this));
-		window.addEvent('fabrik.tab.remove', this.remove.bindWithEvent(this));
-		window.addEvent('fabrik.keynav', this.moveItem.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.tab.add', this.add.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.tab.click', this.show.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.tab.remove', this.remove.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.keynav', this.moveItem.bindWithEvent(this));
 	},
 	
 	/* todo perhaps makecive and clearActive should be a mixin? */
@@ -129,8 +129,8 @@ Page = new Class({
 		this.editable = editable;
 		this.page = new Element('div', {'class': 'page', 'styles': {'display': 'none'}});
 		if (this.editable) {
-			window.addEvent('fabrik.item.resized', this.saveCoords.bindWithEvent(this));
-			window.addEvent('fabrik.item.moved', this.saveCoords.bindWithEvent(this));
+			Fabrik.addEvent('fabrik.item.resized', this.saveCoords.bindWithEvent(this));
+			Fabrik.addEvent('fabrik.item.moved', this.saveCoords.bindWithEvent(this));
 		}
 	},
 	
@@ -150,12 +150,12 @@ Page = new Class({
 		e.stop();
 		if (confirm('Do you really want to delete')) {
 			$(id).destroy();
-			window.fireEvent('fabrik.page.block.delete', [id]);
+			Fabrik.fireEvent('fabrik.page.block.delete', [id]);
 		}
 	},
 	
 	insert: function (id, label, type, dimensions) {
-		window.fireEvent('fabrik.page.insert', [this, id, label, type, dimensions]);
+		Fabrik.fireEvent('fabrik.page.insert', [this, id, label, type, dimensions]);
 	},
 	
 	saveCoords: function (e) {

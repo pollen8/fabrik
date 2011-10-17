@@ -25,7 +25,8 @@ div.calendar{
 	box-pack: center;
 }
 
-.mozilla .displayBox{
+.mozilla .displayBox,
+.webkit .displayBox{
 		/* ff needs to stipulate a width otherwise box-flex is not applied */
 	width:100%;
 }
@@ -193,7 +194,11 @@ span.handlelabel {
 }
 
 .floating-tip ul{
-	padding:0;margin:0;
+	padding:0;margin:0;min-width:100px;
+}
+
+.floating-tip > span{
+	display:block;
 }
 
 .floating-tip ul.fabrikElementContainer li{

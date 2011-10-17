@@ -55,6 +55,10 @@ class FabrikFEModelJoin extends FabModel{
 			} else {
 				$this->_join->load($this->_id);
 			}
+			if (is_string($this->_join->params)) {
+				$this->_join->params = trim($this->_join->params) == '' ? '{"type": ""}' : $this->_join->params;
+				$this->_join->params = json_decode($this->_join->params);
+			}
 		}
 		return $this->_join;
 	}
@@ -129,6 +133,6 @@ class FabrikFEModelJoin extends FabModel{
 		$this->_error = '';
 		return true;
 	}
-
+	
 }
 ?>

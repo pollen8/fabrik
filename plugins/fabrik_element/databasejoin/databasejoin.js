@@ -20,7 +20,7 @@ var FbDatabasejoin = new Class({
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.startEvent = this.start.bindWithEvent(this);
 			this.watchAdd();
-			window.addEvent('fabrik.form.submitted', function (form, json) {
+			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
 				//fired when form submitted - enables element to update itself with any new submitted data
 				if (this.options.popupform === form.id) {
 					this.appendInfo(json);
@@ -49,10 +49,13 @@ var FbDatabasejoin = new Class({
 	},
 	
 	watchAdd: function () {
-		var b = this.getContainer().getElement('.toggle-addoption');
-		//if duplicated remove old events
-		b.removeEvent('click', this.startEvent);
-		b.addEvent('click', this.startEvent);
+		
+		if (c = this.getContainer()) {
+			var b = c.getElement('.toggle-addoption');
+			//if duplicated remove old events
+			b.removeEvent('click', this.startEvent);
+			b.addEvent('click', this.startEvent);
+		}
 	},
 	
 	start: function (e) {
@@ -161,18 +164,20 @@ var FbDatabasejoin = new Class({
 	},
 	
 	watchSelect: function () {
-		var sel = this.getContainer().getElement('.toggle-selectoption');
-		if (typeOf(sel) !== 'null') {
-			sel.addEvent('click', this.selectRecord.bindWithEvent(this));
-			window.addEvent('fabrik.list.row.selected', function (json) {
-				if (this.options.popupform === json.formid) {
-					this.update(json.rowid);
-					var winid = this.element.id + '-popupwin-select';
-					if (Fabrik.Windows[winid]) {
-						Fabrik.Windows[winid].close();
+		if (c = this.getContainer()) {
+			var sel = c.getElement('.toggle-selectoption');
+			if (typeOf(sel) !== 'null') {
+				sel.addEvent('click', this.selectRecord.bindWithEvent(this));
+				Fabrik.addEvent('fabrik.list.row.selected', function (json) {
+					if (this.options.popupform === json.formid) {
+						this.update(json.rowid);
+						var winid = this.element.id + '-popupwin-select';
+						if (Fabrik.Windows[winid]) {
+							Fabrik.Windows[winid].close();
+						}
 					}
-				}
-			}.bind(this));
+				}.bind(this));
+			}
 		}
 	},
 	

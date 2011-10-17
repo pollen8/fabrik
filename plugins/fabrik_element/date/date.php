@@ -547,7 +547,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				try{
 					form_'.$formModel->getId().'.triggerEvents(\''.$subElContainerId.'\', ["click", "focus", "change"], this);
 				}catch(err) {
-					fconsole(err);
+					//fconsole(err);
 				};
 			});';
 			//end onselect function
@@ -558,7 +558,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				try{
 					return disallowDate(this, date);
 				}catch(err) {
-					fconsole(err);
+					//fconsole(err);
 				}
 			});
 			';
@@ -881,16 +881,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		switch ($filterType) {
 			case 'field':
 			case 'dropdown':
-				$mysql = $this->tableDateToMySQL($value);
-				if ($mysql !== false) {
-					$value = $mysql;
-				}
 
 				if (!$params->get('date_showtime', 0) || $exactTime == false) {
 					//$$$ rob turn into a ranged filter to search the entire day
 					$value = (array)$value;
 					$condition = 'BETWEEN';
 					$value[1] = date("Y-m-d H:i:s", strtotime($this->addDays($value[0], 1)) - 1);
+				} else {
+					$mysql = $this->tableDateToMySQL($value);
+					if ($mysql !== false) {
+						$value = $mysql;
+					}
 				}
 				break;
 
@@ -905,7 +906,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				break;
 		}
 		$this->_resetToGMT = true;
-		return parent::getFilterValue($value, $condition, $eval);
+		$value = parent::getFilterValue($value, $condition, $eval);
+		return $value;
 	}
 
 	/**

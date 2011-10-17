@@ -16,7 +16,7 @@
 head.ready(function(){
 	var list = document.id('list_<?php echo $this->list->id?>');
 
-	 window.addEvent('fabrik.list.update', function(l){
+	 Fabrik.addEvent('fabrik.list.update', function(l){
 			if(l.id == <?php echo (int)$this->list->id?>){
 				list.getElements('.fabrik___heading span.filter').hide();
 			}

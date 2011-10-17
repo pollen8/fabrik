@@ -8,7 +8,7 @@ var FrontPackage = new Class({
 		opts.editabe = false;
 		this.parent(opts);
 		this.setup();
-		window.addEvent('fabrik.list.add', this.loadForm.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.list.add', this.loadForm.bindWithEvent(this));
 	},
 	
 	loadForm: function (list, e) {
