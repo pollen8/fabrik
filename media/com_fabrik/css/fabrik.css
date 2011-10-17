@@ -194,7 +194,11 @@ span.handlelabel {
 }
 
 .floating-tip ul{
-	padding:0;margin:0;
+	padding:0;margin:0;min-width:100px;
+}
+
+.floating-tip > span{
+	display:block;
 }
 
 .floating-tip ul.fabrikElementContainer li{

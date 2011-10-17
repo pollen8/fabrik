@@ -51,6 +51,8 @@ class plgSystemFabrik extends JPlugin
 		jimport('joomla.filesystem.file');
 		$p = JPATH_SITE.DS.'plugins'.DS.'system'.DS.'fabrik'.DS;
 		$defines = JFile::exists($p.'user_defines.php') ? $p.'user_defines.php' : $p.'defines.php';
+		$doc = JFactory::getDocument();
+		//$doc->addCustomTag('<meta http-equiv="X-UA-Compatible" content="IE=9" />');
 		require_once($defines);
 	}
 

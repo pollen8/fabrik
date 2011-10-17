@@ -11,7 +11,6 @@
 	if ($this->showFilters && $this->params->get('show-table-filters') == 2) {?>
 		<li>
 			<a href="#" class="toggleFilters">
-			
 				<?php echo FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_FILTER').'</span>'));?>
 				<span><?php echo JText::_('COM_FABRIK_FILTER');?></span>
 			</a>
@@ -20,11 +19,11 @@
 	if ($this->canGroupBy) {?>
 		<li>
 			<a href="#" class="groupBy">
-				<?php echo FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl,  array('title' => JText::_('COM_FABRIK_GROUP_BY')));?>
+				<?php echo FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, array('title' => JText::_('COM_FABRIK_GROUP_BY')));?>
 				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
 			</a>
 			<ul class="floating-tip">
-				<?php foreach($this->groupByHeadings as $url => $label) {?>
+				<?php foreach ($this->groupByHeadings as $url => $label) {?>
 					<li><a href="<?php echo $url?>"><?php echo $label?></a></li>
 				<?php
 				}?>

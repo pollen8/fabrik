@@ -3,23 +3,13 @@ header('Content-type: text/css');
 $c = $_REQUEST['c'];
 echo "
 #listform_$c table.fabrikList {
+	clear:right;
 	border-collapse: collapse;
 	margin-top: 10px;
 	color: #444444;
 	/* seem to remember an issue with this,
 	but it seems nicer to have the table full width
 	- then you can right align the top buttons against it */
-	width:100%;
-}
-
-#listform_$c .fabrik_buttons{
-	height:2.5em;
-	display:-webkit-box;
-	display:-moz-box;
-	display:-box;
-	-webkit-box-pack:end;
-	-moz-box-pack:end;
-	box-pack:end;
 	width:100%;
 }
 
@@ -117,29 +107,26 @@ div.calendar{
 .advancedSeach_$c .fabrik___heading{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
-	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
-
-	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
-		'#D7D7D7', endColorstr = '#F3F3F3' ); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
-		to(#D7D7D7) );
-
 	border-bottom: 1px solid #B7B7B7;
 	border-top: 1px solid #FFFFFF;
 	color: #777777;
-	font-size: 11px;
 	font-weight: bold;
 	min-height: 20px;
 	line-height: 19px;
 	margin: 0;
-	text-align: left;
 	text-shadow: 0 1px 0 #FFFFFF;
+  zoom: 1;
 	text-transform: uppercase;
 }
 
-#listform_$c .fabrikNav{
-	border-top: 1px solid #333;
+#listform_$c th,
+#listform_$c tfoot td{
+	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
+		to(#D7D7D7) );
 }
+
 
 #listform_$c .fabrik_groupheading a{
 	color: #777777;
@@ -199,11 +186,6 @@ div.calendar{
 	font-weight: bold;
 }
 
-#listform_$c .fabrikButtons {
-	text-align: right;
-	padding-top: 10px;
-}
-
 #listform_$c ul.fabrikRepeatData {
 	padding: 0;
 	margin: 0;
@@ -220,86 +202,65 @@ div.calendar{
 	padding:10px;
 }
 
-/*****************************************************/
-/********** default action formatting ****************/
-/*****************************************************/
-#listform_$c .fabrik_row ul.fabrik_action,
-#listform_$c ul.fabrik_action,
-.advancedSeach_$c ul.fabrik_action{
+/********************************************/
+/ ****** start: action buttons **************/
+/********************************************/
+
+#listform_$c .fabrik_buttons {
+	height:25px;
+}
+
+#listform_$c ul.fabrik_action {
 	list-style:none;
-	border:1px solid #999;
-	padding:0;
-	text-align:left;
-	font-weight: bold;
-	font-size: 11px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
+	background:none;
+	list-style:none;
+	min-height:25px;
 	border-radius: 6px;
-	height:23px;
+	float:right;
 	margin:5px;
-	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
-		'#cccccc', endColorstr = '#666666' ); /* for IE */
+	padding:0;
+	border:1px solid #999;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#cccccc'); /* for IE */
+
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
+	background: -o-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
+  background: -ms-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
 
-	display:-moz-box;
-	display:-webkit-box;
-	display:box;
-
-	-webkit-box-pack:end;
-	-moz-box-pack:end;
-	box-pack:end;
 }
 
-#listform_$c ul:empty
-{
-	border:0 !important;
-}
-
-#listform_$c .fabrik_row ul.fabrik_action span,
 #listform_$c ul.fabrik_action span{
 	display:none;
 }
 
-#listform_$c ul.fabrik_action.fabrik_keeptext span{
-	display:inline;
-}
-
-#listform_$c .fabrik_row .fabrik_action li,
 #listform_$c .fabrik_action li,
 .advancedSeach_$c .fabrik_action li{
+	float:left;
 	border-left:1px solid #999;
 	min-height:17px;
-	margin-top:2px;
-	margin-bottom:2px;
+	width:25px;
+	text-align:center;
 }
 
-#listform_$c .fabrik_buttons li{
-	margin:0;
-}
 
-#listform_$c .fabrik_buttons li a{
-	display:block;
-	padding:4px 6px 2px 6px;
-}
-
-#listform_$c .fabrik_row .fabrik_action li:first-child,
 #listform_$c .fabrik_action li:first-child,
 .advancedSeach_$c .fabrik_action li:first-child{
--moz-border-radius: 6px 0 0 6px;
+	-moz-border-radius: 6px 0 0 6px;
 	-webkit-border-radius: 6px 0 0 6px;
 	border-radius: 6px 0 0 6px;
 	border:0;
 }
 
-#listform_$c .fabrik_row .fabrik_action li:last-child,
-#listform_$c .fabrik_action li:last-child,
-.advancedSeach_$c .fabrik_action li:last-child{
--moz-border-radius: 0 6px 6px 0;
-	-webkit-border-radius: 0 6px 6px 0;
-	border-radius: 0 6px 6px 0;
+#listform_$c .fabrik_action li a{
+	display:block;
+	padding:4px 6px 2px 6px;
 }
+
+
+/********************************************/
+/ ****** end: action buttons ****************/
+/********************************************/
 
 /*****************************************************/
 /********** the context menu that appears ************/

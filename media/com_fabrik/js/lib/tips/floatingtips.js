@@ -99,6 +99,13 @@ var FloatingTips = new Class({
 			//stops the element from being hidden if mouse over trigger
 			return this;
 		}
+		//for click triggers like group by moving out of trigger element shouldnt hide list.
+		if (this.options.showOn === 'click') {
+			if (!e.target.getParent('.' + this.options.className)) {
+				//not moving out of the main menu
+				return;
+			}
+		}
 		var tip = element.retrieve('floatingtip');
 		if (!tip) return this;
 		this._animate(tip, 'out');
@@ -130,8 +137,9 @@ var FloatingTips = new Class({
 			cnt = oc(elem);
 			break;
 		}
-		var cwr = new Element('div').addClass(o.className).setStyle('margin', 0);
-		var tip = new Element('div').addClass(o.className + '-wrapper').setStyles({ 'margin': 0, 'padding': 0, 'z-index': cwr.getStyle('z-index') }).adopt(cwr);
+		var cwr = new Element('div').addClass(o.className).setStyles({'margin': 0, 'position': 'absolute'});
+		var positioner = new Element('div').addClass(o.className + '-positioner').setStyles({'position': 'relative'}).adopt(cwr);
+		var tip = new Element('div').addClass(o.className + '-wrapper').setStyles({ 'margin': 0, 'padding': 0, 'z-index': cwr.getStyle('z-index') }).adopt(positioner);
 		
 		if (cnt) { 
 			if (o.html) cwr.set('html', typeof(cnt) == 'string' ? cnt : cnt.get('html')); 
@@ -146,37 +154,42 @@ var FloatingTips = new Class({
 		
 		if (o.balloon && !Browser.ie6) {
 			
-			var trg = new Element('div').addClass(o.className + '-triangle').setStyles({ 'margin': 0, 'padding': 0 });
+			var trg = new Element('div').addClass(o.className + '-triangle').setStyles({ 'margin': 0, 'padding': 0, 'position': 'absolute' });
 			trg.setStyle('z-index', tip.getStyle('z-index') -1);
 			var trgSt = {};
 		
 			var r = 0;
 			// @TODO - margin offsets only ok if arrowSize  = 32.
+			trgSt['height'] = '32px';
+			trgSt['width'] = '32px';
 			switch (opos) {
 			case 'inside': 
 			case 'top': 
 				r = 270;
-				trgSt['height'] = '20px';
-				//trgSt['margin-top'] = '-10px';
-				//trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2: o.arrowOffset;
+				cwr.setStyle('bottom', '0');
+				trgSt['bottom'] = '-30px';
+				trgSt['left'] = o.center ? cwr.getSize().x / 2 - o.arrowSize / 2 : o.arrowOffset;
 				break;
+				
+				
 			case 'right': 
 				r = 0;
-				trgSt['float'] = 'left';
-				trgSt['width'] = '20px';
-				trgSt['margin-left'] = '-31px';
-				trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+				trgSt['top'] = o.center ?  cwr.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+				cwr.setStyle('left', '10px');
+				trgSt['margin-left'] = '-20px';
 				break;
-			case 'bottom': r = 90;
-				trgSt['height'] = '21px';
-				//trgSt['margin-top'] = '-21px';
-				//trgSt['margin-left'] = o.center ? tip.getSize().x / 2 - o.arrowSize / 2 : o.arrowOffset;
+				
+			case 'bottom':
+				r = 90;
+				trgSt['margin-top'] = '-15px';
+				trgSt['left'] = o.center ? cwr.getSize().x / 2 - o.arrowSize / 2 : o.arrowOffset;
+				cwr.setStyle('top', '5px');
 				break;
-			case 'left': r = 180; 
-				trgSt['float'] = 'right';
-				trgSt['width'] = '20px';
-				trgSt['margin-right'] = '-20px';
-				trgSt['margin-top'] = o.center ?  tip.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+			case 'left': 
+				r = 180; 
+				trgSt['right'] = '-25px';
+				trgSt['top'] = o.center ?  cwr.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+				cwr.setStyle('right', '5px');
 				break;
 			}
 			var scale = o.arrowSize/32;
@@ -185,14 +198,15 @@ var FloatingTips = new Class({
 			if (bg === 'transparent') {
 				bg = '#fff';
 			}
+	
 			var arrowStyle = {
-				size: {width: 32, height: 32},
-				scale: scale, 
-				rotate: r,
-				fill: {
-					color: [ bg,  bg]
-				}
-			};
+					size: {width: 32, height: 32},
+					scale: scale, 
+					rotate: r,
+					fill: {
+						color: [ bg,  bg]
+					}
+				};
 			if (borderSize !== 0) {
 				arrowStyle.stroke = {
 					'color': cwr.getStyle('border-color').split(' ')[0],
@@ -225,11 +239,12 @@ var FloatingTips = new Class({
 			}
 			var arrow = Fabrik.iconGen.create(icon.arrowleft, arrowStyle);
 			arrow.inject(trg);
-			trg.setStyles(trgSt).inject(tip, (opos == 'top' || opos == 'inside') ? 'bottom' : 'top');
+			trg.setStyles(trgSt).inject(tip.getElement('.' + o.className + '-positioner'), (opos == 'top' || opos == 'inside') ? 'bottom' : 'top');
 			
 		}
 		
-		var tipSz = tip.getSize(), trgC = elem.getCoordinates(body);
+		//var tipSz = tip.getSize(), trgC = elem.getCoordinates(body);
+		var tipSz = cwr.getSize(), trgC = elem.getCoordinates(body);
 		var pos = { x: trgC.left + o.offset.x, y: trgC.top + o.offset.y };
 		
 		if (opos == 'inside') {
@@ -238,10 +253,12 @@ var FloatingTips = new Class({
 			pos = { x: o.offset.x, y: o.offset.y };
 		} else {
 			switch (opos) {
-				case 'top':     pos.y -= tipSz.y + o.distance; break;
+				//case 'top':     pos.y -= tipSz.y + o.distance; break;
+			case 'top':     pos.y -=  o.distance; break;
 				case 'right': 	pos.x += trgC.width + o.distance; break;
 				case 'bottom': 	pos.y += trgC.height + o.distance; break;
-				case 'left': 	pos.x -= tipSz.x + o.distance; break;
+				//case 'left': 	pos.x -= tipSz.x + o.distance; break;
+				case 'left': 	pos.x -= o.distance; break;
 			}
 		}
 		
