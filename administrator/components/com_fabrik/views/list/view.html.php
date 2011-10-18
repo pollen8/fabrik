@@ -32,19 +32,17 @@ class FabrikViewList extends JView
 	{
 		FabrikHelperHTML::framework();
 		// Initialiase variables.
-		$this->form		= $this->get('Form');
-
-		$this->item		= $this->get('Item');
+		$this->form	= $this->get('Form');
+		$this->item	= $this->get('Item');
 		$formModel = $this->get('FormModel');
 		$formModel->setId($this->item->form_id);
-		$this->state	= $this->get('State');
+		$this->state = $this->get('State');
 		$this->js = $this->get('Js');
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-
 
 		$this->addToolbar();
 		if ($this->item->id == 0) {
@@ -77,10 +75,10 @@ class FabrikViewList extends JView
 	}
 
 	/**
-	 *
 	 * show the list's linked forms etc
 	 * @param $tpl
 	 */
+	
 	public function showLinkedElements($tpl = null)
 	{
 		$model = $this->getModel('Form');

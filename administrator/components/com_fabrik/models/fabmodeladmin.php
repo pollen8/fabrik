@@ -27,10 +27,9 @@ abstract class FabModelAdmin extends JModelAdmin
 	{
 		$item = $this->getItem();
 		// load up the active plug-ins
-		$dispatcher = &JDispatcher::getInstance();
+		$dispatcher = JDispatcher::getInstance();
 		$plugins = JArrayHelper::getValue($item->params, 'plugins', array());
 		$return = array();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		//@todo prob wont work for any other model that extends this class except for the form/list model
 		switch (get_class($this)) {
@@ -43,18 +42,18 @@ abstract class FabModelAdmin extends JModelAdmin
 		$feModel = JModel::getInstance($class, 'FabrikFEModel');
 		$feModel->setId($this->getState($class.'.id'));
 
+		$state = isset($item->params['plugin_state']) ? $item->params['plugin_state'] : array();
 		foreach ($plugins as $x => $plugin) {
-
 			$o = $pluginManager->getPlugIn($plugin, $this->pluginType);
 			$o->getJForm()->model = $feModel;
 			$data = (array)$item->params;
 			$str = $o->onRenderAdminSettings($data, $x);
-			//$str = str_replace(array("\n", "\r"), "", $str);
 			$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-
 			$location = $this->getPluginLocation($x);
 			$event = $this->getPluginEvent($x);
-			$return[] = array('plugin'=>$plugin, 'html'=>$str, 'location'=>$location, 'event'=>$event);
+			$opts = new stdClass();
+			$opts->state = (bool)JArrayHelper::getValue($state, $x);
+			$return[] = array('plugin'=>$plugin, 'html'=>$str, 'location'=>$location, 'event'=>$event, 'opts' => $opts);
 		}
 		return $return;
 	}

@@ -8,9 +8,10 @@ var ListPluginManager = new Class({
 		this.opts.type = 'list';
 	},
 	
-	getPluginTop: function (plugin, loc, when) {
-		return new Element('tr').adopt(
-			new Element('td').adopt([
+	getPluginTop: function (plugin, opts) {
+		var yesno = this.getPublishedYesNo(opts);
+		var tr1 = new Element('tr').adopt([
+			new Element('td').adopt(
 				new Element('input', {
 					'value': Joomla.JText._('COM_FABRIK_ACTION'),
 					'size': 6,
@@ -18,8 +19,10 @@ var ListPluginManager = new Class({
 					'class': 'readonly'
 				}),
 				this._makeSel('inputbox elementtype', 'jform[params][plugins][]', this.plugins, plugin)
-			])
-		);
+			)
+			]);
+		var tr2 = new Element('tr').adopt(new Element('td').set('html', yesno));
+		return new Element('table').adopt(new Element('tbody').adopt(tr1, tr2));
 	}
 });
 

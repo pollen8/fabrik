@@ -56,7 +56,7 @@ var PluginManager = new Class({
 	watchAdd: function () {
 		$('addPlugin').addEvent('click', function (e) {
 			e.stop();
-			this.addAction('', '', '', '');
+			this.addAction('', '', {});
 		}.bind(this));
 	},
 	
@@ -71,7 +71,7 @@ var PluginManager = new Class({
 		return '';
 	},
 	
-	addAction: function (pluginHTML, plugin, loc, when, cloneJs) {
+	addAction: function (pluginHTML, plugin, opts, cloneJs) {
 		cloneJs = cloneJs === false ? false : true;
 		var td = new Element('td');
 		var str  = '';
@@ -88,11 +88,11 @@ var PluginManager = new Class({
 		//end test
 		td.innerHTML = str;
 		var display = 'block';
-		
+		opts.counter = this.counter;
 		var c = new Element('div', {'class': 'actionContainer'}).adopt(
 		new Element('table', {'class': 'adminform', 'id': 'formAction_' + this.counter, 'styles': {'display': display}}).adopt(
 			new Element('tbody', {'styles': {'width': '100%'}}).adopt([
-				this.getPluginTop(plugin, loc, when),
+				this.getPluginTop(plugin, opts),
 				new Element('tr').adopt(td),
 				new Element('tr').adopt(
 					new Element('td', {}).adopt(
@@ -137,9 +137,9 @@ var PluginManager = new Class({
 		//watch the drop down
 		formaction.getElement('.elementtype').addEvent('change', function (e) {
 			e.stop();
-			var id = $(e.target).up(3).id.replace('formAction_', '');
+			var id = e.target.getParent('.adminform').id.replace('formAction_', '');
 			$('formAction_' + id).getElements('.' + this.opts.type + 'Settings').hide();
-			var s = $(e.target).get('value');
+			var s = e.target.get('value');
 			if (s !== Joomla.JText._('COM_FABRIK_PLEASE_SELECT') && s !== '') {
 				$('formAction_' + id).getElement('.page-' + s).show();
 			}
@@ -149,6 +149,15 @@ var PluginManager = new Class({
 		//show any tips (only running code over newly added html)
 		var myTips = new Tips($$('#formAction_' + this.counter + ' .hasTip'), {});
 		this.counter ++;
+	},
+	
+	getPublishedYesNo: function (opts) {
+		var yesno = '<label>' + Joomla.JText._('COM_FABRIK_PUBLISHED') + '</label>';
+		var yeschecked = opts.state !== false ? 'checked="checked' : '';
+		var nochecked = opts.state === false ? 'checked="checked' : '';
+		yesno += '<fieldset class="radio"><label>' + Joomla.JText._('JYES') + '<input type="radio" name="jform[params][plugin_state][' + opts.counter + ']" ' + yeschecked + ' value="1"></label>';
+		yesno += '<label>' + Joomla.JText._('JNO') + '<input type="radio" name="jform[params][plugin_state][' + opts.counter + ']"' + nochecked + ' value="0"></label></fieldset>';
+		return yesno;
 	}
 	
 });

@@ -183,7 +183,7 @@ var fabrikAdminElement = new Class({
 		}
 	},
 	
-	getPluginTop: function (plugin, loc, when) {
+	getPluginTop: function (plugin, opts) {
 		return new Element('tr').adopt(
 			new Element('td').adopt([
 				new Element('input', {'value': Joomla.JText._('COM_FABRIK_ACTION'), 'size': 1, 'readonly': true, 'class': 'readonly'}),

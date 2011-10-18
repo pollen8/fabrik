@@ -271,6 +271,7 @@ class FabrikModelList extends FabModelAdmin
 		JText::script('COM_FABRIK_FROM_COLUMN');
 		JText::script('COM_FABRIK_TO_COLUMN');
 		JText::script('COM_FABRIK_REPEAT_GROUP_BUTTON_LABEL');
+		JText::script('COM_FABRIK_PUBLISHED');
 
 		$joinTypeOpts = array();
 		$joinTypeOpts[] = array('inner', JText::_('INNER JOIN'));
@@ -314,7 +315,7 @@ class FabrikModelList extends FabModelAdmin
 			$joinGroupParams = json_decode($joins[$i]->params);
 			$j = $joins[$i];
 			$joinFormFields = json_encode($j->joinFormFields);
-			$joinToFields =  json_encode($j->joinToFields);
+			$joinToFields = json_encode($j->joinToFields);
 			$repeat = $joinGroupParams->repeat_group_button == 1 ? 1 :0;
 			$js .= "	oAdminTable.addJoin('{$j->group_id}','{$j->id}','{$j->join_type}','{$j->table_join}',";
 			$js .= "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields, $repeat);\n";
@@ -325,7 +326,11 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$js .= "controller = new ListPluginManager(aPlugins);\n";
 		foreach ($plugins as $plugin) {
-			$js .= "controller.addAction('".$plugin['html']."', '".$plugin['plugin']."', '".@$plugin['location']."', '".@$plugin['event']."', false);\n";
+			$opts = array_key_exists('opts', $plugin) ? $plugin['opts'] : new stdClass();
+			$opts->location = @$plugin['location'];
+			$opts->event = @$plugin['event'];
+			$opts = json_encode($opts);
+			$js .= "controller.addAction('".$plugin['html']."', '".$plugin['plugin']."', ".$opts.", false);\n";
 		}
 
 		$js .= "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);\n";

@@ -38,6 +38,9 @@ var FbListPlugin = new Class({
 
 	watchButton: function () {
 		//do relay for floating menus
+		if (typeOf(this.options.name) === 'null') {
+			return;
+		}
 		document.addEvent('click:relay(.' + this.options.name + ')', function (e) {
 			e.stop();
 			var row, chx;

@@ -35,12 +35,12 @@ class FabrikViewForm extends JView
 	{
 		// Initialiase variables.
 		FabrikHelperHTML::framework();
-		$this->form		= $this->get('Form');
-		$this->item		= $this->get('Item');
-		$this->state	= $this->get('State');
+		$this->form	= $this->get('Form');
+		$this->item	= $this->get('Item');
+		$this->state = $this->get('State');
 		$this->abstractPlugins = $this->get('AbstractPlugins');
 		$this->js = $this->get('Js');
-		$this->plugins 	= $this->get('Plugins');
+		$this->plugins = $this->get('Plugins');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

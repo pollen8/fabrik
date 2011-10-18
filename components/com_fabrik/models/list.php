@@ -189,7 +189,7 @@ class FabrikFEModelList extends JModelForm {
 		$pluginManager->getPlugInGroup('list');
 		$pluginManager->runPlugins('button', $this, 'list');
 		$buttons = $pluginManager->_data;
-		$this->getPluginJsClasses();
+		//$this->getPluginJsClasses();
 		return $buttons;
 	}
 
@@ -197,7 +197,17 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
-		$pluginManager->runPlugins('loadJavascriptClass', $this, 'list');
+		$src = array();
+		$pluginManager->runPlugins('loadJavascriptClass', $this, 'list', $src);
+		$r = array();
+		foreach ($pluginManager->_data as $f) {
+			if (is_array($f)) {
+				$r = array_merge($r, $f);
+			} else {
+				$r[] = $f;
+			}
+		}
+		return $r;
 	}
 
 	function getPluginJsObjects($container = null)

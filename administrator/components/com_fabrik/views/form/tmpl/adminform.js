@@ -27,9 +27,11 @@ fabrikAdminForm = new Class({
 		this.opts.type = 'form';
 	},
 	
-	getPluginTop: function (plugin, loc, when) {
-		var s = this._makeSel('inputbox events', 'jform[plugin_events][]', this.opts.when, when);
-		return new Element('tr').adopt(
+	getPluginTop: function (plugin, opts) {
+		var yesno = this.getPublishedYesNo(opts);
+		var s = this._makeSel('inputbox events', 'jform[plugin_events][]', this.opts.when, opts.event);
+	
+		var tr1 = new Element('tr').adopt(
 			new Element('td').adopt([
 				new Element('input', {
 					'value': Joomla.JText._('COM_FABRIK_SELECT_DO'),
@@ -44,7 +46,7 @@ fabrikAdminForm = new Class({
 					'readonly': true,
 					'class': 'readonly'
 				}),
-				this._makeSel('inputbox elementtype', 'jform[plugin_locations][]', this.opts.actions, loc),
+				this._makeSel('inputbox elementtype', 'jform[plugin_locations][]', this.opts.actions, opts.location),
 				new Element('input', {
 					'value': Joomla.JText._('COM_FABRIK_ON'),
 					'size': 1,
@@ -54,5 +56,9 @@ fabrikAdminForm = new Class({
 				s
 			])
 		);
+		var tr2 = new Element('tr').adopt(
+				new Element('td').set('html', yesno)
+		);
+		return new Element('table').adopt(new Element('tbody').adopt([tr2, tr1]));
 	}
 });

@@ -355,6 +355,7 @@ class FabrikFEModelPluginmanager extends JModel{
 		$usedPlugins = (array)$params->get('plugins');
 		$usedLocations = (array)$params->get('plugin_locations');
 		$usedEvents = (array)$params->get('plugin_events');
+		$states = (array)$params->get('plugin_state');
 		$this->_data = array();
 
 		if ($type != 'list') {
@@ -382,6 +383,10 @@ class FabrikFEModelPluginmanager extends JModel{
 				// "I soiled my armour I was so scared!"
 				break;
 			}
+			$state = JArrayHelper::getValue($states, $c, 1);
+			if ($state == false) {
+				continue;
+			}
 			if ($usedPlugin != '') {
 				$plugin = $this->getPlugIn($usedPlugin, $type);
 				//testing this if statement as onLoad was being called on form email plugin when no method availbale
@@ -392,6 +397,7 @@ class FabrikFEModelPluginmanager extends JModel{
 
 					$location = JArrayHelper::getValue($usedLocations, $c);
 					$event = JArrayHelper::getValue($usedEvents, $c);
+					
 					if ($plugin->canUse($oRequest, $location, $event) && method_exists($plugin, $method)) {
 						$pluginArgs = array();
 						if (func_num_args() > 3) {

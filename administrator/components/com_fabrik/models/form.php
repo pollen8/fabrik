@@ -149,6 +149,9 @@ class FabrikModelForm extends FabModelAdmin
 		JText::script('COM_FABRIK_BOTH');
 		JText::script('COM_FABRIK_NEW');
 		JText::script('COM_FABRIK_EDIT');
+		JText::script('COM_FABRIK_PUBLISHED');
+		JText::script('JNO');
+		JText::script('JYES');
 
 		$js =
 	"
@@ -158,8 +161,12 @@ class FabrikModelForm extends FabModelAdmin
 			$js .= "\t\taPlugins.push(".$abstractPlugin['js'].");\n";
 		}
 		$js .= "controller = new fabrikAdminForm(aPlugins);\n";
-		foreach($plugins as $plugin) {
-			$js .= "controller.addAction('".$plugin['html']."', '".$plugin['plugin']."', '".@$plugin['location']."', '".@$plugin['event']."', false);\n";
+		foreach ($plugins as $plugin) {
+			$opts = array_key_exists('opts', $plugin) ? $plugin['opts'] : new stdClass();
+			$opts->location = @$plugin['location'];
+			$opts->event = @$plugin['event'];
+			$opts = json_encode($opts);
+			$js .= "controller.addAction('".$plugin['html']."', '".$plugin['plugin']."', ".$opts.", false);\n";
 		}
 		$js .= "
 });";
