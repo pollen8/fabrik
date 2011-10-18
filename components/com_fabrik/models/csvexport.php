@@ -180,8 +180,8 @@ class FabrikFEModelCSVExport {
 	public function downloadFile()
 	{
 		//to prevent long file from getting cut off from     //max_execution_time
-		set_time_limit(0);
 		error_reporting(0);
+		@set_time_limit(0);
 		
 		jimport('joomla.filesystem.file');
 		$filename = $this->getFileName();

@@ -32,7 +32,7 @@ var FbFileUpload = new Class({
 				// hack to reposition the hidden input field over the 'ad' button
 				var c = $(this.options.element + '_container');
 				var diff = $(this.options.element + '_browseButton').getPosition().y - c.getPosition().y;
-				c.getElement('input[type=file]').getParent().setStyle('top', diff);
+				c.getParent('.fabrikElement').getElement('input[type=file]').getParent().setStyle('top', diff);
 			}
 		}
 	},

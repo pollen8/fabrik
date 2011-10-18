@@ -211,7 +211,7 @@ class FPagination extends JPagination{
 	protected function _list_render($list)
 	{
 		// Reverse output rendering for right-to-left display.
-		$html = '<ul class="pagination fabrik_action fabrik_keeptext">';
+		$html = '<ul class="pagination">';
 		$html .= '<li class="pagination-start">'.$list['start']['data'].'</li>';
 		$html .= '<li class="pagination-prev">'.$list['previous']['data'].'</li>';
 		foreach($list['pages'] as $page) {

@@ -210,7 +210,8 @@ div.calendar{
 	height:25px;
 }
 
-#listform_$c ul.fabrik_action {
+#listform_$c ul.fabrik_action,
+#listform_$c ul.pagination {
 	list-style:none;
 	background:none;
 	list-style:none;

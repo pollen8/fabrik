@@ -910,6 +910,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$tip = $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
 		if ($params->get('tipseval')) {
 			$tip = @eval($tip);
+			FabrikWorker::logEval($default, 'Caught exception on eval of ' . $this->getElement()->name . ' tip: %s');
 		}
 		$tip = trim(JText::_($tip));
 		$tip = htmlspecialchars($tip, ENT_QUOTES);

@@ -167,7 +167,8 @@ var FloatingTips = new Class({
 			case 'top': 
 				r = 270;
 				cwr.setStyle('bottom', '0');
-				trgSt['bottom'] = '-30px';
+				//trgSt['bottom'] = '-30px';
+				trgSt['height'] = '10px';
 				trgSt['left'] = o.center ? cwr.getSize().x / 2 - o.arrowSize / 2 : o.arrowOffset;
 				break;
 				
@@ -200,7 +201,7 @@ var FloatingTips = new Class({
 			}
 	
 			var arrowStyle = {
-					size: {width: 32, height: 32},
+					size: {width: 32, height: trgSt['height'].toInt()},
 					scale: scale, 
 					rotate: r,
 					fill: {
@@ -246,15 +247,14 @@ var FloatingTips = new Class({
 		//var tipSz = tip.getSize(), trgC = elem.getCoordinates(body);
 		var tipSz = cwr.getSize(), trgC = elem.getCoordinates(body);
 		var pos = { x: trgC.left + o.offset.x, y: trgC.top + o.offset.y };
-		
 		if (opos == 'inside') {
 			tip.setStyles({ 'width': tip.getStyle('width'), 'height': tip.getStyle('height') });
 			elem.setStyle('position', 'relative').adopt(tip);
 			pos = { x: o.offset.x, y: o.offset.y };
 		} else {
 			switch (opos) {
-				//case 'top':     pos.y -= tipSz.y + o.distance; break;
-			case 'top':     pos.y -=  o.distance; break;
+				case 'top':     pos.y -= arrowStyle.size.height + o.distance; break;
+			//case 'top':     pos.y -=  o.distance; break;
 				case 'right': 	pos.x += trgC.width + o.distance; break;
 				case 'bottom': 	pos.y += trgC.height + o.distance; break;
 				//case 'left': 	pos.x -= tipSz.x + o.distance; break;

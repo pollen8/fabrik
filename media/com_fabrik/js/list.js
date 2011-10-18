@@ -485,7 +485,6 @@ var FbList = new Class({
 	},
 
 	triggerCSVImport: function (start, opts, fields) {
-		var url = 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id;
 		if (start !== 0) {
 			if (start === -1) {
 				// not triggered from front end selections
@@ -527,9 +526,13 @@ var FbList = new Class({
 			this.csvfields = fields;
 		}
 
-		var thisurl = url + '&start=' + start;
+		opts.start = start;
+		opts.option = 'com_fabrik';
+		opts.view = 'list';
+		opts.format = 'csv';
+		opts.listid = this.id;
 		var myAjax = new Request.JSON({
-			url: thisurl,
+			url: '',
 			method: 'post',
 			data: opts,
 			onSuccess: function (res) {

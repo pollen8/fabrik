@@ -888,10 +888,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					$condition = 'BETWEEN';
 					$value[1] = date("Y-m-d H:i:s", strtotime($this->addDays($value[0], 1)) - 1);
 				} else {
-					$mysql = $this->tableDateToMySQL($value);
-					if ($mysql !== false) {
+					//$mysql = $this->tableDateToMySQL($value);
+					/* if ($mysql !== false) {
 						$value = $mysql;
-					}
+					} */
 				}
 				break;
 

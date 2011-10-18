@@ -6271,7 +6271,6 @@ class FabrikFEModelList extends JModelForm {
 	public function mergeJoinedData()
 	{
 		$params = $this->getParams();
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$display = $params->get('join-display', '');
 		$merge = $display == 'merge' ? true : false;
 		return $merge;
@@ -6295,6 +6294,7 @@ class FabrikFEModelList extends JModelForm {
 		$listid = $this->getTable()->id;
 		$dbprimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
 		$formModel = $this->getFormModel();
+		FabrikHelperHTML::debug($data, 'render:before formatForJoins');
 		foreach ($data as $groupk => $group) {
 			$last_pk = '';
 			$last_i = 0;
@@ -6314,7 +6314,9 @@ class FabrikFEModelList extends JModelForm {
 						// And we really only need to do it once for the first row.
 						if (!isset($can_repeats[$tmpkey])) {
 							$elementModel = $formModel->getElement($tmpkey);
-							$can_repeats[$tmpkey] = $elementModel ? $elementModel->getGroup()->canRepeat() : 0;
+							// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
+							//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
+							$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
 						}
 
 						if (isset($data[$groupk][$last_i]->$key) && $can_repeats[$tmpkey]) {
@@ -6337,6 +6339,7 @@ class FabrikFEModelList extends JModelForm {
 								//$data[$groupk][$last_i]->$origKey .= GROUPSPLITTER.$val;
 							}
 						}
+						
 					}
 					unset($data[$groupk][$i]);
 					continue;
