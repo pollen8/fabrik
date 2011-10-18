@@ -249,7 +249,7 @@ var FbListInlineEdit = new Class({
 	},
 	
 	isEditable: function (cell) {
-		if (cell.hasClass('fabrik_uneditable') || cell.hasClass('fabrik_ordercell') || cell.hasClass('fabrik_select')) {
+		if (cell.hasClass('fabrik_uneditable') || cell.hasClass('fabrik_ordercell') || cell.hasClass('fabrik_select') || cell.hasClass('fabrik_actions')) {
 			return false;
 		}
 		return true;
