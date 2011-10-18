@@ -908,6 +908,9 @@ class plgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$w = new FabrikWorker();
 		$tip = $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
+		if ($params->get('tipseval')) {
+			$tip = @eval($tip);
+		}
 		$tip = trim(JText::_($tip));
 		$tip = htmlspecialchars($tip, ENT_QUOTES);
 		return $tip;
