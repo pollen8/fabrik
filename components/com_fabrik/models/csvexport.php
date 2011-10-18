@@ -281,11 +281,11 @@ class FabrikFEModelCSVExport {
 
 	function getHeadings()
 	{
-		$table 	    = $this->model->getTable();
-		$params 		=& $this->model->getParams();
-		$hformat 		= $params->get('csvfullname');
-		$data 			=& $this->model->getData();
-		$headings 	= array();
+		$table = $this->model->getTable();
+		$params = $this->model->getParams();
+		$hformat = $params->get('csvfullname');
+		$data = $this->model->getData();
+		$headings = array();
 		$g = current($data);
 		if (empty($g)) {
 			return $g;

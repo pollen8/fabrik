@@ -98,6 +98,10 @@ Element.implement({
 			}
 		}
 		return false;
+	},
+	
+	getValue: function () {
+		return this.get('value');
 	}
 });
 
