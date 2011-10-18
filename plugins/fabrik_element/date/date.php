@@ -567,7 +567,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$script .= 'Calendar.setup('.$opts.');'.
 		'}'. //end if id
 		"\n});"; //end domready function
-		if (!$this->getElement()->hidden) {
+		if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
 			FabrikHelperHTML::addScriptDeclaration($script);
 		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
@@ -883,10 +883,14 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			case 'dropdown':
 
 				if (!$params->get('date_showtime', 0) || $exactTime == false) {
+					
 					//$$$ rob turn into a ranged filter to search the entire day
+					// values should be in table format and not mySQL as they are set to mySQL in getRangedFilterValue()
 					$value = (array)$value;
 					$condition = 'BETWEEN';
-					$value[1] = date("Y-m-d H:i:s", strtotime($this->addDays($value[0], 1)) - 1);
+					//$value[1] = date("Y-m-d H:i:s", strtotime($this->addDays($value[0], 1)) - 1);
+					$next = JFactory::getDate(strtotime($this->addDays($value[0], 1)) - 1);
+					$value[1] = $next->toFormat($params->get('date_table_format', '%Y-%m-%d'));
 				} else {
 					//$mysql = $this->tableDateToMySQL($value);
 					/* if ($mysql !== false) {
@@ -1145,7 +1149,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// $$$ hugh - need to convert dates to MySQL format for the query
 		$value[0] = $this->tableDateToMySQL($value[0]);
 		$value[1] = $this->tableDateToMySQL($value[1]);
-
 		// $$$ hugh - if the first date is later than the second, swap 'em round
 		// to keep 'BETWEEN' in the query happy
 		if (strtotime($value[0]) > strtotime($value[1])) {
