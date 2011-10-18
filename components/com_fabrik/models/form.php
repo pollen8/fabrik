@@ -470,6 +470,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function getGroups()
 	{
 		if (!isset($this->groups)) {
+			$this->groups = array();
 			$listModel = $this->getListModel();
 			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 			$groupdata = $this->getPublishedGroups();
