@@ -146,6 +146,7 @@ class FabrikFEModelConnection extends JModel {
 		$session = JFactory::getSession();
 		if (JRequest::getCmd('task') == 'test') {
 			$session->clear('fabrik.connection.'.$cn->id);
+			$dbs = array();
 			$this->_connection = null;
 			$cn = $this->getConnection();
 		}
@@ -170,7 +171,7 @@ class FabrikFEModelConnection extends JModel {
 			} else {
 				$dbs[$cn->id] = JDatabase::getInstance($options);
 			}
-			if (JError::isError($dbs[$cn->id]) || is_a($dbs[$cn->id], 'JException')) {
+			if (JError::isError($dbs[$cn->id]) || is_a($dbs[$cn->id], 'JException') || $dbs[$cn->id]->getErrorNum() !== 0) {
 
 				//$$$Rob - not sure why this is happening on badmintonrochelais.com (mySQL 4.0.24) but it seems like
 				//you can only use one connection on the site? As JDatabase::getInstance() forces a new connection if its options
@@ -195,7 +196,7 @@ class FabrikFEModelConnection extends JModel {
 							$session->clear('fabrik.connection.'.$cn->id);
 							$this->_connection = null;
 						}
-						$dbs[$cn->id] = JError::raiseError(E_ERROR, 'Could not connection to database', $deafult_options);
+						return JError::raiseNotice(E_ERROR, 'Could not connection to database', $deafult_options);
 					}
 				}
 			}
