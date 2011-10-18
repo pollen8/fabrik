@@ -33,8 +33,11 @@ class FabrikViewList extends JView{
 		if ($model->requiresMocha()) {
 			FabrikHelperHTML::mocha();
 		}
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/advanced-search.js');
+		$src = $this->get('PluginJsClasses');
+		array_unshift($src, 'media/com_fabrik/js/list.js');
+		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
+
+		FabrikHelperHTML::script($src);
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);
 

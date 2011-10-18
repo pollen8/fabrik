@@ -38,6 +38,16 @@ echo "
 	margin-left:20px;
 }
 
+#listform_$c .list-footer .pagination li{
+	display: inline;
+	margin:0 2px;
+	 line-height: 1.7em;
+}
+
+#listform_$c .list-footer .pagination li .pagenav {
+    padding: 2px;
+}
+
 
 #listform_$c .fabrik_ordercell a{
 	text-decoration:none;
