@@ -126,7 +126,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	* @param bool $incjoin
 	* @return array filter value and labels
 	*/
-	
+
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		if ($this->isJoin()) {
@@ -136,7 +136,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		return $rows;
 	}
-	
+
 	/**
 	 * get the field name to use as the column that contains the join's label data
 	 * @param bol use step in element name
@@ -1153,13 +1153,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				" )";
 			} else {
 				if ($this->isJoin()) {
-					$fType = $this->getElement()->filter_type; 
+					$fType = $this->getElement()->filter_type;
 					if ($fType == 'auto-complete' || $fType == 'field') {
 						$where = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_val_column'));
 					} else {
 						$where = $db->nameQuote($params->get('join_db_name')).'.'.$db->nameQuote($params->get('join_key_column'));
 					}
-					
+
 					$rows = $this->checkboxRows('parent_id', $condition, $value, $where);
 					$joinIds = array_keys($rows);
 					if (!empty($rows)) {
@@ -1182,7 +1182,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param string $where - if supplied then filters the list (must then supply $value and $condtion)
 	 * @return array rows
 	 */
-	
+
 	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null)
 	{
 		$params = $this->getParams();
@@ -1196,7 +1196,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$to = $db->nameQuote($params->get('join_db_name'));
 		$key = $to.'.'.$db->nameQuote($params->get('join_key_column'));
-		
+
 		$label = $to.'.'.$db->nameQuote($params->get('join_val_column'));
 		$query->select('parent_id, '.$shortName.' AS value, '.$label.' AS text')
 		->from($jointable)
@@ -1448,7 +1448,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$maskbits = 4;
 		$post	= JRequest::get('post', $maskbits);
 		//on new or on copy? details not found?
-		if (array_key_exists('detals', $post)) {
+		if (array_key_exists('details', $post)) {
 			if ($post['details']['plugin'] != 'databasejoin') {
 				$db = FabrikWorker::getDbo();
 				$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =".(int)$post['id']);
