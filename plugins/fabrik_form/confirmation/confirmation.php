@@ -98,7 +98,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		// Initialize some variables
 		$form = $formModel->getForm();
 		//save the posted form data to the form session, for retrival later
- 		$sessionModel = JModel::getInstance('Formsession', 'FabrikModel');
+ 		$sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($formModel->get('id'));
 		$sessionModel->setRowId(0);
 		$sessionModel->savePage($formModel);
