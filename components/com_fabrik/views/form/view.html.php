@@ -552,10 +552,7 @@ class fabrikViewForm extends JView
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable ? '<input type="'.$applyButtonType.'" class="button" name="apply" value="'.$params->get('apply_button_label').'" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0 ? '<input type="submit" value="'.$params->get('delete_button_label', 'Delete').'" class="button" name="delete" />' : '';
-		//$gobackaction = $model->isAjax() ? '': "onclick="history.back();"";
-		// guess we have to leave this choice up to the form creator to show/hide the button 
-		$gobackaction = "onclick=\"history.back();\"";
-		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" '.$gobackaction.' value="'.$params->get('goback_button_label').'" />' : '';
+		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" '.FabrikWorker::goBackAction().' value="'.$params->get('goback_button_label').'" />' : '';
 		if ($model->_editable) {
 			$button = $model->isAjax() ? "button" : "submit";
 			$form->submitButton = '';

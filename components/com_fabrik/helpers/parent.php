@@ -990,6 +990,17 @@ class FabrikWorker {
 		}
 		return true;
 	}
+	
+	public function goBackAction()
+	{
+		jimport('joomla.environment.browser');
+		if (JBrowser::getInstance()->isBrowser('msie')) {
+			$gobackaction = 'onclick="parent.location=\''.JArrayHelper::getValue($_SERVER, 'HTTP_REFERER').'\'"';
+		} else {
+			$gobackaction = 'onclick=\'history.back();\'';
+		}
+		return $gobackaction;
+	}
 
 }
 
