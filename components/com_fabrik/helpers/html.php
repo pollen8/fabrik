@@ -1019,7 +1019,7 @@ EOD;
 			$value = htmlspecialchars($values[$i], ENT_QUOTES); //for values like '1"'
 			$chx = '<input type="'.$type.'" class="fabrikinput '.$type.'" name="'.$thisname.'" value="'.$value.'" ';
 			$chx .= in_array($values[$i], $selected) ? ' checked="checked" />' : ' />';
-			$item[] = '<label>';
+			$item[] = '<label class="fabrikgrid_'.$value.'">';
 			$item[] = $elementBeforeLabel  == '1' ? $chx.$label : $label.$chx;
 			$item[] = '</label>';
 			$items[] = implode("\n", $item);
