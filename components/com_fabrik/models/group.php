@@ -223,7 +223,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	/**
 	 * get an array of published elements
-	 *
+	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
 	 * @return array published element objects
 	 */
 
@@ -231,14 +231,22 @@ class FabrikFEModelGroup extends FabModel{
 	{
 		if (!isset($this->publishedElements)) {
 			$this->publishedElements = array();
+		}
+		$ids = (array)JRequest::getVar('elementid');
+		$sig = implode('.', $ids);
+		if (!array_key_exists($sig, $this->publishedElements)) {
+			$this->publishedElements[$sig] = array();
 			$elements = $this->getMyElements();
 			foreach ($elements as $elementModel) {
-				if ($elementModel->getElement()->published == 1) {
-					$this->publishedElements[] = $elementModel;
+				$element = $elementModel->getELement();
+				if ($element->published == 1) {
+					if (empty($ids) || in_array($element->id, $ids)) {
+						$this->publishedElements[$sig][] = $elementModel;
+					}
 				}
 			}
 		}
-		return $this->publishedElements;
+		return $this->publishedElements[$sig];
 	}
 
 	public function getPublishedListElements()
