@@ -349,6 +349,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$optionsPerRow = (int)$this->getParams()->get('options_per_row', 0);
 		$elBeforeLabel = (bool)$this->getParams()->get('element_before_label', true);
 		//element_before_label
+		if (JRequest::getVar('format') == 'raw') {
+			$optionsPerRow = 1;
+		}
 		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow);
 
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="'.$id.'">');
