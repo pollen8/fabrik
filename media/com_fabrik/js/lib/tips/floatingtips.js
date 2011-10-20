@@ -48,21 +48,24 @@ var FloatingTips = new Class({
 		if (elements) this.attach(elements);
 		return this;
 	},
-
+	
 	attach: function(elements) {
 		var s = this;
 		this.selector = elements;
 		this.elements = $$(elements);
 		this.elements.each(function(e) {
-			e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
-			e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
-			e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
-			Fabrik.addEvent('fabrik.tip.show', function(trigger){
-				var tip = e.retrieve('floatingtip');
-				if (trigger !== e && tip) {
-					this._animate(tip, 'out');
-				}
-			}.bind(this));
+			if (!e.retrieve('tipped')) {
+				e.store('tipped', true);
+				e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
+				e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
+				e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
+				Fabrik.addEvent('fabrik.tip.show', function(trigger){
+					var tip = e.retrieve('floatingtip');
+					if (trigger !== e && tip) {
+						this._animate(tip, 'out');
+					}
+				}.bind(this));
+			}
 		}.bind(this));
 		
 		return this;
@@ -81,7 +84,7 @@ var FloatingTips = new Class({
 	},
 	
 	hide: function(e, element) {
-		if (!element) {
+		if (!element || !e.target) {
 			return;
 		}
 		var t = e.target.getParent('.' + this.options.className + '-wrapper');
@@ -111,6 +114,12 @@ var FloatingTips = new Class({
 		this._animate(tip, 'out');
 		this.fireEvent('hide', [tip, element]);
 		return this;
+	},
+	
+	hideAll: function() {
+		this.elements.each(function(e) {
+			this.hide(new Event.Mock(e.getParent(), 'mouseout'), e);
+		}.bind(this));
 	},
 	
 	_create: function(elem) {
