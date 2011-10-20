@@ -12,6 +12,7 @@ if ($this->params->get('show-title', 1)) {?>
 	</div>
 
 <?php 
+$active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";
 ?>
 
@@ -21,7 +22,7 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";
 
 echo $form->intro;
 echo $this->plugintop;
-$active = ($form->error != '') ? '' : ' fabrikHide';
+
 ?>
 
 

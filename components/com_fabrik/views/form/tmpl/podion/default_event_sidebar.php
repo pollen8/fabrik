@@ -39,9 +39,11 @@ $endTime = JFactory::getDate($this->modeldata['po_events___Event_date_end'])->fo
 			</li>
 			<li class="artists">
 			<?php echo FabrikHelperHTML::image('acts.png', 'form', $this->tmpl, '');?>
-			<?php $acts = $this->modeldata['join'][90];
-			$names = JArrayHelper::getValue($acts, 'po_events_15_repeat___act_id', array());
-			$ids = JArrayHelper::getValue($acts, 'po_events_15_repeat___act_id_raw', array());
+			<?php 
+			//echo "<pre>";print_r(($this->modeldata['join']));echo "</pre>";
+			 $acts = $this->modeldata['join'][9];
+			$names = JArrayHelper::getValue($acts, 'po_events_acts___act_id', array());
+			$ids = JArrayHelper::getValue($acts, 'po_events_acts___event_id_raw', array());
 			if (!empty($names)) {
 				echo '<ul>';
 				for ($i = 0; $i < count($names); $i++) {

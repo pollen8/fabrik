@@ -6,15 +6,7 @@ var FbListInlineEdit = new Class({
 		this.defaults = {};
 		this.editors = {};
 		this.inedit = false;
-		//this.spinner = Fabrik.loader.getSpinner();
-		this.addbutton = new Asset.image(Fabrik.liveSite + 'media/com_fabrik/images/action_check.png', {
-			'alt': 'save',
-			'class': ''
-		});
-		this.cancelbutton = new Asset.image(Fabrik.liveSite + 'media/com_fabrik/images/delete.png', {
-			'alt': 'delete',
-			'class': ''
-		});
+		
 		head.ready(function () {
 			//assigned in list.js fabrik3
 			//this.list = $('list_' + this.options.listid);
@@ -25,7 +17,7 @@ var FbListInlineEdit = new Class({
 			this.setUp();
 		}.bind(this));
 		
-		Fabrik.addEvent('fabrik.table.clearrows', function () {
+		Fabrik.addEvent('fabrik.list.clearrows', function () {
 			this.cancel();			
 		}.bind(this));
 		
@@ -33,11 +25,11 @@ var FbListInlineEdit = new Class({
 			this.stopEditing();
 		}.bind(this));
 		
-		Fabrik.addEvent('fabrik.table.updaterows', function () {
+		Fabrik.addEvent('fabrik.list.updaterows', function () {
 			this.watchCells();
 		}.bind(this));
 		
-		Fabrik.addEvent('fabrik.table.ini', function () {
+		Fabrik.addEvent('fabrik.list.ini', function () {
 			var table = Fabrik.blocks['list_' + this.options.listid];
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
@@ -301,6 +293,8 @@ var FbListInlineEdit = new Class({
 	},
 	
 	edit: function (e, td) {
+		Fabrik.fireEvent('fabrik.plugin.inlineedit.editing');
+		
 		//only one field can be edited at a time
 		if (this.inedit) {
 			return;
@@ -325,8 +319,8 @@ var FbListInlineEdit = new Class({
 		
 		var data = this.getDataFromTable(td);
 		if (typeOf(this.editors[opts.elid]) === 'null' || typeOf(Fabrik['inlineedit_' + opts.elid]) === 'null') {
-			//td.empty().adopt(this.spinner);
-			Fabrik.loader.start(td);
+			// need to load on parent otherwise in table td size gets monged
+			Fabrik.loader.start(td.getParent());
 			new Request({
 				'evalScripts': function (script, text) {
 						this.javascript = script;
@@ -344,7 +338,9 @@ var FbListInlineEdit = new Class({
 				},
 
 				'onComplete': function (r) {
-					Fabrik.loader.stop(td);
+					// need to load on parent otherwise in table td size gets monged
+					Fabrik.loader.stop(td.getParent());
+					
 					//don't use evalScripts = true as we reuse the js when tabbing to the next element. 
 					// so instead set evalScripts to a function to store the js in this.javascript.
 					//Previously js was wrapped in delay
@@ -431,22 +427,26 @@ var FbListInlineEdit = new Class({
 	},
 	
 	watchControls : function (td) {
-		if (typeOf(td.getElement('a.inline-save')) !== 'null') {
-			td.getElement('a.inline-save').addEvent('click',  this.save.bindWithEvent(this, [td]));
+		if (typeOf(td.getElement('.inline-save')) !== 'null') {
+			td.getElement('.inline-save').addEvent('click', this.save.bindWithEvent(this, [td]));
 		}
-		if (typeOf(td.getElement('a.inline-cancel')) !== 'null') {
-			td.getElement('a.inline-cancel').addEvent('click',  this.cancel.bindWithEvent(this, [td]));
+		if (typeOf(td.getElement('.inline-cancel')) !== 'null') {
+			td.getElement('.inline-cancel').addEvent('click', this.cancel.bindWithEvent(this, [td]));
 		}
 	},
 	
 	save: function (e, td) {
-		Fabrik.fireEvent('fabrik.table.updaterows');
 		this.inedit = false;
 		e.stop();
 		var element = this.getElementName(td);
 		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.save&format=raw';
 		var url = 'index.php?option=com_fabrik&task=element.save&format=raw';
 		var opts = this.options.elements[element];
+		
+		// need to load on parent otherwise in table td size gets monged
+		Fabrik.loader.start(td.getParent());
+		
+		
 		var row = this.editing.getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.list.id + '_row_', '');
 		td.removeClass(this.options.focusClass);
@@ -472,11 +472,15 @@ var FbListInlineEdit = new Class({
 		};
 		data[eObj.token]  = 1;
 		data[k] = value;
+		td.empty();
 		new Request({url: url,
 			'data': data,
 			'evalScripts': true,
 			'onComplete': function (r) {
 				td.empty().set('html', r);
+				// need to load on parent otherwise in table td size gets monged
+				Fabrik.loader.stop(td.getParent());
+				Fabrik.fireEvent('fabrik.table.updaterows');
 			}.bind(this)
 		}).send();
 		this.editing = null;
