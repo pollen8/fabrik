@@ -1141,8 +1141,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$elementModels = $joinGroup->getPublishedElements();
 
 						$aUpdatedRecordIds = array();
-						$joinCnn 				=& $listModel->getConnection();
-						$joinDb  				=& $joinCnn->getDb();
+						$joinCnn = $listModel->getConnection();
+						$joinDb = $joinCnn->getDb();
 
 						$paramKey = $listModel->getTable()->db_table_name.'___params';
 						$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
@@ -1172,8 +1172,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 							$item->db_table_name 	= $oJoin->table_join;
 							// $$$ rob - erm is $fields needed -perhaps just pass $item->db_table_name into getPrimaryKeyAndExtra?
-							$fields 				= $listModel->getDBFields($item->db_table_name);
-							$aKey 					= $listModel->getPrimaryKeyAndExtra();
+							$fields = $listModel->getDBFields($item->db_table_name);
+							$aKey = $listModel->getPrimaryKeyAndExtra();
 							$aKey = $aKey[0];
 							$item->db_primary_key = $aKey['colname'];
 							$joinRowId = $repData[$item->db_primary_key];
