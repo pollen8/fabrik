@@ -373,7 +373,7 @@ class FabrikFEModelForm extends FabModelForm
 			$res = $db->loadObjectList();
 			if ($db->getErrorNum()) {
 				JError::raiseError(500, $db->getErrorMsg());
-			} 
+			}
 		} else {
 			$res = array();
 		}
@@ -704,11 +704,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if ($form->record_in_database == '1') {
 			$this->processToDB();
 		}
-		
+
 		// Clean the cache.
 		$cache = JFactory::getCache(JRequest::getCmd('option'));
 		$cache->clean();
-		
+
 		//$$$rob run this before as well as after onAfterProcess (ONLY for redirect plugin)
 		// so that any redirect urls are available for the plugin (e.g twitter)
 		$pluginManager->runPlugins('onLastProcess', $this);
@@ -770,7 +770,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$ns =& $ns[$nodes[$i]];
 			}
 			$ns = $val;
-			
+
 			$ns =& $this->_fullFormData;
 			for ($i = 0; $i <= $pathNodes; $i ++) {
 				// If any node along the registry path does not exist, create it
@@ -1130,6 +1130,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					foreach ($cols as $col) {
 						if ($col->Key == "PRI") {
 							$oJoinPk .= $col->Field;
+							continue;
 						}
 					}
 					$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
@@ -1428,7 +1429,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$listModel->setFormModel($this);
 		$item = $listModel->getTable();
 		$listModel->storeRow($this->_formData, $rowId);
-		
+
 		$usekey = JRequest::getVar('usekey', '');
 		if (!empty($usekey)) {
 			return $listModel->lastInsertId;
@@ -1577,7 +1578,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 		}
 	}
-	
+
 	public function failedValidation()
 	{
 		return empty($this->_arErrors) ? false : true;
@@ -1761,12 +1762,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->setErrors($this->_arErrors);
 		return $ok;
 	}
-	
+
 	/**
 	 * get form validation errors - if empty test session for errors
 	 * @return array errors
 	 */
-	
+
 	public function getErrors()
 	{
 		$session = JFactory::getSession();
@@ -1776,11 +1777,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		return $this->_arErrors;
 	}
-	
+
 	/**
 	* clear form validation errors
 	*/
-	
+
 	public function clearErrors()
 	{
 		$session = JFactory::getSession();
@@ -1789,12 +1790,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$session->clear($context.'errors');
 		//$session->set($context.'session.on', false);
 	}
-	
+
 	/**
 	* set form validation errors in session
 	* @param array errors
 	*/
-	
+
 	public function setErrors($errors)
 	{
 		$session = JFactory::getSession();
@@ -1808,18 +1809,18 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$data = array('modified' => $this->_modifiedValidationData, 'errors' => $this->_arErrors);
 		return json_encode($data);;
 	}
-	
+
 	/**
   * should the form do a spoof check
   * @return bool
 	 */
-	
+
 	public function spoofCheck()
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		return $this->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true));
 	}
-	
+
 	/**
 	 * get an instance of the uploader object
 	 *
@@ -2141,7 +2142,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		}
 		$this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $_PROFILER->mark('formmodel render end') : null;
-		// $$$ rob return res - if its false the the form will not load 
+		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}
 
@@ -2734,7 +2735,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				if (!array_key_exists($tblJoin->id, $this->_data['join'])) {
 					continue;
 				}
-				
+
 				if ($tblJoin->table_join == '') {
 					continue;
 				}
@@ -2973,7 +2974,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		foreach ($joinsToThisKey as $element) {
 			//$qsKey	= $this->getListModel()->getTable()->db_table_name . "___" . $element->name;
 			$qsKey	= $referringTable->getTable()->db_table_name . "___" . $element->name;
-					
+
 			$val 		= JRequest::getVar($qsKey);
 			if ($val == '') {
 				//default to row id if we are coming from a main link (and not a related data link)
@@ -3177,7 +3178,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if (isset($this->groupView)) {
 			return $this->groupView;
 		}
-		
+
 		$this->groupView = array();
 		$this->readOnlyVals = array();
 		// $$$ hugh - temp foreach fix
@@ -3188,7 +3189,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			$groupParams = $groupModel->getParams();
 			$aElements = array();
 			//check if group is acutally a table join
-			
+
 			if (array_key_exists($groupTable->id, $this->_aJoinGroupIds)) {
 				$aElements[] = $this->_makeJoinIdElement($groupTable);
 			}
@@ -3269,7 +3270,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$elementModels = $groupModel->getPublishedElements();
 
 				foreach ($elementModels as $elementModel) {
-					
+
 					// $$$ rob ensure that the element is associated with the correct form (could occur if n plugins rendering form
 					// and detailed views of the same form.
 					$elementModel->_form = $this;
@@ -3284,17 +3285,17 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					if (!$this->_editable && !$elementModel->canView()) {
 						continue;
 					}
-					
+
 					//fabrik3.0 : if the element cant be seen or used then dont add it?
 					if (!$elementModel->canUse() && !$elementModel->canView()) {
 						continue;
 					}
-					
+
 					$elementModel->_foreignKey = $foreignKey;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
-					
+
 					$element = $elementModel->preRender($c, $elCount, $tmpl);
-					
+
 					if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
 					{
 						// $$$ hugh - $this->data doesn't seem to always have what we need in it, but $data does.
@@ -3311,7 +3312,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					}
 					if ($element && !$element->hidden) {
 						$elCount ++;
-					} 
+					}
 				}
 				//if its a repeatable group put in subgroup
 				if ($groupModel->canRepeat()) {
