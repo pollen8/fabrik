@@ -31,7 +31,7 @@
 	<uninstall>
 		<sql>
 			<file charset="utf8" driver="mysql">sql/uninstall.mysql.uft8.sql</file>
-			<file charset="utf8" driver="mysql">sql/uninstall.mysql.uft8.sql</file>
+			<file charset="utf8" driver="mysqli">sql/uninstall.mysql.uft8.sql</file>
 		</sql>
 	</uninstall>
 	
