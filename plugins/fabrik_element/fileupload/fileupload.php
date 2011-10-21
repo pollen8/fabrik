@@ -185,43 +185,45 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$oFiles = new stdClass();
 		$iCounter = 0;
 		for ($x = 0; $x < count($value); $x++) {
-			if (array_key_exists($x, $value) && $value[$x] !== '') {
-				if (is_array($value[$x])) {
-					//from failed validation
-					foreach ($value[$x]['id'] as $tkey => $parts) {
-						$o = new stdClass();
-						$o->id = 'alreadyuploaded_'.$element->id.'_'.$iCounter;//$rawvalues[$x];
-						$o->name = array_pop(explode(DS, $tkey));
-						$o->path = $tkey;
-						$o->url = $this->getStorage()->pathToURL($tkey);
-						$o->recordid = $rawvalues[$x];
-						$o->params = json_decode($value[$x]['crop'][$tkey]);
-						$oFiles->$iCounter = $o;
-						$iCounter++;
-					}
-				} else {
-					if (is_object($value[$x])) { //single crop image (not sure about the 0 settings in here)
-						$parts = explode(DS, $value[$x]->file);
-						$o = new stdClass();
-						$o->id = 'alreadyuploaded_'.$element->id.'_0';
-						$o->name = array_pop($parts);
-						$o->path = $value[$x]->file;
-						$o->url = $this->getStorage()->pathToURL($value[$x]->file);
-						$o->recordid = 0;
-						$o->params = json_decode($value[$x]->params);
-						$oFiles->$iCounter = $o;
-						$iCounter++;
-					} else {
-							$parts = explode(DS, $value[$x]);
+			if (is_array($value)) {
+				if (array_key_exists($x, $value) && $value[$x] !== '') {
+					if (is_array($value[$x])) {
+						//from failed validation
+						foreach ($value[$x]['id'] as $tkey => $parts) {
 							$o = new stdClass();
-							$o->id = 'alreadyuploaded_'.$element->id.'_'.$rawvalues[$x];
-							$o->name = array_pop($parts);
-							$o->path = $value[$x];
-							$o->url = $this->getStorage()->pathToURL($value[$x]);
+							$o->id = 'alreadyuploaded_'.$element->id.'_'.$iCounter;//$rawvalues[$x];
+							$o->name = array_pop(explode(DS, $tkey));
+							$o->path = $tkey;
+							$o->url = $this->getStorage()->pathToURL($tkey);
 							$o->recordid = $rawvalues[$x];
-							$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
+							$o->params = json_decode($value[$x]['crop'][$tkey]);
 							$oFiles->$iCounter = $o;
 							$iCounter++;
+						}
+					} else {
+						if (is_object($value[$x])) { //single crop image (not sure about the 0 settings in here)
+							$parts = explode(DS, $value[$x]->file);
+							$o = new stdClass();
+							$o->id = 'alreadyuploaded_'.$element->id.'_0';
+							$o->name = array_pop($parts);
+							$o->path = $value[$x]->file;
+							$o->url = $this->getStorage()->pathToURL($value[$x]->file);
+							$o->recordid = 0;
+							$o->params = json_decode($value[$x]->params);
+							$oFiles->$iCounter = $o;
+							$iCounter++;
+						} else {
+								$parts = explode(DS, $value[$x]);
+								$o = new stdClass();
+								$o->id = 'alreadyuploaded_'.$element->id.'_'.$rawvalues[$x];
+								$o->name = array_pop($parts);
+								$o->path = $value[$x];
+								$o->url = $this->getStorage()->pathToURL($value[$x]);
+								$o->recordid = $rawvalues[$x];
+								$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
+								$oFiles->$iCounter = $o;
+								$iCounter++;
+						}
 					}
 				}
 			}
