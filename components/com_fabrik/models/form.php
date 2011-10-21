@@ -3263,6 +3263,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			}
 			$groupModel->repeatTotal = $startHidden ? 0 : $repeatGroup;
 			$aSubGroups = array();
+			
 			for ($c = 0; $c < $repeatGroup; $c++) {
 				$aSubGroupElements = array();
 				$elCount = 0;
@@ -3383,6 +3384,27 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->setState('form.id', $pk);
 	}
 
+	
+	public function inLineEditResult()
+	{
+		$listModel = $this->getListModel();
+		$listid = $listModel->getId();
+		$listModel->clearCalculations();
+		$listModel->doCalculations();
+		$elementid = JRequest::getInt('elid');
+		$elmentModel = $this->getElement($elementid, true);
+		$rowid = JRequest::getVar('rowid');
+		$listModel->setId($listid);
+		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
+		$key = JRequest::getVar('element');
+		$html= '';
+		$html .= $elmentModel->renderListData($data[$key], $data);
+		$doCalcs = "\nFabrik.blocks['list_".$listid."'].updateCals(".json_encode($listModel->getCalculations()).")";
+		$html .= '<script type="text/javasript">';
+		$html .= $doCalcs;
+		$html .= "</script>\n";
+		return $html;
+	}
 }
 
 ?>

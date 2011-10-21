@@ -28,6 +28,21 @@ class FabrikControllerForm extends JControllerForm
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
 
+	public function inlineedit()
+	{
+		$document = JFactory::getDocument();
+		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$viewType	= $document->getType();
+		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
+		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$view = $this->getView('form', $viewType, '');
+		$view->setModel($model, true);
+		// Set the layout
+		$view->setLayout($viewLayout);
+		//todo check for cached version
+		$view->inlineEdit();
+	}
+
 	/**
 	 * handle saving posted form data from the admin pages
 	 */
@@ -55,9 +70,9 @@ class FabrikControllerForm extends JControllerForm
 		// Check for request forgeries
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
-			JRequest::checkToken() or die('Invalid Token');
+			//JRequest::checkToken() or die('Invalid Token');
 		}
-		if (JRequest::getVar('fabrik_ignorevalidation', 0 ) != 1) { //put in when saving page of form
+		if (JRequest::getVar('fabrik_ignorevalidation', 0) != 1) { //put in when saving page of form
 			if (!$model->validate()) {
 				//if its in a module with ajax or in a package
 				if (JRequest::getInt('_packageId') !== 0) {
@@ -102,6 +117,11 @@ class FabrikControllerForm extends JControllerForm
 
 		$msg = $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED'));
 
+		if (JRequest::getInt('elid') !== 0) {
+			//inline edit show the edited element
+			echo $model->inLineEditResult();
+			return;
+		}
 		if (JRequest::getInt('_packageId') !== 0) {
 			$rowid = JRequest::getInt('rowid');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
@@ -119,7 +139,7 @@ class FabrikControllerForm extends JControllerForm
 	 * generic function to redirect
 	 */
 
-	protected function makeRedirect($msg = null, &$model )
+	protected function makeRedirect($msg = null, $model)
 	{
 		if (is_null($msg)) {
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');

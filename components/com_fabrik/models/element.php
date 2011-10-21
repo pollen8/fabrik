@@ -244,13 +244,13 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * shows the RAW table data - can be overwritten in plugin class
+	 * shows the RAW list data - can be overwritten in plugin class
 	 * @param string data
 	 * @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
-	function renderRawTableData($data, $oAllRowsData)
+	function renderRawListData($data, $oAllRowsData)
 	{
 		return $data;
 	}
@@ -268,6 +268,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$this->iconsSet = false;
 			return $data;
 		}
+		
 		$params =$this->getParams();
 		if ($params->get('icon_folder', 0) == 0) {
 			$this->iconsSet = false;
@@ -3199,7 +3200,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 
-	function renderTableData_csv($data, $oAllRowsData)
+	function renderListData_csv($data, $oAllRowsData)
 	{
 		return $data;
 	}
@@ -3921,6 +3922,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 			return $retStr;
 	}
+
+	/**
+	 * @deprecated - should be in form view now as you can have > 1 element in inlineedit plugin
+	 */
 
 	public function inLineEdit()
 	{

@@ -60,12 +60,20 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getVar('listid'));
 
-		$elements = $model->getElements('filtername');
+		$elements = $model->getElements('safecolname');
+		
 		$pels = $params->get('inline_editable_elements');
-		$use = trim($pels) == '' ? array() : explode(",", $pels);
+		$use = json_decode($pels);
+		if (!is_object($use)) {
+			$aEls = trim($pels) == '' ? array() : explode(",", $pels);
+			$use = new stdClass();
+			foreach ($aEls as $e) {
+				$use->$e = array($e);
+			}
+		}
 		$els = array();
 		$srcs = array();
-		foreach ($elements as $key => $val) {
+		/* foreach ($elements as $key => $val) {
 			$key = FabrikString::safeColNameToArrayKey($key);
 			if (empty($use) || in_array($key, $use)) {
 				$els[$key] = new stdClass();
@@ -74,11 +82,28 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 				//load in all element js classes
 				$val->formJavascriptClass($srcs);
 			}
+		} */
+		
+		if (!empty($use)) {
+			foreach ($use as $key => $fields) {
+				$trigger = $elements[$key];
+				$els[$key] = new stdClass();
+				$els[$key]->elid = $trigger->_id;
+				$els[$key]->plugins = array();
+				foreach ($fields as $field) {
+					$val = $elements[$field];
+				//load in all element js classes
+					$val->formJavascriptClass($srcs);
+					$els[$key]->plugins[$field] = $val->getElement()->id;
+				}
+			}
 		}
+		
 		FabrikHelperHTML::script($srcs);
 		$opts = new stdClass();
 		$opts->elements = $els;
 		$opts->listid = $model->getId();
+		$opts->formid = $model->getFormModel()->getId();
 		$opts->focusClass = 'focusClass';
 		$opts->editEvent = $params->get('inline_edit_event', 'dblclick');
 		$opts->tabSave = $params->get('inline_tab_save', false);

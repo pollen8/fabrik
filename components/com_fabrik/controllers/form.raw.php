@@ -47,7 +47,7 @@ class FabrikControllerForm extends JController
     $viewType	= $document->getType();
 
     // Set the default view name from the Request
-    $view = &$this->getView($viewName, $viewType);
+    $view = $this->getView($viewName, $viewType);
 
     // Push a model into the view
     $model	= &$this->getModel($modelName, 'FabrikFEModel');
@@ -147,6 +147,13 @@ class FabrikControllerForm extends JController
 		//$listModel->_table = null;
 
 		$msg = $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED'));
+
+		if (JRequest::getInt('elid') !== 0) {
+			//inline edit show the edited element
+			echo $model->inLineEditResult();
+			return;
+		}
+		
 		if (JRequest::getInt('_packageId') !== 0) {
 			echo json_encode(array('msg' => $msg));
 			return;

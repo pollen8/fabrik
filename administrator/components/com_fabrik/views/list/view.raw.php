@@ -20,6 +20,8 @@ jimport('joomla.application.component.view');
  */
 class FabrikViewList extends JView
 {
+	
+
 	/**
 	 * display a json object representing the table data.
 	 */
@@ -28,13 +30,14 @@ class FabrikViewList extends JView
 	{
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
+		$this->setModel($model, true);
 		$table = $model->getTable();
 		$params = $model->getParams();
 		$model->render();
 		$this->emptyDataMessage = $params->get('empty_data_msg');
 		$rowid = JRequest::getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
-		$data =& $model->getData();
+		$data = $model->getData();
 		$nav = $model->getPagination();
 		$c = 0;
 		foreach ($data as $groupk => $group) {
@@ -76,10 +79,10 @@ class FabrikViewList extends JView
 
 	private function getTmpl()
 	{
-		$app =& JFactory::getApplication();
-		$model =& $this->getModel();
-		$table =& $model->getTable();
-		$params =& $model->getParams();
+		$app = JFactory::getApplication();
+		$model = $this->getModel();
+		$table = $model->getTable();
+		$params = $model->getParams();
 		if ($app->isAdmin()) {
 			$tmpl = $params->get('admin_template');
 			if ($tmpl == -1 || $tmpl == '') {

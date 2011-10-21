@@ -207,11 +207,12 @@ var FbListInlineEdit = new Class({
 		if (typeOf(this.td) === 'null') {
 			return;
 		}
-		var p = this.td.getPosition();
-
-		var x = p.x - (window.getSize().x / 2) - (this.td.getSize().x / 2);
-		var y = p.y - (window.getSize().y / 2) + (this.td.getSize().y / 2);
-		this.scrollFx.start(x, y);
+		if (e && e.type !== 'click') {
+			var p = this.td.getPosition();
+			var x = p.x - (window.getSize().x / 2) - (this.td.getSize().x / 2);
+			var y = p.y - (window.getSize().y / 2) + (this.td.getSize().y / 2);
+			this.scrollFx.start(x, y);
+		}
 	},
 	
 	getElementName: function (td) {
@@ -308,7 +309,8 @@ var FbListInlineEdit = new Class({
 		var element = this.getElementName(td);
 		var rowid = td.getParent('.fabrik_row').id.replace('list_' + this.list.id + '_row_', '');
 		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.display&format=raw';
-		var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
+		//var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
+		var url = 'index.php?option=com_fabrik&task=form.inlineedit&format=raw';
 		var opts = this.options.elements[element];
 		if (typeOf(opts) === 'null') {
 			return;
@@ -330,8 +332,9 @@ var FbListInlineEdit = new Class({
 				'data': {
 					'element': element,
 					'elid': opts.elid,
-					'plugin': opts.plugin,
+					'elementid': Object.values(opts.plugins),
 					'rowid': rowid,
+					'formid': this.options.formid,
 					'listid': this.options.listid,
 					'inlinesave': this.options.showSave,
 					'inlinecancel': this.options.showCancel
@@ -364,15 +367,17 @@ var FbListInlineEdit = new Class({
 			var html = this.editors[opts.elid].stripScripts(function (script) {
 				this.javascript = script;
 			}.bind(this));
-		
 			td.empty().set('html', html);
 			//make a new instance of the element js class which will use the new html
-			$exec(this.javascript);
+			eval(this.javascript);
 			//tell the element obj to update its value
 			///triggered from element model
 			Fabrik.addEvent('fabrik.list.inlineedit.setData', function () {
-				Fabrik['inlineedit_' + opts.elid].update(data);
-				Fabrik['inlineedit_' + opts.elid].select();
+				$H(opts.plugins).each(function (fieldid) {
+					console.log('update', fieldid, data[fieldid]);
+					Fabrik['inlineedit_' + opts.elid].elements[fieldid].update(data[fieldid]);
+					Fabrik['inlineedit_' + opts.elid].elements[fieldid].select();
+				});
 				this.watchControls(td);
 				this.setFocus(td);	
 			}.bind(this));
@@ -385,7 +390,7 @@ var FbListInlineEdit = new Class({
 		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
 		var element = this.getElementName(td);
 		var ref = td.getParent('.fabrik_row').id;
-		var v = false;
+		var v = {};
 		this.vv = [];
 		// $$$rob $H needed when group by applied
 		//$H(groupedData).each(function (data) {
@@ -402,8 +407,11 @@ var FbListInlineEdit = new Class({
 				});
 			}
 		}.bind(this));
+		var opts = this.options.elements[element];
 		if (this.vv.length > 0) {
-			v = this.vv[0].data[element + '_raw'];
+			$H(opts.plugins).each(function (elid, elementName) {
+				v[elid] = this.vv[0].data[elementName + '_raw'];
+			}.bind(this));
 		}
 		return v;
 	},
@@ -412,14 +420,16 @@ var FbListInlineEdit = new Class({
 		ref = row.id;
 		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
 		// $$$rob $H needed when group by applied
-		$H(groupedData).each(function (data) {
-			data.each(function (row) {
+		//$H(groupedData).each(function (data, gkey) {
+		groupedData.each(function (data, gkey) {
+			data.each(function (row, dkey) {
 				if (row.id === ref) {
-					row.data[element] = val;
+					row.data[element + '_raw'] = val;
 				}
-			});
-		});
+			}.bind(this));
+		}.bind(this));
 	},
+	
 	setFocus : function (td) {
 		if (typeOf(td.getElement('.fabrikinput')) !== 'null') {
 			td.getElement('.fabrikinput').focus();
@@ -428,50 +438,56 @@ var FbListInlineEdit = new Class({
 	
 	watchControls : function (td) {
 		if (typeOf(td.getElement('.inline-save')) !== 'null') {
-			td.getElement('.inline-save').addEvent('click', this.save.bindWithEvent(this, [td]));
+			td.getElement('.inline-save').removeEvents('click').addEvent('click', this.save.bindWithEvent(this, [td]));
 		}
 		if (typeOf(td.getElement('.inline-cancel')) !== 'null') {
-			td.getElement('.inline-cancel').addEvent('click', this.cancel.bindWithEvent(this, [td]));
+			td.getElement('.inline-cancel').removeEvents('click').addEvent('click', this.cancel.bindWithEvent(this, [td]));
 		}
 	},
 	
 	save: function (e, td) {
+		if (!this.editing) {
+			return;
+		}
 		this.inedit = false;
 		e.stop();
 		var element = this.getElementName(td);
 		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.save&format=raw';
-		var url = 'index.php?option=com_fabrik&task=element.save&format=raw';
+		//var url = 'index.php?option=com_fabrik&task=element.save&format=raw';
+		var url = 'index.php?option=com_fabrik&task=form.process&format=raw&_packageId=1'; //set package id to return js string
 		var opts = this.options.elements[element];
 		
 		// need to load on parent otherwise in table td size gets monged
 		Fabrik.loader.start(td.getParent());
 		
-		
 		var row = this.editing.getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.list.id + '_row_', '');
 		td.removeClass(this.options.focusClass);
-		//var eObj = eval('inlineedit_' + opts.elid);
 		var eObj = Fabrik['inlineedit_' + opts.elid];
 		if (typeOf(eObj) === 'null') {
 			fconsole('issue saving from inline edit: eObj not defined');
 			this.cancel(e);
 			return false;
 		}
-		delete eObj.element;
-		eObj.getElement();
-		var value = eObj.getValue();
-		var k = 'value';
-
-		this.setTableData(row, element, value);
+		
 		var data = {
 			'element': element,
 			'elid': opts.elid,
 			'plugin': opts.plugin,
 			'rowid': rowid,
-			'listid': this.options.listid
+			'listid': this.options.listid,
+			'formid': this.options.formid
 		};
-		data[eObj.token]  = 1;
-		data[k] = value;
+		$H(eObj.elements).each(function (el) {
+			el.getElement();
+			var v = el.getValue();
+			this.setTableData(row, el.options.element, v);
+			data[el.options.element] = v;
+		}.bind(this));
+		
+		
+		data[eObj.token] = 1;
+
 		td.empty();
 		new Request({url: url,
 			'data': data,
@@ -480,7 +496,7 @@ var FbListInlineEdit = new Class({
 				td.empty().set('html', r);
 				// need to load on parent otherwise in table td size gets monged
 				Fabrik.loader.stop(td.getParent());
-				Fabrik.fireEvent('fabrik.table.updaterows');
+				Fabrik.fireEvent('fabrik.list.updaterows');
 			}.bind(this)
 		}).send();
 		this.editing = null;
@@ -509,7 +525,6 @@ var FbListInlineEdit = new Class({
 		var rowid = row.id.replace('list_' + this.getList().id + '_row_', '');
 		var td = this.editing;
 		if (td !== false) {
-			//td.removeClass(this.options.focusClass);
 			var element = this.getElementName(td);
 			var opts = this.options.elements[element];
 			var c = this.defaults[rowid + '.' + opts.elid];

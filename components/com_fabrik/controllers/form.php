@@ -29,6 +29,26 @@ class FabrikControllerForm extends JController
 	var $cacheId = 0;
 
 	/**
+	 * @since 3.0b
+	 * inline edit control
+	 */
+	
+	public function inlineedit()
+	{
+		$document = JFactory::getDocument();
+		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$viewType	= $document->getType();
+		//$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
+		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$view = $this->getView('form', $viewType, '');
+		$view->setModel($model, true);
+		// Set the layout
+		$view->setLayout($viewLayout);
+		//todo check for cached version
+		$view->inlineEdit();
+	}
+	
+	/**
 	 * Display the view
 	 */
 
@@ -106,7 +126,7 @@ class FabrikControllerForm extends JController
 		
 		// Check for request forgeries
 		if ($model->spoofCheck()) {
-			//JRequest::checkToken() or die('Invalid Token');
+			JRequest::checkToken() or die('Invalid Token');
 		}
 		
 		if (!$model->validate()) {
@@ -148,6 +168,13 @@ class FabrikControllerForm extends JController
 		
 		$url = $this->getRedirectURL($model);
 		$msg = $this->getRedirectMessage($model);
+		
+		if (JRequest::getInt('elid') !== 0) {
+			//inline edit show the edited element
+			echo $model->inLineEditResult();
+			return;
+		}
+		
 		// @todo -should get handed off to the json view to do this
 		if (JRequest::getInt('fabrik_ajax') == 1) {
 			//let form.js handle the redirect logic (will also send out a
@@ -221,7 +248,7 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * since 3.0
+	 * @since 3.0
 	 * Enter description here ...
 	 * @param object $model
 	 */

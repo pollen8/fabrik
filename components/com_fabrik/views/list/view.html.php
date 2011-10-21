@@ -79,6 +79,8 @@ class FabrikViewList extends JView{
 		$opts->actionMethod = $listParams->get('actionMethod');
 		$opts->floatPos = $listParams->get('floatPos');
 		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
+		$opts->limitLength = $model->limitLength;
+		$opts->limitStart = $model->limitStart;
 		$csvOpts = new stdClass();
 		$csvOpts->excel = (int)$listParams->get('csv_format');
 		$csvOpts->inctabledata = (int)$listParams->get('csv_include_data');

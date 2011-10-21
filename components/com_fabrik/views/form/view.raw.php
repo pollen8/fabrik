@@ -16,6 +16,78 @@ class fabrikViewForm extends JView
 
 	public $access = null;
 	
+	public function inlineEdit()
+	{
+		$model = $this->getModel('form');
+		$document = JFactory::getDocument();
+		
+		$form = $model->getForm();
+		if ($model->render() === false) {
+			return false;
+		}
+		$this->groups = $this->get('GroupView');
+		$elementid = JRequest::getInt('elid'); //main trigger element's id
+		
+		$html = array();
+		$html[] = '<div class="floating-tip" style="position:absolute">';
+		$html[] = '<ul class="fabrikElementContainer">';
+		foreach ($this->groups as $group) {
+			foreach ($group->elements as $element) {
+				$html[] = '<li class="'.$element->id.'">'.$element->label.'</li>';
+				$html[] = '<li class="fabrikElement">';
+				$html[] = $element->element;
+				$html[] = '</li>';
+			}
+		}
+		
+		$html[] = '</ul>';
+			
+		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel')) {
+			$html[] = '<ul class="fabrik_buttons">';
+		
+			if (JRequest::getBool('inlinecancel') == true) {
+				$html[] = '<li class="ajax-controls inline-cancel">';
+				$html[] = '<a href="#" class="">';
+				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL'))).'<span></span></a>';
+				$html[] = '</li>';
+			}
+		
+			if (JRequest::getBool('inlinesave') == true) {
+				$html[] = '<li class="ajax-controls inline-save">';
+				$html[] = '<a href="#" class="">';
+				$html[] = FabrikHelperHTML::image('save.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SAVE')));
+				$html[] = '<span>'.JText::_('COM_FABRIK_SAVE').'</span></a>';
+				$html[] = '</li>';
+			}
+			$html[] = '</ul>';
+		}
+		$html[] = '</div>';
+		echo implode("\n", $html);
+		
+		$srcs = array();
+		$repeatCounter= 0;
+		$elementids = (array)JRequest::getVar('elementid');
+		$eCounter = 0;
+		$onLoad = array();
+		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
+		$onLoad[] = "Fabrik.inlineedit_$elementid = {'elements': {}};";
+		foreach ($elementids as $id) {
+			$elementModel = $model->getElement($id, true);
+			$elementModel->getElement();
+			$elementModel->_editable = true;
+			$elementModel->formJavascriptClass($srcs);
+			$onLoad[] = "var o = ".$elementModel->elementJavascript($repeatCounter).";";
+			if ($eCounter === 0) {
+				$onLoad[] = "o.select();";
+				$onLoad[] = "o.focus();";
+				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '".JUtility::getToken()."';";
+			}
+			$eCounter ++;
+			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
+		}
+		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
+	}
+	
 	function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
@@ -65,10 +137,10 @@ class fabrikViewForm extends JView
 
 		for ($i = 0; $i < count($gkeys); $i ++) {
 			$groupModel = $groups[$gkeys[$i]];
-			$groupTable 	=& $groupModel->getGroup();
-			$group 				= new stdClass();
-			$groupParams 	=& $groupModel->getParams();
-			$aElements 		= array();
+			$groupTable = $groupModel->getGroup();
+			$group = new stdClass();
+			$groupParams = $groupModel->getParams();
+			$aElements = array();
 			//check if group is acutally a table join
 
 			$repeatGroup = 1;

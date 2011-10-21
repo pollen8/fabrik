@@ -72,6 +72,7 @@ var FloatingTips = new Class({
 	},
 
 	show: function(element) {
+		this.hideAll();
 		var old = element.retrieve('floatingtip');
 		if (old) if (old.getStyle('opacity') == 1) { clearTimeout(old.retrieve('timeout')); return this; }
 		var tip = this._create(element);
@@ -118,7 +119,7 @@ var FloatingTips = new Class({
 	
 	hideAll: function() {
 		this.elements.each(function(e) {
-			this.hide(new Event.Mock(e.getParent(), 'mouseout'), e);
+			this.hide(new Event.Mock(document.body, 'mouseout'), e);
 		}.bind(this));
 	},
 	
@@ -185,8 +186,8 @@ var FloatingTips = new Class({
 			case 'right': 
 				r = 0;
 				trgSt['top'] = o.center ?  cwr.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+				trgSt['width'] = '10px';
 				cwr.setStyle('left', '10px');
-				trgSt['margin-left'] = '-20px';
 				break;
 				
 			case 'bottom':
@@ -210,7 +211,7 @@ var FloatingTips = new Class({
 			}
 	
 			var arrowStyle = {
-					size: {width: 32, height: trgSt['height'].toInt()},
+					size: {width: trgSt['width'].toInt(), height: trgSt['height'].toInt()},
 					scale: scale, 
 					rotate: r,
 					fill: {
@@ -226,6 +227,9 @@ var FloatingTips = new Class({
 			arrowStyle.translate = {x: 0, y: 0};
 			if (opos === 'bottom') {
 				arrowStyle.translate = {x: -11, y: 0};
+			}
+			if (opos === 'right') {
+				arrowStyle.translate = {x: -20, y: 0};
 			}
 			var shadow = cwr.getStyle('box-shadow');
 			var shadowColor, shadowX, shadowY, bits;

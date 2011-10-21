@@ -547,9 +547,9 @@ class FabrikFEModelList extends JModelForm {
 							// For instance, the calc element needs to set _raw.  For now, I changed $thisRow above to
 							// be a = reference to $data[$i], and in renderListData() the calc element modifies
 							// the _raw entry in $thisRow.  I guess it could simply unset the _raw in $thisRow and
-							// then implement a renderRawTableData.  Anyway, just sayin'.
+							// then implement a renderRawListData.  Anyway, just sayin'.
 							if (!array_key_exists($rawCol, $thisRow)) {
-								$data[$i]->$rawCol = $elementModel->renderRawTableData($coldata, $thisRow);
+								$data[$i]->$rawCol = $elementModel->renderRawListData($coldata, $thisRow);
 							}
 						}
 					}
@@ -2017,7 +2017,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @return object params
 	 */
 
-	function &getParams()
+	function getParams()
 	{
 		$table = $this->getTable();
 		if (!isset($this->_params)) {
@@ -5968,8 +5968,10 @@ class FabrikFEModelList extends JModelForm {
 					if ($element->published == 0 && $onlyPublished) {
 						continue;
 					}
+					$dbkey = $key == 'filtername' ? trim($elementModel->getFilterFullName()) : trim($elementModel->getFullName(false, true, false));
 					switch ($key) {
-						case 'filtername'://depreciated (except for querystring filters)
+						case 'safecolname':
+						case 'filtername'://depreciated (except for querystring filters and inline edit)
 							// used id instead for filters
 							// $$$ rob was incorrect for db joinelements with search type = field
 							//$key =  $elementModel->getFullName(false, false, false);
@@ -5979,7 +5981,7 @@ class FabrikFEModelList extends JModelForm {
 							$origconcat = $elementModel->getParams()->get('join_val_column_concat');
 							$elementModel->getParams()->set('join_val_column_concat', '');
 
-							$dbkey = trim($elementModel->getFilterFullName());
+							//$dbkey = ;
 							//$$$ rob if prefilter was using _raw field then we need to assign the model twice to both possible keys
 							if ($elementModel->getElement()->plugin == 'fabrikdatabasejoin') {
 								$dbkey2 =  FabrikString::safeColName($elementModel->getFullName(false, false, false));

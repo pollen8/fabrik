@@ -331,7 +331,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$sql = $this->_buildQuery($data, $repeatCounter);
 		$db->setQuery($sql);
 		if (JDEBUG && JRequest::getVar('format') == 'raw') {
-			echo "/* ".$db->getQuery()." */\n";
+			//echo "/* ".$db->getQuery()." */\n";
 		}
 		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
 		$this->_optionVals[$repeatCounter] = $db->loadObjectList();
