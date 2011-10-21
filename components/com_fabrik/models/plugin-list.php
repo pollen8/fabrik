@@ -102,11 +102,6 @@ class plgFabrik_List extends FabrikPlugin
 		return true;
 	}
 
-	function requiresMocha()
-	{
-		return $this->useMocha;
-	}
-
 	/**
 	 * provide some default text that most table plugins will need
 	 * (this object will then be json encoded by the plugin and passed

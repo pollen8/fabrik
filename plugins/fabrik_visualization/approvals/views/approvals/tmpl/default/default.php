@@ -35,7 +35,7 @@ $row = $this->row;
 							<?php echo FabrikHelperHTML::image('attention2.png', 'list', '');?>
 						</a>
 						<div class="floating-tip" style="display:none">
-						<ul class="view">
+						<ul class="view approvals">
 							<li>
 								<a class="approve" href="index.php?option=com_fabrik&format=raw&task=visualization.display&visualizationid=<?php echo $this->id?>&plugintask=approve&listid=<?php echo $row->listid?>&rowid=<?php echo $row->rowid?>">
 									<?php echo FabrikHelperHTML::image('approve.png', 'visualization', '');?><span>approve</span>

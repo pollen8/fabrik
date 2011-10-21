@@ -30,9 +30,7 @@ class FabrikViewList extends JView{
 		if ($model->requiresSlimbox()) {
 			FabrikHelperHTML::slimbox();
 		}
-		if ($model->requiresMocha()) {
-			FabrikHelperHTML::mocha();
-		}
+	
 		$src = $this->get('PluginJsClasses');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');

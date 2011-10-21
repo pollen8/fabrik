@@ -3177,7 +3177,7 @@ class FabrikFEModelList extends JModelForm {
 				$condition = $afilterConditions[$i];
 				$selValue = JArrayHelper::getValue($afilterValues, $i, '');
 				$filterEval = JArrayHelper::getValue($afilterEval, $i, false);
-				$filterGrouped = $afilterGrouped[$i];
+				$filterGrouped = JArrayHelper::getValue($afilterGrouped, $i, false);
 
 				$selAccess = $afilterAccess[$i];
 				if (!$this->mustApplyFilter($selAccess)) {
@@ -6003,34 +6003,6 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		return $this->elements[$sig];
-	}
-
-	/**
-	 * determines if the talbe needs mocha js classes loaded
-	 *
-	 * @return bol true if required
-	 */
-
-	function requiresMocha()
-	{
-		if ($this->canCSVExport()) {
-			return true;
-		}
-		$params = $this->getParams();
-		if ($params->get('advanced-filter') == 1) {
-			return true;
-		}
-		$pluginManager = FabrikWorker::getPluginManager();
-		$activePlugins = (array)$params->get('plugins');
-		$tableplugins = $pluginManager->getPlugInGroup('list');
-		foreach ($tableplugins as $name => $plugin) {
-			if (in_array($name, $activePlugins)) {
-				if ($plugin->requiresMocha()) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**
