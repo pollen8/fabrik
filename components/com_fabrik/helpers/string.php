@@ -197,8 +197,8 @@ class FabrikString extends JString{
 		$text = htmlspecialchars(strip_tags($text), ENT_QUOTES);
 		$orig = $text;
 		$wordCount = JArrayHelper::getValue($opts, 'wordcount', 10);
-		$showTip =  JArrayHelper::getValue($opts, 'tip', true);
-		$title =  JArrayHelper::getValue($opts, 'title', "");
+		$showTip = JArrayHelper::getValue($opts, 'tip', true);
+		$title = JArrayHelper::getValue($opts, 'title', "");
 		$text = explode(" ", $text);
 		$summary = array_slice($text, 0, $wordCount);
 
@@ -206,12 +206,14 @@ class FabrikString extends JString{
 			$summary[] = " ...";
 		}
 		$summary = implode(" ", $summary);
-		if ($showTip) {
+		if ($showTip && count($text) > $wordCount) {
 			FabrikHelperHTML::tips();
 			if($title !== '') {
 				$title .= "::";
 			}
-			$summary = "<span class=\"fabrikTip\" title=\"$title"."$orig\">$summary</span>";
+			$tip = htmlspecialchars('<div class="truncate_text">'.$title.$orig.'</div>');
+			//$tip = $title.$orig;
+			$summary = '<span class="fabrikTip" title="'.$tip.'">'.$summary.'</span>';
 		}
 		return $summary;
 	}
