@@ -344,6 +344,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere);
 
+		foreach ($aDdObjs as &$o) {
+			$o->text = htmlspecialchars($o->text, ENT_QUOTES); //for values like '1"'
+		}
 		$table = $this->getlistModel()->getTable()->db_table_name;
 		if (is_array($aDdObjs)) {
 			$tmp = array_merge($tmp, $aDdObjs);

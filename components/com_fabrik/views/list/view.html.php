@@ -53,10 +53,11 @@ class FabrikViewList extends JView{
 
 		$this->_row = new stdClass();
 		$script = '';
-
+		$listParams = $model->getParams();
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = (int)$model->isAjax();
+		$opts->ajax_links = (bool)$listParams->get('list_ajax_links', $opts->ajax);
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->_jsonHeadings();
@@ -64,7 +65,7 @@ class FabrikViewList extends JView{
 		foreach ($labels as &$l) {
 			$l = strip_tags($l);
 		}
-		$listParams = $model->getParams();
+		
 		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid 		= $tmpItemid;

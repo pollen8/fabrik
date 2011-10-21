@@ -16,17 +16,14 @@ $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";
 ?>
 
-<div style="position:relative">
+<div class="twopane">
 <div class="fields">
 <?php 
 
 echo $form->intro;
 echo $this->plugintop;
 
-?>
 
-
-	<?php
 	if ($this->showEmail) {
 		echo $this->emailLink;
 	}
@@ -37,7 +34,7 @@ echo $this->plugintop;
 		echo $this->printLink;
 	}
 	echo $this->loadTemplate('relateddata');?>
-<br />
+
 	<dl class="tabs">
 	<?php
 	$display = 0;

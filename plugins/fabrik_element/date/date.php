@@ -614,7 +614,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			// $$$ rob 11/10/2011 if its hidden we dont want the defaultval as mysql 
 			// format as its used by form.js duplcateGroup
 			// to set the value of the date element when its repeated.
-			$opts->defaultVal = $this->formattedDate;
+			$opts->defaultVal = $this->_editable ? $this->formattedDate : '';
 		}
 		$opts->showtime = $params->get('date_showtime', 0) ? true : false;
 		$opts->timelabel = JText::_('time');

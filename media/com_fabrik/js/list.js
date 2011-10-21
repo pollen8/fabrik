@@ -223,6 +223,7 @@ var FbList = new Class({
 		'admin': false,
 		'filterMethod': 'onchange',
 		'ajax': false,
+		'ajax_links': false,
 		'form': 'listform_' + this.id,
 		'hightLight': '#ccffff',
 		'primaryKey': '',
@@ -680,7 +681,8 @@ var FbList = new Class({
 		if (!this.list) {
 			return;
 		}
-		if (this.options.ajax) {
+		
+		if (this.options.ajax_links) {
 			// if floatiing menus then edit out side of this.list (not tested with
 			// mutliple lists on the same page.
 			// if theres an issue with that we may need to inject the floating menu
