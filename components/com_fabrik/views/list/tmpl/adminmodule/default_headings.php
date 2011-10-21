@@ -27,6 +27,7 @@ head.ready(function(){
 	list.getElements('span.heading').each(function(h){
 		var f = h.getNext();
 		if (f) {
+			h.addClass('filtertitle');
 			h.setStyle('cursor', 'pointer');
 			if(i = f.getElement('input')) {
 				i.set('placeholder', h.get('text'));
@@ -36,9 +37,13 @@ head.ready(function(){
 	});
 	list.addEvent('click:relay(span.heading)', function(e){
 		var f = e.target.getNext();
-		if (f){
+		if (f) {
 			f.toggle();
-			//e.target.toggle();
+			var i = list.getParent().getElement('.fabrikFilterContainer');
+			var offsetP = list.getOffsetParent() ? list.getOffsetParent() : document.body;
+			var p = f.getPosition(offsetP);
+			i.setPosition({'x': p.x - 5, 'y': p.y + f.getSize().y});
+			i.toggle();
 		}
 	});
 
