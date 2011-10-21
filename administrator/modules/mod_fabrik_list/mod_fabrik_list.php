@@ -42,7 +42,10 @@ $document = JFactory::getDocument();
 require_once(COM_FABRIK_FRONTEND.DS.'controllers'.DS.'package.php');
 require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'form'.DS.'view.html.php');
 
-$listId	= intval($params->get('list_id', 1));
+$listId	= intval($params->get('list_id', 0));
+if ($listId === 0) {
+	JError::raiseError(500, 'no list specified');
+}
 $listels = json_decode($params->get('list_elements'));
 if (isset($listels->show_in_list)) {
 	JRequest::setVar('fabrik_show_in_list', $listels->show_in_list);
