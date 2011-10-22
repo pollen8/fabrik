@@ -73,18 +73,9 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		}
 		$els = array();
 		$srcs = array();
-		/* foreach ($elements as $key => $val) {
-			$key = FabrikString::safeColNameToArrayKey($key);
-			if (empty($use) || in_array($key, $use)) {
-				$els[$key] = new stdClass();
-				$els[$key]->elid = $val->_id;
-				$els[$key]->plugin = $val->getElement()->plugin;
-				//load in all element js classes
-				$val->formJavascriptClass($srcs);
-			}
-		} */
-		
-		if (!empty($use)) {
+
+		$test = (array)$use;
+		if (!empty($test)) {
 			foreach ($use as $key => $fields) {
 				$trigger = $elements[$key];
 				$els[$key] = new stdClass();
@@ -97,8 +88,19 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 					$els[$key]->plugins[$field] = $val->getElement()->id;
 				}
 			}
+		} else {
+			foreach ($elements as $key => $val) {
+				$key = FabrikString::safeColNameToArrayKey($key);
+				
+				$els[$key] = new stdClass();
+				$els[$key]->elid = $val->_id;
+				$els[$key]->plugins = array();
+				$els[$key]->plugins[$key] = $val->getElement()->plugin;
+				//load in all element js classes
+				$val->formJavascriptClass($srcs);
+				
+			}
 		}
-		
 		FabrikHelperHTML::script($srcs);
 		$opts = new stdClass();
 		$opts->elements = $els;

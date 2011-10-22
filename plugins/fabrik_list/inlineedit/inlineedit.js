@@ -393,6 +393,9 @@ var FbListInlineEdit = new Class({
 		var v = {};
 		this.vv = [];
 		// $$$rob $H needed when group by applied
+		if (typeOf(groupedData) === 'object') {
+			groupedData = $H(groupedData);
+		}
 		//$H(groupedData).each(function (data) {
 		groupedData.each(function (data) {
 			if (typeOf(data) === 'array') {//groued by data in forecasting slotenweb app. Where groupby table plugin applied to data.
@@ -420,6 +423,9 @@ var FbListInlineEdit = new Class({
 		ref = row.id;
 		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
 		// $$$rob $H needed when group by applied
+		if (typeOf(groupedData) === 'object') {
+			groupedData = $H(groupedData);
+		}
 		//$H(groupedData).each(function (data, gkey) {
 		groupedData.each(function (data, gkey) {
 			data.each(function (row, dkey) {
