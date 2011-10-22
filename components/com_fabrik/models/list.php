@@ -4793,7 +4793,8 @@ class FabrikFEModelList extends JModelForm {
 	public function getGroupBy()
 	{
 		$table = $this->getTable();
-		return JRequest::getVar('group_by', $table->group_by);
+		$groupBy = JRequest::getVar('group_by', $table->group_by);
+		return ($groupBy == '0') ? '' : $groupBy;
 	}
 
 	/**
@@ -6650,8 +6651,8 @@ class FabrikFEModelList extends JModelForm {
 		$url .= strpos($url, '?') ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
-		$a[$url] = 'none';
-		foreach($h as $key => $v) {
+		$a[$url.'group_by=0'] = 'none';
+		foreach ($h as $key => $v) {
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions'))) {
 				$thisurl = $url.'group_by='.$key;
 				$a[$thisurl] = strip_tags($v);
