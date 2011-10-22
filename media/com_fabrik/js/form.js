@@ -142,9 +142,9 @@ var FbForm = new Class({
 	setUp : function () {
 		this.form = this.getForm();
 		this.watchGroupButtons();
-		if (this.options.editable) {
-			this.watchSubmit();
-		}
+		//if (this.options.editable) { //submit can appear in confirmation plugin even when readonly
+		this.watchSubmit();
+		//}
 		this.createPages();
 		this.watchClearSession();
 	},

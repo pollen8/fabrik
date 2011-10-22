@@ -491,7 +491,6 @@ var FbListInlineEdit = new Class({
 			data[el.options.element] = v;
 		}.bind(this));
 		
-		
 		data[eObj.token] = 1;
 
 		td.empty();
