@@ -1720,7 +1720,9 @@ class FabrikFEModelList extends JModelForm {
 		if (!$query) {
 			return $this->_whereSQL[$sig][$incFilters];
 		} else {
-			$query->where($this->_whereSQL[$sig][$incFilters]);
+			if (!empty($this->_whereSQL[$sig][$incFilters])) {
+				$query->where($this->_whereSQL[$sig][$incFilters]);
+			}
 			return $query;
 		}
 	}
@@ -2093,25 +2095,6 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$this->_oConn = FabrikWorker::getConnection($this->getTable());
 		return $this->_oConn;
-		/* $config = JFactory::getConfig();
-		 if (!isset($this->_oConn)) {
-		$table = $this->getTable();
-		$connectionModel = JModel::getInstance('connection', 'FabrikFEModel');
-		$jform = JRequest::getVar('jform', array(), 'post');
-		$connId = is_null($table->connection_id) ? JArrayHelper::getValue($jform, 'connection_id', null) : $table->connection_id;
-		$connectionModel->setId($connId);
-		if ($connId == '' || is_null($connId) ||  $connId == '-1') { //-1 for creating new table
-		$connectionModel->loadDefaultConnection();
-		$connectionModel->setId($connectionModel->getConnection()->id);
-		}
-		$connection = $connectionModel->getConnection();
-		$this->_oConn = $connectionModel;
-
-		if (JError::isError($this->_oConn)) {
-		JError::handleEcho($this->_oConn);
-		}
-		}
-		return $this->_oConn; */
 	}
 
 	/**
@@ -2666,7 +2649,6 @@ class FabrikFEModelList extends JModelForm {
 		$tableName = FabrikString::safeColName($tableName);
 		$lastfield = FabrikString::safeColName($lastfield);
 
-
 		$altered = false;
 		if (!array_key_exists($element->name, $dbdescriptions)) {
 
@@ -2717,13 +2699,19 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
 		//if (empty($origColName) || !in_array(strtolower($origColName ), $existingfields)) {
 
+	
 		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
 		//if (empty($element->name) || !in_array($element->name, $existingfields)) {
 		if (empty($origColName) || !in_array($origColName, $existingfields)) {
 			if (!$altered) {
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN ".FabrikString::safeColName($element->name)." $objtype AFTER $lastfield");
 				if (!$fabrikDb->query()) {
-					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					// $$$ rob ok this is hacky but I had a whole series of elements wiped from the db, but wanted to re-add them into the database.
+					// as the db table already had the fields this error was stopping the save.
+					if (!array_key_exists($element->name, $dbdescriptions)) {
+						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					}
+					
 				}
 			}
 		} else {
@@ -2783,6 +2771,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
+		
 		if (!is_null($objtype)) {
 			foreach ($dbdescriptions as $dbdescription) {
 				$fieldname = strtolower($dbdescription->Field);

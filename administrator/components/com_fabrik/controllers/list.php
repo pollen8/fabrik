@@ -29,6 +29,7 @@ class FabrikControllerList extends FabControllerForm
 
 	public function edit()
 	{
+		
 		$model = $this->getModel('connections');
 		if (count($model->activeConnections()) == 0) {
 			JError::raiseError(500, JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));

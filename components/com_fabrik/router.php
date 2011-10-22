@@ -140,8 +140,7 @@ function fabrikParseRoute($segments)
 			$vars['format'] 	= JArrayHelper::getValue($segments, 2, 'html');
 			break;
 		default:
-			echo "router: ahk no view! for " . $segments[0];
-			exit;
+			echo "router: ahk no view! for $view";
 	}
 	return $vars;
 }

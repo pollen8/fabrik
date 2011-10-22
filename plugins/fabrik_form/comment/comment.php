@@ -459,7 +459,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		$row->user_id 	= $user->get('id');
 		$row->approved 	= 1;
 		//@TODO this isnt set?
-		$row->url 			= @$_SERVER["HTTP_REFERER"];
+		$row->url = JRequest::getVar('HTTP_REFERER', '', 'server');
 		$rowid = JRequest::getVar('rowid');
 		$row->formid = JRequest::getVar('formid');
 		$row->row_id = $rowid;

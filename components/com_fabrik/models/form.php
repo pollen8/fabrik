@@ -1005,7 +1005,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		//set the redirect page to the form's url if making a copy and set the id
 		//to the new insertid
 		if (array_key_exists('Copy', $this->_formData)) {
-			$u = str_replace("rowid=$origid", "rowid=$insertId", $_SERVER['HTTP_REFERER']);
+			$u = str_replace("rowid=$origid", "rowid=$insertId", JRequest::getVar('HTTP_REFERER', '', 'server'));
 			JRequest::setVar('fabrik_referrer', $u);
 		}
 		$tmpKey 	= str_replace("`", "", $item->db_primary_key);
@@ -1592,8 +1592,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function validate()
 	{
-		if (JRequest::getVar('fabrik_ignorevalidation', 0) == 1) {
-			//put in when saving page of form
+		if (JRequest::getBool('fabrik_ignorevalidation', false) != true) { //put in when saving page of form
 			return true;
 		}
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');

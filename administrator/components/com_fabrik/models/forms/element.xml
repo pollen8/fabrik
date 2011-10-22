@@ -68,7 +68,8 @@
 	<fieldset name="access">
 	
 		<field name="access" 
-				type="accesslevel" 
+				type="accesslevel"
+				default="1"
 				label="COM_FABRIK_ACCESS_EDITABLE_ELEMENT" 
 				description="COM_FABRIK_ACCESS_EDITABLE_ELEMENT_DESC" />
 				
@@ -464,7 +465,7 @@
 	
 					<field name="view_access" 
 							type="accesslevel" 
-							default="0" 
+							default="1" 
 							label="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT" 
 							description="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT_DESC" />
 					

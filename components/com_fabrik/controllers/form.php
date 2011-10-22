@@ -126,13 +126,13 @@ class FabrikControllerForm extends JController
 		
 		// Check for request forgeries
 		if ($model->spoofCheck()) {
-			JRequest::checkToken() or die('Invalid Token');
+			//JRequest::checkToken() or die('Invalid Token');
 		}
 		
 		if (!$model->validate()) {
-
 			//if its in a module with ajax or in a package
 			if (JRequest::getCmd('fabrik_ajax')) {
+				
 				echo $model->getJsonErrors();
 				return;
 			}
@@ -156,6 +156,13 @@ class FabrikControllerForm extends JController
 		$model->clearErrors();
 
 		$model->process();
+		
+		if (JRequest::getInt('elid') !== 0) {
+			//inline edit show the edited element - ignores validations for now
+			echo $model->inLineEditResult();
+			return;
+		}
+		
 		//check if any plugin has created a new validation error
 		if (!empty($model->_arErrors)) {
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
@@ -168,12 +175,6 @@ class FabrikControllerForm extends JController
 		
 		$url = $this->getRedirectURL($model);
 		$msg = $this->getRedirectMessage($model);
-		
-		if (JRequest::getInt('elid') !== 0) {
-			//inline edit show the edited element
-			echo $model->inLineEditResult();
-			return;
-		}
 		
 		// @todo -should get handed off to the json view to do this
 		if (JRequest::getInt('fabrik_ajax') == 1) {

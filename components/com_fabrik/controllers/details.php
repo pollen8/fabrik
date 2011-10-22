@@ -111,7 +111,7 @@ class FabrikControllerDetails extends JController
 			JRequest::checkToken() or die('Invalid Token');
 		}
 
-		if (JRequest::getVar('fabrik_ignorevalidation', 0) != 1) { //put in when saving page of form
+		if (JRequest::getBool('fabrik_ignorevalidation', false) != true) { //put in when saving page of form
 			if (!$model->validate()) {
 				//if its in a module with ajax or in a package
 				if (JRequest::getInt('_packageId') !== 0) {

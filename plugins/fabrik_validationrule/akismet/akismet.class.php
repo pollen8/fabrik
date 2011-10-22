@@ -349,7 +349,7 @@ class Akismet extends AkismetObject {
 			$this->comment['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 		}
 		if(!isset($this->comment['referrer'])) {
-			$this->comment['referrer'] = $_SERVER['HTTP_REFERER'];
+			$this->comment['referrer'] = JRequest::getVar('HTTP_REFERER', '', 'server');
 		}
 		if(!isset($this->comment['blog'])) {
 			$this->comment['blog'] = $this->blogUrl;

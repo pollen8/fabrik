@@ -1879,9 +1879,11 @@ zoom:
 		return $storage->pathToURL($v);
 	}
 
-	/* not really an AJAX call, we just use the pluginAjax method so we can run this
+	/** 
+	 * not really an AJAX call, we just use the pluginAjax method so we can run this
 	 * method for handling scripted downloads.
 	 */
+	
 	function onAjax_download()
 	{
 		$app = JFactory::getApplication();

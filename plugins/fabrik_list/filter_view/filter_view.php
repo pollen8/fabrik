@@ -26,7 +26,7 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 
 	function getAclParam()
 	{
-		return 'filter_view';
+		return 'filter_view_access';
 	}
 
 	public function onGetContentBeforeList($params, $model, $args)

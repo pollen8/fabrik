@@ -35,7 +35,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					$message = JText::_('PLG_FORM_LOG_LOG_DETAILS_VISITOR');
 				}
 			}
-			$in_db = "INSERT INTO `#__{package}_log` (`referring_url`, `message_type`, `message`) VALUES ('".$_SERVER['HTTP_REFERER']."', 'details.view', '$message');";
+			$in_db = "INSERT INTO `#__{package}_log` (`referring_url`, `message_type`, `message`) VALUES ('".JRequest::getVar('HTTP_REFERER', '', 'server')."', 'details.view', '$message');";
 			$db->setQuery($in_db);
 			if ($message != NULL) {
 				$db->query();
@@ -135,9 +135,9 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		// Custom Message
 		if ($params->get('custom_msg') != '') {
 
-					$rowidPos = strpos($_SERVER['HTTP_REFERER'], 'rowid=');
+					$rowidPos = strpos(JRequest::getVar('HTTP_REFERER', '', 'server'), 'rowid=');
 					$idPos = $rowidPos + 6;
-					$rowid = substr($_SERVER['HTTP_REFERER'], $idPos, 1);
+					$rowid = substr(JRequest::getVar('HTTP_REFERER', '', 'server'), $idPos, 1);
 				if (($rowid == "=") || ($rowid == '&') || ($rowid == '')) {
 					$rep_add_edit = JText::_('PLG_FORM_LOG_REP_ADD');
 				} else {
@@ -148,7 +148,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$custom_msg = preg_replace('/{DATE}/', $date, $custom_msg);
 			/* Using Fabrik's own placeholders {$_SERVER->FOO} instead
 			$custom_msg = preg_replace('/{IP}/', $_SERVER['REMOTE_ADDR'], $custom_msg);
-			$custom_msg = preg_replace('/{REFERER}/', $_SERVER['HTTP_REFERER'], $custom_msg);
+			$custom_msg = preg_replace('/{REFERER}/', JRequest::getVar('HTTP_REFERER', '', 'server'), $custom_msg);
 			$custom_msg = preg_replace('/{USERAGENT}/', $_SERVER['HTTP_USER_AGENT'], $custom_msg);*/
 			$excl_clabels = preg_replace('/([-{2}| |"][0-9a-zA-Z.:$_>]*)/', '', $custom_msg);
 			$split_clabels = preg_split('/[+]{1,}/', $excl_clabels);
@@ -264,11 +264,11 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				if ($params->get('logs_record_ip') == 1) {
 					$clabels_createdb .= ", `referer` varchar(255) NOT NULL";
 					$clabels_db .= ', `referer`';
-					$cdata_db .= ", '".$_SERVER['HTTP_REFERER']."'";
+					$cdata_db .= ", '".JRequest::getVar('HTTP_REFERER', '', 'server')."'";
 				} else {
 					$clabels_createdb = "`date` datetime NOT NULL, `referer` varchar(255) NOT NULL";
 					$clabels_db = '`date`, `referer`';
-					$cdata_db = "'$date', '".$_SERVER['HTTP_REFERER']."'";
+					$cdata_db = "'$date', '".JRequest::getVar('HTTP_REFERER', '', 'server')."'";
 				}
 			}
 			if ($params->get('logs_record_useragent') == 1) {
@@ -329,7 +329,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 						fwrite($open, "<b>IP Address:</b> " . $_SERVER['REMOTE_ADDR'] . "<br/>");
 					}
 					if ($params->get('logs_record_referer') == 1) {
-						fwrite($open, "<b>Referer:</b> ". $_SERVER['HTTP_REFERER'] . "<br/>");
+						fwrite($open, "<b>Referer:</b> ". JRequest::getVar('HTTP_REFERER', '', 'server') . "<br/>");
 					}
 					if ($params->get('logs_record_useragent') == 1) {
 						fwrite($open, "<b>UserAgent: </b>". $_SERVER['HTTP_USER_AGENT']. "<br/>");
@@ -343,7 +343,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 						fwrite($open, "IP Address: " . $_SERVER['REMOTE_ADDR'] . "\n");
 					}
 					if ($params->get('logs_record_referer') == 1) {
-						fwrite($open, "Referer: ". $_SERVER['HTTP_REFERER'] . "\n");
+						fwrite($open, "Referer: ".JRequest::getVar('HTTP_REFERER', '', 'server'). "\n");
 					}
 					if ($params->get('logs_record_useragent') == 1) {
 						fwrite($open, "UserAgent: ". $_SERVER['HTTP_USER_AGENT']. "\n");
@@ -389,9 +389,9 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					}
 					if ($params->get('logs_record_referer') == 1) {
 						if ($params->get('logs_record_ip') == 1) {
-							fwrite($open, ",\"".$_SERVER['HTTP_REFERER'] . "\"");
+							fwrite($open, ",\"".JRequest::getVar('HTTP_REFERER', '', 'server'). "\"");
 						} else {
-							fwrite($open, "\"".$_SERVER['HTTP_REFERER'] . "\"");
+							fwrite($open, "\"".JRequest::getVar('HTTP_REFERER', '', 'server'). "\"");
 						}
 					}
 					if ($params->get('logs_record_useragent') == 1) {
@@ -434,10 +434,10 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				}
 
 				// New record or edit?
-				//if ((substr($_SERVER['HTTP_REFERER'], -1) == '=') || (substr($_SERVER['HTTP_REFERER'], -1) == '&')) {
-					$rowidPos = strpos($_SERVER['HTTP_REFERER'], 'rowid=');
+				//if ((substr(JRequest::getVar('HTTP_REFERER', '', 'server') == '=') || (substr(JRequest::getVar('HTTP_REFERER', '', 'server'), -1) == '&')) {
+					$rowidPos = strpos(JRequest::getVar('HTTP_REFERER', '', 'server'), 'rowid=');
 					$idPos = $rowidPos + 6;
-					$rowid = substr($_SERVER['HTTP_REFERER'], $idPos, 1);
+					$rowid = substr(JRequest::getVar('HTTP_REFERER', '', 'server'), $idPos, 1);
 				if (($rowid == "=") || ($rowid == '&') || ($rowid == '')) {
 					$message_type = 'form.new';
 				} else {
@@ -463,7 +463,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				}
 
 				if ($params->get('record_in') == '') {
-					$in_db = "INSERT INTO `$rdb` (`referring_url`, `message_type`, `message`) VALUES ('".$_SERVER['HTTP_REFERER']."', '$message_type', '$message');";
+					$in_db = "INSERT INTO `$rdb` (`referring_url`, `message_type`, `message`) VALUES ('".JRequest::getVar('HTTP_REFERER', '', 'server')."', '$message_type', '$message');";
 				} else {
 					$create_custom_table = "CREATE TABLE IF NOT EXISTS `$rdb` (`id` int(11) NOT NULL auto_increment PRIMARY KEY, $clabels_createdb);";
 					$db->setQuery($create_custom_table);

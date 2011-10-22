@@ -482,7 +482,8 @@ var FbListInlineEdit = new Class({
 			'plugin': opts.plugin,
 			'rowid': rowid,
 			'listid': this.options.listid,
-			'formid': this.options.formid
+			'formid': this.options.formid,
+			'fabrik_ignorevalidation': 1
 		};
 		$H(eObj.elements).each(function (el) {
 			el.getElement();

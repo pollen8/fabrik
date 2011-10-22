@@ -96,12 +96,11 @@ class FabrikControllerForm extends JController
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
 		// Check for request forgeries
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
+		if ($model->spoofCheck()) {
 			JRequest::checkToken() or die('Invalid Token');
 		}
 
-		if (JRequest::getVar('fabrik_ignorevalidation', 0 ) != 1) { //put in when saving page of form
+		if (JRequest::getBool('fabrik_ignorevalidation', false) != true) { //put in when saving page of form
 			if (!$model->validate()) {
 				//if its in a module with ajax or in a package
 				if (JRequest::getInt('_packageId') !== 0) {
@@ -143,8 +142,6 @@ class FabrikControllerForm extends JController
 		if (!$defaultAction) {
 			return;
 		}
-		//$listModel				=& $model->getListModel();
-		//$listModel->_table = null;
 
 		$msg = $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED'));
 

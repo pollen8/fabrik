@@ -70,29 +70,27 @@ class FabrikControllerForm extends JControllerForm
 		// Check for request forgeries
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
-			//JRequest::checkToken() or die('Invalid Token');
+			JRequest::checkToken() or die('Invalid Token');
 		}
-		if (JRequest::getVar('fabrik_ignorevalidation', 0) != 1) { //put in when saving page of form
-			if (!$model->validate()) {
-				//if its in a module with ajax or in a package
-				if (JRequest::getInt('_packageId') !== 0) {
-					$data = array('modified' => $model->_modifiedValidationData);
-					//validating entire group when navigating form pages
-					$data['errors'] = $model->_arErrors;
-					echo json_encode($data);
-					return;
-				}
-				if ($this->_isMambot) {
-					JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
-					// $$$ hugh - testing way of preserving form values after validation fails with form plugin
-					// might as well use the 'savepage' mechanism, as it's already there!
-					$this->savepage();
-					$this->makeRedirect('', $model);
-				} else {
-					$view->display();
-				}
+		if (!$model->validate()) {
+			//if its in a module with ajax or in a package
+			if (JRequest::getInt('_packageId') !== 0) {
+				$data = array('modified' => $model->_modifiedValidationData);
+				//validating entire group when navigating form pages
+				$data['errors'] = $model->_arErrors;
+				echo json_encode($data);
 				return;
 			}
+			if ($this->_isMambot) {
+				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
+				// $$$ hugh - testing way of preserving form values after validation fails with form plugin
+				// might as well use the 'savepage' mechanism, as it's already there!
+				$this->savepage();
+				$this->makeRedirect('', $model);
+			} else {
+				$view->display();
+			}
+			return;
 		}
 
 		//reset errors as validate() now returns ok validations as empty arrays
