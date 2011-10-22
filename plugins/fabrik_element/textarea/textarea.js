@@ -61,7 +61,9 @@ var FbTextarea = new Class({
 				fconsole('didnt find wysiwyg edtor ...' + this.options.element);
 			}
 		} else {
-			this.container = this.element; 
+			//regrab the element for inline editing (otherwise 2nd col you edit doesnt pickup the textarea.
+			this.element = document.id(this.options.element);
+			this.container = this.element;
 		}
 	},
 	
