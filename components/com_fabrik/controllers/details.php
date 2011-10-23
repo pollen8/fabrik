@@ -268,7 +268,7 @@ class FabrikControllerDetails extends JController
 					$url = "index.php?option=com_fabrik&Itemid=$Itemid";
 				}
 			}
-			$config		= JFactory::getConfig();
+			$config	= JFactory::getConfig();
 			if ($config->get('sef')) {
 				$url = JRoute::_($url);
 			}

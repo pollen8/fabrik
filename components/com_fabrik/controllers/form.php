@@ -126,7 +126,7 @@ class FabrikControllerForm extends JController
 		
 		// Check for request forgeries
 		if ($model->spoofCheck()) {
-			//JRequest::checkToken() or die('Invalid Token');
+			JRequest::checkToken() or die('Invalid Token');
 		}
 		
 		if (!$model->validate()) {
@@ -378,8 +378,8 @@ class FabrikControllerForm extends JController
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
-		$app 				= JFactory::getApplication();
-		$model	= &$this->getModel('list', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array(JRequest::getVar('rowid', 0));
 
 		$listid = JRequest::getInt('listid');
