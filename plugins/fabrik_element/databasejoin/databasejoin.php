@@ -990,33 +990,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * $$$ rob this seems the same as element.php's implementation
-	 *
-	 * used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
-	 * @param bol do we render as a normal filter or as an advanced search filter
-	 * @param string table name to use - defaults to element's current table
-	 * @param string label field to use, defaults to element name
-	 * @param string id field to use, defaults to element name
-	 * @return array text/value objects
-	 */
-
-	/*public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
-	 {
-	$usersConfig = JComponentHelper::getParams('com_fabrik');
-	$params = $this->getParams();
-	$filter_build = $params->get('filter_build_method', 0);
-	if ($filter_build == 0) {
-	$filter_build = $usersConfig->get('filter_build_method');
-	}
-	if ($filter_build == 2) {
-	return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
-	} else {
-	return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
-	}
-	}*/
-
-	/**
 	 * (non-PHPdoc)
 	 * @see components/com_fabrik/models/plgFabrik_Element::_buildFilterJoin()
 	 */
