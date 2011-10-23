@@ -971,7 +971,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					if (in_array($val, $deletedImages)) {
 						unset($origData[$j]->$key);
 					} else {
-						$imagesToKeep[] = $origData[$j]->$key;
+						//$$$ rob make sure we aren't asking to keep an empty string - causes all sorts of mischief further on otherwise
+						if (trim($origData[$j]->$key) !== '') {
+							$imagesToKeep[] = $origData[$j]->$key;
+						}
 					}
 				}
 			}
@@ -1004,7 +1007,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					$files[$i] = $imagesToKeep[$i];//$origData[$i]->$name;
 				}
 			}
-			foreach($imagesToKeep as $k => $v) {
+			foreach ($imagesToKeep as $k => $v) {
 				if (!array_key_exists($k, $files)) {
 					$files[$k] = $v;
 				}
@@ -1032,7 +1035,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				// how many rows are in $imagesToKeep ... if $imagesToKeep isn't empty, then we can assume a) it occurs at least once, and
 				// b) there was at least one row in $origData
 				if (!empty($imagesToKeep)) {
-					$files[] = $origData[0]->$name;
+					if ($origData[0]->$name !== '') {
+						$files[] = $origData[0]->$name;
+					}
 				}
 				/*
 				// @todo not tested but commented code below produced warning as $i not set
