@@ -816,8 +816,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$ns = $val;
 			}
 		} else {
-			$this->_formData[$key] = $val;
-			$this->_fullFormData[$key] = $val;
+			if (isset($this->_formData)) {
+				$this->_formData[$key] = $val;
+			}
+			// check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
+			if (isset($this->_fullFormData)) {
+				$this->_fullFormData[$key] = $val;
+			}
 			/*
 			 * Need to allow RO (encrypted) elements to be updated.  Consensus is that
 			 * we should actually modify the actual encrypted element in the $_REQUEST,
@@ -846,7 +851,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if ($update_raw) {
 				$key .= '_raw';
 				$this->_formData[$key] = $val;
-				$this->_fullFormData[$key] = $val;
+				if (isset($this->_fullFormData)) {
+					$this->_fullFormData[$key] = $val;
+				}
 				if ($override_ro) {
 					$this->_pluginUpdatedElements[$key] = $val;
 				}
@@ -2155,8 +2162,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if (!$this->getForm()->record_in_database) {
 			return $this->_rowId;
 		}
-		$listModel 	=& $this->getListModel();
-		$fabrikDb   	=& $listModel->getDb();
+		$listModel = $this->getListModel();
+		$fabrikDb = $listModel->getDb();
 		$item = $listModel->getTable();
 		$k = $fabrikDb->nameQuote($item->db_primary_key);
 		$fabrikDb->setQuery("SELECT MAX($k) FROM ".FabrikString::safeColName($item->db_table_name) . $listModel->_buildQueryWhere());
@@ -2443,6 +2450,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->sessionModel->setFormId($this->getId());
 		$this->sessionModel->setRowId($this->_rowId);
 		$useCookie = (int)$params->get('multipage_save', 1) === 2 ? true : false;
+		if (!$useCookie) {
+			//incase a plugin is using cookie session (e.g. confirmation plugin)
+			$useCookie = $this->sessionModel->canUseCookie();
+		}
 		$this->sessionModel->useCookie($useCookie);
 		return $this->sessionModel->load();
 	}
@@ -3164,6 +3175,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	 */
 	public function getGroupView($tmpl = '')
 	{
+		if (isset($this->groupView)) {
+			return $this->groupView;
+		}
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
 		// and not used anywhere else (avoids a warning message)
 		$data = array();
@@ -3173,9 +3187,6 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			if (is_string($val)) {
 				$data[$key] = htmlspecialchars($val, ENT_QUOTES);
 			}
-		}
-		if (isset($this->groupView)) {
-			return $this->groupView;
 		}
 
 		$this->groupView = array();
