@@ -41,7 +41,7 @@
  * of a text element like this:
  *
  * var thisElement = $('jos_fabrik_formdata_13___username');
- * var myUsername = thisElement.getValue();
+ * var myUsername = thisElement.get('value');
  * userExists(myUsername,thisElement);
  *
  * Note that there may be better ways of doing this, the above is just the way I found

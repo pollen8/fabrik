@@ -2031,7 +2031,7 @@ class plgFabrik_Element extends FabrikPlugin
 		// check if the elements group id is on of the table join groups if it is then we swap over the table name
 		$fromTable = $this->isJoin() ? $this->getJoinModel()->getJoin()->table_join : $origTable;
 		$joinStr = $incjoin ? $listModel->_buildQueryJoin() : $this->_buildFilterJoin();
-		$groupBy = $incjoin ? "GROUP BY ".$params->get('filter_groupby', 'text')." ASC" : '';
+		$groupBy = "GROUP BY ".$params->get('filter_groupby', 'text')." ASC";
 		foreach ($listModel->getJoins() as $aJoin) {
 			// not sure why the group id key wasnt found - but put here to remove error
 			if (array_key_exists('group_id', $aJoin)) {
