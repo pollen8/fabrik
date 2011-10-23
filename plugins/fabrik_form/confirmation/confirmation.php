@@ -22,28 +22,6 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	var $runAway = false;
 
 	/**
-	 * process the plugin, called when form is submitted
-	 *
-	 * @param object $params
-	 * @param object form
-	 */
-
-	function shouldProcess(&$params)
-	{
-		$condition = $params->get('confirmation_condition');
-		if ($condition == '') {
-			return true;
-		}
-		$w = new FabrikWorker();
-		$condition = trim($w->parseMessageForPlaceHolder($condition, $this->data));
-		$res = @eval($condition);
-		if (is_null($res)) {
-			return true;
-		}
-		return $res;
-	}
-
-	/**
 	 * (non-PHPdoc)
 	 * @see FabrikModelPlugin::runAway()
 	 */
@@ -69,6 +47,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		$session->clear('com_fabrik.form.'.$id.'.session.on');
 		$session->clear('com_fabrik.form.'.$id.'.session.hash');
 	}
+	
 	/**
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
@@ -80,7 +59,8 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	function onBeforeStore(&$params, &$formModel)
 	{
 		$this->runAway = false;
-		if (!$this->shouldProcess($params)) {
+		$this->data = $formModel->_formData;
+		if (!$this->shouldProcess('confirmation_condition')) {
 			$this->clearSession($formModel->getId());
 			return true;
 		}
@@ -99,8 +79,9 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		$form = $formModel->getForm();
 		//save the posted form data to the form session, for retrival later
  		$sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
-		$sessionModel->setFormId($formModel->get('id'));
-		$sessionModel->setRowId(0);
+		$sessionModel->setFormId($formModel->getId());
+		$rowid = JRequest::getVar('rowid', 0);
+		$sessionModel->setRowId($rowid);
 		$sessionModel->savePage($formModel);
 
 		// tell the form model that it's data is loaded from the session
@@ -146,36 +127,52 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		//if we have already processed the form
 		$this->html = '';
 		if (JRequest::getVar('fabrik_confirmation') == 1) {
-
+			$session = JFactory::getSession();
 			//unset this flag
 			JRequest::setVar('fabrik_confirmation', 2);
 			$post = JRequest::get('post', 4);
 			//load in the posted values as hidden fields so that if we
 			//return to the form to edit it it will populate with our data
-			foreach ($post as $key => $val) {
-				// form data is stored in session
+			
+			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not thorugh posted data
+		 	foreach ($post as $key => $val) {
+		 		
+			
 				$noneraw = substr($key, 0, strlen($key) - 4);
-				if ($key == 'join' || $key == 'fabrik_vars' || $formModel->hasElement($key) || $formModel->hasElement($noneraw)) {
+				if ($key == 'join' || $key == 'fabrik_vars') {
 					continue;
 				}
+				if ($formModel->hasElement($key) || $formModel->hasElement($noneraw)) {
+					//return;
+				}
+				if ($formModel->hasElement($noneraw)) {
+				$key = $formModel->getElement($noneraw)->getHTMLName(0);
+				
 				// $$$ rob include both raw and non-raw keys (non raw for radios etc, _raw for db joins)
 				if (is_array($val)) {
 					foreach ($val as $val2) {
 						if (!FabrikWorker::isReserved($key)) {
-							$fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'[]" value="'.urlencode($val2).'" />';
-							$fields[] = '<input type="hidden" name="'.$key.'[]" value="'.urlencode($val2).'" />';
+							if (!strstr($key, '[]')) {
+								$key .= '[]';
+							}
+							//$fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'[]" value="'.urlencode($val2).'" />';
+							//$fields[] = '<input type="hidden" name="'.$key.'" value="'.urlencode($val2).'" />';
+							$fields[] = '<input type="hidden" name="'.$key.'" value="'.($val2).'" />';
 						}
 					}
 				} else {
 					if (!FabrikWorker::isReserved($key)) {
-						$fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'" value="'.urlencode($val).'" />';
-						$fields[] = '<input type="hidden" name="'.$key.'" value="'.urlencode($val).'" />';
+						//$fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'" value="'.urlencode($val).'" />';
+						//$fields[] = '<input type="hidden" name="'.$key.'" value="'.urlencode($val).'" />';
+						$fields[] = '<input type="hidden" name="'.$key.'" value="'.($val).'" />';
 					}
 				}
-			}
-
+			}  
+		 	}
 			//add in a view field as the form doesn't normally contain one
 			$fields[] = '<input type="hidden" name="view" value="form" />';
+			
+			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="2" />';
 
 			//add in a button to allow you to go back to the form and edit your data
 			$fields[]= "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button\" value=\"" . JText::_('PLG_FORM_CONFIRMATION_RE_EDIT') . "\" />";
