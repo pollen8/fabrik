@@ -29,7 +29,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 	/** @param object element model **/
 	var $_elementModel = null;
 
-
 	/**
 	 * get the element full name for the element id
 	 * @param plugin params
@@ -591,32 +590,33 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		if ($post['name'] == '') {
 			$formModel->_arErrors[$this->namefield][0][] = JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME');
+			$this->raiseError($formModel->_arErrors, $this->namefield, JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));
 			$ok = false;
 		}
 
 		if ($post['username'] == '') {
-			$formModel->_arErrors[$this->usernamefield][0][] = JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME');
+			$this->raiseError($formModel->_arErrors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME'));
 			$ok = false;
 		}
 
 		if (preg_match( "#[<>\"'%;()&]#i", $post['username']) || strlen(utf8_decode($post['username'])) < 2) {
-			$formModel->_arErrors[$this->usernamefield][0][] = JText::sprintf( 'VALID_AZ09', JText::_('Username'), 2);
+			$this->raiseError($formModel->_arErrors, $this->usernamefield, JText::sprintf( 'VALID_AZ09', JText::_('Username'), 2));
 			$ok = false;
 		}
 
 		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress( $post['email'])) {
-			$formModel->_arErrors[$this->emailfield][0][] = JText::_('JLIB_DATABASE_ERROR_VALID_MAIL');
+			$this->raiseError($formModel->_arErrors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;
 		}
 		if (empty($post['password'])) {
 			//$$$tom added a new/edit test
 			if (empty($post['id'])) {
-				$formModel->_arErrors[$this->passwordfield][0][] = JText::_('Please enter a password');
+				$this->raiseError($formModel->_arErrors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;
 			}
 		} else {
 			if ($post['password'] != $post['password2']) {
-				$formModel->_arErrors[$this->passwordfield][0][] = JText::_('PASSWORD DO NOT MATCH.');
+				$this->raiseError($formModel->_arErrors, $this->passwordfield, JText::_('PASSWORD DO NOT MATCH.'));
 				$ok = false;
 			}
 		}
@@ -630,7 +630,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$db->setQuery($query);
 		$xid = intval( $db->loadResult());
 		if ($xid && $xid != intval($post['id'])) {
-			$formModel->_arErrors[$this->usernamefield][0][] = JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE');
+			$this->raiseError($formModel->_arErrors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE'));
 			$ok = false;
 		}
 
@@ -643,10 +643,26 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$db->setQuery($query);
 		$xid = intval( $db->loadResult());
 		if ($xid && $xid != intval($post['id'])) {
-			$formModel->_arErrors[$this->emailfield][0][] = JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE');
+			$this->raiseError($formModel->_arErrors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE'));
 			$ok = false;
 		}
 		return $ok;
+	}
+	
+	/**
+	 * raise an error - depends on whether ur in admin or not as to what to do
+	 * @param array form models error array
+	 * @param string $field name 
+	 * @param string $msg
+	 */
+	
+	protected function raiseError(&$err, $field, $msg)
+	{
+		if (JFactory::getApplication()->isAdmin()) {
+			JError::raiseNotice(500, $msg);
+		} else {
+			$err[$field][0][] = $msg;
+		}
 	}
 }
 ?>
