@@ -1799,7 +1799,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$default1 = is_array($default) ? $default['value'][0] : '';
 				$return = JText::_('COM_FABRIK_BETWEEN') . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
 				$default1 = is_array($default) ? $default['value'][1] : '';
-				$return .= "<br /> " . JText::_('and') . ' ' . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
+				$return .= '<br /> '.JText::_('COM_FABRIK_AND').' '.JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
 				break;
 
 			case "dropdown":

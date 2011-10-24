@@ -6651,7 +6651,7 @@ class FabrikFEModelList extends JModelForm {
 		$url .= strpos($url, '?') ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
-		$a[$url.'group_by=0'] = 'none';
+		$a[$url.'group_by=0'] = JText::_('COM_FABRIK_NONE');
 		foreach ($h as $key => $v) {
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions'))) {
 				$thisurl = $url.'group_by='.$key;
