@@ -66,17 +66,23 @@ var FbRatingList = new Class({
 		this.rating = this._getRating(star);
 		var ratingmsg = star.getParent('.fabrik_element').getElement('.ratingMessage');
 		Fabrik.loader.start(ratingmsg);
-		var row = $(star).getParent('.fabrik_row');
+		var row = document.id(star).getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
 		var data = {
+			'option': 'com_fabrik',
+			'format': 'raw',
+			'task': 'plugin.pluginAjax',
+			'plugin': 'rating',
+			'g': 'element',
+			'method': 'ajax_rate',
+			'element_id': this.options.elid,
 			'row_id' : rowid,
 			'elementname' : this.options.elid,
 			'userid' : this.options.userid,
 			'rating' : this.rating,
 			'mode' : this.options.mode
 		};
-		var url = Fabrik.liveSite + '/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=rating&method=ajax_rate&element_id=' + this.options.elid;
-		new Request({url: url,
+		new Request({url: '',
 			'data': data,
 			onComplete: function (r) {
 				r = r.toInt();

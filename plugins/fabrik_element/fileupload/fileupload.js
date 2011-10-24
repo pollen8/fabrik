@@ -222,10 +222,15 @@ var FbFileUpload = new Class({
 		e.stop();
 		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
 		var f = e.target.getParent().getParent().getElement('.plupload_file_name span').get('text');
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&&task=plugin.pluginAjax&plugin=fileupload&method=ajax_deleteFile&element_id=' + this.options.id;
 		new Request({
-			url: url,
+			url: '',
 			data: {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'fileupload',
+				'method': 'ajax_deleteFile',
+				'element_id': this.options.id,
 				'file': f,
 				'recordid': id
 			}

@@ -49,14 +49,21 @@ var FbThumbs =  new Class({
 			var forspin = document.id('count_thumb' + th);
 			this.spinner.inject(forspin);
 			var data = {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'thumbs',
+				'method': 'ajax_rate',
+				'g': 'element',
+				'element_id': this.options.elid,
 				'row_id': this.options.row_id,
 				'elementname': this.options.elid,
 				'userid': this.options.userid,
 				'thumb': th,
 				'listid': this.options.listid
 			};
-			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=thumbs&method=ajax_rate&element_id=' + this.options.elid + '&thumb=' + th;
-			new Request({url: url,
+
+			new Request({url: '',
 				'data': data,
 				onComplete: function (r) {
 					r = JSON.decode(r);

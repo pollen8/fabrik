@@ -5,9 +5,19 @@ var CascadeFilter = new Class({
 		if (this.observer) {
 			new Element('img', {'id': this.options.filterid + '_loading', 'src': Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif', 'alt': 'loading...', 'styles': {'opacity': '0'}}).inject(this.observer, 'before');
 			var v = this.observer.get('value');
-			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&plugin=cascadingdropdown&method=ajax_getOptions&element_id=' + this.options.elid;
-			this.myAjax = new Request({url: url, method: 'post',
-				'data': {'v': v, 'formid': this.options.formid, 'fabrik_cascade_ajax_update': 1, 'filterview': 'table'},
+			this.myAjax = new Request({url: '', method: 'post',
+				'data': {
+					'option': 'com_fabrik',
+					'format': 'raw',
+					'task': 'plugin.pluginAjax',
+					'plugin': 'cascadingdropdown',
+					'method': 'ajax_getOptions',
+					'element_id': this.options.elid,
+					'v': v, 
+					'formid': this.options.formid, 
+					'fabrik_cascade_ajax_update': 1,
+					'filterview': 'table'
+				},
 				onComplete: this.ajaxComplete.bindWithEvent(this)
 			});
 

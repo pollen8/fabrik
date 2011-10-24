@@ -63,10 +63,12 @@ var Autofill = new Class({
 		var v = this.element.getValue();
 		var formid = this.options.formid;
 		var observe = this.options.observe;
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax';
 		
-		var myAjax = new Request({url: url, method: 'post', 
+		var myAjax = new Request({url: '', method: 'post', 
 		'data': {
+			'option': 'com_fabrik',
+			'format': 'raw',
+			'task': 'plugin.pluginAjax',
 			'plugin': 'autofill',
 			'method': 'ajax_getAutoFill',
 			'g': 'form',

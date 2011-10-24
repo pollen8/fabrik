@@ -143,7 +143,6 @@ var FbDateTime = new Class({
 			// when scrolled down the page the offset of the calendar is wrong - this
 			// fixes it
 			var calHeight = $(window.calendar.element).getStyle('height').toInt();
-			e = new Event(e);
 			var u = ie ? event.clientY + document.documentElement.scrollTop : e.pageY;
 			u = u.toInt();
 			$(window.calendar.element).setStyles({
@@ -214,25 +213,20 @@ var FbDateTime = new Class({
 			h.innerHTML = i;
 			h.className = 'fbdateTime-hour';
 			d.appendChild(h);
-			$(h).addEvent('click', function (event) {
-				var e = new Event(event);
-				this.hour = $(e.target).innerHTML;
+			$(h).addEvent('click', function (e) {
+				this.hour = e.target.innerHTML;
 				this.stateTime();
 				this.setActive();
 			}.bind(this));
-			$(h).addEvent('mouseover', function (event) {
-				var e = new Event(event);
-				var h = $(e.target);
-				if (this.hour !== h.innerHTML) {
+			$(h).addEvent('mouseover', function (e) {
+				if (this.hour !== e.target.innerHTML) {
 					e.target.setStyles({
 						background : '#cbeefb'
 					});
 				}
 			}.bind(this));
-			$(h).addEvent('mouseout', function (event) {
-				var e = new Event(event);
-				var h = $(e.target);
-				if (this.hour !== h.innerHTML) {
+			$(h).addEvent('mouseout', function (e) {
+				if (this.hour !== e.target.innerHTML) {
 					h.setStyles({
 						background : this.buttonBg
 					});

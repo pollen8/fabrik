@@ -20,8 +20,8 @@ var FbRating = new Class({
 		this.options.row_id = rowid;
 		this.element = document.id(this.options.element + '_div');
 		this.spinner = new Asset.image(Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif', {
-			'alt' : 'loading',
-			'class' : 'ajax-loader'
+			'alt': 'loading',
+			'class': 'ajax-loader'
 		});
 		this.stars = this.element.getElements('.starRating');
 		this.ratingMessage = this.element.getElement('.ratingMessage');
@@ -97,15 +97,21 @@ var FbRating = new Class({
 		if (this.options.editable === false) {
 			this.spinner.inject(this.ratingMessage);
 			var data = {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'rating',
+				'method': 'ajax_rate',
+				'g': 'element',
+				'element_id': this.options.elid,
 				'row_id': this.options.row_id,
 				'elementname': this.options.elid,
 				'userid': this.options.userid,
 				'rating': this.rating
 			};
-			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=rating&method=ajax_rate&element_id=' + this.options.elid;
 
 			var closeFn = new Request({
-				url: url,
+				url: '',
 				'data': data,
 				onComplete: function () {
 					this.spinner.dispose();

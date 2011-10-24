@@ -54,12 +54,17 @@ var FbImage = new Class({
 		var folder = this.imageDir;
 		this.selectedFolder = this.getFolderPath();
 		folder.empty();
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=image&method=ajax_files';
 		var myAjax = new Request({
-			url : url,
+			url : '',
 			method : 'post',
 			'data' : {
-				'folder' : this.selectedFolder
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'g': 'element',
+				'plugin': 'image',
+				'method': 'ajax_files',
+				'folder': this.selectedFolder
 			},
 
 			onComplete : function (r) {
