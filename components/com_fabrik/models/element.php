@@ -3007,7 +3007,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$dbjoinEl = (is_subclass_of($this, 'plgFabrik_ElementDatabasejoin') || get_class($this) == 'plgFabrik_ElementDatabasejoin');
 
 		if (!$this->isJoin() && !$dbjoinEl) {
-			$this->deleteJoin((int)$post['id']);
+			$this->deleteJoins((int)$post['id']);
 		}
 	}
 	
