@@ -268,7 +268,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$this->iconsSet = false;
 			return $data;
 		}
-		
+
 		$params =$this->getParams();
 		if ($params->get('icon_folder', 0) == 0) {
 			$this->iconsSet = false;
@@ -514,8 +514,8 @@ class plgFabrik_Element extends FabrikPlugin
 		$ar = array(
 			'id' 			=> $id,
 			'triggerEvent' => 'blur'
-			);
-			return array($ar);
+		);
+		return array($ar);
 	}
 
 	/**
@@ -765,7 +765,8 @@ class plgFabrik_Element extends FabrikPlugin
 			// $$$ hugh - don't know what this is for, but was breaking empty fields in repeat
 			// groups, by rendering the //..*..// seps.
 			// if ($value === '') { //query string for joined data
-			if ($value === '' && !$groupModel->canRepeat()) { //query string for joined data
+			if ($value === '' && !$groupModel->canRepeat()) {
+				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
 			if (is_array($value) && !$this->isJoin()) {
@@ -1241,9 +1242,9 @@ class plgFabrik_Element extends FabrikPlugin
 			default:
 			case 'tip':
 				$element->tipAbove = '';
-				$element->tipBelow = '';
-				$element->tipSide = '';
-				break;
+			$element->tipBelow = '';
+			$element->tipSide = '';
+			break;
 			case 'above':
 				$element->tipAbove = $tip;
 				$element->tipBelow = '';
@@ -1693,7 +1694,7 @@ class plgFabrik_Element extends FabrikPlugin
 				return '';
 			}
 			if (array_key_exists('elementid', $filters)) {
-			// $$$ hugh - if we have one or more pre-filters on the same element that has a normal filter,
+				// $$$ hugh - if we have one or more pre-filters on the same element that has a normal filter,
 				// the following line doesn't work. So in 'normal' mode we need to get all the keys,
 				// and find the 'normal' one.
 				//$k = $normal == true ? array_search($elid, $filters['elementid']) : $counter;
@@ -1853,22 +1854,22 @@ class plgFabrik_Element extends FabrikPlugin
 		//takes rows which may be in format :
 		/*
 		 * [0] => stdClass Object
-		 (
-		 [text] => ["1"]
-		 [value] => ["1"]
-		 )
-		 and converts them into
-		 [0] => JObject Object
-		 (
-		 [_errors:protected] => Array
-		 (
-		 )
+		(
+		[text] => ["1"]
+		[value] => ["1"]
+		)
+		and converts them into
+		[0] => JObject Object
+		(
+		[_errors:protected] => Array
+		(
+		)
 
-		 [value] => 1
-		 [text] => 1
-		 [disable] =>
-		 )
-		 */
+		[value] => 1
+		[text] => 1
+		[disable] =>
+		)
+		*/
 		$allvalues = array();
 		foreach ($rows as $row) {
 			$allvalues[] = $row->value;
@@ -2300,7 +2301,7 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($eval == FABRKFILTER_NOQUOTES) {
 				# $$$ hugh - darn, this is stripping the ' of the end of things like "select & from foo where bar = '123'"
 				$value = ltrim($value, "'");
-				$value = rtrim($value, "'");
+			$value = rtrim($value, "'");
 			}
 			if ($condition == '=' && $value == "'_null_'") {
 				$condition = " IS NULL ";
@@ -2333,18 +2334,18 @@ class plgFabrik_Element extends FabrikPlugin
 				break;
 			default:
 				if ($this->isJoin()) {
-					// query the joined table concatanating into one field
-					$jointable = $this->getJoinModel()->getJoin()->table_join;
-					$pk = $this->getListModel()->getTable()->db_primary_key;
-					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
-					$value = str_replace("'", '', $value);
-					$query = "($key = '$value' OR $key LIKE '$value".GROUPSPLITTER."%' OR
-					$key LIKE '".GROUPSPLITTER."$value".GROUPSPLITTER."%' OR
-					$key LIKE '%".GROUPSPLITTER."$value')";
-				} else {
-					$query = " $key $condition $value ";
-				}
-				break;
+				// query the joined table concatanating into one field
+				$jointable = $this->getJoinModel()->getJoin()->table_join;
+				$pk = $this->getListModel()->getTable()->db_primary_key;
+				$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
+				$value = str_replace("'", '', $value);
+				$query = "($key = '$value' OR $key LIKE '$value".GROUPSPLITTER."%' OR
+				$key LIKE '".GROUPSPLITTER."$value".GROUPSPLITTER."%' OR
+				$key LIKE '%".GROUPSPLITTER."$value')";
+			} else {
+				$query = " $key $condition $value ";
+			}
+			break;
 		}
 		return $query;
 	}
@@ -2437,18 +2438,6 @@ class plgFabrik_Element extends FabrikPlugin
 			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
 			return false;
 		}
-		//overridden in element plugin if needed
-		return true;
-	}
-
-	/**
-	 * called from admin element controller at end of element being saved
-	 * @abstract
-	 * @return bool save ok or not
-	 */
-
-	function onAfterSave()
-	{
 		//overridden in element plugin if needed
 		return true;
 	}
@@ -2810,7 +2799,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					break;
 				default:
 					$o->value = $data;
-					break;
+				break;
 
 			}
 			$o->label = $label;
@@ -3003,15 +2992,47 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * overwritten in plugin classes
+	 * can be overwritten in plugin classes
 	 * eg if changing from db join to field we need to remove the join
 	 * entry from the #__{package}_joins table
 	 * @param object row that is going to be updated
-	 * @abstract
 	 */
 
 	function beforeSave(&$row)
 	{
+		$maskbits = 4;
+		$post	= JRequest::get('post', $maskbits);
+		$post = $post['jform'];
+		
+		$dbjoinEl = (is_subclass_of($this, 'plgFabrik_ElementDatabasejoin') || get_class($this) == 'plgFabrik_ElementDatabasejoin');
+
+		if (!$this->isJoin() && !$dbjoinEl) {
+			$this->deleteJoin((int)$post['id']);
+		}
+	}
+	
+	protected function deleteJoins($id)
+	{
+		$element = $this->getElement();
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->delete('#__{package}_joins')->where('element_id = '.$id);
+		$db->setQuery($query);
+		$db->query();
+			
+		$query->clear();
+		$query->select('j.id AS jid')->from('#__{package}_elements AS e')
+		->join('LEFT', ' #__{package}_joins AS j ON j.element_id = e.id')
+		->where('e.parent_id = '.$id);
+		$db->setQuery($query);
+		$join_ids = $db->loadResultArray();
+		
+		if (!empty($join_ids)) {
+			$query->clear();
+			$query->delete('#__{package}_joins')->where('id IN ('.implode(',', $join_ids).')');
+			$db->setQuery($query);
+			$db->query();
+		}
 	}
 
 	/**
@@ -3377,7 +3398,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * get a json encoded string of the element default parameters
 	 * @return string
 	 */
-	
+
 	function getDefaultAttribs()
 	{
 		$o = new stdClass();
@@ -3748,8 +3769,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if (empty($id)) {
 			$id = $this->_id;
 		}
-		$db = FabrikWorker::getDbo();
-		$db->setQuery("SELECT id FROM #__{package}_elements WHERE parent_id = ".(int)$id);
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__{package}_elements')->where('parent_id = '.(int)$id);
+		$db->setQuery($query);
 		$kids = $db->loadObjectList();
 		$all_kids = array();
 		foreach ($kids as $kid) {
@@ -3900,27 +3923,27 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		(
 			"SELECT COUNT(*) FROM #__fabrik_groups ".
 			"WHERE (id = ".$this->_element->group_id.");"
-			);
-			$group_id = $this->_db->loadResult();
+		);
+		$group_id = $this->_db->loadResult();
 
-			if (!$group_id)
-			{
-				$retStr = 'No valid group assignment';
-			}
-			else if (!$this->_element->plugin)
-			{
-				$retStr = 'No plugin';
-			}
-			else if (!$this->_element->label)
-			{
-				$retStr = 'No element label';
-			}
-			else
-			{
-				$retStr = '';
-			}
+		if (!$group_id)
+		{
+			$retStr = 'No valid group assignment';
+		}
+		else if (!$this->_element->plugin)
+		{
+			$retStr = 'No plugin';
+		}
+		else if (!$this->_element->label)
+		{
+			$retStr = 'No element label';
+		}
+		else
+		{
+			$retStr = '';
+		}
 
-			return $retStr;
+		return $retStr;
 	}
 
 	/**
@@ -3998,17 +4021,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$html .= $this->_getElement($data, $repeatCounter, $groupModel);
 			$html .= '</li>';
 			$html .= '</ul>';
-			
+				
 			if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel')) {
 				$html .= '<ul class="fabrik_buttons">';
-				
+
 				if (JRequest::getBool('inlinecancel') == true) {
 					$html .= '<li class="ajax-controls inline-cancel">';
 					$html .= '<a href="#" class="">';
 					$html .= FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL'))).'<span></span></a>';
 					$html .= '</li>';
 				}
-				
+
 				if (JRequest::getBool('inlinesave') == true) {
 					$html .= '<li class="ajax-controls inline-save">';
 					$html .= '<a href="#" class="">';
@@ -4016,11 +4039,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					$html .= '<span>'.JText::_('COM_FABRIK_SAVE').'</span></a>';
 					$html .= '</li>';
 				}
-				
-				
+
+
 				$html .= '</ul>';
 			}
-			
+				
 			$html .= '</div>';
 			$onLoad = "Fabrik.inlineedit_$elementid = ".$this->elementJavascript($repeatCounter).";\n".
 			"Fabrik.inlineedit_$elementid.select();

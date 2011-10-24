@@ -311,33 +311,11 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
 			return false;
 		}
-		$element = $this->getElement();
-		//load join based on this element id
-		$join = FabTable::getInstance('Join', 'FabrikTable');
-		$key = array('element_id' => $data['id']);
-		$join->load($key);
-		if ($join->element_id ==  0) {
-			$join->element_id = $this->_id;
-		}
-		$join->table_join = '#__users';
-		$join->join_type = 'left';
-		$join->group_id = $data['group_id'];
-		$join->table_key = str_replace('`', '', $element->name);
-		$join->table_join_key = 'id';
-		$join->join_from_table = '';
-		if (isset($params->my_table_data) && $params->my_table_data !== '') {
-			$join_label = $params->my_table_data;
-		} else {
-			$join_label = 'username';
-		}
-		$o = new stdClass();
-		$l = 'join-label';
-		$o->$l = $join_label;
-		$o->type = 'element';
-		$join->params = json_encode($o);
-		$join->store();
+		$label = (isset($params->my_table_data) && $params->my_table_data !== '') ? $params->my_table_data : 'username';
+		$this->updateFabrikJoins($data, '#__users', 'id', $label);
 		return true;
 	}
+	
 	
 	protected function getJoinLabel()
 	{
