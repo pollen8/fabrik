@@ -33,7 +33,7 @@ var FbListInlineEdit = new Class({
 			var table = Fabrik.blocks['list_' + this.options.listid];
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
-			var myFormRequest = new Request({'url': 'index.php',
+			var myFormRequest = new Request({'url': '',
 				data: formData,
 				onSuccess: function (json) {
 					json = Json.evaluate(json.stripScripts());
@@ -308,9 +308,7 @@ var FbListInlineEdit = new Class({
 		}
 		var element = this.getElementName(td);
 		var rowid = td.getParent('.fabrik_row').id.replace('list_' + this.list.id + '_row_', '');
-		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.display&format=raw';
 		//var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
-		var url = 'index.php?option=com_fabrik&task=form.inlineedit&format=raw';
 		var opts = this.options.elements[element];
 		if (typeOf(opts) === 'null') {
 			return;
@@ -320,6 +318,7 @@ var FbListInlineEdit = new Class({
 		this.defaults[rowid + '.' + opts.elid] = td.innerHTML;
 		
 		var data = this.getDataFromTable(td);
+		
 		if (typeOf(this.editors[opts.elid]) === 'null' || typeOf(Fabrik['inlineedit_' + opts.elid]) === 'null') {
 			// need to load on parent otherwise in table td size gets monged
 			Fabrik.loader.start(td.getParent());
@@ -328,7 +327,7 @@ var FbListInlineEdit = new Class({
 						this.javascript = script;
 					}.bind(this),
 				'evalResponse': false,
-				'url': url,
+				'url': '',
 				'data': {
 					'element': element,
 					'elid': opts.elid,
@@ -337,7 +336,10 @@ var FbListInlineEdit = new Class({
 					'formid': this.options.formid,
 					'listid': this.options.listid,
 					'inlinesave': this.options.showSave,
-					'inlinecancel': this.options.showCancel
+					'inlinecancel': this.options.showCancel,
+					'option': 'com_fabrik',
+					'task': 'form.inlineedit',
+					'format': 'raw'
 				},
 
 				'onComplete': function (r) {
@@ -458,9 +460,6 @@ var FbListInlineEdit = new Class({
 		this.inedit = false;
 		e.stop();
 		var element = this.getElementName(td);
-		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.save&format=raw';
-		//var url = 'index.php?option=com_fabrik&task=element.save&format=raw';
-		var url = 'index.php?option=com_fabrik&task=form.process&format=raw&_packageId=1'; //set package id to return js string
 		var opts = this.options.elements[element];
 		
 		// need to load on parent otherwise in table td size gets monged
@@ -475,8 +474,12 @@ var FbListInlineEdit = new Class({
 			this.cancel(e);
 			return false;
 		}
-		
+		//set package id to return js string
 		var data = {
+			'option': 'com_fabrik',
+			'task': 'form.process',
+			'format': 'raw',
+			'_packageId': 1,
 			'element': element,
 			'elid': opts.elid,
 			'plugin': opts.plugin,
@@ -495,7 +498,7 @@ var FbListInlineEdit = new Class({
 		data[eObj.token] = 1;
 
 		td.empty();
-		new Request({url: url,
+		new Request({url: '',
 			'data': data,
 			'evalScripts': true,
 			'onComplete': function (r) {

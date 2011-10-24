@@ -1018,7 +1018,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			} else {
 				$myFileDir = JArrayHelper::getValue($request, $name);
 			}
-
+			if (empty($_FILES)) {
+				//inline edit of another element - no files array
+				return;
+			}
 			$file = array(
 					'name' 			=> $isjoin ? $_FILES['join']['name'][$joinid][$name] : $_FILES[$name]['name'],
 					'type' 			=> $isjoin ? $_FILES['join']['type'][$joinid][$name] : $_FILES[$name]['type'],
