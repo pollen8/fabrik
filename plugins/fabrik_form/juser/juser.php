@@ -258,39 +258,33 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int)$params->get('juser_field_default_group');
+		
+		$groupId = JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
+		if (is_array($groupId)) {
+			$groupId = $groupId[0];
+		}
+		$groupId = (int)$groupId;
+		
 		if (!$isNew) {
 			if ($params->get('juser_field_usertype') != '') {
-				
-				$data['gid'] = JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
-				if (is_array($data['gid'])) {
-					$data['gid'] = $data['gid'][0];
+				if (in_array($groupId, $me->getAuthorisedGroups()) || $me->authorise('core.admin')) {
+					$data['gid'] = $groupId;
+				} else {
+					JError::raiseNotice(500, "could not alter user group to $groupId as you are not assigned to that group");
 				}
-				$data['gid'] = (int)$data['gid'];
-				if (!in_array($data['gid'], $me->getAuthorisedGroups())) {
-					$data['gid'] = array_pop($me->getAuthorisedGroups());
-				}
-			}
-			else {
+			} else {
 				// if editing an existing user and no gid field being used,
 				// use default group id
 				$data['gid'] = $defaultGroup;
 			}
 		}
 		else {
-			if ($params->get('juser_field_usertype') != '') {
-				$data['gid'] = JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
-				if (is_array($data['gid'])) {
-					$data['gid'] = $data['gid'][0];
-				}
-			}
-			else {
-				$data['gid'] = $defaultGroup;
-			}
+			$data['gid'] = ($params->get('juser_field_usertype') != '') ? $groupId : $defaultGroup;
 		}
-		$data['gid'] = (int)$data['gid'];
 		if ($data['gid'] === 0) {
 			$data['gid'] = $defaultGroup;
 		}
+		$user->groups = (array)$data['gid'];
 		
 		if ($params->get('juser_field_block') != '') {
 			$this->blockfield = $this->getFieldName($params, 'juser_field_block');
@@ -370,8 +364,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$app->enqueueMessage($user->getError(), 'error');
 			return false;
 		}
-		//assign user to a group
-		JUserHelper::addUserToGroup($user->get('id'), $data['gid']);
 		$session = &JFactory::getSession();
 		JRequest::setVar('newuserid', $user->id);
 		JRequest::setVar('newuserid', $user->id, 'cookie');
