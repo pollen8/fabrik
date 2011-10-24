@@ -1423,6 +1423,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$element = $this->getElement();
 		$maskbits = 4;
 		$post	= JRequest::get('post', $maskbits);
+		echo "<pre>";print_r($this);print_r($post);exit;
 		//on new or on copy? details not found?
 		if (array_key_exists('details', $post)) {
 			if ($post['details']['plugin'] != 'databasejoin') {

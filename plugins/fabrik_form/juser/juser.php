@@ -266,7 +266,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 					$data['gid'] = $data['gid'][0];
 				}
 				$data['gid'] = (int)$data['gid'];
-				if (!in_arary($data['gid'], $me->getAuthorisedGroups())) {
+				if (!in_array($data['gid'], $me->getAuthorisedGroups())) {
 					$data['gid'] = array_pop($me->getAuthorisedGroups());
 				}
 			}
