@@ -1599,7 +1599,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function validate()
 	{
-		if (JRequest::getBool('fabrik_ignorevalidation', false) != true) { //put in when saving page of form
+		if (JRequest::getBool('fabrik_ignorevalidation', false) === true) { //put in when saving page of form
 			return true;
 		}
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
@@ -2750,7 +2750,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					continue;
 				}
 
-				$jdata = $this->_data['join'][$tblJoin->id];
+				$jdata =& $this->_data['join'][$tblJoin->id];
 				$db	= $listModel->getDb();
 				$db->setQuery("DESCRIBE ".$db->nameQuote($tblJoin->table_join));
 				$fields = $db->loadObjectList();
@@ -3231,7 +3231,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-							$repeatGroup = count($origData['join'][$joinTable->id][$smallerElHTMLName]);
+							$repeatGroup = count($this->_data['join'][$joinTable->id][$smallerElHTMLName]);
 							if (!array_key_exists($fullFk, $this->_data['join'][$joinTable->id])) {
 								JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
 								$startHidden = false;
@@ -3274,7 +3274,6 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			}
 			$groupModel->repeatTotal = $startHidden ? 0 : $repeatGroup;
 			$aSubGroups = array();
-			
 			for ($c = 0; $c < $repeatGroup; $c++) {
 				$aSubGroupElements = array();
 				$elCount = 0;
