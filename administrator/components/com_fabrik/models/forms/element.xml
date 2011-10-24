@@ -46,12 +46,13 @@
 	<fieldset name="publishing">
 	
 		<field name="published" 
-			type="radio"
+			type="list"
 			default="1"
 			label="JSTATUS"
 			description="COM_FABRIK_FIELD_ELEMENT_PUBLISHED_DESC">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+				<option value="0">JUNPUBLISHED</option>
+				<option value="1">JPUBLISHED</option>
+				<option value="-2">JTRASHED</option>
 		</field>
 		
 		<field name="use_in_page_title"
