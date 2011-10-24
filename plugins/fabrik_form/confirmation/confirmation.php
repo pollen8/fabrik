@@ -58,7 +58,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 
 	function onBeforeStore(&$params, &$formModel)
 	{
-		if (JRequest::getInt('fabrik_ignorevalidation') === 1) {
+		if (JRequest::getInt('fabrik_ignorevalidation') === 1 || JRequest::getInt('fabrik_ajax') === 1) {
 			//saving via inline edit - dont want to confirm
 			return true;
 		}
