@@ -175,4 +175,11 @@ var Loader = new Class({
 	
 head.ready(function () {
 	Fabrik.tips = new FloatingTips('.fabrikTip', {html: true});
+	Fabrik.addEvent('fabrik.list.updaterows', function () {
+		//reattach new tips after list redraw,
+		Fabrik.tips.attach('.fabrikTip');
+	});
+	Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {
+		Fabrik.tips.hideAll();
+	});
 });

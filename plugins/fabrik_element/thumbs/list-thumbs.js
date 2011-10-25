@@ -68,19 +68,25 @@ var FbThumbsList = new Class({
 	doAjax: function (e, thumb) {
 		var row = e.getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
-		var count_thumb = $('count_thumb' + thumb + rowid);
+		var count_thumb = document.id('count_thumb' + thumb + rowid);
 		Fabrik.loader.start(count_thumb);
 		this.thumb = thumb;
 
 		var data = {
+			'option': 'com_fabrik',
+			'format': 'raw',
+			'task': 'plugin.pluginAjax',
+			'plugin': 'thumbs',
+			'method': 'ajax_rate',
+			'g': 'element',
+			'element_id': this.options.elid,
 			'row_id': rowid,
 			'elementname': this.options.elid,
 			'userid': this.options.userid,
 			'thumb': this.thumb,
 			'listid': this.options.listid
 		};
-		var url = Fabrik.liveSite + '/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=thumbs&method=ajax_rate&element_id=' + this.options.elid + '&thumb=' + this.thumb + '&row_id=' + rowid;
-		new Request({url: url,
+		new Request({url: '',
 			'data': data,
 			onComplete: function (r) {
 				var count_thumbup = document.id('count_thumbup' + rowid);

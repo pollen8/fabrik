@@ -6,15 +6,7 @@ var FbListInlineEdit = new Class({
 		this.defaults = {};
 		this.editors = {};
 		this.inedit = false;
-		//this.spinner = Fabrik.loader.getSpinner();
-		this.addbutton = new Asset.image(Fabrik.liveSite + 'media/com_fabrik/images/action_check.png', {
-			'alt': 'save',
-			'class': ''
-		});
-		this.cancelbutton = new Asset.image(Fabrik.liveSite + 'media/com_fabrik/images/delete.png', {
-			'alt': 'delete',
-			'class': ''
-		});
+		
 		head.ready(function () {
 			//assigned in list.js fabrik3
 			//this.list = $('list_' + this.options.listid);
@@ -25,7 +17,7 @@ var FbListInlineEdit = new Class({
 			this.setUp();
 		}.bind(this));
 		
-		Fabrik.addEvent('fabrik.table.clearrows', function () {
+		Fabrik.addEvent('fabrik.list.clearrows', function () {
 			this.cancel();			
 		}.bind(this));
 		
@@ -33,15 +25,15 @@ var FbListInlineEdit = new Class({
 			this.stopEditing();
 		}.bind(this));
 		
-		Fabrik.addEvent('fabrik.table.updaterows', function () {
+		Fabrik.addEvent('fabrik.list.updaterows', function () {
 			this.watchCells();
 		}.bind(this));
 		
-		Fabrik.addEvent('fabrik.table.ini', function () {
+		Fabrik.addEvent('fabrik.list.ini', function () {
 			var table = Fabrik.blocks['list_' + this.options.listid];
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
-			var myFormRequest = new Request({'url': 'index.php',
+			var myFormRequest = new Request({'url': '',
 				data: formData,
 				onSuccess: function (json) {
 					json = Json.evaluate(json.stripScripts());
@@ -215,11 +207,12 @@ var FbListInlineEdit = new Class({
 		if (typeOf(this.td) === 'null') {
 			return;
 		}
-		var p = this.td.getPosition();
-
-		var x = p.x - (window.getSize().x / 2) - (this.td.getSize().x / 2);
-		var y = p.y - (window.getSize().y / 2) + (this.td.getSize().y / 2);
-		this.scrollFx.start(x, y);
+		if (e && e.type !== 'click') {
+			var p = this.td.getPosition();
+			var x = p.x - (window.getSize().x / 2) - (this.td.getSize().x / 2);
+			var y = p.y - (window.getSize().y / 2) + (this.td.getSize().y / 2);
+			this.scrollFx.start(x, y);
+		}
 	},
 	
 	getElementName: function (td) {
@@ -301,6 +294,8 @@ var FbListInlineEdit = new Class({
 	},
 	
 	edit: function (e, td) {
+		Fabrik.fireEvent('fabrik.plugin.inlineedit.editing');
+		
 		//only one field can be edited at a time
 		if (this.inedit) {
 			return;
@@ -313,8 +308,7 @@ var FbListInlineEdit = new Class({
 		}
 		var element = this.getElementName(td);
 		var rowid = td.getParent('.fabrik_row').id.replace('list_' + this.list.id + '_row_', '');
-		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.display&format=raw';
-		var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
+		//var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
 		var opts = this.options.elements[element];
 		if (typeOf(opts) === 'null') {
 			return;
@@ -324,27 +318,34 @@ var FbListInlineEdit = new Class({
 		this.defaults[rowid + '.' + opts.elid] = td.innerHTML;
 		
 		var data = this.getDataFromTable(td);
+		
 		if (typeOf(this.editors[opts.elid]) === 'null' || typeOf(Fabrik['inlineedit_' + opts.elid]) === 'null') {
-			//td.empty().adopt(this.spinner);
-			Fabrik.loader.start(td);
+			// need to load on parent otherwise in table td size gets monged
+			Fabrik.loader.start(td.getParent());
 			new Request({
 				'evalScripts': function (script, text) {
 						this.javascript = script;
 					}.bind(this),
 				'evalResponse': false,
-				'url': url,
+				'url': '',
 				'data': {
 					'element': element,
 					'elid': opts.elid,
-					'plugin': opts.plugin,
+					'elementid': Object.values(opts.plugins),
 					'rowid': rowid,
+					'formid': this.options.formid,
 					'listid': this.options.listid,
 					'inlinesave': this.options.showSave,
-					'inlinecancel': this.options.showCancel
+					'inlinecancel': this.options.showCancel,
+					'option': 'com_fabrik',
+					'task': 'form.inlineedit',
+					'format': 'raw'
 				},
 
 				'onComplete': function (r) {
-					Fabrik.loader.stop(td);
+					// need to load on parent otherwise in table td size gets monged
+					Fabrik.loader.stop(td.getParent());
+					
 					//don't use evalScripts = true as we reuse the js when tabbing to the next element. 
 					// so instead set evalScripts to a function to store the js in this.javascript.
 					//Previously js was wrapped in delay
@@ -368,15 +369,17 @@ var FbListInlineEdit = new Class({
 			var html = this.editors[opts.elid].stripScripts(function (script) {
 				this.javascript = script;
 			}.bind(this));
-		
 			td.empty().set('html', html);
 			//make a new instance of the element js class which will use the new html
-			$exec(this.javascript);
+			eval(this.javascript);
 			//tell the element obj to update its value
 			///triggered from element model
 			Fabrik.addEvent('fabrik.list.inlineedit.setData', function () {
-				Fabrik['inlineedit_' + opts.elid].update(data);
-				Fabrik['inlineedit_' + opts.elid].select();
+				$H(opts.plugins).each(function (fieldid) {
+					console.log('update', fieldid, data[fieldid]);
+					Fabrik['inlineedit_' + opts.elid].elements[fieldid].update(data[fieldid]);
+					Fabrik['inlineedit_' + opts.elid].elements[fieldid].select();
+				});
 				this.watchControls(td);
 				this.setFocus(td);	
 			}.bind(this));
@@ -389,9 +392,12 @@ var FbListInlineEdit = new Class({
 		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
 		var element = this.getElementName(td);
 		var ref = td.getParent('.fabrik_row').id;
-		var v = false;
+		var v = {};
 		this.vv = [];
 		// $$$rob $H needed when group by applied
+		if (typeOf(groupedData) === 'object') {
+			groupedData = $H(groupedData);
+		}
 		//$H(groupedData).each(function (data) {
 		groupedData.each(function (data) {
 			if (typeOf(data) === 'array') {//groued by data in forecasting slotenweb app. Where groupby table plugin applied to data.
@@ -406,8 +412,11 @@ var FbListInlineEdit = new Class({
 				});
 			}
 		}.bind(this));
+		var opts = this.options.elements[element];
 		if (this.vv.length > 0) {
-			v = this.vv[0].data[element + '_raw'];
+			$H(opts.plugins).each(function (elid, elementName) {
+				v[elid] = this.vv[0].data[elementName + '_raw'];
+			}.bind(this));
 		}
 		return v;
 	},
@@ -416,14 +425,19 @@ var FbListInlineEdit = new Class({
 		ref = row.id;
 		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
 		// $$$rob $H needed when group by applied
-		$H(groupedData).each(function (data) {
-			data.each(function (row) {
+		if (typeOf(groupedData) === 'object') {
+			groupedData = $H(groupedData);
+		}
+		//$H(groupedData).each(function (data, gkey) {
+		groupedData.each(function (data, gkey) {
+			data.each(function (row, dkey) {
 				if (row.id === ref) {
-					row.data[element] = val;
+					row.data[element + '_raw'] = val;
 				}
-			});
-		});
+			}.bind(this));
+		}.bind(this));
 	},
+	
 	setFocus : function (td) {
 		if (typeOf(td.getElement('.fabrikinput')) !== 'null') {
 			td.getElement('.fabrikinput').focus();
@@ -431,52 +445,67 @@ var FbListInlineEdit = new Class({
 	},
 	
 	watchControls : function (td) {
-		if (typeOf(td.getElement('a.inline-save')) !== 'null') {
-			td.getElement('a.inline-save').addEvent('click',  this.save.bindWithEvent(this, [td]));
+		if (typeOf(td.getElement('.inline-save')) !== 'null') {
+			td.getElement('.inline-save').removeEvents('click').addEvent('click', this.save.bindWithEvent(this, [td]));
 		}
-		if (typeOf(td.getElement('a.inline-cancel')) !== 'null') {
-			td.getElement('a.inline-cancel').addEvent('click',  this.cancel.bindWithEvent(this, [td]));
+		if (typeOf(td.getElement('.inline-cancel')) !== 'null') {
+			td.getElement('.inline-cancel').removeEvents('click').addEvent('click', this.cancel.bindWithEvent(this, [td]));
 		}
 	},
 	
 	save: function (e, td) {
-		Fabrik.fireEvent('fabrik.table.updaterows');
+		if (!this.editing) {
+			return;
+		}
 		this.inedit = false;
 		e.stop();
 		var element = this.getElementName(td);
-		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&task=element.save&format=raw';
-		var url = 'index.php?option=com_fabrik&task=element.save&format=raw';
 		var opts = this.options.elements[element];
+		
+		// need to load on parent otherwise in table td size gets monged
+		Fabrik.loader.start(td.getParent());
+		
 		var row = this.editing.getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.list.id + '_row_', '');
 		td.removeClass(this.options.focusClass);
-		//var eObj = eval('inlineedit_' + opts.elid);
 		var eObj = Fabrik['inlineedit_' + opts.elid];
 		if (typeOf(eObj) === 'null') {
 			fconsole('issue saving from inline edit: eObj not defined');
 			this.cancel(e);
 			return false;
 		}
-		delete eObj.element;
-		eObj.getElement();
-		var value = eObj.getValue();
-		var k = 'value';
-
-		this.setTableData(row, element, value);
+		//set package id to return js string
 		var data = {
+			'option': 'com_fabrik',
+			'task': 'form.process',
+			'format': 'raw',
+			'_packageId': 1,
 			'element': element,
 			'elid': opts.elid,
 			'plugin': opts.plugin,
 			'rowid': rowid,
-			'listid': this.options.listid
+			'listid': this.options.listid,
+			'formid': this.options.formid,
+			'fabrik_ignorevalidation': 1
 		};
-		data[eObj.token]  = 1;
-		data[k] = value;
-		new Request({url: url,
+		$H(eObj.elements).each(function (el) {
+			el.getElement();
+			var v = el.getValue();
+			this.setTableData(row, el.options.element, v);
+			data[el.options.element] = v;
+		}.bind(this));
+		
+		data[eObj.token] = 1;
+
+		td.empty();
+		new Request({url: '',
 			'data': data,
 			'evalScripts': true,
 			'onComplete': function (r) {
 				td.empty().set('html', r);
+				// need to load on parent otherwise in table td size gets monged
+				Fabrik.loader.stop(td.getParent());
+				Fabrik.fireEvent('fabrik.list.updaterows');
 			}.bind(this)
 		}).send();
 		this.editing = null;
@@ -505,7 +534,6 @@ var FbListInlineEdit = new Class({
 		var rowid = row.id.replace('list_' + this.getList().id + '_row_', '');
 		var td = this.editing;
 		if (td !== false) {
-			//td.removeClass(this.options.focusClass);
 			var element = this.getElementName(td);
 			var opts = this.options.elements[element];
 			var c = this.defaults[rowid + '.' + opts.elid];

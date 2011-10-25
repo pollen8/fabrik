@@ -63,7 +63,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		//_formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms
 		// $$$ rob swapped order 21/11/2010 so that getEmailData takes preference over _formData
 		//$this->data 		= array_merge($this->getEmailData(), $formModel->_formData);
-		$this->data 		= array_merge($formModel->_formData, $this->getEmailData());
+		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 		// $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		//check if condition exists and is met
 		if (!$this->shouldProcess('email_conditon')) {

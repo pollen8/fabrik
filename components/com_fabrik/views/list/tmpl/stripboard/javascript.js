@@ -17,7 +17,7 @@ var FabrikGrid = new Class({
 
 	initialize : function() {
 		this.container = document.getElement('.f3main');
-		Fabrik.addEvent('fabrik.table.updaterows', function(){
+		Fabrik.addEvent('fabrik.list.updaterows', function(){
 			this.resizeCells();
 			this.scaleScrollDivs();
 			this.watchResizeCols();	

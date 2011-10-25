@@ -2,6 +2,13 @@
 <form>
 	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
 		<fieldset name="plg-list-filter_view">
+		
+		<field name="filter_view_access" 
+				type="accesslevel" 
+				default="1"
+				repeat="true"
+				label="PLG_FABRIK_LIST_FILTER_VIEW_ACCESS_LABEL" />
+				
 			<field name="filter_view_settings" 
 				type="fabrikmodalrepeat" 
 				repeat="true"

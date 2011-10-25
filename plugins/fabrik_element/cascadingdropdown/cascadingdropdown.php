@@ -31,7 +31,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 		FabrikHelperHTML::script('media/com_fabrik/js/lib/Event.mock.js');
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->showPleaseSelect = $params->get('cascadingdropdown_showpleaseselect', true);
+		$opts->showPleaseSelect = $this->showPleaseSelect();
 		$opts->watch = $this->_getWatchId($repeatCounter);
 		$opts->id = $this->_id;
 		$opts->def 	= $this->getValue(array(), $repeatCounter);
@@ -138,7 +138,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$name	= $this->getHTMLName($repeatCounter);
-		$default = $this->getValue($data, $repeatCounter);
+		$default = (array)$this->getValue($data, $repeatCounter);
 
 		// $$$ rob don't bother getting the options if editable as the js event is going to get them.
 		//However if in readonly mode the we do need to get the options
@@ -151,13 +151,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		// elementJavascript() above, so the JS won't get options on init when editing an existing row
 		$tmp = array();
 		$rowid = JRequest::getInt('rowid', 0);
+		$show_please = $this->showPleaseSelect();
 		if (!$this->_editable || ($this->_editable && $rowid != 0)) {
 			$tmp = $this->_getOptions($data, $repeatCounter);
 		}
 		else {
-			$params = $this->getParams();
-			$show_please = $params->get('cascadingdropdown_showpleaseselect', true);
-			if ($params->get('cascadingdropdown_showpleaseselect', true)) {
+			if ($show_please) {
 				$tmp[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
 			}
 		}
@@ -166,7 +165,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$defaultLabel = '';
 		$defaultValue = '';
 		foreach ($tmp as $obj) {
-			if ($obj->value == $default) {
+			if (in_array($obj->value, $default)) {
 				$defaultValue = $obj->value;
 				$defaultLabel = $obj->text;
 			}
@@ -184,7 +183,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 
 		$w = new FabrikWorker();
-		$default = $w->parseMessageForPlaceHolder($default);
+		foreach ($default as &$d) {
+			$d = $w->parseMessageForPlaceHolder($d);
+		}
 		$displayType 	= $params->get('cdd_display_type', 'dropdown'); //not yet implemented always going to use dropdown for now
 		$str = array();
 		if ($this->canUse()) {
@@ -233,7 +234,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$str[] = '<div class="dbjoin-description">';
 			for ($i=0; $i < count($this->_optionVals); $i++) {
 				$opt = $this->_optionVals[$i];
-				$display = $opt->value == $default ? '' : 'none';
+				$display = in_array($opt->value, $default) ? '' : 'none';
 				$c = $i+1;
 				$str[] = '<div style="display:'.$display.'" class="notice description-'.$c.'">'.$opt->description.'</div>';
 			}
@@ -331,19 +332,32 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$sql = $this->_buildQuery($data, $repeatCounter);
 		$db->setQuery($sql);
 		if (JDEBUG && JRequest::getVar('format') == 'raw') {
-			echo "/* ".$db->getQuery()." */\n";
+			//echo "/* ".$db->getQuery()." */\n";
 		}
 		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
 		$this->_optionVals[$repeatCounter] = $db->loadObjectList();
 		if ($db->getErrorNum()) {
 			JError::raiseError(501, $db->getErrorMsg());
 		}
-		$params = $this->getParams();
-		$show_please = $params->get('cascadingdropdown_showpleaseselect', true);
-		if ($params->get('cascadingdropdown_showpleaseselect', true)) {
+		if ($this->showPleaseSelect()) {
 			array_unshift($this->_optionVals[$repeatCounter], JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
 		}
 		return $this->_optionVals[$repeatCounter];
+	}
+	
+	/**
+	 * @since 3.0b
+	 * do you add a please select option to the cdd list
+	 * @return boolean
+	 */
+
+	protected function showPleaseSelect()
+	{
+		$params = $this->getParams();
+		if (!$this->_editable) {
+			return false;
+		}
+		return $params->get('cascadingdropdown_showpleaseselect', true);
 	}
 
 
@@ -448,8 +462,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		if (!is_null($whereval) && $wherekey != '') {
 
-			$wherekey		= array_pop( explode('___', $wherekey));
-			$where			= " WHERE $wherekey = ".$db->Quote($whereval);
+			$wherekey	= array_pop(explode('___', $wherekey));
+			$where = " WHERE $wherekey = ".$db->Quote($whereval);
 
 		}
 		$filter = $params->get('cascadingdropdown_filter');

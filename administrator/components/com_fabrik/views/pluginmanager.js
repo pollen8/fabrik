@@ -48,6 +48,18 @@ var PluginManager = new Class({
 	},
 	
 	deletePlugin: function (e) {
+		// decrease the element name counter. 
+		// Otherwise you can loose data on saving (2 validations, delete first - 2nd lost values)
+		$('plugins').getElements('input, select, textarea').each(function (i) {
+			var s = i.name.match(/\[[0-9]\]/);
+			if (s) {
+				var c = s[0].replace('[', '').replace(']', '').toInt();
+				if (c > 0) {
+					c = c - 1;
+				}
+				i.name = i.name.replace(/\[[0-9]\]/, '[' + c + ']');
+			}
+		});
 		e.stop();
 		$(e.target).up(3).dispose();
 		this.counter --;

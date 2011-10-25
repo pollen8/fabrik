@@ -46,12 +46,13 @@
 	<fieldset name="publishing">
 	
 		<field name="published" 
-			type="radio"
+			type="list"
 			default="1"
 			label="JSTATUS"
 			description="COM_FABRIK_FIELD_ELEMENT_PUBLISHED_DESC">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+				<option value="0">JUNPUBLISHED</option>
+				<option value="1">JPUBLISHED</option>
+				<option value="-2">JTRASHED</option>
 		</field>
 		
 		<field name="use_in_page_title"
@@ -68,7 +69,8 @@
 	<fieldset name="access">
 	
 		<field name="access" 
-				type="accesslevel" 
+				type="accesslevel"
+				default="1"
 				label="COM_FABRIK_ACCESS_EDITABLE_ELEMENT" 
 				description="COM_FABRIK_ACCESS_EDITABLE_ELEMENT_DESC" />
 				
@@ -464,7 +466,7 @@
 	
 					<field name="view_access" 
 							type="accesslevel" 
-							default="0" 
+							default="1" 
 							label="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT" 
 							description="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT_DESC" />
 					

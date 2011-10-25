@@ -37,9 +37,8 @@ var FbCascadingdropdown = new Class({
 	
 	dowatch: function (e)
 	{
-		e = new Event(e);
-		var v = $(e.target).get('value');
-		this.change(v, $(e.target).id);
+		var v = e.target.get('value');
+		this.change(v, e.target.id);
 	},
 	
 	change: function (v, triggerid)
@@ -62,18 +61,28 @@ var FbCascadingdropdown = new Class({
 			}
 		}
 		this.element.getParent().getElement('.loader').setStyle('display', '');
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&plugin=cascadingdropdown&method=ajax_getOptions&element_id=' + this.options.id;
-		url += '&lang=' + this.options.lang;
 		// $$$ hugh testing new getFormElementData() method to include current form element values in data
 		// so any custom 'where' clause on the cdd can use {placeholders}.  Can't use getFormData() because
 		// it includes all QS from current page, including task=processForm, which screws up this AJAX call.
 		var formdata = this.form.getFormElementData();
-		var data = Object.append(formdata, {'v': v, 'formid': this.form.id, 'fabrik_cascade_ajax_update': 1});
+		var data = {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'cascadingdropdown',
+				'method': 'ajax_getOptions',
+				'element_id': this.options.id,
+				'v': v,
+				'formid': this.form.id,
+				'fabrik_cascade_ajax_update': 1,
+				'lang': this.options.lang
+			};
+		data = Object.append(formdata, data);
 		if (this.myAjax) {
 			// $$$ rob stops ascyro behaviour when older ajax call might take longer than new call and thus populate the dd with old data.
 			this.myAjax.cancel();
 		}
-		this.myAjax = new Request({url: url,
+		this.myAjax = new Request({url: '',
 		method: 'post', 
 		'data': data,
 		onComplete: function (json) {

@@ -15,7 +15,7 @@ jimport('joomla.application.component.view');
 class FabrikViewElement extends JView
 {
 
-	var $_id 				= null;
+	var $_id = null;
 
 	function setId($id)
 	{
@@ -30,11 +30,13 @@ class FabrikViewElement extends JView
 
 	function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
+		echo "display";exit;
+	/* 	FabrikHelperHTML::framework();
 		$element = JRequest::getVar('element');
 		$elementid = JRequest::getVar('elid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
+		print_r($className);exit;
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		if (JError::isError($plugin)) {
 			JError::handleMessage($plugin);
@@ -52,7 +54,7 @@ class FabrikViewElement extends JView
 		$html .= $plugin->elementJavascript($repeatCounter);
 		$html .= '</script>';
 		$html .= $plugin->_getElement($data, $repeatCounter, $groupModel);
-		echo $html;
+		echo $html; */
 	}
 
 }

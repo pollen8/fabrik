@@ -349,6 +349,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$optionsPerRow = (int)$this->getParams()->get('options_per_row', 0);
 		$elBeforeLabel = (bool)$this->getParams()->get('element_before_label', true);
 		//element_before_label
+		if (JRequest::getVar('format') == 'raw') {
+			$optionsPerRow = 1;
+		}
 		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow);
 
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="'.$id.'">');
@@ -404,14 +407,15 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 
 			$name = $this->getValueFullName($opts);
-			$rawname = $name . "_raw";
+			// $name could already be in _raw format - so get inverse name e.g. with or without raw
+			$rawname = substr($name, -4) === '_raw' ? substr($name, 0 ,-4) :  $name . "_raw";
 			if ($groupModel->isJoin() || $this->isJoin()) {
 				if ($groupModel->canRepeat()) {
 					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
 						$value = $data['join'][$joinid][$name][$repeatCounter];
 					} else {
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
-							$value = $data['join'][$joinid][$name][$repeatCounter];
+						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname])) {
+							$value = $data['join'][$joinid][$rawname][$repeatCounter];
 						}
 					}
 				} else {
@@ -427,13 +431,12 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				if ($groupModel->canRepeat()) {
 					//can repeat NO join
 					if (array_key_exists($name, $data)) {
-						if (is_array($data[$name])) {
-							//occurs on form submission for fields at least
-							$a = $data[$name];
-						} else {
-							//occurs when getting from the db
-							$a = FabrikWorker::JSONtoData($data[$name], true);
-						}
+						//occurs on form submission for fields at least : occurs when getting from the db
+						$a = is_array($data[$name]) ? $a = $data[$name] : FabrikWorker::JSONtoData($data[$name], true);
+						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
+					} else if (array_key_exists($rawname, $data)) {
+						//occurs on form submission for fields at least : occurs when getting from the db
+						$a = is_array($data[$rawname]) ? $a = $data[$rawname] : FabrikWorker::JSONtoData($data[$rawname], true);
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
 					}
 				} else {
@@ -451,6 +454,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					} */
 					if (array_key_exists($name, $data)) {
 						$value = $data[$name]; //put this back in for radio button after failed validation not picking up previously selected option
+					} else if (array_key_exists($rawname, $data)) {
+						$value = $data[$rawname];
 					}
 				}
 			}

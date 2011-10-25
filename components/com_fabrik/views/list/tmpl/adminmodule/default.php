@@ -6,9 +6,7 @@
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
 $this->headingstmpl = $this->loadTemplate('headings');
-if ($this->showFilters) {
-	echo $this->loadTemplate('filter');
-}?>
+?>
 
 <div class="fabrikDataContainer" style="<?php echo $this->tableStyle?>">
 <div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>"><?php echo $this->emptyDataMessage; ?></div>
@@ -16,6 +14,12 @@ if ($this->showFilters) {
 			echo $c;
 			}?>
 			<div class="boxflex">
+			
+			<?php 
+if ($this->showFilters) {
+	echo $this->loadTemplate('filter');
+}
+?>
 			<table class="fabrikList" id="list_<?php echo $this->table->id;?>" >
 
 	<?php

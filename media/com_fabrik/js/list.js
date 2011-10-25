@@ -223,6 +223,7 @@ var FbList = new Class({
 		'admin': false,
 		'filterMethod': 'onchange',
 		'ajax': false,
+		'ajax_links': false,
 		'form': 'listform_' + this.id,
 		'hightLight': '#ccffff',
 		'primaryKey': '',
@@ -680,7 +681,8 @@ var FbList = new Class({
 		if (!this.list) {
 			return;
 		}
-		if (this.options.ajax) {
+		
+		if (this.options.ajax_links) {
 			// if floatiing menus then edit out side of this.list (not tested with
 			// mutliple lists on the same page.
 			// if theres an issue with that we may need to inject the floating menu
@@ -803,6 +805,7 @@ var FbList = new Class({
 	},
 
 	fabrikNav: function (limitStart) {
+		this.options.limitStart = limitStart;
 		this.form.getElement('#limitstart' + this.id).value = limitStart;
 		// cant do filter as that resets limitstart to 0
 		Fabrik.fireEvent('fabrik.list.navigate', [this, limitStart]);
@@ -855,8 +858,19 @@ var FbList = new Class({
 	},
 
 	updateRows: function () {
+		var data = {
+				'option': 'com_fabrik',
+				'view': 'list',
+				'task': 'list.view',
+				'format': 'raw',
+				'listid': this.id
+			};
+		//var url = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=raw&listid=' + this.id;
+		var url = '';
+		data['limit' + this.id] = this.options.limitLength;
 		new Request.JSON({
-			'url': Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=raw&listid=' + this.id,
+			'url': url,
+			'data': data,
 			onSuccess: function (json) {
 				this._updateRows(json);
 				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
@@ -959,7 +973,7 @@ var FbList = new Class({
 				this.form.getElement('.fabrikNav').set('html', data.htmlnav);
 			}
 			this.watchAll(true);
-			Fabrik.fireEvent('fabrik.table.updaterows');
+			Fabrik.fireEvent('fabrik.list.updaterows');
 			try {
 				Slimbox.scanPage();
 			} catch (err) {

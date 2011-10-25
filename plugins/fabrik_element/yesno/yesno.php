@@ -120,6 +120,26 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		}
 		$rows = array_values($rows);
 	}
+	
+	/**
+	* @param array of scripts previously loaded (load order is important as we are loading via head.js
+	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	* current file
+	*
+	* get the class to manage the form element
+	* if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	* call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	* to ensure that the file is loaded only once
+	*/
+	
+	function formJavascriptClass(&$srcs, $script = '')
+	{
+		$elementList = 'plugins/fabrik_element/radiobutton/radiobutton.js';
+		if (!in_array($elementList, $srcs)) {
+			$srcs[] = $elementList;
+		}
+		parent::formJavascriptClass($srcs, $script);
+	}
 
 	/**
 	 * format the read only output for the page

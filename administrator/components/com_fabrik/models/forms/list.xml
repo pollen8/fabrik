@@ -16,7 +16,7 @@
 
 			<field name="access" 
 				type="accesslevel" 
-				default="0" 
+				default="1" 
 				label="COM_FABRIK_FIELD_VIEW_LIST_LABEL" 
 				description="COM_FABRIK_FIELD_VIEW_LIST_DESC" />
 	
@@ -165,13 +165,22 @@
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
+				
+			<field name="list_ajax_links"
+					type="radio"
+					default="0"
+					label="COM_FABRIK_LIST_AJAX_LINKS_LABEL"
+					description="COM_FABRIK_LIST_AJAX_LINKS_DESC">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
 			
 		</fieldset>
 		<fieldset name="grouping2" addfieldpath="/administrator/components/com_fabrik/models/fields">
 				
 				<field name="group_by_access" 
 					type="accesslevel" 
-					default="0" 
+					default="1" 
 					label="COM_FABRIK_FIELD_GROUP_BY_ACCESS_LABEL" 
 					description="COM_FABRIK_FIELD_GROUP_BY_ACCESS_DESC" />
 					
@@ -199,13 +208,13 @@
 	
 			<field name="allow_view_details" 
 				type="accesslevel" 
-				default="0" 
+				default="1" 
 				label="COM_FABRIK_FIELD_VIEW_RECORDS_LABEL" 
 				description="COM_FABRIK_FIELD_VIEW_RECORDS_DESC" />
 				
 			<field name="allow_edit_details" 
 				type="accesslevel" 
-				default="20" 
+				default="1"
 				label="COM_FABRIK_FIELD_EDIT_RECORDS_LABEL" 
 				description="COM_FABRIK_FIELD_EDIT_RECORDS_DESC" />
 				
@@ -217,13 +226,13 @@
 				
 			<field name="allow_add" 
 				type="accesslevel" 
-				default="0" 
+				default="1" 
 				label="COM_FABRIK_FIELD_ADD_RECORDS_LABEL" 
 				description="COM_FABRIK_FIELD_ADD_RECORDS_DESC" />
 				
 			<field name="allow_delete" 
 				type="accesslevel" 
-				default="20" 
+				default="2" 
 				label="COM_FABRIK_FIELD_DELETE_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_DELETE_RECORDS_DESC" />
 				
@@ -235,7 +244,7 @@
 			
 			<field name="allow_drop" 
 				type="accesslevel" 
-				default="26" 
+				default="3" 
 				label="COM_FABRIK_FIELD_DROP_RECORDS_LABEL" 
 				description="COM_FABRIK_FIELD_DROP_RECORDS_DESC" />
 				

@@ -30,9 +30,7 @@ class FabrikViewList extends JView{
 		if ($model->requiresSlimbox()) {
 			FabrikHelperHTML::slimbox();
 		}
-		if ($model->requiresMocha()) {
-			FabrikHelperHTML::mocha();
-		}
+
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);
@@ -177,11 +175,11 @@ class FabrikViewList extends JView{
 		// or J!'s PDF lib throws warnings about set_magic_quotes_runtime()
 		if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
 			$current_level = error_reporting();
-    		error_reporting($current_level & ~E_DEPRECATED);
+			error_reporting($current_level & ~E_DEPRECATED);
 		}
 		require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'modifiers.php');
-		$user 		= JFactory::getUser();
-		$model		=& $this->getModel();
+		$user = JFactory::getUser();
+		$model = $this->getModel();
 
 		$document = JFactory::getDocument();
 
@@ -230,7 +228,7 @@ class FabrikViewList extends JView{
 				$rowclass = $elparams->get('use_as_row_class');
 				if ($rowclass == 1) {
 					foreach ($data as $groupk => $group) {
-						for ($i=0; $i<count($group); $i++) {
+						for ($i=0; $i < count($group); $i++) {
 							$data[$groupk][$i]->class .= " ". preg_replace('/[^A-Z|a-z|0-9]/', '-', $data[$groupk][$i]->data->$col);
 						}
 					}

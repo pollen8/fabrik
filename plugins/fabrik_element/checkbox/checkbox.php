@@ -36,7 +36,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	 * @return string formatted value
 	 */
 
-	function renderRawTableData($data, $thisRow)
+	function renderRawListData($data, $thisRow)
 	{
 		return json_encode($data);
 	}

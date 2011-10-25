@@ -36,13 +36,13 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$oDate 	= JFactory::getDate();
+		$name = $this->getHTMLName($repeatCounter);
+		$id	= $this->getHTMLId($repeatCounter);
+		$oDate = JFactory::getDate();
 		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
 		$oDate->setOffset($tzoffset);
-		$params 	=& $this->getParams();
+		$params = $this->getParams();
 		$gmt_or_local = $params->get('gmt_or_local');
 		$gmt_or_local += 0;
 		return '<input name="'.$name.'" id="'.$id.'" type="hidden" value="' . $oDate->toMySQL($gmt_or_local) .'" />';

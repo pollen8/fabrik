@@ -288,7 +288,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				$res = sprintf($format, $res);
 			}
 			// $$$ hugh - need to set _raw, might be needed if (say) calc is being used as 'use_as_row_class'
-			// See comments in formatData() in table model, we might could move this to a renderRawTableData() method.
+			// See comments in formatData() in table model, we might could move this to a renderRawListData() method.
 			$raw_name = $this->getFullName(false, true, false) . '_raw';
 			$thisRow->$raw_name = str_replace(GROUPSPLITTER, ',', $res);
 			return parent::renderListData($res, $thisRow);

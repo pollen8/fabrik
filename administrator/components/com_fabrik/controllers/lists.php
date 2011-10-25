@@ -80,22 +80,23 @@ class FabrikControllerLists extends FabControllerAdmin
 				//publish the groups
 
 				$groupModel = $this->getModel('Group');
-
-				$groupids = $groupModel->swapFormToGroupIds($formids);
-				if (!empty($groupids)) {
-					if ($groupModel->publish($groupids, $value) === false) {
-						JError::raiseWarning(500, $groupModel->getError());
-					} else {
-						//publish the elements
-						$elementModel = $this->getModel('Element');
-						$elementIds = $elementModel->swapGroupToElementIds($groupids);
-						if (!$elementModel->publish($elementIds, $value)) {
-							JError::raiseWarning(500, $elementModel->getError());
+				if (is_object($groupModel)) {
+					$groupids = $groupModel->swapFormToGroupIds($formids);
+					if (!empty($groupids)) {
+						if ($groupModel->publish($groupids, $value) === false) {
+							JError::raiseWarning(500, $groupModel->getError());
+						} else {
+							//publish the elements
+							$elementModel = $this->getModel('Element');
+							$elementIds = $elementModel->swapGroupToElementIds($groupids);
+							if (!$elementModel->publish($elementIds, $value)) {
+								JError::raiseWarning(500, $elementModel->getError());
+							}
 						}
 					}
 				}
 				//finally publish the table
-					parent::publish();
+				parent::publish();
 			}
 		}
 		$this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_list, false));

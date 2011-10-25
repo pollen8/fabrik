@@ -10,18 +10,23 @@
  i.e. the same class definitions, etc.
 */
 ?>
+	<?php if ($this->tipLocation == 'above') {
+		echo '<div>'.$element->tipAbove.'</div>';
+	}?>
 	<div <?php echo @$this->element->column;?> class="<?php echo $this->element->containerClass;?>">
 		<?php echo $this->element->label;?>
-		<?php echo $element->errorTag; ?>
+		<?php echo $this->element->errorTag; ?>
 		<div class="fabrikElement">
 			<?php echo $this->element->element;?>
-
 		</div>
-		<div class="fabrikErrorMessage">
-				<?php echo $this->element->error;?>
-			</div>
+		<?php if ($this->tipLocation == 'side') {
+		echo $element->tipSide;
+	}?>
 		<div style="clear:both"></div>
 	</div>
+	<?php if ($this->tipLocation == 'below') {
+		echo '<div>'.$element->tipBelow.'</div>';
+	}?>
 
 	<?php
 	$this->element->rendered = true;

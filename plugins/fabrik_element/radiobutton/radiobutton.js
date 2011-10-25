@@ -28,7 +28,7 @@ var FbRadio = new Class({
 		});
 		this.mySlider.hide();
 		a.addEvent('click', function (e) {
-			new Event(e).stop();
+			e.stop();
 			this.mySlider.toggle();
 		}.bind(this));
 	},

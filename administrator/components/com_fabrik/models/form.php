@@ -245,16 +245,14 @@ class FabrikModelForm extends FabModelAdmin
 			$currentGroups[] = $db->insertid();
 		}
 		$this->_makeFormGroups($data, $currentGroups);
-
 		if ($record_in_database == '1') {
 			$listModel = JModel::getInstance('List', 'FabrikModel');
 			$item = $listModel->loadFromFormId($formid);
 			if ($isnew) {
-				$dbTableName = $data['db_table_name'];
+				$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : FabrikString::clean($data['label']);
 			} else {
 				$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
 			}
-
 		
 			$dbTableExists = $listModel->databaseTableExists($dbTableName);
 			if (!$dbTableExists) {

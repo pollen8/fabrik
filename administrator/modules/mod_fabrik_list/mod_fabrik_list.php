@@ -33,21 +33,21 @@ require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'view.html.php');
 JRequest::setVar('layout', $origLayout);
 
 require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'package'.DS.'view.html.php');
-
-
 JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
 JTable::addIncludePath(COM_FABRIK_BASE.DS.'administrator'.DS.'components'.DS.'com_fabrik'.DS.'tables');
 $document = JFactory::getDocument();
-
 require_once(COM_FABRIK_FRONTEND.DS.'controllers'.DS.'package.php');
 require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'form'.DS.'view.html.php');
 
-$listId	= intval($params->get('list_id', 1));
+$listId	= intval($params->get('list_id', 0));
+if ($listId === 0) {
+	JError::raiseError(500, 'no list specified');
+}
 $listels = json_decode($params->get('list_elements'));
 if (isset($listels->show_in_list)) {
 	JRequest::setVar('fabrik_show_in_list', $listels->show_in_list);
 }
-$useajax = intval($params->get('useajax', 0));
+$useajax = $params->get('useajax');
 $random = intval($params->get('radomizerecords', 0));
 $limit = intval($params->get('limit', 0));
 $layout	= $params->get('fabriklayout', 'default');
@@ -73,9 +73,17 @@ $controller = new FabrikControllerList();
 $view = clone($controller->getView($viewName, $viewType));
 
 // Push a model into the view
-$model	= $controller->getModel($viewName, 'FabrikFEModel');
+$model = $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
-$model->set('ajax', $useajax);
+if ($useajax !== '') {
+	$model->set('ajax', $useajax);
+}
+
+if ($params->get('ajax_links') !== '') {
+	$listParams = $model->getParams();
+	$listParams->set('list_ajax_links', $params->get('ajax_links'));
+}
+
 $model->randomRecords = $random;
 if (!JError::isError($model)) {
 	$view->setModel($model, true);

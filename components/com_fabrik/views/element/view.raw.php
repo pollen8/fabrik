@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 
 class FabrikViewElement extends JView{
 
-	var $_id 				= null;
-	var $isMambot 	= null;
+	var $_id = null;
+	var $isMambot = null;
 
 	function setId($id)
 	{
@@ -30,12 +30,18 @@ class FabrikViewElement extends JView{
 
 	function display($tpl = null)
 	{
-		$elementid = JRequest::getVar('elid');
+		echo "form id = ".JRequest::getInt('formid');exit;
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$ids = JRequest::getVar('plugin');
+		foreach ($ids as $id) {
+			$plugin = $pluginManager->getElementPlugin($id);
+		}
+/* 		$elementid = JRequest::getVar('elid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
-		$plugin->inLineEdit();
+		$plugin->inLineEdit(); */
 	}
 
 }

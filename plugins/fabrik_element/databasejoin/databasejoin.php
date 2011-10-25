@@ -344,6 +344,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere);
 
+		foreach ($aDdObjs as &$o) {
+			$o->text = htmlspecialchars($o->text, ENT_QUOTES); //for values like '1"'
+		}
 		$table = $this->getlistModel()->getTable()->db_table_name;
 		if (is_array($aDdObjs)) {
 			$tmp = array_merge($tmp, $aDdObjs);
@@ -987,33 +990,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * $$$ rob this seems the same as element.php's implementation
-	 *
-	 * used by radio and dropdown elements to get a dropdown list of their unique
-	 * unique values OR all options - basedon filter_build_method
-	 * @param bol do we render as a normal filter or as an advanced search filter
-	 * @param string table name to use - defaults to element's current table
-	 * @param string label field to use, defaults to element name
-	 * @param string id field to use, defaults to element name
-	 * @return array text/value objects
-	 */
-
-	/*public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
-	 {
-	$usersConfig = JComponentHelper::getParams('com_fabrik');
-	$params = $this->getParams();
-	$filter_build = $params->get('filter_build_method', 0);
-	if ($filter_build == 0) {
-	$filter_build = $usersConfig->get('filter_build_method');
-	}
-	if ($filter_build == 2) {
-	return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
-	} else {
-	return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
-	}
-	}*/
-
-	/**
 	 * (non-PHPdoc)
 	 * @see components/com_fabrik/models/plgFabrik_Element::_buildFilterJoin()
 	 */
@@ -1065,8 +1041,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		//ensure table prefilter is applied to query
 		$prefilterWhere = $listModel->_buildQueryPrefilterWhere($this);
 		$elementName = FabrikString::safeColName($this->getFullName(false, false, false));
-		// $$$ hugh - $joinKey is already in full `table`.`element` format from getJoinValueColumn()
-		//$prefilterWhere = str_replace($elementName, "`$joinTableName`.`$joinKey`", $prefilterWhere);
 		$prefilterWhere = str_replace($elementName, $joinKey, $prefilterWhere);
 		if (trim($where) == '') {
 			$prefilterWhere = str_replace('AND', 'WHERE', $prefilterWhere);
@@ -1361,95 +1335,88 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * called when the element is saved
-	 * * // @TODO this wont work for j1.6 - need to test it
+	 * @param array posted element save data
 	 */
 
 	function onSave($data)
 	{
 		$params = json_decode($data['params']);
 		if (!$this->isJoin()) {
-			$element = $this->getElement();
-			//load join based on this element id
-			$join = FabTable::getInstance('Join', 'FabrikTable');
-			$key = array('element_id' => $data['id']);
-			$join->load($key);
-			if ($join->element_id == 0) {
-				$join->element_id = $this->_id;
-			}
-			$join->table_join = $params->join_db_name;
-			$join->join_type = 'left';
-			$join->group_id = $data['group_id'];
-			$join->table_key = str_replace('`', '', $element->name);
-			$join->table_join_key = $params->join_key_column;
-			$join->join_from_table = '';
-			$o = new stdClass();
-			$l = 'join-label';
-			$o->$l = $params->join_val_column;
-			$o->type = 'element';
-			$join->params = json_encode($o);
-			$join->store();
+			$this->updateFabrikJoins($data, $params->join_db_name, $params->join_key_column, $params->join_val_column);
 		}
 		return parent::onSave();
 	}
-
-	function onAfterSave(&$row)
+	
+	/**
+	 * @since 3.0b
+	 * on save of element, update its jos_fabrik_joins record and any decendants join record
+	 * @param array $data
+	 * @param string $tableJoin
+	 * @param string $keyCol
+	 * @param string $label
+	 */
+	
+	protected function updateFabrikJoins($data, $tableJoin, $keyCol, $label)
 	{
-		// $$$ hugh - see if we have any children, and if so, see if those children have
-		// entries in the joins table. If so, update them. If not, create them.
-		$orig_id = (int)$this->_id;
-		$db = FabrikWorker::getDbo();
-		$db->setQuery("
-			SELECT e.id as cid, j.id AS parent_jid
-			FROM #__{package}_elements AS e
-			LEFT JOIN #__{package}_joins AS j ON j.element_id = e.parent_id
-			WHERE e.parent_id = '$orig_id'
-		");
-		$children = $db->loadObjectList();
-		foreach ($children as $child) {
-			$db->setQuery("SELECT id FROM #__{package}_joins WHERE element_id = ".$db->Quote($child->cid));
-			$join = $db->loadObject();
-			if (empty($join)) {
-				// no join table row for this child, so create one
-				// just load the parent's join record, 0 the id and set element_id to be child's id
-				$joinTable = FabTable::getInstance('Join', 'FabrikTable');
-				$joinTable->load($child->parent_jid);
-				$joinTable->id = 0;
-				$joinTable->element_id = $child->cid;
-				$joinTable->group_id = $child->gid;
-				if (!$joinTable->store()) {
-					return JError::raiseWarning(500, $joinTable->getError());
-				}
-			}
-			else {
-				// join table row exists for this child, so update it
-				// load the parent element's join row, and save it as the child's
-				// (so just change id and element_id)
-				$joinTable = FabTable::getInstance('Join', 'FabrikTable');
-				$joinTable->load($child->parent_jid);
-				$joinTable->id = $join->id;
-				$joinTable->element_id = $child->cid;
-				$joinTable->group_id = $child->gid;
-				if (!$joinTable->store()) {
-					return JError::raiseWarning(500, $joinTable->getError());
-				}
-			}
+		//load join based on this element id
+		$this->updateFabrikJoin($data, $this->_id, $tableJoin, $keyCol, $label);
+		$children = $this->getElementDescendents($this->_id);
+		foreach ($children as $id) {
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($id);
+			$data['group_id'] = $elementModel->getElement()->group_id;
+			$data['id'] = $id;
+			$this->updateFabrikJoin($data, $id, $tableJoin, $keyCol, $label);
 		}
-		return true;
+	}
+	
+	/**
+	* @since 3.0b
+	* update an elements jos_fabrik_joins record
+	* @param array $data
+	* @param int element id
+	* @param string $tableJoin
+	* @param string $keyCol
+	* @param string $label
+	*/
+	
+	protected function updateFabrikJoin($data, $elementId, $tableJoin, $keyCol, $label)
+	{
+		$params = json_decode($data['params']);
+		$element = $this->getElement();
+		$join = FabTable::getInstance('Join', 'FabrikTable');
+		$key = array('element_id' => $data['id']);
+		$join->load($key);
+		if ($join->element_id == 0) {
+			$join->element_id = $elementId;
+		}
+		$join->table_join = $tableJoin;
+		$join->join_type = 'left';
+		$join->group_id = $data['group_id'];
+		$join->table_key = str_replace('`', '', $element->name);
+		$join->table_join_key = $keyCol;
+		$join->join_from_table = '';
+		$o = new stdClass();
+		$l = 'join-label';
+		$o->$l = $label;
+		$o->type = 'element';
+		$join->params = json_encode($o);
+		$join->store();
 	}
 
 	/**
 	 * called before the element is saved
+	 * @ $$$ rob: moved up to element model level
 	 * @param object row that is going to be updated
 	 */
 
-	function beforeSave(&$row)
+/* 	function beforeSave(&$row)
 	{
 		$element = $this->getElement();
 		$maskbits = 4;
 		$post	= JRequest::get('post', $maskbits);
 		//on new or on copy? details not found?
 		if (array_key_exists('details', $post)) {
-			if ($post['details']['plugin'] != 'databasejoin') {
+			if (!in_array($post['details']['plugin'], array('databasejoin', 'user'))) {
 				$db = FabrikWorker::getDbo();
 				$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =".(int)$post['id']);
 				$db->query();
@@ -1466,11 +1433,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 			}
 		}
-	}
+		
+	} */
 
 	function onRemove($drop = false)
 	{
-		$db = FabrikWorker::getDbo();
+		$this->deleteJoins((int)$this->_id);
+		/* $db = FabrikWorker::getDbo(true);
 		$orig_id = (int)$this->_id;
 		if (!empty($orig_id)) {
 			$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id = ".$orig_id);
@@ -1485,7 +1454,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			if (!empty($join_ids)) {
 				$db->setQuery("DELETE FROM #__fabrik_joins WHERE id IN (".implode(',', $join_ids).")");
 			}
-		}
+		} */
 		parent::onRemove($drop);
 	}
 
@@ -1499,9 +1468,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$trigger = $params->get('database_join_display_type') == 'dropdown' ? 'change' : 'click';
-		$id 			= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$ar = array(
-			'id' 			=> $id,
+			'id' => $id,
 			'triggerEvent' => $trigger
 		);
 		return array($ar);

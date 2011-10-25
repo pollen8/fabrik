@@ -30,9 +30,7 @@ class FabrikViewList extends JView{
 		if ($model->requiresSlimbox()) {
 			FabrikHelperHTML::slimbox();
 		}
-		if ($model->requiresMocha()) {
-			FabrikHelperHTML::mocha();
-		}
+	
 		$src = $this->get('PluginJsClasses');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
@@ -55,10 +53,11 @@ class FabrikViewList extends JView{
 
 		$this->_row = new stdClass();
 		$script = '';
-
+		$listParams = $model->getParams();
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = (int)$model->isAjax();
+		$opts->ajax_links = (bool)$listParams->get('list_ajax_links', $opts->ajax);
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->_jsonHeadings();
@@ -66,7 +65,7 @@ class FabrikViewList extends JView{
 		foreach ($labels as &$l) {
 			$l = strip_tags($l);
 		}
-		$listParams = $model->getParams();
+		
 		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid 		= $tmpItemid;
@@ -79,6 +78,8 @@ class FabrikViewList extends JView{
 		$opts->actionMethod = $listParams->get('actionMethod');
 		$opts->floatPos = $listParams->get('floatPos');
 		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
+		$opts->limitLength = $model->limitLength;
+		$opts->limitStart = $model->limitStart;
 		$csvOpts = new stdClass();
 		$csvOpts->excel = (int)$listParams->get('csv_format');
 		$csvOpts->inctabledata = (int)$listParams->get('csv_include_data');
@@ -354,8 +355,7 @@ class FabrikViewList extends JView{
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
 		//$form->getGroupsHiarachy();
-		$this->assign('showFilters', (count($this->filters) > 0 && $params->get('show-table-filters', 1) !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
-
+		$this->assign('showFilters', (count($this->filters) > 0 && (int)$params->get('show-table-filters', 1) !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
 		$this->assignRef('calculations', $this->_getCalculations($this->headings));

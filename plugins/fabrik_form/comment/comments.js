@@ -22,15 +22,13 @@ var FabrikComment = new Class({
 		this.spinner = new Element('img', {'styles': {'display': 'none'},	'src': Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif'});
 		this.doAjaxDeleteComplete = this.deleteComplete.bindWithEvent(this);
 		this.ajax = {};
-		var url = Fabrik.liveSite + 'index.php';
 		this.ajax.deleteComment = new Request({
-			'url': url, 
+			'url': '', 
 			'method': 'get',
 			'data': {
 				'option': 'com_fabrik',
 				'format': 'raw',
-				'view': 'plugin',
-				'task': 'pluginAjax',
+				'task': 'plugin.pluginAjax',
 				'plugin': 'comment',
 				'method': 'deleteComment',
 				'g': 'form',
@@ -40,9 +38,15 @@ var FabrikComment = new Class({
 			'onComplete': this.doAjaxDeleteComplete
 		});
 		this.ajax.updateComment = new Request({
-			'url': url + '?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&plugin=comment&method=updateComment&g=form', 
+			'url': '', 
 			'method': 'post',
 			'data': {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'comment',
+				'method': 'updateComment',
+				'g': 'form',
 				'formid': this.options.formid,
 				'rowid': this.options.rowid
 			}
@@ -91,8 +95,7 @@ var FabrikComment = new Class({
 			'data': {
 				'option': 'com_fabrik',
 				'format': 'raw',
-				'view': 'plugin',
-				'task': 'pluginAjax',
+				'task': 'plugin.pluginAjax',
 				'plugin': 'comment',
 				'method': 'addComment',
 				'g': 'form',
@@ -132,9 +135,8 @@ var FabrikComment = new Class({
 
 	// check details and then submit the form
 	doInput : function (e) {
-		var event = new Event(e);
-		this.spinner.inject($(event.target), 'after');
-		var replyform = $(event.target).getParent('.replyform');
+		this.spinner.inject(e.target, 'after');
+		var replyform = e.target.getParent('.replyform');
 		if (replyform.id === 'master-comment-form') {
 			var lis = this.element.getElement('ul').getElements('li');
 			if (lis.length > 0) {
@@ -159,7 +161,7 @@ var FabrikComment = new Class({
 			alert(Joomla.JText._('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING'));
 			return;
 		}
-		event.stop();
+		e.stop();
 		var name = replyform.getElement('input[name=name]');
 		if (name) {
 			var namestr = name.get('value');
@@ -211,7 +213,6 @@ var FabrikComment = new Class({
 	saveComment : function (div) {
 		var id = div.getParent('.comment').id.replace('comment-', '');
 		
-		
 		this.ajax.updateComment.options.data.comment_id = id;
 		// @TODO causing an error when saving inline edit
 		/*if (typeOf(comment_plugin_notify) !== 'null') {
@@ -251,7 +252,7 @@ var FabrikComment = new Class({
 
 				fx.hide();
 				a.addEvent('click', function (e) {
-					e = new Event(e).stop();
+					e.stop();
 					fx.toggle();
 				}.bind(this));
 			}
@@ -260,11 +261,10 @@ var FabrikComment = new Class({
 		this.element.getElements('.del-comment').each(function (a) {
 			a.removeEvents();
 			a.addEvent('click', function (e) {
-				var event = new Event(e);
-				this.ajax.deleteComment.options.data.comment_id = $(event.target).getParent('.comment').id.replace('comment-', '');
+				this.ajax.deleteComment.options.data.comment_id = e.target.getParent('.comment').id.replace('comment-', '');
 				this.ajax.deleteComment.send();
 				this.updateDigg();
-				event.stop();
+				e.stop();
 			}.bind(this));
 		}.bind(this));
 		// if admin watch inline edit
@@ -282,23 +282,21 @@ var FabrikComment = new Class({
 					});
 					var c = e.target.getParent();
 					var commentid = c.id.replace('comment-', '');
-					var url = Fabrik.liveSite + 'index.php';
 					new Request({
-						'url' : url,
-						'method' : 'get',
-						'data' : {
-							'option' : 'com_fabrik',
-							'format' : 'raw',
-							'view' : 'plugin',
-							'task' : 'pluginAjax',
-							'plugin' : 'comment',
-							'method' : 'getEmail',
-							'commentid' : commentid,
-							'g' : 'form',
-							'formid' : this.options.formid,
-							'rowid' : this.options.rowid
+						'url': '',
+						'method': 'get',
+						'data': {
+							'option': 'com_fabrik',
+							'format': 'raw',
+							'task': 'plugin.pluginAjax',
+							'plugin': 'comment',
+							'method': 'getEmail',
+							'commentid': commentid,
+							'g': 'form',
+							'formid': this.options.formid,
+							'rowid': this.options.rowid
 						},
-						'onComplete' : function (r) {
+						'onComplete': function (r) {
 							c.getElements('.info').dispose();
 							new Element('span', {
 								'class' : 'info'
@@ -313,7 +311,7 @@ var FabrikComment = new Class({
 	},
 
 	deleteComplete : function (r) {
-		var c = $('comment_' + r);
+		var c = document.id('comment_' + r);
 		var fx = new Fx.Morph(c, {
 			duration : 1000,
 			transition : Fx.Transitions.Quart.easeOut

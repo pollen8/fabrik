@@ -210,6 +210,10 @@ span.handlelabel {
 	float:none !important;
 }
 
+.floating-tip ul.fabrik_buttons{
+	list-style:none;
+	margin-top:10px;
+}
 /****************************************/
 /*** end window styling *****************/
 /****************************************/
@@ -266,9 +270,9 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 /********** when you click row checkboxes ************/
 /*****************************************************/
 
-.floating-tip a:link,
-.floating-tip a:visited,
-.floating-tip a{
+.floating-tip .fabrikElementContainer a:link,
+.floating-tip .fabrikElementContainer a:visited,
+.floating-tip .fabrikElementContainer a{
 	text-decoration:none;
 	display:block;
 	padding:5px 16px;
@@ -293,19 +297,19 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 }
 
 
-.floating-tip li:first-child{
+.floating-tip .fabrikElementContainer li:first-child{
 	-moz-border-radius: 6px 6px 0 0;
 	-webkit-border-radius: 6px 6px 0 0;
 	border-radius: 6px 6px 0 0;
 }
 
-.floating-tip li:last-child{
+.floating-tip .fabrikElementContainer li:last-child{
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 	border-radius: 0 0 6px 6px;
 }
 
-.floating-tip li{
+.floating-tip .fabrikElementContainer  li{
 	display:block;
 	min-height:19px;
 	border-top:1px solid #D7D7D7;
@@ -313,10 +317,10 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 	background-color:#fff;
 }
 
-.floating-tip li:hover{
+.floating-tip .fabrikElementContainer li:hover{
 	background-color:#DBF5FA;
 }
 
-.floating-tip li span{
+.floating-tip .fabrikElementContainer li span{
 	margin-left:7px;
 }

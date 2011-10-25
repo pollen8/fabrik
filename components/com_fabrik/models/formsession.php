@@ -83,7 +83,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$row->form_id = $this->getFormId();
 		$row->row_id = $this->getRowId();
 		$row->last_page = JRequest::getVar('page');
-		$row->referring_url  = $_SERVER['HTTP_REFERER'];
+		$row->referring_url  = JRequest::getVar('HTTP_REFERER', '', 'server');
 		$row->data = $data;
 		$this->setCookie($hash);
 		if (!$row->store()) {
@@ -103,7 +103,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	function setCookie($hash)
 	{
-		if ($this->_useCookie === false) {
+		if ($this->canUseCookie() === false) {
 			return;
 		}
 		$crypt = $this->getCrypt();
@@ -203,7 +203,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * @return bool
 	 */
 
-	protected function canUseCookie()
+	public function canUseCookie()
 	{
 		$session = JFactory::getSession();
 		$formid = $this->getFormId();
@@ -223,10 +223,10 @@ class FabrikFEModelFormsession extends FabModel {
 		$session = JFactory::getSession();
 		$session->clear('com_fabrik.form.'.$this->getFormId().'.session.on');
 		$user = JFactory::getUser();
-		$row 		=& $this->getTable('Formsession', 'FabrikTable');
+		$row = $this->getTable('Formsession', 'FabrikTable');
 		$hash = '';
 		if ((int)$user->get('id') !== 0) {
-			$hash 	= $this->getHash();
+			$hash = $this->getHash();
 		} else {
 			if ($this->_useCookie) {
 				$crypt = $this->getCrypt();
@@ -279,7 +279,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 */
 	function getUserId()
 	{
-		$user 		= JFactory::getUser();
+		$user = JFactory::getUser();
 		if ($user->get('id') == 0) {
 			return uniqid();
 		}
@@ -291,7 +291,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * @param int $id
 	 * @return null
 	 */
-	function setFormId($id )
+	function setFormId($id)
 	{
 		$this->formid = $id;
 	}
@@ -301,7 +301,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * @param int $id
 	 * @return null
 	 */
-	function setRowId($id )
+	function setRowId($id)
 	{
 		$this->rowid = $id;
 	}

@@ -19,10 +19,18 @@ var FbCalc = new Class({
 	
 	calc: function () {
 		this.element.getParent().getElement('.loader').setStyle('display', '');
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&plugin=calc&method=ajax_calc&element_id=' + this.options.id;
 		var formdata = this.form.getFormElementData();
-		var data = Object.append(formdata, {'formid': this.form.id});
-		var myAjax = new Request({'url': url, method: 'post', 'data': data,
+		var data = {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'calc',
+				'method': 'ajax_calc',
+				'element_id': this.options.id,
+				'formid': this.form.id
+			};
+		data = Object.append(formdata, data);
+		var myAjax = new Request({'url': '', method: 'post', 'data': data,
 		onComplete: function (r) {
 			this.element.getParent().getElement('.loader').setStyle('display', 'none');
 			this.update(r);

@@ -24,7 +24,7 @@ var FbGoogleMapViz = new Class({
 	
 	initialize: function (element, options) {
 		this.element_map = element;
-		this.element = $(element);
+		this.element = document.id(element);
 		
 		this.clusterMarkerCursor = 0;
 		this.clusterMarkers = [];
@@ -33,12 +33,11 @@ var FbGoogleMapViz = new Class({
 		this.setOptions(options);
 		
 		if (this.options.ajax_refresh) {
-			this.updater = new Request({url: 'index.php',
+			this.updater = new Request({url: '',
 				data : {
 					'option': 'com_fabrik',
 					'format': 'raw',
-					'view': 'plugin',
-					'task': 'pluginAjax',
+					'task': 'plugin.pluginAjax',
 					'plugin': 'googlemap',
 					'method': 'ajax_getMarkers',
 					'g': 'visualization',
@@ -139,7 +138,7 @@ var FbGoogleMapViz = new Class({
 						this.container.getElements('.fabrik_filter').each(function (f) {
 							f.value = '';
 						});
-						new Event(e).stop();
+						e.stop();
 						this.container.getElement('form[name=filter]').submit();
 					}.bind(this));
 				}
@@ -314,8 +313,7 @@ var FbGoogleMapViz = new Class({
 		this.periodCounter ++;
 	},
 	
-	toggleOverlay: function (event) {
-		var e = new Event(event);
+	toggleOverlay: function (e) {
 		if (event.target.id.test(/overlay_chbox_(\d+)/)) {
 			var olk = event.target.id.match(/overlay_chbox_(\d+)/)[1].toInt();
 			if (this.options.overlays[olk].isHidden()) {

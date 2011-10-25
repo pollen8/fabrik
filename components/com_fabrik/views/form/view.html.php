@@ -72,7 +72,6 @@ class fabrikViewForm extends JView
 		$form->label = $this->get('label');
 		$form->intro = $this->get('Intro');
 		$form->action = $this->get('Action');
-		
 		$form->formid = $model->_editable ? "form_".$model->getId() : 'details_' . $model->getId();
 		$form->name = "form_".$model->getId();
 
@@ -132,6 +131,8 @@ class fabrikViewForm extends JView
 		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
 		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'form'.DS.$tmpl);
 
+		
+		
 		JDEBUG ? $_PROFILER->mark('form view before template load') : null;
 		$text = $this->loadTemplate();
 		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->_editable === false)) {
@@ -143,6 +144,7 @@ class fabrikViewForm extends JView
 			$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
 			JRequest::setVar('option', $opt);
 		}
+	
 		JDEBUG ? $_PROFILER->mark('form view display end') : null;
 		// allows you to use {placeholders} in form template.
 		$text = $w->parseMessageForPlaceHolder($text, $model->_data);
@@ -475,16 +477,13 @@ class fabrikViewForm extends JView
 			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', {html: true});";
 		}
 		
-		
 		$res = FabrikWorker::getPluginManager()->runPlugins('onJSReady', $model);
 		if (in_array(false, $res)) {
 			return false;
 		}
 		
-		//echo "<pre>";print_r($script);echo "</pre>";
 		$str = implode("\n", $script);
 		FabrikHelperHTML::script($srcs, $str);
-		//FabrikHelperHTML::addScriptDeclaration($str);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}

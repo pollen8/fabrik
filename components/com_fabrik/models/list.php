@@ -413,10 +413,13 @@ class FabrikFEModelList extends JModelForm {
 		if ($fabrikDb->getErrorNum() != 0) {
 			JError::raiseNotice(500,  'getData: ' . $fabrikDb->getErrorMsg());
 		}
-		JDEBUG ? $_PROFILER->mark('start format data') : null;
-		$this->formatData($this->_data);
 		JDEBUG ? $_PROFILER->mark('start format for joins') : null;
 		$this->formatForJoins($this->_data);
+
+		JDEBUG ? $_PROFILER->mark('start format data') : null;
+		$this->formatData($this->_data);
+		/* JDEBUG ? $_PROFILER->mark('start format for joins') : null;
+		 $this->formatForJoins($this->_data); */
 		JDEBUG ? $_PROFILER->mark('data formatted') : null;
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
 		return $this->_data;
@@ -520,7 +523,7 @@ class FabrikFEModelList extends JModelForm {
 				$e = $elementModel->getElement();
 				$elementModel->setContext($groupModel, $form, $this);
 				$params = $elementModel->getParams();
-				$col 	= $elementModel->getFullName(false, true, false);
+				$col	= $elementModel->getFullName(false, true, false);
 
 				//check if there is  a custom out put handler for the tables format
 				// currently supports "renderListData_csv", "renderListData_rss", "renderListData_html", "renderListData_json"
@@ -544,9 +547,9 @@ class FabrikFEModelList extends JModelForm {
 							// For instance, the calc element needs to set _raw.  For now, I changed $thisRow above to
 							// be a = reference to $data[$i], and in renderListData() the calc element modifies
 							// the _raw entry in $thisRow.  I guess it could simply unset the _raw in $thisRow and
-							// then implement a renderRawTableData.  Anyway, just sayin'.
+							// then implement a renderRawListData.  Anyway, just sayin'.
 							if (!array_key_exists($rawCol, $thisRow)) {
-								$data[$i]->$rawCol = $elementModel->renderRawTableData($coldata, $thisRow);
+								$data[$i]->$rawCol = $elementModel->renderRawListData($coldata, $thisRow);
 							}
 						}
 					}
@@ -579,7 +582,7 @@ class FabrikFEModelList extends JModelForm {
 			//see if we can use a raw value instead
 			/*if (!empty($data) && array_key_exists($groupBy . "_raw", $data[0])) {
 			 $groupBy = $groupBy . "_raw";
-			 }*/
+			}*/
 			$groupTitle = null;
 			$aGroupTitles = array();
 			$groupId = 0;
@@ -778,7 +781,7 @@ class FabrikFEModelList extends JModelForm {
 						}
 						$join->list_id = array_key_exists($join->listlabel, $aTableNames) ?  $aTableNames[$join->listlabel]->id : '';
 						/*
-						$linkLabel = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
+						 $linkLabel = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
 						$linkKey .= '_raw';
 						*/
 						$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
@@ -1141,11 +1144,11 @@ class FabrikFEModelList extends JModelForm {
 
 	public function _addLink($data, &$elementModel, $row, $repeatCounter = 0)
 	{
-		$element 	=& $elementModel->getElement();
+		$element = $elementModel->getElement();
 		if ($this->_outPutFormat == 'csv' || $element->link_to_detail == 0) {
 			return $data;
 		}
-		$params 	=& $elementModel->getParams();
+		$params = $elementModel->getParams();
 		$customLink = $params->get('custom_link');
 
 		// $$$ rob if its a custom link then we aren't linking to the details view so we should
@@ -1373,7 +1376,8 @@ class FabrikFEModelList extends JModelForm {
 		$strOrder = '';
 		$clearOrdering = (bool)JRequest::getInt('clearordering', false) && JRequest::getCmd('task') !== 'order';
 		//$$$tom Added single-ordering option
-		if ($params->get('enable_single_sorting', 'default') == 'default') { // Use global
+		if ($params->get('enable_single_sorting', 'default') == 'default') {
+			// Use global
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$singleOrdering = $fbConfig->get('enable_single_sorting', false);
 		}
@@ -1541,7 +1545,8 @@ class FabrikFEModelList extends JModelForm {
 				$t = $ar[0];
 				$s = $ar[1];
 				if (in_array($t, $selectedTables)) {
-					if (!in_array($s, $return)) { //$$$rob test to avoid duplicate join queries
+					if (!in_array($s, $return)) {
+						//$$$rob test to avoid duplicate join queries
 						//ahhh now its there so we can add the statement
 						$return[] = $s;
 						unset($statements[$t]);
@@ -1715,7 +1720,9 @@ class FabrikFEModelList extends JModelForm {
 		if (!$query) {
 			return $this->_whereSQL[$sig][$incFilters];
 		} else {
-			$query->where($this->_whereSQL[$sig][$incFilters]);
+			if (!empty($this->_whereSQL[$sig][$incFilters])) {
+				$query->where($this->_whereSQL[$sig][$incFilters]);
+			}
 			return $query;
 		}
 	}
@@ -1841,11 +1848,11 @@ class FabrikFEModelList extends JModelForm {
 
 				/*if ($filters['search_type'][$i] == 'prefilter') {
 					// $$$rob messed up with prefilters as defined in this thread
-					// http://fabrikar.com/forums/showthread.php?t=12251
-					//$sqlNoFilter[] = empty($sqlNoFilter ) ? $gstart : $gstart.$filters['join'][$i];
-					$sqlNoFilter[] = empty($sqlNoFilter ) ? $gstart : $filters['join'][$i].' '.$gstart;
-					$sqlNoFilter[] = $filters['sqlCond'][$i].$gend;
-					}*/
+				// http://fabrikar.com/forums/showthread.php?t=12251
+				//$sqlNoFilter[] = empty($sqlNoFilter ) ? $gstart : $gstart.$filters['join'][$i];
+				$sqlNoFilter[] = empty($sqlNoFilter ) ? $gstart : $filters['join'][$i].' '.$gstart;
+				$sqlNoFilter[] = $filters['sqlCond'][$i].$gend;
+				}*/
 			}
 		}
 		// $$$rob ensure opening and closing parathethis for prefilters are equal
@@ -1903,14 +1910,14 @@ class FabrikFEModelList extends JModelForm {
 			// $$$ rob moved into elementModel::getAsField_html()
 			/*$table_name = $table->db_table_name;
 			 $group = $groupModel->getGroup();
-			 if ($groupModel->isJoin()) {
-			 foreach ($aJoinObjs as $join) {
-			 //also ignore any joins that are elements
-			 if (array_key_exists('group_id', $join) && $join->group_id == $group->id && $join->element_id == 0) {
-			 $table_name =  $join->table_join;
-			 }
-			 }
-			 }*/
+			if ($groupModel->isJoin()) {
+			foreach ($aJoinObjs as $join) {
+			//also ignore any joins that are elements
+			if (array_key_exists('group_id', $join) && $join->group_id == $group->id && $join->element_id == 0) {
+			$table_name =  $join->table_join;
+			}
+			}
+			}*/
 
 			$elementModels = $groupModel->getPublishedElements();
 			for ($ek = 0; $ek < count($elementModels); $ek ++) {
@@ -2012,7 +2019,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @return object params
 	 */
 
-	function &getParams()
+	function getParams()
 	{
 		$table = $this->getTable();
 		if (!isset($this->_params)) {
@@ -2088,25 +2095,6 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$this->_oConn = FabrikWorker::getConnection($this->getTable());
 		return $this->_oConn;
-		/* $config = JFactory::getConfig();
-		if (!isset($this->_oConn)) {
-			$table = $this->getTable();
-			$connectionModel = JModel::getInstance('connection', 'FabrikFEModel');
-			$jform = JRequest::getVar('jform', array(), 'post');
-			$connId = is_null($table->connection_id) ? JArrayHelper::getValue($jform, 'connection_id', null) : $table->connection_id;
-			$connectionModel->setId($connId);
-			if ($connId == '' || is_null($connId) ||  $connId == '-1') { //-1 for creating new table
-				$connectionModel->loadDefaultConnection();
-				$connectionModel->setId($connectionModel->getConnection()->id);
-			}
-			$connection = $connectionModel->getConnection();
-			$this->_oConn = $connectionModel;
-
-			if (JError::isError($this->_oConn)) {
-				JError::handleEcho($this->_oConn);
-			}
-		}
-		return $this->_oConn; */
 	}
 
 	/**
@@ -2279,9 +2267,9 @@ class FabrikFEModelList extends JModelForm {
 					# don't reurn false, rather drop through and test regular ACL.
 					/*
 					 else {
-					 return false;
-					 }
-					 */
+					return false;
+					}
+					*/
 				}
 			}
 		}
@@ -2357,10 +2345,10 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	* checks user access for front end group by
-	*
-	* @return bol access allowed
-	*/
+	 * checks user access for front end group by
+	 *
+	 * @return bol access allowed
+	 */
 
 	public function canGroupBy()
 	{
@@ -2504,11 +2492,11 @@ class FabrikFEModelList extends JModelForm {
 			$join->canUse = true;
 			if ($join->table_join == '#__users' || $join->table_join == $prefix . 'users') {
 				//if ($db != $this->getDb()) {
-					$conf	= JFactory::getConfig();
-					$thisCn = $this->getConnection()->getConnection();
-					if (!($thisCn->host == $conf->getValue('config.host') && $thisCn->database == $conf->getValue('config.db'))) {
-						$join->canUse = false;
-					}
+				$conf	= JFactory::getConfig();
+				$thisCn = $this->getConnection()->getConnection();
+				if (!($thisCn->host == $conf->getValue('config.host') && $thisCn->database == $conf->getValue('config.db'))) {
+					$join->canUse = false;
+				}
 				//}
 			}
 			// $$$ rob = check for repeat elements In table view we dont need to add the join
@@ -2549,13 +2537,13 @@ class FabrikFEModelList extends JModelForm {
 			// test case:
 			/*
 			 * you have a talbe that joins to a 2nd table
-			 * in that 2nd table there is a database join element
-			 * that 2nd elements key needs to point to the 2nd tables name and not the first
-			 *
-			 * e.g. when you want to create a n-n relationship
-			 *
-			 * events -> (table join) events_artists -> (element join) artist
-			 */
+			* in that 2nd table there is a database join element
+			* that 2nd elements key needs to point to the 2nd tables name and not the first
+			*
+			* e.g. when you want to create a n-n relationship
+			*
+			* events -> (table join) events_artists -> (element join) artist
+			*/
 
 			$join->keytable = $join->join_from_table;
 			if (!array_key_exists($join->group_id, $tableGroups)) {
@@ -2661,7 +2649,6 @@ class FabrikFEModelList extends JModelForm {
 		$tableName = FabrikString::safeColName($tableName);
 		$lastfield = FabrikString::safeColName($lastfield);
 
-
 		$altered = false;
 		if (!array_key_exists($element->name, $dbdescriptions)) {
 
@@ -2695,7 +2682,7 @@ class FabrikFEModelList extends JModelForm {
 				$existingDef .= " ".$keydata[$k]['extra'];
 			}
 		}
-		
+
 		$lowerobjtype= strtolower(trim($objtype));
 		$lowerobjtype = str_replace(' not null', '', $lowerobjtype);
 		if ($element->name == $origColName && strtolower(trim($existingDef)) == $lowerobjtype) {
@@ -2712,13 +2699,19 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
 		//if (empty($origColName) || !in_array(strtolower($origColName ), $existingfields)) {
 
+	
 		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
 		//if (empty($element->name) || !in_array($element->name, $existingfields)) {
 		if (empty($origColName) || !in_array($origColName, $existingfields)) {
 			if (!$altered) {
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN ".FabrikString::safeColName($element->name)." $objtype AFTER $lastfield");
 				if (!$fabrikDb->query()) {
-					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					// $$$ rob ok this is hacky but I had a whole series of elements wiped from the db, but wanted to re-add them into the database.
+					// as the db table already had the fields this error was stopping the save.
+					if (!array_key_exists($element->name, $dbdescriptions)) {
+						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					}
+					
 				}
 			}
 		} else {
@@ -2778,6 +2771,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
+		
 		if (!is_null($objtype)) {
 			foreach ($dbdescriptions as $dbdescription) {
 				$fieldname = strtolower($dbdescription->Field);
@@ -3172,7 +3166,7 @@ class FabrikFEModelList extends JModelForm {
 				$condition = $afilterConditions[$i];
 				$selValue = JArrayHelper::getValue($afilterValues, $i, '');
 				$filterEval = JArrayHelper::getValue($afilterEval, $i, false);
-				$filterGrouped = $afilterGrouped[$i];
+				$filterGrouped = JArrayHelper::getValue($afilterGrouped, $i, false);
 
 				$selAccess = $afilterAccess[$i];
 				if (!$this->mustApplyFilter($selAccess)) {
@@ -3318,12 +3312,14 @@ class FabrikFEModelList extends JModelForm {
 		//$$$ rob ensure that the limitstart + limit isn't greater than the total
 		/*if ($limitstart + $limit > $total) {
 		 $limitstart = $total - $limit;
-		 }*/
+		}*/
 		// $$$ rob 25/02/2011 if you only have say 3 reocrds then above random will show 1 2 or 3 records
 		// so decrease the random start num by the table row dispaly num
 		// going to favour records at the beginning of the table though
 		$limitstart -= $table->rows_per_page;
-		if ($limitstart < 0) { $limitstart = 0;}
+		if ($limitstart < 0) {
+			$limitstart = 0;
+		}
 		$this->randomLimitStart = $limitstart;
 		return $limitstart;
 	}
@@ -3431,33 +3427,33 @@ class FabrikFEModelList extends JModelForm {
 					name, plugin, l.label AS listlabel, l.id as list_id, \n
 					el.id AS element_id, el.label AS element_label, f.id AS form_id,
 					el.params AS element_params"
-					);
-					$query->from('#__{package}_elements AS el');
-					$query->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = el.group_id');
-					$query->join('LEFT', '#__{package}_forms AS f ON f.id = fg.form_id');
-					$query->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id');
-					$query ->where('el.published = 1');
-					$query->where("(plugin = 'databasejoin' AND el.params like '%\"join_db_name\":\"".$table->db_table_name."\"%'
+				);
+				$query->from('#__{package}_elements AS el');
+				$query->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = el.group_id');
+				$query->join('LEFT', '#__{package}_forms AS f ON f.id = fg.form_id');
+				$query->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id');
+				$query ->where('el.published = 1');
+				$query->where("(plugin = 'databasejoin' AND el.params like '%\"join_db_name\":\"".$table->db_table_name."\"%'
 	  		AND el.params like  '%\"join_conn_id\":\"".$table->connection_id."%') OR (plugin = 'cascadingdropdown' AND \n" .
 	  		" el.params like '\"%cascadingdropdown_table\":\"".$table->id."\"%' \n" .
 	  		"AND el.params like '\"%cascadingdropdown_connection\":\"".$table->connection_id."\"%') ", "OR");
-					// load in user element links as well
-					//$$$rob - not convinced this is a good idea
-					if ($usersConfig->get('user_elements_as_related_data', false) == true) {
-						$query->where( "(plugin = 'user' AND
+				// load in user element links as well
+				//$$$rob - not convinced this is a good idea
+				if ($usersConfig->get('user_elements_as_related_data', false) == true) {
+					$query->where( "(plugin = 'user' AND
 				 	el.params like '%\"join_conn_id\":\"".$table->connection_id."%\"' )", "OR");
-					}
+				}
 
-					$db->setQuery($query);
-					$this->_joinsToThisKey = $db->loadObjectList();
-					if ($db->getErrorNum()) {
-						$this->_joinsToThisKey = array();
-						JError::raiseWarning(500,  'getJoinsToThisKey: ' . $db->getErrorMsg());
-					}
-					foreach ($this->_joinsToThisKey as $join) {
-						$element_params = json_decode($join->element_params);
-						$join->join_key_column = $element_params->join_key_column;
-					}
+				$db->setQuery($query);
+				$this->_joinsToThisKey = $db->loadObjectList();
+				if ($db->getErrorNum()) {
+					$this->_joinsToThisKey = array();
+					JError::raiseWarning(500,  'getJoinsToThisKey: ' . $db->getErrorMsg());
+				}
+				foreach ($this->_joinsToThisKey as $join) {
+					$element_params = json_decode($join->element_params);
+					$join->join_key_column = $element_params->join_key_column;
+				}
 			}
 		}
 		return $this->_joinsToThisKey;
@@ -3875,19 +3871,19 @@ class FabrikFEModelList extends JModelForm {
 						break;
 					default:
 						$firstChar = substr($v2, 1, 1);
-						$lastChar = substr($v2, -2, 1);
-						switch( $firstChar )
-						{
-							case "%":
-								$jsSel =( $lastChar == "%")? 'CONTAINS' : $jsSel = 'ENDS WITH';
-								break;
-							default:
-								if ($lastChar == "%") {
-									$jsSel = 'BEGINS WITH';
-								}
-								break;
+					$lastChar = substr($v2, -2, 1);
+					switch( $firstChar )
+					{
+						case "%":
+							$jsSel =( $lastChar == "%")? 'CONTAINS' : $jsSel = 'ENDS WITH';
+							break;
+						default:
+							if ($lastChar == "%") {
+							$jsSel = 'BEGINS WITH';
 						}
 						break;
+					}
+					break;
 				}
 
 				$value = trim(trim($value, '"'), "%");
@@ -4246,7 +4242,8 @@ class FabrikFEModelList extends JModelForm {
 				if (in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
 					$aSums[$elName] = $params->get('sum_value', '');
 					$ser = $params->get('sum_value_serialized');
-					if (is_string($ser)) { //if group gone from repeat to none repeat could be array
+					if (is_string($ser)) {
+						//if group gone from repeat to none repeat could be array
 						$aSums[$elName . "_obj"] = unserialize($ser);
 					}
 				}
@@ -4407,12 +4404,12 @@ class FabrikFEModelList extends JModelForm {
 			// $$$rob this following if statement avoids this scenario from happening:
 			/*
 			 * you have a form with joins to two other tables
-			 * each joined group has a field called 'password'
-			 * first group's password is set to password plugin, second to field
-			 * on update if no password entered for first field data should not be updated as recordInDatabase() return false
-			 * however, as we were iterating over all groups, the 2nd password field's data is used instead!
-			 * this if statement ensures we only look at the correct group
-			 */
+			* each joined group has a field called 'password'
+			* first group's password is set to password plugin, second to field
+			* on update if no password entered for first field data should not be updated as recordInDatabase() return false
+			* however, as we were iterating over all groups, the 2nd password field's data is used instead!
+			* this if statement ensures we only look at the correct group
+			*/
 			if ($isJoin == false || $group->id == $joinGroupTable->id) {
 				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin())) {
 					$elementModels = $groupModel->getPublishedElements();
@@ -4474,8 +4471,8 @@ class FabrikFEModelList extends JModelForm {
 
 		/*
 		 * $$$ rob - correct rowid is now inserted into the form's rowid hidden field
-		 * even when useing usekey and -1, we just need to check if we are adding a new record and if so set rowid to 0
-		 */
+		* even when useing usekey and -1, we just need to check if we are adding a new record and if so set rowid to 0
+		*/
 		if (JRequest::getVar('usekey_newrecord', false)) {
 			$rowId = 0;
 			$origRowId = 0;
@@ -4527,10 +4524,12 @@ class FabrikFEModelList extends JModelForm {
 		$fmtsql = 'UPDATE '.$db->nameQuote($table).' SET %s WHERE %s';
 		$tmp = array();
 		foreach (get_object_vars($object) as $k => $v) {
-			if( is_array($v) or is_object($v) or $k[0] == '_') { // internal or NA field
+			if( is_array($v) or is_object($v) or $k[0] == '_') {
+				// internal or NA field
 				continue;
 			}
-			if( $k == $keyName) { // PK not to be updated
+			if( $k == $keyName) {
+				// PK not to be updated
 				$where = $keyName . '=' . $db->Quote($v);
 				continue;
 			}
@@ -4573,7 +4572,8 @@ class FabrikFEModelList extends JModelForm {
 			if (is_array($v) or is_object($v) or $v === NULL) {
 				continue;
 			}
-			if ($k[0] == '_') { // internal field
+			if ($k[0] == '_') {
+				// internal field
 				continue;
 			}
 			$fields[] = $db->nameQuote($k);
@@ -4649,14 +4649,14 @@ class FabrikFEModelList extends JModelForm {
 						//force a reload of the default value with $origdata
 						unset($elementModel->defaults);
 						$default = array();
-						$repeatGroupCount = $repeatGroupCounts[$groupModel->getGroup()->id];
+						$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
 						for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++) {
 							$def = $elementModel->getValue($origdata, $repeatCount);
 							// $$$ rob 26/04/2011 encodeing done at the end
 							//if its a dropdown radio etc
 							/*if (is_array($def)) {
 							 $def = json_encode($def);
-							 }*/
+							}*/
 							$default[] = $def;
 						}
 						$default = count($default) == 1 ? $default[0] : json_encode($default);
@@ -4793,7 +4793,8 @@ class FabrikFEModelList extends JModelForm {
 	public function getGroupBy()
 	{
 		$table = $this->getTable();
-		return JRequest::getVar('group_by', $table->group_by);
+		$groupBy = JRequest::getVar('group_by', $table->group_by);
+		return ($groupBy == '0') ? '' : $groupBy;
 	}
 
 	/**
@@ -5311,7 +5312,8 @@ class FabrikFEModelList extends JModelForm {
 		$field = strtolower($field);
 		$groupModels = $this->getFormGroupElementData();
 		foreach ($groupModels as $groupModel) {
-			if (!$groupModel->isJoin()) {//dont check groups that aren't in this table
+			if (!$groupModel->isJoin()) {
+				//dont check groups that aren't in this table
 				$elementModels = $groupModel->getMyElements();
 				foreach ($elementModels as $elementModel) {
 					$element = $elementModel->getElement();
@@ -5462,7 +5464,7 @@ class FabrikFEModelList extends JModelForm {
 
 		/*if (is_null($view)) {
 			$view = $this->canEdit($row) ? "form" : "details";
-			}*/
+		}*/
 		///$customLink = $view == 'form' ? $this->getCustomLink('url', 'edit') : $this->getCustomLink('url', 'details');//$params->get('detailurl');
 		$view = 'details';
 		$customLink = $this->getCustomLink('url', 'details');
@@ -5607,7 +5609,7 @@ class FabrikFEModelList extends JModelForm {
 
 				/*if ($field->Key == 'PRI') {
 					$sql .= ' INT(6) ';
-					} else {*/
+				} else {*/
 				$sql .= ' ' . $field->Type . ' ';
 				//}
 				if ($field->Null == '') {
@@ -5956,8 +5958,10 @@ class FabrikFEModelList extends JModelForm {
 					if ($element->published == 0 && $onlyPublished) {
 						continue;
 					}
+					$dbkey = $key == 'filtername' ? trim($elementModel->getFilterFullName()) : trim($elementModel->getFullName(false, true, false));
 					switch ($key) {
-						case 'filtername'://depreciated (except for querystring filters)
+						case 'safecolname':
+						case 'filtername'://depreciated (except for querystring filters and inline edit)
 							// used id instead for filters
 							// $$$ rob was incorrect for db joinelements with search type = field
 							//$key =  $elementModel->getFullName(false, false, false);
@@ -5967,7 +5971,7 @@ class FabrikFEModelList extends JModelForm {
 							$origconcat = $elementModel->getParams()->get('join_val_column_concat');
 							$elementModel->getParams()->set('join_val_column_concat', '');
 
-							$dbkey = trim($elementModel->getFilterFullName());
+							//$dbkey = ;
 							//$$$ rob if prefilter was using _raw field then we need to assign the model twice to both possible keys
 							if ($elementModel->getElement()->plugin == 'fabrikdatabasejoin') {
 								$dbkey2 =  FabrikString::safeColName($elementModel->getFullName(false, false, false));
@@ -5983,40 +5987,12 @@ class FabrikFEModelList extends JModelForm {
 							break;
 						default:
 							$this->elements[$sig][] =  $elementModel;
-							break;
+						break;
 					}
 				}
 			}
 		}
 		return $this->elements[$sig];
-	}
-
-	/**
-	 * determines if the talbe needs mocha js classes loaded
-	 *
-	 * @return bol true if required
-	 */
-
-	function requiresMocha()
-	{
-		if ($this->canCSVExport()) {
-			return true;
-		}
-		$params = $this->getParams();
-		if ($params->get('advanced-filter') == 1) {
-			return true;
-		}
-		$pluginManager = FabrikWorker::getPluginManager();
-		$activePlugins = (array)$params->get('plugins');
-		$tableplugins = $pluginManager->getPlugInGroup('list');
-		foreach ($tableplugins as $name => $plugin) {
-			if (in_array($name, $activePlugins)) {
-				if ($plugin->requiresMocha()) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -6287,6 +6263,9 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
+	 * $$$ rob 19/10/2011 now called before formatData() from getData() as otherwise element tips (created in element->renderListData())
+	 * only contained first merged records data and not all merged records
+	 * 
 	 * Collapses 'repeated joined' rows into a single row.
 	 * If a group is not repeating we just use the first row's data (as subsequent rows will contain the same data
 	 * Otherwise if the group is repeating we append each repeated record's data into the first row's data
@@ -6305,65 +6284,146 @@ class FabrikFEModelList extends JModelForm {
 		$dbprimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
 		$formModel = $this->getFormModel();
 		FabrikHelperHTML::debug($data, 'render:before formatForJoins');
-		foreach ($data as $groupk => $group) {
-			$last_pk = '';
-			$last_i = 0;
-			$count = count($group);
-			$can_repeats = array();
-			for ($i = 0; $i < $count; $i++) {
+		$count = count($data);
 
-				// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
-				//$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->id;
-				$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->$dbprimaryKey;
-				if (!empty($last_pk) && ($last_pk == $next_pk)) {
-					foreach ($data[$groupk][$i] as $key => $val) {
-						$origKey = $key;
-						$tmpkey = FabrikString::rtrimword($key, '_raw');
-						// $$$ hugh - had to cache this stuff, because if you have a lot of rows and a lot of elements,
-						// doing this many hundreds of times causes huge slowdown, exceeding max script execution time!
-						// And we really only need to do it once for the first row.
-						if (!isset($can_repeats[$tmpkey])) {
-							$elementModel = $formModel->getElement($tmpkey);
-							// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
-							//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
-							$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
-						}
-
-						if (isset($data[$groupk][$last_i]->$key) && $can_repeats[$tmpkey]) {
-							// $$$ rob - what about data like yes/no where each viewable option needs to be shown?
-							// $$$ rob - yeah commenting this out, not a good idea - as other cols for this record may have
-							// different data so you end up with this col having 3 entries and the next col having four and you can't
-							// see the correlation between the two sets of data.
-							//if ($data[$groupk][$last_i]->$key != $val) {
-
-							// $$$ rob meant that only one link to details was shown in admin - dont see the point in that
-							//if (preg_match("#\W+fabrik___rowlink.*\W+listid=$listid\W#",$val)) {
-							//continue;
-							//}
-							if ($origKey == $tmpkey) {
-								$data[$groupk][$last_i]->$key .= "<br >\n" . $val;
-							} else {
-								$json = json_decode($data[$groupk][$last_i]->$origKey);
-								$json= $val;
-								$data[$groupk][$last_i]->$origKey = json_encode($json);
-								//$data[$groupk][$last_i]->$origKey .= GROUPSPLITTER.$val;
-							}
-						}
-						
+		$last_pk = '';
+		$last_i = 0;
+		$count = count($data);
+		$can_repeats = array();
+		$remove = array();
+		for ($i = 0; $i < $count; $i++) {
+				
+			// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
+			//$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->id;
+			$next_pk = isset($data[$i]->__pk_val) ? $data[$i]->__pk_val : $data[$i]->$dbprimaryKey;
+			if (!empty($last_pk) && ($last_pk == $next_pk)) {
+				foreach ($data[$i] as $key => $val) {
+					$origKey = $key;
+					$tmpkey = FabrikString::rtrimword($key, '_raw');
+					// $$$ hugh - had to cache this stuff, because if you have a lot of rows and a lot of elements,
+					// doing this many hundreds of times causes huge slowdown, exceeding max script execution time!
+					// And we really only need to do it once for the first row.
+					if (!isset($can_repeats[$tmpkey])) {
+						$elementModel = $formModel->getElement($tmpkey);
+						// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
+						//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
+						$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
 					}
-					unset($data[$groupk][$i]);
-					continue;
+
+					if (isset($data[$last_i]->$key) && $can_repeats[$tmpkey]) {
+						// $$$ rob - what about data like yes/no where each viewable option needs to be shown?
+						// $$$ rob - yeah commenting this out, not a good idea - as other cols for this record may have
+						// different data so you end up with this col having 3 entries and the next col having four and you can't
+						// see the correlation between the two sets of data.
+						//if ($data[$groupk][$last_i]->$key != $val) {
+
+						// $$$ rob meant that only one link to details was shown in admin - dont see the point in that
+						//if (preg_match("#\W+fabrik___rowlink.*\W+listid=$listid\W#",$val)) {
+						//continue;
+						//}
+						if ($origKey == $tmpkey) {
+							$data[$last_i]->$key .= "<br >\n" . $val;
+						} else {
+							$json = json_decode($data[$last_i]->$origKey);
+							$json= $val;
+							$data[$last_i]->$origKey = json_encode($json);
+							//$data[$groupk][$last_i]->$origKey .= GROUPSPLITTER.$val;
+						}
+					}
+
 				}
-				else {
-					$last_i = $i;
-					// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
-					$last_pk = $next_pk;
-				}
+				$remove[] = $i;
+				//unset($data[$i]);
+				continue;
 			}
+			else {
+				$last_i = $i;
+				// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
+				$last_pk = $next_pk;
+			}
+
 			// $$$ rob ensure that we have a sequental set of keys otherwise ajax json will turn array into object
-			$data[$groupk] = array_values($data[$groupk]);
+			$data = array_values($data);
 		}
+		for ($c = count($remove) - 1; $c >=0; $c --) {
+			unset($data[$remove[$c]]);
+		}
+		$data = array_values($data);
 	}
+
+	/**
+	 * $$$ rob 19/10/2011 -  version which works if run after formatData() in getData() 
+	 */
+	/* function formatForJoins(&$data)
+	 {
+	$merge = $this->mergeJoinedData();
+	if (empty($merge)) {
+	return;
+	}
+	$listid = $this->getTable()->id;
+	$dbprimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
+	$formModel = $this->getFormModel();
+	FabrikHelperHTML::debug($data, 'render:before formatForJoins');
+	foreach ($data as $groupk => $group) {
+	$last_pk = '';
+	$last_i = 0;
+	$count = count($group);
+	$can_repeats = array();
+	for ($i = 0; $i < $count; $i++) {
+
+	// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
+	//$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->id;
+	$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->$dbprimaryKey;
+	if (!empty($last_pk) && ($last_pk == $next_pk)) {
+	foreach ($data[$groupk][$i] as $key => $val) {
+	$origKey = $key;
+	$tmpkey = FabrikString::rtrimword($key, '_raw');
+	// $$$ hugh - had to cache this stuff, because if you have a lot of rows and a lot of elements,
+	// doing this many hundreds of times causes huge slowdown, exceeding max script execution time!
+	// And we really only need to do it once for the first row.
+	if (!isset($can_repeats[$tmpkey])) {
+	$elementModel = $formModel->getElement($tmpkey);
+	// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
+	//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
+	$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
+	}
+
+	if (isset($data[$groupk][$last_i]->$key) && $can_repeats[$tmpkey]) {
+	// $$$ rob - what about data like yes/no where each viewable option needs to be shown?
+	// $$$ rob - yeah commenting this out, not a good idea - as other cols for this record may have
+	// different data so you end up with this col having 3 entries and the next col having four and you can't
+	// see the correlation between the two sets of data.
+	//if ($data[$groupk][$last_i]->$key != $val) {
+
+	// $$$ rob meant that only one link to details was shown in admin - dont see the point in that
+	//if (preg_match("#\W+fabrik___rowlink.*\W+listid=$listid\W#",$val)) {
+	//continue;
+	//}
+	if ($origKey == $tmpkey) {
+	$data[$groupk][$last_i]->$key .= "<br >\n" . $val;
+	} else {
+	$json = json_decode($data[$groupk][$last_i]->$origKey);
+	$json= $val;
+	$data[$groupk][$last_i]->$origKey = json_encode($json);
+	//$data[$groupk][$last_i]->$origKey .= GROUPSPLITTER.$val;
+	}
+	}
+
+	}
+	unset($data[$groupk][$i]);
+	continue;
+	}
+	else {
+	$last_i = $i;
+	// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
+	$last_pk = $next_pk;
+	}
+	}
+	// $$$ rob ensure that we have a sequental set of keys otherwise ajax json will turn array into object
+	$data[$groupk] = array_values($data[$groupk]);
+	}
+	echo "<pre>";print_r($data);exit;
+	} */
 
 	function noTable()
 	{
@@ -6591,8 +6651,8 @@ class FabrikFEModelList extends JModelForm {
 		$url .= strpos($url, '?') ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
-		$a[$url] = 'none';
-		foreach($h as $key => $v) {
+		$a[$url.'group_by=0'] = JText::_('COM_FABRIK_NONE');
+		foreach ($h as $key => $v) {
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions'))) {
 				$thisurl = $url.'group_by='.$key;
 				$a[$thisurl] = strip_tags($v);

@@ -48,27 +48,31 @@ var FloatingTips = new Class({
 		if (elements) this.attach(elements);
 		return this;
 	},
-
+	
 	attach: function(elements) {
 		var s = this;
 		this.selector = elements;
 		this.elements = $$(elements);
 		this.elements.each(function(e) {
-			e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
-			e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
-			e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
-			Fabrik.addEvent('fabrik.tip.show', function(trigger){
-				var tip = e.retrieve('floatingtip');
-				if (trigger !== e && tip) {
-					this._animate(tip, 'out');
-				}
-			}.bind(this));
+			if (!e.retrieve('tipped')) {
+				e.store('tipped', true);
+				e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
+				e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
+				e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
+				Fabrik.addEvent('fabrik.tip.show', function(trigger){
+					var tip = e.retrieve('floatingtip');
+					if (trigger !== e && tip) {
+						this._animate(tip, 'out');
+					}
+				}.bind(this));
+			}
 		}.bind(this));
 		
 		return this;
 	},
 
 	show: function(element) {
+		this.hideAll();
 		var old = element.retrieve('floatingtip');
 		if (old) if (old.getStyle('opacity') == 1) { clearTimeout(old.retrieve('timeout')); return this; }
 		var tip = this._create(element);
@@ -81,7 +85,7 @@ var FloatingTips = new Class({
 	},
 	
 	hide: function(e, element) {
-		if (!element) {
+		if (!element || !e.target) {
 			return;
 		}
 		var t = e.target.getParent('.' + this.options.className + '-wrapper');
@@ -111,6 +115,12 @@ var FloatingTips = new Class({
 		this._animate(tip, 'out');
 		this.fireEvent('hide', [tip, element]);
 		return this;
+	},
+	
+	hideAll: function() {
+		this.elements.each(function(e) {
+			this.hide(new Event.Mock(document.body, 'mouseout'), e);
+		}.bind(this));
 	},
 	
 	_create: function(elem) {
@@ -176,8 +186,8 @@ var FloatingTips = new Class({
 			case 'right': 
 				r = 0;
 				trgSt['top'] = o.center ?  cwr.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
+				trgSt['width'] = '10px';
 				cwr.setStyle('left', '10px');
-				trgSt['margin-left'] = '-20px';
 				break;
 				
 			case 'bottom':
@@ -201,7 +211,7 @@ var FloatingTips = new Class({
 			}
 	
 			var arrowStyle = {
-					size: {width: 32, height: trgSt['height'].toInt()},
+					size: {width: trgSt['width'].toInt(), height: trgSt['height'].toInt()},
 					scale: scale, 
 					rotate: r,
 					fill: {
@@ -217,6 +227,9 @@ var FloatingTips = new Class({
 			arrowStyle.translate = {x: 0, y: 0};
 			if (opos === 'bottom') {
 				arrowStyle.translate = {x: -11, y: 0};
+			}
+			if (opos === 'right') {
+				arrowStyle.translate = {x: -20, y: 0};
 			}
 			var shadow = cwr.getStyle('box-shadow');
 			var shadowColor, shadowX, shadowY, bits;

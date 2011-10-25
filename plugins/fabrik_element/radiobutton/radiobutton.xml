@@ -13,6 +13,7 @@
 		<filename plugin="radiobutton">radiobutton.php</filename>
 		<filename>radiobutton.js</filename>
 		<filename>index.html</filename>
+		<folder>forms</folder>
 		<folder>language</folder>
 	</files>
 </extension>

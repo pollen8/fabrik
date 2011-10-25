@@ -63,7 +63,6 @@ var FbListRadiusSearch = new Class({
 	},
 
 	toggleActive : function (e) {
-		e = new Event(e);
 		switch (e.target.get('value')) {
 		case '1':
 			this.fx.slideIn();

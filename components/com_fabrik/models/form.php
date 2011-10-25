@@ -258,13 +258,13 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$tmpl = $this->getTmpl();
-
+		$v = $this->_editable ? 'form' : 'details';
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '') {
 			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php?c='.$this->getId());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php?c='.$this->getId().'&amp;view='.$v);
 			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/template_css.php?c=".$this->getId());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/template_css.php?c=".$this->getId().'&amp;view='.$v);
 			}
 		}
 
@@ -816,8 +816,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$ns = $val;
 			}
 		} else {
-			$this->_formData[$key] = $val;
-			$this->_fullFormData[$key] = $val;
+			if (isset($this->_formData)) {
+				$this->_formData[$key] = $val;
+			}
+			// check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
+			if (isset($this->_fullFormData)) {
+				$this->_fullFormData[$key] = $val;
+			}
 			/*
 			 * Need to allow RO (encrypted) elements to be updated.  Consensus is that
 			 * we should actually modify the actual encrypted element in the $_REQUEST,
@@ -846,7 +851,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if ($update_raw) {
 				$key .= '_raw';
 				$this->_formData[$key] = $val;
-				$this->_fullFormData[$key] = $val;
+				if (isset($this->_fullFormData)) {
+					$this->_fullFormData[$key] = $val;
+				}
 				if ($override_ro) {
 					$this->_pluginUpdatedElements[$key] = $val;
 				}
@@ -1005,7 +1012,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		//set the redirect page to the form's url if making a copy and set the id
 		//to the new insertid
 		if (array_key_exists('Copy', $this->_formData)) {
-			$u = str_replace("rowid=$origid", "rowid=$insertId", $_SERVER['HTTP_REFERER']);
+			$u = str_replace("rowid=$origid", "rowid=$insertId", JRequest::getVar('HTTP_REFERER', '', 'server'));
 			JRequest::setVar('fabrik_referrer', $u);
 		}
 		$tmpKey 	= str_replace("`", "", $item->db_primary_key);
@@ -1142,8 +1149,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$elementModels = $joinGroup->getPublishedElements();
 
 						$aUpdatedRecordIds = array();
-						$joinCnn 				=& $listModel->getConnection();
-						$joinDb  				=& $joinCnn->getDb();
+						$joinCnn = $listModel->getConnection();
+						$joinDb = $joinCnn->getDb();
 
 						$paramKey = $listModel->getTable()->db_table_name.'___params';
 						$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
@@ -1173,8 +1180,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 							$item->db_table_name 	= $oJoin->table_join;
 							// $$$ rob - erm is $fields needed -perhaps just pass $item->db_table_name into getPrimaryKeyAndExtra?
-							$fields 				= $listModel->getDBFields($item->db_table_name);
-							$aKey 					= $listModel->getPrimaryKeyAndExtra();
+							$fields = $listModel->getDBFields($item->db_table_name);
+							$aKey = $listModel->getPrimaryKeyAndExtra();
 							$aKey = $aKey[0];
 							$item->db_primary_key = $aKey['colname'];
 							$joinRowId = $repData[$item->db_primary_key];
@@ -1592,8 +1599,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function validate()
 	{
-		if (JRequest::getVar('fabrik_ignorevalidation', 0) == 1) {
-			//put in when saving page of form
+		if (JRequest::getBool('fabrik_ignorevalidation', false) === true) { //put in when saving page of form
 			return true;
 		}
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
@@ -2156,8 +2162,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if (!$this->getForm()->record_in_database) {
 			return $this->_rowId;
 		}
-		$listModel 	=& $this->getListModel();
-		$fabrikDb   	=& $listModel->getDb();
+		$listModel = $this->getListModel();
+		$fabrikDb = $listModel->getDb();
 		$item = $listModel->getTable();
 		$k = $fabrikDb->nameQuote($item->db_primary_key);
 		$fabrikDb->setQuery("SELECT MAX($k) FROM ".FabrikString::safeColName($item->db_table_name) . $listModel->_buildQueryWhere());
@@ -2444,6 +2450,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->sessionModel->setFormId($this->getId());
 		$this->sessionModel->setRowId($this->_rowId);
 		$useCookie = (int)$params->get('multipage_save', 1) === 2 ? true : false;
+		if (!$useCookie) {
+			//incase a plugin is using cookie session (e.g. confirmation plugin)
+			$useCookie = $this->sessionModel->canUseCookie();
+		}
 		$this->sessionModel->useCookie($useCookie);
 		return $this->sessionModel->load();
 	}
@@ -2740,7 +2750,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					continue;
 				}
 
-				$jdata = $this->_data['join'][$tblJoin->id];
+				$jdata =& $this->_data['join'][$tblJoin->id];
 				$db	= $listModel->getDb();
 				$db->setQuery("DESCRIBE ".$db->nameQuote($tblJoin->table_join));
 				$fields = $db->loadObjectList();
@@ -3165,6 +3175,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	 */
 	public function getGroupView($tmpl = '')
 	{
+		if (isset($this->groupView)) {
+			return $this->groupView;
+		}
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
 		// and not used anywhere else (avoids a warning message)
 		$data = array();
@@ -3174,9 +3187,6 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			if (is_string($val)) {
 				$data[$key] = htmlspecialchars($val, ENT_QUOTES);
 			}
-		}
-		if (isset($this->groupView)) {
-			return $this->groupView;
 		}
 
 		$this->groupView = array();
@@ -3221,7 +3231,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-							$repeatGroup = count($origData['join'][$joinTable->id][$smallerElHTMLName]);
+							$repeatGroup = count($this->_data['join'][$joinTable->id][$smallerElHTMLName]);
 							if (!array_key_exists($fullFk, $this->_data['join'][$joinTable->id])) {
 								JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
 								$startHidden = false;
@@ -3384,6 +3394,27 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->setState('form.id', $pk);
 	}
 
+	
+	public function inLineEditResult()
+	{
+		$listModel = $this->getListModel();
+		$listid = $listModel->getId();
+		$listModel->clearCalculations();
+		$listModel->doCalculations();
+		$elementid = JRequest::getInt('elid');
+		$elmentModel = $this->getElement($elementid, true);
+		$rowid = JRequest::getVar('rowid');
+		$listModel->setId($listid);
+		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
+		$key = JRequest::getVar('element');
+		$html= '';
+		$html .= $elmentModel->renderListData($data[$key], $data);
+		$doCalcs = "\nFabrik.blocks['list_".$listid."'].updateCals(".json_encode($listModel->getCalculations()).")";
+		$html .= '<script type="text/javasript">';
+		$html .= $doCalcs;
+		$html .= "</script>\n";
+		return $html;
+	}
 }
 
 ?>
