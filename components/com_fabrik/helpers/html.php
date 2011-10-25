@@ -173,13 +173,13 @@ EOD;
 		type="hidden" name="option" value="com_fabrik" /> <input type="hidden"
 		name="view" value="emailform" /> <input type="hidden" name="tmpl"
 		value="component" />
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	 <?php echo JHTML::_('form.token'); ?></form>
 
 
@@ -550,7 +550,7 @@ EOD;
 				// 17/10/2011 (firefox) retesting loading this in ajax page as without it Class is not available? so form class doesnt load
 				JHtml::_('behavior.framework', true);
 			}
-				
+
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
 
 				//required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
@@ -942,14 +942,20 @@ EOD;
 			self::$helperpaths[$type] = array();
 			$app = JFactory::getApplication();
 			$template = $app->getTemplate();
-			if ($app->isAdmin()) {
-				self::$helperpaths[$type][] = JPATH_SITE.DS."administrator/templates/$template/images/";
+			switch ($type) {
+				case 'image':
+					if ($app->isAdmin()) {
+						self::$helperpaths[$type][] = JPATH_SITE.DS."administrator/templates/$template/images/";
+					}
+					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/%s/images/";
+					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/images/";
+					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/images/";
+					self::$helperpaths[$type][] = COM_FABRIK_FRONTEND."views/$view/tmpl/%s/images/";
+					self::$helperpaths[$type][] = COM_FABRIK_BASE."media/com_fabrik/images/";
+					self::$helperpaths[$type][] = COM_FABRIK_BASE."images/";
+					self::$helperpaths[$type][] = COM_FABRIK_BASE."images/stories/";
+					break;
 			}
-			self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/%s/images/";
-			self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/images/";
-			self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/images/";
-			self::$helperpaths[$type][] = COM_FABRIK_FRONTEND."views/$view/tmpl/%s/images/";
-			self::$helperpaths[$type][] = COM_FABRIK_BASE."media/com_fabrik/images/";
 		}
 		if (!array_key_exists($path, self::$helperpaths[$type]) && $path !== '') {
 			$highPriority ? array_unshift(self::$helperpaths[$type], $path) : self::$helperpaths[$type][] =  $path;
@@ -958,11 +964,34 @@ EOD;
 	}
 
 	/**
+	 * Search various folder locations for an image
+	 * @param string file name
+	 * @param string type e.g. form/list/element
+	 * @param string template folder name
+	 * @return string full path name if found, original filename if not found
+	 */
+
+	public function getImagePath($file, $type = 'form', $tmpl = '')
+	{
+		$file = ltrim($file, DS);
+		$paths = FabrikHelperHTML::addPath('', 'image', $type, true);
+		$src = '';
+		foreach ($paths as $path) {
+			$path = sprintf($path, $tmpl);
+			$src = $path.$file;
+			if (JFile::exists($src)) {
+				return $src;
+			}
+		}
+		return $path;
+	}
+
+	/**
 	 * Search various folder locations for a template image
 	 * @since 3.0
 	 * @param string file name
 	 * @param string type e.g. form/list/element
-	 * @param string tempalte folder name
+	 * @param string template folder name
 	 * @param array assoc list of properties or string (if you just want to set the image alt tag)
 	 * @param bool src only (default false)
 	 */
@@ -972,6 +1001,9 @@ EOD;
 		if (is_string($properties)) {
 			$properties = array('alt' => $properties);
 		}
+
+		// $$$ hugh - moved to getImagePath
+		/*
 		$app = JFactory::getApplication();
 		$template = $app->getTemplate();
 		$paths = FabrikHelperHTML::addPath('', 'image', $type);
@@ -984,6 +1016,11 @@ EOD;
 				break;
 			}
 		}
+		*/
+		$src = FabrikHelperHTML::getImagePath($file, $type, $tmpl);
+		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $path.$file);
+		$src = str_replace("\\", "/", $src);
+
 		if ($srcOnly) {
 			return $src;
 		}
