@@ -3231,7 +3231,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-							$repeatGroup = count($this->_data['join'][$joinTable->id][$smallerElHTMLName]);
+							$repeatGroup = count($origData['join'][$joinTable->id][$smallerElHTMLName]);
 							if (!array_key_exists($fullFk, $this->_data['join'][$joinTable->id])) {
 								JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
 								$startHidden = false;
