@@ -10,7 +10,7 @@
   <license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
   <authorEmail>pieter@obix.nl</authorEmail>
   <authorUrl>www.obix.nl</authorUrl>
-  <version>3.0</version>
+  <version>{version}</version>
   <description>Renders Fabrik data as Joomla! articles.</description>
 
   <files>

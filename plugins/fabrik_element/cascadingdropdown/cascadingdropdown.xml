@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0</version>
+	<version>{version}</version>
 	<description>Renders a drop down whose content is defined by the value entered in another of the form's elements</description>
 	<files>
 		<filename plugin="cascadingdropdown">cascadingdropdown.php</filename>

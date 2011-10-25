@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>hugh.messenger@gmail.com</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0</version>
+	<version>{version}</version>
 	<description>Check to see if a username exists (or not) in J! users table</description>
 	<files>
 		<filename plugin="userexists">userexists.php</filename>

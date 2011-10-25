@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0</version>
+	<version>{version}</version>
 	<description>Counts records in a row - so adds "COUNT(x) .... GROUP BY (y)" to the main db query</description>
 	<files>
 		<filename plugin="count">count.php</filename>

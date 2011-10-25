@@ -382,6 +382,12 @@
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/" />
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/packages" />
 			<replace file="${cfg.destdir}/pkg_fabrik.xml" token="{version}" value="${version}"/>
+			
+			<replace dir="${cfg.destdir}" value="${version}">
+				<include name="**/*.xml"/>
+				<replacetoken>{version}</replacetoken>
+			</replace>
+
 			<copy file="${cfg.destdir}/pkg_fabrik.xml" todir="${cfg.destdir}/pkg_fabrik" />
 			<copy file="${cfg.destdir}/com_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 			<copy file="${cfg.destdir}/mod_fabrik_form_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
