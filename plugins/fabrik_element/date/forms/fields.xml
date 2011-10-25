@@ -80,8 +80,9 @@
 				default="0" 
 				label="PLG_ELEMENT_DATE_FIRST_WEEK_DAY_LABEL" 
 				description="PLG_ELEMENT_DATE_FIRST_WEEK_DAY_DESC">
-					<option value="0">Sunday</option>
-					<option value="1">Monday</option>
+					<option value="6">SATURDAY</option>
+					<option value="0">SUNDAY</option>
+					<option value="1">MONDAY</option>
 			</field>
 				
 			<field name="date_allow_typing_in_field" 
