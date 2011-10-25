@@ -112,7 +112,7 @@ class FabrikTableList extends FabTable
 
 		// Initialise the query.
 		$query	= $this->_db->getQuery(true);
-		$query->select('c.description AS connection, '.$this->_tbl.'.*');
+		$query->select('c.description AS `connection`, '.$this->_tbl.'.*');
 		$query->from($this->_tbl);
 		$query->join('LEFT', '#__fabrik_connections AS c ON c.id = '.$this->_tbl.'.connection_id');
 		$fields = array_keys($this->getProperties());
