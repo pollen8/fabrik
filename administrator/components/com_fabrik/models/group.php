@@ -97,6 +97,21 @@ class FabrikModelGroup extends FabModelAdmin
 		$res = $db->loadResultArray();
 		return $res;
 	}
+	
+	protected function checkRepeatAndPK($data)
+	{
+		$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+		$groupModel->setId($data['id']);
+		$listModel = $groupModel->getListModel();
+		$pk = $listModel->getTable()->db_primary_key;
+		$elementModels = $groupModel->getMyElements();
+		foreach ($elementModels as $elementModel) {
+			if(FabrikString::safeColName($elementModel->getFullName(false, false, false)) == $pk) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * (non-PHPdoc)
@@ -112,9 +127,17 @@ class FabrikModelGroup extends FabModelAdmin
 			$data['created'] = JFactory::getDate()->toMySQL();
 
 		}
-		$makeJoin = ($data['params']['repeat_group_button'] == 1);
-		if ($makeJoin) {
-			$data['is_join'] = 1;
+		if ($this->checkRepeatAndPK($data)) {
+		
+			$makeJoin = ($data['params']['repeat_group_button'] == 1);
+			if ($makeJoin) {
+				$data['is_join'] = 1;
+			}
+		} else {
+			if (($data['params']['repeat_group_button'] == 1)) {
+				$data['params']['repeat_group_button'] = 0;
+				JError::raiseNotice(500, 'You can not set the group containing the list primary key to be repeatableeee');
+			}
 		}
 		$data['params'] = json_encode($data['params']);
 		$return = parent::save($data);
