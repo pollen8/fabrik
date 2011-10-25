@@ -983,7 +983,7 @@ EOD;
 				return $src;
 			}
 		}
-		return $path;
+		return '';
 	}
 
 	/**
