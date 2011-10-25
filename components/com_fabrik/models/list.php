@@ -6567,6 +6567,7 @@ class FabrikFEModelList extends JModelForm {
 		unset($this->_aJoins);
 		unset($this->_joinsNoCdd);
 		unset($this->elements);
+		unset($this->_data);
 	}
 
 	/**
