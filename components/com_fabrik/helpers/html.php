@@ -1018,7 +1018,7 @@ EOD;
 		}
 		*/
 		$src = FabrikHelperHTML::getImagePath($file, $type, $tmpl);
-		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $path.$file);
+		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $img);
 		$src = str_replace("\\", "/", $src);
 
 		if ($srcOnly) {
