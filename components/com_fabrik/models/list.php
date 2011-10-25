@@ -3971,13 +3971,18 @@ class FabrikFEModelList extends JModelForm {
 
 		$orderbys = json_decode($item->order_by, true);
 
+		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
 		foreach ($groups as $groupModel) {
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
 			$elementModels = $groupModel->getPublishedListElements();
 			foreach ($elementModels as $key => $elementModel) {
-				$viewLinkAdded = false;
 				$element = $elementModel->getElement();
+				// if we define the elements to show in the list - e.g in admin list module then only show those elements
+				if (!empty($showInList) && !in_array($element->id, $showInList)) {
+					continue;
+				}
+				$viewLinkAdded = false;
 
 				$groupHeadings[$groupHeadingKey] ++;
 				$key = $elementModel->getFullName(false, true, false);
@@ -4111,20 +4116,6 @@ class FabrikFEModelList extends JModelForm {
 		}
 		if ($this->canSelectRows()) {
 			$groupHeadings[''] = '';
-		}
-		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
-		if (!empty($showInList)) {
-			//get full names of show in list elements
-			$showInListNames = array();
-			foreach ($showInList as $id) {
-				$showInListNames[] = $formModel->getElement($id, true)->getFullName(false, true, false);
-			}
-			//reorder elements
-			$newTableHeadings = array();
-			foreach ($showInListNames as $name) {
-				$newTableHeadings[$name] = $aTableHeadings[$name];
-			}
-			$aTableHeadings = $newTableHeadings;
 		}
 
 		$args['tableHeadings'] = $aTableHeadings;
