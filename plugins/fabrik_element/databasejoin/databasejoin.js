@@ -357,6 +357,7 @@ var FbDatabasejoin = new Class({
 			//update auto-complete fields id and create new autocompleter object for duplicated element
 			var f = this.getContainer().getElement('.autocomplete-trigger');
 			f.id = this.element.id + '-auto-complete';
+			document.id(f.id).value = '';
 			new FabAutocomplete(this.element.id, this.options.autoCompleteOpts);
 		}
 	},
