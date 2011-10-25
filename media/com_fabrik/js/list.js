@@ -1101,7 +1101,8 @@ var FbList = new Class({
 					// if delete link is in hover box the we cant find the associated chx
 					// box
 					this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-						c.checked = false;
+						// $$$ rob hmm no! this meant if you selected 2 records to delete only the last selected recod would be deleted.
+						//c.checked = false;
 					});
 				}
 				if (typeOf(chx) !== 'null') {
