@@ -1737,6 +1737,9 @@ class plgFabrik_Element extends FabrikPlugin
 		$default = $app->getUserStateFromRequest($context, $elid, $default);
 		if ($this->getElement()->filter_type !== 'range') {
 			$default = (is_array($default) && array_key_exists('value', $default)) ? $default['value'] : $default;
+			if (is_array($default)) {
+				$default = ''; //wierd thing on meow where when you first load the task list the id element had a date range filter applied to it????
+			}
 			$default = stripslashes($default);
 		}
 		return $default;
