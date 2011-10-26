@@ -121,7 +121,7 @@ var fabrikCalendar = new Class({
 				'click': function (e) {
 						e.stop();
 						var o = {};
-						var i = $(e.target).getParent('.fabrikEvent').id.replace('fabrikEvent_', '').split('_');
+						var i = e.target.getParent('.fabrikEvent').id.replace('fabrikEvent_', '').split('_');
 						o.rowid = i[1];
 						o.listid = i[0];
 						this.addEvForm(o);					
@@ -139,17 +139,17 @@ var fabrikCalendar = new Class({
 		var loc;
 		var oldactive = this.activeHoverEvent;
 		this.activeHoverEvent = e.target.hasClass('fabrikEvent') ? e.target : e.target.getParent('.fabrikEvent');
-		if (entry._canDelete === 0) {
-			this.popWin.getElement('.popupDelete').setStyle('display', 'none');
+		if (!entry._canDelete) {
+			this.popWin.getElement('.popupDelete').hide();
 		} else {
-			this.popWin.getElement('.popupDelete').setStyle('display', '');
+			this.popWin.getElement('.popupDelete').show();
 		}
-		if (entry._canEdit === 0) {
-			this.popWin.getElement('.popupEdit').setStyle('display', 'none');
-			this.popWin.getElement('.popupView').setStyle('display', '');
+		if (!entry._canEdit) {
+			this.popWin.getElement('.popupEdit').hide();
+			this.popWin.getElement('.popupView').show();
 		} else {
-			this.popWin.getElement('.popupEdit').setStyle('display', '');
-			this.popWin.getElement('.popupView').setStyle('display', 'none');
+			this.popWin.getElement('.popupEdit').show();
+			this.popWin.getElement('.popupView').hide();
 		}
 		
 		if (this.activeHoverEvent) {
@@ -1150,12 +1150,17 @@ var fabrikCalendar = new Class({
 	},
 	
 	deleteEntry: function (e) {
+		var key = this.activeHoverEvent.id.replace('fabrikEvent_', '');
+		var i = key.split('_');
+		var listid = i[0];
+		if (!this.options.deleteables.contains(listid)) {
+			//doesnt have acess to delete
+			return;
+		}
+		
 		if (confirm(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_CONF_DELETE'))) {
-			var key = this.activeHoverEvent.id.replace('fabrikEvent_', '');
-			var i = key.split('_');
-			this.ajax.deleteEvent.options.data = {'id': i[1], 'listid': i[0]};
+			this.ajax.deleteEvent.options.data = {'id': i[1], 'listid': listid};
 			this.ajax.deleteEvent.send();
-			//$(this.activeHoverEvent).effect('opacity', {duration: 500, transition: Fx.Transitions.linear}).start(1,0);
 			document.id(this.activeHoverEvent).fade('out');
 			this.fx.showEventActions.start({'opacity': [1, 0]});
 			this.removeEntry(key);

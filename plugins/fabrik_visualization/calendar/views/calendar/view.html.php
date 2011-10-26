@@ -63,6 +63,7 @@ class fabrikViewCalendar extends JView
 		//$pluginManager->loadJS();
 		$options = new stdClass();
 		$options->url = $urls;
+		$options->deleteables = $this->get('DeleteAccess');
 		$options->eventLists = $this->get('eventLists');
 		$options->calendarId = $calendar->id;
 		$options->popwiny = $params->get('yoffset', 0);

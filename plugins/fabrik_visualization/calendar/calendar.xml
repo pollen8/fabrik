@@ -2,8 +2,8 @@
 <extension version="1.6" type="plugin" group="fabrik_visualization" method="upgrade">
 	<name>Fabrik Visualization - calendar</name>
 	<author>Rob Clayburn</author>
-	<creationDate>Jan 2008</creationDate>
-	<copyright>(C) 2005-2010 pollen-8.co.uk</copyright>
+	<creationDate>{createdate}</creationDate>
+	<copyright>(C) 2005-{year} pollen-8.co.uk</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>

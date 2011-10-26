@@ -210,8 +210,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$request = JRequest::get('request');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 
-		foreach ($this->_events as $tableId	 => $record) {
-			$listModel->setId($tableId);
+		foreach ($this->_events as $listid	 => $record) {
+			$listModel->setId($listid);
 			$table = $listModel->getTable();
 			$formModel = $listModel->getFormModel();
 			foreach ($request as $key=>$val) {
@@ -229,14 +229,15 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	 * can the user add a record into the calendar
 	 * @return bol
 	 */
+	
 	function getCanAdd()
 	{
 		if (!isset($this->canAdd)) {
 			$params = $this->getParams();
-			$tables = $params->get('calendar_table', array(), '_default',  'array');
-			foreach ($tables as $tid) {
+			$lists = (array)$params->get('calendar_table');
+			foreach ($lists as $id) {
 				$listModel = JModel::getInstance('list', 'FabrikFEModel');
-				$listModel->setId($tid);
+				$listModel->setId($id);
 				if (!$listModel->canAdd()) {
 					$this->canAdd = false;
 					return false;
@@ -245,6 +246,26 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 			$this->canAdd = true;
 		}
 		return $this->canAdd;
+	}
+	
+	/**
+	 * get an arry of list ids for which the current user has delete records rights
+	 * @return array list ids.
+	 */
+	
+	public function getDeleteAccess()
+	{
+		$deleteables = array();
+		$params = $this->getParams();
+		$lists = (array)$params->get('calendar_table');
+		foreach ($lists as $id) {
+			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel->setId($id);
+			if ($listModel->canDelete()) {
+				$deleteables[] = $id;
+			}
+		}
+		return $deleteables;
 	}
 
 	/**
@@ -261,12 +282,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 		$this->setupEvents();
 
-		$calendar 	=& $this->_row;
-		$aLegend 		= "$this->calName.addLegend([";
-		$jsevents 	= array();
-		foreach ($this->_events as $tableId	=> $record) {
+		$calendar = $this->_row;
+		$aLegend = "$this->calName.addLegend([";
+		$jsevents = array();
+		foreach ($this->_events as $listid	=> $record) {
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
-			$listModel->setId($tableId);
+			$listModel->setId($listid);
 			if (!$listModel->canView()) {
 				continue;
 			}
@@ -308,22 +329,22 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 							$row->link = ("index.php?option=com_fabrik&Itemid=$Itemid&view=form&formid=$table->form_id&rowid=$row->id&tmpl=component");
 							$row->_listid = $table->id;
-							$row->_canDelete = $listModel->canDelete();
-							$row->_canEdit = $listModel->canEdit($row);
+							$row->_canDelete = (bool)$listModel->canDelete();
+							$row->_canEdit = (bool)$listModel->canEdit($row);
 
 							// $$$ rob added timezone offset how on earth was this not picked up before :o
 							// $$$ hugh because we suck?
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true) {
-								$date 	= JFactory::getDate($row->startdate);
+								$date = JFactory::getDate($row->startdate);
 								$row->startdate = $date->toMySQL();
-								$date 	= JFactory::getDate($row->startdate);
+								$date = JFactory::getDate($row->startdate);
 								$date->setOffset($tzoffset);
 								$row->startdate =  $date->toFormat('%Y-%m-%d %H:%M:%S');
 							}
 
 							if ($row->enddate !== $db->getNullDate() && $row->enddate !== '') {
 								if ($data['endShowTime'] == true) {
-									$date 	= JFactory::getDate($row->enddate);
+									$date = JFactory::getDate($row->enddate);
 									$date->setOffset($tzoffset);
 									$row->enddate =  $date->toFormat('%Y-%m-%d %H:%M:%S');
 								}
@@ -344,22 +365,22 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	//@TODO: json encode the returned value and move the $this->calName.addLegend to the view
 	function getLegend()
 	{
-		$db		=& FabrikWorker::getDbo();
+		$db	= FabrikWorker::getDbo();
 		$params = $this->getParams();
 		$this->setupEvents();
-		$tables 			= $params->get('calendar_table', '', '_default',  'array');
-		$colour 		= $params->get('colour', '#ccccff', '_default',  'array');
+		$tables = (array)$params->get('calendar_table');
+		$colour = (array)$params->get('colour');
 		$calendar = $this->_row;
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();
-		foreach ($this->_events as $tableId	 => $record) {
+		foreach ($this->_events as $listid => $record) {
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
-			$listModel->setId($tableId);
+			$listModel->setId($listid);
 			$table = $listModel->getTable();
 			foreach ($record as $data) {
 				$rubbish = $table->db_table_name . '___';
 				$colour 	= FabrikString::ltrimword($data['colour'], $rubbish);
-				$aLegend  	.= "{'label':'" .  $table->label . "','colour':'" . $colour . "'},";
+				$aLegend  .= "{'label':'" .  $table->label . "','colour':'" . $colour . "'},";
 			}
 		}
 		$aLegend = rtrim($aLegend, ","). "]);";
