@@ -242,6 +242,16 @@ class FabrikFEModelForm extends FabModelForm
 		if (JRequest::getVar('mjmarkup') == 'iphone') {
 			$tmpl = 'iwebkit';
 		}
+		$menus = JSite::getMenu();
+		$menu	= $menus->getActive();
+		//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
+		if (is_object($menu) && !$this->isMambot) {
+			$menu_params = new JParameter($menu->params);
+			$tmpl = $menu_params->get('fabriklayout');
+		}
+		//finally see if the options are overridden by a querystring var
+		$tmpl = JRequest::getVar('layout', $tmpl);
+		//test it exists - otherwise revert to default tmpl
 		if (!JFolder::exists(JPATH_SITE."/components/com_fabrik/views/form/tmpl/".$tmpl)) {
 			$tmpl = 'default';
 		}
