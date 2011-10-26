@@ -6,12 +6,12 @@
 	method="upgrade">
 	<name>Fabrik list</name>
 	<author>Rob Clayburn</author>
-	<creationDate>Feb 2011</creationDate>
-	<copyright>(C) 2006 Pollen 8 Design Ltd. All rights reserved.</copyright>
+	<creationDate>{createdate}</creationDate>
+	<copyright>(C) 2005-{year} Pollen 8 Design Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0 Alpha</version>
+	<version>{version}</version>
 	<description>This module shows a Fabrik list.</description>
 	<files>
 		<filename module="mod_fabrik_list">mod_fabrik_list.php</filename>

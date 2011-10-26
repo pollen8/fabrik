@@ -5,8 +5,8 @@
          method="upgrade">
   <name>Fabrik Form - Fabrik2Article</name>
   <author>Pieter-Jan de Vries</author>
-  <creationDate>March 2009</creationDate>
-  <copyright>(C) 2009 obix.nl</copyright>
+  <creationDate>{createdate}</creationDate>
+  <copyright>(C) 2009-{year} obix.nl</copyright>
   <license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
   <authorEmail>pieter@obix.nl</authorEmail>
   <authorUrl>www.obix.nl</authorUrl>

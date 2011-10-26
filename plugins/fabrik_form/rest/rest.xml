@@ -2,8 +2,8 @@
 <extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
 	<name>Fabrik Form - rest</name>
 	<author>Rob Clayburn</author>
-	<creationDate>Feb 2011</creationDate>
-	<copyright>(C) 2005-2011 fabrikar.com</copyright>
+	<creationDate>{createdate}</creationDate>
+	<copyright>(C) 2005-{year} fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
