@@ -193,14 +193,15 @@ class FabrikFEModelForm extends FabModelForm
 		if ($listModel->canViewDetails()) {
 			$ret = 1;
 		}
+		$pRowid = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot);
 		/* new form can we add?*/
-		if ($this->_rowId == 0 || JRequest::getVar('rowid') == '-1') {
+		if ($this->_rowId == 0 || $pRowid == '-1') {
 			/*if they can edit can they also add?*/
 			if ($listModel->canAdd()) {
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			else if (JRequest::getVar('rowid') == '-1' && $listModel->canEdit($this->_data)) {
+			else if ($pRowid == '-1' && $listModel->canEdit($this->_data)) {
 				$ret = 2;
 			}
 		} else {
@@ -242,13 +243,7 @@ class FabrikFEModelForm extends FabModelForm
 		if (JRequest::getVar('mjmarkup') == 'iphone') {
 			$tmpl = 'iwebkit';
 		}
-		$menus = JSite::getMenu();
-		$menu	= $menus->getActive();
-		//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
-		if (is_object($menu) && !$this->isMambot) {
-			$menu_params = new JParameter($menu->params);
-			$tmpl = $menu_params->get('fabriklayout');
-		}
+		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 		//finally see if the options are overridden by a querystring var
 		$tmpl = JRequest::getVar('layout', $tmpl);
 		//test it exists - otherwise revert to default tmpl
@@ -2104,14 +2099,14 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if (isset($this->_rowId)) {
 			return $this->_rowId;
 		}
-		$usersConfig 	= JComponentHelper::getParams('com_fabrik');
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$user = JFactory::getUser();
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
 		// the request rowid for the mambot as that value is destinded for the component
 		if ($this->isMambot && JRequest::getCmd('option') == 'com_fabrik') {
 			$this->_rowId = $usersConfig->get('rowid');
 		} else {
-			$this->_rowId = JRequest::getVar('rowid', $usersConfig->get('rowid'));
+			$this->_rowId = FabrikWorker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot);
 		}
 		if ($this->getListModel()->getParams()->get('sef-slug') !== '') {
 			$this->_rowId = explode(":", $this->_rowId);
@@ -2246,9 +2241,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 					//use !== 0 as rowid may be alphanumeric
 					// $$$ hugh - when 'usekey', rowid can actually be 0 (like if using userid and this is guest access)
 					// so go ahead and try and load the row, if it doesn't exist, we'll supress the warning
-					$usekey = JRequest::getVar('usekey', '');
+					$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
 					if (!empty($usekey) || (int)$this->_rowId !== 0 || (!is_numeric($this->_rowId) && $this->_rowId != '')) {
-
 						// $$$ hugh - once we have a few join elements, our select statements are
 						// getting big enough to hit default select length max in MySQL.
 						$listModel->setBigSelects();
@@ -2264,23 +2258,25 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 						}
 						JDEBUG ? $_PROFILER->mark('formmodel getData: rows data loaded') : null;
 						//$$$ rob Ack above didnt work for joined data where there would be n rows rerutned frho "this rowid = $this->_rowId  \n";
-						$data = array();
-						foreach ($rows as &$row) {
-							if (empty($data)) {
-								//if loading in a rowid=-1 set the row id to the actual row id
-								$this->_rowId = isset($row->__pk_val) ? $row->__pk_val : $this->_rowId;
+						if (!empty($rows)) {
+							// only do this if the query returned some rows (it wont if usekey on and userid = 0 for example)
+							$data = array();
+							foreach ($rows as &$row) {
+								if (empty($data)) {
+									//if loading in a rowid=-1 set the row id to the actual row id
+									$this->_rowId = isset($row->__pk_val) ? $row->__pk_val : $this->_rowId;
+								}
+								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
+								$data[] = FArrayHelper::toObject(array_merge($row, JRequest::get('request')));
 							}
-							$row = empty($row) ? array() : JArrayHelper::fromObject($row);
-							$data[] = FArrayHelper::toObject(array_merge($row, JRequest::get('request')));
 						}
-
 						FabrikHelperHTML::debug($data, 'form:getData from querying rowid= '.$this->_rowId.' (form not in Mambot and no errors)');
 
 						// if empty data return and trying to edit a record then show error
 						//occurs if user trying to edit a record forbidden by a prefilter rull
 						if (empty($data) && $this->_rowId != '') {
 							// $$$ hugh - special case when using -1, if user doesn't have a record yet
-							if (JRequest::getVar('rowid') == '-1') {
+							if (FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot) == '-1') {
 								return;
 							}
 							else {
@@ -2492,7 +2488,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 		$emptyRowId = $this->_rowId === '' ? true : false;
 		$random = JRequest::getVar('random');
-		$usekey = JRequest::getVar('usekey');
+		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
 		if ($usekey != '') {
 			$usekey = explode('|', $usekey);
 			foreach ($usekey as &$tmpk) {

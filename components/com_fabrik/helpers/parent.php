@@ -1002,6 +1002,25 @@ class FabrikWorker {
 		return $gobackaction;
 	}
 
+	/**
+	 * attempt to get a variable first from the menu params (if they exists) if not from request
+	 * @param string param name$name
+	 * @param mixed default $val
+	 * @param bool $mambot (if set to true menu params ignored)
+	 */
+
+	public function getMenuOrRequestVar($name, $val = '', $mambot = false)
+	{
+		$menus = JSite::getMenu();
+		$menu	= $menus->getActive();
+		$val = JRequest::getVar($name, $val);
+		//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
+		if (is_object($menu) && !$mambot) {
+			$menu_params = new JParameter($menu->params);
+			$val = $menu_params->get($name, $val);
+		}
+		return $val;
+	}
 }
 
 ?>

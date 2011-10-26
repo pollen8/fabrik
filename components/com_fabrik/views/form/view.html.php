@@ -187,7 +187,7 @@ class fabrikViewForm extends JView
 		$app = JFactory::getApplication();
 		$title = '';
 		if ($app->getName() !== 'administrator') {
-			$menus	= JSite::getMenu();
+			$menus = JSite::getMenu();
 			$menu	= $menus->getActive();
 			//if there is a menu item available AND the form is not rendered in a content plugin or module
 			if (is_object($menu) && !$this->isMambot) {
