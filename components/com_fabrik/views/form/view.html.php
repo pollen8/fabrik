@@ -554,8 +554,8 @@ class fabrikViewForm extends JView
 		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" '.FabrikWorker::goBackAction().' value="'.$params->get('goback_button_label').'" />' : '';
 		if ($model->_editable) {
 			$button = $model->isAjax() ? "button" : "submit";
-			$form->submitButton = '';
-			$form->submitButton .= '<input type="'.$button.'" class="button" name="submit" value="'.$form->submit_button_label.'" />';
+			$submitClass = FabrikString::clean($form->submit_button_label);
+			$form->submitButton = '<input type="'.$button.'" class="button '.$submitClass.'" name="submit" value="'.$form->submit_button_label.'" />';
 		} else {
 			$form->submitButton = '';
 		}
