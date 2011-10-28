@@ -11,7 +11,7 @@
 // JSLint defined globals
 /*global plupload:false, BrowserPlus:false, window:false */
 
-(function (plupload) {
+(function(plupload) {
 	/**
 	 * Yahoo BrowserPlus implementation. This runtime supports these features: dragdrop, jpgresize, pngresize.
 	 *
@@ -25,14 +25,15 @@
 		 *
 		 * @return {Object} Name/value object with supported features.
 		 */
-		getFeatures : function () {
+		getFeatures : function() {
 			return {
 				dragdrop : true,
 				jpgresize : true,
 				pngresize : true,
 				chunks : true,
 				progress: true,
-				multipart: true
+				multipart: true,
+				multi_selection: true
 			};
 		},
 
@@ -43,7 +44,7 @@
 		 * @param {plupload.Uploader} uploader Uploader instance that needs to be initialized.
 		 * @param {function} callback Callback to execute when the runtime initializes or fails to initialize. If it succeeds an object with a parameter name success will be set to true.
 		 */
-		init : function (uploader, callback) {
+		init : function(uploader, callback) {
 			var browserPlus = window.BrowserPlus, browserPlusFiles = {}, settings = uploader.settings, resize = settings.resize;
 
 			function addSelectedFiles(native_files) {
@@ -67,7 +68,7 @@
 			// Setup event listeners if browserplus was initialized
 			function setup() {
 				// Add drop handler
-				uploader.bind("PostInit", function () {
+				uploader.bind("PostInit", function() {
 					var dropTargetElm, dropElmId = settings.drop_element,
 						dropTargetId = uploader.id + '_droptarget',
 						dropElm = document.getElementById(dropElmId),
@@ -78,22 +79,22 @@
 					// files into gears runtimes on the same page
 					function addDropHandler(id, end_callback) {
 						// Add drop target and listener
-						browserPlus.DragAndDrop.AddDropTarget({id : id}, function (res) {
+						browserPlus.DragAndDrop.AddDropTarget({id : id}, function(res) {
 							browserPlus.DragAndDrop.AttachCallbacks({
 								id : id,
-								hover : function (res) {
+								hover : function(res) {
 									if (!res && end_callback) {
 										end_callback();
 									}
 								},
-								drop : function (res) {
+								drop : function(res) {
 									if (end_callback) {
 										end_callback();
 									}
 
 									addSelectedFiles(res);
 								}
-							}, function () {
+							}, function() {
 							});
 						});
 					}
@@ -119,7 +120,7 @@
 
 							document.body.appendChild(dropTargetElm);
 
-							plupload.addEvent(dropElm, 'dragenter', function (e) {
+							plupload.addEvent(dropElm, 'dragenter', function(e) {
 								var dropElm, dropElmPos;
 
 								dropElm = document.getElementById(dropElmId);
@@ -139,23 +140,28 @@
 						}
 					}
 
-					plupload.addEvent(document.getElementById(settings.browse_button), 'click', function (e) {
+					plupload.addEvent(document.getElementById(settings.browse_button), 'click', function(e) {
 						var mimeTypes = [], i, a, filters = settings.filters, ext;
 
 						e.preventDefault();
 
 						// Convert extensions to mimetypes
+						no_type_restriction:
 						for (i = 0; i < filters.length; i++) {
 							ext = filters[i].extensions.split(',');
 
 							for (a = 0; a < ext.length; a++) {
+								if (ext[a] === '*') {
+									mimeTypes = [];
+									break no_type_restriction;
+								}
 								mimeTypes.push(plupload.mimeTypes[ext[a]]);
 							}
 						}
 
 						browserPlus.FileBrowse.OpenBrowseDialog({
 							mimeTypes : mimeTypes
-						}, function (res) {
+						}, function(res) {
 							if (res.success) {
 								addSelectedFiles(res.value);
 							}
@@ -166,7 +172,7 @@
 					dropElm = dropTargetElm = null;
 				});
 
-				uploader.bind("UploadFile", function (up, file) {
+				uploader.bind("UploadFile", function(up, file) {
 					var nativeFile = browserPlusFiles[file.id], reqParams = {},
 					    chunkSize = up.settings.chunk_size, loadProgress, chunkStack = [];
 
@@ -174,7 +180,7 @@
 						var chunkFile;
 
 						// Stop upload if file is maked as failed
-						if (file.status === plupload.FAILED) {
+						if (file.status == plupload.FAILED) {
 							return;
 						}
 
@@ -193,7 +199,7 @@
 							files : {file : chunkFile},
 							cookies : document.cookies,
 							postvars : plupload.extend(reqParams, up.settings.multipart_params),
-							progressCallback : function (res) {
+							progressCallback : function(res) {
 								var i, loaded = 0;
 
 								// since more than 1 chunk can be sent at a time, keep track of how many bytes
@@ -206,7 +212,7 @@
 								file.loaded = loaded;
 								up.trigger('UploadProgress', file);
 							}
-						}, function (res) {
+						}, function(res) {
 							var httpStatus, chunkArgs;
 
 							if (res.success) {
@@ -256,7 +262,7 @@
 					function chunkAndUploadFile(native_file) {
 						file.size = native_file.size;
 						if (chunkSize) {
-							browserPlus.FileAccess.chunk({file : native_file, chunkSize : chunkSize}, function (cr) {
+							browserPlus.FileAccess.chunk({file : native_file, chunkSize : chunkSize}, function(cr) {
 								if (cr.success) {
 									var chunks = cr.value, len = chunks.length;
 
@@ -288,7 +294,7 @@
 									maxheight : resize.height
 								}
 							}]
-						}, function (res) {
+						}, function(res) {
 							if (res.success) {
 								chunkAndUploadFile(res.value.file);
 							}
@@ -303,7 +309,7 @@
 
 			// Check for browserplus object
 			if (browserPlus) {
-				browserPlus.init(function (res) {
+				browserPlus.init(function(res) {
 					var services = [
 						{service: "Uploader", version: "3"},
 						{service: "DragAndDrop", version: "1"},
@@ -318,7 +324,7 @@
 					if (res.success) {
 						browserPlus.require({
 							services : services
-						}, function (sres) {
+						}, function(sres) {
 							if (sres.success) {
 								setup();
 							} else {

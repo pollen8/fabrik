@@ -11,17 +11,22 @@
 // JSLint defined globals
 /*global window:false, document:false, plupload:false, ActiveXObject:false */
 
-(function (window, document, plupload, undef) {
+(function(window, document, plupload, undef) {
 	var uploadInstances = {}, initialized = {};
 
 	function jsonSerialize(obj) {
 		var value, type = typeof obj, isArray, i, key;
 
+		// Treat undefined as null
+		if (obj === undef || obj === null) {
+			return 'null';
+		}
+
 		// Encode strings
 		if (type === 'string') {
 			value = '\bb\tt\nn\ff\rr\""\'\'\\\\';
 
-			return '"' + obj.replace(/([\u0080-\uFFFF\x00-\x1f\"])/g, function (a, b) {
+			return '"' + obj.replace(/([\u0080-\uFFFF\x00-\x1f\"])/g, function(a, b) {
 				var idx = value.indexOf(b);
 
 				if (idx + 1) {
@@ -35,7 +40,7 @@
 		}
 
 		// Loop objects/arrays
-		if (type === 'object') {
+		if (type == 'object') {
 			isArray = obj.length !== undef;
 			value = '';
 
@@ -64,11 +69,6 @@
 			}
 
 			return value;
-		}
-
-		// Treat undefined as null
-		if (obj === undef) {
-			return 'null';
 		}
 
 		// Convert all other types to string
@@ -133,7 +133,7 @@
 	}
 
 	plupload.silverlight = {
-		trigger : function (id, name) {
+		trigger : function(id, name) {
 			var uploader = uploadInstances[id], i, args;
 			
 			if (uploader) {
@@ -141,7 +141,7 @@
 				args[0] = 'Silverlight:' + name;
 
 				// Detach the call so that error handling in the browser is presented correctly
-				setTimeout(function () {
+				setTimeout(function() {
 					uploader.trigger.apply(uploader, args);
 				}, 0);
 			}
@@ -161,13 +161,14 @@
 		 *
 		 * @return {Object} Name/value object with supported features.
 		 */
-		getFeatures : function () {
+		getFeatures : function() {
 			return {
 				jpgresize: true,
 				pngresize: true,
 				chunks: true,
 				progress: true,
-				multipart: true
+				multipart: true,
+				multi_selection: true
 			};
 		},
 
@@ -178,7 +179,7 @@
 		 * @param {plupload.Uploader} uploader Uploader instance that needs to be initialized.
 		 * @param {function} callback Callback to execute when the runtime initializes or fails to initialize. If it succeeds an object with a parameter name success will be set to true.
 		 */
-		init : function (uploader, callback) {
+		init : function(uploader, callback) {
 			var silverlightContainer, filter = '', filters = uploader.settings.filters, i, container = document.body;
 
 			// Check if Silverlight is installed, Silverlight windowless parameter doesn't work correctly on Opera so we disable it for now
@@ -209,13 +210,15 @@
 
 			if (uploader.settings.container) {
 				container = document.getElementById(uploader.settings.container);
-				container.style.position = 'relative';
+				if (plupload.getStyle(container, 'position') === 'static') {
+					container.style.position = 'relative';
+				}
 			}
 
 			container.appendChild(silverlightContainer);
 
 			for (i = 0; i < filters.length; i++) {
-				filter += (filter !== '' ? '|' : '') + filters[i].title + " | *." + filters[i].extensions.replace(/,/g, ';*.');
+				filter += (filter != '' ? '|' : '') + filters[i].title + " | *." + filters[i].extensions.replace(/,/g, ';*.');
 			}
 
 			// Insert the Silverlight object inide the Silverlight container
@@ -231,7 +234,7 @@
 				return document.getElementById(uploader.id + '_silverlight').content.Upload;
 			}
 
-			uploader.bind("Silverlight:Init", function () {
+			uploader.bind("Silverlight:Init", function() {
 				var selectedFiles, lookup = {};
 				
 				// Prevent eventual reinitialization of the instance
@@ -241,11 +244,11 @@
 					
 				initialized[uploader.id] = true;
 
-				uploader.bind("Silverlight:StartSelectFiles", function (up) {
+				uploader.bind("Silverlight:StartSelectFiles", function(up) {
 					selectedFiles = [];
 				});
 
-				uploader.bind("Silverlight:SelectFile", function (up, sl_id, name, size) {
+				uploader.bind("Silverlight:SelectFile", function(up, sl_id, name, size) {
 					var id;
 
 					// Store away silverlight ids
@@ -257,14 +260,14 @@
 					selectedFiles.push(new plupload.File(id, name, size));
 				});
 
-				uploader.bind("Silverlight:SelectSuccessful", function () {
+				uploader.bind("Silverlight:SelectSuccessful", function() {
 					// Trigger FilesAdded event if we added any
 					if (selectedFiles.length) {
 						uploader.trigger("FilesAdded", selectedFiles);
 					}
 				});
 
-				uploader.bind("Silverlight:UploadChunkError", function (up, file_id, chunk, chunks, message) {
+				uploader.bind("Silverlight:UploadChunkError", function(up, file_id, chunk, chunks, message) {
 					uploader.trigger("Error", {
 						code : plupload.IO_ERROR,
 						message : 'IO Error.',
@@ -273,10 +276,10 @@
 					});
 				});
 
-				uploader.bind("Silverlight:UploadFileProgress", function (up, sl_id, loaded, total) {
+				uploader.bind("Silverlight:UploadFileProgress", function(up, sl_id, loaded, total) {
 					var file = up.getFile(lookup[sl_id]);
 
-					if (file.status !== plupload.FAILED) {
+					if (file.status != plupload.FAILED) {
 						file.size = total;
 						file.loaded = loaded;
 
@@ -284,7 +287,7 @@
 					}
 				});
 
-				uploader.bind("Refresh", function (up) {
+				uploader.bind("Refresh", function(up) {
 					var browseButton, browsePos, browseSize;
 
 					browseButton = document.getElementById(up.settings.browse_button);
@@ -301,7 +304,7 @@
 					}
 				});
 
-				uploader.bind("Silverlight:UploadChunkSuccessful", function (up, sl_id, chunk, chunks, text) {
+				uploader.bind("Silverlight:UploadChunkSuccessful", function(up, sl_id, chunk, chunks, text) {
 					var chunkArgs, file = up.getFile(lookup[sl_id]);
 
 					chunkArgs = {
@@ -313,12 +316,12 @@
 					up.trigger('ChunkUploaded', file, chunkArgs);
 
 					// Stop upload if file is maked as failed
-					if (file.status !== plupload.FAILED) {
+					if (file.status != plupload.FAILED) {
 						getSilverlightObj().UploadNextChunk();
 					}
 
 					// Last chunk then dispatch FileUploaded event
-					if (chunk === chunks - 1) {
+					if (chunk == chunks - 1) {
 						file.status = plupload.DONE;
 
 						up.trigger('FileUploaded', file, {
@@ -327,7 +330,7 @@
 					}
 				});
 
-				uploader.bind("Silverlight:UploadSuccessful", function (up, sl_id, response) {
+				uploader.bind("Silverlight:UploadSuccessful", function(up, sl_id, response) {
 					var file = up.getFile(lookup[sl_id]);
 
 					file.status = plupload.DONE;
@@ -337,7 +340,7 @@
 					});
 				});
 
-				uploader.bind("FilesRemoved", function (up, files) {
+				uploader.bind("FilesRemoved", function(up, files) {
 					var i;
 
 					for (i = 0; i < files.length; i++) {
@@ -345,7 +348,7 @@
 					}
 				});
 
-				uploader.bind("UploadFile", function (up, file) {
+				uploader.bind("UploadFile", function(up, file) {
 					var settings = up.settings, resize = settings.resize || {};
 
 					getSilverlightObj().UploadFile(
@@ -353,7 +356,7 @@
 						up.settings.url,
 						jsonSerialize({
 							name : file.target_name || file.name,
-							mime : plupload.mimeTypes[file.name.replace(/^.+\.([^.]+)/, '$1')] || 'application/octet-stream',
+							mime : plupload.mimeTypes[file.name.replace(/^.+\.([^.]+)/, '$1').toLowerCase()] || 'application/octet-stream',
 							chunk_size : settings.chunk_size,
 							image_width : resize.width,
 							image_height : resize.height,
@@ -367,7 +370,7 @@
 				});
 				
 				
-				uploader.bind('Silverlight:MouseEnter', function (up) {
+				uploader.bind('Silverlight:MouseEnter', function(up) {
 					var browseButton, hoverClass;
 						
 					browseButton = document.getElementById(uploader.settings.browse_button);
@@ -378,7 +381,7 @@
 					}
 				});
 				
-				uploader.bind('Silverlight:MouseLeave', function (up) {
+				uploader.bind('Silverlight:MouseLeave', function(up) {
 					var browseButton, hoverClass;
 						
 					browseButton = document.getElementById(uploader.settings.browse_button);
@@ -389,7 +392,7 @@
 					}
 				});
 				
-				uploader.bind('Silverlight:MouseLeftButtonDown', function (up) {
+				uploader.bind('Silverlight:MouseLeftButtonDown', function(up) {
 					var browseButton, activeClass;
 						
 					browseButton = document.getElementById(uploader.settings.browse_button);
@@ -399,13 +402,13 @@
 						plupload.addClass(browseButton, activeClass);
 						
 						// Make sure that browse_button has active state removed from it
-						plupload.addEvent(document.body, 'mouseup', function () {
+						plupload.addEvent(document.body, 'mouseup', function() {
 							plupload.removeClass(browseButton, activeClass);	
 						});
 					}
 				});
 				
-				uploader.bind('Sliverlight:StartSelectFiles', function (up) {
+				uploader.bind('Sliverlight:StartSelectFiles', function(up) {
 					var browseButton, activeClass;
 						
 					browseButton = document.getElementById(uploader.settings.browse_button);
@@ -416,7 +419,7 @@
 					}
 				});
 				
-				uploader.bind("Destroy", function (up) {
+				uploader.bind("Destroy", function(up) {
 					var silverlightContainer;
 					
 					plupload.removeAllEvents(document.body, up.id);
