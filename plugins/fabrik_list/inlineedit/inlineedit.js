@@ -480,6 +480,7 @@ var FbListInlineEdit = new Class({
 			'task': 'form.process',
 			'format': 'raw',
 			'_packageId': 1,
+			'fabrik_ajax': 1,
 			'element': element,
 			'elid': opts.elid,
 			'plugin': opts.plugin,
