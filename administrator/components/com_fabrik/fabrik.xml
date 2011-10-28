@@ -9,17 +9,16 @@
 	type="component">
 
 	<name>Fabrik</name>
-	<creationDate>April 2010</creationDate>
+	<creationDate>{createdate}</creationDate>
 	<author>Fabrik</author>
-	<copyright>Pollen 8 Design Ltd</copyright>
+	<copyright>2005-{year} Pollen 8 Design Ltd</copyright>
 	<license>GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
-	<version>3.0.0</version>
+	<version>{version}</version>
 	<description>The Joomla Application Creation Component</description>
 
 	<scriptfile>com_fabrik.manifest.class.php</scriptfile>
-
 
 	<install>
 		<sql>
