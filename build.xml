@@ -1,342 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="fabrik3-package" default="fabrik.all">
 	<property file="build_config.ini" />
+	<property file="build_config_private.ini" />
+	<import file="./build_updateserver_xml.xml"/>
+	<import file="./build_js.xml" />
+	
+	<property name="update_source" value="${basedir}/administrator/components/com_fabrik/update/fabrik/" />
+	<property name="update_dir" value="${cfg.destdir}/admin/update/fabrik/" />
+	<property name="package_list" value="${update_dir}/package_list.xml" />
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
-	<target name="fabrik.all" depends="js" >
-		<echo>workspace = ${WORKSPACE}</echo>
-		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
+	<target name="fabrik.all" depends="js">
 		<input message="Component version:" addproperty="version" />
+		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
+		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
 		<antcall target="fabrik.refreshfiles" />
-		<antcall target="fabrik.zipcomponent" />
-		<antcall target="fabrik.zipmodules" />
-		
+		<antcall target="fabrik.start_packagelist" />
+		<antcall target="fabrik.component" />
+		<antcall target="fabrik.modules" />
 		<antcall target="fabrik.package.sink.start" />
 		<antcall target="fabrik.package.start" />
-		<antcall target="fabrik.zipplugins" />
-		<antcall target="fabrik.zipfabrikplugins" />
+		<antcall target="fabrik.plugins" />
+		<antcall target="fabrik.fabrikplugins" />
 		<antcall target="fabrik.package.sink.end" />
 		<antcall target="fabrik.package.end" />
-		
-		<echo message=" ... finished exporting files." />
+		<antcall target="updater.ftp" />
+		<echo message="Fabrik build ${version} complete" />
 	</target>
 
-	<target name="fabrik.zipfabrikplugins">
+	<target name="fabrik.start_packagelist">
+		<xmltask dest="${package_list}"> 
+      <insert path="/"  > 
+      <![CDATA[<extensionset name="Fabrik" description="Fabrik">
+</extensionset>]]>
+   		</insert> 
+   </xmltask>
+	</target>
+	
+	<target name="fabrik.fabrikplugins">
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_element/" />
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_cron/" />
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_form/" />
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_list/" />
-
 		<!-- fabrik plug-ins -->
-		<delete file="${cfg.destdir}/pkg_fabrik_sink//packages/plg_fabrik_element_access_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_access_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/access" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_birthday_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_birthday_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/birthday" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_button_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_button_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/button" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_calc_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_calc_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/calc" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_captcha_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_captcha_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/captcha" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_checkbox_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_checkbox_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/checkbox" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_colourpicker_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_colourpicker_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/colourpicker" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_count_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_count_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/count" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_databasejoin_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_databasejoin_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/databasejoin" />
-		
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_date_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_date_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/date" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_display_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_display_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/display" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_dropdown_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_dropdown_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/dropdown" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fbactivityfeed_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fbactivityfeed_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/fbactivityfeed" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fbcomment_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fbcomment_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/fbcomment" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fblike_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fblike_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/fblike" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fblikebox_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fblikebox_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/fblikebox" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fbrecommendations_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fbrecommendations_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/fbrecommendations" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_field_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_field_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/field" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fileupload_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fileupload_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/fileupload" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_folder_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_folder_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/folder" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_googlemap_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_googlemap_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/googlemap" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_googleometer_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_googleometer_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/googleometer" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_image_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_image_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/image" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_internalid_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_internalid_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/internalid" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_ip_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_ip_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/ip" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_jsperiodical_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_jsperiodical_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/jsperiodical" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_kaltura_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_kaltura_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/kaltura" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_link_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_link_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/link" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_openstreetmap_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_openstreetmap_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/openstreetmap" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_picklist_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_picklist_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/picklist" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_password_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_password_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/password" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_radiobutton_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_radiobutton_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/radiobutton" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_rating_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_rating_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/rating" />
-
-		<!--<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_slider_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_element/plg_fabrik_element_slider_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/slider" />
--->
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_sql_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_sql_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/sql" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_sugarid_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_sugarid_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/sugarid" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_textarea_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_textarea_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/textarea" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_thumbs_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_thumbs_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/thumbs" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_timer_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_timer_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/timer" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_timestamp_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_timestamp_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/timestamp" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_twitter_profile_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_twitter_profile_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/twitter_profile" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_user_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_user_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/user" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_video_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_video_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/video" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_yesno_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_yesno_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/yesno" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_youtube_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_youtube_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_element/youtube" />
-
-		<!-- cron plug-ins -->
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_cron/plg_fabrik_cron_email_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_email_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_cron/email" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_cron/plg_fabrik_cron_gcalsync_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_gcalsync_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_cron/gcalsync" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_cron/plg_fabrik_cron_geocode_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_geocode_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_cron/geocode" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_cron/plg_fabrik_cron_gmail_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_gmail_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_cron/gmail" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_cron/plg_fabrik_cron_notification_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_notification_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_cron/notification" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_cron/plg_fabrik_cron_php_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_php_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_cron/php" />
-
-		<!-- form plug-ins -->
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_autofill_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_autofill_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/autofill" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_clone_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_clone_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/clone" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_comment_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_comment_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/comment" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_confirmation_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_confirmation_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/confirmation" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_email_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_email_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/email" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_exif_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_exif_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/exif" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_js_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_js_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/js" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_juser_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_juser_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/juser" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_kunena_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_kunena_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/kunena" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_limit_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_limit_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/limit" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_logs_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_logs_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/logs" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_notification_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_notification_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/notification" />
-			
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_paypal_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_paypal_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/paypal" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_php_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_php_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/php" />
-		
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_receipt_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_receipt_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/receipt" />
-		
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_redirect_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_redirect_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/redirect" />
-		
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_salesforce_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_salesforce_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/salesforce" />
-				
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_sms_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_sms_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/sms" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_twitter_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_twitter_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/twitter" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_form/plg_fabrik_form_vbforum_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_vbforum_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_form/vbforum" />
-
-		<!-- list plug-ins -->
-		
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_list/plg_fabrik_list_copy_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_copy_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_list/copy" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_list/plg_fabrik_list_download_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_download_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_list/download" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_list/plg_fabrik_list_inlineedit_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_inlineedit_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_list/inlineedit" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_list/plg_fabrik_list_php_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_php_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_list/php" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_list/plg_fabrik_list_radius_search_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_radius_search_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_list/radius_search" />
-
-		<!-- validation rule plug-ins -->
-		
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_akismet_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_akismet_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/akismet" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_emailexists_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_emailexists_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/emailexists" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_example_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_example_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/example" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_isalphanumeric_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_isalphanumeric_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/isalphanumeric" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_isemail_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_isemail_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/isemail" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_isgreaterorlessthan_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_isgreaterorlessthan_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/isgreaterorlessthan" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_isnot_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_isnot_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/isnot" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_isnumeric_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_isnumeric_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/isnumeric" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_isuniquevalue_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_isuniquevalue_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/isuniquevalue" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_notempty_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_notempty_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/notempty" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_php_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_php_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/php" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_regex_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_regex_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/regex" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_specialchars_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_specialchars_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/specialchars" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_validationrule/plg_fabrik_validation_userexists_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_userexists_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_validationrule/userexists" />
-
-		<!-- visualization plug-ins -->
-		
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_calendar_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_calendar_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/calendar" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_chart_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_chart_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/chart" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_coverflow_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_coverflow_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/coverflow" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_fusion_gantt_chart_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_fusion_gantt_chart_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/fusion_gantt_chart" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_fusionchart_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_fusionchart_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/fusionchart" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_googlemap_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_googlemap_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/googlemap" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_kaltura_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_kaltura_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/kaltura" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_media_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_media_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/media" />
-
-		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/fabrik_visualization/plg_fabrik_visualization_slideshow_${version}.zip" />
-		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_slideshow_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_visualization/slideshow" />
-
+		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="fabrik.zipfabrikpluginfolder" inheritall="true" inheritrefs="true"/>
+	</target>
+	
+	<target name="fabrik.zipfabrikpluginfolder">
+		<dirset id="dist.contents" dir="${basedir}/plugins/fabrik_${folder}/" includes="*"/>
+		<property name="prop.dist.contents" refid="dist.contents"/>
+		<echo>${prop.dist.contents}</echo>
+		<foreach list="${prop.dist.contents}" delimiter=";" param="plugin" target="fabrik.zipfabrikpluginfolder.plugin"  inheritall="true" inheritrefs="true"/>
+	</target>
+	
+	<target name="fabrik.zipfabrikpluginfolder.plugin">
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset"> 
+      <![CDATA[<extension name="${update.product_name} ${folder} - ${plugin}" element="${plugin}" type="plugin" folder="${update.product_code}_${folder}" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_${folder}_${plugin}.xml" />]]>
+   		</insert> 
+		</xmltask>
+		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${folder}_${plugin}_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${folder}_${plugin}_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_${folder}/${plugin}" />
 	</target>
 
-	<target name="fabrik.zipplugins">
+
+	<target name="fabrik.plugins">
 		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip" />
 		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip">
 			<zipfileset dir="${cfg.destdir}/plugins/content" />
@@ -353,16 +83,135 @@
 		
 		<delete file="${cfg.destdir}/pkg_fabrik/packages/plg_system_fabrik_${version}.zip" />
 		<zip destfile="${cfg.destdir}/pkg_fabrik/packages/plg_system_fabrik_${version}.zip" basedir="${cfg.destdir}/plugins/system/fabrik" />
+		
+		
+		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik Content Plugin</name>
+			<description>Fabrik Content Plugin</description>
+			<type>plugin</type>
+			<element>fabrik</element>
+			<folder>content</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_fabrik_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		
+		<update>
+			<name>Fabrik Search Plugin</name>
+			<description>Fabrik Search Plugin</description>
+			<type>plugin</type>
+			<element>fabrik</element>
+			<folder>search</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_fabrik_search_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		
+		<update>
+			<name>Fabrik Scheduled Tasks Plugin</name>
+			<description>Fabrik Scheduled Tasks Plugin</description>
+			<type>plugin</type>
+			<element>fabrikcron</element>
+			<folder>system</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_fabrik_schedule_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		
+		<update>
+			<name>Fabrik System Plugin</name>
+			<description>Fabrik System Plugin</description>
+			<type>plugin</type>
+			<element>fabrik</element>
+			<folder>system</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_system_fabrik_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset">
+				<![CDATA[<extension name="Fabrik" element="fabrik" type="plugin" folder="content" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_fabrik.xml" />
+<extension name="Search - Fabrik" element="fabrik" type="plugin" folder="search" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_search_fabrik.xml" /> 
+<extension name="System - FabrikSheduled Tasks" element="fabrikcron" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrikcron.xml" />
+<extension name="System - Fabrik" element="fabrik" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrik.xml" />
+]]>
+   		</insert> 
+		</xmltask>
 
 	</target>
 
-	<target name="fabrik.zipmodules">
+	<target name="fabrik.modules">
 		<zip destfile="${cfg.destdir}/mod_fabrik_form_${version}.zip" basedir="${cfg.destdir}/modules/mod_fabrik_form" />
 		<zip destfile="${cfg.destdir}/mod_fabrik_list_${version}.zip" basedir="${cfg.destdir}/modules/mod_fabrik_list" />
+		
+		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik List Module</name>
+			<description>Fabrik List Module</description>
+			<element>mod_fabrik_list</element>
+			<type>module</type>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/mod_fabrik_list_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik Form Module</name>
+			<description>Fabrik Form Module</description>
+			<element>mod_fabrik_form</element>
+			<type>module</type>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/mod_fabrik_form_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset">
+			<![CDATA[<extension name="Fabrik form" element="mod_fabrik_form" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_form.xml" />]]> 
+     		<![CDATA[<extension name="Fabrik list" element="mod_fabrik_list" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_list.xml" />]]>
+   		</insert> 
+		</xmltask>
 	</target>
 
 
-	<target name="fabrik.zipcomponent">
+	<target name="fabrik.component">
 		<!-- create a zip  ( note you cant use as the file paths are more than 100 chars and the Joomla archieve class falls over) of the plugins dir for unpacking upon installation -->
 
 		<move file="${cfg.destdir}/admin/fabrik.xml" todir="${cfg.destdir}" />
@@ -375,10 +224,40 @@
 		<zip destfile="${cfg.destdir}/com_fabrik_${version}.zip" basedir="${cfg.destdir}" excludes="modules/**, plugins/**, pkg_fabrik_sink/** pkg_fabrik.xml 
 			/components/com_fabrik/sef_ext/**" />
 
+		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>${update.product_name}</name>
+			<description>${update.product_name} Component</description>
+			<element>com_fabrik</element>
+			<type>component</type>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/com_fabrik_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>]]>
+	   		</insert> 
+		</xmltask>
+			
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset"> 
+     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml" />]]>
+   		</insert> 
+		</xmltask>
 	</target>
 	
 	<!-- package with the basics installed -->
 	<target name="fabrik.package.start">
+	
+			<tstamp>
+		      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
+		  </tstamp>
+		  <tstamp>
+		      <format property="year" pattern="yyyy" locale="en,UK"/>
+		  </tstamp>
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/" />
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/packages" />
 			<replace file="${cfg.destdir}/pkg_fabrik.xml" token="{version}" value="${version}"/>
@@ -387,6 +266,16 @@
 				<include name="**/*.xml"/>
 				<replacetoken>{version}</replacetoken>
 			</replace>
+			
+			<replace dir="${cfg.destdir}" value="${createdate}">
+				<include name="**/*.xml"/>
+				<replacetoken>{createdate}</replacetoken>
+			</replace>
+			
+			<replace dir="${cfg.destdir}" value="${year}">
+				<include name="**/*.xml"/>
+				<replacetoken>{year}</replacetoken>
+			</replace>
 
 			<copy file="${cfg.destdir}/pkg_fabrik.xml" todir="${cfg.destdir}/pkg_fabrik" />
 			<copy file="${cfg.destdir}/com_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
@@ -394,47 +283,39 @@
 			<copy file="${cfg.destdir}/mod_fabrik_list_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 		</target>
 		
-		<target name="fabrik.package.end">
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_email_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_php_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_button_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_checkbox_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_databasejoin_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_date_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_display_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_dropdown_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_field_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_fileupload_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_googlemap_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_image_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_internalid_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_link_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_radiobutton_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_textarea_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_user_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_email_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_php_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_receipt_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_redirect_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_copy_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_php_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_isgreaterorlessthan_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_notempty_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_php_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validation_regex_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_calendar_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_chart_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_googlemap_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_media_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_slideshow_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+		<target name="fabrik.plugin.cron.zip.copy">
+	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	  </target>
+	  
+	  <target name="fabrik.plugin.element.zip.copy">
+	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	  </target>
+	  
+	  <target name="fabrik.plugin.form.zip.copy">
+	  	<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	  </target>
 		
-			
-			<zip destfile="${cfg.destdir}/pkg_fabrik_${version}.zip" basedir="${cfg.destdir}/pkg_fabrik" />
+		<target name="fabrik.plugin.list.zip.copy">
+			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+		</target>
+		
+		<target name="fabrik.plugin.validation.zip.copy">
+			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validationrule_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+		</target>
+		
+		<target name="fabrik.plugin.visualization.zip.copy">
+			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+		</target>
+		<target name="fabrik.package.end">
+			<var name="updatelist" value=""/>
+			<foreach list="email,php" param="plugin" target="fabrik.plugin.cron.zip.copy" inheritall="true" inheritrefs="true"/>
+			<echo>${updatelist}</echo>
+			<foreach list="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,radiobutton,textarea,user" param="plugin" target="fabrik.plugin.element.zip.copy" inheritall="true" inheritrefs="true"/>
+			<foreach list="email,php,receipt,redirect" target="fabrik.plugin.form.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="copy,php" target="fabrik.plugin.list.zip.copy" inheritall="true" param="plugin" inheritrefs="true"/>
+			<foreach list="isgreaterorlessthan,notempty,php,regex" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="calendar,chart,googlemap,media,slideshow" target="fabrik.plugin.visualization.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<zip destfile="${cfg.destdir}/pkg_fabrik_${version}.zip" basedir="${cfg.destdir}/pkg_fabrik"/>
 		</target>
 
 	<!-- package which will install everything -->
@@ -515,178 +396,38 @@
 		
 		<mkdir dir="${cfg.destdir}/plugins/system/fabrik" />
 		<copy todir="${cfg.destdir}/plugins/system/fabrik">
-			<fileset dir="${basedir}/plugins/system/fabrik">
-			</fileset>
+			<fileset dir="${basedir}/plugins/system/fabrik"></fileset>
 		</copy>
-
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_cron" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_cron/">
-			<fileset dir="${basedir}/plugins/fabrik_cron/">
-			</fileset>
+			<fileset dir="${basedir}/plugins/fabrik_cron/"></fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_element" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_element/">
-			<fileset dir="${basedir}/plugins/fabrik_element/">
-			</fileset>
+			<fileset dir="${basedir}/plugins/fabrik_element/"></fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_form" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_form/">
-			<fileset dir="${basedir}/plugins/fabrik_form/">
-			</fileset>
+			<fileset dir="${basedir}/plugins/fabrik_form/"></fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_list" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_list/">
-			<fileset dir="${basedir}/plugins/fabrik_list/">
-			</fileset>
+			<fileset dir="${basedir}/plugins/fabrik_list/"></fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_validationrule" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_validationrule/">
-			<fileset dir="${basedir}/plugins/fabrik_validationrule/">
-			</fileset>
+			<fileset dir="${basedir}/plugins/fabrik_validationrule/"></fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_visualization" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_visualization/">
-			<fileset dir="${basedir}/plugins/fabrik_visualization/">
-			</fileset>
+			<fileset dir="${basedir}/plugins/fabrik_visualization/"></fileset>
 		</copy>
 	</target>
 	
-	<!--Build -->
-	<target name="js" description="lints and builds js project files for production use"
-		depends="load.properties">
-		<antcall target="js.lint"></antcall>
-		<antcall target="js.minify"></antcall>
-	</target>
-
-	<target name="load.properties" description="Set properties for this build">
-		<echo>load properties</echo>
-		<!--YUI Compressor location -->
-		<property name="yui.dir"
-			value="${basedir}/fabrik_build/yuicompressor/build/yuicompressor-2.4.6.jar" />
-		<!--Source JS dir -->
-		<property name="src.js.dir" value="${basedir}/media/com_fabrik/js" />
-		<!--Source CSS dir -->
-		<property name="src.css.dir" value="${basedir}/media/com_fabrik/css" />
-		<!--Source Lint/Hint dir -->
-		<property name="jslint.js" value="${basedir}/fabrik_build/lint/jshint.js" />
-		<!--Rhino dir -->
-		<property name="js.jar" value="${basedir}/fabrik_build/lint/rhino/js.jar" />
-		<!-- Rhino lint -->
-		<property name="jshint-rhino.js" value="${basedir}/fabrik_build/lint/jshint-rhino.js" />
-		<!--Output dir -->
-		<property name="build.dir" value="${basedir}/media/com_fabrik/" />
-		<!--Build version information -->
-		<property name="build.major" value="1" />
-		<property name="build.minor" value="1" />
-		<property name="jshint.flags"
-			value="browser=true,mootools=true,white=true,loopfunc=true,expr=true,evil=true,boss=true,maxerr=25,undef=false,curly=true,debug=false,eqeqeq=true,immed=true,newcap=true" />
-		<property name="jshint.predef"
-			value="console,confirm" />
-		<property name="jshint.predef.test"
-			value="${jshint.predef},icon" />
-
-	</target>
-
-	<!--JS Lint -->
-	<target name="js.lint">
-		<antcall target="js.lint.do">
-			<param name="dir" value="${basedir}/administrator/components/com_fabrik/" />
-		</antcall>
-		<antcall target="js.lint.do">
-			<param name="dir" value="${src.js.dir}" />
-		</antcall> 
-		<antcall target="js.lint.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_cron/" />
-		</antcall>
-		<antcall target="js.lint.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_element/" />
-		</antcall>
-		<antcall target="js.lint.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_form/" />
-		</antcall>
-		<antcall target="js.lint.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_list/" />
-		</antcall>
-		<antcall target="js.lint.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_validationrule/" />
-		</antcall>
-		<antcall target="js.lint.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_visualization/" />
-		</antcall>
-	</target>
-	
-	<target name="js.lint.do">
-		<echo>dir = ${dir}</echo>
-		<apply dir="${basedir}/fabrik_build/lint" failonerror="true" executable="java" errorproperty="linterror" resultproperty="lintresult">
-			<fileset dir="${dir}">
-				<include name="**/*.js" />
-				<exclude name="**/lib/" />
-				<exclude name="**/*-min.js" />
-			</fileset>
-			<arg line="-jar ${js.jar} ${jshint-rhino.js}" />
-			<srcfile />
-			<arg value="${jshint.flags}" />
-			<arg value="${jshint.predef}" />
-		</apply>
-		<echo>lint error: ${linterror}</echo>
-		<echo>lint result: ${lintresult}</echo>
-		<!--  0 is no errors - > 0 is an erorr count -->
-		<echo>${dir} JSHint Passed</echo>
-	</target>
-	
-	<target name="js.minify">
-		<antcall target="js.minify.do">
-			<param name="dir" value="${basedir}/administrator/components/com_fabrik/" />
-		</antcall>
-		<antcall target="js.minify.do">
-			<param name="dir" value="${src.js.dir}" />
-		</antcall> 
-		<antcall target="js.minify.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_cron/" />
-		</antcall>
-		<antcall target="js.minify.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_element/" />
-		</antcall>
-		<antcall target="js.minify.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_form/" />
-		</antcall>
-		<antcall target="js.minify.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_list/" />
-		</antcall>
-		<antcall target="js.minify.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_validationrule/" />
-		</antcall>
-		<antcall target="js.minify.do">
-			<param name="dir" value="${basedir}/plugins/fabrik_visualization/" />
-		</antcall>
-		
-	</target>
-	
-		<!--Minify JS files -->
-	<target name="js.minify.do" description="Minifies JavaScript files">
-		<echo>${dir}</echo>
-		<apply executable="java" parallel="false" dest="${dir}" failonerror="true" >
-			<fileset dir="${dir}">
-				<include name="**/*.js" />
-				<exclude name="**/lib/" />
-				<exclude name="**/*-min.js" />
-			</fileset>
-			<arg line="-jar" />
-			<arg path="${yui.dir}" />
-			<srcfile />
-			<arg line="-o" />
-			
-			<mapper type="glob" from="*.js" to="*-min.js" />
-			<targetfile />
-		</apply>
-		<echo>Finished</echo>
-	</target>
-	
-
 </project>
