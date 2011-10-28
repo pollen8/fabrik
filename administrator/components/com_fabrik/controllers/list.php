@@ -90,7 +90,7 @@ class FabrikControllerList extends FabControllerForm
 		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
 
 		$viewLayout	= JRequest::getCmd('layout', 'default');
-		$view = & $this->getView($this->view_item, $viewType, '');
+		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 		// Set the layout
 		$view->setLayout($viewLayout);
@@ -147,7 +147,6 @@ class FabrikControllerList extends FabControllerForm
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
 		$model->setId($id);

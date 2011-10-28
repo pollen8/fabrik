@@ -13,7 +13,7 @@ $row = $this->row;
 	<div class='calendar-message'>
 
 	</div>
-	<?php echo $this->loadTemplate( 'filter'); ?>
+	<?php echo $this->loadTemplate('filter'); ?>
 		<?php if ($this->canAdd) {?>
 		<a href="#" class="addEventButton" title="Add an event"><?php echo JText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
 	<?php }?>

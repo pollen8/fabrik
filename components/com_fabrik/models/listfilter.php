@@ -141,7 +141,8 @@ class FabrikFEModelListfilter extends FabModel {
 	{
 		$app = JFactory::getApplication();
 		$item = $this->listModel->getTable();
-		$key = 'com_fabrik.list'.$item->id.'.filter.searchall';
+		$identifier = $this->listModel->getRenderContext();
+		$key = 'com_fabrik.list'.$identifier.'.filter.searchall';
 		$search = trim($app->getUserStateFromRequest($key, 'fabrik_list_filter_all'));
 
 		if ($search == '') {
@@ -275,7 +276,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
 		$registry	= $session->get('registry');
-		$id = $this->listModel->getId();
+		$id = JRequest::getVar('listref', $this->listModel->getRenderContext());
 		$tid = 'list'.$id;
 		$context = 'com_fabrik.list'.$id.'.';
 		$app->setUserState($context.'limitstart', 0);
@@ -606,7 +607,7 @@ class FabrikFEModelListfilter extends FabModel {
 			}
 			$eval = FABRIKFILTER_TEXT;
 
-			$condition 	= is_array($val) ? JArrayHelper::getValue($val, 'condition', $elementModel->getDefaultFilterCondition()) : $elementModel->getDefaultFilterCondition();
+			$condition = is_array($val) ? JArrayHelper::getValue($val, 'condition', $elementModel->getDefaultFilterCondition()) : $elementModel->getDefaultFilterCondition();
 
 			if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin')) {
 				$fieldDesc = $elementModel->getFieldDescription();
@@ -638,6 +639,7 @@ class FabrikFEModelListfilter extends FabModel {
 						$this->indQueryString($elementModel, $filters, $avalue, $acondition, $ajoin, $agrouped, $eval, $key, $raw);
 					}
 				} else {
+					$value = addslashes(urldecode($value));
 					$this->indQueryString($elementModel, $filters, $value, $condition, $join, $grouped, $eval, $key);
 				}
 			} else {
@@ -699,8 +701,12 @@ class FabrikFEModelListfilter extends FabModel {
 		if (!isset($this->request)) {
 			$item = $this->listModel->getTable();
 			$request	= JRequest::get('post');
-			if (array_key_exists('fabrik___filter', $request) && array_key_exists('list_'.$item->id, $request['fabrik___filter'])) {
-				$this->request = $request['fabrik___filter']['list_'.$item->id];
+			//use request ONLY if you want to test an ajax post with params in url
+			//$request	= JRequest::get('request');
+			
+			$k = 'list_'.JRequest::getVar('listref', $this->listModel->getRenderContext());
+			if (array_key_exists('fabrik___filter', $request) && array_key_exists($k, $request['fabrik___filter'])) {
+				$this->request = $request['fabrik___filter'][$k];
 			} else {
 				$this->request = array();
 			}
@@ -729,9 +735,16 @@ class FabrikFEModelListfilter extends FabModel {
 			// that $key is found
 
 			$ajaxPost = strtolower(JRequest::getVar('HTTP_X_REQUESTED_WITH', '', 'server'));
+			$this->listModel->ajaxPost = $ajaxPost;
+			$this->listModel->postValues = $values;
+			//addslashes(urldecode($avalue));
 			foreach ($keyints as $i) {
 				$value = JArrayHelper::getValue($values, $i, '');
-				if ($ajaxPost == 'xmlhttprequest') {
+				
+				// $$$ rob 28/10/2011 - runniing an ajax filter (autocomplete) from horz-search tmpl, looking for term 'test + test'
+				// the '+' is converted into a space so serach fails
+				
+				/* if ($ajaxPost == 'xmlhttprequest') {
 					if (is_array($value)) {
 						foreach ($value as $k => $v) {
 							$value[$k] = urldecode($v);
@@ -739,7 +752,7 @@ class FabrikFEModelListfilter extends FabModel {
 					} else {
 						$value = urldecode($value);
 					}
-				}
+				} */
 				$key = JArrayHelper::getValue($request['key'], $i);
 				$elid = JArrayHelper::getValue($request['elementid'], $i);
 				if ($key == '') {
@@ -868,7 +881,9 @@ class FabrikFEModelListfilter extends FabModel {
 		$app = JFactory::getApplication();
 		$elements = $this->listModel->getElements('id');
 		$item = $this->listModel->getTable();
-		$key = 'com_fabrik.list'.$item->id.'.filter';
+		//$identifier = $item->id;
+		$identifier = JRequest::getVar('listref', $this->listModel->getRenderContext());
+		$key = 'com_fabrik.list'.$identifier.'.filter';
 		$sessionfilters = JArrayHelper::fromObject($app->getUserState($key));
 		$filterkeys = array_keys($filters);
 		if (!is_array($sessionfilters) || !array_key_exists('key', $sessionfilters)) {
@@ -882,9 +897,9 @@ class FabrikFEModelListfilter extends FabModel {
 			return;
 		}
 		//end ignore
-		$request 	=& $this->getPostFilterArray();
+		$request = $this->getPostFilterArray();
 
-		$key = 'com_fabrik.list'.$item->id.'.filter.searchall';
+		$key = 'com_fabrik.list'.$identifier.'.filter.searchall';
 		$pluginKeys = $this->getPluginFilterKeys();
 		$search = $app->getUserStateFromRequest($key, 'fabrik_list_filter_all');
 
@@ -910,12 +925,12 @@ class FabrikFEModelListfilter extends FabModel {
 						//unset($filters[$fkey][$index]);
 
 						//reindex array
-						$filters[$fkey] =array_values($filters[$fkey]);
+						$filters[$fkey] = array_values($filters[$fkey]);
 					}
 				}
 			}
-			$value 			= $sessionfilters['value'][$i];
-			$key2 			= array_key_exists('key2', $sessionfilters) ? JArrayHelper::getValue($sessionfilters['key2'], $i, '') : '';
+			$value = $sessionfilters['value'][$i];
+			$key2 = array_key_exists('key2', $sessionfilters) ? JArrayHelper::getValue($sessionfilters['key2'], $i, '') : '';
 			if ($elid == -1) {
 				//serach all boolean mode
 				$eval = 0;
@@ -976,7 +991,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 					$search_type = array_key_exists($i, $sessionfilters['search_type']) ? $sessionfilters['search_type'][$i] : $elementModel->getDefaultFilterCondition();
 
-					$join 			=  $sessionfilters['join'][$i];
+					$join =  $sessionfilters['join'][$i];
 					$grouped = array_key_exists($i, $sessionfilters['grouped_to_previous']) ? $sessionfilters['grouped_to_previous'][$i] : 0;
 
 					$element = $elementModel->getElement();

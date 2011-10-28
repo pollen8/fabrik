@@ -293,7 +293,7 @@ EOD;
 
 	/**
 	 * get a list of condition options - used in advanced search
-	 * @param int table id
+	 * @param string table ref
 	 * @param string selected value
 	 * @return string html select list
 	 */
@@ -701,7 +701,7 @@ EOD;
 
 	function slimbox()
 	{
-		return;
+		//return;
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($fbConfig->get('include_lightbox_js', 1) == 0) {
 			return;

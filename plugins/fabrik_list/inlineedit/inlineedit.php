@@ -109,7 +109,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		$opts->editEvent = $params->get('inline_edit_event', 'dblclick');
 		$opts->tabSave = $params->get('inline_tab_save', false);
 		$opts->showCancel = $params->get('inline_show_cancel', true);
-		$opts->showSave = $params->get('inline_show_save', true);
+		$opts->showSave = (bool)$params->get('inline_show_save', true);
 		$opts->loadFirst = (bool)$params->get('inline_load_first', false);
 		$opts = json_encode($opts);
 		$formid = 'list_'+$model->getFormModel()->getForm()->id;

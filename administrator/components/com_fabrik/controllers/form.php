@@ -40,7 +40,7 @@ class FabrikControllerForm extends JControllerForm
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
-
+		$view->isMambot = $this->isMambot;
 		// Set the layout
 		$view->setLayout($viewLayout);
 

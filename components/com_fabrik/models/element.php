@@ -1780,8 +1780,8 @@ class plgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 
 		$elName = $this->getFullName(false, true, false);
-		$id = $this->getHTMLId() . 'value';
-		$v = 'fabrik___filter[list_'.$table->id.'][value]';
+		$id = $this->getHTMLId().'value';
+		$v = 'fabrik___filter[list_'.$listModel->getRenderContext().'][value]';
 		$v .= ($normal) ? '['.$counter.']' : '[]';
 
 		//corect default got
@@ -1822,12 +1822,11 @@ class plgFabrik_Element extends FabrikPlugin
 			case "auto-complete":
 				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
-				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$id.'" />';
-				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$default.'" id="'.$id.'-auto-complete" />';
-				// $$$ rob 29/04/2011 - for this to work you would need to update the autocompleter class as it does $(id) not document.getELement();
-				// think its safer to not alter the class as noneof the element pugin implementations work like this!
-				//FabrikHelperHTML::autoComplete('#tableform_'.$table->id . ' #'.$id, $this->getElement()->id);
-				FabrikHelperHTML::autoComplete($id, $this->getElement()->id);
+				// $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters showing and not produce invald html & duplicate js calls
+				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$id.'" value="'.$default.'" />';
+				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$id.'-auto-complete" size="'.$size.'" value="'.$default.'" />';
+				$selector = '#list_'.$listModel->getRenderContext().' .'.$id;
+				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id);
 				break;
 		}
 		if ($normal) {
@@ -2119,16 +2118,17 @@ class plgFabrik_Element extends FabrikPlugin
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
 		$cond = $this->getFilterCondition();
 		$return = array();
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][condition]['.$counter.']" value="'.$cond.'" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][join]['.$counter.']" value="AND" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][key]['.$counter.']" value="'.$elName.'" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][search_type]['.$counter.']" value="normal" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][match]['.$counter.']" value="'.$match.'" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][full_words_only]['.$counter.']" value="'.$params->get('full_words_only', '0').'" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][eval]['.$counter.']" value="'.FABRIKFILTER_TEXT.'" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][grouped_to_previous]['.$counter.']" value="0" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][hidden]['.$counter.']" value="'.$hidden.'" />';
-		$return[] = '<input type="hidden" name="fabrik___filter[list_'.$table->id.'][elementid]['.$counter.']" value="'.$element->id.'" />';
+		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
+		$return[] = $prefix.'[condition]['.$counter.']" value="'.$cond.'" />';
+		$return[] = $prefix.'[join]['.$counter.']" value="AND" />';
+		$return[] = $prefix.'[key]['.$counter.']" value="'.$elName.'" />';
+		$return[] = $prefix.'[search_type]['.$counter.']" value="normal" />';
+		$return[] = $prefix.'[match]['.$counter.']" value="'.$match.'" />';
+		$return[] = $prefix.'[full_words_only]['.$counter.']" value="'.$params->get('full_words_only', '0').'" />';
+		$return[] = $prefix.'[eval]['.$counter.']" value="'.FABRIKFILTER_TEXT.'" />';
+		$return[] = $prefix.'[grouped_to_previous]['.$counter.']" value="0" />';
+		$return[] = $prefix.'[hidden]['.$counter.']" value="'.$hidden.'" />';
+		$return[] = $prefix.'[elementid]['.$counter.']" value="'.$element->id.'" />';
 		return implode("\n", $return);
 	}
 
@@ -2156,9 +2156,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	function getAdvancedFilterHiddenFields()
 	{
-		$table = $this->getListModel()->getTable();
+		$listModel = $this->getListModel();
 		$element = $this->getElement();
-		return "\n".'<input type="hidden" name="fabrik___filter[list_'.$table->id.'][elementid][]" value="'.$element->id.'" />';
+		return "\n".'<input type="hidden" name="fabrik___filter[list_'.$listModel->getRenderContext().'][elementid][]" value="'.$element->id.'" />';
 	}
 
 	/**

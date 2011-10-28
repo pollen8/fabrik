@@ -114,9 +114,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$default 	= $this->getDefaultFilterVal($normal, $counter);
 		$elName 	= $this->getFullName(false, true, false);
 		$htmlid		= $this->getHTMLId() . 'value';
-		$table		= $this->getlistModel()->getTable();
+		$listModel = $this->getListModel();
 		$params		= $this->getParams();
-		$v = 'fabrik___filter[list_'.$table->id.'][value]';
+		$v = 'fabrik___filter[list_'.$listModel->getRenderContext().'][value]';
 		$v .= $normal ? '['.$counter.']' : '[]';
 
 		if (in_array($element->filter_type, array('range', 'dropdown', ''))) {
@@ -157,9 +157,11 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-				$return[] = '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
-				FabrikHelperHTML::autoComplete($htmlid, $this->getElement()->id, $element->plugin);
+				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$htmlid.'" value="'.$default.'" />';
+				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$htmlid.'-auto-complete" size="'.$size.'" value="'.$default.'" />';
+				$selector = '#list_'.$listModel->getRenderContext().' .'.$htmlid;
+				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id);
+				
 				break;
 		}
 		if ($normal) {

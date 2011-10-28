@@ -66,10 +66,8 @@ class FabrikControllerForm extends JControllerForm
 		$this->_isMambot = JRequest::getVar('_isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
-
 		// Check for request forgeries
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true) {
+		if ($model->spoofCheck()) {
 			JRequest::checkToken() or die('Invalid Token');
 		}
 		if (!$model->validate()) {

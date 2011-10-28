@@ -202,11 +202,10 @@ class FabrikViewList extends JView{
 		$document = JFactory::getDocument();
 
 		$item = $model->getTable();
-		$model->render();
+		$data = $model->render();
 
 		$w = new FabrikWorker();
 
-		$data = $this->get('Data');
 		//add in some styling short cuts
 
 		$c = 0;
@@ -222,7 +221,8 @@ class FabrikViewList extends JView{
 				$o->data = $data[$groupk][$i];
 				$o->cursor = $num_rows + $nav->limitstart;
 				$o->total = $nav->total;
-				$o->id = "list_".$item->id."_row_".@$o->data->__pk_val;
+				//$o->id = "list_".$item->id."_row_".@$o->data->__pk_val;
+				$o->id = 'list_'.$model->getRenderContext().'_row_'.@$o->data->__pk_val;
 				$o->class = "fabrik_row oddRow".$c;
 				$data[$groupk][$i] = $o;
 				$c = 1-$c;
@@ -506,39 +506,40 @@ class FabrikViewList extends JView{
 		$reffer = str_replace('&', '&amp;', JRequest::getVar('REQUEST_URI', '', 'server'));
 		$this->hiddenFields = array();
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"option\" value=\"".JRequest::getCmd('option', 'com_fabrik'). "\" />";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"orderdir\" value=\"\" />";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"orderby\" value=\"\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
+		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="" />';
+		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="" />';
 
 		//$$$rob if the content plugin has temporarily set the view to table then get view from origview var, if that doesn't exist
 		//revert to view var. Used when showing table in article/blog layouts
 		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"view\" value=\"" . $view . "\" id = \"table_".$item->id."_view\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" id ="table_'.$item->id.'_view" />';
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"listid\" value=\"$item->id\"/>";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"Itemid\" value=\"$Itemid\"/>";
+		$this->hiddenFields[] = '<input type="hidden" name="listid" value="'.$item->id.'"/>';
+		$this->hiddenFields[] = '<input type="hidden" name="listref" value="'.$model->getRenderContext().'"/>';
+		$this->hiddenFields[] = '<input type="hidden" name="Itemid" value="'.$Itemid.'"/>';
 		//removed in favour of using list_{id}_limit dorop down box
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_referrer\" value=\"$reffer\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_referrer" value="'.$reffer.'" />';
 		$this->hiddenFields[] = JHTML::_('form.token');
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"format\" value=\"html\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="format" value="html" />';
 		//$packageId = JRequest::getInt('_packageId', 0);
 		// $$$ rob testing for ajax table in module
 		$packageId = $model->packageId;
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"_packageId\" value=\"$packageId\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="_packageId" value="'.$packageId.'" />';
 		if ($app->isAdmin()) {
-			$this->hiddenFields[] = "<input type=\"hidden\" name=\"task\" value=\"list.view\" id=\"task\" />";
+			$this->hiddenFields[] = '<input type="hidden" name="task" value="list.view" id="task" />';
 		} else {
-			$this->hiddenFields[] = "<input type=\"hidden\" name=\"task\" value=\"\" />";
+			$this->hiddenFields[] = '<input type="hidden" name="task" value="" />';
 		}
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_listplugin_name\" value=\"\" />";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_listplugin_renderOrder\" value=\"\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_name" value="" />';
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_renderOrder" value="" />';
 
 		// $$$ hugh - added this so plugins have somewhere to stuff any random data they need during submit
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_listplugin_options\" value=\"\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_options" value="" />';
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"incfilters\" value=\"1\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="incfilters" value="1" />';
 		$this->hiddenFields = implode("\n", $this->hiddenFields);
 	}
 

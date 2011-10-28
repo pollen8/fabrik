@@ -46,3 +46,4 @@ transfer/*
 /tests
 /cache
 fabrik_build/output/
+/build_config_private.ini

@@ -128,10 +128,17 @@ class FabrikFEModelVisualization extends JModel
 	function getFilters()
 	{
 		$params = $this->getParams();
-		$listModels = $this->getlistModels();
+		$name = strtolower(str_replace('fabrikModel', '', get_class($this)));
 		$filters = array();
+		$showFilters = $params->get($name.'_show_filters', array());
+		$listModels = $this->getlistModels();
+		$i = 0;
 		foreach ($listModels as $listModel) {
-			$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'vizualization', $this->getVisualization()->id);
+			$show = (bool)JArrayHelper::getValue($showFilters, $i, true);
+			if ($show) {
+				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'vizualization', $this->getVisualization()->id);
+			}
+			$i ++;
 		}
 		$this->getRequireFilterMsg();
 		return $filters;
@@ -180,11 +187,8 @@ class FabrikFEModelVisualization extends JModel
 		$listModels = $this->getlistModels();
 		foreach ($listModels as $model) {
 			$params = $model->getParams();
-
-			$filters	=& $model->getFilterArray();
-
+			$filters = $model->getFilterArray();
 			$ftypes = JArrayHelper::getValue($filters, 'search_type', array());
-
 			//for ($i = count($ftypes) - 1; $i >= 0; $i--) {
 			foreach ($ftypes as $i => $v) {
 				if ($ftypes[$i] == 'prefilter') {

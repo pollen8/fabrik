@@ -213,6 +213,7 @@ class fabrikViewForm extends JView
 
 		$model = $this->getModel();
 		if (!$this->isMambot) {
+			echo "not a mambot !<br>";
 			$title = $model->getPageTitle($params->get('page_title'));
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
 		}

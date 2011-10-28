@@ -23,11 +23,10 @@ class FabrikViewList extends JView{
 		$model->setId(JRequest::getInt('listid'));
 		$table = $model->getTable();
 		$params = $model->getParams();
-		$model->render();
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$rowid = JRequest::getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
-		$data = $model->getData();
+		$data = $model->render();
 		$nav = $model->getPagination();
 		$c = 0;
 		foreach ($data as $groupk => $group) {
@@ -52,7 +51,7 @@ class FabrikViewList extends JView{
 		}
 
 		// $$$ hugh - heading[3] doesn't exist any more?  Trying [0] instead.
-		$d = array('id' => (int)$table->id, 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
+		$d = array('id' => JRequest::getVar('listref', $table->id), 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
 		'headings' => $this->headings,
 			'formid'=> $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));

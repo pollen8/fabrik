@@ -47,10 +47,13 @@ class JFormFieldElement extends JFormFieldList
 		if (!isset($fabrikelements)) {
 			$fabrikelements = array();
 		}
-
-		$c = $this->form->repeatCounter;
+		JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
+		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+		$c = (int)@$this->form->repeatCounter;
 		$table = $this->element['table'];
-
+		if ($table == '') {
+			$table = $this->form->getValue('params.list_id');
+		}
 		$include_calculations = (int)$this->element['include_calculations'];
 		$published = (int)$this->element['published'];
 		$showintable = (int)$this->element['showintable'];

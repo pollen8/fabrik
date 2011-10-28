@@ -75,13 +75,15 @@ var FbFileUpload = new Class({
 		}
 		var c = this.element.getParent('.fabrikSubElementContainer');
 		this.container = c;
-		this.widget = new ImageWidget(c.getElement('canvas'), {'cropdim' : {
+		this.widget = new ImageWidget(c.getElement('canvas'), {
+			'cropdim' : {
 				w: this.options.cropwidth,
 				h: this.options.cropheight,
 				x: this.options.cropwidth / 2,
-				y: this.options.cropheight / 2,
-				crop: this.options.crop
-			}});
+				y: this.options.cropheight / 2
+			},
+			crop: this.options.crop
+		});
 		this.pluploadContainer = c.getElement('.plupload_container');
 		this.pluploadFallback = c.getElement('.plupload_fallback');
 		this.droplist = c.getElement('.plupload_filelist');
@@ -409,9 +411,6 @@ var ImageWidget = new Class({
 			}
 		};
 		this.windowopts.title = opts.crop ? Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE') : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
-		/*if (opts.crop) {
-			windowopts.type = 'modal';
-		}*/
 		this.showWin();
 		this.images = $H({});
 		var parent = this;
@@ -496,6 +495,11 @@ var ImageWidget = new Class({
 					}
 				},
 				onDraw : function (ctx) {
+					if (typeOf(parent.img) === 'null') {
+						console.log('no parent img', parent);
+						return;
+					}
+						
 					var w = this.w * this.scale;
 					var h = this.h * this.scale;
 					var x = this.x - w * 0.5;
