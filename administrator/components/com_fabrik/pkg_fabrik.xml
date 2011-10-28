@@ -2,9 +2,9 @@
 <install type="package" version="1.6">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.0 Alpha</version>
+	<version>{version}</version>
 	<url>http://www.fabrikar.com</url>
-	<creationDate>April 2010</creationDate>
+	<creationDate>{createdate}</creationDate>
 	<author>Fabrik</author>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>
