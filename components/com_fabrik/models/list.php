@@ -139,6 +139,10 @@ class FabrikFEModelList extends JModelForm {
 
 	/** @var array list of column data - used for filters */
 	protected $columnData = array();
+	
+	/** @var string render context used for defining custom css variable for tmpl rendering e.g. module_1*/
+	protected $renderContext = '';
+	
 	/**
 	 * Constructor
 	 *
@@ -3144,13 +3148,13 @@ class FabrikFEModelList extends JModelForm {
 		if (!isset($this->prefilters)) {
 			$params = $this->getParams();
 			$elements = $this->getElements('filtername');
-			$afilterJoins = $params->get('filter-join', '', '_default', 'array');
-			$afilterFields = $params->get('filter-fields', '', '_default', 'array');
-			$afilterConditions	= $params->get('filter-conditions', '', '_default', 'array');
-			$afilterValues = $params->get('filter-value', '', '_default', 'array');
-			$afilterAccess	= $params->get('filter-access', '', '_default', 'array');
-			$afilterEval = $params->get('filter-eval', '', '_default', 'array');
-			$afilterGrouped	= $params->get('filter-grouped', '', '_default', 'array');
+			$afilterJoins = (array)$params->get('filter-join');
+			$afilterFields = (array)$params->get('filter-fields');
+			$afilterConditions = (array)$params->get('filter-conditions');
+			$afilterValues = (array)$params->get('filter-value');
+			$afilterAccess = (array)$params->get('filter-access');
+			$afilterEval = (array)$params->get('filter-eval');
+			$afilterGrouped	= (array)$params->get('filter-grouped');
 			$join = 'WHERE';
 			$w = new FabrikWorker();
 			for ($i=0; $i < count($afilterFields); $i++) {
@@ -3986,6 +3990,7 @@ class FabrikFEModelList extends JModelForm {
 
 				$groupHeadings[$groupHeadingKey] ++;
 				$key = $elementModel->getFullName(false, true, false);
+				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList).':'.$key : $key;
 				$orderKey = $elementModel->getOrderbyFullName(false, false);
 				$elementParams = $elementModel->getParams();
 				$label = $elementParams->get('alt_list_heading');
@@ -4031,18 +4036,23 @@ class FabrikFEModelList extends JModelForm {
 				} else {
 					$heading = $label;
 				}
-				$aTableHeadings[$key] = $heading;
+				$aTableHeadings[$compsitKey] = $heading;
 
-				$headingClass[$key] = array('class' => 'fabrik_ordercell '.$key.' '.$element->id.'_order '.$elementParams->get('tablecss_header_class'),
+				$headingClass[$compsitKey] = array('class' => 'fabrik_ordercell '.$key.' '.$element->id.'_order '.$elementParams->get('tablecss_header_class'),
 				'style' => $elementParams->get('tablecss_header'));
 
-				$cellClass[$key] = array('class' => "{$key} fabrik_element " . $elementParams->get('tablecss_cell_class'),
+				$cellClass[$compsitKey] = array('class' => "{$key} fabrik_element " . $elementParams->get('tablecss_cell_class'),
 				'style' => $elementParams->get('tablecss_cell'));
 
 			}
 			if ($groupHeadings[$groupHeadingKey] == 0) {
 				unset ($groupHeadings[$groupHeadingKey]);
 			}
+		}
+		if (!empty($showInList)) {
+			$aTableHeadings = $this->removeHeadingCompositKey($aTableHeadings);
+			$headingClass = $this->removeHeadingCompositKey($headingClass);
+			$cellClass = $this->removeHeadingCompositKey($cellClass);
 		}
 		if (!in_array($this->_outPutFormat, array('pdf','csv'))) {
 			//@TODO check if any plugins need to use the selector as well!
@@ -4127,6 +4137,16 @@ class FabrikFEModelList extends JModelForm {
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
 	}
 
+	protected function removeHeadingCompositKey($arr)
+	{
+		ksort($arr);
+		foreach ($arr as $key => $val) {
+			$newkey = array_pop(explode(":", $key));
+			$arr[$newkey] = $arr[$key];
+			unset($arr[$key]);
+		}
+		return $arr;
+	}
 	/**
 	 * can the user select the specified row
 	 * @param object row
@@ -6236,7 +6256,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function getClearButton()
 	{
-		$filters = $this->getFilters('listform_'. $this->getId(), 'list');
+		$filters = $this->getFilters('listform_'. $this->getRenderContext(), 'list');
 		return count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0 ? '<a href="#" class="clearFilters">'.JText::_('COM_FABRIK_CLEAR').'</a>' : '';
 	}
 
@@ -6625,12 +6645,22 @@ class FabrikFEModelList extends JModelForm {
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '') {
 			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php?c='.$this->getId());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php?c='.$this->getRenderContext());
 			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/template_css.php?c=".$this->getId());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/template_css.php?c=".$this->getRenderContext());
 			}
 		}
 	}
+	
+	public function getRenderContext()
+	{
+		return $this->getId().$this->renderContext;
+	}
+	
+	public function setRenderContext($scope, $id)
+	{
+		$this->renderContext = '_'.$scope.'_'.$id;
+	} 
 
 	public function getGroupByHeadings()
 	{

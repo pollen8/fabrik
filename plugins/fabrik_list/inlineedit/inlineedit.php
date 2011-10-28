@@ -102,9 +102,8 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 			}
 		}
 		FabrikHelperHTML::script($srcs);
-		$opts = new stdClass();
+		$opts = $this->getElementJSOptions($model);
 		$opts->elements = $els;
-		$opts->listid = $model->getId();
 		$opts->formid = $model->getFormModel()->getId();
 		$opts->focusClass = 'focusClass';
 		$opts->editEvent = $params->get('inline_edit_event', 'dblclick');

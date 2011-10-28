@@ -385,11 +385,10 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		if (!is_object($this->getMapElement())) {
 			return false;
 		}
-		$opts = new stdClass();
+		$opts = $this->getElementJSOptions($model);
 		$opts->steps = (int)$params->get('radius_max', 100);
 		$opts->unit = $params->get('radius_unit', 'km');
 		$opts->value = $this->getValue();
-		$opts->listid = $model->getId();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListRadiusSearch($opts)";
 		return true;

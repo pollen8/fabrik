@@ -9,7 +9,7 @@ var FbListInlineEdit = new Class({
 		
 		head.ready(function () {
 			//assigned in list.js fabrik3
-			//this.list = $('list_' + this.options.listid);
+			//this.list = $('list_' + this.options.ref);
 			if (typeOf(this.getList().getForm()) === 'null') {
 				return false;
 			}
@@ -30,7 +30,7 @@ var FbListInlineEdit = new Class({
 		}.bind(this));
 		
 		Fabrik.addEvent('fabrik.list.ini', function () {
-			var table = Fabrik.blocks['list_' + this.options.listid];
+			var table = Fabrik.blocks['list_' + this.options.ref];
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
 			var myFormRequest = new Request({'url': '',
@@ -389,7 +389,7 @@ var FbListInlineEdit = new Class({
 	},
 	
 	getDataFromTable: function (td) {
-		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
+		var groupedData = Fabrik.blocks['list_' + this.options.ref].options.data;
 		var element = this.getElementName(td);
 		var ref = td.getParent('.fabrik_row').id;
 		var v = {};
@@ -423,7 +423,7 @@ var FbListInlineEdit = new Class({
 	
 	setTableData: function (row, element, val) {
 		ref = row.id;
-		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
+		var groupedData = Fabrik.blocks['list_' + this.options.ref].options.data;
 		// $$$rob $H needed when group by applied
 		if (typeOf(groupedData) === 'object') {
 			groupedData = $H(groupedData);
