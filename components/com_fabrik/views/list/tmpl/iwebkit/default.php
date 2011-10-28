@@ -37,7 +37,7 @@ if ($this->showFilters) {
 
 <div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>"><?php echo $this->emptyDataMessage; ?></div>
 <div class="fabrikDataContainer content" style="<?php echo $this->tableStyle?>">
-<ul class="fabrikList" id="list_<?php echo $this->table->id;?>" >
+<ul class="fabrikList" id="list_<?php echo $this->table->renderid;?>" >
 <?php
 	foreach ($this->rows as $groupedby => $group) {
 		if ($this->isGrouped) {

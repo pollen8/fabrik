@@ -31,7 +31,7 @@ var FbListPlugin = new Class({
 	},
 
 	getList: function () {
-		return Fabrik.blocks['list_' + this.options.listid];
+		return Fabrik.blocks['list_' + this.options.ref];
 	},
 
 	clearFilter: Function.from(),

@@ -23,7 +23,7 @@ class FabrikViewList extends JView{
 		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
 		$model = $this->getModel();
 		$item = $model->getTable();
-		$listid = $model->getId();
+		$listid = $model->getRenderContext();
 		$formModel = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
 
@@ -141,7 +141,7 @@ class FabrikViewList extends JView{
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
-		$script .= "\n" . "var list = new FbList($listid,";
+		$script .= "\n" . "var list = new FbList('$listid',";
 		$script .= $opts;
 		$script .= "\n" . ");";
 		$script .= "\n" . "Fabrik.addBlock('list_{$listid}', list);";
@@ -304,13 +304,14 @@ class FabrikViewList extends JView{
 		$this->table->label 	= $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
 		$this->table->intro 	= $w->parseMessageForPlaceHolder($item->introduction);
 		$this->table->id			= $item->id;
+		$this->table->renderid = $this->get('RenderContext');
 		$this->table->db_table_name = $item->db_table_name;
 		/** end **/
 		$this->assign('list', $this->table);
 		$this->group_by	= $item->group_by;
 		$this->form = new stdClass();
 		$this->form->id = $item->id;
-		$this->formid = 'listform_'.$item->id;
+		$this->formid = 'listform_'.$this->get('RenderContext');
 		$form = $model->getFormModel();
 		$this->table->action = $this->get('TableAction');
 		$this->showCSV = $model->canCSVExport();
@@ -338,7 +339,7 @@ class FabrikViewList extends JView{
 				$this->showAdd = false;
 			}
 		}
-
+		$this->assign('addLabel', $params->get('addlabel', JText::_('COM_FABRIK_ADD')));
 		$this->showRSS = $params->get('rss', 0) == 0 ? 0 : 1;
 		if ($this->showRSS) {
 			$this->rssLink = $model->getRSSFeedLink();
@@ -351,7 +352,7 @@ class FabrikViewList extends JView{
 		$this->assignRef('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters start') : null;
-		$this->filters = $model->getFilters('listform_'. $item->id);
+		$this->filters = $model->getFilters('listform_'. $model->getRenderContext());
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
 		//$form->getGroupsHiarachy();

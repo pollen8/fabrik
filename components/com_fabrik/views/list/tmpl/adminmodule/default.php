@@ -20,7 +20,7 @@ if ($this->showFilters) {
 	echo $this->loadTemplate('filter');
 }
 ?>
-			<table class="fabrikList" id="list_<?php echo $this->table->id;?>" >
+			<table class="fabrikList" id="list_<?php echo $this->table->renderid;?>" >
 
 	<?php
 	$gCounter = 0;

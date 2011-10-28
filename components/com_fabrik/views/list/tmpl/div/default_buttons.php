@@ -3,7 +3,7 @@
 		<li class="addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
 				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl,  array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_ADD').'</span>'));?>
-				<span><?php echo JText::_('COM_FABRIK_ADD');?></span>
+				<span><?php echo $this->addLabel?></span>
 			</a>
 		</li>
 	<?php }

@@ -2,7 +2,7 @@
 	<span class="addbutton">
 		<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
 			<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl);?>
-			<?php echo JText::_('COM_FABRIK_ADD');?>
+			<?php echo $this->addLabel?>
 		</a>
 	</span>
 <?php }?>

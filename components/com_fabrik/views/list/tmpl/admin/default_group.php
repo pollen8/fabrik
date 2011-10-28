@@ -10,7 +10,7 @@ foreach( $this->rows as $groupedby => $this->group ) {
 	}
 	?>
 <table class="adminlist fabrikList"
-	id="list_<?php echo $this->table->id;?>">
+	id="list_<?php echo $this->table->renderid;?>">
 	<thead>
 		<tr class="fabrik___heading">
 		<?php foreach ($this->headings as $key=>$heading) {?>

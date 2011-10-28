@@ -14,10 +14,10 @@
 
 <script type="text/javascript">
 head.ready(function(){
-	var list = document.id('list_<?php echo $this->list->id?>');
+	var list = document.id('list_<?php echo $this->list->renderid?>');
 
 	 Fabrik.addEvent('fabrik.list.update', function(l){
-			if(l.id == <?php echo (int)$this->list->id?>){
+			if(l.id == <?php echo (int)$this->list->renderid?>){
 				list.getElements('.fabrik___heading span.filter').hide();
 			}
 			return true;

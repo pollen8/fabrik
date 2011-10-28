@@ -309,7 +309,7 @@ class FabrikViewList extends JView{
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
 		$form->getGroupsHiarachy();
-		$this->filters = $model->getFilters('listform_'. $item->id);
+		$this->filters = $model->getFilters('listform_'. $model->getRenderContext());
 		$this->assign('showFilters', (count($this->filters) > 0 && $params->get('show-table-filters', 1)) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
 
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));

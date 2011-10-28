@@ -4011,7 +4011,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$listModel->clearCalculations();
 		$listModel->doCalculations();
-		$doCalcs = "\nFabrik.blocks['list_".$listid."'].updateCals(".json_encode($listModel->getCalculations()).")";
+		$doCalcs = "\nFabrik.blocks['list_".$listModel->getRenderContext()."'].updateCals(".json_encode($listModel->getCalculations()).")";
 
 		if(!$saving) {
 			// so not an element with toggle values, so load up the form widget to enable user

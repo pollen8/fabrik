@@ -27,7 +27,7 @@ if ($this->showFilters) {
 			echo $this->grouptemplates[$groupedby];
 		}
 		?>
-	<table class="fabrikList" id="list_<?php echo $this->table->id;?>" >
+	<table class="fabrikList" id="list_<?php echo $this->table->renderid;?>" >
 		<thead>
 			<?php echo $this->headingstmpl; ?>
 		</thead>
