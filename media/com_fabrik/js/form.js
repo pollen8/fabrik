@@ -841,6 +841,8 @@ var FbForm = new Class({
 							if (json.baseRedirect !== true) {
 								if (json.url !== undefined) {
 									Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': 400});
+								} else {
+									alert(saved_msg);
 								}
 							} else {
 								alert(saved_msg);
