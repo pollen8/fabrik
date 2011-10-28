@@ -126,7 +126,7 @@ class FabrikControllerForm extends JControllerForm
 			return;
 		}
 		if (JRequest::getVar('format') == 'raw') {
-			$url = COM_FABRIK_LIVESITE .'/index.php?option=com_fabrik&view=list&format=raw&listid=' . $tid;
+			$url = 'index.php?option=com_fabrik&view=list&format=raw&listid='.$tid;
 			$this->setRedirect($url, $msg);
 		} else {
 			$this->makeRedirect($msg, $model);
