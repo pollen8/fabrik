@@ -12,7 +12,7 @@
 // JSLint defined globals
 /*global plupload:false, window:false */
 
-(function (window, document, plupload, undef) {
+(function(window, document, plupload, undef) {
 	function getById(id) {
 		return document.getElementById(id);
 	}
@@ -30,15 +30,13 @@
 		 *
 		 * @return {Object} Name/value object with supported features.
 		 */
-		getFeatures : function () {
+		getFeatures : function() {			
 			// Only multipart feature
 			return {
 				multipart: true,
 				
-				/* WebKit let you trigger file dialog programmatically while FF and Opera - do not, so we
-				sniff for it here... probably not that good idea, but impossibillity of controlling cursor style 
-				on top of add files button obviously feels even worse */
-				canOpenDialog: navigator.userAgent.indexOf('WebKit') !== -1
+				// WebKit and Gecko 2+ can trigger file dialog progrmmatically
+				triggerDialog: (plupload.ua.gecko && window.FormData || plupload.ua.webkit) 
 			};
 		},
 
@@ -49,17 +47,25 @@
 		 * @param {plupload.Uploader} uploader Uploader instance that needs to be initialized.
 		 * @param {function} callback Callback to execute when the runtime initializes or fails to initialize. If it succeeds an object with a parameter name success will be set to true.
 		 */
-		init : function (uploader, callback) {
-			uploader.bind("Init", function (up) {
+		init : function(uploader, callback) {
+			uploader.bind("Init", function(up) {
 				var container = document.body, iframe, url = "javascript", currentFile,
 					input, currentFileId, fileIds = [], IE = /MSIE/.test(navigator.userAgent), mimes = [],
 					filters = up.settings.filters, i, ext, type, y;
 
 				// Convert extensions to mime types list
+				no_type_restriction:
 				for (i = 0; i < filters.length; i++) {
 					ext = filters[i].extensions.split(/,/);
 
 					for (y = 0; y < ext.length; y++) {
+						
+						// If there's an asterisk in the list, then accept attribute is not required
+						if (ext[y] === '*') {
+							mimes = [];
+							break no_type_restriction;
+						}
+						
 						type = plupload.mimeTypes[ext[y]];
 
 						if (type) {
@@ -67,7 +73,7 @@
 						}
 					}
 				}
-
+				
 				mimes = mimes.join(',');
 
 				function createForm() {
@@ -98,8 +104,8 @@
 					browseButton = getById(up.settings.browse_button);
 					
 					// Route click event to input element programmatically, if possible
-					if (up.features.canOpenDialog && browseButton) {
-						plupload.addEvent(getById(up.settings.browse_button), 'click', function (e) {
+					if (up.features.triggerDialog && browseButton) {
+						plupload.addEvent(getById(up.settings.browse_button), 'click', function(e) {
 							input.click();
 							e.preventDefault();
 						}, up.id);
@@ -110,7 +116,7 @@
 						width : '100%',
 						height : '100%',
 						opacity : 0,
-						fontSize: '2em' // force input element to be bigger then needed to occupy whole space
+						fontSize: '999px' // force input element to be bigger then needed to occupy whole space
 					});
 					
 					plupload.extend(form.style, {
@@ -131,7 +137,7 @@
 					}
 
 					// add change event
-					plupload.addEvent(input, 'change', function (e) {
+					plupload.addEvent(input, 'change', function(e) {
 						var element = e.target, name, files = [], topElement;
 
 						if (element.value) {
@@ -145,7 +151,7 @@
 							files.push(new plupload.File(currentFileId, name));
 							
 							// Clean-up events - they won't be needed anymore
-							if (!up.features.canOpenDialog) {
+							if (!up.features.triggerDialog) {
 								plupload.removeAllEvents(form, up.id);								
 							} else {
 								plupload.removeEvent(browseButton, 'click', up.id);	
@@ -179,7 +185,7 @@
 					container.appendChild(iframe);
 
 					// Add IFrame onload event
-					plupload.addEvent(iframe, 'load', function (e) {
+					plupload.addEvent(iframe, 'load', function(e) {
 						var n = e.target, el, result;
 
 						// Ignore load event if there is no file
@@ -201,8 +207,8 @@
 						}
 
 						// Get result
-						result = el.documentElement.innerText || el.documentElement.textContent;
-
+						result = el.body.innerHTML;
+						
 						// Assume no error
 						if (result) {
 							currentFile.status = plupload.DONE;
@@ -219,15 +225,17 @@
 				
 				if (up.settings.container) {
 					container = getById(up.settings.container);
-					container.style.position = 'relative';
+					if (plupload.getStyle(container, 'position') === 'static') {
+						container.style.position = 'relative';
+					}
 				}
 				
 				// Upload file
-				up.bind("UploadFile", function (up, file) {
+				up.bind("UploadFile", function(up, file) {
 					var form, input;
 					
 					// File upload finished
-					if (file.status === plupload.DONE || file.status === plupload.FAILED || up.state === plupload.STOPPED) {
+					if (file.status == plupload.DONE || file.status == plupload.FAILED || up.state == plupload.STOPPED) {
 						return;
 					}
 
@@ -242,7 +250,7 @@
 					form.setAttribute("action", up.settings.url);
 
 					// Append multipart parameters
-					plupload.each(plupload.extend({name : file.target_name || file.name}, up.settings.multipart_params), function (value, name) {
+					plupload.each(plupload.extend({name : file.target_name || file.name}, up.settings.multipart_params), function(value, name) {
 						var hidden = document.createElement('input');
 
 						plupload.extend(hidden, {
@@ -265,26 +273,28 @@
 				
 				
 				
-				up.bind('FileUploaded', function (up) {
+				up.bind('FileUploaded', function(up) {
 					up.refresh(); // just to get the form back on top of browse_button
 				});				
 
-				up.bind('StateChanged', function (up) {
-					if (up.state === plupload.STARTED) {
+				up.bind('StateChanged', function(up) {
+					if (up.state == plupload.STARTED) {
 						createIframe();
 					}
 
-					if (up.state === plupload.STOPPED) {
-						window.setTimeout(function () {
+					if (up.state == plupload.STOPPED) {
+						window.setTimeout(function() {
 							plupload.removeEvent(iframe, 'load', up.id);
-							iframe.parentNode.removeChild(iframe);
+							if (iframe.parentNode) { // #382
+								iframe.parentNode.removeChild(iframe);
+							}
 						}, 0);
 					}
 				});
 
 				// Refresh button, will reposition the input form
-				up.bind("Refresh", function (up) {
-					var browseButton, topElement, hoverClass, activeClass, browsePos, browseSize, inputContainer, inputFile, pzIndex;
+				up.bind("Refresh", function(up) {
+					var browseButton, topElement, hoverClass, activeClass, browsePos, browseSize, inputContainer, inputFile, zIndex;
 
 					browseButton = getById(up.settings.browse_button);
 					if (browseButton) {
@@ -302,20 +312,25 @@
 						
 						// for IE and WebKit place input element underneath the browse button and route onclick event 
 						// TODO: revise when browser support for this feature will change
-						if (up.features.canOpenDialog) {
-							pzIndex = parseInt(browseButton.parentNode.style.zIndex, 10);
+						if (up.features.triggerDialog) {
+							if (plupload.getStyle(browseButton, 'position') === 'static') {
+								plupload.extend(browseButton.style, {
+									position : 'relative'
+								});
+							}
+							
+							zIndex = parseInt(browseButton.style.zIndex, 10);
 
-							if (isNaN(pzIndex)) {
-								pzIndex = 0;
+							if (isNaN(zIndex)) {
+								zIndex = 0;
 							}
 
 							plupload.extend(browseButton.style, {
-								position : 'relative',
-								zIndex : pzIndex
-							});
+								zIndex : zIndex
+							});							
 
 							plupload.extend(inputContainer.style, {
-								zIndex : pzIndex - 1
+								zIndex : zIndex - 1
 							});
 						}
 
@@ -325,22 +340,22 @@
 						TODO: needs to be revised as things will change */
 						hoverClass = up.settings.browse_button_hover;
 						activeClass = up.settings.browse_button_active;
-						topElement = up.features.canOpenDialog ? browseButton : inputContainer;
+						topElement = up.features.triggerDialog ? browseButton : inputContainer;
 						
 						if (hoverClass) {
-							plupload.addEvent(topElement, 'mouseover', function () {
+							plupload.addEvent(topElement, 'mouseover', function() {
 								plupload.addClass(browseButton, hoverClass);	
 							}, up.id);
-							plupload.addEvent(topElement, 'mouseout', function () {
+							plupload.addEvent(topElement, 'mouseout', function() {
 								plupload.removeClass(browseButton, hoverClass);
 							}, up.id);
 						}
 						
 						if (activeClass) {
-							plupload.addEvent(topElement, 'mousedown', function () {
+							plupload.addEvent(topElement, 'mousedown', function() {
 								plupload.addClass(browseButton, activeClass);	
 							}, up.id);
-							plupload.addEvent(document.body, 'mouseup', function () {
+							plupload.addEvent(document.body, 'mouseup', function() {
 								plupload.removeClass(browseButton, activeClass);	
 							}, up.id);
 						}
@@ -348,7 +363,7 @@
 				});
 
 				// Remove files
-				uploader.bind("FilesRemoved", function (up, files) {
+				uploader.bind("FilesRemoved", function(up, files) {
 					var i, n;
 
 					for (i = 0; i < files.length; i++) {
@@ -361,7 +376,7 @@
 				
 				
 				// Completely destroy the runtime
-				uploader.bind("Destroy", function (up) {
+				uploader.bind("Destroy", function(up) {
 					var name, element, form,
 						elements = {
 							inputContainer: 'form_' + currentFileId,
@@ -379,7 +394,7 @@
 					plupload.removeAllEvents(document.body, up.id);
 					
 					// Remove mark-up
-					plupload.each(fileIds, function (id, i) {
+					plupload.each(fileIds, function(id, i) {
 						form = getById('form_' + id);
 						if (form) {
 							container.removeChild(form);

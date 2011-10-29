@@ -43,7 +43,7 @@ if ($this->params->get('show_page_title', 1)) { ?>
 
 			<div class="scroll-y">
 
-				<ul class="fabrikList list" id="list_<?php echo $this->table->id;?>" >
+				<ul class="fabrikList list" id="list_<?php echo $this->table->renderid;?>" >
 					<?php
 					foreach ($group as $this->_row) {
 						echo $this->loadTemplate('row');

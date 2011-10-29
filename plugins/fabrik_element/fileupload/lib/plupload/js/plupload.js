@@ -13,7 +13,7 @@
 
 /*!@@version@@*/
 
-(function () {
+(function() {
 	var count = 0, runtimes = [], i18n = {}, mimes = {},
 		xmlEncodeChars = {'<' : 'lt', '>' : 'gt', '&' : 'amp', '"' : 'quot', '\'' : '#39'},
 		xmlEncodeRegExp = /[<>&\"\']/g, undef, delay = window.setTimeout,
@@ -31,7 +31,7 @@
 	}
 
 	// Parses the default mime types string into a mimes lookup map
-	(function (mime_data) {
+	(function(mime_data) {
 		var items = mime_data.split(/,/), i, y, ext;
 
 		for (i = 0; i < items.length; i += 2) {
@@ -58,6 +58,7 @@
 		"image/bmp,bmp," +
 		"image/gif,gif," +
 		"image/jpeg,jpeg jpg jpe," +
+		"image/photoshop,psd," +
 		"image/png,png," +
 		"image/svg+xml,svg svgz," +
 		"image/tiff,tiff tif," +
@@ -68,7 +69,11 @@
 		"video/mp4,mp4," +
 		"video/x-m4v,m4v," +
 		"video/x-flv,flv," +
+		"video/x-ms-wmv,wmv," +
+		"video/avi,avi," +
+		"video/webm,webm," +
 		"video/vnd.rn-realvideo,rv," +
+		"text/csv,csv," +
 		"text/plain,asc txt text diff log," +
 		"application/octet-stream,exe"
 	);
@@ -183,7 +188,7 @@
 		INIT_ERROR : -500,
 
 		/**
-		 * File size error. If the user selects a file that is to large it will be blocked and an error of this type will be triggered.
+		 * File size error. If the user selects a file that is too large it will be blocked and an error of this type will be triggered.
 		 *
 		 * @property FILE_SIZE_ERROR
 		 * @final
@@ -231,6 +236,26 @@
 		 * @final
 		 */
 		mimeTypes : mimes,
+		
+		/**
+		 * In some cases sniffing is the only way around :(
+		 */
+		ua: (function() {
+			var nav = navigator, userAgent = nav.userAgent, vendor = nav.vendor, webkit, opera, safari;
+			
+			webkit = /WebKit/.test(userAgent);
+			safari = webkit && vendor.indexOf('Apple') !== -1;
+			opera = window.opera && window.opera.buildNumber;
+			
+			return {
+				windows: navigator.platform.indexOf('Win') !== -1,
+				ie: !webkit && !opera && (/MSIE/gi).test(userAgent) && (/Explorer/gi).test(nav.appName),
+				webkit: webkit,
+				gecko: !webkit && /Gecko/.test(userAgent),
+				safari: safari,
+				opera: !!opera
+			};
+		}()),
 
 		/**
 		 * Extends the specified object with another object.
@@ -240,10 +265,10 @@
 		 * @param {Object..} obj Multiple objects to extend with.
 		 * @return {Object} Same as target, the extended object.
 		 */
-		extend : function (target) {
-			plupload.each(arguments, function (arg, i) {
+		extend : function(target) {
+			plupload.each(arguments, function(arg, i) {
 				if (i > 0) {
-					plupload.each(arg, function (value, key) {
+					plupload.each(arg, function(value, key) {
 						target[key] = value;
 					});
 				}
@@ -259,7 +284,7 @@
 		 * @param {String} s String to clean up.
 		 * @return {String} Cleaned string.
 		 */
-		cleanName : function (name) {
+		cleanName : function(name) {
 			var i, lookup;
 
 			// Replace diacritics
@@ -293,7 +318,7 @@
 		 * @param {String} name Runtime name for example flash.
 		 * @param {Object} obj Object containing init/destroy method.
 		 */
-		addRuntime : function (name, runtime) {			
+		addRuntime : function(name, runtime) {			
 			runtime.name = name;
 			runtimes[name] = runtime;
 			runtimes.push(runtime);
@@ -311,7 +336,7 @@
 		 * @method guid
 		 * @return {String} Virtually unique id.
 		 */
-		guid : function () {
+		guid : function() {
 			var guid = new Date().getTime().toString(32), i;
 
 			for (i = 0; i < 5; i++) {
@@ -328,10 +353,10 @@
 		 * @param {Object} items Name/value object to serialize as a querystring.
 		 * @return {String} String with url + serialized query string items.
 		 */
-		buildUrl : function (url, items) {
+		buildUrl : function(url, items) {
 			var query = '';
 
-			plupload.each(items, function (value, name) {
+			plupload.each(items, function(value, name) {
 				query += (query ? '&' : '') + encodeURIComponent(name) + '=' + encodeURIComponent(value);
 			});
 
@@ -349,7 +374,7 @@
 		 * @param {Object} obj Object to iterate.
 		 * @param {function} callback Callback function to execute for each item.
 		 */
-		each : function (obj, callback) {
+		each : function(obj, callback) {
 			var length, key, i;
 
 			if (obj) {
@@ -382,7 +407,7 @@
 		 * @param {Number} size Size to format as string.
 		 * @return {String} Formatted size string.
 		 */
-		formatSize : function (size) {
+		formatSize : function(size) {
 			if (size === undef || /\D/.test(size)) {
 				return plupload.translate('N/A');
 			}
@@ -413,7 +438,7 @@
 		 * @param {Element} root Optional root element to stop calculations at.
 		 * @return {object} Absolute position of the specified element object with x, y fields.
 		 */
-		 getPos : function (node, root) {
+		 getPos : function(node, root) {
 			var x = 0, y = 0, parent, doc = document, nodeRect, rootRect;
 
 			node = node;
@@ -448,14 +473,14 @@
 			}
 
 			parent = node;
-			while (parent && parent !== root && parent.nodeType) {
+			while (parent && parent != root && parent.nodeType) {
 				x += parent.offsetLeft || 0;
 				y += parent.offsetTop || 0;
 				parent = parent.offsetParent;
 			}
 
 			parent = node.parentNode;
-			while (parent && parent !== root && parent.nodeType) {
+			while (parent && parent != root && parent.nodeType) {
 				x -= parent.scrollLeft || 0;
 				y -= parent.scrollTop || 0;
 				parent = parent.parentNode;
@@ -473,7 +498,7 @@
 		 * @param {Node} node Node to get the size of.
 		 * @return {Object} Object with a w and h property.
 		 */
-		getSize : function (node) {
+		getSize : function(node) {
 			return {
 				w : node.offsetWidth || node.clientWidth,
 				h : node.offsetHeight || node.clientHeight
@@ -487,23 +512,23 @@
 		 * @param {String/Number} size String to parse or number to just pass through.
 		 * @return {Number} Size in bytes.
 		 */
-		parseSize : function (size) {
+		parseSize : function(size) {
 			var mul;
 
-			if (typeof(size) === 'string') {
-				size = /^([0-9]+)([mgk]+)$/.exec(size.toLowerCase().replace(/[^0-9mkg]/g, ''));
+			if (typeof(size) == 'string') {
+				size = /^([0-9]+)([mgk]?)$/.exec(size.toLowerCase().replace(/[^0-9mkg]/g, ''));
 				mul = size[2];
 				size = +size[1];
 
-				if (mul === 'g') {
+				if (mul == 'g') {
 					size *= 1073741824;
 				}
 
-				if (mul === 'm') {
+				if (mul == 'm') {
 					size *= 1048576;
 				}
 
-				if (mul === 'k') {
+				if (mul == 'k') {
 					size *= 1024;
 				}
 			}
@@ -518,8 +543,8 @@
 		 * @param {String} s String to encode.
 		 * @return {String} Encoded string.
 		 */
-		xmlEncode : function (str) {
-			return str ? ('' + str).replace(xmlEncodeRegExp, function (chr) {
+		xmlEncode : function(str) {
+			return str ? ('' + str).replace(xmlEncodeRegExp, function(chr) {
 				return xmlEncodeChars[chr] ? '&' + xmlEncodeChars[chr] + ';' : chr;
 			}) : str;
 		},
@@ -531,7 +556,7 @@
 		 * @param {Object} obj Object with length field.
 		 * @return {Array} Array object containing all items.
 		 */
-		toArray : function (obj) {
+		toArray : function(obj) {
 			var i, arr = [];
 
 			for (i = 0; i < obj.length; i++) {
@@ -547,7 +572,7 @@
 		 * @param {Object} pack Language pack items to add.
 		 * @return {Object} Extended language pack object.
 		 */
-		addI18n : function (pack) {
+		addI18n : function(pack) {
 			return plupload.extend(i18n, pack);
 		},
 
@@ -555,12 +580,26 @@
 		 * Translates the specified string by checking for the english string in the language pack lookup.
 		 *
 		 * @param {String} str String to look for.
-		 * @reutrn {String} Translated string or the input string if it wasn't found.
+		 * @return {String} Translated string or the input string if it wasn't found.
 		 */
-		translate : function (str) {
+		translate : function(str) {
 			return i18n[str] || str;
 		},
+		
+		/**
+		 * Checks if object is empty.
+		 *
+		 * @param {Object} obj Object to check.
+		 * @return {Boolean}
+		 */
+		isEmptyObj : function(obj) {
+			if (obj === undef) return true;
 			
+			for (var prop in obj) {
+				return false;	
+			}
+			return true;
+		},
 		
 		/**
 		 * Checks if specified DOM element has specified class.
@@ -568,10 +607,10 @@
 		 * @param {Object} obj DOM element like object to add handler to.
 		 * @param {String} name Class name
 		 */
-		hasClass : function (obj, name) {
+		hasClass : function(obj, name) {
 			var regExp;
 		
-			if (obj.className === '') {
+			if (obj.className == '') {
 				return false;
 			}
 
@@ -586,9 +625,9 @@
 		 * @param {Object} obj DOM element like object to add handler to.
 		 * @param {String} name Class name
 		 */
-		addClass : function (obj, name) {
+		addClass : function(obj, name) {
 			if (!plupload.hasClass(obj, name)) {
-				obj.className = obj.className === '' ? name : obj.className.replace(/\s+$/, '')+' '+name;
+				obj.className = obj.className == '' ? name : obj.className.replace(/\s+$/, '')+' '+name;
 			}
 		},
 		
@@ -598,14 +637,27 @@
 		 * @param {Object} obj DOM element like object to add handler to.
 		 * @param {String} name Class name
 		 */
-		removeClass : function (obj, name) {
+		removeClass : function(obj, name) {
 			var regExp = new RegExp("(^|\\s+)"+name+"(\\s+|$)");
 			
-			obj.className = obj.className.replace(regExp, function ($0, $1, $2) {
+			obj.className = obj.className.replace(regExp, function($0, $1, $2) {
 				return $1 === ' ' && $2 === ' ' ? ' ' : '';
 			});
 		},
-		
+    
+		/**
+		 * Returns a given computed style of a DOM element.
+		 *
+		 * @param {Object} obj DOM element like object.
+		 * @param {String} name Style you want to get from the DOM element
+		 */
+		getStyle : function(obj, name) {
+			if (obj.currentStyle) {
+				return obj.currentStyle[name];
+			} else if (window.getComputedStyle) {
+				return window.getComputedStyle(obj, null)[name];
+			}
+		},
 
 		/**
 		 * Adds an event handler to the specified object and store reference to the handler
@@ -616,7 +668,7 @@
 		 * @param {Function} callback Function to call when event occurs.
 		 * @param {String} (optional) key that might be used to add specifity to the event record.
 		 */
-		addEvent : function (obj, name, callback) {
+		addEvent : function(obj, name, callback) {
 			var func, events, types, key;
 			
 			// if passed in, event will be locked with this key - one would need to provide it to removeEvent
@@ -630,9 +682,13 @@
 			}
 
 			// Add event listener
-			if (obj.attachEvent) {
+			if (obj.addEventListener) {
+				func = callback;
 				
-				func = function () {
+				obj.addEventListener(name, func, false);
+			} else if (obj.attachEvent) {
+				
+				func = function() {
 					var evt = window.event;
 
 					if (!evt.target) {
@@ -645,12 +701,7 @@
 					callback(evt);
 				};
 				obj.attachEvent('on' + name, func);
-				
-			} else if (obj.addEventListener) {
-				func = callback;
-				
-				obj.addEventListener(name, func, false);
-			}
+			} 
 			
 			// Log event handler to objects internal Plupload registry
 			if (obj[uid] === undef) {
@@ -683,19 +734,11 @@
 		 * @param {String} name Name of event listener to remove.
 		 * @param {Function|String} (optional) might be a callback or unique key to match.
 		 */
-		removeEvent: function (obj, name) {
-			var type, callback, key,
-				
-				// check if object is empty
-				isEmptyObj = function (obj) {
-					for (var prop in obj) {
-						return false;	
-					}
-					return true;
-				};
+		removeEvent: function(obj, name) {
+			var type, callback, key;
 			
 			// match the handler either by callback or by key	
-			if (typeof(arguments[2]) === "function") {
+			if (typeof(arguments[2]) == "function") {
 				callback = arguments[2];
 			} else {
 				key = arguments[2];
@@ -738,7 +781,7 @@
 			}
 			
 			// If Plupload registry has become empty, remove it
-			if (isEmptyObj(eventhash[obj[uid]])) {
+			if (plupload.isEmptyObj(eventhash[obj[uid]])) {
 				delete eventhash[obj[uid]];
 				
 				// IE doesn't let you remove DOM object property with - delete
@@ -757,17 +800,17 @@
 		 * @param {Object} obj DOM element to remove event listeners from.
 		 * @param {String} (optional) unique key to match, when removing events.
 		 */
-		removeAllEvents: function (obj) {
+		removeAllEvents: function(obj) {
 			var key = arguments[1];
 			
 			if (obj[uid] === undef || !obj[uid]) {
 				return;
 			}
 			
-			plupload.each(eventhash[obj[uid]], function (events, name) {
+			plupload.each(eventhash[obj[uid]], function(events, name) {
 				plupload.removeEvent(obj, name, key);
 			});		
-		}		
+		}
 	};
 	
 
@@ -780,15 +823,15 @@
 	 *     browse_button : 'button_id'
 	 * });
 	 *
-	 * uploader.bind('Init', function (up) {
+	 * uploader.bind('Init', function(up) {
 	 *     alert('Supports drag/drop: ' + (!!up.features.dragdrop));
 	 * });
 	 *
-	 * uploader.bind('FilesAdded', function (up, files) {
+	 * uploader.bind('FilesAdded', function(up, files) {
 	 *     alert('Selected files: ' + files.length);
 	 * });
 	 *
-	 * uploader.bind('QueueChanged', function (up) {
+	 * uploader.bind('QueueChanged', function(up) {
 	 *     alert('Queued files: ' + uploader.files.length);
 	 * });
 	 *
@@ -804,7 +847,7 @@
 	 * @method Uploader
 	 * @param {Object} settings Initialization settings, to be used by the uploader instance and runtimes.
 	 */
-	plupload.Uploader = function (settings) {
+	plupload.Uploader = function(settings) {
 		var events = {}, total, files = [], startTime;
 
 		// Inital total state
@@ -823,23 +866,24 @@
 		function uploadNext() {
 			var file, count = 0, i;
 
-			if (this.state === plupload.STARTED) {
+			if (this.state == plupload.STARTED) {
 				// Find first QUEUED file
 				for (i = 0; i < files.length; i++) {
-					if (!file && files[i].status === plupload.QUEUED) {
+					if (!file && files[i].status == plupload.QUEUED) {
 						file = files[i];
 						file.status = plupload.UPLOADING;
-						this.trigger("BeforeUpload", file);
-						this.trigger("UploadFile", file);
+						if (this.trigger("BeforeUpload", file)) {
+							this.trigger("UploadFile", file);
+						}
 					} else {
 						count++;
 					}
 				}
 
 				// All files are DONE or FAILED
-				if (count === files.length) {
-					this.trigger("UploadComplete", files);
+				if (count == files.length) {
 					this.stop();
+					this.trigger("UploadComplete", files);
 				}
 			}
 		}
@@ -861,9 +905,9 @@
 					total.size = undef;
 				}
 
-				if (file.status === plupload.DONE) {
+				if (file.status == plupload.DONE) {
 					total.uploaded++;
-				} else if (file.status === plupload.FAILED) {
+				} else if (file.status == plupload.FAILED) {
 					total.failed++;
 				} else {
 					total.queued++;
@@ -946,13 +990,13 @@
 			 *
 			 * @method init
 			 */
-			init : function () {
+			init : function() {
 				var self = this, i, runtimeList, a, runTimeIndex = 0, items;
 
-				if (typeof(settings.preinit) === "function") {
+				if (typeof(settings.preinit) == "function") {
 					settings.preinit(self);
 				} else {
-					plupload.each(settings.preinit, function (func, name) {
+					plupload.each(settings.preinit, function(func, name) {
 						self.bind(name, func);
 					});
 				}
@@ -969,19 +1013,23 @@
 				settings.max_file_size = plupload.parseSize(settings.max_file_size);
 
 				// Add files to queue
-				self.bind('FilesAdded', function (up, selected_files) {
+				self.bind('FilesAdded', function(up, selected_files) {
 					var i, file, count = 0, extensionsRegExp, filters = settings.filters;
 
 					// Convert extensions to regexp
 					if (filters && filters.length) {
 						extensionsRegExp = [];
 						
-						plupload.each(filters, function (filter) {
-							plupload.each(filter.extensions.split(/,/), function (ext) {
-								extensionsRegExp.push('\\.' + ext.replace(new RegExp('[' + ('/^$.*+?|()[]{}\\'.replace(/./g, '\\$&')) + ']', 'g'), '\\$&'));
+						plupload.each(filters, function(filter) {
+							plupload.each(filter.extensions.split(/,/), function(ext) {
+								if (/^\s*\*\s*$/.test(ext)) {
+									extensionsRegExp.push('\\.*');
+								} else {
+									extensionsRegExp.push('\\.' + ext.replace(new RegExp('[' + ('/^$.*+?|()[]{}\\'.replace(/./g, '\\$&')) + ']', 'g'), '\\$&'));
+								}
 							});
 						});
-
+						
 						extensionsRegExp = new RegExp(extensionsRegExp.join('|') + '$', 'i');
 					}
 
@@ -1020,7 +1068,7 @@
 
 					// Only trigger QueueChanged event if any files where added
 					if (count) {
-						delay(function () {
+						delay(function() {
 							self.trigger("QueueChanged");
 							self.refresh();
 						}, 1);
@@ -1031,7 +1079,7 @@
 
 				// Generate unique target filenames
 				if (settings.unique_names) {
-					self.bind("UploadFile", function (up, file) {
+					self.bind("UploadFile", function(up, file) {
 						var matches = file.name.match(/\.([^.]+)$/), ext = "tmp";
 
 						if (matches) {
@@ -1042,21 +1090,30 @@
 					});
 				}
 
-				self.bind('UploadProgress', function (up, file) {
+				self.bind('UploadProgress', function(up, file) {
 					file.percent = file.size > 0 ? Math.ceil(file.loaded / file.size * 100) : 100;
 					calc();
 				});
 
-				self.bind('StateChanged', function (up) {
-					if (up.state === plupload.STARTED) {
+				self.bind('StateChanged', function(up) {
+					if (up.state == plupload.STARTED) {
 						// Get start time to calculate bps
 						startTime = (+new Date());
+						
+					} else if (up.state == plupload.STOPPED) {
+						// Reset currently uploading files
+						for (i = up.files.length - 1; i >= 0; i--) {
+							if (up.files[i].status == plupload.UPLOADING) {
+								up.files[i].status = plupload.QUEUED;
+								calc();
+							}
+						}
 					}
 				});
 
 				self.bind('QueueChanged', calc);
 
-				self.bind("Error", function (up, err) {
+				self.bind("Error", function(up, err) {
 					// Set failed status if an error occured on a file
 					if (err.file) {
 						err.file.status = plupload.FAILED;
@@ -1064,22 +1121,22 @@
 
 						// Upload next file but detach it from the error event
 						// since other custom listeners might want to stop the queue
-						if (up.state === plupload.STARTED) {
-							delay(function () {
+						if (up.state == plupload.STARTED) {
+							delay(function() {
 								uploadNext.call(self);
 							}, 1);
 						}
 					}
 				});
 
-				self.bind("FileUploaded", function (up, file) {
+				self.bind("FileUploaded", function(up, file) {
 					file.status = plupload.DONE;
 					file.loaded = file.size;
 					up.trigger('UploadProgress', file);
 
 					// Upload next file but detach it from the error event
 					// since other custom listeners might want to stop the queue
-					delay(function () {
+					delay(function() {
 						uploadNext.call(self);
 					}, 1);
 				});
@@ -1120,7 +1177,7 @@
 						}
 
 						// Try initializing the runtime
-						runtime.init(self, function (res) {
+						runtime.init(self, function(res) {
 							if (res && res.success) {
 								// Successful initialization
 								self.features = features;
@@ -1143,10 +1200,10 @@
 
 				callNextInit();
 
-				if (typeof(settings.init) === "function") {
+				if (typeof(settings.init) == "function") {
 					settings.init(self);
 				} else {
-					plupload.each(settings.init, function (func, name) {
+					plupload.each(settings.init, function(func, name) {
 						self.bind(name, func);
 					});
 				}
@@ -1158,7 +1215,7 @@
 			 *
 			 * @method refresh
 			 */
-			refresh : function () {
+			refresh : function() {
 				this.trigger("Refresh");
 			},
 
@@ -1167,12 +1224,12 @@
 			 *
 			 * @method start
 			 */
-			start : function () {
-				if (this.state !== plupload.STARTED) {
+			start : function() {
+				if (this.state != plupload.STARTED) {
 					this.state = plupload.STARTED;
-					this.trigger("StateChanged");
-
-					uploadNext.call(this);
+					this.trigger("StateChanged");	
+					
+					uploadNext.call(this);				
 				}
 			},
 
@@ -1181,9 +1238,9 @@
 			 *
 			 * @method stop
 			 */
-			stop : function () {
-				if (this.state !== plupload.STOPPED) {
-					this.state = plupload.STOPPED;
+			stop : function() {
+				if (this.state != plupload.STOPPED) {
+					this.state = plupload.STOPPED;					
 					this.trigger("StateChanged");
 				}
 			},
@@ -1195,7 +1252,7 @@
 			 * @param {String} id File id to look for.
 			 * @return {plupload.File} File object or undefined if it wasn't found;
 			 */
-			getFile : function (id) {
+			getFile : function(id) {
 				var i;
 
 				for (i = files.length - 1; i >= 0; i--) {
@@ -1211,7 +1268,7 @@
 			 * @method removeFile
 			 * @param {plupload.File} file File to remove from queue.
 			 */
-			removeFile : function (file) {
+			removeFile : function(file) {
 				var i;
 
 				for (i = files.length - 1; i >= 0; i--) {
@@ -1229,7 +1286,7 @@
 			 * @param {Number} length (Optional) Lengh of items to remove.
 			 * @return {Array} Array of files that was removed.
 			 */
-			splice : function (start, length) {
+			splice : function(start, length) {
 				var removed;
 
 				// Splice and trigger events
@@ -1249,7 +1306,7 @@
 			 * @param {String} name Event name to fire.
 			 * @param {Object..} Multiple arguments to pass along to the listener functions.
 			 */
-			trigger : function (name) {
+			trigger : function(name) {
 				var list = events[name.toLowerCase()], i, args;
 
 				// console.log(name, arguments);
@@ -1270,6 +1327,16 @@
 
 				return true;
 			},
+			
+			/**
+			 * Check whether uploader has any listeners to the specified event.
+			 *
+			 * @method hasEventListener
+			 * @param {String} name Event name to check for.
+			 */
+			hasEventListener : function(name) {
+				return !!events[name.toLowerCase()];
+			},
 
 			/**
 			 * Adds an event listener by name.
@@ -1279,7 +1346,7 @@
 			 * @param {function} func Function to call ones the event gets fired.
 			 * @param {Object} scope Optional scope to execute the specified function in.
 			 */
-			bind : function (name, func, scope) {
+			bind : function(name, func, scope) {
 				var list;
 
 				name = name.toLowerCase();
@@ -1295,7 +1362,7 @@
 			 * @param {String} name Name of event to remove.
 			 * @param {function} func Function to remove from listener.
 			 */
-			unbind : function (name) {
+			unbind : function(name) {
 				name = name.toLowerCase();
 
 				var list = events[name], i, func = arguments[1];
@@ -1324,10 +1391,10 @@
 			 *
 			 * @method unbindAll
 			 */
-			unbindAll : function () {
+			unbindAll : function() {
 				var self = this;
 				
-				plupload.each(events, function (list, name) {
+				plupload.each(events, function(list, name) {
 					self.unbind(name);
 				});
 			},
@@ -1337,7 +1404,7 @@
 			 *
 			 * @method destroy
 			 */
-			destroy : function () {							
+			destroy : function() {							
 				this.trigger('Destroy');
 				
 				// Clean-up after uploader itself
@@ -1480,7 +1547,7 @@
 	 * @param {String} name File name.
 	 * @param {Number} size File size in bytes.
 	 */
-	plupload.File = function (id, name, size) {
+	plupload.File = function(id, name, size) {
 		var self = this; // Setup alias for self to reduce code size when it's compressed
 
 		/**
@@ -1539,13 +1606,13 @@
 	 * @class plupload.Runtime
 	 * @static
 	 */
-	plupload.Runtime = function () {
+	plupload.Runtime = function() {
 		/**
 		 * Returns a list of supported features for the runtime.
 		 *
 		 * @return {Object} Name/value object with supported features.
 		 */
-		this.getFeatures = function () {
+		this.getFeatures = function() {
 		};
 
 		/**
@@ -1555,7 +1622,7 @@
 		 * @param {plupload.Uploader} uploader Uploader instance that needs to be initialized.
 		 * @param {function} callback Callback function to execute when the runtime initializes or fails to initialize. If it succeeds an object with a parameter name success will be set to true.
 		 */
-		this.init = function (uploader, callback) {
+		this.init = function(uploader, callback) {
 		};
 	};
 
@@ -1571,7 +1638,7 @@
 	 * @constructor
 	 * @method QueueProgress
 	 */
-	 plupload.QueueProgress = function () {
+	 plupload.QueueProgress = function() {
 		var self = this; // Setup alias for self to reduce code size when it's compressed
 
 		/**
@@ -1635,7 +1702,7 @@
 		 *
 		 * @method reset
 		 */
-		self.reset = function () {
+		self.reset = function() {
 			self.size = self.loaded = self.uploaded = self.failed = self.queued = self.percent = self.bytesPerSec = 0;
 		};
 	};

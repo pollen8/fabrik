@@ -21,7 +21,7 @@ if ($this->showFilters) {
 	echo $c;
 }?>
 	<div class="boxflex">
-		<div class="fabrikList" id="list_<?php echo $this->table->id;?>" >
+		<div class="fabrikList" id="list_<?php echo $this->table->renderid;?>" >
 		
 			<?php
 			$gCounter = 0;

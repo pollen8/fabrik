@@ -139,6 +139,10 @@ class FabrikFEModelList extends JModelForm {
 
 	/** @var array list of column data - used for filters */
 	protected $columnData = array();
+	
+	/** @var string render context used for defining custom css variable for tmpl rendering e.g. module_1*/
+	protected $renderContext = '';
+	
 	/**
 	 * Constructor
 	 *
@@ -252,7 +256,7 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $_PROFILER->mark('Got filters') : null;
 		$this->setLimits();
 		$this->setElementTmpl();
-		$this->getData();
+		$data = $this->getData();
 		JDEBUG ? $_PROFILER->mark('got data') : null;
 		//think we really have to do these as the calc isnt updated when the table is filtered
 		$this->doCalculations();
@@ -260,6 +264,7 @@ class FabrikFEModelList extends JModelForm {
 		$this->getCalculations();
 		JDEBUG ? $_PROFILER->mark('got cacls') : null;
 		$item->hit();
+		return $data;
 	}
 
 	/**
@@ -1221,6 +1226,7 @@ class FabrikFEModelList extends JModelForm {
 		global $_PROFILER;
 		JDEBUG ? $_PROFILER->mark('_buildQuery: start') : null;
 		$query = array();
+		$this->mergeQuery= '';
 		if ($this->mergeJoinedData()) {
 			// $$$ rob - get a list of the main table's ids limited on the navigation
 			// this will then be used to filter the main query,
@@ -1240,6 +1246,7 @@ class FabrikFEModelList extends JModelForm {
 			//check that the order by fields are in the select statement
 			$squery = implode(" ", $query);
 			$db->setQuery($squery, $this->limitStart, $this->limitLength);
+			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = JArrayHelper::getColumn($db->loadObjectList(), '__pk_val');
 		}
@@ -1271,6 +1278,7 @@ class FabrikFEModelList extends JModelForm {
 
 		$query = $this->pluginQuery($query);
 		$query = implode(" ", $query);
+		$this->mainQuery = $query;
 		return $query;
 	}
 
@@ -2913,8 +2921,9 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
-		$registry	=& $session->get('registry');
-		$tid = 'list'.$this->getId();
+		$registry	= $session->get('registry');
+		//$tid = 'list'.$this->getId();
+		$tid = 'list'.JRequest::getVar('listref', $this->getRenderContext());
 		//make sure that we only store data thats been entered from this page first test we aren't in a plugin
 		if (JRequest::getCmd('option') == 'com_fabrik' && is_object($registry)) {
 			// dont do this when you are viewing a form or details page as it wipes out the table filters
@@ -2954,8 +2963,8 @@ class FabrikFEModelList extends JModelForm {
 		$db = FabrikWorker::getDbo();
 
 		$this->filters = array();
-		$user  					= JFactory::getUser();
-		$request 				= $this->getRequestData();
+		$user = JFactory::getUser();
+		$request = $this->getRequestData();
 		$this->storeRequestData($request);
 		FabrikHelperHTML::debug($request, 'filter:request');
 
@@ -3144,13 +3153,13 @@ class FabrikFEModelList extends JModelForm {
 		if (!isset($this->prefilters)) {
 			$params = $this->getParams();
 			$elements = $this->getElements('filtername');
-			$afilterJoins = $params->get('filter-join', '', '_default', 'array');
-			$afilterFields = $params->get('filter-fields', '', '_default', 'array');
-			$afilterConditions	= $params->get('filter-conditions', '', '_default', 'array');
-			$afilterValues = $params->get('filter-value', '', '_default', 'array');
-			$afilterAccess	= $params->get('filter-access', '', '_default', 'array');
-			$afilterEval = $params->get('filter-eval', '', '_default', 'array');
-			$afilterGrouped	= $params->get('filter-grouped', '', '_default', 'array');
+			$afilterJoins = (array)$params->get('filter-join');
+			$afilterFields = (array)$params->get('filter-fields');
+			$afilterConditions = (array)$params->get('filter-conditions');
+			$afilterValues = (array)$params->get('filter-value');
+			$afilterAccess = (array)$params->get('filter-access');
+			$afilterEval = (array)$params->get('filter-eval');
+			$afilterGrouped	= (array)$params->get('filter-grouped');
 			$join = 'WHERE';
 			$w = new FabrikWorker();
 			for ($i=0; $i < count($afilterFields); $i++) {
@@ -3241,13 +3250,13 @@ class FabrikFEModelList extends JModelForm {
 		$db = $this->getDb();
 		$table = $this->getTable();
 		$count = "DISTINCT " .$table->db_primary_key;
-		$totalSql  	= "SELECT COUNT(" . $count . ") AS t FROM ".$table->db_table_name." " . $this->_buildQueryJoin();
-		$totalSql 	.= " " . $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
-		$totalSql 	.= " " . $this->_buildQueryGroupBy();
-		$totalSql 	= $this->pluginQuery($totalSql);
+		$totalSql = "SELECT COUNT(" . $count . ") AS t FROM ".$table->db_table_name." " . $this->_buildQueryJoin();
+		$totalSql .= " " . $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
+		$totalSql .= " " . $this->_buildQueryGroupBy();
+		$totalSql = $this->pluginQuery($totalSql);
 		$db->setQuery($totalSql);
 		FabrikHelperHTML::debug($db->getQuery(), 'table getJoinMergeTotalRecords');
-		$total  	= $db->loadResult();
+		$total = $db->loadResult();
 		return $total;
 	}
 
@@ -3605,6 +3614,7 @@ class FabrikFEModelList extends JModelForm {
 		$opts->container = $container;
 		$opts->type = $type;
 		$opts->id = $type === 'list' ? $this->getId() : $id; //only used in tables
+		$opts->ref = $this->getRenderContext();
 		$opts->advancedSearch = $this->getAdvancedSearchOpts();
 		$opts = json_encode($opts);
 		$fscript = "
@@ -3727,11 +3737,11 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$list = $this->getTable();
 		$opts = new stdClass();
-		$opts->conditionList = FabrikHelperHTML::conditonList($this->getId(), '');
+		$opts->conditionList = FabrikHelperHTML::conditonList($this->getRenderContext(), '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
-		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
-		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
+		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getRenderContext().'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
+		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getRenderContext().'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
 		$opts->counter = count($this->getadvancedSearchRows()) - 1;
 		$elements = $this->getElements();
@@ -3831,13 +3841,12 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$statements = $this->getStatementsOpts();
 		$rows = array();
-
 		$first = false;
 		$elementModels = $this->getElements();
-
-		list($fieldNames, $firstFilter)  = $this->getAdvancedSearchElementList();
-		$type 		= '<input type="hidden" name="fabrik___filter[list_'.$this->getId().'][search_type][]" value="advanced" />';
-		$grouped 	= '<input type="hidden" name="fabrik___filter[list_'.$this->getId().'][grouped_to_previous][]" value="0" />';
+		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
+		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().']';
+		$type = '<input type="hidden" name="'.$prefix.'][search_type][]" value="advanced" />';
+		$grouped = '<input type="hidden" name="'.$prefix.'][grouped_to_previous][]" value="0" />';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
@@ -3850,10 +3859,10 @@ class FabrikFEModelList extends JModelForm {
 						break;
 					}
 				}
-				$join  = $filters['join'][$counter];
+				$join = $filters['join'][$counter];
 
 				$condition = $filters['condition'][$counter];
-				$value 		= $filters['origvalue'][$counter];
+				$value = $filters['origvalue'][$counter];
 				$v2 = $filters['value'][$counter];
 				switch( $condition )
 				{
@@ -3888,9 +3897,9 @@ class FabrikFEModelList extends JModelForm {
 
 				$value = trim(trim($value, '"'), "%");
 				if ($counter == 0) {
-					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="fabrik___filter[list_'.$this->getState('list.id').'][join][]" />';
+					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="'.$prefix.'[join][]" />';
 				} else {
-					$join = FabrikHelperHTML::conditonList($this->getId(), $join);
+					$join = FabrikHelperHTML::conditonList($this->getRenderContext(), $join);
 				}
 
 				$lineElname = FabrikString::safeColName($elementModel->getFullName(false, true, false));
@@ -3898,8 +3907,8 @@ class FabrikFEModelList extends JModelForm {
 				JRequest::setVar($lineElname, array('value' => $value));
 				$filter = & $elementModel->getFilter($counter, false);
 				JRequest::setVar($lineElname, $orig);
-				$key = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
-				$jsSel = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
+				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'[key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
+				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'[condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type, 'grouped' => $grouped);
 
 				$counter ++;
@@ -3907,9 +3916,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 
 		if ($counter == 0) {
-			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="fabrik___filter[list_'.$this->getId().'][join][]" value="WHERE" />';
-			$key = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getId().'][key][]', 'class="inputbox key" size="1" ','value', 'text', '');
-			$jsSel = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getId().'][condition][]', 'class="inputbox" size="1" ','value', 'text', '');
+			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="'.$prefix.'[join][]" value="WHERE" />';
+			$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'[key][]', 'class="inputbox key" size="1" ','value', 'text', '');
+			$jsSel = JHTML::_('select.genericlist', $statements, $prefix.'[condition][]', 'class="inputbox" size="1" ','value', 'text', '');
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type, 'grouped' => $grouped);
 		}
 		$this->advancedSearchRows = $rows;
@@ -3986,6 +3995,7 @@ class FabrikFEModelList extends JModelForm {
 
 				$groupHeadings[$groupHeadingKey] ++;
 				$key = $elementModel->getFullName(false, true, false);
+				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList).':'.$key : $key;
 				$orderKey = $elementModel->getOrderbyFullName(false, false);
 				$elementParams = $elementModel->getParams();
 				$label = $elementParams->get('alt_list_heading');
@@ -4031,18 +4041,23 @@ class FabrikFEModelList extends JModelForm {
 				} else {
 					$heading = $label;
 				}
-				$aTableHeadings[$key] = $heading;
+				$aTableHeadings[$compsitKey] = $heading;
 
-				$headingClass[$key] = array('class' => 'fabrik_ordercell '.$key.' '.$element->id.'_order '.$elementParams->get('tablecss_header_class'),
+				$headingClass[$compsitKey] = array('class' => 'fabrik_ordercell '.$key.' '.$element->id.'_order '.$elementParams->get('tablecss_header_class'),
 				'style' => $elementParams->get('tablecss_header'));
 
-				$cellClass[$key] = array('class' => "{$key} fabrik_element " . $elementParams->get('tablecss_cell_class'),
+				$cellClass[$compsitKey] = array('class' => "{$key} fabrik_element " . $elementParams->get('tablecss_cell_class'),
 				'style' => $elementParams->get('tablecss_cell'));
 
 			}
 			if ($groupHeadings[$groupHeadingKey] == 0) {
 				unset ($groupHeadings[$groupHeadingKey]);
 			}
+		}
+		if (!empty($showInList)) {
+			$aTableHeadings = $this->removeHeadingCompositKey($aTableHeadings);
+			$headingClass = $this->removeHeadingCompositKey($headingClass);
+			$cellClass = $this->removeHeadingCompositKey($cellClass);
 		}
 		if (!in_array($this->_outPutFormat, array('pdf','csv'))) {
 			//@TODO check if any plugins need to use the selector as well!
@@ -4127,6 +4142,16 @@ class FabrikFEModelList extends JModelForm {
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
 	}
 
+	protected function removeHeadingCompositKey($arr)
+	{
+		ksort($arr);
+		foreach ($arr as $key => $val) {
+			$newkey = array_pop(explode(":", $key));
+			$arr[$newkey] = $arr[$key];
+			unset($arr[$key]);
+		}
+		return $arr;
+	}
 	/**
 	 * can the user select the specified row
 	 * @param object row
@@ -6236,7 +6261,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function getClearButton()
 	{
-		$filters = $this->getFilters('listform_'. $this->getId(), 'list');
+		$filters = $this->getFilters('listform_'. $this->getRenderContext(), 'list');
 		return count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0 ? '<a href="#" class="clearFilters">'.JText::_('COM_FABRIK_CLEAR').'</a>' : '';
 	}
 
@@ -6625,12 +6650,22 @@ class FabrikFEModelList extends JModelForm {
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '') {
 			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php?c='.$this->getId());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php?c='.$this->getRenderContext());
 			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/template_css.php?c=".$this->getId());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/template_css.php?c=".$this->getRenderContext());
 			}
 		}
 	}
+	
+	public function getRenderContext()
+	{
+		return $this->getId().$this->renderContext;
+	}
+	
+	public function setRenderContext($scope, $id)
+	{
+		$this->renderContext = '_'.$scope.'_'.$id;
+	} 
 
 	public function getGroupByHeadings()
 	{

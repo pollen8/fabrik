@@ -20,6 +20,11 @@ var FbElementList =  new Class({
 			this.subElements = $A();
 		} else {
 			this.subElements = this.element.getElements('input');
+			this.subElements.each(function (el) {
+				el.addEvent('click', function (e) {
+					Fabrik.fireEvent('fabrik.element.click', [this, e]);
+				});
+			});
 		}
 		return this.subElements;
 	},

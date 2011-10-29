@@ -9,24 +9,123 @@
  */
 
 // JSLint defined globals
-/*global window:false, document:false, plupload:false, google:false */
+/*global window:false, document:false, plupload:false, google:false, GearsFactory:false, ActiveXObject:false */
 
-(function (window, document, plupload, undef) {
+// Copyright 2007, Google Inc.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//  1. Redistributions of source code must retain the above copyright notice,
+//     this list of conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright notice,
+//     this list of conditions and the following disclaimer in the documentation
+//     and/or other materials provided with the distribution.
+//  3. Neither the name of Google Inc. nor the names of its contributors may be
+//     used to endorse or promote products derived from this software without
+//     specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+// EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// Sets up google.gears.*, which is *the only* supported way to access Gears.
+//
+// Circumvent this file at your own risk!
+//
+// In the future, Gears may automatically define google.gears.* without this
+// file. Gears may use these objects to transparently fix bugs and compatibility
+// issues. Applications that use the code below will continue to work seamlessly
+// when that happens.
+
+(function() {
+  // We are already defined. Hooray!
+  if (window.google && google.gears) {
+    return;
+  }
+
+  var factory = null;
+
+  // Firefox
+  if (typeof GearsFactory != 'undefined') {
+    factory = new GearsFactory();
+  } else {
+    // IE
+    try {
+      factory = new ActiveXObject('Gears.Factory');
+      // privateSetGlobalObject is only required and supported on WinCE.
+      if (factory.getBuildInfo().indexOf('ie_mobile') != -1) {
+        factory.privateSetGlobalObject(this);
+      }
+    } catch (e) {
+      // Safari
+      if ((typeof navigator.mimeTypes != 'undefined') && navigator.mimeTypes["application/x-googlegears"]) {
+        factory = document.createElement("object");
+        factory.style.display = "none";
+        factory.width = 0;
+        factory.height = 0;
+        factory.type = "application/x-googlegears";
+        document.documentElement.appendChild(factory);
+      }
+    }
+  }
+
+  // *Do not* define any objects if Gears is not installed. This mimics the
+  // behavior of Gears defining the objects in the future.
+  if (!factory) {
+    return;
+  }
+
+  // Now set up the objects, being careful not to overwrite anything.
+  //
+  // Note: In Internet Explorer for Windows Mobile, you can't add properties to
+  // the window object. However, global objects are automatically added as
+  // properties of the window object in all browsers.
+  if (!window.google) {
+    window.google = {};
+  }
+
+  if (!google.gears) {
+    google.gears = {factory: factory};
+  }
+})();
+
+(function(window, document, plupload, undef) {
 	var blobs = {};
 
-	function scaleImage(image_blob, width, height, quality, mime) {
+	function scaleImage(image_blob, resize, mime) {
 		var percentage, canvas, context, scale;
 
 		// Setup canvas and scale
 		canvas = google.gears.factory.create('beta.canvas');
 		try {
 			canvas.decode(image_blob);
+			
+			if (!resize['width']) {
+				resize['width'] = canvas.width;
+			}
+			
+			if (!resize['height']) {
+				resize['height'] = canvas.height;	
+			}
+			
 			scale = Math.min(width / canvas.width, height / canvas.height);
 
-			if (scale < 1) {
+			if (scale < 1 || (scale === 1 && mime === 'image/jpeg')) {
 				canvas.resize(Math.round(canvas.width * scale), Math.round(canvas.height * scale));
+				
+				if (resize['quality']) {
+					return canvas.encode(mime, {quality : resize.quality / 100});
+				}
 
-				return canvas.encode(mime, {quality : quality / 100});
+				return canvas.encode(mime);
 			}
 		} catch (e) {
 			// Ignore for example when a user uploads a file that can't be decoded
@@ -48,14 +147,15 @@
 		 *
 		 * @return {Object} Name/value object with supported features.
 		 */
-		getFeatures : function () {
+		getFeatures : function() {
 			return {
 				dragdrop: true,
 				jpgresize: true,
 				pngresize: true,
 				chunks: true,
 				progress: true,
-				multipart: true
+				multipart: true,
+				multi_selection: true
 			};
 		},
 
@@ -66,7 +166,7 @@
 		 * @param {plupload.Uploader} uploader Uploader instance that needs to be initialized.
 		 * @param {function} callback Callback to execute when the runtime initializes or fails to initialize. If it succeeds an object with a parameter name success will be set to true.
 		 */
-		init : function (uploader, callback) {
+		init : function(uploader, callback) {
 			var desktop;
 
 			// Check for gears support
@@ -100,18 +200,18 @@
 			}
 
 			// Add drop handler
-			uploader.bind("PostInit", function () {
+			uploader.bind("PostInit", function() {
 				var settings = uploader.settings, dropElm = document.getElementById(settings.drop_element);
 
 				if (dropElm) {
 					// Block browser default drag over
-					plupload.addEvent(dropElm, 'dragover', function (e) {
+					plupload.addEvent(dropElm, 'dragover', function(e) {
 						desktop.setDropEffect(e, 'copy');
 						e.preventDefault();
 					}, uploader.id);
 
 					// Attach drop handler and grab files from Gears
-					plupload.addEvent(dropElm, 'drop', function (e) {
+					plupload.addEvent(dropElm, 'drop', function(e) {
 						var dragData = desktop.getDragData(e, 'application/x-gears-files');
 
 						if (dragData) {
@@ -126,15 +226,21 @@
 				}
 
 				// Add browse button
-				plupload.addEvent(document.getElementById(settings.browse_button), 'click', function (e) {
+				plupload.addEvent(document.getElementById(settings.browse_button), 'click', function(e) {
 					var filters = [], i, a, ext;
 
 					e.preventDefault();
-
+					
+					no_type_restriction:
 					for (i = 0; i < settings.filters.length; i++) {
 						ext = settings.filters[i].extensions.split(',');
 
 						for (a = 0; a < ext.length; a++) {
+							if (ext[a] === '*') {
+								filters = [];
+								break no_type_restriction;
+							}
+							
 							filters.push('.' + ext[a]);
 						}
 					}
@@ -143,12 +249,12 @@
 				}, uploader.id);
 			});
 
-			uploader.bind("UploadFile", function (up, file) {
+			uploader.bind("UploadFile", function(up, file) {
 				var chunk = 0, chunks, chunkSize, loaded = 0, resize = up.settings.resize, chunking;
 
 				// If file is png or jpeg and resize is configured then resize it
 				if (resize && /\.(png|jpg|jpeg)$/i.test(file.name)) {
-					blobs[file.id] = scaleImage(blobs[file.id], resize.width, resize.height, resize.quality || 90, /\.png$/i.test(file.name) ? 'image/png' : 'image/jpeg');
+					blobs[file.id] = scaleImage(blobs[file.id], resize, /\.png$/i.test(file.name) ? 'image/png' : 'image/jpeg');
 				}
 
 				file.size = blobs[file.id].length;
@@ -176,7 +282,7 @@
 							builder = google.gears.factory.create('beta.blobbuilder');
 
 							// Append mutlipart parameters
-							plupload.each(plupload.extend(reqArgs, up.settings.multipart_params), function (value, name) {
+							plupload.each(plupload.extend(reqArgs, up.settings.multipart_params), function(value, name) {
 								builder.append(
 									dashdash + boundary + crlf +
 									'Content-Disposition: form-data; name="' + name + '"' + crlf + crlf
@@ -185,7 +291,7 @@
 								builder.append(value + crlf);
 							});
 
-							mimeType = plupload.mimeTypes[file.name.replace(/^.+\.([^.]+)/, '$1')] || 'application/octet-stream';
+							mimeType = plupload.mimeTypes[file.name.replace(/^.+\.([^.]+)/, '$1').toLowerCase()] || 'application/octet-stream';
 
 							// Add file header
 							builder.append(
@@ -209,7 +315,7 @@
 					}
 
 					// File upload finished
-					if (file.status === plupload.DONE || file.status === plupload.FAILED || up.state === plupload.STOPPED) {
+					if (file.status == plupload.DONE || file.status == plupload.FAILED || up.state == plupload.STOPPED) {
 						return;
 					}
 
@@ -236,20 +342,20 @@
 					}
 
 					// Set custom headers
-					plupload.each(up.settings.headers, function (value, name) {
+					plupload.each(up.settings.headers, function(value, name) {
 						req.setRequestHeader(name, value);
 					});
 
-					req.upload.onprogress = function (progress) {
+					req.upload.onprogress = function(progress) {
 						file.loaded = loaded + progress.loaded - multipartLength;
 						up.trigger('UploadProgress', file);
 					};
 
-					req.onreadystatechange = function () {
+					req.onreadystatechange = function() {
 						var chunkArgs;
 
-						if (req.readyState === 4) {
-							if (req.status === 200) {
+						if (req.readyState == 4) {
+							if (req.status == 200) {
 								chunkArgs = {
 									chunk : chunk,
 									chunks : chunks,
@@ -298,7 +404,7 @@
 				uploadNextChunk();
 			});
 			
-			uploader.bind("Destroy", function (up) {
+			uploader.bind("Destroy", function(up) {
 				var name, element,
 					elements = {		
 						browseButton:	up.settings.browse_button, 

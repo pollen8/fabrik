@@ -692,12 +692,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			return;
 		}
 		$this->removeEmptyNoneJoinedGroupData($this->_formData);
-
+		
+		$this->setFormData();
+		
 		if (!$this->_doUpload()) {
 			return false;
 		}
-
-		$this->setFormData();
+		// $$$ rob 27/10/2011 - moved above _doUpload as code in there is tryign to update _formData which is not yet set
+		//$this->setFormData();
 
 
 		if (in_array(false, $pluginManager->runPlugins('onBeforeStore', $this))) {
@@ -1604,7 +1606,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function validate()
 	{
-		if (JRequest::getBool('fabrik_ignorevalidation', false) === true) { //put in when saving page of form
+		if ((bool)JRequest::getBool('fabrik_ignorevalidation', false) === true) { //put in when saving page of form
 			return true;
 		}
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
@@ -3415,7 +3417,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$key = JRequest::getVar('element');
 		$html= '';
 		$html .= $elmentModel->renderListData($data[$key], $data);
-		$doCalcs = "\nFabrik.blocks['list_".$listid."'].updateCals(".json_encode($listModel->getCalculations()).")";
+		$doCalcs = "\nFabrik.blocks['list_".$listModel->getRenderContext()."'].updateCals(".json_encode($listModel->getCalculations()).")";
 		$html .= '<script type="text/javasript">';
 		$html .= $doCalcs;
 		$html .= "</script>\n";

@@ -314,7 +314,7 @@ class plgContentFabrik extends JPlugin
 
 		// Display the view
 		$view->assign('error', $controller->getError());
-		$view->_isMambot = true;
+		$view->isMambot = true;
 		$displayed = false;
 		// do some view specific code
 		switch ($viewName) {
@@ -401,7 +401,7 @@ class plgContentFabrik extends JPlugin
 				break;
 		}
 		//hack for gallery viz as it may not use the default view
-		$controller->_isMambot = true;
+		$controller->isMambot = true;
 		if (!$displayed) {
 			//$result = $controller->display();
 			ob_start();

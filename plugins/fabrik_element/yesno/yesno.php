@@ -151,7 +151,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	protected function getReadOnlyOutput($value, $label)
 	{
 		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
-		$img = $value == '1' ?"1.png" : "0.png";
+		$img = $value == '1' ? "1.png" : "0.png";
 		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
 	}
 

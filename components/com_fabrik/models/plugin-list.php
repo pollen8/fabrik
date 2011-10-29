@@ -63,6 +63,15 @@ class plgFabrik_List extends FabrikPlugin
 		}
 		return '';
 	}
+	
+	public function getElementJSOptions($model)
+	{
+		$opts = new stdClass();
+		$opts->ref = $model->getRenderContext();
+		$opts->name = $this->_getButtonName();
+		$opts->listid = $model->getId();
+		return $opts;
+	}
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass

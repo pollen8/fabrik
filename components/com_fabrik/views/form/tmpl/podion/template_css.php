@@ -159,6 +159,10 @@ padding:10px;
 	margin:0;
 }
 
+#{$view}_$c{
+	clear:left;
+}
+
 #{$view}_$c .fabrikForm .fabrikGroup ul{
 	list-style:none;
 }

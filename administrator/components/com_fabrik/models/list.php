@@ -348,7 +348,7 @@ class FabrikModelList extends FabModelAdmin
 		for ($i=0; $i < count($afilterFields); $i++) {
 			$selJoin = JArrayHelper::getValue($afilterJoins, $i, 'and');
 			$selFilter = $afilterFields[$i];
-			$grouped = $aGrouped[$i];
+			$grouped = JArrayHelper::getValue($aGrouped, $i, 0);
 			$selCondition = $afilterConditions[$i];
 			$filerEval = (int)JArrayHelper::getValue($afilterEval, $i, '1');
 			if ($selCondition == '&gt;') {

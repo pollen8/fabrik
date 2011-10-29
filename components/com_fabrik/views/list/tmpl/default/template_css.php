@@ -286,7 +286,7 @@ div.calendar{
 	padding:5px 16px;
 }
 .floating-tip {
-background-color: #fff;
+	background-color: #fff;
 	border:1px solid #999;
 	padding:0;
 	text-align:left;

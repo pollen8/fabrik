@@ -1011,13 +1011,17 @@ class FabrikWorker {
 
 	public function getMenuOrRequestVar($name, $val = '', $mambot = false)
 	{
-		$menus = JSite::getMenu();
-		$menu	= $menus->getActive();
+		$app = JFactory::getApplication();
 		$val = JRequest::getVar($name, $val);
-		//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
-		if (is_object($menu) && !$mambot) {
-			$menu_params = new JParameter($menu->params);
-			$val = $menu_params->get($name, $val);
+		if (!$app->isAdmin()) {
+			$menus = JSite::getMenu();
+			$menu	= $menus->getActive();
+			
+			//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
+			if (is_object($menu) && !$mambot) {
+				$menu_params = new JParameter($menu->params);
+				$val = $menu_params->get($name, $val);
+			}
 		}
 		return $val;
 	}

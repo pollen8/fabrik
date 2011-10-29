@@ -27,6 +27,8 @@ class FabrikControllerForm extends JControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
+	public $isMambot = false;
+
 	/**
 	 * show the form in the admin
 	 */
@@ -40,7 +42,7 @@ class FabrikControllerForm extends JControllerForm
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
-
+		$view->isMambot = $this->isMambot;
 		// Set the layout
 		$view->setLayout($viewLayout);
 
@@ -67,7 +69,7 @@ class FabrikControllerForm extends JControllerForm
 		}
 		$model->setId(JRequest::getInt('formid', 0));
 
-		$this->_isMambot = JRequest::getVar('_isMambot', 0);
+		$this->isMambot = JRequest::getVar('_isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
 
@@ -82,8 +84,8 @@ class FabrikControllerForm extends JControllerForm
 				return;
 			}
 			$this->savepage();
-			
-			if ($this->_isMambot) {
+
+			if ($this->isMambot) {
 				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
 			} else {
 				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=1&rowid='.$model->_rowId, '');
@@ -125,11 +127,11 @@ class FabrikControllerForm extends JControllerForm
 			$this->makeRedirect($msg, $model);
 		}
 	}
-	
+
 	/**
 	* save a form's page to the session table
 	*/
-	
+
 	protected function savepage()
 	{
 		$model = $this->getModel('Formsession', 'FabrikFEModel');

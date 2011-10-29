@@ -176,9 +176,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
-		$opts = new stdClass();
-		$opts->name = $this->_getButtonName();
-		$opts->listid = $model->getId();
+		$opts = $this->getElementJSOptions($model);
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListDownload($opts)";
 		return true;

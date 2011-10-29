@@ -9,7 +9,7 @@ var FbListInlineEdit = new Class({
 		
 		head.ready(function () {
 			//assigned in list.js fabrik3
-			//this.list = $('list_' + this.options.listid);
+			//this.list = $('list_' + this.options.ref);
 			if (typeOf(this.getList().getForm()) === 'null') {
 				return false;
 			}
@@ -30,7 +30,7 @@ var FbListInlineEdit = new Class({
 		}.bind(this));
 		
 		Fabrik.addEvent('fabrik.list.ini', function () {
-			var table = Fabrik.blocks['list_' + this.options.listid];
+			var table = Fabrik.blocks['list_' + this.options.ref];
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
 			var myFormRequest = new Request({'url': '',
@@ -40,6 +40,13 @@ var FbListInlineEdit = new Class({
 					table.options.data = json.data;
 				}.bind(this)
 			}).send(); 
+		}.bind(this));
+		
+		//check for a single element whose click value should trigger the save (ie radio buttons)
+		Fabrik.addEvent('fabrik.element.click', function () {
+			if (Object.getLength(this.options.elements) === 1 && this.options.showSave === false) {
+				this.save(null, this.editing);
+			}
 		}.bind(this));
 	},
 	
@@ -57,20 +64,21 @@ var FbListInlineEdit = new Class({
 	watchCells: function () {
 		var firstLoaded = false;
 		this.getList().getForm().getElements('.fabrik_element').each(function (td, x) {
-			if (!firstLoaded && this.options.loadFirst) {
-				firstLoaded = this.edit(null, td);
-				if (firstLoaded) {
-					this.select(null, td);
-				}
-			}
-			if (!this.isEditable(td)) {
-				return;
-			}
-			this.setCursor(td);
-			td.removeEvents();
-			td.addEvent(this.options.editEvent, this.edit.bindWithEvent(this, [td]));
-			td.addEvent('click', this.select.bindWithEvent(this, [td]));
 			if (this.canEdit(td)) {
+				if (!firstLoaded && this.options.loadFirst) {
+					firstLoaded = this.edit(null, td);
+					if (firstLoaded) {
+						this.select(null, td);
+					}
+				}
+				if (!this.isEditable(td)) {
+					return;
+				}
+				this.setCursor(td);
+				td.removeEvents();
+				td.addEvent(this.options.editEvent, this.edit.bindWithEvent(this, [td]));
+				td.addEvent('click', this.select.bindWithEvent(this, [td]));
+			
 				td.addEvent('mouseenter', function (e) {
 					if (!this.isEditable(td)) {
 						td.setStyle('cursor', 'pointer');
@@ -207,7 +215,8 @@ var FbListInlineEdit = new Class({
 		if (typeOf(this.td) === 'null') {
 			return;
 		}
-		if (e && e.type !== 'click') {
+		if (e && (e.type !== 'click' && e.type !== 'mouseover')) {
+			//if using key nav scroll the cell into view
 			var p = this.td.getPosition();
 			var x = p.x - (window.getSize().x / 2) - (this.td.getSize().x / 2);
 			var y = p.y - (window.getSize().y / 2) + (this.td.getSize().y / 2);
@@ -298,7 +307,16 @@ var FbListInlineEdit = new Class({
 		
 		//only one field can be edited at a time
 		if (this.inedit) {
-			return;
+			// if active event is mouse over - close the current editor
+			if (this.options.editEvent === 'mouseover') {
+				if (td === this.editing) {
+					return;
+				}
+				this.select(e, this.editing);
+				this.cancel();
+			} else {
+				return;
+			}
 		}
 		if (!this.canEdit(td)) {
 			return false;
@@ -322,6 +340,7 @@ var FbListInlineEdit = new Class({
 		if (typeOf(this.editors[opts.elid]) === 'null' || typeOf(Fabrik['inlineedit_' + opts.elid]) === 'null') {
 			// need to load on parent otherwise in table td size gets monged
 			Fabrik.loader.start(td.getParent());
+			var inline = this.options.showSave ? 1 : 0;
 			new Request({
 				'evalScripts': function (script, text) {
 						this.javascript = script;
@@ -335,7 +354,7 @@ var FbListInlineEdit = new Class({
 					'rowid': rowid,
 					'formid': this.options.formid,
 					'listid': this.options.listid,
-					'inlinesave': this.options.showSave,
+					'inlinesave': inline,
 					'inlinecancel': this.options.showCancel,
 					'option': 'com_fabrik',
 					'task': 'form.inlineedit',
@@ -356,6 +375,7 @@ var FbListInlineEdit = new Class({
 						$exec(this.javascript);
 					}.bind(this)).delay(1000);
 					td.empty().set('html', r);
+					this._animate(td, 'in');
 					r = r + '<script type="text/javascript">' + this.javascript + '</script>';
 					this.editors[opts.elid] = r;
 					this.watchControls(td);
@@ -388,8 +408,56 @@ var FbListInlineEdit = new Class({
 		return true;
 	},
 	
+	_animate: function (cell, d) {
+		return;
+	/*	//needs more work!
+		var tip = cell.getChildren()[0];
+		this.options.showDelay  = 0;
+		this.options.hideDelay = 0;
+		this.options.motion = 6;
+		this.options.motionOnShow = true;
+		this.options.motionOnHide = true;
+		this.options.position = 'right';
+		tip.store('options', this.options);
+		
+		tip.store('position', tip.getPosition(cell));
+		
+		clearTimeout(tip.retrieve('timeout'));
+		tip.store('timeout', (function(t) { 
+			var o = tip.retrieve('options'), din = (d == 'in');
+			var m = { 'opacity': din ? 1 : 0 };
+			
+			if ((o.motionOnShow && din) || (o.motionOnHide && !din)) {
+				var pos =  t.retrieve('position');
+				if (!pos) return;
+				switch (o.position) {
+					case 'inside': 
+					case 'top':
+						m['top'] = din ? [pos.y - o.motion, pos.y] : pos.y - o.motion;
+						break;
+					case 'right':
+						m['left'] = din ? [pos.x + o.motion, pos.x] : pos.x + o.motion;
+						break;
+					case 'bottom':
+						m['top'] = din ? [pos.y + o.motion, pos.y] : pos.y + o.motion;
+						break;
+					case 'left':
+						m['left'] = din ? [pos.x - o.motion, pos.x] : pos.x - o.motion;
+						break;
+				}
+			}
+			
+			t.morph(m);
+			if (!din) t.get('morph').chain(function () { this.dispose(); }.bind(t)); 
+			
+		}).delay((d == 'in') ? this.options.showDelay : this.options.hideDelay, this, tip));
+		
+		return this;
+		*/
+	},
+	
 	getDataFromTable: function (td) {
-		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
+		var groupedData = Fabrik.blocks['list_' + this.options.ref].options.data;
 		var element = this.getElementName(td);
 		var ref = td.getParent('.fabrik_row').id;
 		var v = {};
@@ -423,7 +491,7 @@ var FbListInlineEdit = new Class({
 	
 	setTableData: function (row, element, val) {
 		ref = row.id;
-		var groupedData = Fabrik.blocks['list_' + this.options.listid].options.data;
+		var groupedData = Fabrik.blocks['list_' + this.options.ref].options.data;
 		// $$$rob $H needed when group by applied
 		if (typeOf(groupedData) === 'object') {
 			groupedData = $H(groupedData);
@@ -458,7 +526,9 @@ var FbListInlineEdit = new Class({
 			return;
 		}
 		this.inedit = false;
-		e.stop();
+		if (e) {
+			e.stop();
+		}
 		var element = this.getElementName(td);
 		var opts = this.options.elements[element];
 		
@@ -480,6 +550,7 @@ var FbListInlineEdit = new Class({
 			'task': 'form.process',
 			'format': 'raw',
 			'_packageId': 1,
+			'fabrik_ajax': 1,
 			'element': element,
 			'elid': opts.elid,
 			'plugin': opts.plugin,
@@ -516,6 +587,8 @@ var FbListInlineEdit = new Class({
 		if (td !== false) {
 			td.removeClass(this.options.focusClass);
 		}
+		console.log(td);
+		//this._animate(td, 'out');
 		this.editing = null;
 		this.inedit = false;
 	},

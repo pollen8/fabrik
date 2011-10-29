@@ -1,4 +1,0 @@
-<?xml version="1.0" ?>
-<extensionset name="Fabrik" description="Fabrik">
-	<extension name="Fabrik" element="pkg_fabrik" type="file" version="3.0.1" detailsurl="http://fabrikar.com/update/com_fabrik/extension.xml"/>
-</extensionset>

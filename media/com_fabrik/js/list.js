@@ -31,7 +31,7 @@ var FbListPlugin = new Class({
 	},
 
 	getList: function () {
-		return Fabrik.blocks['list_' + this.options.listid];
+		return Fabrik.blocks['list_' + this.options.ref];
 	},
 
 	clearFilter: Function.from(),
@@ -108,8 +108,6 @@ var FbListFilter = new Class({
 				e.stop();
 				var x = dims.x - this.filterContainer.getWidth();
 				var y = dims.y + b.getHeight();
-				// this.filterContainer.setStyles({'position':'absolute', 'left':x+'px',
-				// 'top':y+'px'});
 				var rx = this.filterContainer.getStyle('display') === 'none' ? this.filterContainer.show() : this.filterContainer.hide();
 				this.filterContainer.fade('toggle');
 			}.bind(this));
@@ -173,7 +171,7 @@ var FbListFilter = new Class({
 	},
 
 	getList: function () {
-		this.list = Fabrik.blocks[this.options.type + '_' + this.options.id];
+		this.list = Fabrik.blocks[this.options.type + '_' + this.options.ref];
 		return this.list;
 	},
 
@@ -886,7 +884,8 @@ var FbList = new Class({
 				key = "." + key;
 				try {
 					if (typeOf(header.getElement(key)) !== 'null') {
-						header.getElement(key).set('html', data);
+						// $$$ rob 28/10/2011 just alter span to allow for maintaining filter toggle links
+						header.getElement(key).getElement('span').set('html', data);
 					}
 				} catch (err) {
 					fconsole(err);

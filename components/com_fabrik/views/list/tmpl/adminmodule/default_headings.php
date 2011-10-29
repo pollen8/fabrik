@@ -14,10 +14,10 @@
 
 <script type="text/javascript">
 head.ready(function(){
-	var list = document.id('list_<?php echo $this->list->id?>');
-
+	var list = document.id('list_<?php echo $this->list->renderid?>');
+	var form = document.id('listform_<?php echo $this->list->renderid?>');
 	 Fabrik.addEvent('fabrik.list.update', function(l){
-			if(l.id == <?php echo (int)$this->list->id?>){
+			if(l.id == <?php echo (int)$this->list->renderid?>){
 				list.getElements('.fabrik___heading span.filter').hide();
 			}
 			return true;
@@ -39,7 +39,7 @@ head.ready(function(){
 		var f = e.target.getNext();
 		if (f) {
 			f.toggle();
-			var i = list.getParent().getElement('.fabrikFilterContainer');
+			var i = form.getElement('.fabrikFilterContainer');
 			var offsetP = list.getOffsetParent() ? list.getOffsetParent() : document.body;
 			var p = f.getPosition(offsetP);
 			i.setPosition({'x': p.x - 5, 'y': p.y + f.getSize().y});
@@ -47,6 +47,15 @@ head.ready(function(){
 		}
 	});
 
+	form.getElement('.clearFilters').addEvent('click', function () {
+		form.getElement('.fabrikFilterContainer').hide();
+		form.getElements('.fabrik___heading .filter').hide();
+	});
+
+	form.getElement('.fabrik_filter_submit').addEvent('click', function () {
+		form.getElement('.fabrikFilterContainer').hide();
+		form.getElements('.fabrik___heading .filter').hide();
+	});
 });
 
 </script>

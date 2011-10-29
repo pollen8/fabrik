@@ -1384,7 +1384,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = json_decode($data['params']);
 		$element = $this->getElement();
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		$key = array('element_id' => $data['id']);
+		$key = array('element_id' => $data['id'], 'listid' => 0);
 		$join->load($key);
 		if ($join->element_id == 0) {
 			$join->element_id = $elementId;

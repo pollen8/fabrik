@@ -59,7 +59,6 @@ var FbRadio = new Class({
 		});
 	},
 
-
 	update: function (val) {
 		if (!this.options.editable) {
 			if (val === '') {

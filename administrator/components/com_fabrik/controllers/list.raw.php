@@ -56,4 +56,45 @@ class FabrikControllerList extends JControllerForm
 		$fieldDropDown = JHTML::_('select.genericlist', $fieldNames, $name, "class=\"inputbox\"  size=\"1\" ", 'value', 'text', '');
 		echo $fieldDropDown;
 	}
+	
+	public function filter()
+	{
+				// Check for request forgeries
+		//JRequest::checkToken() or die('Invalid Token');
+		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$id = JRequest::getInt('listid');
+		$model->setId($id);
+		JRequest::setvar('cid', $id);
+		$request = $model->getRequestData();
+		$model->storeRequestData($request);
+		$this->view();
+	}
+	
+	/**
+	* show the lists data in the admin
+	*/
+	
+	public function view()
+	{
+		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		if(is_array($cid)){
+			$cid = $cid[0];
+		}
+		$cid = JRequest::getInt('listid', $cid);
+		// grab the model and set its id
+		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model->setState('list.id', $cid);
+		$viewType	= JFactory::getDocument()->getType();
+		//use the front end renderer to show the table
+		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
+	
+		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$view = $this->getView($this->view_item, $viewType, '');
+		$view->setModel($model, true);
+		// Set the layout
+		$view->setLayout($viewLayout);
+		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');
+		$view->display();
+		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+	}
 }

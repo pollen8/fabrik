@@ -28,6 +28,7 @@ class FabrikViewList extends JView
 
 	function display()
 	{
+		$app = JFactory::getApplication();
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$this->setModel($model, true);
@@ -69,6 +70,11 @@ class FabrikViewList extends JView
 		$d['nav'] = $nav->getProperties();
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
 		$d['calculations'] = $model->getCalculations();
+		$msg =  $app->getMessageQueue();
+		if (!empty($msg)) {
+			$d['msg'] = $msg[0]['message'];
+		}
+		
 		echo json_encode($d);
 	}
 

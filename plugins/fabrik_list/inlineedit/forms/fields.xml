@@ -23,7 +23,8 @@
 				label="PLG_LIST_INLINE_EDIT_EVENT_LABEL"
 				description="PLG_LIST_INLINE_EDIT_EVENT_DESC">
 					<option value="click">Click</option>
-					<option value="dblclick">Double click</option>	
+					<option value="dblclick">Double click</option>
+					<option value="mouseover">Mouse over</option>
 			</field> 
 			
 			<field name="inline_tab_save"

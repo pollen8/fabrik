@@ -24,7 +24,7 @@ class imageRender{
 
 	function renderListData(&$model, &$params, $file, $oAllRowsData)
 	{
-		$this->inTableView  = true;
+		$this->inTableView = true;
 		$this->render($model, $params, $file, $oAllRowsData);
 	}
 

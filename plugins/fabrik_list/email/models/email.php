@@ -60,9 +60,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
-		$opts = new stdClass();
-		$opts->name = $this->_getButtonName();
-		$opts->listid = $model->getId();
+		$opts = $this->getElementJSOptions($model);
 		$opts->renderOrder = $this->renderOrder;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListEmail($opts)";

@@ -18,14 +18,13 @@ var FbAutocomplete = new Class({
 
 	initialize: function (element, options) {
 		this.setOptions(options);
-		this.options.labelelement = $(element + '-auto-complete');
+		this.options.labelelement =  typeOf($(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : $(element + '-auto-complete');
 		this.cache = {};
 		this.selected = -1;
 		this.mouseinsde = false;
 		this.watchKeys = this.doWatchKeys.bindWithEvent(this);
 		this.testMenuClose = this.doTestMenuClose.bindWithEvent(this);
 		this.element = typeOf($(element)) === "null" ? document.getElement(element) : $(element);
-		
 		this.buildMenu();
 		if (!this.getInputElement()) {
 			fconsole('autocomplete didnt find input element');

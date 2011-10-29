@@ -38,7 +38,6 @@ JTable::addIncludePath(COM_FABRIK_BASE.DS.'administrator'.DS.'components'.DS.'co
 $document = JFactory::getDocument();
 require_once(COM_FABRIK_FRONTEND.DS.'controllers'.DS.'package.php');
 require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'form'.DS.'view.html.php');
-
 $listId	= intval($params->get('list_id', 0));
 if ($listId === 0) {
 	JError::raiseError(500, 'no list specified');
@@ -47,6 +46,7 @@ $listels = json_decode($params->get('list_elements'));
 if (isset($listels->show_in_list)) {
 	JRequest::setVar('fabrik_show_in_list', $listels->show_in_list);
 }
+
 $useajax = $params->get('useajax');
 $random = intval($params->get('radomizerecords', 0));
 $limit = intval($params->get('limit', 0));
@@ -75,6 +75,7 @@ $view = clone($controller->getView($viewName, $viewType));
 // Push a model into the view
 $model = $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
+$model->setRenderContext($module->module, $module->id);
 if ($useajax !== '') {
 	$model->set('ajax', $useajax);
 }
@@ -82,6 +83,18 @@ if ($useajax !== '') {
 if ($params->get('ajax_links') !== '') {
 	$listParams = $model->getParams();
 	$listParams->set('list_ajax_links', $params->get('ajax_links'));
+}
+
+//set up prefilters - will overwrite ones defined in the list!
+
+
+$prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
+$conditions = (array)$prefilters['filter-conditions'];
+if (!empty($conditions)) {
+	$listParams->set('filter-fields', $prefilters['filter-fields']);
+	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
+	$listParams->set('filter-value', $prefilters['filter-value']);
+	$listParams->set('filter-access', $prefilters['filter-access']);
 }
 
 $model->randomRecords = $random;

@@ -68,7 +68,7 @@ class fabrikViewForm extends JView
 		$params->set('popup', (JRequest::getVar('tmpl') == 'component') ? 1 : 0);
 
 		$this->editable = $model->_editable;
-		
+
 		$form->label = $this->get('label');
 		$form->intro = $this->get('Intro');
 		$form->action = $this->get('Action');
@@ -85,12 +85,12 @@ class fabrikViewForm extends JView
 
 		$this->_addButtons();
 		JDEBUG ? $_PROFILER->mark('form view before validation classes loaded') : null;
-		
+
 		$tmpl = $this->get('tmpl');
-		
+
 		$this->assign('tmpl', $tmpl);
 		JDEBUG ? $_PROFILER->mark('form view before group view got') : null;
-		
+
 		$this->groups = $model->getGroupView($tmpl);
 		JDEBUG ? $_PROFILER->mark('form view after group view got') : null;
 		$this->assignRef('data', $model->data);
@@ -98,7 +98,7 @@ class fabrikViewForm extends JView
 		$this->assignRef('params', $params);
 		$this->assign('tipLocation', $params->get('tiplocation'));
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
-		
+
 		//cck in admin?
 		$this->cck();
 		JDEBUG ? $_PROFILER->mark('form view: after cck') : null;
@@ -131,8 +131,8 @@ class fabrikViewForm extends JView
 		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
 		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'form'.DS.$tmpl);
 
-		
-		
+
+
 		JDEBUG ? $_PROFILER->mark('form view before template load') : null;
 		$text = $this->loadTemplate();
 		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->_editable === false)) {
@@ -144,7 +144,7 @@ class fabrikViewForm extends JView
 			$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
 			JRequest::setVar('option', $opt);
 		}
-	
+
 		JDEBUG ? $_PROFILER->mark('form view display end') : null;
 		// allows you to use {placeholders} in form template.
 		$text = $w->parseMessageForPlaceHolder($text, $model->_data);
@@ -213,6 +213,7 @@ class fabrikViewForm extends JView
 
 		$model = $this->getModel();
 		if (!$this->isMambot) {
+			//echo "not a mambot !<br>";
 			$title = $model->getPageTitle($params->get('page_title'));
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
 		}
@@ -388,7 +389,7 @@ class fabrikViewForm extends JView
 			JText::script('COM_FABRIK_FORM_SAVED');
 			Jtext::script('COM_FABRIK_CONFIRM_DELETE');
 		}
-		
+
 		//$$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
 		$script = array();
@@ -472,16 +473,16 @@ class fabrikViewForm extends JView
 		$script[] = "\t\treturn false;";
 		$script[] = "\t}";
 		$script[] = "}";
-		
+
 		if (FabrikHelperHTML::inAjaxLoadedPage()) {
 			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', {html: true});";
 		}
-		
+
 		$res = FabrikWorker::getPluginManager()->runPlugins('onJSReady', $model);
 		if (in_array(false, $res)) {
 			return false;
 		}
-		
+
 		$str = implode("\n", $script);
 		FabrikHelperHTML::script($srcs, $str);
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -492,7 +493,7 @@ class fabrikViewForm extends JView
 	 * Enter description here ...
 	 * @param unknown_type $form
 	 */
-	
+
 	protected function _loadTmplBottom(&$form)
 	{
 		$app = JFactory::getApplication();
@@ -554,8 +555,8 @@ class fabrikViewForm extends JView
 		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" '.FabrikWorker::goBackAction().' value="'.$params->get('goback_button_label').'" />' : '';
 		if ($model->_editable) {
 			$button = $model->isAjax() ? "button" : "submit";
-			$form->submitButton = '';
-			$form->submitButton .= '<input type="'.$button.'" class="button" name="submit" value="'.$form->submit_button_label.'" />';
+			$submitClass = FabrikString::clean($form->submit_button_label);
+			$form->submitButton = '<input type="'.$button.'" class="button '.$submitClass.'" name="submit" value="'.$form->submit_button_label.'" />';
 		} else {
 			$form->submitButton = '';
 		}
@@ -638,7 +639,7 @@ class fabrikViewForm extends JView
 			// $$$ rob not sure this is correct now as I modified the readOnlyVals structure to contain info about if its in a group
 			// and it now contains the repeated group data
 			$input = (is_array($input) && array_key_exists('value', $input)) ? $input['value'] : $input;
-			
+
 			if ($repeatGroup) {
 				$ar = array();
 				$input = (array)$input;
@@ -668,7 +669,7 @@ class fabrikViewForm extends JView
 					$input = $crypt->encrypt($input);
 				}
 			}
-			
+
 			$safeKey = FabrikString::rtrimword($key, "[]");
 			// $$$ rob - no dont do below as it will strip out join names join[x][fullname] => join
 			//$key = preg_replace("/\[(.*)\]/", '', $key);

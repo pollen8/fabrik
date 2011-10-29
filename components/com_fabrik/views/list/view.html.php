@@ -23,7 +23,7 @@ class FabrikViewList extends JView{
 		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
 		$model = $this->getModel();
 		$item = $model->getTable();
-		$listid = $model->getId();
+		$listid = $model->getRenderContext();
 		$formModel = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
 
@@ -141,7 +141,7 @@ class FabrikViewList extends JView{
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
-		$script .= "\n" . "var list = new FbList($listid,";
+		$script .= "\n" . "var list = new FbList('$listid',";
 		$script .= $opts;
 		$script .= "\n" . ");";
 		$script .= "\n" . "Fabrik.addBlock('list_{$listid}', list);";
@@ -202,11 +202,10 @@ class FabrikViewList extends JView{
 		$document = JFactory::getDocument();
 
 		$item = $model->getTable();
-		$model->render();
+		$data = $model->render();
 
 		$w = new FabrikWorker();
 
-		$data = $this->get('Data');
 		//add in some styling short cuts
 
 		$c = 0;
@@ -222,7 +221,8 @@ class FabrikViewList extends JView{
 				$o->data = $data[$groupk][$i];
 				$o->cursor = $num_rows + $nav->limitstart;
 				$o->total = $nav->total;
-				$o->id = "list_".$item->id."_row_".@$o->data->__pk_val;
+				//$o->id = "list_".$item->id."_row_".@$o->data->__pk_val;
+				$o->id = 'list_'.$model->getRenderContext().'_row_'.@$o->data->__pk_val;
 				$o->class = "fabrik_row oddRow".$c;
 				$data[$groupk][$i] = $o;
 				$c = 1-$c;
@@ -304,13 +304,14 @@ class FabrikViewList extends JView{
 		$this->table->label 	= $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
 		$this->table->intro 	= $w->parseMessageForPlaceHolder($item->introduction);
 		$this->table->id			= $item->id;
+		$this->table->renderid = $this->get('RenderContext');
 		$this->table->db_table_name = $item->db_table_name;
 		/** end **/
 		$this->assign('list', $this->table);
 		$this->group_by	= $item->group_by;
 		$this->form = new stdClass();
 		$this->form->id = $item->id;
-		$this->formid = 'listform_'.$item->id;
+		$this->formid = 'listform_'.$this->get('RenderContext');
 		$form = $model->getFormModel();
 		$this->table->action = $this->get('TableAction');
 		$this->showCSV = $model->canCSVExport();
@@ -338,7 +339,7 @@ class FabrikViewList extends JView{
 				$this->showAdd = false;
 			}
 		}
-
+		$this->assign('addLabel', $params->get('addlabel', JText::_('COM_FABRIK_ADD')));
 		$this->showRSS = $params->get('rss', 0) == 0 ? 0 : 1;
 		if ($this->showRSS) {
 			$this->rssLink = $model->getRSSFeedLink();
@@ -351,7 +352,7 @@ class FabrikViewList extends JView{
 		$this->assignRef('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters start') : null;
-		$this->filters = $model->getFilters('listform_'. $item->id);
+		$this->filters = $model->getFilters('listform_'. $model->getRenderContext());
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
 		//$form->getGroupsHiarachy();
@@ -505,39 +506,40 @@ class FabrikViewList extends JView{
 		$reffer = str_replace('&', '&amp;', JRequest::getVar('REQUEST_URI', '', 'server'));
 		$this->hiddenFields = array();
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"option\" value=\"".JRequest::getCmd('option', 'com_fabrik'). "\" />";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"orderdir\" value=\"\" />";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"orderby\" value=\"\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
+		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="" />';
+		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="" />';
 
 		//$$$rob if the content plugin has temporarily set the view to table then get view from origview var, if that doesn't exist
 		//revert to view var. Used when showing table in article/blog layouts
 		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"view\" value=\"" . $view . "\" id = \"table_".$item->id."_view\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" id ="table_'.$item->id.'_view" />';
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"listid\" value=\"$item->id\"/>";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"Itemid\" value=\"$Itemid\"/>";
+		$this->hiddenFields[] = '<input type="hidden" name="listid" value="'.$item->id.'"/>';
+		$this->hiddenFields[] = '<input type="hidden" name="listref" value="'.$model->getRenderContext().'"/>';
+		$this->hiddenFields[] = '<input type="hidden" name="Itemid" value="'.$Itemid.'"/>';
 		//removed in favour of using list_{id}_limit dorop down box
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_referrer\" value=\"$reffer\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_referrer" value="'.$reffer.'" />';
 		$this->hiddenFields[] = JHTML::_('form.token');
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"format\" value=\"html\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="format" value="html" />';
 		//$packageId = JRequest::getInt('_packageId', 0);
 		// $$$ rob testing for ajax table in module
 		$packageId = $model->packageId;
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"_packageId\" value=\"$packageId\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="_packageId" value="'.$packageId.'" />';
 		if ($app->isAdmin()) {
-			$this->hiddenFields[] = "<input type=\"hidden\" name=\"task\" value=\"list.view\" id=\"task\" />";
+			$this->hiddenFields[] = '<input type="hidden" name="task" value="list.view" id="task" />';
 		} else {
-			$this->hiddenFields[] = "<input type=\"hidden\" name=\"task\" value=\"\" />";
+			$this->hiddenFields[] = '<input type="hidden" name="task" value="" />';
 		}
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_listplugin_name\" value=\"\" />";
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_listplugin_renderOrder\" value=\"\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_name" value="" />';
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_renderOrder" value="" />';
 
 		// $$$ hugh - added this so plugins have somewhere to stuff any random data they need during submit
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"fabrik_listplugin_options\" value=\"\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_options" value="" />';
 
-		$this->hiddenFields[] = "<input type=\"hidden\" name=\"incfilters\" value=\"1\" />";
+		$this->hiddenFields[] = '<input type="hidden" name="incfilters" value="1" />';
 		$this->hiddenFields = implode("\n", $this->hiddenFields);
 	}
 
