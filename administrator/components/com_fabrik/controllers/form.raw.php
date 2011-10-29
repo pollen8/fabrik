@@ -27,6 +27,7 @@ class FabrikControllerForm extends JControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
+	public $isMambot = false;
 
 	public function inlineedit()
 	{
@@ -63,7 +64,7 @@ class FabrikControllerForm extends JControllerForm
 
 		$model->setId(JRequest::getInt('formid', 0));
 
-		$this->_isMambot = JRequest::getVar('_isMambot', 0);
+		$this->isMambot = JRequest::getVar('_isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
 		// Check for request forgeries
@@ -79,7 +80,7 @@ class FabrikControllerForm extends JControllerForm
 				echo json_encode($data);
 				return;
 			}
-			if ($this->_isMambot) {
+			if ($this->isMambot) {
 				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
 				// $$$ hugh - testing way of preserving form values after validation fails with form plugin
 				// might as well use the 'savepage' mechanism, as it's already there!
