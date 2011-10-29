@@ -350,7 +350,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$msg = new stdClass();
 		$msg->opt = $opts;
 		$msg->data = $data;
-		$log->message = FastJSON::encode($msg);
+		$log->message = json_encode($msg);
 		$log->store();
 		return true;
 	}
@@ -402,7 +402,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$log = JTable::getInstance('log', 'Table');
 		$log->referring_url = $_SERVER['REQUEST_URI'];
 		$log->message_type = 'fabrik.ipn.start';
-		$log->message = FastJSON::encode($_REQUEST);
+		$log->message = json_encode($_REQUEST);
 		$log->store();
 
 		//lets try to load in the custom returned value so we can load up the form and its parameters
