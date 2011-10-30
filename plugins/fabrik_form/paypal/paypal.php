@@ -345,7 +345,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 		/// log the info
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-		$log = JTable::getInstance('log', 'Table');
+		$log = FabTable::getInstance('log', 'FabrikTable');
 		$log->message_type = 'fabrik.paypal.onAfterProcess';
 		$msg = new stdClass();
 		$msg->opt = $opts;
@@ -651,7 +651,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 	 * @param int params $renderOrder
 	 * @return mixed false or class instance
 	 */
-	 
+
 	protected function getIPNHandler($params, $renderOrder = 0)
 	{
 		$php_file = $params->get('paypal_run_php_file', array(), '_default', 'array');

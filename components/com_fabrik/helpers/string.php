@@ -219,8 +219,19 @@ class FabrikString extends JString{
 	}
 
 	function removeQSVar($url, $key) {
-	  $url = preg_replace('/(.*)(?|&)' . $key . '=[^&]+?(&)(.*)/i', '$1$2$4', $url . '&');
-	  $url = substr($url, 0, -1);
+		$pair = explode('?', $url);
+		$url = $pair[0];
+		$bits = explode('&', JArrayHelper::getValue($pair, 1));
+		$a = array();
+		foreach ($bits as $bit) {
+			list($thisKey, $val) = explode('=', $bit);
+			if ($thisKey !== $key) {
+				$a[] = $bit;
+			}
+		}
+		if (!empty($a)) {
+			$url .= '?'.implode('&', $a);
+		}
 	  return $url;
 	}
 }

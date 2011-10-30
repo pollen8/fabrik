@@ -1,11 +1,11 @@
 <?php
 /*
  * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
+* @subpackage Fabrik
+* @since		1.6
+* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+*/
 
 // No direct access
 defined('_JEXEC') or die;
@@ -29,7 +29,7 @@ class FabrikControllerList extends FabControllerForm
 
 	public function edit()
 	{
-		
+
 		$model = $this->getModel('connections');
 		if (count($model->activeConnections()) == 0) {
 			JError::raiseError(500, JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
@@ -80,7 +80,9 @@ class FabrikControllerList extends FabControllerForm
 	public function view()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if(is_array($cid)){$cid = $cid[0];}
+		if(is_array($cid)){
+			$cid = $cid[0];
+		}
 		$cid = JRequest::getInt('listid', $cid);
 		// grab the model and set its id
 		$model = JModel::getInstance('List', 'FabrikFEModel');
@@ -124,9 +126,9 @@ class FabrikControllerList extends FabControllerForm
 
 	/*public function dodelete()
 	 {
-		}
-		*/
-	
+	}
+	*/
+
 	public function order()
 	{
 		// Check for request forgeries
@@ -142,6 +144,21 @@ class FabrikControllerList extends FabControllerForm
 		JRequest::setVar('clearfilters', 0);
 		$this->view();
 	}
+
+	/**
+	 * clear filters
+	 */
+
+	function clearfilter()
+	{
+		$app = JFactory::getApplication();
+		$app->enqueueMessage(JText::_('COM_FABRIK_FILTERS_CLEARED'));
+		$this->filter();
+	}
+
+	/**
+	 * filter the list data
+	 */
 
 	public function filter()
 	{

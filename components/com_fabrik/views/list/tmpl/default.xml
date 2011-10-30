@@ -18,7 +18,6 @@
 	
 	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
 		<fieldset name="params" label="COM_FABRIK_OPTIONS">
-			
 
 			<field name="calculations" type="radio" default="0" 
 				label="Reload Calculations" 
@@ -38,7 +37,65 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+		
+			<field name="list_elements" 
+					type="fabrikmodalrepeat" 
+					label="COM_FABRIK_LIST_ELEMENTS_LABEL"
+					description="COM_FABRIK_LIST_ELEMENTS_DESC">
+				
+					<fields name="params">
+						<fieldset name="list_elements_modal" repeat="true">
+							<field name="show_in_list" 
+								size="30"
+								type="listfields"
+								label="COM_FABRIK_LIST_ELEMENTS_HEADING"/>
 						
-		</fieldset>
+						</fieldset>
+					</fields>
+				</field>
+				
+				<field name="prefilters" 
+					type="fabrikmodalrepeat" 
+					label="COM_FABRIK_LIST_PREFILTERS_LABEL"
+					description="COM_FABRIK_LIST_PREFILTERS_DESC">
+				
+					<fields name="params">
+						<fieldset name="prefilters_modal" repeat="true">
+							<field name="filter-fields" 
+								type="listfields"
+								valueformat="tableelement"
+								label="COM_FABRIK_LIST_ELEMENTS_HEADING"/>
+						
+							<field name="filter-conditions"
+								label="COM_FABRIK_LIST_CONDITION_LABEL"
+								type="list">
+									<option value="equals">EQUALS</option>
+									<option value="notequals">NOT EQUAL TO</option>
+									<option value="begins">BEGINS WITH</option>
+									<option value="contains">CONTAINS</option>
+									<option value="ends">ENDS WITH</option>
+									<option value=">">GREATER THAN</option>
+									<option value=">=">GREATER THAN OR EQUALS</option>
+									<option value="&lt;">LESS THAN</option>
+									<option value="IS NULL">IS NULL</option>
+									<option value="&lt;=">LESS THAN OR EQUALS</option>
+									<option value="in">IN</option>
+									<option value="not_in">NOT IN</option>
+									<option value="earlierthisyear">COM_FABRIK_EARLIER_THIS_YEAR</option>
+									<option value="laterthisyear">COM_FABRIK_LATER_THIS_YEAR</option>
+							</field>
+							
+							<field name="filter-value" 
+								type="field"
+								label="COM_FABRIK_LIST_FILTER_VALUE_HEADING"/>
+							
+							<field name="filter-access" 
+								type="accesslevel"
+								label="COM_FABRIK_LIST_FILTER_ACCESS_HEADING"/>
+								
+						</fieldset>
+					</fields>
+				</field>
+			</fieldset>
 	</fields>
 </metadata>

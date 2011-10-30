@@ -55,7 +55,15 @@ if ($limit !== 0) {
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
-$listId = (int)$params->get('list_id', 1);
+$listId	= intval($params->get('list_id', 0));
+if ($listId === 0) {
+	JError::raiseError(500, 'no list specified');
+}
+
+$listels = json_decode($params->get('list_elements'));
+if (isset($listels->show_in_list)) {
+	JRequest::setVar('fabrik_show_in_list', $listels->show_in_list);
+}
 
 $viewName = 'list';
 $viewType	= $document->getType();
@@ -67,6 +75,27 @@ $view = clone($controller->getView($viewName, $viewType));
 // Push a model into the view
 $model = $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
+$model->setRenderContext($module->module, $module->id);
+if ($useajax !== '') {
+	$model->set('ajax', $useajax);
+}
+
+if ($params->get('ajax_links') !== '') {
+	$listParams = $model->getParams();
+	$listParams->set('list_ajax_links', $params->get('ajax_links'));
+}
+
+//set up prefilters - will overwrite ones defined in the list!
+
+$prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
+$conditions = (array)$prefilters['filter-conditions'];
+if (!empty($conditions)) {
+	$listParams->set('filter-fields', $prefilters['filter-fields']);
+	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
+	$listParams->set('filter-value', $prefilters['filter-value']);
+	$listParams->set('filter-access', $prefilters['filter-access']);
+}
+
 $model->randomRecords = $random;
 if (!JError::isError($model)) {
 	$view->setModel($model, true);

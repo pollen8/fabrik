@@ -258,8 +258,10 @@
 				label="COM_FABRIK_FIELD_SHOW_TABLE_FILTERS_LABEL" 
 				description="COM_FABRIK_FIELD_SHOW_TABLE_FILTERS_DESC">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-					<option value="2">COM_FABRIK_TOGGLE</option>
+					<option value="1">COM_FABRIK_FILTER_ABOVE</option>
+					<option value="2">COM_FABRIK_FILTER_ABOVE_TOGGLE</option>
+					<option value="3">COM_FABRIK_FILTER_UNDER_HEADINGS</option>
+					<option value="4">COM_FABRIK_FILTER_UNDER_HEADINGS_TOGGLE</option>
 			</field>
 			
 			<field name="advanced-filter" 
@@ -560,7 +562,8 @@
 				label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" 
 				description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" />
 				
-			<field name="pdf" 
+		<!-- commenting out until we have a valid pdf soluton for 3.0
+		 	<field name="pdf" 
 				type="list"
 				label="COM_FABRIK_FIELD_PDF_ICON_LABEL" 
 				description="COM_FABRIK_FIELD_PDF_ICON_DESC">
@@ -576,8 +579,8 @@
 				hide_default="1"
 				default="admin" 
 				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL" 
-				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" />
-				
+				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" /> -->
+			
 			<field name="show-title" 
 				type="radio" default="1" 
 				label="COM_FABRIK_SHOW_TITLE_LABEL" 

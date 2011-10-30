@@ -81,7 +81,6 @@ class FabrikControllerForm extends JController
 		if (!JError::isError($model) && is_object($model)) {
 			$view->setModel($model, true);
 		}
-		echo $this->isMambot ? 'controller is mambot ': 'controller NOT a ambot';
 		$view->isMambot = $this->isMambot;
 		// Display the view
 		$view->assign('error', $this->getError());
