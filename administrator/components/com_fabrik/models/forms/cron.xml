@@ -83,7 +83,8 @@
 			description="COM_FABRIK_CRON_FIELD_CONNECTION_DESC" />
 			
 		<field name="table" 
-			type="fabriktables" 
+			type="fabriktables"
+			connection_in_repeat="false"
 			observe="params_connection" 
 			label="COM_FABRIK_CRON_FIELD_TABLE_LABEL"/>
 			

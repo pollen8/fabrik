@@ -113,8 +113,15 @@ section for dropdowns radio buttons etc**/
 	padding:0 0 0 10px;
 }
 
+
 /*** end slide out add option section **/
 
+#form_$c input,
+#form_$c select{
+	
+	border:1px solid #aaa;
+	border-radius:3px;
+}
 
 #form_$c  .inputbox:focus{
 	background-color:#ffffcc;

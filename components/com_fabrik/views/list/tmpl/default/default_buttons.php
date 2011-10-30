@@ -1,5 +1,5 @@
 <div class="fabrik_buttons">
-	<ul class="fabrik_action neverToggle"><?php if ($this->showAdd) {?>
+	<ul class="fabrik_action"><?php if ($this->showAdd) {?>
 		<li class="addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
 				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl,  array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_ADD').'</span>'));?>
@@ -7,8 +7,12 @@
 			</a>
 		</li>
 	<?php }
-	
-	if ($this->showFilters && $this->params->get('show-table-filters') == 2) {?>
+	if ($this->showFilters) {?>
+		<li>
+		<?php echo $this->clearFliterLink;?>
+			</li>
+	<?php }
+	if ($this->showFilters && $this->toggleFilters) {?>
 		<li>
 			<a href="#" class="toggleFilters">
 				<?php echo FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_FILTER').'</span>'));?>
@@ -16,6 +20,9 @@
 			</a>
 		</li>
 	<?php }
+	if ($this->advancedSearch !== '') {
+		echo '<li>'.$this->advancedSearch.'</li>';
+	}
 	if ($this->canGroupBy) {?>
 		<li>
 			<a href="#" class="groupBy">
@@ -24,7 +31,7 @@
 			</a>
 			<ul class="floating-tip">
 				<?php foreach ($this->groupByHeadings as $url => $label) {?>
-					<li><a href="<?php echo $url?>"><?php echo $label?></a></li>
+					<li><span><a href="<?php echo $url?>"><?php echo $label?></a></span></li>
 				<?php
 				}?>
 			</ul>

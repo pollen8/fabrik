@@ -9,7 +9,6 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-
 jimport('joomla.application.component.helper');
 jimport('joomla.filesystem.file');
 

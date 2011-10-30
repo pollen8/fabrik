@@ -3215,7 +3215,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		if (is_object($o)) {
 			$s = '<ul>';
-			foreach ($o as $k=>$v) {
+			foreach ($o as $k => $v) {
 				$s .= '<li>'.$v.'</li>';
 			}
 			$s .= '</ul>';

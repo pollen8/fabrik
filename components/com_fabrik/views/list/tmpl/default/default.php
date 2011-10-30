@@ -9,14 +9,14 @@
 <form class="fabrikForm" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
 
 <?php echo $this->loadTemplate('buttons');
-
+if ($this->showFilters) {
+	echo $this->loadTemplate('filter');
+}
 //for some really ODD reason loading the headings template inside the group
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
 $this->headingstmpl =  $this->loadTemplate('headings');
-if ($this->showFilters) {
-	echo $this->loadTemplate('filter');
-}?>
+?>
 
 <div class="fabrikDataContainer">
 
