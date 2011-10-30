@@ -19,6 +19,7 @@ jimport('joomla.filesystem.file');
  * @package		Joomla
  * @subpackage	fabrik
  */
+
 class plgSystemFabrik extends JPlugin
 {
 
@@ -38,7 +39,6 @@ class plgSystemFabrik extends JPlugin
 	function plgSystemFabrik(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
-
 	}
 
 	/**
@@ -80,12 +80,6 @@ class plgSystemFabrik extends JPlugin
 
 		require_once(JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php');
 
-		if (is_array($areas)) {
-			if (!array_intersect($areas, array_keys(plgSearchFabrikAreas()))) {
-				return array();
-			}
-		}
-
 		// load plugin params info
 		$limit = $this->params->def('search_limit', 50);
 		$text = trim($text);
@@ -116,8 +110,6 @@ class plgSystemFabrik extends JPlugin
 				$order = 'a.created DESC';
 				break;
 		}
-		//$this->generalIncludes('list');
-
 		//get all tables with search on
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('published = 1');
@@ -149,7 +141,7 @@ class plgSystemFabrik extends JPlugin
 			$listModel->reset();
 
 			/// $$$ geros - http://fabrikar.com/forums/showthread.php?t=21134&page=2
-			$key = 'com_fabrik.table'.$id.'.filter.searchall';
+			$key = 'com_fabrik.list'.$id.'.filter.searchall';
 			$app->setUserState($key, null);
 
 			unset($table);
@@ -189,14 +181,6 @@ class plgSystemFabrik extends JPlugin
 
 			//set the table search mode to OR - this will search ALL fields with the search term
 			$params->set('search-mode', 'OR');
-
-			//build the query and get the records
-			/* $query = $listModel->_buildQuery();
-			 $fabrikDb->setQuery($query, 0, $limit);
-			$allrows = $fabrikDb->loadObjectList();
-			if (is_null($allrows)) {
-			JError::raiseError(500, $fabrikDb->getErrorMsg());
-			} */
 
 			$allrows = $listModel->getData();
 			// $$$ rob -moved inside loop as dup records from joined data aren't all added to search results

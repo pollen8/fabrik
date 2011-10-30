@@ -99,17 +99,24 @@ class JFormFieldListfields extends JFormFieldList
 				break;
 			case 'list':
 			case 'module':
-				$id = $this->form->getValue('id');
+			case 'item': //menu item
+				if ($controller === 'item') {
+					$id = $this->form->getValue('request.listid');
+				} else {
+					$id = $this->form->getValue('id');
+				}
 				if (!isset($this->form->model)) {
-					if ($controller !== 'module') {
+					echo "not set ";;
+					if (!in_array($controller, array('item', 'module'))) {
 						//seems to work anyway in the admin module page - so lets not raise notice
 						JError::raiseNotice(500, 'Model not set in listfields field '. $this->id);
 					}
+					echo "form model no set";
 					return;
 				}
 				$listModel = $this->form->model;
 				if ($id !== 0) {
-					$formModel =& $listModel->getFormModel();
+					$formModel = $listModel->getFormModel();
 					$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
 					$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, false, $pluginFilters);
 				} else {
@@ -149,7 +156,6 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				$aEls = $res;
 			}
-			//$id 			= ElementHelper::getId($this, $control_name, $name);
 			$aEls[] = JHTML::_('select.option', '', '-');
 			// for pk fields - we are no longer storing the key with '`' as thats mySQL specific
 			$this->value = str_replace('`', '', $this->value);

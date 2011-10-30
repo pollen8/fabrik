@@ -49,7 +49,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 	{
 		$app = JFactory::getApplication();
 		$data = $formModel->_fullFormData;
-		$this->data 		= $data;
+		$this->data = $data;
 		if (!$this->shouldProcess($params)) {
 			return true;
 		}
@@ -363,10 +363,10 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getInt('rowid');
 		JModel::addIncludePath( COM_FABRIK_FRONTEND.DS.'models');
-		$formModel = JModel::getInstance('Form', 'FabrikModel');
+		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
-		$ret_msg = $params->get('paypal_return_msg', array(), '_default', 'array');
+		$ret_msg = (array)$params->get('paypal_return_msg', array());
 		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
 		if ($ret_msg) {
 			$w = new FabrikWorker();
@@ -411,7 +411,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 		//pretty sure they are added but double add
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models');
-		$formModel = JModel::getInstance('Form', 'FabrikModel');
+		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$listModel = $formModel->getlistModel();
 		$params = $formModel->getParams();
@@ -422,19 +422,19 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		// @TODO shortColName won't handle joined data, need to fix this to use safeColName
 		// (don't forget to change nameQuote stuff later on as well)
 		$renderOrder = JRequest::getInt('renderOrder');
-		$ipn_txn_field = $params->get('paypal_ipn_txn_id_element', array(), '_default', 'array');
+		$ipn_txn_field = (array)$params->get('paypal_ipn_txn_id_element', array());
 		$ipn_txn_field = FabrikString::shortColName($ipn_txn_field[$renderOrder]);
 
-		$ipn_payment_field = $params->get('paypal_ipn_payment_element', array(), '_default', 'array');
+		$ipn_payment_field = (array)$params->get('paypal_ipn_payment_element', array());
 		$ipn_payment_field = FabrikString::shortColName($ipn_payment_field[$renderOrder]);
 
-		$ipn_field = $params->get('paypal_ipn_element', array(), '_default', 'array');
+		$ipn_field = (array)$params->get('paypal_ipn_element', array());
 		$ipn_field = FabrikString::shortColName($ipn_field[$renderOrder]);
 
-		$ipn_status_field = $params->get('paypal_ipn_status_element', array(), '_default', 'array');
+		$ipn_status_field = (array)$params->get('paypal_ipn_status_element', array());
 		$ipn_status_field = FabrikString::shortColName($ipn_status_field[$renderOrder]);
 
-		$ipn_address_field = $params->get('paypal_ipn_address_element', array(), '_default', 'array');
+		$ipn_address_field = (array)$params->get('paypal_ipn_address_element', array());
 		$ipn_address_field = FabrikString::shortColName($ipn_address_field[$renderOrder]);
 
 

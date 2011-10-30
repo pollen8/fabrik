@@ -69,7 +69,13 @@ echo "
 	margin-top: 10px;
 }
 
-#listform_$c table.fabrikList td,table.fabrikList th,
+#listform_$c table.fabrikList th{
+	vertical-align:top;
+
+}
+
+#listform_$c table.fabrikList td,
+#listform_$c table.fabrikList th,
 .advancedSeach_$c td, .advancedSeach_$c th {
 	padding: 5px;
 	border: 1px solid #cccccc;
@@ -220,6 +226,11 @@ div.calendar{
 	height:25px;
 }
 
+#listform_$c .fabrik_buttons{
+	/* remove this if you want the top menu bar to be on the right hand side*/
+	float:left !important; 
+}
+
 #listform_$c ul.fabrik_action,
 #listform_$c ul.pagination {
 	list-style:none;
@@ -250,7 +261,7 @@ div.calendar{
 	float:left;
 	border-left:1px solid #999;
 	min-height:17px;
-	width:25px;
+	min-width:25px;
 	text-align:center;
 }
 
@@ -271,6 +282,35 @@ div.calendar{
 
 /********************************************/
 / ****** end: action buttons ****************/
+/********************************************/
+
+/********************************************/
+/ ****** start: search all   ****************/
+/********************************************/
+
+#listform_$c .searchall li{
+	line-height:1.1em;
+}
+#listform_$c .searchall li input,
+#listform_$c .searchall li select,
+#listform_$c .fabrik___heading input,
+#listform_$c .fabrik___heading select{
+	margin:3px 3px 0 3px;
+	border:1px solid #999;
+	border-radius:3px;
+}
+
+#listform_$c .searchall li input[type=button]{
+	background-image:none;
+	padding:0px;
+}
+
+.webkit #listform_$c .searchall li input[type=button]{
+	padding:1px;
+}
+
+/********************************************/
+/ ****** end: search all     ****************/
 /********************************************/
 
 /*****************************************************/
