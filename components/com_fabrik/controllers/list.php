@@ -110,8 +110,8 @@ class FabrikControllerList extends JController
 
 	function filter()
 	{
-		$modelName	= JRequest::getVar('view', 'list', 'default', 'cmd');
-		$model	= $this->getModel($modelName, 'FabrikFEModel');
+		$modelName = JRequest::getVar('view', 'list', 'default', 'cmd');
+		$model = $this->getModel($modelName, 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		FabrikHelperHTML::debug('', 'list model: getRequestData');
 		$request = $model->getRequestData();

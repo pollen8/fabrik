@@ -3159,16 +3159,35 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
 			
-			$prefilters = JArrayHelper::fromObject((json_decode(FabrikWorker::getMenuOrRequestVar('prefilters', ''))));
-			$conditions = (array)$prefilters['filter-conditions'];
-			
-			if (!empty($conditions)) {
-				$params->set('filter-fields', $prefilters['filter-fields']);
-				$params->set('filter-conditions', $prefilters['filter-conditions']);
-				$params->set('filter-value', $prefilters['filter-value']);
-				$params->set('filter-access', $prefilters['filter-access']);
+			//are we coming from a post request via a module? 
+			if (JRequest::getVar('listref') !== '') {
+				// if so we need to load in the modules parameters
+				$moduleid = (int)array_pop(explode('_', JRequest::getVar('listref')));
+				$db = JFactory::getDbo();
+				$query = $db->getQuery(true);
+				if ($moduleid !== 0) {
+					$this->setRenderContext('mod_fabrik_list', $moduleid);
+					$query->select('params')->from('#__modules')->where('id = '.$moduleid);
+					$db->setQuery($query);
+					$properties = json_decode($db->loadResult());
+					$properties = $properties->prefilters;
+				}
 			}
-			
+			//if we are rendering as a module dont pick up the menu item options (parmas already set in list module)
+			if (!strstr($this->getRenderContext(), 'mod_fabrik_list')) {
+				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '');
+			}
+			if (isset($properties)) {
+				$prefilters = JArrayHelper::fromObject(json_decode($properties));
+				$conditions = (array)$prefilters['filter-conditions'];
+				
+				if (!empty($conditions)) {
+					$params->set('filter-fields', $prefilters['filter-fields']);
+					$params->set('filter-conditions', $prefilters['filter-conditions']);
+					$params->set('filter-value', $prefilters['filter-value']);
+					$params->set('filter-access', $prefilters['filter-access']);
+				}
+			}
 			$elements = $this->getElements('filtername');
 			$afilterJoins = (array)$params->get('filter-join');
 			$afilterFields = (array)$params->get('filter-fields');

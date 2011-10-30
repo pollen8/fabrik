@@ -87,7 +87,6 @@ if ($params->get('ajax_links') !== '') {
 
 //set up prefilters - will overwrite ones defined in the list!
 
-
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array)$prefilters['filter-conditions'];
 if (!empty($conditions)) {
