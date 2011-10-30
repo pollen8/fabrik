@@ -227,7 +227,7 @@ div.calendar{
 }
 
 #listform_$c .fabrik_buttons{
-	/* remove this if you want the top menu bar to be on the right hand side/*
+	/* remove this if you want the top menu bar to be on the right hand side*/
 	float:left !important; 
 }
 
@@ -280,6 +280,14 @@ div.calendar{
 }
 
 
+/********************************************/
+/ ****** end: action buttons ****************/
+/********************************************/
+
+/********************************************/
+/ ****** start: search all   ****************/
+/********************************************/
+
 #listform_$c .searchall li{
 	line-height:1.1em;
 }
@@ -300,10 +308,10 @@ div.calendar{
 .webkit #listform_$c .searchall li input[type=button]{
 	padding:1px;
 }
-/********************************************/
-/ ****** end: action buttons ****************/
-/********************************************/
 
+/********************************************/
+/ ****** end: search all     ****************/
+/********************************************/
 
 /*****************************************************/
 /********** the context menu that appears ************/
