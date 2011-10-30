@@ -32,10 +32,11 @@ JHTML::addIncludePath(JPATH_SITE.'/components/com_fabrik/jhelpers/');
 //Register the element class with the loader
 JLoader::register('JElement', JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_fabrik'.DS.'element.php');
 
-if (JRequest::getCmd('option') != 'com_menus') {
+// $$$ rob 30/10/2011 commented out as we need to load these classes for the list menu form
+//if (JRequest::getCmd('option') != 'com_menus') {
 	JLoader::import('components.com_fabrik.classes.formfield', JPATH_SITE.DS.'administrator', 'administrator.');
 	JLoader::import('components.com_fabrik.classes.form', JPATH_SITE.DS.'administrator', 'administrator.');
-}
+//}
 
 require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables'.DS.'fabtable.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'fabrik.php');

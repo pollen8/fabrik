@@ -3152,6 +3152,23 @@ class FabrikFEModelList extends JModelForm {
 
 		if (!isset($this->prefilters)) {
 			$params = $this->getParams();
+			$showInList = array();
+			$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
+			if (isset($listels->show_in_list)) {
+				$showInList = $listels->show_in_list;
+			}
+			$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
+			
+			$prefilters = JArrayHelper::fromObject((json_decode(FabrikWorker::getMenuOrRequestVar('prefilters', ''))));
+			$conditions = (array)$prefilters['filter-conditions'];
+			
+			if (!empty($conditions)) {
+				$params->set('filter-fields', $prefilters['filter-fields']);
+				$params->set('filter-conditions', $prefilters['filter-conditions']);
+				$params->set('filter-value', $prefilters['filter-value']);
+				$params->set('filter-access', $prefilters['filter-access']);
+			}
+			
 			$elements = $this->getElements('filtername');
 			$afilterJoins = (array)$params->get('filter-join');
 			$afilterFields = (array)$params->get('filter-fields');
@@ -3978,7 +3995,15 @@ class FabrikFEModelList extends JModelForm {
 
 		$orderbys = json_decode($item->order_by, true);
 
-		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
+		$listels = json_decode($params->get('list_elements'));
+
+		$showInList = array();
+		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
+		if (isset($listels->show_in_list)) {
+			$showInList = $listels->show_in_list;
+		}
+		$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
+		JRequest::setVar('fabrik_show_in_list', $showInList); //set it for use by groupModel->getPublishedListElements()
 		foreach ($groups as $groupModel) {
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
