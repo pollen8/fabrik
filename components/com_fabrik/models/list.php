@@ -3578,23 +3578,14 @@ class FabrikFEModelList extends JModelForm {
 			$modelFilters = $this->makeFilters($container, $type, $id);
 			JDEBUG ? $_PROFILER->mark('fabrik makeFilters end') : null;
 			foreach ($modelFilters as $name => $filter) {
-				$f 					= new stdClass();
-				$f->label 	= $filter->label;
+				$f = new stdClass();
+				$f->label = $filter->label;
 				$f->element = $filter->filter;
 				$f->required = array_key_exists('required', $filter) ? $filter->required : '';
-				$this->viewfilters[$filter->name] 	= $f;
+				$this->viewfilters[$filter->name] = $f;
 			}
 			FabrikWorker::getPluginManager()->runPlugins('onMakeFilters', $this, 'list');
-			// moved advanced filters to table settings
-			if ($params->get('advanced-filter', '0')) {
-				$f = new stdClass();
-				$f->element = $this->getAdvancedSearchLink();
-				$f->label = '';
-				$f->required = '';
-				$this->viewfilters['fabrik_advanced_search'] 	= $f;
-			}
 		}
-
 		return $this->viewfilters;
 	}
 
@@ -3637,7 +3628,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$v = htmlspecialchars($v, ENT_QUOTES);
 			$o = new stdClass();
-			$o->filter = '<input size="20" value="'.$v.'" class="fabrik_filter" name="fabrik_list_filter_all" />';
+			$o->filter = '<input type="search" size="20" value="'.$v.'" class="fabrik_filter" name="fabrik_list_filter_all" />';
 			if ($params->get('search-mode-advanced') == 1) {
 				$opts = array();
 				$opts[] = JHTML::_('select.option', 'all', JText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
@@ -3723,9 +3714,16 @@ class FabrikFEModelList extends JModelForm {
 
 	function getAdvancedSearchLink()
 	{
-		$table = $this->getTable();
-		$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=".$table->id."&amp;nextview=".JRequest::getVar('view');
-		return '<a href="'.$url.'" class="advanced-search-link">'.JText::_('COM_FABRIK_ADVANCED_SEARCH').'</a>';
+		$params = $this->getParams();
+		if ($params->get('advanced-filter', '0')) {
+			$table = $this->getTable();
+			$tmpl = $this->getTmpl();
+			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=".$table->id."&amp;nextview=".JRequest::getVar('view');
+			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_ADVANCED_SEARCH').'</span>'));
+			return '<a href="'.$url.'" class="advanced-search-link">'.$img.'</a>';
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -6262,7 +6260,16 @@ class FabrikFEModelList extends JModelForm {
 	function getClearButton()
 	{
 		$filters = $this->getFilters('listform_'. $this->getRenderContext(), 'list');
-		return count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0 ? '<a href="#" class="clearFilters">'.JText::_('COM_FABRIK_CLEAR').'</a>' : '';
+		
+		$params = $this->getParams();
+		if (count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0) {
+			$table = $this->getTable();
+			$tmpl = $this->getTmpl();
+			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_CLEAR').'</span>'));
+			return '<a href="#" class="clearFilters">'.$img.'</a>';
+		} else {
+			return '';
+		}
 	}
 
 	/**

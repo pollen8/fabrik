@@ -83,13 +83,24 @@ class FabrikControllerList extends JController
 	function order()
 	{
 		$modelName = JRequest::getVar('view', 'list', 'default', 'cmd');
-		$model = &$this->getModel($modelName, 'FabrikFEModel');
+		$model = $this->getModel($modelName, 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$model->setOrderByAndDir();
 		// $$$ hugh - unset 'resetfilters' in case it was set on QS of original list load.
 		JRequest::setVar('resetfilters', 0);
 		JRequest::setVar('clearfilters', 0);
 		$this->display();
+	}
+
+	/**
+	 * clear filters
+	 */
+
+	function clearfilter()
+	{
+		$app = JFactory::getApplication();
+		$app->enqueueMessage(JText::_('COM_FABRIK_FILTERS_CLEARED'));
+		$this->filter();
 	}
 
 	/**
@@ -100,7 +111,7 @@ class FabrikControllerList extends JController
 	function filter()
 	{
 		$modelName	= JRequest::getVar('view', 'list', 'default', 'cmd');
-		$model	= &$this->getModel($modelName, 'FabrikFEModel');
+		$model	= $this->getModel($modelName, 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		FabrikHelperHTML::debug('', 'list model: getRequestData');
 		$request = $model->getRequestData();
@@ -120,7 +131,6 @@ class FabrikControllerList extends JController
 		$app = JFactory::getApplication();
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = JRequest::getVar('ids', array(), 'request', 'array');
-
 		$listid = JRequest::getInt('listid');
 		$limitstart = JRequest::getInt('limitstart'. $listid);
 		$length = JRequest::getInt('limit' . $listid);
@@ -160,7 +170,7 @@ class FabrikControllerList extends JController
 
 	function doempty()
 	{
-		$model = &$this->getModel('list', 'FabrikFEModel');
+		$model = $this->getModel('list', 'FabrikFEModel');
 		$model->truncate();
 		$this->display();
 	}
@@ -173,8 +183,10 @@ class FabrikControllerList extends JController
 	{
 		$app = JFactory::getApplication();
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if (is_array($cid)) {$cid = $cid[0];}
-		$model = &$this->getModel('list', 'FabrikFEModel');
+		if (is_array($cid)) {
+			$cid = $cid[0];
+		}
+		$model = $this->getModel('list', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid', $cid));
 		// $$$ rob need to ask the model to get its data here as if the plugin calls $model->getData
 		// then the other plugins are recalled which makes the current plugins params incorrect.

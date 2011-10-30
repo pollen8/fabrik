@@ -256,6 +256,7 @@ class FabrikViewList extends JView{
 
 		$firstRow = current($this->rows); //cant use numeric key '0' as group by uses groupd name as key
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
+		$this->assign('advancedSearch', $this->get('AdvancedSearchLink'));
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
 		$this->tableStyle = $this->nodata ? 'display:none' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
@@ -355,8 +356,10 @@ class FabrikViewList extends JView{
 		$this->filters = $model->getFilters('listform_'. $model->getRenderContext());
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
-		//$form->getGroupsHiarachy();
-		$this->assign('showFilters', (count($this->filters) > 0 && (int)$params->get('show-table-filters', 1) !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
+
+		$this->assign('filterMode', (int)$params->get('show-table-filters'));
+		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
+		$this->assign('showFilters', (count($this->filters) > 0 && $this->filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
 		$this->assignRef('calculations', $this->_getCalculations($this->headings));

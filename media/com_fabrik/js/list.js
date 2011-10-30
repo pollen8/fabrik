@@ -110,10 +110,12 @@ var FbListFilter = new Class({
 				var y = dims.y + b.getHeight();
 				var rx = this.filterContainer.getStyle('display') === 'none' ? this.filterContainer.show() : this.filterContainer.hide();
 				this.filterContainer.fade('toggle');
+				this.container.getElements('.filter').toggle();
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
 				this.filterContainer.fade('hide').hide();
+				this.container.getElements('.filter').toggle();
 			}
 		}
 
@@ -142,7 +144,7 @@ var FbListFilter = new Class({
 					'type': 'hidden'
 				}).inject(this.container);
 				if (this.options.type === 'list') {
-					this.list.submit('list.filter');
+					this.list.submit('list.clearfilter');
 				} else {
 					this.container.getElement('form[name=filter]').submit();
 				}
@@ -630,23 +632,30 @@ var FbList = new Class({
 
 	watchFilters: function () {
 		var e = '';
-		if (this.options.filterMethod !== 'submitform') {
-			document.id(this.options.form).getElements('.fabrik_filter').each(function (f) {
-				e = f.get('tag') === 'select' ? 'change' : 'blur';
+		var submit = document.id(this.options.form).getElement('.fabrik_filter_submit');
+		document.id(this.options.form).getElements('.fabrik_filter').each(function (f) {
+			e = f.get('tag') === 'select' ? 'change' : 'blur';
+			if (this.options.filterMethod !== 'submitform') {
 				f.removeEvent(e);
 				f.store('initialvalue', f.get('value'));
+				//document.getElement('.fabrik_filter_submit').highlight('#ffaa00');
 				f.addEvent(e, function (e) {
 					e.stop();
 					if (e.target.retrieve('initialvalue') !== e.target.get('value')) {
 						this.submit('list.filter');
 					}
 				}.bind(this));
-			}.bind(this));
-		} else {
-			var f = document.id(this.options.form).getElement('.fabrik_filter_submit');
-			if (f) {
-				f.removeEvents();
-				f.addEvent('click', function (e) {
+			} else {
+				f.addEvent(e, function (e) {
+					submit.highlight('#ffaa00');
+				}.bind(this));
+			}
+		}.bind(this));
+			
+		if (this.options.filterMethod === 'submitform') {
+			if (submit) {
+				submit.removeEvents();
+				submit.addEvent('click', function (e) {
 					this.submit('list.filter');
 				}.bind(this));
 			}
