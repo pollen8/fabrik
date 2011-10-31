@@ -27,35 +27,40 @@
 				
 			<field name="from" 
 				type="element" 
-				connection="params_connection" 
+				connection="params_connection"
+				connection_in_repeat="false"
 				table="params_table" 
 				label="PLG_CRON_GMAIL_FROM_LABEL" 
 				description="PLG_CRON_GMAIL_FROM_DESC"/>
 				
 			<field name="title" 
 				type="element" 
-				connection="params_connection" 
+				connection="params_connection"
+				connection_in_repeat="false"
 				table="params_table" 
 				label="PLG_CRON_GMAIL_TITLE_LABEL" 
 				description="PLG_CRON_GMAIL_TITLE_DESC"/>
 			
 			<field name="date" 
 				type="element" 
-				connection="params_connection" 
+				connection="params_connection"
+				connection_in_repeat="false"
 				table="params_table" 
 				label="PLG_CRON_GMAIL_DATE_LABEL" 
 				description="PLG_CRON_GMAIL_DATE_DESC"/>
 				
 			<field name="content" 
-				type="element" 
-				connection="params_connection" 
+				type="element"
+				connection="params_connection"
+				connection_in_repeat="false" 
 				table="params_table" 
 				label="PLG_CRON_GMAIL_CONTENT_LABEL" 
 				description="PLG_CRON_GMAIL_CONTENT_DESC"/>
 			
 			<field name="uid" 
 				type="element" 
-				connection="params_connection" 
+				connection="params_connection"
+				connection_in_repeat="false"
 				table="params_table" 
 				label="PLG_CRON_GMAIL_UID_LABEL" 
 				description="PLG_CRON_GMAIL_UID_DESC"/>

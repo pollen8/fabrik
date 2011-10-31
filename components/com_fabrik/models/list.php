@@ -3169,8 +3169,10 @@ class FabrikFEModelList extends JModelForm {
 					$this->setRenderContext('mod_fabrik_list', $moduleid);
 					$query->select('params')->from('#__modules')->where('id = '.$moduleid);
 					$db->setQuery($query);
-					$properties = json_decode($db->loadResult());
-					$properties = $properties->prefilters;
+					$obj = json_decode($db->loadResult());
+					if (is_object($obj) && isset($obj->prefilters)) {
+						$properties = $obj->prefilters;
+					}
 				}
 			}
 			//if we are rendering as a module dont pick up the menu item options (parmas already set in list module)
@@ -3220,7 +3222,17 @@ class FabrikFEModelList extends JModelForm {
 				$tmpfilter = strstr($filter, '_raw`') ? FabrikString::rtrimword( $filter, '_raw`').'`' : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
 				if ($elementModel === false) {
-					JError::raiseNotice(500, 'A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter));
+	
+					// Include the JLog class.
+					jimport('joomla.log.log');
+					
+					// Add the logger.
+					JLog::addLogger(array('text_file' => 'fabrik.log.php'));
+					
+					// start logging...
+					JLog::add('A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter), JLog::NOTICE, 'com_fabrik');
+						
+					
 					continue;
 				}
 				$filters['join'][] = $join;

@@ -25,43 +25,50 @@
 					
 			<field name="gcal_sync_startdate_element" 
 				type="element" 
-				connection="connection" 
-				table="table" 
+				connection="params_connection"
+				connection_in_repeat="false"
+				table="params_table" 
 				label="PLG_CRON_GCAL_START_DATE_ELEMENT_LABEL" 
 				description="PLG_CRON_GCAL_START_DAT_EELEMENT_DESC"/>
 				
 			<field name="gcal_sync_enddate_element" 
 				type="element" 
-				connection="connection" 
-				table="table" 
+				connection="params_connection"
+				connection_in_repeat="false" 
+				table="params_table" 
 				label="PLG_CRON_GCAL_END_DATE_ELEMENT_LABEL" 
 				description="PLG_CRON_GCAL_END_DATE_ELEMENT_DESC"/>
 				
 			<field name="gcal_sync_label_element" 
 				type="element" 
-				connection="connection" 
-				table="table" 
+				connection="params_connection"
+				connection_in_repeat="false"
+				table="params_table" 
 				label="PLG_CRON_GCAL_LABEL_ELEMENT_LABEL" 
 				description="PLG_CRON_GCAL_LABEL_ELEMENT_DESC"/>
 				
 			<field name="gcal_sync_desc_element" 
 				type="element" 
-				connection="connection" 
+				connection="params_connection"
+				connection_in_repeat="false"
 				table="table" 
 				label="PLG_CRON_GCAL_DESC_ELEMENT_LABEL" 
 				description="PLG_CRON_GCAL_DESC_ELEMENT_DESC"/>
 				
 			<field name="gcal_sync_userid_element" 
 				type="element" 
-				connection="connection" 
-				table="table" 
+				connection="params_connection"
+				connection_in_repeat="false"
+				table="params_table" 
 				label="PLG_CRON_GCAL_USER_ID_ELEMENT_LABEL"
 				 description="PLG_CRON_GCAL_USER_ID_ELEMENT_DESC"/>
 				 
 			<field name="gcal_sync_id_element" 
 				type="element" 
-				connection="connection" 
-				table="table" label="PLG_CRON_GCAL_ID_ELEMENT_LABEL" 
+				connection="params_connection"
+				connection_in_repeat="false"
+				table="params_table"
+				label="PLG_CRON_GCAL_ID_ELEMENT_LABEL" 
 				description="PLG_CRON_GCAL_ID_ELEMENT_DESC"/>
 				
 			<field name="gcal_sync_gcal_url" 
