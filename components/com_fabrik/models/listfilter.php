@@ -143,10 +143,11 @@ class FabrikFEModelListfilter extends FabModel {
 		$item = $this->listModel->getTable();
 		$identifier = $this->listModel->getRenderContext();
 		$key = 'com_fabrik.list'.$identifier.'.filter.searchall';
-		$search = trim($app->getUserStateFromRequest($key, 'fabrik_list_filter_all'));
+		$requestKey = 'fabrik_list_filter_all.'.$this->listModel->getRenderContext();
+		$search = trim($app->getUserStateFromRequest($key, $requestKey));
 
 		if ($search == '') {
-			if (array_key_exists('fabrik_list_filter_all', $_POST)) {
+			if (array_key_exists($requestKey, $_POST)) {
 				//empty search string sent unset any searchall filters
 				$ks = array_keys($filters);
 				$filterkeys = array_keys(JArrayHelper::getValue($filters, 'search_type', array()));
@@ -162,7 +163,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 		if ($search == '') {
 			//clear full text search all
-			if (array_key_exists('fabrik_list_filter_all', $_POST)) {
+			if (array_key_exists($requestKey, $_POST)) {
 				$this->clearAFilter($filters, 9999);
 			}
 			return;
@@ -700,11 +701,12 @@ class FabrikFEModelListfilter extends FabModel {
 	{
 		if (!isset($this->request)) {
 			$item = $this->listModel->getTable();
-			$request	= JRequest::get('post');
+			$request = JRequest::get('post');
 			//use request ONLY if you want to test an ajax post with params in url
 			//$request	= JRequest::get('request');
 			
-			$k = 'list_'.JRequest::getVar('listref', $this->listModel->getRenderContext());
+			//$k = 'list_'.JRequest::getVar('listref', $this->listModel->getRenderContext());
+			$k = 'list_'.$this->listModel->getRenderContext();
 			if (array_key_exists('fabrik___filter', $request) && array_key_exists($k, $request['fabrik___filter'])) {
 				$this->request = $request['fabrik___filter'][$k];
 			} else {
@@ -721,7 +723,7 @@ class FabrikFEModelListfilter extends FabModel {
 	private function getPostFilters(&$filters)
 	{
 		$item = $this->listModel->getTable();
-		$request 	=& $this->getPostFilterArray();
+		$request 	= $this->getPostFilterArray();
 		$elements = $this->listModel->getElements('id');
 		$filterkeys = array_keys($filters);
 		$values = JArrayHelper::getValue($request, 'value', array());
@@ -883,6 +885,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$item = $this->listModel->getTable();
 		//$identifier = $item->id;
 		$identifier = JRequest::getVar('listref', $this->listModel->getRenderContext());
+		$identifier = $this->listModel->getRenderContext();
 		$key = 'com_fabrik.list'.$identifier.'.filter';
 		$sessionfilters = JArrayHelper::fromObject($app->getUserState($key));
 		$filterkeys = array_keys($filters);
@@ -900,8 +903,9 @@ class FabrikFEModelListfilter extends FabModel {
 		$request = $this->getPostFilterArray();
 
 		$key = 'com_fabrik.list'.$identifier.'.filter.searchall';
+		$requestKey = 'fabrik_list_filter_all.'.$this->listModel->getRenderContext();
 		$pluginKeys = $this->getPluginFilterKeys();
-		$search = $app->getUserStateFromRequest($key, 'fabrik_list_filter_all');
+		$search = $app->getUserStateFromRequest($key, $requestKey);
 
 		$postkeys = JArrayHelper::getValue($request, 'key', array());
 		for ($i = 0; $i < count($sessionfilters['key']); $i++) {

@@ -70,6 +70,10 @@ class plgSystemFabrik extends JPlugin
 
 	function onContentSearch($text, $phrase='', $ordering='', $areas=null)
 	{
+		if (defined('COM_FABRIK_SEARCH_RUN')) {
+			return;
+		}
+		define('COM_FABRIK_SEARCH_RUN', true);
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
 		global $_PROFILER;
 		JDEBUG ? $_PROFILER->mark('fabrik search start') : null;
@@ -121,9 +125,6 @@ class plgSystemFabrik extends JPlugin
 		if ($db->getErrorNum() != 0) {
 			jexit('search:' . $db->getErrorMsg());
 		}
-		//set the request variable that fabrik uses to search all records
-		//JRequest::setVar('fabrik_list_filter_all', JRequest::getVar('searchword'), 'post');
-		JRequest::setVar('fabrik_list_filter_all', $text, 'post');
 		$section = $this->params->get('search_section_heading');
 		$urls = array();
 		//$$$ rob remove previous search results?
@@ -162,8 +163,12 @@ class plgSystemFabrik extends JPlugin
 			//otherwise the fabrik_list_filter_all var is not used
 			JRequest::setVar('listid', $id);
 
-
 			$listModel->setId($id);
+			
+			$requestKey = 'fabrik_list_filter_all.'.$listModel->getRenderContext();
+			//set the request variable that fabrik uses to search all records
+			JRequest::setVar($requestKey, $text, 'post');
+			
 			$table = $listModel->getTable(true);
 			$fabrikDb = $listModel->getDb();
 			$params = $listModel->getParams();
@@ -223,6 +228,7 @@ class plgSystemFabrik extends JPlugin
 						} else {
 							$o->text = '';
 						}
+						$o->title = strip_tags($o->title);
 						$aAllowedList[] = $o;
 					}
 				}

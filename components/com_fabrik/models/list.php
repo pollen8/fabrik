@@ -2045,6 +2045,7 @@ class FabrikFEModelList extends JModelForm {
 	function setId($id)
 	{
 		$this->setState('list.id', $id);
+		$this->renderContext = '';
 		// $$$ rob not sure why but we need this getState() here
 		// when assinging id from admin view
 		$this->getState();
@@ -2921,8 +2922,8 @@ class FabrikFEModelList extends JModelForm {
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
 		$registry	= $session->get('registry');
-		//$tid = 'list'.$this->getId();
-		$tid = 'list'.JRequest::getVar('listref', $this->getRenderContext());
+		//$tid = 'list'.JRequest::getVar('listref', $this->getRenderContext());
+		$tid = 'list'.$this->getRenderContext();
 		//make sure that we only store data thats been entered from this page first test we aren't in a plugin
 		if (JRequest::getCmd('option') == 'com_fabrik' && is_object($registry)) {
 			// dont do this when you are viewing a form or details page as it wipes out the table filters
@@ -3159,23 +3160,28 @@ class FabrikFEModelList extends JModelForm {
 			$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
 			
 			//are we coming from a post request via a module? 
+			$moduleid = 0;
 			if (JRequest::getVar('listref') !== '') {
 				// if so we need to load in the modules parameters
-				$moduleid = (int)array_pop(explode('_', JRequest::getVar('listref')));
-				$db = JFactory::getDbo();
-				$query = $db->getQuery(true);
-				if ($moduleid !== 0) {
-					$this->setRenderContext('mod_fabrik_list', $moduleid);
-					$query->select('params')->from('#__modules')->where('id = '.$moduleid);
-					$db->setQuery($query);
-					$obj = json_decode($db->loadResult());
-					if (is_object($obj) && isset($obj->prefilters)) {
-						$properties = $obj->prefilters;
+				$ref = explode('_', JRequest::getVar('listref'));
+				if (count($ref) > 1) {
+					$moduleid = (int)array_pop($ref);
+					$db = JFactory::getDbo();
+					$query = $db->getQuery(true);
+					if ($moduleid !== 0) {
+						$this->setRenderContext($moduleid);
+						$query->select('params')->from('#__modules')->where('id = '.$moduleid);
+						$db->setQuery($query);
+						$obj = json_decode($db->loadResult());
+						if (is_object($obj) && isset($obj->prefilters)) {
+							$properties = $obj->prefilters;
+						}
 					}
 				}
 			}
 			//if we are rendering as a module dont pick up the menu item options (parmas already set in list module)
-			if (!strstr($this->getRenderContext(), 'mod_fabrik_list')) {
+			// so first statement when rendenering a module, 2nd when posting to the component from a module.
+			if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0) {
 				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '');
 			}
 			if (isset($properties)) {
@@ -3665,8 +3671,8 @@ class FabrikFEModelList extends JModelForm {
 		if ($params->get('search-mode', 'AND') == 'OR') {
 			//test new option to have one field to search them all
 			$key = 'com_fabrik.list'.$this->getRenderContext().'.searchall';
-
-			$v = $app->getUserStateFromRequest($key, 'fabrik_list_filter_all');
+			$requestKey = 'fabrik_list_filter_all.'.$this->getRenderContext();
+			$v = $app->getUserStateFromRequest($key, $requestKey);
 			if (trim($v) == '') {
 				$fromFormId = $app->getUserState('com_fabrik.searchform.fromForm');
 				if ($fromFormId != $this->getFormModel()->getForm()->id) {
@@ -3675,7 +3681,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$v = htmlspecialchars($v, ENT_QUOTES);
 			$o = new stdClass();
-			$o->filter = '<input type="search" size="20" value="'.$v.'" class="fabrik_filter" name="fabrik_list_filter_all" />';
+			$o->filter = '<input type="search" size="20" value="'.$v.'" class="fabrik_filter" name="'.$requestKey.'" />';
 			if ($params->get('search-mode-advanced') == 1) {
 				$opts = array();
 				$opts[] = JHTML::_('select.option', 'all', JText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
@@ -6724,9 +6730,15 @@ class FabrikFEModelList extends JModelForm {
 		return $this->getId().$this->renderContext;
 	}
 	
-	public function setRenderContext($scope, $id)
+	public function setRenderContext($id)
 	{
-		$this->renderContext = '_'.$scope.'_'.$id;
+		$listref = JRequest::getVar('listref');
+		//$this->renderContext = strstr($listref, 'mod_fabrik_list') ? $listref : '_'.JFactory::getApplication()->scope.'_'.$id;
+		
+		$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
+		
+		//echo "render context = $this->renderContext <br>";
+		//$this->renderContext = '_'.$scope.'_'.$id;
 	} 
 
 	public function getGroupByHeadings()

@@ -71,7 +71,7 @@ $view = clone($controller->getView($viewName, $viewType));
 // Push a model into the view
 $model = $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
-$model->setRenderContext($module->module, $module->id);
+$model->setRenderContext($module->id);
 
 if ($limit !== 0) {
 	$app->setUserState('com_fabrik.list'.$model->getRenderContext().'.limitlength', $limit);

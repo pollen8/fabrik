@@ -516,7 +516,7 @@ class FabrikViewList extends JView{
 		//$$$rob if the content plugin has temporarily set the view to table then get view from origview var, if that doesn't exist
 		//revert to view var. Used when showing table in article/blog layouts
 		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
-		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" id ="table_'.$item->id.'_view" />';
+		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" />';
 
 		$this->hiddenFields[] = '<input type="hidden" name="listid" value="'.$item->id.'"/>';
 		$this->hiddenFields[] = '<input type="hidden" name="listref" value="'.$model->getRenderContext().'"/>';
@@ -532,7 +532,7 @@ class FabrikViewList extends JView{
 		$packageId = $model->packageId;
 		$this->hiddenFields[] = '<input type="hidden" name="_packageId" value="'.$packageId.'" />';
 		if ($app->isAdmin()) {
-			$this->hiddenFields[] = '<input type="hidden" name="task" value="list.view" id="task" />';
+			$this->hiddenFields[] = '<input type="hidden" name="task" value="list.view" />';
 		} else {
 			$this->hiddenFields[] = '<input type="hidden" name="task" value="" />';
 		}

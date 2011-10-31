@@ -1074,7 +1074,7 @@ var FbList = new Class({
 	},
 
 	watchNav: function (e) {
-		var limitBox = this.form.getElement('#limit' + this.id);
+		var limitBox = this.form.getElement('select[name*=limit]');
 		if (limitBox) {
 			limitBox.addEvent('change', function (e) {
 				var res = Fabrik.fireEvent('fabrik.list.limit', [this]);
