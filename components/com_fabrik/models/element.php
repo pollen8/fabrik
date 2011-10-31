@@ -1686,7 +1686,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$default = @$data[$elName]['value'];
 			}
 		}
-		$context = 'com_fabrik.table'.$listModel->getId().'.filter.'.$elid;
+		$context = 'com_fabrik.list'.$listModel->getRenderContext().'.filter.'.$elid;
 		$context .= $normal ? '.normal' : '.advanced';
 		//we didnt find anything - lets check the filters
 		if ($default == '') {

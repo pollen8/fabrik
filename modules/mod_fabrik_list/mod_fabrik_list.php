@@ -48,10 +48,6 @@ $limit = (int)$params->get('limit', 0);
 $layout	= $params->get('fabriklayout', 'default');
 
 JRequest::setVar('layout', $layout);
-if ($limit !== 0) {
-	$app->setUserState('com_fabrik.list'.$listId.'.limitlength', $limit);
-	JRequest::setVar('limit', $limit);
-}
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
@@ -76,6 +72,12 @@ $view = clone($controller->getView($viewName, $viewType));
 $model = $controller->getModel($viewName, 'FabrikFEModel');
 $model->setId($listId);
 $model->setRenderContext($module->module, $module->id);
+
+if ($limit !== 0) {
+	$app->setUserState('com_fabrik.list'.$model->getRenderContext().'.limitlength', $limit);
+	JRequest::setVar('limit', $limit);
+}
+
 if ($useajax !== '') {
 	$model->set('ajax', $useajax);
 }

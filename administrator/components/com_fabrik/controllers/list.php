@@ -205,7 +205,7 @@ class FabrikControllerList extends FabControllerForm
 				$newlimitstart = 0;
 			}
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
-			$context = 'com_fabrik.table'.$listid.'.list.';
+			$context = 'com_fabrik.list'.$model->getRenderContext().'.list.';
 			$app->setUserState($context.'limitstart'.$listid, $newlimitstart);
 		}
 		if (JRequest::getVar('format') == 'raw') {

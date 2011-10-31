@@ -27,7 +27,7 @@ echo "$form->error</div>";?>
 		?>
 		<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 		<?php if (trim($group->title) !== '') {?>
-			<legend><?php echo $group->title;?></legend>
+			<legend><span><?php echo $group->title;?></span></legend>
 		<?php }?>
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {

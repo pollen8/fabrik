@@ -278,7 +278,7 @@ class FabrikFEModelList extends JModelForm {
 		$params = $this->getParams();
 		$id = $this->getId();
 		// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
-		$context = 'com_fabrik.list'.$id.'.';
+		$context = 'com_fabrik.list'.$this->getRenderContext().'.';
 		$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
 		// deal with the fact that you can have more than one table on a page so limitstart has to be
 		// specfic per table
@@ -295,7 +295,6 @@ class FabrikFEModelList extends JModelForm {
 				$limitStart	= $app->getUserStateFromRequest($context.'limitstart', 'limitstart'.$id, $limitStart, 'int');
 			}
 		}
-
 
 		if ($this->_outPutFormat == 'feed') {
 			$limitLength = JRequest::getVar('limit',  $params->get('rsslimit', 150));
@@ -1394,7 +1393,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$id = $this->getId();
 		foreach ($elements as $element) {
-			$context = 'com_fabrik.table'.$id.'.order.'.$element->getElement()->id;
+			$context = 'com_fabrik.list'.$this->getRenderContext().'.order.'.$element->getElement()->id;
 			if ($clearOrdering) {
 				$session->set($context, '');
 			} else {
@@ -1485,9 +1484,9 @@ class FabrikFEModelList extends JModelForm {
 		$postOrderBy = JRequest::getInt('orderby', '');
 		$postOrderDir = JRequest::getVar('orderdir', '');
 		$arOrderVals = array('asc', 'desc', '-');
-		$id = $this->getId();
+		$id = $this->getRenderContext();
 		if (in_array($postOrderDir, $arOrderVals)) {
-			$context = 'com_fabrik.table'.$id.'.order.'.$postOrderBy;
+			$context = 'com_fabrik.list'.$id.'.order.'.$postOrderBy;
 			$session->set($context, $postOrderDir);
 		}
 	}
@@ -3270,7 +3269,7 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob ensure that the limits are set - otherwise can create monster query
 		$this->setLimits();
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.table'. $this->getId().'.total';
+		$context = 'com_fabrik.list'. $this->getRenderContext().'.total';
 		if (isset($this->totalRecords)) {
 			$session->set($context, $this->totalRecords);
 			return $this->totalRecords;
@@ -3665,7 +3664,7 @@ class FabrikFEModelList extends JModelForm {
 		$params = $this->getParams();
 		if ($params->get('search-mode', 'AND') == 'OR') {
 			//test new option to have one field to search them all
-			$key = 'com_fabrik.table'. $table->id.'.searchall';
+			$key = 'com_fabrik.list'.$this->getRenderContext().'.searchall';
 
 			$v = $app->getUserStateFromRequest($key, 'fabrik_list_filter_all');
 			if (trim($v) == '') {
@@ -3683,7 +3682,7 @@ class FabrikFEModelList extends JModelForm {
 				$opts[] = JHTML::_('select.option', 'any', JText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
 				$opts[] = JHTML::_('select.option', 'exact', JText::_('COM_FABRIK_EXACT_TERMS'));
 				$opts[] = JHTML::_('select.option', 'none', JText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
-				$mode = $app->getUserStateFromRequest('com_fabrik.table'. $table->id.'.searchallmode', 'search-mode-advanced');
+				$mode = $app->getUserStateFromRequest('com_fabrik.list'.$this->getRenderContext().'.searchallmode', 'search-mode-advanced');
 				$o->filter .= '&nbsp;'.JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
 			}
 			$o->name = 'all';
@@ -4058,7 +4057,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 				$label = $w->parseMessageForPlaceHolder($label, array());
 				if ($elementParams->get('can_order') == '1' && $this->_outPutFormat != 'csv') {
-					$context = 'com_fabrik.table' . $this->getId() . '.order.' . $element->id;
+					$context = 'com_fabrik.list'.$this->getRenderContext().'.order.'.$element->id;
 					$orderDir	= $session->get($context);
 					$class = "";
 					$currentOrderDir = $orderDir;

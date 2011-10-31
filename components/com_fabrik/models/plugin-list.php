@@ -176,7 +176,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	protected function getSessionContext()
 	{
-		return 'com_fabrik.table'. $this->model->getTable()->id.'.plugins.'.$this->onGetFilterKey().'.';
+		return 'com_fabrik.list'.$this->model->getRenderContext().'.plugins.'.$this->onGetFilterKey().'.';
 	}
 
 	/**

@@ -365,7 +365,7 @@ var FbList = new Class({
 		var rad3 = "<input type='radio' value='1' name='inccalcs' checked='checked' />" + Joomla.JText._('JYES');
 		var rad4 = "<input type='radio' value='1' name='inctabledata' checked='checked' />" + Joomla.JText._('JYES');
 		var rad5 = "<input type='radio' value='1' name='excel' checked='checked' />Excel CSV";
-		var url = 'index.php?option=com_fabrik&view=list&listid=' + this.id + '&format=csv';
+		var url = 'index.php?option=com_fabrik&view=list&listid=' + this.id + '&format=csv&Itemid=' + this.options.Itemid;
 
 		var divopts = {
 			'styles': {
@@ -534,7 +534,9 @@ var FbList = new Class({
 		opts.option = 'com_fabrik';
 		opts.view = 'list';
 		opts.format = 'csv';
+		opts.Itemid = this.options.Itemid;
 		opts.listid = this.id;
+		opts.listref = this.id;
 		var myAjax = new Request.JSON({
 			url: '',
 			method: 'post',
@@ -555,7 +557,7 @@ var FbList = new Class({
 					if (res.count < res.total) {
 						this.triggerCSVImport(res.count);
 					} else {
-						var finalurl = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id + '&start=' + res.count;
+						var finalurl = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id + '&start=' + res.count + '&Itemid=' + this.options.Itemid;
 						var msg = Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
 						msg += ' <a href="' + finalurl + '">' + Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a>';
 						if (typeOf(document.id('csvmsg')) !== 'null') {

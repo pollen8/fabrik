@@ -387,6 +387,7 @@ class FabrikControllerForm extends JController
 		$length = JRequest::getVar('limit' . $listid);
 
 		$oldtotal = $model->getTotalRecords();
+		$model->setId($listid);
 		$model->deleteRows($ids);
 
 		$total = $oldtotal - count($ids);
@@ -399,7 +400,7 @@ class FabrikControllerForm extends JController
 			}
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
-			$context = 'com_fabrik.list.'.$listid.'.';
+			$context = 'com_fabrik.list.'.$model->getRenderContext().'.';
 			$app->setUserState($context.'limitstart', $newlimitstart);
 		}
 		if (JRequest::getVar('format') == 'raw') {

@@ -339,8 +339,8 @@ class FabrikControllerDetails extends JController
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
-		$app 				= JFactory::getApplication();
-		$model	= &$this->getModel('list', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array(JRequest::getVar('rowid', 0));
 
 		$listid = JRequest::getInt('listid');
@@ -348,6 +348,7 @@ class FabrikControllerDetails extends JController
 		$length = JRequest::getVar('limit' . $listid);
 
 		$oldtotal = $model->getTotalRecords();
+		$model->setId($listid);
 		$model->deleteRows($ids);
 
 		$total = $oldtotal - count($ids);
@@ -360,7 +361,7 @@ class FabrikControllerDetails extends JController
 			}
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
-			$context = 'com_fabrik.list.'.$listid.'.';
+			$context = 'com_fabrik.list.'.$model->getRenderContext().'.';
 			$app->setUserState($context.'limitstart', $newlimitstart);
 		}
 		if (JRequest::getVar('format') == 'raw') {

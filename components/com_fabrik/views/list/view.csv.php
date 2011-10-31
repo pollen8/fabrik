@@ -37,6 +37,7 @@ class FabrikViewList extends JView{
 		}
 
 		$start = JRequest::getInt('start', 0);
+		//echo "<!-- $start <= $total -->";
 		if ($start <= $total) {
 			$exporter->writeFile($total);
 		} else {

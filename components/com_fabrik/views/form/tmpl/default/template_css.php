@@ -3,6 +3,41 @@ header('Content-type: text/css');
 $c = (int)$_REQUEST['c'];
 echo "
 
+#form_$c legend{
+	background-color: #c0c0c0;
+	-moz-user-select: none;
+	border-bottom: 1px solid #B7B7B7;
+	border-top: 1px solid #B7B7B7;
+	color: #777777;
+	font-weight: bold;
+	margin: 0;
+	padding:0;
+	text-shadow: 0 1px 0 #FFFFFF;
+  zoom: 1;
+	text-transform: uppercase;
+	width:100%;
+	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
+		to(#D7D7D7) );
+}
+
+#form_$c legend span{
+	padding:5px;
+	display:block;
+}
+
+#form_$c{
+	width:100%;
+	background-color:#FAFAFA;
+	border:1px solid #DDDDDD;
+}
+
+#form_$c h1{
+	paddiing-left:10px;
+	margin:0;
+}
+
 #form_$c fieldset ul,
 #details_$c fieldset ul{
 	list-style:none;
@@ -118,9 +153,9 @@ section for dropdowns radio buttons etc**/
 
 #form_$c input,
 #form_$c select{
-	
-	border:1px solid #aaa;
+	border:1px solid #DDDDDD;
 	border-radius:3px;
+	padding:3px;
 }
 
 #form_$c  .inputbox:focus{
@@ -145,7 +180,6 @@ section for dropdowns radio buttons etc**/
 #form_$c .geo{
 	visibility:hidden;
 }
-
 
 
 #form_$c .fabrikGroup .readonly,
@@ -300,5 +334,35 @@ margin:0;
 	margin-top: 10px;
 	margin-left: 100px;
 }
+
+/*
+some fun with fancy buttons not ready for prime time
+
+#form_$c .button{
+background: -moz-linear-gradient(center top , #ccc 0%, #777) repeat scroll 0 0 transparent;
+border: 1px solid #614337;
+border-radius: 6px 6px 6px 6px;
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.6) inset;
+color: #FFFFFF;
+margin: 10px;
+padding: 5px 20px;
+
+}
+
+#form_$c .button:hover{
+background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent; /* orange */
+background: -moz-linear-gradient(center top , #8EC400 0%, #558A01) repeat scroll 0 0 transparent; /* green */
+text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.2);
+box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.6) inset;
+
+}
+
+#form_$c .button[name=delete]:hover{
+background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
+}
+
+#form_$c .button[name=Reset]:hover{
+background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
+} */
 ";
 ?>

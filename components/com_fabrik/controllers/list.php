@@ -61,7 +61,6 @@ class FabrikControllerList extends JController
 		// Display the view
 		$view->assign('error', $this->getError());
 
-
 		$post = JRequest::get('post');
 		//build unique cache id on url, post and user id
 		$user = JFactory::getUser();
@@ -152,7 +151,7 @@ class FabrikControllerList extends JController
 				$newlimitstart = 0;
 			}
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
-			$context = 'com_fabrik.list.'.$listid.'.';
+			$context = 'com_fabrik.list.'.$model->getRenderContext().'.';
 			$app->setUserState($context.'limitstart', $newlimitstart);
 		}
 		if (JRequest::getVar('format') == 'raw') {
