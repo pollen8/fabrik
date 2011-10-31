@@ -44,7 +44,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	{
 		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
-		$id = $this->getHTMLId($repeatCounter);
+		$html_id = $this->getHTMLId($repeatCounter);
+		$id = $html_id;
 		$params = $this->getParams();
 
 		// $$$ rob - if embedding a form inside a details view then rowid is true (for the detailed view) but we are still showing a new form
@@ -80,8 +81,12 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				}
 				else {
 					// $$$ rob 31/07/2011 not sure this is right - causes js error when field is hidden in form
+					// $$$ hugh 10/31/2011 - but if we don't do it, $id is the label not the value (like 'username')
+					// so wrong uid is written to form, and wipes out real ID when form is submitted.
+					// OK, problem was we were using $id firther on as the html ID, so if we added _raw, element
+					// on form had wrong ID.  Added $html_id above, to use as (duh) html ID instead of $id.
 					if (!strstr($id,'_raw') && array_key_exists($id . '_raw', $data)) {
-						//$id .= '_raw';
+						$id .= '_raw';
 					}
 				}
 				$uid = JArrayHelper::getValue($data, $id, '');
@@ -96,13 +101,13 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		// we should simply return a hidden field with the user id in it.
 		if (!$this->inJDb()) {
 
-			return $this->_getHiddenField($name, $user->get('id'), $id);
+			return $this->_getHiddenField($name, $user->get('id'), $html_id);
 		}
 		$str = '';
 		if ($this->_editable) {
 			$value = $user->get('id');
 			if ($element->hidden) {
-				$str = $this->_getHiddenField($name, $value, $id);
+				$str = $this->_getHiddenField($name, $value, $html_id);
 			} else {
 				$str = parent::render($data, $repeatCounter);
 			}
@@ -315,8 +320,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		$this->updateFabrikJoins($data, '#__users', 'id', $label);
 		return true;
 	}
-	
-	
+
+
 	protected function getJoinLabel()
 	{
 		$label = parent::getJoinLabel();
@@ -592,13 +597,13 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		$user = JFactory::getUser((int)$data[$key]);
 		return $this->getUserDisplayProperty($user);
 	}
-	
+
 	/**
 	 * @since 3.0b
 	 * get the user's property to show, if gid raise warning and revert to username (no gid in J1.7)
 	 * @param object $user
 	 */
-	
+
 	protected function getUserDisplayProperty($user)
 	{
 		static $displayMessage;
