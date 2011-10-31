@@ -139,10 +139,10 @@ class FabrikFEModelList extends JModelForm {
 
 	/** @var array list of column data - used for filters */
 	protected $columnData = array();
-	
+
 	/** @var string render context used for defining custom css variable for tmpl rendering e.g. module_1*/
 	protected $renderContext = '';
-	
+
 	/**
 	 * Constructor
 	 *
@@ -585,29 +585,31 @@ class FabrikFEModelList extends JModelForm {
 
 			//see if we can use a raw value instead
 			/*if (!empty($data) && array_key_exists($groupBy . "_raw", $data[0])) {
-			 $groupBy = $groupBy . "_raw";
+			$groupBy = $groupBy . "_raw";
 			}*/
 			$groupTitle = null;
 			$aGroupTitles = array();
 			$groupId = 0;
-			for ($i=0; $i <count($data); $i++) {
-				if (!in_array($data[$i]->$groupBy , $aGroupTitles)) {
-					$aGroupTitles[] = $data[$i]->$groupBy;
-					$grouptemplate = $w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i]));
-					$this->grouptemplates[$data[$i]->$groupBy] = nl2br($grouptemplate);
-					$groupedData[$data[$i]->$groupBy] = array();
-				}
-				$data[$i]->_groupId = $data[$i]->$groupBy;
-				$gKey = $data[$i]->$groupBy;
-				//	if the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
-				if ($this->_group_by_added) {
-					unset($data[$i]->$groupBy);
-				}
-				if ($this->_temp_db_key_addded) {
-					$k = $table->db_primary_key;
+			$gKey = 0;
+			for ($i = 0; $i < count($data); $i++) {
+				if (isset($data[$i]->$groupBy)) {
+					if (in_array($data[$i]->$groupBy , $aGroupTitles)) {
+						$aGroupTitles[] = $data[$i]->$groupBy;
+						$grouptemplate = $w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i]));
+						$this->grouptemplates[$data[$i]->$groupBy] = nl2br($grouptemplate);
+						$groupedData[$data[$i]->$groupBy] = array();
+					}
+					$data[$i]->_groupId = $data[$i]->$groupBy;
+					$gKey = $data[$i]->$groupBy;
+					//	if the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
+					if ($this->_group_by_added) {
+						unset($data[$i]->$groupBy);
+					}
+					if ($this->_temp_db_key_addded) {
+						$k = $table->db_primary_key;
+					}
 				}
 				$groupedData[$gKey][] = $data[$i];
-
 			}
 			$data = $groupedData;
 		} else {
@@ -1916,7 +1918,7 @@ class FabrikFEModelList extends JModelForm {
 			$groupModel = $groups[$x];
 			// $$$ rob moved into elementModel::getAsField_html()
 			/*$table_name = $table->db_table_name;
-			 $group = $groupModel->getGroup();
+			$group = $groupModel->getGroup();
 			if ($groupModel->isJoin()) {
 			foreach ($aJoinObjs as $join) {
 			//also ignore any joins that are elements
@@ -2274,7 +2276,7 @@ class FabrikFEModelList extends JModelForm {
 					# if they either have usercol privs or the regular ACL.  i.e. if this test fails,
 					# don't reurn false, rather drop through and test regular ACL.
 					/*
-					 else {
+					else {
 					return false;
 					}
 					*/
@@ -2544,7 +2546,7 @@ class FabrikFEModelList extends JModelForm {
 
 			// test case:
 			/*
-			 * you have a talbe that joins to a 2nd table
+			* you have a talbe that joins to a 2nd table
 			* in that 2nd table there is a database join element
 			* that 2nd elements key needs to point to the 2nd tables name and not the first
 			*
@@ -2707,7 +2709,7 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
 		//if (empty($origColName) || !in_array(strtolower($origColName ), $existingfields)) {
 
-	
+
 		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
 		//if (empty($element->name) || !in_array($element->name, $existingfields)) {
 		if (empty($origColName) || !in_array($origColName, $existingfields)) {
@@ -2719,7 +2721,7 @@ class FabrikFEModelList extends JModelForm {
 					if (!array_key_exists($element->name, $dbdescriptions)) {
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
 					}
-					
+						
 				}
 			}
 		} else {
@@ -2779,7 +2781,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
-		
+
 		if (!is_null($objtype)) {
 			foreach ($dbdescriptions as $dbdescription) {
 				$fieldname = strtolower($dbdescription->Field);
@@ -3158,8 +3160,8 @@ class FabrikFEModelList extends JModelForm {
 				$showInList = $listels->show_in_list;
 			}
 			$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
-			
-			//are we coming from a post request via a module? 
+				
+			//are we coming from a post request via a module?
 			$moduleid = 0;
 			if (JRequest::getVar('listref') !== '') {
 				// if so we need to load in the modules parameters
@@ -3187,7 +3189,7 @@ class FabrikFEModelList extends JModelForm {
 			if (isset($properties)) {
 				$prefilters = JArrayHelper::fromObject(json_decode($properties));
 				$conditions = (array)$prefilters['filter-conditions'];
-				
+
 				if (!empty($conditions)) {
 					$params->set('filter-fields', $prefilters['filter-fields']);
 					$params->set('filter-conditions', $prefilters['filter-conditions']);
@@ -3227,17 +3229,17 @@ class FabrikFEModelList extends JModelForm {
 				$tmpfilter = strstr($filter, '_raw`') ? FabrikString::rtrimword( $filter, '_raw`').'`' : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
 				if ($elementModel === false) {
-	
+
 					// Include the JLog class.
 					jimport('joomla.log.log');
-					
+						
 					// Add the logger.
 					JLog::addLogger(array('text_file' => 'fabrik.log.php'));
-					
+						
 					// start logging...
 					JLog::add('A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter), JLog::NOTICE, 'com_fabrik');
+
 						
-					
 					continue;
 				}
 				$filters['join'][] = $join;
@@ -3373,7 +3375,7 @@ class FabrikFEModelList extends JModelForm {
 		//$$$ rob 11/01/2011 cant do this as we dont know what the total is yet
 		//$$$ rob ensure that the limitstart + limit isn't greater than the total
 		/*if ($limitstart + $limit > $total) {
-		 $limitstart = $total - $limit;
+		$limitstart = $total - $limit;
 		}*/
 		// $$$ rob 25/02/2011 if you only have say 3 reocrds then above random will show 1 2 or 3 records
 		// so decrease the random start num by the table row dispaly num
@@ -4478,7 +4480,7 @@ class FabrikFEModelList extends JModelForm {
 			$group = $groupModel->getGroup();
 			// $$$rob this following if statement avoids this scenario from happening:
 			/*
-			 * you have a form with joins to two other tables
+			* you have a form with joins to two other tables
 			* each joined group has a field called 'password'
 			* first group's password is set to password plugin, second to field
 			* on update if no password entered for first field data should not be updated as recordInDatabase() return false
@@ -4730,7 +4732,7 @@ class FabrikFEModelList extends JModelForm {
 							// $$$ rob 26/04/2011 encodeing done at the end
 							//if its a dropdown radio etc
 							/*if (is_array($def)) {
-							 $def = json_encode($def);
+							$def = json_encode($def);
 							}*/
 							$default[] = $def;
 						}
@@ -6321,7 +6323,7 @@ class FabrikFEModelList extends JModelForm {
 	function getClearButton()
 	{
 		$filters = $this->getFilters('listform_'. $this->getRenderContext(), 'list');
-		
+
 		$params = $this->getParams();
 		if (count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0) {
 			$table = $this->getTable();
@@ -6349,7 +6351,7 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * $$$ rob 19/10/2011 now called before formatData() from getData() as otherwise element tips (created in element->renderListData())
 	 * only contained first merged records data and not all merged records
-	 * 
+	 *
 	 * Collapses 'repeated joined' rows into a single row.
 	 * If a group is not repeating we just use the first row's data (as subsequent rows will contain the same data
 	 * Otherwise if the group is repeating we append each repeated record's data into the first row's data
@@ -6376,7 +6378,7 @@ class FabrikFEModelList extends JModelForm {
 		$can_repeats = array();
 		$remove = array();
 		for ($i = 0; $i < $count; $i++) {
-				
+
 			// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
 			//$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->id;
 			$next_pk = isset($data[$i]->__pk_val) ? $data[$i]->__pk_val : $data[$i]->$dbprimaryKey;
@@ -6436,7 +6438,7 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * $$$ rob 19/10/2011 -  version which works if run after formatData() in getData() 
+	 * $$$ rob 19/10/2011 -  version which works if run after formatData() in getData()
 	 */
 	/* function formatForJoins(&$data)
 	 {
@@ -6724,22 +6726,22 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 	}
-	
+
 	public function getRenderContext()
 	{
 		return $this->getId().$this->renderContext;
 	}
-	
+
 	public function setRenderContext($id)
 	{
 		$listref = JRequest::getVar('listref');
 		//$this->renderContext = strstr($listref, 'mod_fabrik_list') ? $listref : '_'.JFactory::getApplication()->scope.'_'.$id;
-		
+
 		$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
-		
+
 		//echo "render context = $this->renderContext <br>";
 		//$this->renderContext = '_'.$scope.'_'.$id;
-	} 
+	}
 
 	public function getGroupByHeadings()
 	{

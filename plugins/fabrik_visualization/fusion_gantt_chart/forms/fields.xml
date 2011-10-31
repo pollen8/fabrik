@@ -15,6 +15,15 @@
 				observe="params_fusion_gantt_chart_connection"
 				label="PLG_VISUALIZATION_GANTT_TABLE_LABEL" />
 				
+			<field name="fusion_gantt_chart_show_filters"
+				type="radio"
+				default="1"
+				label="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_LABEL"
+				description="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
 		</fieldset>
 
 		<fieldset name="process" label="Processes">

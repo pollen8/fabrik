@@ -27,29 +27,33 @@
 				label="PLG_ELEMENT_SLIDESHOW_CONNECTION_LABEL" />
 						
 			<field name="slideshow_table" 
+				type="fabriktables"
 				observe="params_slideshow_connection" 
-				type="fabriktables" 
+				connection_in_repeat="false"
 				label="PLG_ELEMENT_SLIDESHOW_TABLE_LABEL" 
 				description="PLG_ELEMENT_SLIDESHOW_TABLE_DESC"/>
 				
 			<field name="slideshow_fk" 
 				type="element" 
 				connection="params_slideshow_connection" 
-				table="params_slideshow_table" 
+				table="params_slideshow_table"
+				connection_in_repeat="false"
 				label="PLG_ELEMENT_SLIDESHOW_FK_LABEL" 
 				description="PLG_ELEMENT_SLIDESHOW_FK_DESC"/>
 				
 			<field name="slideshow_file" 
 				type="element" 
 				connection="params_slideshow_connection" 
-				table="params_slideshow_table" 
+				table="params_slideshow_table"
+				connection_in_repeat="false"
 				label="PLG_ELEMENT_SLIDESHOW_FILE_LABEL" 
 				description="PLG_ELEMENT_SLIDESHOW_FILE_DESC"/>
 				
 			<field name="slideshow_caption" 
 				type="element" 
 				connection="params_slideshow_connection" 
-				table="params_slideshow_table" 
+				table="params_slideshow_table"
+				connection_in_repeat="false"
 				label="PLG_ELEMENT_SLIDESHOW_CAPTION_LABEL" 
 				description="PLG_ELEMENT_SLIDESHOW_CAPTION_DESC"/>
 				
