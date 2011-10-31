@@ -40,9 +40,10 @@
 		<fieldset name="plg-cron-email-update" label="Update">
 		
 			<field name="cronemail-updatefield" 
-				type="element" 
-				connection="connection" 
-				table="table" 
+				type="element"
+				connection="params_connection"
+				connection_in_repeat="false" 
+				table="params_table" 
 				label="PLG_CRON_EMAIL_FIELD_LABEL" 
 				description="PLG_CRON_EMAIL_FIELD_DESC" />
 				
