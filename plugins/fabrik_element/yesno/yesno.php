@@ -134,6 +134,10 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	
 	function formJavascriptClass(&$srcs, $script = '')
 	{
+		$elementList = 'media/com_fabrik/js/elementlist.js';
+		if (!in_array($elementList, $srcs)) {
+			$srcs[] = $elementList;
+		}
 		$elementList = 'plugins/fabrik_element/radiobutton/radiobutton.js';
 		if (!in_array($elementList, $srcs)) {
 			$srcs[] = $elementList;
