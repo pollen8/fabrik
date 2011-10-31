@@ -261,10 +261,10 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 		$paypal_test_site = $params->get('paypal_test_site', '');
 		if ($paypal_testmode == 1 && !empty($paypal_test_site)) {
-			$ppurl = $paypal_test_site . '/index.php?option=com_fabrik&c=plugin&view=plugin&task=pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=fabrikpaypal&method=ipn';
+			$ppurl = $paypal_test_site . '/index.php?option=com_fabrik&c=plugin&task=plugin.pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=paypal&method=ipn';
 		}
 		else {
-			$ppurl = COM_FABRIK_LIVESITE.'/index.php?option=com_fabrik&c=plugin&view=plugin&task=pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=fabrikpaypal&method=ipn';
+			$ppurl = COM_FABRIK_LIVESITE.'/index.php?option=com_fabrik&c=plugin&task=plugin.pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=paypal&method=ipn';
 		}
 		$paypal_test_site_qs = $params->get('paypal_test_site_qs', '');
 		if ($paypal_testmode == 1 && !empty($paypal_test_site_qs)) {
@@ -306,11 +306,11 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		else {
 			// using default thanks() method so don't forget to add renderOrder
 			if ($paypal_testmode == '1' && !empty($paypal_test_site)) {
-				$opts['return'] = $paypal_test_site .'/index.php?option=com_fabrik&c=plugin&view=plugin&task=pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=fabrikpaypal&method=thanks&rowid=' . $data['rowid']. '&renderOrder=' . $this->renderOrder;
+				$opts['return'] = $paypal_test_site .'/index.php?option=com_fabrik&task=plugin.pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid']. '&renderOrder=' . $this->renderOrder;
 
 			}
 			else {
-				$opts['return'] = COM_FABRIK_LIVESITE.'/index.php?option=com_fabrik&c=plugin&view=plugin&task=pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=fabrikpaypal&method=thanks&rowid=' . $data['rowid']. '&renderOrder=' . $this->renderOrder;
+				$opts['return'] = COM_FABRIK_LIVESITE.'/index.php?option=com_fabrik&task=plugin.pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid']. '&renderOrder=' . $this->renderOrder;
 			}
 		}
 		$opts['return'] = urlencode($opts['return']);
@@ -355,7 +355,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		return true;
 	}
 
-	function thanks()
+	function onThanks()
 	{
 		// @TODO - really need to work out how to get the plugin params at this point,
 		// so we don't have to pass the teg_msg around as a QS arg between us and PayPal,
@@ -395,11 +395,11 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 	 * called from paypal at the end of the transaction
 	 */
 
-	function ipn()
+	function onIpn()
 	{
 		$config = JFactory::getConfig();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-		$log = JTable::getInstance('log', 'Table');
+		$log = FabTable::getInstance('log', 'FabrikTable');
 		$log->referring_url = $_SERVER['REQUEST_URI'];
 		$log->message_type = 'fabrik.ipn.start';
 		$log->message = json_encode($_REQUEST);
