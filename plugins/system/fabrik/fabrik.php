@@ -76,6 +76,7 @@ class plgSystemFabrik extends JPlugin
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
 		global $_PROFILER;
+		
 		JDEBUG ? $_PROFILER->mark('fabrik search start') : null;
 
 		$user	= JFactory::getUser();

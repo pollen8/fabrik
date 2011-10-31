@@ -82,7 +82,7 @@ class JFormFieldTables extends JFormFieldList
 			$opts->conn = 'jform_' . $connectionDd;
 			$opts->value = $this->value;
 			$opts = json_encode($opts);
-			$script = "Fabrik.model.fields.fabriktable['$this->id'] = new tablesElement('$this->id', $opts);\n";
+			$script = "FabrikAdmin.model.fields.fabriktable['$this->id'] = new tablesElement('$this->id', $opts);\n";
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/tables.js', $script);
 		}
 		$html = parent::getInput();

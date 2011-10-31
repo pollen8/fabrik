@@ -185,7 +185,7 @@ var fabriktablesElement = new Class({
 		this.elementLists = $H({});
 		this.waitingElements = $H({});
 		this.setUp();
-		Fabrik.model.fields.fabriktable[this.el.id] = this;
+		FabrikAdmin.model.fields.fabriktable[this.el.id] = this;
 	}
 
 });

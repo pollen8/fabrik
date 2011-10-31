@@ -25,13 +25,13 @@ var elementElement = new Class({
 		if (typeOf($(this.options.conn)) === 'null') {
 			return false;
 		}
-		if (typeOf(Fabrik.model.fields.fabriktable) === 'undefined') {
+		if (typeOf(FabrikAdmin.model.fields.fabriktable) === 'undefined') {
 			return false;
 		}
-		if (Object.getLength(Fabrik.model.fields.fabriktable) === 0) {
+		if (Object.getLength(FabrikAdmin.model.fields.fabriktable) === 0) {
 			return false;
 		}
-		if (Object.keys(Fabrik.model.fields.fabriktable).indexOf(this.options.table) === -1) {
+		if (Object.keys(FabrikAdmin.model.fields.fabriktable).indexOf(this.options.table) === -1) {
 			return false;
 		}
 		return true;
@@ -51,7 +51,7 @@ var elementElement = new Class({
 		if (typeOf(this.el) === 'null') {
 			fconsole('element didnt find me, ', s);
 		}
-		Fabrik.model.fields.fabriktable[this.options.table].registerElement(this);
+		FabrikAdmin.model.fields.fabriktable[this.options.table].registerElement(this);
 	},
 
 	getOpts : function () {

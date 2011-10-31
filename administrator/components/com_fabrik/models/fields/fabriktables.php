@@ -96,7 +96,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 
 
 			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";
-			$script[] = "Fabrik.model.fields.fabriktable['$this->id'] = p;";
+			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
 			//$script[] = "Fabrik.adminElements['$this->id'] = p;";
 			$script = implode("\n", $script);
 

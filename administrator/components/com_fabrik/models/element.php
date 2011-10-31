@@ -405,7 +405,6 @@ class FabrikModelElement extends JModelAdmin
 		}
 		JRequest::setvar('view', 'element');
 		JPluginHelper::importPlugin('fabrik_element', $plugin);
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		if ($plugin == '') {
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
