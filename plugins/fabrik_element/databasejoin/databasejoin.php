@@ -822,29 +822,29 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return string formatted value
 	 */
 
-	/*function getEmailValue($value, $data, $c)
-	 {
-	$tmp = $this->_getOptions($data);
-	if (is_array($value)){
-	foreach ($value as &$v2) {
-	foreach ($tmp as $v) {
-	if ($v->value == $v2) {
-	$v2 = $v->text;
+	function getEmailValue($value, $data, $c)
+	{
+		$tmp = $this->_getOptions($data);
+		if (is_array($value)){
+			foreach ($value as &$v2) {
+				foreach ($tmp as $v) {
+					if ($v->value == $v2) {
+						$v2 = $v->text;
+					}
+				}
+				$v2 = $this->renderListData($v2, new stdClass());
+			}
+			$val = $value;
+		}else {
+			foreach ($tmp as $v) {
+				if ($v->value == $value) {
+					$value = $v->text;
+				}
+			}
+			$val = $this->renderListData($value, new stdClass());
+		}
+		return $val;
 	}
-	}
-	$v2 = $this->renderListData($v2, new stdClass());
-	}
-	$val = $value;
-	}else {
-	foreach ($tmp as $v) {
-	if ($v->value == $value) {
-	$value = $v->text;
-	}
-	}
-	$val = $this->renderListData($value, new stdClass());
-	}
-	return $val;
-	}*/
 
 	/**
 	 *
@@ -1346,7 +1346,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		return parent::onSave();
 	}
-	
+
 	/**
 	 * @since 3.0b
 	 * on save of element, update its jos_fabrik_joins record and any decendants join record
@@ -1355,7 +1355,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param string $keyCol
 	 * @param string $label
 	 */
-	
+
 	protected function updateFabrikJoins($data, $tableJoin, $keyCol, $label)
 	{
 		//load join based on this element id
@@ -1368,7 +1368,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$this->updateFabrikJoin($data, $id, $tableJoin, $keyCol, $label);
 		}
 	}
-	
+
 	/**
 	* @since 3.0b
 	* update an elements jos_fabrik_joins record
@@ -1378,7 +1378,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	* @param string $keyCol
 	* @param string $label
 	*/
-	
+
 	protected function updateFabrikJoin($data, $elementId, $tableJoin, $keyCol, $label)
 	{
 		$params = json_decode($data['params']);
@@ -1433,7 +1433,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 			}
 		}
-		
+
 	} */
 
 	function onRemove($drop = false)
