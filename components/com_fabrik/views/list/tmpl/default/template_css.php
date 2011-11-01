@@ -122,7 +122,6 @@ div.calendar{
 #listform_$c .fabrik___heading,
 .advancedSeach_$c .fabrik___heading{
 	background-color: #c0c0c0;
-	-moz-user-select: none;
 	border-bottom: 1px solid #B7B7B7;
 	border-top: 1px solid #FFFFFF;
 	color: #777777;
@@ -132,7 +131,7 @@ div.calendar{
 	margin: 0;
 	text-shadow: 0 1px 0 #FFFFFF;
   zoom: 1;
-	text-transform: uppercase;
+
 }
 
 #listform_$c th,
@@ -293,11 +292,17 @@ div.calendar{
 }
 #listform_$c .searchall li input,
 #listform_$c .searchall li select,
+#listform_$c .fabrik___heading button,
 #listform_$c .fabrik___heading input,
 #listform_$c .fabrik___heading select{
 	margin:3px 3px 0 3px;
 	border:1px solid #999;
 	border-radius:3px;
+}
+
+#listform_$c button.fabrik_filter_submit{
+height:23px;
+margin-top:2px;
 }
 
 #listform_$c .searchall li input[type=button]{

@@ -7,7 +7,7 @@ echo "
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	border-bottom: 1px solid #B7B7B7;
-	border-top: 1px solid #B7B7B7;
+	/* border-top: 1px solid #B7B7B7; */
 	color: #777777;
 	font-weight: bold;
 	margin: 0;
@@ -20,6 +20,8 @@ echo "
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
+		
+		position:absolute;
 }
 
 #form_$c legend span{
@@ -38,10 +40,17 @@ echo "
 	margin:0;
 }
 
+#form_$c fieldset{
+	margin:5px 10px;
+	position:relative;
+	padding:0;
+	border:1px solid #DDDDDD;
+}
+
 #form_$c fieldset ul,
 #details_$c fieldset ul{
 	list-style:none;
-	padding:0;
+	padding:40px 10px 20px 10px;
 	margin:0;
 }
 
@@ -108,16 +117,13 @@ echo "
 }
 
 #form_$c .fabrikActions{
-	padding-top:15px;
+	padding:10px;
 	clear:left;
-	padding-bottom:15px;
+	margin:5px 10px;
+	border:1px solid #DDDDDD;
 }
-
-
-#form_$c .fabrikLabel{
-	/*ensures label text doesnt overrun validation icons*/
-	padding-right:10px;
-	z-index:99999;
+#form_$c .fabrikActions input{
+	margin-right:7px;
 }
 
 #form_$c .fabrikValidating{

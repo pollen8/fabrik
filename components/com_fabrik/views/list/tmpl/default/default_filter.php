@@ -8,8 +8,12 @@
 	}?>
 		<?php if ($this->filter_action != 'onchange') {?>
 	<li>
-	<input type="button" class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>"
-				name="filter" />
+	<button class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>"
+				name="filter" >
+	<?php echo FabrikHelperHTML::image('search.png', 'list', $this->tmpl);?>
+	</button>
+<!-- 	<input type="button" class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>"
+				name="filter" /> -->
 	</li>
 	<?php } ?>	
 	</ul>
