@@ -83,7 +83,7 @@ class JFormFieldElement extends JFormFieldList
 
 			$script = array();
 			$script[] = "var p = new elementElement('$this->id', $opts);";
-			$script[] = "Fabrik.model.fields.element['$this->id'] = p;";
+			$script[] = "FabrikAdmin.model.fields.element['$this->id'] = p;";
 			$script = implode("\n", $script);
 			$fabrikelements[$this->id] = true;
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/element.js', $script);

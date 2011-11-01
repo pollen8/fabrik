@@ -42,10 +42,10 @@ var FbRepeatGroup = new Class({
 					}
 					
 					this.increaseName(i);
-					$H(Fabrik.model.fields).each(function (plugins, type) {
+					$H(FabrikAdmin.model.fields).each(function (plugins, type) {
 						var newPlugin = false;
-						if (typeOf(Fabrik.model.fields[type][oldid]) !== 'null') {
-							var plugin = Fabrik.model.fields[type][oldid];
+						if (typeOf(FabrikAdmin.model.fields[type][oldid]) !== 'null') {
+							var plugin = FabrikAdmin.model.fields[type][oldid];
 							//ewPlugin = new CloneObject(plugin, true, []);
 							newPlugin = Object.clone(plugin);
 							try {
@@ -55,7 +55,7 @@ var FbRepeatGroup = new Class({
 							}
 						}
 						if (newPlugin !== false) {
-							Fabrik.model.fields[type][i.id] = newPlugin;
+							FabrikAdmin.model.fields[type][i.id] = newPlugin;
 						}
 					}.bind(this));
 					
