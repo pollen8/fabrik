@@ -13,7 +13,7 @@
 		<filename plugin="notification">notification.php</filename>
 		<filename>index.html</filename>
 		<folder>controllers</folder>
-		<folder>form</folder>
+		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>models</folder>
 		<folder>sql</folder>
