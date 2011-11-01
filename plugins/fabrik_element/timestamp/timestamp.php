@@ -78,6 +78,11 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 			return "TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP";
 		}
 	}
+	
+	function isHidden()
+	{
+		return true;
+	}
 
 }
 ?>
