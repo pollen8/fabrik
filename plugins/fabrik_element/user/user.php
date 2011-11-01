@@ -594,7 +594,12 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	function getEmailValue($value, $data, $c)
 	{
 		$key = $this->getFullName(false, true, false) . "_raw";
-		$user = JFactory::getUser((int)$data[$key]);
+		$userid = $data[$key];
+		if (is_array($userid)) {
+			$userid = (int)array_shift($userid);
+		}
+		$user = JFactory::getUser($userid);
+
 		return $this->getUserDisplayProperty($user);
 	}
 
