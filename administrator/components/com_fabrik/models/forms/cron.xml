@@ -26,8 +26,8 @@
 			type="radio" 
 			default="0" 
 			label="JSTATUS">
-				<option value="0">JPUBLISHED</option>
-				<option value="1">JUNPUBLISHED</option>
+				<option value="0">JUNPUBLISHED</option>
+				<option value="1">JPUBLISHED</option>
 		</field>
 		
 		<field name="log" 
