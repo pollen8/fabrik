@@ -58,7 +58,7 @@ class JFormFieldFormList extends JFormFieldList
 	protected function getInput()
 	{
 		$option = JRequest::getCmd('option');
-		if (!in_array($option, array('com_modules'))) {
+		if (!in_array($option, array('com_modules', 'com_menus'))) {
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$query->select('form_id')
