@@ -722,8 +722,7 @@ class FabrikModelElement extends JModelAdmin
 				$rowcopy->store();
 				//copy join records
 				$join = $this->getTable('join');
-				$join->load(array('element_id' => $origElid));
-				if ($join) {
+				if ($join->load(array('element_id' => $origElid))) {
 					$join->id = 0;
 					unset($join->id);
 					$join->element_id = $rowcopy->id;

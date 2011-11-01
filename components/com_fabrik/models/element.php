@@ -276,10 +276,10 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$iconfile = $params->get('icon_file'); //Jaanus added this and following if/else; sometimes we need permanent image (e.g logo of the website where the link always points, like Wikipedia's W)
 
-		if ($iconfile == '') {	
-		$cleanData = FabrikString::clean($data); //this is original	
-		}	
-		else {	
+		if ($iconfile == '') {
+		$cleanData = FabrikString::clean($data); //this is original
+		}
+		else {
 		$cleanData = $iconfile;
 		}
 
@@ -3014,30 +3014,36 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$maskbits = 4;
 		$post	= JRequest::get('post', $maskbits);
 		$post = $post['jform'];
-		
+
 		$dbjoinEl = (is_subclass_of($this, 'plgFabrik_ElementDatabasejoin') || get_class($this) == 'plgFabrik_ElementDatabasejoin');
 
-		if (!$this->isJoin() && !$dbjoinEl) {
+		// $$$ hugh - added test for empty id, i.e. new element, otherwise we try and delete a crapload of join table rows
+		// we shouldn't be deleting!  Also adding defensive code to deleteJoins() to test for empty ID.
+		if (!empty($post['id']) && !$this->isJoin() && !$dbjoinEl) {
 			$this->deleteJoins((int)$post['id']);
 		}
 	}
-	
+
 	protected function deleteJoins($id)
 	{
+		// $$$ hugh - bail if no $id specified
+		if (empty($id)) {
+			return;
+		}
 		$element = $this->getElement();
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_joins')->where('element_id = '.$id);
 		$db->setQuery($query);
 		$db->query();
-			
+
 		$query->clear();
 		$query->select('j.id AS jid')->from('#__{package}_elements AS e')
 		->join('LEFT', ' #__{package}_joins AS j ON j.element_id = e.id')
 		->where('e.parent_id = '.$id);
 		$db->setQuery($query);
 		$join_ids = $db->loadResultArray();
-		
+
 		if (!empty($join_ids)) {
 			$query->clear();
 			$query->delete('#__{package}_joins')->where('id IN ('.implode(',', $join_ids).')');
@@ -4032,7 +4038,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$html .= $this->_getElement($data, $repeatCounter, $groupModel);
 			$html .= '</li>';
 			$html .= '</ul>';
-				
+
 			if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel')) {
 				$html .= '<ul class="fabrik_buttons">';
 
@@ -4054,7 +4060,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 				$html .= '</ul>';
 			}
-				
+
 			$html .= '</div>';
 			$onLoad = "Fabrik.inlineedit_$elementid = ".$this->elementJavascript($repeatCounter).";\n".
 			"Fabrik.inlineedit_$elementid.select();

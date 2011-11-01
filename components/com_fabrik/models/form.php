@@ -33,7 +33,7 @@ class FabrikFEModelForm extends FabModelForm
 	var $_aJoinGroupIds = array();
 
 	/** @var bol true if editable if 0 then show view only verion of form */
-	var $_editable = 1;
+	var $_editable = true;
 
 	/** @var string encoding type */
 	var $_enctype = "application/x-www-form-urlencoded";
@@ -692,9 +692,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			return;
 		}
 		$this->removeEmptyNoneJoinedGroupData($this->_formData);
-		
+
 		$this->setFormData();
-		
+
 		if (!$this->_doUpload()) {
 			return false;
 		}
@@ -3409,7 +3409,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->setState('form.id', $pk);
 	}
 
-	
+
 	public function inLineEditResult()
 	{
 		$listModel = $this->getListModel();
