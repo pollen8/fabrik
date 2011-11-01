@@ -160,7 +160,7 @@ class FabrikFEModelGroup extends FabModel{
 			$this->elements = array();
 			$form = $this->getFormModel();
 			$pluginManager = FabrikWorker::getPluginManager();
-			$allGroups = $pluginManager->getFormPlugins($this->_form);
+			$allGroups = $pluginManager->getFormPlugins($this->getFormModel());
 			if (empty($this->elements)) {
 				//horrible hack for when saving group
 				$this->elements = $allGroups[$this->getId()]->elements;

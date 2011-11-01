@@ -1059,6 +1059,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					continue;
 				}
 				$data = $this->_formData['join'][$oJoin->id];
+				
 				// $$$ rob ensure that the joined data is keyed starting at 0 (could be greated if first group deleted)
 				foreach ($data as &$dv) {
 					if (is_array($dv)) {
@@ -1082,8 +1083,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					//repeat element join
 					$elementModel = $this->getElement($oJoin->element_id, true);
 					$joinGroup = JModel::getInstance('Group', 'FabrikFEModel');
+					
+					//need to set the fake group's form and id to that of the current elements form/group
+					//$joinGroup->set('_form', $this);
+					//$joinGroup->setId($elementModel->getGroup()->getId());
+					
 					$joinGroup->getGroup()->id = -1;
 					$joinGroup->getGroup()->is_join = 1;
+					
 					//set join groups repeat to that of the elements options
 					if ($elementModel->isJoin()) {
 						$joinGroup->getParams()->set('repeat_group_button', 1);
@@ -1098,19 +1105,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						} else {
 							$repeatTotals[$oJoin->group_id] = count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 						}
-					}else{
+					} else {
 						// "Not a repeat element (el id = $oJoin->element_id)<br>";
 					}
-					//$elementModel->getElement()->group_id = -1;
+					
 					//copy the repeating element into the join group
-					$joinGroup->publishedElements[] = $elementModel;
 					$idElementModel = $pluginManager->getPlugIn('internalid', 'element');
 					$idElementModel->getElement()->name = 'id';
 					$idElementModel->getElement()->group_id = $elementModel->getGroup()->getGroup()->id;
 					$idElementModel->_group = $elementModel->getGroup();
 					$idElementModel->_group = $elementModel->_group;
 					$idElementModel->_aFullNames['id1_1__1_'] = $oJoin->table_join.'___id';
-					$joinGroup->publishedElements[] = $idElementModel;
 
 					$parentElement = $pluginManager->getPlugIn('field', 'element');
 					$parentElement->getElement()->name = 'parent_id';
@@ -1118,8 +1123,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$parentElement->_group = $elementModel->getGroup();
 					$parentElement->_group = $elementModel->_group;
 					$parentElement->_aFullNames['parent_id1_1__1_'] = $oJoin->table_join.'___parent_id';
-					$joinGroup->publishedElements[] = $parentElement;
 
+					$joinGroup->publishedElements = array();
+					$joinGroup->publishedElements[''] = array($elementModel, $idElementModel, $parentElement);
 					$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
 					$this->groups[] = $joinGroup;
 
@@ -1137,6 +1143,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 				//back on track
 				if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data)) {
+					
 					//$$$rob get the join tables ful primary key
 					$joinDb->setQuery("DESCRIBE $oJoin->table_join");
 					$oJoinPk = $oJoin->table_join . "___";
@@ -1149,6 +1156,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 					$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
 					//$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
+					
 					if ($joinGroup->canRepeat()) {
 						//find out how many repeated groups were entered
 
@@ -1198,7 +1206,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							// $$$ rob no no no this is not the issue, on SOME setups $item is NOT a reference to $listModel->_table - this is where the issue is
 							// not passing in the correct table name - see notes line 720 for explaination
 							// $listModel->storeRow($repData, $joinRowId, true, $item->db_table_name);
-
 							$listModel->storeRow($repData, $joinRowId, true, $joinGroupTable);
 							if ((int)$joinRowId === 0) {
 								$joinRowId = $listModel->lastInsertId;

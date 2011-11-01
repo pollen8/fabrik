@@ -114,7 +114,6 @@ var FbFileUpload = new Class({
 
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
-			console.log(files, up);
 			var txt = this.droplist.getElement('.plupload_droptext');
 			if (typeOf(txt) !== 'null') {
 				txt.destroy();
@@ -193,6 +192,7 @@ var FbFileUpload = new Class({
 			resizebutton.href = response.uri;
 			resizebutton.id = 'resizebutton_' + file.id;
 			resizebutton.store('filepath', response.filepath);
+			console.log('upload response, ', response);
 			this.widget.setImage(response.uri, response.filepath, file.params);
 			new Element('input', {
 				'type' : 'hidden',
@@ -292,12 +292,141 @@ var FbFileUpload = new Class({
 
 var ImageWidget = new Class({
 
+	initialize : function (canvas, opts) {
+		this.canvas = canvas;
+
+		this.imageDefault = {
+			'rotation': 0,
+			'scale': 100,
+			'imagedim': {
+				x: 200,
+				y: 200,
+				w: 400,
+				h: 400
+			},
+			'cropdim': {
+				x: 75,
+				y: 25,
+				w: 150,
+				h: 50
+			}
+		};
+
+		$extend(this.imageDefault, opts);
+
+		this.windowopts = {
+			'id': this.canvas.id + '-mocha',
+			'type': 'modal',
+			content: this.canvas.getParent(),
+			loadMethod: 'html',
+			width: 420,
+			height: 540,
+			storeOnClose: true,
+			createShowOverLay: false,
+			crop: opts.crop,
+			onClose : function () {
+				$('modalOverlay').hide();
+			},
+			onContentLoaded : function () {
+				this.center();
+			}
+		};
+		this.windowopts.title = opts.crop ? Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE') : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
+		this.showWin();
+		this.images = $H({});
+		var parent = this;
+		this.CANVAS = new FbCanvas({
+			canvasElement: $(this.canvas.id),
+			enableMouse: true,
+			cacheCtxPos: false
+		});
+
+		this.CANVAS.layers.add(new Layer({
+			id: 'bg-layer'
+		}));
+		this.CANVAS.layers.add(new Layer({
+			id: 'image-layer'
+		}));
+		if (opts.crop) {
+			this.CANVAS.layers.add(new Layer({
+				id: 'overlay-layer'
+			}));
+			this.CANVAS.layers.add(new Layer({
+				id: 'crop-layer'
+			}));
+		}
+		var bg = new CanvasItem({
+			id: 'bg',
+			scale: 1,
+			events: {
+				onDraw: function (ctx) {
+					if (typeOf(ctx) === 'null') {
+						//return;
+						ctx = this.CANVAS.ctx;
+					}
+					ctx.fillStyle = "#DFDFDF";
+					ctx.fillRect(0, 0, 400 / this.scale, 400 / this.scale);
+				}.bind(this)
+			}
+		});
+
+		this.CANVAS.layers.get('bg-layer').add(bg);
+		if (opts.crop) {
+			this.overlay = new CanvasItem({
+				id: 'overlay',
+				events: {
+					onDraw: function (ctx) {
+						if (typeOf(ctx) === 'null') {
+							ctx = this.CANVAS.ctx;
+						}
+						this.withinCrop = true;
+						if (this.withinCrop) {
+							var top = {
+								x: 0,
+								y: 0
+							};
+							var bottom = {
+								x: 400,
+								y: 400
+							};
+							ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+							var cropper = this.cropperCanvas;
+							ctx.fillRect(top.x, top.y, bottom.x, cropper.y - (cropper.h / 2));// top
+							ctx.fillRect(top.x - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), top.x + cropper.x, cropper.h);// left
+							ctx.fillRect(top.x + cropper.x + cropper.w - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), bottom.x, cropper.h);// right
+							ctx.fillRect(top.x, top.y + (cropper.y + cropper.h) - (cropper.h / 2), bottom.x, bottom.y);// bottom
+						}
+					}.bind(this)
+				}
+			});
+	
+			this.CANVAS.layers.get('overlay-layer').add(this.overlay);
+		}
+
+		this.imgCanvas = this.makeImgCanvas();
+
+		this.CANVAS.layers.get('image-layer').add(this.imgCanvas);
+
+		this.cropperCanvas = this.makeCropperCanvas();
+		if (opts.crop) {
+			// add an item
+			this.CANVAS.layers.get('crop-layer').add(this.cropperCanvas);
+		}
+		this.makeThread();
+		this.watchZoom();
+		this.watchRotate();
+		this.watchClose();
+		
+		this.win.close();
+	},
+	
 	setImage : function (uri, filepath, params) {
 		this.activeFilePath = filepath;
 		if (this.img && this.img.src === uri) {
 			this.showWin();
 			return;
 		}
+		
 		this.img = Asset.image(uri);
 
 		var el = new Element('img', {
@@ -359,123 +488,10 @@ var ImageWidget = new Class({
 		}.bind(this)).delay(500);
 
 	},
-
-	showWin : function () {
-		this.win = Fabrik.getWindow(this.windowopts);
-		if (typeOf(CANVAS) !== 'null' && typeOf(CANVAS.ctxEl) !== 'null') {
-			CANVAS.ctxPos = $(CANVAS.ctxEl).getPosition();
-		}
-		if (typeOf(CANVAS.threads) !== 'null') {
-			//fixes issue where sometime canvas thread is not started/running so nothing is drawn
-			CANVAS.threads.myThread.start();
-		}
-	},
-
-	initialize : function (canvas, opts) {
-		this.canvas = canvas;
-
-		this.imageDefault = {
-			'rotation': 0,
-			'scale': 100,
-			'imagedim': {
-				x: 200,
-				y: 200,
-				w: 400,
-				h: 400
-			},
-			'cropdim': {
-				x: 75,
-				y: 25,
-				w: 150,
-				h: 50
-			}
-		};
-
-		$extend(this.imageDefault, opts);
-
-		this.windowopts = {
-			'id': this.canvas.id + '-mocha',
-			'type': 'modal',
-			content: this.canvas.getParent(),
-			loadMethod: 'html',
-			width: 420,
-			height: 500,
-			storeOnClose: true,
-			createShowOverLay: false,
-			crop: opts.crop,
-			onClose : function () {
-				$('modalOverlay').hide();
-			},
-			onContentLoaded : function () {
-				this.center();
-			}
-		};
-		this.windowopts.title = opts.crop ? Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE') : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
-		this.showWin();
-		this.images = $H({});
-		var parent = this;
-		CANVAS.init({
-			canvasElement: $(this.canvas.id),
-			enableMouse: true,
-			cacheCtxPos: false
-		});
-
-		CANVAS.layers.add(new Layer({
-			id: 'bg-layer'
-		}));
-		CANVAS.layers.add(new Layer({
-			id: 'image-layer'
-		}));
-		if (opts.crop) {
-			CANVAS.layers.add(new Layer({
-				id: 'overlay-layer'
-			}));
-			CANVAS.layers.add(new Layer({
-				id: 'crop-layer'
-			}));
-		}
-		var bg = new CanvasItem({
-			id: 'bg',
-			scale: 1,
-			events: {
-				onDraw: function (ctx) {
-					ctx.fillStyle = "#DFDFDF";
-					ctx.fillRect(0, 0, 400 / this.scale, 400 / this.scale);
-				}
-			}
-		});
-
-		CANVAS.layers.get('bg-layer').add(bg);
-		if (opts.crop) {
-			var overlay = new CanvasItem({
-				id: 'overlay',
-				events: {
-					onDraw: function (ctx) {
-						this.withinCrop = true;
-						if (this.withinCrop) {
-							var top = {
-								x: 0,
-								y: 0
-							};
-							var bottom = {
-								x: 400,
-								y: 400
-							};
-							ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-							var cropper = parent.cropperCanvas;
-							ctx.fillRect(top.x, top.y, bottom.x, cropper.y - (cropper.h / 2));// top
-							ctx.fillRect(top.x - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), top.x + cropper.x, cropper.h);// left
-							ctx.fillRect(top.x + cropper.x + cropper.w - (cropper.w / 2), top.y + cropper.y - (cropper.h / 2), bottom.x, cropper.h);// right
-							ctx.fillRect(top.x, top.y + (cropper.y + cropper.h) - (cropper.h / 2), bottom.x, bottom.y);// bottom
-						}
-					}
-				}
-			});
 	
-			CANVAS.layers.get('overlay-layer').add(overlay);
-		}
-
-		this.imgCanvas = new CanvasItem({
+	makeImgCanvas: function () {
+		var parent = this;
+		return new CanvasItem({
 			id: 'imgtocrop',
 			w: 400,
 			h: 400,
@@ -495,8 +511,9 @@ var ImageWidget = new Class({
 					}
 				},
 				onDraw : function (ctx) {
+					ctx = parent.CANVAS.ctx;
 					if (typeOf(parent.img) === 'null') {
-						console.log('no parent img', parent);
+						//console.log('no parent img', parent);
 						return;
 					}
 						
@@ -533,13 +550,13 @@ var ImageWidget = new Class({
 				},
 
 				onMousedown : function (x, y) {
-					CANVAS.setDrag(this);
+					parent.CANVAS.setDrag(this);
 					this.offset = [ x - this.dims[0], y - this.dims[1] ];
 					this.dragging = true;
 				},
 
 				onMouseup : function () {
-					CANVAS.clearDrag();
+					parent.CANVAS.clearDrag();
 					this.dragging = false;
 				},
 
@@ -556,151 +573,197 @@ var ImageWidget = new Class({
 				}
 			}
 		});
-
-		CANVAS.layers.get('image-layer').add(this.imgCanvas);
-
-		if (opts.crop) {
-			// add an item
-			this.cropperCanvas = new CanvasItem({
-				id: 'item',
-				x: 175,
-				y: 175,
-				w: 150,
-				h: 50,
-				interactive: true,
-				offset: [ 0, 0 ],
-				events: {
-					onDraw: function (ctx) {
-						/*
-						 * calculate dimensions locally because they are have to be translated
-						 * in order to use translate and rotate with the desired effect:
-						 * rotate the item around its visual center
-						 */
+	},
 	
+	makeCropperCanvas: function () {
+		var parent = this;
+		return new CanvasItem({
+			id: 'item',
+			x: 175,
+			y: 175,
+			w: 150,
+			h: 50,
+			interactive: true,
+			offset: [ 0, 0 ],
+			events: {
+				onDraw: function (ctx) {
+					ctx = parent.CANVAS.ctx;
+					if (typeOf(ctx) === 'null') {
+						return;
+					}
+					/*
+					 * calculate dimensions locally because they are have to be translated
+					 * in order to use translate and rotate with the desired effect:
+					 * rotate the item around its visual center
+					 */
+
+					var w = this.w;
+					var h = this.h;
+					var x = this.x - w * 0.5;
+					var y = this.y - h * 0.5;
+
+					// standard Canvas rotation operation
+
+					ctx.save();
+					ctx.translate(this.x, this.y);
+
+					this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
+					ctx.strokeRect(w * -0.5, h * -0.5, w, h);
+					ctx.restore();
+
+					/*
+					 * used to determine the whether the mouse is over an item or not.
+					 */
+
+					if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
+						parent.images.get(parent.activeFilePath).cropdim = {
+							x : this.x,
+							y : this.y,
+							w : w,
+							h : h
+						};
+					}
+					this.setDims(x, y, w, h);
+				},
+
+				onMousedown : function (x, y) {
+					parent.CANVAS.setDrag(this);
+					this.offset = [ x - this.dims[0], y - this.dims[1] ];
+					this.dragging = true;
+					parent.overlay.withinCrop = true;
+				},
+
+				onMousemove : function (x, y) {
+					document.body.style.cursor = "move";
+					if (this.dragging) {
 						var w = this.w;
 						var h = this.h;
-						var x = this.x - w * 0.5;
-						var y = this.y - h * 0.5;
-	
-						// standard Canvas rotation operation
-	
-						ctx.save();
-						ctx.translate(this.x, this.y);
-	
-						this.hover ? ctx.strokeStyle = '#f00' : ctx.strokeStyle = '#000'; // red/black
-						ctx.strokeRect(w * -0.5, h * -0.5, w, h);
-						ctx.restore();
-	
-						/*
-						 * used to determine the whether the mouse is over an item or not.
-						 */
-	
-						if (typeOf(parent.img) !== 'null' && parent.images.get(parent.activeFilePath)) {
-							parent.images.get(parent.activeFilePath).cropdim = {
-								x : this.x,
-								y : this.y,
-								w : w,
-								h : h
-							};
-						}
-						this.setDims(x, y, w, h);
-					},
-	
-					onMousedown : function (x, y) {
-						CANVAS.setDrag(this);
-						this.offset = [ x - this.dims[0], y - this.dims[1] ];
-						this.dragging = true;
-						overlay.withinCrop = true;
-					},
-	
-					onMousemove : function (x, y) {
-						document.body.style.cursor = "move";
-						if (this.dragging) {
-							var w = this.w;
-							var h = this.h;
-							this.x = x - this.offset[0] + w * 0.5;
-							this.y = y - this.offset[1] + h * 0.5;
-						}
-					},
-	
-					onMouseup : function () {
-						CANVAS.clearDrag();
-						this.dragging = false;
-						overlay.withinCrop = false;
-					},
-	
-					onMouseover : function () {
-						this.hover = true;
-						parent.overCrop = true;
-	
-					},
-	
-					onMouseout : function () {
-						if (!parent.overImg) {
-							document.body.style.cursor = "default";
-						}
-						parent.overCrop = false;
-						this.hover = false;
+						this.x = x - this.offset[0] + w * 0.5;
+						this.y = y - this.offset[1] + h * 0.5;
 					}
-				}
-			});
-	
-			CANVAS.layers.get('crop-layer').add(this.cropperCanvas);
-		}
-		CANVAS.addThread(new Thread({
-			id : 'myThread',
-			onExec : function () {
-				if (typeOf(CANVAS.ctxEl) !== 'null') {
-					CANVAS.clear().draw();
+				},
+
+				onMouseup : function () {
+					parent.CANVAS.clearDrag();
+					this.dragging = false;
+					parent.overlay.withinCrop = false;
+				},
+
+				onMouseover : function () {
+					this.hover = true;
+					parent.overCrop = true;
+
+				},
+
+				onMouseout : function () {
+					if (!parent.overImg) {
+						document.body.style.cursor = "default";
+					}
+					parent.overCrop = false;
+					this.hover = false;
 				}
 			}
+		});
+	},
+	
+	makeThread: function () {
+		this.CANVAS.addThread(new Thread({
+			id : 'myThread',
+			onExec : function () {
+				if (typeOf(this.CANVAS) !== 'null') {
+					if (typeOf(this.CANVAS.ctxEl) !== 'null') {
+						this.CANVAS.clear().draw();
+					}
+				}
+			}.bind(this)
 		}));
-
+	},
+	
+	/**
+	 * watch the close button
+	 */
+	
+	watchClose: function () {
 		var w = $(this.windowopts.id);
-		if (parent.windowopts.crop) {
-			this.scaleField = w.getElement('input[name=zoom-val]');
-			this.scaleSlide = new Slider(w.getElement('.fabrikslider-line'), w.getElement('.knob'), {
-				range : [ 20, 300 ],
-				onChange : function (pos) {
-					this.imgCanvas.scale = pos / 100;
-					if (typeOf(this.img) !== 'null') {
-						try {
-							this.images.get(this.activeFilePath).scale = pos;
-						} catch (err) {
-							fconsole('didnt get active file path:' + ths.activeFilePath);
-						}
-					}
-					this.scaleField.value = pos;
-				}.bind(this)
-			}).set(100);
-
-			this.scaleField.addEvent('keyup', function (e) {
-				this.scaleSlide.set($(e.target).get('value'));
-			}.bind(this));
-
-			var r = w.getElement('.rotate');
-			this.rotateField = r.getElement('input[name=rotate-val]');
-			this.rotateSlide = new Slider(r.getElement('.fabrikslider-line'), r.getElement('.knob'), {
-				onChange : function (pos) {
-					this.imgCanvas.rotation = pos;
-					if (typeOf(this.img) !== 'null') {
-						try {
-							this.images.get(this.activeFilePath).rotation = pos;
-						} catch (err) {
-							fconsole('rorate err' + this.activeFilePath);
-						}
-					}
-					this.rotateField.value = pos;
-				}.bind(this),
-				steps : 360
-			}).set(0);
-			this.rotateField.addEvent('keyup', function (e) {
-				this.rotateSlide.set($(e.target).get('value'));
-			}.bind(this));
-		}
 		w.getElement('input[name=close-crop]').addEvent('click', function (e) {
 			this.win.close();
 		}.bind(this));
-		this.win.close();
-	}
+	},
+	
+	/**
+	 * set up and wath the zoom slide and input field
+	 */
+	
+	watchZoom: function () {
+		var w = $(this.windowopts.id);
+		if (!this.windowopts.crop) {
+			return;
+		}
+		this.scaleField = w.getElement('input[name=zoom-val]');
+		this.scaleSlide = new Slider(w.getElement('.fabrikslider-line'), w.getElement('.knob'), {
+			range : [ 20, 300 ],
+			onChange : function (pos) {
+				this.imgCanvas.scale = pos / 100;
+				if (typeOf(this.img) !== 'null') {
+					try {
+						this.images.get(this.activeFilePath).scale = pos;
+					} catch (err) {
+						fconsole('didnt get active file path:' + this.activeFilePath);
+					}
+				}
+				this.scaleField.value = pos;
+			}.bind(this)
+		}).set(100);
+
+		this.scaleField.addEvent('keyup', function (e) {
+			this.scaleSlide.set(e.target.get('value'));
+		}.bind(this));
+	},
+	
+	/**
+	 * set up and wath the rotate slide and input field
+	 */
+	
+	watchRotate: function () {
+		var w = $(this.windowopts.id);
+		if (!this.windowopts.crop) {
+			return;
+		}
+		var r = w.getElement('.rotate');
+		this.rotateField = r.getElement('input[name=rotate-val]');
+		this.rotateSlide = new Slider(r.getElement('.fabrikslider-line'), r.getElement('.knob'), {
+			onChange : function (pos) {
+				this.imgCanvas.rotation = pos;
+				if (typeOf(this.img) !== 'null') {
+					try {
+						this.images.get(this.activeFilePath).rotation = pos;
+					} catch (err) {
+						fconsole('rorate err' + this.activeFilePath);
+					}
+				}
+				this.rotateField.value = pos;
+			}.bind(this),
+			steps : 360
+		}).set(0);
+		this.rotateField.addEvent('keyup', function (e) {
+			this.rotateSlide.set(e.target.get('value'));
+		}.bind(this));
+	},
+	
+	showWin : function () {
+		this.win = Fabrik.getWindow(this.windowopts);
+		if (typeOf(this.CANVAS) === 'null') {
+			return;
+		}
+		if (typeOf(this.CANVAS.ctxEl) !== 'null') {
+			this.CANVAS.ctxPos = $(this.CANVAS.ctxEl).getPosition();
+		}
+		
+		if (typeOf(this.CANVAS.threads) !== 'null') {
+			if (typeOf(this.CANVAS.threads.get('myThread')) !== 'null') {
+				//fixes issue where sometime canvas thread is not started/running so nothing is drawn
+				this.CANVAS.threads.get('myThread').start();
+			}
+		}
+	},
 });

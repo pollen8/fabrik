@@ -68,11 +68,11 @@ var CanvasItem = new Class({
 	},
 	
 	draw : function(ctx){
-			this.fireEvent('draw',CANVAS.ctx);
+		this.fireEvent('draw');
 	},
 	
 	destroy : function()
 	{
-			this.fireEvent('destroy',CANVAS.ctx);		
+			this.fireEvent('destroy');		
 	}	
 });
