@@ -35,7 +35,7 @@ echo "
 	border:1px solid #DDDDDD;
 }
 
-#form_$c h1{
+#main #form_$c h1{
 	paddiing-left:10px;
 	margin:0;
 }
