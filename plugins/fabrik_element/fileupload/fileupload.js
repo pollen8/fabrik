@@ -416,7 +416,6 @@ var ImageWidget = new Class({
 		this.watchZoom();
 		this.watchRotate();
 		this.watchClose();
-		
 		this.win.close();
 	},
 	
@@ -448,9 +447,14 @@ var ImageWidget = new Class({
 				var s = el.getDimensions(true);
 				imagew = s.width;
 				imageh = s.height;
-				//var imagex = imagew / 2;
+				
+				// as imagedim is changed when the image is scaled, but we still want to store the original
+				// image dimensions for when we come to re-edit it.
+				// not sure we actually need it - but seems a good idea to have a reference to the original image size
+				params.mainimagedim = params.imagedim;
+				params.mainimagedim.w = imagew;
+				params.mainimagedim.h = imageh;
 				imagex = params.imagedim.x;
-				//var imagey = imageh / 2;
 				imagey = params.imagedim.y;
 			} else {
 				show = true;
