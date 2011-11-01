@@ -99,6 +99,7 @@ class FabrikControllerList extends JController
 	{
 		$app = JFactory::getApplication();
 		$app->enqueueMessage(JText::_('COM_FABRIK_FILTERS_CLEARED'));
+		JRequest::setVar('clearfilters', 1);
 		$this->filter();
 	}
 
