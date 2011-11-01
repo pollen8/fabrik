@@ -3673,7 +3673,8 @@ class FabrikFEModelList extends JModelForm {
 		if ($params->get('search-mode', 'AND') == 'OR') {
 			//test new option to have one field to search them all
 			$key = 'com_fabrik.list'.$this->getRenderContext().'.searchall';
-			$requestKey = 'fabrik_list_filter_all.'.$this->getRenderContext();
+			//seems like post keys 'name.1' get turned into 'name_1'
+			$requestKey = 'fabrik_list_filter_all_'.$this->getRenderContext();
 			$v = $app->getUserStateFromRequest($key, $requestKey);
 			if (trim($v) == '') {
 				$fromFormId = $app->getUserState('com_fabrik.searchform.fromForm');
