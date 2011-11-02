@@ -64,7 +64,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$listModel = $this->getlistModel();
 		$params = $this->getParams();
 		if (is_array($data)) {
-			if (count($data) == 1) { $data['label'] = $data['link'];}
+			if (count($data) == 1) {
+				$data['label'] = JArrayHelper::getValue($data, 'link');
+			}
 			if (empty($data['label']) && empty($data['link'])) {
 				return '';
 			}
