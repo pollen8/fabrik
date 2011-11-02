@@ -2872,6 +2872,7 @@ class FabrikFEModelList extends JModelForm {
 	function isView()
 	{
 		$params = $this->getParams();
+		
 		$isview = $params->get('isview', null);
 
 		// $$$ hugh - because querying INFORMATION_SCHEMA can be very slow (like minutes!) on
@@ -2908,6 +2909,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			//store and save param for following tests
 			$params->set('isview', $isview);
+			$table->params = (string)$params;
 			$table->store();
 		}
 		return $isview;
