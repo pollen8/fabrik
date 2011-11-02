@@ -13,6 +13,15 @@
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
 	<target name="fabrik.all"><!--   depends="js" -->
+		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
+		
+		<if>
+ 			<equals arg1="${jslint.do}" arg2="y" />
+			<then>
+			<antcall target="js" />
+			</then>
+		</if>
+		
 		<input message="Component version:" addproperty="version" />
 		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
 		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
