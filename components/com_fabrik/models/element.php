@@ -1833,7 +1833,7 @@ class plgFabrik_Element extends FabrikPlugin
 				// $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters showing and not produce invald html & duplicate js calls
 				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$id.'" value="'.$default.'" />';
 				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$id.'-auto-complete" size="'.$size.'" value="'.$default.'" />';
-				$selector = '#list_'.$listModel->getRenderContext().' .'.$id;
+				$selector = '#listform_'.$listModel->getRenderContext().' .'.$id;
 				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id);
 				break;
 		}

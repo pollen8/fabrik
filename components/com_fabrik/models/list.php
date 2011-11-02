@@ -6395,6 +6395,8 @@ class FabrikFEModelList extends JModelForm {
 						// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
 						//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
 						$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
+						
+						//$can_repeats[$tmpkey] = 0;
 					}
 
 					if (isset($data[$last_i]->$key) && $can_repeats[$tmpkey]) {
@@ -6419,16 +6421,13 @@ class FabrikFEModelList extends JModelForm {
 							array_push($data[$last_i]->$key, $val);
 
 						} else {
-							$json = json_decode($data[$last_i]->$origKey);
 							$json= $val;
 							$data[$last_i]->$origKey = json_encode($json);
-							//$data[$groupk][$last_i]->$origKey .= GROUPSPLITTER.$val;
 						}
 					}
 
 				}
 				$remove[] = $i;
-				//unset($data[$i]);
 				continue;
 			}
 			else {

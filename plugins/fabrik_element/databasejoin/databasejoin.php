@@ -956,7 +956,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
 				$return .= '<input type="text" name="'.$element->id.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$defaultLabel.'" id="'.$htmlid.'-auto-complete" />';
 				$return .= $this->filterHiddenFields();
-				FabrikHelperHTML::autoComplete($htmlid, $element->id, 'databasejoin');
+				$selector = '#listform_'.$listModel->getRenderContext().' .'.$id;
+				FabrikHelperHTML::autoComplete($selector, $element->id, 'databasejoin');
 				break;
 
 		}

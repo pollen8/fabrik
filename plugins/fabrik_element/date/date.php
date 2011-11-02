@@ -1040,7 +1040,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
 				$return[] = '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
-				$autoId = $htmlid;
+				$autoId = '#listform_'.$listModel->getRenderContext().' .'.$id;
 				if (!$normal) {
 					$autoId = '#advanced-search-table .autocomplete-trigger';
 				}

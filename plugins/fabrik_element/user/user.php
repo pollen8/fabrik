@@ -480,7 +480,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				$default = htmlspecialchars($default);
 				$return = "<input type=\"hidden\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$htmlid\" />\n";
 				$return .= "<input type=\"text\" name=\"$v-auto-complete\" class=\"inputbox fabrik_filter autocomplete-trigger\" value=\"$default\" id=\"$htmlid-auto-complete\"  />";
-				FabrikHelperHTML::autoComplete($htmlid, $this->getElement()->id, 'user');
+				$selector = '#listform_'.$listModel->getRenderContext().' .'.$id;
+				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id, 'user');
 				break;
 		}
 		if ($normal) {
