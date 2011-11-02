@@ -1,27 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <updates>
-	
-	<update>
-		<name>Fabrik</name>
-
-		<description>Fabrik Component</description>
-		<element>com_fabrik</element>
-		<type>component</type>
-		<version>3.0.1</version>
-		<infourl title="Joomla! Documentation: Example Extensions">http://docs.joomla.org/Examples</infourl>
-	
-		<downloads>
-			<downloadurl type="full" format="tgz">http://fabrikar.com/dmdocuments/3.0pre-alpha/pkg_fabrik_3.0.1pre-alpha.zip
-			</downloadurl>
-		</downloads>
-		<tags>
-			<tag>testing</tag>
-		</tags>
-		<maintainer>Rob Clayburn</maintainer>
-		<maintainerurl>http://pollen-8.co.uk</maintainerurl>
-		<section>Testing</section>
-		<!-- no <relationships> are defined but they could be! -->
-		<targetplatform name="joomla" version="1.6" />
-	</update>
-
+	<!--  old file dont use any more but leave in to stop errors in 3.0a update check -->
 </updates>

@@ -189,17 +189,31 @@ class Com_FabrikInstallerScript
 	function postflight($type, $parent)
 	{
 		$db = JFactory::getDbo();
+		
+		//remove old update site 
+		
+		$db->setQuery("DELETE FROM #__update_sites WHERE location LIKE '%update/component/com_fabrik%'");
+		$db->query();
+		if (!$db->query()) {
+			echo "<P>didnt remove old update site</p>";
+		} else {
+			echo "<p style=\"color:green\">removed old update site</p>";
+		}
 		$db->setQuery("UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik'))");
 		$db->query();
 		$this->fixmMenuComponentId();
 		if ($type !== 'update') {
 			if (!$this->setConnection()) {
+				echo "<p style=\"color:red\">Didn't set connection. Aborting installation</p>";
+				exit;
 				return false;
 			}
 		}
 		echo "<p style=\"color:green\">Default connection created</p>";
 
 		if (!$this->moveFiles($parent)) {
+			echo "<p style=\"color:red\">Unab;e to move library files. Aborting installation</p>";
+			exit;
 			return false;
 		} else {
 			echo "<p style=\"color:green\">Libray files moved</p>";
@@ -208,6 +222,7 @@ class Com_FabrikInstallerScript
 		if ($type !== 'update') {
 			if (!$this->setDefaultProperties()) {
 				echo "<p>couldnt set default properties</p>";
+				exit;
 				return false;
 			}
 

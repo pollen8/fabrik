@@ -16,7 +16,6 @@
 				<then>
 					<!--  found -->
 					<xmltask source="${update_source}plg_${folder}_${plugin}.xml" dest="${update_source}plg_${folder}_${plugin}.xml"> 
-						<!-- <remove path="/updates/update[version={$version}]/.." /> -->
 						<remove path="/updates/update[version='${version}']" />
 					</xmltask>
 					<xmltask source="${update_source}plg_${folder}_${plugin}.xml" dest="${update_source}plg_${folder}_${plugin}.xml"> 

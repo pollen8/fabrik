@@ -113,12 +113,7 @@
 	
 	<!-- START UPDATESERVERS -->
 	<updateservers>
-		<server type="extension" priority="1" name="Extension Update Site">		<!-- REQUIRED: type,priority,name -->
-			http://fabrikar.com/update/component/com_fabrik/extension.xml
-		</server>
-		<!--<server type="collection" priority="2" name="Collection Update Site">	 REQUIRED: type,priority,name 
-			http://fabrikar.com/update/update.xml
-		</server>-->
+		<server type="collection">http://fabrikar.com/update/fabrik/package_list.xml</server>
 	</updateservers>
 
 	

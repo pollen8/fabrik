@@ -12,7 +12,7 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
-	<target name="fabrik.all" depends="js">
+	<target name="fabrik.all"><!--   depends="js" -->
 		<input message="Component version:" addproperty="version" />
 		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
 		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
@@ -84,8 +84,10 @@
 		<delete file="${cfg.destdir}/pkg_fabrik/packages/plg_system_fabrik_${version}.zip" />
 		<zip destfile="${cfg.destdir}/pkg_fabrik/packages/plg_system_fabrik_${version}.zip" basedir="${cfg.destdir}/plugins/system/fabrik" />
 		
-		
-		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+		<xmltask source="${update_dir}/plg_fabrik.xml" dest="${update_dir}/plg_fabrik.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_fabrik.xml" dest="${update_dir}/plg_fabrik.xml"> 
 			<insert path="updates"> 
 				<![CDATA[<update>
 			<name>Fabrik Content Plugin</name>
@@ -101,8 +103,16 @@
 			<maintainerurl>${update.url}</maintainerurl>
 			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
 		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
 		
-		<update>
+		<xmltask source="${update_dir}/plg_search_fabrik.xml" dest="${update_dir}/plg_search_fabrik.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_search_fabrik.xml" dest="${update_dir}/plg_search_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
 			<name>Fabrik Search Plugin</name>
 			<description>Fabrik Search Plugin</description>
 			<type>plugin</type>
@@ -116,8 +126,16 @@
 			<maintainerurl>${update.url}</maintainerurl>
 			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
 		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
 		
-		<update>
+		<xmltask source="${update_dir}/plg_system_fabrikcron.xml" dest="${update_dir}/plg_system_fabrikcron.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_system_fabrikcron.xml" dest="${update_dir}/plg_system_fabrikcron.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
 			<name>Fabrik Scheduled Tasks Plugin</name>
 			<description>Fabrik Scheduled Tasks Plugin</description>
 			<type>plugin</type>
@@ -131,9 +149,17 @@
 			<maintainerurl>${update.url}</maintainerurl>
 			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
 		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
 		
-		<update>
-			<name>Fabrik System Plugin</name>
+		<xmltask source="${update_dir}/plg_system_fabrik.xml" dest="${update_dir}/plg_system_fabrik.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_system_fabrik.xml" dest="${update_dir}/plg_system_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+				<name>Fabrik System Plugin</name>
 			<description>Fabrik System Plugin</description>
 			<type>plugin</type>
 			<element>fabrik</element>
@@ -149,6 +175,7 @@
 		]]>
 	   		</insert> 
 		</xmltask>
+		
 		
 		<xmltask source="${package_list}" dest="${package_list}"> 
 			<insert path="/extensionset">
@@ -166,7 +193,11 @@
 		<zip destfile="${cfg.destdir}/mod_fabrik_form_${version}.zip" basedir="${cfg.destdir}/modules/mod_fabrik_form" />
 		<zip destfile="${cfg.destdir}/mod_fabrik_list_${version}.zip" basedir="${cfg.destdir}/modules/mod_fabrik_list" />
 		
-		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+		<xmltask source="${update_dir}/mod_fabrik_list.xml" dest="${update_dir}/mod_fabrik_list.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		
+		<xmltask source="${update_dir}/mod_fabrik_list.xml" dest="${update_dir}/mod_fabrik_list.xml"> 
 			<insert path="updates"> 
 				<![CDATA[<update>
 			<name>Fabrik List Module</name>
@@ -184,7 +215,11 @@
 	   		</insert> 
 		</xmltask>
 		
-		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+		<xmltask source="${update_dir}/mod_fabrik_form.xml" dest="${update_dir}/mod_fabrik_form.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		
+		<xmltask source="${update_dir}/mod_fabrik_form.xml" dest="${update_dir}/mod_fabrik_form.xml"> 
 			<insert path="updates"> 
 				<![CDATA[<update>
 			<name>Fabrik Form Module</name>
@@ -211,6 +246,25 @@
 	</target>
 
 
+	<target name="fabrik.prepXML">
+		<if>
+			<available file="${update_dir}/${file}" />
+				<then>
+					<xmltask source="${update_dir}/${file}" dest="${update_dir}/${file}"> 
+						<remove path="/updates/update[version='${version}']" />
+					</xmltask>
+			</then>
+			<else>
+				<xmltask dest="${update_dir}/${file}"> 
+				<insert path="/"  > 
+					<![CDATA[<updates>
+		</updates>]]>
+				</insert>
+			</xmltask>
+			</else>
+		</if>
+	</target>
+	
 	<target name="fabrik.component">
 		<!-- create a zip  ( note you cant use as the file paths are more than 100 chars and the Joomla archieve class falls over) of the plugins dir for unpacking upon installation -->
 
@@ -221,9 +275,12 @@
 		<move file="${cfg.destdir}/admin/pkg_fabrik.xml" todir="${cfg.destdir}" />
 		<move file="${cfg.destdir}/admin/pkg_fabrik_sink.xml" todir="${cfg.destdir}" />
 		
+		
 		<zip destfile="${cfg.destdir}/com_fabrik_${version}.zip" basedir="${cfg.destdir}" excludes="modules/**, plugins/**, pkg_fabrik_sink/** pkg_fabrik.xml 
 			/components/com_fabrik/sef_ext/**" />
 
+		<foreach list="com_fabrik.xml,mod_fabrik_list.xml,mod_fabrik_form.xml,plg_fabrik.xml,plg_search_fabrik.xml,plg_system_fabrikcron.xml,plg_system_fabrik.xml" param="file" target="fabrik.prepXML" inheritall="true" inheritrefs="true"/>
+		
 		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
 			<insert path="updates"> 
 				<![CDATA[<update>
@@ -244,7 +301,7 @@
 			
 		<xmltask source="${package_list}" dest="${package_list}"> 
 			<insert path="/extensionset"> 
-     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml" />]]>
+     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" client_id="administrator" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml" />]]>
    		</insert> 
 		</xmltask>
 	</target>
@@ -252,31 +309,8 @@
 	<!-- package with the basics installed -->
 	<target name="fabrik.package.start">
 	
-			<tstamp>
-		      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
-		  </tstamp>
-		  <tstamp>
-		      <format property="year" pattern="yyyy" locale="en,UK"/>
-		  </tstamp>
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/" />
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/packages" />
-			<replace file="${cfg.destdir}/pkg_fabrik.xml" token="{version}" value="${version}"/>
-			
-			<replace dir="${cfg.destdir}" value="${version}">
-				<include name="**/*.xml"/>
-				<replacetoken>{version}</replacetoken>
-			</replace>
-			
-			<replace dir="${cfg.destdir}" value="${createdate}">
-				<include name="**/*.xml"/>
-				<replacetoken>{createdate}</replacetoken>
-			</replace>
-			
-			<replace dir="${cfg.destdir}" value="${year}">
-				<include name="**/*.xml"/>
-				<replacetoken>{year}</replacetoken>
-			</replace>
-
 			<copy file="${cfg.destdir}/pkg_fabrik.xml" todir="${cfg.destdir}/pkg_fabrik" />
 			<copy file="${cfg.destdir}/com_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 			<copy file="${cfg.destdir}/mod_fabrik_form_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
@@ -428,6 +462,33 @@
 		<copy todir="${cfg.destdir}/plugins/fabrik_visualization/">
 			<fileset dir="${basedir}/plugins/fabrik_visualization/"></fileset>
 		</copy>
+		
+		<antcall target="refresh.updatexml" />
+	</target>
+	
+	<target name="refresh.updatexml">
+	
+		<tstamp>
+	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
+	  </tstamp>
+	  <tstamp>
+	      <format property="year" pattern="yyyy" locale="en,UK"/>
+	  </tstamp>
+	  
+		<replace dir="${cfg.destdir}" value="${version}">
+			<include name="**/*.xml"/>
+			<replacetoken>{version}</replacetoken>
+		</replace>
+		
+		<replace dir="${cfg.destdir}" value="${createdate}">
+			<include name="**/*.xml"/>
+			<replacetoken>{createdate}</replacetoken>
+		</replace>
+		
+		<replace dir="${cfg.destdir}" value="${year}">
+			<include name="**/*.xml"/>
+			<replacetoken>{year}</replacetoken>
+		</replace>
 	</target>
 	
 </project>
