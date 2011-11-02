@@ -36,12 +36,11 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 		
 		if (!empty($data)) {
-			$keys = array_keys($data);
-			//single entry
-			if (in_array('label', $keys)) {
+			if (array_key_exists('label', $data)) {
 				$data = $this->_renderListData($data, $oAllRowsData);
 			} else {
 				for ($i = 0; $i < count($data); $i++) {
+					$data[$i] = JArrayHelper::fromObject($data[$i]);
 					$data[$i] = $this->_renderListData($data[$i], $oAllRowsData);
 				}
 			}
@@ -530,5 +529,6 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		}
 		parent::formJavascriptClass($srcs, $script);
 	}
+
 }
 ?>

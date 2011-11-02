@@ -541,7 +541,7 @@ class FabrikFEModelList extends JModelForm {
 
 					} else {
 						JDEBUG ? $_PROFILER->mark('elements renderListData: ' ."($ec)". " talbeid = $table->id " .  $col) : null;
-						for ($i=0; $i < $ec; $i++) {
+						for ($i = 0; $i < $ec; $i++) {
 							$thisRow = $data[$i];
 							$coldata = $thisRow->$col;
 							$data[$i]->$col = $elementModel->renderListData($coldata, $thisRow);
@@ -6409,7 +6409,15 @@ class FabrikFEModelList extends JModelForm {
 						//continue;
 						//}
 						if ($origKey == $tmpkey) {
-							$data[$last_i]->$key .= "<br >\n" . $val;
+							// $$$ rob - this was just appending data with a <br> but as we do thie before the data is formatted
+							// it was causing all sorts of issues for list rendering of links, dates etc. So now turn the data into 
+							// an array and at the end of this method loop over the data to encode the array into a json object.
+							
+							// The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
+							// with it currently
+							$data[$last_i]->$key = (array)$data[$last_i]->$key;
+							array_push($data[$last_i]->$key, $val);
+
 						} else {
 							$json = json_decode($data[$last_i]->$origKey);
 							$json= $val;
@@ -6434,6 +6442,18 @@ class FabrikFEModelList extends JModelForm {
 		}
 		for ($c = count($remove) - 1; $c >=0; $c --) {
 			unset($data[$remove[$c]]);
+		}
+		// $$$ rob loop over any data that was merged into an array and turn that into a json object
+		foreach ($data as $gkey => $d) {
+			foreach ($d as $k => $v) {
+			if (is_array($v)) {
+				foreach ($v as &$v2) {
+					$v2 = FabrikWorker::JSONtoData($v2);
+				} 
+				$v = json_encode($v);
+				$data[$gkey]->$k = $v;
+			}
+			}
 		}
 		$data = array_values($data);
 	}
