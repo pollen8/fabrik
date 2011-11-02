@@ -769,5 +769,5 @@ var ImageWidget = new Class({
 				this.CANVAS.threads.get('myThread').start();
 			}
 		}
-	},
+	}
 });
