@@ -75,13 +75,9 @@ class plgSystemFabrik extends JPlugin
 		}
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
-		global $_PROFILER;
-		
-		JDEBUG ? $_PROFILER->mark('fabrik search start') : null;
 
 		$user	= JFactory::getUser();
 		$db	= FabrikWorker::getDbo(true);
-		JDEBUG ? $_PROFILER->mark('fabrik search start') : null;
 
 		require_once(JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php');
 
@@ -242,7 +238,6 @@ class plgSystemFabrik extends JPlugin
 				$allList = array_merge($allList, $li);
 			}
 		}
-		JDEBUG ? $_PROFILER->mark('fabrik search end') : null;
 		return $allList;
 	}
 

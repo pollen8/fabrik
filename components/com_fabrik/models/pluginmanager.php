@@ -239,12 +239,12 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	function getFormPlugins(&$form)
 	{
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		if (!isset($this->formplugins)) {
 			$this->formplugins = array();
 		}
 		$sig = $form->get('id');
-		JDEBUG ? $_PROFILER->mark('pluginmanager:getFormPlugins:start - '.$sig) : null;
+		JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:start - '.$sig) : null;
 		if (!array_key_exists($sig, $this->formplugins)) {
 			$this->formplugins[$sig] = array();
 			$lang = JFactory::getLanguage();
@@ -276,7 +276,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			$groupModels = $form->getGroups();
 			$group = 'element';
 			foreach ($elements as $element) {
-				JDEBUG ? $_PROFILER->mark('pluginmanager:getFormPlugins:'.$element->id . ''.$element->plugin) : null;
+				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:'.$element->id . ''.$element->plugin) : null;
 					require_once(JPATH_PLUGINS.DS.'fabrik_element'.DS.$element->plugin.DS.$element->plugin.'.php');
 					$class = 'plgFabrik_Element'.$element->plugin;
 					$pluginModel = new $class($dispatcher, array());

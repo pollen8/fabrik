@@ -193,7 +193,7 @@ class FabrikViewList extends JView{
 			return;
 		}
 
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 		require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'modifiers.php');
 		$user = JFactory::getUser();
@@ -352,10 +352,10 @@ class FabrikViewList extends JView{
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$this->assignRef('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
-		JDEBUG ? $_PROFILER->mark('fabrik getfilters start') : null;
+		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;
 		$this->filters = $model->getFilters('listform_'. $model->getRenderContext());
 		$this->assign('clearFliterLink', $this->get('clearButton'));
-		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
+		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 
 		$this->assign('filterMode', (int)$params->get('show-table-filters'));
 		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
@@ -393,7 +393,8 @@ class FabrikViewList extends JView{
 			JRequest::setVar('option', $opt);
 		}
 
-		JDEBUG ? $_PROFILER->mark('end fabrik display') : null;
+		JDEBUG ? $profiler->mark('end fabrik display') : null;
+
 		// $$$ rob 09/06/2011 no need for isMambot test? should use ob_start() in module / plugin to capture the output
 		echo $text;
 	}

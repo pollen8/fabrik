@@ -168,7 +168,7 @@ class FabrikViewList extends JView{
 
 	function display($tpl = null)
 	{
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 		$Itemid	= @$app->getMenu('site')->getActive()->id;
 		// turn off deprecated warnings in 5.3 or greater,
@@ -307,7 +307,7 @@ class FabrikViewList extends JView{
 		$this->filter_action = $model->getFilterAction();
 		$modelFilters = $model->makeFilters('list_'. $model->getId());
 		$this->assign('clearFliterLink', $this->get('clearButton'));
-		JDEBUG ? $_PROFILER->mark('fabrik getfilters end') : null;
+		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 		$form->getGroupsHiarachy();
 		$this->filters = $model->getFilters('listform_'. $model->getRenderContext());
 		$this->assign('showFilters', (count($this->filters) > 0 && $params->get('show-table-filters', 1)) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);

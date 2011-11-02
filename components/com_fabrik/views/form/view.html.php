@@ -27,7 +27,7 @@ class fabrikViewForm extends JView
 
 	function display($tpl = null)
 	{
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
 		$w = new FabrikWorker();
@@ -56,7 +56,7 @@ class fabrikViewForm extends JView
 		if ($this->access == 0) {
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
-		JDEBUG ? $_PROFILER->mark('form view before join group ids got') : null;
+		JDEBUG ? $profiler->mark('form view before join group ids got') : null;
 		if (!$listModel->noTable()) {
 			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
@@ -84,15 +84,15 @@ class fabrikViewForm extends JView
 		$form->error = count($errors) > 0 ? $form->error : '';
 
 		$this->_addButtons();
-		JDEBUG ? $_PROFILER->mark('form view before validation classes loaded') : null;
+		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
 
 		$tmpl = $this->get('tmpl');
 
 		$this->assign('tmpl', $tmpl);
-		JDEBUG ? $_PROFILER->mark('form view before group view got') : null;
+		JDEBUG ? $profiler->mark('form view before group view got') : null;
 
 		$this->groups = $model->getGroupView($tmpl);
-		JDEBUG ? $_PROFILER->mark('form view after group view got') : null;
+		JDEBUG ? $profiler->mark('form view after group view got') : null;
 		$this->assignRef('data', $model->data);
 		$this->assignRef('modeldata', $model->_data);
 		$this->assignRef('params', $params);
@@ -101,14 +101,14 @@ class fabrikViewForm extends JView
 
 		//cck in admin?
 		$this->cck();
-		JDEBUG ? $_PROFILER->mark('form view: after cck') : null;
+		JDEBUG ? $profiler->mark('form view: after cck') : null;
 		//force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND.DS.'views';
 
 		$this->_addJavascript($listModel->getId());
-		JDEBUG ? $_PROFILER->mark('form view: after add js') : null;
+		JDEBUG ? $profiler->mark('form view: after add js') : null;
 		$this->_loadTmplBottom($form);
-		JDEBUG ? $_PROFILER->mark('form view: after tmpl bottom loaded') : null;
+		JDEBUG ? $profiler->mark('form view: after tmpl bottom loaded') : null;
 
 		if ($model->_editable) {
 			$form->startTag = '<form action="'.$form->action.'" class="fabrikForm" method="post" name="'.$form->name.'" id="'.$form->formid.'" enctype="'.$model->getFormEncType().'">';
@@ -119,13 +119,13 @@ class fabrikViewForm extends JView
 		}
 		$form->endTag .= $this->pluginend;
 		$this->assignRef('form', $form);
-		JDEBUG ? $_PROFILER->mark('form view: form assigned as ref') : null;
+		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
 		$list = new stdClass();
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
 		$this->assignRef('list', $list);
-		JDEBUG ? $_PROFILER->mark('form view: before getRelatedTables()') : null;
+		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
 		$this->assignRef('linkedTables', $this->get('RelatedTables'));
-		JDEBUG ? $_PROFILER->mark('form view: after getRelatedTables()') : null;
+		JDEBUG ? $profiler->mark('form view: after getRelatedTables()') : null;
 		$this->setMessage();
 
 		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
@@ -133,7 +133,7 @@ class fabrikViewForm extends JView
 
 
 
-		JDEBUG ? $_PROFILER->mark('form view before template load') : null;
+		JDEBUG ? $profiler->mark('form view before template load') : null;
 		$text = $this->loadTemplate();
 		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->_editable === false)) {
 			$opt = JRequest::getVar('option');
@@ -145,7 +145,7 @@ class fabrikViewForm extends JView
 			JRequest::setVar('option', $opt);
 		}
 
-		JDEBUG ? $_PROFILER->mark('form view display end') : null;
+		JDEBUG ? $profiler->mark('form view display end') : null;
 		// allows you to use {placeholders} in form template.
 		$text = $w->parseMessageForPlaceHolder($text, $model->_data);
 		echo $text;

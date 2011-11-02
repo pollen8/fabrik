@@ -2147,21 +2147,21 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 	function render()
 	{
-		global $_PROFILER;
-		JDEBUG ? $_PROFILER->mark('formmodel render: start') : null;
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('formmodel render: start') : null;
 		// $$$rob required in paolo's site when rendering modules with ajax option turned on
 		$this->_listModel = null;
 		@set_time_limit(300);
 		$this->_rowId = $this->getRowId();
-		JDEBUG ? $_PROFILER->mark('formmodel render: getData start') : null;
+		JDEBUG ? $profiler->mark('formmodel render: getData start') : null;
 		$data = $this->getData();
-		JDEBUG ? $_PROFILER->mark('formmodel render: getData end') : null;
+		JDEBUG ? $profiler->mark('formmodel render: getData end') : null;
 		$res = FabrikWorker::getPluginManager()->runPlugins('onLoad', $this);
 		if (in_array(false, $res)) {
 			return false;
 		}
 		$this->_reduceDataForXRepeatedJoins();
-		JDEBUG ? $_PROFILER->mark('formmodel render end') : null;
+		JDEBUG ? $profiler->mark('formmodel render end') : null;
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}
@@ -2196,13 +2196,13 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if (isset($this->_data)) {
 			return $this->_data;
 		}
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		$this->_data = array();
 		$data = array(FArrayHelper::toObject(JRequest::get('request')));
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
-		JDEBUG ? $_PROFILER->mark('formmodel getData: groups loaded') : null;
+		JDEBUG ? $profiler->mark('formmodel getData: groups loaded') : null;
 		if (!$form->record_in_database) {
 			FabrikHelperHTML::debug($data, 'form:getData from $_REQUEST');
 			$data = JRequest::get('request');
@@ -2210,11 +2210,11 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
-			JDEBUG ? $_PROFILER->mark('formmodel getData: db created') : null;
+			JDEBUG ? $profiler->mark('formmodel getData: db created') : null;
 			$item = $listModel->getTable();
-			JDEBUG ? $_PROFILER->mark('formmodel getData: table row loaded') : null;
+			JDEBUG ? $profiler->mark('formmodel getData: table row loaded') : null;
 			$this->_aJoinObjs 	=& $listModel->getJoins();
-			JDEBUG ? $_PROFILER->mark('formmodel getData: joins loaded') : null;
+			JDEBUG ? $profiler->mark('formmodel getData: joins loaded') : null;
 			if (!empty($this->_arErrors)) {
 				// $$$ hugh - if we're a mambot, reload the form session state we saved in
 				// process() when it banged out.
@@ -2241,7 +2241,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			} else {
 				//test if its a resumed paged form
 				$srow = $this->getSessionData();
-				JDEBUG ? $_PROFILER->mark('formmodel getData: session data loaded') : null;
+				JDEBUG ? $profiler->mark('formmodel getData: session data loaded') : null;
 				if ($this->saveMultiPage() && $srow->data != '') {
 					$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
 					FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
@@ -2265,7 +2265,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 						if (is_null($rows)) {
 							JError::raiseWarning(500, $fabrikDb->getErrorMsg());
 						}
-						JDEBUG ? $_PROFILER->mark('formmodel getData: rows data loaded') : null;
+						JDEBUG ? $profiler->mark('formmodel getData: rows data loaded') : null;
 						//$$$ rob Ack above didnt work for joined data where there would be n rows rerutned frho "this rowid = $this->_rowId  \n";
 						if (!empty($rows)) {
 							// only do this if the query returned some rows (it wont if usekey on and userid = 0 for example)
@@ -2336,7 +2336,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$data = $w->parseMessageForPlaceHolder($data);
 		$this->_data = $data;
 		FabrikHelperHTML::debug($data, 'form:data');
-		JDEBUG ? $_PROFILER->mark('queryselect: getData() end') : null;
+		JDEBUG ? $profiler->mark('queryselect: getData() end') : null;
 		return $this->_data;
 	}
 

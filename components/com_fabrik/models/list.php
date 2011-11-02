@@ -233,7 +233,7 @@ class FabrikFEModelList extends JModelForm {
 	function render()
 	{
 		FabrikHelperHTML::debug($_POST, 'render:post');
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		$id = $this->getId();
 		if (is_null($id) || $id == '0') {
 			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
@@ -251,18 +251,18 @@ class FabrikFEModelList extends JModelForm {
 		@set_time_limit(60);
 
 		//$this->getRequestData();
-		JDEBUG ? $_PROFILER->mark('About to get table filter') : null;
+		JDEBUG ? $profiler->mark('About to get table filter') : null;
 		$filters = $this->getFilterArray();
-		JDEBUG ? $_PROFILER->mark('Got filters') : null;
+		JDEBUG ? $profiler->mark('Got filters') : null;
 		$this->setLimits();
 		$this->setElementTmpl();
 		$data = $this->getData();
-		JDEBUG ? $_PROFILER->mark('got data') : null;
+		JDEBUG ? $profiler->mark('got data') : null;
 		//think we really have to do these as the calc isnt updated when the table is filtered
 		$this->doCalculations();
-		JDEBUG ? $_PROFILER->mark('done calcs') : null;
+		JDEBUG ? $profiler->mark('done calcs') : null;
 		$this->getCalculations();
-		JDEBUG ? $_PROFILER->mark('got cacls') : null;
+		JDEBUG ? $profiler->mark('got cacls') : null;
 		$item->hit();
 		return $data;
 	}
@@ -319,10 +319,10 @@ class FabrikFEModelList extends JModelForm {
 
 	function getRequestData()
 	{
-		global $_PROFILER;
-		JDEBUG ? $_PROFILER->mark('start get Request data') : null; // 0.5 sec here!
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('start get Request data') : null; // 0.5 sec here!
 		$f = $this->getFilterModel()->getFilters();
-		JDEBUG ? $_PROFILER->mark('end get Request data') : null;
+		JDEBUG ? $profiler->mark('end get Request data') : null;
 		return $f;
 	}
 
@@ -364,7 +364,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function getData()
 	{
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		$pluginManager = FabrikWorker::getPluginManager();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
@@ -374,9 +374,9 @@ class FabrikFEModelList extends JModelForm {
 		$traceModel = ini_get('mysql.trace_mode');
 		ini_set('mysql.trace_mode', 'off'); // needs to be off for FOUND_ROWS() to work
 		$fabrikDb = $this->getDb();
-		JDEBUG ? $_PROFILER->mark('query build start') : null;
+		JDEBUG ? $profiler->mark('query build start') : null;
 		$query = $this->_buildQuery();
-		JDEBUG ? $_PROFILER->mark('query build end') : null;
+		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$this->setBigSelects();
 
@@ -389,7 +389,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
-		JDEBUG ? $_PROFILER->mark('before query run') : null;
+		JDEBUG ? $profiler->mark('before query run') : null;
 
 		//set 2nd param to false in attempt to stop joomfish db adaptor from translating the orignal query
 		// fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
@@ -411,20 +411,20 @@ class FabrikFEModelList extends JModelForm {
 		ini_set('mysql.trace_mode', $traceModel);
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
 
-		JDEBUG ? $_PROFILER->mark('query run and data loaded') : null;
+		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		//@TODO test in J1.7
 		//	$this->translateData($this->_data);
 		if ($fabrikDb->getErrorNum() != 0) {
 			JError::raiseNotice(500,  'getData: ' . $fabrikDb->getErrorMsg());
 		}
-		JDEBUG ? $_PROFILER->mark('start format for joins') : null;
+		JDEBUG ? $profiler->mark('start format for joins') : null;
 		$this->formatForJoins($this->_data);
 
-		JDEBUG ? $_PROFILER->mark('start format data') : null;
+		JDEBUG ? $profiler->mark('start format data') : null;
 		$this->formatData($this->_data);
-		/* JDEBUG ? $_PROFILER->mark('start format for joins') : null;
+		/* 
 		 $this->formatForJoins($this->_data); */
-		JDEBUG ? $_PROFILER->mark('data formatted') : null;
+		JDEBUG ? $profiler->mark('data formatted') : null;
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
 		return $this->_data;
 	}
@@ -500,7 +500,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function formatData(&$data)
 	{
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		jimport('joomla.filesystem.file');
 		$form = $this->getFormModel();
 		$tableParams = $this->getParams();
@@ -540,7 +540,7 @@ class FabrikFEModelList extends JModelForm {
 						}
 
 					} else {
-						JDEBUG ? $_PROFILER->mark('elements renderListData: ' ."($ec)". " talbeid = $table->id " .  $col) : null;
+						JDEBUG ? $profiler->mark('elements renderListData: ' ."($ec)". " talbeid = $table->id " .  $col) : null;
 						for ($i = 0; $i < $ec; $i++) {
 							$thisRow = $data[$i];
 							$coldata = $thisRow->$col;
@@ -560,7 +560,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
-		JDEBUG ? $_PROFILER->mark('elements rendered for table data') : null;
+		JDEBUG ? $profiler->mark('elements rendered for table data') : null;
 		$this->_aGroupInfo = array();
 		$groupTitle = array();
 
@@ -621,12 +621,12 @@ class FabrikFEModelList extends JModelForm {
 			//make sure that the none grouped data is in the same format
 			$data = array($data);
 		}
-		JDEBUG ? $_PROFILER->mark('table groupd by applied') : null;
+		JDEBUG ? $profiler->mark('table groupd by applied') : null;
 		if ($this->_outPutFormat != 'pdf' && $this->_outPutFormat != 'csv' && $this->_outPutFormat != 'feed') {
 			$this->addSelectBoxAndLinks($data);
 			FabrikHelperHTML::debug($data, 'table:data');
 		}
-		JDEBUG ? $_PROFILER->mark('end format data') : null;
+		JDEBUG ? $profiler->mark('end format data') : null;
 	}
 
 	/**
@@ -1224,8 +1224,8 @@ class FabrikFEModelList extends JModelForm {
 
 	function _buildQuery()
 	{
-		global $_PROFILER;
-		JDEBUG ? $_PROFILER->mark('_buildQuery: start') : null;
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('_buildQuery: start') : null;
 		$query = array();
 		$this->mergeQuery= '';
 		if ($this->mergeJoinedData()) {
@@ -1253,9 +1253,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$query = array();
 		$query['select'] = $this->_buildQuerySelect();
-		JDEBUG ? $_PROFILER->mark('queryselect: got') : null;
+		JDEBUG ? $profiler->mark('queryselect: got') : null;
 		$query['join'] = $this->_buildQueryJoin();
-		JDEBUG ? $_PROFILER->mark('queryjoin: got') : null;
+		JDEBUG ? $profiler->mark('queryjoin: got') : null;
 
 		if ($this->mergeJoinedData()) {
 			// $$$ rob We've already used _buildQueryWhere to get our list of main pk ids.
@@ -1307,13 +1307,13 @@ class FabrikFEModelList extends JModelForm {
 
 	function _buildQuerySelect()
 	{
-		global $_PROFILER;
-		JDEBUG ? $_PROFILER->mark('queryselect: start') : null;
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('queryselect: start') : null;
 		$db = $this->getDb();
 		$form = $this->getFormModel();
 		$table = $this->getTable();
 		$form->getGroupsHiarachy(true);
-		JDEBUG ? $_PROFILER->mark('queryselect: fields load start') : null;
+		JDEBUG ? $profiler->mark('queryselect: fields load start') : null;
 		$fields = $this->getAsFields();
 		$pk = FabrikString::safeColName($table->db_primary_key);
 		//SEFSLUG TEST
@@ -1331,7 +1331,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		//END
 
-		JDEBUG ? $_PROFILER->mark('queryselect: fields loaded') : null;
+		JDEBUG ? $profiler->mark('queryselect: fields loaded') : null;
 		$sfields = (empty($fields)) ? '' : implode(", \n ", $fields) . "\n ";
 		//$$$rob added raw as an option to fix issue in saving calendener data
 		if (trim($table->db_primary_key) != '' && (in_array($this->_outPutFormat, array('raw','html','feed','pdf','phocapdf','csv')))) {
@@ -1901,7 +1901,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function getSearchAllFields()
 	{
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		if (isset($this->searchAllAsFields)) {
 			return $this->searchAllAsFields;
 		}
@@ -1969,7 +1969,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function &getAsFields()
 	{
-		global $_PROFILER;
+		$profiler = JProfiler::getInstance('Application');
 		if (isset($this->asfields)) {
 			return $this->asfields;
 		}
@@ -1996,14 +1996,14 @@ class FabrikFEModelList extends JModelForm {
 		}
 		//temporaraily add in the db key so that the edit links work, must remove it before final return
 		//	of getData();
-		JDEBUG ? $_PROFILER->mark('getAsFields: starting to test if a view') : null;
+		JDEBUG ? $profiler->mark('getAsFields: starting to test if a view') : null;
 		if (!$this->isView()) {
 			if (!$this->_temp_db_key_addded && $table->db_primary_key != '') {
 				$str = FabrikString::safeColName($table->db_primary_key)." AS ".FabrikString::safeColNameToArrayKey($table->db_primary_key);
 				$this->fields[] = $db->nameQuote(FabrikString::safeColNameToArrayKey($table->db_primary_key));
 			}
 		}
-		JDEBUG ? $_PROFILER->mark('getAsFields: end of view test') : null;
+		JDEBUG ? $profiler->mark('getAsFields: end of view test') : null;
 		//for raw data in packages
 
 		if ($this->_outPutFormat == 'raw') {
@@ -3625,13 +3625,13 @@ class FabrikFEModelList extends JModelForm {
 	function getFilters($container = 'listform_1', $type = 'list', $id = '')
 	{
 		if (!isset($this->viewfilters)) {
-			global $_PROFILER;
+			$profiler = JProfiler::getInstance('Application');
 			$params = $this->getParams();
 			$this->viewfilters = array();
 
-			JDEBUG ? $_PROFILER->mark('fabrik makeFilters start') : null;
+			JDEBUG ? $profiler->mark('fabrik makeFilters start') : null;
 			$modelFilters = $this->makeFilters($container, $type, $id);
-			JDEBUG ? $_PROFILER->mark('fabrik makeFilters end') : null;
+			JDEBUG ? $profiler->mark('fabrik makeFilters end') : null;
 			foreach ($modelFilters as $name => $filter) {
 				$f = new stdClass();
 				$f->label = $filter->label;
@@ -3729,8 +3729,6 @@ class FabrikFEModelList extends JModelForm {
 						$elementModel->_group = $groupModel;
 						$o = new stdClass();
 						$o->name = $elementModel->getFullName(false, true, false);
-						//global $_PROFILER;
-						//JDEBUG ? $_PROFILER->mark('About to getFilter for:' . $o->name) : null;
 						$o->filter = $elementModel->getFilter($counter, true);
 						$fscript .= $elementModel->_filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
