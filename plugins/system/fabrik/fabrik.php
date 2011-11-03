@@ -118,7 +118,7 @@ class plgSystemFabrik extends JPlugin
 		$db->setQuery($query);
 
 		$list = array();
-		$ids = $db->loadResultArray();
+		$ids = $db->loadColumn();
 		if ($db->getErrorNum() != 0) {
 			jexit('search:' . $db->getErrorMsg());
 		}

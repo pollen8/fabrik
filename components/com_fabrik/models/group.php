@@ -135,7 +135,7 @@ class FabrikFEModelGroup extends FabModel{
 			$db = FabrikWorker::getDbo(true);
 			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int)$this->getId();
 			$db->setQuery($sql);
-			$this->_formsIamIn = $db->loadResultArray();
+			$this->_formsIamIn = $db->loadColumn();
 			if (!$db->query()) {
 				return JError::raiseError(500, $db->getErrorMsg());
 			}

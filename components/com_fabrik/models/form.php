@@ -2077,7 +2077,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		." FROM $item->db_table_name
 WHERE $item->db_primary_key $c $rowid $order $limit");
 
-		$ids = $db->loadResultArray();
+		$ids = $db->loadColumn();
 		if ($dir == 1) {
 			if (count($ids) >= 2) {
 				JRequest::setVar('rowid', $ids[$dir]);
@@ -3379,7 +3379,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$query->select('*')->from('#__{package}_lists')->where("db_table_name = ".$db->Quote($table));
 				$db->setQuery($query);
 			}
-			$this->_linkedFabrikLists[$table] = $db->loadResultArray();
+			$this->_linkedFabrikLists[$table] = $db->loadColumn();
 			if ($db->getErrorNum()) {
 				JError::raiseError(500, $db->getErrorMsg());
 			}

@@ -460,7 +460,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 							WHERE block = 0
 							AND sendEmail = 1";
 				$db->setQuery($q);
-				$sendEmail = $db->loadResultArray();
+				$sendEmail = $db->loadColumn();
 				if (count($sendEmail) > 0) {
 					$jdate = new JDate();
 					// Build the query to add the messages

@@ -348,7 +348,7 @@ class FabrikPlugin extends JPlugin
 				$cnn->setId($cid);
 				$db = $cnn->getDb();
 				$db->setQuery("SHOW TABLES");
-				$rows = (array)$db->loadResultArray();
+				$rows = (array)$db->loadColumn();
 			}
 			array_unshift($rows, '');
 		}

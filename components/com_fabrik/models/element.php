@@ -1118,7 +1118,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_jsactions')->where('element_id = '.(int)$id);
 		$db->setQuery($query);
-		$actions = $db->loadResultArray();
+		$actions = $db->loadColumn();
 		foreach ($actions as $id) {
 			$jscode = FabTable::getInstance('Jsaction', 'FabrikTable');
 			$jscode->load($id);
@@ -2701,7 +2701,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $this->getMedianQuery($listModel);
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
-			$res = $this->_median($db->loadResultArray());
+			$res = $this->_median($db->loadColumn());
 			$o = new stdClass();
 			if ($format != '') {
 				$res = sprintf($format, $res);
@@ -3042,7 +3042,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		->join('LEFT', ' #__{package}_joins AS j ON j.element_id = e.id')
 		->where('e.parent_id = '.$id);
 		$db->setQuery($query);
-		$join_ids = $db->loadResultArray();
+		$join_ids = $db->loadColumn();
 
 		if (!empty($join_ids)) {
 			$query->clear();

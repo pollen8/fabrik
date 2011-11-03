@@ -409,7 +409,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key)->from($item->db_table_name);
 		$db->setQuery($query);
-		$aExistingKeys = $db->loadResultArray();
+		$aExistingKeys = $db->loadColumn();
 
 		$this->addedCount = 0;
 		$updatedCount = 0;
@@ -659,8 +659,10 @@ class FabrikFEModelImportcsv extends JModelForm{
 		}
 		if (!array_key_exists($join->id, $this->joinpkids)) {
 			$db = $model->getDb();
-			$db->setQuery("SELECT $join->table_key FROM $join->table_join");
-			$this->joinpkids[$join->id] = $db->loadResultArray();
+			$query = $db->getQuery(true);
+			$query->select($join->table_key)->from($join->table_join);
+			$db->setQuery($query);
+			$this->joinpkids[$join->id] = $db->loadColumn();
 		}
 		return $this->joinpkids[$join->id];
 	}

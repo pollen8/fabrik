@@ -5736,12 +5736,15 @@ class FabrikFEModelList extends JModelForm {
 		$query = $db->getQuery(true);
 		$query->select($table->db_primary_key)->from($table->db_table_name);
 		$db->setQuery($query);
-		$keys = $db->loadResultArray();
+		$keys = $db->loadColumn();
 		$sql = "";
+		$query = $db->getQuery(true);
 		$dump_buffer_len = 0;
 		if (is_array($keys)) {
 			foreach ($keys as $id) {
-				$db->setQuery("SELECT * FROM ".$table->db_table_name." WHERE $table->db_primary_key = $id");
+				$query->clear();
+				$query->select('*')->from($table->db_table_name)->where($table->db_primary_key = $id);
+				$db->setQuery($query);
 				$row = $db->loadObject();
 				$fmtsql = "\t<query>INSERT INTO ".$table->db_table_name." ( %s ) VALUES ( %s )</query>";
 				$values = array();
@@ -5953,8 +5956,9 @@ class FabrikFEModelList extends JModelForm {
 			$query .= " LIMIT " . $fbConfig->get('filter_list_max', 100);
 			$query = $this->pluginQuery($query);
 			$db->setQuery($query);
-			if (!$res = $db->loadResultArray()) {
-				JError::raiseNotice(500, 'list model getCOlumn Data for '.$colQuoted.' failed');
+			$res = $db->loadColumn();
+			if (!is_null($res)) {
+				JError::raiseNotice(500, 'list model getColumn Data for '.$colQuoted.' failed');
 			}
 			if ((int)$fbConfig->get('filter_list_max', 100) == count($res)) {
 				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $colQuoted));

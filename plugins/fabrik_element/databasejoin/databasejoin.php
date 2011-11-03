@@ -1427,7 +1427,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					LEFT JOIN #__{package}_joins AS j ON j.element_id = e.id
 					WHERE e.parent_id = ".(int)$post['id']
 				);
-				$join_ids = $db->loadResultArray();
+				$join_ids = $db->loadColumn();
 				if (!empty($join_ids)) {
 					$db->setQuery("DELETE FROM #__fabrik_joins WHERE id IN (".implode(',', $join_ids).")");
 					$db->query();
@@ -1451,7 +1451,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				LEFT JOIN #__{package}_joins AS j ON j.element_id = e.id
 				WHERE e.parent_id = $orig_id
 			");
-			$join_ids = $db->loadResultArray();
+			$join_ids = $db->loadColumn();
 			if (!empty($join_ids)) {
 				$db->setQuery("DELETE FROM #__fabrik_joins WHERE id IN (".implode(',', $join_ids).")");
 			}
