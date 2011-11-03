@@ -7,7 +7,6 @@ echo "
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	border-bottom: 1px solid #B7B7B7;
-	/* border-top: 1px solid #B7B7B7; */
 	color: #325773;
 	font-weight: bold;
 	margin: 0;
