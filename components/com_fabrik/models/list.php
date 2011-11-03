@@ -5957,7 +5957,7 @@ class FabrikFEModelList extends JModelForm {
 			$query = $this->pluginQuery($query);
 			$db->setQuery($query);
 			$res = $db->loadColumn();
-			if (!is_null($res)) {
+			if (is_null($res)) {
 				JError::raiseNotice(500, 'list model getColumn Data for '.$colQuoted.' failed');
 			}
 			if ((int)$fbConfig->get('filter_list_max', 100) == count($res)) {

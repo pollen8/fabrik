@@ -186,7 +186,9 @@ class FabrikString extends JString{
 		}
 		$str = $out;
 		if (function_exists('iconv')) {
-			$str = (str_replace("'", '', iconv($fromEnc, $toEnc, $str))); // replace accented characters with ascii equivalent e.g. é => e
+			// $$$ rob added @ incase its farsi which creates a notice:
+			// https://github.com/Fabrik/fabrik/issues/72
+			$str = (str_replace("'", '', @iconv($fromEnc, $toEnc, $str))); // replace accented characters with ascii equivalent e.g. é => e
 		}
 		$str = preg_replace('/\s+/', '_', $str); // compress internal whitespace and replace with _
 		return strtolower(preg_replace('/\W+/', '_', $str));// replace all non-alphanumeric chars except _ and - with '_'
