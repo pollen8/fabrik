@@ -23,7 +23,7 @@
 			<field name="timestamp_format" 
 				length="20" 
 				type="text" 
-				default="%Y-%m-%d %H:%M:%S" 
+				default="Y-m-d h:m:s" 
 				label="PLG_ELEMENT_TIMESTAMP_FORMAT_LABEL" 
 				description="PLG_ELEMENT_TIMESTAMP_FORMAT_DESC" />
 		</fieldset>
