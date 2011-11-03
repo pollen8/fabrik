@@ -29,6 +29,11 @@ echo "$form->error</div>";?>
 		<?php if (trim($group->title) !== '') {?>
 			<legend><span><?php echo $group->title;?></span></legend>
 		<?php }?>
+		
+		<?php if ($group->intro !== '') {?>
+		<div class="groupintro"><?php echo $group->intro ?></div>
+		<?php }?>
+		
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {
 			?>

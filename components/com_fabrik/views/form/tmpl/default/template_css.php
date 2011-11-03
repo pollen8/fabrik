@@ -24,6 +24,12 @@ echo "
 		position:absolute;
 }
 
+#form_$c .groupintro{
+	margin-top:40px;
+	padding:0 20px;
+	color:#666;
+}
+
 #form_$c legend span{
 	padding:5px;
 	display:block;

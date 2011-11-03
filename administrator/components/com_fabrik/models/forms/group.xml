@@ -60,6 +60,13 @@
 		
 		<fieldset name="details2" >
 		
+		<field name="intro"
+			type="textarea"
+			rows="6"
+			cols="20"
+			label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"
+			description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
+		
 			<field name="repeat_group_button" 
 				type="radio" 
 				default="0" 

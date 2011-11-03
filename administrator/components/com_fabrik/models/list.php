@@ -1712,7 +1712,6 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Create a table to store the forms' data depending upon what groups are assigned to the form
-	 * @param object form model
 	 * @param string table name - taken from the table oject linked to the form
 	 * @param array list of default elements to add. (key = element name, value = plugin
 	 * @return mixed false if fail otherwise array of primary keys

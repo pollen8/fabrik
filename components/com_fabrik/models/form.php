@@ -3212,6 +3212,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			$groupTable = $groupModel->getGroup();
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
+			$group->intro = $groupParams->get('intro');
 			$aElements = array();
 			//check if group is acutally a table join
 
