@@ -1010,7 +1010,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			//stops form data being updated with blank data.
 			return;
 		}
-		echo "no crop";exit;
 		$files = array();
 		$deletedImages = JRequest::getVar('fabrik_fileupload_deletedfile', array(), 'request', 'array');
 		$gid = $groupModel->getGroup()->id;
