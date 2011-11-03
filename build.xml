@@ -12,7 +12,7 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
-	<target name="fabrik.all"><!--   depends="js" -->
+	<target name="fabrik.all">
 		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
 		
 		<if>
@@ -353,7 +353,7 @@
 			<var name="updatelist" value=""/>
 			<foreach list="email,php" param="plugin" target="fabrik.plugin.cron.zip.copy" inheritall="true" inheritrefs="true"/>
 			<echo>${updatelist}</echo>
-			<foreach list="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,radiobutton,textarea,user" param="plugin" target="fabrik.plugin.element.zip.copy" inheritall="true" inheritrefs="true"/>
+			<foreach list="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,link,radiobutton,textarea,user" param="plugin" target="fabrik.plugin.element.zip.copy" inheritall="true" inheritrefs="true"/>
 			<foreach list="email,php,receipt,redirect" target="fabrik.plugin.form.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
 			<foreach list="copy,php" target="fabrik.plugin.list.zip.copy" inheritall="true" param="plugin" inheritrefs="true"/>
 			<foreach list="isgreaterorlessthan,notempty,php,regex" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
@@ -391,7 +391,80 @@
 		<copy todir="${cfg.destdir}/site/">
 			<fileset dir="${basedir}/components/com_fabrik/">
 				<exclude name="**/*.zip" />
+				<exclude name="**/views/form/tmpl/**" />
+				<exclude name="**/views/list/tmpl/**" />
 			</fileset>
+		</copy>
+		
+		<!-- explicitly include list templates -->
+		
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/default.xml" todir="${cfg.destdir}/site/views/list/tmpl/" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/admin" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/admin">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/admin" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/adminmodule" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/adminmodule">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/adminmodule" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/bluesky" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/bluesky">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/bluesky" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/dbjoinselect" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/dbjoinselect">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/dbjoinselect" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/default" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/default">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/default" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/div" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/div">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/div" />
+		</copy>
+		
+		<!-- explicitly include form templates -->
+		
+		<copy file="${basedir}/components/com_fabrik/views/form/tmpl/default.xml" todir="${cfg.destdir}/site/views/form/tmpl/" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/admin" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/admin">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/admin" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/bluesky" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/bluesky">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bluesky" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/contacts_custom" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/contacts_custom">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/contacts_custom" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/default">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default_rtl" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/default_rtl">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default_rtl" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/mint" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/mint">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/mint" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/no-labels" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/no-labels">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/no-labels" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/tabs" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/tabs">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/tabs" />
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/media/com_fabrik" />
@@ -400,7 +473,8 @@
 				<exclude name="**/*.zip" />
 			</fileset>
 		</copy>
-
+		
+		
 		<mkdir dir="${cfg.destdir}/site/fabrikfeed" />
 		<copy todir="${cfg.destdir}/site/fabrikfeed">
 			<fileset dir="${basedir}/libraries/joomla/document/fabrikfeed">

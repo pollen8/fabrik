@@ -48,10 +48,10 @@
 		<file type="plugin"	id="list_copy"	group="fabrik_list">plg_fabrik_list_copy_{version}.zip</file>
 		<file type="plugin"	id="list_php"	group="fabrik_list">plg_fabrik_list_php_{version}.zip</file>
 		
-		<file type="plugin"	id="validationrule_isgreaterorlessthan" group="fabrik_validationrule">plg_fabrik_validation_isgreaterorlessthan_{version}.zip</file>
-		<file type="plugin"	id="validationrule_notempty" group="fabrik_validationrule">plg_fabrik_validation_notempty_{version}.zip</file>
-		<file type="plugin"	id="validationrule_php" group="fabrik_validationrule">plg_fabrik_validation_php_{version}.zip</file>
-		<file type="plugin"	id="validationrule_regex" group="fabrik_validationrule">plg_fabrik_validation_regex_{version}.zip</file>
+		<file type="plugin"	id="validationrule_isgreaterorlessthan" group="fabrik_validationrule">plg_fabrik_validationrule_isgreaterorlessthan_{version}.zip</file>
+		<file type="plugin"	id="validationrule_notempty" group="fabrik_validationrule">plg_fabrik_validationrule_notempty_{version}.zip</file>
+		<file type="plugin"	id="validationrule_php" group="fabrik_validationrule">plg_fabrik_validationrule_php_{version}.zip</file>
+		<file type="plugin"	id="validationrule_regex" group="fabrik_validationrule">plg_fabrik_validationrule_regex_{version}.zip</file>
 		
 		<file type="plugin"	id="visualization_calendar" group="fabrik_visualization">plg_fabrik_visualization_calendar_{version}.zip</file>
 		<file type="plugin"	id="visualization_chart" group="fabrik_visualization">plg_fabrik_visualization_chart_{version}.zip</file>
