@@ -129,6 +129,9 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 		?>
 		<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>">
 		<legend><?php echo $group->title;?></legend>
+		<?php if ($group->intro !== '') {?>
+		<div class="groupintro"><?php echo $group->intro ?></div>
+		<?php }?>
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {
 			?>

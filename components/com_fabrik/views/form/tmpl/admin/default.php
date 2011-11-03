@@ -23,7 +23,11 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 	echo $this->loadTemplate('relateddata');
 	foreach ($this->groups as $group) {?>
 		<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
-		<legend><?php echo $group->title;?></legend>
+		<legend><span><?php echo $group->title;?></span></legend>
+		
+		<?php if ($group->intro !== '') {?>
+		<div class="groupintro"><?php echo $group->intro ?></div>
+		<?php }?>
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {
 			?>

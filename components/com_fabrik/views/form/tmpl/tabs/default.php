@@ -45,6 +45,9 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 			<?php echo $group->title;?>
 		</dt>
 		<dd class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+		<?php if (trim($group->title) !== '') {?>
+			<legend><span><?php echo $group->title;?></span></legend>
+		<?php }?>
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {
 			?>

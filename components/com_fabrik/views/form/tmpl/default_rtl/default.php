@@ -9,8 +9,9 @@ if ($this->params->get('show-title', 1)) {?>
 echo $form->intro;
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
-echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
-
+echo "<div class=\"fabrikMainError fabrikError$active\">";
+echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
+echo "$form->error</div>";?>
 	<?php
 	if ($this->showEmail) {
 		echo $this->emailLink;
@@ -25,7 +26,14 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 	foreach ($this->groups as $group) {
 		?>
 		<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
-		<legend><?php echo $group->title;?></legend>
+		<?php if (trim($group->title) !== '') {?>
+			<legend><span><?php echo $group->title;?></span></legend>
+		<?php }?>
+		
+		<?php if ($group->intro !== '') {?>
+		<div class="groupintro"><?php echo $group->intro ?></div>
+		<?php }?>
+		
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {
 			?>
@@ -39,10 +47,10 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 					<?php if ($group->editable) { ?>
 						<div class="fabrikGroupRepeater">
 							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD_GROUP'));?>
+								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
 							</a>
 							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
+								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
 							</a>
 						</div>
 					<?php } ?>

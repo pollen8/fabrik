@@ -4,57 +4,64 @@ $c = (int)$_REQUEST['c'];
 echo "
 
 #form_$c legend{
-	background-color:#2E2E2E;
-	font-size:1.3em;
-	line-height:20px;
-	margin:0;
-	color:#E6F2FF;
-	padding:10px 20px;
+	background-color: #c0c0c0;
+	-moz-user-select: none;
+	border-bottom: 1px solid #8CC77B;
+	color: #567E4E;
+	font-weight: bold;
+	margin: 0;
+	padding:0;
+	text-shadow: 0 1px 0 #FFFFFF;
+  zoom: 1;
+	text-transform: uppercase;
 	width:100%;
+	background: -moz-linear-gradient(center top , #E3F9E1, #A9EEA4) repeat scroll 0 0 #E7E7E7;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#A9EEA4', endColorstr='#E3F9E1'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#E3F9E1),
+		to(#A9EEA4) );
+		position:absolute;
+}
+
+#form_$c .groupintro{
 	margin-top:40px;
+	padding:0 20px;
+	color:#666;
 }
 
-#form_$c .fabrikGroup{
-	padding-bottom:10px;
-	background:#ABDB6C url(images/bg.gif) repeat-x;
-	color:#2E2E2E;
-	margin-bottom:10px;
+#form_$c legend span{
+	padding:5px;
+	display:block;
 }
 
-#form_$c .fabrikGroupRepeater{
-	position:absolute;
-	top:-9px;
-	right:0;
-	padding-right:20px;
+#form_$c{
+	width:100%;
+	background-color:#FBFCFA;
+	border:1px solid #D2F2B7;
 }
 
-#form_$c .fabrikSubGroup{
-	clear:both;
-	border:1px dotted #E6F2FF;
-	margin:10px;
+#main #form_$c h1{
+	paddiing-left:10px;
+	margin:0;
+	
 }
 
-#form_$c .addoption{
-	background-color:#E3FFBF;
-	color:#333;
+#form_$c fieldset{
+	margin:5px 10px;
+	position:relative;
+	padding:0;
+	border:1px solid #C3E7AF;
+	background-color:#F3FCEE;
 }
-
 
 #form_$c fieldset ul,
 #details_$c fieldset ul{
-	margin-top:-30px;
 	list-style:none;
+	padding:40px 10px 20px 10px;
+	margin:0;
 }
 
 #form_$c .fabrikForm .fabrikGroup ul{
 	list-style:none;
-}
-
-#form_$c .fabrikSubElementContainer,
-#details_$c .fabrikSubElementContainer{
-	display:-moz-box;
-	display:box;
-	display:-webkit-box;
 }
 
 #details_$c .fabrikGalleryImage{
@@ -78,19 +85,16 @@ echo "
 }
 
 /* END: align google map sub elements vertically */
-/* START : radio button sub element alignments */
+/* START : label spacing for chxbox, radios */
 
-#form_$c .radiobutton .fabrikSubElementContainer{
-	display:block;
-	margin-left:130px;
+#form_$c label span{
+	padding:0 4px;
 }
 
-/* END : radio button sub element alignments */
+/* END : label spacing for chxbox, radios */
 
 .floating-tip {
-	background-color: black;
-	padding: 5px 15px;
-	color: #dddddd;
+	background-color: #fff;
 	font-weight: bold;
 	font-size: 11px;
 	-moz-border-radius: 3px;
@@ -98,44 +102,35 @@ echo "
 	border-radius: 3px;
 }
 
-#form_$c fieldset ul li{
-	margin-bottom:10px;
+#form_$c .linkedTables{
+	margin:0.6em 0;
 }
 
 #form_$c  .related_data_norecords{
 	display:inline;
 }
 
-#form_$c .fabrikForm .fabrikGroup ul,
-#form_$c .fabrikForm .fabrikGroup li{
-	padding:0;
-	margin:0;
-}
-
-
-#form_$c .fabrikForm .fabrikGroup ul li.fabrikElementContainer,
-#details_$c li.fabrikElementContainer,
-#form_$c li.fabrikElementContainer{
+#form_$c .fabrikForm .fabrikGroup ul .fabrikElementContainer,
+#details_$c .fabrikElementContainer,
+#form_$c .fabrikElementContainer{
 	padding:5px 10px;
 	margin-top:10px;
 	background:none !important;
+	display:-webkit-box;
+	display:-moz-box;
+	display:box;
+	width:50%;
 }
 
 #form_$c .fabrikActions{
-	padding-top:15px;
+	padding:10px;
 	clear:left;
-	padding-bottom:15px;
+	margin:5px 10px;
+		border:1px solid #C3E7AF;
+	background-color:#F3FCEE;
 }
-
-
-#form_$c .fabrikElement{
-	margin-right: 200px;
-}
-
-#form_$c .fabrikLabel{
-	/*ensures label text doesnt overrun validation icons*/
-	padding-right:10px;
-	z-index:99999;
+#form_$c .fabrikActions input{
+	margin-right:7px;
 }
 
 #form_$c .fabrikValidating{
@@ -159,14 +154,22 @@ section for dropdowns radio buttons etc**/
 	clear:left;
 	padding:8px;
 	margin:3px 0;
+	background-color:#efefef;
 }
 
 #form_$c  a.toggle-addoption, a.toggle-selectoption{
 	padding:0 0 0 10px;
 }
 
+
 /*** end slide out add option section **/
 
+#form_$c input,
+#form_$c select{
+	border:1px solid #DDDDDD;
+	border-radius:3px;
+	padding:3px;
+}
 
 #form_$c  .inputbox:focus{
 	background-color:#ffffcc;
@@ -192,7 +195,6 @@ section for dropdowns radio buttons etc**/
 }
 
 
-
 #form_$c .fabrikGroup .readonly,
 #form_$c .fabrikGroup .disabled{
 	background-color:#DFDFDF !important;
@@ -203,6 +205,8 @@ section for dropdowns radio buttons etc**/
 #form_$c ul.folderselect{
 	border:1px dotted #eee;
 	background-color:#efefef;
+	color:#333;
+}
 
 #form_$c .folderselect-container{
 	border:1px dotted #666;width:350px;
@@ -263,7 +267,6 @@ margin:0;
 #details_$c .leftCol,
 #form_$c .fabrikSubLabel{
 	width: 130px;
-	float:left;
 }
 #details_$c .leftCol{
 	color:#999;
@@ -271,7 +274,9 @@ margin:0;
 
 #form_$c .fabrikElement {
 	margin-left: 10px;
-	margin-right:0;
+	-webkit-box-flex:1;
+	-moz-box-flex:1;
+	box-flex:1;
 }
 
 #form_$c .addbutton {
@@ -280,15 +285,11 @@ margin:0;
 	margin-left:7px;
 }
 
-#details_$c .fabrikElementContainer{
-	/*clear:left;*/
-}
-
-#form_$c .fabrikError,#form_$c .fabrikNotice,#form_$c .fabrikValidating,#form_$c .fabrikSuccess{
-	margin: 0;
+#form_$c .fabrikError,
+#form_$c .fabrikNotice,
+#form_$c .fabrikValidating,
+#form_$c .fabrikSuccess{
 	font-weight: bold;
-	margin-bottom: 10px;
-	padding:7px;
 }
 
 #form_$c .fabrikMainError{
@@ -307,7 +308,7 @@ margin:0;
 }
 
 #form_$c .fabrikError,
-#form_$c .fabrikGroup li.fabrikError{
+#form_$c .fabrikGroup .fabrikError{
 	color: #c00;
 	background: #EFE7B8;
 }
@@ -346,5 +347,35 @@ margin:0;
 	margin-top: 10px;
 	margin-left: 100px;
 }
+
+/*
+some fun with fancy buttons not ready for prime time
+
+#form_$c .button{
+background: -moz-linear-gradient(center top , #ccc 0%, #777) repeat scroll 0 0 transparent;
+border: 1px solid #614337;
+border-radius: 6px 6px 6px 6px;
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.6) inset;
+color: #FFFFFF;
+margin: 10px;
+padding: 5px 20px;
+
+}
+
+#form_$c .button:hover{
+background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent; /* orange */
+background: -moz-linear-gradient(center top , #8EC400 0%, #558A01) repeat scroll 0 0 transparent; /* green */
+text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.2);
+box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.6) inset;
+
+}
+
+#form_$c .button[name=delete]:hover{
+background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
+}
+
+#form_$c .button[name=Reset]:hover{
+background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
+} */
 ";
 ?>
