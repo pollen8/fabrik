@@ -237,6 +237,22 @@ class FabrikModelForm extends FabModelAdmin
 		$record_in_database = $data['record_in_database'];
 		$createGroup = $data['_createGroup'];
 		$form =& $this->getForm();
+		
+		$fields = array('id' => 'internalid', 'date_time' => 'date');;
+		//if new and record in db and group selected then we want to get those groups elements to create fields for in the db table 
+		if ($isnew && $record_in_database) {
+			$groups = JArrayHelper::getValue($data, 'current_groups');
+			if (!empty($groups)) {
+				$query = $db->getQuery(true);
+				$query->select('plugin, name')->from('#__fabrik_elements')->where('group_id IN ('.implode(',', $groups).')');
+				$db->setQuery($query);
+				$rows = $db->loadObjectList();
+				foreach ($rows as $row) {
+					$fields[$row->name] = $row->plugin;
+				}
+			}
+		}
+
 		if ($createGroup) {
 			$group = FabTable::getInstance('Group', 'FabrikTable');
 			$group->name = $data['label'];
@@ -267,7 +283,7 @@ class FabrikModelForm extends FabModelAdmin
 					return JError::raiseWarning(500, JText::_("COM_FABRIK_DB_TABLE_ALREADY_EXISTS"));
 				}
 				$listModel->set('form.id', $formid);
-				$listModel->createDBTable($dbTableName);
+				$listModel->createDBTable($dbTableName, $fields);
 			}
 			if (!$dbTableExists || $isnew)
 			{
