@@ -901,7 +901,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$table = $this->getlistModel()->getTable();
+		$listModel = $this->getlistModel();
+		$table = $listModel->getTable();
 
 		$elName = $this->getFilterFullName();
 		$htmlid	= $this->getHTMLId().'value';
