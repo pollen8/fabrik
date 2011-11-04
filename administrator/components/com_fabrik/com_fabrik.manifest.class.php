@@ -93,7 +93,9 @@ class Com_FabrikInstallerScript
 			JFolder::create($dest);
 		}
 
-		$moveRes = JFolder::copy($componentFrontend.DS.'fabrikfeed', $dest, JPATH_SITE, true, true);
+		// $$$ hugh - have to use false as last arg (use_streams) on JFolder::copy(), otherwise
+		// it bypasses FTP layer, and will fail if web server does not have write access to J! folders
+		$moveRes = JFolder::copy($componentFrontend.DS.'fabrikfeed', $dest, JPATH_SITE, true, false);
 		if ($moveRes !== true) {
 			echo "<p style=\"color:red\">failed to moved ".$componentFrontend.DS.'fabrikfeed'. ' to '.$dest.'</p>';
 			return false;
@@ -102,7 +104,7 @@ class Com_FabrikInstallerScript
 		$dest = 'libraries'.DS.'joomla'.DS.'database'.DS.'database';
 
 		$driverInstallLoc = $componentFrontend.DS.'dbdriver'.DS;
-		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, true);
+		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
 		if ($moveRes !== true) {
 			echo "<p style=\"color:red\">failed to moved ".$driverInstallLoc. ' to '.$dest.'</p>';
 			return false;
@@ -189,9 +191,9 @@ class Com_FabrikInstallerScript
 	function postflight($type, $parent)
 	{
 		$db = JFactory::getDbo();
-		
-		//remove old update site 
-		
+
+		//remove old update site
+
 		$db->setQuery("DELETE FROM #__update_sites WHERE location LIKE '%update/component/com_fabrik%'");
 		$db->query();
 		if (!$db->query()) {
