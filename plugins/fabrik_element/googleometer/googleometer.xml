@@ -2,7 +2,7 @@
 <extension version="1.6" type="plugin" group="fabrik_element" method="upgrade">
 	<name>Fabrik Element - google o meter</name>
 	<author>Rob Clayburn</author>
-	<creationDate>{createdate}<creationDate>
+	<creationDate>{createdate}</creationDate>
 	<copyright>(C) 2005-{year} fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
