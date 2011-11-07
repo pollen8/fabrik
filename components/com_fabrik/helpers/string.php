@@ -226,9 +226,11 @@ class FabrikString extends JString{
 		$bits = explode('&', JArrayHelper::getValue($pair, 1));
 		$a = array();
 		foreach ($bits as $bit) {
-			list($thisKey, $val) = explode('=', $bit);
-			if ($thisKey !== $key) {
-				$a[] = $bit;
+			if (strstr($bit, '=')) {
+				list($thisKey, $val) = explode('=', $bit);
+				if ($thisKey !== $key) {
+					$a[] = $bit;
+				}
 			}
 		}
 		if (!empty($a)) {
