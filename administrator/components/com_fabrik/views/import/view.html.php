@@ -57,7 +57,7 @@ class FabrikViewImport extends JView
 	{
 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
-		JToolBarHelper::customX('import.makeTableFromCSV', 'forward.png', 'forward.png', 'Continue', false);
+		JToolBarHelper::customX('import.makeTableFromCSV', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
 
@@ -71,7 +71,8 @@ class FabrikViewImport extends JView
 	{
 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
-		JToolBarHelper::save('import.doimport', 'JTOOLBAR_APPLY');
+		JToolBarHelper::customX('import.doimport', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
+		//JToolBarHelper::save('import.doimport', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
 
