@@ -2,6 +2,34 @@
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-limit">
+		
+		<field name="limit_userfield" 
+				type="listfields" 
+				valueformat="tableelement" 
+				onlytablefields="0" 
+				repeat="true"
+				label="PLG_FORM_LIMIT_USER_LABEL" 
+				description="PLG_FORM_LIMIT_USER_DESC"/>
+				
+			<field name="limit_reached_message" 
+				type="text" 
+				size="40" 
+				repeat="true" 
+				label="PLG_FORM_LIMIT_REACHED_MSG_LABEL" 
+				description="PLG_FORM_LIMIT_REACHED_MSG_DESC" />
+				
+			<field name="limit_allow_anonymous" 
+				type="radio" 
+				default="0" 
+				repeat="true"
+				label="PLG_FORM_LIMIT_ALLOW_ANONYMOUS_LABEL" 
+				description="PLG_FORM_LIMIT_ALLOW_ANONYMOUS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="MODE" repeat="true" type="spacer"/>
+			
 			<field name="limit_length" 
 				type="text" 
 				size="3" 
@@ -9,7 +37,7 @@
 				label="PLG_FORM_LIMIT_LENGTH_LABEL" 
 				description="PLG_FORM_LIMIT_LENGTH_DESC"/>
 				
-			<field name="@spacer" type="spacer" default="OR"/>
+			<field name="OR" type="spacer"/>
 	
 			<field name="limit_connection" 
 				type="connections"
@@ -40,33 +68,6 @@
 				label="PLG_FORM_LIMIT_MAX_ELEMENT_LABEL" 
 				description="PLG_FORM_LIMIT_MAX_ELEMENT_DESC"/>
 		
-			<field name="@spacer" repeat="true" type="spacer"/>
-	
-			<field name="limit_userfield" 
-				type="listfields" 
-				valueformat="tableelement" 
-				onlytablefields="0" 
-				repeat="true"
-				label="PLG_FORM_LIMITUSER_LABEL" 
-				description="PLG_FOM_LIMITUSER_DESC"/>
-				
-			<field name="limit_reached_message" 
-				type="text" 
-				size="20" 
-				default="PLG_FORM_LIMIT_REACHED_MSG"
-				repeat="true" 
-				label="PLG_FORM_LIMIT_REACHED_MSG_LABEL" 
-				description="PLG_FORM_LIMIT_REACHED_MSG_DESC" />
-				
-			<field name="limit_allow_anonymous" 
-				type="radio" 
-				default="0" 
-				repeat="true"
-				label="PLG_FORM_LIMIT_ALLOW_ANONYMOUS_LABEL" 
-				description="LIMITALLOWANONYMOUSDESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
 		</fieldset>
 	
 	</fields>

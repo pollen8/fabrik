@@ -31,7 +31,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 
 	function onLoad($params, &$formModel)
 	{
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+		//FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 		return $this->_process($params, $formModel);
 	}
 
@@ -77,45 +77,6 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 			$app->enqueueMessage(JText::sprintf('ENTRIES_LEFT_MESSAGE', $limit - $c, $limit));
 		}
 		return true;
-	}
-
-	/**
-	 * get JS to manage the plugins html
-	 * @see components/com_fabrik/models/FabrikModelPlugin#onGetAdminJs($form, $lists)
-	 */
-
-	function onGetAdminJs($name, $label, $html)
-	{
-		// @TODO not working
-
-		/*
-		$params = $this->getParams();
-		$children = $params->getChildren();
-
-		$opts = $this->getAdminJsOpts();
-		foreach ($children as $node) {
-			$type = $node->attributes('type');
-			//remove any occurance of a mos_ prefix
-			$type = str_replace('mos_', '', $type);
-			$element = $params->loadElement($type);
-			$repeat 	= $element->getRepeat();
-			$c = $element->getRepeatCounter();
-			if ($type == 'fabriktables') {
-				$connection = $node->attributes('observe');
-				$opts->connection_id = $connection;
-			}
-			if ($type == 'element') {
-				$name = $node->attributes('name');
-				$opts->$name = new stdClass();
-				$opts->$name->published = (int)$node->attributes('published', 0);
-				$opts->$name->include_calculations = (int)$node->attributes('include_calculations', 0);
-				$opts->$name->showintable = (int)$node->attributes('showintable', 0);
-				$opts->$name->list_id = $node->attributes('table');
-			}
-		}
-		$opts = json_encode($opts);
-		$script = "new fabrikAdminLimit('$name', '$label', $opts)";
-		return $script;*/
 	}
 
 }

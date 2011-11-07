@@ -100,8 +100,6 @@ class FabrikModelForm extends FabModelAdmin
 		//trigger the validation dispatcher to get hte validation rules html
 
 		$plugins = JPluginHelper::getPlugin('fabrik_form');
-
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		$feFormModel = JModel::getInstance('form', 'FabrikFEModel');
