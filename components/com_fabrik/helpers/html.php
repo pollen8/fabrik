@@ -880,7 +880,7 @@ EOD;
 	 * @return array autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
-	public function autoCompletOptions($htmlid, $elementid, $plugin = 'fabrikfield', $opts = array())
+	public function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass();
 		$json->url = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id='.$elementid.'&plugin='.$plugin.'&method=autocomplete_options';

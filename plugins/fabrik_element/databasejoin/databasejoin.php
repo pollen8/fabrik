@@ -906,12 +906,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$elName = $this->getFilterFullName();
 		$htmlid	= $this->getHTMLId().'value';
-		// $$$ rob should be done in getFilterFullName if required
-		//$elName 			= FabrikString::safeColName($elName);
 
 		$v = 'fabrik___filter[list_'.$table->id.'][value]';
 		$v .= ($normal) ? '['.$counter.']' : '[]';
-
 
 		$return	= '';
 		$default = $this->getDefaultFilterVal($normal, $counter);
@@ -954,10 +951,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
-				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-				$return .= '<input type="text" name="'.$element->id.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$defaultLabel.'" id="'.$htmlid.'-auto-complete" />';
+				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$htmlid.'" value="'.$default.'" />';
+				$return .= '<input type="text" name="'.$element->id.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$htmlid.'-auto-complete" size="'.$size.'" value="'.$defaultLabel.'" />';
 				$return .= $this->filterHiddenFields();
-				$selector = '#listform_'.$listModel->getRenderContext().' .'.$id;
+				$selector = '#listform_'.$listModel->getRenderContext().' .'.$htmlid;
 				FabrikHelperHTML::autoComplete($selector, $element->id, 'databasejoin');
 				break;
 
