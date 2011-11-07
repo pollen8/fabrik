@@ -4000,6 +4000,11 @@ class FabrikFEModelList extends JModelForm {
 						// $$$ rob 04/08/2011' - need to end $name with db quote to stop comparisons being too l
 						if ((strstr($f, $name.'`') || strstr($f, ($name."_raw`"))) && $val == 1) {
 							$newfields[] = $f;
+						} else {
+							if (!in_array($f, $newfields) && strstr($f, 'GROUP_CONCAT')) {
+								//hack for multiple file uploads
+								$newfields[] = $f;
+							}
 						}
 					}
 				}
