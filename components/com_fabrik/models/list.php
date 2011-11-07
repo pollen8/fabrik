@@ -506,7 +506,7 @@ class FabrikFEModelList extends JModelForm {
 		$tableParams = $this->getParams();
 		$table = $this->getTable();
 		$pluginManager = FabrikWorker::getPluginManager();
-		$method = 'renderListData_' . $this->_outPutFormat;
+		$method = 'renderListData_'.$this->_outPutFormat;
 		$this->_aLinkElements = array();
 
 		// $$$ hugh - temp foreach fix
@@ -579,7 +579,6 @@ class FabrikFEModelList extends JModelForm {
 			$groupedData = array();
 			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
-
 			// $$$ rob commenting this out as if you group on a date then the group by value doesnt correspond
 			// to the keys found in the calculation array
 
@@ -593,7 +592,7 @@ class FabrikFEModelList extends JModelForm {
 			$gKey = 0;
 			for ($i = 0; $i < count($data); $i++) {
 				if (isset($data[$i]->$groupBy)) {
-					if (in_array($data[$i]->$groupBy , $aGroupTitles)) {
+					if (!in_array($data[$i]->$groupBy, $aGroupTitles)) {
 						$aGroupTitles[] = $data[$i]->$groupBy;
 						$grouptemplate = $w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i]));
 						$this->grouptemplates[$data[$i]->$groupBy] = nl2br($grouptemplate);
