@@ -18,7 +18,7 @@ echo "
 }
 
 #listform_$c .fabrikDataContainer{
-	verflow-y:auto;
+	overflow-y:auto;
 	clear:left;
 }
 
@@ -140,6 +140,7 @@ div.calendar{
 }
 
 #listform_$c th,
+#listform_$c .fabrik_groupheading,
 #listform_$c tfoot td{
 	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
