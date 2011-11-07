@@ -401,6 +401,7 @@
 		<!-- explicitly include list templates -->
 		
 		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/default.xml" todir="${cfg.destdir}/site/views/list/tmpl/" />
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/_advancedsearch.php" todir="${cfg.destdir}/site/views/list/tmpl/" />
 		
 		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/admin" />
 		<copy todir="${cfg.destdir}/site/views/list/tmpl/admin">
