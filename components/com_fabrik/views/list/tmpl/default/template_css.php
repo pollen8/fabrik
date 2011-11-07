@@ -17,6 +17,10 @@ echo "
 	padding:0;
 }
 
+#listform_$c .fabrikDataContainer{
+overflow-y:auto;
+}
+
 #listform_$c a,
 #listform_$c .fabrikDataContainer  a:hover{
 	border:0;
@@ -262,6 +266,8 @@ div.calendar{
 	min-height:17px;
 	min-width:25px;
 	text-align:center;
+	margin:0;
+	padding:0;
 }
 
 
