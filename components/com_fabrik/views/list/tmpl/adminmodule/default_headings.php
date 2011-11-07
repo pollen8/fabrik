@@ -1,6 +1,6 @@
 <tr class="fabrik___heading">
 <?php foreach ($this->headings as $key=>$heading) {?>
-	<th class="<?php echo $this->headingClass[$key]['class']?>" style="<?php $this->headingClass[$key]['style']?>">
+	<th class="<?php echo $this->headingClass[$key]['class']?>" style="<?php echo $this->headingClass[$key]['style']?>">
 		<span class="heading"><?php echo  $heading; ?></span>
 		<?php if (array_key_exists($key, $this->filters)) {
 			$filter = $this->filters[$key];

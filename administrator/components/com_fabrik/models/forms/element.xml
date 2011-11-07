@@ -262,24 +262,24 @@
 		</fieldset>
 		
 			<fieldset name="viewcss">
-				<field name="viewcss_header_class" 
+				<field name="tablecss_header_class" 
 					type="text" 
 					size="20" 
 					label="COM_FABRIK_FIELD_VIEW_CSS_HEADER_CLASS_LABEL" 
 					description="COM_FABRIK_FIELD_VIEW_CSS_HEADER_CLASS_DESC" />
 					
-				<field name="viewcss_header" 
+				<field name="tablecss_header" 
 					type="text" 
 					size="40" 
 					label="COM_FABRIK_FIELD_VIEW_CSS_HEADER_LABEL" 
 					description="COM_FABRIK_FIELD_VIEW_CSS_HEADER_DESC" />
 					
-				<field name="viewcss_cell_class" 
+				<field name="tablecss_cell_class" 
 					type="text" size="20" 
 					label="COM_FABRIK_FIELD_VIEW_CSS_CELL_CLASS_LABEL" 
 					description="COM_FABRIK_FIELD_VIEW_CSS_CELL_CLASS_DESC" />
 					
-				<field name="viewcss_cell" 
+				<field name="tablecss_cell" 
 					type="text" 
 					size="40" 
 					label="COM_FABRIK_FIELD_VIEW_CSS_CELL_LABEL" 

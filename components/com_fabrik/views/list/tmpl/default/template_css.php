@@ -18,7 +18,8 @@ echo "
 }
 
 #listform_$c .fabrikDataContainer{
-overflow-y:auto;
+	verflow-y:auto;
+	clear:left;
 }
 
 #listform_$c a,

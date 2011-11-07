@@ -12,7 +12,7 @@ $this->headings = array('fabrik_select' => $del) + $this->headings;
 	<li class="heading">
 		<?php foreach ($this->headings as $key=>$heading) {?>
 		<span class="<?php echo $this->headingClass[$key]['class']?> fabrik_element"
-		style="<?php $this->headingClass[$key]['style']?>">
+		style="<?php echo $this->headingClass[$key]['style']?>">
 			<?php echo $heading; ?>
 		</span>
 		<?php }?>

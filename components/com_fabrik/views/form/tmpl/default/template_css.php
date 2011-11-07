@@ -118,6 +118,7 @@ echo "
 	display:-webkit-box;
 	display:-moz-box;
 	display:box;
+	overflow:visible;
 	width:50%;
 }
 
