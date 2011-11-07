@@ -719,17 +719,17 @@ class FabrikFEModelList extends JModelForm {
 				$row->fabrik_actions = array();
 				if ($canView || $canEdit) {
 					if ($canEdit == 1) {
-						if ($params->get('editlink')) {
+						if ($params->get('editlink') || $params->get('actionMethod') == 'floating') {
 							$row->fabrik_edit = $editLink;
 							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">'.$row->fabrik_edit.'</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
-						if ($this->canViewDetails() && $params->get('detaillink') == 1) {
+						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod') == 'floating')) {
 							$row->fabrik_view = $viewLink;
 							$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">'.$row->fabrik_view.'</li>';
 						}
 					} else {
-						if ($this->canViewDetails() && $params->get('detaillink') == '1') {
+						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating')) {
 							if (empty($this->_aLinkElements)) {
 								$viewLinkAdded = true;
 								$row->fabrik_view = $viewLink;
@@ -740,7 +740,7 @@ class FabrikFEModelList extends JModelForm {
 						}
 					}
 				}
-				if ($this->canViewDetails() && !$viewLinkAdded && $params->get('detaillink') == '1') {
+				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating')) {
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
 					$row->fabrik_view = $viewLink;
@@ -4271,7 +4271,6 @@ class FabrikFEModelList extends JModelForm {
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
 		}
-		$params = $this->getParams();
 		$params = $this->getParams();
 		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView())) {
 			return true;
