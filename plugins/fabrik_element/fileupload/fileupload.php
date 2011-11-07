@@ -293,9 +293,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	function renderListData_csv($data, $rows)
 	{
-		$params = $this->getParams();
+	
+		$data = explode(GROUPSPLITTER, $data);
+		$params =& $this->getParams();
 		$format = $params->get('ul_export_encode_csv', 'base64');
-		return $this->encodeFile($data, $format);
+		foreach ($data as &$d) {
+			$d = $this->encodeFile($d, $format);
+		}
+		return implode(GROUPSPLITTER, $data);
 	}
 
 	/**
@@ -308,9 +313,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	function renderListData_json($data, $rows)
 	{
-		$params = $this->getParams();
+		$data = explode(GROUPSPLITTER, $data);
+		$params =& $this->getParams();
 		$format = $params->get('ul_export_encode_json', 'base64');
-		return $this->encodeFile($data, $format);
+		foreach ($data as &$d) {
+			$d = $this->encodeFile($d, $format);
+		}
+		return implode(GROUPSPLITTER, $data);
 	}
 
 	/**
