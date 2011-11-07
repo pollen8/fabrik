@@ -966,10 +966,14 @@ class FabrikWorker {
 		if (strstr($data, GROUPSPLITTER)) {
 			$data = json_encode(explode(GROUPSPLITTER, $data));
 		}
-		$json = json_decode($data);
-		// only works in PHP5.3
-		//$data = (json_last_error() == JSON_ERROR_NONE) ? $json : $data;
-		$data = is_null($json) ? $data : $json;
+		// half hearted attempt to see if string is acutally json or not.
+		// issue was that if you try to decode '000123' its turned into '123'
+		if (strstr($data, '{') || strstr($data, '[')) {
+			$json = json_decode($data);
+			// only works in PHP5.3
+			//$data = (json_last_error() == JSON_ERROR_NONE) ? $json : $data;
+			$data = is_null($json) ? $data : $json;
+		}
 		$data = $toArray ? (array)$data : $data;
 		return $data;
 	}
