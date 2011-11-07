@@ -11,6 +11,7 @@
 	<description>PLG_FABRIK_DESCRIPTION</description>
 	<files>
 		<filename plugin="fabrik">fabrik.php</filename>
+		<folder>language</folder>
 	</files>
 	
 	<config>
@@ -21,8 +22,5 @@
 			</fieldset>
 		</fields>
 	</config>
-	
-	<languages folder="administrator/language" >
-		<language tag="en-GB">en-GB/en-GB.plg_content_fabrik.ini</language>
-	</languages>
+
 </install>

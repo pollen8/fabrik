@@ -21,6 +21,8 @@
 		
 		<file type="plugin"	id="system_fabrik" group="system">plg_system_fabrik_{version}.zip</file>
 		
+		<file type="plugin" id="content_fabrik" group="content">plg_fabrik_{version}.zip</file>
+		
 		<file type="plugin"	id="cron_email"	group="fabrik_cron">plg_fabrik_cron_email_{version}.zip</file>
 		<file type="plugin"	id="cron_php"	group="fabrik_cron">plg_fabrik_cron_php_{version}.zip</file>
 		
