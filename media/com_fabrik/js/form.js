@@ -1315,6 +1315,9 @@ var FbForm = new Class({
 
 	reset : function () {
 		this.addedGroups.each(function (subgroup) {
+			var group = $(subgroup).findClassUp('fabrikGroup');
+			var i = group.id.replace('group', '');
+			$('fabrik_repeat_group_' + i + '_counter').value = $('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 			subgroup.remove();
 		});
 		this.addedGroups = [];
