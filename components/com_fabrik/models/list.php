@@ -954,11 +954,14 @@ class FabrikFEModelList extends JModelForm {
 
 	function viewFormLink($popUp = false, $element, $row = null, $key = '', $val = '', $usekey = false, $f = 0)
 	{
+		$elKey = $element->list_id.'-'.$element->form_id.'-'.$element->element_id;
 		$params = $this->getParams();
 		$listid = $element->list_id;
 		$formid = $element->form_id;
-		$linkedFormText = $params->get('linkedformtext', '', '_default', 'array');
-		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedFormText, $f), JArrayHelper::fromObject($row));
+		$linkedFormText = $params->get('linkedformtext');
+		$factedlinks = $params->get('factedlinks');
+		$linkedFormText = JArrayHelper::fromObject($factedlinks->linkedformtext);
+		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedFormText, $elKey), JArrayHelper::fromObject($row));
 		$app = JFactory::getApplication();
 		if (!$app->isAdmin()) {
 			$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
