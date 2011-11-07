@@ -25,10 +25,10 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default)) {
-			$params 		=& $this->getParams();
+			$params = $this->getParams();
 			$element = $this->getElement();
 			$w = new FabrikWorker();
-			$this->_default	 	= $params->get('imagefile');
+			$this->_default = $params->get('imagefile');
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
@@ -59,17 +59,17 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
 			$groupModel = $this->_group;
-			$group			=& $groupModel->getGroup();
-			$joinid			= $group->join_id;
-			$formModel 	=& $this->getForm();
-			$element		= $this->getElement();
-			$params 		=& $this->getParams();
+			$group = $groupModel->getGroup();
+			$joinid	= $group->join_id;
+			$formModel = $this->getForm();
+			$element = $this->getElement();
+			$params = $this->getParams();
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
 			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
 				$default = '';
 			} else {
-				$default   = $this->getDefaultValue($data);
+				$default = $this->getDefaultValue($data);
 			}
 
 			$name = $this->getFullName(false, true, false);
@@ -93,7 +93,6 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 							$a = $data[$name];
 						} else {
 							//occurs when getting from the db
-							//$a = 	explode(GROUPSPLITTER, $data[$name]);
 							$a = json_decode($data[$name], true);
 						}
 						$default = JArrayHelper::getValue($a, $repeatCounter, $default);
@@ -129,14 +128,14 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		$data = json_decode($data, true);
+		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 		if ($data === '' || empty($data)) {
 			//no data so default to image.
-			$data = $params->get('imagepath');
-			if (!strstr($data, '/')) {
+			$iPath = $params->get('imagepath');
+			if (!strstr($iPath, '/')) {
 				//single file specified so find it in tmpl folder
-				$data = FabrikHelperHTML::image($data, 'list', @$this->tmpl, array(), false);
+				$data = FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), false);
 			}
 		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
@@ -145,20 +144,19 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$selectImage_root_folder = rtrim($selectImage_root_folder, '/');
 		$showImage = $params->get('show_image_in_table', 0);
 		$linkURL = $params->get('link_url', '');
-		if ($data[0] == '') {
+		if (empty($data) || $data[0] == '') {
 			$data[] = $params->get('imagefile');
 		}
 		for ($i=0; $i <count($data); $i++) {
 			if ($showImage) {
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
-				$src = substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE .'images/stories/' . $selectImage_root_folder . '/' . $data[$i];
-				$data[$i] = "<img src=\"$src\" alt=\"$data[$i]\" />";
+				$src = substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE.$selectImage_root_folder.'/'.$data[$i];
+				$data[$i] = '<img src="'.$src.'" alt="'.$data[$i].'" />';
 			}
 			if ($linkURL) {
-				$data[$i] = "<a href=\"$linkURL\" target=\"_blank\">" . $data[$i] . "</a>";
+				$data[$i] = '<a href="'.$linkURL.'" target="_blank">'.$data[$i].'</a>';
 			}
 		}
-		//$data = implode(GROUPSPLITTER, $data);
 		$data = json_encode($data);
 		return parent::renderListData($data, $oAllRowsData);
 	}
@@ -224,7 +222,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	{
 		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
-		return "<img src='" . COM_FABRIK_LIVESITE  . 'images/stories/' . $selectImage_root_folder . '/'. $data . "' />";
+		return '<img src="'.COM_FABRIK_LIVESITE.$selectImage_root_folder.'/'.$data.'" />';
 	}
 
 	/**
@@ -235,25 +233,26 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		$params 			=& $this->getParams();
-		$name 				= $this->getHTMLName($repeatCounter);
-		$value 				= $this->getValue($data, $repeatCounter);
-		$id 					= $this->getHTMLId($repeatCounter);
-		$rootFolder 	= $params->get('selectImage_root_folder');
+		$params = $this->getParams();
+		$name = $this->getHTMLName($repeatCounter);
+		$value = $this->getValue($data, $repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$rootFolder	= $params->get('selectImage_root_folder');
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$rootFolder = ltrim($rootFolder, '/');
 		$rootFolder = rtrim($rootFolder, '/');
 		// $$$ rob - 30/062011 allow for full urls in the image. (e.g from csv import)
-		$defaultImage = substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . 'images/stories/'.$rootFolder.'/'.$value;
+		$defaultImage = substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder.'/'.$value;
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
-		$canSelect 		= ($params->get('image_front_end_select', '0') && substr($value, 0, 4) !== 'http');
-		$float        = $params->get('image_float');
+		$canSelect = ($params->get('image_front_end_select', '0') && substr($value, 0, 4) !== 'http');
+		$float = $params->get('image_float');
 		$float = $float != '' ? "style='float:$float;'" : '';
-		$str = "<div class='fabrikSubElementContainer' id='$id'>";
+		$str = array();
+		$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 
 		$rootFolder = str_replace('/', DS, $rootFolder);
 		if ($canSelect && $this->_editable) {
-			$str .= '<img src="' . $defaultImage . '" alt="'. $value .'" '.$float.' class="imagedisplayor"/>'."\n";
+			$str[] = '<img src="' . $defaultImage . '" alt="'. $value .'" '.$float.' class="imagedisplayor"/>';
 			if (array_key_exists($name, $data)) {
 				if (trim($value) == '') {
 					$path = "/";
@@ -270,36 +269,33 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			} else {
 				$path = $rootFolder;
 			}
-
-			$fullpath = JPATH_SITE.DS.'images'.DS.'stories';
-
 			$images = array();
-			$imagenames = (array)JFolder::files($fullpath.DS.$path);
+			$imagenames = (array)JFolder::files(JPATH_SITE.DS.$path);
 			foreach ($imagenames as $n) {
 				$images[] = JHTML::_('select.option', $n, $n);
 			}
 			// $$$rob not sure about his name since we are adding $repeatCounter to getHTMLName();
-			$imageName = $this->_group->canRepeat() ? FabrikString::rtrimWord( $name, "][$repeatCounter]") . "_image][$repeatCounter]" : $id . '_image';
+			$imageName = $this->_group->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]" : $id . '_image';
 			$image = array_pop( explode('/', $value));
-			// $$$ hugh - append $rootFolder to $fullpath, otherwise we're showing folders
+			// $$$ hugh - append $rootFolder to JPATH_SITE, otherwise we're showing folders
 			// they aren't supposed to be able to see.
-			$folders = JFolder::folders($fullpath.DS.$rootFolder);
+			$folders = JFolder::folders(JPATH_SITE.DS.$rootFolder);
 			// @TODO - if $folders is empty, hide the button/widget?  All they can do is select
 			// from the initial image dropdown list, so no point having the widget for changing folder?
-			$str  .=	"<br/>" .	JHTML::_('select.genericlist', $images, $imageName, 'class="inputbox imageselector" ', 'value', 'text', $image);
-			$str .= FabrikHelperHTML::folderAjaxSelect($folders);
-			$str 	.= "<input type=\"hidden\" name=\"$name\" value=\"$value\" class=\"fabrikinput hiddenimagepath folderpath\" />";
+			$str[] =	'<br/>'.JHTML::_('select.genericlist', $images, $imageName, 'class="inputbox imageselector" ', 'value', 'text', $image);
+			$str[] = FabrikHelperHTML::folderAjaxSelect($folders);
+			$str[] = '<input type="hidden" name="'.$name.'" value="'.$value.'" class="fabrikinput hiddenimagepath folderpath" />';
 		} else {
 			$linkURL = $params->get('link_url', '');
 			$imgstr = '<img src="'.$defaultImage.'" alt="'.$value.'" '.$float.' class="imagedisplayor"/>'."\n";
 			if ($linkURL) {
-				$imgstr = "<a href=\"$linkURL\" target=\"_blank\">$imgstr</a>";
+				$imgstr = '<a href="'.$linkURL.'" target="_blank">'.$imgstr.'</a>';
 			}
-			$str .= $imgstr;
-			$str .= "<input type=\"hidden\" name=\"$name\" value=\"$value\" class=\"fabrikinput hiddenimagepath folderpath\" />";
+			$str[] = $imgstr;
+			$str[] = '<input type="hidden" name="'.$name.'" value="'.$value.'" class="fabrikinput hiddenimagepath folderpath" />';
 		}
-		$str .= "</div>";
-		return $str;
+		$str[] = '</div>';
+		return implode("\n", $str);
 	}
 
 	function onAjax_files()
@@ -327,10 +323,9 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
-		$selRoot = COM_FABRIK_LIVESITE.'images/stories/'.$params->get('selectImage_root_folder', '');
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->rootPath = 'images/stories/'.$params->get('selectImage_root_folder', '');
-		$opts->canSelect = $params->get('image_front_end_select', false);
+		$opts->rootPath = $params->get('selectImage_root_folder', '');
+		$opts->canSelect = (bool)$params->get('image_front_end_select', false);
 		$opts->id = $element->id;
 		$opts->ds = DS;
 		$opts->dir = JPATH_SITE.DS.str_replace('/', DS, $opts->rootPath);
@@ -356,9 +351,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$folders 	= array();
 		$path 		= $params->get('imagepath', '/');
 		$file 		= $params->get('imagefile');
-		$fullpath = JPATH_SITE . '/images/stories';
 		$folders[] = JHTML::_('select.option', '/', '/');
-		FabrikWorker::readImages($fullpath, "/", $folders, $images, $this->ignoreFolders);
+		FabrikWorker::readImages(JPATH_SITE, "/", $folders, $images, $this->ignoreFolders);
 		$lists['folders'] =	JHTML::_('select.genericlist',  $folders, 'params[imagepath]', 'class="inputbox" size="1" ', 'value', 'text', $path);
 		$javascript	= "onchange=\"previewImage()\" onfocus=\"previewImage()\"";
 		$is = JArrayHelper::getValue($images, $path, array());
@@ -390,20 +384,20 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				var root = '<?php echo COM_FABRIK_LIVESITE;?>';
 				var file = $('paramsimagefile').get('value');
 				var folder = $('paramsimagepath').get('value');
-				$('view_imagefiles').src = root + "images/stories/"  + file;
+				$('view_imagefiles').src = root + file;
 			}
 
 			head.ready(function() {
 			$('paramsimagepath').addEvent('change', function(e) {
 				var event = new Event(e);
 				event.stop;
-				var folder = '<?php echo 'images/stories' . $params->get('selectImage_root_folder', ''); ?>' + $(event.target).getValue();
+				var folder = '<?php echo $params->get('selectImage_root_folder', ''); ?>' + $(event.target).get(\'value\');
 				var url = '<?php echo COM_FABRIK_LIVESITE;?>index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=image&method=ajax_files';
 				var myAjax = new Request({url:url, method:'post',
 			'data':{'folder':folder},
 			onComplete: function(r) {
 				var opts = eval(r);
-				var folder = '<?php echo $params->get('selectImage_root_folder', ''); ?>' + $(event.target).getValue();
+				var folder = '<?php echo $params->get('selectImage_root_folder', ''); ?>' + $(event.target).get(\'value\');
 				$('paramsimagefile').empty()
 				opts.each( function(opt) {
 					$('paramsimagefile').adopt(
@@ -425,7 +419,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	<tr>
 		<td class="paramlist_key"><?php echo JText::_('Default image'); ?></td>
 		<td><?php echo $lists['folders'];echo "<br />\n" . $lists['imagefiles']; ?>
-		<img name="view_imagefiles" id="view_imagefiles" src="<?php echo COM_FABRIK_LIVESITE . 'images/stories/'. $params->get('image_path');?>" width="100" alt="view imagefiles"/> <br />
+		<img name="view_imagefiles" id="view_imagefiles" src="<?php echo COM_FABRIK_LIVESITE . $params->get('image_path');?>" width="100" alt="view imagefiles"/> <br />
 		</td>
 	</tr>
 	<tr>

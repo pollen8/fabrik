@@ -370,7 +370,7 @@ var FbFileElement = new Class({
 		this.slider.hide();
 		this.hiddenField = el.getElement('.folderpath');
 		el.getElement('.toggle').addEvent('click', function (e) {
-			new Event(e).stop();
+			e.stop();
 			this.slider.toggle();
 		}.bind(this));
 		this.watchAjaxFolderLinks();
@@ -385,26 +385,24 @@ var FbFileElement = new Class({
 	
 		
 	browseFolders: function (e) {
-		e = new Event(e).stop();
-		var a = $(e.target);
-		this.folderlist.push(a.innerHTML);
+		e.stop();
+		this.folderlist.push(e.target.get('text'));
 		var dir = this.options.dir + this.folderlist.join(this.options.ds);
-		this.addCrumb(a.innerHTML);
+		this.addCrumb(e.target.get('text'));
 		this.doAjaxBrowse(dir);
 	},
 	
 	useBreadcrumbs: function (e)
 	{
-		e = new Event(e).stop();
+		e.stop();
 		var found = false;
-		var a = $(e.target);
-		var c = a.className;
+		var c = e.target.className;
 		this.folderlist = [];
 		var res = this.breadcrumbs.getElements('a').every(function (link) {
-			if (link.className === a.className) {
+			if (link.className === c) {
 				return false;
 			}
-			this.folderlist.push(a.innerHTML);
+			this.folderlist.push(e.target.innerHTML);
 			return true;
 		}, this);
 		
@@ -420,10 +418,17 @@ var FbFileElement = new Class({
 	},
 	
 	doAjaxBrowse: function (dir) {
-		var url = Fabrik.liveSite + "index.php?option=com_fabrik&format=raw&controller=plugin&task=pluginAjax&plugin=fabrikfileupload&method=ajax_getFolders&element_id=" + this.options.id;
 	
-		new Request({ url: url,
-			data: {'dir': dir},
+		var data = {'dir': dir,
+			'option': 'com_fabrik',
+			'format': 'raw',
+			'task': 'plugin.pluginAjax',
+			'plugin': 'fileupload',
+			'method': 'ajax_getFolders',
+			'element_id': this.options.id
+		};
+		new Request({ url: '',
+			data: data,
 			onComplete: function (r) {
 				r = JSON.decode(r);
 				this.folderdiv.empty();

@@ -3525,7 +3525,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		return $filterExactMatch;
 	}
 
-	function ajax_getFolders()
+	function onAjax_getFolders()
 	{
 		$rDir = JRequest::getVar('dir');
 		$folders = JFolder::folders($rDir);

@@ -822,7 +822,7 @@ EOD;
 	 * @return string html snippet
 	 */
 
-	function folderAjaxSelect($folders, $path = 'images')
+	function folderAjaxSelect($folders, $path = '')
 	{
 		$str = array();
 		$str[] = '<a href="#" class="toggle" title="'.JText::_('COM_FABRIK_BROWSE_FOLDERS').'">';

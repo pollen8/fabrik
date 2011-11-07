@@ -3,7 +3,7 @@
  */
 
 var FbImage = new Class({
-	Extends : FbElement,
+	Extends : FbFileElement,
 	initialize : function (element, options) {
 		this.plugin = 'image';
 		this.folderlist = [];
@@ -31,9 +31,9 @@ var FbImage = new Class({
 
 	getMyElements : function () {
 		var element = this.options.element;
-		this.image = $(element).getParent('.fabrikSubElementContainer').getElement('.imagedisplayor');
-		this.folderDir = $(element).getParent('.fabrikSubElementContainer').getElement('.folderselector');
-		this.imageDir = $(element).getParent('.fabrikSubElementContainer').getElement('.imageselector');
+		this.image = $(element).getParent('.fabrikElementContainer').getElement('.imagedisplayor');
+		this.folderDir = $(element).getParent('.fabrikElementContainer').getElement('.folderselector');
+		this.imageDir = $(element).getParent('.fabrikElementContainer').getElement('.imageselector');
 		// this.hiddenField is set in FbFileElement
 	},
 
