@@ -37,7 +37,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		
 		if (!empty($data)) {
 			if (array_key_exists('label', $data)) {
-				$data = $this->_renderListData($data, $oAllRowsData);
+				$data = (array)$this->_renderListData($data, $oAllRowsData);
 			} else {
 				for ($i = 0; $i < count($data); $i++) {
 					$data[$i] = JArrayHelper::fromObject($data[$i]);
@@ -73,8 +73,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			if ($listModel->getOutPutFormat() != 'rss') {
 				if (empty($data['label'])) {
 					$link = $data['link'];
-				}
-				else {
+				} else {
 					$smart_link = $params->get('link_smart_link', false);
 					if ($smart_link || $target == 'mediabox') {
 						$smarts = $this->_getSmartLinkType($data['link']);
@@ -360,8 +359,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 							$a = $data[$name];
 						} else {
 							//occurs when getting from the db
-							//$a = 	explode(GROUPSPLITTER, $data[$name]);
-							$a = 	json_decode($data[$name]);
+							$a = json_decode($data[$name]);
 						}
 						$default = JArrayHelper::getValue($a, $repeatCounter, $default);
 					}
