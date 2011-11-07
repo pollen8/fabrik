@@ -100,8 +100,13 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 				$c++;
 				continue;
 			}
-			$mapsElements = $listModel->getElementsOfType('fabrikgooglemap');
+			$mapsElements = $listModel->getElementsOfType('googlemap');
 
+			if (empty($mapsElements)) {
+				JError::raiseError(500, JText::_('No google map element present in this list'));
+				continue;
+			}
+			
 			$coordColumn = $mapsElements[0]->getFullName(false, false, false);
 			$table = $listModel->getTable();
 			$where = $listModel->_buildQueryWhere();
@@ -185,7 +190,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 			$mapsElements = $listModel->getElementsOfType('googlemap');
 
 			if (empty($mapsElements)) {
-				JError::raiseError(500, JText::_('No google map element present in this table'));
+				JError::raiseError(500, JText::_('No google map element present in this list'));
 				continue;
 			}
 
