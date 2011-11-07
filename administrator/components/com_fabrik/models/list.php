@@ -1779,14 +1779,15 @@ class FabrikModelList extends FabModelAdmin
 				}
 			}
 		}
-
 		$func = create_function('$value', '$db = FabrikWorker::getDbo(true);;return $db->nameQuote($value);');
 
 		$sql .= implode(', ', $lines);
 		if (!empty($keys)) {
-			$sql .= ", PRIMARY KEY (".implode(',', array_map($func, $keys))."))";
+			$sql .= ', PRIMARY KEY ('.implode(',', array_map($func, $keys)).'))';
+		} else {
+			$sql .= ')';
 		}
-		$sql .= " ENGINE = MYISAM ";
+		$sql .= ' ENGINE = MYISAM ';
 		$fabrikDb->setQuery($sql);
 		if (!$fabrikDb->query()) {
 			JError::raiseError(500, $fabrikDb->getErrorMsg());

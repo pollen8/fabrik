@@ -39,9 +39,6 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	public function import()
 	{
-		/* if (!$this->checkUpload()) {
-			return false;
-		} */
 		$this->readCSV($this->getCSVFileName());
 		$this->findExistingElements();
 		return true;
@@ -59,9 +56,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 			if ($session->has('com_fabrik.csv.filename')) {
 				$this->_csvFile = $session->get('com_fabrik.csv.filename');
 			} else {
-				//$userfile = JRequest::getVar('jform', null, 'files');
-				//$this->_csvFile = $userfile['name']['userfile'];
-				$this->_csvFile = 'fabrik_csv_' . md5( uniqid() );
+				$this->_csvFile = 'fabrik_csv_' . md5(uniqid());
 				$session->set('com_fabrik.csv.filename', $this->_csvFile);
 			}
 		}
@@ -120,8 +115,6 @@ class FabrikFEModelImportcsv extends JModelForm{
 			JError::raiseWarning(500, JText::_('Upload Error'));
 			return false;
 		}
-
-
 		return true;
 	}
 
@@ -205,7 +198,9 @@ class FabrikFEModelImportcsv extends JModelForm{
 		}
 		fclose($csv->mHandle);
 		// $$$ hugh - remove the temp file, but don't clear session
-		$this->removeCSVFile(false);
+		// $$$ rob 07/11/2011 - NO!!! as import in admin reads the file twice.
+		// once for getting the headings and a second time for importing/
+		// $this->removeCSVFile(false);
 	}
 
 	public function getSample()
@@ -229,7 +224,6 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$config = JFactory::getConfig();
 		$tmp_dir = $config->getValue('config.tmp_path');
 		return JPath::clean($tmp_dir);
-		//return JPath::clean(COM_FABRIK_BASE.'media');
 	}
 
 	/**
