@@ -23,9 +23,6 @@ var ColourPicker = new Class({
 	Extends: FbElement,
 	
 	options: {
-		closeImage: 'plugins/fabrik_element/colourpicker/images/close.gif',
-		handleImage: 'plugins/fabrik_element/colourpicker/images/handle.gif',
-		trackImage: 'plugins/fabrik_element/colourpicker/images/track.gif',
 		red: 0,
 		green: 0,
 		blue: 0
@@ -34,10 +31,6 @@ var ColourPicker = new Class({
 	initialize : function (element, options) {
 		this.plugin = 'colourpicker';
 		this.parent(element, options);
-
-		this.options.closeImage = Fabrik.liveSite + this.options.closeImage;
-		this.options.handleImage = Fabrik.liveSite + this.options.handleImage;
-		this.options.trackImage = Fabrik.liveSite + this.options.trackImage;
 		this.element = $(element);
 		this.widget = this.element.getParent('.fabrikSubElementContainer').getElement('.colourpicker-widget');
 		this.setOutputs();
