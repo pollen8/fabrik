@@ -131,4 +131,19 @@ class FabrikModelConnection extends JModelAdmin
 		$session->clear($key);
 		return parent::save($data);
 	}
+	
+	/**
+	* Validate the form
+	* @param object $form
+	* @param array $data
+	*/
+	
+	public function validate($form, $data)
+	{
+		if ($data['password'] !== $data['passwordConf']) {
+			$this->setError(JText::_('COM_FABRIK_PASSWORD_MISMATCH'));
+			return false;
+		}
+		return parent::validate($form, $data);
+	}
 }
