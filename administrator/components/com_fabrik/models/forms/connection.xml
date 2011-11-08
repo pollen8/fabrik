@@ -41,13 +41,13 @@
 			description="COM_FABRIK_FIELD_USER_DESC" />
 			
 		<field name="password" 
-			type="text" 
+			type="password" 
 			size="30" 
 			label="COM_FABRIK_FIELD_PASSWORD_LABEL"
 			description="COM_FABRIK_FIELD_PASSWORD_DESC" />
 			
 		<field name="passwordConf" 
-			type="text"
+			type="password"
 			size="30" 
 			label="COM_FABRIK_FIELD_PASSWORDCONF_LABEL"
 			description="COM_FABRIK_FIELD_PASSWORDCONF_DESC" />
