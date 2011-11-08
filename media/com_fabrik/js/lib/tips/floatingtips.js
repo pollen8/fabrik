@@ -221,7 +221,7 @@ var FloatingTips = new Class({
 			if (borderSize !== 0) {
 				arrowStyle.stroke = {
 					'color': cwr.getStyle('border-color').split(' ')[0],
-					'width': borderSize,
+					'width': borderSize
 				};
 			}
 			arrowStyle.translate = {x: 0, y: 0};
@@ -233,7 +233,7 @@ var FloatingTips = new Class({
 			}
 			var shadow = cwr.getStyle('box-shadow');
 			var shadowColor, shadowX, shadowY, bits;
-			if (shadow !== 'none' && shadow !== '') {
+			if (shadow !== 'none' && shadow !== '' && typeOf(shadow) !== 'null') {
 				if (shadow.contains('rgb')) {
 					bits = shadow.split(')');
 					shadowColor = bits[0] + ')';
@@ -248,7 +248,7 @@ var FloatingTips = new Class({
 				}
 				arrowStyle.shadow = {
 					'color': shadowColor,
-					'translate': {x: -1 * (shadowX + arrowStyle.translate.x), y: shadowY + arrowStyle.translate.y},
+					'translate': {x: -1 * (shadowX + arrowStyle.translate.x), y: shadowY + arrowStyle.translate.y}
 				};
 			}
 			var arrow = Fabrik.iconGen.create(icon.arrowleft, arrowStyle);
