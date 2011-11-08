@@ -676,6 +676,10 @@
 					<option value="bottom">bottom</option>
 					<option value="left">left</option>
 			</field>
+			
+			<field name="addurl" type="text" size="100"
+			label="COM_FABRIK_FIELD_ADD_URL_LABEL" 
+			description="COM_FABRIK_FIELD_ADD_URL_DESC" />
 				
 			<field name="addlabel"
 				type="text" size="20"

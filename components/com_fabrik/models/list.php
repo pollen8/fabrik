@@ -6148,7 +6148,7 @@ class FabrikFEModelList extends JModelForm {
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
 		$params = $this->getParams();
-		$addurl = $params->get('addurl', '');
+		$addurl_url = $params->get('addurl', '');
 		$addlabel = $params->get('addlabel', '');
 		$filters = $this->getRequestData();
 		$keys = JArrayHelper::getValue($filters, 'key', array());
@@ -6159,44 +6159,48 @@ class FabrikFEModelList extends JModelForm {
 				$qs[FabrikString::safeColNameToArrayKey($keys[$i]) . '_raw'] = $vals[$i];
 			}
 		}
-		$addurl_url = '';
 		$addurl_qs = array();
-		if (!empty($addurl)) {
-			$addurl_parts = explode('?', $addurl);
+		if (!empty($addurl_url)) {
+			$addurl_parts = explode('?', $addurl_url);
 			if (count($addurl_parts) > 1) {
 				$addurl_url = $addurl_parts[0];
-				foreach(explode('&', $addurl_parts[1]) as $key => $val) {
-					$addurl_qs[$key] = $val;
+				foreach(explode('&', $addurl_parts[1]) as $urlvar) {
+					$key_value = explode('=',$urlvar);
+					$addurl_qs[$key_value[0]] = $key_value[1];
 				}
 			}
 		}
 		// $$$ rob needs the item id for when sef urls are turned on
 		if (JRequest::getCmd('option') !== 'com_fabrik') {
-			$qs['Itemid'] = $Itemid;
+			if (!array_key_exists('Itemid', $addurl_qs)) {
+				$qs['Itemid'] = $Itemid;
+			}
 		}
-		if ($this->isAjax()) {
-			$qs['ajax'] = '1';
+		if (empty($addurl_url)) {
+			if ($this->isAjax()) {
+				$qs['ajax'] = '1';
+			}
+			$formModel = $this->getFormModel();
+			$formid = $formModel->getForm()->id;
+			if ($this->packageId !== 0 || $this->isAjax()) {
+				$qs['tmpl'] = 'component';
+			}
+	
+			$qs['option'] = 'com_fabrik';
+			if ($app->isAdmin()) {
+				$qs['task'] = 'form.view';
+			} else {
+				$qs['view'] = 'form';
+			}
+			$qs['formid'] = $this->getTable()->form_id;
+			$qs['rowid'] = '0';
 		}
-		$formModel = $this->getFormModel();
-		$formid = $formModel->getForm()->id;
-		if ($this->packageId !== 0 || $this->isAjax()) {
-			$qs['tmpl'] = 'component';
-		}
-
-		$qs['option'] = 'com_fabrik';
-		if ($app->isAdmin()) {
-			$qs['task'] = 'form.view';
-		} else {
-			$qs['view'] = 'form';
-		}
-		$qs['formid'] = $this->getTable()->form_id;
-		$qs['rowid'] = '0';
 		$qs = array_merge($qs, $addurl_qs);
 		foreach ($qs as $key => $val) {
 			$qs_args[] = $key.'='.$val;
 		}
 		$qs = implode('&', $qs_args);
-		if (!empty($addurl)) {
+		if (!empty($addurl_url)) {
 			return JRoute::_($addurl_url . '?' . $qs);
 		} else {
 			return JRoute::_("index.php?" . $qs);
