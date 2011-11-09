@@ -2983,7 +2983,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$linksToForms =  $referringTable->getLinksToThisKey();
 
 		$row = $this->getData();
-		$factedLinks = $tableParams->get('factedlinks');
+		$factedLinks = $tableParams->get('factedlinks', null);
+		if (is_null($factedLinks)) {
+			return;
+		}
 		$linkedLists = $factedLinks->linkedlist;
 		$aExisitngLinkedForms = $factedLinks->linkedform;
 		$linkedform_linktype = $factedLinks->linkedform_linktype;
@@ -3006,7 +3009,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$val = JRequest::getVar($qsKey . "_raw", '');
 				if (empty($val)) {
 					$thisKey = $this->getListModel()->getTable()->db_table_name . "___" . $element->join_key_column . "_raw";
-					$val = $this->_data[$thisKey];
+					$val = JArrayHelper::getValue($this->_data, $thisKey, $val);
 					if (empty($val)) {
 						$val = JRequest::getVar('rowid');
 					}
