@@ -141,6 +141,12 @@ div.calendar{
 	cursor : move;	
 }
 
+.expand{
+	position: absolute;
+	right:20px;
+	top:6px;
+}
+
 .close{
 	position: absolute;
 	right: 0;

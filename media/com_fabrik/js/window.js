@@ -35,10 +35,12 @@ Fabrik.Window = new Class({
 		createShowOverLay: false,
 		width: 300,
 		height: 300,
+		expandable: true,
 		onContentLoaded: function () {}
 	},
 	
 	modal: false,
+	expanded: false,
 	
 	initialize: function (opts)
 	{
@@ -51,13 +53,15 @@ Fabrik.Window = new Class({
 	
 	makeWindow: function ()
 	{
-		var draggerC, dragger;
+		var draggerC, dragger, expandButton;
+		var handleParts = [];
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
 		d.top = window.getSize().y / 2 + window.getScroll().y;
 		d.left = window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow'}).setStyles(d);
 		this.contentWrapperEl = this.window;
 		var art = Fabrik.iconGen.create(icon.cross);
+		
 		var del = new Element('a', {'href': '#', 'class': 'close', 'events': {
 			'click': this.close.bindWithEvent(this)
 		}});
@@ -83,7 +87,20 @@ Fabrik.Window = new Class({
 			draggerC.adopt(dragger);
 		}
 		var label = new Element('span', {'class': hclass}).set('text', this.options.title);
-		this.handle = this.getHandle().adopt([label, del]);
+		handleParts.push(label);
+		var expandIcon = Fabrik.iconGen.create(icon.expand, {scale: 0.4, fill: {
+			color: ['#666666', '#999999']
+		}});
+		if (this.options.expandable && this.modal === false) {
+			expandButton = new Element('a', {'href': '#', 'class': 'expand', 'events': {
+				'click': this.expand.bindWithEvent(this)
+			}}).adopt(expandIcon);
+			handleParts.push(expandButton);
+		}
+		
+		handleParts.push(del);
+		console.log(handleParts);
+		this.handle = this.getHandle().adopt(handleParts);
 		
 		var bottomBarHeight = 15;
 		var topBarHeight = 15;
@@ -119,10 +136,26 @@ Fabrik.Window = new Class({
 
 		document.body.adopt(this.window);
 		this.loadContent();
-		Fabrik.addEvent('fabrik.overlay.hide', function () {
-			//bad idea - means opening windows are hidden if other code calls another window to hide
-			//this.window.hide();
-		}.bind(this));
+		//bad idea - means opening windows are hidden if other code calls another window to hide
+		/*Fabrik.addEvent('fabrik.overlay.hide', function () {
+			this.window.hide();
+		}.bind(this));*/
+	},
+	
+	/**
+	 * toggle the window full screen
+	 */
+	expand: function () {
+		if (!this.expanded) {
+			this.expanded = true;
+			var w = window.getSize();
+			this.unexpanded = this.window.getCoordinates();
+			this.window.setPosition({'x': 0, 'y': 0}).setStyles({'width': w.x, 'height': w.y});
+		} else {
+			this.window.setPosition({'x': this.unexpanded.left, 'y': this.unexpanded.top}).setStyles({'width': this.unexpanded.width, 'height': this.unexpanded.height});
+			this.expanded = false;
+		}
+		this.drawWindow();
 	},
 	
 	getHandle: function () {
