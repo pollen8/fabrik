@@ -34,7 +34,12 @@ echo "
 	display:box;
 }
 
-#listform_$c .list-footer div{
+#listform_$c .list-footer div.limit{
+	margin-top:5px;
+	margin-left:10px;
+}
+
+#listform_$c .list-footer div.counter{
 	margin-top:8px;
 	margin-left:10px;
 }
