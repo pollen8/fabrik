@@ -238,5 +238,25 @@ class FabrikString extends JString{
 		}
 	  return $url;
 	}
+
+	/*
+	* Takes a complete URL, and urlencodes any query string args
+	* @param url to encode
+	* @return encoded url
+	*/
+
+	function encodeurl( $url )
+	{
+		list($site, $qs) = explode('?', $url);
+		if (!empty($qs)) {
+			$new_qs = array();
+			foreach(explode('&', $qs) as $arg) {
+				list($key,$val) = explode('=', $arg);
+				$new_qs[] = $key . "=" . urlencode($val);
+			}
+			$url = $site . "?" . implode("&", $new_qs);
+		}
+		return $url;
+	}
 }
 ?>
