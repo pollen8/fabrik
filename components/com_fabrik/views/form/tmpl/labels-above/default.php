@@ -5,8 +5,12 @@
 echo $form->startTag;
 if ($this->params->get('show-title', 1)) {?>
 <h1><?php echo $form->label;?></h1>
-<?php }
-echo $form->intro;
+<?php }?>
+
+<?php if ($form->intro !== '') {?>
+<div class="formintro"><?php echo $form->intro; ?></div>
+<?php }?>
+<?php 
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">";

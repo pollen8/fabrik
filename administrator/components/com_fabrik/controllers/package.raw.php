@@ -44,7 +44,7 @@ class FabrikControllerPackage extends JControllerForm
 		$selected = JRequest::getVar('selected');
 		$query->select('id, label')->from('#__fabrik_'.$list.'s');
 		if ($selected != '') {
-			$query->where('id NOT IN ('.$selected.')');
+			//$query->where('id NOT IN ('.$selected.')');
 		}
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();

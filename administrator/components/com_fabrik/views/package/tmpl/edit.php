@@ -18,7 +18,7 @@ JHtml::_('behavior.keepalive');
 $fbConfig =& JComponentHelper::getParams('com_fabrik');
 FabrikHelperHTML::mocha();
 FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js');
-FabrikHelperHTML::script('media/com_fabrik/js/icons.js',ue);
+FabrikHelperHTML::script('media/com_fabrik/js/icons.js');
 FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
 FabrikHelperHTML::script('media/com_fabrik/js/canvas.js');
 FabrikHelperHTML::script('media/com_fabrik/js/history.js');
@@ -88,3 +88,5 @@ submitform = function(task){
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>
+
+

@@ -30,10 +30,10 @@ class FabrikControllerPackage extends JController
 		$viewType	= $document->getType();
 
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 
 		//if the view is a package create and assign the table and form views
-		$tableView = &$this->getView('list', $viewType);
+		$tableView = $this->getView('list', $viewType);
 		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$tableView->setModel($listModel, true);
 		$view->_tableView = $tableView;
@@ -44,7 +44,7 @@ class FabrikControllerPackage extends JController
 		$view->_formView->setModel($formModel, true);
 
 		// Push a model into the view
-		$model = &$this->getModel($viewName, 'FabrikFEModel');
+		$model = $this->getModel($viewName, 'FabrikFEModel');
 		$model->setDbo(FabrikWorker::getDbo());
 
 		if (!JError::isError($model)) {

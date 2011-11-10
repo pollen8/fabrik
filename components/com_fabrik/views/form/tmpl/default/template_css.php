@@ -55,8 +55,12 @@ echo "
 #form_$c fieldset ul,
 #details_$c fieldset ul{
 	list-style:none;
-	padding:40px 10px 20px 10px;
 	margin:0;
+}
+
+#form_$c fieldset > ul,
+#details_$c fieldset > ul{
+	padding:40px 10px 20px 10px;
 }
 
 #form_$c .fabrikForm .fabrikGroup ul{

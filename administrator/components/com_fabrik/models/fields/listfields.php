@@ -42,7 +42,7 @@ class JFormFieldListfields extends JFormFieldList
 			$this->results = array();
 		}
 
-		$controller = JRequest::getVar('view');
+		$controller = JRequest::getVar('view', JRequest::getVar('task'));
 		$aEls = array();
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode("|", $this->element['filter']);
 		$bits = array();
@@ -97,6 +97,7 @@ class JFormFieldListfields extends JFormFieldList
 					//****************************//
 				}
 				break;
+			case 'listform':
 			case 'list':
 			case 'module':
 			case 'item': //menu item

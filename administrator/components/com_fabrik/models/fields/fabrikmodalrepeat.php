@@ -47,7 +47,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		 * f3 hack
 		 */
 
-		$view = JRequest::getCmd('view');
+		$view = JRequest::getCmd('view', 'list');
 		switch ($view) {
 			case 'item':
 				$view = 'list';

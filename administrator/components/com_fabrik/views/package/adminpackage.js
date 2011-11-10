@@ -68,6 +68,9 @@ AdminPackage = new Class({
 		var dragger = new Element('div', {'class': 'dragger'});
 		
 		var content = new Element('div', {'class': 'itemContent'});
+		var listid = id.split('_')[1];
+		content.adopt(new Element('iframe', {'width': '100%', 'height': '90%', 'src': 'index.php?option=com_fabrik&task=package.listform&iframe=1&tmpl=component&id=' +  listid}));
+
 		c.adopt([handle, content, dragger]);
 		if (page.editable) {
 			c.makeResizable({'handle': dragger,
@@ -112,7 +115,7 @@ AdminPackage = new Class({
 	},
 	
 	addItem: function (e) {
-		e.stop();
+		e.stop(); 
 		var label = e.target.get('text');
 		this.blocks[this.activeType].push(e.target.id);
 		var id = this.activeType + '_' + e.target.id;

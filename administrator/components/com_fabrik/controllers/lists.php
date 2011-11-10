@@ -112,7 +112,7 @@ class FabrikControllerLists extends FabControllerAdmin
 	{
 		$model = $this->getModel();
 		$viewType	= JFactory::getDocument()->getType();
-		$view = & $this->getView($this->view_item, $viewType);
+		$view = $this->getView($this->view_item, $viewType);
 		$view->setLayout('confirmdelete');
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);

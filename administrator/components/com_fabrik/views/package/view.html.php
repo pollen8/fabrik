@@ -25,6 +25,13 @@ class FabrikViewPackage extends JView
 	protected $item;
 	protected $state;
 
+	public function listform()
+	{
+		FabrikHelperHTML::framework();
+		$this->listform	= $this->get('PackageListForm');
+		JHtml::_('behavior.modal', 'a.modal');
+		parent::display('list');
+	}
 	/**
 	 * Display the view
 	 */
@@ -32,10 +39,12 @@ class FabrikViewPackage extends JView
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
+		JHtml::_('behavior.modal', 'a.modal');
 		FabrikHelperHTML::framework();
 		$this->form		= $this->get('Form');
 		$this->item		= $this->get('Item');
 		$this->state	= $this->get('State');
+		$this->listform	= $this->get('PackageListForm');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

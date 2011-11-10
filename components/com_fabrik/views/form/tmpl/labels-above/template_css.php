@@ -29,6 +29,10 @@ echo "
 	color:#666;
 }
 
+#form_$c .formintro{
+	margin:20px 10px;
+}
+
 #form_$c legend span{
 	padding:5px;
 	display:block;
@@ -115,9 +119,6 @@ echo "
 	padding:5px 10px;
 	margin-top:10px;
 	background:none !important;
-	display:-webkit-box;
-	display:-moz-box;
-	display:box;
 	width:50%;
 }
 
@@ -268,12 +269,6 @@ margin:0;
 }
 #details_$c .leftCol{
 	color:#999;
-}
-
-#form_$c .fabrikElement {
-	-webkit-box-flex:1;
-	-moz-box-flex:1;
-	box-flex:1;
 }
 
 #form_$c .addbutton {

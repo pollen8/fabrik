@@ -196,7 +196,8 @@ class FabrikFEModelConnection extends JModel {
 							$session->clear('fabrik.connection.'.$cn->id);
 							$this->_connection = null;
 						}
-						return JError::raiseNotice(E_ERROR, 'Could not connection to database', $deafult_options);
+						JError::raiseError(E_ERROR, 'Could not connection to database cid = ' . $cn->id);
+						exit;
 					}
 				}
 			}

@@ -904,7 +904,11 @@ class plgFabrik_Element extends FabrikPlugin
 			$rollOver = $this->getTip($data);
 			$pos = $params->get('tiplocation', 'top');
 			$opts = "{position:'$pos'}";
-			return ($rollOver != '') ? '<span class="fabrikTip" opts="'.$opts.'" title="'.$rollOver.'">'.$txt.'</span>' : $txt;
+			if ($rollOver == '') {
+				return $txt;
+			}
+			$rollOver = '<span>'.$rollOver.'</span>';
+			return '<span class="fabrikTip" opts="'.$opts.'" title="'.$rollOver.'">'.$txt.'</span>';
 		} else {
 			return $txt;
 		}

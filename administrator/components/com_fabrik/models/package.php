@@ -12,9 +12,9 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modeladmin');
+require_once('fabmodeladmin.php');
 
-class FabrikModelPackage extends JModelAdmin
+class FabrikModelPackage extends FabModelAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.
@@ -762,5 +762,15 @@ class FabrikModelPackage extends JModelAdmin
 </extension>';
 		JFile::write($this->outputPath.DS.$xmlname.'.xml', $str);
 		return $this->outputPath.DS.$xmlname.'.xml';;
+	}
+	
+	public function getPackageListForm($data = array(), $loadData = true)
+	{
+		// Get the form.
+		$form = $this->loadForm('com_fabrik.packagelist', 'packagelist', array('control' => 'jform', 'load_data' => $loadData));
+		if (empty($form)) {
+			return false;
+		}
+		return $form;
 	}
 }

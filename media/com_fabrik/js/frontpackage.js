@@ -53,7 +53,10 @@ var FrontPackage = new Class({
 			onSuccess:onSuccess
 		}).send();*/
 		//iframe loader
-		var url = 'index.php?option=com_fabrik&view=' + type + '&' + key + '=' + id + '&tmpl=component&package=' + this.options['package'];
+		//var url = 'index.php?option=com_fabrik&view=' + type + '&' + key + '=' + id + '&tmpl=component&package=' + this.options['package'];
+		
+		var url = 'index.php?option=com_fabrik&task=' + type + '.view&' + key + '=' + id + '&tmpl=component&package=' + this.options['package'];
+		
 		var c = new Element('iframe', {'id': id, src: url, 'class': 'itemPlaceHolderIFrame'}).setStyles(style);
 		c.inject(page.page);
 	}
