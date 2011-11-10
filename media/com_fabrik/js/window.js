@@ -36,7 +36,9 @@ Fabrik.Window = new Class({
 		width: 300,
 		height: 300,
 		expandable: true,
-		onContentLoaded: function () {}
+		onContentLoaded: function () {
+			this.fitToContent();
+		}
 	},
 	
 	modal: false,
@@ -99,7 +101,6 @@ Fabrik.Window = new Class({
 		}
 		
 		handleParts.push(del);
-		console.log(handleParts);
 		this.handle = this.getHandle().adopt(handleParts);
 		
 		var bottomBarHeight = 15;
