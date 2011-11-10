@@ -1107,22 +1107,24 @@ var FbList = new Class({
 			}
 			if (r) {
 				var chx = r.getElement('input[type=checkbox][name*=id]');
-				if (typeOf(chx) !== 'null') {
+				/*if (typeOf(chx) !== 'null') {
 					// if delete link is in hover box the we cant find the associated chx
 					// box
+				// $$$ rob hmm no! this meant if you selected 2 records to delete only the last selected recod would be deleted.
 					this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-						// $$$ rob hmm no! this meant if you selected 2 records to delete only the last selected recod would be deleted.
-						//c.checked = false;
+						c.checked = false;
 					});
-				}
+				}*/
 				if (typeOf(chx) !== 'null') {
 					chx.checked = true;
 				}
 			} else {
 				// checkAll
-				this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-					c.checked = true;
-				});
+				if (this.options.actionMethod !== '') { // should only check all for floating tips
+					this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
+						c.checked = true;
+					});
+				}
 			}
 			if (!this.submit('list.delete')) {
 				e.stop();
