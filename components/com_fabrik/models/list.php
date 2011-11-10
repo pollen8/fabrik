@@ -6144,6 +6144,7 @@ class FabrikFEModelList extends JModelForm {
 	function getAddRecordLink()
 	{
 		$qs = array();
+		$w = new FabrikWorker();
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
@@ -6200,6 +6201,7 @@ class FabrikFEModelList extends JModelForm {
 			$qs_args[] = $key.'='.$val;
 		}
 		$qs = implode('&', $qs_args);
+		$qs = $w->parseMessageForPlaceHolder($qs, JRequest::get('request'));
 		if (!empty($addurl_url)) {
 			return JRoute::_($addurl_url . '?' . $qs);
 		} else {
