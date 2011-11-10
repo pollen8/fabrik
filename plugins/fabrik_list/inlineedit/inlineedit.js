@@ -188,6 +188,10 @@ var FbListInlineEdit = new Class({
 			//enter
 			e.stop();
 			if (typeOf(this.editing) === 'element') {
+				// stop textarea elements from submitting when you press enter
+				if (this.editors[this.activeElementId].contains('<textarea')) {
+					return;
+				}
 				this.save(e, this.editing);
 			} else {
 				this.edit(e, this.td);
@@ -333,6 +337,7 @@ var FbListInlineEdit = new Class({
 		}
 		this.inedit = true;
 		this.editing = td;
+		this.activeElementId = opts.elid;
 		this.defaults[rowid + '.' + opts.elid] = td.innerHTML;
 		
 		var data = this.getDataFromTable(td);
