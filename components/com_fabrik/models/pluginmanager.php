@@ -256,7 +256,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			}
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
-			$query->select('*, e.name AS name, e.id AS id, e.published AS published, e.label AS label, e.plugin, e.params AS params, e.access AS access');
+			$query->select('*, e.name AS name, e.id AS id, e.published AS published, e.label AS label, e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering');
 			$query->from('#__{package}_elements AS e');
 			$query->join('INNER', '#__extensions AS p ON p.element = e.plugin');
 			$query->where('group_id IN (' . implode(',', $groupIds) . ')');
