@@ -217,7 +217,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 	function addAttachments($params)
 	{
-		//get attachments
+		//get attachments 
 		$pluginManager = FabrikWorker::getPluginManager();
 		$data = $this->getEmailData();
 		$groups = $this->formModel->getGroupsHiarachy();
