@@ -41,6 +41,7 @@ class FabrikViewList extends JView{
 		if ($start <= $total) {
 			$exporter->writeFile($total);
 		} else {
+			JRequest::setVar('limitstart'.$model->getId(), 0);
 			$session->clear($key);
 			$exporter->downloadFile();
 		}
