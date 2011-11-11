@@ -88,7 +88,7 @@ class FabrikViewList extends JView{
 		$opts->csvOpts = $csvOpts;
 		
 		$opts->csvFields = $this->get('CsvFields');
-		$csvOpts->incfilters = 0;
+		$csvOpts->incfilters = (int)$listParams->get('incfilters');
 
 		$opts->data = $data;
 		//if table data starts as empty then we need the html from the row
