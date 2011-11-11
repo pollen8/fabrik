@@ -53,7 +53,7 @@ class FabrikFEModelCSVExport {
 		}
 
 		$session = JFactory::getSession();
-		$table 	=& $this->model->getTable();
+		$table = $this->model->getTable();
 		$this->model->render();
 		$this->removePkVal();
 		$this->outPutFormat = JRequest::getVar('excel') == 1 ? 'excel' : 'csv';

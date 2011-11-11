@@ -404,7 +404,7 @@
 			
 			<field name="csv_import_frontend" 
 				type="accesslevel" 
-				default="0" 
+				default="2" 
 				label="COM_FABRIK_FIELD_CSV_IMPORT_LABEL" 
 				description="COM_FABRIK_FIELD_CSV_IMPORT_DESC" />
 				
@@ -450,6 +450,15 @@
 				label="COM_FABRIK_FIELD_CSV_FRONTEND_SELECTION_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
+			</field>
+			
+			<field name="incfilters"
+				type="radio"
+				default="0"
+				description="COM_FABRIK_FIELD_CSV_INCLUDE_FILTERS_DESC"
+				label="COM_FABRIK_FIELD_CSV_INCLUDE_FILTERS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
 			</field>
 			
 			<field name="csv_format" 
