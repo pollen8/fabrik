@@ -143,7 +143,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$item = $this->listModel->getTable();
 		$identifier = $this->listModel->getRenderContext();
 		$key = 'com_fabrik.list'.$identifier.'.filter.searchall';
-		$requestKey = 'fabrik_list_filter_all.'.$this->listModel->getRenderContext();
+		$requestKey = 'fabrik_list_filter_all_'.$this->listModel->getRenderContext();
 		$search = trim($app->getUserStateFromRequest($key, $requestKey));
 
 		if ($search == '') {
@@ -357,7 +357,11 @@ class FabrikFEModelListfilter extends FabModel {
 				}
 				$k2 = null;
 			} else {
-				$k2 = $elementModel->getJoinLabelColumn();
+				if ($elementModel->isJoin()) {
+					$k2 = $elementModel->buildQueryElementConcat('', false);
+				} else {
+					$k2 = $elementModel->getJoinLabelColumn();
+				}
 			}
 			$element = $elementModel->getElement();
 			$elparams = $elementModel->getParams();

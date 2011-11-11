@@ -303,7 +303,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @return string sub query
 	 */
 
-	protected function _buildQueryElementConcat($jkey)
+	public function buildQueryElementConcat($jkey, $addAs = true)
 	{
 		$jointable = $this->getJoinModel()->getJoin()->table_join;
 		$dbtable = $this->actualTableName();
@@ -311,7 +311,11 @@ class plgFabrik_Element extends FabrikPlugin
 		$table = $this->getListModel()->getTable();
 		//$fullElName = $db->nameQuote("$dbtable" . "___" . $this->_element->name);//wasnt working for filepload elements in list view.
 		$fullElName = $db->nameQuote($jointable."___".$this->_element->name);
-		return "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE parent_id = " . $table->db_primary_key . ") AS $fullElName";
+		$sql = "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE parent_id = " . $table->db_primary_key . ")";
+		if ($addAs) {
+			$sql .= "  AS $fullElName";
+		}
+		return $sql;
 	}
 
 	/**
@@ -322,7 +326,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @return string sub query
 	 */
 
-	protected function _buildQueryElementConcatId()
+	protected function buildQueryElementConcatId()
 	{
 		$jointable = $this->getJoinModel()->getJoin()->table_join;
 		$dbtable = $this->actualTableName();
@@ -379,7 +383,7 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote("$jointable" . "___" . $this->_element->name));
-			$str = $this->_buildQueryElementConcat($jkey);
+			$str = $this->buildQueryElementConcat($jkey);
 		} else {
 			$str = "$k AS $fullElName";
 		}
@@ -397,7 +401,7 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 
 			if ($this->isJoin()) {
-				$str = $this->_buildQueryElementConcatId();
+				$str = $this->buildQueryElementConcatId();
 				$aFields[] 	= $str;
 				$aAsFields[] = $fullElName;
 

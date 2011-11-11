@@ -1595,7 +1595,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 	}
 
-	protected function _buildQueryElementConcat($jkey)
+	public function buildQueryElementConcat($jkey, $addAs = true)
 	{
 		$join = $this->getJoinModel()->getJoin();
 		$jointable = $join->table_join;
@@ -1610,13 +1610,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable
 		LEFT JOIN ".$params->get('join_db_name')." ON "
-		.$params->get('join_db_name').".".$params->get('join_key_column')." = $jointable.".$this->_element->name." WHERE parent_id = ".$item->db_primary_key.") AS $fullElName";
+		.$params->get('join_db_name').".".$params->get('join_key_column')." = $jointable.".$this->_element->name." WHERE parent_id = ".$item->db_primary_key.")";
+		if ($addAs) {
+			$sql .= " AS $fullElName";
+		}
 		return $sql;
 	}
 
-	protected function _buildQueryElementConcatId()
+	protected function buildQueryElementConcatId()
 	{
-		$str = parent::_buildQueryElementConcatId();
+		$str = parent::buildQueryElementConcatId();
 		$jointable = $this->getJoinModel()->getJoin()->table_join;
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
