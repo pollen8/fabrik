@@ -29,6 +29,9 @@ class FabrikViewList extends JView{
 		$selectedFields = JRequest::getVar('fields', array(), 'default', 'array');
 		$model->setHeadingsForCSV($selectedFields);
 
+		$request = $model->getRequestData();
+		$model->storeRequestData($request);
+		
 		$total = $model->getTotalRecords();
 
 		$key = 'fabrik.table.'.$model->getId().'csv.total';
