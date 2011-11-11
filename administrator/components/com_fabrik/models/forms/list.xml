@@ -404,7 +404,7 @@
 			
 			<field name="csv_import_frontend" 
 				type="accesslevel" 
-				default="2" 
+				default="3" 
 				label="COM_FABRIK_FIELD_CSV_IMPORT_LABEL" 
 				description="COM_FABRIK_FIELD_CSV_IMPORT_DESC" />
 				
