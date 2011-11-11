@@ -313,6 +313,7 @@ var FbList = new Class({
 					if (b.hasClass('custom') === false) {
 						b.addEvent('click', function (e) {
 							this.openCSVWindow();
+							e.stop();
 						}.bind(this));
 					}
 				}.bind(this));
@@ -322,15 +323,6 @@ var FbList = new Class({
 	
 	openCSVWindow: function () {
 		var thisc = this.makeCSVExportForm();
-		this.form.getElements('.fabrik_filter').each(function (f) {
-			var fc = new Element('input', {
-				'type': 'hidden',
-				'name': f.name,
-				'id': f.id,
-				'value': f.get('value')
-			});
-			fc.inject(thisc);
-		}.bind(this));
 		this.exportWindowOpts.content = thisc;
 		this.exportWindowOpts.onContentLoaded = function () {
 			this.fitToContent();
@@ -354,7 +346,7 @@ var FbList = new Class({
 		this.csvopts = this.options.csvOpts;
 		this.csvfields = this.options.csvFields;
 		
-		this.triggerCSVImport(-1);
+		this.triggerCSVExport(-1);
 		return c;
 	},
 	
@@ -455,7 +447,7 @@ var FbList = new Class({
 					new Element('div', {
 						'id': 'csvmsg'
 					}).set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>').inject(e.target, 'before');
-					this.triggerCSVImport(0);
+					this.triggerCSVExport(0);
 				}.bind(this)
 
 			}
@@ -488,7 +480,7 @@ var FbList = new Class({
 		return c;
 	},
 
-	triggerCSVImport: function (start, opts, fields) {
+	triggerCSVExport: function (start, opts, fields) {
 		if (start !== 0) {
 			if (start === -1) {
 				// not triggered from front end selections
@@ -530,6 +522,10 @@ var FbList = new Class({
 			this.csvfields = fields;
 		}
 
+		this.form.getElements('.fabrik_filter').each(function (f) {
+			opts[f.name] = f.get('value');
+		}.bind(this));
+		
 		opts.start = start;
 		opts.option = 'com_fabrik';
 		opts.view = 'list';
@@ -541,6 +537,9 @@ var FbList = new Class({
 			url: '',
 			method: 'post',
 			data: opts,
+			onError: function (text, error) {
+				fconsole(text, error);
+			},
 			onSuccess: function (res) {
 				if (res.err) {
 					alert(res.err);
@@ -555,7 +554,7 @@ var FbList = new Class({
 						document.id('csvfile').set('text', res.file);
 					}
 					if (res.count < res.total) {
-						this.triggerCSVImport(res.count);
+						this.triggerCSVExport(res.count);
 					} else {
 						var finalurl = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id + '&start=' + res.count + '&Itemid=' + this.options.Itemid;
 						var msg = Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
