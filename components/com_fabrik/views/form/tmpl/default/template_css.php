@@ -54,6 +54,7 @@ echo "
 
 #form_$c fieldset ul,
 #details_$c fieldset ul{
+	padding:40px 10px 20px 10px;
 	list-style:none;
 	margin:0;
 }
@@ -333,6 +334,7 @@ margin:0;
 }
 
 #form_$c .fabrikGroupRepeater {
+	padding-top: 50px;
 	float: left;
 	width: 19%;
 }
