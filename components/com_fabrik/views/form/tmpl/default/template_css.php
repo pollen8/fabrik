@@ -334,6 +334,7 @@ margin:0;
 }
 
 #form_$c .fabrikGroupRepeater {
+	padding-top: 50px;
 	float: left;
 	width: 19%;
 }
