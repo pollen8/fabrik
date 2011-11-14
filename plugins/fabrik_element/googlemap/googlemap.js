@@ -32,12 +32,22 @@ var FbGoogleMap = new Class({
 		'auto_center': false,
 		'scrollwheel': false,
 		'streetView': false,
+		'sensor': false,
 		'center': 0,
 		'reverse_geocode': false
 	},
 	
+	loadScript: function () {
+	  var script = document.createElement("script");
+	  script.type = "text/javascript";
+	  var s = this.options.sensor === false ? 'false' : 'true';
+	  script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
+	  document.body.appendChild(script);
+	},
+	
 	initialize : function (element, options) {
 		this.parent(element, options);
+		this.loadScript();
 		// @TODO test google object when offline $type(google) isnt working
 		if (this.options.center === 1 && this.options.rowid === 0) {
 			if (geo_position_js.init()) {
