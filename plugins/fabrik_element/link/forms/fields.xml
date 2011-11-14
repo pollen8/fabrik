@@ -13,7 +13,9 @@
 				label="PLG_ELEMENT_LINK_DEFAULT_LABEL_LABEL" />
 		
 		</fieldset>
-		
+	</fields>
+	
+	<fields name="params">
 		<fieldset name="plg-element-link-extra" addfieldpath="/administrator/components/com_fabrik/models/fields">
 			<field name="link_default_url" 
 				type="text" 

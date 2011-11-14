@@ -2166,15 +2166,26 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * get the hidden fields for an advanced filter
-	 * @param int filter counter
 	 * @return string html hidden fields
 	 */
 
 	function getAdvancedFilterHiddenFields()
 	{
+		$element = $this->getElement();
+		$elName = $this->getFilterFullName();
+		if ($element->plugin != 'fabrikdatabasejoin') {
+			$elName = FabrikString::safeColName($elName);
+		}
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
-		return "\n".'<input type="hidden" name="fabrik___filter[list_'.$listModel->getRenderContext().'][elementid][]" value="'.$element->id.'" />';
+		
+		$return = array();
+		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
+		$return[] = $prefix.'[key][]" value="'.$elName.'" />';
+		$return[] = $prefix.'[elementid][]" value="'.$element->id.'" />';
+		$return[] = $prefix.'[join][]" value="AND" />';
+		$return[] = $prefix.'[grouped_to_previous][]" value="0" />';
+		return implode("\n", $return);
 	}
 
 	/**

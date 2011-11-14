@@ -193,7 +193,6 @@ class FabrikFEModelList extends JModelForm {
 		$pluginManager->getPlugInGroup('list');
 		$pluginManager->runPlugins('button', $this, 'list');
 		$buttons = $pluginManager->_data;
-		//$this->getPluginJsClasses();
 		return $buttons;
 	}
 
@@ -3707,7 +3706,7 @@ class FabrikFEModelList extends JModelForm {
 		// will sometimes skip a group
 		//$groups = $this->getFormGroupElementData();
 		$groups = $this->getFormGroupElementData();
-		foreach ($groups as &$groupModel) {
+		foreach ($groups as $groupModel) {
 			$g = $groupModel->getGroup();
 			$elementModels = null;
 			$elementModels = $groupModel->getPublishedElements();
@@ -3715,7 +3714,7 @@ class FabrikFEModelList extends JModelForm {
 			/*foreach ($elementModels as $kk => $val2) {
 			 $elementModel = $elementModels[$kk]; //dont do with = as this foobars up the last elementModel*/
 			// $$$ rob changed from above 2 lines to 2 below as I think the form_id test inside here fixes things???
-			foreach ($elementModels as &$elementModel) {
+			foreach ($elementModels as $elementModel) {
 				$element = $elementModel->getElement();
 
 				//$$ rob added as some filter_types were null, have to double check that this doesnt
@@ -3961,7 +3960,7 @@ class FabrikFEModelList extends JModelForm {
 				$lineElname = FabrikString::safeColName($elementModel->getFullName(false, true, false));
 				$orig = JRequest::getVar($lineElname);
 				JRequest::setVar($lineElname, array('value' => $value));
-				$filter = & $elementModel->getFilter($counter, false);
+				$filter = $elementModel->getFilter($counter, false);
 				JRequest::setVar($lineElname, $orig);
 				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'[key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
 				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'[condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);

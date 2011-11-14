@@ -14,6 +14,10 @@ require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.
 
 class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
+	protected static $geoJs = null;
+	
+	protected static $usestatic = null;
+	
 	/**
 	 * shows the data formatted for the table view
 	 * @param string data
@@ -115,20 +119,6 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	}
 
 	/**
-	 * load the javascript class that manages interaction with the form element
-	 * should only be called once
-	 * @return string javascript class file
-	 */
-
-	function formJavascriptClass(&$srcs)
-	{
-		$src = "http://maps.google.com/maps/api/js?sensor=".$this->getParams()->get('fb_gm_sensor', 'false');
-		$src .= "&callback=googlemapload";
-		parent::formJavascriptClass($srcs, $src);
-		parent::formJavascriptClass($srcs);
-	}
-
-	/**
 	 * as different map instances may or may not load geo.js we shouldnt put it in
 	 * formJavascriptClass() but call this code from elementJavascript() instead.
 	 * The files are still only loaded when needed and only once
@@ -136,14 +126,13 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	protected function geoJs()
 	{
-		static $geoJs;
-		if (!isset($geoJs)) {
+		if (!isset(self::$geoJs)) {
 			$document = JFactory::getDocument();
 			$params = $this->getParams();
 			if ($params->get('fb_gm_defaultloc')) {
 				$document->addScript("http://code.google.com/apis/gears/gears_init.js");
 				FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
-				$geoJs = true;
+				self::$geoJs = true;
 			}
 		}
 	}
@@ -183,6 +172,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$opts->scrollwheel = (bool)$params->get('fb_gm_scroll_wheel');
 		$opts->streetView = (bool)$params->get('fb_gm_street_view');
 		$opts->latlng           = $this->_editable ? $params->get('fb_gm_latlng', false) : false;
+		$opts->sensor = (bool)$params->get('fb_gm_sensor', false);
 		$opts->latlng_dms       = $this->_editable ? $params->get('fb_gm_latlng_dms', false) : false;
 		$opts->geocode          = $params->get('fb_gm_geocode', false);
 		$opts->geocode_event 	= $params->get('fb_gm_geocode_event', 'button');
@@ -224,7 +214,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	}
 
 	/**
-	 * determine if we use a google static ma
+	 * determine if we use a google static map
 	 * Option has to be turned on and element un-editable
 	 *
 	 * @return bol
@@ -232,18 +222,17 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function _useStaticMap()
 	{
-		static $usestatic;
-		if (!isset($usestatic)) {
+		if (!isset(self::$usestatic)) {
 			$params = $this->getParams();
 			//requires you to have installed the pda plugin
 			//http://joomup.com/blog/2007/10/20/pdaplugin-joomla-15/
 			if (array_key_exists('ispda', $GLOBALS) && $GLOBALS['ispda'] == 1) {
-				$usestatic = true;
+				self::$usestatic = true;
 			} else {
-				$usestatic = ($params->get('fb_gm_staticmap') == '1' && !$this->_editable);
+				self::$usestatic = ($params->get('fb_gm_staticmap') == '1' && !$this->_editable);
 			}
 		}
-		return $usestatic;
+		return self::$usestatic;
 	}
 
 	/**
@@ -369,8 +358,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function _staticMap($v, $w=null, $h=null, $z=null, $repeatCounter = 0, $tableView = false)
 	{
-		$id		= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
+		$id	= $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
 		if (is_null($w)) {
 			$w = $params->get('fb_gm_mapwidth');
 		}
@@ -399,6 +388,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$str .= "</div>";
 		return $str;
 	}
+	
 	/**
 	 * draws the form element
 	 * @param int repeat group counter
@@ -416,7 +406,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$element 		= $this->getElement();
 		$val 				= $this->getValue($data, $repeatCounter);
 
-		$params 		=& $this->getParams();
+		$params 		= $this->getParams();
 		$w 					= $params->get('fb_gm_mapwidth');
 		$h 					= $params->get('fb_gm_mapheight');
 

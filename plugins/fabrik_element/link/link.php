@@ -117,6 +117,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		} else {
 			if (!is_array($value)) {
 				$value = FabrikWorker::JSONtoData($value, true);
+				if (array_key_exists(0, $value)) {
+					$value['label'] = $value[0];
+				}
 			}
 		}
 
