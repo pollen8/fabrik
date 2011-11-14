@@ -110,7 +110,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 			$coordColumn = $mapsElements[0]->getFullName(false, false, false);
 			$table = $listModel->getTable();
 			$where = $listModel->_buildQueryWhere();
-			$join = $tableModel->_buildQueryJoin();
+			$join = $listModel->_buildQueryJoin();
 			$db = $listModel->getDb();
 			$db->setQuery("SELECT $coordColumn AS coords FROM $table->db_table_name $join $where ORDER BY $k");
 			$data = $db->loadObjectList();

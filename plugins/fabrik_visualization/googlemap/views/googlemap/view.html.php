@@ -34,7 +34,8 @@ class fabrikViewGooglemap extends JView
 			FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 		}
 
-		$this->get('PluginJsClasses');
+		$src = $this->get('PluginJsClasses');
+		FabrikHelperHTML::script($src);
 		$tableplugins = "head.ready(function() {\n"
 		.$this->get('PluginJsObjects')
 		."\n});";

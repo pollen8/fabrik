@@ -193,7 +193,6 @@ class FabrikFEModelList extends JModelForm {
 		$pluginManager->getPlugInGroup('list');
 		$pluginManager->runPlugins('button', $this, 'list');
 		$buttons = $pluginManager->_data;
-		//$this->getPluginJsClasses();
 		return $buttons;
 	}
 

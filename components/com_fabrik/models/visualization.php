@@ -225,16 +225,24 @@ class FabrikFEModelVisualization extends JModel
 	/**
 	 * load in any table plugin classes
 	 * needed for radius search filter
+	 * @return array js file paths
 	 */
 
 	function getPluginJsClasses()
 	{
-		$str = array();
+		$srcs = array();
 		$listModels = $this->getListModels();
 		foreach ($listModels as $model) {
-			$str[] = $model->getPluginJsClasses();
+			$paths = $model->getPluginJsClasses();
+			if (!empty($paths)) {
+				if (is_array($paths)) {
+					$srcs = array_merge($srcs, $paths);
+				} else {
+					$srcs[] = $paths;
+				}
+			}
 		}
-		return implode("\n", $str);
+		return $srcs;
 	}
 
 	/**
