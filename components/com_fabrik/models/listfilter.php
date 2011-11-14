@@ -644,7 +644,9 @@ class FabrikFEModelListfilter extends FabModel {
 						$this->indQueryString($elementModel, $filters, $avalue, $acondition, $ajoin, $agrouped, $eval, $key, $raw);
 					}
 				} else {
-					$value = addslashes(urldecode($value));
+					if (is_string($value)) {
+						$value = addslashes(urldecode($value));
+					}
 					$this->indQueryString($elementModel, $filters, $value, $condition, $join, $grouped, $eval, $key);
 				}
 			} else {
