@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-	<fields>
+	<fields name="params">
 		<fieldset name="plg-element-link" addfieldpath="/administrator/components/com_fabrik/models/fields">
 			<field name="width" 
 				type="text" size="3" default="20"
