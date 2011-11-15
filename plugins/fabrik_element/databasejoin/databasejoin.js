@@ -362,6 +362,10 @@ var FbDatabasejoin = new Class({
 		}
 	},
 	
+	getAutoCompleteLabelField: function () {
+		return this.element.findClassUp('fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
+	},
+	
 	addNewEvent: function (action, js) {
 		if (action === 'load') {
 			this.loadEvents.push(js);
