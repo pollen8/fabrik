@@ -14,6 +14,7 @@ var FbForm = new Class({
 		'ajax': false,
 		'primaryKey': null,
 		'error': '',
+		'submitOnEnter': false,
 		'delayedEvents': false,
 		'updatedMsg': 'Form saved',
 		'pages': [],
@@ -64,7 +65,7 @@ var FbForm = new Class({
 	setUpAll: function () {
 		this.setUp();
 		this.winScroller = new Fx.Scroll(window);
-		if (this.options.ajax) {
+		if (this.options.ajax || this.options.submitOnEnter === false) {
 			this.stopEnterSubmitting();
 		}
 		this.watchAddOptions();

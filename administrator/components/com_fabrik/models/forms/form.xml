@@ -167,7 +167,15 @@
 				default="Submit" 
 				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL" 
 				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC" />
-				
+			
+			<field name="submit_on_enter"
+				type="radio"
+				default="0"
+				description="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_DESC"
+				label="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
 		</fieldset>
 		
 		<fieldset name="templates2">
