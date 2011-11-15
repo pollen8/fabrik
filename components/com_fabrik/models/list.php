@@ -3776,7 +3776,7 @@ class FabrikFEModelList extends JModelForm {
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
 			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=".$table->id."&amp;nextview=".JRequest::getVar('view');
-			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_ADVANCED_SEARCH').'</span>'));
+			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip',  'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_ADVANCED_SEARCH').'</span>'));
 			return '<a href="'.$url.'" class="advanced-search-link">'.$img.'</a>';
 		} else {
 			return '';
@@ -6386,7 +6386,7 @@ class FabrikFEModelList extends JModelForm {
 		if (count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0) {
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_CLEAR').'</span>'));
+			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_CLEAR').'</span>'));
 			return '<a href="#" class="clearFilters">'.$img.'</a>';
 		} else {
 			return '';

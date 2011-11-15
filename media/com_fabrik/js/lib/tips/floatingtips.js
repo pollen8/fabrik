@@ -59,7 +59,7 @@ var FloatingTips = new Class({
 				e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
 				e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
 				e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
-				Fabrik.addEvent('fabrik.tip.show', function(trigger){
+				Fabrik.addEvent('fabrik.tip.show', function (trigger) {
 					var tip = e.retrieve('floatingtip');
 					if (trigger !== e && tip) {
 						this._animate(tip, 'out');
@@ -88,6 +88,12 @@ var FloatingTips = new Class({
 		if (!element || !e.target) {
 			return;
 		}
+		var opts = element.retrieve('options');
+		//if its just a notice the mouse out should always hide the tip
+		if (typeOf(opts) !== 'null' && opts.notice) {
+			return this.doHide(element);
+		}
+			//this could be something like the group by hover menu - test if we are really outside
 		var t = e.target.getParent('.' + this.options.className + '-wrapper');
 		var tt = e.target.getParent(this.selector);
 		var classTest = false;
@@ -110,6 +116,10 @@ var FloatingTips = new Class({
 				return;
 			}
 		}
+		return this.doHide(element);
+	},
+	
+	doHide: function(element) {
 		var tip = element.retrieve('floatingtip');
 		if (!tip) return this;
 		this._animate(tip, 'out');
@@ -257,7 +267,6 @@ var FloatingTips = new Class({
 			
 		}
 		
-		//var tipSz = tip.getSize(), trgC = elem.getCoordinates(body);
 		var tipSz = cwr.getSize(), trgC = elem.getCoordinates(body);
 		var pos = { x: trgC.left + o.offset.x, y: trgC.top + o.offset.y };
 		if (opos == 'inside') {
@@ -284,24 +293,15 @@ var FloatingTips = new Class({
 					pos.y += (trgC.height / 2 - tipSz.y / 2); break;
 			}
 		}
-		
 		tip.set('morph', o.fx).store('position', pos);
 		tip.setStyles({ 'top': pos.y, 'left': pos.x });
 		elem.store('options', o);
 		tip.store('options', o);
-		
-		/*tip.addEvent('mouseleave', function(e){
-			this.hide(e, elem, 'tip');
-		}.bind(this));
-		*/
-
 		tip.addEvent('mouseleave', this.options.hideFn.bindWithEvent(this, [elem, 'tip']));
 		return tip;
-		
 	},
 	
 	_animate: function(tip, d) {
-		
 		clearTimeout(tip.retrieve('timeout'));
 		tip.store('timeout', (function(t) { 
 			
@@ -319,14 +319,11 @@ var FloatingTips = new Class({
 					case 'left': 	m['left'] = din ? [pos.x - o.motion, pos.x] : pos.x - o.motion; break;
 				}
 			}
-			
 			t.morph(m);
 			if (!din) t.get('morph').chain(function() { this.dispose(); }.bind(t)); 
 			
 		}).delay((d == 'in') ? this.options.showDelay : this.options.hideDelay, this, tip));
-		
 		return this;
-		
 	}
 
 });

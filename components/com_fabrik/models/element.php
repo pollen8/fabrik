@@ -881,7 +881,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str = '<span class="fabrikErrorMessage">';
 		if ($err !== '') {
 			$err = '<span>'.$err.'</span>';
-			$str .= '<a href="#" class="fabrikTip" title="'.$err.'">'.
+			$str .= '<a href="#" class="fabrikTip" title="'.$err.'" opts="{notice:true}">'.
 			FabrikHelperHTML::image('alert.png', 'form', $tmpl).
 			'</a>';
 		}
@@ -907,7 +907,7 @@ class plgFabrik_Element extends FabrikPlugin
 		if ($formModel->getParams()->get('tiplocation', 'tip') == 'tip' && (($mode == 'form' && ($formModel->_editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false))) {
 			$rollOver = $this->getTip($data);
 			$pos = $params->get('tiplocation', 'top');
-			$opts = "{position:'$pos'}";
+			$opts = "{position:'$pos', notice:true}"; 
 			if ($rollOver == '') {
 				return $txt;
 			}
