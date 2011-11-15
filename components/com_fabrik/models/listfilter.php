@@ -783,15 +783,19 @@ class FabrikFEModelListfilter extends FabModel {
 					}
 					*/
 
+				// $$$ rob set a var for empty value - regardless of whether its an array or string 
+				$emptyValue = ((is_string($value) && trim($value) == '') || (is_array($value) && trim(implode('', $value)) == ''));
+				
 				// $$rob ok the above meant that require filters stopped working as soon as you submitted
 				// an empty search!
 				// So now  add in the empty search IF there is NOT a previous filter in the search data
-				if ((is_string($value) && trim($value) == '') && $index === false) {
+				if ($emptyValue && $index === false) {
 					continue;
 				}
+				
 				// $$$ rob if we are posting an empty value then we really have to clear the filter out from the
 				// session. Otherwise the filter is run as "where field = ''"
-				if ($value == '' && $index !== false) {
+				if ($emptyValue && $index !== false) {
 					// $$ $rob - if the filter has been added from search all then don't remove it
 					if (JArrayHelper::getValue($searchTypes, $index) != 'searchall') {
 						$this->clearAFilter($filters, $index);
@@ -816,7 +820,6 @@ class FabrikFEModelListfilter extends FabModel {
 
 							//$$$rob we DO need to unset
 							unset($filters[$fkey][$index]);
-
 						}
 					}
 				}
