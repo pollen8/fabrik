@@ -157,9 +157,11 @@ var FloatingTips = new Class({
 			cnt = oc(elem);
 			break;
 		}
+		//auto resize the tip based on tip content
+		var cWidth = cnt.length + 'px';
 		var cwr = new Element('div').addClass(o.className).setStyles({'margin': 0, 'position': 'absolute'});
 		var positioner = new Element('div').addClass(o.className + '-positioner').setStyles({'position': 'relative'}).adopt(cwr);
-		var tip = new Element('div').addClass(o.className + '-wrapper').setStyles({ 'margin': 0, 'padding': 0, 'z-index': cwr.getStyle('z-index') }).adopt(positioner);
+		var tip = new Element('div').addClass(o.className + '-wrapper').setStyles({'width': cWidth, 'margin': 0, 'padding': 0, 'z-index': cwr.getStyle('z-index') }).adopt(positioner);
 		
 		if (cnt) { 
 			if (o.html) cwr.set('html', typeof(cnt) == 'string' ? cnt : cnt.get('html')); 
