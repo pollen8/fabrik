@@ -819,7 +819,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$args['data'] = &$data;
 		$pluginButtons = $this->getPluginButtons();
-		foreach ($data as $groupKey=>$group) {
+		foreach ($data as $groupKey => $group) {
 			//$group = $data[$key]; //Messed up in php 5.1 group positioning in data became ambiguous
 			$cg = count($group);
 			for ($i=0; $i < $cg; $i++) {
@@ -3899,9 +3899,9 @@ class FabrikFEModelList extends JModelForm {
 		$first = false;
 		$elementModels = $this->getElements();
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
-		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().']';
-		$type = '<input type="hidden" name="'.$prefix.'][search_type][]" value="advanced" />';
-		$grouped = '<input type="hidden" name="'.$prefix.'][grouped_to_previous][]" value="0" />';
+		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().'][';
+		$type = '<input type="hidden" name="'.$prefix.'search_type][]" value="advanced" />';
+		$grouped = '<input type="hidden" name="'.$prefix.'grouped_to_previous][]" value="0" />';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
@@ -3952,7 +3952,7 @@ class FabrikFEModelList extends JModelForm {
 
 				$value = trim(trim($value, '"'), "%");
 				if ($counter == 0) {
-					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="'.$prefix.'[join][]" />';
+					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="'.$prefix.'join][]" />';
 				} else {
 					$join = FabrikHelperHTML::conditonList($this->getRenderContext(), $join);
 				}
@@ -3962,8 +3962,8 @@ class FabrikFEModelList extends JModelForm {
 				JRequest::setVar($lineElname, array('value' => $value));
 				$filter = $elementModel->getFilter($counter, false);
 				JRequest::setVar($lineElname, $orig);
-				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'[key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
-				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'[condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
+				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
+				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type, 'grouped' => $grouped);
 
 				$counter ++;
@@ -3971,9 +3971,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 
 		if ($counter == 0) {
-			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="'.$prefix.'[join][]" value="WHERE" />';
-			$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'[key][]', 'class="inputbox key" size="1" ','value', 'text', '');
-			$jsSel = JHTML::_('select.genericlist', $statements, $prefix.'[condition][]', 'class="inputbox" size="1" ','value', 'text', '');
+			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="'.$prefix.'join][]" value="WHERE" />';
+			$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', '');
+			$jsSel = JHTML::_('select.genericlist', $statements, $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', '');
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type, 'grouped' => $grouped);
 		}
 		$this->advancedSearchRows = $rows;
@@ -4035,7 +4035,6 @@ class FabrikFEModelList extends JModelForm {
 		$formModel = $this->getFormModel();
 		$linksToForms = $this->getLinksToThisKey();
 		$groups = $formModel->getGroupsHiarachy();
-		$pluginManager = FabrikWorker::getPluginManager();
 		$groupHeadings = array();
 
 		$orderbys = json_decode($item->order_by, true);
@@ -4049,6 +4048,16 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
 		JRequest::setVar('fabrik_show_in_list', $showInList); //set it for use by groupModel->getPublishedListElements()
+		
+		if (!in_array($this->_outPutFormat, array('pdf','csv'))) {
+			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') !== 'end') {
+				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
+			}
+			if ($params->get('checkboxLocation', 'end') !== 'end') {
+				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
+			}
+		}
+		
 		foreach ($groups as $groupModel) {
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
@@ -4130,33 +4139,13 @@ class FabrikFEModelList extends JModelForm {
 		if (!in_array($this->_outPutFormat, array('pdf','csv'))) {
 			//@TODO check if any plugins need to use the selector as well!
 
-			if ($this->canSelectRows()) {
-				$select = '<input type="checkbox" name="checkAll" class="list_' . $this->getId() . '_checkAll" />';
-				$aTableHeadings['fabrik_select'] = $select;
-				$headingClass['fabrik_select'] = array('class' => 'fabrik_ordercell fabrik_select', 'style' => '');
-				$cellClass['fabrik_select'] = array('class' => 'fabrik_select fabrik_element'); //needed for ajax filter/nav
+			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') === 'end') {
+				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
 			}
 			$viewLinkAdded = false;
 			//if no elements linking to the edit form add in a edit column (only if we have the right to edit/view of course!)
-
-			// 3.0 actions now go in one column
-			if ($this->actionHeading == true) {
-				$headingButtons = array();
-
-				if ($this->deletePossible()) {
-					$headingButtons[] = $this->deleteButton();
-				}
-				$return = $pluginManager->runPlugins('button', $this, 'list');
-				$res = $pluginManager->_data;
-				foreach ($res as &$r) {
-					$r = '<li>'.$r.'</li>';
-				}
-				$headingButtons = array_merge($headingButtons, $res);
-				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
-
-
-				$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
-				$cellClass['fabrik_actions'] = array('class' => 'fabrik_actions fabrik_element'); //needed for ajax filter/nav
+			if ($params->get('checkboxLocation', 'end') === 'end') {
+				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
 			// create columns containing links which point to tables associated with this table
 			$factedlinks = $params->get('factedlinks');
@@ -4168,8 +4157,8 @@ class FabrikFEModelList extends JModelForm {
 				}
 				$key = $join->list_id.'-'.$join->form_id.'-'.$join->element_id;
 				if (is_object($join) && isset($factedlinks->linkedlist->$key)) {
-					$linkedTable 	= $factedlinks->linkedlist->$key;
-					$heading 			= $factedlinks->linkedlistheader->$key;
+					$linkedTable = $factedlinks->linkedlist->$key;
+					$heading = $factedlinks->linkedlistheader->$key;
 					if ($linkedTable != '0') {
 						$prefix = $join->element_id."___".$linkedTable;
 						$aTableHeadings[$prefix . "_list_heading"] = empty($heading) ? $join->listlabel . " " . JText::_('COM_FABRIK_LIST') : $heading;
@@ -4206,10 +4195,62 @@ class FabrikFEModelList extends JModelForm {
 		$args['headingClass'] = $headingClass;
 		$args['cellClass'] = $cellClass;
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
-
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
 	}
 
+	/**
+	* put the actions in the headings array - separated to here to enable it to be added at the end or beginning
+	* @param array
+	* @param array
+	* @param array
+	*/
+	
+	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
+	{
+		// 3.0 actions now go in one column
+		if ($this->actionHeading == true) {
+			$pluginManager = FabrikWorker::getPluginManager();
+			$headingButtons = array();
+		
+			if ($this->deletePossible()) {
+				$headingButtons[] = $this->deleteButton();
+			}
+			$return = $pluginManager->runPlugins('button', $this, 'list');
+			$res = $pluginManager->_data;
+			foreach ($res as &$r) {
+				$r = '<li>'.$r.'</li>';
+			}
+			$headingButtons = array_merge($headingButtons, $res);
+			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
+		
+		
+			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
+			$cellClass['fabrik_actions'] = array('class' => 'fabrik_actions fabrik_element'); //needed for ajax filter/nav
+		}
+	}
+	
+	/**
+	* put the checkbox in the headings array - separated to here to enable it to be added at the end or beginning
+	* @param array 
+	* @param array
+	* @param array
+	 */
+	
+	protected function addCheckBox(&$aTableHeadings, &$headingClass, &$cellClass)
+	{
+		$select = '<input type="checkbox" name="checkAll" class="list_' . $this->getId() . '_checkAll" />';
+		$aTableHeadings['fabrik_select'] = $select;
+		$headingClass['fabrik_select'] = array('class' => 'fabrik_ordercell fabrik_select', 'style' => '');
+		$cellClass['fabrik_select'] = array('class' => 'fabrik_select fabrik_element'); //needed for ajax filter/nav
+	}
+
+	/**
+	 * 
+	 * Enter description here ...
+	 * @param array $arr
+	 * @return array
+	 */
+	
 	protected function removeHeadingCompositKey($arr)
 	{
 		ksort($arr);
@@ -4220,6 +4261,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $arr;
 	}
+	
 	/**
 	 * can the user select the specified row
 	 * @param object row

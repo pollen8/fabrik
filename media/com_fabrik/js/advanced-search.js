@@ -10,11 +10,11 @@ AdvancedSearch = new Class({
 	initialize: function (options) {
 		this.setOptions(options);
 		this.trs = $A([]);
-		if ($('advanced-search-add')) {
-			$('advanced-search-add').addEvent("click", this.addRow.bindWithEvent(this));
-			$('advancedFilterTable-clearall').addEvent("click", this.resetForm.bindWithEvent(this));
+		if (document.id('advanced-search-add')) {
+			document.id('advanced-search-add').addEvent("click", this.addRow.bindWithEvent(this));
+			document.id('advancedFilterTable-clearall').addEvent("click", this.resetForm.bindWithEvent(this));
 			this.trs.each(function (tr) {
-				tr.inject($('advanced-search-table').getElements('tr').getLast(), 'after');
+				tr.inject(document.id('advanced-search-table').getElements('tr').getLast(), 'after');
 			}.bind(this));
 		}
 		this.watchDelete();
@@ -40,7 +40,8 @@ AdvancedSearch = new Class({
 	 */
 	
 	updateValueInput: function (e) {
-		Fabrik.loader.start($('advanced-search-table'));
+		var row = e.target.getParent('tr');
+		Fabrik.loader.start(row);
 		var v = e.target.get('value');
 		var update = e.target.getParent().getParent().getElements('td')[3];
 		if (v === '') {
@@ -53,14 +54,14 @@ AdvancedSearch = new Class({
 			'update': update, 
 			'data': {'element': v, 'id': this.options.listid, 'elid': eldata.id, 'plugin': eldata.plugin, 'counter': this.options.counter},
 			'onComplete': function () {
-				Fabrik.loader.stop($('advanced-search-table'));
+				Fabrik.loader.stop(row);
 			}}).send();
 	},
   
 	addRow: function (e) {
 		this.options.counter ++;
 		e.stop();
-		var tr = $('advanced-search-table').getElement('tbody').getElements('tr').getLast();
+		var tr = document.id('advanced-search-table').getElement('tbody').getElements('tr').getLast();
 		var clone = tr.clone();
 		clone.inject(tr, 'after');
 		clone.getElement('td').empty().set('html', this.options.conditionList);
@@ -96,11 +97,11 @@ AdvancedSearch = new Class({
 	},
   
 	resetForm: function () {
-		var table = $('advanced-search-table');
+		var table = document.id('advanced-search-table');
 		if (!table) {
 			return;
 		}
-		$('advanced-search-table').getElements('tbody tr').each(function (tr, i) {
+		table.getElements('tbody tr').each(function (tr, i) {
 			if (i > 1) {
 				tr.dispose();
 			}
@@ -118,9 +119,8 @@ AdvancedSearch = new Class({
 	},
 
 	deleteFilterOption: function (e) {
-		var element = event.target;
-		$(element.id).removeEvent("click", this.deleteFilterOption.bindWithEvent(this));
-		var tr = element.parentNode.parentNode;
+		event.target.removeEvent("click", this.deleteFilterOption.bindWithEvent(this));
+		var tr = event.target.parentNode.parentNode;
 		var table = tr.parentNode;
 		table.removeChild(tr);
 		e.stop();

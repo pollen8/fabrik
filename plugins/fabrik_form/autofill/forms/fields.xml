@@ -49,6 +49,26 @@
 					<option value="0">No</option>
 					<option value="1">Yes</option>
 				</field>
+				
+			<field name="autofill_confirm"
+				type="radio"
+				repeat="true"
+				default="1"
+				description="PLG_FORM_AUTOFILL_CONFIRM_DESC"
+				label="PLG_FORM_AUTOFILL_CONFIRM_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field name="autofill_onload"
+				type="radio"
+				repeat="true"
+				default="0"
+				description="PLG_FORM_AUTOFILL_ONLOAD_DESC"
+				label="PLG_FORM_AUTOFILL_ONLOAD_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>				
+			</field>
 		</fieldset>
 	</fields>
 </form>

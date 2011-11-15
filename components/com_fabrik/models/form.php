@@ -2257,7 +2257,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 						$listModel->setBigSelects();
 
 						//otherwise lets get the table record
-						$sql 	= $this->_buildQuery();
+						$sql = $this->_buildQuery();
 
 						$fabrikDb->setQuery($sql);
 						FabrikHelperHTML::debug($fabrikDb->getQuery(), 'form:render');

@@ -146,7 +146,8 @@ Fabrik.Window = new Class({
 	/**
 	 * toggle the window full screen
 	 */
-	expand: function () {
+	expand: function (e) {
+		e.stop();
 		if (!this.expanded) {
 			this.expanded = true;
 			var w = window.getSize();

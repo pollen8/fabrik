@@ -38,11 +38,11 @@ var FbGoogleMap = new Class({
 	},
 	
 	loadScript: function () {
-	  var script = document.createElement("script");
-	  script.type = "text/javascript";
-	  var s = this.options.sensor === false ? 'false' : 'true';
-	  script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
-	  document.body.appendChild(script);
+		var script = document.createElement("script");
+		script.type = "text/javascript";
+		var s = this.options.sensor === false ? 'false' : 'true';
+		script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
+		document.body.appendChild(script);
 	},
 	
 	initialize : function (element, options) {

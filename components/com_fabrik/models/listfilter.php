@@ -76,7 +76,7 @@ class FabrikFEModelListfilter extends FabModel {
 		//overwrite filters with querystring filter
 		$this->getQuerystringFilters($filters);
 		FabrikHelperHTML::debug($filters, 'filter array: after querystring filters');
-		$request	=& $this->getPostFilterArray();
+		$request =& $this->getPostFilterArray();
 		$this->counter = count(JArrayHelper::getValue($request, 'key', array()));
 		//overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for facted data counts
 		if(JRequest::getVar('fabrik_incsessionfilters', true)) {
@@ -644,7 +644,9 @@ class FabrikFEModelListfilter extends FabModel {
 						$this->indQueryString($elementModel, $filters, $avalue, $acondition, $ajoin, $agrouped, $eval, $key, $raw);
 					}
 				} else {
-					$value = addslashes(urldecode($value));
+					if (is_string($value)) {
+						$value = addslashes(urldecode($value));
+					}
 					$this->indQueryString($elementModel, $filters, $value, $condition, $join, $grouped, $eval, $key);
 				}
 			} else {
@@ -727,7 +729,7 @@ class FabrikFEModelListfilter extends FabModel {
 	private function getPostFilters(&$filters)
 	{
 		$item = $this->listModel->getTable();
-		$request 	= $this->getPostFilterArray();
+		$request = $this->getPostFilterArray();
 		$elements = $this->listModel->getElements('id');
 		$filterkeys = array_keys($filters);
 		$values = JArrayHelper::getValue($request, 'value', array());
@@ -781,15 +783,19 @@ class FabrikFEModelListfilter extends FabModel {
 					}
 					*/
 
+				// $$$ rob set a var for empty value - regardless of whether its an array or string 
+				$emptyValue = ((is_string($value) && trim($value) == '') || (is_array($value) && trim(implode('', $value)) == ''));
+				
 				// $$rob ok the above meant that require filters stopped working as soon as you submitted
 				// an empty search!
 				// So now  add in the empty search IF there is NOT a previous filter in the search data
-				if ((is_string($value) && trim($value) == '') && $index === false) {
+				if ($emptyValue && $index === false) {
 					continue;
 				}
+				
 				// $$$ rob if we are posting an empty value then we really have to clear the filter out from the
 				// session. Otherwise the filter is run as "where field = ''"
-				if ($value == '' && $index !== false) {
+				if ($emptyValue && $index !== false) {
 					// $$ $rob - if the filter has been added from search all then don't remove it
 					if (JArrayHelper::getValue($searchTypes, $index) != 'searchall') {
 						$this->clearAFilter($filters, $index);
@@ -814,7 +820,6 @@ class FabrikFEModelListfilter extends FabModel {
 
 							//$$$rob we DO need to unset
 							unset($filters[$fkey][$index]);
-
 						}
 					}
 				}
