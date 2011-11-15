@@ -1,12 +1,3 @@
-<?php if (count($this->groupheadings ) > 1) { ?>
-
-
-<?php }
-
-$del = $this->headings['fabrik_select'];
-unset($this->headings['fabrik_select']);
-$this->headings = array('fabrik_select' => $del) + $this->headings;
-?>
 <div class="fabrik___headings">
 <ul class="fabrik___heading list">
 	<li class="heading">
