@@ -131,8 +131,6 @@ class fabrikViewForm extends JView
 		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
 		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'form'.DS.$tmpl);
 
-
-
 		JDEBUG ? $profiler->mark('form view before template load') : null;
 		$text = $this->loadTemplate();
 		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->_editable === false)) {
@@ -364,7 +362,7 @@ class fabrikViewForm extends JView
 		//$$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
 		$opts->fabrik_window_id	= JRequest::getVar('fabrik_window_id', ''); //3.0 changed to fabrik_window_id (automatically appended by Fabrik.Window xhr request to load window data
-
+		$opts->submitOnEnter = (bool)$params->get('submit_on_enter', false);
 		//for editing groups with joined data and an empty joined record (ie no joined records)
 		$hidden = array();
 		$maxRepeat = array();

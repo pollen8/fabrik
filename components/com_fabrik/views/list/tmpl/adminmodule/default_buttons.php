@@ -2,7 +2,7 @@
 	<ul class=""><?php if ($this->showAdd) {?>
 		<li class="button addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
-				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl, JText::_('COM_FABRIK_ADD'));?>
+				<?php echo $this->buttons->add;?>
 				<span><?php echo $this->addLabel?></span>
 			</a>
 		</li>

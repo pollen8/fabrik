@@ -592,7 +592,7 @@ EOD;
 				$src[] = 'media/com_fabrik/js/window.js';
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
-				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'/media/com_fabrik/css/fabrik.css');
+				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'media/com_fabrik/css/fabrik.css');
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
 				FabrikHelperHTML::script($src, "Fabrik.fireEvent('fabrik.framework.loaded');");
 			}

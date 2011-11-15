@@ -373,6 +373,7 @@ class FabrikViewList extends JView{
 		// get dropdown list of other tables for quick nav in admin
 		$this->tablePicker = $app->isAdmin() ? FabrikHelperHTML::tableList($this->table->id) : '';
 
+		$this->buttons();
 		// 3.0 buttons now rendered in fabrik_action <ul>
 		//$this->pluginButtons = $model->getPluginButtons();
 
@@ -397,6 +398,31 @@ class FabrikViewList extends JView{
 
 		// $$$ rob 09/06/2011 no need for isMambot test? should use ob_start() in module / plugin to capture the output
 		echo $text;
+	}
+	
+	/**
+	 * build an object with the button icons based on the current tmpl
+	 */
+	protected function buttons()
+	{
+		$this->buttons = new stdClass();
+		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_EXPORT_TO_CSV').'</span>');
+		$this->buttons->csvexport =  FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, $buttonProperties);
+		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_IMPORT_FROM_CSV').'</span>';
+		$this->buttons->csvimport = FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl, $buttonProperties);
+		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_SUBSCRIBE_RSS').'</span>';
+		$this->buttons->feed = FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, $buttonProperties);
+		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_EMPTY').'</span>';
+		$this->buttons->empty = FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, $buttonProperties);
+		
+		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_GROUP_BY').'</span>';
+		$this->buttons->groupby = FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, $buttonProperties);
+		
+		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_FILTER').'</span>';
+		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
+		
+		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_ADD').'</span>';
+		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
 	}
 
 	/**

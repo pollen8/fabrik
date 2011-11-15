@@ -2,7 +2,7 @@
 	<ul class="fabrik_action"><?php if ($this->showAdd) {?>
 		<li class="addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
-				<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl,  array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_ADD').'</span>'));?>
+				<?php echo $this->buttons->add;?>
 				<span><?php echo $this->addLabel?></span>
 			</a>
 		</li>
@@ -15,7 +15,7 @@
 	if ($this->showFilters && $this->toggleFilters) {?>
 		<li>
 			<a href="#" class="toggleFilters">
-				<?php echo FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_FILTER').'</span>'));?>
+				<?php echo $this->buttons->filter;?>
 				<span><?php echo JText::_('COM_FABRIK_FILTER');?></span>
 			</a>
 		</li>
@@ -26,7 +26,7 @@
 	if ($this->canGroupBy) {?>
 		<li>
 			<a href="#" class="groupBy">
-				<?php echo FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, array('title' => JText::_('COM_FABRIK_GROUP_BY')));?>
+				<?php echo $this->buttons->filter;?>
 				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
 			</a>
 			<ul class="floating-tip">
@@ -40,7 +40,7 @@
 	 if ($this->showCSV) {?>
 		<li class="csvExportButton">
 			<a href="#">
-				<?php echo FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_EXPORT_TO_CSV').'</span>'));?>
+				<?php echo $this->buttons->csvexport;?>
 				<span><?php echo JText::_('COM_FABRIK_EXPORT_TO_CSV');?></span>
 			</a>
 		</li>
@@ -48,7 +48,7 @@
 	if ($this->showCSVImport) {?>
 	<li class="csvImportButton">
 			<a href="<?php echo $this->csvImportLink;?>">
-				<?php echo FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_IMPORT_FROM_CSV').'</span>'));?>
+				<?php echo $this->buttons->csvimport;?>
 				<span><?php echo JText::_('COM_FABRIK_IMPORT_FROM_CSV');?></span>
 			</a>
 		</li>
@@ -56,7 +56,7 @@
 	if ($this->showRSS) {?>
 	<li class="feedButton">
 			<a href="<?php echo $this->rssLink;?>">
-				<?php echo FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_SUBSCRIBE_RSS').'</span>'));?>
+				<?php echo $this->buttons->feed;?>
 				<span><?php echo JText::_('COM_FABRIK_SUBSCRIBE_RSS');?></span>
 			</a>
 		</li>
@@ -67,7 +67,7 @@
 	if ($this->emptyLink) {?>
 		<li>
 		<a href="<?php echo $this->emptyLink?>" class="button doempty">
-		<?php echo FabrikHelperHTML::image('trash.png', 'list', $this->tmpl,  array('class' => 'fabrikTip', 'title' => '<span>'.JText::_('COM_FABRIK_EMPTY').'</span>'));?>
+		<?php echo $this->buttons->empty;?>
 		<span><?php echo JText::_('COM_FABRIK_EMPTY')?></span>
 		</a>
 		</li>

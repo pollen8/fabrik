@@ -47,10 +47,10 @@ echo "$form->error</div>";?>
 					<?php if ($group->editable) { ?>
 						<div class="fabrikGroupRepeater">
 							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
+								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, array('class' => 'fabrikTip','opts' => "{notice:true}", 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
 							</a>
 							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
+								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, array('class' => 'fabrikTip','opts' => "{notice:true}", 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
 							</a>
 						</div>
 					<?php } ?>

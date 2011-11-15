@@ -215,7 +215,7 @@ class FabrikString extends JString{
 			}
 			$tip = htmlspecialchars('<div class="truncate_text">'.$title.$orig.'</div>');
 			//$tip = $title.$orig;
-			$summary = '<span class="fabrikTip" title="'.$tip.'">'.$summary.'</span>';
+			$summary = '<span class="fabrikTip" opts="{notice:true}" title="'.$tip.'">'.$summary.'</span>';
 		}
 		return $summary;
 	}
