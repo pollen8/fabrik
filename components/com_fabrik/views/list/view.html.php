@@ -514,7 +514,7 @@ class FabrikViewList extends JView{
 		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="" />';
 		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="" />';
 
-		//$$$rob if the content plugin has temporarily set the view to table then get view from origview var, if that doesn't exist
+		//$$$rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
 		//revert to view var. Used when showing table in article/blog layouts
 		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
 		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" />';

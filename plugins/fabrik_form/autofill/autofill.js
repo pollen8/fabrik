@@ -11,7 +11,9 @@ var Autofill = new Class({
 		cnn: 0,
 		table: 0,
 		map: '',
-		editOrig: false
+		editOrig: false,
+		fillOnLoad: false,
+		confirm: true
 	},
 	
 	initialize: function (options) {
@@ -50,13 +52,19 @@ var Autofill = new Class({
 		} else {
 			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
 		}
+		if (this.options.fillOnLoad && form.options.rowid === '0') {
+			var t = this.options.trigger === '' ? this.options.observe : this.options.trigger;
+			this.form.dispatchEvent('', t, 'load', evnt);
+		}
 	},
 	
 	// perform ajax lookup when the observer element is blurred
 	
 	lookUp: function () {
-		if (!confirm(Joomla.JText._('PLG_FORM_AUTOFILL_DO_UPDATE'))) {
-			return;
+		if (this.options.confirm === true) {
+			if (!confirm(Joomla.JText._('PLG_FORM_AUTOFILL_DO_UPDATE'))) {
+				return;
+			}
 		}
 		Fabrik.loader.start('form_' + this.options.formid, Joomla.JText._('PLG_FORM_AUTOFILL_SEARCHING'));
 		

@@ -40,7 +40,12 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		$opts->map = $params->get('autofill_map');
 		$opts->cnn = $params->get('autofill_cnn');
 		$opts->table = $params->get('autofill_table');
+		if ($opts->table === '') {
+			JError::raiseNotice(500, 'Autofill plugin - no list selected');
+		}
 		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
+		$opts->confirm = (bool)$params->get('autofill_confirm', true);
+		$opts->fillOnLoad = (bool)$params->get('autofill_onload', false);
 		$opts = json_encode($opts);
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
@@ -71,9 +76,13 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId(JRequest::getInt('table'));
 		}
-		$data = $listModel->getRow($value, true, true);
-		$data = array_shift($data);
-
+		if ($value !== '') {
+			// dont get the row if its empty
+			$data = $listModel->getRow($value, true, true);
+			if (!is_null($data)) {
+				$data = array_shift($data);
+			}
+		}
 		if (empty($data)) {
 			echo  "{}";
 		} else {
