@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 	<div id="advancedSearchContainer">
 	<table id="advanced-search-table" class="fabrikList">
 		<tbody>
-			<?php foreach( $this->rows as $row) {?>
+			<?php foreach ($this->rows as $row) {?>
 			<tr>
 				<td><span><?php echo $row['join'];?></span></td>
 				<td><?php echo $row['element'] . $row['type'] . $row['grouped'];?>
