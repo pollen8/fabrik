@@ -3899,9 +3899,9 @@ class FabrikFEModelList extends JModelForm {
 		$first = false;
 		$elementModels = $this->getElements();
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
-		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().']';
-		$type = '<input type="hidden" name="'.$prefix.'][search_type][]" value="advanced" />';
-		$grouped = '<input type="hidden" name="'.$prefix.'][grouped_to_previous][]" value="0" />';
+		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().'][';
+		$type = '<input type="hidden" name="'.$prefix.'search_type][]" value="advanced" />';
+		$grouped = '<input type="hidden" name="'.$prefix.'grouped_to_previous][]" value="0" />';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
@@ -3952,7 +3952,7 @@ class FabrikFEModelList extends JModelForm {
 
 				$value = trim(trim($value, '"'), "%");
 				if ($counter == 0) {
-					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="'.$prefix.'[join][]" />';
+					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="'.$prefix.'join][]" />';
 				} else {
 					$join = FabrikHelperHTML::conditonList($this->getRenderContext(), $join);
 				}
@@ -3962,8 +3962,8 @@ class FabrikFEModelList extends JModelForm {
 				JRequest::setVar($lineElname, array('value' => $value));
 				$filter = $elementModel->getFilter($counter, false);
 				JRequest::setVar($lineElname, $orig);
-				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'[key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
-				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'[condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
+				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
+				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type, 'grouped' => $grouped);
 
 				$counter ++;
@@ -3971,9 +3971,9 @@ class FabrikFEModelList extends JModelForm {
 		}
 
 		if ($counter == 0) {
-			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="'.$prefix.'[join][]" value="WHERE" />';
-			$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'[key][]', 'class="inputbox key" size="1" ','value', 'text', '');
-			$jsSel = JHTML::_('select.genericlist', $statements, $prefix.'[condition][]', 'class="inputbox" size="1" ','value', 'text', '');
+			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="'.$prefix.'join][]" value="WHERE" />';
+			$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', '');
+			$jsSel = JHTML::_('select.genericlist', $statements, $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', '');
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type, 'grouped' => $grouped);
 		}
 		$this->advancedSearchRows = $rows;
