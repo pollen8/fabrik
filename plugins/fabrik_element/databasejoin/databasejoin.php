@@ -456,9 +456,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		} else {
 			$where = '';
 		}
+		$join = $this->getJoin();
+		
 		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of _buildQuery()
 		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches)) {
-			$this->orderBy = $matches[0];
+			//$this->orderBy = $matches[0];
+			$this->orderBy = str_replace("{thistable}", $join->table_join_alias, $matches[0]);
 			$where = str_replace($this->orderBy, '', $where);
 		}
 		if (!empty($this->_autocomplete_where)) {
@@ -467,7 +470,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($where == '') {
 			return $where;
 		}
-		$join = $this->getJoin();
+		
 		$where = str_replace("{thistable}", $join->table_join_alias, $where);
 		$w = new FabrikWorker();
 		$data = is_array($data) ? $data : array();
