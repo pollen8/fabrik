@@ -257,13 +257,26 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 	function getFusionchart()
 	{
-		// Include PHP Class
-		require_once($this->pathBase.'fusionchart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
-		// Add JS to page header
-		$document = JFactory::getDocument();
-		$document->addScript($this->srcBase."fusionchart/lib/FCcharts/FusionCharts.js");
+		$document =& JFactory::getDocument();
+		$params =& $this->getParams();
+		$worker = new FabrikWorker();
+		$fc_version = $params->get('fusionchart_version', 'free_old');
+		if ($fc_version == 'free_22') {
+			require_once($this->pathBase.'fusionchart'.DS.'lib'.DS.'FusionChartsFree'.DS.'Code'.DS.'PHPClass'.DS.'Includes'.DS.'FusionCharts_Gen.php');
+			$document->addScript($this->srcBase."fusionchart/lib/FusionChartsFree/JSClass/FusionCharts.js");
+			$fc_swf_path = COM_FABRIK_LIVESITE.$this->srcBase."fusionchart/lib/FusionChartsFree/Charts/";
+		}
+		else if ($fc_version == 'pro_30') {
+			require_once($this->pathBase.'fusionchart'.DS.'lib'.DS.'FusionCharts'.DS.'Code'.DS.'PHPClass'.DS.'Includes'.DS.'FusionCharts_Gen.php');
+			$document->addScript($this->srcBase."fusionchart/lib/FusionCharts/Code/JSClass/FusionCharts.js");
+			$fc_swf_path = COM_FABRIK_LIVESITE.$this->srcBase."fusionchart/lib/FusionCharts/Charts/";
+		}
+		else {
+			require_once($this->pathBase.'fusionchart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
+			$document->addScript($this->srcBase."fusionchart/lib/FCcharts/FusionCharts.js");
+			$fc_swf_path = COM_FABRIK_LIVESITE.$this->srcBase."fusionchart/lib/FCcharts/";
+		}
 
-		$params = $this->getParams();
 		$calc_prefixes = array('sum___', 'avg___', 'med___', 'cnt___');
 		$calc_prefixmap = array('sum___' => 'sums', 'avg___' => 'avgs', 'med___' => 'medians', 'cnt___' => 'count');
 		$w = $params->get('fusionchart_width');
@@ -275,20 +288,27 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$FC = new FusionCharts("$chartType","$w","$h");
 		//$FC->JSC["debugmode"]=true;
 		// Define path to FC's SWF
-		$FC->setSWFPath($this->srcBase."fusionchart/lib/FCcharts/");
+		$FC->setSWFPath($fc_swf_path);
 
 		$this->setChartMessages($FC);
 
-		// ------------------- Setting Param string
+		// Setting Param string
 		$strParam = $this->getChartParams();
 
-		$x_axis_label 	= $params->get('fusion_x_axis_label', array(), '_default', 'array');
-		$chartElements 	= $params->get('fusionchart_elementList', array(), '_default', 'array');
+		$label_step_ratios = (array)$params->get('fusion_label_step_ratio');
 
-		$chartColours 	= $params->get('fusionchart_colours', array(), '_default', 'array');
-		$listid 				= $params->get('fusionchart_table', array(), '_default', 'array');
-		$axisLabels 		= $params->get('fusionchart_axis_labels', array(), '_default', 'array');
-		$measurement_units = $params->get('fusion_x_axis_measurement_unit', array(), '_default', 'array');
+		$x_axis_label 	= (array)$params->get('fusion_x_axis_label');
+		$chartElements 	= (array)$params->get('fusionchart_elementList');
+
+		$chartColours 	= (array)$params->get('fusionchart_colours');
+		$listid 				= (array)$params->get('fusionchart_table');
+		$axisLabels 		= (array)$params->get('fusionchart_axis_labels');
+		foreach ($axisLabels as $axis_key => $axis_val) {
+			//$worker->replaceRequest($axis_val);
+			$axisLabels[$axis_key] = $worker->parseMessageForPlaceholder($axis_val, null, false);
+		}
+		$dual_y_parents 		= $params->get('fusionchart_dual_y_parent');
+		$measurement_units =(array)$params->get('fusion_x_axis_measurement_unit');
 		$legends  			= $params->get('fusiongraph_show_legend', '');
 		$c = 0;
 		$gdata = array();
@@ -321,7 +341,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			// session state/defaults when it calls getPagination, which is then returned as a cached
 			// object if we call getPagination after render().  So call it first, then render() will
 			// get our cached pagination, rather than vice versa.
-			$nav			=& $listModel->getPagination(0, 0, 0);
+			$nav = $listModel->getPagination(0, 0, 0);
 			$listModel->render();
 			//$listModel->doCalculations();
 			$alldata = $listModel->getData();
@@ -335,14 +355,8 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 			$tmpgdata = array();
 			$tmpglabels = array();
-			//$colour = str_replace("#", '', $chartColours[$c]);
 			$colour = array_key_exists($c , $chartColours) ? str_replace("#", '', $chartColours[$c]) : '';
 
-		/*	if ($fillGraphs) {
-				$c2 = $c + 1;
-				$gfills[] ='b,'. $colour . "," . $c  . ",". $c2 .",0";
-			}
-*/
 			$gcolours[] = $colour;
 
 			if (in_array($pref, $calc_prefixes)) {
@@ -449,71 +463,65 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 				}
 
 				if ($c > 1) {
-					/*
-					// mutiple table/elements, so use the sums
-					// need to scale our data into percentages
-					$tot_sum = array_sum($gsums);
-					$arrData = array();
-					foreach ($gsums as $sum) {
-						$arrData[0] = sprintf('%01.2f', ($sum / $tot_sum) * 100);
-					}
-
-					//$chd = implode(',',$percs);
-					//$chxl = '0:|' . implode('|', $axisLabels);
-
-					if ($legends) {
-						$arrData[1] = $gsums;
-					}
-					else {
-						$arrData[1] = $axisLabels;
-					}
-					$fillGraphs = false;
-					*/
 					$arrCatNames = array();
 					foreach ($axisLabels as $alkey => $al) {
 						$arrCatNames[] = $al;
 					}
 					$arrData = array();
 					$i = 0;
-					foreach ($gdata as $gdkey => $gd) {
-						$arrData[$i][0] = $glabels[$i];
-						$arrData[$i][1] = '';
-						$arrData[$i] = array_merge($arrData[$i], explode(',', $gd));
+				
+					foreach ($gsums as $gd) {
+						$arrData[$i][0] = $axisLabels[$i];
+						$arrData[$i][1] = $gd;
 						$i++;
 					}
 					$FC->addChartDataFromArray($arrData, $arrCatNames);
 				}
 				else {
 					// single table/elements, so use the row data
-
 					$labels = explode('|', $glabels[0]);
 					$gsums = explode(',', $gdata[0]);
 					// scale to percentages
 					$tot_sum = array_sum($gsums);
 					$arrData = array();
-					/*foreach ($gsums as $sum) {
-						$arrData[0] = sprintf('%01.2f', ($sum / $tot_sum) * 100);
-					}*/
 
-
-
+					$labelStep = 0;
+					$label_step_ratio = (int)JArrayHelper::getValue($label_step_ratios, 0, 1);
+					if ($label_step_ratio > 1) {
+						$labelStep = (int)(count($gsums) / $label_step_ratio);
+						$strParam .= ";labelStep=$labelStep";
+					}
 					//$$$tom: inversing array_combine as identical values in gsums will be
 					// dropped otherwise. Should I do that differently?
-					$arrComb = array_combine($labels, $gsums);
-					foreach ($arrComb as $key => $value) {
+					// $$$ hugh - can't use array_combine, as empty labels end up dropping values
+					//$arrComb = array_combine($labels, $gsums);
+					//foreach ($arrComb as $key => $value) {
+					$data_count = 0;
+					foreach ($gsums as $key => $value) {
+						$data_count++;
 						if ($value == '-1') {
 							$value = null;
 						}
-						$FC->addChartData("$value","name=$key");
+						$label = $labels[$key];
+						$str_params = "name=$label";
+						if ($labelStep) {
+							if ($data_count != 1 && $data_count % $labelStep != 0) {
+								$str_params .= ";showName=0";
+							}
+						}
+						$FC->addChartData("$value",$str_params);
 					}
 
 				}
 				break;
 			case 'MSBAR2D':
+			case 'MSBAR3D':
 			case 'MSCOLUMN2D':
 			case 'MSCOLUMN3D':
 			case 'MSLINE':
 			case 'MSAREA2D':
+			case 'MSCOMBIDY2D':
+			case 'MULTIAXISLINE':
 
 			//case 'PIE2D':
 			//case 'PIE3D':
@@ -526,7 +534,6 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			case 'SCROLLCOLUMN2D':
 			case 'SCROLLLINE2D':
 			case 'SCROLLSTACKEDCOLUMN2D':
-
 
 				/*$chd = implode('|', $gdata);
 				if (!empty($chds_override)) {
@@ -557,6 +564,27 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					if ($chartType == 'SCROLLAREA2D' || $chartType == 'SCROLLCOLUMN2D' || $chartType == 'SCROLLLINE2D') {
 						$strParam .= ';numVisiblePlot='.$params->get('fusionchart_scroll_numvisible', 0);
 					}
+				    // $$$ hugh - Dual-Y types
+				    if ($chartType == 'MSCOMBIDY2D' || $chartType == 'MULTIAXISLINE') {
+					    //var_dump($axisLabels);
+					    /*
+					    $strParam .= ';PYAxisName='.$axisLabels[0];
+					    $strParam .= ';SYAxisName='.$axisLabels[1];
+					     */
+					    $p_parents = array();
+					    $s_parents = array();
+
+					    foreach ($dual_y_parents as $dual_y_key => $dual_y_parent) {
+						    if ($dual_y_parent == "P") {
+							    $p_parents[] = $axisLabels[$dual_y_key];
+						    }
+						    else {
+							    $s_parents[] = $axisLabels[$dual_y_key];
+						    }
+					    }
+					    $strParam .= ';PYAxisName=' . implode(' ', $p_parents);
+					    $strParam .= ';SYaxisName=' . implode(' ', $s_parents);
+				    }
 
 					//$$$tom: This is a first attempt at integrating Trendlines but it's not actually working... :s
 					$eltype = $params->get('fusionchart_element_type', 'dataset');
@@ -620,17 +648,37 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 						}
 
 						$FC->addChartDataFromArray($arrData, $arrCatNames);*/
-
+						$label_step_ratio = (int)JArrayHelper::getValue($label_step_ratios, 0, 1);
+						if ($label_step_ratio > 1) {
+							$labelStep = (int)(count(explode(',',$gdata[0])) / $label_step_ratio);
+							$strParam .= ";labelStep=$labelStep";
+						}
 						// Start tom's changes
 						$labels = explode('|',$glabels[0]);
+						$data_count = 0;
 						foreach ($labels as $catLabel) {
-							$FC->addCategory("$catLabel");
+							$data_count++;
+							$catParams = '';
+							if ($labelStep) {
+								if ($data_count == 1 || $data_count % $labelStep == 0) {
+									$catParams = "ShowLabel=1";
+								}
+								else {
+									$catParams = "ShowLabel=0";
+									$catLabel = '';
+								}
+							}
+							$FC->addCategory($catLabel, $catParams);
 						}
 						foreach ($gdata as $key => $chartdata) {
 							$cdata = explode(',',$chartdata);
 							$dataset = $axisLabels[$key];
-							$FC->addDataset("$dataset");
+							$extras = "parentYAxis=".$dual_y_parents[$key];
+							//var_dump($dual_y_parents, $dataset, $extras);
+							$FC->addDataset("$dataset",$extras);
+							$data_count = 0;
 							foreach ($cdata as $key => $value) {
+								$data_count++;
 								if ($value == '-1') {
 									$value = null;
 								}
@@ -682,12 +730,12 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$return .= $qs . '" alt="'.$this->_row->label.'" />';
 		$this->image =  $return;*/
 
-		# Set chart attributes
-		if ($params->get('fusionchart_custom_attributes', '')) {
-			$strParam = trim($params->get('fusionchart_custom_attributes'));
-		}
+	# Set chart attributes
+  	if ($params->get('fusionchart_custom_attributes', '')) {
+  		$strParam .=  ';' . trim($params->get('fusionchart_custom_attributes'));
+  	}
 		$strParam="$strParam";
-		$FC->setChartParams($strParam);
+  	$FC->setChartParams($strParam);
 
 
 		# Render Chart
@@ -698,7 +746,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 	{
 		if (!isset($this->listids)) {
 			$params = $this->getParams();
-			$this->listids = $params->get('fusionchart_table', array(), '_default', 'array');
+			$this->listids = (array)$params->get('fusionchart_table');
 		}
 	}
 
