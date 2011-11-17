@@ -1,0 +1,43 @@
+<?php
+/**
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+// no direct access
+defined('_JEXEC') or die;
+
+$db = JFactory::getDbo();
+//get the package id from #__fabrik_packages for this opton
+$query = $db->getQuery(true);
+$option = JRequest::getCmd('option');
+$query->select('id')->from('#__fabrik_packages')->where('component_name = '.$db->Quote($option).' AND external_ref <> ""')->order('version DESC');
+$db->setQuery($query, 0, 1);
+$id = $db->loadResult();
+JRequest::setVar('id', $id);
+
+// Include dependancies
+jimport('joomla.application.component.controller');
+jimport('joomla.application.component.model');
+jimport('joomla.filesystem.file');
+
+$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? 'user_defines.php' : 'defines.php';
+require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.$defines);
+
+//set the user state to load the package db tables
+$app = JFactory::getApplication();
+$app->setUserState('com_fabrik.package', $option);
+
+//echo $app->getUserState('com_fabrik.package');exit;
+JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+JRequest::setVar('task', 'package.view');
+$config = array();
+$config['base_path'] = JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS;
+
+$controller = JController::getInstance('Fabrik', $config);
+$controller->execute(JRequest::getCmd('task'));
+$controller->redirect();
+
+?>
