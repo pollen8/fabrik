@@ -578,13 +578,15 @@ class FabrikModelPackage extends FabModelAdmin
 
 	protected function copySkeleton($row, &$filenames)
 	{
+		$skeltonFolder = JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'com_fabrik_skeleton'.DS;
+		
 		$name = str_replace('com_', '', $row->component_name);
 		JFolder::create($this->outputPath.DS.'site');
 		JFolder::create($this->outputPath.DS.'site'.DS.'views');
 		JFolder::create($this->outputPath.DS.'admin');
 		JFolder::create($this->outputPath.DS.'admin'.DS.'installation');
 
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'fabrik_skeleton.php';
+		$from = $skeltonFolder.'fabrik_skeleton.php';
 		$to = $this->outputPath.DS.'site'.DS.$name.'.php';
 		if (JFile::exists($to)) {
 			JFile::delete($to);
@@ -593,7 +595,7 @@ class FabrikModelPackage extends FabModelAdmin
 		$filenames[] = $to;
 
 		//admin holding page
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'admin.php';
+		$from = $skeltonFolder.'admin.php';
 		$to = $this->outputPath.DS.'admin'.DS.$name.'.php';
 		if (JFile::exists($to)) {
 			JFile::delete($to);
@@ -602,34 +604,34 @@ class FabrikModelPackage extends FabModelAdmin
 		$filenames[] = $to;
 
 
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'index.html';
+		$from = $skeltonFolder.'index.html';
 		$to = $this->outputPath.DS.'admin'.DS.'installation'.DS.'index.html';
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'index.html';
+		$from = $skeltonFolder.'index.html';
 		$to = $this->outputPath.DS.'site'.DS.'index.html';
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
 
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'index.html';
+		$from = $skeltonFolder.'index.html';
 		$to = $this->outputPath.DS.'admin'.DS.'index.html';
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'images'.DS;
+		$from = $skeltonFolder.'images'.DS;
 		$to = $this->outputPath.DS.'admin'.DS.'images';
 		JFolder::copy($from, $to, '', true);
 		$filenames[] = $to;
 
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'views'.DS;
+		$from = $skeltonFolder.'views'.DS;
 		$to = $this->outputPath.DS.'site'.DS.'views';
 		JFolder::copy($from, $to, '', true);
 		$filenames[] = $to;
 
 		/*//testing this tmp file
-		$from = JPATH_ROOT.DS.'components'.DS.'com_fabrik_skeleton'.DS.'fabrik_skeleton.php';
+		$from = $skeltonFolder.'fabrik_skeleton.php';
 		$to = $this->outputPath.DS.'admin'.DS.$name.'.php';
 		JFile::copy($from, $to);
 		$filenames[] = $to;*/

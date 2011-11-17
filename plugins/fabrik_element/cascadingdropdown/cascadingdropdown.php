@@ -354,7 +354,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	protected function showPleaseSelect()
 	{
 		$params = $this->getParams();
-		if (!$this->_editable) {
+		if (!$this->_editable && JRequest::getVar('method') !== 'ajax_getOptions' ) {
 			return false;
 		}
 		return $params->get('cascadingdropdown_showpleaseselect', true);

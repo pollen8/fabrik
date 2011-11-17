@@ -177,7 +177,11 @@ var FloatingTips = new Class({
 		if (o.balloon && !Browser.ie6) {
 			
 			var trg = new Element('div').addClass(o.className + '-triangle').setStyles({ 'margin': 0, 'padding': 0, 'position': 'absolute' });
-			trg.setStyle('z-index', tip.getStyle('z-index') -1);
+			var zi = tip.getStyle('z-index');
+			if (zi !== 'auto') {
+				zi = zi - 1;
+			}
+			trg.setStyle('z-index', zi);
 			var trgSt = {};
 		
 			var r = 0;
