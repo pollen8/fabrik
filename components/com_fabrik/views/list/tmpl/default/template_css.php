@@ -238,17 +238,37 @@ div.calendar{
 
 #listform_$c .fabrik_buttons{
 	/* remove this if you want the top menu bar to be on the right hand side*/
-	float:left !important; 
+	float:left !important;
 }
 
-#listform_$c ul.fabrik_action,
-#listform_$c ul.pagination {
+#listform_$c ul.fabrik_action {
 	list-style:none;
 	background:none;
 	list-style:none;
 	min-height:25px;
 	border-radius: 6px;
 	float:right;
+	margin:5px;
+	padding:0;
+	border:1px solid #999;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#cccccc'); /* for IE */
+
+	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
+		to(#ccc) ); /* for webkit browsers */
+	background: -moz-linear-gradient(top, #eee, #ccc);
+	background: -o-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
+  background: -ms-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
+
+}
+
+/* $$$ hugh - separated pagination from fabrik_action, 'cos float right makes pagination disappear in Chrome! */
+#listform_$c ul.pagination {
+	list-style:none;
+	background:none;
+	list-style:none;
+	min-height:25px;
+	border-radius: 6px;
+	/* float:right; */
 	margin:5px;
 	padding:0;
 	border:1px solid #999;
