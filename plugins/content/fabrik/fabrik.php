@@ -578,6 +578,8 @@ class plgContentFabrik extends JPlugin
 				$controller = new FabrikController();
 				break;
 		}
+		//set a cacheId so that the controller grabs/creates unique caches for each form/table rendered
+		$controller->cacheId = $id;
 		return $controller;
 	}
 
