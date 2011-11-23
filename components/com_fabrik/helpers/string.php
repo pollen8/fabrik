@@ -159,13 +159,14 @@ class FabrikString extends JString{
 	 * whitespace compressed and replaced with '_'
 	 * replace all non-alphanumeric chars except _ and - with '_'
 	 * 28/06/2011 replaces umlauts with eu
+	 * 22/11/2011 added IGNORE to default enc otherwise iconv chops everything after first unconvertable char
 	 * @param $str to clean
 	 * @param str from encoding
 	 * @paran str to encoding
 	 * @return string cleaned
 	 */
 
-	function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//TRANSLIT")
+	function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
 	{
 		//replace umlauts
 
