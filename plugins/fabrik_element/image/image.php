@@ -28,7 +28,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$w = new FabrikWorker();
-			$this->_default = $params->get('imagefile');
+			//$this->_default = $params->get('imagefile');
+			$this->_default = $params->get('imagepath');
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
@@ -135,7 +136,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$iPath = $params->get('imagepath');
 			if (!strstr($iPath, '/')) {
 				//single file specified so find it in tmpl folder
-				$data = FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), false);
+				$data[] = FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), false);
 			}
 		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
@@ -145,7 +146,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$showImage = $params->get('show_image_in_table', 0);
 		$linkURL = $params->get('link_url', '');
 		if (empty($data) || $data[0] == '') {
-			$data[] = $params->get('imagefile');
+			//$data[] = $params->get('imagefile');
+			$data[] = $params->get('imagepath');
 		}
 		for ($i=0; $i <count($data); $i++) {
 			if ($showImage) {
