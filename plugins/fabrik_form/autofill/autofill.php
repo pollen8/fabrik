@@ -22,14 +22,14 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 class plgFabrik_FormAutofill extends plgFabrik_Form {
 
 	var $_counter = null;
-	
+
 	/**
 	 * need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
 	 * @param object $params
 	 * @param object $formModel
 	 */
-	
+
 	function onAfterJSLoad(&$params, &$formModel)
 	{
 		FabrikHelperHTML::script('plugins/fabrik_form/autofill/autofill.js');
@@ -57,7 +57,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 	 * called via ajax to get the first match record
 	 * @return string json object of record data
 	 */
-	
+
 	function onajax_getAutoFill()
 	{
 		$params = $this->getParams();
@@ -93,8 +93,17 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 				foreach($map as $from => $to) {
 					$toraw = $to.'_raw';
 					$fromraw = $from.'_raw';
-					$newdata->$to = $data->$from;
-					$newdata->$toraw = $data->$fromraw;
+					if (is_array($to)) {
+						foreach ($to as $to2) {
+							$to2_raw = $to2.'_raw';
+							$newdata->$to2 = $data->$from;
+							$newdata->$to2_raw = $data->$fromraw;
+						}
+					}
+					else {
+						$newdata->$to = $data->$from;
+						$newdata->$toraw = $data->$fromraw;
+					}
 				}
 			} else {
 				$newdata = $data;
