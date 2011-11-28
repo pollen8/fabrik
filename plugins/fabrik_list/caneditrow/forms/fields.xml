@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset name="plg-list-caneditrow">
+			<field name="caneditrow_field" 
+				type="listfields"
+				repeat="true"
+				valueformat="tableelement"
+				label="PLG_LIST_CANEDITROW_ELEMENT_LABEL"
+				description="PLG_LIST_CANEDITROW_ELEMENT_DESC" />
+			<field name="caneditrow_useraw"
+				type="radio"
+				repeat="true"
+				default="0"
+				label="PLG_LIST_CANEDITROW_USERAW_LABEL"
+				description="PLG_LIST_CANEDITROW_USERAW_DESC">
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</field>			
+			<field name="caneditrow_value" 
+				type="text"
+				repeat="true"
+				size="20" 
+				label="PLG_LIST_CANEDITROW_VALUE_LABEL"
+				description="PLG_LIST_CANEDITROW_VALUE_DESC" />
+			<field name="caneditrow_eval"
+				type="textarea"
+				repeat="true"
+				rows="5"
+				cols="30"
+				label="PLG_LIST_CANEDITROW_EVAL_LABEL"
+				description="PLG_LIST_CANEDITROW_EVAL_DESC" />
+		</fieldset>
+	</fields>
+</form>
