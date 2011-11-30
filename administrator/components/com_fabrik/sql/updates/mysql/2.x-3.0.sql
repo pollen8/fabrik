@@ -8,7 +8,7 @@ ALTER TABLE `#__fabrik_elements` CHANGE `state` `published` INT( 1 ) NOT NULL DE
 ALTER TABLE `#__fabrik_elements` DROP `button_javascript`;
 ALTER TABLE `#__fabrik_elements` DROP `sub_values`;
 ALTER TABLE `#__fabrik_elements` DROP `sub_labels`;
-ALTER TABLE `#__fabrik_elements` DROP `sub_initial_selection`;
+ALTER TABLE `#__fabrik_elements` DROP `sub_intial_selection`;
 ALTER TABLE `#__fabrik_elements` CHANGE `attribs` `params` TEXT NOT NULL;
 ALTER TABLE `#__fabrik_forms` CHANGE `state` `published` INT( 1 ) NOT NULL DEFAULT '0';
 ALTER TABLE `#__fabrik_forms` CHANGE `attribs` `params` TEXT NOT NULL;
@@ -32,4 +32,4 @@ ALTER TABLE `#__fabrik_validations` CHANGE `clent_side_validation` `client_side_
 ALTER TABLE `#__fabrik_validations` CHANGE `attribs` `params` TEXT NOT NULL;
 ALTER TABLE `#__fabrik_visualizations` CHANGE `state` `published` INT( 1 ) NOT NULL DEFAULT '0';
 ALTER TABLE `#__fabrik_visualizations` CHANGE `attribs` `params` TEXT NOT NULL;
-ALTER TABLE '#__fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL;
+ALTER TABLE `#__fabrik_ratings` CHANGE `tableid` `listid` INT( 6 ) NOT NULL;
