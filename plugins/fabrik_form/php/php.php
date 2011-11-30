@@ -159,7 +159,23 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onLoad( &$params, &$formModel)
  	{
  	 	if ($params->get('only_process_curl') == 'onLoad') {
- 			$this->_runPHP( $params, $formModel);
+ 			return $this->_runPHP( $params, $formModel);
+ 		}
+ 		return true;
+ 	}
+
+ 	/**
+ 	* run when the form is loaded - before its data has been created
+ 	* data found in $formModel->_data
+ 	* @param object $params
+ 	* @param object $formModel
+ 	* @return unknown_type
+ 	*/
+
+ 	function onBeforeLoad( &$params, &$formModel)
+ 	{
+ 		if ($params->get('only_process_curl') == 'onBeforeLoad') {
+ 			return $this->_runPHP( $params, $formModel);
  		}
  		return true;
  	}
@@ -218,7 +234,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 			$php_file = JPATH_ROOT.DS.'plugins'.DS.'fabrik_form'.DS.'php'.DS.'scripts'.DS.$php_file;
 
 			$method = $params->get('only_process_curl');
-			if ($method == 'getBottomContent' || $method == 'getTopContent') {
+			if ($method == 'getBottomContent' || $method == 'getTopContent' || $method == 'getEndContent') {
 				//for these types of scripts any out put you want to inject into the form should be echo'd out
 				// @TODO - shouldn't we apply this logic above as well (direct eval)?
 				ob_start();

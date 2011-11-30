@@ -61,7 +61,9 @@ class JFormFieldElement extends JFormFieldList
 			$include_calculations = 0;
 		}
 
-		if (!array_key_exists($this->id, $fabrikelements)) {
+		// $$$ hugh - don't know what's going on here, except that this method is getting called twice for every element
+		// but first time round, $this->value is not set, so if we cache it, setting loses it's value.
+		//if (!array_key_exists($this->id, $fabrikelements)) {
 			$opts = new stdClass();
 			if ($this->form->repeat) {
 				//in repeat fieldset/group
@@ -87,7 +89,7 @@ class JFormFieldElement extends JFormFieldList
 			$script = implode("\n", $script);
 			$fabrikelements[$this->id] = true;
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/element.js', $script);
-		}
+		//}
 		$return = parent::getInput();
 		$return .= '<img style="margin-left:10px;display:none" id="'.$this->id.'_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('COM_FABRIK_LOADING'). '" />';
 		return $return;

@@ -457,7 +457,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$where = '';
 		}
 		$join = $this->getJoin();
-		
+
 		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of _buildQuery()
 		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches)) {
 			//$this->orderBy = $matches[0];
@@ -470,7 +470,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($where == '') {
 			return $where;
 		}
-		
+
 		$where = str_replace("{thistable}", $join->table_join_alias, $where);
 		$w = new FabrikWorker();
 		$data = is_array($data) ? $data : array();
@@ -1386,7 +1386,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = json_decode($data['params']);
 		$element = $this->getElement();
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		$key = array('element_id' => $data['id'], 'listid' => 0);
+		$key = array('element_id' => $data['id'], 'list_id' => 0);
 		$join->load($key);
 		if ($join->element_id == 0) {
 			$join->element_id = $elementId;

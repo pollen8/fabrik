@@ -158,6 +158,13 @@
 				label="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_LABEL"
 				description="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_DESC">
 			</field>
+			
+			<field name="paypal_subscription_switch"
+				type="textarea"
+				cols="30" rows="5"
+				label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL"
+				description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC">
+			</field>
 	
 			<field name="@spacer" repeat="true" type="spacer" label="" />
 			
