@@ -1,5 +1,6 @@
 UPDATE `#__fabrik_elements` set plugin = (SELECT replace(plugin,'fabrik', ''));
 ALTER TABLE `#__fabrik_connections` CHANGE `attribs` `params` TEXT;
+ALTER TABLE `#__fabrik_connections` CHANGE `state` `published` INT( 1 ) NOT NULL DEFAULT '0';
 ALTER TABLE `#__fabrik_cron` CHANGE `state` `published` INT( 1 ) NOT NULL DEFAULT '0';
 ALTER TABLE `#__fabrik_cron` CHANGE `attribs` `params` TEXT NOT NULL;
 ALTER TABLE `#__fabrik_elements` CHANGE `show_in_table_summary` `show_in_list_summary` INT( 1 ) NOT NULL DEFAULT '0';
