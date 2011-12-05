@@ -34,7 +34,7 @@ var Autofill = new Class({
 		this.element = this.form.formElements.get(this.options.observe);
 		//if its a joined element
 		if (!this.element) {
-			var regex = new RegExp(this.options.observe);
+			var regex = new RegExp(this.options.observe + '$');
 			var k = Object.keys(this.form.formElements);
 			var ii = k.each(function (i) {
 				if (i.test(regex)) {
@@ -43,17 +43,17 @@ var Autofill = new Class({
 			}.bind(this));
 		}
 		if (this.options.trigger === '') {
-			if (typeOf($(this.options.observe)) !== 'null') {
-				var elEvnt = $(this.options.observe).get('tag') === 'select' ? 'change' : 'blur';
-				this.form.dispatchEvent('', this.options.observe, elEvnt, evnt);
-			} else {
+			if (!this.element) {
 				fconsole('autofill - couldnt find element to observe');
+			} else {
+				var elEvnt = this.element.element.get('tag') === 'select' ? 'change' : 'blur';
+				this.form.dispatchEvent('', this.element.strElement, elEvnt, evnt);
 			}
 		} else {
 			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
 		}
 		if (this.options.fillOnLoad && form.options.rowid === '0') {
-			var t = this.options.trigger === '' ? this.options.observe : this.options.trigger;
+			var t = this.options.trigger === '' ? this.element.strElement : this.options.trigger;
 			this.form.dispatchEvent('', t, 'load', evnt);
 		}
 	},
