@@ -32,7 +32,7 @@ class FabrikControllerForm extends JController
 	 * @since 3.0b
 	 * inline edit control
 	 */
-	
+
 	public function inlineedit()
 	{
 		$document = JFactory::getDocument();
@@ -47,7 +47,7 @@ class FabrikControllerForm extends JController
 		//todo check for cached version
 		$view->inlineEdit();
 	}
-	
+
 	/**
 	 * Display the view
 	 */
@@ -75,9 +75,9 @@ class FabrikControllerForm extends JController
 
 		// Push a model into the view (may have been set in content plugin already
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
-		
+
 		//test for failed validation then page refresh
-		$model->clearErrors();
+		$model->getErrors();
 		if (!JError::isError($model) && is_object($model)) {
 			$view->setModel($model, true);
 		}
@@ -114,7 +114,7 @@ class FabrikControllerForm extends JController
 		$model = $this->getModel('form', 'FabrikFEModel');
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
-		
+
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);
 		}
@@ -123,21 +123,21 @@ class FabrikControllerForm extends JController
 		$this->isMambot = JRequest::getVar('isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
-		
+
 		// Check for request forgeries
 		if ($model->spoofCheck()) {
 			JRequest::checkToken() or die('Invalid Token');
 		}
-		
+
 		if (!$model->validate()) {
 			//if its in a module with ajax or in a package
 			if (JRequest::getCmd('fabrik_ajax')) {
-				
+
 				echo $model->getJsonErrors();
 				return;
 			}
 			$this->savepage();
-			
+
 			if ($this->isMambot) {
 				$this->setRedirect($this->getRedirectURL($model, false));
 			} else {
@@ -156,26 +156,26 @@ class FabrikControllerForm extends JController
 		$model->clearErrors();
 
 		$model->process();
-		
+
 		if (JRequest::getInt('elid') !== 0) {
 			//inline edit show the edited element - ignores validations for now
 			echo $model->inLineEditResult();
 			return;
 		}
-		
+
 		//check if any plugin has created a new validation error
 		if (!empty($model->_arErrors)) {
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}
-		
+
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
-		
+
 		$url = $this->getRedirectURL($model);
 		$msg = $this->getRedirectMessage($model);
-		
+
 		// @todo -should get handed off to the json view to do this
 		if (JRequest::getInt('fabrik_ajax') == 1) {
 			//let form.js handle the redirect logic (will also send out a
