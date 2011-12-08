@@ -54,7 +54,7 @@ class flashRender{
 		//var_dump($relPath, $thisFileInfo);
 		$w = $params->get('fu_main_max_width', 0);
 		$h = $params->get('fu_main_max_height', 0);
-		if (array_key_exists('swf', $thisFileInfo)) {
+		if ($thisFileInfo && array_key_exists('swf', $thisFileInfo)) {
 			if ($thisFileInfo['swf']['header']['frame_width'] < $w
 			|| $thisFileInfo['swf']['header']['frame_height'] < $h) {
 				$w = $thisFileInfo['swf']['header']['frame_width'];
