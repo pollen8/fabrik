@@ -229,6 +229,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 			global $fabrikFormData, $fabrikFormDataWithTableName;
 			// for some reason, = wasn't working??
 			$fabrikFormData = $this->_data;
+			// $$$ hugh - doesn't exist for tableless forms
 			if (isset($formModel->_formDataWithtableName)) {
 				$fabrikFormDataWithTableName = $formModel->_formDataWithtableName;
 			}
