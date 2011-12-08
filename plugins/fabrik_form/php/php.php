@@ -229,7 +229,10 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 			global $fabrikFormData, $fabrikFormDataWithTableName;
 			// for some reason, = wasn't working??
 			$fabrikFormData = $this->_data;
-			$fabrikFormDataWithTableName = $formModel->_formDataWithtableName;
+			// $$$ hugh - doesn't exist for tableless forms
+			if (isset($formModel->_formDataWithtableName)) {
+				$fabrikFormDataWithTableName = $formModel->_formDataWithtableName;
+			}
 			$php_file = JFilterInput::clean($params->get('form_php_file'), 'CMD');
 			$php_file = JPATH_ROOT.DS.'plugins'.DS.'fabrik_form'.DS.'php'.DS.'scripts'.DS.$php_file;
 
