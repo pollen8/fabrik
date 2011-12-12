@@ -385,6 +385,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			}
 			$state = JArrayHelper::getValue($states, $c, 1);
 			if ($state == false) {
+				$c++;
 				continue;
 			}
 			if ($usedPlugin != '') {
