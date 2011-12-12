@@ -6026,7 +6026,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function isAjax()
 	{
-		$params = &$this->getParams();
+		$params = $this->getParams();
 		if (is_null($this->ajax)) {
 			// $$$ rob 11/07/2011 if post method set to ajax in request use that over the list_nav option
 			if (JRequest::getVar('ajax', false) == '1') {
@@ -6036,6 +6036,18 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		return (bool)$this->ajax;
+	}
+	
+	/**
+	 * model edit/add links can be set separately to the ajax option
+	 * @return boolean
+	 */
+
+	protected function isAjaxLinks()
+	{
+		$params = $this->getParams();
+		$ajax = $this->isAjax();
+		return (bool)$params->get('list_ajax_links', $ajax);
 	}
 
 	/**
@@ -6219,12 +6231,12 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		if (empty($addurl_url)) {
-			if ($this->isAjax()) {
+			if ($this->isAjaxLinks()) {
 				$qs['ajax'] = '1';
 			}
 			$formModel = $this->getFormModel();
 			$formid = $formModel->getForm()->id;
-			if ($this->packageId !== 0 || $this->isAjax()) {
+			if ($this->packageId !== 0 || $this->isAjaxLinks()) {
 				$qs['tmpl'] = 'component';
 			}
 	
