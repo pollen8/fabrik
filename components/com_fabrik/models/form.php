@@ -3249,7 +3249,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 						//if (!isset($this->_data['join'])) {
 						//$this->_data['join'] = array();
 						//}
-						if (is_array($origData) && array_key_exists($joinTable->id, $origData['join']) && !empty($origData['join'][$joinTable->id])) {
+						if (is_array($origData) && array_key_exists('join', $origData) && array_key_exists($joinTable->id, $origData['join']) && !empty($origData['join'][$joinTable->id])) {
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);

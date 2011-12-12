@@ -1085,7 +1085,7 @@ var FbList = new Class({
 			}.bind(this));
 		}
 		var addRecord = this.form.getElement('.addRecord');
-		if (typeOf(addRecord) !== 'null' && (this.options.ajax)) {
+		if (typeOf(addRecord) !== 'null' && (this.options.ajax_links)) {
 			addRecord.removeEvents();
 			addRecord.addEvent('click', function (e) {
 				e.stop();

@@ -55,7 +55,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
-		FabrikHelperHTML::addStyleDeclaration('.focusClass{border:1px solid red !important;}');
+		//FabrikHelperHTML::addStyleDeclaration('.focusClass{border:1px solid red !important;}');
 		FabrikHelperHTML::script('media/com_fabrik/js/element.js');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getVar('listid'));
