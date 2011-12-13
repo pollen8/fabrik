@@ -160,6 +160,7 @@ class plgContentFabrik extends JPlugin
 					$viewName = 'list';
 					$element = $m[1];
 					break;
+				case 'table':
 				case 'list':
 					$listid = $m[1];
 					break;
@@ -234,12 +235,13 @@ class plgContentFabrik extends JPlugin
 		if ($element !== false) {
 			//special case for rendering element data
 			$controller = $this->_getController('list', $listid);
+			//$view 			=& $this->_getView($controller, $viewName, $listid);
 			$model 			=& $this->_getModel($controller, 'list', $listid);
 			if (!$model) {
 				return;
 			}
 			$model->setId($listid);
-			$formModel =& $model->getForm();
+			$formModel =& $model->getFormModel();
 			$groups =& $formModel->getGroupsHiarachy();
 			foreach ($groups as $groupModel) {
 				$elements =& $groupModel->getMyElements();
@@ -341,6 +343,7 @@ class plgContentFabrik extends JPlugin
 				JRequest::setVar('rowid', $rowid);
 				break;
 			case 'csv':
+			case 'table':
 			case 'list':
 				/// $$$ rob 15/02/2011 addded this as otherwise when you filtered on a table with multiple filter set up subsequent tables were showing
 				//the first tables data
@@ -372,7 +375,7 @@ class plgContentFabrik extends JPlugin
 
 				}
 				$model->setOrderByAndDir();
-				$formModel =& $model->getForm();
+				$formModel =& $model->getFormModel();
 				//apply filters set in mambot
 				foreach ($unused as $k=>$v) {
 
