@@ -4348,6 +4348,7 @@ class FabrikFEModelList extends JModelForm {
 		$aSums = array();
 		$aMedians = array();
 		$aCounts = array();
+		$aCustoms = array();
 		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			$elementModels = $groupModel->getPublishedElements();
@@ -4358,11 +4359,13 @@ class FabrikFEModelList extends JModelForm {
 				$avg 			= $params->get('avg_on', '0');
 				$median 		= $params->get('median_on', '0');
 				$countOn 		= $params->get('count_on', '0');
+				$customOn		= $params->get('custom_calc_on', '0');
 
 				$sumAccess 		= $params->get('sum_access', 0);
 				$avgAccess 		= $params->get('avg_access', 0);
 				$medianAccess 	= $params->get('median_access', 0);
 				$countAccess 	= $params->get('count_access', 0);
+				$customAccess	= $params->get('custom_calc_access', 0);
 
 				if (in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
 					$aSums[$elName] = $params->get('sum_value', '');
@@ -4389,19 +4392,29 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if (in_array($countAccess, $aclGroups) && $params->get('count_value', '') != '') {
+				if ($countOn && in_array($countAccess, $aclGroups) && $params->get('count_value', '') != '') {
 					$aCounts[$elName] = $params->get('count_value', '');
 					$ser = $params->get('count_value_serialized');
 					if (is_string($ser)) {
 						$aCounts[$elName."_obj"] = unserialize($ser);
 					}
 				}
+
+				if ($customOn && in_array($customAccess, $aclGroups)) {
+					$aCustoms[$elName] = $params->get('custom_calc_value', '');
+					$ser = $params->get('custom_calc_value_serialized');
+					if (is_string($ser)) {
+						$aCounts[$elName."_obj"] = unserialize($ser);
+					}
+				}
+
 			}
 		}
 		$aCalculations['sums'] 			= $aSums;
 		$aCalculations['avgs'] 			= $aAvgs;
 		$aCalculations['medians'] 	= $aMedians;
 		$aCalculations['count'] 		= $aCounts;
+		$aCalculations['custom_calc']	= $aCustoms;
 		$this->_aRunCalculations = $aCalculations;
 		return $aCalculations;
 	}
@@ -4885,6 +4898,12 @@ class FabrikFEModelList extends JModelForm {
 					$aCountCals = $elementModel->count($this);
 					$params->set('count_value_serialized', serialize($aCountCals[1]));
 					$params->set('count_value', $aCountCals[0]);
+					$update = true;
+				}
+				if ($params->get('custom_calc_on', 0)) {
+					$aCustomCalcCals = $elementModel->custom_calc($this);
+					$params->set('custom_calc_value_serialized', serialize($aCustomCalcCals[1]));
+					$params->set('custom_calc_value', $aCustomCalcCals[0]);
 					$update = true;
 				}
 				if ($update) {
@@ -6037,7 +6056,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return (bool)$this->ajax;
 	}
-	
+
 	/**
 	 * model edit/add links can be set separately to the ajax option
 	 * @return boolean

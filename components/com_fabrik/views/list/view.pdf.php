@@ -153,7 +153,7 @@ class FabrikViewList extends JView{
 		//reset data back to original settings
 		$this->rows = $origRows;
 	}
-	
+
 	protected function getElementJs()
 	{
 		$model = $this->getModel();
@@ -453,6 +453,26 @@ protected function _getCalculations($aCols)
 				$oCalcs->$tmpKey = $res;
 				$found = true;
 			}
+
+			if (array_key_exists($key. '_obj', $modelCals['custom_calc'])) {
+				$found = true;
+				$res = $modelCals['custom_calc'][$key. '_obj'];
+				foreach ($res as $k => $v) {
+					if ($k != 'calc') {
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
+					}
+				}
+			}
+
+			if (array_key_exists($key, $modelCals['custom_calc'])) {
+				$res = $modelCals['custom_calc'][$key];
+				$calc .= $res;
+				$tmpKey = str_replace(".", "___", $key) . "_calc_custom_calc";
+				$oCalcs->$tmpKey = $res;
+				$found = true;
+			}
+
+
 			$key = str_replace(".", "___", $key);
 			$oCalcs->calc = $calc;
 			$aData[$key] = $oCalcs;

@@ -907,7 +907,7 @@ class plgFabrik_Element extends FabrikPlugin
 		if ($formModel->getParams()->get('tiplocation', 'tip') == 'tip' && (($mode == 'form' && ($formModel->_editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false))) {
 			$rollOver = $this->getTip($data);
 			$pos = $params->get('tiplocation', 'top');
-			$opts = "{position:'$pos', notice:true}"; 
+			$opts = "{position:'$pos', notice:true}";
 			if ($rollOver == '') {
 				return $txt;
 			}
@@ -2178,7 +2178,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
-		
+
 		$return = array();
 		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
 		$return[] = $prefix.'[key][]" value="'.$elName.'" />';
@@ -2572,6 +2572,28 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 	}
 
+	protected function getCustomQuery(&$listModel, $label = "'calc'")
+	{
+		$params = $this->getParams();
+		$custom_query	= $params->get('custom_calc_query', '');
+		$item = $listModel->getTable();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
+		$groupModel = $this->getGroup();
+		if ($groupModel->isJoin()) {
+			//element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
+			$custom_query = sprintf($custom_query, $name);
+			return "SELECT $custom_query AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL";
+		} else {
+			// need to do first query to get distinct records as if we are doing left joins the sum is too large
+			$custom_query = sprintf($custom_query, 'value');
+			return "SELECT $custom_query AS value, label
+				FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL) AS t";
+		}
+	}
+
+
 
 	protected function getMedianQuery(&$listModel, $label = "'calc'")
 	{
@@ -2773,6 +2795,43 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$results = $db->loadObjectList('label');
 		}
 		$res = $this->formatCalcs($results, $calcLabel, $split, false);
+		return array($res, $results);
+	}
+
+	/**
+	* calculation: custom_calc
+	* can be overridden in element class
+	* @param object table model
+	* @return array
+	*/
+
+	function custom_calc(&$listModel)
+	{
+		$db = $listModel->getDb();
+		$params = $this->getParams();
+		$item = $listModel->getTable();
+		$splitCustom	= $params->get('custom_calc_split', '');
+		$split = $splitCustom == '' ? false : true;
+		$calcLabel 	= $params->get('custom_calc_label', JText::_('COM_FABRIK_CUSTOM'));
+		if ($split) {
+			$pluginManager = FabrikWorker::getPluginManager();
+			$plugin = $pluginManager->getElementPlugin($splitCustom);
+			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			$splitName = FabrikString::safeColName($splitName);
+			$sql = $this->getCustomQuery($listModel, $splitName) . " GROUP BY label";
+			$sql = $listModel->pluginQuery($sql);
+			$db->setQuery($sql);
+			$results2 = $db->loadObjectList('label');
+			$results = $this->formatCalcSplitLabels($results2, $plugin, 'custom_calc');
+		} else {
+			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
+			// an error is produced
+			$sql = $this->getCustomQuery($listModel). " GROUP BY label";
+			$sql = $listModel->pluginQuery($sql);
+			$db->setQuery($sql);
+			$results = $db->loadObjectList('label');
+		}
+		$res = $this->formatCalcs($results, $calcLabel, $split);
 		return array($res, $results);
 	}
 

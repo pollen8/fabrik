@@ -462,6 +462,12 @@ class FabrikPlugin extends JPlugin
 							$c->label = JText::_('COM_FABRIK_COUNT') . ": " .$label;
 							$arr[] = $c; //dont use =
 						}
+						if ($params->get('custom_calc_on', 0)) {
+							$c = new stdClass();
+							$c->value = 'cnt___'.$v;
+							$c->label = JText::_('COM_FABRIK_CUSTOM') . ": " .$label;
+							$arr[] = $c; //dont use =
+						}
 					}
 				}
 			}
