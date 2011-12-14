@@ -401,6 +401,39 @@
 					type="listfields"
 					valueformat="id"
 					label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" />
+					
+				<field name="" type="spacer" default=" " />
+				
+				<field name="custom_calc_on" 
+					type="radio"
+					default="0"
+					label="COM_FABRIK_FIELD_CUSTOM_CALC_LABEL"
+					description="COM_FABRIK_FIELD_CUSTOM_CALC_DESC">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
+				<field name="custom_calc_label"
+					type="text"
+					default="Custom"
+					label="COM_FABRIK_FIELD_CUSTOM_CALC_LABEL_LABEL"
+					description="COM_FABRIK_FIELD_CUSTOM_CALC_LABEL_DESC" />
+				
+				<field name="custom_calc_query" 
+					type="text"
+					size="40"
+					label="COM_FABRIK_FIELD_CUSTOM_CALC_QUERY_LABEL"
+					description="COM_FABRIK_FIELD_CUSTOM_CALC_QUERY_DESC" />
+							
+				<field name="custom_calc_access"
+					type="accesslevel"
+					label="COM_FABRIK_FIELD_CUSTOM_CALC_ACCESS_LABEL" 
+					description="COM_FABRIK_FIELD_CUSTOM_CALC_ACCESS_DESC" />
+					
+				<field name="custom_calc_split"
+					type="listfields"
+					valueformat="id"
+					label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" />
 						
 			</fieldset>
 			

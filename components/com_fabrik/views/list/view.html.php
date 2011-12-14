@@ -30,7 +30,7 @@ class FabrikViewList extends JView{
 		if ($model->requiresSlimbox()) {
 			FabrikHelperHTML::slimbox();
 		}
-	
+
 		$src = $this->get('PluginJsClasses');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
@@ -65,7 +65,7 @@ class FabrikViewList extends JView{
 		foreach ($labels as &$l) {
 			$l = strip_tags($l);
 		}
-		
+
 		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid 		= $tmpItemid;
@@ -86,7 +86,7 @@ class FabrikViewList extends JView{
 		$csvOpts->incraw = (int)$listParams->get('csv_include_raw_data');
 		$csvOpts->inccalcs = (int)$listParams->get('csv_include_calculations');
 		$opts->csvOpts = $csvOpts;
-		
+
 		$opts->csvFields = $this->get('CsvFields');
 		$csvOpts->incfilters = (int)$listParams->get('incfilters');
 
@@ -399,7 +399,7 @@ class FabrikViewList extends JView{
 		// $$$ rob 09/06/2011 no need for isMambot test? should use ob_start() in module / plugin to capture the output
 		echo $text;
 	}
-	
+
 	/**
 	 * build an object with the button icons based on the current tmpl
 	 */
@@ -414,13 +414,13 @@ class FabrikViewList extends JView{
 		$this->buttons->feed = FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, $buttonProperties);
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_EMPTY').'</span>';
 		$this->buttons->empty = FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, $buttonProperties);
-		
+
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_GROUP_BY').'</span>';
 		$this->buttons->groupby = FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, $buttonProperties);
-		
+
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_FILTER').'</span>';
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
-		
+
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_ADD').'</span>';
 		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
 	}
@@ -512,6 +512,25 @@ class FabrikViewList extends JView{
 				$oCalcs->$tmpKey = $res;
 				$found = true;
 			}
+
+			if (array_key_exists($key. '_obj', $modelCals['custom_calc'])) {
+				$found = true;
+				$res = $modelCals['custom_calc'][$key. '_obj'];
+				foreach ($res as $k => $v) {
+					if ($k != 'calc') {
+						@$oCalcs->grouped[$k] .= "<span class=\"calclabel\">".$v->calLabel . ":</span> " . $v->value . "<br />";
+					}
+				}
+			}
+
+			if (array_key_exists($key, $modelCals['custom_calc'])) {
+				$res = $modelCals['custom_calc'][$key];
+				$calc .= $res;
+				$tmpKey = str_replace(".", "___", $key) . "_calc_custom_calc";
+				$oCalcs->$tmpKey = $res;
+				$found = true;
+			}
+
 			$key = str_replace(".", "___", $key);
 			$oCalcs->calc = $calc;
 			$aData[$key] = $oCalcs;

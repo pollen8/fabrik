@@ -419,8 +419,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 					if (JRequest::getVar('fabrik_cascade_ajax_update') == 1) {
 						$whereval = JRequest::getVar('v');
 					} else {
-						if (isset($this->_form->_data)) {
-							$whereval = $elementModel->getValue($this->_form->_data, $repeatCounter);
+						if (isset($this->_form->_data) || isset($this->_form->_formData)) {
+							if (isset($this->_form->_data)) {
+								$whereval = $elementModel->getValue($this->_form->_data, $repeatCounter);
+							}
+							else {
+								$whereval = $elementModel->getValue($this->_form->_formData, $repeatCounter);
+							}
 							// $$$ hugh - temporary bandaid to fix 'array' issue in view=details
 							// @TODO fix underlying cause in database join getValue
 							// http://fabrikar.com/forums/showthread.php?p=63512#post63512
