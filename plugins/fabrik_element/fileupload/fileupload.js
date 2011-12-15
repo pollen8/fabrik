@@ -88,19 +88,20 @@ var FbFileUpload = new Class({
 		this.pluploadFallback = c.getElement('.plupload_fallback');
 		this.droplist = c.getElement('.plupload_filelist');
 		this.startbutton = c.getElement('.plupload_start');
-		this.uploader = new plupload.Uploader({
+		var plupopts = {
 			runtimes: this.options.ajax_runtime,
 			browse_button: this.element.id + '_browseButton',
 			container: this.element.id + '_container',
 			drop_element: this.element.id + '_dropList',
-			url: Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
+			url: 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
 			max_file_size: this.options.max_file_size + 'kb',
 			unique_names: false,
 			flash_swf_url: 'plugins/element/fileupload/plupload/js/plupload.flash.swf',
 			silverlight_xap_url: 'plugins/element/fileupload/plupload/js/plupload.silverlight.xap',
 			chunk_size: this.options.ajax_chunk_size + 'kb',
 			multipart: true
-		});
+		};
+		this.uploader = new plupload.Uploader(plupopts);
 
 		// (1) INIT ACTIONS
 		this.uploader.bind('Init', function (up, params) {
