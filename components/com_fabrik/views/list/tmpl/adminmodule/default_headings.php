@@ -47,15 +47,20 @@ head.ready(function(){
 		}
 	});
 
-	form.getElement('.clearFilters').addEvent('click', function () {
-		form.getElement('.fabrikFilterContainer').hide();
-		form.getElements('.fabrik___heading .filter').hide();
-	});
-
-	form.getElement('.fabrik_filter_submit').addEvent('click', function () {
-		form.getElement('.fabrikFilterContainer').hide();
-		form.getElements('.fabrik___heading .filter').hide();
-	});
+	var c = form.getElement('.clearFilters');
+	if (typeOf(c) !== 'null') {
+		c.addEvent('click', function () {
+			form.getElement('.fabrikFilterContainer').hide();
+			form.getElements('.fabrik___heading .filter').hide();
+		});
+	}
+	var s = form.getElement('.fabrik_filter_submit');
+	if (typeOf(s) !== 'null') {
+		s.addEvent('click', function () {
+			form.getElement('.fabrikFilterContainer').hide();
+			form.getElements('.fabrik___heading .filter').hide();
+		});
+	}
 });
 
 </script>
