@@ -747,7 +747,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$saveParams = array();
 			$files = array_keys($crop);
 			$storage = $this->getStorage();
-			$oImage = imageHelper::loadLib($params->get('image_library'));
+			$oImage = FabimageHelper::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
 			$fileCounter = 0;
 
@@ -1007,12 +1007,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		} else {
 			$name = $this->getFullName(true, true, false);
 		}
-
 		if ($this->processAjaxUploads($name)) {
 			//stops form data being updated with blank data.
 			return;
 		}
-		if ($this->crop($name))
+		
+		// if we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
+		// otherwise no standard image processed
+		if ($this->crop($name) && $params->get('ajax_upload'))
 		{
 			//echo "<pre>";print_r($this->_form->_formData);
 			//echo "should have cropped";exit;
@@ -1265,7 +1267,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		// $$$ hugh @TODO - shouldn't we check to see if it's actually an image before we do any of this stuff???
 
 		//resize main image
-		$oImage = imageHelper::loadLib($params->get('image_library'));
+		$oImage = FabimageHelper::loadLib($params->get('image_library'));
 		$oImage->setStorage($storage);
 		// $$$ hugh - removing default of 200, otherwise we ALWAYS resize, whereas
 		// tooltip on these options say 'leave blank for no resizing'
@@ -1570,8 +1572,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$runtimes = $params->get('ajax_runtime', 'html5');
-
+		$w = (int)$params->get('ajax_dropbox_width', 300);
+		$h = (int)$params->get('ajax_dropbox_hight', 200);
+		//add span with id so that element fxs work.
 		$pstr = '<!-- UPLOAD CONTAINER -->
+		<span id="'.$id.'"></span>
 		<div id="'.$id.'-widgetcontainer">';
 
 		$pstr .= '
@@ -1601,7 +1606,7 @@ zoom:
 
 		$pstr .= '
 
-		<div class="plupload_container fabrikHide" id="'.$id.'_container">
+		<div class="plupload_container fabrikHide" id="'.$id.'_container" style="width:'.$w.'px;height:'.$h.'px">
 			<div class="plupload">
 				<div class="plupload_header">
 					<div class="plupload_header_content">
@@ -1630,10 +1635,10 @@ zoom:
 					</div>
 					<div class="plupload_file_action"></div>
 					<div class="plupload_file_status">
-						<span class="plupload_total_status">0%</span>
+						<span class="plupload_total_status"></span>
 					</div>
 					<div class="plupload_file_size">
-						<span class="plupload_total_file_size">0 b</span>
+						<span class="plupload_total_file_size"></span>
 					</div>
 					<div class="plupload_progress">
 						<div class="plupload_progress_container">
@@ -1651,11 +1656,9 @@ zoom:
    <br />
    '. $str.'
 </div>';
-
-		$w = (int)$params->get('ajax_dropbox_width', 300);
-		$h = (int)$params->get('ajax_dropbox_hight', 200);
+		
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
-		FabrikHelperHTML::addStyleDeclaration(".dropList{background:#aaa; width:".$w."px; height:".$h."px;}");
+		//FabrikHelperHTML::addStyleDeclaration(".dropList{background:#aaa; width:".$w."px; height:".$h."px;}");
 		return $pstr;
 	}
 
