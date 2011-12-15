@@ -31,6 +31,10 @@ $row = $this->row;
 					<td><?php echo $row->title?></td>
 					<td><?php echo $row->user?></td>
 					<td  style="text-align:center">
+					<a href="<?php echo $row->view?>">
+						<?php echo FabrikHelperHTML::image('view.png', 'list', '');?>
+					</a></td>
+					<td>
 						<a href="#" class="approvalTip">
 							<?php echo FabrikHelperHTML::image('attention2.png', 'list', '');?>
 						</a>

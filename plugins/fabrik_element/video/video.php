@@ -288,7 +288,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 				//resize main image
 
 
-				$oImage 		= imageHelper::loadLib( $params->get('image_library'));
+				$oImage = FabimageHelper::loadLib( $params->get('image_library'));
 				$mainWidth 		= $params->get('fu_main_max_width');
 				$mainHeight 	= $params->get('fu_main_max_height');
 				if($params->get('make_thumbnail') == '1') {

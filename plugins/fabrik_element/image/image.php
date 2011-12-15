@@ -131,12 +131,15 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
+		
 		if ($data === '' || empty($data)) {
 			//no data so default to image.
 			$iPath = $params->get('imagepath');
 			if (!strstr($iPath, '/')) {
 				//single file specified so find it in tmpl folder
-				$data[] = FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), false);
+				$data = (array)FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), true);
+			} else {
+				$data = (array)$iPath;
 			}
 		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');

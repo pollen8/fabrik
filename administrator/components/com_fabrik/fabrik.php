@@ -20,7 +20,9 @@ $lang->load('com_fabrik', JPATH_SITE.'/components/com_fabrik');
 jimport('joomla.filesystem.file');
 JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+if (JRequest::getVar('task') !== 'plugin.pluginAjax') {
+	FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+}
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 
 // Include dependancies

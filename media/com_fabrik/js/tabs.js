@@ -12,9 +12,9 @@ var Tabs = new Class({
 		if (this.editable) {
 			
 			var a = new Element('a', {
-				'href' : '#',
-				'events' : {
-					'click' : this.addWindow.bindWithEvent(this)
+				'href': '#',
+				'events': {
+					'click': this.addWindow.bindWithEvent(this)
 				}
 			});
 			
@@ -41,7 +41,7 @@ var Tabs = new Class({
 	remove: function (e) {
 		var n;
 		if (typeOf(e) === 'event') {
-			n = e.target.findUp('li').getElement('span').get('text').trim();
+			n = e.target.getParent('li').getElement('span').get('text').trim();
 			e.stop();
 		} else {
 			n = e;
@@ -61,10 +61,16 @@ var Tabs = new Class({
 	},
 
 	addWindow: function (e) {
-
 		var c = new Element('form');
 		c.adopt(new Element('input', {
-			'name' : 'label'
+			'name' : 'label',
+			'events': {
+				'keydown': function (e) {
+					if (e.key === 'enter') {
+						e.stop();
+					}
+				}
+			}
 		}), new Element('br'), new Element('input', {
 			'class' : 'button',
 			'type' : 'button',
@@ -87,7 +93,7 @@ var Tabs = new Class({
 			title: 'Add',
 			content: c,
 			width: 200,
-			height: 150,
+			height: 200,
 			'minimizable': false,
 			'collapsible': true
 		};

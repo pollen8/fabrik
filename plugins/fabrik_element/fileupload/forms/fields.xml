@@ -296,7 +296,7 @@
 				
 			<field name="ajax_dropbox_width"
 				type="text"
-				default="300"
+				default="400"
 				label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_LABEL"
 				description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_DESC" />
 			
