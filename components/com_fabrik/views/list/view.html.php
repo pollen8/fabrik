@@ -14,7 +14,7 @@ jimport('joomla.application.component.view');
 
 class FabrikViewList extends JView{
 
-	public $isMambot 	= null;
+	public $isMambot = null;
 
 	protected function getManagementJS($data = array())
 	{

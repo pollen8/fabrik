@@ -97,6 +97,10 @@ class FabrikFEModelList extends JModelForm {
 	public $randomRecords = false;
 
 	protected $_data = null;
+	
+	/** @var string template name */
+	protected $tmpl = null;
+	
 	var $nav = null;
 	var $fields = null;
 	var $prefilters = null;
@@ -6783,22 +6787,27 @@ class FabrikFEModelList extends JModelForm {
 
 	public function getTmpl()
 	{
-		$app = JFactory::getApplication();
-		$item = $this->getTable();
-		$params = $this->getParams();
-		if ($app->isAdmin()) {
-			$tmpl = JRequest::getVar('layout', $params->get('admin_template'));
-		} else {
-			$tmpl = JRequest::getVar('layout', $item->template);
+		if (!isset($this->tmpl)) {
+			$app = JFactory::getApplication();
+			$item = $this->getTable();
+			$params = $this->getParams();
+			if ($app->isAdmin()) {
+				$this->tmpl = JRequest::getVar('layout', $params->get('admin_template'));
+			} else {
+				$this->tmpl = JRequest::getVar('layout', $item->template);
+			}
+			if ($this->tmpl == '') {
+				$this->tmpl = 'default';
+			}
+			
+			$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
+			
+			// if we are mobilejoomla.com system plugin to detect smartphones
+			if (JRequest::getVar('mjmarkup') == 'iphone') {
+				$this->tmpl = 'iwebkit';
+			}
 		}
-		if ($tmpl == '') {
-			$tmpl = 'default';
-		}
-		// if we are mobilejoomla.com system plugin to detect smartphones
-		if (JRequest::getVar('mjmarkup') == 'iphone') {
-			$tmpl = 'iwebkit';
-		}
-		return $tmpl;
+		return $this->tmpl;
 	}
 
 	protected function setElementTmpl()
