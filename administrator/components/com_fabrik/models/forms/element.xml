@@ -434,6 +434,14 @@
 					type="listfields"
 					valueformat="id"
 					label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" />
+					
+				<field name="custom_calc_php" 
+					type="textarea" 
+					cols="6"
+					rows="10"
+					label="COM_FABRIK_FIELD_CUSTOM_CALC_PHP_LABEL"
+					description="COM_FABRIK_FIELD_CUSTOM_CALC_PHP_DESC" />
+				
 						
 			</fieldset>
 			

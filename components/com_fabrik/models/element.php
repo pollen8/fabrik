@@ -2887,6 +2887,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				case 'count':
 					$o->value = count($data);
 					break;
+				case 'custom_calc':
+					$params = $this->getParams();
+					$custom_calc_php = $params->get('custom_calc_php', '');
+					if (!empty($custom_calc_php)) {
+						$o->value = @eval(stripslashes($custom_calc_php));
+						FabrikWorker::logEval($custom_calc_php, 'Caught exception on eval of ' . $name . ': %s');
+					}
+					else {
+						$o->value = $data;
+					}
+					break;
 				default:
 					$o->value = $data;
 				break;
