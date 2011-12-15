@@ -60,6 +60,7 @@ class FabrikFEModelList extends JModelForm {
 	/** @var array data contains request data **/
 	protected $_aData = null;
 
+	protected $rowIdentifierAdded = false;
 	/**
 	 * @since 3.0 replaces _postMethod
 	 * @var bool is ajax used */
@@ -5543,7 +5544,7 @@ class FabrikFEModelList extends JModelForm {
 		$msg = FabrikWorker::_replaceWithUserData($msg);
 		$msg = FabrikWorker::_replaceWithGlobals($msg);
 		$msg = preg_replace("/{}/", "", $msg);
-		$this->_rowIdentifierAdded = false;
+		$this->rowIdentifierAdded = false;
 		/* replace {element name} with form data */
 		// $$$ hugh - testing changing the regex so we don't blow away PHP structures!  Added the \s so
 		// we only match non-space chars in {}'s.  So unless you have some code like "if (blah) {foo;}", PHP
@@ -5574,7 +5575,7 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ hugh - allow use of {$rowpk} or {rowpk} to mean the rowid of the row within a table
 		if ($match == 'rowpk' || $match == '$rowpk' || $match == 'rowid')
 		{
-			$this->_rowIdentifierAdded = true;
+			$this->rowIdentifierAdded = true;
 			$match = '__pk_val';
 		}
 		$match = preg_replace("/ /", "_", $match);
@@ -5649,7 +5650,7 @@ class FabrikFEModelList extends JModelForm {
 		$link = htmlspecialchars($link);
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$link = $this->parseMessageForRowHolder($link, JArrayHelper::fromObject($row));
-		if ($this->_rowIdentifierAdded === false) {
+		if ($this->rowIdentifierAdded === false) {
 			if (strstr($link,'?')) {
 				$link .= $keyIdentifier;
 			} else {
@@ -6269,6 +6270,7 @@ class FabrikFEModelList extends JModelForm {
 			$qs['rowid'] = '0';
 		}
 		$qs = array_merge($qs, $addurl_qs);
+		$qs_args = array();
 		foreach ($qs as $key => $val) {
 			$qs_args[] = $key.'='.$val;
 		}
