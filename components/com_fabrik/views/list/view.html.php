@@ -96,7 +96,7 @@ class FabrikViewList extends JView{
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 
-		if ($model->isAjax()) {
+		if ($model->isAjax() || $opts->ajax_links) {
 			ob_start();
 			$this->_row = new stdClass();
 			$this->_row->id = '';
