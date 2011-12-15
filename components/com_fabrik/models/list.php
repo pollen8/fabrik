@@ -3103,6 +3103,9 @@ class FabrikFEModelList extends JModelForm {
 			}
 
 			$originalValue = $this->filters['value'][$i];
+			if ($value == '' && $eval == FABRIKFILTER_QUERY) {
+				JError::raiseError(500, JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'));
+			}
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
 
 			if ($fullWordsOnly == '1') {
