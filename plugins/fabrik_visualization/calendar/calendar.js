@@ -1227,6 +1227,7 @@ var fabrikCalendar = new Class({
 			this.showMonth();
 			break;
 		}
+		Cookie.write('fabrik.viz.calendar.date', this.date);
 	},
 	
 	addLegend: function (a) {
