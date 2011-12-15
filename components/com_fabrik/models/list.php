@@ -1175,12 +1175,21 @@ class FabrikFEModelList extends JModelForm {
 		}
 		//try to remove any previously entered links
 		$data = preg_replace('/<a(.*?)>|<\/a>/', '', $data);
-		$data = '<a class="fabrik___rowlink" href="'.$link.'">'.$data.'</a>';
+		
+		$class = '';
+		if ($this->canViewDetails($row)) {
+			$class = 'fabrik_view';
+		}
+		if ($this->canEdit($row)) {
+			$class = 'fabrik_edit';
+		}
+		
+		$data = '<a class="fabrik___rowlink '.$class.'" href="'.$link.'">'.$data.'</a>';
 		return $data;
 	}
 
 	/**
-	 * since 2.0.4 get the href for the edit link
+	 * since 2.0.4 get the href for the edit/details link
 	 * @param object $elementModel
 	 * @param array $row data
 	 * @return string link href
