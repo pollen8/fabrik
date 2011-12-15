@@ -30,7 +30,7 @@ class JFormFieldImagelibs extends JFormFieldList
 	function getOptions()
 	{
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'image.php');
-		$imageLibs = imageHelper::getLibs();
+		$imageLibs = FabimageHelper::getLibs();
 		if (empty( $imageLibs)) {
 			return JHTML::_('select.option', JText::_('NO MAGE LIBRARY FOUND'));
 		}
