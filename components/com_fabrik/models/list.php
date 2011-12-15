@@ -3228,7 +3228,7 @@ class FabrikFEModelList extends JModelForm {
 				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '') {
 					$afilterJoins[0] = 'AND';
 				}
-				$join = $afilterJoins[$i];
+				$join = JArrayHelper::getValue($afilterJoins, $i, 'AND');
 
 				if (trim(strtolower($join)) == 'where') {
 					$join = "AND";
