@@ -4809,7 +4809,12 @@ class FabrikFEModelList extends JModelForm {
 							/*if (is_array($def)) {
 							$def = json_encode($def);
 							}*/
-							$default[] = $def;
+							if (is_array($def)) {
+								// radio buttons getValue() returns an array already so don't array the array.
+								$default = $def;
+							} else {
+								$default[] = $def;
+							}
 						}
 						$default = count($default) == 1 ? $default[0] : json_encode($default);
 						$data[$key] = $default;
