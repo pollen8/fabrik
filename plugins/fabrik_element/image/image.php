@@ -130,12 +130,15 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
+		
 		if ($data === '' || empty($data)) {
 			//no data so default to image.
 			$iPath = $params->get('imagepath');
 			if (!strstr($iPath, '/')) {
 				//single file specified so find it in tmpl folder
-				$data = FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), false);
+				$data = (array)FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), true);
+			} else {
+				$data = (array)$iPath;
 			}
 		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
@@ -144,10 +147,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$selectImage_root_folder = rtrim($selectImage_root_folder, '/');
 		$showImage = $params->get('show_image_in_table', 0);
 		$linkURL = $params->get('link_url', '');
-		if (empty($data) || $data[0] == '') {
-			$data[] = $params->get('imagefile');
-		}
-		for ($i=0; $i <count($data); $i++) {
+		for ($i = 0; $i <count($data); $i++) {
 			if ($showImage) {
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
 				$src = substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE.$selectImage_root_folder.'/'.$data[$i];

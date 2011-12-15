@@ -1017,21 +1017,6 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		// $$$ hugh - moved to getImagePath
-		/*
-		$app = JFactory::getApplication();
-		$template = $app->getTemplate();
-		$paths = FabrikHelperHTML::addPath('', 'image', $type);
-		$src = '';
-		foreach ($paths as $path) {
-			$path = sprintf($path, $tmpl);
-			if (JFile::exists($path.$file)) {
-				$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $path.$file);
-				$src = str_replace("\\", "/", $src);
-				break;
-			}
-		}
-		*/
 		$src = FabrikHelperHTML::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);
 		$src = str_replace("\\", "/", $src);

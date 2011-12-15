@@ -18,8 +18,8 @@ $row = $this->row;
 				<th><?php echo 'Type';//JText::_('PLG_VIZ_APPROVALS_TYPE')?></th>
 				<th><?php echo 'Title';//JText::_('PLG_VIZ_APPROVALS_TITLE')?></th>
 				<th><?php echo 'User';//JText::_('PLG_VIZ_APPROVALS_USER')?></th>
-				<th><?php echo 'Approve';//JText::_('PLG_VIZ_APPROVALS_APPROVE')?></th>
 				<th><?php echo 'View';//JText::_('PLG_VIZ_APPROVALS_VIEW')?></th>
+				<th><?php echo 'Approve';//JText::_('PLG_VIZ_APPROVALS_APPROVE')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -30,6 +30,10 @@ $row = $this->row;
 					<td><?php echo $row->type?></td>
 					<td><?php echo $row->title?></td>
 					<td><?php echo $row->user?></td>
+					<td>
+					<a href="<?php echo $row->view?>">
+						<?php echo FabrikHelperHTML::image('view.png', 'list', '');?>
+					</a></td>
 					<td>
 						<a href="#" class="approvalTip">
 							<?php echo FabrikHelperHTML::image('attention2.png', 'list', '');?>
@@ -49,10 +53,7 @@ $row = $this->row;
 						</ul>
 						</div>
 					</td>
-					<td>
-					<a href="<?php echo $row->view?>">
-						<?php echo FabrikHelperHTML::image('view.png', 'list', '');?>
-					</a></td>
+					
 				</tr>
 			<?php $i++;
 			}?>
