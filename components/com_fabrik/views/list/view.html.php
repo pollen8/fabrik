@@ -96,7 +96,7 @@ class FabrikViewList extends JView{
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 
-		if ($model->isAjax()) {
+		if ($model->isAjax() || $opts->ajax_links) {
 			ob_start();
 			$this->_row = new stdClass();
 			$this->_row->id = '';
@@ -369,7 +369,7 @@ class FabrikViewList extends JView{
 		$this->assign('colCount', count($this->headings));
 		$this->assignRef('grouptemplates', $model->grouptemplates);
 		$this->assignRef('params', $params);
-		$this->_loadTemplateBottom();
+		$this->loadTemplateBottom();
 		$this->getManagementJS($this->rows);
 
 		// get dropdown list of other tables for quick nav in admin
@@ -546,7 +546,7 @@ class FabrikViewList extends JView{
 	 * @return string hidden fields
 	 */
 
-	protected function _loadTemplateBottom()
+	protected function loadTemplateBottom()
 	{
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
@@ -557,11 +557,13 @@ class FabrikViewList extends JView{
 		$reffer = str_replace('&', '&amp;', JRequest::getVar('REQUEST_URI', '', 'server'));
 		$this->hiddenFields = array();
 
-		$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
+		// $$$ rob 15/12/2011 - if in com_content then doing this means you cant delete rows
+		//$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
+		$this->hiddenFields[] = '<input type="hidden" name="option" value="com_fabrik" />';
 		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="" />';
 		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="" />';
 
-		//$$$rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
+		//$$$ rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
 		//revert to view var. Used when showing table in article/blog layouts
 		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
 		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" />';

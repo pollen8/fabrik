@@ -3228,7 +3228,7 @@ class FabrikFEModelList extends JModelForm {
 				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '') {
 					$afilterJoins[0] = 'AND';
 				}
-				$join = $afilterJoins[$i];
+				$join = JArrayHelper::getValue($afilterJoins, $i, 'AND');
 
 				if (trim(strtolower($join)) == 'where') {
 					$join = "AND";
@@ -4809,7 +4809,12 @@ class FabrikFEModelList extends JModelForm {
 							/*if (is_array($def)) {
 							$def = json_encode($def);
 							}*/
-							$default[] = $def;
+							if (is_array($def)) {
+								// radio buttons getValue() returns an array already so don't array the array.
+								$default = $def;
+							} else {
+								$default[] = $def;
+							}
 						}
 						$default = count($default) == 1 ? $default[0] : json_encode($default);
 						$data[$key] = $default;
