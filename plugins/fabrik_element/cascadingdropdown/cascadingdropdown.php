@@ -344,7 +344,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 		return $this->_optionVals[$repeatCounter];
 	}
-	
+
 	/**
 	 * @since 3.0b
 	 * do you add a please select option to the cdd list
@@ -419,8 +419,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 					if (JRequest::getVar('fabrik_cascade_ajax_update') == 1) {
 						$whereval = JRequest::getVar('v');
 					} else {
-						if (isset($this->_form->_data)) {
-							$whereval = $elementModel->getValue($this->_form->_data, $repeatCounter);
+						if (isset($this->_form->_data) || isset($this->_form->_formData)) {
+							if (isset($this->_form->_data)) {
+								$whereval = $elementModel->getValue($this->_form->_data, $repeatCounter);
+							}
+							else {
+								$whereval = $elementModel->getValue($this->_form->_formData, $repeatCounter);
+							}
 							// $$$ hugh - temporary bandaid to fix 'array' issue in view=details
 							// @TODO fix underlying cause in database join getValue
 							// http://fabrikar.com/forums/showthread.php?p=63512#post63512
@@ -523,7 +528,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			foreach ($tables as $tid) {
 				$listModel->setId($tid);
 				$listModel->getTable();
-				$formModel = $listModel->getForm();
+				$formModel = $this->getForm();
 				$formModel->getGroupsHiarachy();
 
 				$orderby = $val;
@@ -736,8 +741,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$default = $this->getDefaultFilterVal($normal);
 			$observed = $this->_getObserverElement();
 			$filterid = $this->getHTMLId().'value';
-			$listModel = $this->getlistModel();
-			$formModel = $listModel->getForm();
+			//$listModel = $this->getlistModel();
+			$formModel = $this->getForm();
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
 			$opts = new stdClass();
 			$opts->formid = $formModel->get('id');
@@ -746,7 +751,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$opts->def = $default;
 			$opts->filterobj = 'filter_'.$container;
 			$opts = json_encode($opts);
-			return "filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerid', $opts));\n";
+			return "Fabrik.filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerid', $opts));\n";
 		}
 	}
 
@@ -760,8 +765,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	{
 		$params = $this->getParams();
 		$observer = $params->get('cascadingdropdown_observe');
-		$listModel = $this->getlistModel();
-		$formModel = $listModel->getForm();
+		//$listModel = $this->getlistModel();
+		//$formModel = $listModel->getForm();
+		$formModel = $this->getForm();
 		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			$elementModels = $groupModel->getMyElements();

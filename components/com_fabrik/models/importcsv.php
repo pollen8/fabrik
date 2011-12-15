@@ -353,7 +353,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$elementKeys = array_keys($elements);
 		foreach ($elementKeys as $e) {
 			$e2 = str_replace('`', '', $e);
-			if (!array_key_exists($e2, $this->matchedHeadings)) {
+			if (!array_key_exists($e2, $this->matchedHeadings) && !array_key_exists($e2.'_raw', $this->matchedHeadings)) {
 				$elementModel = $elements[$e];
 				$defaultsToAdd[FabrikString::safeColNameToArrayKey($e)] = $elementModel;
 			}

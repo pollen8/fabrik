@@ -1237,13 +1237,17 @@ var FbForm = new Class({
 					newEl.element = document.id(lastinput.id);
 					newEl.options.element = lastinput.id;
 				}
-				newEl.reset();
+				//newEl.reset();
 				newElementControllers.push(newEl);
 			}
 		}.bind(this));
 
 		newElementControllers.each(function (newEl) {
 			newEl.cloned(c);
+			// $$$ hugh - moved reset() from end of loop above, otherwise elements with un-cloneable object
+			// like maps end up resetting the wrong map to default values.  Needs to run after element has done
+			// whatever it needs to do with un-cloneable object before resetting.
+			newEl.reset();
 		});
 		var o = {};
 		o[i] = newElementControllers;

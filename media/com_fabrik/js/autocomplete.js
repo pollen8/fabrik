@@ -155,6 +155,9 @@ var FbAutocomplete = new Class({
 	},
 	
 	getListMax: function () {
+		if (typeOf(this.data) === 'null') {
+			return 0;
+		}
 		return this.data.length > this.options.max ? this.options.max : this.data.length;
 	},
 	

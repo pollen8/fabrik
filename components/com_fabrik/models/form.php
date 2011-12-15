@@ -285,8 +285,12 @@ class FabrikFEModelForm extends FabModelForm
 
 	function getCustomJsAction()
 	{
+		// $$$ hugh - added ability to use form_XX, as am adding custom table_XX and viz_XX as well
 		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.$this->getId().".js")) {
 			FabrikHelperHTML::script('components/com_fabrik/js/'.$this->getId() . ".js");
+		}
+		else if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'form_'.$this->getId().".js")) {
+			FabrikHelperHTML::script('components/com_fabrik/js/form_'.$this->getId() . ".js");
 		}
 	}
 
@@ -1059,7 +1063,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					continue;
 				}
 				$data = $this->_formData['join'][$oJoin->id];
-				
+
 				// $$$ rob ensure that the joined data is keyed starting at 0 (could be greated if first group deleted)
 				foreach ($data as &$dv) {
 					if (is_array($dv)) {
@@ -1083,14 +1087,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					//repeat element join
 					$elementModel = $this->getElement($oJoin->element_id, true);
 					$joinGroup = JModel::getInstance('Group', 'FabrikFEModel');
-					
+
 					//need to set the fake group's form and id to that of the current elements form/group
 					//$joinGroup->set('_form', $this);
 					//$joinGroup->setId($elementModel->getGroup()->getId());
-					
+
 					$joinGroup->getGroup()->id = -1;
 					$joinGroup->getGroup()->is_join = 1;
-					
+
 					//set join groups repeat to that of the elements options
 					if ($elementModel->isJoin()) {
 						$joinGroup->getParams()->set('repeat_group_button', 1);
@@ -1108,7 +1112,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					} else {
 						// "Not a repeat element (el id = $oJoin->element_id)<br>";
 					}
-					
+
 					//copy the repeating element into the join group
 					$idElementModel = $pluginManager->getPlugIn('internalid', 'element');
 					$idElementModel->getElement()->name = 'id';
@@ -1143,7 +1147,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 				//back on track
 				if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data)) {
-					
+
 					//$$$rob get the join tables ful primary key
 					$joinDb->setQuery("DESCRIBE $oJoin->table_join");
 					$oJoinPk = $oJoin->table_join . "___";
@@ -1156,7 +1160,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 					$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
 					//$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
-					
+
 					if ($joinGroup->canRepeat()) {
 						//find out how many repeated groups were entered
 
@@ -2153,6 +2157,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->_listModel = null;
 		@set_time_limit(300);
 		$this->_rowId = $this->getRowId();
+		$res = FabrikWorker::getPluginManager()->runPlugins('onBeforeLoad', $this);
+		if (in_array(false, $res)) {
+			return false;
+		}
 		JDEBUG ? $profiler->mark('formmodel render: getData start') : null;
 		$data = $this->getData();
 		JDEBUG ? $profiler->mark('formmodel render: getData end') : null;
@@ -3245,7 +3253,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 						//if (!isset($this->_data['join'])) {
 						//$this->_data['join'] = array();
 						//}
-						if (is_array($origData) && array_key_exists($joinTable->id, $origData['join']) && !empty($origData['join'][$joinTable->id])) {
+						if (is_array($origData) && array_key_exists('join', $origData) && array_key_exists($joinTable->id, $origData['join']) && !empty($origData['join'][$joinTable->id])) {
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);

@@ -421,7 +421,7 @@ class FabrikFEModelList extends JModelForm {
 
 		JDEBUG ? $profiler->mark('start format data') : null;
 		$this->formatData($this->_data);
-		/* 
+		/*
 		 $this->formatForJoins($this->_data); */
 		JDEBUG ? $profiler->mark('data formatted') : null;
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
@@ -2722,7 +2722,7 @@ class FabrikFEModelList extends JModelForm {
 					if (!array_key_exists($element->name, $dbdescriptions)) {
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
 					}
-						
+
 				}
 			}
 		} else {
@@ -2873,7 +2873,7 @@ class FabrikFEModelList extends JModelForm {
 	function isView()
 	{
 		$params = $this->getParams();
-		
+
 		$isview = $params->get('isview', null);
 
 		// $$$ hugh - because querying INFORMATION_SCHEMA can be very slow (like minutes!) on
@@ -3163,7 +3163,7 @@ class FabrikFEModelList extends JModelForm {
 				$showInList = $listels->show_in_list;
 			}
 			$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
-				
+
 			//are we coming from a post request via a module?
 			$moduleid = 0;
 			if (JRequest::getVar('listref') !== '') {
@@ -3235,14 +3235,14 @@ class FabrikFEModelList extends JModelForm {
 
 					// Include the JLog class.
 					jimport('joomla.log.log');
-						
+
 					// Add the logger.
 					JLog::addLogger(array('text_file' => 'fabrik.log.php'));
-						
+
 					// start logging...
 					JLog::add('A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter), JLog::NOTICE, 'com_fabrik');
 
-						
+
 					continue;
 				}
 				$filters['join'][] = $join;
@@ -3667,7 +3667,7 @@ class FabrikFEModelList extends JModelForm {
 		$opts->advancedSearch = $this->getAdvancedSearchOpts();
 		$opts = json_encode($opts);
 		$fscript = "
-		var filter_{$container} = new FbListFilter($opts);\n";
+		Fabrik.filter_{$container} = new FbListFilter($opts);\n";
 
 		$app = JFactory::getApplication();
 		$filters = $this->getFilterArray();
@@ -3742,7 +3742,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
-		$fscript .= "filter_{$container}.update();\n";
+		$fscript .= "Fabrik.filter_{$container}.update();\n";
 		//$fscript .= "});";
 		$this->filterJs = $fscript;
 
@@ -4048,7 +4048,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
 		JRequest::setVar('fabrik_show_in_list', $showInList); //set it for use by groupModel->getPublishedListElements()
-		
+
 		if (!in_array($this->_outPutFormat, array('pdf','csv'))) {
 			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') !== 'end') {
 				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
@@ -4057,7 +4057,7 @@ class FabrikFEModelList extends JModelForm {
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
 		}
-		
+
 		foreach ($groups as $groupModel) {
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
@@ -4204,14 +4204,14 @@ class FabrikFEModelList extends JModelForm {
 	* @param array
 	* @param array
 	*/
-	
+
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
 		// 3.0 actions now go in one column
 		if ($this->actionHeading == true) {
 			$pluginManager = FabrikWorker::getPluginManager();
 			$headingButtons = array();
-		
+
 			if ($this->deletePossible()) {
 				$headingButtons[] = $this->deleteButton();
 			}
@@ -4222,20 +4222,20 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$headingButtons = array_merge($headingButtons, $res);
 			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
-		
-		
+
+
 			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
 			$cellClass['fabrik_actions'] = array('class' => 'fabrik_actions fabrik_element'); //needed for ajax filter/nav
 		}
 	}
-	
+
 	/**
 	* put the checkbox in the headings array - separated to here to enable it to be added at the end or beginning
-	* @param array 
+	* @param array
 	* @param array
 	* @param array
 	 */
-	
+
 	protected function addCheckBox(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
 		$select = '<input type="checkbox" name="checkAll" class="list_' . $this->getId() . '_checkAll" />';
@@ -4245,12 +4245,12 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * 
+	 *
 	 * Enter description here ...
 	 * @param array $arr
 	 * @return array
 	 */
-	
+
 	protected function removeHeadingCompositKey($arr)
 	{
 		ksort($arr);
@@ -4261,7 +4261,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $arr;
 	}
-	
+
 	/**
 	 * can the user select the specified row
 	 * @param object row
@@ -4348,6 +4348,7 @@ class FabrikFEModelList extends JModelForm {
 		$aSums = array();
 		$aMedians = array();
 		$aCounts = array();
+		$aCustoms = array();
 		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel) {
 			$elementModels = $groupModel->getPublishedElements();
@@ -4358,11 +4359,13 @@ class FabrikFEModelList extends JModelForm {
 				$avg 			= $params->get('avg_on', '0');
 				$median 		= $params->get('median_on', '0');
 				$countOn 		= $params->get('count_on', '0');
+				$customOn		= $params->get('custom_calc_on', '0');
 
 				$sumAccess 		= $params->get('sum_access', 0);
 				$avgAccess 		= $params->get('avg_access', 0);
 				$medianAccess 	= $params->get('median_access', 0);
 				$countAccess 	= $params->get('count_access', 0);
+				$customAccess	= $params->get('custom_calc_access', 0);
 
 				if (in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
 					$aSums[$elName] = $params->get('sum_value', '');
@@ -4389,19 +4392,29 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if (in_array($countAccess, $aclGroups) && $params->get('count_value', '') != '') {
+				if ($countOn && in_array($countAccess, $aclGroups) && $params->get('count_value', '') != '') {
 					$aCounts[$elName] = $params->get('count_value', '');
 					$ser = $params->get('count_value_serialized');
 					if (is_string($ser)) {
 						$aCounts[$elName."_obj"] = unserialize($ser);
 					}
 				}
+
+				if ($customOn && in_array($customAccess, $aclGroups)) {
+					$aCustoms[$elName] = $params->get('custom_calc_value', '');
+					$ser = $params->get('custom_calc_value_serialized');
+					if (is_string($ser)) {
+						$aCounts[$elName."_obj"] = unserialize($ser);
+					}
+				}
+
 			}
 		}
 		$aCalculations['sums'] 			= $aSums;
 		$aCalculations['avgs'] 			= $aAvgs;
 		$aCalculations['medians'] 	= $aMedians;
 		$aCalculations['count'] 		= $aCounts;
+		$aCalculations['custom_calc']	= $aCustoms;
 		$this->_aRunCalculations = $aCalculations;
 		return $aCalculations;
 	}
@@ -4885,6 +4898,12 @@ class FabrikFEModelList extends JModelForm {
 					$aCountCals = $elementModel->count($this);
 					$params->set('count_value_serialized', serialize($aCountCals[1]));
 					$params->set('count_value', $aCountCals[0]);
+					$update = true;
+				}
+				if ($params->get('custom_calc_on', 0)) {
+					$aCustomCalcCals = $elementModel->custom_calc($this);
+					$params->set('custom_calc_value_serialized', serialize($aCustomCalcCals[1]));
+					$params->set('custom_calc_value', $aCustomCalcCals[0]);
 					$update = true;
 				}
 				if ($update) {
@@ -6026,7 +6045,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function isAjax()
 	{
-		$params = &$this->getParams();
+		$params = $this->getParams();
 		if (is_null($this->ajax)) {
 			// $$$ rob 11/07/2011 if post method set to ajax in request use that over the list_nav option
 			if (JRequest::getVar('ajax', false) == '1') {
@@ -6036,6 +6055,18 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		return (bool)$this->ajax;
+	}
+
+	/**
+	 * model edit/add links can be set separately to the ajax option
+	 * @return boolean
+	 */
+
+	protected function isAjaxLinks()
+	{
+		$params = $this->getParams();
+		$ajax = $this->isAjax();
+		return (bool)$params->get('list_ajax_links', $ajax);
 	}
 
 	/**
@@ -6219,15 +6250,15 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		if (empty($addurl_url)) {
-			if ($this->isAjax()) {
+			if ($this->isAjaxLinks()) {
 				$qs['ajax'] = '1';
 			}
 			$formModel = $this->getFormModel();
 			$formid = $formModel->getForm()->id;
-			if ($this->packageId !== 0 || $this->isAjax()) {
+			if ($this->packageId !== 0 || $this->isAjaxLinks()) {
 				$qs['tmpl'] = 'component';
 			}
-	
+
 			$qs['option'] = 'com_fabrik';
 			if ($app->isAdmin()) {
 				$qs['task'] = 'form.view';
@@ -6452,7 +6483,7 @@ class FabrikFEModelList extends JModelForm {
 						// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
 						//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
 						$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
-						
+
 						//$can_repeats[$tmpkey] = 0;
 					}
 
@@ -6469,9 +6500,9 @@ class FabrikFEModelList extends JModelForm {
 						//}
 						if ($origKey == $tmpkey) {
 							// $$$ rob - this was just appending data with a <br> but as we do thie before the data is formatted
-							// it was causing all sorts of issues for list rendering of links, dates etc. So now turn the data into 
+							// it was causing all sorts of issues for list rendering of links, dates etc. So now turn the data into
 							// an array and at the end of this method loop over the data to encode the array into a json object.
-							
+
 							// The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
 							// with it currently
 							$data[$last_i]->$key = (array)$data[$last_i]->$key;
@@ -6505,7 +6536,7 @@ class FabrikFEModelList extends JModelForm {
 			if (is_array($v)) {
 				foreach ($v as &$v2) {
 					$v2 = FabrikWorker::JSONtoData($v2);
-				} 
+				}
 				$v = json_encode($v);
 				$data[$gkey]->$k = $v;
 			}

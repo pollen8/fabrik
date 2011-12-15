@@ -11,7 +11,7 @@
 	<description>Updates all values in a column to a given value</description>
 	<files>
 		<filename plugin="update_col">update_col.php</filename>
-		<filename>javascript.js</filename>
+		<filename>update_col.js</filename>
 		<filename>index.html</filename>
 	</files>
 	

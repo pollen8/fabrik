@@ -28,7 +28,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$w = new FabrikWorker();
-			$this->_default = $params->get('imagefile');
+			//$this->_default = $params->get('imagefile');
+			$this->_default = $params->get('imagepath');
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
@@ -147,7 +148,11 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$selectImage_root_folder = rtrim($selectImage_root_folder, '/');
 		$showImage = $params->get('show_image_in_table', 0);
 		$linkURL = $params->get('link_url', '');
-		for ($i = 0; $i <count($data); $i++) {
+		if (empty($data) || $data[0] == '') {
+			//$data[] = $params->get('imagefile');
+			$data[] = $params->get('imagepath');
+		}
+		for ($i=0; $i <count($data); $i++) {
 			if ($showImage) {
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
 				$src = substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE.$selectImage_root_folder.'/'.$data[$i];

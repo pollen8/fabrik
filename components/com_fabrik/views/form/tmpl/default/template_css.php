@@ -193,6 +193,7 @@ section for dropdowns radio buttons etc**/
 
 #form_$c .fabrikSubGroup{
 	clear:both;
+	margin-top:40px;
 }
 
 #form_$c .fabrikSubGroupElements{

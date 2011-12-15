@@ -293,7 +293,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	function renderListData_csv($data, $rows)
 	{
-	
+
 		$data = explode(GROUPSPLITTER, $data);
 		$params =& $this->getParams();
 		$format = $params->get('ul_export_encode_csv', 'base64');
@@ -414,7 +414,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 			}
 		}
-	
+
 		$data = FabrikWorker::JSONtoData($data);
 		if (is_array($data) && !empty($data)) {
 			//crop stuff needs to be removed from data to get correct file path
@@ -1030,7 +1030,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		for ($j = 0; $j < count($origData); $j++) {
 			foreach ($origData[$j] as $key => $val) {
-				if ($key == $name) {
+				if ($key == $name && !empty($val)) {
 					if (in_array($val, $deletedImages)) {
 						unset($origData[$j]->$key);
 					} else {
@@ -1885,8 +1885,8 @@ zoom:
 	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
+		$storage = $this->getStorage();
 		if ($params->get('fu_show_image_in_email', false)) {
-			$storage = $this->getStorage();
 			$render = $this->loadElement($value);
 			if ($params->get('fu_show_image')  != '0') {
 				if ($value != '' && $storage->exists(COM_FABRIK_BASE.$value)) {
