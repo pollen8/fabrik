@@ -14,7 +14,7 @@ jimport('joomla.application.component.view');
 
 class FabrikViewList extends JView{
 
-	public $isMambot 	= null;
+	public $isMambot = null;
 
 	protected function getManagementJS($data = array())
 	{
@@ -53,11 +53,13 @@ class FabrikViewList extends JView{
 
 		$this->_row = new stdClass();
 		$script = '';
-		$listParams = $model->getParams();
+		$params = $model->getParams();
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = (int)$model->isAjax();
-		$opts->ajax_links = (bool)$listParams->get('list_ajax_links', $opts->ajax);
+		$opts->ajax_links = (bool)$params->get('list_ajax_links', $opts->ajax);
+		
+		$opts->links = array('detail' => $params->get('detailurl'), 'edit' => $params->get('editurl'), 'add' => $params->get('addurl'));
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->_jsonHeadings();
@@ -75,20 +77,20 @@ class FabrikViewList extends JView{
 		$opts->page 			= JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
 		$opts->formels		= $elementsNotInTable;
-		$opts->actionMethod = $listParams->get('actionMethod');
-		$opts->floatPos = $listParams->get('floatPos');
-		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
+		$opts->actionMethod = $params->get('actionMethod');
+		$opts->floatPos = $params->get('floatPos');
+		$opts->csvChoose = (bool)$params->get('csv_frontend_selection');
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
 		$csvOpts = new stdClass();
-		$csvOpts->excel = (int)$listParams->get('csv_format');
-		$csvOpts->inctabledata = (int)$listParams->get('csv_include_data');
-		$csvOpts->incraw = (int)$listParams->get('csv_include_raw_data');
-		$csvOpts->inccalcs = (int)$listParams->get('csv_include_calculations');
+		$csvOpts->excel = (int)$params->get('csv_format');
+		$csvOpts->inctabledata = (int)$params->get('csv_include_data');
+		$csvOpts->incraw = (int)$params->get('csv_include_raw_data');
+		$csvOpts->inccalcs = (int)$params->get('csv_include_calculations');
 		$opts->csvOpts = $csvOpts;
 
 		$opts->csvFields = $this->get('CsvFields');
-		$csvOpts->incfilters = (int)$listParams->get('incfilters');
+		$csvOpts->incfilters = (int)$params->get('incfilters');
 
 		$opts->data = $data;
 		//if table data starts as empty then we need the html from the row

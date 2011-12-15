@@ -103,7 +103,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 				require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'image.php');
 				$storage = $this->getStorage();
 				$download_image_library = $params->get('download_image_library');
-				$oImage 		= imageHelper::loadLib( $download_image_library);
+				$oImage = FabimageHelper::loadLib($download_image_library);
 				$oImage->setStorage($storage);
 			}
 			$zipfile = tempnam(sys_get_temp_dir(), "zip");

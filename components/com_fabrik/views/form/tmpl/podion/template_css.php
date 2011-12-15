@@ -4,6 +4,57 @@ $c = (int)$_REQUEST['c'];
 $view = $_REQUEST['view'];
 echo "
 
+#form_$c #group14 div.current label{
+min-width:100px;
+}
+
+/*** date tab***/
+
+
+#form_$c .fabrikForm #group14 ul .fabrikElementContainer,
+#details_$c #group14 .fabrikElementContainer,
+#form_$c #group14 .fabrikElementContainer{
+	padding:5px 10px;
+	margin-top:10px;
+	background:none !important;
+	display:-webkit-box;
+	display:-moz-box;
+	display:box;
+	overflow:visible;
+	width:50%;
+}
+
+#form_$c #group14 .leftCol,
+#details_$c #group14 .leftCol,
+#form_$c .fabrikSubLabel{
+	width: 100px;
+}
+
+#po_events___published .fabrikSubElementContainer{
+	padding-top:7px;
+	font-style:italic;
+	color:#999;
+}
+
+#form_$c #group14 img{
+margin-left:30px;
+vertical-align:text-bottom;
+}
+
+#form_$c #group14 .fabrikinput{
+width:100px;
+}
+
+#form_$c #group14 .timeField{
+	margin-left:30px;
+	width:100px;
+}
+
+#form_$c #group14 .timeButton{
+	
+}
+/*** end date tab ****/
+
 .container{
 	position:relative;
 }
@@ -19,6 +70,7 @@ echo "
 	right:0;
 }
 
+#form_$c .fabrik_buttons input[name=submit],
 .fabrik_buttons input[name=submit] {
 	background: url(images/check.png) no-repeat 5px 50%, -moz-linear-gradient(right bottom 67deg, #cfcdcd, #e5e5e5 50%);
 	padding-left:25px;
@@ -26,6 +78,7 @@ echo "
 		color-stop(50%, #e5e5e5) );
 }
 
+#form_$c .fabrik_buttons input[name=delete],
 .fabrik_buttons input[name=delete] {
 	background: url(images/trash.png) no-repeat 5px 50%, -moz-linear-gradient(right bottom 67deg, #cfcdcd, #e5e5e5 50%);
 	padding-left:25px;
@@ -33,6 +86,7 @@ echo "
 		color-stop(50%, #e5e5e5) );
 }
 
+#form_$c .fabrik_buttons input[name=Reset],
 .fabrik_buttons input[name=Reset] {
 	background: url(images/cross.png) no-repeat 5px 50%, -moz-linear-gradient(right bottom 67deg, #cfcdcd, #e5e5e5 50%);
 	padding-left:25px;
@@ -145,6 +199,7 @@ padding:10px;
 }
 
 #{$view}_$c ul{
+padding-left:0;
 	list-style-type:none;
 }
 
@@ -436,4 +491,13 @@ margin:0;
 	margin-top: 10px;
 	margin-left: 100px;
 }
+
+#form_$c input,
+#form_$c select,
+#form_$c textarea {
+	border:1px solid #DDDDDD;
+	border-radius:5px;
+	padding:5px;
+}
+
 ";?>

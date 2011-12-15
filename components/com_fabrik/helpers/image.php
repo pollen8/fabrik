@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @copyright Pollen 8 design Ltd
  */
 
-class imageHelper
+class FabimageHelper
 {
 
 	/** @var object image manipulation lib, sepecific to library */
@@ -28,12 +28,12 @@ class imageHelper
 	public function getLibs()
 	{
 		$libs = array();
-		$gds = imageHelper::_testGD();
-		foreach ($gds as $key=>$val) {
+		$gds = FabimageHelper::testGD();
+		foreach ($gds as $key => $val) {
 			$libs[] = JHTML::_('select.option', $key, $val);
 		}
-		$im = imageHelper::_testImagemagick();
-		foreach ($im as $key=>$val) {
+		$im = FabimageHelper::testImagemagick();
+		foreach ($im as $key => $val) {
 			$libs[] = JHTML::_('select.option', $key, $val);
 		}
 		return $libs;
@@ -46,9 +46,9 @@ class imageHelper
 	 * @return object image lib
 	 */
 
-	function loadLib($lib)
+	public function loadLib($lib)
 	{
-		$class = "image" . $lib;
+		$class = "Fabimage" . $lib;
 		if (class_exists($class)) {
 			return new $class();
 		} else {
@@ -56,7 +56,7 @@ class imageHelper
 		}
 	}
 
-	function _testGD()
+	protected function testGD()
 	{
 		$gd = array();
 		$GDfuncList = get_extension_funcs('gd');
@@ -78,7 +78,7 @@ class imageHelper
 		return $gd;
 	}
 
-	function _testImagemagick()
+	protected function testImagemagick()
 	{
 		if (function_exists("NewMagickWand")) {
 			$im["IM"] = "Magick wand";
@@ -97,7 +97,7 @@ class imageHelper
 	}
 }
 
-class image
+class Fabimage
 {
 	var $_thumbPath = null;
 
@@ -138,7 +138,7 @@ class image
 	}
 }
 
-class imageGD extends image
+class FabimageGD extends Fabimage
 {
 
 	function imageFromFile($file)
@@ -406,7 +406,7 @@ class imageGD extends image
 	}
 }
 
-class imageGD2 extends imageGD
+class FabimageGD2 extends FabimageGD
 {
 
 	/**
@@ -517,7 +517,7 @@ class imageGD2 extends imageGD
 
 }
 
-class imageIM extends image
+class FabimageIM extends Fabimage
 {
 
 	var $imageMagickDir = '/usr/local/bin/';

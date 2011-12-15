@@ -45,7 +45,7 @@ class plgFabrik_Crongmail extends FabrikPlugin {
 		$contentField = $params->get('plugin-options.content');
 
 		//	$storage = new $storageType( $p);
-		//$imageLib = imageHelper::loadLib('GD2');
+		//$imageLib = FabimageHelper::loadLib('GD2');
 		//	$imageLib->setStorage($storage);
 
 		$storeData 	= array();
