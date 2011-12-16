@@ -841,7 +841,9 @@ var FbForm = new Class({
 							var saved_msg = json.msg !== undefined ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
 								if (json.url !== undefined) {
-									Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': 400});
+									var width = json.width !== undefined ? json.width : 400;
+									var height = json.height !== undefined ? json.height : 400;
+									Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width});
 								} else {
 									alert(saved_msg);
 								}
