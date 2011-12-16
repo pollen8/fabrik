@@ -16,6 +16,7 @@ var FbDatabasejoin = new Class({
 	initialize: function (element, options) {
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
+		this.changeEvents = []; // workaround for change events getting zapped on clone
 		//if users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.startEvent = this.start.bindWithEvent(this);
@@ -347,7 +348,12 @@ var FbDatabasejoin = new Class({
 		//c is the repeat group count
 		// @TODO this is going to wipe out any user added change events to the element
 		// cant' figure out how to just remove the cdd change events.
+		// $$$ hugh - added workaround for change events, by storing them during addNewEvent
+		// and re-adding them after we do this.
 		this.element.removeEvents('change');
+		this.changeEvents.each(function (js) {
+			this.addNewEventAux('change', js);
+		}.bind(this));
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.startEvent = this.start.bindWithEvent(this);
 			this.watchAdd();
@@ -366,12 +372,7 @@ var FbDatabasejoin = new Class({
 		return this.element.findClassUp('fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
 	},
 	
-	addNewEvent: function (action, js) {
-		if (action === 'load') {
-			this.loadEvents.push(js);
-			this.runLoadEvent(js);
-			return;
-		}
+	addNewEventAux: function (action, js) {
 		switch (this.options.displayType) {
 		case 'dropdown':
 		/* falls through */
@@ -400,6 +401,20 @@ var FbDatabasejoin = new Class({
 				});
 			}
 			break;
+		}		
+	},
+	
+	addNewEvent: function (action, js) {
+		if (action === 'load') {
+			this.loadEvents.push(js);
+			this.runLoadEvent(js);
+			return;
 		}
+		// $$$ hugh - workaround for change events getting zapped on clone, where
+		// we have to remove change events added by CDD's watching us
+		if (action === 'change') {
+			this.changeEvents.push(js);
+		}
+		this.addNewEventAux(action, js);
 	}
 });
