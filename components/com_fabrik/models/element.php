@@ -4104,7 +4104,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$listModel->clearCalculations();
 		$listModel->doCalculations();
-		$doCalcs = "\nFabrik.blocks['list_".$listModel->getRenderContext()."'].updateCals(".json_encode($listModel->getCalculations()).")";
+		$listRef = 'list_'.JRequest::getVar('listref');
+		$doCalcs = "\n
+		Fabrik.blocks['".$listRef."'].updateCals(".json_encode($listModel->getCalculations()).")";
 
 		if(!$saving) {
 			// so not an element with toggle values, so load up the form widget to enable user

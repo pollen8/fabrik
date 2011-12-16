@@ -6,7 +6,7 @@ var FbListInlineEdit = new Class({
 		this.defaults = {};
 		this.editors = {};
 		this.inedit = false;
-		
+		this.saving = false;
 		head.ready(function () {
 			//assigned in list.js fabrik3
 			//this.list = $('list_' + this.options.ref);
@@ -33,6 +33,7 @@ var FbListInlineEdit = new Class({
 			var table = Fabrik.blocks['list_' + this.options.ref];
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
+			formData.listref = this.options.ref;
 			var myFormRequest = new Request({'url': '',
 				data: formData,
 				onSuccess: function (json) {
@@ -307,6 +308,9 @@ var FbListInlineEdit = new Class({
 	},
 	
 	edit: function (e, td) {
+		if (this.saving) {
+			return;
+		}
 		Fabrik.fireEvent('fabrik.plugin.inlineedit.editing');
 		
 		//only one field can be edited at a time
@@ -346,6 +350,7 @@ var FbListInlineEdit = new Class({
 			// need to load on parent otherwise in table td size gets monged
 			Fabrik.loader.start(td.getParent());
 			var inline = this.options.showSave ? 1 : 0;
+			
 			new Request({
 				'evalScripts': function (script, text) {
 						this.javascript = script;
@@ -357,6 +362,7 @@ var FbListInlineEdit = new Class({
 					'elid': opts.elid,
 					'elementid': Object.values(opts.plugins),
 					'rowid': rowid,
+					'listref': this.options.ref,
 					'formid': this.options.formid,
 					'listid': this.options.listid,
 					'inlinesave': inline,
@@ -401,7 +407,6 @@ var FbListInlineEdit = new Class({
 			///triggered from element model
 			Fabrik.addEvent('fabrik.list.inlineedit.setData', function () {
 				$H(opts.plugins).each(function (fieldid) {
-					console.log('update', fieldid, data[fieldid]);
 					Fabrik['inlineedit_' + opts.elid].elements[fieldid].update(data[fieldid]);
 					Fabrik['inlineedit_' + opts.elid].elements[fieldid].select();
 				});
@@ -530,6 +535,7 @@ var FbListInlineEdit = new Class({
 		if (!this.editing) {
 			return;
 		}
+		this.saving = true;
 		this.inedit = false;
 		if (e) {
 			e.stop();
@@ -557,6 +563,7 @@ var FbListInlineEdit = new Class({
 			'_packageId': 1,
 			'fabrik_ajax': 1,
 			'element': element,
+			'listref': this.options.ref,
 			'elid': opts.elid,
 			'plugin': opts.plugin,
 			'rowid': rowid,
@@ -582,9 +589,11 @@ var FbListInlineEdit = new Class({
 				// need to load on parent otherwise in table td size gets monged
 				Fabrik.loader.stop(td.getParent());
 				Fabrik.fireEvent('fabrik.list.updaterows');
+				this.saving = false;
 			}.bind(this)
 		}).send();
-		this.editing = null;
+		//this.editing = null;
+		this.stopEditing();
 	},
 	
 	stopEditing: function (e) {
@@ -592,7 +601,6 @@ var FbListInlineEdit = new Class({
 		if (td !== false) {
 			td.removeClass(this.options.focusClass);
 		}
-		console.log(td);
 		//this._animate(td, 'out');
 		this.editing = null;
 		this.inedit = false;
