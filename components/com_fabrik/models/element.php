@@ -2178,12 +2178,11 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
-
 		$return = array();
 		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
-		$return[] = $prefix.'[key][]" value="'.$elName.'" />';
 		$return[] = $prefix.'[elementid][]" value="'.$element->id.'" />';
 		//already added in advanced filter
+		//$return[] = $prefix.'[key][]" value="'.$elName.'" />';
 		//$return[] = $prefix.'[join][]" value="AND" />';
 		//$return[] = $prefix.'[grouped_to_previous][]" value="0" />';
 		return implode("\n", $return);

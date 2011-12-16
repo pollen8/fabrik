@@ -3823,19 +3823,7 @@ class FabrikFEModelList extends JModelForm {
 			$arr[$key] = array('id'=>$e->_id, 'plugin'=>$e->getElement()->plugin);
 		}
 		$opts->elementMap = $arr;
-		//$opts = json_encode($opts);
 		return $opts;
-
-
-		$script = "alert('create obj');
-		new AdvancedSearch($opts);";
-		//$script = "head.ready(function() {$script});";
-		//$script = "head.ready(function() {alert('test');});";
-		$script1 = "head.ready(function(){
-		alert('hread ready test');
-		})";
-		FabrikHelperHTML::addScriptDeclaration($script1);
-		return  $script;
 	}
 
 	private function getAdvancedSearchElementList()
