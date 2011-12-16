@@ -913,7 +913,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$v = 'fabrik___filter[list_'.$table->id.'][value]';
 		$v .= ($normal) ? '['.$counter.']' : '[]';
 
-		$return	= '';
+		$return	= array();
 		$default = $this->getDefaultFilterVal($normal, $counter);
 
 		if (in_array($element->filter_type, array('range', 'dropdown', ''))) {
@@ -928,8 +928,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				// So we'll just return an otherwise empty menu with just the 'select label'
 				$rows = array();
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
-				return $return;
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
+				return implode("\n", $return);
 			}
 			$this->unmergeFilterSplits($rows);
 			$this->reapplyFilterLabels($rows);
@@ -944,30 +944,30 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			default:
 			case '':
 				$this->addSpaceToEmptyLabels($rows, 'text');
-				$return = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
 				break;
 
 			case "field":
-				$return = '<input type="text" class="inputbox fabrik_filter" name="'.$v.'" value="'.$default.'" size="'.$size.'" id="'.$htmlid.'" />';
-				$return .= $this->filterHiddenFields();
+				$return[] = '<input type="text" class="inputbox fabrik_filter" name="'.$v.'" value="'.$default.'" size="'.$size.'" id="'.$htmlid.'" />';
+				$return[] = $this->filterHiddenFields();
 				break;
 
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
-				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$htmlid.'" value="'.$default.'" />';
-				$return .= '<input type="text" name="'.$element->id.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$htmlid.'-auto-complete" size="'.$size.'" value="'.$defaultLabel.'" />';
-				$return .= $this->filterHiddenFields();
+				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$htmlid.'" value="'.$default.'" />';
+				$return[] = '<input type="text" name="'.$element->id.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$htmlid.'-auto-complete" size="'.$size.'" value="'.$defaultLabel.'" />';
+				$return[] = $this->filterHiddenFields();
 				$selector = '#listform_'.$listModel->getRenderContext().' .'.$htmlid;
 				FabrikHelperHTML::autoComplete($selector, $element->id, 'databasejoin');
 				break;
 
 		}
 		if ($normal) {
-			$return .= $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName);
 		} else {
-			$return .= $this->getAdvancedFilterHiddenFields();
+			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
-		return $return;
+		return implode("\n", $return);
 	}
 
 	protected function filterHiddenFields()
