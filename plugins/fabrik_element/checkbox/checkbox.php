@@ -17,6 +17,12 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	
 	protected $inputType = 'checkbox';
 	
+	/**
+	 * set the element id
+	 * and maps parameter names for common ElementList options
+	 * @param int $id
+	 */
+	
 	public function setId($id)
 	{
 		parent::setId($id);
@@ -43,6 +49,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
+	 * @param int repeat group counter
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
@@ -116,11 +123,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$this->encryptFieldName($key);
 		switch ($condition) {
 			case '=':
-				// $$$ rob 05/10/2011 no longer works with json encoded values
-			/* 	$str = " ($key $condition $value OR $key LIKE \"$originalValue',%\"".
-				" OR $key LIKE \"%:'$originalValue',%\"".
-				" OR $key LIKE \"%:'$originalValue'\"".
-				" )"; */
 				$db = FabrikWorker::getDbo();
 				$str = "($key $condition $value ".
 				" OR $key LIKE " . $db->Quote('["'.$originalValue.'"%') .
@@ -154,17 +156,17 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	 * @return array (value condition)
 	 */
 
-	function getFilterValue($value, $condition, $eval )
+	function getFilterValue($value, $condition, $eval)
 	{
 		$value = $this->prepareFilterVal($value);
-		$return = parent::getFilterValue($value, $condition, $eval);
-		return $return;
+		return parent::getFilterValue($value, $condition, $eval);
 	}
 	
 	/**
 	* can be overwritten in add on classes
 	* @param mixed thie elements posted form data
 	* @param array posted form data
+	* @return string
 	*/
 	
 	function storeDatabaseFormat($val, $data)
