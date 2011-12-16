@@ -102,6 +102,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 			$opts = array();
 			$opts['wordcount'] = (int)$params->get('textarea-truncate', 0);
 			$opts['tip'] = $params->get('textarea-hover');
+			$opts['position'] = $params->get('textarea_hover_location', 'top');
 			$data = fabrikString::truncate($data, $opts);
 		}
 		return $data;
