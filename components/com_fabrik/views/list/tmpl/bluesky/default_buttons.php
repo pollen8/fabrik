@@ -26,7 +26,7 @@
 	if ($this->canGroupBy) {?>
 		<li>
 			<a href="#" class="groupBy">
-				<?php echo $this->buttons->filter;?>
+				<?php echo $this->buttons->groupby;?>
 				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
 			</a>
 			<ul class="floating-tip">

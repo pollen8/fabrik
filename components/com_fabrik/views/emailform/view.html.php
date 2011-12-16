@@ -29,7 +29,7 @@ class fabrikViewEmailform extends JView
 		$model = $this->getModel('form');
 		$post = JRequest::get('post');
 		if (!array_key_exists('youremail', $post)) {
-			FabrikHelperHTML::emailForm( $model);
+			FabrikHelperHTML::emailForm($model);
 		} else {
 			$to = $template = '';
 			$this->sendMail( $to);
@@ -37,7 +37,7 @@ class fabrikViewEmailform extends JView
 		}
 	}
 
-	function sendMail( &$email )
+	function sendMail(&$email)
 	{
 		JRequest::checkToken() or die('Invalid Token');
 

@@ -6,6 +6,26 @@ echo "
     margin-left: 10px;
 }
 
+#form_$c dd ul,
+#details_$c dd ul{
+	padding:0;
+	list-style:none;
+	margin:0;
+}
+
+#form_$c .fabrikForm .fabrikGroup ul .fabrikElementContainer,
+#details_$c .fabrikElementContainer,
+#form_$c .fabrikElementContainer{
+	padding:5px 10px;
+	margin-top:10px;
+	background:none !important;
+	display:-webkit-box;
+	display:-moz-box;
+	display:box;
+	overflow:visible;
+	width:50%;
+}
+
 #form_$c .fabrikSubElementContainer {
     margin-left: 100px;
 }

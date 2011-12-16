@@ -176,15 +176,7 @@ EOD;
 		name="view" value="emailform" /> <input type="hidden" name="tmpl"
 		value="component" />
 
-
-
-
-
-
-
 	 <?php echo JHTML::_('form.token'); ?></form>
-
-
 		<?php
 	}
 
@@ -192,14 +184,16 @@ EOD;
 	 * once email has been sent to a frind show this message
 	 */
 
-	function emailSent($to)
+	function emailSent($to, $ok)
 	{
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
 		$document->setTitle($config->getValue('sitename'));
-		?>
+		
+		if ($ok) {?>
 <span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO')." $to";?>
 </span>
+<?php }?>
 <br />
 <br />
 <br />
@@ -235,15 +229,9 @@ EOD;
 			$link = JRoute::_($url);
 			$link = str_replace('&', '&amp;', $link); // $$$ rob for some reason JRoute wasnt doing this ???
 			if ($params->get('icons', true)) {
-
-				if ($app->isAdmin()) {
-					$image = "<img src=\"".COM_FABRIK_LIVESITE."images/M_images/printButton.png\" alt=\"".JText::_('COM_FABRIK_PRINT')."\" />";
-				} else {
-					$attribs = array();
-					$image = JHTML::_('image.site', 'printButton.png', '/images/M_images/', NULL, NULL, JText::_('COM_FABRIK_PRINT'), JText::_('COM_FABRIK_PRINT'));
-				}
+				$image = JHtml::_('image','system/printButton.png', JText::_('COM_FABRIK_PRINT'), NULL, true);
 			} else {
-				$image = '&nbsp;'. JText::_('COM_FABRIK_PRINT');
+				$image = '&nbsp;'. JText::_('JGLOBAL_PRINT');
 			}
 			if ($params->get('popup', 1)) {
 				$ahref = '<a href="javascript:void(0)" onclick="javascript:window.print(); return false" title="' . JText::_('COM_FABRIK_PRINT') . '">';
@@ -272,22 +260,26 @@ EOD;
 		if ($params->get('email') && !$popup) {
 			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
 
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&view=emailform&tmpl=component&formid=". $formModel->get('id')."&rowid=$formModel->_rowId";
+			if ($app->isAdmin()) {
+				$url = "index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=". $formModel->get('id')."&rowid=$formModel->_rowId";
+			 } else {
+				$url = "index.php?option=com_fabrik&view=emailform&tmpl=component&formid=". $formModel->get('id')."&rowid=$formModel->_rowId";
+			} 
+			
 			if (JRequest::getVar('usekey') !== null) {
 				$url .= "&usekey=" . JRequest::getVar('usekey');
 			}
 			$url .= '&referrer='.urlencode(JFactory::getURI()->toString());
-			$link = JRoute::_($url);
+			
+			//$link = JRoute::_($url); //cant jroute as reffer values overrides url task/view!
+			$link = $url;
+			
 			if ($params->get('icons', true)) {
-				if ($app->isAdmin()) {
-					$image = "<img src=\"".COM_FABRIK_LIVESITE."images/M_images/emailButton.png\" alt=\"".JText::_('COM_FABRIK_EMAIL')."\" />";
-				} else {
-					$image = JHTML::_('image.site', 'emailButton.png', '/images/M_images/', NULL, NULL, JText::_('COM_FABRIK_EMAIL' ), JText::_('COM_FABRIK_EMAIL'));
-				}
+				$image = JHtml::_('image','system/emailButton.png', JText::_('JGLOBAL_EMAIL'), NULL, true);
 			} else {
-				$image = '&nbsp;'. JText::_('COM_FABRIK_EMAIL');
+				$image = '&nbsp;'. JText::_('JGLOBAL_EMAIL');
 			}
-			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('COM_FABRIK_EMAIL') . "\">
+			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('JGLOBAL_EMAIL') . "\">
 			$image
 			</a>\n";
 		}
@@ -514,9 +506,9 @@ EOD;
 
 		// checks template image directory for image, if non found default are loaded
 		if ($app->isAdmin()) {
-			$text = "<img src=\"".COM_FABRIK_LIVESITE."images/M_images/pdf_button.png\" alt=\"".JText::_('PDF')."\" />\n";
+			$text = "<img src=\"".COM_FABRIK_LIVESITE."images/pdf_button.png\" alt=\"".JText::_('PDF')."\" />\n";
 		} else {
-			$text = JHTML::_('image.site', 'pdf_button.png', '/images/M_images/', NULL, NULL, JText::_('PDF'));
+			$text = JHTML::_('image.site', 'pdf_button.png', '/images/', NULL, NULL, JText::_('PDF'));
 		}
 		$attribs['title']	= JText::_('PDF');
 		$attribs['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";

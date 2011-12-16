@@ -53,7 +53,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 			$query->where(str_replace('___', '.', $approveEls[$x]) .' = 0');
 			$db->setQuery($query, 0, 5);
 			$rows = $db->loadObjectList();
-			if (!$rows) {
+			if ($rows === null) {
 				JError::raiseNotice(400, $db->getErrorMsg());
 			} else {
 				foreach ($rows as &$row) {

@@ -224,6 +224,7 @@ var FbList = new Class({
 		'filterMethod': 'onchange',
 		'ajax': false,
 		'ajax_links': false,
+		'links': {'edit': '', 'detail': '', 'add': ''},
 		'form': 'listform_' + this.id,
 		'hightLight': '#ccffff',
 		'primaryKey': '',
@@ -691,58 +692,67 @@ var FbList = new Class({
 		}
 		
 		if (this.options.ajax_links) {
-			// if floatiing menus then edit out side of this.list (not tested with
+			// if floating menus then edit out side of this.list (not tested with
 			// mutliple lists on the same page.
 			// if theres an issue with that we may need to inject the floating menu
 			// into the list container - issue with this
 			// may be that posistioning will be effected
 			
-			document.addEvent('click:relay(.fabrik___rowlink)', function (e) {
-				e.stop();
-				var row = e.target;
-				var url = row.get('href');
-				url += url.contains('?') ? '&' : '?';
-				url += 'tmpl=component&ajax=1';
-				Fabrik.getWindow({
-					'id': 'add.' + this.options.formid,
-					'title': 'Edit',
-					'loadMethod': 'xhr',
-					'contentURL': url
-				});
-			}.bind(this));
-			// this.list.addEvent('click:relay(.fabrik_edit)', function (e) {
 			document.addEvent('click:relay(.fabrik_edit)', function (e) {
 				e.stop();
 				var row = this.getActiveRow(e);
+				var url, loadMethod, a;
 				if (!row) {
 					return;
 				}
 				this.setActive(row);
 				var rowid = row.id.replace('list_' + this.id + '_row_', '');
-				var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				if (this.options.links.edit === '') {
+					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+					loadMethod = 'xhr';
+				} else {
+					if (e.target.get('tag') === 'a') {
+						a = e.target;
+					} else {
+						a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+					}
+					url = a.get('href');
+					loadMethod = 'iframe';
+				}
 				// make id the same as the add button so we reuse the same form.
 				Fabrik.getWindow({
 					'id': 'add.' + this.options.formid,
 					'title': 'Edit',
-					'loadMethod': 'xhr',
+					'loadMethod': loadMethod,
 					'contentURL': url
 				});
 			}.bind(this));
 
-			// this.list.addEvent('click:relay(.fabrik_view)', function (e) {
 			document.addEvent('click:relay(.fabrik_view)', function (e) {
 				e.stop();
 				var row = this.getActiveRow(e);
+				var url, loadMethod;
 				if (!row) {
 					return;
 				}
 				this.setActive(row);
 				var rowid = row.id.replace('list_' + this.id + '_row_', '');
-				var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				if (this.options.links.detail === '') {
+					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+					loadMethod = 'xhr';
+				} else {
+					if (e.target.get('tag') === 'a') {
+						a = e.target;
+					} else {
+						a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+					}
+					url = a.get('href');
+					loadMethod = 'iframe';
+				}
 				Fabrik.getWindow({
 					'id': 'view.' + '.' + this.options.formid + '.' + rowid,
 					'title': 'Details',
-					'loadMethod': 'xhr',
+					'loadMethod': loadMethod,
 					'contentURL': url
 				});
 			}.bind(this));
@@ -1087,13 +1097,14 @@ var FbList = new Class({
 		var addRecord = this.form.getElement('.addRecord');
 		if (typeOf(addRecord) !== 'null' && (this.options.ajax_links)) {
 			addRecord.removeEvents();
+			var loadMethod = (this.options.links.add === '' || addRecord.href.contains(Fabrik.liveSite)) ? 'xhr' : 'iframe';
 			addRecord.addEvent('click', function (e) {
 				e.stop();
 				// top.Fabrik.fireEvent('fabrik.list.add', this);//for packages?
 				Fabrik.getWindow({
 					'id': 'add-' + this.id,
 					'title': 'Add',
-					'loadMethod': 'xhr',
+					'loadMethod': loadMethod,
 					'contentURL': addRecord.href
 				});
 			}.bind(this));

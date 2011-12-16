@@ -180,6 +180,8 @@ class FabrikControllerForm extends JController
 		if (JRequest::getInt('fabrik_ajax') == 1) {
 			//let form.js handle the redirect logic (will also send out a
 			echo json_encode(array(
+				'width' => 750,
+				'height' => 500,
 				'msg' => $msg,
 				'url' => $url,
 				'baseRedirect'=>$this->baseRedirect,

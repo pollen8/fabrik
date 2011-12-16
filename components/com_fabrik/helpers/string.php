@@ -216,7 +216,11 @@ class FabrikString extends JString{
 			}
 			$tip = htmlspecialchars('<div class="truncate_text">'.$title.$orig.'</div>');
 			//$tip = $title.$orig;
-			$summary = '<span class="fabrikTip" opts="{notice:true}" title="'.$tip.'">'.$summary.'</span>';
+			$jOpts = new stdClass();
+			$jOpts->notice = true;
+			$jOpts->position = JArrayHelper::getValue($opts, 'position', 'top');
+			$jOpts = json_encode($jOpts);
+			$summary = '<span class="fabrikTip" opts=\''.$jOpts.'\' title="'.$tip.'">'.$summary.'</span>';
 		}
 		return $summary;
 	}

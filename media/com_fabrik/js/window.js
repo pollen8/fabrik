@@ -200,6 +200,9 @@ Fabrik.Window = new Class({
 			u = this.window.getElement('.itemContent');
 			Fabrik.loader.start(u);
 			
+			if (this.iframeEl) {
+				this.iframeEl.dispose();
+			}
 			this.iframeEl = new Element('iframe', {
 				'id': this.options.id + '_iframe',
 				'name': this.options.id + '_iframe',
@@ -237,6 +240,7 @@ Fabrik.Window = new Class({
 	fitToContent: function () {
 		var myfx = new Fx.Scroll(window).toElement(this.window);
 		if (this.options.loadMethod !== 'iframe') {
+			//as iframe content may not be on the same domain we CAN'T guarentee access to its body element to work out its dimensions
 			var contentEl = this.window.getElement('.itemContent');
 			var h = contentEl.getScrollSize().y < window.getHeight() ? contentEl.getScrollSize().y : window.getHeight();
 			var w = contentEl.getScrollSize().x + 40 < window.getWidth() ? contentEl.getScrollSize().x + 40 : window.getWidth();

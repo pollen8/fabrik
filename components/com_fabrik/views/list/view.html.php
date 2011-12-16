@@ -14,7 +14,7 @@ jimport('joomla.application.component.view');
 
 class FabrikViewList extends JView{
 
-	public $isMambot 	= null;
+	public $isMambot = null;
 
 	protected function getManagementJS($data = array())
 	{
@@ -53,11 +53,13 @@ class FabrikViewList extends JView{
 
 		$this->_row = new stdClass();
 		$script = '';
-		$listParams = $model->getParams();
+		$params = $model->getParams();
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = (int)$model->isAjax();
-		$opts->ajax_links = (bool)$listParams->get('list_ajax_links', $opts->ajax);
+		$opts->ajax_links = (bool)$params->get('list_ajax_links', $opts->ajax);
+		
+		$opts->links = array('detail' => $params->get('detailurl'), 'edit' => $params->get('editurl'), 'add' => $params->get('addurl'));
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->_jsonHeadings();
@@ -75,26 +77,26 @@ class FabrikViewList extends JView{
 		$opts->page 			= JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
 		$opts->formels		= $elementsNotInTable;
-		$opts->actionMethod = $listParams->get('actionMethod');
-		$opts->floatPos = $listParams->get('floatPos');
-		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
+		$opts->actionMethod = $params->get('actionMethod');
+		$opts->floatPos = $params->get('floatPos');
+		$opts->csvChoose = (bool)$params->get('csv_frontend_selection');
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
 		$csvOpts = new stdClass();
-		$csvOpts->excel = (int)$listParams->get('csv_format');
-		$csvOpts->inctabledata = (int)$listParams->get('csv_include_data');
-		$csvOpts->incraw = (int)$listParams->get('csv_include_raw_data');
-		$csvOpts->inccalcs = (int)$listParams->get('csv_include_calculations');
+		$csvOpts->excel = (int)$params->get('csv_format');
+		$csvOpts->inctabledata = (int)$params->get('csv_include_data');
+		$csvOpts->incraw = (int)$params->get('csv_include_raw_data');
+		$csvOpts->inccalcs = (int)$params->get('csv_include_calculations');
 		$opts->csvOpts = $csvOpts;
 
 		$opts->csvFields = $this->get('CsvFields');
-		$csvOpts->incfilters = (int)$listParams->get('incfilters');
+		$csvOpts->incfilters = (int)$params->get('incfilters');
 
 		$opts->data = $data;
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 
-		if ($model->isAjax()) {
+		if ($model->isAjax() || $opts->ajax_links) {
 			ob_start();
 			$this->_row = new stdClass();
 			$this->_row->id = '';
@@ -362,12 +364,12 @@ class FabrikViewList extends JView{
 		$this->assign('showFilters', (count($this->filters) > 0 && $this->filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
-		$this->assignRef('calculations', $this->_getCalculations($this->headings));
+		$this->assignRef('calculations', $this->_getCalculations($this->headings, $params->get('actionMethod')));
 		$this->assign('isGrouped', !($this->get('groupBy') == ''));
 		$this->assign('colCount', count($this->headings));
 		$this->assignRef('grouptemplates', $model->grouptemplates);
 		$this->assignRef('params', $params);
-		$this->_loadTemplateBottom();
+		$this->loadTemplateBottom();
 		$this->getManagementJS($this->rows);
 
 		// get dropdown list of other tables for quick nav in admin
@@ -429,14 +431,16 @@ class FabrikViewList extends JView{
 	 * get the table calculations
 	 */
 
-	protected function _getCalculations($aCols)
+	protected function _getCalculations($aCols, $method)
 	{
 		$aData = array();
 		$found = false;
 		$model = $this->getModel();
 		$modelCals = $model->getCalculations();
-
-		foreach ($aCols as $key=>$val) {
+		foreach ($aCols as $key => $val) {
+			if ($key == 'fabrik_actions' && $method == 'floating') {
+				continue;
+			}
 			$calc = '';
 			$res = '';
 			$oCalcs = new stdClass();
@@ -544,7 +548,7 @@ class FabrikViewList extends JView{
 	 * @return string hidden fields
 	 */
 
-	protected function _loadTemplateBottom()
+	protected function loadTemplateBottom()
 	{
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
@@ -555,11 +559,13 @@ class FabrikViewList extends JView{
 		$reffer = str_replace('&', '&amp;', JRequest::getVar('REQUEST_URI', '', 'server'));
 		$this->hiddenFields = array();
 
-		$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
+		// $$$ rob 15/12/2011 - if in com_content then doing this means you cant delete rows
+		//$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
+		$this->hiddenFields[] = '<input type="hidden" name="option" value="com_fabrik" />';
 		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="" />';
 		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="" />';
 
-		//$$$rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
+		//$$$ rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
 		//revert to view var. Used when showing table in article/blog layouts
 		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
 		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" />';

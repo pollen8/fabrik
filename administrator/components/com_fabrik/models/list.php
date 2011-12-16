@@ -227,8 +227,7 @@ class FabrikModelList extends FabModelAdmin
 	protected function getCnn()
 	{
 		$item = $this->getItem();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
-		$connModel 	=& JModel::getInstance('Connection', 'FabrikFEModel');
+		$connModel = JModel::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
 		$connModel->getConnection($item->connection_id);
 		return $connModel;

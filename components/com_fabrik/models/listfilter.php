@@ -69,7 +69,8 @@ class FabrikFEModelListfilter extends FabModel {
 
 		//$$$ fehers The filter is cleared and applied at once without having to clear it first and then apply it (would have to be two clicks).
 		//useful in querystring filters if you want to clear old filters and apply new filters
-		if ((JRequest::getVar('filterclear') == 1 || JRequest::getVar('resetfilters') == 1) && $this->activeTable()) {
+		
+		if ((JRequest::getVar('filterclear') == 1 || FabrikWorker::getMenuOrRequestVar('resetfilters', 0) == 1) && $this->activeTable()) {
 			$this->clearFilters();
 		}
 
@@ -189,7 +190,7 @@ class FabrikFEModelListfilter extends FabModel {
 	public function clearAFilter(&$filters, $id)
 	{
 		$keys = array_keys($filters);
-		foreach($keys as $key) {
+		foreach ($keys as $key) {
 			// $$$ hugh - couple of folk have reported getting PHP error "Cannot unset string offsets"
 			// which means sometimes $filters->foo is a string.  Putting a bandaid on it for now,
 			// but really should try and find out why sometimes we have strings rather than arrays.
@@ -279,29 +280,27 @@ class FabrikFEModelListfilter extends FabModel {
 		$registry	= $session->get('registry');
 		$id = JRequest::getVar('listref', $this->listModel->getRenderContext());
 		$tid = 'list'.$id;
-		$context = 'com_fabrik.list'.$id.'.';
+		$context = 'com_fabrik.list'.$id.'.filter';
 		$app->setUserState($context.'limitstart', 0);
 
-		$reg = $registry->get($context.'filter', new stdClass());
-		//if (isset($registry->_registry['com_fabrik']['data']->$tid->filter)) {
-			//$reg = $registry->_registry['com_fabrik']['data']->$tid->filter;
+		$reg = $registry->get($context, new stdClass());
 
-			// $$$ rob jpluginfilters search_types are those which have been set inside the
-			// Joomla content plugin e.g. {fabrik view=list id=1 tablename___elementname=foo}
-			// these should not be removed when the list filters are cleared
-			$reg = JArrayHelper::fromObject($reg);
-			$serachTypes = JArrayHelper::getValue($reg, 'search_type', array());
-			for($i = 0; $i < count($serachTypes); $i++) {
-				if ($serachTypes[$i] !== 'jpluginfilters') {
-					$this->clearAFilter($reg, $i);
-				}
+		// $$$ rob jpluginfilters search_types are those which have been set inside the
+		// Joomla content plugin e.g. {fabrik view=list id=1 tablename___elementname=foo}
+		// these should not be removed when the list filters are cleared
+		$reg = JArrayHelper::fromObject($reg);
+		$serachTypes = JArrayHelper::getValue($reg, 'search_type', array());
+		for ($i = 0; $i < count($serachTypes); $i++) {
+			if ($serachTypes[$i] !== 'jpluginfilters') {
+				$this->clearAFilter($reg, $i);
 			}
-			$reg = JArrayHelper::toObject($reg);
+		}
+		$reg['searchall'] = '';
+		$reg = JArrayHelper::toObject($reg);
 
-			$registry->set($context.'filter', $reg);
-			//$registry->_registry['com_fabrik']['data']->$tid->filter = $reg;
-			//unset($registry->_registry['com_fabrik']['data']->$tid->filter);
-		//}
+		
+		$registry->set($context, $reg);
+		$reg = $registry->get($context, new stdClass());
 		//reset plugin filter
 		if (isset($registry->_registry['com_fabrik']['data']->$tid->plugins)) {
 			unset($registry->_registry['com_fabrik']['data']->$tid->plugins);

@@ -60,6 +60,7 @@ class FabrikFEModelList extends JModelForm {
 	/** @var array data contains request data **/
 	protected $_aData = null;
 
+	protected $rowIdentifierAdded = false;
 	/**
 	 * @since 3.0 replaces _postMethod
 	 * @var bool is ajax used */
@@ -96,6 +97,10 @@ class FabrikFEModelList extends JModelForm {
 	public $randomRecords = false;
 
 	protected $_data = null;
+	
+	/** @var string template name */
+	protected $tmpl = null;
+	
 	var $nav = null;
 	var $fields = null;
 	var $prefilters = null;
@@ -1174,12 +1179,21 @@ class FabrikFEModelList extends JModelForm {
 		}
 		//try to remove any previously entered links
 		$data = preg_replace('/<a(.*?)>|<\/a>/', '', $data);
-		$data = '<a class="fabrik___rowlink" href="'.$link.'">'.$data.'</a>';
+		
+		$class = '';
+		if ($this->canViewDetails($row)) {
+			$class = 'fabrik_view';
+		}
+		if ($this->canEdit($row)) {
+			$class = 'fabrik_edit';
+		}
+		
+		$data = '<a class="fabrik___rowlink '.$class.'" href="'.$link.'">'.$data.'</a>';
 		return $data;
 	}
 
 	/**
-	 * since 2.0.4 get the href for the edit link
+	 * since 2.0.4 get the href for the edit/details link
 	 * @param object $elementModel
 	 * @param array $row data
 	 * @return string link href
@@ -3089,6 +3103,9 @@ class FabrikFEModelList extends JModelForm {
 			}
 
 			$originalValue = $this->filters['value'][$i];
+			if ($value == '' && $eval == FABRIKFILTER_QUERY) {
+				JError::raiseError(500, JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'));
+			}
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
 
 			if ($fullWordsOnly == '1') {
@@ -3214,7 +3231,7 @@ class FabrikFEModelList extends JModelForm {
 				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '') {
 					$afilterJoins[0] = 'AND';
 				}
-				$join = $afilterJoins[$i];
+				$join = JArrayHelper::getValue($afilterJoins, $i, 'AND');
 
 				if (trim(strtolower($join)) == 'where') {
 					$join = "AND";
@@ -3445,7 +3462,10 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function getSlug($row)
 	{
-		return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
+		//return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
+		$row->slug = str_replace(":", '-', $row->slug);
+		$row->slug = JApplication::stringURLSafe($row->slug);
+		return $row->slug;
 	}
 
 	/**
@@ -3806,19 +3826,7 @@ class FabrikFEModelList extends JModelForm {
 			$arr[$key] = array('id'=>$e->_id, 'plugin'=>$e->getElement()->plugin);
 		}
 		$opts->elementMap = $arr;
-		//$opts = json_encode($opts);
 		return $opts;
-
-
-		$script = "alert('create obj');
-		new AdvancedSearch($opts);";
-		//$script = "head.ready(function() {$script});";
-		//$script = "head.ready(function() {alert('test');});";
-		$script1 = "head.ready(function(){
-		alert('hread ready test');
-		})";
-		FabrikHelperHTML::addScriptDeclaration($script1);
-		return  $script;
 	}
 
 	private function getAdvancedSearchElementList()
@@ -4795,7 +4803,12 @@ class FabrikFEModelList extends JModelForm {
 							/*if (is_array($def)) {
 							$def = json_encode($def);
 							}*/
-							$default[] = $def;
+							if (is_array($def)) {
+								// radio buttons getValue() returns an array already so don't array the array.
+								$default = $def;
+							} else {
+								$default[] = $def;
+							}
 						}
 						$default = count($default) == 1 ? $default[0] : json_encode($default);
 						$data[$key] = $default;
@@ -5543,7 +5556,7 @@ class FabrikFEModelList extends JModelForm {
 		$msg = FabrikWorker::_replaceWithUserData($msg);
 		$msg = FabrikWorker::_replaceWithGlobals($msg);
 		$msg = preg_replace("/{}/", "", $msg);
-		$this->_rowIdentifierAdded = false;
+		$this->rowIdentifierAdded = false;
 		/* replace {element name} with form data */
 		// $$$ hugh - testing changing the regex so we don't blow away PHP structures!  Added the \s so
 		// we only match non-space chars in {}'s.  So unless you have some code like "if (blah) {foo;}", PHP
@@ -5574,7 +5587,7 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ hugh - allow use of {$rowpk} or {rowpk} to mean the rowid of the row within a table
 		if ($match == 'rowpk' || $match == '$rowpk' || $match == 'rowid')
 		{
-			$this->_rowIdentifierAdded = true;
+			$this->rowIdentifierAdded = true;
 			$match = '__pk_val';
 		}
 		$match = preg_replace("/ /", "_", $match);
@@ -5649,7 +5662,7 @@ class FabrikFEModelList extends JModelForm {
 		$link = htmlspecialchars($link);
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$link = $this->parseMessageForRowHolder($link, JArrayHelper::fromObject($row));
-		if ($this->_rowIdentifierAdded === false) {
+		if ($this->rowIdentifierAdded === false) {
 			if (strstr($link,'?')) {
 				$link .= $keyIdentifier;
 			} else {
@@ -6269,6 +6282,7 @@ class FabrikFEModelList extends JModelForm {
 			$qs['rowid'] = '0';
 		}
 		$qs = array_merge($qs, $addurl_qs);
+		$qs_args = array();
 		foreach ($qs as $key => $val) {
 			$qs_args[] = $key.'='.$val;
 		}
@@ -6772,22 +6786,27 @@ class FabrikFEModelList extends JModelForm {
 
 	public function getTmpl()
 	{
-		$app = JFactory::getApplication();
-		$item = $this->getTable();
-		$params = $this->getParams();
-		if ($app->isAdmin()) {
-			$tmpl = JRequest::getVar('layout', $params->get('admin_template'));
-		} else {
-			$tmpl = JRequest::getVar('layout', $item->template);
+		if (!isset($this->tmpl)) {
+			$app = JFactory::getApplication();
+			$item = $this->getTable();
+			$params = $this->getParams();
+			if ($app->isAdmin()) {
+				$this->tmpl = JRequest::getVar('layout', $params->get('admin_template'));
+			} else {
+				$this->tmpl = JRequest::getVar('layout', $item->template);
+			}
+			if ($this->tmpl == '') {
+				$this->tmpl = 'default';
+			}
+			
+			$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
+			
+			// if we are mobilejoomla.com system plugin to detect smartphones
+			if (JRequest::getVar('mjmarkup') == 'iphone') {
+				$this->tmpl = 'iwebkit';
+			}
 		}
-		if ($tmpl == '') {
-			$tmpl = 'default';
-		}
-		// if we are mobilejoomla.com system plugin to detect smartphones
-		if (JRequest::getVar('mjmarkup') == 'iphone') {
-			$tmpl = 'iwebkit';
-		}
-		return $tmpl;
+		return $this->tmpl;
 	}
 
 	protected function setElementTmpl()

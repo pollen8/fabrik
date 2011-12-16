@@ -51,7 +51,6 @@ class FabrikControllerCrons extends FabControllerAdmin
 		$rows = $db->loadObjectList();
 
 		$adminListModel = JModel::getInstance('List', 'FabrikModel');
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager	 	= JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$c = 0;
