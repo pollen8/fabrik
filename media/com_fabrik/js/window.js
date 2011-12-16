@@ -284,8 +284,8 @@ Fabrik.RedirectWindow = new Class({
 			'id': 'redirect',
 			title: '',
 			loadMethod: loadMethod,
-			width: 300,
-			height: 320,
+			width: opts.width ? opts.width : 300,
+			height: opts.height ? opts.height : 320,
 			'minimizable': false,
 			'collapsible': true
 			
