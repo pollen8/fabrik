@@ -58,6 +58,17 @@ var FbForm = new Class({
 			this.getForm().getElements('.fabrikElementContainer > .displayBox').each(function (b) {
 				var w = b.getParent().getSize().x === 0 ? 400 : b.getParent().getSize().x;
 				b.setStyle('width', w + 'px');
+				var e = b.getElement('.fabrikElement');
+				if (typeOf(e) !== 'null') {
+					var x = 0;
+					b.getChildren().each(function (c) {
+						if (c !== e) {
+							x += c.getSize().x;
+						}
+					});
+					e.setStyle('width', w - x - 10 + 'px');
+				}
+				
 			});
 		}
 	},

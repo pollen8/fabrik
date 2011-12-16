@@ -422,24 +422,24 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	function getFilter($counter = 0, $normal = true)
 	{
-		$listModel  	=& $this->getlistModel();
-		$formModel		=& $listModel->getFormModel();
-		$elName2 		= $this->getFullName(false, false, false);
+		$listModel = $this->getlistModel();
+		$formModel = $listModel->getFormModel();
+		$elName2 = $this->getFullName(false, false, false);
 		if (!$formModel->hasElement($elName2)) {
 			return '';
 		}
-		$table				=& $listModel->getTable();
-		$element			= $this->getElement();
-		$params				=& $this->getParams();
+		$table = $listModel->getTable();
+		$element	= $this->getElement();
+		$params	= $this->getParams();
 
-		$elName 			= $this->getFullName(false, true, false);
-		$htmlid				= $this->getHTMLId() . 'value';
+		$elName = $this->getFullName(false, true, false);
+		$htmlid	= $this->getHTMLId() . 'value';
 		$v = 'fabrik___filter[list_'.$table->id.'][value]';
 		$v .= ($normal) ? '['.$counter.']' : '[]';
 
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
-
+		$return = array();
 		$tabletype = $this->_getValColumn();
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
@@ -456,40 +456,40 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			case "range":
 				$attribs = 'class="inputbox fabrik_filter" size="1" ';
 				$default1 = is_array($default) ? $default[0] : '';
-				$return 	 = JHTML::_('select.genericlist', $rows , $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
+				$return[] = JHTML::_('select.genericlist', $rows , $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
 				$default1 = is_array($default) ? $default[1] : '';
-				$return 	 .= JHTML::_('select.genericlist', $rows , $v.'[]', $attribs, 'value', 'text', $default1 , $element->name . "_filter_range_1");
+				$return[] = JHTML::_('select.genericlist', $rows , $v.'[]', $attribs, 'value', 'text', $default1 , $element->name . "_filter_range_1");
 				break;
 			case "dropdown":
 			default:
-				$return 	 = JHTML::_('select.genericlist',  $rows , $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist',  $rows , $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
 				break;
 
 			case "field":
 				if (get_magic_quotes_gpc()) {
-					$default			= stripslashes($default);
+					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return = "<input type=\"text\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$htmlid\" />";
+				$return[] = "<input type=\"text\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$htmlid\" />";
 				break;
 
 			case "auto-complete":
 				if (get_magic_quotes_gpc()) {
-					$default			= stripslashes($default);
+					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return = "<input type=\"hidden\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$htmlid\" />\n";
-				$return .= "<input type=\"text\" name=\"$v-auto-complete\" class=\"inputbox fabrik_filter autocomplete-trigger\" value=\"$default\" id=\"$htmlid-auto-complete\"  />";
+				$return[] = "<input type=\"hidden\" name=\"$v\" class=\"inputbox fabrik_filter\" value=\"$default\" id=\"$htmlid\" />\n";
+				$return[] = "<input type=\"text\" name=\"$v-auto-complete\" class=\"inputbox fabrik_filter autocomplete-trigger\" value=\"$default\" id=\"$htmlid-auto-complete\"  />";
 				$selector = '#listform_'.$listModel->getRenderContext().' .'.$id;
 				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id, 'user');
 				break;
 		}
 		if ($normal) {
-			$return .= $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName);
 		} else {
-			$return .= $this->getAdvancedFilterHiddenFields();
+			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
-		return $return;
+		return implode("\n", $return);
 	}
 
 	/**

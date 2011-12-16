@@ -335,6 +335,13 @@
 					type="accesslevel"
 					label="COM_FABRIK_FIELD_AVERAGE_ACCESS_LABEL"
 					description="COM_FABRIK_FIELD_AVERAGE_ACCESS_DESC" />
+				
+				<field name="avg_round"
+					type="field"
+					size="2"
+					default="0"
+					description="COM_FABRIK_FIELD_AVERAGE_ROUND_DESC"
+					label="COM_FABRIK_FIELD_AVERAGE_ROUND_LABEL" />
 					
 				<field name="avg_split" 
 					type="listfields" 

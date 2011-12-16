@@ -86,7 +86,6 @@ class FabrikControllerElement extends FabControllerForm
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('field', 'element');
 		$id = JRequest::getInt('id');
@@ -114,7 +113,6 @@ class FabrikControllerElement extends FabControllerForm
 	function cancelUpdatestructure()
 	{
 		JRequest::checkToken() or die('Invalid Token');
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('field', 'element');
 		$model->setId(JRequest::getInt('id'));
@@ -155,7 +153,6 @@ class FabrikControllerElement extends FabControllerForm
 	{
 		JRequest::checkToken() or die('Invalid Token');
 		$post = JRequest::get('post');
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$id = (int)JArrayHelper::getValue($post['jform'], 'id', 0);
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className 			= JRequest::getVar('plugin', 'field', 'post');

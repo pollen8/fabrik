@@ -349,7 +349,6 @@ class FabrikModelElement extends JModelAdmin
 		$abstractPlugins = $this->getAbstractPlugins();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		$opts = new stdClass();

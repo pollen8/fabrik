@@ -91,7 +91,18 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-				
+			
+			<field name="textarea_hover_location"
+				type="list"
+				default="top"
+				description="PLG_ELEMENT_TEXTAREA_HOVER_LOCATION_DESC"
+				label="PLG_ELEMENT_TEXTAREA_HOVER_LOCATION_LABEL">
+					<option value="top">top</option>
+					<option value="right">right</option>
+					<option value="bottom">bottom</option>
+					<option value="left">left</option>
+			</field>
+			
 		</fieldset>
 	</fields>
 </form>

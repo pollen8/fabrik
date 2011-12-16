@@ -92,7 +92,6 @@ class FabrikModelVisualization extends JModelAdmin
 		}
 		JRequest::setvar('view', 'visualization');
 		JPluginHelper::importPlugin('fabrik_visualizaton', $plugin);
-		//JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		if ($plugin == '') {

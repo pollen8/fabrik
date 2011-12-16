@@ -3462,7 +3462,10 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function getSlug($row)
 	{
-		return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
+		//return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
+		$row->slug = str_replace(":", '-', $row->slug);
+		$row->slug = JApplication::stringURLSafe($row->slug);
+		return $row->slug;
 	}
 
 	/**
@@ -3823,19 +3826,7 @@ class FabrikFEModelList extends JModelForm {
 			$arr[$key] = array('id'=>$e->_id, 'plugin'=>$e->getElement()->plugin);
 		}
 		$opts->elementMap = $arr;
-		//$opts = json_encode($opts);
 		return $opts;
-
-
-		$script = "alert('create obj');
-		new AdvancedSearch($opts);";
-		//$script = "head.ready(function() {$script});";
-		//$script = "head.ready(function() {alert('test');});";
-		$script1 = "head.ready(function(){
-		alert('hread ready test');
-		})";
-		FabrikHelperHTML::addScriptDeclaration($script1);
-		return  $script;
 	}
 
 	private function getAdvancedSearchElementList()
