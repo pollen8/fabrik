@@ -286,26 +286,5 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		return $this->unNumberFormat($val);
 	}
 
-	protected function getAvgQuery(&$tableModel, $label = "'calc'")
-	{
-		$params = $this->getParams();
-		$format = $params->get('text_format', 'text');
-		$decimal_places = $format == 'decimal' ? $params->get('decimal_length', '0') : '0';
-		$table 			=& $tableModel->getTable();
-		$joinSQL 		= $tableModel->_buildQueryJoin();
-		$whereSQL 	= $tableModel->_buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
-		$groupModel = $this->getGroup();
-		if ($groupModel->isJoin()) {
-			//element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT ROUND(AVG($name), $decimal_places) AS value, $label AS label FROM ".FabrikString::safeColName($table->db_table_name)." $joinSQL $whereSQL";
-		} else {
-			// need to do first query to get distinct records as if we are doing left joins the sum is too large
-			return "SELECT ROUND(AVG(value), $decimal_places) AS value, label
-FROM (SELECT DISTINCT $table->db_primary_key, $name AS value, $label AS label FROM ".FabrikString::safeColName($table->db_table_name)." $joinSQL $whereSQL) AS t";
-		}
-
-	}
-
 }
 ?>

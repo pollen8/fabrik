@@ -2543,12 +2543,13 @@ class plgFabrik_Element extends FabrikPlugin
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 		$groupModel = $this->getGroup();
+		$roundTo = (int)$this->getParams()->get('avg_round');
 		if ($groupModel->isJoin()) {
 			//element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT ROUND(AVG($name)) AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL";
+			return "SELECT ROUND(AVG($name), $roundTo) AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL";
 		} else {
 			// need to do first query to get distinct records as if we are doing left joins the sum is too large
-			return "SELECT ROUND(AVG(value)) AS value, label
+			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
 FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL) AS t";
 
 		}
