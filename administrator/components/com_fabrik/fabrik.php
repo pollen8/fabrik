@@ -14,7 +14,7 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik')) {
 }
 
 //load front end language file as well
-$lang =& JFactory::getLanguage();
+$lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_SITE.'/components/com_fabrik');
 
 jimport('joomla.filesystem.file');

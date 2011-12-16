@@ -232,7 +232,7 @@ class fabrikViewForm extends JView
 		$this->showPrint = $params->get('print', 0);
 
 		if ($this->showPrint) {
-			$text = JHTML::_('image.site',  'printButton.png', '/images/M_images/', NULL, NULL, JText::_('Print'));
+			$text = JHTML::_('image.site',  'printButton.png', '/images/', NULL, NULL, JText::_('Print'));
 			$this->printLink = '<a href="#" onclick="window.print();return false;">'.$text.'</a>';
 		}
 
