@@ -44,6 +44,42 @@
 				rows="5" 
 				label="PLG_FORM_REDIRECT_CONDITION_LABEL" 
 				description="PLG_FORM_REDIRECT_CONDITION_DESC" />
+				
+			<field name="redirect_content_how"
+				type="list"
+				default="popup"
+				repeat="true"
+				label="PLG_FORM_REDIRECT_CONTENT_HOW_LABEL"
+				description="PLG_FORM_REDIRECT_CONTENT_HOW_DESC" >
+					<option value="popup">PLG_FORM_REDIRECT_CONTENT_HOW_POPUP</option>
+					<option value="samepage">PLG_FORM_REDIRECT_CONTENT_HOW_SAMEPAGE</option>
+					<option value="newpage">PLG_FORM_REDIRECT_CONTENT_HOW_NEWPAGE</option>
+			</field>
+			
+			<field name="redirect_content_popup_width" 
+				type="text" 
+				size="5" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_WIDTH_LABEL" 
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_WIDTH_DESC"/>
+				
+			<field name="redirect_content_popup_height" 
+				type="text" 
+				size="5" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_LABEL" 
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_DESC"/>
+				
+			<field name="redirect_content_reset_form"
+				type="radio"
+				default="1"
+				repeat="true"
+				label="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_LABEL"
+				description="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>			
+			
 		</fieldset>
 	</fields>
 </form>

@@ -848,13 +848,25 @@ var FbForm = new Class({
 						this.updateMainError();
 
 						if (errfound === false) {
+							var clear_form = btn.name !== 'apply';
 							Fabrik.loader.stop('form_' + this.id);
 							var saved_msg = json.msg !== undefined ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
+								clear_form = json.clear_form;
 								if (json.url !== undefined) {
-									var width = json.width !== undefined ? json.width : 400;
-									var height = json.height !== undefined ? json.height : 400;
-									Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width});
+									if (json.redirect_how === 'popup') {
+										var width = json.width !== undefined ? json.width : 400;
+										var height = json.height !== undefined ? json.height : 400;
+										Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width});
+									}
+									else {
+										if (json.redirect_how === 'samepage') {
+											window.open(json.url, '_self');
+										}
+										else if (json.redirect_how === 'newpage') {
+											window.open(json.url, '_blank');
+										}
+									}
 								} else {
 									alert(saved_msg);
 								}
@@ -864,7 +876,9 @@ var FbForm = new Class({
 							//query the list to get the updated data
 							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
 							if (btn.name !== 'apply') {
-								this.clearForm();
+								if (clear_form) {
+									this.clearForm();
+								}
 								//if the form was loaded in a Fabrik.Window close the window.
 								if (Fabrik.Windows[this.options.fabrik_window_id]) {
 									Fabrik.Windows[this.options.fabrik_window_id].close();

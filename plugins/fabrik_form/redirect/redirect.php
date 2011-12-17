@@ -71,6 +71,11 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 			//3.0 ajax/module redirect logic handled in form controller not in plugin
 			$surl[$this->renderOrder] = $this->_data->jump_page;
 			$session->set($context.'url', $surl);
+			$session->set($context.'redirect_content_how', $params->get('redirect_content_how', 'popup'));
+			$session->set($context.'redirect_content_popup_width', $params->get('redirect_content_popup_width', '300'));
+			$session->set($context.'redirect_content_popup_height', $params->get('redirect_content_popup_height', '300'));
+			$session->set($context.'redirect_content_popup_reset_form', $params->get('redirect_content_popup_reset_form', '1'));
+
 		} else {
 			$sshowsystemmsg[$this->renderOrder] = false;
 			$session->set($context.'showsystemmsg', $sshowsystemmsg);
