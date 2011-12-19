@@ -2289,18 +2289,22 @@ class plgFabrik_Element extends FabrikPlugin
 					break;
 				case '>':
 				case '&gt;':
+				case 'greaterthan':
 					$condition = '>';
 					break;
 				case '<':
 				case '&lt;':
+				case 'lessthan':
 					$condition = '<';
 					break;
 				case '>=':
 				case '&gt;=':
+				case 'greaterthanequals':
 					$condition = '>=';
 					break;
 				case '<=':
 				case '&lt;=':
+				case 'lessthanequals':
 					$condition = '<=';
 					break;
 				case 'in':

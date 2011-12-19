@@ -828,6 +828,7 @@ var FbForm = new Class({
 					onComplete : function (json, txt) {
 						if (typeOf(json) === 'null') {
 							// stop spinner
+							Fabrik.loader.stop('form_' + this.id, 'Error in returned JSON');
 							fconsole('error in returned json', json, txt);
 							return;
 						}

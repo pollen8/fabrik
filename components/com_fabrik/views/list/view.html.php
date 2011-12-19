@@ -52,7 +52,9 @@ class FabrikViewList extends JView{
 		$tmpItemid = !isset($Itemid) ?  0 : $Itemid;
 
 		$this->_row = new stdClass();
-		$script = '';
+		$script = array();
+		$script[] = "head.ready(function() {";
+		
 		$params = $model->getParams();
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
@@ -143,10 +145,10 @@ class FabrikViewList extends JView{
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
-		$script .= "\n" . "var list = new FbList('$listid',";
-		$script .= $opts;
-		$script .= "\n" . ");";
-		$script .= "\n" . "Fabrik.addBlock('list_{$listid}', list);";
+		$script[] = "var list = new FbList('$listid',";
+		$script[] = $opts;
+		$script[] = ");";
+		$script[] = "Fabrik.addBlock('list_{$listid}', list);";
 
 		//add in plugin objects
 		$params = $model->getParams();
@@ -156,19 +158,19 @@ class FabrikViewList extends JView{
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
 		$aObjs = $pluginManager->_data;
 
-		$script .= "\nlist.addPlugins([\n";
-		$script .= "  " . implode(",\n  ", $aObjs);
-		$script .= "\n]);\n";
-
+		if (!empty($aObjs)) {
+			$script[] = "list.addPlugins([\n";
+			$script[] = "  " . implode(",\n  ", $aObjs);
+			$script[] = "]);";
+		}
 		//@since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
 		$this->assign('pluginBeforeList', $pluginManager->_data);
 
-		$script = "
-		head.ready(function() {
-		".$model->filterJs."
-		$script
-		})";
+		$script[] = $model->filterJs;
+		$script[] = "});";
+		$script = implode("\n", $script);
+		
 		FabrikHelperHTML::addScriptDeclaration($script);
 		$this->getElementJs();
 		//reset data back to original settings
