@@ -73,5 +73,15 @@
 			</field>
 			
 		</fieldset>
+		
+		<fieldset name="plg-dropdown-advanced">
+			<field name="options_split_str" 
+				type="text" 
+				size="10" 
+				default="" 
+				label="PLG_ELEMENT_DROPDOWN_SEPARATOR_LABEL" 
+				description="PLG_ELEMENT_DROPDOWN_SEPARATOR_DESC" />
+		</fieldset>
+		
 	</fields>
 </form>
