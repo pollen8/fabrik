@@ -4363,9 +4363,9 @@ class FabrikFEModelList extends JModelForm {
 			foreach ($elementModels as $elementModel) {
 				$params = $elementModel->getParams();
 				$elName = $elementModel->getFullName(false, true, false);
-				$sum 			= $params->get('sum_on', '0');
-				$avg 			= $params->get('avg_on', '0');
-				$median 		= $params->get('median_on', '0');
+				$sumOn 			= $params->get('sum_on', '0');
+				$avgOn 			= $params->get('avg_on', '0');
+				$medianOn 		= $params->get('median_on', '0');
 				$countOn 		= $params->get('count_on', '0');
 				$customOn		= $params->get('custom_calc_on', '0');
 
@@ -4375,7 +4375,7 @@ class FabrikFEModelList extends JModelForm {
 				$countAccess 	= $params->get('count_access', 0);
 				$customAccess	= $params->get('custom_calc_access', 0);
 
-				if (in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
+				if ($sumOn && in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
 					$aSums[$elName] = $params->get('sum_value', '');
 					$ser = $params->get('sum_value_serialized');
 					if (is_string($ser)) {
@@ -4384,7 +4384,7 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if (in_array($avgAccess, $aclGroups) && $params->get('avg_value', '') != '') {
+				if ($avgOn && in_array($avgAccess, $aclGroups) && $params->get('avg_value', '') != '') {
 					$aAvgs[$elName] = $params->get('avg_value', '');
 					$ser = $params->get('avg_value_serialized');
 					if (is_string($ser)) {
@@ -4392,7 +4392,7 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if (in_array($medianAccess, $aclGroups) && $params->get('median_value', '') != '') {
+				if ($medianOn && in_array($medianAccess, $aclGroups) && $params->get('median_value', '') != '') {
 					$aMedians[$elName] = $params->get('median_value', '');
 					$ser = $params->get('median_value_serialized', '');
 					if (is_string($ser)) {
@@ -4408,7 +4408,7 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if ($customOn && in_array($customAccess, $aclGroups)) {
+				if ($customOn && in_array($customAccess, $aclGroups) && $params->get('custom_calc_value', '') != '') {
 					$aCustoms[$elName] = $params->get('custom_calc_value', '');
 					$ser = $params->get('custom_calc_value_serialized');
 					if (is_string($ser)) {

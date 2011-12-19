@@ -178,13 +178,24 @@ class FabrikControllerForm extends JController
 
 		// @todo -should get handed off to the json view to do this
 		if (JRequest::getInt('fabrik_ajax') == 1) {
-			//let form.js handle the redirect logic (will also send out a
-			echo json_encode(array(
+			// $$$ hugh - adding some options for what to do with redirect when in content plugin
+			// Should probably do this elsewhere, but for now ...
+			$redirect_opts = array(
 				'msg' => $msg,
 				'url' => $url,
 				'baseRedirect'=>$this->baseRedirect,
 				'rowid' => JRequest::getVar('rowid')
-			));
+			);
+			if (!$this->baseRedirect && $this->isMambot) {
+				$session = JFactory::getSession();
+				$context = 'com_fabrik.form.'.$model->get('id').'.redirect.';
+				$redirect_opts['redirect_how'] = $session->get($context.'redirect_content_how', 'popup');
+				$redirect_opts['width'] = (int)$session->get($context.'redirect_content_popup_width', '300');
+				$redirect_opts['height'] = (int)$session->get($context.'redirect_content_popup_height', '300');
+				$redirect_opts['reset_form'] = $session->get($context.'redirect_content_reset_form', '1') == '1';
+			}
+			//let form.js handle the redirect logic (will also send out a
+			echo json_encode($redirect_opts);
 			return;
 		}
 

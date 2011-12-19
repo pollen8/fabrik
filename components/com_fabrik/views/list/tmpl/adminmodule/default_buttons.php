@@ -8,7 +8,7 @@
 		</li>
 	<?php }?>
 		<li class="button">
-			<a href="index.php?option=com_fabrik&task=list.view&listid=<?php echo $this->list->id?>">
+			<a href="index.php?option=com_fabrik&amp;task=list.view&amp;listid=<?php echo $this->list->id?>">
 				<?php echo FabrikHelperHTML::image('view.png', 'list', $this->tmpl, 'view all');?>
 				<span><?php echo JText::_('view all');?></span>
 			</a>

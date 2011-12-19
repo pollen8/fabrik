@@ -374,6 +374,9 @@ class FabrikWorker {
 		//$post	= JRequest::get('post');
 		//$$$ rob changed to allow request variables to be parsed as well. I have a sneaky feeling this
 		// was set to post for a good reason, but I can't see why now.
+		// $$$ hugh - for reasons I don't understand, merging request just doesn't seem to work
+		// in some situations, so I'm adding a replaceRequest call here as a bandaid.
+		FabrikWorker::replaceRequest($msg);
 		$post	= JRequest::get('request');
 		$this->_searchData = is_null($searchData) ?  $post : array_merge($post, $searchData);
 		$this->_searchData['JUtility::getToken'] = JUtility::getToken();
@@ -698,26 +701,26 @@ class FabrikWorker {
 	{
 		$dofilter = false;
 		$filter= false;
-		
+
 		// Filter settings
 		jimport('joomla.application.component.helper');
 		$config		= JComponentHelper::getParams('com_content');
 		$user		= JFactory::getUser();
 		$userGroups	= JAccess::getGroupsByUser($user->get('id'));
-		
+
 		$filters = $config->get('filters');
-		
+
 		$blackListTags			= array();
 		$blackListAttributes	= array();
-		
+
 		$whiteListTags			= array();
 		$whiteListAttributes	= array();
-		
+
 		$noHtml		= false;
 		$whiteList	= false;
 		$blackList	= false;
 		$unfiltered	= false;
-		
+
 		// Cycle through each of the user groups the user is in.
 		// Remember they are include in the Public group as well.
 		foreach ($userGroups AS $groupId)
@@ -726,11 +729,11 @@ class FabrikWorker {
 			if (!isset($filters->$groupId)) {
 				continue;
 			}
-		
+
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
 			$filterType	= strtoupper($filterData->filter_type);
-		
+
 			if ($filterType == 'NH') {
 				// Maximum HTML filtering.
 				$noHtml = true;
@@ -746,25 +749,25 @@ class FabrikWorker {
 				$attributes		= explode(',', $filterData->filter_attributes);
 				$tempTags		= array();
 				$tempAttributes	= array();
-		
+
 				foreach ($tags AS $tag)
 				{
 					$tag = trim($tag);
-		
+
 					if ($tag) {
 						$tempTags[] = $tag;
 					}
 				}
-		
+
 				foreach ($attributes AS $attribute)
 				{
 					$attribute = trim($attribute);
-		
+
 					if ($attribute) {
 						$tempAttributes[] = $attribute;
 					}
 				}
-		
+
 				// Collect the black or white list tags and attributes.
 				// Each list is cummulative.
 				if ($filterType == 'BL') {
@@ -779,13 +782,13 @@ class FabrikWorker {
 				}
 			}
 		}
-		
+
 		// Remove duplicates before processing (because the black list uses both sets of arrays).
 		$blackListTags			= array_unique($blackListTags);
 		$blackListAttributes	= array_unique($blackListAttributes);
 		$whiteListTags			= array_unique($whiteListTags);
 		$whiteListAttributes	= array_unique($whiteListAttributes);
-		
+
 		// Unfiltered assumes first priority.
 		if ($unfiltered) {
 			$dofilter = false;
@@ -811,9 +814,9 @@ class FabrikWorker {
 			else {
 				$filter = JFilterInput::getInstance();
 			}
-		
+
 		}
-		
+
 		return array($dofilter, $filter);
 	}
 
@@ -930,7 +933,7 @@ class FabrikWorker {
 			}
 			$connection = $connectionModel->getConnection();
 			self::$connection[$connId] = $connectionModel;
-				
+
 			if (JError::isError(self::$connection[$connId])) {
 				JError::handleEcho(self::$connection[$connId]);
 			}
@@ -994,7 +997,7 @@ class FabrikWorker {
 		}
 		return true;
 	}
-	
+
 	public function goBackAction()
 	{
 		jimport('joomla.environment.browser');
@@ -1020,7 +1023,7 @@ class FabrikWorker {
 		if (!$app->isAdmin()) {
 			$menus = JSite::getMenu();
 			$menu	= $menus->getActive();
-			
+
 			//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
 			if (is_object($menu) && !$mambot) {
 				$menu_params = new JParameter($menu->params);

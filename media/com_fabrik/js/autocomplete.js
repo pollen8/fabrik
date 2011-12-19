@@ -40,6 +40,9 @@ var FbAutocomplete = new Class({
 			this.closeMenu();
 			return;
 		}
+		if (e.key === 'enter') {
+			e.stop();
+		}
 		var v = this.getInputElement().get('value');
 		if (v === '') {
 			this.element.value = '';
@@ -65,6 +68,10 @@ var FbAutocomplete = new Class({
 						this.completeAjax(e, v);
 					}.bind(this)
 				}).send();
+			}
+		} else {
+			if (e.key === 'enter') {
+				this.openMenu();
 			}
 		}
 		this.searchText = v;
