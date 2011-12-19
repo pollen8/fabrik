@@ -363,12 +363,13 @@ class FabrikViewList extends JView{
 
 		$this->assign('filterMode', (int)$params->get('show-table-filters'));
 		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
-		$this->assign('showFilters', (count($this->filters) > 0 && $this->filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  1 : 0);
+		$this->assign('showFilters', $this->get('showFilters'));
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
 		$this->assignRef('calculations', $this->_getCalculations($this->headings, $params->get('actionMethod')));
 		$this->assign('isGrouped', !($this->get('groupBy') == ''));
 		$this->assign('colCount', count($this->headings));
+		$this->assign('hasButtons', $this->get('hasButtons'));
 		$this->assignRef('grouptemplates', $model->grouptemplates);
 		$this->assignRef('params', $params);
 		$this->loadTemplateBottom();

@@ -6916,5 +6916,34 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $csvFields;
 	}
+	
+	/**
+	 * helper function for view to determine if filters should be shown
+	 * @return boolean
+	 */
+
+	public function getShowFilters()
+	{
+		$filters = $this->getFilters('listform_'. $this->getRenderContext());
+		$params = $this->getParams();
+		$filterMode = (int)$params->get('show-table-filters');
+		return (count($filters) > 0 && $filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  true : false;
+	}
+	
+	/**
+	 * 
+	 * helper view function to determine if any buttons are shown
+	 * @return boolean
+	 */
+	
+	public function getHasButtons()
+	{
+		$params = $this->getParams();
+		if ($this->canAdd() || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport() || $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 ?>
