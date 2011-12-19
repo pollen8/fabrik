@@ -52,7 +52,7 @@ abstract class FabModelAdmin extends JModelAdmin
 			$location = $this->getPluginLocation($x);
 			$event = $this->getPluginEvent($x);
 			$opts = new stdClass();
-			$opts->state = (bool)JArrayHelper::getValue($state, $x);
+			$opts->state = (bool)(trim(JArrayHelper::getValue($state, $x)));
 			$return[] = array('plugin'=>$plugin, 'html'=>$str, 'location'=>$location, 'event'=>$event, 'opts' => $opts);
 		}
 		return $return;
