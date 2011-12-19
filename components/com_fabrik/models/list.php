@@ -3209,12 +3209,12 @@ class FabrikFEModelList extends JModelForm {
 			if (isset($properties)) {
 				$prefilters = JArrayHelper::fromObject(json_decode($properties));
 				$conditions = (array)$prefilters['filter-conditions'];
-
 				if (!empty($conditions)) {
 					$params->set('filter-fields', $prefilters['filter-fields']);
 					$params->set('filter-conditions', $prefilters['filter-conditions']);
 					$params->set('filter-value', $prefilters['filter-value']);
 					$params->set('filter-access', $prefilters['filter-access']);
+					$params->set('filter-eval', $prefilters['filter-eval']);
 				}
 			}
 			$elements = $this->getElements('filtername');
