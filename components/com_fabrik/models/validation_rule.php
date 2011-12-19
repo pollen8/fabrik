@@ -28,7 +28,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	var $pluginParams = null;
 
 	var $_rule = null;
-	
+
 	/** @var string if true validation uses its own icon, if not reverts to string value */
 	protected $icon = true;
 
@@ -63,7 +63,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		if ($condition == '') {
 			return true;
 		}
-		
+
 		$w = new FabrikWorker();
 
 		// $$$ rob merge join data into main array so we can access them in parseMessageForPlaceHolder()
@@ -77,7 +77,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		}
 
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $post));
-		
+
 		$res = @eval($condition);
 		if (is_null($res)) {
 			return true;
@@ -133,25 +133,46 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	 * @param int $c repeat group counter
 	 * @param string $tmpl =
 	 */
-	
+
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
 	{
 		$name = $this->icon === true ? $this->_pluginName : $this->icon;
+		if ($this->allowEmpty($elementModel, $c)) {
+			$name .= '_allowempty';
+		}
 		$label = '<span>'.$this->getLabel($elementModel, $c).'</span>';
 		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => "{notice:true}",  'title' => $label));
 		return $str;
 	}
-	
+
 	/**
 	 * gets the hover/alt text that appears over the validation rule icon in the form
 	 * @param object element model
 	 * @param int repeat group counter
 	 * @return string label
 	 */
-	
+
 	protected function getLabel($elementModel, $c)
 	{
-		return JText::_('PLG_VALIDATIONRULE_'.strtoupper($this->_pluginName).'_LABEL');
+		if ($this->allowEmpty($elementModel, $c)) {
+			return JText::_('PLG_VALIDATIONRULE_'.strtoupper($this->_pluginName).'_ALLOWEMPTY_LABEL');
+		}
+		else {
+			return JText::_('PLG_VALIDATIONRULE_'.strtoupper($this->_pluginName).'_LABEL');
+		}
+	}
+
+	/**
+	* does the validation allow empty value?
+	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	* @param object element model
+	* @param int repeat group counter
+	* @return bool
+	*/
+
+	protected function allowEmpty($elementModel, $c)
+	{
+		return false;
 	}
 }
 ?>

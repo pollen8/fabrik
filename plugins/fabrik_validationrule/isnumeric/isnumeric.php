@@ -22,8 +22,8 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 	var $_className = 'notempty isnumeric';
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
-	protected $icon = 'notempty';
-	
+	protected $icon = 'isnumeric';
+
 	/**
 	 * validate the elements data against the rule
 	 * @param string data to check
@@ -47,5 +47,20 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 		return is_numeric($data);
 	}
 
+	/**
+	* does the validation allow empty value?
+	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	* @param object element model
+	* @param int repeat group counter
+	* @return bool
+	*/
+
+	protected function allowEmpty($elementModel, $c)
+	{
+ 		$params = $this->getParams();
+		$allow_empty = $params->get('isnumeric-allow_empty');
+		$allow_empty = $allow_empty[$c];
+		return $allow_empty == '1';
+	}
 }
 ?>
