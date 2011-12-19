@@ -17,6 +17,11 @@ echo "
 	padding:0;
 }
 
+#listform_$c .fabrikDataContainer{
+	overflow-y:auto;
+	clear:left;
+}
+
 #listform_$c a,
 #listform_$c .fabrikDataContainer  a:hover{
 	border:0;
@@ -29,7 +34,12 @@ echo "
 	display:box;
 }
 
-#listform_$c .list-footer div{
+#listform_$c .list-footer div.limit{
+	margin-top:5px;
+	margin-left:10px;
+}
+
+#listform_$c .list-footer div.counter{
 	margin-top:8px;
 	margin-left:10px;
 }
@@ -134,6 +144,7 @@ div.calendar{
 }
 
 #listform_$c th,
+#listform_$c .fabrik_groupheading,
 #listform_$c tfoot td{
 	background: -moz-linear-gradient(center top , #DCECF4, #BECED2) repeat scroll 0 0 #E7E7E7;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BECED2', endColorstr='#DCECF4'); /* for IE */
@@ -225,11 +236,10 @@ div.calendar{
 
 #listform_$c .fabrik_buttons{
 	/* remove this if you want the top menu bar to be on the right hand side*/
-	float:left !important; 
+	float:left !important;
 }
 
-#listform_$c ul.fabrik_action,
-#listform_$c ul.pagination {
+#listform_$c ul.fabrik_action {
 	list-style:none;
 	background:none;
 	list-style:none;
@@ -239,7 +249,27 @@ div.calendar{
 	margin:5px;
 	padding:0;
 	border:1px solid #999;
-	
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DCECF4', endColorstr='#BECED2'); /* for IE */
+
+	background: -webkit-gradient(linear, left top, left bottom, from(#DCECF4),
+		to(#BECED2) ); /* for webkit browsers */
+	background: -moz-linear-gradient(top, #DCECF4, #BECED2);
+	background: -o-linear-gradient(top, #DCECF4 0%, #BECED2 100%);
+  background: -ms-linear-gradient(top, #DCECF4 0%, #BECED2 100%);
+
+}
+
+/* $$$ hugh - separated pagination from fabrik_action, 'cos float right makes pagination disappear in Chrome! */
+#listform_$c ul.pagination {
+	list-style:none;
+	background:none;
+	list-style:none;
+	min-height:25px;
+	border-radius: 6px;
+	/* float:right; */
+	margin:5px;
+	padding:0;
+	border:1px solid #999;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DCECF4', endColorstr='#BECED2'); /* for IE */
 
 	background: -webkit-gradient(linear, left top, left bottom, from(#DCECF4),
@@ -261,6 +291,8 @@ div.calendar{
 	min-height:17px;
 	min-width:25px;
 	text-align:center;
+	margin:0;
+	padding:0;
 }
 
 
