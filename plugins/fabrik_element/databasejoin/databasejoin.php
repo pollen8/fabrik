@@ -670,7 +670,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					break;
 				case 'multilist':
 					$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
-					$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="6" multiple="true"', 'value', 'text', $defaults, $id);
+					$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="'.(int)$params->get('dbjoin_multilist_size', 6).'" multiple="true"', 'value', 'text', $defaults, $id);
 					break;
 				case 'auto-complete':
 					$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';
