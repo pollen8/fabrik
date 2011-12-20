@@ -148,6 +148,9 @@ class FabrikFEModelList extends JModelForm {
 	/** @var string render context used for defining custom css variable for tmpl rendering e.g. module_1*/
 	protected $renderContext = '';
 
+	/** @var int the max number of buttons that is shown in a row */
+	protected $rowActionCount = 0;
+	
 	/**
 	 * Constructor
 	 *
@@ -671,7 +674,7 @@ class FabrikFEModelList extends JModelForm {
 
 		$joins = $this->getJoins();
 		//for ($x=0; $x<$cx; $x++) { //if grouped data then the key is not numeric
-		foreach ($data as $groupKey=>$group) {
+		foreach ($data as $groupKey => $group) {
 			//$group = $data[$key]; //Messed up in php 5.1 group positioning in data became ambiguous
 			$cg = count($group);
 			for ($i=0; $i < $cg; $i++) {
@@ -835,6 +838,9 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 				if (!empty($row->fabrik_actions)) {
+					if (count($row->fabrik_actions) > $this->rowActionCount) {
+						$this->rowActionCount = count($row->fabrik_actions);
+					}
 					$this->actionHeading = true;
 					$row->fabrik_actions = '<ul class="fabrik_action">'.implode("\n", $row->fabrik_actions).'</ul>';
 				} else {
@@ -6846,10 +6852,12 @@ class FabrikFEModelList extends JModelForm {
 		$app = JFactory::getApplication();
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '') {
+			$qs = '?c='.$this->getRenderContext();
+			$qs .= '&buttoncount='.$this->rowActionCount;
 			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php?c='.$this->getRenderContext());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php'.$qs);
 			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/template_css.php?c=".$this->getRenderContext());
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'components/com_fabrik/views/list/tmpl/'.$tmpl.'/template_css.php'.$qs);
 			}
 		}
 	}
@@ -6862,12 +6870,7 @@ class FabrikFEModelList extends JModelForm {
 	public function setRenderContext($id)
 	{
 		$listref = JRequest::getVar('listref');
-		//$this->renderContext = strstr($listref, 'mod_fabrik_list') ? $listref : '_'.JFactory::getApplication()->scope.'_'.$id;
-
 		$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
-
-		//echo "render context = $this->renderContext <br>";
-		//$this->renderContext = '_'.$scope.'_'.$id;
 	}
 
 	public function getGroupByHeadings()
@@ -6928,6 +6931,13 @@ class FabrikFEModelList extends JModelForm {
 		$params = $this->getParams();
 		$filterMode = (int)$params->get('show-table-filters');
 		return (count($filters) > 0 && $filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  true : false;
+	}
+	
+	protected function getButtonCount()
+	{
+		$buttonCount = 0;
+		
+		return $buttonCount;
 	}
 	
 	/**

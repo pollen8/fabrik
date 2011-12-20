@@ -1,6 +1,7 @@
 <?php
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
+$buttonCount = (int)$_REQUEST['buttoncount'];
 echo "
 #listform_$c table.fabrikList {
 	clear:right;
@@ -257,6 +258,10 @@ div.calendar{
 	background: -o-linear-gradient(top, #DCECF4 0%, #BECED2 100%);
   background: -ms-linear-gradient(top, #DCECF4 0%, #BECED2 100%);
 
+}
+
+#listform_$c .fabrik_row ul.fabrik_action{
+	width:" . 30 * $buttonCount ."px;
 }
 
 /* $$$ hugh - separated pagination from fabrik_action, 'cos float right makes pagination disappear in Chrome! */
