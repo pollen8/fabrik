@@ -700,13 +700,14 @@ class FabrikModelList extends FabModelAdmin
 	 * the list view now enables us to alter en-mass some element properties
 	 * @param unknown_type $row
 	 */
+	
 	protected function updateElements($row)
 	{
 		$params = json_decode($row->params);
-		if ($params->list_search_elements[0] === '') {
+		if ($params->list_search_elements === '') {
 			return;
 		}
-		$searchElements = json_decode($params->list_search_elements[0])->search_elements;
+		$searchElements = json_decode($params->list_search_elements)->search_elements;
 		$elementModels = $this->getFEModel()->getElements(0, false, false);
 		foreach ($elementModels as $elementModel) {
 			$element = $elementModel->getElement(true); //true otherwise ordering set to 0!
@@ -1204,16 +1205,36 @@ class FabrikModelList extends FabModelAdmin
 		$pks = JRequest::getVar('cid', array());
 		$post = JRequest::get('post');
 		foreach ($pks as $i => $pk) {
-			$item =& $this->getTable();
+			$item = $this->getTable();
 			$item->load($pk);
 			$item->id = null;
 			JRequest::setVar('newFormLabel', $post['names'][$pk]['formLabel']);
-
 			JRequest::setVar('newGroupNames', $post['names'][$pk]['groupNames']);
 			$formModel = $this->createLinkedForm($item->form_id);
 			if (!$formModel) {
 				return;
 			}
+			// $$$ rob 20/12/2011 - any element id stored in the list needs to get mapped to the new element ids
+			
+			$elementMap = $formModel->newElements;
+			$params = json_decode($item->params);
+			$toMaps = array(
+				array('list_search_elements', 'search_elements'),
+				array('csv_elements', 'show_in_csv')
+			);
+			foreach ($toMaps as $toMap) {
+				$key = $toMap[0];
+				$key2 = $toMap[1];
+				$orig = json_decode($params->$key);
+				$new = array();
+				foreach ($orig->$key2 as $elementId) {
+					$new[] =  $elementMap[$elementId];
+				}
+				$c = new stdClass();
+				$c->$key2 = $new;
+				$params->$key = json_encode($c);
+			}
+			
 			$item->form_id = $formModel->getTable()->id;
 			$createdate = JFactory::getDate();
 			$createdate = $createdate->toMySQL();
@@ -1224,6 +1245,7 @@ class FabrikModelList extends FabModelAdmin
 			$item->hits = 0;
 			$item->checked_out = 0;
 			$item->checked_out_time = $db->getNullDate();
+			$item->params = json_encode($params);
 			if (!$item->store()) {
 				$this->setError($item->getError());
 				return false;

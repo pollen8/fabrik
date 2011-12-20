@@ -2956,6 +2956,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		//update the model's table to the copied one
 		$this->_form = $form;
 		$this->setId($form->id);
+		$this->newElements = $newElements;
 		return $form;
 	}
 
