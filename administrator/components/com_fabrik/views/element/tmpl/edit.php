@@ -24,6 +24,8 @@ FabrikHelperHTML::script('administrator/components/com_fabrik/views/pluginmanage
 FabrikHelperHTML::script('administrator/components/com_fabrik/views/element/tmpl/adminelement.js');
 
 JFactory::getDocument()->addScriptDeclaration($this->js);
+
+JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">

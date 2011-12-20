@@ -149,13 +149,15 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	function &loadPlugInGroup($group)
 	{
+		// $$$ rob 16/12/2011 - this was setting $this->_plugIns, but if you had 2 lists as admin modules
+		// and the first list had plugins, then the second list would remove that plugin when this method was run
 		$folder = 'fabrik_'.$group;
-		$this->_plugIns[$group] = array();
+		$this->_AbstractplugIns[$group] = array();
 		$plugins = JPluginHelper::getPlugin($folder);
-		foreach($plugins as $plugin) {
-			$this->_plugIns[$group][$plugin->name] = $plugin;
+		foreach ($plugins as $plugin) {
+			$this->_AbstractplugIns[$group][$plugin->name] = $plugin;
 		}
-		return $this->_plugIns[$group];
+		return $this->_AbstractplugIns[$group];
 	}
 
 	/**

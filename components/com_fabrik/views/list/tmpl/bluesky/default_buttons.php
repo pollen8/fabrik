@@ -1,4 +1,6 @@
 <div class="fabrik_buttons">
+
+	<?php if ($this->hasButtons) {?>
 	<ul class="fabrik_action"><?php if ($this->showAdd) {?>
 		<li class="addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
@@ -73,4 +75,5 @@
 		</li>
 <?php }?>
 </ul>
+<?php }?>
 </div>

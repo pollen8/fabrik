@@ -23,7 +23,7 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
 	protected $icon = 'isemail';
-	
+
 	/**
 	 * validate the elements data against the rule
 	 * @param string data to check
@@ -75,6 +75,22 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 			}
 		}
 		return true;
+	}
+
+	/**
+	* does the validation allow empty value?
+	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	* @param object element model
+	* @param int repeat group counter
+	* @return bool
+	*/
+
+	protected function allowEmpty($elementModel, $c)
+	{
+		$params = $this->getParams();
+		$allow_empty = $params->get('isemail-allow_empty');
+		$allow_empty = $allow_empty[$c];
+		return $allow_empty == '1';
 	}
 
 }

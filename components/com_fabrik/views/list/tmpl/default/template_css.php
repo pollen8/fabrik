@@ -81,7 +81,6 @@ echo "
 
 #listform_$c table.fabrikList th{
 	vertical-align:top;
-
 }
 
 #listform_$c table.fabrikList td,

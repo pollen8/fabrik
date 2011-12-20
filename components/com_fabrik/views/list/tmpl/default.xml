@@ -74,11 +74,11 @@
 									<option value="begins">BEGINS WITH</option>
 									<option value="contains">CONTAINS</option>
 									<option value="ends">ENDS WITH</option>
-									<option value=">">GREATER THAN</option>
-									<option value=">=">GREATER THAN OR EQUALS</option>
-									<option value="&lt;">LESS THAN</option>
+									<option value="greaterthan">GREATER THAN</option>
+									<option value="greaterthanequals">GREATER THAN OR EQUALS</option>
+									<option value="lessthan">LESS THAN</option>
 									<option value="IS NULL">IS NULL</option>
-									<option value="&lt;=">LESS THAN OR EQUALS</option>
+									<option value="lessthanequals">LESS THAN OR EQUALS</option>
 									<option value="in">IN</option>
 									<option value="not_in">NOT IN</option>
 									<option value="earlierthisyear">COM_FABRIK_EARLIER_THIS_YEAR</option>
@@ -88,6 +88,15 @@
 							<field name="filter-value" 
 								type="field"
 								label="COM_FABRIK_LIST_FILTER_VALUE_HEADING"/>
+							
+							<field name="filter-eval"
+								type="list"
+								label="COM_FABRIK_TYPE">
+									<option value="0">COM_FABRIK_TEXT</option>
+									<option value="1">COM_FABRIK_EVAL</option>
+									<option value="2">COM_FABRIK_QUERY</option>
+									<option value="3">COM_FABRIK_NO_QUOTES</option>
+							</field>
 							
 							<field name="filter-access" 
 								type="accesslevel"

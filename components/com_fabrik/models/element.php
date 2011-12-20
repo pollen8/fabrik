@@ -2289,18 +2289,22 @@ class plgFabrik_Element extends FabrikPlugin
 					break;
 				case '>':
 				case '&gt;':
+				case 'greaterthan':
 					$condition = '>';
 					break;
 				case '<':
 				case '&lt;':
+				case 'lessthan':
 					$condition = '<';
 					break;
 				case '>=':
 				case '&gt;=':
+				case 'greaterthanequals':
 					$condition = '>=';
 					break;
 				case '<=':
 				case '&lt;=':
+				case 'lessthanequals':
 					$condition = '<=';
 					break;
 				case 'in':
@@ -2886,6 +2890,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					break;
 				case 'count':
 					$o->value = count($data);
+					break;
+				case 'custom_calc':
+					$params = $this->getParams();
+					$custom_calc_php = $params->get('custom_calc_php', '');
+					if (!empty($custom_calc_php)) {
+						$o->value = @eval(stripslashes($custom_calc_php));
+						FabrikWorker::logEval($custom_calc_php, 'Caught exception on eval of ' . $name . ': %s');
+					}
+					else {
+						$o->value = $data;
+					}
 					break;
 				default:
 					$o->value = $data;
@@ -4169,6 +4184,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function getPluginManager()
 	{
 		return FabrikWorker::getPluginManager();
+	}
+	
+	/**
+   * @since 3.0rc1
+   * when the element is a repeatble join (e.g. db join checkbox) then figure out how many
+   * records have been selected
+   * @return int number of records selected
+	 */
+	
+	public function getJoinRepeatCount($data, $oJoin)
+	{
+		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 	}
 }
 ?>

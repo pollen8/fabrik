@@ -3209,12 +3209,12 @@ class FabrikFEModelList extends JModelForm {
 			if (isset($properties)) {
 				$prefilters = JArrayHelper::fromObject(json_decode($properties));
 				$conditions = (array)$prefilters['filter-conditions'];
-
 				if (!empty($conditions)) {
 					$params->set('filter-fields', $prefilters['filter-fields']);
 					$params->set('filter-conditions', $prefilters['filter-conditions']);
 					$params->set('filter-value', $prefilters['filter-value']);
 					$params->set('filter-access', $prefilters['filter-access']);
+					$params->set('filter-eval', $prefilters['filter-eval']);
 				}
 			}
 			$elements = $this->getElements('filtername');
@@ -4363,9 +4363,9 @@ class FabrikFEModelList extends JModelForm {
 			foreach ($elementModels as $elementModel) {
 				$params = $elementModel->getParams();
 				$elName = $elementModel->getFullName(false, true, false);
-				$sum 			= $params->get('sum_on', '0');
-				$avg 			= $params->get('avg_on', '0');
-				$median 		= $params->get('median_on', '0');
+				$sumOn 			= $params->get('sum_on', '0');
+				$avgOn 			= $params->get('avg_on', '0');
+				$medianOn 		= $params->get('median_on', '0');
 				$countOn 		= $params->get('count_on', '0');
 				$customOn		= $params->get('custom_calc_on', '0');
 
@@ -4375,7 +4375,7 @@ class FabrikFEModelList extends JModelForm {
 				$countAccess 	= $params->get('count_access', 0);
 				$customAccess	= $params->get('custom_calc_access', 0);
 
-				if (in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
+				if ($sumOn && in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
 					$aSums[$elName] = $params->get('sum_value', '');
 					$ser = $params->get('sum_value_serialized');
 					if (is_string($ser)) {
@@ -4384,7 +4384,7 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if (in_array($avgAccess, $aclGroups) && $params->get('avg_value', '') != '') {
+				if ($avgOn && in_array($avgAccess, $aclGroups) && $params->get('avg_value', '') != '') {
 					$aAvgs[$elName] = $params->get('avg_value', '');
 					$ser = $params->get('avg_value_serialized');
 					if (is_string($ser)) {
@@ -4392,7 +4392,7 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if (in_array($medianAccess, $aclGroups) && $params->get('median_value', '') != '') {
+				if ($medianOn && in_array($medianAccess, $aclGroups) && $params->get('median_value', '') != '') {
 					$aMedians[$elName] = $params->get('median_value', '');
 					$ser = $params->get('median_value_serialized', '');
 					if (is_string($ser)) {
@@ -4408,7 +4408,7 @@ class FabrikFEModelList extends JModelForm {
 					}
 				}
 
-				if ($customOn && in_array($customAccess, $aclGroups)) {
+				if ($customOn && in_array($customAccess, $aclGroups) && $params->get('custom_calc_value', '') != '') {
 					$aCustoms[$elName] = $params->get('custom_calc_value', '');
 					$ser = $params->get('custom_calc_value_serialized');
 					if (is_string($ser)) {
@@ -6915,6 +6915,35 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		return $csvFields;
+	}
+	
+	/**
+	 * helper function for view to determine if filters should be shown
+	 * @return boolean
+	 */
+
+	public function getShowFilters()
+	{
+		$filters = $this->getFilters('listform_'. $this->getRenderContext());
+		$params = $this->getParams();
+		$filterMode = (int)$params->get('show-table-filters');
+		return (count($filters) > 0 && $filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  true : false;
+	}
+	
+	/**
+	 * 
+	 * helper view function to determine if any buttons are shown
+	 * @return boolean
+	 */
+	
+	public function getHasButtons()
+	{
+		$params = $this->getParams();
+		if ($this->canAdd() || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport() || $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

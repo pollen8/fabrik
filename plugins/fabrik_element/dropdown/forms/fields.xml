@@ -1,7 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-	<fields>
-		<fieldset name="plg-element-dropdown" addfieldpath="/administrator/components/com_fabrik/models/fields">
+
+	<fields name="params">
+		<fieldset name="plg-dropdown-mutli">
+		
+		<field name="sub_options"
+				type="suboptions"
+				label="COM_FABRIK_SUBOPTIONS" />
+			
+			<field name="multiple" 
+				type="radio" 
+				default="0" 
+				label="PLG_ELEMENT_DROPDOWN_ALLOW_MULTISELECT_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="dropdown_multisize" 
+				size="3" 
+				type="text" 
+				default="3" 
+				label="PLG_ELEMENT_DROPDOWN_MULTISIZE_LABEL" 
+				description="PLG_ELEMENT_DROPDOWN_MULTISIZE_DESC" />
+				
+		</fieldset>
+	</fields>
+	
+		<fields>
+		<fieldset name="plg-element-dropdown" label="PLG_ELEMENT_DROPDOWN_DEFAULTS" addfieldpath="/administrator/components/com_fabrik/models/fields">
 			
 			<field name="default" 
 				type="textarea"
@@ -19,31 +45,9 @@
 			
 		</fieldset>
 	</fields>
-
+	
 	<fields name="params">
-		<fieldset name="plg-dropdown-mutli">
-			
-			<field name="multiple" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_DROPDOWN_ALLOW_MULTISELECT_LABEL">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
-			<field name="dropdown_multisize" 
-				length="3" 
-				type="text" 
-				default="3" 
-				label="PLG_ELEMENT_DROPDOWN_MULTISIZE_LABEL" 
-				description="PLG_ELEMENT_DROPDOWN_MULTISIZE_DESC" />
-				
-			<field name="sub_options"
-				type="suboptions"
-				label="COM_FABRIK_SUBOPTIONS" />
-		
-		</fieldset>
-		<fieldset name="plg-dropdown-add">
+		<fieldset name="plg-dropdown-add" label="PLG_ELEMENT_DROPDOWN_FRONT_END_ADDITIONS">
 			
 			<field name="allow_frontend_addtodropdown" 
 				type="radio" 
@@ -73,5 +77,15 @@
 			</field>
 			
 		</fieldset>
+		
+		<fieldset name="plg-dropdown-advanced">
+			<field name="options_split_str" 
+				type="text" 
+				size="10" 
+				default="" 
+				label="PLG_ELEMENT_DROPDOWN_SEPARATOR_LABEL" 
+				description="PLG_ELEMENT_DROPDOWN_SEPARATOR_DESC" />
+		</fieldset>
+		
 	</fields>
 </form>
