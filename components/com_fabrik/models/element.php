@@ -4185,5 +4185,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		return FabrikWorker::getPluginManager();
 	}
+	
+	/**
+   * @since 3.0rc1
+   * when the element is a repeatble join (e.g. db join checkbox) then figure out how many
+   * records have been selected
+   * @return int number of records selected
+	 */
+	
+	public function getJoinRepeatCount($data, $oJoin)
+	{
+		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
+	}
 }
 ?>

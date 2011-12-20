@@ -622,6 +622,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		//if ($this->canView()) {
 		if ($this->canUse()) {
 			$html = array();
+			$idname = $this->getFullName(false, true, false)."_id";
 			/*if user can access the drop down*/
 			switch ($displayType) {
 				case 'dropdown':
@@ -639,7 +640,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaultValue, 'value', 'text', $options_per_row);
 					break;
 				case 'checkbox':
-					$idname = $this->getFullName(false, true, false)."_id";
 					$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 					// $$$ rob 24/05/2011 - add options per row
 					$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
@@ -667,6 +667,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$html[] = '</div>';
 					}
 					$defaultLabel = implode("\n", $html);
+					break;
+				case 'multilist':
+					$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+					$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="6" multiple="true"', 'value', 'text', $defaults, $id);
 					break;
 				case 'auto-complete':
 					$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';
@@ -1413,50 +1417,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 /* 	function beforeSave(&$row)
 	{
-		$element = $this->getElement();
-		$maskbits = 4;
-		$post	= JRequest::get('post', $maskbits);
-		//on new or on copy? details not found?
-		if (array_key_exists('details', $post)) {
-			if (!in_array($post['details']['plugin'], array('databasejoin', 'user'))) {
-				$db = FabrikWorker::getDbo();
-				$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id =".(int)$post['id']);
-				$db->query();
-				$db->setQuery("
-					SELECT j.id AS jid
-					FROM #__{package}_elements AS e
-					LEFT JOIN #__{package}_joins AS j ON j.element_id = e.id
-					WHERE e.parent_id = ".(int)$post['id']
-				);
-				$join_ids = $db->loadColumn();
-				if (!empty($join_ids)) {
-					$db->setQuery("DELETE FROM #__fabrik_joins WHERE id IN (".implode(',', $join_ids).")");
-					$db->query();
-				}
-			}
-		}
-
 	} */
 
 	function onRemove($drop = false)
 	{
 		$this->deleteJoins((int)$this->_id);
-		/* $db = FabrikWorker::getDbo(true);
-		$orig_id = (int)$this->_id;
-		if (!empty($orig_id)) {
-			$db->setQuery("DELETE FROM #__{package}_joins WHERE element_id = ".$orig_id);
-			$db->query();
-			$db->setQuery("
-				SELECT j.id AS jid
-				FROM #__{package}_elements AS e
-				LEFT JOIN #__{package}_joins AS j ON j.element_id = e.id
-				WHERE e.parent_id = $orig_id
-			");
-			$join_ids = $db->loadColumn();
-			if (!empty($join_ids)) {
-				$db->setQuery("DELETE FROM #__fabrik_joins WHERE id IN (".implode(',', $join_ids).")");
-			}
-		} */
 		parent::onRemove($drop);
 	}
 
@@ -1591,7 +1556,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	public function isJoin()
 	{
 		$params = $this->getParams();
-		if ($params->get('database_join_display_type') == 'checkbox') {
+		if (in_array($params->get('database_join_display_type'), array('checkbox', 'multilist'))) {
 			return true;
 		} else {
 			return parent::isJoin();
@@ -1651,6 +1616,25 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$a[] =array($repeatName, $fvRepeatName);
 		}
 		return $a;
+	}
+	
+	/**
+	* @since 3.0rc1
+	* when the element is a repeatble join (e.g. db join checkbox) then figure out how many
+	* records have been selected
+	* @return int number of records selected
+	*/
+	
+	public function getJoinRepeatCount($data, $oJoin)
+	{
+		$displayType = $this->getParams()->get('database_join_display_type', 'dropdown');
+		if ($displayType === 'multilist') {
+			$join = $this->getJoinModel()->getJoin();
+			$repeatName = $join->table_join.'___'.$this->getElement()->name;
+			return count(JArrayHelper::getValue($data, $repeatName, array()));
+		} else {
+			return parent::getJoinRepeatCount($data, $oJoin);
+		}
 	}
 
 }
