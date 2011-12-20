@@ -2,17 +2,10 @@
 <form>
 	<fields name="params">
 		<fieldset name="plg-element-checkbox" addfieldpath="/administrator/components/com_fabrik/models/fields">
-			<field name="sub_default_value" 
-				type="text" 
-				size="30" 
-				label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_LABEL" 
-				description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_DESC"/>
-				
-			<field name="sub_default_label" 
-				type="text" 
-				size="30"
-				label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_LABEL" 
-				description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_DESC"/>
+		
+			<field name="sub_options"
+				type="suboptions"
+				label="COM_FABRIK_SUBOPTIONS" />
 				
 			<field name="element_before_label" 
 				type="radio" 
@@ -23,10 +16,6 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="sub_options"
-				type="suboptions"
-				label="COM_FABRIK_SUBOPTIONS" />
-			
 			<field name="ck_options_per_row" 
 				type="text" 
 				default="4" 
@@ -35,7 +24,23 @@
 				
 		</fieldset>
 		
-		<fieldset name="plg-checkbox-add">
+		<fieldset name="plg-element-checkbox-default" label="PLG_ELEMENT_CHECKBOX_DEFAULTS">
+		
+				<field name="sub_default_value" 
+					type="text" 
+					size="30" 
+					label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_LABEL" 
+					description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_DESC"/>
+				
+			<field name="sub_default_label" 
+				type="text" 
+				size="30"
+				label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_LABEL" 
+				description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_DESC"/>
+			
+		</fieldset>
+		
+		<fieldset name="plg-checkbox-add" label="PLG_ELEMENT_CHECKBOX_FRONTEND_SELECT">
 			<field name="allow_frontend_addtocheckbox" 
 				type="radio" 
 				default="0" 

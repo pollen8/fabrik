@@ -53,9 +53,12 @@ var FloatingTips = new Class({
 		var s = this;
 		this.selector = elements;
 		this.elements = $$(elements);
+		
 		this.elements.each(function(e) {
 			if (!e.retrieve('tipped')) {
 				e.store('tipped', true);
+				var listid = e.getParent('form').getElement('input[name=listid]').get('value');
+				e.store('listid', listid);
 				e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
 				e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
 				e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
@@ -77,6 +80,7 @@ var FloatingTips = new Class({
 		if (old) if (old.getStyle('opacity') == 1) { clearTimeout(old.retrieve('timeout')); return this; }
 		var tip = this._create(element);
 		if (tip == null) return this;
+		tip.store('listid', element.retrieve('listid'));
 		element.store('floatingtip', tip);
 		this._animate(tip, 'in');
 		this.fireEvent('show', [tip, element]);

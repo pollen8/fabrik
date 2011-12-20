@@ -80,7 +80,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 				<?php
 				foreach ($this->calculations as $cal) {
 					echo "<td>";
-					echo array_key_exists($groupedby, $cal->grouped ) ? $cal->grouped[$groupedby] : $cal->calc;
+					echo array_key_exists($groupedby, $cal->grouped) ? $cal->grouped[$groupedby] : $cal->calc;
 					echo  "</td>";
 				}
 				?>

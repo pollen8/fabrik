@@ -165,8 +165,8 @@ var PluginManager = new Class({
 	
 	getPublishedYesNo: function (opts) {
 		var yesno = '<label>' + Joomla.JText._('COM_FABRIK_PUBLISHED') + '</label>';
-		var yeschecked = opts.state !== false ? 'checked="checked' : '';
-		var nochecked = opts.state === false ? 'checked="checked' : '';
+		var yeschecked = opts.state !== false ? 'checked="checked"' : '';
+		var nochecked = opts.state === false ? 'checked="checked"' : '';
 		yesno += '<fieldset class="radio"><label>' + Joomla.JText._('JYES') + '<input type="radio" name="jform[params][plugin_state][' + opts.counter + ']" ' + yeschecked + ' value="1"></label>';
 		yesno += '<label>' + Joomla.JText._('JNO') + '<input type="radio" name="jform[params][plugin_state][' + opts.counter + ']"' + nochecked + ' value="0"></label></fieldset>';
 		return yesno;

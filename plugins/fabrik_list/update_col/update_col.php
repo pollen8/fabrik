@@ -172,6 +172,11 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		} else {
 			$this->msg = JText::sprintf($this->msg, $this->_row_count, $this->_sent);
 		}
+		
+		// Clean the cache.
+		$cache = JFactory::getCache(JRequest::getCmd('option'));
+		$cache->clean();
+		
 		return true;
 	}
 

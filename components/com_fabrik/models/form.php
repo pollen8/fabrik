@@ -755,7 +755,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * update the data that gets posted via the form and stored by the form
 	 * model. Used in elements to modify posted data see fabrikfileupload
 	 * @param string $key (in key.dot.format to set a recursive array
-	 * @param string $val va;ue to set to
+	 * @param string $val value to set to
 	 * @param bool $update_raw automatically update _raw key as well
 	 * @param bool $override_ro update data even if element is RO
 	 * @return null
@@ -1076,6 +1076,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 				$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
 				// 3.0 test on repeatElement param type
+				if (is_string($oJoin->params)) {
+					$oJoin->params = json_decode($oJoin->params);
+				}
 				if ((int)$oJoin->group_id !== 0 && $oJoin->params->type !== 'repeatElement') {
 					$joinGroup = $groups[$oJoin->group_id];
 					//find the primary key for the join table
@@ -1102,12 +1105,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						if ($elementModel->getGroup()->isJoin()) {
 							//repeat element in a repeat group :S
 							$groupJoin = $elementModel->getGroup()->getJoinModel();
-							//$groupKeyVals = $this->_formData['join'][$groupJoin->getId()][$groupJoin->getPrimaryKey().'_raw'];
 							for ($r = 0; $r < count($data[$oJoin->table_join.'___id']); $r ++) {
 								$repeatTotals['el'.$elementModel->getId()][$r] =  count($data[$oJoin->table_join.'___id'][$r]);
 							}
 						} else {
-							$repeatTotals[$oJoin->group_id] = count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
+							$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
 						}
 					} else {
 						// "Not a repeat element (el id = $oJoin->element_id)<br>";

@@ -659,9 +659,10 @@ class FabrikModelElement extends JModelAdmin
 			$this->updateIndexes($elementModel, $listModel, $row);
 		}
 
-		$this->updateJavascript($data);
+		
 		$return = parent::save($data);
 		if ($return) {
+			$this->updateJavascript($data);
 			$elementModel->_id = $this->getState($this->getName().'.id');
 			$row->id = $elementModel->_id;
 			$this->createRepeatElement($elementModel, $row);
@@ -809,7 +810,8 @@ class FabrikModelElement extends JModelAdmin
 
 	protected function updateJavascript($data)
 	{
-		$id = $data['id'];
+		//$id = $data['id'];
+		$id = $this->getState($this->getName().'.id');
 		$db = FabrikWorker::getDbo(true);
 		$db->setQuery("DELETE FROM #__{package}_jsactions WHERE element_id = ".(int)$id);
 		$db->query();

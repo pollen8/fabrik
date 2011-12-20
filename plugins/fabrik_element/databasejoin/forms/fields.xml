@@ -38,6 +38,7 @@
 				<option value="radio">PLG_ELEMENT_DBJOIN_RADIOBUTTONS</option>
 				<option value="auto-complete">PLG_ELEMENT_DBJOIN_AUTO_COMPLETE</option>
 				<option value="checkbox">PLG_ELEMENT_DBJOIN_CHECKBOX</option>
+				<option value="multilist">PLG_ELEMENT_DBJOIN_MULTILIST</option>
 		</field>
 		
 	</fieldset>
@@ -179,6 +180,14 @@
 		<field name="dbjoin_options_per_row" type="width" default="4" size="2"
 			label="PLG_ELEMENT_DBJOIN_OPTIONS_PER_ROW_LABEL"
 			description="PLG_ELEMENT_DBJOIN_OPTIONS_PER_ROW_DESC" />
+			
+		<field name="dbjoin_multilist_size"
+			type="field"
+			default="6"
+			size="2"
+			description="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_DESC"
+			label="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_LABEL" />
+			
 	</fieldset>
 	</fields>
 </form>

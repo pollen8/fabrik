@@ -724,6 +724,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 			if ($this->getValue($post) != 'Array,Array') {
 				$raw = $this->getValue($post);
+				if ($raw == '') {
+					return true;
+				}
 				//echo "raw = <pre>";print_r($raw);
 				if (array_key_exists(0, $raw)) {
 					$crop =(array)JArrayHelper::getValue($raw[0], 'crop');

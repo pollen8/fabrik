@@ -11,31 +11,35 @@ var Suboptions = new Class({
 		this.counter = 0;
 		this.name = name;
 		this.clickRemoveSubElement = this.removeSubElement.bindWithEvent(this);
-		$('addSuboption').addEvent('click', this.addOption.bindWithEvent(this));
+		document.id('addSuboption').addEvent('click', this.addOption.bindWithEvent(this));
 		this.options.sub_values.each(function (v, x) {
 			var chx = this.options.sub_initial_selection.indexOf(v) === -1 ? '' : "checked='checked'";
 			this.addSubElement(v, this.options.sub_labels[x], chx);
 		}.bind(this));
-		$('adminForm').addEvent('submit', function (e) {
+		
+		if (this.options.sub_values.length === 0) {
+			this.addSubElement('', '', false);
+		}
+		// $$$ rob - could probably do this better with firing an event from the main element page but for now this will do
+		Joomla.submitbutton = function (pressbutton) {
 			if (!this.onSave()) {
-				e.stop();
+				return false;
 			}
-		}.bind(this));
+			Joomla.submitform(pressbutton);
+		}.bind(this);
 	},
 	
 	addOption: function (e) {
 		this.addSubElement();
-		var event = new Event(e);
-		event.stop();
+		e.stop();
 	},
 	
 	removeSubElement: function (e) {
-		var event = new Event(e);
-		var id = event.target.id.replace('sub_delete_', '');
-		if ($('sub_subElementBody').getElements('li').length > 1) {
-			$('sub_content_' + id).dispose();
+		var id = e.target.id.replace('sub_delete_', '');
+		if (document.id('sub_subElementBody').getElements('li').length > 1) {
+			document.id('sub_content_' + id).dispose();
 		}
-		event.stop();
+		e.stop();
 	},
 	
 	addSubElement: function (sValue, sText, sCurChecked) {
@@ -85,12 +89,12 @@ var Suboptions = new Class({
 							])
 						])
 					]);
-		if ($('sub_subElementBody').getElement('li').innerHTML === '') {
-			li.replaces($('sub_subElementBody').getElement('li'));
+		if (document.id('sub_subElementBody').getElement('li').innerHTML === '') {
+			li.replaces(document.id('sub_subElementBody').getElement('li'));
 		} else {
-			li.inject($('sub_subElementBody'));
+			li.inject(document.id('sub_subElementBody'));
 		}
-		$('sub_delete_' + this.counter).addEvent('click', this.clickRemoveSubElement);
+		document.id('sub_delete_' + this.counter).addEvent('click', this.clickRemoveSubElement);
 		
 		if (!this.sortable) {
 			this.sortable = new Sortables('sub_subElementBody', {'handle': '.subhandle'});
