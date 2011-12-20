@@ -692,23 +692,25 @@ var FbList = new Class({
 		}
 		
 		if (this.options.ajax_links) {
-			// if floating menus then edit out side of this.list (not tested with
-			// mutliple lists on the same page.
-			// if theres an issue with that we may need to inject the floating menu
-			// into the list container - issue with this
-			// may be that posistioning will be effected
-			
+			document.removeEvents('click:relay(.fabrik_edit)');
 			document.addEvent('click:relay(.fabrik_edit)', function (e) {
+				var url, loadMethod, a, listid;
 				e.stop();
-				var row = this.getActiveRow(e);
-				var url, loadMethod, a;
+				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
+					listid = e.target.getParent('form').getElement('input[name=listid]').get('value');
+				} else {
+					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listid');
+				}
+				//grab this list object in this method as 'this' refers to the last list rendered on the page which may not be the links list! :S
+				var list = Fabrik.blocks['list_' + listid];
+				var row = list.getActiveRow(e);
 				if (!row) {
 					return;
 				}
-				this.setActive(row);
-				var rowid = row.id.replace('list_' + this.id + '_row_', '');
-				if (this.options.links.edit === '') {
-					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				list.setActive(row);
+				var rowid = row.id.replace('list_' + list.id + '_row_', '');
+				if (list.options.links.edit === '') {
+					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
 					loadMethod = 'xhr';
 				} else {
 					if (e.target.get('tag') === 'a') {
@@ -721,24 +723,32 @@ var FbList = new Class({
 				}
 				// make id the same as the add button so we reuse the same form.
 				Fabrik.getWindow({
-					'id': 'add.' + this.options.formid,
+					'id': 'add.' + list.options.formid,
 					'title': 'Edit',
 					'loadMethod': loadMethod,
 					'contentURL': url
 				});
 			}.bind(this));
 
+			document.removeEvents('click:relay(.fabrik_view)');
 			document.addEvent('click:relay(.fabrik_view)', function (e) {
+				var url, loadMethod, a, listid;
 				e.stop();
-				var row = this.getActiveRow(e);
-				var url, loadMethod;
+				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
+					listid = e.target.getParent('form').getElement('input[name=listid]').get('value');
+				} else {
+					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listid');
+				}
+				var list = Fabrik.blocks['list_' + listid];
+				var row = list.getActiveRow(e);
+				
 				if (!row) {
 					return;
 				}
-				this.setActive(row);
-				var rowid = row.id.replace('list_' + this.id + '_row_', '');
-				if (this.options.links.detail === '') {
-					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + this.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				list.setActive(row);
+				var rowid = row.id.replace('list_' + list.id + '_row_', '');
+				if (list.options.links.detail === '') {
+					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
 					loadMethod = 'xhr';
 				} else {
 					if (e.target.get('tag') === 'a') {
@@ -750,7 +760,7 @@ var FbList = new Class({
 					loadMethod = 'iframe';
 				}
 				Fabrik.getWindow({
-					'id': 'view.' + '.' + this.options.formid + '.' + rowid,
+					'id': 'view.' + '.' + list.options.formid + '.' + rowid,
 					'title': 'Details',
 					'loadMethod': loadMethod,
 					'contentURL': url
@@ -758,7 +768,7 @@ var FbList = new Class({
 			}.bind(this));
 		}
 	},
-
+	
 	getForm: function () {
 		if (!this.form) {
 			this.form = document.id(this.options.form);
