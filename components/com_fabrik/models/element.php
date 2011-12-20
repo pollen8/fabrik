@@ -1245,9 +1245,12 @@ class plgFabrik_Element extends FabrikPlugin
 			// $$$rob added fabrikHide (21/09/2009) class as if readonly
 			// data is empty then no point showing just the label
 			// $$$ hugh - DISAGREE ... don't think we should make assumptions like this.
+			// $$$ hugh - OK, I'm commenting this out, as per Skype convo, 12/20/2011
+			/*
 			if (!$this->canUse()) {
 				$element->containerClass .= ' fabrikHide';
 			}
+			*/
 		}
 		//tips (if nto rendered as hovers)
 		$tip = $this->getTip();
@@ -4185,14 +4188,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		return FabrikWorker::getPluginManager();
 	}
-	
+
 	/**
    * @since 3.0rc1
    * when the element is a repeatble join (e.g. db join checkbox) then figure out how many
    * records have been selected
    * @return int number of records selected
 	 */
-	
+
 	public function getJoinRepeatCount($data, $oJoin)
 	{
 		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
