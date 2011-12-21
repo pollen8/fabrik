@@ -18,8 +18,8 @@ $row = $this->row;
 				<th><?php echo 'Type';//JText::_('PLG_VIZ_APPROVALS_TYPE')?></th>
 				<th><?php echo 'Title';//JText::_('PLG_VIZ_APPROVALS_TITLE')?></th>
 				<th><?php echo 'User';//JText::_('PLG_VIZ_APPROVALS_USER')?></th>
-				<th style="width:15%;text-align:center"><?php echo 'Approve';//JText::_('PLG_VIZ_APPROVALS_APPROVE')?></th>
 				<th style="width:15%;text-align:center"><?php echo 'View';//JText::_('PLG_VIZ_APPROVALS_VIEW')?></th>
+				<th style="width:15%;text-align:center"><?php echo 'Approve';//JText::_('PLG_VIZ_APPROVALS_APPROVE')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -53,10 +53,6 @@ $row = $this->row;
 						</ul>
 						</div>
 					</td>
-					<td style="text-align:center">
-					<a href="<?php echo $row->view?>">
-						<?php echo FabrikHelperHTML::image('view.png', 'list', '');?>
-					</a></td>
 				</tr>
 			<?php $i++;
 			}?>
