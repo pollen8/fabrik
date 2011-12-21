@@ -52,20 +52,20 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		$this->calc_prefixmap = array('sum___' => 'sums', 'avg___' => 'avgs', 'med___' => 'medians', 'cnt___' => 'count');
 		$w = (int)$params->get('chart_width', 200);
 		$h = (int)$params->get('chart_height', 200);
-		$graph =$params->get('graph_type');
+		$graph = $params->get('graph_type');
 
-		$fillGraphs 		= $params->get('fill_line_graph');
+		$fillGraphs = $params->get('fill_line_graph');
 
-		$x_axis_label 	= $params->get('x_axis_label', array(), '_default', 'array');
-		$chartElements 	= $params->get('chart_elementList', array(), '_default', 'array');
-		$legends  			= $params->get('graph_show_legend', '');
-		$chxl_override  	= $params->get('chart_chxl', '');
-		$chxl_override 		= trim(str_replace(',','|',$chxl_override),',');
-		$chds_override		= $params->get('chart_chds', '');
-		$chds_override 		= trim(str_replace('|',',',$chds_override),'|');
-		$chg_override		= $params->get('chart_chg', '');
-		$chm_override		= $params->get('chart_chm', '');
-		$chma_override		= $params->get('chart_chma', '');
+		$x_axis_label = (array)$params->get('x_axis_label');
+		$chartElements =(array) $params->get('chart_elementList');
+		$legends = $params->get('graph_show_legend', '');
+		$chxl_override = $params->get('chart_chxl', '');
+		$chxl_override = trim(str_replace(',','|',$chxl_override),',');
+		$chds_override = $params->get('chart_chds', '');
+		$chds_override = trim(str_replace('|',',',$chds_override),'|');
+		$chg_override = $params->get('chart_chg', '');
+		$chm_override = $params->get('chart_chm', '');
+		$chma_override = $params->get('chart_chma', '');
 		$c = 0;
 		$gdata = array();
 		$glabels = array();
@@ -179,6 +179,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		if (!empty($chm_override)) {
 			$qs .= '&amp;chm=' . $chm_override;
 		}
+		
 		if (!empty($chma_override)) {
 			$qs .= '&amp;chma=' . $chma_override;
 		}
@@ -194,6 +195,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		else if ($fillGraphs) {
 			$qs .=  '&amp;chm=' . implode('|', $fills);
 		}
+		$qs .= '&amp;'.$params->get('chart_custom');
 		$return .= $qs . '" alt="'.$this->_row->label.'" />';
 		$this->image =  $return;
 		return $return;
