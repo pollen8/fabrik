@@ -60,7 +60,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	start: function (e) {
-		var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&tmpl=component&ajax=1&formid=" + this.options.popupform;
+		var url = "index.php?option=com_fabrik&task=form.view&tmpl=component&ajax=1&formid=" + this.options.popupform;
 		var id = this.element.id + '-popupwin';
 		this.windowopts = {
 			'id': id,
