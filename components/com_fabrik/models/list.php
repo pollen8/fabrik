@@ -6877,10 +6877,10 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$base	= JURI::getInstance();
 		$base = $base->toString(array('scheme', 'user', 'pass', 'host', 'port', 'path'));
-		$base .= strpos($base, '?') ? '&' : '?';
+		//$base .= strpos($base, '?') ? '&' : '?';
 		$qs = JRequest::getVar('QUERY_STRING', '', 'server');
 		if (stristr($qs, 'group_by')) {
-			$qs = urlencode(FabrikString::removeQSVar($qs, 'group_by'));
+			$qs = FabrikString::removeQSVar($qs, 'group_by');
 		}
 		$url = $base.$qs;
 		$url .= strpos($url, '?') ? '&amp;' : '?';

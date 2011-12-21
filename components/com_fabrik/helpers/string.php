@@ -195,6 +195,13 @@ class FabrikString extends JString{
 		return strtolower(preg_replace('/\W+/', '_', $str));// replace all non-alphanumeric chars except _ and - with '_'
 	}
 
+	/**
+	 * truncate text possibly setting a tip to show all of the text
+	 * @param string $text
+	 * @param array $opts
+	 * @return string
+	 */
+	
 	function truncate($text, $opts = array())
 	{
 		$text = htmlspecialchars(strip_tags($text), ENT_QUOTES);
@@ -225,10 +232,23 @@ class FabrikString extends JString{
 		return $summary;
 	}
 
-	function removeQSVar($url, $key) {
+	/**
+	 * removes a querystring key from a url/queyrstring
+	 * @param string $url or querystring
+	 * @param string $key to remove
+	 * @return string url/querystring
+	 */
+	
+	function removeQSVar($url, $key)
+	{
 		$pair = explode('?', $url);
-		$url = $pair[0];
-		$bits = explode('&', JArrayHelper::getValue($pair, 1));
+		if (count($pair) === 2) {
+			$url = $pair[0];
+			$bits = explode('&', JArrayHelper::getValue($pair, 1));
+		} else {
+			$url = '';
+			$bits = explode('&', JArrayHelper::getValue($pair, 0));
+		}
 		$a = array();
 		foreach ($bits as $bit) {
 			if (strstr($bit, '=')) {
@@ -250,13 +270,13 @@ class FabrikString extends JString{
 	* @return encoded url
 	*/
 
-	function encodeurl( $url )
+	function encodeurl($url)
 	{
 		list($site, $qs) = explode('?', $url);
 		if (!empty($qs)) {
 			$new_qs = array();
-			foreach(explode('&', $qs) as $arg) {
-				list($key,$val) = explode('=', $arg);
+			foreach (explode('&', $qs) as $arg) {
+				list($key, $val) = explode('=', $arg);
 				$new_qs[] = $key . "=" . urlencode($val);
 			}
 			$url = $site . "?" . implode("&", $new_qs);
