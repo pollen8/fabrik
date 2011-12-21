@@ -1,71 +1,73 @@
 <?php
 /**
-* @version		$Id: element.php 10707 2008-08-21 09:52:47Z eddieajau $
-* @package		Joomla.Framework
-* @subpackage	Parameter
-* @copyright	Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved.
-* @license		GNU/GPL, see LICENSE.php
-* Joomla! is free software. This version may have been modified pursuant
-* to the GNU General Public License, and as distributed it includes or
-* is derivative of works licensed under the GNU General Public License or
-* other free or open source software licenses.
-* See COPYRIGHT.php for copyright notices and details.
-*/
+ * @package     Joomla.Platform
+ * @subpackage  HTML
+ *
+ * @copyright   Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE
+ */
 
-// Check to ensure this file is within the rest of the framework
-defined('JPATH_BASE') or die();
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Parameter base class
  *
  * The JElement is the base class for all JElement types
  *
- * @abstract
- * @package 	Joomla.Framework
- * @subpackage		Parameter
- * @since		1.5
+ * @package     Joomla.Platform
+ * @subpackage  Parameter
+ * @since       11.1
+ * @deprecated  Use JForm instead
  */
 class JElement extends JObject
 {
 	/**
-	* element name
-	*
-	* This has to be set in the final
-	* renderer classes.
-	*
-	* @access	protected
-	* @var		string
-	*/
-	var	$_name = null;
+	 * Element name
+	 *
+	 * This has to be set in the final
+	 * renderer classes.
+	 *
+	 * @var    string
+	 */
+	protected $_name = null;
 
 	/**
-	* reference to the object that instantiated the element
-	*
-	* @access	protected
-	* @var		object
-	*/
-	var	$_parent = null;
+	 * Reference to the object that instantiated the element
+	 *
+	 * @var    object
+	 */
+	protected $_parent = null;
 
 	/**
 	 * Constructor
+	 * @since   11.1
 	 *
-	 * @access protected
+	 * @deprecated    12.1
 	 */
-	function __construct($parent = null) {
+	public function __construct($parent = null)
+	{
 		$this->_parent = $parent;
 	}
 
 	/**
-	* get the element name
-	*
-	* @access	public
-	* @return	string	type of the parameter
-	*/
-	function getName() {
+	 * Get the element name
+	 *
+	 * @return  string  type of the parameter
+	 * @since   11.1
+	 *
+	 * @deprecated    12.1
+	 */
+	public function getName() {
 		return $this->_name;
 	}
 
-	function render(&$xmlElement, $value, $control_name = 'params')
+	/**
+	 *
+	 * @since   11.1
+	 *
+	 * @deprecated    12.1
+	 */
+	public function render(&$xmlElement, $value, $control_name = 'params')
 	{
 		$name	= $xmlElement->attributes('name');
 		$label	= $xmlElement->attributes('label');
@@ -78,10 +80,17 @@ class JElement extends JObject
 		$result[3] = $label;
 		$result[4] = $value;
 		$result[5] = $name;
+
 		return $result;
 	}
 
-	function fetchTooltip($label, $description, &$xmlElement, $control_name='', $name='')
+	/**
+	 *
+	 * @since   11.1
+	 *
+	 * @deprecated    12.1
+	 */
+	public function fetchTooltip($label, $description, &$xmlElement, $control_name='', $name='')
 	{
 		$output = '<label id="'.$control_name.$name.'-lbl" for="'.$control_name.$name.'"';
 		if ($description) {
@@ -94,14 +103,21 @@ class JElement extends JObject
 		return $output;
 	}
 
-	function fetchElement($name, $value, &$xmlElement, $control_name) {
-		return;
-	}
+	/**
+	 *
+	 * @since   11.1
+	 *
+	 * @deprecated    12.1
+	 */
+	public function fetchElement($name, $value, &$xmlElement, $control_name)
+	{
 
+	}
+	
 	//////
 	// FABRIK SPECIFIC
 	/////
-
+	
 	/**
 	 * get the elements html name
 	 * @param string $control_name
@@ -118,7 +134,7 @@ class JElement extends JObject
 		}
 		return $fullname;
 	}
-
+	
 	/**
 	 * get the elements id
 	 * @param string $control_name
@@ -128,7 +144,7 @@ class JElement extends JObject
 	function getId($control_name, $name )
 	{
 		$name = str_replace('[]', '', $name);
-
+	
 		$c = $this->getRepeatCounter();
 		if ($c !== false) {
 			$id = $control_name.$name . '-' . $c;
@@ -137,7 +153,7 @@ class JElement extends JObject
 		}
 		return $id;
 	}
-
+	
 	/**
 	 * get repeat group counter used for things like element's id
 	 * @return int repeat group counter
@@ -159,7 +175,7 @@ class JElement extends JObject
 			return false;
 		}
 	}
-
+	
 	/**
 	 * is the current element in a repeat group
 	 * @return bol
@@ -177,5 +193,3 @@ class JElement extends JObject
 		return $this->_parent->_xml[$group]->attributes('repeat');
 	}
 }
-
-?>

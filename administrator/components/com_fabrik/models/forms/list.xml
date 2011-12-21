@@ -537,7 +537,6 @@
 				
 			<field name="list_search_elements" 
 				type="fabrikmodalrepeat" 
-				repeat="true"
 				label="COM_FABRIK_FIELD_SEARCH_ELEMENTS_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_ELEMENTS_DESC">
 				

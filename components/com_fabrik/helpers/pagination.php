@@ -250,7 +250,7 @@ class FPagination extends JPagination{
 		$this->url = preg_replace("/limitstart{$this->_id}=(.*)?(&|)/", "", $this->url);
 		$this->url = FabrikString::rtrimword($this->url, "&");
 		// $$$ hugh - need to work out if we need & or ?
-		$sepchar = strstr($this->url,'?') ? '&' : '?';
+		$sepchar = strstr($this->url,'?') ? '&amp;' : '?';
 		//$sepchar = '&';
 		$data->all	= new JPaginationObject(JText::_('COM_FABRIK_VIEW_ALL'));
 		if (!$this->_viewall) {

@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="inlineedit">inlineedit.php</filename>
 		<filename>inlineedit.js</filename>
+		<filename>inlineedit-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

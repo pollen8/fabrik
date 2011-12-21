@@ -14,7 +14,7 @@ class getFabrikTab extends cbTabHandler {
 
 	function getDisplayTab($tab,$user,$ui)
 	{
-		$dispatcher =& new JDispatcher();
+		$dispatcher = new JDispatcher();
 		JPluginHelper::importPlugin('content', 'fabrik', true, $dispatcher);
 		$dispatcher->register('content', 'plgContentFabrik');
 		$args = array();

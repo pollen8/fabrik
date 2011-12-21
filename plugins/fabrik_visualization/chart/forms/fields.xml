@@ -145,6 +145,13 @@
 				size="60" 
 				label="PLG_VISUALIZATION_CHART_CHMA_LABEL" 
 				description="PLG_VISUALIZATION_CHART_CHMA_DESC" />
+			
+			<field name="chart_custom"
+				type="textarea"
+				rows="6"
+				cols="12"
+				description="PLG_VISUALIZATION_CHART_CUSTOM_DESC"
+				label="PLG_VISUALIZATION_CHART_CUSTOM_LABEL" />
 				
 			</fieldset>
 		</fields>

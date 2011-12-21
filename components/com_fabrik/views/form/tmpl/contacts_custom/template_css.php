@@ -1,32 +1,33 @@
 <?php
 header('Content-type: text/css');
 $c = (int)$_REQUEST['c'];
+$view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
 echo "
-#form_$c .fabrikElement {
+#{$view}_$c .fabrikElement {
 	margin-left: 10px;
 }
 
 
 
-#form_$c .fabrikLabel {
+#{$view}_$c .fabrikLabel {
 	width: 100px;
 	clear: left;
 	float: left;
 }
 
-#form_$c .fabrikActions {
+#{$view}_$c .fabrikActions {
 	padding-top: 15px;
 	clear: left;
 	padding-bottom: 15px;
 }
 
-#form_$c .fabrikGroupRepeater {
+#{$view}_$c .fabrikGroupRepeater {
 	float: left;
 	width: 19%;
 }
 
 /** used by password element */
-#form_$c .fabrikSubLabel {
+#{$view}_$c .fabrikSubLabel {
 	margin-left: -10px;
 	clear: left;
 	margin-top: 10px;
