@@ -64,6 +64,16 @@
 					label="MOD_FABRIK_LIST_LIMIT_LABEL" 
 					description="MOD_FABRIK_LIST_LIMIT_DESC" />
 					
+				<field name="show_nav" 
+					type="list" 
+					default="" 
+					label="MOD_FABRIK_LIST_SHOW_LIST_NAV_LABEL" 
+					description="MOD_FABRIK_LIST_SHOW_LIST_NAV_DESC">
+						<option value="">JGLOBAL_USE_GLOBAL</option>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+					
 				<field name="fabriklayout" 
 					type="folderlist" 
 					directory="/components/com_fabrik/views/list/tmpl/" 
@@ -83,6 +93,29 @@
 								type="listfields"
 								label="MOD_FABRIK_LIST_ELEMENTS_HEADING"/>
 						
+						</fieldset>
+					</fields>
+				</field>
+				
+				<field name="ordering" 
+					type="fabrikmodalrepeat" 
+					label="MOD_FABRIK_LIST_ORDERING_LABEL"
+					description="MOD_FABRIK_LIST_ORDERING_DESC">
+				
+					<fields name="params">
+						<fieldset name="ordering_modal" repeat="true">
+							<field name="order_by" 
+								size="30"
+								type="listfields"
+								valueformat="tableelement"
+								label="MOD_FABRIK_LIST_ELEMENTS_HEADING"/>
+						
+							<field name="order_dir"
+								label="MOD_FABRIK_LIST_ORDER_DIR_LABEL"
+								type="list">
+									<option value="ASC">MOD_FABRIK_LIST_ASCENDING</option>
+									<option value="DESC">MOD_FABRIK_LIST_DECENDING</option>
+							</field>
 						</fieldset>
 					</fields>
 				</field>
@@ -107,20 +140,29 @@
 									<option value="begins">BEGINS WITH</option>
 									<option value="contains">CONTAINS</option>
 									<option value="ends">ENDS WITH</option>
-									<option value=">">GREATER THAN</option>
-									<option value=">=">GREATER THAN OR EQUALS</option>
-									<option value="&lt;">LESS THAN</option>
+									<option value="greaterthan">GREATER THAN</option>
+									<option value="greaterthanequals">GREATER THAN OR EQUALS</option>
+									<option value="lessthan">LESS THAN</option>
 									<option value="IS NULL">IS NULL</option>
-									<option value="&lt;=">LESS THAN OR EQUALS</option>
+									<option value="lessthanequals">LESS THAN OR EQUALS</option>
 									<option value="in">IN</option>
 									<option value="not_in">NOT IN</option>
-									<option value="earlierthisyear">COM_FABRIK_EARLIER_THIS_YEAR</option>
-									<option value="laterthisyear">COM_FABRIK_LATER_THIS_YEAR</option>
+									<option value="earlierthisyear">MOD_FABRIK_LIST_EARLIER_THIS_YEAR</option>
+									<option value="laterthisyear">MOD_FABRIK_LIST_LATER_THIS_YEAR</option>
 							</field>
 							
 							<field name="filter-value" 
 								type="field"
 								label="MOD_FABRIK_LIST_FILTER_VALUE_HEADING"/>
+								
+							<field name="filter-eval"
+								type="list"
+								label="MOD_FABRIK_LIST_TYPE">
+									<option value="0">MOD_FABRIK_LIST_TEXT</option>
+									<option value="1">MOD_FABRIK_LIST_EVAL</option>
+									<option value="2">MOD_FABRIK_LIST_QUERY</option>
+									<option value="3">MOD_FABRIK_LIST_NO_QUOTES</option>
+							</field>
 							
 							<field name="filter-access" 
 								type="accesslevel"

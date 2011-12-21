@@ -87,6 +87,17 @@ if ($params->get('ajax_links') !== '') {
 	$listParams->set('list_ajax_links', $params->get('ajax_links'));
 }
 
+if ($params->get('show_nav', '') !== '') {
+	$listParams->set('show-table-nav', $params->get('show_nav'));
+}
+
+$ordering = JArrayHelper::fromObject(json_decode($params->get('ordering')));
+$orderBy = (array)$ordering['order_by'];
+if (!empty($orderBy)) {
+	$model->getTable()->order_by = json_encode($orderBy);
+	$model->getTable()->order_dir = json_encode($odering['order_dir']);
+}
+
 //set up prefilters - will overwrite ones defined in the list!
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
