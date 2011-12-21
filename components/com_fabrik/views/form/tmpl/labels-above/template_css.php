@@ -1,9 +1,10 @@
 <?php
 header('Content-type: text/css');
 $c = (int)$_REQUEST['c'];
+$view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
 echo "
 
-#form_$c legend{
+#{$view}_$c legend{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	border-bottom: 1px solid #B7B7B7;
@@ -23,47 +24,47 @@ echo "
 		position:absolute;
 }
 
-#form_$c .groupintro{
+#{$view}_$c .groupintro{
 	margin-top:40px;
 	padding:0 20px;
 	color:#666;
 }
 
-#form_$c .formintro{
+#{$view}_$c .formintro{
 	margin:20px 10px;
 }
 
-#form_$c legend span{
+#{$view}_$c legend span{
 	padding:5px;
 	display:block;
 }
 
-#form_$c{
+#{$view}_$c{
 	width:100%;
 	background-color:#FAFAFA;
 	border:1px solid #DDDDDD;
 }
 
-#main #form_$c h1{
+#main #{$view}_$c h1{
 	paddiing-left:10px;
 	margin:0;
 }
 
-#form_$c fieldset{
+#{$view}_$c fieldset{
 	margin:5px 10px;
 	position:relative;
 	padding:0;
 	border:1px solid #DDDDDD;
 }
 
-#form_$c fieldset ul,
+#{$view}_$c fieldset ul,
 #details_$c fieldset ul{
 	list-style:none;
 	padding:40px 10px 20px 10px;
 	margin:0;
 }
 
-#form_$c .fabrikForm .fabrikGroup ul{
+#{$view}_$c .fabrikForm .fabrikGroup ul{
 	list-style:none;
 }
 
@@ -90,7 +91,7 @@ echo "
 /* END: align google map sub elements vertically */
 /* START : label spacing for chxbox, radios */
 
-#form_$c label span{
+#{$view}_$c label span{
 	padding:0 4px;
 }
 
@@ -105,39 +106,39 @@ echo "
 	border-radius: 3px;
 }
 
-#form_$c .linkedTables{
+#{$view}_$c .linkedTables{
 	margin:0.6em 0;
 }
 
-#form_$c  .related_data_norecords{
+#{$view}_$c  .related_data_norecords{
 	display:inline;
 }
 
-#form_$c .fabrikForm .fabrikGroup ul .fabrikElementContainer,
+#{$view}_$c .fabrikForm .fabrikGroup ul .fabrikElementContainer,
 #details_$c .fabrikElementContainer,
-#form_$c .fabrikElementContainer{
+#{$view}_$c .fabrikElementContainer{
 	padding:5px 10px;
 	margin-top:10px;
 	background:none !important;
 	width:50%;
 }
 
-#form_$c .fabrikActions{
+#{$view}_$c .fabrikActions{
 	padding:10px;
 	clear:left;
 	margin:5px 10px;
 	border:1px solid #DDDDDD;
 }
-#form_$c .fabrikActions input{
+#{$view}_$c .fabrikActions input{
 	margin-right:7px;
 }
 
-#form_$c .fabrikValidating{
+#{$view}_$c .fabrikValidating{
 	color: #476767;
 	background: #EFFFFF url(../images/ajax-loader.gif) no-repeat right 7px !important;
 }
 
-#form_$c .fabrikSuccess{
+#{$view}_$c .fabrikSuccess{
 	color: #598F5B;
 	background: #DFFFE0 url(../images/action_check.png) no-repeat right 7px !important;
 }
@@ -145,94 +146,94 @@ echo "
 /*** slide out add option
 section for dropdowns radio buttons etc**/
 
-#form_$c .addoption dl{
+#{$view}_$c .addoption dl{
 	display:inline;
 	width:75%;
 }
-#form_$c .addoption{
+#{$view}_$c .addoption{
 	clear:left;
 	padding:8px;
 	margin:3px 0;
 	background-color:#efefef;
 }
 
-#form_$c  a.toggle-addoption, a.toggle-selectoption{
+#{$view}_$c  a.toggle-addoption, a.toggle-selectoption{
 	padding:0 0 0 10px;
 }
 
 
 /*** end slide out add option section **/
 
-#form_$c input,
-#form_$c select{
+#{$view}_$c input,
+#{$view}_$c select{
 	border:1px solid #DDDDDD;
 	border-radius:3px;
 	padding:3px;
 }
 
-#form_$c  .inputbox:focus{
+#{$view}_$c  .inputbox:focus{
 	background-color:#ffffcc;
 	border:1px solid #aaaaaa;
 }
 
-#form_$c .addoption dd, .addoption dt{
+#{$view}_$c .addoption dd, .addoption dt{
 	padding:2px;
 	display:inline;
 }
 
-#form_$c .fabrikSubGroup{
+#{$view}_$c .fabrikSubGroup{
 	clear:both;
 }
 
-#form_$c .fabrikSubGroupElements{
+#{$view}_$c .fabrikSubGroupElements{
 	width:80%;
 	float:left;
 }
 
-#form_$c .geo{
+#{$view}_$c .geo{
 	visibility:hidden;
 }
 
 
-#form_$c .fabrikGroup .readonly,
-#form_$c .fabrikGroup .disabled{
+#{$view}_$c .fabrikGroup .readonly,
+#{$view}_$c .fabrikGroup .disabled{
 	background-color:#DFDFDF !important;
 	color:#8F8F8F;
 }
 
 /*** fileupload folder select css **/
-#form_$c ul.folderselect{
+#{$view}_$c ul.folderselect{
 	border:1px dotted #eee;
 	background-color:#efefef;
 	color:#333;
 }
 
-#form_$c .folderselect-container{
+#{$view}_$c .folderselect-container{
 	border:1px dotted #666;width:350px;
 }
 
-#form_$c .fabrikForm .breadcrumbs{
+#{$view}_$c .fabrikForm .breadcrumbs{
 	background: transparent url(../images/folder_open.png) no-repeat center left;
 	padding:2px 2px 2px 26px ;
 }
 
-#form_$c .fabrikForm .fabrikGroup li.fileupload_folder{
+#{$view}_$c .fabrikForm .fabrikGroup li.fileupload_folder{
 	background: transparent url(../images/folder.png) no-repeat center left;
 	padding:2px 2px 2px 26px ;
 	margin:2px;
 }
 
-#form_$c .fabrik_characters_left{
+#{$view}_$c .fabrik_characters_left{
 clear:left;
 }
 
 /** bump calendar above mocha window in mootools 1.2**/
-#form_$c div.calendar{
+#{$view}_$c div.calendar{
 	z-index:115 !important;
 }
 
 /** special case for 'display' element with 'show label: no' option **/
-#form_$c .fabrikPluginElementDisplayLabel {
+#{$view}_$c .fabrikPluginElementDisplayLabel {
 	width: 100% !important;
 }
 
@@ -262,79 +263,79 @@ margin:0;
 	background-color:#DFFAFF !important;
 	cursor:pointer;
 }
-#form_$c .leftCol,
+#{$view}_$c .leftCol,
 #details_$c .leftCol,
-#form_$c .fabrikSubLabel{
+#{$view}_$c .fabrikSubLabel{
 	width: 130px;
 }
 #details_$c .leftCol{
 	color:#999;
 }
 
-#form_$c .addbutton {
+#{$view}_$c .addbutton {
 	background: transparent url(images/add.png) no-repeat left;
 	padding: 2px 5px 0 20px;
 	margin-left:7px;
 }
 
-#form_$c .fabrikError,
-#form_$c .fabrikNotice,
-#form_$c .fabrikValidating,
-#form_$c .fabrikSuccess{
+#{$view}_$c .fabrikError,
+#{$view}_$c .fabrikNotice,
+#{$view}_$c .fabrikValidating,
+#{$view}_$c .fabrikSuccess{
 	font-weight: bold;
 }
 
-#form_$c .fabrikMainError{
+#{$view}_$c .fabrikMainError{
 	height:2em;
 	line-height:2em;
 }
 
-#form_$c .fabrikMainError img{
+#{$view}_$c .fabrikMainError img{
 	padding:0.35em 1em;
 	float:left;
 }
 
-#form_$c .fabrikNotice{
+#{$view}_$c .fabrikNotice{
 	color: #009FBF;
 	background: #DFFDFF url(images/alert.png) no-repeat center left !important;
 }
 
-#form_$c .fabrikError,
-#form_$c .fabrikGroup .fabrikError{
+#{$view}_$c .fabrikError,
+#{$view}_$c .fabrikGroup .fabrikError{
 	color: #c00;
 	background: #EFE7B8;
 }
 
-#form_$c .fabrikErrorMessage{
+#{$view}_$c .fabrikErrorMessage{
 	padding-right: 5px;
 }
 
 
 
-#form_$c .fabrikLabel {
+#{$view}_$c .fabrikLabel {
 	min-height:1px; /*for elements with no label txt*/
 }
 
-#form_$c .fabrikActions {
+#{$view}_$c .fabrikActions {
 	padding-top: 15px;
 	clear: left;
 	padding-bottom: 15px;
 }
 
-#form_$c .fabrikGroupRepeater {
+#{$view}_$c .fabrikGroupRepeater {
 	float: left;
 	width: 19%;
 }
 
 /** used by password element */
-#form_$c .fabrikSubLabel {
+#{$view}_$c .fabrikSubLabel {
 	margin-left: -10px;
 	clear: left;
 	margin-top: 10px;
 	float: left;
 }
 
-#form_$c .fabrikSubElement {
+#{$view}_$c .fabrikSubElement {
 	display: block;
 	margin-top: 10px;
 	margin-left: 100px;
@@ -343,7 +344,7 @@ margin:0;
 /*
 some fun with fancy buttons not ready for prime time
 
-#form_$c .button{
+#{$view}_$c .button{
 background: -moz-linear-gradient(center top , #ccc 0%, #777) repeat scroll 0 0 transparent;
 border: 1px solid #614337;
 border-radius: 6px 6px 6px 6px;
@@ -354,7 +355,7 @@ padding: 5px 20px;
 
 }
 
-#form_$c .button:hover{
+#{$view}_$c .button:hover{
 background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent; /* orange */
 background: -moz-linear-gradient(center top , #8EC400 0%, #558A01) repeat scroll 0 0 transparent; /* green */
 text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -362,11 +363,11 @@ box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.6) inset
 
 }
 
-#form_$c .button[name=delete]:hover{
+#{$view}_$c .button[name=delete]:hover{
 background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
 }
 
-#form_$c .button[name=Reset]:hover{
+#{$view}_$c .button[name=Reset]:hover{
 background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
 } */
 ";

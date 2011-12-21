@@ -1,31 +1,32 @@
 <?php
 header('Content-type: text/css');
 $c = (int)$_REQUEST['c'];
+$view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
 echo "
 
-#form_$c fieldset ul{
+#{$view}_$c fieldset ul{
 	list-style:none;
 }
 
-#form_$c .fabrikElement{
+#{$view}_$c .fabrikElement{
 	margin-left:112px;
 }
 
-#form_$c .fabrikLabel{
+#{$view}_$c .fabrikLabel{
 	width:100px;
 	clear:left;
 	float:left;
 }
 
 /** used by password element */
-#form_$c .fabrikSubLabel {
+#{$view}_$c .fabrikSubLabel {
 	margin-left: -10px;
 	clear: left;
 	margin-top: 10px;
 	float: left;
 }
 
-#form_$c .fabrikSubElement {
+#{$view}_$c .fabrikSubElement {
 	display: block;
 	margin-top: 10px;
 	margin-left: 100px;

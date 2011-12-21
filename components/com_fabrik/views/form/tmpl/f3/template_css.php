@@ -1,13 +1,14 @@
 <?php
 header('Content-type: text/css');
 $c = (int)$_REQUEST['c'];
+$view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
 echo "
 
-#form_$c fieldset ul{
+#{$view}_$c fieldset ul{
 	list-style:none;
 }
 
-#form_$c {
+#{$view}_$c {
 	border-radius: 40px;
 	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
 	border-bottom: 1px solid rgba(0, 0, 0, 0.07);
@@ -18,20 +19,20 @@ echo "
 	position: relative;
 }
 
-#form_$c fieldset{
+#{$view}_$c fieldset{
 	border:1px solid;
 	border-radius: 10px;
 	padding-bottom:20px;
 }
 
-#form_$c h1{
+#{$view}_$c h1{
 	font-family:\"UbuntuRegular\";
 	font-size: 2em;
 	font-weight: bold;
 	text-transform: uppercase;
 }
 
-#form_$c legend{
+#{$view}_$c legend{
 	background: -moz-linear-gradient(center top , #1C1C1C, transparent) repeat scroll 0 0 transparent;
 	border-radius: 10px 10px 10px 10px;
 	display: block;
@@ -45,7 +46,7 @@ echo "
 	font-weight:bold;
 }
 
-#form_$c ul{
+#{$view}_$c ul{
 	list-style:none;
 	padding:27px 20px;
 }
@@ -61,40 +62,40 @@ echo "
 	z-index:10001;
 }
 
-#form_$c  .linkedTables{
+#{$view}_$c  .linkedTables{
 	margin:0.6em 0;
 }
 
-#form_$c  .related_data_norecords{
+#{$view}_$c  .related_data_norecords{
 	display:inline;
 }
 
-#form_$c .fabrikForm .fabrikGroup ul,
-#form_$c .fabrikForm .fabrikGroup li{
+#{$view}_$c .fabrikForm .fabrikGroup ul,
+#{$view}_$c .fabrikForm .fabrikGroup li{
 	padding:0;
 	margin:0;
 }
 
 
-#form_$c .fabrikForm .fabrikGroup ul li.fabrikElementContainer,
-#form_$c li.fabrikElementContainer{
+#{$view}_$c .fabrikForm .fabrikGroup ul li.fabrikElementContainer,
+#{$view}_$c li.fabrikElementContainer{
 	padding:5px 10px;
 	margin-top:10px;
 	background:none !important;
 }
 
-#form_$c .fabrikActions{
+#{$view}_$c .fabrikActions{
 	padding-top:15px;
 	clear:left;
 	padding-bottom:15px;
 }
 
 
-#form_$c .fabrikElement{
+#{$view}_$c .fabrikElement{
 	clear:left;
 }
 
-#form_$c .fabrikLabel{
+#{$view}_$c .fabrikLabel{
 float:left;
 	padding-bottom:5px;
 	min-height:1px; /*for elements with no label txt*/
@@ -105,12 +106,12 @@ float:left;
 }
 
 
-#form_$c .fabrikValidating{
+#{$view}_$c .fabrikValidating{
 	color: #476767;
 	background: #EFFFFF url(../images/ajax-loader.gif) no-repeat right 7px !important;
 }
 
-#form_$c .fabrikSuccess{
+#{$view}_$c .fabrikSuccess{
 	color: #598F5B;
 	background: #DFFFE0 url(../images/action_check.png) no-repeat right 7px !important;
 }
@@ -119,87 +120,87 @@ float:left;
 /*** slide out add option
 section for dropdowns radio buttons etc**/
 
-#form_$c .addoption dl{
+#{$view}_$c .addoption dl{
 	display:inline;
 	width:75%;
 }
-#form_$c .addoption{
+#{$view}_$c .addoption{
 	clear:left;
 	padding:8px;
 	margin:3px 0;
 	background-color:#efefef;
 }
 
-#form_$c  a.toggle-addoption, a.toggle-selectoption{
+#{$view}_$c  a.toggle-addoption, a.toggle-selectoption{
 	padding:0 0 0 10px;
 }
 
 /*** end slide out add option section **/
 
 
-#form_$c  .inputbox:focus{
+#{$view}_$c  .inputbox:focus{
 	background-color:#ffffcc;
 }
 
-#form_$c .addoption dd, .addoption dt{
+#{$view}_$c .addoption dd, .addoption dt{
 	padding:2px;
 	display:inline;
 }
 
-#form_$c .fabrikSubGroup{
+#{$view}_$c .fabrikSubGroup{
 	clear:both;
 }
 
-#form_$c .fabrikSubGroupElements{
+#{$view}_$c .fabrikSubGroupElements{
 	width:80%;
 	float:left;
 }
 
-#form_$c .geo{
+#{$view}_$c .geo{
 	visibility:hidden;
 }
 
 
 
-#form_$c .fabrikGroup .readonly,
-#form_$c .fabrikGroup .disabled{
+#{$view}_$c .fabrikGroup .readonly,
+#{$view}_$c .fabrikGroup .disabled{
 	background-color:#DFDFDF !important;
 	color:#8F8F8F;
 }
 
 /*** fileupload folder select css **/
-#form_$c ul.folderselect{
+#{$view}_$c ul.folderselect{
 	border:1px dotted #eee;
 	background-color:#efefef;
 	color:#333;
 }
 
-#form_$c .folderselect-container{
+#{$view}_$c .folderselect-container{
 	border:1px dotted #666;width:350px;
 }
 
-#form_$c .fabrikForm .breadcrumbs{
+#{$view}_$c .fabrikForm .breadcrumbs{
 	background: transparent url(../images/folder_open.png) no-repeat center left;
 	padding:2px 2px 2px 26px ;
 }
 
-#form_$c .fabrikForm .fabrikGroup li.fileupload_folder{
+#{$view}_$c .fabrikForm .fabrikGroup li.fileupload_folder{
 	background: transparent url(../images/folder.png) no-repeat center left;
 	padding:2px 2px 2px 26px ;
 	margin:2px;
 }
 
-#form_$c .fabrik_characters_left{
+#{$view}_$c .fabrik_characters_left{
 clear:left;
 }
 
 /** bump calendar above mocha window in mootools 1.2**/
-#form_$c div.calendar{
+#{$view}_$c div.calendar{
 	z-index:115 !important;
 }
 
 /** special case for 'display' element with 'show label: no' option **/
-#form_$c .fabrikPluginElementDisplayLabel {
+#{$view}_$c .fabrikPluginElementDisplayLabel {
 	width: 100% !important;
 }
 
@@ -226,69 +227,69 @@ clear:left;
 	cursor:pointer;
 }
 
-#form_$c .addbutton {
+#{$view}_$c .addbutton {
 	background: transparent url(images/add.png) no-repeat left;
 	padding: 2px 5px 0 20px;
 	margin-left:7px;
 }
 
-#form_$c .fabrikError,#form_$c .fabrikNotice,#form_$c .fabrikValidating,#form_$c .fabrikSuccess{
+#{$view}_$c .fabrikError,#{$view}_$c .fabrikNotice,#{$view}_$c .fabrikValidating,#{$view}_$c .fabrikSuccess{
 	margin: 0;
 	font-weight: bold;
 	margin-bottom: 10px;
 	padding:7px;
 }
 
-#form_$c .fabrikMainError{
+#{$view}_$c .fabrikMainError{
 	height:2em;
 	line-height:2em;
 }
 
-#form_$c .fabrikMainError img{
+#{$view}_$c .fabrikMainError img{
 	padding:0.35em 1em;
 	float:left;
 }
 
-#form_$c .fabrikNotice{
+#{$view}_$c .fabrikNotice{
 	color: #009FBF;
 	background: #DFFDFF url(images/alert.png) no-repeat center left !important;
 }
 
-#form_$c .fabrikError,
-#form_$c .fabrikGroup li.fabrikError{
+#{$view}_$c .fabrikError,
+#{$view}_$c .fabrikGroup li.fabrikError{
 	color: #c00;
 	background: #EFE7B8;
 }
 
 /** for checkboxes etc with multiple columns, the error was too squashed */
-#form_$c .fabrikError .fabrikSubElementContainer{
+#{$view}_$c .fabrikError .fabrikSubElementContainer{
 	margin-top: 20px;
 }
 
-#form_$c .fabrikErrorMessage{
+#{$view}_$c .fabrikErrorMessage{
 	padding-right: 5px;
 }
 
-#form_$c .fabrikActions {
+#{$view}_$c .fabrikActions {
 	padding-top: 15px;
 	clear: left;
 	padding-bottom: 15px;
 }
 
-#form_$c .fabrikGroupRepeater {
+#{$view}_$c .fabrikGroupRepeater {
 	float: left;
 	width: 19%;
 }
 
 /** used by password element */
-#form_$c .fabrikSubLabel {
+#{$view}_$c .fabrikSubLabel {
 	margin-left: -10px;
 	clear: left;
 	margin-top: 10px;
 	float: left;
 }
 
-#form_$c .fabrikSubElement {
+#{$view}_$c .fabrikSubElement {
 	display: block;
 	margin-top: 10px;
 	margin-left: 100px;
