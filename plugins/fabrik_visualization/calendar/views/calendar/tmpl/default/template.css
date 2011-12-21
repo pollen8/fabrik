@@ -5,23 +5,21 @@
 	padding:0px 5px 5px 20px;
 }
 
-.viewMode{
+ul.viewMode{
 	text-align:right;
-	padding:0;
-	margin:0;
+	padding:0 !important;
+	margin:0 !important;
+	list-style:none !important;
 }
+
 .viewMode li{
-	display:inline;
+	display:inline-block;
 	background-image:none !important;
 	border:1px solid #999999;
 	background-color:#f7f7f7;
-	margin:0 3px;
-	padding:3px;
+	margin:0 3px !important;
+	padding:3px !important;
 	cursor:pointer;
-}
-
-.monthDay{
-
 }
 
 .viewMode li:hover{
@@ -62,7 +60,7 @@
 }
 
 .legend ul{
-	list-style:none;
+	list-style:none !important;
 	padding:0;
 	margin:0;
 }

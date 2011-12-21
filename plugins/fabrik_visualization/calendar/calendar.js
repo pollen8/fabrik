@@ -34,8 +34,10 @@ var fabrikCalendar = new Class({
 		this.droppables = {'month': [], 'week': [], 'day': []};
 		this.fx = {};
 		this.ajax = {};
-		this.fx.showMsg = new Fx.Morph(this.el.getElement('.calendar-message'), {'duration': 700});
-		this.fx.showMsg.set({'opacity': 0});
+		if (typeOf(this.el.getElement('.calendar-message')) !== 'null') { 
+			this.fx.showMsg = new Fx.Morph(this.el.getElement('.calendar-message'), {'duration': 700});
+			this.fx.showMsg.set({'opacity': 0});
+		}
 		this.colwidth = [];
 		this.windowopts = {
 			'id': 'addeventwin',
@@ -100,6 +102,8 @@ var fabrikCalendar = new Class({
 				'top': opts.top.toInt() + 'px',
 				'position': 'absolute',
 				'border': '1px solid #666666',
+				'border-right': '0',
+				'border-left': '0',
 				'overflow': 'auto',
 				'opacity': 0.6
 			};
@@ -107,7 +111,10 @@ var fabrikCalendar = new Class({
 			style.left = opts.left.toInt() + 'px';
 		}
 			
-		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id; 
+		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id;
+		if(opts.view == 'monthView') {
+			style.width -= 1;
+		}
 		var eventCont = new Element('div', {
 			'class': 'fabrikEvent',
 			'id': id,
@@ -1272,7 +1279,7 @@ var fabrikCalendar = new Class({
             return aColor;
         }
         var c = new Color(aColor);
-        if (aDate !== null && (aDate.getDay() === 0 || aDate.getDay() === 6)) {
+        if (typeOf(aDate) !== 'null' && (aDate.getDay() === 0 || aDate.getDay() === 6)) {
             return this._getGreyscaleFromRgb(aColor);
         } else {
             return aColor;
