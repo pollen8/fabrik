@@ -699,7 +699,7 @@ var FbList = new Class({
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
 					listid = e.target.getParent('form').getElement('input[name=listid]').get('value');
 				} else {
-					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listid');
+					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listref');
 				}
 				//grab this list object in this method as 'this' refers to the last list rendered on the page which may not be the links list! :S
 				var list = Fabrik.blocks['list_' + listid];
