@@ -58,8 +58,8 @@ Fabrik.Window = new Class({
 		var draggerC, dragger, expandButton;
 		var handleParts = [];
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
-		d.top = window.getSize().y / 2 + window.getScroll().y;
-		d.left = window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
+		d.top = this.options.offset_y ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
+		d.left = this.options.offset_x ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow'}).setStyles(d);
 		this.contentWrapperEl = this.window;
 		var art = Fabrik.iconGen.create(icon.cross);
@@ -238,7 +238,9 @@ Fabrik.Window = new Class({
 	},
 	
 	fitToContent: function () {
-		var myfx = new Fx.Scroll(window).toElement(this.window);
+		if (!this.options.offset_y) {
+			var myfx = new Fx.Scroll(window).toElement(this.window);
+		}
 		if (this.options.loadMethod !== 'iframe') {
 			//as iframe content may not be on the same domain we CAN'T guarentee access to its body element to work out its dimensions
 			var contentEl = this.window.getElement('.itemContent');

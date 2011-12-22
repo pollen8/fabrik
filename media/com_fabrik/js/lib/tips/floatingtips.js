@@ -54,11 +54,14 @@ var FloatingTips = new Class({
 		this.selector = elements;
 		this.elements = $$(elements);
 		
-		this.elements.each(function(e) {
+		this.elements.each(function (e) {
 			if (!e.retrieve('tipped')) {
 				e.store('tipped', true);
 				var listid = e.getParent('form').getElement('input[name=listid]').get('value');
-				e.store('listid', listid);
+				var listref = e.getParent('form').getElement('input[name=listref]').get('value');
+				//e.store('listid', listid);
+				e.store('listref', listref);
+				console.log(listid, listref);
 				e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
 				e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
 				e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
@@ -74,13 +77,14 @@ var FloatingTips = new Class({
 		return this;
 	},
 
-	show: function(element) {
+	show: function (element) {
 		this.hideAll();
 		var old = element.retrieve('floatingtip');
 		if (old) if (old.getStyle('opacity') == 1) { clearTimeout(old.retrieve('timeout')); return this; }
 		var tip = this._create(element);
 		if (tip == null) return this;
 		tip.store('listid', element.retrieve('listid'));
+		tip.store('listref', element.retrieve('listref'));
 		element.store('floatingtip', tip);
 		this._animate(tip, 'in');
 		this.fireEvent('show', [tip, element]);
@@ -88,7 +92,7 @@ var FloatingTips = new Class({
 		return this;
 	},
 	
-	hide: function(e, element) {
+	hide: function (e, element) {
 		if (!element || !e.target) {
 			return;
 		}

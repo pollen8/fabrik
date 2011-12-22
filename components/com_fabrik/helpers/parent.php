@@ -964,6 +964,10 @@ class FabrikWorker {
 
 	public function JSONtoData($data, $toArray = false)
 	{
+		
+		if (!strstr($data, '{')) {
+			return $toArray ? (array)$data : $data;
+		}
 		// repeat elements are concatned with the GROUPSPLITTER - conver to json string
 		// before continuing.
 		if (strstr($data, GROUPSPLITTER)) {

@@ -54,13 +54,13 @@ class FabrikViewList extends JView{
 		$this->_row = new stdClass();
 		$script = array();
 		$script[] = "head.ready(function() {";
-		
+
 		$params = $model->getParams();
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = (int)$model->isAjax();
 		$opts->ajax_links = (bool)$params->get('list_ajax_links', $opts->ajax);
-		
+
 		$opts->links = array('detail' => $params->get('detailurl'), 'edit' => $params->get('editurl'), 'add' => $params->get('addurl'));
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listid;
@@ -82,6 +82,13 @@ class FabrikViewList extends JView{
 		$opts->actionMethod = $params->get('actionMethod');
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool)$params->get('csv_frontend_selection');
+		$opts->popup_width = (int)$params->get('popup_width', 0);
+		$opts->popup_height = (int)$params->get('popup_height', 0);
+		$opts->popup_offset_x = (int)$params->get('popup_offset_x', 0);
+		$opts->popup_offset_y = (int)$params->get('popup_offset_y', 0);
+		$opts->popup_edit_label = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
+		$opts->popup_view_label = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
+		$opts->popup_add_label = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
 		$csvOpts = new stdClass();
@@ -170,7 +177,7 @@ class FabrikViewList extends JView{
 		$script[] = $model->filterJs;
 		$script[] = "});";
 		$script = implode("\n", $script);
-		
+
 		FabrikHelperHTML::addScriptDeclaration($script);
 		$this->getElementJs();
 		//reset data back to original settings

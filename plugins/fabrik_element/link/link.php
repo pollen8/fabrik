@@ -155,11 +155,11 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$linkname = FabrikString::rtrimword( $name, "[]").'[link]';
 
 		$str = array();
-		$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
-		$str[] = JText::_('PLG_ELEMENT_LINK_LABEL').':<br />';
-		$str[] = '<input class="fabrikinput inputbox'.$errorCSS.'" name="'.$labelname.'" '.$sizeInfo.' value="'.$value['label'].'" />';
-		$str[] = '<br />'.JText::_('PLG_ELEMENT_LINK_URL').':<br />';
-		$str[] = '<input class="fabrikinput inputbox'.$errorCSS.'" name="'.$linkname.'" '.$sizeInfo.' value="'.$value['link'].'" />';
+		$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'"><div>';
+		$str[] = JText::_('PLG_ELEMENT_LINK_LABEL').':</div>';
+		$str[] = '<div><input class="fabrikinput inputbox'.$errorCSS.'" name="'.$labelname.'" '.$sizeInfo.' value="'.$value['label'].'" /></div>';
+		$str[] = '<div>'.JText::_('PLG_ELEMENT_LINK_URL').':</div>';
+		$str[] = '<div><input class="fabrikinput inputbox'.$errorCSS.'" name="'.$linkname.'" '.$sizeInfo.' value="'.$value['link'].'" /></div>';
 		$str[] = '</div>';
 		return implode("\n", $str);
 	}

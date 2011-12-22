@@ -112,7 +112,7 @@ var fabrikCalendar = new Class({
 		}
 			
 		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id;
-		if(opts.view == 'monthView') {
+		if (opts.view === 'monthView') {
 			style.width -= 1;
 		}
 		var eventCont = new Element('div', {
