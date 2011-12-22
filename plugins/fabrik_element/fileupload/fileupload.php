@@ -1421,7 +1421,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		$value = $this->checkForSingleCropValue($value);
 		if ($params->get('ajax_upload')) {
-			$value = isset($value->file) ? $value->file : '';
+			if (isset($value->file)) {
+				$value = $value->file;
+			}
 		}
 		$imagedata = array();
 		/* 	if (strstr($value, GROUPSPLITTER)) {
@@ -1462,14 +1464,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if ($render->output == '' && $params->get('default_image') != '') {
 				$render->output = '<img src="'.$params->get('default_image').'" alt="image" />';
 			}
-		}
-		if (!$this->_editable) {
 			$str 	= '<div class="fabrikSubElementContainer">'.$str;
 			$str .= '</div>';
 			return $str;
-		} else {
-			// $$$ rob dont wrap readonly in subElementContainer as it stops dataConsideredEmpty() working when testing ro values
-
 		}
 		$str .= '<input class="fabrikinput" name="'.$name.'" type="file" id="'.$id.'" />'."\n";
 		if ($params->get('upload_allow_folderselect') == '1') {
