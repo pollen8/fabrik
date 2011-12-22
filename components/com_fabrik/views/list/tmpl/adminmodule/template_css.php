@@ -163,20 +163,19 @@ div.calendar{
 	cursor:pointer;
 }
 
-
 #listform_$c .fabrikFilterContainer
 {
-background-color: #1A80B2;
-color: #FFFFFF;
-padding: 10px 15px;
-position: absolute;
-display:none;
-border-radius: 0 0 6px 6px;
+	background-color: #1A80B2;
+	color: #FFFFFF;
+	padding: 10px 15px;
+	position: absolute;
+	display:none;
+	border-radius: 0 0 6px 6px;
 }
 
 #listform_$c .fabrikFilterContainer a{
-color:#fff;
-padding-right:5px;
+	color:#fff;
+	padding-right:5px;
 }
 /*****************************************************/
 /********** default action formatting ****************/

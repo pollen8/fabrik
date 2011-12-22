@@ -12,8 +12,9 @@
 	<?php }?>
 </tr>
 <?php $doc = JFactory::getDocument();
+$doc->addScript(JURI::root(true).'/media/com_fabrik/js/filtertoggle.js');
 $doc->addScriptDeclaration("
 head.ready(function(){
-	new AdminModuleHeadings('".$this->list->renderid."');
+	new FabFilterToggle('".$this->list->renderid."');
 });
 "); ?>
