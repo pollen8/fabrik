@@ -143,7 +143,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$formparams = $this->getForm()->getParams();
-		$opts->ajax_validation =  $formparams->get('ajax_validations');
+		$opts->ajax_validation =  $formparams->get('ajax_validations') === '1';
 		$opts = json_encode($opts);
 		$lang = new stdClass();
 

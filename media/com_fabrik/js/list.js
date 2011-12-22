@@ -724,9 +724,13 @@ var FbList = new Class({
 				// make id the same as the add button so we reuse the same form.
 				Fabrik.getWindow({
 					'id': 'add.' + list.options.formid,
-					'title': 'Edit',
+					'title': this.options.popup_edit_label,
 					'loadMethod': loadMethod,
-					'contentURL': url
+					'contentURL': url,
+					'width': this.options.popup_width,
+					'height': this.options.popup_height,
+					'offset_x': this.options.popup_offset_x,
+					'offset_y': this.options.popup_offset_y
 				});
 			}.bind(this));
 
@@ -761,9 +765,13 @@ var FbList = new Class({
 				}
 				Fabrik.getWindow({
 					'id': 'view.' + '.' + list.options.formid + '.' + rowid,
-					'title': 'Details',
+					'title': this.options.popup_view_label,
 					'loadMethod': loadMethod,
-					'contentURL': url
+					'contentURL': url,
+					'width': this.options.popup_width,
+					'height': this.options.popup_height,
+					'offset_x': this.options.popup_offset_x,
+					'offset_y': this.options.popup_offset_y
 				});
 			}.bind(this));
 		}
@@ -1113,9 +1121,13 @@ var FbList = new Class({
 				// top.Fabrik.fireEvent('fabrik.list.add', this);//for packages?
 				Fabrik.getWindow({
 					'id': 'add-' + this.id,
-					'title': 'Add',
+					'title': this.options.popup_add_label,
 					'loadMethod': loadMethod,
-					'contentURL': addRecord.href
+					'contentURL': addRecord.href,
+					'width': this.options.popup_width,
+					'height': this.options.popup_height,
+					'offset_x': this.options.popup_offset_x,
+					'offset_y': this.options.popup_offset_y
 				});
 			}.bind(this));
 		}
