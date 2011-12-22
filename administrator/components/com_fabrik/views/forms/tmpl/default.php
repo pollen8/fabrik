@@ -91,7 +91,7 @@ $listDirn	= $this->state->get('list.direction');
 						</a>
 					</td>
 					<td>
-						<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','list.view')">
+						<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','forms.listview')">
 						<?php echo JText::_('COM_FABRIK_VIEW_DATA')?>
 						</a>
 					</td>
