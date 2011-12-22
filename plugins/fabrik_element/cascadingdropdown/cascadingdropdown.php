@@ -749,7 +749,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$opts->filterid = $filterid;
 			$opts->elid = $this->_id;
 			$opts->def = $default;
-			$opts->filterobj = 'filter_'.$container;
+			$opts->filterobj = 'Fabrik.filter_'.$container;
 			$opts = json_encode($opts);
 			return "Fabrik.filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerid', $opts));\n";
 		}
