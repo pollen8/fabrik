@@ -1,3 +1,6 @@
+/*jshint mootools: true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+
 /* can be used to hide filters and show then when the list title is clicked
  * also puts the clear filter and go button underneath the focused filter
  */
@@ -5,25 +8,25 @@ FabFilterToggle = new Class({
 	initialize: function (ref) {
 		var list = document.id('list_' + ref);
 		var form = document.id('listform_' + ref);
-		 Fabrik.addEvent('fabrik.list.update', function(l){
-				if(l.id == ref){
-					list.getElements('.fabrik___heading span.filter').hide();
-				}
-				return true;
-		 });
+		Fabrik.addEvent('fabrik.list.update', function (l) {
+			if (l.id === ref) {
+				list.getElements('.fabrik___heading span.filter').hide();
+			}
+			return true;
+		});
 
-		list.getElements('span.heading').each(function(h){
+		list.getElements('span.heading').each(function (h) {
 			var f = h.getNext();
 			if (f) {
 				h.addClass('filtertitle');
 				h.setStyle('cursor', 'pointer');
-				if(i = f.getElement('input')) {
+				if (i = f.getElement('input')) {
 					i.set('placeholder', h.get('text'));
 				}
 				f.hide();
 			}
 		});
-		list.addEvent('click:relay(span.heading)', function(e){
+		list.addEvent('click:relay(span.heading)', function (e) {
 			var f = e.target.getNext();
 			if (f) {
 				f.toggle();
