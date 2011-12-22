@@ -86,6 +86,9 @@ class FabrikViewList extends JView{
 		$opts->popup_height = (int)$params->get('popup_height', 0);
 		$opts->popup_offset_x = (int)$params->get('popup_offset_x', 0);
 		$opts->popup_offset_y = (int)$params->get('popup_offset_y', 0);
+		$opts->popup_edit_label = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
+		$opts->popup_view_label = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
+		$opts->popup_add_label = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
 		$csvOpts = new stdClass();
