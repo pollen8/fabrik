@@ -702,6 +702,27 @@
 				type="text" size="20"
 				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
 				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC" />
+				
+			<field name="popup_width"
+				type="text" size="5"
+				label="COM_FABRIK_FIELD_POPUP_WIDTH_LABEL"
+				description="COM_FABRIK_FIELD_POPUP_WIDTH_DESC" />
+
+			<field name="popup_height"
+				type="text" size="5"
+				label="COM_FABRIK_FIELD_POPUP_HEIGHT_LABEL"
+				description="COM_FABRIK_FIELD_POPUP_HEIGHT_DESC" />
+
+			<field name="popup_offset_x"
+				type="text" size="5"
+				label="COM_FABRIK_FIELD_POPUP_OFFSET_X_LABEL"
+				description="COM_FABRIK_FIELD_POPUP_OFFSET_X_DESC" />
+
+			<field name="popup_offset_y"
+				type="text" size="5"
+				label="COM_FABRIK_FIELD_POPUP_OFFSET_Y_LABEL"
+				description="COM_FABRIK_FIELD_POPUP_OFFSET_Y_DESC" />
+
 	</fieldset>
 		
 		<fieldset name="prefilter">

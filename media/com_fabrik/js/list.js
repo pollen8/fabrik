@@ -1115,7 +1115,11 @@ var FbList = new Class({
 					'id': 'add-' + this.id,
 					'title': 'Add',
 					'loadMethod': loadMethod,
-					'contentURL': addRecord.href
+					'contentURL': addRecord.href,
+					'width': this.options.popup_width,
+					'height': this.options.popup_height,
+					'offset_x': this.options.popup_offset_x,
+					'offset_y': this.options.popup_offset_y
 				});
 			}.bind(this));
 		}
