@@ -48,7 +48,8 @@ class fabrikViewForm extends JView
 			if (JRequest::getBool('inlinecancel') == true) {
 				$html[] = '<li class="ajax-controls inline-cancel">';
 				$html[] = '<a href="#" class="">';
-				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL'))).'<span></span></a>';
+				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL')));
+				$html[] = '<span>'.JText::_('COM_FABRIK_CANCEL').'</span></a>';
 				$html[] = '</li>';
 			}
 		
