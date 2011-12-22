@@ -99,12 +99,11 @@ var FbDatabasejoin = new Class({
 					
 				switch (this.options.display_type) {
 				case 'dropdown':
-					if (this.element.getElements('option').get('value').contains(v)) {
-						
-					}
+				/* falls through */
+				case 'multilist':
 					var o = this.element.getElements('option').filter(function (o, x) {
 						if (o.get('value') === v) {
-							this.element.selectedIndex = x;
+							this.options.display_type === 'dropdown' ? this.element.selectedIndex = x : o.selected = true;
 							return true;
 						}
 					}.bind(this));
