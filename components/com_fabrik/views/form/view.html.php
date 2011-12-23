@@ -353,6 +353,8 @@ class fabrikViewForm extends JView
 		$opts->rowid = $model->_rowId;
 		//3.0 needed for ajax requests
 		$opts->listid = (int)$this->get('ListModel')->getId();
+		// $$$ hugh - floatingtips.js seems to require this?
+		//$opts->listref = $opts->listid;
 
 		$imgs = new stdClass();
 		$imgs->alert = FabrikHelperHTML::image('alert.png', 'form', $this->tmpl, '', true);
@@ -508,6 +510,7 @@ class fabrikViewForm extends JView
 
 		$this_rowid = is_array($model->_rowId)? implode('|', $model->_rowId) : $model->_rowId;
 		$fields = array('<input type="hidden" name="listid" value="'.$listModel->getId().'" />',
+		'<input type="hidden" name="listref" value="'.$listModel->getId().'" />',
 		'<input type="hidden" name="rowid" value="'.$this_rowid.'" />',
 		'<input type="hidden" name="Itemid" value="'.$Itemid.'" />',
 		'<input type="hidden" name="option" value="com_fabrik" />',
