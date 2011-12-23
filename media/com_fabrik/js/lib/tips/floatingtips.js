@@ -58,10 +58,11 @@ var FloatingTips = new Class({
 			if (!e.retrieve('tipped')) {
 				e.store('tipped', true);
 				var listid = e.getParent('form').getElement('input[name=listid]').get('value');
-				var listref = e.getParent('form').getElement('input[name=listref]').get('value');
-				//e.store('listid', listid);
-				e.store('listref', listref);
-				console.log(listid, listref);
+				var listRefField = e.getParent('form').getElement('input[name=listref]');
+				if (typeOf(listRefField) !== 'null') {
+					var listref = e.getParent('form').getElement('input[name=listref]').get('value');
+					e.store('listref', listref);
+				}
 				e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));
 				e.addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e]));
 				e.getParent().addEvent(this.options.hideOn, this.options.hideFn.bindWithEvent(this, [e.getParent()]));
