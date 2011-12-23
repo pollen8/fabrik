@@ -81,6 +81,12 @@ echo "
 	padding:5px;
 }
 
+/** link sub elements **/
+
+.fabrikSubElementContainer > div {
+	clear:left;
+}
+
 /* START: align google map sub elements vertically */
 
 .googlemap .fabrikSubElementContainer{
