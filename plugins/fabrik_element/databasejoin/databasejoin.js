@@ -348,7 +348,7 @@ var FbDatabasejoin = new Class({
 		// @TODO this is going to wipe out any user added change events to the element
 		// cant' figure out how to just remove the cdd change events.
 		// $$$ hugh - added workaround for change events, by storing them during addNewEvent
-		// and re-adding them after we do this.
+		// and re-adding them after we do this. 
 		this.element.removeEvents('change');
 		this.changeEvents.each(function (js) {
 			this.addNewEventAux('change', js);
