@@ -74,6 +74,9 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 			$session->set($context.'redirect_content_how', $params->get('redirect_content_how', 'popup'));
 			$session->set($context.'redirect_content_popup_width', $params->get('redirect_content_popup_width', '300'));
 			$session->set($context.'redirect_content_popup_height', $params->get('redirect_content_popup_height', '300'));
+			$session->set($context.'redirect_content_popup_x_offset', $params->get('redirect_content_popup_x_offset', '0'));
+			$session->set($context.'redirect_content_popup_y_offset', $params->get('redirect_content_popup_y_offset', '0'));
+			$session->set($context.'redirect_content_popup_title', $params->get('redirect_content_popup_title', ''));
 			$session->set($context.'redirect_content_popup_reset_form', $params->get('redirect_content_popup_reset_form', '1'));
 
 		} else {

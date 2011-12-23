@@ -288,10 +288,10 @@ Fabrik.RedirectWindow = new Class({
 	initialize: function (opts) {
 		var opts2 = {
 			'id': 'redirect',
-			title: '',
+			'title': opts.title ? opts.title : '',
 			loadMethod: loadMethod,
-			width: opts.width ? opts.width : 300,
-			height: opts.height ? opts.height : 320,
+			'width': opts.width ? opts.width : 300,
+			'height': opts.height ? opts.height : 320,
 			'minimizable': false,
 			'collapsible': true
 			
