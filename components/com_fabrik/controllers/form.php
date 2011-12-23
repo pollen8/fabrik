@@ -192,6 +192,9 @@ class FabrikControllerForm extends JController
 				$redirect_opts['redirect_how'] = $session->get($context.'redirect_content_how', 'popup');
 				$redirect_opts['width'] = (int)$session->get($context.'redirect_content_popup_width', '300');
 				$redirect_opts['height'] = (int)$session->get($context.'redirect_content_popup_height', '300');
+				$redirect_opts['x_offset'] = (int)$session->get($context.'redirect_content_popup_x_offset', '0');
+				$redirect_opts['y_offset'] = (int)$session->get($context.'redirect_content_popup_y_offset', '0');
+				$redirect_opts['title'] = $session->get($context.'redirect_content_popup_title', '');
 				$redirect_opts['reset_form'] = $session->get($context.'redirect_content_reset_form', '1') == '1';
 			}
 			//let form.js handle the redirect logic (will also send out a

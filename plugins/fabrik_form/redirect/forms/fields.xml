@@ -70,6 +70,27 @@
 				label="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_LABEL" 
 				description="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_DESC"/>
 				
+			<field name="redirect_content_popup_x_offset" 
+				type="text" 
+				size="5" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_X_OFFSET_LABEL" 
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_X_OFFSET_DESC"/>
+				
+			<field name="redirect_content_popup_y_offset" 
+				type="text" 
+				size="5" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_Y_OFFSET_LABEL" 
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_Y_OFFSET_DESC"/>
+
+			<field name="redirect_content_popup_title" 
+				type="text" 
+				size="50" 
+				repeat="true"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_LABEL" 
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_DESC"/>
+				
 			<field name="redirect_content_reset_form"
 				type="radio"
 				default="1"

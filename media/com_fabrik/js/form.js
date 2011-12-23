@@ -856,9 +856,12 @@ var FbForm = new Class({
 								clear_form = json.clear_form;
 								if (json.url !== undefined) {
 									if (json.redirect_how === 'popup') {
-										var width = json.width !== undefined ? json.width : 400;
-										var height = json.height !== undefined ? json.height : 400;
-										Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width});
+										var width = json.width ? json.width : 400;
+										var height = json.height ? json.height : 400;
+										var x_offset = json.x_offset ? json.x_offset : 0;
+										var y_offset = json.y_offset ? json.y_offset : 0;
+										var title = json.title ? json.title : '';
+										Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width, 'offset_x': x_offset, 'offset_y': y_offset, 'title': title});
 									}
 									else {
 										if (json.redirect_how === 'samepage') {
