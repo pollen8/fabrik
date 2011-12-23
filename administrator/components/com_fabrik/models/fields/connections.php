@@ -45,9 +45,9 @@ class JFormFieldConnections extends JFormFieldList
 		$db	= FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 
-		$query->select('id AS value, description AS text, `default`');
+		$query->select('id AS value, description AS text, '.$db->nameQuote('default'));
 		$query->from('#__fabrik_connections AS c');
-		$query->where('published =1');
+		$query->where('published = 1');
 		$query->order('host');
 
 		// Get the options.
@@ -62,7 +62,6 @@ class JFormFieldConnections extends JFormFieldList
 		$sel = JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
 		$sel->default = false;
 		array_unshift($options, $sel);
-
 		return $options;
 	}
 
@@ -87,7 +86,7 @@ class JFormFieldConnections extends JFormFieldList
 		if ((int)$this->form->getValue('id') == 0 || !$this->element['readonlyonedit']) {
 			return parent::getInput();
 		} else {
-			$options = (array) $this->getOptions();
+			$options = (array)$this->getOptions();
 			$v = '';
 			foreach ($options as $opt) {
 				if ($opt->value == $this->value) {
