@@ -33,6 +33,21 @@ class filesystemstorage extends storageAdaptor{
 		return JFolder::exists($path);
 	}
 
+	/*
+	* create empty index.html for security
+	* @param $path path to folder
+	* @return bool success
+	*/
+	function createIndexFile($path)
+	{
+		$index_file = $path.DS.'index.html';
+		if (!$this->exists($index_file)) {
+			$content = JText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
+			return JFile::write($index_file, $content);
+		}
+		return true;
+	}
+
 	/**
 	 * create a folder
 	 * @param $path
@@ -40,7 +55,10 @@ class filesystemstorage extends storageAdaptor{
 	 */
 	function createFolder($path)
 	{
-		return JFolder::create($path);
+		if (JFolder::create($path)) {
+			return $this->createIndexFile($path);
+		}
+		return false;
 	}
 
 	function clean($path)
@@ -90,7 +108,10 @@ class filesystemstorage extends storageAdaptor{
 	function upload($tmpFile, $filepath)
 	{
 		$this->uploadedFilePath = $filepath;
-		return JFile::upload($tmpFile, $filepath);
+		if (JFile::upload($tmpFile, $filepath)) {
+			return $this->createIndexFile(dirname($filepath));
+		}
+		return false;
 	}
 
 	function setPermissions($filepath)
