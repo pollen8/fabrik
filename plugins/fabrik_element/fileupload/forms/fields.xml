@@ -249,11 +249,22 @@
 				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_SECRETKEY_DESC" />
 				
 			<field name="fileupload_aws_location" 
-				type="radio" 
+				type="list" 
 				label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_STORAGE_LOCATION_LABEL" 
 				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_STORAGE_LOCATION_DESC">
-					<option value="">USA</option>
-					<option value="EU">Europe</option>	
+					<option value="">USA East</option>
+					<option value="us-west-1">USA West(Northern California)</option>
+					<option value="EU">Europe</option>
+					<option value="ap-southeast-1">APAC (Singapore)</option>
+			</field>
+			
+			<field name="fileupload_ssl"
+				type="radio"
+					default="0" 
+					label="PLG_ELEMENT_FILEUPLOAD_SSL_LABEL"
+					description="PLG_ELEMENT_FILEUPLOAD_SSL_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
 			</field>
 			
 			<field name="fileupload_aws_bucketname" 
@@ -261,7 +272,30 @@
 				size="40" 
 				label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_LABEL" 
 				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_DESC" />
-				
+			
+			<field name="fileupload_amazon_acl"
+				type="list" default="2"
+				description="PLG_ELEMENT_FILEUPLOAD_ACL_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_ACL_LABEL">
+					<option value="1">PLG_ELEMENT_FILEUPLOAD_ACL_PRIVATE</option>
+					<option value="2">PLG_ELEMENT_FILEUPLOAD_ACL_PUBLIC_READ</option>
+					<option value="3">PLG_ELEMENT_FILEUPLOAD_ACL_PUBLIC_READ_WRITE</option>
+			</field>
+			
+			<field name="fileupload_skip_check"
+				type="radio"
+				default="0" 
+				description="PLG_ELEMENT_FILEUPLOAD_SKIP_CHECK_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_SKIP_CHECK_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field name="fileupload_amazon_auth_url" 
+				type="text" 
+				default="60" size="3"
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_LABEL" />
 		</fieldset>
 		
 

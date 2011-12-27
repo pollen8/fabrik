@@ -145,7 +145,7 @@ class amazons3storage extends storageAdaptor{
 
 	protected function getAcl()
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		$acl = $params->get('fileupload_amazon_acl', 2);
 		switch ($acl) {
 			case 1:
