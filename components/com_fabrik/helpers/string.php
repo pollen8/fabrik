@@ -244,11 +244,14 @@ class FabrikString extends JString{
 		$pair = explode('?', $url);
 		if (count($pair) === 2) {
 			$url = $pair[0];
-			$bits = explode('&', JArrayHelper::getValue($pair, 1));
+			$bits = JArrayHelper::getValue($pair, 1);
 		} else {
 			$url = '';
-			$bits = explode('&', JArrayHelper::getValue($pair, 0));
+			$bits = JArrayHelper::getValue($pair, 0);
 		}
+		
+		$glue = strstr($bits, '&amp;') ? '&amp;' : '&';
+		$bits = explode($glue, $bits);
 		$a = array();
 		foreach ($bits as $bit) {
 			if (strstr($bit, '=')) {
@@ -259,7 +262,7 @@ class FabrikString extends JString{
 			}
 		}
 		if (!empty($a)) {
-			$url .= '?'.implode('&', $a);
+			$url .= '?' . implode($glue, $a);
 		}
 	  return $url;
 	}

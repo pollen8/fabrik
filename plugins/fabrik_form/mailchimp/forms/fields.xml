@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-mailchimp">
+			<field name="mailchimp_apikey" 
+			type="text" size="40"
+			repeat="true"
+			label="PLG_FORM_MAILCHIMP_API_KEY_LABEL"
+			description="PLG_FORM_MAILCHIMP_API_KEY_DESC"/>
+			
+		<field name="mailchimp_listid"
+			type="text" size="30"
+			repeat="true"
+			label="PLG_FORM_MAILCHIMP_LIST_ID_LABEL"
+			description="PLG_FORM_MAILCHIMP_LIST_ID_DESC"/>
+			
+		<field name="mailchimp_email" 
+			type="listfields"
+			repeat="true"
+			label="PLG_FORM_MAILCHIMP_EMAIL_LABEL" 
+			description="PLG_FORM_MAILCHIMP_EMAIL_DESC" />
+			
+		<field name="mailchimp_firstname" 
+			type="listfields"
+			repeat="true"
+			label="PLG_FORM_MAILCHIMP_FIRST_NAME_LABEL" 
+			description="PLG_FORM_MAILCHIMP_FIRST_NAME_DESC" />
+			
+		<field name="mailchimp_lastname" 
+			type="listfields"
+			repeat="true"
+			label="PLG_FORM_MAILCHIMP_LAST_NAME_LABEL" 
+			description="PLG_FORM_MAILCHIMP_LAST_NAME_DESC" />
+			
+		<field name="mailchimp_signuplabel"
+			type="text"
+			size="30"
+			repeat="true"
+			default="Sign up to my mailing list"
+			label="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_LABEL"
+			description="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_DESC" />
+		
+		<field name="mailchimp_update_existing"
+			type="radio"
+			repeat="true"
+			default="0"
+			label="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_LABEL"
+			description="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field name="mailchimp_email_type"
+			type="radio"
+			repeat="true"
+			default="html"
+			label="PLG_FORM_MAILCHIMP_EMAIL_TYPE_LABEL"
+			description="PLG_FORM_MAILCHIMP_EMAIL_TYPE_DESC">
+				<option value="text">text</option>
+				<option value="html">html</option>
+			</field>
+			
+			
+			<field name="mailchimp_double_optin"
+			type="radio"
+			repeat="true"
+			default="1"
+			label="PLG_FORM_MAILCHIMP_DOUBLE_OPTIN_LABEL"
+			description="PLG_FORM_MAILCHIMP_DOUBLE_OPTIN_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field name="mailchimp_groupopts"
+				type="textarea"
+				repeat="true"
+				cols="40"
+				rows="6"
+				label="PLG_FORM_MAILCHIMP_GROUP_OPTS_LABEL"
+				description="PLG_FORM_MAILCHIMP_GROUP_OPTS_DESC" />
+				
+		</fieldset>
+	</fields>
+</form>

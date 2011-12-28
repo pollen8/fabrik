@@ -248,6 +248,7 @@ var FbList = new Class({
 		this.id = id;
 		this.setOptions(options);
 		this.getForm();
+		this.plugins = [];
 		this.list = document.id('list_' + this.id);
 		this.actionManager = new FbListActions(this, {
 			'method': this.options.actionMethod,

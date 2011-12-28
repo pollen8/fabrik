@@ -1134,6 +1134,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$bits[] = "&resetfilters=1";
 		//$bits[] = "clearfilters=1"; //nope stops url filter form workin on related data :(
+		$bits[] = '&fabrik_incsessionfilters=0';//test for releated data, filter once, go backt o main list re-filter - 
 		$url .= implode("&", $bits);
 		$url = JRoute::_($url);
 
