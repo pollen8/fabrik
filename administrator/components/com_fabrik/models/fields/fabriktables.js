@@ -16,7 +16,7 @@ var fabriktablesElement = new Class({
 		this.waitingElements = $H({}); // keyed on specific element options
 		// if loading in a form plugin then the connect is not yet avaiable in the
 		// dom
-		if (typeOf($(this.options.conn)) === 'null') {
+		if (typeOf(document.id(this.options.conn)) === 'null') {
 			this.periodical = this.getCnn.periodical(500, this);
 		} else {
 			this.setUp();
@@ -24,7 +24,7 @@ var fabriktablesElement = new Class({
 	},
 
 	getCnn : function () {
-		if (typeOf($(this.options.conn)) === 'null') {
+		if (typeOf(document.id(this.options.conn)) === 'null') {
 			return;
 		}
 		this.setUp();
@@ -37,14 +37,16 @@ var fabriktablesElement = new Class({
 	},
 
 	setUp : function () {
-		this.el = $(this.el);
-		if (typeOf($(this.options.conn)) === 'null') {
+		this.el = document.id(this.el);
+		this.cnn = document.id(this.options.conn);
+		if (this.cnn === 'null') {
 			return;
 		}
-		$(this.options.conn).addEvent('change', this.updateMe.bindWithEvent(this));
+		this.loader = document.id(this.el.id + '_loader');
+		this.cnn.addEvent('change', this.updateMe.bindWithEvent(this));
 		this.el.addEvent('change', this.updateElements.bindWithEvent(this));
 		// see if there is a connection selected
-		var v = $(this.options.conn).get('value');
+		var v = this.cnn.get('value');
 		if (v !== '' && v !== -1) {
 			this.updateMe();
 		}
@@ -54,20 +56,28 @@ var fabriktablesElement = new Class({
 		if (e) {
 			e.stop();
 		}
-		var cid = $(this.options.conn).get('value');
+		var cid = this.cnn.get('value');
 		// keep repeating the perioical untill the cnn drop down is completed
 		if (!cid) {
 			return;
 		}
-		if ($(this.el.id + '_loader')) {
-			$(this.el.id + '_loader').setStyle('display', 'inline');
+		if (this.loader) {
+			this.loader.show();
 		}
-	/*	var url = this.options.livesite
-				+ 'index.php?option=com_fabrik&format=raw&view=plugin&&task=pluginAjax&g=element&plugin=field&method=ajax_tables&showf=1&cid=' + cid;*/
-		var url = 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&g=element&plugin=field&method=ajax_tables&showf=1&cid=' + cid;
+
+		var url = 'index.php';
 		var myAjax = new Request({
 			url : url,
-			method : 'get',
+			data: {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'g': 'element',
+				'plugin': 'field',
+				'method': 'ajax_tables',
+				'showf': '1',
+				'cid': cid.toInt()
+			},
 			onComplete : function (r) {
 				var opts = JSON.decode(r);
 				if (typeOf(opts) !== 'null') {
@@ -76,7 +86,6 @@ var fabriktablesElement = new Class({
 					} else {
 						this.el.empty();
 						opts.each(function (opt) {
-							// var o = {'value':opt.value};//wrong for calendar
 							var o = {
 								'value' : opt.id
 							};
@@ -85,8 +94,8 @@ var fabriktablesElement = new Class({
 							}
 							new Element('option', o).appendText(opt.label).inject(this.el);
 						}.bind(this));
-						if ($(this.el.id + '_loader')) {
-							$(this.el.id + '_loader').setStyle('display', 'none');
+						if (this.loader) {
+							this.loader.hide();
 						}
 						this.updateElements();
 					}
@@ -105,8 +114,8 @@ var fabriktablesElement = new Class({
 				// element.el.empty();
 				return;
 			}
-			if ($(element.el.id + '_loader')) {
-				$(element.el.id + '_loader').setStyle('display', '');
+			if (this.loader) {
+				this.loader.show();
 			}
 			var key = opts.getValues().toString() + ',' + table;
 			if (!this.waitingElements.has(key)) {
@@ -122,16 +131,28 @@ var fabriktablesElement = new Class({
 				}
 			} else {
 
-				var cid = $(this.options.conn).get('value');
+				var cid = this.cnn.get('value');
 				this.elementLists.set(key, '');
-				var url = this.options.livesite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=visualization&plugin=chart&method=ajax_fields&k=2&t=' + table + '&cid=' + cid;
-				var ajaxopts = {};
+				//var url = this.options.livesite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=visualization&plugin=chart&method=ajax_fields&k=2&t=' + table + '&cid=' + cid;
+				
+				var ajaxopts = {
+					'option': 'com_fabrik',
+					'format': 'raw',
+					'task': 'plugin.pluginAjax',
+					'g': 'element',
+					'plugin': 'field',
+					'method': 'ajax_tables',
+					'cid': cid.toInt()
+				};
+				//dont think these are needed in ajaxopts
+				//ajaxopts['k'] ='2';
+				//ajaxopts['showf'] = '1';
+				//ajaxopts['t'] = table;
 				opts.each(function (v, k) {
 					ajaxopts[k] = v;
 				});
 				var myAjax = new Request({
-					url : url,
-					method : 'get',
+					'url' : url,
 					'data' : ajaxopts,
 					onComplete : function (r) {
 						this.elementLists.set(key, r);
@@ -140,6 +161,17 @@ var fabriktablesElement = new Class({
 							this.updateElementOptions(r, el);
 							this.waitingElements[key].erase(i);
 						}.bind(this));
+					}.bind(this),
+					
+					onFailure: function (r) {
+						this.waitingElements.get(key).each(function (el, i) {
+							this.updateElementOptions('[]', el);
+							this.waitingElements[key].erase(i);
+						}.bind(this));
+						if (this.loader) {
+							this.loader.hide();
+						}
+						alert(r.status + ': ' + r.statusText);
 					}.bind(this)
 				}).send();
 			}
@@ -168,8 +200,8 @@ var fabriktablesElement = new Class({
 			}
 			new Element('option', o).appendText(opt.label).inject(element.el);
 		}.bind(this));
-		if ($(element.el.id + '_loader')) {
-			$(element.el.id + '_loader').hide();
+		if (this.loader) {
+			this.loader.hide();
 		}
 	},
 	// only called from repeat viz admin interface i think
