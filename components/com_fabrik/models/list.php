@@ -2072,6 +2072,7 @@ class FabrikFEModelList extends JModelForm {
 		$this->renderContext = '';
 		// $$$ rob not sure why but we need this getState() here
 		// when assinging id from admin view
+		$this->setRenderContext($id);
 		$this->getState();
 	}
 
@@ -2089,7 +2090,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function getTable($force = false)
 	{
-		if ($force || is_null($this->_table) || !is_object($this->_table)) {
+		if ($force || !isset($this->_table) || !is_object($this->_table)) {
 			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
 			$this->_table = FabTable::getInstance('List', 'FabrikTable');
 			$id = $this->getId();
@@ -3701,18 +3702,9 @@ class FabrikFEModelList extends JModelForm {
 
 		$params = $this->getParams();
 		if ($params->get('search-mode', 'AND') == 'OR') {
-			//test new option to have one field to search them all
-			$key = 'com_fabrik.list'.$this->getRenderContext().'.searchall';
-			//seems like post keys 'name.1' get turned into 'name_1'
-			$requestKey = 'fabrik_list_filter_all_'.$this->getRenderContext();
-			$v = $app->getUserStateFromRequest($key, $requestKey);
-			if (trim($v) == '') {
-				$fromFormId = $app->getUserState('com_fabrik.searchform.fromForm');
-				if ($fromFormId != $this->getFormModel()->getForm()->id) {
-					$v = $app->getUserState('com_fabrik.searchform.form'.$fromFormId.'.searchall');
-				}
-			}
-			$v = htmlspecialchars($v, ENT_QUOTES);
+			// One field to search them all (and in the darkness bind them)
+			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
+			$v = $this->getFilterModel()->getSearchAllValue();
 			$o = new stdClass();
 			$o->filter = '<input type="search" size="20" value="'.$v.'" class="fabrik_filter" name="'.$requestKey.'" />';
 			if ($params->get('search-mode-advanced') == 1) {
@@ -6786,6 +6778,7 @@ class FabrikFEModelList extends JModelForm {
 		unset($this->filters);
 		unset($this->prefilters);
 		unset($this->_params);
+		unset($this->viewfilters);
 		// $$$ hugh - added some more stuff to clear, as per:
 		// http://fabrikar.com/forums/showthread.php?p=115122#post115122
 		unset($this->asfields);
@@ -6884,8 +6877,14 @@ class FabrikFEModelList extends JModelForm {
 
 	public function setRenderContext($id)
 	{
-		$listref = JRequest::getVar('listref');
-		$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
+		if (JRequest::getVar('task') == 'list.filter') {
+			$listref = JRequest::getVar('listref');
+			$listref = explode('_', $listref);
+			array_shift($listref);
+			$this->renderContext = '_'.implode('_', $listref);
+		} else {
+			$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
+		}
 	}
 
 	public function getGroupByHeadings()

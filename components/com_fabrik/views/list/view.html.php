@@ -571,8 +571,9 @@ class FabrikViewList extends JView{
 		$this->hiddenFields = array();
 
 		// $$$ rob 15/12/2011 - if in com_content then doing this means you cant delete rows
-		//$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
-		$this->hiddenFields[] = '<input type="hidden" name="option" value="com_fabrik" />';
+		$this->hiddenFields[] = '<input type="hidden" name="option" value="'.JRequest::getCmd('option', 'com_fabrik').'" />';
+		// $$$ rob 28/12/2011 but when using com_content as a value you cant filter!
+		//$this->hiddenFields[] = '<input type="hidden" name="option" value="com_fabrik" />';
 		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="" />';
 		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="" />';
 

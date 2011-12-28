@@ -1836,6 +1836,12 @@ class plgFabrik_Element extends FabrikPlugin
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$id.'" />';
 				break;
+				
+				case "hidden":
+					$default = stripslashes($default);
+					$default = htmlspecialchars($default);
+					$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$id.'" />';
+					break;
 
 			case "auto-complete":
 				$default = stripslashes($default);
