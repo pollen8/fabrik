@@ -50,7 +50,7 @@ class plgFabrik_CronRest extends FabrikPlugin {
 			$xml = $xml->xpath($xpath);
 		}
 		$adminListModel->dbTableFromXML($params->get('key'), $params->get('create_list'), $xml);
-		$this->createList($listModel, &$adminListModel);
+		$this->createList($listModel, $adminListModel);
 
 	}
 

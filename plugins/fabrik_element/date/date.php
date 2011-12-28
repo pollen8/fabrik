@@ -1033,6 +1033,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$return[] = $this->calendar($default, $v, $htmlid."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
 				break;
 
+				case 'hidden':
+					if (is_array($default)) {
+						$default = array_shift($default);
+					}
+					if (get_magic_quotes_gpc()) {
+						$default = stripslashes($default);
+					}
+					$default = htmlspecialchars($default);
+					$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+					break;
+					
 			case 'auto-complete':
 				if (get_magic_quotes_gpc()) {
 					$default = stripslashes($default);

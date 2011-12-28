@@ -11,7 +11,7 @@ var tablesElement = new Class({
 		this.setOptions(options);
 		this.updateMeEvent = this.updateMe.bindWithEvent(this);
 		//if loading in a form plugin then the connect is not yet avaiable in the dom
-		if (typeOf($(this.options.conn)) === 'null') {
+		if (typeOf(document.id(this.options.conn)) === 'null') {
 			this.periodical = this.getCnn.periodical(500, this);
 		} else {
 			this.setUp();
@@ -24,7 +24,7 @@ var tablesElement = new Class({
 	},
 	
 	getCnn: function () {
-		if (typeOf($(this.options.conn)) === 'null') {
+		if (typeOf(document.id(this.options.conn)) === 'null') {
 			return;
 		}
 		this.setUp();
@@ -32,10 +32,12 @@ var tablesElement = new Class({
 	},
 	
 	setUp: function () {
-		this.el = $(this.el);
-		$(this.options.conn).addEvent('change', this.updateMeEvent);
+		this.el = document.id(this.el);
+		this.cnn = document.id(this.options.conn);
+		this.loader = document.id(this.el.id + '_loader');
+		this.cnn.addEvent('change', this.updateMeEvent);
 		//see if there is a connection selected
-		var v = $(this.options.conn).get('value');
+		var v = this.cnn.get('value');
 		if (v !== '' && v !== -1) {
 			this.updateMe();
 		}
@@ -45,18 +47,26 @@ var tablesElement = new Class({
 		if (e) {
 			e.stop();
 		}
-		if ($(this.el.id + '_loader')) {
-			$(this.el.id + '_loader').show();
+		if (this.loader) {
+			this.loader.show();
 		}
-		var cid = $(this.options.conn).get('value');
+		var cid = this.cnn.get('value');
 		// $$$ rob 09/09/2011 changed to call admin page, seems better to not cross call between admin and front end for this
 		//var url = this.options.livesite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=field&method=ajax_tables&cid=' + cid;
-		var url = 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&g=element&plugin=field&method=ajax_tables&cid=' + cid;
+		var url = 'index.php';
 		// $$$ hugh - changed this to 'get' method, because some servers barf (Length Required) if
 		// we send it a POST with no postbody.
 		var myAjax = new Request({
 			url: url,
-			method: 'get', 
+			data: {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'g': 'element',
+				'plugin': 'field',
+				'method': 'ajax_tables',
+				'cid': cid.toInt()
+			},
 			onComplete: function (r) {
 				var opts = JSON.decode(r);
 				if (typeOf(opts) !== 'null') {
@@ -70,8 +80,8 @@ var tablesElement = new Class({
 							if (opt === this.options.value) {
 								o.selected = 'selected';
 							}
-							if ($(this.el.id + '_loader')) {
-								$(this.el.id + '_loader').setStyle('display', 'none');
+							if (this.loader) {
+								this.loader.hide();
 							}
 							new Element('option', o).set('text', opt).inject(this.el);
 						}.bind(this));
@@ -79,9 +89,11 @@ var tablesElement = new Class({
 				}
 			}.bind(this),
 			onFailure: function (r) {
-				if ($(this.el.id + '_loader')) {
-					$(this.el.id + '_loader').hide();
+				this.el.empty();
+				if (this.loader) {
+					this.loader.hide();
 				}
+				alert(r.status + ': ' + r.statusText);
 			}.bind(this)
 		}).send();
 	}

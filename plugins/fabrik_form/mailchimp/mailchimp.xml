@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
+	<name>Fabrik Form - Mailchimp</name>
+	<author>Rob Clayburn</author>
+	<creationDate>{createdate}</creationDate>
+	<copyright>(C) 2005-{year} fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>{version}</version>
+	<description>Sign Up To MailChimp list</description>
+	
+	<files>
+		<filename plugin="mailchimp">mailchimp.php</filename>
+		<folder>examples</folder>
+		<folder>forms</folder>
+		<folder>language</folder>
+		<filename>index.html</filename>
+		<file>MCAPI.class.php</file>
+		<file>README</file>
+	</files>
+
+</extension>

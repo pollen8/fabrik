@@ -151,6 +151,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
+				
+			case "hidden":
+				if (get_magic_quotes_gpc()) {
+					$default = stripslashes($default);
+				}
+				$default = htmlspecialchars($default);
+				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+				break;
 
 			case 'auto-complete':
 				if (get_magic_quotes_gpc()) {

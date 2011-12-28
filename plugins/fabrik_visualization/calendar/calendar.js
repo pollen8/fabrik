@@ -108,7 +108,7 @@ var fabrikCalendar = new Class({
 				'opacity': 0.6
 			};
 		if (opts.left) {
-			style.left = opts.left.toInt()+1 + 'px';
+			style.left = opts.left.toInt() + 1 + 'px';
 		}
 			
 		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id;

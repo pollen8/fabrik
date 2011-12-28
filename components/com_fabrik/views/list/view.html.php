@@ -567,6 +567,7 @@ class FabrikViewList extends JView{
 		$item = $model->getTable();
 
 		$reffer = str_replace('&', '&amp;', JRequest::getVar('REQUEST_URI', '', 'server'));
+		$reffer = FabrikString::removeQSVar($reffer, 'fabrik_incsessionfilters');
 		$this->hiddenFields = array();
 
 		// $$$ rob 15/12/2011 - if in com_content then doing this means you cant delete rows

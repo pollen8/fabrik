@@ -1805,7 +1805,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
-		$return = '';
+		$return = array();
 
 		if (in_array($element->filter_type, array('range', 'dropdown'))) {
 			$rows = $this->filterValueList($normal);
@@ -1813,19 +1813,18 @@ class plgFabrik_Element extends FabrikPlugin
 			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 		}
 		$size = (int)$this->getParams()->get('filter_length', 20);
-
 		switch ($element->filter_type)
 		{
 			case "range":
 				$attribs = 'class="inputbox fabrik_filter" size="1" ';
 				$default1 = is_array($default) ? $default['value'][0] : '';
-				$return = JText::_('COM_FABRIK_BETWEEN') . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
+				$return[] = JText::_('COM_FABRIK_BETWEEN') . JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
 				$default1 = is_array($default) ? $default['value'][1] : '';
-				$return .= '<br /> '.JText::_('COM_FABRIK_AND').' '.JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
+				$return[] = '<br /> '.JText::_('COM_FABRIK_AND').' '.JHTML::_('select.genericlist', $rows, $v.'[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
 				break;
 
 			case "dropdown":
-				$return = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $id);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $id);
 				break;
 
 			case "field":
@@ -1835,25 +1834,25 @@ class plgFabrik_Element extends FabrikPlugin
 				$default = stripslashes($default);
 				//}
 				$default = htmlspecialchars($default);
-				$return = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$id.'" />';
+				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$id.'" />';
 				break;
 
 			case "auto-complete":
 				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
 				// $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters showing and not produce invald html & duplicate js calls
-				$return = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$id.'" value="'.$default.'" />';
-				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$id.'-auto-complete" size="'.$size.'" value="'.$default.'" />';
+				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$id.'" value="'.$default.'" />';
+				$return[] = '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$id.'-auto-complete" size="'.$size.'" value="'.$default.'" />';
 				$selector = '#listform_'.$listModel->getRenderContext().' .'.$id;
 				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id);
 				break;
 		}
 		if ($normal) {
-			$return .= $this->getFilterHiddenFields($counter, $elName);
+			$return[] = $this->getFilterHiddenFields($counter, $elName);
 		} else {
-			$return .= $this->getAdvancedFilterHiddenFields();
+			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
-		return $return;
+		return implode("\n", $return);
 	}
 
 	protected function filterSelectLabel()

@@ -64,7 +64,7 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * @since 3.0 replaces _postMethod
 	 * @var bool is ajax used */
-	protected $ajax = null;
+	public $ajax = null;
 
 	/** @var object plugin manager */
 	protected $_pluginManager = null;
@@ -1126,7 +1126,7 @@ class FabrikFEModelList extends JModelForm {
 			$bits[] = "{$key}=$val";
 		}
 
-		$bits[] = 'limitstart=0';
+		$bits[] = 'limitstart'.$listid.'=0';
 
 		if ($popUp) {
 			$bits[] = "tmpl=component";
@@ -1134,6 +1134,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$bits[] = "&resetfilters=1";
 		//$bits[] = "clearfilters=1"; //nope stops url filter form workin on related data :(
+		$bits[] = '&fabrik_incsessionfilters=0';//test for releated data, filter once, go backt o main list re-filter - 
 		$url .= implode("&", $bits);
 		$url = JRoute::_($url);
 
@@ -3769,19 +3770,23 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		$fscript .= "Fabrik.filter_{$container}.update();\n";
-		//$fscript .= "});";
 		$this->filterJs = $fscript;
 
 		//check for search form filters - if they exists create hidden elements for them
 		$keys = JArrayHelper::getValue($filters, 'key', array());
 
 		foreach ($keys as $i => $key) {
-			if ($filters['no-filter-setup'][$i] == '1' && !in_array($filters['search_type'][$i], array('searchall', 'advanced'))) {
+			if ($filters['no-filter-setup'][$i] == '1' && !in_array($filters['search_type'][$i], array('searchall', 'advanced', 'jpluginfilters'))) {
 				$o = new stdClass();
 				// $$$ rob - we are now setting read only filters 'filter' var to the elements read only
 				// label for the passed in filter value
 				//$o->filter = $value;
+				$elementModel = $this->getFormModel()->getElement(str_replace('`', '', $key));
 				$o->filter = $filters['filter'][$i];
+				if ($elementModel) {
+					$elementModel->getElement()->filter_type = 'hidden';
+					$o->filter .= $elementModel->getFilter(0, true);
+				}
 				$o->name = $filters['key'][$i];
 				$o->label = $filters['label'][$i];
 				$aFilters[] = $o;
@@ -6355,8 +6360,12 @@ class FabrikFEModelList extends JModelForm {
 		$form = $this->getFormModel();
 		$page = "index.php?";
 		foreach ($queryvars as $k => $v) {
+			$rawK = FabrikString::rtrimword($k, '_raw');
 			$el = $form->getElement($k);
-			if (is_array($v)) {
+			if ($el === false) {
+				$el = $form->getElement($rawK);
+			}
+ 			if (is_array($v)) {
 				// $$$ rob if you were using URL filters such as
 				//&jos_fabble_activity___create_date[value][]=now&jos_fabble_activity___create_date[value][]=%2B2%20week&jos_fabble_activity___create_date[condition]=BETWEEN
 				// then we don't want to re-add them to the table action.
@@ -6371,9 +6380,13 @@ class FabrikFEModelList extends JModelForm {
 				} else {
 					//check if its a tag element if it is we want to clear that when we clear the form
 					// (if the filter was set via the url we generally want to keep it though
-					if($el->getElement()->plugin !== 'textarea' && $el->getParams()->get('textarea-tagify') !== true) {
+					
+					// 28/12/2011 $$$ rob testing never keeping querystring filters in the qs but instead always adding them to the filters (if no filter set up in element settings then hidden fields added anyway
+					// this is to try to get round issue of related data (countries->regions) filter region from country list, then clear filters (ok) but then if you go to 2nd page of results country url filter re-applied
+						
+					/* if($el->getElement()->plugin !== 'textarea' && $el->getParams()->get('textarea-tagify') !== true) {
 						$qs[] = "$k=$v";
-					}
+					} */
 				}
 			}
 		}
@@ -6382,6 +6395,8 @@ class FabrikFEModelList extends JModelForm {
 		//$action = preg_replace("/limitstart{$this->getId()}=(.*)?(&|)/", "", $action);
 		// $$$ hugh - oops, this pattern was removing to end of line, not just the limitstart, trying out fix
 		$action = preg_replace("/limitstart{$this->getId()}=(\d+)?(&amp;|)/", "", $action);
+		
+		$action = FabrikString::removeQSVar($action, 'fabrik_incsessionfilters');
 		$action = FabrikString::rtrimword($action, "&");
 		$this->tableAction 	= JRoute::_($action);
 		return $this->tableAction;
