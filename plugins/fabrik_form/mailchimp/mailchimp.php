@@ -20,14 +20,6 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 	var $_counter = null;
 
 	var $html = null;
-	/**
-	 * Constructor
-	 */
-
-	function __construct()
-	{
-		parent::__construct();
-	}
 
 	/**
 	 * set up the html to be injected into the bottom of the form
