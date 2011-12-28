@@ -13,7 +13,7 @@
  * userExists() function.  To call your AJAX method, use a URL of this format from
  * your custom JS code:
  *
- * index.php?option=com_fabrik&format=raw&view=plugin&c=plugin&task=userAjax&method=userExists&username=" + myUsername;
+ * index.php?option=com_fabrik&format=raw&task=plugin.userAjax&method=userExists&username=" + myUsername;
  *
  * Fabrik will automatically try and call the function name specified in your 'method='.
  * You are responsible for grabbing any other parameters, using JRequest::getVar('variablename'),
@@ -25,7 +25,7 @@
  * The easiest way to call AJAX from your JS is to use the Mootools Ajax class, for instance:
  *
  * function userExists(myUsername,refocus) {
- *	 var url = "index.php?option=com_fabrik&format=raw&view=plugin&c=plugin&task=userAjax&method=userExists&username=" + myUsername;
+ *	 var url = "index.php?option=com_fabrik&format=raw&task=plugin.userAjax&method=userExists&username=" + myUsername;
  *	 new Request({url:url,
  *		onComplete: function(response) {
  *			if (response != '') {
@@ -55,7 +55,7 @@
  * have a "Country" dropdown, and wish to repopulate the State menu when it changes):
  *
  * function ajaxTest() {
- *	 var url = "index.php?option=com_fabrik&format=raw&controller=plugin&c=plugin&task=userAjax&method=etStateDropDown";
+ *	 var url = "index.php?option=com_fabrik&format=raw&&task=plugin.userAjax&method=etStateDropDown";
  *	 new Request({url:url,
  *		method: 'get',
  *		update: $('jos_fabrik_formdata_13___states')
