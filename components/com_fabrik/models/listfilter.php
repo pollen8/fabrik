@@ -57,7 +57,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 		// $$$ rob clears all list filters, and does NOT apply any
 		// other filters to the table, even if in querystring
-		if (JRequest::getVar('clearfilters') == 1 && $this->activeTable()) {
+		if (JRequest::getInt('clearfilters') === 1 && $this->activeTable()) {
 			$this->clearFilters();
 			$this->_request = array();
 			return $this->_request;
@@ -317,6 +317,11 @@ class FabrikFEModelListfilter extends FabModel {
 		}
 	}
 
+	protected function defaultAccessLevel()
+	{
+		$accessLevels = JFactory::getUser()->authorisedLevels();
+		return JArrayHelper::getValue($accessLevels, 0, 1);
+	}
 	/**
 	 *
 	 * @param array filters
@@ -367,6 +372,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 			$key = array_key_exists('key', $filters) ? array_search($k, $filters['key']) : false;
 
+			$access = $this->defaultAccessLevel();
 			// $$$ rob so search all on checkboxes/radio buttons etc will take the search value of 'one' and return '1'
 			$newsearch = $elementModel->getFilterValue($search, $condition, $eval);
 			$search = $newsearch[0];
@@ -383,7 +389,7 @@ class FabrikFEModelListfilter extends FabModel {
 				$filters['full_words_only'][$key] = 0;
 				$filters['eval'][$key] = $eval;
 				$filters['required'][$key] = 0;
-				$filters['access'][$key] = 0;
+				$filters['access'][$key] = $access;
 				// $$$ rob 16/06/2011 - changed this. If search all and search on post then change post filter. The grouped_to_previous was being set from 1 to 0 - giving
 				// incorrect query. ASAICT grouped_to_previous should always be 1 for search_all. And testing if the element name = 0 seems v wrong :)
 				//$filters['grouped_to_previous'][$key] = $k == 0 ? 0 : 1;
@@ -403,7 +409,7 @@ class FabrikFEModelListfilter extends FabModel {
 				$filters['full_words_only'][] = 0;
 				$filters['eval'][] = $eval;
 				$filters['required'][] = 0;
-				$filters['access'][] = 0;
+				$filters['access'][] = $access;
 				//$$$ rob having grouped_to_previous as 1 was barfing this list view for bea, when doing a search all:
 				// http://test.xx-factory.de/index.php?option=com_fabrik&view=list&listid=31&calculations=0&Itemid=16&resetfilters=0
 				//$filters['grouped_to_previous'][] = 0;//1;
@@ -954,7 +960,7 @@ class FabrikFEModelListfilter extends FabModel {
 				$match = 1;
 				$fullWordsOnly = 0;
 				$required = 0;
-				$access = 0;
+				$access = $this->defaultAccessLevel();
 				$grouped = 1;
 				$label = '';
 				// $$$ rob force the counter to always be the same for advanced search all

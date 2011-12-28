@@ -56,7 +56,7 @@ class plgContentFabrik extends JPlugin
 		jimport('joomla.filesystem.file');
 
 		//load fabrik language
-		$lang =& JFactory::getLanguage();
+		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik', JPATH_BASE.DS.'components'.DS.'com_fabrik');
 
 		if (!defined('COM_FABRIK_FRONTEND')) {
@@ -64,7 +64,7 @@ class plgContentFabrik extends JPlugin
 		}
 
 		// Get plugin info
-		$plugin =& JPluginHelper::getPlugin('content', 'fabrik');
+		$plugin = JPluginHelper::getPlugin('content', 'fabrik');
 		// $$$ hugh had to rename this, it was stomping on com_content and friends $params
 		// $$$ which is passed by reference to us!
 		$fparams = new JParameter($plugin->params);
@@ -300,15 +300,14 @@ class plgContentFabrik extends JPlugin
 		// http://fabrikar.com/forums/showthread.php?p=42960#post42960
 		JRequest::setVar('origid', $origid, 'GET', false);
 
-		$document 	= JFactory::getDocument();
-		$viewType		= $document->getType();
+		$document = JFactory::getDocument();
+		$viewType	= $document->getType();
 		$controller = $this->_getController($viewName, $id);
-		$view 			=& $this->_getView($controller, $viewName, $id);
-		$model 			=& $this->_getModel($controller, $viewName, $id);
+		$view = $this->_getView($controller, $viewName, $id);
+		$model = $this->_getModel($controller, $viewName, $id);
 		if (!$model) {
 			return;
 		}
-
 
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);
@@ -360,8 +359,8 @@ class plgContentFabrik extends JPlugin
 					JError::raiseWarning(500, 'No id set in fabrik plugin declaration');
 					return;
 				}
-				//$view->setId($id); not for f3
 				$model->setId($id);
+				$model->ajax = 1;
 				$task = JRequest::getVar('task');
 				if (method_exists($controller, $task) && JRequest::getInt('activetableid') == $id) {
 					//enable delete() of rows
@@ -377,7 +376,7 @@ class plgContentFabrik extends JPlugin
 				$model->setOrderByAndDir();
 				$formModel =& $model->getFormModel();
 				//apply filters set in mambot
-				foreach ($unused as $k=>$v) {
+				foreach ($unused as $k => $v) {
 
 					//allow for element_test___id[match]=1 to set the match type
 					if (strstr($k, "[match]")){
@@ -406,9 +405,8 @@ class plgContentFabrik extends JPlugin
 		//hack for gallery viz as it may not use the default view
 		$controller->isMambot = true;
 		if (!$displayed) {
-			//$result = $controller->display();
 			ob_start();
-			$controller->display();
+			$controller->display($model);
 			$result = ob_get_contents();
 			ob_end_clean();
 		}

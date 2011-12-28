@@ -941,7 +941,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 
 		$size = $params->get('filter_length', 20);
-
 		switch ($element->filter_type) {
 
 			case "dropdown":
@@ -956,6 +955,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$return[] = $this->filterHiddenFields();
 				break;
 
+			case "hidden":
+				$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="'.$v.'" value="'.$default.'" size="'.$size.'" id="'.$htmlid.'" />';
+				$return[] = $this->filterHiddenFields();
+				break;
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
 				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter '.$htmlid.'" value="'.$default.'" />';

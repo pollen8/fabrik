@@ -249,7 +249,6 @@ class FabrikString extends JString{
 			$url = '';
 			$bits = JArrayHelper::getValue($pair, 0);
 		}
-		
 		$glue = strstr($bits, '&amp;') ? '&amp;' : '&';
 		$bits = explode($glue, $bits);
 		$a = array();

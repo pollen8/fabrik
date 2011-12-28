@@ -696,6 +696,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" size="'.$size.'" id="'.$htmlid.'" />';
 				break;
+				
+			case 'hidden':
+				$default = htmlspecialchars($default);
+				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+				break;
+				
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
 				$default = htmlspecialchars($default);
