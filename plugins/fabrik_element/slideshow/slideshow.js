@@ -1,27 +1,32 @@
-var FbSlideshow = FbElement.extend({
+var FbSlideshow = new Class({
+	 
+	Extends: FbElement, 
 	
 	initialize : function (element, options) {
 		this.plugin = 'slideshow';
 		this.parent(element, options);
 		var opts = {
 			controller: true,
-			delay: parseInt(this.options.slideshow_delay, 10),
-			duration: parseInt(this.options.slideshow_duration, 10),
-			height: parseInt(this.options.slideshow_height, 10),
-			width: parseInt(this.options.slideshow_width, 10),
+			delay: this.options.delay,
+			duration: this.options.duration,
+			height: this.options.height,
+			width: this.options.width,
+			loader: false,
 			hu: Fabrik.liveSite,
-			thumbnails: this.options.slideshow_thumbnails,
-			captions: this.options.slideshow_captions
+			thumbnails: this.options.thumbnails,
+			captions: this.options.captions,
 		};
 		switch (this.options.slideshow_type) {
 		case 1:
+		/* falls through */
+		default:
 			opts = Object.append(opts, {fast: true});
 			this.slideshow = new Slideshow(this.options.html_id, this.options.slideshow_data, opts);
 			break;
 		case 2:
 			opts = Object.append(opts, {
-				zoom : parseInt(this.options.slideshow_zoom, 10),
-				pan : parseInt(this.options.slideshow_pan, 10)
+				zoom: this.options.zoom,
+				pan: this.options.pan
 			});
 			this.slideshow = new Slideshow.KenBurns(this.options.html_id, this.options.slideshow_data, opts);
 			break;

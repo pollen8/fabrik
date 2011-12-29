@@ -711,7 +711,9 @@ Private method: thumbnails
 		var el = this.slideshow.getElement(this.classes.get('thumbnails'));
 		var thumbnails = (el) ? el.empty() : new Element('div', {'class': this.classes.get('thumbnails').substr(1)}).inject(this.slideshow);
 		thumbnails.setStyle('overflow', 'hidden');
-		var ul = new Element('ul', {'tween': {'link': 'cancel'}}).inject(thumbnails);
+		//var ul = new Element('ul', {'tween': {'link': 'cancel'}}).inject(thumbnails);
+		var ul = new Element('ul').inject(thumbnails);
+		ul.set('tween', {'link': 'cancel'});
 		this.data.thumbnails.each(function (thumbnail, i) {
 			var li = new Element('li').inject(ul);
 			var a = new Element('a', {
@@ -749,15 +751,20 @@ Private method: thumbnails
 				var ul = this.getElement('ul').getPosition();
 				var props = this.retrieve('props');
 				var axis = props[3], delta, pos = props[0], size = props[2], value;				
-				var tween = this.getElement('ul').get('tween', {'property': pos});	
+				//var tween = this.getElement('ul').get('tween', {'property': pos});
+				var tween = this.getElement('ul').get('tween');
+				//tween.property = pos;
+				//tween('property', pos);
 				if ($chk(n)) {
 					var li = this.getElements('li')[n].getCoordinates();
 					delta = div[pos] + (div[size] / 2) - (li[size] / 2) - li[pos]	
 					value = (ul[axis] - div[pos] + delta).limit(this.retrieve('limit'), 0);
 					if (fast)	
-						tween.set(value);
+						//tween.set(value);
+						tween.set(pos, value);
 					else						 
-						tween.start(value);
+						//tween.start(value);
+						tween.set(pos, value);
 				}
 				else{
 					var area = div[props[2]] / 3, page = this.retrieve('page'), velocity = -0.2;			
@@ -767,7 +774,8 @@ Private method: thumbnails
 						delta = (page[axis] - div[pos] - div[size] + area) * velocity;			
 					if (delta) {			
 						value = (ul[axis] - div[pos] + delta).limit(this.retrieve('limit'), 0);
-						tween.set(value);
+						//tween.set(value);
+						tween.set(pos, value);
 					}
 				}				
 			}.bind(thumbnails),

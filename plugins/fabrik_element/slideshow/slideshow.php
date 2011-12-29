@@ -34,7 +34,6 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 		if ($this->_editable) {
 			return '<div id="'.$id.'"></div>';
 		}
-		//$value =  $this->getValue($data, $repeatCounter);
 		$ret = "
 			<div id=\"$id\" class=\"slideshow\">
 				<div class=\"slideshow-images\">
@@ -71,13 +70,14 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 	function getValue($data, $repeatCounter = 0, $opts = array() )
 	{
 		if (!isset($this->defaults)) {
-		  $this->defaults = array();
+			$this->defaults = array();
 		}
 		$name = $this->getFullName(false, true, false);
 		$valueKey = $repeatCounter . serialize($opts);
 		if (!array_key_exists($valueKey, $this->defaults)) {
 			$element = $this->getElement();
 			$params = $this->getParams();
+			// $$$ rob huh??? no display_observe property????
 			$watch = $params->get('display_observe', '');
 			if (!empty($watch)) {
 				$watchid = $this->_getWatchId();
@@ -88,8 +88,11 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 					$elKey = FabrikString::safeColName($this->_getWatchKey());
 					$elText = FabrikString::safeColName($this->_getWatchText());
 					$elVal = $elementModel->getValue($data, $repeatCounter);
-					$elQuery = "SELECT $elText AS text FROM {$join->table_join} WHERE $elKey = '$elVal' ";
-					$elDb->setQuery($elQuery);
+					$query = $elDb->getQuery(true);
+					$query->select($elText . ' AS text')->from($join->table_join)->where($elKey.' = '.$elDb->quote($elVal));
+					//$elQuery = "SELECT $elText AS text FROM {$join->table_join} WHERE $elKey = '$elVal' ";
+					//$elDb->setQuery($elQuery);
+					$elDb->setQuery($query);
 					$value = $elDb->loadResult();
 				}
 			}
@@ -99,10 +102,11 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 				if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
 					$value = '';
 				} else {
-					$value   = $this->getDefaultValue($data);
+					$value = $this->getDefaultValue($data);
 				}
 			}
-			if ($value === '') { //query string for joined data
+			if ($value === '') {
+				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
 			$formModel = $this->getForm();
@@ -117,19 +121,21 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 
 	function getImageJSData($repeatCounter = 0)
 	{
-		$listModel 	=& $this->getlistModel();
-		$fabrikDb 		=& $listModel->getDb();
+		$listModel = $this->getlistModel();
+		$fabrikDb = $listModel->getDb();
 		$params = $this->getParams();
 		$slideshow_thumbnails = $params->get('slideshow_thumbnails', false);
 		$slideshow_table = $params->get('slideshow_table', '');
-		$fabrikDb->setQuery("SELECT db_table_name FROM #__{package}_tables WHERE id = $slideshow_table");
-		$dbname 			= $fabrikDb->loadResult();
+		$query = $fabrikDb->getQuery(true);
+		$query->select('db_table_name')->from('#__{package}_lists')->where('id = '.(int)$slideshow_table);
+		$fabrikDb->setQuery($query);
+		$dbname = $fabrikDb->loadResult();
 		$slideshow_fk = $params->get('slideshow_fk', '');
-	    $slideshow_file = $params->get('slideshow_file', '');
-	    $slideshow_caption = $params->get('slideshow_caption', '');
+		$slideshow_file = $params->get('slideshow_file', '');
+		$slideshow_caption = $params->get('slideshow_caption', '');
 		$slideshow_fk = FabrikString::safeColName($slideshow_fk);
 		$slideshow_field  = FabrikString::safeColName($slideshow_file);
-		$db = FabrikWorker::getDbo();
+		$db = $this->getDb();
 		$rowid = JRequest::getInt('rowid');
 		if ($rowid == '-1') {
 			$usekey = JRequest::getInt('rowid');
@@ -147,36 +153,41 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 			$slideshow_caption  = FabrikString::safeColName($slideshow_caption);
 			$field_list .= ", $slideshow_caption AS slideshow_caption";
 		}
-		$query = "SELECT $field_list FROM `$dbname` WHERE $slideshow_fk = '$rowid'";
+		$query = $db->getQuery(true);
+		$query->select($field_list)->from($db->nameQuote($dbname))->where($slideshow_fk.' = '.$db->quote($rowid));
 		$db->setQuery($query);
 		$a_pics = $db->loadObjectList();
 		if (empty($a_pics)) {
 			return '';
 		}
-		#var_dump($query, $a_pics);
 		$js_opts = array();
 		foreach ($a_pics as $key => $pic) {
-			#var_dump($pic); echo "<br />\n";
+			$pic->slideshow_file = str_replace('\\', '/', $pic->slideshow_file);
 			$pic_opts = array();
 			if (isset($pic->slideshow_caption)) {
-				//$pic_opts[] = "caption: '$pic->slideshow_caption'";
-				//$pic_opts[] = array('caption',$pic->slideshow_caption);
 				$pic_opts['caption'] = $pic->slideshow_caption;
 			}
 			if ($slideshow_thumbnails) {
+				// @TODO should grab this from fileupload element no????
 				$mythumb = dirname($pic->slideshow_file) . '/thumbs/' . basename($pic->slideshow_file);
-				//$pic_opts[] = "thumbnail: '$mythumb'";
-				//$pic_opts[] = array('thumbnail',$mythumb);
 				$pic_opts['thumbnail'] = $mythumb;
 			}
-			//$js_opts[$pic->slideshow_file] = "{ " . implode(', ', $pic_opts) . " }";
-			//$js_opts[$pic->slideshow_file] = implode(', ', $pic_opts);
 			$js_opts[$pic->slideshow_file] = $pic_opts;
 		}
 		return $js_opts;
 	}
 
-		/**
+	protected function getDb()
+	{
+		$params = $this->getParams();
+		$id = $params->get('slideshow_connection');
+		$this->_cn = JModel::getInstance('Connection', 'FabrikFEModel');
+		$this->_cn->setId($id);
+		$this->_cn->getConnection();
+		return $this->_cn->getDb();
+	}
+
+	/**
 	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
@@ -191,15 +202,15 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 		$opts->slideshow_data = $slideshow_data = $this->getImageJSData($repeatCounter);
 		$opts->id = $this->_id;
 		$opts->html_id = $html_id = $this->getHTMLId($repeatCounter);
-		$opts->slideshow_type = $params->get('slideshow_type', 1);
-		$opts->slideshow_width = (int)$params->get('slideshow_width', 400);
-		$opts->slideshow_height = (int)$params->get('slideshow_height', 300);
-		$opts->slideshow_delay = (int)$params->get('slideshow_delay', 5000);
-		$opts->slideshow_duration = (int)$params->get('slideshow_duration', 2000);
-		$opts->slideshow_zoom = (int)$params->get('slideshow_zoom', 50);
-		$opts->slideshow_pan = (int)$params->get('slideshow_pan', 20);
-		$opts->slideshow_thumbnails = $use_thumbs ? 'true' : 'false';
-		$opts->slideshow_captions = $use_captions ? 'true' : 'false';
+		$opts->slideshow_type = (int)$params->get('slideshow_type', 1);
+		$opts->width = (int)$params->get('slideshow_width', 400);
+		$opts->height = (int)$params->get('slideshow_height', 300);
+		$opts->delay = (int)$params->get('slideshow_delay', 5000);
+		$opts->duration = (int)$params->get('slideshow_duration', 2000);
+		$opts->zoom = (int)$params->get('slideshow_zoom', 50);
+		$opts->pan = (int)$params->get('slideshow_pan', 20);
+		$opts->thumbnails = $use_thumbs ? 'true' : 'false';
+		$opts->captions = $use_captions ? 'true' : 'false';
 		$opts = json_encode($opts);
 		return "
 			new FbSlideshow('$id', $opts)
@@ -212,35 +223,28 @@ class plgFabrik_ElementSlideshow extends plgFabrik_Element {
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass(&$srcs)
+	function formJavascriptClass(&$srcs, $script = '')
 	{
-		// @FIXME the js paths are not right for fabrik3
-		$params = $this->getParams();
-		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$slideshow_type = $params->get('slideshow_type', 1);
-		$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.js';
-		$document->addScript($src);
+		$srcs[] = 'plugins/fabrik_element/slideshow/lib/slideshow2/js/slideshow.js';
 		switch ($slideshow_type) {
 			case 1:
 				break;
 			case 2:
-				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.kenburns.js';
-				$document->addScript($src);
+				$srcs[] = 'plugins/fabrik_element/slideshow/lib/slideshow2/js/slideshow.kenburns.js';
 				break;
 			case 3:
-				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.push.js';
-				$document->addScript($src);
+				$srcs[] = 'plugins/fabrik_element/slideshow/lib/slideshow2/js/slideshow.push.js';
 				break;
 			case 4:
-				$src = COM_FABRIK_LIVESITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'js'.DS.'slideshow.fold.js';
-				$document->addScript($src);
+				$srcs[] = 'plugins/fabrik_element/slideshow/lib/slideshow2/js/slideshow.fold.js';
 				break;
 			default:
 				break;
 		}
-		JHTML::stylesheet('slideshow.css', 'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikslideshow'.DS.'lib'.DS.'slideshow2'.DS.'css'.DS);
-		parent::formJavascriptClass($srcs);
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'plugins/fabrik_element/slideshow/lib/slideshow2/css/slideshow.css');
+		parent::formJavascriptClass($srcs, $script);
 	}
 
 }
