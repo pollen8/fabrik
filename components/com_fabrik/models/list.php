@@ -534,7 +534,7 @@ class FabrikFEModelList extends JModelForm {
 				$e = $elementModel->getElement();
 				$elementModel->setContext($groupModel, $form, $this);
 				$params = $elementModel->getParams();
-				$col	= $elementModel->getFullName(false, true, false);
+				$col = $elementModel->getFullName(false, true, false);
 
 				//check if there is  a custom out put handler for the tables format
 				// currently supports "renderListData_csv", "renderListData_rss", "renderListData_html", "renderListData_json"
@@ -543,7 +543,7 @@ class FabrikFEModelList extends JModelForm {
 						for ($i=0; $i<count($data); $i++) {
 							$thisRow = $data[$i];
 							$coldata = $thisRow->$col;
-							$data[$i]->$col = $elementModel->$method($coldata, $col, $thisRow);
+							$data[$i]->$col = $elementModel->$method($coldata, $thisRow);
 						}
 
 					} else {
