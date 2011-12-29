@@ -968,10 +968,10 @@ var FbList = new Class({
 					$H(row.data).each(function (val, key) {
 						var rowk = '.' + key;
 						var cell = thisrowtemplate.getElement(rowk);
-						if (typeOf(cell) !== 'null') {
+						if (typeOf(cell) !== 'null' && cell.get('tag') !== 'a') {
 							cell.set('html', val);
 						}
-						rowcounter++;
+						rowcounter ++;
 					}.bind(this));
 					// thisrowtemplate.getElement('.fabrik_row').id = 'list_' + this.id +
 					// '_row_' + row.get('__pk_val');
