@@ -50,6 +50,7 @@ class FabrikViewImport extends JView
 		$this->assign('table', $this->get('ListModel')->getTable());
 		$this->assign('elementTypes', $pluginManager->getElementTypeDd('field', 'plugin[]'));
 		$this->assign('sample', $this->get('Sample'));
+		$this->assign('selectPKField', $this->get('SelectKey'));
 		parent::display('chooseElementTypes');
 	}
 

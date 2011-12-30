@@ -166,6 +166,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$tableParams = $model->getParams();
 		$mode = $tableParams->get('csvfullname');
 
+		
 		while ($arr_data = $csv->NextLine()) {
 			if (empty($this->headings)) {
 				foreach ($arr_data as &$heading) {
@@ -180,6 +181,14 @@ class FabrikFEModelImportcsv extends JModelForm{
 						$heading = str_replace(' ', '_', $heading);
 					}
 				}
+				if (!$this->getSelectKey()) {
+					//if no table loaded and the user asked to automaticall add a key then put id at the beginning of the new headings
+					$idheading = 'id';
+					if (in_array($idheading, $arr_data)) {
+						$idheading .= rand(0, 9);
+					}
+					array_unshift($arr_data, $idheading);
+				}
 				$this->headings = $arr_data;
 			} else {
 				if (function_exists('iconv')) {
@@ -188,6 +197,9 @@ class FabrikFEModelImportcsv extends JModelForm{
 						//if we don't do this then the site's session is destroyed and you are logged out
 						$d = iconv("utf-8", "utf-8//IGNORE", $d);
 					}
+				}
+				if (!$this->getSelectKey()) {
+					array_unshift($arr_data, '');
 				}
 				if (count($arr_data) == 1 && $arr_data[0] == '') {
 					//csv import from excel saved as unicode has blank record @ end
@@ -212,6 +224,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 	 * @deprecated
 	 * possibly setting large data in the session is a bad idea
 	 */
+	
 	public function setSession()
 	{
 		$session = JFactory::getSession();
@@ -690,17 +703,35 @@ class FabrikFEModelImportcsv extends JModelForm{
 		foreach ($this->newHeadings as $heading) {
 			$str .= "$heading, ";
 		}
-		//$str .= "<ul>";
 		return $str;
 	}
 
-
-
-
-
+	/**
+	 * get an array of headings that should be added as part of the  import
+	 * @return array
+	*/
+	
 	public function getNewHeadings()
 	{
 		return $this->newHeadings;
+	}
+	
+	/**
+	 * determine if the chooselementtypes view should contain a column where the user selects the field to be the pk
+	 * @return bool true if column shown
+	 */
+	
+	public function getSelectKey()
+	{
+		$model = $this->getlistModel();
+		if (trim($model->getTable()->db_primary_key) !== '') {
+			return false;
+		}
+		$post = JRequest::getVar('jform', array());
+		if (JArrayHelper::getValue($post, 'addkey', 0) == 1) {
+			return false;
+		}
+		return true;
 	}
 
 	public function getHeadings()
