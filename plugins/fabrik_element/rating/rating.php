@@ -390,7 +390,6 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * get js to ini js object that manages the behaviour of the rating element (non-PHPdoc)
-	 * @TODO looks like this is the digg code rather than rating?
 	 * @see components/com_fabrik/models/plgFabrik_Element#elementListJavascript()
 	 */
 

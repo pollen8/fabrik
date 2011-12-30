@@ -51,16 +51,18 @@ var FloatingTips = new Class({
 	
 	attach: function(elements) {
 		var s = this;
+		var container;
 		this.selector = elements;
 		this.elements = $$(elements);
 		
 		this.elements.each(function (e) {
 			if (!e.retrieve('tipped')) {
 				e.store('tipped', true);
-				var listid = e.getParent('form').getElement('input[name=listid]').get('value');
-				var listRefField = e.getParent('form').getElement('input[name=listref]');
+				container = e.getParent('.fabrikForm');
+				var listid = container.getElement('input[name=listid]').get('value');
+				var listRefField = container.getElement('input[name=listref]');
 				if (typeOf(listRefField) !== 'null') {
-					var listref = e.getParent('form').getElement('input[name=listref]').get('value');
+					var listref = container.getElement('input[name=listref]').get('value');
 					e.store('listref', listref);
 				}
 				e.addEvent(this.options.showOn, this.options.showFn.bindWithEvent(this, [e]));

@@ -132,8 +132,15 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 		
-		if ($data === '' || empty($data)) {
-			//no data so default to image.
+		$pathset = false;
+		foreach ($data as $d) {
+			if (strstr($data, '/')) {
+				$pathset = true;
+				break;
+			}
+		}
+		if ($data === '' || empty($data) || !$pathset) {
+			//no data so default to image (or simple image name stored).
 			$iPath = $params->get('imagepath');
 			if (!strstr($iPath, '/')) {
 				//single file specified so find it in tmpl folder

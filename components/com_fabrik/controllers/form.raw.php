@@ -84,8 +84,8 @@ class FabrikControllerForm extends JController
 		$document = JFactory::getDocument();
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType	= $document->getType();
-		$view 		= &$this->getView($viewName, $viewType);
-		$model		= &$this->getModel('form', 'FabrikFEModel');
+		$view = $this->getView($viewName, $viewType);
+		$model = $this->getModel('form', 'FabrikFEModel');
 		if (!JError::isError($model)) {
 			$view->setModel($model, true);
 		}

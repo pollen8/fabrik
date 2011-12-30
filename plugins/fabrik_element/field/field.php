@@ -154,30 +154,18 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		$guessed = false;
 		if ($params->get('guess_linktype') == '1') {
 			jimport('joomla.mail.helper');
+			$target = $this->guessLinkTarget();
 			if (JMailHelper::isEmailAddress($value)) {
 				$value = JHTML::_('email.cloak', $value);
 				$guessed = true;
 			}
 			// Changes JF Questiaux
 			else if (JString::stristr($value, 'http')) {
-				if ($params->get('link_target_field', 1) == '1') {
-					$target = $params->get('link_target_options', 'default');
-					$value = "<a href=\"$value\" target=\"$target\">$value</a>";
-				}
-				else {
-					$value = "<a href=\"$value\">$value</a>";
-				}
+				$value = '<a href="'.$value.'"'.$target.'>'.$value.'</a>';
 				$guessed = true;
 			} else {
 				if (JString::stristr($value, 'www.')) {
-					if ($params->get('link_target_field', 1) == '1') {
-						$target = $params->get('link_target_options', 'default');
-						$value = "<a href=\"http://$value\" target=\"$target\">$value</a>";
-						// end changes
-					}
-					else {
-						$value = "<a href=\"http://$value\">$value</a>";
-					}
+					$value = '<a href="http://'.$value.'"'.$target.'>'.$value.'</a>';
 					$guessed = true;
 				}
 			}
@@ -185,6 +173,30 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		if (!$guessed) {
 			$this->addCustomLink($value, $data, $repeatCounter);
 		}
+	}
+	
+	/**
+	 * get the guess type link target property
+	 * @return string
+	 */
+	
+	protected function guessLinkTarget()
+	{
+		$params = $this->getParams();
+		$target = $params->get('link_target_options', 'default');
+		switch ($target) {
+			default:
+				$str = ' target="'.$target.'"';
+				break;
+			case 'default':
+				$str = '';
+				break;
+		 	case 'lightbox':
+		 		FabrikHelperHTML::slimbox();
+				$str = ' rel="lightbox[]"';
+				break;
+		}
+		return $str;
 	}
 
 	/**

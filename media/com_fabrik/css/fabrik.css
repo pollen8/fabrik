@@ -303,19 +303,28 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 }
 
 
-.floating-tip .fabrikElementContainer li:first-child{
-	-moz-border-radius: 6px 6px 0 0;
-	-webkit-border-radius: 6px 6px 0 0;
-	border-radius: 6px 6px 0 0;
+.floating-tip .fabrikElementContainer > li:first-child,
+.floating-tip .fabrik_buttons li:first-child,
+.floating-tip .fabrikSubElementContainer li:first-child{
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
 }
 
-.floating-tip .fabrikElementContainer li:last-child{
-	-moz-border-radius: 0 0 6px 6px;
-	-webkit-border-radius: 0 0 6px 6px;
-	border-radius: 0 0 6px 6px;
+.floating-tip .fabrikElementContainer > li:last-child,
+.floating-tip .fabrik_buttons li:last-child,
+.floating-tip .fabrikSubElementContainer li:last-child{
+	-moz-border-radius: 0 ;
+	-webkit-border-radius: 0;
+	border-radius: 0;
 }
 
-.floating-tip .fabrikElementContainer  li{
+.floating-tip .fabrikSubElementContainer ul{
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.floating-tip .fabrikElementContainer li{
 	display:block;
 	min-height:19px;
 	border-top:1px solid #D7D7D7;

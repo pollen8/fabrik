@@ -66,6 +66,7 @@ class JFormFieldFormList extends JFormFieldList
 			->where('group_id = '.(int)$this->form->getValue('id'));
 			$db->setQuery($query);
 			$this->value = $db->loadResult();
+			$this->form->setValue('form', null, $this->value);
 		}
 		return parent::getInput();
 	}

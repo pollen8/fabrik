@@ -50,10 +50,9 @@ class FabrikControllerForm extends JControllerForm
 
 	function process()
 	{
-		$model = JModel::getInstance('Form', 'FabrikFEModel');
-
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 		//for now lets route this to the html view.
 		$view = $this->getView($viewName, 'html');

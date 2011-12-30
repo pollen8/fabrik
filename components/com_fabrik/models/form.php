@@ -3216,6 +3216,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		// and not used anywhere else (avoids a warning message)
 		$data = array();
 		// $$$ rob - 3.0 for some reason just using $this->_data was not right as join data was empty when editing exisitng record
+		unset($this->_data);
 		$origData = $this->getData();
 		foreach ($origData as $key => $val) {
 			if (is_string($val)) {

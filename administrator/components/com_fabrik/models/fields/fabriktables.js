@@ -141,18 +141,17 @@ var fabriktablesElement = new Class({
 					'task': 'plugin.pluginAjax',
 					'g': 'element',
 					'plugin': 'field',
-					'method': 'ajax_tables',
-					'cid': cid.toInt()
+					'method': 'ajax_fields',
+					'cid': cid.toInt(),
+					'showf': '1',
+					'k': '2',
+					't': table
 				};
-				//dont think these are needed in ajaxopts
-				//ajaxopts['k'] ='2';
-				//ajaxopts['showf'] = '1';
-				//ajaxopts['t'] = table;
 				opts.each(function (v, k) {
 					ajaxopts[k] = v;
 				});
 				var myAjax = new Request({
-					'url' : url,
+					'url' : 'index.php',
 					'data' : ajaxopts,
 					onComplete : function (r) {
 						this.elementLists.set(key, r);
@@ -191,14 +190,14 @@ var fabriktablesElement = new Class({
 		}
 		new Element('option', o).appendText('-').inject(element.el);
 		opts.each(function (opt) {
-			opt.value = opt.value.replace('[]', '');
+			var v = opt.value.replace('[]', '');
 			var o = {
-				'value' : opt.value
+				'value': v
 			};
-			if (opt.value === element.options.value) {
+			if (v === element.options.value) {
 				o.selected = 'selected';
 			}
-			new Element('option', o).appendText(opt.label).inject(element.el);
+			new Element('option', o).set('text', opt.label).inject(element.el);
 		}.bind(this));
 		if (this.loader) {
 			this.loader.hide();
