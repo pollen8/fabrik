@@ -236,6 +236,10 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 			$php_file = JFilterInput::clean($params->get('form_php_file'), 'CMD');
 			$php_file = JPATH_ROOT.DS.'plugins'.DS.'fabrik_form'.DS.'php'.DS.'scripts'.DS.$php_file;
 
+			if (!JFile::exists($php_file)) {
+				JError::raiseNotice(500, 'Mssing PHP form plugin file');
+				return;
+			}
 			$method = $params->get('only_process_curl');
 			if ($method == 'getBottomContent' || $method == 'getTopContent' || $method == 'getEndContent') {
 				//for these types of scripts any out put you want to inject into the form should be echo'd out
