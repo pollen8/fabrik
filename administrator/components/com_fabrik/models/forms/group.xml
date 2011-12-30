@@ -68,7 +68,7 @@
 			description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
 		
 			<field name="repeat_group_button" 
-				type="radio" 
+				type="grouprepeat" 
 				default="0" 
 				label="COM_FABRIK_REPEAT_GROUP_BUTTON_LABEL" 
 				description="COM_FABRIK_REPEAT_GROUP_BUTTON_DESC">
