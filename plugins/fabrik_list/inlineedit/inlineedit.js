@@ -506,11 +506,11 @@ var FbListInlineEdit = new Class({
 		if (typeOf(groupedData) === 'object') {
 			groupedData = $H(groupedData);
 		}
-		//$H(groupedData).each(function (data, gkey) {
 		groupedData.each(function (data, gkey) {
-			data.each(function (row, dkey) {
-				if (row.id === ref) {
-					row.data[element + '_raw'] = val;
+			data.each(function (tmpRow, dkey) {
+				if (tmpRow.id === ref) {
+					tmpRow.data[element + '_raw'] = val;
+					this.currentRow = tmpRow;
 				}
 			}.bind(this));
 		}.bind(this));
@@ -577,7 +577,8 @@ var FbListInlineEdit = new Class({
 			this.setTableData(row, el.options.element, v);
 			data[el.options.element] = v;
 		}.bind(this));
-		
+		//post all the rows data to form.process
+		data = Object.append(this.currentRow.data, data);
 		data[eObj.token] = 1;
 
 		td.empty();
