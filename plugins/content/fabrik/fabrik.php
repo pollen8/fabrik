@@ -102,9 +102,11 @@ class plgContentFabrik extends JPlugin
 
 	protected function replace($match)
 	{
+		
 		$match = $match[0];
 		$match = trim($match, "{");
 		$match = trim($match, "}");
+		$ref = preg_replace('/[^A-Z|a-z|0-9]/', '_', $match);
 		$match = str_replace('[','{', $match);
 		$match = str_replace(']','}', $match);
 		$match = $this->parse(array($match));
@@ -213,19 +215,19 @@ class plgContentFabrik extends JPlugin
 			// the getFormCss() call blows up if we don't do this
 			jimport('joomla.filesystem.file');
 			$this->generalIncludes('form');
-			$document 	=& JFactory::getDocument();
-			$viewType		= $document->getType();
+			$document = JFactory::getDocument();
+			$viewType	= $document->getType();
 			$controller = $this->_getController('form', $id);
-			$view 			=& $this->_getView($controller, 'form', $id);
-			$model 			=& $this->_getModel($controller, 'form', $id);
+			$view = $this->_getView($controller, 'form', $id);
+			$model = $this->_getModel($controller, 'form', $id);
 			if (!$model) {
 				return;
 			}
 			$model->setId($id);
 			$model->_editable = false;
-			$form =& $model->getForm();
-			$listModel =& $model->getListModel();
-			$table =& $listModel->getTable();
+			$form = $model->getForm();
+			$listModel = $model->getListModel();
+			$table = $listModel->getTable();
 			$layout = !empty($layout) ? $layout : 'default';
 			$view->setModel($model, true);
 			$model->getFormCss($layout);
@@ -241,8 +243,8 @@ class plgContentFabrik extends JPlugin
 				return;
 			}
 			$model->setId($listid);
-			$formModel =& $model->getFormModel();
-			$groups =& $formModel->getGroupsHiarachy();
+			$formModel = $model->getFormModel();
+			$groups = $formModel->getGroupsHiarachy();
 			foreach ($groups as $groupModel) {
 				$elements =& $groupModel->getMyElements();
 				foreach ($elements as &$elementModel) {
@@ -259,7 +261,7 @@ class plgContentFabrik extends JPlugin
 				JError::raiseNotice(500, 'You are trying to embed an element called ' . $element . ' which is not present in the list');
 				return;
 			}
-			$row 		=& $model->getRow($rowid, false, true);
+			$row = $model->getRow($rowid, false, true);
 
 			if (substr($element, strlen($element) - 4, strlen($element)) !== "_raw") {
 				$element = $element . "_raw";
@@ -344,6 +346,7 @@ class plgContentFabrik extends JPlugin
 			case 'csv':
 			case 'table':
 			case 'list':
+				
 				/// $$$ rob 15/02/2011 addded this as otherwise when you filtered on a table with multiple filter set up subsequent tables were showing
 				//the first tables data
 				if (JRequest::getVar('activelistid') == '') {
@@ -374,7 +377,9 @@ class plgContentFabrik extends JPlugin
 
 				}
 				$model->setOrderByAndDir();
-				$formModel =& $model->getFormModel();
+				
+				
+				$formModel = $model->getFormModel();
 				//apply filters set in mambot
 				foreach ($unused as $k => $v) {
 
@@ -383,7 +388,7 @@ class plgContentFabrik extends JPlugin
 						$k2 = str_replace("[match]", "", $k);
 						if (array_key_exists($k2, $_REQUEST)) {
 							$v2 = JRequest::getVar($k2);
-							$v2 = array('value'=>$v2, 'match'=>$v);
+							$v2 = array('value' => $v2, 'match' => $v);
 						}
 						JRequest::setVar($k2, $v2);
 					}
@@ -406,6 +411,11 @@ class plgContentFabrik extends JPlugin
 		$controller->isMambot = true;
 		if (!$displayed) {
 			ob_start();
+			
+			if (method_exists($model, 'reset')) {
+				$model->reset();
+				$model->setRenderContext($ref);
+			}
 			$controller->display($model);
 			$result = ob_get_contents();
 			ob_end_clean();
@@ -426,7 +436,7 @@ class plgContentFabrik extends JPlugin
 	protected function _setRequest($unused)
 	{
 		$this->origRequestVars = array();
-		foreach ($unused as $k=>$v) {
+		foreach ($unused as $k => $v) {
 			$origVar = JRequest::getVar($k);
 			$this->origRequestVars[$k] = $origVar;
 			JRequest::setVar($k, $v);

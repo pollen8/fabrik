@@ -40,7 +40,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 	{
 		$this->_data = '';
 		if ($params->get('only_process_curl') == 'getBottomContent') {
-			$this->_data = $this->_runPHP( $params, $formModel);
+			$this->_data = $this->_runPHP($params, $formModel);
  			if ($this->_data === false) {
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
@@ -66,7 +66,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 	{
 		$this->_data = '';
 		if ($params->get('only_process_curl') == 'getTopContent') {
-			$this->_data = $this->_runPHP( $params, $formModel);
+			$this->_data = $this->_runPHP($params, $formModel);
  			if ($this->_data === false) {
 				return false;
 			}
@@ -93,7 +93,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 	{
 		$this->_data = '';
 		if ($params->get('only_process_curl') == 'getEndContent') {
-			$this->_data = $this->_runPHP( $params, $formModel);
+			$this->_data = $this->_runPHP($params, $formModel);
  			if ($this->_data === false) {
 				return false;
 			}
@@ -110,7 +110,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onBeforeProcess(&$params, &$formModel)
  	{
  		if ($params->get('only_process_curl') == 'onBeforeProcess') {
- 			if ($this->_runPHP( $params, $formModel) === false) {
+ 			if ($this->_runPHP($params, $formModel) === false) {
 				return false;
 			}
  		}
@@ -120,7 +120,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onBeforeStore( &$params, &$formModel)
  	{
  	 	if ($params->get('only_process_curl') == 'onBeforeStore') {
- 			if ($this->_runPHP( $params, $formModel) === false) {
+ 			if ($this->_runPHP($params, $formModel) === false) {
 				return false;
 			}
  		}
@@ -131,7 +131,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onBeforeCalculations(&$params, &$formModel)
  	{
  	 	if ($params->get('only_process_curl') == 'onBeforeCalculations') {
- 	 		if ($this->_runPHP( $params, $formModel) === false) {
+ 	 		if ($this->_runPHP($params, $formModel) === false) {
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
  		}
@@ -141,7 +141,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onAfterProcess(&$params, &$formModel)
  	{
  	 	if ($params->get('only_process_curl') == 'onAfterProcess') {
- 			if ($this->_runPHP( $params, $formModel) === false) {
+ 			if ($this->_runPHP($params, $formModel) === false) {
 				return false;
 			}
  		}
@@ -159,7 +159,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onLoad( &$params, &$formModel)
  	{
  	 	if ($params->get('only_process_curl') == 'onLoad') {
- 			return $this->_runPHP( $params, $formModel);
+ 			return $this->_runPHP($params, $formModel);
  		}
  		return true;
  	}
@@ -175,7 +175,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onBeforeLoad( &$params, &$formModel)
  	{
  		if ($params->get('only_process_curl') == 'onBeforeLoad') {
- 			return $this->_runPHP( $params, $formModel);
+ 			return $this->_runPHP($params, $formModel);
  		}
  		return true;
  	}
@@ -190,7 +190,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	function onError(&$params, &$formModel)
  	{
  	 	if ($params->get('only_process_curl') == 'onError') {
- 			$this->_runPHP( $params, $formModel);
+ 			$this->_runPHP($params, $formModel);
  		}
  		return true;
 	}
@@ -203,7 +203,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 	 * @return bool false if error running php code
 	 */
 
-	private function _runPHP( &$params, &$formModel)
+	private function _runPHP(&$params, &$formModel)
 	{
 		/**
 		 * if you want to modify the submitted form data
