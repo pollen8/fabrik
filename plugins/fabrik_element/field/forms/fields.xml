@@ -127,6 +127,7 @@
 			
 			<field name="text_format_string"
 				type="text"
+				size="60"
 				label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL"
 				description="PLG_ELEMENT_FIELD_FORMAT_STRING_DESC" />
 		</fieldset>
