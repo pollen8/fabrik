@@ -2097,7 +2097,9 @@ class FabrikFEModelList extends JModelForm {
 			if ($id !== 0) {
 				$this->_table->load($id);
 			}
-			$this->_table->db_primary_key = FabrikString::safeColName($this->_table->db_primary_key);
+			if (trim($this->_table->db_primary_key) !== '') {
+				$this->_table->db_primary_key = FabrikString::safeColName($this->_table->db_primary_key);
+			}
 		}
 		return $this->_table;
 	}
