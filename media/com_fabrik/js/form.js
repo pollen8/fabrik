@@ -98,6 +98,10 @@ var FbForm = new Class({
 			this.repeatGroupMarkers.set(id, c);
 		}.bind(this));
 
+		// IE8 if rowid isnt set here its most likely because you are rendering as a J article plugin and have done:
+		// <p>{fabrik view=form id=1}</p> 
+		// form block level elements should not be encased in <p>'s
+		
 		// testing prev/next buttons
 		var v = this.options.editable === true ? 'form' : 'details';
 		var editopts = {
