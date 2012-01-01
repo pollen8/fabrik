@@ -297,7 +297,8 @@ class FabrikFEModelList extends JModelForm {
 				$limitStart	= JRequest::getInt('limitstart'.$id, $limitStart);
 			}
 		} else {
-			$limitLength = $app->getUserStateFromRequest($context.'limitlength', 'limit'.$id, $item->rows_per_page);
+			$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
+			$limitLength = $app->getUserStateFromRequest($context.'limitlength', 'limit'.$id, $rowsPerPage);
 			if (!$this->randomRecords) {
 				$limitStart	= $app->getUserStateFromRequest($context.'limitstart', 'limitstart'.$id, $limitStart, 'int');
 			}

@@ -241,7 +241,11 @@ var FbList = new Class({
 		'rowtemplate': '',
 		'floatPos': 'left',
 		'csvChoose': false,
-		'csvOpts': {}
+		'csvOpts': {},
+		'popup_width': 300,
+		'popup_height': 300,
+		'popup_offset_x': null,
+		'popup_offset_y': null
 	},
 
 	initialize: function (id, options) {
@@ -249,7 +253,7 @@ var FbList = new Class({
 		this.setOptions(options);
 		this.getForm();
 		this.plugins = [];
-		this.list = document.id('list_' + this.id);
+		this.list = document.id('list_' + this.options.listRef);
 		this.actionManager = new FbListActions(this, {
 			'method': this.options.actionMethod,
 			'floatPos': this.options.floatPos
@@ -723,16 +727,21 @@ var FbList = new Class({
 					loadMethod = 'iframe';
 				}
 				// make id the same as the add button so we reuse the same form.
-				Fabrik.getWindow({
+				var winOpts = {
 					'id': 'add.' + list.options.formid,
 					'title': this.options.popup_edit_label,
 					'loadMethod': loadMethod,
 					'contentURL': url,
 					'width': this.options.popup_width,
-					'height': this.options.popup_height,
-					'offset_x': this.options.popup_offset_x,
-					'offset_y': this.options.popup_offset_y
-				});
+					'height': this.options.popup_height
+				};
+				if (typeOf(this.options.popup_offset_x) !== 'null') {
+					winOpts.offset_x = this.options.popup_offset_x;
+				}
+				if (typeOf(this.options.popup_offset_y) !== 'null') {
+					winOpts.offset_y = this.options.popup_offset_y;
+				}
+				Fabrik.getWindow(winOpts);
 			}.bind(this));
 
 			document.removeEvents('click:relay(.fabrik_view)');
@@ -764,16 +773,21 @@ var FbList = new Class({
 					url = a.get('href');
 					loadMethod = 'iframe';
 				}
-				Fabrik.getWindow({
+				var winOpts = {
 					'id': 'view.' + '.' + list.options.formid + '.' + rowid,
 					'title': this.options.popup_view_label,
 					'loadMethod': loadMethod,
 					'contentURL': url,
 					'width': this.options.popup_width,
-					'height': this.options.popup_height,
-					'offset_x': this.options.popup_offset_x,
-					'offset_y': this.options.popup_offset_y
-				});
+					'height': this.options.popup_height
+				};
+				if (typeOf(this.options.popup_offset_x) !== 'null') {
+					winOpts.offset_x = this.options.popup_offset_x;
+				}
+				if (typeOf(this.options.popup_offset_y) !== 'null') {
+					winOpts.offset_y = this.options.popup_offset_y;
+				}
+				Fabrik.getWindow(winOpts);
 			}.bind(this));
 		}
 	},
@@ -930,7 +944,7 @@ var FbList = new Class({
 					fconsole(err);
 				}
 			});
-
+			this.setRowTemplate();
 			this.clearRows();
 			var counter = 0;
 			var rowcounter = 0;
@@ -942,7 +956,6 @@ var FbList = new Class({
 			if (typeOf(this.form.getElement('.fabrikNav')) !== 'null') {
 				this.form.getElement('.fabrikNav').set('html', data.htmlnav);
 			}
-			this.setRowTemplate();
 			// $$$ rob was $H(data.data) but that wasnt working ????
 			// testing with $H back in again for grouped by data? Yeah works for
 			// grouped data!!
@@ -1120,16 +1133,21 @@ var FbList = new Class({
 			addRecord.addEvent('click', function (e) {
 				e.stop();
 				// top.Fabrik.fireEvent('fabrik.list.add', this);//for packages?
-				Fabrik.getWindow({
+				var winOpts = {
 					'id': 'add-' + this.id,
 					'title': this.options.popup_add_label,
 					'loadMethod': loadMethod,
 					'contentURL': addRecord.href,
 					'width': this.options.popup_width,
-					'height': this.options.popup_height,
-					'offset_x': this.options.popup_offset_x,
-					'offset_y': this.options.popup_offset_y
-				});
+					'height': this.options.popup_height
+				};
+				if (typeOf(this.options.popup_offset_x) !== 'null') {
+					winOpts.offset_x = this.options.popup_offset_x;
+				}
+				if (typeOf(this.options.popup_offset_y) !== 'null') {
+					winOpts.offset_y = this.options.popup_offset_y;
+				}
+				Fabrik.getWindow(winOpts);
 			}.bind(this));
 		}
 		var del = document.getElements('.fabrik_delete a');
