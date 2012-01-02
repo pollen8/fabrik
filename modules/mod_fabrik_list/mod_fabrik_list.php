@@ -45,6 +45,7 @@ $listId = (int)$params->get('list_id', 1);
 $useajax = (int)$params->get('useajax', 0);
 $random	= (int)$params->get('radomizerecords', 0);
 $limit = (int)$params->get('limit', 0);
+$showTitle = $params->get('show-title', '');
 $layout	= $params->get('fabriklayout', 'default');
 
 JRequest::setVar('layout', $layout);
@@ -89,6 +90,10 @@ if ($params->get('ajax_links') !== '') {
 
 if ($params->get('show_nav', '') !== '') {
 	$listParams->set('show-table-nav', $params->get('show_nav'));
+}
+
+if ($showTitle !== '') {
+	$listParams->set('show-title', $showTitle);
 }
 
 $ordering = JArrayHelper::fromObject(json_decode($params->get('ordering')));
