@@ -6815,9 +6815,9 @@ class FabrikFEModelList extends JModelForm {
 			if ($this->tmpl == '') {
 				$this->tmpl = 'default';
 			}
-			
-			$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
-			
+			if ($app->scope !== 'mod_fabrik_list') {
+				$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
+			}
 			// if we are mobilejoomla.com system plugin to detect smartphones
 			if (JRequest::getVar('mjmarkup') == 'iphone') {
 				$this->tmpl = 'iwebkit';

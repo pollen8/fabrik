@@ -38,16 +38,13 @@ $document = JFactory::getDocument();
 FabrikHelperHTML::framework();
 //$$$rob looks like including the view does something to the layout variable
 $origLayout = JRequest::getVar('layout');
-JRequest::setVar('layout', $origLayout);
-
 
 $listId = (int)$params->get('list_id', 1);
 $useajax = (int)$params->get('useajax', 0);
 $random	= (int)$params->get('radomizerecords', 0);
 $limit = (int)$params->get('limit', 0);
 $showTitle = $params->get('show-title', '');
-$layout	= $params->get('fabriklayout', 'default');
-
+$layout	= $params->get('fabriklayout', '');
 JRequest::setVar('layout', $layout);
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
