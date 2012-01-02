@@ -88,12 +88,27 @@ class FPagination extends JPagination{
 		// Initialize variables
 		$limits = array();
 
-		// Make the option list
+		$vals = array();
 		for ($i = 5; $i <= 30; $i += 5) {
+			$vals[] = $i;
+		}
+		$vals[] = 50;
+		$vals[] = 100;
+		
+		if (!in_array($this->startLimit, $vals)) {
+			$vals[] = $this->startLimit;
+		}
+		asort($vals);
+		foreach ($vals as $v) {
+			$limits[] = JHTML::_('select.option', $v);
+		}
+		//startLimit
+		// Make the option list
+		/* for ($i = 5; $i <= 30; $i += 5) {
 			$limits[] = JHTML::_('select.option', "$i");
 		}
 		$limits[] = JHTML::_('select.option', '50');
-		$limits[] = JHTML::_('select.option', '100');
+		$limits[] = JHTML::_('select.option', '100'); */
 		if ($this->showAllOption == true) {
 			$limits[] = JHTML::_('select.option', '0', JText::_('COM_FABRIK_ALL'));
 		}
