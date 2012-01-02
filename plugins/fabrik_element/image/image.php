@@ -131,10 +131,10 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
-		
+
 		$pathset = false;
 		foreach ($data as $d) {
-			if (strstr($data, '/')) {
+			if (strstr($d, '/')) {
 				$pathset = true;
 				break;
 			}
