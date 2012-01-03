@@ -1777,6 +1777,14 @@ class plgFabrik_Element extends FabrikPlugin
 		return $value;
 	}
 
+	protected function filterName($counter = 0, $normal = true)
+	{
+		$listModel = $this->getListModel();
+		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
+		$v .= ($normal) ? '['.$counter.']' : '[]';
+		return $v;
+	}
+	
 	/**
 	 * can be overwritten by plugin class
 	 * Get the table filter for the element
@@ -1800,8 +1808,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 		$elName = $this->getFullName(false, true, false);
 		$id = $this->getHTMLId().'value';
-		$v = 'fabrik___filter[list_'.$listModel->getRenderContext().'][value]';
-		$v .= ($normal) ? '['.$counter.']' : '[]';
+		$v = $this->filterName($counter, $normal);
 
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);

@@ -198,7 +198,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		$elName = $this->getFullName(false, true, false);
 		$htmlid	= $this->getHTMLId() . 'value';
 		$elName = FabrikString::safeColName($elName);
-		$v = 'fabrik___filter[list_'.$table->id.'][value]';
+		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
 		$v .= ($normal) ? '['.$counter.']' : '[]';
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$rows = $this->filterValueList($normal);

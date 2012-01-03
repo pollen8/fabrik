@@ -434,8 +434,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 		$elName = $this->getFullName(false, true, false);
 		$htmlid	= $this->getHTMLId() . 'value';
-		$v = 'fabrik___filter[list_'.$table->id.'][value]';
-		$v .= ($normal) ? '['.$counter.']' : '[]';
+		$v = $this->filterName($counter, $normal);
 
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);

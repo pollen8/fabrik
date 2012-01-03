@@ -934,9 +934,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$elName2 = $this->getFullName(false, false, false);
 
 		$ids = $listModel->getColumnData($elName2);
-		//$v = 'fabrik___filter[list_'.$table->id.'][value]['.$counter.']';
-		$v = 'fabrik___filter[list_'.$table->id.'][value]';
-		$v .= ($normal) ? '['.$counter.']' : '[]';
+		$v = $this->filterName($counter, $normal);
 		//corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$format = $params->get('date_table_format', '%Y-%m-%d');
@@ -983,7 +981,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				if (empty($default)) {
 					$default = array('', '');
 				}
-				//$v = 'fabrik___filter[list_'.$table->id.'][value]['.$counter.']';
 				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN') .
 				$this->calendar($default[0], $v.'[0]', $this->getHTMLId()."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
 				$return[] = '<br />'.JText::_('COM_FABRIK_DATE_RANGE_AND') .

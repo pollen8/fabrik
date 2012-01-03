@@ -914,8 +914,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$elName = $this->getFilterFullName();
 		$htmlid	= $this->getHTMLId().'value';
 
-		$v = 'fabrik___filter[list_'.$table->id.'][value]';
-		$v .= ($normal) ? '['.$counter.']' : '[]';
+		$v = $this->filterName($counter, $normal);
 
 		$return	= array();
 		$default = $this->getDefaultFilterVal($normal, $counter);
