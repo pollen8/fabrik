@@ -124,6 +124,7 @@ class FabrikModelUpgrade extends JModel
 		$sql = str_replace('#__', $prefix, $sql);
 		$sql = explode("\n", $sql);
 		foreach ($sql as $q) {
+			$db->setQuery($q);
 			if (trim($q) !== '') {
 				if (!$db->query()){
 					JError::raiseNotice(500, $db->getErrorMsg());
