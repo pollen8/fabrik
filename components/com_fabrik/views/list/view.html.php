@@ -336,14 +336,15 @@ class FabrikViewList extends JView{
 		$this->group_by	= $item->group_by;
 		$this->form = new stdClass();
 		$this->form->id = $item->id;
-		$this->formid = 'listform_'.$this->get('RenderContext');
+		$this->assign('renderContext', $this->get('RenderContext'));
+		$this->formid = 'listform_' . $this->renderContext;
 		$form = $model->getFormModel();
 		$this->table->action = $this->get('TableAction');
 		$this->showCSV = $model->canCSVExport();
 		$this->showCSVImport = $model->canCSVImport();
 		$this->canGroupBy = $model->canGroupBy();
 		$this->assignRef('navigation', $nav);
-		$this->nav = JRequest::getInt('fabrik_show_nav', $params->get('show-table-nav', 1)) ? $nav->getListFooter($item->id, $this->get('tmpl')) : '';
+		$this->nav = JRequest::getInt('fabrik_show_nav', $params->get('show-table-nav', 1)) ? $nav->getListFooter($this->renderContext, $this->get('tmpl')) : '';
 		$this->nav = '<div class="fabrikNav">'.$this->nav.'</div>';
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
@@ -377,7 +378,7 @@ class FabrikViewList extends JView{
 		$this->assignRef('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
 		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;
-		$this->filters = $model->getFilters('listform_'. $model->getRenderContext());
+		$this->filters = $model->getFilters('listform_'. $this->renderContext);
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 
@@ -593,21 +594,21 @@ class FabrikViewList extends JView{
 		//$$$ rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
 		//revert to view var. Used when showing table in article/blog layouts
 		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
-		$this->hiddenFields[] = '<input type="hidden" name="view" value="'.$view.'" />';
+		$this->hiddenFields[] = '<input type="hidden" name="view" value="' . $view . '" />';
 
-		$this->hiddenFields[] = '<input type="hidden" name="listid" value="'.$item->id.'"/>';
-		$this->hiddenFields[] = '<input type="hidden" name="listref" value="'.$model->getRenderContext().'"/>';
-		$this->hiddenFields[] = '<input type="hidden" name="Itemid" value="'.$Itemid.'"/>';
+		$this->hiddenFields[] = '<input type="hidden" name="listid" value="' . $item->id . '"/>';
+		$this->hiddenFields[] = '<input type="hidden" name="listref" value="'. $this->renderContext .'"/>';
+		$this->hiddenFields[] = '<input type="hidden" name="Itemid" value="' . $Itemid . '"/>';
 		//removed in favour of using list_{id}_limit dorop down box
 
-		$this->hiddenFields[] = '<input type="hidden" name="fabrik_referrer" value="'.$reffer.'" />';
+		$this->hiddenFields[] = '<input type="hidden" name="fabrik_referrer" value="' . $reffer . '" />';
 		$this->hiddenFields[] = JHTML::_('form.token');
 
 		$this->hiddenFields[] = '<input type="hidden" name="format" value="html" />';
 		//$packageId = JRequest::getInt('_packageId', 0);
 		// $$$ rob testing for ajax table in module
 		$packageId = $model->packageId;
-		$this->hiddenFields[] = '<input type="hidden" name="_packageId" value="'.$packageId.'" />';
+		$this->hiddenFields[] = '<input type="hidden" name="_packageId" value="' . $packageId . '" />';
 		if ($app->isAdmin()) {
 			$this->hiddenFields[] = '<input type="hidden" name="task" value="list.view" />';
 		} else {
