@@ -81,8 +81,8 @@ class FabrikModelUpgrade extends JModel
 					switch($update) {
 						case '#__fabrik_elements':
 							//elements had some fields moved into the attribs/params json object
-							if ($row->published == 0) {
-								$row->published = -2;
+							if ($row->state == 0) {
+								$row->state = -2;
 							}
 							$p->can_order = $row->can_order;
 							$row->access = $this->mapACL($row->access);
