@@ -372,7 +372,7 @@ class FabrikPlugin extends JPlugin
 
 		//only used if showall = false, includes validations as separate entries
 		$incCalculations = JRequest::getVar('calcs', false);
-		$arr = array(JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'), 'value', 'label'));
+		//$arr = array(JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'), 'value', 'label'));
 		if ($showAll) { //show all db columns
 			$cid = JRequest::getVar('cid', -1);
 			$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
@@ -474,6 +474,7 @@ class FabrikPlugin extends JPlugin
 				}
 			}
 		}
+		array_unshift($arr, JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'), 'value', 'label'));
 		echo json_encode($arr);
 	}
 
