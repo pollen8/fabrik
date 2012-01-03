@@ -78,7 +78,7 @@ class FabrikModelUpgrade extends JModel
 				if ($json == false) {
 					//only do this if the attribs are not already in json format
 					$p = $this->fromAttribsToObject($row->attribs);
-					switch($update) {
+					switch ($update) {
 						case '#__fabrik_elements':
 							//elements had some fields moved into the attribs/params json object
 							if ($row->state == 0) {
