@@ -387,8 +387,10 @@ class FabrikPlugin extends JPlugin
 						$c = new stdClass();
 						$c->value = $r->Field;
 						$c->label = $r->Field;
-						$arr[] = $c; //dont use =
+						$arr[$r->Field] = $c;
 					}
+					ksort($arr);
+					$arr = array_values($arr);
 				}
 			}
 		} else {
