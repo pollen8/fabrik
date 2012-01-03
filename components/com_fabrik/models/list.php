@@ -297,7 +297,8 @@ class FabrikFEModelList extends JModelForm {
 				$limitStart	= JRequest::getInt('limitstart'.$id, $limitStart);
 			}
 		} else {
-			$limitLength = $app->getUserStateFromRequest($context.'limitlength', 'limit'.$id, $item->rows_per_page);
+			$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
+			$limitLength = $app->getUserStateFromRequest($context.'limitlength', 'limit'.$id, $rowsPerPage);
 			if (!$this->randomRecords) {
 				$limitStart	= $app->getUserStateFromRequest($context.'limitstart', 'limitstart'.$id, $limitStart, 'int');
 			}
@@ -3381,6 +3382,8 @@ class FabrikFEModelList extends JModelForm {
 			$this->nav->showAllOption = $params->get('showall-records', false);
 			$this->nav->setId($this->getId());
 			$this->nav->showTotal = $params->get('show-total', false);
+			$item = $this->getTable();
+			$this->nav->startLimit = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
 			$this->nav->showDisplayNum = $params->get('show_displaynum', true);
 		}
 		return $this->nav;
@@ -6814,9 +6817,9 @@ class FabrikFEModelList extends JModelForm {
 			if ($this->tmpl == '') {
 				$this->tmpl = 'default';
 			}
-			
-			$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
-			
+			if ($app->scope !== 'mod_fabrik_list') {
+				$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
+			}
 			// if we are mobilejoomla.com system plugin to detect smartphones
 			if (JRequest::getVar('mjmarkup') == 'iphone') {
 				$this->tmpl = 'iwebkit';

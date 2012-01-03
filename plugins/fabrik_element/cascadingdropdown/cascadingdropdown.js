@@ -14,8 +14,8 @@ var FbCascadingdropdown = new Class({
 		this.plugin = 'cascadingdropdown';
 		this.parent(element, options);
 		this.doWatchEvent = this.dowatch.bindWithEvent(this);
-		if ($(this.options.watch)) {
-			$(this.options.watch).addEvent('change', this.doWatchEvent);
+		if (document.id(this.options.watch)) {
+			document.id(this.options.watch).addEvent('change', this.doWatchEvent);
 		}
 		if (this.options.showDesc === true) {
 			this.element.addEvent('change', this.showDesc.bindWithEvent(this));
@@ -29,9 +29,9 @@ var FbCascadingdropdown = new Class({
 		// $$$ hugh - only do this if not editing an existing row, see ticket #725
 		// $$$ hugh - ignoreAjax is set when duplicating a group, when we do need to change()
 		// regardless of whether this is a new row or editing.
-		if (this.ignoreAjax || (this.options.editable === '1' && this.options.editing === '0')) {
+		if (this.ignoreAjax || (this.options.editable && !this.options.editing)) {
 			var v = this.form.formElements.get(this.options.watch).getValue();
-			this.change(v, $(this.options.watch).id);
+			this.change(v, document.id(this.options.watch).id);
 		}
 	},
 	
@@ -87,7 +87,7 @@ var FbCascadingdropdown = new Class({
 		'data': data,
 		onComplete: function (json) {
 			var origvalue = this.options.def;
-			this.element.getParent().getElement('.loader').setStyle('display', 'none');
+			this.element.getParent().getElement('.loader').hide();
 			json = JSON.decode(json);
 			this.element.empty();
 			var opts;
@@ -164,7 +164,7 @@ var FbCascadingdropdown = new Class({
 				this.element.removeEvents('change', this.doWatchEvent); 
 				this.doWatchEvent = this.dowatch.bindWithEvent(this);
 				//$(this.options.watch).addEvent('change', this.watch.bindWithEvent(this));
-				$(this.options.watch).addEvent('change', this.doWatchEvent);
+				document.d(this.options.watch).addEvent('change', this.doWatchEvent);
 			}
 			
 		}
@@ -186,7 +186,7 @@ var FbCascadingdropdown = new Class({
 		if (this.ingoreShowDesc === true) {
 			return;
 		}
-		var v = $(e.target).selectedIndex;
+		var v = document.id(e.target).selectedIndex;
 		var c = this.element.getParent('.fabrikElementContainer').getElement('.dbjoin-description');
 		var show = c.getElement('.description-' + v);
 		c.getElements('.notice').each(function (d) {
@@ -196,10 +196,10 @@ var FbCascadingdropdown = new Class({
 					transition: Fx.Transitions.linear
 				});
 				myfx.set(0);
-				d.setStyle('display', '');
+				d.show();
 				myfx.start(0, 1);
 			} else {
-				d.setStyle('display', 'none');
+				d.hide();
 			}
 		}.bind(this));
 	}

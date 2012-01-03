@@ -23,7 +23,8 @@ class FabrikViewList extends JView{
 		$Itemid	= is_object($menuItem) ? $menuItem->id : 0;
 		$model = $this->getModel();
 		$item = $model->getTable();
-		$listid = $model->getRenderContext();
+		$listref = $model->getRenderContext();
+		$listid = $model->getId();
 		$formModel = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
 
@@ -63,7 +64,7 @@ class FabrikViewList extends JView{
 
 		$opts->links = array('detail' => $params->get('detailurl'), 'edit' => $params->get('editurl'), 'add' => $params->get('addurl'));
 		$opts->filterMethod = $this->filter_action;
-		$opts->form = 'listform_' . $listid;
+		$opts->form = 'listform_' . $listref;
 		$opts->headings = $model->_jsonHeadings();
 		$labels = $this->headings;
 		foreach ($labels as &$l) {
@@ -73,6 +74,7 @@ class FabrikViewList extends JView{
 		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid 		= $tmpItemid;
+		$opts->listRef = $listref;
 		$opts->formid 		= $model->getFormModel()->getId();
 		$opts->canEdit 		= $model->canEdit() ? "1" : "0";
 		$opts->canView 		= $model->canView() ? "1" : "0";
@@ -82,10 +84,23 @@ class FabrikViewList extends JView{
 		$opts->actionMethod = $params->get('actionMethod');
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool)$params->get('csv_frontend_selection');
-		$opts->popup_width = (int)$params->get('popup_width', 0);
-		$opts->popup_height = (int)$params->get('popup_height', 0);
-		$opts->popup_offset_x = (int)$params->get('popup_offset_x', 0);
-		$opts->popup_offset_y = (int)$params->get('popup_offset_y', 0);
+		$popUpWidth = $params->get('popup_width', '');
+		if ($popUpWidth !== '') {
+			$opts->popup_width = (int)$popUpWidth;
+		}
+		$popUpHeight = $params->get('popup_height', '');
+		if ($popUpHeight !== '') {
+			$opts->popup_height = (int)$popUpHeight;
+		}
+		$xOffset = $params->get('popup_offset_x', '');
+		if ($xOffset !== '') { 
+			$opts->popup_offset_x = (int)$xOffset;
+		}
+		
+		$yOffset = $params->get('popup_offset_y', '');
+		if ($yOffset !== '') {
+			$opts->popup_offset_y = (int)$yOffset;
+		}
 		$opts->popup_edit_label = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
 		$opts->popup_view_label = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
 		$opts->popup_add_label = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
@@ -104,16 +119,14 @@ class FabrikViewList extends JView{
 		$opts->data = $data;
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
+		ob_start();
+		$this->_row = new stdClass();
+		$this->_row->id = '';
+		$this->_row->class = 'fabrik_row';
+		require(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_row.php');
+		$opts->rowtemplate = ob_get_contents();
+		ob_end_clean();
 
-		if ($model->isAjax() || $opts->ajax_links) {
-			ob_start();
-			$this->_row = new stdClass();
-			$this->_row->id = '';
-			$this->_row->class = 'fabrik_row';
-			require(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_row.php');
-			$opts->rowtemplate = ob_get_contents();
-			ob_end_clean();
-		}
 		//$$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
 		$opts->winid = JRequest::getVar('winid', '');
@@ -155,7 +168,7 @@ class FabrikViewList extends JView{
 		$script[] = "var list = new FbList('$listid',";
 		$script[] = $opts;
 		$script[] = ");";
-		$script[] = "Fabrik.addBlock('list_{$listid}', list);";
+		$script[] = "Fabrik.addBlock('list_{$listref}', list);";
 
 		//add in plugin objects
 		$params = $model->getParams();

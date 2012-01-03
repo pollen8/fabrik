@@ -1751,7 +1751,9 @@ var Flexie = (function (win, doc) {
 			}
 		} else {
 			forEach(FLEX_BOXES, function (i, box) {
-				box._instance.updateModel(box);
+				if (box._instance) {
+					box._instance.updateModel(box);
+				}
 			});
 		}
 	};

@@ -11,6 +11,10 @@ var FbAutocomplete = new Class({
 	
 	options: {
 		menuclass: 'auto-complete-container',
+		classes: {
+			'ul': 'results',
+			'li': 'result'
+		},
 		url: 'index.php',
 		max: 10,
 		onSelection: Class.empty
@@ -18,13 +22,13 @@ var FbAutocomplete = new Class({
 
 	initialize: function (element, options) {
 		this.setOptions(options);
-		this.options.labelelement =  typeOf($(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : $(element + '-auto-complete');
+		this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
 		this.cache = {};
 		this.selected = -1;
 		this.mouseinsde = false;
-		this.watchKeys = this.doWatchKeys.bindWithEvent(this);
+		document.addEvent('keydown', this.doWatchKeys.bindWithEvent(this));
 		this.testMenuClose = this.doTestMenuClose.bindWithEvent(this);
-		this.element = typeOf($(element)) === "null" ? document.getElement(element) : $(element);
+		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
 		this.buildMenu();
 		if (!this.getInputElement()) {
 			fconsole('autocomplete didnt find input element');
@@ -33,6 +37,7 @@ var FbAutocomplete = new Class({
 		this.getInputElement().setProperty('autocomplete', 'off');
 		this.doSearch = this.search.bindWithEvent(this);
 		this.getInputElement().addEvent('keyup', this.doSearch);
+		
 	},
 	
 	search: function (e) {
@@ -87,7 +92,7 @@ var FbAutocomplete = new Class({
 	
 	buildMenu: function ()
 	{
-		this.menu = new Element('div', {'class': this.options.menuclass, 'styles': {'position': 'absolute'}}).adopt(new Element('ul'));
+		this.menu = new Element('div', {'class': this.options.menuclass, 'styles': {'position': 'absolute'}}).adopt(new Element('ul', {'class': this.options.classes.ul}));
 		this.menu.inject(document.body);
 		this.menu.addEvent('mouseenter', function () {
 			this.mouseinsde = true;
@@ -118,7 +123,7 @@ var FbAutocomplete = new Class({
 		}
 		for (var i = 0; i < max; i ++) {
 			var pair = data[i];
-			var li = new Element('li', {'data-value': pair.value, 'class': 'unselected'}).set('text', pair.text);
+			var li = new Element('li', {'data-value': pair.value, 'class': 'unselected ' + this.options.classes.li}).set('text', pair.text);
 			li.inject(ul);
 			li.addEvent('click', this.makeSelection.bindWithEvent(this, [li]));
 		}
@@ -139,7 +144,6 @@ var FbAutocomplete = new Class({
 			this.shown = false;
 			this.menu.fade('out');
 			this.selected = -1;
-			document.removeEvent('keydown', this.watchKeys);
 			document.removeEvent('click', this.testMenuClose);
 		}
 	},
@@ -148,7 +152,6 @@ var FbAutocomplete = new Class({
 		if (!this.shown) {
 			this.shown = true;
 			this.menu.setStyle('visibility', 'visible').fade('in');
-			document.addEvent('keydown', this.watchKeys);
 			document.addEvent('click', this.testMenuClose);
 			this.selected = 0;
 			this.highlight();
@@ -170,35 +173,43 @@ var FbAutocomplete = new Class({
 	
 	doWatchKeys: function (e) {
 		var max = this.getListMax();
-		e = new Event(e);
-		if (e.key === 'enter') {
-			window.fireEvent('blur');
-		}
-		switch (e.code) {
-		case 40://down
-			if (this.selected + 1 < max) {
-				this.selected ++;
-				this.highlight();
+		if (!this.shown) {
+			if (e.code.toInt() === 40 && document.activeElement === this.getInputElement()) {
+				this.openMenu();
 			}
-			e.stop();
-			break;
-		case 38: //up
-			if (this.selected - 1 >= -1) {
-				this.selected --;
-				this.highlight();
+		} else {
+			if (e.key === 'enter') {
+				window.fireEvent('blur');
 			}
-			e.stop();
-			break;
-		case 13://enter
-		case 9://tab
-			e.stop();
-			this.makeSelection({}, this.getSelected());
-			this.closeMenu();
-			break;
-		case 27://escape
-			e.stop();
-			this.closeMenu();
-			break;
+			switch (e.code) {
+			case 40://down
+				if (!this.shown) {
+					this.openMenu();
+				}
+				if (this.selected + 1 < max) {
+					this.selected ++;
+					this.highlight();
+				}
+				e.stop();
+				break;
+			case 38: //up
+				if (this.selected - 1 >= -1) {
+					this.selected --;
+					this.highlight();
+				}
+				e.stop();
+				break;
+			case 13://enter
+			case 9://tab
+				e.stop();
+				this.makeSelection({}, this.getSelected());
+				this.closeMenu();
+				break;
+			case 27://escape
+				e.stop();
+				this.closeMenu();
+				break;
+			}
 		}
 	},
 	
@@ -231,7 +242,7 @@ var FbCddAutocomplete = new Class({
 			this.element.value = '';
 		}
 		if (v !== this.searchText && v !== '') {
-			var key = $(this.options.observerid).get('value') + '.' + v;
+			var key = document.id(this.options.observerid).get('value') + '.' + v;
 			this.positionMenu();
 			if (this.cache[key]) {
 				this.populateMenu(this.cache[key]);
@@ -248,7 +259,7 @@ var FbCddAutocomplete = new Class({
 					data: {
 						value: v,
 						fabrik_cascade_ajax_update: 1,
-						v: $(this.options.observerid).get('value')
+						v: document.id(this.options.observerid).get('value')
 					},
 					onComplete: this.completeAjax.bindWithEvent(this, [key])
 				}).send();

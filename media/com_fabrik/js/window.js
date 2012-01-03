@@ -24,7 +24,7 @@ Fabrik.getWindow = function (opts) {
 
 Fabrik.Window = new Class({
 
-	Implements: [Options, Events],
+	Implements: [Events, Options],
 	
 	options: {
 		id: 'FabrikWindow',
@@ -35,7 +35,10 @@ Fabrik.Window = new Class({
 		createShowOverLay: false,
 		width: 300,
 		height: 300,
+		loadHeight: 100,
 		expandable: true,
+		offset_x: null,
+		offset_y: null,
 		onContentLoaded: function () {
 			this.fitToContent();
 		}
@@ -47,9 +50,6 @@ Fabrik.Window = new Class({
 	initialize: function (opts)
 	{
 		this.setOptions(opts);
-		if (this.options.createShowOverLay) {
-			//Fabrik.overlay.show();
-		}
 		this.makeWindow();
 	},
 	
@@ -58,8 +58,8 @@ Fabrik.Window = new Class({
 		var draggerC, dragger, expandButton;
 		var handleParts = [];
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
-		d.top = this.options.offset_y ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
-		d.left = this.options.offset_x ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
+		d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
+		d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow'}).setStyles(d);
 		this.contentWrapperEl = this.window;
 		var art = Fabrik.iconGen.create(icon.cross);
@@ -106,6 +106,9 @@ Fabrik.Window = new Class({
 		var bottomBarHeight = 15;
 		var topBarHeight = 15;
 		var contentHeight = this.options.height - bottomBarHeight - topBarHeight;
+		if (contentHeight < this.options.loadHeight) {
+			contentHeight = this.options.loadHeight;
+		}
 		this.contentWrapperEl = new Element('div.contentWrapper', {
 			'styles': {'height': contentHeight + 'px'}
 		});

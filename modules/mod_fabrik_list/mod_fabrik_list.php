@@ -38,15 +38,13 @@ $document = JFactory::getDocument();
 FabrikHelperHTML::framework();
 //$$$rob looks like including the view does something to the layout variable
 $origLayout = JRequest::getVar('layout');
-JRequest::setVar('layout', $origLayout);
-
 
 $listId = (int)$params->get('list_id', 1);
 $useajax = (int)$params->get('useajax', 0);
 $random	= (int)$params->get('radomizerecords', 0);
 $limit = (int)$params->get('limit', 0);
-$layout	= $params->get('fabriklayout', 'default');
-
+$showTitle = $params->get('show-title', '');
+$layout	= $params->get('fabriklayout', '');
 JRequest::setVar('layout', $layout);
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
@@ -91,6 +89,10 @@ if ($params->get('show_nav', '') !== '') {
 	$listParams->set('show-table-nav', $params->get('show_nav'));
 }
 
+if ($showTitle !== '') {
+	$listParams->set('show-title', $showTitle);
+}
+
 $ordering = JArrayHelper::fromObject(json_decode($params->get('ordering')));
 $orderBy = (array)$ordering['order_by'];
 if (!empty($orderBy)) {
@@ -107,6 +109,7 @@ if (!empty($conditions)) {
 	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
 	$listParams->set('filter-value', $prefilters['filter-value']);
 	$listParams->set('filter-access', $prefilters['filter-access']);
+	$listParams->set('filter-eval', $prefilters['filter-eval']);
 }
 
 $model->randomRecords = $random;

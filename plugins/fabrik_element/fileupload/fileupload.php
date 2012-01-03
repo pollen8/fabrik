@@ -1450,6 +1450,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->_editable) {
 			foreach ($values as $value) {
 
+				if (is_object($value)) {
+					$value = $value->file;
+				}
 				$render = $this->loadElement($value);
 
 				if ($value != '' && ($storage->exists(COM_FABRIK_BASE.$value) || substr($value, 0, 4) == 'http')) {

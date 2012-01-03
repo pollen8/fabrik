@@ -80,6 +80,15 @@
 					default="default" 
 					label="MOD_FABRIK_LIST_TEMPLATE_LABEL" 
 					descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" />
+				
+				<field name="show-title" 
+					type="list" default="" 
+					label="MOD_FABRIK_LIST_SHOW_TITLE_LABEL" 
+					description="MOD_FABRIK_LIST_SHOW_TITLE_DESC">
+						<option value="">JGLOBAL_USE_GLOBAL</option>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
 					
 				<field name="list_elements" 
 					type="fabrikmodalrepeat" 

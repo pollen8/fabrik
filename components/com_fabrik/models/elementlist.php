@@ -567,9 +567,12 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	function formJavascriptClass(&$srcs, $script = '')
 	{
-		$elementList = 'media/com_fabrik/js/elementlist.js';
-		if (!in_array($elementList, $srcs)) {
-			$srcs[] = $elementList;
+		/////$elementList = 'media/com_fabrik/js/elementlist.js';
+		$files = array('media/com_fabrik/js/element.js', 'media/com_fabrik/js/elementlist.js');
+		foreach ($files as $file) {
+		if (!in_array($file, $srcs)) {
+			$srcs[] = $file;
+		}
 		}
 		parent::formJavascriptClass($srcs, $script);
 	}
