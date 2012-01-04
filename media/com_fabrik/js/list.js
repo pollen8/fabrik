@@ -810,15 +810,15 @@ var FbList = new Class({
 			});
 			if (!ok) {
 				alert(Joomla.JText._('COM_FABRIK_SELECT_ROWS_FOR_DELETION'));
-				Fabrik.loader.stop('listform_' + this.id);
+				Fabrik.loader.stop('listform_' + this.options.listRef);
 				return false;
 			}
 			if (!confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE'))) {
-				Fabrik.loader.stop('listform_' + this.id);
+				Fabrik.loader.stop('listform_' + this.options.listRef);
 				return false;
 			}
 		}
-		Fabrik.loader.start('listform_' + this.id);
+		Fabrik.loader.start('listform_' + this.options.listRef);
 		if (task === 'list.filter') {
 			this.form.task.value = task;
 			if (this.form['limitstart' + this.id]) {
@@ -842,7 +842,7 @@ var FbList = new Class({
 					onComplete: function (json) {
 						json = JSON.decode(json);
 						this._updateRows(json);
-						Fabrik.loader.stop('listform_' + this.id);
+						Fabrik.loader.stop('listform_' + this.options.listRef);
 					}.bind(this)
 				});
 			}
@@ -850,7 +850,7 @@ var FbList = new Class({
 			Fabrik.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);
 		} else {
 			this.form.submit();
-			Fabrik.loader.stop('listform_' + this.id);
+			Fabrik.loader.stop('listform_' + this.options.listRef);
 		}
 		return false;
 	},
@@ -1038,7 +1038,7 @@ var FbList = new Class({
 			Fabrik.fireEvent('fabrik.list.update', [this, data]);
 		}
 		this.stripe();
-		Fabrik.loader.stop('listform_' + this.id);
+		Fabrik.loader.stop('listform_' + this.options.listRef);
 	},
 
 	addRow: function (obj) {
