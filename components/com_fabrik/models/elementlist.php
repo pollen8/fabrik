@@ -109,15 +109,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	function getFilter($counter = 0, $normal = true)
 	{
-		$element 	= $this->getElement();
-		$values 	= $this->getSubOptionValues();
-		$default 	= $this->getDefaultFilterVal($normal, $counter);
-		$elName 	= $this->getFullName(false, true, false);
-		$htmlid		= $this->getHTMLId() . 'value';
+		$element = $this->getElement();
+		$values = $this->getSubOptionValues();
+		$default = $this->getDefaultFilterVal($normal, $counter);
+		$elName = $this->getFullName(false, true, false);
+		$htmlid	= $this->getHTMLId() . 'value';
 		$listModel = $this->getListModel();
-		$params		= $this->getParams();
-		$v = 'fabrik___filter[list_'.$listModel->getRenderContext().'][value]';
-		$v .= $normal ? '['.$counter.']' : '[]';
+		$params	= $this->getParams();
+		$v = $this->filterName($counter, $normal);
 
 		if (in_array($element->filter_type, array('range', 'dropdown', ''))) {
 			$rows = $this->filterValueList($normal);

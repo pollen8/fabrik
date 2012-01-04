@@ -652,11 +652,10 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		$default = $this->getDefaultFilterVal($normal, $counter);
 
-		$v = 'fabrik___filter[list_'.$table->id.'][value]';
-		$v .= ($normal) ? '['.$counter.']' : '[]';
+		$v = $this->filterName($counter, $normal);
 
-		$id = array_pop( explode("___", $params->get('cascadingdropdown_id')));
-		$label = array_pop( explode("___", $params->get('cascadingdropdown_label')));
+		$id = array_pop(explode("___", $params->get('cascadingdropdown_id')));
+		$label = array_pop(explode("___", $params->get('cascadingdropdown_label')));
 
 		//$fabrikDb->setQuery("SELECT db_table_name FROM #__{package}_tables WHERE id = {$params->get('cascadingdropdown_table')}");
 		$dbname = $fabrikDb->NameQuote($this->getDbName());

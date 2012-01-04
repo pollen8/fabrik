@@ -571,7 +571,7 @@ EOD;
 
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
-				$navigator	= JBrowser::getInstance();
+				$navigator = JBrowser::getInstance();
 				if ($navigator->getBrowser() == 'msie') {
 					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
 				}
@@ -773,7 +773,7 @@ EOD;
 		if ($config->get('use_fabrikdebug') == 0) {
 			return;
 		}
-		if (JRequest::getBool( 'fabrikdebug', 0, 'request') != 1) {
+		if (JRequest::getBool('fabrikdebug', 0, 'request') != 1) {
 			return;
 		}
 		if (JRequest::getVar('format') == 'raw') {

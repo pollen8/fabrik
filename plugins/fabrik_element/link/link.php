@@ -95,6 +95,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * draws the form element
+	 * @param array form data
 	 * @param int repeat group counter
 	 * @return string returns element html
 	 */
@@ -104,14 +105,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		$element = $this->getElement();
-		$size = $element->width;
-		$maxlength = $params->get('maxlength');
-		if ($maxlength == "0" or $maxlength == "") {
-			$maxlength = $size;
-		}
+		
+		$bits = $this->inputProperties($repeatCounter);
+		
 		$value = $this->getValue($data, $repeatCounter);
-		$sizeInfo = ' size="'.$size.'" maxlength="'.$maxlength.'"';
 		if ($value == "") {
 			$value = array('label'=>'', 'link'=>'');
 		} else {
@@ -136,32 +133,37 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			}
 			else {
 				$w = new FabrikWorker();
-				$value['link'] = is_array($data ) ? $w->parseMessageForPlaceHolder($value['link'], $data ) : $w->parseMessageForPlaceHolder($value['link']);
+				$value['link'] = is_array($data) ? $w->parseMessageForPlaceHolder($value['link'], $data) : $w->parseMessageForPlaceHolder($value['link']);
 				$target = $params->get('link_target', '');
 				$smart_link = $params->get('link_smart_link', false);
 				if ($smart_link || $target == 'mediabox') {
 					$smarts = $this->_getSmartLinkType( $value['link']);
 					return '<a href="'.$value['link'].'" rel="lightbox['.$smarts['type'].' '.$smarts['width'].' '.$smarts['height'].']">'.$value['label'].'</a>';
 				} else {
-					return '<a href="'.$value['link'].'" target="'.$target.'">'.$value['label'].'</a>';
+					return '<a href="'.$value['link'].'" target="'.$target.'">' . $value['label'] . '</a>';
 				}
 			}
 		}
-		$errorCSS = '';
-		if (isset($this->_elementError) && $this->_elementError != '') {
-			$errorCSS = " elementErrorHighlight";
-		}
+		
 		$labelname = FabrikString::rtrimword( $name, "[]").'[label]';
 		$linkname = FabrikString::rtrimword( $name, "[]").'[link]';
 
-		$str = array();
-		$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'"><div>';
-		$str[] = JText::_('PLG_ELEMENT_LINK_LABEL').':</div>';
-		$str[] = '<div><input class="fabrikinput inputbox'.$errorCSS.'" name="'.$labelname.'" '.$sizeInfo.' value="'.$value['label'].'" /></div>';
-		$str[] = '<div>'.JText::_('PLG_ELEMENT_LINK_URL').':</div>';
-		$str[] = '<div><input class="fabrikinput inputbox'.$errorCSS.'" name="'.$linkname.'" '.$sizeInfo.' value="'.$value['link'].'" /></div>';
-		$str[] = '</div>';
-		return implode("\n", $str);
+		$html = array();
+		$bits['name'] = $labelname;
+		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_LABEL');
+		$bits['value'] = $value['label'];
+		$bits['class'] .= ' fabrikSubElement';
+		unset($bits['id']);
+		
+		$html[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
+		$html[] = $this->buildInput('input', $bits);
+		
+		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_URL');
+		$bits['name'] = $linkname;
+		$bits['value'] = $value['link'];
+		$html[] = $this->buildInput('input', $bits);
+		$html[] = '</div>';
+		return implode("\n", $html);
 	}
 
 	/**

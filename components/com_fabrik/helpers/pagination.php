@@ -34,6 +34,8 @@ class FPagination extends JPagination{
 	var $showTotal = false;
 
 	var $showAllOption = false;
+	
+	protected $listRef = null;
 
 	function setId($id)
 	{
@@ -44,13 +46,16 @@ class FPagination extends JPagination{
 	 * Return the pagination footer
 	 *
 	 * @access	public
+	 * @param string list reference
+	 * @param string tmpl
 	 * @return	string	Pagination footer
 	 * @since	1.0
 	 */
-	function getListFooter($listid = 0, $tmpl = 'default')
+	
+	function getListFooter($listRef = 0, $tmpl = 'default')
 	{
-		$app 				= JFactory::getApplication();
-		$this->listid = $listid;
+		$app = JFactory::getApplication();
+		$this->listRef = $listRef;
 		$list = array();
 		$list['limit'] = $this->limit;
 		$list['limitstart']	= $this->limitstart;
@@ -60,8 +65,7 @@ class FPagination extends JPagination{
 		if ($this->showTotal) {
 			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL_RECORDS') . ': '. $list['total'];
 		}
-		$list['pageslinks']	= $this->getPagesLinks($listid, $tmpl);
-
+		$list['pageslinks']	= $this->getPagesLinks($listRef, $tmpl);
 
 		$chromePath	= JPATH_THEMES.DS.$app->getTemplate().DS.'html'.DS.'pagination.php';
 
@@ -83,6 +87,7 @@ class FPagination extends JPagination{
 	 * @return	string	The html for the limit # input box
 	 * @since	1.0
 	 */
+	
 	function getLimitBox()
 	{
 		// Initialize variables
@@ -102,13 +107,6 @@ class FPagination extends JPagination{
 		foreach ($vals as $v) {
 			$limits[] = JHTML::_('select.option', $v);
 		}
-		//startLimit
-		// Make the option list
-		/* for ($i = 5; $i <= 30; $i += 5) {
-			$limits[] = JHTML::_('select.option', "$i");
-		}
-		$limits[] = JHTML::_('select.option', '50');
-		$limits[] = JHTML::_('select.option', '100'); */
 		if ($this->showAllOption == true) {
 			$limits[] = JHTML::_('select.option', '0', JText::_('COM_FABRIK_ALL'));
 		}
@@ -120,12 +118,12 @@ class FPagination extends JPagination{
 
 	function _item_active(&$item)
 	{
-		$app	= JFactory::getApplication();
+		$app = JFactory::getApplication();
 		if ($app->isAdmin())
 		{
-			return "<a title=\"".$item->text."\" href=\"#\" onclick=\"oTable.fabrikNav(" . $item->base . ");return false;\">".$item->text."</a>";
+			return '<a title="' . $item->text . '" href="#" onclick="oTable.fabrikNav(' . $item->base . ');return false;">' . $item->text . '</a>';
 		} else {
-			return "<a title=\"".$item->text."\" href=\"".$item->link."\" class=\"pagenav\">".$item->text."</a>";
+			return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
 		}
 	}
 
@@ -138,7 +136,7 @@ class FPagination extends JPagination{
 	 * @since	1.0
 	 */
 
-	function getPagesLinks($listid = 0, $tmpl = 'default')
+	function getPagesLinks($listRef = 0, $tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
 
@@ -168,25 +166,25 @@ class FPagination extends JPagination{
 		// Build the select list
 		if ($data->all->base !== null) {
 			$list['all']['active'] = true;
-			$list['all']['data'] = ($itemOverride) ? fabrik_pagination_item_active($data->all, $this->listid) : $this->_item_active($data->all);
+			$list['all']['data'] = $itemOverride ? fabrik_pagination_item_active($data->all, $this->listRef) : $this->_item_active($data->all);
 		} else {
 			$list['all']['active'] = false;
-			$list['all']['data'] = ($itemOverride) ? fabrik_pagination_item_inactive($data->all) : $this->_item_inactive($data->all);
+			$list['all']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->all) : $this->_item_inactive($data->all);
 		}
 
 		if ($data->start->base !== null) {
 			$list['start']['active'] = true;
-			$list['start']['data'] = ($itemOverride) ? fabrik_pagination_item_active($data->start, $this->listid) : $this->_item_active($data->start);
+			$list['start']['data'] = $itemOverride ? fabrik_pagination_item_active($data->start, $this->listRef) : $this->_item_active($data->start);
 		} else {
 			$list['start']['active'] = false;
-			$list['start']['data'] = ($itemOverride) ? fabrik_pagination_item_inactive($data->start) : $this->_item_inactive($data->start);
+			$list['start']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->start) : $this->_item_inactive($data->start);
 		}
 		if ($data->previous->base !== null) {
 			$list['previous']['active'] = true;
-			$list['previous']['data'] = ($itemOverride) ? fabrik_pagination_item_active($data->previous, $this->listid) : $this->_item_active($data->previous);
+			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_active($data->previous, $this->listRef) : $this->_item_active($data->previous);
 		} else {
 			$list['previous']['active'] = false;
-			$list['previous']['data'] = ($itemOverride) ? fabrik_pagination_item_inactive($data->previous) : $this->_item_inactive($data->previous);
+			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->previous) : $this->_item_inactive($data->previous);
 		}
 
 		$list['pages'] = array(); //make sure it exists
@@ -194,26 +192,26 @@ class FPagination extends JPagination{
 		{
 			if ($page->base !== null) {
 				$list['pages'][$i]['active'] = true;
-				$list['pages'][$i]['data'] = ($itemOverride) ? fabrik_pagination_item_active($page, $this->listid) : $this->_item_active($page);
+				$list['pages'][$i]['data'] = $itemOverride ? fabrik_pagination_item_active($page, $this->listRef) : $this->_item_active($page);
 			} else {
 				$list['pages'][$i]['active'] = false;
-				$list['pages'][$i]['data'] = ($itemOverride) ? fabrik_pagination_item_inactive($page) : $this->_item_inactive($page);
+				$list['pages'][$i]['data'] = $itemOverride ? fabrik_pagination_item_inactive($page) : $this->_item_inactive($page);
 			}
 		}
 
 		if ($data->next->base !== null) {
 			$list['next']['active'] = true;
-			$list['next']['data'] = ($itemOverride) ? fabrik_pagination_item_active($data->next, $this->listid) : $this->_item_active($data->next);
+			$list['next']['data'] = $itemOverride ? fabrik_pagination_item_active($data->next, $this->listRef) : $this->_item_active($data->next);
 		} else {
 			$list['next']['active'] = false;
-			$list['next']['data'] = ($itemOverride) ? fabrik_pagination_item_inactive($data->next) : $this->_item_inactive($data->next);
+			$list['next']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->next) : $this->_item_inactive($data->next);
 		}
 		if ($data->end->base !== null) {
 			$list['end']['active'] = true;
-			$list['end']['data'] = ($itemOverride) ? fabrik_pagination_item_active($data->end, $this->listid) : $this->_item_active($data->end);
+			$list['end']['data'] = $itemOverride ? fabrik_pagination_item_active($data->end, $this->listRef) : $this->_item_active($data->end);
 		} else {
 			$list['end']['active'] = false;
-			$list['end']['data'] = ($itemOverride) ? fabrik_pagination_item_inactive($data->end) : $this->_item_inactive($data->end);
+			$list['end']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->end) : $this->_item_inactive($data->end);
 		}
 
 		if ($this->total > $this->limit) {
@@ -229,16 +227,14 @@ class FPagination extends JPagination{
 		$html = '<ul class="pagination">';
 		$html .= '<li class="pagination-start">'.$list['start']['data'].'</li>';
 		$html .= '<li class="pagination-prev">'.$list['previous']['data'].'</li>';
-		foreach($list['pages'] as $page) {
+		foreach ($list['pages'] as $page) {
 			$html .= '<li>'.$page['data'].'</li>';
 		}
 		$html .= '<li class="pagination-next">'. $list['next']['data'].'</li>';
 		$html .= '<li class="pagination-end">'. $list['end']['data'].'</li>';
 		$html .= '</ul>';
-
 		return $html;
 	}
-
 
 	/**
 	 * THIS SEEMS GOOFY TO HAVE TO OVERRIDE DEFAULT FUNCTION - BUT!
@@ -258,7 +254,7 @@ class FPagination extends JPagination{
 
 	function _buildDataObject()
 	{
-		$app 				= JFactory::getApplication();
+		$app = JFactory::getApplication();
 		$admin = $app->isAdmin();
  		// Initialize variables
 		$data = new stdClass();
@@ -336,7 +332,6 @@ class FPagination extends JPagination{
 
 	function _list_footer($list)
 	{
-
 		// Initialize variables
 		$html = "<div class=\"list-footer\">\n";
 
@@ -351,5 +346,4 @@ class FPagination extends JPagination{
 	}
 
 }
-
 ?>

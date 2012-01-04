@@ -78,11 +78,11 @@ class FabrikModelUpgrade extends JModel
 				if ($json == false) {
 					//only do this if the attribs are not already in json format
 					$p = $this->fromAttribsToObject($row->attribs);
-					switch($update) {
+					switch ($update) {
 						case '#__fabrik_elements':
 							//elements had some fields moved into the attribs/params json object
-							if ($row->published == 0) {
-								$row->published = -2;
+							if ($row->state == 0) {
+								$row->state = -2;
 							}
 							$p->can_order = $row->can_order;
 							$row->access = $this->mapACL($row->access);
@@ -124,6 +124,7 @@ class FabrikModelUpgrade extends JModel
 		$sql = str_replace('#__', $prefix, $sql);
 		$sql = explode("\n", $sql);
 		foreach ($sql as $q) {
+			$db->setQuery($q);
 			if (trim($q) !== '') {
 				if (!$db->query()){
 					JError::raiseNotice(500, $db->getErrorMsg());

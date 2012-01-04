@@ -55,16 +55,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 			= $this->getHTMLName($repeatCounter);
-		$id 				= $this->getHTMLId($repeatCounter);
-		$params 		=& $this->getParams();
-		$element 		= $this->getElement();
-		$size 			= $element->width;
-		$maxlength  = $params->get('maxlength');
-		if ($maxlength == "0" or $maxlength == "") {
-			$maxlength = $size;
-		}
-		$bits = array();
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$bits = $this->inputProperties($repeatCounter);
 		// $$$ rob - not sure why we are setting $data to the form's data
 		//but in table view when getting read only filter value from url filter this
 		// _form_data was not set to no readonly value was returned
@@ -73,13 +66,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			$data = $this->_form->_data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
-		$type = $params->get('password') == "1" ?"password" : "text";
-		if (isset($this->_elementError) && $this->_elementError != '') {
-			$type .= " elementErrorHighlight";
-		}
-		if ($element->hidden == '1') {
-			$type = "hidden";
-		}
+		
 		// $$$ hugh - if the form just failed validation, number formatted fields will already
 		// be formatted, so we need to un-format them before formatting them!
 		$value = $this->numberFormat($this->unNumberFormat($value));
@@ -98,16 +85,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$bits['class'] = "fabrikinput inputbox $type";
-		$bits['type']		= $type;
-		$bits['name']		= $name;
-		$bits['id']			= $id;
-		if ($params->get('placeholder') !== '') {
-			$bits['placeholder'] = $params->get('placeholder');
-		}
-		if ($params->get('autocomplete', 1) == 0) {
-			$bits['autocomplete'] = 'off';
-		}
+		
 		//stop "'s from breaking the content out of the field.
 		// $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
 		//so add false flag to ensure its encoded once only
@@ -118,28 +96,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		else {
 			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
 		}
-		$bits['size'] = $size;
-		$bits['maxlength'] = $maxlength;
-
-		//cant be used with hidden element types
-		if ($element->hidden != '1') {
-			if ($params->get('readonly')) {
-				$bits['readonly'] = "readonly";
-				$bits['class'] .= " readonly";
-			}
-			if ($params->get('disable')) {
-				$bits['class'] .= " disabled";
-				$bits['disabled'] = 'disabled';
-			}
-		}
-		$str = "<input ";
-		foreach ($bits as $key=>$val) {
-			$str.= "$key = \"$val\" ";
-		}
-		$str .= " />\n";
-		return $str;
+		return $this->buildInput('input', $bits);
 	}
-
+	
 	/**
 	 * format guess link type
 	 *

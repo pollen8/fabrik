@@ -2021,7 +2021,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
-		$step =( $useStep ) ? "___" : ".";
+		$step = $useStep ? "___" : ".";
 		$gkeys = array_keys($groups);
 		foreach ($gkeys as $gid) {
 			$groupModel = $groups[$gid];
@@ -2058,14 +2058,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// like, it adds filed quotes, not sure if we need them.
 						if ($elementModel->getElement()->published != 0) {
 							$rawval = $elementModel->getRawColumn($useStep);
-							$aEls[] = JHTML::_('select.option', $rawval, $label . "(raw)");
+							$aEls[$label . "(raw)"] = JHTML::_('select.option', $rawval, $label . "(raw)");
 						}
 					}
 				}
-				$aEls[] = JHTML::_('select.option', $val, $label);
+				$aEls[$label] = JHTML::_('select.option', $val, $label);
 			}
 		}
-		asort($aEls);
+		ksort($aEls);
 		return $aEls;
 	}
 
