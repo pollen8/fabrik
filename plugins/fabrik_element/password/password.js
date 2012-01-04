@@ -30,9 +30,7 @@ var FbPassword = new Class({
 		var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
 		var enoughRegex = new RegExp("(?=.{6,}).*", "g");
 		var pwd = this.element;
-		if (pwd.value.length === 0) {
-			strength.set('text', Joomla.JText._('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD'));
-		} else if (false === enoughRegex.test(pwd.value)) {
+		if (false === enoughRegex.test(pwd.value)) {
 			strength.set('text', Joomla.JText._('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS'));
 		} else if (strongRegex.test(pwd.value)) {
 			strength.set('html', '<span style="color:green">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_STRONG') + '</span>');

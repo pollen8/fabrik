@@ -855,6 +855,8 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			if ($bLabel && !$this->isHidden()) {
 				$str .= '<label for="'.$elementHTMLId.'" class="'.$labelClass.'">';
+			} elseif (!$bLabel && !$this->isHidden()) {
+				$str .= '<span class="' . $labelClass . '">';
 			}
 			$l = $element->label;
 			if ($rollOver) {
@@ -870,6 +872,8 @@ class plgFabrik_Element extends FabrikPlugin
 			$str .= $this->rollover($l, $model->_data);
 			if ($bLabel && !$this->isHidden()) {
 				$str .= "</label>";
+			} elseif (!$bLabel && !$this->isHidden()) {
+					$str .= '</span>';
 			}
 		}
 		return $str;
@@ -1448,6 +1452,75 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	* helper method to build an input field
+	* @param string $node
+	* @param array $bits property => value
+	*/
+	
+	protected function buildInput($node = 'input', $bits = array())
+	{
+		$str = '<' . $node . ' ';
+		foreach ($bits as $key=>$val) {
+		$str.= $key .' = "' . $val . '" ';
+				}
+		$str .= '/>';
+		return $str;
+	}
+	
+	/**
+	 * helper function to build the property array used in buildInput()
+	 * @param int $repeatCounter
+	 * @param mixed null/string $type property (if null then password/text applied as default)
+	 */
+
+	protected function inputProperties($repeatCounter, $type = null)
+	{
+		$bits = array();
+		$element = $this->getElement();
+		$params = $this->getParams();
+		$size = $element->width;
+		if (!isset($type)) {
+			$type = $params->get('password') == "1" ?"password" : "text";
+		}
+		$maxlength = $params->get('maxlength');
+		if ($maxlength == "0" or $maxlength == "") {
+			$maxlength = $size;
+		}
+		$class = '';
+		if (isset($this->_elementError) && $this->_elementError != '') {
+			$class .= " elementErrorHighlight";
+		}
+		if ($element->hidden == '1') {
+			$class .= " hidden";
+			$type = 'hidden';
+		}
+		$bits['type'] = $type;
+		$bits['id'] = $this->getHTMLId($repeatCounter);;
+		$bits['name'] = $this->getHTMLName($repeatCounter);
+		$bits['size'] = $size;
+		$bits['maxlength'] = $maxlength;
+		$bits['class'] = "fabrikinput inputbox $class";
+		if ($params->get('placeholder') !== '') {
+			$bits['placeholder'] = $params->get('placeholder');
+		}
+		if ($params->get('autocomplete', 1) == 0) {
+			$bits['autocomplete'] = 'off';
+		}
+		//cant be used with hidden element types
+		if ($element->hidden != '1') {
+			if ($params->get('readonly')) {
+				$bits['readonly'] = "readonly";
+				$bits['class'] .= " readonly";
+			}
+			if ($params->get('disable')) {
+				$bits['class'] .= " disabled";
+				$bits['disabled'] = 'disabled';
+			}
+		}
+		return $bits;
+	}
+	
+	/**
 	 * get the id used in the html element
 	 * @param int repeat group counter
 	 * @return string
@@ -1496,16 +1569,16 @@ class plgFabrik_Element extends FabrikPlugin
 	function getHTMLName($repeatCounter = 0)
 	{
 		$groupModel = $this->getGroup();
-		$params 		=& $this->getParams();
-		$table 			=& $this->getListModel()->getTable();
-		$group 			=& $groupModel->getGroup();
-		$element 		= $this->getElement();
+		$params = $this->getParams();
+		$table = $this->getListModel()->getTable();
+		$group = $groupModel->getGroup();
+		$element = $this->getElement();
 		if ($groupModel->isJoin() || $this->isJoin()) {
-			$joinModel 	= $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
-			$joinTable 	=& $joinModel->getJoin();
-			$fullName 	= 'join[' . $joinTable->id . '][' . $joinTable->table_join . '___' . $element->name . ']';
+			$joinModel = $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
+			$joinTable = $joinModel->getJoin();
+			$fullName = 'join[' . $joinTable->id . '][' . $joinTable->table_join . '___' . $element->name . ']';
 		} else {
-			$fullName 	= $table->db_table_name . '___' . $element->name;
+			$fullName = $table->db_table_name . '___' . $element->name;
 		}
 		if ($groupModel->canRepeat()) {
 			// $$$ rob - always use repeatCounter in html names - avoids ajax post issues with mootools1.1

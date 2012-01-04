@@ -59,44 +59,31 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name				= $this->getHTMLName($repeatCounter);
-		$id 				= $this->getHTMLId($repeatCounter);
-		$params 		=& $this->getParams();
-		$element 		= $this->getElement();
-		$size 			= $element->width;
-		$maxlength  = $params->get('maxlength');
-		if ((int)$maxlength === 0) {
-			$maxlength = $size;
-		}
-		$value 	= "";
-		$type = "password";
-		$class = '';
-		if (isset($this->_elementError) && $this->_elementError != '') {
-			$class = " elementErrorHighlight";
-		}
-		if ($element->hidden == '1') {
-			$type = "hidden";
-		}
-		$sizeInfo =  " size=\"$size\" maxlength=\"$maxlength\"";
+		$element = $this->getElement();
+		$value = '';
 		if (!$this->_editable) {
 			if ($element->hidden == '1') {
-				return "<!--" . stripslashes($value) . "-->";
+				return '<!--' . $value . '-->';
 			} else {
-				return stripslashes($value);
+				return $value;
 			}
 		}
-
-		$value = stripslashes($value);
-		$str = "<input class=\"fabrikinput inputbox $class\" type=\"$type\" name=\"$name\" $sizeInfo id=\"$id\" value=\"$value\" />\n";
-		$str .= "<span class='strength'></span>";
-
+		$bits = $this->inputProperties($repeatCounter, 'password');
+		$bits['value'] = $value;
+		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
+		$html = array();
+		$html[] = $this->buildInput('input', $bits);
+		$html[] = '<span class="strength"></span>';
 		$origname = $element->name;
 		$element->name = $element->name . "_check";
-		$name				= $this->getHTMLName($repeatCounter);
-		$str .= "<div class=\"fabrikSubLabel\"><label for=\"" . $id . "_check\">" . JText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD'). "</label>
-		</div><input class=\"inputbox $class fabrikSubElement\" type=\"$type\" name=\"$name\" $sizeInfo id=\"" . $id . "_check\" value=\"$value\" />\n";
+		$name = $this->getHTMLName($repeatCounter);
+		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
+		$bits['class'] .= ' fabrikSubElement';
+		$bits['name'] = $name;
+		$bits['id'] = $name;
+		$html[] = $this->buildInput('input', $bits);
 		$element->name = $origname;
-		return $str;
+		return implode("\n", $html);
 	}
 
 	/**
@@ -106,11 +93,11 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	 * @return bol true if passes / false if falise validation
 	 */
 
-	function validate( $data, $repeatCounter = 0  )
+	function validate($data, $repeatCounter = 0)
 	{
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$post	=& JRequest::get('post');
+		$post	= JRequest::get('post');
 		$this->defaults = null;
 		$element = $this->getElement();
 		$origname = $element->name;
@@ -118,8 +105,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		$checkvalue = $this->getValue($post, $repeatCounter);
 		$element->name = $origname;
 
-
-		if ($checkvalue != $data ) {
+		if ($checkvalue != $data) {
 			$this->_validationErr = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 			return false;
 		} else {

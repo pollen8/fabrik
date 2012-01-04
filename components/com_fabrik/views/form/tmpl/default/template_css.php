@@ -182,7 +182,8 @@ section for dropdowns radio buttons etc**/
 /*** end slide out add option section **/
 
 #{$view}_$c input,
-#{$view}_$c select{
+#{$view}_$c select,
+#{$view}_$c textarea{
 	border:1px solid #DDDDDD;
 	border-radius:3px;
 	padding:3px;
@@ -242,7 +243,7 @@ section for dropdowns radio buttons etc**/
 }
 
 #{$view}_$c .fabrik_characters_left{
-clear:left;
+	clear:left;
 }
 
 /** bump calendar above mocha window in mootools 1.2**/
@@ -263,9 +264,9 @@ clear:left;
 }
 
 .auto-complete-container ul{
-list-style:none;
-padding:0;
-margin:0;
+	list-style:none;
+	padding:0;
+	margin:0;
 }
 
 .auto-complete-container li.unselected{
@@ -335,8 +336,6 @@ margin:0;
 	padding-right: 5px;
 }
 
-
-
 #{$view}_$c .fabrikLabel {
 	min-height:1px; /*for elements with no label txt*/
 }
@@ -367,34 +366,37 @@ margin:0;
 	margin-left: 100px;
 }
 
+#{$view}_$c .password .fabrikSubElement,
+#{$view}_$c .link .fabrikSubElement {
+	margin-left:0;
+}
+
 /*
 some fun with fancy buttons not ready for prime time
 
 #{$view}_$c .button{
-background: -moz-linear-gradient(center top , #ccc 0%, #777) repeat scroll 0 0 transparent;
-border: 1px solid #614337;
-border-radius: 6px 6px 6px 6px;
-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.6) inset;
-color: #FFFFFF;
-margin: 10px;
-padding: 5px 20px;
-
+	background: -moz-linear-gradient(center top , #ccc 0%, #777) repeat scroll 0 0 transparent;
+	border: 1px solid #614337;
+	border-radius: 6px 6px 6px 6px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.6) inset;
+	color: #FFFFFF;
+	margin: 10px;
+	padding: 5px 20px;
 }
 
 #{$view}_$c .button:hover{
-background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent; /* orange */
-background: -moz-linear-gradient(center top , #8EC400 0%, #558A01) repeat scroll 0 0 transparent; /* green */
-text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.2);
-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.6) inset;
-
+	background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent; /* orange */
+	background: -moz-linear-gradient(center top , #8EC400 0%, #558A01) repeat scroll 0 0 transparent; /* green */
+	text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.2);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.6) inset;
 }
 
 #{$view}_$c .button[name=delete]:hover{
-background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
+	background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
 }
 
 #{$view}_$c .button[name=Reset]:hover{
-background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
+	background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
 } */
 ";
 ?>

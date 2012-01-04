@@ -272,7 +272,8 @@ class fabrikViewForm extends JView
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED')) {
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
-			$srcs = array('media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js');
+			$srcs = array('media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js', 
+			'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js');
 			//searching for ajax load form bug
 			//$srcs = array();
 		}
@@ -451,6 +452,9 @@ class fabrikViewForm extends JView
 		$script[] ="});";
 		$script[] = $actions;
 		$script[] =$vstr;
+		
+		//placholder test
+		$script[] = "new Form.Placeholder('.fabrikForm input');";
 		$script[] =$endJs;
 		$script[] ="function submit_form() {";
 		if (!empty($aWYSIWYGNames)) {
