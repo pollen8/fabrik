@@ -702,7 +702,7 @@ var FbList = new Class({
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
-					listid = e.target.getParent('form').getElement('input[name=listid]').get('value');
+					listid = e.target.getParent('form').getElement('input[name=listref]').get('value');
 				} else {
 					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listref');
 				}
