@@ -19,7 +19,7 @@
 			description="COM_FABRIK_FIELD_ELEMENT_NAME_DESC" required="true"/>
 			
 		<field name="label" 
-			type="text" 
+			type="textorwysiwyg" 
 			size="35" 
 			label="COM_FABRIK_FIELD_ELEMENT_LABEL_LABEL" 
 			description="COM_FABRIK_FIELD_ELEMENT_LABEL_DESC" />
