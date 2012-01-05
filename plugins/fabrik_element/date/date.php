@@ -250,6 +250,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	private function _indStoreDBFormat($val)
 	{
+		$aNullDates = $this->getNullDates();
+		if (in_array(trim($val), $aNullDates)) {
+			return '';
+		}
 		jimport('joomla.utilities.date');
 		$params = $this->getParams();
 		$store_as_local = (int)$params->get('date_store_as_local', 0);

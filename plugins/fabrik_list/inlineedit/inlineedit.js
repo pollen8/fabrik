@@ -9,7 +9,6 @@ var FbListInlineEdit = new Class({
 		this.saving = false;
 		head.ready(function () {
 			//assigned in list.js fabrik3
-			//this.list = $('list_' + this.options.ref);
 			if (typeOf(this.getList().getForm()) === 'null') {
 				return false;
 			}
@@ -30,7 +29,7 @@ var FbListInlineEdit = new Class({
 		}.bind(this));
 		
 		Fabrik.addEvent('fabrik.list.ini', function () {
-			var table = Fabrik.blocks['list_' + this.options.ref];
+			var table = this.getList();
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
 			formData.listref = this.options.ref;
@@ -333,8 +332,7 @@ var FbListInlineEdit = new Class({
 			e.stop();
 		}
 		var element = this.getElementName(td);
-		var rowid = td.getParent('.fabrik_row').id.replace('list_' + this.list.id + '_row_', '');
-		//var url = 'index.php?option=com_fabrik&task=element.display&format=raw';
+		var rowid = this.getRowId(td);
 		var opts = this.options.elements[element];
 		if (typeOf(opts) === 'null') {
 			return;
@@ -467,7 +465,7 @@ var FbListInlineEdit = new Class({
 	},
 	
 	getDataFromTable: function (td) {
-		var groupedData = Fabrik.blocks['list_' + this.options.ref].options.data;
+		var groupedData = this.getList().options.data;
 		var element = this.getElementName(td);
 		var ref = td.getParent('.fabrik_row').id;
 		var v = {};
@@ -501,7 +499,7 @@ var FbListInlineEdit = new Class({
 	
 	setTableData: function (row, element, val) {
 		ref = row.id;
-		var groupedData = Fabrik.blocks['list_' + this.options.ref].options.data;
+		var groupedData = this.getList().options.data;
 		// $$$rob $H needed when group by applied
 		if (typeOf(groupedData) === 'object') {
 			groupedData = $H(groupedData);
@@ -547,7 +545,7 @@ var FbListInlineEdit = new Class({
 		Fabrik.loader.start(td.getParent());
 		
 		var row = this.editing.getParent('.fabrik_row');
-		var rowid = row.id.replace('list_' + this.list.id + '_row_', '');
+		var rowid = this.getRowId(row);
 		td.removeClass(this.options.focusClass);
 		var eObj = Fabrik['inlineedit_' + opts.elid];
 		if (typeOf(eObj) === 'null') {
@@ -571,11 +569,21 @@ var FbListInlineEdit = new Class({
 			'formid': this.options.formid,
 			'fabrik_ignorevalidation': 1
 		};
+		data.join = {};
 		$H(eObj.elements).each(function (el) {
 			el.getElement();
 			var v = el.getValue();
+			var jid = el.options.joinId;
 			this.setTableData(row, el.options.element, v);
-			data[el.options.element] = v;
+			if (el.options.isJoin) {
+				if (typeOf(data.join[jid]) !== 'object') {
+					data.join[jid] = {};
+				}
+				data.join[jid][el.options.elementName] = v;
+			} else {
+				data[el.options.element] = v;
+			}
+			
 		}.bind(this));
 		//post all the rows data to form.process
 		data = Object.append(this.currentRow.data, data);
@@ -618,7 +626,7 @@ var FbListInlineEdit = new Class({
 		if (row === false) {
 			return;
 		}
-		var rowid = row.id.replace('list_' + this.getList().id + '_row_', '');
+		var rowid = this.getRowId(row);
 		var td = this.editing;
 		if (td !== false) {
 			var element = this.getElementName(td);

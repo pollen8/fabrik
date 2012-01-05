@@ -3441,6 +3441,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$elmentModel = $this->getElement($elementid, true);
 		$rowid = JRequest::getVar('rowid');
 		$listModel->setId($listid);
+		//if the inline edit stored a element join we need to reset back the table
+		$listModel->getTable(true);
 		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
 		$key = JRequest::getVar('element');
 		$html= '';

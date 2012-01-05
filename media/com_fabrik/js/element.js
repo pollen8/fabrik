@@ -13,7 +13,9 @@ var FbElement =  new Class({
 		element: null,
 		defaultVal: '',
 		value: '',
-		editable: false
+		editable: false,
+		isJoin: false,
+		joinId: 0
 	},
 		
 	initialize: function (element, options) {

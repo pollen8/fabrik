@@ -172,7 +172,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		$value = $this->getValue(array(), $repeatCounter);
 
-		//$value = is_array($value) ? $value : explode(GROUPSPLITTER, $value);
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
 
@@ -238,6 +237,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->id = $this->_id;
+		if ($this->isJoin()) {
+			$opts->isJoin = true;
+			$opts->joinId = $this->getJoin()->id;
+		}
 		$opts->elid = $element->id;
 		$opts->defaultImage = $params->get('default_image');
 		$opts->folderSelect = $params->get('upload_allow_folderselect', 0);

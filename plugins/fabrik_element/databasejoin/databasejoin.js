@@ -10,7 +10,9 @@ var FbDatabasejoin = new Class({
 		'windowwidth': 360,
 		'displayType': 'dropdown',
 		'popupform': 0,
-		'listid': 0
+		'listid': 0,
+		'joinId': 0,
+		'isJoin': false
 	},
 	
 	initialize: function (element, options) {
@@ -36,8 +38,8 @@ var FbDatabasejoin = new Class({
 			}
 			if (this.options.displayType === 'checkbox') {
 				// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
-				var selector = 'input[name*=' + this.options.elementName + '___' + this.options.elementShortName + ']';
-				var idSelector = 'input[name*=' + this.options.elementName + '___id]';
+				var selector = 'input[name*=' + this.options.joinTable + '___' + this.options.elementShortName + ']';
+				var idSelector = 'input[name*=' + this.options.joinTable + '___id]';
 				this.element.addEvent('click:relay(' + selector + ')', function (i) {
 					this.element.getElements(selector).each(function (tmp, k) {
 						if (tmp === i.target) {
@@ -319,6 +321,14 @@ var FbDatabasejoin = new Class({
 				return '';
 			}
 			return this.element.get('value');
+		case 'multilist':
+			var r = [];
+			this.element.getElements('option').each(function (opt) {
+				if (opt.selected) {
+					r.push(opt.value);
+				}
+			});
+			return r;
 		case 'auto-complete':
 			return this.element.value;
 		case 'radio':
