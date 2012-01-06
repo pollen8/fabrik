@@ -2127,6 +2127,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 			$this->_rowId = $usersConfig->get('rowid');
 		} else {
 			$this->_rowId = FabrikWorker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot);
+			if ($this->_rowId == -2) {
+				// if the default was set to -2 (load last row) then a pagination form plugin's row id should override menu settings
+				$this->_rowId = FabrikWorker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot, 'request');
+			}
 		}
 		if ($this->getListModel()->getParams()->get('sef-slug') !== '') {
 			$this->_rowId = explode(":", $this->_rowId);
@@ -3441,6 +3445,8 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$elmentModel = $this->getElement($elementid, true);
 		$rowid = JRequest::getVar('rowid');
 		$listModel->setId($listid);
+		//if the inline edit stored a element join we need to reset back the table
+		$listModel->getTable(true);
 		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
 		$key = JRequest::getVar('element');
 		$html= '';

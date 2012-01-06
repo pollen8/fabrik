@@ -1931,30 +1931,19 @@ class FabrikFEModelList extends JModelForm {
 		$searchAllFields = array();
 		$this->searchAllAsFields = array();
 
-		$form 			=& $this->getFormModel();
-		$table 			=& $this->getTable();
-		$aJoinObjs 	=& $this->getJoins();
+		$form = $this->getFormModel();
+		$table = $this->getTable();
+		$aJoinObjs = $this->getJoins();
 		$groups = $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
 		$opts = array('inc_raw'=>false);
+		$mode = $this->getParams()->get('search-mode-advanced');
 		foreach ($gkeys as $x) {
 			$groupModel = $groups[$x];
-			// $$$ rob moved into elementModel::getAsField_html()
-			/*$table_name = $table->db_table_name;
-			$group = $groupModel->getGroup();
-			if ($groupModel->isJoin()) {
-			foreach ($aJoinObjs as $join) {
-			//also ignore any joins that are elements
-			if (array_key_exists('group_id', $join) && $join->group_id == $group->id && $join->element_id == 0) {
-			$table_name =  $join->table_join;
-			}
-			}
-			}*/
-
 			$elementModels = $groupModel->getPublishedElements();
 			for ($ek = 0; $ek < count($elementModels); $ek ++) {
 				$elementModel = $elementModels[$ek];
-				if ($elementModel->getParams()->get('inc_in_search_all', true)) {
+				if ($elementModel->includeInSearchAll($mode)) {
 					// boolean search doesnt seem possible on encrypted fields.
 					$p = $elementModel->getParams();
 					$o = $p->get('encrypt');

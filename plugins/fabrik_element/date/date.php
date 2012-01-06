@@ -35,7 +35,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param string data (should be in mySQL format already) - except if called from getEmailValue() 
+	 * @param string data (should be in mySQL format already) - except if called from getEmailValue()
 	 * @param string element name
 	 * @param object all the data in the tables current row
 	 * @return string formatted value
@@ -244,12 +244,18 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 * Enter description here...
 	 *
-	 * @param unknown_type $val
-	 * @return unknown
+	 * @param string $val
+	 * @return string mySQL formatted date
 	 */
 
 	private function _indStoreDBFormat($val)
 	{
+		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('date:_indStoreDBFormat val = ' . $val) : null; // 0.5 sec here!
+		$aNullDates = $this->getNullDates();
+		if (in_array(trim($val), $aNullDates)) {
+			return '';
+		}
 		jimport('joomla.utilities.date');
 		$params = $this->getParams();
 		$store_as_local = (int)$params->get('date_store_as_local', 0);
@@ -284,15 +290,24 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		} else {
 			$format = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		}
+		$orig = new FabDate($val);
+		if (!$orig) {
+			// if $val was not a valid date string return ''
+			return '';
+		}
+		 if ($val === $orig->toMySQL()) {
+		// $$$ rob if your custom form tmpl doesnt contain the date element then its value is already in mySQL format so return it
+			return $val;
+		}
+
 		$b = FabrikWorker::strToDateTime($val, $format);
-		//3.0 can't use timestamp as that gets offset as its taken as numeric by JDate
-		//$orig = new JDate($datebits['timestamp'], 2);
+		//3.0 can't use timestamp as that gets offset as its taken as numeric by FabDate
+		//$orig = new FabDate($datebits['timestamp'], 2);
 		$bstr = $b['year'].'-'.$b['mon'].'-'.$b['day'].' '.$b['hour'].':'.$b['min'].':'.$b['sec'];
-		$orig = new JDate($bstr);
+		$orig = new FabDate($bstr);
 		$this->_resetToGMT = true;
 
 		if ($val === $orig->toMySQL() && $params->get('date_showtime', 0)) {
-
 			$date = $this->toMySQLGMT($orig);
 			return $date;
 		}
@@ -301,7 +316,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		//3.0 produces a double offset in timezone
 		//$date = JFactory::getDate($datebits['timestamp']);
 		$date = $orig;
-		if (!$params->get( 'date_showtime', 0 ) || $store_as_local) {
+		if (!$params->get('date_showtime', 0) || $store_as_local) {
 			$this->_resetToGMT = false;
 		}
 		$date = $this->toMySQLGMT($date);
@@ -611,7 +626,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->hidden = (bool)$this->getElement()->hidden;
 		if ($opts->hidden) {
-			// $$$ rob 11/10/2011 if its hidden we dont want the defaultval as mysql 
+			// $$$ rob 11/10/2011 if its hidden we dont want the defaultval as mysql
 			// format as its used by form.js duplcateGroup
 			// to set the value of the date element when its repeated.
 			$opts->defaultVal = $this->_editable ? $this->formattedDate : '';
@@ -665,8 +680,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$return[] = array(
 			'id' => $id,
 			'triggerEvent' => 'blur'
-			);
-			return $return;
+		);
+		return $return;
 	}
 
 	/**
@@ -883,7 +898,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			case 'dropdown':
 
 				if (!$params->get('date_showtime', 0) || $exactTime == false) {
-					
+						
 					//$$$ rob turn into a ranged filter to search the entire day
 					// values should be in table format and not mySQL as they are set to mySQL in getRangedFilterValue()
 					$value = (array)$value;
@@ -894,7 +909,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				} else {
 					//$mysql = $this->tableDateToMySQL($value);
 					/* if ($mysql !== false) {
-						$value = $mysql;
+					$value = $mysql;
 					} */
 				}
 				break;
@@ -1000,7 +1015,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 						$o->value = '';
 					} else {
 
-						$d = new JDate($o->text);
+						$d = new FabDate($o->text);
 						//@TODO add an option as to whether we format values or not (if records as timestamps we don't want to format the filter value as running
 						// the filter will result in no records found. see http://fabrikar.com/forums/showthread.php?t=10964
 
@@ -1019,6 +1034,18 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			default:
 			case "field":
 				FabrikHelperHTML::loadcalendar();
+			if (is_array($default)) {
+				$default = array_shift($default);
+			}
+			if (get_magic_quotes_gpc()) {
+				$default = stripslashes($default);
+			}
+			$default = htmlspecialchars($default);
+
+			$return[] = $this->calendar($default, $v, $htmlid."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
+			break;
+
+			case 'hidden':
 				if (is_array($default)) {
 					$default = array_shift($default);
 				}
@@ -1026,20 +1053,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-
-				$return[] = $this->calendar($default, $v, $htmlid."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
+				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
-
-				case 'hidden':
-					if (is_array($default)) {
-						$default = array_shift($default);
-					}
-					if (get_magic_quotes_gpc()) {
-						$default = stripslashes($default);
-					}
-					$default = htmlspecialchars($default);
-					$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-					break;
 					
 			case 'auto-complete':
 				if (get_magic_quotes_gpc()) {
@@ -1066,7 +1081,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 * @since 3.0 takes a date from the server and applies the timezone offset
 	 * probably not the right way to do this but ive been at it all day
-	 * @param object JDate
+	 * @param object FabDate
 	 */
 
 	protected function toLocalTime(&$d){
@@ -1121,7 +1136,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$date = JFactory::getDate($data[$j][$key]);
 			$data[$j][$key] = $date->toFormat($format, true);
 			// $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
-			// which we then change to 1999 using a tablecsv import script (don't ask!). But of course JDate doesn't
+			// which we then change to 1999 using a tablecsv import script (don't ask!). But of course FabDate doesn't
 			// like dates outside of UNIX timestamp range, so the previous line was zapping them. So I'm just restoring
 			// the date as found in the CSV file. This could have side effects if someone else tries to import invalid dates,
 			// but ... ah well.
@@ -1194,8 +1209,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		if (!is_array($b)) {
 			return false;
 		}
-		//3.0 can't use timestamp as that gets offset as its taken as numeric by JDate
-		//$orig = new JDate($datebits['timestamp'], 2);
+		//3.0 can't use timestamp as that gets offset as its taken as numeric by FabDate
+		//$orig = new FabDate($datebits['timestamp'], 2);
 		$bstr = $b['year'].'-'.$b['mon'].'-'.$b['day'].' '.$b['hour'].':'.$b['min'].':'.$b['sec'];
 		$date = JFactory::getDate($bstr);
 		if (in_array($v, $this->getNullDates()) || $v === $date->toMySQL()) {
@@ -1213,10 +1228,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 * $$$ rob - not used??? 9/11/2010
 	 * set a dates time to 00:00:00
-	 * @param mixed $time The initial time for the JDate object
+	 * @param mixed $time The initial time for the FabDate object
 	 * @return string mysql formatted date
 	 */
-	
+
 	function setTimeToZero($date)
 	{
 		$date = JFactory::getDate($date);
@@ -1231,7 +1246,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * add days to a date
-	 * @param mixed $time The initial time for the JDate object
+	 * @param mixed $time The initial time for the FabDate object
 	 * @param integer number of days to add (negtive to remove days)
 	 * @return string mysql formatted date
 	 */
@@ -1248,7 +1263,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * add hours to a date
-	 * @param mixed $time The initial time for the JDate object
+	 * @param mixed $time The initial time for the FabDate object
 	 * @param integer number of days to add (negtive to remove days)
 	 * @return string mysql formatted date
 	 */
@@ -1380,32 +1395,33 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				break;
 			default:
 				$params = $this->getParams();
-				$format = $params->get('date_table_format');
-				if ($format == '%a' || $format == '%A') { //special cases where we want to search on a given day of the week
-					//note it wont work with ranged searches
+			$format = $params->get('date_table_format');
+			if ($format == '%a' || $format == '%A') {
+				//special cases where we want to search on a given day of the week
+				//note it wont work with ranged searches
+				$this->strftimeTFormatToMySQL($format);
+				$key = "DATE_FORMAT( $key , '$format')";
+			}
+			else if ($format == '%Y %B') {
+				// $$$ hugh - testing horrible hack for different languages, initially for andorapro's site
+				// Problem is, he has multiple language versions of the site, and needs to filter tables by "%Y %B" dropdown (i.e. "2010 November") in multiple languages.
+				// FabDate automagically uses the selected language when we render the date
+				// but when we get to this point, month names are still localized, i.e. in French or German
+				// which MySQL won't grok (until 5.1.12)
+				// So we need to translate them back again, *sigh*
+				// FIXME - need to make all this more generic, so we can handle any date format which uses
+				// month or day names.
+				$matches = array();
+				if (preg_match('#\d\d\d\d\s+(\S+)\b#', $value, $matches)) {
+					$this_month = $matches[1];
+					$en_month = $this->_monthToEnglish($this_month);
+					$value = str_replace($this_month, $en_month, $value);
 					$this->strftimeTFormatToMySQL($format);
 					$key = "DATE_FORMAT( $key , '$format')";
 				}
-				else if ($format == '%Y %B') {
-					// $$$ hugh - testing horrible hack for different languages, initially for andorapro's site
-					// Problem is, he has multiple language versions of the site, and needs to filter tables by "%Y %B" dropdown (i.e. "2010 November") in multiple languages.
-					// JDate automagically uses the selected language when we render the date
-					// but when we get to this point, month names are still localized, i.e. in French or German
-					// which MySQL won't grok (until 5.1.12)
-					// So we need to translate them back again, *sigh*
-					// FIXME - need to make all this more generic, so we can handle any date format which uses
-					// month or day names.
-					$matches = array();
-					if (preg_match('#\d\d\d\d\s+(\S+)\b#', $value, $matches)) {
-						$this_month = $matches[1];
-						$en_month = $this->_monthToEnglish($this_month);
-						$value = str_replace($this_month, $en_month, $value);
-						$this->strftimeTFormatToMySQL($format);
-						$key = "DATE_FORMAT( $key , '$format')";
-					}
-				}
-				$query = " $key $condition $value ";
-				break;
+			}
+			$query = " $key $condition $value ";
+			break;
 		}
 		return $query;
 	}
@@ -1415,7 +1431,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * @param mixed value to copy into new record
 	 * @return mixed value to copy into new record
 	 */
-	
+
 	public function onCopyRow($val)
 	{
 		$aNullDates = $this->getNullDates();
@@ -1543,15 +1559,31 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	* load a new set of default properites and params for the element
-	* @return object element (id = 0)
-	*/
-	
+	 * load a new set of default properites and params for the element
+	 * @return object element (id = 0)
+	 */
+
 	public function getDefaultProperties()
 	{
 		$item = parent::getDefaultProperties();
 		$item->hidden = 1;
 		return $item;
 	}
+}
+
+/**
+ * very samll override to JDate to stop 500 errors occuring (when Jdebug is on) if $date is not a valid date string
+ */
+
+class FabDate extends JDate{
+
+	public function __construct($date = 'now', $tz = null)
+	{
+		if (!date_create($date)) {
+			return false;
+		}
+		parent::__construct($date, $tz);
+	}
+
 }
 ?>

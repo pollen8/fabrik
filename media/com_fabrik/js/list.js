@@ -30,8 +30,24 @@ var FbListPlugin = new Class({
 		}.bind(this));
 	},
 
+	/**
+	 * get the list object that the plugin is assigned to
+	 */
+
 	getList: function () {
 		return Fabrik.blocks['list_' + this.options.ref];
+	},
+	
+	/**
+	 * get a html nodes row id - so you can pass in td or tr for example
+	 * presumes each row has a fabrik_row class and its id is in a string 'list_listref_rowid'
+	 */
+
+	getRowId: function (node) {
+		if (!node.hasClass('fabrik_row')) {
+			node = node.getParent('.fabrik_row'); 
+		}
+		return node.id.split('_').getLast();
 	},
 
 	clearFilter: Function.from(),
@@ -713,7 +729,7 @@ var FbList = new Class({
 					return;
 				}
 				list.setActive(row);
-				var rowid = row.id.replace('list_' + list.id + '_row_', '');
+				var rowid = row.id.split('_').getLast();
 				if (list.options.links.edit === '') {
 					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
 					loadMethod = 'xhr';
@@ -749,7 +765,7 @@ var FbList = new Class({
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
-					listid = e.target.getParent('form').getElement('input[name=listid]').get('value');
+					listid = e.target.getParent('form').getElement('input[name=listref]').get('value');
 				} else {
 					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listid');
 				}
@@ -760,7 +776,7 @@ var FbList = new Class({
 					return;
 				}
 				list.setActive(row);
-				var rowid = row.id.replace('list_' + list.id + '_row_', '');
+				var rowid = row.id.split('_').getLast();
 				if (list.options.links.detail === '') {
 					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
 					loadMethod = 'xhr';

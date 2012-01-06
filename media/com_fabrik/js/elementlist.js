@@ -77,7 +77,9 @@ var FbElementList =  new Class({
 					}
 					l.value = '';
 					this.addNewOption(val, label);
-					this.mySlider.toggle();
+					if (this.mySlider) {
+						this.mySlider.toggle();
+					}
 				}
 			}.bind(this));
 		}

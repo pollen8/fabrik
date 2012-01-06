@@ -3734,11 +3734,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * @abstract
+	 * should the element's data be returned in the search all?
+	 * @param bool is the elements' list is advanced search all mode?
 	 */
 
-	function includeInSearchAll()
+	function includeInSearchAll($advancedMode = false)
 	{
+		if ($this->isJoin() && $advancedMode) {
+			return false;
+		}
 		return $this->getParams()->get('inc_in_search_all', true);
 	}
 

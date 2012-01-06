@@ -112,8 +112,15 @@ var Loader = new Class({
 	},
 	
 	stop: function (inline, msg, keepOverlay) {
+		var s = this.getSpinner(inline, msg);
 		//dont keep the spinner once stop is called - causes issue when loading ajax form for 2nd time
-		this.getSpinner(inline, msg).destroy();
+		if (Browser.ie && Browser.version < 9) {
+			//well ok we have to in ie8 ;( otherwise it give a js error somewhere in FX
+			s.clearChain(); // tried this to remove FX but didnt seem to achieve anything
+			s.hide();
+		} else {
+			s.destroy();
+		}
 		delete this.spinners[inline];
 	}
 });

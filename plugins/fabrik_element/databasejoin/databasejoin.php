@@ -1314,18 +1314,23 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->popwiny      = $params->get('yoffset', 0);
 		$opts->display_type = $params->get('database_join_display_type', 'dropdown');
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
-		$opts->displayType 	= $params->get('database_join_display_type', 'dropdown');
+		$opts->displayType = $params->get('database_join_display_type', 'dropdown');
 		$opts->show_please_select = $params->get('database_join_show_please_select');
-		$opts->showDesc 		= $params->get('join_desc_column') === '' ? false : true;
+		$opts->showDesc = $params->get('join_desc_column') === '' ? false : true;
 		$opts->autoCompleteOpts = $opts->display_type == 'auto-complete' ? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'databasejoin') : null;
 		$opts->allowadd = $params->get('fabrikdatabasejoin_frontend_add', 0) == 0 ? false : true;
 		if ($this->isJoin()) {
 			$join = $this->getJoin();
-			$opts->elementName = $join->table_join;
+			$opts->joinTable = $join->table_join;
+			// $$$ rob - wrong for inline edit plugin
+			//$opts->elementName = $join->table_join;
+			$opts->elementName = $join->table_join . '___' . $element->name;
 			$opts->elementShortName = $element->name;
+			$opts->joinId = $join->id;
+			$opts->isJoin = true;
 		}
-		$opts = json_encode($opts);
-		return $opts;
+		$opts->isJoin = $this->isJoin();
+		return json_encode($opts);
 	}
 
 	/**

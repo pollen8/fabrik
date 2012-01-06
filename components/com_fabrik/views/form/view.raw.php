@@ -33,7 +33,7 @@ class fabrikViewForm extends JView
 		$html[] = '<ul class="fabrikElementContainer">';
 		foreach ($this->groups as $group) {
 			foreach ($group->elements as $element) {
-				$html[] = '<li class="'.$element->id.'">'.$element->label.'</li>';
+				$html[] = '<li class="'.$element->id.'">' . $element->label . '</li>';
 				$html[] = '<li class="fabrikElement">';
 				$html[] = $element->element;
 				$html[] = '</li>';
@@ -49,7 +49,7 @@ class fabrikViewForm extends JView
 				$html[] = '<li class="ajax-controls inline-cancel">';
 				$html[] = '<a href="#" class="">';
 				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL')));
-				$html[] = '<span>'.JText::_('COM_FABRIK_CANCEL').'</span></a>';
+				$html[] = '<span>' . JText::_('COM_FABRIK_CANCEL') . '</span></a>';
 				$html[] = '</li>';
 			}
 		
@@ -57,7 +57,7 @@ class fabrikViewForm extends JView
 				$html[] = '<li class="ajax-controls inline-save">';
 				$html[] = '<a href="#" class="">';
 				$html[] = FabrikHelperHTML::image('save.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SAVE')));
-				$html[] = '<span>'.JText::_('COM_FABRIK_SAVE').'</span></a>';
+				$html[] = '<span>' . JText::_('COM_FABRIK_SAVE') . '</span></a>';
 				$html[] = '</li>';
 			}
 			$html[] = '</ul>';
