@@ -964,7 +964,7 @@ class FabrikWorker {
 
 	public function JSONtoData($data, $toArray = false)
 	{
-		
+
 		if (!strstr($data, '{')) {
 			//hmm was messng up date rendering @ http://www.podion.eu/dev2/index.php/2011-12-19-10-33-59/actueel
 			//return $toArray ? (array)$data : $data;
@@ -1019,21 +1019,40 @@ class FabrikWorker {
 	 * @param string param name$name
 	 * @param mixed default $val
 	 * @param bool $mambot (if set to true menu params ignored)
+	 * @param string $priority - defaults that menu priorities override request - set to 'request' to inverse this priority
 	 */
 
-	public function getMenuOrRequestVar($name, $val = '', $mambot = false)
+	public function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu')
 	{
 		$app = JFactory::getApplication();
-		$val = JRequest::getVar($name, $val);
-		if (!$app->isAdmin()) {
-			$menus = JSite::getMenu();
-			$menu	= $menus->getActive();
+		if ($priority === 'menu') {
+			$val = JRequest::getVar($name, $val);
+			if (!$app->isAdmin()) {
+				$menus = JSite::getMenu();
+				$menu	= $menus->getActive();
 
-			//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
-			if (is_object($menu) && !$mambot) {
-				$menu_params = new JParameter($menu->params);
-				$val = $menu_params->get($name, $val);
+				//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
+				if (is_object($menu) && !$mambot) {
+					$menu_params = new JParameter($menu->params);
+					$val = $menu_params->get($name, $val);
+				}
 			}
+			
+		} else {
+				
+			if (!$app->isAdmin()) {
+				$menus = JSite::getMenu();
+				$menu	= $menus->getActive();
+			
+				//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
+				if (is_object($menu) && !$mambot) {
+					$menu_params = new JParameter($menu->params);
+					$val = $menu_params->get($name, $val);
+				}
+			}
+			$val = JRequest::getVar($name, $val);
+			
+			
 		}
 		return $val;
 	}
