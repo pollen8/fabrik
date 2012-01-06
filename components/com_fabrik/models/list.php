@@ -6637,7 +6637,6 @@ class FabrikFEModelList extends JModelForm {
 	// $$$ rob ensure that we have a sequental set of keys otherwise ajax json will turn array into object
 	$data[$groupk] = array_values($data[$groupk]);
 	}
-	echo "<pre>";print_r($data);exit;
 	} */
 
 	function noTable()
@@ -6871,7 +6870,8 @@ class FabrikFEModelList extends JModelForm {
 
 	public function setRenderContext($id)
 	{
-		if (JRequest::getVar('task') == 'list.filter') {
+		// $$$ rob if admin filter task = ilter and not list.filter
+		if (JRequest::getVar('task') == 'list.filter' || JRequest::getVar('task') == 'filter') {
 			$listref = JRequest::getVar('listref');
 			$listref = explode('_', $listref);
 			array_shift($listref);

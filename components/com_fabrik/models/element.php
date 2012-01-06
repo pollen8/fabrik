@@ -1750,7 +1750,7 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * get the default value for the table filter
+	 * get the default value for the list filter
 	 * @param bol is the filter a normal or advanced filter
 	 * @param int filter order
 	 */
@@ -1803,7 +1803,6 @@ class plgFabrik_Element extends FabrikPlugin
 					}
 				}
 				else {
-					//$k = $count;
 					$k = $counter;
 				}
 				//is there a filter with this elements name
