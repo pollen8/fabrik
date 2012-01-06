@@ -17,7 +17,8 @@ var FbAutocomplete = new Class({
 		},
 		url: 'index.php',
 		max: 10,
-		onSelection: Class.empty
+		onSelection: Class.empty,
+		autoLoadSingleResult: true
 	},
 
 	initialize: function (element, options) {
@@ -117,7 +118,7 @@ var FbAutocomplete = new Class({
 		var max = this.getListMax();
 		var ul = this.menu.getElement('ul');
 		ul.empty();
-		if (data.length === 1) {
+		if (data.length === 1 && this.options.autoLoadSingleResult) {
 			this.element.value = data[0].value;
 			this.fireEvent('selection', [this, this.element.value]);
 		}
