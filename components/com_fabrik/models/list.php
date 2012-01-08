@@ -97,10 +97,10 @@ class FabrikFEModelList extends JModelForm {
 	public $randomRecords = false;
 
 	protected $_data = null;
-	
+
 	/** @var string template name */
 	protected $tmpl = null;
-	
+
 	var $nav = null;
 	var $fields = null;
 	var $prefilters = null;
@@ -150,7 +150,7 @@ class FabrikFEModelList extends JModelForm {
 
 	/** @var int the max number of buttons that is shown in a row */
 	protected $rowActionCount = 0;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -1135,7 +1135,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$bits[] = "&resetfilters=1";
 		//$bits[] = "clearfilters=1"; //nope stops url filter form workin on related data :(
-		$bits[] = '&fabrik_incsessionfilters=0';//test for releated data, filter once, go backt o main list re-filter - 
+		$bits[] = '&fabrik_incsessionfilters=0';//test for releated data, filter once, go backt o main list re-filter -
 		$url .= implode("&", $bits);
 		$url = JRoute::_($url);
 
@@ -1187,7 +1187,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		//try to remove any previously entered links
 		$data = preg_replace('/<a(.*?)>|<\/a>/', '', $data);
-		
+
 		$class = '';
 		if ($this->canViewDetails($row)) {
 			$class = 'fabrik_view';
@@ -1195,7 +1195,7 @@ class FabrikFEModelList extends JModelForm {
 		if ($this->canEdit($row)) {
 			$class = 'fabrik_edit';
 		}
-		
+
 		$data = '<a class="fabrik___rowlink '.$class.'" href="'.$link.'">'.$data.'</a>';
 		return $data;
 	}
@@ -6366,10 +6366,10 @@ class FabrikFEModelList extends JModelForm {
 				} else {
 					//check if its a tag element if it is we want to clear that when we clear the form
 					// (if the filter was set via the url we generally want to keep it though
-					
+
 					// 28/12/2011 $$$ rob testing never keeping querystring filters in the qs but instead always adding them to the filters (if no filter set up in element settings then hidden fields added anyway
 					// this is to try to get round issue of related data (countries->regions) filter region from country list, then clear filters (ok) but then if you go to 2nd page of results country url filter re-applied
-						
+
 					/* if($el->getElement()->plugin !== 'textarea' && $el->getParams()->get('textarea-tagify') !== true) {
 						$qs[] = "$k=$v";
 					} */
@@ -6381,7 +6381,7 @@ class FabrikFEModelList extends JModelForm {
 		//$action = preg_replace("/limitstart{$this->getId()}=(.*)?(&|)/", "", $action);
 		// $$$ hugh - oops, this pattern was removing to end of line, not just the limitstart, trying out fix
 		$action = preg_replace("/limitstart{$this->getId()}=(\d+)?(&amp;|)/", "", $action);
-		
+
 		$action = FabrikString::removeQSVar($action, 'fabrik_incsessionfilters');
 		$action = FabrikString::rtrimword($action, "&");
 		$this->tableAction 	= JRoute::_($action);
@@ -6890,7 +6890,11 @@ class FabrikFEModelList extends JModelForm {
 		if (stristr($qs, 'group_by')) {
 			$qs = FabrikString::removeQSVar($qs, 'group_by');
 		}
-		$url = $base.$qs;
+		$url = $base;
+		if (!empty($qs)) {
+			$url .= strpos($url, '?') ? '&amp;' : '?';
+			$url .= $qs;
+		}
 		$url .= strpos($url, '?') ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
@@ -6927,7 +6931,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $csvFields;
 	}
-	
+
 	/**
 	 * helper function for view to determine if filters should be shown
 	 * @return boolean
@@ -6940,20 +6944,20 @@ class FabrikFEModelList extends JModelForm {
 		$filterMode = (int)$params->get('show-table-filters');
 		return (count($filters) > 0 && $filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  true : false;
 	}
-	
+
 	protected function getButtonCount()
 	{
 		$buttonCount = 0;
-		
+
 		return $buttonCount;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * helper view function to determine if any buttons are shown
 	 * @return boolean
 	 */
-	
+
 	public function getHasButtons()
 	{
 		$params = $this->getParams();
