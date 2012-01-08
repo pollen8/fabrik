@@ -1645,7 +1645,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		// $$$ rob for PHP 5.2.1 (and potential up to before 5.2.6) $post is not fully associated with _formData -
 		// so the above copToRaw does not update $this->_formData.
-		$this->_formData = $post;
+		// $$$ hugh - had to add the &, otherwise replace validations weren't work, as modifying
+		// $post wasn't modifying $this->_formData.  Which is weird, as I thought all array assignments
+		// were by reference?
+		$this->_formData =& $post;
 		$this->callElementPreprocess();
 
 		// $$$ hugh - add in any encrypted stuff, in case we fail validation ...
