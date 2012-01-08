@@ -21,6 +21,7 @@ echo "
 #listform_$c .fabrikDataContainer{
 	overflow-y:auto;
 	clear:left;
+	width:100%;
 }
 
 #listform_$c a,
