@@ -315,8 +315,8 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$glabels = array();
 		$gcolours = array();
 		$gfills = array();
-		$max = 0;
-		$min = 0;
+		$max =array();
+		$min = array();
 
 		$calculationLabels = array();
 		$calculationData = array();
@@ -325,14 +325,18 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$tmodels = array();
 
 		foreach ($listid as $tid) {
-		  if (!array_key_exists($tid, $tmodels)) {
+			$min[$c] = 0;
+			$max[$c] = 0;
+
+			if (!array_key_exists($tid, $tmodels)) {
 				$listModel = null;
 				$listModel = JModel::getInstance('list', 'FabrikFEModel');
 				$listModel->setId($tid);
 				$tmodels[$tid] = $listModel;
-		  } else {
-		    $listModel = $tmodels[$tid];
-		  }
+			}
+			else {
+			  	$listModel = $tmodels[$tid];
+			}
 
 			$table = $listModel->getTable();
 			$form = $listModel->getForm();
@@ -376,11 +380,9 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 						$calculationLabels[] = trim(strip_tags($o->label));
 					}
 				}
-			if (!empty($calculationData) && max($calculationData) > $max) {
-					$max = max($calculationData);
-				}
-				if(!empty($calculationData) && min($calculationData) < $min) {
-					$min = min($calculationData);
+				if (!empty($calculationData)) {
+					$max[$c] = max($calculationData);
+					$min[$c] = min($calculationData);
 				}
 
 				$gdata[$c] = implode(',', $tmpgdata);
@@ -409,11 +411,9 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 						}
 						$tmpglabels[] = !empty($label) ? strip_tags($row->$label) : '';
 					}
-					if (!empty($tmpgdata) && max($tmpgdata) > $max) {
-						$max = max($tmpgdata);
-					}
-					if(!empty($tmpgdata) && min($tmpgdata) < $min) {
-						$min = min($tmpgdata);
+					if (!empty($tmpgdata)) {
+						$max[$c] = max($tmpgdata);
+						$min[$c] = min($tmpgdata);
 					}
 					$gdata[$c] = implode(',', $tmpgdata);
 					$glabels[$c] = implode('|', $tmpglabels);
@@ -469,7 +469,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					}
 					$arrData = array();
 					$i = 0;
-				
+
 					foreach ($gsums as $gd) {
 						$arrData[$i][0] = $axisLabels[$i];
 						$arrData[$i][1] = $gd;
@@ -593,13 +593,14 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 							// Trendline Start & End values
 							$trendstart = $params->get('fusionchart_trendstartvalue', '');
 							$trendend = $params->get('fusionchart_trendendvalue', '');
-								if ($trendstart[$nbe]) {
-									$startval = $trendstart[$nbe];
-									$endval = $trendend[$nbe];
+								if ($trendstart) {
+									$startval = $trendstart;
+									$endval = $trendend;
 								} else if ($eltype[$nbe] == 'trendline') {
 									// If Start & End values are not specifically defined, use the element's min & max values
-									$startval = $min;
-									$endval = $max;
+var_dump($min, $max, $c, $nbe);
+									$startval = $min[$nbe];
+									$endval = $max[$nbe];
 								}
 								$strAddTrend = "startValue=$startval;endValue=$endval";
 								// Label
@@ -608,13 +609,14 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 								$iszone = $params->get('fusionchart_trendiszone', '0');
 								$elcolour = $params->get('fusionchart_elcolour', '');
 								$elalpha = $params->get('fusionchart_elalpha', '');
-								$strAddTrend .= ";displayvalue=".$displayval[$nbe];
-								$strAddTrend .= ";showOnTop=".$showontop[$nbe];
+								$strAddTrend .= ";displayvalue=".$displayval;
+								$strAddTrend .= ";showOnTop=".$showontop;
 								if ($startval < $endval) {
-									$strAddTrend .= ";isTrendZone=".$iszone[$nbe];
+									$strAddTrend .= ";isTrendZone=".$iszone;
 								}
 								$strAddTrend .= ";color=".$elcolour[$nbe];
 								$strAddTrend .= ";alpha=".$elalpha[$nbe];
+								var_dump($strAddTrend);
 								$FC->addTrendLine("$strAddTrend");
 								unset($axisLabels[$nbe]);
 								unset($gdata[$nbe]);
