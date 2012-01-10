@@ -598,7 +598,6 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 									$endval = $trendend;
 								} else if ($eltype[$nbe] == 'trendline') {
 									// If Start & End values are not specifically defined, use the element's min & max values
-var_dump($min, $max, $c, $nbe);
 									$startval = $min[$nbe];
 									$endval = $max[$nbe];
 								}

@@ -3,16 +3,6 @@
 	<fields name="params">
 
 		<fieldset name="options" repeatcontrols="1" repeat="1">
-		
-			<field name="fusionchart_version" 
-				type="list" 
-				default="free_old" 
-				label="PLG_VISUALIZATION_FUSIONCHART_VERSION_LABEL" 
-				description="PLG_VISUALIZATION_FUSIONCHART_VERSION_DESC">
-				<option value="free_old">Default</option>
-				<option value="free_22">Free 2.2</option>
-				<option value="pro_30">Pro 3.0</option>
-			</field>
 			
 			<field name="fusionchart_connection" 
 				type="connections" 
@@ -31,8 +21,8 @@
 				include_calculations="1"
 				connection="params_fusionchart_connection"
 				table="params_fusionchart_table" 
-				label="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_LABEL"
-				description="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_DESC" />
+				label="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_LABEL"
+				description="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_DESC" />
 				
 			<field name="fusionchart_axis_labels" 
 				type="text" 
@@ -87,41 +77,16 @@
 			
 		</fieldset>
 
-		<fieldset name="trendline" label="PLG_VISUALIZATION_FUSIONCHART_TRENDLINE_SPEC_ATTRIBUTES">
-			<field name="fusionchart_trendlabel"
-				type="text" size="20"
-				label="PLG_VISUALIZATION_FUSIONCHART_TREND_LABEL_LABEL"
-				description="PLG_VISUALIZATION_FUSIONCHART_TREND_LABEL_DESC" />
-				
-			<field name="fusionchart_trendstartvalue"
-				type="text" size="10"
-				label="PLG_VISUALIZATION_FUSIONCHART_TREND_STARTVALUE_LABEL"
-				description="PLG_VISUALIZATION_FUSIONCHART_TREND_STARTVALUE_DESC" />
-				
-			<field name="fusionchart_trendendvalue"
-				type="text" size="10"
-				label="PLG_VISUALIZATION_FUSIONCHART_TREND_ENDVALUE_LABEL"
-				description="PLG_VISUALIZATION_FUSIONCHART_TREND_ENDVALUE_DESC" />
-				
-			<field name="fusionchart_trendshowontop"
-				type="radio" default="1"
-				label="PLG_VISUALIZATION_FUSIONCHART_TREND_SHOWONTOP_LABEL"
-				description="PLG_VISUALIZATION_FUSIONCHART_TREND_SHOWONTOP_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
-			<field name="fusionchart_trendiszone"
-				type="radio" default="0"
-				label="PLG_VISUALIZATION_FUSIONCHART_TREND_ISZONE_LABEL"
-				description="PLG_VISUALIZATION_FUSIONCHART_TREND_ISZONE_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
-		</fieldset>
-
 		<fieldset name="graph_attributes" label="PLG_VISUALIZATION_FUSIONCHART_SPACER_GRAPH_ATTRIBUTES">
+			<field name="fusionchart_version" 
+				type="list" 
+				default="free_old" 
+				label="PLG_VISUALIZATION_FUSIONCHART_VERSION_LABEL" 
+				description="PLG_VISUALIZATION_FUSIONCHART_VERSION_DESC">
+				<option value="free_old">Default</option>
+				<option value="free_22">Free 2.2</option>
+				<option value="pro_30">Pro 3.0</option>
+			</field>
 			<field name="fusionchart_type"
 				type="list" 
 				label="PLG_VISUALIZATION_FUSIONCHART_CHART_TYPE_LABEL">
@@ -211,6 +176,41 @@
 				label="PLG_VISUALIZATION_FUSIONCHART_CUSTOM_ATTRIBUTES_LABEL"
 				description="PLG_VISUALIZATION_FUSIONCHART_CUSTOM_ATTRIBUTES_DESC" />
 
+		</fieldset>
+
+
+		<fieldset name="trendline" label="PLG_VISUALIZATION_FUSIONCHART_TRENDLINE_SPEC_ATTRIBUTES">
+			<field name="fusionchart_trendlabel"
+				type="text" size="20"
+				label="PLG_VISUALIZATION_FUSIONCHART_TREND_LABEL_LABEL"
+				description="PLG_VISUALIZATION_FUSIONCHART_TREND_LABEL_DESC" />
+				
+			<field name="fusionchart_trendstartvalue"
+				type="text" size="10"
+				label="PLG_VISUALIZATION_FUSIONCHART_TREND_STARTVALUE_LABEL"
+				description="PLG_VISUALIZATION_FUSIONCHART_TREND_STARTVALUE_DESC" />
+				
+			<field name="fusionchart_trendendvalue"
+				type="text" size="10"
+				label="PLG_VISUALIZATION_FUSIONCHART_TREND_ENDVALUE_LABEL"
+				description="PLG_VISUALIZATION_FUSIONCHART_TREND_ENDVALUE_DESC" />
+				
+			<field name="fusionchart_trendshowontop"
+				type="radio" default="1"
+				label="PLG_VISUALIZATION_FUSIONCHART_TREND_SHOWONTOP_LABEL"
+				description="PLG_VISUALIZATION_FUSIONCHART_TREND_SHOWONTOP_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="fusionchart_trendiszone"
+				type="radio" default="0"
+				label="PLG_VISUALIZATION_FUSIONCHART_TREND_ISZONE_LABEL"
+				description="PLG_VISUALIZATION_FUSIONCHART_TREND_ISZONE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 
 		<fieldset name="background" label="PLG_VISUALIZATION_FUSIONCHART_SPACER_BG_PROPERTIES">
