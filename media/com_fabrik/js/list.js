@@ -1446,11 +1446,11 @@ var FbListActions = new Class({
 		});
 
 		// hide markup that contained the actions
-		if (this.list.list.getElements('.fabrik_actions')) {
-			this.list.list.getElements('.fabrik_actions').hide();
+		if (this.list.form.getElements('.fabrik_actions')) {
+			this.list.form.getElements('.fabrik_actions').hide();
 		}
-		if (this.list.list.getElements('.fabrik_calculation')) {
-			var calc = this.list.list.getElements('.fabrik_calculation').getLast();
+		if (this.list.form.getElements('.fabrik_calculation')) {
+			var calc = this.list.form.getElements('.fabrik_calculation').getLast();
 			if (typeOf(calc) !== 'null') {
 				calc.hide();
 			}
