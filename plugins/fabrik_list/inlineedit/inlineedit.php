@@ -83,8 +83,10 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 				foreach ($fields as $field) {
 					$val = $elements[$field];
 				//load in all element js classes
-					$val->formJavascriptClass($srcs);
-					$els[$key]->plugins[$field] = $val->getElement()->id;
+					if (is_object($val)) {
+						$val->formJavascriptClass($srcs);
+						$els[$key]->plugins[$field] = $val->getElement()->id;
+					}
 				}
 			}
 		} else {
