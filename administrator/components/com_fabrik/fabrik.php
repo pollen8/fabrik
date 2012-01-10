@@ -35,7 +35,7 @@ if (!defined('COM_FABRIK_FRONTEND')) {
 }
 
 // Execute the task.
-$controller	= &JController::getInstance('Fabrik');
+$controller	= JController::getInstance('Fabrik');
 
 //test that they've published some element plugins!
 $db = JFactory::getDbo();
@@ -46,6 +46,5 @@ if (count($db->loadResult()) === 0) {
 	JError::raiseNotice(E_WARNING, JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'));
 }
 //echo '<pre>';print_r($controller);
-//echo JRequest::getCmd('task', 'home.display');exit;
 $controller->execute(JRequest::getCmd('task', 'home.display'));
 $controller->redirect();
