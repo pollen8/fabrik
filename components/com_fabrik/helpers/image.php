@@ -62,17 +62,21 @@ class FabimageHelper
 		$GDfuncList = get_extension_funcs('gd');
 		ob_start();
 		@phpinfo(INFO_MODULES);
-		$output=ob_get_contents();
+		$output = ob_get_contents();
 		ob_end_clean();
-		$matches[1]='';
-		if (preg_match("/GD Version[ \t]*(<[^>]+>[ \t]*)+([^<>]+)/s", $output, $matches)) {
-			$gdversion = $matches[2];
-		} else {
-			return $gd;
+		$matches[1] = '';
+		if ($output !== '') {
+			if (preg_match("/GD Version[ \t]*(<[^>]+>[ \t]*)+([^<>]+)/s", $output, $matches)) {
+				$gdversion = $matches[2];
+			} else {
+				return $gd;
+			}
 		}
 		if (function_exists('imagecreatetruecolor') && function_exists('imagecreatefromjpeg')) {
+			$gdversion = isset($gdversion) ? $gdversion : 2;
 			$gd['gd2'] = "GD: " . $gdversion;
 		} elseif (function_exists('imagecreatefromjpeg')) {
+			$gdversion = isset($gdversion) ? $gdversion : 1;
 			$gd['gd1'] = "GD: " . $gdversion;
 		}
 		return $gd;
