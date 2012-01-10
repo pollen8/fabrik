@@ -856,7 +856,7 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($bLabel && !$this->isHidden()) {
 				$str .= '<label for="'.$elementHTMLId.'" class="'.$labelClass.'">';
 			} elseif (!$bLabel && !$this->isHidden()) {
-				$str .= '<span class="' . $labelClass . '">';
+				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
 			$l = $element->label;
 			if ($rollOver) {
@@ -2217,18 +2217,22 @@ class plgFabrik_Element extends FabrikPlugin
 		$hidden = $hidden ? 1 : 0;
 
 		$table = $this->getListModel()->getTable();
-
 		$match = $this->isExactMatch(array('match' => $element->filter_exact_match));
-		$cond = $this->getFilterCondition();
 		$return = array();
+		$filters = $this->getListModel()->getFilterArray();
+		$eval = JArrayHelper::getValue($filters, 'eval', array());
+		$eval = JArrayHelper::getValue($eval, $counter, FABRIKFILTER_TEXT);
+		
+		$condition = JArrayHelper::getValue($filters, 'condition', array());
+		$condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
 		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
-		$return[] = $prefix.'[condition]['.$counter.']" value="'.$cond.'" />';
+		$return[] = $prefix.'[condition]['.$counter.']" value="' . $condition . '" />';
 		$return[] = $prefix.'[join]['.$counter.']" value="AND" />';
-		$return[] = $prefix.'[key]['.$counter.']" value="'.$elName.'" />';
+		$return[] = $prefix.'[key]['.$counter.']" value="' . $elName . '" />';
 		$return[] = $prefix.'[search_type]['.$counter.']" value="normal" />';
 		$return[] = $prefix.'[match]['.$counter.']" value="'.$match.'" />';
 		$return[] = $prefix.'[full_words_only]['.$counter.']" value="'.$params->get('full_words_only', '0').'" />';
-		$return[] = $prefix.'[eval]['.$counter.']" value="'.FABRIKFILTER_TEXT.'" />';
+		$return[] = $prefix.'[eval]['.$counter.']" value="' . $eval . '" />';
 		$return[] = $prefix.'[grouped_to_previous]['.$counter.']" value="0" />';
 		$return[] = $prefix.'[hidden]['.$counter.']" value="'.$hidden.'" />';
 		$return[] = $prefix.'[elementid]['.$counter.']" value="'.$element->id.'" />';

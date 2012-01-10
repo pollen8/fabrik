@@ -385,8 +385,8 @@ class FabrikFEModelListfilter extends FabModel {
 			}
 			$k = $elementModel->getFullName(false, false, false);
 			$k = FabrikString::safeColName($k);
-			$eval = FABRIKFILTER_TEXT;
-
+			//$eval = FABRIKFILTER_TEXT;
+			$eval = is_array($filters) ? JArrayHelper::getValue($filters, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 			if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin')) {
 				$fieldDesc = $elementModel->getFieldDescription();
 
@@ -652,8 +652,9 @@ class FabrikFEModelListfilter extends FabModel {
 					continue;
 				}
 			}
-			$eval = FABRIKFILTER_TEXT;
-
+			
+			//$eval = FABRIKFILTER_TEXT;
+			$eval = is_array($val) ? JArrayHelper::getValue($val, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 			$condition = is_array($val) ? JArrayHelper::getValue($val, 'condition', $elementModel->getDefaultFilterCondition()) : $elementModel->getDefaultFilterCondition();
 
 			if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin')) {
@@ -872,7 +873,8 @@ class FabrikFEModelListfilter extends FabModel {
 				if (is_array($value) && $value[0] == '' && (!isset($value[1]) || $value[1] == '')) {
 					continue;
 				}
-				$eval = FABRIKFILTER_TEXT;
+				//$eval = FABRIKFILTER_TEXT;
+				$eval = is_array($value) ? JArrayHelper::getValue($value, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 				if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin')) {
 					$fieldDesc = $elementModel->getFieldDescription();
 
@@ -1032,7 +1034,8 @@ class FabrikFEModelListfilter extends FabModel {
 					$sqlCond = null;
 					$condition = array_key_exists($i, $sessionfilters['condition']) ? $sessionfilters['condition'][$i] : $elementModel->getDefaultFilterCondition();
 					$raw	= array_key_exists($i, $sessionfilters['raw']) ? $sessionfilters['raw'][$i] : 0;
-					$eval = FABRIKFILTER_TEXT;
+					//$eval = FABRIKFILTER_TEXT;
+					$eval =  array_key_exists($i, $sessionfilters['eval']) ? $sessionfilters['eval'][$i] : FABRIKFILTER_TEXT;
 					if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin')) {
 						$fieldDesc = $elementModel->getFieldDescription();
 
