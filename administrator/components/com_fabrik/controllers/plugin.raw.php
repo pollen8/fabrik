@@ -52,5 +52,15 @@ class FabrikControllerPlugin extends JController
 		return;
 	}
 
+	function userAjax()
+	{
+		$db = FabrikWorker::getDbo();
+		require_once(COM_FABRIK_FRONTEND . DS. "user_ajax.php");
+		$method = JRequest::getVar('method', '');
+		$userAjax = new userAjax($db);
+		if (method_exists($userAjax, $method)) {
+			$userAjax->$method();
+		}
+	}
 }
 ?>
