@@ -49,3 +49,8 @@
 	overflow:auto !important;
 }
 
+#jform_label_parent,
+.mce_editable{
+	clear:left;
+	display:block;
+}
