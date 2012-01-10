@@ -95,9 +95,10 @@ if ($showTitle !== '') {
 
 $ordering = JArrayHelper::fromObject(json_decode($params->get('ordering')));
 $orderBy = (array)$ordering['order_by'];
+$orderDir = (array)$ordering['order_dir'];
 if (!empty($orderBy)) {
 	$model->getTable()->order_by = json_encode($orderBy);
-	$model->getTable()->order_dir = json_encode($odering['order_dir']);
+	$model->getTable()->order_dir = json_encode($orderDir);
 }
 
 //set up prefilters - will overwrite ones defined in the list!
