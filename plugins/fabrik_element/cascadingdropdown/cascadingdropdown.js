@@ -109,7 +109,7 @@ var FbCascadingdropdown = new Class({
 					}
 				}.bind(this));
 			} else {
-				if (this.options.showPleaseSelect) {
+				if (this.options.showPleaseSelect && json.length > 0) {
 					var item = json.shift(); 
 					new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
 				}
@@ -144,7 +144,7 @@ var FbCascadingdropdown = new Class({
 		//c is the repeat group count
 		this.myAjax = null;
 		//cloned seems to be called correctly 
-		if ($(this.options.watch)) {
+		if (document.id(this.options.watch)) {
 			if (this.options.watchInSameGroup === true) {
 				// $$$ hugh - nope, 'cos watch already has the _X appended to it!
 				// Should really work out base watch name (without _X) in PHP and put it in this.options.origWatch,
@@ -157,14 +157,14 @@ var FbCascadingdropdown = new Class({
 					this.options.watch = this.options.watch + '_' + c;
 				}
 			}
-			if ($(this.options.watch)) {
+			if (document.id(this.options.watch)) {
 				//old events removed in database join element clone() method
 				// $$$ hugh - oh no they aren't!  join element cloned() method doesn't fire for this!
 				//this.element.removeEvents('change');
 				this.element.removeEvents('change', this.doWatchEvent); 
 				this.doWatchEvent = this.dowatch.bindWithEvent(this);
 				//$(this.options.watch).addEvent('change', this.watch.bindWithEvent(this));
-				document.d(this.options.watch).addEvent('change', this.doWatchEvent);
+				document.id(this.options.watch).addEvent('change', this.doWatchEvent);
 			}
 			
 		}
