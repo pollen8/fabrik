@@ -73,7 +73,7 @@ $model->setRenderContext($module->id);
 
 if ($limit !== 0) {
 	$app->setUserState('com_fabrik.list'.$model->getRenderContext().'.limitlength', $limit);
-	JRequest::setVar('limit', $limit);
+	JRequest::setVar('limit'.$listId, $limit);
 }
 
 if ($useajax !== '') {
