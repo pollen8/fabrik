@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-paginate">
+		
+		<field name="paginate_where"
+			type="list" default="both"
+			repeat="true"
+			label="PLG_FORM_PAGINATE_WHERE_LABEL"
+			description="PLG_FORM_PAGINATE_WHERE_DESC">
+				<option value="both">PLG_FORM_PAGINATE_BOTH</option>
+				<option value="form">PLG_FORM_PAGINATE_FORM</option>
+				<option value="details">PLG_FORM_PAGINATE_DETAILS</option>
+		</field>
+		
+		<field name="paginate_ajax"
+			type="radio"
+			repeat="true"
+			default="1"
+			label="PLG_FORM_PAGINATE_AJAX_LABEL"
+			description="PLG_FORM_PAGINATE_AJAX_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
+		</field>
+		
+		</fieldset>
+	
+	</fields>
+</form>

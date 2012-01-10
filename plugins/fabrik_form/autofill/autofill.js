@@ -32,16 +32,17 @@ var Autofill = new Class({
 		}
 		var evnt = this.lookUp.bind(this);
 		this.element = this.form.formElements.get(this.options.observe);
+		
 		//if its a joined element
 		if (!this.element) {
-			var regex = new RegExp(this.options.observe + '$');
 			var k = Object.keys(this.form.formElements);
 			var ii = k.each(function (i) {
-				if (i.test(regex)) {
+				if (i.contains(this.options.observe)) {
 					this.element = this.form.formElements.get(i);
 				}
 			}.bind(this));
 		}
+		
 		if (this.options.trigger === '') {
 			if (!this.element) {
 				fconsole('autofill - couldnt find element to observe');
@@ -72,30 +73,40 @@ var Autofill = new Class({
 		var formid = this.options.formid;
 		var observe = this.options.observe;
 		
-		var myAjax = new Request({url: '', method: 'post', 
-		'data': {
-			'option': 'com_fabrik',
-			'format': 'raw',
-			'task': 'plugin.pluginAjax',
-			'plugin': 'autofill',
-			'method': 'ajax_getAutoFill',
-			'g': 'form',
-			'v': v, 
-			'formid': formid,
-			'observe': observe,
-			'cnn': this.options.cnn,
-			'table': this.options.table,
-			'map': this.options.map
-		},
-		onComplete: function (json) {
-			Fabrik.loader.stop('form_' + this.options.formid);
-			this.updateForm(json);
-		}.bind(this)}).send();
+		var myAjax = new Request.JSON({ 
+			'data': {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'autofill',
+				'method': 'ajax_getAutoFill',
+				'g': 'form',
+				'v': v, 
+				'formid': formid,
+				'observe': observe,
+				'cnn': this.options.cnn,
+				'table': this.options.table,
+				'map': this.options.map
+			},
+			onCancel: function () {
+				Fabrik.loader.stop('form_' + this.options.formid);
+			}.bind(this),
+			
+			onError: function (text, error) {
+				Fabrik.loader.stop('form_' + this.options.formid);
+				fconsole(text + ' ' + error);
+			}.bind(this),
+			onSuccess: function (json, responseText) {
+				Fabrik.loader.stop('form_' + this.options.formid);
+				this.updateForm(json);
+			}.bind(this)
+		}).send();
 	},
 	
 	//update the form from the ajax request returned data
 	updateForm: function (json) {
-		json = $H(JSON.decode(json));
+		//json = $H(JSON.decode(json));
+		json = $H(json);
 		if (json.length === 0) {
 			alert(Joomla.JText._('PLG_FORM_AUTOFILL_NORECORDS_FOUND'));
 		}

@@ -32,9 +32,10 @@ $row = $this->row;
 					<td><?php echo $row->user?></td>
 					<td  style="text-align:center">
 					<a href="<?php echo $row->view?>">
+					<a class="fabrikTip" opts="{position:'right'}" title="<?php echo FabrikString::truncate($row->content, array('tip' => false, 'wordcount' => 200))?>" >
 						<?php echo FabrikHelperHTML::image('view.png', 'list', '');?>
 					</a></td>
-					<td>
+					<td style="text-align:center">
 						<a href="#" class="approvalTip">
 							<?php echo FabrikHelperHTML::image('attention2.png', 'list', '');?>
 						</a>

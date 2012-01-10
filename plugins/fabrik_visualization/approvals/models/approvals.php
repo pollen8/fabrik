@@ -23,6 +23,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 		$approveEls = (array)$params->get('approvals_approve_element');
 		$titles = (array)$params->get('approvals_title_element');
 		$users = (array)$params->get('approvals_user_element');
+		$contents = (array)$params->get('approvals_content_element');
 
 
 		$this->rows = array();
@@ -46,6 +47,11 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 			$userEl = $formModel->getElement($users[$x]);
 			$userEl->getAsField_html($asfields, $fields, array('alias'=>'user'));
 			//$asfields[] = str_replace('___', '.', $users[$x]) . ' AS user';
+			
+			if (JArrayHelper::getValue($contents, $x, '') !== '') {
+				$contentEl = $formModel->getElement($contents[$x]);
+				$contentEl->getAsField_html($asfields, $fields, array('alias'=>'content'));
+			}
 
 
 			$query->select("'$item->label' AS type, ".$item->db_primary_key.' AS pk, '.implode(',', $asfields))->from($db->nameQuote($item->db_table_name));
@@ -61,7 +67,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 					$row->rowid = $row->pk;
 					$row->listid = $ids[$x];
 				}
-				$this->rows  = array_merge($this->rows, $rows);
+				$this->rows = array_merge($this->rows, $rows);
 			}
 		}
 		return $this->rows;

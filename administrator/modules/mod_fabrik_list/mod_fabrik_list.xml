@@ -123,6 +123,15 @@
 								type="field"
 								label="MOD_FABRIK_LIST_FILTER_VALUE_HEADING"/>
 							
+							<field name="filter-eval"
+								type="list"
+								label="MOD_FABRIK_lIST_TYPE">
+									<option value="0">MOD_FABRIK_lIST_TEXT</option>
+									<option value="1">MOD_FABRIK_lIST_EVAL</option>
+									<option value="2">MOD_FABRIK_lIST_QUERY</option>
+									<option value="3">MOD_FABRIK_lIST_NO_QUOTES</option>
+							</field>
+							
 							<field name="filter-access" 
 								type="accesslevel"
 								label="MOD_FABRIK_LIST_FILTER_ACCESS_HEADING"/>

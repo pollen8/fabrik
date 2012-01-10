@@ -39,6 +39,14 @@
 				table="params_approvals_table"
 				label="PLG_VIZ_APPROVALS_USER_ELEMENT_LABEL"
 				description="PLG_VIZ_APPROVALS_USER_ELEMENT_DESC"/>
+				
+			<field name="approvals_content_element"
+				type="element"
+				connection_in_repeat="true"
+				connection="params_approvals_connection"
+				table="params_approvals_table"
+				label="PLG_VIZ_APPROVALS_CONTENT_ELEMENT_LABEL"
+				description="PLG_VIZ_APPROVALS_CONTENT_ELEMENT_DESC"/>
 			</fieldset>
 		</fields>
 	</form>

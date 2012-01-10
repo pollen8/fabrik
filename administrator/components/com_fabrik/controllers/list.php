@@ -77,16 +77,18 @@ class FabrikControllerList extends FabControllerForm
 	 * show the lists data in the admin
 	 */
 
-	public function view()
+	public function view($model = null)
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
 		if(is_array($cid)){
 			$cid = $cid[0];
 		}
-		$cid = JRequest::getInt('listid', $cid);
-		// grab the model and set its id
-		$model = JModel::getInstance('List', 'FabrikFEModel');
-		$model->setState('list.id', $cid);
+		if (is_null($model)) {
+			$cid = JRequest::getInt('listid', $cid);
+			// grab the model and set its id
+			$model = JModel::getInstance('List', 'FabrikFEModel');
+			$model->setState('list.id', $cid);
+		}
 		$viewType	= JFactory::getDocument()->getType();
 		//use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
@@ -169,7 +171,8 @@ class FabrikControllerList extends FabControllerForm
 		JRequest::setvar('cid', $id);
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
-		$this->view();
+		// $$$ rob pass in the model otherwise display() rebuilds it and the request data is rebuilt
+		$this->view($model);
 	}
 
 	/**

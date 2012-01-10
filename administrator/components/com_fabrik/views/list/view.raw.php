@@ -32,7 +32,7 @@ class FabrikViewList extends JView
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$this->setModel($model, true);
-		$table = $model->getTable();
+		$item = $model->getTable();
 		$params = $model->getParams();
 		$model->render();
 		$this->emptyDataMessage = $params->get('empty_data_msg');
@@ -51,7 +51,7 @@ class FabrikViewList extends JView
 				}
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
-				$o->id = "list_".$table->id."_row_".@$o->data->__pk_val;
+				$o->id = "list_".$item->id."_row_".@$o->data->__pk_val;
 				$o->class = "fabrik_row oddRow".$c;
 				if (is_object($data[$groupk])) {
 					$data[$groupk] = $o;
@@ -63,14 +63,14 @@ class FabrikViewList extends JView
 		}
 
 		// $$$ hugh - heading[3] doesn't exist any more?  Trying [0] instead.
-		$d = array('id' => $table->id, 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
+		$d = array('id' => $item->id, 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
 		'headings' => $this->headings,
 			'formid'=> $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
 		$d['nav'] = $nav->getProperties();
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
 		$d['calculations'] = $model->getCalculations();
-		$msg =  $app->getMessageQueue();
+		$msg = $app->getMessageQueue();
 		if (!empty($msg)) {
 			$d['msg'] = $msg[0]['message'];
 		}
@@ -87,15 +87,15 @@ class FabrikViewList extends JView
 	{
 		$app = JFactory::getApplication();
 		$model = $this->getModel();
-		$table = $model->getTable();
+		$item = $model->getTable();
 		$params = $model->getParams();
 		if ($app->isAdmin()) {
 			$tmpl = $params->get('admin_template');
 			if ($tmpl == -1 || $tmpl == '') {
-				$tmpl = JRequest::getVar('layout', $table->template);
+				$tmpl = JRequest::getVar('layout', $item->template);
 			}
 		} else {
-			$tmpl = JRequest::getVar('layout', $table->template);
+			$tmpl = JRequest::getVar('layout', $item->template);
 		}
 		return $tmpl;
 	}

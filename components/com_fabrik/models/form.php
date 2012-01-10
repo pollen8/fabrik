@@ -1132,7 +1132,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 					$joinGroup->publishedElements = array();
 					$joinGroup->publishedElements[''] = array($elementModel, $idElementModel, $parentElement);
-					$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
+					$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = count($repeatTotals[$oJoin->group_id]) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
 					$this->groups[] = $joinGroup;
 
 					$listModel->getTable()->db_table_name = $oJoin->table_join;

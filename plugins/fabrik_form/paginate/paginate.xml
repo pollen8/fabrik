@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
+	<name>Fabrik Form - paginate</name>
+	<author>Rob Clayburn</author>
+	<creationDate>{createdate}</creationDate>
+	<copyright>(C) 2005-{year} fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>{version}</version>
+	<description>Allows scrolling between records</description>
+	<files>
+		<filename plugin="paginate">paginate.php</filename>
+		<filename>index.html</filename>
+		<filename>scroller.js</filename>
+		<filename>paginate.css</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+	</files>
+</extension>

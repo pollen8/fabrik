@@ -16,6 +16,7 @@ $this->headingstmpl = $this->loadTemplate('headings');
 			<div class="boxflex">
 			
 			<?php 
+			
 if ($this->showFilters) {
 	echo $this->loadTemplate('filter');
 }
