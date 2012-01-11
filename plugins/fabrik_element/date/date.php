@@ -517,10 +517,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$attribs = JArrayHelper::toString($attribs);
 		}
 
-		$document = JFactory::getDocument();
-		$opts = $this->_CalendarJSOpts($id);
+		/* $document = JFactory::getDocument();
+		$opts = $this->_CalendarJSOpts($repeatCounter);
 		$opts->ifFormat = $format;
-		$opts = json_encode($opts);
+		//$opts = json_encode($opts);
 
 		$validations = $this->getValidations();
 
@@ -579,30 +579,29 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			';
 			//end onselect function
 		}
+		$opts = json_encode($opts);
 		$script .= 'Calendar.setup('.$opts.');'.
 		'}'. //end if id
 		"\n});"; //end domready function
 		if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
 			FabrikHelperHTML::addScriptDeclaration($script);
-		}
+		} */
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
-		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'id' => $id.'_img'));
+		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_img'));
 		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.
 		$img;
 	}
 
 	/**
 	 * get the options used for the date elements calendar
-	 * @param $id html id for subelement container
+	 * @param $int repeat counter
 	 * @return object ready for js encoding
 	 */
 
-	protected function _CalendarJSOpts($id = null)
+	protected function _CalendarJSOpts($repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		if (!isset($id)) {
-			$id = $this->getHTMLId();
-		}
+		$id = $this->getHTMLId($repeatCounter);
 		$opts = new stdClass();
 		$opts->inputField = $id;
 		$opts->ifFormat = $params->get('date_form_format');
@@ -610,6 +609,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->align = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay = intval($params->get('date_firstday'));
+		
+		/// testing
+		
+		$opts->subElementContainer = $id;
+		$validations = $this->getValidations();
+		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
+		$opts->hasValidations = empty($validations) ? false : true;
+		
+		$opts->dateAllowFunc = $params->get('date_allow_func');
 		return $opts;
 	}
 
@@ -637,9 +645,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->timedisplay = $params->get('date_timedisplay', 1);
 		$validations = $this->getValidations();
 		$opts->validations = empty($validations) ? false : true;
+		$opts->dateTimeFormat = $params->get('date_time_format', '');
 
 		//for reuse if element is duplicated in repeat group
-		$opts->calendarSetup = $this->_CalendarJSOpts($id);
+		$opts->calendarSetup = $this->_CalendarJSOpts($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbDateTime('$id', $opts)";
 	}
@@ -1419,6 +1428,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					$this->strftimeTFormatToMySQL($format);
 					$key = "DATE_FORMAT( $key , '$format')";
 				}
+			}
+			if ($type == 'querystring' && strtolower($value) == 'now') {
+				$value = 'NOW()';
 			}
 			$query = " $key $condition $value ";
 			break;

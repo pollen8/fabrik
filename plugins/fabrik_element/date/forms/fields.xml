@@ -120,6 +120,13 @@
 				label="PLG_ELEMENT_DATE_TIME_FORMAT_LABEL" 
 				description="PLG_ELEMENT_DATE_TIME_FORMAT_DESC" />
 		</fieldset>
-			
+		
+		<fieldset name="plg-element-date-advanced" label="PLG_ELEMENT_DATE_ADVANCED_HEADING">
+		
+			<field name="date_allow_func"
+				type="textarea"
+				description="PLG_ELEMENT_DATE_ALLOW_FUNC_DESC"
+				label="PLG_ELEMENT_DATE_ALLOW_FUNC_LABEL" />
+		</fieldset>
 	</fields>
 </form>

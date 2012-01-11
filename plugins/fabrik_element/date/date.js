@@ -1,5 +1,25 @@
 var FbDateTime = new Class({
 	Extends: FbElement,
+	
+	options: {
+		'subElementContainer': '',
+		'dateTimeFormat': '', 
+		'calendarSetup': {
+			'eventName': 'click',
+			'ifFormat': "%Y/%m/%d",
+			'daFormat': "%Y/%m/%d",
+			'singleClick': true,
+			'align': "Br",
+			'range': [1900, 2999],
+			'showsTime': false,
+			'timeFormat': '24',
+			'electric': true,
+			'step': 2,
+			'cache': false,
+			'showOthers': false
+		}
+	},
+	
 	initialize: function (element, options) {
 		this.parent(element, options);
 		this.hour = '0';
@@ -12,6 +32,126 @@ var FbDateTime = new Class({
 		this.watchButtons();
 		if (this.options.typing === false) {
 			this.disableTyping();
+		}
+		this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
+			this.makeCalendar();
+		}.bind(this));
+		
+	},
+	
+	/**
+	 * run when calendar poped up - goes over each date and should return true if you dont want the date to be 
+	 * selectable 
+	 */
+	dateSelect: function (date)
+	{
+		var fn = this.options.calendarSetup.dateAllowFunc;
+		if (typeOf(fn) !== 'null' && fn !== '') {
+			eval(fn);
+			return result;
+		}
+		// 2.0 fall back 
+		try {
+			return disallowDate(this.cal, date);
+		} catch (err) {
+			//fconsole(err);
+		}
+	},
+	
+	calSelect: function (calendar, date) {
+		var d = this.setTimeFromField(calendar.date);
+		this.update(d.format('db'));
+		if (this.cal.dateClicked) {
+			this.cal.callCloseHandler();
+		}
+		window.fireEvent('fabrik.date.select', this);
+		try {
+			this.form.triggerEvents(this.options.element, ["click", "focus", "change"], this);
+		} catch (err) {
+			fconsole(err);
+		}
+	},
+	
+	calClose: function (calendar) {
+		this.cal.hide();
+		try {
+			this.form.triggerEvents(this.options.element, ["blur", "click", "change"], this);
+			window.fireEvent('fabrik.date.close', this);
+		} catch (err) {
+			fconsole(err);
+		}
+
+		if (this.options.hasValidations) {
+			//if we have a validation on the element run it when the calendar closes itself
+			//this ensures that alert messages are removed if the new data meets validation criteria
+			this.form.doElementValidation(this.options.element);
+		}
+	},
+	
+	makeCalendar: function () {
+		var mustCreate = false;
+		this.addEventToCalOpts();
+		var params = this.options.calendarSetup;
+		var tmp = ["displayArea", "button"];
+		
+		for (var i in tmp) {
+			if (typeof params[tmp[i]] === "string") {
+				params[tmp[i]] = document.getElementById(params[tmp[i]]);
+			}
+		}
+	
+		params.inputField = this.getDateField();
+		var dateEl = params.inputField || params.displayArea;
+		var dateFmt = params.inputField ? params.ifFormat : params.daFormat;
+		this.cal = Fabrik.calendar;
+		if (dateEl) {
+			params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
+		}
+		
+		if (!this.cal) {
+			this.cal = new Calendar(params.firstDay,
+				params.date,
+				params.onSelect,
+				params.onClose);
+			mustCreate = true;
+			Fabrik.calendar = this.cal;
+		} else {
+			
+			if (params.date) {
+				this.cal.setDate(params.date);
+			}
+			this.cal.hide();
+		}
+		
+		this.cal.setDateStatusHandler(params.dateStatusFunc);
+		this.cal.setDateToolTipHandler(params.dateTooltipFunc);
+		this.cal.showsTime = params.showsTime;
+		this.cal.time24 = (params.timeFormat.toString() === "24");
+		this.cal.weekNumbers = params.weekNumbers;
+		
+		if (params.multiple) {
+			cal.multiple = {};
+			for (i = params.multiple.length; --i >= 0;) {
+				var d = params.multiple[i];
+				var ds = d.print("%Y%m%d");
+				this.cal.multiple[ds] = d;
+			}
+		}
+		this.cal.showsOtherMonths = params.showOthers;
+		this.cal.yearStep = params.step;
+		this.cal.setRange(params.range[0], params.range[1]);
+		this.cal.params = params;
+		
+		this.cal.getDateText = params.dateText;
+		this.cal.setDateFormat(dateFmt);
+		if (mustCreate) {
+			this.cal.create();
+		}
+		this.cal.refresh();
+		if (!params.position) {
+			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
+		} else {
+			this.cal.showAt(params.position[0], params.position[1]);
 		}
 	},
 
@@ -35,23 +175,42 @@ var FbDateTime = new Class({
 					this.options.calendarSetup.inputField = e.target.id;
 					this.options.calendarSetup.button = this.element.id + "_img";
 					this.addEventToCalOpts();
-					Calendar.setup(this.options.calendarSetup);
+					
 				}
 			}.bind(this));
 		}.bind(this));
 	},
 
+	/** 
+	 * returns the date and time in mySQL formatted string
+	 */
 	getValue: function () {
+		var v;
 		if (!this.options.editable) {
 			return this.options.value;
 		}
 		this.getElement();
-		var v = this.element.getElement('.fabrikinput').get('value');
-		// @TODO use relative class name to get time value
-		if (this.options.showtime === true && this.timeElement) {
-			v += ' ' + this.timeElement.get('value');
+		if (this.cal) {
+			v = this.cal.date;
+		} else {
+			if (this.options.value === '') {
+				return '';
+			}
+			v = new Date.parse(this.options.value);
 		}
-		return v;
+		v = this.setTimeFromField(v);
+		return v.format('db');
+	},
+	
+	setTimeFromField: function (d) {
+		if (this.options.showtime === true && this.timeElement) {
+			var t = this.timeElement.get('value').split(':');
+			var h = t[0] ? t[0].toInt() : 0;
+			var m = t[1] ? t[1].toInt() : 0;
+			d.setHours(h);
+			d.setMinutes(m);
+		}
+		return d;
 	},
 
 	watchButtons : function () {
@@ -62,8 +221,8 @@ var FbDateTime = new Class({
 			}.bind(this));
 		}
 		if (this.options.showtime & this.options.editable) {
-			this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
-			this.timeButton = this.element.getParent('.fabrikElementContainer').getElement('.timeButton');
+			this.getTimeField();
+			this.getTimeButton();
 			if (this.timeButton) {
 				this.timeButton.removeEvents('click');
 				this.timeButton.addEvent('click', function () {
@@ -81,7 +240,6 @@ var FbDateTime = new Class({
 	},
 
 	addNewEvent : function (action, js) {
-		// this._getSubElements();
 		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
@@ -106,14 +264,29 @@ var FbDateTime = new Class({
 	},
 
 	update: function (val) {
+		if (val === 'invalid date') {
+			fconsole(this.element.id + ': date not updated as not valid');
+			return;
+		}
 		var date;
+		if (typeOf(val) === 'string') {
+			date = Date.parse(val);
+		} else {
+			date = val;
+		}
+		var f = this.options.calendarSetup.ifFormat;
+		if (this.options.dateTimeFormat !== '' && this.options.showtime) {
+			f += ' ' + this.options.dateTimeFormat;
+		}
+		
 		this.fireEvents([ 'change' ]);
 		if (typeOf(val) === 'null' || val === false) {
 			return;
 		}
 		if (!this.options.editable) {
 			if (typeOf(this.element) !== 'null') {
-				this.element.set('html', val);
+				//this.element.set('html', val);
+				this.element.set('html', date.format(f));
 			}
 			return;
 		}
@@ -121,21 +294,40 @@ var FbDateTime = new Class({
 		if (this.options.hidden) {
 			//if hidden but form set to show time format dont split up the time as we don't 
 			// have a time field to put it into
-			date = val;
+			date = date.format(f);
 		} else {
-			// have to reget the time element as update is called (via reset) in
+			// have to reset the time element as update is called (via reset) in
 			// duplicate group code
 			// before cloned() method called
-			this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
-			var bits = val.split(" ");
-			date = bits[0];
-			var time = (bits.length > 1) ? bits[1].substring(0, 5) : '00:00';
-			var timeBits = time.split(":");
-			this.hour = timeBits[0];
-			this.minute = timeBits[1];
+			this.getTimeField();
+			this.hour = date.get('hours');
+			this.minute = date.get('minutes');
 			this.stateTime();
 		}
-		this.element.getElement('.fabrikinput').value = date;
+		this.getDateField().value = date.format(this.options.calendarSetup.ifFormat);
+	},
+	
+	/**
+	 * get the date field input
+	 */
+	getDateField: function () {
+		return this.element.getElement('.fabrikinput');
+	},
+	
+	/**
+	 * get time time field input
+	 */
+	getTimeField: function () {
+		this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
+		return this.timeElement;
+	},
+	
+	/**
+	 * get time time button img
+	 */
+	getTimeButton: function () {
+		this.timeButton = this.element.getParent('.fabrikElementContainer').getElement('.timeButton');
+		return this.timeButton;
 	},
 
 	showCalendar : function (format, e) {
@@ -329,7 +521,7 @@ var FbDateTime = new Class({
 
 	stateTime: function () {
 		if (this.timeElement) {
-			var newv = this.hour + ':' + this.minute;
+			var newv = this.hour.toString().pad('2', '0', 'left') + ':' + this.minute.toString().pad('2', '0', 'left');
 			var changed = this.timeElement.value !== newv;
 			this.timeElement.value = newv;
 			if (changed) {
@@ -366,37 +558,18 @@ var FbDateTime = new Class({
 	},
 	
 	addEventToCalOpts: function () {
-		var form = this.form;
-		var elid = this.element.id;
-		var el = this;
-		var onclose = function (e) {
-			Fabrik.fireEvent('fabrik.date.close', this);
-			this.hide();
-			try {
-				form.triggerEvents(elid, ["blur", "click", "change"], el);
-			} catch (err) {
-				//fconsole(err);
-			}
-		};
-		var onselect = function (calendar, date) {
-			elementid = calendar.params.inputField.id.replace('_cal', '');
-			calendar.params.inputField.value = date;
-			Fabrik.fireEvent('fabrik.date.select', this);
-			if (calendar.dateClicked) {
-				calendar.callCloseHandler();
-			}
-		};
+		this.options.calendarSetup.onSelect = function (calendar, date) {
+			this.calSelect(calendar, date);
+		}.bind(this);
 		
-		var datechange = function (date) {
-			try {
-				return disallowDate(this, date);
-			} catch (err) {
-				//fconsole(err);
-			}
-		};
-		this.options.calendarSetup.onClose = onclose;
-		this.options.calendarSetup.onSelect = onselect;
-		this.options.calendarSetup.dateStatusFunc = datechange;
+		this.options.calendarSetup.dateStatusFunc = function (date) {
+			return this.dateSelect(date);
+		}.bind(this);
+		
+		this.options.calendarSetup.onClose = function (calendar) {
+			this.calClose(calendar);
+		}.bind(this);
+		
 	},
 
 	cloned : function (c) {
