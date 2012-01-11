@@ -38,6 +38,7 @@ class fabrikViewFusionchart extends JView
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->assign('showTitle', JRequest::getInt('show-title', 1));
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fusionchart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusionchart'.DS.'views'.DS.'fusionchart'.DS.'tmpl'.DS.$tmpl;

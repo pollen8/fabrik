@@ -608,14 +608,16 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 								$iszone = $params->get('fusionchart_trendiszone', '0');
 								$elcolour = $params->get('fusionchart_elcolour', '');
 								$elalpha = $params->get('fusionchart_elalpha', '');
-								$strAddTrend .= ";displayvalue=".$displayval;
+								//$strAddTrend .= ";displayvalue=".$displayval;
+								$strAddTrend .= ";displayvalue=".$axisLabels[$nbe];
 								$strAddTrend .= ";showOnTop=".$showontop;
 								if ($startval < $endval) {
 									$strAddTrend .= ";isTrendZone=".$iszone;
 								}
 								$strAddTrend .= ";color=".$elcolour[$nbe];
 								$strAddTrend .= ";alpha=".$elalpha[$nbe];
-								var_dump($strAddTrend);
+								$strAddTrend .= ";thickness=3";
+								//var_dump($strAddTrend);
 								$FC->addTrendLine("$strAddTrend");
 								unset($axisLabels[$nbe]);
 								unset($gdata[$nbe]);
