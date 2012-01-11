@@ -8,7 +8,8 @@ if ( ! ( defined( '_VALID_CB' ) || defined( '_JEXEC' ) || defined( '_VALID_MOS' 
 
 class getFabrikTab extends cbTabHandler {
 
-	function getFabrikTab() {
+	function getFabrikTab()
+	{
 		$this->cbTabHandler();
 	}
 
@@ -32,10 +33,10 @@ class getFabrikTab extends cbTabHandler {
 		$article->text = $txt;
 		$args[] = &$article;
 		$args[] = &$params;
-		$res = $dispatcher->trigger( 'onContentPrepare', $args );
+		$res = $dispatcher->trigger('onContentPrepare', $args);
 		// $$$ peamak http://fabrikar.com/forums/showthread.php?t=10446&page=2
-    $dispatcher->register( 'content', 'plgContentFabrik' ); // HERE
+    $dispatcher->register('content', 'plgContentFabrik');
 		return  $article->text;
-    }
+	}
 }
 ?>
