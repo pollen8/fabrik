@@ -612,7 +612,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		
 		/// testing
 		
-		$opts->subElementContainer = $id;
 		$validations = $this->getValidations();
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$opts->hasValidations = empty($validations) ? false : true;

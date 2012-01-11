@@ -2,7 +2,6 @@ var FbDateTime = new Class({
 	Extends: FbElement,
 	
 	options: {
-		'subElementContainer': '',
 		'dateTimeFormat': '', 
 		'calendarSetup': {
 			'eventName': 'click',
@@ -28,15 +27,22 @@ var FbDateTime = new Class({
 		this.buttonBg = '#ffffff';
 		this.buttonBgSelected = '#88dd33';
 		this.startElement = element;
-		this.setUp = false;
+		this.setUpDone = false;
+		this.setUp();
+	},
+	
+	setUp: function () {
 		this.watchButtons();
 		if (this.options.typing === false) {
 			this.disableTyping();
 		}
 		this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
-			this.makeCalendar();
+			if (this.cal) {
+				this.cal.show();
+			} else {
+				this.makeCalendar();
+			}
 		}.bind(this));
-		
 	},
 	
 	/**
@@ -65,22 +71,11 @@ var FbDateTime = new Class({
 			this.cal.callCloseHandler();
 		}
 		window.fireEvent('fabrik.date.select', this);
-		try {
-			this.form.triggerEvents(this.options.element, ["click", "focus", "change"], this);
-		} catch (err) {
-			fconsole(err);
-		}
 	},
 	
 	calClose: function (calendar) {
 		this.cal.hide();
-		try {
-			this.form.triggerEvents(this.options.element, ["blur", "click", "change"], this);
-			window.fireEvent('fabrik.date.close', this);
-		} catch (err) {
-			fconsole(err);
-		}
-
+		window.fireEvent('fabrik.date.close', this);
 		if (this.options.hasValidations) {
 			//if we have a validation on the element run it when the calendar closes itself
 			//this ensures that alert messages are removed if the new data meets validation criteria
@@ -103,25 +98,16 @@ var FbDateTime = new Class({
 		params.inputField = this.getDateField();
 		var dateEl = params.inputField || params.displayArea;
 		var dateFmt = params.inputField ? params.ifFormat : params.daFormat;
-		this.cal = Fabrik.calendar;
+		this.cal = null;//Fabrik.calendar;
 		if (dateEl) {
 			params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 		}
 		
-		if (!this.cal) {
-			this.cal = new Calendar(params.firstDay,
-				params.date,
-				params.onSelect,
-				params.onClose);
-			mustCreate = true;
-			Fabrik.calendar = this.cal;
-		} else {
-			
-			if (params.date) {
-				this.cal.setDate(params.date);
-			}
-			this.cal.hide();
-		}
+		this.cal = new Calendar(params.firstDay,
+			params.date,
+			params.onSelect,
+			params.onClose);
+	
 		
 		this.cal.setDateStatusHandler(params.dateStatusFunc);
 		this.cal.setDateToolTipHandler(params.dateTooltipFunc);
@@ -144,9 +130,7 @@ var FbDateTime = new Class({
 		
 		this.cal.getDateText = params.dateText;
 		this.cal.setDateFormat(dateFmt);
-		if (mustCreate) {
-			this.cal.create();
-		}
+		this.cal.create();
 		this.cal.refresh();
 		if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
@@ -214,12 +198,12 @@ var FbDateTime = new Class({
 	},
 
 	watchButtons : function () {
-		var b = document.id(this.options.element + '_cal_img'); 
+		/*var b = document.id(this.options.element + '_cal_img'); 
 		if (typeOf(b) !== 'null') {
 			b.addEvent('click', function (e) {
 				this.showCalendar('y-mm-dd', e);
 			}.bind(this));
-		}
+		}*/
 		if (this.options.showtime & this.options.editable) {
 			this.getTimeField();
 			this.getTimeButton();
@@ -228,11 +212,11 @@ var FbDateTime = new Class({
 				this.timeButton.addEvent('click', function () {
 					this.showTime();
 				}.bind(this));
-				if (!this.setUp) {
+				if (!this.setUpDone) {
 					if (this.timeElement) {
 						this.dropdown = this.makeDropDown();
 						this.setAbsolutePos(this.timeElement);
-						this.setUp = true;
+						this.setUpDone = true;
 					}
 				}
 			}
@@ -249,6 +233,7 @@ var FbDateTime = new Class({
 			}
 			if (action === 'change') {
 				Fabrik.addEvent('fabrik.date.select', function () {
+					var e = 'fabrik.date.select';
 					typeOf(js) === 'function' ? js.delay(0) : eval(js);
 				});
 			}
@@ -263,6 +248,9 @@ var FbDateTime = new Class({
 		}
 	},
 
+	/**
+	 * takes a date object or string
+	 */
 	update: function (val) {
 		if (val === 'invalid date') {
 			fconsole(this.element.id + ': date not updated as not valid');
@@ -331,7 +319,7 @@ var FbDateTime = new Class({
 	},
 
 	showCalendar : function (format, e) {
-		if (window.ie) {
+		/*if (window.ie) {
 			// when scrolled down the page the offset of the calendar is wrong - this
 			// fixes it
 			var calHeight = $(window.calendar.element).getStyle('height').toInt();
@@ -340,7 +328,7 @@ var FbDateTime = new Class({
 			$(window.calendar.element).setStyles({
 				'top' : u - calHeight + 'px'
 			});
-		}
+		}*/
 	},
 
 	getAbsolutePos : function (el) {
@@ -513,9 +501,7 @@ var FbDateTime = new Class({
 
 	formatMinute: function (m) {
 		m = m.replace(':', '');
-		if (m.length === 1) {
-			m = '0' + m;
-		}
+		m.pad('2', '0', 'left');
 		return m;
 	},
 
@@ -552,9 +538,11 @@ var FbDateTime = new Class({
 		hours[this.hour.toInt()].setStyles({
 			backgroundColor: this.buttonBgSelected
 		});
-		mins[this.minute / 5].setStyles({
-			backgroundColor: this.buttonBgSelected
-		});
+		if (typeOf(mins[this.minute / 5]) !== 'null') {
+			mins[this.minute / 5].setStyles({
+				backgroundColor: this.buttonBgSelected
+			});
+		}
 	},
 	
 	addEventToCalOpts: function () {
@@ -573,25 +561,22 @@ var FbDateTime = new Class({
 	},
 
 	cloned : function (c) {
-		this.setUp = false;
+		this.setUpDone = false;
 		this.hour = 0;
-		this.watchButtons();
 		var button = this.element.getElement('img');
 		if (button) {
-			button.id = this.element.id + "_img";
+			button.id = this.element.id + "_cal_img";
 		}
 		var datefield = this.element.getElement('input');
 		datefield.id = this.element.id + "_cal";
 		this.options.calendarSetup.inputField = datefield.id;
 		this.options.calendarSetup.button = this.element.id + "_img";
-		
-		if (this.options.typing === false) {
-			this.disableTyping();
-		}
-		this.addEventToCalOpts();
+
 		if (this.options.hidden !== true) {
-			Calendar.setup(this.options.calendarSetup);
+			this.makeCalendar();
+			this.cal.hide();
 		}
+		this.setUp();
 	}
 });
 
