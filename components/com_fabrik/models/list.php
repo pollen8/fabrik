@@ -284,6 +284,7 @@ class FabrikFEModelList extends JModelForm {
 		$item = $this->getTable();
 		$params = $this->getParams();
 		$id = $this->getId();
+		$this->randomRecords = JRequest::getVar('fabrik_random', $this->randomRecords);
 		// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
 		$context = 'com_fabrik.list'.$this->getRenderContext().'.';
 		$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
