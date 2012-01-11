@@ -94,7 +94,7 @@ FabrikHelperHTML::addScriptDeclaration($this->js);
 		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_GROUPS'), 'form_groups');
 		echo $this->loadTemplate('groups');
 
-		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_TEMPLATES'), 'form_templates');
+		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_LAYOUT'), 'form_templates');
 		echo $this->loadTemplate('templates');
 
 		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_OPTIONS'), 'form_options');

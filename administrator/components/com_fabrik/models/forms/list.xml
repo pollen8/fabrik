@@ -566,7 +566,7 @@
 				
 			<field name="empty_data_msg" 
 				type="text" 
-				size="35" 
+				size="70" 
 				label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" 
 				description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" />
 				

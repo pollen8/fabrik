@@ -65,18 +65,18 @@
 	
 	<fieldset name="templates">
 	
+		<field name="form_template" 
+				type="folderlist"
+				directory="/components/com_fabrik/views/form/tmpl/"
+				label="COM_FABRIK_FIELD_FORM_TEMPLATE_LABEL"
+				description="COM_FABRIK_FIELD_FORM_TEMPLATE_DESC" />
+				
 		<field name="view_only_template" 
 				type="folderlist" 
 				directory="/components/com_fabrik/views/form/tmpl/"
 				label="COM_FABRIK_FIELD_DETAILED_VIEW_TEMPLATE_LABEL"
 				description="COM_FABRIK_FIELD_DETAILED_VIEW_TEMPLATE_DESC" />
 			
-			<field name="form_template" 
-				type="folderlist"
-				directory="/components/com_fabrik/views/form/tmpl/"
-				label="COM_FABRIK_FIELD_FORM_TEMPLATE_LABEL"
-				description="COM_FABRIK_FIELD_FORM_TEMPLATE_DESC" />
-				
 	</fieldset>
 	
 	<fields name="params">
@@ -191,8 +191,57 @@
 				
 		</fieldset>
 		
+		<fieldset name="layout">
+		
+			<field name="show-title" 
+				type="radio" 
+				default="1" 
+				label="COM_FABRIK_FIELD_SHOW_TITLE_LABEL" 
+				description="COM_FABRIK_FIELD_SHOW_TITLE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="show-title-in-detail-view" 
+				type="radio" 
+				default="1" 
+				label="COM_FABRIK_FIELD_SHOW_TITLE_IN_DETAIL_VIEW_LABEL" 
+				description="COM_FABRIK_FIELD_SHOW_TITLE_IN_DETAIL_VIEW_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="print" 
+				type="list"
+				label="COM_FABRIK_FIELD_PRINT_ICON_LABEL"
+				description="COM_FABRIK_FIELD_PRINT_ICON_DESC">
+					<option value="">JGLOBAL_USE_GLOBAL</option>
+					<option value="0">JHIDE</option>
+					<option value="1">JSHOW</option>
+			</field>
+			
+			<field name="email"
+				type="list"
+				label="COM_FABRIK_FIELD_EMAIL_ICON_LABEL" 
+				description="COM_FABRIK_FIELD_EMAIL_ICON_DESC">
+					<option value="">JGLOBAL_USE_GLOBAL</option>
+					<option value="0">JHIDE</option>
+					<option value="1">JSHOW</option>
+			</field>
+			
+		</fieldset>
+		
 		<fieldset name="admintemplates">
 		
+		<field name="admin_form_template" 
+				type="folderlist" 
+				directory="/components/com_fabrik/views/form/tmpl/" 
+				hide_none="1" 
+				hide_default="0" 
+				default="" 
+				label="COM_FABRIK_FIELD_ADMIN_FORM_TEMPLATE_LABEL" 
+				description="COM_FABRIK_FIELD_ADMIN_FORM_TEMPLATE_DESC" />
+				
 			<field name="admin_details_template" 
 				type="folderlist" 
 				directory="/components/com_fabrik/views/form/tmpl/" 
@@ -202,15 +251,6 @@
 				label="COM_FABRIK_FIELD_ADMIN_DETAILS_TEMPLATE_LABEL" 
 				description="COM_FABRIK_FIELD_ADMIN_DETAILS_TEMPLATE_DESC" />
 				
-			<field name="admin_form_template" 
-				type="folderlist" 
-				directory="/components/com_fabrik/views/form/tmpl/" 
-				hide_none="1" 
-				hide_default="0" 
-				default="" 
-				label="COM_FABRIK_FIELD_ADMIN_FORM_TEMPLATE_LABEL" 
-				description="COM_FABRIK_FIELD_ADMIN_FORM_TEMPLATE_DESC" />
-		
 		</fieldset>
 		
 		<fieldset name="notes">
@@ -234,42 +274,6 @@
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
 			</field> -->
-			
-			<field name="print" 
-				type="list"
-				label="COM_FABRIK_FIELD_PRINT_ICON_LABEL"
-				description="COM_FABRIK_FIELD_PRINT_ICON_DESC">
-					<option value="">JGLOBAL_USE_GLOBAL</option>
-					<option value="0">JHIDE</option>
-					<option value="1">JSHOW</option>
-			</field>
-			
-			<field name="email"
-				type="list"
-				label="COM_FABRIK_FIELD_EMAIL_ICON_LABEL" 
-				description="COM_FABRIK_FIELD_EMAIL_ICON_DESC">
-					<option value="">JGLOBAL_USE_GLOBAL</option>
-					<option value="0">JHIDE</option>
-					<option value="1">JSHOW</option>
-			</field>
-			
-			<field name="show-title" 
-				type="radio" 
-				default="1" 
-				label="COM_FABRIK_FIELD_SHOW_TITLE_LABEL" 
-				description="COM_FABRIK_FIELD_SHOW_TITLE_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
-			<field name="show-title-in-detail-view" 
-				type="radio" 
-				default="1" 
-				label="COM_FABRIK_FIELD_SHOW_TITLE_IN_DETAIL_VIEW_LABEL" 
-				description="COM_FABRIK_FIELD_SHOW_TITLE_IN_DETAIL_VIEW_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
 			
 			<field name="show-referring-table-releated-data" 
 				type="radio" 
