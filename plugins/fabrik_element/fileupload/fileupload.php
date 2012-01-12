@@ -1017,7 +1017,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			//stops form data being updated with blank data.
 			return;
 		}
-		
+
 		// if we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
 		// otherwise no standard image processed
 		if ($this->crop($name) && $params->get('ajax_upload'))
@@ -1079,12 +1079,27 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 			}
 		} else {
+			$file = array('name' => '');
 			if ($isjoin) {
 				$myFileDir = $request['join'][$joinid][$name];
+				if (array_key_exists('join', $_FILES) && array_key_exists('name', $_FILES['join']) && array_key_exists($joinid, $_FILES['join']['name']) && array_key_exists($name, $_FILES['join']['name'][$joinid])) {
+					$file['name'] 		= $_FILES['join']['name'][$joinid][$name];
+					$file['type']		= $_FILES['join']['type'][$joinid][$name];
+					$file['tmp_name'] 	= $_FILES['join']['tmp_name'][$joinid][$name];
+					$file['error'] 		= $_FILES['join']['error'][$joinid][$name];
+					$file['size'] 		= $_FILES['join']['size'][$joinid][$name];
+				}
 			} else {
 				$myFileDir = JArrayHelper::getValue($request, $name);
+				if (array_key_exists($name, $_FILES)) {
+					$file['name'] 		= $_FILES[$name]['name'];
+					$file['type']		= $_FILES[$name]['type'];
+					$file['tmp_name'] 	= $_FILES[$name]['tmp_name'];
+					$file['error'] 		= $_FILES[$name]['name'];
+					$file['size'] 		= $_FILES[$name]['size'];
+				}
 			}
-
+			/*
 			$file = array(
 					'name' 			=> $isjoin ? $_FILES['join']['name'][$joinid][$name] : $_FILES[$name]['name'],
 					'type' 			=> $isjoin ? $_FILES['join']['type'][$joinid][$name] : $_FILES[$name]['type'],
@@ -1092,6 +1107,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					'error' 		=> $isjoin ? $_FILES['join']['error'][$joinid][$name] : $_FILES[$name]['error'],
 					'size' 			=> $isjoin ? $_FILES['join']['size'][$joinid][$name] : $_FILES[$name]['size']
 			);
+			*/
 
 			if ($file['name'] != '') {
 				$files[] = $this->_processIndUpload($file, $myFileDir);
@@ -1662,7 +1678,7 @@ zoom:
    <br />
    '. $str.'
 </div>';
-		
+
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
 		//FabrikHelperHTML::addStyleDeclaration(".dropList{background:#aaa; width:".$w."px; height:".$h."px;}");
 		return $pstr;
