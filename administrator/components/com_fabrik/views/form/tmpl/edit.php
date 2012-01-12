@@ -85,7 +85,7 @@ FabrikHelperHTML::addScriptDeclaration($this->js);
 		</fieldset>
 	</div>
 
-	<div class="width-40 fltrt">
+	<div class="width-50 fltrt">
 		<?php echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie'=>1));
 
 		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'form_publishing');

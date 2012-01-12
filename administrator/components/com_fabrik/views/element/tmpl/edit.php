@@ -51,7 +51,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 	</div>
 <?php }?>
 <div id="elementFormTable">
-	<div class="width-40 fltlft">
+	<div class="width-50 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
 			<input type="hidden" id="name_orig" name="name_orig" value="<?php echo $this->item->name; ?>" />
@@ -77,7 +77,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 		</div>
 	</div>
 
-	<div class="width-60 fltrt">
+	<div class="width-50 fltrt">
 		<?php echo JHtml::_('tabs.start', 'element', array('useCookie'=>1));
 			echo $this->loadTemplate('publishing');
 			echo $this->loadTemplate('access');

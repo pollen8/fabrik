@@ -40,7 +40,7 @@
 			required="true" />
 
 		<field name="introduction" 
-			type="textarea" 
+			type="editor" 
 			rows="3" cols="30" 
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
