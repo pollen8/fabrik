@@ -22,7 +22,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	protected $fieldDesc = 'TEXT';
 
 	protected $inputType = 'radio';
-	
+
 	/** @var bool - should the table render functions use html to display the data */
 	public $renderWithHTML = true;
 
@@ -61,14 +61,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$r = isset($opts->sub_initial_selection) ? (array)$opts->sub_initial_selection : array();
 		return $r;
 	}
-	
+
 	/**
 	* used in isempty validation rule
 	*
 	* @param array $data
 	* @return bol
 	*/
-	
+
 	function dataConsideredEmpty($data, $repeatCounter)
 	{
 		$data = (array)$data;
@@ -150,7 +150,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
-				
+
 			case "hidden":
 				if (get_magic_quotes_gpc()) {
 					$default = stripslashes($default);
@@ -168,7 +168,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				$return .= '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '.$htmlid.'-auto-complete" size="'.$size.'" value="'.$default.'" />';
 				$selector = '#list_'.$listModel->getRenderContext().' .'.$htmlid;
 				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id);
-				
+
 				break;
 		}
 		if ($normal) {
@@ -178,13 +178,13 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		}
 		return implode("\n", $return);
 	}
-	
+
 	/**
 	* Examples of where this would be overwritten include timedate element with time field enabled
 	* @param int repeat group counter
 	* @return array html ids to watch for validation
 	*/
-	
+
 	function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
@@ -247,7 +247,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	* from ajax call to get auto complete options
 	* @returns string json encoded optiosn
 	*/
-	
+
 	function onAutocomplete_options()
 	{
 		//needed for ajax update (since we are calling this method via dispatcher element is not set
@@ -283,9 +283,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$gdata = FabrikWorker::JSONtoData($data, true);
 		$uls = array();
 		$useIcon = $params->get('icon_folder', 0);
-		foreach ($gdata as $i => $data) {
+		foreach ($gdata as $i => $d) {
 			$lis = array();
-			$vals = FabrikWorker::JSONtoData($data, true);
+			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
 			foreach ($vals as $val) {
 				$l = $useIcon ? $this->_replaceWithIcons($val) : $val;
 				if (!$this->iconsSet == true) {
@@ -305,14 +305,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		//$$$rob if only one repeat group data then dont bother encasing it in a <ul>
 		return (count($gdata) !== 1 && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
 	}
-	
+
 	/**
 	* shows the data formatted for the csv data
 	* @param string data
 	* @param object all the data in the tables current row
 	* @return string formatted value
 	*/
-	
+
 	function renderListData_csv($data, $oAllRowsData)
 	{
 		$this->renderWithHTML = false;
