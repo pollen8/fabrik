@@ -672,8 +672,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	function process()
 	{
 		if (JRequest::getCmd('format') == 'raw') {
-			ini_set('display_errors', 0);
+			// $$$ hugh - although this is useful, so things like harmless notices don't mess with JSON
+			// formatting in AJAX calls, it causes a nasty situation on machines with Suhosin installed.
+			// Seems that Suhosin will automatically flag a response with "Error 500 - Internal Server Error"
+			// if there is any kind of PHP notice or warning raised, and display_errors is Off.  So this
+			// breaks AJAX calls in a way that cannot be debugged, as the error message goes nowhere.
+			// What we might want to consider instead is removing notices and warnings from the reporting level?
+			// ini_set('display_errors', 0);
+			error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
 		}
+
+		error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
 		@set_time_limit(300);
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
 		$form	= $this->getForm();
