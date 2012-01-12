@@ -826,7 +826,7 @@ var FbForm = new Class({
 					'data': data,
 					'method': this.options.ajaxmethod,
 					onError: function (text, error) {
-						fconsole(text);
+						fconsole(text + ": " + error);
 					},
 					
 					onComplete : function (json, txt) {

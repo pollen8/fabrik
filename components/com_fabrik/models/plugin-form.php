@@ -270,7 +270,16 @@ class plgFabrik_Form extends FabrikPlugin
 
 					// $$$ rob in repeat join groups this isnt really efficient as you end up reformatting the data $c times
 					$elementModel->_form->_data = $model->_formDataWithTableName;
-					$this->emailData[$k] = $elementModel->getEmailValue($this->emailData[$k."_raw"], $model->_formDataWithTableName, $c);
+					// $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
+					// (may only be on AJAX submit)
+					$email_value = '';
+					if (array_key_exists($k."_raw", $this->emailData)) {
+						$email_value = $this->emailData[$k."_raw"];
+					}
+					else if (array_key_exists($k, $this->emailData)) {
+						$email_value = $this->emailData[$k];
+					}
+					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
 					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin) {
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k.'_raw'] = $this->emailData[$k.'_raw'];
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k] = $this->emailData[$k];

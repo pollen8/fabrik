@@ -145,8 +145,13 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		}
 
 		@list($email_from, $email_from_name) = split(":", $w->parseMessageForPlaceholder($params->get('email_from'), $this->data, false));
-		if (empty($email_from_name)) { $email_from_name = $email_from; }
-		$subject = $params->get('email_subject');
+		if (empty($email_from)) {
+			$email_from = $config->getvalue('mailfrom');
+		}
+		if (empty($email_from_name)) {
+			$email_from_name = $config->getValue('fromname', $email_from);
+		}
+				$subject = $params->get('email_subject');
 		if ($subject == "") {
 			$subject = $config->getValue('sitename') . " :: Email";
 		}
@@ -217,7 +222,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 	function addAttachments($params)
 	{
-		//get attachments 
+		//get attachments
 		$pluginManager = FabrikWorker::getPluginManager();
 		$data = $this->getEmailData();
 		$groups = $this->formModel->getGroupsHiarachy();

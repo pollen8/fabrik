@@ -3466,6 +3466,10 @@ class FabrikFEModelList extends JModelForm {
 	protected function getSlug($row)
 	{
 		//return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
+		// $$$ hugh - slug doesn't always exist??
+		if (!isset($row->slug)) {
+			return '';
+		}
 		$row->slug = str_replace(":", '-', $row->slug);
 		$row->slug = JApplication::stringURLSafe($row->slug);
 		return $row->slug;
