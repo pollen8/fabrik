@@ -131,6 +131,22 @@ class FabrikModelUpgrade extends JModel
 				}
 			}
 		}
+		
+		//run fabrik ratings outside mysql script as it may not exist and error
+		$db = JFactory::getDBO();
+		// Check if #__fabrik_ratings table exists
+		$fabrate = "SHOW TABLES LIKE '".$prefix."fabrik_ratings'";
+		$db->setQuery($fabrate);
+		$rateresult = $db->loadObjectList(); 
+		if (!count($rateresult)) {
+			}
+			else 
+			{
+		$db->setQuery ("ALTER TABLE ".$prefix."fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL"); 
+		$db->query();
+
+		}
+		
 	}
 
 	/**
