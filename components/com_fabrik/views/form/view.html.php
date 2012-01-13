@@ -566,8 +566,11 @@ class fabrikViewForm extends JView
 			$form->submitButton = '';
 		}
 		if ($this->isMultiPage) {
-			$form->submitButton .= '<input type="button" class="fabrikPagePrevious button" name="fabrikPagePrevious" value="'.JText::_('COM_FABRIK_PREVIOUS').'" />';
-			$form->submitButton .= '<input type="button" class="fabrikPageNext button" name="fabrikPageNext" value="'.JText::_('COM_FABRIK_NEXT').'" />';
+			$form->prevButton = '<input type="button" class="fabrikPagePrevious button" name="fabrikPagePrevious" value="'.JText::_('COM_FABRIK_PREVIOUS').'" />';
+			$form->nextButton = '<input type="button" class="fabrikPageNext button" name="fabrikPageNext" value="'.JText::_('COM_FABRIK_NEXT').'" />';
+		} else {
+			$form->nextButton = '';
+			$form->prevButton = '';
 		}
 		$format = $model->isAjax() ? 'raw' : 'html';
 		$fields[] = '<input type="hidden" name="format" value="'.$format.'" />';
