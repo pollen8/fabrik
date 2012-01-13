@@ -215,6 +215,10 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	function getEmailValue($value, $data, $c)
 	{
+		$groupModel = $this->getGroup();
+		if ($groupModel->isJoin() && $groupModel->canRepeat()) {
+			$value = $value[$c];
+		}
 		return $this->renderListData($value, new stdClass());
 	}
 

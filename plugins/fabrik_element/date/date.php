@@ -230,6 +230,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$time = '';
 		}
 		$this->formattedDate = $date;
+		// $$$ hugh - OK, I am, as usual, confused.  We can't hand calendar() a date formatted in the
+		// form/table format.
 		$str[] = $this->calendar($date, $name, $id ."_cal", $format, $calopts, $repeatCounter);
 		if ($params->get('date_showtime', 0) && !$element->hidden) {
 			$timelength = strlen($timeformat);
@@ -250,6 +252,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	private function _indStoreDBFormat($val)
 	{
+		// $$$ hugh - sometimes still getting $val as an array with date and time,
+		// like on AJAX submissions?  Or maybe from getEmailData()?  Or both?
+		if (is_array($val)) {
+			// $$$ rob do url decode on time as if its passed from ajax save the : is in format %3C or something
+			$val = $val['date'].' '.$this->_fixTime(urldecode($val['time']));
+		}
+		else {
+			$val = urldecode($val);
+			//var_dump($val);exit;
+		}
+
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('date:_indStoreDBFormat val = ' . $val) : null; // 0.5 sec here!
 		$aNullDates = $this->getNullDates();
@@ -270,7 +283,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 
 		//test if its already in correct format (or empty)
-		if ((is_string($val) && trim($val) === '') || (is_array($val) && trim(implode('', $val)) === '')) {
+		// $$$ hugh - should now already be in string format
+		//if ((is_string($val) && trim($val) === '') || (is_array($val) && trim(implode('', $val)) === '')) {
+		if (trim($val) === '') {
 			return '';
 		}
 		// $$$ rob moved beneath as here $val can be an array which gives errors as getDate expects a string
@@ -283,10 +298,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			// $$$ hugh - no can do, getDefault already munged $val into a string
 			// $$$ rob - erm no! - its an array when submitting from the form, perhaps elsewhere its sent
 			// as a string - so added test for array
+			// $$$ hugh need to do this earlier, moved it to top of proc
+			/*
 			if (is_array($val)) {
 				// $$$ rob do url decode on time as if its passed from ajax save the : is in format %3C or something
 				$val = $val['date'].' '.$this->_fixTime(urldecode($val['time']));
 			}
+			*/
 		} else {
 			$format = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		}
@@ -301,7 +319,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 
 		$b = FabrikWorker::strToDateTime($val, $format);
-		//3.0 can't use timestamp as that gets offset as its taken as numeric by FabDate
+		//3.0 can't use timestamp as that gets offset as its taken as numeric by JDate
 		//$orig = new FabDate($datebits['timestamp'], 2);
 		$bstr = $b['year'].'-'.$b['mon'].'-'.$b['day'].' '.$b['hour'].':'.$b['min'].':'.$b['sec'];
 		$orig = new FabDate($bstr);
@@ -363,11 +381,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function storeDatabaseFormat($val, $data)
 	{
+		if (!is_array($val)) {
+			// $$$ hugh - we really need to work out why some AJAX data is not getting urldecoded.
+			// but for now ... a bandaid.
+			$val = urldecode($val);
+		}
 		//@TODO: deal with failed validations
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin() && is_array($val)) {
 			if (JArrayHelper::getValue($val, 'time') !== '') {
-				$val['time'] = $this->_fixTime($val['time']);
+				$val['time'] = $this->_fixTime(urldecode($val['time']));
 			}
 			$val = implode(" ", $val);
 		} else {
@@ -395,10 +418,14 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if ((is_array($value) && empty($value)) || trim($value) == '') {
+		if ((is_array($value) && empty($value)) || (!is_array($value) && trim($value) == '')) {
 			return '';
 		}
-		# $$$ hugh - need to convert to database format so we GMT-ified date
+		$groupModel = $this->getGroup();
+		if ($groupModel->isJoin() && $groupModel->canRepeat()) {
+			$value = $value[$repeatCounter];
+		}
+		// $$$ hugh - need to convert to database format so we GMT-ified date
 		return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass());
 	}
 
@@ -609,13 +636,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->align = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay = intval($params->get('date_firstday'));
-		
+
 		/// testing
-		
+
 		$validations = $this->getValidations();
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$opts->hasValidations = empty($validations) ? false : true;
-		
+
 		$opts->dateAllowFunc = $params->get('date_allow_func');
 		return $opts;
 	}
@@ -906,7 +933,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			case 'dropdown':
 
 				if (!$params->get('date_showtime', 0) || $exactTime == false) {
-						
+
 					//$$$ rob turn into a ranged filter to search the entire day
 					// values should be in table format and not mySQL as they are set to mySQL in getRangedFilterValue()
 					$value = (array)$value;
@@ -1063,7 +1090,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
-					
+
 			case 'auto-complete':
 				if (get_magic_quotes_gpc()) {
 					$default = stripslashes($default);
@@ -1588,10 +1615,18 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 class FabDate extends JDate{
 
+	protected static $gmt;
+	protected static $stz;
+
 	public function __construct($date = 'now', $tz = null)
 	{
 		if (!date_create($date)) {
 			return false;
+		}
+		// Create the base GMT and server time zone objects.
+		if (empty(self::$gmt) || empty(self::$stz)) {
+			self::$gmt = new DateTimeZone('GMT');
+			self::$stz = new DateTimeZone(@date_default_timezone_get());
 		}
 		parent::__construct($date, $tz);
 	}
