@@ -1106,7 +1106,8 @@ var FbForm = new Class({
 		}
 		// update the hidden field containing number of repeat groups
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
-		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
+		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
+		//this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
 	},
 
 	hideLastGroup : function (groupid, subGroup) {
@@ -1171,10 +1172,11 @@ var FbForm = new Class({
 		var i = e.target.getParent('.fabrikGroup').id.replace('group', '');
 		var group = document.id('group' + i);
 		var c = this.repeatGroupMarkers.get(i);
-		if (c >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
+		var repeats = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt();
+		if (repeats >= this.options.maxRepeat[i] && this.options.maxRepeat[i] !== 0) {
 			return;
 		}
-		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() + 1;
+		document.id('fabrik_repeat_group_' + i + '_counter').value = repeats + 1;
 
 		if (this.isFirstRepeatSubGroup(group)) {
 			var subgroups = group.getElements('.fabrikSubGroup');
