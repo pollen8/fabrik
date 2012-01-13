@@ -12,7 +12,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_Crongmail extends FabrikPlugin {
+//require the abstract plugin class
+require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+
+class plgFabrik_Crongmail extends plgFabrik_Cron {
 
 	/**
 	 * do the plugin action

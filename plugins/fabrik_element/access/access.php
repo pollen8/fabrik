@@ -18,7 +18,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	 * @param array posted form data
 	 */
 
-	function storeDatabaseFormat($val, $data )
+	function storeDatabaseFormat($val, $data)
 	{
 		// $$$ hugh - nope!
 		//return $val[0];

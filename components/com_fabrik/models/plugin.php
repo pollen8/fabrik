@@ -259,7 +259,7 @@ class FabrikPlugin extends JPlugin
 	{
 		return FabTable::getInstance('Extension', 'JTable');
 	}
-
+	
 	/**
 	 * determine if we use the plugin or not
 	 * both location and event criteria have to be match
@@ -495,38 +495,6 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
-	 * used in cron plugins
-	 * can be overridden per plugin
-	 */
-
-	function requiresTableData() {
-		/* whether cron should automagically load table data */
-		return true;
-	}
-
-	function getLog()
-	{
-		return '';
-	}
-
-	/**
-	 * only applicable to cron plugins but as there's no sub class for them
-	 * the methods here for now
-	 * deterimes if the cron plug-in should be run - if require_qs is true
-	 * then fabrik_cron=1 needs to be in the querystring
-	 */
-
-	public function queryStringActivated()
-	{
-		$params = $this->getParams();
-		if (!$params->get('require_qs')) {
-			// querystring not required so plugin should be activated
-			return true;
-		}
-		return JRequest::getInt('fabrik_cron', 0);
-	}
-
-	/**
 	 * if true then the plugin is stating that any subsequent plugin in the same group
 	 * should not be run.
 	 * @param string current plug-in call method e.g. onBeforeStore
@@ -538,7 +506,7 @@ class FabrikPlugin extends JPlugin
 		return false;
 	}
 
-/**
+	/**
 	 * process the plugin, called when form is submitted
 	 *
 	 * @param string param name which contains the PHP code to eval

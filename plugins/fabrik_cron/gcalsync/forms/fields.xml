@@ -3,6 +3,11 @@
 	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
 		<fieldset name="plg-cron-gcalsync">
 			
+			<field name="gcal_notice" type="text" disabled="true" readonly="true" class="readonly"
+			label="PLG_CRON_GCAL_NOTES_LABEL"
+			description="PLG_CRON_GCAL_NOTES_DESC">
+			
+			</field>
 			<field name="gcal_sync_upload_events" 
 				type="radio" 
 				default="from" 

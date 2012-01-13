@@ -12,7 +12,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_Cronemail extends FabrikPlugin {
+//require the abstract plugin class
+require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+
+class plgFabrik_Cronemail extends plgFabrik_Cron {
 
 	var $_counter = null;
 
@@ -40,6 +43,7 @@ class plgFabrik_Cronemail extends FabrikPlugin {
 		$eval = $params->get('cronemail-eval');
 		$condition = $params->get('cronemail_condition', '');
 		$updates = array();
+		$this->log = '';
 		foreach ($data as $group) {
 			if (is_array($group)) {
 				foreach ($group as $row) {
@@ -57,7 +61,12 @@ class plgFabrik_Cronemail extends FabrikPlugin {
 							$thismsg = eval($thismsg);
 						}
 						$thissubject = $w->parseMessageForPlaceHolder($subject, $row);
-						$res = JUTility::sendMail( $MailFrom, $FromName, $thisto, $thissubject, $thismsg, true);
+						$res = JUTility::sendMail($MailFrom, $FromName, $thisto, $thissubject, $thismsg, true);
+						if (!$res) {
+							$this->log .= "\n failed sending to $thisto";
+						}
+					} else {
+						$this->log .= "\n $thisto is not an email address";
 					}
 					$updates[] = $row['__pk_val'];
 
@@ -77,38 +86,13 @@ class plgFabrik_Cronemail extends FabrikPlugin {
 
 			$field = str_replace("___", ".", $field);
 			$query = "UPDATE $table->db_table_name set $field = " . $fabrikDb->Quote($value) . " WHERE $table->db_primary_key IN (" . implode(',', $updates) . ")";
+			$this->log .= "\n update query: $query";
 			$fabrikDb = $listModel->getDb();
 			$fabrikDb->setQuery($query);
 			$fabrikDb->query();
 		}
+		$this->log .= "\n updates " . count($updates) . " records";
 		return count($updates);
-	}
-
-	/**
-	 * show a new for entering the form actions options
-	 */
-
-	function renderAdminSettings()
-	{
-		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
-		$this->getRow();
-		$pluginParams = $this->getParams();
-
-		$document = JFactory::getDocument();
-		?>
-		<div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
-		<?php
-			echo $pluginParams->render('params');
-			echo $pluginParams->render('params', 'fields');
-			?>
-			<fieldset>
-				<legend><?php echo JText::_('update') ?></legend>
-				<?php echo $pluginParams->render('params','update') ?>
-			</fieldset>
-		</div>
-
-		<?php
-		return ;
 	}
 
 }

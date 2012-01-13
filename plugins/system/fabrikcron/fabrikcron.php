@@ -54,13 +54,13 @@ class plgSystemFabrikcron extends JPlugin
 		//3.0 done in inAfterInitialize()
 		//$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php' : JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'defines.php';
 		//require_once($defines);
-		jimport('joomla.application.component.model');
+		/* jimport('joomla.application.component.model');
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'parent.php');
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'); */
 		//get all active tasks
 		$db = FabrikWorker::getDbo(true);
 		$now = JRequest::getVar('fabrikcron_run', false);
@@ -82,8 +82,9 @@ class plgSystemFabrikcron extends JPlugin
 			."WHEN unit = 'month' THEN DATE_ADD( lastrun, INTERVAL frequency MONTH )\n"
 			."WHEN unit = 'year' THEN DATE_ADD( lastrun, INTERVAL frequency YEAR ) END";
 
-			$query = "SELECT id, plugin, lastrun, unit, frequency, $nextrun AS nextrun FROM #__{package}_cron\n"
-			."WHERE published = '1' AND $nextrun < '". JFactory::getDate()->toMySQL() ."'";
+			$query = "SELECT id, plugin, lastrun, unit, frequency, $nextrun AS nextrun FROM #__{package}_cron\n";
+			$query .= "WHERE published = '1' ";
+			$query .= "AND $nextrun < '". JFactory::getDate()->toMySQL() ."'";
 		} else {
 			$query = "SELECT id, plugin FROM #__{package}_cron WHERE published = '1'";
 		}
@@ -103,12 +104,12 @@ class plgSystemFabrikcron extends JPlugin
 		// http://fabrikar.com/forums/showthread.php?p=114008#post114008
 		$ids = array();
 		foreach ($rows as $row) {
-			$ids[] = $row->id;
+			$ids[] = (int)$row->id;
 		}
 		$db->setQuery("UPDATE #__{package}_cron SET published='2' WHERE id IN (" . implode(',', $ids) . ")");
-		$db->query();
+		//$db->query();
 
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 
 		foreach ($rows as $row) {
@@ -116,10 +117,12 @@ class plgSystemFabrikcron extends JPlugin
 			$log->id = null;
 			$log->referring_url = '';
 			//load in the plugin
-			$plugin =& $pluginManager->getPlugIn($row->plugin, 'cron');
-			$plugin->setId($row->id);
+			//$plugin = $pluginManager->getPlugIn($row->plugin, 'cron');
+			//$plugin->setId($row->id);
+			
+			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
 			$log->message_type = 'plg.cron.'.$row->plugin;
-			if (!$plugin->queryStringActivated()){
+			if (!$plugin->queryStringActivated()) {
 				// $$$ hugh - don't forget to make it runnable again before continuing
 				$db->setQuery('UPDATE #__{package}_cron SET published="1" WHERE id = '.$row->id);
 				$db->query();
@@ -133,7 +136,7 @@ class plgSystemFabrikcron extends JPlugin
 				if ($plugin->requiresTableData()) {
 					$table = $thisListModel->getTable();
 					$total = $thisListModel->getTotalRecords();
-					$nav =& $thisListModel->getPagination($total, 0, $total);
+					$nav = $thisListModel->getPagination($total, 0, $total);
 					$data = $thisListModel->getData();
 					$log->message .= "\n" . $thisListModel->_buildQuery();
 				}
@@ -142,9 +145,9 @@ class plgSystemFabrikcron extends JPlugin
 			}
 			$res = $plugin->process($data, $thisListModel);
 			$log->message = $plugin->getLog() . "\n\n" . $log->message;
-			$now =& JFactory::getDate();
+			$now = JFactory::getDate();
 			$now = $now->toUnix();
-			$new =& JFactory::getDate($row->nextrun);
+			$new = JFactory::getDate($row->nextrun);
 			$tmp = $new->toUnix();
 
 			switch ($row->unit) {
@@ -172,7 +175,7 @@ class plgSystemFabrikcron extends JPlugin
 
 			//mark them as being run
 			// $$$ hugh - and make it runnable again by setting 'state' back to 1
-			$nextrun =& JFactory::getDate($tmp);
+			$nextrun = JFactory::getDate($tmp);
 			$db->setQuery('UPDATE #__{package}_cron SET lastrun = "'.$nextrun->toMySQL() .'" WHERE id = '.$row->id);
 			$db->query();
 			//log if asked for

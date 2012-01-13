@@ -12,9 +12,13 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+//require the abstract plugin class
+require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+
+
 require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps.php');
 
-class plgFabrik_CronGeocode extends FabrikPlugin {
+class plgFabrik_CronGeocode extends plgFabrik_Cron {
 
 	var $_counter = null;
 

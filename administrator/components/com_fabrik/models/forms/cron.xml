@@ -30,14 +30,7 @@
 				<option value="1">JPUBLISHED</option>
 		</field>
 		
-		<field name="log" 
-			type="radio"
-			default="0"
-			label="COM_FABRIK_CRON_FIELD_LOG_EVENTS_LABEL"
-			description="COM_FABRIK_LOG_CRON_EVENTS_DESC">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-		</field>
+		
 		
 		<field name="plugin" 
 			type="pluginlist" 
@@ -48,8 +41,7 @@
 		
 	</fieldset>
 	
-	<fields name="params">
-	<fieldset name="run" label="run">
+		<fieldset name="run" label="run">
 	
 		<field name="frequency"
 			type="text"
@@ -75,19 +67,44 @@
 			
 	</fieldset>
 	
-	<fieldset name="connection" label="connection" >
+	<fields name="params">
+	
+		<fieldset name="log" label="log">
 		
-		<field name="connection" 
-			type="connections" 
-			label="COM_FABRIK_CRON_FIELD_CONNECTION_LABEL"
-			description="COM_FABRIK_CRON_FIELD_CONNECTION_DESC" />
+		<field name="log" 
+				type="radio"
+				default="0"
+				label="COM_FABRIK_CRON_FIELD_LOG_EVENTS_LABEL"
+				description="COM_FABRIK_LOG_CRON_EVENTS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 			
-		<field name="table" 
-			type="fabriktables"
-			connection_in_repeat="false"
-			observe="params_connection" 
-			label="COM_FABRIK_CRON_FIELD_TABLE_LABEL"/>
+			<field name="require_qs" 
+				default="0"
+				type="radio"
+				label="COM_FABRIK_CRON_FIELD_REQUIRE_QS_LABEL"
+				description="COM_FABRIK_CRON_FIELD_REQUIRE_QS_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
+			</field>
 			
-	</fieldset>
-</fields>
+		</fieldset>
+	
+		
+		<fieldset name="connection" label="connection" >
+			
+			<field name="connection" 
+				type="connections" 
+				label="COM_FABRIK_CRON_FIELD_CONNECTION_LABEL"
+				description="COM_FABRIK_CRON_FIELD_CONNECTION_DESC" />
+				
+			<field name="table" 
+				type="fabriktables"
+				connection_in_repeat="false"
+				observe="params_connection" 
+				label="COM_FABRIK_CRON_FIELD_TABLE_LABEL"/>
+				
+		</fieldset>
+	</fields>
 </form>

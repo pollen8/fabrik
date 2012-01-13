@@ -309,11 +309,23 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	function getElementPlugin($id)
 	{
-		$el = FabTable::getInstance('Element', 'FabrikTable');
+		return $this->getPluginFromId($id); 
+	}
+	
+	public function getPluginFromId($id, $type = 'Element') 
+	{
+		$el = FabTable::getInstance($type, 'FabrikTable');
 		$el->load($id);
-		$o = $this->loadPlugIn($el->plugin, 'Element');
+		$o = $this->loadPlugIn($el->plugin, $type);
 		$o->setId($id);
-		$o->getElement();
+		switch ($type) {
+			default:
+				$o->getTable();
+				break;
+			case 'Element':
+				$o->getElement();
+				break;
+		}
 		return $o;
 	}
 

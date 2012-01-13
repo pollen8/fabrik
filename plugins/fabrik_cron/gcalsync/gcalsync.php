@@ -12,7 +12,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_CronGcalsync extends FabrikPlugin {
+//require the abstract plugin class
+require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+
+class plgFabrik_CronGcalsync extends plgFabrik_Cron {
 
 	var $_counter = null;
 
@@ -251,44 +254,6 @@ class plgFabrik_CronGcalsync extends FabrikPlugin {
 				}
 			}
 		}
-	}
-
-	/**
-	 * show a new for entering the form actions options
-	 */
-
-	function renderAdminSettings()
-	{
-		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
-		$this->getRow();
-		$pluginParams = $this->getParams();
-
-		$document = JFactory::getDocument();
-		?>
-		<div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
-		<b>NOTES</b>
-		<ul>
-			<li>
-				<b>This plugin requires the ZendGdata library be installed on your server.</b> See the README file that came with this plugin.
-			</li>
-			<li>
-				At the moment, this plugin does not handle repeating event data.  It just uses the first start/end date occurences.
-			<li>
-				To sync more than one GCal into a single Fabrik cal, just add multiple instances of this plugin, configured accordingly.
-			</li>
-			<li>
-				To force a sync (without having to wait for the next scheduled run), visit any page on your site with &amp;fabrikcron_run=1 appended to the URL.  Note that this will run all your scheduled tasks, not just the GCal ones.
-			</li>
-		</ul>
-		<?php
-			// @TODO - work out why the language diddly doesn't work here, so we can make the above notes translateable?
-			//echo JText::_('GCALNOTES');
-			echo $pluginParams->render('params');
-			echo $pluginParams->render('params', 'fields');
-			?>
-		</div>
-		<?php
-		return ;
 	}
 
 }
