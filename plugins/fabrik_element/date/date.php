@@ -1620,8 +1620,19 @@ class FabDate extends JDate{
 
 	public function __construct($date = 'now', $tz = null)
 	{
-		if (!date_create($date)) {
-			return false;
+		$orig = $date;
+		$date = $this->stripDays($date);
+		//not sure if this one needed?
+		//	$date = $this->monthToInt($date);
+		$date = $this->removeDashes($date);
+		try {
+			$dt = new DateTime($date);
+		}
+		catch(Exception $e) {
+			JError::raiseNotice(500, 'date format unknown for ' . $orig . ' replacing with todays date');
+			$date = 'now';
+			// catches 'Failed to parse time string (ublingah!) at position 0 (u)' exception.
+			// don't use this object
 		}
 		// Create the base GMT and server time zone objects.
 		if (empty(self::$gmt) || empty(self::$stz)) {
@@ -1629,6 +1640,42 @@ class FabDate extends JDate{
 			self::$stz = new DateTimeZone(@date_default_timezone_get());
 		}
 		parent::__construct($date, $tz);
+	}
+	
+	protected function removeDashes($str)
+	{
+		$str = FabrikString::ltrimword($str, '-');
+		return $str;
+	}
+	
+	protected function monthToInt($str)
+	{
+		$abbrs = array(true, false);
+		for ($a = 0; $a < count($abbrs); $a ++ ) {
+			for ($i = 0; $i < 13; $i ++) {
+				$month = $this->monthToString($i, $abbrs[$a]);
+				if (stristr($str, $month)) {
+					$monthNum = strlen($i) === 1 ? '0'.$i : $i;
+					$str = str_ireplace($month, $monthNum, $str);
+				}
+			}
+		}
+		return $str;
+	}
+	
+	protected function stripDays($str)
+	{
+		$abbrs = array(true, false);
+		for ($a = 0; $a < count($abbrs); $a ++ ) {
+			for ($i = 0; $i < 7; $i ++) {
+				$day = $this->dayToString($i, $abbrs[$a]);
+				//echo "day = $day <br>";
+				if (stristr($str, $day)) {
+					$str = str_ireplace($day, '', $str);
+				}
+			}
+		}
+		return $str;
 	}
 
 }
