@@ -283,6 +283,8 @@ var FbDateTime = new Class({
 			//if hidden but form set to show time format dont split up the time as we don't 
 			// have a time field to put it into
 			date = date.format(f);
+			this.getDateField().value = date;
+			return;
 		} else {
 			// have to reset the time element as update is called (via reset) in
 			// duplicate group code
