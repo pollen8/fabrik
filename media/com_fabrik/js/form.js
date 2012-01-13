@@ -377,7 +377,7 @@ var FbForm = new Class({
 		var orig = this.form.getElement('input[name=format]').value;
 		var origprocess = this.form.getElement('input[name=task]').value;
 		this.form.getElement('input[name=format]').value = 'raw';
-		this.form.getElement('input[name=task]').value = 'savepage';
+		this.form.getElement('input[name=task]').value = 'form.savepage';
 
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
 		Fabrik.loader.start('form_' + this.id, 'saving page');
