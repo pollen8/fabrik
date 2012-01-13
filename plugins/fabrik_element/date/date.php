@@ -544,75 +544,19 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$attribs = JArrayHelper::toString($attribs);
 		}
 
-		/* $document = JFactory::getDocument();
-		$opts = $this->_CalendarJSOpts($repeatCounter);
+		$document = JFactory::getDocument();
+		$opts = $this->_CalendarJSOpts($id);
 		$opts->ifFormat = $format;
-		//$opts = json_encode($opts);
-
-		$validations = $this->getValidations();
-
-		$script = 'head.ready(function() {
-
-		if($("'.$id.'")) { ';
-
-		$subElContainerId = $this->getHTMLId($repeatCounter);
-
-		$formModel = $this->getForm();
-		//$$$rob might we get away with just testing if the view is a form or detailed view but for now leave as it is
-		if (JRequest::getVar('task') != 'elementFilter' && JRequest::getVar('view') != 'table') {
-			$opts = rtrim($opts, "}");
-			$opts .= ',"onClose":onclose, "onSelect":onselect, "dateStatusFunc":datechange}';
-			$script .= 'var onclose = (function(e) {
-			this.hide();
-			try{
-				form_'.$formModel->getId().'.triggerEvents(\''.$subElContainerId.'\', ["blur", "click", "change"], this);
-				window.fireEvent(\'fabrik.date.close\', this);
-			}catch(err) {
-				fconsole(err);
-			};
-			';
-
-			if (!empty($validations)) {
-				//if we have a validation on the element run it when the calendar closes itself
-				//this ensures that alert messages are removed if the new data meets validation criteria
-				$script .= 'form_'.$formModel->getId().'.doElementValidation(\''.$subElContainerId.'\');'."\n";
-			}
-			$script .= "});\n"; //end onclose function
-
-			//onselect function
-			$script .= 'var onselect = (function(calendar, date) {
- 			$(\''.$id.'\').value = date;
- 			 if (calendar.dateClicked) {
-  		 calendar.callCloseHandler();
- 		 }
-			window.fireEvent(\'fabrik.date.select\', this);
-				try{
-					form_'.$formModel->getId().'.triggerEvents(\''.$subElContainerId.'\', ["click", "focus", "change"], this);
-				}catch(err) {
-					//fconsole(err);
-				};
-			});';
-			//end onselect function
-
-			//date change function
-			$script .= '
-			var datechange = (function(date) {
-				try{
-					return disallowDate(this, date);
-				}catch(err) {
-					//fconsole(err);
-				}
-			});
-			';
-			//end onselect function
-		}
 		$opts = json_encode($opts);
-		$script .= 'Calendar.setup('.$opts.');'.
-		'}'. //end if id
-		"\n});"; //end domready function
+		$script = array();
+		$script[] = 'head.ready(function() {';
+		$script[] = 'if($("'.$id.'")) { ';
+		$script[] = 'Calendar.setup('.$opts.');';
+		$script[] = '}'; //end if id
+		$script[] = '});'; //end domready function
 		if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
-			FabrikHelperHTML::addScriptDeclaration($script);
-		} */
+			FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
+		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_img'));
 		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.
@@ -625,10 +569,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * @return object ready for js encoding
 	 */
 
-	protected function _CalendarJSOpts($repeatCounter = 0)
+	protected function _CalendarJSOpts($id)
 	{
 		$params = $this->getParams();
-		$id = $this->getHTMLId($repeatCounter);
 		$opts = new stdClass();
 		$opts->inputField = $id;
 		$opts->ifFormat = $params->get('date_form_format');
@@ -674,7 +617,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->dateTimeFormat = $params->get('date_time_format', '');
 
 		//for reuse if element is duplicated in repeat group
-		$opts->calendarSetup = $this->_CalendarJSOpts($repeatCounter);
+		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 		$opts = json_encode($opts);
 		return "new FbDateTime('$id', $opts)";
 	}
@@ -1620,8 +1563,19 @@ class FabDate extends JDate{
 
 	public function __construct($date = 'now', $tz = null)
 	{
-		if (!date_create($date)) {
-			return false;
+		$orig = $date;
+		$date = $this->stripDays($date);
+		//not sure if this one needed?
+		//	$date = $this->monthToInt($date);
+		$date = $this->removeDashes($date);
+		try {
+			$dt = new DateTime($date);
+		}
+		catch(Exception $e) {
+			JError::raiseNotice(500, 'date format unknown for ' . $orig . ' replacing with todays date');
+			$date = 'now';
+			// catches 'Failed to parse time string (ublingah!) at position 0 (u)' exception.
+			// don't use this object
 		}
 		// Create the base GMT and server time zone objects.
 		if (empty(self::$gmt) || empty(self::$stz)) {
@@ -1629,6 +1583,42 @@ class FabDate extends JDate{
 			self::$stz = new DateTimeZone(@date_default_timezone_get());
 		}
 		parent::__construct($date, $tz);
+	}
+	
+	protected function removeDashes($str)
+	{
+		$str = FabrikString::ltrimword($str, '-');
+		return $str;
+	}
+	
+	protected function monthToInt($str)
+	{
+		$abbrs = array(true, false);
+		for ($a = 0; $a < count($abbrs); $a ++ ) {
+			for ($i = 0; $i < 13; $i ++) {
+				$month = $this->monthToString($i, $abbrs[$a]);
+				if (stristr($str, $month)) {
+					$monthNum = strlen($i) === 1 ? '0'.$i : $i;
+					$str = str_ireplace($month, $monthNum, $str);
+				}
+			}
+		}
+		return $str;
+	}
+	
+	protected function stripDays($str)
+	{
+		$abbrs = array(true, false);
+		for ($a = 0; $a < count($abbrs); $a ++ ) {
+			for ($i = 0; $i < 7; $i ++) {
+				$day = $this->dayToString($i, $abbrs[$a]);
+				//echo "day = $day <br>";
+				if (stristr($str, $day)) {
+					$str = str_ireplace($day, '', $str);
+				}
+			}
+		}
+		return $str;
 	}
 
 }
