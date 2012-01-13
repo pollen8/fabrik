@@ -34,4 +34,3 @@ ALTER TABLE `#__fabrik_validations` CHANGE `attribs` `params` TEXT NOT NULL;
 ALTER TABLE `#__fabrik_visualizations` CHANGE `state` `published` INT( 1 ) NOT NULL DEFAULT '0';
 ALTER TABLE `#__fabrik_visualizations` CHANGE `attribs` `params` TEXT NOT NULL;
 
-ALTER TABLE `#__fabrik_connections` CHANGE `published` `state` INT( 1 ) NOT NULL DEFAULT '0';
