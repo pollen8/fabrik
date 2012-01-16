@@ -22,6 +22,14 @@
 				repeat="true" 
 				label="PLG_LIST_UPDATE_COL_BUTTON_LABEL_LABEL" />
 			
+			<field name="list_update_col_image_name" 
+				type="text"
+				size="20"
+				repeat="true"
+				default="update_col.png"
+				description="PLG_LIST_UPDATE_COL_IMAGE_DESC"
+				label="PLG_LIST_UPDATE_COL_IMAGE_LABEL" />
+				
 			<field type="fabrikmodalrepeat"	
 				repeat="true"
 				name="update_col_updates"

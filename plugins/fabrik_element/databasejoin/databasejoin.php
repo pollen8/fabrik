@@ -1245,12 +1245,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * Examples of where this would be overwritten include drop downs whos "please select" value might be "-1"
-	 * @param string data posted from form to check
+	 * @param mixed data posted from form to check
 	 * @return bol if data is considered empty then returns true
 	 */
 
 	function dataConsideredEmpty($data, $repeatCounter)
 	{
+		// $$$ hugh on validations (at least), we're getting arrays
+		if (is_array($data)) {
+			return empty($data[0]);
+		}
 		if ($data == '' || $data == '-1') {
 			return true;
 		}
@@ -1624,14 +1628,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		return $a;
 	}
-	
+
 	/**
 	* @since 3.0rc1
 	* when the element is a repeatble join (e.g. db join checkbox) then figure out how many
 	* records have been selected
 	* @return int number of records selected
 	*/
-	
+
 	public function getJoinRepeatCount($data, $oJoin)
 	{
 		$displayType = $this->getParams()->get('database_join_display_type', 'dropdown');
