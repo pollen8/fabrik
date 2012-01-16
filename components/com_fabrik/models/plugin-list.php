@@ -58,7 +58,8 @@ class plgFabrik_List extends FabrikPlugin
 		if ($this->canUse()) {
 			$name = $this->_getButtonName();
 			$label = $this->buttonLabel();
-			$img = FabrikHelperHTML::image($this->_buttonPrefix.'.png', 'list', '',  $label);
+			$imageName = $this->getParams()->get('list_' . $this->_buttonPrefix . '_image_name', $this->_buttonPrefix . '.png');
+			$img = FabrikHelperHTML::image($imageName, 'list', '',  $label);
 			return '<a href="#" class="'.$name.' listplugin" title="'.$label.'">'.$img.'<span>'.$label.'</span></a>';
 		}
 		return '';
@@ -191,7 +192,6 @@ class plgFabrik_List extends FabrikPlugin
 	}
 
 	/**
-	 *
 	 * allows to to alter the table's select query
 	 * @param object $params
 	 * @param object table model

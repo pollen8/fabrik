@@ -13,6 +13,14 @@
 				repeat="true"
 				label="PLG_FABRIK_LIST_PHP_BUTTON_LABEL_LABEL" size="30" />
 				
+			<field name="list_php_image_name" 
+				type="text"
+				size="20"
+				repeat="true"
+				default="php.png"
+				description="PLG_FABRIK_LIST_PHP_IMAGE_DESC"
+				label="PLG_FABRIK_LIST_PHP_IMAGE_LABEL" />
+				
 			<field name="table_php_file" 
 				type="filelist" 
 				directory="plugins/fabrik_list/php/scripts/" 
@@ -34,7 +42,7 @@
 				size="30"
 				repeat="true"
 				label="PLG_FABRIK_LIST_PHP_SUCCESS_MSG_LABEL" />
-				
+			
 		</fieldset>
 	</fields>
 </form>
