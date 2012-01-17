@@ -10,6 +10,7 @@ class FabrikModelUpgrade extends JModel
 
 	public function __construct($config = array())
 	{
+		$this->fundleMenus();
 		if (!$this->shouldUpgrade()) {
 			JFactory::getApplication()->enqueueMessage('Already updated');
 			return parent::__construct($config);
@@ -157,6 +158,27 @@ class FabrikModelUpgrade extends JModel
 		}
 		
 	}
+	
+	protected function fundleMenus()
+	{
+		$db = JFactory::getDbo();
+		$db->setQuery('select extension_id FROM 	#__extensions WHERE type = "component" and element = "com_fabrik"');
+		$cid = (int)$db->loadResult();
+		$db->setQuery('UPDATE #__menu SET component_id = '.$cid .' WHERE link LIKE \'%com_fabrik%\'');
+		$db->query();
+		
+		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'view=table', 'view=list') WHERE component_id = ".$cid);
+		echo $db->getQuery() . "<br>";
+		$db->query();
+		
+		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'tableid=', 'listid=') WHERE component_id = ".$cid);
+		echo $db->getQuery() . "<br>";
+		$db->query();
+		
+		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'fabrik=', 'formid=') WHERE component_id = ".$cid);
+		echo $db->getQuery() . "<br>";
+		$db->query();
+	}
 
 	/**
 	 * convert old skool J1.5 attribs into json object
@@ -167,9 +189,9 @@ class FabrikModelUpgrade extends JModel
 		$a = explode("\n", $str);
 		foreach ($a as $line) {
 			if (strstr($line, '=')) { 
-				list($key, $val) = explode("=", $line);
+				list($key, $val) = explode("=", $line, 2);
 				if (strstr($val, '//..*..//')) {
-					$val = explode($val, '//..*..//');
+					$val = explode('//..*..//', $val);
 				}
 				if ($key) {
 					$o->$key = $val;
