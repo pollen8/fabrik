@@ -34,16 +34,25 @@ class FabrikModelUpgrade extends JModel
 		$tables = $db->loadObjectList('db_table_name') + $this->getFabrikTables();
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$connModel = JModel::getInstance('Connection', 'FabrikFEModel');
+		$cnnTables = array();
 		foreach ($tables as $dbName => $item) {
 			$connModel->setId($item->connection_id);
 			$connModel->getConnection($item->connection_id);
 			$cDb = $connModel->getDb();
+			if (!array_key_exists($item->connection_id, $cnnTables)) {
+				$cnnTables[$item->connection_id] = $cDb->getTableList();
+			}
 			$listModel->set('_oConn', $connModel);
 			//drop the bkup table
 			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
+			}
+			//test table exists
+			if (!in_array($item->db_table_name, $cnnTables[$item->connection_id])) {
+				JError::raiseNotice(500, 'backup: table not found: ' . $item->db_table_name);
+				continue;
 			}
 			//create the bkup table (this method will also correctly copy table indexes
 			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name)." like ".$cDb->nameQuote($item->db_table_name));
@@ -156,13 +165,15 @@ class FabrikModelUpgrade extends JModel
 	protected function fromAttribsToObject($str) {
 		$o = new stdClass();
 		$a = explode("\n", $str);
-		foreach ($a as $line){
-			list($key, $val) = explode("=", $line);
-			if (strstr($val, '//..*..//')) {
-				$val = explode($val, '//..*..//');
-			}
-			if ($key) {
-				$o->$key = $val;
+		foreach ($a as $line) {
+			if (strstr($line, '=')) { 
+				list($key, $val) = explode("=", $line);
+				if (strstr($val, '//..*..//')) {
+					$val = explode($val, '//..*..//');
+				}
+				if ($key) {
+					$o->$key = $val;
+				}
 			}
 		}
 		return $o;
