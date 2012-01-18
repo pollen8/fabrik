@@ -258,7 +258,12 @@ var FbDateTime = new Class({
 		}
 		var date;
 		if (typeOf(val) === 'string') {
+			// $$$ hugh - if val is empty string, like from a clearForm(), the Date.parse() is
+			// going to return null, swhich will then blow up in a few lines.
 			date = Date.parse(val);
+			if (date === null) {
+				return;
+			}
 		} else {
 			date = val;
 		}

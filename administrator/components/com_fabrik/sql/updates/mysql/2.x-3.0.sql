@@ -1,4 +1,5 @@
-UPDATE `#__fabrik_elements` set plugin = (SELECT replace(plugin,'fabrik', ''));
+UPDATE `#__fabrik_elements` SET plugin = (SELECT replace(plugin,'fabrik', ''));
+UPDATE  `#__content` SET introtext = (SELECT replace(introtext, '{fabrik view=table', '{fabrik view=list'));
 ALTER TABLE `#__fabrik_connections` CHANGE `attribs` `params` TEXT;
 ALTER TABLE `#__fabrik_connections` CHANGE `state` `published` INT( 1 ) NOT NULL DEFAULT '0';
 ALTER TABLE `#__fabrik_cron` CHANGE `state` `published` INT( 1 ) NOT NULL DEFAULT '0';

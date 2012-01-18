@@ -76,13 +76,13 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		//as ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object)$params->get('emailexists_or_not');
 		$c = (int)$c;
+		$cond = '';
 		foreach ($ornot as $k => $v) {
 			if ($k == $c) {
 				$cond = $v;
 			}
 		}
 		if ($cond == 'fail_if_not_exists') {
-			echo "Here";
 			return JText::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
 		} else {
 			return parent::getLabel($elementModel, $c);

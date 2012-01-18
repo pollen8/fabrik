@@ -2027,14 +2027,14 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$opts = $params->get('sub_options', '');
-		return $opts == '' ? array() : (array)$opts->sub_values;
+		return $opts == '' ? array() : (array)@$opts->sub_values;
 	}
 
 	protected function getSubOptionLabels()
 	{
 		$params = $this->getParams();
 		$opts = $params->get('sub_options', '');
-		return $opts == '' ? array() : (array)$opts->sub_labels;
+		return $opts == '' ? array() : (array)@$opts->sub_labels;
 	}
 
 	/**

@@ -338,15 +338,16 @@ class FabrikModelList extends FabModelAdmin
 
 		$afilterJoins	= $form->getValue('params.filter-join');
 
-		$afilterFields = $form->getValue('params.filter-fields');
-		$afilterConditions = $form->getValue('params.filter-conditions');
-		$afilterEval = $form->getValue('params.filter-eval');
-		$afilterValues= $form->getValue('params.filter-value');
-		$afilterAccess= $form->getValue('params.filter-access');
-		$aGrouped = $form->getValue('params.filter-grouped');
+		//force to arrays as single prefilters imported from 2.x will be stored as string values
+		$afilterFields = (array)$form->getValue('params.filter-fields');
+		$afilterConditions = (array)$form->getValue('params.filter-conditions');
+		$afilterEval = (array)$form->getValue('params.filter-eval');
+		$afilterValues= (array)$form->getValue('params.filter-value');
+		$afilterAccess= (array)$form->getValue('params.filter-access');
+		$aGrouped = (array)$form->getValue('params.filter-grouped');
 		for ($i=0; $i < count($afilterFields); $i++) {
 			$selJoin = JArrayHelper::getValue($afilterJoins, $i, 'and');
-			$selFilter = $afilterFields[$i];
+			$selFilter = str_replace('`', '', $afilterFields[$i]); // 2.0 upgraded sites had quoted filter names
 			$grouped = JArrayHelper::getValue($aGrouped, $i, 0);
 			$selCondition = $afilterConditions[$i];
 			$filerEval = (int)JArrayHelper::getValue($afilterEval, $i, '1');
