@@ -137,6 +137,9 @@ var FbAutocomplete = new Class({
 		this.getInputElement().value = li.get('text');
 		this.element.value = li.getProperty('data-value');
 		this.closeMenu();
+		// $$$ hugh - need to fire change event, in case it's something like a join element
+		// with a CDD that watches it.
+		this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
 		this.fireEvent('selection', [this, this.element.value]);
 	},
 	
