@@ -309,23 +309,22 @@ class FabrikViewList extends JView{
 		//if there is a menu item available AND the form is not rendered in a content plugin or module
 		if (is_object($menu) && !$this->isMambot) {
 			$menu_params = new JParameter($menu->params);
-			if (!$menu_params->get('page_title') || $menu_params->get('show_page_title') == 0) {
-				$params->set('page_title', '');
-				$params->set('show_page_title', 0);
-			} else {
-				$params->set('page_title', $menu_params->get('page_title'));
-				$params->set('show_page_title', $menu_params->get('show_page_title', 0));
-			}
-
+			$params->set('page_title', $menu_params->get('page_title', $menu->title));
+			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
 		} else {
 			$params->set('show_page_title', JRequest::getInt('show_page_title', 0));
 			$params->set('page_title', JRequest::getVar('title', ''));
 			$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
 		}
 
-		if (!$this->isMambot) {
-			$document->setTitle($w->parseMessageForPlaceHolder($params->get('page_title'), $_REQUEST));
+		$title = $params->get('page_title');
+		if (empty($title)) {
+			$title = $app->getCfg('sitename');
 		}
+		if (!$this->isMambot) {
+			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
+		}
+		
 		/** depreciated (keep incase ppl use them in old tmpls**/
 		$this->table 					= new stdClass();
 		$this->table->label 	= $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
