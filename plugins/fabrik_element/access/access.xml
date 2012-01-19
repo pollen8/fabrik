@@ -13,5 +13,7 @@
 		<filename plugin="access">access.php</filename>
 		<filename>index.html</filename>
 		<filename>access.js</filename>
+		<filename>access-min.js</filename>
+		<folder>forms</folder>
 	</files>
 </extension>

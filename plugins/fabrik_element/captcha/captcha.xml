@@ -13,6 +13,7 @@
 		<filename plugin="captcha">captcha.php</filename>
 		<filename>index.html</filename>
 		<filename>captcha.js</filename>
+		<filename>captcha-min.js</filename>
 		<filename>monofont.ttf</filename>
 		<filename>image.php</filename>
 		<folder>forms</folder>

@@ -13,5 +13,6 @@
 		<filename plugin="button">button.php</filename>
 		<filename>index.html</filename>
 		<filename>button.js</filename>
+		<filename>button-min.js</filename>
 	</files>
 </extension>

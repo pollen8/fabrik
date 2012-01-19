@@ -13,6 +13,7 @@
 		<filename plugin="count">count.php</filename>
 		<filename>index.html</filename>
 		<filename>count.js</filename>
+		<filename>count-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>	

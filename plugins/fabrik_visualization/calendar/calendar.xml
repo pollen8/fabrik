@@ -13,17 +13,13 @@
 	<files>
 		<filename plugin="calendar">calendar.js</filename>
 		<filename>calendar.php</filename>
+		<filename>calendar-min.js</filename>
 		<filename>index.html</filename>
-		<folder>forms</folder>
 		<folder>controllers</folder>
+		<folder>forms</folder>
+		<folder>language</folder>
 		<folder>models</folder>
 		<folder>views</folder>
 	</files>
 
-	<languages folder="language">
-		<language tag="de-DE">de-DE/de-DE.plg_fabrik_visualization_calendar.ini</language>
-		<language tag="en-GB">en-GB/en-GB.plg_fabrik_visualization_calendar.ini</language>
-		<language tag="es-ES">es-ES/es-ES.plg_fabrik_visualization_calendar.ini</language>
-		<language tag="fr-FR">fr-FR/fr-FR.plg_fabrik_visualization_calendar.ini</language>
-	</languages>
 </extension>

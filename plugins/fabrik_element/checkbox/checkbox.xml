@@ -13,6 +13,7 @@
 		<filename plugin="checkbox">checkbox.php</filename>
 		<filename>index.html</filename>
 		<filename>checkbox.js</filename>
+		<filename>checkbox-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

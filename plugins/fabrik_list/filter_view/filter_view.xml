@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="filter_view">filter_view.php</filename>
 		<filename>filter_view.js</filename>
+		<filename>filter_view-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

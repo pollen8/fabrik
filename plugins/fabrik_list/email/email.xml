@@ -11,6 +11,7 @@
 	<description>Adds a button to the table, allowing users to email rows</description>
 	<files>
 		<filename plugin="email">email.js</filename>
+		<filename>email-min.js</filename>
 		<filename>index.html</filename>
 		<folder>controllers</folder>
 		<folder>forms</folder>

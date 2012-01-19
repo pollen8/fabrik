@@ -13,6 +13,7 @@
 		<filename plugin="video">video.php</filename>
 		<filename>index.html</filename>
 		<filename>video.js</filename>
+		<filename>video-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

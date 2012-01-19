@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="jsperiodical">jsperiodical.php</filename>
 		<filename>jsperiodical.js</filename>
+		<filename>jsperiodical-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 	</files>

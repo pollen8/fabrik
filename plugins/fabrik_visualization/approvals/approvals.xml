@@ -11,8 +11,11 @@
 	<description>Shows a summary of records that need approval</description>
 	<files>
 		<filename plugin="approvals">approvals.php</filename>
+		<filename>approvals.js</filename>
+		<filename>approvals-min.js</filename>
 		<filename>index.html</filename>
 		<folder>controllers</folder>
+		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>models</folder>
 		<folder>views</folder>

@@ -13,6 +13,7 @@
 		<filename plugin="autofill">autofill.php</filename>
 		<filename>index.html</filename>
 		<filename>autofill.js</filename>
+		<filename>autofill-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

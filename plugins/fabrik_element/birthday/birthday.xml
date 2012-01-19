@@ -13,6 +13,7 @@
 		<filename plugin="birthday">birthday.php</filename>
 		<filename>index.html</filename>
 		<filename>birthday.js</filename>
+		<filename>birthday-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

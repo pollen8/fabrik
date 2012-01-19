@@ -13,6 +13,7 @@
 		<filename plugin="internalid">internalid.php</filename>
 		<filename>index.html</filename>
 		<filename>internalid.js</filename>
+		<filename>internalid-min.js</filename>
 		<folder>forms</folder>
 	</files>
 	<params>

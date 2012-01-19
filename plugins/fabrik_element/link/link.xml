@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="link">link.php</filename>
 		<filename>link.js</filename>
+		<filename>link-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

@@ -13,6 +13,7 @@
 		<filename plugin="fbrecommendations">fbrecommendations.php</filename>
 		<filename>index.html</filename>
 		<filename>fbrecommendations.js</filename>
+		<filename>fbrecommendations-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

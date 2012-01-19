@@ -13,6 +13,7 @@
 		<filename plugin="fileupload">fileupload.php</filename>
 		<filename>adaptor.php</filename>
 		<filename>fileupload.js</filename>
+		<filename>fileupload-min.js</filename>
 		<filename>index.html</filename>
 		<folder>adaptors</folder>
 		<folder>element</folder>

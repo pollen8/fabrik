@@ -13,6 +13,7 @@
 	<files>
 		<filename plugin="databasejoin">databasejoin.php</filename>
 		<filename>databasejoin.js</filename>
+		<filename>databasejoin-min.js</filename>
 		<folder>forms</folder>
 		<filename>index.html</filename>
 		<folder>language</folder>

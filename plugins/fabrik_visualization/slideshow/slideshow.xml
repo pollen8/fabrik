@@ -14,6 +14,7 @@
 		<folder>forms</folder>
 		<filename>index.html</filename>
 		<filename>slideshow.js</filename>
+		<filename>slideshow-min.js</filename>
 		<folder>controllers</folder>
 		<folder>language</folder>
 		<folder>models</folder>

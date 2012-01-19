@@ -11,16 +11,13 @@
 	<description>Show coverflow</description>
 	<files>
 		<filename plugin="coverflow">coverflow.js</filename>
+		<filename>coverflow-min.js</filename>
 		<filename>index.html</filename>
-		<folder>forms</folder>
 		<folder>controllers</folder>
+		<folder>forms</folder>
+		<folder>language</folder>
 		<folder>lib</folder>
 		<folder>models</folder>
 		<folder>views</folder>
 	</files>
-	
-  <languages folder="language" >
-		<language tag="en-GB">en-GB/en-GB.plg_fabrik_visualization_coverflow.ini</language>
-	</languages>
-	
 </extension>

@@ -10,12 +10,13 @@
 	<version>{version}</version>
 	<description>Show fusion gantt chart</description>
 	<files>
-		<filename plugin="fusion_gantt_chart">index.html</filename>
+		<filename plugin="fusion_gantt_chart">fusion_gantt_chart.php</filename>
+		<file>index.html</file>
 		<folder>controllers</folder>
-		<folder>lib</folder>
+		<folder>forms</folder>
 		<folder>language</folder>
+		<folder>lib</folder>
 		<folder>models</folder>
 		<folder>views</folder>
-		<folder>forms</folder>
 	</files>
 </extension>

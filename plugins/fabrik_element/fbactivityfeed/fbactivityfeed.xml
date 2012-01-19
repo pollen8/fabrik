@@ -13,6 +13,7 @@
 		<filename plugin="fbactivityfeed">fbactivityfeed.php</filename>
 		<filename>index.html</filename>
 		<filename>fbactivityfeed.js</filename>
+		<filename>fbactivityfeed-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

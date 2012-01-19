@@ -13,6 +13,7 @@
 		<filename plugin="list_example">list_example.php</filename>
 		<filename>index.html</filename>
 		<filename>list_example.js</filename>
+		<filename>list_example-min.js</filename>
 		<folder>forms</folder>
 	</files>
 </extension>

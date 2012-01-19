@@ -17,6 +17,6 @@
 		<folder>language</folder>
 		<folder>swatches</folder>
 		<filename>colourpicker.js</filename>
-		
+		<filename>colourpicker-min.js</filename>
 	</files>
 </extension>

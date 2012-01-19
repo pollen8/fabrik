@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="media">media.php</filename>
 		<filename>media.js</filename>
+		<filename>media-min.js</filename>
 		<filename>index.html</filename>
 		<folder>controllers</folder>
 		<folder>forms</folder>

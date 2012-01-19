@@ -124,6 +124,22 @@
 				label="PLG_FORM_PAYPAL_SUBS_DATA_ID_LABEL" 
 				description="PLG_FORM_PAYPAL_SUBS_DATA_ID_DESC"/>
 				
+			<field name="paypal_subs_duration_id" 
+				type="element"
+				repeat="true" 
+				connection="params_paypal_subs_connection" 
+				table="params_paypal_subs_table" 
+				label="PLG_FORM_PAYPAL_SUBS_DURATION_ID_LABEL" 
+				description="PLG_FORM_PAYPAL_SUBS_DURATION_ID_DESC"/>
+				
+				<field name="paypal_duration_key_element" 
+				type="listfields"
+				repeat="true" 
+				onlytablefields="0" 
+				valueformat="tableelement"
+				label="PLG_FORM_PAYPAL_SUBS_DURATION_ID_LABEL" 
+				description="PLG_FORM_PAYPAL_SUBS_DURATION_ID_DESC"/>
+				
 			<field name="paypal_subs_name" 
 				type="text" 
 				repeat="true"

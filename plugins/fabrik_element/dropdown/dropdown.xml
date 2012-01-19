@@ -13,6 +13,7 @@
 		<filename plugin="dropdown">dropdown.php</filename>
 		<filename>index.html</filename>
 		<filename>dropdown.js</filename>
+		<filename>dropdown-js.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

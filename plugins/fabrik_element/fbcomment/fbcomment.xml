@@ -13,6 +13,7 @@
 		<filename plugin="fbcomment">fbcomment.php</filename>
 		<filename>index.html</filename>
 		<filename>fbcomment.js</filename>
+		<filename>fbcomment-min.js</filename>
 		<folder>fields</folder>
 		<folder>language</folder>
 	</files>

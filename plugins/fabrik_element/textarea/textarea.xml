@@ -13,6 +13,7 @@
 		<filename plugin="textarea">textarea.php</filename>
 		<filename>index.html</filename>
 		<filename>textarea.js</filename>
+		<filename>textarea-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

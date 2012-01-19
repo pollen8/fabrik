@@ -13,6 +13,7 @@
 		<filename plugin="picklist">picklist.php</filename>
 		<filename>index.html</filename>
 		<filename>picklist.js</filename>
+		<filename>picklist-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

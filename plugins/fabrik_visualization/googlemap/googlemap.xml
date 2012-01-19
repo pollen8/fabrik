@@ -10,13 +10,14 @@
 	<version>{version}</version>
 	<description>Show a google map</description>
 	<files>
+		<filename plugin="googlemap">googlemap.php</filename>
+		<filename>googlemap.js</filename>
+		<filename>googlemap-min.js</filename>
+		<filename>index.html</filename>
 		<folder>controllers</folder>
+		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>models</folder>
 		<folder>views</folder>
-		<folder>forms</folder>
-		<filename>googlemap.js</filename>
-		<filename plugin="googlemap">googlemap.php</filename>
-		<filename>index.html</filename>
 	</files>
 </extension>

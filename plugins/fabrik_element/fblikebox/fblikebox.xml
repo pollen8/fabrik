@@ -13,6 +13,7 @@
 		<filename plugin="fblikebox">fblikebox.php</filename>
 		<filename>index.html</filename>
 		<filename>fblikebox.js</filename>
+		<filename>fblikebox-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

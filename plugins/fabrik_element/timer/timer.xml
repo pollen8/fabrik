@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="timer">timer.php</filename>
 		<filename>timer.js</filename>
+		<filename>timer-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="googlemap">googlemap.php</filename>
 		<filename>googlemap.js</filename>
+		<filename>googlemap-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>images</folder>

@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="kaltura">kaltura.php</filename>
 		<filename>kaltura.js</filename>
+		<filename>kaltura-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

@@ -12,9 +12,10 @@
 	<files>
 		<filename plugin="chart">chart.js</filename>
 		<filename>chart.php</filename>
+		<filename>chart-min.js</filename>
 		<filename>index.html</filename>
-		<folder>forms</folder>
 		<folder>controllers</folder>
+		<folder>forms</folder>
 		<folder>models</folder>
 		<folder>language</folder>
 		<folder>views</folder>

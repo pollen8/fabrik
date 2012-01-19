@@ -13,7 +13,9 @@
 		<filename plugin="cascadingdropdown">cascadingdropdown.php</filename>
 		<filename>index.html</filename>
 		<filename>cascadingdropdown.js</filename>
+		<filename>cascadingdropdown-min.js</filename>
 		<filename>filter.js</filename>
+		<filename>filter-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

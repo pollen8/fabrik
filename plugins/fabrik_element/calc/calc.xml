@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="calc">calc.php</filename>
 		<filename>calc.js</filename>
+		<filename>calc-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

@@ -26,6 +26,9 @@
 		<filename plugin="comment">comment.php</filename>
 		<filename>index.html</filename>
 		<filename>comments.js</filename>
+		<filename>comments-min.js</filename>
+		<filename>inlineedit.js</filename>
+		<filename>inlineedit-min.js</filename>
 		<filename>comments.css</filename>
 		<folder>images</folder>
 		<folder>language</folder>
