@@ -1077,7 +1077,7 @@ class FabrikFEModelList extends JModelForm {
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$factedLinks = $params->get('factedlinks');
-		$linkedListText = $factedLinks->linkedlisttext->$elKey;
+		$linkedListText = isset($factedLinks->linkedlisttext->$elKey) ? $factedLinks->linkedlisttext->$elKey : '';
 		$label = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
 
 		$Itemid	= $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
@@ -1816,19 +1816,23 @@ class FabrikFEModelList extends JModelForm {
 		$sql= array();
 		// $$$ rob keys may no longer be in asc order as we may have filtered out some in _buildQueryPrefilterWhere()
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
+		$last_i = false;
 
 		while (list($vkey, $i) = each($vkeys)) {
 			//for ($i = 0; $i < count(JArrayHelper::getValue($filters, 'key', array())); $i ++) {
 			// $$$rob - prefilter with element that is not published so ignore
 			$condition = strtoupper(JArrayHelper::getValue($filters['condition'], $i, ''));
 			if (JArrayHelper::getValue($filters['sqlCond'], $i, '') == '' && ($condition != 'IS NULL' && $condition != 'IS NOT NULL')) {
+				$last_i = $i;
 				continue;
 			}
 
 			if ($filters['search_type'][$i] == 'prefilter' && $type == '*') {
+				$last_i = $i;
 				continue;
 			}
 			if ($filters['search_type'][$i] != 'prefilter' && $type == 'prefilter') {
+				$last_i = $i;
 				continue;
 			}
 			$n = current($vkeys);
@@ -1847,7 +1851,9 @@ class FabrikFEModelList extends JModelForm {
 					if ($filters['grouped_to_previous'][$n] == 1) {
 						if (!$ingroup) {
 							// search all filter after a prefilter - alter 'join' value to 'AND'
-							if ($i > 1 && JArrayHelper::getValue($filters['search_type'], $i-1) == 'prefilter' && JArrayHelper::getValue($filters['search_type'], $i) !== 'prefilter') {
+							//if ($i > 1 && JArrayHelper::getValue($filters['search_type'], $i-1) == 'prefilter' && JArrayHelper::getValue($filters['search_type'], $i) !== 'prefilter') {
+							if ($last_i && JArrayHelper::getValue($filters['search_type'], $iast_i) == 'prefilter' && JArrayHelper::getValue($filters['search_type'], $i) !== 'prefilter') {
+
 								$filters['join'][$i] = 'AND';
 								// $$$ hugh - if using a search form, with a multiselect object (like checkbox) and
 								// prefilters, the gstart is never getting set, so have unbalanced )
@@ -1887,6 +1893,7 @@ class FabrikFEModelList extends JModelForm {
 				$sqlNoFilter[] = $filters['sqlCond'][$i].$gend;
 				}*/
 			}
+			$last_i = $i;
 		}
 		// $$$rob ensure opening and closing parathethis for prefilters are equal
 		//seems to occur if you have 3 prefilters with 2nd = grouped/AND and 3rd grouped/OR
