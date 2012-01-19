@@ -224,7 +224,7 @@ class FabrikControllerForm extends JController
 		$formdata = $session->get('com_fabrik.form.data');
 		//$$$ rob 30/03/2011 if using as a search form don't show record added message
 		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id')) {
-			$msg = $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED'));
+			$msg = $model->getParams()->get('suppress_msgs', '0') == '0' ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 		} else {
 			$msg = '';
 		}

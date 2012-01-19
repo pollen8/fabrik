@@ -3066,24 +3066,27 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$f = 0;
 		//create columns containing links which point to forms assosciated with this table
 		foreach ($linksToForms as $element) {
-			$linkedForm 	= $aExisitngLinkedForms->$key;
-			$popUpLink 		= $linkedform_linktype->$key;
+			if ($element !== false) {
+				$key = $element->list_id.'-'.$element->form_id.'-'.$element->element_id;
+				$linkedForm 	= $aExisitngLinkedForms->$key;
+				$popUpLink 		= $linkedform_linktype->$key;
 
-			if ($linkedForm !== '0') {
-				if (is_object($element)) {
-					//$$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
-					// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
-					$linkKey	= @$element->db_table_name . "___" . @$element->name;
-					//$linkKey	= $this->getListModel()->getTable()->db_table_name . "___" . $element->name;
-					$val = JRequest::getVar($linkKey);
-					if ($val == '') {
-						//$val = JRequest::getVar($linkKey . "_raw");
-						$val = JRequest::getVar($qsKey . "_raw", JRequest::getVar('rowid'));
+				if ($linkedForm !== '0') {
+					if (is_object($element)) {
+						//$$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
+						// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
+						$linkKey	= @$element->db_table_name . "___" . @$element->name;
+						//$linkKey	= $this->getListModel()->getTable()->db_table_name . "___" . $element->name;
+						$val = JRequest::getVar($linkKey);
+						if ($val == '') {
+							//$val = JRequest::getVar($linkKey . "_raw");
+							$val = JRequest::getVar($qsKey . "_raw", JRequest::getVar('rowid'));
+						}
+						$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
 					}
-					$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
 				}
+				$f ++;
 			}
-			$f ++;
 		}
 		return $links;
 	}
