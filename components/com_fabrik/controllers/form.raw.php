@@ -143,14 +143,14 @@ class FabrikControllerForm extends JController
 			return;
 		}
 
-		$msg = $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED'));
+		$msg = $model->getParams()->get('suppress_msgs', '0') == '0' ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 
 		if (JRequest::getInt('elid') !== 0) {
 			//inline edit show the edited element
 			echo $model->inLineEditResult();
 			return;
 		}
-		
+
 		if (JRequest::getInt('_packageId') !== 0) {
 			echo json_encode(array('msg' => $msg));
 			return;
