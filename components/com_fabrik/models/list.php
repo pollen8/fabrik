@@ -1077,6 +1077,9 @@ class FabrikFEModelList extends JModelForm {
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$factedLinks = $params->get('factedlinks');
+		// $$$ hugh - we are getting element keys that aren't in the linkedlisttext.
+		// not sure why, so added this defensive code.  Should probably find out
+		// why though!  I just needed to make this error go away NAO!
 		$linkedListText = isset($factedLinks->linkedlisttext->$elKey) ? $factedLinks->linkedlisttext->$elKey : '';
 		$label = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
 
