@@ -35,6 +35,7 @@ if ($this->showFilters) {
 					<?php echo FabrikHelperHTML::image('orderasc.png', 'list', $this->tmpl, JText::_('COM_FABRIK_TOGGLE'));?>
 					<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
 				</a>
+			</div>			
 			<?php }?>
 			<div class="fabrik_groupdata">
 				<div class="groupdataMsg">
@@ -43,6 +44,7 @@ if ($this->showFilters) {
 					</div>
 				</div>
 			</div>
+
 
 <?php
 			foreach ($group as $this->_row) {
