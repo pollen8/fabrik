@@ -323,6 +323,7 @@ margin:0;
 }
 
 #{$view}_$c .fabrikGroupRepeater {
+	padding-top: 50px;
 	float: left;
 	width: 19%;
 }
