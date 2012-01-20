@@ -160,7 +160,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		
 		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
-		$bits['value'] = $value['link'];
+		$bits['value'] = JArrayHelper::getValue($value, 'link');
 		$html[] = $this->buildInput('input', $bits);
 		$html[] = '</div>';
 		return implode("\n", $html);
