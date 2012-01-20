@@ -334,6 +334,15 @@
 				label="COM_FABRIK_FIELD_SUBMIT_SUCCESS_MSG_LABEL"
 				description="COM_FABRIK_FIELD_SUBMIT_SUCCESS_MSG_DESC" />
 				
+			<field name="suppress_msgs"
+				type="radio" 
+				default="0" 
+				label="COM_FABRIK_FIELD_SUPPRESS_MSGS_LABEL" 
+				description="COM_FABRIK_FIELD_SUPPRESS_MSGS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>				
+				
 			<field name="spoof_check" 
 				type="radio" 
 				default="1" 

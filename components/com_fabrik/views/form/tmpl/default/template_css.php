@@ -81,12 +81,6 @@ echo "
 	padding:5px;
 }
 
-/** link sub elements **/
-
-.fabrikSubElementContainer > div {
-	clear:left;
-}
-
 /* START: align google map sub elements vertically */
 
 .googlemap .fabrikSubElementContainer{
@@ -260,7 +254,7 @@ section for dropdowns radio buttons etc**/
 .auto-complete-container{
 	overflow-y: hidden;
 	border:1px solid #ddd;
-	z-index:100;
+	z-index:99999;
 }
 
 .auto-complete-container ul{
