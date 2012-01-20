@@ -153,6 +153,62 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
+	* run on formModel::setFormData()
+	* set before form is validated
+	* @param int repeat group counter
+	* @return null
+	*/
+
+	public function preProcess($c)
+	{
+		$params = $this->getParams();
+
+		// $$$ hugh - special case for social plugins (like CB plugin).  If plugin sets
+		// fabrik.plugin.profile_id, and 'user_use_social_plugin_profile' param is set,
+		// and we are creating a new row, then use the session data as the user ID.
+		// This allows user B to view a table in a CB profile for user A, do an "Add",
+		// and have the user element set to user A's ID.
+		// TODO - make this table/form specific, but not so easy to do in CB plugin
+		if ((int)$params->get('user_use_social_plugin_profile', 0)) {
+			if (JRequest::getInt('rowid') == 0 && JRequest::getCmd('task') !== 'doimport') {
+				$session = JFactory::getSession();
+				if ($session->has('fabrik.plugin.profile_id')) {
+					$profile_id = $session->get('fabrik.plugin.profile_id');
+					$form = $this->getFormModel();
+					$group = $this->getGroup();
+					$joinid = $group->getGroup()->join_id;
+					$key = $this->getFullName(true, true, false);
+					$shortkey = $this->getFullName(false, true, false);
+					$rawkey = $key . '_raw';
+					if ($group->canRepeat()) {
+						if ($group->isJoin()) {
+							$key = str_replace("][", '.', $key);
+							$key = str_replace(array('[',']'), '.', $key)."$c";
+							$rawkey = str_replace($shortkey, $shortkey . '_raw', $key);
+						}
+						else {
+							$key = $key . '.' . $c;
+							$rawkey = $rawkey . '.' . $c;
+						}
+					}
+					else {
+						if ($group->isJoin()) {
+							$key = str_replace("][", ".", $key);
+							$key = str_replace(array('[',']'), '.', $key);
+							$key = rtrim($key, '.');
+							$rawkey = str_replace($shortkey, $shortkey . '_raw', $key);
+						}
+					}
+					$form->updateFormData($key, $profile_id);
+					$form->updateFormData($rawkey, $profile_id);
+					JRequest::setVar($key, $profile_id, 'POST');
+					JRequest::setVar($rawkey, $profile_id, 'POST');
+				}
+			}
+		}
+	}
+
+	/**
 	 * if we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
 	 *
@@ -172,6 +228,26 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			}
 		}
 		$element = $this->getElement();
+		$params =& $this->getParams();
+		
+		// $$$ hugh - special case for social plugins (like CB plugin).  If plugin sets
+		// fabrik.plugin.profile_id, and 'user_use_social_plugin_profile' param is set,
+		// and we are creating a new row, then use the session data as the user ID.
+		// This allows user B to view a table in a CB profile for user A, do an "Add",
+		// and have the user element set to user A's ID.
+		// TODO - make this table/form specific, but not so easy to do in CB plugin
+		if ((int)$params->get('user_use_social_plugin_profile', 0)) {
+			if (JRequest::getInt('rowid') == 0 && JRequest::getCmd('task') !== 'doimport') {
+				$session = JFactory::getSession();
+				if ($session->has('fabrik.plugin.profile_id')) {
+					$data[$element->name] = $session->get('fabrik.plugin.profile_id');
+					$data[$element->name . '_raw'] = $data[$element->name];
+					//$session->clear('fabrik.plugin.profile_id');
+					return;
+				}
+			}
+		}
+		
 		// $$$ rob if in joined data then $data['rowid'] isnt set - use JRequest var instead
 		//if ($data['rowid'] == 0 && !in_array($element->name, $data)) {
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
