@@ -379,6 +379,12 @@ class FabrikPlugin extends JPlugin
 			$cnn->setId($cid);
 			$db = $cnn->getDb();
 			if ($tid != '') {
+				if (is_numeric($tid)) { //if loading on a numeric list id get the list db table name
+					$query = $db->getQuery(true);
+					$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int)$tid);
+					$db->setQuery($query);
+					$tid = $db->loadResult();
+				} 
 				$db->setQuery("DESCRIBE ".$db->nameQuote($tid));
 
 				$rows = $db->loadObjectList();
