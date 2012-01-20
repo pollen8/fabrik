@@ -41,7 +41,8 @@ if ($this->showFilters) {
 					<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 						<?php echo $this->emptyDataMessage; ?>
 					</div>
-				</div
+				</div>
+			</div>
 
 <?php
 			foreach ($group as $this->_row) {
