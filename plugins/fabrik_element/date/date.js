@@ -84,6 +84,10 @@ var FbDateTime = new Class({
 	},
 	
 	makeCalendar: function () {
+		if (this.cal) {
+			this.cal.show();
+			return;
+		}
 		var mustCreate = false;
 		this.addEventToCalOpts();
 		var params = this.options.calendarSetup;
@@ -108,7 +112,6 @@ var FbDateTime = new Class({
 			params.onSelect,
 			params.onClose);
 	
-		
 		this.cal.setDateStatusHandler(params.dateStatusFunc);
 		this.cal.setDateToolTipHandler(params.dateTooltipFunc);
 		this.cal.showsTime = params.showsTime;
@@ -132,11 +135,12 @@ var FbDateTime = new Class({
 		this.cal.setDateFormat(dateFmt);
 		this.cal.create();
 		this.cal.refresh();
-		if (!params.position) {
+		//shows the calendar twice !
+		/*if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
 		} else {
 			this.cal.showAt(params.position[0], params.position[1]);
-		}
+		}*/
 	},
 
 	disableTyping : function () {

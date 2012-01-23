@@ -543,8 +543,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		if (is_array($attribs)) {
 			$attribs = JArrayHelper::toString($attribs);
 		}
-
-		$document = JFactory::getDocument();
 		$opts = $this->_CalendarJSOpts($id);
 		$opts->ifFormat = $format;
 		$opts = json_encode($opts);
