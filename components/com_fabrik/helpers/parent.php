@@ -425,7 +425,7 @@ class FabrikWorker {
 	 * @return string parsed message
 	 */
 
-	protected function replaceWithUserData($msg, $user = null, $prefix = 'my')
+	public function replaceWithUserData($msg, $user = null, $prefix = 'my')
 	{
 		if (is_null($user)) {
 			$user  = &JFactory::getUser();
@@ -468,7 +468,7 @@ class FabrikWorker {
 	 * @return string parsed message
 	 */
 
-	protected function replaceWithGlobals($msg)
+	public function replaceWithGlobals($msg)
 	{
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();

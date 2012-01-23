@@ -5565,8 +5565,8 @@ class FabrikFEModelList extends JModelForm {
 			return $msg;
 		}
 		$this->_parseAddSlases = $addslashes;
-		$msg = FabrikWorker::_replaceWithUserData($msg);
-		$msg = FabrikWorker::_replaceWithGlobals($msg);
+		$msg = FabrikWorker::replaceWithUserData($msg);
+		$msg = FabrikWorker::replaceWithGlobals($msg);
 		$msg = preg_replace("/{}/", "", $msg);
 		$this->rowIdentifierAdded = false;
 		/* replace {element name} with form data */
