@@ -4292,5 +4292,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 	}
+	
+	/**
+	 * @since 3.0rc1
+	 * when we do ajax requests from the element - as the plugin controller uses the J dispatcher
+	 * the element hasnt loaded up itself, so any time you have a function onAjax_doSomething() call this 
+	 * helper function first to load up the element. Otherwise things like parameters will not be loaded
+	 */
+	
+	protected function loadMeForAjax()
+	{
+		$this->_form = JModel::getInstance('form', 'FabrikFEModel');
+		$this->_form->setId(JRequest::getVar('formid'));
+		$this->setId(JRequest::getInt('element_id'));
+		$this->getElement();
+	}
 }
 ?>
