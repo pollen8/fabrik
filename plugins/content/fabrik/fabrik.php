@@ -89,6 +89,8 @@ class plgContentFabrik extends JPlugin
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
 		$w =new FabrikWorker();
 		$w->replaceRequest($match);
+		// stop [] for ranged filters from being removed
+		$match = str_replace('{}', '[]', $match);
 		$match = $w->parseMessageForPlaceHolder($match);
 		return $match;
 	}
@@ -190,7 +192,7 @@ class plgContentFabrik extends JPlugin
 					break;
 				default:
 					if (array_key_exists(1, $m)) {
-						$unused[trim($m[0])] = $m[1];//these are later set as jrequest vars if presenet in list view
+						$unused[trim($m[0])] = $m[1];//these are later set as jrequest vars if present in list view
 					}
 			}
 		}
@@ -414,7 +416,8 @@ class plgContentFabrik extends JPlugin
 			
 			if (method_exists($model, 'reset')) {
 				$model->reset();
-				$model->setRenderContext($ref);
+				// $$$ rob erm $ref is a regex?! something not right here (caused js error in cb plugin)
+				//$model->setRenderContext($ref); 
 			}
 			$controller->display($model);
 			$result = ob_get_contents();
