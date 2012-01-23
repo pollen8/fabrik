@@ -96,6 +96,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		else {
 			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
 		}
+		$bits['class'] .= ' ' . $params->get('text_format');
 		return $this->buildInput('input', $bits);
 	}
 	
