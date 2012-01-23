@@ -37,10 +37,10 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * format the data as a microformat
-	 *
 	 * @param string $data
 	 * @return unknown
 	 */
+	
 	function _microformat($data)
 	{
 		$o = $this->_strToCoords($data, 0);
@@ -88,7 +88,6 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			$document->addScript('http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
 			$jsloaded = true;
 		}
-
 	}
 
 	/**
@@ -99,11 +98,11 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	function elementJavascript($repeatCounter)
 	{
-		$params 	=& $this->getParams();
-		$id 		= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$data 		=& $this->_form->_data;
-		$v 			= $this->getValue($data, $repeatCounter);
+		$params = $this->getParams();
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$data = $this->_form->_data;
+		$v = $this->getValue($data, $repeatCounter);
 		$zoomlevel = $params->get('fb_gm_zoomlevel');
 		$o = $this->_strToCoords($v, $zoomlevel);
 
@@ -193,7 +192,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * @return string static map html
 	 */
 
-	function _staticMap( $v, $w=null, $h=null, $z=null, $repeatCounter = 0)
+	function _staticMap($v, $w=null, $h=null, $z=null, $repeatCounter = 0)
 	{
 		static $eljsloaded;
 		if (!isset($eljsloaded)) {
@@ -201,8 +200,8 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			FabrikHelperHTML::script('media/com_fabrik/js/element.js');
 		}
 		$this->formJavascriptClass();
-		$id		= $this->getHTMLId($repeatCounter).uniqid();
-		$params 	=& $this->getParams();
+		$id = $this->getHTMLId($repeatCounter).uniqid();
+		$params = $this->getParams();
 		if (is_null($w)) {
 			$w = $params->get('fb_osm_table_mapwidth');
 		}
@@ -340,22 +339,22 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			$this->defaults = array();
 		}
 		if (!array_key_exists($repeatCounter, $this->defaults)) {
-			$name 			= $this->getHTMLName($repeatCounter);
+			$name = $this->getHTMLName($repeatCounter);
 			$groupModel = $this->_group;
-			$formModel 	=& $this->_form;
-			$element		= $this->getElement();
+			$formModel = $this->_form;
+			$element = $this->getElement();
 			$listModel = $this->getlistModel();
-			$params 		=& $this->getParams();
+			$params = $this->getParams();
 
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
 			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
 				$value = '';
 			} else {
-				$value   = $this->getDefaultValue($data);
+				$value = $this->getDefaultValue($data);
 			}
 
-			$table 		=& $listModel->getTable();
+			$table = $listModel->getTable();
 			if ($groupModel->canRepeat() == '1') {
 				$fullName = $table->db_table_name . $formModel->_joinTableElementStep . $element->name;
 				if (isset($data[$fullName])) {

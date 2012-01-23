@@ -17,7 +17,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
 
 class plgFabrik_ListFilter_view extends plgFabrik_List {
 
-	protected $_buttonPrefix = 'filter_view';
+	protected $buttonPrefix = 'filter_view';
 
 	/**
 	 * (non-PHPdoc)

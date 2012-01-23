@@ -97,10 +97,12 @@ div.calendar{
 	z-index:10000 !important;
 }
 
-/** autocomplete container inject in doc body not iin #forn_$c */
+/** autocomplete container inject in doc body not in #forn_$c */
 .auto-complete-container{
 	overflow-y: hidden;
-	border:1px solid #ddd;
+	border-radius:0 0 6px 6px;
+	box-shadow:2px 2px 6px rgba(100, 100, 100, 150);
+	border:1px solid #999
 }
 
 .auto-complete-container ul{
@@ -112,17 +114,25 @@ div.calendar{
 
 .auto-complete-container li{
 	text-align:left;
-	padding:2px 10px !important;
-	background:#fff;
+	padding:6px 10px !important;
+	background-color:#999999;
+	border-top:1px solid #bbb;
+	border-bottom:1px solid #777;
 	margin:0 !important;
-	border-top:1px solid #ddd;
 	cursor:hand;
+	font-size:0.9em;
+	color: #eee;
+	text-shadow: 0 1px 0 #666;
 }
 
-.auto-complete-container li:hover,
-.auto-complete-container li.selected{
-	background-color:#DFFAFF !important;
-	cursor:pointer;
+.auto-complete-container li:hover{
+	background-color:#777 !important;
+	border-top:1px solid #999;
+	border-bottom:1px solid #555;
+}
+
+.auto-complete-container li:last-child{
+	border-bottom:0;
 }
 
 #listform_$c .fabrikForm {
@@ -248,7 +258,7 @@ div.calendar{
 	min-height:25px;
 	border-radius: 6px;
 	float:right;
-	margin:5px;
+	margin:0;
 	padding:0;
 	border:1px solid #999;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#cccccc'); /* for IE */
@@ -259,6 +269,21 @@ div.calendar{
 	background: -o-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
   background: -ms-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
 
+}
+
+#listform_$c .fabrik_action .fabrik_filter{
+	margin-top:2px;
+	padding:2px;
+}
+
+#listform_$c ul.fabrik_action li button{
+	background-image:none;
+	border:0;
+	background:transparent;
+}
+
+#listform_$c .fabrikFilterContainer .fabrik_action{
+	margin:0;
 }
 
 #listform_$c .fabrik_row ul.fabrik_action{
@@ -338,8 +363,8 @@ div.calendar{
 }
 
 #listform_$c button.fabrik_filter_submit{
-height:23px;
-margin-top:2px;
+	margin:0;
+	padding:3px 6px;
 }
 
 #listform_$c .searchall li input[type=button]{
@@ -361,12 +386,18 @@ margin-top:2px;
 /*****************************************************/
 
 .floating-tip a:link,
-.floating-tip a:visited,
+{
+	text-decoration:none;
+	display:block;
+	padding:5px 16px;
+}
+
 .floating-tip a{
 	text-decoration:none;
 	display:block;
 	padding:5px 16px;
 }
+
 .floating-tip {
 	background-color: #fff;
 	border:1px solid #999;

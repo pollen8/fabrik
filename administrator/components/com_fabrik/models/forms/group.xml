@@ -61,13 +61,18 @@
 		<fieldset name="details2" >
 		
 		<field name="intro"
-			type="textarea"
+			type="editor"
+			filter="FabrikHelper::filterText"
 			rows="6"
 			cols="20"
 			label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"
 			description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
-		
-			<field name="repeat_group_button" 
+			
+		</fieldset>
+	
+	<fieldset name="repeat">
+	
+		<field name="repeat_group_button" 
 				type="grouprepeat" 
 				default="0" 
 				label="COM_FABRIK_REPEAT_GROUP_BUTTON_LABEL" 
@@ -76,6 +81,16 @@
 					<option value="1">JYES</option>
 			</field>
 
+			<field name="repeat_max"
+				type="text"
+				label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL"
+				description="COM_FABRIK_REPEAT_GROUP_MAX_DESC"
+				size="2" />
+				
+	</fieldset>
+	
+	<fieldset name="layout">
+	
 			<field name="group_columns" 
 				type="text" 
 				default="1" 
@@ -87,12 +102,6 @@
 				type="text" default="44%,44%" 
 				label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" 
 				description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" />
-			
-			<field name="repeat_max"
-				type="text"
-				label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL"
-				description="COM_FABRIK_REPEAT_GROUP_MAX_DESC"
-				size="2" />
 			
 			<field name="repeat_group_show_first" 
 				type="list" 
@@ -113,7 +122,6 @@
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 			</field>
-				
-		</fieldset>
+	</fieldset>
 	</fields>
 </form>

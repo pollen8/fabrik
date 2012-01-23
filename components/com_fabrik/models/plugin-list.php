@@ -17,7 +17,7 @@ class plgFabrik_List extends FabrikPlugin
 	/** determines if the plugin requires mocha to be loaded */
 	var $useMocha = false;
 
-	protected $_buttonPrefix = '';
+	protected $buttonPrefix = '';
 
 	protected $jsInstance = null;
 
@@ -49,7 +49,7 @@ class plgFabrik_List extends FabrikPlugin
 	
 	protected function buttonLabel()
 	{
-		$s = strtoupper($this->_buttonPrefix);
+		$s = strtoupper($this->buttonPrefix);
 		return JText::_('PLG_LIST_'.$s.'_'.$s);
 	}
 	
@@ -58,7 +58,7 @@ class plgFabrik_List extends FabrikPlugin
 		if ($this->canUse()) {
 			$name = $this->_getButtonName();
 			$label = $this->buttonLabel();
-			$imageName = $this->getParams()->get('list_' . $this->_buttonPrefix . '_image_name', $this->_buttonPrefix . '.png');
+			$imageName = $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
 			$img = FabrikHelperHTML::image($imageName, 'list', '',  $label);
 			return '<a href="#" class="'.$name.' listplugin" title="'.$label.'">'.$img.'<span>'.$label.'</span></a>';
 		}
@@ -133,7 +133,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	function _getButtonName()
 	{
-		return $this->_buttonPrefix."-".$this->renderOrder;
+		return $this->buttonPrefix."-".$this->renderOrder;
 	}
 
 	/**
@@ -145,11 +145,11 @@ class plgFabrik_List extends FabrikPlugin
 
 	function process_preflightCheck(&$params, &$model)
 	{
-		if ($this->_buttonPrefix == '') {
+		if ($this->buttonPrefix == '') {
 			return false;
 		}
 		$postedRenderOrder = JRequest::getInt('fabrik_listplugin_renderOrder', -1);
-		return JRequest::getVar('fabrik_listplugin_name') == $this->_buttonPrefix && $this->renderOrder == $postedRenderOrder;
+		return JRequest::getVar('fabrik_listplugin_name') == $this->buttonPrefix && $this->renderOrder == $postedRenderOrder;
 	}
 
 	/**
@@ -177,7 +177,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	protected function getSessionContext()
 	{
-		return 'com_fabrik.list'.$this->model->getRenderContext().'.plugins.'.$this->onGetFilterKey().'.';
+		return 'com_fabrik.list' . $this->model->getRenderContext() . '.plugins.' . $this->onGetFilterKey() . '.';
 	}
 
 	/**

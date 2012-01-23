@@ -691,7 +691,7 @@ class FabrikFEModelListfilter extends FabModel {
 					if (is_string($value)) {
 						$value = addslashes(urldecode($value));
 					}
-					$this->indQueryString($elementModel, $filters, $value, $condition, $join, $grouped, $eval, $key);
+					$this->indQueryString($elementModel, $filters, $value, $condition, $join, $grouped, $eval, $key, $raw);
 				}
 			} else {
 				// if � entered in qs then that is coverted to %E9 which urldecode will convert back

@@ -131,38 +131,38 @@ var FbGoogleMap = new Class({
 				position: point
 			};
 			opts.draggable = this.options.drag;
-				
+
 			if (this.options.latlng === true) {
-				document.id(this.element).getElement('.lat').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
-				document.id(this.element).getElement('.lng').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
+				this.element.getElement('.lat').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
+				this.element.getElement('.lng').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
 			}
 
 			if (this.options.latlng_dms === true) {
-				document.id(this.element).getElement('.latdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
-				document.id(this.element).getElement('.lngdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
+				this.element.getElement('.latdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
+				this.element.getElement('.lngdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
 			}
 
 			this.marker = new google.maps.Marker(opts);
 
 			if (this.options.latlng === true) {
-				document.id(this.element.id).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
-				document.id(this.element.id).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
+				this.element.getElement('.lat').value = this.marker.getPosition().lat() + '° N';
+				this.element.getElement('.lng').value = this.marker.getPosition().lng() + '° E';
 			}
 
 			if (this.options.latlng_dms === true) {
-				document.id(this.element.id).getElement('.latdms').value = this.latDecToDMS();
-				document.id(this.element.id).getElement('.lngdms').value = this.lngDecToDMS();
+				this.element.getElement('.latdms').value = this.latDecToDMS();
+				this.element.getElement('.lngdms').value = this.lngDecToDMS();
 			}
 
 			google.maps.event.addListener(this.marker, "dragend", function () {
 				this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 				if (this.options.latlng === true) {
-					document.id(this.element).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
-					document.id(this.element).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
+					this.element.getElement('.lat').value = this.marker.getPosition().lat() + '° N';
+					this.element.getElement('.lng').value = this.marker.getPosition().lng() + '° E';
 				}
 				if (this.options.latlng_dms === true) {
-					document.id(this.element).getElement('.latdms').value = this.latDecToDMS();
-					document.id(this.element).getElement('.lngdms').value = this.lngDecToDMS();
+					this.element.getElement('.latdms').value = this.latDecToDMS();
+					this.element.getElement('.lngdms').value = this.lngDecToDMS();
 				}
 				if (this.options.reverse_geocode) {
 					this.geocoder.geocode({'latLng': this.marker.getPosition()}, function (results, status) {
@@ -180,37 +180,37 @@ var FbGoogleMap = new Class({
 										}
 										else if (type === 'route') {
 											if (this.options.reverse_geocode_fields.route) {
-												$(this.options.reverse_geocode_fields.route).value += component.long_name;
+												document.id(this.options.reverse_geocode_fields.route).value += component.long_name;
 											}
 										}
 										else if (type === 'street_address') {
 											if (this.options.reverse_geocode_fields.route) {
-												$(this.options.reverse_geocode_fields.route).value = component.long_name;
+												document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
 											}
 										}	
 										else if (type === 'neighborhood') {
 											if (this.options.reverse_geocode_fields.neighborhood) {
-												$(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
+												document.id(this.options.reverse_geocode_fields.neighborhood).value = component.long_name;
 											}
 										}	
 										else if (type === 'locality') {
 											if (this.options.reverse_geocode_fields.city) {
-												$(this.options.reverse_geocode_fields.locality).value = component.long_name;
+												document.id(this.options.reverse_geocode_fields.locality).value = component.long_name;
 											}
 										}
 										else if (type === 'administrative_area_level_1') {
 											if (this.options.reverse_geocode_fields.state) {
-												$(this.options.reverse_geocode_fields.state).value = component.long_name;
+												document.id(this.options.reverse_geocode_fields.state).value = component.long_name;
 											}
 										}
 										else if (type === 'postal_code') {
 											if (this.options.reverse_geocode_fields.zip) {
-												$(this.options.reverse_geocode_fields.zip).value = component.long_name;
+												document.id(this.options.reverse_geocode_fields.zip).value = component.long_name;
 											}
 										}
 										else if (type === 'country') {
 											if (this.options.reverse_geocode_fields.country) {
-												$(this.options.reverse_geocode_fields.country).value = component.long_name;
+												document.id(this.options.reverse_geocode_fields.country).value = component.long_name;
 											}
 										}
 									}.bind(this));
@@ -233,12 +233,12 @@ var FbGoogleMap = new Class({
 					this.marker.setPosition(this.map.getCenter());
 					this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
 					if (this.options.latlng === true) {
-						document.id(this.element).getElement('.lat').value = this.marker.getPosition().lat() + '° N';
-						document.id(this.element).getElement('.lng').value = this.marker.getPosition().lng() + '° E';
+						this.element.getElement('.lat').value = this.marker.getPosition().lat() + '° N';
+						this.element.getElement('.lng').value = this.marker.getPosition().lng() + '° E';
 					}
 					if (this.options.latlng_dms === true) {
-						document.id(this.element).getElement('.latdms').value = this.latDecToDMS();
-						document.id(this.element).getElement('.lngdms').value = this.lngDecToDMS();
+						this.element.getElement('.latdms').value = this.latDecToDMS();
+						this.element.getElement('.lngdms').value = this.lngDecToDMS();
 					}
 				}.bind(this));
 			}
@@ -247,20 +247,21 @@ var FbGoogleMap = new Class({
 	},
 
 	updateFromLatLng : function () {
-		var lat = document.id(this.element.id).getElement('.lat').get('value').replace('° N', '').toFloat();
-		var lng = document.id(this.element.id).getElement('.lng').get('value').replace('° E', '').toFloat();
+		var lat = this.element.getElement('.lat').get('value').replace('° N', '').toFloat();
+		var lng = this.element.getElement('.lng').get('value').replace('° E', '').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);
 		this.marker.setPosition(pnt);
 		this.map.setCenter(pnt, this.map.getZoom());
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
-		document.id(this.element).getElement('.latdms').value = this.latDecToDMS();
-		document.id(this.element).getElement('.lngdms').value = this.lngDecToDMS();
+		this.element.getElement('.latdms').value = this.latDecToDMS();
+		this.element.getElement('.lngdms').value = this.lngDecToDMS();
 	},
 
 	updateFromDMS : function () {
-		var latdms = document.id(this.element.id).getElement('.latdms').get('value').replace('S', '-');
+		var dms = this.element.getElement('.latdms');
+		var latdms = dms.get('value').replace('S', '-');
 		latdms = latdms.replace('N', '');
-		var lngdms = document.id(this.element.id).getElement('.lngdms').get('value').replace('W', '-');
+		var lngdms = dms.get('value').replace('W', '-');
 		lngdms = lngdms.replace('E', '');
 
 		var latdms_d_ms = latdms.split('°');
@@ -287,8 +288,8 @@ var FbGoogleMap = new Class({
 		this.marker.setPosition(pnt);
 		this.map.setCenter(pnt, this.map.getZoom());
 		this.field.value = this.marker.getPosition() + ":" + this.map.getZoom();
-		document.id(this.element).getElement('.lat').value = latdms_topnt + '° N';
-		document.id(this.element).getElement('.lng').value = lngdms_topnt + '° E';
+		this.element.getElement('.lat').value = latdms_topnt + '° N';
+		this.element.getElement('.lng').value = lngdms_topnt + '° E';
 	},
 
 	latDecToDMS : function () {
@@ -357,7 +358,7 @@ var FbGoogleMap = new Class({
 			});
 			address = address.slice(0, -1);
 		} else {
-			address = document.id(this.element.id).getElement('.geocode_input').value;
+			address = this.element.getElement('.geocode_input').value;
 		}
 		this.geocoder.geocode({'address': address}, function (results, status) {
 			if (status !== google.maps.GeocoderStatus.OK || results.length === 0) {
@@ -367,12 +368,12 @@ var FbGoogleMap = new Class({
 				this.map.setCenter(results[0].geometry.location, this.map.getZoom());
 				this.field.value = results[0].geometry.location + ":" + this.map.getZoom();
 				if (this.options.latlng === true) {
-					document.id(this.element.id).getElement('.lat').value = results[0].geometry.location.lat() + '° N';
-					document.id(this.element.id).getElement('.lng').value = results[0].geometry.location.lng() + '° E';
+					this.element.getElement('.lat').value = results[0].geometry.location.lat() + '° N';
+					this.element.getElement('.lng').value = results[0].geometry.location.lng() + '° E';
 				}
 				if (this.options.latlng_dms === true) {
-					document.id(this.element.id).getElement('.latdms').value = this.latDecToDMS();
-					document.id(this.element.id).getElement('.lngdms').value = this.lngDecToDMS();
+					this.element.getElement('.latdms').value = this.latDecToDMS();
+					this.element.getElement('.lngdms').value = this.lngDecToDMS();
 				}
 			}
 		}.bind(this));
@@ -391,15 +392,15 @@ var FbGoogleMap = new Class({
 				}.bind(this));
 			} else {
 				if (this.options.geocode_event === 'button') {
-					document.id(this.element).getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+					this.element.getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
 				}
 			}
 		}
 		if (this.options.geocode === '1' && document.id(this.element).getElement('.geocode_input')) {
 			if (this.options.geocode_event === 'button') {
-				document.id(this.element.id).getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+				this.element.getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
 			} else {
-				document.id(this.element.id).getElement('.geocode_input').addEvent('keyup', this.geoCode.bindWithEvent(this));
+				this.element.getElement('.geocode_input').addEvent('keyup', this.geoCode.bindWithEvent(this));
 			}
 		}
 	},

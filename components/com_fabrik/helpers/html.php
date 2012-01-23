@@ -44,6 +44,8 @@ class FabrikHelperHTML
 	protected static $facebookgraphapi = null;
 
 	protected static $helperpaths = array();
+	
+	protected static $modal = null;
 
 	/**
 	 * load up mocha window code - should be run in ajax loaded pages as well
@@ -708,19 +710,21 @@ EOD;
 
 	function slimbox()
 	{
-		//return;
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
-		if ($fbConfig->get('include_lightbox_js', 1) == 0) {
-			return;
-		}
-		if ($fbConfig->get('use_mediabox', false)) {
-			$folder = 'components/com_fabrik/libs/mediabox/';
-			JHTML::stylesheet('mediabox.css', $folder . 'css/');
-			FabrikHelperHTML::script($folder.'mediabox.js');
-		}
-		else {
-			JHTML::stylesheet('slimbox.css', 'components/com_fabrik/libs/slimbox1.64/css/');
-			FabrikHelperHTML::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js');
+		if (!self::$modal) {
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			if ($fbConfig->get('include_lightbox_js', 1) == 0) {
+				return;
+			}
+			if ($fbConfig->get('use_mediabox', false)) {
+				$folder = 'components/com_fabrik/libs/mediabox/';
+				JHTML::stylesheet('mediabox.css', $folder . 'css/');
+				FabrikHelperHTML::script($folder.'mediabox.js');
+			}
+			else {
+				JHTML::stylesheet('slimbox.css', 'components/com_fabrik/libs/slimbox1.64/css/');
+				FabrikHelperHTML::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js');
+			}
+			self::$modal = true;
 		}
 	}
 

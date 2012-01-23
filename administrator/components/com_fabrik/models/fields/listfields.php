@@ -92,7 +92,7 @@ class JFormFieldListfields extends JFormFieldList
 					$o->table_name = '';
 					$o->name = '';
 					$o->value = '';
-					$o->text = JText::_('SELECT A TABLE FIRST');
+					$o->text = JText::_('COM_FABRIK_SELECT_A_TABLE_FIRST');
 					$res[] = $o;
 					//****************************//
 				}

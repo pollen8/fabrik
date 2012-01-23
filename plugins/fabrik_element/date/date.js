@@ -83,7 +83,20 @@ var FbDateTime = new Class({
 		}
 	},
 	
+	onsubmit: function () {
+		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
+		//processing dates on the server.
+		var v = this.getValue();
+		this.update(v);
+		this.getDateField().value = v;
+		return true;
+	},
+	
 	makeCalendar: function () {
+		if (this.cal) {
+			this.cal.show();
+			return;
+		}
 		var mustCreate = false;
 		this.addEventToCalOpts();
 		var params = this.options.calendarSetup;
@@ -108,7 +121,6 @@ var FbDateTime = new Class({
 			params.onSelect,
 			params.onClose);
 	
-		
 		this.cal.setDateStatusHandler(params.dateStatusFunc);
 		this.cal.setDateToolTipHandler(params.dateTooltipFunc);
 		this.cal.showsTime = params.showsTime;
@@ -132,11 +144,12 @@ var FbDateTime = new Class({
 		this.cal.setDateFormat(dateFmt);
 		this.cal.create();
 		this.cal.refresh();
-		if (!params.position) {
+		//shows the calendar twice !
+		/*if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
 		} else {
 			this.cal.showAt(params.position[0], params.position[1]);
-		}
+		}*/
 	},
 
 	disableTyping : function () {
@@ -198,12 +211,6 @@ var FbDateTime = new Class({
 	},
 
 	watchButtons : function () {
-		/*var b = document.id(this.options.element + '_cal_img'); 
-		if (typeOf(b) !== 'null') {
-			b.addEvent('click', function (e) {
-				this.showCalendar('y-mm-dd', e);
-			}.bind(this));
-		}*/
 		if (this.options.showtime & this.options.editable) {
 			this.getTimeField();
 			this.getTimeButton();

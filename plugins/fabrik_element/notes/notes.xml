@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="1.7" type="plugin" group="fabrik_element" method="upgrade">
+	<name>Fabrik Element - notes</name>
+	<author>Rob Clayburn</author>
+	<creationDate>{createdate}</creationDate>
+	<copyright>(C) 2005-{year} fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>{version}</version>
+	<description>Renders a list of data from another table with option to add records to this table. </description>
+	<files>
+		<filename plugin="notes">notes.php</filename>
+		<filename>index.html</filename>
+		<filename>notes.js</filename>
+		<filename>notes-min.js</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+	</files>
+</extension>

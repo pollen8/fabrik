@@ -220,14 +220,14 @@ class FabrikWorker {
 		foreach ($days as $day) {
 			if (strstr($format, $day)) {
 				$format = str_replace($day, '', $format);
-				$date =  FabrikWorker::_stripDay( $date,  $day == '%a' ? true : false);
+				$date =  FabrikWorker::stripDay( $date,  $day == '%a' ? true : false);
 			}
 		}
 		$months = array('%B', '%b', '%h');
 		foreach ($months as $month) {
 			if (strstr($format, $month)) {
 				$format = str_replace($month, '%m', $format);
-				$date =  FabrikWorker::_monthToInt($date, $month == '%B' ? false : true);
+				$date =  FabrikWorker::monthToInt($date, $month == '%B' ? false : true);
 			}
 		}
 		//@TODO: some of these arent right for strftime
@@ -286,7 +286,8 @@ class FabrikWorker {
 	 * @param bol abbreviated day?
 	 * @return string date
 	 */
-	function _stripDay($date, $abrv = false)
+	
+	protected function stripDay($date, $abrv = false)
 	{
 		if ($abrv) {
 			$date = str_replace(JText::_('SUN'), '', $date);
@@ -296,7 +297,7 @@ class FabrikWorker {
 			$date = str_replace(JText::_('THU'), '', $date);
 			$date = str_replace(JText::_('FRI'), '', $date);
 			$date = str_replace(JText::_('SAT'), '', $date);
-		}else{
+		} else {
 			$date = str_replace(JText::_('SUNDAY'), '', $date);
 			$date = str_replace(JText::_('MONDAY'), '', $date);
 			$date = str_replace(JText::_('TUESDAY'), '', $date);
@@ -308,7 +309,8 @@ class FabrikWorker {
 		return $date;
 	}
 
-	function _monthToInt($date, $abrv = false)
+	
+	protected function monthToInt($date, $abrv = false)
 	{
 		if ($abrv) {
 			$date = str_replace(JText::_('JANUARY_SHORT'), '01', $date);
@@ -323,7 +325,7 @@ class FabrikWorker {
 			$date = str_replace(JText::_('OCTOBER_SHORT'), 10, $date);
 			$date = str_replace(JText::_('NOVEMBER_SHORT'), 11, $date);
 			$date = str_replace(JText::_('DECEMBER_SHORT'), 12, $date);
-		}else{
+		} else {
 			$date = str_replace(JText::_('JANUARY'), '01', $date);
 			$date = str_replace(JText::_('FEBRUARY'), '02', $date);
 			$date = str_replace(JText::_('MARCH'), '03', $date);
@@ -360,7 +362,7 @@ class FabrikWorker {
 	 * @param object user to use in replaceWithUserData (defaults to logged in user)
 	 */
 
-	function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addslashes = false, $theirUser = null)
+	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addslashes = false, $theirUser = null)
 	{
 		$this->_parseAddSlases = $addslashes;
 		if ($msg == '' || is_array($msg) || strpos($msg, '{') === false) {
@@ -380,14 +382,14 @@ class FabrikWorker {
 		$post	= JRequest::get('request');
 		$this->_searchData = is_null($searchData) ?  $post : array_merge($post, $searchData);
 		$this->_searchData['JUtility::getToken'] = JUtility::getToken();
-		$msg = FabrikWorker::_replaceWithUserData($msg);
+		$msg = FabrikWorker::replaceWithUserData($msg);
 		if (!is_null($theirUser)) {
-			$msg = FabrikWorker::_replaceWithUserData($msg, $theirUser, 'your');
+			$msg = FabrikWorker::replaceWithUserData($msg, $theirUser, 'your');
 		}
-		$msg = FabrikWorker::_replaceWithGlobals($msg);
+		$msg = FabrikWorker::replaceWithGlobals($msg);
 		$msg = preg_replace("/{}/", "", $msg);
 		/* replace {element name} with form data */
-		$msg = preg_replace_callback("/{[^}\s]+}/i", array($this, '_replaceWithFormData'), $msg);
+		$msg = preg_replace_callback("/{[^}\s]+}/i", array($this, 'replaceWithFormData'), $msg);
 		if (!$keepPlaceholders) {
 			$msg = preg_replace("/{[^}\s]+}/i", '', $msg);
 		}
@@ -412,7 +414,6 @@ class FabrikWorker {
 	}
 
 	/**
-	 * PRIVATE:
 	 * called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with user ($my) data
 	 * AND
@@ -424,7 +425,7 @@ class FabrikWorker {
 	 * @return string parsed message
 	 */
 
-	function _replaceWithUserData($msg, $user = null, $prefix = 'my')
+	public function replaceWithUserData($msg, $user = null, $prefix = 'my')
 	{
 		if (is_null($user)) {
 			$user  = &JFactory::getUser();
@@ -461,14 +462,13 @@ class FabrikWorker {
 
 
 	/**
-	 * PRIVATE:
 	 * called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with global data
 	 * @param string message to parse
 	 * @return string parsed message
 	 */
 
-	function _replaceWithGlobals($msg)
+	public function replaceWithGlobals($msg)
 	{
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
@@ -494,14 +494,13 @@ class FabrikWorker {
 	}
 
 	/**
-	 * PRVIATE:
 	 * called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with posted data
 	 * @param string placeholder e.g. {placeholder}
 	 * @return string posted data that corresponds with placeholder
 	 */
 
-	function _replaceWithFormData($matches)
+	protected function replaceWithFormData($matches)
 	{
 		//merge any join data key val pairs down into the main data array
 		$joins = JArrayHelper::getValue($this->_searchData, 'join', array());
@@ -515,7 +514,6 @@ class FabrikWorker {
 		$orig = $match;
 		/* strip the {} */
 		$match = substr($match, 1, strlen($match) - 2);
-
 		// $$$ rob test this format searchvalue||defaultsearchvalue
 		$bits = explode("||", $match);
 		if (count($bits) == 2) {

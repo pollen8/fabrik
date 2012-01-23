@@ -20,7 +20,8 @@
 			description="COM_FABRIK_FIELD_TITLE_DESC" />
 			
 		<field name="intro" 
-			type="editor" 
+			type="editor"
+			filter="FabrikHelper::filterText"
 			rows="3" 
 			cols="6" 
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"

@@ -19,7 +19,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
 class plgFabrik_ListPhp extends plgFabrik_List {
 
 
-	protected $_buttonPrefix = 'php';
+	protected $buttonPrefix = 'php';
 
 	function button()
 	{

@@ -87,14 +87,14 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	function _microformat($data)
 	{
 		$o = $this->_strToCoords($data, 0);
+		$str = array();
 		if($data != '') {
-			$data = "<div class=\"geo\">
-			<span class=\"latitude\">{$o->coords[0]}</span>,
-			<span class=\"longitude\">{$o->coords[1]}</span>
-			</div>
-			";
+			$str[] = '<div class="geo">';
+			$str[] = '<span class="latitude">' . $o->coords[0] . '</span>';
+			$str[] = '<span class="longitude">' . $o->coords[1] . '</span>';
+			$str[] = '</div>';
 		}
-		return $data;
+		return implode("\n", $str);
 	}
 
 	/**
@@ -108,14 +108,14 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	function _dmsformat($data)
 	{
 		$dms = $this->_strToDMS($data);
+		$str = array();
 		if($data != '') {
-			$data = "<div class=\"geo\">
-			<span class=\"latitude\">{$dms->coords[0]}</span>,
-			<span class=\"longitude\">{$dms->coords[1]}</span>
-			</div>
-			";
+			$str[] = '<div class="geo">';
+			$str[] = '<span class="latitude">' . $dms->coords[0] . '</span>';
+			$str[] = '<span class="longitude">' . $dms->coords[1] . '</span>';
+			$str[] = '</div>';
 		}
-		return $data;
+		return implode("\n", $str);
 	}
 
 	/**
@@ -165,16 +165,15 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$opts->scalecontrol = (bool)$params->get('fb_gm_scalecontrol');
 		$opts->maptypecontrol = (bool)$params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool)$params->get('fb_gm_overviewcontrol');
-		$opts->drag = (bool)($this->_form->_editable);
+		$opts->drag = (bool)$this->_form->_editable;
 		$opts->staticmap = $this->_useStaticMap() ? true : false;
 		$opts->maptype = $params->get('fb_gm_maptype');
-		$opts->key = $params->get('fb_gm_key');
 		$opts->scrollwheel = (bool)$params->get('fb_gm_scroll_wheel');
 		$opts->streetView = (bool)$params->get('fb_gm_street_view');
-		$opts->latlng           = $this->_editable ? $params->get('fb_gm_latlng', false) : false;
+		$opts->latlng = $this->_editable ? (bool)$params->get('fb_gm_latlng', false) : false;
 		$opts->sensor = (bool)$params->get('fb_gm_sensor', false);
-		$opts->latlng_dms       = $this->_editable ? $params->get('fb_gm_latlng_dms', false) : false;
-		$opts->geocode          = $params->get('fb_gm_geocode', false);
+		$opts->latlng_dms = $this->_editable ? (bool)$params->get('fb_gm_latlng_dms', false) : false;
+		$opts->geocode = (bool)$params->get('fb_gm_geocode', false);
 		$opts->geocode_event 	= $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields	= array();
 		$opts->auto_center = (bool)$params->get('fb_gm_auto_center', false);
@@ -369,7 +368,6 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		if (is_null($z)) {
 			$z = $params->get('fb_gm_zoomlevel');
 		}
-		$k = $params->get('fb_gm_key');
 		$icon = urlencode($params->get('fb_gm_staticmap_icon'));
 		$o = $this->_strToCoords($v, $z);
 		$lat = trim($o->coords[0]);

@@ -16,7 +16,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	var $useMocha = true;
 
-	protected $_buttonPrefix = 'email';
+	protected $buttonPrefix = 'email';
 
 	var $name = "plgFabrik_ListEmail";
 
@@ -134,7 +134,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		if (trim($cond) !== '') {
 			$whereClause .= " AND ($cond)";
 		}
-		$model->setPluginQueryWhere($this->_buttonPrefix, $whereClause);
+		$model->setPluginQueryWhere($this->buttonPrefix, $whereClause);
 		$data = $model->getData();
 		if ($allData) {
 			return $data;

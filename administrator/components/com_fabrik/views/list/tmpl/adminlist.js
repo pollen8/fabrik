@@ -434,19 +434,21 @@ var adminFilters = new Class({
 		if (this.counter > 0) {
 			var opts = {'type': 'radio', 'name': 'jform[params][filter-grouped][' + this.counter + ']', 'value': '1'};
 			opts.checked = (grouped === "1") ? "checked" : "";
-			groupedYes = new Element('label').adopt(
+			groupedYes = new Element('label').set('text', Joomla.JText._('JYES')).adopt(
 				new Element('input', opts)
-			).set('text', Joomla.JText._('JYES'));
+			);
 			//need to redeclare opts for ie8 otherwise it renders a field!
 			opts = {
-					'type': 'radio',
-					'name': 'jform[params][filter-grouped][' + this.counter + ']',
-					'value': '0'
-				};
-			opts.checked = (grouped !== "1") ? "checked" : "";
-			groupedNo = new Element('label').adopt(
+				'type': 'radio',
+				'name': 'jform[params][filter-grouped][' + this.counter + ']',
+				'value': '0'
+			};
+			opts.checked = (grouped !== '1') ? 'checked' : '';
+			
+			groupedNo = new Element('label').set('text', Joomla.JText._('JNO')).adopt(
 				new Element('input', opts)
-			).set('text', Joomla.JText._('JNO'));
+			);
+			
 		}
 		if (this.counter === 0) {
 			joinDd = new Element('span').set('text', 'WHERE').adopt(
