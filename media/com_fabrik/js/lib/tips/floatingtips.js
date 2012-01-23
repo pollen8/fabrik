@@ -227,7 +227,8 @@ var FloatingTips = new Class({
 				break;
 			case 'left': 
 				r = 180; 
-				trgSt['right'] = '-25px';
+				trgSt['right'] = '-2px';
+				trgSt['width'] = '10px';
 				trgSt['top'] = o.center ?  cwr.getSize().y / 2 - o.arrowSize / 2 : o.arrowOffset;
 				cwr.setStyle('right', '5px');
 				break;
@@ -299,7 +300,7 @@ var FloatingTips = new Class({
 				case 'right': 	pos.x += trgC.width + o.distance; break;
 				case 'bottom': 	pos.y += trgC.height + o.distance; break;
 				//case 'left': 	pos.x -= tipSz.x + o.distance; break;
-				case 'left': 	pos.x -= o.distance; break;
+				case 'left': 	pos.x -= o.distance + tip.getWidth(); break;
 			}
 		}
 		

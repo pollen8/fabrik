@@ -13,6 +13,7 @@ var FbListPlugin = new Class({
 	options: {
 		requireChecked: true
 	},
+
 	initialize: function (options) {
 		this.setOptions(options);
 		this.result = true; // set this to false in window.fireEvents to stop
