@@ -111,6 +111,9 @@ class FabrikControllerForm extends JController
 
 	function process()
 	{
+		if (JRequest::getCmd('format', '') == 'raw') {
+			error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
+		}
 		$model = $this->getModel('form', 'FabrikFEModel');
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
