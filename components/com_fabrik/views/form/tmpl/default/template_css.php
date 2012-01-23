@@ -47,7 +47,7 @@ echo "
 
 /*This controls the padding of the title of your form*/
 #main #{$view}_$c h1{
-	paddiing-left:10px;
+	padding-left:10px;
 	margin:0;
 }
 
