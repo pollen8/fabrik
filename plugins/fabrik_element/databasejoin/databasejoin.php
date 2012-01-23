@@ -1113,11 +1113,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			return " ORDER BY $order ASC ";
 		} else {
 			if (isset($this->orderBy)) {
-				$sql .= $this->orderBy;
-				unset($this->orderBy);
+				/* $sql .= $this->orderBy;
+				unset($this->orderBy); */
+				return $this->orderBy;
 			} else {
-				$orderby	= 'text';
-				$sql .= "ORDER BY $orderby ASC ";
+				return "ORDER BY text ASC ";
 			}
 		}
 	}
