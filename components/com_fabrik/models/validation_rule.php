@@ -124,7 +124,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$v = $params->get($this->_pluginName .'-message', JText::_('COM_FABRIK_FAILED_VALIDATION'), '_default', 'array', $c);
-		return $v[$c];
+		// $$$ hugh - under some weird circumastance (I think when session errors aren't being cleared properly), $v[$c] doesn't exist.
+		// So changed this to use JArrayhelper rather than just return $v[$c], to avoid PHP notices.
+		return JArrayHelper::getValue($v, $c, '');
 	}
 
 	/**
