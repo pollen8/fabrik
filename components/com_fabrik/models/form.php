@@ -2070,6 +2070,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// like, it adds filed quotes, not sure if we need them.
 						if ($elementModel->getElement()->published != 0) {
 							$rawval = $elementModel->getRawColumn($useStep);
+							if (!$this->_addDbQuote) {
+								$rawval = str_replace('`', '', $rawval);
+							}
 							$aEls[$label . "(raw)"] = JHTML::_('select.option', $rawval, $label . "(raw)");
 						}
 					}

@@ -345,7 +345,7 @@ class FabrikModelList extends FabModelAdmin
 		$afilterValues= (array)$form->getValue('params.filter-value');
 		$afilterAccess= (array)$form->getValue('params.filter-access');
 		$aGrouped = (array)$form->getValue('params.filter-grouped');
-		for ($i=0; $i < count($afilterFields); $i++) {
+		for ($i = 0; $i < count($afilterFields); $i ++) {
 			$selJoin = JArrayHelper::getValue($afilterJoins, $i, 'and');
 			$selFilter = str_replace('`', '', $afilterFields[$i]); // 2.0 upgraded sites had quoted filter names
 			$grouped = JArrayHelper::getValue($aGrouped, $i, 0);
