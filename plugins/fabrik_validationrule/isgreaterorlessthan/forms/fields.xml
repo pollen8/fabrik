@@ -23,7 +23,17 @@
 				repeat="true"
 				label="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_ELEMENT_LABEL" 
 				description="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_ELEMENT_DESC"/>
-				
+
+			<field name="isgreaterorlessthan-allow_empty" 
+				type="radio" 
+				default="0" 
+				repeat="true"
+				label="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_ALLOW_EMPTY_LABEL" 
+				description="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_ALLOW_EMPTY_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+							
 			<field type="textarea" 
 				cols="30" rows="5" 
 				repeat="true"

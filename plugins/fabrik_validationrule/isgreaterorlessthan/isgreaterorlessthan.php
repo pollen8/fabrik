@@ -46,8 +46,27 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
  		$otherElementModel = $this->getOtherElement($elementModel, $c);
  		$otherFullName = $otherElementModel->getFullName(false, true, false);
  		$compare = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
+ 		if ($this->allowEmpty($elementModel, $c) && ($data === '' || $compare === '')) {
+ 			return true;
+ 		}
  		$res = $elementModel->greaterOrLessThan($data, $cond, $compare);
  		return $res;
+	}
+
+	/**
+	* does the validation allow empty value?
+	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	* @param object element model
+	* @param int repeat group counter
+	* @return bool
+	*/
+
+	protected function allowEmpty($elementModel, $c)
+	{
+		$params = $this->getParams();
+		$allow_empty = $params->get('isgreaterorlessthan-allow_empty');
+		$allow_empty = $allow_empty[$c];
+		return $allow_empty == '1';
 	}
 
 	private function getOtherElement($elementModel, $c)
