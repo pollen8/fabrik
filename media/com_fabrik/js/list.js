@@ -745,7 +745,7 @@ var FbList = new Class({
 				}
 				// make id the same as the add button so we reuse the same form.
 				var winOpts = {
-					'id': 'add.' + list.options.formid,
+					'id': 'add.' + this.id,
 					'title': this.options.popup_edit_label,
 					'loadMethod': loadMethod,
 					'contentURL': url,
@@ -1151,7 +1151,7 @@ var FbList = new Class({
 				e.stop();
 				// top.Fabrik.fireEvent('fabrik.list.add', this);//for packages?
 				var winOpts = {
-					'id': 'add-' + this.id,
+					'id': 'add.' + this.id,
 					'title': this.options.popup_add_label,
 					'loadMethod': loadMethod,
 					'contentURL': addRecord.href,
