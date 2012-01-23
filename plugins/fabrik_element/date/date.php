@@ -232,6 +232,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$this->formattedDate = $date;
 		// $$$ hugh - OK, I am, as usual, confused.  We can't hand calendar() a date formatted in the
 		// form/table format.
+		// $$$rob - its because the calendar js code takes the formatted value in the field and the $format and builds its date objects from
+		// the two.
 		$str[] = $this->calendar($date, $name, $id ."_cal", $format, $calopts, $repeatCounter);
 		if ($params->get('date_showtime', 0) && !$element->hidden) {
 			$timelength = strlen($timeformat);
@@ -256,22 +258,21 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// like on AJAX submissions?  Or maybe from getEmailData()?  Or both?
 		if (is_array($val)) {
 			// $$$ rob do url decode on time as if its passed from ajax save the : is in format %3C or something
-			$val = $val['date'].' '.$this->_fixTime(urldecode($val['time']));
+			//$val = $val['date'].' '.$this->_fixTime(urldecode($val['time']));
+			// $$$ rob 'date' should contain the time
+			$val = JArrayHelper::getValue($val, 'date', '');
 		}
 		else {
 			$val = urldecode($val);
-			//var_dump($val);exit;
 		}
 
-		$profiler = JProfiler::getInstance('Application');
-		JDEBUG ? $profiler->mark('date:_indStoreDBFormat val = ' . $val) : null; // 0.5 sec here!
-		$aNullDates = $this->getNullDates();
-		if (in_array(trim($val), $aNullDates)) {
+		if (in_array(trim($val), $this->getNullDates())) {
 			return '';
 		}
 		jimport('joomla.utilities.date');
 		$params = $this->getParams();
-		$store_as_local = (int)$params->get('date_store_as_local', 0);
+		$store_as_local = (bool)$params->get('date_store_as_local', false);
+		
 		$listModel = $this->getListModel();
 		// $$$ hugh - offset_tz of 1 means 'in MySQL format, GMT'
 		// $$$ hugh - offset_tz of 2 means 'in MySQL format, Local TZ'
@@ -282,69 +283,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			return $this->toMySQLGMT(JFactory::getDate($val));
 		}
 
-		//test if its already in correct format (or empty)
-		// $$$ hugh - should now already be in string format
-		//if ((is_string($val) && trim($val) === '') || (is_array($val) && trim(implode('', $val)) === '')) {
-		if (trim($val) === '') {
-			return '';
-		}
-		// $$$ rob moved beneath as here $val can be an array which gives errors as getDate expects a string
-		/*$orig = JFactory::getDate($val);
-		if ($val === $orig->toMySQL()) {
-		return $this->toMySQLGMT( $orig);
-		}*/
-		if ($params->get('date_showtime', 0)) {
-			$format = $params->get('date_form_format').' '.$params->get('date_time_format');
-			// $$$ hugh - no can do, getDefault already munged $val into a string
-			// $$$ rob - erm no! - its an array when submitting from the form, perhaps elsewhere its sent
-			// as a string - so added test for array
-			// $$$ hugh need to do this earlier, moved it to top of proc
-			/*
-			if (is_array($val)) {
-				// $$$ rob do url decode on time as if its passed from ajax save the : is in format %3C or something
-				$val = $val['date'].' '.$this->_fixTime(urldecode($val['time']));
-			}
-			*/
-		} else {
-			$format = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
-		}
-		$orig = new FabDate($val);
-		if (!$orig) {
-			// if $val was not a valid date string return ''
-			return '';
-		}
-		 if ($val === $orig->toMySQL()) {
-		// $$$ rob if your custom form tmpl doesnt contain the date element then its value is already in mySQL format so return it
-			return $val;
-		}
-
-		$b = FabrikWorker::strToDateTime($val, $format);
-		//3.0 can't use timestamp as that gets offset as its taken as numeric by JDate
-		//$orig = new FabDate($datebits['timestamp'], 2);
-		$bstr = $b['year'].'-'.$b['mon'].'-'.$b['day'].' '.$b['hour'].':'.$b['min'].':'.$b['sec'];
-		$orig = new FabDate($bstr);
-		$this->_resetToGMT = true;
-
-		if ($val === $orig->toMySQL() && $params->get('date_showtime', 0)) {
-			$date = $this->toMySQLGMT($orig);
-			return $date;
-		}
-
-		//$datebits = FabrikWorker::strToDateTime($val, $format);
-		//3.0 produces a double offset in timezone
-		//$date = JFactory::getDate($datebits['timestamp']);
-		$date = $orig;
-		if (!$params->get('date_showtime', 0) || $store_as_local) {
-			$this->_resetToGMT = false;
-		}
-		$date = $this->toMySQLGMT($date);
-		$this->_resetToGMT = true;
-		return $date;
+		//$$$ rob - as the date js code formats to the db format - just return the value.
+		$config = JFactory::getConfig();
+		$tzoffset = new DateTimeZone($config->get('offset'));
+		$val = JFactory::getDate($val, $tzoffset)->toMySQL($store_as_local);
+		return $val;
 	}
 
 	/**
 	 * reset the date to GMT - inversing the offset
-	 *@param date object
+	 * @param date object
 	 * @return string mysql formatted date
 	 */
 
@@ -389,10 +337,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		//@TODO: deal with failed validations
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin() && is_array($val)) {
-			if (JArrayHelper::getValue($val, 'time') !== '') {
+			// $$$ rob 23/01/2012 - $val 'date' should already contain time
+			/* if (JArrayHelper::getValue($val, 'time') !== '') {
 				$val['time'] = $this->_fixTime(urldecode($val['time']));
 			}
 			$val = implode(" ", $val);
+			 */
+			$val = JArrayHelper::getValue($val, 'date', '');
 		} else {
 			if ($groupModel->canRepeat()) {
 				if (is_array($val)) {
@@ -529,7 +480,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 *
 	 * hacked from behaviour as you need to check if the element exists
 	 * it might not as you could be using a custom template
-	 * @param	string	The date value
+	 * @param	string	The date value (must be in the same format as supplied by $format)
 	 * @param	string	The name of the text field
 	 * @param	string	The id of the text field
 	 * @param	string	The date format
@@ -577,13 +528,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->align = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay = intval($params->get('date_firstday'));
-
-		/// testing
-
 		$validations = $this->getValidations();
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$opts->hasValidations = empty($validations) ? false : true;
-
 		$opts->dateAllowFunc = $params->get('date_allow_func');
 		return $opts;
 	}
@@ -783,6 +730,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 
 				if (is_array($value)) {
+					//'date' should now contain the time, as we include in on js onsubmit() method
+					$value = $value['date'];
+					/* echo "get value<pre> ";print_r($value);
 					//TIMEDATE option set - explode with space rather than comma
 					//url decode if it comes from ajax calendar form
 
@@ -793,7 +743,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					else {
 						//$value = '';
 						$value = implode('', $value); //for validations in repeat groups with no time selector
-					}
+					} */
 				}
 				$formModel = $this->getForm();
 				//stops this getting called from form validation code as it messes up repeated/join group validations

@@ -83,6 +83,15 @@ var FbDateTime = new Class({
 		}
 	},
 	
+	onsubmit: function () {
+		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
+		//processing dates on the server.
+		var v = this.getValue();
+		this.update(v);
+		this.getDateField().value = v;
+		return true;
+	},
+	
 	makeCalendar: function () {
 		if (this.cal) {
 			this.cal.show();
@@ -202,12 +211,6 @@ var FbDateTime = new Class({
 	},
 
 	watchButtons : function () {
-		/*var b = document.id(this.options.element + '_cal_img'); 
-		if (typeOf(b) !== 'null') {
-			b.addEvent('click', function (e) {
-				this.showCalendar('y-mm-dd', e);
-			}.bind(this));
-		}*/
 		if (this.options.showtime & this.options.editable) {
 			this.getTimeField();
 			this.getTimeButton();
