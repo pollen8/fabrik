@@ -251,8 +251,8 @@ class FabrikViewList extends JView{
 				$o->id = 'list_'.$model->getRenderContext().'_row_'.@$o->data->__pk_val;
 				$o->class = "fabrik_row oddRow".$c;
 				$data[$groupk][$i] = $o;
-				$c = 1-$c;
-				$num_rows++;
+				$c = 1 - $c;
+				$num_rows ++;
 			}
 		}
 		$groups = $form->getGroupsHiarachy();
