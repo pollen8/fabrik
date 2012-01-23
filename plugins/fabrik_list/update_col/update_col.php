@@ -18,7 +18,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
 class plgFabrik_ListUpdate_col extends plgFabrik_List
 {
 
-	protected $_buttonPrefix = 'update_col';
+	protected $buttonPrefix = 'update_col';
 
 	protected $_sent = 0;
 
@@ -33,7 +33,6 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	{
 		return "update records";
 	}
-
 
 	protected function buttonLabel()
 	{

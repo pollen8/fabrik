@@ -17,7 +17,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
 
 class plgFabrik_ListDownload extends plgFabrik_List {
 
-	protected $_buttonPrefix = 'download';
+	protected $buttonPrefix = 'download';
 
 	function button()
 	{
