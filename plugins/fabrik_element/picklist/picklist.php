@@ -31,14 +31,14 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$params 	=& $this->getParams();
-		$arVals 	= $this->getSubOptionValues();
-		$arTxt 		= $this->getSubOptionLabels();
+		$name = $this->getHTMLName($repeatCounter);
+		$id	= $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$params = $this->getParams();
+		$arVals = $this->getSubOptionValues();
+		$arTxt = $this->getSubOptionLabels();
 		$arSelected = (array)$this->getValue($data, $repeatCounter);
-		$errorCSS  = (isset($this->_elementError) &&  $this->_elementError != '') ?  " elementErrorHighlight" : '';
+		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ?  " elementErrorHighlight" : '';
 		$attribs = 'class="picklistcontainer'.$errorCSS."\"";
 		$style = ".frompicklist, .topicklist{\n"
 		."background-color:#efefef;\n"
@@ -113,21 +113,19 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 	function elementJavascript($repeatCounter)
 	{
-		$id 				= $this->getHTMLId($repeatCounter);
-		$element 		= $this->getElement();
-		$data 			=& $this->getFormModel()->_data;
-		$arVals 		= $this->getSubOptionValues();
-		$arTxt 			= $this->getSubOptionLabels();
-		$params 		=& $this->getParams();
-
-		$opts 								= $this->getElementJSOptions($repeatCounter);
-		$opts->allowadd 			= (bool)$params->get('allowadd', false);
-		$opts->defaultVal 		= $this->getValue($data, $repeatCounter);;
-		//$opts->data 					= array_combine($arVals, $arTxt);;
-		$opts->hovercolour 		= $params->get('picklist-hovercolour', '#AFFFFD');
-		$opts->bghovercolour 	= $params->get('picklist-bghovercolour', '#FFFFDF');
-		$opts 								= json_encode($opts);
-
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$data = $this->getFormModel()->_data;
+		$arVals = $this->getSubOptionValues();
+		$arTxt = $this->getSubOptionLabels();
+		$params = $this->getParams();
+		$opts = $this->getElementJSOptions($repeatCounter);
+		$opts->allowadd = (bool)$params->get('allowadd', false);
+		$opts->defaultVal = $this->getValue($data, $repeatCounter);;
+		//$opts->data = array_combine($arVals, $arTxt);;
+		$opts->hovercolour = $params->get('picklist-hovercolour', '#AFFFFD');
+		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
+		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
 		return "new FbPicklist('$id', $opts)";
 	}

@@ -15,8 +15,6 @@ require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_element'.DS.'databasejoin'.DS.'d
 class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 {
 
-	var $_dbname = null;
-
 	/**
 	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
@@ -88,7 +86,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @return string formatted value
 	 */
 
-	function renderListData($data, $oAllRowsData )
+	function renderListData($data, $oAllRowsData)
 	{
 		$params = $this->getParams();
 		$groupModel = $this->getGroup();
@@ -99,7 +97,6 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$data = $oAllRowsData->$name;
 			}
 			if (!is_array($data)) {
-				//$data = explode(GROUPSPLITTER, $data);
 				$data = json_decode($data);
 			}
 			$labeldata = array();
@@ -259,9 +256,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	function onAjax_getOptions()
 	{
-		$this->_form = JModel::getInstance('form', 'FabrikFEModel');
-		$this->_form->setId(JRequest::getVar('formid'));
-		$this->setId(JRequest::getInt('element_id'));
+		$this->loadMeForAjax();
 		$params = $this->getParams();
 		// $$$ rob commented out for http://fabrikar.com/forums/showthread.php?t=11224
 		// must have been a reason why it was there though?
@@ -617,9 +612,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @return db name or false if unable to get name
 	 */
 
-	private function getDbName()
+	protected function getDbName()
 	{
-		if (!isset($this->_dbname) || $this->_dbname == '') {
+		if (!isset($this->dbname) || $this->dbname == '') {
 			$params = $this->getParams();
 			$id = $params->get('cascadingdropdown_table');
 			if ($id == '') {
@@ -630,9 +625,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$query = $db->getQuery(true);
 			$query->select('db_table_name')->from('#__{package}_lists')->where('id = '.(int)$id);
 			$db->setQuery($query);
-			$this->_dbname = $db->loadResult();
+			$this->dbname = $db->loadResult();
 		}
-		return $this->_dbname;
+		return $this->dbname;
 	}
 
 	/** Get the table filter for the element

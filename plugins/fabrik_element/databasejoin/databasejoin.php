@@ -35,6 +35,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/** @var additionl where for auto-complete query */
 	var $_autocomplete_where = "";
+	
+	/** @var string name of the join db to connect to */
+	protected $dbname = null;
 
 	/**
 	 * testing to see that if the aFields are passed by reference do they update the table object?
@@ -205,7 +208,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if ($element->published == 0){
+		if ($element->published == 0) {
 			return false;
 		}
 		$listModel = $this->getlistModel();
@@ -353,7 +356,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$this->addSpaceToEmptyLabels($tmp);
 		$displayType = $params->get('database_join_display_type', 'dropdown');
-		if ($displayType == 'dropdown' && $params->get('database_join_show_please_select', true)) {
+		if ($this->showPleaseSelect()) {
 			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue') , $this->_getSelectLabel()));
 		}
 		return $tmp;
@@ -362,6 +365,22 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	protected function _getSelectLabel()
 	{
 		return $this->getParams()->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
+	}
+	
+	/**
+	* @since 3.0b
+	* do you add a please select option to the list
+	* @return boolean
+	*/
+	
+	protected function showPleaseSelect()
+	{
+		$params = $this->getParams();
+		$displayType = $params->get('database_join_display_type', 'dropdown');
+		if ($displayType == 'dropdown' && $params->get('database_join_show_please_select', true)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -406,10 +425,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$where = $this->_buildQueryWhere($data, $incWhere);
 		//$$$rob not sure these should be used anyway?
-		$table 	= $params->get('join_db_name');
-		$key		= $this->getJoinValueColumn();
-		$val		= $this->_getValColumn();
-		$orderby	= 'text';
+		$table = $params->get('join_db_name');
+		$key = $this->getJoinValueColumn();
+		$val = $this->_getValColumn();
 		$join = $this->getJoin();
 		if ($table == '') {
 			$table = $join->table_join;
@@ -425,22 +443,41 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($desc !== '') {
 			$sql .= ", ".$db->nameQuote($desc)." AS description";
 		}
+		$sql .= $this->getAdditionalQueryFields();
 		$sql .= " FROM ".$db->nameQuote($table)." AS ".$db->nameQuote($join->table_join_alias);
+		$sql .= $this->buildQueryJoin();
 		$sql .= " $where ";
 		// $$$ hugh - let them specify an order by, i.e. don't append default if the $where already has an 'order by'
 		// @TODO - we should probably split 'order by' out in to another setting field, because if they are using
 		// the 'apply where beneath' and/or 'apply where when' feature, any custom ordering will not be applied
 		// if the 'where' is not being applied, which probably isn't what they want.
 		if (!JString::stristr($where, 'order by')) {
-			if (isset($this->orderBy)) {
-				$sql .= $this->orderBy;
-				unset($this->orderBy);
-			} else {
-				$sql .= "ORDER BY $orderby ASC ";
-			}
+			$sql .= $this->getOrderBy();
 		}
 		$this->_sql[$incWhere] = $sql;
 		return $this->_sql[$incWhere];
+	}
+	
+	/**
+	 * @since 3.0rc1
+	 * if _buildQuery needs additional fields then set them here, used in notes plugin
+	 * @return string fields to add e.g return ',name, username AS other'
+	 */
+	
+	protected function getAdditionalQueryFields()
+	{
+		return '';
+	}
+
+	/**
+	* @since 3.0rc1
+	* if _buildQuery needs additional joins then set them here, used in notes plugin
+	* @return string join statement to add
+	*/
+	
+	protected function buildQueryJoin()
+	{
+		return '';
 	}
 
 	function _buildQueryWhere($data = array(), $incWhere = true)
@@ -1057,8 +1094,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$sql .= $where;
 		if (!JString::stristr($where, 'order by')) {
-			$order = $params->get('filter_groupby', 'text') == 'text' ? $joinKey : $joinVal;
-			$sql .= " ORDER BY $order ASC ";
+			$sql .= $this->getOrderBy('filter');
+			
 		}
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
@@ -1066,6 +1103,25 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return $fabrikDb->loadObjectList();
 	}
 
+	protected function getOrderBy($view = '')
+	{
+		if ($view == 'filter') {
+			$params = $this->getParams();
+			$joinKey = $this->getJoinValueColumn();
+			$joinVal = $this->getJoinLabelColumn();
+			$order = $params->get('filter_groupby', 'text') == 'text' ? $joinKey : $joinVal;
+			return " ORDER BY $order ASC ";
+		} else {
+			if (isset($this->orderBy)) {
+				$sql .= $this->orderBy;
+				unset($this->orderBy);
+			} else {
+				$orderby	= 'text';
+				$sql .= "ORDER BY $orderby ASC ";
+			}
+		}
+	}
+	
 	/**
 	 * get the column name used for the value part of the db join element
 	 * @return string
@@ -1359,9 +1415,37 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		$params = json_decode($data['params']);
 		if (!$this->isJoin()) {
-			$this->updateFabrikJoins($data, $params->join_db_name, $params->join_key_column, $params->join_val_column);
+			$this->updateFabrikJoins($data, $this->getDbName(), $params->join_key_column, $params->join_val_column);
 		}
 		return parent::onSave();
+	}
+	
+	/**
+	 * get the join to database name
+	 * @return string database name
+	 */
+	
+	protected function getDbName()
+	{
+		if (!isset($this->dbname) || $this->dbname == '') {
+			$params = $this->getParams();
+			$id = $params->get('join_db_name');
+			if (is_numeric($id)) {
+				if ($id == '') {
+					JError::raiseWarning(500, 'Unable to get table for cascading dropdown (ignore if creating a new element)');
+					return false;
+				}
+				$db = FabrikWorker::getDbo(true);
+				$query = $db->getQuery(true);
+				$query->select('db_table_name')->from('#__{package}_lists')->where('id = '.(int)$id);
+				$db->setQuery($query);
+				$this->dbname = $db->loadResult();
+			} else {
+				$this->dbname = $id;
+			}
+		}
+		return $this->dbname;
+		
 	}
 
 	/**
