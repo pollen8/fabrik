@@ -1,7 +1,7 @@
 var FbRating = new Class({
 	Extends : FbElement,
 	initialize : function (element, options, rating) {
-		this.field = $(element);
+		this.field = document.id(element);
 		this.parent(element, options);
 		if (this.options.canRate === false) {
 			return;

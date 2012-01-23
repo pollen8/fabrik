@@ -150,14 +150,15 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 				$ids[] = $row_id;
 			}
 			JArrayHelper::toInteger($ids);
-			$db = FabrikWorker::getDbo();
+			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
 			// do this  query so that table view only needs one query to load up all ratings
 			$query = "SELECT row_id, user_id FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int)$listid." AND formid = ".(int)$formid." AND element_id = ".(int)$elementid;
 			$query .= " AND row_id IN (".implode(',', $ids) .") GROUP BY row_id";
 			$db->setQuery($query);
 			$this->creatorIds = $db->loadObjectList('row_id');
-			if (!$this->creatorIds) {
+			if ($db->getErrorNum() != 0) {
+				return false;
 				JError::raiseNotice(500, $db->getErrorMsg());
 			}
 		}
@@ -173,24 +174,29 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		return true;
 	}
 
+	/**
+	 * can we rate this row
+	 * @param int $row_id
+	 * @param array $ids
+	 * @return bool
+	 */
+	
 	protected function canRate($row_id = null, $ids = array())
 	{
-		//if (!isset($this->canRate)) {
-			$params = $this->getParams();
-			if ($params->get('rating-mode') == 'user-rating') {
-				$this->canRate = true;
-				return true;
-			}
-			if (is_null($row_id)) {
-				$row_id = JRequest::getInt('rowid');
-			}
-			$list = $this->getListModel()->getTable();
-			$listid = $list->id;
-			$formid = $list->form_id;
-			$creatorid = $this->getCreatorId($listid, $formid, $row_id, $ids);
-			$userid = $this->getStoreUserId($listid, $row_id);
-			$this->canRate = $creatorid == $userid;
-		//}
+		$params = $this->getParams();
+		if ($params->get('rating-mode') == 'user-rating') {
+			$this->canRate = true;
+			return true;
+		}
+		if (is_null($row_id)) {
+			$row_id = JRequest::getInt('rowid');
+		}
+		$list = $this->getListModel()->getTable();
+		$listid = $list->id;
+		$formid = $list->form_id;
+		$creatorid = $this->getCreatorId($listid, $formid, $row_id, $ids);
+		$userid = $this->getStoreUserId($listid, $row_id);
+		$this->canRate = ($creatorid == $userid || $row_id == 0);
 		return $this->canRate;
 	}
 
@@ -357,9 +363,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		if (JRequest::getVar('view') == 'form' && $params->get('rating-rate-in-form', true) == 0) {
 			return;
 		}
-		$id 			= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$element 	= $this->getElement();
-		$data 		=& $this->_form->_data;
+		$data = $this->_form->_data;
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
@@ -369,19 +375,18 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		}
 
 		$opts = new stdClass();
-		$ext 				= $params->get('rating-pngorgif', '.png');
+		$ext = $params->get('rating-pngorgif', '.png');
 		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
 		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
 		$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
 		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_in$ext", 'form', @$this->tmpl, array(), true);
-		$opts->row_id 		= JRequest::getInt('rowid');
-		$opts->elid 			= $this->getElement()->id;
-		$opts->userid 		= (int)$user->get('id');
-		$opts->canRate 		= (bool)$this->canRate();
-		$opts->mode				= $params->get('rating-mode');
-		$opts->view				= JRequest::getCmd('view');
-		$opts 						= json_encode($opts);
-
+		$opts->row_id = JRequest::getInt('rowid');
+		$opts->elid = $this->getElement()->id;
+		$opts->userid = (int)$user->get('id');
+		$opts->canRate = (bool)$this->canRate();
+		$opts->mode = $params->get('rating-mode');
+		$opts->view = JRequest::getCmd('view');
+		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
 
 		$str = "new FbRating('$id', $opts, '$value')";
