@@ -331,7 +331,7 @@ var FbForm = new Class({
 				document.getElement('.tool-tip').setStyle('top', 0);
 			}
 			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
-			Fabrik.loader.start('form_' + this.id, 'validating');
+			Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATING'));
 	
 			// only validate the current groups elements, otherwise validations on
 			// other pages cause the form to show an error.
@@ -339,7 +339,6 @@ var FbForm = new Class({
 			var groupId = this.options.pages.get(this.currentPage.toInt());
 	
 			var d = $H(this.getFormData());
-			//d.set('view', 'form');
 			d.set('task', 'form.ajax_validate');
 			d.set('fabrik_ajax', '1');
 			d.set('format', 'raw');
