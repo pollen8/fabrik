@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Drop down or radio lists containing data looked up in another table</description>
+	<help url="PLG_ELEMENT_DBJOIN_HELP_SERVER" />
+	<description>PLG_ELEMENT_DBJOIN_DESCRIPTION</description>
 	
 	<files>
 		<filename plugin="databasejoin">databasejoin.php</filename>

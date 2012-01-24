@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Renders Display Text</description>
+	<help url="PLG_ELEMENT_DISPLAY_HELP_SERVER"></help>
+	<description>PLG_ELEMENT_DISPLAY_DESCRIPTION</description>
 	<files>
 		<filename plugin="display">display.php</filename>
 		<filename>index.html</filename>

@@ -8,6 +8,7 @@
 	<authorEmail>hugh.messenger@gmail.com</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
+	<help url="HELP_SERVER" />
 	<description>Stores the submitting client IP</description>
 	<files>
 		<filename plugin="ip">ip.php</filename>

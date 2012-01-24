@@ -8,7 +8,8 @@
 	<authorEmail>hugh.messenger@gmail.com</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Performs calculations on result data, use {name} to access result data.  Rewrite of Rob's original.</description>
+	<help url="PLG_ELEMENT_CALC_HELP_SERVER" />
+	<description>PLG_ELEMENT_CALC_DESCRIPTION</description>
 	<files>
 		<filename plugin="calc">calc.php</filename>
 		<filename>calc.js</filename>

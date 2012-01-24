@@ -8,12 +8,14 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Renders group access drop down</description>
+	<help url="PLG_ELEMENT_ACCESS_HELP_SERVER" />
+	<description>PLG_ELEMENT_ACCESS_DESCRIPTION</description>
 	<files>
 		<filename plugin="access">access.php</filename>
 		<filename>index.html</filename>
 		<filename>access.js</filename>
 		<filename>access-min.js</filename>
 		<folder>forms</folder>
+		<folder>language</folder>
 	</files>
 </extension>

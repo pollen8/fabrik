@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Renders Drop down / multiple select box</description>
+	<help url="PLG_ELEMENT_DROPDOWN_HELP_SERVER"></help>
+	<description>PLG_ELEMENT_DROPDOWN_DESCRIPTION</description>
 	<files>
 		<filename plugin="dropdown">dropdown.php</filename>
 		<filename>index.html</filename>
