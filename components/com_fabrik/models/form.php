@@ -1808,16 +1808,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function getErrors()
 	{
+		$context = 'com_fabrik.form.'.$this->getId().'.';
 		$session = JFactory::getSession();
 		if (empty($this->_arErrors)) {
 			if (!isset($_SERVER['HTTP_REFERER'])) {
 				$this->clearErrors();
 			}
 			else {
-				$context = 'com_fabrik.form.'.$this->getId().'.';
 				$this->_arErrors = $session->get($context.'errors', array());
 			}
 		}
+		$session->clear($context.'errors');
 		return $this->_arErrors;
 	}
 
