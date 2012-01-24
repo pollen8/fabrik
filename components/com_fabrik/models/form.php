@@ -1166,7 +1166,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					foreach ($cols as $col) {
 						if ($col->Key == "PRI") {
 							$oJoinPk .= $col->Field;
-							continue;
+							break;
 						}
 					}
 					$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
@@ -1808,7 +1808,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function getErrors()
 	{
-		$context = 'com_fabrik.form.'.$this->getId().'.';
+		$context = 'com_fabrik.form.'.$this->getId().'_'.(int)$this->_rowId.'.';
 		$session = JFactory::getSession();
 		if (empty($this->_arErrors)) {
 			if (!isset($_SERVER['HTTP_REFERER'])) {
@@ -1829,7 +1829,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function clearErrors()
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.'.$this->getId().'.';
+		$context = 'com_fabrik.form.'.$this->getId().'_'.(int)$this->_rowId.'.';
 		$this->_arErrors = array();
 		$session->clear($context.'errors');
 		//$session->set($context.'session.on', false);
@@ -1843,7 +1843,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function setErrors($errors)
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.'.$this->getId().'.';
+		$context = 'com_fabrik.form.'.$this->getId().'_'.(int)$this->_rowId.'.';
 		$session->set($context.'errors', $errors);
 		$session->set($context.'session.on', true);
 	}
