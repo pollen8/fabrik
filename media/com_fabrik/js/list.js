@@ -1168,35 +1168,9 @@ var FbList = new Class({
 			}.bind(this));
 		}
 		var del = document.getElements('.fabrik_delete a');
+		document.removeEvents('click:relay(.fabrik_delete a)');
 		document.addEvent('click:relay(.fabrik_delete a)', function (e) {
-			var r = e.target.getParent('.fabrik_row');
-			if (!r) {
-				r = this.activeRow;
-			}
-			if (r) {
-				var chx = r.getElement('input[type=checkbox][name*=id]');
-				/*if (typeOf(chx) !== 'null') {
-					// if delete link is in hover box the we cant find the associated chx
-					// box
-				// $$$ rob hmm no! this meant if you selected 2 records to delete only the last selected recod would be deleted.
-					this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-						c.checked = false;
-					});
-				}*/
-				if (typeOf(chx) !== 'null') {
-					chx.checked = true;
-				}
-			} else {
-				// checkAll
-				if (this.options.actionMethod !== '') { // should only check all for floating tips
-					this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-						c.checked = true;
-					});
-				}
-			}
-			if (!this.submit('list.delete')) {
-				e.stop();
-			}
+			this.watchDelete(e);
 		}.bind(this));
 
 		if (document.id('fabrik__swaptable')) {
@@ -1218,6 +1192,37 @@ var FbList = new Class({
 			}
 		}
 		this.watchCheckAll();
+	},
+	
+	watchDelete: function (e) {
+		var r = e.target.getParent('.fabrik_row');
+		if (!r) {
+			r = this.activeRow;
+		}
+		if (r) {
+			var chx = r.getElement('input[type=checkbox][name*=id]');
+			/*if (typeOf(chx) !== 'null') {
+				// if delete link is in hover box the we cant find the associated chx
+				// box
+			// $$$ rob hmm no! this meant if you selected 2 records to delete only the last selected recod would be deleted.
+				this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
+					c.checked = false;
+				});
+			}*/
+			if (typeOf(chx) !== 'null') {
+				chx.checked = true;
+			}
+		} else {
+			// checkAll
+			if (this.options.actionMethod !== '') { // should only check all for floating tips
+				this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
+					c.checked = true;
+				});
+			}
+		}
+		if (!this.submit('list.delete')) {
+			e.stop();
+		}
 	},
 
 	/**
