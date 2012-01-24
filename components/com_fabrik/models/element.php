@@ -2850,7 +2850,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$o->label 	= 'calc';
 			$results = array('calc' => $o);
 		}
-		$res = $this->formatCalcs($results, $calcLabel, $split);
+		$res = $this->formatCalcs($results, $calcLabel, $split, true, false);
 		return array($res, $results);
 	}
 
@@ -3034,10 +3034,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @param string $calcLabel
 	 * @param bol is the data split
 	 * @param bol should we applpy any number formatting
+	 * @param bol should we apply the text_format_string ?
 	 * @return string
 	 */
 
-	protected function formatCalcs(&$results, $calcLabel, $split = false, $numberFormat = true)
+	protected function formatCalcs(&$results, $calcLabel, $split = false, $numberFormat = true, $sprintFFormat = true)
 	{
 		settype($results, 'array');
 		$res = '<span class="calclabel">'.$calcLabel.'</span>';
@@ -3054,8 +3055,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			if ($numberFormat) {
 				$o->value = $this->numberFormat($o->value);
 			}
-			if ($format != '') {
-				$o->value = sprintf( $format, $o->value);
+			if ($format != '' && $sprintFFormat) {
+				$o->value = sprintf($format, $o->value);
 			}
 			$o->calLabel = $calcLabel;
 			$res .= '<span class="calclabel">'.$o->label.':</span> '.$o->value.'<br />';
