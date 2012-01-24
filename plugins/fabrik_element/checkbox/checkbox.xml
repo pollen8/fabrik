@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Renders Checkbox element</description>
+	<help url="PLG_ELEMENT_CHECKBOX_HELP_SERVER" />
+	<description>PLG_ELEMENT_CHECKBOX_DESCRIPTION</description>
 	<files>
 		<filename plugin="checkbox">checkbox.php</filename>
 		<filename>index.html</filename>
@@ -17,5 +18,4 @@
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>
-	
 </extension>

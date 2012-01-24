@@ -8,11 +8,13 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Renders a button</description>
+	<help url="PLG_ELEMENT_BUTTON_HELP_SERVER" />
+	<description>PLG_ELEMENT_BUTTON_DESCRIPTION</description>
 	<files>
 		<filename plugin="button">button.php</filename>
 		<filename>index.html</filename>
 		<filename>button.js</filename>
 		<filename>button-min.js</filename>
+		<folder>language</folder>
 	</files>
 </extension>

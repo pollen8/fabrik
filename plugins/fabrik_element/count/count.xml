@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Counts records in a row - so adds "COUNT(x) .... GROUP BY (y)" to the main db query</description>
+	<help url="PLG_ELEMENT_CHECKBOX_HELP_SERVER" />
+	<description>PLG_ELEMENT_CHECKBOX_DESCRIPTION</description>
 	<files>
 		<filename plugin="count">count.php</filename>
 		<filename>index.html</filename>

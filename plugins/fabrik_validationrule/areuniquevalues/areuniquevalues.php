@@ -70,7 +70,8 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 
 		if (!empty($otherfield)) {
 			// $$$ the array thing needs fixing, for now just grab 0
-			$v = JRequest::getVar($otherFullName);
+			$formdata = $elementModel->getForm()->_formData;
+			$v = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
 			if (is_array($v)) {
 				$v = JArrayHelper::getValue($v, 0, '');
 			}

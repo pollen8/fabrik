@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Renders birthday day/month/year dropdowns</description>
+	<help url="PLG_ELEMENT_BIRTHDAY_HELP_SERVER" />
+	<description>PLG_ELEMENT_BIRTHDAY_DESCRIPTION</description>
 	<files>
 		<filename plugin="birthday">birthday.php</filename>
 		<filename>index.html</filename>

@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>{version}</version>
-	<description>Renders Standard Date Picker</description>
+	<help url="PLG_ELEMENT_DATE_HELP_SERVER"></help>
+	<description>PLG_ELEMENT_DATE_DESCRIPTION</description>
 	<files>
 		<filename plugin="date">date.php</filename>
 		<filename>index.html</filename>
