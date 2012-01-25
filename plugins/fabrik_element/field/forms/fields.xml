@@ -1,33 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-field" label="field">
+		<fieldset label="field" name="plg-element-field">
 		
-			<field name="width" 
-				type="text" size="3" default="20"
-				label="PLG_ELEMENT_FIELD_WIDTH_LABEL"/>
+			<field default="20" label="PLG_ELEMENT_FIELD_WIDTH_LABEL" name="width" size="3" type="text"/>
 			
-			<field name="hidden" 
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_FIELD_HIDDEN_LABEL">
+			<field default="0" label="PLG_ELEMENT_FIELD_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 				
-			<field name="eval" 
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_FIELD_EVAL_LABEL">
+			<field default="0" label="PLG_ELEMENT_FIELD_EVAL_LABEL" name="eval" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 			
-			<field name="default"
-				type="textarea"
-				cols="45"
-				rows="6"
-				label="PLG_ELEMENT_FIELD_DEFAULT_LABEL" />
+			<field cols="45" label="PLG_ELEMENT_FIELD_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
 			
 		</fieldset>
 	</fields>
@@ -35,118 +23,63 @@
 	<fields name="params">
 		<fieldset name="plg-element-field-params">
 		
-		<field name="placeholder"
-				type="text"
-				size="60"
-				label="PLG_ELEMENT_FIELD_PLACEHOLDER_LABEL"
-				description="PLG_ELEMENT_FIELD_PLACEHOLDER_DESC" />
+		<field description="PLG_ELEMENT_FIELD_PLACEHOLDER_DESC" label="PLG_ELEMENT_FIELD_PLACEHOLDER_LABEL" name="placeholder" size="60" type="text"/>
 				
-			<field name="password"
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_FIELD_PASSWORD_LABEL" >
+			<field default="0" label="PLG_ELEMENT_FIELD_PASSWORD_LABEL" name="password" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="maxlength" 
-				type="maxlength" 
-				size="3" 
-				default="255" 
-				label="PLG_ELEMENT_FIELD_MAX_LENGTH_LABEL" />
+			<field default="255" label="PLG_ELEMENT_FIELD_MAX_LENGTH_LABEL" name="maxlength" size="3" type="maxlength"/>
 				
-			<field name="disable" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_LABEL" 
-				description="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_DESC">
+			<field default="0" description="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_DESC" label="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_LABEL" name="disable" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="readonly" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_FIELD_READ_ONLY_LABEL" 
-				description="PLG_ELEMENT_FIELD_READ_ONLY_DESC">
+			<field default="0" description="PLG_ELEMENT_FIELD_READ_ONLY_DESC" label="PLG_ELEMENT_FIELD_READ_ONLY_LABEL" name="readonly" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="autocomplete" 
-				type="radio" 
-				default="1" 
-				label="PLG_ELEMENT_FIELD_AUTOCOMPLETE_LABEL" 
-				description="PLG_ELEMENT_FIELD_AUTOCOMPLETE_DESC">
+			<field default="1" description="PLG_ELEMENT_FIELD_AUTOCOMPLETE_DESC" label="PLG_ELEMENT_FIELD_AUTOCOMPLETE_LABEL" name="autocomplete" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 				
 		</fieldset>
 		
-		<fieldset name="plg-field-formatting" label="PLG_ELEMENT_FIELD_FORMATTING">
+		<fieldset label="PLG_ELEMENT_FIELD_FORMATTING" name="plg-field-formatting">
 
-			<field name="text_format" 
-				type="radio"
-				default="text"
-				label="PLG_ELEMENT_FIELD_FORMAT_LABEL"
-				description="PLG_ELEMENT_FIELD_FORMAT_DESC">
+			<field default="text" description="PLG_ELEMENT_FIELD_FORMAT_DESC" label="PLG_ELEMENT_FIELD_FORMAT_LABEL" name="text_format" type="radio">
 					<option value="text">PLG_ELEMENT_FIELD_TEXT</option>
 					<option value="integer">PLG_ELEMENT_FIELD_INTEGER</option>
 					<option value="decimal">PLG_ELEMENT_FIELD_WIDTH_DECIMAL</option>
 			</field>
 			
-			<field name="integer_length" 
-				type="text"
-				default="6"
-				label="PLG_ELEMENT_FIELD_INTEGER_LENGTH_LABEL"
-				description="PLG_ELEMENT_FIELD_INTEGER_LENGTH_DESC" />
+			<field default="6" description="PLG_ELEMENT_FIELD_INTEGER_LENGTH_DESC" label="PLG_ELEMENT_FIELD_INTEGER_LENGTH_LABEL" name="integer_length" type="text"/>
 				
-			<field name="decimal_length"
-				type="text"
-				default="2"
-				label="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_LABEL"
-				description="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_DESC" />
+			<field default="2" description="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_DESC" label="PLG_ELEMENT_FIELD_DECIMAL_LENGTH_LABEL" name="decimal_length" type="text"/>
 			
-			<field name="field_use_number_format" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_FIELD_USE_NUMBER_FORMAT_LABEL" 
-				description="PLG_ELEMENT_FIELD_USE_NUMBER_FORMAT_DESC">
+			<field default="0" description="PLG_ELEMENT_FIELD_USE_NUMBER_FORMAT_DESC" label="PLG_ELEMENT_FIELD_USE_NUMBER_FORMAT_LABEL" name="field_use_number_format" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 		
-			<field name="field_thousand_sep" 
-				type="text" size="3" default="," 
-				label="PLG_ELEMENT_FIELD_THOUSAND_SEP_LABEL" 
-				description="PLG_ELEMENT_FIELD_THOUSAND_SEP_DESC" />
+			<field default="," description="PLG_ELEMENT_FIELD_THOUSAND_SEP_DESC" label="PLG_ELEMENT_FIELD_THOUSAND_SEP_LABEL" name="field_thousand_sep" size="3" type="text"/>
 		
-			<field name="field_decimal_sep" 
-				type="text" size="3" default="." 
-				label="PLG_ELEMENT_FIELD_DECIMAL_SEP_LABEL" 
-				description="PLG_ELEMENT_FIELD_DECIMAL_SEP_DESC" />
+			<field default="." description="PLG_ELEMENT_FIELD_DECIMAL_SEP_DESC" label="PLG_ELEMENT_FIELD_DECIMAL_SEP_LABEL" name="field_decimal_sep" size="3" type="text"/>
 			
-			<field name="text_format_string"
-				type="text"
-				size="60"
-				label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL"
-				description="PLG_ELEMENT_FIELD_FORMAT_STRING_DESC" />
+			<field description="PLG_ELEMENT_FIELD_FORMAT_STRING_DESC" label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL" name="text_format_string" size="60" type="text"/>
 		</fieldset>
 		
-		<fieldset name="plg-field-guesslink" label="PLG_ELEMENT_FIEILD_GUESS_LINK">
-			<field name="guess_linktype" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_FIELD_GUESS_LINK_TYPE_LABEL" 
-				description="PLG_ELEMENT_FIELD_GUESS_LINK_TYPE_DESC">
+		<fieldset label="PLG_ELEMENT_FIEILD_GUESS_LINK" name="plg-field-guesslink">
+			<field default="0" description="PLG_ELEMENT_FIELD_GUESS_LINK_TYPE_DESC" label="PLG_ELEMENT_FIELD_GUESS_LINK_TYPE_LABEL" name="guess_linktype" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="link_target_options" 
-				type="list" 
-				default="default" 
-				description="PLG_ELEMENT_FIELD_TARGET_OPTIONS_DESC"
-				label="PLG_ELEMENT_FIELD_TARGET_OPTIONS_LABEL" >
+			<field default="default" description="PLG_ELEMENT_FIELD_TARGET_OPTIONS_DESC" label="PLG_ELEMENT_FIELD_TARGET_OPTIONS_LABEL" name="link_target_options" type="list">
 		     	<option value="default">PLG_ELEMENT_FIELD_NOT_SET</option>
 					<option value="_self">PLG_ELEMENT_FIELD_TARGET_SELF</option>
 					<option value="_blank">PLG_ELEMENT_FIELD_TARGET_BLANK</option>

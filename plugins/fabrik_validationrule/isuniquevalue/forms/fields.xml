@@ -1,25 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-validationrule-isuniquevalue">
-			<field type="text" 
-				name="isuniquevalue-message" 
-				size="30" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_ISUNIQUE_ERROR_LABEL"
-				description="PLG_VALIDATIONRULE_ISUNIQUE_ERROR_DESC" />
+			<field description="PLG_VALIDATIONRULE_ISUNIQUE_ERROR_DESC" label="PLG_VALIDATIONRULE_ISUNIQUE_ERROR_LABEL" name="isuniquevalue-message" repeat="true" size="30" type="text"/>
 				
-			<field type="textarea" 
-				cols="30" rows="5" 
-				repeat="true"
-				name="isuniquevalue-validation_condition" 
-				label="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_LABEL" 
-				description="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_DESC"/>
+			<field cols="30" description="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_DESC" label="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_LABEL" name="isuniquevalue-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field name="isuniquevalue-caseinsensitive" 
-				type="radio" default="0" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_ISUNIQUE_CASE_SENSETIVE_LABEL">
+			<field default="0" label="PLG_VALIDATIONRULE_ISUNIQUE_CASE_SENSETIVE_LABEL" name="isuniquevalue-caseinsensitive" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

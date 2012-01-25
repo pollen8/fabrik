@@ -1,42 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-fbactiviyfeed" label="field">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="field" name="plg-element-fbactiviyfeed">
 		
-			<field name="opengraph_applicationid" 
-				type="text" 
-				label="PLG_ELEMENT_FBFEED_APPLICATION_ID_LABEL" 
-				description="PLG_ELEMENT_FBFEED_APPLICATION_ID_DESC" />
+			<field description="PLG_ELEMENT_FBFEED_APPLICATION_ID_DESC" label="PLG_ELEMENT_FBFEED_APPLICATION_ID_LABEL" name="opengraph_applicationid" type="text"/>
 				
-			<field name="fbactivityfeed_domain" 
-				type="text" 
-				label="PLG_ELEMENT_FBFEED_DOMAIN_LABEL" 
-				description="PLG_ELEMENT_FBFEED_DOMAIN_DESC" />
+			<field description="PLG_ELEMENT_FBFEED_DOMAIN_DESC" label="PLG_ELEMENT_FBFEED_DOMAIN_LABEL" name="fbactivityfeed_domain" type="text"/>
 				
-			<field name="fbactivityfeed_width" 
-				type="text" size="3" 
-				default="300" label="PLG_ELEMENT_FBFEED_WIDTH_LABEL" />
+			<field default="300" label="PLG_ELEMENT_FBFEED_WIDTH_LABEL" name="fbactivityfeed_width" size="3" type="text"/>
 				
-			<field name="fbactivityfeed_height" 
-				type="text" size="3" 
-				default="300" label="PLG_ELEMENT_FBFEED_HEIGHT_LABEL" />
+			<field default="300" label="PLG_ELEMENT_FBFEED_HEIGHT_LABEL" name="fbactivityfeed_height" size="3" type="text"/>
 				
-			<field name="fbactivityfeed header" 
-				type="radio" 
-				default="true" 
-				label="PLG_ELEMENT_FBFEED_HEADER_LABEL">
+			<field default="true" label="PLG_ELEMENT_FBFEED_HEADER_LABEL" name="fbactivityfeed header" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fbactivityfeed_border" 
-				type="text" size="7" 
-				label="PLG_ELEMENT_FBFEED_BORDER_LABEL" />
+			<field label="PLG_ELEMENT_FBFEED_BORDER_LABEL" name="fbactivityfeed_border" size="7" type="text"/>
 				
-			<field name="fbactivityfeed_font" 
-				type="list" 
-				default="arial"
-				label="PLG_ELEMENT_FBFEED_FONT_LABEL">
+			<field default="arial" label="PLG_ELEMENT_FBFEED_FONT_LABEL" name="fbactivityfeed_font" type="list">
 					<option value="arial">arial</option>
 					<option value="lucida grande">lucida grande</option>
 					<option value="segoe ui">segoe ui</option>
@@ -45,10 +27,7 @@
 					<option value="verdana">verdana</option>
 			</field>
 			
-			<field name="fbactivityfeed_colorscheme" 
-				default="light" 
-				type="list" 
-				label="PLG_ELEMENT_FBFEED_COLOR_SCHEME_LABEL">
+			<field default="light" label="PLG_ELEMENT_FBFEED_COLOR_SCHEME_LABEL" name="fbactivityfeed_colorscheme" type="list">
 					<option value="light">light</option>
 					<option value="dark">dark</option>
 			</field>

@@ -1,91 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-email">
 				
-			<field name="emailtable_access"
-				type="accesslevel"
-				default="1"
-				repeat="true"
-				label="PLG_FABRIK_LIST_EMAIL_ACCESS_LABEL"/>
+			<field default="1" label="PLG_FABRIK_LIST_EMAIL_ACCESS_LABEL" name="emailtable_access" repeat="true" type="accesslevel"/>
 		
-			<field name="emailtable_from_user" type="radio" default="0" 
-				repeat="true"
-				label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL" 
-				description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC">
+			<field default="0" description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC" label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL" name="emailtable_from_user" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="emailtable_to_type"
-				repeat="true"
-				type="list"
-				default="list"
-				label="PLG_LIST_EMAIL_TO_TYPE_LABEL"
-				description="PLG_LIST_EMAIL_TO_TYPE_DESC">
+			<field default="list" description="PLG_LIST_EMAIL_TO_TYPE_DESC" label="PLG_LIST_EMAIL_TO_TYPE_LABEL" name="emailtable_to_type" repeat="true" type="list">
 					<option value="list">Select from elements</option>
 					<option value="field">Defined in 'email to' field</option>	
 			</field>
 			
-			<field name="emailtable_to"
-				repeat="true"
-				type="text"
-				size="40"
-				label="PLG_LIST_EMAIL_TO_LABEL"
-				description="PLG_LIST_EMAIL_TO_DESC" />
+			<field description="PLG_LIST_EMAIL_TO_DESC" label="PLG_LIST_EMAIL_TO_LABEL" name="emailtable_to" repeat="true" size="40" type="text"/>
 				
-			<field name="email_button_label"
-				repeat="true"
-				type="text"
-				size="30"
-				label="PLG_LIST_EMAIL_BUTTON_LABEL_LABEL"
-				description="PLG_LIST_EMAIL_BUTTON_LABEL_DESC" />
+			<field description="PLG_LIST_EMAIL_BUTTON_LABEL_DESC" label="PLG_LIST_EMAIL_BUTTON_LABEL_LABEL" name="email_button_label" repeat="true" size="30" type="text"/>
 				
-			<field name="email_subject"
-				type="text"
-				size="30"
-				repeat="true"
-				label="PLG_LIST_EMAIL_SUBJECT_LABEL"
-				description="PLG_LIST_EMAIL_SUBJECT_DESC" />
+			<field description="PLG_LIST_EMAIL_SUBJECT_DESC" label="PLG_LIST_EMAIL_SUBJECT_LABEL" name="email_subject" repeat="true" size="30" type="text"/>
 			
-			<field name="email_message"
-				type="textarea"
-				rows="4"
-				cols="60"
-				repeat="true"
-				label="PLG_LIST_MESSAGE_LABEL"
-				description="PLG_LIST_MESSAGE_DESC" />
+			<field cols="60" description="PLG_LIST_MESSAGE_DESC" label="PLG_LIST_MESSAGE_LABEL" name="email_message" repeat="true" rows="4" type="textarea"/>
 				
-			<field name="emailtable_allow_attachment"
-				type="radio"
-				default="1"
-				repeat="true"
-				label="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_LABEL"
-				description="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_DESC">
+			<field default="1" description="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_DESC" label="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_LABEL" name="emailtable_allow_attachment" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field name="emailtable_condition"
-				type="textarea"
-				rows="4"
-				cols="60"
-				repeat="true"
-				label="PLG_LIST_EMAIL_CONDITION_LABEL"
-				description="PLG_LIST_EMAIL_CONDITION_DESC" />
+			<field cols="60" description="PLG_LIST_EMAIL_CONDITION_DESC" label="PLG_LIST_EMAIL_CONDITION_LABEL" name="emailtable_condition" repeat="true" rows="4" type="textarea"/>
 				
-			<field name="emailtable_update_field"
-				type="listfields"
-				valueformat="tableelement"
-				repeat="true"
-				label="PLG_LIST_EMAIL_UPDATE_FIELD_LABEL"
-				description="PLG_LIST_EMAIL_UPDATE_FIELD_DESC" />
+			<field description="PLG_LIST_EMAIL_UPDATE_FIELD_DESC" label="PLG_LIST_EMAIL_UPDATE_FIELD_LABEL" name="emailtable_update_field" repeat="true" type="listfields" valueformat="tableelement"/>
 			
-			<field name="emailtable_update_value"
-				type="text"
-				repeat="true"
-				label="PLG_LIST_EMAIL_UPDATE_VALUE_LABEL"
-				description="PLG_LIST_EMAIL_UPDATE_VALUE_DESC" />
+			<field description="PLG_LIST_EMAIL_UPDATE_VALUE_DESC" label="PLG_LIST_EMAIL_UPDATE_VALUE_LABEL" name="emailtable_update_value" repeat="true" type="text"/>
 		</fieldset>
 	</fields>
 </form>

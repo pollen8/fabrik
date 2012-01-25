@@ -1,96 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields>
 		<fieldset name="plg-element-note">
 					
-				<field name="eval"
-					type="radio" 
-					default="0" 
-					label="PLG_ELEMENT_NOTES_EVAL_LABEL">
+				<field default="0" label="PLG_ELEMENT_NOTES_EVAL_LABEL" name="eval" type="radio">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 					</field>
 					
-				<field name="default" 
-					type="textarea"
-					cols="6"
-					rows="5"
-					label="PLG_ELEMENT_NOTES_DEFAULT_LABEL" />
+				<field cols="6" label="PLG_ELEMENT_NOTES_DEFAULT_LABEL" name="default" rows="5" type="textarea"/>
 			
 			</fieldset>
 	</fields>
 	
 	<fields name="params">
-		<fieldset name="plg-element-note-params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-			<field name="join_conn_id" 
-				type="connections" 
-				label="PLG_ELEMENT_NOTES_CONNECTION_LABEL" />
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-note-params">
+			<field label="PLG_ELEMENT_NOTES_CONNECTION_LABEL" name="join_conn_id" type="connections"/>
 						
-			<field name="join_db_name" 
-				observe="params_join_conn_id" 
-				type="tables" 
-				label="PLG_ELEMENT_NOTES_TABLE_LABEL" 
-				description="PLG_ELEMENT_NOTES_TABLE_DESC"/>
+			<field description="PLG_ELEMENT_NOTES_TABLE_DESC" label="PLG_ELEMENT_NOTES_TABLE_LABEL" name="join_db_name" observe="params_join_conn_id" type="tables"/>
 				
-			<field name="join_key_column" 
-				type="listfields" 
-				connection="params_join_conn_id" 
-				table="params_join_db_name" 
-				label="PLG_ELEMENT_NOTES_ID_LABEL" 
-				description="PLG_ELEMENT_NOTES_ID_DESC"/>
+			<field connection="params_join_conn_id" description="PLG_ELEMENT_NOTES_ID_DESC" label="PLG_ELEMENT_NOTES_ID_LABEL" name="join_key_column" table="params_join_db_name" type="listfields"/>
 				
-			<field name="join_val_column" 
-				type="listfields" 
-				connection="params_join_conn_id" 
-				table="params_join_db_name" 
-				label="PLG_ELEMENT_NOTES_LABEL_LABEL" 
-				description="PLG_ELEMENT_NOTES_LABEL_DESC"/>
+			<field connection="params_join_conn_id" description="PLG_ELEMENT_NOTES_LABEL_DESC" label="PLG_ELEMENT_NOTES_LABEL_LABEL" name="join_val_column" table="params_join_db_name" type="listfields"/>
 				
-			<field name="join_fk_column" 
-				type="listfields" 
-				connection="params_join_conn_id" 
-				table="params_join_db_name" 
-				label="PLG_ELEMENT_NOTES_FOREIGN_KEY_LABEL" 
-				description="PLG_ELEMENT_NOTES_FOREIGN_KEY_DESC"/>
+			<field connection="params_join_conn_id" description="PLG_ELEMENT_NOTES_FOREIGN_KEY_DESC" label="PLG_ELEMENT_NOTES_FOREIGN_KEY_LABEL" name="join_fk_column" table="params_join_db_name" type="listfields"/>
 				
-			<field
-				name="notes_where_element" 
-				type="listfields" 
-				connection="params_join_conn_id" 
-				table="params_join_db_name" 
-				label="PLG_ELEMENT_NOTES_WHERE_FIELD_LABEL" 
-				description="PLG_ELEMENT_NOTES_WHERE_FIELD_DESC" />
+			<field connection="params_join_conn_id" description="PLG_ELEMENT_NOTES_WHERE_FIELD_DESC" label="PLG_ELEMENT_NOTES_WHERE_FIELD_LABEL" name="notes_where_element" table="params_join_db_name" type="listfields"/>
 				
-			<field name="notes_where_value"
-				type="text"
-				size="20"
-				label="PLG_ELEMENT_NOTES_WHERE_VALUE_LABEL" 
-				description="PLG_ELEMENT_NOTES_WHERE_VALUE_DESC" />
+			<field description="PLG_ELEMENT_NOTES_WHERE_VALUE_DESC" label="PLG_ELEMENT_NOTES_WHERE_VALUE_LABEL" name="notes_where_value" size="20" type="text"/>
 				
 				
-			<field
-				name="notes_order_element" 
-				type="listfields" 
-				connection="params_join_conn_id" 
-				table="params_join_db_name" 
-				label="PLG_ELEMENT_NOTES_ORDER_FIELD_LABEL" 
-				description="PLG_ELEMENT_NOTES_ORDER_FIELD_DESC" />
+			<field connection="params_join_conn_id" description="PLG_ELEMENT_NOTES_ORDER_FIELD_DESC" label="PLG_ELEMENT_NOTES_ORDER_FIELD_LABEL" name="notes_order_element" table="params_join_db_name" type="listfields"/>
 				
-			<field name="notes_order_dir"
-				type="list"
-				label="PLG_ELEMENT_NOTES_ORDER_DIR_LABEL" 
-				description="PLG_ELEMENT_NOTES_ORDER_DIR_DESC">
+			<field description="PLG_ELEMENT_NOTES_ORDER_DIR_DESC" label="PLG_ELEMENT_NOTES_ORDER_DIR_LABEL" name="notes_order_dir" type="list">
 					<option value="ASC">ASC</option>
 					<option value="DESC">DESC</option>
 			</field>
 			
-			<field
-				name="userid" 
-				type="listfields" 
-				connection="params_join_conn_id" 
-				table="params_join_db_name" 
-				label="PLG_ELEMENT_NOTES_USER_FIELD_LABEL" 
-				description="PLG_ELEMENT_NOTES_USER_FIELD_DESC" />
+			<field connection="params_join_conn_id" description="PLG_ELEMENT_NOTES_USER_FIELD_DESC" label="PLG_ELEMENT_NOTES_USER_FIELD_LABEL" name="userid" table="params_join_db_name" type="listfields"/>
 		</fieldset>
 		
 	</fields>

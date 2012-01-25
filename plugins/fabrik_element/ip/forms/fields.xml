@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 
 <fields>
-	<fieldset name="plg-element-ip" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-ip">
 			
-			<field name="hidden" 
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_IP_HIDDEN_LABEL">
+			<field default="0" label="PLG_ELEMENT_IP_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -18,11 +15,7 @@
 	<fields name="params">
 		<fieldset name="plg-ip-extra">
 			
-			<field name="ip_update_on_edit" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_IP_UPDATE_ON_EDIT_LABEL" 
-				description="PLG_ELEMENT_IP_UPDATE_ON_EDIT_DESC">
+			<field default="0" description="PLG_ELEMENT_IP_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_IP_UPDATE_ON_EDIT_LABEL" name="ip_update_on_edit" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

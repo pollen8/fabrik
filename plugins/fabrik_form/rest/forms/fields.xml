@@ -1,33 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-rest">
 			
-			<field name="username" 
-				type="field" 
-				default=""
-				repeat="true"
-				label="PLG_FORM_REST_USERNAME_LABEL" 
-				description="PLG_FORM_REST_USERNAME_DESC" />
+			<field default="" description="PLG_FORM_REST_USERNAME_DESC" label="PLG_FORM_REST_USERNAME_LABEL" name="username" repeat="true" type="field"/>
 			
-			<field name="password" 
-				type="text"
-				repeat="true"
-				label="PLG_FORM_REST_PASSWORD_LABEL" 
-				description="PLG_FORM_REST_PASSWORD_DESC" />
+			<field description="PLG_FORM_REST_PASSWORD_DESC" label="PLG_FORM_REST_PASSWORD_LABEL" name="password" repeat="true" type="text"/>
 				
-			<field name="endpoint" 
-				type="text"
-				size="50"
-				repeat="true"
-				label="PLG_FORM_REST_ENDPOINT_LABEL" 
-				description="PLG_REST_ENDPOINT_DESC" />	
+			<field description="PLG_REST_ENDPOINT_DESC" label="PLG_FORM_REST_ENDPOINT_LABEL" name="endpoint" repeat="true" size="50" type="text"/>	
 					
-			<field name="key"
-				type="field"
-				repeat="true"
-				label="PLG_FORM_REST_KEY_LABEL"
-				description="PLG_FORM_REST_KEY_DESC" />
+			<field description="PLG_FORM_REST_KEY_DESC" label="PLG_FORM_REST_KEY_LABEL" name="key" repeat="true" type="field"/>
 				
 		</fieldset>
 	</fields>

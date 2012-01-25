@@ -1,18 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="plg-element-count" group="extra">
-			<field name="count_field" 
-				type="listfields" 
-				valueformat="tableelement" 
-				label="PLG_ELEMENT_COUNT_FIELD_LABEL" 
-				description="PLG_ELEMENT_COUNT_FIELD_DESC" />
+		<fieldset group="extra" name="plg-element-count">
+			<field description="PLG_ELEMENT_COUNT_FIELD_DESC" label="PLG_ELEMENT_COUNT_FIELD_LABEL" name="count_field" type="listfields" valueformat="tableelement"/>
 				
-			<field name="count_groupbyfield" 
-				type="listfields" 
-				valueformat="tableelement" 
-				label="PLG_ELEMENT_COUNT_GROUP_BY_FIELD_LABEL" 
-				description="PLG_ELEMENT_COUNT_GROUP_BY_FIELD_DESC" />
+			<field description="PLG_ELEMENT_COUNT_GROUP_BY_FIELD_DESC" label="PLG_ELEMENT_COUNT_GROUP_BY_FIELD_LABEL" name="count_groupbyfield" type="listfields" valueformat="tableelement"/>
 		</fieldset>	
 	</fields>
 </form>

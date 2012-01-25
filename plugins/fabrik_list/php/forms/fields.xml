@@ -1,47 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-php">
-			<field name="table_php_access" 
-				type="accesslevel" 
-				default="1"
-				repeat="true"
-				label="PLG_FABRIK_LIST_PHP_ACCESS_LABEL" />
+			<field default="1" label="PLG_FABRIK_LIST_PHP_ACCESS_LABEL" name="table_php_access" repeat="true" type="accesslevel"/>
 				
-			<field name="table_php_button_label" 
-				type="text"
-				repeat="true"
-				label="PLG_FABRIK_LIST_PHP_BUTTON_LABEL_LABEL" size="30" />
+			<field label="PLG_FABRIK_LIST_PHP_BUTTON_LABEL_LABEL" name="table_php_button_label" repeat="true" size="30" type="text"/>
 				
-			<field name="list_php_image_name" 
-				type="text"
-				size="20"
-				repeat="true"
-				default="php.png"
-				description="PLG_FABRIK_LIST_PHP_IMAGE_DESC"
-				label="PLG_FABRIK_LIST_PHP_IMAGE_LABEL" />
+			<field default="php.png" description="PLG_FABRIK_LIST_PHP_IMAGE_DESC" label="PLG_FABRIK_LIST_PHP_IMAGE_LABEL" name="list_php_image_name" repeat="true" size="20" type="text"/>
 				
-			<field name="table_php_file" 
-				type="filelist" 
-				directory="plugins/fabrik_list/php/scripts/" 
-				hide_default="1"
-				repeat="true"
-				label="PLG_FABRIK_LIST_PHP_FILE_LABEL" 
-				description="PLG_FABRIK_LIST_PHP_FILE_DESC" />
+			<field description="PLG_FABRIK_LIST_PHP_FILE_DESC" directory="plugins/fabrik_list/php/scripts/" hide_default="1" label="PLG_FABRIK_LIST_PHP_FILE_LABEL" name="table_php_file" repeat="true" type="filelist"/>
 				
-			<field name="table_php_code" 
-				type="textarea" 
-				rows="8" 
-				cols="60"
-				repeat="true"
-				label="PLG_FABRIK_LIST_PHP_CODE_LABEL" 
-				description="PLG_FABRIK_LIST_PHP_CODE_DESC" />
+			<field cols="60" description="PLG_FABRIK_LIST_PHP_CODE_DESC" label="PLG_FABRIK_LIST_PHP_CODE_LABEL" name="table_php_code" repeat="true" rows="8" type="textarea"/>
 				
-			<field name="table_php_msg" 
-				type="text" 
-				size="30"
-				repeat="true"
-				label="PLG_FABRIK_LIST_PHP_SUCCESS_MSG_LABEL" />
+			<field label="PLG_FABRIK_LIST_PHP_SUCCESS_MSG_LABEL" name="table_php_msg" repeat="true" size="30" type="text"/>
 			
 		</fieldset>
 	</fields>

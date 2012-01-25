@@ -1,222 +1,127 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-googlemap" label="googlemap">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="googlemap" name="plg-element-googlemap">
 				
-			<field name="fb_gm_maptype" 
-				type="list" 
-				default="G_NORMAL_MAP" 
-				label="PLG_ELEMENT_GOOGLE_MAP_TYPE_LABEL">
+			<field default="G_NORMAL_MAP" label="PLG_ELEMENT_GOOGLE_MAP_TYPE_LABEL" name="fb_gm_maptype" type="list">
 					<option value="G_NORMAL_MAP">PLG_ELEMENT_GOOGLE_MAP_NORMAL</option>
 					<option value="G_SATELLITE_MAP">PLG_ELEMENT_GOOGLE_MAP_SATELITE</option>
 					<option value="G_HYBRID_MAP">PLG_ELEMENT_GOOGLE_MAP_HYBRID</option>
 			</field>
 			
-			<field name="fb_gm_zoomlevel" 
-				type="text" size="3" default="4" 
-				label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC"/>
+			<field default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_zoomlevel" size="3" type="text"/>
 				
-			<field name="fb_gm_mapwidth" 
-				type="text" 
-				size="3" default="200" 
-				label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL" />
+			<field default="200" label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" type="text"/>
 				
-			<field name="fb_gm_mapheight" 
-				type="text" 
-				size="3" default="150" 
-				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL"/>
+			<field default="150" label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL" name="fb_gm_mapheight" size="3" type="text"/>
 				
-			<field name="fb_gm_mapcontrol" type="list" 
-				default="GSmallZoomControl" 
-				label="PLG_ELEMENT_GOOGLE_MAP_CONTROL_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_CONTROL_DESC">
+			<field default="GSmallZoomControl" description="PLG_ELEMENT_GOOGLE_MAP_CONTROL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_CONTROL_LABEL" name="fb_gm_mapcontrol" type="list">
 					<option value="">None</option>
 					<option value="GLargeMapControl">PLG_ELEMENT_GOOGLE_MAP_LARGE_MAP_CONTROL</option>
 					<option value="GSmallMapControl">PLG_ELEMENT_GOOGLE_MAP_SMALL_MAP_CONTROL</option>
 					<option value="GSmallZoomControl">PLG_ELEMENT_GOOGLE_MAP_SMALL_ZOOM_CONTROL</option>
 			</field>
 			
-			<field name="fb_gm_scalecontrol" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_SCALE_CONTROL_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_SCALE_CONTROL_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_SCALE_CONTROL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_SCALE_CONTROL_LABEL" name="fb_gm_scalecontrol" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fb_gm_maptypecontrol" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_TYPE_CONTROL_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_TYPE_CONTROL_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_TYPE_CONTROL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_TYPE_CONTROL_LABEL" name="fb_gm_maptypecontrol" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fb_gm_overviewcontrol" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_OVERVIEW_CONTROL_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_OVERVIEW_CONTROL_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_OVERVIEW_CONTROL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_OVERVIEW_CONTROL_LABEL" name="fb_gm_overviewcontrol" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fb_gm_staticmap" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_DESC" label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_LABEL" name="fb_gm_staticmap" type="radio">
 					<option value="1">PLG_ELEMENT_GOOGLE_MAP_STATIC</option>
 					<option value="2">PLG_ELEMENT_GOOGLE_MAP_FULL</option>
 			</field>
 			
-			<field name="fb_gm_scroll_wheel" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_MOUSE_WHEEL_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_MOUSE_WHEEL_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_MOUSE_WHEEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_MOUSE_WHEEL_LABEL" name="fb_gm_scroll_wheel" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fb_gm_street_view" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_STREET_VIEW_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_STREET_VIEW_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_STREET_VIEW_DESC" label="PLG_ELEMENT_GOOGLE_MAP_STREET_VIEW_LABEL" name="fb_gm_street_view" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fb_gm_latlng" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_LATLNG_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_LATLNG_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_LATLNG_DESC" label="PLG_ELEMENT_GOOGLE_MAP_LATLNG_LABEL" name="fb_gm_latlng" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fb_gm_latlng_dms" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_LATLNG_DMS_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_LATLNG_DMS_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_LATLNG_DMS_DESC" label="PLG_ELEMENT_GOOGLE_MAP_LATLNG_DMS_LABEL" name="fb_gm_latlng_dms" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 					
 		</fieldset>
 		
-		<fieldset name="plg-element-googlemap-default" label="Default location">
-			<field name="fb_gm_defaultloc"
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_GOOGLE_MAP_DEFAULT_LOCATION_LABEL"
-				description="PLG_ELEMENT_GOOGLE_MAP_DEFAULT_LOCATION_DESC">
+		<fieldset label="Default location" name="plg-element-googlemap-default">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_DEFAULT_LOCATION_DESC" label="PLG_ELEMENT_GOOGLE_MAP_DEFAULT_LOCATION_LABEL" name="fb_gm_defaultloc" type="radio">
 					<option value="0">PLG_ELEMENT_GOOGLE_MAP_COORDS</option>
 					<option value="1">PLG_ELMENET_GOOGLE_MAP_GEOLOC</option>
 			</field>
 			
-			<field name="fb_gm_lat" 
-				type="text" size="10" 
-				default="53.2224"
-				label="PLG_ELEMENT_GOOGLE_MAP_LAT_LABEL"
-				description="PLG_ELEMENT_GOOGLE_MAP_LAT_DESC"/>
+			<field default="53.2224" description="PLG_ELEMENT_GOOGLE_MAP_LAT_DESC" label="PLG_ELEMENT_GOOGLE_MAP_LAT_LABEL" name="fb_gm_lat" size="10" type="text"/>
 				
-			<field name="fb_gm_long" 
-				type="text" size="10" 
-				default="-4.2007" 
-				label="PLG_ELEMENT_GOOGLE_MAP_LONG_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_LONG_DESC"/>
+			<field default="-4.2007" description="PLG_ELEMENT_GOOGLE_MAP_LONG_DESC" label="PLG_ELEMENT_GOOGLE_MAP_LONG_LABEL" name="fb_gm_long" size="10" type="text"/>
 			
 		</fieldset>
 		
-		<fieldset name="plg-element-googlemap-geocoding" label="Geocoding">
-			<field name="fb_gm_geocode" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_DESC">
+		<fieldset label="Geocoding" name="plg-element-googlemap-geocoding">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_LABEL" name="fb_gm_geocode" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 					<option value="2">PLG_ELEMENT_GOOGLE_MAP_USE_ELEMENTS</option>
 			</field>
 			
-			<param name="fb_gm_reverse_geocode"
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_GOOGLE_MAP_REVERSE_GEOCODE_LABEL"
-				description="PLG_ELEMENT_GOOGLE_MAP_REVERSE_GEOCODE_DESC">
+			<param default="0" description="PLG_ELEMENT_GOOGLE_MAP_REVERSE_GEOCODE_DESC" label="PLG_ELEMENT_GOOGLE_MAP_REVERSE_GEOCODE_LABEL" name="fb_gm_reverse_geocode" type="radio">
 					<option value="0">No</option>
 					<option value="1">Yes</option>
 			</param>
 			
-			<field name="fb_gm_geocode_addr1" 
-				type="listfields" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR1_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR1_DESC"/>
+			<field description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR1_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR1_LABEL" name="fb_gm_geocode_addr1" type="listfields"/>
 				
-			<field name="fb_gm_geocode_addr2" 
-				type="listfields" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR2_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR2_DESC"/>
+			<field description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR2_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ADDR2_LABEL" name="fb_gm_geocode_addr2" type="listfields"/>
 				
-			<field name="fb_gm_geocode_city" 
-				type="listfields" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_CITY_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_CITY_DESC"/>
+			<field description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_CITY_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_CITY_LABEL" name="fb_gm_geocode_city" type="listfields"/>
 				
-			<field name="fb_gm_geocode_state" 
-				type="listfields" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_STATE_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_STATE_DESC"/>
+			<field description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_STATE_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_STATE_LABEL" name="fb_gm_geocode_state" type="listfields"/>
 				
-			<field name="fb_gm_geocode_zip" 
-				type="listfields" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ZIP_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ZIP_DESC"/>
+			<field description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ZIP_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_ZIP_LABEL" name="fb_gm_geocode_zip" type="listfields"/>
 				
-			<field name="fb_gm_geocode_country" 
-				type="listfields" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_COUNTRY_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_COUNTRY_DESC"/>
+			<field description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_COUNTRY_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_COUNTRY_LABEL" name="fb_gm_geocode_country" type="listfields"/>
 			
-			<field name="fb_gm_geocode_event" 
-				type="radio" default="button" 
-				label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_EVENT_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_EVENT_DESC">
+			<field default="button" description="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_EVENT_DESC" label="PLG_ELEMENT_GOOGLE_MAP_GEOCODE_EVENT_LABEL" name="fb_gm_geocode_event" type="radio">
 					<option value="button">PLG_ELEMENT_GOOGLE_MAP_BUTTON</option>
 					<option value="change">PLG_ELEMENT_GOOGLE_MAP_AS_YOU_TYPE</option>
 			</field>
 		</fieldset>
 		
-		<fieldset name="plg-element-googlemap-table" label="Table settings">
-			<field name="fb_gm_staticmap_tableview" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_DESC">
+		<fieldset label="Table settings" name="plg-element-googlemap-table">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_DESC" label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_LABEL" name="fb_gm_staticmap_tableview" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 
-			<field name="fb_gm_staticmap_tableview_type_coords" 
-				type="radio" default="0" 
-				label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_TYPE_COORDS_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_TYPE_COORDS_DESC">
+			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_TYPE_COORDS_DESC" label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_TYPE_COORDS_LABEL" name="fb_gm_staticmap_tableview_type_coords" type="radio">
 					<option value="num">PLG_ELEMENT_GOOGLE_MAP_DECIMAL</option>
 					<option value="dms">PLG_ELEMENT_GOOGLE_MAP_DMS</option>
 			</field>
 			
-			<field name="fb_gm_table_mapwidth" 
-				type="text" size="3" 
-				default="200" 
-				label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL"/>
+			<field default="200" label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL" name="fb_gm_table_mapwidth" size="3" type="text"/>
 				
-			<field name="fb_gm_table_mapheight" 
-				type="text" size="3" default="150" 
-				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL"/>
+			<field default="150" label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL" name="fb_gm_table_mapheight" size="3" type="text"/>
 				
-			<field name="fb_gm_table_zoomlevel" 
-				type="text" size="3" default="4" 
-				label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" 
-				description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC"/>
+			<field default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_table_zoomlevel" size="3" type="text"/>
 		</fieldset>
 	</fields>
 </form>

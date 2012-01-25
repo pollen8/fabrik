@@ -1,31 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-googleometer" label="field">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="field" name="plg-element-googleometer">
 		
-			<field name="googleometer_element" 
-				type="listfields" 
-				valueformat="id"
-				label="PLG_ELEMENT_GOOGLEOMETER_ELEMENT_LABEL" 
-				description="PLG_ELEMENT_GOOGLEOMETER_ELEMENT_DESC"/>
+			<field description="PLG_ELEMENT_GOOGLEOMETER_ELEMENT_DESC" label="PLG_ELEMENT_GOOGLEOMETER_ELEMENT_LABEL" name="googleometer_element" type="listfields" valueformat="id"/>
 				
-			<field name="googleometer_width" 
-				type="text" 
-				size="3" default="200" 
-				label="PLG_ELEMENT_GOOGLEOMETER_WIDTH_LABEL" 
-				description="PLG_ELEMENT_GOOGLEOMETER_WIDTH_DESC" />
+			<field default="200" description="PLG_ELEMENT_GOOGLEOMETER_WIDTH_DESC" label="PLG_ELEMENT_GOOGLEOMETER_WIDTH_LABEL" name="googleometer_width" size="3" type="text"/>
 				
-			<field name="googleometer_height" 
-				type="text" 
-				size="3" default="125" 
-				label="PLG_ELEMENT_GOOGLEOMETER_HEIGHT_LABEL" 
-				description="PLG_ELEMENT_GOOGLEOMETER_HEIGHT_DESC" />
+			<field default="125" description="PLG_ELEMENT_GOOGLEOMETER_HEIGHT_DESC" label="PLG_ELEMENT_GOOGLEOMETER_HEIGHT_LABEL" name="googleometer_height" size="3" type="text"/>
 				
-			<field name="googleometer_label" 
-				type="text" 
-				size="20"
-				label="PLG_ELEMENT_GOOGLEOMETER_LABEL_LABEL" 
-				description="PLG_ELEMENT_GOOGLEOMETER_LABEL_DESC" />
+			<field description="PLG_ELEMENT_GOOGLEOMETER_LABEL_DESC" label="PLG_ELEMENT_GOOGLEOMETER_LABEL_LABEL" name="googleometer_label" size="20" type="text"/>
 					
 		</fieldset>
 

@@ -1,27 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-validationrule-isnumeric">
-			<field type="text" 
-				name="isnumeric-message" 
-				size="30" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_ISNUMERIC_ERROR_LABEL"
-				description="PLG_VALIDATIONRULE_ISNUMERIC_ERROR_DESC" />
+			<field description="PLG_VALIDATIONRULE_ISNUMERIC_ERROR_DESC" label="PLG_VALIDATIONRULE_ISNUMERIC_ERROR_LABEL" name="isnumeric-message" repeat="true" size="30" type="text"/>
 				
-			<field type="textarea" 
-				cols="30" rows="5" 
-				repeat="true"
-				name="isnumeric-validation_condition" 
-				label="PLG_VALIDATIONRULE_ISNUMERIC_CONDITION_LABEL" 
-				description="PLG_VALIDATIONRULE_ISNUMERIC_CONDITION_DESC"/>
+			<field cols="30" description="PLG_VALIDATIONRULE_ISNUMERIC_CONDITION_DESC" label="PLG_VALIDATIONRULE_ISNUMERIC_CONDITION_LABEL" name="isnumeric-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field name="isnumeric-allow_empty" 
-				type="radio" 
-				default="0" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_ISNUMERIC_ALLOW_EMPTY_LABEL" 
-				description="PLG_VALIDATIONRULE_ISNUMERIC_ALLOW_EMPTY_DESC">
+			<field default="0" description="PLG_VALIDATIONRULE_ISNUMERIC_ALLOW_EMPTY_DESC" label="PLG_VALIDATIONRULE_ISNUMERIC_ALLOW_EMPTY_LABEL" name="isnumeric-allow_empty" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

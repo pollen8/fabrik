@@ -1,49 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-validationrule-specialchars">
-			<field type="textarea" 
-				cols="30" rows="5" 
-				repeat="true"
-				name="example-validation_condition" 
-				label="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_LABEL" 
-				description="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_DESC"/>
+			<field cols="30" description="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_DESC" label="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_LABEL" name="example-validation_condition" repeat="true" rows="5" type="textarea"/>
 			
-			<field type="text" 
-				name="specialchars-message" 
-				size="30" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_SPECIALCHARS_ERROR_LABEL"
-				description="PLG_VALIDATIONRULE_SPECIALCHARS_ERROR_DESC" />
+			<field description="PLG_VALIDATIONRULE_SPECIALCHARS_ERROR_DESC" label="PLG_VALIDATIONRULE_SPECIALCHARS_ERROR_LABEL" name="specialchars-message" repeat="true" size="30" type="text"/>
 				
-			<field type="textarea" 
-				cols="30" rows="5" 
-				repeat="true"
-				name="specialchars-validation_condition" 
-				label="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_LABEL" 
-				description="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_DESC"/>
+			<field cols="30" description="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_DESC" label="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_LABEL" name="specialchars-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field type="text" 
-				name="specalchars"
-				repeat="true"
-				label="PLG_VALIDATIONRULE_SPECIALCHARS_FORBIDDEN_CHARS_LABEL" 
-				description="PLG_VALIDATIONRULE_SPECIALCHARS_FORBIDDEN_CHARS_DESC"/>
+			<field description="PLG_VALIDATIONRULE_SPECIALCHARS_FORBIDDEN_CHARS_DESC" label="PLG_VALIDATIONRULE_SPECIALCHARS_FORBIDDEN_CHARS_LABEL" name="specalchars" repeat="true" type="text"/>
 				
-			<field name="specialchars-match" 
-				type="radio" 
-				default="1"
-				repeat="true"
-				label="PLG_VALIDATIONRULE_SPECIALCHARS_MATCH_OR_REPLACE_LABEL" 
-				description="PLG_VALIDATIONRULE_SPECIALCHARS_MATCH_OR_REPLACE_DESC">
+			<field default="1" description="PLG_VALIDATIONRULE_SPECIALCHARS_MATCH_OR_REPLACE_DESC" label="PLG_VALIDATIONRULE_SPECIALCHARS_MATCH_OR_REPLACE_LABEL" name="specialchars-match" repeat="true" type="radio">
 					<option value="0">PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE</option>
 					<option value="1">PLG_VALIDATIONRULE_SPECIALCHARS_MATCH</option>
 			</field>
 			
-			<field name="specialchars-replacestring" 
-				type="text"
-				repeat="true"
-				label="PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE_STRING_LABEL" 
-				description="PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE_STRING_LABEL" />
+			<field description="PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE_STRING_LABEL" label="PLG_VALIDATIONRULE_SPECIALCHARS_REPLACE_STRING_LABEL" name="specialchars-replacestring" repeat="true" type="text"/>
 				
 		</fieldset>
 	</fields>

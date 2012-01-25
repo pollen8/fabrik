@@ -1,69 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-twitter">
-			<field name="twitter_consumer_key" 
-				type="text" size="30"
-				label="PLG_FORM_TWITTER_CONSUMER_KEY_LABEL"
-				description="PLG_FORM_TWITTER_CONSUMER_KEY_DESC" />
+			<field description="PLG_FORM_TWITTER_CONSUMER_KEY_DESC" label="PLG_FORM_TWITTER_CONSUMER_KEY_LABEL" name="twitter_consumer_key" size="30" type="text"/>
 			
-			<field name="twitter_consumer_secret" 
-				type="text" size="30"
-				label="PLG_FORM_TWITTER_CONSUMER_SECRET_KEY_LABEL"
-				description="PLG_FORM_TWITTER_CONSUMER_SECRET_KEY_DESC" />
+			<field description="PLG_FORM_TWITTER_CONSUMER_SECRET_KEY_DESC" label="PLG_FORM_TWITTER_CONSUMER_SECRET_KEY_LABEL" name="twitter_consumer_secret" size="30" type="text"/>
 				
 					
-			<field name="twitter_msg_field" 
-				type="listfields" 
-				onlytablefields="0" 
-				default="" 
-				label="PLG_FORM_TWITTERMSGFIELD_LABEL" 
-				description="PLG_FORM_TWITTERMSGFIELD_DESC"/>
+			<field default="" description="PLG_FORM_TWITTERMSGFIELD_DESC" label="PLG_FORM_TWITTERMSGFIELD_LABEL" name="twitter_msg_field" onlytablefields="0" type="listfields"/>
 				
-			<field name="twitter_msg_tmpl" 
-				type="textarea" 
-				rows="6" 
-				cols="30" 
-				label="PLG_FORM_TWITTERTMPLFIELD_LABEL" 
-				description="PLG_FORM_TWITTERTMPLFIELD_DESC"/>
+			<field cols="30" description="PLG_FORM_TWITTERTMPLFIELD_DESC" label="PLG_FORM_TWITTERTMPLFIELD_LABEL" name="twitter_msg_tmpl" rows="6" type="textarea"/>
 				
-			<field name="twitter-show-success-msg" 
-				type="radio" 
-				default="0" 
-				label="PLG_FORM_TWITTERSHOWSUCCESSMSG_LABEL" 
-				description="PLG_FORM_TWITTERSHOWSUCCESSMSG_DESC">
+			<field default="0" description="PLG_FORM_TWITTERSHOWSUCCESSMSG_DESC" label="PLG_FORM_TWITTERSHOWSUCCESSMSG_LABEL" name="twitter-show-success-msg" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="twitter_bitly_api_login"
-				type="text"
-				default=""
-				size="20"
-				label="PLG_FORM_TWITTER_BITLY_API_LOGIN"
-				description="PLG_FORM_TWITTER_BITLY_API_LOGIN_DESC" />
+			<field default="" description="PLG_FORM_TWITTER_BITLY_API_LOGIN_DESC" label="PLG_FORM_TWITTER_BITLY_API_LOGIN" name="twitter_bitly_api_login" size="20" type="text"/>
 		
-			<field name="twitter_bitly_api_key"
-				type="text"
-				default=""
-				size="30"
-				label="PLG_FORM_TWITTER_BITLY_API_KEY"
-				description="PLG_FORM_TWITTER_BITLY_API_KEY_DESC" />
+			<field default="" description="PLG_FORM_TWITTER_BITLY_API_KEY_DESC" label="PLG_FORM_TWITTER_BITLY_API_KEY" name="twitter_bitly_api_key" size="30" type="text"/>
 			
-			<field name="twitter_oauth_token"
-					type="twittersignin"
-					label="PLG_FORM_TWITTER_SIGNIN_LABEL"
-					description="PLG_FORM_TWITTER_SIGNIN_DESC" />
+			<field description="PLG_FORM_TWITTER_SIGNIN_DESC" label="PLG_FORM_TWITTER_SIGNIN_LABEL" name="twitter_oauth_token" type="twittersignin"/>
 					
-			<field name="twitter_oauth_token_secret"
-				type="text"
-				label="PLG_FORM_TWITTER_OAUTH_TOKEN_SECRET_LABEL"
-				description="PLG_FORM_TWITTER_OAUTH_TOKEN_SECRET_DESC" />
+			<field description="PLG_FORM_TWITTER_OAUTH_TOKEN_SECRET_DESC" label="PLG_FORM_TWITTER_OAUTH_TOKEN_SECRET_LABEL" name="twitter_oauth_token_secret" type="text"/>
 				
-			<field name="twitter_oauth_user"
-				type="text"
-				label="PLG_FORM_TWITTER_OAUTH_USER_LABEL"
-				description="PLG_FORM_TWITTER_OAUTH_USER_DESC" />
+			<field description="PLG_FORM_TWITTER_OAUTH_USER_DESC" label="PLG_FORM_TWITTER_OAUTH_USER_LABEL" name="twitter_oauth_user" type="text"/>
 		</fieldset>
 	</fields>
 </form>

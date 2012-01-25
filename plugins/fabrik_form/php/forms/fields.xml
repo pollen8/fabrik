@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-php">
-			<field name="only_process_curl" 
-				type="list" 
-				default="0" 
-				repeat="true"
-				label="PLG_FORM_PHP_PROCESS_CURL_LABEL" description="PLG_FORM_PHP_PROCESS_CURL_DESC">
+			<field default="0" description="PLG_FORM_PHP_PROCESS_CURL_DESC" label="PLG_FORM_PHP_PROCESS_CURL_LABEL" name="only_process_curl" repeat="true" type="list">
 					<option value="">Never</option>
 					<option value="onBeforeLoad">Before the form data is loaded (onBeforeLoad)</option>
 					<option value="onLoad">Before the form is loaded (onLoad)</option>
@@ -20,21 +16,9 @@
 					<option value="getEndContent">After the end of the form (getEndContent)</option>
 			</field>
 			
-			<field name="form_php_file" 
-				type="filelist"
-				repeat="true" 
-				directory="plugins/fabrik_form/php/scripts/" 
-				hide_default="1" 
-				label="PLG_FORM_PHP_FILE_LABEL" 
-				description="PLG_FORM_PHP_FILE_DESC" />
+			<field description="PLG_FORM_PHP_FILE_DESC" directory="plugins/fabrik_form/php/scripts/" hide_default="1" label="PLG_FORM_PHP_FILE_LABEL" name="form_php_file" repeat="true" type="filelist"/>
 				
-			<field name="curl_code" 
-				type="textarea" 
-				repeat="true" 
-				rows="8" 
-				cols="60" 
-				label="PLG_FORM_PHP_CODE_LABEL" 
-				description="PLG_FORM_PHP_CODE_DESC" />
+			<field cols="60" description="PLG_FORM_PHP_CODE_DESC" label="PLG_FORM_PHP_CODE_LABEL" name="curl_code" repeat="true" rows="8" type="textarea"/>
 				
 		</fieldset>
 	</fields>

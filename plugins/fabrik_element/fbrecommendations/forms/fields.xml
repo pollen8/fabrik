@@ -1,42 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-fbrecommendations" label="field">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="field" name="plg-element-fbrecommendations">
 		
-			<field name="opengraph_applicationid" 
-				type="text" 
-				label="PLG_ELEMENT_FBRECOMMENDATION_APPLICATION_ID_LABEL" 
-				description="PLG_ELEMENT_FBRECOMMENDATION_APPLICATION_ID_DESC" />
+			<field description="PLG_ELEMENT_FBRECOMMENDATION_APPLICATION_ID_DESC" label="PLG_ELEMENT_FBRECOMMENDATION_APPLICATION_ID_LABEL" name="opengraph_applicationid" type="text"/>
 			
-			<field name="fbrecommendations_domain" 
-				type="text" 
-				label="PLG_ELEMENT_FBRECOMMENDATION_DOMAIN_LABEL" 
-				description="PLG_ELEMENT_FBRECOMMENDATION_DOMAIN_DESC" />
+			<field description="PLG_ELEMENT_FBRECOMMENDATION_DOMAIN_DESC" label="PLG_ELEMENT_FBRECOMMENDATION_DOMAIN_LABEL" name="fbrecommendations_domain" type="text"/>
 			
-			<field name="fbrecommendations_width" 
-				type="text" size="3" 
-				default="300" label="PLG_ELEMENT_FBRECOMMENDATION_WIDTH_LABEL" />
+			<field default="300" label="PLG_ELEMENT_FBRECOMMENDATION_WIDTH_LABEL" name="fbrecommendations_width" size="3" type="text"/>
 			
-			<field name="fbrecommendations_height" 
-				type="text" size="3" 
-				default="300" 
-				label="PLG_ELEMENT_FBRECOMMENDATION_HEIGHT_LABEL" />
+			<field default="300" label="PLG_ELEMENT_FBRECOMMENDATION_HEIGHT_LABEL" name="fbrecommendations_height" size="3" type="text"/>
 			
-			<field name="fbrecommendations header" 
-				type="radio" 
-				default="true" 
-				label="PLG_ELEMENT_FBRECOMMENDATION_HEADER_LABEL">
+			<field default="true" label="PLG_ELEMENT_FBRECOMMENDATION_HEADER_LABEL" name="fbrecommendations header" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="fbrecommendations_border" 
-				type="text" size="7" 
-				label="PLG_ELEMENT_FBRECOMMENDATION_BORDER_LABEL" />
+			<field label="PLG_ELEMENT_FBRECOMMENDATION_BORDER_LABEL" name="fbrecommendations_border" size="7" type="text"/>
 			
-			<field name="fbrecommendations_font" 
-				type="list" default="arial" 
-				label="PLG_ELEMENT_FBRECOMMENDATION_FONT_LABEL">
+			<field default="arial" label="PLG_ELEMENT_FBRECOMMENDATION_FONT_LABEL" name="fbrecommendations_font" type="list">
 					<option value="arial">arial</option>
 					<option value="lucida grande">lucida grande</option>
 					<option value="segoe ui">segoe ui</option>
@@ -45,9 +27,7 @@
 					<option value="verdana">verdana</option>
 			</field>
 			
-			<field name="fbrecommendations_colorscheme" 
-				default="light" type="list" 
-				label="PLG_ELEMENT_FBRECOMMENDATION_COLOR_SCHEME_LABEL">
+			<field default="light" label="PLG_ELEMENT_FBRECOMMENDATION_COLOR_SCHEME_LABEL" name="fbrecommendations_colorscheme" type="list">
 					<option value="light">light</option>
 					<option value="dark">dark</option>
 			</field>

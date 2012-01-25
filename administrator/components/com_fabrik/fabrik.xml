@@ -1,21 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<extension 
-	xmlns="http://www.joomla.org" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://www.joomla.org extension.xsd "
-	method="upgrade"
-	client="site"
-	version="1.6.0"
-	type="component">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="1.6.0" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
 
 	<name>Fabrik</name>
-	<creationDate>{createdate}</creationDate>
+	<creationDate>January 2012</creationDate>
 	<author>Fabrik</author>
-	<copyright>2005-{year} Pollen 8 Design Ltd</copyright>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
-	<version>{version}</version>
+	<version>3.0.3</version>
 	<description>The Joomla Application Creation Component</description>
 
 	<scriptfile>com_fabrik.manifest.class.php</scriptfile>
@@ -67,24 +60,16 @@
 	</media>
 		
 	<administration>
-		<menu view="home" img="../administrator/components/com_fabrik/images/logo.png">Fabrik</menu>
+		<menu img="../administrator/components/com_fabrik/images/logo.png" view="home">Fabrik</menu>
 		<submenu>
-			<menu link="option=com_fabrik&amp;view=lists" img="../administrator/components/com_fabrik/images/lists.png" view="lists"
-				alt="Lists">Lists</menu>
-			<menu link="option=com_fabrik&amp;view=forms" img="../administrator/components/com_fabrik/images/forms.png" view="forms"
-				alt="Forms">Forms</menu>
-				<menu link="option=com_fabrik&amp;view=groups" img="../administrator/components/com_fabrik/images/groups.png" view="groups"
-				alt="Groups">Groups</menu>
-				<menu link="option=com_fabrik&amp;view=elements" img="../administrator/components/com_fabrik/images/elements.png" view="elements"
-				alt="Elements">Elements</menu>
-				<menu link="option=com_fabrik&amp;view=visualizations" img="../administrator/components/com_fabrik/images/visualizations.png" 
-				view="visualizations" alt="Visualizations">Visualizations</menu>
-				<menu link="option=com_fabrik&amp;view=packages" img="../administrator/components/com_fabrik/images/packages.png" view="packages"
-				alt="Packages">Packages</menu>
-				<menu link="option=com_fabrik&amp;view=connections" img="../administrator/components/com_fabrik/images/connections.png" view="connections"
-				alt="Connections">Connections</menu>
-				<menu link="option=com_fabrik&amp;view=crons" img="../administrator/components/com_fabrik/images/schedules.png" view="crons"
-				alt="Schedule">Schedule</menu>
+			<menu alt="Lists" img="../administrator/components/com_fabrik/images/lists.png" link="option=com_fabrik&amp;view=lists" view="lists">Lists</menu>
+			<menu alt="Forms" img="../administrator/components/com_fabrik/images/forms.png" link="option=com_fabrik&amp;view=forms" view="forms">Forms</menu>
+				<menu alt="Groups" img="../administrator/components/com_fabrik/images/groups.png" link="option=com_fabrik&amp;view=groups" view="groups">Groups</menu>
+				<menu alt="Elements" img="../administrator/components/com_fabrik/images/elements.png" link="option=com_fabrik&amp;view=elements" view="elements">Elements</menu>
+				<menu alt="Visualizations" img="../administrator/components/com_fabrik/images/visualizations.png" link="option=com_fabrik&amp;view=visualizations" view="visualizations">Visualizations</menu>
+				<menu alt="Packages" img="../administrator/components/com_fabrik/images/packages.png" link="option=com_fabrik&amp;view=packages" view="packages">Packages</menu>
+				<menu alt="Connections" img="../administrator/components/com_fabrik/images/connections.png" link="option=com_fabrik&amp;view=connections" view="connections">Connections</menu>
+				<menu alt="Schedule" img="../administrator/components/com_fabrik/images/schedules.png" link="option=com_fabrik&amp;view=crons" view="crons">Schedule</menu>
 		</submenu>
 		
 		<files folder="admin">

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<install version="1.6" type="plugin" group="fabrik_list" method="upgrade">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<install group="fabrik_list" method="upgrade" type="plugin" version="1.6">
 	<name>Fabrik List - update Column</name>
 	<author>Rob Clayburn</author>
 	<creationDate>{createdate}</creationDate>
@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>{version}</version>
+	<version>3.0.2</version>
 	<description>Updates all values in a column to a given value</description>
 	<files>
 		<filename plugin="update_col">update_col.php</filename>

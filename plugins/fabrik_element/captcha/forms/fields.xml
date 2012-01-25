@@ -1,29 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-element-captcha">
-			<field name="captcha-showloggedin" type="radio" default="0" label="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_LABEL" description="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_DESC">
+			<field default="0" description="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_DESC" label="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_LABEL" name="captcha-showloggedin" type="radio">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>
-			<field name="captcha-method" type="radio" default="standard" label="PLG_ELEMENT_CAPTCHA_METHOD_LABEL" description="">
+			<field default="standard" description="" label="PLG_ELEMENT_CAPTCHA_METHOD_LABEL" name="captcha-method" type="radio">
 				<option value="standard">Standard</option>
 				<option value="recaptcha">Recaptcha</option>
 			</field>
 		</fieldset>
 	
-		<fieldset name="plg-captcha-standard" label="PLG_ELEMENT_STANDARD_CAPTCHA_FIELDSET_LABEL">
-			<field name="captcha-width" type="text" size="3" default="120" label="PLG_ELEMENT_CAPTCHA_WIDTH_LABEL" description=""/>
-			<field name="captcha-height" type="text" size="3" default="40" label="PLG_ELEMENT_CAPTCHA_HEIGHT_LABEL" description=""/>
-			<field name="captcha-chars" type="text" size="3" default="6" label="PLG_ELEMENT_CAPTCHA_NUMBER_OF_CHARS_LABEL" description=""/>
-			<field name="captcha-bg" type="text" size="7" default="ffffff" label="PLG_ELEMENT_CAPTCHA_BACKGROUND_COLOR" description=""/>	
-			<field name="captcha-noise-color" type="text" size="7" default="0000ff" label="PLG_ELEMENT_CAPTCHA_NOISE_COLOR" description=""/>
-			<field name="captcha-text-color" type="text" size="7" default="0000ff" label="PLG_ELEMENT_CAPTCHA_TEXT_COLOR" description=""/>
+		<fieldset label="PLG_ELEMENT_STANDARD_CAPTCHA_FIELDSET_LABEL" name="plg-captcha-standard">
+			<field default="120" description="" label="PLG_ELEMENT_CAPTCHA_WIDTH_LABEL" name="captcha-width" size="3" type="text"/>
+			<field default="40" description="" label="PLG_ELEMENT_CAPTCHA_HEIGHT_LABEL" name="captcha-height" size="3" type="text"/>
+			<field default="6" description="" label="PLG_ELEMENT_CAPTCHA_NUMBER_OF_CHARS_LABEL" name="captcha-chars" size="3" type="text"/>
+			<field default="ffffff" description="" label="PLG_ELEMENT_CAPTCHA_BACKGROUND_COLOR" name="captcha-bg" size="7" type="text"/>	
+			<field default="0000ff" description="" label="PLG_ELEMENT_CAPTCHA_NOISE_COLOR" name="captcha-noise-color" size="7" type="text"/>
+			<field default="0000ff" description="" label="PLG_ELEMENT_CAPTCHA_TEXT_COLOR" name="captcha-text-color" size="7" type="text"/>
 		</fieldset>
 		
-		<fieldset name="plg-captcha-recaptcha" label="PLG_ELEMENT_RECAPTCHA_CAPTCHA_FIELDSET_LABEL">
-			<field name="recaptcha_publickey" type="text" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_LABEL" description="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_DESC" size="30" />
-			<field name="recaptcha_privatekey" type="text" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_LABEL" descripton="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_DESC" size="30" default="" />
+		<fieldset label="PLG_ELEMENT_RECAPTCHA_CAPTCHA_FIELDSET_LABEL" name="plg-captcha-recaptcha">
+			<field description="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_DESC" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_LABEL" name="recaptcha_publickey" size="30" type="text"/>
+			<field default="" descripton="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_DESC" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_LABEL" name="recaptcha_privatekey" size="30" type="text"/>
 		</fieldset>
 
 	</fields>
