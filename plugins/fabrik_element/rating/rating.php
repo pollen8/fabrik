@@ -180,7 +180,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	 * @param array $ids
 	 * @return bool
 	 */
-	
+
 	protected function canRate($row_id = null, $ids = array())
 	{
 		$params = $this->getParams();
@@ -313,6 +313,28 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	}
 
 	/**
+	 *
+	 * Create the rating table if it doesn't exist.
+	 */
+	private function createRatingTable() {
+		$db = FabrikWorker::getDbo(true);
+		$db->setQuery("
+			CREATE TABLE IF NOT EXISTS  `#__fabrik_ratings` (
+			`user_id` VARCHAR( 255 ) NOT NULL ,
+			`listid` INT( 6 ) NOT NULL ,
+			`formid` INT( 6 ) NOT NULL ,
+			`row_id` INT( 6 ) NOT NULL ,
+			`rating` INT( 6 ) NOT NULL,
+			`date_created` DATETIME NOT NULL,
+			`element_id` INT( 6 ) NOT NULL,
+	 		PRIMARY KEY (
+	 			`user_id` , `listid` , `formid` , `row_id`, `element_id`
+	 		)
+		);");
+		$db->query();
+	}
+
+	/**
 	 * main method to store a rating
 	 * @param $listid
 	 * @param $formid
@@ -322,6 +344,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	private function doRating($listid, $formid, $row_id, $rating)
 	{
+		$this->createRatingTable();
 		$db = FabrikWorker::getDbo(true);
 		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
@@ -445,7 +468,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	 * (non-PHPdoc)
 	 * @see components/com_fabrik/models/plgFabrik_Element#filterValueList_All($normal, $tableName, $label, $id, $incjoin)
 	 */
-	
+
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		for ($i = 0; $i < 6; $i ++) {
