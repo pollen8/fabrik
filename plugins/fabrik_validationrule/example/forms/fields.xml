@@ -1,20 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-validationrule-example">
-			<field type="text" 
-				name="example-message" 
-				size="30" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_EXAMPLE_ERROR_LABEL"
-				description="PLG_VALIDATIONRULE_EXAMPLE_ERROR_DESC" />
+			<field description="PLG_VALIDATIONRULE_EXAMPLE_ERROR_DESC" label="PLG_VALIDATIONRULE_EXAMPLE_ERROR_LABEL" name="example-message" repeat="true" size="30" type="text"/>
 				
-			<field type="textarea" 
-				cols="30" rows="5" 
-				name="example-validation_condition" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_EXAMPLE_CONDITION_LABEL" 
-				description="PLG_VALIDATIONRULE_EXAMPLE_CONDITION_DESC"/>
+			<field cols="30" description="PLG_VALIDATIONRULE_EXAMPLE_CONDITION_DESC" label="PLG_VALIDATIONRULE_EXAMPLE_CONDITION_LABEL" name="example-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
 		</fieldset>
 	</fields>

@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-salesforce">
-			<field name="salesforce_updateobject" 
-				type="list" default="Lead" 
-				repeat="true"
-				label="PLG_FORM_SALESFORCE_UPDATEOBJECT_LABEL" 
-				description="PLG_FORM_SALESFORCE_UPDATEOBJECT_DESC" >
+			<field default="Lead" description="PLG_FORM_SALESFORCE_UPDATEOBJECT_DESC" label="PLG_FORM_SALESFORCE_UPDATEOBJECT_LABEL" name="salesforce_updateobject" repeat="true" type="list">
 					<option value="Contact">Contact</option>
 					<option value="Community">Community</option>
 					<option value="Contract">Contract</option>
@@ -30,35 +26,15 @@
 					<option value="WebLink">WebLink</option>
 				</field>
 				
-				<field name="salesforce_username" 
-					type="text"
-					repeat="true" 
-					label="PLG_FABRIK_FORM_SALESFORCE_USERNAME_LABEL" />
+				<field label="PLG_FABRIK_FORM_SALESFORCE_USERNAME_LABEL" name="salesforce_username" repeat="true" type="text"/>
 					
-				<field name="salesforce_password" 
-					type="text" 
-					repeat="true"
-					label="PLG_FABRIK_FORM_SALESFORCE_PASSWORD_LABEL" />
+				<field label="PLG_FABRIK_FORM_SALESFORCE_PASSWORD_LABEL" name="salesforce_password" repeat="true" type="text"/>
 					
-				<field name="salesforce_token" 
-					type="text" 
-					repeat="true"
-					label="PLG_FABRIK_FORM_SALESFORCE_TOKEN_LABEL" 
-					description="PLG_FABRIK_FORM_SALESFORCE_TOKEN_DESC" />
+				<field description="PLG_FABRIK_FORM_SALESFORCE_TOKEN_DESC" label="PLG_FABRIK_FORM_SALESFORCE_TOKEN_LABEL" name="salesforce_token" repeat="true" type="text"/>
 					
-				<field name="salesforce_customid" 
-					type="text" 
-					repeat="true"
-					default="WebformSID" 
-					label="PLG_FABRIK_FORM_SALESFORCE_CUSTOMID_LABEL" 
-					description="PLG_FABRIK_FORM_SALESFORCE_CUSTOMID_DESC" />
+				<field default="WebformSID" description="PLG_FABRIK_FORM_SALESFORCE_CUSTOMID_DESC" label="PLG_FABRIK_FORM_SALESFORCE_CUSTOMID_LABEL" name="salesforce_customid" repeat="true" type="text"/>
 					
-				<field name="salesforce_allowupsert" 
-					type="radio" 
-					default="0" 
-					repeat="true"
-					label="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_LABEL" 
-					description="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_DESC">
+				<field default="0" description="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_DESC" label="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_LABEL" name="salesforce_allowupsert" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>

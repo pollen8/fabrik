@@ -1,21 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-clone">
-			<field name="clone_times_field" 
-				type="listfields" 
-				onlytablefields="0" 
-				default="times"
-				repeat="true"
-				label="PLG_FORM_CLONE_TIMES_FIELD_LABEL" 
-				description="PLG_FORM_CLONE_TIMES_FIELD_DESC"/>
+			<field default="times" description="PLG_FORM_CLONE_TIMES_FIELD_DESC" label="PLG_FORM_CLONE_TIMES_FIELD_LABEL" name="clone_times_field" onlytablefields="0" repeat="true" type="listfields"/>
 				
-			<field name="clone_batchid_field" 
-				type="listfields" 
-				onlytablefields="0" 
-				default="message" 
-				label="PLG_FORM_CLONE_BATCHID_FIELD_LABEL" 
-				description="PLG_FORM_CLONE_BATCHID_FIELD_DESC"/>
+			<field default="message" description="PLG_FORM_CLONE_BATCHID_FIELD_DESC" label="PLG_FORM_CLONE_BATCHID_FIELD_LABEL" name="clone_batchid_field" onlytablefields="0" type="listfields"/>
 		</fieldset>
 	</fields>
 </form>

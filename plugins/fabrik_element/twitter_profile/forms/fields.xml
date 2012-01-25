@@ -1,47 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 
 	<fields>
-		<fieldset name="plg-element-twitter_profile" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-twitter_profile">
 			
-			<field name="width" 
-				type="text" size="3"
-				label="PLG_ELEMENT_TWITTER_PROFILE_WIDTH_LABEL"/>
+			<field label="PLG_ELEMENT_TWITTER_PROFILE_WIDTH_LABEL" name="width" size="3" type="text"/>
 				
-			<field name="hidden" 
-				type="radio" 
-				default="0"
-				label="PLG_ELEMENT_TWITTER_PROFILE_HIDDEN_LABEL">
+			<field default="0" label="PLG_ELEMENT_TWITTER_PROFILE_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 				
-			<field name="eval" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_TWITTER_PROFILE_EVAL_LABEL" >
+			<field default="0" label="PLG_ELEMENT_TWITTER_PROFILE_EVAL_LABEL" name="eval" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 				
-			<field name="default" 
-				type="textarea"
-				cols="45"
-				rows="6"
-				label="PLG_ELEMENT_TWITTER_PROFILE_DEFAULT_LABEL" />
+			<field cols="45" label="PLG_ELEMENT_TWITTER_PROFILE_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
 				
 		</fieldset>
 	</fields>
 	<fields name="params">
 	
-		<fieldset name="plg-element-twitter_profile" label="Template" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" label="Template" name="plg-element-twitter_profile">
 			
-			<field name="twitter_profile_template" 
-				type="textarea" 
-				rows="3" 
-				cols="60" 
-				label="PLG_ELEMENT_TWITTER_PROFILE_TEMPLATE_LABEL" 
-				description="PLG_ELEMENT_TWITTER_PROFILE_TEMPLATE_DESC" />
+			<field cols="60" description="PLG_ELEMENT_TWITTER_PROFILE_TEMPLATE_DESC" label="PLG_ELEMENT_TWITTER_PROFILE_TEMPLATE_LABEL" name="twitter_profile_template" rows="3" type="textarea"/>
 				
 		</fieldset>
 	</fields>

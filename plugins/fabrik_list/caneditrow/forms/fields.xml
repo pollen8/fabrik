@@ -1,35 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-caneditrow">
-			<field name="caneditrow_field" 
-				type="listfields"
-				repeat="true"
-				valueformat="tableelement"
-				label="PLG_LIST_CANEDITROW_ELEMENT_LABEL"
-				description="PLG_LIST_CANEDITROW_ELEMENT_DESC" />
-			<field name="caneditrow_useraw"
-				type="radio"
-				repeat="true"
-				default="0"
-				label="PLG_LIST_CANEDITROW_USERAW_LABEL"
-				description="PLG_LIST_CANEDITROW_USERAW_DESC">
+			<field description="PLG_LIST_CANEDITROW_ELEMENT_DESC" label="PLG_LIST_CANEDITROW_ELEMENT_LABEL" name="caneditrow_field" repeat="true" type="listfields" valueformat="tableelement"/>
+			<field default="0" description="PLG_LIST_CANEDITROW_USERAW_DESC" label="PLG_LIST_CANEDITROW_USERAW_LABEL" name="caneditrow_useraw" repeat="true" type="radio">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>			
-			<field name="caneditrow_value" 
-				type="text"
-				repeat="true"
-				size="20" 
-				label="PLG_LIST_CANEDITROW_VALUE_LABEL"
-				description="PLG_LIST_CANEDITROW_VALUE_DESC" />
-			<field name="caneditrow_eval"
-				type="textarea"
-				repeat="true"
-				rows="5"
-				cols="30"
-				label="PLG_LIST_CANEDITROW_EVAL_LABEL"
-				description="PLG_LIST_CANEDITROW_EVAL_DESC" />
+			<field description="PLG_LIST_CANEDITROW_VALUE_DESC" label="PLG_LIST_CANEDITROW_VALUE_LABEL" name="caneditrow_value" repeat="true" size="20" type="text"/>
+			<field cols="30" description="PLG_LIST_CANEDITROW_EVAL_DESC" label="PLG_LIST_CANEDITROW_EVAL_LABEL" name="caneditrow_eval" repeat="true" rows="5" type="textarea"/>
 		</fieldset>
 	</fields>
 </form>

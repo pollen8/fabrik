@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <install type="package" version="1.6">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>{version}</version>
+	<version>3.0.2</version>
 	<url>http://www.fabrikar.com</url>
 	<creationDate>{createdate}</creationDate>
 	<author>Fabrik</author>
@@ -16,51 +16,51 @@
 
 	<files folder="packages">
 		
-		<file type="module" id="mod_fabrik_form" client="site">mod_fabrik_form_{version}.zip</file>
-		<file type="module" id="mod_fabrik_list" client="site">mod_fabrik_list_{version}.zip</file>
+		<file client="site" id="mod_fabrik_form" type="module">mod_fabrik_form_3.0.2.zip</file>
+		<file client="site" id="mod_fabrik_list" type="module">mod_fabrik_list_3.0.2.zip</file>
 		
-		<file type="plugin"	id="system_fabrik" group="system">plg_system_fabrik_{version}.zip</file>
+		<file group="system" id="system_fabrik" type="plugin">plg_system_fabrik_3.0.2.zip</file>
 		
-		<file type="plugin" id="content_fabrik" group="content">plg_fabrik_{version}.zip</file>
+		<file group="content" id="content_fabrik" type="plugin">plg_fabrik_3.0.2.zip</file>
 		
-		<file type="plugin"	id="cron_email"	group="fabrik_cron">plg_fabrik_cron_email_{version}.zip</file>
-		<file type="plugin"	id="cron_php"	group="fabrik_cron">plg_fabrik_cron_php_{version}.zip</file>
+		<file group="fabrik_cron" id="cron_email" type="plugin">plg_fabrik_cron_email_3.0.2.zip</file>
+		<file group="fabrik_cron" id="cron_php" type="plugin">plg_fabrik_cron_php_3.0.2.zip</file>
 		
-		<file type="plugin"	id="element_button"	group="fabrik_element">plg_fabrik_element_button_{version}.zip</file>
-		<file type="plugin"	id="element_checkbox"	group="fabrik_element">plg_fabrik_element_checkbox_{version}.zip</file>
-		<file type="plugin"	id="element_databasejoin"	group="fabrik_element">plg_fabrik_element_databasejoin_{version}.zip</file>
-		<file type="plugin"	id="element_date"	group="fabrik_element">plg_fabrik_element_date_{version}.zip</file>
-		<file type="plugin"	id="element_display"	group="fabrik_element">plg_fabrik_element_display_{version}.zip</file>
-		<file type="plugin"	id="element_dropdown"	group="fabrik_element">plg_fabrik_element_dropdown_{version}.zip</file>
-		<file type="plugin"	id="element_field"	group="fabrik_element">plg_fabrik_element_field_{version}.zip</file>
-		<file type="plugin"	id="element_fileupload"	group="fabrik_element">plg_fabrik_element_fileupload_{version}.zip</file>
-		<file type="plugin"	id="element_googlemap"	group="fabrik_element">plg_fabrik_element_googlemap_{version}.zip</file>
-		<file type="plugin"	id="element_image"	group="fabrik_element">plg_fabrik_element_image_{version}.zip</file>
-		<file type="plugin"	id="element_internalid"	group="fabrik_element">plg_fabrik_element_internalid_{version}.zip</file>
-		<file type="plugin"	id="element_link"	group="fabrik_element">plg_fabrik_element_link_{version}.zip</file>
-		<file type="plugin"	id="element_radiobutton"	group="fabrik_element">plg_fabrik_element_radiobutton_{version}.zip</file>
-		<file type="plugin"	id="element_textarea"	group="fabrik_element">plg_fabrik_element_textarea_{version}.zip</file>
-		<file type="plugin"	id="element_user"	group="fabrik_element">plg_fabrik_element_user_{version}.zip</file>
+		<file group="fabrik_element" id="element_button" type="plugin">plg_fabrik_element_button_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_checkbox" type="plugin">plg_fabrik_element_checkbox_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_databasejoin" type="plugin">plg_fabrik_element_databasejoin_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_date" type="plugin">plg_fabrik_element_date_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_display" type="plugin">plg_fabrik_element_display_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_dropdown" type="plugin">plg_fabrik_element_dropdown_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_field" type="plugin">plg_fabrik_element_field_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_fileupload" type="plugin">plg_fabrik_element_fileupload_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_googlemap" type="plugin">plg_fabrik_element_googlemap_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_image" type="plugin">plg_fabrik_element_image_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_internalid" type="plugin">plg_fabrik_element_internalid_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_link" type="plugin">plg_fabrik_element_link_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_radiobutton" type="plugin">plg_fabrik_element_radiobutton_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_textarea" type="plugin">plg_fabrik_element_textarea_3.0.2.zip</file>
+		<file group="fabrik_element" id="element_user" type="plugin">plg_fabrik_element_user_3.0.2.zip</file>
 		
-		<file type="plugin"	id="form_email"	group="fabrik_form">plg_fabrik_form_email_{version}.zip</file>
-		<file type="plugin"	id="form_php"	group="fabrik_form">plg_fabrik_form_php_{version}.zip</file>
-		<file type="plugin"	id="form_receipt"	group="fabrik_form">plg_fabrik_form_receipt_{version}.zip</file>
-		<file type="plugin"	id="form_redirect"	group="fabrik_form">plg_fabrik_form_redirect_{version}.zip</file>
+		<file group="fabrik_form" id="form_email" type="plugin">plg_fabrik_form_email_3.0.2.zip</file>
+		<file group="fabrik_form" id="form_php" type="plugin">plg_fabrik_form_php_3.0.2.zip</file>
+		<file group="fabrik_form" id="form_receipt" type="plugin">plg_fabrik_form_receipt_3.0.2.zip</file>
+		<file group="fabrik_form" id="form_redirect" type="plugin">plg_fabrik_form_redirect_3.0.2.zip</file>
 		
-		<file type="plugin"	id="list_copy"	group="fabrik_list">plg_fabrik_list_copy_{version}.zip</file>
-		<file type="plugin"	id="list_php"	group="fabrik_list">plg_fabrik_list_php_{version}.zip</file>
+		<file group="fabrik_list" id="list_copy" type="plugin">plg_fabrik_list_copy_3.0.2.zip</file>
+		<file group="fabrik_list" id="list_php" type="plugin">plg_fabrik_list_php_3.0.2.zip</file>
 		
-		<file type="plugin"	id="validationrule_isgreaterorlessthan" group="fabrik_validationrule">plg_fabrik_validationrule_isgreaterorlessthan_{version}.zip</file>
-		<file type="plugin"	id="validationrule_notempty" group="fabrik_validationrule">plg_fabrik_validationrule_notempty_{version}.zip</file>
-		<file type="plugin"	id="validationrule_php" group="fabrik_validationrule">plg_fabrik_validationrule_php_{version}.zip</file>
-		<file type="plugin"	id="validationrule_regex" group="fabrik_validationrule">plg_fabrik_validationrule_regex_{version}.zip</file>
+		<file group="fabrik_validationrule" id="validationrule_isgreaterorlessthan" type="plugin">plg_fabrik_validationrule_isgreaterorlessthan_3.0.2.zip</file>
+		<file group="fabrik_validationrule" id="validationrule_notempty" type="plugin">plg_fabrik_validationrule_notempty_3.0.2.zip</file>
+		<file group="fabrik_validationrule" id="validationrule_php" type="plugin">plg_fabrik_validationrule_php_3.0.2.zip</file>
+		<file group="fabrik_validationrule" id="validationrule_regex" type="plugin">plg_fabrik_validationrule_regex_3.0.2.zip</file>
 		
-		<file type="plugin"	id="visualization_calendar" group="fabrik_visualization">plg_fabrik_visualization_calendar_{version}.zip</file>
-		<file type="plugin"	id="visualization_chart" group="fabrik_visualization">plg_fabrik_visualization_chart_{version}.zip</file>
-		<file type="plugin"	id="visualization_googlemap" group="fabrik_visualization">plg_fabrik_visualization_googlemap_{version}.zip</file>
-		<file type="plugin"	id="visualization_media" group="fabrik_visualization">plg_fabrik_visualization_media_{version}.zip</file>
-		<file type="plugin"	id="visualization_slideshow" group="fabrik_visualization">plg_fabrik_visualization_slideshow_{version}.zip</file>
+		<file group="fabrik_visualization" id="visualization_calendar" type="plugin">plg_fabrik_visualization_calendar_3.0.2.zip</file>
+		<file group="fabrik_visualization" id="visualization_chart" type="plugin">plg_fabrik_visualization_chart_3.0.2.zip</file>
+		<file group="fabrik_visualization" id="visualization_googlemap" type="plugin">plg_fabrik_visualization_googlemap_3.0.2.zip</file>
+		<file group="fabrik_visualization" id="visualization_media" type="plugin">plg_fabrik_visualization_media_3.0.2.zip</file>
+		<file group="fabrik_visualization" id="visualization_slideshow" type="plugin">plg_fabrik_visualization_slideshow_3.0.2.zip</file>
 		
-		<file type="component" 	id="com_fabrik" >com_fabrik_{version}.zip</file>
+		<file id="com_fabrik" type="component">com_fabrik_3.0.2.zip</file>
 	</files>
 </install>

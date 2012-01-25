@@ -1,52 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-picklist" label="field">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="field" name="plg-element-picklist">
 		
-			<field name="sub_options"
-				type="suboptions"
-				label="COM_FABRIK_SUBOPTIONS" />
+			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
-			<field name="allowadd" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_PICKLIST_EDIT_DROPDOWN_LABEL" 
-				description="PLG_ELEMENT_PICKLIST_EDIT_DROPDOWN_DESC">
+			<field default="0" description="PLG_ELEMENT_PICKLIST_EDIT_DROPDOWN_DESC" label="PLG_ELEMENT_PICKLIST_EDIT_DROPDOWN_LABEL" name="allowadd" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="allowadd-onlylabel" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_PICKLIST_ONLY_ADD_LABEL_LABEL" 
-				description="PLG_ELEMENT_PICKLIST_ONLY_ADD_LABEL_DESC">
+			<field default="0" description="PLG_ELEMENT_PICKLIST_ONLY_ADD_LABEL_DESC" label="PLG_ELEMENT_PICKLIST_ONLY_ADD_LABEL_LABEL" name="allowadd-onlylabel" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="savenewadditions" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_PICKLIST_SAVE_NEW_ADDITIONS_LABEL" 
-				description="PLG_ELEMENT_PICKLIST_SAVE_NEW_ADDITIONS_DESC">
+			<field default="0" description="PLG_ELEMENT_PICKLIST_SAVE_NEW_ADDITIONS_DESC" label="PLG_ELEMENT_PICKLIST_SAVE_NEW_ADDITIONS_LABEL" name="savenewadditions" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="picklist-hovercolour" 
-				type="text" 
-				size="6" 
-				default="AFFFFD" 
-				label="PLG_ELEMENT_PICKLIST_HOVER_COLOUR_LABEL" 
-				description="PLG_ELEMENT_PICKLIST_HOVER_COLOUR_DESCRIPTION" />
+			<field default="AFFFFD" description="PLG_ELEMENT_PICKLIST_HOVER_COLOUR_DESCRIPTION" label="PLG_ELEMENT_PICKLIST_HOVER_COLOUR_LABEL" name="picklist-hovercolour" size="6" type="text"/>
 				
-			<field name="picklist-bghovercolour" 
-				type="text" 
-				size="6" 
-				default="FFFFDF" 
-				label="PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_LABEL" 
-				description="PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_DESCRIPTION" />
+			<field default="FFFFDF" description="PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_DESCRIPTION" label="PLG_ELEMENT_PICKLIST_BG_HOVER_COLOUR_LABEL" name="picklist-bghovercolour" size="6" type="text"/>
 
 		</fieldset>
 	</fields>

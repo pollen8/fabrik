@@ -4620,7 +4620,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
-		$this->_addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId);
+		$this->_addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId, $joinGroupTable);
 		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
 
 		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey) {
@@ -4761,7 +4761,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @param int is record join record
 	 */
 
-	function _addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid)
+	function _addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid, $joinGroupTable)
 	{
 		jimport('joomla.utilities.simplecrypt');
 		// $$$ rob since 1.0.6 : 10 June 08
@@ -4798,6 +4798,11 @@ class FabrikFEModelList extends JModelForm {
 					if (!$elementModel->canUse()) {
 						$element = $elementModel->getElement();
 						$fullkey = $elementModel->getFullName(false, true, false);
+						// $$$ rob 24/01/2012 if a previous joined data set had a ro element then if we werent checkign that group is the
+						// same as the join group then the insert failed as data from other joins added into the current join
+						if ($isJoin && ($groupModel->getId() != $joinGroupTable->id)) {
+							continue;
+						}
 						$key = $element->name;
 						// $$$ hugh - allow submission plugins to override RO data
 						// TODO - test this for joined data

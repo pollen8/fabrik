@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="plg-element-colourpicker" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<field name="colourpicker-swatch" 
-			type="filelist" directory="/plugins/fabrik_element/colourpicker/swatches/" 
-			hide_default="1" 
-			label="PLG_ELEMENT_COLOURPICKER_SWATCH_LABEL"
-			description="PLG_ELEMENT_COLOURPICKER_SWATCH_DESC" />
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-colourpicker">
+		<field description="PLG_ELEMENT_COLOURPICKER_SWATCH_DESC" directory="/plugins/fabrik_element/colourpicker/swatches/" hide_default="1" label="PLG_ELEMENT_COLOURPICKER_SWATCH_LABEL" name="colourpicker-swatch" type="filelist"/>
 
 		</fieldset>
 	</fields>

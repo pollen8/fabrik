@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<install version="1.7" type="plugin" group="system" method="upgrade">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<extension group="system" method="upgrade" type="plugin" version="1.7">
 	<name>System - Fabrik</name>
 	<author>Fabrikar.com</author>
-	<creationDate>Aug 2011</creationDate>
-	<copyright>Copyright (C) 2005 - 2011 Pollen 8 Design Ltd. All rights reserved.</copyright>
+	<creationDate>January 2012</creationDate>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
-	<version>{version}</version>
+	<version>3.0.3</version>
 	<description>Required fabrik system plugin</description>
 	<files>
 		<filename plugin="fabrik">fabrik.php</filename>
@@ -15,4 +15,4 @@
 	</files>
 	<config>
 	</config>
-</install>
+</extension>

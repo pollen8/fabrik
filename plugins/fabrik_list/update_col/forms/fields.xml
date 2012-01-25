@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-radius_search">
-			<field name="updatecol_access" 
-				type="accesslevel"
-				default="1"
-				repeat="true"
-				label="PLG_LIST_UPDATE_COL_ACCESS_LABEL" />
+			<field default="1" label="PLG_LIST_UPDATE_COL_ACCESS_LABEL" name="updatecol_access" repeat="true" type="accesslevel"/>
 				
 		<!-- button location no longer used - buttons rendered inline and shown as hover
 			<field name="updatecol_button_location" type="list" default="bottom"
@@ -17,36 +13,18 @@
 				<option value="both">Both</option>			
 			</field>-->
 			
-			<field type="text" 
-				name="button_label" size="30"
-				repeat="true" 
-				label="PLG_LIST_UPDATE_COL_BUTTON_LABEL_LABEL" />
+			<field label="PLG_LIST_UPDATE_COL_BUTTON_LABEL_LABEL" name="button_label" repeat="true" size="30" type="text"/>
 			
-			<field name="list_update_col_image_name" 
-				type="text"
-				size="20"
-				repeat="true"
-				default="update_col.png"
-				description="PLG_LIST_UPDATE_COL_IMAGE_DESC"
-				label="PLG_LIST_UPDATE_COL_IMAGE_LABEL" />
+			<field default="update_col.png" description="PLG_LIST_UPDATE_COL_IMAGE_DESC" label="PLG_LIST_UPDATE_COL_IMAGE_LABEL" name="list_update_col_image_name" repeat="true" size="20" type="text"/>
 				
-			<field type="fabrikmodalrepeat"	
-				repeat="true"
-				name="update_col_updates"
-				label="PLG_LIST_UPDATE_COL_VIEW_SETTINGS_LABEL"
-				description="PLG_LIST_UPDATE_COL_VIEW_SETTINGS_DESC">
+			<field description="PLG_LIST_UPDATE_COL_VIEW_SETTINGS_DESC" label="PLG_LIST_UPDATE_COL_VIEW_SETTINGS_LABEL" name="update_col_updates" repeat="true" type="fabrikmodalrepeat">
 			
 				<fields name="params">
 					<fieldset name="update_col_updates_modal" repeat="true">
 								
-						<field type="listfields" 
-							valueformat="tableelement" 
-							name="coltoupdate" 
-							label="PLG_LIST_UPDATE_COL_COLUMN_TO_UPDATE_LABEL" />
+						<field label="PLG_LIST_UPDATE_COL_COLUMN_TO_UPDATE_LABEL" name="coltoupdate" type="listfields" valueformat="tableelement"/>
 							
-						<field type="text" 
-							name="update_value" size="30"  
-							label="PLG_LIST_UPDATE_COL_UPDATE_TO_LABEL"/>
+						<field label="PLG_LIST_UPDATE_COL_UPDATE_TO_LABEL" name="update_value" size="30" type="text"/>
 							
 					</fieldset>
 				</fields>
@@ -54,45 +32,19 @@
 			</field>
 			
 				
-			<field name="update_message"
-				type="text" repeat="true"
-				label="PLG_LIST_UPDATE_COL_UPDATE_MESSAGE_LABEL" 
-				default="" size="30" 
-				description="PLG_LIST_UPDATE_COL_UPDATE_MESSAGE_DESC" />
+			<field default="" description="PLG_LIST_UPDATE_COL_UPDATE_MESSAGE_DESC" label="PLG_LIST_UPDATE_COL_UPDATE_MESSAGE_LABEL" name="update_message" repeat="true" size="30" type="text"/>
 					
-			<field name="update_date_element" 
-				type="listfields" valueformat="tableelement"
-				repeat="true" 
-				label="PLG_LIST_UPDATE_COL_UPDATE_DATE_LABEL"
-				description="PLG_LIST_UPDATE_COL_UPDATE_DATE_DESC" />
+			<field description="PLG_LIST_UPDATE_COL_UPDATE_DATE_DESC" label="PLG_LIST_UPDATE_COL_UPDATE_DATE_LABEL" name="update_date_element" repeat="true" type="listfields" valueformat="tableelement"/>
 				
-			<field name="update_user_element"
-				repeat="true" 
-				type="listfields" valueformat="tableelement" 
-				label="PLG_LIST_UPDATE_COL_UPDATE_USER_LABEL"
-				description="PLG_LIST_UPDATE_COL_UPDATE_USER_DESC" />
+			<field description="PLG_LIST_UPDATE_COL_UPDATE_USER_DESC" label="PLG_LIST_UPDATE_COL_UPDATE_USER_LABEL" name="update_user_element" repeat="true" type="listfields" valueformat="tableelement"/>
 				
-			<field name="update_email_element"
-				repeat="true" 
-				type="listfields"  valueformat="id"
-				label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_LABEL"
-				description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_DESC" />
+			<field description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_DESC" label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_LABEL" name="update_email_element" repeat="true" type="listfields" valueformat="id"/>
 				
-			<field name="update_email_subject" 
-				type="text" size="35"
-				repeat="true" 
-				label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_SUBJECT_LABEL"
-				description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_SUBJECT_DESC" />
+			<field description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_SUBJECT_DESC" label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_SUBJECT_LABEL" name="update_email_subject" repeat="true" size="35" type="text"/>
 				
-			<field name="eval" type="checkbox" default="0"
-				repeat="true" 
-				label="COM_FABRIK_EVAL" />
+			<field default="0" label="COM_FABRIK_EVAL" name="eval" repeat="true" type="checkbox"/>
 				
-			<field name="update_email_msg" 
-				type="textarea" rows="5" cols="30"
-				repeat="true" 
-				label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_MSG_LABEL"
-				description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_MSG_DESC" />
+			<field cols="30" description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_MSG_DESC" label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_MSG_LABEL" name="update_email_msg" repeat="true" rows="5" type="textarea"/>
 
 		</fieldset>
 	</fields>

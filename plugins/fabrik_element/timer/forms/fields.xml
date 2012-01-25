@@ -1,41 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 	
-		<fieldset name="plg-element-timer" addfieldpath="/administrator/components/com_fabrik/models/fields">
-			<field name="timer_width" 
-				type="text" size="3"
-				default="9"
-				label="PLG_ELEMENT_TIMER_WIDTH_LABEL"/>
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-timer">
+			<field default="9" label="PLG_ELEMENT_TIMER_WIDTH_LABEL" name="timer_width" size="3" type="text"/>
 				
-			<field name="default" 
-				type="textarea"
-				cols="45"
-				rows="6"
-				label="PLG_ELEMENT_TIMER_DEFAULT_LABEL" />
+			<field cols="45" label="PLG_ELEMENT_TIMER_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
 				
-			<field name="timer_disable" 
-				type="radio" 
-				default="0" label="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_LABEL" 
-				description="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_DESC">
+			<field default="0" description="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_DESC" label="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_LABEL" name="timer_disable" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="timer_autostart" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_TIMER_AUTO_START_LABEL" 
-				description="PLG_ELEMENT_TIMER_AUTO_START_DESC">
+			<field default="0" description="PLG_ELEMENT_TIMER_AUTO_START_DESC" label="PLG_ELEMENT_TIMER_AUTO_START_LABEL" name="timer_autostart" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="timer_readonly" 
-				type="radio" 
-				default="0" 
-				label="PLG_ELEMENT_TIMER_READ_ONLY_LABEL" 
-				description="PLG_ELEMENT_TIMER_READ_ONLY_DESC">
+			<field default="0" description="PLG_ELEMENT_TIMER_READ_ONLY_DESC" label="PLG_ELEMENT_TIMER_READ_ONLY_LABEL" name="timer_readonly" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

@@ -1,45 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-cron-rest">
 			
-			<field name="username" 
-				type="field" 
-				default="" 
-				label="PLG_CRON_REST_USERNAME_LABEL" 
-				description="PLG_CRON_REST_USERNAME_DESC" />
+			<field default="" description="PLG_CRON_REST_USERNAME_DESC" label="PLG_CRON_REST_USERNAME_LABEL" name="username" type="field"/>
 					
 			
-			<field name="password" 
-				type="text"
-				label="PLG_CRON_REST_PASSWORD_LABEL" 
-				description="PLG_CRON_REST_PASSWORD_DESC" />
+			<field description="PLG_CRON_REST_PASSWORD_DESC" label="PLG_CRON_REST_PASSWORD_LABEL" name="password" type="text"/>
 				
-			<field name="endpoint" 
-				type="text"
-				size="50"
-				label="PLG_CRON_REST_ENDPOINT_LABEL" 
-				description="PLG_REST_ENDPOINT_DESC" />	
+			<field description="PLG_REST_ENDPOINT_DESC" label="PLG_CRON_REST_ENDPOINT_LABEL" name="endpoint" size="50" type="text"/>	
 					
-			<field name="key"
-				type="field"
-				label="PLG_CRON_REST_KEY_LABEL"
-				description="PLG_CRON_REST_KEY_DESC" />
+			<field description="PLG_CRON_REST_KEY_DESC" label="PLG_CRON_REST_KEY_LABEL" name="key" type="field"/>
 				
-			<field name="datamap" 
-				type="textarea" 
-				label="PLG_CRON_REST_ENDPOINT_LABEL" 
-				description="PLG_CRON_REST_ENDPOINT_DESC"/>
+			<field description="PLG_CRON_REST_ENDPOINT_DESC" label="PLG_CRON_REST_ENDPOINT_LABEL" name="datamap" type="textarea"/>
 				
-			<field name="create_list"
-				type="text"
-				label="PLG_CRON_REST_CREATED_DB_LABEL"
-				description="PLG_CRON_REST_CREATED_DB_DESC" />
+			<field description="PLG_CRON_REST_CREATED_DB_DESC" label="PLG_CRON_REST_CREATED_DB_LABEL" name="create_list" type="text"/>
 				
-			<field name="xpath"
-				type="text"
-				label="PLG_CRON_REST_XPATH_LABEL"
-				description="PLG_CRON_REST_XPATH_DESC" />
+			<field description="PLG_CRON_REST_XPATH_DESC" label="PLG_CRON_REST_XPATH_LABEL" name="xpath" type="text"/>
 		</fieldset>
 	</fields>
 </form>

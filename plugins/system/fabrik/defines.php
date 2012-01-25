@@ -27,7 +27,8 @@ define("COM_FABRIK_EXCEL_CSV_DELIMITER", ";");
 define ("GROUPSPLITTER", "//..*..//");
 
 //override JHTML -needed for framework overrde
-JHTML::addIncludePath(JPATH_SITE.'/components/com_fabrik/jhelpers/');
+$version = new JVersion();
+JHTML::addIncludePath(JPATH_SITE.'/components/com_fabrik/jhelpers/' . $version->RELEASE . '/');
 
 //Register the element class with the loader
 JLoader::register('JElement', JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_fabrik'.DS.'element.php');

@@ -1,38 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="connection"
-			 description="CONNECTIONONLYFABRIKTABLES">
-			<field name="kaltura_connection" type="connections" label="Connection" />
+		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection">
+			<field label="Connection" name="kaltura_connection" type="connections"/>
 		</fieldset>
 
-		<fieldset repeatcontrols="1" repeat="1"
-			>
+		<fieldset repeat="1" repeatcontrols="1">
 			
-			<field name="kaltura_table"
-				observe="params_kaltura_connection" 
-				type="fabriktables"
-				connection_in_repeat="false" label="table" />
+			<field connection_in_repeat="false" label="table" name="kaltura_table" observe="params_kaltura_connection" type="fabriktables"/>
 				
-			<field name="kaltura_video"
-				type="element"
-				connection="params_kaltura_connection"
-				connection_in_repeat="false"
-				table="params_kaltura_table" label="VIDEOELEMENT"
-				description="VIDEOELEMENTDESC" />
+			<field connection="params_kaltura_connection" connection_in_repeat="false" description="VIDEOELEMENTDESC" label="VIDEOELEMENT" name="kaltura_video" table="params_kaltura_table" type="element"/>
 				
-			<field name="kaltura_partnerid" type="text" 
-				label="PARTENERID" description="PARTENERIDDESC" />
+			<field description="PARTENERIDDESC" label="PARTENERID" name="kaltura_partnerid" type="text"/>
 				
-			<field name="kaltura_sub_partnerid" type="text" 
-				label="SUBPARTENERID" description="SUBPARTENERIDDESC" />
+			<field description="SUBPARTENERIDDESC" label="SUBPARTENERID" name="kaltura_sub_partnerid" type="text"/>
 				
-			<field name="kaltura_webservice_secret" type="text" 
-				label="WEBSERVICESECRET" description="WEBSERVICESECRETDESC" />
+			<field description="WEBSERVICESECRETDESC" label="WEBSERVICESECRET" name="kaltura_webservice_secret" type="text"/>
 				
-			<field name="kaltura_admin_secret" type="text" 
-				label="ADMINSECRET" description="ADMINSECRETDESC" />
+			<field description="ADMINSECRETDESC" label="ADMINSECRET" name="kaltura_admin_secret" type="text"/>
 
 		</fieldset>
 	</fields>
-</form>	
+</form>

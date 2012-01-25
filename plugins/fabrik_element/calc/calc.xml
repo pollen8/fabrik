@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<extension version="1.6" type="plugin" group="fabrik_element" method="upgrade">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_element" method="upgrade" type="plugin" version="1.6">
 	<name>Fabrik Element - calculation</name>
 	<author>Hugh Messenger</author>
-	<creationDate>{createdate}</creationDate>
-	<copyright>(C) 2005-{year} fabrikar.com</copyright>
+	<creationDate>January 2012</creationDate>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>hugh.messenger@gmail.com</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>{version}</version>
-	<help url="PLG_ELEMENT_CALC_HELP_SERVER" />
+	<version>3.0.3</version>
+	<help url="PLG_ELEMENT_CALC_HELP_SERVER"/>
 	<description>PLG_ELEMENT_CALC_DESCRIPTION</description>
 	<files>
 		<filename plugin="calc">calc.php</filename>

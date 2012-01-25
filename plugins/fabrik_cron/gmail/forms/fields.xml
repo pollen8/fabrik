@@ -1,75 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-cron-gmail" label="Gmail">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="Gmail" name="plg-cron-gmail">
 			
-			<field name="email" 
-				type="text"
-				label="PLG_CRON_GMAIL_EMAIL_LABEL" 
-				description="PLG_CRON_GMAIL_LABEL_DESC" />
+			<field description="PLG_CRON_GMAIL_LABEL_DESC" label="PLG_CRON_GMAIL_EMAIL_LABEL" name="email" type="text"/>
 				
-			<field name="password" 
-				type="text"
-				label="PLG_CRON_GMAIL_PASSWD_LABEL" 
-				description="PLG_CRON_GMAIL_PASSWD_DESC" />	
+			<field description="PLG_CRON_GMAIL_PASSWD_DESC" label="PLG_CRON_GMAIL_PASSWD_LABEL" name="password" type="text"/>	
 					
-			<field name="server" 
-				type="text"
-				default="{imap.gmail.com:993/imap/ssl}"
-				label="PLG_CRON_GMAIL_SERVER_LABEL" 
-				description="PLG_CRON_GMAIL_SERVER_DESC"/>
+			<field default="{imap.gmail.com:993/imap/ssl}" description="PLG_CRON_GMAIL_SERVER_DESC" label="PLG_CRON_GMAIL_SERVER_LABEL" name="server" type="text"/>
 				
-			<field name="inboxes" 
-				type="text"
-				default="INBOX"
-				label="PLG_CRON_GMAIL_INBOX_LABEL" 
-				description="PLG_CRON_GMAIL_INBOX_DESC"/>
+			<field default="INBOX" description="PLG_CRON_GMAIL_INBOX_DESC" label="PLG_CRON_GMAIL_INBOX_LABEL" name="inboxes" type="text"/>
 				
-			<field name="from" 
-				type="element" 
-				connection="params_connection"
-				connection_in_repeat="false"
-				table="params_table" 
-				label="PLG_CRON_GMAIL_FROM_LABEL" 
-				description="PLG_CRON_GMAIL_FROM_DESC"/>
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GMAIL_FROM_DESC" label="PLG_CRON_GMAIL_FROM_LABEL" name="from" table="params_table" type="element"/>
 				
-			<field name="title" 
-				type="element" 
-				connection="params_connection"
-				connection_in_repeat="false"
-				table="params_table" 
-				label="PLG_CRON_GMAIL_TITLE_LABEL" 
-				description="PLG_CRON_GMAIL_TITLE_DESC"/>
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GMAIL_TITLE_DESC" label="PLG_CRON_GMAIL_TITLE_LABEL" name="title" table="params_table" type="element"/>
 			
-			<field name="date" 
-				type="element" 
-				connection="params_connection"
-				connection_in_repeat="false"
-				table="params_table" 
-				label="PLG_CRON_GMAIL_DATE_LABEL" 
-				description="PLG_CRON_GMAIL_DATE_DESC"/>
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GMAIL_DATE_DESC" label="PLG_CRON_GMAIL_DATE_LABEL" name="date" table="params_table" type="element"/>
 				
-			<field name="content" 
-				type="element"
-				connection="params_connection"
-				connection_in_repeat="false" 
-				table="params_table" 
-				label="PLG_CRON_GMAIL_CONTENT_LABEL" 
-				description="PLG_CRON_GMAIL_CONTENT_DESC"/>
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GMAIL_CONTENT_DESC" label="PLG_CRON_GMAIL_CONTENT_LABEL" name="content" table="params_table" type="element"/>
 			
-			<field name="uid" 
-				type="element" 
-				connection="params_connection"
-				connection_in_repeat="false"
-				table="params_table" 
-				label="PLG_CRON_GMAIL_UID_LABEL" 
-				description="PLG_CRON_GMAIL_UID_DESC"/>
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GMAIL_UID_DESC" label="PLG_CRON_GMAIL_UID_LABEL" name="uid" table="params_table" type="element"/>
 				
-			<field name="lastid"
-				type="text" 
-				class="readonly"
-				label="PLG_CRON_GMAIL_LAST_ID_LABEL" size="10" default="0"
-				readonly="true"  />
+			<field class="readonly" default="0" label="PLG_CRON_GMAIL_LAST_ID_LABEL" name="lastid" readonly="true" size="10" type="text"/>
 		</fieldset>
 	</fields>
 </form>
