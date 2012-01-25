@@ -1,41 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-radius_search">
-			<field name="radius_mapelement" 
-				type="listfields" 
-				filter="fabrikgooglemap"
-				repeat="true"
-				label="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_LABEL" 
-				description="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_DESC" />
+			<field description="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_DESC" filter="fabrikgooglemap" label="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_LABEL" name="radius_mapelement" repeat="true" type="listfields"/>
 				
-			<field name="radius_unit" 
-				default="km" 
-				type="list"
-				repeat="true"
-				label="PLG_LIST_RADIUS_SEARCH_RADIUS_UNIT_LABEL">
+			<field default="km" label="PLG_LIST_RADIUS_SEARCH_RADIUS_UNIT_LABEL" name="radius_unit" repeat="true" type="list">
 					<option value="km">Kms</option>
 					<option value="miles">Miles</option>
 			</field>
 			
-			<field name="radius_max" 
-				default="100" 
-				type="text" 
-				size="4"
-				repeat="true"
-				label="PLG_LIST_RADIUS_SEARCH_MAX_LABEL" />
+			<field default="100" label="PLG_LIST_RADIUS_SEARCH_MAX_LABEL" name="radius_max" repeat="true" size="4" type="text"/>
 				
-			<field name="radius_label" 
-				default="Radius search" 
-				type="text"
-				repeat="true"
-				label="PLG_LIST_RADIUS_SEARCH_SEARCH_LABEL_LABEL" />
+			<field default="Radius search" label="PLG_LIST_RADIUS_SEARCH_SEARCH_LABEL_LABEL" name="radius_label" repeat="true" type="text"/>
 				
-			<field name="radius_placeelement" 
-				type="listfields"
-				repeat="true"
-				label="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_LABEL" 
-				description="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_DESC" />
+			<field description="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_DESC" label="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_LABEL" name="radius_placeelement" repeat="true" type="listfields"/>
 
 		</fieldset>
 	</fields>

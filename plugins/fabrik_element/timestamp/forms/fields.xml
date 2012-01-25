@@ -1,31 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 
 		<fieldset name="plg-element-timestamp">
 
-			<field name="gmt_or_local" 
-				type="radio" default="0"
-				label="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_LABEL"
-				description="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_DESC">
+			<field default="0" description="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_DESC" label="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_LABEL" name="gmt_or_local" type="radio">
 				<option value="0">GMT</option>
 				<option value="1">Local Server Time</option>
 			</field>
 
-			<field name="timestamp_update_on_edit" 
-				type="radio" default="0"
-				label="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_LABEL" 
-				descripton="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_DESC">
+			<field default="0" descripton="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_LABEL" name="timestamp_update_on_edit" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 
-			<field name="timestamp_format" 
-				length="20" 
-				type="text" 
-				default="Y-m-d h:m:s" 
-				label="PLG_ELEMENT_TIMESTAMP_FORMAT_LABEL" 
-				description="PLG_ELEMENT_TIMESTAMP_FORMAT_DESC" />
+			<field default="Y-m-d h:m:s" description="PLG_ELEMENT_TIMESTAMP_FORMAT_DESC" label="PLG_ELEMENT_TIMESTAMP_FORMAT_LABEL" length="20" name="timestamp_format" type="text"/>
 		</fieldset>
 	</fields>
 </form>

@@ -1,22 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-exif">
-			<field name="exif_upload_field" 
-				type="listfields" 
-				onlytablefields="0" 
-				default="user" 
-				repeat="true"
-				label="PLG_FORM_EXIF_IMAGE_FIELD_LABEL" 
-				description="PLG_FORM_EXIF_IMAGE_FIELD_DESC"/>
+			<field default="user" description="PLG_FORM_EXIF_IMAGE_FIELD_DESC" label="PLG_FORM_EXIF_IMAGE_FIELD_LABEL" name="exif_upload_field" onlytablefields="0" repeat="true" type="listfields"/>
 			
-				<field name="exif_map_field" 
-					type="listfields" 
-					onlytablefields="0" 
-					default="user"
-					repeat="true" 
-					label="PLG_FORM_EXIF_MAP_FIELD_LABEL" 
-					description="PLG_FORM_EXIF_MAP_FIELD_DESC"/>
+				<field default="user" description="PLG_FORM_EXIF_MAP_FIELD_DESC" label="PLG_FORM_EXIF_MAP_FIELD_LABEL" name="exif_map_field" onlytablefields="0" repeat="true" type="listfields"/>
 		</fieldset>
 	</fields>
 </form>

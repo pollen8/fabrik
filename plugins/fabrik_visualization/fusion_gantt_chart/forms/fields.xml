@@ -1,137 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="connection"
-			 description="CONNECTIONONLYFABRIKTABLES">
+		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection">
 
-			<field name="fusion_gantt_chart_connection" 
-				type="connections"
-				label="COM_FABRIK_FIELD_CONNECTION_LABEL" />
+			<field label="COM_FABRIK_FIELD_CONNECTION_LABEL" name="fusion_gantt_chart_connection" type="connections"/>
 
-			<field name="fusion_gantt_chart_table"
-				type="fabriktables"
-				connection_in_repeat="false"
-				repeat="0"
-				observe="params_fusion_gantt_chart_connection"
-				label="PLG_VISUALIZATION_GANTT_TABLE_LABEL" />
+			<field connection_in_repeat="false" label="PLG_VISUALIZATION_GANTT_TABLE_LABEL" name="fusion_gantt_chart_table" observe="params_fusion_gantt_chart_connection" repeat="0" type="fabriktables"/>
 				
-			<field name="fusion_gantt_chart_show_filters"
-				type="radio"
-				default="1"
-				label="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_LABEL"
-				description="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_DESC">
+			<field default="1" description="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_DESC" label="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_LABEL" name="fusion_gantt_chart_show_filters" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 				
 		</fieldset>
 
-		<fieldset name="process" label="Processes">
+		<fieldset label="Processes" name="process">
 		
-			<field name="fusion_gantt_chart_process"
-				type="element"
-				connection_in_repeat="false"
-				include_calculations="1"
-				connection="params_fusion_gantt_chart_connection"
-				table="params_fusion_gantt_chart_table"
-				label="PLG_VISUALIZATION_GANNT_PROCESS_LABEL"
-				description="PLG_VISUALIZATION_GANNT_PROCESS_DESC" />
+			<field connection="params_fusion_gantt_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GANNT_PROCESS_DESC" include_calculations="1" label="PLG_VISUALIZATION_GANNT_PROCESS_LABEL" name="fusion_gantt_chart_process" table="params_fusion_gantt_chart_table" type="element"/>
 
-			<field name="fusion_gantt_chart_process_label"
-				type="text"
-				size="20"
-				label="PLG_VISUALIZATION_GANNT_PROCESS_LABEL_LABEL"
-				description="PLG_VISUALIZATION_GANNT_PROCESS_LABEL_DESC" />
+			<field description="PLG_VISUALIZATION_GANNT_PROCESS_LABEL_DESC" label="PLG_VISUALIZATION_GANNT_PROCESS_LABEL_LABEL" name="fusion_gantt_chart_process_label" size="20" type="text"/>
 				
 		</fieldset>
 
-		<fieldset name="tasks" label="Tasks">
-			<field name="fusion_gantt_chart_startdate"
-				type="element"
-				connection_in_repeat="false"
-				include_calculations="1"
-				connection="params_fusion_gantt_chart_connection"
-				table="params_fusion_gantt_chart_table"
-				label="PLG_VISUALIZATION_GANNT_STARTDATE_ELEMENT_LABEL"
-				description="PLG_VISUALIZATION_GANNT_STARTDATE_ELEMENT_DESC" />
+		<fieldset label="Tasks" name="tasks">
+			<field connection="params_fusion_gantt_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GANNT_STARTDATE_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_GANNT_STARTDATE_ELEMENT_LABEL" name="fusion_gantt_chart_startdate" table="params_fusion_gantt_chart_table" type="element"/>
 				
-			<field name="fusion_gantt_chart_enddate"
-				type="element"
-				connection_in_repeat="false"
-				include_calculations="1"
-				connection="params_fusion_gantt_chart_connection"
-				table="params_fusion_gantt_chart_table"
-				label="PLG_VISUALIZATION_GANNT_ENDDATE_ELEMENT_LABEL"
-				description="PLG_VISUALIZATION_GANNT_ENDDATE_ELEMENT_DESC" />
+			<field connection="params_fusion_gantt_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GANNT_ENDDATE_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_GANNT_ENDDATE_ELEMENT_LABEL" name="fusion_gantt_chart_enddate" table="params_fusion_gantt_chart_table" type="element"/>
 				
-			<field name="fusion_gantt_chart_label"
-				type="element"
-				connection_in_repeat="false"
-				include_calculations="1"
-				connection="params_fusion_gantt_chart_connection"
-				table="params_fusion_gantt_chart_table"
-				label="PLG_VISUALIZATION_GANNT_LABEL_ELEMENT_LABEL"
-				description="PLG_VISUALIZATION_GANNT_LABEL_ELEMENT_DESC" />
+			<field connection="params_fusion_gantt_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GANNT_LABEL_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_GANNT_LABEL_ELEMENT_LABEL" name="fusion_gantt_chart_label" table="params_fusion_gantt_chart_table" type="element"/>
 				
-			<field name="fusion_gantt_chart_hover"
-				type="element"
-				connection_in_repeat="false"
-				include_calculations="1"
-				connection="params_fusion_gantt_chart_connection"
-				table="params_fusion_gantt_chart_table"
-				label="PLG_VISUALIZATION_GANNT_HOVER_ELEMENT_LABEL"
-				description="PLG_VISUALIZATION_GANNT_HOVER_ELEMENT_DESC" />
+			<field connection="params_fusion_gantt_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GANNT_HOVER_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_GANNT_HOVER_ELEMENT_LABEL" name="fusion_gantt_chart_hover" table="params_fusion_gantt_chart_table" type="element"/>
 				
-			<field name="fusion_gantt_chart_milestone"
-				type="element"
-				connection_in_repeat="false"
-				include_calculations="1"
-				connection="params_fusion_gantt_chart_connection"
-				table="params_fusion_gantt_chart_table"
-				label="PLG_VISUALIZATION_GANNT_MILESTONE_ELEMENT_LABEL"
-				description="PLG_VISUALIZATION_GANNT_MILESTONE_ELEMENT_DESC" />
+			<field connection="params_fusion_gantt_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GANNT_MILESTONE_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_GANNT_MILESTONE_ELEMENT_LABEL" name="fusion_gantt_chart_milestone" table="params_fusion_gantt_chart_table" type="element"/>
 				
-			<field name="fusion_gantt_chart_connector"
-				type="element"
-				connection_in_repeat="false"
-				include_calculations="1"
-				connection="params_fusion_gantt_chart_connection"
-				table="params_fusion_gantt_chart_table"
-				label="PLG_VISUALIZATION_GANNT_CONNECTION_ELEMENT_LABEL"
-				description="PLG_VISUALIZATION_GANNT_CONNECTION_ELEMENT_DESC" />
+			<field connection="params_fusion_gantt_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GANNT_CONNECTION_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_GANNT_CONNECTION_ELEMENT_LABEL" name="fusion_gantt_chart_connector" table="params_fusion_gantt_chart_table" type="element"/>
 				
 		</fieldset>
 
-		<fieldset name="graph_attributes" label="Graph attributes">
+		<fieldset label="Graph attributes" name="graph_attributes">
 			
-			<field name="fusion_gantt_chart_width"
-				type="text"
-				size="5"
-				default="300"
-				label="PLG_VISUALIZATION_GANNT_WIDTH_LABEL"
-				description="PLG_VISUALIZATION_GANNT_WIDTH_DESC" />
+			<field default="300" description="PLG_VISUALIZATION_GANNT_WIDTH_DESC" label="PLG_VISUALIZATION_GANNT_WIDTH_LABEL" name="fusion_gantt_chart_width" size="5" type="text"/>
 				
-			<field name="fusion_gantt_chart_height"
-				type="text"
-				size="5"
-				default="200"
-				label="PLG_VISUALIZATION_GANNT_HEIGHT_LABEL"
-				description="PLG_VISUALIZATION_GANNT_HEIGHT_DESC" />
+			<field default="200" description="PLG_VISUALIZATION_GANNT_HEIGHT_DESC" label="PLG_VISUALIZATION_GANNT_HEIGHT_LABEL" name="fusion_gantt_chart_height" size="5" type="text"/>
 				
-			<field name="fusion_gantt_chart_layout"
-				type="folderlist"
-				directory="plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/"
-				label="PLG_VISUALIZATION_GANNT_TEMPLATE_LABEL" />
+			<field directory="plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/" label="PLG_VISUALIZATION_GANNT_TEMPLATE_LABEL" name="fusion_gantt_chart_layout" type="folderlist"/>
 				
-			<field name="fusion_gannt_chart_monthdisplay"
-				type="list"
-				default="int"
-				label="PLG_VISUALIZATION_GANNT_MONTH_DISPLAY_TYPE_LABEL"
-				description="PLG_VISUALIZATION_GANNT_MONTH_DISPLAY_TYPE_DESC">
+			<field default="int" description="PLG_VISUALIZATION_GANNT_MONTH_DISPLAY_TYPE_DESC" label="PLG_VISUALIZATION_GANNT_MONTH_DISPLAY_TYPE_LABEL" name="fusion_gannt_chart_monthdisplay" type="list">
 					<option value="int">Number</option>
 					<option value="str">Short string</option>
 			</field>
 
 		</fieldset>
 	</fields>
-</form>	
+</form>

@@ -1,19 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-calc" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-calc">
 			
-			<field name="hidden" 
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_CALC_HIDDEN_LABEL">
+			<field default="0" label="PLG_ELEMENT_CALC_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 				
-			<field name="width"
-				type="text" size="3"
-				label="PLG_ELEMENT_CALC_WIDTH_LABEL"/>
+			<field label="PLG_ELEMENT_CALC_WIDTH_LABEL" name="width" size="3" type="text"/>
 				
 		</fieldset>
 	</fields>
@@ -21,41 +16,21 @@
 	<fields name="params">	
 		<fieldset name="plg-calc-extra">
 			
-			<field name="calc_calculation"
-				type="textarea"
-				cols="60" rows="10"
-				label="PLG_ELEMENT_CALC_CALCULATION_LABEL"
-				description="PLG_ELEMENT_CALC_CALCULATION_DESC"/>
+			<field cols="60" description="PLG_ELEMENT_CALC_CALCULATION_DESC" label="PLG_ELEMENT_CALC_CALCULATION_LABEL" name="calc_calculation" rows="10" type="textarea"/>
 				
-			<field name="calc_format_string"
-				type="text"
-				label="PLG_ELEMENT_CALC_FORMAT_STRING_LABEL"
-				description="PLG_ELEMENT_CALC_FORMAT_STRING_DESC" />
+			<field description="PLG_ELEMENT_CALC_FORMAT_STRING_DESC" label="PLG_ELEMENT_CALC_FORMAT_STRING_LABEL" name="calc_format_string" type="text"/>
 				
-			<field name="calc_on_save_only" 
-				type="radio"
-				default="0" 
-				label="PLG_ELEMENT_CALC_ON_SAVE_ONLY_LABEL" 
-				description="PLG_ELEMENT_CALC_ON_SAVE_ONLY_DESC">
+			<field default="0" description="PLG_ELEMENT_CALC_ON_SAVE_ONLY_DESC" label="PLG_ELEMENT_CALC_ON_SAVE_ONLY_LABEL" name="calc_on_save_only" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="calc_ajax" 
-				type="radio"
-				default="0"
-				label="PLG_ELEMENT_CALC_AJAX_LABEL"
-				description="PLG_ELEMENT_CALC_AJAX_DESC">
+			<field default="0" description="PLG_ELEMENT_CALC_AJAX_DESC" label="PLG_ELEMENT_CALC_AJAX_LABEL" name="calc_ajax" type="radio">
 					<option value="0">No</option>
 					<option value="1">Yes</option>
 			</field>	
 			
-			<field name="calc_ajax_observe"
-				type="textarea"
-				cols="60"
-				rows="6"
-				label="PLG_ELEMENT_CALC_AJAX_OBSERVE_LABEL"
-				description="PLG_ELEMENT_CALC_AJAX_OBSERVE_DESC" />
+			<field cols="60" description="PLG_ELEMENT_CALC_AJAX_OBSERVE_DESC" label="PLG_ELEMENT_CALC_AJAX_OBSERVE_LABEL" name="calc_ajax_observe" rows="6" type="textarea"/>
 				
 		</fieldset>
 

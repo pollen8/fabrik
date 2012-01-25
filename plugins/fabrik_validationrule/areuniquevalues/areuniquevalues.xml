@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<extension version="1.6" type="plugin" group="fabrik_validationrule">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_validationrule" type="plugin" version="1.6">
 	<name>Fabrik Validation - are unique</name>
 	<author>Lieven Gryp</author>
-	<creationDate>{createdate}</creationDate>
-	<copyright>(C) 2005-{year} fabrikar.com</copyright>
+	<creationDate>January 2012</creationDate>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>lieven.gryp@telenet.be</authorEmail>
 	<authorUrl>www.acpegasus.be</authorUrl>
-	<version>{version}</version>
+	<version>3.0.3</version>
 	<description>Determines if the data entered already exists in the database table. 
 	Uniqueness is defined based on 2 fields.</description>
 	<files>

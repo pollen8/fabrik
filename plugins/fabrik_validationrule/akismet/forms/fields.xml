@@ -1,27 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-validationrule-akismet" repeat="1" repeatcontrols="0">
-			<field type="text" 
-				name="akismet-message" 
-				size="30" 
-				repeat="true"
-				label="PLG_VALIDATIONRULE_ASKIMET_ERROR_LABEL"
-				description="PLG_VALIDATIONRULE_ASKIMET_ERROR_DESC" />
+			<field description="PLG_VALIDATIONRULE_ASKIMET_ERROR_DESC" label="PLG_VALIDATIONRULE_ASKIMET_ERROR_LABEL" name="akismet-message" repeat="true" size="30" type="text"/>
 				
-			<field type="textarea" 
-				cols="30" rows="5"
-				repeat="true" 
-				name="akismet-validation_condition" 
-				label="PLG_VALIDATIONRULE_ASKIMET_CONDITION_LABEL" 
-				description="PLG_VALIDATIONRULE_ASKIMET_CONDITION_DESC"/>
+			<field cols="30" description="PLG_VALIDATIONRULE_ASKIMET_CONDITION_DESC" label="PLG_VALIDATIONRULE_ASKIMET_CONDITION_LABEL" name="akismet-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field type="text" 
-				name="akismet-key" 
-				repeat="true"
-				size="30" 
-				label="PLG_VALIDATIONRULE_ASKIMET_KEY_LABEL"
-				description="PLG_VALIDATIONRULE_ASKIMET_KEY_DESC" />
+			<field description="PLG_VALIDATIONRULE_ASKIMET_KEY_DESC" label="PLG_VALIDATIONRULE_ASKIMET_KEY_LABEL" name="akismet-key" repeat="true" size="30" type="text"/>
 				
 		</fieldset>
 	</fields>

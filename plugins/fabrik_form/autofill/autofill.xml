@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<extension version="1.6" type="plugin" group="fabrik_form" method="upgrade">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_form" method="upgrade" type="plugin" version="1.6">
 	<name>Fabrik Form - autofill</name>
 	<author>Rob Clayburn</author>
-	<creationDate>{createdate}</creationDate>
-	<copyright>(C) 2005-{year} fabrikar.com</copyright>
+	<creationDate>January 2012</creationDate>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>{version}</version>
+	<version>3.0.3</version>
 	<description>observers a specified field and looks up first matching record with the same data, then asks if you want to pre-fill in the form with that data</description>
 	<files>
 		<filename plugin="autofill">autofill.php</filename>

@@ -1,74 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-pingdotfm">
-			<field name="ping_userapikey" 
-					type="text" size="30"
-					repeat="true"
-					label="PLG_FORM_PING_FM_USER_APIKEY_LABEL"
-					description="PLG_FORM_PING_FM_USER_APIKEY_DESC"/>
+			<field description="PLG_FORM_PING_FM_USER_APIKEY_DESC" label="PLG_FORM_PING_FM_USER_APIKEY_LABEL" name="ping_userapikey" repeat="true" size="30" type="text"/>
 					
-			<field name="ping_title_field" 
-				type="listfields" 
-				onlytablefields="0"
-				repeat="true"
-				label="PLG_FORM_PING_FM_TITLEFIELD_LABEL" 
-				description="PLG_FORM_PING_FM_TITLEFIELD_DESC"/>
+			<field description="PLG_FORM_PING_FM_TITLEFIELD_DESC" label="PLG_FORM_PING_FM_TITLEFIELD_LABEL" name="ping_title_field" onlytablefields="0" repeat="true" type="listfields"/>
 				
-			<field name="ping_title_tmpl"
-				type="textarea"
-				rows="6" cols="30"
-				repeat="true"
-				label="PLG_FORM_PING_FM_TITLETMPL_LABEL"
-				description="PLG_FORM_PING_FM_TITLETMPL_DESC"/>
+			<field cols="30" description="PLG_FORM_PING_FM_TITLETMPL_DESC" label="PLG_FORM_PING_FM_TITLETMPL_LABEL" name="ping_title_tmpl" repeat="true" rows="6" type="textarea"/>
 			
-			<field name="ping_msg_field" 
-				type="listfields" 
-				onlytablefields="0"
-				repeat="true"
-				label="PLG_FORM_PING_FM_MSGFIELD_LABEL"
-				description="PLG_FORM_PING_FM_MSGFIELD_DESC"/>
+			<field description="PLG_FORM_PING_FM_MSGFIELD_DESC" label="PLG_FORM_PING_FM_MSGFIELD_LABEL" name="ping_msg_field" onlytablefields="0" repeat="true" type="listfields"/>
 			
-			<field name="ping_msg_tmpl"
-				type="textarea"
-				cols="30" rows="6"
-				repeat="true"
-				label="PLG_FORM_PING_FM_MSGTMPL_LABEL"
-				description="PLG_FORM_PING_FM_MSGTMPL_DESC"/>
+			<field cols="30" description="PLG_FORM_PING_FM_MSGTMPL_DESC" label="PLG_FORM_PING_FM_MSGTMPL_LABEL" name="ping_msg_tmpl" repeat="true" rows="6" type="textarea"/>
 			
-			<field name="ping_method" 
-				type="list"
-				default="status"
-				repeat="true"
-				label="PLG_FORM_PING_FM_METHOD_LABEL"
-				description="PLG_FORM_PING_FM_METHOD_DESC">
+			<field default="status" description="PLG_FORM_PING_FM_METHOD_DESC" label="PLG_FORM_PING_FM_METHOD_LABEL" name="ping_method" repeat="true" type="list">
 				<option value="status">Status</option>
 				<option value="microblog">Micro-blog</option>
 				<option value="blog">Blog</option>
 			</field>
 			
-			<field name="ping_method_field" 
-				type="listfields"
-				onlytablefields="0"
-				repeat="true"
-				label="PLG_FORM_PING_FM_METHODFIELD_LABEL"
-				description="PLG_FORM_PING_FM_METHODFIELD_DESC"/>
+			<field description="PLG_FORM_PING_FM_METHODFIELD_DESC" label="PLG_FORM_PING_FM_METHODFIELD_LABEL" name="ping_method_field" onlytablefields="0" repeat="true" type="listfields"/>
 			
-			<field name="ping_show_success_msg" 
-				type="radio" default="0"
-				repeat="true"
-				label="PLG_FORM_PING_FM_SHOW_SUCCESSMSG_LABEL"
-				description="PLG_FORM_PING_FM_SHOW_SUCCESSMSG_DESC">
+			<field default="0" description="PLG_FORM_PING_FM_SHOW_SUCCESSMSG_DESC" label="PLG_FORM_PING_FM_SHOW_SUCCESSMSG_LABEL" name="ping_show_success_msg" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="ping_condition" 
-				type="textarea"
-				cols="30" rows="6"
-				repeat="true"
-				label="PLG_FORM_PING_FM_CONDITION_LABEL" 
-				description="PLG_FORM_PING_FM_CONDITION_DESC" />
+			<field cols="30" description="PLG_FORM_PING_FM_CONDITION_DESC" label="PLG_FORM_PING_FM_CONDITION_LABEL" name="ping_condition" repeat="true" rows="6" type="textarea"/>
 			
 		</fieldset>
 	</fields>

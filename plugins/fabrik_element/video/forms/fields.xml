@@ -1,45 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 	
-		<fieldset name="plg-element-video" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-video">
 			
-			<field name="ul_directory" type="text" size="30" label="UPLOAD_DIR" description="UPLOAD_DIR_LONG"/>	
+			<field description="UPLOAD_DIR_LONG" label="UPLOAD_DIR" name="ul_directory" size="30" type="text"/>	
 
-			<field name="fbVideoController" type="radio" default="1" label="CONTROLLER" description="">
+			<field default="1" description="" label="CONTROLLER" name="fbVideoController" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			<field name="fbVideoAutoPlay" type="radio" default="0" label="AUTOPLAY" description="">
+			<field default="0" description="" label="AUTOPLAY" name="fbVideoAutoPlay" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			<field name="fbVideoLoop" type="radio" default="0" label="LOOP" description="">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			
-			
-			<field name="fbVideoEnableJS" type="radio" default="1" label="ENABLEJS" description="">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			<field name="fbVideoPlayEveryFrame" type="radio" default="0" label="PLAYEVERYFRAME" description="">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			<field name="fbVideoShowVideoInTable" type="radio" default="0" label="SHOWVIDEOINTABLE" description="">
+			<field default="0" description="" label="LOOP" name="fbVideoLoop" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 			
-			<field name="fbVideoWidth" type="text" default="300" label="WIDTH"  />
-			<field name="fbVideoHeight" type="text" default="300" label="HEIGHT"  />
 			
-			<field name="fbVideoBgColor" type="text" label="BGCOLOR"  />
-			<field name="fbVideoEndTime" type="text" label="ENDTIME"  />
-			<field name="fbVideoStartTime" type="text" label="STARTTIME"  />
-			<field name="fbVideoVolume" type="text" default="100" label="VOLUME" description="between 0(mute) and 100 (full volume)" />
+			<field default="1" description="" label="ENABLEJS" name="fbVideoEnableJS" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field default="0" description="" label="PLAYEVERYFRAME" name="fbVideoPlayEveryFrame" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field default="0" description="" label="SHOWVIDEOINTABLE" name="fbVideoShowVideoInTable" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field default="300" label="WIDTH" name="fbVideoWidth" type="text"/>
+			<field default="300" label="HEIGHT" name="fbVideoHeight" type="text"/>
+			
+			<field label="BGCOLOR" name="fbVideoBgColor" type="text"/>
+			<field label="ENDTIME" name="fbVideoEndTime" type="text"/>
+			<field label="STARTTIME" name="fbVideoStartTime" type="text"/>
+			<field default="100" description="between 0(mute) and 100 (full volume)" label="VOLUME" name="fbVideoVolume" type="text"/>
 			
 			
 					

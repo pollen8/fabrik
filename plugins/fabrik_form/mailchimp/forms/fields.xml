@@ -1,83 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-mailchimp">
-			<field name="mailchimp_apikey" 
-			type="text" size="40"
-			repeat="true"
-			label="PLG_FORM_MAILCHIMP_API_KEY_LABEL"
-			description="PLG_FORM_MAILCHIMP_API_KEY_DESC"/>
+			<field description="PLG_FORM_MAILCHIMP_API_KEY_DESC" label="PLG_FORM_MAILCHIMP_API_KEY_LABEL" name="mailchimp_apikey" repeat="true" size="40" type="text"/>
 			
-		<field name="mailchimp_listid"
-			type="text" size="30"
-			repeat="true"
-			label="PLG_FORM_MAILCHIMP_LIST_ID_LABEL"
-			description="PLG_FORM_MAILCHIMP_LIST_ID_DESC"/>
+		<field description="PLG_FORM_MAILCHIMP_LIST_ID_DESC" label="PLG_FORM_MAILCHIMP_LIST_ID_LABEL" name="mailchimp_listid" repeat="true" size="30" type="text"/>
 			
-		<field name="mailchimp_email" 
-			type="listfields"
-			repeat="true"
-			label="PLG_FORM_MAILCHIMP_EMAIL_LABEL" 
-			description="PLG_FORM_MAILCHIMP_EMAIL_DESC" />
+		<field description="PLG_FORM_MAILCHIMP_EMAIL_DESC" label="PLG_FORM_MAILCHIMP_EMAIL_LABEL" name="mailchimp_email" repeat="true" type="listfields"/>
 			
-		<field name="mailchimp_firstname" 
-			type="listfields"
-			repeat="true"
-			label="PLG_FORM_MAILCHIMP_FIRST_NAME_LABEL" 
-			description="PLG_FORM_MAILCHIMP_FIRST_NAME_DESC" />
+		<field description="PLG_FORM_MAILCHIMP_FIRST_NAME_DESC" label="PLG_FORM_MAILCHIMP_FIRST_NAME_LABEL" name="mailchimp_firstname" repeat="true" type="listfields"/>
 			
-		<field name="mailchimp_lastname" 
-			type="listfields"
-			repeat="true"
-			label="PLG_FORM_MAILCHIMP_LAST_NAME_LABEL" 
-			description="PLG_FORM_MAILCHIMP_LAST_NAME_DESC" />
+		<field description="PLG_FORM_MAILCHIMP_LAST_NAME_DESC" label="PLG_FORM_MAILCHIMP_LAST_NAME_LABEL" name="mailchimp_lastname" repeat="true" type="listfields"/>
 			
-		<field name="mailchimp_signuplabel"
-			type="text"
-			size="30"
-			repeat="true"
-			default="Sign up to my mailing list"
-			label="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_LABEL"
-			description="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_DESC" />
+		<field default="Sign up to my mailing list" description="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_DESC" label="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_LABEL" name="mailchimp_signuplabel" repeat="true" size="30" type="text"/>
 		
-		<field name="mailchimp_update_existing"
-			type="radio"
-			repeat="true"
-			default="0"
-			label="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_LABEL"
-			description="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_DESC">
+		<field default="0" description="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_DESC" label="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_LABEL" name="mailchimp_update_existing" repeat="true" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 			
-			<field name="mailchimp_email_type"
-			type="radio"
-			repeat="true"
-			default="html"
-			label="PLG_FORM_MAILCHIMP_EMAIL_TYPE_LABEL"
-			description="PLG_FORM_MAILCHIMP_EMAIL_TYPE_DESC">
+			<field default="html" description="PLG_FORM_MAILCHIMP_EMAIL_TYPE_DESC" label="PLG_FORM_MAILCHIMP_EMAIL_TYPE_LABEL" name="mailchimp_email_type" repeat="true" type="radio">
 				<option value="text">text</option>
 				<option value="html">html</option>
 			</field>
 			
 			
-			<field name="mailchimp_double_optin"
-			type="radio"
-			repeat="true"
-			default="1"
-			label="PLG_FORM_MAILCHIMP_DOUBLE_OPTIN_LABEL"
-			description="PLG_FORM_MAILCHIMP_DOUBLE_OPTIN_DESC">
+			<field default="1" description="PLG_FORM_MAILCHIMP_DOUBLE_OPTIN_DESC" label="PLG_FORM_MAILCHIMP_DOUBLE_OPTIN_LABEL" name="mailchimp_double_optin" repeat="true" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 			
-			<field name="mailchimp_groupopts"
-				type="textarea"
-				repeat="true"
-				cols="40"
-				rows="6"
-				label="PLG_FORM_MAILCHIMP_GROUP_OPTS_LABEL"
-				description="PLG_FORM_MAILCHIMP_GROUP_OPTS_DESC" />
+			<field cols="40" description="PLG_FORM_MAILCHIMP_GROUP_OPTS_DESC" label="PLG_FORM_MAILCHIMP_GROUP_OPTS_LABEL" name="mailchimp_groupopts" repeat="true" rows="6" type="textarea"/>
 				
 		</fieldset>
 	</fields>

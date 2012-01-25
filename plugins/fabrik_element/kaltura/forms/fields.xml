@@ -1,28 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="plg-element-kaltura" label="field">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="field" name="plg-element-kaltura">
 		
-			<field name="kaltura_partnerid" 
-				type="text" 
-				label="PLG_ELEMENT_KALTURA_PARTENER_ID_LABEL" 
-				description="PLG_ELEMENT_KALTURA_PARTENER_ID_DESC" />
+			<field description="PLG_ELEMENT_KALTURA_PARTENER_ID_DESC" label="PLG_ELEMENT_KALTURA_PARTENER_ID_LABEL" name="kaltura_partnerid" type="text"/>
 				
-			<field name="kaltura_sub_partnerid" 
-				type="text" 
-				label="PLG_ELEMENT_KALTURA_SUB_PARTENER_ID_LABEL" 
-				description="PLG_ELEMENT_KALTURA_SUB_PARTENER_ID_DESC" />
+			<field description="PLG_ELEMENT_KALTURA_SUB_PARTENER_ID_DESC" label="PLG_ELEMENT_KALTURA_SUB_PARTENER_ID_LABEL" name="kaltura_sub_partnerid" type="text"/>
 				
-			<field name="kaltura_webservice_secret" 
-				type="text" 
-				label="PLG_ELEMENT_KALTURA_WEB_SERVICE_SECRET_LABEL" 
-				description="PLG_ELEMENT_KALTURA_WEB_SERVICE_SECRET_DESC" />
+			<field description="PLG_ELEMENT_KALTURA_WEB_SERVICE_SECRET_DESC" label="PLG_ELEMENT_KALTURA_WEB_SERVICE_SECRET_LABEL" name="kaltura_webservice_secret" type="text"/>
 				
-			<field name="kaltura_show_closebutton" 
-				type="radio" 
-				default="1"
-				label="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_LABEL" 
-				description="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_DESC">
+			<field default="1" description="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_DESC" label="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_LABEL" name="kaltura_show_closebutton" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

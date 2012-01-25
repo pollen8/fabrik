@@ -1,21 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="plg-element-jsperiodical" label="field">
+		<fieldset label="field" name="plg-element-jsperiodical">
 		
-			<field name="jsperiod_period" 
-				type="text" 
-				size="3" 
-				default="100" 
-				label="PLG_ELEMENT_JSPERIODICAL_TIME_LABEL" 
-				description="PLG_ELEMENT_JSPERIODICAL_TIME_DESC"/>
+			<field default="100" description="PLG_ELEMENT_JSPERIODICAL_TIME_DESC" label="PLG_ELEMENT_JSPERIODICAL_TIME_LABEL" name="jsperiod_period" size="3" type="text"/>
 				
-			<field name="jsperiod_code" 
-				type="textarea" 
-				rows="10" 
-				cols="50" 
-				label="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_LABEL" 
-				description="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_DESC" />
+			<field cols="50" description="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_DESC" label="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_LABEL" name="jsperiod_code" rows="10" type="textarea"/>
 					
 		</fieldset>
 
