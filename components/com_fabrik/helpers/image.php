@@ -293,6 +293,11 @@ class FabimageGD extends Fabimage
 		$ext = strtolower(end(explode('.', $origFile)));
 		/* If an image was successfully loaded, test the image for size*/
 		if ($img) {
+			/* handle image transpacency for original image */
+			if (function_exists(imagealphablending)) {
+				imagealphablending($img, false);
+				imagesavealpha($img, true);
+			}
 			/* Get image size and scale ratio*/
 			$width = imagesx($img);
 			$height = imagesy($img);
@@ -303,6 +308,11 @@ class FabimageGD extends Fabimage
 				$new_height = floor($scale * $height);
 				/* Create a new temporary image*/
 				$tmp_img = imagecreatetruecolor($new_width, $new_height);
+				/* handle image transparency for resized image */
+				if (function_exists(imagealphablending)) {
+					imagealphablending($tmp_img, false);
+					imagesavealpha($tmp_img, true);
+				}
 				/* Copy and resize old image into new image*/
 				imagecopyresampled($tmp_img, $img, 0, 0, 0, 0,
 				$new_width, $new_height, $width, $height);
