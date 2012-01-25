@@ -1108,7 +1108,7 @@ var FbForm = new Class({
 		// update the hidden field containing number of repeat groups
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
-		//this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
+		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
 	},
 
 	hideLastGroup : function (groupid, subGroup) {
