@@ -856,7 +856,7 @@ var FbForm = new Class({
 								if (this.formElements.has(key) && errors.flatten().length > 0) {
 									errfound = true;
 									if (this.formElements[key].options.inRepeatGroup) {
-										for (e=0; e < errors.length; e++) {
+										for (e = 0; e < errors.length; e++) {
 											if (errors[e].flatten().length  > 0) {
 												var this_key = key.replace(/(_\d+)$/, '_' + e);
 												this._showElementError(errors[e], this_key);
