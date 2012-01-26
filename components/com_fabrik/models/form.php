@@ -2904,8 +2904,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$intro = str_replace(']','}', $intro);
 		$w = new FabrikWorker();
 		$intro = $w->parseMessageForPlaceHolder($intro, $this->_data, true);
-		$intro = str_replace('{','[', $intro);
-		$intro = str_replace('}',']', $intro);
+		// $$$ rob 26/01/2011 - this was stopping content plugins from rendering.
+		//$intro = str_replace('{','[', $intro);
+		//$intro = str_replace('}',']', $intro);
 		return $intro;
 	}
 
