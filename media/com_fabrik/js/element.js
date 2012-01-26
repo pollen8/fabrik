@@ -303,7 +303,7 @@ var FbElement =  new Class({
 	setorigId: function ()
 	{
 		// $$$ added inRepeatGroup option, as repeatCounter > 0 doesn't help
-		// if element is in first repeat of a group
+		// if element is in first repeat of a group 
 		//if (this.options.repeatCounter > 0) {
 		if (this.options.inRepeatGroup) {
 			var e = this.options.element;
