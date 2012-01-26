@@ -54,7 +54,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		if (!$this->_editable) {
 			if(!in_array($value, $aNullDates)) {
 				//avoid 0000-00-00
-				list($year,$month,$day) = explode('-',$value);
+				list($year,$month,$day) = strstr('-', $value) ? explode('-', $value) : explode(',', $value);;
 				$daydisp = str_replace($daysys,$daysimple,$day);
 				$monthdisp = str_replace($monthnumbers,$monthlabels,$month);
 				$thisyear = date('Y');
