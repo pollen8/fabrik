@@ -1808,18 +1808,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function getErrors()
 	{
-		//$context = 'com_fabrik.form.'.$this->getId().'_'.(int)$this->_rowId.'.';
-		$context = 'com_fabrik.form.'.$this->getId().'.';
+		$context = 'com_fabrik.form.'.$this->getId() . '.';
 		$session = JFactory::getSession();
 		if (empty($this->_arErrors)) {
 			if (!isset($_SERVER['HTTP_REFERER'])) {
 				$this->clearErrors();
 			}
 			else {
-				$this->_arErrors = $session->get($context.'errors', array());
+				$this->_arErrors = $session->get($context . 'errors', array());
 			}
 		}
-		$session->clear($context.'errors');
+		$session->clear($context .'errors');
 		return $this->_arErrors;
 	}
 
@@ -1830,11 +1829,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function clearErrors()
 	{
 		$session = JFactory::getSession();
-		//$context = 'com_fabrik.form.'.$this->getId().'_'.(int)$this->_rowId.'.';
-		$context = 'com_fabrik.form.'.$this->getId().'.';
+		$context = 'com_fabrik.form.' . $this->getId() . '.';
 		$this->_arErrors = array();
-		$session->clear($context.'errors');
-		$session->set($context.'session.on', false);
+		$session->clear($context . 'errors');
+		// $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
+		// and a field is validated, then we dont submit the form, and go back to add the form, the previously validated
+		// values are shown in the form.
+		$session->set($context . 'session.on', false);
 	}
 
 	/**
@@ -1845,10 +1846,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function setErrors($errors)
 	{
 		$session = JFactory::getSession();
-		//$context = 'com_fabrik.form.'.$this->getId().'_'.(int)$this->_rowId.'.';
-		$context = 'com_fabrik.form.'.$this->getId().'.';
-		$session->set($context.'errors', $errors);
-		$session->set($context.'session.on', true);
+		$context = 'com_fabrik.form.' . $this->getId() . '.';
+		$session->set($context . 'errors', $errors);
+		$session->set($context . 'session.on', true);
 	}
 
 	public function getJsonErrors()
@@ -2281,6 +2281,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$srow = $this->getSessionData();
 				JDEBUG ? $profiler->mark('formmodel getData: session data loaded') : null;
 				if ($this->saveMultiPage() && $srow->data != '') {
+					echo "using sesssion data <br>";
 					$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
 					FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 				} else {
@@ -2389,7 +2390,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$params = $this->getParams();
 		$session = JFactory::getSession();
 		//set in plugins such as confirmation plugin
-		if ($session->has('com_fabrik.form.'.$this->getId().'.session.on')) {
+		if ($session->get('com_fabrik.form.' . $this->getId() . '.session.on') == true) {
 			return true;
 		}
 		$save = (int)$params->get('multipage_save', 1);
