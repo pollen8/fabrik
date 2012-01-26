@@ -3275,7 +3275,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 				$filters['join'][] = $join;
 				$filters['search_type'][] = 'prefilter';
-				$filters['key'][] = $filter;
+				$filters['key'][] = $tmpfilter;
 				$filters['value'][] = $selValue;
 				$filters['origvalue'][] = $selValue;
 				$filters['sqlCond'][] = '';
