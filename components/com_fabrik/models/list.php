@@ -6890,8 +6890,9 @@ class FabrikFEModelList extends JModelForm {
 
 	public function setRenderContext($id)
 	{
-		// $$$ rob if admin filter task = ilter and not list.filter
-		if (JRequest::getVar('task') == 'list.filter' || JRequest::getVar('task') == 'filter') {
+		$app = JFactory::getApplication();
+		// $$$ rob if admin filter task = filter and not list.filter
+		if (JRequest::getVar('task') == 'list.filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter')) {
 			$listref = JRequest::getVar('listref');
 			$listref = explode('_', $listref);
 			array_shift($listref);
