@@ -3257,7 +3257,7 @@ class FabrikFEModelList extends JModelForm {
 				if (!$this->mustApplyFilter($selAccess)) {
 					continue;
 				}
-				$tmpfilter = strstr($filter, '_raw`') ? FabrikString::rtrimword( $filter, '_raw`').'`' : $filter;
+				$tmpfilter = strstr($filter, '_raw') ? FabrikString::rtrimword( $filter, '_raw') : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
 				if ($elementModel === false) {
 
