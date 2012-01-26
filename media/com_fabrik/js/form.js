@@ -590,13 +590,13 @@ var FbForm = new Class({
 
 	// as well as being called from watchValidation can be called from other
 	// element js actions, e.g. date picker closing
-	doElementValidation : function (e, subEl, replacetxt) {
+	doElementValidation: function (e, subEl, replacetxt) {
 		var id;
 		if (this.options.ajaxValidation === false) {
 			return;
 		}
 		replacetxt = typeOf(replacetxt) === 'null' ? '_time' : replacetxt;
-		if (typeOf(e) === 'event' || typeOf(e) === 'object') { // type object in
+		if (typeOf(e) === 'event' || typeOf(e) === 'object' || typeOf(e) === 'domevent') { // type object in
 			id = e.target.id;
 			// for elements with subelements eg checkboxes radiobuttons
 			if (subEl === true) {
@@ -607,10 +607,7 @@ var FbForm = new Class({
 			// available
 			id = e;
 		}
-		// for elements with subelements eg checkboxes radiobuttons
-		/*if (subEl === true) {
-			id = $(e.target).getParent('.fabrikSubElementContainer').id;
-		}*/
+
 		if (typeOf(document.id(id)) === 'null') {
 			return;
 		}
@@ -655,6 +652,9 @@ var FbForm = new Class({
 
 	_completeValidaton : function (r, id, origid) {
 		r = JSON.decode(r);
+		this.formElements.each(function (el, key) {
+			el.afterAjaxValidation();
+		});
 		Fabrik.fireEvent('fabrik.form.elemnet.validation.complete', [this, r, id, origid]);
 		if (this.result === false) {
 			this.result = true;
@@ -925,6 +925,9 @@ var FbForm = new Class({
 	// available
 
 	getFormData : function () {
+		this.formElements.each(function (el, key) {
+			el.onsubmit();
+		});
 		this.getForm();
 		var s = this.form.toQueryString();
 		var h = {};
