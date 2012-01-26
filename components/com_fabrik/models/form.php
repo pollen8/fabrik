@@ -1810,15 +1810,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$context = 'com_fabrik.form.'.$this->getId() . '.';
 		$session = JFactory::getSession();
+		//store errors in local array as clearErrors() removes $this->_arErrors
+		$errors = array();
 		if (empty($this->_arErrors)) {
-			if (!isset($_SERVER['HTTP_REFERER'])) {
-				$this->clearErrors();
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				$errors = $session->get($context . 'errors', array());
 			}
-			else {
-				$this->_arErrors = $session->get($context . 'errors', array());
-			}
+		} else {
+			$errors = $this->_arErrors;
 		}
-		$session->clear($context .'errors');
+		$this->clearErrors();
+		$this->_arErrors = $errors;
 		return $this->_arErrors;
 	}
 
@@ -2281,7 +2283,6 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				$srow = $this->getSessionData();
 				JDEBUG ? $profiler->mark('formmodel getData: session data loaded') : null;
 				if ($this->saveMultiPage() && $srow->data != '') {
-					echo "using sesssion data <br>";
 					$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
 					FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 				} else {
