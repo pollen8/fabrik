@@ -1456,7 +1456,7 @@ class plgFabrik_Element extends FabrikPlugin
 	* @param string $node
 	* @param array $bits property => value
 	*/
-	
+
 	protected function buildInput($node = 'input', $bits = array())
 	{
 		$str = '<' . $node . ' ';
@@ -1466,7 +1466,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str .= '/>';
 		return $str;
 	}
-	
+
 	/**
 	 * helper function to build the property array used in buildInput()
 	 * @param int $repeatCounter
@@ -1519,7 +1519,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		return $bits;
 	}
-	
+
 	/**
 	 * get the id used in the html element
 	 * @param int repeat group counter
@@ -1856,7 +1856,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$v .= ($normal) ? '['.$counter.']' : '[]';
 		return $v;
 	}
-	
+
 	/**
 	 * can be overwritten by plugin class
 	 * Get the table filter for the element
@@ -1915,7 +1915,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$id.'" />';
 				break;
-				
+
 				case "hidden":
 					$default = stripslashes($default);
 					$default = htmlspecialchars($default);
@@ -2222,7 +2222,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$filters = $this->getListModel()->getFilterArray();
 		$eval = JArrayHelper::getValue($filters, 'eval', array());
 		$eval = JArrayHelper::getValue($eval, $counter, FABRIKFILTER_TEXT);
-		
+
 		$condition = JArrayHelper::getValue($filters, 'condition', array());
 		$condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
 		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
@@ -3121,6 +3121,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
+		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
 		$validationEls = array();
 		$validations = $this->getValidations();
 		if (!empty($validations) && $this->_editable) {
@@ -4293,14 +4294,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 	}
-	
+
 	/**
 	 * @since 3.0rc1
 	 * when we do ajax requests from the element - as the plugin controller uses the J dispatcher
-	 * the element hasnt loaded up itself, so any time you have a function onAjax_doSomething() call this 
+	 * the element hasnt loaded up itself, so any time you have a function onAjax_doSomething() call this
 	 * helper function first to load up the element. Otherwise things like parameters will not be loaded
 	 */
-	
+
 	protected function loadMeForAjax()
 	{
 		$this->_form = JModel::getInstance('form', 'FabrikFEModel');

@@ -642,7 +642,13 @@ var FbForm = new Class({
 
 		d = this._prepareRepeatsForAjax(d);
 
-		var origid = el.origId ? el.origId : id;
+		// $$$ hugh - nasty hack, because validate() in form model will always use _0 for
+		// repeated id's
+		var origid = id;
+		if (el.origId) {
+			origid = el.origId + '_0';
+		}
+		//var origid = el.origId ? el.origId : id;
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&form_id=' + this.id;
 		var myAjax = new Request({
@@ -842,11 +848,24 @@ var FbForm = new Class({
 						if (json.errors !== undefined) {
 							// for every element of the form update error message
 							$H(json.errors).each(function (errors, key) {
+								// $$$ hugh - nasty hackery alert!
+								// validate() now returns errors for joins in join___id___label format,
+								// but if repeated, will be an array under _0 name.
 								// replace join[id][label] with join___id___label
-								key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
+								// key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
 								if (this.formElements.has(key) && errors.flatten().length > 0) {
 									errfound = true;
-									this._showElementError(errors, key);
+									if (this.formElements[key].options.inRepeatGroup) {
+										for (e=0; e < errors.length; e++) {
+											if (errors[e].flatten().length  > 0) {
+												var this_key = key.replace(/(_\d+)$/, '_' + e);
+												this._showElementError(errors[e], this_key);
+											}
+										}
+									}
+									else {
+										this._showElementError(errors, key);
+									}
 								}
 							}.bind(this));
 						}
