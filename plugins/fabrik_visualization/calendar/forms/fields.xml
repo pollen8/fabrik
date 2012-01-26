@@ -55,7 +55,7 @@
 			<field name="show_calendar_legend" 
 				type="radio" 
 				default="1" label="PLG_VISUALIZATION_CALENDAR_SHOW_LEGEND_LABEL" 
-				description="SHOWLEGENDDESC">
+				description="PLG_VISUALIZATION_CALENDAR_SHOW_LEGEND_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
