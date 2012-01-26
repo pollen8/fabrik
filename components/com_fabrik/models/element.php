@@ -2801,6 +2801,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$res = $this->formatCalcs($results, $calcLabel, $split);
 		return array($res, $results);
 	}
+	
+	/**
+	* @since 3.0.4
+	* get the sprintf format string
+	* @return string
+	*/
+	
+	public function getFormatString()
+	{
+		$parmas = $this->getParams();
+		return $params->get('text_format_string');
+	}
 
 	/**
 	 * calculation: median
@@ -2819,7 +2831,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$params = $this->getParams();
 		$splitMedian = $params->get('median_split', '');
 		$split = $splitMedian == '' ? false : true;
-		$format = $params->get('text_format_string');
+		$format = $this->getFormatString();
 		$res = '';
 		$calcLabel = $params->get('median_label', JText::_('COM_FABRIK_MEDIAN'));
 		$results = array();
@@ -3047,7 +3059,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$format = $params->get('text_format_string');
+		$format = $this->getFormatString();
 		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
 		foreach ($results as $key => $o) {
 			$o->label = ($o->label == 'calc') ? '' : $o->label;
