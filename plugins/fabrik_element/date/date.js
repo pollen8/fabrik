@@ -92,6 +92,14 @@ var FbDateTime = new Class({
 		return true;
 	},
 	
+	/**
+	 * As ajax validations call onsubmit to get the correct date, we need to
+	 * reset the date back to the display date when the validation is complete
+	 */
+	afterAjaxValidation: function () {
+		this.update(this.getValue());
+	},
+	
 	makeCalendar: function () {
 		if (this.cal) {
 			this.cal.show();

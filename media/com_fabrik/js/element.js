@@ -201,6 +201,14 @@ var FbElement =  new Class({
 		return true;
 	},
 	
+	/**
+	 * As ajax validations call onsubmit to get the correct date, we need to
+	 * reset the date back to the display date when the validation is complete
+	 */
+	afterAjaxValidation: function () {
+		
+	},
+	
 	cloned: function (c) {
 		//run when the element is cloned in a repeat group
 	},
