@@ -2918,7 +2918,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	{
 		$m = explode(":", $match[0]);
 		array_shift($m);
-		return FabrikString::rtrimword(implode(":", $m ) , "}");
+		return FabrikString::rtrimword(implode(":", $m) , "}");
 	}
 
 	/**
