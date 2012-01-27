@@ -63,7 +63,7 @@ class FPagination extends JPagination{
 		$list['limitfield']	= $this->getLimitBox();
 		$list['pagescounter']	= $this->getPagesCounter();
 		if ($this->showTotal) {
-			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL_RECORDS') . ': '. $list['total'];
+			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL') . ': '. $list['total'];
 		}
 		$list['pageslinks']	= $this->getPagesLinks($listRef, $tmpl);
 

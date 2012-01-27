@@ -2752,6 +2752,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+		
+			$uberTotal = 0;
+			foreach ($results2 as $pair) {
+				$uberTotal += $pair->value;
+			}
+			$uberObject = new stdClass();
+			$uberObject->value = $uberTotal;
+			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
+			$uberObject->class = 'splittotal';
+			$results2[] = $uberObject;
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'sum');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -2789,6 +2799,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+			
+			$uberTotal = 0;
+			foreach ($results2 as $pair) {
+				$uberTotal += $pair->value;
+			}
+			$uberObject = new stdClass();
+			$uberObject->value = $uberTotal / count($results2);
+			$uberObject->label = JText::_('COM_FABRIK_AVERAGE');
+			$uberObject->class = 'splittotal';
+			$results2[] = $uberObject;
+			
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'avg');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -2892,6 +2913,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+			
+			$uberTotal = 0;
+			foreach ($results2 as $pair) {
+				$uberTotal += $pair->value;
+			}
+			$uberObject = new stdClass();
+			$uberObject->value = $uberTotal / count($results2);
+			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
+			$uberObject->class = 'splittotal';
+			$results2[] = $uberObject;
+			
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -3053,10 +3085,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	protected function formatCalcs(&$results, $calcLabel, $split = false, $numberFormat = true, $sprintFFormat = true)
 	{
 		settype($results, 'array');
-		$res = '<span class="calclabel">'.$calcLabel.'</span>';
-		if ($split) {
-			$res .= '<br />';
-		}
+		$res = array();
+		$res[] = $split ? '<dl>' : '<ul class="fabrikRepeatData">';
+		$l = '<span class="calclabel">' . $calcLabel . '</span>';
+		$res[] = $split ? '<dt>'. $l . '</dt>' : '<li>' . $l;
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$format = $this->getFormatString();
@@ -3071,10 +3103,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				$o->value = sprintf($format, $o->value);
 			}
 			$o->calLabel = $calcLabel;
-			$res .= '<span class="calclabel">'.$o->label.':</span> '.$o->value.'<br />';
+			$class = isset($o->class) ? ' class="' . $o->class . '"' : '';
+			if ($split) {
+				$res[] = '<dd' . $class . '><span class="calclabel">' . $o->label . ':</span> ' . $o->value . '</dd>';
+			} else {
+				$res[] = $o->value . '</li>';
+			}
 		}
 		ksort($results);
-		return $res;
+		$res[] = $split ? '</dl>' : '</ul>';
+		return implode("\n", $res);
 	}
 
 	/**
