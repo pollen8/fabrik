@@ -1,6 +1,12 @@
 var FbDateTime = new Class({
 	Extends: FbElement,
 	
+	/**
+	 * master date/time stored in this.cal (the js widget)
+	 * upon save we get a db formatted version of this date and put it into the date field
+	 * this dramitcally simplifies storing dates (no longer have to take account of formatting rules and/or
+	 * translations on the server side, as the widget has already handled it for us
+	 */
 	options: {
 		'dateTimeFormat': '', 
 		'calendarSetup': {
@@ -32,17 +38,20 @@ var FbDateTime = new Class({
 	},
 	
 	setUp: function () {
-		this.dateSelected = false;
 		this.watchButtons();
 		if (this.options.typing === false) {
 			this.disableTyping();
+		} else {
+			this.getDateField().addEvent('blur', function (e) {
+				var d = new Date(this.getDateField().value);
+				this.setTimeFromField(d);
+				this.update(d);
+			}.bind(this));
 		}
+		this.makeCalendar();
+		this.cal.hide();
 		this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
-			if (this.cal) {
-				this.cal.show();
-			} else {
-				this.makeCalendar();
-			}
+			this.cal.show();
 		}.bind(this));
 	},
 	
@@ -69,7 +78,6 @@ var FbDateTime = new Class({
 		var d = this.setTimeFromField(calendar.date);
 		this.update(d.format('db'));
 		if (this.cal.dateClicked) {
-			this.dateSelected = true;
 			this.cal.callCloseHandler();
 		}
 		window.fireEvent('fabrik.date.select', this);
@@ -84,15 +92,13 @@ var FbDateTime = new Class({
 			this.form.doElementValidation(this.options.element);
 		}
 	},
-	
+
 	onsubmit: function () {
 		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
 		//processing dates on the server.
-		if (this.dateSelected) {
-			var v = this.getValue();
-			this.update(v);
-			this.getDateField().value = v;
-		}
+		var v = this.getValue();
+		this.update(v);
+		this.getDateField().value = v;
 		return true;
 	},
 	
@@ -156,7 +162,6 @@ var FbDateTime = new Class({
 		this.cal.setDateFormat(dateFmt);
 		this.cal.create();
 		this.cal.refresh();
-		//shows the calendar twice !
 		if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
 		} else {
@@ -318,6 +323,7 @@ var FbDateTime = new Class({
 			this.minute = date.get('minutes');
 			this.stateTime();
 		}
+		this.cal.date = date;
 		this.getDateField().value = date.format(this.options.calendarSetup.ifFormat);
 	},
 	
@@ -517,10 +523,10 @@ var FbDateTime = new Class({
 
 	hideTime: function () {
 		this.timeActive = false;
-		this.dropdown.setStyles({
-			'display': 'none'
-		});
-		this.form.doElementValidation(this.element.id);
+		this.dropdown.hide();
+		if (this.options.validations !== false) {
+			this.form.doElementValidation(this.element.id);
+		}
 		Fabrik.fireEvent('fabrik.date.hidetime', this);
 		Fabrik.fireEvent('fabrik.date.select', this);
 	},
@@ -583,6 +589,7 @@ var FbDateTime = new Class({
 		this.options.calendarSetup.onClose = function (calendar) {
 			this.calClose(calendar);
 		}.bind(this);
+
 		
 	},
 
