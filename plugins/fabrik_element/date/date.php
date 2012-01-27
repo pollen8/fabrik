@@ -497,13 +497,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts = $this->_CalendarJSOpts($id);
 		$opts->ifFormat = $format;
 		$opts = json_encode($opts);
-		$script = array();
-		$script[] = 'head.ready(function() {';
-		$script[] = 'if($("'.$id.'")) { ';
-		$script[] = 'Calendar.setup('.$opts.');';
-		$script[] = '}'; //end if id
-		$script[] = '});'; //end domready function
-		if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
+		// $$$ rob - we shouldnt be ini'ing the calender js in form view as its done in the date.js file.
+		// Should ONLY be used for list filters.
+		//if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
+		if (JRequest::getVar('view') == 'list') {
+			$script = array();
+			$script[] = 'head.ready(function() {';
+			$script[] = 'if($("'.$id.'")) { ';
+			$script[] = 'Calendar.setup('.$opts.');';
+			$script[] = '}'; //end if id
+			$script[] = '});'; //end domready function
 			FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);

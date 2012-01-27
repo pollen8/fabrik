@@ -32,6 +32,7 @@ var FbDateTime = new Class({
 	},
 	
 	setUp: function () {
+		this.dateSelected = false;
 		this.watchButtons();
 		if (this.options.typing === false) {
 			this.disableTyping();
@@ -68,6 +69,7 @@ var FbDateTime = new Class({
 		var d = this.setTimeFromField(calendar.date);
 		this.update(d.format('db'));
 		if (this.cal.dateClicked) {
+			this.dateSelected = true;
 			this.cal.callCloseHandler();
 		}
 		window.fireEvent('fabrik.date.select', this);
@@ -86,9 +88,11 @@ var FbDateTime = new Class({
 	onsubmit: function () {
 		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
 		//processing dates on the server.
-		var v = this.getValue();
-		this.update(v);
-		this.getDateField().value = v;
+		if (this.dateSelected) {
+			var v = this.getValue();
+			this.update(v);
+			this.getDateField().value = v;
+		}
 		return true;
 	},
 	
@@ -153,11 +157,11 @@ var FbDateTime = new Class({
 		this.cal.create();
 		this.cal.refresh();
 		//shows the calendar twice !
-		/*if (!params.position) {
+		if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
 		} else {
 			this.cal.showAt(params.position[0], params.position[1]);
-		}*/
+		}
 	},
 
 	disableTyping : function () {
