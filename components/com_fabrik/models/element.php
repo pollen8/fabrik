@@ -2810,7 +2810,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	
 	public function getFormatString()
 	{
-		$parmas = $this->getParams();
+		$params = $this->getParams();
 		return $params->get('text_format_string');
 	}
 
