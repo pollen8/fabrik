@@ -105,7 +105,7 @@ var Autofill = new Class({
 	
 	//update the form from the ajax request returned data
 	updateForm: function (json) {
-		//json = $H(JSON.decode(json));
+		var repeatNum = this.element.getRepeatNum();
 		json = $H(json);
 		if (json.length === 0) {
 			alert(Joomla.JText._('PLG_FORM_AUTOFILL_NORECORDS_FOUND'));
@@ -114,6 +114,9 @@ var Autofill = new Class({
 			var k2 = key.substr(key.length - 4, 4);
 			if (k2 === '_raw') {
 				key = key.replace('_raw', '');
+				if (repeatNum) {
+					key += '_' + repeatNum;
+				}
 				var el = this.form.formElements.get(key);
 				if (typeOf(el) !== 'null') {
 					el.update(val);

@@ -357,6 +357,18 @@ var FbElement =  new Class({
 		return r;
 	},
 	
+	/**
+	 * determine which duplicated instance of the repeat group the
+	 * element belongs to, returns false if not in a repeat gorup
+	 * other wise an integer
+	 */
+	getRepeatNum: function () {
+		if (this.options.inRepeatGroup === false) {
+			return false;
+		}
+		return this.element.id.split('_').getLast();
+	},
+	
 	select: function () {},
 	focus: function () {}
 });
