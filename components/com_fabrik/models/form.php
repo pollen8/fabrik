@@ -2394,7 +2394,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		if ($session->get('com_fabrik.form.' . $this->getId() . '.session.on') == true) {
 			return true;
 		}
-		$save = (int)$params->get('multipage_save', 1);
+		$save = (int)$params->get('multipage_save', 0);
 		$user = JFactory::getUser();
 		if ($user->get('id') !== 0) {
 			return $save === 0 ? false : true;
@@ -2504,7 +2504,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
 		$this->sessionModel->setFormId($this->getId());
 		$this->sessionModel->setRowId($this->_rowId);
-		$useCookie = (int)$params->get('multipage_save', 1) === 2 ? true : false;
+		$useCookie = (int)$params->get('multipage_save', 0) === 2 ? true : false;
 		if (!$useCookie) {
 			//incase a plugin is using cookie session (e.g. confirmation plugin)
 			$useCookie = $this->sessionModel->canUseCookie();
