@@ -94,6 +94,10 @@ var FbDateTime = new Class({
 	},
 
 	onsubmit: function () {
+		Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
+			//fired when form failed after AJAX submit
+			this.afterAjaxValidation();
+		}.bind(this));
 		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
 		//processing dates on the server.
 		var v = this.getValue();

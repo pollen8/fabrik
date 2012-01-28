@@ -822,7 +822,9 @@ var FbForm = new Class({
 			//do ajax val only if onSubmit val ok
 			if (this.form) {
 				Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_LOADING'));
-				this.elementsBeforeSubmit(e);
+				// $$$ hugh - we already did elementsBeforeSubmit() this at the start of this func?
+				// (and we're going to call it again in getFormData()!)
+				//this.elementsBeforeSubmit(e);
 				// get all values from the form
 				var data = $H(this.getFormData());
 				data = this._prepareRepeatsForAjax(data);
@@ -913,6 +915,7 @@ var FbForm = new Class({
 								}
 							}
 						} else {
+							Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
 							// stop spinner
 							Fabrik.loader.stop('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
 						}
