@@ -264,7 +264,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		jimport('joomla.utilities.date');
 		$params = $this->getParams();
 		$store_as_local = (bool)$params->get('date_store_as_local', false);
-		
+
 		$listModel = $this->getListModel();
 		// $$$ hugh - offset_tz of 1 means 'in MySQL format, GMT'
 		// $$$ hugh - offset_tz of 2 means 'in MySQL format, Local TZ'
@@ -500,8 +500,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_img'));
-		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.
-		$img;
+		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.$img;
 	}
 
 	/**
@@ -516,7 +515,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts = new stdClass();
 		$opts->inputField = $id;
 		$opts->ifFormat = $params->get('date_form_format');
-		$opts->button = $id."_img";
+		$opts->button = $id."_cal_img";
 		$opts->align = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay = intval($params->get('date_firstday'));
@@ -524,7 +523,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$opts->hasValidations = empty($validations) ? false : true;
 		$opts->dateAllowFunc = $params->get('date_allow_func');
-		
+
 		//test
 		$opts->range = array(1066, 2999);
 		return $opts;
@@ -1517,13 +1516,13 @@ class FabDate extends JDate{
 		}
 		parent::__construct($date, $tz);
 	}
-	
+
 	protected function removeDashes($str)
 	{
 		$str = FabrikString::ltrimword($str, '-');
 		return $str;
 	}
-	
+
 	protected function monthToInt($str)
 	{
 		$abbrs = array(true, false);
@@ -1538,7 +1537,7 @@ class FabDate extends JDate{
 		}
 		return $str;
 	}
-	
+
 	protected function stripDays($str)
 	{
 		$abbrs = array(true, false);

@@ -43,9 +43,15 @@ var FbDateTime = new Class({
 			this.disableTyping();
 		} else {
 			this.getDateField().addEvent('blur', function (e) {
-				var d = new Date(this.getDateField().value);
-				this.setTimeFromField(d);
-				this.update(d);
+				var date_str = this.getDateField().value;
+				if (date_str !== '') {
+					var d = new Date();
+					this.setTimeFromField(d);
+					this.update(d);
+				}
+				else {
+					this.options.value = '';
+				}
 			}.bind(this));
 		}
 		this.makeCalendar();
@@ -101,8 +107,10 @@ var FbDateTime = new Class({
 		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
 		//processing dates on the server.
 		var v = this.getValue();
-		this.update(v);
-		this.getDateField().value = v;
+		if (v !== '') {
+			this.update(v);
+			this.getDateField().value = v;
+		}
 		return true;
 	},
 	
@@ -124,7 +132,8 @@ var FbDateTime = new Class({
 		var params = this.options.calendarSetup;
 		var tmp = ["displayArea", "button"];
 		
-		for (var i in tmp) {
+		// for (var i in tmp) {
+		for (i = 0; i < tmp.length; i++) {
 			if (typeof params[tmp[i]] === "string") {
 				params[tmp[i]] = document.getElementById(params[tmp[i]]);
 			}
@@ -209,6 +218,9 @@ var FbDateTime = new Class({
 		}
 		this.getElement();
 		if (this.cal) {
+			if (this.getDateField().value === '') {
+				return '';
+			}
 			v = this.cal.date;
 		} else {
 			if (this.options.value === '') {
