@@ -55,7 +55,11 @@ var FbDateTime = new Class({
 			}.bind(this));
 		}
 		this.makeCalendar();
-		this.cal.hide();
+		//chrome wierdness where we need to delay the hiding if the date picker is hidden
+		var h = function () { 
+			this.cal.hide();
+		};
+		h.delay(100, this);
 		this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
 			this.cal.show();
 		}.bind(this));
@@ -175,6 +179,7 @@ var FbDateTime = new Class({
 		this.cal.setDateFormat(dateFmt);
 		this.cal.create();
 		this.cal.refresh();
+		this.cal.hide();
 		if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
 		} else {
@@ -612,6 +617,7 @@ var FbDateTime = new Class({
 	cloned : function (c) {
 		this.setUpDone = false;
 		this.hour = 0;
+		delete this.cal;
 		var button = this.element.getElement('img');
 		if (button) {
 			button.id = this.element.id + "_cal_img";
@@ -621,10 +627,8 @@ var FbDateTime = new Class({
 		this.options.calendarSetup.inputField = datefield.id;
 		this.options.calendarSetup.button = this.element.id + "_img";
 
-		if (this.options.hidden !== true) {
-			this.makeCalendar();
-			this.cal.hide();
-		}
+		this.makeCalendar();
+		this.cal.hide();
 		this.setUp();
 	}
 });
