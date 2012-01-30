@@ -17,8 +17,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
 
 class plgFabrik_CronRest extends plgFabrik_Cron {
 
-	var $_counter = null;
-
 	/**
 	 * do the plugin action
 	 * @param array data

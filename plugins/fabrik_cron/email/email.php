@@ -17,8 +17,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
 
 class plgFabrik_Cronemail extends plgFabrik_Cron {
 
-	var $_counter = null;
-
 	function canUse()
 	{
 		return true;

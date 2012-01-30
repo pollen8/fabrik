@@ -35,6 +35,8 @@ class FabrikFEModelImportcsv extends JModelForm{
 	protected $_csvFile = null;
 
 	protected $fieldDelimiter = null;
+	
+	protected $baseDir = null;
 
 
 	public function import()
@@ -234,9 +236,22 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	protected function getBaseDir()
 	{
-		$config = JFactory::getConfig();
-		$tmp_dir = $config->getValue('config.tmp_path');
-		return JPath::clean($tmp_dir);
+		if (!isset($this->baseDir)) {
+			$config = JFactory::getConfig();
+			$tmp_dir = $config->getValue('config.tmp_path');
+			$this->baseDir = JPath::clean($tmp_dir);
+		}
+		return $this->baseDir;
+	}
+	
+	/**
+	 * @snce 3.0.3.1
+	 * used by import csv cron plugin to override default base dir location
+	 * @param string $dir (folder path)
+	 */
+	public function setBaseDir($dir)
+	{
+		$this->baseDir = $dir;
 	}
 
 	/**
@@ -435,7 +450,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		foreach ($this->data as $data) {
 			$aRow = array();
 			$pkVal = null;
-			$i =0;
+			$i = 0;
 			foreach ($this->matchedHeadings as $headingKey => $heading) {
 
 				switch ($csvFullName) {
@@ -717,12 +732,18 @@ class FabrikFEModelImportcsv extends JModelForm{
 	}
 	
 	/**
-	 * determine if the chooselementtypes view should contain a column where the user selects the field to be the pk
+	 * determine if the chooselementtypes view should contain a column where 
+	 * the user selects the field to be the pk
 	 * @return bool true if column shown
 	 */
 	
 	public function getSelectKey()
 	{
+		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
+		// otherwise a blank column is added to the import data meaniing overwrite date dunna workie
+		if (JRequest::getBool('cron_csvimport')) {
+			return true;
+		}
 		$model = $this->getlistModel();
 		if (trim($model->getTable()->db_primary_key) !== '') {
 			return false;
