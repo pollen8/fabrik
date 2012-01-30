@@ -165,7 +165,7 @@
 			
 			<field name="submit_button_label" 
 				type="text" 
-				default="Submit" 
+				default="Save" 
 				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL" 
 				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC" />
 			

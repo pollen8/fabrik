@@ -1060,7 +1060,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * when saving a table that links to a database for the first time we
+	 * when saving a list that links to a database for the first time we
 	 * automatically create a form to allow the update/creation of that tables
 	 * records
 	 * @access private
@@ -1084,17 +1084,17 @@ class FabrikModelList extends FabModelAdmin
 			$createdate = $createdate->toMySQL();
 
 			$form = $this->getTable('Form');
-			$item =& $this->getTable('List');
+			$item = $this->getTable('List');
 			$form->label = $item->label;
 			$form->record_in_database = 1;
 
-			$form->created 						= $createdate;
-			$form->created_by 				= $user->get('id');
-			$form->created_by_alias 	= $user->get('username');
-			$form->error							= JText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
-			$form->submit_button_label 	= JText::_('SAVE');
-			$form->published							= $item->published;
-			$form->form_template			= 'default';
+			$form->created = $createdate;
+			$form->created_by = $user->get('id');
+			$form->created_by_alias = $user->get('username');
+			$form->error = JText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
+			$form->submit_button_label = JText::_('COM_FABRIK_SAVE');
+			$form->published = $item->published;
+			$form->form_template = 'default';
 			$form->view_only_template	= 'default';
 
 			if (!$form->store()) {
