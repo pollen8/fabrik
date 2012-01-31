@@ -499,7 +499,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
-		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_img'));
+		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_cal_img'));
 		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.$img;
 	}
 
