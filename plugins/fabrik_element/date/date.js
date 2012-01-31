@@ -61,6 +61,11 @@ var FbDateTime = new Class({
 		};
 		h.delay(100, this);
 		this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
+			if (!this.cal.params.position) {
+				this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
+			} else {
+				this.cal.showAt(this.cal.params.position[0], params.position[1]);
+			}
 			this.cal.show();
 		}.bind(this));
 		Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
@@ -180,11 +185,13 @@ var FbDateTime = new Class({
 		this.cal.create();
 		this.cal.refresh();
 		this.cal.hide();
+		/*
 		if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
 		} else {
 			this.cal.showAt(params.position[0], params.position[1]);
 		}
+		*/
 	},
 
 	disableTyping : function () {
