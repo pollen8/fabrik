@@ -10,6 +10,10 @@ div.calendar{
 	z-index:99999;
 }
 
+div.calendar table {
+	width: 100%;
+}
+
 /*** stoopid beez20 fix */
 
 #main .fabrikForm  a:hover{
