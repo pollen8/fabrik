@@ -88,6 +88,9 @@ echo "
 	box-flex: 1;
 }
 
+#{$view}_$c label{
+	float:none;
+}
 /* END: align google map sub elements vertically */
 /* START : label spacing for chxbox, radios */
 
