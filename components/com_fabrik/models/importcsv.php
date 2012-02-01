@@ -552,7 +552,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 	private function insertJoinedData($joindata)
 	{
 		//ensure that the main row data doesn't contain and joined data (keep [join][x] though
-		$model = $this->getTableModel();
+		$model = $this->getListModel();
 		$table = $model->getTable();
 		$dbname = $table->db_table_name;
 		foreach ($joindata as &$j) {
