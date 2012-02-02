@@ -84,6 +84,6 @@ class FabrikViewCrons extends JView
 			JToolBarHelper::preferences('com_fabrik');
 		}
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CONNECTIONS');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CRONS', false, JText::_('JHELP_COMPONENTS_FABRIK_CRONS'));
 	}
 }

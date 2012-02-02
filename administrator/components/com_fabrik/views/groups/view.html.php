@@ -84,6 +84,6 @@ class FabrikViewGroups extends JView
 			JToolBarHelper::preferences('com_fabrik');
 		}
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_GROUPS');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_GROUPS', false, JText::_('JHELP_COMPONENTS_FABRIK_GROUPS'));
 	}
 }

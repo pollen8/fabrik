@@ -129,6 +129,6 @@ class FabrikViewPackage extends JView
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_PACKAGE_EDIT');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_PACKAGE_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_PACKAGE_EDIT'));
 	}
 }
