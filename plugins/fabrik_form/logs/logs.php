@@ -16,12 +16,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormLogs extends plgFabrik_Form {
 
-	/**
-	 * @var array of files to attach to email
-	 */
-	var $_counter = null;
-
-	function onLoad( &$params, &$formModel )
+	function onLoad(&$params, &$formModel)
 	{
 
 		if ((JRequest::getVar('view') == 'details') && ($params->get('log_details') != '0')) {

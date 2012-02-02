@@ -17,11 +17,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 class plgFabrik_FormClone extends plgFabrik_Form {
 
 	/**
-	 * @var array of files to attach to email
-	 */
-	var $_counter = null;
-
-	/**
 	 * process the plugin, called when form is submitted
 	 *
 	 * @param object $params

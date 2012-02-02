@@ -69,7 +69,6 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
-		//echo "<pre>";print_r($tmp);echo "</pre>";
 		$str[] = '<div id="'.$id.'">';
 		$str[] = '<div style="overflow:auto;height:150px;" class=""><ul>';
 		$i = 0;
@@ -79,6 +78,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 			$i = 1 - $i;
 		}
 		$str[] = '</ul></div>';
+		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
 		
 		if ($params->get('fieldType', 'textarea') == 'field') {
 			$str[] = '<input class="fabrikinput inputbox text" name="'.$name.'"  />';

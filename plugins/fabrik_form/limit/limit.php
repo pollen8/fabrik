@@ -17,13 +17,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 class plgFabrik_FormLimit extends plgFabrik_Form {
 
 	/**
-	 * @var array of files to attach to email
-	 */
-	var $_counter = null;
-
-	/**
 	 * process the plugin, called when form is loaded
-	 *
 	 * @param object $params
 	 * @param object form model
 	 * @returns bol

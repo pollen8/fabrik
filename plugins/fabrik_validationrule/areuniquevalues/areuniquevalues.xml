@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension group="fabrik_validationrule" type="plugin" version="1.6">
+<extension group="fabrik_validationrule" type="plugin" version="2.5">
 	<name>Fabrik Validation - are unique</name>
 	<author>Lieven Gryp</author>
 	<creationDate>January 2012</creationDate>

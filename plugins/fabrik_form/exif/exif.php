@@ -17,8 +17,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormExif extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	var $map_field = '';
 	var $upload_field = '';
 

@@ -16,11 +16,8 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormSMS extends plgFabrik_Form {
 
-	var $_counter = null;
-
  	/**
  	 * process the plugin, called when form is submitted
- 	 *
  	 * @param object $params
  	 * @param object form
  	 */
@@ -29,9 +26,9 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	{
  	  $this->formModel = $oForm;
  	  $message = $this->_getMessage();
- 	  $aData 		= $oForm->_formData;
+ 	  $aData = $oForm->_formData;
  	  $gateway = $this->getInstance();
- 	  $gateway->send( $message);
+ 	  $gateway->send($message);
  	}
 
  	function getInstance()

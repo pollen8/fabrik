@@ -16,15 +16,9 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormEmail extends plgFabrik_Form {
 
-	/**
-	 * @var array of files to attach to email
-	 */
-	var $_counter = null;
-
 	var $_aAttachments = array();
 
 	var $_dontEmailKeys = null;
-
 
 	/**
 	 * MOVED TO PLUGIN.PHP SHOULDPROCESS()

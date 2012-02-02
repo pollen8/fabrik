@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="1.6.0" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
+<extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="2.5" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
 
 	<name>Fabrik</name>
 	<creationDate>January 2012</creationDate>

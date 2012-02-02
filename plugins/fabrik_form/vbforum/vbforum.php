@@ -18,8 +18,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormVbForum extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	var $vb_forum_field = '';
 	var $vb_path = '';
 	var $vb_globals = '';
@@ -31,7 +29,7 @@ class plgFabrik_FormVbForum extends plgFabrik_Form {
 	 * @param object form
 	 */
 
-	function onBeforeStore( &$params, &$formModel )
+	function onBeforeStore(&$params, &$formModel)
 	{
 		global $vbulletin;
 		define(VB_AREA, 'fabrik');

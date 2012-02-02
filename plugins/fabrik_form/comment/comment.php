@@ -32,11 +32,6 @@ class FabrikTableComment extends FabTable
 
 class plgFabrik_FormComment extends plgFabrik_Form {
 
-	/**
-	 * Constructor
-	 */
-	var $_counter = null;
-
 	/**@var string html comment form */
 	var $commentform = null;
 

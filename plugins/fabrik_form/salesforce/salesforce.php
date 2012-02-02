@@ -18,8 +18,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormSalesforce extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	var $_data = null;
 
 	private function client()

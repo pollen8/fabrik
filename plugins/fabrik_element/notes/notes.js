@@ -25,8 +25,11 @@ var FbNotes = new Class({
 		}.bind(this));
 		this.field = this.element.getElement('.fabrikinput');
 		var msg = this.element.getElement('div'); 
-		msg.makeResizable();
-		msg.setStyle('cursor', 'all-scroll');
+		msg.makeResizable({
+			'modifiers': {x:false, y:'height'},
+			'handle': this.element.getElement('.noteHandle')
+		});
+		this.element.getElement('.noteHandle').setStyle('cursor', 'all-scroll');
 	},
 	
 	submit: function (e) {

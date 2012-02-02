@@ -17,8 +17,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormConfirmation extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	var $runAway = false;
 
 	/**
