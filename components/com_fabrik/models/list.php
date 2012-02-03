@@ -4273,6 +4273,17 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function removeHeadingCompositKey($arr)
 	{
+		// $$$ hugh - horrible hack, but if we just ksort as-is, once we have more than 9 elements,
+		// it'll start sort 0,1,10,11,2,3 etc.  There's no doubt a cleaner way to do this,
+		// but for now ... rekey with a 0 padded prefix before we ksort
+		foreach ($arr as $key => $val) {
+			list($part1, $part2) = explode(":", $key);
+			$part1 = sprintf('%03d', $part1);
+			$newkey = $part1.':'.$part2;
+			$arr[$newkey] = $arr[$key];
+			unset($arr[$key]);
+		}
+
 		ksort($arr);
 		foreach ($arr as $key => $val) {
 			$newkey = array_pop(explode(":", $key));
