@@ -1019,10 +1019,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 				}
 			}
-
-			foreach ($_REQUEST['join'] as $join_id => $join_data) {
-
-			}
 		}
 		//set here so element can call formModel::updateFormData()
 		$this->_formData = $aData;
