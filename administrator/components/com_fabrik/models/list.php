@@ -1892,7 +1892,9 @@ class FabrikModelList extends FabModelAdmin
 		$formModel = $this->getFormModel();
 		$tableName = $table->db_table_name;
 		$fabrikDb = $this->getDb();
-		$existingfields = array_map('strtolower', array_keys($fabrikDb->getTableColumns($tableName)));
+		// $$$ hugh - dunno why we do the strtolower, taking it out as it's killing things if you have fields with UC
+		// $existingfields = array_map('strtolower', array_keys($fabrikDb->getTableColumns($tableName)));
+		$existingfields = array_keys($fabrikDb->getTableColumns($tableName));
 		$lastfield = $existingfields[count($existingfields)-1];
 		$sql = "ALTER TABLE ".$db->nameQuote($tableName)." ";
 		$sql_add = array();
