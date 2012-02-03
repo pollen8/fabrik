@@ -45,7 +45,8 @@ var FbDateTime = new Class({
 			this.getDateField().addEvent('blur', function (e) {
 				var date_str = this.getDateField().value;
 				if (date_str !== '') {
-					var d = new Date();
+					//var d = new Date(date_str);
+					var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
 					this.setTimeFromField(d);
 					this.update(d);
 				}
