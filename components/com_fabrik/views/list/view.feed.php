@@ -18,10 +18,10 @@ class FabrikViewList extends JView{
 	{
 		$Itemid	= $app->getMenu('site')->getActive()->id;
 		$app = JFactory::getApplication();
-		$config		= JFactory::getConfig();
-		$user 		= JFactory::getUser();
-		$model		=& $this->getModel();
-		$model->_outPutFormat == 'feed';
+		$config	= JFactory::getConfig();
+		$user = JFactory::getUser();
+		$model = $this->getModel();
+		$model->setOutPutFormat('feed');
 
 		$document = JFactory::getDocument();
 		$document->_itemTags = array();
@@ -29,15 +29,15 @@ class FabrikViewList extends JView{
 		//Get the active menu item
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
-		$table			=& $model->getTable();
+		$table = $model->getTable();
 		$model->render();
-		$params 		=& $model->getParams();
+		$params = $model->getParams();
 
 		if ($params->get('rss') == '0') {
 			return '';
 		}
 
-		$formModel = $model->getForm();
+		$formModel = $model->getFormModel();
 		$form = $formModel->getForm();
 
 		$aJoinsToThisKey = $model->getJoinsToThisKey();
@@ -96,7 +96,6 @@ class FabrikViewList extends JView{
 		if (file_exists($csspath)) {
 			$document->addStyleSheet(COM_FABRIK_LIVESITE . "components/com_fabrik/views/list/tmpl/$tmpl/feed.css");
 		}
-
 
 		$titleEl = $params->get('feed_title');
 		$dateEl = $params->get('feed_date');
@@ -162,7 +161,7 @@ class FabrikViewList extends JView{
 				$link = JRoute::_('index.php?option=com_fabrik&view='.$view.'&listid='.$table->id.'&formid='.$form->id.'&rowid='. $row->__pk_val);
 
 				// strip html from feed item description text
-				$author			= @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
+				$author	= @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
 				if ($dateEl != '') {
 					$date = ($row->$dateEl ? date('r', strtotime(@$row->$dateEl) ) : '');
@@ -171,12 +170,12 @@ class FabrikViewList extends JView{
 				}
 				// load individual item creator class
 
-				$item->title 		= $title;
-				$item->link 		= $link;
-				$item->guid 		= $link;
-				$item->description 	= $str;
-				$item->date			= $date;
-				$item->category   	= $row->category;
+				$item->title = $title;
+				$item->link = $link;
+				$item->guid = $link;
+				$item->description = $str;
+				$item->date = $date;
+				$item->category = $row->category;
 
 				// loads item info into rss array
 				$document->addItem($item);

@@ -1382,13 +1382,16 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$params = $this->getParams();
 		$table = $this->getTable();
-		$db = FabrikWorker::getDbo();
+		$db = $this->getDb();
 		$this->selectedOrderFields = array();
 		if ($this->_outPutFormat == 'feed')
 		{
 			$dateColId = (int)$params->get('feed_date', 0);
-			$db->setQuery('SELECT name FROM #__{package}_elements WHERE id = '.$dateColId);
+			$query = $db->getQuery(true);
+			$query->select('name')->from('#__{package}_elements')->where('id = ' . $dateColId);
+			$db->setQuery($query);
 			$dateCol = $db->nameQuote($table->db_table_name).'.'.$db->nameQuote($db->loadResult());
+			$query->clear();
 			if ($dateColId !== 0) {
 				$this->order_dir = 'DESC';
 				$this->order_by 	= $dateCol;
@@ -6727,6 +6730,15 @@ class FabrikFEModelList extends JModelForm {
 	public function getOutPutFormat()
 	{
 		return $this->_outPutFormat;
+	}
+	
+	/**
+	 * set the list output format
+	 * @param string
+	 */
+	public function setOutPutFormat($f)
+	{
+		$this->_outPutFormat = $f;
 	}
 
 	/**
