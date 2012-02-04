@@ -138,6 +138,7 @@ var Loader = new Class({
 		Fabrik.blocks = {};
 		Fabrik.addBlock = function (blockid, block) {
 			Fabrik.blocks[blockid] = block;
+			Fabrik.fireEvent('fabrik.block.added', block);
 		};
 		//was in head.ready but that cause js error for fileupload in admin when it wanted to 
 		//build its window.
