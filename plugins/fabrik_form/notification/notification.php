@@ -19,8 +19,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormNotification extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	/**
 	 * inject custom html into the bottom of the form
 	 * @param int plugin counter

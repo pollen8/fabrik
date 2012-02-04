@@ -600,7 +600,7 @@ class FabrikModelList extends FabModelAdmin
 				}
 			}
 		}
-		
+
 		// 	save params - this file no longer exists? do we use models/table.xml instead??
 		$params = new fabrikParams($row->params, JPATH_COMPONENT.DS.'xml'.DS.'table.xml');
 
@@ -621,7 +621,7 @@ class FabrikModelList extends FabModelAdmin
 			$row->db_primary_key = $row->db_primary_key == '' ? $row->db_table_name.".".$key : $row->db_primary_key;
 			$row->auto_inc = stristr($fields[$key]->Extra, 'auto_increment') ? true : false;
 		}
-		
+
 		if (!$row->store()) {
 			$this->setError($row->getError());
 			return false;
@@ -701,7 +701,7 @@ class FabrikModelList extends FabModelAdmin
 	 * the list view now enables us to alter en-mass some element properties
 	 * @param unknown_type $row
 	 */
-	
+
 	protected function updateElements($row)
 	{
 		$params = json_decode($row->params);
@@ -1060,7 +1060,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * when saving a table that links to a database for the first time we
+	 * when saving a list that links to a database for the first time we
 	 * automatically create a form to allow the update/creation of that tables
 	 * records
 	 * @access private
@@ -1084,17 +1084,17 @@ class FabrikModelList extends FabModelAdmin
 			$createdate = $createdate->toMySQL();
 
 			$form = $this->getTable('Form');
-			$item =& $this->getTable('List');
+			$item = $this->getTable('List');
 			$form->label = $item->label;
 			$form->record_in_database = 1;
 
-			$form->created 						= $createdate;
-			$form->created_by 				= $user->get('id');
-			$form->created_by_alias 	= $user->get('username');
-			$form->error							= JText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
-			$form->submit_button_label 	= JText::_('SAVE');
-			$form->published							= $item->published;
-			$form->form_template			= 'default';
+			$form->created = $createdate;
+			$form->created_by = $user->get('id');
+			$form->created_by_alias = $user->get('username');
+			$form->error = JText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
+			$form->submit_button_label = JText::_('COM_FABRIK_SAVE');
+			$form->published = $item->published;
+			$form->form_template = 'default';
 			$form->view_only_template	= 'default';
 
 			if (!$form->store()) {
@@ -1216,7 +1216,7 @@ class FabrikModelList extends FabModelAdmin
 				return;
 			}
 			// $$$ rob 20/12/2011 - any element id stored in the list needs to get mapped to the new element ids
-			
+
 			$elementMap = $formModel->newElements;
 			$params = json_decode($item->params);
 			$toMaps = array(
@@ -1235,7 +1235,7 @@ class FabrikModelList extends FabModelAdmin
 				$c->$key2 = $new;
 				$params->$key = json_encode($c);
 			}
-			
+
 			$item->form_id = $formModel->getTable()->id;
 			$createdate = JFactory::getDate();
 			$createdate = $createdate->toMySQL();
@@ -1892,11 +1892,17 @@ class FabrikModelList extends FabModelAdmin
 		$formModel = $this->getFormModel();
 		$tableName = $table->db_table_name;
 		$fabrikDb = $this->getDb();
-		$existingfields = array_map('strtolower', array_keys($fabrikDb->getTableColumns($tableName)));
+		// $$$ hugh - dunno why we do the strtolower, taking it out as it's killing things if you have fields with UC
+		// $existingfields = array_map('strtolower', array_keys($fabrikDb->getTableColumns($tableName)));
+		$existingfields = array_keys($fabrikDb->getTableColumns($tableName));
 		$lastfield = $existingfields[count($existingfields)-1];
 		$sql = "ALTER TABLE ".$db->nameQuote($tableName)." ";
 		$sql_add = array();
-		if (!isset($_POST['current_groups_str'])) {
+		// $$$ hugh - looks like this is now an array in jform
+		$post = JRequest::get('post');
+		$arGroups = JArrayHelper::getValue($post['jform'], 'current_groups', array(), 'array');
+		//if (!isset($_POST['current_groups_str'])) {
+		if (empty($arGroups)) {
 			/* get a list of groups used by the form */
 			$groupsql = "SELECT group_id FROM #__{package}_formgroup WHERE form_id = ".(int)$formModel->id;
 			$db->setQuery($groupsql);
@@ -1908,11 +1914,14 @@ class FabrikModelList extends FabModelAdmin
 			foreach ($groups as $g) {
 				$arGroups[] = $g->group_id;
 			}
-		} else {
+		}
+		/*
+		else {
 			$current_groups_str = JRequest::getVar('current_groups_str');
 
 			$arGroups = explode(",", $current_groups_str);
 		}
+		*/
 		$arAddedObj = array();
 		foreach ($arGroups as $group_id) {
 			$group = FabTable::getInstance('Group', 'FabrikTable');

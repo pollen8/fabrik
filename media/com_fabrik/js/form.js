@@ -590,13 +590,13 @@ var FbForm = new Class({
 
 	// as well as being called from watchValidation can be called from other
 	// element js actions, e.g. date picker closing
-	doElementValidation : function (e, subEl, replacetxt) {
+	doElementValidation: function (e, subEl, replacetxt) {
 		var id;
 		if (this.options.ajaxValidation === false) {
 			return;
 		}
 		replacetxt = typeOf(replacetxt) === 'null' ? '_time' : replacetxt;
-		if (typeOf(e) === 'event' || typeOf(e) === 'object') { // type object in
+		if (typeOf(e) === 'event' || typeOf(e) === 'object' || typeOf(e) === 'domevent') { // type object in
 			id = e.target.id;
 			// for elements with subelements eg checkboxes radiobuttons
 			if (subEl === true) {
@@ -607,10 +607,7 @@ var FbForm = new Class({
 			// available
 			id = e;
 		}
-		// for elements with subelements eg checkboxes radiobuttons
-		/*if (subEl === true) {
-			id = $(e.target).getParent('.fabrikSubElementContainer').id;
-		}*/
+
 		if (typeOf(document.id(id)) === 'null') {
 			return;
 		}
@@ -642,7 +639,13 @@ var FbForm = new Class({
 
 		d = this._prepareRepeatsForAjax(d);
 
-		var origid = el.origId ? el.origId : id;
+		// $$$ hugh - nasty hack, because validate() in form model will always use _0 for
+		// repeated id's
+		var origid = id;
+		if (el.origId) {
+			origid = el.origId + '_0';
+		}
+		//var origid = el.origId ? el.origId : id;
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&form_id=' + this.id;
 		var myAjax = new Request({
@@ -655,6 +658,9 @@ var FbForm = new Class({
 
 	_completeValidaton : function (r, id, origid) {
 		r = JSON.decode(r);
+		this.formElements.each(function (el, key) {
+			el.afterAjaxValidation();
+		});
 		Fabrik.fireEvent('fabrik.form.elemnet.validation.complete', [this, r, id, origid]);
 		if (this.result === false) {
 			this.result = true;
@@ -816,7 +822,9 @@ var FbForm = new Class({
 			//do ajax val only if onSubmit val ok
 			if (this.form) {
 				Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_LOADING'));
-				this.elementsBeforeSubmit(e);
+				// $$$ hugh - we already did elementsBeforeSubmit() this at the start of this func?
+				// (and we're going to call it again in getFormData()!)
+				//this.elementsBeforeSubmit(e);
 				// get all values from the form
 				var data = $H(this.getFormData());
 				data = this._prepareRepeatsForAjax(data);
@@ -842,11 +850,24 @@ var FbForm = new Class({
 						if (json.errors !== undefined) {
 							// for every element of the form update error message
 							$H(json.errors).each(function (errors, key) {
+								// $$$ hugh - nasty hackery alert!
+								// validate() now returns errors for joins in join___id___label format,
+								// but if repeated, will be an array under _0 name.
 								// replace join[id][label] with join___id___label
-								key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
+								// key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
 								if (this.formElements.has(key) && errors.flatten().length > 0) {
 									errfound = true;
-									this._showElementError(errors, key);
+									if (this.formElements[key].options.inRepeatGroup) {
+										for (e = 0; e < errors.length; e++) {
+											if (errors[e].flatten().length  > 0) {
+												var this_key = key.replace(/(_\d+)$/, '_' + e);
+												this._showElementError(errors[e], this_key);
+											}
+										}
+									}
+									else {
+										this._showElementError(errors, key);
+									}
 								}
 							}.bind(this));
 						}
@@ -894,6 +915,7 @@ var FbForm = new Class({
 								}
 							}
 						} else {
+							Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
 							// stop spinner
 							Fabrik.loader.stop('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
 						}
@@ -925,6 +947,9 @@ var FbForm = new Class({
 	// available
 
 	getFormData : function () {
+		this.formElements.each(function (el, key) {
+			el.onsubmit();
+		});
 		this.getForm();
 		var s = this.form.toQueryString();
 		var h = {};

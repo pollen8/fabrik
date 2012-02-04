@@ -3257,7 +3257,7 @@ class FabrikFEModelList extends JModelForm {
 				if (!$this->mustApplyFilter($selAccess)) {
 					continue;
 				}
-				$tmpfilter = strstr($filter, '_raw`') ? FabrikString::rtrimword( $filter, '_raw`').'`' : $filter;
+				$tmpfilter = strstr($filter, '_raw') ? FabrikString::rtrimword( $filter, '_raw') : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
 				if ($elementModel === false) {
 
@@ -3275,7 +3275,7 @@ class FabrikFEModelList extends JModelForm {
 				}
 				$filters['join'][] = $join;
 				$filters['search_type'][] = 'prefilter';
-				$filters['key'][] = $filter;
+				$filters['key'][] = $tmpfilter;
 				$filters['value'][] = $selValue;
 				$filters['origvalue'][] = $selValue;
 				$filters['sqlCond'][] = '';
@@ -4273,6 +4273,17 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function removeHeadingCompositKey($arr)
 	{
+		// $$$ hugh - horrible hack, but if we just ksort as-is, once we have more than 9 elements,
+		// it'll start sort 0,1,10,11,2,3 etc.  There's no doubt a cleaner way to do this,
+		// but for now ... rekey with a 0 padded prefix before we ksort
+		foreach ($arr as $key => $val) {
+			list($part1, $part2) = explode(":", $key);
+			$part1 = sprintf('%03d', $part1);
+			$newkey = $part1.':'.$part2;
+			$arr[$newkey] = $arr[$key];
+			unset($arr[$key]);
+		}
+
 		ksort($arr);
 		foreach ($arr as $key => $val) {
 			$newkey = array_pop(explode(":", $key));
@@ -6890,8 +6901,9 @@ class FabrikFEModelList extends JModelForm {
 
 	public function setRenderContext($id)
 	{
-		// $$$ rob if admin filter task = ilter and not list.filter
-		if (JRequest::getVar('task') == 'list.filter' || JRequest::getVar('task') == 'filter') {
+		$app = JFactory::getApplication();
+		// $$$ rob if admin filter task = filter and not list.filter
+		if (JRequest::getVar('task') == 'list.filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter')) {
 			$listref = JRequest::getVar('listref');
 			$listref = explode('_', $listref);
 			array_shift($listref);

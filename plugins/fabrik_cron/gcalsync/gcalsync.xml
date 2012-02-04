@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension group="fabrik_cron" method="upgrade" type="plugin" version="1.6">
+<extension group="fabrik_cron" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik Cron - GCal Sync</name>
 	<author>Hugh Messenger</author>
 	<creationDate>January 2012</creationDate>

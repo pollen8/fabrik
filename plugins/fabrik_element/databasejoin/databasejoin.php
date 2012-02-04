@@ -655,11 +655,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 
 		$id = $this->getHTMLId($repeatCounter);
+		// $$$ rob 24/05/2011 - add options per row
+		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 		//$$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 		//if ($this->canView()) {
 		if ($this->canUse()) {
 			$html = array();
-			$idname = $this->getFullName(false, true, false)."_id";
+			$idname = $this->getFullName(false, true, false) . "_id";
 			/*if user can access the drop down*/
 			switch ($displayType) {
 				case 'dropdown':
@@ -678,8 +680,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					break;
 				case 'checkbox':
 					$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
-					// $$$ rob 24/05/2011 - add options per row
-					$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 					$html[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 					//$joinids = $default == '' ? array() : explode(GROUPSPLITTER, $default);
 					$joinids = $default;
@@ -707,7 +707,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					break;
 				case 'multilist':
 					$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
-					$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="'.(int)$params->get('dbjoin_multilist_size', 6).'" multiple="true"', 'value', 'text', $defaults, $id);
+					if ($this->_editable) {
+						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="'.(int)$params->get('dbjoin_multilist_size', 6).'" multiple="true"', 'value', 'text', $defaults, $id);
+					} else {
+						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
+					}
+					$defaultLabel = implode("\n", $html);
 					break;
 				case 'auto-complete':
 					$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';

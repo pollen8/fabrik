@@ -18,10 +18,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 class plgFabrik_FormFirefox_contacts extends plgFabrik_Form {
 
 	/**
-	 */
-	var $_counter = null;
-
-	/**
 	 * process the plugin, called when form is loaded
 	 *
 	 * @param object $params
@@ -29,7 +25,7 @@ class plgFabrik_FormFirefox_contacts extends plgFabrik_Form {
 	 * @returns bol
 	 */
 
-	function onLoad( $params, &$formModel )
+	function onLoad($params, &$formModel)
 	{
 		$document = JFactory::getDocument();
 		$document->addScriptDeclaration("head.ready(function() {

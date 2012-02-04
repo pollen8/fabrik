@@ -95,6 +95,6 @@ class FabrikViewCron extends JView
 		}
 
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CRON_EDIT');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CRONS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_CRONS_EDIT'));
 	}
 }

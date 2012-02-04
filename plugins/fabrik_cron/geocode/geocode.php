@@ -20,8 +20,6 @@ require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.
 
 class plgFabrik_CronGeocode extends plgFabrik_Cron {
 
-	var $_counter = null;
-
 	function canUse()
 	{
 		return true;

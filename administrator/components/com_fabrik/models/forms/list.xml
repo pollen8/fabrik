@@ -340,6 +340,13 @@
 					<option value="1">JYES</option>
 			</field>
 			
+			<field name="show_displaynum" type="radio" default="1"
+			label="COM_FABRIK_FIELD_SHOW_DISPLAY_NUM_LABEL"
+			description="COM_FABRIK_FIELD_SHOW_DISPLAY_NUM_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
+			</field>
+			
 			<field name="showall-records" 
 				type="radio" 
 				default="0" 

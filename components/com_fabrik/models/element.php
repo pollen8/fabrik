@@ -1456,7 +1456,7 @@ class plgFabrik_Element extends FabrikPlugin
 	* @param string $node
 	* @param array $bits property => value
 	*/
-	
+
 	protected function buildInput($node = 'input', $bits = array())
 	{
 		$str = '<' . $node . ' ';
@@ -1466,7 +1466,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str .= '/>';
 		return $str;
 	}
-	
+
 	/**
 	 * helper function to build the property array used in buildInput()
 	 * @param int $repeatCounter
@@ -1519,7 +1519,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		return $bits;
 	}
-	
+
 	/**
 	 * get the id used in the html element
 	 * @param int repeat group counter
@@ -1856,7 +1856,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$v .= ($normal) ? '['.$counter.']' : '[]';
 		return $v;
 	}
-	
+
 	/**
 	 * can be overwritten by plugin class
 	 * Get the table filter for the element
@@ -1915,7 +1915,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" size="'.$size.'" value="'.$default.'" id="'.$id.'" />';
 				break;
-				
+
 				case "hidden":
 					$default = stripslashes($default);
 					$default = htmlspecialchars($default);
@@ -2222,7 +2222,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$filters = $this->getListModel()->getFilterArray();
 		$eval = JArrayHelper::getValue($filters, 'eval', array());
 		$eval = JArrayHelper::getValue($eval, $counter, FABRIKFILTER_TEXT);
-		
+
 		$condition = JArrayHelper::getValue($filters, 'condition', array());
 		$condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
 		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
@@ -2752,6 +2752,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+		
+			$uberTotal = 0;
+			foreach ($results2 as $pair) {
+				$uberTotal += $pair->value;
+			}
+			$uberObject = new stdClass();
+			$uberObject->value = $uberTotal;
+			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
+			$uberObject->class = 'splittotal';
+			$results2[] = $uberObject;
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'sum');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -2789,6 +2799,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+			
+			$uberTotal = 0;
+			foreach ($results2 as $pair) {
+				$uberTotal += $pair->value;
+			}
+			$uberObject = new stdClass();
+			$uberObject->value = $uberTotal / count($results2);
+			$uberObject->label = JText::_('COM_FABRIK_AVERAGE');
+			$uberObject->class = 'splittotal';
+			$results2[] = $uberObject;
+			
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'avg');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -2800,6 +2821,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$res = $this->formatCalcs($results, $calcLabel, $split);
 		return array($res, $results);
+	}
+	
+	/**
+	* @since 3.0.4
+	* get the sprintf format string
+	* @return string
+	*/
+	
+	public function getFormatString()
+	{
+		$params = $this->getParams();
+		return $params->get('text_format_string');
 	}
 
 	/**
@@ -2819,7 +2852,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$params = $this->getParams();
 		$splitMedian = $params->get('median_split', '');
 		$split = $splitMedian == '' ? false : true;
-		$format = $params->get('text_format_string');
+		$format = $this->getFormatString();
 		$res = '';
 		$calcLabel = $params->get('median_label', JText::_('COM_FABRIK_MEDIAN'));
 		$results = array();
@@ -2880,6 +2913,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+			
+			$uberTotal = 0;
+			foreach ($results2 as $pair) {
+				$uberTotal += $pair->value;
+			}
+			$uberObject = new stdClass();
+			$uberObject->value = $uberTotal / count($results2);
+			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
+			$uberObject->class = 'splittotal';
+			$results2[] = $uberObject;
+			
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -3041,13 +3085,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	protected function formatCalcs(&$results, $calcLabel, $split = false, $numberFormat = true, $sprintFFormat = true)
 	{
 		settype($results, 'array');
-		$res = '<span class="calclabel">'.$calcLabel.'</span>';
-		if ($split) {
-			$res .= '<br />';
-		}
+		$res = array();
+		$res[] = $split ? '<dl>' : '<ul class="fabrikRepeatData">';
+		$l = '<span class="calclabel">' . $calcLabel . '</span>';
+		$res[] = $split ? '<dt>'. $l . '</dt>' : '<li>' . $l;
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$format = $params->get('text_format_string');
+		$format = $this->getFormatString();
 		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
 		foreach ($results as $key => $o) {
 			$o->label = ($o->label == 'calc') ? '' : $o->label;
@@ -3059,10 +3103,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				$o->value = sprintf($format, $o->value);
 			}
 			$o->calLabel = $calcLabel;
-			$res .= '<span class="calclabel">'.$o->label.':</span> '.$o->value.'<br />';
+			$class = isset($o->class) ? ' class="' . $o->class . '"' : '';
+			if ($split) {
+				$res[] = '<dd' . $class . '><span class="calclabel">' . $o->label . ':</span> ' . $o->value . '</dd>';
+			} else {
+				$res[] = $o->value . '</li>';
+			}
 		}
 		ksort($results);
-		return $res;
+		$res[] = $split ? '</dl>' : '</ul>';
+		return implode("\n", $res);
 	}
 
 	/**
@@ -3121,6 +3171,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
+		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
 		$validationEls = array();
 		$validations = $this->getValidations();
 		if (!empty($validations) && $this->_editable) {
@@ -4293,14 +4344,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 	}
-	
+
 	/**
 	 * @since 3.0rc1
 	 * when we do ajax requests from the element - as the plugin controller uses the J dispatcher
-	 * the element hasnt loaded up itself, so any time you have a function onAjax_doSomething() call this 
+	 * the element hasnt loaded up itself, so any time you have a function onAjax_doSomething() call this
 	 * helper function first to load up the element. Otherwise things like parameters will not be loaded
 	 */
-	
+
 	protected function loadMeForAjax()
 	{
 		$this->_form = JModel::getInstance('form', 'FabrikFEModel');

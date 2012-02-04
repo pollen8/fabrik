@@ -17,11 +17,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 class plgFabrik_FormPaginate extends plgFabrik_Form {
 
 	/**
-	 * @var array of files to attach to email
-	 */
-	var $_counter = null;
-
-	/**
 	 * get the html to insert at the bottom of the form(non-PHPdoc)
 	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getBottomContent_result()
 	 */

@@ -21,8 +21,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormAutofill extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	/**
 	 * need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up

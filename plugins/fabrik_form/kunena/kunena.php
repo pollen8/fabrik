@@ -18,12 +18,9 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormKunena extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	var $vb_forum_field = '';
 	var $vb_path = '';
 	var $vb_globals = '';
-
 
 	/**
 	 * process the plugin, called when form is submitted
@@ -32,7 +29,7 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 	 * @param object form
 	 */
 
-	function onBeforeStore( &$params, &$formModel )
+	function onBeforeStore(&$params, &$formModel)
 	{
 		return;
 		jimport('joomla.filesystem.file');

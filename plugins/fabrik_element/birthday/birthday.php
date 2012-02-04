@@ -54,7 +54,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		if (!$this->_editable) {
 			if(!in_array($value, $aNullDates)) {
 				//avoid 0000-00-00
-				list($year,$month,$day) = explode('-',$value);
+				list($year,$month,$day) = strstr('-', $value) ? explode('-', $value) : explode(',', $value);;
 				$daydisp = str_replace($daysys,$daysimple,$day);
 				$monthdisp = str_replace($monthnumbers,$monthlabels,$month);
 				$thisyear = date('Y');
@@ -151,8 +151,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 			//$name already suffixed with [] as element hasSubElements = true
 			$str[] = JHTML::_('select.genericlist', $days, preg_replace('#(\[\])$#','[0]',$name), $attribs, 'value', 'text', $dayvalue);
-			$str[] = ' / '.JHTML::_('select.genericlist', $months, preg_replace('#(\[\])$#','[1]',$name), $attribs, 'value', 'text', $monthvalue);
-			$str[] = ' / '.JHTML::_('select.genericlist', $years, preg_replace('#(\[\])$#','[2]',$name), $attribs, 'value', 'text', $yearvalue);
+			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' ' .JHTML::_('select.genericlist', $months, preg_replace('#(\[\])$#','[1]',$name), $attribs, 'value', 'text', $monthvalue);
+			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' ' .JHTML::_('select.genericlist', $years, preg_replace('#(\[\])$#','[2]',$name), $attribs, 'value', 'text', $yearvalue);
 			$str[] = '</div>';
 			return implode("\n", $str);
 		}

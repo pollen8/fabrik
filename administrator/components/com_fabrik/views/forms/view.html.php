@@ -82,6 +82,6 @@ class FabrikViewForms extends JView
 			JToolBarHelper::preferences('com_fabrik');
 		}
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS', false, JText::_('JHELP_COMPONENTS_FABRIK_FORMS'));
 	}
 }

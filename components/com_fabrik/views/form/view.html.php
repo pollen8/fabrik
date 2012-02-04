@@ -272,7 +272,7 @@ class fabrikViewForm extends JView
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED')) {
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
-			$srcs = array('media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js', 
+			$srcs = array('media/com_fabrik/js/form.js', 'media/com_fabrik/js/element.js',
 			'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js');
 			//searching for ajax load form bug
 			//$srcs = array();
@@ -452,7 +452,7 @@ class fabrikViewForm extends JView
 		$script[] ="});";
 		$script[] = $actions;
 		$script[] =$vstr;
-		
+
 		//placholder test
 		$script[] = "new Form.Placeholder('.fabrikForm input');";
 		$script[] =$endJs;
@@ -527,13 +527,15 @@ class fabrikViewForm extends JView
 
 		$fields[] = '<input type="hidden" name="_packageId" value="'.$model->packageId.'" />';
 
-		if ($usekey = JRequest::getVar('usekey')) {
+		//if ($usekey = JRequest::getVar('usekey')) {
+		if ($usekey = FabrikWorker::getMenuOrRequestVar('usekey', '')) {
 
 			// $$$rob v's been set from -1 to the actual row id - so ignore usekyey not sure if we should comment this out
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
 
 			$fields[] = '<input type="hidden" name="usekey" value="'.$usekey.'" />';
-			if (empty($model->_data)) {
+			$pk_val = JArrayHelper::getValue($model->_data, FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key));
+			if (empty($pk_val)) {
 				$fields[] = '<input type="hidden" name="usekey_newrecord" value="1" />';
 			}
 		}

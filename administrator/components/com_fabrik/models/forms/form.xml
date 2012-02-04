@@ -165,7 +165,7 @@
 			
 			<field name="submit_button_label" 
 				type="text" 
-				default="Submit" 
+				default="Save" 
 				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL" 
 				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC" />
 			
@@ -355,7 +355,7 @@
 			
 			<field name="multipage_save" 
 				type="list" 
-				default="1" 
+				default="0" 
 				label="COM_FABRIK_FIELD_SPLIT_PAGE_SAVE_LABEL" 
 				description="COM_FABRIK_FIELD_SPLIT_PAGE_SAVE_DESC">
 					<option value="0">JNO</option>

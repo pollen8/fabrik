@@ -401,13 +401,14 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
+		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->_buildQueryJoin();
 			$whereSQL = $listModel->_buildQueryWhere();
-			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->nameQuote($table->db_table_name) . " $joinSQL $whereSQL";
 		} else {
 			return parent::getSumQuery($listModel, $label);
 		}
@@ -422,13 +423,14 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	protected function getAvgQuery(&$listModel, $label = "'calc'")
 	{
+		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->_buildQueryJoin();
 			$whereSQL = $listModel->_buildQueryWhere();
-			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->nameQuote($table->db_table_name) . " $joinSQL $whereSQL";
 		} else {
 			return parent::getAvgQuery($listModel, $label);
 		}
@@ -443,16 +445,29 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	protected function getMedianQuery(&$listModel, $label = "'calc'")
 	{
+		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		if ($fields[$this->getElement()->name]->Type == 'time') {
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->_buildQueryJoin();
 			$whereSQL = $listModel->_buildQueryWhere();
-			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM " . $db->nameQuote($table->db_table_name) . " $joinSQL $whereSQL";
 		} else {
 			return parent::getMedianQuery($listModel, $label);
 		}
+	}
+	
+	/**
+	 * @since 3.0.4
+	 * get the sprintf format string 
+	 * @return string
+	 */
+	
+	public function getFormatString()
+	{
+		$params = $this->getParams();
+		return $params->get('calc_format_string');
 	}
 }
 ?>

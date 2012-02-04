@@ -201,6 +201,14 @@ var FbElement =  new Class({
 		return true;
 	},
 	
+	/**
+	 * As ajax validations call onsubmit to get the correct date, we need to
+	 * reset the date back to the display date when the validation is complete
+	 */
+	afterAjaxValidation: function () {
+		
+	},
+	
 	cloned: function (c) {
 		//run when the element is cloned in a repeat group
 	},
@@ -294,7 +302,10 @@ var FbElement =  new Class({
 	
 	setorigId: function ()
 	{
-		if (this.options.repeatCounter > 0) {
+		// $$$ added inRepeatGroup option, as repeatCounter > 0 doesn't help
+		// if element is in first repeat of a group 
+		//if (this.options.repeatCounter > 0) {
+		if (this.options.inRepeatGroup) {
 			var e = this.options.element;
 			this.origId = e.substring(0, e.length - 1 - this.options.repeatCounter.toString().length);
 		}
@@ -344,6 +355,18 @@ var FbElement =  new Class({
 		namebits.splice(2, 1, i);
 		var r = namebits.join('][');
 		return r;
+	},
+	
+	/**
+	 * determine which duplicated instance of the repeat group the
+	 * element belongs to, returns false if not in a repeat gorup
+	 * other wise an integer
+	 */
+	getRepeatNum: function () {
+		if (this.options.inRepeatGroup === false) {
+			return false;
+		}
+		return this.element.id.split('_').getLast();
 	},
 	
 	select: function () {},

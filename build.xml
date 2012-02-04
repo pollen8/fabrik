@@ -22,7 +22,9 @@
 			</then>
 		</if>
 		
+		<!-- <input message="Previous version number:" addproperty="lastversion" /> -->
 		<input message="Component version:" addproperty="version" />
+		
 		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
 		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
 		<antcall target="fabrik.refreshfiles" />
@@ -320,10 +322,13 @@
 	
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/" />
 			<mkdir dir="${cfg.destdir}/pkg_fabrik/packages" />
+			<replace file="${cfg.destdir}/pkg_fabrik.xml" token="{version}" value="${version}"/>
 			<copy file="${cfg.destdir}/pkg_fabrik.xml" todir="${cfg.destdir}/pkg_fabrik" />
+			<replace file="${cfg.destdir}/pkg_fabrik.xml" token="{version}" value="${version}"/>
 			<copy file="${cfg.destdir}/com_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 			<copy file="${cfg.destdir}/mod_fabrik_form_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 			<copy file="${cfg.destdir}/mod_fabrik_list_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+			
 		</target>
 		
 		<target name="fabrik.plugin.cron.zip.copy">
@@ -563,20 +568,52 @@
 	      <format property="year" pattern="yyyy" locale="en,UK"/>
 	  </tstamp>
 	  
-		<replace dir="${cfg.destdir}" value="${version}">
-			<include name="**/*.xml"/>
-			<replacetoken>{version}</replacetoken>
-		</replace>
+		<xmltask todir="${cfg.destdir}">
+			<fileset dir="${cfg.destdir}">
+				<include name="**/*.xml"/>
+			</fileset>
+			 <replace path="/extension/version/text()" withText="${version}"/> 
+			 <replace path="/extension/creationDate/text()" withText="${createdate}" />
+			 <replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+		</xmltask>
 		
-		<replace dir="${cfg.destdir}" value="${createdate}">
-			<include name="**/*.xml"/>
-			<replacetoken>{createdate}</replacetoken>
-		</replace>
-		
-		<replace dir="${cfg.destdir}" value="${year}">
-			<include name="**/*.xml"/>
-			<replacetoken>{year}</replacetoken>
-		</replace>
+		<antcall target="xml.update.repoistory" />
+	</target>
+	
+	<target name="xml.update.repoistory">
+		<input message="Update repoistory xml files with version number?" addproperty="repository.xml.update" validargs="y,n" defaultvalue="y" />
+			<if>
+	 			<equals arg1="${repository.xml.update}" arg2="y" />
+				<then>
+					<!--  need to do /:node/:node as fabrik.xml sets a namespace (xmlns) -->
+				 	<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
+							<include name="**/administrator/components/com_fabrik/fabrik.xml"/>
+						</fileset>
+							<replace path="/:extension/:version/text()" withText="${version}"/> 
+							<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
+							<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+					</xmltask>
+					
+					<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
+							<include name="**/plugins/fabrik**/**/*.xml"/>
+						</fileset>
+							<replace path="/extension/version/text()" withText="${version}"/> 
+							<replace path="/extension/creationDate/text()" withText="${createdate}" />
+							<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+					</xmltask>
+					
+					<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
+							<include name="**/plugins/**/fabrik/*.xml"/>
+						</fileset>
+							<replace path="/extension/version/text()" withText="${version}"/> 
+							<replace path="/extension/creationDate/text()" withText="${createdate}" />
+							<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+					</xmltask>
+				</then>
+			</if>
 	</target>
 	
 </project>

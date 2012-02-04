@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension group="fabrik_element" method="upgrade" type="plugin" version="1.6">
+<extension group="fabrik_element" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik Element - file upload</name>
 	<author>Rob Clayburn</author>
 	<creationDate>January 2012</creationDate>
@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.0.3</version>
-	<description>Renders A File Upload Field</description>
+	<help url="PLG_ELEMENT_FILEUPLOAD_HELP_SERVER"/>
+	<description>PLG_ELEMENT_FILEUPLOAD_DESCRIPTION</description>
 	<files>
 		<filename plugin="fileupload">fileupload.php</filename>
 		<filename>adaptor.php</filename>

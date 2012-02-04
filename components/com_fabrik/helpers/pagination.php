@@ -36,6 +36,8 @@ class FPagination extends JPagination{
 	var $showAllOption = false;
 	
 	protected $listRef = null;
+	
+	public $showDisplayNum = true;
 
 	function setId($id)
 	{
@@ -60,10 +62,10 @@ class FPagination extends JPagination{
 		$list['limit'] = $this->limit;
 		$list['limitstart']	= $this->limitstart;
 		$list['total'] = $this->total;
-		$list['limitfield']	= $this->getLimitBox();
+		$list['limitfield']	= $this->showDisplayNum ? $this->getLimitBox() : '';
 		$list['pagescounter']	= $this->getPagesCounter();
 		if ($this->showTotal) {
-			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL_RECORDS') . ': '. $list['total'];
+			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL') . ': '. $list['total'];
 		}
 		$list['pageslinks']	= $this->getPagesLinks($listRef, $tmpl);
 
@@ -333,16 +335,15 @@ class FPagination extends JPagination{
 	function _list_footer($list)
 	{
 		// Initialize variables
-		$html = "<div class=\"list-footer\">\n";
-
-		$html .= "\n<div class=\"limit\">".JText::_('COM_FABRIK_DISPLAY_NUM').$list['limitfield']."</div>";
-		$html .= $list['pageslinks'];
-		$html .= "\n<div class=\"counter\">".$list['pagescounter']."</div>";
-
-		$html .= "\n<input type=\"hidden\" name=\"limitstart{$this->_id}\" id=\"limitstart{$this->_id}\" value=\"".$list['limitstart']."\" />";
-		$html .= "\n</div>";
-
-		return $html;
+		$html = array();
+		$html[] = '<div class="list-footer">';
+		$limitLabel = $this->showDisplayNum ? JText::_('COM_FABRIK_DISPLAY_NUM') : '';
+		$html[] = '<div class="limit">' . $limitLabel . $list['limitfield'] . '</div>';
+		$html[] = $list['pageslinks'];
+		$html[] = '<div class="counter">' . $list['pagescounter'] . '</div>';
+		$html[] = '<input type="hidden" name="limitstart' . $this->_id . '" id="limitstart' . $this->_id . '" value="' . $list['limitstart'] . '" />';
+		$html[] = '</div>';
+		return implode("\n", $html);
 	}
 
 }

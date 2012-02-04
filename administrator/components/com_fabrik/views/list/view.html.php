@@ -171,7 +171,7 @@ class FabrikViewList extends JView
 			JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
 		}
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_LISTS_EDIT'));
 	}
 
 	/**

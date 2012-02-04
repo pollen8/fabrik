@@ -17,6 +17,11 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik')) {
 $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_SITE.'/components/com_fabrik');
 
+//test if the system plugin is installed and published
+if (!defined('COM_FABRIK_FRONTEND')) {
+	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+}
+
 jimport('joomla.filesystem.file');
 JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
@@ -48,3 +53,4 @@ if (count($db->loadResult()) === 0) {
 //echo '<pre>';print_r($controller);
 $controller->execute(JRequest::getCmd('task', 'home.display'));
 $controller->redirect();
+?>

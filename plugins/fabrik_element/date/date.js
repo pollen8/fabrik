@@ -1,6 +1,12 @@
 var FbDateTime = new Class({
 	Extends: FbElement,
 	
+	/**
+	 * master date/time stored in this.cal (the js widget)
+	 * upon save we get a db formatted version of this date and put it into the date field
+	 * this dramitcally simplifies storing dates (no longer have to take account of formatting rules and/or
+	 * translations on the server side, as the widget has already handled it for us
+	 */
 	options: {
 		'dateTimeFormat': '', 
 		'calendarSetup': {
@@ -35,13 +41,37 @@ var FbDateTime = new Class({
 		this.watchButtons();
 		if (this.options.typing === false) {
 			this.disableTyping();
+		} else {
+			this.getDateField().addEvent('blur', function (e) {
+				var date_str = this.getDateField().value;
+				if (date_str !== '') {
+					//var d = new Date(date_str);
+					var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
+					this.setTimeFromField(d);
+					this.update(d);
+				}
+				else {
+					this.options.value = '';
+				}
+			}.bind(this));
 		}
+		this.makeCalendar();
+		//chrome wierdness where we need to delay the hiding if the date picker is hidden
+		var h = function () { 
+			this.cal.hide();
+		};
+		h.delay(100, this);
 		this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
-			if (this.cal) {
-				this.cal.show();
+			if (!this.cal.params.position) {
+				this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
 			} else {
-				this.makeCalendar();
+				this.cal.showAt(this.cal.params.position[0], params.position[1]);
 			}
+			this.cal.show();
+		}.bind(this));
+		Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
+			//fired when form failed after AJAX submit
+			this.afterAjaxValidation();
 		}.bind(this));
 	},
 	
@@ -82,14 +112,24 @@ var FbDateTime = new Class({
 			this.form.doElementValidation(this.options.element);
 		}
 	},
-	
+
 	onsubmit: function () {
 		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
 		//processing dates on the server.
 		var v = this.getValue();
-		this.update(v);
-		this.getDateField().value = v;
+		if (v !== '') {
+			this.update(v);
+			this.getDateField().value = v;
+		}
 		return true;
+	},
+	
+	/**
+	 * As ajax validations call onsubmit to get the correct date, we need to
+	 * reset the date back to the display date when the validation is complete
+	 */
+	afterAjaxValidation: function () {
+		this.update(this.getValue());
 	},
 	
 	makeCalendar: function () {
@@ -102,7 +142,8 @@ var FbDateTime = new Class({
 		var params = this.options.calendarSetup;
 		var tmp = ["displayArea", "button"];
 		
-		for (var i in tmp) {
+		// for (var i in tmp) {
+		for (i = 0; i < tmp.length; i++) {
 			if (typeof params[tmp[i]] === "string") {
 				params[tmp[i]] = document.getElementById(params[tmp[i]]);
 			}
@@ -144,12 +185,14 @@ var FbDateTime = new Class({
 		this.cal.setDateFormat(dateFmt);
 		this.cal.create();
 		this.cal.refresh();
-		//shows the calendar twice !
-		/*if (!params.position) {
+		this.cal.hide();
+		/*
+		if (!params.position) {
 			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
 		} else {
 			this.cal.showAt(params.position[0], params.position[1]);
-		}*/
+		}
+		*/
 	},
 
 	disableTyping : function () {
@@ -188,6 +231,9 @@ var FbDateTime = new Class({
 		}
 		this.getElement();
 		if (this.cal) {
+			if (this.getDateField().value === '') {
+				return '';
+			}
 			v = this.cal.date;
 		} else {
 			if (this.options.value === '') {
@@ -306,6 +352,7 @@ var FbDateTime = new Class({
 			this.minute = date.get('minutes');
 			this.stateTime();
 		}
+		this.cal.date = date;
 		this.getDateField().value = date.format(this.options.calendarSetup.ifFormat);
 	},
 	
@@ -505,10 +552,10 @@ var FbDateTime = new Class({
 
 	hideTime: function () {
 		this.timeActive = false;
-		this.dropdown.setStyles({
-			'display': 'none'
-		});
-		this.form.doElementValidation(this.element.id);
+		this.dropdown.hide();
+		if (this.options.validations !== false) {
+			this.form.doElementValidation(this.element.id);
+		}
 		Fabrik.fireEvent('fabrik.date.hidetime', this);
 		Fabrik.fireEvent('fabrik.date.select', this);
 	},
@@ -571,12 +618,14 @@ var FbDateTime = new Class({
 		this.options.calendarSetup.onClose = function (calendar) {
 			this.calClose(calendar);
 		}.bind(this);
+
 		
 	},
 
 	cloned : function (c) {
 		this.setUpDone = false;
 		this.hour = 0;
+		delete this.cal;
 		var button = this.element.getElement('img');
 		if (button) {
 			button.id = this.element.id + "_cal_img";
@@ -586,10 +635,8 @@ var FbDateTime = new Class({
 		this.options.calendarSetup.inputField = datefield.id;
 		this.options.calendarSetup.button = this.element.id + "_img";
 
-		if (this.options.hidden !== true) {
-			this.makeCalendar();
-			this.cal.hide();
-		}
+		this.makeCalendar();
+		this.cal.hide();
 		this.setUp();
 	}
 });

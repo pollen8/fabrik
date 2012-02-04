@@ -81,6 +81,6 @@ class FabrikViewConnections extends JView
 			JToolBarHelper::preferences('com_fabrik');
 		}
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CONNECTIONS');
+		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CONNECTIONS', false, JText::_('JHELP_COMPONENTS_FABRIK_CONNECTIONS'));
 	}
 }

@@ -17,27 +17,8 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
 
 class plgFabrik_FormPaypal extends plgFabrik_Form {
 
-	var $_counter = null;
-
 	var $user_agent = '';
 
-
-	function shouldProcess(&$params)
-	{
-		$condition = $params->get('paypal_conditon');
-
-		if ($condition == '') {
-			return true;
-		}
-		$w = new FabrikWorker();
-		$condition = trim($w->parseMessageForPlaceHolder($condition, $this->data));
-		$res = @eval($condition);
-		if (is_null($res)) {
-			return true;
-		}
-		return $res;
-
-	}
 	/**
 	 * process the plugin, called at end of form submission
 	 *
@@ -50,7 +31,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$app = JFactory::getApplication();
 		$data = $formModel->_fullFormData;
 		$this->data = $data;
-		if (!$this->shouldProcess($params)) {
+		if (!$this->shouldProcess('paypal_conditon')) {
 			return true;
 		}
 		$this->formModel = $formModel;

@@ -19,8 +19,6 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 
 	var $_result = true;
 
-	var $_counter = null;
-
 	/**
 	 * process the plugin, called afer form is submitted
 	 *

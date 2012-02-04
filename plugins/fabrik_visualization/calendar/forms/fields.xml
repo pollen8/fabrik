@@ -20,7 +20,10 @@
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar">
 			<field directory="plugins/fabrik_visualization/calendar/views/calendar/tmpl/" label="PLG_VISUALIZATION_CALENDAR_TEMPLATE_LABEL" name="calendar_layout" type="folderlist"/>
 				
-			<field default="1" description="SHOWLEGENDDESC" label="PLG_VISUALIZATION_CALENDAR_SHOW_LEGEND_LABEL" name="show_calendar_legend" type="radio">
+			<field name="show_calendar_legend" 
+				type="radio" 
+				default="1" label="PLG_VISUALIZATION_CALENDAR_SHOW_LEGEND_LABEL" 
+				description="PLG_VISUALIZATION_CALENDAR_SHOW_LEGEND_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
