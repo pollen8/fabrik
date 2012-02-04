@@ -755,19 +755,34 @@ var FbForm = new Class({
 			return !e.hasClass('fabrikMainError');
 		});
 		if (activeValidations.length > 0 && mainEr.hasClass('fabrikHide')) {
-			mainEr.removeClass('fabrikHide');
+		/*	mainEr.removeClass('fabrikHide');
 			myfx = new Fx.Tween(mainEr, {property: 'opacity',
 				duration: 500
-			}).start(0, 1);
+			}).start(0, 1);*/
+			this.showMainError(this.options.error);
 		}
 		if (activeValidations.length === 0) {
-			myfx = new Fx.Tween(mainEr, {property: 'opacity',
+			this.hideMainError();
+		}
+	},
+	
+	hideMainError: function () {
+		var mainEr = this.form.getElement('.fabrikMainError');
+		myfx = new Fx.Tween(mainEr, {property: 'opacity',
 				duration: 500,
 				onComplete: function () {
 					mainEr.addClass('fabrikHide');
 				}
 			}).start(1, 0);
-		}
+	},
+	
+	showMainError: function (msg) {
+		var mainEr = this.form.getElement('.fabrikMainError');
+		mainEr.set('html', msg);
+		mainEr.removeClass('fabrikHide');
+		myfx = new Fx.Tween(mainEr, {property: 'opacity',
+			duration: 500
+		}).start(0, 1);
 	},
 	
 	/** @since 3.0 get a form button name */
@@ -836,8 +851,14 @@ var FbForm = new Class({
 					'method': this.options.ajaxmethod,
 					onError: function (text, error) {
 						fconsole(text + ": " + error);
-					},
+						this.showMainError(error);
+						Fabrik.loader.stop('form_' + this.id, 'Error in returned JSON');
+					}.bind(this),
 					
+					onFailure: function (xhr) {
+						fconsole(xhr);
+						Fabrik.loader.stop('form_' + this.id, 'Ajax failure');
+					}.bind(this),
 					onComplete : function (json, txt) {
 						if (typeOf(json) === 'null') {
 							// stop spinner
