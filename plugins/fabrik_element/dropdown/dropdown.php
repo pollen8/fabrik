@@ -22,7 +22,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		//set elementlist params from dropdown params
 		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtodropdown', false));
 		$params->set('allowadd-onlylabel', (bool)$params->get('dd-allowadd-onlylabel', true));
-		$params->get('savenewadditions', (bool)$params->get('dd-savenewadditions', false));
+		$params->set('savenewadditions', (bool)$params->get('dd-savenewadditions', false));
 	}
 
 	/**
@@ -50,9 +50,9 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		if ($multiple == "1") {
 			$attribs 	.= ' multiple="multiple" size="'.$multisize.'" ';
 		}
-		$i 					= 0;
+		$i = 0;
 		$aRoValues 	= array();
-		$opts 			= array();
+		$opts = array();
 		foreach ($values as $tmpval) {
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES); //for values like '1"'
@@ -68,6 +68,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			foreach ($selected as $sel) {
 				if (!in_array($sel, $values) && $sel !== '') {
 					$opts[] = JHTML::_('select.option', $sel, $sel);
+					$aRoValues[] = $this->getReadOnlyOutput($sel, $sel);
 				}
 			}
 		}
