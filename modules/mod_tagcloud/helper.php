@@ -12,30 +12,29 @@ class modTagcloudHelper
 {
 	function getCloud(&$params)
 	{
+		$moduleclass_sfx = $params->get( 'moduleclass_sfx', '' );
+		$table = $params->get('table', '');
+		$column = $params->get('column', '');
+		$filter = $params->get('filter', '');
+		$url = $params->get('url', '');
 
-		$moduleclass_sfx 	= $params->get( 'moduleclass_sfx', '' );
-
-		$table						= $params->get( 'table', '' );
-		$column			 			= $params->get( 'column', '' );
-		$filter			 			= $params->get( 'filter', '' );
-		$url			 				= $params->get( 'url', '' );
-
-		$splitter		 			= $params->get( 'splitter', '' );
-		$alphabetically	 	= $params->get( 'alphabetically', '' );
-		$min	 						= intval( $params->get( 'min', 1 ));
-		$max			 				= intval( $params->get( 'max', 20 ));
-		$seperator 				= $params->get( 'seperator', '' );
-		$document =& JFactory::getDocument();
-		$db =& JFactory::getDBO();
-		$query = "SELECT $column FROM $table";
+		$splitter = $params->get('splitter', '');
+		$alphabetically = $params->get('alphabetically', '');
+		$min = (int)$params->get('min', 1);
+		$max = (int)$params->get('max', 20);
+		$seperator = $params->get('seperator', '');
+		$document = JFactory::getDocument();
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select($column)->from($table);
 		if ($filter != '') {
-			$query .= " WHERE $filter";
+			$query->wher($filter);
 		}
-		$db->setQuery( $query );
+		$db->setQuery($query);
 		$rows = $db->loadResultArray();
 
-		$oCloud = new tagCloud( $rows, $url, $min, $max, $seperator, $splitter );
-		return $oCloud->render( $alphabetically );
+		$oCloud = new tagCloud($rows, $url, $min, $max, $seperator, $splitter);
+		return $oCloud->render($alphabetically);
 	}
 }
 
@@ -57,21 +56,23 @@ class tagCloud{
 	 * @param int $min
 	 * @return tagCloud
 	 */
-	function tagCloud( $rows, $url,  $min = 1, $maxRecords = 20, $seperator = ' ... ', $splitter = ',' ){
+	
+	function tagCloud($rows, $url,  $min = 1, $maxRecords = 20, $seperator = ' ... ', $splitter = ',' )
+	{
 		$this->rows = $rows;
 		$this->url = $url;
 		$this->min = $min;
 		$this->maxRecords  = $maxRecords;
 		$this->splitter = $splitter;
 		$this->seperator = ' ' . $seperator . ' ';
-		foreach( $this->rows as $row ){
+		foreach ($this->rows as $row) {
 			$bits = explode( $this->splitter, $row );
-			foreach($bits as $bit){
+			foreach ($bits as $bit) {
 				$bit = trim($bit);
-				if($bit != ''){
-					if(array_key_exists( $bit, $this->countedRows)){
+				if ($bit != '') {
+					if (array_key_exists($bit, $this->countedRows)) {
 						$this->countedRows[$bit] = $this->countedRows[$bit] + 1;
-					}else{
+					} else {
 						$this->countedRows[$bit] = 1;
 					}
 				}
@@ -80,18 +81,18 @@ class tagCloud{
 
 	}
 
-	function render( $order = 0 ){
-
+	function render($order = 0)
+	{
 		arsort($this->countedRows);
 		//remove any that are less than min
-		foreach( $this->countedRows as $key=>$val){
-			if($val < $this->min ){
-				unset( $this->countedRows[$key] );
+		foreach ($this->countedRows as $key => $val) {
+			if ($val < $this->min) {
+				unset($this->countedRows[$key]);
 			}
 		}
 		//trim to the top records
 		$this->countedRows = array_slice( $this->countedRows, 0, $this->maxRecords);
-		switch( $order ){
+		switch ($order) {
 			case 0:
 			default:
 				//order size - asc
@@ -112,8 +113,9 @@ class tagCloud{
 		}
 
 		$cloud = array();
-		foreach($this->countedRows as $bit=>$count){
-			$cloud[] = "<a href='" . $this->url . $bit . "'><span class='cloud_" . $count . "'>". $bit . "</span></a>" . $this->seperator;
+		foreach ($this->countedRows as $bit=>$count) {
+			$url = strstr('%s', $this->url) ? sprintf($this->url, $bit) : $this->url . $bit;
+			$cloud[] = "<a href='" . $url . "'><span class='cloud_" . $count . "'>". $bit . "</span></a>" . $this->seperator;
 		}
 		return $cloud;
 	}
