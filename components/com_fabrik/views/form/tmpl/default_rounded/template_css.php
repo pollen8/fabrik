@@ -15,14 +15,15 @@ echo "
 	margin: 0;
 	padding:0;
 	text-shadow: 0 1px 0 #FFFFFF;
-  zoom: 1;
+  	zoom: 1;
 	text-transform: none;/*changed from uppercase*/
 	width:100%;
 	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
-		position:absolute;	border-radius: 10px 10px 0px 0px; /*added rounded border*/
+		position:absolute;	
+	border-radius: 10px 10px 0px 0px; /*added rounded border*/
 }
 
 /*Here is the styling for your group intro*/
@@ -42,7 +43,8 @@ echo "
 #{$view}_$c{
 	width:100%;
 	background-color:#FAFAFA;
-	border:1px solid #DDDDDD;		border-radius: 10px; /*added rounded border*/
+	border:1px solid #DDDDDD;		
+	border-radius: 10px; /*added rounded border*/
 }
 
 /*This controls the padding of the title of your form*/
@@ -56,7 +58,8 @@ echo "
 	margin:10px 10px;/*changed top margin from 5px to 10px*/
 	position:relative;
 	padding:0;
-	border:1px solid #DDDDDD;		border-radius: 10px 10px 0px 0px; /*added rounded border*/
+	border:1px solid #DDDDDD;
+	border-radius: 10px 10px 0px 0px; /*added rounded border*/
 }
 
 /*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/  
@@ -94,7 +97,7 @@ echo "
 }
 
 /*This controls styling of your google maps elements - needs clarification*/
-.googlemap .fabrikSubElementContainer > div{
+	.googlemap .fabrikSubElementContainer > div{
 	-mox-box-flex: 1;
 	-webkit-box-flex: 1;
 	box-flex: 1;
@@ -110,7 +113,7 @@ echo "
 /* END : label spacing for chxbox, radios */
 
 /*This controls the styling of the tips box that is associated with any of your elements*/
-.floating-tip {
+	.floating-tip {
 	background-color: #fff;
 	font-weight: bold;
 	font-size: 11px;
@@ -148,7 +151,8 @@ echo "
 	padding:10px;
 	clear:left;
 	margin:5px 10px 10px; /*added bottom margin*/
-	border:1px solid #DDDDDD;		border-radius: 0px 0px 10px 10px; /*added rounded border*/
+	border:1px solid #DDDDDD;		
+	border-radius: 0px 0px 10px 10px; /*added rounded border*/
 }
 
 /*This controls the spacing between the buttons at the bottom of your form, for more information on the input tag see http://www.w3schools.com/html/html_forms.asp*/
