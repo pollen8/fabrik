@@ -18,9 +18,13 @@ var Autofill = new Class({
 	
 	initialize: function (options) {
 		this.setOptions(options);
-		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
-			this.setUp(form);	
-		}.bind(this));
+		if (Browser.ie) {
+			this.setUp(Fabrik.blocks['form_' + this.options.formid]);
+		} else {
+			Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+				this.setUp(form);	
+			}.bind(this));
+		}
 	},
 	
 	setUp: function (form) {
