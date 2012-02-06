@@ -26,7 +26,7 @@ var FbNotes = new Class({
 		this.field = this.element.getElement('.fabrikinput');
 		var msg = this.element.getElement('div'); 
 		msg.makeResizable({
-			'modifiers': {x:false, y:'height'},
+			'modifiers': {x: false, y: 'height'},
 			'handle': this.element.getElement('.noteHandle')
 		});
 		this.element.getElement('.noteHandle').setStyle('cursor', 'all-scroll');

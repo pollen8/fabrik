@@ -1160,7 +1160,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		/* $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
 		 used in prefilter dropdown in admin to allow users to prefilter on raw db join value */
-
+		$str = '';
 		$params = $this->getParams();
 		$db = JFactory::getDBO();
 		if ($type == 'querystring') {
