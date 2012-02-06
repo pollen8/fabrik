@@ -14,6 +14,8 @@
 		<filename>update_col.js</filename>
 		<filename>update_col-min.js</filename>
 		<filename>index.html</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
 	</files>
 	
 </install>

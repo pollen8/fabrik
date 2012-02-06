@@ -558,6 +558,8 @@ EOD;
 			if (FabrikHelperHTML::inAjaxLoadedPage()) {
 				// 17/10/2011 (firefox) retesting loading this in ajax page as without it Class is not available? so form class doesnt load
 				JHtml::_('behavior.framework', true);
+				//$$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
+				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
 			}
 
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {

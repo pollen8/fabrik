@@ -15,3 +15,5 @@ Slimbox.scanPage = function() {
 	});
 };
 window.addEvent("domready", Slimbox.scanPage);
+
+Fabrik.addEvent('fabrik.list.update', Slimbox.scanPage);
