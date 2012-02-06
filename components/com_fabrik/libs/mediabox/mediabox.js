@@ -550,3 +550,4 @@ Mediabox.scanPage = function() {
 	});
 };
 window.addEvent("domready", Mediabox.scanPage);
+Fabrik.addEvent('fabrik.list.update', Mediabox.scanPage);
