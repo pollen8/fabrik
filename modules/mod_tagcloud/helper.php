@@ -48,7 +48,7 @@ class tagCloud{
 	var $splitter = ',';
 	var $min = '1'; // min number of matches at which tag is shown
 	var $maxRecords = 20;
-	
+
 	/**
 	 * constructor
 	 * @param array $rows
@@ -56,7 +56,7 @@ class tagCloud{
 	 * @param int $min
 	 * @return tagCloud
 	 */
-	
+
 	function tagCloud($rows, $url,  $min = 1, $maxRecords = 20, $seperator = ' ... ', $splitter = ',' )
 	{
 		$this->rows = $rows;
@@ -114,7 +114,7 @@ class tagCloud{
 
 		$cloud = array();
 		foreach ($this->countedRows as $bit=>$count) {
-			$url = strstr('%s', $this->url) ? sprintf($this->url, $bit) : $this->url . $bit;
+			$url = strstr($this->url, '%s') ? str_replace('%s', $bit, $this->url) : $this->url . $bit;
 			$cloud[] = "<a href='" . $url . "'><span class='cloud_" . $count . "'>". $bit . "</span></a>" . $this->seperator;
 		}
 		return $cloud;
