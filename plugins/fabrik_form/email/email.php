@@ -141,7 +141,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 		$attach_type = $params->get('email_attach_type', '');
 		$config = JFactory::getConfig();
-		$attach_fname = $config->getValue('config.tmp_path').DS.uniqid().'.'.$attach_type;
+		$attach_fname = $config->getValue('config.tmp_path') . DS . uniqid() . '.' . $attach_type;
 		/* Send email*/
 
 		foreach ($email_to as $email) {
@@ -153,7 +153,10 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				$thisAttachments = $this->_aAttachments;
 				$this->data['emailto'] = $email;
 				//see if we can load a user for the email
-				$db->setQuery("SELECT id FROM #__users WHERE email = ". $db->Quote($email));
+				$query = $db->getQuery(true);
+				//todo move htis out of foreach loop - to reduce queries
+				$query->select('id')->from('#__users')->where('email = ' . $db->Quote($email));
+				$db->setQuery($query);
 				$userid = $db->loadResult();
 				$thisUser = JFactory::getUser($userid);
 
@@ -171,7 +174,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
 				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
-				
+				echo "<pre>";print_r($mail);
 				if (JFile::exists($attach_fname)) {
 					JFile::delete($attach_fname);
 				}
@@ -179,7 +182,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
 			}
 		}
-
+exit;
 		return true;
 	}
 
@@ -228,7 +231,6 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 						if (is_array($val)) {
 							$val = implode(",", $val);
 						}
-						//$aVals = explode(GROUPSPLITTER, $val );
 						$aVals = FabrikWorker::JSONtoData($val, true);
 						foreach ($aVals as $v) {
 							$file = $elementModel->addEmailAttachement($v);
