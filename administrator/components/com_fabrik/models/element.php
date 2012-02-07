@@ -532,7 +532,10 @@ class FabrikModelElement extends JModelAdmin
 		$user = JFactory::getUser();
 		$app = JFactory::getApplication();
 
+		$new = $data['id'] == 0 ? true : false;
+
 		$params = $data['params'];
+		$data['name'] = FabrikString::iclean($data['name']);
 		$name = $data['name'];
 
 		$params['validations'] = JArrayHelper::getValue($data, 'validationrule', array());
@@ -540,7 +543,7 @@ class FabrikModelElement extends JModelAdmin
 
 		$row = $elementModel->getElement();
 
-		if ($data['id'] === 0) {
+		if ($new) {
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 		}
@@ -566,7 +569,7 @@ class FabrikModelElement extends JModelAdmin
 		//only update the element name if we can alter existing columns, otherwise the name and
 		//field name become out of sync
 
-		if ($listModel->canAlterFields() || $id == 0) {
+		if ($listModel->canAlterFields() || $new) {
 			$data['name'] = $name;
 		} else {
 			$data['name'] = JRequest::getVar('name_orig', '', 'post', 'cmd');
@@ -603,7 +606,6 @@ class FabrikModelElement extends JModelAdmin
 
 		$cond = 'group_id = '.(int)$row->group_id;
 
-		$new = $data['id'] == 0 ? true : false;
 		if ($new) {
 			$data['ordering'] = $row->getNextOrder($cond);
 		}
@@ -659,7 +661,7 @@ class FabrikModelElement extends JModelAdmin
 			$this->updateIndexes($elementModel, $listModel, $row);
 		}
 
-		
+
 		$return = parent::save($data);
 		if ($return) {
 			$this->updateJavascript($data);
