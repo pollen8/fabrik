@@ -51,7 +51,7 @@ var Autofill = new Class({
 			if (!this.element) {
 				fconsole('autofill - couldnt find element to observe');
 			} else {
-				var elEvnt = this.element.element.get('tag') === 'select' ? 'change' : 'blur';
+				var elEvnt = this.element.getBlurEvent();
 				this.form.dispatchEvent('', this.element.strElement, elEvnt, evnt);
 			}
 		} else {

@@ -83,6 +83,13 @@ var FbDatabasejoin = new Class({
 		e.stop();
 	},
 	
+	getBlurEvent: function () {
+		if (this.options.display_type === 'auto-complete') {
+			return 'change'; 
+		}
+		return this.parent();
+	},
+	
 	appendInfo: function (data) {
 		var rowid = data.rowid;
 		var formid = this.options.formid;
@@ -378,7 +385,12 @@ var FbDatabasejoin = new Class({
 	},
 	
 	getAutoCompleteLabelField: function () {
-		return this.element.findClassUp('fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
+		var p = this.element.findClassUp('fabrikElement');
+		var f = p.getElement('input[name=' + this.element.id + '-auto-complete]');
+		if (typeOf(f) === 'null') {
+			f = p.getElement('input[id=' + this.element.id + '-auto-complete]');
+		}
+		return f;
 	},
 	
 	addNewEventAux: function (action, js) {

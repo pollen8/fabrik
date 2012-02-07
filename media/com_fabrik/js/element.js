@@ -369,6 +369,10 @@ var FbElement =  new Class({
 		return this.element.id.split('_').getLast();
 	},
 	
+	getBlurEvent: function () {
+		return this.element.get('tag') === 'select' ? 'change' : 'blur';
+	},
+	
 	select: function () {},
 	focus: function () {}
 });
