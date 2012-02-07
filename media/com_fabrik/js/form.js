@@ -510,6 +510,7 @@ var FbForm = new Class({
 		oEl.form = this;
 		oEl.groupid = gid;
 		this.formElements.set(elId, oEl);
+		Fabrik.fireEvent('fabrik.form.element.added', [this, elId, oEl]);
 		// $$$ hugh - moved this to addElements, see comment above
 		/*
 		try {
@@ -1355,8 +1356,8 @@ var FbForm = new Class({
 
 		clone.fade(1);
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
-		// note I commented out the increment of c a few lines above
-		Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, c]);
+		// note I commented out the increment of c a few lines above//duplicate
+		Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 		this.unwatchGroupButtons();
 		this.watchGroupButtons();
