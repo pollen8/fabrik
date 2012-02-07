@@ -3932,7 +3932,6 @@ class FabrikFEModelList extends JModelForm {
 		$counter = 0;
 		if (array_key_exists('key', $filters)) {
 			foreach ($filters['key'] as $key) {
-				echo "key = $key <br>";
 
 				foreach ($elementModels as $elementModel) {
 					$testkey = FabrikString::safeColName($elementModel->getFullName(false, false, false));

@@ -102,7 +102,11 @@ class FabrikControllerList extends JController
 		// $$$ rob 28/12/20111 changed from clearfilters as clearfilters removes jpluginfilters (filters
 		// set by content plugin which we want to remain sticky. Otherwise list clear button removes the 
 		// content plugin filters
-		JRequest::setVar('resetfilters', 1);
+		//JRequest::setVar('resetfilters', 1);
+		
+		// $$ rob 07/02/2012 if reset filters set in the menu options then filters not cleared
+		// so instead use replacefilters which doesnt look at the menu item parameters.
+		JRequest::setVar('replacefilters', 1);
 		$this->filter();
 	}
 

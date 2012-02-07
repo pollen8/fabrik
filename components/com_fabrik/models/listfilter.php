@@ -109,7 +109,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$this->_request = $filters;
 		FabrikHelperHTML::debug($this->_request, 'filter array');
 		$this->checkAccess($filters);
-			echo "<pre>";print_r($filters);echo "</pre>";
+		// echo "<pre>";print_r($filters);echo "</pre>";
 		return $filters;
 	}
 
