@@ -435,6 +435,10 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 							$value = $data['join'][$joinid][$rawname];
 						}
 					}
+					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0]))) {
+						// fix for http://fabrikar.com/forums/showthread.php?t=23568&page=2
+						$value = $value[0];
+					}
 				}
 			} else {
 				if ($groupModel->canRepeat()) {
