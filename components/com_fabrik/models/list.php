@@ -3827,12 +3827,14 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$list = $this->getTable();
 		$opts = new stdClass();
-		$opts->conditionList = FabrikHelperHTML::conditonList($this->getRenderContext(), '');
+		$listRef = $this->getRenderContext();
+		$opts->conditionList = FabrikHelperHTML::conditonList($listRef, '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
-		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getRenderContext().'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
-		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getRenderContext().'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
+		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef .'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
+		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'. $listRef .'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
+		$opts->listref = $listRef;
 		$opts->counter = count($this->getadvancedSearchRows()) - 1;
 		$elements = $this->getElements();
 		$arr = array();
@@ -3898,9 +3900,9 @@ class FabrikFEModelList extends JModelForm {
 				$tmp = array();
 				foreach (array_keys($filters) as $k) {
 					if (array_key_exists($k, $advanced)) {
-						$advanced[$k][] = ($filters[$k][$i]);
+						$advanced[$k][] = $filters[$k][$i];
 					} else {
-						$advanced[$k] =  array_key_exists($i, $filters[$k]) ? array(($filters[$k][$i])) : '';
+						$advanced[$k] = array_key_exists($i, $filters[$k]) ? array(($filters[$k][$i])) : '';
 					}
 				}
 			}
@@ -3923,13 +3925,14 @@ class FabrikFEModelList extends JModelForm {
 		$elementModels = $this->getElements();
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().'][';
-		$type = '<input type="hidden" name="'.$prefix.'search_type][]" value="advanced" />';
-		$grouped = '<input type="hidden" name="'.$prefix.'grouped_to_previous][]" value="0" />';
+		$type = '<input type="hidden" name="' . $prefix . 'search_type][]" value="advanced" />';
+		$grouped = '<input type="hidden" name="' . $prefix . 'grouped_to_previous][]" value="0" />';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
 		if (array_key_exists('key', $filters)) {
 			foreach ($filters['key'] as $key) {
+				echo "key = $key <br>";
 
 				foreach ($elementModels as $elementModel) {
 					$testkey = FabrikString::safeColName($elementModel->getFullName(false, false, false));

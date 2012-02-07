@@ -68,8 +68,8 @@ AdvancedSearch = new Class({
 		var tds = clone.getElements('td');
 		tds[1].empty().set('html', this.options.elementList);
 		tds[1].adopt([
-			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listid + '][search_type][]', 'value': 'advanced'}),
-			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listid + '][grouped_to_previous][]', 'value': '0'})
+			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listref + '][search_type][]', 'value': 'advanced'}),
+			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listref + '][grouped_to_previous][]', 'value': '0'})
 		]);
 		tds[2].empty().set('html', this.options.statementList);
 		tds[3].empty();
