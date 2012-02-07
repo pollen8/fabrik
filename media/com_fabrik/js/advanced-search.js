@@ -96,13 +96,16 @@ AdvancedSearch = new Class({
 		}
 	},
   
+	/**
+	 * removes all rows except for the first one, whose values are reset to empty
+	 */
 	resetForm: function () {
 		var table = document.id('advanced-search-table');
 		if (!table) {
 			return;
 		}
 		table.getElements('tbody tr').each(function (tr, i) {
-			if (i > 1) {
+			if (i >= 1) {
 				tr.dispose();
 			}
 			if (i === 0) {
