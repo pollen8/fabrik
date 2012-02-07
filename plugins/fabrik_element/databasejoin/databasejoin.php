@@ -717,7 +717,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				case 'auto-complete':
 					$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';
 					$html[] = '<input type="text" size="20" name="'.$autoCompleteName.'" id="'.$id.'-auto-complete" value="'.$defaultLabel.'" class="fabrikinput inputbox autocomplete-trigger"/>';
-					$html[] = '<input type="hidden" size="20" name="'.$thisElName.'" id="'.$id.'" value="'.JArrayHelper::getValue($default, 0, '').'"/>';
+					//$$$ rob - class property required when cloning repeat groups - don't remove
+					$html[] = '<input type="hidden" class="fabrikinput" size="20" name="'.$thisElName.'" id="'.$id.'" value="'.JArrayHelper::getValue($default, 0, '').'"/>';
 					break;
 			}
 
