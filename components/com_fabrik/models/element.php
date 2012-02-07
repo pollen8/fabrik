@@ -2919,7 +2919,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				$uberTotal += $pair->value;
 			}
 			$uberObject = new stdClass();
-			$uberObject->value = $uberTotal / count($results2);
+			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
 			$results2[] = $uberObject;
