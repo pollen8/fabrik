@@ -83,6 +83,9 @@
 									<option value="not_in">NOT IN</option>
 									<option value="earlierthisyear">COM_FABRIK_EARLIER_THIS_YEAR</option>
 									<option value="laterthisyear">COM_FABRIK_LATER_THIS_YEAR</option>
+									<option value="yesterday">COM_FABRIK_YESTERDAY</option>
+									<option value="today">COM_FABRIK_TODAY</option>
+									<option value="tomorrow">COM_FABRIK_TOMORROW</option>
 							</field>
 							
 							<field name="filter-value" 
