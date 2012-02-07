@@ -141,8 +141,9 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$where[] = $db->nameQuote($field) . ' = ' . $db->Quote($value);
 		
 		$fk = $params->get('join_fk_column', '');
-		if ($fk !== '') {
-			$where[] = $db->nameQuote($fk) . ' = ' . $this->getFormModel()->getRowId();
+		$rowid = $this->getFormModel()->getRowId();
+		if ($fk !== '' && $rowid != '') {
+			$where[] = $db->nameQuote($fk) . ' = ' . $rowid;
 		}
 		if ($this->loadRow != '') {
 			$pk = $db->nameQuote($this->getJoin()->table_join_alias) . '.' .  $db->nameQuote($params->get('join_key_column')) ; 
