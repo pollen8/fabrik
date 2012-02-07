@@ -205,8 +205,8 @@ var ColourPicker = new Class({
 
 	setOutputs : function (output) {
 		this.outputs = {};
-		this.outputs.backgrounds = (this.element.getParent('.fabrikElementContainer').getElements('.colourpicker_bgoutput'));
-		this.outputs.foregrounds = (this.element.getParent('.fabrikElementContainer').getElements('.colourpicker_output'));
+		this.outputs.backgrounds = this.getContainer().getElements('.colourpicker_bgoutput');
+		this.outputs.foregrounds = this.getContainer().getElements('.colourpicker_output');
 		this.outputs.backgrounds.each(function (i) {
 			i.addEvent('click', this.toggleWidget.bindWithEvent(this));
 		}.bind(this));

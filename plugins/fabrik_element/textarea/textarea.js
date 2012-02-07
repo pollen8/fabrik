@@ -24,8 +24,8 @@ var FbTextarea = new Class({
 			return;
 		}
 		if (this.options.editable === true) {
-			var c = this.element.getParent('.fabrikElementContainer');
-			if (c === 'null' || typeOf(c) === 'null' || c === false) {
+			var c = this.getContainer();
+			if (c === false) {
 				fconsole('no fabrikElementContainer class found for textarea');
 				return;
 			}
@@ -91,7 +91,7 @@ var FbTextarea = new Class({
 	
 	informKeyPress: function ()
 	{
-		var charsleftEl = this.element.getParent('.fabrikElementContainer').getElement('.fabrik_characters_left');
+		var charsleftEl = this.getContainer().getElement('.fabrik_characters_left');
 		var content = this.getContent();
 		var charsLeft =  this.options.max - (content.length + 1);
 		if (charsLeft < 0) {
