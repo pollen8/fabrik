@@ -144,9 +144,6 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		$attach_fname = $config->getValue('config.tmp_path').DS.uniqid().'.'.$attach_type;
 		/* Send email*/
 
-		// Get a JMail instance
-		$mail = JFactory::getMailer();
-		
 		foreach ($email_to as $email) {
 			$email = trim($email);
 			if (empty($email)) {
@@ -171,6 +168,8 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 					}
 
 				}
+				// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
+				$mail = JFactory::getMailer();
 				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
 				
 				if (JFile::exists($attach_fname)) {
