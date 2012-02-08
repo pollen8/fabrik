@@ -93,7 +93,7 @@ var FbCascadingdropdown = new Class({
 			var opts;
 			
 			if (this.options.showDesc === true) {
-				var c = this.element.getParent('.fabrikElementContainer').getElement('.dbjoin-description');
+				var c = this.getContainer().getElement('.dbjoin-description');
 				c.empty();
 			}
 			
@@ -187,7 +187,7 @@ var FbCascadingdropdown = new Class({
 			return;
 		}
 		var v = document.id(e.target).selectedIndex;
-		var c = this.element.getParent('.fabrikElementContainer').getElement('.dbjoin-description');
+		var c = this.getContainer().getElement('.dbjoin-description');
 		var show = c.getElement('.description-' + v);
 		c.getElements('.notice').each(function (d) {
 			if (d === show) {

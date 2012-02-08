@@ -83,6 +83,13 @@ var FbDatabasejoin = new Class({
 		e.stop();
 	},
 	
+	getBlurEvent: function () {
+		if (this.options.display_type === 'auto-complete') {
+			return 'change'; 
+		}
+		return this.parent();
+	},
+	
 	appendInfo: function (data) {
 		var rowid = data.rowid;
 		var formid = this.options.formid;
@@ -254,13 +261,20 @@ var FbDatabasejoin = new Class({
 				this.element.value = val;
 				if (this.options.display_type === 'auto-complete') {
 					//update the field label as well (do ajax as we dont know what the label should be (may included concat etc))
-					var myajax = new Ajax({
-						'url': Fabrik.liveSite + 'index.php?option=com_fabrik&view=form&format=raw&fabrik=' + this.form.id + '&rowid=' + val,
+					var myajax = new Request.JSON({
 						'options': {
 							'evalScripts': true
 						},
-						onSuccess: function (r) {
-							r = Json.evaluate(r.stripScripts());
+						data: {
+							'option': 'com_fabrik',
+							'view': 'form', 
+							'format': 'raw',
+							'formid': this.form.id,
+							'rowid': val
+						},
+						onComplete : function (json, txt) {
+							//r = Json.evaluate(r.stripScripts());
+							var r = json;
 							var v = r.data[this.options.key];
 							var l = r.data[this.options.label];
 							if (typeOf(l) !== 'null') {
@@ -286,9 +300,12 @@ var FbDatabasejoin = new Class({
 		this.options.value = val;
 	},
 	
+	/**
+	 * optionally show a description which is another field from the joined table.
+	 */
 	showDesc: function (e) {
 		var v = e.target.selectedIndex;
-		var c = this.element.getParent('.fabrikElementContainer').getElement('.dbjoin-description');
+		var c = this.getContainer().getElement('.dbjoin-description');
 		var show = c.getElement('.description-' + v);
 		c.getElements('.notice').each(function (d) {
 			if (d === show) {
@@ -373,12 +390,17 @@ var FbDatabasejoin = new Class({
 			var f = this.getContainer().getElement('.autocomplete-trigger');
 			f.id = this.element.id + '-auto-complete';
 			document.id(f.id).value = '';
-			new FabAutocomplete(this.element.id, this.options.autoCompleteOpts);
+			new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
 		}
 	},
 	
 	getAutoCompleteLabelField: function () {
-		return this.element.findClassUp('fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
+		var p = this.element.findClassUp('fabrikElement');
+		var f = p.getElement('input[name=' + this.element.id + '-auto-complete]');
+		if (typeOf(f) === 'null') {
+			f = p.getElement('input[id=' + this.element.id + '-auto-complete]');
+		}
+		return f;
 	},
 	
 	addNewEventAux: function (action, js) {

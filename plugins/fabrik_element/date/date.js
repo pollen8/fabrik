@@ -210,7 +210,7 @@ var FbDateTime = new Class({
 					return;
 				}
 				if (e.target.hasClass('timeField')) {
-					this.element.getParent('.fabrikElementContainer').getElement('.timeButton').fireEvent('click');
+					this.getContainer().getElement('.timeButton').fireEvent('click');
 				} else {
 					this.options.calendarSetup.inputField = e.target.id;
 					this.options.calendarSetup.button = this.element.id + "_img";
@@ -367,7 +367,7 @@ var FbDateTime = new Class({
 	 * get time time field input
 	 */
 	getTimeField: function () {
-		this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
+		this.timeElement = this.getContainer().getElement('.timeField');
 		return this.timeElement;
 	},
 	
@@ -375,7 +375,7 @@ var FbDateTime = new Class({
 	 * get time time button img
 	 */
 	getTimeButton: function () {
-		this.timeButton = this.element.getParent('.fabrikElementContainer').getElement('.timeButton');
+		this.timeButton = this.getContainer().getElement('.timeButton');
 		return this.timeButton;
 	},
 

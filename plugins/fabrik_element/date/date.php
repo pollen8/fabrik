@@ -718,7 +718,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 				if (is_array($value)) {
 					//'date' should now contain the time, as we include in on js onsubmit() method
-					$value = $value['date'];
+					$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
 					/* echo "get value<pre> ";print_r($value);
 					//TIMEDATE option set - explode with space rather than comma
 					//url decode if it comes from ajax calendar form
@@ -1303,6 +1303,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				break;
 			case 'laterthisyear':
 				$query = " DAYOFYEAR($key) >= DAYOFYEAR($value) ";
+				break;
+			case 'today':
+				$query = " ($key >= CURDATE() and $key < CURDATE() + INTERVAL 1 DAY) ";
+				break;
+			case 'yesterday':
+				$query = " ($key >= CURDATE() - INTERVAL 1 DAY and $key < CURDATE()) ";
+				break;
+			case 'tomorrow':
+				$query = " ($key >= CURDATE() + INTERVAL 1 DAY  and $key < CURDATE() + INTERVAL 2 DAY ) ";
 				break;
 			default:
 				$params = $this->getParams();

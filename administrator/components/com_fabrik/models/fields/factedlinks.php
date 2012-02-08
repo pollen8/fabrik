@@ -90,8 +90,8 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$listreturn[] = "<td class=\"handle\"></td>";
 			$listreturn[] = "<td>".JHTML::_('tooltip', $hover, $label, 'tooltip.png', $label);
 
-			$yeschecked = JArrayHelper::getValue($linkedLists, $key, 0) != '0' ? 'checked="checked"' : $checked = '';
-			$nochecked = $yeschecked == '' ? 'checked="checked"' : $checked = '';
+			$yeschecked = JArrayHelper::getValue($linkedLists, $key, 0) != '0' ? 'checked="checked"' : '';
+			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$listreturn[] = "<td>";
 			$listreturn[] = '<label><input name="'.$this->name.'[linkedlist][' . $key . ']" value="0" ' .$nochecked . ' type="radio" />' . JText::_('JNO') . '</label>';
@@ -106,8 +106,8 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$listreturn[] = '<input name="'.$this->name.'[linkedlisttext][' . $key . ']" value="' . @$listLinkTexts[$key] .'" size="16" />';
 			$listreturn[] = "</td>";
 
-			$yeschecked = JArrayHelper::getValue($listLinkTypes, $key, 0) != '0' ? 'checked="checked"': $checked = '';
-			$nochecked = $yeschecked == '' ? 'checked="checked"' : $checked = '';
+			$yeschecked = JArrayHelper::getValue($listLinkTypes, $key, 0) != '0' ? 'checked="checked"': '';
+			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$listreturn[] = "<td>";
 			$listreturn[] = '<label><input name="'.$this->name.'[linkedlist_linktype][' . $key . ']" value="0" ' .$nochecked . ' type="radio" />' . JText::_('JNO') . '</label>';
@@ -115,8 +115,8 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$listreturn[] = "</td>";
 			$listreturn[] = "</tr>";
 
-			$yeschecked = JArrayHelper::getValue($linkedForms, $key, 0) != '0'? 'checked="checked"': $checked = '';
-			$nochecked = $yeschecked == '' ? 'checked="checked"' : $checked = '';
+			$yeschecked = JArrayHelper::getValue($linkedForms, $key, 0) != '0'? 'checked="checked"': '';
+			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$formreturn[] = "<tr class=\"row".($f % 2)."\">";
 			$formreturn[] = "<td class=\"handle\"></td>";
@@ -134,8 +134,8 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$formreturn[] = '<input name="'.$this->name.'[linkedformtext][' . $key . ']" value="' . @$formLinkTexts[$key] .'" size="16" />';
 			$formreturn[] = "</td>";
 
-			$yeschecked = JArrayHelper::getValue($formLinkTypes, $key, 0) != '0' ? 'checked="checked"': $checked = '';
-			$nochecked = $yeschecked == '' ? 'checked="checked"' : $checked = '';
+			$yeschecked = JArrayHelper::getValue($formLinkTypes, $key, 0) != '0' ? 'checked="checked"': '';
+			$nochecked = $yeschecked == '' ? 'checked="checked"' : '';
 
 			$formreturn[] = "<td>";
 			$formreturn[] = '<label><input name="'.$this->name.'[linkedform_linktype][' . $key . ']" value="0" ' .$nochecked . ' type="radio" />' . JText::_('JNO') . '</label>';
