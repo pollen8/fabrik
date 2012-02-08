@@ -255,6 +255,20 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		}
 	}
 
+	private function _replaceRequest($msg)
+	{
+		$db = JFactory::GetDbo();
+		$request = JRequest::get('request');
+		foreach ($request as $key => $val) {
+			if (is_string($val)) {
+				// $$$ hugh - escape the key so preg_replace won't puke if key contains /
+				$key = str_replace('/', '\/', $key);
+				$msg = preg_replace("/\{$key\}/", $db->Quote(urldecode($val)), $msg);
+			}
+		}
+		return $msg;
+	}
+
 	function getFusionchart()
 	{
 		$document =& JFactory::getDocument();
@@ -268,7 +282,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		}
 		else if ($fc_version == 'pro_30') {
 			require_once($this->pathBase.'fusionchart'.DS.'lib'.DS.'FusionCharts'.DS.'Code'.DS.'PHPClass'.DS.'Includes'.DS.'FusionCharts_Gen.php');
-			$document->addScript($this->srcBase."fusionchart/lib/FusionCharts/Code/JSClass/FusionCharts.js");
+			$document->addScript($this->srcBase."fusionchart/lib/FusionCharts/Charts/FusionCharts.js");
 			$fc_swf_path = COM_FABRIK_LIVESITE.$this->srcBase."fusionchart/lib/FusionCharts/Charts/";
 		}
 		else {
@@ -310,6 +324,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$dual_y_parents 		= $params->get('fusionchart_dual_y_parent');
 		$measurement_units =(array)$params->get('fusion_x_axis_measurement_unit');
 		$legends  			= $params->get('fusiongraph_show_legend', '');
+		$chartWheres = (array)$params->get('fusionchart_where');
 		$c = 0;
 		$gdata = array();
 		$glabels = array();
@@ -323,6 +338,8 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$calcfound = false;
 
 		$tmodels = array();
+
+		$labelStep = 0;
 
 		foreach ($listid as $tid) {
 			$min[$c] = 0;
@@ -340,7 +357,16 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 			$table = $listModel->getTable();
 			$form = $listModel->getForm();
-			//remove filters?
+
+			// $$$ hugh - adding plugin query, 2012-02-08
+			if (array_key_exists($c, $chartWheres) && !empty($chartWheres[$c])) {
+				$chartWhere = $this->_replaceRequest($chartWheres[$c]);
+				$listModel->setPluginQueryWhere('fusionchart', $chartWhere);
+			} else {
+				// if no where clause, explicitly clear any previously set clause
+				$listModel->unsetPluginQueryWhere('fusionchart');
+			}
+
 			// $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
 			// session state/defaults when it calls getPagination, which is then returned as a cached
 			// object if we call getPagination after render().  So call it first, then render() will
@@ -742,7 +768,25 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 
 		# Render Chart
-		return $FC->renderChart(false, false);
+		if ($chartType == 'MULTIAXISLINE') {
+  			// Nasty, nasty hack for MULTIAXIS, as the FC class doesn't support it.  So need to get the chart XML,
+  			// split out the <dataset>...</dataset> and wrap them in <axis>...</axis>
+  			$axis_attrs = (array)$params->get('fusionchart_mx_attributes');
+  			$dataXML = $FC->getXML();
+  			$matches = array();
+  			if (preg_match_all('#(<\s*dataset[^>]*>.*?<\s*/dataset\s*>)#', $dataXML, $matches)) {
+  				$index = 0;
+  				foreach ($gdata as $key => $chartdata) {
+  					$axis = "<axis " . $axis_attrs[$index] . ">" . $matches[0][$index] . "</axis>";
+  					$dataXML = str_replace($matches[0][$index], $axis, $dataXML);
+  					$index++;
+  				}
+  			}
+  			return $FC->renderChartFromExtXML($dataXML);
+  		}
+  		else {
+  			return $FC->renderChart(false, false);
+  		}
 	}
 
 	function setListIds()
