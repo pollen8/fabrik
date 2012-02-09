@@ -178,6 +178,7 @@ var Loader = new Class({
 			}, this);
 			return this;
 		};
+		window.fireEvent('fabrik.loaded');
 	}
 }());
 	

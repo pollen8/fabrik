@@ -35,7 +35,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/** @var additionl where for auto-complete query */
 	var $_autocomplete_where = "";
-	
+
 	/** @var string name of the join db to connect to */
 	protected $dbname = null;
 
@@ -366,13 +366,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		return $this->getParams()->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
 	}
-	
+
 	/**
 	* @since 3.0b
 	* do you add a please select option to the list
 	* @return boolean
 	*/
-	
+
 	protected function showPleaseSelect()
 	{
 		$params = $this->getParams();
@@ -457,13 +457,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->_sql[$incWhere] = $sql;
 		return $this->_sql[$incWhere];
 	}
-	
+
 	/**
 	 * @since 3.0rc1
 	 * if _buildQuery needs additional fields then set them here, used in notes plugin
 	 * @return string fields to add e.g return ',name, username AS other'
 	 */
-	
+
 	protected function getAdditionalQueryFields()
 	{
 		return '';
@@ -474,7 +474,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	* if _buildQuery needs additional joins then set them here, used in notes plugin
 	* @return string join statement to add
 	*/
-	
+
 	protected function buildQueryJoin()
 	{
 		return '';
@@ -682,7 +682,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 					$html[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 					//$joinids = $default == '' ? array() : explode(GROUPSPLITTER, $default);
-					$joinids = $default;
+					// $$$ hugh - I think this needs to be the raw values ...
+					// $joinids = $default;
+					$rawname = $this->getFullName(false, true, false) . "_raw";
+					$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
 					$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
 					if ($this->isJoin() && $this->_editable) {
 						$join = $this->getJoin();
@@ -1101,7 +1104,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$sql .= $where;
 		if (!JString::stristr($where, 'order by')) {
 			$sql .= $this->getOrderBy('filter');
-			
+
 		}
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
@@ -1127,7 +1130,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 		}
 	}
-	
+
 	/**
 	 * get the column name used for the value part of the db join element
 	 * @return string
@@ -1425,12 +1428,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		return parent::onSave();
 	}
-	
+
 	/**
 	 * get the join to database name
 	 * @return string database name
 	 */
-	
+
 	protected function getDbName()
 	{
 		if (!isset($this->dbname) || $this->dbname == '') {
@@ -1451,7 +1454,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 		}
 		return $this->dbname;
-		
+
 	}
 
 	/**
@@ -1676,6 +1679,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$ rob gave error when using concat label as join_val_column empty.
 		//$jkey = $params->get('join_db_name').'.'.$params->get('join_val_column');
 		$jkey = $this->_getValColumn();
+		$jkey = !strstr($jkey, 'CONCAT') ? $params->get('join_db_name').".$jkey" : $jkey;
+
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable
 		LEFT JOIN ".$params->get('join_db_name')." ON "
