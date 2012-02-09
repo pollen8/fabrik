@@ -28,7 +28,7 @@ class FabrikHelperHTML
 	protected static $framework = null;
 
 	protected static $mcl = null;
-	
+
 	protected static $modals = array();
 
 	protected static $tips = array();
@@ -44,7 +44,7 @@ class FabrikHelperHTML
 	protected static $facebookgraphapi = null;
 
 	protected static $helperpaths = array();
-	
+
 	protected static $modal = null;
 
 	/**
@@ -191,7 +191,7 @@ EOD;
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
 		$document->setTitle($config->getValue('sitename'));
-		
+
 		if ($ok) {?>
 <span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO')." $to";?>
 </span>
@@ -266,16 +266,16 @@ EOD;
 				$url = "index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=". $formModel->get('id')."&rowid=$formModel->_rowId";
 			 } else {
 				$url = "index.php?option=com_fabrik&view=emailform&tmpl=component&formid=". $formModel->get('id')."&rowid=$formModel->_rowId";
-			} 
-			
+			}
+
 			if (JRequest::getVar('usekey') !== null) {
 				$url .= "&usekey=" . JRequest::getVar('usekey');
 			}
 			$url .= '&referrer='.urlencode(JFactory::getURI()->toString());
-			
+
 			//$link = JRoute::_($url); //cant jroute as reffer values overrides url task/view!
 			$link = $url;
-			
+
 			if ($params->get('icons', true)) {
 				$image = JHtml::_('image','system/emailButton.png', JText::_('JGLOBAL_EMAIL'), NULL, true);
 			} else {
@@ -545,7 +545,7 @@ EOD;
 			self::$mcl = true;
 		}
 	}
-	
+
 	/**
 	 * load Fabrik's framework (js and base css file)
 	 */
@@ -560,6 +560,7 @@ EOD;
 				JHtml::_('behavior.framework', true);
 				//$$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
 				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
+				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
 			}
 
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
