@@ -174,7 +174,6 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
 				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
-				echo "<pre>";print_r($mail);
 				if (JFile::exists($attach_fname)) {
 					JFile::delete($attach_fname);
 				}
@@ -182,7 +181,6 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
 			}
 		}
-exit;
 		return true;
 	}
 
