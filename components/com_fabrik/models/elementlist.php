@@ -339,7 +339,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		// $$$ hugh -- working on issue with radio and checkbox, where extra blank subitem gets added
 		// if nothing selected.  this fix assumes that 'value' cannot be empty string for sub-options,
 		// and I'm not sure if we enforce that.  Problem being that if we just cast directly to
-		// an array, the array isn't "empty()", as it has a single, empty index.
+		// an array, the array isn't "empty()", as it has a single, empty string entry.  So then
+		// the array_diff() we're about to do sees that as a diff.
 		// $selected = (array)$this->getValue($data, $repeatCounter);
 		$selected = $this->getValue($data, $repeatCounter);
 		if (is_string($selected)) {
@@ -489,6 +490,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
+			// $$$ hugh -- added this so we are consistent in what we return, otherwise uninitialized values,
+			// i.e. if you've added a checkbox element to a form with existing data, don't get set, and causes
+			// issues with methods that call getValue().
 			if (!isset($value)) {
 				$value = '';
 			}
