@@ -336,7 +336,20 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 
-		$selected = (array)$this->getValue($data, $repeatCounter);
+		// $$$ hugh -- working on issue with radio and checkbox, where extra blank subitem gets added
+		// if nothing selected.  this fix assumes that 'value' cannot be empty string for sub-options,
+		// and I'm not sure if we enforce that.  Problem being that if we just cast directly to
+		// an array, the array isn't "empty()", as it has a single, empty index.
+		// $selected = (array)$this->getValue($data, $repeatCounter);
+		$selected = $this->getValue($data, $repeatCounter);
+		if (is_string($selected)) {
+			if (empty($selected)) {
+				$selected = array();
+			}
+			else {
+				$selected = array($selected);
+			}
+		}
 		//$$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
 		$diff = array_diff($selected, $values);
@@ -475,6 +488,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			if ($value === '') {
 				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
+			}
+			if (!isset($value)) {
+				$value = '';
 			}
 			$element->default = $value;
 			$formModel = $this->getForm();
