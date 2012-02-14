@@ -9,7 +9,9 @@ $row = $this->row;
 
 
 <div id="<?php echo $this->containerId;?>" class="fabrik_visualization" style="border:1px sold;margin:5px;">
-	<h1><?php echo $row->label;?></h1>
+	<?php if ($this->showTitle) {?>
+		<h1><?php echo $row->label;?></h1>
+	<?php }?>
 	<div class='calendar-message'>
 
 	</div>
