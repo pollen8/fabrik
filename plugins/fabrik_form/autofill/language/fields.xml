@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fieldset>
+		<param default="" description="PLG_FORM_AUTOFILL_FIELD_TO_OBSERVE_LABEL" label="PLG_FORM_AUTOFILL_FIELD_TO_OBSERVE_LABEL" name="autofill_field_name" onlytablefields="0" type="listfields" valueformat="tableelement"/>
+	</fieldset>
+</form>

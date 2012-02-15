@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_list" method="upgrade" type="plugin" version="2.5">
+	<name>Fabrik List - filter view</name>
+	<author>Rob Clayburn</author>
+	<creationDate>January 2012</creationDate>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0.3</version>
+	<description>Adds a collapseable sidebar containing specified links to filter the data</description>
+	<files>
+		<filename plugin="filter_view">filter_view.php</filename>
+		<filename>filter_view.js</filename>
+		<filename>filter_view-min.js</filename>
+		<filename>index.html</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+	</files>
+</extension>

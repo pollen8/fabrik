@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="2.5" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
+
+	<name>Fabrik</name>
+	<creationDate>January 2012</creationDate>
+	<author>Fabrik</author>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<license>GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.pollen-8.co.uk</authorUrl>
+	<version>3.0.3</version>
+	<description>The Joomla Application Creation Component</description>
+
+	<scriptfile>com_fabrik.manifest.class.php</scriptfile>
+
+	<install>
+		<sql>
+			<file charset="utf8" driver="mysql">sql/install.mysql.uft8.sql</file>
+			<file charset="utf8" driver="mysqli">sql/install.mysql.uft8.sql</file>
+		</sql>
+	</install>
+
+	<uninstall>
+		<sql>
+			<file charset="utf8" driver="mysql">sql/uninstall.mysql.uft8.sql</file>
+			<file charset="utf8" driver="mysqli">sql/uninstall.mysql.uft8.sql</file>
+		</sql>
+	</uninstall>
+	
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql/</schemapath>		
+		</schemas>
+	</update>
+
+
+	<files folder="site">
+		<folder>controllers</folder>
+		<folder>css</folder>
+		<folder>helpers</folder>
+		<folder>js</folder>
+		<folder>language</folder>
+		<folder>libs</folder>
+		<folder>models</folder>
+		<folder>sef_ext</folder>
+		<folder>views</folder>
+		<folder>fabrikfeed</folder>
+		<folder>dbdriver</folder>
+		<file>controller.php</file>
+		<file>fabrik.php</file>
+		<file>router.php</file>
+		<file>user_ajax_example.php</file>
+	</files>
+
+	<media folder="media">
+		<folder>com_fabrik/images</folder>
+		<folder>com_fabrik/css</folder>
+		<folder>com_fabrik/js</folder>
+		<file>com_fabrik/index.html</file>
+	</media>
+		
+	<administration>
+		<menu img="../administrator/components/com_fabrik/images/logo.png" view="home">Fabrik</menu>
+		<submenu>
+			<menu alt="Lists" img="../administrator/components/com_fabrik/images/lists.png" link="option=com_fabrik&amp;view=lists" view="lists">Lists</menu>
+			<menu alt="Forms" img="../administrator/components/com_fabrik/images/forms.png" link="option=com_fabrik&amp;view=forms" view="forms">Forms</menu>
+				<menu alt="Groups" img="../administrator/components/com_fabrik/images/groups.png" link="option=com_fabrik&amp;view=groups" view="groups">Groups</menu>
+				<menu alt="Elements" img="../administrator/components/com_fabrik/images/elements.png" link="option=com_fabrik&amp;view=elements" view="elements">Elements</menu>
+				<menu alt="Visualizations" img="../administrator/components/com_fabrik/images/visualizations.png" link="option=com_fabrik&amp;view=visualizations" view="visualizations">Visualizations</menu>
+				<menu alt="Packages" img="../administrator/components/com_fabrik/images/packages.png" link="option=com_fabrik&amp;view=packages" view="packages">Packages</menu>
+				<menu alt="Connections" img="../administrator/components/com_fabrik/images/connections.png" link="option=com_fabrik&amp;view=connections" view="connections">Connections</menu>
+				<menu alt="Schedule" img="../administrator/components/com_fabrik/images/schedules.png" link="option=com_fabrik&amp;view=crons" view="crons">Schedule</menu>
+		</submenu>
+		
+		<files folder="admin">
+			
+			<file>fabrik.php</file>
+			<folder>sql</folder>
+			
+			<folder>classes</folder>
+			<folder>contentelements</folder>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>images</folder>
+			<folder>language</folder>
+			<folder>models</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+			<file>access.xml</file>
+			<file>config.xml</file>
+			<file>controller.php</file>
+			<file>element.php</file>
+			<file>headings.css</file>
+			<file>index.html</file>
+		</files>
+
+	</administration>
+	
+	<!-- START UPDATESERVERS -->
+	<updateservers>
+		<server type="collection">http://fabrikar.com/update/fabrik/package_list.xml</server>
+	</updateservers>
+
+	
+</extension>

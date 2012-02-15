@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<config>
+
+	<fieldset label="COM_FABRIK_LISTS" name="tables">
+
+		<field default="1" description="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_DESC" label="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_LABEL" menu="hide" name="fbConf_alter_existing_db_cols" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field default="1" description="COM_FABRIK_FILTER_BUILD_METHOD_DESC" label="COM_FABRIK_FILTER_BUILD_METHOD_LABEL" name="filter_build_method" type="list">
+			<option value="1">COM_FABRIK_SHOW_DATA_RECORDED_IN_TABLE</option>
+			<option value="2">COM_FABRIK_SHOW_ALL_OPTIONS</option>
+		</field>
+		
+		<field default="100" description="COM_FABRIK_FILTER_LIST_MAX_DESC" label="COM_FABRIK_FILTER_LIST_MAX_LABEL" name="filter_list_max" type="text"/>
+		
+
+		<field default="0" description="COM_FABRIK_ENABLE_SINGLE_ORDERING_DESC" label="COM_FABRIK_ENABLE_SINGLE_ORDERING_LABEL" name="enable_single_sorting" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field default="0" description="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_DESC" label="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_LABEL" name="user_elements_as_related_data" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+	</fieldset>
+
+	<fieldset label="COM_FABRIK_FORMS" name="forms">
+
+		<field default="1" description="COM_FABRIK_SPOOF_CHECK_DESC" label="COM_FABRIK_SPOOF_CHECK_LABEL" name="spoofcheck_on_formsubmission" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field default="0" description="" label="COM_FABRIK_WYSIWYG_FOR_ELEMENT_LABELS" menu="hide" name="fbConf_wysiwyg_label" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+	</fieldset>
+
+	<fieldset label="COM_FABRIK_JAVASCRIPT" name="javascript">
+
+		<field default="0" description="COM_FABRIK_MEDIA_BOX_DESC" label="COM_FABRIK_MEDIA_BOX_LABEL" name="use_mediabox" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field default="1" label="COM_FABRIK_LIGHTBOX_JS_LABEL" name="include_lightbox_js" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+	</fieldset>
+
+	<fieldset label="COM_FABRIK_DEBUGGING" name="debug">
+
+		<field default="0" description="COM_FABRIK_FABRIK_DEBUG_DESC" label="COM_FABRIK_FABRIK_DEBUG_LABEL" name="use_fabrikdebug" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+	</fieldset>
+
+	<fieldset label="COM_FABRIK_SEF" name="sef">
+		<field default="0" description="COM_FABRIK_SEF_PREPEND_MENU_TITLE_DESC" label="COM_FABRIK_SEF_PREPEND_MENU_TITLE_LABEL" name="fabrik_sef_prepend_menu_title" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field default="0" description="COM_FABRIK_SEF_TABLENAME_ON_FORMS_DESC" label="COM_FABRIK_SEF_TABLENAME_ON_FORMS_LABEL" name="fabrik_sef_tablename_on_forms" type="radio">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field default="param_id" description="COM_FABRIK_SEF_FORMAT_RECORDS_DESC" label="COM_FABRIK_SEF_FORMAT_RECORDS_LABEL" name="fabrik_sef_format_records" type="list">
+			<option value="param_id">COM_FABRIK_FIELD_ID</option>
+			<option value="id_only">COM_FABRIK_ID_ONLY</option>
+			<option value="id_slug">COM_FABRIK_ID-SLUG</option>
+			<option value="slug_id">COM_FABRIK_SLUG-ID</option>
+			<option value="slug_only">COM_FABRIK_SLUG_ONLY</option>
+		</field>
+		<field description="COM_FABRIK_SEF_CUSTOMTXT_FORM_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_FORM_LABEL" name="fabrik_sef_customtxt_form" type="text"/>
+			
+		<field description="COM_FABRIK_SEF_CUSTOMTXT_NEW_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_NEW_LABEL" name="fabrik_sef_customtxt_new" type="text"/>
+			
+		<field description="COM_FABRIK_SEF_CUSTOMTXT_EDIT_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_EDIT_LABEL" name="fabrik_sef_customtxt_edit" type="text"/>
+			
+		<field description="COM_FABRIK_SEF_CUSTOMTXT_DETAILS_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_DETAILS_LABEL" name="fabrik_sef_customtxt_details" type="text"/>
+			
+		<field description="COM_FABRIK_SEF_CUSTOMTXT_OWN_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_OWN_LABEL" name="fabrik_sef_customtxt_own" type="text"/>
+			
+		<field default="param_id" description="COM_FABRIK_SEF_FORMAT_VIZ_DESC" label="COM_FABRIK_SEF_FORMAT_VIZ_LABEL" name="fabrik_sef_format_viz" type="list">
+			<option value="param_id">COM_FABRIK_PARAM_ID</option>
+			<option value="viz-id">COM_FABRIK_VIZ-ID</option>
+			<option value="id-viz">COM_FABRIK_ID-VIZ</option>
+			<option value="label-id">COM_FABRIK_LABEL-ID</option>
+			<option value="id-label">COM_FABRIK_ID-LABEL</option>
+			<option value="label_only">COM_FABRIK_LABEL_ONLY</option>
+		</field>
+		
+		<field description="COM_FABRIK_SEF_CUSTOMTXT_VIZ_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_VIZ_LABEL" name="fabrik_sef_customtxt_viz" type="text"/>
+			
+	</fieldset>
+	
+	<fieldset description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL" name="permissions">
+
+		<field class="inputbox" component="com_fabrik" filter="rules" label="JCONFIG_PERMISSIONS_LABEL" name="rules" section="component" type="rules" validate="rules"/>
+	</fieldset>
+</config>

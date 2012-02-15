@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_cron" method="upgrade" type="plugin" version="2.5">
+	<name>Fabrik Cron - run PHP</name>
+	<author>Rob Clayburn</author>
+	<creationDate>January 2012</creationDate>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0.3</version>
+	<description>Run some php code</description>
+	<files>
+		<filename plugin="php">php.php</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+		<folder>scripts</folder>
+		<filename>index.html</filename>
+	</files>
+</extension>

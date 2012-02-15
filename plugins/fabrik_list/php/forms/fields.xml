@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-php">
+			<field default="1" label="PLG_FABRIK_LIST_PHP_ACCESS_LABEL" name="table_php_access" repeat="true" type="accesslevel"/>
+				
+			<field label="PLG_FABRIK_LIST_PHP_BUTTON_LABEL_LABEL" name="table_php_button_label" repeat="true" size="30" type="text"/>
+				
+			<field default="php.png" description="PLG_FABRIK_LIST_PHP_IMAGE_DESC" label="PLG_FABRIK_LIST_PHP_IMAGE_LABEL" name="list_php_image_name" repeat="true" size="20" type="text"/>
+				
+			<field description="PLG_FABRIK_LIST_PHP_FILE_DESC" directory="plugins/fabrik_list/php/scripts/" hide_default="1" label="PLG_FABRIK_LIST_PHP_FILE_LABEL" name="table_php_file" repeat="true" type="filelist"/>
+				
+			<field cols="60" description="PLG_FABRIK_LIST_PHP_CODE_DESC" label="PLG_FABRIK_LIST_PHP_CODE_LABEL" name="table_php_code" repeat="true" rows="8" type="textarea"/>
+				
+			<field label="PLG_FABRIK_LIST_PHP_SUCCESS_MSG_LABEL" name="table_php_msg" repeat="true" size="30" type="text"/>
+			
+		</fieldset>
+	</fields>
+</form>

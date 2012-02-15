@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-approvals-params" repeat="1" repeatcontrols="1" repeatmin="1">
+			
+			<field description="PLG_VIZ_APPROVALS_CONNECTION_DESC" label="PLG_VIZ_APPROVALS_CONNECTION_LABEL" name="approvals_connection" type="connections"/>
+				
+			<field connection_in_repeat="true" description="PLG_VIZ_APPROVALS_TABLE_DESC" label="PLG_VIZ_APPROVALS_TABLE_LABEL" name="approvals_table" observe="params_approvals_connection" type="fabriktables"/>
+				
+			<field connection="params_approvals_connection" connection_in_repeat="true" description="PLG_VIZ_APPROVALS_APPROVE_ELEMENT_DESC" label="PLG_VIZ_APPROVALS_APPROVE_ELEMENT_LABEL" name="approvals_approve_element" table="params_approvals_table" type="element"/>
+				
+			<field connection="params_approvals_connection" connection_in_repeat="true" description="PLG_VIZ_APPROVALS_TITLE_ELEMENT_DESC" label="PLG_VIZ_APPROVALS_TITLE_ELEMENT_LABEL" name="approvals_title_element" table="params_approvals_table" type="element"/>
+				
+			<field connection="params_approvals_connection" connection_in_repeat="true" description="PLG_VIZ_APPROVALS_USER_ELEMENT_DESC" label="PLG_VIZ_APPROVALS_USER_ELEMENT_LABEL" name="approvals_user_element" table="params_approvals_table" type="element"/>
+				
+			<field connection="params_approvals_connection" connection_in_repeat="true" description="PLG_VIZ_APPROVALS_CONTENT_ELEMENT_DESC" label="PLG_VIZ_APPROVALS_CONTENT_ELEMENT_LABEL" name="approvals_content_element" table="params_approvals_table" type="element"/>
+			</fieldset>
+		</fields>
+	</form>

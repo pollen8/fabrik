@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="fabrik_updateserver" default="build_updateserver_xml">
+<!-- 
+	builds the individual plugin xml files which contain the update information.
+	ftps up xml and plugin zips to server
+ -->
+	<target name="updater.testfiles">
+		<dirset id="dist.contents" dir="${basedir}/plugins/fabrik_${folder}/" includes="*"/>
+		<property name="prop.dist.contents" refid="dist.contents"/>
+		<foreach list="${prop.dist.contents}" delimiter=";" param="plugin" target="updater.makefile" inheritall="true" inheritrefs="true"/>
+	</target>
+	
+	<target name="updater.makefile">
+		<if>
+			<available file="${update_source}plg_${folder}_${plugin}.xml"/>
+				<then>
+					<!--  found -->
+					<xmltask source="${update_source}plg_${folder}_${plugin}.xml" dest="${update_source}plg_${folder}_${plugin}.xml"> 
+						<remove path="/updates/update[version='${version}']" />
+					</xmltask>
+					<xmltask source="${update_source}plg_${folder}_${plugin}.xml" dest="${update_source}plg_${folder}_${plugin}.xml"> 
+						<insert path="/updates"> 
+							<![CDATA[	<update>
+		<name>${update.product_name} ${folder}: ${plugin}</name>
+		<description>${update.product_name} ${folder}: ${plugin}</description>
+		<element>plg_${folder}_${plugin}</element>
+		<type>plugin</type>
+		<folder>${update.product_code}_${folder}</folder>
+		<version>${version}</version>
+		<downloads>
+			<downloadurl type="full" format="zip">${update.download_folder}/plg_${update.product_code}_${folder}_${plugin}_${version}.zip</downloadurl>
+		</downloads>
+		<maintainer>${update.maintainer}</maintainer>
+		<maintainerurl>${update.url}</maintainerurl>
+		<targetplatform name="${update.target_platform}" version="${update.target_platform_version}" />
+	</update>
+]]>
+						</insert> 
+					</xmltask>
+			</then>
+			<else>
+				<!--  not found create a new extension update xml file -->
+					<xmltask dest="${update_source}plg_${folder}_${plugin}.xml"> 
+						<insert path="/"  > 
+							<![CDATA[<updates>
+	<update>
+		<name>${update.product_name} ${folder}: ${plugin}</name>
+		<description>Fabrik ${folder}: ${plugin}</description>
+		<element>plg_${folder}_${plugin}</element>
+		<type>plugin</type>
+		<folder>${update.product_code}_${folder}</folder>
+		<version>${version}</version>
+		<downloads>
+			<downloadurl type="full" format="zip">${update.download_folder}/plg_${update.product_code}_${folder}_${plugin}_${version}.zip</downloadurl>
+		</downloads>
+		<maintainer>${update.maintainer}</maintainer>
+		<maintainerurl>${update.url}</maintainerurl>
+		<targetplatform name="${update.target_platform}" version="${update.target_platform_version}" />
+	</update>
+</updates>
+]]>
+						</insert> 
+					</xmltask>
+				</else>
+    </if>
+	</target>
+	
+	
+	<target name="updater.ftp">
+		<input message="Export to fabrik.com update server?" addproperty="updater.do" validargs="y,n" defaultvalue="n" />
+		
+		<if>
+ 			<equals arg1="${updater.do}" arg2="y" />
+			<then>
+			<!-- upload the modified extension updater files -->
+				<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.updatedir}">
+					<fileset dir="${update_dir}">
+						<include name="**/*.xml" />
+					</fileset>
+				</ftp> 
+
+				<!--  upload the plugin zips -->
+				<ftp server="fabrikar.com" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}">
+					<fileset dir="${cfg.destdir}/pkg_fabrik_sink/packages/">
+						<include name="**/*.zip" />
+					</fileset>
+				</ftp>
+				<echo>uploaded zip files to ${ftp.downloaddir}</echo>
+			</then>
+		</if>
+		
+	</target>
+</project>

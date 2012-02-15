@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-cron-php">
+			
+			<field description="PLG_FABRIK_CRON_PHP_FILE_DESC" directory="plugins/fabrik_cron/php/scripts/" hide_default="1" label="PLG_FABRIK_CRON_PHP_FILE_LABEL" name="cronphp_file" type="filelist"/>
+					
+		</fieldset>
+	</fields>
+</form>

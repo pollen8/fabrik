@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar-params" repeat="1" repeatcontrols="1" repeatmin="1">
+			
+			<field description="PLG_VISUALIZATION_CALENDAR_CONNECTION_DESC" label="PLG_VISUALIZATION_CALENDAR_CONNECTION_LABEL" name="calendar_connection" type="connections"/>
+				
+			<field connection_in_repeat="true" description="PLG_VISUALIZATION_CALENDAR_TABLE_DESC" label="PLG_VISUALIZATION_CALENDAR_TABLE_LABEL" name="calendar_table" observe="params_calendar_connection" type="fabriktables"/>
+				
+			<field connection="params_calendar_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CALENDAR_START_DATE_ELEMENT_LABEL" label="PLG_VISUALIZATION_CALENDAR_START_DATE_ELEMENT_LABEL" name="calendar_startdate_element" table="params_calendar_table" type="element"/>
+				
+			<field connection="params_calendar_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CALENDAR_END_DATE_ELEMENT_DESC" label="PLG_VISUALIZATION_CALENDAR_END_DATE_ELEMENT_LABEL" name="calendar_enddate_element" table="params_calendar_table" type="element"/>
+				
+			<field connection="params_calendar_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_DESC" label="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_LABEL" name="calendar_label_element" table="params_calendar_table" type="element"/>
+				
+			<field description="PLG_VISUALIZATION_CALENDAR_COLOR_DESC" label="PLG_VISUALIZATION_CALENDAR_COLOR_LABEL" name="colour" type="text"/>	
+		</fieldset>
+		
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar">
+			<field directory="plugins/fabrik_visualization/calendar/views/calendar/tmpl/" label="PLG_VISUALIZATION_CALENDAR_TEMPLATE_LABEL" name="calendar_layout" type="folderlist"/>
+				
+			<field name="show_calendar_legend" 
+				type="radio" 
+				default="1" label="PLG_VISUALIZATION_CALENDAR_SHOW_LEGEND_LABEL" 
+				description="PLG_VISUALIZATION_CALENDAR_SHOW_LEGEND_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field default="1" description="PLG_VISUALIZATION_CALENDAR_SHOW_DAY_DESC" label="PLG_VISUALIZATION_CALENDAR_SHOW_DAY_LABEL" name="show_day" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field default="1" description="PLG_VISUALIZATION_CALENDAR_SHOW_WEEK_DESC" label="PLG_VISUALIZATION_CALENDAR_SHOW_WEEK_LABEL" name="show_week" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field default="0" description="PLG_VISUALIZATION_CALENDAR_Y_OFFSET_DESC" label="PLG_VISUALIZATION_CALENDAR_Y_OFFSET_LABEL" name="yoffset" size="3" type="text"/>
+				
+			<field default="0" description="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_DESC" label="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_LABEL" name="first_week_day" size="1" type="text"/>
+				
+		</fieldset>
+	
+		<fieldset label="PLG_VISUALIZATION_CALENDAR_MONTH_VIEW_OPTIONS" name="plg-visualization-calendar-monthview">
+			<field default="90" description="PLG_VISUALIZATION_CALENDAR_MONTH_DAY_WIDTH_LABEL" label="PLG_VISUALIZATION_CALENDAR_MONTH_DAY_WIDTH_LABEL" name="calendar-monthday-width" size="3" type="text"/>
+				
+			<field default="80" description="PLG_VISUALIZATION_CALENDAR_MONTH_DAY_HEIGHT_DESC" label="PLG_VISUALIZATION_CALENDAR_MONTH_DAY_HEIGHT_LABEL" name="calendar-monthday-height" size="3" type="text"/>
+				
+			<field default="0" description="PLG_VISUALIZATION_CALENDAR_GREYSCALE_WEEKEND_DESC" label="PLG_VISUALIZATION_CALENDAR_GREYSCALE_WEEKEND_LABEL" name="greyscaled-week-end" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+		</fieldset>
+	</fields>
+</form>

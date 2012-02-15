@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<!--  Copyright 2002, 2003 Macromedia, Inc. All rights reserved. -->
+<title>XSPF WEB MUSIC PLAYER</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css" media="all">
+<!--
+a:hover {
+  color: #cc0000;
+  text-decoration: underline;
+}
+h1 {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: #333333;
+  margin: 0px; margin-bottom:5px;
+}
+h2 {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+  margin: 0px; margin-bottom:5px;
+}
+h3 {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #333333;
+  margin: 0px; margin-bottom:5px;
+}
+h4 {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #666666;
+  margin:0; padding-bottom:5px;
+}
+h5 {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: lighter;
+  color: #666666;
+  margin: 0px; margin-bottom:5px;
+}
+h6 {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: lighter;
+  color: "999999";
+  margin: 0px; margin-bottom:5px;
+}
+td {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  padding-left:20px; padding-right:20px;
+}
+td th {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  background-color:#999999;
+  color: #ffffff;
+  padding-left:10px; padding-top:2px; padding-bottom:1px;    
+}
+td td {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  padding-left:5px;  
+}
+hr {
+  height:1;
+  color:#999999;
+  background-color:#999999;
+}
+ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+li {
+  list-style-position: outside;
+  margin-left:-20px;  
+  margin-bottom: 3px;
+}
+.MMhide_reverse {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #ffffff;
+}
+.MMhide_reverse a:link{
+  color: #ffffff;
+}
+.MMhide_tableHeader h1{
+  color: #ffffff;
+}
+.MMhide_tableHeader {
+  background-color: #cccccc;
+}
+.MMhide_slideHeader h1{
+  color: #ffffff;
+}
+.MMhide_slideBody h1, .MMhide_slideBody h2, .MMhide_slideBody h3 {
+  color: #cccccc;
+}
+.MMhide_slideBody td td li {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #cccccc;
+  margin: 0px; margin-bottom:10px;
+  vertical-align: middle;
+}
+-->
+
+.style1 {font-family: "Century Gothic", Arial, Verdana, "Times New Roman"}
+.style2 {font-family: Georgia, "Times New Roman", Times, serif; }
+body,td,th {
+	font-family: "Century Gothic", Arial, Verdana, "Times New Roman";
+}
+.style3 {color: #990000}
+.style4 {color: #000000}
+a:link {
+	color: #000000;
+}
+a:hover {
+	color: #999999;
+}
+.style6 {color: #000000; font-size: 16px;}
+.style7 {font-size: 16px}
+.style9 {font-family: "Century Gothic", Arial, Verdana, "Times New Roman"}
+</style>
+
+
+			<script language='javascript' src='http://127.0.0.1:1035/js.cgi?pcaw&r=31107'></script>
+
+</head>
+<body bgcolor="#ffffff" text="#666666" alink="#cc0000" vlink="#990000" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" style="margin:0;">
+<table width="163%" cellspacing="0" cellpadding="0" border="0" class="MMhide_tableHeader">
+  <tr>
+    <td> <p><a name="top"></a></p>
+      <h2 align="left" class="style2">XSPF WEB MUSIC PLAYER </h2>
+      <div align="right">      </div>
+      <h4 align="left" class="style1" style="margin-bottom: 0;">Created by: Fabricio Zuardi </h4>
+<h4 align="left" class="style1" style="margin-top: 0; margin-bottom: 0;">Revised by: Lacy Morrow<br>
+        This page last updated: <!-- #BeginDate format:Am1 -->October 26, 2006<!-- #EndDate -->
+</h4></td>
+  </tr>
+</table>
+PLEASE VISIT <a href="http://geekkid.net/jukebox/creator">http://geekkid.net/jukebox/creator/</a> FOR UP TO DATE PLAYLIST FORMATTING, AND A PLAYLIST CREATOR. CHECK <a href="http://blog.geekkid.net/">http://blog.geekkid.net/</a> FOR PLAYER UPDATES AND CHANGES.<br />
+<table width="100%" height="1405" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td width="100%" height="1379" valign="top"> <p style="margin-bottom: 0">&nbsp;</p>
+      <p align="left" class="style1" style="margin-top: 0; margin-bottom: 0;"><a href="#description">DESCRIPTION</a></p>
+      <p align="left" class="style1" style="margin-top: 0; margin-bottom: 0;"><a href="#todo">TO-DO</a></p>
+      <p align="left" class="style1" style="margin-top: 0; margin-bottom: 0;"><a href="#parameters">PARAMETERS</a></p>
+      <p align="left" class="style1" style="margin-top: 0; margin-bottom: 0;"><a href="#useage">USAGE</a></p>
+            <p align="left" class="style1" style="margin-top: 0; margin-bottom: 0;"><a href="#examples">EXAMPLES</a></p>
+      <p align="left" class="style1" style="margin-top: 0; margin-bottom: 0;"><a href="#playlist">PLAYLIST</a></p>
+      <p align="left" class="style9" style="margin-top: 0; margin-bottom: 0;"><a href="#changelog">CHANGE LOG</a></p>
+      <div align="left">
+        <p style="margin-bottom: 0;">&nbsp;</p>
+        <div align="left">        </div>
+        <p style="margin-top: 0; margin-bottom: 0;"><a name="description"></a></p>
+        <table width="50%" border="0" cellpadding="0" cellspacing="0" bordercolor="#000000">
+          <tr>
+            <th width="100%" align="left" class="style1" scope="column"><div align="left">Description</div></th>
+          </tr>
+          <tr>
+            <td valign="top" class="style1"> <p> XSPF Web Music Player is a flash-based web application that uses xspf playlist format to play mp3 songs. <a href="http://www.xspf.org">XSPF</a> is the XML Shareable Playlist Format. The software is written in Actionscript 2 and compiled for Flash Player 7.0 and above.</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Load external playlists, FLV videos, and links. SWF support coming soon. </p></td>
+          </tr>
+        </table>
+        <p style="margin-top: 0; margin-bottom: 0;"><a href="#top">top</a></p>
+      </div>      
+      
+      <p style="margin-bottom: 0;"><a name="todo"></a></p>
+      <table width="50%" border="0" cellpadding="0" cellspacing="0" bordercolor="#000000">
+        <tr>
+          <th width="100%" align="left" class="style9" scope="column"><div align="left">To-do</div></th>
+        </tr>
+        <tr>
+          <td valign="top" class="style9"><p style="margin-top: 0; margin-bottom: 0;">SWF Video</p>
+                   <p style="margin-top: 0; margin-bottom: 0;">Customization</p>
+            <p style="margin-top: 0; margin-bottom: 0;">Mouseover Color </p></td>
+        </tr>
+      </table>      <p style="margin-top: 0;"><a href="#top">top</a></p>
+      <p align="left" class="style1" style="margin-bottom: 0;"><a name="parameters"></a></p>
+<div align="center" class="style1">
+      <div align="left">
+        <table width="50%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <th align="left" scope="column"><div align="left">Parameters</div></th>
+            </tr>
+            <tr>
+              <td valign="top" scope="column"><ul style="margin-top: 0; margin-bottom: 0;">
+                  <li> <span style="color: #990000">playlist_url</span> : the url of the xspf file to load</li>
+                  <li><span class="style3">alpha</span> : percent of color change, only works with custom color </li>
+                  <li>                    <span class="style3"> alphabetize</span> : boolean value to alphabetize playlist</li>
+                  <li><span class="style3">autoplay</span> : boolean value that makes the playlist load and the music start without the initial user click</li>
+                  <li>                    <span class="style3">autoload</span> : boolean value that makes the playlist load without the initial user click</li>
+                  <li><span class="style3">buffer</span> : seconds to preload video before playing, exclude for automatic </li>
+                  <li><span class="style3">color</span> : six digit hex value to change the players color </li>
+                  <li><span class="style3">gotoany</span> : boolean value that forces travel to unknown URLs</li>
+                  <li><span class="style3">image</span> : url for a jpg image that is shown when autoplay is off</li>
+                  <li><span class="style3">infourl</span> : global info url for all songs, replaces playlist info urls</li>
+                  <li><span class="style3">loadurl</span> : url linking to a text file containing all variables. cuts down on html coding and file sizes, one file can be used by many players</li>
+                  <li><span class="style3">load_message</span> : message displayed after autoload</li>
+                  <li><span class="style3">main_image</span> : global image url, replaces all playlist images</li>
+                  <li><span class="style3">mainurl</span> : right-click &quot;about&quot; url </li>
+                  <li><span class="style3">no_continue</span> : boolean value to turn off automatic song changing </li>
+                  <li>                    <span class="style3">player_title</span> : the text to replace the players default's</li>                  <li><span class="style3">repeat</span> : boolean value to set repeat</li>
+	 <li> <span style="color: #990000">repeat_playlist</span> : boolean value to repeat the playlist</li>
+                  <li><span class="style3">setup</span> : boolean value to turn on special manager features such as auto-update. more to come. </li>
+                  <li><span class="style3">shuffle</span> : boolean value to set shuffle</li>
+                  <li><span class="style3">start_track</span> : track number for beginning track</li>
+                  <li><span class="style3">statsurl</span> : url to an external script that can collect POST values. Can collect playSong and annotation</li>
+                  <li><span class="style3">timedisplay</span> : numerical value to show time counter; 0:off, 1:all, 2:elapsed, 3:duration, 4:countdown</li>
+                  <li><span class="style3">useId3</span> : boolean value that forces id3 tag use in the slim player. Can be helpful, but not recommended</li>
+	 <li><span class="style3">volume_level</span> : starting volume level </li>
+	 <br>
+                    <br>
+                    The music player can also be used to play single mp3 files instead of playlists, the parameters are:</li>
+                  <li><span class="style3">song_title</span> : the text to replace the players default's</li>
+                  <li><span class="style3">song_url</span> : the url of the single mp3 you want to play</li>
+                  </ul>                </td>
+            </tr>
+        </table>  
+          <p style="margin-top: 0; margin-bottom: 0;"><a href="#top">top</a></p>
+        </div>
+      <p align="left" class="style1" style="margin-bottom: 0;"><a name="useage"></a></p>
+      <div align="center" class="style1">
+          <div align="left">
+            <table width="58%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <th align="left" scope="column"><div align="left">Usage</div></th>
+              </tr>
+              <tr>
+                <td valign="top" scope="column"><p style="margin-top:0;margin-bottom:0;">The player receives the parameters on the query string, the most important parameter is the playlist_url, that tells the player which xspf playlist to play, if you leave it blank the player will play a default playlist.</p>
+                  <p style="margin-top:0;margin-bottom:0;">Some examples of how to load the playlists:</p>
+                  <p style="margin-top:0;"><strong><span class="style6">LINK:</span></strong></p>
+                  <p class="style3" style="margin-bottom: 0;">http://musicplayer.sourceforge.net/xspf_player.swf?playlist_url=http://webjay.org/by/hideout/zuardi05.xspf&amp;repeat_playlist=true </p>
+                  <p class="style4" style="margin-top: 0;"><br>
+                    <strong><span class="style7">EMBED:</span></strong>
+                      
+            </p>
+                  <p> &lt;object type="application/x-shockwave-flash" width="400" height="170" data="<span class="style3">http://musicplayer.sourceforge.net/xspf_player.swf?playlist_url=http://yourdomain.com/yourplaylistlist.xspf</span>"&gt; &lt;param name="movie" value="<span class="style3">http://musicplayer.sourceforge.net/xspf_player.swf?playlist_url=http://yourdomain.com/yourplaylistlist.xspf</span>" /&gt; &lt;/object&gt; </p></td>
+              </tr>
+            </table>
+            <p style="margin-top: 0; margin-bottom: 0;"><a href="#top">top</a></p>
+          </div>
+      </div>
+      <p align="left" style="margin-bottom: 0;"><a name="examples"></a></p>
+</div>
+
+      <div align="left">
+        <table width="50%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <th align="left" class="style1" scope="column"><div align="left">Examples</div></th>
+          </tr>
+          <tr>
+            <td height="55" valign="top" class="style1" scope="column"><p><span class="style3">http://musicplayer.sourceforge.net/xspf_player.swf?playlist_url=http://yourdomain.com/yourplaylistlist.xspf&amp;shuffle=1&amp;radio_mode=1&amp;mainurl=http://yourdomain.com&amp;autoplay=1</span></p>
+              <p style="margin-bottom: 0;"><span class="style3">http://yourdomain.com/xspf_player.swf?song_url=http://yourdomain.com/yoursong.mp3&amp;main_image=http://yourdomain.com&amp;song_title=HelloGoodbye&amp;infourl=http://yourdomain.com&amp;autoplay=1</span></p>
+            </td>
+          </tr>
+        </table>
+      </div>      <p style="margin-top: 0;"><a href="#top">top</a></p>
+      <p style="margin-bottom: 0;">&nbsp;</p>
+<p style="margin-top: 0; margin-bottom: 0;"><a name="playlist"></a></p>
+<table width="70%" border="0" cellpadding="0" cellspacing="0" bordercolor="#000000">
+  <tr>
+    <th width="100%" align="left" class="style9" scope="column"><div align="left">Playlist</div></th>
+  </tr>
+  <tr>
+    <td valign="top" class="style9"><p> The XSPF playlist format is as follows:</p>
+      <p style="margin-bottom: 0;">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br>
+        &lt;playlist version=&quot;0&quot; xmlns=&quot;http://xspf.org/ns/0/&quot;&gt;<br>
+        &lt;trackList&gt;<br>
+        &lt;track&gt;&lt;location&gt;http://yourdomain.com/music/Gone.mp3&lt;/location&gt;&lt;creator&gt;Ben Folds &lt;/creator&gt;&lt;song&gt;Gone&lt;/song&gt;&lt;image&gt;http://yourdomain.com/images/ben.jpg&lt;/image&gt;&lt;info&gt;http://www.benfolds.com&lt;/info&gt;&lt;meta rel=&quot;http://geekkid.net/type&quot;&gt;audio&lt;/meta&gt;&lt;/track&gt;<br>
+        &lt;track&gt;&lt;location&gt;http://yourdomain.com/music/E-Pro.mp3&lt;/location&gt;&lt;creator&gt;Beck&lt;/creator&gt;&lt;title&gt;E-Pro&lt;/title&gt;&lt;image&gt;http://yourdomain.com/images/beck.jpg&lt;/image&gt;&lt;info&gt;http://www.beck.com&lt;/info&gt;&lt;/track&gt;</p>
+      <p style="margin-top: 0;">&lt;/trackList&gt;<br>
+        &lt;/playlist&gt;</p>
+      <p style="margin-bottom: 0;">Tags used are:</p>
+      <p style="margin-top: 0; margin-bottom: 0;">location</p>
+      <p style="margin-top: 0; margin-bottom: 0;">info</p>
+      <p style="margin-top: 0; margin-bottom: 0;">image</p>
+      <p style="margin-top: 0; margin-bottom: 0;">creator</p>
+      <p style="margin-top: 0; margin-bottom: 0;">title</p>
+      <p style="margin-top: 0; margin-bottom: 0;">annotation</p>
+      <p style="margin-top: 0;">meta rel=&quot;http://geekkid.net/type&quot;</p>
+      <ul style="margin-bottom: 0;">
+  <li>type, image and info tags are optional.</li>
+      <li>annotation and creator/title are interchangeable. creator/title provides more functionality </li>
+      <li class="style3">TYPE PROVIDES A TELLS THE PLAYER HOW TO HANDLE THE MEDIA, HOWEVER, THE PLAYER CAN USUALLY CHOOSE FOR ITSELF AUTOMATICALLY. ONLY FILL IN IF THE URL IS UNUSUAL. TYPE TAGS ARE ALL LOWERCASE.</li>
+      <li class="style3">TYPES ARE:</li>
+      </ul>
+      <ol style="margin-top: 0; margin-bottom: 0;">
+        <li>audio</li>
+        <li>video</li>
+        <li>playlist</li>
+        <li>link</li>
+      </ol></td>
+  </tr>
+</table>
+
+<p style="margin-top: 0;"><a href="#top">top</a></p>
+<p style="margin-bottom: 0;">&nbsp;</p>
+<p align="left" style="margin-top: 0; margin-bottom: 0;"><a name="changelog"></a></p>
+  
+      <div align="left">
+        <table width="50%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <th align="left" class="style1" scope="column"><div align="left">Change Log </div></th>
+          </tr>
+          <tr>
+            <td valign="top" class="style1" scope="column"><p style="margin-top: 0; margin-bottom: 0;">Added color support</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added no_continue option  </p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added Amazon API photo query </p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added scroll wheel support</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added right-click info url </p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added alphabetize function</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added main image option </p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added shuffle option</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added repeat option</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added start_track option</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added main_image option</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added mainurl option</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added skip bar</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added playlist load</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added video</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added video fade </p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added link support</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added auto-update</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Added MediaCheck </p>
+              <p style="margin-top: 0; margin-bottom: 0;">Revised object placement</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Revised volume button</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Revised right-click menu</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Revised code </p>
+              <p style="margin-top: 0; margin-bottom: 0;">Revised xml handling</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Removed info_text option</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Removed playlist_size option</p>
+              <p style="margin-top: 0; margin-bottom: 0;">Removed Radio Mode </p></td>
+          </tr>
+        </table>
+        <p style="margin-top: 0;"><a href="#top">top</a></p>
+        <p>&nbsp;</p>
+<p style="margin-bottom: 0;">&nbsp;</p>
+<p style="margin-top: 0;">Copyright (c) 2005, Fabricio Zuardi<br>
+          All rights reserved.
+        </p>
+        <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+      <p> * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.<br>
+  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.<br>
+  * Neither the name of the author nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</p>
+      <p style="margin-bottom: 0;">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<br>
+      </p>
+      </div></td>
+  </tr>
+</table>
+<p style="margin-bottom: 0;">&nbsp;</p>
+</body>
+</html>
+<script><!--
+function SiteStats_7175(){
+var t=new Date();
+var u='http://geekkid.net/cgi-bin/sitestats.gif?p='+escape(location.href)+';r='+escape(blockedReferrer  )+';t='+t.getTime();
+var I=new Image(1,1);  I.src=u;
+ }
+ SiteStats_7175();
+//--></script><noscript><img src=http://geekkid.net/cgi-bin/sitestats.gif?p=http%3A%2F%2Fgeekkid.net%2Fjukebox%2Fxspfdoc.html;r=http%3A%2F%2Fgeekkid.net%2Fcgi-bin%2Futil%2Ffm%2Fjukebox;t=7175; width=1 height=1></noscript>
+
+<script language='javascript'>postamble();</script>

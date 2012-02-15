@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-cron-importcsv">
+				
+			<field name="cron_importcsv_directory" 
+				type="text" size="30" 
+				description="PLG_CRON_IMPORTCSV_DIR_DESC" 
+				label="PLG_CRON_IMPORTCSV_DIR_LABEL" />
+				
+			<field name="cron_importcsv_usetablename" 
+				type="radio" default="0" 
+				description="PLG_CRON_IMPORTCSV_USETABLENAME_DESC" 
+				label="PLG_CRON_IMPORTCSV_USETABLENAME_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field name="cron_importcsv_maxfiles" 
+				type="text" default="1" size="2" 
+				description="PLG_CRON_IMPORTCSV_MAXFILES_DESC" 
+				label="PLG_CRON_IMPORTCSV_MAXFILES_LABEL" />
+				
+			<field name="cron_importcsv_dropdata" 
+			type="radio" default="0" 
+			description="PLG_CRON_IMPORTCSV_DROPDATA_DESC" 
+			label="PLG_CRON_IMPORTCSV_DROPDATA_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field name="cron_importcsv_overwrite" 
+				type="radio" default="0" 
+				description="PLG_CRON_IMPORTCSV_OVERWRITE_DESC"
+				label="PLG_CRON_IMPORTCSV_OVERWRITE_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field name="cron_importcsv_deletefile" 
+				type="list" default="1" 
+				description="PLG_CRON_IMPORTCSV_FILEACTION_DESC"
+				label="PLG_CRON_IMPORTCSV_FILEACTION_LABEL" >
+					<option value="0">PLG_CRON_IMPORTCSV_DONOTHING</option>
+					<option value="1">PLG_CRON_IMPORTCSV_DELETEFILE</option>
+					<option value="2">PLG_CRON_IMPORTCSV_RENAMEFILE</option>
+					<option value="3">PLG_CRON_IMPORTCSV_MOVETODONE</option>
+			</field>	
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="fabrik3-package" default="fabrik.all">
+	<property file="build_config.ini" />
+	<property file="build_config_private.ini" />
+	<import file="./build_updateserver_xml.xml"/>
+	<import file="./build_js.xml" />
+	
+	<property name="update_source" value="${basedir}/administrator/components/com_fabrik/update/fabrik/" />
+	<property name="update_dir" value="${cfg.destdir}/admin/update/fabrik/" />
+	<property name="package_list" value="${update_dir}/package_list.xml" />
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
+
+	<target name="fabrik.all">
+		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
+		
+		<if>
+ 			<equals arg1="${jslint.do}" arg2="y" />
+			<then>
+			<antcall target="js" />
+			</then>
+		</if>
+		
+		<!-- <input message="Previous version number:" addproperty="lastversion" /> -->
+		<input message="Component version:" addproperty="version" />
+		
+		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
+		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
+		<antcall target="fabrik.refreshfiles" />
+		<antcall target="fabrik.start_packagelist" />
+		<antcall target="fabrik.component" />
+		<antcall target="fabrik.modules" />
+		<antcall target="fabrik.package.sink.start" />
+		<antcall target="fabrik.package.start" />
+		<antcall target="fabrik.plugins" />
+		<antcall target="fabrik.fabrikplugins" />
+		<antcall target="fabrik.package.sink.end" />
+		<antcall target="fabrik.package.end" />
+		<antcall target="updater.ftp" />
+		<echo message="Fabrik build ${version} complete" />
+	</target>
+
+	<target name="fabrik.start_packagelist">
+		<xmltask dest="${package_list}"> 
+      <insert path="/"  > 
+      <![CDATA[<extensionset name="Fabrik" description="Fabrik">
+</extensionset>]]>
+   		</insert> 
+   </xmltask>
+	</target>
+	
+	<target name="fabrik.fabrikplugins">
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_element/" />
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_cron/" />
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_form/" />
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_list/" />
+		<!-- fabrik plug-ins -->
+		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="fabrik.zipfabrikpluginfolder" inheritall="true" inheritrefs="true"/>
+	</target>
+	
+	<target name="fabrik.zipfabrikpluginfolder">
+		<dirset id="dist.contents" dir="${basedir}/plugins/fabrik_${folder}/" includes="*"/>
+		<property name="prop.dist.contents" refid="dist.contents"/>
+		<echo>${prop.dist.contents}</echo>
+		<foreach list="${prop.dist.contents}" delimiter=";" param="plugin" target="fabrik.zipfabrikpluginfolder.plugin"  inheritall="true" inheritrefs="true"/>
+	</target>
+	
+	<target name="fabrik.zipfabrikpluginfolder.plugin">
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset"> 
+      <![CDATA[<extension name="${update.product_name} ${folder} - ${plugin}" element="${plugin}" type="plugin" folder="${update.product_code}_${folder}" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_${folder}_${plugin}.xml" />]]>
+   		</insert> 
+		</xmltask>
+		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${folder}_${plugin}_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${folder}_${plugin}_${version}.zip" basedir="${cfg.destdir}/plugins/fabrik_${folder}/${plugin}" />
+	</target>
+
+
+	<target name="fabrik.plugins">
+		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip">
+			<zipfileset dir="${cfg.destdir}/plugins/content" />
+		</zip>
+
+		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_search_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_search_${version}.zip" basedir="${cfg.destdir}/plugins/search" />
+
+		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_schedule_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_schedule_${version}.zip" basedir="${cfg.destdir}/plugins/system/fabrikcron" />
+
+		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_system_fabrik_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik_sink/packages/plg_system_fabrik_${version}.zip" basedir="${cfg.destdir}/plugins/system/fabrik" />
+		
+		<delete file="${cfg.destdir}/pkg_fabrik/packages/plg_system_fabrik_${version}.zip" />
+		<zip destfile="${cfg.destdir}/pkg_fabrik/packages/plg_system_fabrik_${version}.zip" basedir="${cfg.destdir}/plugins/system/fabrik" />
+		
+		<xmltask source="${update_dir}/plg_fabrik.xml" dest="${update_dir}/plg_fabrik.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_fabrik.xml" dest="${update_dir}/plg_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik Content Plugin</name>
+			<description>Fabrik Content Plugin</description>
+			<type>plugin</type>
+			<element>fabrik</element>
+			<folder>content</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_fabrik_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${update_dir}/plg_search_fabrik.xml" dest="${update_dir}/plg_search_fabrik.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_search_fabrik.xml" dest="${update_dir}/plg_search_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik Search Plugin</name>
+			<description>Fabrik Search Plugin</description>
+			<type>plugin</type>
+			<element>fabrik</element>
+			<folder>search</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_fabrik_search_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${update_dir}/plg_system_fabrikcron.xml" dest="${update_dir}/plg_system_fabrikcron.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_system_fabrikcron.xml" dest="${update_dir}/plg_system_fabrikcron.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik Scheduled Tasks Plugin</name>
+			<description>Fabrik Scheduled Tasks Plugin</description>
+			<type>plugin</type>
+			<element>fabrikcron</element>
+			<folder>system</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_fabrik_schedule_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${update_dir}/plg_system_fabrik.xml" dest="${update_dir}/plg_system_fabrik.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		<xmltask source="${update_dir}/plg_system_fabrik.xml" dest="${update_dir}/plg_system_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+				<name>Fabrik System Plugin</name>
+			<description>Fabrik System Plugin</description>
+			<type>plugin</type>
+			<element>fabrik</element>
+			<folder>system</folder>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/plg_system_fabrik_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>
+		]]>
+	   		</insert> 
+		</xmltask>
+		
+		
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset">
+				<![CDATA[<extension name="Fabrik" element="fabrik" type="plugin" folder="content" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_fabrik.xml" />
+<extension name="Search - Fabrik" element="fabrik" type="plugin" folder="search" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_search_fabrik.xml" /> 
+<extension name="System - FabrikSheduled Tasks" element="fabrikcron" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrikcron.xml" />
+<extension name="System - Fabrik" element="fabrik" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrik.xml" />
+]]>
+   		</insert> 
+		</xmltask>
+
+	</target>
+
+	<target name="fabrik.modules">
+		<zip destfile="${cfg.destdir}/mod_fabrik_form_${version}.zip" basedir="${cfg.destdir}/modules/mod_fabrik_form" />
+		<zip destfile="${cfg.destdir}/mod_fabrik_list_${version}.zip" basedir="${cfg.destdir}/modules/mod_fabrik_list" />
+		
+		<xmltask source="${update_dir}/mod_fabrik_list.xml" dest="${update_dir}/mod_fabrik_list.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		
+		<xmltask source="${update_dir}/mod_fabrik_list.xml" dest="${update_dir}/mod_fabrik_list.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik List Module</name>
+			<description>Fabrik List Module</description>
+			<element>mod_fabrik_list</element>
+			<type>module</type>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/mod_fabrik_list_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${update_dir}/mod_fabrik_form.xml" dest="${update_dir}/mod_fabrik_form.xml"> 
+			<remove path="/updates/update[version='${version}']" />
+		</xmltask>
+		
+		<xmltask source="${update_dir}/mod_fabrik_form.xml" dest="${update_dir}/mod_fabrik_form.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>Fabrik Form Module</name>
+			<description>Fabrik Form Module</description>
+			<element>mod_fabrik_form</element>
+			<type>module</type>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/mod_fabrik_form_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>]]>
+	   		</insert> 
+		</xmltask>
+		
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset">
+			<![CDATA[<extension name="Fabrik form" element="mod_fabrik_form" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_form.xml" />]]> 
+     		<![CDATA[<extension name="Fabrik list" element="mod_fabrik_list" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_list.xml" />]]>
+   		</insert> 
+		</xmltask>
+	</target>
+
+
+	<target name="fabrik.prepXML">
+		<if>
+			<available file="${update_dir}/${file}" />
+				<then>
+					<xmltask source="${update_dir}/${file}" dest="${update_dir}/${file}"> 
+						<remove path="/updates/update[version='${version}']" />
+					</xmltask>
+			</then>
+			<else>
+				<xmltask dest="${update_dir}/${file}"> 
+				<insert path="/"  > 
+					<![CDATA[<updates>
+		</updates>]]>
+				</insert>
+			</xmltask>
+			</else>
+		</if>
+	</target>
+	
+	<target name="fabrik.component">
+		<!-- create a zip  ( note you cant use as the file paths are more than 100 chars and the Joomla archieve class falls over) of the plugins dir for unpacking upon installation -->
+
+		<move file="${cfg.destdir}/admin/fabrik.xml" todir="${cfg.destdir}" />
+		<move file="${cfg.destdir}/admin/com_fabrik.manifest.class.php" todir="${cfg.destdir}" />
+
+		<!-- need to move the package.xml file out of the component to avoid nasties -->
+		<move file="${cfg.destdir}/admin/pkg_fabrik.xml" todir="${cfg.destdir}" />
+		<move file="${cfg.destdir}/admin/pkg_fabrik_sink.xml" todir="${cfg.destdir}" />
+		
+		
+		<zip destfile="${cfg.destdir}/com_fabrik_${version}.zip" basedir="${cfg.destdir}" excludes="modules/**, plugins/**, pkg_fabrik_sink/** pkg_fabrik.xml 
+			/components/com_fabrik/sef_ext/**" />
+
+		<foreach list="com_fabrik.xml,mod_fabrik_list.xml,mod_fabrik_form.xml,plg_fabrik.xml,plg_search_fabrik.xml,plg_system_fabrikcron.xml,plg_system_fabrik.xml" param="file" target="fabrik.prepXML" inheritall="true" inheritrefs="true"/>
+		
+		<xmltask source="${update_dir}/com_fabrik.xml" dest="${update_dir}/com_fabrik.xml"> 
+			<insert path="updates"> 
+				<![CDATA[<update>
+			<name>${update.product_name}</name>
+			<description>${update.product_name} Component</description>
+			<element>com_fabrik</element>
+			<type>component</type>
+			<version>${version}</version>
+			<downloads>
+				<downloadurl format="zip" type="full">${update.download_folder}/com_fabrik_${version}.zip</downloadurl>
+			</downloads>
+			<maintainer>${update.maintainer}</maintainer>
+			<maintainerurl>${update.url}</maintainerurl>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+		</update>]]>
+	   		</insert> 
+		</xmltask>
+			
+		<xmltask source="${package_list}" dest="${package_list}"> 
+			<insert path="/extensionset"> 
+     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" client_id="administrator" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml" />]]>
+   		</insert> 
+		</xmltask>
+	</target>
+	
+	<!-- package with the basics installed -->
+	<target name="fabrik.package.start">
+	
+			<mkdir dir="${cfg.destdir}/pkg_fabrik/" />
+			<mkdir dir="${cfg.destdir}/pkg_fabrik/packages" />
+			<replace file="${cfg.destdir}/pkg_fabrik.xml" token="{version}" value="${version}"/>
+			<copy file="${cfg.destdir}/pkg_fabrik.xml" todir="${cfg.destdir}/pkg_fabrik" />
+			<replace file="${cfg.destdir}/pkg_fabrik.xml" token="{version}" value="${version}"/>
+			<copy file="${cfg.destdir}/com_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+			<copy file="${cfg.destdir}/mod_fabrik_form_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+			<copy file="${cfg.destdir}/mod_fabrik_list_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+			
+		</target>
+		
+		<target name="fabrik.plugin.cron.zip.copy">
+	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	  </target>
+	  
+	  <target name="fabrik.plugin.element.zip.copy">
+	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	  </target>
+	  
+	  <target name="fabrik.plugin.form.zip.copy">
+	  	<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	  </target>
+		
+		<target name="fabrik.plugin.list.zip.copy">
+			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+		</target>
+		
+		<target name="fabrik.plugin.validation.zip.copy">
+			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validationrule_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+		</target>
+		
+		<target name="fabrik.plugin.visualization.zip.copy">
+			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+		</target>
+		<target name="fabrik.package.end">
+			<var name="updatelist" value=""/>
+			<foreach list="email,php" param="plugin" target="fabrik.plugin.cron.zip.copy" inheritall="true" inheritrefs="true"/>
+			<echo>${updatelist}</echo>
+			<foreach list="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,link,radiobutton,textarea,user" param="plugin" target="fabrik.plugin.element.zip.copy" inheritall="true" inheritrefs="true"/>
+			<foreach list="email,php,receipt,redirect" target="fabrik.plugin.form.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="copy,php" target="fabrik.plugin.list.zip.copy" inheritall="true" param="plugin" inheritrefs="true"/>
+			<foreach list="isgreaterorlessthan,notempty,php,regex" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="calendar,chart,googlemap,media,slideshow" target="fabrik.plugin.visualization.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+			<zip destfile="${cfg.destdir}/pkg_fabrik_${version}.zip" basedir="${cfg.destdir}/pkg_fabrik"/>
+		</target>
+
+	<!-- package which will install everything -->
+	
+	<target name="fabrik.package.sink.start">
+		<mkdir dir="${cfg.destdir}/pkg_fabrik_sink/" />
+		<mkdir dir="${cfg.destdir}/pkg_fabrik_sink/packages" />
+		<replace file="${cfg.destdir}/pkg_fabrik_sink.xml" token="{version}" value="${version}"/>
+		<copy file="${cfg.destdir}/pkg_fabrik_sink.xml" todir="${cfg.destdir}/pkg_fabrik_sink" />
+		<copy file="${cfg.destdir}/com_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik_sink/packages/" />
+		<copy file="${cfg.destdir}/mod_fabrik_form_${version}.zip" todir="${cfg.destdir}/pkg_fabrik_sink/packages/" />
+		<copy file="${cfg.destdir}/mod_fabrik_list_${version}.zip" todir="${cfg.destdir}/pkg_fabrik_sink/packages/" />
+		<copy file="${cfg.destdir}/mod_fabrik_list_${version}.zip" todir="${cfg.destdir}/pkg_fabrik_sink/packages/" />
+	</target>
+	
+	<target name="fabrik.package.sink.end">
+			<zip destfile="${cfg.destdir}/pkg_fabrik_sink_${version}.zip" basedir="${cfg.destdir}/pkg_fabrik_sink" />
+	</target>
+		
+	<target name="fabrik.refreshfiles">
+		<delete dir="${cfg.destdir}" />
+		<mkdir dir="${cfg.destdir}/admin/" />
+
+		<copy todir="${cfg.destdir}/admin/">
+			<fileset dir="${basedir}/administrator/components/com_fabrik/">
+				<exclude name="**/*.zip" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/site/" />
+		<copy todir="${cfg.destdir}/site/">
+			<fileset dir="${basedir}/components/com_fabrik/">
+				<exclude name="**/*.zip" />
+				<exclude name="**/views/form/tmpl/**" />
+				<exclude name="**/views/list/tmpl/**" />
+			</fileset>
+		</copy>
+		
+		<!-- explicitly include list templates -->
+		
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/default.xml" todir="${cfg.destdir}/site/views/list/tmpl/" />
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/_advancedsearch.php" todir="${cfg.destdir}/site/views/list/tmpl/" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/admin" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/admin">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/admin" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/adminmodule" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/adminmodule">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/adminmodule" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/bluesky" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/bluesky">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/bluesky" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/dbjoinselect" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/dbjoinselect">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/dbjoinselect" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/default" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/default">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/default" />
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/div" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/div">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/div" />
+		</copy>
+		
+		<!-- explicitly include form templates -->
+		
+		<copy file="${basedir}/components/com_fabrik/views/form/tmpl/default.xml" todir="${cfg.destdir}/site/views/form/tmpl/" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/admin" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/admin">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/admin" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/bluesky" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/bluesky">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bluesky" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/contacts_custom" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/contacts_custom">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/contacts_custom" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/default">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default_rtl" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/default_rtl">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default_rtl" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/mint" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/mint">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/mint" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/no-labels" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/no-labels">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/no-labels" />
+		</copy>
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/tabs" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/tabs">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/tabs" />
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/media/com_fabrik" />
+		<copy todir="${cfg.destdir}/media/com_fabrik">
+			<fileset dir="${basedir}/media/com_fabrik">
+				<exclude name="**/*.zip" />
+			</fileset>
+		</copy>
+		
+		
+		<mkdir dir="${cfg.destdir}/site/fabrikfeed" />
+		<copy todir="${cfg.destdir}/site/fabrikfeed">
+			<fileset dir="${basedir}/libraries/joomla/document/fabrikfeed">
+			</fileset>
+		</copy>
+		
+		<!-- copy over the database drivers -->
+		<mkdir dir="${cfg.destdir}/site/dbdriver" />
+		<copy file="${basedir}/libraries/joomla/database/database/mysql_fab.php" todir="${cfg.destdir}/site/dbdriver" />
+		<copy file="${basedir}/libraries/joomla/database/database/mysqli_fab.php" todir="${cfg.destdir}/site/dbdriver" />
+
+		<mkdir dir="${cfg.destdir}/modules/mod_fabrik_form/" />
+		<copy todir="${cfg.destdir}/modules/mod_fabrik_form/">
+			<fileset dir="${basedir}/modules/mod_fabrik_form/">
+			</fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/modules/mod_fabrik_list/" />
+		<copy todir="${cfg.destdir}/modules/mod_fabrik_list/">
+			<fileset dir="${basedir}/modules/mod_fabrik_list/">
+			</fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/plugins/content/fabrik" />
+		<copy todir="${cfg.destdir}/plugins/content/fabrik">
+			<fileset dir="${basedir}/plugins/content/fabrik">
+			</fileset>
+		</copy>
+	
+		<mkdir dir="${cfg.destdir}/plugins/search" />
+		<copy file="${basedir}/plugins/search/fabrik/fabrik.xml" todir="${cfg.destdir}/plugins/search" />
+		<copy file="${basedir}/plugins/search/fabrik/fabrik.php" todir="${cfg.destdir}/plugins/search" />
+
+		<mkdir dir="${cfg.destdir}/plugins/system" />
+		<mkdir dir="${cfg.destdir}/plugins/system/fabrikcron" />
+		<copy file="${basedir}/plugins/system/fabrikcron/fabrikcron.xml" todir="${cfg.destdir}/plugins/system/fabrikcron" />
+		<copy file="${basedir}/plugins/system/fabrikcron/fabrikcron.php" todir="${cfg.destdir}/plugins/system/fabrikcron" />
+		
+		<mkdir dir="${cfg.destdir}/plugins/system/fabrik" />
+		<copy todir="${cfg.destdir}/plugins/system/fabrik">
+			<fileset dir="${basedir}/plugins/system/fabrik"></fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_cron" />
+		<copy todir="${cfg.destdir}/plugins/fabrik_cron/">
+			<fileset dir="${basedir}/plugins/fabrik_cron/"></fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_element" />
+		<copy todir="${cfg.destdir}/plugins/fabrik_element/">
+			<fileset dir="${basedir}/plugins/fabrik_element/"></fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_form" />
+		<copy todir="${cfg.destdir}/plugins/fabrik_form/">
+			<fileset dir="${basedir}/plugins/fabrik_form/"></fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_list" />
+		<copy todir="${cfg.destdir}/plugins/fabrik_list/">
+			<fileset dir="${basedir}/plugins/fabrik_list/"></fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_validationrule" />
+		<copy todir="${cfg.destdir}/plugins/fabrik_validationrule/">
+			<fileset dir="${basedir}/plugins/fabrik_validationrule/"></fileset>
+		</copy>
+
+		<mkdir dir="${cfg.destdir}/plugins/fabrik_visualization" />
+		<copy todir="${cfg.destdir}/plugins/fabrik_visualization/">
+			<fileset dir="${basedir}/plugins/fabrik_visualization/"></fileset>
+		</copy>
+		
+		<antcall target="refresh.updatexml" />
+	</target>
+	
+	<target name="refresh.updatexml">
+	
+		<tstamp>
+	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
+	  </tstamp>
+	  <tstamp>
+	      <format property="year" pattern="yyyy" locale="en,UK"/>
+	  </tstamp>
+	  
+		<xmltask todir="${cfg.destdir}">
+			<fileset dir="${cfg.destdir}">
+				<include name="**/*.xml"/>
+			</fileset>
+			 <replace path="/extension/version/text()" withText="${version}"/> 
+			 <replace path="/extension/creationDate/text()" withText="${createdate}" />
+			 <replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+		</xmltask>
+		
+		<antcall target="xml.update.repoistory" />
+	</target>
+	
+	<target name="xml.update.repoistory">
+		<input message="Update repoistory xml files with version number?" addproperty="repository.xml.update" validargs="y,n" defaultvalue="y" />
+			<if>
+	 			<equals arg1="${repository.xml.update}" arg2="y" />
+				<then>
+					<!--  need to do /:node/:node as fabrik.xml sets a namespace (xmlns) -->
+				 	<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
+							<include name="**/administrator/components/com_fabrik/fabrik.xml"/>
+						</fileset>
+							<replace path="/:extension/:version/text()" withText="${version}"/> 
+							<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
+							<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+					</xmltask>
+					
+					<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
+							<include name="**/plugins/fabrik**/**/*.xml"/>
+						</fileset>
+							<replace path="/extension/version/text()" withText="${version}"/> 
+							<replace path="/extension/creationDate/text()" withText="${createdate}" />
+							<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+					</xmltask>
+					
+					<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
+							<include name="**/plugins/**/fabrik/*.xml"/>
+						</fileset>
+							<replace path="/extension/version/text()" withText="${version}"/> 
+							<replace path="/extension/creationDate/text()" withText="${createdate}" />
+							<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+					</xmltask>
+				</then>
+			</if>
+	</target>
+	
+</project>

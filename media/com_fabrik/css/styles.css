@@ -1,0 +1,435 @@
+.icon-48-fabrik{
+	background:url(../images/logo-48.png);
+}.fabrikHide{
+	display:none;
+}
+
+.fabrikShow{
+	display:block;
+}
+
+div.calendar{
+	z-index:99999;
+}
+
+#fabrikOverlay{
+  background-color: #000000;
+  cursor: pointer;
+  left: 0;
+  top:0;
+  position: absolute;
+  width: 100%;
+  height:100%;
+  z-index: 9999;
+}
+
+#fbPackageLoader {
+	position: absolute;
+	background-color: #fff;
+	padding: 20px;
+	font-size: 2em;
+	border: 2px solid #666;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+.fbPackageStatus{
+	position:absolute;
+	top:50%;
+}
+
+/****************************************/
+/****** mootools spinner css*************/
+/****************************************/
+
+.spinner {
+	position: absolute;
+	opacity: 0.9;
+	filter: alpha(opacity=90);
+	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+	z-index: 999;
+	background: #fff;
+	border:1px solid #ccc;
+	border-radius:2px;
+	
+}
+.spinner-msg {
+	text-align: center;
+	font-weight: bold;
+}
+
+.spinner-img {
+	background: url(../images/ajax-loader.gif) no-repeat;
+	width: 24px;
+	height: 24px;
+	margin: 0 auto;
+}
+
+/****************************************/
+/****** window styling ******************/
+/****************************************/
+
+.fabrikWindow {
+	z-index: 10000;
+	position: absolute;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	border: 1px solid #ccc;
+	min-height: 30px;
+	background-color: #fff;
+	box-shadow: 2px 5px 5px #888;
+	-moz-box-shadow: 2px 2px 2px #888;
+	-webkit-box-shadow: 2px 2px 2px #888;
+	background-color:#fff !important;
+}
+
+.itemContent{
+	margin:auto;
+	overflow:auto;
+	height:100%;
+	text-align: left;
+}
+
+.itemContentPadder{
+		padding:10px;
+}
+
+.draggable{
+	cursor: move;
+}
+
+.handle {
+	border-radius: 7px 7px 0px 0px;
+	-moz-border-radius: 7px 7px 0px 0px;
+	cursor : move;
+	background: #ccc;
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
+		'#cccccc', endColorstr = '#666666' ); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
+		to(#ccc) ); /* for webkit browsers */
+	background: -moz-linear-gradient(top, #eee, #ccc);
+	padding:4px 11px;
+	height:15px;
+}
+
+.close{
+	position: absolute;
+	right: 0;
+	top: 5px;
+}
+
+span.handlelabel {
+	color: #444444;
+	display: block;
+	font-size: 0.8em;
+	height: 13px;
+}
+
+.bottomBar{
+	border-radius: 0px 0px 7px 7px;
+	-moz-border-radius: 0px 0px 7px 7px;
+	height: 15px;
+	background: #ccc;
+	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
+		'#cccccc', endColorstr = '#666666' ); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
+		to(#ccc) ); /* for webkit browsers */
+	background: -moz-linear-gradient(top, #eee, #ccc);
+	padding:4px 11px;
+	position:relative;
+}
+
+.dragger {
+	cursor: nwse-resize;
+	height: 25px;
+	width: 25px;
+	right: 0;
+	bottom: 0;
+	position: absolute;
+	border-radius: 0px 0px 7px 0px;
+	-moz-border-radius: 0px 0px 7px 0px;
+}
+
+.dragger svg{
+	opacity:0.8em;
+}
+
+
+/* ensure overlays go above windows */
+
+.calendar-eightysix.default,
+.floating-tip,
+#fbPackageLoader
+ {
+  z-index: 10001;
+}
+
+.floating-tip ul{
+	padding:0;margin:0;
+}
+
+.floating-tip ul.fabrikElementContainer li{
+	float:none !important;
+}
+
+.floating-tip ul.fabrikElementContainer .fabrik_subelement{
+	width:100% !important;
+	float:none !important;
+}
+
+/****************************************/
+/*** end window styling *****************/
+/****************************************/
+
+/****************************************/
+/*** basic admin form css ***************/
+/****************************************/
+
+.adminform{
+	background-color: #FFFFFF;
+	padding: 5px 17px 17px;
+	border: 1px solid #CCCCCC;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+fieldset.adminform fieldset.radio, fieldset.panelform fieldset.radio, fieldset.adminform-legacy fieldset.radio {
+  border: 0 none;
+  float: left;
+  margin: 0 0 5px;
+  padding: 0;
+}
+
+fieldset.adminform label, fieldset.adminform span.faux-label {
+  clear: left;
+  display: block;
+  float: left;
+  margin: 5px 0;
+  min-width: 135px;
+padding: 0 5px 0 0;
+}
+
+fieldset.adminform ul{
+	list-style-type:none !important;
+}
+
+fieldset.adminform fieldset.radio label, fieldset.panelform fieldset.radio label {
+  clear: none;
+  display: inline;
+  float: left;
+  min-width: 60px;
+  padding-left: 0;
+  padding-right: 10px;
+}
+
+fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select, fieldset.adminform img, fieldset.adminform button {
+  float: left;
+  margin: 5px 5px 5px 0;
+  width: auto;
+}
+
+/*****************************************************/
+/********** the context menu that appears ************/
+/********** when you click row checkboxes ************/
+/*****************************************************/
+
+.floating-tip a:link,
+.floating-tip a:visited,
+.floating-tip a{
+	text-decoration:none;
+	display:block;
+	padding:5px 16px;
+}
+.floating-tip {
+	border:1px solid #333;
+	padding:0;
+	text-align:left;
+	font-weight: bold;
+	font-size: 11px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	list-style:none !important;
+	box-shadow: 2px 2px 2px #aaa;
+	-moz-box-shadow: 2px 2px 2px #aaa;
+	-webkit-box-shadow: 2px 2px 2px #aaa;
+}
+
+.floating-tip li:first-child{
+	-moz-border-radius: 6px 6px 0 0;
+	-webkit-border-radius: 6px 6px 0 0;
+	border-radius: 6px 6px 0 0;
+}
+
+.floating-tip li:last-child{
+	-moz-border-radius: 0 0 6px 6px;
+	-webkit-border-radius: 0 0 6px 6px;
+	border-radius: 0 0 6px 6px;
+}
+
+.floating-tip li{
+	display:block;
+	min-height:19px;
+	border-top:1px solid #D7D7D7;
+	padding:0;
+	background-color:#fff;
+}
+
+.floating-tip li:hover{
+	background-color:#DBF5FA;
+}
+
+.floating-tip li span{
+	margin-left:7px;
+}.draggable {
+	cursor: move;
+}
+
+.page {
+	height: 800px;
+	border: 1px solid #ccc;
+	padding: 20px;
+	position: relative;
+	background-color: #fff;
+	border-radius: 3px 3px 0px 0px;
+	-moz-border-radius: 3px 3px 0px 0px;
+}
+
+.itemPlaceHolderIFrame{
+	position: absolute;
+	border:0;
+}
+
+.itemPlaceHolder-list{
+	background:url("../../../administrator/components/com_fabrik/images/header/fabrik-list.png") no-repeat center;
+}
+
+.itemPlaceHolder-form{
+	background:url("../../../administrator/components/com_fabrik/images/header/fabrik-form.png") no-repeat center;
+}
+
+.itemPlaceHolder-visualization{
+	background:url("../../../administrator/components/com_fabrik/images/header/fabrik-visualization.png") no-repeat center;
+}
+
+.twocols li{
+	width:45%;
+	float:left;
+	height:30px;
+}
+
+#typeList{
+	list-style:none;
+	color:#333;
+	border: 1px solid #ccc;
+	border-bottom:1px solid #999;
+	height:60px;
+	padding-top:10xpx;
+	margin-bottom:25px;
+	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
+		'#bbbbbb', endColorstr = '#eeeeee' ); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#bbb),
+		to(#eee) ); /* for webkit browsers */
+	background: -moz-linear-gradient(top, #eee, #bbb);
+}
+
+#typeList  img{
+	width:38px;
+}
+
+#typeList li{
+	padding-top:2px;
+	height:60px;	
+	float:left;
+	width:120px;
+	text-align:center;
+border-right:1px solid #999999;
+}
+
+#typeList li:hover{
+		filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
+		'#cccccc', endColorstr = '#666666' ); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#ccc),
+		to(#666) ); /* for webkit browsers */
+	background: -moz-linear-gradient(top, #fff, #ddd);
+	}
+
+#typeList li:first-child{
+	border-left:1px solid #999999;
+}
+
+.active {
+	-moz-box-shadow: 5px 5px 5px #888;
+}
+
+.page .handle span{
+	font-weight:normal;
+	color:#666;
+}
+
+#packagemenu {
+	list-style: none;
+	clear:left;
+	margin: 10px 0 1px 0;
+}
+
+#packagemenu li {
+	float:left;
+	cursor: pointer;
+	padding: 2px 1px 2px 12px;
+	margin-left: 4px;
+	border-top: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-bottom: 1px solid #fff;
+	background-color: #eee;
+	border-radius: 3px 3px 0px 0px;
+	-moz-border-radius: 3px 3px 0px 0px;
+	position:relative;
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.15);
+}
+
+#packagemenu li.active {
+	background-color: #fff;
+}
+
+#packagemenu li.inactive {
+	background-color: #eee;
+	border-bottom: 1px dotted #666;
+}
+
+#packagepages {
+	clear: left;
+}.fabrikslider-line{
+	width:250px;
+	height:14px;
+	clear:left;
+	background: url(../images/area.png) repeat-x center center;
+}
+
+.fabrikslider-line .knob{
+	width:15px;
+	height:15px;
+	background: url(../images/slider.png) no-repeat center center;
+	cursor: pointer;
+}
+
+ul.slider-labels, ul.slider-labels li{
+	padding:0 !important;
+	margin:0 !important;
+}
+
+ul.slider-labels li{
+	float:left;
+	color:#aaa;
+}
+
+.clearslider_cont{
+	width:30px;
+	float:left;
+}
+
+.slider_cont{
+	float:left;
+}

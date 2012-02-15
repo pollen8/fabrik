@@ -1,0 +1,59 @@
+.icon-48-fabrik-table,
+.icon-48-lists,
+.icon-48-list{
+	background-image:url(images/header/fabrik-list.png);
+}
+.icon-48-fabrik-schedule,
+.icon-48-crons,
+.icon-48-cron{
+	background-image:url(images/header/fabrik-schedule.png);
+}
+
+.icon-48-fabrik-connection,
+.icon-48-connections,
+.icon-48-connection{
+	background-image:url(images/header/fabrik-connection.png);
+}
+
+.icon-48-fabrik-visualization,
+.icon-48-visualizations,
+.icon-48-visualization{
+	background-image:url(images/header/fabrik-visualization.png);
+}
+
+.icon-48-fabrik-package,
+.icon-48-packages,
+.icon-48-package{
+	background-image:url(images/header/fabrik-package.png);
+}
+
+.icon-48-fabrik-form,
+.icon-48-forms,
+.icon-48-form{
+	background-image:url(images/header/fabrik-form.png);
+}
+
+.icon-48-fabrik-group,
+.icon-48-groups,
+.icon-48-group{
+	background-image:url(images/header/fabrik-group.png) !important;
+}
+
+.icon-48-fabrik-element,
+.icon-48-elements,
+.icon-48-element{
+	background-image:url(images/header/fabrik-element.png);
+}
+
+.pane-down{
+	overflow:auto !important;
+}
+
+#jform_label_parent,
+#jform_intro_parent,
+#jform_introduction_parent,
+#jform_params_intro_parent,
+.mce_editable{
+	clear:left;
+	display:block;
+}
