@@ -121,7 +121,9 @@ var FbDateTime = new Class({
 		var v = this.getValue();
 		if (v !== '') {
 			this.update(v);
-			this.getDateField().value = v;
+			if (this.options.editable) {
+				this.getDateField().value = v;
+			}
 		}
 		return true;
 	},
