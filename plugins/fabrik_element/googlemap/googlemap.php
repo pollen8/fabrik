@@ -130,7 +130,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 			$document = JFactory::getDocument();
 			$params = $this->getParams();
 			if ($params->get('fb_gm_defaultloc')) {
-				$document->addScript("http://code.google.com/apis/gears/gears_init.js");
+				$uri = JURI::getInstance();
+				$document->addScript($uri->getScheme() . '://code.google.com/apis/gears/gears_init.js');
 				FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 				self::$geoJs = true;
 			}
@@ -373,14 +374,14 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$lat = trim($o->coords[0]);
 		$lon = trim($o->coords[1]);
 
-		//$src = "http://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile&markers=$lat,$lon,&key={$k}";
 		// new api3 url:
 		$markers = '';
 		if ($icon !== '') {
 			$markers .="icon:$icon|";
 		}
 		$markers .= "$lat,$lon";
-		$src = "http://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=mobile&amp;markers=$markers&amp;sensor=false";
+		$uri = JURI::getInstance();
+		$src = $uri->getScheme() . "://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=mobile&amp;markers=$markers&amp;sensor=false";
 		$id = $tableView ? '' : "id=\"{$id}\"";
 		$str =  "<div $id class=\"gmStaticMap\"><img src=\"$src\" alt=\"static map\" />";
 		$str .= "</div>";
