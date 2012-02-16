@@ -1,0 +1,8 @@
+So far as I know, the contributors are:
+
+Fabricio Zuardi (original version)
+Lacy Morrow (lots of huge contributions, notably video)
+Thomas Boutell (autoresume, and a few bugfixes)
+
+-Thomas Boutell 2006-11-02
+

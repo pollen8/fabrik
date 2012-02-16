@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-image">
+		
+			<field description="PLG_ELEMENT_IMAGE_PATH_DESC" label="PLG_ELEMENT_IMAGE_PATH_LABEL" name="imagepath" type="field"/>
+
+			<field default="0" description="PLG_ELEMENT_IMAGE_USER_SEL_IMAGE_DESC" label="PLG_ELEMENT_IMAGE_USER_SEL_IMAGE_LABEL" name="image_front_end_select" type="list">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field default="0" description="PLG_ELEMENT_IMAGE_SHOW_IN_TABLE_DESC" label="PLG_ELEMENT_IMAGE_SHOW_IN_TABLE_LABEL" name="show_image_in_table" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
+			</field>
+			<field default="none" label="PLG_ELEMENT_IMAGE_FLOAT_LABEL" name="image_float" type="list">
+				<option value="none">PLG_ELEMENT_IMAGE_NONE</option>
+				<option value="left">PLG_ELEMENT_IMAGE_LEFT</option>
+				<option value="right">PLG_ELEMENT_IMAGE_RIGHT</option>
+			</field>
+			<field default="" description="PLG_ELEMENT_IMAGE_LINK_DESC" label="PLG_ELEMENT_IMAGE_LINK_LABEL" name="link_url" type="text"/>
+		</fieldset>
+		<fieldset group="plg-image-perhaps_notused">
+			<field default="" description="PLG_ELEMENT_IMAGE_ROOT_FOLDER_DESC" label="PLG_ELEMENT_IMAGE_ROOT_FOLDER_LABEL" name="image_path" type="text"/>
+		</fieldset>
+	</fields>
+</form>

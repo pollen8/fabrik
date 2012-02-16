@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-cron-gcalsync">
+			
+			<field class="readonly" description="PLG_CRON_GCAL_NOTES_DESC" disabled="true" label="PLG_CRON_GCAL_NOTES_LABEL" name="gcal_notice" readonly="true" type="text">
+			
+			</field>
+			<field default="from" description="PLG_CRON_GCAL_UPLOAD_DESC" label="PLG_CRON_GCAL_UPLOAD_LABEL" name="gcal_sync_upload_events" type="radio">
+					<option value="from">PLG_CRON_GCAL_FROM_GCAL</option>
+					<option value="to">PLG_CRON_GCAL_TO_GCAL</option>
+					<option value="both">PLG_CRON_GCAL_BOTH</option>
+			</field>
+			
+			<field description="PLG_CRON_GCAL_LOGIN_DESC" label="PLG_CRON_GCAL_LOGIN_LABEL" name="gcal_sync_login" type="text"/>
+				
+			<field description="PLG_CRON_GCAL_PASSWD_DESC" label="PLG_CRON_GCAL_PASSWD_LABEL" name="gcal_sync_passwd" type="text"/>	
+					
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GCAL_START_DAT_EELEMENT_DESC" label="PLG_CRON_GCAL_START_DATE_ELEMENT_LABEL" name="gcal_sync_startdate_element" table="params_table" type="element"/>
+				
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GCAL_END_DATE_ELEMENT_DESC" label="PLG_CRON_GCAL_END_DATE_ELEMENT_LABEL" name="gcal_sync_enddate_element" table="params_table" type="element"/>
+				
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GCAL_LABEL_ELEMENT_DESC" label="PLG_CRON_GCAL_LABEL_ELEMENT_LABEL" name="gcal_sync_label_element" table="params_table" type="element"/>
+				
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GCAL_DESC_ELEMENT_DESC" label="PLG_CRON_GCAL_DESC_ELEMENT_LABEL" name="gcal_sync_desc_element" table="params_table" type="element"/>
+				
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GCAL_USER_ID_ELEMENT_DESC" label="PLG_CRON_GCAL_USER_ID_ELEMENT_LABEL" name="gcal_sync_userid_element" table="params_table" type="element"/>
+				 
+			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GCAL_ID_ELEMENT_DESC" label="PLG_CRON_GCAL_ID_ELEMENT_LABEL" name="gcal_sync_id_element" table="params_table" type="element"/>
+				
+			<field description="PLG_CRON_GCAL_URL_DESC" label="PLG_CRON_GCAL_URL_LABEL" name="gcal_sync_gcal_url" size="100" type="text"/>
+
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-php">
+			<field default="0" description="PLG_FORM_PHP_PROCESS_CURL_DESC" label="PLG_FORM_PHP_PROCESS_CURL_LABEL" name="only_process_curl" repeat="true" type="list">
+					<option value="">Never</option>
+					<option value="onBeforeLoad">Before the form data is loaded (onBeforeLoad)</option>
+					<option value="onLoad">Before the form is loaded (onLoad)</option>
+					<option value="onBeforeProcess">Start of form submission (onBeforeProcess)</option>
+					<option value="onBeforeStore">After any images have been uploaded (onBeforeStore)</option>
+					<option value="onBeforeCalculations">After data stored, before calculations (onBeforeCalculations)</option>
+					<option value="onAfterProcess">End of form submission (onAfterProcess)</option>
+					<option value="onError">If an error occurs in form submission (onError)</option>
+					<option value="getTopContent">At top of form (getTopContent)</option>
+					<option value="getBottomContent">At bottom of form (getBottomContent)</option>
+					<option value="getEndContent">After the end of the form (getEndContent)</option>
+			</field>
+			
+			<field description="PLG_FORM_PHP_FILE_DESC" directory="plugins/fabrik_form/php/scripts/" hide_default="1" label="PLG_FORM_PHP_FILE_LABEL" name="form_php_file" repeat="true" type="filelist"/>
+				
+			<field cols="60" description="PLG_FORM_PHP_CODE_DESC" label="PLG_FORM_PHP_CODE_LABEL" name="curl_code" repeat="true" rows="8" type="textarea"/>
+				
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		
+		<fieldset name="options" repeat="1" repeatcontrols="1">
+		
+			<field label="PLG_VISUALIZATION_COVERFLOW_CONNECTION_LABEL" name="coverflow_connection" type="connections"/>
+		
+			<field default="PLG_VISUALIZATION_COVERFLOW_CROSSDOMAIN_NOTICE" type="spacer"/>
+				
+			<field connection_in_repeat="false" label="PLG_VISUALIZATION_COVERFLOW_TABLE_LABEL" name="coverflow_table" observe="params_coverflow_connection" type="fabriktables"/>
+				
+			<field connection="params_coverflow_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_COVERFLOW_IMAGE_DESC" label="PLG_VISUALIZATION_COVERFLOW_IMAGE_LABEL" name="coverflow_image" published="true" showintable="true" table="params_coverflow_table" type="element"/>
+				
+			<field connection="params_coverflow_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_COVERFLOW_TITLE_DESC" label="PLG_VISUALIZATION_COVERFLOW_TITLE_LABEL" name="coverflow_title" published="true" showintable="true" table="params_coverflow_table" type="element"/>
+				
+			<field connection="params_coverflow_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_COVERFLOW_SUBTITLE_DESC" label="PLG_VISUALIZATION_COVERFLOW_SUBTITLE_LABEL" name="coverflow_subtitle" published="true" showintable="true" table="params_coverflow_table" type="element"/>
+				
+		</fieldset>
+	
+	</fields>
+</form>

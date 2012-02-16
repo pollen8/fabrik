@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-birthday">
+			<field default="please select" description="PLG_ELEMENT_BIRTHDAY_DAY_LABEL_DESC" label="PLG_ELEMENT_BIRTHDAY_DAY_LABEL" name="birthday_daylabel" type="text"/>
+			<field default="please select" description="PLG_ELEMENT_BIRTHDAY_MONTH_LABEL_DESC" label="PLG_ELEMENT_BIRTHDAY_MONTH_LABEL" name="birthday_monthlabel" type="text"/>
+			<field default="please select" description="PLG_ELEMENT_BIRTHDAY_YEAR_LABEL_DESC" label="PLG_ELEMENT_BIRTHDAY_YEAR_LABEL" name="birthday_yearlabel" type="text"/>
+			<field default="please select" description="PLG_ELEMENT_BIRTHDAY_SEPARATOR_DESC" label="PLG_ELEMENT_BIRTHDAY_SEPARATOR_LABEL" name="birthday_separatorlabel" type="text"/>
+			<field default="110" description="PLG_ELEMENT_BIRTHDAY_NUMBER_OF_YEARS_LABEL_DESC" label="PLG_ELEMENT_BIRTHDAY_NUMBER_OF_YEARS_LABEL" name="birthday_numyears" size="3" type="text"/>
+			<field default="%Y-%m-%d" description="PLG_ELEMENT_BIRTHDAY_DATE_FORMAT_DESC" label="PLG_ELEMENT_BIRTHDAY_DATE_FORMAT_LABEL" name="birthday_format" type="text"/>
+		</fieldset>
+	</fields>
+</form>

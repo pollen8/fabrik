@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-kunena">
+			<field checkexists="true" description="PLG_FORM_KUNENA_CATEGORY_DESC" label="PLG_FORM_KUNENA_CATEGORY_LABEL" name="kunena_category" query="SELECT id AS value, name AS text FROM #__kunena_categories WHERE published = 1" repeat="true" type="sql2" value_field="name"/>
+				
+			<field description="PLG_FORM_KUNENA_TITLE_DESC" label="PLG_FORM_KUNENA_TITLE_LABEL" name="kunena_title" repeat="true" type="text"/>
+				
+			<field cols="30" description="PLG_FORM_KUNENA_CONTENT_DESC" label="PLG_FORM_KUNENA_CONTENT_LABEL" name="kunena_content" repeat="true" rows="6" type="textarea"/>
+		</fieldset>	
+	</fields>
+</form>

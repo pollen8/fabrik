@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_element" method="upgrade" type="plugin" version="2.5">
+	<name>Fabrik Element - file upload</name>
+	<author>Rob Clayburn</author>
+	<creationDate>January 2012</creationDate>
+	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0.3</version>
+	<help url="PLG_ELEMENT_FILEUPLOAD_HELP_SERVER"/>
+	<description>PLG_ELEMENT_FILEUPLOAD_DESCRIPTION</description>
+	<files>
+		<filename plugin="fileupload">fileupload.php</filename>
+		<filename>adaptor.php</filename>
+		<filename>fileupload.js</filename>
+		<filename>fileupload-min.js</filename>
+		<filename>index.html</filename>
+		<folder>adaptors</folder>
+		<folder>element</folder>
+		<folder>forms</folder>
+		<folder>language</folder>
+		<folder>lib</folder>
+		<folder>models</folder>
+	</files>
+	
+</extension>

@@ -1,0 +1,1 @@
+var FbCaptcha=new Class({Extends:FbElement,initialize:function(b,a){this.parent(b,a)}});

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+	
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-video">
+			
+			<field description="UPLOAD_DIR_LONG" label="UPLOAD_DIR" name="ul_directory" size="30" type="text"/>	
+
+			<field default="1" description="" label="CONTROLLER" name="fbVideoController" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field default="0" description="" label="AUTOPLAY" name="fbVideoAutoPlay" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field default="0" description="" label="LOOP" name="fbVideoLoop" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			
+			<field default="1" description="" label="ENABLEJS" name="fbVideoEnableJS" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field default="0" description="" label="PLAYEVERYFRAME" name="fbVideoPlayEveryFrame" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field default="0" description="" label="SHOWVIDEOINTABLE" name="fbVideoShowVideoInTable" type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field default="300" label="WIDTH" name="fbVideoWidth" type="text"/>
+			<field default="300" label="HEIGHT" name="fbVideoHeight" type="text"/>
+			
+			<field label="BGCOLOR" name="fbVideoBgColor" type="text"/>
+			<field label="ENDTIME" name="fbVideoEndTime" type="text"/>
+			<field label="STARTTIME" name="fbVideoStartTime" type="text"/>
+			<field default="100" description="between 0(mute) and 100 (full volume)" label="VOLUME" name="fbVideoVolume" type="text"/>
+			
+			
+					
+		</fieldset>
+	</fields>
+</form>

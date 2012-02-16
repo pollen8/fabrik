@@ -1,0 +1,1 @@
+var FbComment=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fbComment";this.parent(b,a)}});

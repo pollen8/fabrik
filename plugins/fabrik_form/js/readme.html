@@ -1,0 +1,46 @@
+//////////////////////////////////////////////////////////////
+/////////     FABRIK 3.0 VS 2.X README!    ///////////////////
+//////////////////////////////////////////////////////////////
+
+we've changed the way form JS is handled in fabrik3.0
+This plugin no longer is supported, instead add event 
+listeners in components/com_fabrik/js/X.js
+where X is your form id.
+Alternaitvely write your js inside your form templates.
+Below is a brief explaination of the changes:
+
+//////////////////////////////////////////////////////////////
+
+window.addEvent(fnc, function(form){
+	
+})
+
+
+//possible options for fnc (passed in variables shown in square brackets)
+
+/*
+ * 'fabrik.form.doelementfx' [form]
+ * 'fabrik.form.groups.save' [form]
+ * ''fabrik.form.groups.save.start' [form]
+ * 'fabrik.form.groups.save.end'[form, json]
+ * 'fabrik.form.group.delete' [form, event]
+ * 'fabrik.form.group.delete.end', [this, event, groupd, repeatCounter]
+ * 'fabrik.form.group.duplicate' [form, event]
+ * 'fabrik.form.submit.start' [form, event, button]
+ * 'fabrik.form.submitted' [form, json to update] (only called when form is saving using ajax)
+ * 'fabrik.form.submit.end' [form]
+ * 'fabrik.form.update' [form, json]
+ * 'fabrik.form.reset' [form]
+ */
+
+/*
+ * to stop the form from continuing its current method set the form's result property to false:
+ * E.g. this will stop the form from being submitted.
+ */
+
+
+Fabrik.addEvent('fabrik.form.submit.start', function(form, event, button){
+	alert('aha! you really should not press that button');
+	form.result = false;	
+})
+

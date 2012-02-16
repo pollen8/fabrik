@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-form-autofill">
+				
+			<field description="PLG_FORM_AUTOFILL_FIELD_TO_OBSERVE_DESC" label="PLG_FORM_AUTOFILL_FIELD_TO_OBSERVE_LABEL" name="autofill_field_name" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
+			
+			<field description="PLG_FORM_AUTOFILL_TRIGGER_DESC" label="PLG_FORM_AUTOFILL_TRIGGER_LABEL" name="autofill_trigger" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
+			
+			<field description="PLG_FORM_AUTOFILL_CONNECTION_DESC" label="PLG_FORM_AUTOFILL_CONNECTION_LABEL" name="autofill_cnn" repeat="true" type="connections"/>
+			
+			<field description="PLG_FORM_AUTOFILL_TABLE_DESC" label="PLG_FORM_AUTOFILL_TABLE_LABEL" name="autofill_table" observe="params_autofill_cnn" repeat="true" type="fabriktables"/>
+				
+			<field cols="30" description="PLG_FORM_AUTOFILL_ELEMENT_MAP_DESC" label="PLG_FORM_AUTOFILL_ELEMENT_MAP_LABEL" name="autofill_map" repeat="true" rows="6" type="textarea"/>
+			
+			<field default="0" description="PLG_FORM_AUTOFILL_EDIT_ORIG_DESC" label="PLG_FORM_AUTOFILL_EDIT_ORIG_LABEL" name="autofill_edit_orig" repeat="true" type="radio">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+				</field>
+				
+			<field default="1" description="PLG_FORM_AUTOFILL_CONFIRM_DESC" label="PLG_FORM_AUTOFILL_CONFIRM_LABEL" name="autofill_confirm" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field default="0" description="PLG_FORM_AUTOFILL_ONLOAD_DESC" label="PLG_FORM_AUTOFILL_ONLOAD_LABEL" name="autofill_onload" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>				
+			</field>
+		</fieldset>
+	</fields>
+</form>

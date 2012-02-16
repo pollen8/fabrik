@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<name>Import list from CSV</name>
+	
+	<fieldset name="details">
+			
+		<field name="userfile"
+			type="file"
+			required="true"
+			label="COM_FABRIK_FIELD_CSV_FILE_LABEL"
+			description="COM_FABRIK_FIELD_CSV_FILE_DESC" />
+		
+	</fieldset>
+	
+	<fieldset name="append">
+		
+		<field name="drop_data"
+			type="radio"
+			default="0"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_LABEL"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+		
+		<field name="overwrite"
+			type="radio" default="0"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_LABEL"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+		
+		<field name="inPutFormat"
+			type="radio" default="csv"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC">
+				<option value="csv">CSV</option>
+				<option value="fabrikexcel">COM_FABRIK_FABRIK_EXCEL_IMPORT_FORMAT</option>
+				<option value="excel">COM_FABRIK_EXCEL_IMPORT_FORMAT</option>
+			</field>
+	</fieldset>
+	
+	<fieldset name="format">
+		
+		<field name="field_delimiter"
+			type="text"
+			size="2" default=","
+			label="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_LABEL"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_DESC" />
+		
+		<field name="tabdelimited"
+			type="checkbox"
+			default="false"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_LABEL"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_DESC" />
+			
+		<field name="text_delimiter"
+			type="text" size="2" default='"'
+			label="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_LABEL"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_DESC" />
+			
+		
+	</fieldset>
+	
+	<fieldset name="creation">
+		
+		<field name="connection_id"
+			type="connections"
+			required="true"
+			label="COM_FABRIK_FIELD_CONNECTION_LABEL"
+			description="COM_FABRIK_FIELD_CONNECTION_DESC" />
+			
+		<field name="db_table_name"
+				type="field"
+				required="true"
+				label="COM_FABRIK_FIELD_CSV_IMPORT_DB_TABLE_NAME_LABEL"
+				description="COM_FABRIK_FIELD_CSV_IMPORT_DB_TABLE_NAME_DESC" />
+				
+		<field name="label"
+				type="field"
+				required="true"
+				label="COM_FABRIK_FIELD_CSV_IMPORT_LIST_LABEL_LABEL"
+				description="COM_FABRIK_FIELD_CSV_IMPORT_LIST_LABEL_DESC" />
+				
+			<field name="addkey"
+					type="radio"
+					required="true"
+					default="0"
+					label="COM_FABRIK_FIELD_CSV_IMPORT_CREATE_PK_LABEL"
+					description="COM_FABRIK_FIELD_CSV_IMPORT_CREATE_PK_DESC">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>		
+			</field>
+	</fieldset>
+</form>

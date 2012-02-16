@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<joomfish type="contentelement">
+  <name>Fabrik - List</name>
+  <author>Rob Clayburn</author>
+  <version>1.8</version>
+  <description>Definition for Fabrik Lists</description>
+  <reference>
+  	<table name="fabrik_lists">
+  		<field type="referenceid" name="id" translate="0">ID</field>
+  		<field type="titletext" name="label" translate="1">Label</field>  		
+		<field type="htmltext" name="introduction" translate="1">Introduction</field>	  		
+  	</table>
+  </reference>
+</joomfish>

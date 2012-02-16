@@ -1,0 +1,1 @@
+ALTER TABLE  `#__fabrik_visualizations` ADD  `access` INT( 6 ) NOT NULL AFTER  `published`;

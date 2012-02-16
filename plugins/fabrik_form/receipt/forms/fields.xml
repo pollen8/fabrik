@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-form-receipt">
+			<field default="0" description="PLG_FORM_RECEIPT_USERCHOOSESRECEIPT_DESC" label="PLG_FORM_RECEIPT_USERCHOOSESRECEIPT_LABEL" name="ask-receipt" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field description="PLG_FORM_RECEIPT_TO_DESC" label="PLG_FORM_RECEIPT_TO_LABEL" name="receipt_to" repeat="true" size="30" type="text"/>
+				  
+			<field description="PLG_FORM_RECEIPT_TITLE_DESC" label="PLG_FORM_RECEIPT_TITLE_LABEL" name="receipt_subject" repeat="true" size="30" type="text"/>
+				
+			<field cols="60" label="PLG_FORM_RECEIPT_MESSAGE_LABEL" name="receipt_message" repeat="true" rows="8" type="textarea"/>
+		</fieldset>
+	</fields>
+</form>

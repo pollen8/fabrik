@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-copy">
+			<field default="1" label="PLG_FABRIK_LIST_COPY_ACCESS_LABEL" name="copytable_access" repeat="true" type="accesslevel"/>
+		</fieldset>
+	</fields>
+</form>

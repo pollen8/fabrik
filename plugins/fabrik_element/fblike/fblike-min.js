@@ -1,0 +1,1 @@
+var FbLike=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fblike";this.parent(b,a)}});

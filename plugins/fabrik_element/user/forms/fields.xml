@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields>
+		<fieldset name="plg-element-user">
+			<field default="0" label="PLG_ELEMENT_USER_HIDDEN_LABEL" name="hidden" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+		</fieldset>
+	</fields>
+	
+	<fields name="params">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-user-params">
+		
+			<field default="0" description="PLG_ELEMENT_USER_DISPLAY_DATA_DESC" label="PLG_ELEMENT_USER_DISPLAY_DATA_LABEL" name="my_table_data" type="list">
+					<option value="id">ID</option>
+					<option value="name">Name</option>
+					<option value="username">User Name</option>
+					<option value="email">Email</option>
+					<option value="block">Block</option>
+					<option value="sendEmail">Send Email</option>
+					<option value="registerDate">Registered Date</option>
+					<option value="lastvisitDate">Last Visit Date</option>
+					<option value="activation">Activation</option>
+			</field>
+			
+			<field default="0" description="PLG_ELEMENT_USER_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_USER_UPDATE_ON_EDIT_LABEL" name="update_on_edit" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field default="0" description="PLG_ELEMENT_USER_UPDATE_ON_COPY_DESC" label="PLG_ELEMENT_USER_UPDATE_ON_COPY_LABEL" name="update_on_copy" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field default="0" description="PLG_ELEMENT_USER_USE_SOCIAL_PROFILE_DESC" label="PLG_ELEMENT_USER_USE_SOCIAL_PROFILE_LABEL" name="user_use_social_plugin_profile" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field description="PLG_ELEMENT_USER_NO_SELECTION_LABEL_DESC" label="PLG_ELEMENT_USER_NO_SELECTION_LABEL_LABEL" name="user_noselectionlabel" size="35" type="text"/> 
+				
+		</fieldset>
+	</fields>
+</form>

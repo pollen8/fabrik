@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-radius_search">
+			<field description="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_DESC" filter="fabrikgooglemap" label="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_LABEL" name="radius_mapelement" repeat="true" type="listfields"/>
+				
+			<field default="km" label="PLG_LIST_RADIUS_SEARCH_RADIUS_UNIT_LABEL" name="radius_unit" repeat="true" type="list">
+					<option value="km">Kms</option>
+					<option value="miles">Miles</option>
+			</field>
+			
+			<field default="100" label="PLG_LIST_RADIUS_SEARCH_MAX_LABEL" name="radius_max" repeat="true" size="4" type="text"/>
+				
+			<field default="Radius search" label="PLG_LIST_RADIUS_SEARCH_SEARCH_LABEL_LABEL" name="radius_label" repeat="true" type="text"/>
+				
+			<field description="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_DESC" label="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_LABEL" name="radius_placeelement" repeat="true" type="listfields"/>
+
+		</fieldset>
+	</fields>
+</form>

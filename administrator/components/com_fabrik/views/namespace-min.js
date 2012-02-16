@@ -1,0 +1,1 @@
+(function(){if(typeOf(window.FabrikAdmin)==="object"){return}FabrikAdmin={};FabrikAdmin.model={fields:{fabriktable:{},element:{}}}}());
