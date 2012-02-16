@@ -93,11 +93,11 @@ var FbFileUpload = new Class({
 			browse_button: this.element.id + '_browseButton',
 			container: this.element.id + '_container',
 			drop_element: this.element.id + '_dropList',
-			url: 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
+			url: '/index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
 			max_file_size: this.options.max_file_size + 'kb',
 			unique_names: false,
-			flash_swf_url: 'plugins/element/fileupload/plupload/js/plupload.flash.swf',
-			silverlight_xap_url: 'plugins/element/fileupload/plupload/js/plupload.silverlight.xap',
+			flash_swf_url: '/plugins/element/fileupload/plupload/js/plupload.flash.swf',
+			silverlight_xap_url: '/plugins/element/fileupload/plupload/js/plupload.silverlight.xap',
 			chunk_size: this.options.ajax_chunk_size + 'kb',
 			multipart: true
 		};

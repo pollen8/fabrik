@@ -15,9 +15,9 @@ require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.
 class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	protected static $geoJs = null;
-	
+
 	protected static $usestatic = null;
-	
+
 	/**
 	 * shows the data formatted for the table view
 	 * @param string data
@@ -174,7 +174,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$opts->latlng = $this->_editable ? (bool)$params->get('fb_gm_latlng', false) : false;
 		$opts->sensor = (bool)$params->get('fb_gm_sensor', false);
 		$opts->latlng_dms = $this->_editable ? (bool)$params->get('fb_gm_latlng_dms', false) : false;
-		$opts->geocode = (bool)$params->get('fb_gm_geocode', false);
+		$opts->geocode = $params->get('fb_gm_geocode', '0');
 		$opts->geocode_event 	= $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields	= array();
 		$opts->auto_center = (bool)$params->get('fb_gm_auto_center', false);
@@ -387,7 +387,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$str .= "</div>";
 		return $str;
 	}
-	
+
 	/**
 	 * draws the form element
 	 * @param int repeat group counter
