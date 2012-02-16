@@ -67,7 +67,7 @@ class FabrikControllerList extends JController
 		$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache = JFactory::getCache('com_fabrik', 'view');
 		// f3 cache with raw view gives error
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf', 'json'))) {
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed'))) {
 			$view->display();
 		} else {
 			$cache->get($view, 'display', $cacheid);
@@ -100,10 +100,10 @@ class FabrikControllerList extends JController
 		$app = JFactory::getApplication();
 		$app->enqueueMessage(JText::_('COM_FABRIK_FILTERS_CLEARED'));
 		// $$$ rob 28/12/20111 changed from clearfilters as clearfilters removes jpluginfilters (filters
-		// set by content plugin which we want to remain sticky. Otherwise list clear button removes the 
+		// set by content plugin which we want to remain sticky. Otherwise list clear button removes the
 		// content plugin filters
 		//JRequest::setVar('resetfilters', 1);
-		
+
 		// $$ rob 07/02/2012 if reset filters set in the menu options then filters not cleared
 		// so instead use replacefilters which doesnt look at the menu item parameters.
 		JRequest::setVar('replacefilters', 1);
