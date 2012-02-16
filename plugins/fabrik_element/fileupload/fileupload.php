@@ -239,7 +239,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->id = $this->_id;
 		if ($this->isJoin()) {
 			$opts->isJoin = true;
-			$opts->joinId = $this->getJoin()->id;
+			$opts->joinId = $this->getJoinModel()->getJoin()->id;
 		}
 		$opts->elid = $element->id;
 		$opts->defaultImage = $params->get('default_image');
