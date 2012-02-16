@@ -154,22 +154,21 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	function getJSIcons()
 	{
-		$icons 			= array();
-		$w 					= new FabrikWorker();
-		$params 		=& $this->getParams();
-		$templates 	= $params->get('fb_gm_detailtemplate', array(), '_default', 'array');
-		$listids = $params->get('googlemap_table', array(), '_default', 'array');
+		$icons = array();
+		$w = new FabrikWorker();
+		$uri = JURI::getInstance();
+		$params = $this->getParams();
+		$templates = (array)$params->get('fb_gm_detailtemplate');
+		$listids = (array)$params->get('googlemap_table');
 		//images for file system
-		$aIconImgs	= $params->get('fb_gm_iconimage', array(), '_default', 'array');
+		$aIconImgs	= (array)$params->get('fb_gm_iconimage');
 		//image from marker data
-		$markerImages = $params->get('fb_gm_iconimage2', array(), '_default', 'array');
+		$markerImages = (array)$params->get('fb_gm_iconimage2');
 		//specifed letter
-		$letters = $params->get('fb_gm_icon_letter', array(), '_default', 'array');
-
-		$aFirstIcons = $params->get('fb_gm_first_iconimage', array(), '_default', 'array');
-		$aLastIcons = $params->get('fb_gm_last_iconimage', array(), '_default', 'array');
-
-		$titleElements = (array)$params->get('fb_gm_title_element', array(), '_default', 'arrray');
+		$letters = (array)$params->get('fb_gm_icon_letter');
+		$aFirstIcons = (array)$params->get('fb_gm_first_iconimage');
+		$aLastIcons = (array)$params->get('fb_gm_last_iconimage');
+		$titleElements = (array)$params->get('fb_gm_title_element');
 		$c = 0;
 		$this->recordCount = 0;
 
@@ -203,7 +202,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 			JRequest::setVar('limit'.$listid, $recLimit);
 			$listModel->setLimits();
 
-			$nav	=& $listModel->getPagination(0, 0, $recLimit);
+			$nav = $listModel->getPagination(0, 0, $recLimit);
 			$data = $listModel->getData();
 			$this->txt = array();
 			$k = 0;
@@ -218,7 +217,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 						$iconImg = JArrayHelper::getValue($aIconImgs, $c, '');
 					}
 					$v = $this->getCordsFromData($row->$coordColumn);
-					if ($v == array(0,0)) {
+					if ($v == array(0, 0)) {
 						continue;//dont show icons with no data
 					}
 					$rowdata = JArrayHelper::fromObject($row);
@@ -295,7 +294,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 					} else {
 						//default icon - lets see if we need to use a letterd icon instead
 						if (JArrayHelper::getValue($letters, $c, '') != '') {
-							$iconImg = 'http://www.google.com/mapfiles/marker'.strtoupper($letters[$c]).'.png';
+							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . strtoupper($letters[$c]) . '.png';
 						}
 						$icons[$v[0].$v[1]] = array($v[0], $v[1], $html, $iconImg, $width,
 						$height, 'groupkey'=> $groupKey, 'listid' => $listid, 'title'=>$title);
@@ -404,8 +403,9 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 		if($w > 640) $w = 640;//max allowed static map size
 		if($w > 640) $h = 640;
-		$src = "http://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile$iconstr";
-		$str = "<img src=\"$src\" alt=\"static map\" />";
+		$uri = JURI::getInstance();
+		$src = $uri->getScheme() . "://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile$iconstr";
+		$str = '<img src="' . $src . '" alt="static map" />';
 		return $str;
 	}
 
@@ -423,7 +423,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		if ((int)$params->get('fb_gm_use_overlays', 0) === 1 &&  (int)$params->get('fb_gm_use_overlays_sidebar', 0) > 0) {
 			return true;
 		}
-		if ((int)$params->get('fb_gm_group_sidebar', 0) == 1){
+		if ((int)$params->get('fb_gm_group_sidebar', 0) === 1) {
 			return true;
 		}
 		return false;

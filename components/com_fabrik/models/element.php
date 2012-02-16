@@ -2740,19 +2740,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$db = $listModel->getDb();
 		$params = $this->getParams();
 		$item = $listModel->getTable();
-		$splitSum	= $params->get('sum_split', '');
-		$split = $splitSum == '' ? false : true;
+		$splitSum = $params->get('sum_split', '');
+		$split = trim($splitSum) == '' ? false : true;
 		$calcLabel 	= $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 		if ($split) {
 			$pluginManager = FabrikWorker::getPluginManager();
+			echo "splt sum = $splitSum <br>";
 			$plugin = $pluginManager->getElementPlugin($splitSum);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			echo "split name = $splitName <br>";
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getSumQuery($listModel, $splitName) . " GROUP BY label";
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
-		
 			$uberTotal = 0;
 			foreach ($results2 as $pair) {
 				$uberTotal += $pair->value;
@@ -2786,10 +2787,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$db = $listModel->getDb();
 		$params	= $this->getParams();
-		$splitAvg	= $params->get('avg_split', '');
+		$splitAvg = $params->get('avg_split', '');
 		$item = $listModel->getTable();
 		$calcLabel = $params->get('avg_label', JText::_('COM_FABRIK_AVERAGE'));
-		$split = $splitAvg == '' ? false : true;
+		$split = trim($splitAvg) == '' ? false : true;
 		if ($split) {
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitAvg);

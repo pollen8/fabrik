@@ -29,8 +29,9 @@ class fabrikViewGooglemap extends JView
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'googlemap'.DS.'views'.DS.'googlemap'.DS.'tmpl'.DS.$tmpl;
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 
+		$uri = JURI::getInstance();
 		if ($params->get('fb_gm_center') == 'userslocation') {
-			$document->addScript('http://code.google.com/apis/gears/gears_init.js');
+			$document->addScript($uri->getScheme() . '://code.google.com/apis/gears/gears_init.js');
 			FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 		}
 
@@ -45,7 +46,7 @@ class fabrikViewGooglemap extends JView
 		  $template = 'static';
 		  $this->assign('staticmap', $this->get('StaticMap'));
 		} else {
-			$src = "http://maps.google.com/maps/api/js?sensor=".$params->get('fb_gm_sensor', 'false');
+			$src = $uri->getScheme() . '://maps.google.com/maps/api/js?sensor=' . $params->get('fb_gm_sensor', 'false');
 			$document->addScript($src);
 
 			FabrikHelperHTML::script('plugins/fabrik_visualization/googlemap/googlemap.js');
