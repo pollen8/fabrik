@@ -235,9 +235,9 @@ class FabrikModelForm extends FabModelAdmin
 		$record_in_database = $data['record_in_database'];
 		$createGroup = $data['_createGroup'];
 		$form =& $this->getForm();
-		
+
 		$fields = array('id' => 'internalid', 'date_time' => 'date');;
-		//if new and record in db and group selected then we want to get those groups elements to create fields for in the db table 
+		//if new and record in db and group selected then we want to get those groups elements to create fields for in the db table
 		if ($isnew && $record_in_database) {
 			$groups = JArrayHelper::getValue($data, 'current_groups');
 			if (!empty($groups)) {
@@ -267,7 +267,7 @@ class FabrikModelForm extends FabModelAdmin
 			} else {
 				$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
 			}
-		
+
 			$dbTableExists = $listModel->databaseTableExists($dbTableName);
 			if (!$dbTableExists) {
 				// @TODO - need to sanitize table name (get rid of non alphanumeirc or _),
@@ -378,6 +378,8 @@ class FabrikModelForm extends FabModelAdmin
 			//there is a table view linked to the form so lets load it
 			$listModel = JModel::getInstance('List', 'FabrikModel');
 			$listModel->loadFromFormId($formId);
+			//$listModel->set('form.id', $formId);
+			$listModel->setFormModel($model);
 			$dbExisits = $listModel->databaseTableExists();
 			if (!$dbExisits) {
 				$listModel->createDBTable();
