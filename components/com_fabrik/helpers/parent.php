@@ -945,7 +945,7 @@ class FabrikWorker {
 	 * @return object plugin manager
 	 */
 
-	public function getPluginManager()
+	public static function getPluginManager()
 	{
 		if (!self::$pluginManager) {
 			self::$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');

@@ -103,10 +103,11 @@ class FabrikModelConnections extends JModelList
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
-	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');

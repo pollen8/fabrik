@@ -25,7 +25,7 @@ class FabimageHelper
 	/** @var object image manipulation lib, sepecific to library */
 	var $_lib = null;
 
-	public function getLibs()
+	public static function getLibs()
 	{
 		$libs = array();
 		$gds = FabimageHelper::testGD();
@@ -56,7 +56,7 @@ class FabimageHelper
 		}
 	}
 
-	protected function testGD()
+	protected static function testGD()
 	{
 		$gd = array();
 		$GDfuncList = get_extension_funcs('gd');
@@ -82,7 +82,7 @@ class FabimageHelper
 		return $gd;
 	}
 
-	protected function testImagemagick()
+	protected static function testImagemagick()
 	{
 		if (function_exists("NewMagickWand")) {
 			$im["IM"] = "Magick wand";

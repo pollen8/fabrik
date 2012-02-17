@@ -23,7 +23,7 @@ class ElementHelper{
 		return $fullName;
 	}
 
-	function getRepeatCounter($element )
+	public static function getRepeatCounter($element )
 	{
 		if (method_exists($element, 'getRepeatCounter')) {
 			$c = $this->getRepeatCounter();

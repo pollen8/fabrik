@@ -347,7 +347,7 @@ EOD;
 	 * @return null
 	 */
 
-	function stylesheet($file, $attribs = array())
+	public static function stylesheet($file, $attribs = array())
 	{
 		if ((JRequest::getVar('format') == 'raw' || JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1) {
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
@@ -550,7 +550,7 @@ EOD;
 	 * load Fabrik's framework (js and base css file)
 	 */
 
-	public function framework()
+	public static function framework()
 	{
 		if (!self::$framework) {
 			$src = array();
@@ -611,7 +611,7 @@ EOD;
 	 * @return null
 	 */
 
-	function addScriptDeclaration($script)
+	public static function addScriptDeclaration($script)
 	{
 		if (JRequest::getCmd('format') == 'raw') {
 			echo "<script type=\"text/javascript\">".$script."</script>";
@@ -633,7 +633,7 @@ EOD;
 	 * append iframe=1 to the url to ensure that we dont try to add the scripts via FBAsset()
 	 */
 
-	function inAjaxLoadedPage()
+	public static function inAjaxLoadedPage()
 	{
 		//are we in fabrik or a content view, if not return false (things like com_config need to load in mootools)
 		$option = JRequest::getCmd('option');
@@ -660,7 +660,7 @@ EOD;
 	 * @param string optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 */
 
-	function script($file, $onLoad = '')
+	public static function script($file, $onLoad = '')
 	{
 		if (empty($file)) {
 			return;

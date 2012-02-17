@@ -494,14 +494,15 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Validate the form
-	 * @param object $form
-	 * @param array $data
+	 * @param   object  $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
 	 */
 
-	public function validate($form, $data)
+	public function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
-		$data = parent::validate($form, $data);
+		$data = parent::validate($form, $data, $group);
 		if (!$data) {
 			return false;
 		}
