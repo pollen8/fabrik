@@ -478,6 +478,11 @@ class FabrikModelList extends FabModelAdmin
 		return $this->formModel;
 	}
 
+	function setFormModel($model)
+	{
+		$this->formModel = $model;
+	}
+
 	/**
 	 * load up the front end list model so we can use some of its methods
 	 * @return object front end list model
