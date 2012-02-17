@@ -301,7 +301,7 @@ class FabrikModelList extends FabModelAdmin
 		$filterOpts->filterAccess = str_replace(array("\n", "\r"), '', $filterOpts->filterAccess);
 		$filterOpts = json_encode($filterOpts);
 
-		$formModel =& $this->getFormModel();
+		$formModel = $this->getFormModel();
 		$filterfields = $formModel->getElementList('jform[params][filter-fields][]', '', false, false, true);
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
 		$js =

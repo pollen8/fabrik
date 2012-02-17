@@ -74,7 +74,7 @@ class FabrikFEModelForm extends FabModelForm
 	var $_arErrors = array();
 
 	/** @var object uploader helper */
-	var $_oUploader = null;
+	protected $uploader = null;
 
 	/** @var array pages (array containing group ids for each page in the form **/
 	var $pages = null;
@@ -1970,10 +1970,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function &getUploader()
 	{
-		if (is_null($this->_oUploader)) {
-			$this->_oUploader = new uploader($this);
+		if (is_null($this->uploader)) {
+			$this->uploader = new uploader($this);
 		}
-		return $this->_oUploader;
+		return $this->uploader;
 	}
 
 	/**

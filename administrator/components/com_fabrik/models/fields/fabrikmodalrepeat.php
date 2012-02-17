@@ -67,7 +67,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		/*
 		 * end
 		 */
-		$subForm->setFields($this->element->children());
+		$children = $this->element->children();
+		$subForm->setFields($children);
 
 		$str = array();
 		$modalid = $this->id.'_modal';
