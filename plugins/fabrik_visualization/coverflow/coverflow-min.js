@@ -1,1 +1,1 @@
-var fbVisCoverflow=new Class({Implements:[Options],options:{},initialize:function(json,options){json=eval(json);this.setOptions(options);head.ready(function(){widget=Runway.createOrShowInstaller(document.getElementById("coverflow"),{onReady:function(){widget.setRecords(json)}})}.bind(this))}});
+var FbVisCoverflow=new Class({Implements:[Options],options:{},initialize:function(json,options){json=eval(json);this.setOptions(options);widget=Runway.createOrShowInstaller(document.getElementById("coverflow"),{onReady:function(){widget.setRecords(json)}})}});
