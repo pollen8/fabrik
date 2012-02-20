@@ -450,7 +450,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @return bol can use or not
 	 */
 
-	function canUse(&$model, $location, $event)
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$element = $this->getElement();
 		if (!is_object($this->_access) || !array_key_exists('use', $this->_access)) {
