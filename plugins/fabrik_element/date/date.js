@@ -254,8 +254,15 @@ var FbDateTime = new Class({
 			var t = this.timeElement.get('value').split(':');
 			var h = t[0] ? t[0].toInt() : 0;
 			var m = t[1] ? t[1].toInt() : 0;
+			
 			d.setHours(h);
 			d.setMinutes(m);
+			
+			if (t[2]) {
+				var s = t[2] ? t[2].toInt() : 0;
+				d.setSeconds(s);
+			}
+			
 		}
 		return d;
 	},
@@ -354,6 +361,7 @@ var FbDateTime = new Class({
 			this.getTimeField();
 			this.hour = date.get('hours');
 			this.minute = date.get('minutes');
+			this.second = date.get('seconds');
 			this.stateTime();
 		}
 		this.cal.date = date;
@@ -573,6 +581,9 @@ var FbDateTime = new Class({
 	stateTime: function () {
 		if (this.timeElement) {
 			var newv = this.hour.toString().pad('2', '0', 'left') + ':' + this.minute.toString().pad('2', '0', 'left');
+			if (this.second) {
+				newv += ':' + this.second.toString().pad('2', '0', 'left');	
+			}
 			var changed = this.timeElement.value !== newv;
 			this.timeElement.value = newv;
 			if (changed) {
