@@ -428,7 +428,7 @@ var FbDatabasejoin = new Class({
 			if (typeOf(f) !== 'null') {
 				f.addEvent(action, function (e) {
 					e.stop();
-					(typeOf(js) === 'function') ? js.delay(0) : eval(js);
+					(typeOf(js) === 'function') ? js.delay(700) : eval(js);
 				});
 			}
 			break;
