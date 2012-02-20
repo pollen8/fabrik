@@ -27,12 +27,14 @@ jimport('joomla.application.component.controller');
 class FabrikController extends JController
 {
 
-	var $isMambot = false;
+	public $isMambot = false;
 
 	/**
 	 * Display the view
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 */
-	function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		//menu links use fabriklayout parameters rather than layout
 		$flayout = JRequest::getVar('fabriklayout');
@@ -41,7 +43,7 @@ class FabrikController extends JController
 		}
 		$document = JFactory::getDocument();
 
-		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$modelName = $viewName;
 		if ($viewName == 'emailform') {
 			$modelName = 'form';
@@ -66,7 +68,6 @@ class FabrikController extends JController
 
 		// Display the view
 		$view->assign('error', $this->getError());
-		$cachable = false;
 		if (($viewName = 'form' || $viewName = 'details') ) {
 			$cachable = true;
 		}

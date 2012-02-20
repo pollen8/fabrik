@@ -301,7 +301,7 @@ class FabrikModelList extends FabModelAdmin
 		$filterOpts->filterAccess = str_replace(array("\n", "\r"), '', $filterOpts->filterAccess);
 		$filterOpts = json_encode($filterOpts);
 
-		$formModel =& $this->getFormModel();
+		$formModel = $this->getFormModel();
 		$filterfields = $formModel->getElementList('jform[params][filter-fields][]', '', false, false, true);
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
 		$js =
@@ -499,14 +499,15 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Validate the form
-	 * @param object $form
-	 * @param array $data
+	 * @param   object  $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
 	 */
 
-	public function validate($form, $data)
+	public function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
-		$data = parent::validate($form, $data);
+		$data = parent::validate($form, $data, $group);
 		if (!$data) {
 			return false;
 		}

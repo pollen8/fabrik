@@ -202,8 +202,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	 * @param int repeat group counter
 	 * @return string formatted value
 	 */
-
-	protected function _getEmailValue($value)
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params 	=& $this->getParams();
 		$split_str = $params->get('options_split_str', '');

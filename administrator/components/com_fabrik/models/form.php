@@ -234,7 +234,7 @@ class FabrikModelForm extends FabModelAdmin
 		$currentGroups = (array)JArrayHelper::getValue($data, 'current_groups');
 		$record_in_database = $data['record_in_database'];
 		$createGroup = $data['_createGroup'];
-		$form =& $this->getForm();
+		$form = $this->getForm();
 
 		$fields = array('id' => 'internalid', 'date_time' => 'date');;
 		//if new and record in db and group selected then we want to get those groups elements to create fields for in the db table
@@ -297,7 +297,7 @@ class FabrikModelForm extends FabModelAdmin
 				$item->published 		= $data['published'];
 				$item->created				= $data['created'];
 				$item->created_by		= $data['created_by'];
-				$item->access = $data['published'];
+				$item->access = 1;
 				$item->params = $listModel->getDefaultParams();
 				$res = $item->store();
 			} else {

@@ -218,7 +218,7 @@ class FabrikPlugin extends JPlugin
 	 * load params
 	 */
 
-	function &getParams()
+	public function getParams()
 	{
 		if (!isset($this->_params)) {
 			return $this->_loadParams();

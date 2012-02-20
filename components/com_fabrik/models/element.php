@@ -444,10 +444,13 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * check user can use the active element
+	 * @param object calling the plugin table/form
+	 * @param string location to trigger plugin on
+	 * @param string event to trigger plugin on
 	 * @return bol can use or not
 	 */
 
-	function canUse()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$element = $this->getElement();
 		if (!is_object($this->_access) || !array_key_exists('use', $this->_access)) {
@@ -975,7 +978,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$table = $listModel->getTable();
 		$db_table_name = $table->db_table_name;
 
-		$thisStep = ($useStep) ? $formModel->_joinTableElementStep : '.';
+		$thisStep = ($useStep) ? $formModel->joinTableElementStep : '.';
 		$group = $groupModel->getGroup();
 		if ($groupModel->isJoin() || $this->isJoin()) {
 			if ($this->isJoin()) {
@@ -1602,7 +1605,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @return object default element params
 	 */
 
-	function getParams()
+	public function getParams()
 	{
 		if (!isset($this->_params)) {
 			$this->_params = new fabrikParams($this->getElement()->params, JPATH_SITE . '/administrator/components/com_fabrik/xml/element.xml' , 'component');

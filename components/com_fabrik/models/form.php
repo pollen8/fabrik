@@ -47,7 +47,7 @@ class FabrikFEModelForm extends FabModelForm
 	/** @var array of join objects for the form */
 	var $_aJoinObjs = array();
 
-	var $_joinTableElementStep = '___';
+	public $joinTableElementStep = '___';
 
 	/** @var object parameters */
 	protected $_params = null;
@@ -74,7 +74,7 @@ class FabrikFEModelForm extends FabModelForm
 	var $_arErrors = array();
 
 	/** @var object uploader helper */
-	var $_oUploader = null;
+	protected $uploader = null;
 
 	/** @var array pages (array containing group ids for each page in the form **/
 	var $pages = null;
@@ -1979,10 +1979,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function &getUploader()
 	{
-		if (is_null($this->_oUploader)) {
-			$this->_oUploader = new uploader($this);
+		if (is_null($this->uploader)) {
+			$this->uploader = new uploader($this);
 		}
-		return $this->_oUploader;
+		return $this->uploader;
 	}
 
 	/**
@@ -3294,7 +3294,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$element->containerClass = '';
 		foreach ($listModel->getJoins() as $oJoin) {
 			if ($oJoin->id == $joinId) {
-				$key = $oJoin->table_join . $this->_joinTableElementStep . $oJoin->table_join_key;
+				$key = $oJoin->table_join . $this->joinTableElementStep . $oJoin->table_join_key;
 
 				if (array_key_exists('join', $this->_data)) {
 					// $$$ rob if join element is a db join the data $key contains label and not foreign key value
@@ -3316,7 +3316,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				}
 				if ($val == '') {
 					//somethings gone wrong - lets take the main table's key
-					$k = $oJoin->join_from_table. $this->_joinTableElementStep . $oJoin->table_key;
+					$k = $oJoin->join_from_table . $this->joinTableElementStep . $oJoin->table_key;
 					$val = @$this->_data[$k];
 				}
 				$element->value = $val;

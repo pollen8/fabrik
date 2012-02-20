@@ -88,7 +88,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	 * @return array plugin list
 	 */
 
-	function _getList()
+	protected function _getList($query, $limitstart = 0, $limit = 0)
 	{
 		$db = FabrikWorker::getDbo(true);
 		if (is_null($this->_group)) {
@@ -96,8 +96,7 @@ class FabrikFEModelPluginmanager extends JModel{
 		}
 		$query = $db->getQuery(true);
 		$folder = $db->Quote('fabrik_'.$this->_group);
-		//$query->select('name AS value, element AS text')->from('#__extensions')->where('folder ='.$folder);
-		$query->select('element AS value, name AS text')->from('#__extensions')->where('folder ='.$folder);
+		$query->select('element AS value, name AS text')->from('#__extensions')->where('folder =' . $folder);
 		$db->setQuery($query);
 		$elementstypes = $db->loadObjectList();
 		return $elementstypes;

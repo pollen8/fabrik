@@ -22,10 +22,11 @@ jimport('joomla.application.component.controller');
 class FabrikController extends JController
 {
 	/**
-	 * Method to display a view.
+	 * Display the view
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 */
-
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$this->default_view = 'home';
 		require_once JPATH_COMPONENT.'/helpers/fabrik.php';

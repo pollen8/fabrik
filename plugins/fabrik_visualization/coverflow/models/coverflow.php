@@ -31,15 +31,14 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 		$w = new FabrikWorker();
 
  		$document->addScript("http://api.simile-widgets.org/runway/1.0/runway-api.js");
-		FabrikHelperHTML::script($this->srcBase.'coverflow/coverflow.js');
 		$c = 0;
-		$images = $params->get('coverflow_image', array(), '_default', 'array');
-		$titles = $params->get('coverflow_title', array(), '_default', 'array');
-		$subtitles = $params->get('coverflow_subtitle', array(), '_default', 'array');
+		$images = (array)$params->get('coverflow_image');
+		$titles = (array)$params->get('coverflow_title');
+		$subtitles = (array)$params->get('coverflow_subtitle');
 
 		$config = JFactory::getConfig();
 
-		$listids = $params->get('coverflow_table', array(), '_default', 'array');
+		$listids = (array)$params->get('coverflow_table');
 		$eventdata = array();
 		foreach ($listids as $listid) {
  			$listModel = JModel::getInstance('List', 'FabrikFEModel');
@@ -91,8 +90,8 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 			$c ++;
 		}
 		$json = json_encode($eventdata);
-		$str = "var coverflow = new fbVisCoverflow($json);";
-		FabrikHelperHTML::addScriptDeclaration($str);
+		$str = "var coverflow = new FbVisCoverflow($json);";
+		FabrikHelperHTML::script($this->srcBase.'coverflow/coverflow.js', $str);
  	}
 
 	function setListIds()

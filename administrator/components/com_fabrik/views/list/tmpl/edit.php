@@ -17,7 +17,7 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
 JHtml::script('media/com_fabrik/js/mootools-ext.js');
-$fbConfig =& JComponentHelper::getParams('com_fabrik');
+$fbConfig = JComponentHelper::getParams('com_fabrik');
 
 $document = JFactory::getDocument();
 
