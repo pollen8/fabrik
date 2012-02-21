@@ -240,6 +240,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_visualizations` (
 	`publish_up` DATETIME NOT NULL,
 	`publish_down` DATETIME NOT NULL,
 	`published` INT(1) NOT NULL,
+	`access` INT(6) NOT NULL,
 	`params` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8;

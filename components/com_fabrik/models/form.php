@@ -47,7 +47,7 @@ class FabrikFEModelForm extends FabModelForm
 	/** @var array of join objects for the form */
 	var $_aJoinObjs = array();
 
-	var $_joinTableElementStep = '___';
+	public $joinTableElementStep = '___';
 
 	/** @var object parameters */
 	protected $_params = null;
@@ -74,7 +74,7 @@ class FabrikFEModelForm extends FabModelForm
 	var $_arErrors = array();
 
 	/** @var object uploader helper */
-	var $_oUploader = null;
+	protected $uploader = null;
 
 	/** @var array pages (array containing group ids for each page in the form **/
 	var $pages = null;
@@ -1166,11 +1166,18 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$data = $this->_formData['join'][$oJoin->id];
 
 				// $$$ rob ensure that the joined data is keyed starting at 0 (could be greated if first group deleted)
+				// $$$ hugh - FIXME - this is hosing up checkboxes and radios, for rows that have no selection, and hence no
+				// entry in the posted data array.
+				// $$$ hugh - ran for a couple of weeks with this commented out, seems OK, as we now renumber repeat counts
+				// in the form.js
+				/*
 				foreach ($data as &$dv) {
 					if (is_array($dv)) {
 						$dv = array_values($dv);
 					}
 				}
+				*/
+
 				//$$$rob moved till just before join table data saved
 				//$data = $oTable->removeTableNameFromSaveData($data, $split='___');
 				$groups = $this->getGroupsHiarachy();
@@ -1749,6 +1756,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// $$$ hugh - had to add the &, otherwise replace validations weren't work, as modifying
 		// $post wasn't modifying $this->_formData.  Which is weird, as I thought all array assignments
 		// were by reference?
+		// $$$ hugh - FIXME - wait ... what ... hang on ... we assign $this->_formData in $this->setFormData(),
+		// which we assigned to $post a few ines up there ^^.  Why are we now assigning $post back to $this->_formData??
 		$this->_formData =& $post;
 		$this->callElementPreprocess();
 
@@ -1970,10 +1979,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function &getUploader()
 	{
-		if (is_null($this->_oUploader)) {
-			$this->_oUploader = new uploader($this);
+		if (is_null($this->uploader)) {
+			$this->uploader = new uploader($this);
 		}
-		return $this->_oUploader;
+		return $this->uploader;
 	}
 
 	/**
@@ -3285,7 +3294,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$element->containerClass = '';
 		foreach ($listModel->getJoins() as $oJoin) {
 			if ($oJoin->id == $joinId) {
-				$key = $oJoin->table_join . $this->_joinTableElementStep . $oJoin->table_join_key;
+				$key = $oJoin->table_join . $this->joinTableElementStep . $oJoin->table_join_key;
 
 				if (array_key_exists('join', $this->_data)) {
 					// $$$ rob if join element is a db join the data $key contains label and not foreign key value
@@ -3307,7 +3316,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 				}
 				if ($val == '') {
 					//somethings gone wrong - lets take the main table's key
-					$k = $oJoin->join_from_table. $this->_joinTableElementStep . $oJoin->table_key;
+					$k = $oJoin->join_from_table . $this->joinTableElementStep . $oJoin->table_key;
 					$val = @$this->_data[$k];
 				}
 				$element->value = $val;
@@ -3337,7 +3346,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		// and not used anywhere else (avoids a warning message)
 		$data = array();
 		// $$$ rob - 3.0 for some reason just using $this->_data was not right as join data was empty when editing exisitng record
-		unset($this->_data);
+		// $$$ hugh - commented this out, as a) running getData() twice is expensive, and b) it blows away any changes onLoad plugins
+		// make to _data, like the juser plugin
+		// Ran this change for a couple of weeks before committing, seems to work without it.
+		//unset($this->_data);
 		$origData = $this->getData();
 		foreach ($origData as $key => $val) {
 			if (is_string($val)) {

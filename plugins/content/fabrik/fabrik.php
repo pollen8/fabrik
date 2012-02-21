@@ -131,7 +131,8 @@ class plgContentFabrik extends JPlugin
 		$rowid = 0;
 		$usekey = '';
 		$usersConfig->set('rowid', 0);
-		foreach ($match as $m) {
+		foreach ($match as $m)
+		{
 			$m = explode("=", $m);
 			// $$$ hugh - deal with %20 as space in arguments
 			$m[1] = urldecode($m[1]);
@@ -236,37 +237,44 @@ class plgContentFabrik extends JPlugin
 			return '';
 		}
 		$this->generalIncludes($viewName);
-		if ($element !== false) {
+		if ($element !== false)
+		{
 			//special case for rendering element data
 			$controller = $this->_getController('list', $listid);
 			//$view 			=& $this->_getView($controller, $viewName, $listid);
-			$model 			=& $this->_getModel($controller, 'list', $listid);
-			if (!$model) {
+			$model =& $this->_getModel($controller, 'list', $listid);
+			if (!$model)
+			{
 				return;
 			}
 			$model->setId($listid);
 			$formModel = $model->getFormModel();
 			$groups = $formModel->getGroupsHiarachy();
-			foreach ($groups as $groupModel) {
-				$elements =& $groupModel->getMyElements();
-				foreach ($elements as &$elementModel) {
+			foreach ($groups as $groupModel)
+			{
+				$elements = $groupModel->getMyElements();
+				foreach ($elements as &$elementModel)
+				{
 					// $$$ rob 26/05/2011 changed it so that you can pick up joined elements without specifying plugin
 					// param 'element' as joinx[x][fullname] but simpy 'fullname'
-					if ($element == $elementModel->getFullName(false, true, false)) {
+					if ($element == $elementModel->getFullName(false, true, false))
+					{
 						$activeEl = $elementModel;
 						continue 2;
 					}
 				}
 			}
 			// $$$ hugh in case they have a typo in their elementname
-			if (empty($activeEl)) {
+			if (empty($activeEl))
+			{
 				JError::raiseNotice(500, 'You are trying to embed an element called ' . $element . ' which is not present in the list');
 				return;
 			}
 			$row = $model->getRow($rowid, false, true);
 
-			if (substr($element, strlen($element) - 4, strlen($element)) !== "_raw") {
-				$element = $element . "_raw";
+			if (substr($element, strlen($element) - 4, strlen($element)) !== '_raw')
+			{
+				$element = $element . '_raw';
 			}
 			//$elval = is_object( $row ) ? $row->$element : '';
 			//$defaultdata = array( $name => $elval);
@@ -275,18 +283,20 @@ class plgContentFabrik extends JPlugin
 			// $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
 			// not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
 			$activeEl->_form->_data = $defaultdata;
-			$activeEl->_editable 	= false;
+			$activeEl->_editable = false;
 			//set row id for things like user element
 			$origRowid = JRequest::getVar('rowid');
 			JRequest::setVar('rowid', $rowid);
 
 			$defaultdata = (array)$defaultdata;
+			unset($activeEl->defaults);
 			$res = $activeEl->render($defaultdata, $repeatcounter);
 			JRequest::setVar('rowid', $origRowid);
 			return $res;
 		}
 
-		if (!isset($viewName)) {
+		if (!isset($viewName))
+		{
 			return;
 		}
 
@@ -305,15 +315,17 @@ class plgContentFabrik extends JPlugin
 		JRequest::setVar('origid', $origid, 'GET', false);
 
 		$document = JFactory::getDocument();
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 		$controller = $this->_getController($viewName, $id);
 		$view = $this->_getView($controller, $viewName, $id);
 		$model = $this->_getModel($controller, $viewName, $id);
-		if (!$model) {
+		if (!$model)
+		{
 			return;
 		}
 
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 
@@ -322,7 +334,8 @@ class plgContentFabrik extends JPlugin
 		$view->isMambot = true;
 		$displayed = false;
 		// do some view specific code
-		switch ($viewName) {
+		switch ($viewName)
+		{
 			case 'form_css':
 				$model->getFormCss();
 				break;
@@ -351,7 +364,8 @@ class plgContentFabrik extends JPlugin
 				
 				/// $$$ rob 15/02/2011 addded this as otherwise when you filtered on a table with multiple filter set up subsequent tables were showing
 				//the first tables data
-				if (JRequest::getVar('activelistid') == '') {
+				if (JRequest::getVar('activelistid') == '')
+				{
 					JRequest::setVar('activelistid', JRequest::getInt('listid'));
 				}
 				JRequest::setVar('listid', $id);
@@ -360,14 +374,16 @@ class plgContentFabrik extends JPlugin
 				JRequest::setVar('clearfilters', $clearfilters);
 				JRequest::setVar('resetfilters', $resetfilters);
 
-				if ($id === 0) {
+				if ($id === 0)
+				{
 					JError::raiseWarning(500, 'No id set in fabrik plugin declaration');
 					return;
 				}
 				$model->setId($id);
 				$model->ajax = 1;
 				$task = JRequest::getVar('task');
-				if (method_exists($controller, $task) && JRequest::getInt('activetableid') == $id) {
+				if (method_exists($controller, $task) && JRequest::getInt('activetableid') == $id)
+				{
 					//enable delete() of rows
 					//table controller deals with display after tasks is called
 					//set $displayed to true to stop controller running twice
@@ -379,7 +395,6 @@ class plgContentFabrik extends JPlugin
 
 				}
 				$model->setOrderByAndDir();
-				
 				
 				$formModel = $model->getFormModel();
 				//apply filters set in mambot

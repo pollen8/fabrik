@@ -44,13 +44,13 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	{
 		jimport('joomla.mail.helper');
 
-		$user						= JFactory::getUser();
-		$config					= JFactory::getConfig();
-		$db 						= JFactory::getDbo();
+		$user = JFactory::getUser();
+		$config = JFactory::getConfig();
+		$db = JFactory::getDbo();
 
 		$this->formModel = $formModel;
-		$formParams			= $formModel->getParams();
-		$emailTemplate	= JPath::clean(JPATH_SITE.DS.'plugins'.DS.'fabrik_form'.DS.'email'.DS.'tmpl'.DS . $params->get('email_template', ''));
+		$formParams = $formModel->getParams();
+		$emailTemplate = JPath::clean(JPATH_SITE.DS.'plugins'.DS.'fabrik_form'.DS.'email'.DS.'tmpl'.DS . $params->get('email_template', ''));
 
 		//$this->data = $this->getEmailData();
 		//getEmailData returns correctly formatted {tablename___elementname} keyed results
@@ -65,39 +65,27 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		}
 
 		$contentTemplate = $params->get('email_template_content');
-		if ($contentTemplate != '') {
-			$content = $this->_getConentTemplate($contentTemplate);
-		} else {
-			$content = '';
-		}
+		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
 		$htmlEmail = true; //always send as html as even text email can contain html from wysiwg editors
 
 		if (JFile::exists($emailTemplate)) {
-			if (JFile::getExt($emailTemplate) == 'php') {
-				$message = $this->_getPHPTemplateEmail($emailTemplate);
-			} else {
-				$message = $this->_getTemplateEmail($emailTemplate);
-			}
+			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate) : $this->_getTemplateEmail($emailTemplate);
 			$message = str_replace('{content}', $content, $message);
 		} else {
-			if ($contentTemplate != '') {
-				$message = $content;
-			} else {
-				$message = $this->_getTextEmail();
-			}
+			$message = $contentTemplate != '' ? $content : $this->_getTextEmail();
 		}
 		$this->addAttachments($params);
 
-		$cc 		= null;
-		$bcc 		= null;
+		$cc = null;
+		$bcc = null;
 		$w = new FabrikWorker();
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message 	= stripslashes($message);
 
-		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
-		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
-		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";
+		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid=' . JRequest::getVar('rowid');
+		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid=' . JRequest::getVar('rowid');
+		$editlink = '<a href="' . $editURL . '">' . JText::_('EDIT') . '</a>';
+		$viewlink = '<a href="' . $viewURL . '">' . JText::_('VIEW') . '</a>';
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
 		$message = str_replace('{fabrik_viewlink}', $viewlink, $message);
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
@@ -106,7 +94,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		// $$$ rob if email_to is not a valid email address check the raw value to see if that is
 		$email_to = explode(',', $params->get('email_to'));
 		foreach ($email_to as &$emailkey) {
-			$emailkey 	= $w->parseMessageForPlaceholder($emailkey, $this->data, false);
+			$emailkey = $w->parseMessageForPlaceholder($emailkey, $this->data, false);
 			//can be in repeat group in which case returns "email1,email2"
 			$emailkey = explode(",", $emailkey);
 			foreach ($emailkey as &$key) {
@@ -145,15 +133,15 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		if (empty($email_from_name)) {
 			$email_from_name = $config->getValue('fromname', $email_from);
 		}
-				$subject = $params->get('email_subject');
+		$subject = $params->get('email_subject');
 		if ($subject == "") {
 			$subject = $config->getValue('sitename') . " :: Email";
 		}
-		$subject = preg_replace_callback( '/&#([0-9a-fx]+);/mi', array($this, 'replace_num_entity'), $subject);
+		$subject = preg_replace_callback('/&#([0-9a-fx]+);/mi', array($this, 'replace_num_entity'), $subject);
 
 		$attach_type = $params->get('email_attach_type', '');
 		$config = JFactory::getConfig();
-		$attach_fname = $config->getValue('config.tmp_path').DS.uniqid().'.'.$attach_type;
+		$attach_fname = $config->getValue('config.tmp_path') . DS . uniqid() . '.' . $attach_type;
 		/* Send email*/
 
 		foreach ($email_to as $email) {
@@ -161,11 +149,14 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 			if (empty($email)) {
 				continue;
 			}
-			if (JMailHelper::isEmailAddress($email)) {
+			if (FabrikWorker::isEmail($email)) {
 				$thisAttachments = $this->_aAttachments;
 				$this->data['emailto'] = $email;
 				//see if we can load a user for the email
-				$db->setQuery("SELECT id FROM #__users WHERE email = ". $db->Quote($email));
+				$query = $db->getQuery(true);
+				//todo move htis out of foreach loop - to reduce queries
+				$query->select('id')->from('#__users')->where('email = ' . $db->Quote($email));
+				$db->setQuery($query);
 				$userid = $db->loadResult();
 				$thisUser = JFactory::getUser($userid);
 
@@ -180,7 +171,9 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 					}
 
 				}
-				$res = JUtility::sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
+				// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
+				$mail = JFactory::getMailer();
+				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
 				if (JFile::exists($attach_fname)) {
 					JFile::delete($attach_fname);
 				}
@@ -188,7 +181,6 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
 			}
 		}
-
 		return true;
 	}
 
@@ -237,7 +229,6 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 						if (is_array($val)) {
 							$val = implode(",", $val);
 						}
-						//$aVals = explode(GROUPSPLITTER, $val );
 						$aVals = FabrikWorker::JSONtoData($val, true);
 						foreach ($aVals as $v) {
 							$file = $elementModel->addEmailAttachement($v);

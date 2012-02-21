@@ -532,7 +532,10 @@ class FabrikModelElement extends JModelAdmin
 		$user = JFactory::getUser();
 		$app = JFactory::getApplication();
 
+		$new = $data['id'] == 0 ? true : false;
+
 		$params = $data['params'];
+		$data['name'] = FabrikString::iclean($data['name']);
 		$name = $data['name'];
 
 		$params['validations'] = JArrayHelper::getValue($data, 'validationrule', array());
@@ -540,7 +543,7 @@ class FabrikModelElement extends JModelAdmin
 
 		$row = $elementModel->getElement();
 
-		if ($data['id'] === 0) {
+		if ($new) {
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 		}
@@ -566,7 +569,7 @@ class FabrikModelElement extends JModelAdmin
 		//only update the element name if we can alter existing columns, otherwise the name and
 		//field name become out of sync
 
-		if ($listModel->canAlterFields() || $id == 0) {
+		if ($listModel->canAlterFields() || $new) {
 			$data['name'] = $name;
 		} else {
 			$data['name'] = JRequest::getVar('name_orig', '', 'post', 'cmd');
@@ -603,7 +606,6 @@ class FabrikModelElement extends JModelAdmin
 
 		$cond = 'group_id = '.(int)$row->group_id;
 
-		$new = $data['id'] == 0 ? true : false;
 		if ($new) {
 			$data['ordering'] = $row->getNextOrder($cond);
 		}
@@ -659,7 +661,7 @@ class FabrikModelElement extends JModelAdmin
 			$this->updateIndexes($elementModel, $listModel, $row);
 		}
 
-		
+
 		$return = parent::save($data);
 		if ($return) {
 			$this->updateJavascript($data);
@@ -670,7 +672,6 @@ class FabrikModelElement extends JModelAdmin
 			// to each of those tables' groups
 
 			if ($new) {
-
 				$this->addElementToOtherDbTables($elementModel, $row);
 			}
 
@@ -689,7 +690,7 @@ class FabrikModelElement extends JModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$list = $elementModel->getListModel()->getTable();
 		$origElid = $row->id;
-		$tmpgroupModel =& $elementModel->getGroup();
+		$tmpgroupModel = $elementModel->getGroup();
 		if ($tmpgroupModel->isJoin()) {
 			$dbname = $tmpgroupModel->getJoinModel()->getJoin()->table_join;
 		} else {
@@ -697,7 +698,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 
 		$query = $db->getQuery(true);
-		$query->select("DISTINCT(l.id), db_table_name, l.id, l.label, l.form_id, l.label AS form_label, g.id AS group_id");
+		$query->select("DISTINCT(l.id) AS id, db_table_name, l.label, l.form_id, l.label AS form_label, g.id AS group_id");
 		$query->from("#__{package}_lists AS l");
 		$query->join('INNER', '#__{package}_forms AS f ON l.form_id = f.id');
 		$query->join('LEFT', '#__{package}_formgroup AS fg ON f.id = fg.form_id');
@@ -705,11 +706,27 @@ class FabrikModelElement extends JModelAdmin
 		$query->where("db_table_name = ".$db->Quote($dbname)." AND l.id !=".(int)$list->id." AND is_join = 0");
 
 		$db->setQuery($query);
+		
 		// $$$ rob load keyed on table id to avoid creating element in every one of the table's group
 		$othertables = $db->loadObjectList('id');
 		if ($db->getErrorNum() != 0) {
 			JError::raiseError(500, $db->getErrorMsg());
 		}
+		
+		// $$$ rob 20/02/2012 if you have 2 lists, countres, regions and then you join regions to countries to get a new group "countries - [regions]"
+		// Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into 
+		
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(l.id) AS id, l.db_table_name, l.label, l.form_id, l.label AS form_label, fg.group_id AS group_id')
+		->from('#__{package}_joins AS j')
+		->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = j.group_id')
+		->join('LEFT', '#__{package}_forms AS f ON fg.form_id = f.id')
+		->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id')
+		->where('j.table_join = ' . $db->Quote($dbname) . ' AND j.list_id <> 0 AND list_id <> ' . (int)$list->id);
+		$db->setQuery($query);
+		$joinedLists = $db->loadObjectList('id');
+		$othertables = array_merge($joinedLists, $othertables);
+		
 		if (!empty($othertables)) {
 			// $$$ hugh - we use $row after this, so we need to work on a copy, otherwise
 			// (for instance) we redirect to the wrong copy of the element

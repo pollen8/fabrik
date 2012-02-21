@@ -444,10 +444,13 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * check user can use the active element
+	 * @param object calling the plugin table/form
+	 * @param string location to trigger plugin on
+	 * @param string event to trigger plugin on
 	 * @return bol can use or not
 	 */
 
-	function canUse()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$element = $this->getElement();
 		if (!is_object($this->_access) || !array_key_exists('use', $this->_access)) {
@@ -975,7 +978,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$table = $listModel->getTable();
 		$db_table_name = $table->db_table_name;
 
-		$thisStep = ($useStep) ? $formModel->_joinTableElementStep : '.';
+		$thisStep = ($useStep) ? $formModel->joinTableElementStep : '.';
 		$group = $groupModel->getGroup();
 		if ($groupModel->isJoin() || $this->isJoin()) {
 			if ($this->isJoin()) {
@@ -1602,7 +1605,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @return object default element params
 	 */
 
-	function getParams()
+	public function getParams()
 	{
 		if (!isset($this->_params)) {
 			$this->_params = new fabrikParams($this->getElement()->params, JPATH_SITE . '/administrator/components/com_fabrik/xml/element.xml' , 'component');
@@ -2740,19 +2743,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$db = $listModel->getDb();
 		$params = $this->getParams();
 		$item = $listModel->getTable();
-		$splitSum	= $params->get('sum_split', '');
-		$split = $splitSum == '' ? false : true;
+		$splitSum = $params->get('sum_split', '');
+		$split = trim($splitSum) == '' ? false : true;
 		$calcLabel 	= $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 		if ($split) {
 			$pluginManager = FabrikWorker::getPluginManager();
+			echo "splt sum = $splitSum <br>";
 			$plugin = $pluginManager->getElementPlugin($splitSum);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			echo "split name = $splitName <br>";
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getSumQuery($listModel, $splitName) . " GROUP BY label";
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
-		
 			$uberTotal = 0;
 			foreach ($results2 as $pair) {
 				$uberTotal += $pair->value;
@@ -2786,10 +2790,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$db = $listModel->getDb();
 		$params	= $this->getParams();
-		$splitAvg	= $params->get('avg_split', '');
+		$splitAvg = $params->get('avg_split', '');
 		$item = $listModel->getTable();
 		$calcLabel = $params->get('avg_label', JText::_('COM_FABRIK_AVERAGE'));
-		$split = $splitAvg == '' ? false : true;
+		$split = trim($splitAvg) == '' ? false : true;
 		if ($split) {
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitAvg);
@@ -2919,7 +2923,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				$uberTotal += $pair->value;
 			}
 			$uberObject = new stdClass();
-			$uberObject->value = $uberTotal / count($results2);
+			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
 			$results2[] = $uberObject;
@@ -3532,8 +3536,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$str[] = '<a href="#" title="'.JText::_('add option').'" class="toggle-addoption">';
 		$str[] = '<img src="'.COM_FABRIK_LIVESITE.'media/com_fabrik/images/action_add.png" alt="'.JText::_('COM_FABRIK_ADD').'"/>';
 		$str[] = '</a>';
-		$str[] = '<br style="clear:left"/>';
-		$str[] = '<div class="addoption"><div>'.JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE').'</div>';
+		$str[] = '<div style="clear:left" class="addoption"><div>'.JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE').'</div>';
 		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions')) {
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
 			$str[] = '<label for="'.$valueid.'">'.JText::_('COM_FABRIK_VALUE').'</label>';

@@ -32,7 +32,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 	function getInput()
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
-		if ($config->get('fbConf_wysiwyg_label') == '0') {
+		if ($config->get('fbConf_wysiwyg_label', '0') == '0') {
 			return parent::getInput();
 		}
 			// Initialize some field attributes.

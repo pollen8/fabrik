@@ -202,8 +202,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	 * @param int repeat group counter
 	 * @return string formatted value
 	 */
-
-	protected function _getEmailValue($value)
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params 	=& $this->getParams();
 		$split_str = $params->get('options_split_str', '');
@@ -336,7 +335,21 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 
-		$selected = (array)$this->getValue($data, $repeatCounter);
+		// $$$ hugh -- working on issue with radio and checkbox, where extra blank subitem gets added
+		// if nothing selected.  this fix assumes that 'value' cannot be empty string for sub-options,
+		// and I'm not sure if we enforce that.  Problem being that if we just cast directly to
+		// an array, the array isn't "empty()", as it has a single, empty string entry.  So then
+		// the array_diff() we're about to do sees that as a diff.
+		// $selected = (array)$this->getValue($data, $repeatCounter);
+		$selected = $this->getValue($data, $repeatCounter);
+		if (is_string($selected)) {
+			if (empty($selected)) {
+				$selected = array();
+			}
+			else {
+				$selected = array($selected);
+			}
+		}
 		//$$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
 		$diff = array_diff($selected, $values);
@@ -435,6 +448,10 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 							$value = $data['join'][$joinid][$rawname];
 						}
 					}
+					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0]))) {
+						// fix for http://fabrikar.com/forums/showthread.php?t=23568&page=2
+						$value = $value[0];
+					}
 				}
 			} else {
 				if ($groupModel->canRepeat()) {
@@ -471,6 +488,12 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			if ($value === '') {
 				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
+			}
+			// $$$ hugh -- added this so we are consistent in what we return, otherwise uninitialized values,
+			// i.e. if you've added a checkbox element to a form with existing data, don't get set, and causes
+			// issues with methods that call getValue().
+			if (!isset($value)) {
+				$value = '';
 			}
 			$element->default = $value;
 			$formModel = $this->getForm();

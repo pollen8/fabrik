@@ -44,7 +44,7 @@ class plgSystemFabrikcron extends JPlugin
 	function doCron()
 	{
 		$app = JFactory::getApplication();
-		if ($app->isAdmin()) {
+		if ($app->isAdmin() || JRequest::getVar('option') == 'com_acymailing') {
 			return;
 		}
 		// $$$ hugh - don't want to run on things like AJAX calls
@@ -60,15 +60,15 @@ class plgSystemFabrikcron extends JPlugin
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
 		require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'parent.php');
 		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-		JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'); */
+		 */
 		//get all active tasks
 		$db = FabrikWorker::getDbo(true);
 		$now = JRequest::getVar('fabrikcron_run', false);
 
 		$log = FabTable::getInstance('Log', 'FabrikTable');
 
-		if (!$now) {
-
+		if (!$now)
+		{
 			// $$$ hugh - changed from using NOW() to JFactory::getDate(), to avoid time zone issues, see:
 			// http://fabrikar.com/forums/showthread.php?p=102245#post102245
 			// .. which seems reasonable, as we use getDate() to set 'lastrun' to at the end of this func
@@ -85,44 +85,49 @@ class plgSystemFabrikcron extends JPlugin
 			$query = "SELECT id, plugin, lastrun, unit, frequency, $nextrun AS nextrun FROM #__{package}_cron\n";
 			$query .= "WHERE published = '1' ";
 			$query .= "AND $nextrun < '". JFactory::getDate()->toMySQL() ."'";
-		} else {
+		}
+		else
+		{
 			$query = "SELECT id, plugin FROM #__{package}_cron WHERE published = '1'";
 		}
 
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-
-		$log->message = '';
-
-		if (empty($rows)) {
+		if (empty($rows))
+		{
 			return;
 		}
+		
+		$log->message = '';
 
 		// $$$ hugh - set 'state' to 2 for selected rows, so we don't end up running
 		// multiple copies, if this code is run again before selected plugins have
 		// finished running, see:
 		// http://fabrikar.com/forums/showthread.php?p=114008#post114008
 		$ids = array();
-		foreach ($rows as $row) {
+		foreach ($rows as $row)
+		{
 			$ids[] = (int)$row->id;
 		}
 		$db->setQuery("UPDATE #__{package}_cron SET published='2' WHERE id IN (" . implode(',', $ids) . ")");
 		//$db->query();
 
+		JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 
-		foreach ($rows as $row) {
+		foreach ($rows as $row)
+		{
 			$log->message = '';
 			$log->id = null;
 			$log->referring_url = '';
 			//load in the plugin
 			//$plugin = $pluginManager->getPlugIn($row->plugin, 'cron');
 			//$plugin->setId($row->id);
-			
 			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
 			$log->message_type = 'plg.cron.'.$row->plugin;
-			if (!$plugin->queryStringActivated()) {
+			if (!$plugin->queryStringActivated())
+			{
 				// $$$ hugh - don't forget to make it runnable again before continuing
 				$db->setQuery('UPDATE #__{package}_cron SET published="1" WHERE id = '.$row->id);
 				$db->query();
@@ -130,17 +135,21 @@ class plgSystemFabrikcron extends JPlugin
 			}
 			$tid = (int)$plugin->getParams()->get('table');
 			$thisListModel = clone($listModel);
-			if ($tid !== 0) {
+			if ($tid !== 0)
+			{
 				$thisListModel->setId($tid);
 				$log->message .= "\n\n$row->plugin\n listid = ".$thisListModel->getId();//. var_export($table);
-				if ($plugin->requiresTableData()) {
+				if ($plugin->requiresTableData())
+				{
 					$table = $thisListModel->getTable();
 					$total = $thisListModel->getTotalRecords();
 					$nav = $thisListModel->getPagination($total, 0, $total);
 					$data = $thisListModel->getData();
 					$log->message .= "\n" . $thisListModel->_buildQuery();
 				}
-			} else {
+			}
+			else
+			{
 				$data = array();
 			}
 			$res = $plugin->process($data, $thisListModel);
@@ -150,7 +159,8 @@ class plgSystemFabrikcron extends JPlugin
 			$new = JFactory::getDate($row->nextrun);
 			$tmp = $new->toUnix();
 
-			switch ($row->unit) {
+			switch ($row->unit)
+			{
 				case 'second':
 					$inc = 1;
 					break;
@@ -169,7 +179,8 @@ class plgSystemFabrikcron extends JPlugin
 			//jobs aren't run as frequently as specified
 			//if the lastrun date was set in admin to ages ago, then incrementally increase the
 			//last run date until it is less than now
-			while ($tmp + ($inc * $row->frequency) < $now) {
+			while ($tmp + ($inc * $row->frequency) < $now)
+			{
 				$tmp = $tmp + ($inc * $row->frequency);
 			}
 
@@ -179,7 +190,8 @@ class plgSystemFabrikcron extends JPlugin
 			$db->setQuery('UPDATE #__{package}_cron SET lastrun = "'.$nextrun->toMySQL() .'" WHERE id = '.$row->id);
 			$db->query();
 			//log if asked for
-			if ($plugin->getParams()->get('log', 0) == 1) {
+			if ($plugin->getParams()->get('log', 0) == 1)
+			{
 				$log->store();
 			}
 		}

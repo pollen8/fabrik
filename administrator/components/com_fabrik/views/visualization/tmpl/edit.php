@@ -17,7 +17,7 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
-$fbConfig =& JComponentHelper::getParams('com_fabrik');
+$fbConfig = JComponentHelper::getParams('com_fabrik');
 FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 
 FabrikHelperHTML::script('administrator/components/com_fabrik/views/visualization/adminvisualization.js');
@@ -61,8 +61,10 @@ JFactory::getDocument()->addScriptDeclaration($js);
 
 <div class="width-50 fltrt">
 
-	<?php echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie'=>1));?>
-	<?php echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'));?>
+	<?php echo JHtml::_('sliders.start','list-sliders-'.$this->item->id, array('useCookie'=>1)); 
+	//echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie'=>1));?>
+	<?php echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'details'); 
+	//echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'));?>
 
 		<fieldset class="adminform">
 		<ul class="adminformlist">
@@ -76,8 +78,25 @@ JFactory::getDocument()->addScriptDeclaration($js);
 			<?php endforeach; ?>
 			</ul>
 		</fieldset>
+		
+		<?php echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_VISUALIZATION_LABEL_VISUALIZATION_DETAILS'), 'more');  
+		//echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_VISUALIZATION_LABEL_VISUALIZATION_DETAILS'));?>
+		
+				<fieldset class="adminform">
+				<ul class="adminformlist">
+					<?php foreach($this->form->getFieldset('more') as $field): ?>
+						<li>
+							<?php if (!$field->hidden): ?>
+								<?php echo $field->label; ?>
+							<?php endif; ?>
+							<?php echo $field->input; ?>
+						</li>
+					<?php endforeach; ?>
+					</ul>
+				</fieldset>
 
-	<?php echo JHtml::_('tabs.end','table-tabs-'.$this->item->id, array('useCookie'=>1)); ?>
+	<?php echo JHtml::_('sliders.end');
+	//echo JHtml::_('tabs.end','table-tabs-'.$this->item->id, array('useCookie'=>1)); ?>
 </div>
 
 

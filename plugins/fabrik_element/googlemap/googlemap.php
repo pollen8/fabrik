@@ -15,9 +15,9 @@ require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.
 class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	protected static $geoJs = null;
-	
+
 	protected static $usestatic = null;
-	
+
 	/**
 	 * shows the data formatted for the table view
 	 * @param string data
@@ -130,7 +130,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 			$document = JFactory::getDocument();
 			$params = $this->getParams();
 			if ($params->get('fb_gm_defaultloc')) {
-				$document->addScript("http://code.google.com/apis/gears/gears_init.js");
+				$uri = JURI::getInstance();
+				$document->addScript($uri->getScheme() . '://code.google.com/apis/gears/gears_init.js');
 				FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 				self::$geoJs = true;
 			}
@@ -173,7 +174,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$opts->latlng = $this->_editable ? (bool)$params->get('fb_gm_latlng', false) : false;
 		$opts->sensor = (bool)$params->get('fb_gm_sensor', false);
 		$opts->latlng_dms = $this->_editable ? (bool)$params->get('fb_gm_latlng_dms', false) : false;
-		$opts->geocode = (bool)$params->get('fb_gm_geocode', false);
+		$opts->geocode = $params->get('fb_gm_geocode', '0');
 		$opts->geocode_event 	= $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields	= array();
 		$opts->auto_center = (bool)$params->get('fb_gm_auto_center', false);
@@ -373,20 +374,20 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$lat = trim($o->coords[0]);
 		$lon = trim($o->coords[1]);
 
-		//$src = "http://maps.google.com/staticmap?center=$lat,$lon&zoom={$z}&size={$w}x{$h}&maptype=mobile&markers=$lat,$lon,&key={$k}";
 		// new api3 url:
 		$markers = '';
 		if ($icon !== '') {
 			$markers .="icon:$icon|";
 		}
 		$markers .= "$lat,$lon";
-		$src = "http://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=mobile&amp;markers=$markers&amp;sensor=false";
+		$uri = JURI::getInstance();
+		$src = $uri->getScheme() . "://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=mobile&amp;markers=$markers&amp;sensor=false";
 		$id = $tableView ? '' : "id=\"{$id}\"";
 		$str =  "<div $id class=\"gmStaticMap\"><img src=\"$src\" alt=\"static map\" />";
 		$str .= "</div>";
 		return $str;
 	}
-	
+
 	/**
 	 * draws the form element
 	 * @param int repeat group counter
@@ -525,7 +526,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 			$table = $listModel->getTable();
 			if ($groupModel->canRepeat() == '1') {
-				$fullName = $table->db_table_name . $formModel->_joinTableElementStep . $element->name;
+				$fullName = $table->db_table_name . $formModel->joinTableElementStep . $element->name;
 				if (isset($data[$fullName])) {
 					if (is_array($data[$fullName])) {
 						$value = $data[$fullName][0];
@@ -561,7 +562,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 					}
 				}
 			} else {
-				$fullName = $table->db_table_name . $formModel->_joinTableElementStep . $element->name;
+				$fullName = $table->db_table_name . $formModel->joinTableElementStep . $element->name;
 				if (isset($data[$fullName])) {
 					/* drop down  */
 					if (is_array($data[$fullName])) {

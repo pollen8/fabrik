@@ -31,7 +31,7 @@ class plgFabrik_List extends FabrikPlugin
 		return '';
 	}
 
-	function canUse(&$model = null, $location = null, $event = null)
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$aclParam = $this->getAclParam();
 		if ($aclParam == '') {

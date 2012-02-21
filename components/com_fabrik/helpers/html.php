@@ -28,7 +28,7 @@ class FabrikHelperHTML
 	protected static $framework = null;
 
 	protected static $mcl = null;
-	
+
 	protected static $modals = array();
 
 	protected static $tips = array();
@@ -44,7 +44,7 @@ class FabrikHelperHTML
 	protected static $facebookgraphapi = null;
 
 	protected static $helperpaths = array();
-	
+
 	protected static $modal = null;
 
 	/**
@@ -191,7 +191,7 @@ EOD;
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
 		$document->setTitle($config->getValue('sitename'));
-		
+
 		if ($ok) {?>
 <span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO')." $to";?>
 </span>
@@ -266,16 +266,16 @@ EOD;
 				$url = "index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=". $formModel->get('id')."&rowid=$formModel->_rowId";
 			 } else {
 				$url = "index.php?option=com_fabrik&view=emailform&tmpl=component&formid=". $formModel->get('id')."&rowid=$formModel->_rowId";
-			} 
-			
+			}
+
 			if (JRequest::getVar('usekey') !== null) {
 				$url .= "&usekey=" . JRequest::getVar('usekey');
 			}
 			$url .= '&referrer='.urlencode(JFactory::getURI()->toString());
-			
+
 			//$link = JRoute::_($url); //cant jroute as reffer values overrides url task/view!
 			$link = $url;
-			
+
 			if ($params->get('icons', true)) {
 				$image = JHtml::_('image','system/emailButton.png', JText::_('JGLOBAL_EMAIL'), NULL, true);
 			} else {
@@ -347,7 +347,7 @@ EOD;
 	 * @return null
 	 */
 
-	function stylesheet($file, $attribs = array())
+	public static function stylesheet($file, $attribs = array())
 	{
 		if ((JRequest::getVar('format') == 'raw' || JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1) {
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
@@ -545,12 +545,12 @@ EOD;
 			self::$mcl = true;
 		}
 	}
-	
+
 	/**
 	 * load Fabrik's framework (js and base css file)
 	 */
 
-	public function framework()
+	public static function framework()
 	{
 		if (!self::$framework) {
 			$src = array();
@@ -558,6 +558,9 @@ EOD;
 			if (FabrikHelperHTML::inAjaxLoadedPage()) {
 				// 17/10/2011 (firefox) retesting loading this in ajax page as without it Class is not available? so form class doesnt load
 				JHtml::_('behavior.framework', true);
+				//$$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
+				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
+				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
 			}
 
 			if (!FabrikHelperHTML::inAjaxLoadedPage()) {
@@ -608,7 +611,7 @@ EOD;
 	 * @return null
 	 */
 
-	function addScriptDeclaration($script)
+	public static function addScriptDeclaration($script)
 	{
 		if (JRequest::getCmd('format') == 'raw') {
 			echo "<script type=\"text/javascript\">".$script."</script>";
@@ -630,7 +633,7 @@ EOD;
 	 * append iframe=1 to the url to ensure that we dont try to add the scripts via FBAsset()
 	 */
 
-	function inAjaxLoadedPage()
+	public static function inAjaxLoadedPage()
 	{
 		//are we in fabrik or a content view, if not return false (things like com_config need to load in mootools)
 		$option = JRequest::getCmd('option');
@@ -657,7 +660,7 @@ EOD;
 	 * @param string optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 */
 
-	function script($file, $onLoad = '')
+	public static function script($file, $onLoad = '')
 	{
 		if (empty($file)) {
 			return;

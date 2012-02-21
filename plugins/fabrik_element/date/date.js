@@ -38,41 +38,43 @@ var FbDateTime = new Class({
 	},
 	
 	setUp: function () {
-		this.watchButtons();
-		if (this.options.typing === false) {
-			this.disableTyping();
-		} else {
-			this.getDateField().addEvent('blur', function (e) {
-				var date_str = this.getDateField().value;
-				if (date_str !== '') {
-					//var d = new Date(date_str);
-					var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
-					this.setTimeFromField(d);
-					this.update(d);
+		if (this.options.editable) {
+			this.watchButtons();
+			if (this.options.typing === false) {
+				this.disableTyping();
+			} else {
+				this.getDateField().addEvent('blur', function (e) {
+					var date_str = this.getDateField().value;
+					if (date_str !== '') {
+						//var d = new Date(date_str);
+						var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
+						this.setTimeFromField(d);
+						this.update(d);
+					}
+					else {
+						this.options.value = '';
+					}
+				}.bind(this));
+			}
+			this.makeCalendar();
+			//chrome wierdness where we need to delay the hiding if the date picker is hidden
+			var h = function () { 
+				this.cal.hide();
+			};
+			h.delay(100, this);
+			this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
+				if (!this.cal.params.position) {
+					this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
+				} else {
+					this.cal.showAt(this.cal.params.position[0], params.position[1]);
 				}
-				else {
-					this.options.value = '';
-				}
+				this.cal.show();
+			}.bind(this));
+			Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
+				//fired when form failed after AJAX submit
+				this.afterAjaxValidation();
 			}.bind(this));
 		}
-		this.makeCalendar();
-		//chrome wierdness where we need to delay the hiding if the date picker is hidden
-		var h = function () { 
-			this.cal.hide();
-		};
-		h.delay(100, this);
-		this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
-			if (!this.cal.params.position) {
-				this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
-			} else {
-				this.cal.showAt(this.cal.params.position[0], params.position[1]);
-			}
-			this.cal.show();
-		}.bind(this));
-		Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
-			//fired when form failed after AJAX submit
-			this.afterAjaxValidation();
-		}.bind(this));
 	},
 	
 	/**
@@ -119,7 +121,9 @@ var FbDateTime = new Class({
 		var v = this.getValue();
 		if (v !== '') {
 			this.update(v);
-			this.getDateField().value = v;
+			if (this.options.editable) {
+				this.getDateField().value = v;
+			}
 		}
 		return true;
 	},
@@ -210,7 +214,7 @@ var FbDateTime = new Class({
 					return;
 				}
 				if (e.target.hasClass('timeField')) {
-					this.element.getParent('.fabrikElementContainer').getElement('.timeButton').fireEvent('click');
+					this.getContainer().getElement('.timeButton').fireEvent('click');
 				} else {
 					this.options.calendarSetup.inputField = e.target.id;
 					this.options.calendarSetup.button = this.element.id + "_img";
@@ -250,8 +254,15 @@ var FbDateTime = new Class({
 			var t = this.timeElement.get('value').split(':');
 			var h = t[0] ? t[0].toInt() : 0;
 			var m = t[1] ? t[1].toInt() : 0;
+			
 			d.setHours(h);
 			d.setMinutes(m);
+			
+			if (t[2]) {
+				var s = t[2] ? t[2].toInt() : 0;
+				d.setSeconds(s);
+			}
+			
 		}
 		return d;
 	},
@@ -350,6 +361,7 @@ var FbDateTime = new Class({
 			this.getTimeField();
 			this.hour = date.get('hours');
 			this.minute = date.get('minutes');
+			this.second = date.get('seconds');
 			this.stateTime();
 		}
 		this.cal.date = date;
@@ -367,7 +379,7 @@ var FbDateTime = new Class({
 	 * get time time field input
 	 */
 	getTimeField: function () {
-		this.timeElement = this.element.getParent('.fabrikElementContainer').getElement('.timeField');
+		this.timeElement = this.getContainer().getElement('.timeField');
 		return this.timeElement;
 	},
 	
@@ -375,7 +387,7 @@ var FbDateTime = new Class({
 	 * get time time button img
 	 */
 	getTimeButton: function () {
-		this.timeButton = this.element.getParent('.fabrikElementContainer').getElement('.timeButton');
+		this.timeButton = this.getContainer().getElement('.timeButton');
 		return this.timeButton;
 	},
 
@@ -569,6 +581,9 @@ var FbDateTime = new Class({
 	stateTime: function () {
 		if (this.timeElement) {
 			var newv = this.hour.toString().pad('2', '0', 'left') + ':' + this.minute.toString().pad('2', '0', 'left');
+			if (this.second) {
+				newv += ':' + this.second.toString().pad('2', '0', 'left');	
+			}
 			var changed = this.timeElement.value !== newv;
 			this.timeElement.value = newv;
 			if (changed) {

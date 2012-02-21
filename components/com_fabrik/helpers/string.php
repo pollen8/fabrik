@@ -160,13 +160,14 @@ class FabrikString extends JString{
 	 * replace all non-alphanumeric chars except _ and - with '_'
 	 * 28/06/2011 replaces umlauts with eu
 	 * 22/11/2011 added IGNORE to default enc otherwise iconv chops everything after first unconvertable char
+	 * 05/02/2012 changed name to iclean, removed strtolower() and added clean() as wrapper that does strtolower
 	 * @param $str to clean
 	 * @param str from encoding
 	 * @paran str to encoding
 	 * @return string cleaned
 	 */
 
-	function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
+	function iclean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
 	{
 		//replace umlauts
 
@@ -192,7 +193,21 @@ class FabrikString extends JString{
 			$str = (str_replace("'", '', @iconv($fromEnc, $toEnc, $str))); // replace accented characters with ascii equivalent e.g. é => e
 		}
 		$str = preg_replace('/\s+/', '_', $str); // compress internal whitespace and replace with _
-		return strtolower(preg_replace('/\W+/', '_', $str));// replace all non-alphanumeric chars except _ and - with '_'
+		return preg_replace('/\W+/', '_', $str);// replace all non-alphanumeric chars except _ and - with '_'
+	}
+
+	/**
+	 * Wrapper for iclean(), that does strtolower on output of clean()
+	 *
+	 * @param $str to clean
+	 * @param str from encoding
+	 * @paran str to encoding
+	 * @return string cleaned
+	 */
+
+	function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
+	{
+		return strtolower(FabrikString::iclean($str, $fromEnc, $toEnc));
 	}
 
 	/**
@@ -201,7 +216,7 @@ class FabrikString extends JString{
 	 * @param array $opts
 	 * @return string
 	 */
-	
+
 	function truncate($text, $opts = array())
 	{
 		$text = htmlspecialchars(strip_tags($text), ENT_QUOTES);
@@ -238,7 +253,7 @@ class FabrikString extends JString{
 	 * @param string $key to remove
 	 * @return string url/querystring
 	 */
-	
+
 	function removeQSVar($url, $key)
 	{
 		$pair = explode('?', $url);

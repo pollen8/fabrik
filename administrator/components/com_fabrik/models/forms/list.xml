@@ -447,6 +447,13 @@
 					<option value="nl">COM_FABRIK_LEAVE_CR_LF</option>
 					<option value="remove">COM_FABRIK_REMOVE</option>
 				</field>
+				
+			<field name="csv_custom_qs" 
+				type="text" 
+				default="" 
+				size="20" 
+				label="COM_FABRIK_FIELD_CSV_CUSTOM_QS_LABEL" 
+				description="COM_FABRIK_FIELD_CSV_CUSTOM_QS_DESC" />
 		</fieldset>
 		
 		<fieldset name="csvauto">

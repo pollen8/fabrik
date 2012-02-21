@@ -99,7 +99,13 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 						}
 					}
 					else {
+						if (!isset($data->$from)) {
+							JError::raiseError(500, 'autofill map json not correctly set?');
+						}
 						$newdata->$to = $data->$from;
+						if (!isset($data->$fromraw)) {
+							JError::raiseError(500, 'autofill toraw map json not correctly set?');
+						}
 						$newdata->$toraw = $data->$fromraw;
 					}
 				}

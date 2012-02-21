@@ -109,7 +109,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$this->_request = $filters;
 		FabrikHelperHTML::debug($this->_request, 'filter array');
 		$this->checkAccess($filters);
-		//	echo "<pre>";print_r($filters);echo "</pre>";
+		// echo "<pre>";print_r($filters);echo "</pre>";
 		return $filters;
 	}
 
@@ -914,7 +914,7 @@ class FabrikFEModelListfilter extends FabModel {
 				$filters['eval'][] = $eval;
 				$filters['required'][] = $elparams->get('filter_required');
 				$filters['access'][] = $elparams->get('filter_access');
-				$filters['grouped_to_previous'][] = $request['grouped_to_previous'][$i];
+				$filters['grouped_to_previous'][] = JArrayHelper::getValue($request['grouped_to_previous'], $i, '0');
 				$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
 				$filters['elementid'][] = $elid;
 				$filters['raw'][] = false;

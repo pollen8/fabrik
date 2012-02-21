@@ -25,6 +25,7 @@ class fabrikViewCalendar extends JView
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
+		$this->assign('showTitle', JRequest::getInt('show-title', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$calendar = $model->_row;

@@ -79,12 +79,11 @@ function fabrik_pagination_list_footer($list)
 	return $html;
 }
 
-function fabrik_pagination_list_render($list)
+function fabrik_pagination_list_render($list, $context)
 {
 	// Initialise variables.
 	$lang = JFactory::getLanguage();
 	$html = null;
-
 	if ($list['start']['active']) {
 		$html .= "<div class=\"button2-right\"><div class=\"start\">".$list['start']['data']."</div></div>";
 	} else {
@@ -113,15 +112,29 @@ function fabrik_pagination_list_render($list)
 		$html .= "<div class=\"button2-left off\"><div class=\"end\">".$list['end']['data']."</div></div>";
 	}
 
+	// watch the nav buttons
+	$doc = JFactory::getDocument();
+	$doc->addScriptDeclaration(
+		"head.ready(function () {
+		Fabrik.addEvent('fabrik.block.added', function (block) {
+			if (block.options.listRef === '$context') {
+				block.form.getElement('.fabrikNav').getElements('a').addEvent('click', function (e) {
+					e.stop();
+					block.fabrikNav(e.target.get('href'));
+				});  
+			}
+		});
+		})"
+	);
 	return $html;
 }
 
 function fabrik_pagination_item_active(&$item, $listid)
 {
-	if ($item->base>0)
-		return "<a href=\"#\" title=\"".$item->text."\" onclick=\"Fabrik.blocks['list_$listid'].fabrikNav($item->base);return false;\">".$item->text."</a>";
+	if ($item->base > 0)
+		return '<a href="' . $item->base . '" title="' .$item->text . '">' . $item->text . '</a>';
 	else
-		return "<a href=\"#\" title=\"".$item->text."\" onclick=\"Fabrik.blocks['list_$listid'].fabrikNav(0);return false;\">".$item->text."</a>";
+		return '<a href="0" title="' . $item->text . '">' .$item->text . '</a>';
 }
 
 function fabrik_pagination_item_inactive(&$item)

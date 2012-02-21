@@ -1382,13 +1382,16 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$params = $this->getParams();
 		$table = $this->getTable();
-		$db = FabrikWorker::getDbo();
+		$db = $this->getDb();
 		$this->selectedOrderFields = array();
-		if ($this->_outPutFormat == 'feed')
+		if ($this->_outPutFormat == 'fabrikfeed' || $this->_outPutFormat == 'feed')
 		{
 			$dateColId = (int)$params->get('feed_date', 0);
-			$db->setQuery('SELECT name FROM #__{package}_elements WHERE id = '.$dateColId);
+			$query = $db->getQuery(true);
+			$query->select('name')->from('#__{package}_elements')->where('id = ' . $dateColId);
+			$db->setQuery($query);
 			$dateCol = $db->nameQuote($table->db_table_name).'.'.$db->nameQuote($db->loadResult());
+			$query->clear();
 			if ($dateColId !== 0) {
 				$this->order_dir = 'DESC';
 				$this->order_by 	= $dateCol;
@@ -3824,12 +3827,14 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$list = $this->getTable();
 		$opts = new stdClass();
-		$opts->conditionList = FabrikHelperHTML::conditonList($this->getRenderContext(), '');
+		$listRef = $this->getRenderContext();
+		$opts->conditionList = FabrikHelperHTML::conditonList($listRef, '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
-		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_'.$this->getRenderContext().'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
-		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'.$this->getRenderContext().'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
+		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef .'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
+		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'. $listRef .'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
+		$opts->listref = $listRef;
 		$opts->counter = count($this->getadvancedSearchRows()) - 1;
 		$elements = $this->getElements();
 		$arr = array();
@@ -3895,9 +3900,9 @@ class FabrikFEModelList extends JModelForm {
 				$tmp = array();
 				foreach (array_keys($filters) as $k) {
 					if (array_key_exists($k, $advanced)) {
-						$advanced[$k][] = ($filters[$k][$i]);
+						$advanced[$k][] = $filters[$k][$i];
 					} else {
-						$advanced[$k] =  array_key_exists($i, $filters[$k]) ? array(($filters[$k][$i])) : '';
+						$advanced[$k] = array_key_exists($i, $filters[$k]) ? array(($filters[$k][$i])) : '';
 					}
 				}
 			}
@@ -3920,8 +3925,8 @@ class FabrikFEModelList extends JModelForm {
 		$elementModels = $this->getElements();
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().'][';
-		$type = '<input type="hidden" name="'.$prefix.'search_type][]" value="advanced" />';
-		$grouped = '<input type="hidden" name="'.$prefix.'grouped_to_previous][]" value="0" />';
+		$type = '<input type="hidden" name="' . $prefix . 'search_type][]" value="advanced" />';
+		$grouped = '<input type="hidden" name="' . $prefix . 'grouped_to_previous][]" value="0" />';
 
 		$filters = $this->getAdvancedFilterValues();
 		$counter = 0;
@@ -6727,6 +6732,15 @@ class FabrikFEModelList extends JModelForm {
 	public function getOutPutFormat()
 	{
 		return $this->_outPutFormat;
+	}
+	
+	/**
+	 * set the list output format
+	 * @param string
+	 */
+	public function setOutPutFormat($f)
+	{
+		$this->_outPutFormat = $f;
 	}
 
 	/**

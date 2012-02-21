@@ -32,6 +32,11 @@
 					<option value="S">Secondary</option>
 			</field>
 			
+			<field description="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_DESC" label="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_LABEL" name="fusionchart_mx_attributes" size="40" type="text"/>
+			
+			<field description="PLG_VISUALIZATION_FUSIONCHART_WHERE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_WHERE_LABEL" name="fusionchart_where" size="40" type="text"/>
+			
+			
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_GRAPH_ATTRIBUTES" name="graph_attributes">
@@ -60,6 +65,7 @@
 					<option value="MSCOLUMN3D">MS Column 3D</option>
 					<option value="MSCOLUMN3DLINEDY">MS Column 3D Line DY</option>
 					<option value="MSLINE">MS Line</option>
+					<option value="MULTIAXISLINE">Multi Axis Line</option>
 					<option value="CANDLESTICK">Candlestick</option>
 					<option value="STACKEDAREA2D">Stacked Area 2D</option>
 					<option value="STACKEDBAR2D">Stacked Bar 2D</option>

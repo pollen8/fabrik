@@ -18,10 +18,10 @@ class FabrikViewList extends JView{
 	{
 		$app = JFactory::getApplication();
 		$Itemid	= $app->getMenu('site')->getActive()->id;
-		$config		= JFactory::getConfig();
-		$user 		= JFactory::getUser();
-		$model		=& $this->getModel();
-		$model->_outPutFormat == 'feed';
+		$config	= JFactory::getConfig();
+		$user = JFactory::getUser();
+		$model = $this->getModel();
+		$model->setOutPutFormat('feed');
 
 		$document = JFactory::getDocument();
 		$document->_itemTags = array();
@@ -41,7 +41,7 @@ class FabrikViewList extends JView{
 			return '';
 		}
 
-		$formModel = $model->getForm();
+		$formModel = $model->getFormModel();
 		$form = $formModel->getForm();
 
 		$aJoinsToThisKey = $model->getJoinsToThisKey();
@@ -209,7 +209,7 @@ class FabrikViewList extends JView{
 				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view='.$view.'&listid='.$table->id.'&formid='.$form->id.'&rowid='. $row->slug;
 
 				// strip html from feed item description text
-				$author			= @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
+				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
 				if ($dateEl != '') {
 					$date = $row->$dateEl ? date('r', strtotime(@$row->$dateEl) ) : '';
@@ -218,13 +218,13 @@ class FabrikViewList extends JView{
 				}
 				// load individual item creator class
 
-				$item->title 		= $title;
-				$item->link 		= $link;
-				$item->guid 		= $guid;
-				$item->description 	= $str;
-				$item->date			= $date;
+				$item->title = $title;
+				$item->link = $link;
+				$item->guid = $guid;
+				$item->description = $str;
+				$item->date = $date;
 				// $$$ hugh - not quite sure where we were expecting $row->category to come from.  Comment out for now.
-				//$item->category   	= $row->category;
+				//$item->category = $row->category;
 
 				foreach ($enclosures as $enclosure) {
 					$item->setEnclosure($enclosure);

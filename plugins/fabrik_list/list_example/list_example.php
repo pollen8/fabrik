@@ -53,7 +53,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	 * run when the table loads its data(non-PHPdoc)
 	 * @see components/com_fabrik/models/FabrikModelTablePlugin#onLoadData($params, $oRequest)
 	 */
-	function onLoadData(&$model)
+	function onLoadData(&$params, &$oRequest)
 	{}
 
 
@@ -74,7 +74,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	}
 
 
-	function canUse()
+	function canUse(&$model = null, $location = null, $event = null)
 	{
 		return true;
 	}
@@ -91,12 +91,14 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
-	 * @param string table's form id to contain plugin
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * return the javascript to create an instance of the class defined in formJavascriptClass
+	 * @param object parameters
+	 * @param list table model
+	 * @param array [0] => string table's form id to contain plugin
+	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($formid)
+	function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);

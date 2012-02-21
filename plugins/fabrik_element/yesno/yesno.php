@@ -194,7 +194,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	function getFilter($counter = 0, $normal = true)
 	{
-		$table = $this->getlistModel()->getTable();
+		$listModel = $this->getlistModel();
+		$table = $listModel->getTable();
 		$elName = $this->getFullName(false, true, false);
 		$htmlid	= $this->getHTMLId() . 'value';
 		$elName = FabrikString::safeColName($elName);

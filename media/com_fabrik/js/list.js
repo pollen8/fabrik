@@ -1042,16 +1042,6 @@ var FbList = new Class({
 			}
 			this.watchAll(true);
 			Fabrik.fireEvent('fabrik.list.updaterows');
-			try {
-				Slimbox.scanPage();
-			} catch (err) {
-				fconsole('slimbox scan:' + err);
-			}
-			try {
-				Mediabox.scanPage();
-			} catch (err2) {
-				fconsole('mediabox scan:' + err2);
-			}
 			Fabrik.fireEvent('fabrik.list.update', [this, data]);
 		}
 		this.stripe();

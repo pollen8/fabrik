@@ -14,7 +14,7 @@ JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
-$fbConfig =& JComponentHelper::getParams('com_fabrik');
+$fbConfig = JComponentHelper::getParams('com_fabrik');
 ?>
 
 

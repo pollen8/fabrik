@@ -68,8 +68,8 @@ AdvancedSearch = new Class({
 		var tds = clone.getElements('td');
 		tds[1].empty().set('html', this.options.elementList);
 		tds[1].adopt([
-			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listid + '][search_type][]', 'value': 'advanced'}),
-			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listid + '][grouped_to_previous][]', 'value': '0'})
+			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listref + '][search_type][]', 'value': 'advanced'}),
+			new Element('input', {'type': 'hidden', 'name': 'fabrik___filter[list_' + this.options.listref + '][grouped_to_previous][]', 'value': '0'})
 		]);
 		tds[2].empty().set('html', this.options.statementList);
 		tds[3].empty();
@@ -96,13 +96,16 @@ AdvancedSearch = new Class({
 		}
 	},
   
+	/**
+	 * removes all rows except for the first one, whose values are reset to empty
+	 */
 	resetForm: function () {
 		var table = document.id('advanced-search-table');
 		if (!table) {
 			return;
 		}
 		table.getElements('tbody tr').each(function (tr, i) {
-			if (i > 1) {
+			if (i >= 1) {
 				tr.dispose();
 			}
 			if (i === 0) {

@@ -217,7 +217,7 @@ class FPagination extends JPagination{
 		}
 
 		if ($this->total > $this->limit) {
-			return ($listOverride) ? fabrik_pagination_list_render($list) : $this->_list_render($list);
+			return ($listOverride) ? fabrik_pagination_list_render($list, $this->listRef) : $this->_list_render($list);
 		} else {
 			return '';
 		}

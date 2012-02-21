@@ -945,7 +945,7 @@ class FabrikWorker {
 	 * @return object plugin manager
 	 */
 
-	public function getPluginManager()
+	public static function getPluginManager()
 	{
 		if (!self::$pluginManager) {
 			self::$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -999,6 +999,25 @@ class FabrikWorker {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * @since 3.0.4
+	 * is the email really an email (more strict than JMailHelper::isEmailAddress())
+	 * @param string $email
+	 * @return bool
+	 */
+	
+	public function isEmail($email)
+	{
+		$conf = JFactory::getConfig();
+		$mail = JFactory::getMailer();
+		$mailer = $conf->get('mailer');
+		if ($mailer === 'mail') {
+			//sendmail and Joomla isEmailAddress dont use the same conditions
+			return (JMailHelper::isEmailAddress($email) && PHPMailer::ValidateAddress($email));
+		}
+		return JMailHelper::isEmailAddress($email);
 	}
 
 	public function goBackAction()
