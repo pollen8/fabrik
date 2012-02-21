@@ -50,16 +50,19 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			$data = $this->_form->_data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
-		$fd = $params->get('details_day_format', 'd.m.Y');
+		$fd = $params->get('birthday_format', 'd.m.Y');
 		if (!$this->_editable) {
 			if(!in_array($value, $aNullDates)) {
 				//avoid 0000-00-00
-				list($year,$month,$day) = strstr('-', $value) ? explode('-', $value) : explode(',', $value);;
-				$daydisp = str_replace($daysys,$daysimple,$day);
-				$monthdisp = str_replace($monthnumbers,$monthlabels,$month);
+				list($year, $month, $day) = strstr($value, '-') ? explode('-', $value) : explode(',', $value);;
+				$daydisp = str_replace($daysys, $daysimple, $day);
+				$monthdisp = str_replace($monthnumbers, $monthlabels, $month);
 				$thisyear = date('Y');
 				$nextyear = date('Y') + 1;
 				$lastyear = date('Y') - 1;
+				// $$$ rob - all this below is nice but ... you still need to set a default
+				$date = JFactory::getDate($value);
+				$detailvalue = $date->toFormat($fd);
 				if(date('m-d') < $month.'-'.$day) {
 					$ageyear = $lastyear;
 				}
@@ -67,11 +70,11 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 					$ageyear = $thisyear;
 				}
 				if ($fd == "d.m.Y") {
-					$detailvalue = $day.'.'.$month.'.'.$year;
+					$detailvalue = $day . '.' . $month . '.' . $year;
 				}
 				else {
 					if ($fd == "m.d.Y") {
-						$detailvalue = $month.'/'.$day.'/'.$year;
+						$detailvalue = $month . '/' . $day . '/' . $year;
 					}
 					if ($fd == 'D. month YYYY') {
 						$detailvalue = $daydisp.'. '.$monthdisp.' '.$year;
@@ -336,89 +339,125 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		$groupModel = $this->getGroup();
 		$data = $groupModel->canRepeat() ? json_decode($data) : array($data);
 		$data = (array)$data;
-		$ft = $params->get('table_day_format', 'd.m.Y');
-		$f = $params->get('birthday_format', '%Y-%m-%d');
+		//$ft = $params->get('table_day_format', 'd.m.Y');
+		$ft = $params->get('birthday_format', '%Y-%m-%d');
 		$fta = $params->get('table_age_format', 'no');
 		$format = array();
+		
+		
+		
+		
 		foreach ($data as $d) {
-			if (!in_array($d, $aNullDates)) {
-				//$date 	= JFactory::getDate($d);
-				list($year,$month,$day) = explode('-',$d);
-				$daydisp = str_replace($daysys,$daysimple,$day);
-				$monthdisp = str_replace($monthnumbers,$monthlabels,$month);
+			if (!in_array($d, $aNullDates))
+			{
+				// $$$ rob default to a format date
+				$date = JFactory::getDate($d);
+				$datedisp = $date->toFormat($ft);
+				
+				list($year, $month, $day) = explode('-', $d);
+				$daydisp = str_replace($daysys, $daysimple, $day);
+				$monthdisp = str_replace($monthnumbers, $monthlabels, $month);
 				$nextyear = date('Y') + 1;
 				$lastyear = date('Y') - 1;
 				$thisyear = date('Y');
-				$dmy = $day.'.'.$month.'.'.$year;
-				$mdy = $month.'/'.$day.'/'.$year;
-				$dmonthyear = $daydisp.'. '.$monthdisp.' '.$year;
-				$monthdyear = $monthdisp.' '.$daydisp.', '.$year;
-				if ($ft == "d.m.Y") {
+				$dmy = $day . '.' . $month . '.' . $year;
+				$mdy = $month . '/' . $day . '/' . $year;
+				$dmonthyear = $daydisp . '. ' . $monthdisp . ' ' . $year;
+				$monthdyear = $monthdisp . ' ' . $daydisp . ', ' . $year;
+				if ($ft == "d.m.Y")
+				{
 					$datedisp = $dmy;
 				}
-				else {
-					if ($ft == "m.d.Y") {
+				else
+				{
+					if ($ft == "m.d.Y")
+					{
 						$datedisp = $mdy;
 					}
-					if ($ft == "D. month YYYY") {
+					if ($ft == "D. month YYYY")
+					{
 						$datedisp = $dmonthyear;
 					}
-					if ($ft == "Month d, YYYY") {
+					if ($ft == "Month d, YYYY")
+					{
 						$datedisp = $monthdyear;
 					}
 				}
-				if ($fta == 'no') {
+				if ($fta == 'no')
+				{
 					$format[] = $datedisp;
 				}
-				else {
-					if (date('m-d') == $month.'-'.$day) {
-						if ($fta == '{age}') {
-							$format[] = "<font color = '#DD0000'><b>".($thisyear - $year)."</b></font>";
+				else
+				{
+					if (date('m-d') == $month.'-'.$day)
+					{
+						if ($fta == '{age}')
+						{
+							$format[] = '<font color ="#DD0000"><b>' . ($thisyear - $year)."</b></font>";
 						}
-						else {
-							if ($fta == '{age} date') {
-								$format[] = "<font color = '#DD0000'><b>".$datedisp." (".($thisyear - $year).")</b></font>";
+						else
+						{
+							if ($fta == '{age} date')
+							{
+								$format[] = '<font color ="#DD0000"><b>' . $datedisp . ' (' . ($thisyear - $year) . ')</b></font>';
 							}
-							if ($fta == '{age} this') {
-								$format[] = "<font color = '#DD0000'><b>".($thisyear - $year)." (".$datedisp.")</b></font>";
+							if ($fta == '{age} this')
+							{
+								$format[] = '<font color ="#DD0000"><b>' . ($thisyear - $year) . ' (' . $datedisp . ')</b></font>';
 							}
-							if ($fta == '{age} next') {
-								$format[] = "<font color = '#DD0000'><b>".($nextyear - $year)." (".$datedisp.")</b></font>";
+							if ($fta == '{age} next')
+							{
+								$format[] = '<font color ="#DD0000"><b>' . ($nextyear - $year) . ' (' . $datedisp . ')</b></font>';
 							}
 						}
 					}
-					else {
-						if ($fta == '{age} date') {
-							if (date('m-d') > $month.'-'.$day) {
-								$format[] = $datedisp.' ('.($thisyear - $year).')';
+					else
+					{
+						if ($fta == '{age} date')
+						{
+							if (date('m-d') > $month . '-' . $day)
+							{
+								$format[] = $datedisp . ' (' . ($thisyear - $year) . ')';
 							}
-							else {
-								$format[] = $datedisp.' ('.($lastyear - $year).')';
+							else
+							{
+								$format[] = $datedisp . ' (' . ($lastyear - $year) . ')';
 							}
 						}
-						else {
-							if ($fta == '{age}') {
-								if (date('m-d') > $month.'-'.$day) {
+						else
+						{
+							if ($fta == '{age}')
+							{
+								if (date('m-d') > $month . '-' . $day)
+								{
 									$format[] = $thisyear - $year;
 								}
-								else {
+								else
+								{
 									$format[] = $lastyear - $year;
 								}
 							}
-							else {
-								if ($fta == '{age} this') {
-									if (in_array(substr(($thisyear - $year),-1),$jubileum) || in_array(substr(($thisyear - $year),-2),$jubileum)) {
+							else
+							{
+								if ($fta == '{age} this')
+								{
+									if (in_array(substr(($thisyear - $year),-1), $jubileum) || in_array(substr(($thisyear - $year), -2), $jubileum))
+									{
 										$format[] = '<b>'.($thisyear - $year).' ('.$datedisp.')</b>';
 									}
-									else {
+									else
+									{
 										$format[] = ($thisyear - $year).' ('.$datedisp.')';
 									}
 								}
-								if ($fta == '{age} next') {
-									if (in_array(substr(($nextyear - $year),-1),$jubileum) || in_array(substr(($nextyear - $year),-2),$jubileum)) {
-										$format[] = '<b>'.($nextyear - $year).' ('.$datedisp.')</b>';
+								if ($fta == '{age} next')
+								{
+									if (in_array(substr(($nextyear - $year), -1), $jubileum) || in_array(substr(($nextyear - $year),-2),$jubileum))
+									{
+										$format[] = '<b>' . ($nextyear - $year) . ' (' . $datedisp . ')</b>';
 									}
-									else {
+									else
+									{
 										$format[] = ($nextyear - $year).' ('.$datedisp.')';
 									}
 								}
@@ -426,7 +465,9 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 						}
 					}
 				}
-			} else {
+			}
+			else
+			{
 				$format[] = '';
 			}
 		}
