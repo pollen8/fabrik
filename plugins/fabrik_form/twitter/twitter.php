@@ -264,7 +264,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	 * from admin, get the administrator to authenticate an account for the form
 	 */
 
-	public function authenticateAdmin()
+	public function onAuthenticateAdmin()
 	{
 		$app = JFactory::getApplication();
 		$formModel = $this->buildModel(JRequest::getInt('formid'));
