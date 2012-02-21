@@ -1384,7 +1384,7 @@ class FabrikFEModelList extends JModelForm {
 		$table = $this->getTable();
 		$db = $this->getDb();
 		$this->selectedOrderFields = array();
-		if ($this->_outPutFormat == 'feed')
+		if ($this->_outPutFormat == 'fabrikfeed' || $this->_outPutFormat == 'feed')
 		{
 			$dateColId = (int)$params->get('feed_date', 0);
 			$query = $db->getQuery(true);
