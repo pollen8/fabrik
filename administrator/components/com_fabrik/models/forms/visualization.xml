@@ -69,4 +69,18 @@
 			
 	</fieldset>
 	
+	<fields name="params">
+		<fieldset name="more">
+			
+			<field name="show-title" 
+				type="radio" 
+				default="1" 
+				label="COM_FABRIK_FIELD_SHOW_TITLE_LABEL" 
+				description="COM_FABRIK_FIELD_SHOW_TITLE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+		</fieldset>
+	</fields>
 </form>
