@@ -165,7 +165,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		//otherwise get authorization url from user to use ther own account
 
 
-		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
+		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
 		$callback .= "&renderOrder=".$this->renderOrder;
 
 		/* Build TwitterOAuth object with client credentials. */
@@ -268,7 +268,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	{
 		$app = JFactory::getApplication();
 		$formModel = $this->buildModel(JRequest::getInt('formid'));
-		$params = $this->getParams();
+		$params = $formModel->getParams();
 		$consumer_key = JRequest::getVar('twitter_consumer_key');
 		$consumer_secret = JRequest::getVar('twitter_consumer_secret');
 		$counter = JRequest::getInt('repeatCounter');
@@ -278,7 +278,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$consumer_secret = (array)$params->get('twitter_consumer_secret');
 		$consumer_secret = $consumer_secret[$counter];
 
-		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&tmpl=component&g=form&method=updateAdmin&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
+		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
 		$callback .= "&repeatCounter=". JRequest::getInt('repeatCounter');
 
 		/* Build TwitterOAuth object with client credentials. */
@@ -318,11 +318,11 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	 * parameters
 	 */
 
-	public function updateAdmin()
+	public function onUpdateAdmin()
 	{
 		$app = JFactory::getApplication();
-		$this->buildModel(JRequest::getInt('formid'));
-		$params = $this->getParams();
+		$formModel = $this->buildModel(JRequest::getInt('formid'));
+		$params = $formModel->getParams();
 
 		$renderOrder = JRequest::getInt('renderOrder');
 
