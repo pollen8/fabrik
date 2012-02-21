@@ -482,14 +482,15 @@ class fabrikViewForm extends JView
 			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', {html: true});";
 		}
 
-		$res = FabrikWorker::getPluginManager()->runPlugins('onJSReady', $model);
+		$pluginManager = FabrikWorker::getPluginManager();
+		$res = $pluginManager->runPlugins('onJSReady', $model);
 		if (in_array(false, $res)) {
 			return false;
 		}
 
 		$str = implode("\n", $script);
 		FabrikHelperHTML::script($srcs, $str);
-		$pluginManager = FabrikWorker::getPluginManager();
+		
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 
