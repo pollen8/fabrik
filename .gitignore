@@ -47,3 +47,9 @@ transfer/*
 /cache
 fabrik_build/output/
 /build_config_private.ini
+/images
+/includes
+/cli
+/index.html
+/image
+/language

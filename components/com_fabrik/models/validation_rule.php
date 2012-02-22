@@ -48,7 +48,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * looks at the validation condition & evaulates it
 	 * if evaulation is true then the validation rule is applied
-	 *@return bol apply validation
+	 * @param	string	elements data
+	 * @param	int		repeat group counter
+	 * @return	bool	apply validation
 	 */
 
 	function shouldValidate($data, $c)
