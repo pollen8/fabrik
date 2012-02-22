@@ -974,9 +974,11 @@ class FabrikModelElement extends JModelAdmin
 		}
 		//remove previous join records if found
 		if ((int)$row->id !== 0) {
-			$sql = "DELETE FROM #__{fabrik}_joins WHERE element_id = ".(int)$row->id;
 			$jdb = FabrikWorker::getDbo(true);
-			$jdb->setQuery($sql);
+			$query = $jdb->getQuery();
+			$query->delete('#__{fabrik}_joins')->where('element_id = ' . (int)$row->id);
+			$jdb = FabrikWorker::getDbo(true);
+			$jdb->setQuery($query);
 			$jdb->query();
 		}
 		//create or update fabrik join

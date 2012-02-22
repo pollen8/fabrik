@@ -30,7 +30,6 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 
 	function onAfterJSLoad(&$params, &$formModel)
 	{
-		FabrikHelperHTML::script('plugins/fabrik_form/autofill/autofill.js');
 		$opts = new stdClass();
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
 		$opts->trigger = str_replace('.', '___', $params->get('autofill_trigger'));
@@ -48,7 +47,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
 		JText::script('PLG_FORM_AUTOFILL_NORECORDS_FOUND');
-		FabrikHelperHTML::addScriptDeclaration("head.ready(function(){var autofill = new Autofill($opts);});");
+		FabrikHelperHTML::script('plugins/fabrik_form/autofill/autofill.js', 'var autofill = new Autofill(' . $opts . ');');
 	}
 
 	/**

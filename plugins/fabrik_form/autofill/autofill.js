@@ -1,6 +1,7 @@
 /**
  * @author Robert
  */
+
 var Autofill = new Class({
 	
 	Implements: [Events, Options],
@@ -19,13 +20,18 @@ var Autofill = new Class({
 	initialize: function (options) {
 		this.setOptions(options);
 		this.attached = [];
-		if (Browser.ie) {
+		/*if (Browser.ie) {
 			this.setUp(Fabrik.blocks['form_' + this.options.formid]);
 		} else {
 			Fabrik.addEvent('fabrik.form.elements.added', function (form) {
 				this.setUp(form);	
 			}.bind(this));
-		}
+		}*/
+		
+		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+			this.setUp(form);	
+		}.bind(this));
+		
 		Fabrik.addEvent('fabrik.form.element.added', function (form, elId, oEl) {
 			if (!this.element) {
 				//if we are on the form load then this.element not set so return

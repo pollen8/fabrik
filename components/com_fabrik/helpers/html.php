@@ -590,8 +590,13 @@ EOD;
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
 				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'media/com_fabrik/css/fabrik.css');
-				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
-				FabrikHelperHTML::script($src, "Fabrik.fireEvent('fabrik.framework.loaded');");
+				//FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
+				//FabrikHelperHTML::script($src, "Fabrik.fireEvent('fabrik.framework.loaded');");
+				
+				$script = array();
+				$script[] = "Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "'";
+				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
+				FabrikHelperHTML::script($src, implode("\n", $script));
 			}
 			self::$framework = true;
 		}

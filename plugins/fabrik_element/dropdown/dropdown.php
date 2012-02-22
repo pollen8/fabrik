@@ -48,7 +48,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$attribs 	= 'class="fabrikinput inputbox'.$errorCSS.'"';
 
 		if ($multiple == "1") {
-			$attribs 	.= ' multiple="multiple" size="'.$multisize.'" ';
+			$attribs .= ' multiple="multiple" size="'.$multisize.'" ';
 		}
 		$i = 0;
 		$aRoValues 	= array();

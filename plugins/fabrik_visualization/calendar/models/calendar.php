@@ -258,10 +258,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$deleteables = array();
 		$params = $this->getParams();
 		$lists = (array)$params->get('calendar_table');
-		foreach ($lists as $id) {
+		foreach ($lists as $id)
+		{
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($id);
-			if ($listModel->canDelete()) {
+			if ($listModel->canDelete())
+			{
 				$deleteables[] = $id;
 			}
 		}
@@ -323,10 +325,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 				$db->setQuery($sql);
 				$formdata = $db->loadObjectList();
-				if (is_array($formdata)) {
-					foreach ($formdata as $row) {
-						if ($row->startdate != '') {
-
+				if (is_array($formdata))
+				{
+					foreach ($formdata as $row)
+					{
+						if ($row->startdate != '')
+						{
 							$row->link = ("index.php?option=com_fabrik&Itemid=$Itemid&view=form&formid=$table->form_id&rowid=$row->id&tmpl=component");
 							$row->_listid = $table->id;
 							$row->_canDelete = (bool)$listModel->canDelete();
@@ -334,7 +338,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 							// $$$ rob added timezone offset how on earth was this not picked up before :o
 							// $$$ hugh because we suck?
-							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true) {
+							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
+							{
 								$date = JFactory::getDate($row->startdate);
 								$row->startdate = $date->toMySQL();
 								$date = JFactory::getDate($row->startdate);
@@ -342,16 +347,20 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 								$row->startdate =  $date->toFormat('%Y-%m-%d %H:%M:%S');
 							}
 
-							if ($row->enddate !== $db->getNullDate() && $row->enddate !== '') {
-								if ($data['endShowTime'] == true) {
+							if ($row->enddate !== $db->getNullDate() && $row->enddate !== '')
+							{
+								if ($data['endShowTime'] == true)
+								{
 									$date = JFactory::getDate($row->enddate);
 									$date->setOffset($tzoffset);
 									$row->enddate =  $date->toFormat('%Y-%m-%d %H:%M:%S');
 								}
-							} else {
+							}
+							 else
+							 {
 								$row->enddate = $row->startdate;
 							}
-							$jsevents[$table->id.'_'.$row->id.'_'.$row->startdate] = clone($row);
+							$jsevents[$table->id . '_' . $row->id . '_' . $row->startdate] = clone($row);
 						}
 					}
 				}

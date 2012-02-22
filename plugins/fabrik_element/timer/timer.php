@@ -48,7 +48,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 		if ($data != '') {
 			$format = '%Y-%m-%d %H:%i:%s';
 			$timebits = FabrikWorker::strToDateTime( $data, $format);
-			$data = date( 'H:i:s', $timebits['timestamp']);
+			$data = date('H:i:s', $timebits['timestamp']);
 		}
 		return $data;
 	}
