@@ -26,12 +26,12 @@ var FbFileUpload = new Class({
 					this.uploader.trigger('FileUploaded', file, {
 						response : JSON.encode(response)
 					});
-					$(file.id).getElement('.plupload_file_status').set('text', '100%');
+					document.id(file.id).getElement('.plupload_file_status').set('text', '100%');
 				}.bind(this));
 				//this.uploader.trigger('Init'); //no as this creates a second div interface
 				// hack to reposition the hidden input field over the 'ad' button
-				var c = $(this.options.element + '_container');
-				var diff = $(this.options.element + '_browseButton').getPosition().y - c.getPosition().y;
+				var c = document.id(this.options.element + '_container');
+				var diff = document.id(this.options.element + '_browseButton').getPosition().y - c.getPosition().y;
 				c.getParent('.fabrikElement').getElement('input[type=file]').getParent().setStyle('top', diff);
 			}
 		}
@@ -49,7 +49,7 @@ var FbFileUpload = new Class({
 	},
 
 	decloned : function (groupid) {
-		var f = $('form_' + this.form.id);
+		var f = document.id('form_' + this.form.id);
 		var i = f.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
 		if (typeOf(i) === 'null') {
 			new Element('input', {
@@ -93,7 +93,7 @@ var FbFileUpload = new Class({
 			browse_button: this.element.id + '_browseButton',
 			container: this.element.id + '_container',
 			drop_element: this.element.id + '_dropList',
-			url: '/index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
+			url: 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
 			max_file_size: this.options.max_file_size + 'kb',
 			unique_names: false,
 			flash_swf_url: '/plugins/element/fileupload/plupload/js/plupload.flash.swf',
@@ -170,7 +170,7 @@ var FbFileUpload = new Class({
 
 		// (3) ON FILE UPLOAD PROGRESS ACTION
 		this.uploader.bind('UploadProgress', function (up, file) {
-			$(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
+			document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
 		});
 
 		this.uploader.bind('Error', function (up, err) {
@@ -188,8 +188,8 @@ var FbFileUpload = new Class({
 
 		this.uploader.bind('FileUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
-			$(file.id).getElement('.plupload_resize').show();
-			var resizebutton = $(file.id).getElement('.plupload_resize').getElement('a');
+			document.id(file.id).getElement('.plupload_resize').show();
+			var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
 			resizebutton.href = response.uri;
 			resizebutton.id = 'resizebutton_' + file.id;
 			resizebutton.store('filepath', response.filepath);
@@ -241,11 +241,11 @@ var FbFileUpload = new Class({
 		var li = e.target.getParent('.plupload_delete');
 		li.destroy();
 		// remove hidden fields as well
-		if ($('id_alreadyuploaded_' + this.options.id + '_' + id)) {
-			$('id_alreadyuploaded_' + this.options.id + '_' + id).destroy();
+		if (document.id('id_alreadyuploaded_' + this.options.id + '_' + id)) {
+			document.id('id_alreadyuploaded_' + this.options.id + '_' + id).destroy();
 		}
-		if ($('coords_alreadyuploaded_' + this.options.id + '_' + id)) {
-			$('coords_alreadyuploaded_' + this.options.id + '_' + id).destroy();
+		if (document.id('coords_alreadyuploaded_' + this.options.id + '_' + id)) {
+			document.id('coords_alreadyuploaded_' + this.options.id + '_' + id).destroy();
 		}
 		/*
 		 * if (this.droplist.getChildren().length === 0) {
@@ -326,7 +326,7 @@ var ImageWidget = new Class({
 			createShowOverLay: false,
 			crop: opts.crop,
 			onClose : function () {
-				$('modalOverlay').hide();
+				document.id('modalOverlay').hide();
 			},
 			onContentLoaded : function () {
 				this.center();
@@ -337,7 +337,7 @@ var ImageWidget = new Class({
 		this.images = $H({});
 		var parent = this;
 		this.CANVAS = new FbCanvas({
-			canvasElement: $(this.canvas.id),
+			canvasElement: document.id(this.canvas.id),
 			enableMouse: true,
 			cacheCtxPos: false
 		});
@@ -538,7 +538,8 @@ var ImageWidget = new Class({
 						try {
 							ctx.drawImage(parent.img, w * -0.5, h * -0.5, w, h);
 						} catch (err) {
-							fconsole(err, parent.img, w * -0.5, h * -0.5, w, h);
+							// only show this for debugging as if we upload a pdf then we get shown lots of these errors.
+							//fconsole(err, parent.img, w * -0.5, h * -0.5, w, h);
 						}
 					}
 					ctx.restore();
@@ -689,7 +690,7 @@ var ImageWidget = new Class({
 	 */
 	
 	watchClose: function () {
-		var w = $(this.windowopts.id);
+		var w = document.id(this.windowopts.id);
 		w.getElement('input[name=close-crop]').addEvent('click', function (e) {
 			this.win.close();
 		}.bind(this));
@@ -700,7 +701,7 @@ var ImageWidget = new Class({
 	 */
 	
 	watchZoom: function () {
-		var w = $(this.windowopts.id);
+		var w = document.id(this.windowopts.id);
 		if (!this.windowopts.crop) {
 			return;
 		}
@@ -730,7 +731,7 @@ var ImageWidget = new Class({
 	 */
 	
 	watchRotate: function () {
-		var w = $(this.windowopts.id);
+		var w = document.id(this.windowopts.id);
 		if (!this.windowopts.crop) {
 			return;
 		}
@@ -761,7 +762,7 @@ var ImageWidget = new Class({
 			return;
 		}
 		if (typeOf(this.CANVAS.ctxEl) !== 'null') {
-			this.CANVAS.ctxPos = $(this.CANVAS.ctxEl).getPosition();
+			this.CANVAS.ctxPos = document.id(this.CANVAS.ctxEl).getPosition();
 		}
 		
 		if (typeOf(this.CANVAS.threads) !== 'null') {

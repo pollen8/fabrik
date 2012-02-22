@@ -428,7 +428,9 @@ class fabrikViewForm extends JView
 				$id = $elementModel->getHTMLId();
 				$elementModel->_editable = ($model->_editable);
 
-				if ($elementModel->canUse() || $elementModel->canView()) {
+				// if the view is a form then we should always add the js as long as the element is editable or viewable
+				// if the view is details then we should only add hte js if the element is viewable.
+				if (($elementModel->canUse() && $model->_editable) || $elementModel->canView()) {
 					for ($c = 0; $c < $max; $c ++) {
 						// $$$ rob ensure that some js code has been returned otherwise dont add empty data to array
 						$ref = trim($elementModel->elementJavascript($c));
@@ -482,14 +484,15 @@ class fabrikViewForm extends JView
 			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', {html: true});";
 		}
 
-		$res = FabrikWorker::getPluginManager()->runPlugins('onJSReady', $model);
+		$pluginManager = FabrikWorker::getPluginManager();
+		$res = $pluginManager->runPlugins('onJSReady', $model);
 		if (in_array(false, $res)) {
 			return false;
 		}
 
 		$str = implode("\n", $script);
 		FabrikHelperHTML::script($srcs, $str);
-		$pluginManager = FabrikWorker::getPluginManager();
+		
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 

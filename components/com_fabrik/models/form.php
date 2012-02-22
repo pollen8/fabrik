@@ -1796,7 +1796,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if (!array_key_exists($groupCounter, $repeatTotals)) {
 					$repeatTotals[$groupCounter] = 1;
 				}
-				for ($c=0; $c < $repeatTotals[$groupCounter]; $c++) {
+				for ($c = 0; $c < $repeatTotals[$groupCounter]; $c++) {
 					$this->_arErrors[$elName][$c] = array();
 					// $$$ rob $this->_formData was $_POST, but failed to get anything for calculation elements
 					//in php 5.2.1

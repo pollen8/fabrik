@@ -21,8 +21,8 @@
 			label="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_LABEL" 
 			description="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_DESC" />
 			
-		<field name="introduction" 
-			type="textarea" 
+		<field name="intro_text" 
+			type="editor" 
 			rows="3" cols="30" 
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
@@ -69,4 +69,18 @@
 			
 	</fieldset>
 	
+	<fields name="params">
+		<fieldset name="more">
+			
+			<field name="show-title" 
+				type="radio" 
+				default="1" 
+				label="COM_FABRIK_FIELD_SHOW_TITLE_LABEL" 
+				description="COM_FABRIK_FIELD_SHOW_TITLE_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+		</fieldset>
+	</fields>
 </form>

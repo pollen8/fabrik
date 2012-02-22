@@ -2013,7 +2013,7 @@ zoom:
 			header('Accept-Ranges: bytes');
 			header('Content-Length: ' . $thisFileInfo['filesize']);
 			header('Content-Type: ' . $thisFileInfo['mime_type']);
-			header('Content-Disposition: attachment; filename=' . $thisFileInfo['filename']);
+			header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
 
 			// ... serve up the image ...
 			echo $filecontent;

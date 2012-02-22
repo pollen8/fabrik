@@ -173,8 +173,8 @@ class FabrikFEModelCSVExport {
 
 	private function getFilePath()
 	{
-		$filename = $this->getFileName();
-		return JPATH_SITE.DS.'tmp'.DS.$filename;
+		$config = JFactory::getConfig();
+		return $config->get('tmp_path') . '/' . $this->getFileName();
 	}
 
 	public function downloadFile()
@@ -195,9 +195,10 @@ class FabrikFEModelCSVExport {
 			return false;
 		}
 
+		JResponse::clearHeaders();
 		//// Set the response to indicate a file download
-		//JResponse::setHeader('Content-Type', 'application/zip');
-		JResponse::setHeader('Content-Disposition', 'attachment; filename="'.$filename.'"');
+		JResponse::setHeader('Content-Type', 'application/zip');
+		JResponse::setHeader('Content-Disposition', "attachment;filename=\"".$filename."\"");
 		
 		// xls formatting for accents
 		JResponse::setHeader('Content-Type', 'application/vnd.ms-excel');
@@ -205,6 +206,8 @@ class FabrikFEModelCSVExport {
 		JResponse::setBody($str);
 		echo JResponse::toString(false);
 		JFile::delete($filepath);
+		// $$$ rob 21/02/2012 - need to exit otherwise Chrome give 349 download error
+		exit;
 	}
 
 	/**
