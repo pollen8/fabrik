@@ -45,7 +45,7 @@ class plgSearchFabrik extends JPlugin
 				return array();
 			}
 		}
-		return plgSystemFabrik::onContentSearch($text, $phrase, $ordering, $areas);
+		return plgSystemFabrik::onDoContentSearch($text, $phrase, $ordering, $areas);
 	}
 
 }

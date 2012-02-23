@@ -68,7 +68,7 @@ class plgSystemFabrik extends JPlugin
 	 * @param mixed An array if restricted to areas, null if search all
 	 */
 
-	function onContentSearch($text, $phrase='', $ordering='', $areas=null)
+	function onDoContentSearch($text, $phrase='', $ordering='', $areas=null)
 	{
 		if (defined('COM_FABRIK_SEARCH_RUN')) {
 			return;
@@ -76,7 +76,7 @@ class plgSystemFabrik extends JPlugin
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
 
-		$user	= JFactory::getUser();
+		$user = JFactory::getUser();
 		$db	= FabrikWorker::getDbo(true);
 
 		require_once(JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php');
@@ -162,7 +162,7 @@ class plgSystemFabrik extends JPlugin
 
 			$listModel->setId($id);
 			
-			$requestKey = 'fabrik_list_filter_all.'.$listModel->getRenderContext();
+			$requestKey = 'fabrik_list_filter_all.' . $listModel->getRenderContext();
 			//set the request variable that fabrik uses to search all records
 			JRequest::setVar($requestKey, $text, 'post');
 			
@@ -192,7 +192,7 @@ class plgSystemFabrik extends JPlugin
 			$descname = is_object($elementModel) ? $elementModel->getFullName(false, true) : '';
 
 
-			$elementModel =& $listModel->getFormModel()->getElement($params->get('search_title', 0), true);
+			$elementModel = $listModel->getFormModel()->getElement($params->get('search_title', 0), true);
 			$title = is_object($elementModel) ? $elementModel->getFullName(false, true) : '';
 
 			$aAllowedList = array();
