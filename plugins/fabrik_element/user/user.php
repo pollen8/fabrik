@@ -59,7 +59,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			if ($this->_editable) {
 				$user = JFactory::getUser();
 			} else {
-				$user = JFactory::getUser((int)$this->getValue($data, $repeatCounter));
+				$userid = (int)$this->getValue($data, $repeatCounter);
+				$user = $userid === 0 ? JFactory::getUser() : JFactory::getUser($userid);
 			}
 		} else {
 			// $$$ hugh - this is blowing away the userid, as $element->default is empty at this point
@@ -85,15 +86,16 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					// so wrong uid is written to form, and wipes out real ID when form is submitted.
 					// OK, problem was we were using $id firther on as the html ID, so if we added _raw, element
 					// on form had wrong ID.  Added $html_id above, to use as (duh) html ID instead of $id.
-					if (!strstr($id,'_raw') && array_key_exists($id . '_raw', $data)) {
+					if (!strstr($id, '_raw') && array_key_exists($id . '_raw', $data)) {
 						$id .= '_raw';
 					}
 				}
 				$uid = JArrayHelper::getValue($data, $id, '');
-				if ($uid === '') {
+				if ($uid === '')
+				{
 					$uid = $this->getValue($data, $repeatCounter);
 				}
-				$user = JFactory::getUser((int)$uid);
+				$user = $id == '' ? JFactory::getUser() : JFactory::getUser((int)$uid);
 			}
 		}
 
@@ -228,7 +230,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			}
 		}
 		$element = $this->getElement();
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		
 		// $$$ hugh - special case for social plugins (like CB plugin).  If plugin sets
 		// fabrik.plugin.profile_id, and 'user_use_social_plugin_profile' param is set,
@@ -255,7 +257,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
 			if (!$this->canUse() || $this->getElement()->hidden == 1) {
-				$user		=& JFactory::getUser();
+				$user = JFactory::getUser();
 				$data[$element->name] = $user->get('id');
 				$data[$element->name . '_raw'] = $data[$element->name];
 			}
@@ -271,7 +273,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			$params = $this->getParams();
 			if ($params->get('update_on_edit',0)) {
 				if (!$this->canUse() || $this->getElement()->hidden == 1) {
-					$user		=& JFactory::getUser();
+					$user = JFactory::getUser();
 					$data[$element->name] = $user->get('id');
 					$data[$element->name . '_raw'] = $data[$element->name];
 				}
@@ -582,13 +584,13 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	protected function _buildFilterJoin()
 	{
-		$params 			=& $this->getParams();
+		$params = $this->getParams();
 		$joinTable 	= FabrikString::safeColName($params->get('join_db_name'));
 		$join = $this->getJoin();
-		$joinTableName  	=  FabrikString::safeColName($join->table_join_alias);
-		$joinKey		= $this->getJoinValueColumn();
-		$elName 			= FabrikString::safeColName($this->getFullName(false, true, false));
-		return 'INNER JOIN '.$joinTable.' AS '.$joinTableName.' ON '.$joinKey.' = '.$elName;
+		$joinTableName = FabrikString::safeColName($join->table_join_alias);
+		$joinKey = $this->getJoinValueColumn();
+		$elName = FabrikString::safeColName($this->getFullName(false, true, false));
+		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName .' ON ' . $joinKey . ' = ' . $elName;
 	}
 
 	/**
@@ -682,7 +684,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		if (is_array($userid)) {
 			$userid = (int)array_shift($userid);
 		}
-		$user = JFactory::getUser($userid);
+		$user = $userid === 0 ? JFactory::getUser() : JFactory::getUser($userid);
 
 		return $this->getUserDisplayProperty($user);
 	}
