@@ -23,24 +23,29 @@ echo "
 }
 
 
-#listform_$c  .fabrik___headings {
+#listform_$c .fabrik___headings {
 
 	background:	-moz-linear-gradient(-90deg, #e1e1e1, #f1f1f1, #ffffff) repeat scroll 0 0 transparent;
 	border-bottom:1px solid #a6a6a6;
 }
 
-#listform_$c  .fabrik___heading.filters span{
+#listform_$c .fabrik___heading.filters span{
 	padding-top:6px;
 	padding-bottom:6px;
 
 }
 
 #listform_$c .oddRow1{
-background-color:#f2f5f9;
+	background-color:#f2f5f9;
 }
 
 #listform_$c .oddRow0{
-background-color:#ffffff;
+	background-color:#ffffff;
+}
+
+#listform_$c span.decimal,
+#listform_$c span.integer{
+	text-align:right;
 }
 
 #listform_$c .f3main {

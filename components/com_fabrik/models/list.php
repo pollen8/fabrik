@@ -4145,11 +4145,9 @@ class FabrikFEModelList extends JModelForm {
 				}
 				$aTableHeadings[$compsitKey] = $heading;
 
-				$headingClass[$compsitKey] = array('class' => 'fabrik_ordercell '.$key.' '.$element->id.'_order '.$elementParams->get('tablecss_header_class'),
-				'style' => $elementParams->get('tablecss_header'));
+				$headingClass[$compsitKey] = array('class' => $elementModel->getHeadingClass(),	'style' => $elementParams->get('tablecss_header'));
 
-				$cellClass[$compsitKey] = array('class' => "{$key} fabrik_element " . $elementParams->get('tablecss_cell_class'),
-				'style' => $elementParams->get('tablecss_cell'));
+				$cellClass[$compsitKey] = array('class' => $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
 
 			}
 			if ($groupHeadings[$groupHeadingKey] == 0) {

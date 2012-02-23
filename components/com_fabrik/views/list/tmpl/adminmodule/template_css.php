@@ -14,6 +14,11 @@ height:2.5em;
 	background:transparent;
 }
 
+#listform_$c td.decimal,
+#listform_$c td.integer{
+	text-align:right;
+}
+
 #listform_$c .list-footer{
 	display:-moz-box;
 	display:-webkit-box;
