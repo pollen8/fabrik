@@ -25,7 +25,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
 	protected $icon = 'isemail';
-	
+
 	/**
 	 * validate the elements data against the rule
 	 * @param string data to check
@@ -43,21 +43,43 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		//as ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object)$params->get('emailexists_or_not');
 		$ornot = isset($ornot->$c) ? $ornot->$c : 'fail_if_exists';
-		
+
 		jimport('joomla.user.helper');
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__users')->where('email = '.$db->quote($data));
 		$db->setQuery($query);
 		$result = $db->loadResult();
-		if (!$result) {
-			if ($ornot == 'fail_if_exists') {
-				return true;
+
+		$user = JFactory::getUser();
+		if ($user->get('guest')){
+			if (!$result) {
+				if ($ornot == 'fail_if_exists') {
+					return true;
+				}
+			} else {
+				if ($ornot == 'fail_if_not_exists') {
+					return true;
+				}
 			}
-		}
-		else {
-			if ($ornot == 'fail_if_not_exists') {
-				return true;
+			return false;
+		} else {
+			if (!$result) {
+				if ($ornot == 'fail_if_exists') {
+					return true;
+				}else{
+					return false;
+				}
+			} else {
+				if ($result == $user->get('id')) // The connected user is editing his own data
+				{
+					if ($ornot == 'fail_if_exists') {
+						return true;
+					} else {
+						return false;
+					}
+				}
+				return false;
 			}
 		}
 		return false;
@@ -69,7 +91,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 	* @param int repeat group counter
 	* @return string label
 	*/
-	
+
 	protected function getLabel($elementModel, $c)
 	{
 		$params = $this->getParams();
@@ -88,6 +110,6 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 			return parent::getLabel($elementModel, $c);
 		}
 	}
-	
+
 }
 ?>

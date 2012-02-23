@@ -165,7 +165,7 @@ class FabrikFEModelListfilter extends FabModel {
 	public function getSearchAllRequestKey()
 	{
 		$identifier = $this->listModel->getRenderContext();
-		return 'fabrik_list_filter_all_'.$identifier;
+		return 'fabrik_list_filter_all.' . $identifier;
 	}
 
 	/**

@@ -95,7 +95,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		}
 
 		// if we are editing a user, we need to make sure the password field is cleared
-		if (JRequest::getInt('rowid')) {
+		//if (JRequest::getInt('rowid')) {
+		if (FabrikWorker::getMenuOrRequestVar('rowid')) {
 			$this->passwordfield 	= $this->getFieldName($params, 'juser_field_password');
 			$formModel->_data[$this->passwordfield] = '';
 			$formModel->_data[$this->passwordfield . '_raw'] = '';
@@ -256,13 +257,13 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int)$params->get('juser_field_default_group');
-		
+
 		$groupId = JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
 		if (is_array($groupId)) {
 			$groupId = $groupId[0];
 		}
 		$groupId = (int)$groupId;
-		
+
 		if (!$isNew) {
 			if ($params->get('juser_field_usertype') != '') {
 				if (in_array($groupId, $me->getAuthorisedGroups()) || $me->authorise('core.admin')) {
@@ -283,7 +284,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$data['gid'] = $defaultGroup;
 		}
 		$user->groups = (array)$data['gid'];
-		
+
 		if ($params->get('juser_field_block') != '') {
 			$this->blockfield = $this->getFieldName($params, 'juser_field_block');
 			$blocked = JArrayHelper::getValue($formModel->_formData, $this->blockfield, '');
@@ -382,22 +383,22 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$data['mailfrom'] = $config->get('mailfrom');
 			$data['sitename'] = $config->get('sitename');
 			$data['siteurl'] = JUri::base();
-			
+
 			$uri = JURI::getInstance();
 			$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
-			
+
 			// Handle account activation/confirmation emails.
 			if ($useractivation == 2 && !$bypassActivation)
 			{
 				// Set the link to confirm the user email.
 				$data['activate'] = $base.JRoute::_('index.php?option=com_users&task=registration.activate&token='.$data['activation'], false);
-			
+
 				$emailSubject = JText::sprintf(
 							'COM_USERS_EMAIL_ACCOUNT_DETAILS',
 				$data['name'],
 				$data['sitename']
 				);
-			
+
 				$emailBody = JText::sprintf(
 							'COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY',
 				$data['name'],
@@ -412,9 +413,9 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			{
 				// Set the link to activate the user account.
 				$data['activate'] = $base.JRoute::_('index.php?option=com_users&task=registration.activate&token='.$data['activation'], false);
-			
+
 				$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-			
+
 				$emailBody = JText::sprintf(
 							'COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY',
 				$data['name'],
@@ -425,7 +426,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 				$data['password_clear']
 				);
 			}
-			elseif ($params->get('juser_bypass_accountdetails') != 1) 
+			elseif ($params->get('juser_bypass_accountdetails') != 1)
 			{
 				$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_BODY', $data['name'], $data['sitename'], $data['siteurl'] );
@@ -435,7 +436,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			if ($emailSubject !== '')
 			{
 				$return = JUtility::sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
-			
+
 				// Check for an error.
 				if ($return !== true)
 				{
@@ -463,7 +464,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 					}
 				}
 			}
-		} 
+		}
 
 		// If updating self, load the new user object into the session
 		// FIXME - doesnt work in J1.7??
@@ -629,14 +630,14 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		}
 		return $ok;
 	}
-	
+
 	/**
 	 * raise an error - depends on whether ur in admin or not as to what to do
 	 * @param array form models error array
-	 * @param string $field name 
+	 * @param string $field name
 	 * @param string $msg
 	 */
-	
+
 	protected function raiseError(&$err, $field, $msg)
 	{
 		if (JFactory::getApplication()->isAdmin()) {
