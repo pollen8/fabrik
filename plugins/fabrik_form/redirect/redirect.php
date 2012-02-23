@@ -29,12 +29,12 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	function onLastProcess($params, &$formModel)
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.'.$formModel->get('id').'.redirect.';
+		$context = 'com_fabrik.form.' . $formModel->get('id') . '.redirect.';
 		//get existing session params
-		$surl = (array)$session->get($context.'url', array());
-		$stitle = (array)$session->get($context.'title', array());
-		$smsg = (array)$session->get($context.'msg', array());
-		$sshowsystemmsg = (array)$session->get($context.'showsystemmsg', array());
+		$surl = (array)$session->get($context . 'url', array());
+		$stitle = (array)$session->get($context . 'title', array());
+		$smsg = (array)$session->get($context . 'msg', array());
+		$sshowsystemmsg = (array)$session->get($context . 'showsystemmsg', array());
 
 		$app = JFactory::getApplication();
 		$this->formModel = $formModel;
@@ -48,24 +48,26 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$this->data = array_merge($this->getEmailData(), $formModel->_formData);
 		$this->_data->jump_page = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
 		$this->_data->thanks_message = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
-		if (!$this->shouldRedirect($params)) {
+		if (!$this->shouldRedirect($params))
+		{
 			//clear any sessoin redirects
 			unset($surl[$this->renderOrder]);
 			unset($stitle[$this->renderOrder]);
 			unset($smsg[$this->renderOrder]);
 			unset($sshowsystemmsg[$this->renderOrder]);
 
-			$session->set($context.'url', $surl);
-			$session->set($context.'title', $stitle);
-			$session->set($context.'msg', $smsg);
-			$session->set($context.'showsystemmsg', $sshowsystemmsg);
+			$session->set($context . 'url', $surl);
+			$session->set($context . 'title', $stitle);
+			$session->set($context . 'msg', $smsg);
+			$session->set($context . 'showsystemmsg', $sshowsystemmsg);
 			return true;
 		}
 		$this->_storeInSession($formModel);
 		$sshowsystemmsg[$this->renderOrder] = true;
-		$session->set($context.'showsystemmsg', $sshowsystemmsg);
-		if ($this->_data->jump_page != '') {
-			$this->_data->jump_page = $this->_buildJumpPage($formModel);
+		$session->set($context . 'showsystemmsg', $sshowsystemmsg);
+		if ($this->_data->jump_page != '')
+		{
+			$this->_data->jump_page = $this->buildJumpPage($formModel);
 			//3.0 ajax/module redirect logic handled in form controller not in plugin
 			$surl[$this->renderOrder] = $this->_data->jump_page;
 			$session->set($context.'url', $surl);
@@ -76,20 +78,21 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 			$session->set($context.'redirect_content_popup_y_offset', $params->get('redirect_content_popup_y_offset', '0'));
 			$session->set($context.'redirect_content_popup_title', $params->get('redirect_content_popup_title', ''));
 			$session->set($context.'redirect_content_popup_reset_form', $params->get('redirect_content_popup_reset_form', '1'));
-
-		} else {
+		}
+		else
+		{
 			$sshowsystemmsg[$this->renderOrder] = false;
-			$session->set($context.'showsystemmsg', $sshowsystemmsg);
+			$session->set($context . 'showsystemmsg', $sshowsystemmsg);
 
 			$stitle[$this->renderOrder] = $form->label;
-			$session->set($context.'title', $stitle);
+			$session->set($context . 'title', $stitle);
 
 			$surl[$this->renderOrder] = 'index.php?option=com_fabrik&view=plugin&g=form&plugin=redirect&method=displayThanks&task=pluginAjax';
 			$session->set($context.'url', $surl);
 		}
 
 		$smsg[$this->renderOrder] = $this->_data->thanks_message;
-		$session->set($context.'msg', $smsg);
+		$session->set($context . 'msg', $smsg);
 		return true;
 	}
 
@@ -177,7 +180,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	 * @return new jump page
 	 */
 
-	function _buildJumpPage(&$formModel)
+	protected function buildJumpPage(&$formModel)
 	{
 		///$$$rob - I've tested the issue reported in rev 1268
 		//where Hugh added a force call to getTable() in elementModel->getFullName() to stop the wrong table name
@@ -316,7 +319,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 			}
 
 			$session = JFactory::getSession();
-			$registry	=& $session->get('registry');
+			$registry = $session->get('registry');
 
 			//clear registry search form entries
 			$key = 'com_fabrik.searchform';

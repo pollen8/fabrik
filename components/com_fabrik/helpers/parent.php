@@ -378,8 +378,12 @@ class FabrikWorker {
 		// was set to post for a good reason, but I can't see why now.
 		// $$$ hugh - for reasons I don't understand, merging request just doesn't seem to work
 		// in some situations, so I'm adding a replaceRequest call here as a bandaid.
-		FabrikWorker::replaceRequest($msg);
-		$post	= JRequest::get('request');
+		
+		// @TODO $$$ rob can you remember what those situations where? Because doing this is messing up form plugins (e.g redirect) when they do replace on getEmailData()
+		// as having the line below commented in causes the request to be used before searchData. 
+		// FabrikWorker::replaceRequest($msg);
+		
+		$post = JRequest::get('request');
 		$this->_searchData = is_null($searchData) ?  $post : array_merge($post, $searchData);
 		$this->_searchData['JUtility::getToken'] = JUtility::getToken();
 		$msg = FabrikWorker::replaceWithUserData($msg);
