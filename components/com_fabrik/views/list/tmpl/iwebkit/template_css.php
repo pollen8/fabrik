@@ -7,6 +7,12 @@ echo "
 	padding:0;
 	background-image:none;
 }
+
+#listform_$c li.decimal,
+#listform_$c li.integer{
+	text-align:right;
+}
+
 /*****************************************************/
 /********** default action formatting ****************/
 /*****************************************************/

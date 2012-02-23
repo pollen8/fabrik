@@ -67,8 +67,7 @@ class JFormFieldSuboptions extends JFormField
 <ul id=\"sub_subElementBody\" class=\"subelements\">
 	<li></li>
 </ul>
-<a class=\"addButton\" href=\"#\" id=\"addSuboption\">". JText::_('COM_FABRIK_ADD').
-"</a></div>";
+<a class=\"addButton\" href=\"#\" id=\"addSuboption\">". JText::_('COM_FABRIK_ADD'). "</a></div>";
 		return $html;
 	}
 

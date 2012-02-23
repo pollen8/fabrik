@@ -70,6 +70,10 @@ echo "
 	color:#333;
 }
 
+#listform_$c td.decimal,
+#listform_$c td.integer{
+	text-align:right;
+}
 
 #listform_$c .fabrikElementContainer{
 	/** for inline edit **/

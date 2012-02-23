@@ -154,11 +154,10 @@ class FabrikPlugin extends JPlugin
 
 			$form->repeat = $repeat;
 			if ($repeat) {
-				$str .= '<a class="addButton" href="#">'.JText::_('COM_FABRIK_ADD').'</a> | ';
+				$str .= '<a class="addButton" href="#">' . JText::_('COM_FABRIK_ADD') . '</a>';
 			}
-			$str .= '
-			<legend>'.JText::_($fieldset->label).'</legend>';
-			for($r = 0; $r < $repeatDataMax; $r ++) {
+			$str .= '<legend>'.JText::_($fieldset->label).'</legend>';
+			for ($r = 0; $r < $repeatDataMax; $r ++) {
 				if ($repeat) {
 					$str .= '<div class="repeatGroup">';
 					$form->repeatCounter = $r;

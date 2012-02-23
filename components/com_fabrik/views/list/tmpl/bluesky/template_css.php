@@ -35,6 +35,11 @@ echo "
 	display:box;
 }
 
+#listform_$c td.decimal,
+#listform_$c td.integer{
+	text-align:right;
+}
+
 #listform_$c .list-footer div.limit{
 	margin-top:5px;
 	margin-left:10px;

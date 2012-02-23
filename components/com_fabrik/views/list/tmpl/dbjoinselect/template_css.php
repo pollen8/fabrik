@@ -23,6 +23,11 @@ echo "
 	width: 50%;
 }
 
+#listform_$c td.decimal,
+#listform_$c td.integer{
+	text-align:right;
+}
+
 #listform_$c .fabrikHover {
 	background-color: #ffffff;
 }

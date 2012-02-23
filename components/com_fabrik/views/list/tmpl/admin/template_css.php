@@ -6,6 +6,11 @@ echo "
 	color:#6022E5;
 }
 
+#listform_$c td.decimal,
+#listform_$c td.integer{
+	text-align:right;
+}
+
 #listform_$c .oddrow0{
 	background-color:#FAFAFA;
 }

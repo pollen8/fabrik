@@ -258,5 +258,22 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		return $this->unNumberFormat($val);
 	}
 
+	/**
+	* @since 3.0.4
+	* get the element's cell class
+	* @return	string	css classes
+	*/
+	
+	public function getCellClass()
+	{
+		$params = $this->getParams();
+		$classes = parent::getCellClass();
+		$format = $params->get('text_format');
+		if ($format == 'decimal' || $format == 'integer')
+		{
+			$classes .= ' ' . $format;
+		}
+		 return $classes;
+	}
 }
 ?>

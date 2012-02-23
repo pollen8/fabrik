@@ -4362,5 +4362,42 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();
 	}
+	
+	/**
+	 * @since 3.0.4
+	 * get the element's cell class
+	 * @return	string	css classes
+	 */
+	
+	public function getCellClass() 
+	{
+		$params = $this->getParams();
+		$classes = array();
+		$classes[] = $this->getFullName(false, true, false);
+		$classes[] = 'fabrik_element';
+		$c = $params->get('tablecss_cell_class', '');
+		if ($c !== '')
+		{
+			$classes[] = $c;
+		}
+		return implode(' ', $classes);
+	}
+	
+	/**
+	 * @since 3.0.4
+	 * get the elements list heading class
+	 * @return	string	css classes
+	 */
+	
+	public function getHeadingClass()
+	{
+		$params = $this->getParams();
+		$classes = array();
+		$classes[] = 'fabrik_ordercell';
+		$classes[] = $this->getFullName(false, true, false);
+		$classes[] = $this->getElement()->id . '_order';
+		$classes[] = $this->getParams()->get('tablecss_header_class');
+		return implode(' ', $classes);
+	}
 }
 ?>
