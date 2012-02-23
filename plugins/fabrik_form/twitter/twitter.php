@@ -73,11 +73,13 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$renderOrder = JRequest::getInt('renderOrder');
 
 		$consumer_key = $params->get('twitter_consumer_key');
-		if (is_array($consumer_key)) {
+		if (is_array($consumer_key))
+		{
 			$consumer_key = $consumer_key[$renderOrder];
 		}
 		$consumer_secret = $params->get('twitter_consumer_secret');
-		if (is_array($consumer_secret)) {
+		if (is_array($consumer_secret))
+		{
 			$consumer_secret = $consumer_secret[$renderOrder];
 		}
 
@@ -114,7 +116,8 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$content = $connection->get('account/rate_limit_status');
 		echo "Current API hits remaining: {$content->remaining_hits}.";
 
-		if ($content->remaining_hits <= 0) {
+		if ($content->remaining_hits <= 0)
+		{
 			JError::raiseNotice(500, JText::_('TWITTER_ACCOUNT_LIMIT_REACHED'));
 		}
 		/* Get logged in user to help with tests. */
@@ -125,10 +128,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$parameters = array('status' => $msg);
 		$status = $connection->post('statuses/update', $parameters);
 		$show_success = (int)$session->get('com_fabrik.form.twitter.showmessage', 0);
-		switch ($connection->http_code) {
+		switch ($connection->http_code)
+		{
 			case '200':
 			case '304':
-				if ($show_success == 1) {
+				if ($show_success == 1)
+				{
 					$app->enqueueMessage(JText::_('PLG_FORM_TWITTER_SUCCESS_MSG'));
 				}
 				break;
@@ -153,6 +158,16 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$consumer_key = $params->get('twitter_consumer_key');
 		$consumer_secret = $params->get('twitter_consumer_secret');
 
+		if ($params->get('twitter_oauth_token') == '')
+		{
+			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'));
+		}
+		
+		if ($params->get('twitter_oauth_token_secret') == '')
+		{
+			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'));
+		}
+		
 		if ($params->get('twitter_oauth_token_secret') !== '')
 		{
 
@@ -164,9 +179,10 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 		//otherwise get authorization url from user to use ther own account
 
-
-		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
-		$callback .= "&renderOrder=".$this->renderOrder;
+		// $this->row not set ?! so this callback url was giving notices
+		//$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
+		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid=' . $formModel->getId();
+		$callback .= '&renderOrder=' . $this->renderOrder;
 
 		/* Build TwitterOAuth object with client credentials. */
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
@@ -180,7 +196,8 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
 
 		/* If last connection failed don't display authorization link. */
-		switch ($connection->http_code) {
+		switch ($connection->http_code)
+		{
 			case 200:
 				/* Build authorize URL and redirect user to Twitter. */
 				$url = $connection->getAuthorizeURL($token);
@@ -208,12 +225,15 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	function bitlifyCallback($url)
 	{
 		$return_url = $url[1];
-		if ($this->bitly === false) {
+		if ($this->bitly === false)
+		{
 			return $return_url;
 		}
-		if (!strstr($url[1],'bit.ly/') && $url[1] !== '') {
+		if (!strstr($url[1],'bit.ly/') && $url[1] !== '')
+		{
 			$return_url = $this->bitly->shorten($url[1]);
-			if ($this->bitly->getError() > 0) {
+			if ($this->bitly->getError() > 0)
+			{
 				JError::raiseNotice(500, 'Error with bit.ly: ' . $this->bitly->getErrorMsg());
 			}
 		}
@@ -223,15 +243,18 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	function bitlifyMessage($msg)
 	{
 		static $bitly;
-		if (!isset($bitly)) {
+		if (!isset($bitly))
+		{
 			$params = $this->getParams();
 			$bitly_login = $params->get('twitter_bitly_api_login', '');
 			$bitly_key = $params->get('twitter_bitly_api_key', '');
-			if (!empty($bitly_login) && !empty($bitly_key)) {
+			if (!empty($bitly_login) && !empty($bitly_key))
+			{
 				require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'bitly'.DS.'bitly.php');
 				$this->bitly = $bitly = new bitly( $bitly_login, $bitly_key);
 			}
-			else {
+			else
+			{
 				$this->bitly = $bitly = false;
 				return $msg;
 			}
@@ -245,12 +268,15 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	{
 		$data = $this->getEmailData();
 		$twitter_msg_field_id = $params->get('twitter_msg_field', '');
-		if ($twitter_msg_field_id != '') {
+		if ($twitter_msg_field_id != '')
+		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($twitter_msg_field_id);
 			$element = $elementModel->getElement(true);
 			$twitter_msg_field = $elementModel->getFullName(false, true, false);
 			$msg = $data[$twitter_msg_field];
-		} else {
+		}
+		else
+		{
 			$w = new FabrikWorker();
 			$msg = $w->parseMessageForPlaceHolder($params->get('twitter_msg_tmpl'), $data);
 		}
@@ -278,9 +304,26 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$consumer_secret = (array)$params->get('twitter_consumer_secret');
 		$consumer_secret = $consumer_secret[$counter];
 
-		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
+		// $this->row not set ?! so this callback url was giving notices
+		//$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
+		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='.$formModel->getId();
 		$callback .= "&repeatCounter=". JRequest::getInt('repeatCounter');
 
+		if (!function_exists('curl_init'))
+		{
+			JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_CURL'));
+			return;
+		}
+		if ($consumer_key == '')
+		{
+			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'));
+		}
+		
+		if ($consumer_secret == '')
+		{
+			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'));
+		}
+		
 		/* Build TwitterOAuth object with client credentials. */
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
 
@@ -294,7 +337,8 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$_SESSION['oauth_callback_confirmed'] = $request_token['oauth_callback_confirmed'];
 
 		/* If last connection failed don't display authorization link. */
-		switch ($connection->http_code) {
+		switch ($connection->http_code)
+		{
 			case 200:
 				/* Build authorize URL and redirect user to Twitter. */
 				$url = $connection->getAuthorizeURL($token);
@@ -351,26 +395,24 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 		$js = array();
 
-		foreach ($pairs as $paramname => $requestname) {
+		foreach ($pairs as $paramname => $requestname)
+		{
 			$tokens = (array)JArrayHelper::getValue($opts, $paramname);
 			$newtokens = array();
-			for ($i=0; $i<=$counter; $i++) {
-				if ($i == $counter) {
-					$newtokens[$i] = $access_token[$requestname];
-				} else {
-					$newtokens[$i] = '';
-				}
-				$jsid = "#params".$paramname."-".$i;
+			for ($i = 0; $i<=$counter; $i++)
+			{
+				$newtokens[$i] = ($i == $counter) ? $access_token[$requestname] : '';
+				$jsid = '#params' . $paramname . '-' . $i;
 				$js[] = "window.opener.document.getElement('$jsid').value = '$newtokens[$i]';";
 
 			}
-			//$opts[$paramname] = implode(GROUPSPLITTER, $newtokens);
 			$opts[$paramname] = $newtokens;
 		}
 
 		$row->params = json_encode($opts);
 
-		if (!$row->store()) {
+		if (!$row->store())
+		{
 			JError::raiseWarning(500, $row->getError());
 		}
 
