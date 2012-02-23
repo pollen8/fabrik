@@ -263,11 +263,11 @@ class FabrikModelForm extends FabModelAdmin
 			$listModel = JModel::getInstance('List', 'FabrikModel');
 			$item = $listModel->loadFromFormId($formid);
 			if ($isnew) {
-				$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : FabrikString::clean($data['label']);
+				$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : $data['label'];
+				$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '', $dbTableName);
 			} else {
 				$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
 			}
-
 			$dbTableExists = $listModel->databaseTableExists($dbTableName);
 			if (!$dbTableExists) {
 				// @TODO - need to sanitize table name (get rid of non alphanumeirc or _),
@@ -276,7 +276,8 @@ class FabrikModelForm extends FabModelAdmin
 				// need to do some more testing on MySQL table name case sensitivity
 				// BUT ... as we're potentially changing the table name after testing for existance
 				// we need to test again.
-				$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '_', $dbTableName);
+				//$$$ rob - was replacing with '_' but if your form name was 'x - y' then this was converted to x___y which then blows up element name code due to '___' being presumed to be the element splitter.
+				$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '', $dbTableName);
 				if ($listModel->databaseTableExists($dbTableName)) {
 					return JError::raiseWarning(500, JText::_("COM_FABRIK_DB_TABLE_ALREADY_EXISTS"));
 				}

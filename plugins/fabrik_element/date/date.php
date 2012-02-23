@@ -35,7 +35,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param string data (should be in mySQL format already) - except if called from getEmailValue()
+	 * @param string data (should be in mySQL format already)
 	 * @param string element name
 	 * @param object all the data in the tables current row
 	 * @return string formatted value
@@ -367,7 +367,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$value = $value[$repeatCounter];
 		}
 		// $$$ hugh - need to convert to database format so we GMT-ified date
-		return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass());
+		return $this->renderListData($value, new stdClass());
+		// $$$ rob - no need to covert to db format now as its posted as db format already.
+		//return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass());
 	}
 
 	/**
