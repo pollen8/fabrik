@@ -19,7 +19,7 @@
 				
 			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GEOCODE_COUNTRY_DESC" label="PLG_CRON_GEOCODE_COUNTRY_LABEL" name="geocode_country_element" table="params_table" type="element"/>
 				
-			<field description="PLG_CRON_GEOCODE_IS_EMPTY_DESC" label="PLG_CRON_GEOCODE_IS_EMPTY_LABEL" name="geocode_is_empty" size="30" type="text"/>
+			<field default="(53.2224,-4.2007):4" description="PLG_CRON_GEOCODE_IS_EMPTY_DESC" label="PLG_CRON_GEOCODE_IS_EMPTY_LABEL" name="geocode_is_empty" size="30" type="text"/>
 				
 			<field default="4" description="PLG_CRON_GEOCODE_ZOOM_DESC" label="PLG_CRON_GEOCODE_ZOOM_LABEL" name="geocode_zoom_level" size="2" type="text"/>
 			
