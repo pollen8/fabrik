@@ -1148,7 +1148,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		//save join data
 		$this->_removeIgnoredData($this->_formData);
 		$aDeleteRecordId = '';
-		if (array_key_exists('join', $this->_formData)) {
+		// $$$ hugh - can't do this, as might be join element with no data,
+		// like checkbox join with no selections.
+		//if (array_key_exists('join', $this->_formData)) {
 
 			foreach ($aPreProcessedJoins as $aPreProcessedJoin) {
 
@@ -1161,7 +1163,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 				// $$$ rob 22/02/2011 could be a mutlfileupload with no images selected?
 				if (!array_key_exists($oJoin->id, $this->_formData['join'])) {
-					continue;
+					//continue;
 				}
 				$data = $this->_formData['join'][$oJoin->id];
 
@@ -1465,7 +1467,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$joinDb->query();
 				}
 			}
-		}
+		//}
 		//testing for saving pages/
 		JRequest::setVar('rowid', $insertId);
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this))) {

@@ -706,16 +706,16 @@ class FabrikModelElement extends JModelAdmin
 		$query->where("db_table_name = ".$db->Quote($dbname)." AND l.id !=".(int)$list->id." AND is_join = 0");
 
 		$db->setQuery($query);
-		
+
 		// $$$ rob load keyed on table id to avoid creating element in every one of the table's group
 		$othertables = $db->loadObjectList('id');
 		if ($db->getErrorNum() != 0) {
 			JError::raiseError(500, $db->getErrorMsg());
 		}
-		
+
 		// $$$ rob 20/02/2012 if you have 2 lists, countres, regions and then you join regions to countries to get a new group "countries - [regions]"
-		// Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into 
-		
+		// Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into
+
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(l.id) AS id, l.db_table_name, l.label, l.form_id, l.label AS form_label, fg.group_id AS group_id')
 		->from('#__{package}_joins AS j')
@@ -726,7 +726,7 @@ class FabrikModelElement extends JModelAdmin
 		$db->setQuery($query);
 		$joinedLists = $db->loadObjectList('id');
 		$othertables = array_merge($joinedLists, $othertables);
-		
+
 		if (!empty($othertables)) {
 			// $$$ hugh - we use $row after this, so we need to work on a copy, otherwise
 			// (for instance) we redirect to the wrong copy of the element
@@ -975,9 +975,8 @@ class FabrikModelElement extends JModelAdmin
 		//remove previous join records if found
 		if ((int)$row->id !== 0) {
 			$jdb = FabrikWorker::getDbo(true);
-			$query = $jdb->getQuery();
+			$query = $jdb->getQuery(true);
 			$query->delete('#__{fabrik}_joins')->where('element_id = ' . (int)$row->id);
-			$jdb = FabrikWorker::getDbo(true);
 			$jdb->setQuery($query);
 			$jdb->query();
 		}
