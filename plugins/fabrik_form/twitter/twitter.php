@@ -162,12 +162,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		{
 			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'));
 		}
-		
+
 		if ($params->get('twitter_oauth_token_secret') == '')
 		{
 			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'));
 		}
-		
+
 		if ($params->get('twitter_oauth_token_secret') !== '')
 		{
 
@@ -318,12 +318,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		{
 			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'));
 		}
-		
+
 		if ($consumer_secret == '')
 		{
 			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'));
 		}
-		
+
 		/* Build TwitterOAuth object with client credentials. */
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
 
@@ -402,7 +402,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 			for ($i = 0; $i<=$counter; $i++)
 			{
 				$newtokens[$i] = ($i == $counter) ? $access_token[$requestname] : '';
-				$jsid = '#params' . $paramname . '-' . $i;
+				$jsid = '#jform_params_' . $paramname . '-' . $i;
 				$js[] = "window.opener.document.getElement('$jsid').value = '$newtokens[$i]';";
 
 			}

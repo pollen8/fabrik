@@ -2748,10 +2748,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$calcLabel 	= $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 		if ($split) {
 			$pluginManager = FabrikWorker::getPluginManager();
-			echo "splt sum = $splitSum <br>";
 			$plugin = $pluginManager->getElementPlugin($splitSum);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-			echo "split name = $splitName <br>";
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getSumQuery($listModel, $splitName) . " GROUP BY label";
 			$sql = $listModel->pluginQuery($sql);
