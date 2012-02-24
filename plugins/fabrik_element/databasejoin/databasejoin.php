@@ -737,7 +737,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 
 			$html[] = ($displayType == 'radio') ? '</div>' : '';
-		} else {
+		} else if ($this->canView()) {
+			$html[] = $this->renderListData($default, JArrayHelper::toObject($data));
+		}
+		else {
 			/* make a hidden field instead*/
 			//$$$ rob no - the readonly data should be made in form view _loadTmplBottom
 			//$str = '<input type='hidden' class='fabrikinput' name='$thisElName' id='$id' value='$default' />";
@@ -756,7 +759,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					$defaultLabel = '<a href="'.JRoute::_($url).'">'.$defaultLabel.'</a>';
 				}
 			}
-			return $defaultLabel;
+			$html[] = $defaultLabel;
 		}
 		if ($params->get('join_desc_column') !== '') {
 			$html[] = '<div class="dbjoin-description">';
