@@ -1148,9 +1148,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		//save join data
 		$this->_removeIgnoredData($this->_formData);
 		$aDeleteRecordId = '';
-		// $$$ hugh - can't do this, as might be join element with no data,
-		// like checkbox join with no selections.
+		// $$$ hugh - can't do this, as might be repeat element with no data,
+		// like checkbox join with no selections, and no other joins on form
 		//if (array_key_exists('join', $this->_formData)) {
+			if (!isset($this->_formData['join'])) {
+				$this->_formData['join'] = array();
+			}
 
 			foreach ($aPreProcessedJoins as $aPreProcessedJoin) {
 
@@ -1165,7 +1168,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if (!array_key_exists($oJoin->id, $this->_formData['join'])) {
 					//continue;
 				}
-				$data = $this->_formData['join'][$oJoin->id];
+				$data = FArrayHelper::getValue($this->_formData['join'], $oJoin->id, array(), 'array');
 
 				// $$$ rob ensure that the joined data is keyed starting at 0 (could be greated if first group deleted)
 				// $$$ hugh - FIXME - this is hosing up checkboxes and radios, for rows that have no selection, and hence no
@@ -1199,6 +1202,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				} else {
 					//repeat element join
 					$elementModel = $this->getElement($oJoin->element_id, true);
+					// $$$ hugh - covers case where repeat element is read only,
+					// so isn't submitting any join data, versus editable element
+					// which is empty (like checkbox join), so isn't submitting any data.
+					if (!$elementModel->canUse()) {
+						continue;
+					}
 					$joinGroup = JModel::getInstance('Group', 'FabrikFEModel');
 
 					//need to set the fake group's form and id to that of the current elements form/group
