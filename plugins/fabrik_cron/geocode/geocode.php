@@ -124,7 +124,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 						if (!empty($full_addr)) {
 							// OK!  Lets try and geocode it ...
 							if ($gmap->getInfoLocation($full_addr)) {
-								echo 'found ';
+								//echo 'found ';
 								$lat = $gmap->getLatitude();
 								$long = $gmap->getLongitude();
 								if (!empty($lat) && !empty($long)) {
@@ -138,6 +138,12 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 									$total_encoded++;
 								}
 							}
+							else {
+								FabrikWorker::log('plg.cron.geocode.information', sprintf('no geocode result for: %s', $full_addr));
+							}
+						}
+						else {
+							FabrikWorker::log('plg.cron.geocode.information', 'empty address');
 						}
 					}
 				}
