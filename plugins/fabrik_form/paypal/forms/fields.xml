@@ -44,9 +44,9 @@
 				
 			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_ID_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_ID_LABEL" name="paypal_subs_id" repeat="true" table="params_paypal_subs_table" type="element"/>
 				
-			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DURATION_ID_DESC" label="PLG_FORM_PAYPAL_SUBS_DURATION_ID_LABEL" name="paypal_subs_duration_id" repeat="true" table="params_paypal_subs_table" type="element"/>
+			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_LABEL" name="paypal_subs_duration_id" repeat="true" table="params_paypal_subs_table" type="element"/>
 				
-				<field description="PLG_FORM_PAYPAL_SUBS_DURATION_ID_DESC" label="PLG_FORM_PAYPAL_SUBS_DURATION_ID_LABEL" name="paypal_duration_key_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
+				<field description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_LABEL" name="paypal_duration_key_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
 				
 			<field description="PLG_FORM_PAYPAL_SUBS_DATA_NAME_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_NAME_LABEL" name="paypal_subs_name" repeat="true" type="text"/>
 				
