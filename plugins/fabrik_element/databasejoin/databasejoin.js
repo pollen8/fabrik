@@ -168,6 +168,9 @@ var FbDatabasejoin = new Class({
 				if (typeOf(this.element) === 'null') {
 					return;
 				}
+				// $$$ hugh - fire change blur event, so things like autofill will pick up change
+				this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
+				this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
 			}.bind(this)
 		}).send();
 	},
