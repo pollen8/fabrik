@@ -1268,7 +1268,7 @@ class FabrikFEModelList extends JModelForm {
 			$query['select'] = "SELECT  ". implode(', ', $this->selectedOrderFields) . " FROM ".$db->nameQuote($table->db_table_name);
 			$query['join'] = $this->_buildQueryJoin();
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
-			$query['grouby'] = $this->_buildQueryGroupBy();
+			$query['groupby'] = $this->_buildQueryGroupBy();
 			$query['order'] = $order;
 
 			//check that the order by fields are in the select statement
