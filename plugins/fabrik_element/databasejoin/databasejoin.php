@@ -887,7 +887,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getEmailValue($value, $data, $c)
 	{
-		$tmp = $this->_getOptions($data);
+		$tmp = $this->_getOptions($data, $c);
 		if (is_array($value)){
 			foreach ($value as &$v2) {
 				foreach ($tmp as $v) {
