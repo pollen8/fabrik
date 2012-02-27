@@ -685,7 +685,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
 		@set_time_limit(300);
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
-		$form	= $this->getForm();
+		$form = $this->getForm();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$params = $this->getParams();
 
@@ -897,7 +897,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$ajaxPost = JRequest::getBool('fabrik_ajax');
 		// $$$ hugh - @TODO extract the actual decoding into a private method, so we don't repeat essentially
 		// the same code a bazillion times!
-		foreach ($_REQUEST as $key=>$val) {
+		foreach ($_REQUEST as $key => $val) {
 			// handle join data separately
 			if ($key === 'join') {
 				continue;
@@ -1033,11 +1033,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	private function callElementPreprocess()
 	{
 		$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
-		// $$$ hugh - if we assign by reference, the foreach loop goes loopy if there is a joined
-		// group.  For some reason, the array pointer gets stuck and it keeps igterating through
-		// the first group forever.  This seems to happen only with getGroupsHierachy, we've
-		// run across this before.  Still no idea what is going on.
-		//$groups = $this->getGroupsHiarachy();
 		$groups = $this->getGroupsHiarachy();
 		//curerntly this is just used by calculation elements
 		foreach ($groups as $groupModel) {
@@ -1743,11 +1738,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$oValidationRules = $pluginManager->getPlugInGroup('validationrule');
-		//$post	=& JRequest::get('post', 4); //4 allows html
-		// $$$ rob added coptToRow here so that calcs run in setFormData, element preProcess()
-		//can access raw values
-		//$this->copyToRaw( $_REQUEST);
+		$validationRules = $pluginManager->getPlugInGroup('validationrule');
+
 		$post = $this->setFormData();
 		//contains any data modified by the validations
 		$this->_modifiedValidationData = array();
