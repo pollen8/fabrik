@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
-
+JTable::addIncludePath(JPATH_SITE . '/plugins/fabrik_form/subscriptions/tables');
 
 class fabrikSubscriptionsIPN {
 	function __construct()
@@ -35,6 +35,7 @@ class fabrikSubscriptionsIPN {
 	* @param $err_msg
 	* @return unknown_type
 	*/
+	
 	function payment_status_Pending($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.payment_status_Pending', '');
@@ -65,14 +66,14 @@ class fabrikSubscriptionsIPN {
 	
 	function payment_status_Reversed($listModel, $request, &$set_list, &$err_msg)
 	{
-	$this->log('fabrik.ipn.payment_status_Reversed', '');
-	return 'ok';
-		}
+		$this->log('fabrik.ipn.payment_status_Reversed', '');
+		return 'ok';
+	}
 	
 	function payment_status_Cancelled_Reversal($listModel, $request, &$set_list, &$err_msg)
 	{
-	$this->log('fabrik.ipn.payment_status_Cancelled_Reversal', '');
-	return 'ok';
+		$this->log('fabrik.ipn.payment_status_Cancelled_Reversal', '');
+		return 'ok';
 	}
 	
 	/**
@@ -103,9 +104,9 @@ class fabrikSubscriptionsIPN {
 	
 	function txn_type_web_accept($listModel, $request, &$set_list, &$err_msg)
 	{
-	$this->log('fabrik.ipn.txn_type_web_accept', '');
-	return 'ok';
-		}
+		$this->log('fabrik.ipn.txn_type_web_accept', '');
+		return 'ok';
+	}
 	
 	/**
 	* occurs when someone first signs up for a subscription,
@@ -120,8 +121,8 @@ class fabrikSubscriptionsIPN {
 	
 	 function txn_type_subscr_signup($listModel, $request, &$set_list, &$err_msg)
 	{
-	$this->log('fabrik.ipn.txn_type_subscr_signup', '');
-			return 'ok';
+		$this->log('fabrik.ipn.txn_type_subscr_signup', '');
+		return 'ok';
 	}
 	
 	/**
@@ -136,7 +137,7 @@ class fabrikSubscriptionsIPN {
 	function txn_type_subscr_cancel($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.txn_type_subscr_cancel', '');
-		$invoice = $this->checkInvoice( $request );
+		$invoice = $this->checkInvoice($request);
 		if (!$invoice)
 		{
 			$this->log('fabrik.ipn.txn_type_subscr_cancel invoice not found', $invoice .' not found so didnt cancel a subscription');
@@ -146,6 +147,7 @@ class fabrikSubscriptionsIPN {
 		if ($sub === false)
 		{
 			$this->log('fabrik.ipn.txn_type_subscr_cancel subscription not found', $invoice .' not found so didnt cancel a subscription');
+			return false;
 		}
 		$now = JFactory::getDate()->toSql();
 		$sub->status = 'Cancelled';
@@ -215,19 +217,18 @@ class fabrikSubscriptionsIPN {
 		$subUser = JFactory::getUser($sub->userid);
 		$this->log('fabrik.ipn.txn_type_subscr_payment sub userid', $subUser->get('id'));
 	
-		$db->setQuery('SELECT max(usergroup) AS gid FROM `fabsubs_subscriptions` AS s
-			INNER JOIN fabsubs_plans AS p ON p.id = s.plan
-			
-			// @TODO fix for 2.5 - gid not used
-			WHERE userid = ' . $subUser->get('id'));//' and status = "Active"'
+		$query = $db->getQuery(true);
+		$query->select('usergroup AS gid')->from('#__fabrik_subs_subscriptions AS s')
+		->join('INNER', '#__fabrik_subs_plans AS p ON p.id = s.plan')
+		->where('userid = ' . $subUser->get('id')); //' and status = "Active"'
+		$db->setQuery($query);
 		$gid = $db->loadResult();
 	
 		$this->log('fabrik.ipn.txn_type_subscr_payment gid query', $db->getQuery());
 	
 		$this->log('fabrik.ipn.setusergid', $subUser->get('id') . ' set to '. $gid . "\n ".$db->getQuery() . "\n ". $db->getErrorMsg());
-		$subUser->gid = $gid;
+		$subUser->groups = (array)$gid;
 		$subUser->save();
-	
 	
 		$app = JFactory::getApplication();
 		$MailFrom = $app->getCfg('mailfrom');
@@ -267,18 +268,19 @@ class fabrikSubscriptionsIPN {
 	* @return unknown_type
 	*/
 	
-	function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg)
+	{
 		$this->log('fabrik.ipn.txn_type_subscr_failed', '');
 		return 'ok';
 	}
 	
 	/**
 	*
-	* @param $listModel
-	* @param $request
-	* @param $set_list
-	* @param $err_msg
-	* @return unknown_type
+	* @param	$listModel
+	* @param	$request
+	* @param	$set_list
+	* @param	$err_msg
+	* @return	unknown_type
 	*
 	* seems to get called when you do a silver paypal payment (not sub)
 	* but as it occurs before anything else (eg. form.paypal.ipn.Completed the expired invoice doesnt
@@ -311,16 +313,19 @@ class fabrikSubscriptionsIPN {
 	* @return J table object
 	*/
 	
-	private function getSubscriptionFromInvoice($inv)
+	private function getSubscriptionFromInvoice(string $inv)
 	{
 		$db = JFactory::getDbo();
-		$db->setQuery("SELECT subscr_id FROM fabsubs_invoices WHERE invoice_number = " . $db->Quote($inv));
+		$query = $db->getQuery(true);
+		$query->select('subscr_id')
+		->from('#__fabrik_subs_invoices')->where('invoice_number = ' . $db->Quote($inv));
+		$db->setQuery($query);
 		$subid = (int)$db->loadResult();
 		if($subid === 0)
 		{
 			return false;
 		}
-		$sub = JTable::getInstance('Subscriptions', 'Table');
+		$sub = JTable::getInstance('Subscription', 'FabrikTable');
 		$sub->load($subid);
 		return $sub;
 	}
@@ -331,12 +336,10 @@ class fabrikSubscriptionsIPN {
 	* @return unknown_type
 	*/
 	
-	private function getInvoice($inv)
+	private function getInvoice(string $inv)
 	{
-		$row = JTable::getInstance('Invoices', 'Table');
-		//$row->_tbl_key = 'invoice_number';
-		$row->set('_tbl_key', 'invoice_number');
-		$row->load($inv);
+		$row = JTable::getInstance('Invoice', 'FabrikTable');
+		$row->load(array('invoice_number' => $inv));
 		return $row;
 	}
 	
@@ -348,7 +351,7 @@ class fabrikSubscriptionsIPN {
 	* @return unknown_type
 	*/
 	
-	private function reportError($msg, $to, $data)
+	private function reportError(string $msg, string $to, array $data)
 	{
 		$app = JFactory::getApplication();
 		$MailFrom = $app->getCfg('mailfrom');
@@ -371,11 +374,11 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	 * ensures that an invoice num was found in the request data.
-	 * @param array $request
-	 * @return mixed false if not found, otherwise returns invoice num
+	 * @param	array	$request
+	 * @return	mixed	false if not found, otherwise returns invoice num
 	 */
 	
-	private function checkInvoice($request)
+	private function checkInvoice(array $request)
 	{
 		$invoice = $request['invoice'];
 		$receiver_email = $request['receiver_email'];
@@ -398,8 +401,10 @@ class fabrikSubscriptionsIPN {
 	
 	public function fallbackPlan($sub)
 	{
-		$plan = JTable::getInstance('Plans', 'Table');
-		$newPlan = JTable::getInstance('Plans', 'Table');
+		// @TODO below code does not loook up the users actual plans but used a field fall_back_plan which we dont have now
+		return;
+		$plan = JTable::getInstance('Plan', 'FabrikTable');
+		$newPlan = JTable::getInstance('Plan', 'FabrikTable');
 		$plan->load((int)$sub->plan);
 		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int)$sub->plan .' = ' . (int)$plan->fall_back_plan);
 		$fallback = false;
@@ -408,18 +413,15 @@ class fabrikSubscriptionsIPN {
 			$fallback = true;
 			$newPlan->load((int)$plan->fall_back_plan);
 			$gid = (int)$newPlan->usergroup;
-			if ($gid <18)
-			{
-				$gid = 18;
-			}
 		}
 		else
 		{
-			$gid = 18;
+			$config = JComponentHelper::getParams('com_users');
+			$gid = $config->get('new_usertype');
 		}
 		$subUser = JFactory::getUser($sub->userid);
-		$subUser->gid = $gid;
 		$this->log('fabrik.ipn. fallback', $subUser->get('id') .' gid set to ' . $gid);
+		$subUser->groups = (array)$gid;
 		$subUser->save();
 	
 		if ($fallback)
@@ -436,7 +438,7 @@ class fabrikSubscriptionsIPN {
 			$this->log('fabrik.ipn. fallback', 'expiration date = strtotime(+'.$newPlan->duration.' '.$newLength.")\n minus = strtotime(-" .$plan->duration.' '.$oldLength.") \n =: $expDate - $minus"	);
 			$expDate = JFactory::getDate()->toUnix() - ( $expDate - $minus );
 	
-			$sub = JTable::getInstance('Subscriptions', 'Table');
+			$sub = JTable::getInstance('Subscription', 'FabrikTable');
 			$sub->userid = $subUser->get('id');
 			$sub->type = 1; //paypal payment - no recurring
 			$sub->status = 'Active';

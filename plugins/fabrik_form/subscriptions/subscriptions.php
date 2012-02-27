@@ -33,8 +33,8 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	{
 		$w = $this->getWorker();
 		$data = $this->getEmailData();
-		$email = $w->parseMessageForPlaceHolder($this->params->get('subscriptions_accountemail'), $data);
-		return $email;
+		$field = $params->get('subscriptions_testmode') == 1 ? 'subscriptions_sandbox_email' : 'subscriptions_accountemail';
+		return $w->parseMessageForPlaceHolder($this->params->get($field), $data);
 	}
 
 	/**
@@ -101,19 +101,8 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	protected function getItemName()
 	{
 		$data = $this->getEmailData();
-		echo "<pre>";print_r($data);
 		// @TODO replace with look up of plan name and billing cycle
 		return array($data['jos_fabrik_subs_users___plan_id_raw'], $data['jos_fabrik_subs_users___plan_id'][0]);
-	}
-
-	/**
-	 * is this set up to be a subscription or single payment
-	 * @return	bool
-	 */
-
-	protected function isSubscription()
-	{
-		return true;
 	}
 
 	/**
@@ -123,15 +112,14 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	protected function setSubscriptionValues(&$opts)
 	{
-		// @TODO replace site name and various placeholders
-		$name = 'http://fabrikar.com/  {plan_name}  User: {fabsubs_users___name} ({fabsubs_users___username})';
-
+		$w = $this->getWorker();
+		$config = JFactory::getConfig();
 		$data = $this->getEmailData();
+		
+		$gateWay = $this->getGateway();
+		
 		$item= $data['jos_fabrik_subs_users___billing_cycle'][0] . ' ' . $data['jos_fabrik_subs_users___gateway'][0];
 		$item_raw = $data['jos_fabrik_subs_users___billing_cycle_raw'][0];
-		
-		
-		echo "<pre>";print_r($data);
 		
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
@@ -141,29 +129,30 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 		$db->setQuery($query);
 		$sub = $db->loadObject();
-
-		if (is_object($sub))
+		
+		// @TODO test replace various placeholders
+		$name = $config->get('sitename') . ' {plan_name}  User: {jos_fabrik_subs_users___name} ({jos_fabrik_subs_users___username})';
+		$tmp = array_merge(JRequest::get('data'), JArrayHelper::fromObject($sub));
+		$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);//'http://fabrikar.com/ '.$sub->item_name. ' - User: subtest26012010 (subtest26012010)';
+		$opts['invoice'] = uniqid('', true);
+		
+		if ($gateWay->subscription == 1)
 		{
-			echo "<pre>sub = ";print_r($sub);
-			$opts['p3'] = $sub->p3;
-			$opts['t3'] = $sub->t3;
-			$opts['a3'] = $sub->cost;
-			//$opts['src'] = 1;
-			$opts['no_note'] = 1;
-			$opts['custom'] = '';
-			$tmp = array_merge(JRequest::get('data'), JArrayHelper::fromObject($sub));
-			$opts['item_name'] = $this->getWorker()->parseMessageForPlaceHolder($name, $tmp);//'http://fabrikar.com/ '.$sub->item_name. ' - User: subtest26012010 (subtest26012010)';
-			$opts['invoice'] = uniqid('', true);
-			$gateWay = $this->getGateway();
-			$opts['src'] = $w->parseMessageForPlaceHolder((int)$gateWay->subscription, $tmp);
-			$amount = $opts['amount'];
-			unset($opts['amount']);
-		}
-		else
-		{
-			echo $db->getQuery();
-			echo "<pre>";print_r($sub);exit;
-			JError::raiseError(500, 'Could not determine subscription period, please check your settings');
+			if (is_object($sub))
+			{
+				$opts['p3'] = $sub->p3;
+				$opts['t3'] = $sub->t3;
+				$opts['a3'] = $sub->cost;
+				//$opts['src'] = 1;
+				$opts['no_note'] = 1;
+				$opts['custom'] = '';
+				$opts['src'] = 1;
+				unset($opts['amount']);
+			}
+			else
+			{
+				JError::raiseError(500, 'Could not determine subscription period, please check your settings');
+			}
 		}
 	}
 
@@ -202,45 +191,12 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		$url = $testMode == 1 ? 'https://www.sandbox.paypal.com/us/cgi-bin/webscr?' : 'https://www.paypal.com/cgi-bin/webscr?';
 		$opts = array();
 		$gateway = $this->getGateway();
-		echo "<pre>gatway = ";print_r($gateway);
 		$opts['cmd'] = $gateway->subscription ? '_xclick-subscriptions' : '_xclick'; 
 		$opts['business'] = $this->getBusinessEmail($params);
 		$opts['amount'] = $this->getAmount($params);
 		list($item_raw, $item) = $this->getItemName($params);
 		$opts['item_name'] = $item;
-		if ($this->isSubscription())
-		{
-			$this->setSubscriptionValues($opts);
-		}
-
-		// $$$ rob 03/02/2011
-		// check if we have a gateway subscription switch set up. This is for sites where
-		// you can toggle between a subscription or a single payment. E.g. fabrikar com
-		// if 'subscriptions_subscription_switch' is blank then use the $opts['cmd'] setting
-		// if not empty it should be some eval'd PHP which needs to return true for the payment
-		// to be treated as a subscription
-		// We want to do this so that single payments can make use of Paypals option to pay via credit card
-		// without a subscriptions account (subscriptions require a Paypal account)
-		// We do this after the subscription code has been run as this code is still needed to look up the correct item_name
-
-		/* $subSwitch = $params->get('subscriptions_subscription_switch');
-		 if (trim($subSwitch) !== '')
-		{
-		$subSwitch = $w->parseMessageForPlaceHolder($subSwitch);
-		$isSub = @eval($subSwitch);
-		if (!$isSub)
-		{
-		//reset the amount which was unset during subscription code
-		$opts['amount'] = $amount;
-		$opts['cmd'] = '_xclick';
-		//unset any subscription options we may have set
-		unset($opts['p3']);
-		unset($opts['t3']);
-		unset($opts['a3']);
-		unset($opts['no_note']);
-		//$opts['src'] = 0;
-		}
-		} */
+		$this->setSubscriptionValues($opts);
 
 		$opts['currency_code'] = $this->getCurrencyCode();
 		$opts['notify_url'] = $this->getNotifyUrl();
@@ -264,20 +220,19 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		// to force ONLY recirect to Subscriptions?
 		$surl = (array)$session->get($context.'url', array());
 		$surl[$this->renderOrder] = $url;
-		$session->set($context.'url', $surl);
+		$session->set($context . 'url', $surl);
 
 		/// log the info
-		$log = FabTable::getInstance('log', 'FabrikTable');
+		/* $log = FabTable::getInstance('log', 'FabrikTable');
 		$log->message_type = 'fabrik.subscriptions.onAfterProcess';
 		$msg = new stdClass();
 		$msg->opt = $opts;
 		$msg->data = $data;
 		$log->message = json_encode($msg);
-		$log->store();
+		$log->store(); */
 
 		// @TODO use JLog instead of fabrik log
 		//JLog::add($subject . ', ' . $body, JLog::NOTICE, 'com_fabrik');
-exit;
 		return true;
 	}
 
@@ -314,7 +269,7 @@ exit;
 		$testSiteQs = $this->params->get('subscriptions_test_site_qs', '');
 		$testMode = $this->params->get('subscriptions_testmode', false);
 		$ppurl  = ($testMode == 1 && !empty($testSite)) ? $testSite : COM_FABRIK_LIVESITE;
-		$ppurl .= '/index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $formModel->get('id') . '&g=form&plugin=subscriptions&method=ipn';
+		$ppurl .= '/index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $this->formModel->get('id') . '&g=form&plugin=subscriptions&method=ipn';
 		if ($testMode == 1 && !empty($testSiteQs))
 		{
 			$ppurl .= $testSiteQs;
@@ -360,7 +315,7 @@ exit;
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
-		$ret_msg = (array)$params->get('subscriptions_return_msg', array());
+		$ret_msg = (array)$params->get('subscriptions_return_msg');
 		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
 		if ($ret_msg)
 		{
@@ -368,7 +323,7 @@ exit;
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowid);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
-			if (stristr($ret_msg,'[show_all]'))
+			if (stristr($ret_msg, '[show_all]'))
 			{
 				$all_data = array();
 				foreach ($_REQUEST as $key => $val)
