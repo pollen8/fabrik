@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<extension group="content" method="upgrade" type="plugin" version="1.7">
+<extension group="content" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik</name>
 	<author>Pollen 8 Design Ltd</author>
 	<creationDate>February 2012</creationDate>

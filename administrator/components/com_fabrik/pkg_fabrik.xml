@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<install type="package" version="1.6">
+<install type="package" version="2.5">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>{version}</version>
+	<version>3.0.4</version>
 	<url>http://www.fabrikar.com</url>
-	<creationDate>{createdate}</creationDate>
+	<creationDate>February 2012</creationDate>
 	<author>Fabrik</author>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>

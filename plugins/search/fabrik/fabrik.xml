@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<extension group="search" method="upgrade" type="plugin" version="1.6.0">
+<extension group="search" method="upgrade" type="plugin" version="2.5">
 	<name>Search - Fabrik</name>
 	<author>Rob Claybrun</author>
 	<creationDate>February 2012</creationDate>

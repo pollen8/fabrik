@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension group="fabrik_element" method="upgrade" type="plugin" version="1.7">
+<extension group="fabrik_element" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik Element - notes</name>
 	<author>Rob Clayburn</author>
 	<creationDate>February 2012</creationDate>

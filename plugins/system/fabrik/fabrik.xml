@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<extension group="system" method="upgrade" type="plugin" version="1.7">
+<extension group="system" method="upgrade" type="plugin" version="2.5">
 	<name>System - Fabrik</name>
 	<author>Fabrikar.com</author>
 	<creationDate>February 2012</creationDate>
