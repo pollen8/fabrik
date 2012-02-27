@@ -161,8 +161,8 @@ class plgSystemFabrik extends JPlugin
 			JRequest::setVar('listid', $id);
 
 			$listModel->setId($id);
-			
-			$requestKey = 'fabrik_list_filter_all.' . $listModel->getRenderContext();
+			$filterModel = $listModel->getFilterModel();
+			$requestKey = $filterModel->getSearchAllRequestKey();
 			//set the request variable that fabrik uses to search all records
 			JRequest::setVar($requestKey, $text, 'post');
 			
