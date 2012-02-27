@@ -3598,6 +3598,10 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$html .= "</script>\n";
 		return $html;
 	}
+
+	public function isEditable() {
+		return $this->_editable;
+	}
 }
 
 ?>
