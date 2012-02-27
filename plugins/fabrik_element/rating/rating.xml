@@ -2,13 +2,13 @@
 <extension group="fabrik_element" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik Element - rating</name>
 	<author>Rob Clayburn</author>
-	<creationDate>January 2012</creationDate>
+	<creationDate>February 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0.3</version>
-	<help url="PLG_ELEMENT_RATING_HELP_SERVER" />
+	<version>3.0.4</version>
+	<help url="PLG_ELEMENT_RATING_HELP_SERVER"/>
 	<description>PLG_ELEMENT_RATING_DESCRIPTION</description>
 	<install>
 		<sql>
