@@ -1493,6 +1493,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$item->hidden = 1;
 		return $item;
 	}
+	
+	public function fromXMLFormat($v)
+	{
+		return JFactory::getDate($v)->toSql();
+	}
 }
 
 /**
@@ -1563,6 +1568,6 @@ class FabDate extends JDate{
 		}
 		return $str;
 	}
-
+	
 }
 ?>

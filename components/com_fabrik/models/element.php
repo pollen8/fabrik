@@ -4397,5 +4397,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$classes[] = $this->getParams()->get('tablecss_header_class');
 		return implode(' ', $classes);
 	}
+	
+	public function fromXMLFormat($v)
+	{
+		return $v;
+	}
 }
 ?>

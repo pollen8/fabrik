@@ -404,6 +404,8 @@ class FabrikViewList extends JView{
 		// 3.0 buttons now rendered in fabrik_action <ul>
 		//$this->pluginButtons = $model->getPluginButtons();
 
+		$this->assign('pluginTopButtons', $this->get('PluginTopButtons'));
+		
 		//force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND.DS.'views';
 

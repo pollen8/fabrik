@@ -188,6 +188,19 @@ class FabrikFEModelList extends JModelForm {
 		$pluginManager->runPlugins('process', $this, 'list');
 		return $pluginManager->_data;
 	}
+	
+	/**
+	 * code to enable plugins to add a button to the top of the list
+	 * @return	array	button html
+	 */
+	
+	public function getPluginTopButtons()
+	{
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('topButton', $this, 'list');
+		$buttons = $pluginManager->_data;
+		return $buttons;
+	}
 
 	/**
 	 * get the html that is outputted by table plug-in buttons
