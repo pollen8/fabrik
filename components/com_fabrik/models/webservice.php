@@ -152,9 +152,10 @@ abstract class FabrikWebService
 			{
 				$to = $map['to'];
 				$map['from'] = $w->parseMessageForPlaceHolder($map['from'], $d);
-				if (isset($map['match']))
+				
+				if (JArrayHelper::getValue($map, 'match', '') !== '')
 				{
-					if (JArrayHelper::getValue($map, 'eval'))
+					if (JArrayHelper::getValue($map, 'eval') == 1)
 					{
 						$res = eval($map['match']);
 						if ($res !== false)
@@ -222,7 +223,7 @@ abstract class FabrikWebService
 				$row[$k] = $elementModel->fromXMLFormat($v);
 			}
 			$pk = '';
-			if (array_key_exists($row[$fk], $ids))
+			if (array_key_exists($row[$fk], $ids) && $row[$fk] != '')
 			{
 				$pk = $ids[$row[$fk]]->id;
 			}

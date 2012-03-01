@@ -99,7 +99,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$service = FabrikWebService::getInstance($opts);
 		
 		$filters = $this->getServiceFilters($service);
-		$service->setMap($this->getMap());
+		$service->setMap($this->getMap($formModel));
 		$filters = array_merge($opts['credentials'], $filters);
 				
 		$method = $params->get('webservice_get_method');
@@ -113,7 +113,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		return true;
 	}
 	
-	protected function getMap()
+	protected function getMap($formModel)
 	{
 		$params = $this->getParams();
 		$map = json_decode($params->get('webservice_map'));
@@ -126,7 +126,8 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$n = count($from);
 		for ($i = 0; $i < $n; $i ++)
 		{
-			$return[] = array('from' => $from[$i], 'to' => $to[$i], 'value' => $value[$i], 'match' => $match[$i], 'eval' => (bool)$eval[$i]);
+			$tid = $formModel->getElement($to[$i], true)->getElement()->name;
+			$return[] = array('from' => $from[$i], 'to' => $tid, 'value' => $value[$i], 'match' => $match[$i], 'eval' => (bool)$eval[$i]);
 		}
 		return $return;
 	}
