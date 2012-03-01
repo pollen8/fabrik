@@ -231,7 +231,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		}
 		$element = $this->getElement();
 		$params = $this->getParams();
-		
+
 		// $$$ hugh - special case for social plugins (like CB plugin).  If plugin sets
 		// fabrik.plugin.profile_id, and 'user_use_social_plugin_profile' param is set,
 		// and we are creating a new row, then use the session data as the user ID.
@@ -249,7 +249,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				}
 			}
 		}
-		
+
 		// $$$ rob if in joined data then $data['rowid'] isnt set - use JRequest var instead
 		//if ($data['rowid'] == 0 && !in_array($element->name, $data)) {
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
@@ -549,7 +549,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
-				
+
 				case "hidden":
 					if (get_magic_quotes_gpc()) {
 						$default = stripslashes($default);
@@ -679,8 +679,16 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	function getEmailValue($value, $data, $c)
 	{
-		$key = $this->getFullName(false, true, false) . "_raw";
-		$userid = $data[$key];
+		$key = $this->getFullName(false, true, false);
+		$rawkey = $key . "_raw";
+		$userid = $value;
+		if (array_key_exists($rawkey, $data)) {
+			$userid = $data[$rawkey];
+		}
+		else if (array_key_exists($key, $data)) {
+			$userid = $data[$key];
+		}
+
 		if (is_array($userid)) {
 			$userid = (int)array_shift($userid);
 		}
