@@ -212,13 +212,16 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	public function getEmailData()
 	{
 		$data = parent::getEmailData();
-		$data['fabrik_editurl'] = JRoute::_(COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$this->formModel->getId()."&amp;rowid=".JRequest::getVar('rowid'));
-		$data['fabrik_viewurl'] = JRoute::_(COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=".$this->formModel->getId()."&amp;rowid=".JRequest::getVar('rowid'));
+		$data['fabrik_editurl'] = COM_FABRIK_LIVESITE . JRoute::_("index.php?option=com_fabrik&amp;view=form&amp;formid=".$this->formModel->getId()."&amp;rowid=".JRequest::getVar('rowid'));
+		$data['fabrik_viewurl'] = COM_FABRIK_LIVESITE . JRoute::_("index.php?option=com_fabrik&amp;view=details&amp;formid=".$this->formModel->getId()."&amp;rowid=".JRequest::getVar('rowid'));
 		//$$$ rob fabrik_viewurl/fabrik_editurl desribed in help text as fabrik_edit_url/fabrik_view_url.
+		// $$$ hugh - so let's add edit_link and view_link as well, just for consistency
 		$data['fabrik_edit_url'] = $data['fabrik_editurl'];
 		$data['fabrik_view_url'] = $data['fabrik_viewurl'];
 		$data['fabrik_editlink'] = "<a href=\"{$data['fabrik_editurl']}\">" . JText::_('EDIT') . "</a>";
 		$data['fabrik_viewlink'] = "<a href=\"{$data['fabrik_viewurl']}\">" . JText::_('VIEW') . "</a>";
+		$data['fabrik_edit_link'] = "<a href=\"{$data['fabrik_editurl']}\">" . JText::_('EDIT') . "</a>";
+		$data['fabrik_view_link'] = "<a href=\"{$data['fabrik_viewurl']}\">" . JText::_('VIEW') . "</a>";
 		return $data;
 	}
 

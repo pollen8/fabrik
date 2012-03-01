@@ -59,6 +59,12 @@ function fabrikBuildRoute(&$query) {
 		unset($query['formid']);
 	};
 
+	// $$$ hugh - looks like we still have some links using 'fabrik' instead of 'formid'
+	if (isset($query['fabrik'])) {
+		$segments[] = $query['fabrik'];
+		unset($query['fabrik']);
+	};
+
 	if (isset($query['listid'])) {
 		if ($view != 'form' && $view != 'details') {
 			$segments[] = $query['listid'];
