@@ -90,12 +90,12 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 						$id .= '_raw';
 					}
 				}
-				$uid = JArrayHelper::getValue($data, $id, '');
-				if ($uid === '')
+				$id = JArrayHelper::getValue($data, $id, '');
+				if ($id === '')
 				{
-					$uid = $this->getValue($data, $repeatCounter);
+					$id = $this->getValue($data, $repeatCounter);
 				}
-				$user = $id == '' ? JFactory::getUser() : JFactory::getUser((int)$uid);
+				$user = $id === '' ? JFactory::getUser() : JFactory::getUser($uid);
 			}
 		}
 
