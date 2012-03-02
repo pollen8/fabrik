@@ -1990,7 +1990,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$found = false;
 				for ($i=0; $i< count($vals); $i++) {
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
-					$txt2 = FabrikWorker::JSONtoData($txt[$i], true);
+					$txt2 = FabrikWorker::JSONtoData(JArrayHelper::getValue($txt, $i), true);
 					for ($jj=0; $jj<count($vals2); $jj++) {
 						if (!in_array($vals2[$jj], $allvalues)) {
 							$found = true;
