@@ -867,8 +867,16 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			if ($this->_editable) {
 				$validations = $this->getValidations();
-				foreach ($validations as $validation) {
-					$l .= $validation->getIcon($this, $repeatCounter, $tmpl);
+				if (count($validations) > 0)
+				{
+					$validationHovers = array('<span><ul style="list-style:none">');
+					foreach ($validations as $validation)
+					{
+						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
+					}
+					$validationHovers[] = '</ul></span>'; 
+					$title = htmlspecialchars(implode("", $validationHovers), ENT_QUOTES);
+					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title));
 				}
 			}
 			$model = $this->getFormModel();
@@ -1990,7 +1998,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$found = false;
 				for ($i=0; $i< count($vals); $i++) {
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
-					$txt2 = FabrikWorker::JSONtoData($txt[$i], true);
+					$txt2 = FabrikWorker::JSONtoData(JArrayHelper::getValue($txt, $i), true);
 					for ($jj=0; $jj<count($vals2); $jj++) {
 						if (!in_array($vals2[$jj], $allvalues)) {
 							$found = true;

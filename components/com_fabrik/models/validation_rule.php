@@ -132,6 +132,8 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
+	 * @deprecated @since 3.0.5
+	 * now show only on validation icon next to the element name and put icons and text inside hover text
 	 * gets the validation rule icon
 	 * @param object element model
 	 * @param int $c repeat group counter
@@ -144,9 +146,20 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		if ($this->allowEmpty($elementModel, $c)) {
 			$name .= '_allowempty';
 		}
-		$label = '<span>'.$this->getLabel($elementModel, $c).'</span>';
-		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => "{notice:true}",  'title' => $label));
+		$label = '<span>'.$this->getLabel($elementModel, $c). '</span>';
+		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip ' . $this->_pluginName, 'opts' => "{notice:true}",  'title' => $label));
 		return $str;
+	}
+	
+	public function getHoverText($elementModel, $c = 0, $tmpl = '')
+	{
+		$name = $this->icon === true ? $this->_pluginName : $this->icon;
+		if ($this->allowEmpty($elementModel, $c))
+		{
+			$name .= '_allowempty';
+		}
+		$i = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => $this->_pluginName));
+		return $i .  $this->getLabel($elementModel, $c) ;
 	}
 
 	/**

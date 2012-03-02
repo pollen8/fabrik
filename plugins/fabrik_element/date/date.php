@@ -493,11 +493,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		//if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
 		if (JRequest::getVar('view') == 'list') {
 			$script = array();
-			$script[] = 'head.ready(function() {';
+			if (JRequest::getVar('format') !== 'raw')
+			{
+				$script[] = 'head.ready(function() {';
+			}
 			$script[] = 'if($("'.$id.'")) { ';
 			$script[] = 'Calendar.setup('.$opts.');';
 			$script[] = '}'; //end if id
-			$script[] = '});'; //end domready function
+			if (JRequest::getVar('format') !== 'raw')
+			{
+				$script[] = '});'; //end domready function
+			}
 			FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
@@ -811,7 +817,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		switch ($filterType) {
 			case 'field':
 			case 'dropdown':
-
+			default:
 				if (!$params->get('date_showtime', 0) || $exactTime == false) {
 
 					//$$$ rob turn into a ranged filter to search the entire day
