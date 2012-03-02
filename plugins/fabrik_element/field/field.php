@@ -66,7 +66,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			$data = $this->_form->_data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
-		
+
 		// $$$ hugh - if the form just failed validation, number formatted fields will already
 		// be formatted, so we need to un-format them before formatting them!
 		$value = $this->numberFormat($this->unNumberFormat($value));
@@ -85,7 +85,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		
+
 		//stop "'s from breaking the content out of the field.
 		// $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
 		//so add false flag to ensure its encoded once only
@@ -99,7 +99,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		$bits['class'] .= ' ' . $params->get('text_format');
 		return $this->buildInput('input', $bits);
 	}
-	
+
 	/**
 	 * format guess link type
 	 *
@@ -130,16 +130,19 @@ class plgFabrik_ElementField extends plgFabrik_Element
 				}
 			}
 		}
+		// $$$ hugh - this gets done in $listModel->_addLink(), called from element parent::renderListData()
+		/*
 		if (!$guessed) {
 			$this->addCustomLink($value, $data, $repeatCounter);
 		}
+		*/
 	}
-	
+
 	/**
 	 * get the guess type link target property
 	 * @return string
 	 */
-	
+
 	protected function guessLinkTarget()
 	{
 		$params = $this->getParams();
@@ -263,7 +266,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	* get the element's cell class
 	* @return	string	css classes
 	*/
-	
+
 	public function getCellClass()
 	{
 		$params = $this->getParams();
