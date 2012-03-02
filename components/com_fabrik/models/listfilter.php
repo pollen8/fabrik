@@ -349,6 +349,10 @@ class FabrikFEModelListfilter extends FabModel {
 		$context = 'com_fabrik.list' . $id . '.filter';
 		$app->setUserState($context . 'limitstart', 0);
 
+		if (!is_object($registry))
+		{
+			return;
+		}
 		$reg = $registry->get($context, new stdClass());
 
 		// $$$ rob jpluginfilters search_types are those which have been set inside the
