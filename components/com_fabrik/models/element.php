@@ -867,8 +867,16 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			if ($this->_editable) {
 				$validations = $this->getValidations();
-				foreach ($validations as $validation) {
-					$l .= $validation->getIcon($this, $repeatCounter, $tmpl);
+				if (count($validations) > 0)
+				{
+					$validationHovers = array('<span><ul style="list-style:none">');
+					foreach ($validations as $validation)
+					{
+						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
+					}
+					$validationHovers[] = '</ul></span>'; 
+					$title = htmlspecialchars(implode("", $validationHovers), ENT_QUOTES);
+					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title));
 				}
 			}
 			$model = $this->getFormModel();
