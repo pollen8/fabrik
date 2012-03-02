@@ -12,21 +12,28 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-
 //require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListWebservice extends plgFabrik_List
 {
 
+	/**@var	string	button prefix name */
+	protected $buttonPrefix = 'update_col';
 
-	protected $buttonPrefix = 'webservice';
-
+	/**
+	 * does the plugin render a button at the top of the list?
+	 * @return	bool
+	 */
 	public function topButton()
 	{
 		return true;
 	}
 	
+	/**
+	 * create the HTML for rendering a button in the top button list
+	 * @return	string	<a> link
+	 */
 	public function topButton_result()
 	{
 		if ($this->canUse()) {
@@ -38,11 +45,19 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		}
 	}
 	
+	/**
+	 * row button set up code
+	 * @return	string
+	 */
 	function button()
 	{
 		return "run webservice";
 	}
 	
+	/**
+	 * @see plgFabrik_List::button_result()
+	 */
+
 	public function button_result()
 	{
 		return '';
@@ -52,7 +67,6 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	{
 		return $this->getParams()->get('webservice_button_label', parent::buttonLabel());
 	}
-
 
 	/**
 	 * (non-PHPdoc)
@@ -66,7 +80,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 
 	/**
 	 * determine if the list plugin is a button and can be activated only when rows are selected
-	 * @return	bOol
+	 * @return	bool
 	 */
 
 	function canSelectRows()
@@ -109,10 +123,15 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		
 		$update = (bool)$params->get('webservice_update_existing', false);
 		$service->storeLocally($model, $serviceData, $fk, $update);
-		$this->msg = JText::sprintf($params->get('webservice_msg'), $service->updateCount, $service->addedCount);
+		$this->msg = JText::sprintf($params->get('webservice_msg'), $service->addedCount, $service->updateCount);
 		return true;
 	}
 	
+	/**
+	 * get the data map to transform web service data into list data
+	 * @param	object	$formModel
+	 * @return	array	data map
+	 */
 	protected function getMap($formModel)
 	{
 		$params = $this->getParams();
@@ -156,6 +175,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	
 	/**
 	 * get sign in credentials to the service
+	 * @return	array	login credentials
 	 */
 	
 	protected function getCredentials()
@@ -180,10 +200,10 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param object table model
-	 * @param array [0] => string table's form id to contain plugin
-	 * @return bool
+	 * @param	object	parameters
+	 * @param	object	table model
+	 * @param	array	[0] => string table's form id to contain plugin
+	 * @return	bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)

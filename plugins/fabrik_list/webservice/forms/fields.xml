@@ -13,17 +13,12 @@
 				repeat="true" size="30"
 				label="PLG_FABRIK_LIST_WEBSERVICE_BUTTON_LABEL_LABEL" />
 				
-			<field name="list_webservice_image_name" 
-				type="text"
-				default="php.png"
-				repeat="true" size="20"
-				description="PLG_FABRIK_LIST_WEBSERVICE_IMAGE_DESC"
-				label="PLG_FABRIK_LIST_WEBSERVICE_IMAGE_LABEL"  />
-				
 			<field name="webservice_msg"
 				repeat="true"
 				size="30"
+				default="%s records added, %s records updated"
 				type="text"
+				description="PLG_FABRIK_LIST_WEBSERVICE_SUCCESS_MSG_DESC"
 				label="PLG_FABRIK_LIST_WEBSERVICE_SUCCESS_MSG_LABEL"/>
 			
 			<field name="webservice_driver"
@@ -34,6 +29,7 @@
 				label="PLG_FABRIK_LIST_WEBSERVICE_DRIVER_LABEL">
 					<option value="soap">soap</option>
 					<option value="yql">yql</option>
+					<option value="rest">rest (json)</option>
 			</field>
 			
 			<field name="webservice_url"
@@ -140,7 +136,8 @@
 							repeat="true"
 							label="PLG_FABRIK_LIST_WEBSERVICE_MAP_TO_LABEL"/>
 						<field name="map_match"
-							type="text"
+							type="textarea"
+							rows="3" cols="30"
 							repeat="true"
 							label="PLG_FABRIK_LIST_WEBSERVICE_MAP_MATCH_LABEL" />
 						<field name="map_value"

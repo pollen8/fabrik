@@ -141,17 +141,17 @@ abstract class FabrikWebService
 		$this->map = $map;
 	}
 	
-	public function map($data, $fk)
+	public function map($datas, $fk)
 	{
 		$return = array();
 		$w = new FabrikWorker();
-		foreach ($data as $d)
+		foreach ($datas as $data)
 		{
 			$row = array();
 			foreach ($this->map as $map)
 			{
 				$to = $map['to'];
-				$map['from'] = $w->parseMessageForPlaceHolder($map['from'], $d);
+				$map['from'] = $w->parseMessageForPlaceHolder($map['from'], $data, false);
 				
 				if (JArrayHelper::getValue($map, 'match', '') !== '')
 				{
