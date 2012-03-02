@@ -1055,8 +1055,8 @@ class FabrikFEModelListfilter extends FabModel {
 		//end ignore
 		$request = $this->getPostFilterArray();
 
-		$key = 'com_fabrik.list'.$identifier.'.filter.searchall';
-		$requestKey = 'fabrik_list_filter_all.'.$this->listModel->getRenderContext();
+		$key = 'com_fabrik.list' . $identifier . '.filter.searchall';
+		$requestKey = $this->getSearchAllRequestKey();
 		$pluginKeys = $this->getPluginFilterKeys();
 		$search = $app->getUserStateFromRequest($key, $requestKey);
 

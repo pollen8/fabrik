@@ -78,7 +78,7 @@
 						<include name="**/*.xml" />
 					</fileset>
 				</ftp> 
-
+				<echo>uploaded update server xml files to ${ftp.updatedir}</echo>
 				<!--  upload the plugin zips -->
 				<ftp server="fabrikar.com" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}">
 					<fileset dir="${cfg.destdir}/pkg_fabrik_sink/packages/">

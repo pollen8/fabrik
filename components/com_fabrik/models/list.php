@@ -1268,7 +1268,7 @@ class FabrikFEModelList extends JModelForm {
 			$query['select'] = "SELECT  ". implode(', ', $this->selectedOrderFields) . " FROM ".$db->nameQuote($table->db_table_name);
 			$query['join'] = $this->_buildQueryJoin();
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
-			$query['grouby'] = $this->_buildQueryGroupBy();
+			$query['groupby'] = $this->_buildQueryGroupBy();
 			$query['order'] = $order;
 
 			//check that the order by fields are in the select statement
@@ -4740,6 +4740,7 @@ class FabrikFEModelList extends JModelForm {
 		$secret = JFactory::getConfig()->getValue('secret');
 		$fmtsql = 'INSERT INTO '.$db->nameQuote($table).' ( %s ) VALUES ( %s ) ';
 		$fields = array();
+		$values = array();
 		foreach (get_object_vars($object) as $k => $v) {
 			if (is_array($v) or is_object($v) or $v === NULL) {
 				continue;
@@ -6731,7 +6732,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		return $this->_outPutFormat;
 	}
-	
+
 	/**
 	 * set the list output format
 	 * @param string

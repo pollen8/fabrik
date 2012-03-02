@@ -88,7 +88,7 @@ class FabrikControllerForm extends JControllerForm
 			if ($this->isMambot) {
 				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
 			} else {
-				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=1&rowid='.$model->_rowId, '');
+				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=' . $model->getId() . '&rowid='.$model->_rowId, '');
 			}
 			return;
 		}

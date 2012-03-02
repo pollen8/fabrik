@@ -590,13 +590,16 @@ EOD;
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
 				FabrikHelperHTML::styleSheet(COM_FABRIK_LIVESITE.'media/com_fabrik/css/fabrik.css');
-				//FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
-				//FabrikHelperHTML::script($src, "Fabrik.fireEvent('fabrik.framework.loaded');");
-				
+				// $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
+				// in some browsers it's not available when other things (like map biz) are loading
+				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
+				FabrikHelperHTML::script($src, "Fabrik.fireEvent('fabrik.framework.loaded');");
+				/*
 				$script = array();
 				$script[] = "Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "'";
 				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
 				FabrikHelperHTML::script($src, implode("\n", $script));
+				*/
 			}
 			self::$framework = true;
 		}

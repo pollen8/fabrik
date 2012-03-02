@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<extension version="1.7" group="content" method="upgrade" type="plugin">
+<extension group="content" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik</name>
 	<author>Pollen 8 Design Ltd</author>
-	<creationDate>January 2012</creationDate>
+	<creationDate>February 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0.3</version>
+	<version>3.0.4</version>
 	<description>PLG_FABRIK_DESCRIPTION</description>
 	<files>
 		<filename plugin="fabrik">fabrik.php</filename>

@@ -115,7 +115,7 @@ class FabrikControllerForm extends JController
 			error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
 		}
 		$model = $this->getModel('form', 'FabrikFEModel');
-		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 
 		if (!JError::isError($model)) {

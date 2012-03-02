@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+
+	<fields name="params">
+
+		<fieldset name="plg-form-subscriptions">
+
+			<field name="subscriptions_accountemail"
+				type="text"
+				repeat="true"
+				description="PLG_FORM_SUBSCRIPTIONS_EMAILACCOUNT_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_EMAILACCOUNT_LABEL"/>
+
+			<field name="subscriptions_return_msg"
+				type="textarea"
+				cols="30" rows="5"
+				repeat="true" 
+				description="PLG_FORM_SUBSCRIPTIONS_RETURN_MSG_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_RETURN_MSG_LABEL" />
+
+			<field name="subscriptions_conditon"
+				type="textarea"
+				cols="30" rows="5"
+				repeat="true"
+				description="PLG_FORM_SUBSCRIPTIONS_CONDITION_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_CONDITION_LABEL" />
+				
+			<field name="subscriptions_testmode"
+				type="radio"
+				default="0" 
+				repeat="true"
+				description="PLG_FORM_SUBSCRIPTIONS_TEST_MODE_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_TEST_MODE_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
+			<field name="subscriptions_receive_debug_emails"
+				default="1"
+				repeat="true"
+				type="radio"
+				description="PLG_FORM_SUBSCRIPTIONS_DEBUG_EMAIL_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_DEBUG_EMAIL_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
+			<field name="subscriptions_send_default_email"
+				type="radio"
+				default="1"
+				repeat="true"
+				description="PLG_FORM_SUBSCRIPTIONS_DEFAULT_EMAIL_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_DEFAULT_EMAIL_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="subscriptions_test_site"
+				type="text"
+				repeat="true"
+				description="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_LABEL" />
+				
+			<field name="subscriptions_test_site_qs"
+				type="text"
+				repeat="true"
+				description="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_QS_DESC"
+				label="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_QS_LABEL" />
+			
+			<field name="subscriptions_sandbox_email"
+				type="text"
+				repeat="true"
+				description=""
+				label="sandbox seller email" />
+		</fieldset>
+	</fields>
+</form>

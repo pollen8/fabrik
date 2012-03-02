@@ -312,7 +312,7 @@
 			
 		<xmltask source="${package_list}" dest="${package_list}"> 
 			<insert path="/extensionset"> 
-     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" client_id="administrator" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml" />]]>
+     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" client="administrator" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml" />]]>
    		</insert> 
 		</xmltask>
 	</target>
@@ -590,27 +590,40 @@
 						<fileset dir="${basedir}">
 							<include name="**/administrator/components/com_fabrik/fabrik.xml"/>
 						</fileset>
-							<replace path="/:extension/:version/text()" withText="${version}"/> 
-							<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
-							<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<replace path="/:extension/:version/text()" withText="${version}"/> 
+						<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
+						<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<attr path="/:extension" attr="version" value="${update.target_platform_version}" />
+					</xmltask>
+					
+					<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
+							<include name="**/administrator/components/com_fabrik/pkg_fabrik.xml"/>
+						</fileset>
+						<replace path="/install/version/text()" withText="${version}"/> 
+						<replace path="/install/creationDate/text()" withText="${createdate}" />
+						<replace path="/install/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<attr path="/install" attr="version" value="${update.target_platform_version}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
 						<fileset dir="${basedir}">
 							<include name="**/plugins/fabrik**/**/*.xml"/>
 						</fileset>
-							<replace path="/extension/version/text()" withText="${version}"/> 
-							<replace path="/extension/creationDate/text()" withText="${createdate}" />
-							<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<replace path="/extension/version/text()" withText="${version}"/> 
+						<replace path="/extension/creationDate/text()" withText="${createdate}" />
+						<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<attr path="/extension" attr="version" value="${update.target_platform_version}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
 						<fileset dir="${basedir}">
 							<include name="**/plugins/**/fabrik/*.xml"/>
 						</fileset>
-							<replace path="/extension/version/text()" withText="${version}"/> 
-							<replace path="/extension/creationDate/text()" withText="${createdate}" />
-							<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<replace path="/extension/version/text()" withText="${version}"/> 
+						<replace path="/extension/creationDate/text()" withText="${createdate}" />
+						<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<attr path="/extension" attr="version" value="${update.target_platform_version}" />
 					</xmltask>
 				</then>
 			</if>
