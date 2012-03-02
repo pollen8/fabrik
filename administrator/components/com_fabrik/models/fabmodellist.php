@@ -40,7 +40,7 @@ class FabModelList extends JModelList
 		// Select the required fields from the table.
 		$query->select('id AS value, label AS text');
 		$query->from('#__{package}_forms')->where('published <> -2');
-		$query->order('label DESC');
+		$query->order('label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		return $rows;
