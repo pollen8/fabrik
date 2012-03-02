@@ -36,7 +36,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 		if ($params->get('limit_allow_anonymous')) {
 			return true;
 		}
-		if (JRequest::getCmd('view') === 'details') {
+		if (JRequest::getCmd('view') === 'details' || JRequest::getInt('rowid', 0) > 0) {
 			return true;
 		}
 
