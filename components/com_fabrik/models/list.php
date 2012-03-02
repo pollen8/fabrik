@@ -3944,6 +3944,7 @@ class FabrikFEModelList extends JModelForm {
 				$condition = $filters['condition'][$counter];
 				$value = $filters['origvalue'][$counter];
 				$v2 = $filters['value'][$counter];
+				$jsSel = '=';
 				switch( $condition )
 				{
 					case "<>":

@@ -80,7 +80,8 @@ class FabrikFEModelListfilter extends FabModel {
 		//$$$ fehers The filter is cleared and applied at once without having to clear it first and then apply it (would have to be two clicks).
 		//useful in querystring filters if you want to clear old filters and apply new filters
 
-		if ((JRequest::getVar('filterclear') == 1 || FabrikWorker::getMenuOrRequestVar('resetfilters', 0) == 1) && $this->activeTable())
+		// $$$ rob 20/03/2011 - request resetfilters should overwrite menu option - otherwise filter then nav will remove filter.
+		if ((JRequest::getVar('filterclear') == 1 || FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request') == 1) && $this->activeTable())
 		{
 			$this->clearFilters();
 		}
