@@ -25,12 +25,21 @@ class plgFabrik_ListCaneditrow extends plgFabrik_List {
 		return false;
 	}
 
-	function onCanEdit($params, $tableModel, $row)
+	function onCanEdit($params, $listModel, $row)
 	{
 		// If $row is null, we were called from the table's canEdit() in a per-table rather than per-row context,
 		// and we don't have an opinion on per-table edit permissions, so just return true.
-		if (!is_object($row[0])) {
+		if (is_null($row) || is_null($row[0])) 
+		{
 			return true;
+		}
+		if (is_array($row[0]))
+		{
+			$data = JArrayHelper::toObject($row[0]);
+		}
+		else
+		{
+			$data = $row[0];
 		}
 		$field = str_replace('.', '___', $params->get('caneditrow_field'));
 		// $$$ rob if no can edit field selected in admin return true
@@ -41,18 +50,18 @@ class plgFabrik_ListCaneditrow extends plgFabrik_List {
 		$caneditrow_eval = $params->get('caneditrow_eval', '');
 		if (!empty($caneditrow_eval)) {
 			$w = new FabrikWorker();
-			$data = JArrayHelper::fromObject($row[0]);
+			$data = JArrayHelper::fromObject($data);
 			$caneditrow_eval = $w->parseMessageForPlaceHolder($caneditrow_eval, $data);
 			$caneditrow_eval = @eval($caneditrow_eval);
 			FabrikWorker::logEval($caneditrow_eval, 'Caught exception on eval in can edit row : %s');
 			return $caneditrow_eval;
 		} else {
-			// No PHP given, so just do a simple match on the specified element and value settigns.
+			// No PHP given, so just do a simple match on the specified element and value settings.
 			if ($params->get('caneditrow_useraw', '0') == '1') {
 				$field .= '_raw';
 			}
 			$value = $params->get('caneditrow_value');
-			return $row[0]->$field == $value;
+			return $data->$field == $value;
 		}
 	}
 }
