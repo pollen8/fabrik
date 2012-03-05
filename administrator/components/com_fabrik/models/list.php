@@ -430,16 +430,17 @@ class FabrikModelList extends FabModelAdmin
 		foreach ($plugins as $x => $plugin) {
 
 			$data = array();
-
 			$o = $pluginManager->getPlugIn($plugin->name, 'List');
-			$o->getJForm()->model = $feListModel;
-
-			// $$$ rob 0 was $x below but that rendered first set of plugins with indexes 1,2,3
-			// think they should all be indexed 0
-			$str = $o->onRenderAdminSettings($data, 0);
-			$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
-			$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-			$rules[] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
+			if (is_object($o))
+			{
+				$o->getJForm()->model = $feListModel;
+				// $$$ rob 0 was $x below but that rendered first set of plugins with indexes 1,2,3
+				// think they should all be indexed 0
+				$str = $o->onRenderAdminSettings($data, 0);
+				$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
+				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
+				$rules[] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
+			}
 		}
 
 		return $rules;

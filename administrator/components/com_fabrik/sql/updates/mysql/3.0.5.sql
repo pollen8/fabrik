@@ -1,0 +1,1 @@
+UPDATE `#__extensions` SET `name` = 'mod_fabrik_list' WHERE element = 'mod_fabrik_list'

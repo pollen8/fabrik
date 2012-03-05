@@ -70,6 +70,10 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 		if (JFile::exists($emailTemplate)) {
 			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate) : $this->_getTemplateEmail($emailTemplate);
+			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
+			if ($message === false) {
+				return;
+			}
 			$message = str_replace('{content}', $content, $message);
 		} else {
 			$message = $contentTemplate != '' ? $content : $this->_getTextEmail();
@@ -194,11 +198,15 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 	protected function _getPHPTemplateEmail($tmpl)
 	{
+		$emailData = $this->data;
 		// start capturing output into a buffer
 		ob_start();
-		require($tmpl);
+		$result = require($tmpl);
 		$message = ob_get_contents();
 		ob_end_clean();
+		if ($result === false) {
+			return false;
+		}
 		return $message;
 	}
 

@@ -2234,8 +2234,13 @@ class plgFabrik_Element extends FabrikPlugin
 		$eval = JArrayHelper::getValue($filters, 'eval', array());
 		$eval = JArrayHelper::getValue($eval, $counter, FABRIKFILTER_TEXT);
 
-		$condition = JArrayHelper::getValue($filters, 'condition', array());
-		$condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
+		// $$$ hugh - these two lines are preventing the "exact match" setting on an element filter working,
+		// as we always end up with an = condition, so exact match No nev er works.  I've "fixed" it by just using
+		// the element's getFilterCondition(), but I don't know what side effects this might have.
+		// So BOLO for filtering oddities!
+		//$condition = JArrayHelper::getValue($filters, 'condition', array());
+		//$condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
+		$condition = $this->getFilterCondition();
 		$prefix = '<input type="hidden" name="fabrik___filter[list_'.$this->getListModel()->getRenderContext().']';
 		$return[] = $prefix.'[condition]['.$counter.']" value="' . $condition . '" />';
 		$return[] = $prefix.'[join]['.$counter.']" value="AND" />';
@@ -2809,7 +2814,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
-			
+
 			$uberTotal = 0;
 			foreach ($results2 as $pair) {
 				$uberTotal += $pair->value;
@@ -2819,7 +2824,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$uberObject->label = JText::_('COM_FABRIK_AVERAGE');
 			$uberObject->class = 'splittotal';
 			$results2[] = $uberObject;
-			
+
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'avg');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -2832,13 +2837,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$res = $this->formatCalcs($results, $calcLabel, $split);
 		return array($res, $results);
 	}
-	
+
 	/**
 	* @since 3.0.4
 	* get the sprintf format string
 	* @return string
 	*/
-	
+
 	public function getFormatString()
 	{
 		$params = $this->getParams();
@@ -2923,7 +2928,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
-			
+
 			$uberTotal = 0;
 			foreach ($results2 as $pair) {
 				$uberTotal += $pair->value;
@@ -2933,7 +2938,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
 			$results2[] = $uberObject;
-			
+
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
@@ -3444,7 +3449,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$listModel = $this->getListModel();
 		$data = FabrikWorker::JSONtoData($data, true);
 		foreach ($data as $i => &$d) {
-			if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
+			// $$$ hugh - in f3 icon_folder is a radio choice, 0 or 1, not a folder path
+			//if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
+			if ($params->get('icon_folder') == '1') {
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
 				$d = $this->_replaceWithIcons($d);
 			}
@@ -4368,14 +4375,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();
 	}
-	
+
 	/**
 	 * @since 3.0.4
 	 * get the element's cell class
 	 * @return	string	css classes
 	 */
-	
-	public function getCellClass() 
+
+	public function getCellClass()
 	{
 		$params = $this->getParams();
 		$classes = array();
@@ -4388,13 +4395,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		return implode(' ', $classes);
 	}
-	
+
 	/**
 	 * @since 3.0.4
 	 * get the elements list heading class
 	 * @return	string	css classes
 	 */
-	
+
 	public function getHeadingClass()
 	{
 		$params = $this->getParams();
