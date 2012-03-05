@@ -183,7 +183,7 @@ class FabrikControllerList extends JController
 	}
 
 	/**
-	 * run a table plugin
+	 * run a list plugin
 	 */
 
 	function doPlugin()

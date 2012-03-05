@@ -97,7 +97,7 @@ var FbListPlugin = new Class({
 	},
 
 	buttonAction: function () {
-		this.list.submit('doPlugin');
+		this.list.submit('list.doPlugin');
 	}
 });
 
@@ -1279,7 +1279,7 @@ var FbListKeys = new Class({
 
 var FbGroupedToggler = new Class({
 	initialize: function (container) {
-		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
+		container.addEvent('mouseup:relay(.fabrik_groupheading a.toggle)', function (e) {
 			e.stop();
 			var h = e.target.getParent('.fabrik_groupheading');
 			var img = h.getElement('img');

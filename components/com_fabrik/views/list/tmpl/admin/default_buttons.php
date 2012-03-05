@@ -58,4 +58,10 @@ echo '<li>'.$this->pdfLink.'<li>';
 	</a>
 	</li>
 <?php }?>
+<?php 
+	foreach ($this->pluginTopButtons as $b) {?>
+	<li>
+		<?php echo $b;?>
+	</li>
+	<?php }?>
 </ul>

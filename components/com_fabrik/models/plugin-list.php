@@ -137,7 +137,7 @@ class plgFabrik_List extends FabrikPlugin
 	}
 
 	/**
-	 * prefilght check to ensure that the tabel plugin should process
+	 * prefilght check to ensure that the list plugin should process
 	 * @param object $params
 	 * @param object $model
 	 * @return string|boolean

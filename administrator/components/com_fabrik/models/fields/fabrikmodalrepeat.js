@@ -92,12 +92,14 @@ var FabrikModalRepeat = new Class({
 				this._setRadioValues(radiovals);
 				this.resizeModal();
 			}
+			e.stop();
 		}.bind(this));
 		this.content.addEvent('click:relay(a.remove)', function (e) {
 			if (tr = this.findTr(e)) {
 				tr.dispose();
 				this.resizeModal();
 			}
+			e.stop();
 		}.bind(this));
 	},
 	
@@ -111,7 +113,7 @@ var FabrikModalRepeat = new Class({
 		if (s.y + 50 > document.window.getSize().y) {
 			s.y = document.window.getSize().y - 50;
 		}
-		SqueezeBox.resize(s, true, false);
+		SqueezeBox.resize(s, false);
 	},
 	
 	stripe: function () {

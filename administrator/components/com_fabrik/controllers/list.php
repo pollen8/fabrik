@@ -232,5 +232,45 @@ class FabrikControllerList extends FabControllerForm
 		$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=list&cid=$listid", 'post');
 		$this->setRedirect($ref);
 	}
+	
+	/**
+	* run a list plugin
+	*/
+	
+	function doPlugin()
+	{
+		$app = JFactory::getApplication();
+		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		if (is_array($cid))
+		{
+			$cid = $cid[0];
+		}
+		$model = $this->getModel('list', 'FabrikFEModel');
+		$model->setId(JRequest::getInt('listid', $cid));
+		// $$$ rob need to ask the model to get its data here as if the plugin calls $model->getData
+		// then the other plugins are recalled which makes the current plugins params incorrect.
+		$model->setLimits();
+		$model->getData();
+		//if showing n tables in article page then ensure that only activated table runs its plugin
+		if (JRequest::getInt('id') == $model->get('id') || JRequest::getVar('origid', '') == '')
+		{
+			$msgs = $model->processPlugin();
+			if (JRequest::getVar('format') == 'raw')
+			{
+				JRequest::setVar('view', 'list');
+			}
+			else
+			{
+				foreach ($msgs as $msg)
+				{
+					$app->enqueueMessage($msg);
+				}
+			}
+		}
+		$format = JRequest::getCmd('fromat', 'html');
+		$ref = "index.php?option=com_fabrik&task=list.view&cid[]=". $model->getId() . '&format=' . $format;
+		//ECHO $ref;EXIT;
+		$app->redirect($ref);
+	}
 
 }
