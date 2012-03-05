@@ -815,6 +815,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 		$filterType = $this->getElement()->filter_type;
 		switch ($filterType) {
+			case 'range':
+				$value = (array)$value;
+				foreach ($value as &$v) {
+					$mysql = $this->tableDateToMySQL($v);
+					if ($mysql !== false) {
+						$v = $mysql;
+					}
+				}
+				break;
 			case 'field':
 			case 'dropdown':
 			default:
@@ -832,16 +841,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					/* if ($mysql !== false) {
 					$value = $mysql;
 					} */
-				}
-				break;
-
-			case 'ranged':
-				$value = (array)$value;
-				foreach ($value as &$v) {
-					$mysql = $this->tableDateToMySQL($v);
-					if ($mysql !== false) {
-						$v = $mysql;
-					}
 				}
 				break;
 		}
