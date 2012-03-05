@@ -9,11 +9,15 @@ var FbGoogleMapViz = new Class({
 		'scalecontrol': false,
 		'center': 'middle',
 		'ajax_refresh': false,
+		'use_polygon': false,
 		'polyline': [],
 		'polylinewidth': [],
 		'polylinecolour': [],
+		'polygonopacity': [],
+		'polygonfillcolour': [],
 		'refresh_rate': 10000,
 		'use_cookies': true,
+		'use_groups': false,
 		'overlays': [],
 		'overlay_urls': [],
 		'overlay_labels': [],
@@ -143,7 +147,7 @@ var FbGoogleMapViz = new Class({
 					}.bind(this));
 				}
 			}
-	
+
 			this.options.polyline.each(function (points, c) {
 				var glatlng = [];
 				points.each(function (p) {
@@ -151,8 +155,17 @@ var FbGoogleMapViz = new Class({
 				});
 				var width = this.options.polylinewidth[c];
 				var colour = this.options.polylinecolour[c];
-				var polyline = new google.maps.Polyline({path: glatlng, 'strokeColor': colour, 'strokeWeight': width});
-				polyline.setMap(this.map);
+				var opacity = this.options.polygonopacity[c];
+				var fillColor = this.options.polygonfillcolour[c];
+				
+				if (!this.options.use_polygon) {
+					var polyline = new google.maps.Polyline({path: glatlng, 'strokeColor': colour, 'strokeWeight': width});
+					polyline.setMap(this.map);
+				}
+				else {
+					var polygon = new google.maps.Polygon({paths: glatlng, 'strokeColor': colour, 'strokeWeight': width, strokeOpacity: opacity, fillColor: fillColor});
+					polygon.setMap(this.map);
+				}
 			}.bind(this));
 		}.bind(this));
 	},
@@ -175,7 +188,6 @@ var FbGoogleMapViz = new Class({
 			this.bounds.extend(new google.maps.LatLng(i[0], i[1]));
 			this.markers.push(this.addIcon(i[0], i[1], i[2], i[3], i[4], i[5], i.groupkey, i.title));
 		}.bind(this));
-	  
 		this.renderGroupedSideBar();
 		if (this.options.clustering) {
 			// Using MarkerClusterer, http://gmaps-utility-library.googlecode.com/svn/trunk/markerclusterer/1.0/docs/reference.html
@@ -241,6 +253,9 @@ var FbGoogleMapViz = new Class({
 				c = this.bounds.getCenter();
 			}
 			break;
+		case 'querystring':
+			c = new google.maps.LatLng(this.options.lat, this.options.lon);
+			break;
 		default:
 			var lasticon = this.options.icons.getLast();
 			if (lasticon) {
@@ -267,7 +282,8 @@ var FbGoogleMapViz = new Class({
 		if (img !== '') {
 			markerOptions.flat = true;
 			if (img.substr(0, 7) !== 'http://' && img.substr(0, 8) !== 'https://') {
-				markerOptions.icon = Fabrik.liveSite + '/images/stories/' + img;
+				//markerOptions.icon = Fabrik.liveSite + '/images/stories/' + img;
+				markerOptions.icon = Fabrik.liveSite + 'media/com_fabrik/images/' + img;
 			} else {
 				markerOptions.icon = img;
 			}
@@ -312,15 +328,14 @@ var FbGoogleMapViz = new Class({
 		}
 		this.periodCounter ++;
 	},
-	
+
 	toggleOverlay: function (e) {
-		if (event.target.id.test(/overlay_chbox_(\d+)/)) {
-			var olk = event.target.id.match(/overlay_chbox_(\d+)/)[1].toInt();
-			if (this.options.overlays[olk].isHidden()) {
-				this.options.overlays[olk].show();
-			}
-			else {
-				this.options.overlays[olk].hide();
+		if (e.target.id.test(/overlay_chbox_(\d+)/)) {
+			var olk = e.target.id.match(/overlay_chbox_(\d+)/)[1].toInt();
+			if (e.target.checked) {
+				this.options.overlays[olk].setMap(this.map);
+			} else {
+				this.options.overlays[olk].setMap(null);
 			}
 		}
 	},
@@ -328,10 +343,12 @@ var FbGoogleMapViz = new Class({
 	addOverlays: function () {
 		if (this.options.use_overlays) {
 			this.options.overlay_urls.each(function (overlay_url, k) {
-				this.options.overlays[k] = new GGeoXml(overlay_url);
-				this.map.addOverlay(this.options.overlays[k]);
+				this.options.overlays[k] = new google.maps.KmlLayer(overlay_url);
+				this.options.overlays[k].setMap(this.map);
 				this.options.overlay_events[k] = this.toggleOverlay.bindWithEvent(this);
-				$('overlay_chbox_' + k).addEvent('click', this.options.overlay_events[k]);
+				if(typeOf(document.id('overlay_chbox_' + k)) !== 'null') {
+					document.id('overlay_chbox_' + k).addEvent('click', this.options.overlay_events[k]);
+				}
 			}.bind(this));
 		}
 	},
@@ -344,19 +361,24 @@ var FbGoogleMapViz = new Class({
 	},
 	
 	renderGroupedSideBar: function () {
+		if (!this.options.use_groups) {
+			return;
+		}
 		this.grouped = {};
-		var c = $(this.options.container).getElement('.grouped_sidebar');
+		var c = document.id(this.options.container).getElement('.grouped_sidebar');
 		if (typeOf(c) === 'null') {
 			return;
 		}
 		this.options.icons.each(function (i) {
-			if ($type(this.grouped[i.groupkey]) === false) {
+			if (typeOf(this.grouped[i.groupkey]) == 'null') {
 				this.grouped[i.groupkey] = [];
 				var k = i.listid + i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
+				k += ' ' + i.groupClass;
 				var h = new Element('div', {'class': 'groupedContainer' + k}).adopt(new Element('a', {
 					'events': {
 						'click': function (e) {
 							var cname = e.target.className.replace('groupedLink', 'groupedContent');
+							cname = cname.split(' ')[0];
 							document.getElements('.groupedContent').hide();
 							document.getElements('.' + cname).show();
 						}
@@ -372,6 +394,8 @@ var FbGoogleMapViz = new Class({
 		c.addEvent('click:relay(a)', function (event, clicked) {
 			event.preventDefault(); //don't follow the link
 			this.infoWindow.close();
+			document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
+			clicked.addClass('active');
 			var l = clicked.get('text');
 			this.toggledGroup = l;
 			this.toggleGrouped();
