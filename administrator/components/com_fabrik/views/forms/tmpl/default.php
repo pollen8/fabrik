@@ -74,7 +74,6 @@ $listDirn	= $this->state->get('list.direction');
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
 			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.form.1') && $canCheckin;
 			?>
-
 			<tr class="row<?php echo $i % 2; ?>">
 					<td><?php echo $item->id; ?></td>
 					<td><?php echo JHtml::_('grid.id', $i, $item->id); ?></td>
@@ -98,7 +97,7 @@ $listDirn	= $this->state->get('list.direction');
 						</a>
 					</td>
 					<td>
-						<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','forms.listview')">
+						<a href="index.php?option=com_fabrik&task=list.view&listid=<?php echo $item->list_id?>">
 						<?php echo JText::_('COM_FABRIK_VIEW_DATA')?>
 						</a>
 					</td>
