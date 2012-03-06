@@ -111,7 +111,11 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 			'credentials' => $credentials
 		);
 		$service = FabrikWebService::getInstance($opts);
-		
+		if (JError::isError($service)) {
+			echo $service->getMessage();
+			JError::raiseError(500, $service->getMessage());
+			jexit();
+		}
 		$filters = $this->getServiceFilters($service);
 		$service->setMap($this->getMap($formModel));
 		$filters = array_merge($opts['credentials'], $filters);
@@ -183,8 +187,8 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$params = $this->getParams();
 		$credentials = json_decode($params->get('webservice_credentials'));
 		$return = array();
-		$keys = $credentials->webservice_credentials_key;
-		$vals = $credentials->webservice_credentials_value; 
+		$keys = isset($credentials->webservice_credentials_key) ? $credentials->webservice_credentials_key : array();
+		$vals = isset($credentials->webservice_credentials_value) ? $credentials->webservice_credentials_value : array(); 
 		$n = count($keys);
 		for ($i = 0; $i < $n; $i ++)
 		{

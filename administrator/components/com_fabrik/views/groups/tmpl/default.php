@@ -26,7 +26,14 @@ $listDirn	= $this->state->get('list.direction');
 			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 		</div>
 		<div class="filter-select fltrt">
-
+			
+			<?php if (!empty($this->packageOptions)) {?>
+			<select name="package" class="inputbox" onchange="this.form.submit()">
+				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
+				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
+			</select>
+			<?php }?>
+			
 			<select name="filter_form" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('COM_FABRIK_SELECT_FORM');?></option>
 				<?php echo JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true);?>

@@ -14,20 +14,17 @@ class fabrikViewPackage extends JView
 		$state = $this->get('State');
 		$item = $this->get('Item');
 		$document = JFactory::getDocument();
-		FabrikHelperHTML::script('media/com_fabrik/js/icons.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/canvas.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/history.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/keynav.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/tabs.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/pages.js');
-		FabrikHelperHTML::script('media/com_fabrik/js/frontpackage.js');
+		$srcs = array('media/com_fabrik/js/icons.js', 'media/com_fabrik/js/icongen.js', 'media/com_fabrik/js/canvas.js',
+		'media/com_fabrik/js/history.js', 'media/com_fabrik/js/keynav.js', 'media/com_fabrik/js/tabs.js',
+		'media/com_fabrik/js/pages.js', 'media/com_fabrik/js/frontpackage.js');
+		
+		FabrikHelperHTML::script($srcs);
 
 		FabrikHelperHTML::stylesheet('media/com_fabrik/css/package.css');
 		$canvas = $item->params->get('canvas');
 		
-		// $$$ rob 08/11/2011test if component name set but still rendering 
-		// in option=com_fabrik then we should use fabrik ass the package
+		// $$$ rob 08/11/2011 test if component name set but still rendering 
+		// in option=com_fabrik then we should use fabrik as the package
 		if (JRequest::getCmd('option') === 'com_fabrik') {
 			$item->component_name = 'fabrik';
 		}

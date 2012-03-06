@@ -43,10 +43,11 @@ abstract class FabrikWebService
 		
 				// Derive the file path for the driver class.
 				$path = dirname(__FILE__) . '/webservice/' . $options['driver'] . '.php';
-		
+		echo "path = $path <br>";
 				// If the file exists register the class with our class loader.
 				if (file_exists($path))
 				{
+					echo "$class, $path <br>";
 					JLoader::register($class, $path);
 				}
 				// If it doesn't exist we are at an impasse so throw an exception.

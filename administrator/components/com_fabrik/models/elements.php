@@ -205,7 +205,7 @@ class FabrikModelElements extends FabModelList
 		$this->setState('filter.plugin', $plugin);
 
 		// List state information.
-		parent::populateState('ordering', 'asc');
+		parent::populateState($ordering, $direction);
 	}
 
 

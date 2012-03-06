@@ -12,9 +12,14 @@ $db = JFactory::getDbo();
 //get the package id from #__fabrik_packages for this opton
 $query = $db->getQuery(true);
 $option = JRequest::getCmd('option');
-$query->select('id')->from('#__fabrik_packages')->where('component_name = '.$db->Quote($option).' AND external_ref <> ""')->order('version DESC');
+$shortName = substr($option, 4);
+$query->select('id')->from('#__fabrik_packages')->where('(component_name = ' . $db->Quote($option) . ' OR component_name = ' . $db->quote($shortName) . ') AND external_ref <> ""')->order('version DESC');
 $db->setQuery($query, 0, 1);
 $id = $db->loadResult();
+if ($id == '')
+{
+	JError::raiseError(500, 'Could not load package');
+}
 JRequest::setVar('id', $id);
 
 // Include dependancies
@@ -22,19 +27,16 @@ jimport('joomla.application.component.controller');
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
-$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? 'user_defines.php' : 'defines.php';
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.$defines);
-
 //set the user state to load the package db tables
 $app = JFactory::getApplication();
 $app->setUserState('com_fabrik.package', $option);
 
 //echo $app->getUserState('com_fabrik.package');exit;
-JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models');
+JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
+JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 JRequest::setVar('task', 'package.view');
 $config = array();
-$config['base_path'] = JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS;
+$config['base_path'] = JPATH_SITE . '/components/com_fabrik/';
 
 $controller = JController::getInstance('Fabrik', $config);
 $controller->execute(JRequest::getCmd('task'));

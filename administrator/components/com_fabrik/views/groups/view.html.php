@@ -34,6 +34,7 @@ class FabrikViewGroups extends JView
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
 		$this->formOptions = $this->get('FormOptions');
+		$this->packageOptions = $this->get('PackageOptions');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

@@ -33,7 +33,7 @@ class FabrikViewForms extends JView
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
-
+		$this->packageOptions = $this->get('PackageOptions');
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
@@ -41,7 +41,6 @@ class FabrikViewForms extends JView
 		}
 
 		$this->addToolbar();
-		//require_once JPATH_COMPONENT .'/models/fields/bannerclient.php';
 		parent::display($tpl);
 	}
 

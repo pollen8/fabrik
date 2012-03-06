@@ -34,12 +34,31 @@ class FabModelList extends JModelList
 	function getFormOptions()
 	{
 		// Initialise variables.
-		$db		= $this->getDbo();
-		$query	= $db->getQuery(true);
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
 		$query->select('id AS value, label AS text');
 		$query->from('#__{package}_forms')->where('published <> -2');
+		$query->order('label ASC');
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+		return $rows;
+	}
+	
+	/**
+	 * get an array of objects to populate the package/apps dropdown list
+	 * @since 3.0.5
+	 * @return	array	value/text objects
+	 */
+	public function getPackageOptions()
+	{
+		// Initialise variables. Always use J db here no matter what package we are using
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		// Select the required fields from the table.
+		$query->select('DISTINCT component_name AS value, label AS text');
+		$query->from('#__fabrik_packages')->where('external_ref = 1');
 		$query->order('label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
@@ -79,5 +98,24 @@ class FabModelList extends JModelList
 		if (!empty($form)) {
 			$query->where($table.'.form_id = '. (int)$form);
 		}
+	}
+	
+	/**
+	* Method to auto-populate the model state.
+	*
+	* Note. Calling getState in this method will result in recursion.
+	* @param   string  $ordering   An optional ordering field.
+	* @param   string  $direction  An optional direction (asc|desc).
+	* @since	1.6
+	*/
+	
+	protected function populateState($ordering = null, $direction = null)
+	{
+		$app = JFactory::getApplication('administrator');
+		//Load the package state
+		$package = $app->getUserStateFromRequest('com_fabrik.package', 'package', '');
+		$this->setState('com_fabrik.package', $package);
+		// List state information.
+		parent::populateState($ordering, $direction);
 	}
 }
