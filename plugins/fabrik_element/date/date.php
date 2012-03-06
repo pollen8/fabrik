@@ -1088,8 +1088,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
 		// $$$ hugh - need to convert dates to MySQL format for the query
-		$value[0] = $this->tableDateToMySQL($value[0]);
-		$value[1] = $this->tableDateToMySQL($value[1]);
+		// $$$ hugh - not any more, since we changed to always submit in MySQL format
+		//$value[0] = $this->tableDateToMySQL($value[0]);
+		//$value[1] = $this->tableDateToMySQL($value[1]);
 		// $$$ hugh - if the first date is later than the second, swap 'em round
 		// to keep 'BETWEEN' in the query happy
 		if (strtotime($value[0]) > strtotime($value[1])) {
@@ -1498,7 +1499,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$item->hidden = 1;
 		return $item;
 	}
-	
+
 	public function fromXMLFormat($v)
 	{
 		return JFactory::getDate($v)->toSql();
@@ -1573,6 +1574,6 @@ class FabDate extends JDate{
 		}
 		return $str;
 	}
-	
+
 }
 ?>
