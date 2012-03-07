@@ -45,6 +45,7 @@ class FabrikViewElements extends JView
 		$this->showInListOptions = $this->get('ShowInListOptions');
 		$this->groupOptions = $this->get('GroupOptions');
 		$this->pluginOptions = $this->get('PluginOptions');
+		$this->packageOptions = $this->get('PackageOptions');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {

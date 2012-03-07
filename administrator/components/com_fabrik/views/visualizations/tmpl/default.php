@@ -12,10 +12,10 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
 JHtml::_('behavior.tooltip');
 JHTML::_('script','system/multiselect.js',false,true);
-$user	= JFactory::getUser();
+$user = JFactory::getUser();
 $userId	= $user->get('id');
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+$listOrder = $this->state->get('list.ordering');
+$listDirn = $this->state->get('list.direction');
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=visualizations'); ?>" method="post" name="adminForm" id="adminForm">
 <fieldset id="filter-bar">
@@ -26,7 +26,14 @@ $listDirn	= $this->state->get('list.direction');
 			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 		</div>
 		<div class="filter-select fltrt">
-
+			
+			<?php if (!empty($this->packageOptions)) {?>
+			<select name="package" class="inputbox" onchange="this.form.submit()">
+				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
+				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
+			</select>
+			<?php }?>
+			
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
 				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>
@@ -36,6 +43,7 @@ $listDirn	= $this->state->get('list.direction');
 	<div class="clr"> </div>
 	<table class="adminlist">
 		<thead>
+			<tr>
 				<th width="2%"><?php echo JHTML::_( 'grid.sort',  'JGRID_HEADING_ID', 'v.id', $listDirn, $listOrder); ?></th>
 				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="checkAll(this);" /> </th>
 				<th width="35%" >
@@ -58,8 +66,8 @@ $listDirn	= $this->state->get('list.direction');
 		</tfoot>
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
-			$ordering	= ($listOrder == 'ordering');
-			$link = JRoute::_('index.php?option=com_fabrik&task=visualization.edit&id='.(int)$item->id);
+			$ordering = ($listOrder == 'ordering');
+			$link = JRoute::_('index.php?option=com_fabrik&task=visualization.edit&id=' . (int) $item->id);
 			$canChange	= true;
 			?>
 
@@ -92,7 +100,6 @@ $listDirn	= $this->state->get('list.direction');
 			<?php endforeach; ?>
 		</tbody>
 	</table>
-
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />

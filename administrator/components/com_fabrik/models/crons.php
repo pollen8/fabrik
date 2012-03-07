@@ -9,10 +9,9 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modellist');
+require_once('fabmodellist.php');
 
-
-class FabrikModelCrons extends JModelList
+class FabrikModelCrons extends FabModelList
 {
 
 	/**

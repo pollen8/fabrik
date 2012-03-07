@@ -1,1 +1,2 @@
-UPDATE `#__extensions` SET `name` = 'mod_fabrik_list' WHERE element = 'mod_fabrik_list'
+UPDATE `#__extensions` SET `name` = 'mod_fabrik_list' WHERE element = 'mod_fabrik_list';
+ALTER TABLE `#__fabrik_packages` ADD UNIQUE `package_key` ( `external_ref` ( 1 ) , `component_name` ( 100 ) , `version` ( 10 ) );

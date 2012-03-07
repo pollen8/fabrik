@@ -73,7 +73,12 @@
 		<span><?php echo JText::_('COM_FABRIK_EMPTY')?></span>
 		</a>
 		</li>
-<?php }?>
+	<?php }
+	foreach ($this->pluginTopButtons as $b) {?>
+	<li>
+		<?php echo $b;?>
+	</li>
+	<?php }?>
 </ul>
 <?php }?>
 </div>

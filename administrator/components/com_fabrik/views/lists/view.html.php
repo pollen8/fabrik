@@ -44,7 +44,7 @@ class FabrikViewLists extends JView
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
-
+		$this->packageOptions = $this->get('PackageOptions');
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));

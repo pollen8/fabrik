@@ -28,6 +28,13 @@ $listDirn	= $this->state->get('list.direction');
 		</div>
 		<div class="filter-select fltrt">
 
+			<?php if (!empty($this->packageOptions)) {?>
+			<select name="package" class="inputbox" onchange="this.form.submit()">
+				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
+				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
+			</select>
+			<?php }?>
+			
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
 				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>

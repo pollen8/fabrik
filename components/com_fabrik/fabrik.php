@@ -15,6 +15,7 @@ jimport('joomla.filesystem.file');
 if (!defined('COM_FABRIK_FRONTEND')) {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
+
 require_once(JPATH_COMPONENT.DS.'controller.php');
 
 //test for YQL & XML document type
@@ -115,12 +116,45 @@ $app = JFactory::getApplication();
 $package = JRequest::getVar('package', 'fabrik');
 $app->setUserState('com_fabrik.package', $package);
 
-//$package = $app->getUserStateFromRequest('com_fabrik.package', 'package', 'fabrik');
-//echo "package = $package <br>";
-/**/
-// Perform the Request task#
-//echo "<pre>";print_r($_POST);
-//echo "$classname . $task";exit;
+/// web service testing ///
+JLoader::import('webservice', JPATH_SITE . '/components/com_fabrik/models/');
+if (JRequest::getVar('soap') == 1) 
+{
+	$opts = array(
+	'driver' => 'soap',
+	'endpoint' => 'http://webservices.activetickets.com/members/ActiveTicketsMembersServices.asmx?WSDL',
+	'credentials' => array('Clientname' => "SPLFenix", 'LanguageCode' => "nl")
+	);
+	
+	$service = FabrikWebService::getInstance($opts);
+	
+	$params = $opts['credentials'];
+	$params['From'] = JFactory::getDate()->toISO8601();
+	$params['To'] = JFactory::getDate('next year')->toISO8601();
+	$params['IncludePrices'] = true;
+	$params['MemberId'] = 14;
+	$method = JRequest::getVar($method, 'GetProgramList');
+	$program = $service->get($method, $params, '//ProgramList/Program', null);
+	
+	$listModel = JModel::getInstance('List', 'FabrikFEModel');
+	$listModel->setId(7);
+	$service->storeLocally($listModel, $program);
+	
+}
+
+if (JRequest::getVar('yql') == 1)
+{
+	$opts = array(
+		'driver' => 'yql',
+		'endpoint' => 'https://query.yahooapis.com/v1/public/yql'
+	);
+	
+	$service = FabrikWebService::getInstance($opts);
+	$query = "select * from upcoming.events where location='London'";
+	$program = $service->get($query, array(), 'event', null);
+}
+//end web service testing ///
+
 $controller->execute($task);
 
 // Redirect if set by the controller
