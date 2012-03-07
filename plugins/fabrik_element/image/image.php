@@ -16,6 +16,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	var $ignoreFolders = array('cache', 'lib', 'install', 'modules', 'themes', 'upgrade', 'locks', 'smarty', 'tmp');
 
 	protected $fieldDesc = 'TEXT';
+	
 
 	/**
 	 * this really does get just the default value (as defined in the element's settings)
@@ -24,24 +25,24 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->default)) {
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$w = new FabrikWorker();
-			//$this->_default = $params->get('imagefile');
-			$this->_default = $params->get('imagepath');
+			//$this->default = $params->get('imagefile');
+			$this->default = $params->get('imagepath');
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
 			$rootFolder = ltrim($rootFolder,'/');
-			$this->_default = preg_replace("#^$rootFolder#",'',$this->_default);
-			$this->_default = $w->parseMessageForPlaceHolder($this->_default, $data);
+			$this->default = preg_replace("#^$rootFolder#",'',$this->default);
+			$this->default = $w->parseMessageForPlaceHolder($this->default, $data);
 			if ($element->eval == "1") {
-				$this->_default = @eval(stripslashes($this->_default));
-				FabrikWorker::logEval($this->_default, 'Caught exception on eval in '.$element->name.'::getDefaultValue() : %s');
+				$this->default = @eval(stripslashes($this->default));
+				FabrikWorker::logEval($this->default, 'Caught exception on eval in '.$element->name.'::getDefaultValue() : %s');
 			}
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	/**
@@ -55,10 +56,10 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		if (is_null($this->defaults)) {
-			$this->defaults = array();
+		if (is_null($this->default)) {
+			$this->default = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults)) {
+		if (!array_key_exists($repeatCounter, $this->default)) {
 			$groupModel = $this->_group;
 			$group = $groupModel->getGroup();
 			$joinid	= $group->join_id;
@@ -114,10 +115,10 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			if (is_array($element->default)) {
 				$element->default = implode(',', $element->default);
 			}
-			$this->defaults[$repeatCounter] = $element->default;
+			$this->default[$repeatCounter] = $element->default;
 
 		}
-		return $this->defaults[$repeatCounter];
+		return $this->default[$repeatCounter];
 	}
 
 	/**

@@ -1152,6 +1152,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 			foreach ($aPreProcessedJoins as $aPreProcessedJoin) {
 
+				if (!array_key_exists('join', $aPreProcessedJoin))
+				{
+					continue;
+				}
 				$oJoin = $aPreProcessedJoin['join'];
 
 				if (array_key_exists('Copy', $this->_formData)) {
@@ -1187,7 +1191,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if (is_string($oJoin->params)) {
 					$oJoin->params = json_decode($oJoin->params);
 				}
-				if ((int)$oJoin->group_id !== 0 && $oJoin->params->type !== 'repeatElement') {
+				$joinType = isset($oJoin->params->type) ? $oJoin->params->type : '';
+				if ((int)$oJoin->group_id !== 0 && $joinType !== 'repeatElement') {
 					$joinGroup = $groups[$oJoin->group_id];
 					//find the primary key for the join table
 					// $$$ rob - looks like  $item isn't a reference to $listModel->_table -go figure?? (php5.2.5 lax) Also reason why Hugh thought we
@@ -1219,8 +1224,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						if ($elementModel->getGroup()->isJoin()) {
 							//repeat element in a repeat group :S
 							$groupJoin = $elementModel->getGroup()->getJoinModel();
-							for ($r = 0; $r < count($data[$oJoin->table_join.'___id']); $r ++) {
-								$repeatTotals['el'.$elementModel->getId()][$r] =  count($data[$oJoin->table_join.'___id'][$r]);
+							$dataPks = JArrayHelper::getValue($data, $oJoin->table_join . '___id', array());
+							for ($r = 0; $r < count($dataPks); $r ++)
+							{
+								$repeatTotals['el' . $elementModel->getId()][$r] = count($dataPks[$r]);
 							}
 						} else {
 							$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
@@ -1246,7 +1253,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 					$joinGroup->publishedElements = array();
 					$joinGroup->publishedElements[''] = array($elementModel, $idElementModel, $parentElement);
-					$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = count($repeatTotals[$oJoin->group_id]) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
+					echo "<pre>repeat totals = ";print_r($repeatTotals);echo "group id = $oJoin->group_id ";
+					//$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = count($repeatTotals[$oJoin->group_id]) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
+					$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = JArrayHelper::getValue($repeatTotals, $oJoin->group_id, 0) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
 					$this->groups[] = $joinGroup;
 
 					$listModel->getTable()->db_table_name = $oJoin->table_join;
@@ -1469,10 +1478,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				} else {
 					// no join data found so delete all joined records
 					$k = $oJoin->join_from_table . '___' .$oJoin->table_key;
-					$query = $joinDb->getQuery(true);
-					$query->delete($oJoin->table_join)->where("($oJoin->table_join_key = {$this->_formData[$k]})");
-					$joinDb->setQuery($query);
-					$joinDb->query();
+					$delPkVal = JArrayHelper::getValue($this->_formData, $k, '');
+					if ($delPkVal !== '')
+					{
+						$query = $joinDb->getQuery(true);
+						$query->delete($oJoin->table_join)->where("($oJoin->table_join_key = $delPkVal)");
+						$joinDb->setQuery($query);
+						$joinDb->query();
+					}
 				}
 			}
 		//}

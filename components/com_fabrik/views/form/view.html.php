@@ -369,15 +369,35 @@ class fabrikViewForm extends JView
 		//for editing groups with joined data and an empty joined record (ie no joined records)
 		$hidden = array();
 		$maxRepeat = array();
+		$showMaxRepeats = array();
 		foreach ($this->groups as $g) {
 			$hidden[$g->id] = $g->startHidden;
 			$maxRepeat[$g->id] = $g->maxRepeat;
+			$showMaxRepeats[$g->id] = $g->showMaxRepeats;
 		}
 		$opts->hiddenGroup = $hidden;
 		$opts->maxRepeat = $maxRepeat;
+		$opts->showMaxRepeats = $showMaxRepeats;
 		//$$$ rob 26/04/2011 joomfish translations of password validation error messages
 		//$opts->lang = FabrikWorker::getJoomfishLang();
 
+		// $$$ hugh adding these so calc element can easily find joined and repeated join groups
+		// when it needs to add observe events ... don't ask ... LOL!
+		$opts->join_group_ids = array();
+		$opts->group_repeats = array();
+		$opts->group_joins_ids = array();
+		$groups =& $model->getGroupsHiarachy();
+		
+		
+		foreach ($groups as $groupModel) {
+			if ($groupModel->getGroup()->is_join) {
+				$opts->join_group_ids[$groupModel->getGroup()->join_id] = (int)$groupModel->getGroup()->id;
+				$opts->group_join_ids[$groupModel->getGroup()->id] = (int)$groupModel->getGroup()->join_id;
+		
+				$opts->group_repeats[$groupModel->getGroup()->id] = $groupModel->canRepeat();
+			}
+		}
+		
 		$opts = json_encode($opts);
 
 		$lang = new stdClass();

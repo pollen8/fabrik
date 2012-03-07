@@ -408,6 +408,7 @@ class FabrikFEModelGroup extends FabModel{
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->_editable) ? 1 : 0;
 		$group->maxRepeat = (int)$params->get('repeat_max');
+		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		return $group;
 	}
 
