@@ -346,7 +346,7 @@ var FbGoogleMapViz = new Class({
 				this.options.overlays[k] = new google.maps.KmlLayer(overlay_url);
 				this.options.overlays[k].setMap(this.map);
 				this.options.overlay_events[k] = this.toggleOverlay.bindWithEvent(this);
-				if(typeOf(document.id('overlay_chbox_' + k)) !== 'null') {
+				if (typeOf(document.id('overlay_chbox_' + k)) !== 'null') {
 					document.id('overlay_chbox_' + k).addEvent('click', this.options.overlay_events[k]);
 				}
 			}.bind(this));
@@ -370,7 +370,7 @@ var FbGoogleMapViz = new Class({
 			return;
 		}
 		this.options.icons.each(function (i) {
-			if (typeOf(this.grouped[i.groupkey]) == 'null') {
+			if (typeOf(this.grouped[i.groupkey]) === 'null') {
 				this.grouped[i.groupkey] = [];
 				var k = i.listid + i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
 				k += ' ' + i.groupClass;

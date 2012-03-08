@@ -70,6 +70,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 					}
 				}
 			}
+			else
+			{
+				$data_copy = $data;
+			}
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
 			$default = @eval($default);
 			FabrikWorker::logEval($default, 'Caught exception on eval of ' . $this->getElement()->name . '::_getV(): %s');
@@ -121,7 +125,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				if (is_array($data)) {
 					if (array_key_exists($name, $data)) {
 						$default = $data[$name];
-					}else{
+					}
+					else
+					{
 						if (array_key_exists($rawname, $data)) {
 							$default = $data[$rawname];
 						}
@@ -211,7 +217,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				$rawkey = $rawkey . '.' . $c;
 			}
 		}
-		else {
+		else 
+		{
 			if ($group->isJoin()) {
 				$key = str_replace("][", ".", $key);
 				$key = str_replace(array('[',']'), '.', $key);

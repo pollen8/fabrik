@@ -17,6 +17,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	protected $fieldDesc = 'TEXT';
 
+
 	/**
 	 * this really does get just the default value (as defined in the element's settings)
 	 * @return unknown_type
@@ -24,24 +25,24 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->default)) {
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$w = new FabrikWorker();
-			//$this->_default = $params->get('imagefile');
-			$this->_default = $params->get('imagepath');
+			//$this->default = $params->get('imagefile');
+			$this->default = $params->get('imagepath');
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
 			$rootFolder = ltrim($rootFolder,'/');
-			$this->_default = preg_replace("#^$rootFolder#",'',$this->_default);
-			$this->_default = $w->parseMessageForPlaceHolder($this->_default, $data);
+			$this->default = preg_replace("#^$rootFolder#",'',$this->default);
+			$this->default = $w->parseMessageForPlaceHolder($this->default, $data);
 			if ($element->eval == "1") {
-				$this->_default = @eval(stripslashes($this->_default));
-				FabrikWorker::logEval($this->_default, 'Caught exception on eval in '.$element->name.'::getDefaultValue() : %s');
+				$this->default = @eval(stripslashes($this->default));
+				FabrikWorker::logEval($this->default, 'Caught exception on eval in '.$element->name.'::getDefaultValue() : %s');
 			}
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	/**

@@ -343,7 +343,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		// $selected = (array)$this->getValue($data, $repeatCounter);
 		$selected = $this->getValue($data, $repeatCounter);
 		if (is_string($selected)) {
-			if (empty($selected)) {
+			if ($selected === '') {
 				$selected = array();
 			}
 			else {

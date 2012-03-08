@@ -45,19 +45,31 @@ var FrontPackage = new Class({
 			break;
 		}
 		var plugin = "{fabrik view=" + type + " id=" + id + "}";
-		/*var c = new Element('div', {'id':id, 'class':'itemPlaceHolder'}).setStyles(style);
-		var url = 'index.php?option=com_fabrik&view='+type+'&' + key + '=' + id + '&tmpl=component&packageid='+this.options.packageid;
-		var myAjax = new Request.HTML({url:url,
-			method:'post', 
-			update:page.page,
-			onSuccess:onSuccess
-		}).send();*/
+		var c = new Element('div', {'id': id, 'class': 'itemPlaceHolder'}).setStyles(style);
+		c.inject(page.page);
+		data = {
+			'option': 'com_fabrik',
+			'view': type,
+			'tmpl': 'component',
+			'packageid': this.options.packageid,
+			'ajax': 1,
+			'ajaxlinks': 1
+		};
+		data[key] = id;
+		console.log(data);
+		var url = 'index.php';
+		var myAjax = new Request.HTML({url: url,
+			'data': data,
+			method: 'post', 
+			update: c,
+			onSuccess: onSuccess
+		}).send();
 		//iframe loader
 		//var url = 'index.php?option=com_fabrik&view=' + type + '&' + key + '=' + id + '&tmpl=component&package=' + this.options['package'];
 		
-		var url = 'index.php?option=com_fabrik&task=' + type + '.view&' + key + '=' + id + '&tmpl=component&package=' + this.options['package'];
+		/*var url = 'index.php?option=com_fabrik&task=' + type + '.view&' + key + '=' + id + '&tmpl=component&iframe=1&package=' + this.options['package'];
 		
 		var c = new Element('iframe', {'id': id, src: url, 'class': 'itemPlaceHolderIFrame'}).setStyles(style);
-		c.inject(page.page);
+		c.inject(page.page);*/
 	}
 });

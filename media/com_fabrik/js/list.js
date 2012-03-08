@@ -200,6 +200,22 @@ var FbListFilter = new Class({
 		}
 		this.filters.get(plugin).push(f);
 	},
+	
+	onSubmit: function () {
+		if (this.filters.date) {
+			this.filters.date.each(function (f) {
+				f.onSubmit();
+			});
+		}
+	},
+	
+	onUpdateData: function () {
+		if (this.filters.date) {
+			this.filters.date.each(function (f) {
+				f.onUpdateData();
+			});
+		}
+	},
 
 	// $$$ hugh - added this primarily for CDD element, so it can get an array to
 	// emulate submitted form data
@@ -262,7 +278,8 @@ var FbList = new Class({
 		'popup_width': 300,
 		'popup_height': 300,
 		'popup_offset_x': null,
-		'popup_offset_y': null
+		'popup_offset_y': null,
+		'listRef': '' // e.g. '1_com_fabrik_1'
 	},
 
 	initialize: function (id, options) {
@@ -837,6 +854,7 @@ var FbList = new Class({
 		}
 		Fabrik.loader.start('listform_' + this.options.listRef);
 		if (task === 'list.filter') {
+			Fabrik['filter_listform_' + this.options.listRef].onSubmit();
 			this.form.task.value = task;
 			if (this.form['limitstart' + this.id]) {
 				this.form.getElement('#limitstart' + this.id).value = 0;
@@ -860,6 +878,7 @@ var FbList = new Class({
 						json = JSON.decode(json);
 						this._updateRows(json);
 						Fabrik.loader.stop('listform_' + this.options.listRef);
+						Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
 					}.bind(this)
 				});
 			}
@@ -869,6 +888,7 @@ var FbList = new Class({
 			this.form.submit();
 			Fabrik.loader.stop('listform_' + this.options.listRef);
 		}
+		//Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
 		return false;
 	},
 
@@ -1180,6 +1200,17 @@ var FbList = new Class({
 					}.bind(this));
 				}.bind(this));
 			}
+		}
+		
+		if (this.options.admin) {
+			Fabrik.addEvent('fabrik.block.added', function (block) {
+				if (block.options.listRef === this.options.listRef) {
+					block.form.getElement('.fabrikNav').getElements('a').addEvent('click', function (e) {
+						e.stop();
+						block.fabrikNav(e.target.get('href'));
+					});  
+				}
+			}.bind(this));
 		}
 		this.watchCheckAll();
 	},

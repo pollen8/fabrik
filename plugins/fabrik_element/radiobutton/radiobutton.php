@@ -99,9 +99,9 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$element = $this->getElement();
 		if (!array_key_exists($element->name, $data)) {
 			$sel = $this->getSubInitialSelection();
-			$sel = $sel[0];
+			$sel = JArrayHelper::getValue($sel, 0, '');
 			$arVals = $this->getSubOptionValues();
-			$data[$element->name] = array($arVals[$sel]);
+			$data[$element->name] = array(JArrayHelper::getValue($arVals, $sel, ''));
 		}
 	}
 

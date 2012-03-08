@@ -702,19 +702,21 @@ class FabrikFEModelList extends JModelForm {
 
 				$nextview = $canEdit ? "form" : "details";
 				$pKeyVal = array_key_exists($tmpKey, $row) ? $row->$tmpKey : '';
-				$pkcheck = '<div style="display:none">';
+				$pkcheck = array();
+				$pkcheck[] = '<div style="display:none">';
 				foreach ($joins as $join) {
 					if ($join->list_id !== '0') {
 						// $$$ rob 22/02/2011 was not using _raw before which was intserting html into the value for image elements
 						$fkey = $join->table_join_alias.'___'.$join->table_key."_raw";
 						if (isset($row->$fkey)) {
-							$fKeyVal= $row->$fkey;
-							$pkcheck .= '<input type="checkbox" class="fabrik_joinedkey" value="'.$fKeyVal.'" name="'.$join->table_join_alias.'['.$row->__pk_val.']" />'."\n";
+							$fKeyVal = $row->$fkey;
+							$pkcheck[] = '<input type="checkbox" class="fabrik_joinedkey" value="' . htmlspecialchars($fKeyVal, ENT_COMPAT, 'UTF-8') . '" name="'.$join->table_join_alias.'['.$row->__pk_val.']" />'."\n";
 						}
 					}
 				}
-				$pkcheck .= '</div>';
-				$row->fabrik_select = $this->canSelectRow($row) ? '<input type="checkbox" id="id_'.$row->__pk_val.'" name="ids['.$row->__pk_val.']" value="'.$pKeyVal.'" />'.$pkcheck : '';
+				$pkcheck[] = '</div>';
+				$pkcheck = implode("\n", $pkcheck);
+				$row->fabrik_select = $this->canSelectRow($row) ? '<input type="checkbox" id="id_' . $row->__pk_val . '" name="ids['.$row->__pk_val.']" value="' . htmlspecialchars($pKeyVal, ENT_COMPAT, 'UTF-8') . '" />'.$pkcheck : '';
 				//add in some default links if no element choosen to be a link
 				$link = $this->viewDetailsLink($data[$groupKey][$i]);//dont use $row as it generates a pas by ref error
 				$edit_link = $this->editLink($data[$groupKey][$i]);
@@ -2967,7 +2969,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
-		$registry	= $session->get('registry');
+		$registry = $session->get('registry');
 		//$tid = 'list'.JRequest::getVar('listref', $this->getRenderContext());
 		$tid = 'list'.$this->getRenderContext();
 		//make sure that we only store data thats been entered from this page first test we aren't in a plugin
@@ -2978,19 +2980,23 @@ class FabrikFEModelList extends JModelForm {
 				unset($reg['com_fabrik']['data']->$tid->filter);
 			}
 		}
-		//@TODO test for _clear_ in values and if so delete session data
+		
+		$context = 'com_fabrik.'. $tid .'.filter';
+		 //@TODO test for _clear_ in values and if so delete session data
 		foreach ($request as $key => $val) {
 			if (is_array($val)) {
-				$key = 'com_fabrik.'. $tid .'.filter.'.$key;
+				$key = $context . '.' . $key;
 				$app->setUserState($key, array_values($val));
 			}
 		}
+		// registry not available in admin - seems clunky anyway
+		/* echo "<pre>";print_r($reg);echO "</pre>";
 		if (isset($reg['com_fabrik']) && array_key_exists($tid, $reg['com_fabrik']['data'])) {
 			FabrikHelperHTML::debug($reg['com_fabrik']['data']->$tid, 'session filters saved as:');
 		}
 		else {
 			FabrikHelperHTML::debug('', 'session filters saved as: no filters to save!');
-		}
+		} */
 	}
 
 	/**
@@ -3081,7 +3087,7 @@ class FabrikFEModelList extends JModelForm {
 				continue;
 			}
 
-			//table plug-in filter found - it should have set its own sql in onGetPostFilter();
+			//list plug-in filter found - it should have set its own sql in onGetPostFilter();
 			if (in_array($elid, $pluginKeys)) {
 				$this->filters['origvalue'][$i] = $value;
 				$this->filters['sqlCond'][$i] = $this->filters['sqlCond'][$i];
@@ -3777,7 +3783,7 @@ class FabrikFEModelList extends JModelForm {
 						$o = new stdClass();
 						$o->name = $elementModel->getFullName(false, true, false);
 						$o->filter = $elementModel->getFilter($counter, true);
-						$fscript .= $elementModel->_filterJS(true, $container);
+						$fscript .= $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
 						$o->label = $elementModel->getParams()->get('alt_list_heading') == '' ? $element->label : $elementModel->getParams()->get('alt_list_heading');
 						$aFilters[] = $o;
@@ -4079,10 +4085,11 @@ class FabrikFEModelList extends JModelForm {
 		$orderbys = json_decode($item->order_by, true);
 
 		$listels = json_decode($params->get('list_elements'));
-
+		
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
-		if (isset($listels->show_in_list)) {
+		// $$$ rob check if empty or if a single empty value was set in the menu/module params
+		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == '')) {
 			$showInList = $listels->show_in_list;
 		}
 		$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
@@ -6376,8 +6383,8 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$option = JRequest::getCmd('option');
 		// Get the router
-		$app	= &JFactory::getApplication();
-		$router = &$app->getRouter();
+		$app = JFactory::getApplication();
+		$router = $app->getRouter();
 
 		$uri = clone(JURI::getInstance());
 		// $$$ rob force these to be 0 once the menu item has been loaded for the first time
@@ -6912,7 +6919,7 @@ class FabrikFEModelList extends JModelForm {
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '') {
 			$qs = '?c='.$this->getRenderContext();
-			$qs .= '&buttoncount='.$this->rowActionCount;
+			$qs .= '&amp;buttoncount='.$this->rowActionCount;
 			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php')) {
 				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php'.$qs);
 			} else {

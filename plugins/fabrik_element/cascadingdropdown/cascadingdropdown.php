@@ -719,7 +719,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @param string container
 	 */
 
-	function _filterJS($normal, $container)
+	public function filterJS($normal, $container)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();

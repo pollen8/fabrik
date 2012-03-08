@@ -289,9 +289,10 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass()
+	function formJavascriptClass(&$srcs)
 	{
-		FabrikHelperHTML::script('javascript.js', 'components/com_fabrik/plugins/element/fabrikyoutube/', false);
+		plgFabrik_Element::formJavascriptClass($srcs, 'plugins/fabrik_element/youtube/youtube.js');
+		parent::formJavascriptClass($srcs);
 	}
 
 	/**

@@ -874,7 +874,7 @@ class plgFabrik_Element extends FabrikPlugin
 					{
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
 					}
-					$validationHovers[] = '</ul></span>'; 
+					$validationHovers[] = '</ul></span>';
 					$title = htmlspecialchars(implode("", $validationHovers), ENT_QUOTES);
 					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title));
 				}
@@ -1414,8 +1414,11 @@ class plgFabrik_Element extends FabrikPlugin
 					}
 				} else {
 					//repeating group not joined
+					// don't think this applies in f3
+					/*
 					$val = JArrayHelper::getValue(json_decode($val, true), $repeatCounter);
 					$repData[$k] = $val;
+					*/
 				}
 			}
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $repData);
@@ -3179,11 +3182,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$opts = new stdClass();
 		$data = $this->_form->_data;
 		$opts->repeatCounter = $repeatCounter;
-		if ($this->canView() && !$this->canUse()) {
-			$opts->editable = false;
-		} else {
-			$opts->editable = $this->_editable;
-		}
+		$opts->editable = ($this->canView() && !$this->canUse()) ? false : $this->_editable;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
@@ -3199,6 +3198,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			}
 		}
 		$opts->watchElements = $validationEls;
+		$groupModel = $this->getGroup();
+		$opts->canRepeat = (bool) $groupModel->canRepeat();
+		$opts->isGroupJoin = (bool) $groupModel->isJoin();
+		if ($this->isJoin())
+		{
+			$opts->joinid = (int) $this->getJoinModel()->getJoin()->id;
+		}
+		else
+		{
+			$opts->joinid = (int) $groupModel->getGroup()->join_id;
+		}
 		return $opts;
 	}
 
@@ -3799,7 +3809,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @param string container
 	 */
 
-	function _filterJS($normal, $container)
+	public function filterJS($normal, $container)
 	{
 		//overwritten in plugin
 	}
@@ -4412,7 +4422,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$classes[] = $this->getParams()->get('tablecss_header_class');
 		return implode(' ', $classes);
 	}
-	
+
 	public function fromXMLFormat($v)
 	{
 		return $v;
