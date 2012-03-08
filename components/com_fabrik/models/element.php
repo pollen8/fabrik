@@ -4427,5 +4427,19 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		return $v;
 	}
+	
+	/**
+	* allows the element to pre-process a rows data before and join mergeing of rows
+	* occurs. Used in calc element to do cals on actual row rather than merged row
+	* @since	3.0.5
+	* @param	string	elements data for the current row
+	* @param	object	current row's data
+	* @return	string	formatted value
+	*/
+	
+	public function preFormatFormJoins($data, $row)
+	{
+		return $data;
+	}
 }
 ?>

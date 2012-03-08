@@ -188,12 +188,12 @@ class FabrikFEModelList extends JModelForm {
 		$pluginManager->runPlugins('process', $this, 'list');
 		return $pluginManager->_data;
 	}
-	
+
 	/**
 	 * code to enable plugins to add a button to the top of the list
 	 * @return	array	button html
 	 */
-	
+
 	public function getPluginTopButtons()
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -439,6 +439,9 @@ class FabrikFEModelList extends JModelForm {
 		if ($fabrikDb->getErrorNum() != 0) {
 			JError::raiseNotice(500,  'getData: ' . $fabrikDb->getErrorMsg());
 		}
+
+		$this->preFormatFormJoins($this->_data);
+
 		JDEBUG ? $profiler->mark('start format for joins') : null;
 		$this->formatForJoins($this->_data);
 
@@ -2980,9 +2983,9 @@ class FabrikFEModelList extends JModelForm {
 				unset($reg['com_fabrik']['data']->$tid->filter);
 			}
 		}
-		
+
 		$context = 'com_fabrik.'. $tid .'.filter';
-		 //@TODO test for _clear_ in values and if so delete session data
+		//@TODO test for _clear_ in values and if so delete session data
 		foreach ($request as $key => $val) {
 			if (is_array($val)) {
 				$key = $context . '.' . $key;
@@ -2992,10 +2995,10 @@ class FabrikFEModelList extends JModelForm {
 		// registry not available in admin - seems clunky anyway
 		/* echo "<pre>";print_r($reg);echO "</pre>";
 		if (isset($reg['com_fabrik']) && array_key_exists($tid, $reg['com_fabrik']['data'])) {
-			FabrikHelperHTML::debug($reg['com_fabrik']['data']->$tid, 'session filters saved as:');
+		FabrikHelperHTML::debug($reg['com_fabrik']['data']->$tid, 'session filters saved as:');
 		}
 		else {
-			FabrikHelperHTML::debug('', 'session filters saved as: no filters to save!');
+		FabrikHelperHTML::debug('', 'session filters saved as: no filters to save!');
 		} */
 	}
 
@@ -4085,7 +4088,7 @@ class FabrikFEModelList extends JModelForm {
 		$orderbys = json_decode($item->order_by, true);
 
 		$listels = json_decode($params->get('list_elements'));
-		
+
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
 		// $$$ rob check if empty or if a single empty value was set in the menu/module params
@@ -4243,11 +4246,11 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	* put the actions in the headings array - separated to here to enable it to be added at the end or beginning
-	* @param array
-	* @param array
-	* @param array
-	*/
+	 * put the actions in the headings array - separated to here to enable it to be added at the end or beginning
+	 * @param array
+	 * @param array
+	 * @param array
+	 */
 
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
@@ -4274,10 +4277,10 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	* put the checkbox in the headings array - separated to here to enable it to be added at the end or beginning
-	* @param array
-	* @param array
-	* @param array
+	 * put the checkbox in the headings array - separated to here to enable it to be added at the end or beginning
+	 * @param array
+	 * @param array
+	 * @param array
 	 */
 
 	protected function addCheckBox(&$aTableHeadings, &$headingClass, &$cellClass)
@@ -6407,7 +6410,7 @@ class FabrikFEModelList extends JModelForm {
 			if ($el === false) {
 				$el = $form->getElement($rawK);
 			}
- 			if (is_array($v)) {
+			if (is_array($v)) {
 				// $$$ rob if you were using URL filters such as
 				//&jos_fabble_activity___create_date[value][]=now&jos_fabble_activity___create_date[value][]=%2B2%20week&jos_fabble_activity___create_date[condition]=BETWEEN
 				// then we don't want to re-add them to the table action.
@@ -6514,6 +6517,46 @@ class FabrikFEModelList extends JModelForm {
 		return $merge;
 	}
 
+	protected function preFormatFormJoins(&$data)
+	{
+		$profiler = JProfiler::getInstance('Application');
+		$form = $this->getFormModel();
+		$tableParams = $this->getParams();
+		$table = $this->getTable();
+		$pluginManager = FabrikWorker::getPluginManager();
+		$method = 'renderListData_'.$this->_outPutFormat;
+		$this->_aLinkElements = array();
+
+		// $$$ hugh - temp foreach fix
+		$groups = $form->getGroupsHiarachy();
+		$ec = count($data);
+		foreach ($groups as $groupModel)
+		{
+			if (($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv' || $this->_outPutFormat == 'feed')
+			{
+				$elementModels = $groupModel->getPublishedElements();
+			}
+			else
+			{
+				$elementModels = $groupModel->getPublishedListElements();
+			}
+			foreach ($elementModels as $elementModel)
+			{
+				//$elementModel->setContext($groupModel, $form, $this);
+				$col = $elementModel->getFullName(false, true, false);
+				if (!empty($data) && array_key_exists($col, $data[0]))
+				{
+					for ($i = 0; $i < $ec; $i ++)
+					{
+						$thisRow = $data[$i];
+						$coldata = $thisRow->$col;
+						$data[$i]->$col = $elementModel->preFormatFormJoins($coldata, $thisRow);
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * $$$ rob 19/10/2011 now called before formatData() from getData() as otherwise element tips (created in element->renderListData())
 	 * only contained first merged records data and not all merged records
@@ -6610,90 +6653,17 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob loop over any data that was merged into an array and turn that into a json object
 		foreach ($data as $gkey => $d) {
 			foreach ($d as $k => $v) {
-			if (is_array($v)) {
-				foreach ($v as &$v2) {
-					$v2 = FabrikWorker::JSONtoData($v2);
+				if (is_array($v)) {
+					foreach ($v as &$v2) {
+						$v2 = FabrikWorker::JSONtoData($v2);
+					}
+					$v = json_encode($v);
+					$data[$gkey]->$k = $v;
 				}
-				$v = json_encode($v);
-				$data[$gkey]->$k = $v;
-			}
 			}
 		}
 		$data = array_values($data);
 	}
-
-	/**
-	 * $$$ rob 19/10/2011 -  version which works if run after formatData() in getData()
-	 */
-	/* function formatForJoins(&$data)
-	 {
-	$merge = $this->mergeJoinedData();
-	if (empty($merge)) {
-	return;
-	}
-	$listid = $this->getTable()->id;
-	$dbprimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
-	$formModel = $this->getFormModel();
-	FabrikHelperHTML::debug($data, 'render:before formatForJoins');
-	foreach ($data as $groupk => $group) {
-	$last_pk = '';
-	$last_i = 0;
-	$count = count($group);
-	$can_repeats = array();
-	for ($i = 0; $i < $count; $i++) {
-
-	// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
-	//$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->id;
-	$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->$dbprimaryKey;
-	if (!empty($last_pk) && ($last_pk == $next_pk)) {
-	foreach ($data[$groupk][$i] as $key => $val) {
-	$origKey = $key;
-	$tmpkey = FabrikString::rtrimword($key, '_raw');
-	// $$$ hugh - had to cache this stuff, because if you have a lot of rows and a lot of elements,
-	// doing this many hundreds of times causes huge slowdown, exceeding max script execution time!
-	// And we really only need to do it once for the first row.
-	if (!isset($can_repeats[$tmpkey])) {
-	$elementModel = $formModel->getElement($tmpkey);
-	// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
-	//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
-	$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
-	}
-
-	if (isset($data[$groupk][$last_i]->$key) && $can_repeats[$tmpkey]) {
-	// $$$ rob - what about data like yes/no where each viewable option needs to be shown?
-	// $$$ rob - yeah commenting this out, not a good idea - as other cols for this record may have
-	// different data so you end up with this col having 3 entries and the next col having four and you can't
-	// see the correlation between the two sets of data.
-	//if ($data[$groupk][$last_i]->$key != $val) {
-
-	// $$$ rob meant that only one link to details was shown in admin - dont see the point in that
-	//if (preg_match("#\W+fabrik___rowlink.*\W+listid=$listid\W#",$val)) {
-	//continue;
-	//}
-	if ($origKey == $tmpkey) {
-	$data[$groupk][$last_i]->$key .= "<br >\n" . $val;
-	} else {
-	$json = json_decode($data[$groupk][$last_i]->$origKey);
-	$json= $val;
-	$data[$groupk][$last_i]->$origKey = json_encode($json);
-	//$data[$groupk][$last_i]->$origKey .= GROUPSPLITTER.$val;
-	}
-	}
-
-	}
-	unset($data[$groupk][$i]);
-	continue;
-	}
-	else {
-	$last_i = $i;
-	// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
-	$last_pk = $next_pk;
-	}
-	}
-	// $$$ rob ensure that we have a sequental set of keys otherwise ajax json will turn array into object
-	$data[$groupk] = array_values($data[$groupk]);
-	}
-	} */
 
 	function noTable()
 	{
