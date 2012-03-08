@@ -95,7 +95,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				{
 					$id = $this->getValue($data, $repeatCounter);
 				}
-				$user = $id === '' ? JFactory::getUser() : JFactory::getUser($uid);
+				$user = $id === '' ? JFactory::getUser() : JFactory::getUser($id);
 			}
 		}
 
