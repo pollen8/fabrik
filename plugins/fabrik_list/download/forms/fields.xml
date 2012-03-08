@@ -6,7 +6,7 @@
 				
 			<field label="PLG_FABRIK_LIST_DOWNLOAD_BUTTON_LABEL" name="download_button_label" repeat="true" size="30" type="text"/>
 				
-			<field description="PLG_FABRIK_LIST_DOWNLOAD_TABLED_ESC" label="PLG_FABRIK_LIST_DOWNLOAD_TABLE_LABEL" name="download_table" repeat="true" size="35" type="text"/>
+			<field description="PLG_FABRIK_LIST_DOWNLOAD_TABLED_DESC" label="PLG_FABRIK_LIST_DOWNLOAD_TABLE_LABEL" name="download_table" repeat="true" size="35" type="text"/>
 				  
 			<field description="PLG_FABRIK_LIST_DOWNLOAD_FK_DESC" label="PLG_FABRIK_LIST_DOWNLOAD_FK_LABEL" name="download_fk" repeat="true" size="35" type="text"/>
 				  

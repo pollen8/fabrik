@@ -19,11 +19,13 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 
 	protected $buttonPrefix = 'download';
 
+	protected $msg = null;
+
 	function button()
 	{
 		return "download files";
 	}
-	
+
 	protected function buttonLabel()
 	{
 		return $this->getParams()->get('download_button_label', parent::buttonLabel());
@@ -162,7 +164,18 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		else {
 			$zip_err = "No files to ZIP!";
 		}
-		return $zip_err;
+		if (empty($zip_err)) {
+			return true;
+		}
+		else {
+			$this->msg = $zip_err;
+			return false;
+		}
+	}
+
+	function process_result($c)
+	{
+		return $this->msg;
 	}
 
 	/**
