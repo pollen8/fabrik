@@ -874,7 +874,7 @@ class plgFabrik_Element extends FabrikPlugin
 					{
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
 					}
-					$validationHovers[] = '</ul></span>'; 
+					$validationHovers[] = '</ul></span>';
 					$title = htmlspecialchars(implode("", $validationHovers), ENT_QUOTES);
 					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title));
 				}
@@ -1414,8 +1414,11 @@ class plgFabrik_Element extends FabrikPlugin
 					}
 				} else {
 					//repeating group not joined
+					// don't think this applies in f3
+					/*
 					$val = JArrayHelper::getValue(json_decode($val, true), $repeatCounter);
 					$repData[$k] = $val;
+					*/
 				}
 			}
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $repData);
@@ -4412,7 +4415,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$classes[] = $this->getParams()->get('tablecss_header_class');
 		return implode(' ', $classes);
 	}
-	
+
 	public function fromXMLFormat($v)
 	{
 		return $v;
