@@ -16,7 +16,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	var $ignoreFolders = array('cache', 'lib', 'install', 'modules', 'themes', 'upgrade', 'locks', 'smarty', 'tmp');
 
 	protected $fieldDesc = 'TEXT';
-	
+
 
 	/**
 	 * this really does get just the default value (as defined in the element's settings)
@@ -56,10 +56,10 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		if (is_null($this->default)) {
-			$this->default = array();
+		if (is_null($this->defaults)) {
+			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->default)) {
+		if (!array_key_exists($repeatCounter, $this->defaults)) {
 			$groupModel = $this->_group;
 			$group = $groupModel->getGroup();
 			$joinid	= $group->join_id;
@@ -115,10 +115,10 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			if (is_array($element->default)) {
 				$element->default = implode(',', $element->default);
 			}
-			$this->default[$repeatCounter] = $element->default;
+			$this->defaults[$repeatCounter] = $element->default;
 
 		}
-		return $this->default[$repeatCounter];
+		return $this->defaults[$repeatCounter];
 	}
 
 	/**
