@@ -49,7 +49,7 @@ class FabrikModelForms extends FabModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				'f.*'
+				'f.*, l.id AS list_id'
 			)
 		);
 		$query->from('#__{package}_forms AS f');
@@ -72,6 +72,7 @@ class FabrikModelForms extends FabModelList
 		// Join over the users for the checked out user.
 		$query->select('u.name AS editor');
 		$query->join('LEFT', '#__users AS u ON checked_out = u.id');
+		$query->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id');
 
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering');

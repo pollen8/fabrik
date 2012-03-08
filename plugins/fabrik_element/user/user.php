@@ -107,7 +107,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		}
 		$str = '';
 		if ($this->_editable) {
-			$value = $user->get('id');
+			$value = is_object($user) ? $user->get('id') : '';
 			if ($element->hidden) {
 				$str = $this->_getHiddenField($name, $value, $html_id);
 			} else {

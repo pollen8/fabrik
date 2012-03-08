@@ -122,7 +122,7 @@ $listDirn	= $this->state->get('list.direction');
 					</a>
 				</td>
 				<td>
-					<a href="#view" onclick="return listItemTask('cb<?php echo $i;?>','list.view');">
+					<a href="index.php?option=com_fabrik&task=list.view&listid=<?php echo $item->id;?>">
 						<?php echo JText::_('COM_FABRIK_VIEW_DATA');?>
 					</a>
 				</td>

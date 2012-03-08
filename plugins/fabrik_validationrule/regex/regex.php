@@ -42,8 +42,8 @@ class plgFabrik_ValidationruleRegex extends plgFabrik_Validationrule
 		$domatch = $params->get('regex-match');
 		$domatch = $domatch[$c];
 		if ($domatch) {
-			$v = $params->get('regex-expression');
-			$found = preg_match($v[$c], $data, $matches);
+			$v = (array) $params->get('regex-expression');
+			$found = preg_match(JArrayHelper::getValue($v, $c), $data, $matches);
 			return $found;
 		}
 		return true;
@@ -53,12 +53,12 @@ class plgFabrik_ValidationruleRegex extends plgFabrik_Validationrule
  	{
 
  		$params = $this->getParams();
-		$domatch = $params->get('regex-match', '_default','array', $c);
-		$domatch = $domatch[$c];
+		$domatch = (array) $params->get('regex-match');
+		$domatch = JArrayHelper::getValue($domatch, $c);
 		if (!$domatch) {
-	 		$v = $params->get($this->_pluginName .'-expression', '_default','array', $c);
-			$replace = $params->get('regex-replacestring', '_default','array', $c);
-			$return = preg_replace($v[$c], $replace[$c], $data);
+	 		$v = (array) $params->get($this->_pluginName .'-expression');
+			$replace = (array) $params->get('regex-replacestring');
+			$return = preg_replace(JArrayHelper::getValue($v, $c), JArrayHelper::getValue($replace, $c), $data);
 			return $return;
 		}
 		return $data;

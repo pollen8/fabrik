@@ -87,6 +87,16 @@
 				description="COM_FABRIK_REPEAT_GROUP_MAX_DESC"
 				size="2" />
 				
+			<!--  not yet implemented but used in calc element huh!? (copied over from f2)
+			<field name="show_repeat_max" 
+				type="radio" 
+				default="0"
+				description="COM_FABRIK_REPEAT_GROUP_SHOW_MAX_DESC"
+				label="COM_FABRIK_REPEAT_GROUP_SHOW_MAX_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			 -->	
 	</fieldset>
 	
 	<fieldset name="layout">

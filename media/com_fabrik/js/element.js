@@ -23,6 +23,7 @@ var FbElement =  new Class({
 		options.element = element;
 		this.strElement = element;
 		this.loadEvents = []; // need to store these for use if the form is reset
+		this.changeEvents = []; // need to store these for gory reasons to do with cloning
 		this.setOptions(options);
 		this.setElement();
 	},
@@ -116,6 +117,20 @@ var FbElement =  new Class({
 		}
 	},
 	
+	renewChangeEvents: function () {
+		this.element.removeEvents('change');
+		this.changeEvents.each(function (js) {
+			this.addNewEventAux('change', js);
+		}.bind(this));
+	},
+	
+	addNewEventAux: function (action, js) {
+		this.element.addEvent(action, function (e) {
+			e.stop();
+			typeOf(js) === 'function' ? js.delay(0) : eval(js);
+		});
+	},
+	
 	addNewEvent: function (action, js) {
 		if (action === 'load') {
 			this.loadEvents.push(js);
@@ -125,14 +140,10 @@ var FbElement =  new Class({
 				this.element = $(this.strElement);
 			}
 			if (this.element) {
-				this.element.addEvent(action, function (e) {
-					e.stop();
-					var r = typeOf(js) === 'function' ? js.delay(0) :	eval(js);
-				});
-				
-				this.element.addEvent('blur', function (e) {
-					this.validate();
-				}.bind(this));
+				if (action === 'change') {
+					this.changeEvents.push(js);
+				}
+				this.addNewEventAux(action, js);
 			}
 		}
 	},
@@ -208,29 +219,39 @@ var FbElement =  new Class({
 	afterAjaxValidation: function () {
 		
 	},
-	
+
+	/**
+	 * run when the element is cloned in a repeat group
+	 */
 	cloned: function (c) {
-		//run when the element is cloned in a repeat group
+		this.renewChangeEvents();
 	},
 	
+	/**
+	 * run when the element is decloled from the form as part of a deleted repeat group
+	 */
 	decloned: function (groupid) {
-		//run when the element is decleled from the form as part of a deleted repeat group
 	},
 	
-	//get the wrapper dom element that contains all of the elements dom objects
+	/**
+	 * get the wrapper dom element that contains all of the elements dom objects
+	 */
 	getContainer: function ()
 	{
 		return typeOf(this.element) === 'null' ? false : this.element.getParent('.fabrikElementContainer');
 	},
 	
-	//get the dom element which shows the error messages
+	/**
+	 * get the dom element which shows the error messages
+	 */
 	getErrorElement: function ()
 	{
 		return this.getContainer().getElement('.fabrikErrorMessage');
 	},
 	
-	//get the fx to fade up/down element validation feedback text
-	
+	/**
+	 * get the fx to fade up/down element validation feedback text
+	 */
 	getValidationFx: function () {
 		if (!this.validationFX) {
 			this.validationFX = new Fx.Morph(this.getErrorElement(), {duration: 500, wait: true});

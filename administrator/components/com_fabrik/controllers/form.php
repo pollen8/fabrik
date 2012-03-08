@@ -155,7 +155,8 @@ class FabrikControllerForm extends JControllerForm
 			$page = "index.php?option=com_fabrik&task=list.view&cid[]=".$model->getlistModel()->getTable()->id;
 		}
 		// $$$ rob was redirecting back to admin list view and not list data view (list.view) 
-		//$page = JRequest::getVar('fabrik_referrer', $page);
+		// $$$ rob put back in as list views are now called using /administrator/index.php?option=com_fabrik&task=list.view&listid=1
+		$page = JRequest::getVar('fabrik_referrer', $page);
 		$this->setRedirect($page, $msg);
 	}
 }

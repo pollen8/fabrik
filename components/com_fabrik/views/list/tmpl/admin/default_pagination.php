@@ -111,21 +111,6 @@ function fabrik_pagination_list_render($list, $context)
 	} else {
 		$html .= "<div class=\"button2-left off\"><div class=\"end\">".$list['end']['data']."</div></div>";
 	}
-
-	// watch the nav buttons
-	$doc = JFactory::getDocument();
-	$doc->addScriptDeclaration(
-		"head.ready(function () {
-		Fabrik.addEvent('fabrik.block.added', function (block) {
-			if (block.options.listRef === '$context') {
-				block.form.getElement('.fabrikNav').getElements('a').addEvent('click', function (e) {
-					e.stop();
-					block.fabrikNav(e.target.get('href'));
-				});  
-			}
-		});
-		})"
-	);
 	return $html;
 }
 

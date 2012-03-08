@@ -66,7 +66,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if ($groupModel->isJoin()) {
 				$name = $this->getFullName(false, true, false);
 				$joinid = $groupModel->getGroup()->join_id;
-				$fdata = $_FILES['join']['name'][$joinid][$name];
+				$fileJoinData = JArrayHelper::getValue( $_FILES['join']['name'], $joinid, array());
+				$fdata = JArrayHelper::getValue($fileJoinData, $name);
+				//$fdata = $_FILES['join']['name'][$joinid][$name];
 			} else {
 				$fdata = @$_FILES[$fullName]['name'];
 			}
@@ -1132,7 +1134,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		if ($isjoin) {
 			if (!$groupModel->canRepeat()) {
-				$files = $files[0];
+				$files = JArrayHelper::getValue($files, 0, '');
 			}
 
 			$this->_form->updateFormData("join.{$joinid}.{$name}", $files);

@@ -3182,11 +3182,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$opts = new stdClass();
 		$data = $this->_form->_data;
 		$opts->repeatCounter = $repeatCounter;
-		if ($this->canView() && !$this->canUse()) {
-			$opts->editable = false;
-		} else {
-			$opts->editable = $this->_editable;
-		}
+		$opts->editable = ($this->canView() && !$this->canUse()) ? false : $this->_editable;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
@@ -3202,6 +3198,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			}
 		}
 		$opts->watchElements = $validationEls;
+		$groupModel = $this->getGroup();
+		$opts->canRepeat = (bool) $groupModel->canRepeat();
+		$opts->isGroupJoin = (bool) $groupModel->isJoin();
+		if ($this->isJoin())
+		{
+			$opts->joinid = (int) $this->getJoinModel()->getJoin()->id;
+		}
+		else
+		{
+			$opts->joinid = (int) $groupModel->getGroup()->join_id;
+		}
 		return $opts;
 	}
 
@@ -3802,7 +3809,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @param string container
 	 */
 
-	function _filterJS($normal, $container)
+	public function filterJS($normal, $container)
 	{
 		//overwritten in plugin
 	}

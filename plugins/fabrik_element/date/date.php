@@ -491,7 +491,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// $$$ rob - we shouldnt be ini'ing the calender js in form view as its done in the date.js file.
 		// Should ONLY be used for list filters.
 		//if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
-		if (JRequest::getVar('view') == 'list') {
+		
+		/* if (JRequest::getVar('view') == 'list') {
 			$script = array();
 			if (JRequest::getVar('format') !== 'raw')
 			{
@@ -505,7 +506,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$script[] = '});'; //end domready function
 			}
 			FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
-		}
+		} */
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_cal_img'));
 		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.$img;
@@ -727,7 +728,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				if (is_array($value)) {
 					//'date' should now contain the time, as we include in on js onsubmit() method
 					$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
-					/* echo "get value<pre> ";print_r($value);
+					/* 
 					//TIMEDATE option set - explode with space rather than comma
 					//url decode if it comes from ajax calendar form
 
@@ -797,52 +798,57 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * this builds an array containing the filters value and condition
 	 * If no date time option, then we change the filter into a ranged filter to search
 	 * the whole day for records.
-	 * @param string initial $value
+	 * @param string initial $value all filters should submit as sql format
 	 * @param string intial $condition
 	 * @param string eval - how the value should be handled
-	 * @return array (value condition) values should be in mySQL format
+	 * @return array (value condition) values in sql format
 	 */
 
 	function getFilterValue($value, $condition, $eval)
 	{
 		$params = $this->getParams();
 		$store_as_local = (int)$params->get('date_store_as_local', 0);
-		if (!$params->get('date_showtime', 0) || $store_as_local) {
+		if (!$params->get('date_showtime', 0) || $store_as_local)
+		{
 			$this->_resetToGMT = false;
 		}
 
 		$exactTime = $this->formatContainsTime($params->get('date_table_format'));
-
-		$filterType = $this->getElement()->filter_type;
-		switch ($filterType) {
+		$this->rangeFilterSet = false;
+		// $$$ rob if filtering in querystring and ranged value set then force filter type to range
+		$filterType = is_array($value) ? 'range' : $this->getElement()->filter_type;
+		switch ($filterType)
+		{
 			case 'range':
-				$value = (array)$value;
-				foreach ($value as &$v) {
-					$mysql = $this->tableDateToMySQL($v);
-					if ($mysql !== false) {
-						$v = $mysql;
-					}
-				}
+				// ranged dates should be sent in sql format
 				break;
 			case 'field':
 			case 'dropdown':
+			case 'auto-complete':
 			default:
-				if (!$params->get('date_showtime', 0) || $exactTime == false) {
-
-					//$$$ rob turn into a ranged filter to search the entire day
-					// values should be in table format and not mySQL as they are set to mySQL in getRangedFilterValue()
-					$value = (array)$value;
-					$condition = 'BETWEEN';
-					//$value[1] = date("Y-m-d H:i:s", strtotime($this->addDays($value[0], 1)) - 1);
-					$next = JFactory::getDate(strtotime($this->addDays($value[0], 1)) - 1);
-					$value[1] = $next->toFormat($params->get('date_table_format', '%Y-%m-%d'));
-				} else {
-					//$mysql = $this->tableDateToMySQL($value);
-					/* if ($mysql !== false) {
-					$value = $mysql;
-					} */
+				//odity when filtering from qs
+				$value = str_replace("'", '', $value);
+				
+				//allow for special filters such as 'now' 'tomorrow' etc
+				$value = JFactory::getDate($value)->toSql();
+				
+				// only set to a range if condition is matching (so dont set to range for < or > conditions)
+				if ($condition == 'contains' || $condition == '=' || $condition == 'REGEXP') {
+					if (!$params->get('date_showtime', 0) || $exactTime == false) {
+						//$$$ rob turn into a ranged filter to search the entire day
+						// values should be in sql format
+						$value = (array)$value;
+						$condition = 'BETWEEN';
+						
+						$next = JFactory::getDate(strtotime($this->addDays($value[0], 1)) - 1);
+						$value[1] = $next->toSql();
+						$value[0] = JFactory::getDate($value[0])->toSql();
+						
+						// set a flat to stop getRangedFilterValue from adding an additional day to end value
+						$this->rangeFilterSet = true;
+					}
 				}
-				break;
+			break;
 		}
 		$this->_resetToGMT = true;
 		$value = parent::getFilterValue($value, $condition, $eval);
@@ -906,20 +912,26 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		if (in_array($element->filter_type, array('dropdown'))) {
 			$rows = $this->filterValueList($normal);
 		}
-		$calOpts = array('class' => 'inputbox fabrik_filter', 'maxlength' => '19', 'size' => 16);
+		$calOpts = $this->filterCalendarOpts();
 		$return = array();
 		switch ($element->filter_type)
 		{
 			case "range":
 				FabrikHelperHTML::loadcalendar();
-				//@TODO: this messes up if the table date format is different to the form date format
-				if (empty($default)) {
+				if (empty($default))
+				{
 					$default = array('', '');
 				}
+				else
+				{
+					$default[0] = JFactory::getDate($default[0])->toFormat($format);
+					$default[1] = JFactory::getDate($default[1])->toFormat($format);
+				}
+				
 				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN') .
 				$this->calendar($default[0], $v.'[0]', $this->getHTMLId()."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
 				$return[] = '<br />'.JText::_('COM_FABRIK_DATE_RANGE_AND') .
-				$this->calendar($default[1], $v.'[1]', $this->getHTMLId()."_filter_range_1".JRequest::getVar('task'), $format, $calOpts);
+				$this->calendar($default[1], $v.'[1]', $this->getHTMLId()."_filter_range_1_".JRequest::getVar('task'), $format, $calOpts);
 
 				break;
 
@@ -930,19 +942,19 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				jimport('joomla.utilities.date');
 				$ddData = array();
 				foreach ($rows as $k => $o) {
-					if ($fabrikDb->getNullDate() === $o->text) {
+					if ($fabrikDb->getNullDate() === $o->text)
+					{
 						$o->text = '';
 						$o->value = '';
-					} else {
-
+					}
+					else
+					{
 						$d = new FabDate($o->text);
-						//@TODO add an option as to whether we format values or not (if records as timestamps we don't want to format the filter value as running
-						// the filter will result in no records found. see http://fabrikar.com/forums/showthread.php?t=10964
-
-						$o->value = $d->toFormat($format); //if we have a table format like %m-%d then we want to remove duplicate full times
+						$o->value = $d->toSql();
 						$o->text = $d->toFormat($format);
 					}
-					if (!array_key_exists($o->value, $ddData)) {
+					if (!array_key_exists($o->value, $ddData))
+					{
 						$ddData[$o->value] = $o;
 					}
 				}
@@ -954,16 +966,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			default:
 			case "field":
 				FabrikHelperHTML::loadcalendar();
-			if (is_array($default)) {
-				$default = array_shift($default);
-			}
-			if (get_magic_quotes_gpc()) {
-				$default = stripslashes($default);
-			}
-			$default = htmlspecialchars($default);
-
-			$return[] = $this->calendar($default, $v, $htmlid."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
-			break;
+				 if (is_array($default))
+				 {
+					$default = array_shift($default);
+				}
+				$default = JFactory::getDate($default)->toFormat($format);
+				$return[] = $this->calendar($default, $v, $htmlid . '_filter_range_0_' . JRequest::getVar('task'), $format, $calOpts);
+				break;
 
 			case 'hidden':
 				if (is_array($default)) {
@@ -983,7 +992,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
 				$return[] = '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
-				$autoId = '#listform_'.$listModel->getRenderContext().' .'.$id;
+				
+				$autoId = '#' . $htmlid . '-auto-complete';
 				if (!$normal) {
 					$autoId = '#advanced-search-table .autocomplete-trigger';
 				}
@@ -1101,13 +1111,21 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 		$exactTime = $this->formatContainsTime($params->get('date_table_format'));
 		if (!$params->get('date_showtime', 0) || $exactTime == false) {
-			// $$$ hugh - need to back this out by one second, otherwise we're including next day.
-			// So ... say we are searching from '2009-07-17' to '2009-07-21', the
-			// addDays(1) changes '2009-07-21 00:00:00' to '2009-07-22 00:00:00',
-			// but what we really want is '2009-07-21 23:59:59'
-			$value[1] = date("Y-m-d H:i:s", strtotime($this->addDays($value[1], 1)) - 1);
+			
+			// range values could already have been set in getFilterValue
+			if (!$this->rangeFilterSet)
+			{
+			
+				// $$$ hugh - need to back this out by one second, otherwise we're including next day.
+				// So ... say we are searching from '2009-07-17' to '2009-07-21', the
+				// addDays(1) changes '2009-07-21 00:00:00' to '2009-07-22 00:00:00',
+				// but what we really want is '2009-07-21 23:59:59'
+			
+				$value[1] = date("Y-m-d H:i:s", strtotime($this->addDays($value[1], 1)) - 1);
+			}
+			
 		}
-		$value = $db->Quote($value[0])." AND ".$db->Quote($value[1]);
+		$value = $db->Quote($value[0]) . ' AND ' . $db->Quote($value[1]);
 		$condition = 'BETWEEN';
 		return array($value, $condition);
 	}
@@ -1177,7 +1195,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$thePHPDate['mday'] = $thePHPDate['mday']+$add;
 		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'], $thePHPDate['year']);
 		$date = JFactory::getDate($v);
-		return $date->toMySQL($v);
+		return $date->toSQL($v);
 	}
 
 	/**
@@ -1503,6 +1521,51 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	public function fromXMLFormat($v)
 	{
 		return JFactory::getDate($v)->toSql();
+	}
+	
+	/**
+	* if used as a filter add in some JS code to watch observed filter element's changes
+	* when it changes update the contents of this elements dd filter's options
+	* @param bol is the filter a normal (true) or advanced filter
+	* @param string container
+	*/
+	
+	public function filterJS($normal, $container)
+	{
+		$element = $this->getElement();
+		if ($element->filter_type !== 'field' && $element->filter_type !== 'range')
+		{
+			return;
+		}
+		$htmlid = $this->getHTMLId();
+		$params = $this->getParams();
+		$id = $htmlid . '_filter_range_0_' . JRequest::getVar('task');
+		$id2 = $htmlid . '_filter_range_1_' . JRequest::getVar('task');
+		
+		$opts = $this->_CalendarJSOpts($id);
+		
+		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');
+		$opts->type = $element->filter_type;
+		$opts->ids = $element->filter_type == 'field' ? array($id) : array($id, $id2);
+		$opts->buttons = $element->filter_type == 'field' ? array($id . '_cal_img') : array($id . '_cal_img', $id2 . '_cal_img');
+		$opts = json_encode($opts);
+		
+		
+		//$this->calendar($default[0], $v.'[0]', $this->getHTMLId()."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
+		//$this->calendar($default[1], $v.'[1]', $this->getHTMLId()."_filter_range_1_".JRequest::getVar('task'), $format, $calOpts);
+		
+		
+		FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js');
+		return 'Fabrik.filter_'. $container. '.addFilter(\'' . $element->plugin . '\', new DateFilter(' . $opts . '));' . "\n";
+	}
+	
+	protected function filterCalendarOpts()
+	{
+		$params = $this->getParams();
+		$calOpts = array('class' => 'inputbox fabrik_filter', 'maxlength' => '19', 'size' => 16);
+		if ($params->get('date_allow_typing_in_field', true) == false) {
+			$calopts['readonly'] = 'readonly';
+		}
 	}
 }
 

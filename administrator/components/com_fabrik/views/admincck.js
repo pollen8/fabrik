@@ -27,7 +27,7 @@ var adminCCK = new Class({
 		Fabrik.addBlock('cck', this);
 		this.form.options.ajax = true;
 		// get the form to emulate being in a module
-		document.getElement('input[name=_packageId]').value = '-1';
+		document.getElement('input[name=packageid]').value = '-1';
 	},
 
 	insertTag : function (json) {
