@@ -4691,7 +4691,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$ok = $this->insertObject($table->db_table_name, $oRecord, $primaryKey, false);
 		} else {
-			$ok = $this->updateObject($table->db_table_name, $oRecord, $primaryKey, false);
+			$ok = $this->updateObject($table->db_table_name, $oRecord, $primaryKey, true);
 		}
 		$this->_tmpSQL = $fabrikDb->getQuery();
 		if (!$ok) {
@@ -4717,10 +4717,12 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = $this->getDb();
 		$secret = JFactory::getConfig()->getValue('secret');
-		$fmtsql = 'UPDATE '.$db->nameQuote($table).' SET %s WHERE %s';
+		$fmtsql = 'UPDATE ' . $db->nameQuote($table) . ' SET %s WHERE %s';
 		$tmp = array();
-		foreach (get_object_vars($object) as $k => $v) {
-			if( is_array($v) or is_object($v) or $k[0] == '_') {
+		foreach (get_object_vars($object) as $k => $v)
+		{
+			if (is_array($v) or is_object($v) or $k[0] == '_')
+			{
 				// internal or NA field
 				continue;
 			}
@@ -4731,15 +4733,21 @@ class FabrikFEModelList extends JModelForm {
 			}
 			if ($v === null)
 			{
-				if ($updateNulls) {
+				if ($updateNulls)
+				{
 					$val = 'NULL';
-				} else {
+				}
+				else
+				{
 					continue;
 				}
-			} else {
+			}
+			else
+			{
 				$val = $db->isQuoted($k) ? $db->Quote($v) : (int) $v;
 			}
-			if (in_array($k, $this->encrypt)) {
+			if (in_array($k, $this->encrypt))
+			{
 				$val = "AES_ENCRYPT($val, '$secret')";
 			}
 			$tmp[] = $db->nameQuote($k) . '=' . $val;

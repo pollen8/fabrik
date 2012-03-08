@@ -1084,7 +1084,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$listModel->setBigSelects();
 		$item = $listModel->getTable();
 		$origTableName = $item->db_table_name;
-		$origTableKey	= $item->db_primary_key;
+		$origTableKey = $item->db_primary_key;
 		$pluginManager = FabrikWorker::getPluginManager();
 
 		// COPY function should create new records
@@ -1516,7 +1516,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				//check if the data gets inserted on update
 				$v = $elementModel->getValue($data);
 				//currently only field password elements return true and file uploads when no file selected
-				if ($elementModel->ignoreOnUpdate( $v)) {
+				if ($elementModel->ignoreOnUpdate($v)) {
 					$fullName = $elementModel->getFullName(false, true, true);
 					unset($data['join'][$groupTable->join_id][$fullName]);
 					if (array_key_exists($element->name, $data)) {
