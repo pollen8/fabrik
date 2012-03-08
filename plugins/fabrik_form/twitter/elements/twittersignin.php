@@ -41,19 +41,18 @@ class JFormFieldTwittersignin extends JFormField
 
 	function getInput()
 	{
-		//$id 			= ElementHelper::getId($this, $control_name, $name);
-		//$fullName = ElementHelper::getFullName($this, $control_name, $name);
 		$iframeid = $this->id.'_iframe';
 		$cid = JRequest::getVar('id', array(), 'array');
 		// $$$ hugh - when creating a new form, no 'cid' ... not sure what to do, so just set it to 0.  Should
 		// prolly just return something like 'available after save' ?
-		if (!empty($cid)) {
+		if (!empty($cid))
+		{
 			$cid = (int)$cid[0];
 		}
-		else {
+		else
+		{
 			$cid = 0;
 		}
-		//$c = (int)$this->getRepeatCounter();
 		$c = isset($this->form->repeatCounter) ? (int)$this->form->repeatCounter : 0;
 
 

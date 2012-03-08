@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-form-twitter">
+		<fieldset name="plg-form-twitter" addfieldpath="/plugins/fabrik_form/twitter/elements">
 			<field description="PLG_FORM_TWITTER_CONSUMER_KEY_DESC" label="PLG_FORM_TWITTER_CONSUMER_KEY_LABEL" name="twitter_consumer_key" repeat="true" size="30" type="text"/>
 			
 			<field description="PLG_FORM_TWITTER_CONSUMER_SECRET_KEY_DESC" label="PLG_FORM_TWITTER_CONSUMER_SECRET_KEY_LABEL" name="twitter_consumer_secret" repeat="true" size="30" type="text"/>
 				
-					
 			<field default="" description="PLG_FORM_TWITTERMSGFIELD_DESC" label="PLG_FORM_TWITTERMSGFIELD_LABEL" name="twitter_msg_field" onlytablefields="0" repeat="true" type="listfields"/>
 				
 			<field cols="30" description="PLG_FORM_TWITTERTMPLFIELD_DESC" label="PLG_FORM_TWITTERTMPLFIELD_LABEL" name="twitter_msg_tmpl" repeat="true" rows="6" type="textarea"/>
