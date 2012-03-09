@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_subs_payment_gateways` (
 );
 
 
-CREATE TABLE IF NOT EXISTS `'#__fabrik_subs_plan_billing_cycle` (
+CREATE TABLE IF NOT EXISTS `#__fabrik_subs_plan_billing_cycle` (
   `id` int(11) NOT NULL auto_increment,
   `plan_id` int(6) NOT NULL,
   `duration` int(6) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_subs_subscriptions` (
   KEY `fb_order_signup_date_INDEX` (`signup_date`)
 );
 
-CREATE TABLE IF NOT EXISTS `jos_fabrik_subs_users` (
+CREATE TABLE IF NOT EXISTS `#__fabrik_subs_users` (
   `id` int(6) NOT NULL auto_increment,
   `time_date` datetime default NULL,
   `userid` varchar(255) default NULL,
