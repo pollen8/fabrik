@@ -309,6 +309,16 @@ var FbList = new Class({
 		Fabrik.addEvent('fabrik.form.submitted', function () {
 			this.updateRows();
 		}.bind(this));
+		
+		/**
+		 * once an ajax form has been submitted lets clear out any loose events and the form object itself
+		 */
+		Fabrik.addEvent('fabrik.form.ajax.submit.end', function (form) {
+			form.formElements.each(function (el) {
+				el.removeCustomEvents();
+			});
+			delete Fabrik.blocks['form_' + form.id];
+		});
 	},
 
 	setRowTemplate: function () {

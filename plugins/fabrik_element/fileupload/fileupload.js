@@ -8,9 +8,11 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 		
-		Fabrik.addEvent('fabrik.form.submit.start', function (form, json) {
+		this.submitEvent = function (form, json) {
 			this.onSubmit(form);
-		}.bind(this));
+		}.bind(this);
+		
+		Fabrik.addEvent('fabrik.form.submit.start', this.submitEvent);
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
@@ -37,6 +39,15 @@ var FbFileUpload = new Class({
 		}
 	},
 
+	/**
+	 * when in ajax form, on submit the list will call this, so we can remove the submit event
+	 * if we dont do that, upon a second form submission the original submitEvent is used causing a js error
+	 * as it still references the files uploaded in the first form
+	 */
+	removeCustomEvents: function () {
+		Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
+	},
+	
 	cloned : function () {
 		// replaced cloned image with default image
 		if (typeOf(this.element.getParent('.fabrikElement')) === 'null') {

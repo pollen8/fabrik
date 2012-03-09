@@ -117,6 +117,13 @@ var FbElement =  new Class({
 		}
 	},
 	
+	/** 
+	 * called from list when ajax form closed
+	 * fileupload needs to remove its onSubmit event
+	 * othewise 2nd form submission will use first forms event
+	 */
+	removeCustomEvents: function () {},
+	
 	renewChangeEvents: function () {
 		this.element.removeEvents('change');
 		this.changeEvents.each(function (js) {
