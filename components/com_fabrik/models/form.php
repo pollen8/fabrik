@@ -1253,7 +1253,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 					$joinGroup->publishedElements = array();
 					$joinGroup->publishedElements[''] = array($elementModel, $idElementModel, $parentElement);
-					echo "<pre>repeat totals = ";print_r($repeatTotals);echo "group id = $oJoin->group_id ";
+					//echo "<pre>repeat totals = ";print_r($repeatTotals);echo "group id = $oJoin->group_id ";
 					//$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = count($repeatTotals[$oJoin->group_id]) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
 					$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = JArrayHelper::getValue($repeatTotals, $oJoin->group_id, 0) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
 					$this->groups[] = $joinGroup;
@@ -3611,7 +3611,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	public function isEditable() {
 		return $this->_editable;
 	}
-	
+
 	/**
 	 * helper method to get the session redirect key. Redirect plugin stores this
 	 * other form plugins such as twitter or paypal may need to query the session to perform the final redirect
@@ -3621,7 +3621,7 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 	public function getRedirectContext()
 	{
 		return 'com_fabrik.form.' . $this->getId() . '.redirect.';
-		
+
 	}
 }
 
