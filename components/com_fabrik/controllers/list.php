@@ -32,18 +32,10 @@ class FabrikControllerList extends JController
 
 	function display($model = null)
 	{
-
-		//menu links use fabriklayout parameters rather than layout
-		$flayout = JRequest::getVar('fabriklayout');
-		if ($flayout != '') {
-			JRequest::setVar('layout', $flayout);
-		}
-
 		$document = JFactory::getDocument();
-
-		$viewName	= JRequest::getVar('view', 'list', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'list', 'default', 'cmd');
 		$modelName = $viewName;
-		$layout		= JRequest::getWord('layout', 'default');
+		$layout = JRequest::getWord('layout', 'default');
 
 		$viewType	= $document->getType();
 

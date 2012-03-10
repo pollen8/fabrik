@@ -55,11 +55,6 @@ class FabrikControllerForm extends JController
 	function display()
 	{
 		$session = JFactory::getSession();
-		//menu links use fabriklayout parameters rather than layout
-		$flayout = JRequest::getVar('fabriklayout');
-		if ($flayout != '') {
-			JRequest::setVar('layout', $flayout);
-		}
 		$document = JFactory::getDocument();
 
 		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
@@ -191,14 +186,14 @@ class FabrikControllerForm extends JController
 			);
 			if (!$this->baseRedirect && $this->isMambot) {
 				$session = JFactory::getSession();
-				$context = 'com_fabrik.form.'.$model->get('id').'.redirect.';
-				$redirect_opts['redirect_how'] = $session->get($context.'redirect_content_how', 'popup');
-				$redirect_opts['width'] = (int)$session->get($context.'redirect_content_popup_width', '300');
-				$redirect_opts['height'] = (int)$session->get($context.'redirect_content_popup_height', '300');
-				$redirect_opts['x_offset'] = (int)$session->get($context.'redirect_content_popup_x_offset', '0');
-				$redirect_opts['y_offset'] = (int)$session->get($context.'redirect_content_popup_y_offset', '0');
-				$redirect_opts['title'] = $session->get($context.'redirect_content_popup_title', '');
-				$redirect_opts['reset_form'] = $session->get($context.'redirect_content_reset_form', '1') == '1';
+				$context = $model->getRedirectContext();
+				$redirect_opts['redirect_how'] = $session->get($context . 'redirect_content_how', 'popup');
+				$redirect_opts['width'] = (int)$session->get($context . 'redirect_content_popup_width', '300');
+				$redirect_opts['height'] = (int)$session->get($context . 'redirect_content_popup_height', '300');
+				$redirect_opts['x_offset'] = (int)$session->get($context . 'redirect_content_popup_x_offset', '0');
+				$redirect_opts['y_offset'] = (int)$session->get($context . 'redirect_content_popup_y_offset', '0');
+				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
+				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
 			//let form.js handle the redirect logic (will also send out a
 			echo json_encode($redirect_opts);
@@ -223,7 +218,7 @@ class FabrikControllerForm extends JController
 	protected function getRedirectMessage($model)
 	{
 		$session = JFactory::getSession();
-		$registry	= $session->get('registry');
+		$registry = $session->get('registry');
 		$formdata = $session->get('com_fabrik.form.data');
 		//$$$ rob 30/03/2011 if using as a search form don't show record added message
 		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id')) {
@@ -231,7 +226,8 @@ class FabrikControllerForm extends JController
 		} else {
 			$msg = '';
 		}
-		$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
+		//$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
+		$context = $model->getRedirectContext();
 		$smsg = $session->get($context.'msg', array($msg));
 		if (!is_array($smsg)) {
 			$smsg = array($smsg);
@@ -313,7 +309,7 @@ class FabrikControllerForm extends JController
 		}
 		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
-		$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
+		$context = $model->getRedirectContext();
 		//if the redirect plug-in has set a url use that in preference to the default url
 		//$surl = $session->get($context.'url', array($url));
 		$surl = $session->get($context.'url', array());

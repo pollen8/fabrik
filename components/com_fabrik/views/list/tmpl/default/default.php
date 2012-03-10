@@ -90,8 +90,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 			$gCounter++;
 			}?>
 		</table>
-		<?php	print_r($this->hiddenFields);?>
+		<?php print_r($this->hiddenFields);?>
 	</div>
 </div>
-
 </form>

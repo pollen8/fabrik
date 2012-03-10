@@ -26,11 +26,17 @@
 				<option value="1">JYES</option>
 			</field>
 			
-			<field name="fabriklayout" type="folderlist" 
+			<!-- <field name="fabriklayout" type="folderlist" 
+				directory="/components/com_fabrik/views/list/tmpl/"
+				label="Template" 
+				descrption="The table template to use" /> -->
+				
+				
+			<field name="listlayout" type="folderlist" 
 				directory="/components/com_fabrik/views/list/tmpl/"
 				label="Template" 
 				descrption="The table template to use" />
-			
+				
 			<field name="resetfilters" type="radio" default="0" 
 				label="Reset filters" 
 				description="Reset any applied filters when clicking on the link">
