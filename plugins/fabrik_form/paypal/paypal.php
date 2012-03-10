@@ -315,7 +315,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		// as the preferred redirect url
 
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.'.$formModel->getId().'.redirect.';
+		$context = $formModel->getRedirectContext();
 
 		// $$$ hugh - fixing issue with new redirect, which now needs to be an array.
 		// Not sure if we need to preserve existing session data, or just create a new surl array,
