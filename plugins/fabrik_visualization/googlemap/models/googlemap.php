@@ -82,7 +82,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 	{
 		if (!isset($this->listids)) {
 			$params = $this->getParams();
-			$this->listids = $params->get('googlemap_table', array(), '_default', 'array');
+			$this->listids = (array) $params->get('googlemap_table');
 		}
 	}
 
@@ -95,7 +95,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 	{
 		$params = $this->getParams();
 		$lines = array();
-		$polyelements = $params->get('fb_gm_polyline_element', array(), '_default', 'array');
+		$polyelements = (array) $params->get('fb_gm_polyline_element');
 		$listModels = $this->getlistModels();
 		$c = 0;
 		foreach ($listModels as $listModel) {

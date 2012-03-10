@@ -81,8 +81,8 @@ class fabrikViewGooglemap extends JView
 		//if ((int)$params->get('fb_gm_use_overlays', 0) === 1 &&  (int)$params->get('fb_gm_use_overlays_sidebar', 0) > 0) {
 		if ($this->get('ShowSideBar')) {
 			$this->assign('showSidebar', 1);
-			$this->assign('overlayUrls', $params->get('fb_gm_overlay_urls', array(), '_default', 'array'));
-			$this->assign('overlayLabels', $params->get('fb_gm_overlay_labels', array(), '_default', 'array'));
+			$this->assign('overlayUrls', (array) $params->get('fb_gm_overlay_urls'));
+			$this->assign('overlayLabels', (array) $params->get('fb_gm_overlay_labels'));
 		} else {
 			$this->assign('showSidebar', 0);
 		}
