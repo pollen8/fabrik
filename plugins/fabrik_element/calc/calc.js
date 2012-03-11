@@ -98,13 +98,6 @@ var FbCalc = new Class({
 	
 	cloned: function (c) {
 		this.parent(c);
-		var newObserves = [];
-		this.options.observe.each(function (o) {
-			var n = (o.test(/_(\d+)$/)) ? o.replace(/_(\d+)$/, '_' + c) : o + '_' + c;
-			newObserves.push(n);
-		});
-		this.options.observe = newObserves;
 		this.attachedToForm();
-		
 	}
 });

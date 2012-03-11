@@ -41,19 +41,18 @@ class JFormFieldTwittersignin extends JFormField
 
 	function getInput()
 	{
-		//$id 			= ElementHelper::getId($this, $control_name, $name);
-		//$fullName = ElementHelper::getFullName($this, $control_name, $name);
 		$iframeid = $this->id.'_iframe';
 		$cid = JRequest::getVar('id', array(), 'array');
 		// $$$ hugh - when creating a new form, no 'cid' ... not sure what to do, so just set it to 0.  Should
 		// prolly just return something like 'available after save' ?
-		if (!empty($cid)) {
+		if (!empty($cid))
+		{
 			$cid = (int)$cid[0];
 		}
-		else {
+		else
+		{
 			$cid = 0;
 		}
-		//$c = (int)$this->getRepeatCounter();
 		$c = isset($this->form->repeatCounter) ? (int)$this->form->repeatCounter : 0;
 
 
@@ -67,8 +66,8 @@ class JFormFieldTwittersignin extends JFormField
 
 		$js = "window.open('$href', 'twitterwins', 'width=800,height=460,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');return false;";
 		$str =  '<a href="#" onclick="'.$js.'"><img src="'.COM_FABRIK_LIVESITE.'components/com_fabrik/libs/abraham-twitteroauth/images/lighter.png" alt="Sign in with Twitter"/></a>';
-		$str .= " | <a href=\"#\" onclick=\"$clearjs\">" .    JText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</a><br/>";
-		$str .= "<br /><input type=\"text\" readonly=\"readonly\" name=\"". $this->name . "\" id=\"" .$this->id . "\" value=\"" . $this->value . "\" />";
+		$str .= " | <button class=\"button\" href=\"#\" onclick=\"$clearjs\">" .    JText::_('PLG_FORM_TWITTER_CLEAR_CREDENTIALS') . "</button><br/>";
+		$str .= "<br /><input type=\"hidden\" readonly=\"readonly\" name=\"". $this->name . "\" id=\"" .$this->id . "\" value=\"" . $this->value . "\" />";
 		return $str;
 	}
 }

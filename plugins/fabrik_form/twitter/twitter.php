@@ -114,7 +114,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$app = JFactory::getApplication();
 		/* If method is set change API call made. Test is called by default. */
 		$content = $connection->get('account/rate_limit_status');
-		echo "Current API hits remaining: {$content->remaining_hits}.";
+		//echo "Current API hits remaining: {$content->remaining_hits}.";
 
 		if ($content->remaining_hits <= 0)
 		{
@@ -128,6 +128,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$parameters = array('status' => $msg);
 		$status = $connection->post('statuses/update', $parameters);
 		$show_success = (int)$session->get('com_fabrik.form.twitter.showmessage', 0);
+		
 		switch ($connection->http_code)
 		{
 			case '200':
@@ -140,7 +141,9 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 			default:
 				JError::raiseNotice(JText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
 		}
-		$url = $session->get('com_fabrik.form.'.$formdata['fabrik'].'.redirect.url', array($url));
+		$url = JRequest::getVar('fabrik_referrer', '');
+		$context = $this->formModel->getRedirectContext();
+		$url = $session->get($context . 'url', array($url));
 		$url = array_shift($url);
 		$app->redirect($url);
 	}
@@ -307,24 +310,13 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$consumer_secret = (array)$params->get('twitter_consumer_secret');
 		$consumer_secret = $consumer_secret[$counter];
 
-		// $this->row not set ?! so this callback url was giving notices
-		//$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
-		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='.$formModel->getId();
+		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='.$formModel->getId();
 		$callback .= "&repeatCounter=". JRequest::getInt('repeatCounter');
 
 		if (!function_exists('curl_init'))
 		{
 			JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_CURL'));
 			return;
-		}
-		if ($consumer_key == '')
-		{
-			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'));
-		}
-
-		if ($consumer_secret == '')
-		{
-			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'));
 		}
 
 		/* Build TwitterOAuth object with client credentials. */

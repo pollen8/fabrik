@@ -128,13 +128,17 @@ var DateFilter = new Class({
 	
 	onSubmit: function () {
 		this.cals.each(function (c) {
-			c.params.inputField.value = c.date.format('db'); 
+			if (c.params.inputField.value !== '') {
+				c.params.inputField.value = c.date.format('db');
+			}
 		}.bind(this));
 	},
 	
 	onUpdateData: function () {
 		this.cals.each(function (c) {
-			this.update(c, c.date); 
+			if (c.params.inputField.value !== '') {
+				this.update(c, c.date); 
+			}
 		}.bind(this));
 	}
 });

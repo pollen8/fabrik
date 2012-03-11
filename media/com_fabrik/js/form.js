@@ -951,6 +951,13 @@ var FbForm = new Class({
 			e.stop();
 			// update global status error
 			this.updateMainError();
+		} else {
+			/**
+			 * enables the list to clean up the form and custom events
+			 */
+			if (this.options.ajax) {
+				Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
+			}
 		}
 	},
 

@@ -22,14 +22,14 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	/**
 	 * process the plugin, called afer form is submitted
 	 *
-	 * @param object $params (with the current active plugin values in them)
-	 * @param object form
+	 * @param	object	$params (with the current active plugin values in them)
+	 * @param	object	form model
 	 */
 
 	function onLastProcess($params, &$formModel)
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.' . $formModel->get('id') . '.redirect.';
+		$context = $formModel->getRedirectContext();
 		//get existing session params
 		$surl = (array)$session->get($context . 'url', array());
 		$stitle = (array)$session->get($context . 'title', array());

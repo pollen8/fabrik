@@ -144,6 +144,15 @@ var Loader = new Class({
 		//build its window.
 		Fabrik.iconGen = new IconGenerator({scale: 0.5});
 		
+		Fabrik.removeEvent = function (type, fn) {
+			if (Fabrik.events[type]) {
+				var index = Fabrik.events[type].indexOf(fn);
+				if (index !== -1) {
+					delete Fabrik.events[type][index];
+				}
+			}
+		};
+		
 		//events test: replacing window.addEvents as they are reset when you reload mootools in ajax window.
 		// need to load mootools in ajax window otherwise Fabrik classes dont correctly load
 		Fabrik.addEvent = function (type, fn) {
