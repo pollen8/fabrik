@@ -901,7 +901,7 @@ var FbForm = new Class({
 							Fabrik.loader.stop('form_' + this.id);
 							var saved_msg = json.msg !== undefined ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
-								clear_form = json.clear_form;
+								clear_form = json.reset_form;
 								if (json.url !== undefined) {
 									if (json.redirect_how === 'popup') {
 										var width = json.width ? json.width : 400;
@@ -923,6 +923,7 @@ var FbForm = new Class({
 									alert(saved_msg);
 								}
 							} else {
+								clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
 								alert(saved_msg);
 							}
 							//query the list to get the updated data
