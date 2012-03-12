@@ -315,7 +315,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		// as the preferred redirect url
 
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.'.$formModel->getId().'.redirect.';
+		$context = $formModel->getRedirectContext();
 
 		// $$$ hugh - fixing issue with new redirect, which now needs to be an array.
 		// Not sure if we need to preserve existing session data, or just create a new surl array,
@@ -533,7 +533,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 								$set_list[$ipn_address_field] = $buyer_address;
 							}
 							$ipn = $this->getIPNHandler($params, $renderOrder);
-							/*$php_file = $params->get('paypal_run_php_file', array(), '_default', 'array');
+							/*$php_file = (array) $params->get('paypal_run_php_file');
 							 $php_file = JFilterInput::clean($php_file[$renderOrder], 'CMD');
 							 $php_file = empty($php_file) ? '' : COM_FABRIK_FRONTEND.DS.'plugins'.DS.'form'.DS.'fabrikpaypal'.DS.'scripts'.DS.$php_file;
 							 if (!empty($php_file) && file_exists($php_file)) {*/
@@ -581,9 +581,9 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 			}
 		}
 
-		$receive_debug_emails = $params->get('paypal_receive_debug_emails', array(), '_default', 'array');
+		$receive_debug_emails = (array) $params->get('paypal_receive_debug_emails');
 		$receive_debug_emails = $receive_debug_emails[$renderOrder];
-		$send_default_email = $params->get('paypal_send_default_email', array(), '_default', 'array');
+		$send_default_email = (array) $params->get('paypal_send_default_email');
 		$send_default_email = $send_default_email[$renderOrder];
 		if ($status != 'ok') {
 			foreach ($_POST as $key => $value) {
@@ -635,7 +635,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 	protected function getIPNHandler($params, $renderOrder = 0)
 	{
-		$php_file = $params->get('paypal_run_php_file', array(), '_default', 'array');
+		$php_file = (array) $params->get('paypal_run_php_file');
 		$php_file = JFilterInput::clean($php_file[$renderOrder], 'CMD');
 		$php_file = empty($php_file) ? '' : 'plugins'.DS.'fabrik_form'.DS.'paypal'.DS.'scripts'.DS.$php_file;
 		if (!empty($php_file) && file_exists($php_file)) {

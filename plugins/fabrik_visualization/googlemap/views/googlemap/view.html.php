@@ -21,10 +21,8 @@ class fabrikViewGooglemap extends JView
 
 		$js = $model->getJs();
 		$this->txt = $model->getText();
-		$this->params = $model->getParams();
-
-		$params = $model->getPluginParams();
-		$this->assignRef('params', $params);
+		$params = $model->getParams();
+		$this->assign('params', $params);
 		$tmpl = $params->get('fb_gm_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'googlemap'.DS.'views'.DS.'googlemap'.DS.'tmpl'.DS.$tmpl;
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
@@ -78,12 +76,14 @@ class fabrikViewGooglemap extends JView
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$this->assign('sidebarPosition', $params->get('fb_gm_use_overlays_sidebar'));
-		//if ((int)$params->get('fb_gm_use_overlays', 0) === 1 &&  (int)$params->get('fb_gm_use_overlays_sidebar', 0) > 0) {
-		if ($this->get('ShowSideBar')) {
+		if ($this->get('ShowSideBar'))
+		{
 			$this->assign('showSidebar', 1);
-			$this->assign('overlayUrls', $params->get('fb_gm_overlay_urls', array(), '_default', 'array'));
-			$this->assign('overlayLabels', $params->get('fb_gm_overlay_labels', array(), '_default', 'array'));
-		} else {
+			$this->assign('overlayUrls', (array) $params->get('fb_gm_overlay_urls'));
+			$this->assign('overlayLabels', (array) $params->get('fb_gm_overlay_labels'));
+		}
+		else
+		{
 			$this->assign('showSidebar', 0);
 		}
 
@@ -91,7 +91,6 @@ class fabrikViewGooglemap extends JView
 
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('grouptemplates', $this->get('GroupTemplates'));
-
 		echo parent::display($template);
 	}
 

@@ -195,7 +195,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 	{
 		if (!isset($this->listids)) {
 			$params = $this->getParams();
-			$this->listids = $params->get('fusion_gantt_chart_table', array(), '_default', 'array');
+			$this->listids = (array) $params->get('fusion_gantt_chart_table');
 		}
 	}
 

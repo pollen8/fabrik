@@ -40,7 +40,7 @@ class fabrikViewChart extends JView
     $this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$pluginParams = $model->getPluginParams();
-		$this->assignRef('params', $pluginParams);
+		$this->assignRef('params', $model->getParams());
 		$tmpl = $pluginParams->get('chart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'chart'.DS.'views'.DS.'chart'.DS.'tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);

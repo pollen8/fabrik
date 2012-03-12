@@ -236,9 +236,9 @@ EOD;
 				$image = '&nbsp;'. JText::_('JGLOBAL_PRINT');
 			}
 			if ($params->get('popup', 1)) {
-				$ahref = '<a href="javascript:void(0)" onclick="javascript:window.print(); return false" title="' . JText::_('COM_FABRIK_PRINT') . '">';
+				$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="' . JText::_('COM_FABRIK_PRINT') . '">';
 			} else {
-				$ahref = "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('COM_FABRIK_PRINT') . "\">";
+				$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('COM_FABRIK_PRINT') . "\">";
 			}
 			$return = $ahref .
 			$image .
@@ -649,8 +649,8 @@ EOD;
 			return false;
 		}
 		if (class_exists('JSite')) {
-			$menus	= &JSite::getMenu();
-			$menu	= $menus->getActive();
+			$menus = JSite::getMenu();
+			$menu = $menus->getActive();
 			//popup menu item so not in ajax loaded page even if tmpl=component
 			// $$$ hugh - nope, browserNav of '1' is not a popup, just a new tab, see ...
 			// http://fabrikar.com/forums/showthread.php?p=111771#post111771

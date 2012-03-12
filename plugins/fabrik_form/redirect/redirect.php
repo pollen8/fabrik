@@ -318,26 +318,18 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 				}
 			}
 
-			$session = JFactory::getSession();
-			$registry = $session->get('registry');
-
 			//clear registry search form entries
 			$key = 'com_fabrik.searchform';
-			//test for this err - http://fabrikar.com/forums/showthread.php?t=14149&page=3
-			if (is_a($registry, 'JRegistry')) {
-				$registry->setValue($key, null);
-			}
-			//$session->destroy();
 
 			$listModel = $formModel->getlistModel();
 			//check for special fabrik_list_filter_all element!
-			$searchAll = JRequest::getVar($listModel->getTable()->db_table_name .'___fabrik_list_filter_all');
-
-			$registry->setValue('com_fabrik.searchform.form'.$formModel->get('id').'.searchall', $searchAll);
-
-			$registry->setValue('com_fabrik.searchform.form'.$formModel->get('id').'.filters', $store);
-
-			$registry->setValue('com_fabrik.searchform.fromForm', $formModel->get('id'));
+			$searchAll = JRequest::getVar($listModel->getTable()->db_table_name . '___fabrik_list_filter_all');
+			
+			$app->setUserState('com_fabrik.searchform.form' . $formModel->get('id') . '.searchall', $searchAll);
+			$app->setUserState($key, $id);
+			
+			$app->setUserState('com_fabrik.searchform.form' . $formModel->get('id') . '.filters', $store);
+			$app->setUserState('com_fabrik.searchform.fromForm', $formModel->get('id'));
 
 		}
 	}

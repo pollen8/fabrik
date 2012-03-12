@@ -209,11 +209,10 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		}
 		$url .= implode('&', $qs);
 		// $$$ rob 04/02/2011 no longer doing redirect from ANY plugin EXCEPT the redirect plugin
-		// - instead a session var is set (com_fabrik.form.X.redirect.url)
-		// as the preferred redirect url
+		// - instead a session var is set as the preferred redirect url
 
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.' . $formModel->getId() . '.redirect.';
+		$context = $formModel->getRedirectContext();
 
 		// $$$ hugh - fixing issue with new redirect, which now needs to be an array.
 		// Not sure if we need to preserve existing session data, or just create a new surl array,

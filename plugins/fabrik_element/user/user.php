@@ -95,14 +95,14 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				{
 					$id = $this->getValue($data, $repeatCounter);
 				}
-				$user = $id === '' ? JFactory::getUser() : JFactory::getUser($id);
+				$id = is_array($id) ? $id[0] : $id;
+				$user = $id === '' ? JFactory::getUser() : JFactory::getUser((int)$id);
 			}
 		}
 
 		// if the table database is not the same as the joomla database then
 		// we should simply return a hidden field with the user id in it.
 		if (!$this->inJDb()) {
-
 			return $this->_getHiddenField($name, $user->get('id'), $html_id);
 		}
 		$str = '';

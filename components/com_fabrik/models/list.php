@@ -6848,8 +6848,12 @@ class FabrikFEModelList extends JModelForm {
 			if ($this->tmpl == '') {
 				$this->tmpl = 'default';
 			}
-			if ($app->scope !== 'mod_fabrik_list') {
+			if ($app->scope !== 'mod_fabrik_list')
+			{
 				$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
+				// $$$ rob 10/03/2012 changed menu param to listlayout to avoid the list menu item 
+				// options also being used for the form/details view template
+				$this->tmpl = FabrikWorker::getMenuOrRequestVar('listlayout', $this->tmpl, $this->isMambot);
 			}
 			// if we are mobilejoomla.com system plugin to detect smartphones
 			if (JRequest::getVar('mjmarkup') == 'iphone') {

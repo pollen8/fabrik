@@ -31,6 +31,7 @@ class fabrikViewMedia extends JView
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
+		$this->assign('params', $model->getParams());
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('media_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'media'.DS.'views'.DS.'media'.DS.'tmpl'.DS.$tmpl;
