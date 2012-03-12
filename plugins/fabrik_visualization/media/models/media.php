@@ -123,7 +123,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization {
 	{
 		if (!isset($this->listids)) {
 			$params = $this->getParams();
-			$this->listids = $params->get('media_table', array(), '_default', 'array');
+			$this->listids = (array) $params->get('media_table');
 		}
 	}
 }

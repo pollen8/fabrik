@@ -35,14 +35,8 @@ class FabrikControllerDetails extends JController
 	function display()
 	{
 		$session = JFactory::getSession();
-		//menu links use fabriklayout parameters rather than layout
-		$flayout = JRequest::getVar('fabriklayout');
-		if ($flayout != '') {
-			JRequest::setVar('layout', $flayout);
-		}
 		$document = JFactory::getDocument();
-
-		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$modelName = $viewName;
 		if ($viewName == 'emailform') {
 			$modelName = 'form';

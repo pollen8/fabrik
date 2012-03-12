@@ -33,7 +33,7 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
 	 * @return bol true if validation passes, false if fails
 	 */
 
-	function validate($data, &$element, $c)
+	function validate($data, &$elementModel, $c)
 	{
 		//for multiselect elements
 		if (is_array($data)) {
@@ -43,7 +43,7 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
 		$domatch = $params->get('php-match');
 		$domatch = $domatch[$c];
 		if ($domatch) {
-			$formModel = $element->getFormModel();
+			$formModel = $elementModel->getFormModel();
 			$php_code = $params->get('php-code');
 			$retval = eval($php_code[$c]);
 			return $retval;
