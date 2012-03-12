@@ -249,6 +249,18 @@ var FbDateTime = new Class({
 		return v.format('db');
 	},
 	
+	hasSeconds: function () {
+		if (this.options.showtime === true && this.timeElement) {
+			if (this.options.dateTimeFormat.contains('%S')) {
+				return true;
+			}
+			if (this.options.dateTimeFormat.contains('%T')) {
+				return true;
+			}
+		}
+		return false;
+	},
+	
 	setTimeFromField: function (d) {
 		if (this.options.showtime === true && this.timeElement) {
 			var t = this.timeElement.get('value').split(':');
@@ -258,11 +270,17 @@ var FbDateTime = new Class({
 			d.setHours(h);
 			d.setMinutes(m);
 			
-			if (t[2]) {
+			if (t[2] && this.hasSeconds()) {
 				var s = t[2] ? t[2].toInt() : 0;
 				d.setSeconds(s);
+			} else {
+				d.setSeconds(0);
 			}
 			
+		} else {
+			d.setHours(0);
+			d.setMinutes(0);
+			d.setSeconds(0);
 		}
 		return d;
 	},
