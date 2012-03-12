@@ -23,7 +23,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	var $recordCount = 0;
 
-	function getText() {
+	function getText()
+	{
 		return $this->txt;
 	}
 
@@ -41,6 +42,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$viz = $this->getVisualization();
 
 		$opts = new stdClass();
+		$opts->lat = 0;
+		$opts->lon = 0;
 		$opts->icons = $this->getJSIcons();
 		$opts->polyline = $this->getPolyline();
 		$opts->id = $viz->id;
@@ -49,6 +52,12 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$opts->maptypecontrol = (bool)$params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool)$params->get('fb_gm_overviewcontrol');
 		$opts->center = $params->get('fb_gm_center');
+		if ($opts->center == 'querystring')
+		{
+			$opts->lat = JRequest::getVar('latitude', '') == '' ? $opts->lat : (float)JRequest::getVar('latitude');
+			$opts->lon = JRequest::getVar('longitude', '') == '' ? $opts->lon : (float)JRequest::getVar('longitude');
+			$opts->zoomlevel = JRequest::getVar('zoom', '') == '' ? $opts->zoomlevel : JRequest::getVar('zoom');
+		}
 		$opts->ajax_refresh = (bool)$params->get('fb_gm_ajax_refresh', false);
 		$opts->ajax_refresh_center = $params->get('fb_gm_ajax_refresh_center', 1);
 		$opts->maptype = $params->get('fb_gm_maptype');
@@ -423,7 +432,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		return $str;
 	}
 
-	function getSidebar() {
+	function getSidebar()
+	{
 		$params = $this->getParams();
 		if ((int)$params->get('fb_gm_use_overlays', 0) && (int)$params->get('fb_gm_use_overlays_sidebar')) {
 

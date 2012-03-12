@@ -90,7 +90,7 @@ var FbGoogleMapViz = new Class({
 				zoomControl: this.options.zoom,
 				zoomControlOptions: {style: this.options.zoomStyle} 
 			};
-			this.map = new google.maps.Map($(this.element_map), mapOpts);
+			this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
 
 			this.infoWindow = new google.maps.InfoWindow({
 				content: ''
