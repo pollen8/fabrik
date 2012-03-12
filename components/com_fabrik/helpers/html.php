@@ -649,8 +649,8 @@ EOD;
 			return false;
 		}
 		if (class_exists('JSite')) {
-			$menus	= &JSite::getMenu();
-			$menu	= $menus->getActive();
+			$menus = JSite::getMenu();
+			$menu = $menus->getActive();
 			//popup menu item so not in ajax loaded page even if tmpl=component
 			// $$$ hugh - nope, browserNav of '1' is not a popup, just a new tab, see ...
 			// http://fabrikar.com/forums/showthread.php?p=111771#post111771

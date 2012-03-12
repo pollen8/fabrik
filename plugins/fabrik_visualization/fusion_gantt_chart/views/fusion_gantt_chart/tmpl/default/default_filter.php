@@ -2,7 +2,7 @@
 <form method="post" name="filter">
 <?php
 foreach ($this->filters as $table => $filters) {
-  if (!empty( $filters)) {?>
+  if (!empty($filters)) {?>
 	  <table class="filtertable fabrikList"><tbody>
 	  <tr>
 		<th style="text-align:left"><?php echo JText::_('SEARCH');?>:</th>
