@@ -346,9 +346,9 @@ class FabrikFEModelListfilter extends FabModel {
 		$registry = $session->get('registry');
 		$id = JRequest::getVar('listref', $this->listModel->getRenderContext());
 		$tid = 'list' . $id;
-		$context = 'com_fabrik.list' . $id . '.filter';
-		$app->setUserState($context . 'limitstart', 0);
-
+		$listContext = 'com_fabrik.list' . $id .'.';
+		$context = $listContext . 'filter';
+		$app->setUserState($listContext . 'limitstart', 0);
 		if (!is_object($registry))
 		{
 			return;
@@ -388,6 +388,8 @@ class FabrikFEModelListfilter extends FabModel {
 		{
 			$app->setUserState('com_fabrik.searchform.form'.$fromFormId.'.searchall', '');
 		}
+		
+		
 	}
 
 	protected function defaultAccessLevel()
