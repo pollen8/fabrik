@@ -289,14 +289,16 @@ class FabrikString extends JString{
 
 	function encodeurl($url)
 	{
-		list($site, $qs) = explode('?', $url);
-		if (!empty($qs)) {
-			$new_qs = array();
-			foreach (explode('&', $qs) as $arg) {
-				list($key, $val) = explode('=', $arg);
-				$new_qs[] = $key . "=" . urlencode($val);
+		if (strstr($url, '?')) {
+			list($site, $qs) = explode('?', $url);
+			if (!empty($qs)) {
+				$new_qs = array();
+				foreach (explode('&', $qs) as $arg) {
+					list($key, $val) = explode('=', $arg);
+					$new_qs[] = $key . "=" . urlencode($val);
+				}
+				$url = $site . "?" . implode("&", $new_qs);
 			}
-			$url = $site . "?" . implode("&", $new_qs);
 		}
 		return $url;
 	}
