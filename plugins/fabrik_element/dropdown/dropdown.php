@@ -247,10 +247,16 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$params = $this->getParams();
 		if ($params->get('multiple')) {
 			$originalValue = trim($value, "'");
-			return " ($key $condition $value OR $key LIKE \"$originalValue',%\"".
-				" OR $key LIKE \"%:'$originalValue',%\"".
-				" OR $key LIKE \"%:'$originalValue'\"".
-				" )";
+			
+			$where1 = ('["' . $originalValue . '",%');
+			$where2 = ('%,"' . $originalValue . '",%');
+			$where3 = ('%,"' . $originalValue . '"]');
+			
+
+			return ' (' . $key . ' ' . $condition . ' ' . $value .' OR ' . $key . ' LIKE \'' . $where1 . 
+							'\' OR ' . $key . ' LIKE \'' . $where2 .
+							'\' OR ' . $key . ' LIKE \'' . $where3 .
+							'\' )';
 		} else {
 			return parent::getFilterQuery($key, $condition, $value, $originalValue, $type);
 		}
