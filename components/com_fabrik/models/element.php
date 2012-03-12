@@ -2938,8 +2938,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
-
 			$uberTotal = 0;
+			foreach ($results2 as $k => &$r)
+			{
+				if ($k == '')
+				{
+					unset($results2[$k]);
+				}
+			}
 			foreach ($results2 as $pair) {
 				$uberTotal += $pair->value;
 			}
@@ -2947,9 +2953,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
-			$results2[] = $uberObject;
-
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
+			$results[JText::_('COM_FABRIK_TOTAL')] = $uberObject;
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
 			// an error is produced
