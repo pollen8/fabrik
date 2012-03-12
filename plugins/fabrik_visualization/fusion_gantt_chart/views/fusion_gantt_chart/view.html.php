@@ -31,8 +31,9 @@ class fabrikViewFusion_gantt_chart extends JView
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('fusion_gantt_chart', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
-    $this->assignRef('filters', $this->get('Filters'));
-    $this->assign('showFilters', JRequest::getInt('showfilters', 1));
+		$this->assignRef('filters', $this->get('Filters'));
+		$this->assign('showFilters', JRequest::getInt('showfilters', 1));
+		$this->assign('params', $model->getParams());
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fusion_gantt_chart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusion_gantt_chart'.DS.'views'.DS.'fusion_gantt_chart'.DS.'tmpl'.DS.$tmpl;

@@ -40,7 +40,6 @@ class FabrikFEModelVisualization extends JModel
 	function getPluginParams()
 	{
 		if (!isset($this->_pluginParams)) {
-			$cache = & JFactory::getCache();
 			$this->_pluginParams = $this->_loadPluginParams();
 		}
 		return $this->_pluginParams;
@@ -280,9 +279,11 @@ class FabrikFEModelVisualization extends JModel
 
 	function getParams()
 	{
-		if (is_null($this->_params)) {
+		if (is_null($this->_params))
+		{
 			$v = $this->getVisualization();
 			$this->_params = new fabrikParams($v->params);
+			$this->_params->set('show-title', JRequest::getInt('show-title', $this->_params->get('show-title', 1)));
 		}
 		return $this->_params;
 	}
@@ -291,5 +292,6 @@ class FabrikFEModelVisualization extends JModel
 	{
 		return $this->getState('id');
 	}
+
 }
 ?>

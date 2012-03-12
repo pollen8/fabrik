@@ -21,10 +21,8 @@ class fabrikViewGooglemap extends JView
 
 		$js = $model->getJs();
 		$this->txt = $model->getText();
-		$this->params = $model->getParams();
-
-		$params = $model->getPluginParams();
-		$this->assignRef('params', $params);
+		$params = $model->getParams();
+		$this->assign('params', $params);
 		$tmpl = $params->get('fb_gm_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'googlemap'.DS.'views'.DS.'googlemap'.DS.'tmpl'.DS.$tmpl;
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
