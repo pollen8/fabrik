@@ -49,10 +49,10 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 			$params	= $this->getPluginParams();
 			$lists = (array)$params->get('calendar_table');
 			JArrayHelper::toInteger($lists);
-			$dateFields = $params->get('calendar_startdate_element', array(), '_default', 'array');
-			$dateFields2 = $params->get('calendar_enddate_element', array(), '_default', 'array');
-			$labels = $params->get('calendar_label_element', array(), '_default', 'array');
-			$colours = $params->get('colour', array(), '_default', 'array');
+			$dateFields = (array) $params->get('calendar_startdate_element');
+			$dateFields2 = (array) $params->get('calendar_enddate_element');
+			$labels = (array) $params->get('calendar_label_element');
+			$colours = (array) $params->get('colour');
 
 			$db->setQuery("SELECT id AS value, label AS text FROM #__{package}_lists WHERE id IN ('" . implode("','", $lists) . "')");
 			$rows = $db->loadObjectList();

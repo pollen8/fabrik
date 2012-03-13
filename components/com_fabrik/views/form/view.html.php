@@ -233,7 +233,7 @@ class fabrikViewForm extends JView
 
 		if ($this->showPrint) {
 			$text = JHTML::_('image.site',  'printButton.png', '/images/', NULL, NULL, JText::_('Print'));
-			$this->printLink = '<a href="#" onclick="window.print();return false;">'.$text.'</a>';
+			$this->printLink = '<a href="#" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
 
 		if (JRequest::getVar('tmpl') != 'component') {

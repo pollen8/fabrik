@@ -30,7 +30,7 @@ class fabrikViewSlideshow extends JView
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$pluginParams = $model->getPluginParams();
-		$this->assignRef('params', $pluginParams);
+		$this->assignRef('params', $model->getParams());
 		$tmpl = $pluginParams->get('slideshow_viz_layout', $tmpl);
 		$tmplpath = $model->pathBase.'slideshow'.DS.'views'.DS.'slideshow'.DS.'tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);

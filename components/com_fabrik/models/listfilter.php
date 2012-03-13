@@ -346,9 +346,9 @@ class FabrikFEModelListfilter extends FabModel {
 		$registry = $session->get('registry');
 		$id = JRequest::getVar('listref', $this->listModel->getRenderContext());
 		$tid = 'list' . $id;
-		$context = 'com_fabrik.list' . $id . '.filter';
-		$app->setUserState($context . 'limitstart', 0);
-
+		$listContext = 'com_fabrik.list' . $id .'.';
+		$context = $listContext . 'filter';
+		$app->setUserState($listContext . 'limitstart', 0);
 		if (!is_object($registry))
 		{
 			return;
@@ -388,6 +388,8 @@ class FabrikFEModelListfilter extends FabModel {
 		{
 			$app->setUserState('com_fabrik.searchform.form'.$fromFormId.'.searchall', '');
 		}
+		
+		
 	}
 
 	protected function defaultAccessLevel()
@@ -546,15 +548,10 @@ class FabrikFEModelListfilter extends FabModel {
 
 	private function getSearchFormFilters(&$filters)
 	{
+		$app = JFactory::getApplication();
 		$fromFormId = $this->getSearchFormId();
 		$formModel = $this->listModel->getFormModel();
 		$db = FabrikWorker::getDbo();
-		$session = JFactory::getSession();
-		$registry = $session->get('registry');
-		if (!is_object($registry))
-		{
-			return;
-		}
 		$lookupkeys = JArrayHelper::getValue($filters, 'key', array());
 		if ($fromFormId != $formModel->get('id'))
 		{
@@ -566,9 +563,8 @@ class FabrikFEModelListfilter extends FabModel {
 			// which we'll need in the case of $elid not being in $elements for search forms
 			$elements = $this->listModel->getElements('id');
 			$filter_elements = $this->listModel->getElements('filtername');
-			$key = 'com_fabrik.searchform.form'.$fromFormId.'.filters';
 			$tablename = $db->nameQuote($this->listModel->getTable()->db_table_name);
-			$searchfilters = $registry->getValue($key);
+			$searchfilters = $app->getUserState('com_fabrik.searchform.form'.$fromFormId.'.filters');
 			for ($i = 0; $i < count($searchfilters['key']); $i++)
 			{
 				$eval = FABRIKFILTER_TEXT;

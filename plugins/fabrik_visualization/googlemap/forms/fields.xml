@@ -67,6 +67,7 @@
 					<option value="middle">PLG_VISUALIZATION_GOOGLEMAP_MIDDLE</option>
 					<option value="lastmarker">PLG_VISUALIZATION_GOOGLEMAP_LAST_MARKER</option>
 					<option value="userslocation">PLG_VISUALIZATION_GOOGLEMAP_USERS_LOCATION</option>
+					<option value="querystring">PLG_VISUALIZATION_GOOGLEMAP_QUERY_STRING</option>
 			</field>
 			
 			<field default="600" label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" type="text"/>

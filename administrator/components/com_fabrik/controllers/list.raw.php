@@ -57,6 +57,35 @@ class FabrikControllerList extends JControllerForm
 		echo $fieldDropDown;
 	}
 	
+	function delete()
+	{
+		// Check for request forgeries
+		JRequest::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$listid = JRequest::getInt('listid');
+		$model->setId($listid);
+		$ids = JRequest::getVar('ids', array(), 'request', 'array');
+		$limitstart = JRequest::getVar('limitstart'. $listid);
+		$length = JRequest::getVar('limit' . $listid);
+		$oldtotal = $model->getTotalRecords();
+		$model->deleteRows($ids);
+		$total = $oldtotal - count($ids);
+		if ($total >= $limitstart)
+		{
+			$newlimitstart = $limitstart - $length;
+			if ($newlimitstart < 0)
+			{
+				$newlimitstart = 0;
+			}
+			$context = 'com_fabrik.list'.$model->getRenderContext().'.list.';
+			$app->setUserState($context.'limitstart'.$listid, $newlimitstart);
+		}
+		JRequest::setVar('view', 'list');
+		$this->view();
+		
+	}
+	
 	public function filter()
 	{
 				// Check for request forgeries

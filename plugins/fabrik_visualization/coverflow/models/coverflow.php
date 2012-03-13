@@ -98,7 +98,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 	{
 		if (!isset($this->listids)) {
 			$params = $this->getParams();
-			$this->listids = $params->get('coverflow_table', array(), '_default', 'array');
+			$this->listids = (array) $params->get('coverflow_table');
 		}
 	}
 }

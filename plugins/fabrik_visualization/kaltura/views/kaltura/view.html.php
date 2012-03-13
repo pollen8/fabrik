@@ -12,18 +12,17 @@ class fabrikViewKaltura extends JView
 	{
 		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
-		$params 	   	= $app->getParams('com_fabrik');
-		$document 		= JFactory::getDocument();
-		$usersConfig 	= JComponentHelper::getParams('com_fabrik');
-		$model				= $this->getModel();
+		$params = $app->getParams('com_fabrik');
+		$document = JFactory::getDocument();
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
+		$model = $this->getModel();
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
-		$this->row 		= $model->getVisualization();
-		$this->params = $model->getParams();
+		$this->row = $model->getVisualization();
+		$this->assign('params', $model->getParams());
 
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fb_gm_layout', $tmpl);
 		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'kaltura'.DS.'views'.DS.'kaltura'.DS.'tmpl'.DS.$tmpl;
-
 
 		$js = <<<EOT
 		<script type="text/javascript" >

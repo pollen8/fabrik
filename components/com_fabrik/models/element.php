@@ -1969,7 +1969,6 @@ class plgFabrik_Element extends FabrikPlugin
 
 	protected function unmergeFilterSplits(&$rows)
 	{
-		// $$ rob not working with dropdown el dropdown filter
 		//takes rows which may be in format :
 		/*
 		 * [0] => stdClass Object
@@ -1997,13 +1996,17 @@ class plgFabrik_Element extends FabrikPlugin
 		for ($j = $c; $j >= 0; $j--) {
 			$vals = FabrikWorker::JSONtoData($rows[$j]->value, true);
 			$txt = FabrikWorker::JSONtoData($rows[$j]->text, true);
-			if (is_array($vals)) {
+			if (is_array($vals))
+			{
 				$found = false;
-				for ($i=0; $i< count($vals); $i++) {
+				for ($i = 0; $i < count($vals); $i++)
+				{
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
 					$txt2 = FabrikWorker::JSONtoData(JArrayHelper::getValue($txt, $i), true);
-					for ($jj=0; $jj<count($vals2); $jj++) {
-						if (!in_array($vals2[$jj], $allvalues)) {
+					for ($jj = 0; $jj < count($vals2); $jj++)
+					{
+						if (!in_array($vals2[$jj], $allvalues))
+						{
 							$found = true;
 							$allvalues[] = $vals2[$jj];
 							$rows[] = JHTML::_('select.option', $vals2[$jj], $txt2[$jj]);
@@ -2013,6 +2016,10 @@ class plgFabrik_Element extends FabrikPlugin
 				if ($found) {
 					unset($rows[$j]); // $$$ r4ob 01/08/2011 - caused empty list in advanced search on dropdown element
 				}
+			}
+			if (count($vals) > 1)
+			{
+				unset($rows[$j]);
 			}
 		}
 	}
@@ -2931,8 +2938,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
-
 			$uberTotal = 0;
+			foreach ($results2 as $k => &$r)
+			{
+				if ($k == '')
+				{
+					unset($results2[$k]);
+				}
+			}
 			foreach ($results2 as $pair) {
 				$uberTotal += $pair->value;
 			}
@@ -2940,9 +2953,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
-			$results2[] = $uberObject;
-
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
+			$results[JText::_('COM_FABRIK_TOTAL')] = $uberObject;
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
 			// an error is produced

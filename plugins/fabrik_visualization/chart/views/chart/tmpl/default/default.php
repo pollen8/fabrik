@@ -4,7 +4,9 @@ defined('_JEXEC') or die();
 $row = $this->row;
 ?>
 <div id="<?php echo $this->containerId;?>" class="fabrik_visualization">
+	<?php if ($this->params->get('show-title', 0)) {?>
 	<h1><?php echo $row->label;?></h1>
+	<?php }?>
 	<br/>
 	<p><?php echo $row->intro_text;?></p>
 	<?php echo $this->loadTemplate( 'filter'); ?>
