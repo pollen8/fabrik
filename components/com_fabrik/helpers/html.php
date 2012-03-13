@@ -972,7 +972,7 @@ EOD;
 					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/%s/images/";
 					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/images/";
 					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/images/";
-					self::$helperpaths[$type][] = COM_FABRIK_FRONTEND."views/$view/tmpl/%s/images/";
+					self::$helperpaths[$type][] = COM_FABRIK_FRONTEND."/views/$view/tmpl/%s/images/";
 					self::$helperpaths[$type][] = COM_FABRIK_BASE."media/com_fabrik/images/";
 					self::$helperpaths[$type][] = COM_FABRIK_BASE."images/";
 					self::$helperpaths[$type][] = COM_FABRIK_BASE."images/stories/";
