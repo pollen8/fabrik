@@ -53,7 +53,7 @@ class FabrikFEModelPluginmanager extends JModel{
 				$defaultlabel = JText::_('COM_FABRIK_PLEASE_SELECT');
 			}
 			$a = array(JHTML::_('select.option', '', $defaultlabel));
-			$elementstypes = $this->_getList();
+			$elementstypes = $this->_getList(null);
 			$elementstypes = array_merge($a, $elementstypes);
 			$this->_elementLists[$hash] = JHTML::_('select.genericlist',  $elementstypes, $name, $extra , 'value', 'text', $default);
 		}
