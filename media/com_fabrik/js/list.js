@@ -286,6 +286,7 @@ var FbList = new Class({
 		this.id = id;
 		this.setOptions(options);
 		this.getForm();
+		this.result = true; //used with plugins to determine if list actions should be performed
 		this.plugins = [];
 		this.list = document.id('list_' + this.options.listRef);
 		this.actionManager = new FbListActions(this, {
