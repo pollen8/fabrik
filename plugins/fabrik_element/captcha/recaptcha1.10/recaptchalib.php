@@ -2,9 +2,9 @@
 /*
  * This is a PHP library that handles calling reCAPTCHA.
  *    - Documentation and latest version
- *          http://recaptcha.net/plugins/php/
+ *          http://www.google.com/recaptchaplugins/php/
  *    - Get a reCAPTCHA API Key
- *          http://recaptcha.net/api/getkey
+ *          http://www.google.com/recaptchaapi/getkey
  *    - Discussion group
  *          http://groups.google.com/group/recaptcha
  *
@@ -105,7 +105,7 @@ function recaptcha_get_html ($id, $pubkey, $error = null, $use_ssl = false)
 {
 	
 	if ($pubkey == null || $pubkey == '') {
-		die ("To use reCAPTCHA you must get an API key from <a href='http://recaptcha.net/api/getkey'>http://recaptcha.net/api/getkey</a>");
+		die ("To use reCAPTCHA you must get an API key from <a href='http://www.google.com/recaptcha'>http://www.google.com/recaptcha</a>");
 	}
 	
 	if ($use_ssl) {
@@ -158,7 +158,7 @@ class ReCaptchaResponse {
 function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array())
 {
 	if ($privkey == null || $privkey == '') {
-		die ("To use reCAPTCHA you must get an API key from <a href='http://recaptcha.net/api/getkey'>http://recaptcha.net/api/getkey</a>");
+		die ("To use reCAPTCHA you must get an API key from <a href='http://www.google.com/recaptcha'>http://www.google.com/recaptcha</a>");
 	}
 
 	if ($remoteip == null || $remoteip == '') {
@@ -206,7 +206,7 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
  * @param string $appname The name of your application
  */
 function recaptcha_get_signup_url ($domain = null, $appname = null) {
-	return "http://recaptcha.net/api/getkey?" .  _recaptcha_qsencode (array ('domain' => $domain, 'app' => $appname));
+	return "http://www.google.com/recaptcha?" .  _recaptcha_qsencode (array ('domain' => $domain, 'app' => $appname));
 }
 
 function _recaptcha_aes_pad($val) {
