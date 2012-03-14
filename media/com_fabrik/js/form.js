@@ -462,7 +462,7 @@ var FbForm = new Class({
 			next.disabled = "disabled";
 			next.setStyle('opacity', 0.5);
 		} else {
-			if (typeOf(submit) !== 'null' && this.options.rowid === '') {
+			if (typeOf(submit) !== 'null' && (this.options.rowid === '' || this.options.rowid === '0')) {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
 			}
