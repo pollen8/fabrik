@@ -123,9 +123,10 @@ class FabrikViewList extends JView{
 		$this->_row = new stdClass();
 		$this->_row->id = '';
 		$this->_row->class = 'fabrik_row';
-		if (JFile::exists(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_row.php')) {
-			require(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_row.php');
-		}
+	/* 	if (JFile::exists(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_row.php')) {
+			require(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_row.php');
+		} */
+		echo $this->loadTemplate('row');
 		$opts->rowtemplate = ob_get_contents();
 		ob_end_clean();
 
@@ -218,9 +219,18 @@ class FabrikViewList extends JView{
 			$this->advancedSearch($tpl);
 			return;
 		}
-
+		
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
+
+		//force front end templates
+		$tmpl = $this->get('tmpl');
+		$this->_basePath = COM_FABRIK_FRONTEND.DS.'views';
+		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
+		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'list'.DS.$tmpl);
+
+		
+		
 		require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'modifiers.php');
 		$user = JFactory::getUser();
 
@@ -349,7 +359,7 @@ class FabrikViewList extends JView{
 		$this->nav = '<div class="fabrikNav">'.$this->nav.'</div>';
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
-		$tmpl = $this->get('tmpl');
+		
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$this->showPDF = $params->get('pdf', 0);
 		if ($this->showPDF) {
@@ -406,12 +416,6 @@ class FabrikViewList extends JView{
 
 		$this->assign('pluginTopButtons', $this->get('PluginTopButtons'));
 		
-		//force front end templates
-		$this->_basePath = COM_FABRIK_FRONTEND.DS.'views';
-
-		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
-		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'list'.DS.$tmpl);
-
 		$text = $this->loadTemplate();
 		if ($params->get('process-jplugins')) {
 			$opt = JRequest::getVar('option');
