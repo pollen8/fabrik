@@ -20,9 +20,14 @@ var FbSlider = new Class({
 				onChange : function (pos) {
 					output.value = pos;
 					this.options.value = pos;
+					
 					output2.set('text', pos);
 					this.callChange();
 				}.bind(this),
+				onComplete: function (pos) {
+					//fire for validations
+					output.fireEvent('blur', new Event.Mock(output, 'change'));
+				},
 				steps : this.options.steps
 			}).set(0);
 
@@ -34,6 +39,7 @@ var FbSlider = new Class({
 				clear.addEvent('click', function (e) {
 					this.mySlide.set(0);
 					output.value = '';
+					output.fireEvent('blur', new Event.Mock(output, 'change'));
 					output2.set('text', '');
 					e.stop();
 				});
