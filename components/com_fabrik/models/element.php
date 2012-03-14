@@ -1807,10 +1807,11 @@ class plgFabrik_Element extends FabrikPlugin
 				$k = false;
 				if ($normal) {
 					$keys = array_keys($filters['elementid'], $elid);
-					foreach($keys as $key) {
+					foreach ($keys as $key) {
 						// $$$ rob 05/09/2011 - just testing for 'normal' is not enough as there are several search_types - ie I've added a test for
 						//querystring filters as without that the search values were not being shown in ranged filter fields
-						if ($filters['search_type'][$key] == 'normal' || $filters['search_type'][$key] == 'querystring') {
+						if (in_array($filters['search_type'][$key], array('normal', 'querystring', 'jpluginfilters')))
+						{
 							$k = $key;
 							continue;
 						}
