@@ -970,7 +970,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				 {
 					$default = array_shift($default);
 				}
-				$default = JFactory::getDate($default)->toFormat($format);
+				if ($default !== '')
+				{
+					$default = JFactory::getDate($default)->toFormat($format);
+				}
 				$return[] = $this->calendar($default, $v, $htmlid . '_filter_range_0_' . JRequest::getVar('task'), $format, $calOpts);
 				break;
 
