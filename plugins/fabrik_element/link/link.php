@@ -105,41 +105,52 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		
 		$bits = $this->inputProperties($repeatCounter);
-		
 		$value = $this->getValue($data, $repeatCounter);
-		if ($value == "") {
+		if ($value == "")
+		{
 			$value = array('label'=>'', 'link'=>'');
-		} else {
-			if (!is_array($value)) {
+		}
+		else
+		{
+			if (!is_array($value))
+			{
 				$value = FabrikWorker::JSONtoData($value, true);
-				if (array_key_exists(0, $value)) {
+				if (array_key_exists(0, $value))
+				{
 					$value['label'] = $value[0];
 				}
 			}
 		}
 
-		if (count($value) == 0) {
-			$value = array('label'=>'', 'link'=>'');
+		if (count($value) == 0)
+		{
+			$value = array('label' => '', 'link' => '');
 		}
 
-		if (JRequest::getVar('rowid') == 0) {
+		if (JRequest::getVar('rowid') == 0)
+		{
 			$value['link'] = $params->get('link_default_url');
 		}
-		if (!$this->_editable) {
-			if (empty($value['link'])) {
+		if (!$this->_editable)
+		{
+			if (empty($value['link']))
+			{
 				return $value['label'];
 			}
-			else {
+			else
+			{
 				$w = new FabrikWorker();
 				$value['link'] = is_array($data) ? $w->parseMessageForPlaceHolder($value['link'], $data) : $w->parseMessageForPlaceHolder($value['link']);
 				$target = $params->get('link_target', '');
 				$smart_link = $params->get('link_smart_link', false);
-				if ($smart_link || $target == 'mediabox') {
+				if ($smart_link || $target == 'mediabox')
+				{
 					$smarts = $this->_getSmartLinkType( $value['link']);
 					return '<a href="'.$value['link'].'" rel="lightbox['.$smarts['type'].' '.$smarts['width'].' '.$smarts['height'].']">'.$value['label'].'</a>';
-				} else {
+				}
+				else
+				{
 					return '<a href="'.$value['link'].'" target="'.$target.'">' . $value['label'] . '</a>';
 				}
 			}
@@ -154,10 +165,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$bits['value'] = $value['label'];
 		$bits['class'] .= ' fabrikSubElement';
 		unset($bits['id']);
-		
+
 		$html[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 		$html[] = $this->buildInput('input', $bits);
-		
 		$bits['placeholder'] = JText::_('PLG_ELEMENT_LINK_URL');
 		$bits['name'] = $linkname;
 		$bits['value'] = JArrayHelper::getValue($value, 'link');
@@ -316,12 +326,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	/**
 	 * can be overwritten by plugin class
 	 * determines the value for the element in the form view
-	 * @TODO: whats the diff between this and getValue() ?????
-	 * $$$ROB - TESTING POINTING getValue() to here
-	 * @param array data
-	 * @param int when repeating joinded groups we need to know what part of the array to access
-	 * @param array options
-	 * @return string default value
+	 * @param	array	data
+	 * @param	int		when repeating joinded groups we need to know what part of the array to access
+	 * @param	array	options
+	 * @return	string	default value
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
