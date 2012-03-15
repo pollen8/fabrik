@@ -1,12 +1,13 @@
 var FbSlider = new Class({
-	Extends : FbElement,
-	initialize : function (element, options) {
+	Extends: FbElement,
+	initialize: function (element, options) {
 		this.parent(element, options);
 		this.plugin = 'slider';
 		if (typeOf(this.options.value) === 'null') {
 			this.options.value = 0;
 		}
 		this.options.value = this.options.value.toInt();
+		var v = this.options.value;
 		if (this.options.editable === true) {
 			if (typeOf(this.element) === 'null') {
 				fconsole('no element found for slider');
@@ -29,7 +30,7 @@ var FbSlider = new Class({
 					output.fireEvent('blur', new Event.Mock(output, 'change'));
 				},
 				steps : this.options.steps
-			}).set(0);
+			}).set(v);
 
 			this.mySlide.set(this.options.value);
 			output.value = this.options.value;
