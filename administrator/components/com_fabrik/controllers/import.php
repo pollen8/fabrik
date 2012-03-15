@@ -183,8 +183,8 @@ class FabrikControllerImport extends FabControllerForm
 	function display()
 	{
 		
-		$viewType	= JFactory::getDocument()->getType();
-		$view = & $this->getView('import', $viewType);
+		$viewType = JFactory::getDocument()->getType();
+		$view = $this->getView('import', $viewType);
 		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
 		$model = $this->getModel();
 		if (!JError::isError($model)) {
@@ -222,7 +222,7 @@ class FabrikControllerImport extends FabControllerForm
 		} else {
 			$model->import();
 			JRequest::setVar('fabrik_list', $id);
-			$msg = $model->makeTableFromCSV();
+			$msg = $model->insertData();
 			$model->removeCSVFile();
 			$this->setRedirect('index.php?option=com_fabrik&task=list.view&cid='.$id, $msg);
 		}

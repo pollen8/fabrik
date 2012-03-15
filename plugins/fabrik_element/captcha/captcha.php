@@ -65,21 +65,15 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	}
 
 	/**
-	 * check user can view the read only element & view in table view
+	 * check user can view the read only element & view in list view
 	 * If user logged in return false
+	 * $$$ rob 14/03/2012 always returns false now - cant see a need to show it in the details / list view
 	 * @return bol can view or not
 	 */
 
 	function canView()
 	{
-		$user = JFactory::getUser();
-		$params = $this->getParams();
-		if ($user->id != 0) {
-			if ($params->get('captcha-showloggedin', 0) == 0) {
-				return false;
-			}
-		}
-		return parent::canView();
+		return false;
 	}
 
 	/**
@@ -106,16 +100,28 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	 * @return string returns element html
 	 */
 
-	function render($data, $repeatCounter = 0) {
+	function render($data, $repeatCounter = 0)
+	{
 		$session = JFactory::getSession();
 		$name = $this->getHTMLName($repeatCounter);
 		$id	= $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$user = JFactory::getUser();
-
-		if ($params->get('captcha-method') == 'recaptcha') {
-
+		$value = $this->getValue($data, $repeatCounter);
+		if (!$this->_editable)
+		{
+			if ($element->hidden == '1')
+			{
+				return '<!-- '.stripslashes($value).' -->';
+			}
+			else
+			{
+				return stripslashes($value);
+			}
+		}
+		if ($params->get('captcha-method') == 'recaptcha')
+		{
 			$publickey = $params->get('recaptcha_publickey');
 
 			//$$$tom added lang & theme options
@@ -138,8 +144,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 			// $$$ hugh - code that generates image now in image.php
 			$session->set('com_fabrik.element.captach.security_code', $code);
 
-// ***** e-kinst
-//	additional plugin params with validation
+			// ***** e-kinst
+			//	additional plugin params with validation
 			$noise_color = $params->get('captcha-noise-color', '0000FF');
 			// '0000FF' again if we have param value but it's invalid
 			$noise_color = $this->_getRGBcolor($noise_color, '0000FF');
@@ -148,26 +154,25 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 			$bg_color = $params->get('captcha-bg', 'FFFFFF');
 			$bg_color = $this->_getRGBcolor($bg_color, 'FFFFFF');
 
-//	let's keep all params in relatively safe place not only captcha value
+			//	let's keep all params in relatively safe place not only captcha value
 			$session->set('com_fabrik.element.captach.height', $height);
 			$session->set('com_fabrik.element.captach.width', $width);
 			$session->set('com_fabrik.element.captach.noise_color', $noise_color);
 			$session->set('com_fabrik.element.captach.text_color', $text_color);
 			$session->set('com_fabrik.element.captach.bg_color', $bg_color);
 			$session->set('com_fabrik.element.captach.font', $this->_font);
-// * /e-kinst
+			// * /e-kinst
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
 
-//***** e-kinst 
-//	It seems too dangerous to set all parameters here,
-//	because everybody can enlarge image size and set noise color to
-//	background color to OCR captcha values without problems
+			//***** e-kinst 
+			//	It seems too dangerous to set all parameters here,
+			//	because everybody can enlarge image size and set noise color to
+			//	background color to OCR captcha values without problems
 			$str[] = '<img src="'.COM_FABRIK_LIVESITE.'plugins/fabrik_element/captcha/image.php?foo='.rand().'" alt="'.JText::_('security image').'" />';
-// *  /e-kinst
+			// *  /e-kinst
 			$str[] = '<br />';
 
-			$value = $this->getValue($data, $repeatCounter);
 			$type = ($params->get('password') == "1") ? "password" : "text";
 			if (isset($this->_elementError) && $this->_elementError != '') {
 				$type .= " elementErrorHighlight";
@@ -176,13 +181,6 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 				$type = "hidden";
 			}
 			$sizeInfo = ' size="'.$size.'"';
-			if (!$this->_editable) {
-				if ($element->hidden == '1') {
-					return '<!-- '.stripslashes($value).' -->';
-				} else {
-					return stripslashes($value);
-				}
-			}
 			$str[] = '<input class="inputbox '.$type.'" type="'.$type.'" name="'.$name.'" id="'.$id.'" '.$sizeInfo.' value="" />';
 			return implode("\n", $str);
 		}

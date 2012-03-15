@@ -6920,13 +6920,25 @@ class FabrikFEModelList extends JModelForm {
 		$app = JFactory::getApplication();
 		// $$$ rob if admin filter task = filter and not list.filter
 		if (JRequest::getVar('task') == 'list.filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter')) {
-			$listref = JRequest::getVar('listref');
-			$listref = explode('_', $listref);
-			array_shift($listref);
-			$this->renderContext = '_'.implode('_', $listref);
+			$this->setRenderContextFromRequest();
 		} else {
-			$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
+			
+			if (JRequest::getVar('task') == 'list.view' && JRequest::getVar('format') == 'raw') {
+				// testing for ajax nav in content plugin
+				$this->setRenderContextFromRequest();
+			} else 
+			{
+				$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
+			}
 		}
+	}
+	
+	protected function setRenderContextFromRequest()
+	{
+		$listref = JRequest::getVar('listref');
+		$listref = explode('_', $listref);
+		array_shift($listref);
+		$this->renderContext = '_'.implode('_', $listref);
 	}
 
 	public function getGroupByHeadings()

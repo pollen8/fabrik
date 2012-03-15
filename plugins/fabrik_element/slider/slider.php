@@ -55,7 +55,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		}
 		$labels = array_filter(explode(',', $params->get('slider-labels')));
 		$str = array();
-		$str[] = '<div id="'.$id.'">';
+		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
 
 		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/slider/images/', 'image', 'form', false);
 		$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
@@ -98,7 +98,8 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * @param	int		repeat counter
+	 * @return string 	javascript to create instance
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -107,11 +108,11 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->steps = (int)$params->get('slider-steps', 100);
-		$data 		=& $this->_form->_data;
+		$data = $this->_form->_data;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbSlider('$id', $opts)";
 	}
-
+	
 }
 ?>

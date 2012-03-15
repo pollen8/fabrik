@@ -1807,10 +1807,11 @@ class plgFabrik_Element extends FabrikPlugin
 				$k = false;
 				if ($normal) {
 					$keys = array_keys($filters['elementid'], $elid);
-					foreach($keys as $key) {
+					foreach ($keys as $key) {
 						// $$$ rob 05/09/2011 - just testing for 'normal' is not enough as there are several search_types - ie I've added a test for
 						//querystring filters as without that the search values were not being shown in ranged filter fields
-						if ($filters['search_type'][$key] == 'normal' || $filters['search_type'][$key] == 'querystring') {
+						if (in_array($filters['search_type'][$key], array('normal', 'querystring', 'jpluginfilters')))
+						{
 							$k = $key;
 							continue;
 						}
@@ -2938,8 +2939,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
-
 			$uberTotal = 0;
+			foreach ($results2 as $k => &$r)
+			{
+				if ($k == '')
+				{
+					unset($results2[$k]);
+				}
+			}
 			foreach ($results2 as $pair) {
 				$uberTotal += $pair->value;
 			}
@@ -2947,9 +2954,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
-			$results2[] = $uberObject;
-
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
+			$results[JText::_('COM_FABRIK_TOTAL')] = $uberObject;
 		} else {
 			// need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled
 			// an error is produced

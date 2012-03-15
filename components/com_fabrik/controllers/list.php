@@ -204,10 +204,19 @@ class FabrikControllerList extends JController
 		}
 		//3.0 use redirect rather than calling view() as that gave an sql error (joins seemed not to be loaded for the list)
 		$format = JRequest::getVar('format', 'html');
-		if ($format !== 'raw') {
-			$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=list&listid=". $model->getId() . '&format=' . $format, 'post');
-		} else {
-			$ref = "index.php?option=com_fabrik&view=list&listid=". $model->getId() . '&format=' . $format;
+		$defaultRef = 'index.php?option=com_fabrik&view=list&listid=' . $model->getId() . '&format=' . $format;
+		if ($format !== 'raw')
+		{
+			$ref = JRequest::getVar('fabrik_referrer', $defaultRef, 'post');
+			// for some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
+			if (empty($ref))
+			{
+				$ref = JRequest::getVar('HTTP_REFERER', $defaultRef, 'server');
+			}
+		}
+		else
+		{
+			$ref = $defaultRef;
 		}
 		$app->redirect($ref);
 	}

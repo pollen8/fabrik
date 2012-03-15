@@ -462,7 +462,7 @@ var FbForm = new Class({
 			next.disabled = "disabled";
 			next.setStyle('opacity', 0.5);
 		} else {
-			if (typeOf(submit) !== 'null' && this.options.rowid === '') {
+			if (typeOf(submit) !== 'null' && (this.options.rowid === '' || this.options.rowid.toString() === '0')) {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
 			}
@@ -1164,6 +1164,8 @@ var FbForm = new Class({
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
+		Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
+
 	},
 
 	hideLastGroup : function (groupid, subGroup) {
