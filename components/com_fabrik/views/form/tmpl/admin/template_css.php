@@ -29,7 +29,6 @@ echo "
 #{$view}_$c .fabrikSubElement {
 	display: block;
 	margin-top: 10px;
-	margin-left: 100px;
 }
 ";
 ?>
