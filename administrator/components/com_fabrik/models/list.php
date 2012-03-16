@@ -1378,7 +1378,8 @@ class FabrikModelList extends FabModelAdmin
 		if ($fieldName === "") {
 			return false;
 		}
-		$sql = "ALTER TABLE ".$tableName." ADD PRIMARY KEY ($fieldName)";
+		$fieldName = $db->quoteName($fieldName);
+		$sql = "ALTER TABLE ".$tableName." ADD PRIMARY KEY (" . $fieldName . ")";
 		/* add a primary key */
 		$db->setQuery($sql);
 		if (!$db->query()) {
