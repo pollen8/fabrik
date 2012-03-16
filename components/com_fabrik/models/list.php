@@ -7019,7 +7019,6 @@ class FabrikFEModelList extends JModelForm {
 	protected function getButtonCount()
 	{
 		$buttonCount = 0;
-
 		return $buttonCount;
 	}
 

@@ -2,6 +2,7 @@
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 $buttonCount = (int)$_REQUEST['buttoncount'];
+$buttonTotal = $buttonCount === 0 ? '100%' : 30 * $buttonCount ."px";
 echo "
 #listform_$c table.fabrikList {
 	clear:right;
@@ -266,7 +267,7 @@ div.calendar{
 }
 
 #listform_$c .fabrik_row ul.fabrik_action{
-	width:" . 30 * $buttonCount ."px;
+	width:$buttonTotal;
 }
 
 /* $$$ hugh - separated pagination from fabrik_action, 'cos float right makes pagination disappear in Chrome! */
