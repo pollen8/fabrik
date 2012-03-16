@@ -40,17 +40,29 @@ class getFabrikTab extends cbTabHandler {
 		$args = array();
 		$article = new stdClass();
 		$txt = $this->params->get('plugintext');
+
+		// $$$ hugh - set profile user in session so Fabrik user element can get at it
+		// TODO - should really make this table/form specific!
+
+		$session =& JFactory::getSession();
+		// $$$ hugh - testing using a unique session hash, which we will stuff in the
+		// plugin args, and will get added where necessary in Fabrik lists and forms so
+		// we can actually track the right form submissions with their coresponding CB
+		// profiles.
+		$social_hash = md5(serialize(array(JRequest::getURI(), $tab, $user)));
+		$session->set('fabrik.plugin.' . $social_hash . '.profile_id', $user->get('id'));
+		// do the old style one without the hash for backward compat
+		$session->set('fabrik.plugin.profile_id', $user->get('id'));
+		$txt = rtrim($txt, '}') . " fabrik_social_profile_hash=" . $social_hash . '}';
+
 		//do some dynamic replacesments with the owner's data
 		foreach ($user as $k=>$v) {
 			if (strstr( $txt, "{\$my->$k}" )) {
 				$txt = str_replace("{\$my->$k}", $v, $txt);
 			}
+			// $$$ hugh - might as well stuff the entire CB user object in the session
+			$session->set('fabrik.plugin.' . $social_hash . '.' . $k, $v);
 		}
-
-		// $$$ hugh - set profile user in session so Fabrik user element can get at it
-		// TODO - should really make this table/form specific!
-		$session =& JFactory::getSession();
-		$session->set('fabrik.plugin.profile_id', $user->get('id'));
 
 		$params = new stdClass();
 		$args[] = 0;
