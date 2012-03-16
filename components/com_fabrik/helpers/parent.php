@@ -990,6 +990,12 @@ class FabrikWorker {
 			$json = json_decode($data);
 			// only works in PHP5.3
 			//$data = (json_last_error() == JSON_ERROR_NONE) ? $json : $data;
+			if (is_null($json))
+			{
+				// if coming back froma  failed validation - the json string may habe been htmlspecialchars_encoded in
+				// the form model getGroupView method
+				$json = json_decode(stripslashes(htmlspecialchars_decode($data, ENT_QUOTES)));
+			}
 			$data = is_null($json) ? $data : $json;
 		}
 		$data = $toArray ? (array)$data : $data;

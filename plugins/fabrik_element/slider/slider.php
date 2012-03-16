@@ -98,7 +98,8 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * @param	int		repeat counter
+	 * @return string 	javascript to create instance
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -107,7 +108,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->steps = (int)$params->get('slider-steps', 100);
-		$data 		=& $this->_form->_data;
+		$data = $this->_form->_data;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbSlider('$id', $opts)";
