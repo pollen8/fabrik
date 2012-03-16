@@ -4673,15 +4673,19 @@ class FabrikFEModelList extends JModelForm {
 			$rowId = 0;
 			$origRowId = 0;
 		}
-
+		
 		$primaryKey = str_replace("`", "", $primaryKey);
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
 		if (!$this->_importingCSV) {
 			//if its a repeat group which is also the primary group $primaryKey was not set.
 			if ($primaryKey) {
-				$oRecord->$primaryKey = $rowId;
+				if (is_numeric($oRecord->$primaryKey))
+				{
+					$oRecord->$primaryKey = $rowId;
+				}
 			}
 		}
+//		echo "<pre>$origRowId: ";print_r($oRecord);exit;
 		if ($origRowId == '' || $origRowId == 0) {
 
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
