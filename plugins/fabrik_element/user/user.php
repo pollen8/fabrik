@@ -115,9 +115,16 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			}
 		} else {
 			$displayParam = $this->_getValColumn();
+			/*
+			if ($params->get('update_on_edit')) {
+				$str = "";
+			}
+			else
+			*/
 			if (is_a($user, 'JUser')) {
 				$str = $user->get($displayParam);
-			} else {
+			}
+			else {
 				JError::raiseWarning(E_NOTICE, "didnt load for $element->default");
 			}
 		}
@@ -173,9 +180,13 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		// TODO - make this table/form specific, but not so easy to do in CB plugin
 		if ((int)$params->get('user_use_social_plugin_profile', 0)) {
 			if (JRequest::getInt('rowid') == 0 && JRequest::getCmd('task') !== 'doimport') {
+				$context = 'fabrik.plugin.profile_id';
+				if (JRequest::getVar('fabrik_social_profile_hash', '') != '') {
+					$context = 'fabrik.plugin.' . JRequest::getVar('fabrik_social_profile_hash', '') . '.profile_id';
+				}
 				$session = JFactory::getSession();
-				if ($session->has('fabrik.plugin.profile_id')) {
-					$profile_id = $session->get('fabrik.plugin.profile_id');
+				if ($session->has($context)) {
+					$profile_id = $session->get($context);
 					$form = $this->getFormModel();
 					$group = $this->getGroup();
 					$joinid = $group->getGroup()->join_id;
