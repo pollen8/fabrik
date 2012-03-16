@@ -2453,7 +2453,7 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($eval == FABRKFILTER_NOQUOTES) {
 				# $$$ hugh - darn, this is stripping the ' of the end of things like "select & from foo where bar = '123'"
 				$value = ltrim($value, "'");
-			$value = rtrim($value, "'");
+				$value = rtrim($value, "'");
 			}
 			if ($condition == '=' && $value == "'_null_'") {
 				$condition = " IS NULL ";
