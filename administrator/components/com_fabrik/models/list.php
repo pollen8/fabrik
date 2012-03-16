@@ -1378,7 +1378,8 @@ class FabrikModelList extends FabModelAdmin
 		if ($fieldName === "") {
 			return false;
 		}
-		$sql = "ALTER TABLE ".$tableName." ADD PRIMARY KEY ($fieldName)";
+		$fieldName = $db->quoteName($fieldName);
+		$sql = "ALTER TABLE ".$tableName." ADD PRIMARY KEY (" . $fieldName . ")";
 		/* add a primary key */
 		$db->setQuery($sql);
 		if (!$db->query()) {
@@ -1440,6 +1441,10 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$table =& $this->getTable();
 		$table->load($this->getState('list.id'));
+		if (!$autoIncrement)
+		{
+			$type = '';
+		}
 		$sql = "ALTER TABLE ".$tableName." CHANGE ".FabrikString::safeColName($fieldName).' '.FabrikString::safeColName($fieldName)." $type NOT NULL ";
 		/* update primary key */
 		if ($autoIncrement) {

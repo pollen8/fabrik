@@ -369,12 +369,6 @@ section for dropdowns radio buttons etc**/
 #{$view}_$c .fabrikSubElement {
 	display: block;
 	margin-top: 10px;
-	margin-left: 100px;
-}
-
-#{$view}_$c .password .fabrikSubElement,
-#{$view}_$c .link .fabrikSubElement {
-	margin-left:0;
 }
 
 /*

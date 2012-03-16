@@ -28,23 +28,26 @@ class plgFabrik_ValidationruleIsNot extends plgFabrik_Validationrule
 	
 	/**
 	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element model
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * @param	string	data to check
+	 * @param	object	element model
+	 * @param	int		plugin sequence ref
+	 * @return	bool	true if validation passes, false if fails
 	 */
 
 	function validate($data, &$elementModel, $c)
 	{
-		if (is_array($data)) {
+		if (is_array($data))
+		{
 			$data = implode('', $data);
 		}
 		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
 		$isnot = $isnot[$c];
 		$isnot = explode('|', $isnot);
-		foreach ($isnot as $i) {
-			if($data == $i) {
+		foreach ($isnot as $i)
+		{
+			if((string) $data === (string) $i)
+			{
 				return false;
 			}
 		}

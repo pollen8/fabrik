@@ -76,6 +76,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
+	 * $$$rob deprecated - seems to be a copy of the db join renderListData() method - so we were doubling up
+	 * this code when we called parent::renderListData()
+	 * 
 	 * child classes can then call this function with
 	 * return parent::renderListData($data, $oAllRowsData);
 	 * to perform rendering that is applicable to all plugins
@@ -86,7 +89,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @return string formatted value
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	/* function renderListData($data, $oAllRowsData)
 	{
 		$params = $this->getParams();
 		$groupModel = $this->getGroup();
@@ -120,7 +123,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$data = json_encode($labeldata);
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $oAllRowsData);
-	}
+	} */
 
 	/**
 	 * draws the form element

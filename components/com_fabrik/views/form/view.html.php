@@ -387,17 +387,17 @@ class fabrikViewForm extends JView
 		$opts->group_repeats = array();
 		$opts->group_joins_ids = array();
 		$groups =& $model->getGroupsHiarachy();
-		
-		
+
+
 		foreach ($groups as $groupModel) {
 			if ($groupModel->getGroup()->is_join) {
 				$opts->join_group_ids[$groupModel->getGroup()->join_id] = (int)$groupModel->getGroup()->id;
 				$opts->group_join_ids[$groupModel->getGroup()->id] = (int)$groupModel->getGroup()->join_id;
-		
+
 				$opts->group_repeats[$groupModel->getGroup()->id] = $groupModel->canRepeat();
 			}
 		}
-		
+
 		$opts = json_encode($opts);
 
 		$lang = new stdClass();
@@ -512,7 +512,7 @@ class fabrikViewForm extends JView
 
 		$str = implode("\n", $script);
 		FabrikHelperHTML::script($srcs, $str);
-		
+
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 
@@ -606,6 +606,11 @@ class fabrikViewForm extends JView
 			$c = $groupModel->repeatTotal;
 			//used for validations
 			$fields[] = '<input type="hidden" name="fabrik_repeat_group['.$group->id.']" value="'.$c.'" id="fabrik_repeat_group_'.$group->id.'_counter" />';
+		}
+
+		// $$$ hugh - testing social_profile_hash stuff
+		if (JRequest::getVar('fabrik_social_profile_hash', '') != '') {
+			$fields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="'.JRequest::getCmd('fabrik_social_profile_hash','').'" id="fabrik_social_profile_hash" />';
 		}
 
 		$this->_cryptQueryString($fields);

@@ -4673,15 +4673,19 @@ class FabrikFEModelList extends JModelForm {
 			$rowId = 0;
 			$origRowId = 0;
 		}
-
+		
 		$primaryKey = str_replace("`", "", $primaryKey);
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
 		if (!$this->_importingCSV) {
 			//if its a repeat group which is also the primary group $primaryKey was not set.
 			if ($primaryKey) {
-				$oRecord->$primaryKey = $rowId;
+				if (is_numeric($oRecord->$primaryKey))
+				{
+					$oRecord->$primaryKey = $rowId;
+				}
 			}
 		}
+//		echo "<pre>$origRowId: ";print_r($oRecord);exit;
 		if ($origRowId == '' || $origRowId == 0) {
 
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
@@ -6344,6 +6348,13 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$qs['formid'] = $this->getTable()->form_id;
 			$qs['rowid'] = '0';
+
+			// $$$ hugh - testing social profile session hash, which may get set by things like
+			// the CB or JomSocial plugin.  Needed so things like the 'user' element can derive the
+			// user ID of the profile being viewed, to which a record is being added.
+			if (JRequest::getVar('fabrik_social_profile_hash', '') != '') {
+				$qs['fabrik_social_profile_hash'] = JRequest::getCmd('fabrik_social_profile_hash', '');
+			}
 		}
 		$qs = array_merge($qs, $addurl_qs);
 		$qs_args = array();
@@ -6851,7 +6862,7 @@ class FabrikFEModelList extends JModelForm {
 			if ($app->scope !== 'mod_fabrik_list')
 			{
 				$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
-				// $$$ rob 10/03/2012 changed menu param to listlayout to avoid the list menu item 
+				// $$$ rob 10/03/2012 changed menu param to listlayout to avoid the list menu item
 				// options also being used for the form/details view template
 				$this->tmpl = FabrikWorker::getMenuOrRequestVar('listlayout', $this->tmpl, $this->isMambot);
 			}
@@ -6922,17 +6933,17 @@ class FabrikFEModelList extends JModelForm {
 		if (JRequest::getVar('task') == 'list.filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter')) {
 			$this->setRenderContextFromRequest();
 		} else {
-			
+
 			if (JRequest::getVar('task') == 'list.view' && JRequest::getVar('format') == 'raw') {
 				// testing for ajax nav in content plugin
 				$this->setRenderContextFromRequest();
-			} else 
+			} else
 			{
 				$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
 			}
 		}
 	}
-	
+
 	protected function setRenderContextFromRequest()
 	{
 		$listref = JRequest::getVar('listref');

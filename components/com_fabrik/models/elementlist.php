@@ -277,32 +277,38 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$multiple = $params->get('multiple', 0) || $this->isJoin();
-		$sLabels 	= array();
+		$mergeGroupRepeat = ($this->getGroup()->canRepeat() && $this->getListModel()->mergeJoinedData());
+		$sLabels = array();
 		//repeat group data
 		$gdata = FabrikWorker::JSONtoData($data, true);
 		$uls = array();
 		$useIcon = $params->get('icon_folder', 0);
-		foreach ($gdata as $i => $d) {
+		foreach ($gdata as $i => $d)
+		{
 			$lis = array();
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
-			foreach ($vals as $val) {
+			foreach ($vals as $val)
+			{
 				$l = $useIcon ? $this->_replaceWithIcons($val) : $val;
-				if (!$this->iconsSet == true) {
+				if (!$this->iconsSet == true)
+				{
 					$l = $this->getLabelForValue($val);
 					$l = $this->_replaceWithIcons($l);
 				}
 				$l = $this->rollover($l, $oAllRowsData, 'list');
 				$l = $listModel->_addLink($l, $this, $oAllRowsData, $i);
-				if (trim($l) !== '') {
-					$lis[] =  $multiple ? "<li>$l</li>" : $l;
+				if (trim($l) !== '')
+				{
+					$lis[] =  $multiple || $mergeGroupRepeat ? "<li>$l</li>" : $l;
 				}
 			}
-			if (!empty($lis)) {
+			if (!empty($lis))
+			{
 				$uls[] = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $lis).'</ul>' : implode(' ', $lis);
 			}
 		}
 		//$$$rob if only one repeat group data then dont bother encasing it in a <ul>
-		return (count($gdata) !== 1 && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
+		return ((count($gdata) !== 1 || $mergeGroupRepeat) && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
 	}
 
 	/**
