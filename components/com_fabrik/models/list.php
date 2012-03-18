@@ -3282,7 +3282,9 @@ class FabrikFEModelList extends JModelForm {
 				if (!$this->mustApplyFilter($selAccess)) {
 					continue;
 				}
-				$tmpfilter = strstr($filter, '_raw') ? FabrikString::rtrimword( $filter, '_raw') : $filter;
+				//$tmpfilter = strstr($filter, '_raw') ? FabrikString::rtrimword( $filter, '_raw') : $filter;
+				$raw = preg_match("/_raw$/", $filter) > 0;
+				$tmpfilter = $raw ? FabrikString::rtrimword( $filter, '_raw') : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
 				if ($elementModel === false) {
 
@@ -3317,6 +3319,7 @@ class FabrikFEModelList extends JModelForm {
 				$filters['required'][] = 0;
 				$filters['hidden'][] = false;
 				$filters['elementid'][] = $elementModel !== false ? $elementModel->getElement()->id : 0;
+				$filters['raw'][] = $raw;
 				$this->prefilters = true;
 			}
 		}
@@ -4673,7 +4676,7 @@ class FabrikFEModelList extends JModelForm {
 			$rowId = 0;
 			$origRowId = 0;
 		}
-		
+
 		$primaryKey = str_replace("`", "", $primaryKey);
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
 		if (!$this->_importingCSV) {
@@ -7019,7 +7022,6 @@ class FabrikFEModelList extends JModelForm {
 	protected function getButtonCount()
 	{
 		$buttonCount = 0;
-
 		return $buttonCount;
 	}
 

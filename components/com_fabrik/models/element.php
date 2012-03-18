@@ -176,9 +176,9 @@ class plgFabrik_Element extends FabrikPlugin
 	function setContext($groupModel, $formModel, &$listModel)
 	{
 		//dont assign these with &= as they already are when passed into the func
-		$this->_group 	=& $groupModel;
-		$this->_form 		=& $formModel;
-		$this->_list 	=& $listModel;
+		$this->_group =& $groupModel;
+		$this->_form =& $formModel;
+		$this->_list =& $listModel;
 	}
 
 	/**

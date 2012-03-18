@@ -77,10 +77,24 @@ class plgContentFabrik extends JPlugin
 		}
 
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
+		// $$$ hugh - hacky fix for nasty issue with IE, which (for gory reasons) doesn't like having our JS content
+		// wrapped in P tags.  But the default WYSIWYG editor in J! will automagically wrap P tags around everything.
+		// So let's just look for obvious cases of <p>{fabrik ...}</p>, and replace the P's with DIV's.
+		// Yes, it's hacky, but it'll save us a buttload of support work.
+		$pregex = "/<p>\s*{" .$botRegex ."\s*.*?}\s*<\/p>/i";
+		$row->text = preg_replace_callback($pregex, array($this, 'preplace'), $row->text);
+
 		// $$$ hugh - having to change this to use {[]}
 		$regex = "/{" .$botRegex ."\s*.*?}/i";
 		$row->text = preg_replace_callback($regex, array($this, 'replace'), $row->text);
 
+	}
+
+	protected function preplace($match) {
+		$match = $match[0];
+		$match = str_ireplace('<p>', '<div>', $match);
+		$match = str_ireplace('</p>', '</div>', $match);
+		return $match;
 	}
 
 	protected function parse($match)
@@ -104,7 +118,7 @@ class plgContentFabrik extends JPlugin
 
 	protected function replace($match)
 	{
-		
+
 		$match = $match[0];
 		$match = trim($match, "{");
 		$match = trim($match, "}");
@@ -361,7 +375,7 @@ class plgContentFabrik extends JPlugin
 			case 'csv':
 			case 'table':
 			case 'list':
-				
+
 				/// $$$ rob 15/02/2011 addded this as otherwise when you filtered on a table with multiple filter set up subsequent tables were showing
 				//the first tables data
 				if (JRequest::getVar('activelistid') == '')
@@ -395,7 +409,7 @@ class plgContentFabrik extends JPlugin
 
 				}
 				$model->setOrderByAndDir();
-				
+
 				$formModel = $model->getFormModel();
 				//apply filters set in mambot
 				foreach ($unused as $k => $v) {
@@ -428,11 +442,11 @@ class plgContentFabrik extends JPlugin
 		$controller->isMambot = true;
 		if (!$displayed) {
 			ob_start();
-			
+
 			if (method_exists($model, 'reset')) {
 				$model->reset();
 				// $$$ rob erm $ref is a regex?! something not right here (caused js error in cb plugin)
-				//$model->setRenderContext($ref); 
+				//$model->setRenderContext($ref);
 			}
 			$controller->display($model);
 			$result = ob_get_contents();
