@@ -1897,78 +1897,90 @@ class FabrikModelList extends FabModelAdmin
 	public function ammendTable()
 	{
 		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
 		$user = JFactory::getUser();
-		$table = $this->getTable();
+		//$table = $this->getTable();
+		$table = $this->_table;
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$ammend = false;
-		$formModel = $this->getFormModel();
 		$tableName = $table->db_table_name;
 		$fabrikDb = $this->getDb();
 		// $$$ hugh - dunno why we do the strtolower, taking it out as it's killing things if you have fields with UC
 		// $existingfields = array_map('strtolower', array_keys($fabrikDb->getTableColumns($tableName)));
-		$existingfields = array_keys($fabrikDb->getTableColumns($tableName));
-		$lastfield = $existingfields[count($existingfields)-1];
-		$sql = "ALTER TABLE ".$db->nameQuote($tableName)." ";
-		$sql_add = array();
+		$columns = $fabrikDb->getTableColumns($tableName);
+		$existingfields = array_keys($columns);
+		$lastfield = empty($existingfields) ? '' : $existingfields[count($existingfields)-1];
+		$sql = 'ALTER TABLE ' . $db->quoteName($tableName) . ' ';
+		$sqlAdd = array();
 		// $$$ hugh - looks like this is now an array in jform
 		$post = JRequest::get('post');
 		$arGroups = JArrayHelper::getValue($post['jform'], 'current_groups', array(), 'array');
-		//if (!isset($_POST['current_groups_str'])) {
-		if (empty($arGroups)) {
+		if (empty($arGroups))
+		{
 			/* get a list of groups used by the form */
-			$groupsql = "SELECT group_id FROM #__{package}_formgroup WHERE form_id = ".(int)$formModel->id;
-			$db->setQuery($groupsql);
+			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $formModel->id);
+			$db->setQuery($query);
 			$groups = $db->loadObjectList();
-			if ($db->getErrorNum()) {
+			if ($db->getErrorNum())
+			{
 				JError::raiseWarning(500,  'ammendTable: ' . $db->getErrorMsg());
 			}
 			$arGroups = array();
-			foreach ($groups as $g) {
+			foreach ($groups as $g)
+			{
 				$arGroups[] = $g->group_id;
 			}
 		}
-		/*
-		else {
-			$current_groups_str = JRequest::getVar('current_groups_str');
-
-			$arGroups = explode(",", $current_groups_str);
-		}
-		*/
+		
 		$arAddedObj = array();
-		foreach ($arGroups as $group_id) {
+		foreach ($arGroups as $group_id)
+		{
 			$group = FabTable::getInstance('Group', 'FabrikTable');
 			$group->load($group_id);
-			if ($group->is_join == '0') {
-				$groupsql = "SELECT * FROM #__{package}_elements WHERE group_id = ".(int)$group_id;
-				$db->setQuery($groupsql);
+			if ($group->is_join == '0')
+			{
+				$query->clear();
+				$query->select('*')->from('#__{package}_elements')->where('group_id = ' . (int) $group_id);
+				$db->setQuery($query);
 				$elements = $db->loadObjectList();
-				foreach ($elements as $obj) {
+				foreach ($elements as $obj)
+				{
 					// do this in the add element form (but in any event names should be quoted)
 					//$objname = strtolower(preg_replace("/[^A-Za-z0-9]/", "_", $obj->name));
 					$objname = $obj->name;
-					if (!in_array($objname, $existingfields)) {
+					if (!in_array($objname, $existingfields))
+					{
 						/* make sure that the object is not already in the table*/
-						if (!in_array($objname, $arAddedObj)) {
+						if (!in_array($objname, $arAddedObj))
+						{
 							/* any elements that are names the same (eg radio buttons) can not be entered twice into the database*/
-							$arAddedObj[] 		= $objname;
-							$objtypeid 				= $obj->plugin;
-							$pluginClassName 	= $obj->plugin;
-							$plugin 					= $pluginManager->getPlugIn($pluginClassName, 'element');
+							$arAddedObj[] = $objname;
+							$objtypeid = $obj->plugin;
+							$pluginClassName = $obj->plugin;
+							$plugin = $pluginManager->getPlugIn($pluginClassName, 'element');
 							$plugin->setId($obj->id);
-							$objtype 					= $plugin->getFieldDescription();
-							if ($objname != "" && !is_null($objtype)) {
+							$objtype = $plugin->getFieldDescription();
+							if ($objname != "" && !is_null($objtype))
+							{
 								$ammend = true;
-								$sql_add[] = "ADD COLUMN ".$db->nameQuote($objname)." $objtype null AFTER ".$db->nameQuote($lastfield);
+								$add = "ADD COLUMN " . $db->quoteName($objname) . " $objtype null";
+								if ($lastfield !== '')
+								{
+									$add .= " AFTER " . $db->quoteName($lastfield);
+								}
+								$sqlAdd[] = $add;
 							}
 						}
 					}
 				}
 			}
 		}
-		if ($ammend) {
-			$sql .= implode(', ', $sql_add);
+		if ($ammend)
+		{
+			$sql .= implode(', ', $sqlAdd);
 			$fabrikDb->setQuery($sql);
-			if (!$fabrikDb->query()) {
+			if (!$fabrikDb->query())
+			{
 				return JError::raiseWarning(500, 'amend table: ' . $fabrikDb->getErrorMsg());
 			}
 		}

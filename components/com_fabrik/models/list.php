@@ -2813,9 +2813,9 @@ class FabrikFEModelList extends JModelForm {
 		$element = $elementModel->getElement();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$basePlugIn = $pluginManager->getPlugIn($element->plugin, 'element');
-		$fbConfig 	=& JComponentHelper::getParams('com_fabrik');
-		$fabrikDb 	= $this->getDb();
-		$table 			=& $this->getTable();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$fabrikDb = $this->getDb();
+		$table = $this->getTable();
 		$tableName 	= $table->db_table_name;
 		// $$$ rob base plugin needs to know group info for date fields in non-join repeat groups
 		$basePlugIn->_group = $elementModel->_group;

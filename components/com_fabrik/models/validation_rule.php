@@ -118,16 +118,14 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * get the warning message
-	 *
-	 * @return string
+	 * @param	int		validation rule number.
+	 * @return	string
 	 */
 
-	function getMessage($c)
+	function getMessage($c = 0)
 	{
 		$params = $this->getParams();
 		$v = (array)$params->get($this->_pluginName . '-message');
-		// $$$ hugh - under some weird circumastance (I think when session errors aren't being cleared properly), $v[$c] doesn't exist.
-		// So changed this to use JArrayhelper rather than just return $v[$c], to avoid PHP notices.
 		$v = JArrayHelper::getValue($v, $c, '');
 		if ($v === '')
 		{
