@@ -268,6 +268,7 @@ class FabrikModelForm extends FabModelAdmin
 				$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : $data['label'];
 				// mysql will force db table names to lower case even if you set the db name to upper case - so use clean()
 				$dbTableName = FabrikString::clean($dbTableName);
+				$dbTableName = str_replace('___', '_', $dbTableName); // otherwise part of the table name is taken for element names
 			}
 			else
 			{
