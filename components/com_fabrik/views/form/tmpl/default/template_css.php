@@ -60,8 +60,7 @@ echo "
 }
 
 /*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/  
-#{$view}_$c fieldset ul,
-#details_$c fieldset ul{
+#{$view}_$c fieldset ul{
 	padding:0;
 	list-style:none;
 	margin:0;

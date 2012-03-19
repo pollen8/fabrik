@@ -436,7 +436,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 			$name = $this->getValueFullName($opts);
 			// $name could already be in _raw format - so get inverse name e.g. with or without raw
-			$rawname = substr($name, -4) === '_raw' ? substr($name, 0 ,-4) :  $name . "_raw";
+			$rawname = substr($name, -4) === '_raw' ? substr($name, 0 ,-4) :  $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin()) {
 				if ($groupModel->canRepeat()) {
 					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
