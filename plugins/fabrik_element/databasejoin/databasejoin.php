@@ -658,19 +658,25 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$ rob 24/05/2011 - add options per row
 		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 		$html = array();
-
-		if (!$formModel->isEditable()) {
-			//$defaultLabel = $this->renderListData($default, JArrayHelper::toObject($data));
-			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'))) {
+		if (!$formModel->isEditable())
+		{
+			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
+			$defaultLabel = $this->renderListData($default, JArrayHelper::toObject($data));
+			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
+			{
 				$defaultLabel = '';//no point showing 'please select' for read only
 			}
-			if ($params->get('databasejoin_readonly_link') == 1) {
-				$popupformid = (int)$params->get('databasejoin_popupform');
-				if ($popupformid !== 0) {
-					$db->setQuery("select id from #__{package}_lists where form_id = $popupformid");
+			if ($params->get('databasejoin_readonly_link') == 1)
+			{
+				$popupformid = (int) $params->get('databasejoin_popupform');
+				if ($popupformid !== 0)
+				{
+					$query = $db->getQuery(true);
+					$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
+					$db->setQuery($query);
 					$listid = $db->loadResult();
-					$url = 'index.php?option=com_fabrik&view=details&formid='.$popupformid.'&listid ='.$listid .'&rowid='.$defaultValue;
-					$defaultLabel = '<a href="'.JRoute::_($url).'">'.$defaultLabel.'</a>';
+					$url = 'index.php?option=com_fabrik&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
+					$defaultLabel = '<a href="' . JRoute::_($url) . '">' . $defaultLabel . '</a>';
 				}
 			}
 			$html[] = $defaultLabel;
@@ -678,11 +684,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		else {
 			//$$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 			//if ($this->canView()) {
-			if ($this->canUse()) {
-
+			if ($this->canUse())
+			{
 				$idname = $this->getFullName(false, true, false) . "_id";
 				/*if user can access the drop down*/
-				switch ($displayType) {
+				switch ($displayType)
+				{
 					case 'dropdown':
 					default:
 						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="1"', 'value', 'text', $default, $id);
