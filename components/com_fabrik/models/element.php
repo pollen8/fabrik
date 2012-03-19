@@ -3417,17 +3417,24 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	function getFieldDescription()
 	{
+		$plugin = JPluginHelper::getPlugin('fabrik_element', 'dropdown');
+		$fparams = new JRegistry($plugin->params);
 		$p = $this->getParams();
-		if ($this->encryptMe()) {
+		if ($this->encryptMe())
+		{
 			return 'BLOB';
 		}
 		$group = $this->getGroup();
-		if ($group->isJoin() == 0 && $group->canRepeat()) {
+		if ($group->isJoin() == 0 && $group->canRepeat()) 
+		{
 			return "TEXT";
-		} else {
+		}
+		else
+		{
 			$size = $p->get('maxlength', $this->fieldSize);
 			$objtype = sprintf($this->fieldDesc, $size);
 		}
+		$objtype = $fparams->get('defaultFieldType', $objtype);
 		return $objtype;
 	}
 
