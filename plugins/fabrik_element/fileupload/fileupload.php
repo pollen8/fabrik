@@ -1245,30 +1245,35 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$storage = $this->getStorage();
 		// $$$ hugh - check if we need to blow away the cached filepath, set in validation
 		$myFileName = $storage->cleanName($file['name'], $repeatGroupCounter);
-		if ($myFileName != $file['name']) {
+		if ($myFileName != $file['name'])
+		{
 			$file['name'] = $myFileName;
 			unset($this->_filePaths[$repeatGroupCounter]);
 		}
 		$tmpFile = $file['tmp_name'];
 		$uploader = $this->getFormModel()->getUploader();
-
-		if ($params->get('ul_file_types') == '') {
+		if ($params->get('ul_file_types') == '')
+		{
 			$params->set('ul_file_types', implode(',', $this->_getAllowedExtension()));
 		}
 		$err = null;
 		// Set FTP credentials, if given
 		jimport('joomla.client.helper');
 		JClientHelper::setCredentialsFromRequest('ftp');
-		if ($myFileName == '') {
+		if ($myFileName == '')
+		{
 			return;
 		}
 		$filepath = $this->_getFilePath($repeatGroupCounter);
-		if (!uploader::canUpload($file, $err, $params)) {
-			$this->setError(100, $file['name'] .': '. JText::_($err));
+		if (!uploader::canUpload($file, $err, $params))
+		{
+			$this->setError(100, $file['name'] . ': '. JText::_($err));
 		}
 
-		if ($storage->exists($filepath)) {
-			switch ($params->get('ul_file_increment', 0)) {
+		if ($storage->exists($filepath))
+		{
+			switch ($params->get('ul_file_increment', 0))
+			{
 				case 0:
 					break;
 				case 1:
@@ -1279,7 +1284,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					break;
 			}
 		}
-		if (!$storage->upload($tmpFile, $filepath)) {
+		if (!$storage->upload($tmpFile, $filepath))
+		{
 			$uploader->moveError = true;
 			$this->setError(100, JText::sprintf('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ERR', $tmpFile, $filepath));
 			return;
@@ -1295,35 +1301,42 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$oImage->setStorage($storage);
 		// $$$ hugh - removing default of 200, otherwise we ALWAYS resize, whereas
 		// tooltip on these options say 'leave blank for no resizing'
-		$mainWidth 		= $params->get('fu_main_max_width', '');
-		$mainHeight 	= $params->get('fu_main_max_height', '');
+		$mainWidth = $params->get('fu_main_max_width', '');
+		$mainHeight = $params->get('fu_main_max_height', '');
 
-		if ($mainWidth != '' || $mainHeight != '') {
+		if ($mainWidth != '' || $mainHeight != '')
+		{
 			// $$$ rob ensure that both values are integers otherwise resize fails
-			if ($mainHeight == '') {
+			if ($mainHeight == '')
+			{
 				$mainHeight = (int)$mainWidth;
 			}
-			if ($mainWidth == '') {
+			if ($mainWidth == '')
+			{
 				$mainWidth = (int)$mainHeight;
 			}
 			$oImage->resize($mainWidth, $mainHeight, $filepath, $filepath);
 		}
 		// $$$ hugh - if it's a PDF, make sure option is set to attempt PDF thumb
 		$make_thumbnail = $params->get('make_thumbnail') == '1' ? true : false;
-		if (JFile::getExt($filepath) == 'pdf' && $params->get('fu_make_pdf_thumb', '0') == '0') {
+		if (JFile::getExt($filepath) == 'pdf' && $params->get('fu_make_pdf_thumb', '0') == '0')
+		{
 			$make_thumbnail = false;
 		}
-		if ($make_thumbnail) {
-			$thumbPath = $storage->clean(JPATH_SITE.DS.$params->get('thumb_dir').DS.$myFileDir.DS, false);
+		if ($make_thumbnail)
+		{
+			$thumbPath = $storage->clean(JPATH_SITE . '/' . $params->get('thumb_dir') . '/' . $myFileDir . '/', false);
 			$w = new FabrikWorker();
 			$thumbPath = $w->parseMessageForPlaceHolder($thumbPath);
-			$thumbPrefix 	= $params->get('thumb_prefix');
-			$maxWidth 		= $params->get('thumb_max_width', 125);
-			$maxHeight 		= $params->get('thumb_max_height', 125);
-
-			if ($thumbPath != '') {
-				if (!$storage->folderExists($thumbPath)) {
-					if (!$storage->createFolder($thumbPath)) {
+			$thumbPrefix = $params->get('thumb_prefix');
+			$maxWidth = $params->get('thumb_max_width', 125);
+			$maxHeight = $params->get('thumb_max_height', 125);
+			if ($thumbPath != '')
+			{
+				if (!$storage->folderExists($thumbPath))
+				{
+					if (!$storage->createFolder($thumbPath))
+					{
 						JError::raiseError(21, "Could not make dir $thumbPath ");
 					}
 				}
@@ -1508,7 +1521,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if ($params->get('ajax_upload')) {
 			$str = $render->output.$this->plupload($str, $repeatCounter, $values);
 		}
-		$str 	= '<div class="fabrikSubElementContainer">'.$str;
+		$str = '<div class="fabrikSubElementContainer">' . $str;
 		$str .= '</div>';
 		return $str;
 	}
