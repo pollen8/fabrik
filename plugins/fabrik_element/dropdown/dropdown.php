@@ -107,35 +107,6 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	}
 
 	/**
-	 * can be overwritten by plugin class
-	 * determines the label used for the browser title
-	 * in the form/detail views
-	 * @param array data
-	 * @param int when repeating joinded groups we need to know what part of the array to access
-	 * @param array options
-	 * @return string default value
-	 */
-
-	function getTitlePart($data, $repeatCounter = 0, $opts = array())
-	{
-		$val = $this->getValue($data, $repeatCounter, $opts);
-		$element = $this->getElement();
-		$labels = explode('|', $element->sub_labels);
-		$values = explode('|',  $element->sub_values);
-		$str = '';
-		if (is_array($val)) {
-			foreach ($val as $tmpVal) {
-				$key = array_search($tmpVal, $values);
-				$str.= ($key === false) ? $tmpVal : $labels[$key];
-				$str.= " ";
-			}
-		} else {
-			$str = $val;
-		}
-		return $str;
-	}
-
-	/**
 	 * this really does get just the default value (as defined in the element's settings)
 	 * @return array
 	 */
