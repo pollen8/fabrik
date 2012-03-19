@@ -45,39 +45,45 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function renderListData($data, $oAllRowsData)
 	{
-		if ($data == '') {
+		if ($data == '')
+		{
 			return '';
 		}
 		//@TODO: deal with time options (currently can be defined in date_table_format param).
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-
 		$aNullDates = $this->getNullDates();
 		$params = $this->getParams();
 		$store_as_local = (int)$params->get('date_store_as_local', 0);
-
 		$groupModel = $this->getGroup();
 		$data = FabrikWorker::JSONtoData($data, true);
-
 		$f = $params->get('date_table_format', '%Y-%m-%d');
-
-		if ($f == 'Y-m-d') {
+		if ($f == 'Y-m-d')
+		{
 			$f = '%Y-%m-%d';
 		}
 		$format = array();
-		foreach ($data as $d) {
-			if (!in_array($d, $aNullDates)) {
+		foreach ($data as $d)
+		{
+			if (!in_array($d, $aNullDates))
+			{
 				$date = JFactory::getDate($d);
 				//$$$ rob - dates always stored with time (and hence timezone offset) so, unless stored_as_local
 				// we must set the timezone
-				if (!$store_as_local) {
+				if (!$store_as_local)
+				{
 					$date->setTimeZone($timeZone);
 				}
-				if ($f == '{age}') {
+				if ($f == '{age}')
+				{
 					$format[] = date('Y') - $date->toFormat('%Y', true);
-				} else {
+				}
+				else
+				{
 					$format[] = $date->toFormat($f, true);
 				}
-			} else {
+			}
+			else
+			{
 				$format[] = '';
 			}
 		}
@@ -353,20 +359,34 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param mixed element's data
-	 * @param array form records data
-	 * @param int repeat group counter
-	 * @return string formatted value
+	 * @param	mixed	element's raw data
+	 * @param	array	form records data
+	 * @param	int		repeat group counter
+	 * @return	string	formatted value
 	 */
 
 	function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if ((is_array($value) && empty($value)) || (!is_array($value) && trim($value) == '')) {
+		if ((is_array($value) && empty($value)) || (!is_array($value) && trim($value) == ''))
+		{
 			return '';
 		}
 		$groupModel = $this->getGroup();
-		if ($groupModel->isJoin() && $groupModel->canRepeat()) {
+		if ($groupModel->isJoin() && $groupModel->canRepeat())
+		{
 			$value = $value[$repeatCounter];
+		}
+		if (is_array($value)) 
+		{
+			$date = JArrayHelper::getValue($value, 'date');
+			$d = JFactory::getDate($date);
+			$time = JArrayHelper::getValue($value, 'time', '');
+			if ($time !== '')
+			{
+				list($h, $m, $s) = explode(':', $time);
+				$d->setTime($h, $m, $s);
+			}
+			$value = $d->toSql();
 		}
 		// $$$ hugh - need to convert to database format so we GMT-ified date
 		return $this->renderListData($value, new stdClass());
@@ -1506,7 +1526,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$date = JFactory::getDate($val);
 				$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 				$date->setTimeZone($timeZone);
-				$val = $date->toMySQL(true);
+				$val = $date->toSql(true);
 			}
 		}
 		return $val;
