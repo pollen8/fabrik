@@ -3281,20 +3281,19 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * can be overwritten in plugin classes
 	 * eg if changing from db join to field we need to remove the join
 	 * entry from the #__{package}_joins table
-	 * @param object row that is going to be updated
+	 * @param	object	row that is going to be updated
 	 */
 
 	function beforeSave(&$row)
 	{
 		$maskbits = 4;
-		$post	= JRequest::get('post', $maskbits);
+		$post = JRequest::get('post', $maskbits);
 		$post = $post['jform'];
-
 		$dbjoinEl = (is_subclass_of($this, 'plgFabrik_ElementDatabasejoin') || get_class($this) == 'plgFabrik_ElementDatabasejoin');
-
 		// $$$ hugh - added test for empty id, i.e. new element, otherwise we try and delete a crapload of join table rows
 		// we shouldn't be deleting!  Also adding defensive code to deleteJoins() to test for empty ID.
-		if (!empty($post['id']) && !$this->isJoin() && !$dbjoinEl) {
+		if (!empty($post['id']) && !$this->isJoin() && !$dbjoinEl)
+		{
 			$this->deleteJoins((int)$post['id']);
 		}
 	}
@@ -4453,6 +4452,19 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function preFormatFormJoins($data, $row)
 	{
 		return $data;
+	}
+	
+	/**
+	 * return an array of parameter names which should not get updated if a linked element's parent is saved
+	 * notably any paramter which references another element id should be returned in this array
+	 * called from admin element model updateChildIds()
+	 * see cascadingdropdown element for example 
+	 * @return	array	parameter names to not alter
+	 */
+	
+	public function getFixedChildParameters()
+	{
+		return array();
 	}
 }
 ?>

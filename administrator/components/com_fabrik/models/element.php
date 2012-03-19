@@ -531,19 +531,15 @@ class FabrikModelElement extends JModelAdmin
 		jimport('joomla.utilities.date');
 		$user = JFactory::getUser();
 		$app = JFactory::getApplication();
-
 		$new = $data['id'] == 0 ? true : false;
-
 		$params = $data['params'];
 		$data['name'] = FabrikString::iclean($data['name']);
 		$name = $data['name'];
-
 		$params['validations'] = JArrayHelper::getValue($data, 'validationrule', array());
 		$elementModel = $this->getElementPluginModel($data);
-
 		$row = $elementModel->getElement();
-
-		if ($new) {
+		if ($new)
+		{
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 		}
@@ -551,37 +547,37 @@ class FabrikModelElement extends JModelAdmin
 		$item = $listModel->getTable();
 
 		//are we updating the name of the primary key element?
-		if ($row->name === FabrikString::shortColName($item->db_primary_key)) {
-			if ($name !== $row->name) {
+		if ($row->name === FabrikString::shortColName($item->db_primary_key))
+		{
+			if ($name !== $row->name)
+			{
 				//yes we are so update the table
 				$item->db_primary_key = str_replace($row->name, $name, $item->db_primary_key);
 				$item->store();
 			}
 		}
-
+		
 		$jsons = array('sub_values', 'sub_labels', 'sub_initial_selection');
-		foreach ($jsons as $json) {
-			if (array_key_exists($json, $data)) {
+		foreach ($jsons as $json)
+		{
+			if (array_key_exists($json, $data))
+			{
 				$data[$json] = json_encode($data[$json]);
 			}
 		}
-
 		//only update the element name if we can alter existing columns, otherwise the name and
 		//field name become out of sync
-
-		if ($listModel->canAlterFields() || $new) {
-			$data['name'] = $name;
-		} else {
-			$data['name'] = JRequest::getVar('name_orig', '', 'post', 'cmd');
-		}
+		$data['name'] = ($listModel->canAlterFields() || $new) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
 
 		$ar = array('published', 'use_in_page_title', 'show_in_list_summary', 'link_to_detail', 'can_order', 'filter_exact_match');
-		foreach ($ar as $a) {
-			if (!array_key_exists($a, $data)) {
+		foreach ($ar as $a)
+		{
+			if (!array_key_exists($a, $data))
+			{
 				$data[$a] = 0;
 			}
 		}
-
+		
 		// $$$ rob - test for change in element type
 		//(eg if changing from db join to field we need to remove the join
 		//entry from the #__{package}_joins table
@@ -589,53 +585,51 @@ class FabrikModelElement extends JModelAdmin
 		$elementModel->beforeSave($row);
 
 		//unlink linked elements
-		if (JRequest::getVar('unlink') == 'on') {
+		if (JRequest::getVar('unlink') == 'on')
+		{
 			$data['parent_id'] = 0;
 		}
 
 		$datenow = new JDate();
-		if ($row->id != 0) {
-			$data['modified'] = $datenow->toMySQL();
+		if ($row->id != 0)
+		{
+			$data['modified'] = $datenow->toSql();
 			$data['modified_by'] = $user->get('id');
-		} else {
-			$data['created'] = $datenow->toMySQL();
+		}
+		else
+		{
+			$data['created'] = $datenow->toSql();
 			$data['created_by'] = $user->get('id');
 			$data['created_by_alias'] = $user->get('username');
 		}
 		$data['params'] = json_encode($params);
-
 		$cond = 'group_id = '.(int)$row->group_id;
-
-		if ($new) {
+		if ($new)
+		{
 			$data['ordering'] = $row->getNextOrder($cond);
 		}
-
 		$row->reorder($cond);
 		$this->updateChildIds($row);
-
 		$elementModel->getElement()->bind($data);
-
 		$origName = JRequest::getVar('name_orig', '', 'post', 'cmd');
-
 		list($update, $q, $oldName, $newdesc, $origDesc) = $listModel->shouldUpdateElement($elementModel, $origName);
 
-
-		if ($update) {
-
+		if ($update)
+		{
 			$origplugin = JRequest::getVar('plugin_orig');
-
 			$config = JFactory::getConfig();
 			$prefix = $config->getValue('dbprefix');
-
 			$tablename = $listModel->getTable()->db_table_name;
 			$hasprefix = (strstr($tablename, $prefix) === false) ? false : true;
 			$tablename = str_replace($prefix, '#__', $tablename);
-
-
-			if (in_array($tablename, $this->core)) {
+			if (in_array($tablename, $this->core))
+			{
 				$app->enqueueMessage(JText::_('COM_FABRIK_WARNING_UPDATE_CORE_TABLE'), 'notice');
-			} else {
-				if ($hasprefix) {
+			}
+			else
+			{
+				if ($hasprefix)
+				{
 					$app->enqueueMessage(JText::_('COM_FABRIK_WARNING_UPDATE_TABLE_WITH_PREFIX'), 'notice');
 				}
 			}
@@ -652,30 +646,32 @@ class FabrikModelElement extends JModelAdmin
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');
 			$app->setUserState('com_fabrik.redirect', 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id='.(int)$row->id."&origplugin=$origplugin&&origtaks=$task&plugin=$row->plugin");
-
-		} else {
+		}
+		else
+		{
 			$app->setUserState('com_fabrik.confirmUpdate', 0);
 		}
-
-		if ((int)$listModel->getTable()->id !== 0) {
+		if ((int)$listModel->getTable()->id !== 0)
+		{
 			$this->updateIndexes($elementModel, $listModel, $row);
 		}
-
-
 		$return = parent::save($data);
-		if ($return) {
+		if ($return)
+		{
 			$this->updateJavascript($data);
-			$elementModel->_id = $this->getState($this->getName().'.id');
+			$elementModel->_id = $this->getState($this->getName() . '.id');
 			$row->id = $elementModel->_id;
 			$this->createRepeatElement($elementModel, $row);
 			// If new, check if the element's db table is used by other tables and if so add the element
 			// to each of those tables' groups
 
-			if ($new) {
+			if ($new)
+			{
 				$this->addElementToOtherDbTables($elementModel, $row);
 			}
 
-			if (!$elementModel->onSave($data)) {
+			if (!$elementModel->onSave($data))
+			{
 				$this->setError(JText::_('COM_FABRIK_ERROR_SAVING_ELEMENT_PLUGIN_OPTIONS'));
 				return false;
 			}
@@ -754,36 +750,61 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * update child elements
-	 * @param object row element
-	 * @return mixed
+	 * @param	object	row element
+	 * @return	mixed
 	 */
 
 	private function updateChildIds(&$row)
 	{
-		if ((int)$row->id === 0)
+		
+		if ((int) $row->id === 0)
 		{
 			//new element so don't update child ids
 			return;
 		}
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__{package}_elements')->where("parent_id = ".(int)$row->id);
+		$query->select('id')->from('#__{package}_elements')->where("parent_id = ".(int) $row->id);
 		$db->setQuery($query);
 		$objs = $db->loadObjectList();
 		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
-		foreach ($objs as $obj) {
-			$item = FabTable::getInstance('Element', 'FabrikTable');
-			$item->load($obj->id);
-			foreach ($row as $key=>$val) {
-				if (!in_array($key, $ignore)) {
-					// $$$rob - i can't replicate bug #138 but this should fix things anyway???
-					if ($key == 'name') {
-						$val = str_replace("`", "", $val);
+		
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		foreach ($objs as $obj)
+		{
+			$plugin = $pluginManager->getElementPlugin($obj->id);
+			$leave = $plugin->getFixedChildParameters();
+			$item = $plugin->getElement();
+			foreach ($row as $key => $val)
+			{
+				if (!in_array($key, $ignore))
+				{
+					if ($key == 'params')
+					{
+						$origParams = json_decode($item->params);
+						$newParams = json_decode($val);
+						foreach ($newParams as $pKey => $pVal)
+						{
+							if (!in_array($pKey, $leave))
+							{
+								$origParams->$pKey = $pVal;
+							} 
+						}
+						$val = json_encode($origParams);
+					}
+					else
+					{
+						// $$$rob - i can't replicate bug #138 but this should fix things anyway???
+						if ($key == 'name')
+						{
+							$val = str_replace("`", '', $val);
+						}
 					}
 					$item->$key = $val;
 				}
 			}
-			if (!$item->store()) {
+			if (!$item->store())
+			{
 				JError::raiseWarning(500, $item->getError());
 			}
 		}
