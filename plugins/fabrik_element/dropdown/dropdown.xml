@@ -18,4 +18,13 @@
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>
+	
+	<config>
+		<fields name="params">
+			<fieldset label="PLG_ELEMENT_FABRIK_OPTIONS" name="params">
+				<field default="TEXT" description="PLG_ELEMENT_FABRIK_FIELD_TYPE_DESC" label="PLG_ELEMENT_FABRIK_FIELD_TYPE_LABEL" name="defaultFieldType" size="20" type="text"/>
+			</fieldset>
+		</fields>
+	</config>
+	
 </extension>
