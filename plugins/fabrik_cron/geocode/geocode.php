@@ -52,6 +52,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 		// grab all the params, like GMaps key, field names to use, etc
 		// $geocode_gmap_key = $params->get('geocode_gmap_key');
 		$geocode_batch_limit = (int)$params->get('geocode_batch_limit', '0');
+		$geocode_delay = (int)$params->get('geocode_delay', '0');
 		$geocode_is_empty = $params->get('geocode_is_empty');
 		$geocode_zoom_level = $params->get('geocode_zoom_level', '4');
 		$geocode_map_element_long = $params->get('geocode_map_element');
@@ -68,6 +69,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 		$geocode_zip_element = $geocode_zip_element_long ? FabrikString::shortColName($geocode_zip_element_long) : '';
 		$geocode_country_element_long = $params->get('geocode_country_userid_element');
 		$geocode_country_element = $geocode_country_element_long ? FabrikString::shortColName($geocode_country_element_long) : '';
+		$geocode_when = $params->get('geocode_zip_element', '1');
 
 		// sanity check, make sure required elements have been specified
 		/*
@@ -88,8 +90,19 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 						FabrikWorker::log('plg.cron.geocode.information', 'reached batch limit');
 						break 2;
 					}
-					// see if the map element is considered empty
-					if (empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty) {
+					// See if the map element is considered empty
+					// Values of $geocode_when are:
+					// 1: default or empty
+					// 2: empty
+					// 3: always
+					$do_geocode = true;
+					if ($geocode_when == '1') {
+						$do_geocode = empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty;
+					}
+					else if ($geocode_when == '2') {
+						$geocode = empty($row->$geocode_map_element);
+					}
+					if ($do_geocode) {
 						// it's empty, so lets try and geocode.
 						// first, construct the address
 						// we'll build an array of address components, which we'll explode into a string later
@@ -151,7 +164,10 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 								}
 							}
 							else {
-								FabrikWorker::log('plg.cron.geocode.information', sprintf('no geocode result for: %s', $full_addr));
+								FabrikWorker::log('plg.cron.geocode.information', sprintf('Error (%s), no geocode result for: %s', $res['status'], $full_addr));
+							}
+							if ($geocode_delay > 0) {
+								usleep($geocode_delay);
 							}
 						}
 						else {
