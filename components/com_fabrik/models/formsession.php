@@ -45,18 +45,19 @@ class FabrikFEModelFormsession extends FabModel {
 
 	function __construct()
 	{
-		if (!defined('_FABRIKFORMSESSION_LOADED_FROM_COOKIE')) {
+		if (!defined('_FABRIKFORMSESSION_LOADED_FROM_COOKIE'))
+		{
 			define('_FABRIKFORMSESSION_LOADED_FROM_COOKIE', 1);
 			define('_FABRIKFORMSESSION_LOADED_FROM_TABLE', 2);
 		}
 		parent::__construct();
 	}
 
-/**
- * save the form data to #__{package}_form_sesson
- * @param object form $formModel
- * @return null
- */
+	/**
+	 * save the form data to #__{package}_form_sesson
+	 * @param object form $formModel
+	 * @return null
+	 */
 
 	function savePage(&$formModel)
 	{
@@ -70,7 +71,8 @@ class FabrikFEModelFormsession extends FabModel {
 		$querystring = JArrayHelper::getValue($fabrik_vars, 'querystring', array());
 
 		$formModel->addEncrytedVarsToArray($post);
-		if (array_key_exists('fabrik_vars', $post)) {
+		if (array_key_exists('fabrik_vars', $post))
+		{
 			unset($post['fabrik_vars']);
 		}
 		$data = serialize($post);
@@ -86,7 +88,8 @@ class FabrikFEModelFormsession extends FabModel {
 		$row->referring_url  = JRequest::getVar('HTTP_REFERER', '', 'server');
 		$row->data = $data;
 		$this->setCookie($hash);
-		if (!$row->store()) {
+		if (!$row->store())
+		{
 			echo $row->getError();
 		}
 		// $$$ hugh - if we're saving the formdata in the session, we should set 'session.on'
@@ -103,13 +106,14 @@ class FabrikFEModelFormsession extends FabModel {
 
 	function setCookie($hash)
 	{
-		if ($this->canUseCookie() === false) {
+		if ($this->canUseCookie() === false)
+		{
 			return;
 		}
 		$crypt = $this->getCrypt();
-		$lifetime = time() + 365*24*60*60;
+		$lifetime = time() + 365 * 24 * 60 * 60;
 		$user = JFactory::getUser();
-		$key = (int)$user->get('id').":".$this->getFormId().":".$this->getRowId();
+		$key = (int)$user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
 		$rcookie = $crypt->encrypt($hash);
 		setcookie($key, $rcookie, $lifetime, '/');
 	}
@@ -123,13 +127,14 @@ class FabrikFEModelFormsession extends FabModel {
 	{
 		$user = JFactory::getUser();
 		$lifetime = time() -99986400;
-		$key = (int)$user->get('id').":".$this->getFormId().":".$this->getRowId();
-		$res = setcookie( $key, false, $lifetime, '/');
+		$key = (int)$user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
+		$res = setcookie($key, false, $lifetime, '/');
 	}
 
 	protected function getCrypt()
 	{
-		if (!isset($this->crypt)) {
+		if (!isset($this->crypt))
+		{
 			jimport('joomla.utilities.simplecrypt');
 			jimport('joomla.utilities.utility');
 			//Create the encryption key, apply extra hardening using the user agent string
@@ -156,27 +161,34 @@ class FabrikFEModelFormsession extends FabModel {
 		$row = $this->getTable('Formsession', 'FabrikTable');
 		$row->data = '';
 		$hash = '';
-		if ((int)$user->get('id') !== 0) {
+		if ((int)$user->get('id') !== 0)
+		{
 			$hash = $this->getHash();
 			$this->status = JText::_('LOADING FROM DATABASE');
 			$this->statusid = _FABRIKFORMSESSION_LOADED_FROM_TABLE;
-		} else {
-			if ($this->canUseCookie()) {
+		}
+		else
+		{
+			if ($this->canUseCookie())
+			{
 				$crypt = $this->getCrypt();
 				$cookiekey = $this->getCookieKey();
 				$cookieval = JArrayHelper::getValue($_COOKIE, $cookiekey, '');
-				if ($cookieval !== '') {
+				if ($cookieval !== '')
+				{
 					$this->status = JText::_('COM_FABRIK_LOADING_FROM_COOKIE');
 					$this->statusid =_FABRIKFORMSESSION_LOADED_FROM_COOKIE;
 					$hash = $crypt->decrypt($cookieval);
 				}
 			}
 		}
-		if ($hash !== '') {
+		if ($hash !== '')
+		{
 			// no point loading it if the hash is empty
 			$row->load(array('hash'=> $hash));
 		}
-		if (is_null($row->id)) {
+		if (is_null($row->id))
+		{
 			$row->last_page = 0;
 			$row->data = '';
 		}
@@ -189,10 +201,11 @@ class FabrikFEModelFormsession extends FabModel {
 	 * @since 2.0.4
 	 * get the cookie name
 	 */
+	
 	protected function getCookieKey()
 	{
 		$user = JFactory::getUser();
-		$key = (int)$user->get('id').":".$this->getFormId().":".$this->getRowId();
+		$key = (int)$user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
 		return $key;
 	}
 
@@ -207,7 +220,8 @@ class FabrikFEModelFormsession extends FabModel {
 	{
 		$session = JFactory::getSession();
 		$formid = $this->getFormId();
-		if ($session->has('com_fabrik.form.'.$formid.'.session.on')) {
+		if ($session->get('com_fabrik.form.' . $formid . '.session.on'))
+		{
 			return true;
 		}
 		return $this->_useCookie;
@@ -221,26 +235,28 @@ class FabrikFEModelFormsession extends FabModel {
 		// $$$ hugh - need to clear the 'session.on'.  If we're zapping the stored
 		// session form data, doesn't matter who or what set 'session.on' ... it ain't there any more.
 		$session = JFactory::getSession();
-		$session->clear('com_fabrik.form.'.$this->getFormId().'.session.on');
+		$session->clear('com_fabrik.form.' . $this->getFormId() . '.session.on');
 		$user = JFactory::getUser();
 		$row = $this->getTable('Formsession', 'FabrikTable');
 		$hash = '';
-		if ((int)$user->get('id') !== 0) {
+		if ((int)$user->get('id') !== 0)
+		{
 			$hash = $this->getHash();
-		} else {
-			if ($this->_useCookie) {
+		}
+		else
+		{
+			if ($this->_useCookie)
+			{
 				$crypt = $this->getCrypt();
-				$cookiekey = (int)$user->get('id').":".$this->getFormId().":".$this->getRowId();
+				$cookiekey = (int)$user->get('id') . ":" . $this->getFormId() . ":" . $this->getRowId();
 				$cookieval = JArrayHelper::getValue($_COOKIE, $cookiekey, '');
-				if ($cookieval !== '') {
+				if ($cookieval !== '')
+				{
 					$hash = $crypt->decrypt($cookieval);
 				}
 			}
 		}
 		$db = $row->getDBO();
-		//$row->set('_tbl_key', 'hash');
-		//$k = $row->getKeyName();
-		//$row->$k = $hash;
 		$row->hash = $hash;
 		$query = 'DELETE FROM '.$db->nameQuote($row->getTableName()).
 				' WHERE '.$row->getKeyName().' = '. $db->Quote($hash);
@@ -267,8 +283,9 @@ class FabrikFEModelFormsession extends FabModel {
 	function getHash()
 	{
 		$userid = $this->getUserId();
-		if (is_null($this->hash)) {
-			$this->hash = $userid.":".$this->getFormId().":".$this->getRowId();
+		if (is_null($this->hash))
+		{
+			$this->hash = $userid . ':' . $this->getFormId() . ':' . $this->getRowId();
 		}
 		return $this->hash;
 	}
@@ -280,7 +297,8 @@ class FabrikFEModelFormsession extends FabModel {
 	function getUserId()
 	{
 		$user = JFactory::getUser();
-		if ($user->get('id') == 0) {
+		if ($user->get('id') == 0)
+		{
 			return uniqid();
 		}
 		return $user->get('id');
@@ -314,7 +332,8 @@ class FabrikFEModelFormsession extends FabModel {
 
 	function getRowId()
 	{
-		if (is_null($this->rowid)) {
+		if (is_null($this->rowid))
+		{
 			$this->rowid = JRequest::getInt('rowid');
 		}
 		return (int)$this->rowid;
@@ -328,7 +347,8 @@ class FabrikFEModelFormsession extends FabModel {
 
 	function getFormId()
 	{
-		if (is_null($this->formid)) {
+		if (is_null($this->formid))
+		{
 			$this->formid = JRequest::getInt('formid');
 		}
 		return $this->formid;

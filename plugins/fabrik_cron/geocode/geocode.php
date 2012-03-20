@@ -16,7 +16,8 @@ defined('_JEXEC') or die();
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
 
 
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps.php');
+//require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps.php');
+require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps2.php');
 
 class plgFabrik_CronGeocode extends plgFabrik_Cron {
 
@@ -49,7 +50,9 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 		$mydata[0] = $db->loadObjectList();
 
 		// grab all the params, like GMaps key, field names to use, etc
-		$geocode_gmap_key = $params->get('geocode_gmap_key');
+		// $geocode_gmap_key = $params->get('geocode_gmap_key');
+		$geocode_batch_limit = (int)$params->get('geocode_batch_limit', '0');
+		$geocode_delay = (int)$params->get('geocode_delay', '0');
 		$geocode_is_empty = $params->get('geocode_is_empty');
 		$geocode_zoom_level = $params->get('geocode_zoom_level', '4');
 		$geocode_map_element_long = $params->get('geocode_map_element');
@@ -66,20 +69,40 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 		$geocode_zip_element = $geocode_zip_element_long ? FabrikString::shortColName($geocode_zip_element_long) : '';
 		$geocode_country_element_long = $params->get('geocode_country_userid_element');
 		$geocode_country_element = $geocode_country_element_long ? FabrikString::shortColName($geocode_country_element_long) : '';
+		$geocode_when = $params->get('geocode_zip_element', '1');
 
 		// sanity check, make sure required elements have been specified
+		/*
 		if (empty($geocode_gmap_key)) {
 			JError::raiseNotice(500, 'No google maps key specified');
 			return;
 		}
 		$gmap = new GMaps($geocode_gmap_key);
+		*/
+		$gmap = new GeoCode();
 		// run through our table data
 		$total_encoded = 0;
+		$total_attempts = 0;
 		foreach ($mydata as $gkey => $group) {
 			if (is_array($group)) {
 				foreach ($group as $rkey => $row) {
-					// see if the map element is considered empty
-					if (empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty) {
+					if ($geocode_batch_limit > 0 && $total_attempts >= $geocode_batch_limit) {
+						FabrikWorker::log('plg.cron.geocode.information', 'reached batch limit');
+						break 2;
+					}
+					// See if the map element is considered empty
+					// Values of $geocode_when are:
+					// 1: default or empty
+					// 2: empty
+					// 3: always
+					$do_geocode = true;
+					if ($geocode_when == '1') {
+						$do_geocode = empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty;
+					}
+					else if ($geocode_when == '2') {
+						$geocode = empty($row->$geocode_map_element);
+					}
+					if ($do_geocode) {
 						// it's empty, so lets try and geocode.
 						// first, construct the address
 						// we'll build an array of address components, which we'll explode into a string later
@@ -123,10 +146,12 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 						// Did we actually get an address?
 						if (!empty($full_addr)) {
 							// OK!  Lets try and geocode it ...
-							if ($gmap->getInfoLocation($full_addr)) {
+							$total_attempts++;
+							$res = $gmap->getLatLng($full_addr);
+							if ($res['status'] == 'OK') {
 								//echo 'found ';
-								$lat = $gmap->getLatitude();
-								$long = $gmap->getLongitude();
+								$lat = $res['lat'];
+								$long = $res['lng'];
 								if (!empty($lat) && !empty($long)) {
 									$map_value = "($lat,$long):$geocode_zoom_level";
 									$db->setQuery("
@@ -139,7 +164,10 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 								}
 							}
 							else {
-								FabrikWorker::log('plg.cron.geocode.information', sprintf('no geocode result for: %s', $full_addr));
+								FabrikWorker::log('plg.cron.geocode.information', sprintf('Error (%s), no geocode result for: %s', $res['status'], $full_addr));
+							}
+							if ($geocode_delay > 0) {
+								usleep($geocode_delay);
 							}
 						}
 						else {

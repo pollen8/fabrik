@@ -1253,8 +1253,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 					$joinGroup->publishedElements = array();
 					$joinGroup->publishedElements[''] = array($elementModel, $idElementModel, $parentElement);
-					//echo "<pre>repeat totals = ";print_r($repeatTotals);echo "group id = $oJoin->group_id ";
-					//$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = count($repeatTotals[$oJoin->group_id]) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
 					$data[$oJoin->table_join . '___' . $oJoin->table_join_key]  = JArrayHelper::getValue($repeatTotals, $oJoin->group_id, 0) === 0 ? array() : array_fill(0, $repeatTotals[$oJoin->group_id], $insertId);
 					$this->groups[] = $joinGroup;
 
@@ -2625,8 +2623,9 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$this->sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
 		$this->sessionModel->setFormId($this->getId());
 		$this->sessionModel->setRowId($this->_rowId);
-		$useCookie = (int)$params->get('multipage_save', 0) === 2 ? true : false;
-		if (!$useCookie) {
+		$useCookie = (int) $params->get('multipage_save', 0) === 2 ? true : false;
+		if (!$useCookie)
+		{
 			//incase a plugin is using cookie session (e.g. confirmation plugin)
 			$useCookie = $this->sessionModel->canUseCookie();
 		}
@@ -2641,28 +2640,30 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 
 	function _buildQuery()
 	{
-		if (isset($this->query)) {
+		if (isset($this->query))
+		{
 			return $this->query;
 		}
 		$db = FabrikWorker::getDbo();
 		$conf = JFactory::getConfig();
-		$form	= $this->getForm();
-		if (!$form->record_in_database) {
+		$form = $this->getForm();
+		if (!$form->record_in_database)
+		{
 			return;
 		}
 		$listModel = $this->getListModel();
 		$item = $listModel->getTable();
-
 		$sql = $listModel->_buildQuerySelect();
 		$sql .= $listModel->_buildQueryJoin();
-
 		$emptyRowId = $this->_rowId === '' ? true : false;
 		$random = JRequest::getVar('random');
 		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
-		if ($usekey != '') {
+		if ($usekey != '')
+		{
 			$usekey = explode('|', $usekey);
-			foreach ($usekey as &$tmpk) {
-				$tmpk = !strstr($tmpk, '.') ? $item->db_table_name.'.'.$tmpk : $tmpk;
+			foreach ($usekey as &$tmpk)
+			{
+				$tmpk = !strstr($tmpk, '.') ? $item->db_table_name . '.' . $tmpk : $tmpk;
 				$tmpk = FabrikString::safeColName($tmpk);
 			}
 			if (!is_array($this->_rowId)) {
@@ -2673,58 +2674,73 @@ WHERE $item->db_primary_key $c $rowid $order $limit");
 		$viewpk = JRequest::getVar('view_primary_key');
 		// $$$ hugh - changed this to !==, as in rowid=-1/usekey situations, we can have a rowid of 0
 		// I don't THINK this will have any untoward side effects, but ...
-		if (!$random && !$emptyRowId) {
+		if (!$random && !$emptyRowId)
+		{
 			$sql .= " WHERE ";
-			if (!empty($usekey)) {
+			if (!empty($usekey))
+			{
 				$sql .= "(";
 				$parts = array();
-				for ($k = 0; $k < count($usekey); $k++) {
+				for ($k = 0; $k < count($usekey); $k++)
+				{
 					//ensure that the key value is not quoted as we Quote() afterwards
-					if (strstr($aRowIds[$k], "'")) {
+					if (strstr($aRowIds[$k], "'"))
+					{
 						$aRowIds[$k] = str_replace("'", '', $aRowIds[$k]);
 					}
-					if ($comparison == '=') {
-						$parts[] = " ".$usekey[$k]." = ".$db->Quote($aRowIds[$k]);
-					} else {
-						$parts[] = " ".$usekey[$k]." LIKE ". $db->Quote("%".$aRowIds[$k]."%");
+					if ($comparison == '=')
+					{
+						$parts[] = ' ' . $usekey[$k] . ' = ' . $db->quote($aRowIds[$k]);
+					}
+					else
+					{
+						$parts[] = ' ' . $usekey[$k] . ' LIKE '. $db->quote('%' . $aRowIds[$k] . '%');
 					}
 				}
-				$sql .= implode(" AND ", $parts);
-				$sql .= ")";
-			} else {
-				$sql .= " $item->db_primary_key = ". $db->Quote($this->_rowId);
+				$sql .= implode(' AND ', $parts);
+				$sql .= ')';
+			}
+			else
+			{
+				$sql .= ' ' . $item->db_primary_key . ' = ' . $db->quote($this->_rowId);
 			}
 		} else {
-			if ($viewpk != '') {
-				$sql .= " WHERE $viewpk ";
-			} else if ($random) {
+			if ($viewpk != '')
+			{
+				$sql .= ' WHERE ' . $viewpk . ' ';
+			} else if ($random)
+			{
 				// $$$ rob Should this not go after prefilters have been applied ?
-				$sql .= " ORDER BY RAND() LIMIT 1 ";
+				$sql .= ' ORDER BY RAND() LIMIT 1 ';
 			}
 		}
 		// get prefilter conditions from table and apply them to the record
 		//the false, ignores any filters set by the table
 		$where = $listModel->_buildQueryWhere(false);
-
-		if (strstr($sql, 'WHERE') && $this->_rowId != '') {
+		if (strstr($sql, 'WHERE') && $this->_rowId != '')
+		{
 			//do it this way as queries may contain subquerues which we want to keep the where
 			$firstword = substr($where, 0, 5);
-			if ($firstword == 'WHERE') {
+			if ($firstword == 'WHERE')
+			{
 				$where = substr_replace($where, 'AND', 0, 5);
 			}
 		}
 		//set rowId to -2 to indicate random record
-		if ($random) {
+		if ($random)
+		{
 			$this->_rowId = -2;
 		}
 		// $$$ rob ensure that all prefilters are wrapped in brackets so that
 		// only one record is loaded by the query - might need to set $word = and?
-		if (trim($where) != '') {
+		if (trim($where) != '')
+		{
 			$where = explode(' ', $where);
 			$word = array_shift($where);
 			$sql .= $word . ' (' . implode(' ', $where) . ')';
 		}
-		if (!$random) {
+		if (!$random)
+		{
 			// $$$ rob if showing joined repeat groups we want to be able to order them as defined in the table
 			$sql .= $listModel->_buildQueryOrder();
 		}

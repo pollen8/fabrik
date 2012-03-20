@@ -33,7 +33,7 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
 	 * @return bol true if validation passes, false if fails
 	 */
 
-	function validate($data, &$elementModel, $c)
+	function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		//for multiselect elements
 		if (is_array($data)) {
@@ -41,11 +41,11 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
-		$domatch = $domatch[$c];
+		$domatch = $domatch[$pluginc];
 		if ($domatch) {
 			$formModel = $elementModel->getFormModel();
 			$php_code = $params->get('php-code');
-			$retval = eval($php_code[$c]);
+			$retval = eval($php_code[$pluginc]);
 			return $retval;
 		}
 		return true;
@@ -60,14 +60,14 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
  	 * @return string original or replaced data
  	 */
 
- 	function replace($data, &$element, $c)
+ 	function replace($data, &$element, $pluginc, $repeatCounter)
  	{
  		$params = $this->getParams();
 		$domatch = $params->get('php-match');
-		$domatch = $domatch[$c];
+		$domatch = $domatch[$pluginc];
 		if (!$domatch) {
 			$php_code = $params->get('php-code');
-			return eval($php_code[$c]);
+			return eval($php_code[$pluginc]);
 		}
 		return $data;
  	}

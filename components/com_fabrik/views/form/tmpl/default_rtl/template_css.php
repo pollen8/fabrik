@@ -61,11 +61,14 @@ echo "
 	border:1px solid #DDDDDD;
 }
 
-#{$view}_$c fieldset ul,
-#details_$c fieldset ul{
+#{$view}_$c fieldset ul{
 	list-style:none;
 	padding:40px 10px 20px 10px;
 	margin:0;
+}
+
+#{$view}_$c ul.fabrikRepeatData{
+	padding:0;
 }
 
 #{$view}_$c .fabrikForm .fabrikGroup ul{
