@@ -50,7 +50,8 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 		$mydata[0] = $db->loadObjectList();
 
 		// grab all the params, like GMaps key, field names to use, etc
-		$geocode_gmap_key = $params->get('geocode_gmap_key');
+		// $geocode_gmap_key = $params->get('geocode_gmap_key');
+		$geocode_batch_limit = (int)$params->get('geocode_batch_limit', '0');
 		$geocode_is_empty = $params->get('geocode_is_empty');
 		$geocode_zoom_level = $params->get('geocode_zoom_level', '4');
 		$geocode_map_element_long = $params->get('geocode_map_element');
@@ -79,9 +80,14 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 		$gmap = new GeoCode();
 		// run through our table data
 		$total_encoded = 0;
+		$total_attempts = 0;
 		foreach ($mydata as $gkey => $group) {
 			if (is_array($group)) {
 				foreach ($group as $rkey => $row) {
+					if ($geocode_batch_limit > 0 && $total_attempts >= $geocode_batch_limit) {
+						FabrikWorker::log('plg.cron.geocode.information', 'reached batch limit');
+						break 2;
+					}
 					// see if the map element is considered empty
 					if (empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty) {
 						// it's empty, so lets try and geocode.
@@ -127,6 +133,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 						// Did we actually get an address?
 						if (!empty($full_addr)) {
 							// OK!  Lets try and geocode it ...
+							$total_attempts++;
 							$res = $gmap->getLatLng($full_addr);
 							if ($res['status'] == 'OK') {
 								//echo 'found ';
