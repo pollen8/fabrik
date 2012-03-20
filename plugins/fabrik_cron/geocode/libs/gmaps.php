@@ -1,36 +1,41 @@
 <?php
+
+/**
+ * $$$ hugh - DEPRECATED - using ./libs/gmaps2.php for API v3 now.
+ */
+
 /**
  * GMaps class ver 0.2
- * 
+ *
  * Gets geo-informations from the Google Maps API
  * http://code.google.com/apis/maps/index.html
  *
  * Copyright 2008-2009 by Enrico Zimuel (enrico@zimuel.it)
- * 
+ *
  */
 class GMaps
 {
     const MAPS_HOST = 'maps.google.com';
     /**
-     * Latitude 
-     * 
+     * Latitude
+     *
      * @var double
      */
     private $_latitude;
     /**
-     * Longitude 
+     * Longitude
      *
      * @var double
      */
     private $_longitude;
     /**
-     * Address 
+     * Address
      *
      * @var string
      */
     private $_address;
     /**
-     * Country name 
+     * Country name
      *
      * @var string
      */
@@ -87,7 +92,7 @@ class GMaps
         if (!empty($address)) {
             return $this->_connect($address);
         }
-        return false;    
+        return false;
     }
     /**
      * connect to Google Maps
@@ -97,14 +102,14 @@ class GMaps
      */
     private function _connect($param) {
         $request_url = $this->_baseUrl . "&oe=utf-8&q=" . urlencode($param);
-        $xml = simplexml_load_file($request_url);      
+        $xml = simplexml_load_file($request_url);
         if (! empty($xml->Response)) {
             $point= $xml->Response->Placemark->Point;
             if (! empty($point)) {
                 $coordinatesSplit = split(",", $point->coordinates);
                 // Format: Longitude, Latitude, Altitude
                 $this->_latitude = $coordinatesSplit[1];
-                $this->_longitude = $coordinatesSplit[0];    
+                $this->_longitude = $coordinatesSplit[0];
             }
             $this->_address= $xml->Response->Placemark->address;
             $this->_countryName= $xml->Response->Placemark->AddressDetails->Country->CountryName;

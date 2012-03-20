@@ -2,9 +2,7 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-cron-geocode">
-			
-			<field description="PLG_CRON_GEOCODE_GMAP_KEY_DESC" label="PLG_CRON_GEOCODE_GMAP_KEY_LABEL" name="geocode_gmap_key" size="100" type="text"/>
-						
+									
 			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GEOCODE_MAP_DESC" label="PLG_CRON_GEOCODE_MAP_LABEL" name="geocode_map_element" table="params_table" type="element"/>
 				
 			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GEOCODE_ADDR1_DESC" label="PLG_CRON_GEOCODE_ADDR1_LABEL" name="geocode_addr1_element" table="params_table" type="element"/>

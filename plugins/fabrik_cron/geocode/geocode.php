@@ -16,7 +16,8 @@ defined('_JEXEC') or die();
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
 
 
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps.php');
+//require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps.php');
+require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps2.php');
 
 class plgFabrik_CronGeocode extends plgFabrik_Cron {
 
@@ -68,11 +69,14 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 		$geocode_country_element = $geocode_country_element_long ? FabrikString::shortColName($geocode_country_element_long) : '';
 
 		// sanity check, make sure required elements have been specified
+		/*
 		if (empty($geocode_gmap_key)) {
 			JError::raiseNotice(500, 'No google maps key specified');
 			return;
 		}
 		$gmap = new GMaps($geocode_gmap_key);
+		*/
+		$gmap = new GeoCode();
 		// run through our table data
 		$total_encoded = 0;
 		foreach ($mydata as $gkey => $group) {
@@ -123,10 +127,11 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 						// Did we actually get an address?
 						if (!empty($full_addr)) {
 							// OK!  Lets try and geocode it ...
-							if ($gmap->getInfoLocation($full_addr)) {
+							$res = $gmap->getLatLng($full_addr);
+							if ($res['status'] == 'OK') {
 								//echo 'found ';
-								$lat = $gmap->getLatitude();
-								$long = $gmap->getLongitude();
+								$lat = $res['lat'];
+								$long = $res['lng'];
 								if (!empty($lat) && !empty($long)) {
 									$map_value = "($lat,$long):$geocode_zoom_level";
 									$db->setQuery("
