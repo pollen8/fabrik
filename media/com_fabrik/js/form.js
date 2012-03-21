@@ -699,7 +699,7 @@ var FbForm = new Class({
 		var gids = $A(this.options.pages.get(this.currentPage.toInt()));
 		var err = false;
 		$H(d).each(function (v, k) {
-			k = k.replace(/\[(.*)\]/, '');// for dropdown validations
+			k = k.replace(/\[(.*)\]/, '').replace(/%5B(.*)%5D/, '');// for dropdown validations
 			if (this.formElements.has(k)) {
 				var el = this.formElements.get(k);
 				if (gids.contains(el.groupid.toInt())) {
