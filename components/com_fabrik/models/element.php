@@ -1413,12 +1413,7 @@ class plgFabrik_Element extends FabrikPlugin
 						}
 					}
 				} else {
-					//repeating group not joined
-					// don't think this applies in f3
-					/*
-					$val = JArrayHelper::getValue(json_decode($val, true), $repeatCounter);
 					$repData[$k] = $val;
-					*/
 				}
 			}
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $repData);
@@ -3425,7 +3420,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			return 'BLOB';
 		}
 		$group = $this->getGroup();
-		if ($group->isJoin() == 0 && $group->canRepeat()) 
+		if ($group->isJoin() == 0 && $group->canRepeat())
 		{
 			return "TEXT";
 		}
@@ -4446,7 +4441,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		return $v;
 	}
-	
+
 	/**
 	* allows the element to pre-process a rows data before and join mergeing of rows
 	* occurs. Used in calc element to do cals on actual row rather than merged row
@@ -4455,20 +4450,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	* @param	object	current row's data
 	* @return	string	formatted value
 	*/
-	
+
 	public function preFormatFormJoins($data, $row)
 	{
 		return $data;
 	}
-	
+
 	/**
 	 * return an array of parameter names which should not get updated if a linked element's parent is saved
 	 * notably any paramter which references another element id should be returned in this array
 	 * called from admin element model updateChildIds()
-	 * see cascadingdropdown element for example 
+	 * see cascadingdropdown element for example
 	 * @return	array	parameter names to not alter
 	 */
-	
+
 	public function getFixedChildParameters()
 	{
 		return array();
