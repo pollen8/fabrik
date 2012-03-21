@@ -29,7 +29,7 @@ All other element and validation plugins can be found by following these steps:
 
 The element or validation plugin will then appear as an option when creating an element or validation.
 
-Upgrading
+Updating
 ================
 
 Once you have installed Fabrik 3.x, if you want to stay up to date with the latest code updates between official releases, you can 'update from GitHub'.
