@@ -69,7 +69,11 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 		// $$$ hugh - if the form just failed validation, number formatted fields will already
 		// be formatted, so we need to un-format them before formatting them!
-		$value = $this->numberFormat($this->unNumberFormat($value));
+		// $$$ rob - well better actually check if we are coming from a failed validation then :)
+		if (JRequest::getCmd('task') == 'form.process') {
+			$value = $this->unNumberFormat($value);
+		}
+		$value = $this->numberFormat($value);
 		if (!$this->_editable) {
 			$this->_guessLinkType($value, $data, $repeatCounter);
 			//$value = $this->numberFormat($value);
