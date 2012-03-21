@@ -40,10 +40,10 @@ Please see here for instructions on how to update from GitHub - [http://fabrikar
 Further Information
 ================
 
-[Wiki](http://fabrikar.com/wiki)
-[FAQ](http://fabrikar.com/wiki/index.php/3.x_FAQ)
-[Forum](http://fabrikar.com/forums/)
-[Forum Post Template](http://fabrikar.com/wiki/index.php/3.x_Forum_Post_Template)
-[Things You Can Do](http://fabrikar.com/wiki/index.php/Things_You_Can_Do)
-[Contribute Code](http://fabrikar.com/wiki/index.php/Contribute_Code)
-[Contribute Translation](http://fabrikar.com/wiki/index.php/3.x_Translation)
+[Wiki](http://fabrikar.com/wiki)  
+[FAQ](http://fabrikar.com/wiki/index.php/3.x_FAQ)  
+[Forum](http://fabrikar.com/forums/)  
+[Forum Post Template](http://fabrikar.com/wiki/index.php/3.x_Forum_Post_Template)  
+[Things You Can Do](http://fabrikar.com/wiki/index.php/Things_You_Can_Do)  
+[Contribute Code](http://fabrikar.com/wiki/index.php/Contribute_Code)  
+[Contribute Translation](http://fabrikar.com/wiki/index.php/3.x_Translation)  
