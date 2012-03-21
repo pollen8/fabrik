@@ -36,6 +36,10 @@ Once you have installed Fabrik 3.x, if you want to stay up to date with the late
 
 Please see here for instructions on how to update from GitHub - [http://fabrikar.com/wiki/index.php/3.x_Update_from_GitHub](http://fabrikar.com/wiki/index.php/3.x_Update_from_GitHub)
 
+Upgrading
+================
+
+At the time of an official release, please follow the steps here - [http://fabrikar.com/wiki/index.php/3.x_Upgrade_instructions](http://fabrikar.com/wiki/index.php/3.x_Upgrade_instructions)
 
 Further Information
 ================
