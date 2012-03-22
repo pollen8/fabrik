@@ -2,26 +2,26 @@
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-logs">
-			<field default="0" description="PLG_FORM_LOG_LOGSRECORDINDB_DESC" label="PLG_FORM_LOG_LOGSRECORDINDB_LABEL" name="logs_record_in_db" repeat="true" type="radio">
+			<field default="0" description="PLG_FORM_LOG_RECORDINDB_DESC" label="PLG_FORM_LOG_RECORDINDB_LABEL" name="logs_record_in_db" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
 				
 			<field description="PLG_FORM_LOG_RECORDIN_DESC" label="PLG_FORM_LOG_RECORDIN_LABEL" name="record_in" repeat="true" size="30" type="text"/>
 				
-			<field default="Y-m-d H:i:s" description="PLG_FORM_LOG_LOGSDATENOW_DESC" label="PLG_FORM_LOG_LOGSDATENOW_LABEL" name="logs_date_now" repeat="true" size="30" type="text"/>
+			<field default="Y-m-d H:i:s" description="PLG_FORM_LOG_DATENOW_DESC" label="PLG_FORM_LOG_DATENOW_LABEL" name="logs_date_now" repeat="true" size="30" type="text"/>
 				
-			<field default="0" label="PLG_FORM_LOG_LOGSRECORDIP_LABEL" name="logs_record_ip" repeat="true" type="radio">
+			<field default="0" label="PLG_FORM_LOG_RECORDIP_LABEL" name="logs_record_ip" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
 			
-			<field default="0" label="PLG_FORM_LOG_LOGSRECORDREFERER_LABEL" name="logs_record_referer" repeat="true" type="radio">
+			<field default="0" label="PLG_FORM_LOG_RECORDREFERER_LABEL" name="logs_record_referer" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" label="PLG_FORM_LOG_LOGSRECORDUSERAGENT_LABEL" name="logs_record_useragent" repeat="true" type="radio">
+			<field default="0" label="PLG_FORM_LOG_RECORDUSERAGENT_LABEL" name="logs_record_useragent" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -38,43 +38,56 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="logs/" description="PLG_FORM_LOG_LOGSPATH_DESC" label="PLG_FORM_LOG_LOGSPATH_LABEL" name="logs_path" repeat="true" size="30" type="text"/>
+			<field default="logs/" description="PLG_FORM_LOG_PATH_DESC" label="PLG_FORM_LOG_PATH_LABEL" name="logs_path" repeat="true" size="30" type="text"/>
 				
-			<field default="mylogs" description="PLG_FORM_LOG_LOGSFILE_DESC" label="PLG_FORM_LOG_LOGSFILE_LABEL" name="logs_file" repeat="true" size="30" type="text"/>
+			<field default="mylogs" description="PLG_FORM_LOG_FILE_DESC" label="PLG_FORM_LOG_FILE_LABEL" name="logs_file" repeat="true" size="30" type="text"/>
 				
-			<field default="0" description="PLG_FORM_LOG_LOGSRANDOMFILENAME_DESC" label="PLG_FORM_LOG_LOGSRANDOMFILENAME_LABEL" name="logs_random_filename" repeat="true" type="radio">
+			<field default="0" description="PLG_FORM_LOG_RANDOMFILENAME_DESC" label="PLG_FORM_LOG_RANDOMFILENAME_LABEL" name="logs_random_filename" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="30" description="PLG_FORM_LOG_LOGSRANDOMFILENAMELENGTH_DESC" label="PLG_FORM_LOG_LOGSRANDOMFILENAMELENGTH_LABEL" name="logs_random_filename_length" repeat="true" size="9" type="text"/>
+			<field default="30" description="PLG_FORM_LOG_RANDOMFILENAMELENGTH_DESC" label="PLG_FORM_LOG_RANDOMFILENAMELENGTH_LABEL" name="logs_random_filename_length" repeat="true" size="9" type="text"/>
 				
-			<field default="htm" description="PLG_FORM_LOG_LOGSFILEFORMAT_DESC" label="PLG_FORM_LOG_LOGSFILEFORMAT_LABEL" name="logs_file_format" repeat="true" type="radio">
+			<field default="htm" description="PLG_FORM_LOG_FILEFORMAT_DESC" label="PLG_FORM_LOG_FILEFORMAT_LABEL" name="logs_file_format" repeat="true" type="list">
 					<option value="htm">HTM</option>
 					<option value="txt">TXT</option>
 					<option value="csv">CSV</option>
 			</field>
 			
-			<field default="-----" description="PLG_FORM_LOG_LOGSSEPARATOR_DESC" label="PLG_FORM_LOG_LOGSSEPARATOR_LABEL" name="logs_separator" repeat="true" size="30" type="text"/>
+			<field default="-----" description="PLG_FORM_LOG_SEPARATOR_DESC" label="PLG_FORM_LOG_SEPARATOR_LABEL" name="logs_separator" repeat="true" size="30" type="text"/>
 				
-			<field default="a" description="PLG_FORM_LOG_LOGSAORW_DESC" label="PLG_FORM_LOG_LOGSAORW_LABEL" name="logs_append_or_overwrite" repeat="true" type="radio">
-					<option value="a">LOGSAPPEND</option>
-					<option value="w">LOGSOVERWRITE</option>
+			<field default="a" description="PLG_FORM_LOG_AORW_DESC" label="PLG_FORM_LOG_AORW_LABEL" name="logs_append_or_overwrite" repeat="true" type="radio">
+					<option value="a">PLG_FORM_LOG_APPEND</option>
+					<option value="w">PLG_FORM_LOG_OVERWRITE</option>
 			</field>
 
-			<field default="0" description="PLG_FORM_LOG_LOGDETAILS_DESC" label="PLG_FORM_LOG_LOGDETAILS_LABEL" name="log_details" repeat="true" type="radio">
+			<field default="0" description="PLG_FORM_LOG_LOGDETAILS_DESC" label="PLG_FORM_LOG_LOGDETAILS_LABEL" name="log_details" repeat="true" type="list">
 					<option value="0">JNO</option>
 					<option value="id">ID</option>
 					<option value="username">Username</option>
 					<option value="name">Name</option>
 			</field>
 			
-			<field default="0" description="PLG_FORM_LOG_LOGDETAILSIFVISITOR_DESC" label="PLG_FORM_LOG_LOGDETAILSIFVISITOR_LABEL" name="log_details_ifvisitor" repeat="true" type="radio">
-					<option value="0">JNO</option>
-					<option value="1">IP Address</option>
+			<field default="0" description="PLG_FORM_LOG_LOGDETAILSIFVISITOR_DESC" label="PLG_FORM_LOG_LOGDETAILSIFVISITOR_LABEL" name="log_details_ifvisitor" repeat="true" type="list">
+				<option value="0">JNO</option>
+				<option value="1">IP Address</option>
 				<option value="2">Generic</option>
 			</field>
 
+			<field name="log_form_load" type="radio" default="0" repeat="true" label="PLG_FORM_LOG_FORM_LOAD_LABEL" description="PLG_FORM_LOG_FORM_LOAD_DESC">
+				<option value="0">JNO</option>
+				<option value="id">JYES</option>
+			</field>
+			
+			<field name="log_send_email" type="radio" default="0" repeat="true" label="PLG_FORM_LOG_SEND_EMAIL_LABEL" description="PLG_FORM_LOG_SEND_EMAIL_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			
+			<field name="log_send_email_to" type="text" size="30" repeat="true" label="PLG_FORM_LOG_SEND_EMAIL_TO_LABEL" description="PLG_FORM_LOG_SEND_EMAIL_TO_DESC" />
+			<field name="log_send_email_subject" type="text" size="30" repeat="true" label="PLG_FORM_LOG_SEND_EMAIL_SUBJECT_LABEL" description="PLG_FORM_LOG_SEND_EMAIL_SUBJECT_DESC" />
+		
 		</fieldset>
 	
 	</fields>
