@@ -12,8 +12,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'validation_rule.php');
+require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 {
@@ -28,15 +27,16 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 
 	/**
 	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * @param	string	data to check
+	 * @param	object	element
+	 * @param	int		plugin sequence ref
+	 * @return	bool	true if validation passes, false if fails
 	 */
 
 	function validate($data, &$element, $c)
 	{
-		if (empty($data)) {
+		if (empty($data))
+		{
 			return false;
 		}
 		$params = $this->getParams();
@@ -47,37 +47,37 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		jimport('joomla.user.helper');
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__users')->where('email = '.$db->quote($data));
+		$query->select('id')->from('#__users')->where('email = ' . $db->quote($data));
 		$db->setQuery($query);
 		$result = $db->loadResult();
-
 		$user = JFactory::getUser();
-		if ($user->get('guest')){
-			if (!$result) {
-				if ($ornot == 'fail_if_exists') {
+		if ($user->get('guest'))
+		{
+			if (!$result)
+			{
+				if ($ornot == 'fail_if_exists')
+				{
 					return true;
 				}
-			} else {
-				if ($ornot == 'fail_if_not_exists') {
+			}
+			else
+			{
+				if ($ornot == 'fail_if_not_exists')
+				{
 					return true;
 				}
 			}
 			return false;
-		} else {
-			if (!$result) {
-				if ($ornot == 'fail_if_exists') {
-					return true;
-				}else{
-					return false;
-				}
+		}
+		else
+		{
+			if (!$result)
+			{
+				return ($ornot == 'fail_if_exists') ? true : false;
 			} else {
 				if ($result == $user->get('id')) // The connected user is editing his own data
 				{
-					if ($ornot == 'fail_if_exists') {
-						return true;
-					} else {
-						return false;
-					}
+					return ($ornot == 'fail_if_exists') ? true : false;
 				}
 				return false;
 			}
@@ -87,26 +87,31 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 
 	/**
 	* gets the hover/alt text that appears over the validation rule icon in the form
-	* @param object element model
-	* @param int repeat group counter
-	* @return string label
+	* @param	object	element model
+	* @param	int		repeat group counter
+	* @return	string	label
 	*/
 
 	protected function getLabel($elementModel, $c)
 	{
 		$params = $this->getParams();
 		//as ornot is a radio button it gets json encoded/decoded as an object
-		$ornot = (object)$params->get('emailexists_or_not');
-		$c = (int)$c;
+		$ornot = (object) $params->get('emailexists_or_not');
+		$c = (int) $c;
 		$cond = '';
-		foreach ($ornot as $k => $v) {
-			if ($k == $c) {
+		foreach ($ornot as $k => $v)
+		{
+			if ($k == $c)
+			{
 				$cond = $v;
 			}
 		}
-		if ($cond == 'fail_if_not_exists') {
+		if ($cond == 'fail_if_not_exists')
+		{
 			return JText::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
-		} else {
+		}
+		else
+		{
 			return parent::getLabel($elementModel, $c);
 		}
 	}

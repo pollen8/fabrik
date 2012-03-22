@@ -12,8 +12,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'validation_rule.php');
+require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 {
@@ -28,16 +27,17 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 
 	/**
 	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element Model
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * @param	string	data to check
+	 * @param	object	element Model
+	 * @param	int		plugin sequence ref
+	 * @return	bool	true if validation passes, false if fails
 	 */
 
 	function validate($data, &$elementModel, $c)
 	{
 		//could be a dropdown with multivalues
-		if (is_array($data)) {
+		if (is_array($data))
+		{
 			$data = implode('', $data);
 		}
 		$params = $this->getParams();
@@ -48,31 +48,36 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		$listModel = $elementModel->getlistModel();
 		$table = $listModel->getTable();
 
-		if ((int)$otherfield !== 0) {
+		if ((int)$otherfield !== 0)
+		{
 			$otherElementModel = $this->getOtherElement($elementModel, $c);
 			$otherFullName = $otherElementModel->getFullName(false, true, false);
 			$otherfield = $otherElementModel->getFullName(false, false, false);
-		} else {
+		}
+		else
+		{
 			//old fabrik 2.x params stored element name as a string
 			$otherFullName = $table->db_table_name.'___'.$otherfield;
 		}
 
 		$db = $listModel->getDb();
-		$lookuptable = $db->NameQuote($table->db_table_name);
+		$lookuptable = $db->quoteName($table->db_table_name);
 		$data = $db->Quote($data);
 
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)')
 		->from($lookuptable)
-		->where($elementModel->getFullName(false, false, false)." = $data");
+		->where($elementModel->getFullName(false, false, false) . ' = ' . $data);
 
 		$listModel->_buildQueryJoin($query);
 
-		if (!empty($otherfield)) {
+		if (!empty($otherfield))
+		{
 			// $$$ the array thing needs fixing, for now just grab 0
 			$formdata = $elementModel->getForm()->_formData;
-			$v = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
-			if (is_array($v)) {
+			$v = JArrayHelper::getValue($formdata, $otherFullName . '_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
+			if (is_array($v))
+			{
 				$v = JArrayHelper::getValue($v, 0, '');
 			}
 			$query->where("$otherfield = ".$db->Quote($v));
@@ -82,8 +87,9 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		// will fail 'cos it finds the original record (assuming this element hasn't changed)
 		// @TODO - is there a better way getting the rowid?  What if this is form a joined table?
 		$rowid = JRequest::getVar('rowid');
-		if (!empty($rowid)) {
-			$query->where("$table->db_primary_key != " . $db->Quote($rowid));
+		if (!empty($rowid))
+		{
+			$query->where($table->db_primary_key . ' != ' . $db->quote($rowid));
 		}
 		$db->setQuery($query);
 		$c = $db->loadResult();
@@ -93,27 +99,30 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 	private function getOtherElement($elementModel, $c)
 	{
 		$params = $this->getParams();
-		$otherfield = (array)$params->get('areuniquevalues-otherfield', array());
+		$otherfield = (array) $params->get('areuniquevalues-otherfield');
 		$otherfield = $otherfield[$c];
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 
 	/**
 	* gets the hover/alt text that appears over the validation rule icon in the form
-	* @param object element model
-	* @param int repeat group counter
-	* @return string label
+	* @param	object	element model
+	* @param	int		repeat group counter
+	* @return	string	label
 	*/
 
 	protected function getLabel($elementModel, $c)
 	{
 		$otherElementModel = $this->getOtherElement($elementModel, $c);
 		$params = $this->getParams();
-		$otherfield = (array)$params->get('areuniquevalues-otherfield', array());
+		$otherfield = (array) $params->get('areuniquevalues-otherfield');
 		$otherfield = $otherfield[$c];
-		if ((int)$otherfield !== 0) {
+		if ((int)$otherfield !== 0)
+		{
 			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
-		} else {
+		}
+		else
+		{
 			return parent::getLabel($elementModel, $c);
 		}
 	}

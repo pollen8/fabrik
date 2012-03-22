@@ -10,8 +10,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin classes
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'validation_rule.php');
+require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationrule {
 
@@ -25,28 +24,28 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 
 	/**
 	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * @param	string	data to check
+	 * @param	object	element
+	 * @param	int		plugin sequence ref
+	 * @return	bool	true if validation passes, false if fails
 	 */
 
 	function validate($data, &$elementModel, $c)
 	{
 		//could be a dropdown with multivalues
-		if (is_array($data)) {
+		if (is_array($data))
+		{
 			$data = implode('', $data);
 		}
  		$params = $this->getParams();
  		$formdata = $elementModel->getForm()->_formData;
  		$cond = $params->get('isgreaterorlessthan-greaterthan');
  		$cond = $cond[$c] == '1' ? '>' : '<';
- 		//$compare = $params->get('isgreaterorlessthan-comparewith');
- 		//$compare = str_replace('.', '___', $compare[$c]);
  		$otherElementModel = $this->getOtherElement($elementModel, $c);
  		$otherFullName = $otherElementModel->getFullName(false, true, false);
  		$compare = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
- 		if ($this->allowEmpty($elementModel, $c) && ($data === '' || $compare === '')) {
+ 		if ($this->allowEmpty($elementModel, $c) && ($data === '' || $compare === ''))
+ 		{
  			return true;
  		}
  		$res = $elementModel->greaterOrLessThan($data, $cond, $compare);
@@ -56,9 +55,9 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	/**
 	* does the validation allow empty value?
 	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
-	* @param object element model
-	* @param int repeat group counter
-	* @return bool
+	* @param	object	element model
+	* @param	int		repeat group counter
+	* @return	bool
 	*/
 
 	protected function allowEmpty($elementModel, $c)
@@ -76,7 +75,6 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 		$otherfield = $otherfield[$c];
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
-
 
 }
 ?>

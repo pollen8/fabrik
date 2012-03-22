@@ -56,8 +56,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'validation_rule.php');
+require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_ValidationruleExample extends plgFabrik_Validationrule
 {
@@ -72,10 +71,10 @@ class plgFabrik_ValidationruleExample extends plgFabrik_Validationrule
 
 	/**
 	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element model
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * @param	string	data to check
+	 * @param	object	element model
+	 * @param	int		plugin sequence ref
+	 * @return	bool	true if validation passes, false if fails
 	 */
 
 	function validate($data, &$elementModel, $c)
@@ -86,11 +85,12 @@ class plgFabrik_ValidationruleExample extends plgFabrik_Validationrule
 
 	/**
 	 * replace the elements data with something else!
-	 * @param string data to check
-	 * @param object element model
-	 * @param int plugin sequence ref
-	 * @return string replaced data
+	 * @param	string	data to check
+	 * @param	object	element model
+	 * @param	int		plugin sequence ref
+	 * @return	string	replaced data
 	 */
+	
  	function replace($data, &$element, $c)
  	{
  		return $data;

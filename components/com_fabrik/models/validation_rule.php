@@ -10,13 +10,8 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
-/**
- * @package fabrik
- * @Copyright (C) Rob Clayburn
- * @version $Revision: 1.3 $
- */
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'plugin.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/plugin.php');
 
 class plgFabrik_Validationrule extends FabrikPlugin
 {
@@ -58,30 +53,31 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		$params = $this->getParams();
 		$post	= JRequest::get('post');
 		$v = (array)$params->get($this->_pluginName .'-validation_condition');
-		if (!array_key_exists($c, $v)) {
+		if (!array_key_exists($c, $v))
+		{
 			return true;
 		}
 		$condition = $v[$c];
 		if ($condition == '') {
 			return true;
 		}
-
 		$w = new FabrikWorker();
-
 		// $$$ rob merge join data into main array so we can access them in parseMessageForPlaceHolder()
 		$joindata = JArrayHelper::getValue($post, 'join', array());
-		foreach ($joindata as $joinid => $joind) {
-			foreach ($joind as $k => $v) {
-				if ($k !== 'rowid') {
+		foreach ($joindata as $joinid => $joind)
+		{
+			foreach ($joind as $k => $v)
+			{
+				if ($k !== 'rowid')
+				{
 					$post[$k] = $v;
 				}
 			}
 		}
-
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $post));
-
 		$res = @eval($condition);
-		if (is_null($res)) {
+		if (is_null($res))
+		{
 			return true;
 		}
 		return $res;
@@ -94,7 +90,8 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
  	function getPluginParams()
 	{
-		if (!isset($this->pluginParams)) {
+		if (!isset($this->pluginParams))
+		{
 			$this->pluginParams = $this->_loadPluginParams();
 		}
 		return $this->pluginParams;
@@ -107,8 +104,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	function &getValidationRule()
 	{
-		if (!$this->_rule) {
-			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+		if (!$this->_rule)
+		{
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$row = FabTable::getInstance('Validationrule', 'FabrikTable');
 			$row->load($this->_id);
 			$this->_rule = $row;
@@ -138,15 +136,16 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	 * @deprecated @since 3.0.5
 	 * now show only on validation icon next to the element name and put icons and text inside hover text
 	 * gets the validation rule icon
-	 * @param object element model
-	 * @param int $c repeat group counter
-	 * @param string $tmpl =
+	 * @param	object	element model
+	 * @param	int		$c repeat group counter
+	 * @param	string	$tmpl =
 	 */
 
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
 	{
 		$name = $this->icon === true ? $this->_pluginName : $this->icon;
-		if ($this->allowEmpty($elementModel, $c)) {
+		if ($this->allowEmpty($elementModel, $c))
+		{
 			$name .= '_allowempty';
 		}
 		$label = '<span>'.$this->getLabel($elementModel, $c). '</span>';
@@ -167,27 +166,29 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * gets the hover/alt text that appears over the validation rule icon in the form
-	 * @param object element model
-	 * @param int repeat group counter
-	 * @return string label
+	 * @param	object	element model
+	 * @param	int		repeat group counter
+	 * @return	string	label
 	 */
 
 	protected function getLabel($elementModel, $c)
 	{
-		if ($this->allowEmpty($elementModel, $c)) {
-			return JText::_('PLG_VALIDATIONRULE_'.strtoupper($this->_pluginName).'_ALLOWEMPTY_LABEL');
+		if ($this->allowEmpty($elementModel, $c))
+		{
+			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->_pluginName) . '_ALLOWEMPTY_LABEL');
 		}
-		else {
-			return JText::_('PLG_VALIDATIONRULE_'.strtoupper($this->_pluginName).'_LABEL');
+		else
+		{
+			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->_pluginName) . '_LABEL');
 		}
 	}
 
 	/**
 	* does the validation allow empty value?
 	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
-	* @param object element model
-	* @param int repeat group counter
-	* @return bool
+	* @param	object	element model
+	* @param	int		repeat group counter
+	* @return	bool
 	*/
 
 	protected function allowEmpty($elementModel, $c)

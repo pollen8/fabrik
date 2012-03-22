@@ -10,7 +10,6 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin classes
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
 require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'validation_rule.php');
 
 class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule

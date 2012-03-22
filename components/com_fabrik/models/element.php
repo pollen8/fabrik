@@ -332,7 +332,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
-		$fullElName = $db->nameQuote($jointable."___".$this->_element->name."_raw");
+		$fullElName = $db->nameQuote($jointable."___".$this->_element->name.'_raw');
 		return "(SELECT GROUP_CONCAT(id SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE parent_id = " . $table->db_primary_key . ") AS $fullElName";
 	}
 
@@ -348,7 +348,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$group = $this->getGroup()->getGroup();
 		$name = $this->getFullName(false, true, false);
 		$fv_name = 'join['.$group->join_id.']['.$name.']';
-		$rawname = $name."_raw";
+		$rawname = $name.'_raw';
 		$fv_rawname = 'join['.$group->join_id.']['.$rawname.']';
 		return array(
 		array($name, $fv_name),
@@ -410,7 +410,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$aFields[] 	= $str;
 				$aAsFields[] = $fullElName;
 			} else {
-				$fullElName = $db->nameQuote($dbtable."___".$this->_element->name."_raw");
+				$fullElName = $db->nameQuote($dbtable."___".$this->_element->name.'_raw');
 				$str = "$k AS $fullElName";
 			}
 			if (!in_array($str, $aFields)) {
@@ -724,7 +724,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 
 			$name = $this->getFullName(false, true, false);
-			$rawname = $name . "_raw";
+			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin()) {
 				// $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
 				//if ($groupModel->canRepeat() || !$this->isJoin()) {
@@ -894,9 +894,10 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		$err = $this->_getErrorMsg($repeatCounter);
 		$str = '<span class="fabrikErrorMessage">';
-		if ($err !== '') {
-			$err = '<span>'.$err.'</span>';
-			$str .= '<a href="#" class="fabrikTip" title="'.$err.'" opts="{notice:true}">'.
+		if ($err !== '')
+		{
+			$err = '<span>' . $err . '</span>';
+			$str .= '<a href="#" class="fabrikTip" title="' . $err . '" opts="{notice:true}">'.
 			FabrikHelperHTML::image('alert.png', 'form', $tmpl).
 			'</a>';
 		}
@@ -1155,33 +1156,31 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * this was in the views display and _getElement code but seeing as its used
 	 * by multiple views its safer to have it here
-	 * @param int repeat group counter
-	 * @param int order in which the element is shown in the form
-	 * @param string template
-	 * @return mixed - false if you shouldnt continue to render the element
+	 * @param	int		repeat group counter
+	 * @param	int		order in which the element is shown in the form
+	 * @param	string	template
+	 * @return	mixed	- false if you shouldnt continue to render the element
 	 */
 
 	function preRender($c, $elCount, $tmpl)
 	{
 		$model = $this->getFormModel();
 		$groupModel = $this->getGroup();
-		if (!$this->canUse() && !$this->canView()) {
+		if (!$this->canUse() && !$this->canView())
+		{
 			return false;
 		}
-
-		if (!$this->canUse()) {
+		if (!$this->canUse())
+		{
 			$this->_editable = false;
-		} else {
+		}
+		else
+		{
 			$this->_editable = ($model->_editable) ? true : false;
 		}
 		$params = $this->getParams();
 		//force reload?
 		$this->_HTMLids = null;
-
-		// $$$ rob Massive resource hog - produces one query per element
-		// think Hugh had this in for some wierd PHP5.x.x issue - but it makes long forms
-		// very unloadable - eg 103 queries compared to 49 queries, plus an additional second load time on the form
-		//$elementTable 	=& $this->getElement(true);
 		$elementTable = $this->getElement();
 		$element = new stdClass();
 		$element->startRow = false;
@@ -1190,13 +1189,15 @@ class plgFabrik_Element extends FabrikPlugin
 
 		//if the element is in a join AND is the join's foreign key then we don't show the element
 
-		if ($elementTable->name == $this->_foreignKey) {
+		if ($elementTable->name == $this->_foreignKey)
+		{
 			$element->label	= '';
 			$element->error	= '';
 			$this->_element->hidden = true;
-		} else {
-			//@TODO
-			$element->error	= $this->_getErrorMsg($model->_arErrors, $c);
+		}
+		else
+		{
+			$element->error	= $this->_getErrorMsg($c);
 		}
 
 		$element->plugin = $elementTable->plugin;
@@ -1204,15 +1205,16 @@ class plgFabrik_Element extends FabrikPlugin
 		$element->id = $this->getHTMLId($c);
 		$element->className = "fb_el_" . $element->id;
 		$element->containerClass = $this->containerClass($element);
-
 		$element->element = $this->_getElement($model->_data, $c, $groupModel);
 
-		if ($params->get('tipsoverelement', false)) {
+		if ($params->get('tipsoverelement', false))
+		{
 			$element->element = $this->rollover($element->element, $model->_data);
 		}
 		$element->label_raw = $this->_element->label;
 		//getLabel needs to know if the element is editable
-		if ($elementTable->name != $this->_foreignKey) {
+		if ($elementTable->name != $this->_foreignKey)
+		{
 			$l = $this->getLabel($c, $tmpl);
 			$w = new FabrikWorker();
 			$element->label = $w->parseMessageForPlaceHolder($l, $model->_data);
@@ -1222,63 +1224,67 @@ class plgFabrik_Element extends FabrikPlugin
 		//style attribute for group columns
 		$element->column = '';
 		$colcount = (int)$groupParams->get('group_columns');
-		if ($colcount > 1) {
+		if ($colcount > 1)
+		{
 			$widths = $groupParams->get('group_column_widths');
-			$w = floor((100- ($colcount * 6)) / $colcount) ."%";
-			if ($widths != '') {
+			$w = floor((100- ($colcount * 6)) / $colcount) . '%';
+			if ($widths != '')
+			{
 				$widths = explode(',', $widths);
 				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
 			}
-			$element->column = ' style="float:left;width:'.$w.';';
-			if (($elCount % $colcount == 0) || $element->hidden) {
+			$element->column = ' style="float:left;width:' . $w . ';';
+			if (($elCount % $colcount == 0) || $element->hidden)
+			{
 				$element->startRow = true;
 				$element->column .= "clear:both;";
 			}
-			if (($elCount % $colcount === $colcount - 1) || $element->hidden) {
+			if (($elCount % $colcount === $colcount - 1) || $element->hidden)
+			{
 				$element->endRow = true;
 			}
 			$element->column .= '" ';
-		} else {
+		}
+		else
+		{
 			$element->column .= ' style="clear:both;width:100%;"';
 		}
 		$element->element_ro = $this->_getROElement($model->_data, $c);
-
 		$element->value = $this->getValue($model->_data, $c);
 
-		if (array_key_exists($elHTMLName . "_raw", $model->_data)) {
-			$element->element_raw = $model->_data[$elHTMLName . "_raw"];
-		} else {
-			if (array_key_exists($elHTMLName, $model->_data)) {
+		if (array_key_exists($elHTMLName . '_raw', $model->_data))
+		{
+			$element->element_raw = $model->_data[$elHTMLName . '_raw'];
+		}
+		else
+		{
+			if (array_key_exists($elHTMLName, $model->_data))
+			{
 				$element->element_raw = $model->_data[$elHTMLName];
-			} else {
+			}
+			else {
+				
 				$element->element_raw = $element->value;
 			}
 		}
-		if ($this->dataConsideredEmpty($element->element_ro, $c)) {
+		if ($this->dataConsideredEmpty($element->element_ro, $c))
+		{
 			$element->containerClass .= ' fabrikDataEmpty';
-
-			// $$$rob added fabrikHide (21/09/2009) class as if readonly
-			// data is empty then no point showing just the label
-			// $$$ hugh - DISAGREE ... don't think we should make assumptions like this.
-			// $$$ hugh - OK, I'm commenting this out, as per Skype convo, 12/20/2011
-			/*
-			if (!$this->canUse()) {
-				$element->containerClass .= ' fabrikHide';
-			}
-			*/
 		}
 		//tips (if nto rendered as hovers)
 		$tip = $this->getTip();
-		if ($tip !== '') {
+		if ($tip !== '')
+		{
 			$tip = '<div class="fabrikInlineTip">'.FabrikHelperHTML::image('questionmark.png', 'form', $tmpl).$tip.'</div>';
 		}
-		switch ($model->getParams()->get('tiplocation')) {
+		switch ($model->getParams()->get('tiplocation'))
+		{
 			default:
 			case 'tip':
 				$element->tipAbove = '';
-			$element->tipBelow = '';
-			$element->tipSide = '';
-			break;
+				$element->tipBelow = '';
+				$element->tipSide = '';
+				break;
 			case 'above':
 				$element->tipAbove = $tip;
 				$element->tipBelow = '';
@@ -1306,7 +1312,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	protected function containerClass($element)
 	{
-		$item	= $this->getElement();
+		$item = $this->getElement();
 		$c = array('fabrikElementContainer', $item->plugin);
 
 		if ($element->hidden) {
@@ -1424,23 +1430,27 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * get any html errror messages for form element
-	 * @param array error messages
-	 * @param int repeat count
-	 * @return string error messages
+	 * get any html error messages
+	 * @param	int		repeat count
+	 * @return	string	error messages
 	 */
 
-	function _getErrorMsg(&$arErrors, $repeatCount = 0)
+	function _getErrorMsg($repeatCount = 0)
 	{
 		$arErrors = $this->getFormModel()->_arErrors;
 		$parsed_name = $this->getFullName(true, true);
 		$err_msg = '';
 		$parsed_name = FabrikString::rtrimword($parsed_name, "[]");
-		if (isset($arErrors[$parsed_name])) {
-			if (array_key_exists($repeatCount, $arErrors[$parsed_name])) {
-				if (is_array($arErrors[$parsed_name][$repeatCount])) {
+		if (isset($arErrors[$parsed_name]))
+		{
+			if (array_key_exists($repeatCount, $arErrors[$parsed_name]))
+			{
+				if (is_array($arErrors[$parsed_name][$repeatCount]))
+				{
 					$err_msg = implode('<br />', $arErrors[$parsed_name][$repeatCount]);
-				} else {
+				}
+				else
+				{
 					$err_msg .= $arErrors[$parsed_name][$repeatCount];
 				}
 			}

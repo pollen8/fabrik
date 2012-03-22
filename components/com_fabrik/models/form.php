@@ -247,7 +247,7 @@ class FabrikFEModelForm extends FabModelForm
 		//finally see if the options are overridden by a querystring var
 		$tmpl = JRequest::getVar('layout', $tmpl);
 		//test it exists - otherwise revert to default tmpl
-		if (!JFolder::exists(JPATH_SITE."/components/com_fabrik/views/form/tmpl/".$tmpl)) {
+		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl)) {
 			$tmpl = 'default';
 		}
 		$item->form_template = $tmpl;
@@ -286,38 +286,49 @@ class FabrikFEModelForm extends FabModelForm
 	function getCustomJsAction()
 	{
 		// $$$ hugh - added ability to use form_XX, as am adding custom table_XX and viz_XX as well
-		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.$this->getId().".js")) {
-			FabrikHelperHTML::script('components/com_fabrik/js/'.$this->getId() . ".js");
+		if (file_exists(COM_FABRIK_FRONTEND . '/js/' . $this->getId() . '.js'))
+		{
+			FabrikHelperHTML::script('components/com_fabrik/js/'.$this->getId() . '.js');
 		}
-		else if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'form_'.$this->getId().".js")) {
-			FabrikHelperHTML::script('components/com_fabrik/js/form_'.$this->getId() . ".js");
+		else if (file_exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
+		{
+			FabrikHelperHTML::script('components/com_fabrik/js/form_'.$this->getId() . '.js');
 		}
 	}
 
 	/**
 	 * set the page title for form
-	 * @return string page title
+	 * @return	string	page title
 	 */
 
 	function getPageTitle($title = '')
 	{
 		$params = $this->getParams();
 		$label = $this->getLabel();
-		if (JRequest::getVar('view') == 'details') {
-			if (!$params->get('show-title-in-detail-view', true)) {
+		if (JRequest::getVar('view') == 'details')
+		{
+			if (!$params->get('show-title-in-detail-view', true))
+			{
 				$title = '';
-			} else {
-				$title = ($title == "") ? $label : $title . " ";
 			}
-		} else {
-			$title = ($title == "") ? $label : $title . " ";
+			else
+			{
+				$title = ($title == '') ? $label : $title . " ";
+			}
+		}
+		else
+	 	{
+			$title = ($title == '') ? $label : $title . " ";
 		}
 		$groups = $this->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$element = $elementModel->getElement();
-				if ($element->use_in_page_title == '1') {
+				if ($element->use_in_page_title == '1')
+				{
 					$default = $elementModel->getTitlePart($this->_data);
 					$s = is_array($default) ? implode(', ', $default) . " " : $default . " ";
 					$title .= ' ' . $s;
@@ -329,17 +340,20 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * compares the forms table with its groups to see if any of the groups are in fact table joins
-	 * @param array tables joins
-	 * @return array array(group_id =>join_id)
+	 * @param	array	tables joins
+	 * @return	array	array(group_id =>join_id)
 	 */
 
 	function getJoinGroupIds($joins)
 	{
 		$arJoinGroupIds = array();
 		$groups = $this->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
-			foreach ($joins as $join) {
-				if ($join->element_id == 0 && $groupModel->getGroup()->id == $join->group_id) {
+		foreach ($groups as $groupModel)
+		{
+			foreach ($joins as $join)
+			{
+				if ($join->element_id == 0 && $groupModel->getGroup()->id == $join->group_id)
+				{
 					$arJoinGroupIds[$groupModel->getId()] = $join->id;
 				}
 			}
@@ -349,14 +363,14 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * //@TODO test this!
 	 * gets the javascript actions the forms elements
-	 * @return array of javascript actions
+	 * @return	array	javascript actions
 	 */
 
 	function getJsActions()
 	{
-		if (isset($this->jsActions)) {
+		if (isset($this->jsActions))
+		{
 			return $this->jsActions;
 		}
 		$this->jsActions = array();
@@ -365,9 +379,11 @@ class FabrikFEModelForm extends FabModelForm
 		$aJsActions = array();
 		$aElIds = array();
 		$groups = $this->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				// $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
 				// which we should now be doing ... and getParent() causes an extra table lookup for every child
 				// element on the form.
@@ -375,22 +391,29 @@ class FabrikFEModelForm extends FabModelForm
 				$aElIds[] = (int)$elementModel->getElement()->id;
 			}
 		}
-		if (!empty($aElIds)) {
+		if (!empty($aElIds))
+		{
 			$query = $db->getQuery(true);
-			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN ('.implode(',', $aElIds).')');
+			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $aElIds) . ')');
 			$db->setQuery($query);
 			$res = $db->loadObjectList();
-			if ($db->getErrorNum()) {
+			if ($db->getErrorNum())
+			{
 				JError::raiseError(500, $db->getErrorMsg());
 			}
-		} else {
+		}
+		else
+		{
 			$res = array();
 		}
-		if (is_array($res)) {
-			foreach ($res as $r) {
+		if (is_array($res))
+		{
+			foreach ($res as $r)
+			{
 				//merge the js attribs back into the array
 				$a = json_decode($r->params);
-				foreach ($a as $k=>$v) {
+				foreach ($a as $k=>$v)
+				{
 					$r->$k = $v;
 				}
 				unset($r->params);
@@ -408,7 +431,8 @@ class FabrikFEModelForm extends FabModelForm
 	function getPublishedGroups()
 	{
 		$db = FabrikWorker::getDbo(true);
-		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups)) {
+		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups))
+		{
 			$params = $this->getParams();
 			$sql = "SELECT *, fg.group_id AS group_id, RAND() AS rand_order FROM #__{package}_formgroup AS fg
 INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
@@ -684,7 +708,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
 		@set_time_limit(300);
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/uploader.php');
 		$form = $this->getForm();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$params = $this->getParams();
@@ -1751,7 +1775,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if ((bool)JRequest::getBool('fabrik_ignorevalidation', false) === true) { //put in when saving page of form
 			return true;
 		}
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'uploader.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/uploader.php');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$validationRules = $pluginManager->getPlugInGroup('validationrule');
 
