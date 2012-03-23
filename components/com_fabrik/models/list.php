@@ -151,6 +151,7 @@ class FabrikFEModelList extends JModelForm {
 	/** @var int the max number of buttons that is shown in a row */
 	protected $rowActionCount = 0;
 
+	public $orderEls = array();
 	/**
 	 * Constructor
 	 *
@@ -1442,15 +1443,21 @@ class FabrikFEModelList extends JModelForm {
 			$singleOrdering = $params->get('enable_single_sorting', false);
 		}
 		$id = $this->getId();
-		foreach ($elements as $element) {
-			$context = 'com_fabrik.list'.$this->getRenderContext().'.order.'.$element->getElement()->id;
-			if ($clearOrdering) {
+		foreach ($elements as $element)
+		{
+			$context = 'com_fabrik.list' . $this->getRenderContext() . '.order.' . $element->getElement()->id;
+			if ($clearOrdering)
+			{
 				$session->set($context, '');
-			} else {
+			}
+			else
+			{
 				//$$$tom Added single-ordering option
-				if (!$singleOrdering || ($singleOrdering && $element->getElement()->id == JRequest::getInt('orderby', ''))) {
+				if (!$singleOrdering || ($singleOrdering && $element->getElement()->id == JRequest::getInt('orderby', '')))
+				{
 					$dir = $session->get($context);
-					if ($dir != '' && $dir != '-' && trim($dir) != 'Array') {
+					if ($dir != '' && $dir != '-' && trim($dir) != 'Array')
+					{
 						$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
 						$strOrder .= $element->getOrderByName()." $dir";
 						$this->orderEls[] = $element->getOrderByName();
@@ -1458,7 +1465,8 @@ class FabrikFEModelList extends JModelForm {
 						$element->getAsField_html($this->selectedOrderFields, $aAsFields);
 					}
 				}
-				else {
+				else
+				{
 					$session->set($context, '');
 				}
 			}
@@ -7039,6 +7047,57 @@ class FabrikFEModelList extends JModelForm {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	* Compacts the ordering sequence of the selected records
+	* @since 3.0.5
+	* @param	string	column name to order on
+	* @param	string 	additional where query to limit ordering to a particular subset of records
+	*/
+	
+	public function reorder($colid, $where = '')
+	{
+		$elementModel = $this->getFormModel()->getElement($colid, true);
+		$asfields = array();
+		$fields = array();
+		$elementModel->getAsField_html($asfields, $fields);
+		$col = $asfields[0];
+		$field = array_shift(explode("AS", $col));
+		$db = $this->getDb();
+		$k = $this->getTable()->db_primary_key;
+		$shortKey = FabrikString::shortColName($k);
+		$tbl = $this->getTable()->db_table_name;
+	
+		$query = $db->getQuery(true);
+		$query->select(array($k, $col))->from($tbl);
+		if ($where !== '')
+		{
+			$query->where($where);
+		}
+		$query = $this->_buildQueryOrder($query);
+
+		$dir = strtolower(JArrayHelper::getValue($this->orderDirs, 0, 'asc'));
+		$db->setQuery($query);
+		if (!($orders = $db->loadObjectList()))
+		{
+			$this->setError($db->getErrorMsg());
+			return false;
+		}
+		$kk = trim(FabrikString::safeColNameToArrayKey($field));
+		// compact the ordering numbers
+		for ($i = 0, $n = count($orders); $i < $n; $i++)
+		{
+			$o = $orders[$i];
+			$neworder = ($dir == 'asc') ? $i + 1 : $n - $i;
+			$orders[$i]->$kk = $neworder;
+			$query->clear();
+			$query->update($tbl)->set($field . ' = ' . (int) $orders[$i]->$kk)
+			->where($k . ' = ' . $this->_db->quote($orders[$i]->$shortKey));
+			$db->setQuery($query);
+			$db->query();
+		}
+		return true;
 	}
 }
 ?>
