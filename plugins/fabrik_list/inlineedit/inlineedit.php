@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListInlineedit extends plgFabrik_List {
 
