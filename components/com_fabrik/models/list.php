@@ -6929,6 +6929,15 @@ class FabrikFEModelList extends JModelForm {
 			} else {
 				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'components/com_fabrik/views/list/tmpl/'.$tmpl.'/template_css.php'.$qs);
 			}
+			// $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
+			// custom.css - for backward compat with existing 2.x custom.css
+			// custom_css.php - what we'll recommend people use for custom css moving foward.
+			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/list/tmpl/'.$tmpl.'/custom.css')) {
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/custom.css");
+			}
+			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/list/tmpl/'.$tmpl.'/custom_css.php')) {
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/custom_css.php'.$qs);
+			}
 		}
 	}
 
@@ -7048,14 +7057,14 @@ class FabrikFEModelList extends JModelForm {
 			return false;
 		}
 	}
-	
+
 	/**
 	* Compacts the ordering sequence of the selected records
 	* @since 3.0.5
 	* @param	string	column name to order on
 	* @param	string 	additional where query to limit ordering to a particular subset of records
 	*/
-	
+
 	public function reorder($colid, $where = '')
 	{
 		$elementModel = $this->getFormModel()->getElement($colid, true);
@@ -7068,7 +7077,7 @@ class FabrikFEModelList extends JModelForm {
 		$k = $this->getTable()->db_primary_key;
 		$shortKey = FabrikString::shortColName($k);
 		$tbl = $this->getTable()->db_table_name;
-	
+
 		$query = $db->getQuery(true);
 		$query->select(array($k, $col))->from($tbl);
 		if ($where !== '')
