@@ -26,6 +26,11 @@ var FbListPHP = new Class({
 		if (additional_data) {
 			this.list.getForm().getElement('input[name=fabrik_listplugin_options]').value = Json.encode(hdata);
 		}
+		if (this.options.js_code !== '') {
+			if (eval(this.options.js_code) === false) {
+				return;
+			}
+		}
 		this.list.submit('list.doPlugin');
 	}
 });
