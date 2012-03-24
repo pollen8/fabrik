@@ -6936,7 +6936,7 @@ class FabrikFEModelList extends JModelForm {
 				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/custom.css");
 			}
 			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/list/tmpl/'.$tmpl.'/custom_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/custom_css.php'.$qs);
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/custom_css.php".$qs);
 			}
 		}
 	}
