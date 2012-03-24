@@ -397,7 +397,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		}
 		$markers .= "$lat,$lon";
 		$uri = JURI::getInstance();
-		$src = $uri->getScheme() . "://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=$type&amp;markers=$markers&amp;sensor=false";
+		$src = $uri->getScheme() . "://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=$type&amp;mobile=true&amp;markers=$markers&amp;sensor=false";
 		$id = $tableView ? '' : "id=\"{$id}\"";
 		$str =  "<div $id class=\"gmStaticMap\"><img src=\"$src\" alt=\"static map\" />";
 		$str .= "</div>";
