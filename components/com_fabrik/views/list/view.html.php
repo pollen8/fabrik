@@ -93,10 +93,10 @@ class FabrikViewList extends JView{
 			$opts->popup_height = (int)$popUpHeight;
 		}
 		$xOffset = $params->get('popup_offset_x', '');
-		if ($xOffset !== '') { 
+		if ($xOffset !== '') {
 			$opts->popup_offset_x = (int)$xOffset;
 		}
-		
+
 		$yOffset = $params->get('popup_offset_y', '');
 		if ($yOffset !== '') {
 			$opts->popup_offset_y = (int)$yOffset;
@@ -219,7 +219,7 @@ class FabrikViewList extends JView{
 			$this->advancedSearch($tpl);
 			return;
 		}
-		
+
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 
@@ -229,8 +229,8 @@ class FabrikViewList extends JView{
 		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
 		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'list'.DS.$tmpl);
 
-		
-		
+
+
 		require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'modifiers.php');
 		$user = JFactory::getUser();
 
@@ -334,7 +334,7 @@ class FabrikViewList extends JView{
 		if (!$this->isMambot) {
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
 		}
-		
+
 		/** depreciated (keep incase ppl use them in old tmpls**/
 		$this->table 					= new stdClass();
 		$this->table->label 	= $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
@@ -359,7 +359,7 @@ class FabrikViewList extends JView{
 		$this->nav = '<div class="fabrikNav">'.$this->nav.'</div>';
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
-		
+
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$this->showPDF = $params->get('pdf', 0);
 		if ($this->showPDF) {
@@ -415,7 +415,7 @@ class FabrikViewList extends JView{
 		//$this->pluginButtons = $model->getPluginButtons();
 
 		$this->assign('pluginTopButtons', $this->get('PluginTopButtons'));
-		
+
 		$text = $this->loadTemplate();
 		if ($params->get('process-jplugins')) {
 			$opt = JRequest::getVar('option');
@@ -628,6 +628,11 @@ class FabrikViewList extends JView{
 		$this->hiddenFields[] = '<input type="hidden" name="fabrik_listplugin_options" value="" />';
 
 		$this->hiddenFields[] = '<input type="hidden" name="incfilters" value="1" />';
+
+		// $$$ hugh - testing social profile hash stuff
+		if (JRequest::getVar('fabrik_social_profile_hash', '') != '') {
+			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="'. JRequest::getVar('fabrik_social_profile_hash') .'" />';
+		}
 		$this->hiddenFields = implode("\n", $this->hiddenFields);
 	}
 
