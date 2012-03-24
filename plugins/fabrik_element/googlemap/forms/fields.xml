@@ -7,6 +7,7 @@
 					<option value="G_NORMAL_MAP">PLG_ELEMENT_GOOGLE_MAP_NORMAL</option>
 					<option value="G_SATELLITE_MAP">PLG_ELEMENT_GOOGLE_MAP_SATELITE</option>
 					<option value="G_HYBRID_MAP">PLG_ELEMENT_GOOGLE_MAP_HYBRID</option>
+					<option value="TERRAIN">PLG_ELEMENT_GOOGLE_MAP_TERRAIN</option>
 			</field>
 			
 			<field default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_zoomlevel" size="3" type="text"/>
