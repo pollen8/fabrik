@@ -13,12 +13,13 @@ class fabrikViewPopupwin extends JView
 		$renderOrder = JRequest::getInt('renderOrder');
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
-		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_list'.DS.'email'.DS.'views'.DS.'popupwin'.DS.'tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_list/email/views/popupwin/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 		
 		$this->assign('fieldList', $this->get('ToField'));
 		$records = $this->get('records');
-		if (count($records) == 0) {
+		if (count($records) == 0)
+		{
 			JError::raiseNotice(500, 'None of the selected records can be emailed');
 			return;
 		}
