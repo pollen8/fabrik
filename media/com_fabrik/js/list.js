@@ -82,7 +82,10 @@ var FbListPlugin = new Class({
 			row = e.target.getParent('.fabrik___heading');
 			if (row && ok === false) {
 				this.listform.getElements('input[name^=ids]').set('checked', true);
-				this.listform.getElement('input[name=checkAll]').set('checked', true);
+				var all = this.listform.getElement('input[name=checkAll]');
+				if (typeOf(all) !== 'null') {
+					all.set('checked', true);
+				}
 				ok = true;
 			}
 			if (!ok && this.options.requireChecked) {
