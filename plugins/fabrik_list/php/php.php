@@ -25,7 +25,7 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 	{
 		return "run php";
 	}
-	
+
 	protected function buttonLabel()
 	{
 		return $this->getParams()->get('table_php_button_label', parent::buttonLabel());
@@ -90,6 +90,7 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
+		$opts->js_code = $params->get('table_php_js_code', '');
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListPHP($opts)";
 		return true;

@@ -271,6 +271,15 @@ class FabrikFEModelForm extends FabModelForm
 			} else {
 				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/template_css.php?c=".$this->getId().'&amp;view='.$v);
 			}
+			// $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
+			// custom.css - for backward compat with existing 2.x custom.css
+			// custom_css.php - what we'll recommend people use for custom css moving foward.
+			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom.css')) {
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom.css");
+			}
+			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom_css.php')) {
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom_css.php?c=".$this->getId().'&amp;view='.$v);
+			}
 		}
 
 		if ($app->isAdmin() && JRequest::getVar('tmpl') === 'components') {

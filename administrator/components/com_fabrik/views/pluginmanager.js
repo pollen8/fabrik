@@ -50,6 +50,8 @@ var PluginManager = new Class({
 	deletePlugin: function (e) {
 		// decrease the element name counter. 
 		// Otherwise you can loose data on saving (2 validations, delete first - 2nd lost values)
+		// $$$ hugh - fixing this code
+		/*
 		$('plugins').getElements('input, select, textarea').each(function (i) {
 			var s = i.name.match(/\[[0-9]\]/);
 			if (s) {
@@ -60,6 +62,29 @@ var PluginManager = new Class({
 				i.name = i.name.replace(/\[[0-9]\]/, '[' + c + ']');
 			}
 		});
+		*/
+		if (e.target.findClassUp('adminform').id.test(/_\d+$/)) {
+			var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
+			$('plugins').getElements('input, select, textarea').each(function (i) {
+				var s = i.name.match(/\[[0-9]+\]/);
+				if (s) {
+					var c = s[0].replace('[', '').replace(']', '').toInt();
+					if (c > x) {
+						c = c - 1;
+						i.name = i.name.replace(/\[[0-9]+\]/, '[' + c + ']');
+					}
+				}
+			});
+			$$('table.adminform').each(function (i) {
+				if (i.id.match(/formAction_\d+$/)) {
+					var c = i.id.match(/formAction_(\d+)$/)[1].toInt();
+					if (c > x) {
+						c = c - 1;
+						i.id = i.id.replace(/(formAction_)(\d+)$/, '$1' + c);
+					}
+				}
+			});
+		}
 		e.stop();
 		$(e.target).up(3).dispose();
 		this.counter --;
@@ -96,6 +121,8 @@ var PluginManager = new Class({
 			
 		}.bind(this));
 		//test for settting radio buttons ids - seems to work
+		// @TODO - Son of a whore!  i think this may be the line of code
+		// which has been destroying $foo[0] usage in PHP fragments!
 		str = str.replace(/\[0\]/gi, '[' + this.counter + ']');
 		//end test
 		td.innerHTML = str;
