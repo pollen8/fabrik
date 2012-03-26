@@ -58,6 +58,8 @@ class plgFabrik_List extends FabrikPlugin
 	{
 		if ($this->canUse())
 		{
+			$p = $this->onGetFilterKey_result();
+			FabrikHelperHTML::addPath('plugins/fabrik_list/' . $p . '/images/', 'image','list');
 			$name = $this->_getButtonName();
 			$label = $this->buttonLabel();
 			$imageName = $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
@@ -170,6 +172,10 @@ class plgFabrik_List extends FabrikPlugin
 
 	public function onGetFilterKey_result()
 	{
+		if (!isset($this->filterKey))
+		{
+			$this->onGetFilterKey();
+		}
 		return $this->filterKey;
 	}
 
