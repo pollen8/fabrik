@@ -108,7 +108,7 @@ var FbDateTime = new Class({
 	calClose: function (calendar) {
 		this.cal.hide();
 		window.fireEvent('fabrik.date.close', this);
-		if (this.options.hasValidations) {
+		if (this.options.validations) {
 			//if we have a validation on the element run it when the calendar closes itself
 			//this ensures that alert messages are removed if the new data meets validation criteria
 			this.form.doElementValidation(this.options.element);
