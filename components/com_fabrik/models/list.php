@@ -6622,7 +6622,17 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$params = $this->getParams();
 		$display = $params->get('join-display', '');
-		$merge = $display == 'merge' ? true : false;
+		switch ($display) {
+			case 'merge':
+				$merge = 1;
+				break;
+			case 'reduce':
+				$merge = 2;
+				break;
+			default:
+				$merge = 0;
+				break;
+		}
 		return $merge;
 	}
 
@@ -6694,7 +6704,54 @@ class FabrikFEModelList extends JModelForm {
 		$last_i = 0;
 		$count = count($data);
 		$can_repeats = array();
+		$can_repeats_tables = array();
+		$can_repeats_keys = array();
+		$can_repeats_pk_vals = array();
 		$remove = array();
+
+		foreach ($data[0] as $key => $val) {
+			$origKey = $key;
+			$tmpkey = FabrikString::rtrimword($key, '_raw');
+			// $$$ hugh - had to cache this stuff, because if you have a lot of rows and a lot of elements,
+			// doing this many hundreds of times causes huge slowdown, exceeding max script execution time!
+			// And we really only need to do it once for the first row.
+			if (!isset($can_repeats[$tmpkey])) {
+				$elementModel = $formModel->getElement($tmpkey);
+				// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
+				//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
+				if ($merge == 2 && $elementModel) {
+					if ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) {
+						// We need to work out the PK of the joined table.
+						// So first, get the table name.
+						$group = $elementModel->getGroup();
+						$join = $group->getJoinModel()->getJoin();
+						$join_table_name = $join->table_join;
+						// We have the table name, so see if we already have it cached ...
+						if (!isset($can_repeats_tables[$join_table_name])) {
+							// We don't have it yet, so grab the PK
+							$keys = $this->getPrimaryKeyAndExtra($join_table_name);
+							if (!empty($keys) && array_key_exists('key', $keys[0])) {
+								// OK, now we have the PK for the table
+								$can_repeats_tables[$join_table_name] = $keys[0];
+							}
+						}
+						// Hopefully we now have the PK
+						if (isset($can_repeats_tables[$join_table_name])) {
+							$can_repeats_keys[$tmpkey] = $join_table_name . '___' . $can_repeats_tables[$join_table_name]['colname'];
+						}
+						if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]])) {
+							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]] = array();
+						}
+						if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][0])) {
+							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][0] = $data[0]->$can_repeats_keys[$tmpkey];
+						}
+					}
+				}
+				$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
+			}
+		}
+
+
 		for ($i = 0; $i < $count; $i++) {
 
 			// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
@@ -6707,16 +6764,50 @@ class FabrikFEModelList extends JModelForm {
 					// $$$ hugh - had to cache this stuff, because if you have a lot of rows and a lot of elements,
 					// doing this many hundreds of times causes huge slowdown, exceeding max script execution time!
 					// And we really only need to do it once for the first row.
+					/*
 					if (!isset($can_repeats[$tmpkey])) {
 						$elementModel = $formModel->getElement($tmpkey);
 						// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
 						//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
+						if ($elementModel) {
+							if ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) {
+								// We need to work out the PK of the joined table.
+								// So first, get the table name.
+								$group = $elementModel->getGroup();
+								$join = $group->getJoinModel()->getJoin();
+								$join_table_name = $join->table_join;
+								// We have the table name, so see if we already have it cached ...
+								if (!isset($can_repeats_tables[$join_table_name])) {
+									// We don't have it yet, so grab the PK
+									$keys = $this->getPrimaryKeyAndExtra($join_table_name);
+									if (!empty($keys) && array_key_exists('key', $keys[0])) {
+										// OK, now we have the PK for the table
+										$can_repeats_tables[$join_table_name] = $keys[0];
+									}
+								}
+								// Hopefully we now have the PK
+								if (isset($can_repeats_tables[$join_table_name])) {
+									$can_repeats_keys[$tmpkey] = $join_table_name . '___' . $can_repeats_tables[$join_table_name]['colname'];
+								}
+								if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]])) {
+									$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]] = array();
+								}
+								if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i])) {
+									$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i] = $data[$i]->$can_repeats_keys[$tmpkey];
+								}
+								//$joinListModel = $group->getListModel();
+							}
+						}
 						$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
 
 						//$can_repeats[$tmpkey] = 0;
 					}
+					*/
 
 					if (isset($data[$last_i]->$key) && $can_repeats[$tmpkey]) {
+						if ($merge == 2 && !isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i])) {
+							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i] = $data[$i]->$can_repeats_keys[$tmpkey];
+						}
 						// $$$ rob - what about data like yes/no where each viewable option needs to be shown?
 						// $$$ rob - yeah commenting this out, not a good idea - as other cols for this record may have
 						// different data so you end up with this col having 3 entries and the next col having four and you can't
@@ -6732,11 +6823,19 @@ class FabrikFEModelList extends JModelForm {
 							// it was causing all sorts of issues for list rendering of links, dates etc. So now turn the data into
 							// an array and at the end of this method loop over the data to encode the array into a json object.
 
-							// The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
-							// with it currently
-							$data[$last_i]->$key = (array)$data[$last_i]->$key;
-							array_push($data[$last_i]->$key, $val);
-
+							$do_merge = true;
+							if ($merge == 2) {
+								$pk_vals = array_count_values($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]]);
+								if ($pk_vals[$data[$i]->$can_repeats_keys[$tmpkey]] > 1) {
+									$do_merge = false;
+								}
+							}
+							if ($do_merge) {
+								// The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
+								// with it currently
+								$data[$last_i]->$key = (array)$data[$last_i]->$key;
+								array_push($data[$last_i]->$key, $val);
+							}
 						} else {
 							$json= $val;
 							$data[$last_i]->$origKey = json_encode($json);
@@ -6748,6 +6847,15 @@ class FabrikFEModelList extends JModelForm {
 				continue;
 			}
 			else {
+				if ($merge == 2) {
+					foreach ($data[$i] as $key => $val) {
+						$origKey = $key;
+						$tmpkey = FabrikString::rtrimword($key, '_raw');
+						if ($can_repeats[$tmpkey] && !isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i])) {
+							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i] = $data[$i]->$can_repeats_keys[$tmpkey];
+						}
+					}
+				}
 				$last_i = $i;
 				// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
 				$last_pk = $next_pk;
