@@ -25,36 +25,44 @@ function fabrikBuildRoute(&$query) {
 	$segments = array();
 
 	$menu = &JSite::getMenu();
-	$menuItem = &$menu->getItem( @$query['Itemid']);
-	if (isset($query['c'])) {
+	$menuItem = &$menu->getItem(@$query['Itemid']);
+	if (isset($query['c']))
+	{
 		//$segments[] = $query['c'];//remove from sef url
 		unset($query['c']);
 	};
 
-	if (isset($query['task'])) {
+	if (isset($query['task']))
+	{
 		$segments[] = $query['task'];
 		unset($query['task']);
 	};
 
-	if (isset($query['view'])) {
+	if (isset($query['view']))
+	{
 		$view = $query['view'];
 		$segments[] = $view;
 		unset($query['view']);
-	} else {
+	}
+	else
+	{
 		$view = '';
 	}
 
-	if (isset($query['id'])) {
+	if (isset($query['id']))
+	{
 		$segments[] = $query['id'];
 		unset($query['id']);
 	};
 
-	if (isset($query['layout'])) {
+	if (isset($query['layout']))
+	{
 		$segments[] = $query['layout'];
 		unset($query['layout']);
 	};
 
-	if (isset($query['formid'])) {
+	if (isset($query['formid']))
+	{
 		$segments[] = $query['formid'];
 		unset($query['formid']);
 	};
@@ -65,41 +73,48 @@ function fabrikBuildRoute(&$query) {
 		unset($query['fabrik']);
 	};
 
-	if (isset($query['listid'])) {
+	if (isset($query['listid']))
+	{
 		if ($view != 'form' && $view != 'details') {
 			$segments[] = $query['listid'];
 		}
 		unset($query['listid']);
 	};
 
-	if (isset($query['rowid'])) {
+	if (isset($query['rowid']))
+	{
 		$segments[] = $query['rowid'];
 		unset($query['rowid']);
 	};
 
-	if (isset($query['calculations'])) {
+	if (isset($query['calculations']))
+	{
 		$segments[] = $query['calculations'];
 		unset($query['calculations']);
 	};
 
-	if (isset($query['filetype'])) {
+	if (isset($query['filetype']))
+	{
 		$segments[] = $query['filetype'];
 		unset($query['filetype']);
 	}
-	if (isset($query['format'] )) {
+	if (isset($query['format'] ))
+	{
 		$segments[] = $query['format'];
 		//don't unset as with sef urls and extensions on - if we unset it
 		//the url's prefix is set to .html
 		//unset($query['format']);
 	}
 
-	if (isset($query['type'])) {
+	if (isset($query['type']))
+	{
 		$segments[] = $query['type'];
 		unset($query['type']);
 	}
 
 		//test
-	if (isset($query['fabriklayout'])) {
+	if (isset($query['fabriklayout']))
+	{
 		$segments[] = $query['fabriklayout'];
 		unset($query['fabriklayout']);
 	};
@@ -115,10 +130,12 @@ function fabrikParseRoute($segments)
 	$menu = JSite::getMenu();
 	$item = $menu->getActive();
 	$view = $segments[0];
-	if (strstr($view, '.')) {
+	if (strstr($view, '.'))
+	{
 		$view = array_shift(explode('.', $view));
 	}
-	switch ($view) { //view (controller not passed into segments)
+	switch ($view)
+	{ //view (controller not passed into segments)
 		case 'form':
 		case 'details':
 			// 3.0 task no longer user
