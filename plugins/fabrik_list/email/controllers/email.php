@@ -11,8 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/params.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
 
 /**
  * Email table plug-in Controller
@@ -52,7 +52,7 @@ class FabrikControllerListemail extends JController
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 
 		$listModel = $this->getModel('List', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('id'));
@@ -65,7 +65,8 @@ class FabrikControllerListemail extends JController
 		$model->formModel = $formModel;
 		$model->listModel = $listModel;
 		$model->setParams($listModel->getParams(), JRequest::getInt('renderOrder'));
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		$view->setModel($listModel);

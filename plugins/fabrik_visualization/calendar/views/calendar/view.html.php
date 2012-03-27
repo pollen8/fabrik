@@ -24,7 +24,7 @@ class fabrikViewCalendar extends JView
 		$model->setListIds();
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
 		$this->assign('showTitle', JRequest::getInt('show-title', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
@@ -33,7 +33,8 @@ class fabrikViewCalendar extends JView
 
 		$canAdd = $this->get('CanAdd');
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
-		if ($canAdd && $this->requiredFiltersFound) {
+		if ($canAdd && $this->requiredFiltersFound)
+		{
 			$app->enqueueMessage(JText::_('PLG_VISUALIZATION_CALENDAR_DOUBLE_CLICK_TO_ADD'));
 		}
 		$this->assign('canAdd', $canAdd);
@@ -75,7 +76,8 @@ class fabrikViewCalendar extends JView
 
 		$o = $model->getAddStandardEventFormInfo();
 
-		if ($o != null) {
+		if ($o != null)
+		{
 			$options->listid = $o->id;
 		}
 
@@ -124,14 +126,14 @@ class fabrikViewCalendar extends JView
 		$pluginParams = $model->getPluginParams();
 		$this->assignRef('params', $model->getParams());
 		$tmpl = $pluginParams->get('calendar_layout', $tmpl);
-		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'calendar'.DS.'views'.DS.'calendar'.DS.'tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 
-		$ab_css_file = $tmplpath.DS."template.css";
+		$ab_css_file = $tmplpath . '/template.css';
 
 		if (JFile::exists($ab_css_file))
 		{
-			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/'.$tmpl.'/template.css');
+			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tmpl . '/template.css');
 		}
 		return parent::display();
 	}
@@ -143,23 +145,19 @@ class fabrikViewCalendar extends JView
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
-
+		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$rows = $model->getEventLists();
 		$o = $model->getAddStandardEventFormInfo();
-
 		$options = array();
 		$options[] = JHTML::_('select.option', '', JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_SELECT'));
-
-		if ($o != null) {
+		if ($o != null)
+		{
 			$listid = $o->id;
 			$options[] = JHTML::_('select.option', $listid, JText::_('PLG_VISUALIZATION_CALENDAR_STANDARD_EVENT'));
 		}
-
 		$model->getEvents();
 		$config = JFactory::getConfig();
 		$prefix = $config->getValue('config.dbprefix');
-
 		$this->_eventTypeDd = JHTML::_('select.genericlist', array_merge($options, $rows), 'event_type', 'class="inputbox" size="1" ', 'value', 'text', '', 'fabrik_event_type');
 
 		//tried loading in iframe and as an ajax request directly - however
@@ -174,8 +172,10 @@ class fabrikViewCalendar extends JView
 		o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';
 		o.labelfield = '{$prefix}fabrik_calendar_events___label';
 		";
-		foreach ($model->_events as $tid=>$arr) {
-			foreach ($arr as $ar) {
+		foreach ($model->_events as $tid=>$arr)
+		{
+			foreach ($arr as $ar)
+			{
 				$script .= "if(".$ar['formid']." == fid)	{\n";
 				$script .= "o.datefield = '".$ar['startdate'] . "'\n";
 				$script .= "o.datefield2 = '".$ar['enddate'] . "'\n";
@@ -191,7 +191,7 @@ class fabrikViewCalendar extends JView
 	});
 	";
 		FabrikHelperHTML::addScriptDeclaration($script);
-		echo "<h2>".JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ":</h2>";
+		echo '<h2>' . JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
 	}
 }

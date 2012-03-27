@@ -17,17 +17,18 @@ class fabrikViewCoverflow extends JView
 		$model->setId($id);
 		$row = $model->getVisualization();
 		$model->setListIds();
-		if ($this->get('RequiredFiltersFound')) {
+		if ($this->get('RequiredFiltersFound'))
+		{
 			$model->render();
 		}
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('row', $row);
-		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$pluginParams = $model->getPluginParams();
 		$this->assignRef('params', $model->getParams());
-		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'coverflow'.DS.'views'.DS.'coverflow'.DS.'tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/coverflow/views/coverflow/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 		//assign something to Fabrik.blocks to ensure we can clear filters

@@ -1684,15 +1684,18 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * does the element store its data in a join table (1:n)
-	 * @return bool
+	 * @return	bool
 	 */
 
 	public function isJoin()
 	{
 		$params = $this->getParams();
-		if (in_array($params->get('database_join_display_type'), array('checkbox', 'multilist'))) {
+		if (in_array($params->get('database_join_display_type'), array('checkbox', 'multilist')))
+		{
 			return true;
-		} else {
+		}
+		else
+		{
 			return parent::isJoin();
 		}
 	}
