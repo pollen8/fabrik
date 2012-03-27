@@ -10,7 +10,7 @@
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js');
 JHtml::_('behavior.tooltip');
@@ -61,10 +61,8 @@ JFactory::getDocument()->addScriptDeclaration($js);
 
 <div class="width-50 fltrt">
 
-	<?php echo JHtml::_('sliders.start','list-sliders-'.$this->item->id, array('useCookie'=>1)); 
-	//echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie'=>1));?>
-	<?php echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'details'); 
-	//echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'));?>
+	<?php echo JHtml::_('sliders.start','list-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
+	<?php echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'details');?>
 
 		<fieldset class="adminform">
 		<ul class="adminformlist">
@@ -79,9 +77,7 @@ JFactory::getDocument()->addScriptDeclaration($js);
 			</ul>
 		</fieldset>
 		
-		<?php echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_VISUALIZATION_LABEL_VISUALIZATION_DETAILS'), 'more');  
-		//echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_VISUALIZATION_LABEL_VISUALIZATION_DETAILS'));?>
-		
+		<?php echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_VISUALIZATION_LABEL_VISUALIZATION_DETAILS'), 'more');  ?>
 				<fieldset class="adminform">
 				<ul class="adminformlist">
 					<?php foreach($this->form->getFieldset('more') as $field): ?>
@@ -94,12 +90,8 @@ JFactory::getDocument()->addScriptDeclaration($js);
 					<?php endforeach; ?>
 					</ul>
 				</fieldset>
-
-	<?php echo JHtml::_('sliders.end');
-	//echo JHtml::_('tabs.end','table-tabs-'.$this->item->id, array('useCookie'=>1)); ?>
+	<?php echo JHtml::_('sliders.end');?>
 </div>
-
-
 
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>

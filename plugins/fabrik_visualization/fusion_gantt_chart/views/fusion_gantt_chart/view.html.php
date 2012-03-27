@@ -18,13 +18,14 @@ class fabrikViewFusion_gantt_chart extends JView
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
 		$this->row = $model->getVisualization();
 		$model->setListIds();
-
-		if ($this->row->published == 0) {  
+		if ($this->row->published == 0)
+		{  
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
-		if ($this->requiredFiltersFound) {
+		if ($this->requiredFiltersFound)
+		{
 			$this->assign('chart', $this->get('Chart'));
 		}
 		$viewName = $this->getName();
@@ -32,20 +33,19 @@ class fabrikViewFusion_gantt_chart extends JView
 		$plugin = $pluginManager->getPlugIn('fusion_gantt_chart', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', 1));
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
 		$this->assign('params', $model->getParams());
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fusion_gantt_chart_layout', $tmpl);
-		$tmplpath = JPATH_ROOT.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusion_gantt_chart'.DS.'views'.DS.'fusion_gantt_chart'.DS.'tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 
-		$ab_css_file = $tmplpath.DS."template.css";
+		$ab_css_file = $tmplpath . '/template.css';
 
 		if (JFile::exists($ab_css_file))
 		{
-			JHTML::stylesheet('template.css', 'plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/'.$tmpl.'/', true);
+			JHTML::stylesheet('plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tmpl . '/template.css');
 		}
-
 		//assign something to Fabrik.blocks to ensure we can clear filters
 		$str = "head.ready(function() {
 			fabrikChart{$this->row->id} = {};";
