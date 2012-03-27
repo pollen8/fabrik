@@ -499,7 +499,7 @@ class FabrikFEModelList extends JModelForm {
 				//$$$ rob if the id isnt published fall back to __pk_val
 				$translateRow =  array_key_exists($longKey, $row) ? $res[$row->$longKey] : $res[$row->__pk_val];
 				foreach ($row as $key => $val) {
-					$shortkey = array_pop(explode("___", $key));
+					$shortkey = array_pop(explode('___', $key));
 					if ($shortkey === $title) {
 						$row->$key = $translateRow->titleTranslation;
 						$key = $key ."_raw";
@@ -638,7 +638,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			$data = $groupedData;
 		} else {
-			for ($i=0; $i<count($data); $i++) {
+			for ($i = 0; $i<count($data); $i++) {
 				if ($this->_temp_db_key_addded) {
 					$k = $table->db_primary_key;
 				}
@@ -673,10 +673,12 @@ class FabrikFEModelList extends JModelForm {
 		//get a list of fabrik tables and ids for view table and form links
 		$linksToForms =  $this->getLinksToThisKey();
 		$action = $app->isAdmin() ? "task" : "view";
-		$sql = "SELECT id, label, db_table_name FROM #__{package}_lists";
-		$db->setQuery($sql);
+		$query = $db->getQuery(true);
+		$query->select('id, label, db_table_name')->from('#__{package}_lists');
+		$db->setQuery($query);
 		$aTableNames = $db->loadObjectList('label');
-		if ($db->getErrorNum()) {
+		if ($db->getErrorNum())
+		{
 			JError::raiseError(500, $db->getErrorMsg());
 		}
 		$cx = count($data);
@@ -684,19 +686,23 @@ class FabrikFEModelList extends JModelForm {
 
 		//get pk values
 		$pks = array();
-		foreach ($data as $groupKey=>$group) {
+		foreach ($data as $groupKey=>$group)
+		{
 			$cg = count($group);
-			for ($i=0; $i < $cg; $i++) {
+			for ($i = 0; $i < $cg; $i++)
+			{
 				$pks[] = @$data[$groupKey][$i]->$tmpKey;
 			}
 		}
 
 		$joins = $this->getJoins();
 		//for ($x=0; $x<$cx; $x++) { //if grouped data then the key is not numeric
-		foreach ($data as $groupKey => $group) {
+		foreach ($data as $groupKey => $group)
+		{
 			//$group = $data[$key]; //Messed up in php 5.1 group positioning in data became ambiguous
 			$cg = count($group);
-			for ($i=0; $i < $cg; $i++) {
+			for ($i = 0; $i < $cg; $i++)
+			{
 				$row = $data[$groupKey][$i];
 				$viewLinkAdded = false;
 				//done each row as its result can change
@@ -708,19 +714,22 @@ class FabrikFEModelList extends JModelForm {
 				$pKeyVal = array_key_exists($tmpKey, $row) ? $row->$tmpKey : '';
 				$pkcheck = array();
 				$pkcheck[] = '<div style="display:none">';
-				foreach ($joins as $join) {
-					if ($join->list_id !== '0') {
+				foreach ($joins as $join)
+				{
+					if ($join->list_id !== '0')
+					{
 						// $$$ rob 22/02/2011 was not using _raw before which was intserting html into the value for image elements
 						$fkey = $join->table_join_alias.'___'.$join->table_key."_raw";
-						if (isset($row->$fkey)) {
+						if (isset($row->$fkey))
+						{
 							$fKeyVal = $row->$fkey;
-							$pkcheck[] = '<input type="checkbox" class="fabrik_joinedkey" value="' . htmlspecialchars($fKeyVal, ENT_COMPAT, 'UTF-8') . '" name="'.$join->table_join_alias.'['.$row->__pk_val.']" />'."\n";
+							$pkcheck[] = '<input type="checkbox" class="fabrik_joinedkey" value="' . htmlspecialchars($fKeyVal, ENT_COMPAT, 'UTF-8') . '" name="' . $join->table_join_alias . '[' . $row->__pk_val . ']" />' . "\n";
 						}
 					}
 				}
 				$pkcheck[] = '</div>';
 				$pkcheck = implode("\n", $pkcheck);
-				$row->fabrik_select = $this->canSelectRow($row) ? '<input type="checkbox" id="id_' . $row->__pk_val . '" name="ids['.$row->__pk_val.']" value="' . htmlspecialchars($pKeyVal, ENT_COMPAT, 'UTF-8') . '" />'.$pkcheck : '';
+				$row->fabrik_select = $this->canSelectRow($row) ? '<input type="checkbox" id="id_' . $row->__pk_val . '" name="ids[' . $row->__pk_val . ']" value="' . htmlspecialchars($pKeyVal, ENT_COMPAT, 'UTF-8') . '" />' . $pkcheck : '';
 				//add in some default links if no element choosen to be a link
 				$link = $this->viewDetailsLink($data[$groupKey][$i]);//dont use $row as it generates a pas by ref error
 				$edit_link = $this->editLink($data[$groupKey][$i]);
@@ -734,89 +743,100 @@ class FabrikFEModelList extends JModelForm {
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" '.$editLinkAttribs.' href="'.$edit_link.'" title="'.$editLabel.'">'.
+				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . ' href="' . $edit_link . '" title="' . $editLabel . '">'.
 				FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)).
-							'<span>'.$editLabel.'</span></a>';
+							'<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-				$viewLink = '<a class="fabrik___rowlink" '.$detailsLinkAttribs.' href="'.$link.'" title="'.$viewLabel.'">'.
+				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . ' href="' . $link . '" title="' . $viewLabel . '">'.
 				FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel)).
 								'<span>'.$viewLabel.'</span></a>';
 
 				//3.0 actions now in list in one cell
 				$row->fabrik_actions = array();
-				if ($canView || $canEdit) {
-					if ($canEdit == 1) {
-						if ($params->get('editlink') || $params->get('actionMethod') == 'floating') {
+				if ($canView || $canEdit)
+				{
+					if ($canEdit == 1)
+					{
+						if ($params->get('editlink') || $params->get('actionMethod') == 'floating')
+						{
 							$row->fabrik_edit = $editLink;
 							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">'.$row->fabrik_edit.'</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
-						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod') == 'floating')) {
+						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod') == 'floating'))
+						{
 							$row->fabrik_view = $viewLink;
-							$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">'.$row->fabrik_view.'</li>';
+							$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 						}
-					} else {
-						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating')) {
-							if (empty($this->_aLinkElements)) {
+					}
+					else
+					{
+						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating'))
+						{
+							if (empty($this->_aLinkElements))
+							{
 								$viewLinkAdded = true;
 								$row->fabrik_view = $viewLink;
-								$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">'.$row->fabrik_view.'</li>';
+								$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 							}
-						} else {
+						}
+						else
+						{
 							$row->fabrik_edit = '';
 						}
 					}
 				}
-				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating')) {
+				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating'))
+				{
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
 					$row->fabrik_view = $viewLink;
-					$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">'.$row->fabrik_view.'</li>';
+					$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 				}
-
-				if ($this->deletePossible()) {
+				if ($this->deletePossible())
+				{
 					$row->fabrik_actions['fabrik_delete'] = $this->deleteButton();
 				}
-
 				// create columns containing links which point to tables associated with this table
 				$joinsToThisKey = $this->getJoinsToThisKey();
 				$f = 0;
 				$keys = isset($factedlinks->linkedlist) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedlist)) : array();
-				for ($ii=0; $ii <count($joinsToThisKey); $ii++) {
-					if (!array_key_exists($f, $keys)) {
+				for ($ii = 0; $ii <count($joinsToThisKey); $ii ++)
+				{
+					if (!array_key_exists($f, $keys))
+					{
 						continue;
 					}
 					$join = $joinsToThisKey[$ii];
 					$linkedTable = $factedlinks->linkedlist->$keys[$f];
 					$popupLink = $factedlinks->linkedlist_linktype->$keys[$f];
 					$linkedListText = $factedlinks->linkedlisttext->$keys[$f];
-					if ($linkedTable != '0') {
-
-						$recordKey = $join->element_id."___".$linkedTable;
+					if ($linkedTable != '0')
+					{
+						$recordKey = $join->element_id . '___' . $linkedTable;
 						$key = $recordKey."_list_heading";
 						$val = $pKeyVal;
-
-
 						$recordCounts = $this->getRecordCounts($join, $pks);
 						$count = 0;
 						$linkKey = $recordCounts['linkKey'];
-						if (is_array($recordCounts)) {
-							if (array_key_exists($val, $recordCounts)) {
+						if (is_array($recordCounts))
+						{
+							if (array_key_exists($val, $recordCounts))
+							{
 								$count = $recordCounts[$val]->total;
 								$linkKey = $recordCounts[$val]->linkKey;
-							} else {
-								if (array_key_exists((int)$val, $recordCounts) && (int)$val !== 0) {
+							}
+							else
+							{
+								if (array_key_exists((int)$val, $recordCounts) && (int)$val !== 0)
+								{
 									$count = $recordCounts[(int)$val]->total;
 									$linkKey = $recordCounts[$val]->linkKey;
 								}
 							}
 						}
 						$join->list_id = array_key_exists($join->listlabel, $aTableNames) ?  $aTableNames[$join->listlabel]->id : '';
-						/*
-						 $linkLabel = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
-						$linkKey .= '_raw';
-						*/
 						$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
 					}
 					$f ++;
@@ -824,18 +844,22 @@ class FabrikFEModelList extends JModelForm {
 
 				$f = 0;
 				//create columns containing links which point to forms assosciated with this table
-				foreach ($linksToForms as $join) {
-					if (array_key_exists($f, $keys)) {
+				foreach ($linksToForms as $join)
+				{
+					if (array_key_exists($f, $keys))
+					{
 						$linkedForm = $factedlinks->linkedform->$keys[$f];
 						$popupLink = $factedlinks->linkedform_linktype->$keys[$f];
 						// $$$ hugh @TODO - rob, can you check this, I added this line,
 						// but the logic applied for $val in the linked table code above seems to be needed?
 						// http://fabrikar.com/forums/showthread.php?t=9535
 						$val = $pKeyVal;
-						if ($linkedForm !== '0') {
-							if (is_object($join)) {
+						if ($linkedForm !== '0')
+						{
+							if (is_object($join))
+							{
 								//$$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
-								$linkKey = @$join->db_table_name . "___" . @$join->name;
+								$linkKey = @$join->db_table_name . '___' . @$join->name;
 								$gkey = $linkKey . "_form_heading";
 								$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$keys[$f], JArrayHelper::fromObject($row));
 								$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
@@ -848,23 +872,30 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$args['data'] = &$data;
 		$pluginButtons = $this->getPluginButtons();
-		foreach ($data as $groupKey => $group) {
-			//$group = $data[$key]; //Messed up in php 5.1 group positioning in data became ambiguous
+		foreach ($data as $groupKey => $group)
+		{
 			$cg = count($group);
-			for ($i=0; $i < $cg; $i++) {
+			for ($i = 0; $i < $cg; $i++)
+			{
 				$row = $data[$groupKey][$i];
-				foreach ($pluginButtons as $b) {
-					if (trim($b) !== '') {
-						$row->fabrik_actions[] = '<li>'.$b.'</li>';
+				foreach ($pluginButtons as $b)
+				{
+					if (trim($b) !== '')
+					{
+						$row->fabrik_actions[] = '<li>' . $b . '</li>';
 					}
 				}
-				if (!empty($row->fabrik_actions)) {
-					if (count($row->fabrik_actions) > $this->rowActionCount) {
+				if (!empty($row->fabrik_actions))
+				{
+					if (count($row->fabrik_actions) > $this->rowActionCount)
+					{
 						$this->rowActionCount = count($row->fabrik_actions);
 					}
 					$this->actionHeading = true;
-					$row->fabrik_actions = '<ul class="fabrik_action">'.implode("\n", $row->fabrik_actions).'</ul>';
-				} else {
+					$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
+				}
+				else
+				{
 					$row->fabrik_actions = '';
 				}
 			}
@@ -4103,50 +4134,60 @@ class FabrikFEModelList extends JModelForm {
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
 		// $$$ rob check if empty or if a single empty value was set in the menu/module params
-		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == '')) {
+		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
+		{
 			$showInList = $listels->show_in_list;
 		}
 		$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
 		JRequest::setVar('fabrik_show_in_list', $showInList); //set it for use by groupModel->getPublishedListElements()
 
-		if (!in_array($this->_outPutFormat, array('pdf','csv'))) {
-			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') !== 'end') {
+		if (!in_array($this->_outPutFormat, array('pdf','csv')))
+		{
+			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') !== 'end')
+			{
 				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
 			}
-			if ($params->get('checkboxLocation', 'end') !== 'end') {
+			if ($params->get('checkboxLocation', 'end') !== 'end')
+			{
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
 		}
 
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
 			$elementModels = $groupModel->getPublishedListElements();
 			foreach ($elementModels as $key => $elementModel) {
+				
 				$element = $elementModel->getElement();
 				// if we define the elements to show in the list - e.g in admin list module then only show those elements
-				if (!empty($showInList) && !in_array($element->id, $showInList)) {
+				if (!empty($showInList) && !in_array($element->id, $showInList))
+				{
 					continue;
 				}
 				$viewLinkAdded = false;
 
 				$groupHeadings[$groupHeadingKey] ++;
 				$key = $elementModel->getFullName(false, true, false);
-				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList).':'.$key : $key;
+				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList) . ':' . $key : $key;
 				$orderKey = $elementModel->getOrderbyFullName(false, false);
 				$elementParams = $elementModel->getParams();
 				$label = $elementParams->get('alt_list_heading');
-				if ($label == '') {
+				if ($label == '')
+				{
 					$label = $element->label;
 				}
 				$label = $w->parseMessageForPlaceHolder($label, array());
-				if ($elementParams->get('can_order') == '1' && $this->_outPutFormat != 'csv') {
-					$context = 'com_fabrik.list'.$this->getRenderContext().'.order.'.$element->id;
-					$orderDir	= $session->get($context);
+				if ($elementParams->get('can_order') == '1' && $this->_outPutFormat != 'csv')
+				{
+					$context = 'com_fabrik.list' . $this->getRenderContext() . '.order.' . $element->id;
+					$orderDir = $session->get($context);
 					$class = "";
 					$currentOrderDir = $orderDir;
 					$tmpl = $this->getTmpl();
-					switch ($orderDir) {
+					switch ($orderDir)
+					{
 						case "desc":
 							$orderDir = "-";
 							$class = 'class="fabrikorder-desc"';
@@ -4165,17 +4206,22 @@ class FabrikFEModelList extends JModelForm {
 							break;
 					}
 
-					if ($class === '') {
-						if (in_array($key, $orderbys)) {
-							if ($item->order_dir === 'desc') {
+					if ($class === '')
+					{
+						if (in_array($key, $orderbys))
+						{
+							if ($item->order_dir === 'desc')
+							{
 								$class = 'class="fabrikorder-desc"';
 								$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							}
 						}
 					}
 
-					$heading = '<a '.$class.' href="#">'.$img.$label.'</a>';
-				} else {
+					$heading = '<a ' . $class . ' href="#">' . $img . $label . '</a>';
+				}
+				else
+				{
 					$heading = $label;
 				}
 				$aTableHeadings[$compsitKey] = $heading;
@@ -4185,40 +4231,49 @@ class FabrikFEModelList extends JModelForm {
 				$cellClass[$compsitKey] = array('class' => $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
 
 			}
-			if ($groupHeadings[$groupHeadingKey] == 0) {
+			if ($groupHeadings[$groupHeadingKey] == 0)
+			{
 				unset ($groupHeadings[$groupHeadingKey]);
 			}
 		}
-		if (!empty($showInList)) {
+		if (!empty($showInList))
+		{
 			$aTableHeadings = $this->removeHeadingCompositKey($aTableHeadings);
 			$headingClass = $this->removeHeadingCompositKey($headingClass);
 			$cellClass = $this->removeHeadingCompositKey($cellClass);
 		}
-		if (!in_array($this->_outPutFormat, array('pdf','csv'))) {
+		if (!in_array($this->_outPutFormat, array('pdf','csv')))
+		{
 			//@TODO check if any plugins need to use the selector as well!
 
-			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') === 'end') {
+			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') === 'end')
+			{
 				$this->addCheckBox($aTableHeadings, $headingClass, $cellClass);
 			}
 			$viewLinkAdded = false;
 			//if no elements linking to the edit form add in a edit column (only if we have the right to edit/view of course!)
-			if ($params->get('checkboxLocation', 'end') === 'end') {
+			if ($params->get('checkboxLocation', 'end') === 'end')
+			{
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
 			// create columns containing links which point to tables associated with this table
 			$factedlinks = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
 			$f = 0;
-			foreach ($joinsToThisKey as $join) {
-				if ($join === false) {
+			foreach ($joinsToThisKey as $join)
+			{
+				if ($join === false)
+				{
 					continue;
 				}
-				$key = $join->list_id.'-'.$join->form_id.'-'.$join->element_id;
-				if (is_object($join) && isset($factedlinks->linkedlist->$key)) {
+				$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+				if (is_object($join) && isset($factedlinks->linkedlist->$key))
+				{
 					$linkedTable = $factedlinks->linkedlist->$key;
 					$heading = $factedlinks->linkedlistheader->$key;
-					if ($linkedTable != '0') {
-						$prefix = $join->element_id."___".$linkedTable;
+					if ($linkedTable != '0')
+					{
+						$prefix = $join->element_id . '___' . $linkedTable;
 						$aTableHeadings[$prefix . "_list_heading"] = empty($heading) ? $join->listlabel . " " . JText::_('COM_FABRIK_LIST') : $heading;
 						$headingClass[$prefix . "_list_heading"] = array('class' => 'fabrik_ordercell '.$prefix.'_list_heading related', 'style' => '');
 						$cellClass[$prefix . "_list_heading"] = array('class' => $prefix.'_list_heading fabrik_element related');
@@ -4228,15 +4283,18 @@ class FabrikFEModelList extends JModelForm {
 			}
 
 			$f = 0;
-			foreach ($linksToForms as $join) {
-				if ($join === false) {
+			foreach ($linksToForms as $join)
+			{
+				if ($join === false)
+				{
 					continue;
 				}
-				$key = $join->list_id.'-'.$join->form_id.'-'.$join->element_id;
+				$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
 				$linkedForm = $factedlinks->linkedform->$key;
-				if ($linkedForm != '0') {
+				if ($linkedForm != '0')
+				{
 					$heading = $factedlinks->linkedformheader->$key;
-					$prefix	= $join->db_table_name . "___" . $join->name;
+					$prefix	= $join->db_table_name . '___' . $join->name;
 					$aTableHeadings[$prefix . "_form_heading"] = empty($heading) ? $join->listlabel . " " . JText::_('COM_FABRIK_FORM') : $heading;
 					$headingClass[$prefix . "_form_heading"] = array('class' => 'fabrik_ordercell '.$prefix.'_form_heading related', 'style' => '');
 					$cellClass[$prefix . "_form_heading"] = array('class' => $prefix.'_form_heading fabrik_element related');
@@ -4244,7 +4302,8 @@ class FabrikFEModelList extends JModelForm {
 				$f ++;
 			}
 		}
-		if ($this->canSelectRows()) {
+		if ($this->canSelectRows())
+		{
 			$groupHeadings[''] = '';
 		}
 
@@ -4580,25 +4639,26 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * saves posted form data into a table
 	 * data should be keyed on short name
-	 * @param array data to save
-	 * @param int row id to edit/updated
-	 * @param bol is the data being saved into a join table
-	 * @param object joined group table
-	 * @return bol true if saved ok
+	 * @param	array	data to save
+	 * @param	int		row id to edit/updated
+	 * @param	bool	is the data being saved into a join table
+	 * @param	object	joined group table
+	 * @return	bool	true if saved ok
 	 */
 
 	function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
 		$origRowId = $rowId;
 		//dont save a record if no data collected
-		//if ($isJoin && implode($data) == '') { //raises notice on save of joined data from csv import
-		if ($isJoin && empty($data)) {
+		if ($isJoin && empty($data))
+		{
 			return;
 		}
 		$fabrikDb = $this->getDb();
 		$table = $this->getTable();
 		$formModel = $this->getFormModel();
-		if ($isJoin) {
+		if ($isJoin)
+		{
 			$this->getFormGroupElementData();
 		}
 		$oRecord = new stdClass();
@@ -4606,7 +4666,8 @@ class FabrikFEModelList extends JModelForm {
 		$noRepeatFields = array();
 		$c = 0;
 		$groups = $formModel->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$group = $groupModel->getGroup();
 			// $$$rob this following if statement avoids this scenario from happening:
 			/*
@@ -4617,53 +4678,62 @@ class FabrikFEModelList extends JModelForm {
 			* however, as we were iterating over all groups, the 2nd password field's data is used instead!
 			* this if statement ensures we only look at the correct group
 			*/
-			if ($isJoin == false || $group->id == $joinGroupTable->id) {
-				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin())) {
+			if ($isJoin == false || $group->id == $joinGroupTable->id)
+			{
+				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
+				{
 					$elementModels = $groupModel->getPublishedElements();
-					foreach ($elementModels as $elementModel) {
+					foreach ($elementModels as $elementModel)
+					{
 						$element = $elementModel->getElement();
 						$key = $element->name;
 						$fullkey = $elementModel->getFullName(false, true, false);
+						
 						//for radio buttons and dropdowns otherwise nothing is stored for them??
 						$postkey = array_key_exists($key ."_raw", $data) ? $key . "_raw" : $key;
 
 						//if the user cant use or view dont update this element's value
 						//read only data should be added in _addDefaultDataFromRO
-						if (!$elementModel->canUse() && !$elementModel->canView() && !$formModel->updatedByPlugin($fullkey)) {
+						if (!$elementModel->canUse() && !$elementModel->canView() && !$formModel->updatedByPlugin($fullkey))
+						{
 							continue;
 						}
 						//@TODO similar check (but not quiet the same performed in formModel _removeIgnoredData() - should merge into one place
-						if ($elementModel->recordInDatabase($data)) {
+						if ($elementModel->recordInDatabase($data))
+						{
 							if (array_key_exists($key, $data) && !in_array($key, $noRepeatFields)) {
 								$noRepeatFields[] = $key;
 								$lastKey = $key;
-
 								$val = $elementModel->storeDatabaseFormat($data[$postkey], $data, $key);
 								$elementModel->updateRowId($rowId);
-								if (array_key_exists('fabrik_copy_from_table', $data)) {
+								if (array_key_exists('fabrik_copy_from_table', $data))
+								{
 									$val = $elementModel->onCopyRow($val);
 								}
 
-								if (array_key_exists('Copy', $data)) {
+								if (array_key_exists('Copy', $data))
+								{
 									$val = $elementModel->onSaveAsCopy($val);
 								}
 
 								//test for backslashed quotes
-								if (get_magic_quotes_gpc()) {
-									if (!$elementModel->isUpload()) {
+								if (get_magic_quotes_gpc())
+								{
+									if (!$elementModel->isUpload())
+									{
 										$val = stripslashes($val);
 									}
 								}
 								$oRecord->$key = $val;
 								$aBindData[$key] = $val;
 
-								if ($elementModel->isJoin()){
+								if ($elementModel->isJoin() && $isJoin && array_key_exists('params', $data))
+								{
 									//add in params object set by element plugin - eg fileupload element rotation/scale
 									$oRecord->params = JArrayHelper::getValue($data, 'params');
 									$aBindData[$key] = $oRecord->params;
 								}
-
-								$c++;
+								$c ++;
 							}
 						}
 					}
@@ -4673,47 +4743,55 @@ class FabrikFEModelList extends JModelForm {
 		$this->_addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId, $joinGroupTable);
 		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
 
-		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey) {
+		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey)
+		{
 			return;
 		}
-
 		/*
 		 * $$$ rob - correct rowid is now inserted into the form's rowid hidden field
 		* even when useing usekey and -1, we just need to check if we are adding a new record and if so set rowid to 0
 		*/
-		if (JRequest::getVar('usekey_newrecord', false)) {
+		if (JRequest::getVar('usekey_newrecord', false))
+		{
 			$rowId = 0;
 			$origRowId = 0;
 		}
 
 		$primaryKey = str_replace("`", "", $primaryKey);
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
-		if (!$this->_importingCSV) {
+		if (!$this->_importingCSV)
+		{
 			//if its a repeat group which is also the primary group $primaryKey was not set.
-			if ($primaryKey) {
+			if ($primaryKey)
+			{
 				if (is_numeric($oRecord->$primaryKey))
 				{
 					$oRecord->$primaryKey = $rowId;
 				}
 			}
 		}
-//		echo "<pre>$origRowId: ";print_r($oRecord);exit;
-		if ($origRowId == '' || $origRowId == 0) {
-
+		if ($origRowId == '' || $origRowId == 0)
+		{
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
 			// $$$ rob don't do this when importing via CSV as we want to maintain existing keys (hence check on task var
-			if (($primaryKey !== '' && $this->getTable()->auto_inc == true) && JRequest::getCmd('task') !== 'doImport') {
+			if (($primaryKey !== '' && $this->getTable()->auto_inc == true) && JRequest::getCmd('task') !== 'doImport')
+			{
 				unset($oRecord->$primaryKey);
 			}
 			$ok = $this->insertObject($table->db_table_name, $oRecord, $primaryKey, false);
-		} else {
+		}
+		else
+		{
 			$ok = $this->updateObject($table->db_table_name, $oRecord, $primaryKey, true);
 		}
 		$this->_tmpSQL = $fabrikDb->getQuery();
-		if (!$ok) {
+		if (!$ok)
+		{
 			$q = JDEBUG ? $fabrikDb->getQuery() : '';
 			return JError::raiseWarning(500, 'Store row failed: ' . $q  . "<br>" . $fabrikDb->getErrorMsg());
-		} else {
+		}
+		else
+		{
 			// Clean the cache.
 			JFactory::getCache('com_fabrik')->clean();
 			// $$$ rob new as if you update a record the insertid() returns 0
@@ -5586,7 +5664,7 @@ class FabrikFEModelList extends JModelForm {
 		if (is_array($aFields)) {
 			foreach ($aFields as $oField) {
 				if ($incTableName) {
-					$fieldNames[] = JHTML::_('select.option', $tbl . "___" . $oField->Field, $oField->Field);
+					$fieldNames[] = JHTML::_('select.option', $tbl . '___' . $oField->Field, $oField->Field);
 				} else {
 					$fieldNames[] = JHTML::_('select.option', $oField->Field);
 				}
