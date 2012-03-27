@@ -4639,25 +4639,26 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * saves posted form data into a table
 	 * data should be keyed on short name
-	 * @param array data to save
-	 * @param int row id to edit/updated
-	 * @param bol is the data being saved into a join table
-	 * @param object joined group table
-	 * @return bol true if saved ok
+	 * @param	array	data to save
+	 * @param	int		row id to edit/updated
+	 * @param	bool	is the data being saved into a join table
+	 * @param	object	joined group table
+	 * @return	bool	true if saved ok
 	 */
 
 	function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
 		$origRowId = $rowId;
 		//dont save a record if no data collected
-		//if ($isJoin && implode($data) == '') { //raises notice on save of joined data from csv import
-		if ($isJoin && empty($data)) {
+		if ($isJoin && empty($data))
+		{
 			return;
 		}
 		$fabrikDb = $this->getDb();
 		$table = $this->getTable();
 		$formModel = $this->getFormModel();
-		if ($isJoin) {
+		if ($isJoin)
+		{
 			$this->getFormGroupElementData();
 		}
 		$oRecord = new stdClass();
@@ -4665,7 +4666,8 @@ class FabrikFEModelList extends JModelForm {
 		$noRepeatFields = array();
 		$c = 0;
 		$groups = $formModel->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$group = $groupModel->getGroup();
 			// $$$rob this following if statement avoids this scenario from happening:
 			/*
@@ -4676,52 +4678,62 @@ class FabrikFEModelList extends JModelForm {
 			* however, as we were iterating over all groups, the 2nd password field's data is used instead!
 			* this if statement ensures we only look at the correct group
 			*/
-			if ($isJoin == false || $group->id == $joinGroupTable->id) {
-				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin())) {
+			if ($isJoin == false || $group->id == $joinGroupTable->id)
+			{
+				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
+				{
 					$elementModels = $groupModel->getPublishedElements();
-					foreach ($elementModels as $elementModel) {
+					foreach ($elementModels as $elementModel)
+					{
 						$element = $elementModel->getElement();
 						$key = $element->name;
 						$fullkey = $elementModel->getFullName(false, true, false);
+						
 						//for radio buttons and dropdowns otherwise nothing is stored for them??
 						$postkey = array_key_exists($key ."_raw", $data) ? $key . "_raw" : $key;
 
 						//if the user cant use or view dont update this element's value
 						//read only data should be added in _addDefaultDataFromRO
-						if (!$elementModel->canUse() && !$elementModel->canView() && !$formModel->updatedByPlugin($fullkey)) {
+						if (!$elementModel->canUse() && !$elementModel->canView() && !$formModel->updatedByPlugin($fullkey))
+						{
 							continue;
 						}
 						//@TODO similar check (but not quiet the same performed in formModel _removeIgnoredData() - should merge into one place
-						if ($elementModel->recordInDatabase($data)) {
+						if ($elementModel->recordInDatabase($data))
+						{
 							if (array_key_exists($key, $data) && !in_array($key, $noRepeatFields)) {
 								$noRepeatFields[] = $key;
 								$lastKey = $key;
-
 								$val = $elementModel->storeDatabaseFormat($data[$postkey], $data, $key);
 								$elementModel->updateRowId($rowId);
-								if (array_key_exists('fabrik_copy_from_table', $data)) {
+								if (array_key_exists('fabrik_copy_from_table', $data))
+								{
 									$val = $elementModel->onCopyRow($val);
 								}
 
-								if (array_key_exists('Copy', $data)) {
+								if (array_key_exists('Copy', $data))
+								{
 									$val = $elementModel->onSaveAsCopy($val);
 								}
 
 								//test for backslashed quotes
-								if (get_magic_quotes_gpc()) {
-									if (!$elementModel->isUpload()) {
+								if (get_magic_quotes_gpc())
+								{
+									if (!$elementModel->isUpload())
+									{
 										$val = stripslashes($val);
 									}
 								}
 								$oRecord->$key = $val;
 								$aBindData[$key] = $val;
 
-								if ($elementModel->isJoin()){
+								if ($elementModel->isJoin() && $isJoin && array_key_exists('params', $data))
+								{
 									//add in params object set by element plugin - eg fileupload element rotation/scale
 									$oRecord->params = JArrayHelper::getValue($data, 'params');
 									$aBindData[$key] = $oRecord->params;
 								}
-								$c++;
+								$c ++;
 							}
 						}
 					}
@@ -4731,47 +4743,55 @@ class FabrikFEModelList extends JModelForm {
 		$this->_addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId, $joinGroupTable);
 		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
 
-		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey) {
+		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey)
+		{
 			return;
 		}
-
 		/*
 		 * $$$ rob - correct rowid is now inserted into the form's rowid hidden field
 		* even when useing usekey and -1, we just need to check if we are adding a new record and if so set rowid to 0
 		*/
-		if (JRequest::getVar('usekey_newrecord', false)) {
+		if (JRequest::getVar('usekey_newrecord', false))
+		{
 			$rowId = 0;
 			$origRowId = 0;
 		}
 
 		$primaryKey = str_replace("`", "", $primaryKey);
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
-		if (!$this->_importingCSV) {
+		if (!$this->_importingCSV)
+		{
 			//if its a repeat group which is also the primary group $primaryKey was not set.
-			if ($primaryKey) {
+			if ($primaryKey)
+			{
 				if (is_numeric($oRecord->$primaryKey))
 				{
 					$oRecord->$primaryKey = $rowId;
 				}
 			}
 		}
-//		echo "<pre>$origRowId: ";print_r($oRecord);exit;
-		if ($origRowId == '' || $origRowId == 0) {
-
+		if ($origRowId == '' || $origRowId == 0)
+		{
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
 			// $$$ rob don't do this when importing via CSV as we want to maintain existing keys (hence check on task var
-			if (($primaryKey !== '' && $this->getTable()->auto_inc == true) && JRequest::getCmd('task') !== 'doImport') {
+			if (($primaryKey !== '' && $this->getTable()->auto_inc == true) && JRequest::getCmd('task') !== 'doImport')
+			{
 				unset($oRecord->$primaryKey);
 			}
 			$ok = $this->insertObject($table->db_table_name, $oRecord, $primaryKey, false);
-		} else {
+		}
+		else
+		{
 			$ok = $this->updateObject($table->db_table_name, $oRecord, $primaryKey, true);
 		}
 		$this->_tmpSQL = $fabrikDb->getQuery();
-		if (!$ok) {
+		if (!$ok)
+		{
 			$q = JDEBUG ? $fabrikDb->getQuery() : '';
 			return JError::raiseWarning(500, 'Store row failed: ' . $q  . "<br>" . $fabrikDb->getErrorMsg());
-		} else {
+		}
+		else
+		{
 			// Clean the cache.
 			JFactory::getCache('com_fabrik')->clean();
 			// $$$ rob new as if you update a record the insertid() returns 0
