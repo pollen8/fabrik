@@ -1605,7 +1605,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					//currently only field password elements return true
 					$fullName = $elementModel->getFullName(false, true, true);
-					unset($this->_formData['join'][$group->join_id][$fullName]);
+					if (array_key_exists('join', $this->_formData))
+					{
+						unset($this->_formData['join'][$group->join_id][$fullName]);
+					}
 					if (array_key_exists($element->name, $this->_formData))
 					{
 						unset($this->_formData[$element->name]);
@@ -3339,18 +3342,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$db = FabrikWorker::getDbo(true);
 		$links = array();
 		$params = $this->getParams();
-		if (!$params->get('show-referring-table-releated-data', false)) {
+		if (!$params->get('show-referring-table-releated-data', false))
+		{
 			return $links;
 		}
-
 		$listModel = $this->getListModel();
-		//
 		$referringTable = JModel::getInstance('List', 'FabrikFEModel');
 		// $$$ rob - not sure that referring_table is anything other than the form's table id
 		// but for now just defaulting to that if no other variable found (e.g when links in sef urls)
 		$tid = JRequest::getInt('referring_table', JRequest::getInt('listid', $listModel->getTable()->id));
 		$referringTable->setId($tid);
-		$tmpKey 	= '__pk_val';
+		$tmpKey = '__pk_val';
 		$tableParams = $referringTable->getParams();
 		$table = $referringTable->getTable();
 		$joinsToThisKey = $referringTable->getJoinsToThisKey();
@@ -3358,7 +3360,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		$row = $this->getData();
 		$factedLinks = $tableParams->get('factedlinks', null);
-		if (is_null($factedLinks)) {
+		if (is_null($factedLinks))
+		{
 			return;
 		}
 		$linkedLists = $factedLinks->linkedlist;
@@ -3366,62 +3369,65 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$linkedform_linktype = $factedLinks->linkedform_linktype;
 		$linkedtable_linktype = $factedLinks->linkedlist_linktype;
 		$f = 0;
-
-		$sql = "SELECT id, label, db_table_name FROM #__{package}_lists";
-		$db->setQuery($sql);
+		$query = $db->getQuery(true);
+		$query->select('id, label, db_table_name')->from('#__{package}_lists');
+		$db->setQuery($query);
 		$aTableNames = $db->loadObjectList('label');
-		if ($db->getErrorNum()) {
+		if ($db->getErrorNum())
+		{
 			JError::raiseError(500, $db->getErrorMsg());
 		}
-		foreach ($joinsToThisKey as $element) {
-			//$qsKey	= $this->getListModel()->getTable()->db_table_name . '___' . $element->name;
-			$qsKey	= $referringTable->getTable()->db_table_name . '___' . $element->name;
-
-			$val 		= JRequest::getVar($qsKey);
-			if ($val == '') {
+		foreach ($joinsToThisKey as $element)
+		{
+			$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
+			$val = JRequest::getVar($qsKey);
+			if ($val == '')
+			{
 				//default to row id if we are coming from a main link (and not a related data link)
 				$val = JRequest::getVar($qsKey . '_raw', '');
-				if (empty($val)) {
+				if (empty($val))
+				{
 					$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
 					$val = JArrayHelper::getValue($this->_data, $thisKey, $val);
-					if (empty($val)) {
+					if (empty($val))
+					{
 						$val = JRequest::getVar('rowid');
 					}
 				}
 			}
-			$key = $element->list_id.'-'.$element->form_id.'-'.$element->element_id;
-
-			if (isset($linkedLists->$key)) {
+			$key = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
+			if (isset($linkedLists->$key))
+			{
 				// $$$ hugh - changed to use _raw as key, see:
 				// http://fabrikar.com/forums/showthread.php?t=20020
 				$linkKey = $element->db_table_name . '___' . $element->name;
 				$linkKeyRaw = $linkKey . '_raw';
-				$popUpLink 		= JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
+				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$recordCounts = $referringTable->getRecordCounts($element);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
-				//$element->list_id = (array_key_exists($element->listlabel, $aTableNames)) ?  $aTableNames[$element->tablelabel]->id : '';
 				$links[$element->list_id][] = $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
-
 			$f ++;
 		}
 		$f = 0;
 		//create columns containing links which point to forms assosciated with this table
-		foreach ($linksToForms as $element) {
-			if ($element !== false) {
-				$key = $element->list_id.'-'.$element->form_id.'-'.$element->element_id;
-				$linkedForm 	= $aExisitngLinkedForms->$key;
-				$popUpLink 		= $linkedform_linktype->$key;
-
-				if ($linkedForm !== '0') {
-					if (is_object($element)) {
+		foreach ($linksToForms as $element)
+		{
+			if ($element !== false)
+			{
+				$key = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
+				$linkedForm = $aExisitngLinkedForms->$key;
+				$popUpLink = $linkedform_linktype->$key;
+				if ($linkedForm !== '0')
+				{
+					if (is_object($element))
+					{
 						//$$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
 						// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
 						$linkKey	= @$element->db_table_name . '___' . @$element->name;
-						//$linkKey	= $this->getListModel()->getTable()->db_table_name . '___' . $element->name;
 						$val = JRequest::getVar($linkKey);
-						if ($val == '') {
-							//$val = JRequest::getVar($linkKey . '_raw');
+						if ($val == '')
+						{
 							$val = JRequest::getVar($qsKey . '_raw', JRequest::getVar('rowid'));
 						}
 						$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
@@ -3435,32 +3441,34 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get the url to use as the form's action property
-	 * @return string url
+	 * @return	string	url
 	 */
 	function getAction()
 	{
 		$app = JFactory::getApplication();
 		// Get the router
 		$router = $app->getRouter();
-		if ($app->isAdmin()) {
+		if ($app->isAdmin())
+		{
 			$action = JArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
 			$action =  str_replace("&", "&amp;", $action);
 			// $$$rob no good for cck form?
 			//return "index.php";
 			return $action;
 		}
-		if ((int)$this->packageId !== 0) {
-			$action = 'index.php?option=com_fabrik&view=form&formid='.$this->getId();
+		if ((int) $this->packageId !== 0)
+		{
+			$action = 'index.php?option=com_fabrik&view=form&formid=' . $this->getId();
 			return $action;
 		}
 		$option = JRequest::getCmd('option');
-
-		if ($option === 'com_fabrik') {
-			$page = "index.php?";
+		if ($option === 'com_fabrik')
+		{
+			$page = 'index.php?';
 			//get array of all querystring vars
 			$queryvars = $router->parse(JFactory::getURI());
-
-			if ($this->isAjax()) {
+			if ($this->isAjax())
+			{
 				$queryvars['format'] = 'raw';
 				//@TODO this should prb be views or controllers now?
 				//$queryvars['controller'] = "form";
@@ -3469,8 +3477,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$queryvars['task'] = 'form.process';
 			}
 			$qs = array();
-			foreach ($queryvars as $k => $v) {
-				if ($k == 'rowid') {
+			foreach ($queryvars as $k => $v)
+			{
+				if ($k == 'rowid')
+				{
 					$v = $this->getRowId();
 				}
 				// $$$ hugh - things get weird if we have been passed a urlencoded URL as a qs arg,
@@ -3478,21 +3488,27 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				// when we JRoute::_() below.  So we need to re-urlencode stuff and junk.
 				// Ooops, make sure it isn't an array, which we'll get if they have something like
 				// &table___foo[value]=bar
-				if (!is_array($v)) {
+				if (!is_array($v))
+				{
 					$v = urlencode($v);
 				}
-				$qs[] = "$k=$v";
+				$qs[] = $k . '=' . $v;
 			}
-			$action = $page.implode("&amp;",$qs);
+			$action = $page.implode("&amp;", $qs);
 
 			$action = JRoute::_($action);
-		} else {
+		}
+		else
+		{
 			//in plugin & SEF URLs
-			if ((int)$router->getMode() === (int)JROUTER_MODE_SEF) {
+			if ((int) $router->getMode() === (int)JROUTER_MODE_SEF)
+			{
 				//$$$ rob if embedding a form in a form, then the embedded form's url will contain
 				// the id of the main form - not sure if its an issue for now
 				$action = JArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
-			} else {
+			}
+			else
+			{
 				// in plugin and no sef (routing dealt with in form controller)
 				$action = 'index.php';
 			}
@@ -3503,15 +3519,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * if the group is a joined group we want to ensure that its id field is contained with in the group's elements
 	 *
-	 * @param object $groupTable
-	 * @return string html hidden field
+	 * @param	object	$groupTable
+	 * @return	string	html hidden field
 	 */
 
-	function _makeJoinIdElement(&$groupTable )
+	function _makeJoinIdElement(&$groupTable)
 	{
 		$listModel = $this->getListModel();
 		$joinId = $this->_aJoinGroupIds[$groupTable->id];
-		$element 			= new stdClass();
+		$element = new stdClass();
 		//add in row id for join data
 		$element->label = '';
 		$element->error = '';
@@ -3523,29 +3539,40 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$element->column = '';
 		$element->className = '';
 		$element->containerClass = '';
-		foreach ($listModel->getJoins() as $oJoin) {
-			if ($oJoin->id == $joinId) {
+		foreach ($listModel->getJoins() as $oJoin)
+		{
+			if ($oJoin->id == $joinId)
+			{
 				$key = $oJoin->table_join . $this->joinTableElementStep . $oJoin->table_join_key;
-
-				if (array_key_exists('join', $this->_data)) {
+				if (array_key_exists('join', $this->_data))
+				{
 					// $$$ rob if join element is a db join the data $key contains label and not foreign key value
-					if (@array_key_exists($key . '_raw', $this->_data['join'][$joinId])) {
+					if (@array_key_exists($key . '_raw', $this->_data['join'][$joinId]))
+					{
 						$val = $this->_data['join'][$joinId][$key . '_raw'];
-					} else {
+					}
+					else
+					{
 						$val = @$this->_data['join'][$joinId][$key];
 					}
-					if (is_array($val)) {
-						if (array_key_exists(0,$val)) {
+					if (is_array($val))
+					{
+						if (array_key_exists(0,$val))
+						{
 							$val = $val[0];
 						}
-						else {
+						else
+						{
 							$val = '';
 						}
 					}
-				} else {
+				}
+				else
+				{
 					$val = '';
 				}
-				if ($val == '') {
+				if ($val == '')
+				{
 					//somethings gone wrong - lets take the main table's key
 					$k = $oJoin->join_from_table . $this->joinTableElementStep . $oJoin->table_key;
 					$val = @$this->_data[$k];
