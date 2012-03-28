@@ -1282,7 +1282,13 @@ class FabrikFEModelList extends JModelForm {
 		} else {
 			$array = JArrayHelper::fromObject($row);
 			foreach ($array as $k => &$v) {
-				$v = json_decode($v, true);
+				// $$$ hugh - not everything is JSON, some stuff is just plain strings.
+				// So we need to see if JSON encoding failed, and only use result if it didn't.
+				// $v = json_decode($v, true);
+				$v2 = json_decode($v, true);
+				if ($v2 !== null) {
+					$v = $v2;
+				}
 				if (is_array($v)) {
 					$v = JArrayHelper::getValue($v, $repeatCounter);
 				}
@@ -4159,7 +4165,7 @@ class FabrikFEModelList extends JModelForm {
 			$groupHeadings[$groupHeadingKey] = 0;
 			$elementModels = $groupModel->getPublishedListElements();
 			foreach ($elementModels as $key => $elementModel) {
-				
+
 				$element = $elementModel->getElement();
 				// if we define the elements to show in the list - e.g in admin list module then only show those elements
 				if (!empty($showInList) && !in_array($element->id, $showInList))
@@ -4688,7 +4694,7 @@ class FabrikFEModelList extends JModelForm {
 						$element = $elementModel->getElement();
 						$key = $element->name;
 						$fullkey = $elementModel->getFullName(false, true, false);
-						
+
 						//for radio buttons and dropdowns otherwise nothing is stored for them??
 						$postkey = array_key_exists($key ."_raw", $data) ? $key . "_raw" : $key;
 
@@ -6709,6 +6715,9 @@ class FabrikFEModelList extends JModelForm {
 		$can_repeats_pk_vals = array();
 		$remove = array();
 
+		// First, go round first row of data, and prep some stuff.
+		// Basically, if doing a "reduce data" merge (merge == 2), we need to know what the
+		// PK element is for each joined group (well, for each element, really)
 		foreach ($data[0] as $key => $val) {
 			$origKey = $key;
 			$tmpkey = FabrikString::rtrimword($key, '_raw');
@@ -6739,9 +6748,11 @@ class FabrikFEModelList extends JModelForm {
 						if (isset($can_repeats_tables[$join_table_name])) {
 							$can_repeats_keys[$tmpkey] = $join_table_name . '___' . $can_repeats_tables[$join_table_name]['colname'];
 						}
+						// Create the array if it doesn't exist
 						if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]])) {
 							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]] = array();
 						}
+						// Now store the
 						if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][0])) {
 							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][0] = $data[0]->$can_repeats_keys[$tmpkey];
 						}
