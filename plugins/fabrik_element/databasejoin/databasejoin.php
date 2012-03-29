@@ -1593,6 +1593,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		foreach ($tmp as $obj) {
 			if ($obj->value == $v) {
 				$defaultLabel = $obj->text;
+				break;
 			}
 		}
 		return is_null($defaultLabel) ? $v : $defaultLabel;
