@@ -331,18 +331,22 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 	protected function _getConentTemplate($contentTemplate)
 	{
-		require_once(COM_FABRIK_BASE.'components/com_content/helpers/query.php');
-		JModel::addIncludePath(COM_FABRIK_BASE.'components/com_content/models');
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')
+			->where('id = ' . (int) $contentTemplate);
+			$db->setQuery($query);
+			$res = $db->loadObject();
+		}
+		else
+		{
+		JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
 		$articleModel = JModel::getInstance('Article', 'ContentModel');
-		// $$$ rob when sending from admin we need to alter $mainframe to be the
-		//front end application otherwise com_content errors out trying to create
-		//the article
-		global $mainframe;
-		$origMainframe = $mainframe;
-		jimport('joomla.application.application');
-		$mainframe = JApplication::getInstance('site', array(), 'J');
 		$res = $articleModel->getItem($contentTemplate);
-		$mainframe = $origMainframe;
+		}
 		return $res->introtext . ' ' . $res->fulltext;
 	}
 

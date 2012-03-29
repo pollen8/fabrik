@@ -24,16 +24,13 @@ class plgFabrik_ValidationruleNotempty extends plgFabrik_Validationrule
 	protected $icon = 'notempty';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$element, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
-		$ok = $element->dataConsideredEmpty($data, $c);
+		$ok = $elementModel->dataConsideredEmpty($data, $repeatCounter);
 		return !$ok;
 	}
 

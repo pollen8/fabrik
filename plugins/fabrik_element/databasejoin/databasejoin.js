@@ -16,8 +16,10 @@ var FbDatabasejoin = new Class({
 	},
 	
 	initialize: function (element, options) {
+		
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
+		this.updateFromServer();
 		this.changeEvents = []; // workaround for change events getting zapped on clone
 		//if users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
@@ -26,7 +28,8 @@ var FbDatabasejoin = new Class({
 			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
 				//fired when form submitted - enables element to update itself with any new submitted data
 				if (this.options.popupform === form.id) {
-					this.appendInfo(json);
+					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
+					this.updateFromServer();
 				}
 			}.bind(this));
 		}
@@ -52,7 +55,6 @@ var FbDatabasejoin = new Class({
 	},
 	
 	watchAdd: function () {
-		
 		if (c = this.getContainer()) {
 			var b = c.getElement('.toggle-addoption');
 			//if duplicated remove old events
@@ -90,6 +92,109 @@ var FbDatabasejoin = new Class({
 		return this.parent();
 	},
 	
+	addOption: function (v, l)
+	{
+		if (v === '') {
+			return;
+		}
+		switch (this.options.display_type) {
+		case 'dropdown':
+		/* falls through */
+		case 'multilist':
+			opt = new Element('option', {'value': v, 'selected': 'selected'}).set('text', l);
+			$(this.element.id).adopt(opt);
+			break;
+		case 'auto-complete':
+			labelfield = this.element.getParent('.fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
+			this.element.value = v;
+			labelfield.value = l;
+			break;
+		case 'checkbox':
+			var chxs = this.element.getElements('> .fabrik_subelement');
+			var newchx = chxs.getLast().clone();
+			newchx.getElement('span').set('text', l);
+			newchx.getElement('input').set('value', v);
+			var last = chxs.length === 0 ? this.element : chxs.getLast();
+			newchx.inject(last, 'after');
+			
+			var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
+			var newid = ids.getLast().clone();
+			newid.getElement('span').set('text', l);
+			newid.getElement('input').set('value', 0); // to add a new join record set to 0
+			last = ids.length === 0 ? this.element.getElements('.fabrikHide') : ids.getLast();
+			newid.inject(last, 'after');
+			break;
+		case 'radio':
+		/* falls through */
+		default:
+			var opt = new Element('div', {
+				'class': 'fabrik_subelement'
+			}).adopt(new Element('label').adopt([new Element('input', {
+				'class': 'fabrikinput',
+				'type': 'radio',
+				'checked': true,
+				'name': this.options.element + '[]',
+				'value': v
+			}), new Element('span').set('text', l)]));
+			opt.inject($(this.element.id).getElements('.fabrik_subelement').getLast(), 'after');
+			break;
+		}
+	},
+	
+	/**
+	 * send an ajax request to requery the element options and update the element if new options found
+	 */
+	updateFromServer: function ()
+	{
+		var data = {
+				'option': 'com_fabrik',
+				'format': 'raw',
+				'task': 'plugin.pluginAjax',
+				'plugin': 'databasejoin',
+				'method': 'ajax_getOptions',
+				'element_id': this.options.id
+			};
+		
+		new Request.JSON({url: '',
+			method: 'post', 
+			'data': data,
+			onComplete: function (json) {
+				var existingValues = this.getOptionValues();
+				json.each(function (o) {
+					if (!existingValues.contains(o.value)) {
+						this.addOption(o.value, o.text);
+						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
+						this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
+					}
+				}.bind(this));
+			}.bind(this)
+		}).post();
+	},
+	
+	getOptionValues: function () {
+		var o;
+		var values = [];
+		switch (this.options.display_type) {
+		case 'dropdown':
+		/* falls through */
+		case 'multilist':
+			o = this.element.getElements('option');
+			break;
+		case 'checkbox':
+			o = this.element.getElements('.fabrik_subelement input[type=checkbox]');
+			break;
+		case 'radio':
+		/* falls through */
+		default:
+			o = this.element.getElements('.fabrik_subelement type=[radio]');
+			break;
+		}
+		o.each(function (o) {
+			values.push(o.get('value'));
+		});
+		return values.unique();
+	},
+	
 	appendInfo: function (data) {
 		var rowid = data.rowid;
 		var formid = this.options.formid;
@@ -117,29 +222,14 @@ var FbDatabasejoin = new Class({
 						}
 					}.bind(this));
 					if (o.length === 0) {
-						opt = new Element('option', {'value': v, 'selected': 'selected'}).set('text', l);
-						$(this.element.id).adopt(opt);
+						this.addOption(v, l);
 					}
 					break;
 				case 'auto-complete':
-					labelfield = this.element.getParent('.fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
-					this.element.value = v;
-					labelfield.value = l;
+					this.addOption(v, l);
 					break;
 				case 'checkbox':
-					var chxs = this.element.getElements('> .fabrik_subelement');
-					var newchx = chxs.getLast().clone();
-					newchx.getElement('span').set('text', l);
-					newchx.getElement('input').set('value', v);
-					var last = chxs.length === 0 ? this.element : chxs.getLast();
-					newchx.inject(last, 'after');
-					
-					var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
-					var newid = ids.getLast().clone();
-					newid.getElement('span').set('text', l);
-					newid.getElement('input').set('value', 0); // to add a new join record set to 0
-					last = ids.length === 0 ? this.element.getElements('.fabrikHide') : ids.getLast();
-					newid.inject(last, 'after');
+					this.addOption(v, l);
 					break;
 				case 'radio':
 				/* falls through */
@@ -151,16 +241,7 @@ var FbDatabasejoin = new Class({
 						}
 					}.bind(this));
 					if (o.length === 0) {
-						var opt = new Element('div', {
-							'class': 'fabrik_subelement'
-						}).adopt(new Element('label').adopt([new Element('input', {
-							'class': 'fabrikinput',
-							'type': 'radio',
-							'checked': true,
-							'name': this.options.element + '[]',
-							'value': v
-						}), new Element('span').set('text', l)]));
-						opt.inject($(this.element.id).getElements('.fabrik_subelement').getLast(), 'after');
+						this.addOption(v, l);
 					}
 					break;
 				}
