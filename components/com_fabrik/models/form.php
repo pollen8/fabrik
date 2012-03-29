@@ -2014,6 +2014,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			FabrikWorker::getPluginManager()->runPlugins('onError', $this);
 		}
 		FabrikHelperHTML::debug($this->_arErrors, 'form:errors');
+		echo "<pre>";print_r($this->_arErrors);echo "</pre>";
 		$this->setErrors($this->_arErrors);
 		return $ok;
 	}
