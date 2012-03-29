@@ -99,5 +99,19 @@ var FbCalc = new Class({
 	cloned: function (c) {
 		this.parent(c);
 		this.attachedToForm();
+	},
+	
+	update: function (val) {
+		if (this.element) {
+			this.element.innerHTML = val;
+			this.options.value = val;
+		}
+	},
+	
+	getValue: function () {
+		if (this.element) {
+			return this.options.value;
+		}
+		return false;
 	}
 });
