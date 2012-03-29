@@ -217,7 +217,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				$rawkey = $rawkey . '.' . $c;
 			}
 		}
-		else 
+		else
 		{
 			if ($group->isJoin()) {
 				$key = str_replace("][", ".", $key);
@@ -258,12 +258,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			}
 		}
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_Element::preFormatFormJoins()
 	 */
-	
+
 	public function preFormatFormJoins($element_data, $row)
 	{
 		$params = $this->getParams();
@@ -284,9 +284,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$cal = $params->get('calc_calculation', '');
 			$listModel = $this->getlistModel();
 			$formModel = $this->getFormModel();
-			
+
 			$data = JArrayHelper::fromObject($row);
-			
+
 			$data['rowid'] = $data['__pk_val'];
 			$data['fabrik'] = $formModel->getId();
 			// $$$ hugh - trying to standardize on $data so scripts know where data is,
@@ -306,7 +306,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			return parent::preFormatFormJoins($res, $row);
 		}
 	}
-	
+
 	/**
 	 * fudge the CSV export so that we get the calculated result regardless of whether
 	 * the value has been stored in the database base (mimics what the user would see in the table view)
@@ -348,7 +348,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				$str[] = $value;
 			}
 			else {
+				/*
 				$str[] = '<input class="fabrikinput inputbox" disabled="disabled" name="'.$name.'" id="'.$id.'" value="'.$value.'" size="'.$element->width.'" />';
+				*/
+				$str[] = '<span class="fabrikinput" name="' . $name . '" id="' . $id . '">' . $value . '</span>';
 			}
 		} else {
 			/* make a hidden field instead*/
@@ -395,6 +398,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker();
 		$d = JRequest::get('request');
+		$this->getFormModel()->_data = $d;
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
@@ -469,13 +473,13 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			return parent::getMedianQuery($listModel, $label);
 		}
 	}
-	
+
 	/**
 	 * @since 3.0.4
-	 * get the sprintf format string 
+	 * get the sprintf format string
 	 * @return string
 	 */
-	
+
 	public function getFormatString()
 	{
 		$params = $this->getParams();

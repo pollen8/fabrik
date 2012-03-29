@@ -29,6 +29,7 @@ echo "
 	background-image: none;
 	padding: 0;
 	margin: 0;
+	min-height: 20px;
 }
 
 #listform_$c .fabrikList tfoot{
