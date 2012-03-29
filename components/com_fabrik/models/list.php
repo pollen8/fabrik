@@ -3264,9 +3264,10 @@ class FabrikFEModelList extends JModelForm {
 
 			//are we coming from a post request via a module?
 			$moduleid = 0;
-			if (JRequest::getVar('listref') !== '') {
+			$requestRef =  JRequest::getVar('listref', '');
+			if ($requestRef !== '' && ! strstr($requestRef, 'com_fabrik')) {
 				// if so we need to load in the modules parameters
-				$ref = explode('_', JRequest::getVar('listref'));
+				$ref = explode('_', $requestRef);
 				if (count($ref) > 1) {
 					$moduleid = (int)array_pop($ref);
 					$db = JFactory::getDbo();
