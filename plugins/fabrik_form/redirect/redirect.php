@@ -45,7 +45,11 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$this->_data->save_in_session = $params->get('save_insession');
 		$form = $formModel->getForm();
 
+		// $$$ hugh - think we need to switcheroonie the order, otherwise _formData takes
+		// precedence over getEmailData(), which I think kind of defeats the object of
+		// the exercisee?
 		$this->data = array_merge($this->getEmailData(), $formModel->_formData);
+		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 		$this->_data->jump_page = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
 		$this->_data->thanks_message = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
 		if (!$this->shouldRedirect($params))
@@ -324,10 +328,10 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 			$listModel = $formModel->getlistModel();
 			//check for special fabrik_list_filter_all element!
 			$searchAll = JRequest::getVar($listModel->getTable()->db_table_name . '___fabrik_list_filter_all');
-			
+
 			$app->setUserState('com_fabrik.searchform.form' . $formModel->get('id') . '.searchall', $searchAll);
 			$app->setUserState($key, $id);
-			
+
 			$app->setUserState('com_fabrik.searchform.form' . $formModel->get('id') . '.filters', $store);
 			$app->setUserState('com_fabrik.searchform.fromForm', $formModel->get('id'));
 
