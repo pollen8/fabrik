@@ -47,7 +47,9 @@ var FbDateTime = new Class({
 					var date_str = this.getDateField().value;
 					if (date_str !== '') {
 						//var d = new Date(date_str);
-						var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
+						//this is the calendar native parseDate call, but it doesnt take into account seconds
+						//var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
+						var d = Date.parse(date_str);
 						this.setTimeFromField(d);
 						this.update(d);
 					}
@@ -278,9 +280,10 @@ var FbDateTime = new Class({
 			}
 			
 		} else {
-			d.setHours(0);
-			d.setMinutes(0);
-			d.setSeconds(0);
+			//hidden fields should still keep their times
+			//d.setHours(0);
+			//d.setMinutes(0);
+			//d.setSeconds(0);
 		}
 		return d;
 	},

@@ -214,7 +214,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			//get the formatted date
 			$local = true;//$store_as_local;
 			$date = $oDate->toFormat($format, true);
-			$this->offsetDate = $oDate->toMySQL(true);
+			$this->offsetDate = $oDate->toSql(true);
 			if (!$this->_editable) {
 				$time = ($params->get('date_showtime', 0)) ? " " .$oDate->toFormat($timeformat, true) : '';
 				return $date.$time;
@@ -507,28 +507,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		if (is_array($attribs)) {
 			$attribs = JArrayHelper::toString($attribs);
 		}
-		$opts = $this->_CalendarJSOpts($id);
-		$opts->ifFormat = $format;
-		$opts = json_encode($opts);
-		// $$$ rob - we shouldnt be ini'ing the calender js in form view as its done in the date.js file.
-		// Should ONLY be used for list filters.
-		//if (!$this->getElement()->hidden || JRequest::getVar('view') == 'list') {
-
-		/* if (JRequest::getVar('view') == 'list') {
-			$script = array();
-		if (JRequest::getVar('format') !== 'raw')
-		{
-		$script[] = 'head.ready(function() {';
-		}
-		$script[] = 'if($("'.$id.'")) { ';
-		$script[] = 'Calendar.setup('.$opts.');';
-		$script[] = '}'; //end if id
-		if (JRequest::getVar('format') !== 'raw')
-		{
-		$script[] = '});'; //end domready function
-		}
-		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
-		} */
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_cal_img'));
 		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.$img;
@@ -572,27 +550,20 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->hidden = (bool)$this->getElement()->hidden;
-		/* if ($opts->hidden) {
-			// $$$ rob 11/10/2011 if its hidden we dont want the defaultval as mysql
-		// format as its used by form.js duplcateGroup
-		// to set the value of the date element when its repeated.
-		$opts->defaultVal = $this->_editable ? $this->formattedDate : '';
-		} */
 		$opts->defaultVal = $this->offsetDate;
-		$opts->showtime = $params->get('date_showtime', 0) ? true : false;
+		$opts->showtime = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
 		$opts->timelabel = JText::_('time');
 		$opts->typing = $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay = $params->get('date_timedisplay', 1);
 		$validations = $this->getValidations();
 		$opts->validations = empty($validations) ? false : true;
 		$opts->dateTimeFormat = $params->get('date_time_format', '');
-
 		//for reuse if element is duplicated in repeat group
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 		$opts = json_encode($opts);
 		return "new FbDateTime('$id', $opts)";
 	}
-
+	
 	/**
 	 * get the type of field to store the data in
 	 *
