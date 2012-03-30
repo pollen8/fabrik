@@ -33,6 +33,9 @@ var DateFilter = new Class({
 			return;
 		}
 		button = document.id(button);
+		if (typeOf(button) === 'null') {
+			return;
+		}
 		this.addEventToCalOpts();
 		var params = Object.clone(this.options.calendarSetup);
 		var tmp = ["displayArea", "button"];

@@ -228,7 +228,7 @@ class FabrikControllerList extends JController
 	function elementFilter()
 	{
 		$id = JRequest::getInt('id');
-		$model = &$this->getModel('list', 'FabrikFEModel');
+		$model = $this->getModel('list', 'FabrikFEModel');
 		$model->setId($id);
 		echo $model->getAdvancedElementFilter();
 	}

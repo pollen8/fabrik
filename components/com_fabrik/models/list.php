@@ -11,8 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.modelform');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'pagination.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/pagination.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
 
 class FabrikFEModelList extends JModelForm {
 
@@ -2158,7 +2158,7 @@ class FabrikFEModelList extends JModelForm {
 	function getTable($force = false)
 	{
 		if ($force || !isset($this->_table) || !is_object($this->_table)) {
-			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$this->_table = FabTable::getInstance('List', 'FabrikTable');
 			$id = $this->getId();
 			if ($id !== 0) {
@@ -2499,7 +2499,7 @@ class FabrikFEModelList extends JModelForm {
 
 	function loadFromFormId($formId)
 	{
-		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'table');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/table');
 		$row = FabTable::getInstance('List', 'FabrikTable');
 		$row->load(array('form_id'=>$formId));
 		$this->_table = $row;
@@ -6381,7 +6381,10 @@ class FabrikFEModelList extends JModelForm {
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$el = $plugin->getElement();
-		return $plugin->getFilter(JRequest::getInt('counter', 0), false);
+		$container = 'listform_' . $this->getRenderContext();
+		$script = $plugin->filterJS(false, $container);
+		FabrikHelperHTML::addScriptDeclaration($script);
+		echo $plugin->getFilter(JRequest::getInt('counter', 0), false);
 	}
 
 	/**

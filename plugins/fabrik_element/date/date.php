@@ -1665,7 +1665,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	public function filterJS($normal, $container)
 	{
 		$element = $this->getElement();
-		if ($element->filter_type !== 'field' && $element->filter_type !== 'range')
+		if ($normal && ($element->filter_type !== 'field' && $element->filter_type !== 'range'))
 		{
 			return;
 		}
@@ -1682,13 +1682,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->buttons = $element->filter_type == 'field' ? array($id . '_cal_img') : array($id . '_cal_img', $id2 . '_cal_img');
 		$opts = json_encode($opts);
 
-
-		//$this->calendar($default[0], $v.'[0]', $this->getHTMLId()."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
-		//$this->calendar($default[1], $v.'[1]', $this->getHTMLId()."_filter_range_1_".JRequest::getVar('task'), $format, $calOpts);
-
-
-		FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js');
-		return 'Fabrik.filter_'. $container. '.addFilter(\'' . $element->plugin . '\', new DateFilter(' . $opts . '));' . "\n";
+		$script = 'Fabrik.filter_'. $container. '.addFilter(\'' . $element->plugin . '\', new DateFilter(' . $opts . '));' . "\n";
+		if ($normal)
+		{
+			FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js');
+			return $script;
+		}
+		else
+		{
+			FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js', $script);
+		}
 	}
 
 	protected function filterCalendarOpts()
