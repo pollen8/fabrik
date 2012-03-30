@@ -33,7 +33,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 	 * @return	bool	true if validation passes, false if fails
 	 */
 
-	function validate($data, &$element, $c)
+	function validate($data, &$elementModel, $c)
 	{
 		if (empty($data))
 		{
@@ -43,6 +43,27 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		//as ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object)$params->get('emailexists_or_not');
 		$ornot = isset($ornot->$c) ? $ornot->$c : 'fail_if_exists';
+
+		$user_field = (array)$params->get('emailexists_user_field', array());
+		$user_field = $user_field[$c];
+		$user_id = 0;
+		if ((int)$user_field !== 0)
+		{
+			$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
+			$user_fullName = $user_elementModel->getFullName(false, true, false);
+			$user_field = $user_elementModel->getFullName(false, false, false);
+		}
+
+		if (!empty($user_field))
+		{
+			// $$$ the array thing needs fixing, for now just grab 0
+			$formdata = $elementModel->getForm()->_formData;
+			$user_id = JArrayHelper::getValue($formdata, $user_fullName . '_raw', JArrayHelper::getValue($formdata, $user_fullName, ''));
+			if (is_array($user_id))
+			{
+				$user_id = JArrayHelper::getValue($user_id, 0, '');
+			}
+		}
 
 		jimport('joomla.user.helper');
 		$db = FabrikWorker::getDbo(true);
@@ -75,11 +96,19 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 			{
 				return ($ornot == 'fail_if_exists') ? true : false;
 			} else {
-				if ($result == $user->get('id')) // The connected user is editing his own data
-				{
-					return ($ornot == 'fail_if_exists') ? true : false;
+				if ($user_id != 0) {
+					if ($result == $user_id) {
+						return ($ornot == 'fail_if_exists') ? true : false;
+					}
+					return false;
 				}
-				return false;
+				else {
+					if ($result == $user->get('id')) // The connected user is editing his own data
+					{
+						return ($ornot == 'fail_if_exists') ? true : false;
+					}
+					return false;
+				}
 			}
 		}
 		return false;
