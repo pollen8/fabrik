@@ -16,8 +16,8 @@ class FabrikViewList extends JView{
 
 	function display()
 	{
-		$Itemid	= $app->getMenu('site')->getActive()->id;
 		$app = JFactory::getApplication();
+		$Itemid	= $app->getMenu('site')->getActive()->id;
 		$config	= JFactory::getConfig();
 		$user = JFactory::getUser();
 		$model = $this->getModel();

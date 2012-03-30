@@ -35,7 +35,7 @@ class FabrikViewList extends JView{
 
 		$table = $model->getTable();
 		$model->render();
-		$params	=& $model->getParams();
+		$params	= $model->getParams();
 
 		if ($params->get('rss') == '0') {
 			return '';
@@ -60,6 +60,7 @@ class FabrikViewList extends JView{
 				}
 				if ($element->id == $dateEl) {
 					$dateEl = $elementModel->getFullName(false, true, false);
+					$rawdateEl = $dateEl . '_raw';
 				}
 				$elParams = $elementModel->getParams();
 
@@ -110,8 +111,9 @@ class FabrikViewList extends JView{
 		$w = new FabrikWorker();
 		$rows = $model->getData();
 
-		$document->title = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
-		$document->description = $w->parseMessageForPlaceHolder($table->introduction);
+		$document->title = htmlentities($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
+		$desc = htmlspecialchars (trim(strip_tags($table->introduction)));
+		$document->description = $desc;//htmlentities(trim($w->parseMessageForPlaceHolder($desc)), ENT_COMPAT, 'UTF-8');
 		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid='.$table->id.'&Itemid='.$Itemid);
 
 		/* check for a custom css file and include it if it exists*/
@@ -119,7 +121,7 @@ class FabrikViewList extends JView{
 		$csspath = COM_FABRIK_FRONTEND.DS."views".DS."list".DS."tmpl".DS.$tmpl.DS.'feed.css';
 
 		if (file_exists($csspath)) {
-			$document->addStyleSheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/table/tmpl/$tmpl/feed.css");
+			$document->addStyleSheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/$tmpl/feed.css");
 		}
 
 		$view = $model->canEdit() ? 'form' : 'details';
@@ -138,7 +140,9 @@ class FabrikViewList extends JView{
 
 				//get the content
 				$str2 = '';
-				$str = '<table style="margin-top:10px;padding-top:10px;">';
+				$str = '';
+				$tstart = '<table style="margin-top:10px;padding-top:10px;">';
+				
 				//used for content not in dl
 				//ok for feed gator you cant have the same item title so we'll take the first value from the table (asume its the pk and use that to append to the item title)'
 				$title = '';
@@ -169,18 +173,22 @@ class FabrikViewList extends JView{
 							}
 						}
 					}
-					if ($title == '') {
+					if ($title == '')
+					{
 						//set a default title
 						$title = $row->$dbcolname['colName'];
 					}
-					$rsscontent = $row->$dbcolname['colName'];
+					$rsscontent = strip_tags($row->$dbcolname['colName']);
 
 					$found = false;
-					foreach ($rsstags as $rsstag =>$namespace) {
-						if (strstr($rsscontent, $rsstag)) {
+					foreach ($rsstags as $rsstag =>$namespace)
+					{
+						if (strstr($rsscontent, $rsstag))
+						{
 							$found = true;
 							$rsstag = substr($rsstag, 1, strlen($rsstag)-2);
-							if (!strstr($document->_namespace, $namespace)) {
+							if (!strstr($document->_namespace, $namespace))
+							{
 								$document->_itemTags[] = $rsstag;
 								$document->_namespace .=  $namespace . " ";
 							}
@@ -188,21 +196,35 @@ class FabrikViewList extends JView{
 						}
 					}
 
-					if ($found) {
+					if ($found)
+					{
 						$item->{$rsstag} = $rsscontent;
-					} else {
-						if ($dbcolname['label'] == '') {
+					}
+					else
+					{
+						if ($dbcolname['label'] == '')
+						{
 							$str2 .= $rsscontent . "<br />\n";
-						} else {
+						}
+						else
+						{
 							$str .= "<tr><td>" . $dbcolname['label'] . ":</td><td>" . $rsscontent . "</td></tr>\n";
 						}
 					}
 				}
 
-				if (isset($row->$titleEl)) {
+				if (isset($row->$titleEl))
+				{
 					$title = $row->$titleEl;
 				}
-				$str = $str2 . $str . "</table>";
+				if ($dbcolname['label'] != '')
+				{
+					$str = $tstart . $str . "</table>";
+				}
+				else
+				{
+					$str = $str2;
+				}
 
 				// url link to article
 				$link = JRoute::_('index.php?option=com_fabrik&view='.$view.'&listid='.$table->id.'&formid='.$form->id.'&rowid='. $row->slug);
@@ -211,9 +233,12 @@ class FabrikViewList extends JView{
 				// strip html from feed item description text
 				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
-				if ($dateEl != '') {
-					$date = $row->$dateEl ? date('r', strtotime(@$row->$dateEl) ) : '';
-				} else {
+				if ($dateEl != '')
+				{
+					$date = $row->$dateEl ? date('r', strtotime(@$row->$rawdateEl) ) : '';
+				}
+				else
+				{
 					$date = '';
 				}
 				// load individual item creator class
@@ -226,12 +251,13 @@ class FabrikViewList extends JView{
 				// $$$ hugh - not quite sure where we were expecting $row->category to come from.  Comment out for now.
 				//$item->category = $row->category;
 
-				foreach ($enclosures as $enclosure) {
+				foreach ($enclosures as $enclosure)
+				{
 					$item->setEnclosure($enclosure);
 				}
 
 				// loads item info into rss array
-				$document->addItem( $item);
+				$res = $document->addItem($item);
 			}
 		}
 	}
