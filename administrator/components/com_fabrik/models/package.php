@@ -285,37 +285,44 @@ class FabrikModelPackage extends FabModelAdmin
 			$this->rowsToInsert('#__' . $row->component_name . '_visualizations', $viz, $return);
 		}
 
-		foreach ($lists as $listid) {
+		foreach ($lists as $listid)
+		{
 			$query->clear();
-			$query->select('*')->from('#__{package}_lists')->where('id = ' . $listid);
+			$query->select('*')->from('#__{package}_lists')->where('id = ' . (int) $listid);
 			$db->setQuery($query);
-
 			$list = $db->loadObjectList();
-			$this->rowsToInsert('#__'.$row->component_name.'_lists', $list, $return);
+			$this->rowsToInsert('#__' . $row->component_name . '_lists', $list, $return);
+			
 			//form
 			$query->clear();
-			$query->select('*')->from('#__{package}_forms')->where('id = ' . $list[0]->form_id);
+			$query->select('*')->from('#__{package}_forms')->where('id = ' . (int) $list[0]->form_id);
+			$db->setQuery($query);
 			$forms = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_forms', $forms, $return);
+			
 			//form groups
 			$query->clear();
-			$query->select('*')->from('#__{package}_formgroup')->where('form_id = ' . $list[0]->form_id);
+			$query->select('*')->from('#__{package}_formgroup')->where('form_id = ' . (int) $list[0]->form_id);
+			$db->setQuery($query);
 			$formgroups = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_formgroup', $formgroups, $return);
 
 			$groupids = array();
-			foreach ($formgroups as $formgroup) {
+			foreach ($formgroups as $formgroup)
+			{
 				$groupids[] = $formgroup->group_id;
 			}
 			//groups
 			$query->clear();
 			$query->select('*')->from('#__{package}_groups')->where('id IN (' . implode(',', $groupids) . ')');
+			$db->setQuery($query);
 			$groups = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_groups', $groups, $return);
 
 			//elements
 			$query->clear();
 			$query->select('*')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $groupids) . ')');
+			$db->setQuery($query);
 			$elements = $db->loadObjectList();
 			$elementids = array();
 			foreach ($elements as $element) {
@@ -326,18 +333,21 @@ class FabrikModelPackage extends FabModelAdmin
 			//joins
 			$query->clear();
 			$query->select('*')->from('#__{package}_joins')->where('list_id IN (' . implode(',', $lists) . ') OR element_id IN (' . implode(',', $elementids) . ')');
+			$db->setQuery($query);
 			$joins = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_joins', $joins, $return);
 
 			//js actions
 			$query->clear();
 			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' .implode(',', $elementids) .')');
+			$db->setQuery($query);
 			$jsactions = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_jsactions', $jsactions, $return);
 
 			//js actions
 			$query->clear();
 			$query->select('*')->from('#__{package}_validations')->where('element_id IN (' .implode(',', $elementids) .')');
+			$db->setQuery($query);
 			$validations = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name.'_validations', $validations, $return);
 
@@ -361,9 +371,17 @@ class FabrikModelPackage extends FabModelAdmin
 		return $path;
 	}
 
+	/**
+	 * 
+	 * @param	string	db table name
+	 * @param	array	rows to insert
+	 * @param 	array	sql statements parsed by ref
+	 */
+	
 	protected function rowsToInsert($table, $rows, &$return)
 	{
 		$db = FabrikWorker::getDbo(true);
+		
 		foreach ($rows as $row) {
 			$fmtsql = 'INSERT INTO '.$db->nameQuote($table).' (%s) VALUES (%s) ON DUPLICATE KEY UPDATE %s';
 			$fields = array();
@@ -385,6 +403,8 @@ class FabrikModelPackage extends FabModelAdmin
 				if ($k[0] == '_') { // internal field
 					continue;
 				}
+				
+				$v = str_replace($db->getPrefix(), '#__', $v);
 				$val = $db->isQuoted($k) ? $db->Quote($v) : (int) $v;
 				$fields[] = $db->nameQuote($k);
 				$values[] = $val;
@@ -475,13 +495,15 @@ class FabrikModelPackage extends FabModelAdmin
 		}
 
 		// create the sql to build the db tables that store the data.
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		
 		$formModel = JModel::getInstance('form', 'FabrikFEModel');
 
 		$lookups = $this->getInstallItems($row);
 		$lids = $lookups->list;
 		JArrayHelper::toInteger($lids);
-		foreach ($lids as $lid) {
+		foreach ($lids as $lid)
+		{
+			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($lid);
 			$sql .= "\n\n".$listModel->getCreateTableSQL(true);
 		}
@@ -694,14 +716,17 @@ class FabrikModelPackage extends FabModelAdmin
 		// @TODO add update url e.g:
 		//<update>http://fabrikar.com/update/packages/free</update>
 		$version = new JVersion;
-		$xmlname = 'pkg_'.str_replace('com_', '', $row->component_name);
+		$date = JFactory::getDate();
+		$xmlname = 'pkg_' . str_replace('com_', '', $row->component_name);
 		$str = '<?xml version="1.0" encoding="UTF-8" ?>
 <install type="package" version="' . $version->RELEASE . '">
 	<name>'.$row->label.'</name>
-	<packagename>'.$xmlname.'</packagename>
-	<version>'.$row->version.'</version>
+	<packagename>' . str_replace('com_', '', $row->component_name) . '</packagename>
+	<version>' . $row->version . '</version>
 	<url>http://www.fabrikar.com</url>
 	<packager>Rob Clayburn</packager>
+	<author>Rob Clayburn</author>
+	<creationDate>' . $date->format('M Y') . '</creationDate>
 	<packagerurl>http://www.fabrikar.com</packagerurl>
 	<description>Created by Fabrik</description>
 
@@ -779,7 +804,7 @@ class FabrikModelPackage extends FabModelAdmin
 	type="component">
 
 	<name>' . $row->component_name . '</name>
-	<creationDate>' . $date->toSql() . '</creationDate>
+	<creationDate>' . $date->format('M Y') . '</creationDate>
 	<author>Fabrik</author>
 	<copyright>Pollen 8 Design Ltd</copyright>
 	<license>GNU/GPL</license>
