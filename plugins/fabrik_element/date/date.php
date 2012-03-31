@@ -1298,7 +1298,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$thePHPDate['mday'] = $thePHPDate['mday']+$add;
 		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'], $thePHPDate['year']);
 		$date = JFactory::getDate($v);
-		return $date->toSQL($v);
+		return $date->toSql($v);
 	}
 
 	/**
