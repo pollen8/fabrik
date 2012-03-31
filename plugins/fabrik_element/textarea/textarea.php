@@ -180,7 +180,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 			} else {
 				$editor = JFactory::getEditor();
-				$str = $editor->display($name, $value, $name, $cols, $rows, $cols, $rows);
+				$str = $editor->display($name, $value, $rows, $rows, $cols, $rows, true, $id);
 			}
 		} else {
 
@@ -204,7 +204,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		return $str;
 	}
-
+	
 	/**
 	 * used to format the data when shown in the form's email
 	 * @param mixed element's data
