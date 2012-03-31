@@ -696,7 +696,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			case "dropdown":
 				$oDistinctData = array();
-				$rows[] = JHTML::_('select.option', '', JText::_('FILTER_PLEASE_SELECT'));
+				$rows[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_FILTER_PLEASE_SELECT'));
 				if (is_array($oDistinctData))
 				{
 					$rows = array_merge($rows, $oDistinctData);

@@ -56,7 +56,6 @@ var FrontPackage = new Class({
 			'ajaxlinks': 1
 		};
 		data[key] = id;
-		console.log(data);
 		var url = 'index.php';
 		var myAjax = new Request.HTML({url: url,
 			'data': data,

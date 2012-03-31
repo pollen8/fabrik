@@ -133,7 +133,6 @@ var Pages = new Class({
 		this.pages[editor.get('text').trim()] = orig;
 		delete this.pages[origKey];
 		this.pages.erase(origKey);
-		console.log(this.pages);
 	}
 });
 
