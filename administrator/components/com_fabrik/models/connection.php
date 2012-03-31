@@ -103,6 +103,42 @@ class FabrikModelConnection extends JModelAdmin
 		$db->query();
 		return true;
 	}
+	
+	/**
+	 * check if connection is the default and if so reset its values to those of the J db connection
+	 * @param	object	$item
+	 */
+	
+	function checkDefault(&$item)
+	{
+		$table = $this->getTable();
+		$app = JFactory::getApplication();
+		if ($item->id == 1)
+		{
+			$app->enqueueMessage(JText::_('COM_FABRIK_ORIGINAL_CONNECTION'));
+			if (!$this->matchesDefault($item))
+			{
+				$config = JFactory::getConfig();
+				$item->host = $config->get('host');
+				$item->user = $config->get('user');
+				$item->password = $config->get('password');
+				$item->database = $config->get('db');
+				JError::raiseWarning(E_WARNING, JText::_('COM_FABRIK_YOU_MUST_SAVE_THIS_CNN'));
+			}
+		}
+	}
+	
+	/**
+	 * do the item details match the J db connection details
+	 * @param	object	$item
+	 * @return	bool
+	 */
+	
+	protected function matchesDefault($item)
+	{
+		$config = JFactory::getConfig();
+		return $config->get('host') == $item->host && $config->get('user') == $item->user && $config->get('password') == $item->password && $config->get('db') == $item->database;
+	}
 
 	/**
 	 * save the connection- test first if its vald
