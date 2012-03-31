@@ -112,8 +112,7 @@ class FabrikViewList extends JView{
 		$rows = $model->getData();
 
 		$document->title = htmlentities($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
-		$desc = htmlspecialchars (trim(strip_tags($table->introduction)));
-		$document->description = $desc;//htmlentities(trim($w->parseMessageForPlaceHolder($desc)), ENT_COMPAT, 'UTF-8');
+		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
 		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid='.$table->id.'&Itemid='.$Itemid);
 
 		/* check for a custom css file and include it if it exists*/
