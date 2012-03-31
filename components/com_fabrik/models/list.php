@@ -1442,15 +1442,16 @@ class FabrikFEModelList extends JModelForm {
 		$this->selectedOrderFields = array();
 		if ($this->_outPutFormat == 'fabrikfeed' || $this->_outPutFormat == 'feed')
 		{
-			$dateColId = (int)$params->get('feed_date', 0);
-			$query = $db->getQuery(true);
-			$query->select('name')->from('#__{package}_elements')->where('id = ' . $dateColId);
-			$db->setQuery($query);
-			$dateCol = $db->nameQuote($table->db_table_name).'.'.$db->nameQuote($db->loadResult());
-			$query->clear();
-			if ($dateColId !== 0) {
+			$dateColId = (int) $params->get('feed_date', 0);
+			$q = $db->getQuery(true);
+			$q->select('name')->from('#__{package}_elements')->where('id = ' . $dateColId);
+			$db->setQuery($q);
+			$dateCol = $db->quoteName($table->db_table_name . '.' . $db->loadResult());
+			$q->clear();
+			if ($dateColId !== 0)
+			{
 				$this->order_dir = 'DESC';
-				$this->order_by 	= $dateCol;
+				$this->order_by = $dateCol;
 				if (!$query) {
 					return  "\n ORDER BY $dateCol DESC";
 				} else {
@@ -6059,7 +6060,7 @@ class FabrikFEModelList extends JModelForm {
 			if ($format == true) {
 				$this->formatData($rows);
 			}
-			$this->rows[$sig] = $rows[0];
+			$this->rows[$sig] = JArrayHelper::getValue($rows, 0, new stdClass());
 		}
 		return $this->rows[$sig];
 	}
