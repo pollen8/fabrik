@@ -10,6 +10,7 @@ var Pages = new Class({
 		Fabrik.addEvent('fabrik.tab.click', this.show.bindWithEvent(this));
 		Fabrik.addEvent('fabrik.tab.remove', this.remove.bindWithEvent(this));
 		Fabrik.addEvent('fabrik.keynav', this.moveItem.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.inline.save', this.updateTabKey.bindWithEvent(this));
 	},
 	
 	/* todo perhaps makecive and clearActive should be a mixin? */
@@ -121,6 +122,18 @@ var Pages = new Class({
 			r[k.trim()] = o;
 		});
 		return r;
+	},
+	
+	/**
+	 * called when tab label is changed
+	 */
+	updateTabKey: function (editor) {
+		var origKey = editor.retrieve('origValue').trim();
+		var orig = this.pages[origKey];
+		this.pages[editor.get('text').trim()] = orig;
+		delete this.pages[origKey];
+		this.pages.erase(origKey);
+		console.log(this.pages);
 	}
 });
 

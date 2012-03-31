@@ -25,6 +25,8 @@ FabrikHelperHTML::script('media/com_fabrik/js/history.js');
 FabrikHelperHTML::script('media/com_fabrik/js/keynav.js');
 FabrikHelperHTML::script('media/com_fabrik/js/tabs.js');
 FabrikHelperHTML::script('media/com_fabrik/js/pages.js');
+FabrikHelperHTML::script('media/com_fabrik/js/inline.js', "new inline('#packagemenu li span');");
+
 FabrikHelperHTML::script('administrator/components/com_fabrik/views/package/adminpackage.js');
 JHTML::stylesheet('media/com_fabrik/css/package.css');
 ?>
