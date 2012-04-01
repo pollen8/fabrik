@@ -7135,7 +7135,7 @@ class FabrikFEModelList extends JModelForm {
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '') {
 			$qs = '?c='.$this->getRenderContext();
-			$qs .= '&amp;buttoncount='.$this->rowActionCount;
+			$qs .= '&buttoncount='.$this->rowActionCount;
 			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php')) {
 				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php'.$qs);
 			} else {

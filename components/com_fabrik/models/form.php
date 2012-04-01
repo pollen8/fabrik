@@ -267,9 +267,9 @@ class FabrikFEModelForm extends FabModelForm
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '') {
 			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php?c='.$this->getId().'&amp;view='.$v);
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php?c='.$this->getId().'&view='.$v);
 			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/template_css.php?c=".$this->getId().'&amp;view='.$v);
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/template_css.php?c=".$this->getId().'&view='.$v);
 			}
 			// $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			// custom.css - for backward compat with existing 2.x custom.css
@@ -278,7 +278,7 @@ class FabrikFEModelForm extends FabModelForm
 				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom.css");
 			}
 			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom_css.php?c=".$this->getId().'&amp;view='.$v);
+				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom_css.php?c=".$this->getId().'&view='.$v);
 			}
 		}
 
