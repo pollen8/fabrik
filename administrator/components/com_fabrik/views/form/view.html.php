@@ -97,9 +97,7 @@ class FabrikViewForm extends JView
 					}
 				}
 			}
-			if ($canDo->get('core.create')) {
-				JToolBarHelper::custom('form.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
-			}
+			// $$$ rob no save as copy as this gets complicated due to renaming lists, groups etc. Users should copy from list view.
 			JToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CLOSE');
 		}
 
