@@ -2008,6 +2008,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 		}
 		//insert join data into request array
+		$post['join'] = $joindata;
 		JRequest::setVar('join', $joindata, 'post');
 		if (!empty($this->_arErrors))
 		{
