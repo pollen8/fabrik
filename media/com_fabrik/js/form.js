@@ -1297,8 +1297,9 @@ var FbForm = new Class({
 							l.setProperty('for', input.id);
 						}
 					}
-
-					input.name = input.name.replace('[0]', '[' + c + ']');
+					if (typeOf(input.name) !== 'null') {
+						input.name = input.name.replace('[0]', '[' + c + ']');
+					}
 				}
 			}.bind(this));
 	
