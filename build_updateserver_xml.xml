@@ -73,14 +73,14 @@
  			<equals arg1="${updater.do}" arg2="y" />
 			<then>
 			<!-- upload the modified extension updater files -->
-				<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.updatedir}">
+				<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.updatedir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
 					<fileset dir="${update_dir}">
 						<include name="**/*.xml" />
 					</fileset>
 				</ftp> 
 				<echo>uploaded update server xml files to ${ftp.updatedir}</echo>
 				<!--  upload the plugin zips -->
-				<ftp server="fabrikar.com" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}">
+				<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
 					<fileset dir="${cfg.destdir}/pkg_fabrik_sink/packages/">
 						<include name="**/*.zip" />
 					</fileset>

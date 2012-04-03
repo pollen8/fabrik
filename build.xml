@@ -25,18 +25,25 @@
 		<!-- <input message="Previous version number:" addproperty="lastversion" /> -->
 		<input message="Component version:" addproperty="version" />
 		
-		<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
-		<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
-		<antcall target="fabrik.refreshfiles" />
-		<antcall target="fabrik.start_packagelist" />
-		<antcall target="fabrik.component" />
-		<antcall target="fabrik.modules" />
-		<antcall target="fabrik.package.sink.start" />
-		<antcall target="fabrik.package.start" />
-		<antcall target="fabrik.plugins" />
-		<antcall target="fabrik.fabrikplugins" />
-		<antcall target="fabrik.package.sink.end" />
-		<antcall target="fabrik.package.end" />
+		<input message="build zips?" addproperty="zip.do" validargs="y,n" defaultvalue="y" />
+		
+		<if>
+ 			<equals arg1="${zip.do}" arg2="y" />
+			<then>
+			<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
+			<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
+			<antcall target="fabrik.refreshfiles" />
+			<antcall target="fabrik.start_packagelist" />
+			<antcall target="fabrik.component" />
+			<antcall target="fabrik.modules" />
+			<antcall target="fabrik.package.sink.start" />
+			<antcall target="fabrik.package.start" />
+			<antcall target="fabrik.plugins" />
+			<antcall target="fabrik.fabrikplugins" />
+			<antcall target="fabrik.package.sink.end" />
+			<antcall target="fabrik.package.end" />
+		</then>
+		</if>
 		<antcall target="updater.ftp" />
 		<echo message="Fabrik build ${version} complete" />
 	</target>
