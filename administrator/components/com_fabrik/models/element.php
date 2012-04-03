@@ -556,7 +556,7 @@ class FabrikModelElement extends JModelAdmin
 				$item->store();
 			}
 		}
-		
+
 		$jsons = array('sub_values', 'sub_labels', 'sub_initial_selection');
 		foreach ($jsons as $json)
 		{
@@ -577,7 +577,7 @@ class FabrikModelElement extends JModelAdmin
 				$data[$a] = 0;
 			}
 		}
-		
+
 		// $$$ rob - test for change in element type
 		//(eg if changing from db join to field we need to remove the join
 		//entry from the #__{package}_joins table
@@ -756,7 +756,7 @@ class FabrikModelElement extends JModelAdmin
 
 	private function updateChildIds(&$row)
 	{
-		
+
 		if ((int) $row->id === 0)
 		{
 			//new element so don't update child ids
@@ -768,7 +768,7 @@ class FabrikModelElement extends JModelAdmin
 		$db->setQuery($query);
 		$objs = $db->loadObjectList();
 		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
-		
+
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		foreach ($objs as $obj)
 		{
@@ -788,7 +788,7 @@ class FabrikModelElement extends JModelAdmin
 							if (!in_array($pKey, $leave))
 							{
 								$origParams->$pKey = $pVal;
-							} 
+							}
 						}
 						$val = json_encode($origParams);
 					}
@@ -848,10 +848,14 @@ class FabrikModelElement extends JModelAdmin
 
 	protected function updateJavascript($data)
 	{
-		//$id = $data['id'];
-		$id = $this->getState($this->getName().'.id');
+		// $$$ hugh - 2012/04/02
+		// updated to apply js changes to descendents as well.  NOTE that this means
+		// all descendents (i.e. children of children, etc), not just direct children.
+		$this_id = $this->getState($this->getName().'.id');
+		$ids = $this->getElementDescendents($this_id);
+		$ids[] = $this_id;
 		$db = FabrikWorker::getDbo(true);
-		$db->setQuery("DELETE FROM #__{package}_jsactions WHERE element_id = ".(int)$id);
+		$db->setQuery("DELETE FROM #__{package}_jsactions WHERE element_id IN (" . implode(',', $ids) . ")");
 		$db->query();
 		$post = JRequest::get('post');
 		if (array_key_exists('js_action', $post['jform']) && is_array($post['jform']['js_action'])) {
@@ -867,14 +871,16 @@ class FabrikModelElement extends JModelAdmin
 					$code = $post['jform']['js_code'][$c];
 					$code = str_replace("}", "}\n", $code);
 					$code = str_replace('"', "'", $code);
-					$query = $db->getQuery(true);
-					$query->insert('#__{package}_jsactions');
-					$query->set('element_id = '.(int)$id);
-					$query->set('action = '.$db->quote($jsAction));
-					$query->set('code = '.$db->quote($code));
-					$query->set('params = \''.$params."'");
-					$db->setQuery($query);
-					$db->query();
+					foreach ($ids as $id) {
+						$query = $db->getQuery(true);
+						$query->insert('#__{package}_jsactions');
+						$query->set('element_id = '.(int)$id);
+						$query->set('action = '.$db->quote($jsAction));
+						$query->set('code = '.$db->quote($code));
+						$query->set('params = \''.$params."'");
+						$db->setQuery($query);
+						$db->query();
+					}
 				}
 			}
 		}
@@ -1075,5 +1081,29 @@ class FabrikModelElement extends JModelAdmin
 	protected function getReorderConditions($table)
 	{
 		return array('group_id = '.$table->group_id);
+	}
+
+	/**
+	*
+	* Recursively get all linked children of an element
+	*
+	* @param $id element id
+	*/
+	protected function getElementDescendents($id = 0)
+	{
+		if (empty($id)) {
+			$id = $this->getState($this->getName().'.id');
+		}
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__{package}_elements')->where('parent_id = '.(int)$id);
+		$db->setQuery($query);
+		$kids = $db->loadObjectList();
+		$all_kids = array();
+		foreach ($kids as $kid) {
+			$all_kids[] = $kid->id;
+			$all_kids = array_merge($this->getElementDescendents($kid->id), $all_kids);
+		}
+		return $all_kids;
 	}
 }

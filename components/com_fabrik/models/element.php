@@ -1016,7 +1016,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * get the element tip html
 	 * @param	array	$data to use in parse holders - defaults to form's data
 	 */
-	
+
 	protected function getTip($data = null)
 	{
 		if (is_null($data))
@@ -1356,7 +1356,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$element->element_raw = $model->_data[$elHTMLName];
 			}
 			else {
-				
+
 				$element->element_raw = $element->value;
 			}
 		}
@@ -1891,7 +1891,9 @@ class plgFabrik_Element extends FabrikPlugin
 					}
 					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, JRequest::get('post'));
 					$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
-					$js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
+					// $$$ need to use ciorrected triggerid here as well
+					//$js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
+					$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event')";
 					$js .= "}";
 					$js = addslashes($js);
 					$js = str_replace(array("\n", "\r"), "", $js);
