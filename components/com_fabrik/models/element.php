@@ -293,6 +293,7 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($img !== '')
 			{
 				$this->iconsSet = true;
+				$img = '<a class="fabrikTip" href="#" title="' . $data. '">' . $img . '</a>';
 				return $img;
 			}
 		}
