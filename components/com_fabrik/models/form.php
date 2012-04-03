@@ -1478,7 +1478,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				// ...removing the $c group counter
 				if ($joinRowId == '')
 				{
-					$joinRowId = $listModel->_lastInsertId;
+					$joinRowId = $listModel->lastInsertId;
 					$this->_formData['join'][$oJoin->id][$oJoinPk] = $joinRowId;
 					$this->_formDataWithTableName['join'][$oJoin->id][$oJoinPk] = $joinRowId;
 					$this->_fullFormData['join'][$oJoin->id][$oJoinPk] = $joinRowId;

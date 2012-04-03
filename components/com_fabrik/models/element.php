@@ -109,6 +109,16 @@ class plgFabrik_Element extends FabrikPlugin
 		// Set new element ID
 		$this->_id = $id;
 	}
+	
+	/**
+	 * get the element id
+	 * @return	int	element id
+	 */
+	
+	public function getId()
+	{
+		return $this->_id;
+	}
 
 	/**
 	 * get the element table object
