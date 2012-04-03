@@ -2,12 +2,12 @@
 <extension group="system" method="upgrade" type="plugin" version="2.5">
 	<name>System - Fabrik</name>
 	<author>Fabrikar.com</author>
-	<creationDate>February 2012</creationDate>
+	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
-	<version>3.0.4</version>
+	<version>3.0.5</version>
 	<description>Required fabrik system plugin</description>
 	<files>
 		<filename plugin="fabrik">fabrik.php</filename>

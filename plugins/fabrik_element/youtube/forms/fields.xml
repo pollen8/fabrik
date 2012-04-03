@@ -1,43 +1,43 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="plg-element-youtube" addfieldpath="/administrator/components/com_fabrik/models/fields">
-			<field name="width" type="text" size="3" label="Width" default="60" description="" />
-			<field name="default" type="text" size="50" default="" label="Default" />
-			<field name="include_related" type="radio" default="1" label="INCLUDERELATEDVIDEOS" description="">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-youtube">
+			<field default="60" description="" label="Width" name="width" size="3" type="text"/>
+			<field default="" label="Default" name="default" size="50" type="text"/>
+			<field default="1" description="" label="INCLUDERELATEDVIDEOS" name="include_related" type="radio">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>
-			<field name="show_border" type="radio" default="0" label="SHOWBORDER" description="">
+			<field default="0" description="" label="SHOWBORDER" name="show_border" type="radio">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>
-			<field name="enable_delayed_cookies" type="radio" default="0" label="ENABLEDELAYEDCOOKIES" description="ENABLEDELAYEDCOOKIESDESC">
+			<field default="0" description="ENABLEDELAYEDCOOKIESDESC" label="ENABLEDELAYEDCOOKIES" name="enable_delayed_cookies" type="radio">
 				<option value="0">No</option>
 				<option value="1">Yes</option>
 			</field>
-			<field name="color1" type="text" size="9" default="#333333" label="COLOR1" description="COLOR1DESC" />
-			<field name="color2" type="text" size="9" default="#000000" label="COLOR2" description="COLOR2DESC" />
-			<field name="player_size" type="radio" default="medium" label="PLAYERSIZE" description="">
+			<field default="#333333" description="COLOR1DESC" label="COLOR1" name="color1" size="9" type="text"/>
+			<field default="#000000" description="COLOR2DESC" label="COLOR2" name="color2" size="9" type="text"/>
+			<field default="medium" description="" label="PLAYERSIZE" name="player_size" type="radio">
 				<option value="small">340x285</option>
 				<option value="medium">445x364</option>
 				<option value="normal">500x405</option>
 				<option value="big">660x525</option>
 			</field>
-			<field name="or_width_player" type="text" size="3" label="ORWIDTHPLAYER" description="ORWIDTHPLAYERDESC" />
-			<field name="or_height_player" type="text" size="3" label="ORHEIGHTPLAYER" description="ORHEIGHTPLAYERDESC" />
-			<field name="display_in_table" type="radio" default="0" label="DISPLAYINTABLE" description="DISPLAYINTABLEDESC">
+			<field description="ORWIDTHPLAYERDESC" label="ORWIDTHPLAYER" name="or_width_player" size="3" type="text"/>
+			<field description="ORHEIGHTPLAYERDESC" label="ORHEIGHTPLAYER" name="or_height_player" size="3" type="text"/>
+			<field default="0" description="DISPLAYINTABLEDESC" label="DISPLAYINTABLE" name="display_in_table" type="radio">
 				<option value="0">Mini</option>
 				<option value="1">Display link</option>
 				<option value="2">Normal</option>
 			</field>
-			<field name="display_link" type="radio" default="0" label="DISPLAYLINK" description="DISPLAYLINKDESC">
+			<field default="0" description="DISPLAYLINKDESC" label="DISPLAYLINK" name="display_link" type="radio">
 				<option value="0">Raw txt link</option>
 				<option value="1">Linked txt link</option>
 				<option value="2">'Watch Video' link</option>
 			</field>
-			<field name="text_link" type="text" size="12" label="TEXTLINK" default="Watch Video" description="" />
-			<field name="target_link" type="radio" default="0" label="TARGETLINK" description="TARGETLINKDESC">
+			<field default="Watch Video" description="" label="TEXTLINK" name="text_link" size="12" type="text"/>
+			<field default="0" description="TARGETLINKDESC" label="TARGETLINK" name="target_link" type="radio">
 				<option value="0">Current window</option>
 				<option value="1">New window</option>
 				<option value="2">Lightbox</option>

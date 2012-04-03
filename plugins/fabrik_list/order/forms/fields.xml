@@ -2,24 +2,11 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-order">
-			<field name="order_access"
-				type="accesslevel"
-				repeat="true"
-				label="PLG_LIST_ORDER_ACCESS_LABEL"
-				default="3"	/>
+			<field default="3" label="PLG_LIST_ORDER_ACCESS_LABEL" name="order_access" repeat="true" type="accesslevel"/>
 				
-			<field name="order_element"
-				type="listfields"
-				repeat="true"
-				label="PLG_LIST_ORDER_ELEMENT_LABEL"
-				description="PLG_LIST_ORDER_ELEMENT_DESC" />
+			<field description="PLG_LIST_ORDER_ELEMENT_DESC" label="PLG_LIST_ORDER_ELEMENT_LABEL" name="order_element" repeat="true" type="listfields"/>
 			
-			<field name="order_element_as_handle"
-				type="radio"
-				default="1"
-				repeat="true"
-				label="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_LABEL"
-				description="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_DESC">
+			<field default="1" description="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_DESC" label="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_LABEL" name="order_element_as_handle" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>

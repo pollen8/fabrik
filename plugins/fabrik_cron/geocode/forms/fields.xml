@@ -17,7 +17,7 @@
 				
 			<field connection="params_connection" connection_in_repeat="false" description="PLG_CRON_GEOCODE_COUNTRY_DESC" label="PLG_CRON_GEOCODE_COUNTRY_LABEL" name="geocode_country_element" table="params_table" type="element"/>
 
-			<field name="geocode_when" type="list" label="PLG_CRON_GEOCODE_WHEN_LABEL" description="PLG_CRON_GEOCODE_WHEN_DESC" default="1">
+			<field default="1" description="PLG_CRON_GEOCODE_WHEN_DESC" label="PLG_CRON_GEOCODE_WHEN_LABEL" name="geocode_when" type="list">
 				<option value="1">PLG_CRON_GEOCODE_WHEN_EMPTY_OR_DEFAULT</option>
 				<option value="2">PLG_CRON_GEOCODE_WHEN_EMPTY</option>
 				<option value="3">PLG_CRON_GEOCODE_WHEN_ALWAYS</option>

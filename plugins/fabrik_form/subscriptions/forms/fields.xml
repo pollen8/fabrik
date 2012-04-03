@@ -5,73 +5,32 @@
 
 		<fieldset name="plg-form-subscriptions">
 
-			<field name="subscriptions_accountemail"
-				type="text"
-				repeat="true"
-				description="PLG_FORM_SUBSCRIPTIONS_EMAILACCOUNT_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_EMAILACCOUNT_LABEL"/>
+			<field description="PLG_FORM_SUBSCRIPTIONS_EMAILACCOUNT_DESC" label="PLG_FORM_SUBSCRIPTIONS_EMAILACCOUNT_LABEL" name="subscriptions_accountemail" repeat="true" type="text"/>
 
-			<field name="subscriptions_return_msg"
-				type="textarea"
-				cols="30" rows="5"
-				repeat="true" 
-				description="PLG_FORM_SUBSCRIPTIONS_RETURN_MSG_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_RETURN_MSG_LABEL" />
+			<field cols="30" description="PLG_FORM_SUBSCRIPTIONS_RETURN_MSG_DESC" label="PLG_FORM_SUBSCRIPTIONS_RETURN_MSG_LABEL" name="subscriptions_return_msg" repeat="true" rows="5" type="textarea"/>
 
-			<field name="subscriptions_conditon"
-				type="textarea"
-				cols="30" rows="5"
-				repeat="true"
-				description="PLG_FORM_SUBSCRIPTIONS_CONDITION_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_CONDITION_LABEL" />
+			<field cols="30" description="PLG_FORM_SUBSCRIPTIONS_CONDITION_DESC" label="PLG_FORM_SUBSCRIPTIONS_CONDITION_LABEL" name="subscriptions_conditon" repeat="true" rows="5" type="textarea"/>
 				
-			<field name="subscriptions_testmode"
-				type="radio"
-				default="0" 
-				repeat="true"
-				description="PLG_FORM_SUBSCRIPTIONS_TEST_MODE_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_TEST_MODE_LABEL">
+			<field default="0" description="PLG_FORM_SUBSCRIPTIONS_TEST_MODE_DESC" label="PLG_FORM_SUBSCRIPTIONS_TEST_MODE_LABEL" name="subscriptions_testmode" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 
-			<field name="subscriptions_receive_debug_emails"
-				default="1"
-				repeat="true"
-				type="radio"
-				description="PLG_FORM_SUBSCRIPTIONS_DEBUG_EMAIL_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_DEBUG_EMAIL_LABEL">
+			<field default="1" description="PLG_FORM_SUBSCRIPTIONS_DEBUG_EMAIL_DESC" label="PLG_FORM_SUBSCRIPTIONS_DEBUG_EMAIL_LABEL" name="subscriptions_receive_debug_emails" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 
-			<field name="subscriptions_send_default_email"
-				type="radio"
-				default="1"
-				repeat="true"
-				description="PLG_FORM_SUBSCRIPTIONS_DEFAULT_EMAIL_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_DEFAULT_EMAIL_LABEL">
+			<field default="1" description="PLG_FORM_SUBSCRIPTIONS_DEFAULT_EMAIL_DESC" label="PLG_FORM_SUBSCRIPTIONS_DEFAULT_EMAIL_LABEL" name="subscriptions_send_default_email" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="subscriptions_test_site"
-				type="text"
-				repeat="true"
-				description="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_LABEL" />
+			<field description="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_DESC" label="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_LABEL" name="subscriptions_test_site" repeat="true" type="text"/>
 				
-			<field name="subscriptions_test_site_qs"
-				type="text"
-				repeat="true"
-				description="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_QS_DESC"
-				label="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_QS_LABEL" />
+			<field description="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_QS_DESC" label="PLG_FORM_SUBSCRIPTIONS_TEST_SITE_QS_LABEL" name="subscriptions_test_site_qs" repeat="true" type="text"/>
 			
-			<field name="subscriptions_sandbox_email"
-				type="text"
-				repeat="true"
-				description=""
-				label="sandbox seller email" />
+			<field description="" label="sandbox seller email" name="subscriptions_sandbox_email" repeat="true" type="text"/>
 		</fieldset>
 	</fields>
 </form>

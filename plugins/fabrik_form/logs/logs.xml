@@ -2,12 +2,12 @@
 <extension group="fabrik_form" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik Form - logs</name>
 	<author>Peamak</author>
-	<creationDate>February 2012</creationDate>
+	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>pktom64@gmail.com</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.0.4</version>
+	<version>3.0.5</version>
 	<description>Create or update a log file and/or database</description>
 	<files>
 		<filename plugin="logs">logs.php</filename>
