@@ -300,6 +300,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 		// Create new chart
 		$FC = new FusionCharts("$chartType","$w","$h");
+		//$FC->setRenderer('javascript');
 		//$FC->JSC["debugmode"]=true;
 		// Define path to FC's SWF
 		$FC->setSWFPath($fc_swf_path);
