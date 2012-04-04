@@ -102,9 +102,25 @@ class plgContentFabrik extends JPlugin
 		$match = $match[0];
 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
 		$w =new FabrikWorker();
+		$match = preg_replace('/\s+/', ' ', $match);
+		// $$$ hugh - only replace []'s in value, not key, so we handle
+		// ranged filters and 'complex' filters
+		$match2 = array();
+		foreach (explode(" ", $match) as $m) {
+			if (strstr($m, '=')) {
+				list($key, $val) = explode('=', $m);
+				$val = str_replace('[','{', $val);
+				$val = str_replace(']', '}', $val);
+				$match2[] = $key . '=' . $val;
+			}
+			else {
+				$match2[] = $m;
+			}
+		}
+		$match = implode(' ', $match2);
 		$w->replaceRequest($match);
 		// stop [] for ranged filters from being removed
-		$match = str_replace('{}', '[]', $match);
+		//$match = str_replace('{}', '[]', $match);
 		$match = $w->parseMessageForPlaceHolder($match);
 		return $match;
 	}
@@ -123,10 +139,10 @@ class plgContentFabrik extends JPlugin
 		$match = trim($match, "{");
 		$match = trim($match, "}");
 		$ref = preg_replace('/[^A-Z|a-z|0-9]/', '_', $match);
-		$match = str_replace('[','{', $match);
-		$match = str_replace(']','}', $match);
+		//$match = str_replace('[','{', $match);
+		//$match = str_replace(']','}', $match);
 		$match = $this->parse(array($match));
-		$match = preg_replace('/\s+/', ' ', $match);
+		//$match = preg_replace('/\s+/', ' ', $match);
 		$match = explode(" ", $match);
 		array_shift($match);
 		$user = JFactory::getUser();
@@ -207,7 +223,8 @@ class plgContentFabrik extends JPlugin
 					break;
 				default:
 					if (array_key_exists(1, $m)) {
-						$unused[trim($m[0])] = $m[1];//these are later set as jrequest vars if present in list view
+						//$unused[trim($m[0])] = $m[1];//these are later set as jrequest vars if present in list view
+						$unused[] = trim($m[0]) . '=' . $m[1];
 					}
 			}
 		}
@@ -411,7 +428,9 @@ class plgContentFabrik extends JPlugin
 				$model->setOrderByAndDir();
 
 				$formModel = $model->getFormModel();
+				// $$$ hugh - need to handle this in _setRequest()
 				//apply filters set in mambot
+				/*
 				foreach ($unused as $k => $v) {
 
 					//allow for element_test___id[match]=1 to set the match type
@@ -427,15 +446,19 @@ class plgContentFabrik extends JPlugin
 						JRequest::setVar($k, $v);
 					}
 				}
+				*/
 
 				break;
 			case 'visualization':
 				JRequest::setVar('showfilters', $showfilters);
 				JRequest::setVar('clearfilters', $clearfilters);
 				JRequest::setVar('resetfilters', $resetfilters);
+				/*
 				foreach ($unused as $k=>$v) {
 					JRequest::setVar($k, $v, 'get');
 				}
+				*/
+				$this->_setRequest($unused);
 				break;
 		}
 		//hack for gallery viz as it may not use the default view
@@ -467,8 +490,14 @@ class plgContentFabrik extends JPlugin
 
 	protected function _setRequest($unused)
 	{
+		// $$$ hugh - in order to allow complex filters to work in lists, like ...
+		// foo___bar[value][]=1 foo___bar[value[]=9 foo___bar[condition]=BETWEEN
+		// we have to build a qs style array structure, using parse_str().
+		$qs_arr = array();
+		$qs_str = implode('&', $unused);
+		parse_str($qs_str, $qs_arr);
 		$this->origRequestVars = array();
-		foreach ($unused as $k => $v) {
+		foreach ($qs_arr as $k => $v) {
 			$origVar = JRequest::getVar($k);
 			$this->origRequestVars[$k] = $origVar;
 			JRequest::setVar($k, $v);
@@ -477,7 +506,7 @@ class plgContentFabrik extends JPlugin
 		//code to determine if the filter is a querystring filter or one set from the plugin
 		//if its set from here it becomes sticky and is not cleared from the session. So we basically
 		//treat all filters set up inside {fabrik.....} as prefilters
-		JRequest::setVar('fabrik_sticky_filters', array_keys($unused));
+		JRequest::setVar('fabrik_sticky_filters', array_keys($qs_arr));
 	}
 
 	protected function resetRequest()
