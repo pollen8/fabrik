@@ -67,7 +67,7 @@ Class GeoCode
         }
         else
         {
-            $resultFromGl['status'] = "Address not found";
+            $resultFromGl['status'] = $result->status;
         }
         return $resultFromGl;
     }

@@ -100,7 +100,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 						$do_geocode = empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty;
 					}
 					else if ($geocode_when == '2') {
-						$geocode = empty($row->$geocode_map_element);
+						$do_geocode = empty($row->$geocode_map_element);
 					}
 					if ($do_geocode) {
 						// it's empty, so lets try and geocode.
