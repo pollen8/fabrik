@@ -241,6 +241,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$opts['currency_code'] = $paypal_currency_code;
 
 		$paypal_test_site = $params->get('paypal_test_site', '');
+		$paypal_test_site = rtrim($paypal_test_site, '/');
 		if ($paypal_testmode == 1 && !empty($paypal_test_site)) {
 			$ppurl = $paypal_test_site . '/index.php?option=com_fabrik&c=plugin&task=plugin.pluginAjax&formid='.$formModel->get('id').'&g=form&plugin=paypal&method=ipn';
 		}
