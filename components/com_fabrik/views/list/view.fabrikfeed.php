@@ -75,7 +75,7 @@ class FabrikViewList extends JView{
 					$aTableHeadings[$heading]['dbField'] = $element->name;
 					$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 					// $$$ hugh - adding enclosure stuff for podcasting
-					if ($element->plugin == 'fabrikfileupload') {
+					if ($element->plugin == 'fileupload') {
 						$aTableHeadings[$heading]['enclosure'] = true;
 					}
 					else {
@@ -141,7 +141,7 @@ class FabrikViewList extends JView{
 				$str2 = '';
 				$str = '';
 				$tstart = '<table style="margin-top:10px;padding-top:10px;">';
-				
+
 				//used for content not in dl
 				//ok for feed gator you cant have the same item title so we'll take the first value from the table (asume its the pk and use that to append to the item title)'
 				$title = '';
