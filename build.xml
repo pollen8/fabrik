@@ -560,7 +560,10 @@
 
 		<mkdir dir="${cfg.destdir}/plugins/fabrik_visualization" />
 		<copy todir="${cfg.destdir}/plugins/fabrik_visualization/">
-			<fileset dir="${basedir}/plugins/fabrik_visualization/"></fileset>
+			<fileset dir="${basedir}/plugins/fabrik_visualization/">
+					<exclude name="**/FusionCharts/**" />
+					<exclude name="**/FusionChartsFree/**" />
+			</fileset>
 		</copy>
 		
 		<antcall target="refresh.updatexml" />
@@ -616,6 +619,8 @@
 					<xmltask todir="${basedir}">
 						<fileset dir="${basedir}">
 							<include name="**/plugins/fabrik**/**/*.xml"/>
+							<exclude name="**/FusionCharts/**" />
+							<exclude name="**/FusionChartsFree/**" />
 						</fileset>
 						<replace path="/extension/version/text()" withText="${version}"/> 
 						<replace path="/extension/creationDate/text()" withText="${createdate}" />
