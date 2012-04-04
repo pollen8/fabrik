@@ -178,6 +178,9 @@ var fabriktablesElement = new Class({
 	},
 
 	updateElementOptions : function (r, element) {
+		if (r === '') {
+			return;
+		}
 		var table = $(this.el).get('value');
 		var key = element.getOpts().getValues().toString() + ',' + table;
 		var opts = eval(r);
