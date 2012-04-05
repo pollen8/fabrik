@@ -10,7 +10,7 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// This extension written by Allan Hansen <ahØartemis*dk>      //
+// This extension written by Allan Hansen <ahï¿½artemis*dk>      //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
@@ -136,7 +136,9 @@ class getID3_cached_mysql extends getID3
 			if ($this->cursor = mysql_query("SELECT `value` FROM `getid3_cache` WHERE (`filename` = '".mysql_real_escape_string($filename)."') AND (`filesize` = '".mysql_real_escape_string($filesize)."') AND (`filetime` = '".mysql_real_escape_string($filetime)."')", $this->connection)) {
 				// Hit
 				list($result) = mysql_fetch_array($this->cursor);
-				return unserialize(base64_decode($result));
+				if ($result) {
+					return unserialize(base64_decode($result));
+				}
 			}
 		}
 
@@ -147,7 +149,7 @@ class getID3_cached_mysql extends getID3
 		if (file_exists($filename)) {
 			$this->cursor = mysql_query("INSERT INTO `getid3_cache` (`filename`, `filesize`, `filetime`, `analyzetime`, `value`) VALUES ('".mysql_real_escape_string($filename)."', '".mysql_real_escape_string($filesize)."', '".mysql_real_escape_string($filetime)."', '".mysql_real_escape_string(time())."', '".mysql_real_escape_string(base64_encode(serialize($analysis)))."')", $this->connection);
 		}
-		return $result;
+		return $analysis;
 	}
 
 
@@ -161,7 +163,7 @@ class getID3_cached_mysql extends getID3
 			`filetime` INT(11) NOT NULL DEFAULT '0',
 			`analyzetime` INT(11) NOT NULL DEFAULT '0',
 			`value` TEXT NOT NULL,
-			PRIMARY KEY (`filename`,`filesize`,`filetime`)) TYPE=MyISAM", $this->connection);
+			PRIMARY KEY (`filename`,`filesize`,`filetime`)) ENGINE=MyISAM", $this->connection);
 		echo mysql_error($this->connection);
 	}
 }
