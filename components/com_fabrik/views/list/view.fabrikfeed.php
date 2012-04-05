@@ -158,7 +158,7 @@ class FabrikViewList extends JView{
 							$enclosure_url = COM_FABRIK_LIVESITE . str_replace('\\','/',$enclosure_url);
 							if (file_exists($enclosure_file) and !is_dir($enclosure_file)) {
 								$enclosure_type = '';
-								if ($enclosure_type = FabrikWorker::getAudioMimeType($enclosure_file)) {
+								if ($enclosure_type = FabrikWorker::getPodcastMimeType($enclosure_file)) {
 									$enclosure_size = filesize($enclosure_file);
 									$enclosures[] = array(
 										'url' => $enclosure_url,
