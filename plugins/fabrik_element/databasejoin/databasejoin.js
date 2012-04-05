@@ -19,7 +19,9 @@ var FbDatabasejoin = new Class({
 		
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
-		this.updateFromServer();
+		if (this.options.editable) {
+			this.updateFromServer();
+		}
 		this.changeEvents = []; // workaround for change events getting zapped on clone
 		//if users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
