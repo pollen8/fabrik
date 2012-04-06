@@ -34,6 +34,8 @@ class fabrikViewChart extends JView
 		{
 			$this->assign('chart', '');
 		}
+		$params = $model->getParams();
+		$this->assign('params', $params);
 		$viewName = $this->getName();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('chart', 'visualization');
@@ -43,7 +45,6 @@ class fabrikViewChart extends JView
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$pluginParams = $model->getPluginParams();
-		$this->assignRef('params', $model->getParams());
 		$tmpl = $pluginParams->get('chart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);

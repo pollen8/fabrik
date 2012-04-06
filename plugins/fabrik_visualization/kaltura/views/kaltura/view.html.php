@@ -18,7 +18,8 @@ class fabrikViewKaltura extends JView
 		$model = $this->getModel();
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
 		$this->row = $model->getVisualization();
-		$this->assign('params', $model->getParams());
+		$params = $model->getParams();
+		$this->assign('params', $params);
 
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fb_gm_layout', $tmpl);

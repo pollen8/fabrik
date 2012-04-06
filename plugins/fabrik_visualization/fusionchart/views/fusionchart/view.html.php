@@ -33,6 +33,8 @@ class fabrikViewFusionchart extends JView
 		{
 			$this->assign('chart', '');
 		}
+		$params = $model->getParams();
+		$this->assign('params', $params);
 		$viewName = $this->getName();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
@@ -42,8 +44,7 @@ class fabrikViewFusionchart extends JView
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fusionchart_layout', $tmpl);
-		$this->assignRef('params', $model->getParams());
-		
+
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 

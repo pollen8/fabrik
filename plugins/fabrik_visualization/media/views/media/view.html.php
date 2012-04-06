@@ -24,7 +24,8 @@ class fabrikViewMedia extends JView
 		}
 		$calendar = $model->_row;
 		$this->media = $model->getMedia();
-
+		$params = $model->getParams();
+		$this->assign('params', $params);
 		$viewName = $this->getName();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('media', 'visualization');
