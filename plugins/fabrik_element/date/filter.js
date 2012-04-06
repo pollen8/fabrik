@@ -78,6 +78,15 @@ var DateFilter = new Class({
 			this.cals[id].show();
 		}.bind(this));
 		
+		// $$$ hugh - need to update cal's date when date is entered by hand in input field
+		this.cals[id].params.inputField.addEvent('blur', function (e) {
+			var date_str = this.cals[id].params.inputField.value;
+			if (date_str !== '') {
+				var d = Date.parseDate(date_str, this.cals[id].params.ifFormat);
+				this.cals[id].date = d;
+			}
+		}.bind(this));
+		
 		//chrome wierdness where we need to delay the hiding if the date picker is hidden
 		var h = function () { 
 			this.cals[id].hide();
