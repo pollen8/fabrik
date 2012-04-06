@@ -75,7 +75,7 @@ class FabrikViewList extends JView{
 					$aTableHeadings[$heading]['dbField'] = $element->name;
 					$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 					// $$$ hugh - adding enclosure stuff for podcasting
-					if ($element->plugin == 'fileupload') {
+					if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1') {
 						$aTableHeadings[$heading]['enclosure'] = true;
 					}
 					else {
@@ -100,7 +100,7 @@ class FabrikViewList extends JView{
 				$aTableHeadings[$heading]['dbField'] = $element->name;
 				$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 				// $$$ hugh - adding enclosure stuff for podcasting
-				if ($element->plugin == 'fabrikfileupload') {
+				if ($element->plugin == 'fileupload'  || $elParams->get('use_as_rss_enclosure', '0') == '1') {
 					$aTableHeadings[$heading]['enclosure'] = true;
 				}
 				else {
@@ -154,12 +154,27 @@ class FabrikViewList extends JView{
 						$colName = $dbcolname['colName'] . '_raw';
 						$enclosure_url = $row->$colName;
 						if (!empty($enclosure_url)) {
-							$enclosure_file = COM_FABRIK_BASE.$enclosure_url;
-							$enclosure_url = COM_FABRIK_LIVESITE . str_replace('\\','/',$enclosure_url);
-							if (file_exists($enclosure_file) and !is_dir($enclosure_file)) {
+							$remote_file = false;
+							// Element value should either be a full path, or relative to J! base
+							if (strstr($enclosure_url, 'http://') && !strstr($enclosure_url, COM_FABRIK_LIVESITE)) {
+								$enclosure_file = $enclosure_url;
+								$remote_file = true;
+							}
+							else if (strstr($enclosure_url, COM_FABRIK_LIVESITE)) {
+								$enclosure_file = str_replace(COM_FABRIK_LIVESITE, COM_FABRIK_BASE, $enclosure_url);
+							}
+							else if (preg_match('#^'. COM_FABRIK_BASE . "#", $enclosure_url)) {
+								$enclosure_file = $enclosure_url;
+								$enclosure_url = str_replace(COM_FABRIK_BASE, '', $enclosure_url);
+							}
+							else {
+								$enclosure_file = COM_FABRIK_BASE.$enclosure_url;
+								$enclosure_url = COM_FABRIK_LIVESITE . str_replace('\\','/',$enclosure_url);
+							}
+							if ($remote_file || (file_exists($enclosure_file) && !is_dir($enclosure_file))) {
 								$enclosure_type = '';
 								if ($enclosure_type = FabrikWorker::getPodcastMimeType($enclosure_file)) {
-									$enclosure_size = filesize($enclosure_file);
+									$enclosure_size = $this->get_filesize($enclosure_file, $remote_file);
 									$enclosures[] = array(
 										'url' => $enclosure_url,
 										'length' => $enclosure_size,
@@ -258,6 +273,25 @@ class FabrikViewList extends JView{
 				// loads item info into rss array
 				$res = $document->addItem($item);
 			}
+		}
+	}
+
+	protected function get_filesize($path, $remote = false) {
+		if ($remote) {
+			$ch = curl_init($path);
+
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, true);
+			curl_setopt($ch, CURLOPT_NOBODY, true);
+
+			$data = curl_exec($ch);
+			$size = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+
+			curl_close($ch);
+			return $size;
+		}
+		else {
+			return filesize($path);
 		}
 	}
 
