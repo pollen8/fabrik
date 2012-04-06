@@ -6551,7 +6551,7 @@ class FabrikFEModelList extends JModelForm {
 						$qs[] = "$k=$v";				# $option != 'com_fabrik'
 					}
 					// * /e-kinst
-					
+
 					//check if its a tag element if it is we want to clear that when we clear the form
 					// (if the filter was set via the url we generally want to keep it though
 
@@ -6786,48 +6786,6 @@ class FabrikFEModelList extends JModelForm {
 				foreach ($data[$i] as $key => $val) {
 					$origKey = $key;
 					$tmpkey = FabrikString::rtrimword($key, '_raw');
-					// $$$ hugh - had to cache this stuff, because if you have a lot of rows and a lot of elements,
-					// doing this many hundreds of times causes huge slowdown, exceeding max script execution time!
-					// And we really only need to do it once for the first row.
-					/*
-					if (!isset($can_repeats[$tmpkey])) {
-						$elementModel = $formModel->getElement($tmpkey);
-						// $$$ rob - testing for linking join which is repeat but linked join which is not - still need separate info from linked to join
-						//$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat()) : 0;
-						if ($elementModel) {
-							if ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) {
-								// We need to work out the PK of the joined table.
-								// So first, get the table name.
-								$group = $elementModel->getGroup();
-								$join = $group->getJoinModel()->getJoin();
-								$join_table_name = $join->table_join;
-								// We have the table name, so see if we already have it cached ...
-								if (!isset($can_repeats_tables[$join_table_name])) {
-									// We don't have it yet, so grab the PK
-									$keys = $this->getPrimaryKeyAndExtra($join_table_name);
-									if (!empty($keys) && array_key_exists('key', $keys[0])) {
-										// OK, now we have the PK for the table
-										$can_repeats_tables[$join_table_name] = $keys[0];
-									}
-								}
-								// Hopefully we now have the PK
-								if (isset($can_repeats_tables[$join_table_name])) {
-									$can_repeats_keys[$tmpkey] = $join_table_name . '___' . $can_repeats_tables[$join_table_name]['colname'];
-								}
-								if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]])) {
-									$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]] = array();
-								}
-								if (!isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i])) {
-									$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i] = $data[$i]->$can_repeats_keys[$tmpkey];
-								}
-								//$joinListModel = $group->getListModel();
-							}
-						}
-						$can_repeats[$tmpkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
-
-						//$can_repeats[$tmpkey] = 0;
-					}
-					*/
 
 					if (isset($data[$last_i]->$key) && $can_repeats[$tmpkey]) {
 						if ($merge == 2 && !isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i])) {
