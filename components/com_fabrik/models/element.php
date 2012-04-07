@@ -109,12 +109,12 @@ class plgFabrik_Element extends FabrikPlugin
 		// Set new element ID
 		$this->_id = $id;
 	}
-	
+
 	/**
 	 * get the element id
 	 * @return	int	element id
 	 */
-	
+
 	public function getId()
 	{
 		return $this->_id;
@@ -1904,7 +1904,12 @@ class plgFabrik_Element extends FabrikPlugin
 					$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
 					// $$$ need to use ciorrected triggerid here as well
 					//$js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
-					$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event')";
+					if (preg_match('#^fabrik_trigger#', $triggerid)) {
+						$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event')";
+					}
+					else {
+						$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event')";
+					}
 					$js .= "}";
 					$js = addslashes($js);
 					$js = str_replace(array("\n", "\r"), "", $js);
