@@ -407,6 +407,7 @@
 				<exclude name="**/*.zip" />
 				<exclude name="**/views/form/tmpl/**" />
 				<exclude name="**/views/list/tmpl/**" />
+				<exclude name="**/js/*.js" />
 			</fileset>
 		</copy>
 		
