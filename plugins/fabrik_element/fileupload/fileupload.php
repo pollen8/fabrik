@@ -281,8 +281,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
-		for ($i=0; $i <count($data); $i++) {
-			$data[$i] = $this->_renderListData($data[$i], $oAllRowsData, $i);
+		if (empty($data)) {
+			$data[0] = $this->_renderListData('', $oAllRowsData, 0);
+		}
+		else {
+			for ($i=0; $i <count($data); $i++) {
+				$data[$i] = $this->_renderListData($data[$i], $oAllRowsData, $i);
+			}
 		}
 		$data = json_encode($data);
 		return parent::renderListData($data, $oAllRowsData);
@@ -1193,13 +1198,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$r = JArrayHelper::getValue(JArrayHelper::fromObject($olddaata), $name, '') === '' ? true : false;
 				if (!$r)
 				{
-					//if an original value is found then data not empty - if not found continue to check the $_FILES array to see if one 
+					//if an original value is found then data not empty - if not found continue to check the $_FILES array to see if one
 					// has been uploaded
 					return false;
 				}
 			}
 		}
-		
+
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin()) {
 			$name = $this->getFullName(false, true, false);
@@ -1510,7 +1515,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if ($render->output == '' && $params->get('default_image') != '') {
 				$render->output = '<img src="'.$params->get('default_image').'" alt="image" />';
 			}
-			$str 	= '<div class="fabrikSubElementContainer">'.$str;
+			$str 	= '<div class="fabrikSubElementContainer">';
+			$str .= $render->output;
 			$str .= '</div>';
 			return $str;
 		}
