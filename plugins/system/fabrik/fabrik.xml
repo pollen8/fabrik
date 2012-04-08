@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
-	<version>3.0.5.1</version>
+	<version>3.0.5.2</version>
 	<description>Required fabrik system plugin</description>
 	<files>
 		<filename plugin="fabrik">fabrik.php</filename>

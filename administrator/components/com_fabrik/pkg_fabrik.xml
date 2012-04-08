@@ -2,7 +2,7 @@
 <install type="package" version="2.5">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
-	<version>3.0.5.1</version>
+	<version>3.0.5.2</version>
 	<url>http://www.fabrikar.com</url>
 	<creationDate>April 2012</creationDate>
 	<author>Fabrik</author>
