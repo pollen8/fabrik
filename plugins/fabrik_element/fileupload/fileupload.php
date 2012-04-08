@@ -281,6 +281,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
+		// $$$ hugh - have to run thru rendering even if data is empty,
+		// in case default image is being used.
 		if (empty($data)) {
 			$data[0] = $this->_renderListData('', $oAllRowsData, 0);
 		}
