@@ -437,7 +437,9 @@
 		
 		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/default" />
 		<copy todir="${cfg.destdir}/site/views/list/tmpl/default">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/default" />
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/default">
+				<exclude name="**/custom_css.php" />
+			</fileset>
 		</copy>
 		
 		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/div" />
@@ -463,7 +465,9 @@
 		</copy>
 		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default" />
 		<copy todir="${cfg.destdir}/site/views/form/tmpl/default">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default" />
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default">
+				<exclude name="**/custom_css.php" />
+			</fileset>
 		</copy>
 		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default_rtl" />
 		<copy todir="${cfg.destdir}/site/views/form/tmpl/default_rtl">
