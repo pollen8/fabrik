@@ -108,6 +108,9 @@ class FabrikFEModelForm extends FabModelForm
 
 	var $_linkedFabrikLists = null;
 
+	/** @var bool are we copying a row?  i.e. using form's Copy button.  Plugin manager needs to know. */
+	var $_copyingRow = false;
+
 	/**
 	 * Constructor
 	 *
@@ -698,6 +701,20 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	}
 
 	/**
+	* Are we copying a row?  Usually set in controller process().
+	*
+	* @param bool if true, set _copyingRow to true
+	* @return bool
+	*/
+
+	function copyingRow($set = false) {
+		if ($set) {
+			$this->_copyingRow = true;
+		}
+		return $this->_copyingRow;
+	}
+
+	/**
 	 * processes the form data and decides what action to take
 	 * @return bool false if one of the plugins reuturns an error otherwise true
 	 */
@@ -728,6 +745,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// $$$ rob _rowId can be updated by juser plugin so plugin can use check (for new/edit)
 		// now looks at _origRowId
 		$this->_origRowId = $this->_rowId;
+
 		$this->getGroupsHiarachy();
 
 		if ($form->record_in_database == '1') {
