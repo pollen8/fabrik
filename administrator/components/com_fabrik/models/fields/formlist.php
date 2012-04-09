@@ -45,10 +45,14 @@ class JFormFieldFormList extends JFormFieldList
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label AS ' . $db->quote('text') . ', published');
 		$query->from('#__{package}_forms');
-		$query->where('published <> -2');
+		if (!$this->element['showtrashed'])
+		{
+			$query->where('published <> -2');
+		}
 		$query->order('published DESC, label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+		
 		foreach ($rows as &$row)
 		{
 			switch ($row->published)

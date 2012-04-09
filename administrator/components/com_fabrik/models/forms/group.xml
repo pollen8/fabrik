@@ -27,7 +27,8 @@
 			description="COM_FABRIK_FIELD_TITLE_DESC"  />
 		
 		<field name="form"
-			type="formlist" 
+			type="formlist"
+			showtrashed="true"
 			label="COM_FABRIK_FIELD_GROUP_FORM_LABEL" 
 			description="COM_FABRIK_FIELD_GROUP_FORM_DESC" />
 		
