@@ -15,7 +15,15 @@ jimport('joomla.filesystem.file');
 if (!defined('COM_FABRIK_FRONTEND')) {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
-
+/* $timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+$date = JFactory::getDate('2012-04-12 14:05:00');
+$date->setTimezone($timeZone);
+echo $date->toFormat('%Y-%m-%d', true);
+echo "<br>";
+$date = JFactory::getDate('2012-04-12 14:05:00');
+$date->setTimezone($timeZone);
+echo $date->toFormat('%Y-%m-%d', true);
+exit; */
 require_once(JPATH_COMPONENT.DS.'controller.php');
 
 //test for YQL & XML document type

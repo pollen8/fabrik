@@ -6736,6 +6736,10 @@ class FabrikFEModelList extends JModelForm {
 		$can_repeats_pk_vals = array();
 		$remove = array();
 
+		if (empty($data))
+		{
+			return;
+		}
 		// First, go round first row of data, and prep some stuff.
 		// Basically, if doing a "reduce data" merge (merge == 2), we need to know what the
 		// PK element is for each joined group (well, for each element, really)
