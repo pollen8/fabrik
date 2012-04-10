@@ -301,18 +301,13 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	/**
 	 * get the value to store the value in the db
 	 *
-	 * @param array $val
-	 * @return string mySQL formatted date
+	 * @param	mixed	$val (array normally but string on csv import)
+	 * @return	string	yyyy-mm-dd 
 	 */
 
 	private function _indStoreDBFormat($val)
 	{
-		// $$$ rob 14/03/2011 removing month/day/year indexes - not needed as far as I can see and causing issues with validations not working
-		//$d = mktime(0, 0, 0, $val[1]['month'], $val[0]['day'], $val[2]['year']);
-		//$d = mktime(0, 0, 0, $val[1], $val[0], $val[2]);
-		$d = $val[2].'-'.$val[1].'-'.$val[0];
-		//$date = JFactory::getDate($d);
-		return $d; //return $date->toMySQL();
+		return is_array($val) ? $val[2].'-'.$val[1].'-'.$val[0] : '';
 	}
 
 	/**

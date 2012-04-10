@@ -240,6 +240,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				}
 			}
 		} else {
+			if (json_decode($val))
+			{
+				return $val;
+			}
 			$return = $val;
 		}
 		$return = json_encode($val);
