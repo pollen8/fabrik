@@ -88,8 +88,8 @@ class fabrikViewCalendar extends JView
 		$options->filters = $model->filters;
 		// end not sure
 		$options->Itemid = $Itemid;
-		$options->show_day = $params->get('show_day', true);
-		$options->show_week = $params->get('show_week', true);
+		$options->show_day = (bool) $params->get('show_day', true);
+		$options->show_week = (bool) $params->get('show_week', true);
 		$options->days = array(JText::_('SUNDAY'), JText::_('MONDAY'), JText::_('TUESDAY'), JText::_('WEDNESDAY'), JText::_('THURSDAY'), JText::_('FRIDAY'), JText::_('SATURDAY'));
 		$options->shortDays = array(JText::_('SUN'), JText::_('MON'), JText::_('TUE'), JText::_('WED'), JText::_('THU'), JText::_('FRI'), JText::_('SAT'));
 		$options->months = array(JText::_('JANUARY'), JText::_('FEBRUARY'), JText::_('MARCH'), JText::_('APRIL'), JText::_('MAY'), JText::_('JUNE'), JText::_('JULY'), JText::_('AUGUST'), JText::_('SEPTEMBER'), JText::_('OCTOBER'), JText::_('NOVEMBER'), JText::_('DECEMBER'));
