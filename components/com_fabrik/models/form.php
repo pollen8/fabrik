@@ -1369,6 +1369,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 						// $$$ rob didn't work for 2nd joined data set
 						//$repData[$oJoin->table_join_key] = $insertId;
+						unset($repData[$oJoin->table_join_key . '_raw']);
 						$repData[$oJoin->table_join_key] = JArrayHelper::getValue($joinKeys, $oJoin->join_from_table . '.' . $oJoin->table_key, $insertId);
 						// $$$ rob test for issue with importing joined csv data
 						if (is_array($repData[$oJoin->table_join_key]))
