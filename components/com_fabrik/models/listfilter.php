@@ -209,7 +209,10 @@ class FabrikFEModelListfilter extends FabModel {
 					{
 						foreach ($ks as $k)
 						{
-							unset($filters[$k][$filterkey]);
+							// $$$ rob 10/04/2012  simply unsetting the array leaves the array pointer, but somewhere we recreate
+							// $filters['search_type'] so its index becomes out of sync. see http://fabrikar.com/forums/showthread.php?t=25698
+							// unset($filters[$k][$filterkey]);
+							$filters[$k] = array();
 						}
 					}
 				}
