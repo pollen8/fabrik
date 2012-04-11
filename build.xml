@@ -636,6 +636,7 @@
 					<xmltask todir="${basedir}">
 						<fileset dir="${basedir}">
 							<include name="**/plugins/**/fabrik/*.xml"/>
+							<include name="**/plugins/system/fabrikcron/*.xml"/>
 						</fileset>
 						<replace path="/extension/version/text()" withText="${version}"/> 
 						<replace path="/extension/creationDate/text()" withText="${createdate}" />
