@@ -4112,7 +4112,7 @@ class FabrikFEModelList extends JModelForm {
 							$newfields[] = $f;
 						}
 					}
-					
+
 				}
 			}
 			$this->asfields = $newfields;
@@ -5022,10 +5022,12 @@ class FabrikFEModelList extends JModelForm {
 								if (is_array($encrypted)) {
 									$v = array();
 									foreach ($encrypted as $e) {
+										$e = urldecode($e);
 										$v[] = empty($e)? '' : $crypt->decrypt($e);
 									}
 									$v = json_encode($v);
 								} else {
+									$encrypted = urldecode($encrypted);
 									$v = !empty($encrypted) ? $crypt->decrypt($encrypted) : '';
 								}
 

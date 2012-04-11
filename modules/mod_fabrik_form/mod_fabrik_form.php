@@ -39,6 +39,11 @@ $layout = $params->get('template', 'default');
 $usersConfig = JComponentHelper::getParams('com_fabrik');
 $usersConfig->set('rowid', $rowid);
 
+$usekey = $params->get('usekey', '');
+if (!empty($usekey)) {
+	JRequest::setVar('usekey', $usekey);
+}
+
 $moduleclass_sfx 	= $params->get('moduleclass_sfx', '');
 
 $model->isMambot = true;
@@ -47,7 +52,7 @@ $moduleAjax = $params->get('formmodule_useajax', true);
 
 $origView = JRequest::getVar('view');
 
-JRequest::setVar('formid', $formId);
+//JRequest::setVar('formid', $formId);
 JRequest::setVar('view', 'form');
 $controller = new FabrikControllerForm();
 
