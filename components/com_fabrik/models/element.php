@@ -2939,7 +2939,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	protected function getCustomQuery(&$listModel, $label = "'calc'")
 	{
 		$params = $this->getParams();
-		$custom_query	= $params->get('custom_calc_query', '');
+		$custom_query = $params->get('custom_calc_query', '');
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
