@@ -267,8 +267,15 @@ var FbDateTime = new Class({
 	
 	setTimeFromField: function (d) {
 		if (this.options.showtime === true && this.timeElement) {
-			var t = this.timeElement.get('value').split(':');
+			var time = this.timeElement.get('value').toUpperCase();
+			var afternoon = time.contains('PM') ? true : false;
+			time = time.replace('PM', '').replace('AM', '');	
+			
+			var t = time.split(':');
 			var h = t[0] ? t[0].toInt() : 0;
+			if (afternoon) {
+				h += 12;
+			}
 			var m = t[1] ? t[1].toInt() : 0;
 			
 			d.setHours(h);
