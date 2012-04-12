@@ -1971,7 +1971,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					{
 						$elDbVals = $elementModel->toDbVal($form_data, $c);
 					}
-
 					//validations plugins attached to elemenets
 					$pluginc = 0;
 					if (!$elementModel->mustValidate())
@@ -1998,6 +1997,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 									if ($testreplace != $elDbVals[$c])
 									{
 										$elDbVals[$c] = $testreplace;
+										$this->_modifiedValidationData[$elName][$c] = $testreplace;
+										$joindata[$joinModel->_id][$elName2 . '_raw'][$c] = $testreplace;
 									}
 								}
 								else
@@ -2038,6 +2039,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$elementModel->defaults = null;
 			}
 		}
+		
 		//insert join data into request array
 		$post['join'] = $joindata;
 		JRequest::setVar('join', $joindata, 'post');
