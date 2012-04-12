@@ -488,7 +488,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$render->renderListData($this, $params, $data, $oAllRowsData);
 		}
 		if ($render->output == '' && $params->get('default_image') != '') {
-			$render->output = "<img src=\"{$params->get('default_image')}\" alt=\"image\" />";
+			$defaultURL = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $params->get('default_image')));
+			$render->output = "<img src=\"$defaultURL\" alt=\"image\" />";
 		}
 		return $render->output;
 	}
