@@ -168,7 +168,7 @@ echo "
 /*This controls the styling of the form field when ajax validation has been successful*/
 #{$view}_$c .fabrikSuccess{
 	color: #598F5B;
-	background: #DFFFE0 url(../images/action_check.png) no-repeat right 7px !important;
+	background: #DFFFE0 no-repeat right 7px !important;
 }
 
 /*** slide out add option

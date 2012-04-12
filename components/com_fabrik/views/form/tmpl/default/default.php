@@ -1,4 +1,4 @@
-<!-- The default template includes the following folder and files:
+<?php  /* The default template includes the following folder and files:
 
 images - this is the folder for the form template's images
 - add.png
@@ -32,9 +32,8 @@ fieldset
 
 To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.  
 
--->
-
-<!--If you have set to show the page title in the forms layout parameters, then the page title will show-->
+If you have set to show the page title in the forms layout parameters, then the page title will show */
+?>
 <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
 <?php } ?>
@@ -42,10 +41,10 @@ To learn about all the different elements in a basic form see http://www.w3schoo
 echo $form->startTag;
 if ($this->params->get('show-title', 1)) {?>
 
-<!--This will show the forms label-->
+<?php  /*This will show the forms label */?>
 <h1><?php echo $form->label;?></h1>
 
-<!--This area will show the form's intro as well as any errors-->
+<?php  /*This area will show the form's intro as well as any errors */ ?>
 <?php }
 echo $form->intro;
 echo $this->plugintop;
@@ -67,15 +66,15 @@ echo "$form->error</div>";?>
 	foreach ($this->groups as $group) {
 		?>
 		
-<!-- This is where the fieldset is set up -->
-		<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
-		<?php if (trim($group->title) !== '') {?>
+<?php  /* This is where the fieldset is set up */ ?>
+		<<?php echo $form->fieldsetTag ?> class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 		
-<!-- This is where the legend is set up -->
-			<legend><span><?php echo $group->title;?></span></legend>
+		<?php if (trim($group->title) !== '')
+		{?>
+			<<?php echo $form->legendTag ?> class="legend"><span><?php echo $group->title;?></span></<?php echo $form->legendTag ?>>
 		<?php }?>
 		
-<!-- This is where the group intro is shown -->
+<?php  /* This is where the group intro is shown */ ?>
 		<?php if ($group->intro !== '') {?>
 		<div class="groupintro"><?php echo $group->intro ?></div>
 		<?php }?>
@@ -107,14 +106,14 @@ echo "$form->error</div>";?>
 			$this->elements = $group->elements;
 			echo $this->loadTemplate('group');
 		}?>
-	</fieldset>
+	</<?php echo $form->fieldsetTag ?>>
 <?php
 	}
 	echo $this->hiddenFields;
 	?>
 	<?php echo $this->pluginbottom; ?>
 	
-<!-- This is where the buttons at the bottom of the form are set up -->
+<?php  /* This is where the buttons at the bottom of the form are set up */ ?>
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
 	<?php echo $form->nextButton?> <?php echo $form->prevButton?>
 	 <?php echo $form->applyButton;?>

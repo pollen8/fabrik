@@ -123,22 +123,23 @@ class FabrikFEModelImportcsv extends JModelForm{
 	/**
 	 * get the field delimiter from post
 	 * and set in session 'com_fabrik.csv.fielddelimiter' for later use
+	 * @return	string	delimiter character
 	 */
 
 	protected function getFieldDelimiter()
 	{
-		if (is_null($this->fieldDelimiter)) {
+		$data = $this->getFormData();
+		if (is_null($this->fieldDelimiter))
+		{
 			$session = JFactory::getSession();
-			if ($session->has('com_fabrik.csv.fielddelimiter')) {
+			if ($session->has('com_fabrik.csv.fielddelimiter'))
+			{
 				$this->fieldDelimiter = $session->get('com_fabrik.csv.fielddelimiter');
-			} else {
-				$tabDelimiter = JArrayHelper::getValue($data, 'tabdelimited');
-				$data = $this->getFormData();
-				$this->fieldDelimiter = $tabDelimiter == 1 ? "\t" : JArrayHelper::getValue($data, 'field_delimiter', ',');
-				$session->set('com_fabrik.csv.fielddelimiter', $this->fieldDelimiter);
 			}
+			$tabDelimiter = JArrayHelper::getValue($data, 'tabdelimited');
+			$this->fieldDelimiter = $tabDelimiter == 1 ? "\t" : JArrayHelper::getValue($data, 'field_delimiter', $this->fieldDelimiter);
+			$session->set('com_fabrik.csv.fielddelimiter', $this->fieldDelimiter);
 		}
-
 		return $this->fieldDelimiter;
 	}
 
@@ -351,6 +352,18 @@ class FabrikFEModelImportcsv extends JModelForm{
 							break; //break out of the group foreach
 						}
 					}
+					//joined element params 
+					if ($elementModel->isJoin())
+					{
+						$hkey = ($elementModel->getJoinModel()->getJoin()->table_join . '___params');
+						if ($hkey === $heading)
+						{
+							if (!array_key_exists($hkey, $this->matchedHeadings)) {
+								$found = true;
+								break; //break out of the group foreach
+							}
+						}
+					}
 				}
 			}
 			//moved after repeat group otherwise elements in second group are never found
@@ -363,7 +376,6 @@ class FabrikFEModelImportcsv extends JModelForm{
 			$element = $elementModel->getElement();
 			$elementModel->prepareCSVData($this->data, $key, $rawMap[$key]);
 		}
-		
 	}
 
 	/**
@@ -635,12 +647,14 @@ class FabrikFEModelImportcsv extends JModelForm{
 				$joindata[$pkVal]['join'] = array();
 			}
 
-			foreach ($joins as $join) {
-				$repeat = $groups[$join->group_id]->canRepeat();
+			foreach ($joins as $join)
+			{
 				//only iterate over table joins (exclude element joins)
-				if ((int)$join->element_id != 0) {
+				if ((int) $join->element_id != 0)
+				{
 					continue;
 				}
+				$repeat = $groups[$join->group_id]->canRepeat();
 				$keys = $this->getJoinPkRecords($join);
 				if ($overWrite && in_array($pkVal, $keys)) { // not sure 2nd test is right here
 					$origData[$join->table_key] = $pkVal;

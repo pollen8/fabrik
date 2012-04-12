@@ -48,8 +48,10 @@ var FbDateTime = new Class({
 					if (date_str !== '') {
 						//var d = new Date(date_str);
 						//this is the calendar native parseDate call, but it doesnt take into account seconds
-						//var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
-						var d = Date.parse(date_str);
+						// $$$ hugh - yup, but if we don't use parseDate() with the iFormat, a simple Date.parse()
+						// hoses up anything but standard 'db' format.  So we HAVE to use parseDate() here.
+						var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
+						//var d = Date.parse(date_str);
 						this.setTimeFromField(d);
 						this.update(d);
 					}

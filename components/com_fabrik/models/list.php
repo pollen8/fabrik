@@ -4080,32 +4080,39 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * set the headings that should be shown in the csv export file
-	 * @param unknown_type $headings
+	 * @param	array	$headings to use (key is element name value must be 1 for it to be added)
 	 */
 
 	function setHeadingsForCSV($headings)
 	{
 		$asfields = $this->getAsFields();
 		$newfields = array();
+		$db = $this->getDb();
 		$this->_temp_db_key_addded = false;
 		// $$$ rob if no fields specified presume we are requesting CSV file from URL and return
-		// all fields otherwise set the fields to be those selected in fabrik window.
-		if (!empty($headings)) {
-			foreach ($headings as $name => $val) {
+		// all fields otherwise set the fields to be those selected in fabrik window
+		// or defined in the lists csv export settings
+		if (!empty($headings))
+		{
+			foreach ($headings as $name => $val)
+			{
+				if ($val != 1)
+				{
+					continue;
+				}
 				$elModel = $this->getFormModel()->getElement($name);
-				if (is_object($elModel)) {
+				if (is_object($elModel))
+				{
 					$name = $elModel->getFullName(false, true, false);
-					foreach ($asfields as $f) {
-						// $$$ rob 04/08/2011' - need to end $name with db quote to stop comparisons being too l
-						if ((strstr($f, $name.'`') || strstr($f, ($name."_raw`"))) && $val == 1) {
+					$pName = $elModel->isJoin() ? $db->quoteName($elModel->getJoinModel()->getJoin()->table_join . '___params') : '';
+					foreach ($asfields as $f)
+					{
+						if ((strstr($f, $db->quoteName($name)) || strstr($f, $db->quoteName($name . '_raw')) || ($elModel->isJoin() && strstr($f, $pName))))
+						{
 							$newfields[] = $f;
-						} else {
-							if (!in_array($f, $newfields) && strstr($f, 'GROUP_CONCAT')) {
-								//hack for multiple file uploads
-								$newfields[] = $f;
-							}
 						}
 					}
+
 				}
 			}
 			$this->asfields = $newfields;
@@ -5015,10 +5022,12 @@ class FabrikFEModelList extends JModelForm {
 								if (is_array($encrypted)) {
 									$v = array();
 									foreach ($encrypted as $e) {
+										$e = urldecode($e);
 										$v[] = empty($e)? '' : $crypt->decrypt($e);
 									}
 									$v = json_encode($v);
 								} else {
+									$encrypted = urldecode($encrypted);
 									$v = !empty($encrypted) ? $crypt->decrypt($encrypted) : '';
 								}
 
@@ -6729,6 +6738,10 @@ class FabrikFEModelList extends JModelForm {
 		$can_repeats_pk_vals = array();
 		$remove = array();
 
+		if (empty($data))
+		{
+			return;
+		}
 		// First, go round first row of data, and prep some stuff.
 		// Basically, if doing a "reduce data" merge (merge == 2), we need to know what the
 		// PK element is for each joined group (well, for each element, really)

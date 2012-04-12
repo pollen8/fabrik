@@ -19,7 +19,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	protected $_resetToGMT = true;
 
 	protected $rangeFilterSet = false;
-	
+
 	/**
 	 * Dates are stored in database as GMT times
 	 * i.e. with no offsets
@@ -376,7 +376,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		{
 			$value = $value[$repeatCounter];
 		}
-		if (is_array($value)) 
+		if (is_array($value))
 		{
 			$date = JArrayHelper::getValue($value, 'date');
 			$d = JFactory::getDate($date);
@@ -563,7 +563,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts = json_encode($opts);
 		return "new FbDateTime('$id', $opts)";
 	}
-	
+
 	/**
 	 * get the type of field to store the data in
 	 *
@@ -855,7 +855,18 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				else
 				{
 					$value = JFactory::getDate($value)->toSql();
+					// $$$ hugh - strip time if not needed.  Specific case is element filter,
+					// first time submitting filter from list, will have arbitrary "now" time.
+					// Dunno if this will break anything else!
+					if (!$exactTime) {
+						$value = $this->setMySQLTimeToZero($value);
+					}
 					$next = JFactory::getDate(strtotime($this->addDays($value, 1)) - 1);
+					// $$$ now we need to reset $value to GMT.
+					// Probably need to take $store_as_local into account here?
+					$this->_resetToGMT = true;
+					$value = $this->toMySQLGMT(JFactory::getDate($value));
+					$this->_resetToGMT = false;
 				}
 
 				// only set to a range if condition is matching (so dont set to range for < or > conditions)
@@ -1282,6 +1293,19 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'], $thePHPDate['year']);
 		$date = JFactory::getDate($v);
 		return $date->toMySQL($v);
+	}
+
+	/**
+	* simple minded method to set a MySQL formatted date's time to 00:00:00
+	* @param string $date in MySQL format
+	* @return string mysql formatted date with time set to 0
+	*/
+
+	function setMySQLTimeToZero($date)
+	{
+		$date_array = explode(' ', $date);
+		$date_array[1] = '00:00:00';
+		return implode(' ', $date_array);
 	}
 
 	/**

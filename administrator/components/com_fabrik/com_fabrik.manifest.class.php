@@ -76,37 +76,34 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Move over files into Joomla libraries folder
-	 * @param object installer
-	 * @param bool upgrade
-	 * @return bool
+	 * @param	object	installer
+	 * @param	bool	upgrade
+	 * @return	bool
 	 */
 
 	protected function moveFiles(&$installer, $upgrade = false)
 	{
-
 		jimport('joomla.filesystem.file');
-
-		$componentFrontend  = 'components'.DS.'com_fabrik';
-
-		$dest = 'libraries'.DS.'joomla'.DS.'document'.DS.'fabrikfeed';
-		if (!JFolder::exists($dest)) {
-			JFolder::create($dest);
+		$componentFrontend = 'components/com_fabrik';
+		$dest = 'libraries/joomla/document/fabrikfeed';
+		if (!JFolder::exists(JPATH_ROOT . '/' . $dest))
+		{
+			JFolder::create(JPATH_ROOT . '/' . $dest);
 		}
-
 		// $$$ hugh - have to use false as last arg (use_streams) on JFolder::copy(), otherwise
 		// it bypasses FTP layer, and will fail if web server does not have write access to J! folders
-		$moveRes = JFolder::copy($componentFrontend.DS.'fabrikfeed', $dest, JPATH_SITE, true, false);
-		if ($moveRes !== true) {
-			echo "<p style=\"color:red\">failed to moved ".$componentFrontend.DS.'fabrikfeed'. ' to '.$dest.'</p>';
+		$moveRes = JFolder::copy($componentFrontend . '/fabrikfeed', $dest, JPATH_SITE, true, false);
+		if ($moveRes !== true)
+		{
+			echo "<p style=\"color:red\">failed to moved " . $componentFrontend . '/fabrikfeed to ' . $dest . '</p>';
 			return false;
 		}
-
-		$dest = 'libraries'.DS.'joomla'.DS.'database'.DS.'database';
-
-		$driverInstallLoc = $componentFrontend.DS.'dbdriver'.DS;
+		$dest = 'libraries/joomla/database/database';
+		$driverInstallLoc = $componentFrontend . '/dbdriver/';
 		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
-		if ($moveRes !== true) {
-			echo "<p style=\"color:red\">failed to moved ".$driverInstallLoc. ' to '.$dest.'</p>';
+		if ($moveRes !== true)
+		{
+			echo "<p style=\"color:red\">failed to moved " . $driverInstallLoc . ' to ' . $dest . '</p>';
 			return false;
 		}
 		return true;
@@ -122,14 +119,16 @@ class Com_FabrikInstallerScript
 		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
 
-		$dest = JPATH_SITE.DS.'libraries'.DS.'joomla'.DS.'document'.DS.'fabrikfeed';
-		if (JFolder::exists($dest)) {
-			if (!JFolder::delete($dest)) {
+		$dest = JPATH_SITE . '/libraries/joomla/document/fabrikfeed';
+		if (JFolder::exists($dest))
+		{
+			if (!JFolder::delete($dest))
+			{
 				return false;
 			}
 		}
 
-		$dest = JPATH_SITE.DS.'libraries'.DS.'joomla'.DS.'database'.DS.'database';
+		$dest = JPATH_SITE . '/libraries/joomla/database/database';
 		foreach ($this->drivers as $driver) {
 			if (JFile::exists($dest.DS.$driver)) {
 				JFile::delete($dest.DS.$driver);
@@ -214,7 +213,7 @@ class Com_FabrikInstallerScript
 		echo "<p style=\"color:green\">Default connection created</p>";
 
 		if (!$this->moveFiles($parent)) {
-			echo "<p style=\"color:red\">Unab;e to move library files. Aborting installation</p>";
+			echo "<p style=\"color:red\">Unable to move library files. Aborting installation</p>";
 			exit;
 			return false;
 		} else {

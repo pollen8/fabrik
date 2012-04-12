@@ -1008,13 +1008,15 @@ var fabrikCalendar = new Class({
 		}
 		var bs = [];
 		bs.push(new Element('li', {'class': 'centerOnToday'}).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_TODAY')));
-		if (this.options.show_day !== 0) {
+		if (this.options.show_day) {
 			bs.push(new Element('li', {'class': 'dayViewLink'}).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DAY')));
 		}
-		if (this.options.show_week !== 0) {
+		if (this.options.show_week) {
 			bs.push(new Element('li', {'class': 'weekViewLink'}).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_WEEK')));
 		}
-		bs.push(new Element('li', {'class': 'monthViewLink'}).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_MONTH')));
+		if (this.options.show_week || this.options.show_day) {
+			bs.push(new Element('li', {'class': 'monthViewLink'}).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_MONTH')));
+		}
 		
 		var nav = new Element('div', {'class': 'calendarNav'}).adopt( 
 		new Element('input', {
@@ -1058,13 +1060,15 @@ var fabrikCalendar = new Class({
 	
 		this.el.getElement('.nextPage').addEvent('click',  this.nextPage.bindWithEvent(this));
 		this.el.getElement('.previousPage').addEvent('click',  this.previousPage.bindWithEvent(this));
-		if (this.options.show_day !== 0) {
+		if (this.options.show_day) {
 			this.el.getElement('.dayViewLink').addEvent('click', this.renderDayView.bindWithEvent(this));
 		}
-		if (this.options.show_week !== 0) {
+		if (this.options.show_week) {
 			this.el.getElement('.weekViewLink').addEvent('click', this.renderWeekView.bindWithEvent(this));
 		}
-		this.el.getElement('.monthViewLink').addEvent('click', this.renderMonthView.bindWithEvent(this));
+		if (this.options.show_week || this.options.show_day) {
+			this.el.getElement('.monthViewLink').addEvent('click', this.renderMonthView.bindWithEvent(this));
+		}
 		this.el.getElement('.centerOnToday').addEvent('click', this.centerOnToday.bindWithEvent(this));
 		this.showMonth();
 		this.watchFilters();

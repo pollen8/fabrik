@@ -374,7 +374,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			return implode($splitter, $aRoValues);
 		}
 
-		$optionsPerRow = (int)$this->getParams()->get('options_per_row', 0);
+		$optionsPerRow = (int)$this->getParams()->get('options_per_row', 4);
 		$elBeforeLabel = (bool)$this->getParams()->get('element_before_label', true);
 		//element_before_label
 		if (JRequest::getVar('format') == 'raw') {

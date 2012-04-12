@@ -9,7 +9,7 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
 	<version>3.0.5.2</version>
-	<description>The Joomla Application Creation Component</description>
+	<description>COM_FABRIK_XML_DESCRIPTION</description>
 
 	<scriptfile>com_fabrik.manifest.class.php</scriptfile>
 
@@ -62,21 +62,20 @@
 	<administration>
 		<menu img="../administrator/components/com_fabrik/images/logo.png" view="home">Fabrik</menu>
 		<submenu>
-			<menu alt="Lists" img="../administrator/components/com_fabrik/images/lists.png" link="option=com_fabrik&amp;view=lists" view="lists">Lists</menu>
-			<menu alt="Forms" img="../administrator/components/com_fabrik/images/forms.png" link="option=com_fabrik&amp;view=forms" view="forms">Forms</menu>
-				<menu alt="Groups" img="../administrator/components/com_fabrik/images/groups.png" link="option=com_fabrik&amp;view=groups" view="groups">Groups</menu>
-				<menu alt="Elements" img="../administrator/components/com_fabrik/images/elements.png" link="option=com_fabrik&amp;view=elements" view="elements">Elements</menu>
-				<menu alt="Visualizations" img="../administrator/components/com_fabrik/images/visualizations.png" link="option=com_fabrik&amp;view=visualizations" view="visualizations">Visualizations</menu>
-				<menu alt="Packages" img="../administrator/components/com_fabrik/images/packages.png" link="option=com_fabrik&amp;view=packages" view="packages">Packages</menu>
-				<menu alt="Connections" img="../administrator/components/com_fabrik/images/connections.png" link="option=com_fabrik&amp;view=connections" view="connections">Connections</menu>
-				<menu alt="Schedule" img="../administrator/components/com_fabrik/images/schedules.png" link="option=com_fabrik&amp;view=crons" view="crons">Schedule</menu>
+			<menu alt="Lists" img="../administrator/components/com_fabrik/images/lists.png" link="option=com_fabrik&amp;view=lists" view="lists">com_fabrik_lists</menu>
+			<menu alt="Forms" img="../administrator/components/com_fabrik/images/forms.png" link="option=com_fabrik&amp;view=forms" view="forms">com_fabrik_forms</menu>
+				<menu alt="Groups" img="../administrator/components/com_fabrik/images/groups.png" link="option=com_fabrik&amp;view=groups" view="groups">com_fabrik_groups</menu>
+				<menu alt="Elements" img="../administrator/components/com_fabrik/images/elements.png" link="option=com_fabrik&amp;view=elements" view="elements">com_fabrik_elements</menu>
+				<menu alt="Visualizations" img="../administrator/components/com_fabrik/images/visualizations.png" link="option=com_fabrik&amp;view=visualizations" view="visualizations">com_fabrik_visualizations</menu>
+				<menu alt="Packages" img="../administrator/components/com_fabrik/images/packages.png" link="option=com_fabrik&amp;view=packages" view="packages">com_fabrik_packages</menu>
+				<menu alt="Connections" img="../administrator/components/com_fabrik/images/connections.png" link="option=com_fabrik&amp;view=connections" view="connections">com_fabrik_connections</menu>
+				<menu alt="Schedule" img="../administrator/components/com_fabrik/images/schedules.png" link="option=com_fabrik&amp;view=crons" view="crons">com_fabrik_schedule</menu>
 		</submenu>
 		
 		<files folder="admin">
 			
 			<file>fabrik.php</file>
 			<folder>sql</folder>
-			
 			<folder>classes</folder>
 			<folder>contentelements</folder>
 			<folder>controllers</folder>

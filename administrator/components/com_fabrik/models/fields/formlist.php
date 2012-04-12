@@ -43,15 +43,33 @@ class JFormFieldFormList extends JFormFieldList
 	{
 		$db	= FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select("id AS value, label AS ".$db->quote('text'));
-		$query->from("#__{package}_forms");
-		$query->order("label ASC");
+		$query->select('id AS value, label AS ' . $db->quote('text') . ', published');
+		$query->from('#__{package}_forms');
+		if (!$this->element['showtrashed'])
+		{
+			$query->where('published <> -2');
+		}
+		$query->order('published DESC, label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+		
+		foreach ($rows as &$row)
+		{
+			switch ($row->published)
+			{
+				case '0':
+					$row->text .= ' [' . JText::_('JUNPUBLISHED') . ']';
+					break;
+				case '-2':
+					$row->text .= ' [' . JText::_('JTRASHED') . ']';
+					break;
+			}
+		}
 		$o = new stdClass();
 		$o->value = '';
 		$o->text = '';
 		array_unshift($rows, $o);
+		
 		return $rows;
 	}
 	

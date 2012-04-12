@@ -108,6 +108,9 @@ class FabrikFEModelForm extends FabModelForm
 
 	var $_linkedFabrikLists = null;
 
+	/** @var bool are we copying a row?  i.e. using form's Copy button.  Plugin manager needs to know. */
+	var $_copyingRow = false;
+
 	/**
 	 * Constructor
 	 *
@@ -698,6 +701,20 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	}
 
 	/**
+	 * Are we copying a row?  Usually set in controller process().
+	 *
+	 * @param bool if true, set _copyingRow to true
+	 * @return bool
+	 */
+
+	function copyingRow($set = false) {
+		if ($set) {
+			$this->_copyingRow = true;
+		}
+		return $this->_copyingRow;
+	}
+
+	/**
 	 * processes the form data and decides what action to take
 	 * @return bool false if one of the plugins reuturns an error otherwise true
 	 */
@@ -728,6 +745,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// $$$ rob _rowId can be updated by juser plugin so plugin can use check (for new/edit)
 		// now looks at _origRowId
 		$this->_origRowId = $this->_rowId;
+
 		$this->getGroupsHiarachy();
 
 		if ($form->record_in_database == '1') {
@@ -1263,7 +1281,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					// "Not a repeat element (el id = $oJoin->element_id)<br>";
 				}
-
 				//copy the repeating element into the join group
 				$idElementModel = $pluginManager->getPlugIn('internalid', 'element');
 				$idElementModel->getElement()->name = 'id';
@@ -1300,7 +1317,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data))
 			{
 				//$$$rob get the join tables ful primary key
-				$joinDb->setQuery("DESCRIBE $oJoin->table_join");
+				$joinDb->setQuery('DESCRIBE ' . $oJoin->table_join);
 				$oJoinPk = $oJoin->table_join . '___';
 				$cols = $joinDb->loadObjectList();
 				foreach ($cols as $col)
@@ -1327,7 +1344,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$joinCnn = $listModel->getConnection();
 					$joinDb = $joinCnn->getDb();
 
-
 					for ($c = 0; $c < $repeatedGroupCount; $c ++)
 					{
 						//get the data for each group and record it seperately
@@ -1338,15 +1354,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$n = $elementModel->getFullName(false, true, false);
 							$v = (is_array($data[$n]) && array_key_exists($c, $data[$n])) ? $data[$n][$c] : '';
 							$repData[$element->name] = $v;
+							$n_raw = $n . '_raw';
+							// $$$ rob 11/04/2012 - repeat elements don't have raw values so use the value as the default raw value
+							$defaultRaw = $joinType == 'repeatElement' ? $v : '';
+							$v_raw = (is_array($data[$n_raw]) && array_key_exists($c, $data[$n_raw])) ? $data[$n_raw][$c] : $defaultRaw;
+							$repData[$element->name . '_raw'] = $v_raw;
+
 							//store any params set in the individual plug-in (see fabrikfileupload::processUpload()->crop()
 							if ($elementModel->isJoin())
 							{
 								$repData['params'] = JArrayHelper::getValue($repeatParams, $c);
 							}
 						}
-
 						// $$$ rob didn't work for 2nd joined data set
 						//$repData[$oJoin->table_join_key] = $insertId;
+						unset($repData[$oJoin->table_join_key . '_raw']);
 						$repData[$oJoin->table_join_key] = JArrayHelper::getValue($joinKeys, $oJoin->join_from_table . '.' . $oJoin->table_key, $insertId);
 						// $$$ rob test for issue with importing joined csv data
 						if (is_array($repData[$oJoin->table_join_key]))
@@ -1835,7 +1857,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		//contains any data modified by the validations
 		$this->_modifiedValidationData = array();
 		$w = new FabrikWorker();
-		$joindata = array();
+		//$joindata = array();
 		$ok = true;
 
 		// $$$ rob 01/07/2011 fileupload needs to examine records previous data for validations on edting records
@@ -1866,6 +1888,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$groups = $this->getGroupsHiarachy();
 		$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'request', 'array');
 		$ajaxPost = JRequest::getBool('fabrik_ajax');
+
+		$joindata = isset($post['join']) ? $post['join'] : array();
 
 		foreach ($groups as $groupModel)
 		{
@@ -1930,9 +1954,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$this->_arErrors[$elName][$c][] = $elementModel->getValidationErr();
 					}
 
-					if ($groupModel->canRepeat() || $elementModel->isJoin())
+					// $$$ rob 11/04/2012 was stopping multiselect/chx dbjoin elements from saving in normal group.
+					//if ($groupModel->canRepeat() || $elementModel->isJoin())
+					if ($groupModel->canRepeat())
 					{
-						// $$$ rob for repeat gorups no join setting to array() menat that $_POST only contained the last repeat group data
+						// $$$ rob for repeat groups no join setting to array() menat that $_POST only contained the last repeat group data
 						//$elDbVals = array();
 						$elDbVals[$c] = $elementModel->toDbVal($form_data, $c);
 					}

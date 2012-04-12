@@ -38,6 +38,10 @@
 					type="text" size="4" default="0" label="MOD_FABRIK_FORM_ROW_ID_LABEL" 
 					description="MOD_FABRIK_FORM_ROW_ID_DESC" />
 					
+				<field name="usekey" 
+					type="text" size="15" default="" label="MOD_FABRIK_FORM_USEKEY_LABEL" 
+					description="MOD_FABRIK_FORM_USEKEY_DESC" />					
+					
 				<field name="template" 
 					type="folderlist" directory="/components/com_fabrik/views/form/tmpl" 
 					hide_none="1" hide_default="0" default="default" 

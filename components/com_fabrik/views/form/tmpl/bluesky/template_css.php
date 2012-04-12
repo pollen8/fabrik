@@ -135,12 +135,12 @@ echo "
 
 #{$view}_$c .fabrikValidating{
 	color: #476767;
-	background: #EFFFFF url(../images/ajax-loader.gif) no-repeat right 7px !important;
+	background: #EFFFFF no-repeat right 7px !important;
 }
 
 #{$view}_$c .fabrikSuccess{
 	color: #598F5B;
-	background: #DFFFE0 url(../images/action_check.png) no-repeat right 7px !important;
+	background: #DFFFE0 no-repeat right 7px !important;
 }
 
 /*** slide out add option

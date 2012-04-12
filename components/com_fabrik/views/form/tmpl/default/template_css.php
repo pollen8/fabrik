@@ -5,7 +5,8 @@ $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
 echo "
 
 /*Here is the styling for your table legend - to learn what all the different elements are in a basic form see http://www.w3schools.com/tags/tag_legend.asp*/  
-#{$view}_$c legend{
+#{$view}_$c legend,
+#{$view}_$c h3.legend{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
 	border-bottom: 1px solid #B7B7B7;
@@ -32,8 +33,8 @@ echo "
 	color:#666;
 }
 
-/*Here is the styling for your legend span, this is extra styling adding to your legend.  For more information on the <span> tag see: http://www.w3schools.com/tags/tag_span.asp*/
-#{$view}_$c legend span{
+#{$view}_$c legend span,
+#{$view}_$c h3.legend span{
 	padding:5px;
 	display:block;
 }
@@ -52,7 +53,8 @@ echo "
 }
 
 /*This controls the margin and border of your form area ie the fieldset - note: if you leave the margin as is, this could be said to control the 'inner border'*/
-#{$view}_$c fieldset{
+#{$view}_$c fieldset,
+#{$view}_$c .fabrikGroup{
 	margin:5px 10px;
 	position:relative;
 	padding:0;
@@ -158,13 +160,13 @@ echo "
 /*This controls the styling of the form field when being validated by ajax*/
 #{$view}_$c .fabrikValidating{
 	color: #476767;
-	background: #EFFFFF url(../images/ajax-loader.gif) no-repeat right 7px !important;
+	background: #EFFFFF no-repeat right 7px !important;
 }
 
 /*This controls the styling of the form field when ajax validation has been successful*/
 #{$view}_$c .fabrikSuccess{
 	color: #598F5B;
-	background: #DFFFE0 url(../images/action_check.png) no-repeat right 7px !important;
+	background: #DFFFE0;
 }
 
 /*** slide out add option
