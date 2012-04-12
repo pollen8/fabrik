@@ -1902,6 +1902,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 			foreach ($elementModels as $elementModel)
 			{
+				// if the user can't view or edit the element, then don't validate it. Otherwise user sees failed validation but no idication of what failed
+				if (!$elementModel->canUse() && !$elementModel->canView())
+				{
+					continue;
+				}
 				$elDbVals = array();
 				$element = $elementModel->getElement();
 
