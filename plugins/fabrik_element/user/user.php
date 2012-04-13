@@ -616,36 +616,43 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
-		if (!$this->inJDb()) {
-			return "$key $condition $value";
+		if (!$this->inJDb())
+		{
+			return $key . ' ' . $condition . ' ' . $value;
 		}
 		$element = $this->getElement();
 		// $$$ hugh - we need to use the join alias, not hard code #__users
 		$join = $this->getJoin();
-		$joinTableName  =  $join->table_join_alias;
-		if (empty($joinTableName)) {
+		$joinTableName = $join->table_join_alias;
+		if (empty($joinTableName))
+		{
 			$joinTableName = '#__users';
 		}
-		if ($type == 'querystring') {
+		$db = JFactory::getDbo();
+		if ($type == 'querystring' || $type = 'jpluginfilters')
+		{
 			$key = FabrikString::safeColNameToArrayKey($key);
 			// $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
 			// by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
 			// value if it was then we want to filter on the key and not the label
-			if (!array_key_exists($key, JRequest::get('get'))) {
-				$key = "`$joinTableName`.`id`";
+			if (!array_key_exists($key, JRequest::get('get')))
+			{
+				$key = $db->quoteName($joinTableName . '.id');
 				$this->encryptFieldName($key);
-				return "$key $condition $value";
+				return $key . ' ' . $condition . ' ' . $value;
 			}
 		}
-		if ($type == 'advanced') {
-			$key = "`$joinTableName`.`id`";
+		if ($type == 'advanced')
+		{
+			$key = $db->quoteName($joinTableName . '.id');
 			$this->encryptFieldName($key);
-			return "$key $condition $value";
+			return $key . ' ' . $condition . ' ' . $value;
 		}
 		$params = $this->getParams();
-
-		if ($type != 'prefilter') {
-			switch ($element->filter_type) {
+		if ($type != 'prefilter')
+		{
+			switch ($element->filter_type)
+			{
 				case 'range':
 				case 'dropdown':
 					$tabletype = 'id';
@@ -655,17 +662,22 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					$tabletype = $this->_getValColumn();
 					break;
 			}
-			$k = '`' . $joinTableName . '`.`' . $tabletype.'`';
-		} else {
-			if ($this->_rawFilter) {
-				$k = '`' . $joinTableName . '`.`id`';
-			}else{
+			$k = $db->quoteName($joinTableName . '.' . $tabletype);
+		}
+		else
+		{
+			if ($this->_rawFilter)
+			{
+				$k = $db->quoteName($joinTableName . '.id');
+			}
+			else
+			{
 				$tabletype = $this->_getValColumn();
-				$k = '`' . $joinTableName . '`.`' . $tabletype.'`';
+				$k = $db->quoteName($joinTableName . '.' . $tabletype);
 			}
 		}
 		$this->encryptFieldName($k);
-		$str = "$k $condition $value";
+		$str = $k . ' ' . $condition . ' ' . $value;
 		return $str;
 	}
 
