@@ -33,7 +33,7 @@ class FabrikFEModelForm extends FabModelForm
 	var $_aJoinGroupIds = array();
 
 	/** @var bol true if editable if 0 then show view only verion of form */
-	var $_editable = true;
+	var $_editable = false;		# security requires minimum access rights by default
 
 	/** @var string encoding type */
 	var $_enctype = "application/x-www-form-urlencoded";
