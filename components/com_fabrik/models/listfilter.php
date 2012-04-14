@@ -806,7 +806,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$k2 = FabrikString::safeColNameToArrayKey($key);
 		// $$$ rob fabrik_sticky_filters set in J content plugin - treat these as prefilters so we dont unset them
 		// when we clear the filters
-		$filterType = in_array($k2, JRequest::getVar('fabrik_sticky_filters', array())) ? 'jpluginfilters': 'querystring';
+		$filterType = in_array($k2 . '_raw', JRequest::getVar('fabrik_sticky_filters', array())) || in_array($k2, JRequest::getVar('fabrik_sticky_filters', array())) ? 'jpluginfilters': 'querystring';
 		$filters['value'][] = $value;
 		$filters['condition'][] = urldecode($condition);
 		$filters['join'][] = $join;

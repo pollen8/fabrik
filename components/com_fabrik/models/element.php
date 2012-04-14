@@ -2939,7 +2939,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	protected function getCustomQuery(&$listModel, $label = "'calc'")
 	{
 		$params = $this->getParams();
-		$custom_query	= $params->get('custom_calc_query', '');
+		$custom_query = $params->get('custom_calc_query', '');
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
@@ -2952,8 +2952,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		} else {
 			// need to do first query to get distinct records as if we are doing left joins the sum is too large
 			$custom_query = sprintf($custom_query, 'value');
-			return "SELECT $custom_query AS value, label
-				FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL) AS t";
+			//return "SELECT $custom_query AS value, label FROM (SELECT DISTINCT *, $item->db_primary_key, $name AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL) AS t";
+			return "SELECT $custom_query AS value, label FROM (SELECT DISTINCT ".FabrikString::safeColName($item->db_table_name).".*, $name AS value, $label AS label FROM ".FabrikString::safeColName($item->db_table_name)." $joinSQL $whereSQL) AS t";
 		}
 	}
 

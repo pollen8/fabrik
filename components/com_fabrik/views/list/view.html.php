@@ -123,9 +123,6 @@ class FabrikViewList extends JView{
 		$this->_row = new stdClass();
 		$this->_row->id = '';
 		$this->_row->class = 'fabrik_row';
-	/* 	if (JFile::exists(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_row.php')) {
-			require(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_row.php');
-		} */
 		echo $this->loadTemplate('row');
 		$opts->rowtemplate = ob_get_contents();
 		ob_end_clean();

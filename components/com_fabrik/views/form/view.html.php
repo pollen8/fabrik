@@ -358,7 +358,7 @@ class fabrikViewForm extends JView
 		$opts->start_page = $start_page;
 		$opts->inlineMessage = (bool)$this->isMambot;
 		//$$$rob dont int this as keys may be string
-		$opts->rowid = $model->_rowId;
+		$opts->rowid = (string) $model->_rowId;
 		//3.0 needed for ajax requests
 		$opts->listid = (int)$this->get('ListModel')->getId();
 		// $$$ hugh - floatingtips.js seems to require this?
