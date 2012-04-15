@@ -151,6 +151,12 @@ class FabrikFEModelList extends JModelForm {
 	/** @var int the max number of buttons that is shown in a row */
 	protected $rowActionCount = 0;
 
+	/** @var bool do any of the elements have a required filter, only used through method of same name */
+	protected $hasRequiredElementFilters = null;
+
+	/** @var array do any of thecache for elements which have a required filter */
+	protected $elementsWithRequiredFilters = array();
+
 	public $orderEls = array();
 	/**
 	 * Constructor
@@ -1725,31 +1731,7 @@ class FabrikFEModelList extends JModelForm {
 		return '';
 	}
 
-	/**
-	 * does a filter have to be appled before we show any table data
-	 * @retrun bool
-	 */
 
-	protected function filtersRequired()
-	{
-		$app = JFactory::getApplication();
-		$params = $this->getParams();
-		if (!$this->getRequiredFiltersFound()) {
-			return true;
-		}
-		switch ($params->get('require-filter', 0)) {
-			case 0:
-			default:
-				return false;
-				break;
-			case 1:
-				return true;
-				break;
-			case 2:
-				return $app->isAdmin() ? false : true;
-				break;
-		}
-	}
 
 	/**
 	 * get the part of the sql query that relates to the where statement
@@ -1775,17 +1757,8 @@ class FabrikFEModelList extends JModelForm {
 		# on the main row count and data fetch, and things like
 		# filter dropdowns still get built.
 
-		// $$$ rob prefilters shouldnt be included in 'require filtering'
-		$ftypes = JArrayHelper::getValue($filters, 'search_type', array());
-
-		foreach ($ftypes as $i => $ftype) {
-			if ($ftype == 'prefilter') {
-				unset($ftypes[$i]);
-			}
-		}
-
-		if ($incFilters && $this->filtersRequired() && empty($ftypes)) {
-			$this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
+		if ($incFilters && !$this->gotAllRequiredFilters()) {
+			//$this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
 			if (!$query) {
 				return 'WHERE 1 = -1 ';
 			} else {
@@ -3677,6 +3650,107 @@ class FabrikFEModelList extends JModelForm {
 		return $params->get('empty_data_msg', JText::_('COM_FABRIK_LIST_NO_DATA_MSG'));
 	}
 
+	public function getRequiredMsg()
+	{
+		if (isset($this->emptyMsg)) {
+			return $this->emptyMsg;
+		}
+		return '';
+	}
+
+	/**
+	 *
+	 * Do we have all required filters, by both list level and element level settings.
+	 * @param unknown_type $filters
+	 * @return boolean
+	 */
+	public function gotAllRequiredFilters() {
+		if ($this->listRequiresFiltering() && !$this->gotOptionalFilters()) {
+			$this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
+			return false;
+		}
+		if ($this->hasRequiredElementFilters() && !$this->getRequiredFiltersFound()) {
+			$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	* does a filter have to be appled before we show any table data
+	* @retrun bool
+	*/
+
+	protected function listRequiresFiltering()
+	{
+		$app = JFactory::getApplication();
+		$params = $this->getParams();
+		/*
+			if (!$this->getRequiredFiltersFound()) {
+		return true;
+		}
+		*/
+		switch ($params->get('require-filter', 0)) {
+			case 0:
+			default:
+				return false;
+				break;
+			case 1:
+				return true;
+				break;
+			case 2:
+				return $app->isAdmin() ? false : true;
+				break;
+		}
+	}
+
+	/**
+	* have all the required filters been met?
+	*
+	* @return bol true if they have if false we shouldnt show the table data
+	*/
+
+	function hasRequiredElementFilters()
+	{
+		if (isset($this->hasRequiredElementFilters)) {
+			return $this->hasRequiredElementFilters;
+		}
+		$filters 	= $this->getFilterArray();
+		$elements = $this->getElements();
+
+		$this->hasRequiredElementFilters = false;
+
+		foreach ($elements as $kk => $val2) {
+			$elementModel = $elements[$kk]; //dont do with = as this foobars up the last elementModel
+			$element = $elementModel->getElement();
+			if ($element->filter_type <> '' && $element->filter_type != 'null') {
+				if ($elementModel->canView() && $elementModel->canUseFilter()) {
+					if ($elementModel->getParams()->get('filter_required') == 1) {
+						$this->elementsWithRequiredFilters[] = $elementModel;
+						$this->hasRequiredElementFilters = true;
+					}
+				}
+			}
+		}
+		return $this->hasRequiredElementFilters;
+	}
+
+	/**
+	 *
+	 * Do we have any filters that aren't pre-filters
+	 * @param unknown_type $filters
+	 */
+	function gotOptionalFilters() {
+		$filters 	= $this->getFilterArray();
+		$ftypes = JArrayHelper::getValue($filters, 'search_type', array());
+		foreach ($ftypes as $i => $ftype) {
+			if ($ftype != 'prefilter') {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * have all the required filters been met?
 	 *
@@ -3693,6 +3767,7 @@ class FabrikFEModelList extends JModelForm {
 
 		$required = array();
 
+		/*
 		foreach ($elements as $kk => $val2) {
 			$elementModel = $elements[$kk]; //dont do with = as this foobars up the last elementModel
 			$element = $elementModel->getElement();
@@ -3724,6 +3799,34 @@ class FabrikFEModelList extends JModelForm {
 							}
 						}
 					}
+				}
+			}
+		}
+		*/
+
+		/* if no required filters, then by definition we have them all */
+		if (!$this->hasRequiredElementFilters()) {
+			return true;
+		}
+		/* if no filter keys, by definition we don't have required ones */
+		if (!array_key_exists('key', $filters) || !is_array($filters['key'])) {
+			$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+			return false;
+		}
+		foreach ($this->elementsWithRequiredFilters as $elementModel) {
+			if ($elementModel->getParams()->get('filter_required') == 1) {
+				$name = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+				reset($filters['key']);
+				$found = false;
+				while (list($key, $val) = each($filters['key'])) {
+					if ($val == $name) {
+						$found = true;
+						break;
+					}
+				}
+				if (!$found || $filters['origvalue'][$key] == '') {
+					$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
+					return false;
 				}
 			}
 		}

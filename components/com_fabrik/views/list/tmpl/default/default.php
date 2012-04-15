@@ -44,11 +44,27 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 		 </thead>
 		 -->
 			<?php
+			echo '<thead>'.$this->headingstmpl.'</thead>';
+			if ($this->isGrouped && empty($this->rows)) {
+				?>
+				<tbody style="<?php echo $this->emptyStyle?>">
+				<tr>
+				<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+				<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
+				<?php echo $this->emptyDataMessage; ?>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+				<?php
+			}
 			$gCounter = 0;
 			foreach ($this->rows as $groupedby => $group) {
+			/*
 			if ($gCounter == 0) {
 				echo '<thead>'.$this->headingstmpl.'</thead>';
 			}
+			*/
 			if ($this->isGrouped) {
 			?>
 			<tbody>

@@ -184,6 +184,7 @@ class FabrikFEModelVisualization extends JModel
 	function getRequireFilterMsg()
 	{
 		$listModels = $this->getlistModels();
+		/* $$$ hugh - rewrote the list stuff for required filtering
 		foreach ($listModels as $model) {
 			$params = $model->getParams();
 			$filters = $model->getFilterArray();
@@ -201,6 +202,12 @@ class FabrikFEModelVisualization extends JModel
 		}
 		if (!$this->getRequiredFiltersFound()) {
 			JError::raiseNotice(500, JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS'));
+		}
+		*/
+		foreach ($listModels as $model) {
+			if (!$model->gotAllRequiredFilters()) {
+				JError::raiseNotice(500, $model->getRequiredMsg());
+			}
 		}
 	}
 
