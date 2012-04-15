@@ -3087,12 +3087,12 @@ class FabrikFEModelList extends JModelForm {
 		$raws = JArrayHelper::getValue($this->filters, 'raw', array());
 		//for ($i=0; $i < count($this->filters['key']); $i++) {
 		foreach ($this->filters['key'] as $i => $keyval) {
-			$value 					= $this->filters['value'][$i];
-			$condition 			= strtolower($this->filters['condition'][$i]);
-			$key 						= $this->filters['key'][$i];
+			$value = $this->filters['value'][$i];
+			$condition = strtolower($this->filters['condition'][$i]);
+			$key = $this->filters['key'][$i];
 			$filterEval	= $this->filters['eval'][$i];
-			$elid 					= JArrayHelper::getValue($elementids, $i);
-			$key2						= array_key_exists('key2', $this->filters) ? JArrayHelper::getValue($this->filters['key2'], $i, '') : '';
+			$elid = JArrayHelper::getValue($elementids, $i);
+			$key2 = array_key_exists('key2', $this->filters) ? JArrayHelper::getValue($this->filters['key2'], $i, '') : '';
 
 			// $$$ rob see if the key is a raw filter
 			// 20/12/2010 - think $key is never with _raw now as it is unset in tablefilter::getQuerystringFilters() although may  be set elsewhere
@@ -3122,8 +3122,8 @@ class FabrikFEModelList extends JModelForm {
 			if (strval($key2) !== '') {
 				$key = $key2;
 			}
-			$eval						= $this->filters['eval'][$i];
-			$fullWordsOnly 	= $this->filters['full_words_only'][$i];
+			$eval = $this->filters['eval'][$i];
+			$fullWordsOnly = $this->filters['full_words_only'][$i];
 			$exactMatch = $this->filters['match'][$i];
 
 			if (!is_a($elementModel, 'plgFabrik_Element')) {

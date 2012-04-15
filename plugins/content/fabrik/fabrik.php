@@ -100,7 +100,7 @@ class plgContentFabrik extends JPlugin
 	protected function parse($match)
 	{
 		$match = $match[0];
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'parent.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/parent.php');
 		$w =new FabrikWorker();
 		$match = preg_replace('/\s+/', ' ', $match);
 		// $$$ hugh - only replace []'s in value, not key, so we handle
@@ -146,7 +146,7 @@ class plgContentFabrik extends JPlugin
 		$match = explode(" ", $match);
 		array_shift($match);
 		$user = JFactory::getUser();
-		$usersConfig 	=& JComponentHelper::getParams('com_fabrik');
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$unused = array();
 		$element = false; // special case if we are wanting to write in an element's data
 		$repeatcounter = 0;
@@ -423,50 +423,25 @@ class plgContentFabrik extends JPlugin
 					$controller->$task();
 					$result = ob_get_contents();
 					ob_end_clean();
-
 				}
 				$model->setOrderByAndDir();
-
 				$formModel = $model->getFormModel();
-				// $$$ hugh - need to handle this in _setRequest()
-				//apply filters set in mambot
-				/*
-				foreach ($unused as $k => $v) {
-
-					//allow for element_test___id[match]=1 to set the match type
-					if (strstr($k, "[match]")){
-						$k2 = str_replace("[match]", "", $k);
-						if (array_key_exists($k2, $_REQUEST)) {
-							$v2 = JRequest::getVar($k2);
-							$v2 = array('value' => $v2, 'match' => $v);
-						}
-						JRequest::setVar($k2, $v2);
-					}
-					else {
-						JRequest::setVar($k, $v);
-					}
-				}
-				*/
-
 				break;
+				
 			case 'visualization':
 				JRequest::setVar('showfilters', $showfilters);
 				JRequest::setVar('clearfilters', $clearfilters);
 				JRequest::setVar('resetfilters', $resetfilters);
-				/*
-				foreach ($unused as $k=>$v) {
-					JRequest::setVar($k, $v, 'get');
-				}
-				*/
 				$this->_setRequest($unused);
 				break;
 		}
 		//hack for gallery viz as it may not use the default view
 		$controller->isMambot = true;
-		if (!$displayed) {
+		if (!$displayed)
+		{
 			ob_start();
-
-			if (method_exists($model, 'reset')) {
+			if (method_exists($model, 'reset'))
+			{
 				$model->reset();
 				// $$$ rob erm $ref is a regex?! something not right here (caused js error in cb plugin)
 				//$model->setRenderContext($ref);
@@ -497,7 +472,8 @@ class plgContentFabrik extends JPlugin
 		$qs_str = implode('&', $unused);
 		parse_str($qs_str, $qs_arr);
 		$this->origRequestVars = array();
-		foreach ($qs_arr as $k => $v) {
+		foreach ($qs_arr as $k => $v)
+		{
 			$origVar = JRequest::getVar($k);
 			$this->origRequestVars[$k] = $origVar;
 			JRequest::setVar($k, $v);
@@ -511,8 +487,19 @@ class plgContentFabrik extends JPlugin
 
 	protected function resetRequest()
 	{
-		foreach ($this->origRequestVars as $k => $v) {
-			JRequest::setVar($k, $v);
+		foreach ($this->origRequestVars as $k => $v)
+		{
+			if (!is_null($v))
+			{
+				JRequest::setVar($k, $v);
+			}
+			else
+			{
+				// $$$ rob 13/04/2012 clear rather than setting to '' as subsequent list plugins with fewer filters
+				// will contain the previous plugins filter, even if not included in the current plugin declaration
+				unset($_GET[$k]);
+				unset($_REQUEST[$k]);
+			}
 		}
 	}
 
