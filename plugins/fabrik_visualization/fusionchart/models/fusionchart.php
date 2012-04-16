@@ -357,6 +357,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 	function getFusionchart()
 	{
+		$this->cantTrendLine = array();
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$worker = new FabrikWorker();
@@ -385,7 +386,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$w = $params->get('fusionchart_width');
 		$h = $params->get('fusionchart_height');
 
-		$chartType =$params->get('fusionchart_type');
+		$chartType = $params->get('fusionchart_type');
 
 		// Create new chart
 		$this->FC = new FusionCharts("$chartType","$w","$h");
@@ -602,10 +603,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					$tot_sum = array_sum($gsums);
 					$arrData = array();
 					$labelStep = 0;
-					$label_step_ratio = (int)JArrayHelper::getValue($label_step_ratios, 0, 1);
+					$label_step_ratio = (int) JArrayHelper::getValue($label_step_ratios, 0, 1);
 					if ($label_step_ratio > 1)
 					 {
-						$labelStep = (int)(count($gsums) / $label_step_ratio);
+						$labelStep = (int) (count($gsums) / $label_step_ratio);
 						$strParam .= ';labelStep=' . $labelStep;
 					}
 					//$$$tom: inversing array_combine as identical values in gsums will be
@@ -643,14 +644,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			case 'MSAREA2D':
 			case 'MSCOMBIDY2D':
 			case 'MULTIAXISLINE':
-
-				//case 'PIE2D':
-				//case 'PIE3D':
 			case 'STACKEDAREA2D':
 			case 'STACKEDBAR2D':
 			case 'STACKEDCOLUMN2D':
 			case 'STACKEDCOLUMN3D':
-
 			case 'SCROLLAREA2D':
 			case 'SCROLLCOLUMN2D':
 			case 'SCROLLLINE2D':
@@ -682,9 +679,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 						$strParam .= ';SYaxisName=' . implode(' ', $s_parents);
 					}
 
-					//$$$tom: This is a first attempt at integrating Trendlines but it's not actually working... :s
-					$eltype = $params->get('fusionchart_element_type', 'dataset');
-					$this->trendLine($eltype, $gdata);
+					//$this->trendLine($gdata);
 
 					$label_step_ratio = (int) JArrayHelper::getValue($label_step_ratios, 0, 1);
 					if ($label_step_ratio > 1)
@@ -714,10 +709,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					}
 					foreach ($gdata as $key => $chartdata)
 					{
-						$cdata = explode(',',$chartdata);
+						$cdata = explode(',', $chartdata);
 						$dataset = $this->axisLabels[$key];
 						$extras = 'parentYAxis=' . $dual_y_parents[$key];
-						$this->FC->addDataset("$dataset", $extras);
+						$this->FC->addDataset($dataset, $extras);
 						$data_count = 0;
 						foreach ($cdata as $key => $value)
 						{
@@ -731,6 +726,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					}
 				}
 		}
+		$this->c > 1 ? $this->trendLine($gdata) : $this->trendLine();
 		$colours = implode(($calcfound ? '|': ','), $gcolours);
 
 		# Set chart attributes
@@ -767,16 +763,26 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		}
 	}
 
-	protected function trendLine($eltype, &$gdata)
+	/**
+	 * add a trend line to the chart - not all chart types support rendering trendlines
+	 * @param	array	$gdata
+	 */
+	
+	protected function trendLine(&$gdata = null)
 	{
 		$params = $this->getParams();
+		$chartType = $params->get('fusionchart_type');
+		$eltype = $params->get('fusionchart_element_type', 'dataset');
+		$found = false;
+		$trendstart = $params->get('fusionchart_trendstartvalue', '');
+		$trendend = $params->get('fusionchart_trendendvalue', '');
 		for ($nbe = 0; $nbe < $this->c; $nbe ++)
 		{
 			if ($eltype[$nbe] != 'dataset')
 			{
+				$found = true; 
 				// Trendline Start & End values
-				$trendstart = $params->get('fusionchart_trendstartvalue', '');
-				$trendend = $params->get('fusionchart_trendendvalue', '');
+				
 				if ($trendstart)
 				{
 					$startval = $trendstart;
@@ -788,25 +794,39 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					$startval = $this->min[$nbe];
 					$endval = $this->max[$nbe];
 				}
-				$strAddTrend = 'startValue=' . $startval . ';endValue=' . $endval;
-				$elcolour = $params->get('fusionchart_elcolour', '');
-				$elalpha = $params->get('fusionchart_elalpha', '');
-				$strAddTrend .= ';displayvalue=' . $this->axisLabels[$nbe];
-				$strAddTrend .= ';showOnTop=' . $params->get('fusionchart_trendshowontop', '1');
-				if ($startval < $endval)
+				$this->buildTrendLine($startval, $endval, $nbe);
+				
+				if (is_array($gdata))
 				{
-					$strAddTrend .= ';isTrendZone=' . $params->get('fusionchart_trendiszone', '0');
+					unset($this->axisLabels[$nbe]);
+					unset($gdata[$nbe]);
 				}
-				$strAddTrend .= ';tooltext=' . $params->get('fusionchart_trendlabel', '');;
-				$strAddTrend .= ';color=' . $elcolour[$nbe];
-				$strAddTrend .= ';alpha=' . $elalpha[$nbe];
-				$strAddTrend .= ';thickness=3';
-				$this->FC->addTrendLine($strAddTrend);
-				unset($this->axisLabels[$nbe]);
-				unset($gdata[$nbe]);
-
 			}
 		}
+		if (!$found && ($trendstart != '' && $trendend != ''))
+		{
+			$this->buildTrendLine($trendstart, $trendend);
+		}
+	}
+	
+	protected function buildTrendLine($startval, $endval, $nbe = null)
+	{
+		$params = $this->getParams();
+		$strAddTrend = 'startValue=' . $startval . ';endValue=' . $endval;
+		$elcolour = (array) $params->get('fusionchart_elcolour', '');
+		$elalpha = (array) $params->get('fusionchart_elalpha', '');
+		$strAddTrend .= ';displayvalue=' . JArrayHelper::getValue($this->axisLabels, $nbe, $params->get('fusionchart_trendlabel', ''));
+		$strAddTrend .= ';showOnTop=' . $params->get('fusionchart_trendshowontop', '1');
+		if ($startval < $endval)
+		{
+			$strAddTrend .= ';isTrendZone=' . $params->get('fusionchart_trendiszone', '0');
+		}
+		//tooltext doesn't seem to be working:
+		$strAddTrend .= ';tooltext=' . $params->get('fusionchart_trendlabel', '');;
+		$strAddTrend .= ';color=' . JArrayHelper::getValue($elcolour, $nbe, '333333');
+		$strAddTrend .= ';alpha=' . JArrayHelper::getValue($elalpha, $nbe, 50);
+		$strAddTrend .= ';thickness=3';
+		$this->FC->addTrendLine($strAddTrend);
 	}
 
 	function setListIds()
