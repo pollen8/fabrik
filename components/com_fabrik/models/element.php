@@ -306,6 +306,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$opts = new stdClass();
 				$opts->notice = true;
 				$opts = json_encode($opts);
+				$data = '<span>' . $data . '</span>';
 				$img = '<a class="fabrikTip" href="#" opts=\'' . $opts . '\' title="' . $data. '">' . $img . '</a>';
 				return $img;
 			}
