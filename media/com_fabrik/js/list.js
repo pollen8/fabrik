@@ -120,7 +120,6 @@ var FbListFilter = new Class({
 		this.filters = $H({});
 		this.setOptions(options);
 		this.container = document.id(this.options.container);
-
 		this.filterContainer = this.container.getElement('.fabrikFilterContainer');
 		var b = this.container.getElement('.toggleFilters');
 		if (typeOf(b) !== 'null') {
@@ -131,12 +130,12 @@ var FbListFilter = new Class({
 				var y = dims.y + b.getHeight();
 				var rx = this.filterContainer.getStyle('display') === 'none' ? this.filterContainer.show() : this.filterContainer.hide();
 				this.filterContainer.fade('toggle');
-				this.container.getElements('.filter').toggle();
+				this.container.getElements('.filter, .fabrik_filter').toggle();
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
 				this.filterContainer.fade('hide').hide();
-				this.container.getElements('.filter').toggle();
+				this.container.getElements('.filter, .fabrik_filter').toggle();
 			}
 		}
 
