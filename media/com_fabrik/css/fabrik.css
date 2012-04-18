@@ -2,6 +2,10 @@
 	display:none !important;
 }
 
+.listfilter{
+	text-align:right;
+}
+
 .fabrikShow{
 	display:block;
 }
