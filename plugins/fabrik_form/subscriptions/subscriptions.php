@@ -274,7 +274,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 			$ppurl .= $testSiteQs;
 		}
 		$ppurl .= '&renderOrder=' . $this->renderOrder;
-		urlencode($ppurl);
+		return urlencode($ppurl);
 	}
 
 	/**
