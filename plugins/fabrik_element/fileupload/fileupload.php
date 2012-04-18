@@ -435,19 +435,27 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$storage = $this->getStorage();
 
 		$use_download_script = $params->get('fu_use_download_script', '0');
-		if ($use_download_script == FU_DOWNLOAD_SCRIPT_TABLE || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH) {
-			if (empty($data) || !$storage->exists(COM_FABRIK_BASE.$data)) {
+		if ($use_download_script == FU_DOWNLOAD_SCRIPT_TABLE || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH)
+		{
+			if (empty($data) || !$storage->exists(COM_FABRIK_BASE . $data))
+			{
 				return "";
 			}
-			$aclEl = str_replace('.', '___', $params->get('fu_download_acl', ''));
-			if (!empty($aclEl)) {
-				$aclElraw = $aclEl . "_raw";
-				$canDownload = FabrikWorker::getACL($oAllRowsData->$aclElraw, 'filedownload');
-				if (!$canDownload) {
+			$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
+			$aclEl = $aclEl->getFullName();
+			//$aclEl = str_replace('.', '___', $params->get('fu_download_acl', ''));
+			if (!empty($aclEl))
+			{
+				$aclElraw = $aclEl . '_raw';
+				$user = JFactory::getUser();
+				$groups = $user->getAuthorisedViewLevels();
+				$canDownload = in_array($oAllRowsData->$aclElraw, $groups);
+				if (!$canDownload)
+				{
 					$a = $params->get('fu_download_noaccess_url') == '' ? '' : '<a href="'.$params->get('fu_download_noaccess_url').'" >';
 					$a2 = $params->get('fu_download_noaccess_url') == '' ? '' : '</a>';
 					$img = $params->get('fu_download_noaccess_image');
-					return $img == '' ? '' : "$a<img src=\"images/stories/$img\" alt=\"".JText::_('DOWNLOAD NO PERMISSION')."\" />$a2";
+					return $img == '' ? '' : "$a<img src=\"" . COM_FABRIK_LIVESITE . "images/stories/$img\" alt=\"".JText::_('DOWNLOAD NO PERMISSION')."\" />$a2";
 				}
 			}
 			$formModel = $this->getForm();
@@ -455,24 +463,30 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$rowid = $oAllRowsData->__pk_val;
 			$elementid = $this->_id;
 			$title = basename($data);
-			if ($params->get('fu_title_element') == '') {
+			if ($params->get('fu_title_element') == '')
+			{
 				$title_name = $this->getFullName(true, true, false ) . '__title';
-			} else {
+			}
+			else
+			{
 				$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 			}
 			//$title_name .= '_raw'; //Jaanus: WHY _raw? Do we really want to see the numbers instead of normal words? See also http://fabrikar.com/forums/showthread.php?p=123267 about f2
-			if (array_key_exists($title_name, $oAllRowsData)) {
-				if (!empty($oAllRowsData->$title_name)) {
+			if (array_key_exists($title_name, $oAllRowsData))
+			{
+				if (!empty($oAllRowsData->$title_name))
+				{
 					$title = $oAllRowsData->$title_name;
 					$title = FabrikWorker::JSONtoData($title, true);
 					$title = $title[$i];
 				}
 			}
-			if ($params->get('fu_download_access_image') !== '') {
-				$title = "<img src=\"images/stories/".$params->get('fu_download_access_image')."\" alt=\"$title\" />";
+			if ($params->get('fu_download_access_image') !== '')
+			{
+				$title = "<img src=\"" . COM_FABRIK_LIVESITE . "images/stories/".$params->get('fu_download_access_image')."\" alt=\"$title\" />";
 			}
-			$link = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id=$elementid&amp;formid=$formid&amp;rowid=$rowid&amp;repeatcount=$i";
-			$url = "<a href=\"$link\">$title</a>";
+			$link = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;
+			$url = '<a href="' . $link . '">' . $title . '</a>';
 			return $url;
 		}
 
@@ -1491,8 +1505,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$formid = $formModel->getId();
 
 		$use_download_script = $params->get('fu_use_download_script', '0');
-		if (!$this->_editable && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH)) {
-			return $this->downloadLink();
+		if (!$this->_editable && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))
+		{
+			return $this->downloadLink($value);
 		}
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
 		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
@@ -1567,10 +1582,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (empty($value) || !$storage->exists(COM_FABRIK_BASE.$value)) {
 			return "";
 		}
-		$aclEl = str_replace('.', '___', $params->get('fu_download_acl', ''));
-		if (!empty($aclEl)) {
+		$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
+		$aclEl = $aclEl->getFullName();
+		if (!empty($aclEl))
+		{
 			$canDownload = in_array($data[$aclEl], JFactory::getUser()->authorisedLevels());
-			if (!$canDownload) {
+			if (!$canDownload)
+			{
 				$img = $params->get('fu_download_noaccess_image');
 				return $img == '' ? '' : "<img src=\"images/stories/$img\" alt=\"".JText::_('DOWNLOAD NO PERMISSION')."\" />";
 			}
@@ -1579,7 +1597,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$rowid = JRequest::getVar('rowid', '0');
 		$elementid = $this->_id;
 		$title = basename($value);
-		if ($params->get('fu_title_element') == '') {
+		if ($params->get('fu_title_element') == '')
+		{
 			$title_name = $this->getFullName(true, true, false ) . '__title';
 		} else {
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
@@ -1597,8 +1616,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if ($params->get('fu_download_access_image') !== '') {
 			$title = "<img src=\"images/stories/".$params->get('fu_download_access_image')."\" alt=\"$title\" />";
 		}
-		$link = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&element_id=$elementid&formid=$formid&rowid=$rowid&repeatcount=$repeatCounter";
-		$url = "<a href=\"$link\">$title</a>";
+		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&element_id=' . $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
+		$url = '<a href="' . $link . '">' . $title . '</a>';
 		return $url;
 	}
 
@@ -1971,17 +1990,22 @@ zoom:
 
 	function onAjax_download()
 	{
+		$this->setId(JRequest::getInt('element_id'));
+		$this->getElement();
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$url = JRequest::getVar('HTTP_REFERER', '', 'server');
-		$lang = &JFactory::getLanguage();
+		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik.plg.element.fabrikfileupload', JPATH_ADMINISTRATOR);
-		if (!$this->canView()) {
+		if (!$this->canView())
+		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION'));
 			$app->redirect($url);
 			exit;
 		}
 		$rowid = JRequest::getInt('rowid', 0);
-		if (empty($rowid)) {
+		if (empty($rowid))
+		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
 			$app->redirect($url);
 			exit;
@@ -1989,50 +2013,38 @@ zoom:
 		$repeatcount = JRequest::getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
 		$row = $listModel->getRow($rowid, false);
-		if (empty($row)) {
+		if (empty($row))
+		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
 			$app->redirect($url);
 			exit;
 		}
-		$aclEl = str_replace('.', '___', $params->get('fu_download_acl', ''));
-		if (!empty($aclEl)) {
-			$canDownload = FabrikWorker::getACL($row->$aclEl, 'filedownload');
-			if (!$canDownload) {
+		$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
+		$aclEl = $aclEl->getFullName();
+		if (!empty($aclEl))
+		{
+			$aclElraw = $aclEl . '_raw';
+			$user = JFactory::getUser();
+			$groups = $user->getAuthorisedViewLevels();
+			$canDownload = in_array($row->$aclElraw, $groups);
+			if (!$canDownload)
+			{
 				$app->enqueueMessage(JText::_('DOWNLOAD NO PERMISSION'));
 				$app->redirect($url);
 			}
 		}
-		//$element = $this->getElement();
 		$storage = $this->getStorage();
 		$elName = $this->getFullName(false, true, false);
-		//$elName .= '_raw';
 		$filepath = $row->$elName;
-		//$filepath = explode(GROUPSPLITTER,$filepath);
 		$filepath = FabrikWorker::JSONtoData($filepath, true);
 		$filepath = JArrayHelper::getValue($filepath, $repeatcount);
 		$filepath = $storage->getFullPath($filepath);
 		$filecontent = $storage->read($filepath);
-		if ($filecontent !== false) {
-			/*
-			 // $$$ hugh - turn of E_DEPRECATED to avoid warnings about eregi() in getid3
-			$current_level = error_reporting();
-			error_reporting($current_level & ~E_DEPRECATED);
-
-			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.php');
-			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.lib.php');
-
-			getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'extension.cache.mysql.php', __FILE__, true);
-			$config =& JFactory::getConfig();
-			$host =  $config->getValue('host');
-			$database = $config->getValue('db');
-			$username = $config->getValue('user');
-			$password = $config->getValue('password');
-			$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
-			// Analyze file and store returned data in $ThisFileInfo
-			$thisFileInfo = $getID3->analyze($filepath);
-			*/
+		if ($filecontent !== false)
+		{
 			$thisFileInfo = $storage->getFileInfo($filepath);
-			if ($thisFileInfo === false) {
+			if ($thisFileInfo === false)
+			{
 				$app->enqueueMessage( JText::_('DOWNLOAD NO SUCH FILE'));
 				$app->redirect($url);
 				exit;
@@ -2047,17 +2059,16 @@ zoom:
 			header('Content-Length: ' . $thisFileInfo['filesize']);
 			header('Content-Type: ' . $thisFileInfo['mime_type']);
 			header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
-
-			// ... serve up the image ...
+			// ... serve up the file ...
 			echo $filecontent;
-
 			$this->downloadEmail($row, $filepath);
 			$this->downloadHit($rowid, $repeatcount);
 			$this->downloadLog($row, $filepath);
 			// ... and we're done.
 			exit();
 		}
-		else {
+		else
+		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));
 			$app->redirect($url);
 			exit;
@@ -2068,55 +2079,33 @@ zoom:
 	{
 		// $$$ hugh @TODO - make this work for repeats and/or joins!
 		$params = $this->getParams();
-		if ($hit_counter = $params->get('fu_download_hit_counter','')) {
+		if ($hit_counter = $params->get('fu_download_hit_counter',''))
+		{
 			JError::setErrorHandling(E_ALL, 'ignore');
 			$listModel = $this->getListModel();
 			$pk = $listModel->getTable()->db_primary_key;
 			$fabrikDb = $listModel->getDb();
 			list($table_name,$element_name) = explode('.', $hit_counter);
-			$sql = "UPDATE $table_name SET $element_name = COALESCE($element_name,0) + 1 WHERE $pk = ".$fabrikDb->Quote($rowid);
+			$sql = "UPDATE $table_name SET $element_name = COALESCE($element_name,0) + 1 WHERE $pk = " . $fabrikDb->quote($rowid);
 			$fabrikDb->setQuery($sql);
 			$fabrikDb->query();
-		}
-	}
-
-	function downloadEmail( &$row, $filepath)
-	{
-		$params = $this->getParams();
-		$email_to = $params->get('fu_download_email', '');
-		if (!empty($email_to)) {
-			JError::setErrorHandling(E_ALL, 'ignore');
-			jimport('joomla.mail.helper');
-			$w = new FabrikWorker();
-			$email_to = $w->parseMessageForPlaceholder($email_to, JArrayHelper::fromObject($row), false);
-			$config = JFactory::getConfig();
-			$from = $config->getValue('mailfrom');
-			$fromname = $config->getValue('fromname');
-			$msg = JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_EMAIL_MSG') . "<br />\n";
-			$msg .= JText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME') . ': ' . $filepath . "<br />\n";
-			$user = JFactory::getUser();
-			$msg .= JText::_('PLG_ELEMENT_FILEUPLOAD_BY') . ': ' . ($user->get('id') == 0 ? 'guest' : $user->get('username')) . "<br />\n";
-			$msg .= JText::_('PLG_ELEMENT_FILEUPLOAD_FROM') . ': ' . JRequest::getVar('REMOTE_ADDR','','server') . "<br />\n";
-			$msg .= JText::_('PLG_ELEMENT_FILEUPLOAD_ON') . ': ' . date(DATE_RFC822) . "<br />\n";
-			$subject = JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_EMAIL_SUBJECT') . ' :: ' . $config->getValue('sitename');
-			foreach (explode(',', $email_to) as $to) {
-				$res = JUtility::sendMail( $from, $fromname, $to, $subject, $msg, true);
-			}
 		}
 	}
 
 	/**
 	 * log the download
 	 * @since 2.0.5
-	 * @param string $filepath
+	 * @param	object	row
+	 * @param	string	$filepath
 	 */
 
-	function downloadLog(&$row, $filepath)
+	function downloadLog($row, $filepath)
 	{
-		$params =& $this->getParams();
-		if ((int)$params->get('fu_download_log', 0)) {
-			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
-			$log =& JTable::getInstance('log', 'Table');
+		$params = $this->getParams();
+		if ((int) $params->get('fu_download_log', 0))
+		{
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
+			$log = JTable::getInstance('log', 'Table');
 			$log->message_type = 'fabrik.fileupload.download';
 			$user = JFactory::getUser();
 			$msg = new stdClass();
@@ -2124,7 +2113,7 @@ zoom:
 			$msg->userid = $user->get('id');
 			$msg->username = $user->get('username');
 			$msg->email = $user->get('email');
-			$log->referring_url = JRequest::getVar('REMOTE_ADDR','','server');
+			$log->referring_url = JRequest::getVar('REMOTE_ADDR', '', 'server');
 			$log->message = json_encode($msg);
 			$log->store();
 		}
