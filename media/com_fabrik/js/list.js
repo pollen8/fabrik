@@ -130,12 +130,12 @@ var FbListFilter = new Class({
 				var y = dims.y + b.getHeight();
 				var rx = this.filterContainer.getStyle('display') === 'none' ? this.filterContainer.show() : this.filterContainer.hide();
 				this.filterContainer.fade('toggle');
-				this.container.getElements('.filter, .fabrik_filter').toggle();
+				this.container.getElements('.filter, .listfilter').toggle();
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
 				this.filterContainer.fade('hide').hide();
-				this.container.getElements('.filter, .fabrik_filter').toggle();
+				this.container.getElements('.filter, .listfilter').toggle();
 			}
 		}
 
