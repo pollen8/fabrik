@@ -498,18 +498,19 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * @param	string	The id of the text field
 	 * @param	string	The date format
 	 * @param	array	Additional html attributes
-	 * @param int repeat group counter
+	 * @param	int		repeat group counter
 	 */
 
 	function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null, $repeatCounter = 0)
 	{
 		FabrikHelperHTML::loadcalendar();
-		if (is_array($attribs)) {
+		if (is_array($attribs))
+		{
 			$attribs = JArrayHelper::toString($attribs);
 		}
-		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE.'media/system/images/', 'image', 'form', false);
-		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id.'_cal_img'));
-		return '<input type="text" name="'.$name.'" id="'.$id.'" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" '.$attribs.' />'.$img;
+		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
+		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img'));
+		return '<input type="text" name="' . $name . '" id="' . $id . '" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" ' . $attribs . ' />' . $img;
 	}
 
 	/**
@@ -995,10 +996,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$joinStr = '';
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
-		foreach ($joins as $aJoin) {
+		foreach ($joins as $aJoin)
+		{
 			// not sure why the group id key wasnt found - but put here to remove error
-			if (array_key_exists('group_id', $aJoin)) {
-				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0) {
+			if (array_key_exists('group_id', $aJoin))
+			{
+				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
+				{
 					$fromTable = $aJoin->table_join;
 					$joinStr = " LEFT JOIN $fromTable ON ".$aJoin->table_join.".".$aJoin->table_join_key." = ".$aJoin->join_from_table.".".$aJoin->table_key;
 					$elName = str_replace($origTable.'.', $fromTable.'.', $elName);
@@ -1013,14 +1017,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		. "\n WHERE $elName IN ('".implode("','", $ids)."')"
 		. "\n AND TRIM($elName) <> '' $where GROUP BY text ASC";
 		$requestName = $elName."___filter";
-		if (array_key_exists($elName, $_REQUEST)) {
-			if (is_array($_REQUEST[$elName]) && array_key_exists('value', $_REQUEST[$elName])) {
+		if (array_key_exists($elName, $_REQUEST))
+		{
+			if (is_array($_REQUEST[$elName]) && array_key_exists('value', $_REQUEST[$elName]))
+			{
 				$_REQUEST[$requestName] = $_REQUEST[$elName]['value'];
 			}
 		}
 		$htmlid = $this->getHTMLId();
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		if (in_array($element->filter_type, array('dropdown'))) {
+		if (in_array($element->filter_type, array('dropdown')))
+		{
 			$rows = $this->filterValueList($normal);
 		}
 		$calOpts = $this->filterCalendarOpts();
@@ -1038,21 +1045,22 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					$default[0] = JFactory::getDate($default[0])->toFormat($format);
 					$default[1] = JFactory::getDate($default[1])->toFormat($format);
 				}
-
+				// add wrapper div for list filter toggeling
+				$return[] = '<div class="fabrik_filter_container">';
 				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN') .
-				$this->calendar($default[0], $v.'[0]', $this->getHTMLId()."_filter_range_0_".JRequest::getVar('task'), $format, $calOpts);
+				$this->calendar($default[0], $v . '[0]', $this->getHTMLId() . '_filter_range_0_' . JRequest::getVar('task'), $format, $calOpts);
 				$return[] = '<br />'.JText::_('COM_FABRIK_DATE_RANGE_AND') .
-				$this->calendar($default[1], $v.'[1]', $this->getHTMLId()."_filter_range_1_".JRequest::getVar('task'), $format, $calOpts);
-
+				$this->calendar($default[1], $v . '[1]', $this->getHTMLId(). '_filter_range_1_' . JRequest::getVar('task'), $format, $calOpts);
+				$return[] = '</div>';
 				break;
 
 			case "dropdown":
-
 				// cant do the format in the MySQL query as its not the same formatting
 				// e.g. M in mysql is month and J's date code its minute
 				jimport('joomla.utilities.date');
 				$ddData = array();
-				foreach ($rows as $k => $o) {
+				foreach ($rows as $k => $o)
+				{
 					if ($fabrikDb->getNullDate() === $o->text)
 					{
 						$o->text = '';
@@ -1071,8 +1079,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text', $default, $htmlid."_filter_range_0");
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text', $default, $htmlid . '_filter_range_0');
 				break;
 			default:
 			case "field":
@@ -1085,7 +1092,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				{
 					$default = JFactory::getDate($default)->toFormat($format);
 				}
+				// add wrapper div for list filter toggeling
+				$return[] = '<div class="fabrik_filter_container">';
 				$return[] = $this->calendar($default, $v, $htmlid . '_filter_range_0_' . JRequest::getVar('task'), $format, $calOpts);
+				$return[] = '</div>';
 				break;
 
 			case 'hidden':
