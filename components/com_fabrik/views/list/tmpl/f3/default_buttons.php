@@ -51,7 +51,7 @@ echo '<li>'.$this->pdfLink.'<li>';
 }?>
 
 <?php if ($this->emptyLink) {?>
-	<li class="button doempty">
+	<li class="doempty">
 	<a href="<?php echo $this->emptyLink?>"/>
 	<?php echo $this->buttons->empty;?>
 	<span><?php echo JText::_('COM_FABRIK_EMPTY')?></span>
