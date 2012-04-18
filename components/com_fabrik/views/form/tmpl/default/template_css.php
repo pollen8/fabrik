@@ -4,7 +4,7 @@ $c = (int)$_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
 echo "
 
-/*Here is the styling for your table legend - to learn what all the different elements are in a basic form see http://www.w3schools.com/tags/tag_legend.asp*/  
+/*Here is the styling for your table legend - to learn what all the different elements are in a basic form see http://www.w3schools.com/tags/tag_legend.asp*/
 #{$view}_$c legend,
 #{$view}_$c h3.legend{
 	background-color: #c0c0c0;
@@ -61,15 +61,25 @@ echo "
 	border:1px solid #DDDDDD;
 }
 
-/*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/  
+/* Needed in detail view */
+#details_$c .fabrikGroup{
+	clear: both;
+}
+
+/*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/
 #{$view}_$c fieldset ul{
-	padding:0;
 	list-style:none;
 	margin:0;
 }
 
-/*Note that the order of pixel specifications here follows this rule - top, right, bottom, left*/  
-#{$view}_$c fieldset > ul{
+/*Note that the order of pixel specifications here follows this rule - top, right, bottom, left*/
+/* Styling for main element list in form view */
+#form_$c fieldset > ul{
+	padding:40px 10px 20px 10px;
+}
+
+/* Styling for the main element list in detail view*/
+#details_$c .fabrikGroup > ul{
 	padding:40px 10px 20px 10px;
 }
 
@@ -215,7 +225,7 @@ section for dropdowns radio buttons etc**/
 
 #{$view}_$c .fabrikSubGroupElements{
 	width:80%;
-	float:left;
+	/* float:left; */
 }
 
 #{$view}_$c .geo{
