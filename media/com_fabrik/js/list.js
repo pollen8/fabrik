@@ -58,6 +58,7 @@ var FbListPlugin = new Class({
 		if (typeOf(this.options.name) === 'null') {
 			return;
 		}
+		//might need to be this.listform and not document
 		document.addEvent('click:relay(.' + this.options.name + ')', function (e) {
 			e.stop();
 			var row, chx;
@@ -119,7 +120,6 @@ var FbListFilter = new Class({
 		this.filters = $H({});
 		this.setOptions(options);
 		this.container = document.id(this.options.container);
-
 		this.filterContainer = this.container.getElement('.fabrikFilterContainer');
 		var b = this.container.getElement('.toggleFilters');
 		if (typeOf(b) !== 'null') {
@@ -130,12 +130,12 @@ var FbListFilter = new Class({
 				var y = dims.y + b.getHeight();
 				var rx = this.filterContainer.getStyle('display') === 'none' ? this.filterContainer.show() : this.filterContainer.hide();
 				this.filterContainer.fade('toggle');
-				this.container.getElements('.filter').toggle();
+				this.container.getElements('.filter, .listfilter').toggle();
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
 				this.filterContainer.fade('hide').hide();
-				this.container.getElements('.filter').toggle();
+				this.container.getElements('.filter, .listfilter').toggle();
 			}
 		}
 
@@ -745,8 +745,8 @@ var FbList = new Class({
 		}
 		
 		if (this.options.ajax_links) {
-			document.removeEvents('click:relay(.fabrik_edit)');
-			document.addEvent('click:relay(.fabrik_edit)', function (e) {
+			this.getForm().removeEvents('click:relay(.fabrik_edit)');
+			this.getForm().addEvent('click:relay(.fabrik_edit)', function (e) {
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
@@ -792,8 +792,8 @@ var FbList = new Class({
 				Fabrik.getWindow(winOpts);
 			}.bind(this));
 
-			document.removeEvents('click:relay(.fabrik_view)');
-			document.addEvent('click:relay(.fabrik_view)', function (e) {
+			this.getForm().removeEvents('click:relay(.fabrik_view)');
+			this.getForm().addEvent('click:relay(.fabrik_view)', function (e) {
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
@@ -1192,8 +1192,8 @@ var FbList = new Class({
 			}.bind(this));
 		}
 		var del = document.getElements('.fabrik_delete a');
-		document.removeEvents('click:relay(.fabrik_delete a)');
-		document.addEvent('click:relay(.fabrik_delete a)', function (e) {
+		this.getForm().removeEvents('click:relay(.fabrik_delete a)');
+		this.getForm().addEvent('click:relay(.fabrik_delete a)', function (e) {
 			this.watchDelete(e);
 		}.bind(this));
 

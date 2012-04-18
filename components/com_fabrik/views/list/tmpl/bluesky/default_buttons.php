@@ -68,7 +68,7 @@
 	}
 	if ($this->emptyLink) {?>
 		<li>
-		<a href="<?php echo $this->emptyLink?>" class="button doempty">
+		<a href="<?php echo $this->emptyLink?>" class="doempty">
 		<?php echo $this->buttons->empty;?>
 		<span><?php echo JText::_('COM_FABRIK_EMPTY')?></span>
 		</a>

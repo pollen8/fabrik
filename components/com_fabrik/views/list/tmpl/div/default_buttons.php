@@ -1,4 +1,6 @@
 <div class="fabrik_buttons">
+	<?php if ($this->hasButtons) {?>
+
 	<ul class="fabrik_action"><?php if ($this->showAdd) {?>
 		<li class="addbutton">
 			<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
@@ -7,7 +9,7 @@
 			</a>
 		</li>
 	<?php }
-	
+
 	if ($this->showFilters && $this->params->get('show-table-filters') == 2) {?>
 		<li>
 			<a href="#" class="toggleFilters">
@@ -59,11 +61,12 @@
 	}
 	if ($this->emptyLink) {?>
 		<li>
-		<a href="<?php echo $this->emptyLink?>" class="button doempty">
+		<a href="<?php echo $this->emptyLink?>" class="doempty">
 		<?php echo $this->buttons->empty;?>
 		<span><?php echo JText::_('COM_FABRIK_EMPTY')?></span>
 		</a>
 		</li>
 <?php }?>
 </ul>
+<?php }?>
 </div>

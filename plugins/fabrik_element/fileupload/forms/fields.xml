@@ -113,88 +113,184 @@
 		</fieldset>
 		
 		<fieldset name="plg-fileupload-amazon">
-			<field description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_ACCESSKEY_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_ACCESSKEY_LABEL" name="fileupload_aws_accesskey" size="40" type="text"/>
+		
+			<field name="fileupload_aws_accesskey"
+				type="text"
+				size="40" 
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_ACCESSKEY_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_ACCESSKEY_LABEL" />
 				
-			<field description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_SECRETKEY_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_SECRETKEY_LABEL" name="fileupload_aws_secretkey" size="40" type="text"/>
+			<field name="fileupload_aws_secretkey"
+				type="text"
+				size="40"
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_SECRETKEY_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_SECRETKEY_LABEL" />
 				
-			<field description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_STORAGE_LOCATION_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_STORAGE_LOCATION_LABEL" name="fileupload_aws_location" type="list">
+			<field name="fileupload_aws_location"
+				type="list"
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_STORAGE_LOCATION_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_STORAGE_LOCATION_LABEL" >
 					<option value="">USA East</option>
 					<option value="us-west-1">USA West(Northern California)</option>
 					<option value="EU">Europe</option>
 					<option value="ap-southeast-1">APAC (Singapore)</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_SSL_DESC" label="PLG_ELEMENT_FILEUPLOAD_SSL_LABEL" name="fileupload_ssl" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>	
+			<field name="fileupload_ssl"
+				type="radio"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_SSL_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_SSL_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
 			</field>
 			
-			<field description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_LABEL" name="fileupload_aws_bucketname" size="40" type="text"/>
+			<field name="fileupload_aws_bucketname"
+				size="40"
+				type="text"
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_LABEL" />
 			
-			<field default="2" description="PLG_ELEMENT_FILEUPLOAD_ACL_DESC" label="PLG_ELEMENT_FILEUPLOAD_ACL_LABEL" name="fileupload_amazon_acl" type="list">
+			<field name="fileupload_amazon_acl"
+				type="list"
+				default="2"
+				description="PLG_ELEMENT_FILEUPLOAD_ACL_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_ACL_LABEL">
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_ACL_PRIVATE</option>
 					<option value="2">PLG_ELEMENT_FILEUPLOAD_ACL_PUBLIC_READ</option>
 					<option value="3">PLG_ELEMENT_FILEUPLOAD_ACL_PUBLIC_READ_WRITE</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_SKIP_CHECK_DESC" label="PLG_ELEMENT_FILEUPLOAD_SKIP_CHECK_LABEL" name="fileupload_skip_check" type="radio">
+			<field name="fileupload_skip_check"
+				type="radio"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_SKIP_CHECK_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_SKIP_CHECK_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="60" description="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_LABEL" name="fileupload_amazon_auth_url" size="3" type="text"/>
+			<field name="fileupload_amazon_auth_url" 
+				type="text"
+				size="3"
+				default="60"
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_LABEL"/>
+				
 		</fieldset>
 		
 
 		<fieldset name="plg-fileupload-ajax-upload">
 	
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DESC" hide="0" label="PLG_ELEMENT_FILEUPLOAD_AJAX_LABEL" name="ajax_upload" show="1" toggle="plg-fileupload-ajax-upload-opts" type="toggleoptionsradio">
+			<field name="ajax_upload"
+				type="toggleoptionsradio"
+				default="0"
+				hide="0"
+				show="1"
+				toggle="plg-fileupload-ajax-upload-opts"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 		</fieldset>
 			
 		<fieldset name="plg-fileupload-ajax-upload-opts">
-			<field default="html5" description="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_LABEL" name="ajax_runtime" type="text"/>
+			<field name="ajax_runtime"
+				type="text"
+				default="html5"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_LABEL" />
 			
-			<field default="4" description="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_LABEL" name="ajax_max" size="2" type="text"/>
+			<field name="ajax_max"
+				type="text"
+				size="2"
+				default="4"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_LABEL" />
 				
-			<field default="400" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_LABEL" name="ajax_dropbox_width" type="text"/>
+			<field name="ajax_dropbox_width"
+				type="text"
+				default="400"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_LABEL" />
 			
-			<field default="200" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_LABEL" name="ajax_dropbox_height" type="text"/>
+			<field name="ajax_dropbox_height"
+				type="text"
+				default="200"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_LABEL" />
 				
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_LABEL" name="ajax_chunk_size" size="4" type="text"/>
+			<field name="ajax_chunk_size"
+				size="4"
+				type="text"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_LABEL"/>
 				
 		</fieldset>
 		
-		<fieldset group="plg-fileupload-downloads">
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_DESC" label="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_LABEL" name="fu_use_download_script" type="list">
+		<fieldset label="PLG_ELEMENT_FILEUPLOAD_DOWNLOADS" name="plg-fileupload-downloads">
+		
+			<field
+				name="fu_use_download_script"
+				type="list"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_LABEL">
 					<option value="0">No</option>
 					<option value="1">Table View Only</option>
 					<option value="2">Detail View Only</option>
 					<option value="3">Both</option>
 				</field>
-				<field description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_DESC" filter="fabrikaccess" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_LABEL" name="fu_download_acl" type="listfields"/>
+		
+				<field name="fu_download_acl"
+					type="listfields"
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_DESC"
+					filter="access" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_LABEL" />
 					
-				<field description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_DESC" directory="/images/stories" hide_none="1" label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_LABEL" name="fu_download_noaccess_image" type="imagelist"/>
+				<field name="fu_download_noaccess_image"
+					type="imagelist"
+					directory="/images/stories" hide_none="1" 
+					description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_DESC"
+					label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_LABEL" />
 					
-				<field description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_LINK_DESC" label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_LINK_LABEL" name="fu_download_noaccess_url" type="text"/>
+				<field name="fu_download_noaccess_url"
+					type="text"
+					description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_LINK_DESC"
+					label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_LINK_LABEL" />
 					
-				<field description="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_DESC" directory="/images/stories" hide_none="1" label="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_LABEL" name="fu_download_access_image" type="imagelist"/>
+				<field name="fu_download_access_image"
+					type="imagelist"
+					directory="/images/stories"
+					hide_none="1" 
+					description="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_DESC"
+					label="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_LABEL" />
 				
-				
-				<field description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_EMAIL_DESC" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_EMAIL_LABEL" name="fu_download_email" size="20" type="text"/>
+				<field name="fu_download_hit_counter"
+					type="listfields"
+					valueformat="tableelement"
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_DESC"
+					label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_LABEL" />
 					
-				<field description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_DESC" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_LABEL" name="fu_download_hit_counter" type="listfields" valueformat="tableelement"/>
-					
-				<field default="0" description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_DESC" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_LABEL" name="fu_download_log" type="radio">
+				<field name="fu_download_log"
+					type="radio"
+					default="0"
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_DESC"
+					label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_LABEL">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
+		
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_FILEUPLOAD_EXPORT" name="plg-fileupload-export">
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_CSV_EXPORT_FORMAT_DESC" label="PLG_ELEMENT_FILEUPLOAD_CSV_EXPORT_FORMAT_LABEL" name="ul_export_encode_csv" type="list">
+		
+			<field name="ul_export_encode_csv"
+				type="list"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_CSV_EXPORT_FORMAT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_CSV_EXPORT_FORMAT_LABEL">
 					<option value="relative">PLG_ELEMENT_FILEUPLOAD_RELATIVE_PATH</option>
 					<option value="full">PLG_ELEMENT_FILEUPLOAD_FULL_PATH</option>
 					<option value="url">PLG_ELEMENT_FILEUPLOAD_URL</option>
@@ -202,12 +298,15 @@
 					<option value="base64">PLG_ELEMENT_FILEUPLOAD_BASE64_FILE_STREAM</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_JSON_EXPORT_FORMAT_DESC" label="PLG_ELEMENT_FILEUPLOAD_JSON_EXPORT_FORMAT_LABEL" name="ul_export_encode_json" type="list">
-				<option value="relative">PLG_ELEMENT_FILEUPLOAD_RELATIVE_PATH</option>
-				<option value="full">PLG_ELEMENT_FILEUPLOAD_FULL_PATH</option>
-				<option value="url">PLG_ELEMENT_FILEUPLOAD_URL</option>
-				<option value="raw">PLG_ELEMENT_FILEUPLOAD_RAW_FILE_STREAM</option>
-				<option value="base64">PLG_ELEMENT_FILEUPLOAD_BASE64_FILE_STREAM</option>
+			<field name="ul_export_encode_json"
+				type="list"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_JSON_EXPORT_FORMAT_DESC" label="PLG_ELEMENT_FILEUPLOAD_JSON_EXPORT_FORMAT_LABEL">
+					<option value="relative">PLG_ELEMENT_FILEUPLOAD_RELATIVE_PATH</option>
+					<option value="full">PLG_ELEMENT_FILEUPLOAD_FULL_PATH</option>
+					<option value="url">PLG_ELEMENT_FILEUPLOAD_URL</option>
+					<option value="raw">PLG_ELEMENT_FILEUPLOAD_RAW_FILE_STREAM</option>
+					<option value="base64">PLG_ELEMENT_FILEUPLOAD_BASE64_FILE_STREAM</option>
 			</field>
 		</fieldset>
 	</fields>

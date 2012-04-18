@@ -23,10 +23,11 @@ class FabrikViewList extends JView{
 		$model->setId(JRequest::getInt('listid'));
 		$table = $model->getTable();
 		$params = $model->getParams();
-		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
+		//$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$rowid = JRequest::getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->render();
+		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$nav = $model->getPagination();
 		$c = 0;
 		foreach ($data as $groupk => $group) {

@@ -390,7 +390,7 @@ class FabrikViewList extends JView{
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 
-		$this->assign('filterMode', (int)$params->get('show-table-filters'));
+		$this->assign('filterMode', (int) $params->get('show-table-filters'));
 		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
 		$this->assign('showFilters', $this->get('showFilters'));
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
