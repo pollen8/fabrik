@@ -199,22 +199,6 @@
 				label="COM_FABRIK_FIELD_VIEW_HEADING_LABEL_LABEL" 
 				description="COM_FABRIK_FIELD_VIEW_HEADING_LABEL_DESC" />
 				
-			<field name="icon_folder" 
-				type="radio" 
-				default="0"
-				label="COM_FABRIK_FIELD_ICON_FOLDER_LABEL" 
-				description="COM_FABRIK_FIELD_ICON_FOLDER_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-				
-			<field name="icon_file" 
-				SIZE="20" type="text" 
-				default="" 
-				label="COM_FABRIK_FIELD_ICON_FILE_LABEL" 
-				description="COM_FABRIK_FIELD_ICON_FILE_DESC">
-			</field>
-
 			<field name="custom_link" 
 				size="70" type="text" 
 				label="COM_FABRIK_FIELD_CUSTOM_LINK_LABEL" 
@@ -228,6 +212,35 @@
 					<option value="1">JYES</option>
 			</field>
 			
+		</fieldset>
+		
+		<fieldset name="icons">
+		
+			<field name="icon_folder" 
+				type="radio" 
+				default="0"
+				label="COM_FABRIK_FIELD_ICON_FOLDER_LABEL" 
+				description="COM_FABRIK_FIELD_ICON_FOLDER_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="icon_hovertext" 
+				type="radio" 
+				default="1"
+				label="COM_FABRIK_FIELD_ICON_HOVER_TEXT_LABEL" 
+				description="COM_FABRIK_FIELD_ICON_HOVER_TEXT_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
+			<field name="icon_file" 
+				SIZE="20" type="text" 
+				default="" 
+				label="COM_FABRIK_FIELD_ICON_FILE_LABEL" 
+				description="COM_FABRIK_FIELD_ICON_FILE_DESC">
+			</field>
+		
 		</fieldset>
 	
 		<fieldset name="rss">

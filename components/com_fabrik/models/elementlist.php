@@ -289,26 +289,26 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
 			foreach ($vals as $val)
 			{
-				$l = $useIcon ? $this->_replaceWithIcons($val) : $val;
+				$l = $useIcon ? $this->_replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
 				if (!$this->iconsSet == true)
 				{
 					$l = $this->getLabelForValue($val);
-					$l = $this->_replaceWithIcons($l);
+					$l = $this->_replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				$l = $this->rollover($l, $oAllRowsData, 'list');
 				$l = $listModel->_addLink($l, $this, $oAllRowsData, $i);
 				if (trim($l) !== '')
 				{
-					$lis[] =  $multiple || $mergeGroupRepeat ? "<li>$l</li>" : $l;
+					$lis[] =  $multiple || $mergeGroupRepeat ? '<li>' . $l . '</li>' : $l;
 				}
 			}
 			if (!empty($lis))
 			{
-				$uls[] = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $lis).'</ul>' : implode(' ', $lis);
+				$uls[] = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $lis) . '</ul>' : implode(' ', $lis);
 			}
 		}
 		//$$$rob if only one repeat group data then dont bother encasing it in a <ul>
-		return ((count($gdata) !== 1 || $mergeGroupRepeat) && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">'.implode(' ', $uls).'</ul>' : implode(' ', $uls);
+		return ((count($gdata) !== 1 || $mergeGroupRepeat) && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $uls) . '</ul>' : implode(' ', $uls);
 	}
 
 	/**
