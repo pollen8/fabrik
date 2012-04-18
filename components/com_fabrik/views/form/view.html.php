@@ -604,6 +604,16 @@ class fabrikViewForm extends JView
 			$form->nextButton = '';
 			$form->prevButton = '';
 		}
+
+		if (empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton)
+			&& empty($form->gobackButton) && empty($form->deleteButton) && empty($form->applyButton)
+			&& empty($form->copyButton) && empty($form->resetButton)) {
+			$this->hasActions = false;
+		}
+		else {
+			$this->hasActions = true;
+		}
+
 		$format = $model->isAjax() ? 'raw' : 'html';
 		$fields[] = '<input type="hidden" name="format" value="'.$format.'" />';
 
