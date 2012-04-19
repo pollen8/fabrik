@@ -307,7 +307,9 @@ class plgFabrik_Element extends FabrikPlugin
 				$this->iconsSet = true;
 				$opts = new stdClass();
 				$opts->notice = true;
+				$opts->position = 'top';
 				$opts = json_encode($opts);
+				$data = htmlspecialchars($data, ENT_QUOTES);
 				$data = '<span>' . $data . '</span>';
 				if ($params->get('icon_hovertext', true))
 				{
@@ -1023,6 +1025,8 @@ class plgFabrik_Element extends FabrikPlugin
 			{
 				return $txt;
 			}
+			// $$$ rob this might be needed - cant find a test case atm though
+			//$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 			$rollOver = '<span>' . $rollOver . '</span>';
 			return '<span class="fabrikTip" opts="' . $opts . '" title="' . $rollOver . '">' . $txt . '</span>';
 		}
@@ -3725,14 +3729,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	function renderListData($data, $oAllRowsData)
 	{
-		
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
 		$data = FabrikWorker::JSONtoData($data, true);
 		foreach ($data as $i => &$d)
 		{
-			// $$$ hugh - in f3 icon_folder is a radio choice, 0 or 1, not a folder path
-			//if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') {
 			if ($params->get('icon_folder') == '1')
 			{
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
@@ -3741,6 +3742,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$d = $this->rollover($d, $oAllRowsData, 'list');
 			$d = $listModel->_addLink($d, $this, $oAllRowsData, $i);
 		}
+		return $this->renderListDataFinal($data);
+	}
+	
+	/**
+	 * final prepare data function called from renderListData(), converts data to string and if needed 
+	 * encases in <ul> (for repeating data)
+	 * @param	array	list cell data
+	 * @return	string	cell data
+	 */
+	
+	protected function renderListDataFinal($data)
+	{
 		if (is_array($data) && count($data) > 1)
 		{
 			if (!array_key_exists(0, $data))
@@ -3769,9 +3782,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	protected function convertDataToString(&$o)
 	{
-		if (is_object($o)) {
+		if (is_object($o))
+		{
 			$s = '<ul>';
-			foreach ($o as $k => $v) {
+			foreach ($o as $k => $v)
+			{
 				$s .= '<li>' . $v . '</li>';
 			}
 			$s .= '</ul>';
