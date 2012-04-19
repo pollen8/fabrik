@@ -1,3 +1,8 @@
+<?php if (!JFactory::getApplication()->isAdmin())
+{
+	JError::raiseNotice(500, JText::_('COM_FABRIK_ERR_ADMIN_LIST_TMPL_IN_FRONTEND'));
+	return;
+}?>
 <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
 <?php } ?>
