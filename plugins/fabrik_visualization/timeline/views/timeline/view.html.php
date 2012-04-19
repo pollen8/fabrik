@@ -25,7 +25,9 @@ class fabrikViewTimeline extends JView
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$pluginParams = $model->getPluginParams();
-		$this->assignRef('params', $pluginParams);
+		$params = $model->getParams();
+		$this->assignRef('params', $params);
+		$tmpl = $params->get('timeline_layout', $tmpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/timeline/views/timeline/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 		//ensure we don't have an incorrect version of mootools loaded

@@ -76,5 +76,14 @@
 				description="PLG_VIZ_TIMELINE_CLASS_DESC" />
 			
 		</fieldset>
+		
+		<fieldset name="plg-visualization-layout">
+			
+			<field name="timeline_layout"
+				label="PLG_VIZ_TIMELINE_TEMPLATE_LABEL"
+				type="folderlist"
+				directory="/plugins/fabrik_visualization/timeline/views/timeline/tmpl/" />
+				
+		</fieldset>
 	</fields>
 </form>
