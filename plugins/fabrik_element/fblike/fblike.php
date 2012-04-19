@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementFblike extends plgFabrik_Element {
 
@@ -37,13 +37,14 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 		$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
 		// $$$ rob no need to get other meta data as we are linking to the details which contains full meta info on what it is
 		// you are liking
-		$meta['og:url'] = $ex.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 		$meta['og:site_name'] = $config->getValue('sitename');
 		$meta['fb:admins'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
-		//in table view we like the detailed record not the table view itself
+		// in list view we link to the detailed record not the list view itself
+		// means form or details view must be viewable by the user
 		$url = $this->getListModel()->linkHref($this, $oAllRowsData);
-		return $str.$this->_render($url);
+		return $str . $this->_render($url);
 		return parent::renderListData($data, $oAllRowsData);
 	}
 
