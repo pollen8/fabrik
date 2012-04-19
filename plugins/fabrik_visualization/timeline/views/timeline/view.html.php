@@ -24,7 +24,6 @@ class fabrikViewTimeline extends JView
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ?  1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
-		$pluginParams = $model->getPluginParams();
 		$params = $model->getParams();
 		$this->assignRef('params', $params);
 		$tmpl = $params->get('timeline_layout', $tmpl);
