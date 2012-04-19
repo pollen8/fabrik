@@ -97,7 +97,7 @@ class plgSystemFabrikcron extends JPlugin
 		{
 			return;
 		}
-		
+
 		$log->message = '';
 
 		// $$$ hugh - set 'state' to 2 for selected rows, so we don't end up running
@@ -187,7 +187,7 @@ class plgSystemFabrikcron extends JPlugin
 			//mark them as being run
 			// $$$ hugh - and make it runnable again by setting 'state' back to 1
 			$nextrun = JFactory::getDate($tmp);
-			$db->setQuery('UPDATE #__{package}_cron SET lastrun = "'.$nextrun->toMySQL() .'" WHERE id = '.$row->id);
+			$db->setQuery('UPDATE #__{package}_cron SET published = "1", lastrun = "'.$nextrun->toMySQL() .'" WHERE id = '.$row->id);
 			$db->query();
 			//log if asked for
 			if ($plugin->getParams()->get('log', 0) == 1)
