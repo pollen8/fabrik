@@ -3893,7 +3893,7 @@ class FabrikFEModelList extends JModelForm {
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
 			$v = $this->getFilterModel()->getSearchAllValue();
 			$o = new stdClass();
-			$o->filter = '<input type="search" size="20" value="'.$v.'" class="fabrik_filter" name="'.$requestKey.'" />';
+			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="'.$v.'" class="fabrik_filter" name="'.$requestKey.'" />';
 			if ($params->get('search-mode-advanced') == 1) {
 				$opts = array();
 				$opts[] = JHTML::_('select.option', 'all', JText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
