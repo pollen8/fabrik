@@ -83,7 +83,7 @@ var FloatingTips = new Class({
 	},
 
 	show: function (element) {
-		this.hideAll();
+		//this.hideAll();
 		var old = element.retrieve('floatingtip');
 		if (old) if (old.getStyle('opacity') == 1) { clearTimeout(old.retrieve('timeout')); return this; }
 		var tip = this._create(element);
@@ -102,11 +102,7 @@ var FloatingTips = new Class({
 			return;
 		}
 		var opts = element.retrieve('options');
-		//if its just a notice the mouse out should always hide the tip
-		if (typeOf(opts) !== 'null' && opts.notice) {
-			return this.doHide(element);
-		}
-			//this could be something like the group by hover menu - test if we are really outside
+		//this could be something like the group by hover menu - test if we are really outside
 		var t = e.target.getParent('.' + this.options.className + '-wrapper');
 		var tt = e.target.getParent(this.selector);
 		var classTest = false;
@@ -116,15 +112,23 @@ var FloatingTips = new Class({
 			} else {
 				classTest = e.target.hasClass(this.selector['class']);
 			}
+		} else {
+			classTest = true;
 		}
 	
 		if (this.elements.contains(t) || this.elements.contains(tt) || classTest) {
 			//stops the element from being hidden if mouse over trigger
 			return this;
 		}
+		//if its just a notice the mouse out should always hide the tip
+		if (typeOf(opts) !== 'null' && opts.notice) {
+			return this.doHide(element);
+		}
+
 		//for click triggers like group by moving out of trigger element shouldnt hide list.
+		// unless its an checkbox which has been deselected
 		if (this.options.showOn === 'click') {
-			if (!e.target.getParent('.' + this.options.className)) {
+			if (!e.target.getParent('.' + this.options.className) && e.target.get('checked') !== false) {
 				//not moving out of the main menu
 				return;
 			}
@@ -133,6 +137,7 @@ var FloatingTips = new Class({
 	},
 	
 	doHide: function(element) {
+		return;
 		var tip = element.retrieve('floatingtip');
 		if (!tip) return this;
 		this._animate(tip, 'out');
@@ -142,7 +147,7 @@ var FloatingTips = new Class({
 	
 	hideAll: function() {
 		this.elements.each(function(e) {
-			this.hide(new Event.Mock(document.body, 'mouseout'), e);
+			//this.hide(new Event.Mock(document.body, 'mouseout'), e);
 		}.bind(this));
 	},
 	
@@ -171,10 +176,18 @@ var FloatingTips = new Class({
 			break;
 		}
 		//auto resize the tip based on tip content
-		var cWidth = cnt.length + 'px';
+		// we have to make a hidden div and inject it into the dom to acutally measure the content size
+		var tmp = new Element('div').addClass(o.className + '-positioner floating-tip').set('html', cnt);
+		tmp.setStyle('display', 'none');
+		tmp.inject(document.body);
+		var tmpDims = tmp.getDimensions(true);
+		tmpDims.width = 1000; // don't ask! if set to actual width then word wrapping occurs in ie on 'export to csv'
+		var cWidth = tmpDims.width + 'px';
+		var cHeight = tmpDims.height + 'px';
+		
 		var cwr = new Element('div').addClass(o.className).setStyles({'margin': 0, 'position': 'absolute'});
 		var positioner = new Element('div').addClass(o.className + '-positioner').setStyles({'position': 'relative'}).adopt(cwr);
-		var tip = new Element('div').addClass(o.className + '-wrapper').setStyles({'width': cWidth, 'margin': 0, 'padding': 0, 'z-index': cwr.getStyle('z-index') }).adopt(positioner);
+		var tip = new Element('div').addClass(o.className + '-wrapper').setStyles({'width': cWidth, 'height': 0, 'margin': 0, 'padding': 0, 'z-index': cwr.getStyle('z-index') }).adopt(positioner);
 		
 		if (cnt) { 
 			if (o.html) cwr.set('html', typeof(cnt) == 'string' ? cnt : cnt.get('html')); 
@@ -191,7 +204,7 @@ var FloatingTips = new Class({
 			
 			var trg = new Element('div').addClass(o.className + '-triangle').setStyles({ 'margin': 0, 'padding': 0, 'position': 'absolute' });
 			var zi = tip.getStyle('z-index');
-			if (zi !== 'auto') {
+			if (zi !== 'auto' && zi.toInt() !== 0) {
 				zi = zi - 1;
 			}
 			trg.setStyle('z-index', zi);
@@ -289,6 +302,9 @@ var FloatingTips = new Class({
 		
 		var tipSz = cwr.getSize(), trgC = elem.getCoordinates(body);
 		var pos = { x: trgC.left + o.offset.x, y: trgC.top + o.offset.y };
+		if (Browser.ie && opos === 'top') {
+			pos.y = pos.y - tmpDims.height;
+		}
 		if (opos == 'inside') {
 			tip.setStyles({ 'width': tip.getStyle('width'), 'height': tip.getStyle('height') });
 			elem.setStyle('position', 'relative').adopt(tip);
@@ -296,10 +312,8 @@ var FloatingTips = new Class({
 		} else {
 			switch (opos) {
 				case 'top':     pos.y -= arrowStyle.size.height + o.distance; break;
-			//case 'top':     pos.y -=  o.distance; break;
 				case 'right': 	pos.x += trgC.width + o.distance; break;
 				case 'bottom': 	pos.y += trgC.height + o.distance; break;
-				//case 'left': 	pos.x -= tipSz.x + o.distance; break;
 				case 'left': 	pos.x -= o.distance + tip.getWidth(); break;
 			}
 		}
@@ -318,6 +332,9 @@ var FloatingTips = new Class({
 		elem.store('options', o);
 		tip.store('options', o);
 		tip.addEvent('mouseleave', this.options.hideFn.bindWithEvent(this, [elem, 'tip']));
+		if (o.notice) {
+			elem.addEvent('mouseleave', this.doHide.bind(this, [elem]));
+		}
 		return tip;
 	},
 	

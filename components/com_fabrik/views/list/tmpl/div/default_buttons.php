@@ -24,7 +24,7 @@
 				<?php echo $this->buttons->filter;?>
 				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
 			</a>
-			<ul class="floating-tip">
+			<ul>
 				<?php foreach ($this->groupByHeadings as $url => $label) {?>
 					<li><a href="<?php echo $url?>"><?php echo $label?></a></li>
 				<?php

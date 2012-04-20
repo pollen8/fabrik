@@ -1142,6 +1142,7 @@ EOD;
 		$p = '';
 		foreach ($bits as $key => $val)
 		{
+			$val = str_replace('"', "'", $val);
 			$p .= $key . '="' . $val . '" ';
 		}
 		return $src == '' ? '' : '<img src="' . $src . '" '. $p. '/>';

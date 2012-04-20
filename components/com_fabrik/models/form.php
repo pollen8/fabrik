@@ -1822,7 +1822,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 				else
 				{
-					if (!array_key_exists($elName2 . '_raw', $post)) {
+					if (!array_key_exists($elName2 . '_raw', $post))
+					{
 						JRequest::setVar($elName2 . '_raw', @$post[$elName2]); //post required getValue() later on
 						$post[$elName2 . '_raw'] = @$post[$elName2];
 					}

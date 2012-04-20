@@ -291,6 +291,12 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 	display:block;
 	padding:5px 16px;
 }
+
+.floating-tip a{
+	display: block;
+	padding: 3px;
+}
+
 .floating-tip {
 	padding: 0;
 	min-width: 100px;
@@ -309,7 +315,6 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 .floating-tip > span {
 	padding: 5px 15px;
 }
-
 
 .floating-tip .fabrikElementContainer > li:first-child,
 .floating-tip .fabrik_buttons li:first-child,
@@ -346,4 +351,8 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 
 .floating-tip .fabrikElementContainer li span{
 	margin-left:7px;
+}
+
+.floating-tip .validation-notices li{
+	border:0;
 }

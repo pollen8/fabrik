@@ -31,9 +31,9 @@
 				<?php echo $this->buttons->groupby;?>
 				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
 			</a>
-			<ul class="floating-tip">
+			<ul>
 				<?php foreach ($this->groupByHeadings as $url => $label) {?>
-					<li><span><a href="<?php echo $url?>"><?php echo $label?></a></span></li>
+					<li><a href="<?php echo $url?>"><?php echo $label?></a></li>
 				<?php
 				}?>
 			</ul>

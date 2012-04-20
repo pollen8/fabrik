@@ -743,6 +743,7 @@ var FbForm = new Class({
 		if (msg === '') {
 			msg = Joomla.JText._('COM_FABRIK_SUCCESS');
 		}
+		msg = '<span>' + msg + '</span>';
 		this.formElements.get(id).setErrorMessage(msg, classname);
 		return (classname === 'fabrikSuccess') ? false : true;
 	},
@@ -756,10 +757,6 @@ var FbForm = new Class({
 			return !e.hasClass('fabrikMainError');
 		});
 		if (activeValidations.length > 0 && mainEr.hasClass('fabrikHide')) {
-		/*	mainEr.removeClass('fabrikHide');
-			myfx = new Fx.Tween(mainEr, {property: 'opacity',
-				duration: 500
-			}).start(0, 1);*/
 			this.showMainError(this.options.error);
 		}
 		if (activeValidations.length === 0) {

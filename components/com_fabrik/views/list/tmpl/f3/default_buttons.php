@@ -16,7 +16,22 @@
 			<span><?php echo JText::_('COM_FABRIK_FILTER');?></span>
 		</a>
 	</li>
-<?php } ?>
+<?php } 
+
+	if ($this->canGroupBy) {?>
+		<li>
+			<a href="#" class="groupBy">
+				<?php echo $this->buttons->groupby;?>
+				<span><?php echo JText::_('COM_FABRIK_GROUP_BY');?></span>
+			</a>
+			<ul>
+				<?php foreach ($this->groupByHeadings as $url => $label) {?>
+					<li><a href="<?php echo $url?>"><?php echo $label?></a></li>
+				<?php
+				}?>
+			</ul>
+		</li>
+	<?php }?>
 
 <?php if ($this->showCSV) {?>
 	<li class="csvExportButton">

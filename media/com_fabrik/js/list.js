@@ -1383,7 +1383,7 @@ var FbListActions = new Class({
 			// sub menus ie group by options
 			if (ul.getElement('ul')) {
 				var el = ul.getElement('ul');
-				var c = el.clone();
+				var c = new Element('div').adopt(el.clone());
 				var trigger = el.getParent();
 				var tip = new FloatingTips(trigger, {
 					showOn: 'click',

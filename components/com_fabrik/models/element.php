@@ -953,17 +953,22 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			if ($this->_editable)
 			{
-				$validations = $this->getValidations();
+				$validations = array_unique($this->getValidations());
 				if (count($validations) > 0)
 				{
-					$validationHovers = array('<span><ul style="list-style:none">');
+					$validationHovers = array('<span><ul class="validation-notices" style="list-style:none">');
 					foreach ($validations as $validation)
 					{
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
 					}
 					$validationHovers[] = '</ul></span>';
-					$title = htmlspecialchars(implode("", $validationHovers), ENT_QUOTES);
-					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title));
+					$validationHovers = implode('', $validationHovers);
+					$title = htmlspecialchars($validationHovers, ENT_QUOTES);
+					$opts = new stdClass();
+					$opts->position = 'top';
+					$opts->notice = true;
+					$opts = json_encode($opts);
+					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => $opts, 'title' => $title));
 				}
 			}
 			$model = $this->getFormModel();
@@ -973,7 +978,7 @@ class plgFabrik_Element extends FabrikPlugin
 				$str .= '</label>';
 			} elseif (!$bLabel && !$this->isHidden())
 			{
-					$str .= '</span>';
+				$str .= '</span>';
 			}
 		}
 		return $str;
