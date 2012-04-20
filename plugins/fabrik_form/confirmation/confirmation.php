@@ -107,10 +107,14 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 
 		//set the element access to read only??
 		$groups = $formModel->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
-				$elementModel->getElement()->access = 26;
+			foreach ($elementModels as $elementModel)
+			{
+				// $$$ rob 20/04/2012 unset the element access otherwise previously cached acl is used.
+				unset($elementModel->_access);
+				$elementModel->getElement()->access = -1;
 			}
 		}
 		return false;
@@ -129,6 +133,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		//if we have already processed the form
 		$this->html = '';
 		if (JRequest::getVar('fabrik_confirmation') == 1) {
+			echo "here";
 			$session = JFactory::getSession();
 			//unset this flag
 			JRequest::setVar('fabrik_confirmation', 2);
