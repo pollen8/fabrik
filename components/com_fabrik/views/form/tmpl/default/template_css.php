@@ -24,6 +24,7 @@ echo "
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
 		position:absolute;
+	font-size: 100%;
 }
 
 /*Here is the styling for your group intro*/
