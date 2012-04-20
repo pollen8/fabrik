@@ -251,7 +251,7 @@
 					
 				<field name="fu_download_noaccess_image"
 					type="imagelist"
-					directory="/images/stories" hide_none="1" 
+					directory="media/com_fabrik/images" hide_none="1" 
 					description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_DESC"
 					label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_LABEL" />
 					
@@ -262,7 +262,7 @@
 					
 				<field name="fu_download_access_image"
 					type="imagelist"
-					directory="/images/stories"
+					directory="media/com_fabrik/images"
 					hide_none="1" 
 					description="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_DESC"
 					label="PLG_ELEMENT_FILEUPLOAD_ACCESS_IMG_LABEL" />
