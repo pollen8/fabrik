@@ -800,7 +800,7 @@ class FabrikFEModelList extends JModelForm {
 					$row->fabrik_view = $viewLink;
 					$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 				}
-				if ($this->deletePossible())
+				if ($this->canDelete($row))
 				{
 					$row->fabrik_actions['fabrik_delete'] = $this->deleteButton();
 				}
