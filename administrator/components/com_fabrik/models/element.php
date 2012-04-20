@@ -645,7 +645,7 @@ class FabrikModelElement extends JModelAdmin
 			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');
-			$app->setUserState('com_fabrik.redirect', 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id='.(int)$row->id."&origplugin=$origplugin&&origtaks=$task&plugin=$row->plugin");
+			$app->setUserState('com_fabrik.redirect', 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id='.(int)$row->id."&origplugin=$origplugin&origtask=$task&plugin=$row->plugin");
 		}
 		else
 		{
