@@ -53,6 +53,11 @@ echo "
 	background:#F6F9FA;
 }
 
+#{$view}_$c fieldset ul{
+	list-style:none;
+	margin:0;
+}
+
 #{$view}_$c fieldset > ul,
 #details_$c fieldset > ul,
 #{$view}_$c .fabrikSubGroupElements > ul{
