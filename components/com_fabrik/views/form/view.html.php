@@ -605,9 +605,12 @@ class fabrikViewForm extends JView
 			$form->prevButton = '';
 		}
 
-		if (empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton)
+		// $$$ hugh - hide actions section is we're printing, or if not actions selected
+		if (JRequest::getVar('print', '0') == '1' ||
+			(empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton)
 			&& empty($form->gobackButton) && empty($form->deleteButton) && empty($form->applyButton)
-			&& empty($form->copyButton) && empty($form->resetButton)) {
+			&& empty($form->copyButton) && empty($form->resetButton))
+			) {
 			$this->hasActions = false;
 		}
 		else {
