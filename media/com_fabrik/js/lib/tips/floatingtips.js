@@ -137,7 +137,7 @@ var FloatingTips = new Class({
 	},
 	
 	doHide: function(element) {
-		return;
+		// return;
 		var tip = element.retrieve('floatingtip');
 		if (!tip) return this;
 		this._animate(tip, 'out');
