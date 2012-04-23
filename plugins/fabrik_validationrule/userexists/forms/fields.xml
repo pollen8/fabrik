@@ -10,7 +10,9 @@
 					<option value="fail_if_exists">PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_EXISTS</option>
 					<option value="fail_if_not_exists">PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_NOT_EXISTS</option>
 			</field>
-			
+
+			<field description="PLG_VALIDATIONRULE_USEREXISTS_USER_FIELD_DESC" label="PLG_VALIDATIONRULE_USEREXISTS_USER_FIELD_LABEL" name="userexists_user_field" repeat="true" type="listfields"/>
+		
 		</fieldset>
 	</fields>
 </form>
