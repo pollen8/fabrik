@@ -1223,8 +1223,14 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$params = $this->getParams();
 		// $$$ hugh - need to convert dates to MySQL format for the query
 		// $$$ hugh - not any more, since we changed to always submit in MySQL format
-		//$value[0] = $this->tableDateToMySQL($value[0]);
-		//$value[1] = $this->tableDateToMySQL($value[1]);
+		// $$$ hugh - removing the MySQL conversion has broken 'special' range handling,
+		// which used to happen in the MySQL conversion function.  So ...
+		// Created new helper funcion specialStrToMySQL() which turns things
+		// like 'midnight yesterday' etc into MySQL dates, defaulting to GMT.
+		// This lets us do ranged query string and content plugin filters like ...
+		// table___date[value][]=midnight%20yesterday&table___date[value][]=midnight%20today&table___date[condition]=BETWEEN
+		$value[0] = FabrikWorker::specialStrToMySQL($value[0]);
+		$value[1] = FabrikWorker::specialStrToMySQL($value[1]);
 		// $$$ hugh - if the first date is later than the second, swap 'em round
 		// to keep 'BETWEEN' in the query happy
 		if (strtotime($value[0]) > strtotime($value[1])) {
