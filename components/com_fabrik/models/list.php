@@ -1298,7 +1298,7 @@ class FabrikFEModelList extends JModelForm {
 				if ($v2 !== null) {
 				$v = $v2;
 				}
-			}		
+			}
 		}
 			$array['rowid'] = $this->getSlug($row);
 			$array['listid'] = $table->id;
@@ -7394,6 +7394,21 @@ class FabrikFEModelList extends JModelForm {
 			$db->query();
 		}
 		return true;
+	}
+
+	/**
+	* load the JS files into the document
+	* @return nullscript
+	*/
+
+	function getCustomJsAction()
+	{
+		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'table_'.$this->getId().".js")) {
+			FabrikHelperHTML::script('components/com_fabrik/js/table_' . $this->getId() . ".js");
+		}
+		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'list_'.$this->getId().".js")) {
+			FabrikHelperHTML::script('components/com_fabrik/js/list_' . $this->getId() . ".js");
+		}
 	}
 }
 ?>

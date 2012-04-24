@@ -195,6 +195,7 @@ class FabrikViewList extends JView{
 		$this->getElementJs();
 		//reset data back to original settings
 		$this->rows = $origRows;
+		$this->get('CustomJsAction');
 	}
 
 	protected function getElementJs()
@@ -437,16 +438,16 @@ class FabrikViewList extends JView{
 	{
 		$this->buttons = new stdClass();
 		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_EXPORT_TO_CSV').'</span>');
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_EXPORT_TO_CSV');			
+		$buttonProperties['alt'] = JText::_('COM_FABRIK_EXPORT_TO_CSV');
 		$this->buttons->csvexport =  FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, $buttonProperties);
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_IMPORT_FROM_CSV').'</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_IMPORT_TO_CSV');	
+		$buttonProperties['alt'] = JText::_('COM_FABRIK_IMPORT_TO_CSV');
 		$this->buttons->csvimport = FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl, $buttonProperties);
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_SUBSCRIBE_RSS').'</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_SUBSCIBE_RSS');	
+		$buttonProperties['alt'] = JText::_('COM_FABRIK_SUBSCIBE_RSS');
 		$this->buttons->feed = FabrikHelperHTML::image('feed.png', 'list', $this->tmpl, $buttonProperties);
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_EMPTY').'</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_EMPTY');			
+		$buttonProperties['alt'] = JText::_('COM_FABRIK_EMPTY');
 		$this->buttons->empty = FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, $buttonProperties);
 
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_GROUP_BY').'</span>';
@@ -454,11 +455,11 @@ class FabrikViewList extends JView{
 		$this->buttons->groupby = FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, $buttonProperties);
 
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_FILTER').'</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');		
+		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
 
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_ADD').'</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_ADD');	
+		$buttonProperties['alt'] = JText::_('COM_FABRIK_ADD');
 		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
 	}
 
