@@ -31,9 +31,13 @@ var FbImage = new Class({
 
 	getMyElements : function () {
 		var element = this.options.element;
-		this.image = this.getContainer().getElement('.imagedisplayor');
-		this.folderDir = this.getContainer().getElement('.folderselector');
-		this.imageDir = this.getContainer().getElement('.imageselector');
+		var c = this.getContainer();
+		if (!c) {
+			return;
+		}
+		this.image = c.getElement('.imagedisplayor');
+		this.folderDir = c.getElement('.folderselector');
+		this.imageDir = c.getElement('.imageselector');
 		// this.hiddenField is set in FbFileElement
 	},
 
