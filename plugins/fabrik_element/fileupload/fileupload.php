@@ -143,6 +143,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$srcs[] = $script;
 			$elementclasses[$script] = 1;
 		}
+		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
+		return false;
 	}
 
 	/**
@@ -690,8 +692,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if (count($raw) == 1 && empty($raw[0])) {
 				return true;
 			}
+			// $$$ hugh - no longer seems to be in $raw[0] ?
+			/*
 			$crop = (array)JArrayHelper::getValue($raw[0], 'crop');
 			$ids = (array)JArrayHelper::getValue($raw[0], 'id');
+			*/
+			$crop = (array)JArrayHelper::getValue($raw, 'crop');
+			$ids = (array)JArrayHelper::getValue($raw, 'id');
 			$ids = array_values($ids);
 
 			$saveParams = array();

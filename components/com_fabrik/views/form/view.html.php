@@ -304,8 +304,14 @@ class fabrikViewForm extends JView
 				//$element = $elementModel->getParent();
 				$element = $elementModel->getElement();
 				if (!in_array($element->plugin, $aLoadedElementPlugins)) {
-					$aLoadedElementPlugins[] = $element->plugin;
-					$elementModel->formJavascriptClass($srcs);
+					// $$$ hugh - certain elements, like fileupload, need to load different JS files
+					// on a per-element basis, so as a test fix, I modified the fileupload's formJavaScriptClass to return false,
+					// and test for that here, so as to not add it to aLoadedElementPlugins[].  The existing 'static' tests in
+					// formJavascriptClass() should still prevent scripts being added twice.
+					if ($elementModel->formJavascriptClass($srcs) !== false) {
+						$aLoadedElementPlugins[] = $element->plugin;
+					}
+
 				}
 				$eventMax = ($groupModel->repeatTotal == 0) ? 1 : $groupModel->repeatTotal;
 				for ($c = 0; $c < $eventMax; $c ++) {
