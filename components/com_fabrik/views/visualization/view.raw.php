@@ -16,5 +16,6 @@ class FabrikViewVisualization extends JView{
 	function display( $tmpl = 'default' )
 	{
 		
-		$model = $this->getModel();
-		$usersConfig = JComponentHelper::getParams('c
+		
+	}
+}
