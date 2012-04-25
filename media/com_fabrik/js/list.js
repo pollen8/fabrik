@@ -1219,10 +1219,13 @@ var FbList = new Class({
 		if (this.options.admin) {
 			Fabrik.addEvent('fabrik.block.added', function (block) {
 				if (block.options.listRef === this.options.listRef) {
-					block.form.getElement('.fabrikNav').getElements('a').addEvent('click', function (e) {
-						e.stop();
-						block.fabrikNav(e.target.get('href'));
-					});  
+					var nav = block.form.getElement('.fabrikNav');
+					if (typeOf(nav) !== 'null') {
+						nav.getElements('a').addEvent('click', function (e) {
+							e.stop();
+							block.fabrikNav(e.target.get('href'));
+						});
+					}
 				}
 			}.bind(this));
 		}
