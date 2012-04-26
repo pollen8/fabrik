@@ -1110,7 +1110,7 @@ var FbList = new Class({
 	stripe: function () {
 		var trs = this.list.getElements('.fabrik_row');
 		for (i = 0; i < trs.length; i++) {
-			if (i !== 0) { // ignore heading
+			if (!trs[i].hasClass('fabrik___header')) { // ignore heading
 				var row = 'oddRow' + (i % 2);
 				trs[i].addClass(row);
 			}
