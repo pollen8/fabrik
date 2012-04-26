@@ -561,6 +561,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->dateTimeFormat = $params->get('date_time_format', '');
 		//for reuse if element is duplicated in repeat group
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
+		$opts->advanced = $params->get('date_advanced', '0') == '1';
 		$opts = json_encode($opts);
 		return "new FbDateTime('$id', $opts)";
 	}
@@ -1714,6 +1715,39 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		return $calOpts;
 	}
+
+	/**
+	* @param array of scripts previously loaded (load order is important as we are loading via head.js
+	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	* current file
+	*
+	* get the class to manage the form element
+	* if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	* call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	* to ensure that the file is loaded only once
+	*/
+
+	function formJavascriptClass(&$srcs, $script = '')
+	{
+		$prefix = JDEBUG ? '' : '-min';
+		$params = $this->getParams();
+		if ($params->get('date_advanced', '0') == '1') {
+			if (empty($prefix)) {
+				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/date' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/core' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/parser' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/extras' . $prefix . '.js');
+			}
+			else {
+				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/date.js');
+				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/extras.js');
+			}
+		}
+		parent::formJavascriptClass($srcs);
+		// return false, as we need to be called on per-element (not per-plugin) basis
+		return false;
+	}
+
 }
 
 /**

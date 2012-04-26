@@ -70,7 +70,10 @@
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_DATE_ADVANCED_HEADING" name="plg-element-date-advanced">
-		
+			<field default="0" description="PLG_ELEMENT_DATE_ADVANCED_DESC" label="PLG_ELEMENT_DATE_ADVANCED_LABEL" name="date_advanced" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>		
 			<field description="PLG_ELEMENT_DATE_ALLOW_FUNC_DESC" label="PLG_ELEMENT_DATE_ALLOW_FUNC_LABEL" name="date_allow_func" type="textarea"/>
 		</fieldset>
 	</fields>

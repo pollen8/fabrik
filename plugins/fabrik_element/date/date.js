@@ -21,7 +21,8 @@ var FbDateTime = new Class({
 			'electric': true,
 			'step': 2,
 			'cache': false,
-			'showOthers': false
+			'showOthers': false,
+			'advanced': false
 		}
 	},
 	
@@ -46,12 +47,16 @@ var FbDateTime = new Class({
 				this.getDateField().addEvent('blur', function (e) {
 					var date_str = this.getDateField().value;
 					if (date_str !== '') {
-						//var d = new Date(date_str);
+						var d;
 						//this is the calendar native parseDate call, but it doesnt take into account seconds
 						// $$$ hugh - yup, but if we don't use parseDate() with the iFormat, a simple Date.parse()
 						// hoses up anything but standard 'db' format.  So we HAVE to use parseDate() here.
-						var d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
-						//var d = Date.parse(date_str);
+						if (this.options.advanced) {
+							d = Date.parseExact(date_str, Date.normalizeFormat(this.options.calendarSetup.ifFormat));
+						}
+						else {
+							d = Date.parseDate(date_str, this.options.calendarSetup.ifFormat);
+						}
 						this.setTimeFromField(d);
 						this.update(d);
 					}
