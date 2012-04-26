@@ -1,59 +1,67 @@
-.fabrikHide{
-	display:none !important;
+.fabrikHide {
+	display: none !important;
 }
 
-.listfilter{
-	text-align:right;
+.listfilter {
+	text-align: right;
 }
 
-.fabrikShow{
-	display:block;
+.fabrikShow {
+	display: block;
 }
 
-div.calendar{
-	z-index:99999;
+div.calendar {
+	z-index: 99999;
 }
 
 div.calendar table {
 	width: 100%;
 }
 
-/*** stoopid beez20 fix */
+.lt-ie9 a.close {
+	background-image: url(../images/delete.png);
+}
 
-#main .fabrikForm  a:hover{
-	color:#000 !important;
-	background-color:transparent !important;
+.lt-ie9 a.expand {
+	background-image: url(../images/maximize.png);
+	width: 16px;
+	height: 16px;
+	margin-top: -3px;
+}
+/*** stoopid beez20 fix */
+#main .fabrikForm  a:hover {
+	color: #000 !important;
+	background-color: transparent !important;
 }
 /**start: flexible box model short cuts **/
-.displayBox{
-	display:-webkit-box;
-	display:-moz-box;
-	display:box;
+.displayBox {
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
 	moz-box-pack: center;
 	box-pack: center;
 }
 
-.mozilla .displayBox,
-.webkit .displayBox{
-		/* ff needs to stipulate a width otherwise box-flex is not applied */
-	width:100%;
+.mozilla .displayBox,.webkit .displayBox {
+	/* ff needs to stipulate a width otherwise box-flex is not applied */
+	width: 100%;
 }
-.boxFlex{
-	-webkit-box-flex:1;
-	-moz-box-flex:1;
-	box-flex:1;
+
+.boxFlex {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
 }
 /**end: flexible box model short cuts **/
-
-#fabrikOverlay{
-  background-color: #000000;
-  cursor: pointer;
-  left: 0;
-  top:0;
-  position: absolute;
-  width: 100%;
-  height:100%;
-  z-index: 9999;
+#fabrikOverlay {
+	background-color: #000000;
+	cursor: pointer;
+	left: 0;
+	top: 0;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
 }
 
 #fbPackageLoader {
@@ -66,26 +74,25 @@ div.calendar table {
 	-moz-border-radius: 6px;
 }
 
-.fbPackageStatus{
-	position:absolute;
-	top:50%;
+.fbPackageStatus {
+	position: absolute;
+	top: 50%;
 }
 
 /****************************************/
 /****** mootools spinner css*************/
 /****************************************/
-
 .spinner {
 	position: absolute;
 	opacity: 0.9;
-	filter: alpha(opacity=90);
-	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+	filter: alpha(opacity = 90);
+	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90 );
 	z-index: 999;
 	background: #fff;
-	border:1px solid #ccc;
-	border-radius:2px;
-	
+	border: 1px solid #ccc;
+	border-radius: 2px;
 }
+
 .spinner-msg {
 	text-align: center;
 	font-weight: bold;
@@ -101,7 +108,6 @@ div.calendar table {
 /****************************************/
 /****** window styling ******************/
 /****************************************/
-
 .fabrikWindow {
 	z-index: 10000;
 	position: absolute;
@@ -113,21 +119,21 @@ div.calendar table {
 	box-shadow: 2px 5px 5px #888;
 	-moz-box-shadow: 2px 2px 2px #888;
 	-webkit-box-shadow: 2px 2px 2px #888;
-	background-color:#fff !important;
+	background-color: #fff !important;
 }
 
-.itemContent{
-	margin:auto;
-	overflow:auto;
-	height:100%;
+.itemContent {
+	margin: auto;
+	overflow: auto;
+	height: 100%;
 	text-align: left;
 }
 
-.itemContentPadder{
-		padding:10px;
+.itemContentPadder {
+	padding: 10px;
 }
 
-.draggable{
+.draggable {
 	cursor: move;
 }
 
@@ -135,27 +141,27 @@ div.calendar table {
 	border-radius: 7px 7px 0px 0px;
 	-moz-border-radius: 7px 7px 0px 0px;
 	background: #ccc;
-	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
-	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
-		'#cccccc', endColorstr = '#666666' ); /* for IE */
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
+	filter: progid:  DXImageTransform.Microsoft.gradient(  startColorstr= 
+		'#cccccc', endColorstr=  '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
-	padding:4px 11px;
-	height:15px;
+	padding: 4px 11px;
+	height: 15px;
 }
 
 .draggable {
-	cursor : move;	
+	cursor: move;
 }
 
-.expand{
+.expand {
 	position: absolute;
-	right:20px;
-	top:6px;
+	right: 20px;
+	top: 6px;
 }
 
-.close{
+.close {
 	position: absolute;
 	right: 0;
 	top: 5px;
@@ -168,18 +174,18 @@ span.handlelabel {
 	height: 13px;
 }
 
-.bottomBar{
+.bottomBar {
 	border-radius: 0px 0px 7px 7px;
 	-moz-border-radius: 0px 0px 7px 7px;
 	height: 15px;
 	background: #ccc;
-	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
-		'#cccccc', endColorstr = '#666666' ); /* for IE */
+	filter: progid:  DXImageTransform.Microsoft.gradient(  startColorstr= 
+		'#cccccc', endColorstr=  '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
-	padding:4px 11px;
-	position:relative;
+	padding: 4px 11px;
+	position: relative;
 }
 
 .dragger {
@@ -193,40 +199,37 @@ span.handlelabel {
 	-moz-border-radius: 0px 0px 7px 0px;
 }
 
-.dragger svg{
-	opacity:0.8em;
+.dragger svg {
+	opacity: 0.8em;
 }
-
 
 /* ensure overlays go above windows */
-
-.calendar-eightysix.default,
-.floating-tip,
-#fbPackageLoader
- {
-  z-index: 10001;
+.calendar-eightysix.default,.floating-tip,#fbPackageLoader {
+	z-index: 10001;
 }
 
-.floating-tip ul{
-	padding:0;margin:0;min-width:100px;
+.floating-tip ul {
+	padding: 0;
+	margin: 0;
+	min-width: 100px;
 }
 
-.floating-tip > span{
-	display:block;
+.floating-tip>span {
+	display: block;
 }
 
-.floating-tip ul.fabrikElementContainer li{
-	float:none !important;
+.floating-tip ul.fabrikElementContainer li {
+	float: none !important;
 }
 
-.floating-tip ul.fabrikElementContainer .fabrik_subelement{
-	width:100% !important;
-	float:none !important;
+.floating-tip ul.fabrikElementContainer .fabrik_subelement {
+	width: 100% !important;
+	float: none !important;
 }
 
-.floating-tip ul.fabrik_buttons{
-	list-style:none;
-	margin-top:10px;
+.floating-tip ul.fabrik_buttons {
+	list-style: none;
+	margin-top: 10px;
 }
 /****************************************/
 /*** end window styling *****************/
@@ -235,8 +238,7 @@ span.handlelabel {
 /****************************************/
 /*** basic admin form css ***************/
 /****************************************/
-
-.adminform{
+.adminform {
 	background-color: #FFFFFF;
 	padding: 5px 17px 17px;
 	border: 1px solid #CCCCCC;
@@ -244,55 +246,56 @@ span.handlelabel {
 	text-align: left;
 }
 
-fieldset.adminform fieldset.radio, fieldset.panelform fieldset.radio, fieldset.adminform-legacy fieldset.radio {
-  border: 0 none;
-  float: left;
-  margin: 0 0 5px;
-  padding: 0;
+fieldset.adminform fieldset.radio,fieldset.panelform fieldset.radio,fieldset.adminform-legacy fieldset.radio
+	{
+	border: 0 none;
+	float: left;
+	margin: 0 0 5px;
+	padding: 0;
 }
 
-fieldset.adminform label, fieldset.adminform span.faux-label {
-  clear: left;
-  display: block;
-  float: left;
-  margin: 5px 0;
-  min-width: 135px;
-padding: 0 5px 0 0;
+fieldset.adminform label,fieldset.adminform span.faux-label {
+	clear: left;
+	display: block;
+	float: left;
+	margin: 5px 0;
+	min-width: 135px;
+	padding: 0 5px 0 0;
 }
 
-fieldset.adminform ul{
-	list-style-type:none !important;
+fieldset.adminform ul {
+	list-style-type: none !important;
 }
 
-fieldset.adminform fieldset.radio label, fieldset.panelform fieldset.radio label {
-  clear: none;
-  display: inline;
-  float: left;
-  min-width: 60px;
-  padding-left: 0;
-  padding-right: 10px;
+fieldset.adminform fieldset.radio label,fieldset.panelform fieldset.radio label
+	{
+	clear: none;
+	display: inline;
+	float: left;
+	min-width: 60px;
+	padding-left: 0;
+	padding-right: 10px;
 }
 
-fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select, fieldset.adminform img, fieldset.adminform button {
-  float: left;
-  margin: 5px 5px 5px 0;
-  width: auto;
+fieldset.adminform input,fieldset.adminform textarea,fieldset.adminform select,fieldset.adminform img,fieldset.adminform button
+	{
+	float: left;
+	margin: 5px 5px 5px 0;
+	width: auto;
 }
 
 /*****************************************************/
 /********** the context menu that appears ************/
 /********** when you click row checkboxes ************/
 /*****************************************************/
-
-.floating-tip .fabrikElementContainer a:link,
-.floating-tip .fabrikElementContainer a:visited,
-.floating-tip .fabrikElementContainer a{
-	text-decoration:none;
-	display:block;
-	padding:5px 16px;
+.floating-tip .fabrikElementContainer a:link,.floating-tip .fabrikElementContainer a:visited,.floating-tip .fabrikElementContainer a
+	{
+	text-decoration: none;
+	display: block;
+	padding: 5px 16px;
 }
 
-.floating-tip a{
+.floating-tip a {
 	display: block;
 	padding: 3px;
 }
@@ -306,53 +309,51 @@ fieldset.adminform input, fieldset.adminform textarea, fieldset.adminform select
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
-	list-style:none !important;
+	list-style: none !important;
 	box-shadow: 2px 2px 2px #aaa;
 	-moz-box-shadow: 2px 2px 2px #aaa;
 	-webkit-box-shadow: 2px 2px 2px #aaa;
 }
 
-.floating-tip > span {
+.floating-tip>span {
 	padding: 5px 15px;
 }
 
-.floating-tip .fabrikElementContainer > li:first-child,
-.floating-tip .fabrik_buttons li:first-child,
-.floating-tip .fabrikSubElementContainer li:first-child{
+.floating-tip .fabrikElementContainer>li:first-child,.floating-tip .fabrik_buttons li:first-child,.floating-tip .fabrikSubElementContainer li:first-child
+	{
 	-moz-border-radius: 0;
 	-webkit-border-radius: 0;
 	border-radius: 0;
 }
 
-.floating-tip .fabrikElementContainer > li:last-child,
-.floating-tip .fabrik_buttons li:last-child,
-.floating-tip .fabrikSubElementContainer li:last-child{
-	-moz-border-radius: 0 ;
+.floating-tip .fabrikElementContainer>li:last-child,.floating-tip .fabrik_buttons li:last-child,.floating-tip .fabrikSubElementContainer li:last-child
+	{
+	-moz-border-radius: 0;
 	-webkit-border-radius: 0;
 	border-radius: 0;
 }
 
-.floating-tip .fabrikSubElementContainer ul{
+.floating-tip .fabrikSubElementContainer ul {
 	margin: 0 !important;
 	padding: 0 !important;
 }
 
-.floating-tip .fabrikElementContainer li{
-	display:block;
-	min-height:19px;
-	border-top:1px solid #D7D7D7;
-	padding:0;
-	background-color:#fff;
+.floating-tip .fabrikElementContainer li {
+	display: block;
+	min-height: 19px;
+	border-top: 1px solid #D7D7D7;
+	padding: 0;
+	background-color: #fff;
 }
 
-.floating-tip .fabrikElementContainer li:hover{
-	background-color:#DBF5FA;
+.floating-tip .fabrikElementContainer li:hover {
+	background-color: #DBF5FA;
 }
 
-.floating-tip .fabrikElementContainer li span{
-	margin-left:7px;
+.floating-tip .fabrikElementContainer li span {
+	margin-left: 7px;
 }
 
-.floating-tip .validation-notices li{
-	border:0;
+.floating-tip .validation-notices li {
+	border: 0;
 }
