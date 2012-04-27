@@ -105,11 +105,6 @@ echo "
 
 .floating-tip {
 	background-color: #fff;
-	font-weight: bold;
-	font-size: 11px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
 }
 
 #{$view}_$c .linkedTables{

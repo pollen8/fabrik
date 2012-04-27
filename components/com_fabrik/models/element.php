@@ -306,7 +306,6 @@ class plgFabrik_Element extends FabrikPlugin
 			{
 				$this->iconsSet = true;
 				$opts = new stdClass();
-				$opts->notice = true;
 				$opts->position = 'top';
 				$opts = json_encode($opts);
 				$data = htmlspecialchars($data, ENT_QUOTES);
@@ -956,17 +955,16 @@ class plgFabrik_Element extends FabrikPlugin
 				$validations = array_unique($this->getValidations());
 				if (count($validations) > 0)
 				{
-					$validationHovers = array('<span><ul class="validation-notices" style="list-style:none">');
+					$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
 					foreach ($validations as $validation)
 					{
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
 					}
-					$validationHovers[] = '</ul></span>';
+					$validationHovers[] = '</ul></div>';
 					$validationHovers = implode('', $validationHovers);
 					$title = htmlspecialchars($validationHovers, ENT_QUOTES);
 					$opts = new stdClass();
 					$opts->position = 'top';
-					$opts->notice = true;
 					$opts = json_encode($opts);
 					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => $opts, 'title' => $title));
 				}

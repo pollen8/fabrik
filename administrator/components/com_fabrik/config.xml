@@ -53,7 +53,55 @@
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-
+		
+		<field name="tipfx"
+			description="COM_FABRIK_TIP_FX_DESC"
+			label="COM_FABRIK_TIP_FX_LABEL"
+			default="linear"
+			type="list" >
+				<option value="linear">linear</option>
+				<option value="Quad">Quad</option>
+				<option value="Cubic">Cubic</option>
+				<option value="Quart">Quart</option>
+				<option value="Quint">Quint</option>
+				<option value="Expo">Expo</option>
+				<option value="Circ">Circ</option>	
+				<option value="Sine">Sine</option>	
+				<option value="Back">Back</option>
+				<option value="Bounce">Bounce</option>
+				<option value="Elastic">Elastic</option>
+		</field>
+		
+		<field name="tipfx_ease"
+			default="easeIn"
+			description="COM_FABRIK_TIP_EASE_DESC"
+			label="COM_FABRIK_TIP_EASE_LABEL"
+			type="list">
+				<option value="easeIn">In</option>
+				<option value="easeOut">Out</option>
+				<option value="easeInOut">InOut</option>	
+		</field>
+		
+		<field name="tipfx_duration"
+			size="3"
+			description="COM_FABRIK_TIP_FX_DURATION_DESC"
+			label="COM_FABRIK_TIP_FX_DURATION_LABEL"
+			default="500" />
+			
+		<field name="tipfx_distance"
+			size="3"
+			default="50"
+			description="COM_FABRIK_TIP_FX_DISTANCE_DESC"
+			label="COM_FABRIK_TIP_FX_DISTANCE_LABEL" />
+		
+		<field name="tipfx_fadein"
+			default="0"
+			label="COM_FABRIK_TIP_FX_FADEIN_LABEL"
+			description="COM_FABRIK_TIP_FX_FADEIN_DESC"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
 	</fieldset>
 
 	<fieldset label="COM_FABRIK_DEBUGGING" name="debug">
