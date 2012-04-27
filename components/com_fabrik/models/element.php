@@ -1340,35 +1340,6 @@ class plgFabrik_Element extends FabrikPlugin
 			$element->label = $w->parseMessageForPlaceHolder($l, $model->_data);
 		}
 		$element->errorTag = $this->addErrorHTML($c, $tmpl);
-		$groupParams = $groupModel->getParams();
-		//style attribute for group columns
-		$element->column = '';
-		$colcount = (int)$groupParams->get('group_columns');
-		if ($colcount > 1)
-		{
-			$widths = $groupParams->get('group_column_widths');
-			$w = floor((100- ($colcount * 6)) / $colcount) . '%';
-			if ($widths != '')
-			{
-				$widths = explode(',', $widths);
-				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
-			}
-			$element->column = ' style="float:left;width:' . $w . ';';
-			if (($elCount % $colcount == 0) || $element->hidden)
-			{
-				$element->startRow = true;
-				$element->column .= "clear:both;";
-			}
-			if (($elCount % $colcount === $colcount - 1) || $element->hidden)
-			{
-				$element->endRow = true;
-			}
-			$element->column .= '" ';
-		}
-		else
-		{
-			$element->column .= ' style="clear:both;width:100%;"';
-		}
 		$element->element_ro = $this->_getROElement($model->_data, $c);
 		$element->value = $this->getValue($model->_data, $c);
 

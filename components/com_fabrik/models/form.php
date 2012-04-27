@@ -3793,8 +3793,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$aSubGroups[] = $aSubGroupElements;
 				}
 			}
-			$groupModel->randomiseElements($aElements);
+			$groupModel->randomiseElements($aElements); 
 
+			//style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly
+			$ix = 1;
+			foreach ($aElements as $elKey => $element) 
+			{
+				$groupModel->setColumnCss($element, $ix);
+				$ix ++;
+			}
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
 			$group->startHidden = $startHidden;
