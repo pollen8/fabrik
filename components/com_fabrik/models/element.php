@@ -1501,7 +1501,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$params = $this->getParams();
 		$customLink = $params->get('custom_link');
-		if ($customLink !== '' && $this->getElement()->link_to_detail == '1')
+		if ($customLink !== '' && $this->getElement()->link_to_detail == '1' && $params->get('custom_link_indetails', true))
 		{
 			$w = new FabrikWorker();
 			$repData = array();
