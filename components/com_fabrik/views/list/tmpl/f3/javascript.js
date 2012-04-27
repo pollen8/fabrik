@@ -15,8 +15,16 @@ var FabrikGrid = new Class({
 			color:['#378F36', '#46B040']
 		}},
 
-	initialize : function() {
-		this.container = document.getElement('.f3main');
+	Implements: Options,
+	
+	options: {
+		'listref' : ''
+	},
+	
+	initialize : function(options) {
+		this.setOptions(options);
+		//this.container = document.getElement('.f3main');
+		this.container = document.id(this.options.listref);
 		Fabrik.addEvent('fabrik.list.updaterows', function(){
 			this.resizeCells();
 			this.scaleScrollDivs();
@@ -82,7 +90,7 @@ var FabrikGrid = new Class({
 		var opts = Object.clone(this.iconSettings);
 		Object.append(opts, options);
 		var i = Fabrik.iconGen.create(icon[name], opts);
-		var button = $('fabrikInterface').getElement(to);
+		var button = this.container.getElement(to);
 		if(typeOf(button) == 'element'){
 			i.inject(button);
 		}
@@ -105,14 +113,17 @@ var FabrikGrid = new Class({
 				}
 			}
 		}.bind(this));
-		var h = this.container.getElements('.fabrik_ordercell').splice(0, 1);
-		h.addEvent('mouseover', function(e) {
-			this.resizeCol = e.target;
+		var h = $A(this.container.getElements('.fabrik_ordercell').splice(0, 1));
+		h.each(function (r) {
+			r.addEvent('mouseover', function(e) {
+				this.resizeCol = e.target;
+			}.bind(this));
+			
+			r.addEvent('mouseleave', function(e) {
+				this.resizeCol = null;
+			}.bind(this));
 		}.bind(this));
-
-		h.addEvent('mouseleave', function(e) {
-			this.resizeCol = null;
-		}.bind(this));
+			
 	},
 	
 	doResize:function(e){
@@ -212,6 +223,3 @@ var FabrikGrid = new Class({
 
 var col = null;
 
-head.ready(function() {
-	new FabrikGrid();
-});

@@ -1,11 +1,12 @@
+<?php $filter = JFilterInput::getInstance(array('p'), array(), 1);?>
 <div class="fabrik___headings">
 <ul class="fabrik___heading list">
 	<li class="heading">
 		<?php foreach ($this->headings as $key=>$heading) {?>
-		<span class="<?php echo $this->headingClass[$key]['class']?> fabrik_element"
+		<div class="<?php echo $this->headingClass[$key]['class']?> fabrik_element"
 		style="<?php echo $this->headingClass[$key]['style']?>">
-			<?php echo $heading; ?>
-		</span>
+			<?php echo $filter->clean($heading, 'HTML'); ?>
+		</div>
 		<?php }?>
 	</li>
 </ul>
@@ -16,12 +17,12 @@
 	<?php
 	$this->found_filters = array();
 	foreach ($this->headings as $key=>$heading) {?>
-		<span class="<?php echo $this->headingClass[$key]['class']?> fabrik_element">
+		<div class="<?php echo $this->headingClass[$key]['class']?> fabrik_element">
 		<?php $filter = JArrayHelper::getValue($this->filters, $key, null);
 		if(!is_null($filter)) {
 			$this->found_filters[] = $key;
 			echo $filter->element;
-		} ?></span>
+		} ?></div>
 		<?php }?>
 	</li>
 </ul>

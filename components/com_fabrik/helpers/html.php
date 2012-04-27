@@ -633,7 +633,8 @@ EOD;
 				$src[] = 'media/com_fabrik/js/icons.js';
 				$src[] = 'media/com_fabrik/js/icongen.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
-				$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
+				//$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
+				$src[] = 'media/com_fabrik/js/tips.js';
 				$src[] = 'media/com_fabrik/js/window.js';
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
@@ -641,13 +642,23 @@ EOD;
 				// $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
 				// in some browsers it's not available when other things (like map biz) are loading
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
-				FabrikHelperHTML::script($src, "Fabrik.fireEvent('fabrik.framework.loaded');");
-				/*
+				
 				$script = array();
-				$script[] = "Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "'";
 				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
 				FabrikHelperHTML::script($src, implode("\n", $script));
-				*/
+				
+				$tipOpts = FabrikHelperHTML::tipOpts();
+				FabrikHelperHTML::addScriptDeclaration("head.ready(function () {
+	Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts) . ");
+	Fabrik.addEvent('fabrik.list.updaterows', function () {
+		//reattach new tips after list redraw,
+		Fabrik.tips.attach('.fabrikTip');
+	});
+	Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {
+		Fabrik.tips.hideAll();
+	});
+});
+				");
 			}
 			self::$framework = true;
 		}
@@ -662,6 +673,21 @@ EOD;
 		FabrikHelperHTML::framework();
 	}
 
+	public static function tipOpts()
+	{
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
+		$opts = new stdClass();
+		$opts->tipfx = 'Fx.Transitions.' . $usersConfig->get('tipfx', 'Linear');
+		if ($usersConfig->get('tipfx', 'Linear') !== 'Linear')
+		{
+			$opts->tipfx .= '.' . $usersConfig->get('tipfx_ease', 'easeIn');
+		}
+		$opts->duration = $usersConfig->get('tipfx_duration', '500');
+		$opts->distance = (int) $usersConfig->get('tipfx_distance', '20');
+		$opts->fadein = (bool) $usersConfig->get('tipfx_fadein', false);
+		return $opts;
+	}
+	
 	/**
 	 * @param string js $script
 	 * @return null

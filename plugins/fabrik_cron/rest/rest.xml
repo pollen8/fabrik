@@ -13,6 +13,7 @@
 		<filename plugin="rest">rest.php</filename>
 		<folder>forms</folder>
 		<filename>index.html</filename>
+		<folder>language</folder>
 	</files>
 	
 </extension>

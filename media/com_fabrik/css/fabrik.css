@@ -85,7 +85,7 @@ div.calendar table {
 .spinner {
 	position: absolute;
 	opacity: 0.9;
-	filter: alpha(opacity = 90);
+	filter: alpha(opacity =   90);
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90 );
 	z-index: 999;
 	background: #fff;
@@ -142,8 +142,9 @@ div.calendar table {
 	-moz-border-radius: 7px 7px 0px 0px;
 	background: #ccc;
 	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
-	filter: progid:  DXImageTransform.Microsoft.gradient(  startColorstr= 
-		'#cccccc', endColorstr=  '#666666' ); /* for IE */
+	filter: progid:   DXImageTransform.Microsoft.gradient(   startColorstr=
+		 
+		'#cccccc', endColorstr=   '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
@@ -179,8 +180,9 @@ span.handlelabel {
 	-moz-border-radius: 0px 0px 7px 7px;
 	height: 15px;
 	background: #ccc;
-	filter: progid:  DXImageTransform.Microsoft.gradient(  startColorstr= 
-		'#cccccc', endColorstr=  '#666666' ); /* for IE */
+	filter: progid:   DXImageTransform.Microsoft.gradient(   startColorstr=
+		 
+		'#cccccc', endColorstr=   '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
@@ -288,72 +290,126 @@ fieldset.adminform input,fieldset.adminform textarea,fieldset.adminform select,f
 /********** the context menu that appears ************/
 /********** when you click row checkboxes ************/
 /*****************************************************/
-.floating-tip .fabrikElementContainer a:link,.floating-tip .fabrikElementContainer a:visited,.floating-tip .fabrikElementContainer a
-	{
+
+/*** adds css arrow and borders around the tip ***/
+
+.floating-tip {
+	z-index: 999;
+}
+
+.floating-tip ul {
+	list-style: none;
+	z-index: 999;
+}
+
+.floating-tip li a:hover {
+	background-color: #DBF5FA;
+	color: #000;
+}
+
+.floating-tip span {
+	padding: 2px;
+}
+
+.floating-tip a {
 	text-decoration: none;
 	display: block;
 	padding: 5px 16px;
 }
 
-.floating-tip a {
-	display: block;
-	padding: 3px;
-}
-
-.floating-tip {
-	padding: 0;
+.floating-tip-wrapper {
+	font-size: 0.7em;
 	min-width: 100px;
-	text-align: left;
-	font-weight: bold;
-	font-size: 11px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
-	border-radius: 6px;
-	list-style: none !important;
-	box-shadow: 2px 2px 2px #aaa;
-	-moz-box-shadow: 2px 2px 2px #aaa;
-	-webkit-box-shadow: 2px 2px 2px #aaa;
+	text-align: center;
+	color: black;
+	background: #fff;
+	/** will add a border round the shadow **/
+	background-clip: padding-box;
+	box-shadow: 0 0px 2px rgba(0, 0, 0, 0.5);
+	border: 5px solid #111;
+	border: 5px solid rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+	-webkit-transition: opacity 0.5s linear;
+	-moz-transition: opacity 0.5s linear;
+	-ms-transition: opacity 0.5s linear;
+	-o-transition: opacity 0.5s linear;
+	transition: opacity 0.5s linear;
 }
 
-.floating-tip>span {
-	padding: 5px 15px;
-}
-
-.floating-tip .fabrikElementContainer>li:first-child,.floating-tip .fabrik_buttons li:first-child,.floating-tip .fabrikSubElementContainer li:first-child
+/** set transparent borders for top/bottom tips */
+.floating-tip-wrapper .floating-tip.tipbottom:before,.floating-tip-wrapper .floating-tip.tipbottom:after,.floating-tip-wrapper .floating-tip.tiptop:before,.floating-tip-wrapper .floating-tip.tiptop:after
 	{
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0;
-	border-radius: 0;
+	content: "";
+	position: absolute;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	/** center the tip - left 50% plus border offset in margin-left*/
+	left: 50%;
+	margin-left: -10px;
 }
 
-.floating-tip .fabrikElementContainer>li:last-child,.floating-tip .fabrik_buttons li:last-child,.floating-tip .fabrikSubElementContainer li:last-child
+/* bottom position so arrow @ top **/
+.floating-tip-wrapper .floating-tip.tipbottom:before {
+	border-bottom: 10px solid #111;
+	border-bottom: 10px solid rgba(0, 0, 0, 0.5);
+	margin-top: -15px;
+}
+
+.floating-tip-wrapper .floating-tip.tipbottom:after {
+	border-bottom: 10px solid #fff;
+	top: 0;
+	margin-top: -10px;
+	z-index: 1;
+}
+
+/** top position so arrow should be @ bottom */
+.floating-tip-wrapper .floating-tip.tiptop:before {
+	border-top: 10px solid #111;
+	border-top: 10px solid rgba(0, 0, 0, 0.5);
+	bottom: -15px;
+}
+
+.floating-tip-wrapper .floating-tip.tiptop:after {
+	border-top: 10px solid #fff;
+	margin-top: 0px;
+}
+
+/** set transparent borders for right/left tips */
+.floating-tip-wrapper .floating-tip.tipright:before,.floating-tip-wrapper .floating-tip.tipright:after,.floating-tip-wrapper .floating-tip.tipleft:before,.floating-tip-wrapper .floating-tip.tipleft:after
 	{
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0;
-	border-radius: 0;
+	content: "";
+	position: absolute;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	/** center the tip - top 50% plus border offset in margin-top*/
+	top: 50%;
+	margin-top: -10px;
 }
 
-.floating-tip .fabrikSubElementContainer ul {
-	margin: 0 !important;
-	padding: 0 !important;
+/** right position so arrow should be @ left */
+.floating-tip-wrapper .floating-tip.tipright:before {
+	border-right: 10px solid #111;
+	border-right: 10px solid rgba(0, 0, 0, 0.5);
+	left: 0;
+	margin-left: -15px;
 }
 
-.floating-tip .fabrikElementContainer li {
-	display: block;
-	min-height: 19px;
-	border-top: 1px solid #D7D7D7;
-	padding: 0;
-	background-color: #fff;
+.floating-tip-wrapper .floating-tip.tipright:after {
+	border-right: 10px solid #fff;
+	margin-left: -9px;
+	left: 0;
 }
 
-.floating-tip .fabrikElementContainer li:hover {
-	background-color: #DBF5FA;
+/** left position so arrow should be @ right */
+.floating-tip-wrapper .floating-tip.tipleft:before {
+	border-left: 10px solid #111;
+	border-left: 10px solid rgba(0, 0, 0, 0.5);
+	margin-right: -15px;
+	right: 0;
 }
 
-.floating-tip .fabrikElementContainer li span {
-	margin-left: 7px;
-}
-
-.floating-tip .validation-notices li {
-	border: 0;
+.floating-tip-wrapper .floating-tip.tipleft:after {
+	border-left: 10px solid #fff;
+	right: 0;
+	margin-right: -9px;
 }

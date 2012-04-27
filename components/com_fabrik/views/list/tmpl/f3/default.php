@@ -2,12 +2,24 @@
 FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js');
 FabrikHelperHTML::script('media/com_fabrik/js/icons.js');
 FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
+
+
+$filter = JFilterInput::getInstance(array('p'), array(), 1);
+$opts = new stdClass();
+$opts->listref = 'listform_' . $this->listref;
+$opts = json_encode($opts);
+$script = "
+head.ready(function() {
+	new FabrikGrid($opts);
+});";
+FabrikHelperHTML::addScriptDeclaration($script)
 ?>
 
 <div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>"><?php echo $this->emptyDataMessage; ?></div>
 
+<pre><?php print_r($opts)?></pre>
 
-<div id="fabrikInterface">
+<div id="list_<?php echo $this->table->renderid;?>">
 <?php
 if ($this->params->get('show_page_title', 1)) { ?>
 		<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
