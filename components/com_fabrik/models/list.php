@@ -7261,25 +7261,30 @@ class FabrikFEModelList extends JModelForm {
 
 	public function getGroupByHeadings()
 	{
-		$base	= JURI::getInstance();
+		$base = JURI::getInstance();
 		$base = $base->toString(array('scheme', 'user', 'pass', 'host', 'port', 'path'));
 		//$base .= strpos($base, '?') ? '&' : '?';
 		$qs = JRequest::getVar('QUERY_STRING', '', 'server');
-		if (stristr($qs, 'group_by')) {
+		if (stristr($qs, 'group_by'))
+		{
 			$qs = FabrikString::removeQSVar($qs, 'group_by');
+			$qs = FabrikString::ltrimword($qs, '?');
 		}
 		$url = $base;
-		if (!empty($qs)) {
-			$url .= strpos($url, '?') ? '&amp;' : '?';
+		if (!empty($qs))
+		{
+			$url .= strpos($url, '?') !== false ? '&amp;' : '?';
 			$url .= $qs;
 		}
-		$url .= strpos($url, '?') ? '&amp;' : '?';
+		$url .= strpos($url, '?') !== false ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
 		$a[$url.'group_by=0'] = JText::_('COM_FABRIK_NONE');
-		foreach ($h as $key => $v) {
-			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions'))) {
-				$thisurl = $url.'group_by='.$key;
+		foreach ($h as $key => $v)
+		{
+			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions')))
+			{
+				$thisurl = $url . 'group_by=' . $key;
 				$a[$thisurl] = strip_tags($v);
 			}
 		}
