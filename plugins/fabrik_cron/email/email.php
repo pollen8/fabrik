@@ -81,7 +81,9 @@ class plgFabrik_Cronemail extends plgFabrik_Cron {
 			$connection = $params->get('connection');
 			$field = $params->get('cronemail-updatefield');
 			$value = $params->get('cronemail-updatefield-value');
-
+			if ($params->get('cronemail-updatefield-eval', '0') == '1') {
+				$value = @eval($value);
+			}
 			$field = str_replace("___", ".", $field);
 			$query = "UPDATE $table->db_table_name set $field = " . $fabrikDb->Quote($value) . " WHERE $table->db_primary_key IN (" . implode(',', $updates) . ")";
 			$this->log .= "\n update query: $query";
