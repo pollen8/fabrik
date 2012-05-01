@@ -940,7 +940,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function &setFormData()
 	{
-		if (isset($this->_formData)) {
+		if (isset($this->_formData))
+		{
 			return $this->_formData;
 		}
 		list($dofilter, $filter) = FabrikWorker::getContentFilter();
