@@ -200,7 +200,7 @@ var FbForm = new Class({
 			// is injected into c
 			// apply fx to div rather than li - damn im good
 			if ((c).get('tag') === 'li') {
-				fxdiv = new Element('div').adopt(c.getChildren());
+				fxdiv = new Element('div', {'style': 'width:100%'}).adopt(c.getChildren());
 				c.empty();
 				fxdiv.inject(c);
 			} else {
