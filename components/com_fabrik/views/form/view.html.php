@@ -513,8 +513,10 @@ class fabrikViewForm extends JView
 		$script[] = "\t}";
 		$script[] = "}";
 
-		if (FabrikHelperHTML::inAjaxLoadedPage()) {
-			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', {html: true});";
+		if (FabrikHelperHTML::inAjaxLoadedPage())
+		{
+			$tipOpts = FabrikHelperHTML::tipOpts();
+			$script[] = "new FloatingTips('#".$bkey." .fabrikTip', " . json_encode($tipOpts) . ");";
 		}
 
 		$pluginManager = FabrikWorker::getPluginManager();

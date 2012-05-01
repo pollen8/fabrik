@@ -97,20 +97,12 @@ echo "
 
 /* END : label spacing for chxbox, radios */
 
-.floating-tip {
-	background-color: #fff;
-	font-weight: bold;
-	font-size: 11px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-}
 
 #{$view}_$c .linkedTables{
 	margin:0.6em 0;
 }
 
-#{$view}_$c  .related_data_norecords{
+#{$view}_$c .related_data_norecords{
 	display:inline;
 }
 

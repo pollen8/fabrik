@@ -15,6 +15,9 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 	protected  $fieldDesc = 'TEXT';
 
+	/** @var bol override default value as we don't want to record this in database*/
+	var $_recordInDatabase = false;
+
 	function setIsRecordedInDatabase()
 	{
 		$this->_recordInDatabase = false;
@@ -36,7 +39,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 		}
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
-	
+
 	/**
 	 * render the elements list value
 	 * @param unknown_type $data
@@ -65,7 +68,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	}
 
 	/**
-	 * gets the value or default value 
+	 * gets the value or default value
 	 * @param array data
 	 * @param int repeat group counter
 	 * @param array options

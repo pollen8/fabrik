@@ -175,6 +175,7 @@ class FabrikFEModelGroup extends FabModel{
 	 * that the form template uses
 	 * @return null
 	 */
+
 	function randomiseElements(&$elements)
 	{
 		if ($this->getParams()->get('random', false) == true) {
@@ -184,6 +185,46 @@ class FabrikFEModelGroup extends FabModel{
 				$new[$key] = $elements[$key];
 			}
 			$elements = $new;
+		}
+	}
+
+
+	/**
+	 * set the element column css allows for group colum settings to be applied
+	 * @since 	Fabrik 3.0.5.2
+	 * @param	object	prerender element properties
+	 * @param	int		current key when looping over elements.
+	 */
+
+	public function setColumnCss(&$element, $elCount)
+	{
+		$params = $this->getParams();
+		$element->column = '';
+		$colcount = (int) $params->get('group_columns');
+		if ($colcount > 1)
+		{
+			$widths = $params->get('group_column_widths');
+			$w = floor((100 - ($colcount * 6)) / $colcount) . '%';
+			if ($widths != '')
+			{
+				$widths = explode(',', $widths);
+				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
+			}
+			$element->column = ' style="float:left;width:' . $w . ';';
+			if (($elCount % $colcount == 0) || $element->hidden)
+			{
+				$element->startRow = true;
+				$element->column .= "clear:both;";
+			}
+			if (($elCount % $colcount === $colcount - 1) || $element->hidden)
+			{
+				$element->endRow = true;
+			}
+			$element->column .= '" ';
+		}
+		else
+		{
+			$element->column .= ' style="clear:both;width:100%;"';
 		}
 	}
 
@@ -280,9 +321,9 @@ class FabrikFEModelGroup extends FabModel{
 	}
 	/*
 	 * is the group a repeat group
-	 *
-	 * @return bol
-	 */
+	*
+	* @return bol
+	*/
 
 	public function canRepeat()
 	{

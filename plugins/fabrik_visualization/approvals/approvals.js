@@ -26,9 +26,7 @@ var fbVisApprovals = new Class({
 			});
 			
 			new FloatingTips('.approvalTip', {
-				html: true,
 				position: 'right',
-				balloon: true,
 				content: function (e) {
 					var r = e.getNext();
 					r.store('trigger', e);

@@ -306,7 +306,6 @@ class plgFabrik_Element extends FabrikPlugin
 			{
 				$this->iconsSet = true;
 				$opts = new stdClass();
-				$opts->notice = true;
 				$opts->position = 'top';
 				$opts = json_encode($opts);
 				$data = htmlspecialchars($data, ENT_QUOTES);
@@ -956,17 +955,16 @@ class plgFabrik_Element extends FabrikPlugin
 				$validations = array_unique($this->getValidations());
 				if (count($validations) > 0)
 				{
-					$validationHovers = array('<span><ul class="validation-notices" style="list-style:none">');
+					$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
 					foreach ($validations as $validation)
 					{
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
 					}
-					$validationHovers[] = '</ul></span>';
+					$validationHovers[] = '</ul></div>';
 					$validationHovers = implode('', $validationHovers);
 					$title = htmlspecialchars($validationHovers, ENT_QUOTES);
 					$opts = new stdClass();
 					$opts->position = 'top';
-					$opts->notice = true;
 					$opts = json_encode($opts);
 					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => $opts, 'title' => $title));
 				}
@@ -1342,35 +1340,6 @@ class plgFabrik_Element extends FabrikPlugin
 			$element->label = $w->parseMessageForPlaceHolder($l, $model->_data);
 		}
 		$element->errorTag = $this->addErrorHTML($c, $tmpl);
-		$groupParams = $groupModel->getParams();
-		//style attribute for group columns
-		$element->column = '';
-		$colcount = (int)$groupParams->get('group_columns');
-		if ($colcount > 1)
-		{
-			$widths = $groupParams->get('group_column_widths');
-			$w = floor((100- ($colcount * 6)) / $colcount) . '%';
-			if ($widths != '')
-			{
-				$widths = explode(',', $widths);
-				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
-			}
-			$element->column = ' style="float:left;width:' . $w . ';';
-			if (($elCount % $colcount == 0) || $element->hidden)
-			{
-				$element->startRow = true;
-				$element->column .= "clear:both;";
-			}
-			if (($elCount % $colcount === $colcount - 1) || $element->hidden)
-			{
-				$element->endRow = true;
-			}
-			$element->column .= '" ';
-		}
-		else
-		{
-			$element->column .= ' style="clear:both;width:100%;"';
-		}
 		$element->element_ro = $this->_getROElement($model->_data, $c);
 		$element->value = $this->getValue($model->_data, $c);
 
@@ -1532,7 +1501,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$params = $this->getParams();
 		$customLink = $params->get('custom_link');
-		if ($customLink !== '' && $this->getElement()->link_to_detail == '1')
+		if ($customLink !== '' && $this->getElement()->link_to_detail == '1' && $params->get('custom_link_indetails', true))
 		{
 			$w = new FabrikWorker();
 			$repData = array();

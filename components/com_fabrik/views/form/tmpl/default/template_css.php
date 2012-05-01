@@ -124,11 +124,6 @@ echo "
 /*This controls the styling of the tips box that is associated with any of your elements*/
 .floating-tip {
 	background-color: #fff;
-	font-weight: bold;
-	font-size: 11px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
 }
 
 /*This controls the styling of your linked tables - needs clarification*/

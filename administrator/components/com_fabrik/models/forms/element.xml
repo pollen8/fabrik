@@ -203,6 +203,15 @@
 				size="70" type="text" 
 				label="COM_FABRIK_FIELD_CUSTOM_LINK_LABEL" 
 				description="COM_FABRIK_FIELD_CUSTOM_LINK_DESC" />
+			
+			<field name="custom_link_indetails"
+				type="radio"
+				default="1"
+				description="COM_FABRIK_FIELD_CUSTOM_LINK_IN_DETAILS_DESC"
+				label="COM_FABRIK_FIELD_CUSTOM_LINK_IN_DETAILS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 				
 			<field name="use_as_row_class" 
 				type="radio" default="0" 
