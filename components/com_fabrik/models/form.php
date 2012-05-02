@@ -947,14 +947,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		list($dofilter, $filter) = FabrikWorker::getContentFilter();
 
 		$ajaxPost = JRequest::getBool('fabrik_ajax');
-		
+
 		$this->ajaxPost = $ajaxPost;
 		$this->filter = $filter;
 		$this->dofilter = $dofilter;
 		$aData = JRequest::get('post', JREQUEST_ALLOWRAW);
 		array_walk_recursive($aData, array($this, '_clean'));
-		
-		
+
+
 		//set here so element can call formModel::updateFormData()
 		$this->_formData = $aData;
 
@@ -964,14 +964,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$session->set('com_fabrik.form.data', $this->_formData);
 		return $this->_formData;
 	}
-	
+
 	/**
 	 * called from setFormData to clean up posted data from either ajax or posted form
-	 * used in array_walk_recursive() method 
+	 * used in array_walk_recursive() method
 	 * @param	mixed	$item (string or array)
 	 * @param	string	$key
 	 */
-	
+
 	protected function _clean(&$item, $key)
 	{
 		if (is_array($item))
@@ -1954,7 +1954,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$elementModel->defaults = null;
 			}
 		}
-		
+
 		//insert join data into request array
 		$post['join'] = $joindata;
 		JRequest::setVar('join', $joindata, 'post');
@@ -3704,7 +3704,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 				//if its a repeatable group put in subgroup
 				if ($groupModel->canRepeat()) {
-					
+
 					//style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
 					$ix = 1;
 					foreach ($aSubGroupElements as $elKey => $element)
@@ -3712,31 +3712,35 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$groupModel->setColumnCss($element, $ix);
 						$ix ++;
 					}
-					
+
 					$aSubGroups[] = $aSubGroupElements;
 				}
 			}
-			$groupModel->randomiseElements($aElements); 
+			$groupModel->randomiseElements($aElements);
 
 			//style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
 			$ix = 1;
-			foreach ($aElements as $elKey => $element) 
+			foreach ($aElements as $elKey => $element)
 			{
 				$groupModel->setColumnCss($element, $ix);
 				$ix ++;
 			}
 			//echo "<pre>";print_r($aElements);echo "</pre>";
-			
+
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
 			$group->startHidden = $startHidden;
 			//only create the group if there are some element inside it
 			if (count($aElements) != 0) {
 				//28/01/2011 $$$rob and if it is published
-				$showGroup = $groupParams->get('repeat_group_show_first');
+				$showGroup = (int)$groupParams->get('repeat_group_show_first');
 				if ($showGroup != -1) {
-				//Jaanus: if not form view with "details only" option and not details view with "form only" option
-					if (!($showGroup == 2 && $this->_editable) && !($showGroup == 3 && JRequest::getVar('view', 'form') == 'details')) {
+					// $$$ - hugh - testing new 'hide if no usable elements' option (4)
+					//Jaanus: if not form view with "details only" option and not details view with "form only" option
+					if (!($showGroup == 2 && $this->_editable)
+						&& !($showGroup == 3 && JRequest::getVar('view', 'form') == 'details')
+						&& !($showGroup == 4 && !$groupModel->canView())
+						) {
 						$this->groupView[$group->name] = $group;
 					}
 				}

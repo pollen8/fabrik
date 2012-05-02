@@ -124,6 +124,7 @@
 					<option value="-1">COM_FABRIK_YES_BUT_HIDDEN</option>
 					<option value="2">COM_FABRIK_DETAILS_VIEW_ONLY</option>
 					<option value="3">COM_FABRIK_FORM_VIEW_ONLY</option>
+					<option value="4">COM_FABRIK_SHOW_GROUP_USABLE_ELEMENTS_ONLY</option>
 			</field>
 			
 			<field name="random"
