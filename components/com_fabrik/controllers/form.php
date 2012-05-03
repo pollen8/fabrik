@@ -175,7 +175,7 @@ class FabrikControllerForm extends JController
 			$view->display();
 			return;
 		}
-
+		
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
 
@@ -285,41 +285,56 @@ class FabrikControllerForm extends JController
 	protected function getRedirectURL($model, $incSession = true)
 	{
 		$app = JFactory::getApplication();
-		if ($app->isAdmin()) {
-			if (array_key_exists('apply', $model->_formData)) {
-				$url = "index.php?option=com_fabrik&c=form&task=form&formid=".JRequest::getInt('formid')."&listid=".JRequest::getInt('listid')."&rowid=".JRequest::getInt('rowid');
+		if ($app->isAdmin())
+		{
+			if (array_key_exists('apply', $model->_formData))
+			{
+				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid') . '&rowid=' . JRequest::getInt('rowid');
 			} else {
-				$url = "index.php?option=com_fabrik&c=table&task=viewTable&cid[]=".$model->_table->id;
+				$url = 'index.php?option=com_fabrik&c=table&task=viewTable&cid[]=' . $model->_table->id;
 			}
-		} else {
+		}
+		else
+		{
 			if (array_key_exists('apply', $model->_formData)) {
-				$url = "index.php?option=com_fabrik&view=form&formid=".JRequest::getInt('formid')."&rowid=".JRequest::getInt('rowid')."&listid=".JRequest::getInt('listid');
-			} else {
-				if ($this->isMambot) {
+				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid') . '&listid=' . JRequest::getInt('listid');
+			}
+			else
+			{
+				if ($this->isMambot)
+				{
 					//return to the same page
 					$url = JArrayHelper::getvalue($_SERVER, 'HTTP_REFERER', 'index.php');
-				} else {
+				}
+				else
+				{
 					//return to the page that called the form
 					$url = urldecode(JRequest::getVar('fabrik_referrer', 'index.php', 'post'));
 				}
-				$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
-				if ($url == '') {
-					if ($Itemid !== 0) {
-						$url = "index.php?option=com_fabrik&Itemid=$Itemid";
-					} else {
+				$Itemid	= (int) @$app->getMenu('site')->getActive()->id;
+				if ($url == '')
+				{
+					if ($Itemid !== 0)
+					{
+						$url = 'index.php?' . http_build_query($app->getMenu('site')->getActive()->query) . '&Itemid=' . $Itemid;
+					}
+					else
+					{
 						//no menu link so redirect back to list view
-						$url = "index.php?option=com_fabrik&view=list&listid=".JRequest::getInt('listid');
+						$url = 'index.php?option=com_fabrik&view=list&listid=' . JRequest::getInt('listid');
 					}
 				}
 			}
 			$config	= JFactory::getConfig();
-			if ($config->get('sef')) {
+			if ($config->get('sef'))
+			{
 				$url = JRoute::_($url);
 			}
 		}
 		//3.0 need to distinguish between the default redirect and redirect plugin
 		$this->baseRedirect = true;
-		if (!$incSession) {
+		if (!$incSession)
+		{
 			return $url;
 		}
 		$session = JFactory::getSession();
@@ -327,19 +342,22 @@ class FabrikControllerForm extends JController
 		$context = $model->getRedirectContext();
 		//if the redirect plug-in has set a url use that in preference to the default url
 		//$surl = $session->get($context.'url', array($url));
-		$surl = $session->get($context.'url', array());
-		if (!empty($surl)) {
+		$surl = $session->get($context . 'url', array());
+		if (!empty($surl))
+		{
 			$this->baseRedirect = false;
 		}
-		if (!is_array($surl)) {
+		if (!is_array($surl))
+		{
 			$surl = array($surl);
 		}
-		if (empty($surl)) {
+		if (empty($surl))
+		{
 			$surl[] = $url;
 		}
 		// $$$ hugh - hmmm, array_shift re-orders array keys, which will screw up plugin ordering?
 		$url = array_shift($surl);
-		$session->set($context.'url', $surl);
+		$session->set($context . 'url', $surl);
 		return $url;
 	}
 
