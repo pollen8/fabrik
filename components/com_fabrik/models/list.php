@@ -7403,16 +7403,20 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	* load the JS files into the document
-	* @return nullscript
+	* @param	array	reference: js script srcs to load in the head
+	* @return	null
 	*/
 
-	function getCustomJsAction()
+	function getCustomJsAction(&$srcs)
 	{
-		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'table_'.$this->getId().".js")) {
-			FabrikHelperHTML::script('components/com_fabrik/js/table_' . $this->getId() . ".js");
+		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/table_' . $this->getId() . '.js'))
+		{
+			$srcs[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
-		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'list_'.$this->getId().".js")) {
-			FabrikHelperHTML::script('components/com_fabrik/js/list_' . $this->getId() . ".js");
+		
+		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' .$this->getId() . '.js'))
+		{
+			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
 		}
 	}
 }

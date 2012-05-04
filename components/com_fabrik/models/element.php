@@ -3927,7 +3927,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function getDefaultProperties()
 	{
 		$user = JFactory::getUser();
-		$now = JFactory::getDate()->toMySQL();
+		$now = JFactory::getDate()->toSql();
 		$this->setId(0);
 		$item = $this->getElement();
 		$item->plugin = $this->_name;

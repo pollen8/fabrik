@@ -336,7 +336,6 @@ class fabrikViewForm extends JView
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 
 		$this->get('FormCss');
-		$this->get('CustomJsAction');
 
 		$startJs = "head.ready(function() {\n";
 		$startJs= '';
@@ -521,13 +520,13 @@ class fabrikViewForm extends JView
 
 		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onJSReady', $model);
-		if (in_array(false, $res)) {
+		if (in_array(false, $res))
+		{
 			return false;
 		}
-
 		$str = implode("\n", $script);
+		$model->getCustomJsAction($srcs);
 		FabrikHelperHTML::script($srcs, $str);
-
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 
