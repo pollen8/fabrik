@@ -4037,7 +4037,7 @@ class FabrikFEModelList extends JModelForm {
 					$first = true;
 					$firstFilter = $elementModel->getFilter(0, false);
 				}
-				$fieldNames[] = JHTML::_('select.option', $elName, $element->label);
+				$fieldNames[] = JHTML::_('select.option', $elName, strip_tags($element->label));
 			}
 		}
 		return array($fieldNames, $firstFilter);
@@ -4167,15 +4167,15 @@ class FabrikFEModelList extends JModelForm {
 				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
 				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type, 'grouped' => $grouped);
-
 				$counter ++;
 			}
 		}
 
-		if ($counter == 0) {
-			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="'.$prefix.'join][]" value="WHERE" />';
-			$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', '');
-			$jsSel = JHTML::_('select.genericlist', $statements, $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', '');
+		if ($counter == 0)
+		{
+			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="' . $prefix . 'join][]" value="WHERE" />';
+			$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key" size="1" ','value', 'text', '');
+			$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ','value', 'text', '');
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type, 'grouped' => $grouped);
 		}
 		$this->advancedSearchRows = $rows;
