@@ -136,7 +136,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	{
 		$v = parent::getValue($data, $repeatCounter, $opts);
 		// $$$ rob see http://fabrikar.com/forums/showthread.php?t=25965
-		if (count($v) == 1)
+		if (is_array($v) && count($v) == 1)
 		{
 			$v = $v[0];
 		}
