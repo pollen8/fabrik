@@ -124,5 +124,23 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	{
 		return count($this->getSubOptionValues()) < 3 ? true : false;
 	}
+	
+	/**
+	 * determines the value for the element in the form view
+	 * @param array data
+	 * @param int when repeating joinded groups we need to know what part of the array to access
+	 * @param array options
+	 */
+
+	function getValue($data, $repeatCounter = 0, $opts = array())
+	{
+		$v = parent::getValue($data, $repeatCounter, $opts);
+		// $$$ rob see http://fabrikar.com/forums/showthread.php?t=25965
+		if (count($v) == 1)
+		{
+			$v = $v[0];
+		}
+		return $v;
+	}
 }
 ?>
