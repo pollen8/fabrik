@@ -1049,9 +1049,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				// add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
 				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN') .
-				$this->calendar($default[0], $v . '[0]', $this->getHTMLId() . '_filter_range_0_' . JRequest::getVar('task'), $format, $calOpts);
+				$this->calendar($default[0], $v . '[0]', $this->getFilterHtmlId(0), $format, $calOpts);
 				$return[] = '<br />'.JText::_('COM_FABRIK_DATE_RANGE_AND') .
-				$this->calendar($default[1], $v . '[1]', $this->getHTMLId(). '_filter_range_1_' . JRequest::getVar('task'), $format, $calOpts);
+				$this->calendar($default[1], $v . '[1]', $this-> getFilterHtmlId(1), $format, $calOpts);
 				$return[] = '</div>';
 				break;
 
@@ -1080,7 +1080,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text', $default, $htmlid . '_filter_range_0');
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text', $default, $htmlid . '0');
 				break;
 			default:
 			case "field":
@@ -1095,7 +1095,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 				// add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
-				$return[] = $this->calendar($default, $v, $htmlid . '_filter_range_0_' . JRequest::getVar('task'), $format, $calOpts);
+				$return[] = $this->calendar($default, $v, $this->getFilterHtmlId(0), $format, $calOpts);
 				$return[] = '</div>';
 				break;
 
@@ -1131,6 +1131,12 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
 		return implode("\n", $return);
+	}
+	
+	protected function getFilterHtmlId($range)
+	{
+		$counter = JRequest::getVar('counter', 0);
+		return $this->getHTMLId() . '_filter_range_' . $range . '_' . JRequest::getVar('task') . '.' . $counter;
 	}
 
 	/**
@@ -1676,6 +1682,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	public function filterJS($normal, $container)
 	{
+		
 		$element = $this->getElement();
 		if ($normal && ($element->filter_type !== 'field' && $element->filter_type !== 'range'))
 		{
@@ -1683,8 +1690,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		$htmlid = $this->getHTMLId();
 		$params = $this->getParams();
-		$id = $htmlid . '_filter_range_0_' . JRequest::getVar('task');
-		$id2 = $htmlid . '_filter_range_1_' . JRequest::getVar('task');
+		$id = $this->getFilterHtmlId(0);
+		$id2 =$this->getFilterHtmlId(1);
 
 		$opts = $this->_CalendarJSOpts($id);
 
@@ -1694,7 +1701,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->buttons = $element->filter_type == 'field' ? array($id . '_cal_img') : array($id . '_cal_img', $id2 . '_cal_img');
 		$opts = json_encode($opts);
 
-		$script = 'Fabrik.filter_'. $container. '.addFilter(\'' . $element->plugin . '\', new DateFilter(' . $opts . '));' . "\n";
+		$script = 'Fabrik.filter_' . $container . '.addFilter(\'' . $element->plugin . '\', new DateFilter(' . $opts . '));' . "\n";
 		if ($normal)
 		{
 			FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js');
@@ -1710,7 +1717,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	{
 		$params = $this->getParams();
 		$calOpts = array('class' => 'inputbox fabrik_filter', 'maxlength' => '19', 'size' => 16);
-		if ($params->get('date_allow_typing_in_field', true) == false) {
+		if ($params->get('date_allow_typing_in_field', true) == false)
+		{
 			$calopts['readonly'] = 'readonly';
 		}
 		return $calOpts;
@@ -1731,14 +1739,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	{
 		$prefix = JDEBUG ? '' : '-min';
 		$params = $this->getParams();
-		if ($params->get('date_advanced', '0') == '1') {
-			if (empty($prefix)) {
+		if ($params->get('date_advanced', '0') == '1')
+		{
+			if (empty($prefix))
+			{
 				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/date' . $prefix . '.js');
 				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/core' . $prefix . '.js');
 				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/parser' . $prefix . '.js');
 				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/extras' . $prefix . '.js');
 			}
-			else {
+			else
+			{
 				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/date.js');
 				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/extras.js');
 			}
