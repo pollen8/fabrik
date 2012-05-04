@@ -11,8 +11,10 @@ AdvancedSearch = new Class({
 		this.setOptions(options);
 		this.trs = $A([]);
 		if (document.id('advanced-search-add')) {
-			document.id('advanced-search-add').addEvent("click", this.addRow.bindWithEvent(this));
-			document.id('advancedFilterTable-clearall').addEvent("click", this.resetForm.bindWithEvent(this));
+			document.id('advanced-search-add').removeEvents('click');
+			document.id('advanced-search-add').addEvent('click', this.addRow.bindWithEvent(this));
+			document.id('advancedFilterTable-clearall').removeEvents('click');
+			document.id('advancedFilterTable-clearall').addEvent('click', this.resetForm.bindWithEvent(this));
 			this.trs.each(function (tr) {
 				tr.inject(document.id('advanced-search-table').getElements('tr').getLast(), 'after');
 			}.bind(this));
@@ -122,7 +124,7 @@ AdvancedSearch = new Class({
 	},
 
 	deleteFilterOption: function (e) {
-		event.target.removeEvent("click", this.deleteFilterOption.bindWithEvent(this));
+		event.target.removeEvent('click', this.deleteFilterOption.bindWithEvent(this));
 		var tr = event.target.parentNode.parentNode;
 		var table = tr.parentNode;
 		table.removeChild(tr);
