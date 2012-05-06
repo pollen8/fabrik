@@ -2417,7 +2417,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 		// $$$ rob this caused issues if your element was a dbjoin with a concat label, but then you save it as a field
 		//if ($params->get('join_val_column_concat') == '') {
-		if ($element->plugin != 'fabrikdatabasejoin')
+		if ($element->plugin != 'databasejoin')
 		{
 			$elName = FabrikString::safeColName($elName);
 		}
@@ -3718,14 +3718,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		return $this->renderListDataFinal($data);
 	}
-	
+
 	/**
-	 * final prepare data function called from renderListData(), converts data to string and if needed 
+	 * final prepare data function called from renderListData(), converts data to string and if needed
 	 * encases in <ul> (for repeating data)
 	 * @param	array	list cell data
 	 * @return	string	cell data
 	 */
-	
+
 	protected function renderListDataFinal($data)
 	{
 		if (is_array($data) && count($data) > 1)
@@ -3927,7 +3927,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function getDefaultProperties()
 	{
 		$user = JFactory::getUser();
-		$now = JFactory::getDate()->toMySQL();
+		$now = JFactory::getDate()->toSql();
 		$this->setId(0);
 		$item = $this->getElement();
 		$item->plugin = $this->_name;

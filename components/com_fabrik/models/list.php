@@ -3892,9 +3892,9 @@ class FabrikFEModelList extends JModelForm {
 		if ($params->get('search-mode', 'AND') == 'OR') {
 			// One field to search them all (and in the darkness bind them)
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
-			$v = $this->getFilterModel()->getSearchAllValue();
+			$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass();
-			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="'.$v.'" class="fabrik_filter" name="'.$requestKey.'" />';
+			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v . '" class="fabrik_filter" name="'.$requestKey.'" />';
 			if ($params->get('search-mode-advanced') == 1) {
 				$opts = array();
 				$opts[] = JHTML::_('select.option', 'all', JText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
@@ -4037,7 +4037,7 @@ class FabrikFEModelList extends JModelForm {
 					$first = true;
 					$firstFilter = $elementModel->getFilter(0, false);
 				}
-				$fieldNames[] = JHTML::_('select.option', $elName, $element->label);
+				$fieldNames[] = JHTML::_('select.option', $elName, strip_tags($element->label));
 			}
 		}
 		return array($fieldNames, $firstFilter);
@@ -4167,15 +4167,15 @@ class FabrikFEModelList extends JModelForm {
 				$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', $key);
 				$jsSel = JHTML::_('select.genericlist', $statements,  $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type, 'grouped' => $grouped);
-
 				$counter ++;
 			}
 		}
 
-		if ($counter == 0) {
-			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="'.$prefix.'join][]" value="WHERE" />';
-			$key = JHTML::_('select.genericlist', $fieldNames, $prefix.'key][]', 'class="inputbox key" size="1" ','value', 'text', '');
-			$jsSel = JHTML::_('select.genericlist', $statements, $prefix.'condition][]', 'class="inputbox" size="1" ','value', 'text', '');
+		if ($counter == 0)
+		{
+			$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" name="' . $prefix . 'join][]" value="WHERE" />';
+			$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key" size="1" ','value', 'text', '');
+			$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ','value', 'text', '');
 			$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $firstFilter, 'type' => $type, 'grouped' => $grouped);
 		}
 		$this->advancedSearchRows = $rows;
@@ -7403,16 +7403,20 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	* load the JS files into the document
-	* @return nullscript
+	* @param	array	reference: js script srcs to load in the head
+	* @return	null
 	*/
 
-	function getCustomJsAction()
+	function getCustomJsAction(&$srcs)
 	{
-		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'table_'.$this->getId().".js")) {
-			FabrikHelperHTML::script('components/com_fabrik/js/table_' . $this->getId() . ".js");
+		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/table_' . $this->getId() . '.js'))
+		{
+			$srcs[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
-		if (file_exists(COM_FABRIK_FRONTEND.DS.'js'.DS.'list_'.$this->getId().".js")) {
-			FabrikHelperHTML::script('components/com_fabrik/js/list_' . $this->getId() . ".js");
+		
+		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' .$this->getId() . '.js'))
+		{
+			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
 		}
 	}
 }

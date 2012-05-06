@@ -35,6 +35,8 @@ class FabrikViewList extends JView{
 		$src = $this->get('PluginJsClasses');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
+		
+		$model->getCustomJsAction($src);
 
 		FabrikHelperHTML::script($src);
 		$tmpl = $this->get('tmpl');
@@ -196,7 +198,6 @@ class FabrikViewList extends JView{
 		$this->getElementJs();
 		//reset data back to original settings
 		$this->rows = $origRows;
-		$this->get('CustomJsAction');
 	}
 
 	protected function getElementJs()

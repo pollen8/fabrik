@@ -144,15 +144,16 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * get the search all posted (or session) value
-	 * @return string
+	 * @param	string	model html (performs htmlspecialchars on value) OR 'query' (adds slashes and url decodes)
+	 * @return	string
 	 */
 	
-	public function getSearchAllValue()
+	public function getSearchAllValue($mode = 'html')
 	{
 		$app = JFactory::getApplication();
 		$identifier = $this->listModel->getRenderContext();
 		//test new option to have one field to search them all
-		$key = 'com_fabrik.list'.$identifier.'.filter.searchall';
+		$key = 'com_fabrik.list' . $identifier . '.filter.searchall';
 		//seems like post keys 'name.1' get turned into 'name_1'
 		$requestKey = $this->getSearchAllRequestKey();
 		$v = $app->getUserStateFromRequest($key, $requestKey);
@@ -164,7 +165,7 @@ class FabrikFEModelListfilter extends FabModel {
 				$v = $app->getUserState('com_fabrik.searchform.form'.$fromFormId.'.searchall');
 			}
 		}
-		$v = htmlspecialchars($v, ENT_QUOTES);
+		$v = $mode == 'html' ? htmlspecialchars($v, ENT_QUOTES) : addslashes(urldecode($v));
 		return $v;
 	}
 	
@@ -195,7 +196,7 @@ class FabrikFEModelListfilter extends FabModel {
 	private function getSearchAllFilters(&$filters)
 	{
 		$requestKey = $this->getSearchAllRequestKey();
-		$search = $this->getSearchAllValue();
+		$search = $this->getSearchAllValue('query');
 		if ($search == '')
 		{
 			if (array_key_exists($requestKey, $_POST))

@@ -292,19 +292,20 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * load the JS files into the document
+	 * @param	array	reference: js script srcs to load in the head
 	 * @return null
 	 */
 
-	function getCustomJsAction()
+	function getCustomJsAction(&$srcs)
 	{
 		// $$$ hugh - added ability to use form_XX, as am adding custom table_XX and viz_XX as well
-		if (file_exists(COM_FABRIK_FRONTEND . '/js/' . $this->getId() . '.js'))
+		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $this->getId() . '.js'))
 		{
-			FabrikHelperHTML::script('components/com_fabrik/js/'.$this->getId() . '.js');
+			$srcs[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
 		}
-		else if (file_exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
+		else if (JFile::exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
 		{
-			FabrikHelperHTML::script('components/com_fabrik/js/form_'.$this->getId() . '.js');
+			$srcs[] = 'components/com_fabrik/js/form_' . $this->getId() . '.js';
 		}
 	}
 
