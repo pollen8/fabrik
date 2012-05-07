@@ -87,6 +87,24 @@
 				label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL"
 				description="COM_FABRIK_REPEAT_GROUP_MAX_DESC"
 				size="2" />
+			
+			<field name="repeat_add_access" 
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_ACCESS_ADD_REPEAT_GROUP_LABEL" 
+				description="COM_FABRIK_ACCESS_ADD_REPEAT_GROUP_DESC" />
+			
+			<field name="repeat_delete_access" 
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_ACCESS_DELETE_REPEAT_GROUP_LABEL" 
+				description="COM_FABRIK_ACCESS_DELETE_REPEAT_GROUP_DESC" />	
+			
+			<field name="repeat_delete_access_user" 
+				type="listfields" 
+				valueformat="tableelement" 
+				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL" 
+				description="COM_FABRIK_FIELD_OR_USE_FIELD_DELETE_LABEL" />
 				
 			<!--  not yet implemented but used in calc element huh!? (copied over from f2)
 			<field name="show_repeat_max" 

@@ -2309,48 +2309,8 @@ class FabrikFEModelList extends JModelForm {
 
 	function canUserDo($row, $col)
 	{
-		if (!is_null($row)) {
-			$params = $this->getParams();
-			$user = JFactory::getUser();
-			$usercol =$params->get($col, '');
-			if ($usercol !=  '') {
-				$usercol = FabrikString::safeColNameToArrayKey($usercol);
-
-				if (!array_key_exists($usercol, $row)) {
-					return false;
-				} else {
-					if (array_key_exists($usercol . "_raw", $row)) {
-						$usercol .= "_raw";
-					}
-					$myid = $user->get('id');
-					//-1 for menu items that link to their own reocrds
-					// $$$ hugh - TODO - test - something doesn't look right about this logic!!
-					// $$$ hugh - was $row->$usercol, but $row is an array not an object!
-					// $$$ hugh - oops, it's an array when coming here from form, object when coming from table!
-					if (is_array($row)) {
-						$usercol_val = $row[$usercol];
-					}
-					else {
-						$usercol_val = $row->$usercol;
-					}
-					if (empty($usercol_val) && empty($myid)) {
-						return false;
-					}
-					if (intVal($usercol_val) === intVal($myid) || JRequest::getVar('rowid') == -1) {
-						return true;
-					}
-					# $$$ hugh - testing making the "or use field" truly an OR, so they can edit
-					# if they either have usercol privs or the regular ACL.  i.e. if this test fails,
-					# don't reurn false, rather drop through and test regular ACL.
-					/*
-					else {
-					return false;
-					}
-					*/
-				}
-			}
-		}
-		return -1;
+		$params = $this->getParams();
+		return FabrikWorker::canUserDo($params, $row, $col);
 	}
 
 	/**

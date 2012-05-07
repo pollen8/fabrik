@@ -242,7 +242,8 @@ class FabrikFEModelGroup extends FabModel{
 
 	function getFormModel()
 	{
-		if (!isset($this->_form)) {
+		if (!isset($this->_form))
+		{
 			$formids = $this->getFormsIamIn();
 			$formid = empty($formids) ? 0 : $formids[0];
 			$this->_form = JModel::getInstance('Form', 'FabrikFEModel');
@@ -322,13 +323,57 @@ class FabrikFEModelGroup extends FabModel{
 	/*
 	 * is the group a repeat group
 	*
-	* @return bol
+	* @return	bool
 	*/
 
 	public function canRepeat()
 	{
 		$params = $this->getParams();
 		return $params->get('repeat_group_button');
+	}
+	
+	/**
+	 * can the user add a repeat group
+	 * @since 3.0.1
+	 * @return	bool
+	 */
+	
+	public function canAddRepeat()
+	{
+		$params = $this->getParams();
+		$ok = $this->canRepeat();
+		if ($ok)
+		{
+			$user = JFactory::getUser();
+			$groups = $user->authorisedLevels();
+			$ok = in_array($params->get('repeat_add_access', 1), $groups);
+		}
+		return $ok;
+		
+	}
+	
+	/**
+	* can the user delete a repeat group
+	* @since 3.0.1
+	* @return	bool
+	*/
+	
+	public function canDeleteRepeat()
+	{
+		$ok = false;
+		if ($this->canRepeat())
+		{
+			$params = $this->getParams();
+			$row = $this->getFormModel()->getData();
+			$ok = FabrikWorker::canUserDo($params, $row, 'repeat_delete_access_user');
+			if ($ok === -1)
+			{
+				$user = JFactory::getUser();
+				$groups = $user->authorisedLevels();
+				$ok = in_array($params->get('repeat_delete_access', 1), $groups);
+			}
+		}
+		return $ok;
 	}
 
 	/**
@@ -407,20 +452,24 @@ class FabrikFEModelGroup extends FabModel{
 		$group = new stdClass();
 		$groupTable	= $this->getGroup();
 		$params	= $this->getParams();
-
-		if (!isset($this->_editable)) {
+		if (!isset($this->_editable))
+		{
 			$this->_editable = $formModel->_editable;
 		}
-		if ($this->_editable) {
+		if ($this->_editable)
+		{
 			//if all of the groups elements are not editable then set the group to uneditable
 			$elements = $this->getPublishedElements();
 			$editable = false;
-			foreach ($elements as $element) {
-				if ($element->canUse()) {
+			foreach ($elements as $element)
+			{
+				if ($element->canUse())
+				{
 					$editable = true;
 				}
 			}
-			if (!$editable) {
+			if (!$editable)
+			{
 				$this->_editable = false;
 			}
 		}
@@ -434,13 +483,15 @@ class FabrikFEModelGroup extends FabModel{
 		// $$$ hugh - added array_key_exists for (I think!) corner case where group properties have been
 		// changed to remove (or change) paging, but user still has session state set.  So it was throwing
 		// a PHP 'undefined index' notice.
-		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage]) && !in_array($groupTable->id, $pages[$startpage]) || $showGroup == 0) {
+		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage]) && !in_array($groupTable->id, $pages[$startpage]) || $showGroup == 0)
+		{
 			$groupTable->css .= ";display:none;";
 		}
 		$group->css = trim(str_replace(array("<br />", "<br>"), "", $groupTable->css));
 		$group->id = $groupTable->id;
 
-		if (JString::stristr($groupTable->label , "{Add/Edit}")) {
+		if (JString::stristr($groupTable->label , "{Add/Edit}"))
+		{
 			$replace = ((int)$formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$groupTable->label  = str_replace("{Add/Edit}", $replace, $groupTable->label);
 		}
@@ -450,6 +501,8 @@ class FabrikFEModelGroup extends FabModel{
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->_editable) ? 1 : 0;
 		$group->maxRepeat = (int)$params->get('repeat_max');
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
+		$group->canAddRepeat = $this->canAddRepeat();
+		$group->canDeleteRepeat = $this->canDeleteRepeat();
 		return $group;
 	}
 

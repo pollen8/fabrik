@@ -230,10 +230,10 @@ class FabrikWorker {
 	function specialStrToMySQL($date, $gmt = true)
 	{
 		/**
-		* lets check if we have some special text as per :
-		* http://php.net/strtotime - this means we can use "+2 week" as a url filter
-		* do this before we urldecode the date otherwise the + is replaced with ' ';
-		*/
+		 * lets check if we have some special text as per :
+		 * http://php.net/strtotime - this means we can use "+2 week" as a url filter
+		 * do this before we urldecode the date otherwise the + is replaced with ' ';
+		 */
 
 		$matches = array();
 		$matches2 = array();
@@ -772,7 +772,7 @@ class FabrikWorker {
 		$dofilter = false;
 		$filter= false;
 
-	// Filter settings
+		// Filter settings
 		jimport('joomla.application.component.helper');
 
 		// Get Config and Filters in Joomla 2.5
@@ -781,8 +781,8 @@ class FabrikWorker {
 
 		// If no filter data found, get from com_content (Joomla 1.6/1.7 sites)
 		if (empty($filters)) {
-		$contentParams = JComponentHelper::getParams('com_content');
-		$filters = $contentParams->get('filters');
+			$contentParams = JComponentHelper::getParams('com_content');
+			$filters = $contentParams->get('filters');
 		}
 
 		$user		= JFactory::getUser();
@@ -1158,6 +1158,50 @@ class FabrikWorker {
 
 		}
 		return $val;
+	}
+	
+	/**
+	* access control function for determining if the user can perform
+	* a designated function on a specific row
+	* @param object $row data
+	* @param string $col access control setting to compare against
+	* @return mixed - if ACL setting defined here return blo, otherwise return -1 to contiune with default acl setting
+	*/
+
+	public static function canUserDo($params, $row, $col)
+	{
+		if (!is_null($row))
+		{
+			$user = JFactory::getUser();
+			$usercol =$params->get($col, '');
+			if ($usercol !=  '')
+			{
+				$usercol = FabrikString::safeColNameToArrayKey($usercol);
+				if (!array_key_exists($usercol, $row))
+				{
+					return false;
+				}
+				else
+				{
+					if (array_key_exists($usercol . '_raw', $row))
+					{
+						$usercol .= '_raw';
+					}
+					$myid = $user->get('id');
+					//-1 for menu items that link to their own records
+					$usercol_val = is_array($row) ? $row[$usercol] : $row->$usercol;
+					if (empty($usercol_val) && empty($myid))
+					{
+						return false;
+					}
+					if (intVal($usercol_val) === intVal($myid) || JRequest::getVar('rowid') == -1)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return -1;
 	}
 }
 

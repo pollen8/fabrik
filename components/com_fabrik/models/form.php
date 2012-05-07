@@ -3726,8 +3726,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$groupModel->setColumnCss($element, $ix);
 				$ix ++;
 			}
-			//echo "<pre>";print_r($aElements);echo "</pre>";
-
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
 			$group->startHidden = $startHidden;
