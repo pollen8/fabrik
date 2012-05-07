@@ -218,9 +218,8 @@ var FloatingTips = new Class({
 		var tip = tips[opts.showOn];
 		var fxs = trigger.retrieve('fxs');
 		var fx = fxs[opts.showOn];
-		
 		this.hideOthers(trigger);
-		if (fx.isRunning()) {
+		if (fx.isRunning() && opts.showOn !== "mouseenter" && opts.hideOn !== "mouseleave") {
 			return;
 		}
 		fx.hideMe = true;
