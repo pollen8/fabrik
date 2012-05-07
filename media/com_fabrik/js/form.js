@@ -97,6 +97,12 @@ var FbForm = new Class({
 		this.form.getElements('.fabrikGroup').each(function (group) {
 			var id = group.id.replace('group', '');
 			var c = group.getElements('.fabrikSubGroup').length;
+			//if no joined repeating data then c should be 0 and not 1
+			if (c === 1) {
+				if (group.getElement('.fabrikSubGroupElements').getStyle('display') === 'none') {
+					c = 0;
+				}
+			}
 			this.repeatGroupMarkers.set(id, c);
 		}.bind(this));
 
