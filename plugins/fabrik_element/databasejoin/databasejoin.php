@@ -763,12 +763,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 				if ($params->get('fabrikdatabasejoin_frontend_select') && $this->_editable)
 				{
+					JText::script('PLG_ELEMENT_DBJOIN_SELECT');
 					$html[] = '<a href="#" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">' .
 					FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
 				if ($params->get('fabrikdatabasejoin_frontend_add') && $this->_editable)
 				{
+					JText::script('PLG_ELEMENT_DBJOIN_ADD');
 					$html[] = '<a href="#" title="'.JText::_('COM_FABRIK_ADD').'" class="toggle-addoption">';
 					$html[] = FabrikHelperHTML::image('action_add.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}

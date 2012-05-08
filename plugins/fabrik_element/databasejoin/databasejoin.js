@@ -67,7 +67,7 @@ var FbDatabasejoin = new Class({
 		var id = this.element.id + '-popupwin';
 		this.windowopts = {
 			'id': id,
-			'title': 'Add',
+			'title': Joomla.JText._('PLG_ELEMENT_DBJOIN_ADD'),
 			'contentType': 'xhr',
 			'loadMethod': 'xhr',
 			'contentURL': url,
@@ -281,7 +281,7 @@ var FbDatabasejoin = new Class({
 		url += "&resetfilters=1";
 		this.windowopts = {
 			'id': id,
-			'title': 'Select',
+			'title': Joomla.JText._('PLG_ELEMENT_DBJOIN_SELECT'),
 			'contentType': 'xhr',
 			'loadMethod': 'xhr',
 			'evalScripts': true,
