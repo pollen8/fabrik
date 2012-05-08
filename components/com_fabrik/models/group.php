@@ -194,6 +194,7 @@ class FabrikFEModelGroup extends FabModel{
 	 * @since 	Fabrik 3.0.5.2
 	 * @param	object	prerender element properties
 	 * @param	int		current key when looping over elements.
+	 * @return	int		the next column count
 	 */
 
 	public function setColumnCss(&$element, $elCount)
@@ -208,10 +209,10 @@ class FabrikFEModelGroup extends FabModel{
 			if ($widths != '')
 			{
 				$widths = explode(',', $widths);
-				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
+				$w = JArrayHelper::getValue($widths, $elCount % $colcount + 1, $w);
 			}
 			$element->column = ' style="float:left;width:' . $w . ';';
-			if (($elCount % $colcount == 0) || $element->hidden)
+			if ($elCount !== 0 && ($elCount % $colcount + 1 == 0) || $element->hidden)
 			{
 				$element->startRow = true;
 				$element->column .= "clear:both;";
@@ -226,6 +227,12 @@ class FabrikFEModelGroup extends FabModel{
 		{
 			$element->column .= ' style="clear:both;width:100%;"';
 		}
+		// $$$ rob only advance in the column count if the element is not hidden
+		if (!$element->hidden)
+		{
+			$elCount ++;
+		}
+		return $elCount;
 	}
 
 	/**

@@ -3738,8 +3738,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$ix = 1;
 					foreach ($aSubGroupElements as $elKey => $element)
 					{
-						$groupModel->setColumnCss($element, $ix);
-						$ix ++;
+						$ix = $groupModel->setColumnCss($element, $ix);
 					}
 
 					$aSubGroups[] = $aSubGroupElements;
@@ -3751,8 +3750,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$ix = 1;
 			foreach ($aElements as $elKey => $element)
 			{
-				$groupModel->setColumnCss($element, $ix);
-				$ix ++;
+				$ix = $groupModel->setColumnCss($element, $ix);
 			}
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
