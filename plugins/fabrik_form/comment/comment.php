@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND.DS.'models/plugin-form.php');
 
 /**
  * @package		Joomla
@@ -21,7 +21,6 @@ require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
  */
 class FabrikTableComment extends FabTable
 {
-
 
 	function __construct(&$_db)
 	{
@@ -37,6 +36,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	var $commentsLocked = null;
 
+	protected $_data = array();
+	
 	function getEndContent_result($c)
 	{
 		return $this->_data;
@@ -67,6 +68,11 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	function getEndContent(&$params, &$formModel)
 	{
+		$rowid = $formModel->getRowId();
+		if ( $rowid == 0 || $rowid == '')
+		{
+			return;
+		}
 		$this->commentsLocked($params, $formModel);
 		$method = $params->get("comment_method", "disqus");
 		switch($method) {
@@ -451,14 +457,15 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		$row = FabTable::getInstance('comment', 'FabrikTable');// new TableComment($db);
 		$row->bind( JRequest::get('request'));
 		$row->ipaddress = $_SERVER['REMOTE_ADDR'];
-		$row->user_id 	= $user->get('id');
-		$row->approved 	= 1;
+		$row->user_id = $user->get('id');
+		$row->approved = 1;
 		//@TODO this isnt set?
 		$row->url = JRequest::getVar('HTTP_REFERER', '', 'server');
 		$rowid = JRequest::getVar('rowid');
 		$row->formid = JRequest::getVar('formid');
 		$row->row_id = $rowid;
-		if ($user->get('id') != 0) {
+		if ($user->get('id') != 0)
+		{
 			$row->name = $user->get('name');
 			$row->email = $user->get('email');
 		}
@@ -684,16 +691,19 @@ var idcomments_post_url;");
 	 * @param object $params
 	 * @param object $formModel
 	 */
+	
 	function _jcomment(&$params, $formModel)
 	{
-		$jcomments = JPATH_SITE.DS.'components'.DS.'com_jcomments'.DS.'jcomments.php';
-		if (JFile::exists($jcomments)) {
+		$jcomments = JPATH_SITE . '/components/com_jcomments/jcomments.php';
+		if (JFile::exists($jcomments))
+		{
 			require_once($jcomments);
 			$this->_data = '<div id="jcomments" style="clear: both;">
-                    '.JComments::showComments(JRequest::getVar('rowid'), "com_fabrik_{$formModel->getId()}").'
+                    '.JComments::show(JRequest::getVar('rowid'), "com_fabrik_{$formModel->getId()}").'
                     </div>';
 		}
-		else {
+		else
+		{
 			JError::raiseNotice(500, JText::_('JComment is not installed on your system'));
 		}
 	}
