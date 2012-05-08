@@ -37,6 +37,7 @@ var FloatingTips = new Class({
 		this.elements.each(function (trigger) {
 			var opts = Object.merge(Object.clone(this.options), JSON.decode(trigger.get('opts', '{}').opts));
 			var optStore = trigger.retrieve('opts', {});
+			trigger.erase('opts');
 			if (!optStore[opts.showOn]) {
 				optStore[opts.showOn] = opts;
 				trigger.store('opts', optStore);
