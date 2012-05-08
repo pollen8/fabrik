@@ -1150,7 +1150,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$facetTable = $this->_facetedTable($listid);
 		if (!$facetTable->canView()) {
-			return '<div style="text-align:center"><a title="'.JText::_('Insufficient access rights. Please login').'"><img src="media/com_fabrik/images/login.png" alt="'.JText::_('iInsufficient access rights. Please login').'" /></a></div>';
+			return '<div style="text-align:center"><a title="'. JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '"><img src="media/com_fabrik/images/login.png" alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
 		}
 		$tlabel = ($label === '') ? JText::_('COM_FABRIK_NO_RECORDS') : '(0) '.$label;
 
