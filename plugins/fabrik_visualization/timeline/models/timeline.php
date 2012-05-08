@@ -14,7 +14,7 @@ jimport('joomla.application.component.model');
 
 require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
-class fabrikModelTimeline extends FabrikFEModelVisualization { //JModel
+class fabrikModelTimeline extends FabrikFEModelVisualization {
 
 	/**
 	 * internally render the plugin, and add required script declarations
@@ -72,7 +72,6 @@ class fabrikModelTimeline extends FabrikFEModelVisualization { //JModel
 				{
 					$endKey = $startKey;
 					$enddate2 = $startdate2;
-					//JError::raiseError(500, $enddate2 . " not found in the table, is it published?");
 				}
 				$endElement = $elements[$endKey];
 
@@ -109,18 +108,19 @@ class fabrikModelTimeline extends FabrikFEModelVisualization { //JModel
 								$end = (array_key_exists($enddate. '_raw', $row) && $endTimeFormat) ? $row->{$enddate. '_raw'} : @$row->$enddate;
 								$event->end = ($end > $event->start) ? $end : '';
 								//if we are showing the times we need to re-offset the date as its already been offset in the tbl model
-								$endD = ($endTimeFormat) ? JFactory::getDate($event->end, $timeZone) : JFactory::getDate($event->end);
-								$event->end = $endD->toISO8601($endTimeFormat);
+								$endD = !(array_key_exists($enddate. '_raw', $row) && $endTimeFormat) ? JFactory::getDate($event->end, $timeZone) : JFactory::getDate($event->end);
+								$event->end = $endD->toISO8601();
 							}
 
-							$sDate = ($startTimeFormat) ? JFactory::getDate($event->start, $timeZone) : JFactory::getDate($event->start);
-							$event->start = $sDate->toISO8601($startTimeFormat);
+							$sDate = !(array_key_exists($startdate. '_raw', $row) && $tblStartFormat) ? JFactory::getDate($event->start, $timeZone) : JFactory::getDate($event->start);
+							$event->start = $sDate->toISO8601();
 							$event->title = strip_tags(@$row->$title);
 							$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : JRoute::_('index.php?option=com_fabrik&view=' . $nextview . '&formid=' . $table->form_id . '&rowid=' . $row->__pk_val . '&listid=' . $listModel->getId());
 							$event->image = '';
 							$event->color = $colour;
 							$event->textColor = $textColour;
 							$event->classname  =  isset($row->$className) ? $row->$className : '';
+							$event->classname = strip_tags($event->classname);
 							if ($event->start !== '' && !is_null($event->start))
 							{
 								$eventdata[] = $event;

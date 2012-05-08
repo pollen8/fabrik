@@ -47,7 +47,7 @@ var FbVisTimeline = new Class({
 		bandInfos[1].syncWith = 0;
 		bandInfos[1].highlight = true;
 
-		this.tl = Timeline.create($("my-timeline"), bandInfos);
+		this.tl = Timeline.create(document.id("my-timeline"), bandInfos);
 		eventSource.loadJSON(this.json, '');
 
 		window.addEvent('resize', function () {
@@ -58,7 +58,5 @@ var FbVisTimeline = new Class({
 				}.bind(this), 500);
 			}
 		}.bind(this));
-
 	}
-
 });
