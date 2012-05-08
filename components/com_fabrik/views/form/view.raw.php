@@ -29,7 +29,8 @@ class fabrikViewForm extends JView
 		$elementid = JRequest::getInt('elid'); //main trigger element's id
 		
 		$html = array();
-		$html[] = '<div class="floating-tip" style="position:absolute">';
+		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
+		$html[] = '<div class="floating-tip" >';
 		$html[] = '<ul class="fabrikElementContainer">';
 		foreach ($this->groups as $group) {
 			foreach ($group->elements as $element) {
@@ -43,8 +44,8 @@ class fabrikViewForm extends JView
 		$html[] = '</ul>';
 			
 		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel')) {
-			$html[] = '<ul class="fabrik_buttons">';
-		
+			//$html[] = '<ul class="fabrik_buttons">';
+			$html[] = '<ul class="">';
 			if (JRequest::getBool('inlinecancel') == true) {
 				$html[] = '<li class="ajax-controls inline-cancel">';
 				$html[] = '<a href="#" class="">';
@@ -62,6 +63,7 @@ class fabrikViewForm extends JView
 			}
 			$html[] = '</ul>';
 		}
+		$html[] = '</div>';
 		$html[] = '</div>';
 		echo implode("\n", $html);
 		

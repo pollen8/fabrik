@@ -28,11 +28,16 @@ div.calendar table {
 	height: 16px;
 	margin-top: -3px;
 }
-/*** stoopid beez20 fix */
+/*** stoopid beez20 fixes */
 #main .fabrikForm  a:hover {
 	color: #000 !important;
 	background-color: transparent !important;
 }
+
+#main .floating-tip-wrapper ul {
+	list-style: none;
+}
+
 /**start: flexible box model short cuts **/
 .displayBox {
 	display: -webkit-box;
@@ -85,7 +90,7 @@ div.calendar table {
 .spinner {
 	position: absolute;
 	opacity: 0.9;
-	filter: alpha(opacity =   90);
+	filter: alpha(opacity =     90);
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90 );
 	z-index: 999;
 	background: #fff;
@@ -142,9 +147,10 @@ div.calendar table {
 	-moz-border-radius: 7px 7px 0px 0px;
 	background: #ccc;
 	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
-	filter: progid:   DXImageTransform.Microsoft.gradient(   startColorstr=
+	filter: progid:    DXImageTransform.Microsoft.gradient(    startColorstr=
+		
 		 
-		'#cccccc', endColorstr=   '#666666' ); /* for IE */
+		'#cccccc', endColorstr=    '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
@@ -180,9 +186,10 @@ span.handlelabel {
 	-moz-border-radius: 0px 0px 7px 7px;
 	height: 15px;
 	background: #ccc;
-	filter: progid:   DXImageTransform.Microsoft.gradient(   startColorstr=
+	filter: progid:    DXImageTransform.Microsoft.gradient(    startColorstr=
+		
 		 
-		'#cccccc', endColorstr=   '#666666' ); /* for IE */
+		'#cccccc', endColorstr=    '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
@@ -232,6 +239,24 @@ span.handlelabel {
 .floating-tip ul.fabrik_buttons {
 	list-style: none;
 	margin-top: 10px;
+}
+
+.floating-tip-wrapper.inlineedit .ajax-controls {
+	float: left;
+	width: 48%;
+}
+
+.floating-tip-wrapper.inlineedit .ajax-controls a {
+	display: inline;
+	padding: 5px 16px;
+	text-decoration: none;
+}
+
+.floating-tip-wrapper.inlineedit {
+	text-align: left;
+	min-width: 220px;
+	text-align: left;
+	font-size: 1.05em;
 }
 /****************************************/
 /*** end window styling *****************/
@@ -292,7 +317,6 @@ fieldset.adminform input,fieldset.adminform textarea,fieldset.adminform select,f
 /*****************************************************/
 
 /*** adds css arrow and borders around the tip ***/
-
 .floating-tip {
 	z-index: 999;
 }

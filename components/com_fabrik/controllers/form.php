@@ -37,8 +37,7 @@ class FabrikControllerForm extends JController
 	{
 		$document = JFactory::getDocument();
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
-		$viewType	= $document->getType();
-		//$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
+		$viewType = $document->getType();
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
@@ -56,10 +55,10 @@ class FabrikControllerForm extends JController
 	{
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
-
-		$viewName	= JRequest::getVar('view', 'form', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$modelName = $viewName;
-		if ($viewName == 'emailform') {
+		if ($viewName == 'emailform')
+		{
 			$modelName = 'form';
 		}
 
@@ -74,6 +73,7 @@ class FabrikControllerForm extends JController
 		//test for failed validation then page refresh
 		$model->getErrors();
 		if (!JError::isError($model) && is_object($model)) {
+			
 			$view->setModel($model, true);
 		}
 		$view->isMambot = $this->isMambot;
@@ -82,9 +82,12 @@ class FabrikControllerForm extends JController
 
 		// Workaround for token caching
 
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf'))) {
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf')))
+		{
 			$view->display();
-		} else {
+		}
+		else
+		{
 			$user = JFactory::getUser();
 			$post = JRequest::get('post');
 			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
@@ -95,7 +98,7 @@ class FabrikControllerForm extends JController
 			ob_end_clean();
 			$token = JUtility::getToken();
 			$search = '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
-			$replacement = '<input type="hidden" name="'.$token.'" value="1" />';
+			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
 			echo preg_replace($search, $replacement, $contents);
 		}
 	}
@@ -106,14 +109,16 @@ class FabrikControllerForm extends JController
 
 	function process()
 	{
-		if (JRequest::getCmd('format', '') == 'raw') {
+		if (JRequest::getCmd('format', '') == 'raw')
+		{
 			error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
 		}
 		$model = $this->getModel('form', 'FabrikFEModel');
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		$model->setId(JRequest::getInt('formid', 0));
@@ -131,11 +136,13 @@ class FabrikControllerForm extends JController
 		}
 
 		// Check for request forgeries
-		if ($model->spoofCheck()) {
+		if ($model->spoofCheck())
+		{
 			JRequest::checkToken() or die('Invalid Token');
 		}
 
-		if (!$model->validate()) {
+		if (!$model->validate())
+		{
 			//if its in a module with ajax or in a package
 			if (JRequest::getCmd('fabrik_ajax'))
 			{
@@ -143,14 +150,17 @@ class FabrikControllerForm extends JController
 				return;
 			}
 			$this->savepage();
-
-			if ($this->isMambot) {
+			if ($this->isMambot)
+			{
 				$this->setRedirect($this->getRedirectURL($model, false));
-			} else {
+			}
+			else
+			{
 				// $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
 				// couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
 				// if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
-				if (JRequest::getCmd('usekey') !== '') {
+				if (JRequest::getCmd('usekey') !== '')
+				{
 					JRequest::setVar('rowid', -1);
 				}
 				$view->display();
@@ -162,8 +172,8 @@ class FabrikControllerForm extends JController
 		$model->clearErrors();
 
 		$model->process();
-
-		if (JRequest::getInt('elid') !== 0) {
+		if (JRequest::getInt('elid') !== 0)
+		{
 			//inline edit show the edited element - ignores validations for now
 			echo $model->inLineEditResult();
 			return;
@@ -184,13 +194,14 @@ class FabrikControllerForm extends JController
 		$msg = $this->getRedirectMessage($model);
 
 		// @todo -should get handed off to the json view to do this
-		if (JRequest::getInt('fabrik_ajax') == 1) {
+		if (JRequest::getInt('fabrik_ajax') == 1)
+		{
 			// $$$ hugh - adding some options for what to do with redirect when in content plugin
 			// Should probably do this elsewhere, but for now ...
 			$redirect_opts = array(
 				'msg' => $msg,
 				'url' => $url,
-				'baseRedirect'=>$this->baseRedirect,
+				'baseRedirect' => $this->baseRedirect,
 				'rowid' => JRequest::getVar('rowid')
 			);
 			if (!$this->baseRedirect && $this->isMambot) {
@@ -204,23 +215,27 @@ class FabrikControllerForm extends JController
 				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
-			else if ($this->isMambot) {
+			else if ($this->isMambot)
+			{
 				// $$$ hugh - special case to allow custom code to specify that
 				// the form should not be cleared after a failed AJAX submit
 				$session = JFactory::getSession();
-				$context = 'com_fabrik.form.'.$model->get('id').'.redirect.';
-				$redirect_opts['reset_form'] = $session->get($context.'redirect_content_reset_form', '1') == '1';
+				$context = 'com_fabrik.form.' . $model->get('id') . '.redirect.';
+				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
 			//let form.js handle the redirect logic (will also send out a
 			echo json_encode($redirect_opts);
 			return;
 		}
 
-		if (JRequest::getVar('format') == 'raw') {
+		if (JRequest::getVar('format') == 'raw')
+		{
 			JRequest::setVar('view', 'list');
 			$this->display();
 			return;
-		} else {
+		}
+		else
+		{
 			$this->setRedirect($url, $msg);
 		}
 	}
@@ -237,38 +252,47 @@ class FabrikControllerForm extends JController
 		$registry = $session->get('registry');
 		$formdata = $session->get('com_fabrik.form.data');
 		//$$$ rob 30/03/2011 if using as a search form don't show record added message
-		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id')) {
+		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id'))
+		{
 			$msg = $model->getParams()->get('suppress_msgs', '0') == '0' ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
-		} else {
+		}
+		else
+		{
 			$msg = '';
 		}
 		//$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
 		$context = $model->getRedirectContext();
-		$smsg = $session->get($context.'msg', array($msg));
-		if (!is_array($smsg)) {
+		$smsg = $session->get($context . 'msg', array($msg));
+		if (!is_array($smsg))
+		{
 			$smsg = array($smsg);
 		}
-		if (empty($smsg)) {
+		if (empty($smsg))
+		{
 			$smsg[] = $msg;
 		}
 		// $$$ rob Was using array_shift to set $msg, not to really remove it from $smsg
 		// without the array_shift the custom message is never attached to the redirect page.
 		// use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
 		$custommsg = JArrayHelper::getValue($smsg, array_shift(array_keys($smsg)));
-		if ($custommsg != '') {
+		if ($custommsg != '')
+		{
 			$msg = $custommsg;
 		}
 		$app = JFactory::getApplication();
 		$q = $app->getMessageQueue();
 		$found = false;
-		foreach ($q as $m) {
+		foreach ($q as $m)
+		{
 			//custom message already queued - unset default msg
-			if ($m['type'] == 'message' && trim($m['message']) !== '') {
+			if ($m['type'] == 'message' && trim($m['message']) !== '')
+			{
 				$found= true;
 				break;
 			}
 		}
-		if ($found) {
+		if ($found)
+		{
 			$msg = null;
 		}
 		$session->set($context.'msg', $smsg);
