@@ -390,4 +390,8 @@ border-radius:3px;
 	display:block;
 	width:100px;
 }
+
+#{$view}_$c .addGroup:link {
+	text-decoration: none;
+}
 ";?>

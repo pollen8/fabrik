@@ -67,6 +67,10 @@ echo "
 	padding:0;
 }
 
+#{$view}_$c .addGroup:link {
+	text-decoration: none;
+}
+
 #{$view}_$c .fabrikForm .fabrikGroup ul{
 	list-style:none;
 }

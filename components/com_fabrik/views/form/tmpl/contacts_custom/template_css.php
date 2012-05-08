@@ -56,6 +56,14 @@ echo "
 	#float: none;
 	#clear: none;
 }
+
+#{$view}_$c .addGroup:link {
+	text-decoration: none;
+}
+
+#{$view}_$c .addGroup:link {
+	text-decoration: none;
+}
 ";?>
 
 

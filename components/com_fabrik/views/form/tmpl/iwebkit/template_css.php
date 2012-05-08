@@ -26,4 +26,8 @@ echo "
 float:none !important;
 width:100% !important;
 }
+
+#{$view}_$c .addGroup:link {
+	text-decoration: none;
+}
 ";?>

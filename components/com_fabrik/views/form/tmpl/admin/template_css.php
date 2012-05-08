@@ -30,5 +30,9 @@ echo "
 	display: block;
 	margin-top: 10px;
 }
+
+#{$view}_$c .addGroup:link {
+	text-decoration: none;
+}
 ";
 ?>
