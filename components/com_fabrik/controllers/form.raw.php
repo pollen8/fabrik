@@ -44,15 +44,17 @@ class FabrikControllerForm extends JController
     $view = $this->getView($viewName, $viewType);
 
     // Push a model into the view
-    $model	= &$this->getModel($modelName, 'FabrikFEModel');
+    $model = $this->getModel($modelName, 'FabrikFEModel');
     //if errors made when submitting from a J plugin they are stored in the session
     //lets get them back and insert them into the form model
-  	if (empty($model->_arErrors)) {
-			$context = 'com_fabrik.form.'.JRequest::getInt('formid');
-			$model->_arErrors = $session->get($context.'.errors', array());
-			$session->clear($context.'.errors');
-		}
-    if (!JError::isError($model) && is_object($model)) {
+  	if (!$model->hasErrors())
+  	{
+		$context = 'com_fabrik.form.' . JRequest::getInt('formid');
+		$model->_arErrors = $session->get($context . '.errors', array());
+		$session->clear($context . '.errors');
+	}
+    if (!JError::isError($model) && is_object($model))
+    {
       $view->setModel($model, true);
     }
 		$view->isMambot = $this->isMambot;

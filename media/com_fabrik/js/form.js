@@ -389,6 +389,7 @@ var FbForm = new Class({
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
 		Fabrik.loader.start('form_' + this.id, 'saving page');
 		var data = this.getFormData();
+		data.fabrik_ajax = 1;
 		new Request({
 			url: url,
 			method: this.options.ajaxmethod,

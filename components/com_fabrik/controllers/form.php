@@ -137,8 +137,8 @@ class FabrikControllerForm extends JController
 
 		if (!$model->validate()) {
 			//if its in a module with ajax or in a package
-			if (JRequest::getCmd('fabrik_ajax')) {
-
+			if (JRequest::getCmd('fabrik_ajax'))
+			{
 				echo $model->getJsonErrors();
 				return;
 			}
@@ -170,7 +170,8 @@ class FabrikControllerForm extends JController
 		}
 
 		//check if any plugin has created a new validation error
-		if (!empty($model->_arErrors)) {
+		if ($model->hasErrors())
+		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
@@ -290,13 +291,16 @@ class FabrikControllerForm extends JController
 			if (array_key_exists('apply', $model->_formData))
 			{
 				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid') . '&rowid=' . JRequest::getInt('rowid');
-			} else {
+			}
+			else
+			{
 				$url = 'index.php?option=com_fabrik&c=table&task=viewTable&cid[]=' . $model->_table->id;
 			}
 		}
 		else
 		{
-			if (array_key_exists('apply', $model->_formData)) {
+			if (array_key_exists('apply', $model->_formData))
+			{
 				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid') . '&listid=' . JRequest::getInt('listid');
 			}
 			else

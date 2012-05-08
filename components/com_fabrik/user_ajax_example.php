@@ -55,10 +55,10 @@
  * have a "Country" dropdown, and wish to repopulate the State menu when it changes):
  *
  * function ajaxTest() {
- *	 var url = "index.php?option=com_fabrik&format=raw&&task=plugin.userAjax&method=etStateDropDown";
+ *	 var url = "index.php?option=com_fabrik&format=raw&task=plugin.userAjax&method=etStateDropDown";
  *	 new Request({url:url,
  *		method: 'get',
- *		update: $('jos_fabrik_formdata_13___states')
+ *		update: document.id('jos_fabrik_formdata_13___states')
  *	 }).request();
  * }
  *

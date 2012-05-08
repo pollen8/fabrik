@@ -395,8 +395,8 @@ class plgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
 		$table = $this->getListModel()->getTable();
-		$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName("$dbtable" . '___' . $this->_element->name));
-		$k = $db->quoteName($dbtable). '.' . $db->quoteName($this->_element->name);
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->_element->name));
+		$k = $db->quoteName($dbtable) . '.' . $db->quoteName($this->_element->name);
 		$secret = JFactory::getConfig()->getValue('secret');
 		if ($this->encryptMe())
 		{
@@ -451,7 +451,7 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 			if (!in_array($str, $aFields))
 			{
-				$aFields[] 	= $str;
+				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
 			}
 		}

@@ -63,8 +63,8 @@ class FabrikControllerForm extends JControllerForm
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType = $document->getType();
 		$view = $this->getView($viewName, $viewType);
-
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		$model->setId(JRequest::getInt('formid', 0));
@@ -74,21 +74,27 @@ class FabrikControllerForm extends JControllerForm
 		$model->_rowId = JRequest::getVar('rowid', '');
 
 		// Check for request forgeries
-		if ($model->spoofCheck()) {
+		if ($model->spoofCheck())
+		{
 			JRequest::checkToken() or die('Invalid Token');
 		}
-		if (!$model->validate()) {
+		if (!$model->validate())
+		{
 			//if its in a module with ajax or in a package
-			if (JRequest::getInt('_packageId') !== 0) {
+			if (JRequest::getInt('_packageId') !== 0)
+			{
 				echo $model->getJsonErrors();
 				return;
 			}
 			$this->savepage();
 
-			if ($this->isMambot) {
+			if ($this->isMambot)
+			{
 				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
-			} else {
-				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=' . $model->getId() . '&rowid='.$model->_rowId, '');
+			}
+			else
+			{
+				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=' . $model->getId() . '&rowid=' . $model->_rowId, '');
 			}
 			return;
 		}
@@ -99,7 +105,8 @@ class FabrikControllerForm extends JControllerForm
 		$defaultAction = $model->process();
 
 		//check if any plugin has created a new validation error
-		if (!empty( $model->_arErrors)) {
+		if (!empty($model->_arErrors))
+		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
@@ -107,7 +114,8 @@ class FabrikControllerForm extends JControllerForm
 
 		//one of the plugins returned false stopping the default redirect
 		// action from taking place
-		if (!$defaultAction) {
+		if (!$defaultAction)
+		{
 			return;
 		}
 		$listModel = $model->getListModel();
@@ -115,15 +123,19 @@ class FabrikControllerForm extends JControllerForm
 
 		$msg = $model->getParams()->get('suppress_msgs', '0') == '0' ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 
-		if (JRequest::getInt('_packageId') !== 0) {
+		if (JRequest::getInt('_packageId') !== 0)
+		{
 			$rowid = JRequest::getInt('rowid');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
 			return;
 		}
-		if (JRequest::getVar('format') == 'raw') {
-			$url = COM_FABRIK_LIVESITE.'/index.php?option=com_fabrik&view=list&format=raw&listid='.$tid;
+		if (JRequest::getVar('format') == 'raw')
+		{
+			$url = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&view=list&format=raw&listid=' . $tid;
 			$this->setRedirect($url, $msg);
-		} else {
+		}
+		else
+		{
 			$this->makeRedirect($msg, $model);
 		}
 	}
@@ -144,15 +156,19 @@ class FabrikControllerForm extends JControllerForm
 	 * generic function to redirect
 	 */
 
-	protected function makeRedirect($msg = null, &$model )
+	protected function makeRedirect($msg = null, &$model)
 	{
-		if (is_null($msg)) {
+		if (is_null($msg))
+		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
-		if (array_key_exists('apply', $model->_formData)) {
-			$page = "index.php?option=com_fabrik&task=form.view&formid=".JRequest::getInt('formid')."&listid=".JRequest::getInt('listid')."&rowid=".JRequest::getInt('rowid');
-		} else {
-			$page = "index.php?option=com_fabrik&task=list.view&cid[]=".$model->getlistModel()->getTable()->id;
+		if (array_key_exists('apply', $model->_formData))
+		{
+			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid') . '&rowid=' . JRequest::getInt('rowid');
+		}
+		else
+		{
+			$page = 'index.php?option=com_fabrik&task=list.view&cid[]=' . $model->getlistModel()->getTable()->id;
 		}
 		// $$$ rob was redirecting back to admin list view and not list data view (list.view) 
 		// $$$ rob put back in as list views are now called using /administrator/index.php?option=com_fabrik&task=list.view&listid=1

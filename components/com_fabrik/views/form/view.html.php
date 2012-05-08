@@ -73,15 +73,13 @@ class fabrikViewForm extends JView
 		$form->intro = $this->get('Intro');
 		$form->action = $this->get('Action');
 		$form->formid = $model->_editable ? "form_".$model->getId() : 'details_' . $model->getId();
-		$form->name = "form_".$model->getId();
+		$form->name = 'form_' . $model->getId();
 
 		if ($form->error === '') {
 			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
 		}
-		//if errors made when submitting from a J plugin they are stored in the session
-		$errors = $this->get('Errors');
 		$form->origerror = $form->error;
-		$form->error = count($errors) > 0 ? $form->error : '';
+		$form->error = $model->hasErrors() ? $form->error : '';
 
 		$this->_addButtons();
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;

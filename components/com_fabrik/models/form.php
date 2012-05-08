@@ -945,22 +945,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			return $this->_formData;
 		}
-		list($dofilter, $filter) = FabrikWorker::getContentFilter();
+		list($this->dofilter, $this->filter) = FabrikWorker::getContentFilter();
 
-		$ajaxPost = JRequest::getBool('fabrik_ajax');
-
-		$this->ajaxPost = $ajaxPost;
-		$this->filter = $filter;
-		$this->dofilter = $dofilter;
+		$this->ajaxPost = JRequest::getBool('fabrik_ajax');
 		$aData = JRequest::get('post', JREQUEST_ALLOWRAW);
 		array_walk_recursive($aData, array($this, '_clean'));
 
-
 		//set here so element can call formModel::updateFormData()
 		$this->_formData = $aData;
-
 		$this->_fullFormData = $this->_formData;
-
 		$session = JFactory::getSession();
 		$session->set('com_fabrik.form.data', $this->_formData);
 		return $this->_formData;
@@ -991,6 +984,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				if ($this->dofilter)
 				{
 					$item = $this->filter->clean($item);
+				}
+			} else
+			{
+				if ($this->ajaxPost)
+				{
+					$item = rawurldecode($item);
 				}
 			}
 		}
@@ -1688,7 +1687,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 								}
 								$elementModel->_group = $groupModel;
 								$elementModel->setValuesFromEncryt($post, $key, $v);
-								// $$ rob set both normal and rawvalues to encrypted - otherwise validate mehtod doenst
+								// $$ rob set both normal and rawvalues to encrypted - otherwise validate method doenst
 								//pick up decrypted value
 								$elementModel->setValuesFromEncryt($post, $key . '_raw', $v);
 							}
@@ -1749,7 +1748,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function failedValidation()
 	{
-		return empty($this->_arErrors) ? false : true;
+		return $this->hasErrors();
 	}
 
 	/**
@@ -2423,10 +2422,38 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$fabrikDb = $listModel->getDb();
 		$item = $listModel->getTable();
 		$k = $fabrikDb->nameQuote($item->db_primary_key);
-		$fabrikDb->setQuery("SELECT MAX($k) FROM ".FabrikString::safeColName($item->db_table_name) . $listModel->_buildQueryWhere());
+		$fabrikDb->setQuery("SELECT MAX($k) FROM " . FabrikString::safeColName($item->db_table_name) . $listModel->_buildQueryWhere());
 		return $fabrikDb->loadResult();
 	}
 
+	/**
+	 * Does the form contain user errors
+	 * @return	bool
+	 */
+	public function hasErrors()
+	{
+		$errorsFound = !empty($this->_arErrors);
+		//test if its a resumed paged form 
+		// if so _arErrors will be filled so check all elements had no errors
+		$srow = $this->getSessionData();
+		$multiPageErrors = false;
+		if ($this->saveMultiPage() && $srow->data != '')
+		{
+			foreach ($this->_arErrors as $err)
+			{
+				if (!empty($err[0]))
+				{
+					$multiPageErrors = true;
+				}
+			}
+			if (!$multiPageErrors)
+			{
+				$errorsFound = false;
+			}
+		}
+		return $errorsFound;
+	}
+	
 	/**
 	 * main method to get the data to insert into the form
 	 * @return	array	form's data
@@ -2461,7 +2488,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			JDEBUG ? $profiler->mark('formmodel getData: table row loaded') : null;
 			$this->_aJoinObjs = $listModel->getJoins();
 			JDEBUG ? $profiler->mark('formmodel getData: joins loaded') : null;
-			if (!empty($this->_arErrors))
+			
+			if ($this->hasErrors())
 			{
 				// $$$ hugh - if we're a mambot, reload the form session state we saved in
 				// process() when it banged out.
