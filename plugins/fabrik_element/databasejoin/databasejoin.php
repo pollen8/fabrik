@@ -69,7 +69,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		$connection = $listModel->getConnection();
 		//make sure same connection as this table
-		$fullElName = JArrayHelper::getValue($opts, 'alias', $table."___".$element->name);
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
 		if ($params->get('join_conn_id') == $connection->get('_id') || $element->plugin != 'databasejoin') {
 			$join = $this->getJoin();
 			if (!$join) {
@@ -95,10 +95,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$k2 = $this->getJoinLabelColumn();
 
 			if (JArrayHelper::getValue($opts, 'inc_raw', true)) {
-				$aFields[] = "$k AS ".$db->nameQuote($fullElName."_raw");
-				$aAsFields[] = $db->nameQuote($fullElName."_raw");
+				$aFields[] = "$k AS " . $db->nameQuote($fullElName . '_raw');
+				$aAsFields[] = $db->nameQuote($fullElName . '_raw');
 			}
-			$aFields[] = "$k2 AS ".$db->nameQuote($fullElName);
+			$aFields[] = "$k2 AS " . $db->nameQuote($fullElName);
 			$aAsFields[] = $db->nameQuote($fullElName);
 		}
 		else
@@ -116,7 +116,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$element = $this->getElement();
 		$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-		$name = $element->name."_raw";
+		$name = $element->name.'_raw';
 		return $useStep ? $k."___".$name : FabrikString::safeColName("$k.$name");
 	}
 
@@ -149,24 +149,27 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getJoinLabelColumn($useStep = false)
 	{
-		if (!isset($this->joinLabelCols)) {
+		if (!isset($this->joinLabelCols))
+		{
 			$this->joinLabelCols = array();
 		}
-		if (array_key_exists((int)$useStep, $this->joinLabelCols)) {
+		if (array_key_exists((int) $useStep, $this->joinLabelCols))
+		{
 			return $this->joinLabelCols[$useStep];
 		}
 		$params = $this->getParams();
 		$db = $this->getDb();
 		$join = $this->getJoin();
-		if (($params->get('join_val_column_concat') != '') && JRequest::getVar('overide_join_val_column_concat') != 1) {
+		if (($params->get('join_val_column_concat') != '') && JRequest::getVar('overide_join_val_column_concat') != 1)
+		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('join_val_column_concat'));
 			$w = new FabrikWorker();
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
-			return "CONCAT(".$val.")";
+			return 'CONCAT(' . $val . ')';
 		}
 		$label = $this->getJoinLabel();
 		$joinTableName = $join->table_join_alias;
-		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName.'___'.$label : $db->nameQuote($joinTableName).'.'.$db->nameQuote($label);
+		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName . '___' . $label : $db->nameQuote($joinTableName . '.' . $label);
 		return $this->joinLabelCols[(int)$useStep];
 	}
 
@@ -174,9 +177,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		$join = $this->getJoin();
 		$label = FabrikString::shortColName($join->_params->get('join-label'));
-		if ($label == '') {
-			if (!$this->isJoin()) {
-				JError::raiseWarning(500, 'Could not find the join label for '.$this->getElement()->name.' try unlinking and saving it');
+		if ($label == '')
+		{
+			if (!$this->isJoin())
+			{
+				JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
 			}
 			$label = $this->getElement()->name;
 		}
@@ -712,7 +717,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						//$joinids = $default == '' ? array() : explode(GROUPSPLITTER, $default);
 						// $$$ hugh - I think this needs to be the raw values ...
 						// $joinids = $default;
-						$rawname = $this->getFullName(false, true, false) . "_raw";
+						$rawname = $this->getFullName(false, true, false) . '_raw';
 						$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
 						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
 						if ($this->isJoin() && $this->_editable)
@@ -808,7 +813,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = $this->getParams();
 		if (!$this->isJoin() && JArrayHelper::getValue($opts, 'valueFormat', 'raw') == 'raw')
 		{
-			$name .= "_raw";
+			$name .= '_raw';
 		}
 		return $name;
 	}
@@ -1452,15 +1457,19 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * called when the element is saved
-	 * @param array posted element save data
+	 * @param	array	posted element save data
 	 */
 
 	function onSave($data)
 	{
 		$params = json_decode($data['params']);
-		if (!$this->isJoin()) {
+		if (!$this->isJoin())
+		{
+			echo $this->getDbName();
+			//echo "<pre>";print_r($data);exit;
 			$this->updateFabrikJoins($data, $this->getDbName(), $params->join_key_column, $params->join_val_column);
 		}
+		//echo "here";exit;
 		return parent::onSave();
 	}
 
@@ -1529,9 +1538,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = json_decode($data['params']);
 		$element = $this->getElement();
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		$key = array('element_id' => $data['id'], 'list_id' => 0);
+		// $$$ rob 08/05/2012 - toggling from dropdown to multiselect set the list_id to 1, so if you 
+		// reset to dropdown then this key would not load the existing join so a secondary join record 
+		// would be created for the element. 
+		//$key = array('element_id' => $data['id'], 'list_id' => 0);
+		$key = array('element_id' => $data['id']);
 		$join->load($key);
-		if ($join->element_id == 0) {
+		if ($join->element_id == 0)
+		{
 			$join->element_id = $elementId;
 		}
 		$join->table_join = $tableJoin;
