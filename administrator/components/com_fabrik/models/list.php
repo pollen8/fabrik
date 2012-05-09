@@ -1161,7 +1161,7 @@ class FabrikModelList extends FabModelAdmin
 		$this->getFormModel();
 		if ($formid == 0)
 		{
-			echo 'createLinkedForm';exit;
+			//echo 'createLinkedForm';exit;
 			// $$$ rob required otherwise the JTable is loaed with db_table_name as a property
 			//which then generates an error - not sure why its loaded like that though?
 			// 18/08/2011 - could be due to the Form table class having it in its bind method - (have now overridden form table store() to remove thoes two params)
