@@ -460,6 +460,13 @@ var FbGoogleMap = new Class({
 		fconsole('geo location error=' + p.message);
 	},
 	
+	redraw : function () {
+		google.maps.event.trigger(this.map, 'resize');
+		var center = new google.maps.LatLng(this.options.lat, this.options.lon);
+		this.map.setCenter(center);
+		this.map.setZoom(this.map.getZoom());
+	},
+	
 	/*
 	 * Testing some stuff to try and get maps to display properly when they are in the
 	 * tab template.  If a map is in a tab which isn't selected on page load, the map
