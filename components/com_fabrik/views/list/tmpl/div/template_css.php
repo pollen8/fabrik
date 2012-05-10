@@ -168,6 +168,7 @@ div.calendar{
 
 #listform_$c table.filtertable {
 	width: 50%;
+	float: right;
 }
 
 #listform_$c .fabrikHover {
