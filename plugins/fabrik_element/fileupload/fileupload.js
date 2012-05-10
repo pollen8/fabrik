@@ -199,6 +199,11 @@ var FbFileUpload = new Class({
 
 		this.uploader.bind('FileUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
+			if (response.error) {
+				alert(response.error);
+				document.id(file.id).destroy();
+				return;
+			}
 			document.id(file.id).getElement('.plupload_resize').show();
 			var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
 			resizebutton.href = response.uri;

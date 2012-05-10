@@ -353,16 +353,18 @@ class FabimageGD extends Fabimage
 		imagecopyresampled($destImg, $origImg, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH);
 		$this->writeImg($destImg, $destFile, $header);*/
 		//convert hex to rgb colours.
-		list($r, $g, $b) =sscanf($bg, '#%2x%2x%2x');
+		list($r, $g, $b) = sscanf($bg, '#%2x%2x%2x');
 
 		//$destImg = imagecreatetruecolor($dstW, $dstH);
 		list($origImg, $header) = $this->imageFromFile($origFile);
+		
+		
 		$destImg = imagecreatetruecolor($dstW, $dstH);
 
 		$bg = imagecolorallocate($destImg, $r, $g, $b);
 		// Draw a bg rectangle
 		imagefilledrectangle($destImg, 0 , 0 , (int)$dstW, (int)$dstH , $bg );
-
+		
 		$this->writeImg($destImg, $destFile, $header);
 		$srcW = imagesx($destImg);
 		$srcH = imagesy($destImg);
@@ -371,13 +373,13 @@ class FabimageGD extends Fabimage
 		$origH = imagesy($origImg);
 
 		//if the orig image is smaller than the destination then increase its canvas and fill it with the bg
-		if ($origW < $srcW || $origH < $srcH) {
+		if ($origW < $srcW || $origH < $srcH)
+		{
 			$srcBg = imagecreatetruecolor($srcW, $srcH);
 			imagefilledrectangle($srcBg, 0 , 0 , (int)$srcW, (int)$srcH , $bg);
 			imagecopyresampled($srcBg, $origImg, 0, 0, 0, 0, $origW, $origH, $origW, $origH);
 			$origImg = $srcBg;
 		}
-
 		imagecopyresampled($destImg, $origImg, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH);
 		$this->writeImg($destImg, $destFile, $header);
 	}
