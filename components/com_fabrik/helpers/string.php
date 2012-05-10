@@ -25,7 +25,8 @@ class FabrikString extends JString{
 	function ltrimword($str, $word = false)
 	{
 		$pos = strpos($str,$word);
-		if ($pos === 0) { // true ? then exectue!
+		if ($pos === 0)
+		{ // true ? then exectue!
 			$str = JString::substr($str, strlen($word));
 		}
 		return $str;
