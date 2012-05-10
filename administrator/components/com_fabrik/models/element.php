@@ -253,7 +253,7 @@ class FabrikModelElement extends JModelAdmin
 		$query->select('*')->from('#__{package}_jsactions')->where('element_id = ' . $id);
 		$db->setQuery($query);
 		$items = $db->loadObjectList();
-		for ($i=0; $i < count($items); $i++)
+		for ($i = 0; $i < count($items); $i++)
 		{
 			$items[$i]->params = json_decode($items[$i]->params);
 		}
