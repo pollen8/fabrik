@@ -5,7 +5,7 @@ FabRecordSet = new Class({
 		this.options = {};
 		$extend(this.options, options);
 		var f = this.form.getForm();
-		var tableId = f.getElement('input[name=tableid]').get('value');
+		var tableId = f.getElement('input[name=listid]').get('value');
 		this.pkfield = f.getElement('input[name=rowid]');
 		var formId = this.form.id;
 		this.view = this.form.options.editable === true ? 'form':'details';
