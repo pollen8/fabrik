@@ -1044,7 +1044,7 @@ class FabrikModelElement extends JModelAdmin
 		$db = $listModel->getDb();
 		$desc = $elementModel->getFieldDescription();
 		$name = $db->nameQuote($row->name);
-		$db->setQuery('CREATE TABLE IF NOT EXISTS ' . $db->nameQuote($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), $name $desc, ' . $db->nameQuote('params') . ' TEXT );');
+		$db->setQuery('CREATE TABLE IF NOT EXISTS ' . $db->nameQuote($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), ' . $name . ' ' . $desc . ', ' . $db->nameQuote('params') . ' TEXT );');
 		$db->query();
 		if ($db->getErrorNum() != 0)
 		{
