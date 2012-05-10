@@ -893,6 +893,7 @@ var FbList = new Class({
 						this._updateRows(json);
 						Fabrik.loader.stop('listform_' + this.options.listRef);
 						Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
+						Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [this, json]);
 					}.bind(this)
 				});
 			}
