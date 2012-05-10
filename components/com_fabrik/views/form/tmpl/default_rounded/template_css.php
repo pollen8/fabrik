@@ -4,7 +4,7 @@ $c = (int)$_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
 echo "
 
-/*Here is the styling for your table legend - to learn what all the different elements are in a basic form see http://www.w3schools.com/tags/tag_legend.asp*/  
+/*Here is the styling for your table legend - to learn what all the different elements are in a basic form see http://www.w3schools.com/tags/tag_legend.asp*/
 #{$view}_$c legend{
 	background-color: #c0c0c0;
 	-moz-user-select: none;
@@ -16,13 +16,12 @@ echo "
 	padding:0;
 	text-shadow: 0 1px 0 #FFFFFF;
   	zoom: 1;
-	text-transform: none;/*changed from uppercase*/
 	width:100%;
 	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
-		position:absolute;	
+		position:absolute;
 	border-radius: 10px 10px 0px 0px; /*added rounded border*/
 }
 
@@ -43,7 +42,7 @@ echo "
 #{$view}_$c{
 	width:100%;
 	background-color:#FAFAFA;
-	border:1px solid #DDDDDD;		
+	border:1px solid #DDDDDD;
 	border-radius: 10px; /*added rounded border*/
 }
 
@@ -62,14 +61,14 @@ echo "
 	border-radius: 10px 10px 0px 0px; /*added rounded border*/
 }
 
-/*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/  
+/*This controls the display of your form elements - note: ul stands for 'unordered list', see: http://www.w3schools.com/tags/tag_ul.asp*/
 #{$view}_$c fieldset > ul{
 	padding:0;
 	list-style:none;
 	margin:0;
 }
 
-/*Note that the order of pixel specifications here follows this rule - top, right, bottom, left*/  
+/*Note that the order of pixel specifications here follows this rule - top, right, bottom, left*/
 #{$view}_$c fieldset > ul{
 	padding:40px 10px 20px 10px;
 }
@@ -145,7 +144,7 @@ echo "
 	padding:10px;
 	clear:left;
 	margin:5px 10px 10px; /*added bottom margin*/
-	border:1px solid #DDDDDD;		
+	border:1px solid #DDDDDD;
 	border-radius: 0px 0px 10px 10px; /*added rounded border*/
 }
 

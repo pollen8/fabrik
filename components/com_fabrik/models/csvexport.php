@@ -131,7 +131,7 @@ class FabrikFEModelCSVExport {
 		$o->err = 'cant write file ' . $filepath;
 		echo json_encode($o);
 	}
-	
+
 	private function carriageReutrnFix(&$row)
 	{
 		$newline = $this->model->getParams()->get('newline_csv_export', 'nl');
@@ -182,7 +182,7 @@ class FabrikFEModelCSVExport {
 		//to prevent long file from getting cut off from     //max_execution_time
 		error_reporting(0);
 		@set_time_limit(0);
-		
+
 		jimport('joomla.filesystem.file');
 		$filename = $this->getFileName();
 		$filepath = $this->getFilePath();
@@ -199,7 +199,7 @@ class FabrikFEModelCSVExport {
 		//// Set the response to indicate a file download
 		JResponse::setHeader('Content-Type', 'application/zip');
 		JResponse::setHeader('Content-Disposition', "attachment;filename=\"".$filename."\"");
-		
+
 		// xls formatting for accents
 		JResponse::setHeader('Content-Type', 'application/vnd.ms-excel');
 		JResponse::setHeader('charset', 'UTF-16LE');
@@ -284,6 +284,7 @@ class FabrikFEModelCSVExport {
 
 	function getHeadings()
 	{
+		$w = new FabrikWorker();
 		$table = $this->model->getTable();
 		$params = $this->model->getParams();
 		$hformat = $params->get('csvfullname');
@@ -323,10 +324,13 @@ class FabrikFEModelCSVExport {
 								break;
 							case '1':
 								$n = $elementModel->getFullName(false, false, false);
-								break;
+							$label = $w->parseMessageForPlaceHolder($label, array());	break;
 							case '2':
 								$headingLabel = $elementModel->getParams()->get('alt_list_heading');
 								$n = trim($headingLabel) === '' ? $element->label : $headingLabel;
+								// $$$ hugh - added next line as special case for a client, do not remove!
+								// (used in conjuntion with "Custom QS" option, to allow variable header labels
+								$n = $w->parseMessageForPlaceHolder($n, array());
 								break;
 						}
 
