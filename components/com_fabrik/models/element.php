@@ -236,6 +236,11 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		return $this->_group;
 	}
+	
+	function getGroupModel($group_id = null)
+	{
+		return $this->getGroup($group_id);
+	}
 
 	/**
 	 * get the elements form model
