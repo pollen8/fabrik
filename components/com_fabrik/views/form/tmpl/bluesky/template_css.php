@@ -13,8 +13,7 @@ echo "
 	margin: 0;
 	padding:0;
 	text-shadow: 0 1px 0 #FFFFFF;
-  zoom: 1;
-	text-transform: uppercase;
+ 	zoom: 1;
 	width:100%;
 	background: -moz-linear-gradient(center top , #DCECF4, #BECED2) repeat scroll 0 0 #E7E7E7;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BECED2', endColorstr='#DCECF4'); /* for IE */

@@ -29,7 +29,6 @@ echo "
 	font-family:\"UbuntuRegular\";
 	font-size: 2em;
 	font-weight: bold;
-	text-transform: uppercase;
 }
 
 #{$view}_$c legend{
@@ -42,7 +41,6 @@ echo "
 	position: absolute;
 	width: 873px;
 	font-family:\"UbuntuRegular\";
-	text-transform:uppercase;
 	font-weight:bold;
 }
 

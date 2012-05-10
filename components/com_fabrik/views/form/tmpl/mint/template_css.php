@@ -13,8 +13,7 @@ echo "
 	margin: 0;
 	padding:0;
 	text-shadow: 0 1px 0 #FFFFFF;
-  zoom: 1;
-	text-transform: uppercase;
+	zoom: 1;
 	width:100%;
 	background: -moz-linear-gradient(center top , #E3F9E1, #A9EEA4) repeat scroll 0 0 #E7E7E7;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#A9EEA4', endColorstr='#E3F9E1'); /* for IE */
@@ -43,7 +42,7 @@ echo "
 #main #{$view}_$c h1{
 	paddiing-left:10px;
 	margin:0;
-	
+
 }
 
 #{$view}_$c fieldset{
