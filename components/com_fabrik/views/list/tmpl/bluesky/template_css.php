@@ -20,8 +20,8 @@ echo "
 }
 
 #listform_$c .fabrikDataContainer{
-	overflow-y:auto;
-	clear:left;
+	overflow-y: auto;
+	clear: both;
 }
 
 #listform_$c a,
@@ -189,6 +189,7 @@ div.calendar{
 
 #listform_$c table.filtertable {
 	width: 50%;
+	float: right;
 }
 
 #listform_$c .fabrikHover {
