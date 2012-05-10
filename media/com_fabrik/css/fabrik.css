@@ -258,6 +258,11 @@ span.handlelabel {
 	text-align: left;
 	font-size: 1.05em;
 }
+
+.floating-tip ul.validation-notices{
+	padding: 3px;
+}
+
 /****************************************/
 /*** end window styling *****************/
 /****************************************/

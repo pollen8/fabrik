@@ -22,18 +22,17 @@ var FloatingTips = new Class({
 	},
 	
 	initialize: function (elements, options) {
-		this.elements = $$(elements);
 		this.setOptions(options);
 		this.options.fxProperties = {transition: eval(this.options.tipfx), duration: this.options.duration};
 		//any tip (not necessarily in this instance has asked for all other tips to be hidden.
 		window.addEvent('tips.hideall', function (e, trigger) {
 			this.hideOthers(trigger);
 		}.bind(this));
-		
-		this.attach();
+		if (elements) this.attach(elements);
 	},
 	
-	attach: function () {
+	attach: function (elements) {
+		this.elements = $$(elements);
 		this.elements.each(function (trigger) {
 			var opts = Object.merge(Object.clone(this.options), JSON.decode(trigger.get('opts', '{}').opts));
 			var optStore = trigger.retrieve('opts', {});
