@@ -304,6 +304,17 @@ class FabrikString extends JString{
 				$url = $site . "?" . implode("&", $new_qs);
 			}
 		}
+		if (strstr($url, '{')) {
+			// $$$ hugh special case for some Google URL's that use encoded JSON objects in the path part of the URL
+			// so we need to re-encode {, }, " and :.  Except of course for the : in http(s):.
+			list($http, $rest) = explode(':', $url, 2);
+			if (!empty($rest)) {
+				$patterns = array('#\{#', '#\}#', '#"#', '#\\\\#', '#:#');
+				$replacements = array('%7B', '%7D', '%22', '%5C', '%3A');
+				$rest = preg_replace($patterns, $replacements, $rest);
+				$url = $http . ':' . $rest;
+			}
+		}
 		return $url;
 	}
 }
