@@ -35,7 +35,7 @@ class FabrikViewList extends JView{
 		$src = $this->get('PluginJsClasses');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
-		
+
 		$model->getCustomJsAction($src);
 
 		FabrikHelperHTML::script($src);
@@ -454,6 +454,8 @@ class FabrikViewList extends JView{
 	 */
 	protected function buttons()
 	{
+		$model = $this->getModel();
+		$params = $model->getParams();
 		$this->buttons = new stdClass();
 		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_EXPORT_TO_CSV').'</span>');
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_EXPORT_TO_CSV');
@@ -476,8 +478,8 @@ class FabrikViewList extends JView{
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
 
-		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_ADD').'</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_ADD');
+		$buttonProperties['title'] = '<span>' . $params->get('addlabel', JText::_('COM_FABRIK_ADD')) . '</span>';
+		$buttonProperties['alt'] = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
 	}
 
