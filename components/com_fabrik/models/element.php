@@ -4670,6 +4670,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$classes = array();
 		$classes[] = $this->getFullName(false, true, false);
 		$classes[] = 'fabrik_element';
+		$classes[] = 'fabrik_list_' . $this->getListModel()->getId() . '_group_' . $this->getGroupModel()->getId();
 		$c = $params->get('tablecss_cell_class', '');
 		if ($c !== '')
 		{
@@ -4691,6 +4692,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$classes[] = 'fabrik_ordercell';
 		$classes[] = $this->getFullName(false, true, false);
 		$classes[] = $this->getElement()->id . '_order';
+		$classes[] = 'fabrik_list_' . $this->getListModel()->getId() . '_group_' . $this->getGroupModel()->getId();
 		$classes[] = $this->getParams()->get('tablecss_header_class');
 		return implode(' ', $classes);
 	}
