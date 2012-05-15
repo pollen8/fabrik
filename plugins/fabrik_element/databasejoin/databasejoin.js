@@ -447,7 +447,7 @@ var FbDatabasejoin = new Class({
 	getValues: function () {
 		var v = $A([]);
 		var search = (this.options.display_type !== 'dropdown') ? 'input' : 'option';
-		$(this.element.id).getElements(search).each(function (f) {
+		document.id(this.element.id).getElements(search).each(function (f) {
 			v.push(f.value);
 		});
 		return v;
@@ -472,6 +472,7 @@ var FbDatabasejoin = new Class({
 			//update auto-complete fields id and create new autocompleter object for duplicated element
 			var f = this.getContainer().getElement('.autocomplete-trigger');
 			f.id = this.element.id + '-auto-complete';
+			f.name = this.element.name.replace('[]', '') + '-auto-complete';
 			document.id(f.id).value = '';
 			new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
 		}

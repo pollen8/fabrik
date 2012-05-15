@@ -638,9 +638,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$joinId = '';
 			$joinGroupId = '';
 		}
+		$default = (array) $this->getValue($data, $repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		$w = new FabrikWorker();
-		$default = (array)$this->getValue($data, $repeatCounter);
 		foreach ($default as &$d)
 		{
 			$d = $w->parseMessageForPlaceHolder($d);
@@ -658,7 +658,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$defaultLabel = $obj->text;
 			}
 		}
-
 		$id = $this->getHTMLId($repeatCounter);
 		// $$$ rob 24/05/2011 - add options per row
 		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
@@ -750,19 +749,21 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 						if ($this->_editable)
 						{
-							$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="'.(int)$params->get('dbjoin_multilist_size', 6).'" multiple="true"', 'value', 'text', $defaults, $id);
+							$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="' . (int) $params->get('dbjoin_multilist_size', 6) . '" multiple="true"', 'value', 'text', $defaults, $id);
 						}
 						else
 						{
-							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="'.$id.'"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
+							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="' . $id . '"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
 						}
 						$defaultLabel = implode("\n", $html);
 						break;
 					case 'auto-complete':
-						$autoCompleteName = str_replace('[]', '', $thisElName).'-auto-complete';
-						$html[] = '<input type="text" size="20" name="'.$autoCompleteName.'" id="'.$id.'-auto-complete" value="'.$defaultLabel.'" class="fabrikinput inputbox autocomplete-trigger"/>';
+						// get the LABEL from the form's data.
+						$label = (array) $this->getValue($data, $repeatCounter, array('valueFormat' => 'label'));
+						$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
+						$html[] = '<input type="text" size="20" name="' . $autoCompleteName . '" id="' . $id . '-auto-complete" value="' . $label[0] . '" class="fabrikinput inputbox autocomplete-trigger"/>';
 						//$$$ rob - class property required when cloning repeat groups - don't remove
-						$html[] = '<input type="hidden" class="fabrikinput" size="20" name="'.$thisElName.'" id="'.$id.'" value="'.JArrayHelper::getValue($default, 0, '').'"/>';
+						$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="' . JArrayHelper::getValue($default, 0, '') . '"/>';
 						break;
 				}
 
@@ -1466,10 +1467,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (!$this->isJoin())
 		{
 			echo $this->getDbName();
-			//echo "<pre>";print_r($data);exit;
 			$this->updateFabrikJoins($data, $this->getDbName(), $params->join_key_column, $params->join_val_column);
 		}
-		//echo "here";exit;
 		return parent::onSave();
 	}
 
@@ -1666,7 +1665,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * get the name of the field to order the table data by
-	 * @return string column to order by tablename.elementname
+	 * @return	string	column to order by tablename.elementname
 	 */
 
 	function getOrderByName()
@@ -1675,8 +1674,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$join = $this->getJoin();
 		$joinTable = $join->table_join_alias;
 		$joinVal = $this->_getValColumn();
-		$return = !strstr($joinVal, 'CONCAT') ? "$joinTable.$joinVal" : $joinVal;
-		if ($return == '.') {
+		$return = !strstr($joinVal, 'CONCAT') ? $joinTable. '.' . $joinVal : $joinVal;
+		if ($return == '.')
+		{
 			$return = parent::getOrderByName();
 		}
 		return $return;
@@ -1685,17 +1685,21 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	public function selfDiagnose()
 	{
 		$retStr = parent::selfDiagnose();
-		if ($this->_pluginName == 'fabrikdatabasejoin') {
+		if ($this->_pluginName == 'fabrikdatabasejoin')
+		{
 			//Get the attributes as a parameter object:
 			$params = $this->getParams();
 			//Process the possible errors returning an error string:
-			if (!$params->get('join_db_name')) {
+			if (!$params->get('join_db_name'))
+			{
 				$retStr .= "\nMissing Table";
 			}
-			if (!$params->get('join_key_column')) {
+			if (!$params->get('join_key_column'))
+			{
 				$retStr .= "\nMissing Key";
 			}
-			if ((!$params->get('join_val_column')) && (!$params->get('join_val_column_concat'))) {
+			if ((!$params->get('join_val_column')) && (!$params->get('join_val_column_concat')))
+			{
 				$retStr = "\nMissing Label";
 			}
 		}
@@ -1732,14 +1736,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$ rob gave error when using concat label as join_val_column empty.
 		//$jkey = $params->get('join_db_name').'.'.$params->get('join_val_column');
 		$jkey = $this->_getValColumn();
-		$jkey = !strstr($jkey, 'CONCAT') ? $params->get('join_db_name').".$jkey" : $jkey;
+		$jkey = !strstr($jkey, 'CONCAT') ? $params->get('join_db_name') . '.' . $jkey : $jkey;
 
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable
-		LEFT JOIN ".$params->get('join_db_name')." ON "
-		.$params->get('join_db_name').".".$params->get('join_key_column')." = $jointable.".$this->_element->name." WHERE parent_id = ".$item->db_primary_key.")";
-		if ($addAs) {
-			$sql .= " AS $fullElName";
+		LEFT JOIN " . $params->get('join_db_name') . " ON "
+		. $params->get('join_db_name') . "." . $params->get('join_key_column')." = $jointable." . $this->_element->name . " WHERE parent_id = ".$item->db_primary_key.")";
+		if ($addAs)
+		{
+			$sql .= ' AS ' . $fullElName;
 		}
 		return $sql;
 	}
@@ -1752,7 +1757,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
 		$fullElName = $this->getFullName(false, true, false)."_id";
-		$str .= ", (SELECT GROUP_CONCAT(".$this->_element->name." SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE parent_id = ".$table->db_primary_key.") AS $fullElName";
+		$str .= ", (SELECT GROUP_CONCAT(" . $this->_element->name . " SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE parent_id = " . $table->db_primary_key . ") AS $fullElName";
 		return $str;
 	}
 
@@ -1766,12 +1771,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	public function getJoinDataNames()
 	{
 		$a = parent::getJoinDataNames();
-		if ($this->isJoin()) {
+		if ($this->isJoin())
+		{
 			$element = $this->getElement();
 			$group = $this->getGroup()->getGroup();
 			$join = $this->getJoinModel()->getJoin();
-			$repeatName = $join->table_join.'___repeatnum';
-			$fvRepeatName = 'join['.$group->join_id.']['.$repeatName.']';
+			$repeatName = $join->table_join . '___repeatnum';
+			$fvRepeatName = 'join[' . $group->join_id . '][' . $repeatName . ']';
 			$a[] =array($repeatName, $fvRepeatName);
 		}
 		return $a;
@@ -1781,20 +1787,24 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	* @since 3.0rc1
 	* when the element is a repeatble join (e.g. db join checkbox) then figure out how many
 	* records have been selected
-	* @return int number of records selected
+	* @param	array
+	* @return	int		number of records selected
 	*/
 
 	public function getJoinRepeatCount($data, $oJoin)
 	{
 		$displayType = $this->getParams()->get('database_join_display_type', 'dropdown');
-		if ($displayType === 'multilist') {
+		if ($displayType === 'multilist')
+		{
 			$join = $this->getJoinModel()->getJoin();
-			$repeatName = $join->table_join.'___'.$this->getElement()->name;
+			$repeatName = $join->table_join . '___' . $this->getElement()->name;
 			return count(JArrayHelper::getValue($data, $repeatName, array()));
-		} else {
+		}
+		else
+		{
 			return parent::getJoinRepeatCount($data, $oJoin);
 		}
 	}
-
+	
 }
 ?>
