@@ -8,7 +8,7 @@ var FloatingTips = new Class({
 		'hideOn': 'mouseleave',
 		'content': 'title',
 		'distance': 50,
-		'tipfx': ' Fx.Transitions.linear',
+		'tipfx': 'Fx.Transitions.linear',
 		'duration': 500,
 		'fadein': false,
 		showFn: function (e) {
@@ -28,7 +28,9 @@ var FloatingTips = new Class({
 		window.addEvent('tips.hideall', function (e, trigger) {
 			this.hideOthers(trigger);
 		}.bind(this));
-		if (elements) this.attach(elements);
+		if (elements) {
+			this.attach(elements);
+		}
 	},
 	
 	attach: function (elements) {
