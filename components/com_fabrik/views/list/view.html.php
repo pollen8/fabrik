@@ -266,27 +266,7 @@ class FabrikViewList extends JView{
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->setContext($groupModel, $form, $model);
-				$col = $elementModel->getFullName(false, true, false);
-				$col .= '_raw';
-				$rowclass = $elementModel->getParams()->get('use_as_row_class');
-				if ($rowclass == 1)
-				{
-					foreach ($data as $groupk => $group)
-					{
-						for ($i = 0; $i < count($group); $i ++)
-						{
-							$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $data[$groupk][$i]->data->$col);
-							$c = FabrikString::ltrim($c, '-');
-							$c = FabrikString::rtrim($c, '-');
-							// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
-							if (is_numeric($c))
-							{
-								$c = $elementModel->getElement()->name . $c;
-							}
-							$data[$groupk][$i]->class .= ' ' . $c;
-						}
-					}
-				}
+				$rowclass = $elementModel->setRowClass($data);
 			}
 		}
 		$this->rows = $data;
