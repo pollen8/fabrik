@@ -977,7 +977,13 @@ var FbList = new Class({
 			onSuccess: function (json) {
 				this._updateRows(json);
 				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
-			}.bind(this)
+			}.bind(this),
+			onError: function (text, error) {
+				console.log(text, error);
+			},
+			onFailure: function (xhr) {
+				console.log(xhr);
+			}
 		}).send();
 	},
 
@@ -1044,6 +1050,10 @@ var FbList = new Class({
 					if (typeOf(this.options.rowtemplate) === 'string') {
 						var c = thisrowtemplate.getElement('.fabrik_row').clone();
 						c.id = row.id;
+						var newClass = row['class'].split(' ');
+						for (j = 0; j < newClass.length; j ++) {
+							c.addClass(newClass[j]);
+						}
 						c.inject(tbody);
 					} else {
 						var r = thisrowtemplate.getElement('.fabrik_row');
