@@ -6793,6 +6793,7 @@ class FabrikFEModelList extends JModelForm {
 		$listid = $this->getTable()->id;
 		$dbprimaryKey = FabrikString::safeColNameToArrayKey($this->getTable()->db_primary_key);
 		$formModel = $this->getFormModel();
+		$db = $this->getDb();
 		FabrikHelperHTML::debug($data, 'render:before formatForJoins');
 		$count = count($data);
 
@@ -6836,6 +6837,16 @@ class FabrikFEModelList extends JModelForm {
 							if (!empty($keys) && array_key_exists('key', $keys[0])) {
 								// OK, now we have the PK for the table
 								$can_repeats_tables[$join_table_name] = $keys[0];
+							}
+							else {
+								// $$$ hugh - might be a view, so Hail Mary attempt to get PK
+								$query = $db->getQuery(true);
+								$query->select('db_primary_key')->from('#__{package}_lists')->where('db_table_name = ' . $db->Quote($join_table_name));
+								$db->setQuery($query);
+								$join_pk = $db->loadResult();
+								if (!empty($join_pk)) {
+									$can_repeats_tables[$join_table_name] = array('colname' => FabrikString::shortColName($join_pk));
+								}
 							}
 						}
 						// Hopefully we now have the PK
@@ -7386,7 +7397,7 @@ class FabrikFEModelList extends JModelForm {
 		{
 			$srcs[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
-		
+
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' .$this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';

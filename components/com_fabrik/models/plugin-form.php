@@ -264,7 +264,11 @@ class plgFabrik_Form extends FabrikPlugin
 						}
 					} else {
 						//@TODO do we need to check if none -joined repeat groups have their data set out correctly?
-						if (array_key_exists($key, $model->_formDataWithTableName))
+						if ($elementModel->isJoin()) {
+							$join = $elementModel->getJoinModel()->getJoin();
+							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$join->id][$k];
+						}
+						else if (array_key_exists($key, $model->_formDataWithTableName))
 						{
 							$rawval = JArrayHelper::getValue($model->_formDataWithTableName, $k . '_raw', '');
 							if ($rawval == '')
@@ -299,6 +303,10 @@ class plgFabrik_Form extends FabrikPlugin
 					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin) {
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k.'_raw'] = $this->emailData[$k.'_raw'];
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k] = $this->emailData[$k];
+					}
+					if ($elementModel->isJoin()) {
+						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k . '_raw'] = $this->emailData[$k . '_raw'];
+						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k] = $this->emailData[$k];
 					}
 				}
 			}
