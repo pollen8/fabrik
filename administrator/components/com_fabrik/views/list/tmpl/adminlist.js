@@ -141,7 +141,7 @@ var ListForm = new Class({
 	},
 		
 	watchFieldList: function (name) {
-		document.id('table-sliders-data-2').addEvent('change:relay(select[name*=' + name + '])', function (e, target) {
+		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(select[name*=' + name + '])', function (e, target) {
 			this.updateJoinStatement(target.getParent('table').id.replace('join', ''));
 		}.bind(this));
 	},
@@ -299,7 +299,7 @@ var ListForm = new Class({
 	
 	watchJoins: function () {
 		
-		document.id('table-sliders-data-2').addEvent('change:relay(.join_from)', function (e, target) {
+		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(.join_from)', function (e, target) {
 			var activeJoinCounter = target.getParent('table').id.replace('join', '');
 			this.updateJoinStatement(activeJoinCounter);
 			var table = target.get('value');
@@ -313,7 +313,7 @@ var ListForm = new Class({
 			}).send();
 		}.bind(this));
 		
-		document.id('table-sliders-data-2').addEvent('change:relay(.join_to)', function (e, target) {
+		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(.join_to)', function (e, target) {
 			var activeJoinCounter = target.getParent('table').id.replace('join', '');
 			this.updateJoinStatement(activeJoinCounter);
 			var table = target.get('value');
