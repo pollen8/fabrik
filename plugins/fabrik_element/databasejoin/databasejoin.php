@@ -916,23 +916,39 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	function getEmailValue($value, $data, $c)
 	{
 		$tmp = $this->_getOptions($data, $c);
-		if (is_array($value)){
+		if ($this->isJoin()) {
+			// $$$ hugh - if it's a repeat element, we need to render it as
+			// a single entity
 			foreach ($value as &$v2) {
 				foreach ($tmp as $v) {
 					if ($v->value == $v2) {
 						$v2 = $v->text;
+						break;
 					}
 				}
-				$v2 = $this->renderListData($v2, new stdClass());
 			}
-			$val = $value;
-		}else {
-			foreach ($tmp as $v) {
-				if ($v->value == $value) {
-					$value = $v->text;
+			$val = $this->renderListData($value, new stdClass());;
+		}
+		else {
+			if (is_array($value)){
+				foreach ($value as &$v2) {
+					foreach ($tmp as $v) {
+						if ($v->value == $v2) {
+							$v2 = $v->text;
+							break;
+						}
+					}
+					$v2 = $this->renderListData($v2, new stdClass());
 				}
+				$val = $value;
+			}else {
+				foreach ($tmp as $v) {
+					if ($v->value == $value) {
+						$value = $v->text;
+					}
+				}
+				$val = $this->renderListData($value, new stdClass());
 			}
-			$val = $this->renderListData($value, new stdClass());
 		}
 		return $val;
 	}
@@ -1537,9 +1553,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = json_decode($data['params']);
 		$element = $this->getElement();
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		// $$$ rob 08/05/2012 - toggling from dropdown to multiselect set the list_id to 1, so if you 
-		// reset to dropdown then this key would not load the existing join so a secondary join record 
-		// would be created for the element. 
+		// $$$ rob 08/05/2012 - toggling from dropdown to multiselect set the list_id to 1, so if you
+		// reset to dropdown then this key would not load the existing join so a secondary join record
+		// would be created for the element.
 		//$key = array('element_id' => $data['id'], 'list_id' => 0);
 		$key = array('element_id' => $data['id']);
 		$join->load($key);
@@ -1805,6 +1821,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			return parent::getJoinRepeatCount($data, $oJoin);
 		}
 	}
-	
+
 }
 ?>
