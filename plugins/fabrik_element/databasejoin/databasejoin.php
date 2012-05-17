@@ -761,7 +761,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						// get the LABEL from the form's data.
 						$label = (array) $this->getValue($data, $repeatCounter, array('valueFormat' => 'label'));
 						$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
-						$html[] = '<input type="text" size="20" name="' . $autoCompleteName . '" id="' . $id . '-auto-complete" value="' . $label[0] . '" class="fabrikinput inputbox autocomplete-trigger"/>';
+						$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id . '-auto-complete" value="' . $label[0] . '" class="fabrikinput inputbox autocomplete-trigger"/>';
 						//$$$ rob - class property required when cloning repeat groups - don't remove
 						$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="' . JArrayHelper::getValue($default, 0, '') . '"/>';
 						break;
