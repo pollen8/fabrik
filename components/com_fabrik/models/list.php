@@ -5662,12 +5662,15 @@ class FabrikFEModelList extends JModelForm {
 		$return = array();
 		$groupModels = $this->getFormGroupElementData();
 		//remove any groups that were set to be repeating and hence were storing in their own db table.
-		foreach ($groupModels as $groupModel) {
-			if ($groupModel->isJoin()) {
+		foreach ($groupModels as $groupModel)
+		{
+			if ($groupModel->isJoin())
+			{
 				$joinModel = $groupModel->getJoinModel();
 				$join = $joinModel->getJoin();
-				$joinParams = json_decode($join->params);
-				if (isset($joinParams->type) && $joinParams->type == 'group') {
+				$joinParams = is_string($join->params) ? json_decode($join->params) : $join->params;
+				if (isset($joinParams->type) && $joinParams->type === 'group')
+				{
 					$return[] = $joinModel;
 				}
 			}
@@ -7262,14 +7265,24 @@ class FabrikFEModelList extends JModelForm {
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$csvFields = array();
-		if ($params->get('csv_elements') == '') {
+		if ($params->get('csv_elements') == '')
+		{
 			$csvIds = array();
-		} else {
+		}
+		else
+		{
 			$csvIds = json_decode($params->get('csv_elements'))->show_in_csv;
 		}
-		foreach ($csvIds as $id) {
-			if ($id !== '') {
-				$csvFields[$formModel->getElement($id, true)->getFullName(false, true, false)] = 1;
+		foreach ($csvIds as $id)
+		{
+			if ($id !== '')
+			{
+				$elementModel = $formModel->getElement($id, true);
+				if ($elementModel !== false)
+				{
+					$csvFields[$elementModel->getFullName(false, true, false)] = 1;
+				}
+				
 			}
 		}
 		return $csvFields;
