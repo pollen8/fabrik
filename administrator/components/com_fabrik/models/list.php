@@ -420,7 +420,8 @@ class FabrikModelList extends FabModelAdmin
 			$join->joinFormFields = array_keys($fields[$join->join_from_table]);
 			$join->joinToFields = array_keys($fields[$join->table_join]);
 		}
-		return $joins;
+		// $$$ re-index the array in case we zapped anything
+		return array_values($joins);
 	}
 
 	/**
