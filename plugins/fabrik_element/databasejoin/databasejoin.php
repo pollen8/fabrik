@@ -880,10 +880,17 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ((int)$this->_id !== 0) {
 			$join->load(array('element_id' => $this->_id));
 			if($join->table_join == '') {
-				return "VARCHAR(255)";
+				// $$$ hugh - this almost certainly means we are changing element type to a join,
+				// and the join row hasn't been created yet.  So let's grab the params, instead of
+				// defaulting to VARCHAR
+				//return "VARCHAR(255)";
+				$dbName = $params->get('join_db_name');
+				$joinKey = $params->get('join_key_column');
 			}
-			$dbName = $join->table_join;
-			$joinKey = $join->table_join_key;
+			else {
+				$dbName = $join->table_join;
+				$joinKey = $join->table_join_key;
+			}
 		} else {
 			$dbName = $params->get('join_db_name');
 			$joinKey = $params->get('join_key_column');
