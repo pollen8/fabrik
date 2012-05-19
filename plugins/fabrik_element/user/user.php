@@ -31,6 +31,11 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		if (empty($params->join_db_name)) {
 			$params->set('join_db_name', '#__users');
 		}
+		// $$$ hugh - think we need to default key column as well, otherwise
+		// when creating user element, we end up setting field to VARCHAR 255
+		if (empty($params->join_key_column)) {
+			$params->set('join_key_column', 'id');
+		}
 		return $params;
 	}
 
