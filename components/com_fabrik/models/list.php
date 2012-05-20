@@ -2532,6 +2532,12 @@ class FabrikFEModelList extends JModelForm {
 				$conf	= JFactory::getConfig();
 				$thisCn = $this->getConnection()->getConnection();
 				if (!($thisCn->host == $conf->getValue('config.host') && $thisCn->database == $conf->getValue('config.db'))) {
+					// $$$ hugh - changed this to pitch an error and bang out, otherwise if we just set canUse to false, our getData query
+					// is just going to blow up, with no useful warning msg.
+					// This is basically a bandaid for corner case where user has (say) host name in J!'s config, and IP address in
+					// our connection details, or vice versa, which is not uncommon for 'locahost' setups, so at least I'll know what
+					// the problem is when they post in the forums!
+					JError::raiseError(500, 'USER JOIN ON NON-JOOMLA DATABASE CONNECTION (CHECK FABRIK CONNECTION AND JOOMLA CONFIG USE SAME HOSTNAME)');
 					$join->canUse = false;
 				}
 				//}
@@ -7293,7 +7299,7 @@ class FabrikFEModelList extends JModelForm {
 				{
 					$csvFields[$elementModel->getFullName(false, true, false)] = 1;
 				}
-				
+
 			}
 		}
 		return $csvFields;
