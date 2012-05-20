@@ -111,7 +111,7 @@ class FabrikModelElement extends JModelAdmin
 	 * @return	mixed	A JForm object on success, false on failure
 	 * @since	1.6
 	 */
-	
+
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
@@ -130,7 +130,7 @@ class FabrikModelElement extends JModelAdmin
 	 * @return	mixed	The data for the form.
 	 * @since	1.6
 	 */
-	
+
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
@@ -334,7 +334,7 @@ class FabrikModelElement extends JModelAdmin
 			}
 			//get the current data for repeated validation
 			foreach ($pluginData as $key => $values) {
-				
+
 				if ($key == 'plugin')
 				{
 					continue;
@@ -685,6 +685,7 @@ class FabrikModelElement extends JModelAdmin
 			$this->updateJavascript($data);
 			$elementModel->_id = $this->getState($this->getName() . '.id');
 			$row->id = $elementModel->_id;
+			$data->id = $row->id;
 			$this->createRepeatElement($elementModel, $row);
 			// If new, check if the element's db table is used by other tables and if so add the element
 			// to each of those tables' groups

@@ -1567,7 +1567,18 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// reset to dropdown then this key would not load the existing join so a secondary join record
 		// would be created for the element.
 		//$key = array('element_id' => $data['id'], 'list_id' => 0);
-		$key = array('element_id' => $data['id']);
+		// $$$ hugh - NOOOOOOOO!  Creating a new user element, $data['id'] is 0, so without the list_id => we end up loading the first
+		// list join at random, instead of a new row, which has SERIOUSLY BAD side effects, and is responsible for the Mysterious Disappearing
+		// Group issue ... 'cos the list_id gets set wrong.
+		// I *think* the actual problem is that we weren't setting $data['id'] to newly created element id in the element model save() method, before
+		// calling onSave(), which I've now done, but just to be on the safe side, put in some defensive code so id $data['id'] is 0, we make sure
+		// we don't load a random list join row!!
+		if ($data['id'] == 0) {
+			$key = array('element_id' => $data['id'], 'list_id' => 0);
+		}
+		else {
+			$key = array('element_id' => $data['id']);
+		}
 		$join->load($key);
 		if ($join->element_id == 0)
 		{
