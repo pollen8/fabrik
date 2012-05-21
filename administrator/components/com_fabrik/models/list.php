@@ -811,7 +811,8 @@ class FabrikModelList extends FabModelAdmin
 		{
 			return;
 		}
-		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$this->getState('list.id'));
+		// $$$ hugh - added "AND element_id = 0" to avoid fallout from "random join and group deletion" issue from May 2012
+		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$this->getState('list.id').' AND element_id = 0');
 		$db->setQuery($query);
 		$aOldJoins = $db->loadObjectList();
 		$params = $data['params'];
