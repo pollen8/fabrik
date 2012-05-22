@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_cron" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik Cron - ImportCSV</name>
+	<name>plg_cron_importcsv</name>
 	<author>Mike Griggs</author>
 	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>

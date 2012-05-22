@@ -1,0 +1,1 @@
+var FbViewlevel=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikviewlevel";this.parent(b,a)}});

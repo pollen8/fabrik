@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_visualization" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik Visualization - calendar</name>
+	<name>plg_fabrik_visualization_calendar</name>
 	<author>Rob Clayburn</author>
 	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
@@ -8,8 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.0.5.2</version>
-	<description>Defines behaviour of calendar visualization plugin</description>
-	
+	<help url="PLG_VISUALIZATION_CALENDAR_HELP_SERVER" />
+	<description>PLG_VISUALIZATION_CALENDAR_DESCRIPTION</description>
 	<files>
 		<filename plugin="calendar">calendar.js</filename>
 		<filename>calendar.php</filename>
@@ -21,5 +21,4 @@
 		<folder>models</folder>
 		<folder>views</folder>
 	</files>
-
 </extension>

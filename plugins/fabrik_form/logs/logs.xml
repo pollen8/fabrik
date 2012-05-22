@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_form" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik Form - logs</name>
+	<name>plg_fabrik_form_logs</name>
 	<author>Peamak</author>
 	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
@@ -8,7 +8,8 @@
 	<authorEmail>pktom64@gmail.com</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.0.5.2</version>
-	<description>Create or update a log file and/or database</description>
+	<help url="PLG_FORM_LOGS_HELP_SERVER" />
+	<description>PLG_FORM_LOGS_DESCRIPTION</description>
 	<files>
 		<filename plugin="logs">logs.php</filename>
 		<filename>index.html</filename>
