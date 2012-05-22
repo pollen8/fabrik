@@ -1284,7 +1284,10 @@ var FbForm = new Class({
 						subElementCounter++;
 						subElementContainer = input.getParent('.fabrikSubElementContainer');
 						// clone the first inputs event to all subelements
-						input.cloneEvents(document.id(testid).getElement('input'));
+						// $$$ hugh - sanity check in case we have an element which has no input
+						if (document.id(testid).getElement('input')) {
+							input.cloneEvents(document.id(testid).getElement('input'));
+						}
 						// id set out side this each() function
 					} else {
 						input.cloneEvents(el.element);
