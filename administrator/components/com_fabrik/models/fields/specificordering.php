@@ -34,6 +34,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 	function getOptions()
 	{
 		//ONLY WORKS INSIDE ELEMENT :(
+		$db = FabrikWorker::getDbo();
 		$group_id = $this->form->getValue('group_id');
 			$query = "SELECT ordering AS value, name AS text".
 			"\n FROM #__{package}_elements ".

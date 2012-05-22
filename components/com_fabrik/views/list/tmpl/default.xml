@@ -67,6 +67,15 @@
 				
 					<fields name="params">
 						<fieldset name="prefilters_modal" repeat="true">
+						
+							<field name="filter-join"
+								type="list"
+								default="OR"
+								label="">
+									<option value="AND">AND</option>
+									<option value="OR">OR</option>
+							</field>
+							
 							<field name="filter-fields" 
 								type="listfields"
 								valueformat="tableelement"
