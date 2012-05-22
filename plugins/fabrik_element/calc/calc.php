@@ -387,6 +387,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
 		$opts->observe = $obs;
 		$opts->id = $this->_id;
+		$validations = $this->getValidations();
+		$opts->validations = empty($validations) ? false : true;
 		$opts = json_encode($opts);
 		return "new FbCalc('$id', $opts)";
 	}
