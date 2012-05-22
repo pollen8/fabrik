@@ -734,7 +734,7 @@ var FbList = new Class({
 	getActiveRow: function (e) {
 		var row = e.target.getParent('.fabrik_row');
 		if (!row) {
-			row = this.activeRow;
+			row = Fabrik.activeRow;
 		}
 		return row;
 	},
@@ -1202,12 +1202,6 @@ var FbList = new Class({
 				Fabrik.getWindow(winOpts);
 			}.bind(this));
 		}
-		var del = document.getElements('.fabrik_delete a');
-		this.getForm().removeEvents('click:relay(.fabrik_delete a)');
-		this.getForm().addEvent('click:relay(.fabrik_delete a)', function (e) {
-			this.watchDelete(e);
-		}.bind(this));
-
 		if (document.id('fabrik__swaptable')) {
 			document.id('fabrik__swaptable').addEvent('change', function (e) {
 				window.location = 'index.php?option=com_fabrik&task=list.view&cid=' + e.target.get('value');
@@ -1243,37 +1237,6 @@ var FbList = new Class({
 		this.watchCheckAll();
 	},
 	
-	watchDelete: function (e) {
-		var r = e.target.getParent('.fabrik_row');
-		if (!r) {
-			r = this.activeRow;
-		}
-		if (r) {
-			var chx = r.getElement('input[type=checkbox][name*=id]');
-			/*if (typeOf(chx) !== 'null') {
-				// if delete link is in hover box the we cant find the associated chx
-				// box
-			// $$$ rob hmm no! this meant if you selected 2 records to delete only the last selected recod would be deleted.
-				this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-					c.checked = false;
-				});
-			}*/
-			if (typeOf(chx) !== 'null') {
-				chx.checked = true;
-			}
-		} else {
-			// checkAll
-			if (this.options.actionMethod !== '') { // should only check all for floating tips
-				this.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-					c.checked = true;
-				});
-			}
-		}
-		if (!this.submit('list.delete')) {
-			e.stop();
-		}
-	},
-
 	/**
 	 * currently only called from element raw view when using inline edit plugin
 	 * might need to use for ajax nav as well?
@@ -1438,7 +1401,6 @@ var FbListActions = new Class({
 	},
 
 	setUpFloating: function () {
-
 		this.list.form.getElements('ul.fabrik_action').each(function (ul) {
 			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
@@ -1453,8 +1415,9 @@ var FbListActions = new Class({
 					};
 
 					var c = function (el, o) {
-						this.activeRow = ul.getParent('.fabrik_row');
-						return ul.getParent();
+						var r = ul.getParent();
+						r.store('activeRow', ul.getParent('.fabrik_row'));
+						return r;
 					}.bind(this.list);
 
 					var opts =  {
@@ -1465,9 +1428,11 @@ var FbListActions = new Class({
 							hideFn: function (e) {
 								return !e.target.checked;
 							},
-							showFn: function (e) {
+							showFn: function (e, trigger) {
+								Fabrik.activeRow = ul.getParent().retrieve('activeRow');
+								trigger.store('list', this.list);
 								return e.target.checked;
-							}
+							}.bind(this.list)
 						};
 					
 					var tipOpts = Object.merge(Object.clone(Fabrik.tips.options), opts);
@@ -1491,9 +1456,10 @@ var FbListActions = new Class({
 			hideFn: function (e) {
 				return !e.target.checked;
 			},
-			showFn: function (e) {
+			showFn: function (e, trigger) {
+				trigger.retrieve('tip').click.store('list', this.list);
 				return e.target.checked;
-			}
+			}.bind(this.list)
 		});
 		var tip = new FloatingTips(chxall, tipChxAllOpts);
 

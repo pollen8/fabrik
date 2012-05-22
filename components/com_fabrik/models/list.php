@@ -767,7 +767,7 @@ class FabrikFEModelList extends JModelForm {
 						if ($params->get('editlink') || $params->get('actionMethod') == 'floating')
 						{
 							$row->fabrik_edit = $editLink;
-							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">'.$row->fabrik_edit.'</li>';
+							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
 						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod') == 'floating'))
@@ -5737,23 +5737,27 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * test if a field already exists in the database
 	 *
-	 * @param string $field
-	 * @param array id's to ignore.
-	 * @return bol
+	 * @param	string	$field
+	 * @param	array	id's to ignore.
+	 * @return	bool
 	 */
 
 	function fieldExists($field, $ignore = array())
 	{
 		$field = strtolower($field);
 		$groupModels = $this->getFormGroupElementData();
-		foreach ($groupModels as $groupModel) {
-			if (!$groupModel->isJoin()) {
+		foreach ($groupModels as $groupModel)
+		{
+			if (!$groupModel->isJoin())
+			{
 				//dont check groups that aren't in this table
 				$elementModels = $groupModel->getMyElements();
-				foreach ($elementModels as $elementModel) {
+				foreach ($elementModels as $elementModel)
+				{
 					$element = $elementModel->getElement();
 					$n = strtolower($element->name);
-					if (strtolower($element->name) == $field && !in_array($element->id, $ignore)) {
+					if (strtolower($element->name) == $field && !in_array($element->id, $ignore))
+					{
 						return true;
 					}
 				}
@@ -5763,14 +5767,14 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * @param int connection id to use
-	 * @param string table to load fields for
-	 * @param string show "please select" top option
-	 * @param bol append field name values with table name
-	 * @param string name of drop down
-	 * @param string selected option
-	 * @param string class name
-	 * @return string html to be added to DOM
+	 * @param	int		connection id to use
+	 * @param	string	table to load fields for
+	 * @param	string	show "please select" top option
+	 * @param	bool	append field name values with table name
+	 * @param	string	name of drop down
+	 * @param	string	selected option
+	 * @param	string	class name
+	 * @return	string	html to be added to DOM
 	 */
 
 	function getFieldsDropDown($cnnId, $tbl, $incSelect, $incTableName = false, $selectListName = 'order_by', $selected = null, $className = "inputbox")
@@ -5778,36 +5782,44 @@ class FabrikFEModelList extends JModelForm {
 		$this->setConnectionId($cnnId);
 		$aFields = $this->getDBFields($tbl);
 		$fieldNames = array();
-		if ($incSelect != '') {
+		if ($incSelect != '')
+		{
 			$fieldNames[] = JHTML::_('select.option', '', $incSelect);
 		}
-		if (is_array($aFields)) {
-			foreach ($aFields as $oField) {
-				if ($incTableName) {
+		if (is_array($aFields))
+		{
+			foreach ($aFields as $oField)
+			{
+				if ($incTableName)
+				{
 					$fieldNames[] = JHTML::_('select.option', $tbl . '___' . $oField->Field, $oField->Field);
-				} else {
+				}
+				else
+				{
 					$fieldNames[] = JHTML::_('select.option', $oField->Field);
 				}
 			}
 		}
-		$fieldDropDown = JHTML::_('select.genericlist',  $fieldNames, $selectListName, 'class="'.$className.'" size="1" ', 'value', 'text', $selected);
+		$fieldDropDown = JHTML::_('select.genericlist', $fieldNames, $selectListName, 'class="' . $className . '" size="1" ', 'value', 'text', $selected);
 		return str_replace("\n", "", $fieldDropDown);
 	}
 
 	/**
 	 * create the RSS href link to go in the table template
-	 * @return string RSS link
+	 * @return	string	RSS link
 	 */
 
 	function getRSSFeedLink()
 	{
 		$app = JFactory::getApplication();
 		$link = '';
-		if ($this->getParams()->get('rss') == '1') {
+		if ($this->getParams()->get('rss') == '1')
+		{
 			//$$$ rob test fabriks own feed renderer
 			//$link = 'index.php?option=com_fabrik&view=table&listid=' . $this->getState('list.id'); . "&format=feed";
 			$link = 'index.php?option=com_fabrik&view=list&listid=' . $this->getId() . "&format=fabrikfeed";
-			if (!$app->isAdmin()) {
+			if (!$app->isAdmin())
+			{
 				$link = JRoute::_($link);
 			}
 		}
@@ -5819,15 +5831,16 @@ class FabrikFEModelList extends JModelForm {
 	 * {placeholder} with row data
 	 * (added by hugh, does the same thing as parseMessageForPlaceHolder in parent
 	 * class, but for rows instead of forms)
-	 * @param string text to parse
-	 * @param array of row data
-	 * @param bool add slashes to the replaced data (default = false) set to true in fabrikcalc element
+	 * @param	string	text to parse
+	 * @param	array	of row data
+	 * @param	bool	add slashes to the replaced data (default = false) set to true in fabrikcalc element
 	 */
 
 	function parseMessageForRowHolder($msg, &$row, $addslashes = false)
 	{
 		$this->_aRow = $row;
-		if (!strstr($msg, '{')){
+		if (!strstr($msg, '{'))
+		{
 			return $msg;
 		}
 		$this->_parseAddSlases = $addslashes;

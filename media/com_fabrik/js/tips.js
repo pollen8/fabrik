@@ -99,7 +99,7 @@ var FloatingTips = new Class({
 					return;
 				}
 			}
-			if (opts.showFn(e)) {
+			if (opts.showFn(e, trigger)) {
 				this.show(trigger, evnt);
 			}
 		}.bind(this));
