@@ -767,7 +767,7 @@ class FabrikFEModelList extends JModelForm {
 						if ($params->get('editlink') || $params->get('actionMethod') == 'floating')
 						{
 							$row->fabrik_edit = $editLink;
-							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">'.$row->fabrik_edit.'</li>';
+							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
 						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod') == 'floating'))
@@ -1693,17 +1693,21 @@ class FabrikFEModelList extends JModelForm {
 		$filters = $this->getFilterArray();
 		$keys = array_keys($filters);
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'value', array()));
-		foreach ($vkeys as $i) {
-			if ($filters['search_type'][$i] != 'prefilter' || $filters['key'][$i] != $elementName) {
-				foreach ($keys as $key) {
+		foreach ($vkeys as $i)
+		{
+			if ($filters['search_type'][$i] != 'prefilter' || $filters['key'][$i] != $elementName)
+			{
+				foreach ($keys as $key)
+				{
 					unset($filters[$key][$i]);
 				}
 			}
 		}
 		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters);
 		$where = str_replace('WHERE', '', $sql);
-		if ($where != '') {
-			$where = " AND $where";
+		if ($where != '')
+		{
+			$where = ' AND ' . $where;
 		}
 		return $where;
 	}
@@ -1737,17 +1741,18 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * get the part of the sql query that relates to the where statement
 	 *
-	 * @param bol $incFilters if true the SQL contains
+	 * @param	bool	$incFilters if true the SQL contains
 	 * any filters if false only contains prefilter sql
-	 * @param bool start the statement with 'where' (true is for j1.5 way of making queries, false for j1.6+)
-	 * @return string where query
+	 * @param	bool	start the statement with 'where' (true is for j1.5 way of making queries, false for j1.6+)
+	 * @return	string	where query
 	 */
 
 	function _buildQueryWhere($incFilters = true, $query = false)
 	{
 		$sig = !$query ? 'string' : 'query';
 		$db = FabrikWorker::getDbo();
-		if (isset($this->_whereSQL[$sig])) {
+		if (isset($this->_whereSQL[$sig]))
+		{
 			return $this->_whereSQL[$sig][$incFilters];
 		}
 		$filters = $this->getFilterArray();
@@ -1758,46 +1763,59 @@ class FabrikFEModelList extends JModelForm {
 		# on the main row count and data fetch, and things like
 		# filter dropdowns still get built.
 
-		if ($incFilters && !$this->gotAllRequiredFilters()) {
+		if ($incFilters && !$this->gotAllRequiredFilters())
+		{
 			//$this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
-			if (!$query) {
+			if (!$query)
+			{
 				return 'WHERE 1 = -1 ';
-			} else {
+			}
+			else
+			{
 				$query->where('1 = -1');
 				return $query;
 			}
-
 		}
-
 		$groups = $this->getFormModel()->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$elementModel->appendTableWhere($this->_pluginQueryWhere);
 			}
 		}
-
-		if (empty($filters)) {
+		if (empty($filters))
+		{
 			// $$$ hugh - testing hack for plugins to add WHERE clauses
-			if (!empty($this->_pluginQueryWhere)) {
-				if (!$query) {
+			if (!empty($this->_pluginQueryWhere))
+			{
+				if (!$query)
+				{
 					return 'WHERE '.implode(' AND ', $this->_pluginQueryWhere);
-				} else {
+				}
+				else
+				{
 					$query->where(implode(' AND ', $this->_pluginQueryWhere));
 					return $query;
 				}
 			}
-			else {
+			else
+			{
 				return $query ? $query : '';
 			}
 		}
 		$addWhere = $query == false ? true : false;
 		list($sqlNoFilter, $sql) = $this->_filtersToSQL($filters, $addWhere);
 		$this->_whereSQL[$sig] = array('0' => $sqlNoFilter, '1' => $sql);
-		if (!$query) {
+		if (!$query)
+		{
 			return $this->_whereSQL[$sig][$incFilters];
-		} else {
-			if (!empty($this->_whereSQL[$sig][$incFilters])) {
+		}
+		else
+		{
+			if (!empty($this->_whereSQL[$sig][$incFilters]))
+			{
 				$query->where($this->_whereSQL[$sig][$incFilters]);
 			}
 			return $query;
@@ -2990,12 +3008,13 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * creates filter array (return existing if exists)
-	 *@return array filters
+	 * @return	array	filters
 	 */
 
 	function &getFilterArray()
 	{
-		if (isset($this->filters)) {
+		if (isset($this->filters))
+		{
 			return $this->filters;
 		}
 
@@ -3193,32 +3212,37 @@ class FabrikFEModelList extends JModelForm {
 
 	function getPrefilterArray(&$filters)
 	{
-
-		if (!isset($this->prefilters)) {
+		if (!isset($this->prefilters))
+		{
 			$params = $this->getParams();
 			$showInList = array();
 			$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
-			if (isset($listels->show_in_list)) {
+			if (isset($listels->show_in_list))
+			{
 				$showInList = $listels->show_in_list;
 			}
-			$showInList = (array)JRequest::getVar('fabrik_show_in_list', $showInList);
+			$showInList = (array) JRequest::getVar('fabrik_show_in_list', $showInList);
 
 			//are we coming from a post request via a module?
 			$moduleid = 0;
 			$requestRef =  JRequest::getVar('listref', '');
-			if ($requestRef !== '' && ! strstr($requestRef, 'com_fabrik')) {
+			if ($requestRef !== '' && ! strstr($requestRef, 'com_fabrik'))
+			{
 				// if so we need to load in the modules parameters
 				$ref = explode('_', $requestRef);
-				if (count($ref) > 1) {
+				if (count($ref) > 1)
+				{
 					$moduleid = (int)array_pop($ref);
 					$db = JFactory::getDbo();
 					$query = $db->getQuery(true);
-					if ($moduleid !== 0) {
+					if ($moduleid !== 0)
+					{
 						$this->setRenderContext($moduleid);
-						$query->select('params')->from('#__modules')->where('id = '.$moduleid);
+						$query->select('params')->from('#__modules')->where('id = ' . $moduleid);
 						$db->setQuery($query);
 						$obj = json_decode($db->loadResult());
-						if (is_object($obj) && isset($obj->prefilters)) {
+						if (is_object($obj) && isset($obj->prefilters))
+						{
 							$properties = $obj->prefilters;
 						}
 					}
@@ -3226,38 +3250,45 @@ class FabrikFEModelList extends JModelForm {
 			}
 			//if we are rendering as a module dont pick up the menu item options (parmas already set in list module)
 			// so first statement when rendenering a module, 2nd when posting to the component from a module.
-			if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0) {
+			if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0)
+			{
 				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '');
 			}
-			if (isset($properties)) {
+			if (isset($properties))
+			{
 				$prefilters = JArrayHelper::fromObject(json_decode($properties));
 				$conditions = (array)$prefilters['filter-conditions'];
-				if (!empty($conditions)) {
+				if (!empty($conditions))
+				{
 					$params->set('filter-fields', $prefilters['filter-fields']);
 					$params->set('filter-conditions', $prefilters['filter-conditions']);
 					$params->set('filter-value', $prefilters['filter-value']);
 					$params->set('filter-access', $prefilters['filter-access']);
 					$params->set('filter-eval', $prefilters['filter-eval']);
+					$params->set('filter-join', $prefilters['filter-join']);
 				}
 			}
 			$elements = $this->getElements('filtername');
-			$afilterJoins = (array)$params->get('filter-join');
-			$afilterFields = (array)$params->get('filter-fields');
-			$afilterConditions = (array)$params->get('filter-conditions');
-			$afilterValues = (array)$params->get('filter-value');
-			$afilterAccess = (array)$params->get('filter-access');
-			$afilterEval = (array)$params->get('filter-eval');
-			$afilterGrouped	= (array)$params->get('filter-grouped');
+			$afilterJoins = (array) $params->get('filter-join');
+			$afilterFields = (array) $params->get('filter-fields');
+			$afilterConditions = (array) $params->get('filter-conditions');
+			$afilterValues = (array) $params->get('filter-value');
+			$afilterAccess = (array) $params->get('filter-access');
+			$afilterEval = (array) $params->get('filter-eval');
+			$afilterGrouped	= (array) $params->get('filter-grouped');
 			$join = 'WHERE';
 			$w = new FabrikWorker();
-			for ($i=0; $i < count($afilterFields); $i++) {
-				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '') {
+			for ($i = 0; $i < count($afilterFields); $i++)
+			{
+				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '')
+				{
 					$afilterJoins[0] = 'AND';
 				}
 				$join = JArrayHelper::getValue($afilterJoins, $i, 'AND');
 
-				if (trim(strtolower($join)) == 'where') {
-					$join = "AND";
+				if (trim(strtolower($join)) == 'where')
+				{
+					$join = 'AND';
 				}
 				$filter = $afilterFields[$i];
 				$condition = $afilterConditions[$i];
@@ -3266,15 +3297,16 @@ class FabrikFEModelList extends JModelForm {
 				$filterGrouped = JArrayHelper::getValue($afilterGrouped, $i, false);
 
 				$selAccess = $afilterAccess[$i];
-				if (!$this->mustApplyFilter($selAccess)) {
+				if (!$this->mustApplyFilter($selAccess))
+				{
 					continue;
 				}
 				//$tmpfilter = strstr($filter, '_raw') ? FabrikString::rtrimword( $filter, '_raw') : $filter;
 				$raw = preg_match("/_raw$/", $filter) > 0;
 				$tmpfilter = $raw ? FabrikString::rtrimword( $filter, '_raw') : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
-				if ($elementModel === false) {
-
+				if ($elementModel === false)
+				{
 					// Include the JLog class.
 					jimport('joomla.log.log');
 
@@ -3283,7 +3315,6 @@ class FabrikFEModelList extends JModelForm {
 
 					// start logging...
 					JLog::add('A prefilter has been set up on an unpublished element, and will not be applied:' . FabrikString::safeColName($tmpfilter), JLog::NOTICE, 'com_fabrik');
-
 
 					continue;
 				}
@@ -3299,7 +3330,6 @@ class FabrikFEModelList extends JModelForm {
 				$filters['eval'][] = $filterEval;
 				$filters['match'][] = ($condition == 'equals') ? 1 : 0;
 				$filters['full_words_only'][] = 0;
-
 				$filters['label'][] = '';
 				$filters['access'][] = '';
 				$filters['key2'][] = '';
@@ -5707,23 +5737,27 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * test if a field already exists in the database
 	 *
-	 * @param string $field
-	 * @param array id's to ignore.
-	 * @return bol
+	 * @param	string	$field
+	 * @param	array	id's to ignore.
+	 * @return	bool
 	 */
 
 	function fieldExists($field, $ignore = array())
 	{
 		$field = strtolower($field);
 		$groupModels = $this->getFormGroupElementData();
-		foreach ($groupModels as $groupModel) {
-			if (!$groupModel->isJoin()) {
+		foreach ($groupModels as $groupModel)
+		{
+			if (!$groupModel->isJoin())
+			{
 				//dont check groups that aren't in this table
 				$elementModels = $groupModel->getMyElements();
-				foreach ($elementModels as $elementModel) {
+				foreach ($elementModels as $elementModel)
+				{
 					$element = $elementModel->getElement();
 					$n = strtolower($element->name);
-					if (strtolower($element->name) == $field && !in_array($element->id, $ignore)) {
+					if (strtolower($element->name) == $field && !in_array($element->id, $ignore))
+					{
 						return true;
 					}
 				}
@@ -5733,14 +5767,14 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * @param int connection id to use
-	 * @param string table to load fields for
-	 * @param string show "please select" top option
-	 * @param bol append field name values with table name
-	 * @param string name of drop down
-	 * @param string selected option
-	 * @param string class name
-	 * @return string html to be added to DOM
+	 * @param	int		connection id to use
+	 * @param	string	table to load fields for
+	 * @param	string	show "please select" top option
+	 * @param	bool	append field name values with table name
+	 * @param	string	name of drop down
+	 * @param	string	selected option
+	 * @param	string	class name
+	 * @return	string	html to be added to DOM
 	 */
 
 	function getFieldsDropDown($cnnId, $tbl, $incSelect, $incTableName = false, $selectListName = 'order_by', $selected = null, $className = "inputbox")
@@ -5748,36 +5782,44 @@ class FabrikFEModelList extends JModelForm {
 		$this->setConnectionId($cnnId);
 		$aFields = $this->getDBFields($tbl);
 		$fieldNames = array();
-		if ($incSelect != '') {
+		if ($incSelect != '')
+		{
 			$fieldNames[] = JHTML::_('select.option', '', $incSelect);
 		}
-		if (is_array($aFields)) {
-			foreach ($aFields as $oField) {
-				if ($incTableName) {
+		if (is_array($aFields))
+		{
+			foreach ($aFields as $oField)
+			{
+				if ($incTableName)
+				{
 					$fieldNames[] = JHTML::_('select.option', $tbl . '___' . $oField->Field, $oField->Field);
-				} else {
+				}
+				else
+				{
 					$fieldNames[] = JHTML::_('select.option', $oField->Field);
 				}
 			}
 		}
-		$fieldDropDown = JHTML::_('select.genericlist',  $fieldNames, $selectListName, 'class="'.$className.'" size="1" ', 'value', 'text', $selected);
+		$fieldDropDown = JHTML::_('select.genericlist', $fieldNames, $selectListName, 'class="' . $className . '" size="1" ', 'value', 'text', $selected);
 		return str_replace("\n", "", $fieldDropDown);
 	}
 
 	/**
 	 * create the RSS href link to go in the table template
-	 * @return string RSS link
+	 * @return	string	RSS link
 	 */
 
 	function getRSSFeedLink()
 	{
 		$app = JFactory::getApplication();
 		$link = '';
-		if ($this->getParams()->get('rss') == '1') {
+		if ($this->getParams()->get('rss') == '1')
+		{
 			//$$$ rob test fabriks own feed renderer
 			//$link = 'index.php?option=com_fabrik&view=table&listid=' . $this->getState('list.id'); . "&format=feed";
 			$link = 'index.php?option=com_fabrik&view=list&listid=' . $this->getId() . "&format=fabrikfeed";
-			if (!$app->isAdmin()) {
+			if (!$app->isAdmin())
+			{
 				$link = JRoute::_($link);
 			}
 		}
@@ -5789,15 +5831,16 @@ class FabrikFEModelList extends JModelForm {
 	 * {placeholder} with row data
 	 * (added by hugh, does the same thing as parseMessageForPlaceHolder in parent
 	 * class, but for rows instead of forms)
-	 * @param string text to parse
-	 * @param array of row data
-	 * @param bool add slashes to the replaced data (default = false) set to true in fabrikcalc element
+	 * @param	string	text to parse
+	 * @param	array	of row data
+	 * @param	bool	add slashes to the replaced data (default = false) set to true in fabrikcalc element
 	 */
 
 	function parseMessageForRowHolder($msg, &$row, $addslashes = false)
 	{
 		$this->_aRow = $row;
-		if (!strstr($msg, '{')){
+		if (!strstr($msg, '{'))
+		{
 			return $msg;
 		}
 		$this->_parseAddSlases = $addslashes;

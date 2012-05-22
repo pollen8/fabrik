@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_form" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik Form - kunena forum</name>
+	<name>plg_fabrik_form_kunena</name>
 	<author>Rob Clayburn</author>
 	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.0.5.2</version>
-	<description>Create a new vBulletin forum</description>
+	<help url="PLG_FORM_KUNENA_HELP_SERVER" />
+	<description>PLG_FORM_KUNENA_DESCRIPTION</description>
 	<files>
 		<filename plugin="kunena">kunena.php</filename>
 		<filename>index.html</filename>

@@ -39,8 +39,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 	protected function getChartParams()
 	{
 		$params = $this->getParams();
-		$strParam = 'caption=' . $params->get('fusionchart_caption', '');
-
+		$w = new FabrikWorker();
+		$caption = $w->parseMessageForPlaceHolder($params->get('fusionchart_caption', ''));
+		$strParam = 'caption=' . $caption;
+		
 		// Graph attributes
 		$strParam .= ';palette=' . $params->get('fusionchart_chart_palette', 1);
 		if ($params->get('fusionchart_bgcolor'))
