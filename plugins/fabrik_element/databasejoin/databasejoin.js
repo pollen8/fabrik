@@ -142,8 +142,9 @@ var FbDatabasejoin = new Class({
 	
 	/**
 	 * send an ajax request to requery the element options and update the element if new options found
+	 * @param	string	(optional) additional value to get the updated value for (used in select)
 	 */
-	updateFromServer: function ()
+	updateFromServer: function (v)
 	{
 		var data = {
 				'option': 'com_fabrik',
@@ -153,7 +154,9 @@ var FbDatabasejoin = new Class({
 				'method': 'ajax_getOptions',
 				'element_id': this.options.id
 			};
-		
+		if (v) {
+			data[this.strElement + '_raw'] = v;
+		}
 		new Request.JSON({url: '',
 			method: 'post', 
 			'data': data,
@@ -267,6 +270,7 @@ var FbDatabasejoin = new Class({
 						if (Fabrik.Windows[winid]) {
 							Fabrik.Windows[winid].close();
 						}
+						this.updateFromServer(json.rowid);
 					}
 				}.bind(this));
 			}
