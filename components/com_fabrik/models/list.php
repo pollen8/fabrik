@@ -1309,7 +1309,7 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * get query to make records
-	 * @return string sql
+	 * @return	string	sql
 	 */
 
 	function _buildQuery()
@@ -1318,24 +1318,40 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $profiler->mark('_buildQuery: start') : null;
 		$query = array();
 		$this->mergeQuery= '';
-		if ($this->mergeJoinedData()) {
+		if ($this->mergeJoinedData())
+		{
 			// $$$ rob - get a list of the main table's ids limited on the navigation
 			// this will then be used to filter the main query,
 			// by modifying the where part of the query
 			$db = $this->getDb();
 			$table = $this->getTable();
+			
+			// $$$ rob 23/05/2012 if the search data is in the joined records we want to get the id's for the joined records and not the master record
+			// see http://fabrikar.com/forums/showthread.php?t=26400. This is a partial hack as I can't see how we know which joined record is really last
+			$joins = $this->getJoins();
+			//default to the primary key as before this fix
+			$lookUp = $table->db_primary_key;
+			foreach ($joins as $join)
+			{
+				if ($join->_params->get('type') !== 'element')
+				{
+					$lookUp = $join->table_join . '.' .  $join->table_key;
+				}
+			}
+			
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->_buildQueryOrder();
-			$this->selectedOrderFields = (array)$this->selectedOrderFields;
-			array_unshift($this->selectedOrderFields , "DISTINCT ".$table->db_primary_key . " AS __pk_val");
-			$query['select'] = "SELECT  ". implode(', ', $this->selectedOrderFields) . " FROM ".$db->nameQuote($table->db_table_name);
+			$this->selectedOrderFields = (array) $this->selectedOrderFields;
+			array_unshift($this->selectedOrderFields , 'DISTINCT ' . $lookUp . ' AS __pk_val');
+			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
+			
 			$query['join'] = $this->_buildQueryJoin();
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
 			$query['groupby'] = $this->_buildQueryGroupBy();
 			$query['order'] = $order;
 
 			//check that the order by fields are in the select statement
-			$squery = implode(" ", $query);
+			$squery = implode(' ', $query);
 			$db->setQuery($squery, $this->limitStart, $this->limitLength);
 			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
@@ -1347,20 +1363,24 @@ class FabrikFEModelList extends JModelForm {
 		$query['join'] = $this->_buildQueryJoin();
 		JDEBUG ? $profiler->mark('queryjoin: got') : null;
 
-		if ($this->mergeJoinedData()) {
+		if ($this->mergeJoinedData())
+		{
 			// $$$ rob We've already used _buildQueryWhere to get our list of main pk ids.
 			// so lets use that list of ids to create the where statement. This will return 5/10/20 etc
 			// records from our main table, as per our page nav, even if a main record has 3 rows of joined
 			// data. If no ids found then do where 1 = -1 to return no records
-
-			if (!empty($ids)) {
-				$query['where'] = " WHERE $table->db_primary_key IN (".implode($ids, ',').')';
-			} else {
-				$query['where'] = " WHERE 1 = -1";
+			if (!empty($ids))
+			{
+				$query['where'] = ' WHERE ' . $lookUp . ' IN (' . implode($ids, ',') . ')';
 			}
-		} else {
+			else
+			{
+				$query['where'] = ' WHERE 1 = -1';
+			}
+		}
+		else
+		{
 			// $$$ rob we aren't merging joined records so lets just add the standard where query
-
 			//incfilters set when exporting as CSV
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
 		}
@@ -1368,15 +1388,15 @@ class FabrikFEModelList extends JModelForm {
 		$query['order'] = $this->_buildQueryOrder();
 
 		$query = $this->pluginQuery($query);
-		$query = implode(" ", $query);
+		$query = implode(' ', $query);
 		$this->mainQuery = $query;
 		return $query;
 	}
 
 	/**
 	 * pass an sql query through the table plug-ins
-	 * @param string $query
-	 * @return string altered query.
+	 * @param	string	$query
+	 * @return	string	altered query.
 	 */
 
 	public function pluginQuery($query)
@@ -1426,12 +1446,12 @@ class FabrikFEModelList extends JModelForm {
 		//$$$rob added raw as an option to fix issue in saving calendener data
 		if (trim($table->db_primary_key) != '' && (in_array($this->_outPutFormat, array('raw','html','feed','pdf','phocapdf','csv')))) {
 			$sfields .= ", ";
-			$strPKey = $pk . " AS " . $db->nameQuote('__pk_val') . "\n";
+			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
 			$query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ' . $sfields . $strPKey;
 		} else {
 			$query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ' . trim($sfields, ", \n")  . "\n";
 		}
-		$query .= " FROM ".$db->nameQuote($table->db_table_name)." \n";
+		$query .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
 		return $query;
 	}
 
@@ -1459,10 +1479,13 @@ class FabrikFEModelList extends JModelForm {
 			{
 				$this->order_dir = 'DESC';
 				$this->order_by = $dateCol;
-				if (!$query) {
+				if (!$query)
+				{
 					return  "\n ORDER BY $dateCol DESC";
-				} else {
-					$query->order($dateCol.' DESC');
+				}
+				else
+				{
+					$query->order($dateCol . ' DESC');
 					return $query;
 				}
 			}
@@ -1479,12 +1502,14 @@ class FabrikFEModelList extends JModelForm {
 		$strOrder = '';
 		$clearOrdering = (bool)JRequest::getInt('clearordering', false) && JRequest::getCmd('task') !== 'order';
 		//$$$tom Added single-ordering option
-		if ($params->get('enable_single_sorting', 'default') == 'default') {
+		if ($params->get('enable_single_sorting', 'default') == 'default')
+		{
 			// Use global
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$singleOrdering = $fbConfig->get('enable_single_sorting', false);
 		}
-		else {
+		else
+		{
 			$singleOrdering = $params->get('enable_single_sorting', false);
 		}
 		$id = $this->getId();
@@ -1517,27 +1542,36 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		//if nothing found in session use default ordering
-		if ($strOrder == '') {
+		if ($strOrder == '')
+		{
 			$orderbys = json_decode($table->order_by, true);
 			$orderdirs = json_decode($table->order_dir, true);
-			if (!empty($orderbys)) {
+			if (!empty($orderbys))
+			{
 				$bits = array();
-				for ($o = 0; $o < count($orderbys); $o++) {
+				for ($o = 0; $o < count($orderbys); $o ++)
+				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
-					if ($orderbys[$o] !== '') {
+					if ($orderbys[$o] !== '')
+					{
 						$orderby = FabrikString::safeColName($orderbys[$o]);
 						$els = $this->getElements('filtername');
-						if (array_key_exists($orderby, $els)) {
+						if (array_key_exists($orderby, $els))
+						{
 							// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
 							$field = $els[$orderby]->getOrderByName();
-							if (!stristr($field, 'CONCAT(')) {
+							if (!stristr($field, 'CONCAT('))
+							{
 								$field = FabrikString::safeColName($field);
 							}
 							$bits[] = " $field $dir";
 							$this->orderEls[] = $field;
 							$this->orderDirs[] = $dir;
-						} else {
-							if (strstr($orderby, '_raw`')) {
+						}
+						else
+						{
+							if (strstr($orderby, '_raw`'))
+							{
 								$orderby = FabrikString::safeColNameToArrayKey($orderby);
 							}
 							$bits[] = " $orderby $dir";
@@ -1546,10 +1580,14 @@ class FabrikFEModelList extends JModelForm {
 						}
 					}
 				}
-				if (!empty($bits)) {
-					if (!$query) {
+				if (!empty($bits))
+				{
+					if (!$query)
+					{
 						$strOrder = "\n ORDER BY" . implode(',', $bits);
-					} else {
+					}
+					else
+					{
 						$query->order(implode(',', $bits));
 					}
 				}
@@ -1560,14 +1598,18 @@ class FabrikFEModelList extends JModelForm {
 		// order by, isn't specific to the Group By feature in any way?  So why not just put this option in
 		//
 		$groupOrderBy = $params->get('group_by_order');
-		if ($groupOrderBy != '') {
+		if ($groupOrderBy != '')
+		{
 			$groupOrderDir = $params->get('group_by_order_dir');
 			$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
 			$orderby = strstr($groupOrderBy, '_raw`') ? FabrikString::safeColNameToArrayKey($groupOrderBy) : FabrikString::safeColName($groupOrderBy);
-			if (!$query) {
-				$strOrder .= $orderby." ".$groupOrderDir;
-			} else {
-				$query->order($orderby." ".$groupOrderDir);
+			if (!$query)
+			{
+				$strOrder .= $orderby . ' ' . $groupOrderDir;
+			}
+			else
+			{
+				$query->order($orderby . ' ' . $groupOrderDir);
 			}
 			$this->orderEls[] = $orderby;
 			$this->orderDirs[] = $groupOrderDir;
@@ -1578,7 +1620,7 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * called when the table column order by is clicked
 	 * store order options in session
-	 * @return null
+	 * @return	null
 	 */
 
 	function setOrderByAndDir()
@@ -1588,8 +1630,9 @@ class FabrikFEModelList extends JModelForm {
 		$postOrderDir = JRequest::getVar('orderdir', '');
 		$arOrderVals = array('asc', 'desc', '-');
 		$id = $this->getRenderContext();
-		if (in_array($postOrderDir, $arOrderVals)) {
-			$context = 'com_fabrik.list'.$id.'.order.'.$postOrderBy;
+		if (in_array($postOrderDir, $arOrderVals))
+		{
+			$context = 'com_fabrik.list' . $id . '.order.' . $postOrderBy;
 			$session->set($context, $postOrderDir);
 		}
 	}
@@ -1605,42 +1648,50 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = FabrikWorker::getDbo();
 		$ref = $query ? '1': '0';
-		if (isset($this->_joinsSQL[$ref])) {
+		if (isset($this->_joinsSQL[$ref]))
+		{
 			return $this->_joinsSQL[$ref];
 		}
 		$statements = array();
 		$table = $this->getTable();
-
 		$selectedTables[] = $table->db_table_name;
 		$return = array();
 		$joins	= ($this->get('includeCddInJoin', true) === false) ? $this->getJoinsNoCdd() : $this->getJoins();
 		$tableGroups = array();
-		foreach ($joins as $join) {
+		foreach ($joins as $join)
+		{
 			//used to bypass user joins if the table connect isnt the Joomla
 			//connection
-			if ((int)$join->canUse === 0) {
+			if ((int) $join->canUse === 0)
+			{
 				continue;
 			}
-			if ($join->join_type == '') {
+			if ($join->join_type == '')
+			{
 				$join->join_type = 'LEFT';
 			}
+			$sql = strtoupper($join->join_type) . ' JOIN ' . $db->quoteName($join->table_join);
+			$k = FabrikString::safeColName($join->keytable . '.' . $join->table_key);
 
-			$sql = strtoupper($join->join_type) ." JOIN ".$db->nameQuote($join->table_join);
-			$k = FabrikString::safeColName($join->keytable.'.'.$join->table_key);
-
-			if ($join->table_join_alias == '') {
-				$on = FabrikString::safeColName($join->table_join.'.'.$join->table_join_key);
+			if ($join->table_join_alias == '')
+			{
+				$on = FabrikString::safeColName($join->table_join . '.' . $join->table_join_key);
 				$sql .=	" ON $on = $k \n";
-			} else {
-				$on = FabrikString::safeColName($join->table_join_alias.'.'.$join->table_join_key);
-				$sql .= " AS ".FabrikString::safeColName($join->table_join_alias)." ON $on = $k \n";
+			}
+			else
+			{
+				$on = FabrikString::safeColName($join->table_join_alias . '.' . $join->table_join_key);
+				$sql .= ' AS ' . FabrikString::safeColName($join->table_join_alias) . ' ON ' . $on . ' = ' . $k . " \n";
 			}
 			// try to order join statements to ensure that you are selecting from tables that have
 			//already been included (either via a previous join statement or the table select statement)
-			if (in_array($join->keytable, $selectedTables)) {
+			if (in_array($join->keytable, $selectedTables))
+			{
 				$return[] = $sql;
 				$selectedTables[] = $join->table_join;
-			} else {
+			}
+			else
+			{
 				//didnt find anything so defer it till later
 
 				//$statements[$join->keytable] = $sql;
@@ -1651,11 +1702,14 @@ class FabrikFEModelList extends JModelForm {
 			}
 
 			//go through the deferred join statements and see if their table has now been selected
-			foreach ($statements as $joinid => $ar) {
+			foreach ($statements as $joinid => $ar)
+			{
 				$t = $ar[0];
 				$s = $ar[1];
-				if (in_array($t, $selectedTables)) {
-					if (!in_array($s, $return)) {
+				if (in_array($t, $selectedTables))
+				{
+					if (!in_array($s, $return))
+					{
 						//$$$rob test to avoid duplicate join queries
 						//ahhh now its there so we can add the statement
 						$return[] = $s;
@@ -1665,23 +1719,29 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		// $$$rob test for bug #376
-		foreach ($statements as $joinid => $ar) {
+		foreach ($statements as $joinid => $ar)
+		{
 			$s = $ar[1];
-			if (!in_array($s, $return)) {
+			if (!in_array($s, $return))
+			{
 				$return[] = $s;
 			}
 		}
 		// 3.0 not really tested
-		if ($query !== false) {
-			foreach ($return as $r) {
-				$words = explode(" ", trim($r));
+		if ($query !== false)
+		{
+			foreach ($return as $r)
+			{
+				$words = explode(' ', trim($r));
 				$type = array_shift($words);
 				$statement = str_replace('JOIN', '', implode(' ', $words));
 				$query->join($type, $statement);
 			}
 			return $query;
-		} else {
-			$return = implode(" ", $return);
+		}
+		else
+		{
+			$return = implode(' ', $return);
 			$this->_joinsSQL[$ref] = $return;
 		}
 		return $query == false ? $return: $query;
@@ -1715,28 +1775,30 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * get the part of the main query that provides a group by statement
 	 * only added by 'count' element plug-in at the moment
-	 * @return string
+	 * @return	string
 	 */
 
 	function _buildQueryGroupBy()
 	{
 		$groups = $this->getFormModel()->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$res = $elementModel->getGroupByQuery();
-				if ($res != '') {
+				if ($res != '')
+				{
 					$this->_pluginQueryGroupBy[] = $res;
 				}
 			}
 		}
-		if (!empty($this->_pluginQueryGroupBy)) {
+		if (!empty($this->_pluginQueryGroupBy))
+		{
 			return ' GROUP BY '.implode(', ', $this->_pluginQueryGroupBy);
 		}
 		return '';
 	}
-
-
 
 	/**
 	 * get the part of the sql query that relates to the where statement
@@ -2027,7 +2089,7 @@ class FabrikFEModelList extends JModelForm {
 		$db = FabrikWorker::getDbo();
 		//if the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
 
-		$longGroupBy = $db->NameQuote(FabrikString::safeColNameToArrayKey($table->group_by));
+		$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
 		if (!in_array($longGroupBy, $searchAllFields) && trim($table->group_by) != '') {
 			$this->searchAllAsFields[] = FabrikString::safeColName($table->group_by) . " AS " . $longGroupBy;
 			$searchAllFields[] = $longGroupBy;
@@ -2082,7 +2144,7 @@ class FabrikFEModelList extends JModelForm {
 		if (!$this->isView()) {
 			if (!$this->_temp_db_key_addded && $table->db_primary_key != '') {
 				$str = FabrikString::safeColName($table->db_primary_key)." AS ".FabrikString::safeColNameToArrayKey($table->db_primary_key);
-				$this->fields[] = $db->nameQuote(FabrikString::safeColNameToArrayKey($table->db_primary_key));
+				$this->fields[] = $db->quoteName(FabrikString::safeColNameToArrayKey($table->db_primary_key));
 			}
 		}
 		JDEBUG ? $profiler->mark('getAsFields: end of view test') : null;
@@ -2096,7 +2158,7 @@ class FabrikFEModelList extends JModelForm {
 		$this->_group_by_added = false;
 		//if the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
 
-		$longGroupBy = $db->NameQuote(FabrikString::safeColNameToArrayKey($table->group_by));
+		$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
 		if (!in_array($longGroupBy, $this->fields) && trim($table->group_by) != '') {
 			$this->asfields[] = FabrikString::safeColName($table->group_by) . " AS " . $longGroupBy;
 			$this->fields = $longGroupBy;
@@ -2778,19 +2840,25 @@ class FabrikFEModelList extends JModelForm {
 		} else {
 			// $$$ rob don't alter it yet - lets defer this and give the user the choice if they
 			// really want to do this
-			if ($this->canAlterFields()) {
-				if ($origColName == null) {
-					$origColName = $fabrikDb->nameQuote($element->name);
-				} else {
-					$origColName = $fabrikDb->nameQuote($origColName);
+			if ($this->canAlterFields())
+			{
+				if ($origColName == null)
+				{
+					$origColName = $fabrikDb->quoteName($element->name);
 				}
-				if (strtolower($objtype) == 'blob') {
+				else
+				{
+					$origColName = $fabrikDb->quoteName($origColName);
+				}
+				if (strtolower($objtype) == 'blob')
+				{
 					$dropKey = true;
 				}
-				$q = "ALTER TABLE $tableName CHANGE $origColName ".FabrikString::safeColName($element->name)." $objtype ";
-				if ($primaryKey == $fabrikDb->NameQuote($tableName) . "." . FabrikString::safeColName($element->name) && $table->auto_inc) {
-					if (!strstr($q, 'NOT NULL AUTO_INCREMENT')) {
-						$q .= " NOT NULL AUTO_INCREMENT ";
+				$q = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $origColName . ' ' . FabrikString::safeColName($element->name) . ' ' . $objtype . ' ';
+				if ($primaryKey == $fabrikDb->quoteName($tableName) . '.' . FabrikString::safeColName($element->name) && $table->auto_inc) {
+					if (!strstr($q, 'NOT NULL AUTO_INCREMENT'))
+					{
+						$q .= ' NOT NULL AUTO_INCREMENT ';
 					}
 				}
 				$origColName = FabrikString::safeColName($origColName);
@@ -3436,19 +3504,20 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * get the random lmit start val
-	 * @return int limit start
+	 * @return	int		limit start
 	 */
 
 	protected function getRandomLimitStart()
 	{
-		if (isset($this->randomLimitStart)) {
+		if (isset($this->randomLimitStart))
+		{
 			return $this->randomLimitStart;
 		}
 		$db = $this->getDb();
 		$table = $this->getTable();
 		// $$$ rob @todo - do we need to add the join in here as well?
 		// added + 1 as with 4 records to show 3 4th was not shown
-		$db->setQuery("SELECT FLOOR(RAND() * COUNT(*) + 1) AS ".$db->nameQuote('offset')." FROM ". $db->nameQuote($table->db_table_name) . " " . $this->_buildQueryWhere());
+		$db->setQuery('SELECT FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset') . ' FROM ' . $db->quoteName($table->db_table_name) . ' ' . $this->_buildQueryWhere());
 		$limitstart = $db->loadResult();
 		//$$$ rob 11/01/2011 cant do this as we dont know what the total is yet
 		//$$$ rob ensure that the limitstart + limit isn't greater than the total
@@ -3459,7 +3528,8 @@ class FabrikFEModelList extends JModelForm {
 		// so decrease the random start num by the table row dispaly num
 		// going to favour records at the beginning of the table though
 		$limitstart -= $table->rows_per_page;
-		if ($limitstart < 0) {
+		if ($limitstart < 0)
+		{
 			$limitstart = 0;
 		}
 		$this->randomLimitStart = $limitstart;
@@ -3540,13 +3610,15 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$table = $this->getTable();
 		$db = $this->getDb();
-		$db->setQuery("SELECT * FROM ".$db->nameQuote($table->db_table_name)." LIMIT 1");
-		if (!($result = $db->query())) {
+		$db->setQuery('SELECT * FROM ' . $db->quoteName($table->db_table_name) . ' LIMIT 1');
+		if (!($result = $db->query()))
+		{
 			return null;
 		}
-		$fields       = array();
-		$num_fields   = mysql_num_fields($result);
-		for ($i = 0; $i < $num_fields; $i++) {
+		$fields = array();
+		$num_fields = mysql_num_fields($result);
+		for ($i = 0; $i < $num_fields; $i++)
+		{
 			$fields[] = mysql_fetch_field($result, $i);
 		}
 		return $fields;
@@ -4926,7 +4998,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = $this->getDb();
 		$secret = JFactory::getConfig()->getValue('secret');
-		$fmtsql = 'UPDATE ' . $db->nameQuote($table) . ' SET %s WHERE %s';
+		$fmtsql = 'UPDATE ' . $db->quoteName($table) . ' SET %s WHERE %s';
 		$tmp = array();
 		foreach (get_object_vars($object) as $k => $v)
 		{
@@ -4959,7 +5031,7 @@ class FabrikFEModelList extends JModelForm {
 			{
 				$val = "AES_ENCRYPT($val, '$secret')";
 			}
-			$tmp[] = $db->nameQuote($k) . '=' . $val;
+			$tmp[] = $db->quoteName($k) . '=' . $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $tmp) , $where));
 		return $db->query();
@@ -4979,7 +5051,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = $this->getDb();
 		$secret = JFactory::getConfig()->getValue('secret');
-		$fmtsql = 'INSERT INTO '.$db->nameQuote($table).' ( %s ) VALUES ( %s ) ';
+		$fmtsql = 'INSERT INTO ' . $db->quoteName($table) . ' ( %s ) VALUES ( %s ) ';
 		$fields = array();
 		$values = array();
 		foreach (get_object_vars($object) as $k => $v) {
@@ -4990,7 +5062,7 @@ class FabrikFEModelList extends JModelForm {
 				// internal field
 				continue;
 			}
-			$fields[] = $db->nameQuote($k);
+			$fields[] = $db->quoteName($k);
 			$val = $db->isQuoted($k) ? $db->Quote($v) : (int) $v;
 			if (in_array($k, $this->encrypt)) {
 				$val = "AES_ENCRYPT($val, '$secret')";
@@ -5439,7 +5511,7 @@ class FabrikFEModelList extends JModelForm {
 
 		$this->dropIndex($field, $prefix, $type, $table);
 
-		$query = " ALTER TABLE ".$db->nameQuote($table)." ADD INDEX ".$db->nameQuote("fb_{$prefix}_{$field}_{$type}")." (".$db->nameQuote($field)." $size)";
+		$query = " ALTER TABLE ".$db->quoteName($table)." ADD INDEX ".$db->quoteName("fb_{$prefix}_{$field}_{$type}")." (".$db->quoteName($field)." $size)";
 		$db->setQuery($query);
 		$db->query();
 	}
@@ -5461,12 +5533,12 @@ class FabrikFEModelList extends JModelForm {
 		if ($field == '') {
 			return;
 		}
-		$db->setQuery("SHOW INDEX FROM ".$db->nameQuote($table));
+		$db->setQuery("SHOW INDEX FROM ".$db->quoteName($table));
 		$dbIndexes = $db->loadObjectList();
 		if (is_array($dbIndexes)) {
 			foreach ($dbIndexes as $index) {
 				if ($index->Key_name == "fb_{$prefix}_{$field}_{$type}") {
-					$db->setQuery(" ALTER TABLE ".$db->nameQuote($table)." DROP INDEX ".$db->nameQuote("fb_{$prefix}_{$field}_{$type}"));
+					$db->setQuery(" ALTER TABLE ".$db->quoteName($table)." DROP INDEX ".$db->quoteName("fb_{$prefix}_{$field}_{$type}"));
 					$db->query();
 					break;
 				}
@@ -5489,10 +5561,10 @@ class FabrikFEModelList extends JModelForm {
 		if ($field == '') {
 			return;
 		}
-		$db->setQuery("SHOW INDEX FROM ".$db->nameQuote($table) . ' WHERE Column_name = ' . $db->Quote($field));
+		$db->setQuery("SHOW INDEX FROM ".$db->quoteName($table) . ' WHERE Column_name = ' . $db->Quote($field));
 		$dbIndexes = $db->loadObjectList();
 		foreach ($dbIndexes as $index) {
-			$db->setQuery(" ALTER TABLE ".$db->nameQuote($table)." DROP INDEX ".$db->nameQuote($index->Key_name));
+			$db->setQuery(" ALTER TABLE ".$db->quoteName($table)." DROP INDEX ".$db->quoteName($index->Key_name));
 			$db->query();
 		}
 	}
@@ -5511,7 +5583,7 @@ class FabrikFEModelList extends JModelForm {
 			for ($i=0; $i<count($joins); $i++) {
 				$join = $joins[$i];
 				if ((int)$join->list_id !== 0) {
-					$sql = "DELETE FROM ".$db->nameQuote($join->table_join)." WHERE ".$db->nameQuote($join->table_join_key)." IN (".$val.")";
+					$sql = "DELETE FROM ".$db->quoteName($join->table_join)." WHERE ".$db->quoteName($join->table_join_key)." IN (".$val.")";
 					$db->setQuery($sql);
 					$db->query();
 				}
@@ -5648,7 +5720,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = $this->getDb();
 		$table = $this->getTable();
-		$sql = "DELETE FROM ".$db->nameQuote($table->db_table_name);
+		$sql = "DELETE FROM ".$db->quoteName($table->db_table_name);
 		$db->setQuery($sql);
 		$msg= '';
 		if (!$db->query()) {
@@ -5666,7 +5738,7 @@ class FabrikFEModelList extends JModelForm {
 		$db = $this->getDb();
 		$item = $this->getTable();
 		if ($item->db_table_name !== '') {
-			$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($item->db_table_name);
+			$sql = "DROP TABLE IF EXISTS ".$db->quoteName($item->db_table_name);
 			$db->setQuery($sql);
 			if (!$db->query()) {
 				return JError::raiseError(500, 'drop:'. JText::_($db->getErrorMsg()));
@@ -5676,7 +5748,7 @@ class FabrikFEModelList extends JModelForm {
 		$joinModels = $this->getInternalRepeatJoins();
 		foreach ($joinModels as $joinModel) {
 			if ($joinModel->getJoin()->table_join !== '') {
-				$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($joinModel->getJoin()->table_join);
+				$sql = "DROP TABLE IF EXISTS ".$db->quoteName($joinModel->getJoin()->table_join);
 				$db->setQuery($sql);
 				$db->query();
 				if ($db->getErrorNum()) {
@@ -5725,10 +5797,10 @@ class FabrikFEModelList extends JModelForm {
 		//remove any groups that were set to be repeating and hence were storing in their own db table.
 		$joinModels = $this->getInternalRepeatJoins();
 		foreach ($joinModels as $joinModel) {
-			$db->setQuery("TRUNCATE ".$db->nameQuote($joinModel->getJoin()->table_join));
+			$db->setQuery("TRUNCATE ".$db->quoteName($joinModel->getJoin()->table_join));
 			$db->query();
 		}
-		$db->setQuery("TRUNCATE ".$db->nameQuote($item->db_table_name));
+		$db->setQuery("TRUNCATE ".$db->quoteName($item->db_table_name));
 		$db->query();
 		// 3.0 clear filters (resets limitstart so that subsequently added records are shown)
 		$this->getFilterModel()->clearFilters();
@@ -6017,7 +6089,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = FabrikWorker::getDbo();
 		$genTable = $this->getGenericTableName();
-		$sql = "DROP TABLE IF EXISTS ".$db->nameQuote($genTable);
+		$sql = "DROP TABLE IF EXISTS ".$db->quoteName($genTable);
 		return $sql;
 	}
 
@@ -6120,7 +6192,7 @@ class FabrikFEModelList extends JModelForm {
 				$values = array();
 				$fields = array();
 				foreach ($row as $k => $v) {
-					$fields[] = $db->NameQuote($k);
+					$fields[] = $db->quoteName($k);
 					$values[] = $db->Quote($v);
 				}
 				$sql .= sprintf($fmtsql, implode(",", $fields) ,  implode(",", $values));
