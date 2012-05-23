@@ -643,6 +643,7 @@ var FbList = new Class({
 	},
 
 	watchOrder: function () {
+		var elementId = false;
 		var hs = document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc');
 		hs.removeEvents('click');
 		hs.each(function (h) {
@@ -669,16 +670,17 @@ var FbList = new Class({
 					orderdir = 'asc';
 					break;
 				}
-				td = td.className.split(' ')[2].replace('_order', '').replace(/^\s+/g, '').replace(/\s+$/g, '');// chrome
-																																																				// and
-																																																				// safari
-																																																				// you
-																																																				// need
-																																																				// to
-																																																				// trim
-																																																				// whitespace
+				td.className.split(' ').each(function (c) {
+					if (c.contains('_order')) {
+						elementId = c.replace('_order', '').replace(/^\s+/g, '').replace(/\s+$/g, '');
+					}
+				});
+				if (!elementId) {
+					fconsole('woops didnt find the element id, cant order');
+					return;
+				}
 				h.className = newOrderClass;
-				this.fabrikNavOrder(td, orderdir);
+				this.fabrikNavOrder(elementId, orderdir);
 				e.stop();
 			}.bind(this));
 		}.bind(this));
