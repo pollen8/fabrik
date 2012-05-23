@@ -29,30 +29,49 @@ class FabrikViewList extends JView{
 		$data = $model->render();
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$nav = $model->getPagination();
+		$form = $model->getFormModel();
 		$c = 0;
-		foreach ($data as $groupk => $group) {
-			foreach ($group as $i => $x) {
+		foreach ($data as $groupk => $group)
+		{
+			foreach ($group as $i => $x)
+			{
 				$o = new stdClass();
-				if (is_object($data[$groupk])) {
+				if (is_object($data[$groupk]))
+				{
 					$o->data = JArrayHelper::fromObject($data[$groupk]);
-				} else {
+				}
+				else
+				{
 					$o->data = $data[$groupk][$i];
 				}
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
-				$o->id = "list_".$table->id."_row_".@$o->data->__pk_val;
-				$o->class = "fabrik_row oddRow".$c;
-				if (is_object($data[$groupk])) {
+				$o->id = 'list_' . $table->id . '_row_' . @$o->data->__pk_val;
+				$o->class = 'fabrik_row oddRow' . $c;
+				if (is_object($data[$groupk]))
+				{
 					$data[$groupk] = $o;
-				} else {
+				}
+				else
+				{
 					$data[$groupk][$i] = $o;
 				}
-				$c = 1-$c;
+				$c = 1 - $c;
 			}
 		}
-
+		
+		$groups = $form->getGroupsHiarachy();
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+			foreach ($elementModels as $elementModel)
+			{
+				$elementModel->setContext($groupModel, $form, $model);
+				$elementModel->setRowClass($data);
+			}
+		}
 		// $$$ hugh - heading[3] doesn't exist any more?  Trying [0] instead.
-		$d = array('id' => $table->id, 'listRef' => JRequest::getVar('listref'), 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
+		$d = array('id' => $table->id, 'listRef' => JRequest::getVar('listref'), 'rowid' => $rowid, 'model'=>'list', 'data' => $data,
 		'headings' => $this->headings,
 			'formid'=> $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));

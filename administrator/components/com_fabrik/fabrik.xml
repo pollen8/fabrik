@@ -60,7 +60,7 @@
 	</media>
 		
 	<administration>
-		<menu img="../administrator/components/com_fabrik/images/logo.png" view="home">Fabrik</menu>
+		<menu img="../administrator/components/com_fabrik/images/fabrik.png" view="home">Fabrik</menu>
 		<submenu>
 			<menu alt="Lists" img="../administrator/components/com_fabrik/images/lists.png" link="option=com_fabrik&amp;view=lists" view="lists">com_fabrik_lists</menu>
 			<menu alt="Forms" img="../administrator/components/com_fabrik/images/forms.png" link="option=com_fabrik&amp;view=forms" view="forms">com_fabrik_forms</menu>

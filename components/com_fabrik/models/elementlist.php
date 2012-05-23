@@ -394,14 +394,14 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	protected function getElementBeforeLabel()
 	{
-		return (bool)$this->getParams()->get('radio_element_before_label', true);
+		return (bool) $this->getParams()->get('radio_element_before_label', true);
 	}
 
 	/**
 	 * called from within function getValue
 	 * needed so we can append _raw to the name for elements such as db joins
-	 * @param array $opts
-	 * @return string element name inside data array
+	 * @param	array	$opts
+	 * @return	string	element name inside data array
 	 */
 
 	protected function getValueFullName($opts)
@@ -411,19 +411,21 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * determines the value for the element in the form view
-	 * @param array data
-	 * @param int when repeating joinded groups we need to know what part of the array to access
-	 * @param array options
+	 * @param	array	data
+	 * @param	int		when repeating joinded groups we need to know what part of the array to access
+	 * @param	array	options
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		$data = (array)$data;
-		if (!isset($this->defaults)) {
+		$data = (array) $data;
+		if (!isset($this->defaults))
+		{
 			$this->defaults = array();
 		}
-		$valueKey = $repeatCounter.serialize($opts);
-		if (!array_key_exists($valueKey, $this->defaults)) {
+		$valueKey = $repeatCounter . serialize($opts);
+		if (!array_key_exists($valueKey, $this->defaults))
+		{
 			$value = '';
 			$groupModel = $this->_group;
 			$group = $groupModel->getGroup();
@@ -437,77 +439,93 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			$name = $this->getValueFullName($opts);
 			// $name could already be in _raw format - so get inverse name e.g. with or without raw
 			$rawname = substr($name, -4) === '_raw' ? substr($name, 0 ,-4) :  $name . '_raw';
-			if ($groupModel->isJoin() || $this->isJoin()) {
-				if ($groupModel->canRepeat()) {
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+			if ($groupModel->isJoin() || $this->isJoin())
+			{
+				if ($groupModel->canRepeat())
+				{
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+					{
 						$value = $data['join'][$joinid][$name][$repeatCounter];
-					} else {
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname])) {
+					}
+					else
+					{
+						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname]))
+						{
 							$value = $data['join'][$joinid][$rawname][$repeatCounter];
 						}
 					}
-				} else {
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid])) {
+				}
+				else
+				{
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]))
+					{
 						$value = $data['join'][$joinid][$name];
-					} else {
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($rawname, $data['join'][$joinid])) {
+					}
+					else
+					{
+						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($rawname, $data['join'][$joinid]))
+						{
 							$value = $data['join'][$joinid][$rawname];
 						}
 					}
-					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0]))) {
+					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0])))
+					{
 						// fix for http://fabrikar.com/forums/showthread.php?t=23568&page=2
 						$value = $value[0];
 					}
 				}
-			} else {
-				if ($groupModel->canRepeat()) {
+			}
+			else
+			{
+				if ($groupModel->canRepeat())
+				{
 					//can repeat NO join
-					if (array_key_exists($name, $data)) {
+					if (array_key_exists($name, $data))
+					{
 						//occurs on form submission for fields at least : occurs when getting from the db
 						$a = is_array($data[$name]) ? $a = $data[$name] : FabrikWorker::JSONtoData($data[$name], true);
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
-					} else if (array_key_exists($rawname, $data)) {
+					}
+					else if (array_key_exists($rawname, $data))
+					{
 						//occurs on form submission for fields at least : occurs when getting from the db
 						$a = is_array($data[$rawname]) ? $a = $data[$rawname] : FabrikWorker::JSONtoData($data[$rawname], true);
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
 					}
-				} else {
-					// $$$ rob - default should be an array (otherwise default options for database join element are not used)
-					/* if (array_key_exists($name, $data)) {
-						if (is_array($data[$name])) {
-					//occurs on form submission for fields at least
-					$default = $data[$name];
-					} else {
-					//occurs when getting from the db
-					//$$$ rob changed to false below as when saving encrypted data a stored valued of 62
-					// was being returned as [62], then [[62]] etc.
-					$default = FabrikWorker::JSONtoData($data[$name], false);
-					}
-					} */
-					if (array_key_exists($name, $data)) {
+				}
+				else
+				{
+					if (array_key_exists($name, $data))
+					{
 						$value = $data[$name]; //put this back in for radio button after failed validation not picking up previously selected option
-					} else if (array_key_exists($rawname, $data)) {
+					}
+					else if (array_key_exists($rawname, $data))
+					{
 						$value = $data[$rawname];
 					}
 				}
 			}
-			if ($value === '') {
+			if ($value === '')
+			{
 				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
 			// $$$ hugh -- added this so we are consistent in what we return, otherwise uninitialized values,
 			// i.e. if you've added a checkbox element to a form with existing data, don't get set, and causes
 			// issues with methods that call getValue().
-			if (!isset($value)) {
+			if (!isset($value))
+			{
 				$value = '';
 			}
 			$element->default = $value;
 			$formModel = $this->getForm();
 			//stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
+			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
-			if (is_string($element->default)) {
+			if (is_string($element->default))
+			{
 				//$$$ rob changed to false below as when saving encrypted data a stored valued of 62
 				// was being returned as [62], then [[62]] etc.
 				$element->default = FabrikWorker::JSONtoData($element->default, false);

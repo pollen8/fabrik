@@ -13,11 +13,10 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
 
-//require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps.php');
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_cron'.DS.'geocode'.DS.'libs'.DS.'gmaps2.php');
+require_once(JPATH_SITE . '/plugins/fabrik_cron/geocode/libs/gmaps2.php');
 
 class plgFabrik_CronGeocode extends plgFabrik_Cron {
 

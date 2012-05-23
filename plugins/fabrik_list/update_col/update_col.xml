@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_list" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik List - update Column</name>
+	<name>plg_fabrik_list_update_col</name>
 	<author>Rob Clayburn</author>
 	<creationDate>{createdate}</creationDate>
 	<copyright>(C) 2005-{year} fabrikar.com</copyright>
@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.0.5.2</version>
-	<description>Updates all values in a column to a given value</description>
+	<help url="PLG_LIST_UPDATE_COL_HELP_SERVER" />
+	<description>PLG_LIST_UPDATE_COL_DESCRIPTION</description>
 	<files>
 		<filename plugin="update_col">update_col.php</filename>
 		<filename>update_col.js</filename>

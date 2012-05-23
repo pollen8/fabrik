@@ -52,3 +52,7 @@ ul.subelements table:hover{
 	cursor: move;
 	width: 5%;
 }
+
+#jform_params_prefilters_modal-table > tbody > tr:first-child td:first-child {
+    opacity: 0;
+}

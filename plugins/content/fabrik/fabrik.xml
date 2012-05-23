@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <extension group="content" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik</name>
+	<name>plg_fabrik</name>
 	<author>Pollen 8 Design Ltd</author>
 	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>

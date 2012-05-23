@@ -35,7 +35,7 @@ class FabrikViewList extends JView{
 		$src = $this->get('PluginJsClasses');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
-		
+
 		$model->getCustomJsAction($src);
 
 		FabrikHelperHTML::script($src);
@@ -266,27 +266,7 @@ class FabrikViewList extends JView{
 			foreach ($elementModels as $elementModel)
 			{
 				$elementModel->setContext($groupModel, $form, $model);
-				$col = $elementModel->getFullName(false, true, false);
-				$col .= '_raw';
-				$rowclass = $elementModel->getParams()->get('use_as_row_class');
-				if ($rowclass == 1)
-				{
-					foreach ($data as $groupk => $group)
-					{
-						for ($i = 0; $i < count($group); $i ++)
-						{
-							$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $data[$groupk][$i]->data->$col);
-							$c = FabrikString::ltrim($c, '-');
-							$c = FabrikString::rtrim($c, '-');
-							// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
-							if (is_numeric($c))
-							{
-								$c = $elementModel->getElement()->name . $c;
-							}
-							$data[$groupk][$i]->class .= ' ' . $c;
-						}
-					}
-				}
+				$rowclass = $elementModel->setRowClass($data);
 			}
 		}
 		$this->rows = $data;
@@ -454,6 +434,8 @@ class FabrikViewList extends JView{
 	 */
 	protected function buttons()
 	{
+		$model = $this->getModel();
+		$params = $model->getParams();
 		$this->buttons = new stdClass();
 		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_EXPORT_TO_CSV').'</span>');
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_EXPORT_TO_CSV');
@@ -476,8 +458,8 @@ class FabrikViewList extends JView{
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
 
-		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_ADD').'</span>';
-		$buttonProperties['alt'] = JText::_('COM_FABRIK_ADD');
+		$buttonProperties['title'] = '<span>' . $params->get('addlabel', JText::_('COM_FABRIK_ADD')) . '</span>';
+		$buttonProperties['alt'] = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
 	}
 

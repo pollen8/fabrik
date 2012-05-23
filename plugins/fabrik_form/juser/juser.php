@@ -69,7 +69,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 	 * @param	object	plugin parameters
 	 * @param	object	form model
 	 */
-	
+
 	function onLoad(&$params, &$formModel)
 	{
 		if ($params->get('synchro_users') == 1)
@@ -87,10 +87,11 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			{
 				// Load the list of users from #__users
 				$query->clear();
-				$query->select('*')->from($fabrikDb->quoteName('#__users'))->order('iD ASC');
+				$query->select('DISTINCT u.*, ug.group_id')->from($fabrikDb->quoteName('#__users') . 'AS u')->join('LEFT', '#__user_usergroup_map AS ug ON ug.user_id = u.id')->group('u.id')->order('u.id ASC');
 				$fabrikDb->setQuery($query);
 				$origUsers = $fabrikDb->loadObjectList();
 				$count = 0;
+				$import = true;
 				// @TODO really should batch this stuff up, maybe 100 at a time, rather than an insert for every user!
 				foreach ($origUsers as $o_user)
 				{
@@ -102,20 +103,22 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 						$this->getFieldName($params, 'juser_field_email', true) => $o_user->email,
 						$this->getFieldName($params, 'juser_field_password', true) => $o_user->password,
 						$this->getFieldName($params, 'juser_field_name', true) => $o_user->username,
-						$this->getFieldName($params, 'juser_field_username', true) => $o_user->username
+						$this->getFieldName($params, 'juser_field_username', true) => $o_user->username,
+						$this->getFieldName($params, 'juser_field_usertype', true) => $o_user->group_id
 					);
 					$query->insert($tableName);
 					foreach ($fields as $key => $val)
 					{
 						$query->set($fabrikDb->quoteName($key) . ' = ' . $fabrikDb->quote($val));
 					}
-					
+
 					$fabrikDb->setQuery($query);
 					if (!$fabrikDb->query())
 					{
 						JError::raiseNotice(400, $fabrikDb->getErrorMsg());
+						$import = false;
 					}
-					$import = $fabrikDb->query();
+					//$import = $fabrikDb->query();
 					$count = $count + 1;
 				}
 				//@TODO - $$$rob - the $import test below only checks if the LAST query ran ok - should check ALL
@@ -196,7 +199,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			foreach ($groups as $group)
 			{
 				foreach ($group as $rows) {
-					
+
 					foreach ($rows as $row)
 					{
 						if (isset($row->$useridfield))
@@ -206,7 +209,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 								$user = new JUser((int) $row->$useridfield);
 								// Bail out now and return false, or just carry on?
 								if (!$user->delete()) {
-									
+
 									JError::raiseWarning(500, 'Unable to delete user id ' . $row->$useridfield);
 								}
 							}
@@ -323,7 +326,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		if (!$isNew)
 		{
 			if ($params->get('juser_field_usertype') != '') {
-				
+
 				if (in_array($groupId, $me->getAuthorisedGroups()) || $me->authorise('core.admin'))
 				{
 					$data['gid'] = $groupId;

@@ -92,6 +92,10 @@ var FbCalc = new Class({
 		onComplete: function (r) {
 			this.element.getParent().getElement('.loader').setStyle('display', 'none');
 			this.update(r);
+			if (this.options.validations) {
+				//if we have a validation on the element run it after AJAX calc is done
+				this.form.doElementValidation(this.options.element);
+			}
 		}.bind(this)}).send();
 	},
 	

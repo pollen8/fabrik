@@ -167,8 +167,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				$months[] = JHTML::_('select.option', $i + 1, $monthlabels[$i]);
 			}
 			$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', JText::_('YEAR'))));
-			$date = date('Y');
-			//$firstYear = (int)$params->get('birthday_firstyear', 100); //Jaanus: now we can choose one exact year A.C to begin the dropdown
+			//Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
+			$date = date('Y') + (int)$params->get('birthday_forward', 0);
 			$yearopt = $params->get('birthday_yearopt');
 			$yearstart = (int)$params->get('birthday_yearstart');
 			$yeardiff = $yearopt == 'number' ? $yearstart : $date - $yearstart;
@@ -289,6 +289,9 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 	function storeDatabaseFormat($val, $data)
 	{
+		// $$$ hugh - No need for this in 3.x, all repeated groups are now joins,
+		// so we get called once per instance of repeat
+		/*
 		$groupModel = $this->getGroup();
 		if ($groupModel->canRepeat()) {
 			if (is_array($val)) {
@@ -299,6 +302,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				return json_encode($res);
 			}
 		}
+		*/
 		return $this->_indStoreDBFormat($val);
 	}
 
@@ -306,7 +310,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	 * get the value to store the value in the db
 	 *
 	 * @param	mixed	$val (array normally but string on csv import)
-	 * @return	string	yyyy-mm-dd 
+	 * @return	string	yyyy-mm-dd
 	 */
 
 	private function _indStoreDBFormat($val)
@@ -366,10 +370,10 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		//$ft = $params->get('birthday_format', 'd.m.Y'); //$ft = $params->get('birthday_format', '%Y-%m-%d');
 		$fta = $params->get('list_age_format', 'no');
 		$format = array();
-		
-		
-		
-		
+
+
+
+
 		foreach ($data as $d) {
 			if (!in_array($d, $aNullDates))
 			{
@@ -377,7 +381,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				//$date = JFactory::getDate($d);
 				//$datedisp = $date->toFormat($ft);
 				// Jaanus: sorry, but in this manner the element doesn't work with dates earlier than 1901
-				
+
 				list($year, $month, $day) = explode('-', $d);
 				$daydisp = str_replace($daysys, $daysimple, $day);
 				$monthdisp = str_replace($monthnumbers, $monthlabels, $month);

@@ -140,6 +140,9 @@ var Loader = new Class({
 			Fabrik.blocks[blockid] = block;
 			Fabrik.fireEvent('fabrik.block.added', block);
 		};
+		document.addEvent('click:relay(.fabrik_delete a)', function (e, target) {
+			Fabrik.watchDelete(e, target);
+		});
 		//was in head.ready but that cause js error for fileupload in admin when it wanted to 
 		//build its window.
 		Fabrik.iconGen = new IconGenerator({scale: 0.5});
@@ -187,6 +190,39 @@ var Loader = new Class({
 			}, this);
 			return this;
 		};
+		
+		/** globally observe delete links **/
+		
+		Fabrik.watchDelete = function (e, target) {
+			var l, ref, r;
+			r = e.target.getParent('.fabrik_row');
+			if (!r) {
+				r = Fabrik.activeRow;
+			}
+			if (r) {
+				var chx = r.getElement('input[type=checkbox][name*=id]');
+				if (typeOf(chx) !== 'null') {
+					chx.checked = true;
+				}
+				ref = r.id.split('_');
+				ref = ref.splice(0, ref.length - 2).join('_');
+				l = Fabrik.blocks[ref];
+			} else {
+				// checkAll
+				ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
+				l = Fabrik.blocks[ref];
+				if (l.options.actionMethod !== '') { // should only check all for floating tips
+					l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
+						c.checked = true;
+					});
+				}
+			}
+			//get correct list block
+			if (!l.submit('list.delete')) {
+				e.stop();
+			}
+		};
+		
 		window.fireEvent('fabrik.loaded');
 	}
 }());

@@ -273,11 +273,11 @@ EOD;
 			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
 			if ($app->isAdmin())
 			{
-				$url = 'index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=' . $formModel->get('id') . '&rowid=' . $formModel->rowId;
+				$url = 'index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=' . $formModel->get('id') . '&rowid=' . $formModel->getRowId();
 			 }
 			 else
 			 {
-				$url = 'index.php?option=com_fabrik&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid=' . $formModel->rowId;
+				$url = 'index.php?option=com_fabrik&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid=' . $formModel->getRowId();
 			}
 
 			if (JRequest::getVar('usekey') !== null)
@@ -642,11 +642,11 @@ EOD;
 				// $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
 				// in some browsers it's not available when other things (like map biz) are loading
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '".COM_FABRIK_LIVESITE."';});");
-				
+
 				$script = array();
 				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
 				FabrikHelperHTML::script($src, implode("\n", $script));
-				
+
 				$tipOpts = FabrikHelperHTML::tipOpts();
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function () {
 	Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts) . ");
@@ -687,7 +687,7 @@ EOD;
 		$opts->fadein = (bool) $usersConfig->get('tipfx_fadein', false);
 		return $opts;
 	}
-	
+
 	/**
 	 * @param string js $script
 	 * @return null

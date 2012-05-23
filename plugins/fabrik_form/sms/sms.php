@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 
 //require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/sms.php');
 
 class plgFabrik_FormSMS extends plgFabrik_Form {
 
@@ -22,13 +23,18 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	 * @param	object	form model
  	 */
 
+	function onAfterProcess($params, &$formModel)
+	{
+		$this->process($params, $formModel);
+	}
+	
  	function process($params, &$formModel)
  	{
  	  $this->formModel = $formModel;
  	  $message = $this->getMessage();
  	  $aData = $oForm->_formData;
  	  $gateway = $this->getInstance();
- 	  $gateway->send($message);
+ 	  $gateway->process($message);
  	}
 
  	function getInstance()
@@ -36,48 +42,13 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	  if (!isset($this->gateway))
  	  {
  	    $params = $this->getParams();
- 	    $gateway = JFilterInput::clean($params->get('sms-gateway', 'Kapow'), 'CMD');
+ 	    $gateway = JFilterInput::clean($params->get('sms-gateway', 'kapow.php'), 'CMD');
 		require_once(JPATH_ROOT . '/plugins/fabrik_form/sms/gateway/' . strtolower($gateway));
+		$gateway = JFile::stripExt($gateway);
  	    $this->gateway = new $gateway();
  	    $this->gateway->params = $params;
  	  }
  	  return $this->gateway;
- 	}
-
- 	public static function doRequest($method, $url, $vars)
- 	{
- 	  $ch = curl_init();
- 	  curl_setopt($ch, CURLOPT_URL, $url);
- 	  curl_setopt($ch, CURLOPT_HEADER, 1);
- 	  curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
- 	  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
- 	  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- 	  curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
- 	  curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
- 	  if ($method == 'POST')
- 	  {
- 	    curl_setopt($ch, CURLOPT_POST, 1);
- 	    curl_setopt($ch, CURLOPT_POSTFIELDS, $vars);
- 	  }
- 	  $data = curl_exec($ch);
- 	  curl_close($ch);
- 	  if ($data)
- 	  {
- 	    if ($this->callback)
- 	    {
- 	      $callback = $this->callback;
- 	      $this->callback = false;
- 	      return call_user_func($callback, $data);
- 	    }
- 	    else
- 	    {
- 	      return $data;
- 	    }
- 	  }
- 	  else
- 	  {
- 	    return curl_error($ch);
- 	  }
  	}
 
  	/**

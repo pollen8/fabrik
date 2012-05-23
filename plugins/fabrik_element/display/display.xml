@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_element" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik Element - display text</name>
+	<name>plg_fabrik_element_display</name>
 	<author>Hugh Messenger</author>
 	<creationDate>April 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>

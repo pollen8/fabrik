@@ -209,7 +209,9 @@ class FabrikFEModelGroup extends FabModel{
 			if ($widths != '')
 			{
 				$widths = explode(',', $widths);
-				$w = JArrayHelper::getValue($widths, $elCount % $colcount + 1, $w);
+				// $$$ hugh - http://fabrikar.com/forums/showthread.php?p=140799#post140799
+				//$w = JArrayHelper::getValue($widths, $elCount % $colcount + 1, $w);
+				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
 			}
 			$element->column = ' style="float:left;width:' . $w . ';';
 			if ($elCount !== 0 && ($elCount % $colcount + 1 == 0) || $element->hidden)
@@ -338,13 +340,13 @@ class FabrikFEModelGroup extends FabModel{
 		$params = $this->getParams();
 		return $params->get('repeat_group_button');
 	}
-	
+
 	/**
 	 * can the user add a repeat group
 	 * @since 3.0.1
 	 * @return	bool
 	 */
-	
+
 	public function canAddRepeat()
 	{
 		$params = $this->getParams();
@@ -356,15 +358,15 @@ class FabrikFEModelGroup extends FabModel{
 			$ok = in_array($params->get('repeat_add_access', 1), $groups);
 		}
 		return $ok;
-		
+
 	}
-	
+
 	/**
 	* can the user delete a repeat group
 	* @since 3.0.1
 	* @return	bool
 	*/
-	
+
 	public function canDeleteRepeat()
 	{
 		$ok = false;

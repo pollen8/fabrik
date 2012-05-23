@@ -53,6 +53,7 @@ var ListForm = new Class({
 		this.joinCounter = 0;
 		this.watchOrderButtons();
 		this.watchDbName();
+		this.watchJoins();
 	},
 	
 	watchOrderButtons: function () {
@@ -140,13 +141,9 @@ var ListForm = new Class({
 	},
 		
 	watchFieldList: function (name) {
-		$A(document.getElementsByName(name)).each(function (dd) {
-			dd.addEvent('change', function (e) {
-				var sel = e.target.parentNode.parentNode.parentNode.parentNode;
-				var activeJoinCounter = sel.id.replace('join', '');
-				this.updateJoinStatement(activeJoinCounter);
-			}.bind(this));
-		}.bind(this));	
+		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(select[name*=' + name + '])', function (e, target) {
+			this.updateJoinStatement(target.getParent('table').id.replace('join', ''));
+		}.bind(this));
 	},
 	
 	_findActiveTables: function () {
@@ -182,13 +179,23 @@ var ListForm = new Class({
 		joinToFields = joinToFields ? joinToFields : [['-', '']];
 		
 		var tbody = new Element('tbody');
+		
+		var ii = new Element('input', {
+			'readonly': 'readonly',
+			'size': '2',
+			'class': 'disabled readonly',
+			'name': 'jform[params][join_id][]',
+			'value': joinId
+		});
+		
 		var sContent = new Element('table', {'class': 'adminform', 'id': 'join' + this.joinCounter}).adopt([
 			new Element('thead').adopt([
 				new Element('tr', {
 					events: {
 						'click': function (e) {
 							e.stop();
-							e.target.getParent('.adminform').getElement('tbody').slide('toggle');
+							var tbody = e.target.getParent('.adminform').getElement('tbody');
+							Browser.ie ? tbody.toggle() : tbody.slide('toggle'); 
 						}
 					},
 					'styles': {
@@ -210,14 +217,7 @@ var ListForm = new Class({
 			
 					new Element('tr').adopt([
 						new Element('td').set('text', 'id'),
-						new Element('td').adopt(new Element('input', {
-							'type': 'field',
-							'readonly': 'readonly',
-							'size': '2',
-							'class': 'disabled readonly',
-							'name': 'jform[params][join_id][]',
-							'value': joinId
-						}))
+						new Element('td').adopt(ii)
 					]),
 					new Element('tr').adopt([
 						new Element('td').adopt([
@@ -282,11 +282,10 @@ var ListForm = new Class({
 		var d = new Element('div', {'id': 'join'}).adopt(sContent);
 		d.inject(document.id('joindtd'));  
 		if (thisKey !== '') {
-			tbody.slide('hide');
+			Browser.ie ? tbody.hide() : tbody.slide('hide'); 
 		}
 		this.updateJoinStatement(this.joinCounter);
-		this.watchJoins();
-		this.joinCounter++;
+		this.joinCounter ++;
 	},
 			
 	deleteJoin: function (e) {
@@ -299,50 +298,37 @@ var ListForm = new Class({
 	},
 	
 	watchJoins: function () {
-		$$('.join_from').each(function (dd) {
-			dd.removeEvents('change');
-			dd.addEvent('change', function (e) {
-				var sel = e.target.parentNode.parentNode.parentNode.parentNode;
-				var activeJoinCounter = sel.id.replace('join', '');
-				this.updateJoinStatement(activeJoinCounter);
-				var table = e.target.get('value');
-				var conn = document.getElement('input[name*=connection_id]').get('value');
 		
-				var url = 'index.php?option=com_fabrik&format=raw&task=list.ajax_loadTableDropDown&table=' + table + '&conn=' + conn;
-				var myAjax = new Request.HTML({
-					url: url,
-					method: 'post', 
-					update: document.id('joinThisTableId' + activeJoinCounter),
-					onComplete: function (r) {
-						this.watchFieldList('jform[params][table_key][]');
-					}.bind(this)
-				}).send();
-			}.bind(this));
-		}.bind(this));	
+		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(.join_from)', function (e, target) {
+			var activeJoinCounter = target.getParent('table').id.replace('join', '');
+			this.updateJoinStatement(activeJoinCounter);
+			var table = target.get('value');
+			var conn = document.getElement('input[name*=connection_id]').get('value');
+	
+			var url = 'index.php?option=com_fabrik&format=raw&task=list.ajax_loadTableDropDown&table=' + table + '&conn=' + conn;
+			var myAjax = new Request.HTML({
+				url: url,
+				method: 'post', 
+				update: document.id('joinThisTableId' + activeJoinCounter)
+			}).send();
+		}.bind(this));
 		
-		$$('.join_to').each(function (dd) {
-			dd.removeEvents('change');
-			dd.addEvent('change', function (e) {
-				var sel = e.target.parentNode.parentNode.parentNode.parentNode;
-				var activeJoinCounter = sel.id.replace('join', '');
-				this.updateJoinStatement(activeJoinCounter);
-				var table = e.target.get('value');
-				var conn = document.getElement('input[name*=connection_id]').get('value');
-				var url = 'index.php?name=jform[params][table_join_key][]&option=com_fabrik&format=raw&task=list.ajax_loadTableDropDown&table=' + table + '&conn=' + conn;
-								
-				var myAjax = new Request.HTML({
-					url: url,
-					method: 'post', 
-					update: document.id('joinJoinTableId' + activeJoinCounter),
-					onComplete: function (r) {
-						this.watchFieldList('jform[params][table_join_key][]');
-					}.bind(this)
-				}).send();
-			}.bind(this));
-		}.bind(this));	
-		this.watchFieldList('jform[params][join_type][]');
-		this.watchFieldList('jform[params][table_join_key][]');
-		this.watchFieldList('jform[params][table_key][]');
+		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(.join_to)', function (e, target) {
+			var activeJoinCounter = target.getParent('table').id.replace('join', '');
+			this.updateJoinStatement(activeJoinCounter);
+			var table = target.get('value');
+			var conn = document.getElement('input[name*=connection_id]').get('value');
+			var url = 'index.php?name=jform[params][table_join_key][]&option=com_fabrik&format=raw&task=list.ajax_loadTableDropDown&table=' + table + '&conn=' + conn;
+							
+			var myAjax = new Request.HTML({
+				url: url,
+				method: 'post', 
+				update: document.id('joinJoinTableId' + activeJoinCounter)
+			}).send();
+		}.bind(this));
+		this.watchFieldList('join_type');
+		this.watchFieldList('table_join_key');
+		this.watchFieldList('table_key');
 	},
 	
 	updateJoinStatement: function (activeJoinCounter) {
@@ -405,7 +391,6 @@ var adminFilters = new Class({
 	},
 	
 	_makeSel: function (c, name, pairs, sel) {
-		//@TODO refactor this as its duplicated everywhere!
 		var opts = [];
 		opts.push(new Element('option', {'value': ''}).set('text', Joomla.JText._('COM_FABRIK_PLEASE_SELECT')));
 		pairs.each(function (pair) {

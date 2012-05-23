@@ -98,6 +98,8 @@
 		<field default="4" description="PLG_ELEMENT_DBJOIN_OPTIONS_PER_ROW_DESC" label="PLG_ELEMENT_DBJOIN_OPTIONS_PER_ROW_LABEL" name="dbjoin_options_per_row" size="2" type="width"/>
 			
 		<field default="6" description="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_DESC" label="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_LABEL" name="dbjoin_multilist_size" size="2" type="field"/>
+
+		<field default="20" description="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_DESC" label="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_LABEL" name="dbjoin_autocomplete_size" size="3" type="field"/>
 			
 	</fieldset>
 	</fields>
