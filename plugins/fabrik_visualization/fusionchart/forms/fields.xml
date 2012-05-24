@@ -32,11 +32,7 @@
 			
 			<field description="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_DESC" label="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_LABEL" name="fusionchart_mx_attributes" size="40" type="text"/>
 			
-			<field name="fusionchart_where"
-				type="text"
-				size="40"
-				description="PLG_VISUALIZATION_FUSIONCHART_WHERE_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_WHERE_LABEL"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_WHERE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_WHERE_LABEL" name="fusionchart_where" size="40" type="text"/>
 			
 		</fieldset>
 
