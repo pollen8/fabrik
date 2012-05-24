@@ -267,8 +267,8 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * do a boolean search
-	 * @param array $filters
-	 * @param string $search
+	 * @param	array	$filters
+	 * @param	string	$search term
 	 */
 
 	private function doBooleanSearch(&$filters, $search)
@@ -295,7 +295,7 @@ class FabrikFEModelListfilter extends FabModel {
 		}
 		foreach ($search as &$s)
 		{
-			$s = $operator . $s;
+			$s = $operator . $s . '*';
 		}
 		$search = implode(' ', $search);
 
