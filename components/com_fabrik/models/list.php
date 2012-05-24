@@ -7518,7 +7518,6 @@ class FabrikFEModelList extends JModelForm {
 		{
 			$srcs[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
-
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' .$this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';

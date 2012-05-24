@@ -298,7 +298,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	function getCustomJsAction(&$srcs)
 	{
-		// $$$ hugh - added ability to use form_XX, as am adding custom table_XX and viz_XX as well
+		// $$$ hugh - added ability to use form_XX, as am adding custom list_XX
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
