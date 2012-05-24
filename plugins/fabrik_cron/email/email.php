@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
 class plgFabrik_Cronemail extends plgFabrik_Cron {
 
@@ -42,28 +42,38 @@ class plgFabrik_Cronemail extends plgFabrik_Cron {
 		$condition = $params->get('cronemail_condition', '');
 		$updates = array();
 		$this->log = '';
-		foreach ($data as $group) {
-			if (is_array($group)) {
-				foreach ($group as $row) {
-					if (!empty($condition)) {
+		foreach ($data as $group)
+		{
+			if (is_array($group))
+			{
+				foreach ($group as $row)
+				{
+					if (!empty($condition))
+					{
 						$this_condition = $w->parseMessageForPlaceHolder($condition, $row);
-						if (eval($this_condition) === false)) {
+						if (eval($this_condition) === false)
+						{
 							continue;
 						}
 					}
 					$row = JArrayHelper::fromObject($row);
 					$thisto = $w->parseMessageForPlaceHolder($to, $row);
-					if (JMailHelper::isEmailAddress($thisto)) {
+					if (JMailHelper::isEmailAddress($thisto))
+					{
 						$thismsg = $w->parseMessageForPlaceHolder($msg, $row);
-						if ($eval) {
+						if ($eval)
+						{
 							$thismsg = eval($thismsg);
 						}
 						$thissubject = $w->parseMessageForPlaceHolder($subject, $row);
 						$res = JUTility::sendMail($MailFrom, $FromName, $thisto, $thissubject, $thismsg, true);
-						if (!$res) {
+						if (!$res)
+						{
 							$this->log .= "\n failed sending to $thisto";
 						}
-					} else {
+					}
+					else
+					{
 						$this->log .= "\n $thisto is not an email address";
 					}
 					$updates[] = $row['__pk_val'];
@@ -72,16 +82,17 @@ class plgFabrik_Cronemail extends plgFabrik_Cron {
 			}
 		}
 		$field = $params->get('cronemail-updatefield');
-		if (!empty( $updates) && trim($field ) != '') {
+		if (!empty( $updates) && trim($field ) != '')
+		{
 			//do any update found
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($params->get('table'));
 			$table = $listModel->getTable();
-
 			$connection = $params->get('connection');
 			$field = $params->get('cronemail-updatefield');
 			$value = $params->get('cronemail-updatefield-value');
-			if ($params->get('cronemail-updatefield-eval', '0') == '1') {
+			if ($params->get('cronemail-updatefield-eval', '0') == '1')
+			{
 				$value = @eval($value);
 			}
 			$field = str_replace("___", ".", $field);
