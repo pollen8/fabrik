@@ -401,7 +401,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		{
 			// If user activation is turned on, we need to set the activation information
 			$useractivation = $usersConfig->get('useractivation');
-			if ($useractivation == '1' && !$bypassActivation)
+			if (($useractivation == '1' || $useractivation == '2') && !$bypassActivation)
 			{
 				jimport('joomla.user.helper');
 				$data['activation'] = JUtility::getHash(JUserHelper::genRandomPassword());
