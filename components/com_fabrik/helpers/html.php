@@ -392,16 +392,28 @@ EOD;
 
 	/**
 	 * check for a custom css file and include it if it exists
-	 * @param string $path NOT including JPATH_SITE (so relative too root dir
-	 * @return false
+	 * @param	string	$path NOT including JPATH_SITE (so relative too root dir) may include querystring
+	 * @return	bool	if loaded or not
 	 */
 
 	public static function stylesheetFromPath($path)
 	{
-		if (JFile::exists(JPATH_SITE . '/' . $path))
+		if (strstr($path, '?'))
+		{
+			$file = explode('?', $path);
+			$file = $file[0];
+		}
+		else
+		{
+			$file = $path;
+		}
+			
+		if (JFile::exists(JPATH_SITE . '/' . $file))
 		{
 			FabrikHelperHTML::stylesheet($path);
+			return true;
 		}
+		return false;
 	}
 
 	/**
