@@ -16,41 +16,11 @@ var FbDatabasejoin = new Class({
 	},
 	
 	initialize: function (element, options) {
-		
+		this.activePopUp = false;
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
 		this.changeEvents = []; // workaround for change events getting zapped on clone
-		//if users can add records to the database join drop down
-		if (this.options.allowadd === true && this.options.editable !== false) {
-			this.startEvent = this.start.bindWithEvent(this);
-			this.watchAdd();
-			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
-				//fired when form submitted - enables element to update itself with any new submitted data
-				if (this.options.popupform === form.id) {
-					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
-					this.updateFromServer();
-				}
-			}.bind(this));
-		}
-		
-		if (this.options.editable) {
-			this.watchSelect();
-			if (this.options.showDesc === true) {
-				this.element.addEvent('change', this.showDesc.bindWithEvent(this));
-			}
-			if (this.options.displayType === 'checkbox') {
-				// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
-				var selector = 'input[name*=' + this.options.joinTable + '___' + this.options.elementShortName + ']';
-				var idSelector = 'input[name*=' + this.options.joinTable + '___id]';
-				this.element.addEvent('click:relay(' + selector + ')', function (i) {
-					this.element.getElements(selector).each(function (tmp, k) {
-						if (tmp === i.target) {
-							this.element.getElements(idSelector)[k].checked = i.target.checked;
-						}
-					}.bind(this));
-				}.bind(this));
-			}
-		}
+		this.init();
 	},
 	
 	watchAdd: function () {
@@ -62,7 +32,12 @@ var FbDatabasejoin = new Class({
 		}
 	},
 	
+	/**
+	 * add option via a popup form. Opens a window with the releated form
+	 * inside
+	 */
 	start: function (e) {
+		this.activePopUp = true;
 		var url = "index.php?option=com_fabrik&task=form.view&tmpl=component&ajax=1&formid=" + this.options.popupform;
 		var id = this.element.id + '-popupwin';
 		this.windowopts = {
@@ -91,8 +66,17 @@ var FbDatabasejoin = new Class({
 		return this.parent();
 	},
 	
+	/**
+	 * adds an option to the db join element, for dropdowns and radio buttons
+	 * (where only one selection is possible from a visible list of options)
+	 * the new option is only selected if its value = this.options.value
+	 * @param	string	value
+	 * @param	string	label
+	 */
+	
 	addOption: function (v, l)
 	{
+		var opt, selected, chxed;
 		if (v === '') {
 			return;
 		}
@@ -100,8 +84,9 @@ var FbDatabasejoin = new Class({
 		case 'dropdown':
 		/* falls through */
 		case 'multilist':
-			opt = new Element('option', {'value': v, 'selected': 'selected'}).set('text', l);
-			$(this.element.id).adopt(opt);
+			selected = (v === this.options.value) ? 'selected' : '';
+			opt = new Element('option', {'value': v, 'selected': selected}).set('text', l);
+			document.id(this.element.id).adopt(opt);
 			break;
 		case 'auto-complete':
 			labelfield = this.element.getParent('.fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
@@ -115,7 +100,6 @@ var FbDatabasejoin = new Class({
 			newchx.getElement('input').set('value', v);
 			var last = chxs.length === 0 ? this.element : chxs.getLast();
 			newchx.inject(last, 'after');
-			
 			var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
 			var newid = ids.getLast().clone();
 			newid.getElement('span').set('text', l);
@@ -126,7 +110,8 @@ var FbDatabasejoin = new Class({
 		case 'radio':
 		/* falls through */
 		default:
-			var opt = new Element('div', {
+			chxed = (v === this.options.value) ? true : false;
+			opt = new Element('div', {
 				'class': 'fabrik_subelement'
 			}).adopt(new Element('label').adopt([new Element('input', {
 				'class': 'fabrikinput',
@@ -135,7 +120,7 @@ var FbDatabasejoin = new Class({
 				'name': this.options.element + '[]',
 				'value': v
 			}), new Element('span').set('text', l)]));
-			opt.inject($(this.element.id).getElements('.fabrik_subelement').getLast(), 'after');
+			opt.inject(document.id(this.element.id).getElements('.fabrik_subelement').getLast(), 'after');
 			break;
 		}
 	},
@@ -144,6 +129,7 @@ var FbDatabasejoin = new Class({
 	 * send an ajax request to requery the element options and update the element if new options found
 	 * @param	string	(optional) additional value to get the updated value for (used in select)
 	 */
+	
 	updateFromServer: function (v)
 	{
 		var data = {
@@ -164,11 +150,15 @@ var FbDatabasejoin = new Class({
 				var existingValues = this.getOptionValues();
 				json.each(function (o) {
 					if (!existingValues.contains(o.value)) {
+						if (this.activePopUp) {
+							this.options.value = o.value;
+						}
 						this.addOption(o.value, o.text);
 						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
 						this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
 					}
 				}.bind(this));
+				this.activePopUp = false;
 			}.bind(this)
 		}).post();
 	},
@@ -360,10 +350,8 @@ var FbDatabasejoin = new Class({
 							'rowid': val
 						},
 						onComplete : function (json, txt) {
-							//r = Json.evaluate(r.stripScripts());
-							var r = json;
-							var v = r.data[this.options.key];
-							var l = r.data[this.options.label];
+							var v = json.data[this.options.key];
+							var l = json.data[this.options.label];
 							if (typeOf(l) !== 'null') {
 								labelfield = this.element.getParent('.fabrikElement').getElement('.autocomplete-trigger');
 								this.element.value = v;
@@ -390,6 +378,7 @@ var FbDatabasejoin = new Class({
 	/**
 	 * optionally show a description which is another field from the joined table.
 	 */
+	
 	showDesc: function (e) {
 		var v = e.target.selectedIndex;
 		var c = this.getContainer().getElement('.dbjoin-description');
@@ -464,17 +453,15 @@ var FbDatabasejoin = new Class({
 		// $$$ hugh - added workaround for change events, by storing them during addNewEvent
 		// and re-adding them after we do this. 
 		this.element.removeEvents('change');
+		this.activePopUp = false;
 		this.changeEvents.each(function (js) {
 			this.addNewEventAux('change', js);
 		}.bind(this));
-		if (this.options.allowadd === true && this.options.editable !== false) {
-			this.startEvent = this.start.bindWithEvent(this);
-			this.watchAdd();
-		}
+		this.init();
 		this.watchSelect();
 		if (this.options.display_type === 'auto-complete') {
 			//update auto-complete fields id and create new autocompleter object for duplicated element
-			var f = this.getContainer().getElement('.autocomplete-trigger');
+			var f = this.getAutoCompleteLabelField();
 			f.id = this.element.id + '-auto-complete';
 			f.name = this.element.name.replace('[]', '') + '-auto-complete';
 			document.id(f.id).value = '';
@@ -482,11 +469,45 @@ var FbDatabasejoin = new Class({
 		}
 	},
 	
+	init: function () {
+		//if users can add records to the database join drop down
+		if (this.options.allowadd === true && this.options.editable !== false) {
+			this.startEvent = this.start.bindWithEvent(this);
+			this.watchAdd();
+			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
+				//fired when form submitted - enables element to update itself with any new submitted data
+				if (this.options.popupform === form.id) {
+					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
+					this.updateFromServer();
+				}
+			}.bind(this));
+		}
+		
+		if (this.options.editable) {
+			this.watchSelect();
+			if (this.options.showDesc === true) {
+				this.element.addEvent('change', this.showDesc.bindWithEvent(this));
+			}
+			if (this.options.displayType === 'checkbox') {
+				// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
+				var selector = 'input[name*=' + this.options.joinTable + '___' + this.options.elementShortName + ']';
+				var idSelector = 'input[name*=' + this.options.joinTable + '___id]';
+				this.element.addEvent('click:relay(' + selector + ')', function (i) {
+					this.element.getElements(selector).each(function (tmp, k) {
+						if (tmp === i.target) {
+							this.element.getElements(idSelector)[k].checked = i.target.checked;
+						}
+					}.bind(this));
+				}.bind(this));
+			}
+		}
+	},
+	
 	getAutoCompleteLabelField: function () {
-		var p = this.element.findClassUp('fabrikElement');
-		var f = p.getElement('input[name=' + this.element.id + '-auto-complete]');
+		var p = this.element.getParent('.fabrikElement');
+		var f = p.getElement('input[name*=-auto-complete]');
 		if (typeOf(f) === 'null') {
-			f = p.getElement('input[id=' + this.element.id + '-auto-complete]');
+			f = p.getElement('input[id*=-auto-complete]');
 		}
 		return f;
 	},
@@ -535,5 +556,16 @@ var FbDatabasejoin = new Class({
 			this.changeEvents.push(js);
 		}
 		this.addNewEventAux(action, js);
+	},
+	
+	decreaseName: function (delIndex) {
+		if (this.options.displayType === 'auto-complete') {
+			var f = this.getAutoCompleteLabelField();
+			if ($type(f) !== false) {
+				f.name = this._decreaseName(f.name, delIndex, '-auto-complete');
+				f.id = this._decreaseId(f.id, delIndex, '-auto-complete');
+			}
+		}
+		return this.parent(delIndex);
 	}
 });
