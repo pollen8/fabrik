@@ -313,7 +313,7 @@ class FabrikFEModelList extends JModelForm {
 		$id = $this->getId();
 		$this->randomRecords = JRequest::getVar('fabrik_random', $this->randomRecords);
 		// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
-		$context = 'com_fabrik.list'.$this->getRenderContext().'.';
+		$context = 'com_fabrik.list' . $this->getRenderContext() . '.';
 		$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
 		// deal with the fact that you can have more than one table on a page so limitstart has to be
 		// specfic per table
@@ -1324,7 +1324,7 @@ class FabrikFEModelList extends JModelForm {
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('_buildQuery: start') : null;
 		$query = array();
-		$this->mergeQuery= '';
+		$this->mergeQuery = '';
 		if ($this->mergeJoinedData())
 		{
 			// $$$ rob - get a list of the main table's ids limited on the navigation
@@ -1335,21 +1335,26 @@ class FabrikFEModelList extends JModelForm {
 
 			// $$$ rob 23/05/2012 if the search data is in the joined records we want to get the id's for the joined records and not the master record
 			// see http://fabrikar.com/forums/showthread.php?t=26400. This is a partial hack as I can't see how we know which joined record is really last
+			// $$$ rob 25/05/2012 - slight change so that we work our way up the pk/fk list until we find some ids.
 			$joins = $this->getJoins();
 			//default to the primary key as before this fix
-			$lookUp = $table->db_primary_key;
+			$lookupC = 0;
+			$lookUps = array('DISTINCT ' . $table->db_primary_key . ' AS __pk_val' . $lookupC);
+			$lookUpNames = array($table->db_primary_key);
 			foreach ($joins as $join)
 			{
 				if ($join->_params->get('type') !== 'element')
 				{
-					$lookUp = $join->table_join . '.' .  $join->table_key;
+					$lookUps[] = $join->table_join . '.' .  $join->table_key . ' AS __pk_val' . $lookupC;
+					$lookUpNames[] = $join->table_join . '.' .  $join->table_key;
+					$lookupC ++;
 				}
 			}
 
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->_buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
-			array_unshift($this->selectedOrderFields , 'DISTINCT ' . $lookUp . ' AS __pk_val');
+			$this->selectedOrderFields = array_merge($this->selectedOrderFields, $lookUps);
 			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
 
 			$query['join'] = $this->_buildQueryJoin();
@@ -1362,7 +1367,15 @@ class FabrikFEModelList extends JModelForm {
 			$db->setQuery($squery, $this->limitStart, $this->limitLength);
 			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
-			$ids = JArrayHelper::getColumn($db->loadObjectList(), '__pk_val');
+			$ids = array();
+			while (empty($ids) && $lookupC >= 0)
+			{
+				$ids = JArrayHelper::getColumn($db->loadObjectList(), '__pk_val' . $lookupC);
+				if (empty($ids))
+				{
+					$lookupC --;
+				}
+			}
 		}
 		$query = array();
 		$query['select'] = $this->_buildQuerySelect();
@@ -1378,7 +1391,7 @@ class FabrikFEModelList extends JModelForm {
 			// data. If no ids found then do where 1 = -1 to return no records
 			if (!empty($ids))
 			{
-				$query['where'] = ' WHERE ' . $lookUp . ' IN (' . implode($ids, ',') . ')';
+				$query['where'] = ' WHERE ' . $lookUpNames[$lookupC] . ' IN (' . implode($ids, ',') . ')';
 			}
 			else
 			{
@@ -2064,7 +2077,8 @@ class FabrikFEModelList extends JModelForm {
 	function getSearchAllFields()
 	{
 		$profiler = JProfiler::getInstance('Application');
-		if (isset($this->searchAllAsFields)) {
+		if (isset($this->searchAllAsFields))
+		{
 			return $this->searchAllAsFields;
 		}
 		$searchAllFields = array();
@@ -2077,12 +2091,15 @@ class FabrikFEModelList extends JModelForm {
 		$gkeys = array_keys($groups);
 		$opts = array('inc_raw'=>false);
 		$mode = $this->getParams()->get('search-mode-advanced');
-		foreach ($gkeys as $x) {
+		foreach ($gkeys as $x)
+		{
 			$groupModel = $groups[$x];
 			$elementModels = $groupModel->getPublishedElements();
-			for ($ek = 0; $ek < count($elementModels); $ek ++) {
+			for ($ek = 0; $ek < count($elementModels); $ek ++)
+			{
 				$elementModel = $elementModels[$ek];
-				if ($elementModel->includeInSearchAll($mode)) {
+				if ($elementModel->includeInSearchAll($mode))
+				{
 					// boolean search doesnt seem possible on encrypted fields.
 					$p = $elementModel->getParams();
 					$o = $p->get('encrypt');
@@ -2097,14 +2114,17 @@ class FabrikFEModelList extends JModelForm {
 		//if the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
 
 		$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
-		if (!in_array($longGroupBy, $searchAllFields) && trim($table->group_by) != '') {
-			$this->searchAllAsFields[] = FabrikString::safeColName($table->group_by) . " AS " . $longGroupBy;
+		if (!in_array($longGroupBy, $searchAllFields) && trim($table->group_by) != '')
+		{
+			$this->searchAllAsFields[] = FabrikString::safeColName($table->group_by) . ' AS ' . $longGroupBy;
 			$searchAllFields[] = $longGroupBy;
 		}
 
-		for ($x=0; $x < count($this->searchAllAsFields); $x ++) {
-			$match = ' AS '.$searchAllFields[$x];
-			if (array_key_exists($x, $this->searchAllAsFields)) {
+		for ($x = 0; $x < count($this->searchAllAsFields); $x ++)
+		{
+			$match = ' AS ' . $searchAllFields[$x];
+			if (array_key_exists($x, $this->searchAllAsFields))
+			{
 				$this->searchAllAsFields[$x] = trim(str_replace($match, '', $this->searchAllAsFields[$x]));
 			}
 		}
@@ -3053,7 +3073,7 @@ class FabrikFEModelList extends JModelForm {
 		$session = JFactory::getSession();
 		$registry = $session->get('registry');
 		//$tid = 'list'.JRequest::getVar('listref', $this->getRenderContext());
-		$tid = 'list'.$this->getRenderContext();
+		$tid = 'list' . $this->getRenderContext();
 		//make sure that we only store data thats been entered from this page first test we aren't in a plugin
 		if (JRequest::getCmd('option') == 'com_fabrik' && is_object($registry)) {
 			// dont do this when you are viewing a form or details page as it wipes out the table filters
@@ -3420,7 +3440,7 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * get the total number of records in the table
-	 * @return int total number of records
+	 * @return	int		total number of records
 	 */
 
 	function getTotalRecords()
@@ -3428,17 +3448,20 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob ensure that the limits are set - otherwise can create monster query
 		$this->setLimits();
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.list'. $this->getRenderContext().'.total';
-		if (isset($this->totalRecords)) {
+		$context = 'com_fabrik.list' . $this->getRenderContext() . '.total';
+		if (isset($this->totalRecords))
+		{
 			$session->set($context, $this->totalRecords);
 			return $this->totalRecords;
 		}
 		// $$$ rob getData() should always be run first
-		if (is_null($this->_data)) {
+		if (is_null($this->_data))
+		{
 			$this->getData();
 			return $this->totalRecords;
 		}
-		if ($this->mergeJoinedData()) {
+		if ($this->mergeJoinedData())
+		{
 			$this->totalRecords = $this->getJoinMergeTotalRecords();
 			$session->set($context, $this->totalRecords);
 			return $this->totalRecords;
@@ -4180,12 +4203,13 @@ class FabrikFEModelList extends JModelForm {
 	}
 	/**
 	 * build an array of html data that gets inserted into the advanced search popup view
-	 * @return array html lists/fields
+	 * @return	array	html lists/fields
 	 */
 
 	public function getAdvancedSearchRows()
 	{
-		if (isset($this->advancedSearchRows)) {
+		if (isset($this->advancedSearchRows))
+		{
 			return $this->advancedSearchRows;
 		}
 		$statements = $this->getStatementsOpts();
@@ -4193,7 +4217,7 @@ class FabrikFEModelList extends JModelForm {
 		$first = false;
 		$elementModels = $this->getElements();
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
-		$prefix = 'fabrik___filter[list_'.$this->getRenderContext().'][';
+		$prefix = 'fabrik___filter[list_' . $this->getRenderContext() . '][';
 		$type = '<input type="hidden" name="' . $prefix . 'search_type][]" value="advanced" />';
 		$grouped = '<input type="hidden" name="' . $prefix . 'grouped_to_previous][]" value="0" />';
 
@@ -4214,7 +4238,7 @@ class FabrikFEModelList extends JModelForm {
 				$value = $filters['origvalue'][$counter];
 				$v2 = $filters['value'][$counter];
 				$jsSel = '=';
-				switch( $condition )
+				switch ($condition)
 				{
 					case "<>":
 						$jsSel = '<>';
@@ -4230,19 +4254,19 @@ class FabrikFEModelList extends JModelForm {
 						break;
 					default:
 						$firstChar = substr($v2, 1, 1);
-					$lastChar = substr($v2, -2, 1);
-					switch( $firstChar )
-					{
-						case "%":
-							$jsSel =( $lastChar == "%")? 'CONTAINS' : $jsSel = 'ENDS WITH';
+						$lastChar = substr($v2, -2, 1);
+						switch ($firstChar)
+						{
+							case "%":
+								$jsSel =( $lastChar == "%")? 'CONTAINS' : $jsSel = 'ENDS WITH';
+								break;
+							default:
+								if ($lastChar == "%") {
+								$jsSel = 'BEGINS WITH';
+							}
 							break;
-						default:
-							if ($lastChar == "%") {
-							$jsSel = 'BEGINS WITH';
 						}
 						break;
-					}
-					break;
 				}
 
 				$value = trim(trim($value, '"'), "%");
@@ -6827,12 +6851,14 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/** plugins sometimes need to clear their where clauses
-	 * @param string plugin name
-	 * @return bol
+	 * @param	string	plugin name
+	 * @return	bool
 	 */
+	
 	function unsetPluginQueryWhere($pluginName)
 	{
-		if (array_key_exists($pluginName, $this->_pluginQueryWhere)) {
+		if (array_key_exists($pluginName, $this->_pluginQueryWhere))
+		{
 			unset($this->_pluginQueryWhere[$pluginName]);
 		}
 		return true;
@@ -6841,19 +6867,19 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * if all filters are set to read only then don't return a clear button
 	 * otherwised do
-	 * @return string clear filter button link
+	 * @return	string	clear filter button link
 	 */
 
 	function getClearButton()
 	{
 		$filters = $this->getFilters('listform_' . $this->getRenderContext(), 'list');
 		$params = $this->getParams();
-		if (count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0)
+		if (count($filters) > 0 || $params->get('advanced-filter'))
 		{
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_CLEAR').'</span>'));
-			return '<a href="#" class="clearFilters">'.$img.'</a>';
+			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . JText::_('COM_FABRIK_CLEAR') . '</span>'));
+			return '<a href="#" class="clearFilters">' . $img . '</a>';
 		}
 		else
 		{
@@ -7334,55 +7360,84 @@ class FabrikFEModelList extends JModelForm {
 		$tmpl = $this->getTmpl();
 		$app = JFactory::getApplication();
 		/* check for a form template file (code moved from view) */
-		if ($tmpl != '') {
-			$qs = '?c='.$this->getRenderContext();
+		if ($tmpl != '')
+		{
+			$qs = '?c=' . $this->getRenderContext();
 			$qs .= '&buttoncount='.$this->rowActionCount;
-			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/list/'.$tmpl.'/template_css.php'.$qs);
-			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'components/com_fabrik/views/list/tmpl/'.$tmpl.'/template_css.php'.$qs);
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs))
+			{
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/template_css.php' . $qs);
 			}
 			// $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			// custom.css - for backward compat with existing 2.x custom.css
 			// custom_css.php - what we'll recommend people use for custom css moving foward.
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/list/tmpl/'.$tmpl.'/custom.css')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/custom.css");
-			}
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/list/tmpl/'.$tmpl.'/custom_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/".$tmpl."/custom_css.php".$qs);
-			}
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom.css');
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/'.$tmpl.'/custom_css.php'.$qs);
 		}
 	}
 
 	public function getRenderContext()
 	{
-		return $this->getId().$this->renderContext;
+		if ($this->renderContext === '')
+		{
+			$this->setRenderContext($this->getId());
+		}
+		return $this->getId() . $this->renderContext;
 	}
 
-	public function setRenderContext($id)
+	
+	/**
+	 * lists can be rendered in articles, as components and in modules
+	 * we need to set a unique reference for them to avoid conflicts
+	 * @param	int		$id module/component list id
+	 */
+	
+	public function setRenderContext($id = null)
 	{
 		$app = JFactory::getApplication();
 		// $$$ rob if admin filter task = filter and not list.filter
-		if (JRequest::getVar('task') == 'list.filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter')) {
+		if (JRequest::getVar('task') == 'list.filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter'))
+		{
 			$this->setRenderContextFromRequest();
-		} else {
-
-			if (JRequest::getVar('task') == 'list.view' && JRequest::getVar('format') == 'raw') {
-				// testing for ajax nav in content plugin
-				$this->setRenderContextFromRequest();
-			} else
+		}
+		else
+		{
+			if ((JRequest::getVar('task') == 'list.view' && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch' || JRequest::getVar('task') === 'list.elementFilter')
 			{
-				$this->renderContext = '_'.JFactory::getApplication()->scope.'_'.$id;
+				// testing for ajax nav in content plugin or in advanced search
+				$this->setRenderContextFromRequest();
 			}
+			else
+			{
+				$this->renderContext = '_' . JFactory::getApplication()->scope . '_' . $id;
+			}
+		}
+		if ($this->renderContext == '')
+		{
+			$this->renderContext = '_' . JFactory::getApplication()->scope . '_' . $id;
 		}
 	}
 
+	/**
+	 * when dealing with ajax requests filtering etc we want to take the listref from the 
+	 * request array
+	 * @return	string	listref
+	 */
+	
 	protected function setRenderContextFromRequest()
 	{
-		$listref = JRequest::getVar('listref');
-		$listref = explode('_', $listref);
-		array_shift($listref);
-		$this->renderContext = '_'.implode('_', $listref);
+		$listref = JRequest::getVar('listref', '');
+		if ($listref === '')
+		{
+			$this->renderContext = '';
+		}
+		else
+		{
+			$listref = explode('_', $listref);
+			array_shift($listref);
+			$this->renderContext = '_' . implode('_', $listref);
+		}
+		return $this->renderContext;
 	}
 
 	public function getGroupByHeadings()
@@ -7405,7 +7460,7 @@ class FabrikFEModelList extends JModelForm {
 		$url .= strpos($url, '?') !== false ? '&amp;' : '?';
 		$a = array();
 		list($h, $x, $b, $c) = $this->getHeadings();
-		$a[$url.'group_by=0'] = JText::_('COM_FABRIK_NONE');
+		$a[$url . 'group_by=0'] = JText::_('COM_FABRIK_NONE');
 		foreach ($h as $key => $v)
 		{
 			if (!in_array($key, array('fabrik_select', 'fabrik_edit', 'fabrik_view', 'fabrik_delete', 'fabrik_actions')))

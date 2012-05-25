@@ -9,7 +9,7 @@
 			</a>
 		</li>
 	<?php }
-	if ($this->showFilters) {?>
+	if ($this->showClearFilters) {?>
 		<li>
 		<?php echo $this->clearFliterLink;?>
 			</li>

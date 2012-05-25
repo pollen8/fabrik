@@ -5,33 +5,48 @@ AdvancedSearch = new Class({
 	
 	Implements: [Options, Events],
 	
-	options: {},
+	options: {
+		'ajax': false
+	},
 			
 	initialize: function (options) {
 		this.setOptions(options);
+		this.form = document.id('advanced-search-win' + this.options.listref).getElement('form');
 		this.trs = $A([]);
-		if (document.id('advanced-search-add')) {
-			document.id('advanced-search-add').removeEvents('click');
-			document.id('advanced-search-add').addEvent('click', this.addRow.bindWithEvent(this));
-			document.id('advancedFilterTable-clearall').removeEvents('click');
-			document.id('advancedFilterTable-clearall').addEvent('click', this.resetForm.bindWithEvent(this));
+		if (this.form.getElement('.advanced-search-add')) {
+			this.form.getElement('.advanced-search-add').removeEvents('click');
+			this.form.getElement('.advanced-search-add').addEvent('click', this.addRow.bindWithEvent(this));
+			this.form.getElement('.advanced-search-clearall').removeEvents('click');
+			this.form.getElement('.advanced-search-clearall').addEvent('click', this.resetForm.bindWithEvent(this));
 			this.trs.each(function (tr) {
-				tr.inject(document.id('advanced-search-table').getElements('tr').getLast(), 'after');
+				tr.inject(this.form.getElement('.advanced-search-list').getElements('tr').getLast(), 'after');
 			}.bind(this));
 		}
 		this.watchDelete();
+		this.watchApply();
 		this.watchElementList();
+	},
+	
+	watchApply: function () {
+		if (!this.options.ajax) {
+			return;
+		}
+		this.form.getElement('.advanced-search-apply').addEvent('click', function (e) {
+			e.stop();
+			var list = Fabrik.blocks['list_' + this.options.listref];
+			list.submit('list.filter');
+		}.bind(this));
 	},
   
 	watchDelete: function () {
 		//should really just delegate these events from the adv search table
-		$$('.advanced-search-remove-row').removeEvents();
-		$$('.advanced-search-remove-row').addEvent('click', this.removeRow.bindWithEvent(this));
+		this.form.getElements('.advanced-search-remove-row').removeEvents();
+		this.form.getElements('.advanced-search-remove-row').addEvent('click', this.removeRow.bindWithEvent(this));
 	},
 	
 	watchElementList: function () {
-		$$('select.key').removeEvents();
-		$$('select.key').addEvent('change', this.updateValueInput.bindWithEvent(this));
+		this.form.getElements('select.key').removeEvents();
+		this.form.getElements('select.key').addEvent('change', this.updateValueInput.bindWithEvent(this));
 	},
 	
 	/**
@@ -54,7 +69,8 @@ AdvancedSearch = new Class({
 		var eldata = this.options.elementMap[v];
 		new Request.HTML({'url': url, 
 			'update': update, 
-			'data': {'element': v, 'id': this.options.listid, 'elid': eldata.id, 'plugin': eldata.plugin, 'counter': this.options.counter},
+			'data': {'element': v, 'id': this.options.listid, 'elid': eldata.id, 'plugin': eldata.plugin, 'counter': this.options.counter,
+				'listref':  this.options.listref},
 			'onComplete': function () {
 				Fabrik.loader.stop(row);
 			}}).send();
@@ -63,7 +79,7 @@ AdvancedSearch = new Class({
 	addRow: function (e) {
 		this.options.counter ++;
 		e.stop();
-		var tr = document.id('advanced-search-table').getElement('tbody').getElements('tr').getLast();
+		var tr = this.form.getElement('.advanced-search-list').getElement('tbody').getElements('tr').getLast();
 		var clone = tr.clone();
 		clone.inject(tr, 'after');
 		clone.getElement('td').empty().set('html', this.options.conditionList);
@@ -81,7 +97,7 @@ AdvancedSearch = new Class({
   
 	removeRow: function (e) {
 		e.stop();
-		if ($$('.advanced-search-remove-row').length > 1) {
+		if (this.form.getElements('.advanced-search-remove-row').length > 1) {
 			this.options.counter --;
 			var tr = e.target.findUp('tr');
 			var fx = new Fx.Morph(tr, {
@@ -102,7 +118,7 @@ AdvancedSearch = new Class({
 	 * removes all rows except for the first one, whose values are reset to empty
 	 */
 	resetForm: function () {
-		var table = document.id('advanced-search-table');
+		var table = this.form.getElement('.advanced-search-list');
 		if (!table) {
 			return;
 		}

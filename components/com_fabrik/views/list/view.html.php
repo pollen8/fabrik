@@ -27,8 +27,8 @@ class FabrikViewList extends JView{
 		$listid = $model->getId();
 		$formModel = $model->getFormModel();
 		$elementsNotInTable = $formModel->getElementsNotInTable();
-
-		if ($model->requiresSlimbox()) {
+		if ($model->requiresSlimbox())
+		{
 			FabrikHelperHTML::slimbox();
 		}
 		$frameworkJsFiles = FabrikHelperHTML::framework();
@@ -45,8 +45,9 @@ class FabrikViewList extends JView{
 		$this->get('ListCss');
 		// check for a custom js file and include it if it exists
 		$aJsPath = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
-		if (JFile::exists($aJsPath)) {
-			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/'.$tmpl.'/javascript.js');
+		if (JFile::exists($aJsPath))
+		{
+			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js');
 		}
 
 		$origRows = $this->rows;
@@ -61,8 +62,8 @@ class FabrikViewList extends JView{
 		$params = $model->getParams();
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
-		$opts->ajax = (int)$model->isAjax();
-		$opts->ajax_links = (bool)$params->get('list_ajax_links', $opts->ajax);
+		$opts->ajax = (int) $model->isAjax();
+		$opts->ajax_links = (bool) $params->get('list_ajax_links', $opts->ajax);
 
 		$opts->links = array('detail' => $params->get('detailurl'), 'edit' => $params->get('editurl'), 'add' => $params->get('addurl'));
 		$opts->filterMethod = $this->filter_action;
@@ -70,10 +71,10 @@ class FabrikViewList extends JView{
 		$this->listref = $listref;
 		$opts->headings = $model->_jsonHeadings();
 		$labels = $this->headings;
-		foreach ($labels as &$l) {
+		foreach ($labels as &$l)
+		{
 			$l = strip_tags($l);
 		}
-
 		$opts->labels = $labels;
 		$opts->primaryKey = $item->db_primary_key;
 		$opts->Itemid = $tmpItemid;
@@ -395,6 +396,7 @@ class FabrikViewList extends JView{
 		$this->assign('filterMode', (int) $params->get('show-table-filters'));
 		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
 		$this->assign('showFilters', $this->get('showFilters'));
+		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
 		$this->assignRef('calculations', $this->_getCalculations($this->headings, $params->get('actionMethod')));
@@ -673,8 +675,11 @@ class FabrikViewList extends JView{
 
 	protected function advancedSearch($tpl)
 	{
-		$id = $this->getModel()->getState('list.id');
+		$model = $this->getModel();
+		$id = $model->getState('list.id');
 		$this->assign('tmpl', $this->get('tmpl'));
+		$model->setRenderContext($id);
+		$this->listref = $model->getRenderContext();
 		//advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
 		$this->assignRef('rows', $this->get('advancedSearchRows'));
 		$action = JRequest::getVar('HTTP_REFERER', 'index.php?option=com_fabrik', 'server');

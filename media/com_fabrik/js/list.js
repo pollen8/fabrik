@@ -119,6 +119,7 @@ var FbListFilter = new Class({
 	initialize: function (options) {
 		this.filters = $H({});
 		this.setOptions(options);
+		this.advancedSearch = false;
 		this.container = document.id(this.options.container);
 		this.filterContainer = this.container.getElement('.fabrikFilterContainer');
 		var b = this.container.getElement('.toggleFilters');
@@ -170,12 +171,13 @@ var FbListFilter = new Class({
 				}
 			}.bind(this));
 		}
-		if (advancedSearch = this.container.getElement('.advanced-search-link')) {
-			advancedSearch.addEvent('click', function (e) {
+		if (advancedSearchButton = this.container.getElement('.advanced-search-link')) {
+			advancedSearchButton.addEvent('click', function (e) {
 				e.stop();
 				var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=_advancedsearch&listid=" + this.options.id;
+				url += '&listref=' + this.options.ref;
 				this.windowopts = {
-					'id': 'advanced-search-win',
+					'id': 'advanced-search-win' + this.options.ref,
 					title: Joomla.JText._('COM_FABRIK_ADVANCED_SEARCH'),
 					loadMethod: 'xhr',
 					evalScripts: true,
@@ -184,7 +186,8 @@ var FbListFilter = new Class({
 					height: 300,
 					y: this.options.popwiny,
 					onContentLoaded: function (win) {
-						new AdvancedSearch(this.options.advancedSearch);
+						var list = Fabrik.blocks['list_' + this.options.ref];
+						list.advancedSearch = new AdvancedSearch(this.options.advancedSearch);
 					}.bind(this)
 				};
 				var mywin = Fabrik.getWindow(this.windowopts);
@@ -886,10 +889,19 @@ var FbList = new Class({
 			this.form.getElement('input[name=option]').value = 'com_fabrik';
 			this.form.getElement('input[name=view]').value = 'list';
 			this.form.getElement('input[name=format]').value = 'raw';
+			
+			var data = this.form.toQueryString();
+			if (task === 'list.filter' && this.advancedSearch !== false) {
+				var advSearchForm = document.getElement('form.advancedSeach_' + this.options.listRef);
+				if (typeOf(advSearchForm) !== 'null') {
+					data += '&' + advSearchForm.toQueryString();
+					data += '&replacefilters=1';
+				}
+			}
 			if (!this.request) {
 				this.request = new Request({
 					'url': this.form.get('action'),
-					'data': this.form,
+					'data': data,
 					onComplete: function (json) {
 						json = JSON.decode(json);
 						this._updateRows(json);
@@ -898,6 +910,8 @@ var FbList = new Class({
 						Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [this, json]);
 					}.bind(this)
 				});
+			} else {
+				this.request.options.data = data;
 			}
 			this.request.send();
 			Fabrik.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);

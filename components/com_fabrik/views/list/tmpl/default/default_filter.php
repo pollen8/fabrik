@@ -1,19 +1,16 @@
 <div class="fabrikFilterContainer">
-<?php if ($this->filterMode === 3 || $this->filterMode === 4) {
-	?><div class="searchall">
+<?php if ($this->filterMode === 3 || $this->filterMode === 4) {?>
+<div class="searchall">
 	<ul class="fabrik_action">
 		
 	<?php if (array_key_exists('all', $this->filters)) {
-		echo '<li>'.$this->filters['all']->element.'</li>';
+		echo '<li>' . $this->filters['all']->element . '</li>';
 	}?>
 		<?php if ($this->filter_action != 'onchange') {?>
 	<li>
-	<button class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>"
-				name="filter" >
-	<?php echo FabrikHelperHTML::image('search.png', 'list', $this->tmpl);?>
-	</button>
-<!-- 	<input type="button" class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>"
-				name="filter" /> -->
+		<button class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>" name="filter" >
+		<?php echo FabrikHelperHTML::image('search.png', 'list', $this->tmpl);?>
+		</button>
 	</li>
 	<?php } ?>	
 	</ul>
@@ -32,7 +29,7 @@
 	$c = 0;
 	foreach ($this->filters as $filter) {
 			$required = $filter->required == 1 ? ' notempty' : '';?>
-			<tr class="fabrik_row oddRow<?php echo ($c % 2). $required;?>">
+			<tr class="fabrik_row oddRow<?php echo ($c % 2) . $required;?>">
 			<td><?php echo $filter->label;?></td>
 			<td style="text-align:right;"><?php echo $filter->element;?></td>
 		</tr>
