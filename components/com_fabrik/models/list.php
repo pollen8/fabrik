@@ -1325,7 +1325,7 @@ class FabrikFEModelList extends JModelForm {
 			// by modifying the where part of the query
 			$db = $this->getDb();
 			$table = $this->getTable();
-			
+
 			// $$$ rob 23/05/2012 if the search data is in the joined records we want to get the id's for the joined records and not the master record
 			// see http://fabrikar.com/forums/showthread.php?t=26400. This is a partial hack as I can't see how we know which joined record is really last
 			$joins = $this->getJoins();
@@ -1338,13 +1338,13 @@ class FabrikFEModelList extends JModelForm {
 					$lookUp = $join->table_join . '.' .  $join->table_key;
 				}
 			}
-			
+
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->_buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
 			array_unshift($this->selectedOrderFields , 'DISTINCT ' . $lookUp . ' AS __pk_val');
 			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
-			
+
 			$query['join'] = $this->_buildQueryJoin();
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
 			$query['groupby'] = $this->_buildQueryGroupBy();
@@ -3333,7 +3333,7 @@ class FabrikFEModelList extends JModelForm {
 					$params->set('filter-value', $prefilters['filter-value']);
 					$params->set('filter-access', $prefilters['filter-access']);
 					$params->set('filter-eval', $prefilters['filter-eval']);
-					$params->set('filter-join', $prefilters['filter-join']);
+					$params->set('filter-join', JArrayHelper::getValue($prefilters, 'filter-join', ''));
 				}
 			}
 			$elements = $this->getElements('filtername');
@@ -7518,7 +7518,6 @@ class FabrikFEModelList extends JModelForm {
 		{
 			$srcs[] = 'components/com_fabrik/js/table_' . $this->getId() . '.js';
 		}
-
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/list_' .$this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';

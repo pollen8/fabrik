@@ -264,11 +264,26 @@ class FabrikFEModelListfilter extends FabModel {
 			}
 		}
 	}
+	
+	/**
+	 * for advanced search all test if the search string is long enough
+	 * @since 3.0.6
+	 * @param	string	search string
+	 * @return	bool	search string long enough?
+	 */
+	
+	protected function testBooleanSearchLength($s)
+	{
+		$db = JFactory::getDbo();
+		$db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
+		$res = $db->loadObject();
+		return strlen($s) >= $res->Value; 
+	}
 
 	/**
 	 * do a boolean search
-	 * @param array $filters
-	 * @param string $search
+	 * @param	array	$filters
+	 * @param	string	$search term
 	 */
 
 	private function doBooleanSearch(&$filters, $search)
@@ -276,6 +291,11 @@ class FabrikFEModelListfilter extends FabModel {
 		$mode = JRequest::getVar('search-mode-advanced', 'and');
 		if (trim($search) == '')
 		{
+			return;
+		}
+		if (!$this->testBooleanSearchLength($search))
+		{
+			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
 			return;
 		}
 		$search = explode(' ', $search);
@@ -295,7 +315,7 @@ class FabrikFEModelListfilter extends FabModel {
 		}
 		foreach ($search as &$s)
 		{
-			$s = $operator . $s;
+			$s = $operator . $s . '*';
 		}
 		$search = implode(' ', $search);
 

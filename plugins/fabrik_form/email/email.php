@@ -40,7 +40,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	 * @returns bol
 	 */
 
-	function onAfterProcess($params, &$formModel )
+	function onAfterProcess($params, &$formModel)
 	{
 		jimport('joomla.mail.helper');
 		$user = JFactory::getUser();
