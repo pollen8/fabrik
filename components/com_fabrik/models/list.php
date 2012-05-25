@@ -3941,9 +3941,10 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * creates an array of html code for each filter
 	 * Also adds in JS code to manage filters
-	 * @param string $container
-	 * @param string $type
-	 * @return array of html code for each filter
+	 * @param	string	$container
+	 * @param 	string	$type
+	 * @param	int		$id
+	 * @return	array	of html code for each filter
 	 */
 
 	function &makeFilters($container = 'listform_1', $type = 'list', $id = '')
@@ -3964,20 +3965,22 @@ class FabrikFEModelList extends JModelForm {
 		$filters = $this->getFilterArray();
 
 		$params = $this->getParams();
-		if ($params->get('search-mode', 'AND') == 'OR') {
+		if ($params->get('search-mode', 'AND') == 'OR')
+		{
 			// One field to search them all (and in the darkness bind them)
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
 			$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass();
 			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v . '" class="fabrik_filter" name="'.$requestKey.'" />';
-			if ($params->get('search-mode-advanced') == 1) {
+			if ($params->get('search-mode-advanced') == 1)
+			{
 				$opts = array();
 				$opts[] = JHTML::_('select.option', 'all', JText::_('COM_FABRIK_ALL_OF_THESE_TERMS'));
 				$opts[] = JHTML::_('select.option', 'any', JText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
 				$opts[] = JHTML::_('select.option', 'exact', JText::_('COM_FABRIK_EXACT_TERMS'));
 				$opts[] = JHTML::_('select.option', 'none', JText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
-				$mode = $app->getUserStateFromRequest('com_fabrik.list'.$this->getRenderContext().'.searchallmode', 'search-mode-advanced');
-				$o->filter .= '&nbsp;'.JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
+				$mode = $app->getUserStateFromRequest('com_fabrik.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
+				$o->filter .= '&nbsp;' . JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
 			}
 			$o->name = 'all';
 			$o->label = $params->get('search-all-label', JText::_('COM_FABRIK_ALL'));
@@ -3988,26 +3991,25 @@ class FabrikFEModelList extends JModelForm {
 		// will sometimes skip a group
 		//$groups = $this->getFormGroupElementData();
 		$groups = $this->getFormGroupElementData();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$g = $groupModel->getGroup();
 			$elementModels = null;
 			$elementModels = $groupModel->getPublishedElements();
-
-			/*foreach ($elementModels as $kk => $val2) {
-			 $elementModel = $elementModels[$kk]; //dont do with = as this foobars up the last elementModel*/
-			// $$$ rob changed from above 2 lines to 2 below as I think the form_id test inside here fixes things???
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$element = $elementModel->getElement();
-
 				//$$ rob added as some filter_types were null, have to double check that this doesnt
 				// mess with showing the readonly values from search forms
-				if (isset($element->filter_type) && $element->filter_type <> '' && $element->filter_type != 'null') {
-					if ($elementModel->canView() && $elementModel->canUseFilter()) {
-
+				if (isset($element->filter_type) && $element->filter_type <> '' && $element->filter_type != 'null')
+				{
+					if ($elementModel->canView() && $elementModel->canUseFilter())
+					{
 						// $$$ rob in facted browsing somehow (not sure how!) some elements from the facted table get inserted into elementModels
 						// with their form id set - so test if its been set and if its not the same as the current form id
 						// if so then ignore
-						if (isset($element->form_id) && (int)$element->form_id !== 0 && $element->form_id !== $this->getFormModel()->getId()) {
+						if (isset($element->form_id) && (int)$element->form_id !== 0 && $element->form_id !== $this->getFormModel()->getId())
+						{
 							continue;
 						}
 						//force the correct group model into the element model to ensure no wierdness in getting the element name
@@ -4030,15 +4032,18 @@ class FabrikFEModelList extends JModelForm {
 		//check for search form filters - if they exists create hidden elements for them
 		$keys = JArrayHelper::getValue($filters, 'key', array());
 
-		foreach ($keys as $i => $key) {
-			if ($filters['no-filter-setup'][$i] == '1' && !in_array($filters['search_type'][$i], array('searchall', 'advanced', 'jpluginfilters'))) {
+		foreach ($keys as $i => $key)
+		{
+			if ($filters['no-filter-setup'][$i] == '1' && !in_array($filters['search_type'][$i], array('searchall', 'advanced', 'jpluginfilters')))
+			{
 				$o = new stdClass();
 				// $$$ rob - we are now setting read only filters 'filter' var to the elements read only
 				// label for the passed in filter value
 				//$o->filter = $value;
 				$elementModel = $this->getFormModel()->getElement(str_replace('`', '', $key));
 				$o->filter = $filters['filter'][$i];
-				if ($elementModel) {
+				if ($elementModel)
+				{
 					$elementModel->getElement()->filter_type = 'hidden';
 					$o->filter .= $elementModel->getFilter(0, true);
 				}
@@ -4058,13 +4063,16 @@ class FabrikFEModelList extends JModelForm {
 	function getAdvancedSearchLink()
 	{
 		$params = $this->getParams();
-		if ($params->get('advanced-filter', '0')) {
+		if ($params->get('advanced-filter', '0'))
+		{
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=".$table->id."&amp;nextview=".JRequest::getVar('view');
-			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip',  'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_ADVANCED_SEARCH').'</span>'));
-			return '<a href="'.$url.'" class="advanced-search-link">'.$img.'</a>';
-		} else {
+			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid=' . $table->id . '&amp;nextview=' . JRequest::getVar('view');
+			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>'));
+			return '<a href="' . $url . '" class="advanced-search-link">' . $img . '</a>';
+		}
+		else
+		{
 			return '';
 		}
 	}
@@ -4072,6 +4080,7 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * called from index.php?option=com_fabrik&view=list&layout=_advancedsearch&tmpl=component&listid=4
 	 * advanced serach popup view
+	 * @return	object	advanced search options
 	 */
 
 	function getAdvancedSearchOpts()
@@ -4082,16 +4091,18 @@ class FabrikFEModelList extends JModelForm {
 		$opts->conditionList = FabrikHelperHTML::conditonList($listRef, '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
-		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef .'][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
-		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_'. $listRef .'][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
+		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef . '][key][]', 'class="inputbox key" size="1" ', 'value', 'text');
+		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_' . $listRef . '][condition][]', 'class="inputbox" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
 		$opts->listref = $listRef;
+		$opts->ajax = $this->isAjax();
 		$opts->counter = count($this->getadvancedSearchRows()) - 1;
 		$elements = $this->getElements();
 		$arr = array();
-		foreach ($elements as $e) {
+		foreach ($elements as $e)
+		{
 			$key = FabrikString::safeColName($e->getFullName(false, false, false));
-			$arr[$key] = array('id'=>$e->_id, 'plugin'=>$e->getElement()->plugin);
+			$arr[$key] = array('id' => $e->_id, 'plugin' => $e->getElement()->plugin);
 		}
 		$opts->elementMap = $arr;
 		return $opts;
@@ -4103,12 +4114,15 @@ class FabrikFEModelList extends JModelForm {
 		$firstFilter = false;
 		$fieldNames[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
 		$elementModels = $this->getElements();
-		foreach ($elementModels as $elementModel) {
+		foreach ($elementModels as $elementModel)
+		{
 			$element = $elementModel->getElement();
 			$elParams = $elementModel->getParams();
-			if ($elParams->get('inc_in_adv_search', 1)) {
+			if ($elParams->get('inc_in_adv_search', 1))
+			{
 				$elName = FabrikString::safeColName($elementModel->getFullName(false, false, false));
-				if (!$first) {
+				if (!$first)
+				{
 					$first = true;
 					$firstFilter = $elementModel->getFilter(0, false);
 				}
@@ -4145,11 +4159,15 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$filters = $this->getFilterArray();
 		$advanced = array();
-		for ($i = 0; $i < count(JArrayHelper::getValue($filters, 'key', array())); $i++) {
+		$iKeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
+		foreach ($iKeys as $i)
+		{
 			$searchType = JArrayHelper::getValue($filters['search_type'], $i);
-			if (!is_null($searchType) && $searchType == 'advanced') {
+			if (!is_null($searchType) && $searchType == 'advanced')
+			{
 				$tmp = array();
-				foreach (array_keys($filters) as $k) {
+				foreach (array_keys($filters) as $k)
+				{
 					if (array_key_exists($k, $advanced)) {
 						$advanced[$k][] = $filters[$k][$i];
 					} else {
@@ -6423,21 +6441,25 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * determine how the model does filtering and navigation
-	 * @return string (ajax/post default post)
+	 * @return bool	ajax true /post false; default post
 	 */
 
 	function isAjax()
 	{
 		$params = $this->getParams();
-		if (is_null($this->ajax)) {
+		if (is_null($this->ajax))
+		{
 			// $$$ rob 11/07/2011 if post method set to ajax in request use that over the list_nav option
-			if (JRequest::getVar('ajax', false) == '1') {
+			if (JRequest::getVar('ajax', false) == '1')
+			{
 				$this->ajax = true;
-			} else {
+			}
+			else
+			{
 				$this->ajax = $params->get('list_ajax', JRequest::getBool('ajax', false));
 			}
 		}
-		return (bool)$this->ajax;
+		return (bool) $this->ajax;
 	}
 
 	/**
@@ -6824,15 +6846,17 @@ class FabrikFEModelList extends JModelForm {
 
 	function getClearButton()
 	{
-		$filters = $this->getFilters('listform_'. $this->getRenderContext(), 'list');
-
+		$filters = $this->getFilters('listform_' . $this->getRenderContext(), 'list');
 		$params = $this->getParams();
-		if (count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0) {
+		if (count($filters) > 0 || count($this->getAdvancedFilterValues()) > 0)
+		{
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
 			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_CLEAR').'</span>'));
 			return '<a href="#" class="clearFilters">'.$img.'</a>';
-		} else {
+		}
+		else
+		{
 			return '';
 		}
 	}
@@ -7429,14 +7453,14 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * helper function for view to determine if filters should be shown
-	 * @return boolean
+	 * @return	bool
 	 */
 
 	public function getShowFilters()
 	{
-		$filters = $this->getFilters('listform_'. $this->getRenderContext());
+		$filters = $this->getFilters('listform_' . $this->getRenderContext());
 		$params = $this->getParams();
-		$filterMode = (int)$params->get('show-table-filters');
+		$filterMode = (int) $params->get('show-table-filters');
 		return (count($filters) > 0 && $filterMode !== 0) && JRequest::getVar('showfilters', 1) == 1 ?  true : false;
 	}
 
