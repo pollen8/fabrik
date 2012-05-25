@@ -62,6 +62,7 @@ echo "$form->error</div>";?>
 							<?php }?>
 						</div>
 					<?php } ?>
+					<div style="clear:left"></div>
 				</div>
 				<?php
 			}
