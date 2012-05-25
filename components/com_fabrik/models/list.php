@@ -224,17 +224,20 @@ class FabrikFEModelList extends JModelForm {
 		return $buttons;
 	}
 
-	function getPluginJsClasses()
+	function getPluginJsClasses(&$r = array())
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
 		$src = array();
 		$pluginManager->runPlugins('loadJavascriptClass', $this, 'list', $src);
-		$r = array();
-		foreach ($pluginManager->_data as $f) {
-			if (is_array($f)) {
+		foreach ($pluginManager->_data as $f)
+		{
+			if (is_array($f))
+			{
 				$r = array_merge($r, $f);
-			} else {
+			}
+			else
+			{
 				$r[] = $f;
 			}
 		}
@@ -243,8 +246,9 @@ class FabrikFEModelList extends JModelForm {
 
 	function getPluginJsObjects($container = null)
 	{
-		if (is_null($container)) {
-			$container = "listform_".$this->getId();
+		if (is_null($container))
+		{
+			$container = 'listform_' . $this->getId();
 		}
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
@@ -262,16 +266,19 @@ class FabrikFEModelList extends JModelForm {
 		FabrikHelperHTML::debug($_POST, 'render:post');
 		$profiler = JProfiler::getInstance('Application');
 		$id = $this->getId();
-		if (is_null($id) || $id == '0') {
+		if (is_null($id) || $id == '0')
+		{
 			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
 		}
 		$this->_outPutFormat = JRequest::getVar('format', 'html');
-		if ($this->_outPutFormat == 'fabrikfeed') {
+		if ($this->_outPutFormat == 'fabrikfeed')
+		{
 			$this->_outPutFormat = 'feed';
 		}
 
 		$item = $this->getTable();
-		if ($item->db_table_name == '') {
+		if ($item->db_table_name == '')
+		{
 			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
 		}
 		//cant set time limit in safe mode so suppress warning

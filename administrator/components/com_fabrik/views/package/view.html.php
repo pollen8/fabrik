@@ -27,7 +27,8 @@ class FabrikViewPackage extends JView
 
 	public function listform()
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::script($srcs);
 		$this->listform	= $this->get('PackageListForm');
 		JHtml::_('behavior.modal', 'a.modal');
 		parent::display('list');
@@ -40,14 +41,14 @@ class FabrikViewPackage extends JView
 	{
 		// Initialiase variables.
 		JHtml::_('behavior.modal', 'a.modal');
-		FabrikHelperHTML::framework();
-		$this->form		= $this->get('Form');
-		$this->item		= $this->get('Item');
-		$this->state	= $this->get('State');
+		$this->form = $this->get('Form');
+		$this->item = $this->get('Item');
+		$this->state = $this->get('State');
 		$this->listform	= $this->get('PackageListForm');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $this->get('Errors')))
+		{
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
@@ -75,10 +76,8 @@ class FabrikViewPackage extends JView
 		$opts->pagecontainer = 'packagepages';
 		$opts->layout = $layout;
 		$opts = json_encode($opts);
-		$script = "head.ready(function() {
-	PackageCanvas = new AdminPackage($opts)
-});";
-		$document->addScriptDeclaration($script);
+		$this->js = "PackageCanvas = new AdminPackage($opts);
+		new inline('#packagemenu li span');";
 		parent::display($tpl);
 	}
 
@@ -91,38 +90,44 @@ class FabrikViewPackage extends JView
 	protected function addToolbar()
 	{
 		JRequest::setVar('hidemainmenu', true);
-		$user		= JFactory::getUser();
-		$userId		= $user->get('id');
-		$isNew		= ($this->item->id == 0);
+		$user = JFactory::getUser();
+		$userId = $user->get('id');
+		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo		= FabrikHelper::getActions($this->state->get('filter.category_id'));
+		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
 
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_PACKAGE_NEW') : JText::_('COM_FABRIK_MANAGER_PACKAGE_EDIT'), 'package.png');
 
-		if ($isNew) {
+		if ($isNew)
+		{
 			// For new records, check the create permission.
-			if ($canDo->get('core.create')) {
+			if ($canDo->get('core.create'))
+			{
 				JToolBarHelper::apply('package.apply', 'JTOOLBAR_APPLY');
 				JToolBarHelper::save('package.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('package.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
 			JToolBarHelper::cancel('package.cancel', 'JTOOLBAR_CANCEL');
-		} else {
-
+		}
+		else
+		{
 			// Can't save the record if it's checked out.
-			if (!$checkedOut) {
+			if (!$checkedOut)
+			{
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
-				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId)) {
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId))
+				{
 					JToolBarHelper::apply('package.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('package.save', 'JTOOLBAR_SAVE');
-
 					// We can save this record, but check the create permission to see if we can return to make a new one.
-					if ($canDo->get('core.create')) {
+					if ($canDo->get('core.create'))
+					{
 						JToolBarHelper::addNew('package.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 					}
 				}
 			}
-			if ($canDo->get('core.create')) {
+			if ($canDo->get('core.create'))
+			{
 				JToolBarHelper::custom('package.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
 			JToolBarHelper::cancel('package.cancel', 'JTOOLBAR_CLOSE');

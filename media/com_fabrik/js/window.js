@@ -231,7 +231,6 @@ Fabrik.Window = new Class({
 	},
 	
 	drawWindow: function () {
-		console.log('drawWindow');
 		this.contentWrapperEl.setStyle('height', this.window.getDimensions().height - this.handle.getDimensions().height - 25);
 		this.contentWrapperEl.setStyle('width', this.window.getDimensions().width - 2);
 		// Resize iframe when window is resized

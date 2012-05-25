@@ -1085,7 +1085,7 @@ var FbForm = new Class({
 		});
 	},
 
-	deleteGroup : function (e) {
+	deleteGroup: function (e) {
 		Fabrik.fireEvent('fabrik.form.group.delete', [this, e]);
 		if (this.result === false) {
 			this.result = true;
@@ -1113,9 +1113,7 @@ var FbForm = new Class({
 			this.hideLastGroup(i, subGroup);
 
 		} else {
-
 			var toel = subGroup.getPrevious();
-
 			var myFx = new Fx.Tween(subGroup, {'property': 'opacity',
 				duration: 300,
 				onComplete: function () {
@@ -1131,9 +1129,8 @@ var FbForm = new Class({
 							}
 						}
 					}.bind(this));
-					
-					subgroups = group.getElements('.fabrikSubGroup');// minus the removed
-																														// group
+					// minus the removed group
+					subgroups = group.getElements('.fabrikSubGroup');
 					var nameMap = {};
 					this.formElements.each(function (e, k) {
 						if (e.groupid === i) {
@@ -1275,7 +1272,6 @@ var FbForm = new Class({
 				// NOW?)
 				container = input.getParent('.fabrikSubElementContainer');
 				var testid = (hasSubElements && container) ? container.id : input.id;
-
 				if (el.options.element === testid) {
 					lastinput = input;
 					formElementFound = true;

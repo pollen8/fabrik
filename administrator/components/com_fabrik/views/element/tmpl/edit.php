@@ -10,20 +10,20 @@
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.framework', true);
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
-FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js');
+$srcs = FabrikHelperHTML::framework();
+$srcs[] = 'media/com_fabrik/js/mootools-ext.js';
+$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+$srcs[] = 'administrator/components/com_fabrik/views/element/tmpl/adminelement.js';
 
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/pluginmanager.js');
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/element/tmpl/adminelement.js');
-
-JFactory::getDocument()->addScriptDeclaration($this->js);
+FabrikHelperHTML::script($srcs, $this->js);
 
 JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 ?>

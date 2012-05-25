@@ -10,11 +10,13 @@
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 $fbConfig = JComponentHelper::getParams('com_fabrik');
+$srcs = FabrikHelperHTML::framework();
+FabrikHelperHTML::script($srcs);
 ?>
 
 
@@ -28,37 +30,37 @@ $fbConfig = JComponentHelper::getParams('com_fabrik');
 				</li>
 
 				<li>
-					<?php echo $this->form->getLabel('host'). $this->form->getInput('host'); ?>
+					<?php echo $this->form->getLabel('host') . $this->form->getInput('host'); ?>
 				</li>
 
 				<li>
-					<?php echo $this->form->getLabel('database'). $this->form->getInput('database'); ?>
+					<?php echo $this->form->getLabel('database') . $this->form->getInput('database'); ?>
 				</li>
 
 				<li>
-					<?php echo $this->form->getLabel('user'). $this->form->getInput('user'); ?>
+					<?php echo $this->form->getLabel('user') . $this->form->getInput('user'); ?>
 				</li>
 
 			<?php if ($this->item->host != ""){?>
 				<li>
-					<label><?php echo JText::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS');  ?>
+					<label><?php echo JText::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS'); ?></label>
 				</li>
 			<?php } ?>
 
 				<li>
-					<?php echo $this->form->getLabel('password'). $this->form->getInput('password'); ?>
+					<?php echo $this->form->getLabel('password') . $this->form->getInput('password'); ?>
 				</li>
 
 				<li>
-					<?php echo $this->form->getLabel('passwordConf'). $this->form->getInput('passwordConf'); ?>
+					<?php echo $this->form->getLabel('passwordConf') . $this->form->getInput('passwordConf'); ?>
 				</li>
 
 				<li>
-					<?php echo $this->form->getLabel('published'). $this->form->getInput('published'); ?>
+					<?php echo $this->form->getLabel('published') . $this->form->getInput('published'); ?>
 				</li>
 
 				<li>
-					<?php echo $this->form->getLabel('id'). $this->form->getInput('id'); ?>
+					<?php echo $this->form->getLabel('id') . $this->form->getInput('id'); ?>
 				</li>
 			</ul>
 			<div class="clr"> </div>

@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE.DS.'components/com_fabrik/models/visualization.php');
 
 class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
@@ -287,7 +287,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 						}
 					} else {
 						//standard google map icon size
-						list($width, $height) = $this->markerSize(JPATH_SITE.DS.'images'.DS.'stories'.DS.$iconImg);
+						list($width, $height) = $this->markerSize(JPATH_SITE.DS.'images/stories'.DS.$iconImg);
 					}
 					//just for moosehunt!
 					$radomize = ($_SERVER['HTTP_HOST'] == 'moosehunt.mobi') ? true :false;

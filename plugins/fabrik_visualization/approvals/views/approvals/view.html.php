@@ -10,7 +10,6 @@ class fabrikViewApprovals extends JView
 
 	function display($tmpl = 'default')
 	{
-		FabrikHelperHTML::framework();
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
@@ -25,16 +24,19 @@ class fabrikViewApprovals extends JView
 
 		$this->assignRef('params', $model->getParams());
 		$tmpl = $this->params->get('approvals_layout', $tmpl);
-		$tmplpath = JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.'approvals'.DS.'views'.DS.'approvals'.DS.'tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_SITE . '/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 
-		$ab_css_file = $tmplpath.DS."template.css";
+		$ab_css_file = $tmplpath . '/template.css';
 
-		if (file_exists($ab_css_file)) {
-			JHTML::stylesheet('/plugins/fabrik_visualization/approvals/views/approvals/tmpl/'.$tmpl.'/template.css');
+		if (file_exists($ab_css_file))
+		{
+			JHTML::stylesheet('/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tmpl . '/template.css');
 		}
 
-		FabrikHelperHTML::script('plugins/fabrik_visualization/approvals/approvals.js', "var approvals = new fbVisApprovals('approvals_".$id."');");
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'plugins/fabrik_visualization/approvals/approvals.js';
+		FabrikHelperHTML::script($srcs, "var approvals = new fbVisApprovals('approvals_" . $id . "');");
 
 		$text = $this->loadTemplate();
 		$opt = JRequest::getVar('option');
@@ -48,7 +50,6 @@ class fabrikViewApprovals extends JView
 		JRequest::setVar('option', $opt);
 		echo $text;
 	}
-
 
 }
 ?>

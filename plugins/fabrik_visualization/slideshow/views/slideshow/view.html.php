@@ -10,7 +10,7 @@ class fabrikViewSlideshow extends JView
 
 	function display($tmpl = 'default')
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
 		$model= $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
@@ -35,32 +35,32 @@ class fabrikViewSlideshow extends JView
 		$tmpl = $pluginParams->get('slideshow_viz_layout', $tmpl);
 		$tmplpath = $model->pathBase.'slideshow/views/slideshow/tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
+		$srcs[] = 'media/com_fabrik/js/list.js';
 		if ($this->get('RequiredFiltersFound'))
 		{
-			FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.js');
-			$slideshow_viz_type = $pluginParams->get('slideshow_viz_type', 1);
-			switch ($slideshow_viz_type)
+			$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
+			$mode = $pluginParams->get('slideshow_viz_type', 1);
+			switch ($mode)
 			{
 				case 1:
 					break;
 				case 2:
-					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js');
+					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.kenburns.js';
 					break;
 				case 3:
-					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.push.js');
+					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.push.js';
 					break;
 				case 4:
-					FabrikHelperHTML::script('components/com_fabrik/libs/slideshow2/js/slideshow.fold.js');
+					$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.fold.js';
 					break;
 				default:
 					break;
 			}
 
 			JHTML::stylesheet('components/com_fabrik/libs/slideshow2/css/slideshow.css');
-			FabrikHelperHTML::script('plugins/fabrik_visualization/slideshow/slideshow.js');
+			$srcs[] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
-		FabrikHelperHTML::addScriptDeclaration($this->js);
+		FabrikHelperHTML::script($srcs, $this->js);
 
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);

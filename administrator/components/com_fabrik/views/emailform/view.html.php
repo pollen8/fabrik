@@ -14,23 +14,27 @@ jimport('joomla.application.component.view');
 class fabrikViewEmailform extends JView
 {
 
-	var $_template 	= null;
-	var $_errors 	= null;
-	var $_data 		= null;
-	var $_rowId 	= null;
-	var $_params 	= null;
+	var $_template = null;
+	var $_errors = null;
+	var $_data = null;
+	var $_rowId = null;
+	var $_params = null;
 	var $isMambot = null;
 
-	var $_id 			= null;
+	var $_id = null;
 
 	function display()
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::script($srcs);
 		$model = JModel::getInstance('form', 'FabrikFEModel');
 		$post = JRequest::get('post');
-		if (!array_key_exists('youremail', $post)) {
+		if (!array_key_exists('youremail', $post))
+		{
 			FabrikHelperHTML::emailForm($model);
-		} else {
+		}
+		else
+		{
 			$to = $template = '';
 			$ok = $this->sendMail($to);
 			FabrikHelperHTML::emailSent($to, $ok);
@@ -44,13 +48,15 @@ class fabrikViewEmailform extends JView
 		// First, make sure the form was posted from a browser.
 		// For basic web-forms, we don't care about anything
 		// other than requests from a browser:
-		if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+		if (!isset($_SERVER['HTTP_USER_AGENT']))
+		{
 			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		// Make sure the form was indeed POST'ed:
 		//  (requires your html form to use: action="post")
-		if (!$_SERVER['REQUEST_METHOD'] == 'POST') {
+		if (!$_SERVER['REQUEST_METHOD'] == 'POST')
+		{
 			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
@@ -65,9 +71,12 @@ class fabrikViewEmailform extends JView
 
 		// Loop through each POST'ed value and test if it contains
 		// one of the $badStrings:
-		foreach ($_POST as $k => $v) {
-			foreach ($badStrings as $v2) {
-				if (JString::strpos($v, $v2 ) !== false) {
+		foreach ($_POST as $k => $v)
+		 {
+			foreach ($badStrings as $v2)
+			{
+				if (JString::strpos($v, $v2 ) !== false)
+				{
 					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
 				}
 			}
@@ -76,14 +85,15 @@ class fabrikViewEmailform extends JView
 		// Made it past spammer test, free up some memory
 		// and continue rest of script:
 		unset($k, $v, $v2, $badStrings);
-		$email 				= JRequest::getVar('email', '');
-		$yourname 			= JRequest::getVar('yourname', '');
-		$youremail 			= JRequest::getVar('youremail', '');
-		$subject_default 	= JText::sprintf( 'Email from', $yourname);
+		$email = JRequest::getVar('email', '');
+		$yourname = JRequest::getVar('yourname', '');
+		$youremail = JRequest::getVar('youremail', '');
+		$subject_default = JText::sprintf( 'Email from', $yourname);
 		$subject = JRequest::getVar('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
-		if (!$email || !$youremail || ( JMailHelper::isEmailAddress($email) == false) || (JMailHelper::isEmailAddress($youremail) == false)) {
+		if (!$email || !$youremail || (JMailHelper::isEmailAddress($email) == false) || (JMailHelper::isEmailAddress($youremail) == false))
+		{
 			JError::raiseError(500, JText::_('EMAIL_ERR_NOINFO'));
 		}
 
@@ -97,7 +107,6 @@ class fabrikViewEmailform extends JView
 
 		// mail function
 		JUTility::sendMail($youremail, $yourname, $email, $subject, $msg);
-
 	}
 
 }

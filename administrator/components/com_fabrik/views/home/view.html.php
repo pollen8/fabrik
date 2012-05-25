@@ -28,7 +28,8 @@ class FabrikViewHome extends JView
 	 */
 	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::script($srcs);
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_log')->where('message_type != ""')->order('timedate_created DESC');

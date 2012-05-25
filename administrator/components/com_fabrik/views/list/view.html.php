@@ -28,9 +28,9 @@ class FabrikViewList extends JView
 	/**
 	 * Display the list
 	 */
+	
 	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
 		// Initialiase variables.
 		$this->form	= $this->get('Form');
 		$this->item	= $this->get('Item');
@@ -39,23 +39,28 @@ class FabrikViewList extends JView
 		$this->state = $this->get('State');
 		$this->js = $this->get('Js');
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $this->get('Errors')))
+		{
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
 
 		$this->addToolbar();
-		if ($this->item->id == 0) {
+		if ($this->item->id == 0)
+		{
 			$this->order_by = array(JText::_('COM_FABRIK_AVAILABLE_AFTER_SAVE'));
 			$this->group_by = JText::_('COM_FABRIK_AVAILABLE_AFTER_SAVE');
-		} else {
+		}
+		else
+		{
 			$this->order_by = array();
-
 			$orderbys = FabrikWorker::JSONtoData($this->item->order_by, true);
-			foreach ($orderbys as $orderby) {
+			foreach ($orderbys as $orderby)
+			{
 				$this->order_by[] = $formModel->getElementList('order_by[]', $orderby, true, false, false);
 			}
-			if (empty($this->order_by)) {
+			if (empty($this->order_by))
+			{
 				$this->order_by[] = $formModel->getElementList('order_by[]', '', true, false, false);
 			}
 			$orderDir[] = JHTML::_('select.option', 'ASC', JText::_('COM_FABRIK_ASCENDING'));
@@ -63,10 +68,12 @@ class FabrikViewList extends JView
 
 			$orderdirs = FabrikWorker::JSONtoData($this->item->order_dir, true);
 			$this->order_dir = array();
-			foreach ($orderdirs as $orderdir) {
+			foreach ($orderdirs as $orderdir)
+			{
 				$this->order_dir[] = JHTML::_( 'select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', $orderdir);
 			}
-			if (empty($this->order_dir)) {
+			if (empty($this->order_dir))
+			{
 				$this->order_dir[] = JHTML::_( 'select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', '');
 			}
 			$this->group_by = $formModel->getElementList('group_by', $this->item->group_by, true, false, false);
@@ -101,7 +108,7 @@ class FabrikViewList extends JView
 		foreach ($cid as $id)
 		{
 			$model->setId($id);
-			$table =& $model->getTable();
+			$table = $model->getTable();
 			$formModel = $model->getFormModel();
 			$row = new stdClass();
 			$row->id = $id;
@@ -110,7 +117,8 @@ class FabrikViewList extends JView
 			$row->formlabel = $formModel->getForm()->label;
 			$groups = $formModel->getGroupsHiarachy();
 			$row->groups = array();
-			foreach ($groups as $group) {
+			foreach ($groups as $group)
+			{
 				$grouprow = new stdClass();
 				$g = $group->getGroup();
 				$grouprow->id = $g->id;
@@ -126,46 +134,50 @@ class FabrikViewList extends JView
 
 	/**
 	 * Add the page title and toolbar.
-	 *
 	 * @since	1.6
 	 */
+
 	protected function addToolbar()
 	{
 		JRequest::setVar('hidemainmenu', true);
 
-		$user		= JFactory::getUser();
-		$userId		= $user->get('id');
-		$isNew		= ($this->item->id == 0);
+		$user = JFactory::getUser();
+		$userId = $user->get('id');
+		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo		= FabrikHelper::getActions($this->state->get('filter.category_id'));
-
+		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_LIST_NEW') : JText::_('COM_FABRIK_MANAGER_LIST_EDIT'), 'list.png');
-
-		if ($isNew) {
+		if ($isNew)
+		{
 			// For new records, check the create permission.
-			if ($canDo->get('core.create')) {
+			if ($canDo->get('core.create'))
+			{
 				JToolBarHelper::apply('list.apply', 'JTOOLBAR_APPLY');
 				JToolBarHelper::save('list.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('list.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
 			JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CANCEL');
-		} else {
-
+		}
+		else
+		{
 			// Can't save the record if it's checked out.
-			if (!$checkedOut) {
+			if (!$checkedOut)
+			{
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
-				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId)) {
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId))
+				{
 					JToolBarHelper::apply('list.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('list.save', 'JTOOLBAR_SAVE');
-
 					// We can save this record, but check the create permission to see if we can return to make a new one.
-					if ($canDo->get('core.create')) {
+					if ($canDo->get('core.create'))
+					{
 						JToolBarHelper::addNew('list.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 					}
 				}
 			}
 			// If checked out, we can still save
-			if ($canDo->get('core.create')) {
+			if ($canDo->get('core.create'))
+			{
 				JToolBarHelper::custom('list.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
 			JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
@@ -176,7 +188,6 @@ class FabrikViewList extends JView
 
 	/**
 	 * Add the page title and toolbar.
-	 *
 	 * @since	1.6
 	 */
 
@@ -191,7 +202,6 @@ class FabrikViewList extends JView
 
 	/**
 	 * Add the page title and toolbar.
-	 *
 	 * @since   3.0
 	 */
 

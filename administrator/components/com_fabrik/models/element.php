@@ -384,27 +384,21 @@ class FabrikModelElement extends JModelAdmin
 		JText::script('COM_FABRIK_SELECT_DO');
 		JText::script('COM_FABRIK_WHERE_THIS');
 		JText::script('COM_FABRIK_PLEASE_SELECT');
-		$js =
-	"
-  head.ready(function() {
-  	var opts = $opts;";
-
-		$js .= "\t\tvar aPlugins = [];\n";
+		$js = "\tvar opts = $opts;";
+		$js .= "\tvar aPlugins = [];\n";
 		foreach ($abstractPlugins as $abstractPlugin)
 		{
-			$js .= "\t\taPlugins.push(".$abstractPlugin['js'].");\n";
+			$js .= "\taPlugins.push(".$abstractPlugin['js'].");\n";
 		}
-		$js .= "controller = new fabrikAdminElement(aPlugins, opts);\n";
+		$js .= "\tcontroller = new fabrikAdminElement(aPlugins, opts);\n";
 		foreach ($plugins as $plugin)
 		{
 			$opts = new stdClass();
 			$opts->location = @$plugin['location'];
 			$opts->event = @$plugin['event'];
 			$opts = json_encode($opts);
-			$js .= "controller.addAction('" . $plugin['html'] . "', '" . $plugin['plugin'] . "'," . $opts . ", false);\n";
+			$js .= "\tcontroller.addAction('" . $plugin['html'] . "', '" . $plugin['plugin'] . "'," . $opts . ", false);\n";
 		}
-		$js .= "
-});";
 		return $js;
 	}
 

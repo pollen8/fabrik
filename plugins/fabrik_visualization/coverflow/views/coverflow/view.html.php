@@ -10,7 +10,7 @@ class fabrikViewCoverflow extends JView
 
 	function display($tmpl = 'default')
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
@@ -31,13 +31,11 @@ class fabrikViewCoverflow extends JView
 		$pluginParams = $model->getPluginParams();
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/coverflow/views/coverflow/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
+		$srcs[] = 'media/com_fabrik/js/list.js';
 		//assign something to Fabrik.blocks to ensure we can clear filters
-		$str = "head.ready(function() {
-			fabrikChart{$this->row->id} = {};";
-		$str .= "\n" . "Fabrik.addBlock('vizualization_{$this->row->id}', fabrikChart{$this->row->id});
-		});";
-		FabrikHelperHTML::addScriptDeclaration($str);
+		$str = "fabrikChart{$this->row->id} = {};";
+		$str .= "\n" . "Fabrik.addBlock('vizualization_{$this->row->id}', fabrikChart{$this->row->id});";
+		FabrikHelperHTML::addScriptDeclaration($srcs, $str);
 		echo parent::display();
 	}
 }
