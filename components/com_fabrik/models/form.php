@@ -1223,6 +1223,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			// $$$ rob - erm is $fields needed?
 			$fields = $listModel->getDBFields($listModel->getTable()->db_table_name);
 			$aKey = $listModel->getPrimaryKeyAndExtra();
+			if (!$aKey) {
+				// $$$ hugh - most likely a view, so lets not try and store it
+				continue;
+			}
 			$aKey = $aKey[0];
 			$listModel->getTable()->db_primary_key = $aKey['colname'];
 			$joinDb = $listModel->getDb();
@@ -2433,7 +2437,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function hasErrors()
 	{
 		$errorsFound = !empty($this->_arErrors);
-		//test if its a resumed paged form 
+		//test if its a resumed paged form
 		// if so _arErrors will be filled so check all elements had no errors
 		$srow = $this->getSessionData();
 		$multiPageErrors = false;
@@ -2453,7 +2457,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		return $errorsFound;
 	}
-	
+
 	/**
 	 * main method to get the data to insert into the form
 	 * @return	array	form's data
@@ -2488,7 +2492,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			JDEBUG ? $profiler->mark('formmodel getData: table row loaded') : null;
 			$this->_aJoinObjs = $listModel->getJoins();
 			JDEBUG ? $profiler->mark('formmodel getData: joins loaded') : null;
-			
+
 			if ($this->hasErrors())
 			{
 				// $$$ hugh - if we're a mambot, reload the form session state we saved in
