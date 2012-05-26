@@ -12,26 +12,24 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
-FabrikHelperHTML::script('media/com_fabrik/js/mootools-ext.js');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
 $fbConfig = JComponentHelper::getParams('com_fabrik');
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/visualization/adminvisualization.js');
+$srcs = FabrikHelperHTML::framework();
+$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+$srcs[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
 
 $opts = new stdClass();
 $opts->plugin = $this->item->plugin;
 
 $js = "
-head.ready(function() {
-	var options = ".json_encode($opts).";
+	var options = " . json_encode($opts) . ";
 	var controller = new AdminVisualization(options);
-});\n";
+";
 
-JFactory::getDocument()->addScriptDeclaration($js);
+FabrikHelperHTML::script($srcs, $js);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">

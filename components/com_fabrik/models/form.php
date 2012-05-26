@@ -2266,14 +2266,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							{
 								$rawval = str_replace('`', '', $rawval);
 							}
-							$aEls[$label . "(raw)"] = JHTML::_('select.option', $rawval, $label . '(raw)');
+							$aEls[$label . '(raw)'] = JHTML::_('select.option', $rawval, $label . '(raw)');
 						}
 					}
 				}
-				$aEls[$label] = JHTML::_('select.option', $val, $label);
+				$aEls[] = JHTML::_('select.option', $val, $label);
 			}
 		}
-		ksort($aEls);
+		asort($aEls);
 		return $aEls;
 	}
 

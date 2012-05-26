@@ -136,7 +136,9 @@ class fabrikModelTimeline extends FabrikFEModelVisualization {
 		$json->events = $eventdata;
 		$json = json_encode($json);
 		$str = "var timeline = new FbVisTimeline($json);";
-		FabrikHelperHTML::script('plugins/fabrik_visualization/timeline/timeline.js', $str);
+		return $str;
+		$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
+		FabrikHelperHTML::script($srcs, $str);
 	}
 
 	function setListIds()

@@ -4088,12 +4088,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * should the element's data be returned in the search all?
-	 * @param bool is the elements' list is advanced search all mode?
+	 * @param	bool	is the elements' list is advanced search all mode?
+	 * @return	bool	true
 	 */
 
 	function includeInSearchAll($advancedMode = false)
 	{
-		if ($this->isJoin() && $advancedMode) {
+		if ($this->isJoin() && $advancedMode)
+		{
 			return false;
 		}
 		return $this->getParams()->get('inc_in_search_all', true);
@@ -4103,8 +4105,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * get the value to use for graph calculations
 	 * can be overwritten in plugin
 	 * see fabriktimer which converts the value into seconds
-	 * @param string $v
-	 * @return mixed
+	 * @param	string	$v
+	 * @return	mixed
 	 */
 
 	public function getCalculationValue($v)

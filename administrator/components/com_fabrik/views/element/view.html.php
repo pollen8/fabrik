@@ -34,16 +34,16 @@ class FabrikViewElement extends JView
 
 	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
-		if ($this->getLayout() == 'confirmupdate') {
+		if ($this->getLayout() == 'confirmupdate')
+		{
 			$this->confirmupdate();
 			return;
 		}
-		require_once JPATH_COMPONENT.'/helpers/adminhtml.php';
+		require_once JPATH_COMPONENT . '/helpers/adminhtml.php';
 		// Initialiase variables.
-		$this->form			= $this->get('Form');
-		$this->item			= $this->get('Item');
-		$this->state		= $this->get('State');
+		$this->form = $this->get('Form');
+		$this->item = $this->get('Item');
+		$this->state = $this->get('State');
 		$this->pluginFields = $this->get('PluginHTML');
 
 		$this->js = $this->get('Js');
@@ -51,7 +51,8 @@ class FabrikViewElement extends JView
 		$this->jsevents	= $this->get('JsEvents');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $this->get('Errors')))
+		{
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
@@ -59,14 +60,15 @@ class FabrikViewElement extends JView
 		$this->addToolbar();
 
 		//used for js part of form
-		if ($this->item->id == 0) {
+		if ($this->item->id == 0)
+		{
 			$this->elements = array(JText::_('COM_FABRIK_AVAILABLE_AFTER_SAVE'));
-		} else {
+		}
+		else
+		{
 			$this->elements = $this->get('Elements');
 		}
-
 		$this->assign('parent', $this->get('Parent'));
-
 		parent::display($tpl);
 	}
 

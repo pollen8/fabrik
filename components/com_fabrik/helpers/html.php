@@ -392,16 +392,28 @@ EOD;
 
 	/**
 	 * check for a custom css file and include it if it exists
-	 * @param string $path NOT including JPATH_SITE (so relative too root dir
-	 * @return false
+	 * @param	string	$path NOT including JPATH_SITE (so relative too root dir) may include querystring
+	 * @return	bool	if loaded or not
 	 */
 
 	public static function stylesheetFromPath($path)
 	{
-		if (JFile::exists(JPATH_SITE . '/' . $path))
+		if (strstr($path, '?'))
+		{
+			$file = explode('?', $path);
+			$file = $file[0];
+		}
+		else
+		{
+			$file = $path;
+		}
+
+		if (JFile::exists(JPATH_SITE . '/' . $file))
 		{
 			FabrikHelperHTML::stylesheet($path);
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -633,7 +645,6 @@ EOD;
 				$src[] = 'media/com_fabrik/js/icons.js';
 				$src[] = 'media/com_fabrik/js/icongen.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
-				//$src[] = 'media/com_fabrik/js/lib/tips/floatingtips.js';
 				$src[] = 'media/com_fabrik/js/tips.js';
 				$src[] = 'media/com_fabrik/js/window.js';
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
@@ -645,7 +656,6 @@ EOD;
 
 				$script = array();
 				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
-				FabrikHelperHTML::script($src, implode("\n", $script));
 
 				$tipOpts = FabrikHelperHTML::tipOpts();
 				FabrikHelperHTML::addScriptDeclaration("head.ready(function () {
@@ -660,8 +670,9 @@ EOD;
 });
 				");
 			}
-			self::$framework = true;
+			self::$framework = $src;
 		}
+		return self::$framework;
 	}
 
 	/**
@@ -758,13 +769,10 @@ EOD;
 		{
 			return;
 		}
-
 		$config = JFactory::getConfig();
 		$debug = $config->get('debug');
-		//$uncompressed	= $debug ? '-uncompressed' : '';
 		$ext = $debug || JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
-
-		$file = (array)$file;
+		$file = (array) $file;
 		$src = array();
 		foreach ($file as $f)
 		{
@@ -786,7 +794,7 @@ EOD;
 				{
 					$f = $compressedFile;
 				}
-				$f = COM_FABRIK_LIVESITE.$f;
+				$f = COM_FABRIK_LIVESITE . $f;
 			}
 			if (JRequest::getCmd('format') == 'raw')
 			{
@@ -808,6 +816,7 @@ EOD;
 			}
 			else
 			{
+				//$onLoad = "(function() {\n " . $onLoad . "\n //end load func \n})";
 				$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
 			}
 			$src[] = $onLoad;

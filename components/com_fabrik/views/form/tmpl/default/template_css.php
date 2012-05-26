@@ -221,6 +221,7 @@ section for dropdowns radio buttons etc**/
 
 #{$view}_$c .fabrikSubGroupElements{
 	width:80%;
+	border: 1px dotted #666;
 	/* float:left; */
 }
 

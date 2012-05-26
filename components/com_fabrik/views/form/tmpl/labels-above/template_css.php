@@ -58,7 +58,7 @@ echo "
 
 #{$view}_$c fieldset ul{
 	list-style:none;
-	padding:40px 10px 20px 10px;
+	padding: 20px 10px 20px 10px;
 	margin:0;
 }
 
@@ -186,12 +186,24 @@ section for dropdowns radio buttons etc**/
 }
 
 #{$view}_$c .fabrikSubGroup{
-	clear:both;
+	border-bottom: 1px dashed #ccc;
+	padding: 10px 0 15px 0;
+	position: relative;
+}
+
+#{$view}_$c legend +.fabrikSubGroup{
+	margin-top:25px;
 }
 
 #{$view}_$c .fabrikSubGroupElements{
-	width:80%;
-	float:left;
+	
+}
+
+#{$view}_$c .fabrikGroupRepeater{
+	position: absolute;
+	right: 10px;
+	padding-top: 20px;
+	top: 0;
 }
 
 #{$view}_$c .geo{
@@ -314,8 +326,6 @@ margin:0;
 	padding-right: 5px;
 }
 
-
-
 #{$view}_$c .fabrikLabel {
 	min-height:1px; /*for elements with no label txt*/
 }
@@ -324,12 +334,6 @@ margin:0;
 	padding-top: 15px;
 	clear: left;
 	padding-bottom: 15px;
-}
-
-#{$view}_$c .fabrikGroupRepeater {
-	padding-top: 50px;
-	float: left;
-	width: 19%;
 }
 
 /** used by password element */

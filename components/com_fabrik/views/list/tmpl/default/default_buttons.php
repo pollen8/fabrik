@@ -9,10 +9,10 @@
 			</a>
 		</li>
 	<?php }
-	if ($this->showFilters) {?>
+	if ($this->showClearFilters) {?>
 		<li>
 		<?php echo $this->clearFliterLink;?>
-			</li>
+		</li>
 	<?php }
 	if ($this->showFilters && $this->toggleFilters) {?>
 		<li>
@@ -23,7 +23,7 @@
 		</li>
 	<?php }
 	if ($this->advancedSearch !== '') {
-		echo '<li>'.$this->advancedSearch.'</li>';
+		echo '<li>' . $this->advancedSearch . '</li>';
 	}
 	if ($this->canGroupBy) {?>
 		<li>

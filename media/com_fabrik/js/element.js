@@ -350,16 +350,34 @@ var FbElement =  new Class({
 				e.id = this._decreaseId(e.id, delIndex);
 			}.bind(this));
 		} else {
-			this.element.name = this._decreaseName(this.element.name, delIndex);
+			if (typeOf(this.element.name) !== 'null') {
+				this.element.name = this._decreaseName(this.element.name, delIndex);
+			}
 		}
-		this.element.id = this._decreaseId(this.element.id, delIndex);
+		if (typeOf(this.element.id) !== 'null') {
+			this.element.id = this._decreaseId(this.element.id, delIndex);
+		}
 		return this.element.id;
 	},
 	
-	_decreaseId: function (n, delIndex) {
+	/**
+	 * @param	string	name to decrease
+	 * @param	int		delete index
+	 * @param	string	name suffix to keep (used for db join autocomplete element)
+	 */
+	
+	_decreaseId: function (n, delIndex, suffix) {
+		var suffixFound = false;
+		suffix = suffix ? suffix : false;
+		if (suffix !== false) {
+			if (n.contains(suffix)) {
+				n = n.replace(suffix, '');
+				suffixFound = true;
+			}
+		}
 		var bits = $A(n.split('_'));
 		var i = bits.getLast();
-		if (i !== i.toInt()) {
+		if (typeOf(i.toInt()) === 'null') {
 			return bits.join('_');
 		}
 		if (i >= 1  && i > delIndex) {
@@ -367,11 +385,28 @@ var FbElement =  new Class({
 		}
 		bits.splice(bits.length - 1, 1, i);
 		var r = bits.join('_');
+		if (suffixFound) {
+			r += suffix;
+		}
 		this.options.element = r;
 		return r;
 	},
+	
+	/**
+	 * @param	string	name to decrease
+	 * @param	int		delete index
+	 * @param	string	name suffix to keep (used for db join autocomplete element)
+	 */
 
-	_decreaseName: function (n, delIndex) {
+	_decreaseName: function (n, delIndex, suffix) {
+		suffixFound = false;
+		suffix = suffix ? suffix : false;
+		if (suffix !== false) {
+			if (n.contains(suffix)) {
+				n = n.replace(suffix, '');
+				suffixFound = true;
+			}
+		}
 		var namebits = n.split('][');
 		var i = namebits[2].replace(']', '').toInt();
 		if (i >= 1  && i > delIndex) {
@@ -382,6 +417,9 @@ var FbElement =  new Class({
 		}
 		namebits.splice(2, 1, i);
 		var r = namebits.join('][');
+		if (suffixFound) {
+			r += suffix;
+		}
 		return r;
 	},
 	

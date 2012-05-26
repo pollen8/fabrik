@@ -10,7 +10,7 @@
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
@@ -20,12 +20,12 @@ JHtml::script('media/com_fabrik/js/mootools-ext.js');
 $fbConfig = JComponentHelper::getParams('com_fabrik');
 
 $document = JFactory::getDocument();
+$srcs = FabrikHelperHTML::framework();
+$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+$srcs[] = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
 
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/pluginmanager.js');
-FabrikHelperHTML::script('administrator/components/com_fabrik/views/list/tmpl/adminlist.js');
-
-FabrikHelperHTML::addScriptDeclaration($this->js);
+FabrikHelperHTML::script($srcs, $this->js);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">

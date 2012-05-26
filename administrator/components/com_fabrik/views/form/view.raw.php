@@ -34,7 +34,6 @@ class FabrikViewForm extends JView
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
-		FabrikHelperHTML::framework();
 		$this->form	= $this->get('Form');
 		$this->item	= $this->get('Item');
 		$this->state = $this->get('State');
@@ -43,13 +42,12 @@ class FabrikViewForm extends JView
 		$this->plugins = $this->get('Plugins');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
+		if (count($errors = $this->get('Errors')))
+		{
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-
 		$this->addToolbar();
-
 		parent::display($tpl);
 	}
 

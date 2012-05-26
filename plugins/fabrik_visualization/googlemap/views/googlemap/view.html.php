@@ -10,7 +10,7 @@ class fabrikViewGooglemap extends JView
 
 	function display($tmpl = 'default')
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::slimbox();
 		$document = JFactory::getDocument();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -24,20 +24,16 @@ class fabrikViewGooglemap extends JView
 		$this->assign('params', $params);
 		$tmpl = $params->get('fb_gm_layout', $tmpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tmpl;
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
+		$srcs[] = 'media/com_fabrik/js/list.js';
 
 		$uri = JURI::getInstance();
-		if ($params->get('fb_gm_center') == 'userslocation') {
+		if ($params->get('fb_gm_center') == 'userslocation')
+		{
 			$document->addScript($uri->getScheme() . '://code.google.com/apis/gears/gears_init.js');
-			FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
+			$srcs[] = 'components/com_fabrik/libs/geo-location/geo.js';
 		}
 
-		$src = $this->get('PluginJsClasses');
-		FabrikHelperHTML::script($src);
-		$tableplugins = "head.ready(function() {\n"
-		.$this->get('PluginJsObjects')
-		."\n});";
-		FabrikHelperHTML::addScriptDeclaration($tableplugins);
+		$model->getPluginJsClasses($srcs);
 		global $ispda;
 		if ($ispda == 1)
 		{ //pdabot
@@ -48,10 +44,10 @@ class fabrikViewGooglemap extends JView
 		{
 			$src = $uri->getScheme() . '://maps.google.com/maps/api/js?sensor=' . $params->get('fb_gm_sensor', 'false');
 			$document->addScript($src);
-			FabrikHelperHTML::script('plugins/fabrik_visualization/googlemap/googlemap.js');
+			$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
 			if ((int) $this->params->get('fb_gm_clustering', '0') == 1)
 			{
-				FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markerclusterer/src/markerclusterer.js');
+				$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclusterer/src/markerclusterer.js';
 				//FabrikHelperHTML::script('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js');
 				//FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
 			}
@@ -64,6 +60,7 @@ class fabrikViewGooglemap extends JView
 			FabrikHelperHTML::addScriptDeclaration($js);
 			$template = null;
 		}
+		FabrikHelperHTML::script($srcs, $this->get('PluginJsObjects'));
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tmpl . '/template.css');
 		//check and add a general fabrik custom css file overrides template css and generic table css
 		FabrikHelperHTML::stylesheetFromPath('media/com_fabrik/css/custom.css');

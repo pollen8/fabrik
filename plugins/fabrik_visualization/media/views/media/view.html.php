@@ -10,13 +10,14 @@ class fabrikViewMedia extends JView
 
 	function display($tmpl = 'default')
 	{
-		FabrikHelperHTML::framework();
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
 		$this->row = $model->getVisualization();
 		$model->setListIds();
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/list.js';
+		FabrikHelperHTML::script($srcs);
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));

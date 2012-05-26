@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 
@@ -23,7 +23,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 
  	function render()
  	{
- 		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
+ 		require_once(COM_FABRIK_FRONTEND . '/helpers/html.php');
  		$app = JFactory::getApplication();
  		$params = $this->getParams();
  		$config	= JFactory::getConfig();
@@ -32,56 +32,60 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 
  		$document->addScript("http://api.simile-widgets.org/runway/1.0/runway-api.js");
 		$c = 0;
-		$images = (array)$params->get('coverflow_image');
-		$titles = (array)$params->get('coverflow_title');
-		$subtitles = (array)$params->get('coverflow_subtitle');
+		$images = (array) $params->get('coverflow_image');
+		$titles = (array) $params->get('coverflow_title');
+		$subtitles = (array) $params->get('coverflow_subtitle');
 
 		$config = JFactory::getConfig();
 
 		$listids = (array)$params->get('coverflow_table');
 		$eventdata = array();
-		foreach ($listids as $listid) {
+		foreach ($listids as $listid)
+		{
  			$listModel = JModel::getInstance('List', 'FabrikFEModel');
 	 		$listModel->setId($listid);
 	 		$list = $listModel->getTable();
 			$nav = $listModel->getPagination(0, 0, 0);
-
-			$image =  $images[$c];
-			$title =  $titles[$c];
+			$image = $images[$c];
+			$title = $titles[$c];
 			$subtitle = $subtitles[$c];
-
 			$data = $listModel->getData();
-
-			if ($listModel->canView() || $listModel->canEdit()) {
-
+			if ($listModel->canView() || $listModel->canEdit())
+			{
 				$elements = $listModel->getElements();
 				$imageElement = JArrayHelper::getValue($elements, FabrikString::safeColName($image));
 				$action = $app->isAdmin() ? "task" : "view";
 				$nextview = $listModel->canEdit() ? "form" : "details";
 
-				foreach ($data as $group) {
-					if (is_array($group)) {
-					foreach ($group as $row) {
+				foreach ($data as $group)
+				{
+					if (is_array($group))
+					{
+					foreach ($group as $row)
+					{
 						$event = new stdClass();
-						if (!method_exists($imageElement, 'getStorage')) {
+						if (!method_exists($imageElement, 'getStorage'))
+						{
 							//JError::raiseError(500, 'Looks like you selected a element other than a fileupload element for the coverflows image element');
-							switch (get_class($imageElement)) {
+							switch (get_class($imageElement))
+							{
 								case 'FabrikModelFabrikImage':
 									$rootFolder = $imageElement->getParams()->get('selectImage_root_folder');
 									$rootFolder = ltrim($rootFolder, '/');
 									$rootFolder = rtrim($rootFolder, '/');
-									$event->image = COM_FABRIK_LIVESITE . 'images/stories/'.$rootFolder.'/'.$row->{$image."_raw"};
+									$event->image = COM_FABRIK_LIVESITE . 'images/stories/' . $rootFolder . '/' . $row->{$image."_raw"};
 									break;
 								default:
 									$event->image = isset($row->{$image."_raw"}) ? $row->{$image."_raw"} : '';
 									break;
 							}
-
-						} else {
+						}
+						else
+						{
 							$event->image = $imageElement->getStorage()->pathToURL($row->{$image."_raw"});
 						}
-						$event->title = (string)strip_tags($row->$title);
-						$event->subtitle = (string)strip_tags($row->$subtitle);
+						$event->title = (string) strip_tags($row->$title);
+						$event->subtitle = (string) strip_tags($row->$subtitle);
 						$eventdata[] = $event;
 					}
 					}
@@ -90,13 +94,16 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 			$c ++;
 		}
 		$json = json_encode($eventdata);
-		$str = "var coverflow = new FbVisCoverflow($json);";
-		FabrikHelperHTML::script($this->srcBase.'coverflow/coverflow.js', $str);
+		$str = "var coverflow = new FbVisCoverflow($json);"; 
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = $this->srcBase . 'coverflow/coverflow.js';
+		FabrikHelperHTML::script($srcs, $str);
  	}
 
 	function setListIds()
 	{
-		if (!isset($this->listids)) {
+		if (!isset($this->listids))
+		{
 			$params = $this->getParams();
 			$this->listids = (array) $params->get('coverflow_table');
 		}

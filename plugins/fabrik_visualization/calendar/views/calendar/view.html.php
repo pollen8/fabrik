@@ -10,7 +10,6 @@ class fabrikViewCalendar extends JView
 
 	function display($tmpl = 'default')
 	{
-		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
 		$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -43,7 +42,6 @@ class fabrikViewCalendar extends JView
 
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
-		FabrikHelperHTML::script('plugins/fabrik_visualization/calendar/calendar.js');
 		$params = $model->getParams();
 
 		//Get the active menu item
@@ -116,13 +114,15 @@ class fabrikViewCalendar extends JView
 		JText::script('PLG_VISUALIZATION_CALENDAR_EDIT');
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 
-		$str = "head.ready(function() {\n".
-		"  $this->calName = new fabrikCalendar('calendar_$calendar->id');\n".
+		$str = " $this->calName = new fabrikCalendar('calendar_$calendar->id');\n".
 		"  $this->calName.render($json);\n".
 		"  Fabrik.addBlock('calendar_" . $calendar->id . "', $this->calName);\n";
-		$str .= $legend . "\n});\n";
+		$str .= $legend . "\n";
 
-		FabrikHelperHTML::addScriptDeclaration($str);
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'plugins/fabrik_visualization/calendar/calendar.js';
+		FabrikHelperHTML::script($srcs, $str);
+		
 		$viewName = $this->getName();
 
 		$pluginParams = $model->getPluginParams();
