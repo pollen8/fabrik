@@ -1336,6 +1336,7 @@ class FabrikFEModelList extends JModelForm {
 			// $$$ rob 23/05/2012 if the search data is in the joined records we want to get the id's for the joined records and not the master record
 			// see http://fabrikar.com/forums/showthread.php?t=26400. This is a partial hack as I can't see how we know which joined record is really last
 			// $$$ rob 25/05/2012 - slight change so that we work our way up the pk/fk list until we find some ids.
+			// $$$ hugh, later in the day 25/05/2012 - big OOOOPS, see comment below about table_key vs table_join_key!
 			$joins = $this->getJoins();
 			//default to the primary key as before this fix
 			$lookupC = 0;
@@ -1345,8 +1346,10 @@ class FabrikFEModelList extends JModelForm {
 			{
 				if ($join->_params->get('type') !== 'element')
 				{
-					$lookUps[] = $join->table_join . '.' .  $join->table_key . ' AS __pk_val' . $lookupC;
-					$lookUpNames[] = $join->table_join . '.' .  $join->table_key;
+					// $$$ hugh - shurely shome mishtake?  New code was using $join->table_key here, I'm assuming
+					// this MUST need to be $join->table_join_key?
+					$lookUps[] = $join->table_join . '.' .  $join->table_join_key . ' AS __pk_val' . $lookupC;
+					$lookUpNames[] = $join->table_join . '.' .  $join->table_join_key;
 					$lookupC ++;
 				}
 			}
@@ -6854,7 +6857,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @param	string	plugin name
 	 * @return	bool
 	 */
-	
+
 	function unsetPluginQueryWhere($pluginName)
 	{
 		if (array_key_exists($pluginName, $this->_pluginQueryWhere))
@@ -7385,13 +7388,13 @@ class FabrikFEModelList extends JModelForm {
 		return $this->getId() . $this->renderContext;
 	}
 
-	
+
 	/**
 	 * lists can be rendered in articles, as components and in modules
 	 * we need to set a unique reference for them to avoid conflicts
 	 * @param	int		$id module/component list id
 	 */
-	
+
 	public function setRenderContext($id = null)
 	{
 		$app = JFactory::getApplication();
@@ -7419,11 +7422,11 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * when dealing with ajax requests filtering etc we want to take the listref from the 
+	 * when dealing with ajax requests filtering etc we want to take the listref from the
 	 * request array
 	 * @return	string	listref
 	 */
-	
+
 	protected function setRenderContextFromRequest()
 	{
 		$listref = JRequest::getVar('listref', '');
