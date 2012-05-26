@@ -225,6 +225,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $iCounter;//$rawvalues[$x];
 							$o->name = array_pop(explode(DS, $tkey));
 							$o->path = $tkey;
+							if ($fileinfo = $this->getStorage()->getFileInfo($o->path)) {
+								$o->size = $fileinfo['filesize'];
+							}
+							else {
+								$o->size = 'unknown';
+							}
 							$o->url = $this->getStorage()->pathToURL($tkey);
 							$o->recordid = $rawvalues[$x];
 							$o->params = json_decode($value[$x]['crop'][$tkey]);
@@ -242,6 +248,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							$o->id = 'alreadyuploaded_'.$element->id.'_0';
 							$o->name = array_pop($parts);
 							$o->path = $value[$x]->file;
+							if ($fileinfo = $this->getStorage()->getFileInfo($o->path)) {
+								$o->size = $fileinfo['filesize'];
+							}
+							else {
+								$o->size = 'unknown';
+							}
 							$o->url = $this->getStorage()->pathToURL($value[$x]->file);
 							$o->recordid = 0;
 							$o->params = json_decode($value[$x]->params);
@@ -255,6 +267,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $rawvalues[$x];
 							$o->name = array_pop($parts);
 							$o->path = $value[$x];
+							if ($fileinfo = $this->getStorage()->getFileInfo($o->path)) {
+								$o->size = $fileinfo['filesize'];
+							}
+							else {
+								$o->size = 'unknown';
+							}
 							$o->url = $this->getStorage()->pathToURL($value[$x]);
 							$o->recordid = $rawvalues[$x];
 							$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
@@ -640,8 +658,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		else
 		{
-			
-			if (JRequest::getVar('method') === 'ajax_upload') 
+
+			if (JRequest::getVar('method') === 'ajax_upload')
 			{
 				$aFile = $_FILES['file'];
 			}
@@ -653,7 +671,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				$aFile = $_FILES[$elName];
 			}
-			
+
 			if ($groupModel->canRepeat())
 			{
 				$myFileName = $aFile['name'][$repeatCounter];
@@ -851,7 +869,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if ($this->getValue($post) != 'Array,Array')
 			{
 				$raw = $this->getValue($post);
-				
+
 				if ($raw == '')
 				{
 					return true;
@@ -878,7 +896,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				return true;
 			}
-			
+
 			$ids = array_values($ids);
 			$saveParams = array();
 			$files = array_keys($crop);
@@ -1009,7 +1027,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			//make a scaled verios of the original image
 			$destWidth = (int) $origWidth * ($scale/100);
 			$destHeight = (int) $origHeight* ($scale/100);
-			
+
 			$scaledImage = imagecreatetruecolor($destWidth, $destHeight);
 			//copy the man image into the scaled image
 			imagecopyresampled($scaledImage, $origImage, 0, 0, 0, 0, $destWidth, $destHeight, $origWidth, $origHeight);
@@ -1036,14 +1054,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$srcH = (int)$origHeight * ($scale/100);
 		$destWidth = (int)$imagedim->w;
 		$setHeight = (int)$imagedim->h;
-		
+
 		//echo "$canvas, $origImage, $destX, $destY, $srcX, $srcY, $destWidth, $setHeight, $srcW, $srcH";
-		
-		
+
+
 		imagecopyresampled($canvas, $origImage, $destX, $destY, $srcX, $srcY, $destWidth, $setHeight, $srcW, $srcH);
-		
+
 		$oImage->imageToFile($destCropFile, $canvas);
-		
+
 		if ($coords->rotation != 0)
 		{
 			//works great here for images with scale < 100
@@ -1694,12 +1712,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->_editable)
 		{
 			//failed validations - format different!
-			if (array_key_exists('id', $values)) 
+			if (array_key_exists('id', $values))
 			{
 				$values = array_keys($values['id']);
 			}
 			//end failed validations
-			
+
 			foreach ($values as $value)
 			{
 				if (is_object($value))
@@ -1752,7 +1770,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$str[] = $allRenders;
 			$str = $this->plupload($str, $repeatCounter, $values);
 		}
-		
+
 		array_unshift($str, '<div class="fabrikSubElementContainer">');
 		$str[] = '</div>';
 		return implode("\n", $str);
@@ -1865,7 +1883,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$w = (int) $params->get('ajax_dropbox_width', 300);
 		$h = (int) $params->get('ajax_dropbox_hight', 200);
 		//add span with id so that element fxs work.
-		
+
 		$pstr = array();
 		$pstr[] = '<span id="' . $id . '"></span>';
 		$pstr[] = '<div id="' . $id . '-widgetcontainer">';
@@ -1938,7 +1956,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$pstr[] = '<!-- FALLBACK; SHOULD LOADING OF PLUPLOAD FAIL -->';
 		$pstr[] = '<div class="plupload_fallback">'.JText::_('PLG_ELEMENT_FILEUPLOAD_FALLBACK_MESSAGE');
    		$pstr[] = '<br />';
-   		
+
    		array_merge($pstr, $str);
 		$pstr[] = '</div>';
 
@@ -1959,11 +1977,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		*/
 		/* error_reporting(0);
 		error_reporting(E_ERROR | E_PARSE); */
-		
+
 		$o = new stdClass();
 		$this->_id = JRequest::getInt('element_id');
 		$groupModel = $this->getGroup();
-		
+
 		if (!$this->validate())
 		{
 			$o->error = $this->_validationErr;
