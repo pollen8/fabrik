@@ -351,12 +351,12 @@ class FabrikModelList extends FabModelAdmin
 		$afilterJoins = $form->getValue('params.filter-join');
 
 		//force to arrays as single prefilters imported from 2.x will be stored as string values
-		$afilterFields = (array)$form->getValue('params.filter-fields');
-		$afilterConditions = (array)$form->getValue('params.filter-conditions');
-		$afilterEval = (array)$form->getValue('params.filter-eval');
+		$afilterFields = (array) $form->getValue('params.filter-fields');
+		$afilterConditions = (array) $form->getValue('params.filter-conditions');
+		$afilterEval = (array) $form->getValue('params.filter-eval');
 		$afilterValues= (array)$form->getValue('params.filter-value');
-		$afilterAccess= (array)$form->getValue('params.filter-access');
-		$aGrouped = (array)$form->getValue('params.filter-grouped');
+		$afilterAccess= (array) $form->getValue('params.filter-access');
+		$aGrouped = (array) $form->getValue('params.filter-grouped');
 		for ($i = 0; $i < count($afilterFields); $i ++)
 		{
 			$selJoin = JArrayHelper::getValue($afilterJoins, $i, 'and');
@@ -390,13 +390,13 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * get the table's join objects
-	 * @return array
+	 * @return	array
 	 */
 
 	protected function getJoins()
 	{
 		$item = $this->getItem();
-		if ((int)$item->id === 0)
+		if ((int) $item->id === 0)
 		{
 			return array();
 		}
@@ -411,7 +411,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$join =& $joins[$i];
 			$jparams = $join->jparams == '' ? new stdClass() : json_decode($join->jparams);
-			if (isset($jparams->type) && $jparams->type == 'element')
+			if (isset($jparams->type) && ($jparams->type == 'element' || $jparams->type == 'repeatElement'))
 			{
 				unset($joins[$i]);
 				continue;
