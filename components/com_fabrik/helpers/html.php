@@ -407,7 +407,7 @@ EOD;
 		{
 			$file = $path;
 		}
-			
+
 		if (JFile::exists(JPATH_SITE . '/' . $file))
 		{
 			FabrikHelperHTML::stylesheet($path);
@@ -816,8 +816,8 @@ EOD;
 			}
 			else
 			{
-				$onLoad = "(function() {\n " . $onLoad . "\n //end load func \n})";
-				//$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
+				//$onLoad = "(function() {\n " . $onLoad . "\n //end load func \n})";
+				$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
 			}
 			$src[] = $onLoad;
 		}
