@@ -281,7 +281,7 @@ class filesystemstorage extends storageAdaptor{
 	}
 
 	function getFullPath($filepath) {
-		if (!(preg_match('#^' . COM_FABRIK_BASE . '#', $filepath))) {
+		if (!(preg_match('#^' . preg_quote(COM_FABRIK_BASE, '#') . '#', $filepath))) {
 			return COM_FABRIK_BASE.DS.$filepath;
 		}
 		return $filepath;
