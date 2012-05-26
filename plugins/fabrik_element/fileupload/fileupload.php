@@ -1975,8 +1975,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		/*
 		 * <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
 		*/
-		/* error_reporting(0);
-		error_reporting(E_ERROR | E_PARSE); */
+		/* error_reporting(0); */
+		// $$$ hugh - reinstated this workaround, as I started getting those utf8 warnings as well.
+		error_reporting(E_ERROR | E_PARSE);
 
 		$o = new stdClass();
 		$this->_id = JRequest::getInt('element_id');
@@ -2437,6 +2438,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$filename = JRequest::getVar('file');
 		$join = FabTable::getInstance('join', 'FabrikTable');
 		$join->load(array('element_id' => JRequest::getInt('element_id')));
+		$this->setId(JRequest::getInt('element_id'));
+		$this->getElement();
+		$params = $this->getParams();
+		$dir = $params->get('ul_directory', '');
+		$filename = rtrim($dir, DS) . DS . $filename;
 		$this->deleteFile($filename);
 		$db = $this->getListModel()->getDb();
 		$query = $db->getQuery(true);
