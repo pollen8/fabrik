@@ -223,7 +223,8 @@ class FabrikFEModelListfilter extends FabModel {
 		if ($search == '')
 		{
 			//clear full text search all
-			if (array_key_exists($requestKey, $_POST)) {
+			if (array_key_exists($requestKey, $_POST))
+			{
 				$this->clearAFilter($filters, 9999);
 			}
 			return;
@@ -423,8 +424,8 @@ class FabrikFEModelListfilter extends FabModel {
 	}
 	/**
 	 *
-	 * @param array filters
-	 * @param string $search
+	 * @param	array	&$filters
+	 * @param	string	$search
 	 * @return null
 	 */
 
@@ -435,6 +436,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$i = 0;
 		$condition = 'REGEXP';
 		$orig_search = $search;
+		$searchable = false;
 		foreach ($keys as $elid)
 		{
 			// $$$ hugh - need to reset $search each time round, in case getFilterValue has esacped something,
@@ -445,6 +447,7 @@ class FabrikFEModelListfilter extends FabModel {
 			{
 				continue;
 			}
+			$searchable = true;
 			$k = $elementModel->getFullName(false, false, false);
 			$k = FabrikString::safeColName($k);
 			
@@ -531,6 +534,10 @@ class FabrikFEModelListfilter extends FabModel {
 			}
 			$i ++;
 		}
+		if (!$searchable)
+		{
+			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
+		}
 	}
 
 	private function getSearchFormSearchAllFilters(&$filters)
@@ -542,7 +549,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$fromFormId = $app->getUserState($key);
 		if ($fromFormId != $formModel->getId())
 		{
-			$search = $app->getUserState('com_fabrik.searchform.form'.$fromFormId.'.searchall');
+			$search = $app->getUserState('com_fabrik.searchform.form' . $fromFormId . '.searchall');
 			if (trim($search) == '')
 			{
 				return;
