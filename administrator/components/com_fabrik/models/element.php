@@ -621,7 +621,7 @@ class FabrikModelElement extends JModelAdmin
 			$data['created_by_alias'] = $user->get('username');
 		}
 		$data['params'] = json_encode($params);
-		$cond = 'group_id = '.(int)$row->group_id;
+		$cond = 'group_id = ' . (int) $row->group_id;
 		if ($new)
 		{
 			$data['ordering'] = $row->getNextOrder($cond);
@@ -663,15 +663,16 @@ class FabrikModelElement extends JModelAdmin
 			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');
-			$app->setUserState('com_fabrik.redirect', 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id='.(int)$row->id."&origplugin=$origplugin&origtask=$task&plugin=$row->plugin");
+			$app->setUserState('com_fabrik.redirect', 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id=' . (int) $row->id . '&origplugin=' . $origplugin . '&origtask=' . $task . '&plugin=' . $row->plugin);
 		}
 		else
 		{
 			$app->setUserState('com_fabrik.confirmUpdate', 0);
 		}
-		if ((int)$listModel->getTable()->id !== 0)
+		if ((int) $listModel->getTable()->id !== 0)
 		{
 			$this->updateIndexes($elementModel, $listModel, $row);
+			$listModel->updateFromElement($elementModel);
 		}
 		$return = parent::save($data);
 		if ($return)
@@ -890,7 +891,8 @@ class FabrikModelElement extends JModelAdmin
 		$post = JRequest::get('post');
 		if (array_key_exists('js_action', $post['jform']) && is_array($post['jform']['js_action']))
 		{
-			for ($c = 0; $c < count($post['jform']['js_action']); $c ++) {
+			for ($c = 0; $c < count($post['jform']['js_action']); $c ++)
+			{
 				$jsAction = $post['jform']['js_action'][$c];
 				$params = new stdClass();
 				$params->js_e_event = $post['js_e_event'][$c];
@@ -907,10 +909,10 @@ class FabrikModelElement extends JModelAdmin
 					{
 						$query = $db->getQuery(true);
 						$query->insert('#__{package}_jsactions');
-						$query->set('element_id = '.(int)$id);
-						$query->set('action = '.$db->quote($jsAction));
-						$query->set('code = '.$db->quote($code));
-						$query->set('params = \''.$params."'");
+						$query->set('element_id = ' . (int) $id);
+						$query->set('action = ' . $db->quote($jsAction));
+						$query->set('code = ' . $db->quote($code));
+						$query->set('params = \'' . $params . "'");
 						$db->setQuery($query);
 						$db->query();
 					}

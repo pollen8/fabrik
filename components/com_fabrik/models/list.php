@@ -386,7 +386,8 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$fabrikDb = $this->getDb();
 		$params = $this->getParams();
-		if ($params->get('enable_big_selects', 0)) {
+		if ($params->get('enable_big_selects', 0))
+		{
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
 			$fabrikDb->query();
 		}
@@ -395,7 +396,7 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * get the table's data
 	 *
-	 * @return array of objects (rows)
+	 * @return	array	of objects (rows)
 	 */
 
 	function getData()
@@ -404,7 +405,8 @@ class FabrikFEModelList extends JModelForm {
 		$pluginManager = FabrikWorker::getPluginManager();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
-		if (isset($this->_data) && !is_null($this->_data)) {
+		if (isset($this->_data) && !is_null($this->_data))
+		{
 			return $this->_data;
 		}
 		$traceModel = ini_get('mysql.trace_mode');
@@ -418,9 +420,12 @@ class FabrikFEModelList extends JModelForm {
 
 		// $$$ rob - if merging joined data then we don't want to limit
 		// the query as we have already done so in _buildQuery()
-		if ($this->mergeJoinedData()) {
+		if ($this->mergeJoinedData())
+		{
 			$fabrikDb->setQuery($query);
-		} else {
+		}
+		else
+		{
 			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
 		}
 
@@ -431,17 +436,22 @@ class FabrikFEModelList extends JModelForm {
 		// fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
 		// $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
 		$this->_data = $fabrikDb->loadObjectList('', 'stdClass', false);
-		if ($fabrikDb->getErrorNum() != 0) {
+		if ($fabrikDb->getErrorNum() != 0)
+		{
 			jexit('getData:' . $fabrikDb->getErrorMsg());
 		}
 		/// $$$ rob better way of getting total records
-		if ($this->mergeJoinedData()) {
+		if ($this->mergeJoinedData())
+		{
 			$this->totalRecords = $this->getTotalRecords();
-		} else {
+		}
+		else
+		{
 			$fabrikDb->setQuery("SELECT FOUND_ROWS()");
 			$this->totalRecords = $fabrikDb->loadResult();
 		}
-		if ($this->randomRecords) {
+		if ($this->randomRecords)
+		{
 			shuffle($this->_data);
 		}
 		ini_set('mysql.trace_mode', $traceModel);
@@ -450,7 +460,8 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		//@TODO test in J1.7
 		//	$this->translateData($this->_data);
-		if ($fabrikDb->getErrorNum() != 0) {
+		if ($fabrikDb->getErrorNum() != 0)
+		{
 			JError::raiseNotice(500,  'getData: ' . $fabrikDb->getErrorMsg());
 		}
 
@@ -472,6 +483,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @deprecated Joomfish not available in J1.7
 	 * @param unknown_type $data
 	 */
+	
 	function translateData(&$data)
 	{
 		$params = $this->getParams();
@@ -7611,6 +7623,40 @@ class FabrikFEModelList extends JModelForm {
 		{
 			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
 		}
+	}
+	
+	/**
+	 * @since 3.0.6
+	 * when saving an element it can effect the list parameters, update them here.
+	 * @param	object	$elementModel
+	 */
+	
+	function updateFromElement($elementModel)
+	{
+		$elParams = $elementModel->getParams();
+		$add = $elParams->get('inc_in_search_all');
+		$params = $this->getParams();
+		$p = json_decode($params->get('list_search_elements'));
+		$elementId = $elementModel->getId();
+		if ($add)
+		{
+			if (!in_array($elementId, $p->search_elements))
+			{
+				$p->search_elements[] = (string) $elementId;
+			}
+		}
+		else
+		{
+			$k = array_search($elementId, $p->search_elements);
+			if ($k !== false)
+			{
+				unset($p->search_elements[$k]);
+			}
+		}
+		$params->set('list_search_elements',  json_encode($p));
+		$item = $this->getTable();
+		$item->params = (string) $params;
+		$item->store();
 	}
 }
 ?>

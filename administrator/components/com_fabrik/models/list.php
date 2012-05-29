@@ -578,7 +578,8 @@ class FabrikModelList extends FabModelAdmin
 		$row->order_by = json_encode(JRequest::getVar('order_by', array(), 'post', 'array'));
 		$row->order_dir = json_encode(JRequest::getVar('order_dir', array(), 'post', 'array'));
 
-		if (!$row->check()) {
+		if (!$row->check())
+		{
 			$this->setError($row->getError());
 			return false;
 		}
@@ -613,7 +614,7 @@ class FabrikModelList extends FabModelAdmin
 
 			$row->form_id = $this->getState('list.form_id');
 			//create fabrik group
-			$groupData = array("name" => $row->label, "label" => $row->label);
+			$groupData = array('name' => $row->label, 'label' => $row->label);
 
 			JRequest::setVar('_createGroup', 1, 'post');
 
@@ -714,7 +715,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$feModel->addIndex($row->group_by, 'groupby', 'INDEX', $map["$row->group_by"]);
 		}
-		if ($params->get('group_by_order') !== '')
+		if (trim($params->get('group_by_order')) !== '')
 		{
 			$feModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
 		}
@@ -774,8 +775,8 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * check to see if a table exists
-	 * @param string name of table (ovewrites form_id val to test)
-	 * @return boolean false if no table found true if table found
+	 * @param	string	name of table (ovewrites form_id val to test)
+	 * @return	bool	false if no table found true if table found
 	 */
 
 	function databaseTableExists($tableName = null)
@@ -790,16 +791,16 @@ class FabrikModelList extends FabModelAdmin
 			$tableName = $table->db_table_name;
 		}
 		$fabrikDatabase = $this->getDb();
-		$sql = "SHOW TABLES LIKE " . $fabrikDatabase->quote($tableName);
+		$sql = 'SHOW TABLES LIKE ' . $fabrikDatabase->quote($tableName);
 		$fabrikDatabase->setQuery($sql);
 		$total = $fabrikDatabase->loadResult();
 		echo $fabrikDatabase->getError();
-		return ($total == "") ? false : true;
+		return ($total == '') ? false : true;
 	}
 
 	/**
 	 * deals with ensuring joins are managed correctly when table is saved
-	 * @param array data
+	 * @param	array	data
 	 */
 
 	private function updateJoins($data)
@@ -807,12 +808,12 @@ class FabrikModelList extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		// if we are creating a new list then don't update any joins - can result in groups and elements being removed.
-		if ((int)$this->getState('list.id') === 0)
+		if ((int) $this->getState('list.id') === 0)
 		{
 			return;
 		}
 		// $$$ hugh - added "AND element_id = 0" to avoid fallout from "random join and group deletion" issue from May 2012
-		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$this->getState('list.id').' AND element_id = 0');
+		$query->select('*')->from('#__{package}_joins')->where('list_id = ' . (int) $this->getState('list.id') . ' AND element_id = 0');
 		$db->setQuery($query);
 		$aOldJoins = $db->loadObjectList();
 		$params = $data['params'];
@@ -915,13 +916,13 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 *  new join make the group, group elements and formgroup entries for the join data
-	 * @param string table key
-	 * @param string join to table key
-	 * @param string join type
-	 * @param string join to table
-	 * @param string join table
-	 * @param bool is the group a repeat
+	 * new join make the group, group elements and formgroup entries for the join data
+	 * @param	string	table key
+	 * @param	string	join to table key
+	 * @param	string	join type
+	 * @param	string	join to table
+	 * @param	string	join table
+	 * @param	bool	is the group a repeat
 	 */
 
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
