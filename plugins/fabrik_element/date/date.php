@@ -1267,8 +1267,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// like 'midnight yesterday' etc into MySQL dates, defaulting to GMT.
 		// This lets us do ranged query string and content plugin filters like ...
 		// table___date[value][]=midnight%20yesterday&table___date[value][]=midnight%20today&table___date[condition]=BETWEEN
-		$value[0] = FabrikWorker::specialStrToMySQL($value[0]);
-		$value[1] = FabrikWorker::specialStrToMySQL($value[1]);
+		$value[0] = FabrikWorker::specialStrToMySQL(JArrayHelper::getValue($value, 0));
+		$value[1] = FabrikWorker::specialStrToMySQL(JArrayHelper::getValue($value, 1));
 		// $$$ hugh - if the first date is later than the second, swap 'em round
 		// to keep 'BETWEEN' in the query happy
 		if (strtotime($value[0]) > strtotime($value[1]))
@@ -1302,28 +1302,30 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 * convert a table formatted date string into a mySQL formatted date string
 	 * (if already in mySQL format returns the date)
-	 * @param string date in table view format
-	 * @return string date in mySQL format or false if string date could not be converted
+	 * @param	string	date in table view format
+	 * @return	string	date in mySQL format or false if string date could not be converted
 	 */
 
 	function tableDateToMySQL($v)
 	{
 		$params = $this->getParams();
-		$store_as_local = (int)$params->get('date_store_as_local', 0);
+		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$format = $params->get('date_table_format', '%Y-%m-%d');
 		$b = FabrikWorker::strToDateTime($v, $format);
-		if (!is_array($b)) {
+		if (!is_array($b))
+		{
 			return false;
 		}
 		//3.0 can't use timestamp as that gets offset as its taken as numeric by FabDate
 		//$orig = new FabDate($datebits['timestamp'], 2);
-		$bstr = $b['year'].'-'.$b['mon'].'-'.$b['day'].' '.$b['hour'].':'.$b['min'].':'.$b['sec'];
+		$bstr = $b['year'] . '-' . $b['mon'] . '-' . $b['day'] . ' ' . $b['hour'] . ':' . $b['min'] . ':' . $b['sec'];
 		$date = JFactory::getDate($bstr);
-		if (in_array($v, $this->getNullDates()) || $v === $date->toMySQL()) {
+		if (in_array($v, $this->getNullDates()) || $v === $date->toMySQL())
+		{
 			return $v;
 		}
-
-		if ($store_as_local) {
+		if ($store_as_local)
+		{
 			$this->_resetToGMT = false;
 		}
 		$retval = $this->toMySQLGMT($date);
@@ -1334,8 +1336,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 * $$$ rob - not used??? 9/11/2010
 	 * set a dates time to 00:00:00
-	 * @param mixed $time The initial time for the FabDate object
-	 * @return string mysql formatted date
+	 * @param	mixed	$time The initial time for the FabDate object
+	 * @return	string	mysql formatted date
 	 */
 
 	function setTimeToZero($date)
@@ -1352,8 +1354,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	* simple minded method to set a MySQL formatted date's time to 00:00:00
-	* @param string $date in MySQL format
-	* @return string mysql formatted date with time set to 0
+	* @param	string	$date in MySQL format
+	* @return	string	mysql formatted date with time set to 0
 	*/
 
 	function setMySQLTimeToZero($date)
@@ -1365,9 +1367,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * add days to a date
-	 * @param mixed $time The initial time for the FabDate object
-	 * @param integer number of days to add (negtive to remove days)
-	 * @return string mysql formatted date
+	 * @param	mixed	$time The initial time for the FabDate object
+	 * @param	integer	number of days to add (negtive to remove days)
+	 * @return	string	mysql formatted date
 	 */
 
 	function addDays($date, $add = 0)
@@ -1382,23 +1384,28 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * add hours to a date
-	 * @param mixed $time The initial time for the FabDate object
-	 * @param integer number of days to add (negtive to remove days)
-	 * @return string mysql formatted date
+	 * @param	mixed	$time The initial time for the FabDate object
+	 * @param	integer	number of days to add (negtive to remove days)
+	 * @return	string	mysql formatted date
 	 */
 
 	function addHours($date, $add = 0)
 	{
 		$date = JFactory::getDate($date);
 		$thePHPDate = getdate($date->toUnix());
-		if ($thePHPDate['hours']+$add >= 24) {
+		if ($thePHPDate['hours'] + $add >= 24)
+		{
 			$thePHPDate['hours'] = 0;
-			$thePHPDate['mday']++;
-		} else if ($thePHPDate['hours']+$add < 0) {
+			$thePHPDate['mday'] ++;
+		}
+		else if ($thePHPDate['hours'] + $add < 0)
+		{
 			$thePHPDate['hours'] = 0;
-			$thePHPDate['mday']--;
-		} else {
-			$thePHPDate['hours'] = $thePHPDate['hours']+$add;
+			$thePHPDate['mday'] --;
+		}
+		else
+		{
+			$thePHPDate['hours'] = $thePHPDate['hours'] + $add;
 		}
 		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'], $thePHPDate['year']);
 		$date = JFactory::getDate($v);
@@ -1407,47 +1414,50 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * build the query for the avg caclculation
-	 * @param model $listModel
-	 * @param string $label the label to apply to each avg
-	 * @return string sql statement
+	 * @param	model	$listModel
+	 * @param	string	$label the label to apply to each avg
+	 * @return	string	sql statement
 	 */
 
 	protected function getAvgQuery(&$listModel, $label = "'calc'")
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
-		return "SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))) AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+		$table = $listModel->getTable();
+		$db = $listModel->getDb();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
+		return 'SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM ' . $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
+		$table = $listModel->getTable();
+		$db = $listModel->getDb();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name 	= $this->getFullName(false, false, false);
 		//$$$rob not actaully likely to work due to the query easily exceeding mySQL's TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return "SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))) AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM ' . $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 
 	public function simpleAvg($data)
 	{
-		$avg = $this->simpleSum($data)/count($data);
+		$avg = $this->simpleSum($data) / count($data);
 		return JFactory::getDate($avg)->toMySQL();
 	}
 
 	/**
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param array $data to sum
-	 * @return string sum result
+	 * @param	array	$data to sum
+	 * @return	string	sum result
 	 */
 
 	public function simpleSum($data)
 	{
 		$sum = 0;
-		foreach ($data as $d) {
+		foreach ($data as $d)
+		{
 			$date = JFactory::getDate($d);
 			$sum += $date->toUnix();
 		}
@@ -1456,18 +1466,19 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * takes date's time value and turns it into seconds
-	 * @param date object $date
-	 * @return int seconds
+	 * @param	date	object $date
+	 * @return	int		seconds
 	 */
 
 	protected function toSeconds($date)
 	{
-		return (int)($date->toFormat('%H') * 60 * 60) + (int)($date->toFormat('%M') * 60) + (int)$date->toFormat('%S');
+		return (int)($date->toFormat('%H') * 60 * 60) + (int) ($date->toFormat('%M') * 60) + (int) $date->toFormat('%S');
 	}
 
 	/**
 	 * takes strftime time formatting - http://fr.php.net/manual/en/function.strftime.php
 	 * and converts to format used in mySQL DATE_FORMAT http://dev.mysql.com/doc/refman/5.1/en/date-and-time-functions.html
+	 * @param	string	format
 	 */
 
 	protected function strftimeTFormatToMySQL(&$format)

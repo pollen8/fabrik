@@ -116,8 +116,25 @@ class FabrikFEModelListfilter extends FabModel {
 		$this->_request = $filters;
 		FabrikHelperHTML::debug($this->_request, 'filter array');
 		$this->checkAccess($filters);
-		// echo "<pre>";print_r($filters);echo "</pre>";
+		$this->normalizeKeys($filters);
 		return $filters;
+	}
+	
+	/**
+	 * @since 3.0.6
+	 * with prefilter and search all - 2nd time you use the search all the array keys 
+	 * seem incorrect - resulting in an incorrect query.
+	 * Use this to force each $filter['property'] array to start at 0 and increment
+	 * @param	array	&$filters
+	 */
+	
+	private function normalizeKeys(&$filters)
+	{
+		$properties = array_keys($filters);
+		foreach ($properties as $property)
+		{
+			$filters[$property] = array_values($filters[$property]);
+		}
 	}
 
 	/**
