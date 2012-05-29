@@ -326,7 +326,7 @@ class FabrikViewList extends JView{
 		}
 		if (!$this->isMambot)
 		{
-			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
+			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST, false));
 		}
 
 		/** depreciated (keep incase ppl use them in old tmpls**/
