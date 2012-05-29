@@ -243,6 +243,9 @@ class filesystemstorage extends storageAdaptor{
 	 * return array
 	 */
 	function getFileInfo($filepath) {
+		if (!$this->exists($filepath)) {
+			$filepath = $this->getFullPath($filepath);
+		}
 		if ($this->exists($filepath)) {
 			// $$$ hugh - turn of E_DEPRECATED to avoid warnings about eregi() in getid3
 			// LOL!  E_DEPRECATED only available in 5.3.0+, pitches Notice in anything earlier.  :)
@@ -278,7 +281,7 @@ class filesystemstorage extends storageAdaptor{
 	}
 
 	function getFullPath($filepath) {
-		if (!(preg_match('#^' . COM_FABRIK_BASE . '#', $filepath))) {
+		if (!(preg_match('#^' . preg_quote(COM_FABRIK_BASE, '#') . '#', $filepath))) {
 			return COM_FABRIK_BASE.DS.$filepath;
 		}
 		return $filepath;

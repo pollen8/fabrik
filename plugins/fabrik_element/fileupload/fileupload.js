@@ -29,6 +29,7 @@ var FbFileUpload = new Class({
 						response : JSON.encode(response)
 					});
 					document.id(file.id).getElement('.plupload_file_status').set('text', '100%');
+					document.id(file.id).getElement('.plupload_file_size').set('text', file.size);					
 				}.bind(this));
 				//this.uploader.trigger('Init'); //no as this creates a second div interface
 				// hack to reposition the hidden input field over the 'ad' button

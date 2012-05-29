@@ -333,11 +333,12 @@ var FbDatabasejoin = new Class({
 				}
 			}
 		}
-		if (!found && this.options.show_please_select) {
+		if (!found) {
 			if (this.element.get('tag') === 'input') {
 				this.element.value = val;
 				if (this.options.display_type === 'auto-complete') {
 					//update the field label as well (do ajax as we dont know what the label should be (may included concat etc))
+					/*
 					var myajax = new Request.JSON({
 						'options': {
 							'evalScripts': true
@@ -359,10 +360,14 @@ var FbDatabasejoin = new Class({
 							}
 						}.bind(this)
 					}).send();
+					*/
+					this.updateFromServer(val);
 				}
 			} else {
 				if (this.options.displayType === 'dropdown') {
-					this.element.options[0].selected = true;
+					if (this.options.show_please_select) {
+						this.element.options[0].selected = true;
+					}
 				} else {
 					this.element.getElements('input').each(function (i) {
 						if (i.get('value') === val) {

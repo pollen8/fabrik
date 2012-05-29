@@ -43,7 +43,7 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 		if ($allow_empty == '1' and empty( $data)) {
 			return true;
 		}
-		return is_numeric($data);
+		return is_numeric( $element->unNumberFormat($data) );
 	}
 
 	/**
