@@ -793,7 +793,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * this builds an array containing the filters value and condition
 	 * If no date time option, then we change the filter into a ranged filter to search
 	 * the whole day for records.
-	 * @param	string	initial $value all filters should submit as sql format
+	 * @param	string	initial $value all filters should submit as sql format EXCEPT for special string in search all (e.g. 'last week');
 	 * @param	string	intial $condition
 	 * @param	string	eval - how the value should be handled
 	 * @return	array	(value condition) values in sql format
@@ -854,13 +854,44 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					$value = JFactory::getDate('first day of ' . $this->untranslateMonth($value))->toSql();
 					$next = JFactory::getDate('last day of ' . $this->untranslateMonth($value))->setTime(23, 59, 59);
 				}
+				elseif (trim(strtolower($value)) === 'last week')
+				{
+					$value = JFactory::getDate('last week')->toSql();
+					$next = JFactory::getDate();
+				}
+				elseif (trim(strtolower($value)) === 'last month')
+				{
+					$value = JFactory::getDate('last month')->toSql();
+					$next = JFactory::getDate();
+				}
+				elseif (trim(strtolower($value)) === 'last year')
+				{
+					$value = JFactory::getDate('last year')->toSql();
+					$next = JFactory::getDate();
+				}
+				elseif (trim(strtolower($value)) === 'next week')
+				{
+					$value = JFactory::getDate()->toSql();
+					$next = JFactory::getDate('next week');
+				}
+				elseif (trim(strtolower($value)) === 'next month')
+				{
+					$value = JFactory::getDate()->toSql();
+					$next = JFactory::getDate('next month');
+				}
+				elseif (trim(strtolower($value)) === 'next year')
+				{
+					$value = JFactory::getDate()->toSql();
+					$next = JFactory::getDate('next year');
+				}
 				else
 				{
 					$value = JFactory::getDate($value)->toSql();
 					// $$$ hugh - strip time if not needed.  Specific case is element filter,
 					// first time submitting filter from list, will have arbitrary "now" time.
 					// Dunno if this will break anything else!
-					if (!$exactTime) {
+					if (!$exactTime)
+					{
 						$value = $this->setMySQLTimeToZero($value);
 					}
 					$next = JFactory::getDate(strtotime($this->addDays($value, 1)) - 1);
@@ -1240,15 +1271,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$value[1] = FabrikWorker::specialStrToMySQL($value[1]);
 		// $$$ hugh - if the first date is later than the second, swap 'em round
 		// to keep 'BETWEEN' in the query happy
-		if (strtotime($value[0]) > strtotime($value[1])) {
+		if (strtotime($value[0]) > strtotime($value[1]))
+		{
 			$tmp_value = $value[0];
 			$value[0] = $value[1];
 			$value[1] = $tmp_value;
 		}
 
 		$exactTime = $this->formatContainsTime($params->get('date_table_format'));
-		if (!$params->get('date_showtime', 0) || $exactTime == false) {
-
+		if (!$params->get('date_showtime', 0) || $exactTime == false)
+		{
 			// range values could already have been set in getFilterValue
 			if (!$this->rangeFilterSet)
 			{
@@ -1262,7 +1294,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			}
 
 		}
-		$value = $db->Quote($value[0]) . ' AND ' . $db->Quote($value[1]);
+		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		$condition = 'BETWEEN';
 		return array($value, $condition);
 	}

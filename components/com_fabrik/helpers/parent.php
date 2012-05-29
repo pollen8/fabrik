@@ -224,9 +224,10 @@ class FabrikWorker {
 	/**
 	 *
 	 * check for, and convert, any 'special' formats for strtotime, like 'yesterday', etc
-	 * @param string  $date
-	 * @return string date
+	 * @param	string  $date
+	 * @return	string	date
 	 */
+	
 	function specialStrToMySQL($date, $gmt = true)
 	{
 		/**
@@ -243,7 +244,8 @@ class FabrikWorker {
 		preg_match("/[+|-][0-9]* (week\b|year\b|day\b|month\b)/i", $date, $matches2); //eg +2 Week
 		preg_match("/[next|last]* (\monday\b|tuesday\b|wednesday\b|thursday\b|friday\b|saturday\b|sunday\b)/i", $date, $matches3); //eg next wednesday
 		$matches = array_merge($matches, $matches2, $matches3);
-		if (!empty($matches)) {
+		if (!empty($matches))
+		{
 			$d = JFactory::getDate($date);
 			$date = $d->toSql(!$gmt);
 		}
@@ -1072,8 +1074,8 @@ class FabrikWorker {
 
 	/**
 	 * test if a string is a compatible date
-	 * @param string $d
-	 * @return bool
+	 * @param	string	$d
+	 * @return	bool
 	 */
 
 	public function isDate($d)
