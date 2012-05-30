@@ -2,39 +2,103 @@
 <form>
 	<fields name="params">
 		<fieldset name="plg-form-redirect">
-			<field cols="60" description="PLG_FORM_REDIRECT_JUMPPAGE_LABEL" label="PLG_FORM_REDIRECT_JUMPPAGE_LABEL" name="jump_page" repeat="true" rows="2" type="textarea"/>
+			<field name="jump_page"
+				type="textarea"
+				repeat="true"
+				cols="60"
+				rows="2"
+				description="PLG_FORM_REDIRECT_JUMPPAGE_DESC"
+				label="PLG_FORM_REDIRECT_JUMPPAGE_LABEL" />
 				
-			<field default="0" description="PLG_FORM_REDIRECT_APPENDJUMPURL_DESC" label="PLG_FORM_REDIRECT_APPENDJUMPURL_LABEL" name="append_jump_url" repeat="true" type="radio">
+			<field name="append_jump_url"
+				default="0"
+				description="PLG_FORM_REDIRECT_APPENDJUMPURL_DESC"
+				label="PLG_FORM_REDIRECT_APPENDJUMPURL_LABEL"
+				repeat="true"
+				type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field cols="60" description="PLG_FORM_REDIRECT_THANKSMSG_DESC" label="PLG_FORM_REDIRECT_THANKSMSG_LABEL" name="thanks_message" repeat="true" rows="8" type="textarea"/>
+			<field name="thanks_message"
+				cols="60"
+				description="PLG_FORM_REDIRECT_THANKSMSG_DESC"
+				label="PLG_FORM_REDIRECT_THANKSMSG_LABEL"
+				repeat="true"
+				rows="8"
+				type="textarea"/>
 				
-			<field default="0" description="PLG_FORM_REDIRECT_SAVEINSESSION_DESC" label="PLG_FORM_REDIRECT_SAVEINSESSION_LABEL" name="save_insession" repeat="true" type="radio">
+			<field name="save_insession"
+				default="0"
+				description="PLG_FORM_REDIRECT_SAVEINSESSION_DESC"
+				label="PLG_FORM_REDIRECT_SAVEINSESSION_LABEL"
+				repeat="true"
+				type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field cols="60" description="PLG_FORM_REDIRECT_CONDITION_DESC" label="PLG_FORM_REDIRECT_CONDITION_LABEL" name="redirect_conditon" repeat="true" rows="5" type="textarea"/>
+			<field name="redirect_conditon"
+				cols="60"
+				description="PLG_FORM_REDIRECT_CONDITION_DESC"
+				label="PLG_FORM_REDIRECT_CONDITION_LABEL"
+				repeat="true"
+				rows="5"
+				type="textarea"/>
 				
-			<field default="popup" description="PLG_FORM_REDIRECT_CONTENT_HOW_DESC" label="PLG_FORM_REDIRECT_CONTENT_HOW_LABEL" name="redirect_content_how" repeat="true" type="list">
+			<field name="redirect_content_how"
+				default="popup"
+				description="PLG_FORM_REDIRECT_CONTENT_HOW_DESC"
+				label="PLG_FORM_REDIRECT_CONTENT_HOW_LABEL"
+				repeat="true"
+				type="list">
 					<option value="popup">PLG_FORM_REDIRECT_CONTENT_HOW_POPUP</option>
 					<option value="samepage">PLG_FORM_REDIRECT_CONTENT_HOW_SAMEPAGE</option>
 					<option value="newpage">PLG_FORM_REDIRECT_CONTENT_HOW_NEWPAGE</option>
 			</field>
 			
-			<field description="PLG_FORM_REDIRECT_CONTENT_POPUP_WIDTH_DESC" label="PLG_FORM_REDIRECT_CONTENT_POPUP_WIDTH_LABEL" name="redirect_content_popup_width" repeat="true" size="5" type="text"/>
+			<field name="redirect_content_popup_width"
+				type="text"
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_WIDTH_DESC"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_WIDTH_LABEL"
+				repeat="true"
+				size="5" />
 				
-			<field description="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_DESC" label="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_LABEL" name="redirect_content_popup_height" repeat="true" size="5" type="text"/>
+			<field 
+				name="redirect_content_popup_height"
+				type="text"
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_DESC"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_HEIGHT_LABEL"
+				repeat="true"
+				size="5" />
 				
-			<field description="PLG_FORM_REDIRECT_CONTENT_POPUP_X_OFFSET_DESC" label="PLG_FORM_REDIRECT_CONTENT_POPUP_X_OFFSET_LABEL" name="redirect_content_popup_x_offset" repeat="true" size="5" type="text"/>
+			<field name="redirect_content_popup_x_offset"
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_X_OFFSET_DESC"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_X_OFFSET_LABEL"
+				repeat="true"
+				size="5"
+				type="text"/>
 				
-			<field description="PLG_FORM_REDIRECT_CONTENT_POPUP_Y_OFFSET_DESC" label="PLG_FORM_REDIRECT_CONTENT_POPUP_Y_OFFSET_LABEL" name="redirect_content_popup_y_offset" repeat="true" size="5" type="text"/>
+			<field name="redirect_content_popup_y_offset"
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_Y_OFFSET_DESC"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_Y_OFFSET_LABEL"
+				repeat="true"
+				size="5"
+				type="text"/>
 
-			<field description="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_DESC" label="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_LABEL" name="redirect_content_popup_title" repeat="true" size="50" type="text"/>
+			<field name="redirect_content_popup_title"
+				description="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_DESC"
+				label="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_LABEL"
+				repeat="true"
+				size="50"
+				type="text"/>
 				
-			<field default="1" description="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_DESC" label="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_LABEL" name="redirect_content_reset_form" repeat="true" type="radio">
+			<field name="redirect_content_reset_form"
+				default="1"
+				description="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_DESC"
+				label="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_LABEL"
+				repeat="true"
+				type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>			
