@@ -1030,18 +1030,18 @@ class FabrikFEModelList extends JModelForm {
 	 * creates the html <a> link allowing you to edit other forms from the table
 	 * E.g. Faceted browsing: those specified in the table's "Form's whose primary keys link to this table"
 	 *
-	 * @param bol $popUp
-	 * @param object element 27/06/2011 - changed to passing in element
-	 * @param object $row
-	 * @param string $key
-	 * @param string $val
-	 * @param int param repeat value 27/11/2011
-	 * @return string <a> html part
+	 * @param	bool	$popUp
+	 * @param	object	element 27/06/2011 - changed to passing in element
+	 * @param	object	$row
+	 * @param	string	$key
+	 * @param	string	$val
+	 * @param	int		param repeat value 27/11/2011
+	 * @return	string	<a> html part
 	 */
 
 	function viewFormLink($popUp = false, $element, $row = null, $key = '', $val = '', $usekey = false, $f = 0)
 	{
-		$elKey = $element->list_id.'-'.$element->form_id.'-'.$element->element_id;
+		$elKey = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
 		$params = $this->getParams();
 		$listid = $element->list_id;
 		$formid = $element->form_id;
@@ -1050,67 +1050,78 @@ class FabrikFEModelList extends JModelForm {
 		$linkedFormText = JArrayHelper::fromObject($factedlinks->linkedformtext);
 		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedFormText, $elKey), JArrayHelper::fromObject($row));
 		$app = JFactory::getApplication();
-		if (!$app->isAdmin()) {
-			$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
+		if (!$app->isAdmin())
+		{
+			$Itemid	= (int) @$app->getMenu('site')->getActive()->id;
 		}
-		if (is_null($listid)) {
+		if (is_null($listid))
+		{
 			$list = $this->getTable();
 			$listid = $list->id;
 		}
-
-		if (is_null($formid)) {
+		if (is_null($formid))
+		{
 			$form = $this->getFormModel()->getForm();
 			$formid = $form->id;
 		}
 		$facetTable = $this->_facetedTable($listid);
-		if (!$facetTable->canAdd()) {
-			return '<div style="text-align:center"><a title="'.JText::_('JERROR_ALERTNOAUTHOR').'"><img src="media/com_fabrik/images/login.png" alt="'.JText::_('JERROR_ALERTNOAUTHOR').'" /></a></div>';
+		if (!$facetTable->canAdd())
+		{
+			return '<div style="text-align:center"><a title="' . JText::_('JERROR_ALERTNOAUTHOR') . '"><img src="media/com_fabrik/images/login.png" alt="' . JText::_('JERROR_ALERTNOAUTHOR') . '" /></a></div>';
 		}
-		if ($app->isAdmin()) {
-			$bits[] = "task=form.view";
-			$bits[] = "cid=$formid";
-		} else {
-			$bits[] = "view=form";
-			//$bits[] = "listid=$listid";
-			$bits[] = "Itemid=$Itemid";
+		if ($app->isAdmin())
+		{
+			$bits[] = 'task=form.view';
+			$bits[] = 'cid=' . $formid;
 		}
-		$bits[] = "formid=$formid";
-		$bits[] = "referring_table=". $this->getTable()->id;
+		else
+		{
+			$bits[] = 'view=form';
+			$bits[] = 'Itemid=' . $Itemid;
+		}
+		$bits[] = 'formid=' . $formid;
+		$bits[] = 'referring_table=' . $this->getTable()->id;
 		// $$$ hugh - change in fabrikdatabasejoin getValue() means we have to append _raw to key name
-		if ($key != '') {
-			$bits[] = "{$key}_raw=$val";
+		if ($key != '')
+		{
+			$bits[] = $key . '_raw=' . $val;
 		}
-
-		if ($popUp) {
+		if ($popUp)
+		{
 			$bits[] = "tmpl=component";
 			$bits[] = "ajax=1";
 		}
-
-		if ($usekey and $key != '' and !is_null($row)) {
-			$bits[] = "usekey=" . FabrikString::shortColName($key);
-			$bits[] = "rowid=" . $row->slug;
-		} else {
-			$bits[] = "rowid=0";
+		if ($usekey and $key != '' and !is_null($row))
+		{
+			$bits[] = 'usekey=' . FabrikString::shortColName($key);
+			$bits[] = 'rowid=' . $row->slug;
+		}
+		else
+		{
+			$bits[] = 'rowid=0';
 		}
 
-		$url = "index.php?option=com_fabrik&" . implode("&", $bits);
+		$url = 'index.php?option=com_fabrik&' . implode('&', $bits);
 		$url = JRoute::_($url);
-
-		if (is_null($label) || $label == '') {
+		if (is_null($label) || $label == '')
+		{
 			$label = JText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
-		if ($popUp) {
+		if ($popUp)
+		{
 			FabrikHelperHTML::mocha('a.popupwin');
 			$opts = new stdClass();
 			$opts->maximizable = 1;
 			$opts->title = JText::_('COM_FABRIK_ADD');
 			$opts->evalScripts = 1;
 			$opts = json_encode($opts);
-			$link = "<a rel=\"$opts\" href=\"$url\" class=\"popupwin\" title=\"$label\">".$label."</a>";
-		} else {
-			$link = '<a href="'.$url.'" title="'.$label.'">'.$label.'</a>';
+			$link = "<a rel=\"$opts\" href=\"$url\" class=\"popupwin\" title=\"$label\">" . $label . "</a>";
 		}
-		$url = '<span class="addbutton">'.$link.'</span></a>';
+		else
+		{
+			$link = '<a href="' . $url . '" title="' . $label . '">' . $label . '</a>';
+		}
+		$url = '<span class="addbutton">' . $link . '</span></a>';
 		return $url;
 	}
 
@@ -1443,11 +1454,49 @@ class FabrikFEModelList extends JModelForm {
 		$query = $args->query;
 		return $query;
 	}
+	
+	/**
+	 * add the slug field to the select fields, called from _buildQuerySelect()
+	 * @since 3.0.6
+	 * @param	array	&$fields
+	 */
+	
+	private function selectSlug(&$fields)
+	{
+		$formModel = $this->getFormModel();
+		$item = $this->getTable();
+		$pk = FabrikString::safeColName($item->db_primary_key);
+		$params = $this->getParams();
+		if (in_array($this->_outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf')))
+		{
+			$slug = $params->get('sef-slug');
+			$raw = substr($slug, strlen($slug) -4, 4) == '_raw' ? true : false;
+			$slug = FabrikString::rtrimword($slug, '_raw');
+				
+			$slugElement = $formModel->getElement($slug);
+			if ($slugElement)
+			{
+				$slug = $slugElement->getSlugName($raw);
+			}
+				
+			if ($slug != '')
+			{
+				$slug = FabrikString::safeColName($slug);
+				$fields[] = "CONCAT_WS(':', $pk, $slug) AS slug";
+			}
+			else
+			{
+				if ($pk !== '``')
+				{
+					$fields[] = $pk .  ' AS slug';
+				}
+			}
+		}
+	}
 
 	/**
 	 * get the select part of the query
-	 *
-	 * @return string
+	 * @return	string
 	 */
 
 	function _buildQuerySelect()
@@ -1461,29 +1510,19 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $profiler->mark('queryselect: fields load start') : null;
 		$fields = $this->getAsFields();
 		$pk = FabrikString::safeColName($table->db_primary_key);
-		//SEFSLUG TEST
 		$params = $this->getParams();
-		if (in_array($this->_outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf'))) {
-			$slug = $params->get('sef-slug');
-			if ($slug != '') {
-				$slug = FabrikString::safeColName($slug);
-				$fields[] = "CONCAT_WS(':', $pk, $slug) AS slug";
-			} else {
-				if ($pk !== '``') {
-					$fields[] = "$pk AS slug";
-				}
-			}
-		}
-		//END
-
+		$this->selectSlug($fields);
 		JDEBUG ? $profiler->mark('queryselect: fields loaded') : null;
 		$sfields = (empty($fields)) ? '' : implode(", \n ", $fields) . "\n ";
 		//$$$rob added raw as an option to fix issue in saving calendener data
-		if (trim($table->db_primary_key) != '' && (in_array($this->_outPutFormat, array('raw','html','feed','pdf','phocapdf','csv')))) {
+		if (trim($table->db_primary_key) != '' && (in_array($this->_outPutFormat, array('raw','html','feed','pdf','phocapdf','csv'))))
+		{
 			$sfields .= ", ";
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
 			$query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ' . $sfields . $strPKey;
-		} else {
+		}
+		else
+		{
 			$query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ' . trim($sfields, ", \n")  . "\n";
 		}
 		$query .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
@@ -3629,18 +3668,19 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * format the row id slug
-	 * @param object $row data
-	 * @return string formatted slug
+	 * @param	object	$row data
+	 * @return	string	formatted slug
 	 */
 
 	protected function getSlug($row)
 	{
 		//return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
 		// $$$ hugh - slug doesn't always exist??
-		if (!isset($row->slug)) {
+		if (!isset($row->slug)) 
+		{
 			return '';
 		}
-		$row->slug = str_replace(":", '-', $row->slug);
+		$row->slug = str_replace(':', '-', $row->slug);
 		$row->slug = JApplication::stringURLSafe($row->slug);
 		return $row->slug;
 	}

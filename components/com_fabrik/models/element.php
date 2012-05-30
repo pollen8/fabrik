@@ -1079,6 +1079,17 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		return FabrikString::safeColName($this->getFullName(false, true, false));
 	}
+	
+	/**
+	 * @since 3.0.6
+	 * get the field name to use in the list's slug url
+	 * @param	bool	$raw
+	 */
+	
+	public function getSlugName($raw = false)
+	{
+		return $this->getFilterFullName();
+	}
 
 	/**
 	 * refractored from group class - can be overwritten by plugins
