@@ -644,18 +644,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * run a method on all the element plugins in the form
 	 *
-	 * @param string method to call
-	 * @param array posted form data
+	 * @param	string	method to call
+	 * @param	array	posted form data
 	 */
 
 	function runElementPlugins($method, $data)
 	{
 		$groups = $this->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$params = $elementModel->getParams();
-				if (method_exists($elementModel, $method)) {
+				if (method_exists($elementModel, $method))
+				{
 					$elementModel->$method($params, $data);
 				}
 			}
@@ -677,14 +680,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * when the form is submitted we want to get the orginal record it
 	 * is updating - this is used in things like the fileupload element
 	 * to check for changes in uploaded files and process the difference
-	 * @return object
+	 * @return	object
 	 */
 
 	function setOrigData()
 	{
-		if (JRequest::getInt('rowid') == 0) {
+		if (JRequest::getInt('rowid') == 0)
+		{
 			$this->_origData = array(new stdClass());
-		} else {
+		}
+		else
+		{
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
 			$sql = $this->_buildQuery();
@@ -695,7 +701,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function getOrigData()
 	{
-		if (!isset($this->_origData)) {
+		if (!isset($this->_origData))
+		{
 			$this->setOrigData();
 		}
 		return $this->_origData;
@@ -704,12 +711,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Are we copying a row?  Usually set in controller process().
 	 *
-	 * @param bool if true, set _copyingRow to true
-	 * @return bool
+	 * @param	bool	if true, set _copyingRow to true
+	 * @return	bool
 	 */
 
 	function copyingRow($set = false) {
-		if ($set) {
+		if ($set)
+		{
 			$this->_copyingRow = true;
 		}
 		return $this->_copyingRow;
@@ -722,7 +730,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function process()
 	{
-		if (JRequest::getCmd('format') == 'raw') {
+		if (JRequest::getCmd('format') == 'raw')
+		{
 			// $$$ hugh - although this is useful, so things like harmless notices don't mess with JSON
 			// formatting in AJAX calls, it causes a nasty situation on machines with Suhosin installed.
 			// Seems that Suhosin will automatically flag a response with "Error 500 - Internal Server Error"
@@ -749,31 +758,36 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		$this->getGroupsHiarachy();
 
-		if ($form->record_in_database == '1') {
+		if ($form->record_in_database == '1')
+		{
 			$this->setOrigData();
 		}
 
-		if (in_array(false, $pluginManager->runPlugins('onBeforeProcess', $this))) {
+		if (in_array(false, $pluginManager->runPlugins('onBeforeProcess', $this)))
+		{
 			return;
 		}
 		$this->removeEmptyNoneJoinedGroupData($this->_formData);
 
 		$this->setFormData();
 
-		if (!$this->_doUpload()) {
+		if (!$this->_doUpload())
+		{
 			return false;
 		}
 		// $$$ rob 27/10/2011 - moved above _doUpload as code in there is tryign to update _formData which is not yet set
 		//$this->setFormData();
 
 
-		if (in_array(false, $pluginManager->runPlugins('onBeforeStore', $this))) {
+		if (in_array(false, $pluginManager->runPlugins('onBeforeStore', $this)))
+		{
 			return false;
 		}
 
 		$this->_formDataWithTableName = $this->_formData;
 
-		if ($form->record_in_database == '1') {
+		if ($form->record_in_database == '1')
+		{
 			$this->processToDB();
 		}
 
@@ -785,7 +799,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// so that any redirect urls are available for the plugin (e.g twitter)
 		$pluginManager->runPlugins('onLastProcess', $this);
 
-		if (in_array(false, $pluginManager->runPlugins('onAfterProcess', $this))) {
+		if (in_array(false, $pluginManager->runPlugins('onAfterProcess', $this)))
+		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
 			//returning false here stops the default redirect occuring
 			return false;
@@ -794,7 +809,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$sessionModel->remove();
 
 		//$$$rob used ONLY for redirect plugins
-		if (in_array(false, $pluginManager->runPlugins('onLastProcess', $this))) {
+		if (in_array(false, $pluginManager->runPlugins('onLastProcess', $this)))
+		{
 			// $$$ rob this no longer stops default redirect (not needed any more)
 			//returning false here stops the default redirect occuring
 			return false;
@@ -806,7 +822,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$oUploader = $this->getUploader();
 		$oUploader->upload();
-		if ($oUploader->moveError) {
+		if ($oUploader->moveError)
+		{
 			return false;
 		}
 		return true;
@@ -815,11 +832,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * update the data that gets posted via the form and stored by the form
 	 * model. Used in elements to modify posted data see fabrikfileupload
-	 * @param string $key (in key.dot.format to set a recursive array
-	 * @param string $val value to set to
-	 * @param bool $update_raw automatically update _raw key as well
-	 * @param bool $override_ro update data even if element is RO
-	 * @return null
+	 * @param	string	$key (in key.dot.format to set a recursive array
+	 * @param	string	$val value to set to
+	 * @param	bool	$update_raw automatically update _raw key as well
+	 * @param	bool	$override_ro update data even if element is RO
+	 * @return	null
 	 */
 
 	function updateFormData($key, $val, $update_raw = false, $override_ro = false)
@@ -829,14 +846,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$nodes = explode('.', $key);
 			$count = count($nodes);
 			$pathNodes = $count - 1;
-			if ($pathNodes < 0) {
+			if ($pathNodes < 0)
+			{
 				$pathNodes = 0;
 			}
 			$ns =& $this->_formData;
-			for ($i = 0; $i <= $pathNodes; $i ++) {
+			for ($i = 0; $i <= $pathNodes; $i ++)
+			{
 				// If any node along the registry path does not exist, create it
 				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-				if (!isset($ns[$nodes[$i]])) {
+				if (!isset($ns[$nodes[$i]]))
+				{
 					$ns[$nodes[$i]] = array();
 				}
 				$ns =& $ns[$nodes[$i]];
@@ -844,10 +864,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$ns = $val;
 
 			$ns =& $this->_fullFormData;
-			for ($i = 0; $i <= $pathNodes; $i ++) {
+			for ($i = 0; $i <= $pathNodes; $i ++)
+			{
 				// If any node along the registry path does not exist, create it
 				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-				if (!isset($ns[$nodes[$i]])) {
+				if (!isset($ns[$nodes[$i]]))
+				{
 					$ns[$nodes[$i]] = array();
 				}
 				$ns =& $ns[$nodes[$i]];
@@ -855,12 +877,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$ns = $val;
 
 			// $$$ hugh - FIXME - nope, this won't work!  We don't know which path node is the element name.
-			if ($update_raw) {
+			if ($update_raw)
+			{
 				$key .= '_raw';
 				$nodes = explode('.', $key);
 				$count = count($nodes);
 				$pathNodes = $count - 1;
-				if ($pathNodes < 0) {
+				if ($pathNodes < 0)
+				{
 					$pathNodes = 0;
 				}
 				$ns =& $this->_formData;
@@ -868,7 +892,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					// If any node along the registry path does not exist, create it
 					//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-					if (!isset($ns[$nodes[$i]])) {
+					if (!isset($ns[$nodes[$i]]))
+					{
 						$ns[$nodes[$i]] = array();
 					}
 					$ns =& $ns[$nodes[$i]];
@@ -880,19 +905,24 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					// If any node along the registry path does not exist, create it
 					//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-					if (!isset($ns[$nodes[$i]])) {
+					if (!isset($ns[$nodes[$i]]))
+					{
 						$ns[$nodes[$i]] = array();
 					}
 					$ns =& $ns[$nodes[$i]];
 				}
 				$ns = $val;
 			}
-		} else {
-			if (isset($this->_formData)) {
+		}
+		else
+		{
+			if (isset($this->_formData))
+			{
 				$this->_formData[$key] = $val;
 			}
 			// check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
-			if (isset($this->_fullFormData)) {
+			if (isset($this->_fullFormData))
+			{
 				$this->_fullFormData[$key] = $val;
 			}
 			/*
@@ -917,16 +947,20 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			// during the RO data phase of writing the row.  Don't think it really matter what we set it to,
 			// might as well be the value.  Note that we need the new $override_ro arg, as some elements
 			// use updateFormData() as part of normal operation, which should default to NOT overriding RO.
-			if ($override_ro) {
+			if ($override_ro)
+			{
 				$this->_pluginUpdatedElements[$key] = $val;
 			}
-			if ($update_raw) {
+			if ($update_raw)
+			{
 				$key .= '_raw';
 				$this->_formData[$key] = $val;
-				if (isset($this->_fullFormData)) {
+				if (isset($this->_fullFormData))
+				{
 					$this->_fullFormData[$key] = $val;
 				}
-				if ($override_ro) {
+				if ($override_ro)
+				{
 					$this->_pluginUpdatedElements[$key] = $val;
 				}
 			}
