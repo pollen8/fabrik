@@ -120,16 +120,16 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	 * @return	string
 	 */
 
-	function getMessage($c = 0)
+	public function getMessage($c = 0)
 	{
 		$params = $this->getParams();
-		$v = (array)$params->get($this->_pluginName . '-message');
+		$v = (array) $params->get($this->_pluginName . '-message');
 		$v = JArrayHelper::getValue($v, $c, '');
 		if ($v === '')
 		{
-			$v = JText::_('COM_FABRIK_FAILED_VALIDATION');
+			$v = 'COM_FABRIK_FAILED_VALIDATION';
 		}
-		return $v;
+		return JText::_($v);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		{
 			$name .= '_allowempty';
 		}
-		$label = '<span>'.$this->getLabel($elementModel, $c). '</span>';
+		$label = '<span>' . $this->getLabel($elementModel, $c) . '</span>';
 		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip ' . $this->_pluginName, 'opts' => "{notice:true}",  'title' => $label));
 		return $str;
 	}
