@@ -53,8 +53,6 @@ class JFormFieldListfields extends JFormFieldList
 		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
-		echo $this->name;
-		echo $showRaw ? 'raw true' : 'raw false';
 		switch ($controller)
 		{
 			case 'element':
