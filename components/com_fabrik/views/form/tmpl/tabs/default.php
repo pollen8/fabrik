@@ -100,6 +100,7 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 <?php
 $document = JFactory::getDocument();
 echo $form->endTag;
+echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();
 $options = "{display:$display}";
 $js = '		head.ready(function() { $$(\'dl.tabs\').each(function(tabs) { new JTabs(tabs, '.$options.'); }); });';
