@@ -5421,7 +5421,7 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * @since Fabrik 3.0
 	 * make id element
-	 * @param int $groupId
+	 * @param	int	$groupId
 	 */
 
 	public function makeIdElement($groupId)
@@ -5431,7 +5431,8 @@ class FabrikFEModelList extends JModelForm {
 		$item = $element->getDefaultProperties();
 		$item->name = $item->label = 'id';
 		$item->group_id = $groupId;
-		if (!$item->store()) {
+		if (!$item->store())
+		{
 			JError::raiseWarning(500, $item->getError());
 			return false;
 		}
@@ -5441,7 +5442,7 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * @since Fabrik 3.0
 	 * make foreign key element
-	 * @param int $groupId
+	 * @param	int	$groupId
 	 */
 
 	public function makeFkElement($groupId)
@@ -5450,9 +5451,10 @@ class FabrikFEModelList extends JModelForm {
 		$element = $pluginMananger->getPlugIn('field', 'element');
 		$item = $element->getDefaultProperties();
 		$item->name = $item->label = 'parent_id';
-		$item->hidden	= 1;
+		$item->hidden = 1;
 		$item->group_id = $groupId;
-		if (!$item->store()) {
+		if (!$item->store())
+		{
 			JError::raiseWarning(500, $item->getError());
 			return false;
 		}
