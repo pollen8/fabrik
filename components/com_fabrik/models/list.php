@@ -1374,6 +1374,7 @@ class FabrikFEModelList extends JModelForm {
 					// $$$ hugh - shurely shome mishtake?  New code was using $join->table_key here, I'm assuming
 					// this MUST need to be $join->table_join_key?
 					// $$$ hugh - need to be $lookupC + 1, otherwise we end up with two 0's, 'cos we added main table above
+					// blah test crlf
 					$lookUps[] = $join->table_join . '.' .  $join->table_join_key . ' AS __pk_val' . ($lookupC + 1);
 					$lookUpNames[] = $join->table_join . '.' .  $join->table_join_key;
 					$lookupC ++;
