@@ -1367,11 +1367,14 @@ class FabrikFEModelList extends JModelForm {
 			$lookUpNames = array($table->db_primary_key);
 			foreach ($joins as $join)
 			{
-				if ($join->_params->get('type') !== 'element')
+				// $$$ hugh - added repeatElement, as _makeJoinAliases() is going to set canUse to false for those,
+				// so they won't get included in the query ... so will blow up if we reference them with __pk_calX selection
+				if ($join->_params->get('type') !== 'element' && $join->_params->get('type') !== 'repeatElement')
 				{
 					// $$$ hugh - shurely shome mishtake?  New code was using $join->table_key here, I'm assuming
 					// this MUST need to be $join->table_join_key?
-					$lookUps[] = $join->table_join . '.' .  $join->table_join_key . ' AS __pk_val' . $lookupC;
+					// $$$ hugh - need to be $lookupC + 1, otherwise we end up with two 0's, 'cos we added main table above
+					$lookUps[] = $join->table_join . '.' .  $join->table_join_key . ' AS __pk_val' . ($lookupC + 1);
 					$lookUpNames[] = $join->table_join . '.' .  $join->table_join_key;
 					$lookupC ++;
 				}
