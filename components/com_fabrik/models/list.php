@@ -1374,7 +1374,6 @@ class FabrikFEModelList extends JModelForm {
 					// $$$ hugh - shurely shome mishtake?  New code was using $join->table_key here, I'm assuming
 					// this MUST need to be $join->table_join_key?
 					// $$$ hugh - need to be $lookupC + 1, otherwise we end up with two 0's, 'cos we added main table above
-					// blah test crlf
 					$lookUps[] = $join->table_join . '.' .  $join->table_join_key . ' AS __pk_val' . ($lookupC + 1);
 					$lookUpNames[] = $join->table_join . '.' .  $join->table_join_key;
 					$lookupC ++;
@@ -6048,8 +6047,8 @@ class FabrikFEModelList extends JModelForm {
 	 * PRVIATE:
 	 * called from parseMessageForRowHolder to iterate through string to replace
 	 * {placeholder} with row data
-	 * @param array matches found in parseMessageForRowHolder
-	 * @return string posted data that corresponds with placeholder
+	 * @param	array	matches found in parseMessageForRowHolder
+	 * @return	string	posted data that corresponds with placeholder
 	 */
 
 	function _replaceWithRowData($matches)
@@ -6059,7 +6058,8 @@ class FabrikFEModelList extends JModelForm {
 		$match = substr($match, 1, strlen($match) - 2);
 
 		// $$$ hugh - in case any {$my->foo} or {$_SERVER->FOO} paterns are left over, avoid 'undefined index' warnings
-		if (preg_match('#^\$#',$match)) {
+		if (preg_match('#^\$#',$match))
+		{
 			return '';
 		}
 		$match = str_replace('.', '___', $match);
@@ -6070,11 +6070,13 @@ class FabrikFEModelList extends JModelForm {
 			$match = '__pk_val';
 		}
 		$match = preg_replace("/ /", "_", $match);
-		if ($match == 'formid') {
+		if ($match == 'formid')
+		{
 			return $this->getFormModel()->getId();
 		}
 		$return = JArrayHelper::getValue($this->_aRow, $match);
-		if ($this->_parseAddSlases) {
+		if ($this->_parseAddSlases)
+		{
 			$return = htmlspecialchars($return, ENT_QUOTES, 'UTF-8');
 		}
 		return $return;
