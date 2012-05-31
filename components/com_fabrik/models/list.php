@@ -5161,27 +5161,33 @@ class FabrikFEModelList extends JModelForm {
 		$fmtsql = 'INSERT INTO ' . $db->quoteName($table) . ' ( %s ) VALUES ( %s ) ';
 		$fields = array();
 		$values = array();
-		foreach (get_object_vars($object) as $k => $v) {
-			if (is_array($v) or is_object($v) or $v === NULL) {
+		foreach (get_object_vars($object) as $k => $v)
+		{
+			if (is_array($v) or is_object($v) or $v === NULL)
+			{
 				continue;
 			}
-			if ($k[0] == '_') {
+			if ($k[0] == '_')
+			{
 				// internal field
 				continue;
 			}
 			$fields[] = $db->quoteName($k);
 			$val = $db->isQuoted($k) ? $db->Quote($v) : (int) $v;
-			if (in_array($k, $this->encrypt)) {
+			if (in_array($k, $this->encrypt))
+			{
 				$val = "AES_ENCRYPT($val, '$secret')";
 			}
 			$values[] = $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $fields) ,  implode(",", $values)));
-		if (!$db->query()) {
+		if (!$db->query())
+		{
 			return false;
 		}
 		$id = $db->insertid();
-		if ($keyName && $id) {
+		if ($keyName && $id)
+		{
 			$object->$keyName = $id;
 		}
 		return true;
