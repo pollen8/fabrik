@@ -37,6 +37,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'), JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
+		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'), JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
 		$monthnumbers = array('01','02','03','04','05','06','07','08','09','10','11','12');
 		$daysys = array('01','02','03','04','05','06','07','08','09');
 		$daysimple = array('1','2','3','4','5','6','7','8','9');

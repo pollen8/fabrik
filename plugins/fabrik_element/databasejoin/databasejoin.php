@@ -110,7 +110,23 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$aAsFields[] = $db->quoteName($fullElName);
 		}
 	}
+	
+	/**
+	* @since 3.0.6
+	* get the field name to use in the list's slug url
+	* @param	bool	$raw
+	*/
+	
+	public function getSlugName($raw = false)
+	{
+		return $raw ? parent::getSlugName($raw) : $this->getJoinLabelColumn();
+	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getRawColumn()
+	 */
+	
 	public function getRawColumn($useStep = true)
 	{
 		$join = $this->getJoin();
@@ -1668,11 +1684,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	* @since 3.0b
 	* update an elements jos_fabrik_joins record
-	* @param array $data
-	* @param int element id
-	* @param string $tableJoin
-	* @param string $keyCol
-	* @param string $label
+	* @param	array	$data
+	* @param	int		element id
+	* @param	string	$tableJoin
+	* @param	string	$keyCol
+	* @param	string	$label
 	*/
 
 	protected function updateFabrikJoin($data, $elementId, $tableJoin, $keyCol, $label)
@@ -1693,7 +1709,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($data['id'] == 0) {
 			$key = array('element_id' => $data['id'], 'list_id' => 0);
 		}
-		else {
+		else
+		{
 			$key = array('element_id' => $data['id']);
 		}
 		$join->load($key);
@@ -1733,8 +1750,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
-	 * @return array html ids to watch for validation
+	 * @param	int		repeat group counter
+	 * @return	array	html ids to watch for validation
 	 */
 
 	function getValidationWatchElements($repeatCounter)
@@ -1752,9 +1769,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * used by elements with suboptions
 	 *
-	 * @param string value
-	 * @param string default label
-	 * @return string label
+	 * @param	string	value
+	 * @param	string	default label
+	 * @return	string	label
 	 */
 
 	public function getLabelForValue($v, $defaultLabel = null)
@@ -1762,8 +1779,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$n = $this->getFullName(false, true, false);
 		$data = array($n => $v, $n.'_raw' => $v);
 		$tmp = $this->_getOptions($data, 0, false);
-		foreach ($tmp as $obj) {
-			if ($obj->value == $v) {
+		foreach ($tmp as $obj)
+		{
+			if ($obj->value == $v)
+			{
 				$defaultLabel = $obj->text;
 				break;
 			}
@@ -1774,7 +1793,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * if no filter condition supplied (either via querystring or in posted filter data
 	 * return the most appropriate filter option for the element.
-	 * @return string default filter condition ('=', 'REGEXP' etc)
+	 * @return	string	default filter condition ('=', 'REGEXP' etc)
 	 */
 
 	function getDefaultFilterCondition()
@@ -1784,8 +1803,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * is the dropdowns cnn the same as the main Joomla db
-	 * @return bool
+	 * @return	bool
 	 */
+	
 	protected function inJDb()
 	{
 		$config = JFactory::getConfig();
@@ -1808,10 +1828,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->getElement(true);
 		$db = FabrikWorker::getDbo();
 		$c = $this->_getValColumn();
-		if (!strstr($c, 'CONCAT')) {
+		if (!strstr($c, 'CONCAT'))
+		{
 			$c = FabrikString::safeColName($c);
 		}
-		$this->_autocomplete_where = $c.' LIKE '.$db->Quote('%'.JRequest::getVar('value').'%');
+		$this->_autocomplete_where = $c.' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
 		// $$$ hugh - changed last arg (incwhere) to true, not sure why it was false
 		$tmp = $this->_getOptions(array(), 0, true);
 		echo json_encode($tmp);

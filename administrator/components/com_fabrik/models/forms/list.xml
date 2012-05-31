@@ -367,7 +367,8 @@
 			
 			<field name="sef-slug" 
 				type="listfields" 
-				valueformat="tableelement" 
+				valueformat="tableelement"
+				raw="1" 
 				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL" 
 				description="COM_FABRIK_FIELD_SEF_SLUG_DESC" />
 				
