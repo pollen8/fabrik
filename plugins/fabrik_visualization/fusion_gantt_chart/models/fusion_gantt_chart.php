@@ -60,9 +60,9 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$label = $params->get('fusion_gantt_chart_label');
 		$hover = $params->get('fusion_gantt_chart_hover');
 		$milestone = $params->get('fusion_gantt_chart_milestone');
-		$milestoneraw = $milestone."_raw";
+		$milestoneraw = $milestone . '_raw';
 		$connector = $params->get('fusion_gantt_chart_connector');
-		$connectorraw = $connector."_raw";
+		$connectorraw = $connector . '_raw';
 		$fields = array();
 		$names = array();
 		$uses = array($process, $start, $end, $label, $hover, $milestone, $connector);

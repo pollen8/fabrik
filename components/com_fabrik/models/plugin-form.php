@@ -215,8 +215,8 @@ class plgFabrik_Form extends FabrikPlugin
 					foreach ($elementModels as $tmpElement) {
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
 						if (is_array($model->_formDataWithTableName)) {
-							if (array_key_exists($smallerElHTMLName."_raw", $model->_formDataWithTableName)) {
-								$d = $model->_formDataWithTableName[$smallerElHTMLName."_raw"];
+							if (array_key_exists($smallerElHTMLName . '_raw', $model->_formDataWithTableName)) {
+								$d = $model->_formDataWithTableName[$smallerElHTMLName . '_raw'];
 							} else {
 								$d = @$model->_formDataWithTableName[$smallerElHTMLName];
 							}
