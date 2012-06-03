@@ -28,8 +28,6 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		//Jaanus: needed also here to not to show 0000-00-00 in detail view;
-		//see also 58, added && !in_array($value, $aNullDates) (same reason).
 		$db = JFactory::getDbo();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -148,7 +146,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 			if ($groupModel->isJoin()) {
 				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])) {
 					if ($groupModel->canRepeat()) {
-					$data = str_replace(null, '', $data);
+					//$data = str_replace(null, '', $data); just tried to make null data visible for rep. group
 
 						if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname])) {
 							$value = $data['join'][$joinid][$rawname][$repeatCounter];
@@ -169,30 +167,11 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 					}
 				}
 			} else {
-				if ($groupModel->canRepeat()) {
-					//repeat group NO join
-					$thisname = $rawname;
-					if (!array_key_exists($name, $data)) {
-						$thisname = $name;
-					}
-					if (array_key_exists($thisname, $data)) {
-						if (is_array($data[$thisname])) {
-							//occurs on form submission for fields at least
-							$a = $data[$thisname];
-						} else {
-							//occurs when getting from the db
-							$a = json_decode($data[$thisname]);
-						}
-						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
-					}
-
-				} else {
 					if (!is_array($data)) {
 						$value = $data;
 					} else {
 						$value = JArrayHelper::getValue($data, $name, JArrayHelper::getValue($data, $rawname, $value));
 					}
-				}
 			}
 
 			if (is_array($value)) {
@@ -220,20 +199,6 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 
 	function storeDatabaseFormat($val, $data)
 	{
-		// $$$ hugh - No need for this in 3.x, all repeated groups are now joins,
-		// so we get called once per instance of repeat
-		/*
-		$groupModel = $this->getGroup();
-		if ($groupModel->canRepeat()) {
-			if (is_array($val)) {
-				$res = array();
-				foreach ($val as $v) {
-					$res[] = $this->_indStoreDBFormat($v);
-				}
-				return json_encode($res);
-			}
-		}
-		*/
 		return $this->_indStoreDBFormat($val);
 	}
 
@@ -300,11 +265,6 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		foreach ($data as $d) {
 			if ($d)
 			{
-				// $$$ rob default to a format date
-				//$date = JFactory::getDate($d);
-				//$datedisp = $date->toFormat($ft);
-				// Jaanus: sorry, but in this manner the element doesn't work with dates earlier than 1901
-
 				list($hour, $min, $sec) = explode(':', $d);
 				$hms = $hour . $sep . $min . $sep . $sec;
 				$hm = $hour . $sep . $min;
