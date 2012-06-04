@@ -103,6 +103,8 @@ class plgContentFabrik extends JPlugin
 	protected function parse($match)
 	{
 		$match = $match[0];
+		// $$$ hugh - see if we can remove formatting added by WYSIWYG editors
+		$match = strip_tags($match);
 		require_once(COM_FABRIK_FRONTEND . '/helpers/parent.php');
 		$w =new FabrikWorker();
 		$match = preg_replace('/\s+/', ' ', $match);
@@ -165,7 +167,7 @@ class plgContentFabrik extends JPlugin
 		$usekey = '';
 		$session = JFactory::getSession();
 		$usersConfig->set('rowid', 0);
-		
+
 		foreach ($match as $m)
 		{
 			$m = explode("=", $m);
@@ -443,7 +445,7 @@ class plgContentFabrik extends JPlugin
 				$model->setOrderByAndDir();
 				$formModel = $model->getFormModel();
 				break;
-				
+
 			case 'visualization':
 				JRequest::setVar('showfilters', $showfilters);
 				JRequest::setVar('clearfilters', $clearfilters);
