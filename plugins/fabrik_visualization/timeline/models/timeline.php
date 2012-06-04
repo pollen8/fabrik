@@ -102,17 +102,18 @@ class fabrikModelTimeline extends FabrikFEModelVisualization {
 							$event = new stdClass();
 							$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row));
 							$event->description = $html;
-							$event->start = (array_key_exists($startdate. '_raw', $row) && $tblStartFormat) ? $row->{$startdate. '_raw'} : $row->$startdate;
+							//$event->start = (array_key_exists($startdate. '_raw', $row) && $tblStartFormat) ? $row->{$startdate. '_raw'} : $row->$startdate;
+							$event->start = (array_key_exists($startdate. '_raw', $row) && $startTimeFormat) ? $row->{$startdate. '_raw'} : $row->$startdate;
 							if (trim($enddate) !== '')
 							{
 								$end = (array_key_exists($enddate. '_raw', $row) && $endTimeFormat) ? $row->{$enddate. '_raw'} : @$row->$enddate;
-								$event->end = ($end > $event->start) ? $end : '';
+								$event->end = ($end >= $event->start) ? $end : '';
 								//if we are showing the times we need to re-offset the date as its already been offset in the tbl model
 								$endD = !(array_key_exists($enddate. '_raw', $row) && $endTimeFormat) ? JFactory::getDate($event->end, $timeZone) : JFactory::getDate($event->end);
 								$event->end = $endD->toISO8601();
 							}
 
-							$sDate = !(array_key_exists($startdate. '_raw', $row) && $tblStartFormat) ? JFactory::getDate($event->start, $timeZone) : JFactory::getDate($event->start);
+							$sDate = !(array_key_exists($startdate. '_raw', $row) && $startTimeFormat) ? JFactory::getDate($event->start, $timeZone) : JFactory::getDate($event->start);
 							$event->start = $sDate->toISO8601();
 							$event->title = strip_tags(@$row->$title);
 							$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : JRoute::_('index.php?option=com_fabrik&view=' . $nextview . '&formid=' . $table->form_id . '&rowid=' . $row->__pk_val . '&listid=' . $listModel->getId());
@@ -123,6 +124,9 @@ class fabrikModelTimeline extends FabrikFEModelVisualization {
 							$event->classname = strip_tags($event->classname);
 							if ($event->start !== '' && !is_null($event->start))
 							{
+								if ($event->end == $event->start) {
+									$event->end = '';
+								}
 								$eventdata[] = $event;
 							}
 						}
