@@ -540,7 +540,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	function getValidationErr()
 	{
-		return $this->_validationErr;
+		return JText::_($this->_validationErr);
 	}
 
 	/**
@@ -1063,7 +1063,8 @@ class plgFabrik_Element extends FabrikPlugin
 			$tip = @eval($tip);
 			FabrikWorker::logEval($tip, 'Caught exception on eval of ' . $this->getElement()->name . ' tip: %s');
 		}
-		$tip = trim(JText::_($tip));
+		$tip = trim(JText::_($tip));#
+		$tip = JText::_($tip);
 		$tip = htmlspecialchars($tip, ENT_QUOTES);
 		return $tip;
 	}
@@ -1078,6 +1079,17 @@ class plgFabrik_Element extends FabrikPlugin
 	function getFilterFullName()
 	{
 		return FabrikString::safeColName($this->getFullName(false, true, false));
+	}
+	
+	/**
+	 * @since 3.0.6
+	 * get the field name to use in the list's slug url
+	 * @param	bool	$raw
+	 */
+	
+	public function getSlugName($raw = false)
+	{
+		return $this->getFilterFullName();
 	}
 
 	/**

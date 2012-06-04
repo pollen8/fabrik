@@ -52,6 +52,7 @@ class JFormFieldListfields extends JFormFieldList
 		//else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
 		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
+		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
 		switch ($controller)
 		{
 			case 'element':
@@ -63,7 +64,7 @@ class JFormFieldListfields extends JFormFieldList
 					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0) : $this->form->getValue('group_id');
 					$groupModel->setId($groupId);
 					$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
-					$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, false, $pluginFilters);
+					$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, $showRaw, $pluginFilters);
 					$hash = $controller . '.' . implode('.', $bits);
 					if (array_key_exists($hash, $this->results))
 					{
@@ -121,7 +122,7 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$formModel = $listModel->getFormModel();
 					$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-					$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, false, $pluginFilters);
+					$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters);
 				}
 				else
 				{
@@ -136,7 +137,7 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				$formModel = $this->form->model;
 				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, false, $pluginFilters);
+				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters);
 				break;
 			case 'group':
 				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
@@ -144,7 +145,7 @@ class JFormFieldListfields extends JFormFieldList
 				$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 				$groupModel->setId($id);
 				$formModel = $groupModel->getFormModel();
-				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, false, $pluginFilters);
+				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters);
 				break;
 			default:
 				return JText::_('THE LISTFIELDS ELEMENT IS ONLY USABLE BY LISTS AND ELEMENTS');

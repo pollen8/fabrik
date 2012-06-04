@@ -127,7 +127,6 @@ class fabrikViewForm extends JView
 			$form->fieldsetTag = 'div';
 			$form->legendTag = 'h3';
 		}
-		$form->endTag .= $this->pluginend;
 		$this->assignRef('form', $form);
 		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
 		$list = new stdClass();

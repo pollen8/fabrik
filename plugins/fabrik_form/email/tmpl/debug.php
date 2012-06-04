@@ -40,4 +40,3 @@ foreach (array_keys($joindata) as $joinkey) {
 }
 ?>
 </table>
-
