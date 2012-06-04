@@ -341,11 +341,11 @@ class FabrikFEModelImportcsv extends JModelForm{
 						}
 					}
 					$hkey .= "_raw";
-					if (strtolower(trim($heading)) == strtolower(trim($name))."_raw") {
+					if (strtolower(trim($heading)) == strtolower(trim($name)) . '_raw') {
 						if (!array_key_exists($hkey, $this->matchedHeadings)) {
 							/** heading found in table */
-							$this->matchedHeadings[$hkey] = $element->name ."_raw";
-							$this->aUsedElements[strtolower($heading) ."_raw"] = $elementModel;
+							$this->matchedHeadings[$hkey] = $element->name  . '_raw';
+							$this->aUsedElements[strtolower($heading)  . '_raw'] = $elementModel;
 							$found = true;
 							$elementMap[$intKey] = clone($elementModel);
 							$rawMap[$intKey] = true;

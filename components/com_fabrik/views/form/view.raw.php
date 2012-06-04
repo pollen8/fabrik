@@ -178,8 +178,8 @@ class fabrikViewForm extends JView
 					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-						if (array_key_exists($smallerElHTMLName."_raw", $model->_data)) {
-							$d = $model->_data[$smallerElHTMLName."_raw"];
+						if (array_key_exists($smallerElHTMLName . '_raw', $model->_data)) {
+							$d = $model->_data[$smallerElHTMLName . '_raw'];
 						} else {
 							$d = @$model->_data[$smallerElHTMLName];
 						}

@@ -306,8 +306,8 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		} else {
 			$aFields[] 	= $str;
 			$aAsFields[] =  $fullElName;
-			$aFields[]				= $db->nameQuote($dbtable).'.'.$db->nameQuote($this->_element->name).' AS '.$db->nameQuote($fullElName."_raw");
-			$aAsFields[]			= $db->nameQuote($fullElName."_raw");
+			$aFields[]				= $db->nameQuote($dbtable).'.'.$db->nameQuote($this->_element->name).' AS '.$db->nameQuote($fullElName . '_raw');
+			$aAsFields[]			= $db->nameQuote($fullElName . '_raw');
 		}
 	}
 
