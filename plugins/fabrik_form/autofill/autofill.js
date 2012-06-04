@@ -155,18 +155,26 @@ var Autofill = new Class({
 			var k2 = key.substr(key.length - 4, 4);
 			if (k2 === '_raw') {
 				key = key.replace('_raw', '');
-				if (repeatNum) {
-					key += '_' + repeatNum;
-				}
-				var el = this.form.formElements.get(key);
-				if (typeOf(el) !== 'null') {
-					el.update(val);
+				if (!this.tryUpdate(key, val)) {
+					if (repeatNum) {
+						key += '_' + repeatNum;
+						this.tryUpdate(key, val);
+					}
 				}
 			}
 		}.bind(this));
 		if (this.options.editOrig === true) {
 			this.form.getForm().getElement('input[name=rowid]').value = json.__pk_val;
 		}
+	},
+	
+	tryUpdate: function (key, val) {
+		var el = this.form.formElements.get(key);
+		if (typeOf(el) !== 'null') {
+			el.update(val);
+			return true;
+		}
+		return false;
 	}
 	
 });
