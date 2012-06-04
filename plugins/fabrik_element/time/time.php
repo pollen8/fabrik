@@ -269,7 +269,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 				$hms = $hour . $sep . $min . $sep . $sec;
 				$hm = $hour . $sep . $min;
 				$ms = $min . $sep . $sec;
-				if ($ft == "d.m.Y")
+				$timedisp = '';
+				if ($ft == "H:i:s")
 				{
 					$timedisp = $hms;
 				}
