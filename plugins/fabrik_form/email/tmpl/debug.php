@@ -3,6 +3,9 @@
 <table>
 <?php
 foreach ($this->data as $key => $val) {
+  if ($key === 'join') {
+  	continue;
+  }
   echo "<tr><td>$key</td><td>";
   if (is_array($val)) {
   	foreach ($val as $v) {
