@@ -227,7 +227,7 @@ class fabrikSubscriptionsIPN {
 		$this->log('fabrik.ipn.txn_type_subscr_payment gid query', $db->getQuery());
 	
 		$this->log('fabrik.ipn.setusergid', $subUser->get('id') . ' set to '. $gid . "\n ".$db->getQuery() . "\n ". $db->getErrorMsg());
-		$subUser->groups = (array)$gid;
+		$subUser->groups = (array) $gid;
 		$subUser->save();
 	
 		$app = JFactory::getApplication();
@@ -421,7 +421,7 @@ class fabrikSubscriptionsIPN {
 		}
 		$subUser = JFactory::getUser($sub->userid);
 		$this->log('fabrik.ipn. fallback', $subUser->get('id') .' gid set to ' . $gid);
-		$subUser->groups = (array)$gid;
+		$subUser->groups = (array) $gid;
 		$subUser->save();
 	
 		if ($fallback)

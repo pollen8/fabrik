@@ -349,7 +349,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		if (strstr($data, ',')) {
 			$data = explode(',', $data);
 		}
-		$data = (array)$data;
+		$data = (array) $data;
 		foreach ($data as $d) {
 			if (trim($d) == '') {
 				return true;
@@ -384,7 +384,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		$groupModel = $this->getGroup();
 		//Jaanus: json_decode replaced with FabrikWorker::JSONtoData that made visible also single data in repeated group
 		$data = $groupModel->canRepeat() ? FabrikWorker::JSONtoData($data, true) : array($data);
-		$data = (array)$data;
+		$data = (array) $data;
 		$ft = $params->get('list_date_format', 'd.m.Y');
 		//$ft = $params->get('birthday_format', 'd.m.Y'); //$ft = $params->get('birthday_format', '%Y-%m-%d');
 		$fta = $params->get('list_age_format', 'no');

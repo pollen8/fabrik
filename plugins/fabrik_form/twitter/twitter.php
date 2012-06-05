@@ -305,10 +305,10 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$consumer_key = JRequest::getVar('twitter_consumer_key');
 		$consumer_secret = JRequest::getVar('twitter_consumer_secret');
 		$counter = JRequest::getInt('repeatCounter');
-		$consumer_key = (array)$params->get('twitter_consumer_key');
+		$consumer_key = (array) $params->get('twitter_consumer_key');
 		$consumer_key = $consumer_key[$counter];
 
-		$consumer_secret = (array)$params->get('twitter_consumer_secret');
+		$consumer_secret = (array) $params->get('twitter_consumer_secret');
 		$consumer_secret = $consumer_secret[$counter];
 
 		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='.$formModel->getId();

@@ -943,7 +943,7 @@ class FabrikFEModelListfilter extends FabModel {
 				// index is the filter index for a previous filter that uses the same element id
 				if (!in_array($elid, $usedMerges))
 				{
-					$index = array_key_exists('elementid', $filters) ? array_search($elid, (array)$filters['elementid']) : false;
+					$index = array_key_exists('elementid', $filters) ? array_search($elid, (array) $filters['elementid']) : false;
 				}
 				else
 				{

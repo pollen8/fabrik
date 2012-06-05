@@ -320,7 +320,7 @@ class FabrikModelElement extends JModelAdmin
 		$plugins = JArrayHelper::getValue($validations, 'plugin', array());
 		$return = array();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$pluginData = empty($item->params) ? array() : (array)$item->params;
+		$pluginData = empty($item->params) ? array() : (array) $item->params;
 		$locations = JArrayHelper::getValue($item->params, 'plugin_locations');
 		$events = JArrayHelper::getValue($item->params, 'plugin_locations');
 		foreach ($plugins as $x => $plugin)

@@ -66,7 +66,7 @@ class fabrikParams extends JParameter
 	{
 		$return = parent::get($key, $default);
 		if ($outputFormat == 'array') {
-			$return = $return == '' ? array() : (array)$return;
+			$return = $return == '' ? array() : (array) $return;
 		}
 		return $return;
 	}

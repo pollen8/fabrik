@@ -750,7 +750,7 @@ class fabrikViewForm extends JView
 			if ($repeatGroup)
 			{
 				$ar = array();
-				$input = (array)$input;
+				$input = (array) $input;
 				foreach ($input as $i)
 				{
 					if (is_array($i))
@@ -798,7 +798,7 @@ class fabrikViewForm extends JView
 			}
 			else
 			{
-				$fields[$safeKey] = (array)$fields[$safeKey];
+				$fields[$safeKey] = (array) $fields[$safeKey];
 				$fields[$safeKey][] = $input;
 			}
 		}

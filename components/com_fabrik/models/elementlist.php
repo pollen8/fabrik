@@ -58,7 +58,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	{
 		$params = $this->getParams();
 		$opts = $params->get('sub_options');
-		$r = isset($opts->sub_initial_selection) ? (array)$opts->sub_initial_selection : array();
+		$r = isset($opts->sub_initial_selection) ? (array) $opts->sub_initial_selection : array();
 		return $r;
 	}
 
@@ -71,7 +71,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	function dataConsideredEmpty($data, $repeatCounter)
 	{
-		$data = (array)$data;
+		$data = (array) $data;
 		foreach ($data as $d) {
 			if ($d != '') {
 				return false;
@@ -346,7 +346,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		// and I'm not sure if we enforce that.  Problem being that if we just cast directly to
 		// an array, the array isn't "empty()", as it has a single, empty string entry.  So then
 		// the array_diff() we're about to do sees that as a diff.
-		// $selected = (array)$this->getValue($data, $repeatCounter);
+		// $selected = (array) $this->getValue($data, $repeatCounter);
 		$selected = $this->getValue($data, $repeatCounter);
 		if (is_string($selected)) {
 			if ($selected === '') {

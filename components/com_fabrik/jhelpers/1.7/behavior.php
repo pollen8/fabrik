@@ -732,7 +732,7 @@ abstract class JHtmlBehavior
 		$object = '{';
 
 		// Iterate over array to build objects
-		foreach ((array)$array as $k => $v)
+		foreach ((array) $array as $k => $v)
 		{
 			if (is_null($v)) {
 				continue;

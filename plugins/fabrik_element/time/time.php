@@ -229,7 +229,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		if (strstr($data, ',')) {
 			$data = explode(',', $data);
 		}
-		$data = (array)$data;
+		$data = (array) $data;
 		foreach ($data as $d) {
 			if (trim($d) == '') {
 				return true;
@@ -257,7 +257,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		$params = $this->getParams();
 		$groupModel = $this->getGroup();
 		$data = $groupModel->canRepeat() ? FabrikWorker::JsonToData($data) : array($data);
-		$data = (array)$data;
+		$data = (array) $data;
 		$ft = $params->get('list_time_format', 'H:i:s');
 		$sep = $params->get('time_separatorlabel', JText::_(':'));
 		$format = array();

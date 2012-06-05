@@ -1139,7 +1139,7 @@ class FabrikWorker {
 		if (!strstr($data, '{'))
 		{
 			//hmm was messng up date rendering @ http://www.podion.eu/dev2/index.php/2011-12-19-10-33-59/actueel
-			//return $toArray ? (array)$data : $data;
+			//return $toArray ? (array) $data : $data;
 		}
 		// repeat elements are concatned with the GROUPSPLITTER - conver to json string
 		// before continuing.
@@ -1162,7 +1162,7 @@ class FabrikWorker {
 			}
 			$data = is_null($json) ? $data : $json;
 		}
-		$data = $toArray ? (array)$data : $data;
+		$data = $toArray ? (array) $data : $data;
 		return $data;
 	}
 

@@ -125,7 +125,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$query = "SELECT row_id, AVG(rating) AS r, COUNT(rating) AS total FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int)$listid." AND formid = ".(int)$formid." AND element_id = ".(int)$elementid;
 			$query .= " AND row_id IN (".implode(',', $ids) .") GROUP BY row_id";
 			$db->setQuery($query);
-			$this->avgs = (array)$db->loadObjectList('row_id');
+			$this->avgs = (array) $db->loadObjectList('row_id');
 		}
 		$params = $this->getParams();
 		$r = array_key_exists($row_id, $this->avgs) ? $this->avgs[$row_id]->r : 0;

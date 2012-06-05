@@ -336,7 +336,7 @@ class plgContentFabrik extends JPlugin
 			$origRowid = JRequest::getVar('rowid');
 			JRequest::setVar('rowid', $rowid);
 
-			$defaultdata = (array)$defaultdata;
+			$defaultdata = (array) $defaultdata;
 			unset($activeEl->defaults);
 			$res = $activeEl->render($defaultdata, $repeatcounter);
 			JRequest::setVar('rowid', $origRowid);

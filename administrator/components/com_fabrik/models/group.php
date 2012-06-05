@@ -220,7 +220,7 @@ class FabrikModelGroup extends FabModelAdmin
 		$pluginManager = FabrikWorker::getPluginManager();
 		$db = $listModel->getDb();
 		$list = $listModel->getTable();
-		$elements = (array)$groupModel->getMyElements();
+		$elements = (array) $groupModel->getMyElements();
 		$names = array();
 		$fields = $listModel->getDBFields(null, 'Field');
 		$names['id'] = "id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";

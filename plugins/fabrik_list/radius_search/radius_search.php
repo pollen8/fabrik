@@ -162,7 +162,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		if ($active[0] == 0) {
 			//need to clear out any session filter (occurs when you search with r filter, then deactivate the filter
 			$filterModel = $model->getFilterModel();
-			$index = array_key_exists('elementid', $filters) ? array_search('radius_search', (array)$filters['elementid']) : false;
+			$index = array_key_exists('elementid', $filters) ? array_search('radius_search', (array) $filters['elementid']) : false;
 			if ($index !== false) {
 				$filterModel->clearAFilter($filters, $index);
 			}

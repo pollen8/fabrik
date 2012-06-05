@@ -52,7 +52,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$post	= JRequest::get('post');
-		$v = (array)$params->get($this->_pluginName .'-validation_condition');
+		$v = (array) $params->get($this->_pluginName .'-validation_condition');
 		if (!array_key_exists($c, $v))
 		{
 			return true;

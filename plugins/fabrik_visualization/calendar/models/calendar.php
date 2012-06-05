@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelCalendar extends FabrikFEModelVisualization {
 	var $_eventLists = null;
@@ -36,7 +36,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function setListIds()
 	{
 		if (!isset($this->listids)) {
-			$this->listids = (array)$this->getParams()->get('calendar_table');
+			$this->listids = (array) $this->getParams()->get('calendar_table');
 			JArrayHelper::toInteger($this->listids);
 		}
 	}
@@ -47,7 +47,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 			$this->_eventLists = array();
 			$db = FabrikWorker::getDbo(true);
 			$params	= $this->getPluginParams();
-			$lists = (array)$params->get('calendar_table');
+			$lists = (array) $params->get('calendar_table');
 			JArrayHelper::toInteger($lists);
 			$dateFields = (array) $params->get('calendar_startdate_element');
 			$dateFields2 = (array) $params->get('calendar_enddate_element');
@@ -134,11 +134,11 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	{
 		if (is_null($this->_events)) {
 			$params = $this->getParams();
-			$tables = (array)$params->get('calendar_table');
-			$table_label = (array)$params->get('calendar_label_element');
-			$table_startdate = (array)$params->get('calendar_startdate_element');
-			$table_enddate = (array)$params->get('calendar_enddate_element');
-			$colour	= (array)$params->get('colour');
+			$tables = (array) $params->get('calendar_table');
+			$table_label = (array) $params->get('calendar_label_element');
+			$table_startdate = (array) $params->get('calendar_startdate_element');
+			$table_enddate = (array) $params->get('calendar_enddate_element');
+			$colour	= (array) $params->get('colour');
 			$this->_events = array();
 			for ($i=0; $i<count($tables); $i++) {
 				$listModel = JModel::getInstance('list', 'FabrikFEModel');
@@ -234,7 +234,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	{
 		if (!isset($this->canAdd)) {
 			$params = $this->getParams();
-			$lists = (array)$params->get('calendar_table');
+			$lists = (array) $params->get('calendar_table');
 			foreach ($lists as $id) {
 				$listModel = JModel::getInstance('list', 'FabrikFEModel');
 				$listModel->setId($id);
@@ -257,7 +257,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	{
 		$deleteables = array();
 		$params = $this->getParams();
-		$lists = (array)$params->get('calendar_table');
+		$lists = (array) $params->get('calendar_table');
 		foreach ($lists as $id)
 		{
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
@@ -377,8 +377,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$db	= FabrikWorker::getDbo();
 		$params = $this->getParams();
 		$this->setupEvents();
-		$tables = (array)$params->get('calendar_table');
-		$colour = (array)$params->get('colour');
+		$tables = (array) $params->get('calendar_table');
+		$colour = (array) $params->get('colour');
 		$calendar = $this->_row;
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();

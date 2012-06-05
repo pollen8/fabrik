@@ -31,10 +31,10 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$session = JFactory::getSession();
 		$context = $formModel->getRedirectContext();
 		//get existing session params
-		$surl = (array)$session->get($context . 'url', array());
-		$stitle = (array)$session->get($context . 'title', array());
-		$smsg = (array)$session->get($context . 'msg', array());
-		$sshowsystemmsg = (array)$session->get($context . 'showsystemmsg', array());
+		$surl = (array) $session->get($context . 'url', array());
+		$stitle = (array) $session->get($context . 'title', array());
+		$smsg = (array) $session->get($context . 'msg', array());
+		$sshowsystemmsg = (array) $session->get($context . 'showsystemmsg', array());
 
 		$app = JFactory::getApplication();
 		$this->formModel = $formModel;
@@ -121,7 +121,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
 		$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
-		$title = (array)$session->get($context.'title', $title);
+		$title = (array) $session->get($context.'title', $title);
 		$title = array_shift($title);
 		$message = $session->get($context.'msg', $message);
 		if (JRequest::getVar('fabrik_ajax')) {

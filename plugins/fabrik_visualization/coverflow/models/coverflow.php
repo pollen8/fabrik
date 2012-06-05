@@ -38,7 +38,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 
 		$config = JFactory::getConfig();
 
-		$listids = (array)$params->get('coverflow_table');
+		$listids = (array) $params->get('coverflow_table');
 		$eventdata = array();
 		foreach ($listids as $listid)
 		{

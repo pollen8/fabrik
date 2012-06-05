@@ -909,7 +909,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					{
 						//$$$ rob turn into a ranged filter to search the entire day
 						// values should be in sql format
-						$value = (array)$value;
+						$value = (array) $value;
 						$condition = 'BETWEEN';
 						$value[1] = $next->toSql();
 						// set a flat to stop getRangedFilterValue from adding an additional day to end value

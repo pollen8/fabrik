@@ -37,7 +37,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 		if (!empty($data)) {
 			if (array_key_exists('label', $data)) {
-				$data = (array)$this->_renderListData($data, $oAllRowsData);
+				$data = (array) $this->_renderListData($data, $oAllRowsData);
 			} else {
 				for ($i = 0; $i < count($data); $i++) {
 					$data[$i] = JArrayHelper::fromObject($data[$i]);

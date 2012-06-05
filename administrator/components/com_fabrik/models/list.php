@@ -354,7 +354,7 @@ class FabrikModelList extends FabModelAdmin
 		$afilterFields = (array) $form->getValue('params.filter-fields');
 		$afilterConditions = (array) $form->getValue('params.filter-conditions');
 		$afilterEval = (array) $form->getValue('params.filter-eval');
-		$afilterValues= (array)$form->getValue('params.filter-value');
+		$afilterValues= (array) $form->getValue('params.filter-value');
 		$afilterAccess= (array) $form->getValue('params.filter-access');
 		$aGrouped = (array) $form->getValue('params.filter-grouped');
 		for ($i = 0; $i < count($afilterFields); $i ++)
@@ -1650,7 +1650,7 @@ class FabrikModelList extends FabModelAdmin
 		// Initialise variables.
 		$dispatcher	= JDispatcher::getInstance();
 		$user = JFactory::getUser();
-		$pks = (array)$pks;
+		$pks = (array) $pks;
 		$table = $this->getTable();
 		$app = JFactory::getApplication();
 		// Include the content plugins for the on delete events.
@@ -1769,7 +1769,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $form->id);
 		$db->setQuery($query);
-		$groupids = (array)$db->loadResultArray();
+		$groupids = (array) $db->loadResultArray();
 		//delete groups
 		$groupModel = JModel::getInstance('Group', 'FabrikModel');
 		$groupModel->delete($groupids, $deleteElements);

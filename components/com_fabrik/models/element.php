@@ -3401,7 +3401,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	function _median($results)
 	{
-		$results = (array)$results;
+		$results = (array) $results;
 		sort($results);
 		if ((count($results) % 2) == 1) {
 			/* odd */

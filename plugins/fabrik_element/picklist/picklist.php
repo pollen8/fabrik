@@ -37,7 +37,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
-		$arSelected = (array)$this->getValue($data, $repeatCounter);
+		$arSelected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ?  " elementErrorHighlight" : '';
 		$attribs = 'class="picklistcontainer'.$errorCSS."\"";
 		$style = ".frompicklist, .topicklist{\n"

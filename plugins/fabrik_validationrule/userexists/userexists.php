@@ -70,7 +70,7 @@ class plgFabrik_ValidationruleUserExists extends plgFabrik_Validationrule
 			}
 			else
 			{
-				$user_field = (array)$params->get('userexists_user_field', array());
+				$user_field = (array) $params->get('userexists_user_field', array());
 				$user_field = $user_field[$c];
 				$user_id = 0;
 				if ((int)$user_field !== 0)

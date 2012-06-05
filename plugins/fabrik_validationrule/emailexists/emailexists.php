@@ -44,7 +44,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		$ornot = (object)$params->get('emailexists_or_not');
 		$ornot = isset($ornot->$c) ? $ornot->$c : 'fail_if_exists';
 
-		$user_field = (array)$params->get('emailexists_user_field', array());
+		$user_field = (array) $params->get('emailexists_user_field', array());
 		$user_field = $user_field[$c];
 		$user_id = 0;
 		if ((int)$user_field !== 0)

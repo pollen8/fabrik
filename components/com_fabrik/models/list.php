@@ -3602,7 +3602,7 @@ class FabrikFEModelList extends JModelForm {
 			if (isset($properties))
 			{
 				$prefilters = JArrayHelper::fromObject(json_decode($properties));
-				$conditions = (array)$prefilters['filter-conditions'];
+				$conditions = (array) $prefilters['filter-conditions'];
 				if (!empty($conditions))
 				{
 					$params->set('filter-fields', $prefilters['filter-fields']);
@@ -4804,30 +4804,30 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * put the actions in the headings array - separated to here to enable it to be added at the end or beginning
-	 * @param array
-	 * @param array
-	 * @param array
+	 * @param	array
+	 * @param	array
+	 * @param	array
 	 */
 
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
 		// 3.0 actions now go in one column
-		if ($this->actionHeading == true) {
+		if ($this->actionHeading == true)
+		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$headingButtons = array();
-
-			if ($this->deletePossible()) {
+			if ($this->deletePossible())
+			{
 				$headingButtons[] = $this->deleteButton();
 			}
 			$return = $pluginManager->runPlugins('button', $this, 'list');
 			$res = $pluginManager->_data;
-			foreach ($res as &$r) {
-				$r = '<li>'.$r.'</li>';
+			foreach ($res as &$r)
+			{
+				$r = '<li>' . $r . '</li>';
 			}
 			$headingButtons = array_merge($headingButtons, $res);
 			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">'.implode("\n", $headingButtons).'</ul>';
-
-
 			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
 			$cellClass['fabrik_actions'] = array('class' => 'fabrik_actions fabrik_element'); //needed for ajax filter/nav
 		}
@@ -4835,9 +4835,9 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * put the checkbox in the headings array - separated to here to enable it to be added at the end or beginning
-	 * @param array
-	 * @param array
-	 * @param array
+	 * @param	array
+	 * @param	array
+	 * @param	array
 	 */
 
 	protected function addCheckBox(&$aTableHeadings, &$headingClass, &$cellClass)
@@ -4851,8 +4851,8 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 *
 	 * Enter description here ...
-	 * @param array $arr
-	 * @return array
+	 * @param	array	$arr
+	 * @return	array
 	 */
 
 	protected function removeHeadingCompositKey($arr)
@@ -4860,16 +4860,17 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ hugh - horrible hack, but if we just ksort as-is, once we have more than 9 elements,
 		// it'll start sort 0,1,10,11,2,3 etc.  There's no doubt a cleaner way to do this,
 		// but for now ... rekey with a 0 padded prefix before we ksort
-		foreach ($arr as $key => $val) {
+		foreach ($arr as $key => $val)
+		{
 			list($part1, $part2) = explode(":", $key);
 			$part1 = sprintf('%03d', $part1);
 			$newkey = $part1.':'.$part2;
 			$arr[$newkey] = $arr[$key];
 			unset($arr[$key]);
 		}
-
 		ksort($arr);
-		foreach ($arr as $key => $val) {
+		foreach ($arr as $key => $val)
+		{
 			$newkey = array_pop(explode(":", $key));
 			$arr[$newkey] = $arr[$key];
 			unset($arr[$key]);
@@ -4879,32 +4880,37 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * can the user select the specified row
-	 * @param object row
-	 * @return bool
+	 * @param	object	row
+	 * @return	bool
 	 */
 
 	function canSelectRow($row)
 	{
 		$canSelect = FabrikWorker::getPluginManager()->runPlugins('onCanSelectRow', $this, 'list', $row);
-		if (in_array(false, $canSelect)) {
+		if (in_array(false, $canSelect))
+		{
 			return false;
 		}
-		if ($this->canDelete($row)) {
+		if ($this->canDelete($row))
+		{
 			$this->canSelectRows = true;
 			return true;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row))) {
+		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
+		{
 			return true;
 		}
-		$usedPlugins = (array)$params->get('plugins');
-		if (empty($usedPlugins)) {
+		$usedPlugins = (array) $params->get('plugins');
+		if (empty($usedPlugins))
+		{
 			return false;
 		}
 		$pluginManager = FabrikWorker::getPluginManager();
 		$listplugins = $pluginManager->getPlugInGroup('list');
 		$v = in_array(true, $pluginManager->runPlugins('canSelectRows', $this, 'list'));
-		if ($v) {
+		if ($v)
+		{
 			$this->canSelectRows = true;
 		}
 		return $v;
@@ -4915,24 +4921,28 @@ class FabrikFEModelList extends JModelForm {
 	 * If you can delete then true returned, if not then check
 	 * available table plugins to see if they allow for row selection
 	 * if so a checkbox column appears in the table
-	 * @return bool
+	 * @return	bool
 	 */
 
 	function canSelectRows()
 	{
-		if (!is_null($this->canSelectRows)) {
+		if (!is_null($this->canSelectRows))
+		{
 			return $this->canSelectRows;
 		}
-		if ($this->canDelete()) {
+		if ($this->canDelete())
+		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView())) {
+		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView()))
+		{
 			return true;
 		}
-		$usedPlugins = (array)$params->get('plugin');
-		if (empty($usedPlugins)) {
+		$usedPlugins = (array) $params->get('plugin');
+		if (empty($usedPlugins))
+		{
 			$this->canSelectRows = false;
 			return $this->canSelectRows;
 		}
@@ -4952,7 +4962,8 @@ class FabrikFEModelList extends JModelForm {
 
 	function getCalculations()
 	{
-		if (!empty($this->_aRunCalculations)) {
+		if (!empty($this->_aRunCalculations))
+		{
 			return $this->_aRunCalculations;
 		}
 		$user = JFactory::getUser();
@@ -4965,79 +4976,84 @@ class FabrikFEModelList extends JModelForm {
 		$aCounts = array();
 		$aCustoms = array();
 		$groups = $formModel->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$params = $elementModel->getParams();
 				$elName = $elementModel->getFullName(false, true, false);
-				$sumOn 			= $params->get('sum_on', '0');
-				$avgOn 			= $params->get('avg_on', '0');
-				$medianOn 		= $params->get('median_on', '0');
-				$countOn 		= $params->get('count_on', '0');
-				$customOn		= $params->get('custom_calc_on', '0');
-
-				$sumAccess 		= $params->get('sum_access', 0);
-				$avgAccess 		= $params->get('avg_access', 0);
-				$medianAccess 	= $params->get('median_access', 0);
-				$countAccess 	= $params->get('count_access', 0);
-				$customAccess	= $params->get('custom_calc_access', 0);
-
-				if ($sumOn && in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '') {
+				$sumOn = $params->get('sum_on', '0');
+				$avgOn = $params->get('avg_on', '0');
+				$medianOn = $params->get('median_on', '0');
+				$countOn = $params->get('count_on', '0');
+				$customOn = $params->get('custom_calc_on', '0');
+				$sumAccess = $params->get('sum_access', 0);
+				$avgAccess = $params->get('avg_access', 0);
+				$medianAccess = $params->get('median_access', 0);
+				$countAccess = $params->get('count_access', 0);
+				$customAccess = $params->get('custom_calc_access', 0);
+				if ($sumOn && in_array($sumAccess, $aclGroups) && $params->get('sum_value', '') != '')
+				{
 					$aSums[$elName] = $params->get('sum_value', '');
 					$ser = $params->get('sum_value_serialized');
-					if (is_string($ser)) {
+					if (is_string($ser))
+					{
 						//if group gone from repeat to none repeat could be array
-						$aSums[$elName . "_obj"] = unserialize($ser);
+						$aSums[$elName . '_obj'] = unserialize($ser);
 					}
 				}
-
-				if ($avgOn && in_array($avgAccess, $aclGroups) && $params->get('avg_value', '') != '') {
+				if ($avgOn && in_array($avgAccess, $aclGroups) && $params->get('avg_value', '') != '')
+				{
 					$aAvgs[$elName] = $params->get('avg_value', '');
 					$ser = $params->get('avg_value_serialized');
-					if (is_string($ser)) {
-						$aAvgs[$elName."_obj"] = unserialize($ser);
+					if (is_string($ser))
+					{
+						$aAvgs[$elName . '_obj'] = unserialize($ser);
 					}
 				}
-
-				if ($medianOn && in_array($medianAccess, $aclGroups) && $params->get('median_value', '') != '') {
+				if ($medianOn && in_array($medianAccess, $aclGroups) && $params->get('median_value', '') != '')
+				{
 					$aMedians[$elName] = $params->get('median_value', '');
 					$ser = $params->get('median_value_serialized', '');
-					if (is_string($ser)) {
-						$aMedians[$elName . "_obj"] = unserialize($ser);
+					if (is_string($ser))
+					{
+						$aMedians[$elName . '_obj'] = unserialize($ser);
 					}
 				}
-
-				if ($countOn && in_array($countAccess, $aclGroups) && $params->get('count_value', '') != '') {
+				if ($countOn && in_array($countAccess, $aclGroups) && $params->get('count_value', '') != '')
+				{
 					$aCounts[$elName] = $params->get('count_value', '');
 					$ser = $params->get('count_value_serialized');
-					if (is_string($ser)) {
-						$aCounts[$elName."_obj"] = unserialize($ser);
+					if (is_string($ser))
+					{
+						$aCounts[$elName . '_obj'] = unserialize($ser);
 					}
 				}
 
-				if ($customOn && in_array($customAccess, $aclGroups) && $params->get('custom_calc_value', '') != '') {
+				if ($customOn && in_array($customAccess, $aclGroups) && $params->get('custom_calc_value', '') != '')
+				{
 					$aCustoms[$elName] = $params->get('custom_calc_value', '');
 					$ser = $params->get('custom_calc_value_serialized');
-					if (is_string($ser)) {
-						$aCounts[$elName."_obj"] = unserialize($ser);
+					if (is_string($ser))
+					{
+						$aCounts[$elName . '_obj'] = unserialize($ser);
 					}
 				}
-
 			}
 		}
-		$aCalculations['sums'] 			= $aSums;
-		$aCalculations['avgs'] 			= $aAvgs;
-		$aCalculations['medians'] 	= $aMedians;
-		$aCalculations['count'] 		= $aCounts;
-		$aCalculations['custom_calc']	= $aCustoms;
+		$aCalculations['sums'] = $aSums;
+		$aCalculations['avgs'] = $aAvgs;
+		$aCalculations['medians'] = $aMedians;
+		$aCalculations['count'] = $aCounts;
+		$aCalculations['custom_calc'] = $aCustoms;
 		$this->_aRunCalculations = $aCalculations;
 		return $aCalculations;
 	}
 
 	/**
 	 * get table headings to pass into table js oject
-	 *
-	 * @return string headings tablename___name
+	 * @return	string	headings tablename___name
 	 */
 
 	function _jsonHeadings()
@@ -5046,12 +5062,15 @@ class FabrikFEModelList extends JModelForm {
 		$table = $this->getTable();
 		$formModel = $this->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$element = $elementModel->getElement();
-				if ($element->show_in_list_summary) {
-					$aHeadings[] = $table->db_table_name.'___'.$element->name;
+				if ($element->show_in_list_summary)
+				{
+					$aHeadings[] = $table->db_table_name . '___' . $element->name;
 				}
 			}
 		}
@@ -5063,37 +5082,48 @@ class FabrikFEModelList extends JModelForm {
 	 * this is run to see if there is any table join data,
 	 * if there is it stores it in $this->_joinsToProcess
 	 *
-	 * @return array [joinid] = array(join, group array);
+	 * @return	array	[joinid] = array(join, group array);
 	 */
 
 	function preProcessJoin()
 	{
-		if (!isset($this->_joinsToProcess)) {
+		if (!isset($this->_joinsToProcess))
+		{
 			$this->_joinsToProcess = array();
 			$formModel = $this->getFormModel();
 			$groups = $formModel->getGroupsHiarachy();
-			foreach ($groups as $groupModel) {
+			foreach ($groups as $groupModel)
+			{
 				$group = $groupModel->getGroup();
-				if ($groupModel->isJoin()) {
+				if ($groupModel->isJoin())
+				{
 					$joinModel = $groupModel->getJoinModel();
 					$join = $joinModel->getJoin();
-					if (!array_key_exists($join->id, $this->_joinsToProcess)) {
-						$this->_joinsToProcess[$join->id] = array("join" => $join, "groups" => array($groupModel));
-					} else {
-						$this->_joinsToProcess[$join->id]["groups"][] = $groupModel;
+					if (!array_key_exists($join->id, $this->_joinsToProcess))
+					{
+						$this->_joinsToProcess[$join->id] = array('join' => $join, 'groups' => array($groupModel));
+					}
+					else
+					{
+						$this->_joinsToProcess[$join->id]['groups'][] = $groupModel;
 					}
 				}
 				$elements = $groupModel->getPublishedElements();
 				$c = count($elements);
-				for($x = 0; $x < $c; $x ++){
+				for($x = 0; $x < $c; $x ++)
+				{
 					$elementModel = $elements[$x];
-					if ($elementModel->isJoin()) {
+					if ($elementModel->isJoin())
+					{
 						$joinModel = $elementModel->getJoinModel();
 						$join = $joinModel->getJoin();
-						if (!array_key_exists($join->id, $this->_joinsToProcess)) {
-							$this->_joinsToProcess[$join->element_id] = array( "join" => $join, "elements" => array($elementModel) );
-						} else {
-							$this->_joinsToProcess[$join->element_id]["elements"][] = $elementModel;
+						if (!array_key_exists($join->id, $this->_joinsToProcess))
+						{
+							$this->_joinsToProcess[$join->element_id] = array('join' => $join, 'elements' => array($elementModel) );
+						}
+						else
+						{
+							$this->_joinsToProcess[$join->element_id]['elements'][] = $elementModel;
 						}
 					}
 				}
@@ -5104,18 +5134,22 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * strip the table names from the front of the key
-	 * @param array data to strip
-	 * @return array stripped data
+	 * @param	array	data to strip
+	 * @return	array	stripped data
 	 */
 
 	function removeTableNameFromSaveData($data, $split='___')
 	{
-		foreach ($data as $key=>$val) {
+		foreach ($data as $key => $val)
+		{
 			$akey = explode($split, $key);
-			if (count($akey) > 1) {
+			if (count($akey) > 1)
+			{
 				$newKey = $akey[1];
 				unset($data[$key]);
-			} else {
+			}
+			else
+			{
 				$newKey = $akey[0];
 			}
 			$data[$newKey] = $val;
@@ -5389,10 +5423,10 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * If an element is set to readonly, and has a default value selected then insert this
 	 * data into the array that is to be bound to the table record
-	 * @since 1.0.6
-	 * @param array data
-	 * @param object to bind to table row
-	 * @param int is record join record
+	 * @since	1.0.6
+	 * @param	array	data
+	 * @param	object	to bind to table row
+	 * @param	int		is record join record
 	 */
 
 	function _addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid, $joinGroupTable)
@@ -5402,12 +5436,14 @@ class FabrikFEModelList extends JModelForm {
 		// get the current record - not that which was posted
 		$formModel = $this->getFormModel();
 		$table = $this->getTable();
-
-		if (is_null($this->_origData)) {
-			if (empty($rowid)) {
+		if (is_null($this->_origData))
+		{
+			if (empty($rowid))
+			{
 				$this->_origData = $origdata = array();
 			}
-			else {
+			else
+			{
 				$sql = $formModel->_buildQuery();
 				$db = $this->getDb();
 				$db->setQuery($sql);
@@ -5416,20 +5452,26 @@ class FabrikFEModelList extends JModelForm {
 				$origdata = is_array($origdata) ? $origdata : array();
 				$this->_origData = $origdata;
 			}
-		} else {
+		}
+		else
+		{
 			$origdata = $this->_origData;
 		}
 		$form = $formModel->getForm();
 		$groups = $formModel->getGroupsHiarachy();
 		$gcounter = 0;
 		$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
-		foreach  ($groups as $groupModel) {
-			if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin())) {
+		foreach  ($groups as $groupModel)
+		{
+			if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
+			{
 				$elementModels = $groupModel->getPublishedElements();
-				foreach ($elementModels as $elementModel) {
+				foreach ($elementModels as $elementModel)
+				{
 					// $$$ rob 25/02/2011 unviewable elements are now also being encrypted
 					//if (!$elementModel->canUse() && $elementModel->canView()) {
-					if (!$elementModel->canUse()) {
+					if (!$elementModel->canUse())
+					{
 						$element = $elementModel->getElement();
 						$fullkey = $elementModel->getFullName(false, true, false);
 						// $$$ rob 24/01/2012 if a previous joined data set had a ro element then if we werent checkign that group is the
@@ -5440,24 +5482,29 @@ class FabrikFEModelList extends JModelForm {
 						$key = $element->name;
 						// $$$ hugh - allow submission plugins to override RO data
 						// TODO - test this for joined data
-						if ($formModel->updatedByPlugin($fullkey)) {
+						if ($formModel->updatedByPlugin($fullkey))
+						{
 							continue;
 						}
 						//force a reload of the default value with $origdata
 						unset($elementModel->defaults);
 						$default = array();
 						$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
-						for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++) {
+						for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++)
+						{
 							$def = $elementModel->getValue($origdata, $repeatCount);
 							// $$$ rob 26/04/2011 encodeing done at the end
 							//if its a dropdown radio etc
 							/*if (is_array($def)) {
 							$def = json_encode($def);
 							}*/
-							if (is_array($def)) {
+							if (is_array($def))
+							{
 								// radio buttons getValue() returns an array already so don't array the array.
 								$default = $def;
-							} else {
+							}
+							else
+							{
 								$default[] = $def;
 							}
 						}
@@ -5472,45 +5519,56 @@ class FabrikFEModelList extends JModelForm {
 		$copy = JRequest::getBool('Copy');
 
 		//check crypted querystring vars (encrypted in form/view.html.php ) _cryptQueryString
-		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars'])) {
+		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
+		{
 			$crypt = new JSimpleCrypt();
-			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted) {
+			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
+			{
 				// $$$ hugh - allow submission plugins to override RO data
 				// TODO - test this for joined data
-				if ($formModel->updatedByPlugin($key)) {
+				if ($formModel->updatedByPlugin($key))
+				{
 					continue;
 				}
 				$key = FabrikString::shortColName($key);
 				// $$$ hugh - trying to fix issue where encrypted elements from a main group end up being added to
 				// a joined group's field list for the update/insert on the joined row(s).
-				if (!array_key_exists($key,$data)) {
+				if (!array_key_exists($key,$data))
+				{
 					continue;
 				}
-				foreach ($groups as $groupModel) {
+				foreach ($groups as $groupModel)
+				{
 					$elementModels = $groupModel->getPublishedElements();
-					foreach ($elementModels as $elementModel) {
+					foreach ($elementModels as $elementModel)
+					{
 						$element = $elementModel->getElement();
-
-						if ($element->name == $key) {
+						if ($element->name == $key)
+						{
 							//dont overwrite if something has been entered
 							// $$$ rob 25/02/2011 unviewable elements are now also being encrypted
 							//if (!$elementModel->canUse() && $elementModel->canView()) {
-							if (!$elementModel->canUse()) {
+							if (!$elementModel->canUse())
+							{
 								//repeat groups no join:
-								if (is_array($encrypted)) {
+								if (is_array($encrypted))
+								{
 									$v = array();
-									foreach ($encrypted as $e) {
+									foreach ($encrypted as $e)
+									{
 										$e = urldecode($e);
-										$v[] = empty($e)? '' : $crypt->decrypt($e);
+										$v[] = empty($e) ? '' : $crypt->decrypt($e);
 									}
 									$v = json_encode($v);
-								} else {
+								}
+								else
+								{
 									$encrypted = urldecode($encrypted);
 									$v = !empty($encrypted) ? $crypt->decrypt($encrypted) : '';
 								}
-
-								if ($copy) {
-									$v = $elementModel->onSaveAsCopy( $v);
+								if ($copy)
+								{
+									$v = $elementModel->onSaveAsCopy($v);
 								}
 								$data[$key] = $v;
 								$oRecord->$key = $v;
@@ -5535,44 +5593,51 @@ class FabrikFEModelList extends JModelForm {
 		$db = FabrikWorker::getDbo();
 		$formModel = $this->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$element = $elementModel->getElement();
 				$params = $elementModel->getParams();
 				$update = false;
-				if ($params->get('sum_on', 0)) {
+				if ($params->get('sum_on', 0))
+				{
 					$aSumCals = $elementModel->sum($this);
 					$params->set('sum_value_serialized', serialize($aSumCals[1]));
 					$params->set('sum_value', $aSumCals[0]);
 					$update = true;
 				}
-				if ($params->get('avg_on', 0)) {
+				if ($params->get('avg_on', 0))
+				{
 					$aAvgCals = $elementModel->avg($this);
 					$params->set('avg_value_serialized', serialize($aAvgCals[1]));
 					$params->set('avg_value', $aAvgCals[0]);
 					$update = true;
 				}
-				if ($params->get('median_on', 0)) {
+				if ($params->get('median_on', 0))
+				{
 					$medians = $elementModel->median($this);
 					$params->set('median_value_serialized', serialize($medians[1]));
 					$params->set('median_value', $medians[0]);
-
 					$update = true;
 				}
-				if ($params->get('count_on', 0)) {
+				if ($params->get('count_on', 0))
+				{
 					$aCountCals = $elementModel->count($this);
 					$params->set('count_value_serialized', serialize($aCountCals[1]));
 					$params->set('count_value', $aCountCals[0]);
 					$update = true;
 				}
-				if ($params->get('custom_calc_on', 0)) {
+				if ($params->get('custom_calc_on', 0))
+				{
 					$aCustomCalcCals = $elementModel->custom_calc($this);
 					$params->set('custom_calc_value_serialized', serialize($aCustomCalcCals[1]));
 					$params->set('custom_calc_value', $aCustomCalcCals[0]);
 					$update = true;
 				}
-				if ($update) {
+				if ($update)
+				{
 					$elementModel->storeAttribs();
 				}
 			}
@@ -5581,8 +5646,8 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * check to see if prefilter should be applied
-	 * @param int group id to check against
-	 * @return bol must apply filter
+	 * @param	int		group id to check against
+	 * @return	bool	must apply filter
 	 */
 
 	function mustApplyFilter($gid)
@@ -5592,7 +5657,7 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * set the connection id - used when creating a new table
-	 * @param int connection id
+	 * @param	int		connection id
 	 */
 
 	function setConnectionId($id)
@@ -5609,7 +5674,7 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * test if the main J user can create mySQL tables
-	 * @return bol
+	 * @return	bool
 	 */
 
 	function canCreateDbTable()
@@ -5639,7 +5704,7 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * @since Fabrik 3.0
+	 * @since	Fabrik 3.0
 	 * make foreign key element
 	 * @param	int	$groupId
 	 */
@@ -5662,36 +5727,38 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * updates the table record to point to the newly created form
-	 * @params int form id
+	 * @params	int		form id
 	 */
 
 	function _updateFormId($formId)
 	{
 		$item = $this->getTable();
 		$item->form_id = $formId;
-		if (!$item->store()) {
+		if (!$item->store())
+		{
 			return JError::raiseWarning(500, $item->getError());
 		}
 	}
 
 	/**
 	 * get the tables primary key and if the primary key is auto increment
-	 * @param string optional table name (used when getting pk to joined tables
-	 * @return mixed if ok returns array(key, extra, type, name) otherwise
-	 * returns false
+	 * @param	string	optional table name (used when getting pk to joined tables
+	 * @return	mixed	if ok returns array(key, extra, type, name) otherwise
 	 */
 
 	function getPrimaryKeyAndExtra($table = null)
 	{
 		$origColNames = $this->getDBFields($table);
 		$keys = array();
-		if (is_array($origColNames)) {
+		if (is_array($origColNames))
+		{
 			foreach ($origColNames as $origColName) {
-				$colName 	= $origColName->Field;
-				$key 			= $origColName->Key;
-				$extra 		= $origColName->Extra;
-				$type 		= $origColName->Type;
-				if ($key == "PRI") {
+				$colName = $origColName->Field;
+				$key = $origColName->Key;
+				$extra = $origColName->Extra;
+				$type = $origColName->Type;
+				if ($key == "PRI")
+				{
 					$keys[] = array("key" => $key, "extra" => $extra, "type" => $type, "colname" => $colName);
 				}
 			}
@@ -5702,58 +5769,72 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * run the prefilter sql and replace any placeholders in the subsequent prefilter
 	 *
-	 * @param string/array prefilter value
-	 * @return string/array prefilter value
+	 * @param	mixed	string/array prefilter value
+	 * @return	mixed	string/array prefilter value
 	 */
 
 	function _prefilterParse($selValue)
 	{
 		$isstring = false;
-		if (is_string($selValue)) {
+		if (is_string($selValue))
+		{
 			$isstring = true;
 			$selValue = array($selValue);
 		}
 		$preSQL = htmlspecialchars_decode($this->getParams()->get('prefilter_query'), ENT_QUOTES);
-		if (trim($preSQL) != '') {
+		if (trim($preSQL) != '')
+		{
 			$db = FabrikWorker::getDbo();
 			$w = new FabrikWorker();
 			$w->replaceRequest($preSQL);
 			$preSQL = $w->parseMessageForPlaceHolder($preSQL);
 			$db->setQuery($preSQL);
 			$q = $db->loadObjectList();
-			if (!empty($q)) {
+			if (!empty($q))
+			{
 				$q = $q[0];
 			}
 		}
-		if (isset($q)) {
-			foreach ($q as $key=>$val) {
-				if (substr($key, 0, 1) != '_') {
+		if (isset($q))
+		{
+			foreach ($q as $key => $val)
+			{
+				if (substr($key, 0, 1) != '_')
+				{
 					$found = false;
-					for ($i=0; $i < count($selValue); $i++) {
-						if (strstr($selValue[$i], '{$q-&gt;'. $key)) {
+					for ($i = 0; $i < count($selValue); $i++)
+					{
+						if (strstr($selValue[$i], '{$q-&gt;'. $key))
+						{
 							$found = true;
 							$pattern = '{$q-&gt;'. $key. "}";
 						}
-						if (strstr($selValue[$i], '{$q->' . $key)) {
+						if (strstr($selValue[$i], '{$q->' . $key))
+						{
 							$found = true;
 							$pattern = '{$q->'. $key . "}";
 						}
-
-						if ($found) {
+						if ($found)
+						{
 							$selValue[$i] = str_replace($pattern, $val, $selValue[$i]);
 						}
 					}
 				}
 			}
-		} else {
+		}
+		else
+		{
 			//parse for default values only
 			$pattern = "/({[^}]+}).*}?/s";
-			for ($i=0; $i < count($selValue); $i++) {
+			for ($i = 0; $i < count($selValue); $i++)
+			{
 				$ok = preg_match($pattern, $selValue[$i], $matches);
-				foreach ($matches as $match) {
+				foreach ($matches as $match)
+				{
 					$matchx = substr($match, 1, strlen($match) - 2);
 					//a default option was set so lets use that
-					if (strstr($matchx, '|')) {
+					if (strstr($matchx, '|'))
+					{
 						$bits = explode('|', $matchx);
 						$selValue[$i] = str_replace($match, $bits[1], $selValue[$i]);
 					}
@@ -5765,7 +5846,8 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function getIndexes()
 	{
-		if (!isset($this->_indexes)) {
+		if (!isset($this->_indexes))
+		{
 			$db = $this->getDb();
 			$db->setQuery("SHOW INDEXES FROM " . $this->getTable()->db_table_name);
 			$this->_indexes = $db->loadObjectList();
@@ -5775,17 +5857,18 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * add an index to the table
-	 * @param string field name
-	 * @param stirng index name prefix (allows you to differentiate between indexes created in
+	 * @param	string	field name
+	 * @param	string	index name prefix (allows you to differentiate between indexes created in
 	 * different parts of fabrik)
-	 * @param string index type
-	 * @param int index length
+	 * @param	string	index type
+	 * @param	int		index length
 	 */
 
 	public function addIndex($field, $prefix = '', $type = 'INDEX', $size = '')
 	{
 		$indexes = $this->getIndexes();
-		if (is_numeric($field)) {
+		if (is_numeric($field))
+		{
 			$el = $this->getFormModel()->getElement($field, true);
 			$field = $el->getFullName(false, true, false);
 		}
@@ -5797,29 +5880,32 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob 29/03/2011 ensure its in tablename___elementname format
 		$field = str_replace('.', '___', $field);
 		// $$$ rob 28/02/2011 if index in joined table we need to use that the make the key on
-		if (!strstr($field, '___')) {
+		if (!strstr($field, '___'))
+		{
 			$table = $this->getTable()->db_table_name;
-		} else {
+		}
+		else
+		{
 			$table = array_shift(explode('___', $field));
 		}
 		$field = FabrikString::shortColName($field);
 		FArrayHelper::filter($indexes, 'Column_name', $field);
-		if (!empty($indexes)) {
+		if (!empty($indexes))
+		{
 			// an index already exists on that column name no need to add
 			return;
 		}
 		$db = $this->getDb();
-
-		if ($field == '') {
+		if ($field == '')
+		{
 			return;
 		}
-		if ($size != '') {
-			$size = "( $size )";
+		if ($size != '')
+		{
+			$size = '( ' . $size . ' )';
 		}
-
 		$this->dropIndex($field, $prefix, $type, $table);
-
-		$query = " ALTER TABLE ".$db->quoteName($table)." ADD INDEX ".$db->quoteName("fb_{$prefix}_{$field}_{$type}")." (".$db->quoteName($field)." $size)";
+		$query = " ALTER TABLE " . $db->quoteName($table) . " ADD INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . " (" . $db->quoteName($field) . " $size)";
 		$db->setQuery($query);
 		$db->query();
 	}
@@ -7350,7 +7436,7 @@ class FabrikFEModelList extends JModelForm {
 							if ($do_merge) {
 								// The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
 								// with it currently
-								$data[$last_i]->$key = (array)$data[$last_i]->$key;
+								$data[$last_i]->$key = (array) $data[$last_i]->$key;
 								array_push($data[$last_i]->$key, $val);
 							}
 						} else {

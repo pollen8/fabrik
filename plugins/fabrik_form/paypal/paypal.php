@@ -321,7 +321,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		// $$$ hugh - fixing issue with new redirect, which now needs to be an array.
 		// Not sure if we need to preserve existing session data, or just create a new surl array,
 		// to force ONLY recirect to PayPal?
-		$surl = (array)$session->get($context.'url', array());
+		$surl = (array) $session->get($context.'url', array());
 		$surl[$this->renderOrder] = $url;
 		$session->set($context.'url', $surl);
 
@@ -348,7 +348,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
-		$ret_msg = (array)$params->get('paypal_return_msg', array());
+		$ret_msg = (array) $params->get('paypal_return_msg', array());
 		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
 		if ($ret_msg) {
 			$w = new FabrikWorker();
@@ -404,19 +404,19 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		// @TODO shortColName won't handle joined data, need to fix this to use safeColName
 		// (don't forget to change nameQuote stuff later on as well)
 		$renderOrder = JRequest::getInt('renderOrder');
-		$ipn_txn_field = (array)$params->get('paypal_ipn_txn_id_element', array());
+		$ipn_txn_field = (array) $params->get('paypal_ipn_txn_id_element', array());
 		$ipn_txn_field = FabrikString::shortColName($ipn_txn_field[$renderOrder]);
 
-		$ipn_payment_field = (array)$params->get('paypal_ipn_payment_element', array());
+		$ipn_payment_field = (array) $params->get('paypal_ipn_payment_element', array());
 		$ipn_payment_field = FabrikString::shortColName($ipn_payment_field[$renderOrder]);
 
-		$ipn_field = (array)$params->get('paypal_ipn_element', array());
+		$ipn_field = (array) $params->get('paypal_ipn_element', array());
 		$ipn_field = FabrikString::shortColName($ipn_field[$renderOrder]);
 
-		$ipn_status_field = (array)$params->get('paypal_ipn_status_element', array());
+		$ipn_status_field = (array) $params->get('paypal_ipn_status_element', array());
 		$ipn_status_field = FabrikString::shortColName($ipn_status_field[$renderOrder]);
 
-		$ipn_address_field = (array)$params->get('paypal_ipn_address_element', array());
+		$ipn_address_field = (array) $params->get('paypal_ipn_address_element', array());
 		$ipn_address_field = FabrikString::shortColName($ipn_address_field[$renderOrder]);
 
 

@@ -91,7 +91,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
-		$default = (array)$this->getValue($data, $repeatCounter);
+		$default = (array) $this->getValue($data, $repeatCounter);
 
 		// $$$ rob don't bother getting the options if editable as the js event is going to get them.
 		//However if in readonly mode the we do need to get the options

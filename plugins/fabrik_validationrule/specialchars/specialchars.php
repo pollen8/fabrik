@@ -59,7 +59,7 @@ class plgFabrik_ValidationruleSpecialChars extends plgFabrik_Validationrule
 	function replace($data, &$element, $c)
 	{
 		$params = $this->getParams();
-		$domatch = (array)$params->get('specialchars-match');
+		$domatch = (array) $params->get('specialchars-match');
 		$domatch = $domatch[$c];
 		if (!$domatch)
 		{

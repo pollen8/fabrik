@@ -147,7 +147,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				//single file specified so find it in tmpl folder
 				$data = (array)FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), true);
 			} else {
-				$data = (array)$iPath;
+				$data = (array) $iPath;
 			}
 		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');

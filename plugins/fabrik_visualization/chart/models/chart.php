@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelChart extends FabrikFEModelVisualization
 {
@@ -56,7 +56,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 		$fillGraphs = $params->get('fill_line_graph');
 
-		$x_axis_label = (array)$params->get('x_axis_label');
+		$x_axis_label = (array) $params->get('x_axis_label');
 		$chartElements =(array) $params->get('chart_elementList');
 		$legends = $params->get('graph_show_legend', '');
 		$chxl_override = $params->get('chart_chxl', '');

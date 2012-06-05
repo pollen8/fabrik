@@ -71,7 +71,7 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	private function getOtherElement($elementModel, $c)
 	{
 		$params = $this->getParams();
-		$otherfield = (array)$params->get('isgreaterorlessthan-comparewith', array());
+		$otherfield = (array) $params->get('isgreaterorlessthan-comparewith', array());
 		$otherfield = $otherfield[$c];
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}

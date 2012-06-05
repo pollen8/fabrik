@@ -86,7 +86,7 @@ class FabrikModelElements extends FabModelList
 		}
 
 		//for drop fields view
-		$cids = (array)$this->getState('filter.cid');
+		$cids = (array) $this->getState('filter.cid');
 		if (!empty($cids)) {
 			$query->where('e.id IN ('.implode(',', $cids).')');
 		}

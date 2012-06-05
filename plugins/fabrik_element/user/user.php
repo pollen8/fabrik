@@ -540,7 +540,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		// so added '' to this test.  Should probably set $element->filter_type to a default somewhere.
 		if (in_array($element->filter_type, array('range', 'dropdown', ''))) {
 			$rows = $this->filterValueList($normal, '', $joinTableName.'.'.$tabletype, '', false);
-			$rows = (array)$rows;
+			$rows = (array) $rows;
 			array_unshift($rows, JHTML::_('select.option',  '', $this->filterSelectLabel()));
 		}
 

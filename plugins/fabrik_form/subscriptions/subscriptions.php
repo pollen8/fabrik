@@ -217,7 +217,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		// $$$ hugh - fixing issue with new redirect, which now needs to be an array.
 		// Not sure if we need to preserve existing session data, or just create a new surl array,
 		// to force ONLY recirect to Subscriptions?
-		$surl = (array)$session->get($context.'url', array());
+		$surl = (array) $session->get($context.'url', array());
 		$surl[$this->renderOrder] = $url;
 		$session->set($context . 'url', $surl);
 
@@ -314,7 +314,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
-		$ret_msg = (array)$params->get('subscriptions_return_msg');
+		$ret_msg = (array) $params->get('subscriptions_return_msg');
 		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
 		if ($ret_msg)
 		{
@@ -524,9 +524,9 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 			}
 		}
 
-		$receive_debug_emails = (array)$params->get('subscriptions_receive_debug_emails');
+		$receive_debug_emails = (array) $params->get('subscriptions_receive_debug_emails');
 		$receive_debug_emails = $receive_debug_emails[$renderOrder];
-		$send_default_email = (array)$params->get('subscriptions_send_default_email');
+		$send_default_email = (array) $params->get('subscriptions_send_default_email');
 		$send_default_email = $send_default_email[$renderOrder];
 		if ($status != 'ok')
 		{
