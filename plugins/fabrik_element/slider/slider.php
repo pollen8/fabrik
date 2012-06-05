@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementSlider extends plgFabrik_Element {
 
@@ -57,7 +57,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$str = array();
 		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
 
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/slider/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/slider/images/', 'image', 'form', false);
 		$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 		if ($params->get('slider-shownone')) {
 			$str[] = '<div class="clearslider_cont"><img src="'.$outsrc.'" style="cursor:pointer;padding:3px;" alt="'.JText::_('PLG_ELEMENT_SLIDER_CLEAR').'" class="clearslider" /></div>';

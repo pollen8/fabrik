@@ -110,7 +110,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$tmp_name = $this->getCSVFileName();
 		$tmp_dir = $this->getBaseDir();
 
-		$to = JPath::clean($tmp_dir.DS.$tmp_name);
+		$to = JPath::clean($tmp_dir . '/' . $tmp_name);
 
 		$resultdir = JFile::upload($userfile['tmp_name']['userfile'], $to);
 		if ($resultdir == false && !JFile::exists($to)) {
@@ -263,7 +263,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 	public function removeCSVFile($clear_session = true)
 	{
 		$baseDir = $this->getBaseDir();
-		$userfile_path = $baseDir . DS . $this->getCSVFileName();
+		$userfile_path = $baseDir . '/' . $this->getCSVFileName();
 		if (JFile::exists($userfile_path)) {
 			JFile::delete($userfile_path);
 		}

@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
 
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormKunena extends plgFabrik_Form {
 
@@ -33,15 +33,15 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 	{		
 		//return;		
 		jimport('joomla.filesystem.file');
-		//$files[]  = COM_FABRIK_BASE.'administrator'.DS.'components'.DS.'com_kunena'.DS.'language'.DS.'kunena.english.php';
-		$files[] = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'class.kunena.php';
-		$define = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'lib'.DS.'kunena.defines.php';
-		$files[]  = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'lib'.DS.'kunena.defines.php';
-		//$files[]  = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'lib'.DS.'kunena.session.class.php';
-		$files[]  = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'lib'.DS.'kunena.link.class.php';
-		$files[]  = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'lib'.DS.'kunena.link.class.php';
-		//$files[]  = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'template'.DS.'default'.DS.'smile.class.php';
-		$files[]  = COM_FABRIK_BASE.'components'.DS.'com_kunena'.DS.'lib'.DS.'kunena.smile.class.php';
+		//$files[]  = COM_FABRIK_BASE.'administrator/components/com_kunena/language/kunena.english.php';
+		$files[] = COM_FABRIK_BASE.'components/com_kunena/class.kunena.php';
+		$define = COM_FABRIK_BASE.'components/com_kunena/lib/kunena.defines.php';
+		$files[]  = COM_FABRIK_BASE.'components/com_kunena/lib/kunena.defines.php';
+		//$files[]  = COM_FABRIK_BASE.'components/com_kunena/lib/kunena.session.class.php';
+		$files[]  = COM_FABRIK_BASE.'components/com_kunena/lib/kunena.link.class.php';
+		$files[]  = COM_FABRIK_BASE.'components/com_kunena/lib/kunena.link.class.php';
+		//$files[]  = COM_FABRIK_BASE.'components/com_kunena/template/default/smile.class.php';
+		$files[]  = COM_FABRIK_BASE.'components/com_kunena/lib/kunena.smile.class.php';
 		if (!JFile::exists($define)) {
 			return JError::raiseError(500, 'could not find the Kunena component');
 		}
@@ -57,7 +57,7 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 			$postfile = KUNENA_PATH_FUNCS . '/post.php';
 		}
 		else {
-			$postfile = KUNENA_PATH_TEMPLATE_DEFAULT .DS. 'post.php';
+			$postfile = KUNENA_PATH_TEMPLATE_DEFAULT . '/post.php';
 		}
 		$w = new FabrikWorker();
 		

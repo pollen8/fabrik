@@ -3825,7 +3825,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				return array();
 			} else {
 				$query = $db->getQuery(true);
-				$query->select('*')->from('#__{package}_lists')->where("db_table_name = ".$db->Quote($table));
+				$query->select('*')->from('#__{package}_lists')->where("db_table_name = ".$db->quote($table));
 				$db->setQuery($query);
 			}
 			$this->_linkedFabrikLists[$table] = $db->loadColumn();

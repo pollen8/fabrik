@@ -239,7 +239,7 @@ class FabrikModelGroup extends FabModelAdmin
 					}
 					$names[$fname] = $str;
 				} else {
-					$names[$fname] = $db->nameQuote($fname).' '.$element->getFieldDescription();
+					$names[$fname] = $db->quoteName($fname).' '.$element->getFieldDescription();
 				}
 			}
 
@@ -249,7 +249,7 @@ class FabrikModelGroup extends FabModelAdmin
 		$existingTables = $db->loadResultArray();
 		if (!in_array($newTableName, $existingTables)) {
 			// no existing repeat group table found so lets create it
-			$query = "CREATE TABLE IF NOT EXISTS ".$db->nameQuote($newTableName)." (".implode(",", $names).")";
+			$query = "CREATE TABLE IF NOT EXISTS ".$db->quoteName($newTableName)." (".implode(",", $names).")";
 			$db->setQuery($query);
 			if (!$db->query()) {
 				JError::raiseError(500, $db->getErrorMsg());
@@ -266,7 +266,7 @@ class FabrikModelGroup extends FabModelAdmin
 				return false;
 			}
 			//repeat table already created - lets check its structure matches the group elements
-			$db->setQuery("DESCRIBE ".$db->nameQuote($newTableName));
+			$db->setQuery("DESCRIBE ".$db->quoteName($newTableName));
 			$existingFields = $db->loadObjectList('Field');
 			$newFields = array_diff(array_keys($names), array_keys($existingFields));
 			if (!empty($newFields)) {
@@ -274,7 +274,7 @@ class FabrikModelGroup extends FabModelAdmin
 				$lastfield = $lastfield->Field;
 				foreach ($newFields as $newField) {
 					$info = $names[$newField];
-					$db->setQuery("ALTER TABLE ".$db->nameQuote($newTableName)." ADD COLUMN $info AFTER $lastfield");
+					$db->setQuery("ALTER TABLE ".$db->quoteName($newTableName)." ADD COLUMN $info AFTER $lastfield");
 					if (!$db->query()) {
 						JError::raiseError(500, $db->getErrorMsg());
 					}

@@ -87,14 +87,14 @@ class FabrikViewList extends JView{
 		$rows = $model->getData();
 		$document->title = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
 		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
-		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid='.$table->id.'&Itemid='.$Itemid);
+		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
 
 		/* check for a custom css file and include it if it exists*/
 		$tmpl = JRequest::getVar('layout', $table->template);
-		$csspath = COM_FABRIK_FRONTEND.DS."views".DS."list".DS."tmpl".DS.$tmpl.DS.'feed.css';
-
-		if (file_exists($csspath)) {
-			$document->addStyleSheet(COM_FABRIK_LIVESITE . "components/com_fabrik/views/list/tmpl/$tmpl/feed.css");
+		$csspath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/feed.css';
+		if (file_exists($csspath))
+		{
+			$document->addStyleSheet(COM_FABRIK_LIVESITE . 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/feed.css');
 		}
 
 		$titleEl = $params->get('feed_title');

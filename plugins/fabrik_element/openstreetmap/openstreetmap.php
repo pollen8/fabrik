@@ -10,8 +10,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
-
 class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**

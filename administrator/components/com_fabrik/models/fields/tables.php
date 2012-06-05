@@ -9,7 +9,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 /**
  * Renders a list of tables, either fabrik lists, or db tables
@@ -41,26 +41,32 @@ class JFormFieldTables extends JFormFieldList
 		$connectionDd = $this->element['observe'];
 		$options = array();
 		$db	= FabrikWorker::getDbo(true);
-		if ($connectionDd == '') {
+		if ($connectionDd == '')
+		{
 			//we are not monitoring a connection drop down so load in all tables
 			$query = "SHOW TABLES";
 
 			$db->setQuery($query);
 			$items = $db->loadResultArray();
 			// Check for a database error.
-			if ($db->getErrorNum()) {
+			if ($db->getErrorNum())
+			{
 				JError::raiseWarning(500, $db->getErrorMsg());
 			}
-			foreach ($items as $l) {
+			foreach ($items as $l)
+			{
 				$options[] = JHTML::_('select.option', $l, $l);
 			}
-		} else {
+		}
+		else
+		{
 			$connId = $this->form->getValue('connection_id');
 			$query = $db->getQuery(true);
-			$query->select('id AS value, db_table_name AS '.$db->Quote('text'))->from('#__{package}_lists')->where('connection_id = ' . (int)$connId);
+			$query->select('id AS value, db_table_name AS ' . $db->quote('text'))->from('#__{package}_lists')->where('connection_id = ' . (int)$connId);
 			$db->setQuery($query);
 			$items = $db->loadObjectList();
-			foreach ($items as $item) {
+			foreach ($items as $item)
+			{
 				$options[] = JHTML::_('select.option', $item->value, $item->text);
 			}
 		}
@@ -70,12 +76,14 @@ class JFormFieldTables extends JFormFieldList
 	function getInput()
 	{
 		$connectionDd = $this->element['observe'];
-		if ((int)$this->form->getValue('id') != 0 && $this->element['readonlyonedit']){
-			return '<input type="text" value="'.$this->value.'" class="readonly" name="'.$this->name.'" readonly="true" />';
+		if ((int) $this->form->getValue('id') != 0 && $this->element['readonlyonedit'])
+		{
+			return '<input type="text" value="'.$this->value.'" class="readonly" name="' . $this->name . '" readonly="true" />';
 		}
 		$c = ElementHelper::getRepeatCounter($this);
 		$readOnlyOnEdit =  $this->element['readonlyonedit'];
-		if ($connectionDd != '') {
+		if ($connectionDd != '')
+		{
 			$connectionDd = ($c === false) ?  $connectionDd : $connectionDd . '-' . $c;
 			$opts = new stdClass();
 			$opts->livesite = COM_FABRIK_LIVESITE;
@@ -86,7 +94,7 @@ class JFormFieldTables extends JFormFieldList
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/tables.js', $script);
 		}
 		$html = parent::getInput();
-		$html .= "<img style='margin-left:10px;display:none' id='".$this->id."_loader' src='components/com_fabrik/images/ajax-loader.gif' alt='" . JText::_('LOADING'). "' />";
+		$html .= "<img style='margin-left:10px;display:none' id='" . $this->id . "_loader' src='components/com_fabrik/images/ajax-loader.gif' alt='" . JText::_('LOADING') . "' />";
 		return $html;
 	}
 

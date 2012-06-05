@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 /**
  * Renders a list of elements found in a fabrik table
@@ -29,9 +29,10 @@ class JFormFieldImagelibs extends JFormFieldList
 
 	function getOptions()
 	{
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'image.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
 		$imageLibs = FabimageHelper::getLibs();
-		if (empty($imageLibs)) {
+		if (empty($imageLibs))
+		{
 			return JHTML::_('select.option', JText::_('NO MAGE LIBRARY FOUND'));
 		}
 		return $imageLibs;

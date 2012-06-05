@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
 
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListPhp extends plgFabrik_List {
 
@@ -66,7 +66,7 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 			$code = $params->get('table_php_code');
 			@eval($code);
 		} else {
-			require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_list'.DS.'php'.DS.'scripts'.DS.$file);
+			require_once(JPATH_ROOT . '/plugins/fabrik_list/php/scripts/' . $file);
 		}
 		return true;
 	}

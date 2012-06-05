@@ -79,7 +79,7 @@ class FabrikFEModelGroup extends FabModel{
 	function &getGroup()
 	{
 		if (is_null($this->_group)) {
-			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$this->_group = FabTable::getInstance('Group', 'FabrikTable');
 			$this->_group->load($this->getId());
 		}

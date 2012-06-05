@@ -284,7 +284,6 @@ class FabrikFEModelList extends JModelForm {
 		}
 		//cant set time limit in safe mode so suppress warning
 		@set_time_limit(60);
-
 		//$this->getRequestData();
 		JDEBUG ? $profiler->mark('About to get table filter') : null;
 		$filters = $this->getFilterArray();
@@ -424,7 +423,7 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $profiler->mark('query build start') : null;
 		$query = $this->_buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
-
+		
 		$this->setBigSelects();
 
 		// $$$ rob - if merging joined data then we don't want to limit
@@ -437,7 +436,7 @@ class FabrikFEModelList extends JModelForm {
 		{
 			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
 		}
-
+		
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
@@ -465,7 +464,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		ini_set('mysql.trace_mode', $traceModel);
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
-
+		
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		//@TODO test in J1.7
 		//	$this->translateData($this->_data);
@@ -473,9 +472,9 @@ class FabrikFEModelList extends JModelForm {
 		{
 			JError::raiseNotice(500,  'getData: ' . $fabrikDb->getErrorMsg());
 		}
-
+		
 		$this->preFormatFormJoins($this->_data);
-
+		
 		JDEBUG ? $profiler->mark('start format for joins') : null;
 		$this->formatForJoins($this->_data);
 
@@ -1065,7 +1064,7 @@ class FabrikFEModelList extends JModelForm {
 		//see http://fabrikar.com/forums/showthread.php?t=12860
 		//$totalSql  = "SELECT $linkKey AS id, COUNT($linkKey) AS total FROM " . $element->db_table_name . " " . $tableModel->_buildQueryJoin();
 
-		$k2 = $db->Quote(FabrikString::safeColNameToArrayKey($key));
+		$k2 = $db->quote(FabrikString::safeColNameToArrayKey($key));
 		//$totalSql  = "SELECT $k2 AS linkKey, $linkKey AS id, COUNT($linkKey) AS total FROM " . $listModel->getTable()->db_table_name . " " . $listModel->_buildQueryJoin();
 
 		//$$$ Jannus - see http://fabrikar.com/forums/showthread.php?t=20751
@@ -1443,6 +1442,7 @@ class FabrikFEModelList extends JModelForm {
 			$lookupC = 0;
 			$lookUps = array('DISTINCT ' . $table->db_primary_key . ' AS __pk_val' . $lookupC);
 			$lookUpNames = array($table->db_primary_key);
+			
 			foreach ($joins as $join)
 			{
 				// $$$ hugh - added repeatElement, as _makeJoinAliases() is going to set canUse to false for those,
@@ -1475,9 +1475,23 @@ class FabrikFEModelList extends JModelForm {
 			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
+			
+			$idRows = $db->loadObjectList();
 			while (empty($ids) && $lookupC >= 0)
 			{
-				$ids = JArrayHelper::getColumn($db->loadObjectList(), '__pk_val' . $lookupC);
+				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
+				for ($idx = count($ids) - 1; $idx >= 0; $idx --)
+				{
+					if ($ids[$idx] == '')
+					{
+						unset($ids[$idx]);
+					}
+					else 
+					{
+						$ids[$idx] = $db->quote($ids[$idx]);
+					}
+				}
+				$ids = array_unique($ids);
 				if (empty($ids))
 				{
 					$lookupC --;
@@ -2723,7 +2737,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/table');
 		$row = FabTable::getInstance('List', 'FabrikTable');
-		$row->load(array('form_id'=>$formId));
+		$row->load(array('form_id' => $formId));
 		$this->_table = $row;
 		$this->setId($row->id);
 		$this->setState('list.id', $row->id);
@@ -3275,7 +3289,7 @@ class FabrikFEModelList extends JModelForm {
 				return;
 			}
 			$sql = " SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.tables ".
-			"WHERE table_name = " . $db->Quote($table->db_table_name) . " AND table_type = 'view' AND table_schema = " . $db->Quote($dbname);
+			"WHERE table_name = " . $db->quote($table->db_table_name) . " AND table_type = 'view' AND table_schema = " . $db->quote($dbname);
 			$db->setQuery($sql);
 			$row = $db->loadObjectList();
 			if (empty($row))
@@ -3422,7 +3436,7 @@ class FabrikFEModelList extends JModelForm {
 			if ($elid == -1) {
 				//bool match
 				$this->filters['origvalue'][$i] = $value;
-				$this->filters['sqlCond'][$i] = $key.' '.$condition.' ('.$db->Quote($value) . ' IN BOOLEAN MODE)';
+				$this->filters['sqlCond'][$i] = $key.' '.$condition.' ('.$db->quote($value) . ' IN BOOLEAN MODE)';
 				continue;
 			}
 
@@ -3466,9 +3480,9 @@ class FabrikFEModelList extends JModelForm {
 			}
 			else if ($condition == 'like') {
 				$condition = 'LIKE';
-				$value = $db->Quote($value);
+				$value = $db->quote($value);
 			}else if ($condition == 'laterthisyear' || $condition == 'earlierthisyear') {
-				$value = $db->Quote($value);
+				$value = $db->quote($value);
 			}
 			if ($fullWordsOnly == '1') {
 				$condition = 'REGEXP';
@@ -5295,7 +5309,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			if( $k == $keyName) {
 				// PK not to be updated
-				$where = $keyName . '=' . $db->Quote($v);
+				$where = $keyName . '=' . $db->quote($v);
 				continue;
 			}
 			if ($v === null)
@@ -5311,7 +5325,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 			else
 			{
-				$val = $db->isQuoted($k) ? $db->Quote($v) : (int) $v;
+				$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
 			}
 			if (in_array($k, $this->encrypt))
 			{
@@ -5352,7 +5366,7 @@ class FabrikFEModelList extends JModelForm {
 				continue;
 			}
 			$fields[] = $db->quoteName($k);
-			$val = $db->isQuoted($k) ? $db->Quote($v) : (int) $v;
+			$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
 			if (in_array($k, $this->encrypt))
 			{
 				$val = "AES_ENCRYPT($val, '$secret')";
@@ -5855,7 +5869,7 @@ class FabrikFEModelList extends JModelForm {
 		if ($field == '') {
 			return;
 		}
-		$db->setQuery("SHOW INDEX FROM ".$db->quoteName($table) . ' WHERE Column_name = ' . $db->Quote($field));
+		$db->setQuery("SHOW INDEX FROM ".$db->quoteName($table) . ' WHERE Column_name = ' . $db->quote($field));
 		$dbIndexes = $db->loadObjectList();
 		foreach ($dbIndexes as $index) {
 			$db->setQuery(" ALTER TABLE ".$db->quoteName($table)." DROP INDEX ".$db->quoteName($index->Key_name));
@@ -5911,7 +5925,7 @@ class FabrikFEModelList extends JModelForm {
 
 		$c = count($val);
 		foreach ($val as &$v) {
-			$v = $db->Quote($v);
+			$v = $db->quote($v);
 		}
 		$val = implode(",", $val);
 
@@ -5960,7 +5974,7 @@ class FabrikFEModelList extends JModelForm {
 			$val = $ids;
 			$c = count($val);
 			foreach ($val as &$v) {
-				$v = $db->Quote($v);
+				$v = $db->quote($v);
 			}
 			$val = implode(",", $val);
 		}
@@ -6490,7 +6504,7 @@ class FabrikFEModelList extends JModelForm {
 				$fields = array();
 				foreach ($row as $k => $v) {
 					$fields[] = $db->quoteName($k);
-					$values[] = $db->Quote($v);
+					$values[] = $db->quote($v);
 				}
 				$sql .= sprintf($fmtsql, implode(",", $fields) ,  implode(",", $values));
 				$sql .= "\n";
@@ -7136,15 +7150,16 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * get the join display mode - merge or normal
-	 * @return bool true if merge
+	 * get the join display mode - merge, normal or reduce
+	 * @return	string	1 if merge, 2 if reduce, 0 if no merge or reduce
 	 */
 
 	public function mergeJoinedData()
 	{
 		$params = $this->getParams();
 		$display = $params->get('join-display', '');
-		switch ($display) {
+		switch ($display)
+		{
 			case 'merge':
 				$merge = 1;
 				break;
@@ -7165,9 +7180,9 @@ class FabrikFEModelList extends JModelForm {
 		$tableParams = $this->getParams();
 		$table = $this->getTable();
 		$pluginManager = FabrikWorker::getPluginManager();
-		$method = 'renderListData_'.$this->_outPutFormat;
+		$method = 'renderListData_' . $this->_outPutFormat;
 		$this->_aLinkElements = array();
-
+		
 		// $$$ hugh - temp foreach fix
 		$groups = $form->getGroupsHiarachy();
 		$ec = count($data);
@@ -7181,12 +7196,14 @@ class FabrikFEModelList extends JModelForm {
 			{
 				$elementModels = $groupModel->getPublishedListElements();
 			}
+			
 			foreach ($elementModels as $elementModel)
 			{
 				//$elementModel->setContext($groupModel, $form, $this);
 				$col = $elementModel->getFullName(false, true, false);
 				if (!empty($data) && array_key_exists($col, $data[0]))
 				{
+					
 					for ($i = 0; $i < $ec; $i ++)
 					{
 						$thisRow = $data[$i];
@@ -7267,7 +7284,7 @@ class FabrikFEModelList extends JModelForm {
 							else {
 								// $$$ hugh - might be a view, so Hail Mary attempt to get PK
 								$query = $db->getQuery(true);
-								$query->select('db_primary_key')->from('#__{package}_lists')->where('db_table_name = ' . $db->Quote($join_table_name));
+								$query->select('db_primary_key')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($join_table_name));
 								$db->setQuery($query);
 								$join_pk = $db->loadResult();
 								if (!empty($join_pk)) {
@@ -7413,7 +7430,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$db = $this->getDb();
 		$table = $this->getTable();
-		$query = "UPDATE $table->db_table_name SET $key = COALESCE($key,0)  + $dir WHERE $table->db_primary_key = ".$db->Quote($rowId);
+		$query = "UPDATE $table->db_table_name SET $key = COALESCE($key,0)  + $dir WHERE $table->db_primary_key = ".$db->quote($rowId);
 		$db->setQuery($query);
 		return $db->query();
 	}
@@ -7473,7 +7490,7 @@ class FabrikFEModelList extends JModelForm {
 		//$data = array_shift($data);
 		$table = $this->getTable();
 
-		$update = "$col = ".$db->Quote($val);
+		$update = "$col = ".$db->quote($val);
 		$tbl = array_shift(explode('.', $col));
 
 		$joinFound = false;

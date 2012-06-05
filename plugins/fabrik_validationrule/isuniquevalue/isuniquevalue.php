@@ -11,7 +11,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'validation_rule.php');
+require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_ValidationruleIsUniqueValue extends plgFabrik_Validationrule
 {
@@ -44,7 +44,7 @@ class plgFabrik_ValidationruleIsUniqueValue extends plgFabrik_Validationrule
 		$table 				= $listModel->getTable();
 		$db 					= $listModel->getDb();
 		$lookuptable 	= $db->NameQuote($table->db_table_name);
-		$data 				= $db->Quote($data);
+		$data 				= $db->quote($data);
 		$query = $db->getQuery(true);
 		$cond = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '='; 
 		$query->select('COUNT(*)')
@@ -59,7 +59,7 @@ class plgFabrik_ValidationruleIsUniqueValue extends plgFabrik_Validationrule
 		$pk = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 		$rowid = JRequest::getVar($pk, '');
 		if (!empty( $rowid)) {
-			$query->where($table->db_primary_key .' != '.$db->Quote($rowid));
+			$query->where($table->db_primary_key .' != '.$db->quote($rowid));
 		}
 		$db->setQuery($query);
 		$c = $db->loadResult();

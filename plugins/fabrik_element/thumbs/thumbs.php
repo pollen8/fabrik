@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
@@ -246,7 +246,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
 		$date = JFactory::getDate('now', $tzoffset);
-		$strDate = $db->Quote($date->toMySQL());
+		$strDate = $db->quote($date->toMySQL());
 
 		$user = JFactory::getUser();
 		$userid = (int)$user->get('id');
@@ -258,12 +258,12 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 			//set cookie
 			$lifetime = time() + 365*24*60*60;
 			setcookie( $hash, '1', $lifetime, '/');
-			$userid = $db->Quote($hash);
+			$userid = $db->quote($hash);
 		}
 		$elementid = $this->getElement()->id;
 		$db->setQuery("INSERT INTO #__{package}_thumbs (user_id, listid, formid, row_id, thumb, date_created, element_id)
-		values ($userid, $listid, $formid, $row_id, ".$db->Quote($thumb).", $strDate, $elementid)
-			ON DUPLICATE KEY UPDATE date_created = $strDate, thumb = ".$db->Quote($thumb));
+		values ($userid, $listid, $formid, $row_id, ".$db->quote($thumb).", $strDate, $elementid)
+			ON DUPLICATE KEY UPDATE date_created = $strDate, thumb = ".$db->quote($thumb));
 		$db->query();
 		if ($db->getErrorNum()) {
 			$err = new stdClass();

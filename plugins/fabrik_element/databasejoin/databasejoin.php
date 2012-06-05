@@ -309,7 +309,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$quoteV = array();
 				foreach ($value as $v)
 				{
-					$quoteV[] = $db->Quote($v);
+					$quoteV[] = $db->quote($v);
 				}
 				$this->_autocomplete_where = $this->getJoinValueColumn() . " IN (" . implode(', ', $quoteV) . ')';
 			}

@@ -9,7 +9,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 /**
  * Renders a repeating drop down list of packages
@@ -40,9 +40,9 @@ class JFormFieldPackageList extends JFormFieldList
 	{
 		$db	= FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
-		$query->select("id AS value, CONCAT(label, '(', version , ')') AS ".FabrikString::safeColName(text));
-		$query->from("#__{package}_packages");
-		$query->order("value DESC");
+		$query->select("id AS value, CONCAT(label, '(', version , ')') AS " . FabrikString::safeColName(text));
+		$query->from('#__{package}_packages');
+		$query->order('value DESC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		$o = new stdClass();
@@ -61,9 +61,12 @@ class JFormFieldPackageList extends JFormFieldList
 
 	protected function getInput()
 	{
-		if ($this->element['active'] == 1) {
+		if ($this->element['active'] == 1)
+		{
 			 $this->element['readonly'] = '';
-		} else {
+		}
+		else
+		{
 			$this->element['readonly'] = 'true';
 		}
 		return parent::getInput();

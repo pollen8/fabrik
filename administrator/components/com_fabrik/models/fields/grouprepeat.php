@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 
 JFormHelper::loadFieldClass('radio');
@@ -33,9 +33,12 @@ class JFormFieldGrouprepeat extends JFormFieldRadio
 
 	protected function getInput()
 	{
-		if ((int)$this->form->getValue('form') === 0) {
-			return '<input class="readonly" size="60" value="'.JText::_('COM_FABRIK_FIELD_ASSIGN_GROUP_TO_FORM_FIRST').'" type="readonly" />';
-		} else {
+		if ((int) $this->form->getValue('form') === 0)
+		{
+			return '<input class="readonly" size="60" value="' . JText::_('COM_FABRIK_FIELD_ASSIGN_GROUP_TO_FORM_FIRST') . '" type="readonly" />';
+		}
+		else
+		{
 			return parent::getInput();
 		}
 	}

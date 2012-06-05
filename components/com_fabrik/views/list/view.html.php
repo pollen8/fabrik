@@ -232,7 +232,7 @@ class FabrikViewList extends JView{
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
 		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
-
+		
 		require_once(COM_FABRIK_FRONTEND . '/views/modifiers.php');
 		$user = JFactory::getUser();
 		$model = $this->getModel();

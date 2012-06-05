@@ -213,7 +213,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$params = $this->getParams();
 		if (is_array($val)) {
 			if ($params->get('use_bitly')) {
-				require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'bitly'.DS.'bitly.php');
+				require_once(JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php');
 				$login = $params->get('bitly_login');
 				$key = $params->get('bitly_apikey');
 				$bitly = new bitly($login, $key);

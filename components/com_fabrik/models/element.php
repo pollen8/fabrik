@@ -405,14 +405,14 @@ class plgFabrik_Element extends FabrikPlugin
 		$secret = JFactory::getConfig()->getValue('secret');
 		if ($this->encryptMe())
 		{
-			$k = 'AES_DECRYPT(' . $k . ', ' . $db->Quote($secret) . ')';
+			$k = 'AES_DECRYPT(' . $k . ', ' . $db->quote($secret) . ')';
 		}
 		if ($this->isJoin())
 		{
 			$jkey = $this->_element->name;
 			if ($this->encryptMe())
 			{
-				$jkey = 'AES_DECRYPT(' . $jkey . ', ' . $db->Quote($secret) . ')';
+				$jkey = 'AES_DECRYPT(' . $jkey . ', ' . $db->quote($secret) . ')';
 			}
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($jointable . '___' . $this->_element->name));
@@ -437,7 +437,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$k = $db->quoteName($dbtable) . '.' . $db->quoteName($this->_element->name);
 			if ($this->encryptMe())
 			{
-				$k = 'AES_DECRYPT(' . $k . ', ' . $db->Quote($secret) . ')';
+				$k = 'AES_DECRYPT(' . $k . ', ' . $db->quote($secret) . ')';
 			}
 			if ($this->isJoin())
 			{
@@ -2528,7 +2528,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$value = $db->Quote($value[0]) . ' AND ' . $db->Quote($value[1]);
+			$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		}
 		$condition = 'BETWEEN';
 		return array($value, $condition);
@@ -2602,28 +2602,28 @@ class plgFabrik_Element extends FabrikPlugin
 				case '<>':
 					$condition = "<>";
 					// 2 = subquery so dont quote
-					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->Quote($value);
+					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->quote($value);
 					break;
 				case 'equals':
 				case '=':
 					$condition = "=";
-					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->Quote($value);
+					$value = ($eval == FABRIKFILTER_QUERY) ? '(' . $value . ')' : $db->quote($value);
 					break;
 				case 'begins':
 				case 'begins with':
 					$condition = "LIKE";
-					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->Quote($value.'%');
+					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote($value.'%');
 					break;
 				case 'ends':
 				case 'ends with':
 					// @TODO test this with subsquery
 					$condition = "LIKE";
-					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->Quote('%'.$value);
+					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%'.$value);
 					break;
 				case 'contains':
 					// @TODO test this with subsquery
 					$condition = "LIKE";
-					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->Quote('%'.$value.'%');
+					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%'.$value.'%');
 					break;
 				case '>':
 				case '&gt;':
@@ -2983,10 +2983,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$count_condition = $params->get('count_condition', '');
 		if (!empty($count_condition)) {
 			if (!empty($whereSQL)) {
-				$whereSQL .= " AND $name = ". $db->Quote($count_condition);
+				$whereSQL .= " AND $name = ". $db->quote($count_condition);
 			}
 			else {
-				$whereSQL = "WHERE $name = ". $db->Quote($count_condition);
+				$whereSQL = "WHERE $name = ". $db->quote($count_condition);
 			}
 		}
 		$groupModel = $this->getGroup();
@@ -3926,7 +3926,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$db = FabrikWorker::getDbo(true);
 		$element->params = $this->getParams()->toString();
 		$query = $db->getQuery(true);
-		$query->update('#__{package}_elements')->set("params = ".$db->Quote($element->params))->where("id = ".(int)$element->id);
+		$query->update('#__{package}_elements')->set("params = ".$db->quote($element->params))->where("id = ".(int)$element->id);
 		$db->setQuery($query);
 		$res = $db->query();
 		if (!$res) {
@@ -4180,7 +4180,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$where = trim($listModel->_buildQueryWhere(false));
 		$where .= ($where == '') ? ' WHERE ' : ' AND ';
 		$join = $listModel->_buildQueryJoin();
-		$where .= "$name LIKE " . $db->Quote(addslashes('%'.JRequest::getVar('value').'%'));
+		$where .= "$name LIKE " . $db->quote(addslashes('%'.JRequest::getVar('value').'%'));
 		$query = "SELECT DISTINCT($name) AS value, $name AS text FROM $tableName $join $where";
 		$query = $listModel->pluginQuery($query);
 		$db->setQuery($query);
@@ -4545,7 +4545,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$key = $this->getFullName();
 
 		$template = JFactory::getApplication()->getTemplate();
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'administrator/templates/'.$template.'/images/', 'image', 'list');
+		FabrikHelperHTML::addPath(JPATH_SITE . '/administrator/templates/'.$template.'/images/', 'image', 'list');
 
 		//@TODO add acl checks here
 		$task = JRequest::getVar('task');

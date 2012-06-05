@@ -43,7 +43,7 @@ class FabrikControllerPackage extends JControllerForm
 		$document = JFactory::getDocument();
 		//$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType	= $document->getType();
-		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
+		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		//$view->setModel($model, true);
@@ -51,14 +51,13 @@ class FabrikControllerPackage extends JControllerForm
 		// Set the layout
 		$view->setLayout($viewLayout);
 
-		
 		//if the view is a package create and assign the table and form views
 		$listView = $this->getView('list', $viewType);
 		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$listView->setModel($listModel, true);
 		$view->_tableView = $listView;
 		
-		$view->_formView = &$this->getView('Form', $viewType);
+		$view->_formView = $this->getView('Form', $viewType);
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$formModel->setDbo(FabrikWorker::getDbo());
 		$view->_formView->setModel($formModel, true);
@@ -66,8 +65,8 @@ class FabrikControllerPackage extends JControllerForm
 		// Push a model into the view
 		$model = $this->getModel($viewName, 'FabrikFEModel');
 		$model->setDbo(FabrikWorker::getDbo());
-		
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		
@@ -80,13 +79,13 @@ class FabrikControllerPackage extends JControllerForm
 	{
 		$document = JFactory::getDocument();
 		$this->Form	= $this->get('PackageListForm');
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 		$view = $this->getView('package', $viewType, '');
 		// Push a model into the view
 		$model = $this->getModel();
 		$model->setDbo(FabrikWorker::getDbo());
-		
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		$view->listform();

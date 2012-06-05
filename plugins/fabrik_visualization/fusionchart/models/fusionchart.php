@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components/com_fabrik/models/visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
@@ -340,7 +340,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			{
 				// $$$ hugh - escape the key so preg_replace won't puke if key contains /
 				$key = str_replace('/', '\/', $key);
-				$msg = preg_replace("/\{$key\}/", $db->Quote(urldecode($val)), $msg);
+				$msg = preg_replace("/\{$key\}/", $db->quote(urldecode($val)), $msg);
 			}
 		}
 		return $msg;

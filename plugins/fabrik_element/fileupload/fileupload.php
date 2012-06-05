@@ -437,11 +437,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$ext = strtolower(JFile::getExt($file));
 		if (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php'))
 		{
-			require(JPATH_ROOT.DS.'plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php');
+			require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php');
 		}
-		else if (JFile::exists(JPATH_ROOT.DS.'plugins/fabrik_element/fileupload/element/' . $ext . '.php'))
+		else if (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php'))
 		{
-			require(JPATH_ROOT.DS.'plugins/fabrik_element/fileupload/element/' . $ext . '.php');
+			require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php');
 		}
 		else
 		{
@@ -572,7 +572,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$render = $this->loadElement($data);
 		}
 
-		if (empty($data) || (!$skip_exists_check && !$storage->exists(COM_FABRIK_BASE . DS . $data)))
+		if (empty($data) || (!$skip_exists_check && !$storage->exists(COM_FABRIK_BASE . '/' . $data)))
 		{
 			$render->output = '';
 		}
@@ -1345,7 +1345,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	function deleteFile($filename)
 	{
 		$storage = $this->getStorage();
-		$file = $storage->clean(JPATH_SITE.DS.$filename);
+		$file = $storage->clean(JPATH_SITE . '/' . $filename);
 		$thumb = $storage->clean($storage->_getThumb($filename));
 		$cropped = $storage->clean($storage->_getCropped($filename));
 		if ($storage->exists($file))
@@ -1358,9 +1358,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		else
 		{
-			if ($storage->exists(JPATH_SITE.DS.$thumb))
+			if ($storage->exists(JPATH_SITE . '/' . $thumb))
 			{
-				$storage->delete(JPATH_SITE.DS.$thumb);
+				$storage->delete(JPATH_SITE . '/' . $thumb);
 			}
 		}
 		if ($storage->exists($cropped))
@@ -1369,9 +1369,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		else
 		{
-			if ($storage->exists(JPATH_SITE.DS.$cropped))
+			if ($storage->exists(JPATH_SITE . '/' . $cropped))
 			{
-				$storage->delete(JPATH_SITE.DS.$cropped);
+				$storage->delete(JPATH_SITE . '/' . $cropped);
 			}
 		}
 	}
@@ -2078,7 +2078,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 			else
 			{
-				$p = JPATH_SITE . DS . $data;
+				$p = JPATH_SITE . '/' . $data;
 			}
 			return $p;
 		}
@@ -2107,10 +2107,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		if ($params->get('make_thumbnail'))
 		{
-			$ulDir = JPath::clean($params->get('ul_directory')) . DS;
+			$ulDir = JPath::clean($params->get('ul_directory')) . '/';
 			$ulDir = str_replace("\\", "\\\\", $ulDir);
 			$thumbDir = $params->get('thumb_dir');
-			$thumbDir = JPath::clean($params->get('thumb_dir')) . DS;
+			$thumbDir = JPath::clean($params->get('thumb_dir')) . '/';
 			$w = new FabrikWorker();
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir = str_replace("\\", "\\\\", $thumbDir);
@@ -2447,7 +2447,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$this->getElement();
 		$params = $this->getParams();
 		$dir = $params->get('ul_directory', '');
-		$filename = rtrim($dir, DS) . DS . $filename;
+		$filename = rtrim($dir, '/') . '/' . $filename;
 		$this->deleteFile($filename);
 		$db = $this->getListModel()->getDb();
 		$query = $db->getQuery(true);

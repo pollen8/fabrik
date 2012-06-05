@@ -40,15 +40,17 @@ class FabrikControllerList extends JControllerForm
 		$db = $oCnn->getDb();
 		$table = JRequest::getVar('table', '');
 		$fieldNames = array();
-		if ($table != '') {
+		if ($table != '')
+		{
 			$table = FabrikString::safeColName($table);
 			$name = JRequest::getVar('name', 'jform[params][table_key][]');
-			$sql = "DESCRIBE $table";
+			$sql = 'DESCRIBE ' . $table;
 			$db->setQuery($sql);
 			$aFields = $db->loadObjectList();
-
-			if (is_array($aFields)) {
-				foreach ($aFields as $oField) {
+			if (is_array($aFields))
+			{
+				foreach ($aFields as $oField)
+				{
 					$fieldNames[] = JHTML::_('select.option', $oField->Field);
 				}
 			}
@@ -78,8 +80,8 @@ class FabrikControllerList extends JControllerForm
 			{
 				$newlimitstart = 0;
 			}
-			$context = 'com_fabrik.list'.$model->getRenderContext().'.list.';
-			$app->setUserState($context.'limitstart'.$listid, $newlimitstart);
+			$context = 'com_fabrik.list' . $model->getRenderContext() . '.list.';
+			$app->setUserState($context . 'limitstart' . $listid, $newlimitstart);
 		}
 		JRequest::setVar('view', 'list');
 		$this->view();
@@ -88,7 +90,7 @@ class FabrikControllerList extends JControllerForm
 	
 	public function filter()
 	{
-				// Check for request forgeries
+		// Check for request forgeries
 		//JRequest::checkToken() or die('Invalid Token');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
@@ -106,7 +108,8 @@ class FabrikControllerList extends JControllerForm
 	public function view()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if(is_array($cid)){
+		if(is_array($cid))
+		{
 			$cid = $cid[0];
 		}
 		$cid = JRequest::getInt('listid', $cid);
@@ -115,8 +118,7 @@ class FabrikControllerList extends JControllerForm
 		$model->setState('list.id', $cid);
 		$viewType	= JFactory::getDocument()->getType();
 		//use the front end renderer to show the table
-		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
-	
+		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);

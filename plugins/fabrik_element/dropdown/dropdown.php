@@ -211,7 +211,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 				$value = $label;
 			}
 			if (!preg_match('#^\'.*\'$#', $value)) {
-				$value = $db->Quote($value);
+				$value = $db->quote($value);
 			}
 		}
 		$this->encryptFieldName($key);

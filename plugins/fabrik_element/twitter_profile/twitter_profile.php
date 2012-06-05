@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 {
@@ -42,7 +42,7 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 			return '';
 		}
 
-		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'twitter'.DS.'class.twitter.php');
+		require_once(COM_FABRIK_FRONTEND . '/libs/twitter/class.twitter.php');
 		$twitter = new twitter();
 		$params = $this->getParams();
 		static $error;

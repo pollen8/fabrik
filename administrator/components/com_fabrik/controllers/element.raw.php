@@ -44,7 +44,7 @@ class FabrikControllerElement extends JControllerForm
 
 	public function save()
 	{
-		$listModel =& $this->getModel('list', 'FabrikFEModel');
+		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('listid'));
 		$rowId = JRequest::getVar('rowid');
 		$key = JRequest::getVar('element');

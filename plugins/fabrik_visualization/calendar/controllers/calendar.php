@@ -11,8 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/params.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
 
 /**
  * Fabrik Calendar Plug-in Controller

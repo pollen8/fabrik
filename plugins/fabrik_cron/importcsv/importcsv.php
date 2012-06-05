@@ -13,10 +13,10 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'importcsv.php');
+require_once(COM_FABRIK_FRONTEND . '/models/importcsv.php');
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
 class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 
@@ -83,8 +83,8 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 		$orig_listid = JRequest::getInt('listid', -1);
 
 		//Fabrik use this as the base directory, so we need a new directory under 'media'
-		define("FABRIK_CSV_IMPORT_ROOT",JPATH_ROOT.DS.'media');
-		$d = FABRIK_CSV_IMPORT_ROOT.DS.$cronDir;
+		define("FABRIK_CSV_IMPORT_ROOT",JPATH_ROOT . '/media');
+		$d = FABRIK_CSV_IMPORT_ROOT . '/' . $cronDir;
 
 		//TODO: Need to also have a FILTER for CSV files ONLY.
 		$filter = "\.CSV$|\.csv$";
@@ -130,20 +130,25 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 				$app->enqueueMessage($msg);
 			}
 
-			if ($deleteFile == '1') {
+			if ($deleteFile == '1')
+			{
 				JFile::delete($full_csvfile);
 			}
-			else if ($deleteFile == '2') {
+			else if ($deleteFile == '2')
+			{
 				$new_csvfile = $full_csvfile . '.' . time();
 				JFile::move($full_csvfile, $new_csvfile);
 			}
-			else if ($deleteFile == '3') {
-				$done_folder = dirname($full_csvfile) . DS . 'done';
-				if (JFolder::exists($done_folder)) {
-					$new_csvfile = $done_folder . DS . basename($full_csvfile);
+			else if ($deleteFile == '3')
+			{
+				$done_folder = dirname($full_csvfile) . '/done';
+				if (JFolder::exists($done_folder))
+				{
+					$new_csvfile = $done_folder . '/' . basename($full_csvfile);
 					JFile::move($full_csvfile, $new_csvfile);
 				}
-				else {
+				else
+				{
 					if ($app->isAdmin()) {
 						$app->enqueueMessage("Move file requested, but can't find 'done' folder: $done_folder");
 					}

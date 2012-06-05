@@ -10,8 +10,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_element'.DS.'radiobutton'.DS.'radiobutton.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once(JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php');
 
 class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
@@ -36,7 +36,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	function renderListData($data, $oAllRowsData)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		//check if the data is in csv format, if so then the element is a multi drop down
 		if ($data == '1') {
 			return FabrikHelperHTML::image("1.png", 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
@@ -55,7 +55,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	function renderListData_pdf($data, $oAllRowsData)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		if ($data == '1') {
 			return FabrikHelperHTML::image("1_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JYES')));
 		} else {
@@ -154,7 +154,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	protected function getReadOnlyOutput($value, $label)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'form', false);
 		$img = $value == '1' ? "1.png" : "0.png";
 		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
 	}

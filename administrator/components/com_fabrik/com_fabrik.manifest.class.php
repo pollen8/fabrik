@@ -54,7 +54,7 @@ class Com_FabrikInstallerScript
 	{
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('extension_id, params')->from('#__extensions')->where('name = '.$db->Quote('fabrik'))->where('type = '.$db->Quote('component'));
+		$query->select('extension_id, params')->from('#__extensions')->where('name = '.$db->quote('fabrik'))->where('type = '.$db->quote('component'));
 		$db->setQuery($query);
 		$row = $db->loadObject();
 		$opts = new stdClass();
@@ -65,7 +65,7 @@ class Com_FabrikInstallerScript
 		if ($row && ($row->params == '{}' || $row->params == '')) {
 			$json = $row->params;
 			$query = $db->getQuery(true);
-			$query->update('#__extensions')->set('params = '.$db->Quote($json))->where('extension_id = '.(int)$row->extension_id);
+			$query->update('#__extensions')->set('params = '.$db->quote($json))->where('extension_id = '.(int)$row->extension_id);
 			$db->setQuery($query);
 			if (!$db->query()) {
 				return false;
@@ -111,14 +111,13 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Run when the component is unistalled.
-	 * @param object $parent installer object
+	 * @param	object	$parent installer object
 	 */
 
 	function uninstall($parent)
 	{
 		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
-
 		$dest = JPATH_SITE . '/libraries/joomla/document/fabrikfeed';
 		if (JFolder::exists($dest))
 		{
@@ -127,18 +126,21 @@ class Com_FabrikInstallerScript
 				return false;
 			}
 		}
-
 		$dest = JPATH_SITE . '/libraries/joomla/database/database';
-		foreach ($this->drivers as $driver) {
-			if (JFile::exists($dest.DS.$driver)) {
-				JFile::delete($dest.DS.$driver);
+		foreach ($this->drivers as $driver)
+		{
+			if (JFile::exists($dest . '/' . $driver))
+			{
+				JFile::delete($dest . '/' . $driver);
 			}
 		}
 	}
 
 	/**
-	* god knows why but install component, uninstall component and install again and component_id is set to 0 for the menu items grrrrr
+	* god knows why but install component, uninstall component and install 
+	* again and component_id is set to 0 for the menu items grrrrr
 	*/
+	
 	protected function fixmMenuComponentId()
 	{
 		$db = JFactory::getDbo();
@@ -149,11 +151,11 @@ class Com_FabrikInstallerScript
 		$query->clear();
 		$query->update('#__menu')->set('component_id = '.$id)->where('path LIKE "fabrik%"');
 		$db->setQuery($query)->query();
-		}
+	}
 
 	/**
 	 * Run when the component is updated
-	 * @param object $parent installer object
+	 * @param	object	$parent installer object
 	 */
 
 	function update($parent)
@@ -190,21 +192,24 @@ class Com_FabrikInstallerScript
 	function postflight($type, $parent)
 	{
 		$db = JFactory::getDbo();
-
 		//remove old update site
-
 		$db->setQuery("DELETE FROM #__update_sites WHERE location LIKE '%update/component/com_fabrik%'");
 		$db->query();
-		if (!$db->query()) {
+		if (!$db->query())
+		{
 			echo "<P>didnt remove old update site</p>";
-		} else {
+		}
+		else
+		{
 			echo "<p style=\"color:green\">removed old update site</p>";
 		}
 		$db->setQuery("UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik'))");
 		$db->query();
 		$this->fixmMenuComponentId();
-		if ($type !== 'update') {
-			if (!$this->setConnection()) {
+		if ($type !== 'update')
+		{
+			if (!$this->setConnection())
+			{
 				echo "<p style=\"color:red\">Didn't set connection. Aborting installation</p>";
 				exit;
 				return false;
@@ -212,11 +217,14 @@ class Com_FabrikInstallerScript
 		}
 		echo "<p style=\"color:green\">Default connection created</p>";
 
-		if (!$this->moveFiles($parent)) {
+		if (!$this->moveFiles($parent))
+		{
 			echo "<p style=\"color:red\">Unable to move library files. Aborting installation</p>";
 			exit;
 			return false;
-		} else {
+		}
+		else
+		{
 			echo "<p style=\"color:green\">Libray files moved</p>";
 		}
 
@@ -233,13 +241,10 @@ class Com_FabrikInstallerScript
 here to install sample data</a></p>
 	  ';
 
+		// An example of setting a redirect to a new location after the install is completed
+		//$parent->getParent()->set('redirect_url', 'http://www.google.com');
 
-			// An example of setting a redirect to a new location after the install is completed
-			//$parent->getParent()->set('redirect_url', 'http://www.google.com');
-
-			$upgrade = JModel::getInstance('Upgrade', 'FabrikModel');
+		$upgrade = JModel::getInstance('Upgrade', 'FabrikModel');
 	}
-
-
 
 }

@@ -13,7 +13,7 @@ $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 $option = JRequest::getCmd('option');
 $shortName = substr($option, 4);
-$query->select('id')->from('#__fabrik_packages')->where('(component_name = ' . $db->Quote($option) . ' OR component_name = ' . $db->quote($shortName) . ') AND external_ref <> ""')->order('version DESC');
+$query->select('id')->from('#__fabrik_packages')->where('(component_name = ' . $db->quote($option) . ' OR component_name = ' . $db->quote($shortName) . ') AND external_ref <> ""')->order('version DESC');
 $db->setQuery($query, 0, 1);
 $id = $db->loadResult();
 if ($id == '')

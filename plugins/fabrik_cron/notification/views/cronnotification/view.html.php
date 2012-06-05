@@ -14,13 +14,14 @@ class fabrikViewCronnotification extends JView
 
 		$viewName = $this->getName();
 
-		$tmplpath = JPATH_ROOT.DS.'fabrik_cron'.DS.'notification'.DS.'views'.DS.'cronnotification'.DS.'tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_ROOT . '/fabrik_cron/notification/views/cronnotification/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 
-		$ab_css_file = $tmplpath.DS."template.css";
+		$ab_css_file = $tmplpath . '/template.css';
 
-		if (JFile::exists($ab_css_file)){
-			JHTML::stylesheet('template.css', '/plugins/fabrik_cron/notification/views/cronnotification/tmpl/'.$tmpl.'/', true);
+		if (JFile::exists($ab_css_file))
+		{
+			JHTML::stylesheet('template.css', '/plugins/fabrik_cron/notification/views/cronnotification/tmpl/' . $tmpl . '/', true);
 		}
 		//ensure we don't have an incorrect version of mootools loaded
 		FabrikHelperHTML::cleanMootools();

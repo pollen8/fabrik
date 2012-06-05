@@ -38,10 +38,8 @@ class JFormFieldPluginList extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$group = (string)$this->element['plugin'];
-		$key 		= $this->element['key'];
-		// From 1.5 that we may need
-		//$fullName = ElementHelper::getFullName($this, $control_name, $name);
+		$group = (string) $this->element['plugin'];
+		$key = $this->element['key'];
 		$key = ($key == 'visualization.plugin') ? "CONCAT('visualization.',element) " : 'element';
 		// Initialize variables.
 		$options = array();
@@ -49,23 +47,22 @@ class JFormFieldPluginList extends JFormFieldList
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
-		$query->select($key.' AS value, element AS text');
+		$query->select($key . ' AS value, element AS text');
 		$query->from('#__extensions AS p');
-		$query->where($db->nameQuote('type').' = '.$db->Quote('plugin'));
-		$query->where($db->nameQuote('enabled').' = 1 AND state != -1');
-		$query->where($db->nameQuote('folder').' = '.$db->Quote($group));
+		$query->where($db->quoteName('type') . ' = ' . $db->quote('plugin'));
+		$query->where($db->quoteName('enabled') . ' = 1 AND state != -1');
+		$query->where($db->quoteName('folder') . ' = ' . $db->quote($group));
 		$query->order('text');
 
 		// Get the options.
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
 		// Check for a database error.
-		if ($db->getErrorNum()) {
+		if ($db->getErrorNum())
+		{
 			JError::raiseWarning(500, $db->getErrorMsg());
 		}
-
 		array_unshift($options, JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
-
 		return $options;
 	}
 }

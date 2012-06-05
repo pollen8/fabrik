@@ -49,9 +49,9 @@ class fabrikViewPackage extends JView
 		$document->addScriptDeclaration($script);
 
 		//force front end templates
-		$this->_basePath = COM_FABRIK_FRONTEND.DS.'views';
+		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$tmpl = !isset($item->template) ? 'default' : $item->template;
-		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
+		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
 		$text = $this->loadTemplate();
 		$opt = JRequest::getVar('option');
 		JRequest::setVar('option', 'com_content');
@@ -60,7 +60,6 @@ class fabrikViewPackage extends JView
 		$text = JHTML::_('content.prepare', $text);
 		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
 		JRequest::setVar('option', $opt);
-
 		echo $text;
 	}
 

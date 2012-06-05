@@ -14,7 +14,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormSalesforce extends plgFabrik_Form {
 
@@ -24,7 +24,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 	{
 
 		//Get the path to the Toolkit, set in the options on install.
-		$toolkit_path = JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'salesforce';
+		$toolkit_path = JPATH_SITE . '/components/com_fabrik/libs/salesforce';
 
 		//Ok, now use SOAP to send the information to SalesForce
 		require_once($toolkit_path .'/soapclient/SforcePartnerClient.php');

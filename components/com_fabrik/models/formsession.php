@@ -259,7 +259,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$db = $row->getDBO();
 		$row->hash = $hash;
 		$query = 'DELETE FROM '.$db->nameQuote($row->getTableName()).
-				' WHERE '.$row->getKeyName().' = '. $db->Quote($hash);
+				' WHERE '.$row->getKeyName().' = '. $db->quote($hash);
 		$db->setQuery($query);
 		$this->removeCookie();
 		$this->row = $row;

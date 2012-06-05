@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListRadius_search extends plgFabrik_List {
 
@@ -119,7 +119,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		$db = $this->model->getDb();
 		$usekey = JRequest::getVar('usekey');
 		JRequest::setVar('usekey', $placeElement->name);
-		$row = $this->model->getRow($db->Quote($place));
+		$row = $this->model->getRow($db->quote($place));
 		JRequest::SetVar('usekey', $usekey);
 		if (is_object($row)) {
 			$coords = explode(':', str_replace(array('(',')'), '', $row->$mapName));

@@ -66,7 +66,7 @@ class FabrikModelLists extends FabModelList
 				//Filter by search in title
 				$search = $this->getState('filter.search');
 				if (!empty($search)) {
-					$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+					$search = $db->quote('%'.$db->getEscaped($search, true).'%');
 					$query->where('(l.db_table_name LIKE '.$search.' OR l.label LIKE '.$search.')');
 				}
 

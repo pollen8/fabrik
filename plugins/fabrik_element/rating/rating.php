@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementRating extends plgFabrik_Element {
 
@@ -45,7 +45,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$data = FabrikWorker::JSONtoData($data, true);
 
 		$url = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='.$this->getElement()->id;
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/rating/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/rating/images/', 'image', 'list', false);
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
 
@@ -222,7 +222,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 		$imagepath = JUri::root().'/plugins/fabrik_element/rating/images/';
 
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/rating/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/rating/images/', 'image', 'form', false);
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
 		$clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
@@ -298,7 +298,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			//store in elements table as well
 			$db = $listModel->getDb();
 			$element = $this->getElement();
-			$db->setQuery("UPDATE $list->db_table_name SET $element->name = $rating WHERE $list->db_primary_key = " . $db->Quote($row_id));
+			$db->setQuery("UPDATE $list->db_table_name SET $element->name = $rating WHERE $list->db_primary_key = " . $db->quote($row_id));
 			$db->query();
 		}
 		$this->getRatingAverage('', $listid, $formid, $row_id);
@@ -349,8 +349,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
 		$date = JFactory::getDate('now', $tzoffset);
-		$strDate = $db->Quote($date->toMySQL());
-		$userid = $db->Quote($this->getStoreUserId($listid, $row_id));
+		$strDate = $db->quote($date->toMySQL());
+		$userid = $db->quote($this->getStoreUserId($listid, $row_id));
 		$elementid = $this->getElement()->id;
 		$db->setQuery("INSERT INTO #__fabrik_ratings (user_id, listid, formid, row_id, rating, date_created, element_id)
 		values ($userid, $listid, $formid, $row_id, $rating, $strDate, $elementid)

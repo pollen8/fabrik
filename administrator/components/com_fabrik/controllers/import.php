@@ -28,13 +28,14 @@ class FabrikControllerImport extends FabControllerForm
 	/**
 	 * if new elements found in the CSV file and user decided to
 	 * add them to the table then do it here
-	 * @param object import model
-	 * @param array existing headings
-	 * @return unknown_type
+	 * @param	object	import model
+	 * @param	array	existing headings
+	 * @return	unknown_type
 	 */
+	
 	protected function addElements($model, $headings)
 	{
-		$user =& JFactory::getUser();
+		$user = JFactory::getUser();
 		$c = 0;
 		$listModel = &$this->getModel('List', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('list_id'));
@@ -50,39 +51,44 @@ class FabrikControllerImport extends FabControllerForm
 		$dataRemoved = false;
 		
 		// @TODO use actual element plugin getDefaultProperties()
-		foreach ($newElements as $elname => $add) {
-			if ($add) {
+		foreach ($newElements as $elname => $add)
+		{
+			if ($add)
+			{
 				$element->id = 0;
 				$element->name = JFilterInput::clean($elname, 'CMD');
 				$element->label = strtolower($elname);
 				$element->plugin = $plugins[$c];
-				$element->group_id 			= $groupId;
-				$element->eval 					= 0;
-				$element->published 		= 1;
-				$element->width 				= 255;
-				$element->created 			= date('Y-m-d H:i:s');
-				$element->created_by 		= $user->get('id');
-				$element->created_by_alias 	= $user->get('username');
-				$element->checked_out 	= 0;
+				$element->group_id = $groupId;
+				$element->eval = 0;
+				$element->published = 1;
+				$element->width = 255;
+				$element->created = date('Y-m-d H:i:s');
+				$element->created_by = $user->get('id');
+				$element->created_by_alias = $user->get('username');
+				$element->checked_out = 0;
 				$element->show_in_list_summary = 1;
-				$element->ordering 	= 0;
+				$element->ordering = 0;
 				$element->params = $elementModel->getDefaultAttribs();
 				$headings[] = $element->name;
-
 				$element->store();
 				$where = " group_id = '" . $element->group_id . "'";
 				$element->move(1, $where);
 				//$elementModel->addToDBTable();
 				$elementsCreated ++;
-			} else {
+			}
+			else
+			{
 				//need to remove none selected element's (that dont already appear in the table structure
 				// data from the csv data
 				$session = JFactory::getSession();
 				$allHeadings = $session->get('com_fabrik.csvheadings');
 				$index = array_search($elname, $allHeadings);
-				if ($index !== false) {
+				if ($index !== false)
+				{
 					$dataRemoved = true;
-					foreach ($model->data as &$d) {
+					foreach ($model->data as &$d)
+					{
 						unset($d[$index]);
 					}
 				}
@@ -91,9 +97,11 @@ class FabrikControllerImport extends FabControllerForm
 		}
 		
 		$listModel->ammendTable(); //3.0 testing?
-		if ($dataRemoved) {
+		if ($dataRemoved)
+		{
 			//reindex data array
-			foreach ($model->data as $k => $d) {
+			foreach ($model->data as $k => $d)
+			{
 				$model->data[$k] = array_reverse(array_reverse($d));
 			}
 		}
@@ -102,7 +110,6 @@ class FabrikControllerImport extends FabControllerForm
 
 	/**
 	 * cancel import
-	 * @return null
 	 */
 
 	function cancel()
@@ -112,7 +119,6 @@ class FabrikControllerImport extends FabControllerForm
 
 	/**
 	 * make or update the table from the CSV file
-	 * @return null
 	 */
 
 	function makeTableFromCSV()
@@ -121,9 +127,8 @@ class FabrikControllerImport extends FabControllerForm
 		$session = JFactory::getSession();
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$model->import();
-		
-		if (JRequest::getInt('fabrik_list') == 0) {
-			
+		if (JRequest::getInt('fabrik_list') == 0)
+		{
 			$plugins = JRequest::getVar('plugin');
 			$createElements = JRequest::getVar('createElements', array());
 			$dataRemoved = false;
@@ -131,12 +136,14 @@ class FabrikControllerImport extends FabControllerForm
 			$c = 0;
 			$dbname = JRequest::getVar('db_table_name');
 			$model->matchedHeadings = array();
-			foreach ($createElements as $elname => $add) {
-				if ($add) {
+			foreach ($createElements as $elname => $add)
+			{
+				if ($add)
+				{
 					$name = JFilterInput::clean($elname, 'CMD');
 					$plugin = $plugins[$c];
 					$newElements[$name] = $plugin;
-					$model->matchedHeadings[$dbname.'.'.$name] = $name;
+					$model->matchedHeadings[$dbname . '.' . $name] = $name;
 				}
 				$c ++;
 			}
@@ -159,19 +166,20 @@ class FabrikControllerImport extends FabControllerForm
 			'jform' => array('id' => 0, '_database_name' => $dbname, 'db_table_name' =>  '')
 			);
 			JRequest::setVar('jform', $data['jform']);
-			
-			if (!$listModel->save($data)) {
+			if (!$listModel->save($data))
+			{
 				return $listModel->getError();
 			}
 			$model->listModel = null;
 			JRequest::setVar('listid', $listModel->getItem()->id);
-		} else {
+		}
+		else
+		{
 			//$model->data = $session->get('com_fabrik.csvdata');
 			$headings = $session->get('com_fabrik.matchedHeadings');
 			$model->matchedHeadings = $this->addElements($model, $headings);
 			JRequest::setVar('listid', JRequest::getInt('fabrik_list'));
 		}
-		
 		$msg = $model->insertData();
 		$this->setRedirect('index.php?option=com_fabrik&view=lists', $msg);
 	}
@@ -187,7 +195,8 @@ class FabrikControllerImport extends FabControllerForm
 		$view = $this->getView('import', $viewType);
 		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
 		$model = $this->getModel();
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		$view->display();
@@ -203,28 +212,31 @@ class FabrikControllerImport extends FabControllerForm
 	public function doimport()
 	{
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
-		if (!$model->checkUpload()) {
+		if (!$model->checkUpload())
+		{
 			$this->display();
 			return;
 		}
 		$id = $model->getListModel()->getId();
 		$document = JFactory::getDocument();
-		$viewName	= 'import';
-		$viewType	= $document->getType();
+		$viewName = 'import';
+		$viewType = $document->getType();
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
-		
 		$model->import();
-		if (!empty($model->newHeadings)) {
+		if (!empty($model->newHeadings))
+		{
 			$view->setModel($model, true);
 			$view->setModel($this->getModel('pluginmanager', 'FabrikFEModel'));
 			$view->chooseElementTypes();
-		} else {
+		}
+		else
+		{
 			$model->import();
 			JRequest::setVar('fabrik_list', $id);
 			$msg = $model->insertData();
 			$model->removeCSVFile();
-			$this->setRedirect('index.php?option=com_fabrik&task=list.view&cid='.$id, $msg);
+			$this->setRedirect('index.php?option=com_fabrik&task=list.view&cid=' . $id, $msg);
 		}
 	}
 }

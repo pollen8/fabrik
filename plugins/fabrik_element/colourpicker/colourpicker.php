@@ -57,7 +57,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		if (!$this->_editable) {
 			return;
 		}
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
@@ -73,7 +73,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		$c->blue = (int)$vars[2];
 		$opts->colour = $c;
 		$swatch = $params->get('colourpicker-swatch', 'default.js');
-		$swatchFile = JPATH_SITE.DS.'plugins'.DS.'fabrik_element'.DS.'colourpicker'.DS.'swatches'.DS.$swatch;
+		$swatchFile = JPATH_SITE . '/plugins/fabrik_element/colourpicker/swatches/' . $swatch;
 		$opts->swatch = json_decode(JFile::read($swatchFile));
 		
 		$opts->closeImage = FabrikHelperHTML::image("close.gif", 'form', @$this->tmpl, array(), true);

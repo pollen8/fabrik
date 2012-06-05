@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
@@ -418,68 +418,79 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * @param	int	repeat group counter
+	 * @return	string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
 	{
-		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'mobileuseragent'.DS.'mobileuseragent.php');
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
-		$ua 				= new MobileUserAgent();
-		$id					= $this->getHTMLId($repeatCounter);
-		$name 			= $this->getHTMLName($repeatCounter);
+		require_once(COM_FABRIK_FRONTEND . '/libs/mobileuseragent/mobileuseragent.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+		$ua = new MobileUserAgent();
+		$id = $this->getHTMLId($repeatCounter);
+		$name = $this->getHTMLName($repeatCounter);
 		$groupModel = $this->_group;
-		$element 		= $this->getElement();
-		$val 				= $this->getValue($data, $repeatCounter);
-
-		$params 		= $this->getParams();
-		$w 					= $params->get('fb_gm_mapwidth');
-		$h 					= $params->get('fb_gm_mapheight');
-
-		if ($this->_useStaticMap()) {
+		$element = $this->getElement();
+		$val = $this->getValue($data, $repeatCounter);
+		$params = $this->getParams();
+		$w = $params->get('fb_gm_mapwidth');
+		$h = $params->get('fb_gm_mapheight');
+		if ($this->_useStaticMap())
+		{
 			return $this->_staticMap($val, null, null, null, $repeatCounter);
-		} else {
+		}
+		else
+		{
 			$val = JArrayHelper::getValue($data, $name, $val);//(array_key_exists($name, $data) && !empty($data[$name])) ? $data[$name] : $val;
-			if ($element->hidden == '1') {
+			if ($element->hidden == '1')
+			{
 				return $this->getHiddenField($name, $data[$name], $id);
 			}
-			$str = '<div class="fabrikSubElementContainer" id="'.$id.'">';
+			$str = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 			//if its not editable and theres no val don't show the map
-			if ((!$this->_editable && $val !='') || $this->_editable) {
-				if ($this->_editable && $params->get('fb_gm_geocode') != '0') {
+			if ((!$this->_editable && $val !='') || $this->_editable)
+			{
+				if ($this->_editable && $params->get('fb_gm_geocode') != '0')
+				{
 					$str .= '<div style="margin-bottom:5px">';
 				}
-				if ($this->_editable && $params->get('fb_gm_geocode') == 1) {
+				if ($this->_editable && $params->get('fb_gm_geocode') == 1)
+				{
 					$str .= '<input class="geocode_input inputbox" style="margin-right:5px"/>';
 				}
 
-				if ($params->get('fb_gm_geocode') != '0' && $params->get('fb_gm_geocode_event', 'button') == 'button' && $this->_editable) {
+				if ($params->get('fb_gm_geocode') != '0' && $params->get('fb_gm_geocode_event', 'button') == 'button' && $this->_editable)
+				{
 					$str .= '<input class="button geocode" type="button" value="'.JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE').'" />';
 				}
-				if ($this->_editable && $params->get('fb_gm_geocode') != '0') {
+				if ($this->_editable && $params->get('fb_gm_geocode') != '0')
+				{
 					$str .= '</div>';
 				}
-				$str .= '<div class="map" style="width:'.$w.'px; height:'.$h.'px"></div>';
-				$str .= '<input type="hidden" class="fabrikinput" name="'.$name.'" value="'.htmlspecialchars($val, ENT_QUOTES).'" />';
-				if (($this->_editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng') == '1') {
+				$str .= '<div class="map" style="width:' . $w . 'px; height:' . $h . 'px"></div>';
+				$str .= '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . htmlspecialchars($val, ENT_QUOTES) . '" />';
+				if (($this->_editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng') == '1')
+				{
 					$arrloc = explode(',', $val);
 					$arrloc[0] = str_replace("(", "", $arrloc[0]);
 					$arrloc[1] = array_key_exists(1, $arrloc ) ? str_replace(")", "", array_shift(explode(":", $arrloc[1]))) : '';
 					$edit = $this->_editable ? '' : 'disabled="true"';
 					$str .= '<div class="coord" style="margin-top:5px;">
-					<input '.$edit.' size="23" value="'.$arrloc[0].' ° N" style="margin-right:5px" class="inputbox lat"/>
-					<input '.$edit.' size="23" value="'.$arrloc[1].' ° E"  class="inputbox lng"/></div>';
+					<input ' . $edit . ' size="23" value="' . $arrloc[0] . ' ° N" style="margin-right:5px" class="inputbox lat"/>
+					<input ' . $edit . ' size="23" value="' . $arrloc[1] . ' ° E"  class="inputbox lng"/></div>';
 				}
-				if (($this->_editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng_dms') == '1') {
+				if (($this->_editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng_dms') == '1')
+				{
 					$dms = $this->_strToDMS($val);
 					$edit = $this->_editable ? '' : 'disabled="true"';
 					$str .= '<div class="coord" style="margin-top:5px;">
-					<input '.$edit.' size=\"23\" value="'.$dms->coords[0].'" style="margin-right:5px" class="latdms"/>
-					<input '.$edit.' size=\"23\" value="'.$dms->coords[1].'"  class="lngdms"/></div>';
+					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[0] . '" style="margin-right:5px" class="latdms"/>
+					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[1] . '"  class="lngdms"/></div>';
 				}
 				$str .= '</div>';
-			} else {
+			}
+			else
+			{
 				$str .= JText::_('PLG_ELEMENT_GOOGLEMAP_NO_LOCATION_SELECTED');
 			}
 			$str .= $this->_microformat($val);
@@ -489,9 +500,9 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * can be overwritten in the plugin class - see database join element for example
-	 * @param array
-	 * @param array
-	 * @param array options
+	 * @param	array
+	 * @param	array
+	 * @param	array	options
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
@@ -499,20 +510,22 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
 		$listModel = $this->getlistModel();
-		$table 		=& $listModel->getTable();
-
-		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->_element->name);
+		$table = $listModel->getTable();
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->_element->name);
 		$dbtable = $db->nameQuote($dbtable);
-		$str = $dbtable.".".$db->nameQuote($this->_element->name)." AS ".$db->nameQuote($fullElName);
-		if ($table->db_primary_key == $fullElName) {
+		$str = $dbtable . '.' . $db->nameQuote($this->_element->name) . ' AS ' . $db->nameQuote($fullElName);
+		if ($table->db_primary_key == $fullElName)
+		{
 			array_unshift($aFields, $fullElName);
 			array_unshift($aAsFields, $fullElName);
-		} else {
+		}
+		else
+		{
 			$aFields[] 	= $str;
 			$aAsFields[] =  $db->nameQuote($fullElName);
-			$rawName = "$fullElName". "_raw";
-			$aFields[]				= $dbtable.".".$db->nameQuote($this->_element->name)." AS ".$db->nameQuote($rawName);
-			$aAsFields[]			= $db->nameQuote($rawName);
+			$rawName = $fullElName . '_raw';
+			$aFields[] = $dbtable . '.' . $db->nameQuote($this->_element->name) . ' AS ' . $db->nameQuote($rawName);
+			$aAsFields[] = $db->nameQuote($rawName);
 		}
 	}
 
@@ -523,7 +536,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->_default))
+		{
 			$params = $this->getParams();
 			// $$$ hugh - added parens around lat,long for consistancy!
 			$this->_default = '(' . $params->get('fb_gm_lat') . ',' . $params->get('fb_gm_long') . ')' . ':' . $params->get('fb_gm_zoomlevel');
@@ -534,10 +548,12 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		if (is_null($this->defaults)) {
+		if (is_null($this->defaults))
+		{
 			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults)) {
+		if (!array_key_exists($repeatCounter, $this->defaults))
+		{
 			$groupModel = $this->getGroup();
 			$formModel = $this->getForm();
 			$element = $this->getElement();
@@ -546,73 +562,98 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
+			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
+			{
 				$value = '';
-			} else {
+			}
+			else
+			{
 				$value = $this->getDefaultValue($data);
 			}
 
 			$table = $listModel->getTable();
-			if ($groupModel->canRepeat() == '1') {
+			if ($groupModel->canRepeat() == '1')
+			{
 				$fullName = $table->db_table_name . $formModel->joinTableElementStep . $element->name;
-				if (isset($data[$fullName])) {
-					if (is_array($data[$fullName])) {
+				if (isset($data[$fullName]))
+				{
+					if (is_array($data[$fullName]))
+					{
 						$value = $data[$fullName][0];
-					} else {
+					}
+					else
+					{
 						$value = $data[$fullName];
 					}
-					//$value = explode(GROUPSPLITTER, $value);
 					$value = FabrikWorker::JSONtoData($value, true);
-					if (array_key_exists($repeatCounter, $value)) {
+					if (array_key_exists($repeatCounter, $value))
+					{
 						$value = $value[$repeatCounter];
-						if (is_array($value)) {
+						if (is_array($value))
+						{
 							$value = implode(',', $value);
 						}
 						return $value;
 					}
 				}
 			}
-			if ($groupModel->isJoin()) {
+			if ($groupModel->isJoin())
+			{
 				$fullName = $this->getFullName(false, true, false);
 				$joinid = $groupModel->getGroup()->join_id;
-				if (isset($data['join'][$joinid][$fullName])) {
+				if (isset($data['join'][$joinid][$fullName]))
+				{
 					$value = $data['join'][$joinid][$fullName];
-					if (is_array($value) && array_key_exists($repeatCounter, $value)) {
+					if (is_array($value) && array_key_exists($repeatCounter, $value))
+					{
 						$value = $value[$repeatCounter];
 					}
-				} else {
+				}
+				else
+				{
 					// $$$ rob - prob not used but im leaving in just in case
-					if (isset($data[$fullName])) {
+					if (isset($data[$fullName]))
+					{
 						$value = $data[$fullName];
-						if (is_array($value) && array_key_exists($repeatCounter, $value)) {
+						if (is_array($value) && array_key_exists($repeatCounter, $value))
+						{
 							$value = $value[$repeatCounter];
 						}
 					}
 				}
-			} else {
+			}
+			else
+			{
 				$fullName = $table->db_table_name . $formModel->joinTableElementStep . $element->name;
-				if (isset($data[$fullName])) {
+				if (isset($data[$fullName]))
+				{
 					/* drop down  */
-					if (is_array($data[$fullName])) {
-
-						if (isset($data[$fullName ][0])) {
+					if (is_array($data[$fullName]))
+					{
+						if (isset($data[$fullName ][0]))
+						{
 							/* if not its a file upload el */
 							$value = $data[$fullName][0];
 						}
-					} else {
+					}
+					else
+					{
 						$value = $data[$fullName];
 					}
 				}
 			}
-			if ($value === '') { //query string for joined data
+			if ($value === '')
+			{ //query string for joined data
 				$value = JArrayHelper::getValue($data, $fullName);
 			}
 			//stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
+			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			/** ensure that the data is a string **/
-			if (is_array($value)) {
+			if (is_array($value))
+			{
 				$value  = implode(',', $value);
 			}
 			$this->defaults[$repeatCounter] = $value;

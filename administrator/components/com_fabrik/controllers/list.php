@@ -29,9 +29,9 @@ class FabrikControllerList extends FabControllerForm
 
 	public function edit()
 	{
-
 		$model = $this->getModel('connections');
-		if (count($model->activeConnections()) == 0) {
+		if (count($model->activeConnections()) == 0)
+		{
 			JError::raiseError(500, JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
 			return;
 		}
@@ -48,12 +48,13 @@ class FabrikControllerList extends FabControllerForm
 		$model = JModel::getInstance('list', 'FabrikFEModel');
 		if (count($cid) > 0)
 		{
-			$viewType	= JFactory::getDocument()->getType();
+			$viewType = JFactory::getDocument()->getType();
 			$view = $this->getView($this->view_item, $viewType, '');
 			$view->setModel($model, true);
 			$view->confirmCopy('confirm_copy');
 		}
-		else {
+		else
+		{
 			return JError::raiseWarning(500, JText::_('NO ITEMS SELECTED'));
 		}
 	}
@@ -68,9 +69,9 @@ class FabrikControllerList extends FabControllerForm
 		JRequest::checkToken() or die('Invalid Token');
 		$model = $this->getModel();
 		$model->copy();
-		$ntext = $this->text_prefix.'_N_ITEMS_COPIED';
+		$ntext = $this->text_prefix . '_N_ITEMS_COPIED';
 		$this->setMessage(JText::plural($ntext, count(JRequest::getVar('cid'))));
-		$this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_list, false));
+		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
 
 	/**
@@ -80,10 +81,12 @@ class FabrikControllerList extends FabControllerForm
 	public function view($model = null)
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if(is_array($cid)){
+		if(is_array($cid))
+		{
 			$cid = $cid[0];
 		}
-		if (is_null($model)) {
+		if (is_null($model))
+		{
 			$cid = JRequest::getInt('listid', $cid);
 			// grab the model and set its id
 			$model = JModel::getInstance('List', 'FabrikFEModel');
@@ -91,8 +94,7 @@ class FabrikControllerList extends FabControllerForm
 		}
 		$viewType	= JFactory::getDocument()->getType();
 		//use the front end renderer to show the table
-		$this->setPath('view', COM_FABRIK_FRONTEND.DS.'views');
-
+		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
@@ -110,7 +112,7 @@ class FabrikControllerList extends FabControllerForm
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid[0]);
 		$formModel = $model->getFormModel();
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 		$viewLayout	= JRequest::getCmd('layout', 'linked_elements');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
@@ -187,36 +189,33 @@ class FabrikControllerList extends FabControllerForm
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
 		$model->setId($listid);
-
 		$ids = JRequest::getVar('ids', array(), 'request', 'array');
-
 		$limitstart = JRequest::getVar('limitstart'. $listid);
 		$length = JRequest::getVar('limit' . $listid);
-
 		$oldtotal = $model->getTotalRecords();
 		$model->deleteRows($ids);
-
 		$total = $oldtotal - count($ids);
-
-		//$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=list&cid=$listid", 'post');
-		$ref ="index.php?option=com_fabrik&task=list.view&cid=$listid";
-
-		if ($total >= $limitstart) {
+		$ref ='index.php?option=com_fabrik&task=list.view&cid=' . $listid;
+		if ($total >= $limitstart)
+		{
 			$newlimitstart = $limitstart - $length;
-			if ($newlimitstart < 0) {
+			if ($newlimitstart < 0)
+			{
 				$newlimitstart = 0;
 			}
-			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
-			$context = 'com_fabrik.list'.$model->getRenderContext().'.list.';
+			$ref = str_replace('limitstart' . $listid . '=' . $limitstart, 'limitstart' . $listid . '=' . $newlimitstart, $ref);
+			$context = 'com_fabrik.list' . $model->getRenderContext() . '.list.';
 			$app->setUserState($context.'limitstart'.$listid, $newlimitstart);
 		}
-		if (JRequest::getVar('format') == 'raw') {
+		if (JRequest::getVar('format') == 'raw')
+		{
 			JRequest::setVar('view', 'list');
-
 			$this->view();
-		} else {
+		}
+		else
+		{
 			//@TODO: test this
-			$app->redirect($ref, count($ids) . " " . JText::_('COM_FABRIK_RECORDS_DELETED'));
+			$app->redirect($ref, count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED'));
 		}
 	}
 
@@ -229,7 +228,7 @@ class FabrikControllerList extends FabControllerForm
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$model->truncate();
 		$listid = JRequest::getInt('listid');
-		$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=list&cid=$listid", 'post');
+		$ref = JRequest::getVar('fabrik_referrer', 'index.php?option=com_fabrik&view=list&cid=' . $listid, 'post');
 		$this->setRedirect($ref);
 	}
 	
@@ -268,8 +267,7 @@ class FabrikControllerList extends FabControllerForm
 			}
 		}
 		$format = JRequest::getCmd('fromat', 'html');
-		$ref = "index.php?option=com_fabrik&task=list.view&cid[]=". $model->getId() . '&format=' . $format;
-		//ECHO $ref;EXIT;
+		$ref = 'index.php?option=com_fabrik&task=list.view&cid[]='. $model->getId() . '&format=' . $format;
 		$app->redirect($ref);
 	}
 

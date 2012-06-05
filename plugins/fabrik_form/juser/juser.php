@@ -696,7 +696,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		// check for existing username
 		$query = 'SELECT id'
 		. ' FROM #__users '
-		. ' WHERE username = ' . $db->Quote($post['username'])
+		. ' WHERE username = ' . $db->quote($post['username'])
 		. ' AND id != '. (int)$post['id'];
 		;
 		$db->setQuery($query);
@@ -710,7 +710,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		// check for existing email
 		$query = 'SELECT id'
 		. ' FROM #__users '
-		. ' WHERE email = '. $db->Quote($post['email'])
+		. ' WHERE email = '. $db->quote($post['email'])
 		. ' AND id != '. (int)$post['id']
 		;
 		$db->setQuery($query);

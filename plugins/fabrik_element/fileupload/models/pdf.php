@@ -35,7 +35,7 @@ class pdfRender{
 			 	if (strtolower($thumb_url_info['extension'] == 'pdf')) {
 			 		$thumb_url = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '.' . $this->pdf_thumb_type;
 					$thumb_file_info = pathinfo($thumb_file);
-					$thumb_file = $thumb_file_info['dirname'] . DS . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
+					$thumb_file = $thumb_file_info['dirname'] . '/' . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
 			 	}
 			 	if ($model->getStorage()->exists($thumb_file)) {
 			 		return $thumb_url;

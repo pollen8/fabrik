@@ -9,7 +9,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables'.DS.'fabtable.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php');
 
 /**
  * @package		Joomla
@@ -109,7 +109,7 @@ class FabrikTableForm extends FabTable
 				return false;
 			}
 			// Add the search tuple to the query.
-			$query->where($this->_db->nameQuote($this->_tbl).'.'.$this->_db->nameQuote($field).' = '.$this->_db->quote($value));
+			$query->where($this->_db->quoteName($this->_tbl).'.'.$this->_db->quoteName($field).' = '.$this->_db->quote($value));
 		}
 
 		//$$$ rob added

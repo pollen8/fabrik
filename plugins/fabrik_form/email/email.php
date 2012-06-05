@@ -175,7 +175,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				//see if we can load a user for the email
 				$query = $db->getQuery(true);
 				//todo move htis out of foreach loop - to reduce queries
-				$query->select('id')->from('#__users')->where('email = ' . $db->Quote($email));
+				$query->select('id')->from('#__users')->where('email = ' . $db->quote($email));
 				$db->setQuery($query);
 				$userid = $db->loadResult();
 				$thisUser = JFactory::getUser($userid);

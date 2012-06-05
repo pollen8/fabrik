@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_element'.DS.'databasejoin'.DS.'databasejoin.php');
+require_once(JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php');
 
 class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 {

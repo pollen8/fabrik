@@ -120,24 +120,25 @@ class fabrikViewForm extends JView
         $this->message .= " <a href='#' class='clearSession'>" . JText::_('COM_FABRIK_CLEAR') . "</a>";
       }
     }
-		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
-		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'form'.DS.$tmpl);
+		$this->addTemplatePath($this->_basePath .'/' . $this->_name . '/tmpl/' . $tmpl);
+		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
     parent::display();
     return;
   }
 
   /**
    * include the template css files
-   *
    * @param string template name
    */
+  
   function _includeTemplateCSSFile( $formTemplate )
   {
     $config		= JFactory::getConfig();
     $document = JFactory::getDocument();
-    $ab_css_file = JPATH_SITE.DS."components".DS."com_fabrik".DS."views".DS."form".DS."tmpl".DS."$formTemplate".DS."template.css";
-    $live_css_file = COM_FABRIK_LIVESITE  . "components/com_fabrik/views/form/tmpl/$formTemplate/template.css";
-    if (file_exists($ab_css_file)) {
+    $ab_css_file = JPATH_SITE . 'components/com_fabrik/views/form/tmpl/' . $formTemplate . '/template.css';
+    $live_css_file = COM_FABRIK_LIVESITE  . 'components/com_fabrik/views/form/tmpl/' . $formTemplate . '/template.css';
+    if (file_exists($ab_css_file))
+    {
       $document->addStyleSheet($live_css_file);
     }
   }
@@ -148,8 +149,8 @@ class fabrikViewForm extends JView
 
   function _addButtons()
   {
-    $model		=& $this->getModel();
-    $params 	=& $model->getParams();
+    $model = $this->getModel();
+    $params = $model->getParams();
     $this->showEmail = $params->get('email', 0);
 
     if (JRequest::getVar('tmpl') != 'component') {

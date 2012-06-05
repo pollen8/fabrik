@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 
@@ -21,7 +21,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 	{
 		// Include PHP Class#
 		if (!class_exists('FusionCharts')) { 
-			require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusion_gantt_chart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
+			require_once(JPATH_SITE . '/plugins/fabrik_visualization/fusion_gantt_chart/lib/FCclass/FusionCharts_Gen.php');
 		}
 		// Add JS to page header
 		$document = JFactory::getDocument();

@@ -318,7 +318,7 @@ class fabrikSubscriptionsIPN {
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('subscr_id')
-		->from('#__fabrik_subs_invoices')->where('invoice_number = ' . $db->Quote($inv));
+		->from('#__fabrik_subs_invoices')->where('invoice_number = ' . $db->quote($inv));
 		$db->setQuery($query);
 		$subid = (int)$db->loadResult();
 		if($subid === 0)

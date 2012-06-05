@@ -150,7 +150,7 @@ class FabrikModelElement extends JModelAdmin
 		$aGroups = array();
 		$query	= $db->getQuery(true);
 		$query->select('form_id');
-		$query->from($db->nameQuote('#__{package}_formgroup') . ' AS fg');
+		$query->from($db->quoteName('#__{package}_formgroup') . ' AS fg');
 		$query->where('fg.group_id = ' . (int) $item->group_id);
 		$db->setQuery($query);
 		$formrow = $db->loadObject();
@@ -721,7 +721,7 @@ class FabrikModelElement extends JModelAdmin
 		$query->join('INNER', '#__{package}_forms AS f ON l.form_id = f.id');
 		$query->join('LEFT', '#__{package}_formgroup AS fg ON f.id = fg.form_id');
 		$query->join('LEFT', '#__{package}_groups AS g ON fg.group_id = g.id');
-		$query->where("db_table_name = ".$db->Quote($dbname)." AND l.id !=".(int)$list->id." AND is_join = 0");
+		$query->where("db_table_name = ".$db->quote($dbname)." AND l.id !=".(int)$list->id." AND is_join = 0");
 
 		$db->setQuery($query);
 
@@ -741,7 +741,7 @@ class FabrikModelElement extends JModelAdmin
 		->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = j.group_id')
 		->join('LEFT', '#__{package}_forms AS f ON fg.form_id = f.id')
 		->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id')
-		->where('j.table_join = ' . $db->Quote($dbname) . ' AND j.list_id <> 0 AND list_id <> ' . (int) $list->id);
+		->where('j.table_join = ' . $db->quote($dbname) . ' AND j.list_id <> 0 AND list_id <> ' . (int) $list->id);
 		$db->setQuery($query);
 		$joinedLists = $db->loadObjectList('id');
 		$othertables = array_merge($joinedLists, $othertables);
@@ -968,7 +968,7 @@ class FabrikModelElement extends JModelAdmin
 				{
 					$listModel = $pluginModel->getListModel();
 					$db = $listModel->getDb();
-					$tableName = $db->nameQuote($this->getRepeatElementTableName($pluginModel));
+					$tableName = $db->quoteName($this->getRepeatElementTableName($pluginModel));
 					$db->setQuery('DROP TABLE ' . $tableName);
 					if (!$db->query())
 					{
@@ -981,7 +981,7 @@ class FabrikModelElement extends JModelAdmin
 				if (!empty($item->id))
 				{
 					$db = $listModel->getDb();
-					$db->setQuery('ALTER TABLE ' . $db->nameQuote($item->db_table_name) . ' DROP ' . $db->nameQuote($element->name));
+					$db->setQuery('ALTER TABLE ' . $db->quoteName($item->db_table_name) . ' DROP ' . $db->quoteName($element->name));
 					$db->query();
 				}
 			}
@@ -1040,8 +1040,8 @@ class FabrikModelElement extends JModelAdmin
 		$formModel = $elementModel->getForm();
 		$db = $listModel->getDb();
 		$desc = $elementModel->getFieldDescription();
-		$name = $db->nameQuote($row->name);
-		$db->setQuery('CREATE TABLE IF NOT EXISTS ' . $db->nameQuote($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), ' . $name . ' ' . $desc . ', ' . $db->nameQuote('params') . ' TEXT );');
+		$name = $db->quoteName($row->name);
+		$db->setQuery('CREATE TABLE IF NOT EXISTS ' . $db->quoteName($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), ' . $name . ' ' . $desc . ', ' . $db->quoteName('params') . ' TEXT );');
 		$db->query();
 		if ($db->getErrorNum() != 0)
 		{

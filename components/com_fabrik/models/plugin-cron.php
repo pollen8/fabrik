@@ -23,14 +23,15 @@ class plgFabrik_Cron extends FabrikPlugin
 	
 	/**
 	 * get the db row 
-	 * @param bool $force
-	 * @return object
+	 * @param	bool	$force
+	 * @return	object
 	 */
 	
 	public function &getTable($force = false)
 	{
-		if (!$this->row || $force) {
-			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+		if (!$this->row || $force)
+		{
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$row = FabTable::getInstance('Cron', 'FabrikTable');
 			$row->load($this->row);
 			$this->row = $row;

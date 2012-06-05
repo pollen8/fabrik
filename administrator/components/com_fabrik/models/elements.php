@@ -66,7 +66,7 @@ class FabrikModelElements extends FabModelList
 		//Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
-			$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+			$search = $db->quote('%'.$db->getEscaped($search, true).'%');
 			$query->where('(e.name LIKE '.$search.' OR e.label LIKE '.$search.')');
 		}
 
@@ -82,7 +82,7 @@ class FabrikModelElements extends FabModelList
 
 		$plugin = $this->getState('filter.plugin');
 		if (trim($plugin) !== '') {
-			$query->where('e.plugin = '.$db->Quote($plugin));
+			$query->where('e.plugin = '.$db->quote($plugin));
 		}
 
 		//for drop fields view
@@ -231,10 +231,10 @@ class FabrikModelElements extends FabModelList
 		$query->select('element AS value, element AS text')
 		->from('#__extensions')
 		->where('enabled >= 1')
-		->where('type ='.$db->Quote('plugin'))
+		->where('type ='.$db->quote('plugin'))
 		->where('state >= 0')
 		->where('access IN ('.$levels.')')
-		->where('folder = '.$db->Quote('fabrik_element'))
+		->where('folder = '.$db->quote('fabrik_element'))
 		->order('text');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();

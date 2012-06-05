@@ -64,7 +64,7 @@ class FabrikModelConnections extends JModelList
 		//Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
-			$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+			$search = $db->quote('%'.$db->getEscaped($search, true).'%');
 			$query->where('(c.host LIKE '.$search.' OR c.database OR c.description LIKE '.$search.')');
 		}
 

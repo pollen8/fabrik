@@ -123,9 +123,9 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('cost, label, plan_name, duration AS p3, period_unit AS t3, ' . $db->Quote($item_raw) . ' AS item_number ')
+		$query->select('cost, label, plan_name, duration AS p3, period_unit AS t3, ' . $db->quote($item_raw) . ' AS item_number ')
 		->from('#__fabrik_subs_plan_billing_cycle')
-		->where('id = ' . $db->Quote($item_raw));
+		->where('id = ' . $db->quote($item_raw));
 
 		$db->setQuery($query);
 		$sub = $db->loadObject();
@@ -438,7 +438,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 						$query = $db->getQuery(true);
 						$query->select($ipn_status_field)->from('#__fabrik_subs_invoices')
-						->where($db->quoteName($ipn_txn_field) . ' = ' . $db->Quote($txn_id));
+						->where($db->quoteName($ipn_txn_field) . ' = ' . $db->quote($txn_id));
 						$db->setQuery($query);
 						$txn_result = $db->loadResult();
 						if (!empty($txn_result))
@@ -498,13 +498,13 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 								$set_array = array();
 								foreach ($set_list as $set_field => $set_value)
 								{
-									$set_value = $db->Quote($set_value);
+									$set_value = $db->quote($set_value);
 									$set_field = $db->quoteName($set_field);
 									$set_array[] = "$set_field = $set_value";
 								}
 								$query = $db->getQuery(true);
 								$query->update('#__fabrik_subs_invoices')
-								->set( implode(',', $set_array))->where('id = ' . $db->Quote($rowid));
+								->set( implode(',', $set_array))->where('id = ' . $db->quote($rowid));
 								$db->setQuery($query);
 								if (!$db->query())
 								{

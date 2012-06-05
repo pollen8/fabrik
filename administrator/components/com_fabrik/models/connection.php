@@ -94,11 +94,11 @@ class FabrikModelConnection extends JModelAdmin
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->update('#__fabrik_connections')->set($db->nameQuote('default')." = 0");
+		$query->update('#__fabrik_connections')->set($db->quoteName('default')." = 0");
 		$db->setQuery($query);
 		$db->query();
 		$query->clear();
-		$query->update('#__fabrik_connections')->set($db->nameQuote('default')." = 1")->where("id = ".(int)$id);
+		$query->update('#__fabrik_connections')->set($db->quoteName('default')." = 1")->where("id = ".(int)$id);
 		$db->setQuery($query);
 		$db->query();
 		return true;

@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
 class plgFabrik_Crongmail extends plgFabrik_Cron {
 
@@ -39,7 +39,7 @@ class plgFabrik_Crongmail extends plgFabrik_Cron {
 
 		$deleteMail = false;
 		//$storageType = 'filesystemstorage';
-		//require_once(JPATH_BASE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'element'.DS.'fabrikfileupload'.DS.'adaptors'.DS.$storageType.'.php');
+		//require_once(JPATH_BASE.DS.'components/com_fabrik/plugins/element/fabrikfileupload/adaptors'.DS.$storageType.'.php');
 		$p = new stdClass();
 
 		$fromField = $params->get('plugin-options.from');
@@ -201,10 +201,10 @@ print_r($result);exit;
 			if ($data['imageFound']) {
 			// @TODO process images to fileupload element
 			if (isset($data['imageBuffer'] )) {
-			$relLargeImagePath = DS.'media'.DS.'com_fabrik'.DS.$data['id'].DS.'galleries'.DS.'images'.DS.$data['attachmentName'];
+			$relLargeImagePath = '/media/com_fabrik/' . $data['id'] .  '/galleries/images/' . $data['attachmentName'];
 			$largeImagePath = JPATH_BASE.$relLargeImagePath;
 
-			$smallImagePath = JPATH_BASE.DS.'media'.DS.'com_fabrik'.DS.$data['id'].DS.'galleries'.DS.'thumbs'.DS.$data['attachmentName'];
+			$smallImagePath = JPATH_BASE . '/media/com_fabrik/' . $data['id'] . '/galleries/thumbs/' . $data['attachmentName'];
 			JFile::write( $largeImagePath, $data['imageBuffer']);
 			$imageLib->resize(400, 400, $largeImagePath, $largeImagePath);
 			$imageLib->resize(125, 125, $largeImagePath, $smallImagePath);

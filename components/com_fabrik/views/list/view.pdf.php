@@ -37,9 +37,10 @@ class FabrikViewList extends JView{
 
 		$this->get('ListCss');
 		// check for a custom js file and include it if it exists
-		$aJsPath = JPATH_SITE.DS."components".DS."com_fabrik".DS."views".DS."list".DS."tmpl".DS.$tmpl.DS."javascript.js";
-		if (JFile::exists($aJsPath)) {
-			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/'.$tmpl.'/javascript.js');
+		$aJsPath = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
+		if (JFile::exists($aJsPath))
+		{
+			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js');
 		}
 
 		$origRows = $this->rows;
@@ -75,12 +76,13 @@ class FabrikViewList extends JView{
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 
-		if ($model->isAjax()) {
+		if ($model->isAjax())
+		{
 			ob_start();
 			$this->_row = new stdClass();
 			$this->_row->id = '';
 			$this->_row->class = 'fabrik_row';
-			require(COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_row.php');
+			require(COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_row.php');
 			$opts->rowtemplate = ob_get_contents();
 			ob_end_clean();
 		}
@@ -177,7 +179,7 @@ class FabrikViewList extends JView{
 			$current_level = error_reporting();
 			error_reporting($current_level & ~E_DEPRECATED);
 		}
-		require_once(COM_FABRIK_FRONTEND.DS.'views'.DS.'modifiers.php');
+		require_once(COM_FABRIK_FRONTEND . '/views/modifiers.php');
 		$user = JFactory::getUser();
 		$model = $this->getModel();
 
@@ -314,7 +316,7 @@ class FabrikViewList extends JView{
 
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
-		$this->calculations 	= $this->_getCalculations($this->headings);
+		$this->calculations = $this->_getCalculations($this->headings);
 
 		$this->assign('isGrouped', $item->group_by);
 		$this->assign('colCount', count($this->headings));
@@ -331,15 +333,15 @@ class FabrikViewList extends JView{
 		$this->pluginButtons = $model->getPluginButtons();
 
 		//force front end templates
-		$this->_basePath = COM_FABRIK_FRONTEND . DS . 'views';
+		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 
 		$tmpl = $params->get('pdf_template');
-		if ($tmpl == -1) {
+		if ($tmpl == -1)
+		{
 			$tmpl = JRequest::getVar('layout', $item->template);
 		}
-
-		$this->addTemplatePath($this->_basePath.DS.$this->_name.DS.'tmpl'.DS.$tmpl);
-		$this->addTemplatePath(JPATH_SITE.DS.'templates'.DS.$app->getTemplate().DS.'html'.DS.'com_fabrik'.DS.'list'.DS.$tmpl);
+		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
+		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
 		//ensure we don't have an incorrect version of mootools loaded
 
 		$this->fixForPDF();

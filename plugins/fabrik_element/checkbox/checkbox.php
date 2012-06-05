@@ -125,9 +125,9 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 			case '=':
 				$db = FabrikWorker::getDbo();
 				$str = "($key $condition $value ".
-				" OR $key LIKE " . $db->Quote('["'.$originalValue.'"%') .
-				" OR $key LIKE " . $db->Quote('%"'.$originalValue.'"%') .
-				" OR $key LIKE " . $db->Quote('%"'.$originalValue.'"]') .")";
+				" OR $key LIKE " . $db->quote('["'.$originalValue.'"%') .
+				" OR $key LIKE " . $db->quote('%"'.$originalValue.'"%') .
+				" OR $key LIKE " . $db->quote('%"'.$originalValue.'"]') .")";
 
 				break;
 			default:

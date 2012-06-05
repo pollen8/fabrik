@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
 class plgFabrik_Cronphp extends plgFabrik_Cron {
 
@@ -30,7 +30,7 @@ class plgFabrik_Cronphp extends plgFabrik_Cron {
 	{
 	  $params = $this->getParams();
 	  $file = JFilterInput::clean($params->get('cronphp_file'), 'CMD');
-	  require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_cron'.DS.'php'.DS.'scripts'.DS.$file);
+	  require_once(JPATH_ROOT . '/plugins/fabrik_cron/php/scripts/' . $file);
 	}
 
 	/**

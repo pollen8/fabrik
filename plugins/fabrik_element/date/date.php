@@ -1193,7 +1193,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$name = $this->getFullName(false, false, false);
-		$db->setQuery("SELECT DISTINCT($name) AS value, $name AS text FROM $table->db_table_name WHERE $name LIKE ".$db->Quote('%'.addslashes(JRequest::getVar('value').'%')));
+		$db->setQuery("SELECT DISTINCT($name) AS value, $name AS text FROM $table->db_table_name WHERE $name LIKE ".$db->quote('%'.addslashes(JRequest::getVar('value').'%')));
 		$tmp = $db->loadObjectList();
 		$ddData = array();
 		foreach ($tmp as &$t) {

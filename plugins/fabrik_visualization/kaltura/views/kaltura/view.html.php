@@ -23,7 +23,7 @@ class fabrikViewKaltura extends JView
 
 		$pluginParams = $model->getPluginParams();
 		$tmpl = $pluginParams->get('fb_gm_layout', $tmpl);
-		$tmplpath = JPATH_ROOT.DS.'plugins/fabrik_visualization/kaltura/views/kaltura/tmpl'.DS.$tmpl;
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/kaltura/views/kaltura/tmpl'.DS.$tmpl;
 
 		$js = <<<EOT
 		<script type="text/javascript" >

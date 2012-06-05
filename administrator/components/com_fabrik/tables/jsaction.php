@@ -9,7 +9,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables'.DS.'fabtable.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php');
 
 /**
  * @package		Joomla

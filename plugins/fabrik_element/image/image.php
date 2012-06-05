@@ -272,7 +272,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				} else {
 					$bits = explode("/", $value);
 					if (count($bits) > 1) {
-						$path = DS . array_shift($bits) . DS;
+						$path = '/' . array_shift($bits) . '/';
 						$path = $rootFolder . $path;
 						$val = array_shift($bits);
 					} else {
@@ -283,7 +283,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				$path = $rootFolder;
 			}
 			$images = array();
-			$imagenames = (array)JFolder::files(JPATH_SITE.DS.$path);
+			$imagenames = (array)JFolder::files(JPATH_SITE . '/' . $path);
 			foreach ($imagenames as $n) {
 				$images[] = JHTML::_('select.option', $n, $n);
 			}
@@ -314,7 +314,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	function onAjax_files()
 	{
 		$folder = JRequest::getVar('folder');
-		$pathA = JPath::clean(JPATH_SITE.DS.$folder);
+		$pathA = JPath::clean(JPATH_SITE . '/' . $folder);
 		$folder = array();
 		$files = array();
 		$images = array();
@@ -341,7 +341,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$opts->canSelect = (bool)$params->get('image_front_end_select', false);
 		$opts->id = $element->id;
 		$opts->ds = DS;
-		$opts->dir = JPATH_SITE.DS.str_replace('/', DS, $opts->rootPath);
+		$opts->dir = JPATH_SITE . DS . str_replace('/', DS, $opts->rootPath);
 		$opts = json_encode($opts);
 		return "new FbImage('$id', $opts)";
 	}

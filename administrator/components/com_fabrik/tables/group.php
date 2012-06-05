@@ -10,7 +10,7 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables'.DS.'fabtable.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php');
 
 /**
  * @package		Joomla
@@ -76,7 +76,7 @@ class FabrikTableGroup extends FabTable
 		->join('LEFT', '#__{package}_joins ON #__{package}_groups.id = #__{package}_joins.group_id');
 
 		foreach ($keys as $field => $value) {
-			$query->where($db->nameQuote('#__{package}_groups').'.'.$db->nameQuote($field).' = '.$db->quote($value));
+			$query->where($db->quoteName('#__{package}_groups').'.'.$db->quoteName($field).' = '.$db->quote($value));
 		}
 		$query->where(" (( element_id = 0 OR is_join = 0) OR element_id IS NULL)");
 		$db->setQuery($query);

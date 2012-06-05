@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormNotification extends plgFabrik_Form {
 
@@ -81,7 +81,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 	protected function getRef($tableid = 0)
 	{
 		$db = FabrikWorker::getDbo();
-		return $db->Quote(JRequest::getInt('listid', $listid).'.'.JRequest::getInt('formid', 0 ).'.'.JRequest::getInt('rowid', 0));;
+		return $db->quote(JRequest::getInt('listid', $listid).'.'.JRequest::getInt('formid', 0 ).'.'.JRequest::getInt('rowid', 0));;
 	}
 
 	protected function process($add = true, $why = 'author')
@@ -123,9 +123,9 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		// add entry indicating the form has been updated this record will then be used by the cron plugin to
 		// see which new events have been generated and notify subscribers of said events.
 		$db = FabrikWorker::getDbo();
-		$event = JRequest::getInt('rowid') == 0 ? $db->Quote(JText::_('RECORD_ADDED')) : $db->Quote(JText::_('RECORD_UPDATED'));
+		$event = JRequest::getInt('rowid') == 0 ? $db->quote(JText::_('RECORD_ADDED')) : $db->quote(JText::_('RECORD_UPDATED'));
 		$date = JFactory::getDate();
-		$date = $db->Quote($date->toMySQL());
+		$date = $db->quote($date->toMySQL());
 		$ref = $this->getRef();
 		$msg = $notify ? JText::_('PLG_CRON_NOTIFICATION_ADDED') : JText::_('PLG_CRON_NOTIFICATION_REMOVED');
 		$app = JFactory::getApplication();

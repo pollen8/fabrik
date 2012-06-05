@@ -585,8 +585,8 @@ class FabimageIM extends Fabimage
 					// NOTE - changed $destFile arg to pass by reference OOOPS can't do that!
 
 					// $$$ rob 04/08/2011 wont work in php 5.1
-					//$destFile = $destinfo['dirname'] . DS . $destinfo['filename'] . '.' . $pdf_thumb_type;
-					$thumb_file = JFile::stripExt($destFile).'.'.$pdf_thumb_type;
+					//$destFile = $destinfo['dirname'] . '/' . $destinfo['filename'] . '.' . $pdf_thumb_type;
+					$thumb_file = JFile::stripExt($destFile) . '.' . $pdf_thumb_type;
 
 				}
 				// Now just load it, set format, resize, save and garbage collect.

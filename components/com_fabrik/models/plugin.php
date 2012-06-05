@@ -101,7 +101,7 @@ class FabrikPlugin extends JPlugin
 		//$this->loadLanguage(); //now done in contruct
 		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
 
-		$xmlFile = JPATH_SITE . '/plugins/' . $this->_type.DS.$this->_name . '/forms/fields.xml';
+		$xmlFile = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '/forms/fields.xml';
 		$form = $this->getJForm();
 
 		$repeatScript = '';

@@ -58,44 +58,52 @@ class FabrikControllerLists extends FabControllerAdmin
 
 	function publish()
 	{
-		$cid	= JRequest::getVar('cid', array(), '', 'array');
-		$data	= array('publish' => 1, 'unpublish' => 0, 'archive'=> 2, 'trash' => -2, 'report'=>-3);
-		$task 	= $this->getTask();
-		$value	= JArrayHelper::getValue($data, $task, 0, 'int');
-		if (empty($cid)) {
+		$cid = JRequest::getVar('cid', array(), '', 'array');
+		$data = array('publish' => 1, 'unpublish' => 0, 'archive'=> 2, 'trash' => -2, 'report'=>-3);
+		$task = $this->getTask();
+		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		if (empty($cid))
+		{
 			JError::raiseWarning(500, JText::_($this->text_prefix.'_NO_ITEM_SELECTED'));
-		} else {
+		}
+		else
+		{
 			// Make sure the item ids are integers
 			JArrayHelper::toInteger($cid);
-
 			$model = $this->getModel('Form');
-
 			$formids = $model->swapListToFormIds($cid);
 			// Publish the items.
 			$formKeys = array();
-
-			if (!$model->publish($formids, $value)) {
+			if (!$model->publish($formids, $value))
+			{
 				JError::raiseWarning(500, $model->getError());
-			} else {
+			}
+			else
+			{
 				//publish the groups
-
 				$groupModel = $this->getModel('Group');
-				if (is_object($groupModel)) {
+				if (is_object($groupModel))
+				{
 					$groupids = $groupModel->swapFormToGroupIds($formids);
-					if (!empty($groupids)) {
-						if ($groupModel->publish($groupids, $value) === false) {
+					if (!empty($groupids))
+					{
+						if ($groupModel->publish($groupids, $value) === false)
+						{
 							JError::raiseWarning(500, $groupModel->getError());
-						} else {
+						}
+						else
+						{
 							//publish the elements
 							$elementModel = $this->getModel('Element');
 							$elementIds = $elementModel->swapGroupToElementIds($groupids);
-							if (!$elementModel->publish($elementIds, $value)) {
+							if (!$elementModel->publish($elementIds, $value))
+							{
 								JError::raiseWarning(500, $elementModel->getError());
 							}
 						}
 					}
 				}
-				//finally publish the table
+				//finally publish the list
 				parent::publish();
 			}
 		}
@@ -104,17 +112,17 @@ class FabrikControllerLists extends FabControllerAdmin
 
 	/**
 	 * Set up page asking about what to delete
-	 *
 	 * @since	1.6
 	 */
 
 	function delete()
 	{
 		$model = $this->getModel();
-		$viewType	= JFactory::getDocument()->getType();
+		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
 		$view->setLayout('confirmdelete');
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		//used to load in the confirm form fields
