@@ -231,7 +231,7 @@ class FabrikViewList extends JView{
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
 		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
-		
+
 		require_once(COM_FABRIK_FRONTEND . '/views/modifiers.php');
 		$user = JFactory::getUser();
 		$model = $this->getModel();
@@ -393,20 +393,20 @@ class FabrikViewList extends JView{
 		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
 		$this->assign('showFilters', $this->get('showFilters'));
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
-		
+
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
-		$this->calculation = $this->_getCalculations($this->headings, $params->get('actionMethod'));
+		$this->calculations = $this->_getCalculations($this->headings, $params->get('actionMethod'));
 		$this->assign('isGrouped', !($this->get('groupBy') == ''));
 		$this->assign('colCount', count($this->headings));
-		
+
 		$this->assign('hasButtons', $this->get('hasButtons'));
 		$this->assignRef('grouptemplates', $model->grouptemplates);
-		
+
 		$this->assignRef('params', $params);
-		
+
 		$this->loadTemplateBottom();
-		
+
 		$this->getManagementJS($this->rows);
 		// get dropdown list of other tables for quick nav in admin
 		$this->tablePicker = $app->isAdmin() ? FabrikHelperHTML::tableList($this->table->id) : '';
