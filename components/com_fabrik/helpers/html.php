@@ -326,7 +326,7 @@ EOD;
 	 * @param	string	$sel
 	 * @return	mixed	html select list or error
 	 */
-	
+
 	function tableList($sel = '')
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -768,6 +768,18 @@ EOD;
 			}
 		}
 		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1);
+	}
+
+	/**
+	 * Returns true is either J! or Fabrik debug is enabled
+	 *
+	 * @return bool
+	 */
+	public static function isDebug()
+	{
+		$config = JFactory::getConfig();
+		$debug = (int)$config->get('debug');
+		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) === 1;
 	}
 
 	/**
