@@ -91,7 +91,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	 * @return	array	plugin list
 	 */
 
-	protected function _getList($query, $limitstart = 0, $limit = 0)
+	protected function _getList($query = null, $limitstart = 0, $limit = 0)
 	{
 		$db = FabrikWorker::getDbo(true);
 		if (is_null($this->_group))
@@ -193,7 +193,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	 * @param	string	$group
 	 * @return	array	plugins
 	 */
-	
+
 	public function getPlugInGroupPlugins($group)
 	{
 		$plugins = $this->getPlugInGroup($group);
@@ -204,7 +204,7 @@ class FabrikFEModelPluginmanager extends JModel{
 		}
 		return $r;
 	}
-	
+
 	/**
 	 * @param	string	plugin name e.g. fabrikfield
 	 * @param	string	plugin type element/ form or list
@@ -339,10 +339,10 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	function getElementPlugin($id)
 	{
-		return $this->getPluginFromId($id); 
+		return $this->getPluginFromId($id);
 	}
-	
-	public function getPluginFromId($id, $type = 'Element') 
+
+	public function getPluginFromId($id, $type = 'Element')
 	{
 		$el = FabTable::getInstance($type, 'FabrikTable');
 		$el->load($id);
@@ -446,7 +446,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			{
 				$plugin = $this->getPlugIn($usedPlugin, $type);
 				//testing this if statement as onLoad was being called on form email plugin when no method availbale
-				
+
 				if (method_exists($plugin, $method))
 				{
 					$plugin->renderOrder = $c;
