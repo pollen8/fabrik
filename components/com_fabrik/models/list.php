@@ -157,6 +157,10 @@ class FabrikFEModelList extends JModelForm {
 	/** @var array do any of thecache for elements which have a required filter */
 	protected $elementsWithRequiredFilters = array();
 
+	/** @var bool force formatData() to format all elements, uses formatAll() accessor method **/
+	protected $_format_all = false;
+
+
 	public $orderEls = array();
 	/**
 	 * Constructor
@@ -423,7 +427,7 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $profiler->mark('query build start') : null;
 		$query = $this->_buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
-		
+
 		$this->setBigSelects();
 
 		// $$$ rob - if merging joined data then we don't want to limit
@@ -436,7 +440,7 @@ class FabrikFEModelList extends JModelForm {
 		{
 			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
 		}
-		
+
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
@@ -464,7 +468,7 @@ class FabrikFEModelList extends JModelForm {
 		}
 		ini_set('mysql.trace_mode', $traceModel);
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
-		
+
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		//@TODO test in J1.7
 		//	$this->translateData($this->_data);
@@ -472,9 +476,9 @@ class FabrikFEModelList extends JModelForm {
 		{
 			JError::raiseNotice(500,  'getData: ' . $fabrikDb->getErrorMsg());
 		}
-		
+
 		$this->preFormatFormJoins($this->_data);
-		
+
 		JDEBUG ? $profiler->mark('start format for joins') : null;
 		$this->formatForJoins($this->_data);
 
@@ -491,7 +495,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @deprecated Joomfish not available in J1.7
 	 * @param	array	$data
 	 */
-	
+
 	function translateData(&$data)
 	{
 		$params = $this->getParams();
@@ -591,7 +595,8 @@ class FabrikFEModelList extends JModelForm {
 			// http://fabrikar.com/forums/showthread.php?p=102600#post102600
 			// $$$ rob in that case lets test that rather than loading blindly
 			// $$$ rob 15/02/2011 or out put may be csv in which we want to format any fields not shown in the form
-			if (($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv' || $this->_outPutFormat == 'feed')
+			// $$$ hugh 06/05/2012 added formatAll() mechanism, so plugins can force formatting of all elements
+			if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv' || $this->_outPutFormat == 'feed')
 			{
 				$elementModels = $groupModel->getPublishedElements();
 			}
@@ -656,7 +661,7 @@ class FabrikFEModelList extends JModelForm {
 			// 3.0 if not group by template spec'd byt group by assigned in qs then use that as the group by tmpl
 			$requestGroupBy = JRequest::getCmd('group_by');
 			if ($requestGroupBy == '') {
-				
+
 				$groupTemplate = $tableParams->get('group_by_template');
 			}
 			else
@@ -980,8 +985,8 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function deleteButton()
 	{
-		return '<li class="fabrik_delete"><a href="#" class="delete" title="' . JText::_('COM_FABRIK_DELETE') . '">' . 
-		FabrikHelperHTML::image('delete.png', 'list', '', array('alt' => JText::_('COM_FABRIK_DELETE'))) . 
+		return '<li class="fabrik_delete"><a href="#" class="delete" title="' . JText::_('COM_FABRIK_DELETE') . '">' .
+		FabrikHelperHTML::image('delete.png', 'list', '', array('alt' => JText::_('COM_FABRIK_DELETE'))) .
 		'<span>' . JText::_('COM_FABRIK_DELETE') . '</span></a></li>';
 	}
 
@@ -1442,7 +1447,7 @@ class FabrikFEModelList extends JModelForm {
 			$lookupC = 0;
 			$lookUps = array('DISTINCT ' . $table->db_primary_key . ' AS __pk_val' . $lookupC);
 			$lookUpNames = array($table->db_primary_key);
-			
+
 			foreach ($joins as $join)
 			{
 				// $$$ hugh - added repeatElement, as _makeJoinAliases() is going to set canUse to false for those,
@@ -1475,7 +1480,7 @@ class FabrikFEModelList extends JModelForm {
 			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
-			
+
 			$idRows = $db->loadObjectList();
 			while (empty($ids) && $lookupC >= 0)
 			{
@@ -1486,7 +1491,7 @@ class FabrikFEModelList extends JModelForm {
 					{
 						unset($ids[$idx]);
 					}
-					else 
+					else
 					{
 						$ids[$idx] = $db->quote($ids[$idx]);
 					}
@@ -1548,13 +1553,13 @@ class FabrikFEModelList extends JModelForm {
 		$query = $args->query;
 		return $query;
 	}
-	
+
 	/**
 	 * add the slug field to the select fields, called from _buildQuerySelect()
 	 * @since 3.0.6
 	 * @param	array	&$fields
 	 */
-	
+
 	private function selectSlug(&$fields)
 	{
 		$formModel = $this->getFormModel();
@@ -1566,13 +1571,13 @@ class FabrikFEModelList extends JModelForm {
 			$slug = $params->get('sef-slug');
 			$raw = substr($slug, strlen($slug) -4, 4) == '_raw' ? true : false;
 			$slug = FabrikString::rtrimword($slug, '_raw');
-				
+
 			$slugElement = $formModel->getElement($slug);
 			if ($slugElement)
 			{
 				$slug = $slugElement->getSlugName($raw);
 			}
-				
+
 			if ($slug != '')
 			{
 				$slug = FabrikString::safeColName($slug);
@@ -1918,9 +1923,9 @@ class FabrikFEModelList extends JModelForm {
 	/**
 	 * build query prefilter where part
 	 * @param	object	$element model
-	 * @return	string	
+	 * @return	string
 	 */
-	
+
 	function _buildQueryPrefilterWhere($element)
 	{
 		$elementName = FabrikString::safeColName($element->getFullName(false, false, false));
@@ -2904,7 +2909,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		foreach ($joins as &$join) {
-			
+
 			//if they are element joins add in this tables name as the calling joining table.
 			if ($join->join_from_table == '')
 			{
@@ -3893,7 +3898,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		//return empty($row->slug) ? '' : $objname = preg_replace("/[^A-Za-z0-9]/", "-", $row->slug);
 		// $$$ hugh - slug doesn't always exist??
-		if (!isset($row->slug)) 
+		if (!isset($row->slug))
 		{
 			return '';
 		}
@@ -4892,7 +4897,7 @@ class FabrikFEModelList extends JModelForm {
 		ksort($arr);
 		foreach ($arr as $key => $val)
 		{
-			$bits = explode(':', $key); 
+			$bits = explode(':', $key);
 			$newkey = array_pop($bits);
 			$arr[$newkey] = $arr[$key];
 			unset($arr[$key]);
@@ -7303,7 +7308,7 @@ class FabrikFEModelList extends JModelForm {
 		$pluginManager = FabrikWorker::getPluginManager();
 		$method = 'renderListData_' . $this->_outPutFormat;
 		$this->_aLinkElements = array();
-		
+
 		// $$$ hugh - temp foreach fix
 		$groups = $form->getGroupsHiarachy();
 		$ec = count($data);
@@ -7317,14 +7322,14 @@ class FabrikFEModelList extends JModelForm {
 			{
 				$elementModels = $groupModel->getPublishedListElements();
 			}
-			
+
 			foreach ($elementModels as $elementModel)
 			{
 				//$elementModel->setContext($groupModel, $form, $this);
 				$col = $elementModel->getFullName(false, true, false);
 				if (!empty($data) && array_key_exists($col, $data[0]))
 				{
-					
+
 					for ($i = 0; $i < $ec; $i ++)
 					{
 						$thisRow = $data[$i];
@@ -7995,13 +8000,13 @@ class FabrikFEModelList extends JModelForm {
 			$srcs[] = 'components/com_fabrik/js/list_' . $this->getId() . '.js';
 		}
 	}
-	
+
 	/**
 	 * @since 3.0.6
 	 * when saving an element it can effect the list parameters, update them here.
 	 * @param	object	$elementModel
 	 */
-	
+
 	function updateFromElement($elementModel)
 	{
 		$elParams = $elementModel->getParams();
@@ -8029,5 +8034,22 @@ class FabrikFEModelList extends JModelForm {
 		$item->params = (string) $params;
 		$item->store();
 	}
+
+	/**
+	* Get / set formatAll, which forces formatData() to ignore 'show in table'
+	* and just format everything, needed by things like the table email plugin.
+	* If called without an arg, just returns current setting.
+	*
+	* @param bool optional arg to set format
+	* @return bool
+	*/
+	public function formatAll($format_all = null)
+	{
+		if (isset($format_all)) {
+			$this->_format_all = $format_all;
+		}
+		return $this->_format_all;
+	}
+
 }
 ?>
