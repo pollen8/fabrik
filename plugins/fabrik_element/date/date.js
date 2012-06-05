@@ -129,7 +129,11 @@ var FbDateTime = new Class({
 		//processing dates on the server.
 		var v = this.getValue();
 		if (v !== '') {
-			this.update(v);
+			// $$$ hugh - pretty sure we don't need to call update(), as getValue() is already returning
+			// in MySQL format.  If we call update(), it fires a 'change' event, which puts us in an
+			// infinite loop in some situations, like on a calc element update.
+			// So just setting the date field to v should be enough.
+			//this.update(v);
 			if (this.options.editable) {
 				this.getDateField().value = v;
 			}
@@ -167,7 +171,13 @@ var FbDateTime = new Class({
 		var dateFmt = params.inputField ? params.ifFormat : params.daFormat;
 		this.cal = null;//Fabrik.calendar;
 		if (dateEl) {
-			params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
+			if (this.options.advanced) {
+				params.date = Date.parseExact(dateEl.value || dateEl.innerHTML, Date.normalizeFormat(dateFmt));
+			}
+			else {
+				params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
+			}
+			//params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 		}
 		
 		this.cal = new Calendar(params.firstDay,
@@ -322,6 +332,23 @@ var FbDateTime = new Class({
 		}
 	},
 
+	addNewEventAux : function (action, js) {
+		if (action === 'change') {
+			Fabrik.addEvent('fabrik.date.select', function () {
+				var e = 'fabrik.date.select';
+				typeOf(js) === 'function' ? js.delay(0) : eval(js);
+			});
+		}
+		this.element.getElements('input').each(function (i) {
+			i.addEvent(action, function (e) {
+				if (typeOf(e) === 'event') {
+					e.stop();
+				}
+				typeOf(js) === 'function' ? js.delay(0) : eval(js);
+			});
+		}.bind(this));	
+	},
+	
 	addNewEvent : function (action, js) {
 		if (action === 'load') {
 			this.loadEvents.push(js);
@@ -331,19 +358,9 @@ var FbDateTime = new Class({
 				this.element = $(this.strElement);
 			}
 			if (action === 'change') {
-				Fabrik.addEvent('fabrik.date.select', function () {
-					var e = 'fabrik.date.select';
-					typeOf(js) === 'function' ? js.delay(0) : eval(js);
-				});
+				this.changeEvents.push(js);
 			}
-			this.element.getElements('input').each(function (i) {
-				i.addEvent(action, function (e) {
-					if (typeOf(e) === 'event') {
-						e.stop();
-					}
-					typeOf(js) === 'function' ? js.delay(0) : eval(js);
-				});
-			}.bind(this));
+			this.addNewEventAux(action, js);
 		}
 	},
 
