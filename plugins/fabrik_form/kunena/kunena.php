@@ -25,13 +25,12 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form
+	 * @param	object	$params
+	 * @param	object	form
 	 */
 
-	function onAfterProcess(&$params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{		
-		//return;		
 		jimport('joomla.filesystem.file');
 		//$files[]  = COM_FABRIK_BASE.'administrator/components/com_kunena/language/kunena.english.php';
 		$files[] = COM_FABRIK_BASE.'components/com_kunena/class.kunena.php';

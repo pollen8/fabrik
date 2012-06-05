@@ -56,7 +56,8 @@ class FabrikModelConnection extends JModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.connection', 'connection', array('control' => 'jform', 'load_data' => $loadData));
-		if (empty($form)) {
+		if (empty($form))
+		{
 			return false;
 		}
 		return $form;
@@ -68,15 +69,15 @@ class FabrikModelConnection extends JModelAdmin
 	 * @return	mixed	The data for the form.
 	 * @since	1.6
 	 */
+	
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.connection.data', array());
-
-		if (empty($data)) {
+		if (empty($data))
+		{
 			$data = $this->getItem();
 		}
-
 		return $data;
 	}
 
@@ -94,11 +95,11 @@ class FabrikModelConnection extends JModelAdmin
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->update('#__fabrik_connections')->set($db->quoteName('default')." = 0");
+		$query->update('#__fabrik_connections')->set($db->quoteName('default') . ' = 0');
 		$db->setQuery($query);
 		$db->query();
 		$query->clear();
-		$query->update('#__fabrik_connections')->set($db->quoteName('default')." = 1")->where("id = ".(int)$id);
+		$query->update('#__fabrik_connections')->set($db->quoteName('default') . ' = 1')->where('id = ' . (int) $id);
 		$db->setQuery($query);
 		$db->query();
 		return true;
@@ -143,24 +144,22 @@ class FabrikModelConnection extends JModelAdmin
 	/**
 	 * save the connection- test first if its vald
 	 * if it is remove the session instance of the connection then call parent save
-	 * @param array $data
+	 * @param	array	$data
 	 */
 
 	function save($data)
 	{
-
 		$session = JFactory::getSession();
 		$model = JModel::getInstance('Connection', 'FabrikFEModel');
 		$model->setId($data['id']);
-
 		$options = $model->getConnectionOptions(JArrayHelper::toObject($data));
 		$db = JDatabase::getInstance($options);
-
-		if (JError::isError($db)) {
+		if (JError::isError($db))
+		{
 			$this->setError(JText::_('COM_FABRIK_UNABLE_TO_CONNECT'));
 			return false;
 		}
-		$key = 'fabrik.connection.'.$data['id'];
+		$key = 'fabrik.connection.' . $data['id'];
 		// erm yeah will remove the session connection for the admin user, but not any other user whose already using the site
 		// would need to clear out the session table i think - but that would then log out all users.
 		$session->clear($key);
@@ -168,14 +167,14 @@ class FabrikModelConnection extends JModelAdmin
 	}
 	
 	/**
-	* Validate the form
-	* @param object $form
-	* @param array $data
-	*/
+	 * (non-PHPdoc)
+	 * @see JModelForm::validate()
+	 */
 	
-	public function validate($form, $data)
+	public function validate($form, $data, $group = null)
 	{
-		if ($data['password'] !== $data['passwordConf']) {
+		if ($data['password'] !== $data['passwordConf'])
+		{
 			$this->setError(JText::_('COM_FABRIK_PASSWORD_MISMATCH'));
 			return false;
 		}

@@ -37,13 +37,11 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	}
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		if ($data != '') {
 			$format = '%Y-%m-%d %H:%i:%s';

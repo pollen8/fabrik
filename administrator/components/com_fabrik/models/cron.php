@@ -70,35 +70,35 @@ class FabrikModelCron extends JModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.cron.data', array());
-
-		if (empty($data)) {
+		if (empty($data))
+		{
 			$data = $this->getItem();
 		}
-
 		return $data;
 	}
 
 	/**
 	 * get html form fields for a plugin (filled with
 	 * current element's plugin data
-	 * @param string $plugin
-	 * @return string html form fields
+	 * @param	string	$plugin
+	 * @return	string	html form fields
 	 */
 
 	function getPluginHTML($plugin = null)
 	{
 		$item = $this->getItem();
-		if (is_null($plugin)) {
-
+		if (is_null($plugin))
+		{
 			$plugin = $item->plugin;
 		}
 		JPluginHelper::importPlugin('fabrik_cron');
-
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-
-		if ($plugin == '') {
+		if ($plugin == '')
+		{
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
-		} else {
+		}
+		else
+		{
 			$plugin = $pluginManager->getPlugIn($plugin, 'Cron');
 			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item));
 		}
@@ -118,20 +118,18 @@ class FabrikModelCron extends JModelAdmin
 	}
 
 	/**
-	 * Method to validate the form data.
-	 *
-	 * @param	object		$form		The form to validate against.
-	 * @param	array		$data		The data to validate.
-	 * @return	mixed		Array of filtered data if valid, false otherwise.
-	 * @since	1.1
+	 * (non-PHPdoc)
+	 * @see JModelForm::validate()
 	 */
-	function validate($form, $data)
+	
+	public function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
 		$ok = parent::validate($form, $data);
 		//standard jform validation failed so we shouldn't test further as we can't
 		//be sure of the data
-		if (!$ok) {
+		if (!$ok)
+		{
 			return false;
 		}
 		//hack - must be able to add the plugin xml fields file to $form to include in validation

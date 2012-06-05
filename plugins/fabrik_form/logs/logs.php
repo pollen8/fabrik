@@ -44,12 +44,12 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form model
-	 * @returns bol
+	 * @param	object	$params
+	 * @param	object	form model
+	 * @returns	bool
 	 */
 
-	function onAfterProcess(&$params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$type = empty($formModel->_origRowId) ? 'form.submit.add' : 'form.submit.edit';
 		return $this->log($params, $formModel, $type);
@@ -340,11 +340,11 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 			$clabelsCreateDb[] =$db->quoteName('rowid')." INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('rowid');
-			$cdataDb[] = $db->quote((int)$rowid);
+			$cdataDb[] = $db->quote((int) $rowid);
 
 			$clabelsCreateDb[] =$db->quoteName('userid')." INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('userid');
-			$cdataDb[] = $db->quote((int)$userid);
+			$cdataDb[] = $db->quote((int) $userid);
 
 			$clabelsCreateDb[] =$db->quoteName('tableid')." INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('tableid');
@@ -441,7 +441,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					$txtMsg = "Date: " . $date . "\n";
 					$txtMsg .= "Form ID: " . $formModel->getId() . "\n";
 					$txtMsg .= "Table ID: " . $formModel->getListModel()->getId() . "\n";
-					$txtMsg .= "Row ID: " . (int)$rowid . "\n";
+					$txtMsg .= "Row ID: " . (int) $rowid . "\n";
 					$txtMsg .= "User ID: $userid ($username)\n";
 					if ($params->get('logs_record_ip') == 1)
 					{

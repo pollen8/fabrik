@@ -328,13 +328,14 @@ class FabrikModelElement extends JModelAdmin
 			$data = array();
 			foreach ($item as $key => $val)
 			{
-				if ($key !== 'params') {
+				if ($key !== 'params')
+				{
 					$data[$key] = $val;
 				}
 			}
 			//get the current data for repeated validation
-			foreach ($pluginData as $key => $values) {
-
+			foreach ($pluginData as $key => $values)
+			{
 				if ($key == 'plugin')
 				{
 					continue;
@@ -370,10 +371,10 @@ class FabrikModelElement extends JModelAdmin
 
 		$opts = new stdClass();
 		$opts->plugin = $item->plugin;
-		$opts->parentid = (int)$item->parent_id;
+		$opts->parentid = (int) $item->parent_id;
 		$opts->jsevents = $this->getJsEvents();
 		$opts->elements = $this->getElements();
-		$opts->id = (int)$item->id;
+		$opts->id = (int) $item->id;
 		$opts = json_encode($opts);
 
 		JText::script('COM_FABRIK_ACTION');
@@ -411,6 +412,7 @@ class FabrikModelElement extends JModelAdmin
 
 	function getPluginHTML($plugin = null)
 	{
+		$str = '';
 		$item = $this->getItem();
 		if (is_null($plugin))
 		{
@@ -445,20 +447,16 @@ class FabrikModelElement extends JModelAdmin
 	 * @param	$item
 	 */
 
-	function prepareTable($item)
+	function prepareTable(&$item)
 	{
 	}
 
 	/**
-	 * Method to validate the form data.
-	 *
-	 * @param	object		$form		The form to validate against.
-	 * @param	array		$data		The data to validate.
-	 * @return	mixed		Array of filtered data if valid, false otherwise.
-	 * @since	1.1
+	 * (non-PHPdoc)
+	 * @see JModelForm::validate()
 	 */
-
-	function validate($form, $data)
+	
+	public function validate($form, $data, $group = null)
 	{
 		$ok = parent::validate($form, $data);
 		//standard jform validation failed so we shouldn't test further as we can't
@@ -468,35 +466,29 @@ class FabrikModelElement extends JModelAdmin
 			return false;
 		}
 		$db = FabrikWorker::getDbo(true);
-
 		if (FabrikWorker::isReserved($data['name']))
 		{
 			$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
 		}
-
 		$elementModel = $this->getElementPluginModel($data);
-
 		$elementModel->getElement()->bind($data);
 		if ($data['id'] === 0)
 		{
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 		}
-
 		$listModel = $elementModel->getListModel();
-
 		//test for duplicate names
 		//unlinking produces this error
-		if (!JRequest::getVar('unlink', false) && (int)$data['id'] === 0)
+		if (!JRequest::getVar('unlink', false) && (int) $data['id'] === 0)
 		{
-			$row->group_id = (int)$data['group_id'];
-
+			$row->group_id = (int) $data['group_id'];
 			$query = $db->getQuery(true);
 			$query->select('t.id')->from('#__{package}_joins AS j');
 			$query->join('INNER', '#__{package}_lists AS t ON j.table_join = t.db_table_name');
 			$query->where("group_id = $row->group_id AND element_id = 0");
 			$db->setQuery($query);
-			$joinTblId = (int)$db->loadResult();
+			$joinTblId = (int) $db->loadResult();
 			$ignore = array($data['id']);
 			if ($joinTblId === 0)
 			{
@@ -721,7 +713,7 @@ class FabrikModelElement extends JModelAdmin
 		$query->join('INNER', '#__{package}_forms AS f ON l.form_id = f.id');
 		$query->join('LEFT', '#__{package}_formgroup AS fg ON f.id = fg.form_id');
 		$query->join('LEFT', '#__{package}_groups AS g ON fg.group_id = g.id');
-		$query->where("db_table_name = ".$db->quote($dbname)." AND l.id !=".(int)$list->id." AND is_join = 0");
+		$query->where("db_table_name = ".$db->quote($dbname)." AND l.id !=".(int) $list->id." AND is_join = 0");
 
 		$db->setQuery($query);
 
@@ -947,7 +939,7 @@ class FabrikModelElement extends JModelAdmin
 	 * @param	array	$cids to delete
 	 */
 
-	public function delete($cids)
+	public function delete(&$pks)
 	{
 		// Initialize variables
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -1100,7 +1092,7 @@ class FabrikModelElement extends JModelAdmin
 	public function getParent()
 	{
 		$item = $this->getItem();
-		$item->parent_id = (int)$item->parent_id;
+		$item->parent_id = (int) $item->parent_id;
 		if ($item->parent_id === 0)
 		{
 			$parent = 0;

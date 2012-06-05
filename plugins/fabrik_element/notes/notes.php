@@ -36,19 +36,13 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * child classes can then call this function with
-	 * return parent::renderListData($data, $oAllRowsData);
-	 * to perform rendering that is applicable to all plugins
-	 *
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementDatabasejoin::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData )
+	public function renderListData($data, &$thisRow)
 	{
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	protected function getNotes()

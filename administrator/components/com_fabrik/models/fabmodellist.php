@@ -78,7 +78,7 @@ class FabModelList extends JModelList
 		$query->where('published <> -2');
 		if ($formid !== '') {
 			$query->join('INNER', '#__{package}_formgroup AS fg ON fg.group_id = g.id');
-			$query->where('fg.form_id = '.(int)$formid);
+			$query->where('fg.form_id = '.(int) $formid);
 		}
 		$query->order('g.name ASC');
 		$db->setQuery($query);
@@ -96,7 +96,7 @@ class FabModelList extends JModelList
 	{
 		$form = $this->getState('filter.form');
 		if (!empty($form)) {
-			$query->where($table.'.form_id = '. (int)$form);
+			$query->where($table.'.form_id = '. (int) $form);
 		}
 	}
 	

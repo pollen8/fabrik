@@ -186,8 +186,8 @@ class FabrikModelGroup extends FabModelAdmin
 		if ($data['form'] == '') {
 			return;
 		}
-		$formid = (int)$data['form'];
-		$id = (int)$data['id'];
+		$formid = (int) $data['form'];
+		$id = (int) $data['id'];
 		$item = FabTable::getInstance('FormGroup', 'FabrikTable');
 		$item->load(array('form_id' => $formid, 'group_id' => $id));
 		if ($item->id == '') {
@@ -196,7 +196,7 @@ class FabrikModelGroup extends FabModelAdmin
 			$query = $db->getQuery(true);
 			$query->select('MAX(ordering)')->from('#__{package}_formgroup')->where('form_id = '.$formid);
 			$db->setQuery($query);
-			$next = (int)$db->loadResult() + 1;
+			$next = (int) $db->loadResult() + 1;
 			$item->ordering = $next;
 			$item->form_id = $formid;
 			$item->group_id = $id;

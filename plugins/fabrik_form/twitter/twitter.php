@@ -36,12 +36,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form model
-	 * @returns bol
+	 * @param	object	$params
+	 * @param	object	form model
+	 * @returns	bol
 	 */
 
-	function onAfterProcess($params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$this->_process($params, $formModel);
 		//stop default redirect from occuring
@@ -128,7 +128,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 		$parameters = array('status' => $msg);
 		$status = $connection->post('statuses/update', $parameters);
-		$show_success = (int)$session->get('com_fabrik.form.twitter.showmessage', 0);
+		$show_success = (int) $session->get('com_fabrik.form.twitter.showmessage', 0);
 		
 		switch ($connection->http_code)
 		{
@@ -184,7 +184,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		//otherwise get authorization url from user to use ther own account
 
 		// $this->row not set ?! so this callback url was giving notices
-		//$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
+		//$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&element_id='.(int) $this->row->id.'&formid='.$formModel->getId();
 		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid=' . $formModel->getId();
 		$callback .= '&renderOrder=' . $this->renderOrder;
 

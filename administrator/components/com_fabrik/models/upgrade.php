@@ -163,7 +163,7 @@ class FabrikModelUpgrade extends JModel
 	{
 		$db = JFactory::getDbo();
 		$db->setQuery('select extension_id FROM 	#__extensions WHERE type = "component" and element = "com_fabrik"');
-		$cid = (int)$db->loadResult();
+		$cid = (int) $db->loadResult();
 		$db->setQuery('UPDATE #__menu SET component_id = '.$cid .' WHERE link LIKE \'%com_fabrik%\'');
 		$db->query();
 		

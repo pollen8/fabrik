@@ -23,7 +23,7 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	 * @param	object	form model
  	 */
 
-	function onAfterProcess($params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$this->process($params, $formModel);
 	}

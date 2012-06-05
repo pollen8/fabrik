@@ -107,7 +107,7 @@ class plgSystemFabrikcron extends JPlugin
 		$ids = array();
 		foreach ($rows as $row)
 		{
-			$ids[] = (int)$row->id;
+			$ids[] = (int) $row->id;
 		}
 		$db->setQuery("UPDATE #__{package}_cron SET published='2' WHERE id IN (" . implode(',', $ids) . ")");
 		//$db->query();
@@ -133,7 +133,7 @@ class plgSystemFabrikcron extends JPlugin
 				$db->query();
 				continue;
 			}
-			$tid = (int)$plugin->getParams()->get('table');
+			$tid = (int) $plugin->getParams()->get('table');
 			$thisListModel = clone($listModel);
 			if ($tid !== 0)
 			{

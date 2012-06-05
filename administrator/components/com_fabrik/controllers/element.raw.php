@@ -41,14 +41,19 @@ class FabrikControllerElement extends JControllerForm
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
 	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see JControllerForm::save()
+	 */
 
-	public function save()
+	public function save($key = null, $urlVar = null)
 	{
 		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('listid'));
 		$rowId = JRequest::getVar('rowid');
 		$key = JRequest::getVar('element');
-		$key = array_pop(explode("___", $key));
+		$key = array_pop(explode('___', $key));
 		$value = JRequest::getVar('value');
 		$listModel->storeCell($rowId, $key, $value);
 		$this->mode = 'readonly';

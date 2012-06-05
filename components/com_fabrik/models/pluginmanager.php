@@ -62,7 +62,7 @@ class FabrikFEModelPluginmanager extends JModel{
 		return $this->_elementLists[$hash];
 	}
 
-	function canUse()
+	public function canUse()
 	{
 		return true;
 	}
@@ -91,7 +91,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	 * @return	array	plugin list
 	 */
 
-	protected function _getList()
+	protected function _getList($query, $limitstart = 0, $limit = 0)
 	{
 		$db = FabrikWorker::getDbo(true);
 		if (is_null($this->_group))
@@ -218,22 +218,25 @@ class FabrikFEModelPluginmanager extends JModel{
 			$group = 'list';
 		}
 		$group = strtolower($group);
-		$ok = JPluginHelper::importPlugin('fabrik_' . strtolower($group));
+		$ok = JPluginHelper::importPlugin('fabrik_' . $group);
 		$dispatcher = JDispatcher::getInstance();
 		if ($className != '')
 		{
-			if (JFile::exists(JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/' . $className . '.php'))
+			$file = JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/' . $className . '.php';
+			if (JFile::exists($file))
 			{
-				require_once(JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/' . $className . '.php');
+				require_once($file);
 			}
 			else
 			{
-				if (JFile::exists((JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/models/' . $className . '.php')))
+				$file = JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/models/' . $className . '.php';
+				if (JFile::exists($file))
 				{
-					require_once(JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/models/' . $className . '.php');
+					require_once($file);
 				}
 				else
 				{
+					JError::raiseNotice(500, 'did not load ' . $className . ' ' . $group);
 					return false;
 				}
 			}
@@ -261,7 +264,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	 * @return	array	of group objects with plugin objects loaded in group->elements
 	 */
 
-	function getFormPlugins(&$form)
+	public function getFormPlugins(&$form)
 	{
 		$profiler = JProfiler::getInstance('Application');
 		if (!isset($this->formplugins))
@@ -443,10 +446,10 @@ class FabrikFEModelPluginmanager extends JModel{
 			{
 				$plugin = $this->getPlugIn($usedPlugin, $type);
 				//testing this if statement as onLoad was being called on form email plugin when no method availbale
-				$plugin->renderOrder = $c;
 				
 				if (method_exists($plugin, $method))
 				{
+					$plugin->renderOrder = $c;
 					$modelTable = $oRequest->getTable();
 					$pluginParams = $plugin->setParams($params, $c);
 					$location = JArrayHelper::getValue($usedLocations, $c);
@@ -463,7 +466,6 @@ class FabrikFEModelPluginmanager extends JModel{
 						$preflightCheck = method_exists($plugin, $preflightMethod) ? $plugin->$preflightMethod($pluginParams, $oRequest, $pluginArgs) : true;
 						if ($preflightCheck)
 						{
-							
 							$ok = $plugin->$method($pluginParams, $oRequest, $pluginArgs);
 							if ($ok === false)
 							{
@@ -496,7 +498,6 @@ class FabrikFEModelPluginmanager extends JModel{
 				$c ++;
 			}
 		}
-		
 		$this->_runPlugins = $runPlugins;
 		return array_unique($return);
 	}
@@ -511,7 +512,8 @@ class FabrikFEModelPluginmanager extends JModel{
 	function pluginExists($group, $plugin)
 	{
 		$plugins = $this->loadPlugInGroup($group);
-		if (in_array($plugin, array_keys($plugins))) {
+		if (in_array($plugin, array_keys($plugins)))
+		{
 			return true;
 		}
 		return false;

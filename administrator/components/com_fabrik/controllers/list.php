@@ -27,7 +27,12 @@ class FabrikControllerList extends FabControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
-	public function edit()
+	/**
+	 * (non-PHPdoc)
+	 * @see JControllerForm::edit()
+	 */
+	
+	public function edit($key = null, $urlVar = null)
 	{
 		$model = $this->getModel('connections');
 		if (count($model->activeConnections()) == 0)
@@ -35,7 +40,7 @@ class FabrikControllerList extends FabControllerForm
 			JError::raiseError(500, JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
 			return;
 		}
-		parent::edit();
+		parent::edit($key, $urlVar);
 	}
 
 	/**

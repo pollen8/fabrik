@@ -21,7 +21,7 @@ class flashRender{
 	 * @param object all row's data
 	 */
 
-	function renderListData(&$model, &$params, $file, $oAllRowsData)
+	function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->render($model, $params, $file);
 	}

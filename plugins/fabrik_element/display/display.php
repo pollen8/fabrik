@@ -41,15 +41,15 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	}
 
 	/**
-	 * render the elements list value
-	 * @param unknown_type $data
-	 * @param unknown_type $oAllRowsData
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
-	function renderListData($data, $oAllRowsData)
+	
+	public function renderListData($data, &$thisRow)
 	{
 		unset($this->_default);
-		$value = $this->getValue(JArrayHelper::fromObject($oAllRowsData));
-		return parent::renderListData($value, $oAllRowsData);
+		$value = $this->getValue(JArrayHelper::fromObject($thisRow));
+		return parent::renderListData($value, $thisRow);
 	}
 
 	/**

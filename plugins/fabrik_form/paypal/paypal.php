@@ -21,12 +21,11 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 	/**
 	 * process the plugin, called at end of form submission
-	 *
-	 * @param object $params
-	 * @param object form model
+	 * @param	object	$params
+	 * @param	object	form model
 	 */
 
-	function onAfterProcess(&$params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
 		$data = $formModel->_fullFormData;
@@ -108,7 +107,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		//$$$ rob add in subscription variables
 		if ($opts['cmd'] === '_xclick-subscriptions') {
 			$subTable = JModel::getInstance('List', 'FabrikFEModel');
-			$subTable->setId((int)$params->get('paypal_subs_table'));
+			$subTable->setId((int) $params->get('paypal_subs_table'));
 
 			$idEl = FabrikString::safeColName($params->get('paypal_subs_id', ''));
 			$durationEl = FabrikString::safeColName($params->get('paypal_subs_duration', ''));

@@ -64,7 +64,7 @@ $listDirn	= $this->state->get('list.direction');
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'ordering');
-			$link = JRoute::_('index.php?option=com_fabrik&task=package.edit&id='.(int)$item->id);
+			$link = JRoute::_('index.php?option=com_fabrik&task=package.edit&id='.(int) $item->id);
 			$canCreate	= $user->authorise('core.create',		'com_fabrik.package.'.$item->id);
 			$canEdit	= $user->authorise('core.edit',			'com_fabrik.package.'.$item->id);
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;

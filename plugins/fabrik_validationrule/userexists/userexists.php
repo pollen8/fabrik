@@ -24,14 +24,11 @@ class plgFabrik_ValidationruleUserExists extends plgFabrik_Validationrule
 	protected $icon = 'notempty';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$elementModel, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		$params = $this->getParams();
 		$c = trim((string) $c);
@@ -73,7 +70,7 @@ class plgFabrik_ValidationruleUserExists extends plgFabrik_Validationrule
 				$user_field = (array) $params->get('userexists_user_field', array());
 				$user_field = $user_field[$c];
 				$user_id = 0;
-				if ((int)$user_field !== 0)
+				if ((int) $user_field !== 0)
 				{
 					$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
 					$user_fullName = $user_elementModel->getFullName(false, true, false);

@@ -158,7 +158,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$monthdisplay = $params->get('fusion_gannt_chart_monthdisplay');
 		$this->fc->addGanttCategorySet("bgColor=333333;fontColor=99cc00;isBold=1;fontSize=14");
 		for ($y = $startyear; $y <= $endyear; $y++) {
-			$firstmonth = ($y == $startyear) ? (int)$mindate->toFormat('%m') : 1;
+			$firstmonth = ($y == $startyear) ? (int) $mindate->toFormat('%m') : 1;
 			$lastmonth = ($y == $endyear) ? $maxdate->toFormat('%m')+1 : 13;
 
 			$start = date('Y/m/d', mktime(0, 0, 0, $firstmonth, 1, $y));
@@ -171,7 +171,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		//echo "start year = $startyear end yera = $endyear ";exit;
 		for ($y = $startyear; $y <= $endyear; $y++) {
 			$lastmonth = ($y == $endyear) ? $maxdate->toFormat('%m')+1 : 13;
-			$firstmonth = ($y == $startyear) ? (int)$mindate->toFormat('%m') : 1;
+			$firstmonth = ($y == $startyear) ? (int) $mindate->toFormat('%m') : 1;
 			for ($m = $firstmonth; $m < $lastmonth; $m++) {
 				$starttime = mktime(0, 0, 0, $m, 1, $y);
 				$start = date('Y/m/d', $starttime);

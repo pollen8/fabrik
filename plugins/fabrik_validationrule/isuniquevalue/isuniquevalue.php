@@ -25,26 +25,24 @@ class plgFabrik_ValidationruleIsUniqueValue extends plgFabrik_Validationrule
 	protected $icon = 'notempty';
 	
 	/**
-	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element Model
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$elementModel, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		//could be a dropdown with multivalues
-		if (is_array($data)) {
+		if (is_array($data))
+		{
 			$data = implode('', $data);
 		}
 		$params = $this->getParams();
-		$element 			= $elementModel->getElement();
-		$listModel 	= $elementModel->getlistModel();
-		$table 				= $listModel->getTable();
-		$db 					= $listModel->getDb();
-		$lookuptable 	= $db->NameQuote($table->db_table_name);
-		$data 				= $db->quote($data);
+		$element = $elementModel->getElement();
+		$listModel = $elementModel->getlistModel();
+		$table = $listModel->getTable();
+		$db = $listModel->getDb();
+		$lookuptable = $db->NameQuote($table->db_table_name);
+		$data = $db->quote($data);
 		$query = $db->getQuery(true);
 		$cond = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '='; 
 		$query->select('COUNT(*)')
@@ -58,8 +56,9 @@ class plgFabrik_ValidationruleIsUniqueValue extends plgFabrik_Validationrule
 		// Have to do it by grabbing PK from request, 'cos rowid isn't set on AJAX validation
 		$pk = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 		$rowid = JRequest::getVar($pk, '');
-		if (!empty( $rowid)) {
-			$query->where($table->db_primary_key .' != '.$db->quote($rowid));
+		if (!empty( $rowid))
+		{
+			$query->where($table->db_primary_key . ' != ' . $db->quote($rowid));
 		}
 		$db->setQuery($query);
 		$c = $db->loadResult();

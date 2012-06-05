@@ -23,14 +23,11 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	protected $icon = 'notempty';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$elementModel, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		//could be a dropdown with multivalues
 		if (is_array($data))

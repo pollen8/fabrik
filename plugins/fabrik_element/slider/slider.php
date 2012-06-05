@@ -21,17 +21,14 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 	protected $fieldSize = '6';
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
-
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -47,7 +44,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		$width = (int)$params->get('slider_width', 250);
+		$width = (int) $params->get('slider_width', 250);
 		$element = $this->getElement();
 		$val = $this->getValue($data, $repeatCounter);
 		if (!$this->_editable) {
@@ -107,7 +104,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->steps = (int)$params->get('slider-steps', 100);
+		$opts->steps = (int) $params->get('slider-steps', 100);
 		$data = $this->_form->_data;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts = json_encode($opts);

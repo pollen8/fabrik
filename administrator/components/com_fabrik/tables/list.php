@@ -65,7 +65,7 @@ class FabrikTableList extends FabTable
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
-		return 'com_fabrik.list.'.(int)$this->$k;
+		return 'com_fabrik.list.'.(int) $this->$k;
 	}
 
 	/**

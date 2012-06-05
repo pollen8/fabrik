@@ -47,13 +47,13 @@ class JFormFieldTwittersignin extends JFormField
 		// prolly just return something like 'available after save' ?
 		if (!empty($cid))
 		{
-			$cid = (int)$cid[0];
+			$cid = (int) $cid[0];
 		}
 		else
 		{
 			$cid = 0;
 		}
-		$c = isset($this->form->repeatCounter) ? (int)$this->form->repeatCounter : 0;
+		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 
 
 		//$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&g=form&method=authenticateAdmin&tmpl=component&formid='.$cid.'&repeatCounter='.$c;

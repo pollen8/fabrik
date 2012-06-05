@@ -49,32 +49,34 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 	}
 
 	/**
-	* shows the data formatted for the table view
-	* @param string data
-	* @param object all the data in the tables current row
-	* @return string formatted value
-	*/
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
+	 */
 	
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$data = JHTML::_('date', $data, JText::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')));
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 	/**
 	 * defines the type of database table field that is created to store the element's data
-	 * @return string db field description
+	 * @return	string	db field description
 	 */
 
 	function getFieldDescription()
 	{
 		$params = $this->getParams();
-		if ($params->get('encrypt', false)) {
+		if ($params->get('encrypt', false))
+		{
 			return 'BLOB';
 		}
-		if ($params->get('timestamp_update_on_edit')) {
+		if ($params->get('timestamp_update_on_edit'))
+		{
 			return "TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
-		} else {
+		}
+		else
+		{
 			return "TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP";
 		}
 	}

@@ -65,7 +65,7 @@ class Com_FabrikInstallerScript
 		if ($row && ($row->params == '{}' || $row->params == '')) {
 			$json = $row->params;
 			$query = $db->getQuery(true);
-			$query->update('#__extensions')->set('params = '.$db->quote($json))->where('extension_id = '.(int)$row->extension_id);
+			$query->update('#__extensions')->set('params = '.$db->quote($json))->where('extension_id = '.(int) $row->extension_id);
 			$db->setQuery($query);
 			if (!$db->query()) {
 				return false;

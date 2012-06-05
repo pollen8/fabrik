@@ -22,7 +22,7 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 
 	protected $db = null;
 
-	function canUse()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		return true;
 	}
@@ -64,10 +64,10 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 		$params = $this->getParams();
 
 		//Get plugin settings and save state of request array vars we might change
-		$maxFiles = (int)$params->get('cron_importcsv_maxfiles', 1);
+		$maxFiles = (int) $params->get('cron_importcsv_maxfiles', 1);
 		$deleteFile = $params->get('cron_importcsv_deletefile', true);
 		$cronDir = $params->get('cron_importcsv_directory');
-		$useTableName = (int)$params->get('cron_importcsv_usetablename', false);
+		$useTableName = (int) $params->get('cron_importcsv_usetablename', false);
 
 		$dropdata = $params->get('cron_importcsv_dropdata', '0');
 		$orig_dropdata = JRequest::getVar('dropdata', -1);

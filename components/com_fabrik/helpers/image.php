@@ -363,7 +363,7 @@ class FabimageGD extends Fabimage
 
 		$bg = imagecolorallocate($destImg, $r, $g, $b);
 		// Draw a bg rectangle
-		imagefilledrectangle($destImg, 0 , 0 , (int)$dstW, (int)$dstH , $bg );
+		imagefilledrectangle($destImg, 0 , 0 , (int) $dstW, (int) $dstH , $bg );
 		
 		$this->writeImg($destImg, $destFile, $header);
 		$srcW = imagesx($destImg);
@@ -376,7 +376,7 @@ class FabimageGD extends Fabimage
 		if ($origW < $srcW || $origH < $srcH)
 		{
 			$srcBg = imagecreatetruecolor($srcW, $srcH);
-			imagefilledrectangle($srcBg, 0 , 0 , (int)$srcW, (int)$srcH , $bg);
+			imagefilledrectangle($srcBg, 0 , 0 , (int) $srcW, (int) $srcH , $bg);
 			imagecopyresampled($srcBg, $origImg, 0, 0, 0, 0, $origW, $origH, $origW, $origH);
 			$origImg = $srcBg;
 		}

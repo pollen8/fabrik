@@ -107,7 +107,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$query->select('fg.group_id AS value, g.name AS text');
 		$query->from('#__{package}_formgroup AS fg');
 		$query->join('LEFT', ' #__{package}_groups AS g ON fg.group_id = g.id');
-		$query->where('fg.form_id = '.(int)$this->form->getValue('id'));
+		$query->where('fg.form_id = '.(int) $this->form->getValue('id'));
 		$query->where('g.name <> ""');
 		$query->order('fg.ordering');
 		$db->setQuery($query);

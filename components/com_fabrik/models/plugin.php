@@ -16,7 +16,7 @@ require_once(COM_FABRIK_FRONTEND . '/models/parent.php'); //required for fabble
 class FabrikPlugin extends JPlugin
 {
 
-	/** @var bol determines if the admin settings are visible or hidden when rendered */
+	/** @var bool determines if the admin settings are visible or hidden when rendered */
 	var $_adminVisible = false;
 
 	/** @var string path to xml file **/
@@ -59,7 +59,7 @@ class FabrikPlugin extends JPlugin
 	 * @param       array   $config  An array that holds the plugin configuration
 	 * @since       1.5
 	 */
-	public function __construct(& $subject, $config = array())
+	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
 		$this->loadLanguage();
@@ -222,7 +222,7 @@ class FabrikPlugin extends JPlugin
 				$data[$key] = JArrayHelper::getValue($val, $repeatCounter);
 			}
 		}
-		$this->_params = new JParameter(json_encode($data));
+		$this->_params = new JRegistry(json_encode($data));
 		return $this->_params;
 	}
 
@@ -242,10 +242,10 @@ class FabrikPlugin extends JPlugin
 		}
 	}
 
-	function &_loadParams()
+	function _loadParams()
 	{
-		if (!isset($this->attribs)) {
-
+		if (!isset($this->attribs))
+		{
 			$row = $this->getRow();
 			$a = $row->params;
 		}
@@ -255,7 +255,7 @@ class FabrikPlugin extends JPlugin
 		}
 		if (!isset($this->_params))
 		{
-			$this->_params = new fabrikParams($a, $this->_xmlPath, 'component');
+			$this->_params = new JRegistry($a);
 		}
 		return $this->_params;
 	}
@@ -289,7 +289,7 @@ class FabrikPlugin extends JPlugin
 	 * @return	bool	true if we should run the plugin otherwise false
 	 */
 
-	function canUse(&$model, $location, $event)
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$ok = false;
 		$app = JFactory::getApplication();
@@ -345,7 +345,7 @@ class FabrikPlugin extends JPlugin
 		return $ok;
 	}
 
-	function customProcessResult()
+	public function customProcessResult($method, &$formModel)
 	{
 		return true;
 	}
@@ -419,7 +419,8 @@ class FabrikPlugin extends JPlugin
 		$incCalculations = JRequest::getVar('calcs', false);
 		$arr = array();
 		if ($showAll)
-		{ //show all db columns
+		{
+			//show all db columns
 			$cid = JRequest::getVar('cid', -1);
 			$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
 			$cnn->setId($cid);
@@ -481,7 +482,6 @@ class FabrikPlugin extends JPlugin
 				{
 					$elementModels = $groups[$g]->getMyElements();
 				}
-
 				foreach ($elementModels as $e => $eVal)
 				{
 					$element = $eVal->getElement();

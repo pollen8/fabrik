@@ -50,7 +50,6 @@ class FabrikViewList extends JView{
 				$element = $elementModel->getElement();
 				$elParams = $elementModel->getParams();
 
-				//$elParams = new fabrikParams($oElement->attribs, $mosConfig_absolute_path . '/administrator/components/com_fabrik/xml/element.xml', 'component');
 				if ($elParams->get('show_in_rss_feed') == '1') {
 					$heading = $element->label;
 					if ($elParams->get('show_label_in_rss_feed') == '1') {
@@ -67,7 +66,7 @@ class FabrikViewList extends JView{
 
 		foreach ($aJoinsToThisKey as $element) {
 			$element = $elementModel->getElement();
-			$elParams = new fabrikParams($element->attribs, JPATH_SITE . '/administrator/components/com_fabrik/xml/element.xml', 'component');
+			$elParams = new JRegistry($element->attribs);
 			if ($elParams->get('show_in_rss_feed') == '1') {
 				$heading = $element->label;
 

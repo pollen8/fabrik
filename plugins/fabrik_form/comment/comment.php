@@ -602,7 +602,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		$comments = $this->getComments($row->formid, $row->row_id);
 		$row = $comments[$row->id];
 		$obj->content =$this->writeComment($params, $row);
-		$obj->depth = (int)$row->depth;
+		$obj->depth = (int) $row->depth;
 		$obj->id = $row->id;
 		$notificationPlugin = $this->notificationPluginInstalled($formModel);
 

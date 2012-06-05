@@ -16,7 +16,7 @@ require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormRest extends plgFabrik_Form {
 
-	function onAfterProcess(&$params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$w = new FabrikWorker();
 		$config_userpass = $params->get('username').':'.$params->get('password');

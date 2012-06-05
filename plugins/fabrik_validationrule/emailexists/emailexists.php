@@ -26,14 +26,11 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 	protected $icon = 'isemail';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$elementModel, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		if (empty($data))
 		{
@@ -47,7 +44,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		$user_field = (array) $params->get('emailexists_user_field', array());
 		$user_field = $user_field[$c];
 		$user_id = 0;
-		if ((int)$user_field !== 0)
+		if ((int) $user_field !== 0)
 		{
 			$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
 			$user_fullName = $user_elementModel->getFullName(false, true, false);

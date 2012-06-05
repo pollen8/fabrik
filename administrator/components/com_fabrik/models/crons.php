@@ -62,7 +62,7 @@ class FabrikModelCrons extends FabModelList
 		// Filter by published state
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
-			$query->where('c.published = '.(int)$published);
+			$query->where('c.published = '.(int) $published);
 		} else if ($published === '') {
 			$query->where('(c.published IN (0, 1))');
 		}

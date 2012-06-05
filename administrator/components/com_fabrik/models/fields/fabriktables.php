@@ -11,7 +11,6 @@ defined('JPATH_BASE') or die();
 
 //required for menus
 require_once(JPATH_SITE . '/components/com_fabrik/helpers/html.php');
-require_once(JPATH_SITE . '/components/com_fabrik/helpers/params.php');
 require_once(JPATH_SITE . '/components/com_fabrik/helpers/string.php');
 require_once(JPATH_SITE . '/components/com_fabrik/helpers/parent.php');
 require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
@@ -72,8 +71,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 
 	function getInput()
 	{
-		//$c = ElementHelper::getRepeatCounter($this);
-		$c = isset($this->form->repeatCounter) ? (int)$this->form->repeatCounter : 0;
+		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 		$connectionDd = $this->element['observe'];
 		if (!isset($fabriktables))
 		{
@@ -100,12 +98,10 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$opts->repeatCounter =  empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
 			$opts->container = 'test';
 			$opts = json_encode($opts);
-
 			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";
 			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
 			//$script[] = "Fabrik.adminElements['$this->id'] = p;";
 			$script = implode("\n", $script);
-
 			$fabriktables[$this->id] = true;
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabriktables.js', $script);
 		}

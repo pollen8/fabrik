@@ -39,7 +39,7 @@ class FabrikTableElement extends FabTable
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
-		return 'com_fabrik.element.'.(int)$this->$k;
+		return 'com_fabrik.element.'.(int) $this->$k;
 	}
 
 	/**
@@ -99,8 +99,8 @@ class FabrikTableElement extends FabTable
 
 		// Sanitize input.
 		JArrayHelper::toInteger($pks);
-		$userId = (int)$userId;
-		$state  = (int)$state;
+		$userId = (int) $userId;
+		$state  = (int) $state;
 
 		// If there are no primary keys set check to see if the instance key is set.
 		if (empty($pks))
@@ -120,11 +120,11 @@ class FabrikTableElement extends FabTable
 		// Update the publishing state for rows with the given primary keys.
 		$query = $this->_db->getQuery(true);
 		$query->update($this->_tbl);
-		$query->set('show_in_list_summary = '.(int)$state);
+		$query->set('show_in_list_summary = '.(int) $state);
 
 		// Determine if there is checkin support for the table.
 		if (property_exists($this, 'checked_out') || property_exists($this, 'checked_out_time')) {
-			$query->where('(checked_out = 0 OR checked_out = '.(int)$userId.')');
+			$query->where('(checked_out = 0 OR checked_out = '.(int) $userId.')');
 			$checkin = true;
 		}
 		else {

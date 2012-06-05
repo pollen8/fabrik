@@ -15,21 +15,20 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 {
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$format = $params->get('text_format_string');
-		if ($format  != '') {
+		if ($format  != '')
+		{
 			 $str = sprintf($format, $data);
 			 $data = eval($str);
 		}
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -56,7 +55,7 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 		$element 		= $this->getElement();
 		$size 			= $element->width;
 		$maxlength  = $params->get('maxlength', 0);
-		if ((int)$maxlength === 0) {
+		if ((int) $maxlength === 0) {
 			$maxlength = $size;
 		}
 

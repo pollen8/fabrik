@@ -50,8 +50,8 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	{
 		$params = $this->getParams();
 		$this->calc_prefixmap = array('sum___' => 'sums', 'avg___' => 'avgs', 'med___' => 'medians', 'cnt___' => 'count');
-		$w = (int)$params->get('chart_width', 200);
-		$h = (int)$params->get('chart_height', 200);
+		$w = (int) $params->get('chart_width', 200);
+		$h = (int) $params->get('chart_height', 200);
 		$graph = $params->get('graph_type');
 
 		$fillGraphs = $params->get('fill_line_graph');

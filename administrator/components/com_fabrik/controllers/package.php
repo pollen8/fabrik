@@ -19,6 +19,7 @@ jimport('joomla.application.component.controllerform');
  * @subpackage	com_fabrik
  * @since		1.6
  */
+
 class FabrikControllerPackage extends JControllerForm
 {
 	/**
@@ -83,7 +84,8 @@ class FabrikControllerPackage extends JControllerForm
 		$view = $this->getView('package', $viewType, '');
 		// Push a model into the view
 		$model = $this->getModel();
-		$model->setDbo(FabrikWorker::getDbo());
+		$db = FabrikWorker::getDbo();
+		$model->setDbo($db);
 		if (!JError::isError($model))
 		{
 			$view->setModel($model, true);

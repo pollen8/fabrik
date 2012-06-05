@@ -25,9 +25,9 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 	 * @return string formatted value
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
-		$params =& $this->getParams();
+		$params = $this->getParams();
 		// ------------------ Construct embedded player
 
 		// Player size
@@ -289,7 +289,7 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass(&$srcs)
+	function formJavascriptClass(&$srcs, $script = '')
 	{
 		plgFabrik_Element::formJavascriptClass($srcs, 'plugins/fabrik_element/youtube/youtube.js');
 		parent::formJavascriptClass($srcs);

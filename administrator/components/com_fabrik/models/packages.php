@@ -62,7 +62,7 @@ class FabrikModelPackages extends JModelList
 		// Filter by published state
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
-			$query->where('p.published = '.(int)$published);
+			$query->where('p.published = '.(int) $published);
 		} else if ($published === '') {
 			$query->where('(p.published IN (0, 1))');
 		}

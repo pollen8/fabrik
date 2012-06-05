@@ -19,12 +19,12 @@ class plgFabrik_FormClone extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form model
-	 * @returns bol
+	 * @param	object	$params
+	 * @param	object	form model
+	 * @returns	bool
 	 */
 
-	function onAfterProcess($params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		return $this->_process($params, $formModel);
 	}
@@ -51,7 +51,7 @@ class plgFabrik_FormClone extends plgFabrik_Form {
 			//$clone_times_field = $elementModel->getFullName(false, true, false);
 			$clone_times = $formModel->_formData[$element->name];
 			if (is_numeric($clone_times)) {
-				$clone_times = (int)$clone_times;
+				$clone_times = (int) $clone_times;
 				$formModel->_formData['Copy'] = 1;
 				for ($x=1; $x < $clone_times; $x++) {
 					$formModel->processToDB();

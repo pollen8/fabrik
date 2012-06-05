@@ -320,7 +320,7 @@ class fabrikSubscriptionsIPN {
 		$query->select('subscr_id')
 		->from('#__fabrik_subs_invoices')->where('invoice_number = ' . $db->quote($inv));
 		$db->setQuery($query);
-		$subid = (int)$db->loadResult();
+		$subid = (int) $db->loadResult();
 		if($subid === 0)
 		{
 			return false;
@@ -405,14 +405,14 @@ class fabrikSubscriptionsIPN {
 		return;
 		$plan = JTable::getInstance('Plan', 'FabrikTable');
 		$newPlan = JTable::getInstance('Plan', 'FabrikTable');
-		$plan->load((int)$sub->plan);
-		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int)$sub->plan .' = ' . (int)$plan->fall_back_plan);
+		$plan->load((int) $sub->plan);
+		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int) $sub->plan .' = ' . (int) $plan->fall_back_plan);
 		$fallback = false;
 		if ($plan->fall_back_plan != 0)
 		{
 			$fallback = true;
-			$newPlan->load((int)$plan->fall_back_plan);
-			$gid = (int)$newPlan->usergroup;
+			$newPlan->load((int) $plan->fall_back_plan);
+			$gid = (int) $newPlan->usergroup;
 		}
 		else
 		{

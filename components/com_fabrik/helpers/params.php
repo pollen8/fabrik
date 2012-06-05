@@ -17,7 +17,7 @@ jimport('joomla.html.parameter');
 class fabrikParams extends JParameter
 {
 
-	/** @var bol duplicatable param (if true add []" to end of element name)*/
+	/** @var bool duplicatable param (if true add []" to end of element name)*/
 	var $_duplicate = false;
 
 	/** used by form plugins - to set id in name of radio buttons **/
@@ -43,10 +43,12 @@ class fabrikParams extends JParameter
 	{
 		$p = array();
 		$default = (object)$this->_xml['_default'];
-		if (empty($default)) {
+		if (empty($default))
+		{
 			return $p;
 		}
-		foreach ($default->children() as $node)  {
+		foreach ($default->children() as $node) 
+		{
 			$p[] = $node->attributes('name');
 		}
 		return $p;
@@ -65,8 +67,9 @@ class fabrikParams extends JParameter
 	function get($key, $default='', $group = '_default', $outputFormat = 'string', $counter = null )
 	{
 		$return = parent::get($key, $default);
-		if ($outputFormat == 'array') {
-			$return = $return == '' ? array() : (array) $return;
+		if ($outputFormat == 'array')
+		{
+			$return = $return == '' ? array() : (array)$return;
 		}
 		return $return;
 	}
@@ -78,12 +81,13 @@ class fabrikParams extends JParameter
 
 	function getParams($name = 'params', $group = '_default', $ouputformat = 'string', $counter = null)
 	{
-		if (!isset($this->_xml[$group])) {
+		if (!isset($this->_xml[$group]))
+		{
 			return false;
 		}
-
 		$results = array();
-		foreach ($this->_xml[$group]->children() as $param)  {
+		foreach ($this->_xml[$group]->children() as $param)
+		{
 			$results[] = $this->getParam($param, $name, $group, $ouputformat, $counter);
 		}
 		return $results;
@@ -97,11 +101,13 @@ class fabrikParams extends JParameter
 	 */
 	function getParamsNames($name = 'params', $group = '_default')
 	{
-		if (!isset($this->_xml[$group])) {
+		if (!isset($this->_xml[$group]))
+		{
 			return false;
 		}
 		$results = array();
-		foreach ($this->_xml[$group]->children() as $node)  {
+		foreach ($this->_xml[$group]->children() as $node)
+		{
 			$results[] = $node->attributes('name');
 		}
 		return $results;
@@ -142,16 +148,20 @@ class fabrikParams extends JParameter
 		//get value
 
 
-		if ($outPutFormat == 'array' && !is_null($counter)) {
+		if ($outPutFormat == 'array' && !is_null($counter))
+		{
 			$nodeName = str_replace("[]", "",$node->attributes('name'));
-		} else {
+		}
+		else
+		{
 			$nodeName = $node->attributes('name');
 		}
 		//end test
 
 		$value = $this->get($nodeName, $node->attributes('default'), $group, $outPutFormat, $counter);
 
-		if ($outPutFormat == 'array' && !is_null($counter)) {
+		if ($outPutFormat == 'array' && !is_null($counter))
+		{
 			$value = JArrayHelper::getValue($value, $counter, '');
 		}
 		//value must be a string
@@ -160,21 +170,24 @@ class fabrikParams extends JParameter
 		$result = $element->render($node, $value, $control_name);
 
 		$reqParamName = $result[5];
-
-		if ($this->_duplicate) { //_duplicate property set in view pages
-			if ($type == 'radio') {
-
+		//_duplicate property set in view pages
+		if ($this->_duplicate)
+		{
+			if ($type == 'radio')
+			{
 				//otherwise only a single entry is recorded no matter how many duplicates we make
-				if ($counter == 0 && isset($this->_counter_override)) {
+				if ($counter == 0 && isset($this->_counter_override))
+				{
 					$counter = $this->_counter_override;
 				}
 				$replacewith = "[$reqParamName][$counter][]";
-			} else {
+			}
+			else
+			{
 				$replacewith = "[$reqParamName][]";
 			}
 			$result[1] = str_replace("[$reqParamName]", $replacewith, $result[1]);
 		}
-
 		return $result;
 	}
 
@@ -184,7 +197,7 @@ class fabrikParams extends JParameter
 	 * @access	public
 	 * @param	string	The name of the control, or the default text area if a setup file is not found
 	 * @param string group
-	 * @param bol write out or return
+	 * @param bool write out or return
 	 * @param int if set and group is repeat only return int row from rendered params
 	 * used for form plugin admin pages.
 	 * @return	string	HTML
@@ -207,46 +220,54 @@ class fabrikParams extends JParameter
 		$repeat = false;
 		$repeatControls = true;
 		$repeatMin = 0;
-		if (is_array($this->_xml)) {
-			if (array_key_exists($group, $this->_xml)) {
+		if (is_array($this->_xml))
+		{
+			if (array_key_exists($group, $this->_xml))
+			{
 				$repeat = $this->_xml[$group]->attributes('repeat');
-				$repeatMin = (int)$this->_xml[$group]->attributes('repeatmin');
+				$repeatMin = (int) $this->_xml[$group]->attributes('repeatmin');
 				$repeatControls = $this->_xml[$group]->attributes('repeatcontrols');
 			}
 		}
-		if ($repeat) {
+		if ($repeat)
+		{
 			//get the name of the first element in the group
 			$children = $this->_xml[$group]->children();
-			if (empty($children)) {
+			if (empty($children))
+			{
 				$firstElName = '';
 				$allParamData = '';
 				$value = '';
-			} else {
+			}
+			else
+			{
 				$firstElName = str_replace("[]", "", $children[0]->attributes('name'));
-
 				$allParamData = $this->_registry['_default']['data'];
-
 				$value = $this->get($firstElName, array(), $group, 'array');
 			}
-
 
 			$c = 0;
 
 			//limit the number of groups of repeated params written out
-			if (!is_null($repeatSingleVal) && is_int($repeatSingleVal)) {
+			if (!is_null($repeatSingleVal) && is_int($repeatSingleVal))
+			{
 				$total = $repeatSingleVal + 1;
 				$start = $repeatSingleVal;
-			} else {
+			}
+			else
+			{
 				$total = count($value);
 				$start = 0;
 			}
 			$return .= '<div id="container'.$this->_identifier.'">';
 				//add in the 'add' button to duplicate the group
 			//only show for first added group
-			if ($repeatControls && $repeatSingleVal == 0) {
+			if ($repeatControls && $repeatSingleVal == 0)
+			{
 				$return .= "<a href='#' class='addButton'>" . JText::_('COM_FABRIK_ADD') . "</a>";
 			}
-			for ($x=$start; $x<$total; $x++) {
+			for ($x = $start; $x<$total; $x++)
+			{
 				//call render for the number of time the group is repeated
 				//echo parent::render($name, $group);
 
@@ -258,7 +279,8 @@ class fabrikParams extends JParameter
 				$html = array();
 				$html[] = '<table width="100%" class="paramlist admintable" cellspacing="1">';
 
-				if ($description = $this->_xml[$group]->attributes('description')) {
+				if ($description = $this->_xml[$group]->attributes('description'))
+				{
 					// add the params description to the display
 					$desc	= JText::_($description);
 					$html[]	= '<tr><td class="paramlist_description" colspan="2">'.$desc.'</td></tr>';
@@ -267,36 +289,40 @@ class fabrikParams extends JParameter
 				{
 					$html[] = '<tr>';
 
-					if ($param[0]) {
-						$html[] = '<td width="40%" class="paramlist_key"><span class="editlinktip">'.$param[0].'</span></td>';
-						$html[] = '<td class="paramlist_value">'.$param[1].'</td>';
-					} else {
-						$html[] = '<td class="paramlist_value" colspan="2">'.$param[1].'</td>';
+					if ($param[0])
+					{
+						$html[] = '<td width="40%" class="paramlist_key"><span class="editlinktip">' . $param[0] . '</span></td>';
+						$html[] = '<td class="paramlist_value">' . $param[1] . '</td>';
 					}
-
+					else
+					{
+						$html[] = '<td class="paramlist_value" colspan="2">' . $param[1] . '</td>';
+					}
 					$html[] = '</tr>';
 				}
 
-				if (count($params ) < 1) {
+				if (count($params ) < 1)
+				{
 					$html[] = "<tr><td colspan=\"2\"><i>".JText::_('COM_FABRIK_THERE_ARE_NO_PARAMETERS_FOR_THIS_ITEM')."</i></td></tr>";
 				}
-
 				$html[] = '</table>';
 				if ($repeatControls) {
 					$html[]= "<a href='#' class=\"removeButton delete\">" . JText::_('COM_FABRIK_DELETE') . "</a>";
 				}
 				$return .= implode("\n", $html);
-
 				///end new
 				$c ++;
 				$return .= "</div>";
 			}
 			$return .= "</div>";
-		} else {
+		}
+		else
+		{
 			$return .= parent::render($name, $group);
 		}
 
-		if ($repeat && $repeatControls && ($repeatSingleVal == null || $repeatSingleVal == 0)) {
+		if ($repeat && $repeatControls && ($repeatSingleVal == null || $repeatSingleVal == 0))
+		{
 			FabrikHelperHTML::script('components/com_fabrik/libs/params.js');
 			// watch add and remove buttons
 			$document = JFactory::getDocument();
@@ -305,9 +331,12 @@ class fabrikParams extends JParameter
 	});";
 			FabrikHelperHTML::addScriptDeclaration($script);
 		}
-		if ($write) {
+		if ($write)
+		{
 			echo $return;
-		} else {
+		}
+		else
+		{
 			return $return;
 		}
 	}

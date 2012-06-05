@@ -130,16 +130,16 @@ EOD;
 
 	/**
 	 * show form to allow users to email form to a friend
-	 * @param	object	form
+	 * @param	object	form model
 	 * @param	string	template
 	 */
 
-	function emailForm($formModel, $template = '')
+	public static function emailForm($formModel, $template = '')
 	{
 		$document = JFactory::getDocument();
 		$form = $formModel->getForm();
 		$document->setTitle($form->label);
-		$document->addStyleSheet("templates/' . $template . '/css/template_css.css");
+		$document->addStyleSheet("templates/'. $template .'/css/template_css.css");
 		//$url = JRoute::_('index.php?option=com_fabrik&view=emailform&tmpl=component');
 		?>
 <form method="post" action="index.php" name="frontendForm">
@@ -185,11 +185,9 @@ EOD;
 
 	/**
 	 * once email has been sent to a frind show this message
-	 * @params	string	$to
-	 * @param	bool	sucess?
 	 */
 
-	function emailSent($to, $ok)
+	public static function emailSent($to, $ok)
 	{
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
@@ -212,13 +210,13 @@ EOD;
 
 	/**
 	 * writes a print icon
-	 * @param	object	form
+	 * @param	object	form model
 	 * @param	object	parameters
 	 * @param	int		row id
 	 * @return	string	print html icon/link
 	 */
 
-	function printIcon($formModel, $params, $rowid = '')
+	public static function printIcon($formModel, $params, $rowid = '')
 	{
 		$app = JFactory::getApplication();
 		$config	= JFactory::getConfig();
@@ -261,12 +259,12 @@ EOD;
 
 	/**
 	 * Writes Email icon
-	 * @param	object	form
+	 * @param	object	form model
 	 * @param	object	parameters
 	 * @return	string	email icon/link html
 	 */
 
-	function emailIcon($formModel, $params)
+	public static function emailIcon($formModel, $params)
 	{
 		$app = JFactory::getApplication();
 		$config	= JFactory::getConfig();
@@ -313,7 +311,7 @@ EOD;
 	 * @return	string	html select list
 	 */
 
-	function conditonList($listid, $sel = '')
+	public static function conditonList($listid, $sel = '')
 	{
 		$conditions = array();
 		$conditions[] = JHTML::_('select.option', 'AND', JText::_('COM_FABRIK_AND'));
@@ -326,8 +324,8 @@ EOD;
 	 * @param	string	$sel
 	 * @return	mixed	html select list or error
 	 */
-
-	function tableList($sel = '')
+	
+	public static function tableList($sel = '')
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
@@ -346,18 +344,7 @@ EOD;
 	 * @deprecated - behavior.calendar is loaded in framework();
 	 */
 
-	function loadCalendar()
-	{
-	}
-
-	/**
-	 * @deprecated
-	 * Internal method to translate the JavaScript Calendar
-	 *
-	 * @return	string	JavaScript that translates the object
-	 * @since	1.5
-	 */
-	function _calendartranslation()
+	public static function loadCalendar()
 	{
 	}
 
@@ -437,10 +424,10 @@ EOD;
 	 * @param	string	The name of the object variable for the option value
 	 * @param	string	The name of the object variable for the option text
 	 * @param	int		number of options to show per row @since 2.0.5
-	 * @returns	string	HTML for the select list
+	 * @return	string	HTML for the select list
 	 */
 
-	function radioList(&$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0)
+	public static function radioList(&$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0)
 	{
 		return FabrikHelperHTML::aList('radio', $arr, $tag_name, $tag_attribs, $selected, $key, $text, $options_per_row);
 	}
@@ -459,7 +446,7 @@ EOD;
 	 * @returns	string	HTML for the select list
 	 */
 
-	public function aList($type, &$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0, $editable=true)
+	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0, $editable=true)
 	{
 		reset($arr);
 		if ($options_per_row > 0)
@@ -592,7 +579,7 @@ EOD;
 	 * Keep session alive, for example, while editing or creating an article.
 	 */
 
-	function keepalive()
+	public static function keepalive()
 	{
 		//test since 2.0b3 dont do anything if loading from Fabrik win
 		if (FabrikHelperHTML::inAjaxLoadedPage())
@@ -602,7 +589,7 @@ EOD;
 		JHtml::_('behavior.keepalive');
 	}
 
-	public function mcl()
+	public static function mcl()
 	{
 		if (!self::$mcl)
 		{
@@ -692,7 +679,7 @@ EOD;
 	 * @deprecated use ::framework instead
 	 */
 
-	function mootools()
+	public static function mootools()
 	{
 		FabrikHelperHTML::framework();
 	}
@@ -729,7 +716,7 @@ EOD;
 		}
 	}
 
-	public function addStyleDeclaration($style)
+	public static function addStyleDeclaration($style)
 	{
 		if (JRequest::getCmd('format') == 'raw')
 		{
@@ -756,8 +743,9 @@ EOD;
 		}
 		if (class_exists('JSite'))
 		{
-			$menus	= JSite::getMenu();
-			$menu	= $menus->getActive();
+			$app = JFactory::getApplication();
+			$menus = $app->getMenu();
+			$menu = $menus->getActive();
 			//popup menu item so not in ajax loaded page even if tmpl=component
 			// $$$ hugh - nope, browserNav of '1' is not a popup, just a new tab, see ...
 			// http://fabrikar.com/forums/showthread.php?p=111771#post111771
@@ -778,13 +766,13 @@ EOD;
 	public static function isDebug()
 	{
 		$config = JFactory::getConfig();
-		$debug = (int)$config->get('debug');
+		$debug = (int) $config->get('debug');
 		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) === 1;
 	}
 
 	/**
 	 * wrapper for JHTML::Script()
-	 * @param	mixed,	string or array of files to load
+	 * @param	mixed	string or array of files to load
 	 * @param	string	optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 */
 
@@ -851,7 +839,7 @@ EOD;
 		}
 	}
 
-	function slimbox()
+	public static function slimbox()
 	{
 		if (!self::$modal)
 		{
@@ -864,7 +852,7 @@ EOD;
 			{
 				$folder = 'components/com_fabrik/libs/mediabox/';
 				JHTML::stylesheet($folder . '/css/mediabox.css');
-				FabrikHelperHTML::script($folder . 'mediabox.js');
+				FabrikHelperHTML::script($folder.'mediabox.js');
 			}
 			else
 			{
@@ -881,7 +869,7 @@ EOD;
 	 * @param	string	$selectorPrefix limit the tips selection to those contained within an id
 	 */
 
-	function tips($selector='.hasTip', $params = array(), $selectorPrefix = 'document')
+	public static function tips($selector='.hasTip', $params = array(), $selectorPrefix = 'document')
 	{
 
 		$sig = md5(serialize(array($selector,$params)));
@@ -891,10 +879,10 @@ EOD;
 		}
 
 		// Setup options object
-		$opt['maxTitleChars']	= (isset($params['maxTitleChars']) && ($params['maxTitleChars'])) ? (int)$params['maxTitleChars'] : 50;
-		$opt['offsets']			= (isset($params['offsets'])) ? (int)$params['offsets'] : null;
-		$opt['showDelay']		= (isset($params['showDelay'])) ? (int)$params['showDelay'] : null;
-		$opt['hideDelay']		= (isset($params['hideDelay'])) ? (int)$params['hideDelay'] : null;
+		$opt['maxTitleChars']	= (isset($params['maxTitleChars']) && ($params['maxTitleChars'])) ? (int) $params['maxTitleChars'] : 50;
+		$opt['offsets']			= (isset($params['offsets'])) ? (int) $params['offsets'] : null;
+		$opt['showDelay']		= (isset($params['showDelay'])) ? (int) $params['showDelay'] : null;
+		$opt['hideDelay']		= (isset($params['hideDelay'])) ? (int) $params['hideDelay'] : null;
 		$opt['className']		= (isset($params['className'])) ? $params['className'] : null;
 		$opt['fixed']			= (isset($params['fixed']) && ($params['fixed'])) ? '\\true' : '\\false';
 		$opt['onShow']			= (isset($params['onShow'])) ? '\\'.$params['onShow'] : null;
@@ -917,7 +905,7 @@ EOD;
 	 * @param	string	$title
 	 */
 
-	function debug($content, $title = 'output:')
+	public static function debug($content, $title = 'output:')
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
 		if ($config->get('use_fabrikdebug') == 0)
@@ -1014,7 +1002,7 @@ EOD;
 	 * @param	array	$opts (currently only takes 'onSelection')
 	 */
 
-	public function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
 		FabrikHelperHTML::autoCompleteScript();
 		$json = FabrikHelperHTML::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
@@ -1033,7 +1021,7 @@ EOD;
 	 * @return	array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
-	public function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass();
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid . '&plugin=' . $plugin . '&method=autocomplete_options';
@@ -1050,7 +1038,8 @@ EOD;
 	 *Load the autocomplete script once
 	 */
 
-	public function autoCompleteScript() {
+	public static function autoCompleteScript()
+	{
 		if (!isset(self::$autocomplete))
 		{
 			self::$autocomplete = true;
@@ -1058,7 +1047,7 @@ EOD;
 		}
 	}
 
-	public function facebookGraphAPI($appid, $locale = 'en_US', $meta = array())
+	public static function facebookGraphAPI($appid, $locale = 'en_US', $meta = array())
 	{
 		if (!isset(self::$facebookgraphapi))
 		{
@@ -1110,7 +1099,7 @@ EOD;
 	 * @param	bool	$highPriority should the added $path take precedence over previously added paths (default true)
 	 */
 
-	public function addPath($path = '', $type = 'image', $view = 'form', $highPriority = true)
+	public static function addPath($path = '', $type = 'image', $view = 'form', $highPriority = true)
 	{
 		if (!array_key_exists($type, self::$helperpaths))
 		{
@@ -1149,7 +1138,7 @@ EOD;
 	 * @return	string	full path name if found, original filename if not found
 	 */
 
-	public function getImagePath($file, $type = 'form', $tmpl = '')
+	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
 		$file = ltrim($file, DS);
 		$paths = FabrikHelperHTML::addPath('', 'image', $type, true);
@@ -1176,7 +1165,7 @@ EOD;
 	 * @param	bool	src only (default false)
 	 */
 
-	public function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
+	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
 	{
 		if (is_string($properties))
 		{
@@ -1216,7 +1205,7 @@ EOD;
 	 * @param	int		$optionsPerRow
 	 */
 
-	public function grid($values, $labels, $selected, $name, $type = 'checkbox', $elementBeforeLabel = true, $optionsPerRow = 4)
+	public static function grid($values, $labels, $selected, $name, $type="checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)
 	{
 		$items = array();
 		for ($i = 0; $i < count($values); $i ++)

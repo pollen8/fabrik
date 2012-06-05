@@ -77,17 +77,18 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	}
 
 	/**
-	 * check user can view the active element
-	 * If user logged in return false
-	 * @return bol can view or not
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::canUse()
 	 */
 
-	function canUse()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
-		if ($user->id != 0) {
-			if ($params->get('captcha-showloggedin', 0) == 0) {
+		if ($user->id != 0)
+		{
+			if ($params->get('captcha-showloggedin', 0) == 0)
+			{
 				return false;
 			}
 		}

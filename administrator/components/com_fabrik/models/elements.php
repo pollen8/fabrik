@@ -58,7 +58,7 @@ class FabrikModelElements extends FabModelList
 		// Filter by published state
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
-			$query->where('e.published = '.(int)$published);
+			$query->where('e.published = '.(int) $published);
 		} else if ($published === '') {
 			$query->where('(e.published IN (0, 1))');
 		}
@@ -72,12 +72,12 @@ class FabrikModelElements extends FabModelList
 
 		$group = $this->getState('filter.group');
 		if (trim($group) !== '') {
-			$query->where('g.id = '.(int)$group);
+			$query->where('g.id = '.(int) $group);
 		}
 
 		$showInList = $this->getState('filter.showinlist');
 		if (trim($showInList) !== '') {
-			$query->where('e.show_in_list_summary = '.(int)$showInList);
+			$query->where('e.show_in_list_summary = '.(int) $showInList);
 		}
 
 		$plugin = $this->getState('filter.plugin');

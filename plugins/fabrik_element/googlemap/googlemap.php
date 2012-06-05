@@ -25,7 +25,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	 * @return string formatted value
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
@@ -51,13 +51,13 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 					$d = $params->get('fb_gm_staticmap_tableview_type_coords', 'num') == 'dms' ? $this->_dmsformat($d) : $this->_microformat($d);
 				}
 			}
-			$d = $this->rollover($d, $oAllRowsData, 'list');
-			$d = $listModel->_addLink($d, $this, $oAllRowsData, $i);
+			$d = $this->rollover($d, $thisRow, 'list');
+			$d = $listModel->_addLink($d, $this, $thisRow, $i);
 		}
 		return $this->renderListDataFinal($data);
 	}
 
-	function renderListData_feed($data, $oAllRowsData)
+	function renderListData_feed($data, $thisRow)
 	{
 		$str = '';
 		$data = FabrikWorker::JSONtoData($data, true);
@@ -163,7 +163,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$element = $this->getElement();
 		$data = $this->_form->_data;
 		$v = $this->getValue($data, $repeatCounter);
-		$zoomlevel = (int)$params->get('fb_gm_zoomlevel');
+		$zoomlevel = (int) $params->get('fb_gm_zoomlevel');
 		$o = $this->_strToCoords($v, $zoomlevel);
 		$dms = $this->_strToDMS($v);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -173,7 +173,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 		$opts->lat_dms = (float)$dms->coords[0];
 		$opts->rowid = (int)JArrayHelper::getValue($data, 'rowid');
 		$opts->lon_dms = (float)$dms->coords[1];
-		$opts->zoomlevel = (int)$o->zoomlevel;
+		$opts->zoomlevel = (int) $o->zoomlevel;
 		$opts->control = $params->get('fb_gm_mapcontrol');
 		$opts->scalecontrol = (bool)$params->get('fb_gm_scalecontrol');
 		$opts->maptypecontrol = (bool)$params->get('fb_gm_maptypecontrol');
@@ -207,7 +207,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 				}
 			}
 		}
-		$opts->center = (int)$params->get('fb_gm_defaultloc', 0);
+		$opts->center = (int) $params->get('fb_gm_defaultloc', 0);
 		$opts = json_encode($opts);
 
 		return "new FbGoogleMap('$id', $opts)";
@@ -258,7 +258,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	{
 		$o = new stdClass();
 		$o->coords = array('', '');
-		$o->zoomlevel = (int)$zoomlevel;
+		$o->zoomlevel = (int) $zoomlevel;
 		if (strstr($v, ",")) {
 			$ar = explode(":", $v);
 			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : 4;
@@ -294,9 +294,9 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 			} else {
 				$dms_lat_dir = 'N';
 			}
-			$dms_lat_deg = abs((int)$dms->coords[0]);
+			$dms_lat_deg = abs((int) $dms->coords[0]);
 			$dms_lat_min_float = 60 * (abs($dms->coords[0]) - $dms_lat_deg);
-			$dms_lat_min = (int)$dms_lat_min_float;
+			$dms_lat_min = (int) $dms_lat_min_float;
 			$dms_lat_sec_float = 60 * ($dms_lat_min_float - $dms_lat_min);
 
 			//Round the secs
@@ -329,9 +329,9 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 			} else {
 				$dms_long_dir = 'E';
 			}
-			$dms_long_deg = abs((int)$dms->coords[1]);
+			$dms_long_deg = abs((int) $dms->coords[1]);
 			$dms_long_min_float = 60 * (abs($dms->coords[1]) - $dms_long_deg);
-			$dms_long_min = (int)$dms_long_min_float;
+			$dms_long_min = (int) $dms_long_min_float;
 			$dms_long_sec_float = 60 * ($dms_long_min_float - $dms_long_min);
 
 			//Round the secs

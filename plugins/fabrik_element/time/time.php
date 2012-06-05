@@ -251,7 +251,12 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		return "new FbTime('$id', $opts)";
 	}
 
-	function renderListData($data, $oAllRowsData)
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
+	 */
+	
+	public function renderListData($data, &$thisRow)
 	{
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
@@ -293,7 +298,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 			}
 		}
 		$data = json_encode($format);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 }

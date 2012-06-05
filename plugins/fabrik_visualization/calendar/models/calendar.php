@@ -278,9 +278,9 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	function getEvents()
 	{
 		$app = JFactory::getApplication();
-		$Itemid	= @(int)$app->getMenu('site')->getActive()->id;
+		$Itemid	= @(int) $app->getMenu('site')->getActive()->id;
 		$config = JFactory::getConfig();
-		$tzoffset = (int)$config->getValue('config.offset');
+		$tzoffset = (int) $config->getValue('config.offset');
 
 		$this->setupEvents();
 

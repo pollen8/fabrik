@@ -84,9 +84,9 @@ $listDirn	= $this->state->get('list.direction');
 		<?php foreach ($this->items as $i => $item) :
 				$ordering	= ($listOrder == 'ordering');
 				$link	= JRoute::_('index.php?option=com_fabrik&task=list.edit&id='. $item->id);
-				$params = new JParameter($item->params, 'administrator/components/com_fabrik/models/forms/list.xml');
-				$elementLink = JRoute::_('index.php?option=com_fabrik&task=element.edit&id=0&filter_groupId='.$this->table_groups[$item->id]->group_id);
- 				$formLink = JRoute::_('index.php?option=com_fabrik&task=form.edit&id='.$item->form_id);
+				$params = new JRegistry($item->params);
+				$elementLink = JRoute::_('index.php?option=com_fabrik&task=element.edit&id=0&filter_groupId=' . $this->table_groups[$item->id]->group_id);
+ 				$formLink = JRoute::_('index.php?option=com_fabrik&task=form.edit&id=' . $item->form_id);
  				$canChange= true;
 			?>
 			<tr class="row<?php echo $i % 2; ?>">

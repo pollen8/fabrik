@@ -18,35 +18,39 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	protected $fieldDesc = 'TEXT';
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$listModel = $this->getlistModel();
 		$params = $this->getParams();
 		$target = $params->get('link_target', '');
 		$smart_link = $params->get('link_smart_link', false);
-		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox')) {
+		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox'))
+		{
 			FabrikHelperHTML::slimbox();
 		}
 		$data = FabrikWorker::JSONtoData($data, true);
 
-		if (!empty($data)) {
-			if (array_key_exists('label', $data)) {
-				$data = (array) $this->_renderListData($data, $oAllRowsData);
-			} else {
-				for ($i = 0; $i < count($data); $i++) {
+		if (!empty($data))
+		{
+			if (array_key_exists('label', $data))
+			{
+				$data = (array) $this->_renderListData($data, $thisRow);
+			}
+			else
+			{
+				for ($i = 0; $i < count($data); $i++)
+				{
 					$data[$i] = JArrayHelper::fromObject($data[$i]);
-					$data[$i] = $this->_renderListData($data[$i], $oAllRowsData);
+					$data[$i] = $this->_renderListData($data[$i], $thisRow);
 				}
 			}
 		}
 		$data = json_encode($data);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -55,7 +59,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	 * @return string formatted value
 	 */
 
-	protected function _renderListData($data, $oAllRowsData)
+	protected function _renderListData($data, $thisRow)
 	{
 		if (is_string($data)) {
 			$data = FabrikWorker::JSONtoData($data, true);
@@ -87,7 +91,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				$link = $data['link'];
 			}
 			$w = new FabrikWorker();
-			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($oAllRowsData));
+			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($thisRow));
 			return $link;
 		}
 		return $data;
@@ -178,22 +182,23 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param mixed element's data
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::_getEmailValue()
 	 */
 
-	protected function _getEmailValue($value)
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if (is_string($value)) {
+		if (is_string($value))
+		{
 			$value = FabrikWorker::JSONtoData($value, true);
 			$value['label'] = JArrayHelper::getValue($value, 0);
 			$value['link'] = JArrayHelper::getValue($value, 1);
 		}
-		if (is_array($value)) {
+		if (is_array($value))
+		{
 			$w = new FabrikWorker();
-			$link 	= $w->parseMessageForPlaceHolder($value['link']);
-			$value = '<a href="'.$link.'" >'.$value['label'].'</a>';
+			$link = $w->parseMessageForPlaceHolder($value['link']);
+			$value = '<a href="' . $link . '" >' . $value['label'] . '</a>';
 		}
 		return $value;
 	}

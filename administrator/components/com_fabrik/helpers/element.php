@@ -43,7 +43,7 @@ class ElementHelper{
 		return $c;
 	}
 
-	function getRepeat($element)
+	public static function getRepeat($element)
 	{
 		if (method_exists($element, 'getRepeat'))
 		{

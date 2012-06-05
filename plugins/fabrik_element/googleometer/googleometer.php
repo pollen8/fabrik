@@ -51,7 +51,7 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element {
 
 	private function getDataElement() {
 		$params = $this->getParams();
-		$elementid = (int)$params->get('googleometer_element');
+		$elementid = (int) $params->get('googleometer_element');
 		$element = FabrikWorker::getPluginManager()->getPlugIn('', 'element');
 		$element->setId($elementid);
 		return $element;
@@ -71,23 +71,22 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element {
 		return $range;
 	}
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		static $range;
 		static $fullName;
-		if (!isset($range)) {
+		if (!isset($range))
+		{
 			$range = $this->getRange();
 			$fullName = $this->getDataElementFullName();
 		}
-		$data = $oAllRowsData->$fullName;
+		$data = $thisRow->$fullName;
 		$data = $this->_renderListData($data, $range);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	function _renderListData($data, $range) {

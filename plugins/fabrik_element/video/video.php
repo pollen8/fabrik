@@ -24,18 +24,18 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	protected $_is_upload = true;
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData) {
+	public function renderListData($data, &$thisRow)
+	{
 		$str = '';
 		$data = FabrikWorker::JSONtoData($data, true);
 		//$data = explode(GROUPSPLITTER, $data);
-		foreach ($data as $d) {
-			$str .= $this->_renderListData($d, $oAllRowsData);
+		foreach ($data as $d)
+		{
+			$str .= $this->_renderListData($d, $thisRow);
 		}
 		return $str;
 	}
@@ -47,7 +47,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	 * @return string formatted value
 	 */
 
-	function _renderListData($data, $oAllRowsData)
+	function _renderListData($data, $thisRow)
 	{
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
@@ -131,7 +131,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		$params 	=& $this->getParams();
 
 		$maxlength  = $params->get('maxlength');
-		if ((int)$maxlength === 0) {
+		if ((int) $maxlength === 0) {
 			$maxlength = $element->width;
 		}
 

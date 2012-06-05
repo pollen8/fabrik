@@ -67,7 +67,7 @@ $listDirn	= $this->state->get('list.direction');
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'ordering');
-			$link = JRoute::_('index.php?option=com_fabrik&task=cron.edit&id='.(int)$item->id);
+			$link = JRoute::_('index.php?option=com_fabrik&task=cron.edit&id='.(int) $item->id);
 			$canChange	= true;
 			?>
 

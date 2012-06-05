@@ -451,7 +451,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		// so lets see if any of $joins are table joins.
 		$tableJoinsFound = false;
 		for ($x = 0; $x < count($joins); $x++) {
-			if ((int)$joins[$x]->list_id !== 0) {
+			if ((int) $joins[$x]->list_id !== 0) {
 				$tableJoinsFound = true;
 			}
 		}

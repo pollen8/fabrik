@@ -10,7 +10,7 @@ $db = FabrikWorker::getDbo();
 $location = $db->quote("(".$data->gate_user___latitude .",".$data->gate_user___longitude."):4");
 $time = $db->quote($data->gate_user___time_stamp_raw);
 $db->setQuery("SELECT COUNT(*) FROM moose_location WHERE location = $location AND time_date = $time");
-$count = (int)$db->loadResult();
+$count = (int) $db->loadResult();
 
 if ($count === 0) {
   $db->setQuery("INSERT INTO moose_location (`location`, `time_date`) VALUES ($location, $time)");
@@ -40,7 +40,7 @@ foreach($rows as $row) {
   if($c !== 0) {
     $query .= ", dontcalculate = 1";
   }
-  $query .= ' where id = ' . (int)$row->id;
+  $query .= ' where id = ' . (int) $row->id;
   $db->setQuery($query) ;
   $db->query();
   $c++;

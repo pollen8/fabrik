@@ -86,7 +86,7 @@ echo JHtml::_('sliders.end');
 
 	</div>
 	<div class="width-60 fltrt">
-		<?php echo JHtml::_('tabs.start', 'list-tabs-'.(int)$this->item->id, array('useCookie'=>1));
+		<?php echo JHtml::_('tabs.start', 'list-tabs-'.(int) $this->item->id, array('useCookie'=>1));
 		echo $this->loadTemplate('data');
 		echo $this->loadTemplate('publishing');
 		echo $this->loadTemplate('plugins');

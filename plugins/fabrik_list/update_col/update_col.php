@@ -119,13 +119,13 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 				$db->setQuery($query);
 				$results = $db->loadObjectList();
 				foreach ($results as $result) {
-					$userids_emails[(int)$result->id] = $result->email;
+					$userids_emails[(int) $result->id] = $result->email;
 				}
 			}
 			foreach ($aids as $id) {
 				$row = $model->getRow($id);
 				if ($emailWhich == 'user') {
-					$userid = (int)$row->$emailFieldRaw;
+					$userid = (int) $row->$emailFieldRaw;
 					$to = JArrayHelper::getValue($userids_emails, $userid);
 				}
 				else {
@@ -159,7 +159,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		}
 
 		if (!empty($userCol)) {
-			$this->_process($model, $userCol, (int)$user->get('id'));
+			$this->_process($model, $userCol, (int) $user->get('id'));
 		}
 		foreach ($update->coltoupdate as $i => $col) {
 			$this->_process($model, $col, $update->update_value[$i]);

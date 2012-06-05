@@ -54,7 +54,7 @@ class FabrikViewList extends JView{
 
 		$opts = new stdClass();
 		$opts->admin = $app->isAdmin();
-		$opts->ajax = (int)$model->isAjax();
+		$opts->ajax = (int) $model->isAjax();
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->_jsonHeadings();

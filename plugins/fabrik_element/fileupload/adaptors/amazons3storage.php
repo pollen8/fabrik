@@ -371,7 +371,7 @@ class amazons3storage extends storageAdaptor{
 	function preRenderPath($filepath)
 	{
 		$params = $this->getParams();
-		if ($lifetime = (int)$params->get('fileupload_amazon_auth_url', 0))
+		if ($lifetime = (int) $params->get('fileupload_amazon_auth_url', 0))
 		{
 			$file = $this->urlToPath($filepath);
 			$file = str_replace("%20", " ", $file);

@@ -68,7 +68,7 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		$query = $db->getQuery(true);
 		$query->select('id')->from('jos_{package}_lists')->where('db_table_name = ' . $db->nameQuote($table));
 		$db->setQuery($query);
-		$res = (int)$db->loadResult();
+		$res = (int) $db->loadResult();
 
 		$now = JFactory::getDate()->toMySQL();
 		$user = JFactory::getUser();

@@ -332,7 +332,7 @@ class FabrikModelForm extends FabModelAdmin
 		$formid = $this->getState($this->getName() . '.id');
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int)$formid);
+		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formid);
 		$db->setQuery($query);
 		// delete the old form groups
 		if (!$db->query())
@@ -347,7 +347,7 @@ class FabrikModelForm extends FabModelAdmin
 			{
 				$group_id = (int) $group_id;
 				$query = $db->getQuery(true);
-				$query->insert('#__{package}_formgroup')->set(array('form_id =' . (int)$formid, 'group_id = ' . $group_id, 'ordering = ' . $orderid));
+				$query->insert('#__{package}_formgroup')->set(array('form_id =' . (int) $formid, 'group_id = ' . $group_id, 'ordering = ' . $orderid));
 				$db->setQuery($query);
 				if (!$db->query())
 				{
@@ -412,13 +412,14 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Method to validate the form data.
 	 *
-	 * @param	object		$form		The form to validate against.
-	 * @param	array		$data		The data to validate.
-	 * @return	mixed		Array of filtered data if valid, false otherwise.
+	 * @param	object	$form		The form to validate against.
+	 * @param	array	$data		The data to validate.
+	 * @param   string	$group  The name of the field group to validate.
+	 * @return	mixed	Array of filtered data if valid, false otherwise.
 	 * @since	1.1
 	 */
 	
-	function validate($form, $data)
+	function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
 		$ok = parent::validate($form, $data);
@@ -436,10 +437,10 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 *  delete form and form groups
-	 * @param array $cids to delete
+	 * @param	array	$cids to delete
 	 */
 	
-	public function delete($cids)
+	public function delete(&$cids)
 	{
 		$res = parent::delete($cids);
 		if ($res)

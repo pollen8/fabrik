@@ -30,13 +30,11 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	var $creatorIds = null;
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -49,15 +47,15 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
 
-		$url .= '&amp;row_id='.$oAllRowsData->__pk_val;
+		$url .= '&amp;row_id='.$thisRow->__pk_val;
 		$url .= '&amp;elementname='.$this->getElement()->id;
 		$url .= '&amp;userid='.$user->get('id');
 		$url .= '&amp;nonajax=1';
-		$row_id = isset($oAllRowsData->__pk_val) ? $oAllRowsData->__pk_val : $oAllRowsData->id;
+		$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
 		$ids = JArrayHelper::getColumn($this->getListModel()->getData(), '__pk_val');
 		$canRate = $this->canRate($row_id, $ids);
 		for ($i=0; $i <count($data); $i++) {
-			$avg = $this->_renderListData($data[$i], $oAllRowsData);
+			$avg = $this->_renderListData($data[$i], $thisRow);
 			if (!$canRate) {
 				$atpl = '';
 				$a2 = '';
@@ -84,10 +82,10 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$data[$i] = implode("\n", $str);
 		}
 		$data = json_encode($data);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
-	private function _renderListData($data, $oAllRowsData)
+	private function _renderListData($data, $thisRow)
 	{
 		$params = $this->getParams();
 		if ($params->get('rating-mode') == 'creator-rating') {
@@ -97,7 +95,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$listid = $list->id;
 			$formid = $list->form_id;
 			$ids = JArrayHelper::getColumn($this->getListModel()->getData(), '__pk_val');
-			$row_id = isset($oAllRowsData->__pk_val) ? $oAllRowsData->__pk_val : $oAllRowsData->id;
+			$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
 			list($avg, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id, $ids);
 			return $avg;
 		}
@@ -122,7 +120,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
 			// do this  query so that table view only needs one query to load up all ratings
-			$query = "SELECT row_id, AVG(rating) AS r, COUNT(rating) AS total FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int)$listid." AND formid = ".(int)$formid." AND element_id = ".(int)$elementid;
+			$query = "SELECT row_id, AVG(rating) AS r, COUNT(rating) AS total FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int) $listid." AND formid = ".(int) $formid." AND element_id = ".(int) $elementid;
 			$query .= " AND row_id IN (".implode(',', $ids) .") GROUP BY row_id";
 			$db->setQuery($query);
 			$this->avgs = (array) $db->loadObjectList('row_id');
@@ -130,7 +128,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$params = $this->getParams();
 		$r = array_key_exists($row_id, $this->avgs) ? $this->avgs[$row_id]->r : 0;
 		$t = array_key_exists($row_id, $this->avgs) ? $this->avgs[$row_id]->total : 0;
-		$float = (int)$params->get('rating_float', 0);
+		$float = (int) $params->get('rating_float', 0);
 		$this->avg = number_format($r, $float);
 		return array(round($r), $t);
 	}
@@ -153,7 +151,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
 			// do this  query so that table view only needs one query to load up all ratings
-			$query = "SELECT row_id, user_id FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int)$listid." AND formid = ".(int)$formid." AND element_id = ".(int)$elementid;
+			$query = "SELECT row_id, user_id FROM #__{package}_ratings WHERE rating <> -1 AND listid = ".(int) $listid." AND formid = ".(int) $formid." AND element_id = ".(int) $elementid;
 			$query .= " AND row_id IN (".implode(',', $ids) .") GROUP BY row_id";
 			$db->setQuery($query);
 			$this->creatorIds = $db->loadObjectList('row_id');
@@ -265,7 +263,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	 * @see components/com_fabrik/models/plgFabrik_Element#storeDatabaseFormat($val, $data)
 	 */
 
-	function storeDatabaseFormat($val, $data, $key)
+	function storeDatabaseFormat($val, $data)
 	{
 		$params = $this->getParams();
 		$listid = JRequest::getInt('listid');
@@ -361,7 +359,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	private function getStoreUserId($listid, $row_id)
 	{
 		$user = JFactory::getUser();
-		$userid = (int)$user->get('id');
+		$userid = (int) $user->get('id');
 		if ($userid === 0) {
 			$hash = $this->getCookieName($listid, $row_id);
 			//set cookie
@@ -405,7 +403,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_in$ext", 'form', @$this->tmpl, array(), true);
 		$opts->row_id = JRequest::getInt('rowid');
 		$opts->elid = $this->getElement()->id;
-		$opts->userid = (int)$user->get('id');
+		$opts->userid = (int) $user->get('id');
 		$opts->canRate = (bool)$this->canRate();
 		$opts->mode = $params->get('rating-mode');
 		$opts->view = JRequest::getCmd('view');
@@ -438,13 +436,13 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
 		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
-		$opts->userid = (int)$user->get('id');
+		$opts->userid = (int) $user->get('id');
 		$opts->mode = $params->get('rating-mode');
 		$opts = json_encode($opts);
 		return "new FbRatingList('$id', $opts);\n";
 	}
 
-	function includeInSearchAll()
+	function includeInSearchAll($advancedMode = false)
 	{
 		return false;
 	}

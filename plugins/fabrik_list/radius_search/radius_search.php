@@ -169,7 +169,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 			return;
 		}
 
-		$v =(int)$v;
+		$v =(int) $v;
 		$key = $this->onGetFilterKey();
 
 		$filters['value'][$key] = $v;
@@ -276,7 +276,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		if ($v == '') {
 			return;
 		}
-		$v = (int)$v;
+		$v = (int) $v;
 		return $v;
 	}
 	/*
@@ -386,7 +386,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 			return false;
 		}
 		$opts = $this->getElementJSOptions($model);
-		$opts->steps = (int)$params->get('radius_max', 100);
+		$opts->steps = (int) $params->get('radius_max', 100);
 		$opts->unit = $params->get('radius_unit', 'km');
 		$opts->value = $this->getValue();
 		$opts = json_encode($opts);

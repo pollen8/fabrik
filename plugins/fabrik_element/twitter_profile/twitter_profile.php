@@ -18,27 +18,26 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 {
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$data = $this->format($data);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
 	 * take the recorded twitter screen name and parse it through the template
-	 * @param string $screenName
-	 * @return string|unknown
+	 * @param	string $screenName
+	 * @return	string|unknown
 	 */
 	protected function format($screenName)
 	{
-		if (trim($screenName) == '') {
+		if (trim($screenName) == '')
+		{
 			return '';
 		}
 

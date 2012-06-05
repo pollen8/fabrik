@@ -53,7 +53,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		}
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_date_format', 'd.m.Y');
-		$dateandage = (int)$params->get('details_dateandage', '0');
+		$dateandage = (int) $params->get('details_dateandage', '0');
 		
 		if (!$this->_editable)
 		{
@@ -177,9 +177,9 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			}
 			$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', JText::_('YEAR'))));
 			//Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
-			$date = date('Y') + (int)$params->get('birthday_forward', 0);
+			$date = date('Y') + (int) $params->get('birthday_forward', 0);
 			$yearopt = $params->get('birthday_yearopt');
-			$yearstart = (int)$params->get('birthday_yearstart');
+			$yearstart = (int) $params->get('birthday_yearstart');
 			$yeardiff = $yearopt == 'number' ? $yearstart : $date - $yearstart;
 			for ($i = $date; $i >= $date - $yeardiff; $i--)
 			{
@@ -371,7 +371,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		return "new FbBirthday('$id', $opts)";
 	}
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$db = FabrikWorker::getDbo();
 		$aNullDates = array('0000-00-000000-00-00','0000-00-00 00:00:00','0000-00-00','', $db->getNullDate());
@@ -520,7 +520,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			}
 		}
 		$data = json_encode($format);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 }

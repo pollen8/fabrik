@@ -9,30 +9,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-/**
- * compat with php < 5.1
- */
-if (!function_exists('htmlspecialchars_decode') )
-{
-	function htmlspecialchars_decode($text)
-	{
-		return strtr($text, array_flip(get_html_translation_table(HTML_SPECIALCHARS)));
-	}
-}
-
-if (!function_exists('array_combine'))
-{
-	function array_combine($arr1,$arr2)
-	{
-		$out = array();
-		foreach ($arr1 as $key1 => $value1)
-		{
-			$out[$value1] = $arr2[$key1];
-		}
-		return $out;
-	}
-}
-
 /*
  * generic tools that all models use
 * This code used to be in models/parent.php
@@ -144,7 +120,7 @@ class FabrikWorker {
 	 * @return	array	date info
 	 */
 
-	function strToDateTime($date, $format)
+	public static function strToDateTime($date, $format)
 	{
 		$weekdays = array(
 			'Sun' => '0',
@@ -181,7 +157,7 @@ class FabrikWorker {
 		$dateTime = array('sec' => 0, 'min' => 0, 'hour' => 0, 'day' => 1, 'mon' => 0, 'year' => 0, 'timestamp' => 0);
 		foreach ($date as $key => $val)
 		{
-			switch($key)
+			switch ($key)
 			{
 				case 'd':
 				case 'e':
@@ -266,7 +242,7 @@ class FabrikWorker {
 	 * @return	array	date bits keyed on date representations e.g.  m/d/Y
 	 */
 	
-	function str2Time($date, $format)
+	public static function str2Time($date, $format)
 	{
 		static $finalformat;
 		/**
@@ -285,7 +261,7 @@ class FabrikWorker {
 		if (!empty($matches))
 		{
 			$d = JFactory::getDate($date);
-			//$date = $d->toMySQL();
+			//$date = $d->toSql();
 			//$$$rob set to $format as we expect $date to already be in $format
 			$date = $d->toFormat($format);
 		}
@@ -373,8 +349,8 @@ class FabrikWorker {
 	 * @param	bool	abbreviated day?
 	 * @return	string	date
 	 */
-
-	protected function stripDay($date, $abrv = false)
+	
+	public static function stripDay($date, $abrv = false)
 	{
 		if ($abrv)
 		{
@@ -399,8 +375,7 @@ class FabrikWorker {
 		return $date;
 	}
 
-
-	protected function monthToInt($date, $abrv = false)
+	public static function monthToInt($date, $abrv = false)
 	{
 		if ($abrv)
 		{
@@ -435,7 +410,7 @@ class FabrikWorker {
 		return $date;
 	}
 
-	function isReserved($str)
+	public static function isReserved($str)
 	{
 		$_reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size", "ul_file_types", "ul_directory", "listid", 'rowid', 'itemid', 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
 		if (in_array(strtolower($str ), $_reservedWords))
@@ -479,7 +454,7 @@ class FabrikWorker {
 
 		$post = JRequest::get('request');
 		$this->_searchData = is_null($searchData) ?  $post : array_merge($post, $searchData);
-		$this->_searchData['JUtility::getToken'] = JUtility::getToken();
+		$this->_searchData['JSession::getFormToken'] = JSession::getFormToken();
 		$msg = FabrikWorker::replaceWithUserData($msg);
 		if (!is_null($theirUser))
 		{
@@ -501,7 +476,7 @@ class FabrikWorker {
 	 * @param	$msg	string to parse
 	 */
 
-	function replaceRequest(&$msg)
+	public function replaceRequest(&$msg)
 	{
 		$request = JRequest::get('request');
 		foreach ($request as $key => $val)
@@ -527,7 +502,7 @@ class FabrikWorker {
 	 * @return	string	parsed message
 	 */
 
-	public function replaceWithUserData($msg, $user = null, $prefix = 'my')
+	public static function replaceWithUserData($msg, $user = null, $prefix = 'my')
 	{
 		if (is_null($user))
 		{
@@ -535,7 +510,7 @@ class FabrikWorker {
 		}
 		if (is_object($user))
 		{
-			foreach ($user as $key=>$val)
+			foreach ($user as $key => $val)
 			{
 				if (substr($key, 0, 1) != '_')
 				{
@@ -576,7 +551,7 @@ class FabrikWorker {
 	 * @return	string	parsed message
 	 */
 
-	public function replaceWithGlobals($msg)
+	public static function replaceWithGlobals($msg)
 	{
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
@@ -584,10 +559,10 @@ class FabrikWorker {
 		$config = JFactory::getConfig();
 		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
 		$msg = str_replace('{$mosConfig_live_site}', JURI::base(), $msg);
-		$msg = str_replace('{$mosConfig_offset}', $config->getValue('offset'), $msg);
+		$msg = str_replace('{$mosConfig_offset}', $config->get('offset'), $msg);
 		$msg = str_replace('{$Itemid}', $Itemid, $msg);
-		$msg = str_replace('{$mosConfig_sitename}', $config->getValue('sitename'), $msg);
-		$msg = str_replace('{$mosConfig_mailfrom}',$config->getValue('mailfrom'), $msg);
+		$msg = str_replace('{$mosConfig_sitename}', $config->get('sitename'), $msg);
+		$msg = str_replace('{$mosConfig_mailfrom}',$config->get('mailfrom'), $msg);
 		$msg = str_replace('{where_i_came_from}', JRequest::getVar('HTTP_REFERER', '', 'server'), $msg);
 		foreach ($_SERVER as $key => $val)
 		{
@@ -682,7 +657,9 @@ class FabrikWorker {
 						if (is_array($m))
 						{
 							$newmatch .= ',' . implode(',', $m);
-						} else {
+						}
+						else
+						{
 							$newmatch .= ',' . $m;
 						}
 					}
@@ -731,7 +708,7 @@ class FabrikWorker {
 	 * @param	bool	make options out for the results
 	 */
 
-	public function readImages($imagePath, $folderPath, &$folders, &$images, $aFolderFilter, $makeOptions = true)
+	public static function readImages($imagePath, $folderPath, &$folders, &$images, $aFolderFilter, $makeOptions = true)
 	{
 		$imgFiles = FabrikWorker::fabrikReadDirectory($imagePath, '.', false, false, $aFolderFilter);
 		foreach ($imgFiles as $file)
@@ -746,7 +723,8 @@ class FabrikWorker {
 					$folders[] = JHTML::_('select.option', $ff_);
 					FabrikWorker::readImages($i_f, $ff_, $folders, $images, $aFolderFilter);
 				}
-			} else if (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
+			}
+			else if (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// leading / we don't need
 				$imageFile = substr($ff, 1);
@@ -766,7 +744,7 @@ class FabrikWorker {
 	 * @return	array	of file/folder names
 	 */
 
-	public function fabrikReadDirectory($path, $filter='.', $recurse=false, $fullpath=false, $aFolderFilter=array(), $foldersOnly = false)
+	public static function fabrikReadDirectory($path, $filter='.', $recurse=false, $fullpath=false, $aFolderFilter=array(), $foldersOnly = false)
 	{
 		$arr = array();
 		if (!@is_dir($path))
@@ -826,7 +804,7 @@ class FabrikWorker {
 	 * @return	string	first two letters of lang code - e.g. nl from 'nl-NL'
 	 */
 
-	public function getJoomfishLang()
+	public static function getJoomfishLang()
 	{
 		$lang = JFactory::getLanguage();
 		return array_shift(explode('-', $lang->getTag()));
@@ -838,7 +816,7 @@ class FabrikWorker {
 	 * @return	array	(bool should the filter be used, object the filter to use)
 	 */
 
-	public function getContentFilter()
+	public static function getContentFilter()
 	{
 		$dofilter = false;
 		$filter= false;
@@ -983,7 +961,7 @@ class FabrikWorker {
 	 * @param	string	$msg error message, should contain %s as we spintf in the error_get_last()'s message property
 	 */
 
-	public function logEval($val, $msg)
+	public static function logEval($val, $msg)
 	{
 		if (version_compare( phpversion(), '5.2.0', '>='))
 		{
@@ -1001,7 +979,7 @@ class FabrikWorker {
 	 * @param	bool	$jsonEncode
 	 */
 
-	public function log($type, $msg, $jsonEncode = true)
+	public static function log($type, $msg, $jsonEncode = true)
 	{
 		if ($jsonEncode)
 		{
@@ -1029,7 +1007,7 @@ class FabrikWorker {
 
 	public static function getDbo($loadJoomlaDb = false, $cnnId = null)
 	{
-		$sig = (int)$loadJoomlaDb . '.' . $cnnId;
+		$sig = (int) $loadJoomlaDb . '.' . $cnnId;
 		if (!self::$database)
 		{
 			self::$database = array();
@@ -1056,16 +1034,16 @@ class FabrikWorker {
 			}
 			else
 			{
-				$host = $conf->getValue('config.host');
-				$user = $conf->getValue('config.user');
-				$password = $conf->getValue('config.password');
-				$database = $conf->getValue('config.db');
+				$host = $conf->get('host');
+				$user = $conf->get('user');
+				$password = $conf->get('password');
+				$database = $conf->get('db');
 			}
-			$dbprefix = $conf->getValue('config.dbprefix');
-			$driver = $conf->getValue('config.dbtype');
+			$dbprefix = $conf->get('dbprefix');
+			$driver = $conf->get('dbtype');
 			//test for sawpping db table names
 			$driver .= '_fab';
-			$debug = $conf->getValue('config.debug');
+			$debug = $conf->get('debug');
 			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $dbprefix);
 			self::$database[$sig] = JDatabase::getInstance($options);
 		}
@@ -1078,7 +1056,7 @@ class FabrikWorker {
 	 * @param mixed - a list table or connection id
 	 */
 
-	public function getConnection($item = null)
+	public static function getConnection($item = null)
 	{
 		$jform = JRequest::getVar('jform', array(), 'post');
 		if (is_object($item))
@@ -1133,7 +1111,7 @@ class FabrikWorker {
 	 * @param	bool	force data to be an array
 	 */
 
-	public function JSONtoData($data, $toArray = false)
+	public static function JSONtoData($data, $toArray = false)
 	{
 
 		if (!strstr($data, '{'))
@@ -1172,12 +1150,14 @@ class FabrikWorker {
 	 * @return	bool
 	 */
 
-	public function isDate($d)
+	public static function isDate($d)
 	{
-		try {
+		try
+		{
 			$dt = new DateTime($d);
 		}
-		catch(Exception $e) {
+		catch (Exception $e)
+		{
 			return false;
 		}
 		return true;
@@ -1225,7 +1205,7 @@ class FabrikWorker {
 	 * @param	string	$priority - defaults that menu priorities override request - set to 'request' to inverse this priority
 	 */
 
-	public function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu')
+	public static function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu')
 	{
 		$app = JFactory::getApplication();
 		if ($priority === 'menu')
@@ -1233,12 +1213,12 @@ class FabrikWorker {
 			$val = JRequest::getVar($name, $val);
 			if (!$app->isAdmin())
 			{
-				$menus = JSite::getMenu();
+				$menus = $app->getMenu();
 				$menu = $menus->getActive();
 				//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
 				if (is_object($menu) && !$mambot)
 				{
-					$menu_params = new JParameter($menu->params);
+					$menu_params = new JRegistry($menu->params);
 					$val = $menu_params->get($name, $val);
 				}
 			}
@@ -1247,12 +1227,12 @@ class FabrikWorker {
 		{
 			if (!$app->isAdmin())
 			{
-				$menus = JSite::getMenu();
+				$menus = $app->getMenu();
 				$menu = $menus->getActive();
 				//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
 				if (is_object($menu) && !$mambot)
 				{
-					$menu_params = new JParameter($menu->params);
+					$menu_params = new JRegistry($menu->params);
 					$val = $menu_params->get($name, $val);
 				}
 			}

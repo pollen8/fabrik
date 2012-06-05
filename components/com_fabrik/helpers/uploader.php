@@ -126,8 +126,8 @@ class uploader extends JObject
 			return false;
 		}
 
-		$maxSize = (int)$params->get('upload_maxsize', 0);
-		if ($maxSize > 0 && (int)$file['size'] > $maxSize)
+		$maxSize = (int) $params->get('upload_maxsize', 0);
+		if ($maxSize > 0 && (int) $file['size'] > $maxSize)
 		{
 			$err = 'WARNFILETOOLARGE';
 			return false;

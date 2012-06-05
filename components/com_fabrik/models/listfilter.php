@@ -22,7 +22,8 @@ class FabrikFEModelListfilter extends FabModel {
 	 * get the table from the listModel
 	 * @see libraries/joomla/application/component/JModel#getTable($name, $prefix, $options)
 	 */
-	function getTable()
+	
+	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
 		return $this->listModel->getTable();
 	}
@@ -89,7 +90,7 @@ class FabrikFEModelListfilter extends FabModel {
 		//overwrite filters with querystring filter
 		$this->getQuerystringFilters($filters);
 		FabrikHelperHTML::debug($filters, 'filter array: after querystring filters');
-		$request =& $this->getPostFilterArray();
+		$request = $this->getPostFilterArray();
 		$this->counter = count(JArrayHelper::getValue($request, 'key', array()));
 		//overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for facted data counts
 		if(JRequest::getVar('fabrik_incsessionfilters', true))

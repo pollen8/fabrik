@@ -23,9 +23,9 @@ defined('_JEXEC') or die();
 
 function fabrikBuildRoute(&$query) {
 	$segments = array();
-
-	$menu = &JSite::getMenu();
-	$menuItem = &$menu->getItem(@$query['Itemid']);
+	$app = JFactory::getApplication();
+	$menu = $app->getMenu();
+	$menuItem = $menu->getItem(@$query['Itemid']);
 	if (isset($query['c']))
 	{
 		//$segments[] = $query['c'];//remove from sef url
@@ -127,7 +127,8 @@ function fabrikParseRoute($segments)
 	//vars are what Joomla then uses for its $_REQUEST array
 	$vars = array();
 	//Get the active menu item
-	$menu = JSite::getMenu();
+	$app = JFactory::getApplication();
+	$menu = $app->getMenu();
 	$item = $menu->getActive();
 	$view = $segments[0];
 	if (strstr($view, '.'))
@@ -139,28 +140,28 @@ function fabrikParseRoute($segments)
 		case 'form':
 		case 'details':
 			// 3.0 task no longer user
-			//$vars['task'] 		= 'view';
-			$vars['formid'] 	= JArrayHelper::getValue($segments, 1, 0);
+			//$vars['task'] = 'view';
+			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
 			// $$$ rob no longer passing in listid - no need and makes sef urls tidier
-			//$vars['listid'] 	= JArrayHelper::getValue($segments, 2, 0);
-			$vars['rowid'] 		= JArrayHelper::getValue($segments, 2, 0);
-			$vars['view'] 		= $segments[0];
+			//$vars['listid'] = JArrayHelper::getValue($segments, 2, 0);
+			$vars['rowid'] = JArrayHelper::getValue($segments, 2, 0);
+			$vars['view'] = $segments[0];
 			break;
 		case 'table':
 		case 'list':
-			$vars['view'] 		= JArrayHelper::getValue($segments, 0, '');
-			$vars['listid'] 	= JArrayHelper::getValue($segments, 1, 0);
+			$vars['view'] = JArrayHelper::getValue($segments, 0, '');
+			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
 			//$vars['format'] = $segments[2]; - //test may not be when filtering on tbl, sef, modrewrite and file extension on
 			//$vars['type'] = $segments[3];
 			break;
 		case 'import':
-			$vars['view'] 		= 'import';
-			$vars['listid'] 	= JArrayHelper::getValue($segments, 1, 0);
+			$vars['view'] = 'import';
+			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
 			$vars['filetype'] = JArrayHelper::getValue($segments, 2, 0);
 			break;
 		case 'visualization':
-			$vars['id'] 			= JArrayHelper::getValue($segments, 1, 0);;
-			$vars['format'] 	= JArrayHelper::getValue($segments, 2, 'html');
+			$vars['id'] = JArrayHelper::getValue($segments, 1, 0);;
+			$vars['format'] = JArrayHelper::getValue($segments, 2, 'html');
 			break;
 		default:
 			//echo "router: ahk no view! for $view";

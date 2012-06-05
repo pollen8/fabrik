@@ -37,7 +37,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 	 * which calls this function has already done the work for you
 	 */
 
-	function getBottomContent(&$params, &$formModel)
+	public function getBottomContent($params, $formModel)
 	{
 		$user = JFactory::getUser();
 		if ($user->get('id') == 0) {
@@ -63,7 +63,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		//see if the checkbox should be checked
 		$db = FabrikWorker::getDbo();
 		$ref =$this->getRef($formModel->getListModel()->getId());
-		$db->setQuery("SELECT COUNT(id) FROM #__{package}_notification WHERE user_id = ".(int)$user->get('id') . " AND reference = $ref");
+		$db->setQuery("SELECT COUNT(id) FROM #__{package}_notification WHERE user_id = ".(int) $user->get('id') . " AND reference = $ref");
 		$found = $db->loadResult();
 		$checked = $found ? "checked=\"checked\"" : "";
 		$this->html = "
@@ -106,7 +106,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		}
 	}
 
- 	function onAfterProcess($params, &$formModel)
+ 	public function onAfterProcess($params, &$formModel)
 	{
 		if ($params->get('notification_ajax', 0) == 1) {
 			return;

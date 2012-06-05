@@ -62,7 +62,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$data = $this->getEmailData();
-			$cycleId = (int)$data['jos_fabrik_subs_users___billing_cycle_raw'][0];
+			$cycleId = (int) $data['jos_fabrik_subs_users___billing_cycle_raw'][0];
 			$query->select('*')->from('#__fabrik_subs_plan_billing_cycle')
 			->where('id = ' . $cycleId);
 			$db->setQuery($query);
@@ -83,7 +83,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$data = $this->getEmailData();
-			$id = (int)$data['jos_fabrik_subs_users___gateway_raw'][0];
+			$id = (int) $data['jos_fabrik_subs_users___gateway_raw'][0];
 			$query->select('*')->from('#__fabrik_subs_payment_gateways')
 			->where('id = ' . $id);
 			$db->setQuery($query);
@@ -172,7 +172,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	 * @param	object	form model
 	 */
 
-	function onAfterProcess(&$params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$this->params = $params;
 		$this->formModel = $formModel;

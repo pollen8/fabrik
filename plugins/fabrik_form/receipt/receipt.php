@@ -25,7 +25,7 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 	 * which calls this function has already done the work for you
 	 */
 
-	function getBottomContent(&$params)
+	public function getBottomContent($params, $formModel)
 	{
 		if($params->get('ask-receipt')) {
 			$this->html = "
@@ -49,16 +49,17 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 
 	/**
 	 * process the plugin, called when form is submitted
-	 *
-	 * @param object $params
-	 * @param object form
+	 * @param	object	$params
+	 * @param	object	form model
 	 */
 
-	function onAfterProcess($params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
-		if ($params->get('ask-receipt')) {
+		if ($params->get('ask-receipt'))
+		{
 			$post = JRequest::get('post');
-			if (!array_key_exists('fabrik_email_copy', $post)) {
+			if (!array_key_exists('fabrik_email_copy', $post))
+			{
 				return;
 			}
 		}
@@ -70,7 +71,7 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 
 		//getEmailData returns correctly formatted {tablename___elementname} keyed results
 		//_formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms
-		$aData 		= array_merge($this->getEmailData(), $formModel->_formData);
+		$aData = array_merge($this->getEmailData(), $formModel->_formData);
 
 		$message = $params->get('receipt_message');
 		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');

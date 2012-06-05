@@ -24,7 +24,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 	 * @return string formatted value
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$str = '';
@@ -68,9 +68,9 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$c = new stdClass();
 		// 14/06/2011 changed over to color param object from ind colour settings
-		$c->red = (int)$vars[0];
-		$c->green = (int)$vars[1];
-		$c->blue = (int)$vars[2];
+		$c->red = (int) $vars[0];
+		$c->green = (int) $vars[1];
+		$c->blue = (int) $vars[2];
 		$opts->colour = $c;
 		$swatch = $params->get('colourpicker-swatch', 'default.js');
 		$swatchFile = JPATH_SITE . '/plugins/fabrik_element/colourpicker/swatches/' . $swatch;

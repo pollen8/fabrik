@@ -48,7 +48,7 @@ class bitly {
 			return 0;
 		}
 		else {
-			return (int)$this->status_code;
+			return (int) $this->status_code;
 		}
 	}
 

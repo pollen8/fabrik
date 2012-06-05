@@ -31,7 +31,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getBottomContent()
 	 */
 
-	function getBottomContent(&$params, &$formModel)
+	public function getBottomContent($params, $formModel)
 	{
 		if (!$this->show($params, $formModel)) {
 			return;
@@ -109,10 +109,10 @@ $where = $params->get('paginate_where');
 				return true;
 				break;
 			case 'form':
-				return (int)$formModel->_editable == 1;
+				return (int) $formModel->_editable == 1;
 				break;
 			case 'details':
-				return (int)$formModel->_editable == 0;
+				return (int) $formModel->_editable == 0;
 				break;
 		}
 	}

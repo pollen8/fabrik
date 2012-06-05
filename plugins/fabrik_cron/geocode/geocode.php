@@ -20,7 +20,7 @@ require_once(JPATH_SITE . '/plugins/fabrik_cron/geocode/libs/gmaps2.php');
 
 class plgFabrik_CronGeocode extends plgFabrik_Cron {
 
-	function canUse()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		return true;
 	}
@@ -50,8 +50,8 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 
 		// grab all the params, like GMaps key, field names to use, etc
 		// $geocode_gmap_key = $params->get('geocode_gmap_key');
-		$geocode_batch_limit = (int)$params->get('geocode_batch_limit', '0');
-		$geocode_delay = (int)$params->get('geocode_delay', '0');
+		$geocode_batch_limit = (int) $params->get('geocode_batch_limit', '0');
+		$geocode_delay = (int) $params->get('geocode_delay', '0');
 		$geocode_is_empty = $params->get('geocode_is_empty');
 		$geocode_zoom_level = $params->get('geocode_zoom_level', '4');
 		$geocode_map_element_long = $params->get('geocode_map_element');

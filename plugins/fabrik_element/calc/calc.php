@@ -20,7 +20,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	 * @return	string
 	 */
 
-	function getDefaultValue($data = array(), $repeatCounter = 0)
+	function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default))
 		{
@@ -175,6 +175,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		return $default;
 	}
+	
 	/**
 	 * determines the value for the element in the form view
 	 * @param	array	data
@@ -364,10 +365,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	/**
 	 * fudge the CSV export so that we get the calculated result regardless of whether
 	 * the value has been stored in the database base (mimics what the user would see in the table view)
-	 * @see components/com_fabrik/models/plgFabrik_Element#renderListData($data, $oAllRowsData)
+	 * @see components/com_fabrik/models/plgFabrik_Element#renderListData($data, $thisRow)
 	 */
 
-	function renderListData_csv($data, &$thisRow)
+	public function renderListData_csv($data, &$thisRow)
 	{
 		$val = $this->renderListData($data, $thisRow);
 		$col = $this->getFullName(false, true, false);
@@ -415,7 +416,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		else
 		{
 			/* make a hidden field instead*/
-			$str[] = '<input type="hidden" class="fabrikinput" name="'.$name.'" id="'.$id.'" value="'.$value.'" />';
+			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
 		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
 		return implode("\n", $str);
