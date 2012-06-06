@@ -24,7 +24,7 @@ class plgFabrik_ValidationruleIsNot extends plgFabrik_Validationrule
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
 	protected $icon = 'notempty';
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_Validationrule::validate()
@@ -38,7 +38,7 @@ class plgFabrik_ValidationruleIsNot extends plgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
-		$isnot = $isnot[$c];
+		$isnot = $isnot[$pluginc];
 		$isnot = explode('|', $isnot);
 		foreach ($isnot as $i)
 		{
