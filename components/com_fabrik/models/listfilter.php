@@ -61,7 +61,7 @@ class FabrikFEModelListfilter extends FabModel {
 		{
 			return $this->_request;
 		}
-
+		$profiler = JProfiler::getInstance('Application');
 		$filters = array();
 
 		// $$$ rob clears all list filters, and does NOT apply any
@@ -86,11 +86,13 @@ class FabrikFEModelListfilter extends FabModel {
 		{
 			$this->clearFilters();
 		}
-
+		JDEBUG ? $profiler->mark('listfilter:cleared') : null;
 		//overwrite filters with querystring filter
 		$this->getQuerystringFilters($filters);
+		JDEBUG ? $profiler->mark('listfilter:querystring filters got') : null;
 		FabrikHelperHTML::debug($filters, 'filter array: after querystring filters');
 		$request = $this->getPostFilterArray();
+		JDEBUG ? $profiler->mark('listfilter:request got') : null;
 		$this->counter = count(JArrayHelper::getValue($request, 'key', array()));
 		//overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for facted data counts
 		if(JRequest::getVar('fabrik_incsessionfilters', true))
@@ -98,7 +100,7 @@ class FabrikFEModelListfilter extends FabModel {
 			$this->getSessionFilters($filters);
 		}
 		FabrikHelperHTML::debug($filters, 'filter array: after session filters');
-
+		JDEBUG ? $profiler->mark('listfilter:session filters got') : null;
 		//the search form search all has lower priority than the filter search all and search form filters
 		$this->getSearchFormSearchAllFilters($filters);
 
@@ -109,10 +111,10 @@ class FabrikFEModelListfilter extends FabModel {
 
 		//overwrite filters with 'search all' filter
 		$this->getSearchAllFilters($filters);
-
+		JDEBUG ? $profiler->mark('listfilter:search all done') : null;
 		//finally overwrite filters with post filters
 		$this->getPostFilters($filters);
-
+		JDEBUG ? $profiler->mark('listfilter:post filters got') : null;
 		FabrikHelperHTML::debug($filters, 'filter array: after getpostfilters');
 		$this->_request = $filters;
 		FabrikHelperHTML::debug($this->_request, 'filter array');
