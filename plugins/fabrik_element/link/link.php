@@ -18,39 +18,35 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	protected $fieldDesc = 'TEXT';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * shows the data formatted for the table view
+	 * @param string data
+	 * @param object all the data in the tables current row
+	 * @return string formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	function renderListData($data, $oAllRowsData)
 	{
 		$listModel = $this->getlistModel();
 		$params = $this->getParams();
 		$target = $params->get('link_target', '');
 		$smart_link = $params->get('link_smart_link', false);
-		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox'))
-		{
+		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox')) {
 			FabrikHelperHTML::slimbox();
 		}
 		$data = FabrikWorker::JSONtoData($data, true);
 
-		if (!empty($data))
-		{
-			if (array_key_exists('label', $data))
-			{
-				$data = (array) $this->_renderListData($data, $thisRow);
-			}
-			else
-			{
-				for ($i = 0; $i < count($data); $i++)
-				{
+		if (!empty($data)) {
+			if (array_key_exists('label', $data)) {
+				$data = (array)$this->_renderListData($data, $oAllRowsData);
+			} else {
+				for ($i = 0; $i < count($data); $i++) {
 					$data[$i] = JArrayHelper::fromObject($data[$i]);
-					$data[$i] = $this->_renderListData($data[$i], $thisRow);
+					$data[$i] = $this->_renderListData($data[$i], $oAllRowsData);
 				}
 			}
 		}
 		$data = json_encode($data);
-		return parent::renderListData($data, $thisRow);
+		return parent::renderListData($data, $oAllRowsData);
 	}
 
 	/**
@@ -59,7 +55,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	 * @return string formatted value
 	 */
 
-	protected function _renderListData($data, $thisRow)
+	protected function _renderListData($data, $oAllRowsData)
 	{
 		if (is_string($data)) {
 			$data = FabrikWorker::JSONtoData($data, true);
@@ -70,28 +66,32 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			if (count($data) == 1) {
 				$data['label'] = JArrayHelper::getValue($data, 'link');
 			}
-			if (empty($data['label']) && empty($data['link'])) {
-				return '';
+			$_lnk = trim($data['link']);
+			$_lbl = trim($data['label']);
+			if (strtolower($_lnk) == 'http://' || strtolower($_lnk) == 'https://') {
+				$_lnk = ''; //threat some default values as empty
 			}
 			$target = $params->get('link_target', '');
 			if ($listModel->getOutPutFormat() != 'rss') {
-				if (empty($data['label'])) {
-					$link = $data['link'];
-				} else {
+				$link = '';
+				if (empty($_lbl)) {
+					$_lbl = $_lnk; //if label is empty, set as a copy of the link
+				}
+				if ((!empty($_lbl)) && (!empty($_lnk))) {
 					$smart_link = $params->get('link_smart_link', false);
 					if ($smart_link || $target == 'mediabox') {
-						$smarts = $this->_getSmartLinkType($data['link']);
-						$link = '<a href="'.$data['link'].'" rel="lightbox['.$smarts['type'].' '.$smarts['width'].' '.$smarts['height'].']">'.$data['label'].'</a>';
+						$smarts = $this->_getSmartLinkType($_lnk);
+						$link = '<a href="' . $_lnk . '" rel="lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">' . $_lbl . '</a>';
 					}
 					else {
-						$link = '<a href="'.$data['link'].'" target="'.$target.'">'.$data['label'].'</a>';
+						$link = '<a href="' . $_lnk . '" target="' . $target . '">' . $_lbl . '</a>';
 					}
 				}
 			} else {
-				$link = $data['link'];
+				$link = $_lnk;
 			}
 			$w = new FabrikWorker();
-			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($thisRow));
+			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($oAllRowsData));
 			return $link;
 		}
 		return $data;
@@ -139,26 +139,24 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		}
 		if (!$this->_editable)
 		{
-			if (empty($value['link']))
-			{
-				return $value['label'];
+			$_lbl = trim($value['label']);
+			$_lnk = trim($value['link']);
+			$w = new FabrikWorker();
+			$_lnk = is_array($data) ? $w->parseMessageForPlaceHolder($_lnk, $data) : $w->parseMessageForPlaceHolder($_lnk);
+			if (empty($_lnk) || strtolower($_lnk) == 'http://' || strtolower($_lnk) == 'https://') {
+				return ''; //don't return empty links
 			}
-			else
-			{
-				$w = new FabrikWorker();
-				$value['link'] = is_array($data) ? $w->parseMessageForPlaceHolder($value['link'], $data) : $w->parseMessageForPlaceHolder($value['link']);
-				$target = $params->get('link_target', '');
-				$smart_link = $params->get('link_smart_link', false);
-				if ($smart_link || $target == 'mediabox')
-				{
-					$smarts = $this->_getSmartLinkType( $value['link']);
-					return '<a href="'.$value['link'].'" rel="lightbox['.$smarts['type'].' '.$smarts['width'].' '.$smarts['height'].']">'.$value['label'].'</a>';
-				}
-				else
-				{
-					return '<a href="'.$value['link'].'" target="'.$target.'">' . $value['label'] . '</a>';
-				}
+			$target = $params->get('link_target', '');
+			$smart_link = $params->get('link_smart_link', false);
+			if (empty($_lbl)) {
+				$_lbl = $_lnk; //if label is empty, set as a copy of the link
 			}
+			if ($smart_link || $target == 'mediabox')
+			{
+				$smarts = $this->_getSmartLinkType($_lnk);
+				return '<a href="' . $_lnk . '" rel="lightbox['.$smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">' . $_lbl . '</a>';
+			}
+			return '<a href="' . $_lnk . '" target="' . $target . '">' . $_lbl . '</a>';
 		}
 
 		$labelname = FabrikString::rtrimword( $name, "[]").'[label]';
@@ -182,23 +180,22 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::_getEmailValue()
+	 * used to format the data when shown in the form's email
+	 * @param mixed element's data
+	 * @return string formatted value
 	 */
 
-	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	protected function _getEmailValue($value)
 	{
-		if (is_string($value))
-		{
+		if (is_string($value)) {
 			$value = FabrikWorker::JSONtoData($value, true);
 			$value['label'] = JArrayHelper::getValue($value, 0);
 			$value['link'] = JArrayHelper::getValue($value, 1);
 		}
-		if (is_array($value))
-		{
+		if (is_array($value)) {
 			$w = new FabrikWorker();
-			$link = $w->parseMessageForPlaceHolder($value['link']);
-			$value = '<a href="' . $link . '" >' . $value['label'] . '</a>';
+			$link 	= $w->parseMessageForPlaceHolder($value['link']);
+			$value = '<a href="'.$link.'" >'.$value['label'].'</a>';
 		}
 		return $value;
 	}
@@ -218,7 +215,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$params = $this->getParams();
 		if (is_array($val)) {
 			if ($params->get('use_bitly')) {
-				require_once(JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php');
+				require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'bitly'.DS.'bitly.php');
 				$login = $params->get('bitly_login');
 				$key = $params->get('bitly_apikey');
 				$bitly = new bitly($login, $key);
