@@ -1018,7 +1018,7 @@ class FabrikFEModelList extends JModelForm {
 			{
 				$linkWhere[] = "link LIKE 'index.php?option=com_fabrik&view=list&listid=" . (int) $element->list_id . "%'";
 			}
-			$query .= 'type = "component" AND (' . implode(' OR ', $linkWhere) . ')';
+			$where = 'type = "component" AND (' . implode(' OR ', $linkWhere) . ')';
 			$query->where($where);
 			$db->setQuery($query);
 			$this->tableLinks = $db->loadObjectList();
