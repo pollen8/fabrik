@@ -42,7 +42,7 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 		{
 			return true;
 		}
-		return is_numeric( $element->unNumberFormat($data) );
+		return is_numeric( $elementModel->unNumberFormat($data) );
 	}
 
 	/**
