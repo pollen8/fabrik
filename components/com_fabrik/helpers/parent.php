@@ -52,7 +52,7 @@ class FabrikWorker {
 	 * @param	string	filename
 	 * @return	bool
 	 */
-	
+
 	function isImageExtension($file)
 	{
 		$path_parts = pathinfo($file);
@@ -64,7 +64,7 @@ class FabrikWorker {
 	 * @param	string	filename
 	 * @return	bool
 	 */
-	
+
 	function isAudioExtension($file)
 	{
 		$path_parts = pathinfo($file);
@@ -211,7 +211,7 @@ class FabrikWorker {
 	 * @param	string  $date
 	 * @return	string	date
 	 */
-	
+
 	function specialStrToMySQL($date, $gmt = true)
 	{
 		/**
@@ -241,7 +241,7 @@ class FabrikWorker {
 	 * @param	string	format that the date should be in
 	 * @return	array	date bits keyed on date representations e.g.  m/d/Y
 	 */
-	
+
 	public static function str2Time($date, $format)
 	{
 		static $finalformat;
@@ -349,7 +349,7 @@ class FabrikWorker {
 	 * @param	bool	abbreviated day?
 	 * @return	string	date
 	 */
-	
+
 	public static function stripDay($date, $abrv = false)
 	{
 		if ($abrv)
@@ -1218,8 +1218,8 @@ class FabrikWorker {
 				//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
 				if (is_object($menu) && !$mambot)
 				{
-					$menu_params = new JRegistry($menu->params);
-					$val = $menu_params->get($name, $val);
+					//$menu_params = new JRegistry($menu->params);
+					$val = $menu->params->get($name, $val);
 				}
 			}
 		}
@@ -1232,15 +1232,15 @@ class FabrikWorker {
 				//if there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
 				if (is_object($menu) && !$mambot)
 				{
-					$menu_params = new JRegistry($menu->params);
-					$val = $menu_params->get($name, $val);
+					//$menu_params = new JRegistry($menu->params);
+					$val = $menu->params->get($name, $val);
 				}
 			}
 			$val = JRequest::getVar($name, $val);
 		}
 		return $val;
 	}
-	
+
 	/**
 	* access control function for determining if the user can perform
 	* a designated function on a specific row

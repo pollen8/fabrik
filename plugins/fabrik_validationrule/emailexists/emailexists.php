@@ -39,10 +39,10 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		$params = $this->getParams();
 		//as ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object)$params->get('emailexists_or_not');
-		$ornot = isset($ornot->$c) ? $ornot->$c : 'fail_if_exists';
+		$ornot = isset($ornot->$pluginc) ? $ornot->$pluginc : 'fail_if_exists';
 
 		$user_field = (array) $params->get('emailexists_user_field', array());
-		$user_field = $user_field[$c];
+		$user_field = $user_field[$pluginc];
 		$user_id = 0;
 		if ((int) $user_field !== 0)
 		{
@@ -118,16 +118,16 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 	* @return	string	label
 	*/
 
-	protected function getLabel($elementModel, $c)
+	protected function getLabel($elementModel, $pluginc)
 	{
 		$params = $this->getParams();
 		//as ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object) $params->get('emailexists_or_not');
-		$c = (int) $c;
+		$pluginc = (int) $pluginc;
 		$cond = '';
 		foreach ($ornot as $k => $v)
 		{
-			if ($k == $c)
+			if ($k == $pluginc)
 			{
 				$cond = $v;
 			}
@@ -138,7 +138,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		}
 		else
 		{
-			return parent::getLabel($elementModel, $c);
+			return parent::getLabel($elementModel, $pluginc);
 		}
 	}
 

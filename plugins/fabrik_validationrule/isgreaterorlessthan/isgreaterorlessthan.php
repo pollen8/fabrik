@@ -37,11 +37,11 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
  		$params = $this->getParams();
  		$formdata = $elementModel->getForm()->_formData;
  		$cond = $params->get('isgreaterorlessthan-greaterthan');
- 		$cond = $cond[$c] == '1' ? '>' : '<';
- 		$otherElementModel = $this->getOtherElement($elementModel, $c);
+ 		$cond = $cond[$pluginc] == '1' ? '>' : '<';
+ 		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
  		$otherFullName = $otherElementModel->getFullName(false, true, false);
  		$compare = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
- 		if ($this->allowEmpty($elementModel, $c) && ($data === '' || $compare === ''))
+ 		if ($this->allowEmpty($elementModel, $pluginc) && ($data === '' || $compare === ''))
  		{
  			return true;
  		}
@@ -57,19 +57,19 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	* @return	bool
 	*/
 
-	protected function allowEmpty($elementModel, $c)
+	protected function allowEmpty($elementModel, $pluginc)
 	{
 		$params = $this->getParams();
 		$allow_empty = $params->get('isgreaterorlessthan-allow_empty');
-		$allow_empty = $allow_empty[$c];
+		$allow_empty = $allow_empty[$pluginc];
 		return $allow_empty == '1';
 	}
 
-	private function getOtherElement($elementModel, $c)
+	private function getOtherElement($elementModel, $pluginc)
 	{
 		$params = $this->getParams();
 		$otherfield = (array) $params->get('isgreaterorlessthan-comparewith', array());
-		$otherfield = $otherfield[$c];
+		$otherfield = $otherfield[$pluginc];
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 

@@ -110,7 +110,7 @@ class plgFabrik_Element extends FabrikPlugin
 		parent::__construct($subject, $config);
 		$this->_access = new stdClass();
 	}
-	
+
 	/**
 	 * Method to set the element id
 	 *
@@ -947,7 +947,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str = '';
 		if ($this->canView() || $this->canUse())
 		{
-			$rollOver = $params->get('rollover') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
+			$rollOver = $params->get('rollover', '') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
 			$labelClass = 'fabrikLabel ';
 			if (empty($element->label))
 			{
@@ -1095,13 +1095,13 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		return FabrikString::safeColName($this->getFullName(false, true, false));
 	}
-	
+
 	/**
 	 * @since 3.0.6
 	 * get the field name to use in the list's slug url
 	 * @param	bool	$raw
 	 */
-	
+
 	public function getSlugName($raw = false)
 	{
 		return $this->getFilterFullName();
@@ -1775,7 +1775,7 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		if (!isset($this->_params))
 		{
-			//$this->params = new fabrikParams($this->getElement()->params, JPATH_SITE . '/administrator/components/com_fabrik/xml/element.xml' , 'component');
+			//$this->_params = new fabrikParams($this->getElement()->params, JPATH_SITE . '/administrator/components/com_fabrik/xml/element.xml' , 'component');
 			$this->_params = new JRegistry($this->getElement()->params);
 			//$this->getPluginParams();
 		}
@@ -1792,13 +1792,13 @@ class plgFabrik_Element extends FabrikPlugin
 	{
 		if (!isset($this->_pluginParams))
 		{
-			$this->_pluginParams = $this->_loadPluginParams();
+			$this->_pluginParams = $this->loadPluginParams();
 		}
 		return $this->_pluginParams;
 	}
 
 	/**
-	 * @deprecated 
+	 * @deprecated
 	 */
 	protected function loadPluginParams()
 	{

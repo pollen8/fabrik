@@ -168,11 +168,13 @@ class FabrikControllerForm extends JControllerForm
 		}
 		else
 		{
-			$page = 'index.php?option=com_fabrik&task=list.view&cid[]=' . $model->getlistModel()->getTable()->id;
+			$page = 'index.php?option=com_fabrik&task=list.view&listid=' . $model->getlistModel()->getTable()->id;
 		}
-		// $$$ rob was redirecting back to admin list view and not list data view (list.view) 
+		// $$$ rob was redirecting back to admin list view and not list data view (list.view)
 		// $$$ rob put back in as list views are now called using /administrator/index.php?option=com_fabrik&task=list.view&listid=1
-		$page = JRequest::getVar('fabrik_referrer', $page);
+		// $$$ hugh - commented this out, as it was overriding the 'apply' URL form above, and (if I'm reading Rob's comments correctly)
+		// fixing the $page setting above, to use task=list.view&listid=X should work?
+		//$page = JRequest::getVar('fabrik_referrer', $page);
 		$this->setRedirect($page, $msg);
 	}
 }

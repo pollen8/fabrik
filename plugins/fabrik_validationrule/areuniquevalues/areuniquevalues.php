@@ -38,13 +38,13 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$otherfield = (array) $params->get('areuniquevalues-otherfield', array());
-		$otherfield = $otherfield[$c];
+		$otherfield = $otherfield[$pluginc];
 		$element = $elementModel->getElement();
 		$listModel = $elementModel->getlistModel();
 		$table = $listModel->getTable();
 		if ((int) $otherfield !== 0)
 		{
-			$otherElementModel = $this->getOtherElement($elementModel, $c);
+			$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
 			$otherFullName = $otherElementModel->getFullName(false, true, false);
 			$otherfield = $otherElementModel->getFullName(false, false, false);
 		}
@@ -90,11 +90,11 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		return ($c == 0) ? true : false;
 	}
 
-	private function getOtherElement($elementModel, $c)
+	private function getOtherElement($elementModel, $pluginc)
 	{
 		$params = $this->getParams();
 		$otherfield = (array) $params->get('areuniquevalues-otherfield');
-		$otherfield = $otherfield[$c];
+		$otherfield = $otherfield[$pluginc];
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 
@@ -105,19 +105,19 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 	* @return	string	label
 	*/
 
-	protected function getLabel($elementModel, $c)
+	protected function getLabel($elementModel, $pluginc)
 	{
-		$otherElementModel = $this->getOtherElement($elementModel, $c);
+		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
 		$params = $this->getParams();
 		$otherfield = (array) $params->get('areuniquevalues-otherfield');
-		$otherfield = $otherfield[$c];
+		$otherfield = $otherfield[$pluginc];
 		if ((int) $otherfield !== 0)
 		{
 			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
 		}
 		else
 		{
-			return parent::getLabel($elementModel, $c);
+			return parent::getLabel($elementModel, $pluginc);
 		}
 	}
 }
