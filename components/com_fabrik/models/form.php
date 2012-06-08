@@ -600,12 +600,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * -------->element
 	 * --->group
 	 * if run before then existing data returned
-	 * @return array element objects
+	 * @return	array	element objects
 	 */
 
 	function getGroupsHiarachy()
 	{
-		if (!isset($this->groups)) {
+		if (!isset($this->groups))
+		{
 			$this->getGroups();
 			$this->groups = FabrikWorker::getPluginManager()->getFormPlugins($this);
 		}
@@ -614,20 +615,25 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get an list of elements that aren't shown in the table view
-	 *
-	 * @return array of element table objects
+	 * @return	array	of element table objects
 	 */
+	
 	function getElementsNotInTable()
 	{
-		if (!isset($this->_elementsNotInTable)) {
+		if (!isset($this->_elementsNotInTable))
+		{
 			$this->_elementsNotInTable = array();
 			$groups = $this->getGroupsHiarachy();
-			foreach ($groups as $group) {
+			foreach ($groups as $group)
+			{
 				$elements = $group->getPublishedElements();
-				foreach ($elements as $elementModel) {
-					if ($elementModel->canView() || $elementModel->canUse()) {
+				foreach ($elements as $elementModel)
+				{
+					if ($elementModel->canView() || $elementModel->canUse())
+					{
 						$element = $elementModel->getElement();
-						if (!isset($element->show_in_list_summary) || !$element->show_in_list_summary) {
+						if (!isset($element->show_in_list_summary) || !$element->show_in_list_summary)
+						{
 							$this->_elementsNotInTable[] = $element;
 						}
 					}
@@ -641,20 +647,20 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * this checks to see if the form has a file upload element
-	 * and returns the correct
-	 * encoding type for the form
-	 * @param int form id
-	 * @param object forms elements
-	 * @return string form encoding type
+	 * and returns the correct encoding type for the form
+	 * @return	string	form encoding type
 	 */
 
 	function getFormEncType()
 	{
 		$groups = $this->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
-				if ($elementModel->isUpload()) {
+			foreach ($elementModels as $elementModel)
+			{
+				if ($elementModel->isUpload())
+				{
 					return "multipart/form-data";
 				}
 			}
@@ -2971,10 +2977,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * attempts to determine if the form contains the element
 	 * @param	string	element name to search for
 	 * @param	bool	check search name against element id
+	 * @param	bool	check short element name
 	 * @return	bool	true if found, false if not found
 	 */
 
-	function hasElement($searchName, $checkInt = false)
+	function hasElement($searchName, $checkInt = false, $checkShort = true)
 	{
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
@@ -2995,7 +3002,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						return true;
 					}
 				}
-				if ($searchName == $element->name)
+				if ($searchName == $element->name && $checkShort)
 				{
 					$this->_currentElement = $elementModel;
 					return true;
@@ -3029,12 +3036,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * get an element
 	 * @param	string	$searchName
 	 * @param	bool	check search name against element id
+	 * @param	bool	check short element name
 	 * @return	mixed	ok: element model not ok: false
 	 */
 
-	function getElement($searchName, $checkInt = false)
+	function getElement($searchName, $checkInt = false, $checkShort = true)
 	{
-		return $this->hasElement($searchName, $checkInt) ? $this->_currentElement : false;
+		return $this->hasElement($searchName, $checkInt, $checkShort) ? $this->_currentElement : false;
 	}
 
 	/**
