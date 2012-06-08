@@ -102,7 +102,7 @@ if (!empty($conditions))
 	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
 	$listParams->set('filter-value', $prefilters['filter-value']);
 	$listParams->set('filter-access', $prefilters['filter-access']);
-	$listParams->set('filter-eval', $prefilters['filter-eval']);
+	$listParams->set('filter-eval', JArrayHelper::getValue($prefilters, 'filter-eval'));
 }
 
 $model->randomRecords = $random;

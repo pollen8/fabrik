@@ -61,7 +61,7 @@ class FabrikFEModelListfilter extends FabModel {
 		{
 			return $this->_request;
 		}
-
+		$profiler = JProfiler::getInstance('Application');
 		$filters = array();
 
 		// $$$ rob clears all list filters, and does NOT apply any
@@ -86,11 +86,13 @@ class FabrikFEModelListfilter extends FabModel {
 		{
 			$this->clearFilters();
 		}
-
+		JDEBUG ? $profiler->mark('listfilter:cleared') : null;
 		//overwrite filters with querystring filter
 		$this->getQuerystringFilters($filters);
+		JDEBUG ? $profiler->mark('listfilter:querystring filters got') : null;
 		FabrikHelperHTML::debug($filters, 'filter array: after querystring filters');
 		$request = $this->getPostFilterArray();
+		JDEBUG ? $profiler->mark('listfilter:request got') : null;
 		$this->counter = count(JArrayHelper::getValue($request, 'key', array()));
 		//overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for facted data counts
 		if(JRequest::getVar('fabrik_incsessionfilters', true))
@@ -98,7 +100,7 @@ class FabrikFEModelListfilter extends FabModel {
 			$this->getSessionFilters($filters);
 		}
 		FabrikHelperHTML::debug($filters, 'filter array: after session filters');
-
+		JDEBUG ? $profiler->mark('listfilter:session filters got') : null;
 		//the search form search all has lower priority than the filter search all and search form filters
 		$this->getSearchFormSearchAllFilters($filters);
 
@@ -109,10 +111,10 @@ class FabrikFEModelListfilter extends FabModel {
 
 		//overwrite filters with 'search all' filter
 		$this->getSearchAllFilters($filters);
-
+		JDEBUG ? $profiler->mark('listfilter:search all done') : null;
 		//finally overwrite filters with post filters
 		$this->getPostFilters($filters);
-
+		JDEBUG ? $profiler->mark('listfilter:post filters got') : null;
 		FabrikHelperHTML::debug($filters, 'filter array: after getpostfilters');
 		$this->_request = $filters;
 		FabrikHelperHTML::debug($this->_request, 'filter array');
@@ -723,7 +725,8 @@ class FabrikFEModelListfilter extends FabModel {
 	{
 		$item = $this->listModel->getTable();
 		$request = JRequest::get('get');
-		$elements = $this->listModel->getElements('filtername');
+		//$elements = $this->listModel->getElements('filtername');
+		$formModel = $this->listModel->getFormModel();
 		$filterkeys = array_keys($filters);
 		foreach ($request as $key => $val)
 		{
@@ -749,22 +752,12 @@ class FabrikFEModelListfilter extends FabModel {
 			{
 				$raw = 1;
 				// withouth this line releated data links 'listname___elementname_raw=X' where not having their filter applied
-				$key  = FabrikString::safeColName(FabrikString::rtrimword($oldkey, '_raw'));
+				$key = FabrikString::safeColName(FabrikString::rtrimword($oldkey, '_raw'));
 			}
-			if (!array_key_exists($key, $elements))
-			{
-				continue;
-			}
-			$elementModel = $elements[$key];
+			$elementModel = $formModel->getElement(FabrikString::rtrimword($oldkey, '_raw'), false, false);
 			if (!is_a($elementModel, 'plgFabrik_Element'))
 			{
-				//check if raw key available
-				$key = FabrikString::safeColName(FabrikString::rtrimword($oldkey, '_raw'));
-				$elementModel = $elements[$key];
-				if (!is_a($elementModel, 'plgFabrik_Element'))
-				{
-					continue;
-				}
+				continue;
 			}
 			
 			//$eval = FABRIKFILTER_TEXT;
@@ -829,16 +822,15 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * insert individual querystring filter into filter array
-	 * @param $elementModel
-	 * @param $filters
-	 * @param $value
-	 * @param $condition
-	 * @param $join
-	 * @param $grouped
-	 * @param $eval
-	 * @param $key
-	 * @param $raw is the filter a raw filter (tablename___elementname_raw=foo)
-	 * @return unknown_type
+	 * @param	object	$elementModel
+	 * @param	array	&$filters
+	 * @param	mixed	$value
+	 * @param	string	$condition
+	 * @param	string	$join
+	 * @param	bool	$grouped
+	 * @param	boll	$eval
+	 * @param	string	$key
+	 * @param	string	$raw is the filter a raw filter (tablename___elementname_raw=foo)
 	 */
 
 	private function indQueryString($elementModel, &$filters, $value, $condition, $join, $grouped, $eval, $key, $raw = false)
@@ -1076,18 +1068,19 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * load up filters stored in the session from previous searches
-	 * @param array $filters
+	 * @param	array	&$filters
 	 */
 
 	private function getSessionFilters(&$filters)
 	{
+		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 		$elements = $this->listModel->getElements('id');
 		$item = $this->listModel->getTable();
 		//$identifier = $item->id;
 		$identifier = JRequest::getVar('listref', $this->listModel->getRenderContext());
 		$identifier = $this->listModel->getRenderContext();
-		$key = 'com_fabrik.list'.$identifier.'.filter';
+		$key = 'com_fabrik.list' . $identifier . '.filter';
 		$sessionfilters = JArrayHelper::fromObject($app->getUserState($key));
 		$filterkeys = array_keys($filters);
 		if (!is_array($sessionfilters) || !array_key_exists('key', $sessionfilters))
@@ -1104,10 +1097,12 @@ class FabrikFEModelListfilter extends FabModel {
 		}
 		//end ignore
 		$request = $this->getPostFilterArray();
-
+		JDEBUG ? $profiler->mark('listfilter:session filters getPostFilterArray') : null;
 		$key = 'com_fabrik.list' . $identifier . '.filter.searchall';
 		$requestKey = $this->getSearchAllRequestKey();
+		JDEBUG ? $profiler->mark('listfilter:session filters getSearchAllRequestKey') : null;
 		$pluginKeys = $this->getPluginFilterKeys();
+		JDEBUG ? $profiler->mark('listfilter:session filters getPluginFilterKeys') : null;
 		$search = $app->getUserStateFromRequest($key, $requestKey);
 
 		$postkeys = JArrayHelper::getValue($request, 'key', array());

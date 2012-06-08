@@ -23,10 +23,10 @@ class FabrikFEModelGroup extends FabModel{
 	var $_group = null;
 
 	/** @var object form model */
-	protected $_form 		= null;
+	protected $_form = null;
 
-	/** @var object table model */
-	var $_table 		= null;
+	/** @var object list model */
+	var $_table = null;
 
 	var $_joinModel = null;
 
@@ -298,6 +298,53 @@ class FabrikFEModelGroup extends FabModel{
 			}
 		}
 		return $this->publishedElements[$sig];
+	}
+	
+	/**
+	 * get a list of all elements which are set to show in list or are set to include in list query
+	 * @since	3.0.6
+	 * @return	areray	list of element models
+	 */
+	
+	public function getListQueryElements()
+	{
+		if (!isset($this->listQueryElements))
+		{
+			$this->listQueryElements = array();
+		}
+		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
+		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
+		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
+		$sig = empty($showInList) ? 0 : implode('.', $showInList);
+		if (!array_key_exists($sig, $this->listQueryElements))
+		{
+			$this->listQueryElements[$sig] = array();
+			$elements = $this->getMyElements();
+			foreach ($elements as $elementModel)
+			{
+				$element = $elementModel->getElement();
+				
+				$params = $elementModel->getParams();
+				if ($element->published == 1 && $elementModel->canView())
+				{
+					if (empty($showInList))
+					{
+						if ($element->show_in_list_summary || $params->get('include_in_list_query', 1) == 1)
+						{
+							$this->listQueryElements[$sig][] = $elementModel;
+						}
+					}
+					else
+					{
+						if (in_array($element->id, $showInList) || $params->get('include_in_list_query', 1) == 1)
+						{
+							$this->listQueryElements[$sig][] = $elementModel;
+						}
+					}
+				}
+			}
+		}
+		return $this->listQueryElements[$sig];
 	}
 
 	public function getPublishedListElements()

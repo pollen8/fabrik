@@ -30,6 +30,7 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
+		$email = $data;
 		//could be a dropdown with multivalues
 		if (is_array($email))
 		{

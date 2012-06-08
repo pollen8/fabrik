@@ -390,7 +390,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	 * @return	array	of bools: false if error found and processed, otherwise true
 	 */
 
-	function runPlugins($method, &$oRequest, $type = 'form')
+	public function runPlugins($method, &$oRequest, $type = 'form')
 	{
 		if ($type == 'form')
 		{
@@ -454,7 +454,7 @@ class FabrikFEModelPluginmanager extends JModel{
 					$pluginParams = $plugin->setParams($params, $c);
 					$location = JArrayHelper::getValue($usedLocations, $c);
 					$event = JArrayHelper::getValue($usedEvents, $c);
-					if ($plugin->canUse($oRequest, $location, $event) && method_exists($plugin, $method))
+					if ($plugin->canUse($oRequest, $location, $event))
 					{
 						$pluginArgs = array();
 						if (func_num_args() > 3)

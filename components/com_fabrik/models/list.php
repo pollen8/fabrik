@@ -2332,7 +2332,7 @@ class FabrikFEModelList extends JModelForm {
 		foreach ($gkeys as $x)
 		{
 			$groupModel = $groups[$x];
-			$elementModels = $groupModel->getPublishedElements();
+			$elementModels = $groupModel->getListQueryElements();
 			foreach ($elementModels as $elementModel)
 			{
 				$method = 'getAsField_' . $this->_outPutFormat;
@@ -3631,11 +3631,11 @@ class FabrikFEModelList extends JModelForm {
 				$conditions = (array) $prefilters['filter-conditions'];
 				if (!empty($conditions))
 				{
-					$params->set('filter-fields', $prefilters['filter-fields']);
-					$params->set('filter-conditions', $prefilters['filter-conditions']);
-					$params->set('filter-value', $prefilters['filter-value']);
-					$params->set('filter-access', $prefilters['filter-access']);
-					$params->set('filter-eval', $prefilters['filter-eval']);
+					$params->set('filter-fields', JArrayHelper::getValue($prefilters, 'filter-fields'));
+					$params->set('filter-conditions', JArrayHelper::getValue($prefilters, 'filter-conditions'));
+					$params->set('filter-value', JArrayHelper::getValue($prefilters, 'filter-value'));
+					$params->set('filter-access', JArrayHelper::getValue($prefilters, 'filter-access'));
+					$params->set('filter-eval', JArrayHelper::getValue($prefilters, 'filter-eval', ''));
 					$params->set('filter-join', JArrayHelper::getValue($prefilters, 'filter-join', ''));
 				}
 			}
@@ -3767,8 +3767,9 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * load in the elements for the table's form
-	 * If no form loaded for the table object then one is loaded
-	 * @return array element objects
+	 * If no form loaded for the list object then one is loaded
+	 * @param	bool	get element plugins only found in list query
+	 * @return	array	element objects
 	 */
 
 	function getFormGroupElementData()
@@ -3778,19 +3779,19 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * require the correct pagenav class based on template
-	 *
-	 * @param int total
-	 * @param int start
-	 * @param int length
-	 * @return object pageNav
+	 * @param	int		total
+	 * @param	int		start
+	 * @param	int		length
+	 * @return	object	pageNav
 	 */
 
 	function &getPagination($total = 0, $limitstart = 0, $limit = 0)
 	{
 		$db = FabrikWorker::getDbo();
-		if (!isset($this->nav)) {
-
-			if ($this->randomRecords) {
+		if (!isset($this->nav))
+		{
+			if ($this->randomRecords)
+			{
 				$limitstart = $this->getRandomLimitStart();
 			}
 			$params = $this->getParams();
@@ -4082,26 +4083,28 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	* have all the required filters been met?
-	*
-	* @return bol true if they have if false we shouldnt show the table data
+	* @return	bol	true if they have if false we shouldnt show the table data
 	*/
 
 	function hasRequiredElementFilters()
 	{
-		if (isset($this->hasRequiredElementFilters)) {
+		if (isset($this->hasRequiredElementFilters))
+		{
 			return $this->hasRequiredElementFilters;
 		}
-		$filters 	= $this->getFilterArray();
+		$filters = $this->getFilterArray();
 		$elements = $this->getElements();
-
 		$this->hasRequiredElementFilters = false;
-
-		foreach ($elements as $kk => $val2) {
+		foreach ($elements as $kk => $val2)
+		{
 			$elementModel = $elements[$kk]; //dont do with = as this foobars up the last elementModel
 			$element = $elementModel->getElement();
-			if ($element->filter_type <> '' && $element->filter_type != 'null') {
-				if ($elementModel->canView() && $elementModel->canUseFilter()) {
-					if ($elementModel->getParams()->get('filter_required') == 1) {
+			if ($element->filter_type <> '' && $element->filter_type != 'null')
+			{
+				if ($elementModel->canView() && $elementModel->canUseFilter())
+				{
+					if ($elementModel->getParams()->get('filter_required') == 1)
+					{
 						$this->elementsWithRequiredFilters[] = $elementModel;
 						$this->hasRequiredElementFilters = true;
 					}
@@ -4129,78 +4132,46 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * have all the required filters been met?
-	 *
-	 * @return bol true if they have if false we shouldnt show the table data
+	 * @return	bool	true if they have if false we shouldnt show the table data
 	 */
 
 	function getRequiredFiltersFound()
 	{
-		if (isset($this->requiredFilterFound)) {
+		if (isset($this->requiredFilterFound))
+		{
 			return $this->requiredFilterFound;
 		}
-		$filters 	= $this->getFilterArray();
+		$filters = $this->getFilterArray();
 		$elements = $this->getElements();
-
 		$required = array();
-
-		/*
-		foreach ($elements as $kk => $val2) {
-			$elementModel = $elements[$kk]; //dont do with = as this foobars up the last elementModel
-			$element = $elementModel->getElement();
-			if ($element->filter_type <> '' && $element->filter_type != 'null') {
-				if ($elementModel->canView() && $elementModel->canUseFilter()) {
-					//force the correct group model into the element model to ensure no wierdness in getting the element name
-					if ($elementModel->getParams()->get('filter_required') == 1) {
-						$name = FabrikString::safeColName($elementModel->getFullName(false, false, false));
-						if (array_key_exists('key', $filters) && is_array($filters['key'])) {
-							reset($filters['key']);
-							$found = false;
-							while (list($key, $val) = each($filters['key'])) {
-								if ($val == $name) {
-									$found = true;
-									break;
-								}
-							}
-							if (!$found || $filters['origvalue'][$key] == '') {
-								$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
-								return false;
-							}
-						}
-						else {
-							// $$$ hugh ... if $filters doesn't exist, then by definition
-							// the required filter isn't there?
-							if (empty($filters)) {
-								$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
-								return false;
-							}
-						}
-					}
-				}
-			}
-		}
-		*/
-
 		/* if no required filters, then by definition we have them all */
-		if (!$this->hasRequiredElementFilters()) {
+		if (!$this->hasRequiredElementFilters())
+		{
 			return true;
 		}
 		/* if no filter keys, by definition we don't have required ones */
-		if (!array_key_exists('key', $filters) || !is_array($filters['key'])) {
+		if (!array_key_exists('key', $filters) || !is_array($filters['key']))
+		{
 			$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 			return false;
 		}
-		foreach ($this->elementsWithRequiredFilters as $elementModel) {
-			if ($elementModel->getParams()->get('filter_required') == 1) {
+		foreach ($this->elementsWithRequiredFilters as $elementModel)
+		{
+			if ($elementModel->getParams()->get('filter_required') == 1)
+			{
 				$name = FabrikString::safeColName($elementModel->getFullName(false, false, false));
 				reset($filters['key']);
 				$found = false;
-				while (list($key, $val) = each($filters['key'])) {
-					if ($val == $name) {
+				while (list($key, $val) = each($filters['key']))
+				{
+					if ($val == $name)
+					{
 						$found = true;
 						break;
 					}
 				}
-				if (!$found || $filters['origvalue'][$key] == '') {
+				if (!$found || $filters['origvalue'][$key] == '')
+				{
 					$this->emptyMsg = JText::_('COM_FABRIK_PLEASE_SELECT_ALL_REQUIRED_FILTERS');
 					return false;
 				}
@@ -5628,35 +5599,36 @@ class FabrikFEModelList extends JModelForm {
 				$element = $elementModel->getElement();
 				$params = $elementModel->getParams();
 				$update = false;
-				if ($params->get('sum_on', 0))
+				if ($params->get('sum_on', 0) == 1)
 				{
+					echo "sum element $element->name <br>";
 					$aSumCals = $elementModel->sum($this);
 					$params->set('sum_value_serialized', serialize($aSumCals[1]));
 					$params->set('sum_value', $aSumCals[0]);
 					$update = true;
 				}
-				if ($params->get('avg_on', 0))
+				if ($params->get('avg_on', 0) == 1)
 				{
 					$aAvgCals = $elementModel->avg($this);
 					$params->set('avg_value_serialized', serialize($aAvgCals[1]));
 					$params->set('avg_value', $aAvgCals[0]);
 					$update = true;
 				}
-				if ($params->get('median_on', 0))
+				if ($params->get('median_on', 0) == 1)
 				{
 					$medians = $elementModel->median($this);
 					$params->set('median_value_serialized', serialize($medians[1]));
 					$params->set('median_value', $medians[0]);
 					$update = true;
 				}
-				if ($params->get('count_on', 0))
+				if ($params->get('count_on', 0) == 1)
 				{
 					$aCountCals = $elementModel->count($this);
 					$params->set('count_value_serialized', serialize($aCountCals[1]));
 					$params->set('count_value', $aCountCals[0]);
 					$update = true;
 				}
-				if ($params->get('custom_calc_on', 0))
+				if ($params->get('custom_calc_on', 0) == 1)
 				{
 					$aCustomCalcCals = $elementModel->custom_calc($this);
 					$params->set('custom_calc_value_serialized', serialize($aCustomCalcCals[1]));
@@ -6815,13 +6787,14 @@ class FabrikFEModelList extends JModelForm {
 
 	/**
 	 * get a single column of data from the table, test for element filters
-	 * @param string column to get
-	 * @return array values for the column - empty array if no results found
+	 * @param	string	column to get
+	 * @return	array	values for the column - empty array if no results found
 	 */
 
 	function getColumnData($col)
 	{
-		if (!array_key_exists($col, $this->columnData)) {
+		if (!array_key_exists($col, $this->columnData))
+		{
 			$table = $this->getTable();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$db = $this->getDb();
@@ -6836,14 +6809,17 @@ class FabrikFEModelList extends JModelForm {
 			$query = $this->pluginQuery($query);
 			$db->setQuery($query);
 			$res = $db->loadColumn();
-			if (is_null($res)) {
+			if (is_null($res))
+			{
 				JError::raiseNotice(500, 'list model getColumn Data for '.$colQuoted.' failed');
 			}
-			if ((int) $fbConfig->get('filter_list_max', 100) == count($res)) {
+			if ((int) $fbConfig->get('filter_list_max', 100) == count($res))
+			{
 				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $colQuoted));
 			}
 			FabrikHelperHTML::debug($query, 'filter:getColumnData query');
-			if (is_null($res)) {
+			if (is_null($res))
+			{
 				$res = array();
 			}
 			$this->columnData[$col] = $res;
@@ -6910,33 +6886,39 @@ class FabrikFEModelList extends JModelForm {
 	}
 
 	/**
-	 * get all the elements in the table
-	 * @param string key to key returned array on, currently accepts null, '', 'id', or 'filtername'
-	 * @param bol show in table default true
-	 * @return array table element models
+	 * get all the elements in the list
+	 * @param	string	key to key returned array on, currently accepts null, '', 'id', or 'filtername'
+	 * @param	bol		show in table default true
+	 * @return	array	table element models
 	 */
 
 	function getElements($key = 0, $showInTable = true, $onlyPublished = true)
 	{
-		if (!isset($this->elements)) {
+		if (!isset($this->elements))
+		{
 			$this->elements = array();
 		}
-		$sig = $key.'.'.(int) $showInTable;
-		if (!array_key_exists($sig, $this->elements)) {
+		$sig = $key . '.' . (int) $showInTable;
+		if (!array_key_exists($sig, $this->elements))
+		{
 			$this->elements[$sig] = array();
 			$found = array();
 			$groups = $this->getFormGroupElementData();
-			foreach (array_keys($groups) as $gid) {
+			foreach (array_keys($groups) as $gid)
+			{
 				//foreach ($groups as $groupModel) { // $$$ rob dont do this as for some reason only fist groups elements are got when applying filters
 				$groupModel = $groups[$gid];
 				$elementModels = $groupModel->getMyElements();
-				foreach ($elementModels as $elementModel) {
+				foreach ($elementModels as $elementModel)
+				{
 					$element = $elementModel->getElement();
-					if ($element->published == 0 && $onlyPublished) {
+					if ($element->published == 0 && $onlyPublished)
+					{
 						continue;
 					}
 					$dbkey = $key == 'filtername' ? trim($elementModel->getFilterFullName()) : trim($elementModel->getFullName(false, true, false));
-					switch ($key) {
+					switch ($key)
+					{
 						case 'safecolname':
 						case 'filtername'://depreciated (except for querystring filters and inline edit)
 							// used id instead for filters
@@ -6948,9 +6930,9 @@ class FabrikFEModelList extends JModelForm {
 							$origconcat = $elementModel->getParams()->get('join_val_column_concat');
 							$elementModel->getParams()->set('join_val_column_concat', '');
 
-							//$dbkey = ;
 							//$$$ rob if prefilter was using _raw field then we need to assign the model twice to both possible keys
-							if ($elementModel->getElement()->plugin == 'fabrikdatabasejoin') {
+							if ($elementModel->getElement()->plugin == 'fabrikdatabasejoin')
+							{
 								$dbkey2 =  FabrikString::safeColName($elementModel->getFullName(false, false, false));
 								$this->elements[$sig][$dbkey2] = $elementModel;
 							}
@@ -7115,18 +7097,22 @@ class FabrikFEModelList extends JModelForm {
 		$script = '';
 		$groups = $form->getGroupsHiarachy();
 		$run = array();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$element = $elementModel->getElement();
-				if (!in_array($element->plugin, $run)) {
+				if (!in_array($element->plugin, $run))
+				{
 					$run[] = $element->plugin;
 					$elementModel->tableJavascriptClass();
 				}
 				$script .= $elementModel->elementListJavascript();
 			}
 		}
-		if ($script !== '') {
+		if ($script !== '')
+		{
 			$script = "head.ready(function() {\n". $script . "});\n";
 			FabrikHelperHTML::addScriptDeclaration($script);
 		}

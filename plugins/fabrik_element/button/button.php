@@ -14,9 +14,10 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 {
 
 	/**
-	 * draws a field element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * draws a button
+	 * @param	string	data
+	 * @param	int		repeat group counter
+	 * @return	string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -24,15 +25,25 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$str = "<input type='button' class='fabrikinput button' id='$id' name='$name' value='$element->label' />";
+		$str = '<input type="button" class="fabrikinput button" id="' . $id . '" name="' . $name . '" value="' . $element->label . "' />";
 		return $str;
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getLabel()
+	 */
+	
 	function getLabel($repeatCounter, $tmpl = '')
 	{
 		return '';
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::elementJavascript()
+	 */
+	
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
@@ -44,8 +55,8 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 
 	/**
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
-	 * @return array html ids to watch for validation
+	 * @param	int		repeat group counter
+	 * @return	array	html ids to watch for validation
 	 */
 
 	function getValidationWatchElements($repeatCounter)

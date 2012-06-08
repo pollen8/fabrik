@@ -203,12 +203,12 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @param	object	table model
 	 */
 
-	function setContext($groupModel, $formModel, &$listModel)
+	function setContext(&$groupModel, &$formModel, &$listModel)
 	{
 		//dont assign these with &= as they already are when passed into the func
-		$this->_group =& $groupModel;
-		$this->_form =& $formModel;
-		$this->_list =& $listModel;
+		$this->_group = $groupModel;
+		$this->_form = $formModel;
+		$this->_list = $listModel;
 	}
 
 	/**
@@ -310,7 +310,7 @@ class plgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 		$params =$this->getParams();
-		if ($params->get('icon_folder', 0) == 0)
+		if ((int) $params->get('icon_folder', 0) === 0)
 		{
 			$this->iconsSet = false;
 			return $data;
@@ -368,8 +368,8 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @since 2.1.1
 	 * build the sub query which is used when merging in in repeat element records from their joined table into the one field.
 	 * Overwritten in database join element to allow for building the join to the talbe containing the stored values required ids
-	 * @param string $jkey
-	 * @return string sub query
+	 * @param	string	$jkey
+	 * @return	string	sub query
 	 */
 
 	protected function buildQueryElementConcatId()
@@ -1824,12 +1824,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$element = $this->getElement();
 		$params = $this->getParams();
-		$validations = $params->get('validations', '', '_default', 'array');
-		// $$$ hugh 06/05/2012 - last night's commit seems to have changed things, and sometimes $validations
-		// is coming back as an object rather than an array.
-		if (is_object($validations)) {
-			$validations = JArrayHelper::fromObject($validations);
-		}
+		$validations = (array) $params->get('validations', 'array');
 		$usedPlugins = JArrayHelper::getValue($validations, 'plugin', array());
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
