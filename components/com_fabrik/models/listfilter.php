@@ -22,7 +22,8 @@ class FabrikFEModelListfilter extends FabModel {
 	 * get the table from the listModel
 	 * @see libraries/joomla/application/component/JModel#getTable($name, $prefix, $options)
 	 */
-	function getTable()
+	
+	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
 		return $this->listModel->getTable();
 	}
@@ -89,7 +90,7 @@ class FabrikFEModelListfilter extends FabModel {
 		//overwrite filters with querystring filter
 		$this->getQuerystringFilters($filters);
 		FabrikHelperHTML::debug($filters, 'filter array: after querystring filters');
-		$request =& $this->getPostFilterArray();
+		$request = $this->getPostFilterArray();
 		$this->counter = count(JArrayHelper::getValue($request, 'key', array()));
 		//overwrite filters with session filters (fabrik_incsessionfilters set to false in listModel::getRecordCounts / for facted data counts
 		if(JRequest::getVar('fabrik_incsessionfilters', true))
@@ -116,8 +117,25 @@ class FabrikFEModelListfilter extends FabModel {
 		$this->_request = $filters;
 		FabrikHelperHTML::debug($this->_request, 'filter array');
 		$this->checkAccess($filters);
-		// echo "<pre>";print_r($filters);echo "</pre>";
+		$this->normalizeKeys($filters);
 		return $filters;
+	}
+	
+	/**
+	 * @since 3.0.6
+	 * with prefilter and search all - 2nd time you use the search all the array keys 
+	 * seem incorrect - resulting in an incorrect query.
+	 * Use this to force each $filter['property'] array to start at 0 and increment
+	 * @param	array	&$filters
+	 */
+	
+	private function normalizeKeys(&$filters)
+	{
+		$properties = array_keys($filters);
+		foreach ($properties as $property)
+		{
+			$filters[$property] = array_values($filters[$property]);
+		}
 	}
 
 	/**
@@ -223,7 +241,8 @@ class FabrikFEModelListfilter extends FabModel {
 		if ($search == '')
 		{
 			//clear full text search all
-			if (array_key_exists($requestKey, $_POST)) {
+			if (array_key_exists($requestKey, $_POST))
+			{
 				$this->clearAFilter($filters, 9999);
 			}
 			return;
@@ -423,8 +442,8 @@ class FabrikFEModelListfilter extends FabModel {
 	}
 	/**
 	 *
-	 * @param array filters
-	 * @param string $search
+	 * @param	array	&$filters
+	 * @param	string	$search
 	 * @return null
 	 */
 
@@ -435,6 +454,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$i = 0;
 		$condition = 'REGEXP';
 		$orig_search = $search;
+		$searchable = false;
 		foreach ($keys as $elid)
 		{
 			// $$$ hugh - need to reset $search each time round, in case getFilterValue has esacped something,
@@ -445,6 +465,7 @@ class FabrikFEModelListfilter extends FabModel {
 			{
 				continue;
 			}
+			$searchable = true;
 			$k = $elementModel->getFullName(false, false, false);
 			$k = FabrikString::safeColName($k);
 			
@@ -531,6 +552,10 @@ class FabrikFEModelListfilter extends FabModel {
 			}
 			$i ++;
 		}
+		if (!$searchable)
+		{
+			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
+		}
 	}
 
 	private function getSearchFormSearchAllFilters(&$filters)
@@ -542,7 +567,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$fromFormId = $app->getUserState($key);
 		if ($fromFormId != $formModel->getId())
 		{
-			$search = $app->getUserState('com_fabrik.searchform.form'.$fromFormId.'.searchall');
+			$search = $app->getUserState('com_fabrik.searchform.form' . $fromFormId . '.searchall');
 			if (trim($search) == '')
 			{
 				return;
@@ -919,7 +944,7 @@ class FabrikFEModelListfilter extends FabModel {
 				// index is the filter index for a previous filter that uses the same element id
 				if (!in_array($elid, $usedMerges))
 				{
-					$index = array_key_exists('elementid', $filters) ? array_search($elid, (array)$filters['elementid']) : false;
+					$index = array_key_exists('elementid', $filters) ? array_search($elid, (array) $filters['elementid']) : false;
 				}
 				else
 				{

@@ -70,37 +70,42 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	}
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
-		$data = parent::renderListData($data, $oAllRowsData);
+		$data = parent::renderListData($data, $thisRow);
 		$params = $this->getParams();
-
-		if ($params->get('textarea-tagify') == true) {
+		if ($params->get('textarea-tagify') == true)
+		{
 			$data = $this->tagify( $data);
 		}
 		//$$$rob dont strip slashes here - this is done when saving to db now
 
-		if ($params->get('use_wysiwyg', 0) == 0) {
-			if (is_array($data)) {
-				for ($i=0; $i<count($data); $i++) {
+		if ($params->get('use_wysiwyg', 0) == 0)
+		{
+			if (is_array($data))
+			{
+				for ($i = 0; $i<count($data); $i++)
+				{
 					$data[$i] = nl2br($data[$i]);
 				}
-			} else {
-				if (is_object($data)) {
+			}
+			else
+			{
+				if (is_object($data))
+				{
 					$this->convertDataToString($data);
 				}
 				$data = nl2br($data);
 			}
 		}
-		if (!$params->get('textarea-tagify') && $data !== '' && (int)$params->get('textarea-truncate', 0) !== 0) {
+		if (!$params->get('textarea-tagify') && $data !== '' && (int) $params->get('textarea-truncate', 0) !== 0)
+		{
 			$opts = array();
-			$opts['wordcount'] = (int)$params->get('textarea-truncate', 0);
+			$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
 			$opts['tip'] = $params->get('textarea-hover');
 			$opts['position'] = $params->get('textarea_hover_location', 'top');
 			$data = fabrikString::truncate($data, $opts);
@@ -266,7 +271,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		if ($params->get('delete_overflow', true)) {
 			return true;
 		}
-		if (JString::strlen($data) > (int)$params->get('textarea-maxlength')) {
+		if (JString::strlen($data) > (int) $params->get('textarea-maxlength')) {
 			return false;
 		}
 		return true;

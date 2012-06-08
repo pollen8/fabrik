@@ -122,32 +122,35 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	}
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
-
 		$pathset = false;
-		foreach ($data as $d) {
-			if (strstr($d, '/')) {
+		foreach ($data as $d)
+		{
+			if (strstr($d, '/'))
+			{
 				$pathset = true;
 				break;
 			}
 		}
-		if ($data === '' || empty($data) || !$pathset) {
+		if ($data === '' || empty($data) || !$pathset)
+		{
 			//no data so default to image (or simple image name stored).
 			$iPath = $params->get('imagepath');
-			if (!strstr($iPath, '/')) {
+			if (!strstr($iPath, '/'))
+			{
 				//single file specified so find it in tmpl folder
-				$data = (array)FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), true);
-			} else {
-				$data = (array)$iPath;
+				$data = (array) FabrikHelperHTML::image($iPath, 'list', @$this->tmpl, array(), true);
+			}
+			else
+			{
+				$data = (array) $iPath;
 			}
 		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
@@ -160,18 +163,21 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			//$data[] = $params->get('imagefile');
 			$data[] = $params->get('imagepath');
 		}
-		for ($i=0; $i <count($data); $i++) {
-			if ($showImage) {
+		for ($i = 0; $i < count($data); $i++)
+		{
+			if ($showImage)
+			{
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
 				$src = substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE.$selectImage_root_folder.'/'.$data[$i];
 				$data[$i] = '<img src="'.$src.'" alt="'.$data[$i].'" />';
 			}
-			if ($linkURL) {
+			if ($linkURL)
+			{
 				$data[$i] = '<a href="'.$linkURL.'" target="_blank">'.$data[$i].'</a>';
 			}
 		}
 		$data = json_encode($data);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -231,7 +237,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	 * @return string formatted value
 	 */
 
-	function renderListData_rss($data, $oAllRowsData)
+	function renderListData_rss($data, $thisRow)
 	{
 		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
@@ -272,7 +278,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				} else {
 					$bits = explode("/", $value);
 					if (count($bits) > 1) {
-						$path = DS . array_shift($bits) . DS;
+						$path = '/' . array_shift($bits) . '/';
 						$path = $rootFolder . $path;
 						$val = array_shift($bits);
 					} else {
@@ -283,7 +289,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				$path = $rootFolder;
 			}
 			$images = array();
-			$imagenames = (array)JFolder::files(JPATH_SITE.DS.$path);
+			$imagenames = (array)JFolder::files(JPATH_SITE . '/' . $path);
 			foreach ($imagenames as $n) {
 				$images[] = JHTML::_('select.option', $n, $n);
 			}
@@ -314,7 +320,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	function onAjax_files()
 	{
 		$folder = JRequest::getVar('folder');
-		$pathA = JPath::clean(JPATH_SITE.DS.$folder);
+		$pathA = JPath::clean(JPATH_SITE . '/' . $folder);
 		$folder = array();
 		$files = array();
 		$images = array();
@@ -341,7 +347,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$opts->canSelect = (bool)$params->get('image_front_end_select', false);
 		$opts->id = $element->id;
 		$opts->ds = DS;
-		$opts->dir = JPATH_SITE.DS.str_replace('/', DS, $opts->rootPath);
+		$opts->dir = JPATH_SITE . DS . str_replace('/', DS, $opts->rootPath);
 		$opts = json_encode($opts);
 		return "new FbImage('$id', $opts)";
 	}

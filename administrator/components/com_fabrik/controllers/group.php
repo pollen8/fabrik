@@ -27,6 +27,4 @@ class FabrikControllerGroup extends JControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_GROUP';
 
-
-
 }

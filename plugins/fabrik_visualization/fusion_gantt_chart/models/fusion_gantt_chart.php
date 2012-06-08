@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 
@@ -21,7 +21,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 	{
 		// Include PHP Class#
 		if (!class_exists('FusionCharts')) { 
-			require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.'fusion_gantt_chart'.DS.'lib'.DS.'FCclass'.DS.'FusionCharts_Gen.php');
+			require_once(JPATH_SITE . '/plugins/fabrik_visualization/fusion_gantt_chart/lib/FCclass/FusionCharts_Gen.php');
 		}
 		// Add JS to page header
 		$document = JFactory::getDocument();
@@ -60,9 +60,9 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$label = $params->get('fusion_gantt_chart_label');
 		$hover = $params->get('fusion_gantt_chart_hover');
 		$milestone = $params->get('fusion_gantt_chart_milestone');
-		$milestoneraw = $milestone."_raw";
+		$milestoneraw = $milestone . '_raw';
 		$connector = $params->get('fusion_gantt_chart_connector');
-		$connectorraw = $connector."_raw";
+		$connectorraw = $connector . '_raw';
 		$fields = array();
 		$names = array();
 		$uses = array($process, $start, $end, $label, $hover, $milestone, $connector);
@@ -158,7 +158,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$monthdisplay = $params->get('fusion_gannt_chart_monthdisplay');
 		$this->fc->addGanttCategorySet("bgColor=333333;fontColor=99cc00;isBold=1;fontSize=14");
 		for ($y = $startyear; $y <= $endyear; $y++) {
-			$firstmonth = ($y == $startyear) ? (int)$mindate->toFormat('%m') : 1;
+			$firstmonth = ($y == $startyear) ? (int) $mindate->toFormat('%m') : 1;
 			$lastmonth = ($y == $endyear) ? $maxdate->toFormat('%m')+1 : 13;
 
 			$start = date('Y/m/d', mktime(0, 0, 0, $firstmonth, 1, $y));
@@ -171,7 +171,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		//echo "start year = $startyear end yera = $endyear ";exit;
 		for ($y = $startyear; $y <= $endyear; $y++) {
 			$lastmonth = ($y == $endyear) ? $maxdate->toFormat('%m')+1 : 13;
-			$firstmonth = ($y == $startyear) ? (int)$mindate->toFormat('%m') : 1;
+			$firstmonth = ($y == $startyear) ? (int) $mindate->toFormat('%m') : 1;
 			for ($m = $firstmonth; $m < $lastmonth; $m++) {
 				$starttime = mktime(0, 0, 0, $m, 1, $y);
 				$start = date('Y/m/d', $starttime);

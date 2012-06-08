@@ -79,7 +79,7 @@ class FabrikFEModelGroup extends FabModel{
 	function &getGroup()
 	{
 		if (is_null($this->_group)) {
-			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$this->_group = FabTable::getInstance('Group', 'FabrikTable');
 			$this->_group->load($this->getId());
 		}
@@ -133,7 +133,7 @@ class FabrikFEModelGroup extends FabModel{
 	{
 		if (!isset($this->_formsIamIn)) {
 			$db = FabrikWorker::getDbo(true);
-			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int)$this->getId();
+			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int) $this->getId();
 			$db->setQuery($sql);
 			$this->_formsIamIn = $db->loadColumn();
 			if (!$db->query()) {
@@ -430,7 +430,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	function &loadParams()
 	{
-		$this->_params = new fabrikParams($this->_group->params);
+		$this->_params = new JRegistry($this->_group->params);
 		return $this->_params;
 	}
 
@@ -501,14 +501,14 @@ class FabrikFEModelGroup extends FabModel{
 
 		if (JString::stristr($groupTable->label , "{Add/Edit}"))
 		{
-			$replace = ((int)$formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = ((int) $formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$groupTable->label  = str_replace("{Add/Edit}", $replace, $groupTable->label);
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->_data, false);
 
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->_editable) ? 1 : 0;
-		$group->maxRepeat = (int)$params->get('repeat_max');
+		$group->maxRepeat = (int) $params->get('repeat_max');
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();

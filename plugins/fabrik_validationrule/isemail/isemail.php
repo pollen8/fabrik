@@ -24,36 +24,34 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 	protected $icon = 'isemail';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($email, &$element, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		//could be a dropdown with multivalues
-		if (is_array($email)) {
+		if (is_array($email))
+		{
 			$email = implode('', $email);
 		}
 		//decode as it can be posted via ajax
 		$email = urldecode($email);
-
  		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
-		$allow_empty = $allow_empty[$c];
-		if ($allow_empty == '1' and empty($email)) {
+		$allow_empty = $allow_empty[$pluginc];
+		if ($allow_empty == '1' and empty($email))
+		{
 			return true;
 		}
-
 		// $$$ hugh - let's try using new helper func instead of rolling our own.
 		return FabrikWorker::isEmail($email);
 
 		// $$$ keeping this code just in case, but shouldn't be reached.
 
 		/* First, we check that there's one symbol, and that the lengths are right*/
-		if (!preg_match("/[^@]{1,64}@[^@]{1,255}/", $email)) {
+		if (!preg_match("/[^@]{1,64}@[^@]{1,255}/", $email))
+		{
 			/* Email invalid because wrong number of characters in one section, or wrong number of symbols.*/
 			return false;
 		}
@@ -61,20 +59,26 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 		/* Split it into sections to make life easier*/
 		$email_array = explode("@", $email);
 		$local_array = explode(".", $email_array[0]);
-		for ($i = 0; $i < sizeof($local_array); $i++) {
-			if (!preg_match("/^(([A-Za-z0-9!#$%&'*+\/=?^_`{|}~-][A-Za-z0-9!#$%&'*+\/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$/", $local_array[0])) {
+		for ($i = 0; $i < sizeof($local_array); $i++)
+		{
+			if (!preg_match("/^(([A-Za-z0-9!#$%&'*+\/=?^_`{|}~-][A-Za-z0-9!#$%&'*+\/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$/", $local_array[0]))
+			{
 				return false;
 			}
 		}
 		/* Check if domain is IP. If not, it should be valid domain name */
-		if (!preg_match("/^\[?[0-9\.]+\]?$/", $email_array[1])) {
+		if (!preg_match("/^\[?[0-9\.]+\]?$/", $email_array[1]))
+		{
 			$domain_array = explode(".", $email_array[1]);
-			if (sizeof( $domain_array ) < 2) {
+			if (sizeof( $domain_array ) < 2)
+			{
 				 /* Not enough parts to domain */
 				return false;
 			}
-			for ($i = 0; $i < sizeof( $domain_array); $i++) {
-				if (!preg_match("/^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$/", $domain_array[$i])) {
+			for ($i = 0; $i < sizeof( $domain_array); $i++)
+			{
+				if (!preg_match("/^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$/", $domain_array[$i]))
+				{
 					return false;
 				}
 			}
@@ -90,11 +94,11 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 	* @return bool
 	*/
 
-	protected function allowEmpty($elementModel, $c)
+	protected function allowEmpty($elementModel, $pluginc)
 	{
 		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
-		$allow_empty = $allow_empty[$c];
+		$allow_empty = $allow_empty[$pluginc];
 		return $allow_empty == '1';
 	}
 

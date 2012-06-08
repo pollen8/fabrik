@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementCount extends plgFabrik_Element {
 
@@ -64,7 +64,7 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	 * @see components/com_fabrik/models/plgFabrik_Element#canUse()
 	 */
 
-	function canUse()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		return false;
 	}

@@ -10,9 +10,9 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'image.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
 
 jimport('joomla.application.component.model');
 
@@ -24,18 +24,18 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	protected $_is_upload = true;
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData) {
+	public function renderListData($data, &$thisRow)
+	{
 		$str = '';
 		$data = FabrikWorker::JSONtoData($data, true);
 		//$data = explode(GROUPSPLITTER, $data);
-		foreach ($data as $d) {
-			$str .= $this->_renderListData($d, $oAllRowsData);
+		foreach ($data as $d)
+		{
+			$str .= $this->_renderListData($d, $thisRow);
 		}
 		return $str;
 	}
@@ -47,7 +47,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	 * @return string formatted value
 	 */
 
-	function _renderListData($data, $oAllRowsData)
+	function _renderListData($data, $thisRow)
 	{
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
@@ -73,10 +73,10 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		$format 	= JRequest::getVar('format', '');
 		//when loaded via ajax adding scripts into the doc head wont load them
 		echo "<script type='text/javascript'>";
-		require( COM_FABRIK_FRONTEND.DS.'media'.DS.'com_fabrik'.DS.'js'.DS.'element.js');
+		require( COM_FABRIK_FRONTEND . '/media/com_fabrik/js/element.js');
 		echo "</script>";
 		echo "<script type='text/javascript'>";
-		require( JPATH_ROOT.DS.'plugins'.DS.'fabrik_element'.DS.'video'.DS.'video.js');
+		require( JPATH_ROOT . '/plugins/fabrik_element/video/video.js');
 		echo "</script>";
 
 		$params = $this->getParams();
@@ -131,7 +131,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		$params 	=& $this->getParams();
 
 		$maxlength  = $params->get('maxlength');
-		if ((int)$maxlength === 0) {
+		if ((int) $maxlength === 0) {
 			$maxlength = $element->width;
 		}
 
@@ -254,11 +254,11 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		}
 		$folder = $params->get('ul_directory');
 		if($myFileDir != '') {
-			$folder .= JPath::clean(JPATH_SITE . DS . $myFileDir);
+			$folder .= JPath::clean(JPATH_SITE . '/' . $myFileDir);
 		}
 		$oUploader->_makeRecursiveFolders($folder);
 
-		$folder 	= JPath::clean(JPATH_SITE . DS . $folder);
+		$folder 	= JPath::clean(JPATH_SITE . '/' . $folder);
 
 		$err		= null;
 
@@ -267,7 +267,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		JClientHelper::setCredentialsFromRequest('ftp');
 
 		if ($myFileName != '') {
-			$filepath = JPath::clean($folder.DS.strtolower($myFileName));
+			$filepath = JPath::clean($folder . '/' . strtolower($myFileName));
 
 			if (!uploader::canUpload($file, $err, $params)) {
 				return JError::raiseNotice(100, JText::_($err));
@@ -292,14 +292,14 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 				$mainWidth 		= $params->get('fu_main_max_width');
 				$mainHeight 	= $params->get('fu_main_max_height');
 				if($params->get('make_thumbnail') == '1') {
-					$thumbPath 		=  JPath::clean($params->get('thumb_dir') . DS . $myFileDir . DS);
+					$thumbPath 		=  JPath::clean($params->get('thumb_dir') . '/' . $myFileDir . '/');
 					$thumbPrefix 	= $params->get('thumb_prefix');
 					$maxWidth 		= $params->get('thumb_max_width');
 					$maxHeight 		= $params->get('thumb_max_height');
 					if( $thumbPath != '') {
 						$oUploader->_makeRecursiveFolders($thumbPath);
 					}
-					$destThumbFile =  JPath::clean((JPATH_SITE) . DS . $thumbPath . DS . $thumbPrefix . basename($filepath));
+					$destThumbFile =  JPath::clean((JPATH_SITE) . '/' . $thumbPath . '/' . $thumbPrefix . basename($filepath));
 					$msg = $oImage->resize( $maxWidth, $maxHeight, $filepath, $destThumbFile);
 				}
 

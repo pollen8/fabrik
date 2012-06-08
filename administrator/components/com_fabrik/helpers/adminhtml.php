@@ -24,26 +24,32 @@ class FabrikHelperAdminHTML
 
 	/**
 	 * get a list of directories
-	 * @param string path to read from
-	 * @param bol return full paths or not
+	 * @param	string	path to read from
+	 * @param	bool	return full paths or not
 	 */
 
 	function fabrikListDirs($path, $fullpath = false)
 	{
 		$arr = array();
-		if (!@is_dir($path)) {
+		if (!@is_dir($path))
+		{
 			return $arr;
 		}
 		$handle = opendir($path);
-
-		while ($file = readdir($handle)) {
+		while ($file = readdir($handle))
+		{
 			$dir =  JPath::clean($path.'/'.$file);
 			$isDir = is_dir($dir);
-			if (($file != ".") && ($file != "..") && ($file != ".svn")) {
-				if ($isDir) {
-					if ($fullpath) {
-						$arr[] = trim( JPath::clean($path.'/'.$file));
-					} else {
+			if (($file != ".") && ($file != "..") && ($file != ".svn"))
+			{
+				if ($isDir)
+				{
+					if ($fullpath)
+					{
+						$arr[] = trim( JPath::clean($path . '/' . $file));
+					}
+					else
+					{
 						$arr[] = trim($file);
 					}
 				}
@@ -52,7 +58,6 @@ class FabrikHelperAdminHTML
 		closedir($handle);
 		asort($arr);
 		return $arr;
-
 	}
 
 }

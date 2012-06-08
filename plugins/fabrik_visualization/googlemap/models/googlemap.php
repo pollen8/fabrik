@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components/com_fabrik/models/visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
@@ -47,7 +47,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$opts->icons = $this->getJSIcons();
 		$opts->polyline = $this->getPolyline();
 		$opts->id = $viz->id;
-		$opts->zoomlevel = (int)$params->get('fb_gm_zoomlevel');
+		$opts->zoomlevel = (int) $params->get('fb_gm_zoomlevel');
 		$opts->scalecontrol = (bool)$params->get('fb_gm_scalecontrol');
 		$opts->maptypecontrol = (bool)$params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool)$params->get('fb_gm_overviewcontrol');
@@ -75,7 +75,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
 		$opts->overlay_labels = (array) $params->get('fb_gm_overlay_labels');
 		$opts->use_overlays = (int) $params->get('fb_gm_use_overlays', '0');
-		$opts->use_overlays_sidebar = $opts->use_overlays && (int)$params->get('fb_gm_use_overlays_sidebar', '0');
+		$opts->use_overlays_sidebar = $opts->use_overlays && (int) $params->get('fb_gm_use_overlays_sidebar', '0');
 		$opts->use_groups = (bool) $params->get('fb_gm_group_sidebar', 0);
 		$opts->groupTemplates = $this->getGroupTemplates();
 		$opts->zoomStyle = (int) $params->get('fb_gm_zoom_control_style', 0);
@@ -287,7 +287,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 						}
 					} else {
 						//standard google map icon size
-						list($width, $height) = $this->markerSize(JPATH_SITE.DS.'images/stories'.DS.$iconImg);
+						list($width, $height) = $this->markerSize(JPATH_SITE . '/images/stories'.DS.$iconImg);
 					}
 					//just for moosehunt!
 					$radomize = ($_SERVER['HTTP_HOST'] == 'moosehunt.mobi') ? true :false;
@@ -435,7 +435,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 	function getSidebar()
 	{
 		$params = $this->getParams();
-		if ((int)$params->get('fb_gm_use_overlays', 0) && (int)$params->get('fb_gm_use_overlays_sidebar')) {
+		if ((int) $params->get('fb_gm_use_overlays', 0) && (int) $params->get('fb_gm_use_overlays_sidebar')) {
 
 		}
 	}
@@ -444,10 +444,10 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 	{
 		$params = $this->getParams();
 		// KLM layers side bar?
-		if ((int)$params->get('fb_gm_use_overlays', 0) === 1 &&  (int)$params->get('fb_gm_use_overlays_sidebar', 0) > 0) {
+		if ((int) $params->get('fb_gm_use_overlays', 0) === 1 &&  (int) $params->get('fb_gm_use_overlays_sidebar', 0) > 0) {
 			return true;
 		}
-		if ((int)$params->get('fb_gm_group_sidebar', 0) === 1) {
+		if ((int) $params->get('fb_gm_group_sidebar', 0) === 1) {
 			return true;
 		}
 		return false;

@@ -87,7 +87,7 @@ class FabrikViewList extends JView{
 
 		foreach ($aJoinsToThisKey as $element) {
 			$element = $elementModel->getElement();
-			$elParams = new fabrikParams($element->attribs, JPATH_SITE . '/administrator/components/com_fabrik/xml/element.xml', 'component');
+			$elParams = new JRegistry($element->attribs);
 			if ($elParams->get('show_in_rss_feed') == '1') {
 				$heading = $element->label;
 
@@ -113,14 +113,14 @@ class FabrikViewList extends JView{
 
 		$document->title = htmlentities($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
 		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
-		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid='.$table->id.'&Itemid='.$Itemid);
+		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
 
 		/* check for a custom css file and include it if it exists*/
 		$tmpl = JRequest::getVar('layout', $table->template);
-		$csspath = COM_FABRIK_FRONTEND.DS."views".DS."list".DS."tmpl".DS.$tmpl.DS.'feed.css';
-
-		if (file_exists($csspath)) {
-			$document->addStyleSheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/list/tmpl/$tmpl/feed.css");
+		$csspath = COM_FABRIK_FRONTEND . 'views/list/tmpl/' . $tmpl . '/feed.css';
+		if (file_exists($csspath))
+		{
+			$document->addStyleSheet(COM_FABRIK_LIVESITE . 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/feed.css');
 		}
 
 		$view = $model->canEdit() ? 'form' : 'details';

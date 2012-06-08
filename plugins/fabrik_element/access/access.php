@@ -81,12 +81,14 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 		return $options;
 	}
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$gtree = $this->getOpts();
 		$filter = & JFilterInput::getInstance(null, null, 1, 1);
-		foreach ($gtree as $o) {
-			if ($o->value == $data) {
+		foreach ($gtree as $o)
+		{
+			if ($o->value == $data)
+			{
 				return ltrim($filter->clean($o->text, 'word'), '&nbsp;');
 			}
 		}

@@ -39,14 +39,12 @@ class FabrikControllerPlugin extends JController
 		$plugin = JRequest::getVar('plugin', '');
 		$method = JRequest::getVar('method', '');
 		$group = JRequest::getVar('g', 'element');
-
 		if (!JPluginHelper::importPlugin('fabrik_'.$group, $plugin)) {
 			$o = new stdClass();
 			$o->err = 'unable to import plugin fabrik_'.$group.' '.$plugin;
 			echo json_encode($o);
 			return;
 		}
-
 		$dispatcher = JDispatcher::getInstance();
 		if (substr($method, 0, 2) !== 'on') {
 			$method = 'on'.JString::ucfirst($method);
@@ -59,10 +57,11 @@ class FabrikControllerPlugin extends JController
 	 * custom user ajax class handling as per F1.0.x
 	 * @return unknown_type
 	 */
+	
 	function userAjax()
 	{
 		$db = FabrikWorker::getDbo();
-		require_once(COM_FABRIK_FRONTEND . DS. "user_ajax.php");
+		require_once(COM_FABRIK_FRONTEND . '/user_ajax.php');
 		$method = JRequest::getVar('method', '');
 		$userAjax = new userAjax($db);
 		if (method_exists($userAjax, $method)) {

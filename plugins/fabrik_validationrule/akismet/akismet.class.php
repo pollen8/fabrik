@@ -81,7 +81,7 @@ class AkismetObject {
 	 * @return String[]
 	 */ 
 	function getErrors() {
-		return (array)$this->errors;
+		return (array) $this->errors;
 	}
 	
 	

@@ -10,7 +10,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin classes
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'validation_rule.php');
+require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 {
@@ -24,26 +24,25 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 	protected $icon = 'isnumeric';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$element, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		//could be a dropdown with multivalues
-		if (is_array($data)) {
+		if (is_array($data))
+		{
 			$data = implode('', $data);
 		}
  		$params = $this->getParams();
 		$allow_empty = $params->get('isnumeric-allow_empty');
-		$allow_empty = $allow_empty[$c];
-		if ($allow_empty == '1' and empty( $data)) {
+		$allow_empty = $allow_empty[$pluginc];
+		if ($allow_empty == '1' and empty( $data))
+		{
 			return true;
 		}
-		return is_numeric($data);
+		return is_numeric( $elementModel->unNumberFormat($data) );
 	}
 
 	/**
@@ -54,11 +53,11 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 	* @return bool
 	*/
 
-	protected function allowEmpty($elementModel, $c)
+	protected function allowEmpty($elementModel, $pluginc)
 	{
  		$params = $this->getParams();
 		$allow_empty = $params->get('isnumeric-allow_empty');
-		$allow_empty = $allow_empty[$c];
+		$allow_empty = $allow_empty[$pluginc];
 		return $allow_empty == '1';
 	}
 }

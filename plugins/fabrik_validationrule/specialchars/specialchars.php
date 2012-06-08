@@ -22,16 +22,13 @@ class plgFabrik_ValidationruleSpecialChars extends plgFabrik_Validationrule
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
 	protected $icon = 'notempty';
-	
+
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$element, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		//for multiselect elements
 		if (is_array($data))
@@ -40,11 +37,11 @@ class plgFabrik_ValidationruleSpecialChars extends plgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$domatch = $params->get('specialchars-match');
-		$domatch = $domatch[$c];
+		$domatch = $domatch[$pluginc];
 		if ($domatch)
 		{
 			$v = $params->get('specalchars');
-			$v = explode(',', $v[$c]);
+			$v = explode(',', $v[$pluginc]);
 			foreach($v as $c)
 			{
 				if (strstr($data, $c))
@@ -56,22 +53,22 @@ class plgFabrik_ValidationruleSpecialChars extends plgFabrik_Validationrule
 		return true;
 	}
 
-	function replace($data, &$element, $c)
+	function replace($data, &$element, $pluginc)
 	{
 		$params = $this->getParams();
-		$domatch = (array)$params->get('specialchars-match');
-		$domatch = $domatch[$c];
+		$domatch = (array) $params->get('specialchars-match');
+		$domatch = $domatch[$pluginc];
 		if (!$domatch)
 		{
 			$v = $params->get($this->_pluginName .'-expression');
 			$replace = $params->get('specialchars-replacestring');
-			$replace = $replace[$c];
+			$replace = $replace[$pluginc];
 			if ($replace === '_default')
 			{
 				$replace = '';
 			}
 			$v = $params->get('specalchars');
-			$v = explode(',', $v[$c]);
+			$v = explode(',', $v[$pluginc]);
 			foreach ($v as $c)
 			{
 				$data = str_replace($c, $replace, $data);

@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 jimport('kaltura.kaltura_client');
 
 class plgFabrik_ElementKaltura extends plgFabrik_Element {
@@ -18,16 +18,14 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element {
 	protected $fieldDesc = 'TEXT';
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$id = $this->getHTMLId();
-		$id .= "_" . $oAllRowsData->__pk_val;
+		$id .= "_" . $thisRow->__pk_val;
 		FabrikHelperHTML::script('media/com_fabrik/js/lib/swfobject.js');
 		$params = $this->getParams();
 		$partnerid = $params->get('kaltura_partnerid');
@@ -49,7 +47,7 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element {
 </script>
 		<?php
 return '<div id="'.$id.'"></div>';
-		//return parent::renderListData($data, $oAllRowsData);
+		//return parent::renderListData($data, $thisRow);
 	}
 
 

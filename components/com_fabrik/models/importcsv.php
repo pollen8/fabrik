@@ -110,7 +110,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$tmp_name = $this->getCSVFileName();
 		$tmp_dir = $this->getBaseDir();
 
-		$to = JPath::clean($tmp_dir.DS.$tmp_name);
+		$to = JPath::clean($tmp_dir . '/' . $tmp_name);
 
 		$resultdir = JFile::upload($userfile['tmp_name']['userfile'], $to);
 		if ($resultdir == false && !JFile::exists($to)) {
@@ -263,7 +263,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 	public function removeCSVFile($clear_session = true)
 	{
 		$baseDir = $this->getBaseDir();
-		$userfile_path = $baseDir . DS . $this->getCSVFileName();
+		$userfile_path = $baseDir . '/' . $this->getCSVFileName();
 		if (JFile::exists($userfile_path)) {
 			JFile::delete($userfile_path);
 		}
@@ -341,11 +341,11 @@ class FabrikFEModelImportcsv extends JModelForm{
 						}
 					}
 					$hkey .= "_raw";
-					if (strtolower(trim($heading)) == strtolower(trim($name))."_raw") {
+					if (strtolower(trim($heading)) == strtolower(trim($name)) . '_raw') {
 						if (!array_key_exists($hkey, $this->matchedHeadings)) {
 							/** heading found in table */
-							$this->matchedHeadings[$hkey] = $element->name ."_raw";
-							$this->aUsedElements[strtolower($heading) ."_raw"] = $elementModel;
+							$this->matchedHeadings[$hkey] = $element->name  . '_raw';
+							$this->aUsedElements[strtolower($heading)  . '_raw'] = $elementModel;
 							$found = true;
 							$elementMap[$intKey] = clone($elementModel);
 							$rawMap[$intKey] = true;
@@ -451,7 +451,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 		// so lets see if any of $joins are table joins.
 		$tableJoinsFound = false;
 		for ($x = 0; $x < count($joins); $x++) {
-			if ((int)$joins[$x]->list_id !== 0) {
+			if ((int) $joins[$x]->list_id !== 0) {
 				$tableJoinsFound = true;
 			}
 		}

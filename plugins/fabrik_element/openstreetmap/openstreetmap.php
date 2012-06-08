@@ -10,18 +10,14 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
-
 class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$str = '';
 		$params = $this->getParams();
@@ -29,7 +25,8 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$h = $params->get('fb_gm_table_mapheight');
 		$z = $params->get('fb_gm_table_zoomlevel');
 		$data = FabrikWorker::JSONtoData($data, true);
-		foreach ($data as $d) {
+		foreach ($data as $d)
+		{
 			$str .= $this->_staticMap($d, $w, $h, $z);
 		}
 		return $str;
@@ -37,14 +34,15 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * format the data as a microformat
-	 * @param string $data
-	 * @return unknown
+	 * @param	string	$data
+	 * @return	string	micro formatted data
 	 */
 	
 	function _microformat($data)
 	{
 		$o = $this->_strToCoords($data, 0);
-		if($data != '') {
+		if($data != '')
+		{
 			$data = "<div class=\"geo\">
 			<span class=\"latitude\">{$o->coords[0]}</span>,
 			<span class=\"longitude\">{$o->coords[1]}</span>
@@ -60,10 +58,11 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * @return string javascript class file
 	 */
 
-	function formJavascriptClass(&$srcs)
+	function formJavascriptClass(&$srcs, $script = '')
 	{
 		static $jsloaded;
-		if (!isset($jsloaded)) {
+		if (!isset($jsloaded))
+		{
 			$document = JFactory::getDocument();
 			$params = $this->getParams();
 
@@ -71,20 +70,22 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			parent::formJavascriptClass($srcs);
 			FabrikHelperHTML::script('components/com_fabrik/libs/openlayers/openlayers_ext.js');
 
-			if ($params->get('fb_osm_virtualearthlayers')) {
+			if ($params->get('fb_osm_virtualearthlayers'))
+			{
 				$document->addScript('http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.1');
 			}
 
-			if ($params->get('fb_osm_gmlayers')) {
+			if ($params->get('fb_osm_gmlayers'))
+			{
 				$src = "http://maps.google.com/maps?file=api&amp;v=2&amp;key=" . $params->get('fb_osm_gm_key');
 				$document->addScript($src);
 			}
 
-			if ($params->get('fb_osm_yahoolayers')) {
+			if ($params->get('fb_osm_yahoolayers'))
+			{
 				$yahooid = $params->get('fb_yahoo_key');
 				$document->addScript('http://api.maps.yahoo.com/ajaxymap?v=3.8&appid='.$yahooid);
 			}
-
 			$document->addScript('http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
 			$jsloaded = true;
 		}
@@ -108,28 +109,27 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 		$layers = new stdClass();
 		$layers->virtualEarth = $params->get('fb_osm_virtualearthlayers');
-		$layers->yahoo 				= $params->get('fb_osm_yahoolayers');
-		$layers->google 			= $params->get('fb_osm_gmlayers');
+		$layers->yahoo = $params->get('fb_osm_yahoolayers');
+		$layers->google = $params->get('fb_osm_gmlayers');
 
 		$opts = $this->getElementJSOptions($repeatCounter);
 
-		$opts->lon 				= $o->coords[0];
-		$opts->lat 				= $o->coords[1];
-		$opts->zoomlevel 		= $o->zoomlevel;
+		$opts->lon = $o->coords[0];
+		$opts->lat = $o->coords[1];
+		$opts->zoomlevel = $o->zoomlevel;
 
 		$opts->layers = $layers;
 
-		$opts->control 			= $params->get('fb_osm_mapcontrol');
-		$opts->scalecontrol 	= $params->get('fb_osm_scalecontrol');
-		$opts->maptypecontrol 	= $params->get('fb_osm_maptypecontrol');
+		$opts->control = $params->get('fb_osm_mapcontrol');
+		$opts->scalecontrol = $params->get('fb_osm_scalecontrol');
+		$opts->maptypecontrol = $params->get('fb_osm_maptypecontrol');
 		$opts->overviewcontrol 	= $params->get('fb_osm_overviewcontrol');
-		$opts->drag = ($this->_form->_editable) ? true:false;
+		$opts->drag = ($this->getFormModel()->editable) ? true : false;
 		$opts->staticmap = $this->_useStaticMap() ? true: false;
 		$opts->maptype = $params->get('fb_osm_maptype');
 		$opts->key = $params->get('fb_osm_key');
 		$opts->defaultLayer = $params->get('fb_osm_defaultlayer');
 		$opts = json_encode($opts);
-
 		return "new FbOpenStreetMap('$id', $opts)";
 	}
 
@@ -137,19 +137,23 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * determine if we use a google static ma
 	 * Option has to be turned on and element un-editable
 	 *
-	 * @return bol
+	 * @return bool
 	 */
 
 	function _useStaticMap()
 	{
 		static $usestatic;
-		if (!isset($usestatic)) {
+		if (!isset($usestatic))
+		{
 			$params = $this->getParams();
 			//requires you to have installed the pda plugin
 			//http://joomup.com/blog/2007/10/20/pdaplugin-joomla-15/
-			if (array_key_exists('ispda', $GLOBALS) && $GLOBALS['ispda'] == 1) {
+			if (array_key_exists('ispda', $GLOBALS) && $GLOBALS['ispda'] == 1)
+			{
 				$usestatic = true;
-			} else {
+			}
+			else
+			{
 				$usestatic = ($params->get('fb_osm_staticmap') && !$this->_editable);
 			}
 		}
@@ -167,14 +171,17 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	{
 		$o = new stdClass();
 		$o->coords = array('','');
-		$o->zoomlevel = (int)$zoomlevel;
-		if (strstr($v, ",")) {
+		$o->zoomlevel = (int) $zoomlevel;
+		if (strstr($v, ","))
+		{
 			$ar = explode(":", $v);
 			$o->zoomlevel = count($ar) == 2 ? array_pop( $ar ) : 4;
 			$v = FabrikString::ltrimword($ar[0], "(");
 			$v = rtrim($v, ")");
 			$o->coords = explode(",", $v);
-		} else {
+		}
+		else
+		{
 			$o->coords = array(0,0);
 		}
 		return $o;
@@ -192,17 +199,19 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * @return string static map html
 	 */
 
-	function _staticMap($v, $w=null, $h=null, $z=null, $repeatCounter = 0)
+	function _staticMap($v, $w = null, $h = null, $z = null, $repeatCounter = 0)
 	{
 		static $eljsloaded;
-		if (!isset($eljsloaded)) {
+		if (!isset($eljsloaded))
+		{
 			$eljsloaded = true;
 			FabrikHelperHTML::script('media/com_fabrik/js/element.js');
 		}
 		$this->formJavascriptClass();
 		$id = $this->getHTMLId($repeatCounter).uniqid();
 		$params = $this->getParams();
-		if (is_null($w)) {
+		if (is_null($w))
+		{
 			$w = $params->get('fb_osm_table_mapwidth');
 		}
 		if (is_null($h)) {
@@ -306,8 +315,8 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		} else {
 			$aFields[] 	= $str;
 			$aAsFields[] =  $fullElName;
-			$aFields[]				= $db->nameQuote($dbtable).'.'.$db->nameQuote($this->_element->name).' AS '.$db->nameQuote($fullElName."_raw");
-			$aAsFields[]			= $db->nameQuote($fullElName."_raw");
+			$aFields[]				= $db->nameQuote($dbtable).'.'.$db->nameQuote($this->_element->name).' AS '.$db->nameQuote($fullElName . '_raw');
+			$aAsFields[]			= $db->nameQuote($fullElName . '_raw');
 		}
 	}
 
@@ -316,7 +325,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
    * @return unknown_type
    */
 
-  function getDefaultValue($data = array() )
+  function getDefaultValue($data = array())
   {
     if (!isset($this->_default)) {
 	    $params 		=& $this->getParams();

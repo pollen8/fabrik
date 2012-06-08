@@ -12,7 +12,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormPaginate extends plgFabrik_Form {
 
@@ -31,7 +31,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getBottomContent()
 	 */
 
-	function getBottomContent(&$params, &$formModel)
+	public function getBottomContent($params, $formModel)
 	{
 		if (!$this->show($params, $formModel)) {
 			return;
@@ -109,10 +109,10 @@ $where = $params->get('paginate_where');
 				return true;
 				break;
 			case 'form':
-				return (int)$formModel->_editable == 1;
+				return (int) $formModel->_editable == 1;
 				break;
 			case 'details':
-				return (int)$formModel->_editable == 0;
+				return (int) $formModel->_editable == 0;
 				break;
 		}
 	}

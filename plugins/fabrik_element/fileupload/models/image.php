@@ -22,10 +22,10 @@ class imageRender{
 	 * @param object all row's data
 	 */
 
-	function renderListData(&$model, &$params, $file, $oAllRowsData)
+	function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->inTableView = true;
-		$this->render($model, $params, $file, $oAllRowsData);
+		$this->render($model, $params, $file, $thisRow);
 	}
 
 	/**
@@ -35,7 +35,7 @@ class imageRender{
 	 * @param object all row's data
 	 */
 
-	function render(&$model, &$params, $file, $oAllRowsData = null)
+	function render(&$model, &$params, $file, $thisRow = null)
 	{
 		// $$$ hugh - added this hack to let people use elementname__title as a title element
 		// for the image, to show in the lightbox popup.
@@ -48,8 +48,8 @@ class imageRender{
 		}
 		if (JRequest::getVar('view') == 'list') {
 			$listModel = $model->getlistModel();
-			if (array_key_exists($title_name, $oAllRowsData)) {
-				$title = $oAllRowsData->$title_name;
+			if (array_key_exists($title_name, $thisRow)) {
+				$title = $thisRow->$title_name;
 
 			}
 		}

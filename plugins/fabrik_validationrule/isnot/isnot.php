@@ -24,16 +24,13 @@ class plgFabrik_ValidationruleIsNot extends plgFabrik_Validationrule
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
 	protected $icon = 'notempty';
-	
+
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element model
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$elementModel, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		if (is_array($data))
 		{
@@ -41,7 +38,7 @@ class plgFabrik_ValidationruleIsNot extends plgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
-		$isnot = $isnot[$c];
+		$isnot = $isnot[$pluginc];
 		$isnot = explode('|', $isnot);
 		foreach ($isnot as $i)
 		{

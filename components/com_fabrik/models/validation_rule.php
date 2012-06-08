@@ -29,13 +29,14 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * @param	string	data to check
+	 * @param	object	element
+	 * @param	int		plugin sequence ref
+	 * @param	int		repeat group counter
+	 * @return	bool	true if validation passes, false if fails
 	 */
 
-	function validate($data, &$element, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		return true;
 	}
@@ -52,7 +53,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$post	= JRequest::get('post');
-		$v = (array)$params->get($this->_pluginName .'-validation_condition');
+		$v = (array) $params->get($this->_pluginName .'-validation_condition');
 		if (!array_key_exists($c, $v))
 		{
 			return true;
@@ -120,16 +121,16 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	 * @return	string
 	 */
 
-	function getMessage($c = 0)
+	public function getMessage($c = 0)
 	{
 		$params = $this->getParams();
-		$v = (array)$params->get($this->_pluginName . '-message');
+		$v = (array) $params->get($this->_pluginName . '-message');
 		$v = JArrayHelper::getValue($v, $c, '');
 		if ($v === '')
 		{
-			$v = JText::_('COM_FABRIK_FAILED_VALIDATION');
+			$v = 'COM_FABRIK_FAILED_VALIDATION';
 		}
-		return $v;
+		return JText::_($v);
 	}
 
 	/**
@@ -148,7 +149,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		{
 			$name .= '_allowempty';
 		}
-		$label = '<span>'.$this->getLabel($elementModel, $c). '</span>';
+		$label = '<span>' . $this->getLabel($elementModel, $c) . '</span>';
 		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip ' . $this->_pluginName, 'opts' => "{notice:true}",  'title' => $label));
 		return $str;
 	}

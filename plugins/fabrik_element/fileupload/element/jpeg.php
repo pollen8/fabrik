@@ -10,6 +10,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS."plugins".DS."fabrik_element".DS."fileupload".DS."models".DS."image.php");
+require_once(JPATH_SITE . '/plugins/fabrik_element/fileupload/models/image.php');
 $render = new imageRender();
 ?>

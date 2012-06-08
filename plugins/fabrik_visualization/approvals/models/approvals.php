@@ -12,18 +12,18 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 
 class fabrikModelApprovals extends FabrikFEModelVisualization {
 
 	function getRows()
 	{
 		$params = $this->getParams();
-		$ids = (array)$params->get('approvals_table');
-		$approveEls = (array)$params->get('approvals_approve_element');
-		$titles = (array)$params->get('approvals_title_element');
-		$users = (array)$params->get('approvals_user_element');
-		$contents = (array)$params->get('approvals_content_element');
+		$ids = (array) $params->get('approvals_table');
+		$approveEls = (array) $params->get('approvals_approve_element');
+		$titles = (array) $params->get('approvals_title_element');
+		$users = (array) $params->get('approvals_user_element');
+		$contents = (array) $params->get('approvals_content_element');
 
 
 		$this->rows = array();
@@ -88,8 +88,8 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 	protected function decide($v)
 	{
 		$params = $this->getParams();
-		$ids = (array)$params->get('approvals_table');
-		$approveEls = (array)$params->get('approvals_approve_element');
+		$ids = (array) $params->get('approvals_table');
+		$approveEls = (array) $params->get('approvals_approve_element');
 		foreach ($ids as $key => $listid) {
 			if ($listid == JRequest::getInt('listid')) {
 				$listModel = JModel::getInstance('List', 'FabrikFEModel');

@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
  * If you edit the copy in the plugin folder, please be sure to also modify the copy in the admin folder.
  */
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
@@ -47,13 +47,13 @@ class JFormFieldTwittersignin extends JFormField
 		// prolly just return something like 'available after save' ?
 		if (!empty($cid))
 		{
-			$cid = (int)$cid[0];
+			$cid = (int) $cid[0];
 		}
 		else
 		{
 			$cid = 0;
 		}
-		$c = isset($this->form->repeatCounter) ? (int)$this->form->repeatCounter : 0;
+		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 
 
 		//$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&controller=plugin&task=pluginAjax&plugin=fabriktwitter&g=form&method=authenticateAdmin&tmpl=component&formid='.$cid.'&repeatCounter='.$c;

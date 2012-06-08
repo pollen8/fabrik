@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 /**
  * Renders a list of ascending / decending options
@@ -33,10 +33,11 @@ class JFormFieldAscendingdescending extends JFormFieldList
 	 * @return	array	The field option objects.
 	 * @since	1.6
 	 */
+	
 	public function getOptions()
 	{
-		$opts[] = JHTML::_('select.option', "ASC", JText::_('COM_FABRIK_ASCENDING'));
-		$opts[] = JHTML::_('select.option', "DESC", JText::_('COM_FABRIK_DESCENDING'));
+		$opts[] = JHTML::_('select.option', 'ASC', JText::_('COM_FABRIK_ASCENDING'));
+		$opts[] = JHTML::_('select.option', 'DESC', JText::_('COM_FABRIK_DESCENDING'));
 		return $opts;
 	}
 }

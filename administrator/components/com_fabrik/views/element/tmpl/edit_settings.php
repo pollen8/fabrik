@@ -30,7 +30,7 @@ foreach ($panels as $panel) {
 			<fieldset class="adminform">
 				<ul class="adminformlist">
 					<?php
-					$fieldsets = (array)$panel['fieldset'];
+					$fieldsets = (array) $panel['fieldset'];
 					foreach ($fieldsets as $fieldset) :
 						foreach ($this->form->getFieldset($fieldset) as $field) :?>
 						<li>

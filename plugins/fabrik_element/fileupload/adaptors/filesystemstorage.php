@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ROOT.DS.'plugins'.DS.'fabrik_element'.DS.'fileupload'.DS.'adaptor.php');
+require_once(JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php');
 
 class filesystemstorage extends storageAdaptor{
 
@@ -38,10 +38,12 @@ class filesystemstorage extends storageAdaptor{
 	* @param $path path to folder
 	* @return bool success
 	*/
+	
 	function createIndexFile($path)
 	{
-		$index_file = $path.DS.'index.html';
-		if (!$this->exists($index_file)) {
+		$index_file = $path . '/index.html';
+		if (!$this->exists($index_file))
+		{
 			$content = JText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
 			return JFile::write($index_file, $content);
 		}
@@ -53,9 +55,11 @@ class filesystemstorage extends storageAdaptor{
 	 * @param $path
 	 * @return unknown_type
 	 */
+	
 	function createFolder($path)
 	{
-		if (JFolder::create($path)) {
+		if (JFolder::create($path))
+		{
 			return $this->createIndexFile($path);
 		}
 		return false;
@@ -72,20 +76,24 @@ class filesystemstorage extends storageAdaptor{
 		$filename_o = preg_replace( '#[^a-zA-Z0-9_\-\.]#', '_', $filename);
 		// $$$peamak: add random filename
 		$params = $this->getParams();
-		if ($params->get('random_filename') == 1) {
+		if ($params->get('random_filename') == 1)
+		{
 			$length = $params->get('length_random_filename');
 			$key = "";
 			$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
 			$i = 0;
-			while ($i < $length) {
+			while ($i < $length)
+			{
 				$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
 				$key .= $char;
 				$i++;
 			}
 			$file_e = JFile::getExt($filename_o);
-			$file_f = preg_replace('/.'.$file_e.'$/', '', $filename_o);
-			$filename = $file_f.'_'.$key.'.'.$file_e;
-		} else {
+			$file_f = preg_replace('/.' . $file_e . '$/', '', $filename_o);
+			$filename = $file_f . '_' . $key . '.' . $file_e;
+		}
+		else
+		{
 			$filename = $filename_o;
 		}
 		return $filename;
@@ -108,7 +116,8 @@ class filesystemstorage extends storageAdaptor{
 	function upload($tmpFile, $filepath)
 	{
 		$this->uploadedFilePath = $filepath;
-		if (JFile::upload($tmpFile, $filepath)) {
+		if (JFile::upload($tmpFile, $filepath))
+		{
 			return $this->createIndexFile(dirname($filepath));
 		}
 		return false;
@@ -176,8 +185,10 @@ class filesystemstorage extends storageAdaptor{
 
 		$match = array();
 		$replace = array();
-		for ($i=0; $i < count($filebits); $i++) {
-			if (array_key_exists($i, $ulDirbits) && $filebits[$i] != $ulDirbits[$i]) {
+		for ($i = 0; $i < count($filebits); $i++)
+		{
+			if (array_key_exists($i, $ulDirbits) && $filebits[$i] != $ulDirbits[$i])
+			{
 				$match[] = $ulDirbits[$i];
 				$replace[] = $filebits[$i];
 			}
@@ -194,14 +205,14 @@ class filesystemstorage extends storageAdaptor{
 		$file = $w->parseMessageForPlaceHolder($file);
 		$f = basename($file);
 		$dir = dirname($file);
-		// Jaanus added: create also thumb suffix
 		$ext = JFile::getExt($f);
 		$fclean = str_replace('.'.$ext, '', $f); //remove extension
-		if ($type == 'thumb') {
-		//	$file = $dir . '/' . $params->get('thumb_prefix') .  $f;
+		if ($type == 'thumb')
+		{
 			$file = $dir . '/' . $params->get('thumb_prefix') .  $fclean . $params->get('thumb_suffix') .'.'. $ext; //$f replaced by $fclean, $ext
-		// Jaanus: end of changements
-		} else {
+		}
+		else
+		{
 			$file = $dir . '/' . $f;
 		}
 		return $file;
@@ -242,22 +253,26 @@ class filesystemstorage extends storageAdaptor{
 	 * @param $filepath
 	 * return array
 	 */
-	function getFileInfo($filepath) {
-		if (!$this->exists($filepath)) {
+	function getFileInfo($filepath)
+	{
+		if (!$this->exists($filepath))
+		{
 			$filepath = $this->getFullPath($filepath);
 		}
-		if ($this->exists($filepath)) {
+		if ($this->exists($filepath))
+		{
 			// $$$ hugh - turn of E_DEPRECATED to avoid warnings about eregi() in getid3
 			// LOL!  E_DEPRECATED only available in 5.3.0+, pitches Notice in anything earlier.  :)
-			if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+			if (version_compare(PHP_VERSION, '5.3.0') >= 0)
+			{
 				$current_level = error_reporting();
 	    		error_reporting($current_level & ~E_DEPRECATED);
 			}
 	    	/*
-			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.php');
-			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.lib.php');
+			require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php');
+			require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php');
 
-			getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'extension.cache.mysql.php', __FILE__, true);
+			getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
 			$config =& JFactory::getConfig();
 			$host =  $config->getValue('host');
 			$database = $config->getValue('db');
@@ -268,21 +283,24 @@ class filesystemstorage extends storageAdaptor{
 			// Analyze file and store returned data in $ThisFileInfo
 			$thisFileInfo = $getID3->analyze($filepath);
 			*/
-			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'phpmimetypeclass'.DS.'class.mime.php');
+			require_once(COM_FABRIK_FRONTEND . '/libs/phpmimetypeclass/class.mime.php');
 			$mime = new MIMETypes();
 			$thisFileInfo['filesize'] = filesize($filepath);
 			$thisFileInfo['filename'] = basename($filepath);
 			$thisFileInfo['mime_type'] = $mime->getMimeType($filepath);
 			return $thisFileInfo;
 		}
-		else {
+		else
+		{
 			return false;
 		}
 	}
 
-	function getFullPath($filepath) {
-		if (!(preg_match('#^' . preg_quote(COM_FABRIK_BASE, '#') . '#', $filepath))) {
-			return COM_FABRIK_BASE.DS.$filepath;
+	function getFullPath($filepath)
+	{
+		if (!(preg_match('#^' . preg_quote(COM_FABRIK_BASE, '#') . '#', $filepath)))
+		{
+			return COM_FABRIK_BASE . '/' . $filepath;
 		}
 		return $filepath;
 	}

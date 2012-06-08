@@ -24,20 +24,17 @@ class plgFabrik_ValidationruleUserExists extends plgFabrik_Validationrule
 	protected $icon = 'notempty';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$elementModel, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$c = trim((string) $c);
+		$pluginc = trim((string) $pluginc);
 		//as ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object) $params->get('userexists_or_not');
-		$ornot = isset($ornot->$c) ? $ornot->$c : 'fail_if_exists';
+		$ornot = isset($ornot->$pluginc) ? $ornot->$pluginc : 'fail_if_exists';
 		$user = JFactory::getUser();
 		jimport('joomla.user.helper');
 		$result = JUserHelper::getUserId($data);
@@ -70,10 +67,10 @@ class plgFabrik_ValidationruleUserExists extends plgFabrik_Validationrule
 			}
 			else
 			{
-				$user_field = (array)$params->get('userexists_user_field', array());
-				$user_field = $user_field[$c];
+				$user_field = (array) $params->get('userexists_user_field', array());
+				$user_field = $user_field[$pluginc];
 				$user_id = 0;
-				if ((int)$user_field !== 0)
+				if ((int) $user_field !== 0)
 				{
 					$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
 					$user_fullName = $user_elementModel->getFullName(false, true, false);

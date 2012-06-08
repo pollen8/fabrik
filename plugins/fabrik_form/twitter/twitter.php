@@ -12,10 +12,11 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
-if (!class_exists('TwitterOAuth')) {
-	require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'abraham-twitteroauth'.DS.'twitteroauth'.DS.'twitteroauth.php');
+if (!class_exists('TwitterOAuth'))
+{
+	require_once(COM_FABRIK_FRONTEND . '/libs/abraham-twitteroauth/twitteroauth/twitteroauth.php');
 }
 
 class plgFabrik_FormTwitter extends plgFabrik_Form {
@@ -35,12 +36,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form model
-	 * @returns bol
+	 * @param	object	$params
+	 * @param	object	form model
+	 * @returns	bol
 	 */
 
-	function onAfterProcess($params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$this->_process($params, $formModel);
 		//stop default redirect from occuring
@@ -127,7 +128,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 
 		$parameters = array('status' => $msg);
 		$status = $connection->post('statuses/update', $parameters);
-		$show_success = (int)$session->get('com_fabrik.form.twitter.showmessage', 0);
+		$show_success = (int) $session->get('com_fabrik.form.twitter.showmessage', 0);
 		
 		switch ($connection->http_code)
 		{
@@ -183,7 +184,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		//otherwise get authorization url from user to use ther own account
 
 		// $this->row not set ?! so this callback url was giving notices
-		//$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&element_id='.(int)$this->row->id.'&formid='.$formModel->getId();
+		//$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&element_id='.(int) $this->row->id.'&formid='.$formModel->getId();
 		$callback = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid=' . $formModel->getId();
 		$callback .= '&renderOrder=' . $this->renderOrder;
 
@@ -256,7 +257,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 			$bitly_key = $params->get('twitter_bitly_api_key', '');
 			if (!empty($bitly_login) && !empty($bitly_key))
 			{
-				require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'bitly'.DS.'bitly.php');
+				require_once(JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php');
 				$this->bitly = $bitly = new bitly( $bitly_login, $bitly_key);
 			}
 			else
@@ -304,10 +305,10 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		$consumer_key = JRequest::getVar('twitter_consumer_key');
 		$consumer_secret = JRequest::getVar('twitter_consumer_secret');
 		$counter = JRequest::getInt('repeatCounter');
-		$consumer_key = (array)$params->get('twitter_consumer_key');
+		$consumer_key = (array) $params->get('twitter_consumer_key');
 		$consumer_key = $consumer_key[$counter];
 
-		$consumer_secret = (array)$params->get('twitter_consumer_secret');
+		$consumer_secret = (array) $params->get('twitter_consumer_secret');
 		$consumer_secret = $consumer_secret[$counter];
 
 		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='.$formModel->getId();

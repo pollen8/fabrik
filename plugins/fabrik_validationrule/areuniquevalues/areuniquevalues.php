@@ -7,7 +7,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
-
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
@@ -26,14 +25,11 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 	protected $icon = 'notempty';
 
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element Model
-	 * @param	int		plugin sequence ref
-	 * @return	bool	true if validation passes, false if fails
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Validationrule::validate()
 	 */
 
-	function validate($data, &$elementModel, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		//could be a dropdown with multivalues
 		if (is_array($data))
@@ -41,28 +37,26 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 			$data = implode('', $data);
 		}
 		$params = $this->getParams();
-		$otherfield = (array)$params->get('areuniquevalues-otherfield', array());
-		$otherfield = $otherfield[$c];
-
+		$otherfield = (array) $params->get('areuniquevalues-otherfield', array());
+		$otherfield = $otherfield[$pluginc];
 		$element = $elementModel->getElement();
 		$listModel = $elementModel->getlistModel();
 		$table = $listModel->getTable();
-
-		if ((int)$otherfield !== 0)
+		if ((int) $otherfield !== 0)
 		{
-			$otherElementModel = $this->getOtherElement($elementModel, $c);
+			$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
 			$otherFullName = $otherElementModel->getFullName(false, true, false);
 			$otherfield = $otherElementModel->getFullName(false, false, false);
 		}
 		else
 		{
 			//old fabrik 2.x params stored element name as a string
-			$otherFullName = $table->db_table_name.'___'.$otherfield;
+			$otherFullName = $table->db_table_name . '___' . $otherfield;
 		}
 
 		$db = $listModel->getDb();
 		$lookuptable = $db->quoteName($table->db_table_name);
-		$data = $db->Quote($data);
+		$data = $db->quote($data);
 
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)')
@@ -80,7 +74,7 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 			{
 				$v = JArrayHelper::getValue($v, 0, '');
 			}
-			$query->where("$otherfield = ".$db->Quote($v));
+			$query->where($otherfield . ' = ' . $db->quote($v));
 		}
 
 		// $$$ hugh - need to check to see if we're editing a record, otherwise
@@ -96,11 +90,11 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		return ($c == 0) ? true : false;
 	}
 
-	private function getOtherElement($elementModel, $c)
+	private function getOtherElement($elementModel, $pluginc)
 	{
 		$params = $this->getParams();
 		$otherfield = (array) $params->get('areuniquevalues-otherfield');
-		$otherfield = $otherfield[$c];
+		$otherfield = $otherfield[$pluginc];
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 
@@ -111,19 +105,19 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 	* @return	string	label
 	*/
 
-	protected function getLabel($elementModel, $c)
+	protected function getLabel($elementModel, $pluginc)
 	{
-		$otherElementModel = $this->getOtherElement($elementModel, $c);
+		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
 		$params = $this->getParams();
 		$otherfield = (array) $params->get('areuniquevalues-otherfield');
-		$otherfield = $otherfield[$c];
-		if ((int)$otherfield !== 0)
+		$otherfield = $otherfield[$pluginc];
+		if ((int) $otherfield !== 0)
 		{
 			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
 		}
 		else
 		{
-			return parent::getLabel($elementModel, $c);
+			return parent::getLabel($elementModel, $pluginc);
 		}
 	}
 }

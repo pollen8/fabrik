@@ -27,6 +27,4 @@ class FabrikControllerCron extends JControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_CRON';
 
-
-
 }

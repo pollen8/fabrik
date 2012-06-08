@@ -35,13 +35,15 @@ class FabrikControllerConnection extends JControllerForm
 	function test()
 	{
 		JRequest::checkToken() or die('Invalid Token');
-		$cid	= JRequest::getVar('cid', array(0), 'method', 'array');
-		$cid	= array((int)$cid[0]);
+		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		$cid = array((int) $cid[0]);
 		$link = 'index.php?option=com_fabrik&view=connections';
-		foreach ($cid as $id) {
+		foreach ($cid as $id)
+		{
 			$model = JModel::getInstance('Connection', 'FabrikFEModel');
 			$model->setId($id);
-			if ($model->testConnection() == false) {
+			if ($model->testConnection() == false)
+			{
 				JError::raiseWarning(500,  JText::_('COM_FABRIK_UNABLE_TO_CONNECT'));
 				$this->setRedirect($link);
 				return;

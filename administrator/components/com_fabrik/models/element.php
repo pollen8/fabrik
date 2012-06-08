@@ -150,7 +150,7 @@ class FabrikModelElement extends JModelAdmin
 		$aGroups = array();
 		$query	= $db->getQuery(true);
 		$query->select('form_id');
-		$query->from($db->nameQuote('#__{package}_formgroup') . ' AS fg');
+		$query->from($db->quoteName('#__{package}_formgroup') . ' AS fg');
 		$query->where('fg.group_id = ' . (int) $item->group_id);
 		$db->setQuery($query);
 		$formrow = $db->loadObject();
@@ -320,7 +320,7 @@ class FabrikModelElement extends JModelAdmin
 		$plugins = JArrayHelper::getValue($validations, 'plugin', array());
 		$return = array();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$pluginData = empty($item->params) ? array() : (array)$item->params;
+		$pluginData = empty($item->params) ? array() : (array) $item->params;
 		$locations = JArrayHelper::getValue($item->params, 'plugin_locations');
 		$events = JArrayHelper::getValue($item->params, 'plugin_locations');
 		foreach ($plugins as $x => $plugin)
@@ -328,13 +328,14 @@ class FabrikModelElement extends JModelAdmin
 			$data = array();
 			foreach ($item as $key => $val)
 			{
-				if ($key !== 'params') {
+				if ($key !== 'params')
+				{
 					$data[$key] = $val;
 				}
 			}
 			//get the current data for repeated validation
-			foreach ($pluginData as $key => $values) {
-
+			foreach ($pluginData as $key => $values)
+			{
 				if ($key == 'plugin')
 				{
 					continue;
@@ -370,10 +371,10 @@ class FabrikModelElement extends JModelAdmin
 
 		$opts = new stdClass();
 		$opts->plugin = $item->plugin;
-		$opts->parentid = (int)$item->parent_id;
+		$opts->parentid = (int) $item->parent_id;
 		$opts->jsevents = $this->getJsEvents();
 		$opts->elements = $this->getElements();
-		$opts->id = (int)$item->id;
+		$opts->id = (int) $item->id;
 		$opts = json_encode($opts);
 
 		JText::script('COM_FABRIK_ACTION');
@@ -411,6 +412,7 @@ class FabrikModelElement extends JModelAdmin
 
 	function getPluginHTML($plugin = null)
 	{
+		$str = '';
 		$item = $this->getItem();
 		if (is_null($plugin))
 		{
@@ -445,20 +447,16 @@ class FabrikModelElement extends JModelAdmin
 	 * @param	$item
 	 */
 
-	function prepareTable($item)
+	function prepareTable(&$item)
 	{
 	}
 
 	/**
-	 * Method to validate the form data.
-	 *
-	 * @param	object		$form		The form to validate against.
-	 * @param	array		$data		The data to validate.
-	 * @return	mixed		Array of filtered data if valid, false otherwise.
-	 * @since	1.1
+	 * (non-PHPdoc)
+	 * @see JModelForm::validate()
 	 */
-
-	function validate($form, $data)
+	
+	public function validate($form, $data, $group = null)
 	{
 		$ok = parent::validate($form, $data);
 		//standard jform validation failed so we shouldn't test further as we can't
@@ -468,35 +466,29 @@ class FabrikModelElement extends JModelAdmin
 			return false;
 		}
 		$db = FabrikWorker::getDbo(true);
-
 		if (FabrikWorker::isReserved($data['name']))
 		{
 			$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
 		}
-
 		$elementModel = $this->getElementPluginModel($data);
-
 		$elementModel->getElement()->bind($data);
 		if ($data['id'] === 0)
 		{
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 		}
-
 		$listModel = $elementModel->getListModel();
-
 		//test for duplicate names
 		//unlinking produces this error
-		if (!JRequest::getVar('unlink', false) && (int)$data['id'] === 0)
+		if (!JRequest::getVar('unlink', false) && (int) $data['id'] === 0)
 		{
-			$row->group_id = (int)$data['group_id'];
-
+			$row->group_id = (int) $data['group_id'];
 			$query = $db->getQuery(true);
 			$query->select('t.id')->from('#__{package}_joins AS j');
 			$query->join('INNER', '#__{package}_lists AS t ON j.table_join = t.db_table_name');
 			$query->where("group_id = $row->group_id AND element_id = 0");
 			$db->setQuery($query);
-			$joinTblId = (int)$db->loadResult();
+			$joinTblId = (int) $db->loadResult();
 			$ignore = array($data['id']);
 			if ($joinTblId === 0)
 			{
@@ -621,7 +613,7 @@ class FabrikModelElement extends JModelAdmin
 			$data['created_by_alias'] = $user->get('username');
 		}
 		$data['params'] = json_encode($params);
-		$cond = 'group_id = '.(int)$row->group_id;
+		$cond = 'group_id = ' . (int) $row->group_id;
 		if ($new)
 		{
 			$data['ordering'] = $row->getNextOrder($cond);
@@ -663,15 +655,16 @@ class FabrikModelElement extends JModelAdmin
 			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');
-			$app->setUserState('com_fabrik.redirect', 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id='.(int)$row->id."&origplugin=$origplugin&origtask=$task&plugin=$row->plugin");
+			$app->setUserState('com_fabrik.redirect', 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id=' . (int) $row->id . '&origplugin=' . $origplugin . '&origtask=' . $task . '&plugin=' . $row->plugin);
 		}
 		else
 		{
 			$app->setUserState('com_fabrik.confirmUpdate', 0);
 		}
-		if ((int)$listModel->getTable()->id !== 0)
+		if ((int) $listModel->getTable()->id !== 0)
 		{
 			$this->updateIndexes($elementModel, $listModel, $row);
+			$listModel->updateFromElement($elementModel);
 		}
 		$return = parent::save($data);
 		if ($return)
@@ -720,7 +713,7 @@ class FabrikModelElement extends JModelAdmin
 		$query->join('INNER', '#__{package}_forms AS f ON l.form_id = f.id');
 		$query->join('LEFT', '#__{package}_formgroup AS fg ON f.id = fg.form_id');
 		$query->join('LEFT', '#__{package}_groups AS g ON fg.group_id = g.id');
-		$query->where("db_table_name = ".$db->Quote($dbname)." AND l.id !=".(int)$list->id." AND is_join = 0");
+		$query->where("db_table_name = ".$db->quote($dbname)." AND l.id !=".(int) $list->id." AND is_join = 0");
 
 		$db->setQuery($query);
 
@@ -740,7 +733,7 @@ class FabrikModelElement extends JModelAdmin
 		->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = j.group_id')
 		->join('LEFT', '#__{package}_forms AS f ON fg.form_id = f.id')
 		->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id')
-		->where('j.table_join = ' . $db->Quote($dbname) . ' AND j.list_id <> 0 AND list_id <> ' . (int) $list->id);
+		->where('j.table_join = ' . $db->quote($dbname) . ' AND j.list_id <> 0 AND list_id <> ' . (int) $list->id);
 		$db->setQuery($query);
 		$joinedLists = $db->loadObjectList('id');
 		$othertables = array_merge($joinedLists, $othertables);
@@ -890,7 +883,8 @@ class FabrikModelElement extends JModelAdmin
 		$post = JRequest::get('post');
 		if (array_key_exists('js_action', $post['jform']) && is_array($post['jform']['js_action']))
 		{
-			for ($c = 0; $c < count($post['jform']['js_action']); $c ++) {
+			for ($c = 0; $c < count($post['jform']['js_action']); $c ++)
+			{
 				$jsAction = $post['jform']['js_action'][$c];
 				$params = new stdClass();
 				$params->js_e_event = $post['js_e_event'][$c];
@@ -907,10 +901,10 @@ class FabrikModelElement extends JModelAdmin
 					{
 						$query = $db->getQuery(true);
 						$query->insert('#__{package}_jsactions');
-						$query->set('element_id = '.(int)$id);
-						$query->set('action = '.$db->quote($jsAction));
-						$query->set('code = '.$db->quote($code));
-						$query->set('params = \''.$params."'");
+						$query->set('element_id = ' . (int) $id);
+						$query->set('action = ' . $db->quote($jsAction));
+						$query->set('code = ' . $db->quote($code));
+						$query->set('params = \'' . $params . "'");
 						$db->setQuery($query);
 						$db->query();
 					}
@@ -945,7 +939,7 @@ class FabrikModelElement extends JModelAdmin
 	 * @param	array	$cids to delete
 	 */
 
-	public function delete($cids)
+	public function delete(&$pks)
 	{
 		// Initialize variables
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -966,7 +960,7 @@ class FabrikModelElement extends JModelAdmin
 				{
 					$listModel = $pluginModel->getListModel();
 					$db = $listModel->getDb();
-					$tableName = $db->nameQuote($this->getRepeatElementTableName($pluginModel));
+					$tableName = $db->quoteName($this->getRepeatElementTableName($pluginModel));
 					$db->setQuery('DROP TABLE ' . $tableName);
 					if (!$db->query())
 					{
@@ -979,7 +973,7 @@ class FabrikModelElement extends JModelAdmin
 				if (!empty($item->id))
 				{
 					$db = $listModel->getDb();
-					$db->setQuery('ALTER TABLE ' . $db->nameQuote($item->db_table_name) . ' DROP ' . $db->nameQuote($element->name));
+					$db->setQuery('ALTER TABLE ' . $db->quoteName($item->db_table_name) . ' DROP ' . $db->quoteName($element->name));
 					$db->query();
 				}
 			}
@@ -1038,8 +1032,8 @@ class FabrikModelElement extends JModelAdmin
 		$formModel = $elementModel->getForm();
 		$db = $listModel->getDb();
 		$desc = $elementModel->getFieldDescription();
-		$name = $db->nameQuote($row->name);
-		$db->setQuery('CREATE TABLE IF NOT EXISTS ' . $db->nameQuote($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), ' . $name . ' ' . $desc . ', ' . $db->nameQuote('params') . ' TEXT );');
+		$name = $db->quoteName($row->name);
+		$db->setQuery('CREATE TABLE IF NOT EXISTS ' . $db->quoteName($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), ' . $name . ' ' . $desc . ', ' . $db->quoteName('params') . ' TEXT );');
 		$db->query();
 		if ($db->getErrorNum() != 0)
 		{
@@ -1098,7 +1092,7 @@ class FabrikModelElement extends JModelAdmin
 	public function getParent()
 	{
 		$item = $this->getItem();
-		$item->parent_id = (int)$item->parent_id;
+		$item->parent_id = (int) $item->parent_id;
 		if ($item->parent_id === 0)
 		{
 			$parent = 0;

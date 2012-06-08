@@ -54,7 +54,7 @@ abstract class FabModelAdmin extends JModelAdmin
 			else
 			{
 				$o->getJForm()->model = $feModel;
-				$data = (array)$item->params;
+				$data = (array) $item->params;
 				$str = $o->onRenderAdminSettings($data, $x);
 				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
 				$location = $this->getPluginLocation($x);

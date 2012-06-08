@@ -357,14 +357,14 @@ class FabimageGD extends Fabimage
 
 		//$destImg = imagecreatetruecolor($dstW, $dstH);
 		list($origImg, $header) = $this->imageFromFile($origFile);
-		
-		
+
+
 		$destImg = imagecreatetruecolor($dstW, $dstH);
 
 		$bg = imagecolorallocate($destImg, $r, $g, $b);
 		// Draw a bg rectangle
-		imagefilledrectangle($destImg, 0 , 0 , (int)$dstW, (int)$dstH , $bg );
-		
+		imagefilledrectangle($destImg, 0 , 0 , (int) $dstW, (int) $dstH , $bg );
+
 		$this->writeImg($destImg, $destFile, $header);
 		$srcW = imagesx($destImg);
 		$srcH = imagesy($destImg);
@@ -376,7 +376,7 @@ class FabimageGD extends Fabimage
 		if ($origW < $srcW || $origH < $srcH)
 		{
 			$srcBg = imagecreatetruecolor($srcW, $srcH);
-			imagefilledrectangle($srcBg, 0 , 0 , (int)$srcW, (int)$srcH , $bg);
+			imagefilledrectangle($srcBg, 0 , 0 , (int) $srcW, (int) $srcH , $bg);
 			imagecopyresampled($srcBg, $origImg, 0, 0, 0, 0, $origW, $origH, $origW, $origH);
 			$origImg = $srcBg;
 		}
@@ -395,21 +395,21 @@ class FabimageGD extends Fabimage
 	{
 		if ($header == "image/jpeg") {
 			ob_start();
-			imagejpeg( $img, "", 100);
+			imagejpeg( $img, null, 100);
 			$image = ob_get_contents();
 			ob_end_clean();
 			$this->storage->write($destFile, $image);
 		} else {
 			if ($header == "image/png") {
 				ob_start();
-				imagepng($img, "", 0);
+				imagepng($img, null, 0);
 				$image = ob_get_contents();
 				ob_end_clean();
 				$this->storage->write($destFile, $image);
 			} else {
 				if (function_exists("imagegif")) {
 					ob_start();
-					imagegif($img, "", 100);
+					imagegif($img, null, 100);
 					$image = ob_get_contents();
 					ob_end_clean();
 					$this->storage->write($destFile, $image);
@@ -502,21 +502,21 @@ class FabimageGD2 extends FabimageGD
 		if ($header == "image/jpeg") {
 
 			ob_start();
-			imagejpeg($img, "", 100);
+			imagejpeg($img, null, 100);
 			$image = ob_get_contents();
 			ob_end_clean();
 			$this->storage->write($destFile, $image);
 		} else {
 			if ($header == "image/png") {
 				ob_start();
-				imagepng($img, "", 0);
+				imagepng($img, null, 0);
 				$image = ob_get_contents();
 				ob_end_clean();
 				$this->storage->write($destFile, $image);
 			} else {
 				if (function_exists("imagegif")) {
 					ob_start();
-					imagegif($img, "", 100);
+					imagegif($img, null, 100);
 					$image = ob_get_contents();
 					ob_end_clean();
 					$this->storage->write($destFile, $image);
@@ -585,8 +585,8 @@ class FabimageIM extends Fabimage
 					// NOTE - changed $destFile arg to pass by reference OOOPS can't do that!
 
 					// $$$ rob 04/08/2011 wont work in php 5.1
-					//$destFile = $destinfo['dirname'] . DS . $destinfo['filename'] . '.' . $pdf_thumb_type;
-					$thumb_file = JFile::stripExt($destFile).'.'.$pdf_thumb_type;
+					//$destFile = $destinfo['dirname'] . '/' . $destinfo['filename'] . '.' . $pdf_thumb_type;
+					$thumb_file = JFile::stripExt($destFile) . '.' . $pdf_thumb_type;
 
 				}
 				// Now just load it, set format, resize, save and garbage collect.

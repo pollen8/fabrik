@@ -351,12 +351,12 @@ class FabrikModelList extends FabModelAdmin
 		$afilterJoins = $form->getValue('params.filter-join');
 
 		//force to arrays as single prefilters imported from 2.x will be stored as string values
-		$afilterFields = (array)$form->getValue('params.filter-fields');
-		$afilterConditions = (array)$form->getValue('params.filter-conditions');
-		$afilterEval = (array)$form->getValue('params.filter-eval');
-		$afilterValues= (array)$form->getValue('params.filter-value');
-		$afilterAccess= (array)$form->getValue('params.filter-access');
-		$aGrouped = (array)$form->getValue('params.filter-grouped');
+		$afilterFields = (array) $form->getValue('params.filter-fields');
+		$afilterConditions = (array) $form->getValue('params.filter-conditions');
+		$afilterEval = (array) $form->getValue('params.filter-eval');
+		$afilterValues= (array) $form->getValue('params.filter-value');
+		$afilterAccess= (array) $form->getValue('params.filter-access');
+		$aGrouped = (array) $form->getValue('params.filter-grouped');
 		for ($i = 0; $i < count($afilterFields); $i ++)
 		{
 			$selJoin = JArrayHelper::getValue($afilterJoins, $i, 'and');
@@ -390,19 +390,19 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * get the table's join objects
-	 * @return array
+	 * @return	array
 	 */
 
 	protected function getJoins()
 	{
 		$item = $this->getItem();
-		if ((int)$item->id === 0)
+		if ((int) $item->id === 0)
 		{
 			return array();
 		}
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('*, j.id AS id, j.params as jparams')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
+		$query->select('*, j.id AS id, j.params as jparams')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = ' . (int) $item->id);
 		$db->setQuery($query);
 		$joins = $db->loadObjectList();
 		$fabrikDb = $this->getFEModel()->getDb();
@@ -411,7 +411,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$join =& $joins[$i];
 			$jparams = $join->jparams == '' ? new stdClass() : json_decode($join->jparams);
-			if (isset($jparams->type) && $jparams->type == 'element')
+			if (isset($jparams->type) && ($jparams->type == 'element' || $jparams->type == 'repeatElement'))
 			{
 				unset($joins[$i]);
 				continue;
@@ -426,7 +426,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * get the possible list plug-ins that can be selected for use
-	 * @return array
+	 * @return	array
 	 */
 
 	public function getAbstractPlugins()
@@ -456,7 +456,7 @@ class FabrikModelList extends FabModelAdmin
 				$str = $o->onRenderAdminSettings($data, 0);
 				$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
 				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-				$rules[] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
+				$rules[] = array('plugin' => $plugin->name, 'html' => $str, 'js' => $js);
 			}
 		}
 		return $rules;
@@ -578,7 +578,8 @@ class FabrikModelList extends FabModelAdmin
 		$row->order_by = json_encode(JRequest::getVar('order_by', array(), 'post', 'array'));
 		$row->order_dir = json_encode(JRequest::getVar('order_dir', array(), 'post', 'array'));
 
-		if (!$row->check()) {
+		if (!$row->check())
+		{
 			$this->setError($row->getError());
 			return false;
 		}
@@ -613,7 +614,7 @@ class FabrikModelList extends FabModelAdmin
 
 			$row->form_id = $this->getState('list.form_id');
 			//create fabrik group
-			$groupData = array("name" => $row->label, "label" => $row->label);
+			$groupData = array('name' => $row->label, 'label' => $row->label);
 
 			JRequest::setVar('_createGroup', 1, 'post');
 
@@ -714,7 +715,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$feModel->addIndex($row->group_by, 'groupby', 'INDEX', $map["$row->group_by"]);
 		}
-		if ($params->get('group_by_order') !== '')
+		if (trim($params->get('group_by_order')) !== '')
 		{
 			$feModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
 		}
@@ -728,7 +729,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$this->updateElements($row);
 		/* $$$rob - joomfish not available for j1.7
-		 if (JFolder::exists(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements')) {
+		 if (JFolder::exists(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements')) {
 		if ($params->get('allow-data-translation')) {
 		if (!$this->makeJoomfishXML()) {
 		$this->setError(JTEXT::_( "Unable to make Joomfish XML file"));
@@ -774,8 +775,8 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * check to see if a table exists
-	 * @param string name of table (ovewrites form_id val to test)
-	 * @return boolean false if no table found true if table found
+	 * @param	string	name of table (ovewrites form_id val to test)
+	 * @return	bool	false if no table found true if table found
 	 */
 
 	function databaseTableExists($tableName = null)
@@ -790,16 +791,16 @@ class FabrikModelList extends FabModelAdmin
 			$tableName = $table->db_table_name;
 		}
 		$fabrikDatabase = $this->getDb();
-		$sql = "SHOW TABLES LIKE " . $fabrikDatabase->quote($tableName);
+		$sql = 'SHOW TABLES LIKE ' . $fabrikDatabase->quote($tableName);
 		$fabrikDatabase->setQuery($sql);
 		$total = $fabrikDatabase->loadResult();
 		echo $fabrikDatabase->getError();
-		return ($total == "") ? false : true;
+		return ($total == '') ? false : true;
 	}
 
 	/**
 	 * deals with ensuring joins are managed correctly when table is saved
-	 * @param array data
+	 * @param	array	data
 	 */
 
 	private function updateJoins($data)
@@ -807,12 +808,12 @@ class FabrikModelList extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		// if we are creating a new list then don't update any joins - can result in groups and elements being removed.
-		if ((int)$this->getState('list.id') === 0)
+		if ((int) $this->getState('list.id') === 0)
 		{
 			return;
 		}
 		// $$$ hugh - added "AND element_id = 0" to avoid fallout from "random join and group deletion" issue from May 2012
-		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$this->getState('list.id').' AND element_id = 0');
+		$query->select('*')->from('#__{package}_joins')->where('list_id = ' . (int) $this->getState('list.id') . ' AND element_id = 0');
 		$db->setQuery($query);
 		$aOldJoins = $db->loadObjectList();
 		$params = $data['params'];
@@ -845,7 +846,8 @@ class FabrikModelList extends FabModelAdmin
 			$existingJoin = false;
 			foreach ($aOldJoins as $oOldJoin)
 			{
-				if ($joinIds[$i] == $oOldJoin->id) {
+				if ($joinIds[$i] == $oOldJoin->id)
+				{
 					$existingJoin = true;
 				}
 			}
@@ -915,13 +917,13 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 *  new join make the group, group elements and formgroup entries for the join data
-	 * @param string table key
-	 * @param string join to table key
-	 * @param string join type
-	 * @param string join to table
-	 * @param string join table
-	 * @param bool is the group a repeat
+	 * new join make the group, group elements and formgroup entries for the join data
+	 * @param	string	table key
+	 * @param	string	join to table key
+	 * @param	string	join type
+	 * @param	string	join to table
+	 * @param	string	join table
+	 * @param	bool	is the group a repeat
 	 */
 
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
@@ -982,7 +984,7 @@ class FabrikModelList extends FabModelAdmin
 
 		//here we're importing directly from the database schema
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__{package}_lists')->where('db_table_name = '.$db->Quote($tableName));
+		$query->select('id')->from('#__{package}_lists')->where('db_table_name = '.$db->quote($tableName));
 		$db->setQuery($query);
 		$id = $db->loadResult();
 		$dispatcher = JDispatcher::getInstance();
@@ -1163,7 +1165,6 @@ class FabrikModelList extends FabModelAdmin
 		$this->getFormModel();
 		if ($formid == 0)
 		{
-			//echo 'createLinkedForm';exit;
 			// $$$ rob required otherwise the JTable is loaed with db_table_name as a property
 			//which then generates an error - not sure why its loaded like that though?
 			// 18/08/2011 - could be due to the Form table class having it in its bind method - (have now overridden form table store() to remove thoes two params)
@@ -1364,7 +1365,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$fromid);
+		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int) $fromid);
 		$db->setQuery($query);
 		$joins = $db->loadObjectList();
 		$feModel = $this->getFEModel();
@@ -1567,7 +1568,7 @@ class FabrikModelList extends FabModelAdmin
 
 	private function removeJoomfishXML()
 	{
-		$file = JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements'.DS.'fabrik-' . $this->getTable()->db_table_name . '.xml';
+		$file = JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements/fabrik-' . $this->getTable()->db_table_name . '.xml';
 		if (JFile::exists($file))
 		{
 			JFile::delete($file);
@@ -1632,7 +1633,7 @@ class FabrikModelList extends FabModelAdmin
   </reference>
 </joomfish>';
 		//file name HAS to be the same as the table name MINUS db extension
-		return JFile::write(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements'.DS.$tableName.'.xml', $str);
+		return JFile::write(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements/' . $tableName . '.xml', $str);
 	}
 
 	/**
@@ -1649,7 +1650,7 @@ class FabrikModelList extends FabModelAdmin
 		// Initialise variables.
 		$dispatcher	= JDispatcher::getInstance();
 		$user = JFactory::getUser();
-		$pks = (array)$pks;
+		$pks = (array) $pks;
 		$table = $this->getTable();
 		$app = JFactory::getApplication();
 		// Include the content plugins for the on delete events.
@@ -1747,7 +1748,7 @@ class FabrikModelList extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$form = $this->getTable('form');
 		$form->load($table->form_id);
-		if ((int)$form->id === 0)
+		if ((int) $form->id === 0)
 		{
 			return false;
 		}
@@ -1762,13 +1763,13 @@ class FabrikModelList extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		//get group ids
-		if ((int)$form->id === 0)
+		if ((int) $form->id === 0)
 		{
 			return false;
 		}
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $form->id);
 		$db->setQuery($query);
-		$groupids = (array)$db->loadResultArray();
+		$groupids = (array) $db->loadResultArray();
 		//delete groups
 		$groupModel = JModel::getInstance('Group', 'FabrikModel');
 		$groupModel->delete($groupids, $deleteElements);

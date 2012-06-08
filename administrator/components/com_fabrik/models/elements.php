@@ -58,7 +58,7 @@ class FabrikModelElements extends FabModelList
 		// Filter by published state
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
-			$query->where('e.published = '.(int)$published);
+			$query->where('e.published = '.(int) $published);
 		} else if ($published === '') {
 			$query->where('(e.published IN (0, 1))');
 		}
@@ -66,27 +66,27 @@ class FabrikModelElements extends FabModelList
 		//Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
-			$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+			$search = $db->quote('%'.$db->getEscaped($search, true).'%');
 			$query->where('(e.name LIKE '.$search.' OR e.label LIKE '.$search.')');
 		}
 
 		$group = $this->getState('filter.group');
 		if (trim($group) !== '') {
-			$query->where('g.id = '.(int)$group);
+			$query->where('g.id = '.(int) $group);
 		}
 
 		$showInList = $this->getState('filter.showinlist');
 		if (trim($showInList) !== '') {
-			$query->where('e.show_in_list_summary = '.(int)$showInList);
+			$query->where('e.show_in_list_summary = '.(int) $showInList);
 		}
 
 		$plugin = $this->getState('filter.plugin');
 		if (trim($plugin) !== '') {
-			$query->where('e.plugin = '.$db->Quote($plugin));
+			$query->where('e.plugin = '.$db->quote($plugin));
 		}
 
 		//for drop fields view
-		$cids = (array)$this->getState('filter.cid');
+		$cids = (array) $this->getState('filter.cid');
 		if (!empty($cids)) {
 			$query->where('e.id IN ('.implode(',', $cids).')');
 		}
@@ -231,10 +231,10 @@ class FabrikModelElements extends FabModelList
 		$query->select('element AS value, element AS text')
 		->from('#__extensions')
 		->where('enabled >= 1')
-		->where('type ='.$db->Quote('plugin'))
+		->where('type ='.$db->quote('plugin'))
 		->where('state >= 0')
 		->where('access IN ('.$levels.')')
-		->where('folder = '.$db->Quote('fabrik_element'))
+		->where('folder = '.$db->quote('fabrik_element'))
 		->order('text');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();

@@ -11,8 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/params.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
 
 /**
  * Abstract Visualization Controller
@@ -22,6 +22,7 @@ require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
  * @subpackage	Fabrik
  * @since 1.5
  */
+
 class FabrikControllerVisualization extends JController
 {
 
@@ -35,31 +36,33 @@ class FabrikControllerVisualization extends JController
 	function display()
 	{
 		$document = JFactory::getDocument();
-
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
-		if ($viewName == '') {
+		if ($viewName == '')
+		{
 			// if we are using a url like http://localhost/fabrik3.0.x/index.php?option=com_fabrik&view=visualization&id=6
 			// then we need to ascertain which viz to use
 			$viewName = $this->getViewName();
 		}
-		$viewType	= $document->getType();
-
+		$viewType = $document->getType();
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
-
 		$model = $this->getModel($viewName);
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		// Display the view
 		$view->assign('error', $this->getError());
 
 		// f3 cache with raw view gives error
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv'))) {
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv')))
+		{
 			$view->display();
-		} else {
+		}
+		else
+		{
 			$post = JRequest::get('post');
 			//build unique cache id on url, post and user id
 			$user = JFactory::getUser();
@@ -71,7 +74,7 @@ class FabrikControllerVisualization extends JController
 	
 	/**
 	 * if loading via id then we want to get the view name and add the plugin view and model paths
-	 * @return string view name
+	 * @return	string	view name
 	 */
 	
 	protected function getViewName()
@@ -79,8 +82,8 @@ class FabrikControllerVisualization extends JController
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
 		$viz->load(JRequest::getInt('id'));
 		$viewName = $viz->plugin;
-		$this->addViewPath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'views');
-		JModel::addIncludePath(JPATH_SITE.DS.'plugins'.DS.'fabrik_visualization'.DS.$viewName.DS.'models');
+		$this->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/views');
+		JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/models');
 		return $viewName;
 	}
 

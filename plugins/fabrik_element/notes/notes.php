@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_element'.DS.'databasejoin'.DS.'databasejoin.php');
+require_once(JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php');
 
 class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 {
@@ -36,19 +36,13 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * child classes can then call this function with
-	 * return parent::renderListData($data, $oAllRowsData);
-	 * to perform rendering that is applicable to all plugins
-	 *
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementDatabasejoin::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData )
+	public function renderListData($data, &$thisRow)
 	{
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	protected function getNotes()
@@ -125,7 +119,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		if (!array_key_exists($c, $this->components)) {
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $db->Quote($c));
+			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $db->quote($c));
 			$db->seQuery($query);
 			$found = $db->loadResult();
 			$this->components[$c] = $found;
@@ -150,7 +144,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		// Jaanus: here we can choose whether WHERE has to have single or (if field is the same as FK then only) custom (single or multiple) criterias,
 		if ($value != '') {
 			if ($field != '' && $field !== $fk) {
-			$where[] = $db->nameQuote($field) . ' = ' . $db->Quote($value);
+			$where[] = $db->nameQuote($field) . ' = ' . $db->quote($value);
 			}
 			else {
 			$where[] = $value;
@@ -244,7 +238,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$table = $db->nameQuote($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
 		$key = $db->nameQuote($params->get('join_key_column'));
-		$v = $db->Quote(JRequest::getVar('v'));
+		$v = $db->quote(JRequest::getVar('v'));
 		$rowid = $this->getFormModel()->getRowId();
 		
 		//Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == 0)
@@ -255,7 +249,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		//Jaanus - commented the $field related code out as it doesn't seem to have sense and it generated "ajax failed" error in submission when where element was selected
 		/*$field = $params->get('notes_where_element', '');
 		if ($field !== '') {
-			$query->set($db->nameQuote($field) . ' = ' . $db->Quote($params->get('notes_where_value')));
+			$query->set($db->nameQuote($field) . ' = ' . $db->quote($params->get('notes_where_value')));
 		}
 		*/
 		$user = $params->get('userid', '');
@@ -265,7 +259,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		
 		$fk = $params->get('join_fk_column', '');
 		if ($fk !== '') {
-			$query->set($db->nameQuote($fk) . ' = ' . $db->Quote(JRequest::getVar('rowid')));
+			$query->set($db->nameQuote($fk) . ' = ' . $db->quote(JRequest::getVar('rowid')));
 		}
 		
 		$db->setQuery($query);
@@ -273,7 +267,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		if (!$db->query()) {
 			JError::raiseError(500, 'db insert failed');
 		} else {
-			$this->loadRow = $db->Quote($db->insertid());
+			$this->loadRow = $db->quote($db->insertid());
 			$opts = $this->_getOptions();
 			$row = $opts[0];
 		/* 	$query->clear();

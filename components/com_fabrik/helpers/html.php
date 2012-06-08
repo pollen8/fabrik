@@ -130,10 +130,11 @@ EOD;
 
 	/**
 	 * show form to allow users to email form to a friend
-	 * @param object form
+	 * @param	object	form model
+	 * @param	string	template
 	 */
 
-	function emailForm($formModel, $template='')
+	public static function emailForm($formModel, $template = '')
 	{
 		$document = JFactory::getDocument();
 		$form = $formModel->getForm();
@@ -186,7 +187,7 @@ EOD;
 	 * once email has been sent to a frind show this message
 	 */
 
-	function emailSent($to, $ok)
+	public static function emailSent($to, $ok)
 	{
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
@@ -194,7 +195,7 @@ EOD;
 
 		if ($ok)
 		{?>
-<span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO')." $to";?>
+<span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to;?>
 </span>
 <?php }?>
 <br />
@@ -209,13 +210,13 @@ EOD;
 
 	/**
 	 * writes a print icon
-	 * @param object form
-	 * @param object parameters
-	 * @param int row id
-	 * @return string print html icon/link
+	 * @param	object	form model
+	 * @param	object	parameters
+	 * @param	int		row id
+	 * @return	string	print html icon/link
 	 */
 
-	function printIcon($formModel, $params, $rowid = '')
+	public static function printIcon($formModel, $params, $rowid = '')
 	{
 		$app = JFactory::getApplication();
 		$config	= JFactory::getConfig();
@@ -258,12 +259,12 @@ EOD;
 
 	/**
 	 * Writes Email icon
-	 * @param object form
-	 * @param object parameters
-	 * @return string email icon/link html
+	 * @param	object	form model
+	 * @param	object	parameters
+	 * @return	string	email icon/link html
 	 */
 
-	function emailIcon($formModel, $params)
+	public static function emailIcon($formModel, $params)
 	{
 		$app = JFactory::getApplication();
 		$config	= JFactory::getConfig();
@@ -282,9 +283,9 @@ EOD;
 
 			if (JRequest::getVar('usekey') !== null)
 			{
-				$url .= "&usekey=" . JRequest::getVar('usekey');
+				$url .= '&usekey=' . JRequest::getVar('usekey');
 			}
-			$url .= '&referrer='.urlencode(JFactory::getURI()->toString());
+			$url .= '&referrer=' . urlencode(JFactory::getURI()->toString());
 
 			//$link = JRoute::_($url); //cant jroute as reffer values overrides url task/view!
 			$link = $url;
@@ -305,12 +306,12 @@ EOD;
 
 	/**
 	 * get a list of condition options - used in advanced search
-	 * @param string table ref
-	 * @param string selected value
-	 * @return string html select list
+	 * @param	string	list ref
+	 * @param	string	selected value
+	 * @return	string	html select list
 	 */
 
-	function conditonList($listid, $sel = '')
+	public static function conditonList($listid, $sel = '')
 	{
 		$conditions = array();
 		$conditions[] = JHTML::_('select.option', 'AND', JText::_('COM_FABRIK_AND'));
@@ -318,8 +319,13 @@ EOD;
 		return JHTML::_('select.genericlist', $conditions, 'fabrik___filter[list_' . $listid . '][join][]', 'class="inputbox" size="1" ', 'value', 'text', $sel);
 	}
 
-
-	function tableList($sel = '')
+	/**
+	 * get a select list of fabrik lists
+	 * @param	string	$sel
+	 * @return	mixed	html select list or error
+	 */
+	
+	public static function tableList($sel = '')
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
@@ -338,18 +344,7 @@ EOD;
 	 * @deprecated - behavior.calendar is loaded in framework();
 	 */
 
-	function loadCalendar()
-	{
-	}
-
-	/**
-	 * @deprecated
-	 * Internal method to translate the JavaScript Calendar
-	 *
-	 * @return	string	JavaScript that translates the object
-	 * @since	1.5
-	 */
-	function _calendartranslation()
+	public static function loadCalendar()
 	{
 	}
 
@@ -358,10 +353,9 @@ EOD;
 	 * takes into account if you are viewing the page in raw format
 	 * if so sends js code back to webpage to inject css file into document head
 	 * If not raw format then apply standard J stylesheet
-	 * @param $filename
-	 * @param $path
-	 * @param $attribs
-	 * @return null
+	 * @param	string	$filename
+	 * @param	array	$attribs
+	 * @return	null
 	 */
 
 	public static function stylesheet($file, $attribs = array())
@@ -383,9 +377,14 @@ EOD;
 		}
 		else
 		{
+			// $$$ rob 29/05/2011 ensure file is appended with live site, stops issues when loading css from admin pages.
+			$document = JFactory::getDocument();
+			if (!strstr($file, COM_FABRIK_LIVESITE))
+			{
+				$file = COM_FABRIK_LIVESITE . '/' . $file;
+			}
 			// $$$ rob 27/04/2011 changed from JHTML::styleSheet as that doesn't work loading
 			// php style sheets with querystrings in them
-			$document = JFactory::getDocument();
 			$document->addStylesheet($file);
 		}
 	}
@@ -418,36 +417,36 @@ EOD;
 
 	/**
 	 * Generates an HTML radio list
-	 * @param array An array of objects
-	 * @param string The value of the HTML name attribute
-	 * @param string Additional HTML attributes for the <select> tag
-	 * @param mixed The key that is selected
-	 * @param string The name of the object variable for the option value
-	 * @param string The name of the object variable for the option text
-	 * @param int number of options to show per row @since 2.0.5
-	 * @returns string HTML for the select list
+	 * @param	array	An array of objects
+	 * @param	string	The value of the HTML name attribute
+	 * @param	string	Additional HTML attributes for the <select> tag
+	 * @param	mixed	The key that is selected
+	 * @param	string	The name of the object variable for the option value
+	 * @param	string	The name of the object variable for the option text
+	 * @param	int		number of options to show per row @since 2.0.5
+	 * @return	string	HTML for the select list
 	 */
 
-	function radioList(&$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0)
+	public static function radioList(&$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0)
 	{
 		return FabrikHelperHTML::aList('radio', $arr, $tag_name, $tag_attribs, $selected, $key, $text, $options_per_row);
 	}
 
 	/**
 	 * Generates an HTML radio OR checkbox list
-	 * @param string type - radio or checkbox
-	 * @param array An array of objects
-	 * @param string The value of the HTML name attribute
-	 * @param string Additional HTML attributes for the <select> tag
-	 * @param mixed The key that is selected
-	 * @param string The name of the object variable for the option value
-	 * @param string The name of the object variable for the option text
-	 * @param int number of options to show per row @since 2.0.5
-	 * @param bool is the list editable or not @since 2.1.1
-	 * @returns string HTML for the select list
+	 * @param	string	type - radio or checkbox
+	 * @param	array	An array of objects
+	 * @param	string	The value of the HTML name attribute
+	 * @param	string	Additional HTML attributes for the <select> tag
+	 * @param	mixed	The key that is selected
+	 * @param	string	The name of the object variable for the option value
+	 * @param	string	The name of the object variable for the option text
+	 * @param	int		number of options to show per row @since 2.0.5
+	 * @param	bool	is the list editable or not @since 2.1.1
+	 * @returns	string	HTML for the select list
 	 */
 
-	public function aList($type, &$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0, $editable=true)
+	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0, $editable=true)
 	{
 		reset($arr);
 		if ($options_per_row > 0)
@@ -462,7 +461,7 @@ EOD;
 		$html = "";
 		if ($editable)
 		{
-			$selectText = $type == 'checkbox' ? " checked=\"checked\"" : " selected=\"selected\"";
+			$selectText = $type == 'checkbox' ? ' checked="checked"' : ' selected="selected"';
 		}
 		else
 		{
@@ -475,7 +474,7 @@ EOD;
 			$id = isset($arr[$i]->id) ? @$arr[$i]->id : null;
 
 			$extra = '';
-			$extra .= $id ? " id=\"" . $arr[$i]->id . "\"" : '';
+			$extra .= $id ? ' id="' . $arr[$i]->id . '"' : '';
 			$found = false;
 			if (is_array($selected))
 			{
@@ -505,7 +504,7 @@ EOD;
 			}
 			else
 			{
-				$extra .= $k == $selected ? " checked=\"checked\"" : '';
+				$extra .= $k == $selected ? ' checked="checked"' : '';
 			}
 			$html .= $div;
 
@@ -580,7 +579,7 @@ EOD;
 	 * Keep session alive, for example, while editing or creating an article.
 	 */
 
-	function keepalive()
+	public static function keepalive()
 	{
 		//test since 2.0b3 dont do anything if loading from Fabrik win
 		if (FabrikHelperHTML::inAjaxLoadedPage())
@@ -590,7 +589,7 @@ EOD;
 		JHtml::_('behavior.keepalive');
 	}
 
-	public function mcl()
+	public static function mcl()
 	{
 		if (!self::$mcl)
 		{
@@ -637,7 +636,8 @@ EOD;
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
 				$navigator = JBrowser::getInstance();
-				if ($navigator->getBrowser() == 'msie') {
+				if ($navigator->getBrowser() == 'msie')
+				{
 					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
 				}
 				$src[] = 'media/com_fabrik/js/mootools-ext.js';
@@ -679,7 +679,7 @@ EOD;
 	 * @deprecated use ::framework instead
 	 */
 
-	function mootools()
+	public static function mootools()
 	{
 		FabrikHelperHTML::framework();
 	}
@@ -700,15 +700,15 @@ EOD;
 	}
 
 	/**
-	 * @param string js $script
-	 * @return null
+	 * @param	string	js $script
+	 * @return	null
 	 */
 
 	public static function addScriptDeclaration($script)
 	{
 		if (JRequest::getCmd('format') == 'raw')
 		{
-			echo "<script type=\"text/javascript\">" . $script . "</script>";
+			echo '<script type="text/javascript">' . $script . '</script>';
 		}
 		else
 		{
@@ -716,11 +716,11 @@ EOD;
 		}
 	}
 
-	public function addStyleDeclaration($style)
+	public static function addStyleDeclaration($style)
 	{
 		if (JRequest::getCmd('format') == 'raw')
 		{
-			echo "<style type=\"text/css\">" . $style . "</script>";
+			echo '<style type="text/css">' . $style . '</script>';
 		}
 		else
 		{
@@ -743,8 +743,9 @@ EOD;
 		}
 		if (class_exists('JSite'))
 		{
-			$menus	= JSite::getMenu();
-			$menu	= $menus->getActive();
+			$app = JFactory::getApplication();
+			$menus = $app->getMenu();
+			$menu = $menus->getActive();
 			//popup menu item so not in ajax loaded page even if tmpl=component
 			// $$$ hugh - nope, browserNav of '1' is not a popup, just a new tab, see ...
 			// http://fabrikar.com/forums/showthread.php?p=111771#post111771
@@ -758,9 +759,21 @@ EOD;
 	}
 
 	/**
+	 * Returns true is either J! or Fabrik debug is enabled
+	 *
+	 * @return bool
+	 */
+	public static function isDebug()
+	{
+		$config = JFactory::getConfig();
+		$debug = (int) $config->get('debug');
+		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) === 1;
+	}
+
+	/**
 	 * wrapper for JHTML::Script()
-	 * @param mixed, string or array of files to load
-	 * @param string optional js to run if format=raw (as we first load the $file via Asset.Javascript()
+	 * @param	mixed	string or array of files to load
+	 * @param	string	optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 */
 
 	public static function script($file, $onLoad = '')
@@ -798,8 +811,8 @@ EOD;
 			}
 			if (JRequest::getCmd('format') == 'raw')
 			{
-				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){'.$onLoad.'}' : '';
-				echo '<script type="text/javascript">Asset.javascript(\''.$f.'\', {'.$opts.'});</script>';
+				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){' . $onLoad . '}' : '';
+				echo '<script type="text/javascript">Asset.javascript(\'' . $f . '\', {' . $opts . '});</script>';
 			}
 			else
 			{
@@ -816,7 +829,6 @@ EOD;
 			}
 			else
 			{
-				//$onLoad = "(function() {\n " . $onLoad . "\n //end load func \n})";
 				$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
 			}
 			$src[] = $onLoad;
@@ -827,7 +839,7 @@ EOD;
 		}
 	}
 
-	function slimbox()
+	public static function slimbox()
 	{
 		if (!self::$modal)
 		{
@@ -852,13 +864,12 @@ EOD;
 	}
 
 	/**
-	 * @param $selector string class name of tips
-	 * @param $params array paramters
-	 * @param $selectorPrefix limit the tips selection to those contained within an id
-	 * @return unknown_type
+	 * @param	string	$selector string class name of tips
+	 * @param	array	$params array paramters
+	 * @param	string	$selectorPrefix limit the tips selection to those contained within an id
 	 */
 
-	function tips($selector='.hasTip', $params = array(), $selectorPrefix = 'document')
+	public static function tips($selector='.hasTip', $params = array(), $selectorPrefix = 'document')
 	{
 
 		$sig = md5(serialize(array($selector,$params)));
@@ -868,10 +879,10 @@ EOD;
 		}
 
 		// Setup options object
-		$opt['maxTitleChars']	= (isset($params['maxTitleChars']) && ($params['maxTitleChars'])) ? (int)$params['maxTitleChars'] : 50;
-		$opt['offsets']			= (isset($params['offsets'])) ? (int)$params['offsets'] : null;
-		$opt['showDelay']		= (isset($params['showDelay'])) ? (int)$params['showDelay'] : null;
-		$opt['hideDelay']		= (isset($params['hideDelay'])) ? (int)$params['hideDelay'] : null;
+		$opt['maxTitleChars']	= (isset($params['maxTitleChars']) && ($params['maxTitleChars'])) ? (int) $params['maxTitleChars'] : 50;
+		$opt['offsets']			= (isset($params['offsets'])) ? (int) $params['offsets'] : null;
+		$opt['showDelay']		= (isset($params['showDelay'])) ? (int) $params['showDelay'] : null;
+		$opt['hideDelay']		= (isset($params['hideDelay'])) ? (int) $params['hideDelay'] : null;
 		$opt['className']		= (isset($params['className'])) ? $params['className'] : null;
 		$opt['fixed']			= (isset($params['fixed']) && ($params['fixed'])) ? '\\true' : '\\false';
 		$opt['onShow']			= (isset($params['onShow'])) ? '\\'.$params['onShow'] : null;
@@ -886,16 +897,15 @@ EOD;
 		//FabrikHelperHTML::addScriptDeclaration($tooltipInit);
 
 		self::$tips[$sig] = true;
-		return;
 	}
 
 	/**
 	 * add a debug out put section
-	 * @param mixed string/object $content
-	 * @param string $title
+	 * @param	mixed	string/object $content
+	 * @param	string	$title
 	 */
 
-	function debug($content, $title = 'output:')
+	public static function debug($content, $title = 'output:')
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
 		if ($config->get('use_fabrikdebug') == 0)
@@ -910,17 +920,17 @@ EOD;
 		{
 			return;
 		}
-		echo "<div class=\"fabrikDebugOutputTitle\">$title</div>";
-		echo "<div class=\"fabrikDebugOutput fabrikDebugHidden\">";
+		echo '<div class="fabrikDebugOutputTitle">' . $title . '</div>';
+		echo '<div class="fabrikDebugOutput fabrikDebugHidden">';
 		if (is_object($content) || is_array($content))
 		{
-			echo "<pre>" . htmlspecialchars(print_r($content, true)) . "</pre>";
+			echo '<pre>' . htmlspecialchars(print_r($content, true)) . '</pre>';
 		}
 		else
 		{
 			echo htmlspecialchars($content);
 		}
-		echo "</div>";
+		echo '</div>';
 
 		if (!isset(self::$debug))
 		{
@@ -944,9 +954,9 @@ EOD;
 
 	/**
 	 * create html for ajax folder browser (used by fileupload and image elements)
-	 * @param array folders
-	 * @param string start path
-	 * @return string html snippet
+	 * @param	array	folders
+	 * @param	string	start path
+	 * @return	string	html snippet
 	 */
 
 	function folderAjaxSelect($folders, $path = '')
@@ -957,7 +967,7 @@ EOD;
 		$str[] = FabrikHelperHTML::image('orderneutral.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_BROWSE_FOLDERS')));
 		$str[] = '</a>';
 		$str[] = '<div class="folderselect-container">';
-		$str[] = '<span class="breadcrumbs"><a href="#">'.JText::_('HOME').'</a><span> / </span>';
+		$str[] = '<span class="breadcrumbs"><a href="#">' . JText::_('HOME') . '</a><span> / </span>';
 		$i = 1;
 		$path = explode("/", $path);
 		foreach ($path as $p)
@@ -972,7 +982,7 @@ EOD;
 		{
 			if (trim($folder) != '')
 			{
-				$str[] = '<li class="fileupload_folder"><a href="#">'.$folder.'</a></li>';
+				$str[] = '<li class="fileupload_folder"><a href="#">' . $folder . '</a></li>';
 			}
 		}
 		//for html validation
@@ -986,13 +996,13 @@ EOD;
 
 	/**
 	 * Add autocomplete JS code to head
-	 * @param string $htmlid of element to turn into autocomplete
-	 * @param int $elementid
-	 * @param string $plugin
-	 * @param array $opts (currently only takes 'onSelection')
+	 * @param	string	$htmlid of element to turn into autocomplete
+	 * @param	int		$elementid
+	 * @param	string	$plugin
+	 * @param	array	$opts (currently only takes 'onSelection')
 	 */
 
-	public function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
 		FabrikHelperHTML::autoCompleteScript();
 		$json = FabrikHelperHTML::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
@@ -1004,14 +1014,14 @@ EOD;
 
 	/**
 	 * Gets auto complete js options (needed separate from autoComplete as db js class needs these values for repeat group duplication)
-	 * @param string $htmlid of element to turn into autocomplete
-	 * @param int $elementid
-	 * @param string $plugin
-	 * @param array $opts (currently only takes 'onSelection')
-	 * @return array autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
+	 * @param	string	$htmlid of element to turn into autocomplete
+	 * @param	int		$elementid
+	 * @param	string	$plugin
+	 * @param	array	$opts (currently only takes 'onSelection')
+	 * @return	array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
-	public function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass();
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid . '&plugin=' . $plugin . '&method=autocomplete_options';
@@ -1028,7 +1038,8 @@ EOD;
 	 *Load the autocomplete script once
 	 */
 
-	public function autoCompleteScript() {
+	public static function autoCompleteScript()
+	{
 		if (!isset(self::$autocomplete))
 		{
 			self::$autocomplete = true;
@@ -1036,7 +1047,7 @@ EOD;
 		}
 	}
 
-	public function facebookGraphAPI($appid, $locale = 'en_US', $meta = array())
+	public static function facebookGraphAPI($appid, $locale = 'en_US', $meta = array())
 	{
 		if (!isset(self::$facebookgraphapi))
 		{
@@ -1069,12 +1080,12 @@ EOD;
 					$v = 'article';
 				}
 			}
-			$data['custom'][] = "<meta property=\"$k\" content=\"$v\"/>";
+			$data['custom'][] = '<meta property="' . $k . '" content="' . $v . '"/>';
 
 		}
 		if (!$typeFound)
 		{
-			$data['custom'][] = "<meta property=\"og:type\" content=\"article\"/>";
+			$data['custom'][] = '<meta property="og:type" content="article"/>';
 		}
 		$document->setHeadData($data);
 	}
@@ -1082,13 +1093,13 @@ EOD;
 	/**
 	 * add path for image() function
 	 * @since 3.0
-	 * @param string $path to add to list of folders to search
-	 * @param string $type of path set to load (currently only image is used)
-	 * @param string $view are we looking at loading form or list images?
-	 * @param bool $highPriority should the added $path take precedence over previously added paths (default true)
+	 * @param	string	$path to add to list of folders to search
+	 * @param	string	$type of path set to load (currently only image is used)
+	 * @param	string	$view are we looking at loading form or list images?
+	 * @param	bool	$highPriority should the added $path take precedence over previously added paths (default true)
 	 */
 
-	public function addPath($path = '', $type = 'image', $view = 'form', $highPriority = true)
+	public static function addPath($path = '', $type = 'image', $view = 'form', $highPriority = true)
 	{
 		if (!array_key_exists($type, self::$helperpaths))
 		{
@@ -1100,15 +1111,15 @@ EOD;
 				case 'image':
 					if ($app->isAdmin())
 					{
-						self::$helperpaths[$type][] = JPATH_SITE . '/' . "administrator/templates/$template/images/";
+						self::$helperpaths[$type][] = JPATH_SITE . '/administrator/templates/' . $template . '/images/';
 					}
-					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/%s/images/";
-					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/$view/images/";
-					self::$helperpaths[$type][] = COM_FABRIK_BASE."templates/$template/html/com_fabrik/images/";
-					self::$helperpaths[$type][] = COM_FABRIK_FRONTEND."/views/$view/tmpl/%s/images/";
-					self::$helperpaths[$type][] = COM_FABRIK_BASE."media/com_fabrik/images/";
-					self::$helperpaths[$type][] = COM_FABRIK_BASE."images/";
-					self::$helperpaths[$type][] = COM_FABRIK_BASE."images/stories/";
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'templates/' . $template . '/html/com_fabrik/' . $view . '/%s/images/';
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'templates/' . $template . '/html/com_fabrik/' . $view . '/images/';
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'templates/' . $template . '/html/com_fabrik/images/';
+					self::$helperpaths[$type][] = COM_FABRIK_FRONTEND . '/views/' . $view . '/tmpl/%s/images/';
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'media/com_fabrik/images/';
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'images/';
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'images/stories/';
 					break;
 			}
 		}
@@ -1121,13 +1132,13 @@ EOD;
 
 	/**
 	 * Search various folder locations for an image
-	 * @param string file name
-	 * @param string type e.g. form/list/element
-	 * @param string template folder name
-	 * @return string full path name if found, original filename if not found
+	 * @param	string	file name
+	 * @param	string	type e.g. form/list/element
+	 * @param	string	template folder name
+	 * @return	string	full path name if found, original filename if not found
 	 */
 
-	public function getImagePath($file, $type = 'form', $tmpl = '')
+	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
 		$file = ltrim($file, DS);
 		$paths = FabrikHelperHTML::addPath('', 'image', $type, true);
@@ -1147,14 +1158,14 @@ EOD;
 	/**
 	 * Search various folder locations for a template image
 	 * @since 3.0
-	 * @param string file name
-	 * @param string type e.g. form/list/element
-	 * @param string template folder name
-	 * @param array assoc list of properties or string (if you just want to set the image alt tag)
-	 * @param bool src only (default false)
+	 * @param	string	file name
+	 * @param	string	type e.g. form/list/element
+	 * @param	string	template folder name
+	 * @param	array	assoc list of properties or string (if you just want to set the image alt tag)
+	 * @param	bool	src only (default false)
 	 */
 
-	public function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
+	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
 	{
 		if (is_string($properties))
 		{
@@ -1185,28 +1196,28 @@ EOD;
 
 	/**
 	 * make a grid of items
-	 * @param array $values
-	 * @param array $labels
-	 * @param array $selected
-	 * @param string $name
-	 * @param string $type *checkbox/radio etc
-	 * @param bool $elementBeforeLabel
-	 * @param int $optionsPerRow
+	 * @param	array	$values
+	 * @param	array	$labels
+	 * @param	array	$selected
+	 * @param	string	$name
+	 * @param	string	$type *checkbox/radio etc
+	 * @param	bool	$elementBeforeLabel
+	 * @param	int		$optionsPerRow
 	 */
 
-	public function grid($values, $labels, $selected, $name, $type="checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)
+	public static function grid($values, $labels, $selected, $name, $type="checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)
 	{
 		$items = array();
 		for ($i = 0; $i < count($values); $i ++)
 		{
 			$item = array();
-			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . "[$i]" : $name;
-			$label = '<span>'.$labels[$i].'</span>';
+			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
+			$label = '<span>' . $labels[$i] . '</span>';
 			$value = htmlspecialchars($values[$i], ENT_QUOTES); //for values like '1"'
-			$chx = '<input type="'.$type.'" class="fabrikinput '.$type.'" name="'.$thisname.'" value="'.$value.'" ';
+			$chx = '<input type="' . $type . '" class="fabrikinput ' . $type . '" name="' . $thisname . '" value="' . $value . '" ';
 			$chx .= in_array($values[$i], $selected) ? ' checked="checked" />' : ' />';
-			$item[] = '<label class="fabrikgrid_'.$value.'">';
-			$item[] = $elementBeforeLabel  == '1' ? $chx.$label : $label.$chx;
+			$item[] = '<label class="fabrikgrid_' . $value . '">';
+			$item[] = $elementBeforeLabel  == '1' ? $chx . $label : $label . $chx;
 			$item[] = '</label>';
 			$items[] = implode("\n", $item);
 		}
@@ -1219,7 +1230,7 @@ EOD;
 		foreach ($items as $i => $s)
 		{
 			$clear = ($i % $optionsPerRow == 0) ? 'clear:left;' : '';
-			$grid[] = '<li style="'.$clear.'float:left;width:'.$w.'%;padding:0;margin:0;">'.$s.'</li>';
+			$grid[] = '<li style="' . $clear . 'float:left;width:' . $w . '%;padding:0;margin:0;">' . $s . '</li>';
 		}
 		$grid[] = '</ul>';
 		return $grid;

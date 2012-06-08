@@ -27,14 +27,14 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 	
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param array radio button ids
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementList::_getEmailValue()
 	 */
 
-	protected function _getEmailValue($value)
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if (empty($value)) {
+		if (empty($value))
+		{
 			return '';
 		}
 		$labels = $this->getSubOptionLabels();

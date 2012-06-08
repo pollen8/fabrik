@@ -1,6 +1,6 @@
 <form action="index.php" method="post" name="adminForm">
 	<?php if (!empty($this->newHeadings)) {
-		if ((int)$this->table->id !== 0) {
+		if ((int) $this->table->id !== 0) {
 		echo "<H3>" . JText::_('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND') . "</h3>";
 		echo JText::sprintf('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND_DESC', $this->table->label, $this->table->label);
 	}?>
@@ -19,8 +19,8 @@
 			</thead>
 			<tbody>
 			<?php
-			$chx = (int)$this->table->id === 0 ? '' : 'checked="checked"';
-			$chx2 = (int)$this->table->id === 0 ? 'checked="checked"' : '';
+			$chx = (int) $this->table->id === 0 ? '' : 'checked="checked"';
+			$chx2 = (int) $this->table->id === 0 ? 'checked="checked"' : '';
 			for ($i = 0; $i < count($this->newHeadings); $i ++) {
 				$heading = trim($this->newHeadings[$i]);
 				$sample = '';

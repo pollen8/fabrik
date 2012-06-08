@@ -24,7 +24,7 @@ class videoRender
 	 * @param object all row's data
 	 */
 
-	function renderListData(&$model, &$params, $file, $oAllRowsData)
+	function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->render($model, $params, $file);
 	}
@@ -39,12 +39,12 @@ class videoRender
 	{
 		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
 		ini_set('display_errors', true);
-		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.php');
-		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'getid3.lib.php');
+		require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php');
+		require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php');
 			
-		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND.DS.'libs'.DS.'getid3'.DS.'getid3'.DS.'extension.cache.mysql.php', __FILE__, true);
+		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
 		$config = JFactory::getConfig();
-		$host =  $config->getValue('host');
+		$host = $config->getValue('host');
 		$database = $config->getValue('db');
 		$username = $config->getValue('user');
 		$password = $config->getValue('password');
@@ -53,11 +53,15 @@ class videoRender
 		$relPath = JPATH_SITE . "$file";
 		$thisFileInfo = $getID3->analyze($relPath);
 
-		if (array_key_exists('video', $thisFileInfo)) {
-			if (array_key_exists('resolution_x', $thisFileInfo['video'])) {
+		if (array_key_exists('video', $thisFileInfo))
+		{
+			if (array_key_exists('resolution_x', $thisFileInfo['video']))
+			{
 				$w = $thisFileInfo['video']['resolution_x'];
 				$h = $thisFileInfo['video']['resolution_y'];
-			}else{
+			}
+			else
+			{
 				$w = $thisFileInfo['video']['streams']['2']['resolution_x']; //for wmv files
 				$h = $thisFileInfo['video']['streams']['2']['resolution_y'];
 			}

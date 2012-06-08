@@ -227,7 +227,7 @@ class fabrikSubscriptionsIPN {
 		$this->log('fabrik.ipn.txn_type_subscr_payment gid query', $db->getQuery());
 	
 		$this->log('fabrik.ipn.setusergid', $subUser->get('id') . ' set to '. $gid . "\n ".$db->getQuery() . "\n ". $db->getErrorMsg());
-		$subUser->groups = (array)$gid;
+		$subUser->groups = (array) $gid;
 		$subUser->save();
 	
 		$app = JFactory::getApplication();
@@ -318,9 +318,9 @@ class fabrikSubscriptionsIPN {
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('subscr_id')
-		->from('#__fabrik_subs_invoices')->where('invoice_number = ' . $db->Quote($inv));
+		->from('#__fabrik_subs_invoices')->where('invoice_number = ' . $db->quote($inv));
 		$db->setQuery($query);
-		$subid = (int)$db->loadResult();
+		$subid = (int) $db->loadResult();
 		if($subid === 0)
 		{
 			return false;
@@ -405,14 +405,14 @@ class fabrikSubscriptionsIPN {
 		return;
 		$plan = JTable::getInstance('Plan', 'FabrikTable');
 		$newPlan = JTable::getInstance('Plan', 'FabrikTable');
-		$plan->load((int)$sub->plan);
-		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int)$sub->plan .' = ' . (int)$plan->fall_back_plan);
+		$plan->load((int) $sub->plan);
+		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int) $sub->plan .' = ' . (int) $plan->fall_back_plan);
 		$fallback = false;
 		if ($plan->fall_back_plan != 0)
 		{
 			$fallback = true;
-			$newPlan->load((int)$plan->fall_back_plan);
-			$gid = (int)$newPlan->usergroup;
+			$newPlan->load((int) $plan->fall_back_plan);
+			$gid = (int) $newPlan->usergroup;
 		}
 		else
 		{
@@ -421,7 +421,7 @@ class fabrikSubscriptionsIPN {
 		}
 		$subUser = JFactory::getUser($sub->userid);
 		$this->log('fabrik.ipn. fallback', $subUser->get('id') .' gid set to ' . $gid);
-		$subUser->groups = (array)$gid;
+		$subUser->groups = (array) $gid;
 		$subUser->save();
 	
 		if ($fallback)

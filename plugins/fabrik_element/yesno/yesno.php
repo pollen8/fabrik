@@ -10,8 +10,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_element'.DS.'radiobutton'.DS.'radiobutton.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once(JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php');
 
 class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
@@ -25,22 +25,26 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	 * @return unknown_type
 	 */
 
-	function getDefaultValue($data)
+	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->_default))
+		{
 			$params = $this->getParams();
 			$this->_default = $params->get('yesno_default', 0);
 		}
 		return $this->_default;
 	}
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		//check if the data is in csv format, if so then the element is a multi drop down
-		if ($data == '1') {
+		if ($data == '1')
+		{
 			return FabrikHelperHTML::image("1.png", 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
-		} else {
+		}
+		else
+		{
 			return FabrikHelperHTML::image("0.png", 'list', @$this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
@@ -53,12 +57,15 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	 * @return string formatted value
 	 */
 
-	function renderListData_pdf($data, $oAllRowsData)
+	function renderListData_pdf($data, $thisRow)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
-		if ($data == '1') {
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		if ($data == '1')
+		{
 			return FabrikHelperHTML::image("1_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JYES')));
-		} else {
+		}
+		else
+		{
 			return FabrikHelperHTML::image("0_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
@@ -70,7 +77,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	 * @return string formatted value
 	 */
 
-	function renderListData_csv($data, $oAllRowsData)
+	function renderListData_csv($data, &$thisRow)
 	{
 		if ($data == '1') {
 			return JText::_('JYES');
@@ -110,10 +117,13 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
-		foreach ($rows as &$row) {
-			if ($row->value !== '') {
+		foreach ($rows as &$row)
+		{
+			if ($row->value !== '')
+			{
 				$k = array_search($row->value, $values);
-				if ($k !== false) {
+				if ($k !== false)
+				{
 					$row->text = $labels[$k];
 				}
 			}
@@ -135,11 +145,13 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	function formJavascriptClass(&$srcs, $script = '')
 	{
 		$elementList = 'media/com_fabrik/js/elementlist.js';
-		if (!in_array($elementList, $srcs)) {
+		if (!in_array($elementList, $srcs))
+		{
 			$srcs[] = $elementList;
 		}
 		$elementList = 'plugins/fabrik_element/radiobutton/radiobutton.js';
-		if (!in_array($elementList, $srcs)) {
+		if (!in_array($elementList, $srcs))
+		{
 			$srcs[] = $elementList;
 		}
 		parent::formJavascriptClass($srcs, $script);
@@ -154,7 +166,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	protected function getReadOnlyOutput($value, $label)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'form', false);
 		$img = $value == '1' ? "1.png" : "0.png";
 		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
 	}
@@ -186,13 +198,11 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	}
 
 	/**
-	 * Get the table filter for the element
-	 * @param bol do we render as a normal filter or as an advanced searc filter
-	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * @return string filter html
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementList::getFilter()
 	 */
 
-	function getFilter($counter = 0, $normal = true)
+	public function getFilter($counter = 0, $normal = true)
 	{
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
@@ -205,14 +215,20 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		$rows = $this->filterValueList($normal);
 		$return = array();
 		$element = $this->getElement();
-		if ($element->filter_type == 'hidden') {
-			$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-		} else {
+		if ($element->filter_type == 'hidden')
+		{
+			$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+		}
+		else
+		{
 			$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
 		}
-		if ($normal) {
+		if ($normal)
+		{
 			$return[] = $this->getFilterHiddenFields($counter, $elName);
-		} else {
+		}
+		else
+		{
 			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
 		return implode("\n", $return);
@@ -230,7 +246,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		$o->text = $this->filterSelectLabel();
 		$opt = array($o);
 		$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
-		foreach ($rows as &$row) {
+		foreach ($rows as &$row)
+		{
 			if ($row->value == 1) { $row->text = JText::_('JYES'); }
 			if ($row->value == 0) { $row->text = JText::_('JNO'); }
 		}
