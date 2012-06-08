@@ -947,7 +947,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str = '';
 		if ($this->canView() || $this->canUse())
 		{
-			$rollOver = $params->get('rollover') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
+			$rollOver = $params->get('rollover', '') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
 			$labelClass = 'fabrikLabel ';
 			if (empty($element->label))
 			{
