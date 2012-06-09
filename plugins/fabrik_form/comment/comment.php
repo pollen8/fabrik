@@ -602,7 +602,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		$comments = $this->getComments($row->formid, $row->row_id);
 		$row = $comments[$row->id];
 		$obj->content =$this->writeComment($params, $row);
-		$obj->depth = (int)$row->depth;
+		$obj->depth = (int) $row->depth;
 		$obj->id = $row->id;
 		$notificationPlugin = $this->notificationPluginInstalled($formModel);
 
@@ -634,11 +634,11 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	function addNotificationEvent($row, $formModel)
 	{
 		$db = FabrikWorker::getDbo();
-		$event = $db->Quote('COMMENT_ADDED');
+		$event = $db->quote('COMMENT_ADDED');
 		$user = JFactory::getUser();
 		$user_id = (int) $user->get('id');
-		$ref = $db->Quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . JRequest::getVar('rowid'));
-		$date = $db->Quote(JFactory::getDate()->toSql());
+		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . JRequest::getVar('rowid'));
+		$date = $db->quote(JFactory::getDate()->toSql());
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_notification_event')->set(array('event = ' . $event, 'user_id = ' . $user_id, 'reference = ' . $ref, 'date_time = ' . $date));
 		$db->setQuery($query);
@@ -659,7 +659,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
 		$user_id = (int) $user->get('id');
-		$label = $db->Quote(JRequest::getVar('label'));
+		$label = $db->quote(JRequest::getVar('label'));
 		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . JRequest::getVar('rowid'));
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_notification')->set(array('reason = ' . $db->quote('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));

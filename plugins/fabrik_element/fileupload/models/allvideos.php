@@ -26,7 +26,7 @@ class allVideosRender
 	 * @param object all row's data
 	 */
 
-	function renderListData(&$model, &$params, $file, $oAllRowsData)
+	function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->inTableView  = true;
 		$this->render($model, $params, $file);

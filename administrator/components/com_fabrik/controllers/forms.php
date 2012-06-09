@@ -63,15 +63,16 @@ class FabrikControllerForms extends FabControllerAdmin
 	public function listview()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if(is_array($cid)){
+		if(is_array($cid))
+		{
 			$cid = $cid[0];
 		}
 		$db = JFactory::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__fabrik_lists')->where('form_id = '.(int)$cid);
+		$query->select('id')->from('#__fabrik_lists')->where('form_id = ' . (int) $cid);
 		$db->setQuery($query);
 		$listid = $db->loadResult();
-		$this->setRedirect('index.php?option=com_fabrik&task=list.view&listid='.$listid);
+		$this->setRedirect('index.php?option=com_fabrik&task=list.view&listid=' . $listid);
 	}
 
 }

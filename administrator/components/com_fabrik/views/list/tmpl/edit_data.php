@@ -1,5 +1,5 @@
 	<?php echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_GROUP_LABEL_DATA'), 'list-data-panel');?>
-	<?php echo JHtml::_('sliders.start', 'table-sliders-data-'.(int)$this->item->id, array('useCookie'=>0)); ?>
+	<?php echo JHtml::_('sliders.start', 'table-sliders-data-'.(int) $this->item->id, array('useCookie'=>0)); ?>
 
 <?php echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_DATA'), 'data-details'); ?>
 	<fieldset class="adminform">
@@ -36,7 +36,7 @@
 				<div class="orderby_container" style="margin-bottom:3px">
 				<?php
 					echo JArrayHelper::getValue($this->order_by, $o, $this->order_by[0]);
-					if ((int)$this->item->id !== 0) {
+					if ((int) $this->item->id !== 0) {
 						echo JArrayHelper::getValue($this->order_dir, $o)?>
 					<a class="addOrder" href="#"><img src="components/com_fabrik/images/add.png" label="<?php echo JText::_('COM_FABRIK_ADD')?>" alt="<?php echo JText::_('COM_FABRIK_ADD')?>" /></a>
 					<a class="deleteOrder" href="#"><img src="components/com_fabrik/images/remove.png" label="<?php echo JText::_('REMOVE')?>" alt="<?php echo JText::_('REMOVE')?>" /></a>

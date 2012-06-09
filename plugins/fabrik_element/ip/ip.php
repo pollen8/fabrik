@@ -96,15 +96,13 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -112,7 +110,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	 * @return unknown_type
 	 */
 
-	function getDefaultValue($data = array() )
+	function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default)) {
 			$this->_default = $_SERVER['REMOTE_ADDR'];

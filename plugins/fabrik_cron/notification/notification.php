@@ -13,11 +13,11 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
 class plgFabrik_Cronnotification extends plgFabrik_Cron {
 
-	function canUse()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		return true;
 	}

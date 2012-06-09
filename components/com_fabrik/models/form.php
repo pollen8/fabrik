@@ -158,7 +158,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @return object form table
 	 */
 
-	function &getForm()
+	function getForm()
 	{
 		return $this->getTable();
 	}
@@ -168,11 +168,12 @@ class FabrikFEModelForm extends FabModelForm
 	 * @return object params
 	 */
 
-	function &getParams()
+	function getParams()
 	{
-		if (!isset($this->_params)) {
+		if (!isset($this->_params))
+		{
 			$form = $this->getForm();
-			$this->_params = new fabrikParams($form->params, JPATH_SITE . '/administrator/components/com_fabrik/xml/form.xml', 'component');
+			$this->_params = new JRegistry($form->params);
 		}
 		return $this->_params;
 	}
@@ -185,37 +186,47 @@ class FabrikFEModelForm extends FabModelForm
 	function checkAccessFromListSettings()
 	{
 		$form = $this->getForm();
-		if ($form->record_in_database == 0) {
+		if ($form->record_in_database == 0)
+		{
 			return 2;
 		}
 		$listModel = $this->getListModel();
-		if (!is_object($listModel)) {
+		if (!is_object($listModel))
+		{
 			return 2;
 		}
 		$ret = 0;
-		if ($listModel->canViewDetails()) {
+		if ($listModel->canViewDetails())
+		{
 			$ret = 1;
 		}
 		$pRowid = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot);
 		/* new form can we add?*/
-		if ($this->_rowId == 0 || $pRowid == '-1') {
+		if ($this->_rowId == 0 || $pRowid == '-1')
+		{
 			/*if they can edit can they also add?*/
-			if ($listModel->canAdd()) {
+			if ($listModel->canAdd())
+			{
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			else if ($pRowid == '-1' && $listModel->canEdit($this->_data)) {
+			else if ($pRowid == '-1' && $listModel->canEdit($this->_data))
+			{
 				$ret = 2;
 			}
-		} else {
+		}
+		else
+		{
 			/*editing from - can we edit?*/
-			if ($listModel->canEdit($this->_data)) {
+			if ($listModel->canEdit($this->_data))
+			{
 				$ret = 2;
 			}
 		}
 		//$$$rob refractored from view
 		$this->_editable = ($ret == 1 && $this->_editable == '1') ? false : true;
-		if (JRequest::getVar('view', 'form') == 'details') {
+		if (JRequest::getVar('view', 'form') == 'details')
+		{
 			$this->_editable = false;
 		}
 		return $ret;
@@ -233,24 +244,31 @@ class FabrikFEModelForm extends FabModelForm
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
-		if ($app->isAdmin()) {
+		if ($app->isAdmin())
+		{
 			$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
 		}
-		if ($tmpl == '') {
-			if ($this->_editable) {
+		if ($tmpl == '')
+		{
+			if ($this->_editable)
+			{
 				$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
-			} else {
+			}
+			else
+			{
 				$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
 			}
 		}
-		if (JRequest::getVar('mjmarkup') == 'iphone') {
+		if (JRequest::getVar('mjmarkup') == 'iphone')
+		{
 			$tmpl = 'iwebkit';
 		}
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 		//finally see if the options are overridden by a querystring var
 		$tmpl = JRequest::getVar('layout', $tmpl);
 		//test it exists - otherwise revert to default tmpl
-		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl)) {
+		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
+		{
 			$tmpl = 'default';
 		}
 		$item->form_template = $tmpl;
@@ -401,7 +419,7 @@ class FabrikFEModelForm extends FabModelForm
 				// which we should now be doing ... and getParent() causes an extra table lookup for every child
 				// element on the form.
 				$aJsActions[$elementModel->getElement()->id] = array();
-				$aElIds[] = (int)$elementModel->getElement()->id;
+				$aElIds[] = (int) $elementModel->getElement()->id;
 			}
 		}
 		if (!empty($aElIds))
@@ -449,7 +467,7 @@ class FabrikFEModelForm extends FabModelForm
 			$params = $this->getParams();
 			$sql = "SELECT *, fg.group_id AS group_id, RAND() AS rand_order FROM #__{package}_formgroup AS fg
 INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
- WHERE fg.form_id = ".(int)$this->getId()." AND published = 1";
+ WHERE fg.form_id = ".(int) $this->getId()." AND published = 1";
 			if ($params->get('randomise_groups') == 1) {
 				$sql .= " ORDER BY rand_order";
 			} else {
@@ -493,7 +511,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$form = $this->getForm();
 		if ($form->record_in_database) {
 			$listModel = $this->getListModel();
-			$listid = (int)$listModel->getId();
+			$listid = (int) $listModel->getId();
 			if (is_object($listModel) && $listid !== 0) {
 				$db->setQuery("SELECT g.id, j.id AS joinid FROM #__{package}_joins AS j INNER JOIN #__{package}_groups AS g ON g.id = j.group_id WHERE list_id = '$listid' AND g.published = 1 ");
 				$joinGroups = $db->loadObjectList('id');
@@ -515,22 +533,25 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function getGroups()
 	{
-		if (!isset($this->groups)) {
+		if (!isset($this->groups))
+		{
 			$this->groups = array();
 			$listModel = $this->getListModel();
 			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
 			$groupdata = $this->getPublishedGroups();
-			foreach ($groupdata as $id => $groupd) {
+			foreach ($groupdata as $id => $groupd)
+			{
 				$thisGroup = clone($groupModel);
 				$thisGroup->setId($id);
 				$thisGroup->setContext($this, $listModel);
 				// $$ rob 25/02/2011 this was doing a query per group - pointless as we bind $groupd to $row afterwards
 				//$row = $thisGroup->getGroup();
-				$row = & FabTable::getInstance('Group', 'FabrikTable');
+				$row = FabTable::getInstance('Group', 'FabrikTable');
 				$row->bind($groupd);
 				$thisGroup->_group = $row;
-				if ($row->published == 1) {
-					$this->groups[$id] = $thisGroup; //dont use &=!
+				if ($row->published == 1)
+				{
+					$this->groups[$id] = $thisGroup;
 				}
 			}
 		}
@@ -553,7 +574,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		ON #__{package}_formgroup.group_id = #__{package}_groups.id
 		LEFT JOIN #__{package}_elements
 		ON #__{package}_groups.id = #__{package}_elements.group_id
-		WHERE #__{package}_formgroup.form_id = " . (int)$this->getState('form.id') . " ";
+		WHERE #__{package}_formgroup.form_id = " . (int) $this->getState('form.id') . " ";
 		if ($excludeUnpublished) {
 			$sql .= " AND #__{package}_elements.published = '1' ";
 		}
@@ -579,12 +600,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * -------->element
 	 * --->group
 	 * if run before then existing data returned
-	 * @return array element objects
+	 * @return	array	element objects
 	 */
 
 	function getGroupsHiarachy()
 	{
-		if (!isset($this->groups)) {
+		if (!isset($this->groups))
+		{
 			$this->getGroups();
 			$this->groups = FabrikWorker::getPluginManager()->getFormPlugins($this);
 		}
@@ -593,20 +615,25 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get an list of elements that aren't shown in the table view
-	 *
-	 * @return array of element table objects
+	 * @return	array	of element table objects
 	 */
+	
 	function getElementsNotInTable()
 	{
-		if (!isset($this->_elementsNotInTable)) {
+		if (!isset($this->_elementsNotInTable))
+		{
 			$this->_elementsNotInTable = array();
 			$groups = $this->getGroupsHiarachy();
-			foreach ($groups as $group) {
+			foreach ($groups as $group)
+			{
 				$elements = $group->getPublishedElements();
-				foreach ($elements as $elementModel) {
-					if ($elementModel->canView() || $elementModel->canUse()) {
+				foreach ($elements as $elementModel)
+				{
+					if ($elementModel->canView() || $elementModel->canUse())
+					{
 						$element = $elementModel->getElement();
-						if (!isset($element->show_in_list_summary) || !$element->show_in_list_summary) {
+						if (!isset($element->show_in_list_summary) || !$element->show_in_list_summary)
+						{
 							$this->_elementsNotInTable[] = $element;
 						}
 					}
@@ -620,20 +647,20 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * this checks to see if the form has a file upload element
-	 * and returns the correct
-	 * encoding type for the form
-	 * @param int form id
-	 * @param object forms elements
-	 * @return string form encoding type
+	 * and returns the correct encoding type for the form
+	 * @return	string	form encoding type
 	 */
 
 	function getFormEncType()
 	{
 		$groups = $this->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
-				if ($elementModel->isUpload()) {
+			foreach ($elementModels as $elementModel)
+			{
+				if ($elementModel->isUpload())
+				{
 					return "multipart/form-data";
 				}
 			}
@@ -1344,7 +1371,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// not passing in the correct table name - see notes line 720 for explaination
 						// $listModel->storeRow($repData, $joinRowId, true, $item->db_table_name);
 						$listModel->storeRow($repData, $joinRowId, true, $joinGroupTable);
-						if ((int)$joinRowId === 0)
+						if ((int) $joinRowId === 0)
 						{
 							$joinRowId = $listModel->lastInsertId;
 							// $$$ hugh - need to set PK element value for things like email plugin
@@ -1385,7 +1412,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					// $$$ hugh - trying to get one-to-one joins working where parent.fk = child.pk (ie where parent points to child)
 					// So ... if we have that situation, what we will see next is
-					// if (($fullforeginKey != $oJoinPk || (int)$data['rowid'] === 0) && ($fullforeginKey != "{$oJoin->table_join}___{$oJoin->table_key}" || $oJoin->table_key === $oJoin->table_join_key)) {}
+					// if (($fullforeginKey != $oJoinPk || (int) $data['rowid'] === 0) && ($fullforeginKey != "{$oJoin->table_join}___{$oJoin->table_key}" || $oJoin->table_key === $oJoin->table_join_key)) {}
 					// which we need NOT to be true, otherwise (as per Rob's comment) we'll actually be overwriting the PK.
 					// Then, after that we are going to see ...
 					// if ($fullforeginKey == $oJoinPk) {}
@@ -1410,7 +1437,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				//2) also test if the foreign key isnt the same as the joins key - hard to explain cos its v confusing but
 				//when you had 2 joins with both of them key'd to the main table things went horribly wrong
 
-				//if (($fullforeginKey != $oJoinPk || (int)$data['rowid'] === 0) && $fullforeginKey != "{$oJoin->table_join}___{$oJoin->table_key}") {
+				//if (($fullforeginKey != $oJoinPk || (int) $data['rowid'] === 0) && $fullforeginKey != "{$oJoin->table_join}___{$oJoin->table_key}") {
 
 				// $$$ rob - 3) hmm (2) was incorrect if your table had a pk called the same as the joined table's fk - eg.
 				// tbl, venture pk venture_id, tbl access, fk venture_id
@@ -2111,7 +2138,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * @return object form row
 	 */
 
-	function &getTable()
+	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
 		if (is_null($this->_form))
 		{
@@ -2136,14 +2163,16 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * depreicated
 	 */
-	function _getFromGroupsStr(){
+	function _getFromGroupsStr()
+	{
 	}
 
 	/**
 	 * depreicated
 	 */
 
-	function _loadFromGroupsStr() {
+	function _loadFromGroupsStr()
+	{
 	}
 
 	/**
@@ -2237,7 +2266,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$class = get_class($elementModel);
 				if (!in_array($class, $ignore))
 				{
-					$aEls[] = (int)$elementModel->getElement()->id;
+					$aEls[] = (int) $elementModel->getElement()->id;
 				}
 			}
 		}
@@ -2287,7 +2316,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					{
 						$val = FabrikString::safeColName($val);
 					}
-
 					if ($incRaw && is_a($elementModel, 'plgFabrik_ElementDatabasejoin'))
 					{
 						// FIXME - next line had been commented out, causing undefined warning for $rawval
@@ -2696,7 +2724,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			return true;
 		}
-		$save = (int)$params->get('multipage_save', 0);
+		$save = (int) $params->get('multipage_save', 0);
 		$user = JFactory::getUser();
 		if ($user->get('id') !== 0)
 		{
@@ -2949,10 +2977,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * attempts to determine if the form contains the element
 	 * @param	string	element name to search for
 	 * @param	bool	check search name against element id
+	 * @param	bool	check short element name
 	 * @return	bool	true if found, false if not found
 	 */
 
-	function hasElement($searchName, $checkInt = false)
+	function hasElement($searchName, $checkInt = false, $checkShort = true)
 	{
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
@@ -2973,7 +3002,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						return true;
 					}
 				}
-				if ($searchName == $element->name)
+				if ($searchName == $element->name && $checkShort)
 				{
 					$this->_currentElement = $elementModel;
 					return true;
@@ -3007,12 +3036,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * get an element
 	 * @param	string	$searchName
 	 * @param	bool	check search name against element id
+	 * @param	bool	check short element name
 	 * @return	mixed	ok: element model not ok: false
 	 */
 
-	function getElement($searchName, $checkInt = false)
+	function getElement($searchName, $checkInt = false, $checkShort = true)
 	{
-		return $this->hasElement($searchName, $checkInt) ? $this->_currentElement : false;
+		return $this->hasElement($searchName, $checkInt, $checkShort) ? $this->_currentElement : false;
 	}
 
 	/**
@@ -3246,8 +3276,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function getIntro()
 	{
-		$match = ((int)$this->_rowId === 0) ? 'new' : 'edit';
-		$remove = ((int)$this->_rowId === 0) ? 'edit' : 'new';
+		$match = ((int) $this->_rowId === 0) ? 'new' : 'edit';
+		$remove = ((int) $this->_rowId === 0) ? 'edit' : 'new';
 		$match = "/{".$match.":\s*.*?}/i";
 		$remove = "/{".$remove.":\s*.*?}/i";
 		$intro = $this->getForm()->intro;
@@ -3289,7 +3319,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			return str_replace("{Add/Edit}", '', $label);
 		}
 		if (JString::stristr($label, "{Add/Edit}")) {
-			$replace = ((int)$this->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = ((int) $this->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 		return $label;
@@ -3796,7 +3826,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			//only create the group if there are some element inside it
 			if (count($aElements) != 0) {
 				//28/01/2011 $$$rob and if it is published
-				$showGroup = (int)$groupParams->get('repeat_group_show_first');
+				$showGroup = (int) $groupParams->get('repeat_group_show_first');
 				if ($showGroup != -1) {
 					// $$$ - hugh - testing new 'hide if no usable elements' option (4)
 					//Jaanus: if not form view with "details only" option and not details view with "form only" option
@@ -3825,7 +3855,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				return array();
 			} else {
 				$query = $db->getQuery(true);
-				$query->select('*')->from('#__{package}_lists')->where("db_table_name = ".$db->Quote($table));
+				$query->select('*')->from('#__{package}_lists')->where("db_table_name = ".$db->quote($table));
 				$db->setQuery($query);
 			}
 			$this->_linkedFabrikLists[$table] = $db->loadColumn();

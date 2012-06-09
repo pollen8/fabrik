@@ -48,8 +48,8 @@ class FPagination extends JPagination{
 	 * Return the pagination footer
 	 *
 	 * @access	public
-	 * @param string list reference
-	 * @param string tmpl
+	 * @param	string	list reference
+	 * @param	string	tmpl
 	 * @return	string	Pagination footer
 	 * @since	1.0
 	 */
@@ -63,18 +63,20 @@ class FPagination extends JPagination{
 		$list['limitstart']	= $this->limitstart;
 		$list['total'] = $this->total;
 		$list['limitfield']	= $this->showDisplayNum ? $this->getLimitBox() : '';
-		$list['pagescounter']	= $this->getPagesCounter();
-		if ($this->showTotal) {
+		$list['pagescounter'] = $this->getPagesCounter();
+		if ($this->showTotal)
+		{
 			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL') . ': '. $list['total'];
 		}
 		$list['pageslinks']	= $this->getPagesLinks($listRef, $tmpl);
 
-		$chromePath	= JPATH_THEMES.DS.$app->getTemplate().DS.'html'.DS.'pagination.php';
+		$chromePath	= JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
 
 		if (file_exists($chromePath))
 		{
 			require_once($chromePath);
-			if (function_exists('pagination_list_footer')) {
+			if (function_exists('pagination_list_footer'))
+			{
 				//cant allow for it to be overridden
 				//return pagination_list_footer($list);
 			}
@@ -153,39 +155,50 @@ class FPagination extends JPagination{
 		$itemOverride = false;
 		$listOverride = false;
 
-		$chromePath = COM_FABRIK_FRONTEND.DS.'views'.DS.'list'.DS.'tmpl'.DS.$tmpl.DS.'default_pagination.php';
+		$chromePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_pagination.php';
 		if (JFile::exists($chromePath))
 		{
 			require_once($chromePath);
-			if (function_exists('fabrik_pagination_item_active') && function_exists('fabrik_pagination_item_inactive')) {
+			if (function_exists('fabrik_pagination_item_active') && function_exists('fabrik_pagination_item_inactive'))
+			{
 				//cant allow this as the js code we use for the items is different
 				$itemOverride = true;
 			}
-			if (function_exists('fabrik_pagination_list_render')) {
+			if (function_exists('fabrik_pagination_list_render'))
+			{
 				$listOverride = true;
 			}
 		}
 
 		// Build the select list
-		if ($data->all->base !== null) {
+		if ($data->all->base !== null)
+		{
 			$list['all']['active'] = true;
 			$list['all']['data'] = $itemOverride ? fabrik_pagination_item_active($data->all, $this->listRef) : $this->_item_active($data->all);
-		} else {
+		}
+		else
+		{
 			$list['all']['active'] = false;
 			$list['all']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->all) : $this->_item_inactive($data->all);
 		}
 
-		if ($data->start->base !== null) {
+		if ($data->start->base !== null)
+		{
 			$list['start']['active'] = true;
 			$list['start']['data'] = $itemOverride ? fabrik_pagination_item_active($data->start, $this->listRef) : $this->_item_active($data->start);
-		} else {
+		}
+		else
+		{
 			$list['start']['active'] = false;
 			$list['start']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->start) : $this->_item_inactive($data->start);
 		}
-		if ($data->previous->base !== null) {
+		if ($data->previous->base !== null)
+		{
 			$list['previous']['active'] = true;
 			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_active($data->previous, $this->listRef) : $this->_item_active($data->previous);
-		} else {
+		}
+		else
+		{
 			$list['previous']['active'] = false;
 			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->previous) : $this->_item_inactive($data->previous);
 		}
@@ -193,33 +206,45 @@ class FPagination extends JPagination{
 		$list['pages'] = array(); //make sure it exists
 		foreach ($data->pages as $i => $page)
 		{
-			if ($page->base !== null) {
+			if ($page->base !== null)
+			{
 				$list['pages'][$i]['active'] = true;
 				$list['pages'][$i]['data'] = $itemOverride ? fabrik_pagination_item_active($page, $this->listRef) : $this->_item_active($page);
-			} else {
+			}
+			else
+			{
 				$list['pages'][$i]['active'] = false;
 				$list['pages'][$i]['data'] = $itemOverride ? fabrik_pagination_item_inactive($page) : $this->_item_inactive($page);
 			}
 		}
 
-		if ($data->next->base !== null) {
+		if ($data->next->base !== null)
+		{
 			$list['next']['active'] = true;
 			$list['next']['data'] = $itemOverride ? fabrik_pagination_item_active($data->next, $this->listRef) : $this->_item_active($data->next);
-		} else {
+		}
+		else
+		{
 			$list['next']['active'] = false;
 			$list['next']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->next) : $this->_item_inactive($data->next);
 		}
-		if ($data->end->base !== null) {
+		if ($data->end->base !== null)
+		{
 			$list['end']['active'] = true;
 			$list['end']['data'] = $itemOverride ? fabrik_pagination_item_active($data->end, $this->listRef) : $this->_item_active($data->end);
-		} else {
+		}
+		else
+		{
 			$list['end']['active'] = false;
 			$list['end']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->end) : $this->_item_inactive($data->end);
 		}
 
-		if ($this->total > $this->limit) {
+		if ($this->total > $this->limit)
+		{
 			return ($listOverride) ? fabrik_pagination_list_render($list, $this->listRef) : $this->_list_render($list);
-		} else {
+		}
+		else
+		{
 			return '';
 		}
 	}
@@ -228,13 +253,14 @@ class FPagination extends JPagination{
 	{
 		// Reverse output rendering for right-to-left display.
 		$html = '<ul class="pagination">';
-		$html .= '<li class="pagination-start">'.$list['start']['data'].'</li>';
-		$html .= '<li class="pagination-prev">'.$list['previous']['data'].'</li>';
-		foreach ($list['pages'] as $page) {
-			$html .= '<li>'.$page['data'].'</li>';
+		$html .= '<li class="pagination-start">' . $list['start']['data'] . '</li>';
+		$html .= '<li class="pagination-prev">' . $list['previous']['data'] . '</li>';
+		foreach ($list['pages'] as $page)
+		{
+			$html .= '<li>' . $page['data'] . '</li>';
 		}
-		$html .= '<li class="pagination-next">'. $list['next']['data'].'</li>';
-		$html .= '<li class="pagination-end">'. $list['end']['data'].'</li>';
+		$html .= '<li class="pagination-next">' . $list['next']['data'] . '</li>';
+		$html .= '<li class="pagination-end">' . $list['end']['data'] . '</li>';
 		$html .= '</ul>';
 		return $html;
 	}
@@ -266,14 +292,15 @@ class FPagination extends JPagination{
 		// $$$ hugh - need to work out if we need & or ?
 		$sepchar = strstr($this->url,'?') ? '&amp;' : '?';
 		//$sepchar = '&';
-		$data->all	= new JPaginationObject(JText::_('COM_FABRIK_VIEW_ALL'));
-		if (!$this->_viewall) {
-			$data->all->base	= '0';
-			$data->all->link	= $admin ? "{$sepchar}limitstart=" : JRoute::_("{$sepchar}limitstart=");
+		$data->all = new JPaginationObject(JText::_('COM_FABRIK_VIEW_ALL'));
+		if (!$this->_viewall)
+		{
+			$data->all->base = '0';
+			$data->all->link = $admin ? "{$sepchar}limitstart=" : JRoute::_("{$sepchar}limitstart=");
 		}
 
 		// Set the start and previous data objects
-		$data->start	= new JPaginationObject(JText::_('COM_FABRIK_START'));
+		$data->start = new JPaginationObject(JText::_('COM_FABRIK_START'));
 		$data->previous	= new JPaginationObject(JText::_('COM_FABRIK_PREV'));
 
 		if ($this->get('pages.current') > 1)

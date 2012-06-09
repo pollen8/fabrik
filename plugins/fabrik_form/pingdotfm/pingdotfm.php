@@ -18,7 +18,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 
@@ -30,12 +30,12 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form model
-	 * @returns bol
+	 * @param	object	$params
+	 * @param	object	form model
+	 * @returns	bool
 	 */
 
-	function onAfterProcess($params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		return $this->_process($params, $formModel);
 	}

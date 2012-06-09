@@ -9,7 +9,7 @@
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHTML::_('script','system/multiselect.js',false,true);
 $user	= JFactory::getUser();
@@ -67,7 +67,7 @@ $listDirn	= $this->state->get('list.direction');
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'ordering');
-			$link = JRoute::_('index.php?option=com_fabrik&task=cron.edit&id='.(int)$item->id);
+			$link = JRoute::_('index.php?option=com_fabrik&task=cron.edit&id='.(int) $item->id);
 			$canChange	= true;
 			?>
 

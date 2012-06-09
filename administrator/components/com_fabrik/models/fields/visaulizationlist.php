@@ -9,8 +9,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'parent.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/helpers/parent.php');
 
 /**
  * Renders a list of created visualizations
@@ -35,7 +35,7 @@ class JFormFieldVisaulizationlist extends JFormFieldList
 		$a = array(JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select("id AS value, label AS text")->from("#__{package}_visualizations")->where("published =1")->order("text");
+		$query->select('id AS value, label AS text')->from('#__{package}_visualizations')->where('published =1')->order('text');
 		$db->setQuery($query);
 		$elementstypes = $db->loadObjectList();
 		$elementstypes = array_merge($a, $elementstypes);

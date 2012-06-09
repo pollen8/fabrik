@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 
@@ -24,9 +24,9 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param array data to pre-populate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * @param	array	data to pre-populate element with
+	 * @param	int		repeat group counter
+	 * @return	string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -46,7 +46,7 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * @return	string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)

@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
 
 class fabrikModelMedia extends FabrikFEModelVisualization {
 

@@ -43,7 +43,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$labels = $this->getSubOptionLabels();
 		$multiple = $params->get('multiple', 0);
 		$multisize = $params->get('dropdown_multisize', 3);
-		$selected = (array)$this->getValue($data, $repeatCounter);
+		$selected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ? " elementErrorHighlight" : '';
 		$attribs 	= 'class="fabrikinput inputbox'.$errorCSS.'"';
 
@@ -164,7 +164,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	protected function replaceLabelWithValue($selected)
 	{
-		$selected = (array)$selected;
+		$selected = (array) $selected;
 		foreach ($selected as &$s) {
 			$s = str_replace("'", "", $s);
 		}
@@ -211,7 +211,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 				$value = $label;
 			}
 			if (!preg_match('#^\'.*\'$#', $value)) {
-				$value = $db->Quote($value);
+				$value = $db->quote($value);
 			}
 		}
 		$this->encryptFieldName($key);

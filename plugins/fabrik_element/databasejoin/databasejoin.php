@@ -97,7 +97,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 			$k2 = $this->getJoinLabelColumn();
 
-			if (JArrayHelper::getValue($opts, 'inc_raw', true)) {
+			if (JArrayHelper::getValue($opts, 'inc_raw', true))
+			{
 				$aFields[] = $k . ' AS ' . $db->quoteName($fullElName . '_raw');
 				$aAsFields[] = $db->quoteName($fullElName . '_raw');
 			}
@@ -192,8 +193,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$label = $this->getJoinLabel();
 		$joinTableName = $join->table_join_alias;
-		$this->joinLabelCols[(int)$useStep] = $useStep ? $joinTableName . '___' . $label : $db->quoteName($joinTableName . '.' . $label);
-		return $this->joinLabelCols[(int)$useStep];
+		$this->joinLabelCols[(int) $useStep] = $useStep ? $joinTableName . '___' . $label : $db->quoteName($joinTableName . '.' . $label);
+		return $this->joinLabelCols[(int) $useStep];
 	}
 
 	protected function getJoinLabel()
@@ -309,7 +310,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$quoteV = array();
 				foreach ($value as $v)
 				{
-					$quoteV[] = $db->Quote($v);
+					$quoteV[] = $db->quote($v);
 				}
 				$this->_autocomplete_where = $this->getJoinValueColumn() . " IN (" . implode(', ', $quoteV) . ')';
 			}
@@ -494,7 +495,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$query = $db->getQuery(true);
 		$sql = "SELECT DISTINCT($key) AS value, $val AS text";
-		$desc = $params->get('join_desc_column');
+		$desc = $params->get('join_desc_column', '');
 		if ($desc !== '')
 		{
 			$sql .= ", " . $db->quoteName($desc) . ' AS description';
@@ -607,7 +608,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return	object	database
 	 */
 
-	function &getDb()
+	function getDb()
 	{
 		$cn = $this->getConnection();
 		if (!$this->_joinDb)
@@ -858,7 +859,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				//$str = '<input type='hidden' class='fabrikinput' name='$thisElName' id='$id' value='$default' />";
 			}
 		}
-		if ($params->get('join_desc_column') !== '')
+		if ($params->get('join_desc_column', '') !== '')
 		{
 			$html[] = '<div class="dbjoin-description">';
 			for ($i = 0; $i < count($this->_optionVals); $i++)
@@ -1053,7 +1054,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 *
 	 * child classes can then call this function with
-	 * return parent::renderListData($data, $oAllRowsData);
+	 * return parent::renderListData($data, $thisRow);
 	 * to perform rendering that is applicable to all plugins
 	 *
 	 * shows the data formatted for the list view
@@ -1062,7 +1063,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return	string	formatted value
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$groupModel = $this->_group;
@@ -1072,9 +1073,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$opts = $this->_getOptionVals();
 			$name = $this->getFullName(false, true, false) . '_raw';
 			//if coming from fabrikemail plugin oAllRowsdata is empty
-			if (isset($oAllRowsData->$name))
+			if (isset($thisRow->$name))
 			{
-				$data = $oAllRowsData->$name;
+				$data = $thisRow->$name;
 			}
 			if (!is_array($data))
 			{
@@ -1098,18 +1099,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$data = json_encode($labeldata);
 		// $$$ rob add links and icons done in parent::renderListData();
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
-	 * Get the list filter for the element
-	 * @param	int		counter
-	 * @param	bool	do we render as a normal filter or as an advanced search filter
-	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * @return	string	filter html
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementList::getFilter()
 	 */
 
-	function getFilter($counter = true, $normal = true)
+	public function getFilter($counter = 0, $normal = true)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -1570,7 +1568,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$table = $params->get('join_db_name');
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$forms = $this->getLinkedForms();
-		$popupform = (int)$params->get('databasejoin_popupform');
+		$popupform = (int) $params->get('databasejoin_popupform');
 		$popuplistid = (empty($popupform) || !isset($forms[$popupform])) ? '' : $forms[$popupform]->listid;
 		$opts->id = $this->_id;
 		$opts->key = $table."___".$params->get('join_key_column');
@@ -1585,7 +1583,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
 		$opts->displayType = $params->get('database_join_display_type', 'dropdown');
 		$opts->show_please_select = $params->get('database_join_show_please_select');
-		$opts->showDesc = $params->get('join_desc_column') === '' ? false : true;
+		$opts->showDesc = $params->get('join_desc_column', '') === '' ? false : true;
 		$opts->autoCompleteOpts = $opts->display_type == 'auto-complete' ? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'databasejoin') : null;
 		$opts->allowadd = $params->get('fabrikdatabasejoin_frontend_add', 0) == 0 ? false : true;
 		if ($this->isJoin()) {
@@ -1648,7 +1646,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 				$db = FabrikWorker::getDbo(true);
 				$query = $db->getQuery(true);
-				$query->select('db_table_name')->from('#__{package}_lists')->where('id = '.(int)$id);
+				$query->select('db_table_name')->from('#__{package}_lists')->where('id = '.(int) $id);
 				$db->setQuery($query);
 				$this->dbname = $db->loadResult();
 			} else {
@@ -1662,10 +1660,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * @since 3.0b
 	 * on save of element, update its jos_fabrik_joins record and any decendants join record
-	 * @param array $data
-	 * @param string $tableJoin
-	 * @param string $keyCol
-	 * @param string $label
+	 * @param	array	$data
+	 * @param	string	$tableJoin
+	 * @param	string	$keyCol
+	 * @param	string	$label
 	 */
 
 	protected function updateFabrikJoins($data, $tableJoin, $keyCol, $label)
@@ -1673,7 +1671,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		//load join based on this element id
 		$this->updateFabrikJoin($data, $this->_id, $tableJoin, $keyCol, $label);
 		$children = $this->getElementDescendents($this->_id);
-		foreach ($children as $id) {
+		foreach ($children as $id)
+		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($id);
 			$data['group_id'] = $elementModel->getElement()->group_id;
 			$data['id'] = $id;
@@ -1744,7 +1743,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function onRemove($drop = false)
 	{
-		$this->deleteJoins((int)$this->_id);
+		$this->deleteJoins((int) $this->_id);
 		parent::onRemove($drop);
 	}
 

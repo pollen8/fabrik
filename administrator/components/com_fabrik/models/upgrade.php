@@ -45,7 +45,7 @@ class FabrikModelUpgrade extends JModel
 			}
 			$listModel->set('_oConn', $connModel);
 			//drop the bkup table
-			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name));
+			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->quoteName('bkup_'.$item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
@@ -56,12 +56,12 @@ class FabrikModelUpgrade extends JModel
 				continue;
 			}
 			//create the bkup table (this method will also correctly copy table indexes
-			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->nameQuote('bkup_'.$item->db_table_name)." like ".$cDb->nameQuote($item->db_table_name));
+			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->quoteName('bkup_'.$item->db_table_name)." like ".$cDb->quoteName($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
 			}
-			$cDb->setQuery("INSERT INTO ".$cDb->nameQuote('bkup_'.$item->db_table_name)." select * from ".$cDb->nameQuote($item->db_table_name));
+			$cDb->setQuery("INSERT INTO ".$cDb->quoteName('bkup_'.$item->db_table_name)." select * from ".$cDb->quoteName($item->db_table_name));
 			if (!$cDb->query()) {
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
@@ -163,7 +163,7 @@ class FabrikModelUpgrade extends JModel
 	{
 		$db = JFactory::getDbo();
 		$db->setQuery('select extension_id FROM 	#__extensions WHERE type = "component" and element = "com_fabrik"');
-		$cid = (int)$db->loadResult();
+		$cid = (int) $db->loadResult();
 		$db->setQuery('UPDATE #__menu SET component_id = '.$cid .' WHERE link LIKE \'%com_fabrik%\'');
 		$db->query();
 		

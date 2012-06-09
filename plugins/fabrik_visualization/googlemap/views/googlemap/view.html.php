@@ -44,12 +44,25 @@ class fabrikViewGooglemap extends JView
 		{
 			$src = $uri->getScheme() . '://maps.google.com/maps/api/js?sensor=' . $params->get('fb_gm_sensor', 'false');
 			$document->addScript($src);
-			$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
+			if (FabrikHelperHTML::isDebug())
+			{
+				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
+			}
+			else
+			{
+				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap-min.js';
+			}
+
 			if ((int) $this->params->get('fb_gm_clustering', '0') == 1)
 			{
-				$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclusterer/src/markerclusterer.js';
-				//FabrikHelperHTML::script('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js');
-				//FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
+				if (FabrikHelperHTML::isDebug())
+				{
+					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer.js';
+				}
+				else
+				{
+					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer-packed.js';
+				}
 			}
 			else
 			{

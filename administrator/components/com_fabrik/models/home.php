@@ -164,7 +164,7 @@ class FabrikModelHome extends JModelAdmin
 		$formId = $db->insertid();
 
 		$query = $db->getQuery(true);
-		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int)$formId, 'group_id='.(int)$groupId, 'ordering=0'));
+		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int) $formId, 'group_id='.(int) $groupId, 'ordering=0'));
 		$db->setQuery($query);
 		if (!$db->query()) {
 			echo $db->getErrorMsg();
@@ -172,7 +172,7 @@ class FabrikModelHome extends JModelAdmin
 		}
 
 		$query = $db->getQuery(true);
-		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int)$formId, 'group_id='.(int)$group2Id, 'ordering=1'));
+		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int) $formId, 'group_id='.(int) $group2Id, 'ordering=1'));
 		$db->setQuery($query);
 		if (!$db->query()) {
 			echo $db->getErrorMsg();

@@ -16,12 +16,14 @@ require_once('fabcontrolleradmin.php');
  * @subpackage	com_fabrik
  * @since		1.6
  */
+
 class FabrikControllerGroups extends FabControllerAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.
 	 * @since	1.6
 	 */
+	
 	protected $text_prefix = 'COM_FABRIK_GROUPS';
 
 	protected $view_item = 'groups';
@@ -33,6 +35,7 @@ class FabrikControllerGroups extends FabControllerAdmin
 	 * @see		JController
 	 * @since	1.6
 	 */
+	
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
@@ -42,6 +45,7 @@ class FabrikControllerGroups extends FabControllerAdmin
 	 * Proxy for getModel.
 	 * @since	1.6
 	 */
+	
 	public function &getModel($name = 'Group', $prefix = 'FabrikModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));

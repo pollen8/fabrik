@@ -58,8 +58,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$values = (array)$this->getSubOptionValues();
-		$labels = (array)$this->getSubOptionLabels();
+		$values = (array) $this->getSubOptionValues();
+		$labels = (array) $this->getSubOptionLabels();
 		$data = $this->getFormModel()->_data;
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->value = $this->getValue($data, $repeatCounter);
@@ -125,9 +125,9 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 			case '=':
 				$db = FabrikWorker::getDbo();
 				$str = "($key $condition $value ".
-				" OR $key LIKE " . $db->Quote('["'.$originalValue.'"%') .
-				" OR $key LIKE " . $db->Quote('%"'.$originalValue.'"%') .
-				" OR $key LIKE " . $db->Quote('%"'.$originalValue.'"]') .")";
+				" OR $key LIKE " . $db->quote('["'.$originalValue.'"%') .
+				" OR $key LIKE " . $db->quote('%"'.$originalValue.'"%') .
+				" OR $key LIKE " . $db->quote('%"'.$originalValue.'"]') .")";
 
 				break;
 			default:

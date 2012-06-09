@@ -4,40 +4,53 @@ defined('JPATH_BASE') or die();
 
 class ElementHelper{
 
-	function getId($element, $control_name, $name )
+	function getId($element, $control_name, $name)
 	{
-		if (method_exists($element, 'getId')) {
-			$id 			= $element->getId($control_name, $name);
-		} else {
+		if (method_exists($element, 'getId'))
+		{
+			$id = $element->getId($control_name, $name);
+		}
+		else
+		{
 			$id  = "$control_name.$name";
 		}
 		return $id;
 	}
 
-	function getFullName($element, $control_name, $name ){
-		if (method_exists($element, 'getFullName')) {
+	function getFullName($element, $control_name, $name)
+	{
+		if (method_exists($element, 'getFullName'))
+		{
 			$fullName = $element->getFullName($control_name, $name);
-		} else {
-			$fullName = $control_name."[".$name."]";
+		}
+		else
+		{
+			$fullName = $control_name . '[' . $name . ']';
 		}
 		return $fullName;
 	}
 
-	public static function getRepeatCounter($element )
+	public static function getRepeatCounter($element)
 	{
-		if (method_exists($element, 'getRepeatCounter')) {
+		if (method_exists($element, 'getRepeatCounter'))
+		{
 			$c = $this->getRepeatCounter();
-		} else {
+		}
+		else
+		{
 			$c = false;
 		}
 		return $c;
 	}
 
-	function getRepeat($element )
+	public static function getRepeat($element)
 	{
-		if (method_exists($element, 'getRepeat')) {
+		if (method_exists($element, 'getRepeat'))
+		{
 			$c = $this->getRepeat();
-		} else {
+		}
+		else
+		{
 			$c = 0;
 		}
 		return $c;

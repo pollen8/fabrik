@@ -1,6 +1,6 @@
 <?php
 header('Content-type: text/css');
-$c = (int)$_REQUEST['c'];
+$c = (int) $_REQUEST['c'];
 echo "
 #listform_$c .fabrikForm {
 	margin-top: 15px;

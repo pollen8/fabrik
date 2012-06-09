@@ -29,9 +29,9 @@ class FabrikHelper
 
 	function prepareSaveDate(&$strdate)
 	{
-		$config =& JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
-		$db =& FabrikWorker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		// Handle never unpublish date
 		if (trim($strdate) == JText::_('Never') || trim($strdate) == '' || trim($strdate) == $db->getNullDate())
 		{
@@ -43,7 +43,7 @@ class FabrikHelper
 				$strdate .= ' 00:00:00';
 			}
 			$date =& JFactory::getDate($strdate, $tzoffset);
-			$strdate = $date->toMySQL();
+			$strdate = $date->toSql();
 		}
 	}
 
@@ -55,29 +55,30 @@ class FabrikHelper
 	 * @return	JObject
 	 * @since	1.6
 	 */
+	
 	public static function getActions($categoryId = 0)
 	{
 		$user	= JFactory::getUser();
 		$result	= new JObject;
-
-		if (empty($categoryId)) {
+		if (empty($categoryId))
+		{
 			$assetName = 'com_fabrik';
-		} else {
-			$assetName = 'com_fabrik.category.'.(int)$categoryId;
 		}
-
+		else
+		{
+			$assetName = 'com_fabrik.category.' . (int) $categoryId;
+		}
 		$actions = array(
 			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete'
 		);
-
-		foreach ($actions as $action) {
-			$result->set($action,	$user->authorise($action, $assetName));
+		foreach ($actions as $action)
+		{
+			$result->set($action, $user->authorise($action, $assetName));
 		}
-
 		return $result;
 	}
 
-/**
+	/**
 	 * Configure the Linkbar.
 	 *
 	 * @param	string	The name of the active view.
@@ -85,6 +86,7 @@ class FabrikHelper
 	 * @return	void
 	 * @since	1.6
 	 */
+	
 	public static function addSubmenu($vName)
 	{
 		JSubMenuHelper::addEntry(
@@ -138,9 +140,10 @@ class FabrikHelper
 	
 	/**
 	* Applies the content tag filters to arbitrary text as per settings for current user group
-	* @param text The string to filter
-	* @return string The filtered string
+	* @param	text	The string to filter
+	* @return	string	The filtered string
 	*/
+	
 	public static function filterText($text)
 	{
 		// Filter settings
@@ -167,7 +170,8 @@ class FabrikHelper
 		foreach ($userGroups as $groupId)
 		{
 			// May have added a group by not saved the filters.
-			if (!isset($filters->$groupId)) {
+			if (!isset($filters->$groupId))
+			{
 				continue;
 			}
 	

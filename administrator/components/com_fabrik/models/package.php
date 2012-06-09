@@ -383,7 +383,7 @@ class FabrikModelPackage extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		
 		foreach ($rows as $row) {
-			$fmtsql = 'INSERT INTO '.$db->nameQuote($table).' (%s) VALUES (%s) ON DUPLICATE KEY UPDATE %s';
+			$fmtsql = 'INSERT INTO '.$db->quoteName($table).' (%s) VALUES (%s) ON DUPLICATE KEY UPDATE %s';
 			$fields = array();
 			$values = array();
 			$updates = array();
@@ -405,10 +405,10 @@ class FabrikModelPackage extends FabModelAdmin
 				}
 				
 				$v = str_replace($db->getPrefix(), '#__', $v);
-				$val = $db->isQuoted($k) ? $db->Quote($v) : (int) $v;
-				$fields[] = $db->nameQuote($k);
+				$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
+				$fields[] = $db->quoteName($k);
 				$values[] = $val;
-				$updates[] = $db->nameQuote($k) . ' = ' . $val;
+				$updates[] = $db->quoteName($k) . ' = ' . $val;
 			}
 			$sql = sprintf($fmtsql, implode(",", $fields) ,  implode(",", $values), implode(',', $updates)) . ';';
 			$return[] = "\t\t\$db->setQuery(\"$sql\");";
@@ -768,9 +768,9 @@ class FabrikModelPackage extends FabModelAdmin
 		JFolder::create($this->outputPath . 'packages');
 		foreach ($plugins as &$plugin) {
 
-			$filenames = array(JPATH_ROOT . '/plugins/' . $plugin->group.DS.$plugin->name);
+			$filenames = array(JPATH_ROOT . '/plugins/' . $plugin->group . '/' . $plugin->name);
 			$files = array();
-			$root = JPATH_ROOT . '/plugins/' . $plugin->group.DS.$plugin->name.DS;
+			$root = JPATH_ROOT . '/plugins/' . $plugin->group . '/' . $plugin->name . '/';
 			$this->addFiles($filenames, $files, $root);
 			$plugin->file = str_replace('{version}', $row->version, $plugin->file);
 			$pluginZipPath = $this->outputPath . 'packages/' . $plugin->file;

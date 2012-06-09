@@ -44,12 +44,12 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form model
-	 * @returns bol
+	 * @param	object	$params
+	 * @param	object	form model
+	 * @returns	bool
 	 */
 
-	function onAfterProcess(&$params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$type = empty($formModel->_origRowId) ? 'form.submit.add' : 'form.submit.edit';
 		return $this->log($params, $formModel, $type);
@@ -106,11 +106,11 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 		$w = new FabrikWorker();
 		$logs_path = $w->parseMessageForPlaceHolder($params->get('logs_path'));
-		if (strpos($logs_path,DS) !== 0)
+		if (strpos($logs_path, '/') !== 0)
 		{
-			$logs_path = JPATH_ROOT . DS . $logs_path;
+			$logs_path = JPATH_ROOT . '/' . $logs_path;
 		}
-		$logs_path = rtrim($logs_path, DS);
+		$logs_path = rtrim($logs_path, '/');
 		if (!JFolder::exists($logs_path))
 		{
 			if (!JFolder::create($logs_path))
@@ -324,35 +324,35 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 			$clabelsCreateDb[] = $db->quoteName('ip')." varchar(32) NOT NULL";
 			$clabelsDb[] = $db->quoteName('ip');
-			$cdataDb[] = $params->get('logs_record_ip') == '1' ? $db->Quote($_SERVER['REMOTE_ADDR']) : $db->Quote('');
+			$cdataDb[] = $params->get('logs_record_ip') == '1' ? $db->quote($_SERVER['REMOTE_ADDR']) : $db->quote('');
 
 			$clabelsCreateDb[] = $db->quoteName('referer')." varchar(255) NOT NULL";
 			$clabelsDb[] = $db->quoteName('referer');
-			$cdataDb[] = $params->get('logs_record_referer') == '1' ? $db->Quote($http_referrer) : $db->Quote('');
+			$cdataDb[] = $params->get('logs_record_referer') == '1' ? $db->quote($http_referrer) : $db->quote('');
 
 			$clabelsCreateDb[] = $db->quoteName('user_agent')." varchar(255) NOT NULL";
 			$clabelsDb[] = $db->quoteName('user_agent');
-			$cdataDb[] = $params->get('logs_record_useragent') == '1' ? $db->Quote($_SERVER['HTTP_USER_AGENT']) : $db->Quote('');
+			$cdataDb[] = $params->get('logs_record_useragent') == '1' ? $db->quote($_SERVER['HTTP_USER_AGENT']) : $db->quote('');
 
 			$clabelsCreateDb[] =$db->quoteName( 'data_comparison' )." TEXT NOT NULL";
 			$clabelsDb[] = $db->quoteName( 'data_comparison' );
-			$cdataDb[] = $params->get('compare_data') == '1' ? $db->Quote($result_compare) : $db->Quote('');
+			$cdataDb[] = $params->get('compare_data') == '1' ? $db->quote($result_compare) : $db->quote('');
 
 			$clabelsCreateDb[] =$db->quoteName('rowid')." INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('rowid');
-			$cdataDb[] = $db->Quote((int)$rowid);
+			$cdataDb[] = $db->quote((int) $rowid);
 
 			$clabelsCreateDb[] =$db->quoteName('userid')." INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('userid');
-			$cdataDb[] = $db->Quote((int)$userid);
+			$cdataDb[] = $db->quote((int) $userid);
 
 			$clabelsCreateDb[] =$db->quoteName('tableid')." INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('tableid');
-			$cdataDb[] = $db->Quote( $formModel->getTableModel()->getId() );
+			$cdataDb[] = $db->quote( $formModel->getTableModel()->getId() );
 
 			$clabelsCreateDb[] =$db->quoteName('formid')." INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('formid');
-			$cdataDb[] = $db->Quote( $formModel->getId() );
+			$cdataDb[] = $db->quote( $formModel->getId() );
 
 			$clabels_createdb = implode(", ", $clabelsCreateDb);
 			$clabels_db = implode(", ", $clabelsDb);
@@ -441,7 +441,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					$txtMsg = "Date: " . $date . "\n";
 					$txtMsg .= "Form ID: " . $formModel->getId() . "\n";
 					$txtMsg .= "Table ID: " . $formModel->getListModel()->getId() . "\n";
-					$txtMsg .= "Row ID: " . (int)$rowid . "\n";
+					$txtMsg .= "Row ID: " . (int) $rowid . "\n";
 					$txtMsg .= "User ID: $userid ($username)\n";
 					if ($params->get('logs_record_ip') == 1)
 					{
@@ -558,7 +558,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			// regardless.
 			if ($params->get('record_in') == '')
 			{
-				$in_db = "INSERT INTO $rdb (".$db->quoteName('referring_url').", ".$db->quoteName('message_type').", ".$db->quoteName('message').") VALUES (".$db->Quote($http_referrer).", ".$db->Quote($messageType).", ".$db->Quote($message).");";
+				$in_db = "INSERT INTO $rdb (".$db->quoteName('referring_url').", ".$db->quoteName('message_type').", ".$db->quoteName('message').") VALUES (".$db->quote($http_referrer).", ".$db->quote($messageType).", ".$db->quote($message).");";
 				$db->setQuery($in_db);
 				$db->query();
 			}

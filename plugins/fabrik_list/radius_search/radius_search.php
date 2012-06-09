@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListRadius_search extends plgFabrik_List {
 
@@ -119,7 +119,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		$db = $this->model->getDb();
 		$usekey = JRequest::getVar('usekey');
 		JRequest::setVar('usekey', $placeElement->name);
-		$row = $this->model->getRow($db->Quote($place));
+		$row = $this->model->getRow($db->quote($place));
 		JRequest::SetVar('usekey', $usekey);
 		if (is_object($row)) {
 			$coords = explode(':', str_replace(array('(',')'), '', $row->$mapName));
@@ -162,14 +162,14 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		if ($active[0] == 0) {
 			//need to clear out any session filter (occurs when you search with r filter, then deactivate the filter
 			$filterModel = $model->getFilterModel();
-			$index = array_key_exists('elementid', $filters) ? array_search('radius_search', (array)$filters['elementid']) : false;
+			$index = array_key_exists('elementid', $filters) ? array_search('radius_search', (array) $filters['elementid']) : false;
 			if ($index !== false) {
 				$filterModel->clearAFilter($filters, $index);
 			}
 			return;
 		}
 
-		$v =(int)$v;
+		$v =(int) $v;
 		$key = $this->onGetFilterKey();
 
 		$filters['value'][$key] = $v;
@@ -276,7 +276,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		if ($v == '') {
 			return;
 		}
-		$v = (int)$v;
+		$v = (int) $v;
 		return $v;
 	}
 	/*
@@ -386,7 +386,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 			return false;
 		}
 		$opts = $this->getElementJSOptions($model);
-		$opts->steps = (int)$params->get('radius_max', 100);
+		$opts->steps = (int) $params->get('radius_max', 100);
 		$opts->unit = $params->get('radius_unit', 'km');
 		$opts->value = $this->getValue();
 		$opts = json_encode($opts);

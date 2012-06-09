@@ -61,7 +61,7 @@ class FabrikModelVisualizations extends FabModelList
 		// Filter by published state
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
-			$query->where('v.published = '.(int)$published);
+			$query->where('v.published = '.(int) $published);
 		} else if ($published === '') {
 			$query->where('(v.published IN (0, 1))');
 		}
@@ -69,7 +69,7 @@ class FabrikModelVisualizations extends FabModelList
 		//Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
-			$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+			$search = $db->quote('%'.$db->getEscaped($search, true).'%');
 			$query->where('(v.label LIKE '.$search.')');
 		}
 

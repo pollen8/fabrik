@@ -62,7 +62,7 @@ class FabrikModelPackages extends JModelList
 		// Filter by published state
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
-			$query->where('p.published = '.(int)$published);
+			$query->where('p.published = '.(int) $published);
 		} else if ($published === '') {
 			$query->where('(p.published IN (0, 1))');
 		}
@@ -71,7 +71,7 @@ class FabrikModelPackages extends JModelList
 		//Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
-			$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+			$search = $db->quote('%'.$db->getEscaped($search, true).'%');
 			$query->where('(p.label LIKE '.$search.' OR p.component_name LIKE '.$search.')');
 		}
 		// Add the list ordering clause.
@@ -132,13 +132,17 @@ class FabrikModelPackages extends JModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
-		foreach ($items as &$i) {
+		foreach ($items as &$i)
+		{
 			$n = $i->component_name .'_'.$i->version;
-			$file = JPATH_ROOT.DS.'tmp'.DS.$n.DS.'pkg_'.$n.'.zip';
-			$url = COM_FABRIK_LIVESITE.'tmp/'.$n.'/pkg_'.$n.'.zip';
-			if (JFile::exists($file)) {
-			$i->file = "<a href=\"$url\">pkg_".$n.".zip</a>";
-			}else{
+			$file = JPATH_ROOT . '/tmp/' . $n . '/pkg_' . $n . '.zip';
+			$url = COM_FABRIK_LIVESITE . 'tmp/' . $n . '/pkg_' . $n . '.zip';
+			if (JFile::exists($file))
+			{
+				$i->file = '<a href="' . $url . '">pkg_' . $n . '.zip</a>';
+			}
+			else
+			{
 				$i->file = JText::_('COM_FABRIK_EXPORT_PACKAGE_TO_CREATE_ZIP');
 			}
 		}

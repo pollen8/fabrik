@@ -36,9 +36,9 @@ function datePart($mask, $dateTimeStr) {
         list($year, $month, $day) = $arDatePt;
         // determine the request
         switch ($mask) {
-        case "m": return (int)$month;
-        case "d": return (int)$day;
-        case "y": return (int)$year;
+        case "m": return (int) $month;
+        case "d": return (int) $day;
+        case "y": return (int) $year;
         }
         // default to mm/dd/yyyy
         return (trim($month . "/" . $day . "/" . $year));

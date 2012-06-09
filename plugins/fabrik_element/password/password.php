@@ -13,31 +13,42 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementPassword extends plgFabrik_Element
 {
 
-	function recordInDatabase($data)
+	/**
+	 * states if the elemnt contains data which is recorded in the database
+	 * some elements (eg buttons) dont
+	 * @param	array	posted data
+	 * @return	bool	should record in db
+	 */
+
+	public function recordInDatabase($data = null)
 	{
 		$element = $this->getElement();
 		//if storing from inline edit then key may not exist
-		if (!array_key_exists($element->name, $data)) {
+		if (!array_key_exists($element->name, $data))
+		{
 			return false;
 		}
-		if (trim($data[$element->name]) === '') {
+		if (trim($data[$element->name]) === '')
+		{
 			return false;
-		}else{
+		}
+		else
+		{
 			return true;
 		}
 	}
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+	 * @param	mixed	thie elements posted form data
+	 * @param	array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
 	{
 		//$val = md5(trim($val));
 		jimport('joomla.user.helper');
-		$salt  = JUserHelper::genRandomPassword(32);
+		$salt = JUserHelper::genRandomPassword(32);
 		$crypt = JUserHelper::getCryptedPassword($val, $salt);
 		$val = $crypt.':'.$salt;
 		return $val;
@@ -47,7 +58,8 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	 * determines if the element can contain data used in sending receipts, e.g. field returns true
 	 */
 
-	function isReceiptElement() {
+	function isReceiptElement()
+	{
 		return true;
 	}
 
@@ -61,10 +73,14 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	{
 		$element = $this->getElement();
 		$value = '';
-		if (!$this->_editable) {
-			if ($element->hidden == '1') {
+		if (!$this->_editable)
+		{
+			if ($element->hidden == '1')
+			{
 				return '<!--' . $value . '-->';
-			} else {
+			}
+			else
+			{
 				return $value;
 			}
 		}
@@ -88,29 +104,32 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	/**
 	 * validate the passwords
-	 * @param string elements data
-	 * @param int repeat group counter
-	 * @return bol true if passes / false if falise validation
+	 * @param	string	elements data
+	 * @param	int		repeat group counter
+	 * @return	bool	true if passes / false if falise validation
 	 */
 
 	function validate($data, $repeatCounter = 0)
 	{
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$post	= JRequest::get('post');
+		$post = JRequest::get('post');
 		$this->defaults = null;
 		$element = $this->getElement();
 		$origname = $element->name;
 		$element->name = $element->name . "_check";
 		$checkvalue = $this->getValue($post, $repeatCounter);
 		$element->name = $origname;
-
-		if ($checkvalue != $data) {
+		if ($checkvalue != $data)
+		{
 			$this->_validationErr = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 			return false;
-		} else {
+		}
+		else
+		{
 			//$$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
-			if (JRequest::getInt('rowid') === 0 && JRequest::getInt($k, 0, 'post') === 0 && $data === '') {
+			if (JRequest::getInt('rowid') === 0 && JRequest::getInt($k, 0, 'post') === 0 && $data === '')
+			{
 				$this->_validationErr .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;
 			}
@@ -150,12 +169,12 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	function getValidationWatchElements($repeatCounter)
 	{
-		$id 			= $this->getHTMLId($repeatCounter) . "_check";
+		$id = $this->getHTMLId($repeatCounter) . '_check';
 		$ar = array(
-			'id' 			=> $id,
+			'id' => $id,
 			'triggerEvent' => 'blur'
 			);
-			return array($ar);
+		return array($ar);
 	}
 }
 ?>

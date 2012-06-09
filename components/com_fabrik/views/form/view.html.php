@@ -204,7 +204,7 @@ class fabrikViewForm extends JView
 			//if there is a menu item available AND the form is not rendered in a content plugin or module
 			if (is_object($menu) && !$this->isMambot)
 			{
-				$menu_params = new JParameter($menu->params);
+				$menu_params = new JRegistry($menu->params);
 				$params->set('page_title', $menu_params->get('page_title', ''));
 				$params->set('show_page_title', $menu_params->get('show_page_title', 0));
 			}
@@ -354,7 +354,7 @@ class fabrikViewForm extends JView
 
 		$this->get('FormCss');
 
-		$start_page = isset($model->sessionModel->last_page) ? (int)$model->sessionModel->last_page : 0;
+		$start_page = isset($model->sessionModel->last_page) ? (int) $model->sessionModel->last_page : 0;
 		if ($start_page !== 0)
 		{
 			$app->enqueueMessage(JText::_('COM_FABRIK_RESTARTING_MUTLIPAGE_FORM'));
@@ -750,7 +750,7 @@ class fabrikViewForm extends JView
 			if ($repeatGroup)
 			{
 				$ar = array();
-				$input = (array)$input;
+				$input = (array) $input;
 				foreach ($input as $i)
 				{
 					if (is_array($i))
@@ -798,7 +798,7 @@ class fabrikViewForm extends JView
 			}
 			else
 			{
-				$fields[$safeKey] = (array)$fields[$safeKey];
+				$fields[$safeKey] = (array) $fields[$safeKey];
 				$fields[$safeKey][] = $input;
 			}
 		}

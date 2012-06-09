@@ -73,7 +73,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		$els = array();
 		$srcs = array();
 
-		$test = (array)$use;
+		$test = (array) $use;
 		if (!empty($test)) {
 			foreach ($use as $key => $fields) {
 				$trigger = $elements[$key];

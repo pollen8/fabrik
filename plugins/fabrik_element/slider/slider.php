@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementSlider extends plgFabrik_Element {
 
@@ -21,17 +21,14 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 	protected $fieldSize = '6';
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
-
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -47,7 +44,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		$width = (int)$params->get('slider_width', 250);
+		$width = (int) $params->get('slider_width', 250);
 		$element = $this->getElement();
 		$val = $this->getValue($data, $repeatCounter);
 		if (!$this->_editable) {
@@ -57,7 +54,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$str = array();
 		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
 
-		FabrikHelperHTML::addPath(JPATH_SITE.DS.'plugins/fabrik_element/slider/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/slider/images/', 'image', 'form', false);
 		$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 		if ($params->get('slider-shownone')) {
 			$str[] = '<div class="clearslider_cont"><img src="'.$outsrc.'" style="cursor:pointer;padding:3px;" alt="'.JText::_('PLG_ELEMENT_SLIDER_CLEAR').'" class="clearslider" /></div>';
@@ -107,7 +104,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->steps = (int)$params->get('slider-steps', 100);
+		$opts->steps = (int) $params->get('slider-steps', 100);
 		$data = $this->_form->_data;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts = json_encode($opts);

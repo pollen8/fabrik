@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 {
@@ -37,7 +37,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
-		$arSelected = (array)$this->getValue($data, $repeatCounter);
+		$arSelected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ?  " elementErrorHighlight" : '';
 		$attribs = 'class="picklistcontainer'.$errorCSS."\"";
 		$style = ".frompicklist, .topicklist{\n"

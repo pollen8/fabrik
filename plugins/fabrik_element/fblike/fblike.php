@@ -23,13 +23,11 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 	protected $fieldSize = '1';
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$meta = array();
@@ -43,9 +41,9 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		// in list view we link to the detailed record not the list view itself
 		// means form or details view must be viewable by the user
-		$url = $this->getListModel()->linkHref($this, $oAllRowsData);
+		$url = $this->getListModel()->linkHref($this, $thisRow);
 		return $str . $this->_render($url);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**

@@ -23,10 +23,10 @@ class FabrikFEModelGroup extends FabModel{
 	var $_group = null;
 
 	/** @var object form model */
-	protected $_form 		= null;
+	protected $_form = null;
 
-	/** @var object table model */
-	var $_table 		= null;
+	/** @var object list model */
+	var $_table = null;
 
 	var $_joinModel = null;
 
@@ -79,7 +79,7 @@ class FabrikFEModelGroup extends FabModel{
 	function &getGroup()
 	{
 		if (is_null($this->_group)) {
-			JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$this->_group = FabTable::getInstance('Group', 'FabrikTable');
 			$this->_group->load($this->getId());
 		}
@@ -133,7 +133,7 @@ class FabrikFEModelGroup extends FabModel{
 	{
 		if (!isset($this->_formsIamIn)) {
 			$db = FabrikWorker::getDbo(true);
-			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int)$this->getId();
+			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int) $this->getId();
 			$db->setQuery($sql);
 			$this->_formsIamIn = $db->loadColumn();
 			if (!$db->query()) {
@@ -299,6 +299,53 @@ class FabrikFEModelGroup extends FabModel{
 		}
 		return $this->publishedElements[$sig];
 	}
+	
+	/**
+	 * get a list of all elements which are set to show in list or are set to include in list query
+	 * @since	3.0.6
+	 * @return	areray	list of element models
+	 */
+	
+	public function getListQueryElements()
+	{
+		if (!isset($this->listQueryElements))
+		{
+			$this->listQueryElements = array();
+		}
+		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
+		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
+		$showInList = (array)JRequest::getVar('fabrik_show_in_list', array());
+		$sig = empty($showInList) ? 0 : implode('.', $showInList);
+		if (!array_key_exists($sig, $this->listQueryElements))
+		{
+			$this->listQueryElements[$sig] = array();
+			$elements = $this->getMyElements();
+			foreach ($elements as $elementModel)
+			{
+				$element = $elementModel->getElement();
+				
+				$params = $elementModel->getParams();
+				if ($element->published == 1 && $elementModel->canView())
+				{
+					if (empty($showInList))
+					{
+						if ($element->show_in_list_summary || $params->get('include_in_list_query', 1) == 1)
+						{
+							$this->listQueryElements[$sig][] = $elementModel;
+						}
+					}
+					else
+					{
+						if (in_array($element->id, $showInList) || $params->get('include_in_list_query', 1) == 1)
+						{
+							$this->listQueryElements[$sig][] = $elementModel;
+						}
+					}
+				}
+			}
+		}
+		return $this->listQueryElements[$sig];
+	}
 
 	public function getPublishedListElements()
 	{
@@ -430,7 +477,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	function &loadParams()
 	{
-		$this->_params = new fabrikParams($this->_group->params);
+		$this->_params = new JRegistry($this->_group->params);
 		return $this->_params;
 	}
 
@@ -501,14 +548,14 @@ class FabrikFEModelGroup extends FabModel{
 
 		if (JString::stristr($groupTable->label , "{Add/Edit}"))
 		{
-			$replace = ((int)$formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = ((int) $formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$groupTable->label  = str_replace("{Add/Edit}", $replace, $groupTable->label);
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->_data, false);
 
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->_editable) ? 1 : 0;
-		$group->maxRepeat = (int)$params->get('repeat_max');
+		$group->maxRepeat = (int) $params->get('repeat_max');
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();

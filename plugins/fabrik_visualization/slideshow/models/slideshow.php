@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
+require_once(JPATH_SITE . '/components'.DS.'com_fabrik'.DS.'models'.DS.'visualization.php');
 
 class fabrikModelSlideshow extends FabrikFEModelVisualization {
 
@@ -187,12 +187,12 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 		$opts->id = $viz->id;
 		$opts->html_id = 'slideshow_viz';
 		$opts->slideshow_type = $params->get('slideshow_viz_type', 1);
-		$opts->slideshow_width = (int)$params->get('slideshow_viz_width', 400);
-		$opts->slideshow_height = (int)$params->get('slideshow_viz_height', 300);
-		$opts->slideshow_delay = (int)$params->get('slideshow_viz_delay', 5000);
-		$opts->slideshow_duration = (int)$params->get('slideshow_viz_duration', 2000);
-		$opts->slideshow_zoom = (int)$params->get('slideshow_viz_zoom', 50);
-		$opts->slideshow_pan = (int)$params->get('slideshow_viz_pan', 20);
+		$opts->slideshow_width = (int) $params->get('slideshow_viz_width', 400);
+		$opts->slideshow_height = (int) $params->get('slideshow_viz_height', 300);
+		$opts->slideshow_delay = (int) $params->get('slideshow_viz_delay', 5000);
+		$opts->slideshow_duration = (int) $params->get('slideshow_viz_duration', 2000);
+		$opts->slideshow_zoom = (int) $params->get('slideshow_viz_zoom', 50);
+		$opts->slideshow_pan = (int) $params->get('slideshow_viz_pan', 20);
 		$opts->slideshow_thumbnails = $use_thumbs ? true : false;
 		$opts->slideshow_captions = $use_captions ? true : false;
 		$opts->container = "slideshow_viz_".$this->getVisualization()->id;

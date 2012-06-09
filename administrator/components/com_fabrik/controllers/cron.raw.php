@@ -34,7 +34,7 @@ class FabrikControllerCron extends JControllerForm
 	public function getPluginHTML()
 	{
 		$plugin = JRequest::getCmd('plugin');
-		$model		= $this->getModel();
+		$model = $this->getModel();
 		$model->getForm();
 		echo $model->getPluginHTML( $plugin);
 	}

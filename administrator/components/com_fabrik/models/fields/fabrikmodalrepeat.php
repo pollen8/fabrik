@@ -38,9 +38,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$options = array();
 		JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 		$subForm = new JForm($this->name, array('control'=>'jform'));
-
 		$xml = $this->element->children()->asFormattedXML();
-
 		$subForm->load($xml);
 
 		/**

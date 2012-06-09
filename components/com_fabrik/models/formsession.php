@@ -81,7 +81,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$user = JFactory::getUser();
 		$row = $this->load();
 		$row->hash = $hash;
-		$row->user_id = (int)$user->get('id');
+		$row->user_id = (int) $user->get('id');
 		$row->form_id = $this->getFormId();
 		$row->row_id = $this->getRowId();
 		$row->last_page = JRequest::getVar('page');
@@ -113,7 +113,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$crypt = $this->getCrypt();
 		$lifetime = time() + 365 * 24 * 60 * 60;
 		$user = JFactory::getUser();
-		$key = (int)$user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
+		$key = (int) $user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
 		$rcookie = $crypt->encrypt($hash);
 		setcookie($key, $rcookie, $lifetime, '/');
 	}
@@ -127,7 +127,7 @@ class FabrikFEModelFormsession extends FabModel {
 	{
 		$user = JFactory::getUser();
 		$lifetime = time() -99986400;
-		$key = (int)$user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
+		$key = (int) $user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
 		$res = setcookie($key, false, $lifetime, '/');
 	}
 
@@ -161,7 +161,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$row = $this->getTable('Formsession', 'FabrikTable');
 		$row->data = '';
 		$hash = '';
-		if ((int)$user->get('id') !== 0)
+		if ((int) $user->get('id') !== 0)
 		{
 			$hash = $this->getHash();
 			$this->status = JText::_('LOADING FROM DATABASE');
@@ -205,7 +205,7 @@ class FabrikFEModelFormsession extends FabModel {
 	protected function getCookieKey()
 	{
 		$user = JFactory::getUser();
-		$key = (int)$user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
+		$key = (int) $user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
 		return $key;
 	}
 
@@ -239,7 +239,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$user = JFactory::getUser();
 		$row = $this->getTable('Formsession', 'FabrikTable');
 		$hash = '';
-		if ((int)$user->get('id') !== 0)
+		if ((int) $user->get('id') !== 0)
 		{
 			$hash = $this->getHash();
 		}
@@ -248,7 +248,7 @@ class FabrikFEModelFormsession extends FabModel {
 			if ($this->_useCookie)
 			{
 				$crypt = $this->getCrypt();
-				$cookiekey = (int)$user->get('id') . ":" . $this->getFormId() . ":" . $this->getRowId();
+				$cookiekey = (int) $user->get('id') . ":" . $this->getFormId() . ":" . $this->getRowId();
 				$cookieval = JArrayHelper::getValue($_COOKIE, $cookiekey, '');
 				if ($cookieval !== '')
 				{
@@ -259,7 +259,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$db = $row->getDBO();
 		$row->hash = $hash;
 		$query = 'DELETE FROM '.$db->nameQuote($row->getTableName()).
-				' WHERE '.$row->getKeyName().' = '. $db->Quote($hash);
+				' WHERE '.$row->getKeyName().' = '. $db->quote($hash);
 		$db->setQuery($query);
 		$this->removeCookie();
 		$this->row = $row;
@@ -336,7 +336,7 @@ class FabrikFEModelFormsession extends FabModel {
 		{
 			$this->rowid = JRequest::getInt('rowid');
 		}
-		return (int)$this->rowid;
+		return (int) $this->rowid;
 	}
 
 	/**

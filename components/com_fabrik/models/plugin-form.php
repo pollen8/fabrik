@@ -17,46 +17,48 @@ class plgFabrik_Form extends FabrikPlugin
 	/**@var array formatted email data */
 	var $emailData = null;
 
+	/** @var string html to return from plugin rendering */
+	protected $html = '';
+	
 	/**
 	 * run from table model when deleting rows
 	 *
-	 * @return bol
+	 * @return	bool
 	 */
 
-	function onDeleteRowsForm($pluginParams, $oRequest, $pluginArgs)
+	public function onDeleteRowsForm($params, &$formModel, &$groups)
 	{
 		return true;
 	}
 
 	/**
 	 * run right at the beginning of the form processing
-	 *
-	 * @return bool
+	 * @return	bool
 	 */
 
-	function onBeforeProcess()
+	public function onBeforeProcess($params, &$formModel)
 	{
 		return true;
 	}
 
 	/**
 	 * run if form validation fails
-	 *
-	 * @return bool
+	 * @return	bool
 	 */
 
-	function onError()
+	public function onError($params, &$formModel)
 	{
 
 	}
 
 	/**
 	 * run before table calculations are applied
-	 *
-	 * @return bool
+	 * @param	object	params
+	 * @param	object	form model
+	 * @return	bool
 	 */
 
-	function onBeforeCalculations()
+	function onBeforeCalculations($params, $formModel)
 	{
 		return true;
 	}
@@ -64,11 +66,12 @@ class plgFabrik_Form extends FabrikPlugin
 	/**
 	 * run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
-	 *
-	 * @return bool
+	 * @param	object	$params
+	 * @param	object	form model
+	 * @return	bool
 	 */
 
-	function onAfterProcess()
+	public function onAfterProcess($params, &$formModel)
 	{
 		return true;
 	}
@@ -80,51 +83,51 @@ class plgFabrik_Form extends FabrikPlugin
 	 * @return bool
 	 */
 
-	function customProcessResult($method )
+	public function customProcessResult($method, &$formModel)
 	{
 		return true;
 	}
 
 	/**
 	 * sets up any bottom html
-	 *
+	 * @param	object params
+	 * @param	object form model
 	 */
 
-	function getBottomContent()
+	public function getBottomContent($params, $formModel)
 	{
 
 	}
 
 	/**
 	 * get any html that needs to be written into the bottom of the form
-	 *
 	 * @return string html
 	 */
 
-	function getBottomContent_result()
+	public function getBottomContent_result($c)
 	{
-		return "";
+		return $this->html;
 	}
 
 	/**
 	 * sets up any top html
-	 *
+	 * @param	object	params
+	 * @param	object	form model
 	 */
 
-	function getTopContent()
+	function getTopContent($params, $formModel)
 	{
 
 	}
 
 	/**
 	 * get any html that needs to be written into the top of the form
-	 *
-	 * @return string html
+	 * @return	string	html
 	 */
 
-	function getTopContent_result()
+	public function getTopContent_result()
 	{
-		return "";
+		return $this->html;
 	}
 
 
@@ -139,11 +142,13 @@ class plgFabrik_Form extends FabrikPlugin
 
 	function getEmailData()
 	{
-		if (isset($this->emailData)) {
+		if (isset($this->emailData))
+		{
 			return $this->emailData;
 		}
 		$model = $this->formModel;
-		if (is_null($model->_formDataWithTableName)) {
+		if (is_null($model->_formDataWithTableName))
+		{
 			return array();
 		}
 		$model->isAjax();
@@ -158,7 +163,8 @@ class plgFabrik_Form extends FabrikPlugin
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 
 		$model->_editable = false;
-		if (is_object($listModel)) {
+		if (is_object($listModel))
+		{
 			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
 		}
@@ -174,7 +180,6 @@ class plgFabrik_Form extends FabrikPlugin
 		{
 			$groupParams = $groupModel->getParams();
 			//check if group is acutally a table join
-
 			$repeatGroup = 1;
 			$foreignKey = null;
 			if ($groupModel->canRepeat())
@@ -215,8 +220,8 @@ class plgFabrik_Form extends FabrikPlugin
 					foreach ($elementModels as $tmpElement) {
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
 						if (is_array($model->_formDataWithTableName)) {
-							if (array_key_exists($smallerElHTMLName."_raw", $model->_formDataWithTableName)) {
-								$d = $model->_formDataWithTableName[$smallerElHTMLName."_raw"];
+							if (array_key_exists($smallerElHTMLName . '_raw', $model->_formDataWithTableName)) {
+								$d = $model->_formDataWithTableName[$smallerElHTMLName . '_raw'];
 							} else {
 								$d = @$model->_formDataWithTableName[$smallerElHTMLName];
 							}
@@ -230,11 +235,12 @@ class plgFabrik_Form extends FabrikPlugin
 			$groupModel->repeatTotal = $repeatGroup;
 			$group = $groupModel->getGroup();
 			$aSubGroups = array();
-			for ($c = 0; $c < $repeatGroup; $c++) {
+			for ($c = 0; $c < $repeatGroup; $c++)
+			{
 				$aSubGroupElements = array();
 				$elementModels = $groupModel->getPublishedElements();
-
-				foreach ($elementModels as $elementModel) {
+				foreach ($elementModels as $elementModel)
+				{
 					//force reload?
 					$elementModel->defaults = null;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
@@ -246,13 +252,13 @@ class plgFabrik_Form extends FabrikPlugin
 					//in a new form (joined grouped) even when editing a record
 					$elementModel->_inRepeatGroup = $groupModel->canRepeat();
 					$elementModel->_inJoin = $groupModel->isJoin();
-					$elementModel->_editable 	= false;
+					$elementModel->_editable = false;
 
 					if ($elementModel->_inJoin)
 					{
 						if ($elementModel->_inRepeatGroup)
 						{
-							if (!array_key_exists($k . "_raw", $this->emailData))
+							if (!array_key_exists($k . '_raw', $this->emailData))
 							{
 								$this->emailData[$k . '_raw'] = array();
 							}
@@ -264,7 +270,8 @@ class plgFabrik_Form extends FabrikPlugin
 						}
 					} else {
 						//@TODO do we need to check if none -joined repeat groups have their data set out correctly?
-						if ($elementModel->isJoin()) {
+						if ($elementModel->isJoin())
+						{
 							$join = $elementModel->getJoinModel()->getJoin();
 							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$join->id][$k];
 						}
@@ -289,22 +296,25 @@ class plgFabrik_Form extends FabrikPlugin
 					// selected FK value.
 
 					// $$$ rob in repeat join groups this isnt really efficient as you end up reformatting the data $c times
-					$elementModel->_form->_data = $model->_formDataWithTableName;
+					$elementModel->getFormModel()->_data = $model->_formDataWithTableName;
 					// $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
 					// (may only be on AJAX submit)
 					$email_value = '';
 					if (array_key_exists($k . '_raw', $this->emailData)) {
 						$email_value = $this->emailData[$k . '_raw'];
 					}
-					else if (array_key_exists($k, $this->emailData)) {
+					else if (array_key_exists($k, $this->emailData))
+					{
 						$email_value = $this->emailData[$k];
 					}
 					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
-					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin) {
+					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin)
+					{
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k.'_raw'] = $this->emailData[$k.'_raw'];
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k] = $this->emailData[$k];
 					}
-					if ($elementModel->isJoin()) {
+					if ($elementModel->isJoin())
+					{
 						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k . '_raw'] = $this->emailData[$k . '_raw'];
 						$this->emailData['join'][$elementModel->getJoinModel()->getJoin()->id][$k] = $this->emailData[$k];
 					}

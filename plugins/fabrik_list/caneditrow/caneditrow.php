@@ -13,8 +13,8 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-list.php');
-require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once(COM_FABRIK_FRONTEND . '/helpers/html.php');
 
 class plgFabrik_ListCaneditrow extends plgFabrik_List {
 

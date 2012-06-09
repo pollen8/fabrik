@@ -29,13 +29,14 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * validate the elements data against the rule
-	 * @param string data to check
-	 * @param object element
-	 * @param int plugin sequence ref
-	 * @return bol true if validation passes, false if fails
+	 * @param	string	data to check
+	 * @param	object	element
+	 * @param	int		plugin sequence ref
+	 * @param	int		repeat group counter
+	 * @return	bool	true if validation passes, false if fails
 	 */
 
-	function validate($data, &$element, $c)
+	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		return true;
 	}
@@ -52,7 +53,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$post	= JRequest::get('post');
-		$v = (array)$params->get($this->_pluginName .'-validation_condition');
+		$v = (array) $params->get($this->_pluginName .'-validation_condition');
 		if (!array_key_exists($c, $v))
 		{
 			return true;

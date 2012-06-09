@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormExif extends plgFabrik_Form {
 
@@ -93,7 +93,7 @@ class plgFabrik_FormExif extends plgFabrik_Form {
 		$element = $plugin->getElement(true);
 		$this->upload_field = $plugin->getFullName();
 
-		$file_path = JPATH_SITE.DS.$data[$this->upload_field];
+		$file_path = JPATH_SITE . '/' . $data[$this->upload_field];
 		if (JFile::exists($file_path)) {
 			$coords = $this->getCoordinates($file_path);
 			if (!empty($coords)) {

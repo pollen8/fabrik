@@ -354,7 +354,7 @@ class FabrikModelList extends FabModelAdmin
 		$afilterFields = (array) $form->getValue('params.filter-fields');
 		$afilterConditions = (array) $form->getValue('params.filter-conditions');
 		$afilterEval = (array) $form->getValue('params.filter-eval');
-		$afilterValues= (array)$form->getValue('params.filter-value');
+		$afilterValues= (array) $form->getValue('params.filter-value');
 		$afilterAccess= (array) $form->getValue('params.filter-access');
 		$aGrouped = (array) $form->getValue('params.filter-grouped');
 		for ($i = 0; $i < count($afilterFields); $i ++)
@@ -402,7 +402,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('*, j.id AS id, j.params as jparams')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = '.(int)$item->id);
+		$query->select('*, j.id AS id, j.params as jparams')->from('#__{package}_joins AS j')->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('j.list_id = ' . (int) $item->id);
 		$db->setQuery($query);
 		$joins = $db->loadObjectList();
 		$fabrikDb = $this->getFEModel()->getDb();
@@ -426,7 +426,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * get the possible list plug-ins that can be selected for use
-	 * @return array
+	 * @return	array
 	 */
 
 	public function getAbstractPlugins()
@@ -456,7 +456,7 @@ class FabrikModelList extends FabModelAdmin
 				$str = $o->onRenderAdminSettings($data, 0);
 				$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
 				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-				$rules[] = array('plugin'=>$plugin->name, 'html'=>$str, 'js'=>$js);
+				$rules[] = array('plugin' => $plugin->name, 'html' => $str, 'js' => $js);
 			}
 		}
 		return $rules;
@@ -729,7 +729,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$this->updateElements($row);
 		/* $$$rob - joomfish not available for j1.7
-		 if (JFolder::exists(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements')) {
+		 if (JFolder::exists(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements')) {
 		if ($params->get('allow-data-translation')) {
 		if (!$this->makeJoomfishXML()) {
 		$this->setError(JTEXT::_( "Unable to make Joomfish XML file"));
@@ -846,7 +846,8 @@ class FabrikModelList extends FabModelAdmin
 			$existingJoin = false;
 			foreach ($aOldJoins as $oOldJoin)
 			{
-				if ($joinIds[$i] == $oOldJoin->id) {
+				if ($joinIds[$i] == $oOldJoin->id)
+				{
 					$existingJoin = true;
 				}
 			}
@@ -983,7 +984,7 @@ class FabrikModelList extends FabModelAdmin
 
 		//here we're importing directly from the database schema
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__{package}_lists')->where('db_table_name = '.$db->Quote($tableName));
+		$query->select('id')->from('#__{package}_lists')->where('db_table_name = '.$db->quote($tableName));
 		$db->setQuery($query);
 		$id = $db->loadResult();
 		$dispatcher = JDispatcher::getInstance();
@@ -1164,7 +1165,6 @@ class FabrikModelList extends FabModelAdmin
 		$this->getFormModel();
 		if ($formid == 0)
 		{
-			//echo 'createLinkedForm';exit;
 			// $$$ rob required otherwise the JTable is loaed with db_table_name as a property
 			//which then generates an error - not sure why its loaded like that though?
 			// 18/08/2011 - could be due to the Form table class having it in its bind method - (have now overridden form table store() to remove thoes two params)
@@ -1365,7 +1365,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int)$fromid);
+		$query->select('*')->from('#__{package}_joins')->where('list_id = '.(int) $fromid);
 		$db->setQuery($query);
 		$joins = $db->loadObjectList();
 		$feModel = $this->getFEModel();
@@ -1568,7 +1568,7 @@ class FabrikModelList extends FabModelAdmin
 
 	private function removeJoomfishXML()
 	{
-		$file = JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements'.DS.'fabrik-' . $this->getTable()->db_table_name . '.xml';
+		$file = JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements/fabrik-' . $this->getTable()->db_table_name . '.xml';
 		if (JFile::exists($file))
 		{
 			JFile::delete($file);
@@ -1633,7 +1633,7 @@ class FabrikModelList extends FabModelAdmin
   </reference>
 </joomfish>';
 		//file name HAS to be the same as the table name MINUS db extension
-		return JFile::write(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_joomfish'.DS.'contentelements'.DS.$tableName.'.xml', $str);
+		return JFile::write(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements/' . $tableName . '.xml', $str);
 	}
 
 	/**
@@ -1650,7 +1650,7 @@ class FabrikModelList extends FabModelAdmin
 		// Initialise variables.
 		$dispatcher	= JDispatcher::getInstance();
 		$user = JFactory::getUser();
-		$pks = (array)$pks;
+		$pks = (array) $pks;
 		$table = $this->getTable();
 		$app = JFactory::getApplication();
 		// Include the content plugins for the on delete events.
@@ -1748,7 +1748,7 @@ class FabrikModelList extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$form = $this->getTable('form');
 		$form->load($table->form_id);
-		if ((int)$form->id === 0)
+		if ((int) $form->id === 0)
 		{
 			return false;
 		}
@@ -1763,13 +1763,13 @@ class FabrikModelList extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		//get group ids
-		if ((int)$form->id === 0)
+		if ((int) $form->id === 0)
 		{
 			return false;
 		}
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $form->id);
 		$db->setQuery($query);
-		$groupids = (array)$db->loadResultArray();
+		$groupids = (array) $db->loadResultArray();
 		//delete groups
 		$groupModel = JModel::getInstance('Group', 'FabrikModel');
 		$groupModel->delete($groupids, $deleteElements);

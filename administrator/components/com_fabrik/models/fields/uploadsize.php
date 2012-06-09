@@ -9,7 +9,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 /**
  * Renders a upload size field
@@ -47,39 +47,41 @@ class JFormFieldUploadsize extends JFormField
 
 	function getInput()
 	{
-		$size = $this->element['size'] ? 'size="'.$this->element['size'].'"' : '';
-		$class = $this->element['class'] ? 'class="'.$this->element['class'].'"' : 'class="text_area"';
+		$size = $this->element['size'] ? 'size="' . $this->element['size'] . '"' : '';
+		$class = $this->element['class'] ? 'class="' . $this->element['class'] . '"' : 'class="text_area"';
 		$value = htmlspecialchars(html_entity_decode($this->value, ENT_QUOTES), ENT_QUOTES);
-		if ($value == '') {
+		if ($value == '')
+		{
 			$value = $this->getMax();
 		}
-		return '<input type="text" name="'.$this->name.'" id="'.$this->id.'" value="'.$value.'" '.$class.' '.$size.' />';
+		return '<input type="text" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" ' . $class . ' ' . $size . ' />';
 	}
 
 	/**
 	 * (non-PHPdoc)
 	 * @see JFormField::getLabel()
 	 */
+	
 	function getLabel()
 	{
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
 		$text = $this->translateLabel ? JText::_($text) : $text;
 		$max = $this->getMax();
-		$mb = $max/1024;
-		$this->description = JText::_($this->description). $max .'Kb / '.$mb.'Mb';
+		$mb = $max / 1024;
+		$this->description = JText::_($this->description) . $max . 'Kb / ' . $mb . 'Mb';
 		return parent::getLabel();
 	}
 
 	/**
 	 * get the max upload size allowed by the server.
-	 * @return int kilobyte upload size
+	 * @return	int	kilobyte upload size
 	 */
 
 	protected function getMax()
 	{
-		$post_value 	= $this->_return_bytes(ini_get('post_max_size'));
-		$upload_value 	= $this->_return_bytes(ini_get('upload_max_filesize'));
+		$post_value = $this->_return_bytes(ini_get('post_max_size'));
+		$upload_value = $this->_return_bytes(ini_get('upload_max_filesize'));
 		$value = min($post_value, $upload_value);
 		$value = $value / 1024;
 		return $value;

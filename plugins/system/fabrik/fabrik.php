@@ -49,8 +49,8 @@ class plgSystemFabrik extends JPlugin
 	function onAfterInitialise()
 	{
 		jimport('joomla.filesystem.file');
-		$p = JPATH_SITE.DS.'plugins'.DS.'system'.DS.'fabrik'.DS;
-		$defines = JFile::exists($p.'user_defines.php') ? $p.'user_defines.php' : $p.'defines.php';
+		$p = JPATH_SITE . '/plugins/system/fabrik/';
+		$defines = JFile::exists($p . 'user_defines.php') ? $p . 'user_defines.php' : $p . 'defines.php';
 		$doc = JFactory::getDocument();
 		//$doc->addCustomTag('<meta http-equiv="X-UA-Compatible" content="IE=9" />');
 		require_once($defines);
@@ -74,12 +74,12 @@ class plgSystemFabrik extends JPlugin
 			return;
 		}
 		define('COM_FABRIK_SEARCH_RUN', true);
-		JModel::addIncludePath(COM_FABRIK_FRONTEND.DS.'models', 'FabrikFEModel');
+		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 		$user = JFactory::getUser();
 		$db	= FabrikWorker::getDbo(true);
 
-		require_once(JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php');
+		require_once(JPATH_SITE . '/components/com_content/helpers/route.php');
 
 		// load plugin params info
 		$limit = $this->params->def('search_limit', 50);

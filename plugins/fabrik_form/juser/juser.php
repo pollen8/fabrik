@@ -191,15 +191,15 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 	 * @return	bool
 	 */
 
-	function onDeleteRowsForm(&$params, &$formModel, &$groups)
+	public function onDeleteRowsForm($params, &$formModel, &$groups)
 	{
 		if ($params->get('juser_field_userid') != '' && $params->get('juser_delete_user', false)) {
 			$useridfield = $this->getFieldName($params, 'juser_field_userid');
 			$useridfield .= '_raw';
 			foreach ($groups as $group)
 			{
-				foreach ($group as $rows) {
-
+				foreach ($group as $rows)
+				{
 					foreach ($rows as $row)
 					{
 						if (isset($row->$useridfield))
@@ -208,8 +208,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 							{
 								$user = new JUser((int) $row->$useridfield);
 								// Bail out now and return false, or just carry on?
-								if (!$user->delete()) {
-
+								if (!$user->delete())
+								{
 									JError::raiseWarning(500, 'Unable to delete user id ' . $row->$useridfield);
 								}
 							}
@@ -276,7 +276,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
 			if (!empty($formModel->_rowId))
 			{
-				$original_id = (int)$formModel->_formData[$this->useridfield];
+				$original_id = (int) $formModel->_formData[$this->useridfield];
 			}
 		}
 		else
@@ -314,19 +314,19 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$data['id'] = $original_id;
 
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
-		$defaultGroup = (int)$params->get('juser_field_default_group');
+		$defaultGroup = (int) $params->get('juser_field_default_group');
 
 		$groupId = JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
 		if (is_array($groupId))
 		{
 			$groupId = $groupId[0];
 		}
-		$groupId = (int)$groupId;
+		$groupId = (int) $groupId;
 
 		if (!$isNew)
 		{
-			if ($params->get('juser_field_usertype') != '') {
-
+			if ($params->get('juser_field_usertype') != '')
+			{
 				if (in_array($groupId, $me->getAuthorisedGroups()) || $me->authorise('core.admin'))
 				{
 					$data['gid'] = $groupId;
@@ -587,10 +587,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 	 * @return	null
 	 */
 
-	function onAfterProcess($params, $formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$user = JFactory::getUser();
-		if ((int)$user->get('id') !== 0)
+		if ((int) $user->get('id') !== 0)
 		{
 			return;
 		}
@@ -696,8 +696,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		// check for existing username
 		$query = 'SELECT id'
 		. ' FROM #__users '
-		. ' WHERE username = ' . $db->Quote($post['username'])
-		. ' AND id != '. (int)$post['id'];
+		. ' WHERE username = ' . $db->quote($post['username'])
+		. ' AND id != '. (int) $post['id'];
 		;
 		$db->setQuery($query);
 		$xid = intval( $db->loadResult());
@@ -710,8 +710,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		// check for existing email
 		$query = 'SELECT id'
 		. ' FROM #__users '
-		. ' WHERE email = '. $db->Quote($post['email'])
-		. ' AND id != '. (int)$post['id']
+		. ' WHERE email = '. $db->quote($post['email'])
+		. ' AND id != '. (int) $post['id']
 		;
 		$db->setQuery($query);
 		$xid = intval( $db->loadResult());

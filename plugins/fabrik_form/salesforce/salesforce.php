@@ -14,7 +14,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormSalesforce extends plgFabrik_Form {
 
@@ -22,9 +22,8 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 
 	private function client()
 	{
-
 		//Get the path to the Toolkit, set in the options on install.
-		$toolkit_path = JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'salesforce';
+		$toolkit_path = JPATH_SITE . '/components/com_fabrik/libs/salesforce';
 
 		//Ok, now use SOAP to send the information to SalesForce
 		require_once($toolkit_path .'/soapclient/SforcePartnerClient.php');
@@ -38,14 +37,15 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		return $client;
 	}
 
-	function getBottomContent(&$params)
+	public function getBottomContent($params, $formModel)
 	{
-		if (!class_exists('SoapClient')) {
+		if (!class_exists('SoapClient'))
+		{
 			JError::raiseWarning(E_WARNING, "Salesforce Plug-in: PHP has not been compiled with the SOAP extension. We will be unable to send this data to Salesforce.com");
 		}
 	}
 
-	function onAfterProcess(&$params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		@ini_set("soap.wsdl_cache_enabled", "0");
 
@@ -60,18 +60,25 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		$fields = $client->describeSObjects($givenObject)->fields;
 		$submission = array();
 		//map the posted data into acceptable fields
-		foreach ($fields as $f) {
+		foreach ($fields as $f)
+		{
 			$name = $f->name;
-			foreach ( $formModel->_fullFormData as $key => $val) {
-				if (is_array($val)) {
+			foreach ( $formModel->_fullFormData as $key => $val)
+			{
+				if (is_array($val))
+				{
 					$val = implode(';', $val);
 				}
 				$key = array_pop(explode('___', $key));
-				if (strtolower($key) == strtolower($name) && strtolower($name) != 'id') {
+				if (strtolower($key) == strtolower($name) && strtolower($name) != 'id')
+				{
 					$submission[$name] = $val;
-				} else {
+				}
+				else
+				{
 					// check custom fields
-					if (strtolower($key.'__c') == strtolower($name) && strtolower($name) != 'id') {
+					if (strtolower($key.'__c') == strtolower($name) && strtolower($name) != 'id')
+					{
 						$submission[$name] = $val;
 					}
 				}
@@ -79,8 +86,9 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		}
 
 		$key = FabrikString::safeColNameToArrayKey($formModel->getlistModel()->getTable()->db_primary_key);
-		$customkey =$params->get('salesforce_customid').'__c';
-		if ($params->get('salesforce_allowupsert', 0)) {
+		$customkey =$params->get('salesforce_customid') . '__c';
+		if ($params->get('salesforce_allowupsert', 0))
+		{
 			$submission[$customkey] = $formModel->_fullFormData[$key];
 		}
 		$sObjects = array();
@@ -89,27 +97,43 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		$sObject->fields = $submission;
 		array_push($sObjects, $sObject);
 		$app = JFactory::getApplication();
-		if ($params->get('salesforce_allowupsert', 0)) {
+		if ($params->get('salesforce_allowupsert', 0))
+		{
 			$result = $this->upsert($client, $sObjects, $customkey);
-		} else {
+		}
+		else
+		{
 			$result = $this->insert($client, $sObjects);
 		}
-		if ($result->success == 1) {
-			if ($result->created == '' && $params->get('salesforce_allowupsert', 0)) {
+		if ($result->success == 1)
+		{
+			if ($result->created == '' && $params->get('salesforce_allowupsert', 0))
+			{
 				$app->enqueueMessage(JText::sprintf(SALESFORCE_UPDATED, $updateObject));
-			} else {
+			}
+			else
+			{
 				$app->enqueueMessage(JText::sprintf(SALESFORCE_CREATED, $updateObject));
 			}
-		} else {
-			if (isset($result->errors)) {
-				if (is_array($result->errors)) {
-					foreach ($result->errors as $error) {
+		}
+		else
+		{
+			if (isset($result->errors))
+			{
+				if (is_array($result->errors))
+				{
+					foreach ($result->errors as $error)
+					{
 						JError::raiseWarning(500, JText::_('SALESFORCE_ERR').$errors->message);
 					}
-				} else {
+				}
+				else
+				{
 					JError::raiseWarning(500, JText::_('SALESFORCE_ERR'). $result->errors->message);
 				}
-			} else {
+			}
+			else
+			{
 				JError::raiseWarning(500, JText::sprintf(SALESFORCE_NOCREATE, $updateObject));
 			}
 		}
@@ -148,7 +172,6 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 			return $e;
 		}
 	}
-
 
 }
 ?>

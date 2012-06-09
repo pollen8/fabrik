@@ -9,7 +9,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'helpers'.DS.'element.php');
+require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
 
 /**
  * Renders a list of groups
@@ -39,16 +39,16 @@ class JFormFieldGroupList extends JFormFieldList
 	function getOptions()
 	{
 
-		if ($this->value == '') {
-			$app =& JFactory::getApplication();
+		if ($this->value == '')
+		{
+			$app = JFactory::getApplication();
 			$this->value = $app->getUserStateFromRequest('com_fabrik.elements.filter.group', 'filter_groupId', $this->value);
 		}
 
 		// Initialize variables.
 		$options = array();
-
-		$db		= FabrikWorker::getDbo(true);
-		$query	= $db->getQuery(true);
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
 
 		$query->select('id AS value, name AS text');
 		$query->from('#__{package}_groups AS g');
@@ -61,12 +61,11 @@ class JFormFieldGroupList extends JFormFieldList
 		$options = $db->loadObjectList();
 
 		// Check for a database error.
-		if ($db->getErrorNum()) {
+		if ($db->getErrorNum())
+		{
 			JError::raiseWarning(500, $db->getErrorMsg());
 		}
-
 		array_unshift($options, JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
-
 		return $options;
 	}
 

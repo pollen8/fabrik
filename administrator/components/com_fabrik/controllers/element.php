@@ -40,23 +40,21 @@ class FabrikControllerElement extends FabControllerForm
 	public function setRedirect($url, $msg = null, $type = null)
 	{
 		$app = JFactory::getApplication();
-		$confirmUpdate =  $app->getUserState('com_fabrik.confirmUpdate');
-
+		$confirmUpdate = $app->getUserState('com_fabrik.confirmUpdate');
 		// @TODO override the redirect url if confirm update is needed and task appropriate
-		if ($confirmUpdate == true) {
+		if ($confirmUpdate == true)
+		{
 			$url = $app->getUserState('com_fabrik.redirect');
-			$this->redirect = $url;//'index.php?option=com_fabrik&view=element&layout=confirmupdate';
+			$this->redirect = $url;
 		}
 		$this->redirect = $url;
-
-		if ($msg !== null) {
+		if ($msg !== null)
+		{
 			// controller may have set this directly
 			$this->message	= $msg;
 		}
-
 		// Ensure the type is not overwritten by a previous call to setMessage.
 		$this->messageType	= ($type === null || empty($this->messageType)) ? 'message' : $type;
-
 		return $this;
 	}
 
@@ -67,12 +65,14 @@ class FabrikControllerElement extends FabControllerForm
 	 *
 	 * @since   11.1
 	 */
+	
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
 		$gid = JRequest::getInt('filter_groupId');
-		if ($gid !== 0) {
-			$append .= '&filter_groupId='.$gid;
+		if ($gid !== 0)
+		{
+			$append .= '&filter_groupId=' . $gid;
 		}
 		return $append;
 	}
@@ -92,17 +92,22 @@ class FabrikControllerElement extends FabControllerForm
 		$model->setId($id);
 		$fabrikDb = $model->getListModel()->getDB();
 		$fabrikDb->setQuery($app->getUserState('com_fabrik.q'));
-
-		if (!$fabrikDb->query()) {
+		if (!$fabrikDb->query())
+		{
 			JError::raiseWarning(E_WARNING, $fabrikDb->stderr(true));
 			$msg = '';
-		} else {
+		}
+		else
+		{
 			$msg = JText::_('COM_FABRIK_STRUCTURE_UPDATED');
 		}
-		if (JRequest::getCmd('origtask') == 'save') {
-			$this->setRedirect("index.php?option=com_fabrik&view=elements", $msg);
-		} else {
-			$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id='. $id, $msg);
+		if (JRequest::getCmd('origtask') == 'save')
+		{
+			$this->setRedirect('index.php?option=com_fabrik&view=elements', $msg);
+		}
+		else
+		{
+			$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id=' . $id, $msg);
 		}
 	}
 
@@ -116,14 +121,17 @@ class FabrikControllerElement extends FabControllerForm
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('field', 'element');
 		$model->setId(JRequest::getInt('id'));
-		$element =& $model->getElement();
+		$element = $model->getElement();
 		$element->name = JRequest::getWord('oldname');
 		$element->plugin = JRequest::getWord('origplugin');
 		$element->store();
-		if (JRequest::getVar('origtask') == 'save') {
-			$this->setRedirect("index.php?option=com_fabrik&view=elements", $msg);
-		} else {
-			$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id='. $element->id, $msg);
+		if (JRequest::getVar('origtask') == 'save')
+		{
+			$this->setRedirect('index.php?option=com_fabrik&view=elements', $msg);
+		}
+		else
+		{
+			$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id=' . $element->id, $msg);
 		}
 	}
 
@@ -138,7 +146,8 @@ class FabrikControllerElement extends FabControllerForm
 	{
 		$ok = parent::save();
 		$app = JFactory::getApplication();
-		if (!is_null($app->getUserState('com_fabrik.redirect'))) {
+		if (!is_null($app->getUserState('com_fabrik.redirect')))
+		{
 			$this->setRedirect($app->getUserState('com_fabrik.redirect') );
 			$app->setUserState('com_fabrik.redirect', null);
 		}
@@ -153,12 +162,12 @@ class FabrikControllerElement extends FabControllerForm
 	{
 		JRequest::checkToken() or die('Invalid Token');
 		$post = JRequest::get('post');
-		$id = (int)JArrayHelper::getValue($post['jform'], 'id', 0);
+		$id = (int) JArrayHelper::getValue($post['jform'], 'id', 0);
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className 			= JRequest::getVar('plugin', 'field', 'post');
-		$elementModel 	= $pluginManager->getPlugIn($className, 'element');
+		$className = JRequest::getVar('plugin', 'field', 'post');
+		$elementModel = $pluginManager->getPlugIn($className, 'element');
 		$elementModel->setId($id);
-		$row =& $elementModel->getElement();
+		$row = $elementModel->getElement();
 		$row->checkin();
 		$to = JRequest::getInt('redirectto');
 		$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id='. $to);

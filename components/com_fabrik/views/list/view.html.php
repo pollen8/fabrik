@@ -199,7 +199,6 @@ class FabrikViewList extends JView{
 		$script[] = $model->filterJs;
 		$script[] = "});";
 		$script = implode("\n", $script);
-
 		FabrikHelperHTML::addScriptDeclaration($script);
 		$this->getElementJs();
 		//reset data back to original settings
@@ -276,7 +275,6 @@ class FabrikViewList extends JView{
 		}
 		$this->rows = $data;
 		reset($this->rows);
-
 		$firstRow = current($this->rows); //cant use numeric key '0' as group by uses groupd name as key
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
 		$this->assign('advancedSearch', $this->get('AdvancedSearchLink'));
@@ -300,15 +298,15 @@ class FabrikViewList extends JView{
 		{
 			require_once(JPATH_ROOT . '/includes/application.php');
 		}
-		$menus = JSite::getMenu();
+		$app = JFactory::getApplication();
+		$menus = $app->getMenu();
 		$menu = $menus->getActive();
-
 		// because the application sets a default page title, we need to get it
 		// right from the menu item itself
 		//if there is a menu item available AND the form is not rendered in a content plugin or module
 		if (is_object($menu) && !$this->isMambot)
 		{
-			$menu_params = new JParameter($menu->params);
+			$menu_params = new JRegistry($menu->params);
 			$params->set('page_title', $menu_params->get('page_title', $menu->title));
 			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
 		}
@@ -328,7 +326,6 @@ class FabrikViewList extends JView{
 		{
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST, false));
 		}
-
 		/** depreciated (keep incase ppl use them in old tmpls**/
 		$this->table = new stdClass();
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
@@ -386,28 +383,31 @@ class FabrikViewList extends JView{
 			}
 		}
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
-		$this->assignRef('groupByHeadings', $this->get('GroupByHeadings'));
+		$this->assign('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
 		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;
 		$this->filters = $model->getFilters('listform_'. $this->renderContext);
 		$this->assign('clearFliterLink', $this->get('clearButton'));
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
-
 		$this->assign('filterMode', (int) $params->get('show-table-filters'));
 		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
 		$this->assign('showFilters', $this->get('showFilters'));
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
+
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
-		$this->assignRef('calculations', $this->_getCalculations($this->headings, $params->get('actionMethod')));
+		$this->calculations = $this->_getCalculations($this->headings, $params->get('actionMethod'));
 		$this->assign('isGrouped', !($this->get('groupBy') == ''));
 		$this->assign('colCount', count($this->headings));
+
 		$this->assign('hasButtons', $this->get('hasButtons'));
 		$this->assignRef('grouptemplates', $model->grouptemplates);
-		$this->assignRef('params', $params);
-		$this->loadTemplateBottom();
-		$this->getManagementJS($this->rows);
 
+		$this->assignRef('params', $params);
+
+		$this->loadTemplateBottom();
+
+		$this->getManagementJS($this->rows);
 		// get dropdown list of other tables for quick nav in admin
 		$this->tablePicker = $app->isAdmin() ? FabrikHelperHTML::tableList($this->table->id) : '';
 
@@ -640,7 +640,6 @@ class FabrikViewList extends JView{
 		$this->hiddenFields[] = '<input type="hidden" name="listref" value="'. $this->renderContext .'"/>';
 		$this->hiddenFields[] = '<input type="hidden" name="Itemid" value="' . $Itemid . '"/>';
 		//removed in favour of using list_{id}_limit dorop down box
-
 		$this->hiddenFields[] = '<input type="hidden" name="fabrik_referrer" value="' . $reffer . '" />';
 		$this->hiddenFields[] = JHTML::_('form.token');
 

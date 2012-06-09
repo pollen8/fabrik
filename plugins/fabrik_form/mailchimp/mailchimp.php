@@ -12,7 +12,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 require_once('MCAPI.class.php');
 
 class plgFabrik_FormMailchimp extends plgFabrik_Form 
@@ -23,11 +23,11 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 	/**
 	 * set up the html to be injected into the bottom of the form
 	 *
-	 * @param object $params (no repeat counter stuff needed here as the plugin manager
+	 * @param	object $params (no repeat counter stuff needed here as the plugin manager
 	 * which calls this function has already done the work for you
 	 */
 
-	function getBottomContent(&$params)
+	public function getBottomContent($params, $formModel)
 	{
 			$this->html = "
 			<label class=\"mailchimpsignup\"><input type=\"checkbox\" name=\"fabrik_mailchimp_signup\" class=\"fabrik_mailchimp_signup\" value=\"1\"  />
@@ -47,12 +47,11 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 
 	/**
 	 * process the plugin, called when form is submitted
-	 *
-	 * @param object $params
-	 * @param object form
+	 * @param	object	$params
+	 * @param	object	form
 	 */
 
-	function onAfterProcess($params, &$formModel)
+	public function onAfterProcess($params, &$formModel)
 	{
 		$this->formModel = $formModel;
 		$emailData = $this->getEmailData();

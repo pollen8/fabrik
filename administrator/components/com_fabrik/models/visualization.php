@@ -33,6 +33,7 @@ class FabrikModelVisualization extends JModelAdmin
 	 * @return	JTable	A database object
 	 * @since	1.6
 	 */
+	
 	public function getTable($type = 'Visualization', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabriKWorker::getDbo(true);
@@ -52,7 +53,8 @@ class FabrikModelVisualization extends JModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.visualization', 'visualization', array('control' => 'jform', 'load_data' => $loadData));
-		if (empty($form)) {
+		if (empty($form))
+		{
 			return false;
 		}
 		$form->model = $this;
@@ -69,34 +71,36 @@ class FabrikModelVisualization extends JModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.visualization.data', array());
-
-		if (empty($data)) {
+		if (empty($data))
+		{
 			$data = $this->getItem();
 		}
-
 		return $data;
 	}
 
 	/**
 	 * get html form fields for a plugin (filled with
 	 * current element's plugin data
-	 * @param string $plugin
-	 * @return string html form fields
+	 * @param	string	$plugin
+	 * @return	string	html form fields
 	 */
 
 	function getPluginHTML($plugin = null)
 	{
 		$item = $this->getItem();
-		if (is_null($plugin)) {
+		if (is_null($plugin))
+		{
 			$plugin = $item->plugin;
 		}
 		JRequest::setvar('view', 'visualization');
 		JPluginHelper::importPlugin('fabrik_visualizaton', $plugin);
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-
-		if ($plugin == '') {
+		if ($plugin == '')
+		{
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
-		} else {
+		}
+		else
+		{
 			$plugin = $pluginManager->getPlugIn($plugin, 'Visualization');
 			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item));
 		}
@@ -104,12 +108,12 @@ class FabrikModelVisualization extends JModelAdmin
 	}
 
 	/**
-	 * needed for saving params- not sure y!
-	 * @param unknown_type $form
-	 * @param unknown_type $data
+	 * (non-PHPdoc)
+	 * @see JModelForm::validate()
 	 */
-
-	function validate($form, $data) {
+	
+	public function validate($form, $data, $group = null)
+	{
 		parent::validate($form, $data);
 		return $data;
 	}

@@ -16,13 +16,11 @@ class plgFabrik_ElementField extends plgFabrik_Element
 {
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$data = $this->numberFormat($data);
@@ -33,8 +31,8 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		if ($params->get('password') == "1") {
 			$data = str_pad('', strlen($data), '*');
 		}
-		$this->_guessLinkType($data, $oAllRowsData, 0);
-		return parent::renderListData($data, $oAllRowsData);
+		$this->_guessLinkType($data, $thisRow, 0);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -203,7 +201,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 				$objtype = "INT(" . $p->get('integer_length', 10) . ")";
 				break;
 			case 'decimal':
-				$total = (int)$p->get('integer_length', 10) + (int)$p->get('decimal_length', 2);
+				$total = (int) $p->get('integer_length', 10) + (int) $p->get('decimal_length', 2);
 				$objtype = "DECIMAL(" . $total . "," . $p->get('decimal_length', 2) . ")";
 				break;
 		}
@@ -218,11 +216,11 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	{
 		$params = $this->getParams();
 		$return  = array();
-		$size 		= (int)$this->getElement()->width;
+		$size 		= (int) $this->getElement()->width;
 		if ($size !== 0) {
 			$return['length'] = $size;
 		}
-		$maxlength  = (int)$params->get('maxlength');
+		$maxlength  = (int) $params->get('maxlength');
 		if ($maxlength === 0) {
 			$maxlength = $size;
 		}

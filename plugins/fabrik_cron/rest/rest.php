@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-cron.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
 class plgFabrik_CronRest extends plgFabrik_Cron {
 
@@ -68,7 +68,7 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		$query = $db->getQuery(true);
 		$query->select('id')->from('jos_{package}_lists')->where('db_table_name = ' . $db->nameQuote($table));
 		$db->setQuery($query);
-		$res = (int)$db->loadResult();
+		$res = (int) $db->loadResult();
 
 		$now = JFactory::getDate()->toMySQL();
 		$user = JFactory::getUser();

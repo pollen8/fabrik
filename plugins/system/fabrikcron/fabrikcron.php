@@ -52,14 +52,14 @@ class plgSystemFabrikcron extends JPlugin
 			return;
 		}
 		//3.0 done in inAfterInitialize()
-		//$defines = JFile::exists(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php') ? JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'user_defines.php' : JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'defines.php';
+		//$defines = JFile::exists(JPATH_SITE . '/components/com_fabrik/user_defines.php') ? JPATH_SITE . '/components/com_fabrik/user_defines.php' : JPATH_SITE . '/components/com_fabrik/defines.php';
 		//require_once($defines);
 		/* jimport('joomla.application.component.model');
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'params.php');
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'html.php');
-		require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'parent.php');
-		JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_fabrik'.DS.'tables');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/params.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/html.php');
+		require_once(COM_FABRIK_FRONTEND . '/models/parent.php');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		 */
 		//get all active tasks
 		$db = FabrikWorker::getDbo(true);
@@ -107,7 +107,7 @@ class plgSystemFabrikcron extends JPlugin
 		$ids = array();
 		foreach ($rows as $row)
 		{
-			$ids[] = (int)$row->id;
+			$ids[] = (int) $row->id;
 		}
 		$db->setQuery("UPDATE #__{package}_cron SET published='2' WHERE id IN (" . implode(',', $ids) . ")");
 		//$db->query();
@@ -133,7 +133,7 @@ class plgSystemFabrikcron extends JPlugin
 				$db->query();
 				continue;
 			}
-			$tid = (int)$plugin->getParams()->get('table');
+			$tid = (int) $plugin->getParams()->get('table');
 			$thisListModel = clone($listModel);
 			if ($tid !== 0)
 			{

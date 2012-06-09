@@ -12,8 +12,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
-require_once(JPATH_SITE.DS.'plugins'.DS.'fabrik_element'.DS.'date'.DS.'date.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once(JPATH_SITE . '/plugins/fabrik_element/date/date.php');
 
 class plgFabrik_ElementTimer extends plgFabrik_Element {
 
@@ -37,13 +37,11 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	}
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		if ($data != '') {
 			$format = '%Y-%m-%d %H:%i:%s';

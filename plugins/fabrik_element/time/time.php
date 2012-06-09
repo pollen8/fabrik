@@ -229,7 +229,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		if (strstr($data, ',')) {
 			$data = explode(',', $data);
 		}
-		$data = (array)$data;
+		$data = (array) $data;
 		foreach ($data as $d) {
 			if (trim($d) == '') {
 				return true;
@@ -251,13 +251,19 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		return "new FbTime('$id', $opts)";
 	}
 
-	function renderListData($data, $oAllRowsData)
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
+	 */
+	
+	public function renderListData($data, &$thisRow)
 	{
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
 		$groupModel = $this->getGroup();
-		$data = $groupModel->canRepeat() ? FabrikWorker::JsonToData($data) : array($data);
-		$data = (array)$data;
+		//Jaanus: removed condition canrepeat() from renderListData: weird result such as ["00:03:45","00 when not repeating but still join and merged. Using isJoin() instead
+		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
+		$data = (array) $data;
 		$ft = $params->get('list_time_format', 'H:i:s');
 		$sep = $params->get('time_separatorlabel', JText::_(':'));
 		$format = array();
@@ -269,7 +275,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 				$hms = $hour . $sep . $min . $sep . $sec;
 				$hm = $hour . $sep . $min;
 				$ms = $min . $sep . $sec;
-				if ($ft == "d.m.Y")
+				$timedisp = '';
+				if ($ft == "H:i:s")
 				{
 					$timedisp = $hms;
 				}
@@ -292,7 +299,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 			}
 		}
 		$data = json_encode($format);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 }

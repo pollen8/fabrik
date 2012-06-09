@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 //require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin-form.php');
+require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
 
 class plgFabrik_FormConfirmation extends plgFabrik_Form {
 
@@ -123,17 +123,17 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	/**
 	 * set up the html to be injected into the bottom of the form
 	 *
-	 * @param object $params (no repeat counter stuff needed here as the plugin manager
+	 * @param	object	$params (no repeat counter stuff needed here as the plugin manager
 	 * which calls this function has already done the work for you
-	 * @param object form model
+	 * @param	object	form model
 	 */
 
-	function getBottomContent(&$params, $formModel)
+	public function getBottomContent($params, $formModel)
 	{
 		//if we have already processed the form
 		$this->html = '';
-		if (JRequest::getVar('fabrik_confirmation') == 1) {
-			echo "here";
+		if (JRequest::getVar('fabrik_confirmation') == 1)
+		{
 			$session = JFactory::getSession();
 			//unset this flag
 			JRequest::setVar('fabrik_confirmation', 2);
@@ -142,24 +142,29 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 			//return to the form to edit it it will populate with our data
 			
 			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not thorugh posted data
-		 	foreach ($post as $key => $val) {
-		 		
-			
+		 	foreach ($post as $key => $val)
+		 	{
 				$noneraw = substr($key, 0, strlen($key) - 4);
-				if ($key == 'join' || $key == 'fabrik_vars') {
+				if ($key == 'join' || $key == 'fabrik_vars')
+				{
 					continue;
 				}
-				if ($formModel->hasElement($key) || $formModel->hasElement($noneraw)) {
+				if ($formModel->hasElement($key) || $formModel->hasElement($noneraw))
+				{
 					//return;
 				}
-				if ($formModel->hasElement($noneraw)) {
+				if ($formModel->hasElement($noneraw))
+				{
 				$key = $formModel->getElement($noneraw)->getHTMLName(0);
-				
 				// $$$ rob include both raw and non-raw keys (non raw for radios etc, _raw for db joins)
-				if (is_array($val)) {
-					foreach ($val as $val2) {
-						if (!FabrikWorker::isReserved($key)) {
-							if (!strstr($key, '[]')) {
+				if (is_array($val))
+				{
+					foreach ($val as $val2)
+					{
+						if (!FabrikWorker::isReserved($key))
+						{
+							if (!strstr($key, '[]'))
+							{
 								$key .= '[]';
 							}
 							//$fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'[]" value="'.urlencode($val2).'" />';
@@ -167,7 +172,9 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 							$fields[] = '<input type="hidden" name="'.$key.'" value="'.($val2).'" />';
 						}
 					}
-				} else {
+				}
+				else
+				{
 					if (!FabrikWorker::isReserved($key)) {
 						//$fields[] = '<input type="hidden" name="'.str_replace('_raw','',$key).'" value="'.urlencode($val).'" />';
 						//$fields[] = '<input type="hidden" name="'.$key.'" value="'.urlencode($val).'" />';
@@ -178,7 +185,6 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		 	}
 			//add in a view field as the form doesn't normally contain one
 			$fields[] = '<input type="hidden" name="view" value="form" />';
-			
 			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="2" />';
 
 			//add in a button to allow you to go back to the form and edit your data

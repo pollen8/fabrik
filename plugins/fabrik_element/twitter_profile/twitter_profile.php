@@ -12,37 +12,36 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'models'.DS.'element.php');
+require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 {
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$data = $this->format($data);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
 	 * take the recorded twitter screen name and parse it through the template
-	 * @param string $screenName
-	 * @return string|unknown
+	 * @param	string $screenName
+	 * @return	string|unknown
 	 */
 	protected function format($screenName)
 	{
-		if (trim($screenName) == '') {
+		if (trim($screenName) == '')
+		{
 			return '';
 		}
 
-		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'twitter'.DS.'class.twitter.php');
+		require_once(COM_FABRIK_FRONTEND . '/libs/twitter/class.twitter.php');
 		$twitter = new twitter();
 		$params = $this->getParams();
 		static $error;
