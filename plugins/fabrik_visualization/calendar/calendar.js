@@ -22,7 +22,7 @@ var fabrikCalendar = new Class({
 	},
 	
 	initialize: function (el) {
-		this.el  = $(el);
+		this.el  = document.id(el);
 		this.SECOND = 1000; // the number of milliseconds in a second
 		this.MINUTE = this.SECOND * 60; // the number of milliseconds in a minute
 		this.HOUR = this.MINUTE * 60; // the number of milliseconds in an hour
@@ -267,13 +267,13 @@ var fabrikCalendar = new Class({
 		
 		//watch the mouse to see if it leaves the activeArea - if it does hide the event popup
 		document.addEvent('mousemove', function (e) {
-			var el = $(e.target);
+			var el = e.target;
 			var x = e.client.x;
 			var y = e.client.y;
 			var z = this.activeArea;
 			if (typeOf(z) !== 'null' && typeOf(this.activeDay) !== 'null') {
 				if ((x <= z.left || x >= z.right) || (y <= z.top || y >= z.bottom)) {
-					//var loc = $('popWin').getCoordinates();
+					//var loc = document.id('popWin').getCoodocument.id(inates();
 					if (!this.inFadeOut) {
 						var loc = this.activeHoverEvent.getCoordinates();
 						var fxopts = {
@@ -897,9 +897,9 @@ var fabrikCalendar = new Class({
 					'events': {
 						'click': function (e) {
 							e.stop();
-							this.selectedDate.setTime($(e.target).className.replace('dayHeading ', '').toInt());
+							this.selectedDate.setTime(e.target.className.replace('dayHeading ', '').toInt());
 							var tmpdate = new Date();
-							$(e.target).getParent().getParent().getElements('td').each(function (td) {
+							e.target.getParent().getParent().getElements('td').each(function (td) {
 								var t = td.className.replace('day ', '').replace(' selectedDay').toInt();
 								tmpdate.setTime(t);
 								if (tmpdate.getDayOfYear() === this.selectedDate.getDayOfYear()) {
