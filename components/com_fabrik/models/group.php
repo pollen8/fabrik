@@ -225,14 +225,15 @@ class FabrikFEModelGroup extends FabModel{
 		$colcount = (int) $params->get('group_columns');
 		if ($colcount > 1)
 		{
-			$widths = $params->get('group_column_widths');
+			$widths = $params->get('group_column_widths', '');
 			$w = floor((100 - ($colcount * 6)) / $colcount) . '%';
-			if ($widths != '')
+			if ($widths !== '')
 			{
 				$widths = explode(',', $widths);
 				// $$$ hugh - http://fabrikar.com/forums/showthread.php?p=140799#post140799
 				//$w = JArrayHelper::getValue($widths, $elCount % $colcount + 1, $w);
-				$w = JArrayHelper::getValue($widths, $elCount % $colcount, $w);
+				// $$$ rob - not quiet see http://fabrikar.com/forums/showthread.php?t=26662
+				$w = JArrayHelper::getValue($widths, ($elCount - 1) % $colcount, $w);
 			}
 			$element->column = ' style="float:left;width:' . $w . ';';
 			if ($elCount !== 0 && ($elCount % $colcount + 1 == 0) || $element->hidden)
