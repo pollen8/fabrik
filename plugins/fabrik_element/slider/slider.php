@@ -47,7 +47,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$width = (int) $params->get('slider_width', 250);
 		$element = $this->getElement();
 		$val = $this->getValue($data, $repeatCounter);
-		if (!$this->_editable) {
+		if (!$this->editable) {
 			return $val;
 		}
 		$labels = array_filter(explode(',', $params->get('slider-labels')));
@@ -105,7 +105,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->steps = (int) $params->get('slider-steps', 100);
-		$data = $this->_form->_data;
+		$data = $this->getFormModel()->_data;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbSlider('$id', $opts)";

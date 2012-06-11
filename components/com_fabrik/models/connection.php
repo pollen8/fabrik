@@ -15,16 +15,16 @@ jimport('joomla.application.component.model');
 class FabrikFEModelConnection extends JModel {
 
 	/** @var object table **/
-	protected $_connection = null;
+	protected $connection = null;
 
 	/** @var object default connection table **/
-	protected $_defaultConnection = null;
+	protected $defaultConnection = null;
 
 	/** @var array containing db connections */
-	protected $_dbs = array();
+	protected static $dbs = array();
 
 	/** @var int connection id */
-	protected $_id = null;
+	protected $id = null;
 
 	/**
 	 * Constructor
@@ -45,12 +45,12 @@ class FabrikFEModelConnection extends JModel {
 	function setId($id)
 	{
 		// Set new element ID
-		$this->_id = $id;
+		$this->id = $id;
 	}
 
 	/**
 	 * is the conenction table the default connection
-	 * @return bol
+	 * @return bool
 	 */
 
 	function isDefault()
@@ -70,8 +70,10 @@ class FabrikFEModelConnection extends JModel {
 	{
 		$tableOptions = array();
 		$cn = $this->getConnection();
-		if ($cn->host and $cn->published == '1') {
-			if (@mysql_connect($cn->host, $cn->user, $cn->password)) {
+		if ($cn->host and $cn->published == '1')
+		{
+			if (@mysql_connect($cn->host, $cn->user, $cn->password))
+			{
 				//ensure db files are included
 				jimport('joomla.database.database');
 				$options = $this->getConnectionOptions($cn);
@@ -79,15 +81,21 @@ class FabrikFEModelConnection extends JModel {
 				$fabrikDb = JDatabase::getInstance($options);
 				$tables = $fabrikDb->getTableList();
 				$tableOptions[] = JHTML::_('select.option', '', '-');
-				if (is_array($tables)) {
-					foreach ($tables as $table) {
+				if (is_array($tables))
+				{
+					foreach ($tables as $table)
+					{
 						$tableOptions[] = JHTML::_('select.option', $table, $table);
 					}
 				}
-			} else {
+			}
+			else
+			{
 				$tableOptions[] = JHTML::_('select.option','couldnt connect');
 			}
-		} else {
+		}
+		else
+		{
 			$tableOptions[] = JHTML::_('select.option','host not set');
 		}
 		return JHTML::_('select.genericlist', $tableOptions, $name, 'class="' . $class . '" size="1" id="' . $name  . '" '.$javascript, 'value', 'text', $selected);
@@ -101,34 +109,43 @@ class FabrikFEModelConnection extends JModel {
 
 	function &getConnection($id = null)
 	{
-		if (!is_null($id)) {
+		if (!is_null($id))
+		{
 			$this->setId($id);
 		}
-		if (!is_object($this->_connection)) {
+		if (!is_object($this->connection))
+		{
 			$session = JFactory::getSession();
-			$key = 'fabrik.connection.'.$this->_id;
-			if ($session->has($key)) {
+			$key = 'fabrik.connection.' . $this->id;
+			if ($session->has($key))
+			{
 				$connProperties = unserialize($session->get($key));
 				// $$$ rob since J1.6 - connection properties stored as an array (in f2 it was an object)
-				if (is_a($connProperties, '__PHP_Incomplete_Class') || JArrayHelper::getValue($connProperties, 'id') == '') {
+				if (is_a($connProperties, '__PHP_Incomplete_Class') || JArrayHelper::getValue($connProperties, 'id') == '')
+				{
 					$session->clear($key);
-				} else {
-					$this->_connection = FabTable::getInstance('connection', 'FabrikTable');
-					$this->_connection->bind($connProperties);
-					return $this->_connection;
+				}
+				else
+				{
+					$this->connection = FabTable::getInstance('connection', 'FabrikTable');
+					$this->connection->bind($connProperties);
+					return $this->connection;
 				}
 
 			}
-			if ($this->_id == -1 || $this->_id == '') {
-				$this->_connection = $this->loadDefaultConnection();
-			} else {
-				$this->_connection = FabTable::getInstance('Connection', 'FabrikTable');
-				$this->_connection->load($this->_id);
+			if ($this->id == -1 || $this->id == '')
+			{
+				$this->connection = $this->loadDefaultConnection();
+			}
+			else
+			{
+				$this->connection = FabTable::getInstance('Connection', 'FabrikTable');
+				$this->connection->load($this->id);
 			}
 			// $$$ rob store the connection for later use as it may be required by modules/plugins
-			$session->set($key, serialize($this->_connection->getProperties()));
+			$session->set($key, serialize($this->connection->getProperties()));
 		}
-		return $this->_connection;
+		return $this->connection;
 	}
 
 	/**
@@ -138,64 +155,72 @@ class FabrikFEModelConnection extends JModel {
 
 	function &getDb()
 	{
-		static $dbs;
-		if (!isset($dbs)) {
-			$dbs = array();
+		if (!isset(self::$dbs))
+		{
+			self::$dbs = array();
 		}
 		$cn = $this->getConnection();
 		$session = JFactory::getSession();
-		if (JRequest::getCmd('task') == 'test') {
+		if (JRequest::getCmd('task') == 'test')
+		{
 			$session->clear('fabrik.connection.'.$cn->id);
-			$dbs = array();
-			$this->_connection = null;
+			self::$dbs = array();
+			$this->connection = null;
 			$cn = $this->getConnection();
 		}
 
-		if (!array_key_exists($cn->id, $dbs)) {
+		if (!array_key_exists($cn->id, self::$dbs))
+		{
 			//$$$rob lets see if we have an exact config match with J db if so just return that
 			$conf = JFactory::getConfig();
-			$host 		= $conf->getValue('config.host');
-			$user 		= $conf->getValue('config.user');
-			$password = $conf->getValue('config.password');
-			$database	= $conf->getValue('config.db');
-			$prefix 	= $conf->getValue('config.dbprefix');
-			$driver 	= $conf->getValue('config.dbtype');
-
-			$debug 		= $conf->getValue('config.debug');
+			$host = $conf->get('host');
+			$user = $conf->get('user');
+			$password = $conf->get('password');
+			$database = $conf->get('db');
+			$prefix = $conf->get('dbprefix');
+			$driver = $conf->get('dbtype');
+			$debug = $conf->get('debug');
 
 			$deafult_options= array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 			$options = $this->getConnectionOptions($cn);
 
-			if ($this->_compareConnectionOpts($deafult_options, $options)) {
-				$dbs[$cn->id] = FabrikWorker::getDbo();
-			} else {
-				$dbs[$cn->id] = JDatabase::getInstance($options);
+			if ($this->compareConnectionOpts($deafult_options, $options))
+			{
+				self::$dbs[$cn->id] = FabrikWorker::getDbo();
 			}
-			if (JError::isError($dbs[$cn->id]) || is_a($dbs[$cn->id], 'JException') || $dbs[$cn->id]->getErrorNum() !== 0) {
-
+			else
+			{
+				self::$dbs[$cn->id] = JDatabase::getInstance($options);
+			}
+			if (JError::isError(self::$dbs[$cn->id]) || is_a(self::$dbs[$cn->id], 'JException') || self::$dbs[$cn->id]->getErrorNum() !== 0)
+			{
 				//$$$Rob - not sure why this is happening on badmintonrochelais.com (mySQL 4.0.24) but it seems like
 				//you can only use one connection on the site? As JDatabase::getInstance() forces a new connection if its options
 				//signature is not found, then fabrik's default connection won't be created, hence defaulting to that one
 				if ($cn->default == 1 && JRequest::getCmd('task') !== 'test')
 				{
-					$dbs[$cn->id] = FabrikWorker::getDbo();
+					self::$dbs[$cn->id] = FabrikWorker::getDbo();
 
 					// $$$rob remove the error from the error stack
 					// if we dont do this the form is not rendered
 					JError::getError(true);
-
-				} else {
+				}
+				else
+				{
 					$app = JFactory::getApplication();
-
-					if (!$app->isAdmin()) {
+					if (!$app->isAdmin())
+					{
 						JError::raiseError(E_ERROR, 'Could not connection to database', $deafult_options);
 						jexit('Could not connection to database - possibly a menu item which doesn\'t link to a fabrik table');
-					} else {
+					}
+					else
+					{
 						// $$$ rob - unset the connection as caching it will mean that changes we make to the incorrect connection in admin, will not result
 						// in the test connection link informing the user that the changed connection properties are now correct
-						if (JRequest::getCmd('task') == 'test') {
-							$session->clear('fabrik.connection.'.$cn->id);
-							$this->_connection = null;
+						if (JRequest::getCmd('task') == 'test')
+						{
+							$session->clear('fabrik.connection.' . $cn->id);
+							$this->connection = null;
 							$level =  E_NOTICE;
 						}
 						else
@@ -207,17 +232,17 @@ class FabrikFEModelConnection extends JModel {
 				}
 			}
 		}
-		return $dbs[$cn->id];
+		return self::$dbs[$cn->id];
 	}
 
 	/**
 	 * compare two arrays of connection details. Ignore prefix as this may be set to '' if using koowna
-	 * @param array $opts1
-	 * @param array $opts2
-	 * @return boolean
+	 * @param	array	$opts1
+	 * @param	array	$opts2
+	 * @return	boolean
 	 */
 
-	private function _compareConnectionOpts($opts1, $opts2)
+	private function compareConnectionOpts($opts1, $opts2)
 	{
 		return ($opts1['driver'] == $opts2['driver']
 		&& $opts1['host'] == $opts2['host']
@@ -236,21 +261,24 @@ class FabrikFEModelConnection extends JModel {
 
 	function getConnectionOptions(&$cn)
 	{
-		$conf				= JFactory::getConfig();
-		$host 			= $cn->host;
-		$user 			= $cn->user;
-		$password 	= $cn->password;
-		$database		= $cn->database;
-		if (defined('KOOWA')) {
+		$conf = JFactory::getConfig();
+		$host = $cn->host;
+		$user = $cn->user;
+		$password = $cn->password;
+		$database = $cn->database;
+		if (defined('KOOWA'))
+		{
 			$prefix = '';
-		} else {
-			$prefix 		= $conf->getValue('config.dbprefix');
 		}
-		$driver 		= $conf->getValue('config.dbtype');
+		else
+		{
+			$prefix = $conf->get('dbprefix');
+		}
+		$driver = $conf->get('dbtype');
 		//test for sawpping db table names
 		$driver .= '_fab';
-		$debug 			= $conf->getValue('config.debug');
-		$options		= array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
+		$debug = $conf->get('debug');
+		$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 		return $options;
 	}
 
@@ -265,7 +293,7 @@ class FabrikFEModelConnection extends JModel {
 		$query = $db->getQuery(true);
 		$query->select('*, id AS value, description AS text')->from('#__fabrik_connections')->where('published = 1');
 		$db->setQuery($query);
-		$realCnns	= $db->loadObjectList();
+		$realCnns = $db->loadObjectList();
 		return $realCnns;
 	}
 
@@ -280,7 +308,8 @@ class FabrikFEModelConnection extends JModel {
 
 	function getConnectionsDd($realCnns, $javascript, $name = 'connection_id', $selected, $id = '', $attribs= 'class="inputbox" size="1" ')
 	{
-		if ($id == '') {
+		if ($id == '')
+		{
 			$id = $name;
 		}
 		$cnns[] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
@@ -303,21 +332,28 @@ class FabrikFEModelConnection extends JModel {
 		$connectionTableFields = array();
 		$connectionTableFields[-1] = array();
 		$connectionTableFields[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
-		foreach ($realCnns as $cn) {
+		foreach ($realCnns as $cn)
+		{
 			$connectionTableFields[$cn->value] = array();
-			if ($cn->host and $cn->published == '1') {
-
+			if ($cn->host and $cn->published == '1')
+			{
 				$options = $this->getConnectionOptions($cn);
 				$fabrikDb = JDatabase::getInstance($options);
 
-				if (JError::isError($fabrikDb)) {
+				if (JError::isError($fabrikDb))
+				{
 					$connectionTableFields[$cn->value][$key] = "unable to connect to $cn->text<br />";
-				} else {
-					if ($fabrikDb->getErrorNum() == 0) {
+				}
+				else
+				{
+					if ($fabrikDb->getErrorNum() == 0)
+					{
 						$tables = $fabrikDb->getTableList();
 						$fields = $fabrikDb->getTableFields($tables);
 						$connectionTableFields[$cn->value][$key] = $fields;
-					} else {
+					}
+					else
+					{
 						$connectionTableFields[$cn->value][$key] = "unable to connect to $cn->text<br />";
 					}
 				}
@@ -338,26 +374,34 @@ class FabrikFEModelConnection extends JModel {
 		$connectionTables[-1] = array();
 		$db = FabrikWorker::getDbo();
 		$connectionTables[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
-		foreach ($realCnns as $cn) {
+		foreach ($realCnns as $cn)
+		{
 			$connectionTables[$cn->value] = array();
-			if ($cn->host and $cn->published == '1') {
-
-				$this->_connection = null;
-				$this->_id = $cn->id;
+			if ($cn->host and $cn->published == '1')
+			{
+				$this->connection = null;
+				$this->id = $cn->id;
 				$fabrikDb = $this->getDb();
-
-				if (JError::isError($fabrikDb)) {
+				if (JError::isError($fabrikDb))
+				{
 					$connectionTables[$cn->value][] = JHTML::_('select.option','', "unable to connect to $cn->description");
-				} else {
-					if ($fabrikDb->getErrorNum() == 0) {
+				}
+				else
+				{
+					if ($fabrikDb->getErrorNum() == 0)
+					{
 						$tables = $fabrikDb->getTableList();
 						$connectionTables[$cn->value][] = JHTML::_('select.option', '', '- Please select -');
-						if (is_array($tables)) {
-							foreach ($tables as $table) {
+						if (is_array($tables))
+						{
+							foreach ($tables as $table)
+							{
 								$connectionTables[$cn->value][] = JHTML::_('select.option',$table, $table);
 							}
 						}
-					} else {
+					}
+					else
+					{
 						$connectionTables[$cn->value][] = JHTML::_('select.option','', "unable to connect to $cn->description");
 					}
 				}
@@ -377,19 +421,23 @@ class FabrikFEModelConnection extends JModel {
 		$cn = $this->getConnection();
 		$fabrikDb = $this->getDb();
 		$tables = $fabrikDb->getTableList();
-		if (is_array($tables)) {
-			if ($addBlank) {
+		if (is_array($tables))
+		{
+			if ($addBlank)
+			{
 				$tables = array_merge(array(""), $tables);
 			}
 			return $tables;
-		} else {
+		}
+		else
+		{	
 			return array();
 		}
 	}
 
 	/**
 	 * tests if you can connect to the connection
-	 * @return bol true if connection made otherwise false
+	 * @return	bool	true if connection made otherwise false
 	 */
 
 	function testConnection()
@@ -404,15 +452,16 @@ class FabrikFEModelConnection extends JModel {
 
 	function &loadDefaultConnection()
 	{
-		if (!$this->_defaultConnection) {
+		if (!$this->defaultConnection)
+		{
 			// $$$ rob connections are pooled for all packages - each package should use
 			// jos_fabrik_connections and not jos_{package}_connections
 			$row = FabTable::getInstance('Connection', 'FabrikTable');
 			$row->load(array('default'=> 1));
-			$this->_defaultConnection = $row;
+			$this->defaultConnection = $row;
 		}
-		$this->_connection = $this->_defaultConnection;
-		return $this->_defaultConnection;
+		$this->connection = $this->defaultConnection;
+		return $this->defaultConnection;
 	}
 }
 

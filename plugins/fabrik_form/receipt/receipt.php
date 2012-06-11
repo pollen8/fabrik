@@ -111,14 +111,16 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 
 		$subject =  html_entity_decode($params->get('receipt_subject', ''));
 		$subject = $w->parseMessageForPlaceHolder($subject, null, false);
-		$from 		= $config->getValue('mailfrom');
-		$fromname = $config->getValue('fromname');
+		$from 		= $config->get('mailfrom');
+		$fromname = $config->get('fromname');
 		//darn silly hack for poor joomfish settings where lang parameters are set to overide joomla global config but not mail translations entered
 		$rawconfig = new JConfig();
-		if ($from === '') {
+		if ($from === '')
+		{
 			$from = $rawconfig->mailfrom;
 		}
-		if ($fromname === '') {
+		if ($fromname === '')
+		{
 			$fromname= $rawconfig->fromname;
 		}
 		$res = JUTility::sendMail( $from, $fromname, $to, $subject, $message, true);

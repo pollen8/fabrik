@@ -270,7 +270,7 @@ class plgContentFabrik extends JPlugin
 				return;
 			}
 			$model->setId($id);
-			$model->_editable = false;
+			$model->editable = false;
 			$form = $model->getForm();
 			$listModel = $model->getListModel();
 			$table = $listModel->getTable();
@@ -325,7 +325,7 @@ class plgContentFabrik extends JPlugin
 			// $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
 			// not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
 			$activeEl->getFormModel()->_data = $defaultdata;
-			$activeEl->_editable = false;
+			$activeEl->editable = false;
 			//set row id for things like user element
 			$origRowid = JRequest::getVar('rowid');
 			JRequest::setVar('rowid', $rowid);

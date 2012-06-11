@@ -17,35 +17,36 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 
-	var $_recordInDatabase = false;
+	protected $recordInDatabase = false;
 
 	function getLabel($repeatCounter, $tmpl = '')
 	{
 		return '';
 	}
 
-	function setIsRecordedInDatabase() {
-		$this->_recordInDatabase = false;
+	function setIsRecordedInDatabase()
+	{
+		$this->recordInDatabase = false;
 	}
 
 	/**
 	 * draws a field element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * @param	int		repeat group counter
+	 * @return	string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id	= $this->getHTMLId($repeatCounter);
-		$oDate = JFactory::getDate();
+		$date = JFactory::getDate();
 		$config = JFactory::getConfig();
-		$tzoffset = $config->getValue('config.offset');
-		$oDate->setOffset($tzoffset);
+		$tz = DateTimeZone($config->get('offset'));
+		$date->setTimezone($tz);
 		$params = $this->getParams();
 		$gmt_or_local = $params->get('gmt_or_local');
 		$gmt_or_local += 0;
-		return '<input name="'.$name.'" id="'.$id.'" type="hidden" value="' . $oDate->toMySQL($gmt_or_local) .'" />';
+		return '<input name="' . $name . '" id="' . $id . '" type="hidden" value="' . $date->toSql($gmt_or_local) . '" />';
 	}
 
 	/**

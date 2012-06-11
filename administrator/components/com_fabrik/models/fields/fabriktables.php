@@ -40,8 +40,6 @@ class JFormFieldFabrikTables extends JFormFieldList
 	*/
 	var	$_name = 'Fabriktables';
 
-	var $_array_counter = null;
-
 	static $fabriktables;
 
 	function getOptions()

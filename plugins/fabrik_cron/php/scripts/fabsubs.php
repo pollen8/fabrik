@@ -33,12 +33,10 @@ $expiration_mails = $db->loadObjectList('emailday');
 
 
 $config = JFactory::getConfig();
-$sitename = $config->getValue('sitename');
-$mailfrom = $config->getValue('mailfrom');
-$fromname = $config->getValue('fromname');
+$sitename = $config->get('sitename');
+$mailfrom = $config->get('mailfrom');
+$fromname = $config->get('fromname');
 $url = str_replace('/administrator', '', JURI::base());
-
-
 
 	$db->setQuery("SELECT s.id AS subid, p.id AS planid, p.duration, plan_name AS subscription, p.period_unit, username, email, u.name, userid,
 signup_date, '$sitename' AS sitename, '$mailfrom' AS mailfrom, '$url' AS url, '$fromname' AS fromname, s.recurring,

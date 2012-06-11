@@ -80,13 +80,14 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 			= $this->getHTMLName($repeatCounter);
-		$id 				= $this->getHTMLId($repeatCounter);
-		$params 		=& $this->getParams();
-		$element 		= $this->getElement();
-		$size 			= $element->width;
-		$maxlength  = $params->get('maxlength');
-		if ($maxlength == "0" or $maxlength == "") {
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$size = $element->width;
+		$maxlength = $params->get('maxlength');
+		if ($maxlength == "0" or $maxlength == "")
+		{
 			$maxlength = $size;
 		}
 		$bits = array();
@@ -94,22 +95,26 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 		//but in table view when getting read only filter value from url filter this
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
-		if (is_array($this->_form->_data)) {
-			$data 	=& $this->_form->_data;
+		$formModel = $this->getFormModel();
+		if (is_array($formModel->_data))
+		{
+			$data = $formModel->_data;
 		}
 		$value 	= $this->getValue($data, $repeatCounter);
 		$type = "text";
-		if (isset($this->_elementError) && $this->_elementError != '') {
+		if ($this->elementError != '')
+		{
 			$type .= " elementErrorHighlight";
 		}
-		if ($element->hidden == '1') {
+		if ($element->hidden == '1')
+		{
 			$type = "hidden";
 		}
-		if (!$this->_editable) {
+		if (!$this->editable)
+		{
 			$value = $this->format($value);
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
-
 		$bits['class']		= "fabrikinput inputbox $type";
 		$bits['type']		= $type;
 		$bits['name']		= $name;

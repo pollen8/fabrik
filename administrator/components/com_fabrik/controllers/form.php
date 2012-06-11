@@ -71,7 +71,7 @@ class FabrikControllerForm extends JControllerForm
 
 		$this->isMambot = JRequest::getVar('_isMambot', 0);
 		$model->getForm();
-		$model->_rowId = JRequest::getVar('rowid', '');
+		$model->rowId = JRequest::getVar('rowid', '');
 
 		// Check for request forgeries
 		if ($model->spoofCheck())
@@ -94,7 +94,7 @@ class FabrikControllerForm extends JControllerForm
 			}
 			else
 			{
-				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=' . $model->getId() . '&rowid=' . $model->_rowId, '');
+				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=' . $model->getId() . '&rowid=' . $model->rowId, '');
 			}
 			return;
 		}
@@ -105,7 +105,7 @@ class FabrikControllerForm extends JControllerForm
 		$defaultAction = $model->process();
 
 		//check if any plugin has created a new validation error
-		if (!empty($model->_arErrors))
+		if (!empty($model->errors))
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();

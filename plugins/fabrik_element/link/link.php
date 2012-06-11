@@ -137,7 +137,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
-		if (!$this->_editable)
+		if (!$this->editable)
 		{
 			$_lbl = trim($value['label']);
 			$_lnk = trim($value['link']);
@@ -181,29 +181,31 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param mixed element's data
-	 * @return string formatted value
+	 * @param	mixed	element's data
+	 * @return	string	formatted value
 	 */
 
-	protected function _getEmailValue($value)
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if (is_string($value)) {
+		if (is_string($value))
+		{
 			$value = FabrikWorker::JSONtoData($value, true);
 			$value['label'] = JArrayHelper::getValue($value, 0);
 			$value['link'] = JArrayHelper::getValue($value, 1);
 		}
-		if (is_array($value)) {
+		if (is_array($value))
+		{
 			$w = new FabrikWorker();
 			$link 	= $w->parseMessageForPlaceHolder($value['link']);
-			$value = '<a href="'.$link.'" >'.$value['label'].'</a>';
+			$value = '<a href="' . $link . '" >' . $value['label'] . '</a>';
 		}
 		return $value;
 	}
 
 	/**
 	 * manupulates posted form data for insertion into database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+	 * @param	mixed	thie elements posted form data
+	 * @param	array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -214,38 +216,48 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$return = '';
 		$params = $this->getParams();
 		if (is_array($val)) {
-			if ($params->get('use_bitly')) {
-				require_once(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'libs'.DS.'bitly'.DS.'bitly.php');
+			if ($params->get('use_bitly'))
+			{
+				require_once(JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php');
 				$login = $params->get('bitly_login');
 				$key = $params->get('bitly_apikey');
 				$bitly = new bitly($login, $key);
 			}
-			foreach ($val as $key => &$v) {
-				if (is_array($v)) {
-
-					if ($params->get('use_bitly')) {
+			foreach ($val as $key => &$v)
+			{
+				if (is_array($v))
+				{
+					if ($params->get('use_bitly'))
+					{
 						// bitly will return an error if you try and shorten a shortened link,
 						// and the class file we are using doesn't check for this
-						if (!strstr($v['link'],'bit.ly/') && $v['link'] !== '') {
+						if (!strstr($v['link'],'bit.ly/') && $v['link'] !== '')
+						{
 							$v['link'] = $bitly->shorten($v['link']);
 						}
 					}
 					/*$return .= implode(GROUPSPLITTER2, $v);
 					$return .= GROUPSPLITTER;*/
-
-				} else {
-					if ($key == 'link') {
+				}
+				else
+				{
+					if ($key == 'link')
+					{
 						$v = FabrikString::encodeurl($v);
 					}
 					// not in repeat group
-					if($key == 'link' && $params->get('use_bitly')) {
-						if (!strstr($v,'bit.ly/') && $v !== '') {
+					if($key == 'link' && $params->get('use_bitly'))
+					{
+						if (!strstr($v,'bit.ly/') && $v !== '')
+						{
 							$v = $bitly->shorten($v);
 						}
 					}
 				}
 			}
-		} else {
+		}
+		else
+		{
 			if (json_decode($val))
 			{
 				return $val;
@@ -258,7 +270,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * @return	string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -267,7 +279,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$params = $this->getParams();
 		$target = $params->get('link_target', '');
 		$smart_link = $params->get('link_smart_link', false);
-		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox')) {
+		if ($listModel->getOutPutFormat() != 'rss' && ($smart_link || $target == 'mediabox'))
+		{
 			FabrikHelperHTML::slimbox();
 		}
 		$id = $this->getHTMLId($repeatCounter);
@@ -289,7 +302,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		$data = (array)json_decode($this->getValue($data, $c, true));
 		$name = $this->getFullName(false, true, false);
 		$group = $this->getGroup();
-		if ($group->canRepeat()) {
+		if ($group->canRepeat())
+		{
 			// $$$ rob - I've not actually tested this bit!
 			if (!array_key_exists($name, $values)) {
 				$values[$name]['data']['label'] = array();
@@ -297,21 +311,23 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			}
 			$values[$name]['data']['label'][$c] = $data[0];
 			$values[$name]['data']['link'][$c] = $data[1];
-		} else {
+		}
+		else
+		{
 			$values[$name]['data']['label'] = $data[0];
 			$values[$name]['data']['link'] = $data[1];
 		}
 	}
 
 	/**
-	 * this really does get just the default value (as defined in the element's settings)
-	 * @param array data to use as parsemessage for placeholder
-	 * @return unknown}_type
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getDefaultValue()
 	 */
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->default))
+		{
 			$w = new FabrikWorker();
 			$params = $this->getParams();
 			$link = $params->get('link_default_url');
@@ -320,17 +336,19 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			// $$$ rob only parse for place holder if we can use the element
 			// otherwise for encrypted values store raw, and they are parsed when the
 			// form in processsed in form::addEncrytedVarsToArray();
-			if ($this->canUse()) {
+			if ($this->canUse())
+			{
 				$link = $w->parseMessageForPlaceHolder($link, $data);
 			}
 			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->default, $data);
-			if ($element->eval == "1") {
+			if ($element->eval == "1")
+			{
 				$default = @eval(stripslashes($default));
 			}
-			$this->_default = array('label'=>$default, 'link'=>$link);
+			$this->default = array('label' => $default, 'link' => $link);
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	/**
@@ -344,10 +362,12 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		if (!isset($this->defaults)) {
+		if (!isset($this->defaults))
+		{
 			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults)) {
+		if (!array_key_exists($repeatCounter, $this->defaults))
+		{
 			$groupModel = $this->getGroup();
 			$group = $groupModel->getGroup();
 			$joinid = $group->join_id;
@@ -355,32 +375,39 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			$element = $this->getElement();
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
-				$default = '';
-			} else {
-				$default = $this->getDefaultValue($data);
-			}
-
+			$default = array_key_exists('use_default', $opts) && $opts['use_default'] == false ? '' : $this->getDefaultValue($data);
 			$name = $this->getFullName(false, true, false);
-
-			if ($groupModel->isJoin()) {
-				if ($groupModel->canRepeat()) {
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+			if ($groupModel->isJoin())
+			{
+				if ($groupModel->canRepeat())
+				{
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+					{
 						$default = $data['join'][$joinid][$name][$repeatCounter];
 					}
-				} else {
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid])) {
+				}
+				else
+				{
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]))
+					{
 						$default = $data['join'][$joinid][$name];
 					}
 				}
-			} else {
-				if ($groupModel->canRepeat()) {
+			}
+			else
+			{
+				if ($groupModel->canRepeat())
+				{
 					//repeat group NO join
-					if (array_key_exists($name, $data)) {
-						if (is_array($data[$name])) {
+					if (array_key_exists($name, $data))
+					{
+						if (is_array($data[$name]))
+						{
 							//occurs on form submission for fields at least
 							$a = $data[$name];
-						} else {
+						}
+						else
+						{
 							//occurs when getting from the db
 							$a = json_decode($data[$name]);
 						}

@@ -50,7 +50,6 @@ $db->setQuery($query);
 if (count($db->loadResult()) === 0) {
 	JError::raiseNotice(E_WARNING, JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'));
 }
-//echo '<pre>';print_r($controller);
 $controller->execute(JRequest::getCmd('task', 'home.display'));
 $controller->redirect();
 ?>

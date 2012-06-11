@@ -14,15 +14,6 @@ jimport('joomla.application.component.view');
 class fabrikViewEmailform extends JView
 {
 
-	var $_template = null;
-	var $_errors = null;
-	var $_data = null;
-	var $_rowId = null;
-	var $_params = null;
-	var $isMambot = null;
-
-	var $_id = null;
-
 	function display()
 	{
 		$srcs = FabrikHelperHTML::framework();
@@ -98,7 +89,7 @@ class fabrikViewEmailform extends JView
 		}
 
 		$config = JFactory::getConfig();
-		$sitename = $config->getValue('sitename');
+		$sitename = $config->get('sitename');
 		// link sent in email
 
 		$link = JRequest::getVar('referrer');

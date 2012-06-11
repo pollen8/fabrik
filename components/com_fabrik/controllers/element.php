@@ -46,7 +46,7 @@ class FabrikControllerElement extends JController
 
 		// $$$ rob 04/06/2011 don't assign a model to the element as its only a plugin
 
-		$view->_editable = ($this->mode == 'readonly') ? false : true;
+		$view->editable = ($this->mode == 'readonly') ? false : true;
 
 		// Display the view
 		$view->assign('error', $this->getError());

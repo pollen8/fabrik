@@ -33,7 +33,7 @@ class JFormFieldListfields extends JFormFieldList
 	var	$_name = 'Listfields';
 
 	/** @var array objects resulting from this elements queries - keyed on idetifying hash */
-	var $results = null;
+	protected $results = null;
 
 
 	function getInput()

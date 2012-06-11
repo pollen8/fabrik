@@ -133,8 +133,9 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$element = $this->getElement();
 
 		$value = $this->getValue($data, $repeatCounter);
-		$type = ($params->get('password') == "1" ) ?"password" : "text";
-		if (isset($this->_elementError) && $this->_elementError != '') {
+		$type = ($params->get('password') == "1" ) ? "password" : "text";
+		if ($this->elementError != '')
+		{
 			$type .= " elementErrorHighlight";
 		}
 		$imagepath = COM_FABRIK_LIVESITE.'/plugins/fabrik_element/thumbs/images/';
@@ -242,9 +243,9 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 	{
 		$db = FabrikWorker::getDbo();
 		$config = JFactory::getConfig();
-		$tzoffset = $config->getValue('config.offset');
+		$tzoffset = $config->get('offset');
 		$date = JFactory::getDate('now', $tzoffset);
-		$strDate = $db->quote($date->toMySQL());
+		$strDate = $db->quote($date->toSql());
 
 		$user = JFactory::getUser();
 		$userid = (int) $user->get('id');
@@ -300,27 +301,26 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
-		if (JRequest::getVar('view') == 'form') {
+		if (JRequest::getVar('view') == 'form')
+		{
 			return;
 		}
-		$id 			= $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$data 		=& $this->_form->_data;
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$data = $this->getFormModel()->_data;
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
 		$value = $this->getValue($data, $repeatCounter);
-
 		$opts = new stdClass();
-		$opts->row_id 		= JRequest::getInt('rowid');
-		$opts->myThumb 		= $this->_getMyThumb($listid, $formid, $row_id);
-		$opts->elid 		= $this->getElement()->id;
-		$opts->userid 		= (int) $user->get('id');
-		$opts->mode		= $params->get('rating-mode');
-		$opts->view		= JRequest::getCmd('view');
+		$opts->row_id = JRequest::getInt('rowid');
+		$opts->myThumb = $this->_getMyThumb($listid, $formid, $row_id);
+		$opts->elid = $this->getElement()->id;
+		$opts->userid = (int) $user->get('id');
+		$opts->mode = $params->get('rating-mode');
+		$opts->view = JRequest::getCmd('view');
 		$opts->listid = $listid;
-		$opts 			= json_encode($opts);
-
+		$opts = json_encode($opts);
 		$lang = new stdClass();
 		$lang->norating = JText::_('NO RATING');
 		$lang = json_encode($lang);

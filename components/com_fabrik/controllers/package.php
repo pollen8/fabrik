@@ -38,7 +38,7 @@ class FabrikControllerPackage extends JController
 		$tableView->setModel($listModel, true);
 		$view->_tableView = $tableView;
 
-		$view->_formView = &$this->getView('Form', $viewType);
+		$view->_formView = $this->getView('Form', $viewType);
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$formModel->setDbo(FabrikWorker::getDbo());
 		$view->_formView->setModel($formModel, true);

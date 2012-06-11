@@ -16,8 +16,6 @@ class fabrikViewForm extends JView
 
 	public $isMambot = null;
 
-	var $repeatableJoinGroupCount = 0;
-
 	public $access = null;
 
 	/**
@@ -53,7 +51,7 @@ class fabrikViewForm extends JView
 				return false;
 			}
 		}
-		$this->assign('rowid', $model->_rowId);
+		$this->assign('rowid', $model->rowId);
 		$this->assign('access', $model->checkAccessFromListSettings());
 		if ($this->access == 0)
 		{
@@ -71,14 +69,13 @@ class fabrikViewForm extends JView
 		$params->def('icons', $app->getCfg('icons'));
 		$params->set('popup', (JRequest::getVar('tmpl') == 'component') ? 1 : 0);
 
-		$this->editable = $model->_editable;
+		$this->editable = $model->editable;
 
 		$form->label = $this->get('label');
 		$form->intro = $this->get('Intro');
 		$form->action = $this->get('Action');
-		$form->formid = $model->_editable ? "form_".$model->getId() : 'details_' . $model->getId();
+		$form->formid = $model->editable ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
-
 		if ($form->error === '')
 		{
 			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
@@ -113,7 +110,7 @@ class fabrikViewForm extends JView
 		$this->_loadTmplBottom($form);
 		JDEBUG ? $profiler->mark('form view: after tmpl bottom loaded') : null;
 
-		if ($model->_editable)
+		if ($model->editable)
 		{
 			$form->startTag = '<form action="' . $form->action . '" class="fabrikForm" method="post" name="' . $form->name . '" id="' . $form->formid . '" enctype="' . $model->getFormEncType() . '">';
 			$form->endTag = '</form>';
@@ -142,7 +139,7 @@ class fabrikViewForm extends JView
 
 		JDEBUG ? $profiler->mark('form view before template load') : null;
 		$text = $this->loadTemplate();
-		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->_editable === false))
+		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->editable === false))
 		{
 			$opt = JRequest::getVar('option');
 			JRequest::setVar('option', 'com_content');
@@ -260,12 +257,12 @@ class fabrikViewForm extends JView
 			}
 			if ($this->showPrint)
 			{
-				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->_rowId);
+				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->rowId);
 			}
 			$this->showPDF = $params->get('pdf', 0);
 			if ($this->showPDF)
 			{
-				$this->pdfLink = FabrikHelperHTML::pdfIcon($model, $params, $model->_rowId);
+				$this->pdfLink = FabrikHelperHTML::pdfIcon($model, $params, $model->rowId);
 			}
 		}
 		else
@@ -287,7 +284,7 @@ class fabrikViewForm extends JView
 
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
-		$jsControllerKey = $model->_editable ? 'form_'. $model->getId() : 'details_'. $model->getId();
+		$jsControllerKey = $model->editable ? 'form_'. $model->getId() : 'details_'. $model->getId();
 
 		$srcs = FabrikHelperHTML::framework();
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
@@ -347,7 +344,7 @@ class fabrikViewForm extends JView
 		$form = $model->getForm();
 		FabrikHelperHTML::mocha();
 
-		$bkey = $model->_editable ? 'form_' . $model->getId() : 'details_' . $model->getId();
+		$bkey = $model->editable ? 'form_' . $model->getId() : 'details_' . $model->getId();
 
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
@@ -375,11 +372,11 @@ class fabrikViewForm extends JView
 		$opts->pages = $model->getPages();
 		$opts->plugins = array();
 		$opts->multipage_save = (int) $model->saveMultiPage();
-		$opts->editable = $model->_editable;
+		$opts->editable = $model->editable;
 		$opts->start_page = $start_page;
 		$opts->inlineMessage = (bool) $this->isMambot;
 		//$$$rob dont int this as keys may be string
-		$opts->rowid = (string) $model->_rowId;
+		$opts->rowid = (string) $model->rowId;
 		//3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
@@ -455,7 +452,7 @@ class fabrikViewForm extends JView
 		foreach ($groups as $groupModel)
 		{
 			$showGroup = $groupModel->getParams()->get('repeat_group_show_first');
-			if ($showGroup == -1 || ($showGroup == 2 && $model->_editable))
+			if ($showGroup == -1 || ($showGroup == 2 && $model->editable))
 			{
 				// $$$ rob unpublished group so dont include the element js
 				continue;
@@ -473,11 +470,11 @@ class fabrikViewForm extends JView
 				}
 				$fullName = $elementModel->getFullName();
 				$id = $elementModel->getHTMLId();
-				$elementModel->_editable = ($model->_editable);
+				$elementModel->editable = ($model->editable);
 
 				// if the view is a form then we should always add the js as long as the element is editable or viewable
 				// if the view is details then we should only add hte js if the element is viewable.
-				if (($elementModel->canUse() && $model->_editable) || $elementModel->canView())
+				if (($elementModel->canUse() && $model->editable) || $elementModel->canView())
 				{
 					for ($c = 0; $c < $max; $c ++)
 					{
@@ -488,7 +485,7 @@ class fabrikViewForm extends JView
 							$aObjs[] = $ref;
 						}
 						$validations = $elementModel->getValidations();
-						if (!empty($validations) && $elementModel->_editable)
+						if (!empty($validations) && $elementModel->editable)
 						{
 							$watchElements = $elementModel->getValidationWatchElements($c);
 							foreach ($watchElements as $watchElement)
@@ -570,7 +567,7 @@ class fabrikViewForm extends JView
 		// $$$rob - if returning from a failed validation then we should use the fabrik_referrer post var
 		$reffer =str_replace('&', '&amp;',  JRequest::getVar('fabrik_referrer', $reffer));
 
-		$this_rowid = is_array($model->_rowId)? implode('|', $model->_rowId) : $model->_rowId;
+		$this_rowid = is_array($model->rowId)? implode('|', $model->rowId) : $model->rowId;
 		$fields = array('<input type="hidden" name="listid" value="' . $listModel->getId() . '" />',
 		'<input type="hidden" name="listref" value="' . $listModel->getId() . '" />',
 		'<input type="hidden" name="rowid" value="' . $this_rowid . '" />',
@@ -617,12 +614,12 @@ class fabrikViewForm extends JView
 		$fields[] = JHTML::_('form.token');
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1" ?	'<input type="reset" class="button" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
-		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->_rowId != '' ?	'<input type="submit" class="button" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
+		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->rowId != '' ?	'<input type="submit" class="button" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable ? '<input type="' . $applyButtonType . '" class="button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0 ? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="button" name="delete" />' : '';
 		$form->gobackButton = $params->get('goback_button', 0) == "1" ?	'<input type="button" class="button" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label') . '" />' : '';
-		if ($model->_editable && $params->get('submit_button', 1))
+		if ($model->editable && $params->get('submit_button', 1))
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);

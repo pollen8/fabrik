@@ -78,11 +78,11 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 		$firstNameKey = $formModel->getElement($params->get('mailchimp_firstname'), true)->getFullName();
 		if ($params->get('mailchimp_lastname') !== '') {
 			$lastNameKey = $formModel->getElement($params->get('mailchimp_lastname'), true)->getFullName();
-			$lname = $formModel->_formDataWithTableName[$lastNameKey];
+			$lname = $formModel->formDataWithTableName[$lastNameKey];
 			$opts['LNAME'] = $lname;
 		}
-		$email = $formModel->_formDataWithTableName[$emailKey];
-		$fname = $formModel->_formDataWithTableName[$firstNameKey];
+		$email = $formModel->formDataWithTableName[$emailKey];
+		$fname = $formModel->formDataWithTableName[$firstNameKey];
 
 		$opts['FNAME'] = $fname;
 
@@ -109,7 +109,7 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 		$updateExisting = (bool)$params->get('mailchimp_update_existing');
 		$retval = $api->listSubscribe($listId, $email, $opts, $emailType, $doubleOptin, $updateExisting);
 		if ($api->errorCode) {
-			$formModel->_arErrors['mailchimp_error'] = true;
+			$formModel->errors['mailchimp_error'] = true;
 			JError::raiseNotice(500, $api->errorCode.':'.$api->errorMessage);
 			return false;
 		} else {

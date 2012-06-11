@@ -14,8 +14,6 @@ require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListEmail extends plgFabrik_List {
 
-	var $useMocha = true;
-
 	protected $buttonPrefix = 'email';
 
 	var $name = "plgFabrik_ListEmail";
@@ -26,9 +24,9 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	/**
 	 * determine if the list plugin is a button and can be activated only when rows are selected
-	 *
 	 * @return	bool
 	 */
+	
 	function canSelectRows()
 	{
 		return $this->canUse();
@@ -69,7 +67,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	function getToField()
 	{
-		$this->_id = JRequest::getInt('id');
+		$this->id = JRequest::getInt('id');
 		$params = $this->getParams();
 		$renderOrder = JRequest::getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type');
@@ -179,7 +177,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 				{
 					continue;
 				}
-				$path = $folder.DS.strtolower($name);
+				$path = $folder . '/' . strtolower($name);
 				if (!JFile::upload($files['tmp_name'][$c], $path))
 				{
 					JError::raiseWarning(100, JText::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
@@ -227,11 +225,11 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		}
 		else
 		{
-			$from = $config->getValue('mailfrom');
-			$fromname = $config->getValue('fromname');
+			$from = $config->get('mailfrom');
+			$fromname = $config->get('fromname');
 		}
 
-		$email_from = $config->getValue('mailfrom');
+		$email_from = $config->get('mailfrom');
 		$cc = null;
 		$bcc = null;
 		$sent = 0;

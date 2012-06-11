@@ -15,11 +15,11 @@ jimport('joomla.application.component.view');
 class FabrikViewElement extends JView
 {
 
-	var $_id = null;
+	var $id = null;
 
 	function setId($id)
 	{
-		$this->_id = $id;
+		$this->id = $id;
 	}
 
 	/**

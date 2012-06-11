@@ -19,10 +19,10 @@ class FabrikViewList extends JView{
 		$exporter = JModel::getInstance('Csvexport', 'FabrikFEModel');
 		$model = JModel::getInstance('list', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
-		$model->set('_outPutFormat', 'csv');
+		$model->setOutPutFormat('csv');
 		$exporter->model = $model;
-		JRequest::setVar('limitstart'.$model->getId(), JRequest::getInt('start', 0));
-		JRequest::setVar('limit'.$model->getId(), $exporter->_getStep());
+		JRequest::setVar('limitstart' . $model->getId(), JRequest::getInt('start', 0));
+		JRequest::setVar('limit' . $model->getId(), $exporter->getStep());
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
 		// the table total
@@ -34,17 +34,21 @@ class FabrikViewList extends JView{
 		
 		$total = $model->getTotalRecords();
 
-		$key = 'fabrik.table.'.$model->getId().'csv.total';
-		if (is_null($session->get($key))) {
+		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
+		if (is_null($session->get($key)))
+		{
 			$session->set($key, $total);
 		}
 
 		$start = JRequest::getInt('start', 0);
 		//echo "<!-- $start <= $total -->";
-		if ($start <= $total) {
+		if ($start <= $total)
+		{
 			$exporter->writeFile($total);
-		} else {
-			JRequest::setVar('limitstart'.$model->getId(), 0);
+		}
+		else
+		{
+			JRequest::setVar('limitstart' . $model->getId(), 0);
 			$session->clear($key);
 			$exporter->downloadFile();
 		}

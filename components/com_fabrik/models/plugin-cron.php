@@ -41,10 +41,11 @@ class plgFabrik_Cron extends FabrikPlugin
 	
 	/**
 	* whether cron should automagically load table data
-	* @return bool
+	* @return	bool
 	*/
 	
-	public function requiresTableData() {
+	public function requiresTableData()
+	{
 		return true;
 	}
 	
@@ -63,13 +64,14 @@ class plgFabrik_Cron extends FabrikPlugin
 	* the methods here for now
 	* deterimes if the cron plug-in should be run - if require_qs is true
 	* then fabrik_cron=1 needs to be in the querystring
-	* @return bool
+	* @return	bool
 	*/
 	
 	public function queryStringActivated()
 	{
 		$params = $this->getParams();
-		if (!$params->get('require_qs', false)) {
+		if (!$params->get('require_qs', false))
+		{
 			// querystring not required so plugin should be activated
 			return true;
 		}

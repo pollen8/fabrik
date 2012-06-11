@@ -113,7 +113,7 @@ class FabrikModelHome extends JModelAdmin
 		$group = $this->getTable('Group');
 		$config = JFactory::getConfig();
 
-		$dbTableName = $config->getValue('dbprefix') . "fb_contact_sample";
+		$dbTableName = $config->get('dbprefix') . "fb_contact_sample";
 		echo "<div style='text-align:left;border:1px dotted #cccccc;padding:10px;'>" .
 		"<h3>Installing data...</h3><ol>";
 
@@ -203,7 +203,7 @@ class FabrikModelHome extends JModelAdmin
 		}
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($form->id);
-		$formModel->_form = $form;
+		$formModel->form = $form;
 
 		$listModel->setState('list.id', $list->id);
 		$listModel->getItem();

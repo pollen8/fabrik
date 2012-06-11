@@ -128,14 +128,15 @@ class FabrikViewCron {
 					</td>
 				</tr>
 				<?php
-					foreach ($pluginManager->_plugIns['cron'] as $oPlugin)
+					$plugins = $pluginManager->getPlugInGroup('cron');
+					foreach ($plugins as $plugin)
 					{
-						$oPlugin->setId($row->id);
+						$plugin->setId($row->id);
 						?>
 					<tr>
 					<td colspan="2">
 						<?php
-						$oPlugin->renderAdminSettings();
+						$plugin->renderAdminSettings();
 						?>
 						</td>
 					</tr>

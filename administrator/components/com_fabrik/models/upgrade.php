@@ -43,7 +43,7 @@ class FabrikModelUpgrade extends JModel
 			if (!array_key_exists($item->connection_id, $cnnTables)) {
 				$cnnTables[$item->connection_id] = $cDb->getTableList();
 			}
-			$listModel->set('_oConn', $connModel);
+			$listModel->set('connection', $connModel);
 			//drop the bkup table
 			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->quoteName('bkup_'.$item->db_table_name));
 			if (!$cDb->query()) {

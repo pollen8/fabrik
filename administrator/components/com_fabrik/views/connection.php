@@ -144,23 +144,24 @@ class FabrikViewConenction {
 	 * @param object connection
 	 */
 
-	function edit($row) {
+	function edit($row)
+	{
 		JHtml::_('behavior.framework');
 		FabrikViewConenction::setConnectionToolbar();
 		JRequest::setVar('hidemainmenu', 1);
-		$app =& JFactory::getApplication();
-		$config =& JFactory::getConfig();
-		if ($row->id == 1) {
-		  $app->enqueueMessage(JText::_('THIS IS THE ORIGINAL CONNECTION'));
-
-		  if (!($config->getValue('host') == $row->host && $config->getValue('user') == $row->user && $config->getValue('password') == $row->password && $config->getValue('db') == $row->database)) {
-		    JError::raiseWarning(E_WARNING, JText::_('YOUMUSTSAVETHISCNN'));
-		  }
-	    $row->host =$config->getValue('host');
-	    $row->user = $config->getValue('user');
-	    $row->password = $config->getValue('password');
-	    $row->database = $config->getValue('db');
-
+		$app = JFactory::getApplication();
+		$config = JFactory::getConfig();
+		if ($row->id == 1)
+		{
+			$app->enqueueMessage(JText::_('THIS IS THE ORIGINAL CONNECTION'));
+			if (!($config->get('host') == $row->host && $config->get('user') == $row->user && $config->get('password') == $row->password && $config->get('db') == $row->database))
+			{
+				JError::raiseWarning(E_WARNING, JText::_('YOUMUSTSAVETHISCNN'));
+			}
+			$row->host =$config->get('host');
+			$row->user = $config->get('user');
+			$row->password = $config->get('password');
+			$row->database = $config->get('db');
 		}
 		?>
 		<form action="index.php" method="post" name="adminForm">

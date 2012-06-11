@@ -38,7 +38,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
 		$arSelected = (array) $this->getValue($data, $repeatCounter);
-		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ?  " elementErrorHighlight" : '';
+		$errorCSS = $this->elementError != '' ?  " elementErrorHighlight" : '';
 		$attribs = 'class="picklistcontainer'.$errorCSS."\"";
 		$style = ".frompicklist, .topicklist{\n"
 		."background-color:#efefef;\n"
@@ -99,7 +99,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 		$str = "<div $attribs>$fromlist</div><div class='picklistcontainer'>$tolist</div>";
 		$str .=  $this->getHiddenField($name, json_encode($arSelected), $id);
-		if (!$this->_editable) {
+		if (!$this->editable) {
 			return implode(', ', $aRoValues);
 		}
 		$str .= $this->getAddOptionFields($repeatCounter);

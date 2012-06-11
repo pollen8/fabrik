@@ -14,34 +14,37 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 {
 
 	/**
-	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::render()
 	 */
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$params 	= $this->getParams();
-		$element 	= $this->getElement();
-		$value 		= $this->getValue($data, $repeatCounter);
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$value = $this->getValue($data, $repeatCounter);
 		$type = "hidden";
-		if (isset($this->_elementError) && $this->_elementError != '') {
-			$type .= " elementErrorHighlight";
+		if ($this->elementError != '')
+		{
+			$type .= ' elementErrorHighlight';
 		}
-		if (!$this->_editable) {
+		if (!$this->editable)
+		{
 			//as per http://fabrikar.com/forums/showthread.php?t=12867
 			//return "<!--" . stripslashes($value) . "-->";
-			return($element->hidden == '1') ? "<!-- " . stripslashes($value) . " -->" : stripslashes($value);
+			return ($element->hidden == '1') ? "<!-- " . stripslashes($value) . " -->" : stripslashes($value);
 		}
-		$hidden = 'hidden';
 		/* no need to eval here as its done before hand i think ! */
-		if ($element->eval == "1" and !isset($data[$name])) {
-			$str = "<input class=\"inputbox $type\" type=\"$hidden\" name=\"$name\" id=\"$id\" value=\"$value\" />\n";
-		} else {
+		if ($element->eval == "1" and !isset($data[$name]))
+		{
+			$str = $this->getHiddenField($name, $value, $id, 'inputbox fabrikinput ' . $type);
+		}
+		else
+		{
 			$value = stripslashes($value);
-			$str = "<input class=\"inputbox fabrikinput $type\" type=\"$hidden\" name=\"$name\" id=\"$id\" value=\"$value\" />\n";
+			$str = $this->getHiddenField($name, $value, $id, 'inputbox ' . $type);
 		}
 		return $str;
 	}
@@ -57,7 +60,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * @return	string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -80,7 +83,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 	
 	/**
 	 * load a new set of default properites and params for the element
-	 * @return object element (id = 0)
+	 * @return	object	element (id = 0)
 	 */
 	
 	public function getDefaultProperties()

@@ -229,7 +229,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$local = true;//$store_as_local;
 			$date = $oDate->toFormat($format, true);
 			$this->offsetDate = $oDate->toSql(true);
-			if (!$this->_editable)
+			if (!$this->editable)
 			{
 				$time = ($params->get('date_showtime', 0)) ? ' ' .$oDate->toFormat($timeformat, true) : '';
 				return $date.$time;
@@ -243,7 +243,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		else
 		{
-			if (!$this->_editable)
+			if (!$this->editable)
 			{
 				return '';
 			}
@@ -294,15 +294,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		jimport('joomla.utilities.date');
 		$params = $this->getParams();
-		$store_as_local = (bool)$params->get('date_store_as_local', false);
+		$store_as_local = (bool) $params->get('date_store_as_local', false);
 
 		$listModel = $this->getListModel();
 		// $$$ hugh - offset_tz of 1 means 'in MySQL format, GMT'
 		// $$$ hugh - offset_tz of 2 means 'in MySQL format, Local TZ'
-		if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '1') {
+		if ($listModel->importingCSV && $params->get('date_csv_offset_tz', '0') == '1')
+		{
 			return $val;
 		}
-		else if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '2') {
+		else if ($listModel->importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
+		{
 			return $this->toMySQLGMT(JFactory::getDate($val));
 		}
 
@@ -658,36 +660,43 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->default))
+		{
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
-			if ($params->get('date_defaulttotoday', 0)) {
-				if ($store_as_local) {
+			if ($params->get('date_defaulttotoday', 0))
+			{
+				if ($store_as_local)
+				{
 					$localDate = date('Y-m-d H:i:s');
 					$oTmpDate = JFactory::getDate(strtotime($localDate));
 				}
-				else {
+				else
+				{
 					$oTmpDate = JFactory::getDate();
 				}
-				$default = $oTmpDate->toMySQL();
+				$default = $oTmpDate->toSql();
 			}
-			else {
+			else
+			{
 				// deafult date should always be entered as gmt date e.g. eval'd default of:
 				$default = $element->default;
-				if ($element->eval == "1") {
+				if ($element->eval == "1")
+				{
 					$default = @eval(stripslashes($default));
 					FabrikWorker::logEval($default, 'Caught exception on eval in '.$element->name.'::getDefaultValue() : %s');
 				}
-				if (trim($default) != '') {
+				if (trim($default) != '')
+				{
 					$oTmpDate = JFactory::getDate($default);
-					$default = $oTmpDate->toMySQL();
+					$default = $oTmpDate->toSql();
 				}
 			}
-			$this->_default = $default;
+			$this->default = $default;
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	/**
@@ -1087,7 +1096,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 			}
 		}
-		$where = $listModel->_buildQueryPrefilterWhere($this);
+		$where = $listModel->buildQueryPrefilterWhere($this);
 		$elName = FabrikString::safeColName($elName);
 
 		//dont format here as the format string is different between mysql and php's calendar strftime
@@ -1233,7 +1242,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	public function onAutocomplete_options()
 	{
 		//needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->_id = JRequest::getInt('element_id');
+		$this->id = JRequest::getInt('element_id');
 		$this->getElement(true);
 		$listModel = $this->getListModel();
 		$table = $listModel->getTable();
@@ -1242,9 +1251,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$db->setQuery("SELECT DISTINCT($name) AS value, $name AS text FROM $table->db_table_name WHERE $name LIKE ".$db->quote('%'.addslashes(JRequest::getVar('value').'%')));
 		$tmp = $db->loadObjectList();
 		$ddData = array();
-		foreach ($tmp as &$t) {
+		foreach ($tmp as &$t)
+		{
 			$this->toLabel($t->text);
-			if (!array_key_exists($t->text, $ddData)) {
+			if (!array_key_exists($t->text, $ddData))
+			{
 				$ddData[$t->text] = $t;
 			}
 		}
@@ -1472,8 +1483,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	{
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
-		$joinSQL = $listModel->_buildQueryJoin();
-		$whereSQL = $listModel->_buildQueryWhere();
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 		return 'SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM ' . $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
@@ -1482,8 +1493,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	{
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
-		$joinSQL = $listModel->_buildQueryJoin();
-		$whereSQL = $listModel->_buildQueryWhere();
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
 		$name 	= $this->getFullName(false, false, false);
 		//$$$rob not actaully likely to work due to the query easily exceeding mySQL's TIMESTAMP_MAX_VALUE value but the query in itself is correct
 		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM ' . $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;

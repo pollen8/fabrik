@@ -25,10 +25,11 @@ jimport('joomla.html.pagination');
 
 class FPagination extends JPagination{
 
-	/** "var string action url */
+	/** @var string action url */
 	var $url = '';
 
-	var $_id = '';
+	/** @var int list id */
+	protected $id = '';
 
 	/** @bool show the total number of records found **/
 	var $showTotal = false;
@@ -41,7 +42,7 @@ class FPagination extends JPagination{
 
 	function setId($id)
 	{
-		$this->_id = $id;
+		$this->id = $id;
 	}
 
 	/**
@@ -98,25 +99,29 @@ class FPagination extends JPagination{
 		$limits = array();
 
 		$vals = array();
-		for ($i = 5; $i <= 30; $i += 5) {
+		for ($i = 5; $i <= 30; $i += 5)
+		{
 			$vals[] = $i;
 		}
 		$vals[] = 50;
 		$vals[] = 100;
 		
-		if (!in_array($this->startLimit, $vals)) {
+		if (!in_array($this->startLimit, $vals))
+		{
 			$vals[] = $this->startLimit;
 		}
 		asort($vals);
-		foreach ($vals as $v) {
+		foreach ($vals as $v)
+		{
 			$limits[] = JHTML::_('select.option', $v);
 		}
-		if ($this->showAllOption == true) {
+		if ($this->showAllOption == true)
+		{
 			$limits[] = JHTML::_('select.option', '0', JText::_('COM_FABRIK_ALL'));
 		}
 		$selected = $this->_viewall ? 0 : $this->limit;
 		$js = '';
-		$html = JHTML::_('select.genericlist', $limits, 'limit'.$this->_id, 'class="inputbox" size="1" onchange="'.$js.'"', 'value', 'text', $selected);
+		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, 'class="inputbox" size="1" onchange="' . $js . '"', 'value', 'text', $selected);
 		return $html;
 	}
 
@@ -127,7 +132,9 @@ class FPagination extends JPagination{
 		{
 			//return '<a title="' . $item->text . '" href="#" onclick="oTable.fabrikNav(' . $item->base . ');return false;">' . $item->text . '</a>';
 			return '<a href="' . $item->base . '" title="' .$item->text . '">' . $item->text . '</a>';
-		} else {
+		}
+		else
+		{
 			return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
 		}
 	}
@@ -144,7 +151,6 @@ class FPagination extends JPagination{
 	function getPagesLinks($listRef = 0, $tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
-
 		$lang = JFactory::getLanguage();
 
 		// Build the page navigation list
@@ -287,7 +293,7 @@ class FPagination extends JPagination{
 		$admin = $app->isAdmin();
  		// Initialize variables
 		$data = new stdClass();
-		$this->url = preg_replace("/limitstart{$this->_id}=(.*)?(&|)/", "", $this->url);
+		$this->url = preg_replace("/limitstart{$this->id}=(.*)?(&|)/", "", $this->url);
 		$this->url = FabrikString::rtrimword($this->url, "&");
 		// $$$ hugh - need to work out if we need & or ?
 		$sepchar = strstr($this->url,'?') ? '&amp;' : '?';
@@ -309,10 +315,10 @@ class FPagination extends JPagination{
 
 			//$page = $page == 0 ? '' : $page; //set the empty for removal from route
 			$data->start->base	= '0';
-			$data->start->link	= $admin ? "{$sepchar}limitstart{$this->_id}=0" : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=0");
+			$data->start->link	= $admin ? "{$sepchar}limitstart{$this->id}=0" : JRoute::_($this->url."{$sepchar}limitstart{$this->id}=0");
 
 			$data->previous->base	= $page;
-			$data->previous->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$page : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$page);
+			$data->previous->link	= $admin ? "{$sepchar}limitstart{$this->id}=".$page : JRoute::_($this->url."{$sepchar}limitstart{$this->id}=".$page);
 
 			$data->start->link = str_replace('resetfilters=1', '', $data->start->link);
 			$data->previous->link = str_replace('resetfilters=1', '', $data->previous->link);
@@ -330,9 +336,9 @@ class FPagination extends JPagination{
 			$end  = ($this->get('pages.total') -1) * $this->limit;
 
 			$data->next->base	= $next;
-			$data->next->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$next : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$next);
+			$data->next->link	= $admin ? "{$sepchar}limitstart{$this->id}=".$next : JRoute::_($this->url."{$sepchar}limitstart{$this->id}=".$next);
 			$data->end->base	= $end;
-			$data->end->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$end : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$end);
+			$data->end->link	= $admin ? "{$sepchar}limitstart{$this->id}=".$end : JRoute::_($this->url."{$sepchar}limitstart{$this->id}=".$end);
 
 			$data->next->link = str_replace('resetfilters=1', '', $data->next->link);
 			$data->end->link = str_replace('resetfilters=1', '', $data->end->link);
@@ -352,7 +358,7 @@ class FPagination extends JPagination{
 			if ($i != $this->get('pages.current') || $this->_viewall)
 			{
 				$data->pages[$i]->base	= $offset;
-				$data->pages[$i]->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$offset : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$offset);
+				$data->pages[$i]->link	= $admin ? "{$sepchar}limitstart{$this->id}=".$offset : JRoute::_($this->url."{$sepchar}limitstart{$this->id}=".$offset);
 				$data->pages[$i]->link = str_replace('resetfilters=1', '', $data->pages[$i]->link);
 				$data->pages[$i]->link = str_replace('clearordering=1', '', $data->pages[$i]->link);
 			}
@@ -369,7 +375,7 @@ class FPagination extends JPagination{
 		$html[] = '<div class="limit">' . $limitLabel . $list['limitfield'] . '</div>';
 		$html[] = $list['pageslinks'];
 		$html[] = '<div class="counter">' . $list['pagescounter'] . '</div>';
-		$html[] = '<input type="hidden" name="limitstart' . $this->_id . '" id="limitstart' . $this->_id . '" value="' . $list['limitstart'] . '" />';
+		$html[] = '<input type="hidden" name="limitstart' . $this->id . '" id="limitstart' . $this->id . '" value="' . $list['limitstart'] . '" />';
 		$html[] = '</div>';
 		return implode("\n", $html);
 	}

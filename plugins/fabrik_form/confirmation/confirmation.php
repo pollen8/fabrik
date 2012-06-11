@@ -56,17 +56,20 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 
 	function onBeforeStore(&$params, &$formModel)
 	{
-		if (JRequest::getInt('fabrik_ignorevalidation') === 1 || JRequest::getInt('fabrik_ajax') === 1) {
+		if (JRequest::getInt('fabrik_ignorevalidation') === 1 || JRequest::getInt('fabrik_ajax') === 1)
+		{
 			//saving via inline edit - dont want to confirm
 			return true;
 		}
 		$this->runAway = false;
 		$this->data = $formModel->_formData;
-		if (!$this->shouldProcess('confirmation_condition')) {
+		if (!$this->shouldProcess('confirmation_condition'))
+		{
 			$this->clearSession($formModel->getId());
 			return true;
 		}
-		if (JRequest::getVar('fabrik_confirmation') == 2) {
+		if (JRequest::getVar('fabrik_confirmation') == 2)
+		{
 			//if we were already on the confirmation page
 			// return and set to 2 to ignore?
 			// $$$ hugh - I don't think it really matters,
@@ -92,9 +95,9 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 		$session->set('com_fabrik.form.'.$formModel->getId().'.session.hash', $sessionModel->getHash());
 
 		//set an error so we can reshow the same form for confirmation purposes
-		$formModel->_arErrors['confirmation_required'] = true;
+		$formModel->errors['confirmation_required'] = true;
 		$form->error = JText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS');
-		$formModel->_editable = false;
+		$formModel->editable = false;
 
 		//clear out unwanted buttons
 		$formParams = $formModel->getParams();
@@ -113,7 +116,8 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 			foreach ($elementModels as $elementModel)
 			{
 				// $$$ rob 20/04/2012 unset the element access otherwise previously cached acl is used.
-				unset($elementModel->_access);
+				unset($elementModel->access);
+				$elementModel->clearAccess();
 				$elementModel->getElement()->access = -1;
 			}
 		}
@@ -210,7 +214,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	 * @return string html
 	 */
 
-	function getBottomContent_result($c)
+	public function getBottomContent_result($c)
 	{
 		return $this->html;
 	}

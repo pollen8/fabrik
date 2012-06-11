@@ -245,7 +245,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		if ($ftable == $jos_users)
 		{
-			$formModel->_storeMainRow = false;
+			$formModel->storeMainRow = false;
 		}
 
 		$usersConfig = JComponentHelper::getParams('com_users');
@@ -267,14 +267,12 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		// Check for request forgeries
 		JRequest::checkToken() or jexit('Invalid Token');
-
 		$option = JRequest::getCmd('option');
-
 		$original_id = 0;
 		if ($params->get('juser_field_userid') != '')
 		{
 			$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
-			if (!empty($formModel->_rowId))
+			if (!empty($formModel->rowId))
 			{
 				$original_id = (int) $formModel->_formData[$this->useridfield];
 			}
@@ -575,7 +573,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		}
 		if ($ftable == $jos_users)
 		{
-			$formModel->_rowId = $user->get('id');
+			$formModel->rowId = $user->get('id');
 		}
 	}
 
@@ -653,26 +651,26 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 		if ($post['name'] == '')
 		{
-			$formModel->_arErrors[$this->namefield][0][] = JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME');
-			$this->raiseError($formModel->_arErrors, $this->namefield, JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));
+			$formModel->errors[$this->namefield][0][] = JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME');
+			$this->raiseError($formModel->errors, $this->namefield, JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));
 			$ok = false;
 		}
 
 		if ($post['username'] == '')
 		{
-			$this->raiseError($formModel->_arErrors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME'));
+			$this->raiseError($formModel->errors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME'));
 			$ok = false;
 		}
 
 		if (preg_match( "#[<>\"'%;()&]#i", $post['username']) || strlen(utf8_decode($post['username'])) < 2)
 		{
-			$this->raiseError($formModel->_arErrors, $this->usernamefield, JText::sprintf( 'VALID_AZ09', JText::_('Username'), 2));
+			$this->raiseError($formModel->errors, $this->usernamefield, JText::sprintf( 'VALID_AZ09', JText::_('Username'), 2));
 			$ok = false;
 		}
 
 		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress( $post['email']))
 		{
-			$this->raiseError($formModel->_arErrors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
+			$this->raiseError($formModel->errors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;
 		}
 		if (empty($post['password']))
@@ -680,7 +678,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			//$$$tom added a new/edit test
 			if (empty($post['id']))
 			{
-				$this->raiseError($formModel->_arErrors, $this->passwordfield, JText::_('Please enter a password'));
+				$this->raiseError($formModel->errors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;
 			}
 		}
@@ -688,7 +686,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		{
 			if ($post['password'] != $post['password2'])
 			{
-				$this->raiseError($formModel->_arErrors, $this->passwordfield, JText::_('PASSWORD DO NOT MATCH.'));
+				$this->raiseError($formModel->errors, $this->passwordfield, JText::_('PASSWORD DO NOT MATCH.'));
 				$ok = false;
 			}
 		}
@@ -703,7 +701,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$xid = intval( $db->loadResult());
 		if ($xid && $xid != intval($post['id']))
 		{
-			$this->raiseError($formModel->_arErrors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE'));
+			$this->raiseError($formModel->errors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE'));
 			$ok = false;
 		}
 
@@ -717,7 +715,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$xid = intval( $db->loadResult());
 		if ($xid && $xid != intval($post['id']))
 		{
-			$this->raiseError($formModel->_arErrors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE'));
+			$this->raiseError($formModel->errors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE'));
 			$ok = false;
 		}
 		return $ok;

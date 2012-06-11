@@ -168,7 +168,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * @param bol add slashes to reutrn data
+	 * @param bool add slashes to reutrn data
 	 * @return string dropdown
 	 */
 
@@ -186,7 +186,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 *@param bol add slashes to reutrn data
+	 *@param bool add slashes to reutrn data
 	 *@param string name of the drop down
 	 *@param int mode - states what values get put into drop down
 	 *@return string dropdown
@@ -873,7 +873,7 @@ class FabrikModelList extends FabModelAdmin
 				*  and mark the loaded one as to be deleted
 				*/
 				$joinModel->setId($joinIds[$i]);
-				$joinModel->_join = null;
+				$joinModel->clearJoin();
 				$join = $joinModel->getJoin();
 
 				if ($join->table_join != $joinTable[$i])
@@ -908,7 +908,7 @@ class FabrikModelList extends FabModelAdmin
 					// delete join
 					$join = $this->getTable('Join');
 					$joinModel->setId($oOldJoin->id);
-					unset($joinModel->_join);
+					$joinModel->clearJoin();
 					$joinModel->getJoin();
 					$joinModel->deleteAll($oOldJoin->group_id);
 				}
@@ -1138,7 +1138,7 @@ class FabrikModelList extends FabModelAdmin
 
 			$elementModel = $pluginManager->getPlugIn($element->plugin, 'element');
 			$elementModel->setId($element->id);
-			$elementModel->_element = $element;
+			$elementModel->element = $element;
 			// hack for user element
 			$details = array(
 					'group_id' => $element->group_id
@@ -1588,9 +1588,9 @@ class FabrikModelList extends FabModelAdmin
 
 		//get all database join elements and check if we need to create xml files for them
 
-		$table =& $this->getTable();
-		$tableName = str_replace($config->getValue('dbprefix'), '',$table->db_table_name);
-		$params =& $this->getParams();
+		$table = $this->getTable();
+		$tableName = str_replace($config->get('dbprefix'), '',$table->db_table_name);
+		$params = $this->getParams();
 		$titleElement = $params->get('joomfish-title');
 		$str = '<?xml version="1.0" ?>
 <joomfish type="contentelement">

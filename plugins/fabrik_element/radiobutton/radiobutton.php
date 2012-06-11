@@ -13,25 +13,25 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 {
 
-	var $hasLabel = false;
+	protected $hasLabel = false;
 
 	public function setId($id)
 	{
 		parent::setId($id);
 		$params = $this->getParams();
 		//set elementlist params from radio params
-		$params->set('element_before_label', (bool)$params->get('radio_element_before_label', true));
-		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtoradio', false));
-		$params->set('allowadd-onlylabel', (bool)$params->get('rad-allowadd-onlylabel', true));
-		$params->set('savenewadditions', (bool)$params->get('rad-savenewadditions', false));
+		$params->set('element_before_label', (bool) $params->get('radio_element_before_label', true));
+		$params->set('allow_frontend_addto', (bool) $params->get('allow_frontend_addtoradio', false));
+		$params->set('allowadd-onlylabel', (bool) $params->get('rad-allowadd-onlylabel', true));
+		$params->set('savenewadditions', (bool) $params->get('rad-savenewadditions', false));
 	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::_getEmailValue()
+	 * @see plgFabrik_ElementList::getIndEmailValue()
 	 */
 
-	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		if (empty($value))
 		{
@@ -45,15 +45,15 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::elementJavascript()
 	 */
 
 	function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$data = $this->_form->_data;
+		$data = $this->getFormModel()->_data;
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -67,17 +67,18 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * Get the sql for filtering the table data and the array of filter settings
-	 * @param string filter value
-	 * @return string filter value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::prepareFilterVal()
 	 */
 
 	function prepareFilterVal($val)
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
-		for ($i=0; $i<count($labels); $i++) {
-			if (strtolower($labels[$i]) == strtolower($val)) {
+		for ($i = 0; $i < count($labels); $i++)
+		{
+			if (strtolower($labels[$i]) == strtolower($val))
+			{
 				$val = $values[$i];
 				return $val;
 			}
@@ -86,18 +87,16 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * OPTIONAL
-	 * If your element risks not to post anything in the form (e.g. check boxes with none checked)
-	 * the this function will insert a default value into the database
-	 * @param array form data
-	 * @return array form data
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getEmptyDataValue()
 	 */
 
 	function getEmptyDataValue(&$data)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if (!array_key_exists($element->name, $data)) {
+		if (!array_key_exists($element->name, $data))
+		{
 			$sel = $this->getSubInitialSelection();
 			$sel = JArrayHelper::getValue($sel, 0, '');
 			$arVals = $this->getSubOptionValues();
@@ -106,11 +105,8 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * this builds an array containing the filters value and condition
-	 * @param string initial $value
-	 * @param string intial $condition
-	 * @param string eval - how the value should be handled
-	 * @return array (value condition)
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getFilterValue()
 	 */
 
 	function getFilterValue($value, $condition, $eval)
@@ -126,10 +122,8 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 	
 	/**
-	 * determines the value for the element in the form view
-	 * @param array data
-	 * @param int when repeating joinded groups we need to know what part of the array to access
-	 * @param array options
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementList::getValue()
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())

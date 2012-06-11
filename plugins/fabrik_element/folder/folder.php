@@ -28,7 +28,7 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 		$params = $this->getParams();
 		$allowAdd = $params->get('allow_frontend_addtodropdown', false);
 		$selected = $this->getValue($data, $repeatCounter);
-		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ? " elementErrorHighlight" : '';
+		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$attribs = 'class="fabrikinput inputbox'.$errorCSS."\"";
 		$aRoValues = array();
 		$path = JPATH_ROOT . '/' . $params->get('fbfolder_path');
@@ -63,7 +63,7 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 			}
 		}
 		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
-		if (!$this->_editable)
+		if (!$this->editable)
 		{
 			return implode(', ', $aRoValues);
 		}
@@ -81,7 +81,7 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$data = $this->_form->_data;
+		$data = $this->getFormModel()->_data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$path = JPATH_ROOT . '/' . $params->get('fbfbfolder_path');
 		$folders = JFolder::folders($path);

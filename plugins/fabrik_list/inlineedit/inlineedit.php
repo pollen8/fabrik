@@ -30,7 +30,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *
-	 * @return bol
+	 * @return bool
 	 */
 
 	function canSelectRows()
@@ -46,10 +46,10 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 	
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param list table model
-	 * @param array [0] => string table's form id to contain plugin
-	 * @return bool
+	 * @param	object	parameters
+	 * @param	object	list model
+	 * @param	array	[0] => string table's form id to contain plugin
+	 * @return	bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)
@@ -58,48 +58,52 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		FabrikHelperHTML::script('media/com_fabrik/js/element.js');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getVar('listid'));
-
 		$elements = $model->getElements('safecolname');
-		
 		$pels = $params->get('inline_editable_elements');
 		$use = json_decode($pels);
-		if (!is_object($use)) {
+		if (!is_object($use))
+		{
 			$aEls = trim($pels) == '' ? array() : explode(",", $pels);
 			$use = new stdClass();
-			foreach ($aEls as $e) {
+			foreach ($aEls as $e)
+			{
 				$use->$e = array($e);
 			}
 		}
 		$els = array();
 		$srcs = array();
-
 		$test = (array) $use;
-		if (!empty($test)) {
-			foreach ($use as $key => $fields) {
+		if (!empty($test))
+		{
+			foreach ($use as $key => $fields)
+			{
 				$trigger = $elements[$key];
 				$els[$key] = new stdClass();
-				$els[$key]->elid = $trigger->_id;
+				$els[$key]->elid = $trigger->getId();
 				$els[$key]->plugins = array();
-				foreach ($fields as $field) {
+				foreach ($fields as $field)
+				{
 					$val = $elements[$field];
-				//load in all element js classes
-					if (is_object($val)) {
+					//load in all element js classes
+					if (is_object($val))
+					{
 						$val->formJavascriptClass($srcs);
 						$els[$key]->plugins[$field] = $val->getElement()->id;
 					}
 				}
 			}
-		} else {
-			foreach ($elements as $key => $val) {
+		}
+		else
+		{
+			foreach ($elements as $key => $val)
+			{
 				$key = FabrikString::safeColNameToArrayKey($key);
-				
 				$els[$key] = new stdClass();
-				$els[$key]->elid = $val->_id;
+				$els[$key]->elid = $val->getId();
 				$els[$key]->plugins = array();
 				$els[$key]->plugins[$key] = $val->getElement()->id;
 				//load in all element js classes
 				$val->formJavascriptClass($srcs);
-				
 			}
 		}
 		FabrikHelperHTML::script($srcs);
@@ -110,8 +114,8 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		$opts->editEvent = $params->get('inline_edit_event', 'dblclick');
 		$opts->tabSave = $params->get('inline_tab_save', false);
 		$opts->showCancel = $params->get('inline_show_cancel', true);
-		$opts->showSave = (bool)$params->get('inline_show_save', true);
-		$opts->loadFirst = (bool)$params->get('inline_load_first', false);
+		$opts->showSave = (bool) $params->get('inline_show_save', true);
+		$opts->loadFirst = (bool) $params->get('inline_load_first', false);
 		$opts = json_encode($opts);
 		$formid = 'list_'+$model->getFormModel()->getForm()->id;
 		$this->jsInstance = "new FbListInlineEdit($opts)";

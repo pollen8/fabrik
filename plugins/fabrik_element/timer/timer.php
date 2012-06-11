@@ -84,7 +84,8 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 			$value = array_pop($value);
 		}
 		$type = "text";
-		if (isset($this->_elementError) && $this->_elementError != '') {
+		if ($this->elementError != '')
+		{
 			$type .= " elementErrorHighlight";
 		}
 		if ($element->hidden == '1') {
@@ -95,7 +96,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 			$sizeInfo .= " readonly=\"readonly\" ";
 			$type .= " readonly";
 		}
-		if (!$this->_editable) {
+		if (!$this->editable) {
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
@@ -126,64 +127,66 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	/**
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param array $data to sum
-	 * @return string sum result
+	 * @param	array	$data to sum
+	 * @return	string	sum result
 	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
+		$table = $listModel->getTable();
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
 		//$$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
 	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param model $listModel
-	 * @param string $label the label to apply to each avg
-	 * @return string sql statement
+	 * @param	model	$listModel
+	 * @param	string	$label the label to apply to each avg
+	 * @return	string	sql statement
 	 */
 
 	protected function getAvgQuery(&$listModel, $label = "'calc'" )
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
+		$table = $listModel->getTable();
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
 	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param model $listModel
-	 * @param string $label the label to apply to each avg
-	 * @return string sql statement
+	 * @param	model	$listModel
+	 * @param	string	$label the label to apply to each avg
+	 * @return	string	sql statement
 	 */
 
 	protected function getMedianQuery(&$listModel, $label = "'calc'" )
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
+		$table = $listModel->getTable();
+		$joinSQL = $listModel->buildQueryJoin();
+		$whereSQL = $listModel->buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param array $data to sum
-	 * @return string sum result
+	 * @param	array	$data to sum
+	 * @return	string	sum result
 	 */
 
 	public function simpleSum($data)
 	{
 		$sum = 0;
-		foreach ($data as $d) {
-			if ($d != '') {
+		foreach ($data as $d)
+		{
+			if ($d != '')
+			{
 				$date = JFactory::getDate($d);
 				$sum += $this->toSeconds($date);
 			}
@@ -195,13 +198,14 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	 * get the value to use for graph calculations
 	 * can be overwritten in plugin
 	 * see fabriktimer which converts the value into seconds
-	 * @param string $v
-	 * @return mixed
+	 * @param	string	$v
+	 * @return	mixed
 	 */
 
 	public function getCalculationValue($v)
 	{
-		if ($v == '') {
+		if ($v == '')
+		{
 			return 0;
 		}
 		$date = JFactory::getDate($v);

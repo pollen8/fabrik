@@ -61,16 +61,19 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 
 		$value = $this->getValue($data, $repeatCounter);
 		$type = "text";
-		if (isset($this->_elementError) && $this->_elementError != '') {
+		if ($this->elementError != '')
+		{
 			$type .= " elementErrorHighlight";
 		}
 		if ($element->hidden == '1') {
 			$type = "hidden";
 		}
 		$sizeInfo =  " size=\"$size\" maxlength=\"$maxlength\"";
-		if (!$this->_editable) {
+		if (!$this->editable)
+		{
 			$format = $params->get('text_format_string');
-			if ($format  != '') {
+			if ($format  != '')
+			{
 				 $value =  eval(sprintf($format,$value));
 			}
 			if ($element->hidden == '1') {

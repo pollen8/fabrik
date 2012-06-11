@@ -22,7 +22,8 @@ class fabrikViewForm extends JView
 		$document = JFactory::getDocument();
 		
 		$form = $model->getForm();
-		if ($model->render() === false) {
+		if ($model->render() === false)
+		{
 			return false;
 		}
 		$this->groups = $this->get('GroupView');
@@ -32,21 +33,24 @@ class fabrikViewForm extends JView
 		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
 		$html[] = '<div class="floating-tip" >';
 		$html[] = '<ul class="fabrikElementContainer">';
-		foreach ($this->groups as $group) {
-			foreach ($group->elements as $element) {
+		foreach ($this->groups as $group)
+		{
+			foreach ($group->elements as $element)
+			{
 				$html[] = '<li class="'.$element->id.'">' . $element->label . '</li>';
 				$html[] = '<li class="fabrikElement">';
 				$html[] = $element->element;
 				$html[] = '</li>';
 			}
 		}
-		
 		$html[] = '</ul>';
 			
-		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel')) {
+		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel'))
+		{
 			//$html[] = '<ul class="fabrik_buttons">';
 			$html[] = '<ul class="">';
-			if (JRequest::getBool('inlinecancel') == true) {
+			if (JRequest::getBool('inlinecancel') == true)
+			{
 				$html[] = '<li class="ajax-controls inline-cancel">';
 				$html[] = '<a href="#" class="">';
 				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL')));
@@ -54,7 +58,8 @@ class fabrikViewForm extends JView
 				$html[] = '</li>';
 			}
 		
-			if (JRequest::getBool('inlinesave') == true) {
+			if (JRequest::getBool('inlinesave') == true)
+			{
 				$html[] = '<li class="ajax-controls inline-save">';
 				$html[] = '<a href="#" class="">';
 				$html[] = FabrikHelperHTML::image('save.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SAVE')));
@@ -74,13 +79,15 @@ class fabrikViewForm extends JView
 		$onLoad = array();
 		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
 		$onLoad[] = "Fabrik.inlineedit_$elementid = {'elements': {}};";
-		foreach ($elementids as $id) {
+		foreach ($elementids as $id)
+		{
 			$elementModel = $model->getElement($id, true);
 			$elementModel->getElement();
-			$elementModel->_editable = true;
+			$elementModel->editable = true;
 			$elementModel->formJavascriptClass($srcs);
 			$onLoad[] = "var o = ".$elementModel->elementJavascript($repeatCounter).";";
-			if ($eCounter === 0) {
+			if ($eCounter === 0)
+			{
 				$onLoad[] = "o.select();";
 				$onLoad[] = "o.focus();";
 				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '".JUtility::getToken()."';";
@@ -114,11 +121,12 @@ class fabrikViewForm extends JView
 		}
 
 		$this->assign('access', $model->checkAccessFromListSettings());
-		if ($this->access == 0) {
+		if ($this->access == 0)
+		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
-		
-		if (is_object($listModel)) {
+		if (is_object($listModel))
+		{
 			$joins = $listModel->getJoins();
 			$model->getJoinGroupIds($joins);
 		}
@@ -129,8 +137,9 @@ class fabrikViewForm extends JView
 		$params->set('popup', $pop);
 
 		$view = JRequest::getVar('view', 'form');
-		if ($view == 'details') {
-			$model->_editable = false;
+		if ($view == 'details')
+		{
+			$model->editable = false;
 		}
 
 		$groups = $model->getGroupsHiarachy();
@@ -138,7 +147,8 @@ class fabrikViewForm extends JView
 		$JSONarray = array();
 		$JSONHtml = array();
 
-		for ($i = 0; $i < count($gkeys); $i ++) {
+		for ($i = 0; $i < count($gkeys); $i ++)
+		{
 			$groupModel = $groups[$gkeys[$i]];
 			$groupTable = $groupModel->getGroup();
 			$group = new stdClass();
@@ -149,84 +159,97 @@ class fabrikViewForm extends JView
 			$repeatGroup = 1;
 			$foreignKey = null;
 
-			if ($groupModel->canRepeat()) {
-				if ($groupModel->isJoin()) {
-
+			if ($groupModel->canRepeat())
+			{
+				if ($groupModel->isJoin())
+				{
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-
 					$foreignKey  = '';
-					if (is_object($joinTable)) {
+					if (is_object($joinTable))
+					{
 						$foreignKey = $joinTable->table_join_key;
 						//need to duplicate this perhaps per the number of times
 						//that a repeat group occurs in the default data?
-						if (isset($model->_data['join']) && array_key_exists($joinTable->id, $model->_data['join'])) {
+						if (isset($model->_data['join']) && array_key_exists($joinTable->id, $model->_data['join']))
+						{
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
 							$repeatGroup = count($model->_data['join'][$joinTable->id][$smallerElHTMLName]);
-						} else {
+						}
+						else
+						{
 							//$$$ rob test!!!
-							if (!$groupParams->get('repeat_group_show_first')) {
+							if (!$groupParams->get('repeat_group_show_first'))
+							{
 								continue;
 							}
 						}
 					}
-				} else {
+				}
+				else
+				{
 					// repeat groups which arent joins
 					$elementModels = $groupModel->getPublishedElements();
-					foreach ($elementModels as $tmpElement) {
+					foreach ($elementModels as $tmpElement)
+					{
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-						if (array_key_exists($smallerElHTMLName . '_raw', $model->_data)) {
+						if (array_key_exists($smallerElHTMLName . '_raw', $model->_data))
+						{
 							$d = $model->_data[$smallerElHTMLName . '_raw'];
-						} else {
+						}
+						else
+						{
 							$d = @$model->_data[$smallerElHTMLName];
 						}
-						/*if (is_string($d) && strstr($d, GROUPSPLITTER)) {
-							$d = explode(GROUPSPLITTER, $d);
-						}*/
 						$d = json_decode($d, true);
 						$c = count($d);
 						if ($c > $repeatGroup) { $repeatGroup = $c;}
 					}
 				}
 			}
-
 			$groupModel->repeatTotal = $repeatGroup;
-
 			$aSubGroups = array();
-			for ($c = 0; $c < $repeatGroup; $c++) {
+			for ($c = 0; $c < $repeatGroup; $c++)
+			{
 				$aSubGroupElements = array();
 				$elCount = 0;
 				$elementModels = $groupModel->getPublishedElements();
-				foreach ($elementModels as $elementModel) {
-					if (!$model->_editable) {
+				foreach ($elementModels as $elementModel)
+				{
+					if (!$model->editable)
+					{
 						// $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
 						// db join add append data doesn't work if for example the popup form is set to allow adding,
 						// but not editing records
-						//$elementModel->_inDetailedView = true;
-						$elementModel->_editable = false;
+						//$elementModel->inDetailedView = true;
+						$elementModel->editable = false;
 					}
 
 					//force reload?
-					$elementModel->_HTMLids = null;
-					$elementHTMLId 	= $elementModel->getHTMLId($c);
-					if (!$model->_editable) {
+					$elementModel->HTMLids = null;
+					$elementHTMLId = $elementModel->getHTMLId($c);
+					if (!$model->editable)
+					{
 						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->_data, $c);
-					}else{
+					}
+					else
+					{
 						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->_data, $c);
 					}
 					//test for paginate plugin
-					if (!$model->_editable) {
-						$elementModel->_HTMLids = null;
-						$elementModel->_inDetailedView = true;
+					if (!$model->editable)
+					{
+						$elementModel->HTMLids = null;
+						$elementModel->inDetailedView = true;
 					}
 					$JSONHtml[$elementHTMLId] = htmlentities($elementModel->render($model->_data, $c), ENT_QUOTES, 'UTF-8');
 				}
 			}
 		}
-		$data = array("id"=>$model->getId(), 'model'=>'table', "errors"=> $model->_arErrors, "data" => $JSONarray, 'html'=>$JSONHtml, 'post'=>$_REQUEST);
+		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JSONarray, 'html' => $JSONHtml, 'post' => $_REQUEST);
 		echo json_encode($data);
 	}
 

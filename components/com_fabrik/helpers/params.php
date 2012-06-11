@@ -165,7 +165,7 @@ class fabrikParams extends JParameter
 			$value = JArrayHelper::getValue($value, $counter, '');
 		}
 		//value must be a string
-		$element->_array_counter = $counter;
+		$element->array_counter = $counter;
 
 		$result = $element->render($node, $value, $control_name);
 

@@ -18,10 +18,10 @@ class videoRender
 	var $output = '';
 	
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+	 * @param	object	element model
+	 * @param	object	element params
+	 * @param	string	row data for this element
+	 * @param	object	all row's data
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -30,9 +30,9 @@ class videoRender
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
+	 * @param	object	element model
+	 * @param	object	element params
+	 * @param	string	row data for this element
 	 */
 
 	function render(&$model, &$params, $file)
@@ -44,15 +44,14 @@ class videoRender
 			
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
 		$config = JFactory::getConfig();
-		$host = $config->getValue('host');
-		$database = $config->getValue('db');
-		$username = $config->getValue('user');
-		$password = $config->getValue('password');
+		$host = $config->get('host');
+		$database = $config->get('db');
+		$username = $config->get('user');
+		$password = $config->get('password');
 		$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
 		// Analyze file and store returned data in $ThisFileInfo
-		$relPath = JPATH_SITE . "$file";
+		$relPath = JPATH_SITE . $file;
 		$thisFileInfo = $getID3->analyze($relPath);
-
 		if (array_key_exists('video', $thisFileInfo))
 		{
 			if (array_key_exists('resolution_x', $thisFileInfo['video']))
@@ -66,7 +65,8 @@ class videoRender
 				$h = $thisFileInfo['video']['streams']['2']['resolution_y'];
 			}
 			
-			switch ($thisFileInfo['fileformat']) {
+			switch ($thisFileInfo['fileformat'])
+			{
 				//add in space for controller
 				case 'quicktime':
 					$h += 16;
@@ -77,7 +77,8 @@ class videoRender
 		}
 		$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 		
-		switch ($thisFileInfo['fileformat']) {
+		switch ($thisFileInfo['fileformat'])
+		{
 			case 'asf':
 				
 				$this->output = '<object id="MediaPlayer" width='.$w.' height='.$h.' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components�" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">

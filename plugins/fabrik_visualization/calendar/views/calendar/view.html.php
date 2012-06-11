@@ -29,7 +29,7 @@ class fabrikViewCalendar extends JView
 		$this->assign('showTitle', JRequest::getInt('show-title', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
-		$calendar = $model->_row;
+		$calendar = $this->row;
 		$this->calName = $model->getCalName();
 
 		$canAdd = $this->get('CanAdd');
@@ -42,7 +42,6 @@ class fabrikViewCalendar extends JView
 
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
-		$params = $model->getParams();
 
 		//Get the active menu item
 		$urlfilters = JRequest::get('get');
@@ -52,13 +51,14 @@ class fabrikViewCalendar extends JView
 		unset($urlfilters['Itemid']);
 		unset($urlfilters['visualizationid']);
 		unset($urlfilters['format']);
-		if (empty($urlfilters)) {
+		if (empty($urlfilters))
+		{
 			$urlfilters = new stdClass();
 		}
 		$urls = new stdClass();
 		//dont JRoute as its wont load with sef?
-		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid='.$Itemid.'&id='.$id;
-		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid='.$Itemid.'&id='.$id;
+		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid . '&id=' . $id;
+		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0 ) ? $model->getLegend() : '';
 		$tmpl = $params->get('calendar_layout', 'default');
@@ -124,19 +124,11 @@ class fabrikViewCalendar extends JView
 		FabrikHelperHTML::script($srcs, $str);
 		
 		$viewName = $this->getName();
-
-		$pluginParams = $model->getPluginParams();
 		$this->assignRef('params', $model->getParams());
-		$tmpl = $pluginParams->get('calendar_layout', $tmpl);
+		$tmpl = $params->get('calendar_layout', $tmpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
-
-		$ab_css_file = $tmplpath . '/template.css';
-
-		if (JFile::exists($ab_css_file))
-		{
-			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tmpl . '/template.css');
-		}
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tmpl . '/template.css');
 		return parent::display();
 	}
 
@@ -150,6 +142,7 @@ class fabrikViewCalendar extends JView
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$rows = $model->getEventLists();
 		$o = $model->getAddStandardEventFormInfo();
+		$calendar = $model->getVisualization();
 		$options = array();
 		$options[] = JHTML::_('select.option', '', JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_SELECT'));
 		if ($o != null)
@@ -159,42 +152,40 @@ class fabrikViewCalendar extends JView
 		}
 		$model->getEvents();
 		$config = JFactory::getConfig();
-		$prefix = $config->getValue('config.dbprefix');
+		$prefix = $config->get('dbprefix');
 		$this->_eventTypeDd = JHTML::_('select.genericlist', array_merge($options, $rows), 'event_type', 'class="inputbox" size="1" ', 'value', 'text', '', 'fabrik_event_type');
 
 		//tried loading in iframe and as an ajax request directly - however
 		//in the end decided to set a call back to the main calendar object (via the package manager)
 		//to load up the new add event form
-		$script = "head.ready(function() {
-			//oCalendar".$model->getId().".addListenTo('chooseeventwin');
-		$('fabrik_event_type').addEvent('change', function(e) {
-		var fid = $(e.target).get('value');
-		var o = ({'d':'','listid':fid,'rowid':0});
-		o.datefield = '{$prefix}fabrik_calendar_events___start_date';
-		o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';
-		o.labelfield = '{$prefix}fabrik_calendar_events___label';
-		";
+		$script = array();
+		$script[] = "head.ready(function() {";
+		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
+		$script[] = "var fid = e.target.get('value');";
+		$script[] = "var o = ({'d':'','listid':fid,'rowid':0});";
+		$script[] = "o.datefield = '{$prefix}fabrik_calendar_events___start_date';";
+		$script[] = "o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';";
+		$script[] = "o.labelfield = '{$prefix}fabrik_calendar_events___label';";
+		
 		foreach ($model->_events as $tid=>$arr)
 		{
 			foreach ($arr as $ar)
 			{
-				$script .= "if(".$ar['formid']." == fid)	{\n";
-				$script .= "o.datefield = '".$ar['startdate'] . "'\n";
-				$script .= "o.datefield2 = '".$ar['enddate'] . "'\n";
-				$script .= "o.labelfield = '".$ar['label'] . "'\n";
-				$script .= "}\n";
+				$script[] = "if(".$ar['formid']." == fid)	{";
+				$script[] = "o.datefield = '".$ar['startdate'] . "'";
+				$script[] = "o.datefield2 = '".$ar['enddate'] . "'";
+				$script[] = "o.labelfield = '".$ar['label'] . "'";
+				$script[] = "}\n";
 			}
 		}
-		$script .= "var o = JSON.encode(o);
-		// @TODO deal with this via window.fireEvent()
-			//oPackage.sendMessage('chooseeventwin', 'addEvForm' , true, o);
-
-	});
-	});
-	";
-		FabrikHelperHTML::addScriptDeclaration($script);
+		$script[] = "Fabrik.blocks['calendar_" . $calendar->id . "'].addEvForm(o);";
+		$script[] = "Fabrik.Windows.chooseeventwin.close();";
+		$script[] = "});";
+		$script[] = "});";
+		
 		echo '<h2>' . JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
+		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 	}
 }
 ?>

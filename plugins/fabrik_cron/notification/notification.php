@@ -47,8 +47,8 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron {
 		$rows = $db->loadObjectList();
 
 		$config = JFactory::getConfig();
-		$email_from = $config->getValue('mailfrom');
-		$sitename = $config->getValue('sitename');
+		$email_from = $config->get('mailfrom');
+		$sitename = $config->get('sitename');
 		$sent = array();
 		$usermsgs = array();
 		foreach ($rows as $row) {

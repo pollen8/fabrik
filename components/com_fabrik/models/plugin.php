@@ -23,11 +23,11 @@ class FabrikPlugin extends JPlugin
 	var $_xmlPath = null;
 
 	/** @var object params **/
-	protected $_params  = null;
+	public $params  = null;
 
 	var $attribs = null;
 
-	var $_id = null;
+	protected $id = null;
 
 	var $_row = null;
 
@@ -41,9 +41,14 @@ class FabrikPlugin extends JPlugin
 	/** @var object jform */
 	public $jform = null;
 
-	function setId($id)
+	public function setId($id)
 	{
-		$this->_id = $id;
+		$this->id = $id;
+	}
+	
+	public function getId()
+	{
+		return $this->id;
 	}
 
 	function getName()
@@ -59,6 +64,7 @@ class FabrikPlugin extends JPlugin
 	 * @param       array   $config  An array that holds the plugin configuration
 	 * @since       1.5
 	 */
+	
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
@@ -135,7 +141,6 @@ class FabrikPlugin extends JPlugin
 		{
 			$class = 'adminform ' . $type . 'Settings page-' . $this->_name;
 			$repeat = isset($fieldset->repeatcontrols) && $fieldset->repeatcontrols == 1;
-
 			//bind data for repeat groups
 			$repeatDataMax = 1;
 			if ($repeat)
@@ -222,8 +227,8 @@ class FabrikPlugin extends JPlugin
 				$data[$key] = JArrayHelper::getValue($val, $repeatCounter);
 			}
 		}
-		$this->_params = new JRegistry(json_encode($data));
-		return $this->_params;
+		$this->params = new JRegistry(json_encode($data));
+		return $this->params;
 	}
 
 	/**
@@ -232,13 +237,13 @@ class FabrikPlugin extends JPlugin
 
 	public function getParams()
 	{
-		if (!isset($this->_params))
+		if (!isset($this->params))
 		{
 			return $this->_loadParams();
 		}
 		else
 		{
-			return $this->_params;
+			return $this->params;
 		}
 	}
 
@@ -253,11 +258,11 @@ class FabrikPlugin extends JPlugin
 		{
 			$a = $this->params;
 		}
-		if (!isset($this->_params))
+		if (!isset($this->params))
 		{
-			$this->_params = new JRegistry($a);
+			$this->params = new JRegistry($a);
 		}
-		return $this->_params;
+		return $this->params;
 	}
 
 	function getRow()
@@ -265,7 +270,7 @@ class FabrikPlugin extends JPlugin
 		if (!isset($this->_row))
 		{
 			$this->_row = $this->getTable($this->_type);
-			$this->_row->load($this->_id);
+			$this->_row->load($this->id);
 		}
 		return $this->_row;
 	}
@@ -315,29 +320,19 @@ class FabrikPlugin extends JPlugin
 		{
 			// $$$ hugh @FIXME - added copyingRow() stuff to form model, need to do it
 			// for list model as well.
-			$k = array_key_exists('_origRowId', $model) ? '_origRowId' : '_rowId';
+			$k = array_key_exists('origRowId', $model) ? 'origRowId' : 'rowId';
 			switch ($event)
 			{
 				case 'new':
 					if ($model->$k != 0)
 					{
-						if (isset($model->_copyingRow)) {
-							$ok = $model->copyingRow();
-						}
-						else {
-							$ok = false;
-						}
+						$ok = isset($model->_copyingRow) ? $model->copyingRow() : false;
 					}
 					break;
 				case 'edit':
 					if ($model->$k == 0)
 					{
-						if (isset($model->_copyingRow)) {
-							$ok = !$model->copyingRow();
-						}
-						else {
-							$ok = false;
-						}
+						$ok = isset($model->_copyingRow) ? !$model->copyingRow() : false;
 					}
 					break;
 			}
@@ -376,7 +371,8 @@ class FabrikPlugin extends JPlugin
 			if ($cid !== 0)
 			{
 				$query = $db->getQuery(true);
-				$query->select('id, label')->from('#__{package}_lists')->where(' connection_id = ' . $cid)->order('label ASC');
+				$query->select('id, label')->from('#__{package}_lists')->where('connection_id = ' . $cid)
+				->order('label ASC');
 				$db->setQuery($query);
 				$rows = $db->loadObjectList();
 			}
@@ -435,8 +431,8 @@ class FabrikPlugin extends JPlugin
 					$db->setQuery($query);
 					$tid = $db->loadResult();
 				}
-				$db->setQuery('DESCRIBE ' . $db->nameQuote($tid));
-
+				// @TODO JQuery this
+				$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
 				$rows = $db->loadObjectList();
 				if (is_array($rows))
 				{

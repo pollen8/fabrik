@@ -17,14 +17,15 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/plugin.php');
 class FabrikFEModelVisualization extends JModel
 {
 
-	var $_pluginParams = null;
+	protected $pluginParams = null;
 
 	var $_row = null;
 
-	var $_params = null;
+	/** @var object params*/
+	protected $params = null;
 
 	//@var string url for filter form
-	var $getFilterFormURL = null;
+	protected $getFilterFormURL = null;
 
 	public $srcBase = "plugins/fabrik_visualization/";
 
@@ -35,28 +36,15 @@ class FabrikFEModelVisualization extends JModel
 		$this->pathBase = JPATH_SITE . '/plugins/fabrik_visualization/';
 		parent::__construct();
 	}
-
-	function getPluginParams()
-	{
-		if (!isset($this->_pluginParams))
-		{
-			$this->_pluginParams = $this->_loadPluginParams();
-		}
-		return $this->_pluginParams;
-	}
-
+	
 	/**
-	 * load visualization plugin  params
-	 * @access	private - public call = getPluginParams()
-	 *
-	 * @return	object	visualization plugin parameters
+	 * @since	3.0.6
+	 * alais to getVisualization() 
 	 */
-
-	function _loadPluginParams()
+	
+	public function getRow()
 	{
-		$this->getVisualization();
-		$pluginParams = new JRegistry($this->_row->params);
-		return $pluginParams;
+		return $this->getVisualization();
 	}
 
 	function getVisualization()
@@ -111,12 +99,6 @@ class FabrikFEModelVisualization extends JModel
 		return $lists[$id];
 	}
 
-	function getGalleryTableId()
-	{
-		$params = $this->getParams();
-		return $params->get('gallery_category_table');
-	}
-
 	function getContainerId()
 	{
 		$viz = $this->getVisualization();
@@ -137,7 +119,7 @@ class FabrikFEModelVisualization extends JModel
 		$i = 0;
 		foreach ($listModels as $listModel)
 		{
-			$show = (bool)JArrayHelper::getValue($showFilters, $i, true);
+			$show = (bool) JArrayHelper::getValue($showFilters, $i, true);
 			if ($show)
 			{
 				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'vizualization', $this->getVisualization()->id);
@@ -150,7 +132,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * set the url for the filter form's action
-	 * @return string action url
+	 * @return	string	action url
 	 */
 
 	public function getFilterFormURL()
@@ -203,7 +185,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * should be overwritten in plugin viz model
-	 * @abstract
+	 * @return	bool
 	 */
 
 	function getRequiredFiltersFound()
@@ -274,13 +256,13 @@ class FabrikFEModelVisualization extends JModel
 
 	function getParams()
 	{
-		if (is_null($this->_params))
+		if (is_null($this->params))
 		{
 			$v = $this->getVisualization();
-			$this->_params = new JRegistry($v->params);
-			$this->_params->set('show-title', JRequest::getInt('show-title', $this->_params->get('show-title', 1)));
+			$this->params = new JRegistry($v->params);
+			$this->params->set('show-title', JRequest::getInt('show-title', $this->params->get('show-title', 1)));
 		}
-		return $this->_params;
+		return $this->params;
 	}
 
 	function getId()

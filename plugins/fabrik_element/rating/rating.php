@@ -21,13 +21,13 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	protected $fieldSize = '1';
 
 	/** @var array average ratings */
-	var $avgs = null;
+	protected $avgs = null;
 
 	/** @bool can the rating element be used by the current user*/
-	var $canRate = null;
+	protected $canRate = null;
 
 	/** @var array creator id */
-	var $creatorIds = null;
+	protected $creatorIds = null;
 
 	/**
 	 * (non-PHPdoc)
@@ -47,35 +47,42 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
 
-		$url .= '&amp;row_id='.$thisRow->__pk_val;
-		$url .= '&amp;elementname='.$this->getElement()->id;
-		$url .= '&amp;userid='.$user->get('id');
+		$url .= '&amp;row_id=' . $thisRow->__pk_val;
+		$url .= '&amp;elementname=' . $this->getElement()->id;
+		$url .= '&amp;userid=' . $user->get('id');
 		$url .= '&amp;nonajax=1';
 		$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
 		$ids = JArrayHelper::getColumn($this->getListModel()->getData(), '__pk_val');
 		$canRate = $this->canRate($row_id, $ids);
-		for ($i=0; $i <count($data); $i++) {
+		for ($i = 0; $i <count($data); $i++)
+		{
 			$avg = $this->_renderListData($data[$i], $thisRow);
-			if (!$canRate) {
+			if (!$canRate)
+			{
 				$atpl = '';
 				$a2 = '';
-			} else {
+			}
+			else
+			{
 				$atpl = "<a href=\"{$url}&amp;rating={r}\">";
 				$a2 = "</a>";
 			}
 			$str = array();
 			$str[] = '<div style="width:100px">';
-			for ($s = 0; $s < $avg; $s ++) {
+			for ($s = 0; $s < $avg; $s ++)
+			{
 				$r = $s + 1;
 				$a = str_replace('{r}', $r, $atpl);
 				$str[] = $a.'<img src="'.$imagepath.'star_in'.$ext.'" style="padding-left:1px;" alt="'.$r.'" class="starRating rate_'.$r.'"/>'.$a2;
 			}
-			for ($s = $avg; $s < 5; $s ++) {
+			for ($s = $avg; $s < 5; $s ++)
+			{
 				$r = $s + 1;
 				$a = str_replace('{r}', $r, $atpl);
 				$str[] = $a.'<img src="'.$imagepath.'star_out'.$ext.'" style="padding-left:1px;" alt="'.$r.'" class="starRating rate_'.$r.'"/>'.$a2;
 			}
-			if ($params->get('rating-mode') != 'creator-rating') {
+			if ($params->get('rating-mode') != 'creator-rating')
+			{
 				$str[] = '<div class="ratingMessage">'.$avg.'</div>';
 			}
 			$str[] = '</div>';
@@ -88,9 +95,12 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	private function _renderListData($data, $thisRow)
 	{
 		$params = $this->getParams();
-		if ($params->get('rating-mode') == 'creator-rating') {
+		if ($params->get('rating-mode') == 'creator-rating')
+		{
 			return $data;
-		} else {
+		}
+		else
+		{
 			$list = $this->getlistModel()->getTable();
 			$listid = $list->id;
 			$formid = $list->form_id;
@@ -102,20 +112,22 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	}
 
 	/**
-	 * @param $data string/int
-	 * @param $listid int table id
-	 * @param $formid int form id
-	 * @param $row_id int row id
-	 * @param $ids array all row ids
+	 * @param	$data	string/int
+	 * @param	$listid	int table id
+	 * @param	$formid	int form id
+	 * @param	$row_id	int row id
+	 * @param	$ids	array all row ids
 	 * @return array(int average rating, int total)
 	 */
 
 	function getRatingAverage($data, $listid, $formid, $row_id, $ids = array())
 	{
-		if (empty($ids)) {
+		if (empty($ids))
+		{
 			$ids[] = $row_id;
 		}
-		if (!isset($this->avgs)) {
+		if (!isset($this->avgs))
+		{
 			JArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
@@ -135,16 +147,18 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * Enter description here ...
-	 * @param unknown_type $listid
-	 * @param unknown_type $formid
-	 * @param unknown_type $row_id
-	 * @param unknown_type $ids
+	 * @param	int		$listid
+	 * @param	int		$formid
+	 * @param	int		$row_id
+	 * @param	array	$ids
 	 */
 
 	protected function getCreatorId($listid, $formid, $row_id, $ids = array())
 	{
-		if (!isset($this->creatorIds)) {
-			if (empty($ids)) {
+		if (!isset($this->creatorIds))
+		{
+			if (empty($ids))
+			{
 				$ids[] = $row_id;
 			}
 			JArrayHelper::toInteger($ids);
@@ -155,7 +169,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			$query .= " AND row_id IN (".implode(',', $ids) .") GROUP BY row_id";
 			$db->setQuery($query);
 			$this->creatorIds = $db->loadObjectList('row_id');
-			if ($db->getErrorNum() != 0) {
+			if ($db->getErrorNum() != 0)
+			{
 				return false;
 				JError::raiseNotice(500, $db->getErrorMsg());
 			}
@@ -182,11 +197,13 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	protected function canRate($row_id = null, $ids = array())
 	{
 		$params = $this->getParams();
-		if ($params->get('rating-mode') == 'user-rating') {
+		if ($params->get('rating-mode') == 'user-rating')
+		{
 			$this->canRate = true;
 			return true;
 		}
-		if (is_null($row_id)) {
+		if (is_null($row_id))
+		{
 			$row_id = JRequest::getInt('rowid');
 		}
 		$list = $this->getListModel()->getTable();
@@ -200,9 +217,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * @param	array	data to preopulate element with
+	 * @param	int		repeat group counter
+	 * @return	string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -210,7 +227,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		if (JRequest::getVar('view') == 'form' && $params->get('rating-rate-in-form', true) == 0) {
+		if (JRequest::getVar('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
+		{
 			return JText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETALS_VIEW');
 		}
 		$ext = $params->get('rating-pngorgif', '.png');
@@ -225,35 +243,42 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
 		$clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
 		$str = array();
-		$str[] = '<div id="'.$id.'_div" class="fabrikSubElementContainer">';
-		if ($params->get('rating-nonefirst') && $this->canRate()) {
+		$str[] = '<div id="' . $id . '_div" class="fabrikSubElementContainer">';
+		if ($params->get('rating-nonefirst') && $this->canRate())
+		{
 			$str[] = '<img src="'.$imagepath.'clear_rating_out'.$ext.'" style="'.$css.'padding:3px;" alt="clear" class="rate_-1" />';
 		}
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
-		if ($params->get('rating-mode') == 'creator-rating') {
+		if ($params->get('rating-mode') == 'creator-rating')
+		{
 			$avg = $value;
 			$this->avg = $value;
-		} else {
+		}
+		else
+		{
 			list($avg, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
 		}
-		for ($s = 0; $s<$avg; $s++) {
+		for ($s = 0; $s<$avg; $s++)
+		{
 			$r = $s+1;
-			$str[] = '<img src="'.$insrc.'" style="'.$css.'padding:3px;" alt="'.$r.'" class="starRating rate_'.$r.'" />';
+			$str[] = '<img src="' . $insrc . '" style="' . $css . 'padding:3px;" alt="' . $r . '" class="starRating rate_' . $r . '" />';
 		}
-		for ($s = $avg; $s<5; $s++) {
+		for ($s = $avg; $s < 5; $s++)
+		{
 			$r = $s+1;
-			$str[] = '<img src="'.$outsrc.'" style="'.$css.'padding:3px;" alt="'.$r.'" class="starRating rate_'.$r.'" />';
+			$str[] = '<img src="' . $outsrc . '" style="' . $css . 'padding:3px;" alt="' . $r . '" class="starRating rate_' . $r . '" />';
 		}
 
-		if (!$params->get('rating-nonefirst') && $this->canRate()) {
-			$str[] = '<img src="'.$clearsrc.'" style="'.$css.'padding:3px;" alt="clear" class="rate_-1" />';
+		if (!$params->get('rating-nonefirst') && $this->canRate())
+		{
+			$str[] = '<img src="' . $clearsrc . '" style="' . $css . 'padding:3px;" alt="clear" class="rate_-1" />';
 		}
 		$str[] = '<span class="ratingScore">'.$this->avg.'</span>';
 		$str[] = '<div class="ratingMessage">';
 		$str[] = '</div>';
-		$str[] = '<input type="hidden" name="'.$name.'" id="'.$id.'" value="'.$value.'" />';
+		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		$str[] = '</div>';
 		return implode("\n", $str);
 	}
@@ -269,7 +294,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$listid = JRequest::getInt('listid');
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
-		if ($params->get('rating-mode') == 'user-rating') {
+		if ($params->get('rating-mode') == 'user-rating')
+		{
 			list($val, $total) = $this->getRatingAverage($val, $listid, $formid, $row_id);
 		}
 		return $val;
@@ -290,8 +316,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$row_id = JRequest::getVar('row_id');
 		$rating = JRequest::getInt('rating');
 		$this->doRating($listid, $formid, $row_id, $rating);
-
-		if (JRequest::getVar('mode') == 'creator-rating') {
+		if (JRequest::getVar('mode') == 'creator-rating')
+		{
 			// @todo FIX for joins as well
 			//store in elements table as well
 			$db = $listModel->getDb();
@@ -307,14 +333,15 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	{
 		$cookieName = "rating-table_{$listid}_row_{$row_id}".$_SERVER['REMOTE_ADDR'];
 		jimport('joomla.utilities.utility');
-		return JUtility::getHash($cookieName);
+		return JApplication::getHash($cookieName);
 	}
 
 	/**
 	 *
 	 * Create the rating table if it doesn't exist.
 	 */
-	private function createRatingTable() {
+	private function createRatingTable()
+	{
 		$db = FabrikWorker::getDbo(true);
 		$db->setQuery("
 			CREATE TABLE IF NOT EXISTS  `#__fabrik_ratings` (
@@ -345,9 +372,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$this->createRatingTable();
 		$db = FabrikWorker::getDbo(true);
 		$config = JFactory::getConfig();
-		$tzoffset = $config->getValue('config.offset');
+		$tzoffset = $config->get('offset');
 		$date = JFactory::getDate('now', $tzoffset);
-		$strDate = $db->quote($date->toMySQL());
+		$strDate = $db->quote($date->toSql());
 		$userid = $db->quote($this->getStoreUserId($listid, $row_id));
 		$elementid = $this->getElement()->id;
 		$db->setQuery("INSERT INTO #__fabrik_ratings (user_id, listid, formid, row_id, rating, date_created, element_id)
@@ -360,7 +387,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	{
 		$user = JFactory::getUser();
 		$userid = (int) $user->get('id');
-		if ($userid === 0) {
+		if ($userid === 0)
+		{
 			$hash = $this->getCookieName($listid, $row_id);
 			//set cookie
 			$lifetime = time() + 365*24*60*60;
@@ -385,13 +413,14 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			return;
 		}
 		$id = $this->getHTMLId($repeatCounter);
-		$element 	= $this->getElement();
-		$data = $this->_form->_data;
+		$element = $this->getElement();
+		$data = $this->getFormModel()->_data;
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
 		$value = $this->getValue($data, $repeatCounter);
-		if ($params->get('rating-mode') != 'creator-rating') {
+		if ($params->get('rating-mode') != 'creator-rating')
+		{
 			list($value, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
 		}
 
@@ -409,7 +438,6 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$opts->view = JRequest::getCmd('view');
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
-
 		$str = "new FbRating('$id', $opts, '$value')";
 		return $str;
 	}
@@ -427,7 +455,6 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$id = $this->getHTMLId();
 		$list = $this->getlistModel()->getTable();
 		$ext = $params->get('rating-pngorgif', '.png');
-
 		$opts = new stdClass();
 		$opts->listid = $list->id;
 		$imagepath = JUri::root().'/plugins/fabrik_element/rating/images/';
@@ -442,7 +469,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		return "new FbRatingList('$id', $opts);\n";
 	}
 
-	function includeInSearchAll($advancedMode = false)
+	public function includeInSearchAll($advancedMode = false)
 	{
 		return false;
 	}
@@ -452,12 +479,16 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
 		$filter_build = $params->get('filter_build_method', 0);
-		if ($filter_build == 0) {
+		if ($filter_build == 0)
+		{
 			$filter_build = $usersConfig->get('filter_build_method');
 		}
-		if ($filter_build == 2) {
+		if ($filter_build == 2)
+		{
 			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
-		} else {
+		}
+		else
+		{
 			return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
 		}
 	}
@@ -469,7 +500,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		for ($i = 0; $i < 6; $i ++) {
+		for ($i = 0; $i < 6; $i ++)
+		{
 			$return[] = JHTML::_('select.option', $i);
 		}
 		return $return;

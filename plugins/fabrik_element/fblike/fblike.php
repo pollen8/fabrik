@@ -16,7 +16,7 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementFblike extends plgFabrik_Element {
 
-	var $hasLabel = false;
+	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
 
@@ -36,7 +36,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 		// $$$ rob no need to get other meta data as we are linking to the details which contains full meta info on what it is
 		// you are liking
 		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-		$meta['og:site_name'] = $config->getValue('sitename');
+		$meta['og:site_name'] = $config->get('sitename');
 		$meta['fb:admins'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		// in list view we link to the detailed record not the list view itself
@@ -48,9 +48,9 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param array data to pre-populate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * @param	array	data to pre-populate element with
+	 * @param	int		repeat group counter
+	 * @return	string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -75,33 +75,41 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 			'og:fax_number' => 'fblike_fax_number'
 		);
 
-		foreach ($map as $k => $v) {
+		foreach ($map as $k => $v)
+		{
 			$elid = $params->get($v);
-			if ($elid != '') {
+			if ($elid != '')
+			{
 				$el = $formModel->getElement($elid, true);
-				if (is_object($el)) {
+				if (is_object($el))
+				{
 					$name = $el->getFullName(false, true, false);
 					$v = JArrayHelper::getValue($data, $name);
-					if ($k == 'og:image') { $v = $ex.$_SERVER['SERVER_NAME'].$v; }
-					if ($v !== '') {
+					if ($k == 'og:image')
+					{
+						$v = $ex . $_SERVER['SERVER_NAME'] . $v;
+					}
+					if ($v !== '')
+					{
 						$meta[$k] = $v;
 					}
 				}
 			}
 		}
-
 		$locEl = $formModel->getElement($params->get('fblike_location'), true);
-		if ($locEl != '') {
+		if ($locEl != '')
+		{
 			$loc = JArrayHelper::getValue($data, $locEl->getFullName(false, true, false));
 			$loc = array_shift(explode(':', $loc));
 			$loc = explode(",", $loc);
-			if (count($loc) == 2) {
+			if (count($loc) == 2)
+			{
 				$meta['og:latitude'] = $loc[0];
 				$meta['og:longitude'] = $loc[1];
 			}
 		}
 		$meta['og:url'] = $ex.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-		$meta['og:site_name'] = $config->getValue('sitename');
+		$meta['og:site_name'] = $config->get('sitename');
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
@@ -114,31 +122,34 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 	protected function _render($url)
 	{
 		$params = $this->getParams();
-		if ($url !== '') {
-			if (!strstr($url, COM_FABRIK_LIVESITE)) {
+		if ($url !== '')
+		{
+			if (!strstr($url, COM_FABRIK_LIVESITE))
+			{
 				// $$$ rob doesnt work with sef urls as $url already contains site folder.
 				//$url = COM_FABRIK_LIVESITE.$url;
 				$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
-				$url = $ex.$_SERVER['SERVER_NAME'].$url;
+				$url = $ex . $_SERVER['SERVER_NAME'] . $url;
 			}
 			$href = "href=\"$url\"";
-		} else {
+		}
+		else
+		{
 			$href = '';
 		}
-
 		$layout= $params->get('fblike_layout', 'standard');
 		$showfaces = $params->get('fblike_showfaces', 0) == 1 ? 'true' : 'false';
 		$width = $params->get('fblike_width', 300);
 		$action = $params->get('fblike_action', 'like');
 		$font = $params->get('fblike_font', 'arial');
 		$colorscheme = $params->get('fblike_colorscheme', 'light');
-		$str = "<fb:like $href layout=\"$layout\" show_faces=\"$showfaces\" width=\"$width\" action=\"$action\" font=\"$font\" colorscheme=\"$colorscheme\" />";
+		$str = '<fb:like ' . $href . 'layout="' . $layout . '" show_faces="' . $showfaces . '" width="' . $width . '" action="' . $action . '" font="' . $font . '" colorscheme="' . $colorscheme . '" />';
 		return $str;
 	}
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * @return	string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)

@@ -38,10 +38,10 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$view = &$this->getView($viewName, $viewType);
 
 		//create a form view as well to render the add event form.
-		//$view->_formView = &$this->getView('Form', $viewType);
+		//$view$elementModel->getFormModel()View = &$this->getView('Form', $viewType);
 
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
-		//$view->_formView->setModel($formModel, true);
+		//$view$elementModel->getFormModel()View->setModel($formModel, true);
 
 		parent::display();
 	}
@@ -90,12 +90,15 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$id = JRequest::getInt('visualizationid', $usersConfig->get('visualizationid', 0));
 		$model->setId($id);
 		$model->setupEvents();
-		if (array_key_exists($listid, $model->_events)) {
+		if (array_key_exists($listid, $model->_events))
+		{
 			$datefield = $model->_events[$listid][0]['startdate'];
-		} else {
+		}
+		else
+		{
 			$config = JFactory::getConfig();
-			$prefix = $config->getValue('config.dbprefix');
-			$datefield = $prefix.'fabrik_calendar_events___start_date';
+			$prefix = $config->get('dbprefix');
+			$datefield = $prefix . 'fabrik_calendar_events___start_date';
 		}
 		$rowid = JRequest::getInt('rowid');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');

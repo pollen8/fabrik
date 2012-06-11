@@ -184,26 +184,32 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron {
 
 			// if upload syncing (from us to gcal) is enabled ...
 			if ($gcal_sync_upload == 'both' || $gcal_sync_upload == 'to') {
+				
 				// Grab the tzOffset.  Note that gcal want +/-XX (like -06)
 				// but J! gives us +/-X (like -6) so we sprintf it to the right format
 				$config = JFactory::getConfig();
-				$tzOffset = (int) $config->getValue('config.offset');
+				$tzOffset = (int) $config->get('offset');
 				$tzOffset = sprintf('%+03d', $tzOffset);
 				// loop thru the array we built earlier of events we have that aren't in gcal
-				foreach ($our_upload_ids as $id => $event) {
+				foreach ($our_upload_ids as $id => $event)
+				{
 					// skip if a userid element is specified, and doesn't match the owner of this gcal
-					if ($gcal_userid_element_long) {
-						if ($event->$gcal_userid_element != $our_userid) {
+					if ($gcal_userid_element_long)
+					{
+						if ($event->$gcal_userid_element != $our_userid)
+						{
 							continue;
 						}
 					}
 					// now start building the gcal event structure
 					$newEvent = $gdataCal->newEventEntry();
 					$newEvent->title = $gdataCal->newTitle($event->$gcal_label_element);
-					if ($gcal_desc_element_long) {
+					if ($gcal_desc_element_long)
+					{
 						$newEvent->content = $gdataCal->newContent($event->$gcal_desc_element);
 					}
-					else {
+					else
+					{
 						$newEvent->content = $gdataCal->newContent($event->$gcal_label_element);
 					}
 					$when = $gdataCal->newWhen();

@@ -38,14 +38,15 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		//but in table view when getting read only filter value from url filter this
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
-		if (is_array($this->_form->_data))
+		$formModel = $this->getFormModel();
+		if (is_array($formModel->_data))
 		{
-			$data = $this->_form->_data;
+			$data = $formModel->_data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 		$sep = $params->get('time_separatorlabel', JText::_(':'));
 		$fd = $params->get('details_time_format', 'H:i:s');
-		if (!$this->_editable)
+		if (!$this->editable)
 		{
 			if ($value)
 			{
@@ -100,7 +101,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 				$i = str_pad($i,2,'0',STR_PAD_LEFT);
 				$secs[] = JHTML::_('select.option', $i);
 			}
-			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
+			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 			$attribs = 'class="fabrikinput inputbox'.$errorCSS.'"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';

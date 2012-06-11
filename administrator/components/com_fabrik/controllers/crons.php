@@ -77,7 +77,7 @@ class FabrikControllerCrons extends FabControllerAdmin
 				{
 					$table = $listModel->getTable();
 					$data = $thisListModel->getData();
-					$log->message .= "\n" . $thisListModel->_buildQuery();
+					$log->message .= "\n" . $thisListModel->buildQuery();
 				}
 			}
 			else

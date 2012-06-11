@@ -362,12 +362,13 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		$listid = $this->model->get('id');
 		$formid = $this->model->getFormModel()->get('id');
 		$shortkey = $el->getElement()->name;
-		if (!is_object($mapelement)) {
+		if (!is_object($mapelement))
+		{
 			JError::raiseNotice(500, JText::_('Radius search plug-in active but map element unpublished'));
 			return;
 		}
 		$mapfullkey = $mapelement->getFullName(false, true, false);
-		FabrikHelperHTML::autoComplete("radius_search_place{$this->_counter}", $el->getElement()->id, $el->_pluginName, $opts);
+		FabrikHelperHTML::autoComplete("radius_search_place{$this->_counter}", $el->getElement()->id, $el->pluginName, $opts);
 		FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 		parent::loadJavascriptClass();
 	}

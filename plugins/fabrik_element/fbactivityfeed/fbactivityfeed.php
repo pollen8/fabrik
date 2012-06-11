@@ -16,7 +16,7 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementFbactivityfeed extends plgFabrik_Element {
 
-	var $hasLabel = false;
+	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
 

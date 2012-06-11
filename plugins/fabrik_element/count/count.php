@@ -39,13 +39,14 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	{
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
-		if (JRequest::getVar('c') != 'form') {
+		if (JRequest::getVar('c') != 'form')
+		{
 			$params = $this->getParams();
-			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->nameQuote($dbtable . "___".$this->_element->name));
-			$r = "COUNT(".$params->get('count_field', '*').")";
-			$aFields[] 	= "$r AS $fullElName";
+			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->element->name));
+			$r = 'COUNT(' . $params->get('count_field', '*') . ')';
+			$aFields[] 	= $r . ' AS ' . $fullElName;
 			$aAsFields[] =  $fullElName;
-			$aAsFields[] =  "`$dbtable" . "___" . $this->getElement()->name . "_raw`";
+			$aAsFields[] =  $db->quoteName($dbtable . '___' . $this->getElement()->name . '_raw');
 		}
 	}
 
@@ -90,18 +91,18 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 		 //but in table view when getting read only filter value from url filter this
 		 // _form_data was not set to no readonly value was returned
 		 // added little test to see if the data was actually an array before using it
-		 if (is_array($this->_form->_data)) {
-			$data 	=& $this->_form->_data;
+		 if (is_array($this->getFormModel()->_data)) {
+			$data 	=& $this->getFormModel()->_data;
 			}
 			$value 	= $this->getValue($data, $repeatCounter);
 			$type = "text";
-			if (isset($this->_elementError) && $this->_elementError != '') {
+			if ($this->elementError != '') {
 			$type .= " elementErrorHighlight";
 			}
 			if ($element->hidden == '1') {
 			$type = "hidden";
 			}
-			if (!$this->_editable) {
+			if (!$this->editable) {
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 			}
 

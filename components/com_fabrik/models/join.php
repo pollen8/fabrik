@@ -18,10 +18,10 @@ class FabrikFEModelJoin extends FabModel{
 	 */
 
 	/** @var object join table */
-	var $_join = null;
+	protected $join = null;
 
 	/** @var int id of join to load */
-	var $_id = null;
+	protected $id = null;
 
 	/** @var array join data to bind to Join table */
 	var $_data = null;
@@ -33,12 +33,12 @@ class FabrikFEModelJoin extends FabModel{
 
 	function setId($id)
 	{
-		$this->_id = $id;
+		$this->id = $id;
 	}
 	
 	function getId()
 	{
-		return $this->_id;
+		return $this->id;
 	}
 
 	function setData($d)
@@ -48,19 +48,28 @@ class FabrikFEModelJoin extends FabModel{
 
 	function getJoin()
 	{
-		if (!isset($this->_join)) {
-			$this->_join = FabTable::getInstance('join', 'FabrikTable');
-			if (isset($this->_data)) {
-				$this->_join->bind($this->_data);
-			} else {
-				$this->_join->load($this->_id);
+		if (!isset($this->join))
+		{
+			$this->join = FabTable::getInstance('join', 'FabrikTable');
+			if (isset($this->_data))
+			{
+				$this->join->bind($this->_data);
 			}
-			if (is_string($this->_join->params)) {
-				$this->_join->params = trim($this->_join->params) == '' ? '{"type": ""}' : $this->_join->params;
-				$this->_join->params = json_decode($this->_join->params);
+			else {
+				$this->join->load($this->_id);
+			}
+			if (is_string($this->join->params))
+			{
+				$this->join->params = trim($this->join->params) == '' ? '{"type": ""}' : $this->join->params;
+				$this->join->params = json_decode($this->join->params);
 			}
 		}
-		return $this->_join;
+		return $this->join;
+	}
+	
+	function clearJoin()
+	{
+		unset($this->join);
 	}
 
 	/**
@@ -71,19 +80,25 @@ class FabrikFEModelJoin extends FabModel{
 
 	function getJoinFromKey($key, $id)
 	{
-		if (!isset($this->_join)) {
+		if (!isset($this->join))
+		{
 			$db = FabrikWorker::getDbo(true);
-			$this->_join = FabTable::getInstance('join', 'FabrikTable');
-			$this->_join->load(array($key => $id));
+			$this->join = FabTable::getInstance('join', 'FabrikTable');
+			$this->join->load(array($key => $id));
 		}
-		return $this->_join;
+		return $this->join;
 	}
 
 	function getPrimaryKey($splitter = '___')
 	{
 		$join = $this->getJoin();
-		$pk = $join->table_join.$splitter.$join->table_join_key;
-		return $ok;
+		$pk = $join->table_join . $splitter . $join->table_join_key;
+		return $pk;
+	}
+	
+	public function setElementId($id)
+	{
+		$this->join->element_id = $id;
 	}
 	
 	/**
@@ -95,19 +110,27 @@ class FabrikFEModelJoin extends FabModel{
 	function deleteAll($groupId)
 	{
 		$db = FabrikWorker::getDbo(true);
-		$db->setQuery("DELETE FROM #__{package}_elements WHERE group_id = ".(int) $groupId);
-		if (!$db->query()) {
+		$query = $db->getQuery(true);
+		$query->delete(' #__{package}_elements')->where('group_id = ' . (int) $groupId);
+		$db->setQuery($query);
+		if (!$db->query())
+		{
 			return JError::raiseError(500, $db->getErrorMsg());
 		}
-
-		$db->setQuery("DELETE FROM #__{package}_groups WHERE id = ".(int) $groupId);
-		if (!$db->query()) {
+		$query->clear();
+		$query->delete(' #__{package}_groups')->where('id = ' . (int) $groupId);
+		$db->setQuery($query);
+		if (!$db->query())
+		{
 			return JError::raiseError(500, $db->getErrorMsg());
 		}
 
 		/* delete all form group records */
-		$db->setQuery("DELETE FROM #__{package}_formgroup WHERE group_id = ".(int) $groupId);
-		if (!$db->query()) {
+		$query->clear();
+		$query->delete(' #__{package}_formgroup')->where('group_id = ' . (int) $groupId);
+		$db->setQuery($query);
+		if (!$db->query())
+		{
 			return JError::raiseError(500, $db->getErrorMsg());
 		}
 		$this->getJoin()->delete();
@@ -120,16 +143,18 @@ class FabrikFEModelJoin extends FabModel{
 
 	function save($source)
 	{
-		if (!$this->bind($source)) {
+		if (!$this->bind($source))
+		{
 			return false;
 		}
-		if (!$this->check()) {
+		if (!$this->check())
+		{
 			return false;
 		}
-		if (!$this->store()) {
+		if (!$this->store())
+		{
 			return false;
 		}
-
 		$this->_error = '';
 		return true;
 	}

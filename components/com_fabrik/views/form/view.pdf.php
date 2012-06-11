@@ -14,163 +14,165 @@ jimport('joomla.application.component.view');
 class fabrikViewForm extends JView
 {
 
-  /**
-   * main setup routine for displaying the form/detail view
-   * @param string template
-   */
+	/**
+	 * main setup routine for displaying the form/detail view
+	 * @param string template
+	 */
 
-  function display($tpl = null)
-  {
+	function display($tpl = null)
+	{
 		$app = JFactory::getApplication();
 		$document = JFactory::getDocument();
-    $config	= JFactory::getConfig();
-    $w = new FabrikWorker();
-    $model = $this->getModel();
-    $model->_editable = false;
+		$config	= JFactory::getConfig();
+		$w = new FabrikWorker();
+		$model = $this->getModel();
+		$model->editable = false;
 
-    //Get the active menu item
-    $usersConfig = JComponentHelper::getParams('com_fabrik');
+		//Get the active menu item
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
-    $form = $model->getForm();
-    $data = $model->render();
-    list($this->plugintop, $this->pluginbottom) = $this->get('FormPluginHTML');
+		$form = $model->getForm();
+		$data = $model->render();
+		list($this->plugintop, $this->pluginbottom) = $this->get('FormPluginHTML');
 
-    if (!$model->canPublish()) {
-      if (!$app->isAdmin()) {
-        echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
-        return false;
-      }
-    }
+		if (!$model->canPublish()) {
+			if (!$app->isAdmin()) {
+				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				return false;
+			}
+		}
 
-    $access = $model->checkAccessFromListSettings();
-    if ($access == 0) {
-      echo JText::_('JERROR_ALERTNOAUTHOR');
-      return false;
-    }
-    if ($access == 1 && $model->_editable == '1') {
-      $model->_editable = 0;
-    }
-    if (is_object($model->_table)) {
-      $joins = $model->_table->getJoins();
-      $model->getJoinGroupIds($joins);
-    }
-    //as J1.7 doesnt have a pdf view we cant setName on raw doc type
+		$access = $model->checkAccessFromListSettings();
+		if ($access == 0)
+		{
+			echo JText::_('JERROR_ALERTNOAUTHOR');
+			return false;
+		}
+		if ($access == 1 && $model->editable == '1')
+		{
+			$model->editable = 0;
+		}
+		if (is_object($model->_table)) {
+			$joins = $model->_table->getJoins();
+			$model->getJoinGroupIds($joins);
+		}
+		//as J1.7 doesnt have a pdf view we cant setName on raw doc type
 		//$document->setName($w->parseMessageForPlaceHolder($this->get('PageTitle'), JArrayHelper::fromObject($data)));
 		//$document->_engine->DefOrientation = 'L';
 
 		$params = $model->getParams();
-    $params->def('icons', $app->getCfg('icons'));
-    $pop = JRequest::getVar('tmpl') == 'component' ? 1 : 0;
-    $params->set('popup', $pop);
-    $this->form_template = JRequest::getVar('layout', $form->form_template);
+		$params->def('icons', $app->getCfg('icons'));
+		$pop = JRequest::getVar('tmpl') == 'component' ? 1 : 0;
+		$params->set('popup', $pop);
+		$this->form_template = JRequest::getVar('layout', $form->form_template);
 
-    $this->editable = $model->_editable;
+		$this->editable = $model->editable;
 
-    $form->label = $this->get('label');
-    //$document->_engine->SetTitle( $form->label);
-	$form->intro = $this->get('Intro');
-	$form->action = $this->get('Action');
-	$form->js = '';
-	$form->formid = 'form_' . $model->getId();
-	$form->name = 'form_' . $model->getId();
+		$form->label = $this->get('label');
+		//$document->_engine->SetTitle( $form->label);
+		$form->intro = $this->get('Intro');
+		$form->action = $this->get('Action');
+		$form->js = '';
+		$form->formid = 'form_' . $model->getId();
+		$form->name = 'form_' . $model->getId();
 
-    $form->encType = $model->getFormEncType();;
+		$form->encType = $model->getFormEncType();;
 
-    $form->error = $model->hasErrors() ? $form->error : '';
-    
-    $this->showEmail = $params->get('email', 0);
+		$form->error = $model->hasErrors() ? $form->error : '';
 
-    $this->assignRef('groups', $this->get('GroupView'));
+		$this->showEmail = $params->get('email', 0);
 
-    $this->assignRef('params', $params);
+		$this->assignRef('groups', $this->get('GroupView'));
 
-    $form->startTag = '<div class="fabrikForm fabrikDetails" id="detail_' . $model->getId() . '">';
-    $form->endTag  = '</div>';
-    //force front end templates
-    $this->_basePath = COM_FABRIK_FRONTEND . '/views';
+		$this->assignRef('params', $params);
 
-    $t = $params->get('pdf_template');
-    if ($t == '') {
-    	$t = ($model->_editable) ? $form->form_template : $form->view_only_template;
-    }
-    $form->form_template = JRequest::getVar('layout', $t);
-    $tmpl = JRequest::getVar('layout', $form->form_template);
-    $this->_includeTemplateCSSFile( $tmpl);
+		$form->startTag = '<div class="fabrikForm fabrikDetails" id="detail_' . $model->getId() . '">';
+		$form->endTag  = '</div>';
+		//force front end templates
+		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 
-    $this->message = '';
-    $this->_addButtons();
-    $form->error = '';
-    $this->hiddenFields = '';
-    $form->resetButton = '';
-    $form->submitButton = '';
-    $form->copyButton = '';
-    $form->gobackButton = '';
-    $form->applyButton = '';
-    $form->deleteButton = '';
+		$t = $params->get('pdf_template');
+		if ($t == '') {
+			$t = ($model->editable) ? $form->form_template : $form->view_only_template;
+		}
+		$form->form_template = JRequest::getVar('layout', $t);
+		$tmpl = JRequest::getVar('layout', $form->form_template);
+		$this->_includeTemplateCSSFile( $tmpl);
 
-    $this->assignRef('form', $form);
+		$this->message = '';
+		$this->_addButtons();
+		$form->error = '';
+		$this->hiddenFields = '';
+		$form->resetButton = '';
+		$form->submitButton = '';
+		$form->copyButton = '';
+		$form->gobackButton = '';
+		$form->applyButton = '';
+		$form->deleteButton = '';
 
-    $table = new stdClass();
+		$this->assignRef('form', $form);
+
+		$table = new stdClass();
 		$table->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
 		$this->assignRef('table', $table);
 
-    if ($model->sessionModel) {
-      $this->message = $model->sessionModel->status;
-      if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
-        $this->message .= " <a href='#' class='clearSession'>" . JText::_('COM_FABRIK_CLEAR') . "</a>";
-      }
-    }
+		if ($model->sessionModel) {
+			$this->message = $model->sessionModel->status;
+			if ($model->sessionModel->statusid == _FABRIKFORMSESSION_LOADED_FROM_COOKIE) {
+				$this->message .= " <a href='#' class='clearSession'>" . JText::_('COM_FABRIK_CLEAR') . "</a>";
+			}
+		}
 		$this->addTemplatePath($this->_basePath .'/' . $this->_name . '/tmpl/' . $tmpl);
 		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
-    parent::display();
-    return;
-  }
+		parent::display();
+		return;
+	}
 
-  /**
-   * include the template css files
-   * @param string template name
-   */
-  
-  function _includeTemplateCSSFile( $formTemplate )
-  {
-    $config		= JFactory::getConfig();
-    $document = JFactory::getDocument();
-    $ab_css_file = JPATH_SITE . 'components/com_fabrik/views/form/tmpl/' . $formTemplate . '/template.css';
-    $live_css_file = COM_FABRIK_LIVESITE  . 'components/com_fabrik/views/form/tmpl/' . $formTemplate . '/template.css';
-    if (file_exists($ab_css_file))
-    {
-      $document->addStyleSheet($live_css_file);
-    }
-  }
+	/**
+	 * include the template css files
+	 * @param string template name
+	 */
 
-  /**
-   * add buttons to the view e.g. print, pdf
-   */
+	function _includeTemplateCSSFile( $formTemplate )
+	{
+		$config		= JFactory::getConfig();
+		$document = JFactory::getDocument();
+		$ab_css_file = JPATH_SITE . 'components/com_fabrik/views/form/tmpl/' . $formTemplate . '/template.css';
+		$live_css_file = COM_FABRIK_LIVESITE  . 'components/com_fabrik/views/form/tmpl/' . $formTemplate . '/template.css';
+		if (file_exists($ab_css_file))
+		{
+			$document->addStyleSheet($live_css_file);
+		}
+	}
 
-  function _addButtons()
-  {
-    $model = $this->getModel();
-    $params = $model->getParams();
-    $this->showEmail = $params->get('email', 0);
+	/**
+	 * add buttons to the view e.g. print, pdf
+	 */
 
-    if (JRequest::getVar('tmpl') != 'component') {
-      if ($this->showEmail) {
-        $this->emailLink = '';
-      }
+	function _addButtons()
+	{
+		$model = $this->getModel();
+		$params = $model->getParams();
+		$this->showEmail = $params->get('email', 0);
 
-      $this->showPrint = $params->get('print', 0);
-      if ($this->showPrint) {
-        $this->printLink = '';
-      }
+		if (JRequest::getVar('tmpl') != 'component') {
+			if ($this->showEmail) {
+				$this->emailLink = '';
+			}
 
-      $this->showPDF = $params->get('pdf', 0);
-      if ($this->showPDF) {
-        $this->pdfLink = '';
-      }
-    } else {
-      $this->showPDF = $this->showPrint = false;
-    }
-  }
+			$this->showPrint = $params->get('print', 0);
+			if ($this->showPrint) {
+				$this->printLink = '';
+			}
+
+			$this->showPDF = $params->get('pdf', 0);
+			if ($this->showPDF) {
+				$this->pdfLink = '';
+			}
+		} else {
+			$this->showPDF = $this->showPrint = false;
+		}
+	}
 
 }
 ?>

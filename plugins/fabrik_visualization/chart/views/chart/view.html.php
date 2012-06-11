@@ -44,21 +44,13 @@ class fabrikViewChart extends JView
 		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
-		$pluginParams = $model->getPluginParams();
-		$tmpl = $pluginParams->get('chart_layout', $tmpl);
+		$tmpl = $params->get('chart_layout', $tmpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
-
-		$ab_css_file = $tmplpath . '/template.css';
-		if (JFile::exists($ab_css_file))
-		{
-			JHTML::stylesheet('plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tmpl . '/template.css', true);
-		}
-
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tmpl . '/template.css');
 		//assign something to Fabrik.blocks to ensure we can clear filters
 		$str = "fabrikChart{$this->row->id} = {};";
 		$str .= "\n" . "Fabrik.addBlock('vizualization_{$this->row->id}', fabrikChart{$this->row->id});";
-		
 		FabrikHelperHTML::addScriptDeclaration($srcs, $str);
 		echo parent::display();
 	}

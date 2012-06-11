@@ -47,7 +47,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 		$opts = new stdClass();
 		$opts->listid = $formModel->getListModel()->getId();
 		$opts->fabrik = $formModel->getId();
-		$opts->rowid = $formModel->_rowId;
+		$opts->rowid = $formModel->rowId;
 		$opts->senderBlock = JRequest::getCmd('view') == 'form' ? 'form_' : 'details_';
 		$opts->senderBlock .= $formModel->getId();
 		$opts = json_encode($opts);

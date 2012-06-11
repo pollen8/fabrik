@@ -16,17 +16,15 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 
-	var $hasLabel = false;
+	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
 
 	protected $fieldSize = '1';
 
 	/**
-	 * draws the form element
-	 * @param	array	data to pre-populate element with
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::render()
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -40,13 +38,13 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 		$border = $params->get('fbrecommendations_border', '');
 		$font = $params->get('fbrecommendations_font', 'arial');
 		$colorscheme = $params->get('fbrecommendations_colorscheme', 'light');
-		$str .= "<fb:recommendations site=\"$domain\" width=\"$width\" height=\"$height\" header=\"$header\" colorscheme=\"$colorscheme\" font=\"$font\" border_color=\"$border\" />";
+		$str .= '<fb:recommendations site="' . $domain . '" width="' . $width . '" height="' . $height . '" header="' . $header . '" colorscheme="' . $colorscheme . '" font="' . $font . '" border_color="' . $border . '" />';
 		return $str;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::elementJavascript()
 	 */
 
 	function elementJavascript($repeatCounter)

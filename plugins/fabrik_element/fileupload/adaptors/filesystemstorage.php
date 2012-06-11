@@ -274,10 +274,10 @@ class filesystemstorage extends storageAdaptor{
 
 			getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
 			$config =& JFactory::getConfig();
-			$host =  $config->getValue('host');
-			$database = $config->getValue('db');
-			$username = $config->getValue('user');
-			$password = $config->getValue('password');
+			$host =  $config->get('host');
+			$database = $config->get('db');
+			$username = $config->get('user');
+			$password = $config->get('password');
 			$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
 			$getID3->encoding = 'UTF-8';
 			// Analyze file and store returned data in $ThisFileInfo

@@ -401,7 +401,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 		// $$$ hugh
 		// @TODO shortColName won't handle joined data, need to fix this to use safeColName
-		// (don't forget to change nameQuote stuff later on as well)
+		// (don't forget to change quoteName stuff later on as well)
 		$renderOrder = JRequest::getInt('renderOrder');
 		$ipn_txn_field = (array) $params->get('paypal_ipn_txn_id_element', array());
 		$ipn_txn_field = FabrikString::shortColName($ipn_txn_field[$renderOrder]);
@@ -424,14 +424,13 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$ipn_value = str_replace(']','}',$ipn_value);
 		$ipn_value = $w->parseMessageForPlaceHolder($ipn_value, $_POST);
 
-		$email_from = $admin_email = $config->getValue('mailfrom');
-
-
+		$email_from = $admin_email = $config->get('mailfrom');
 
 		// read the post from PayPal system and add 'cmd'
 		$req = 'cmd=_notify-validate';
 
-		foreach ($_POST as $key => $value) {
+		foreach ($_POST as $key => $value)
+		{
 			$value = urlencode(stripslashes($value));
 			$req .= "&$key=$value";
 		}
@@ -495,7 +494,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 						//$$tom This block Paypal from updating the IPN field if the payment status evolves (e.g. from Pending to Completed)
 						// $$$ hugh - added check of status, so only barf if there is a status field, and it is Completed for this txn_id
 						if (!empty($ipn_txn_field) && !empty($ipn_status_field)) {
-							$db->setQuery("SELECT $ipn_status_field FROM $table->db_table_name WHERE ".$db->nameQuote($ipn_txn_field)." = ".$db->quote($txn_id));
+							$db->setQuery("SELECT $ipn_status_field FROM $table->db_table_name WHERE ".$db->quoteName($ipn_txn_field)." = ".$db->quote($txn_id));
 							$txn_result = $db->loadResult();
 							if (!empty($txn_result)) {
 								if ($txn_result == 'Completed') {
@@ -561,7 +560,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 								$set_array = array();
 								foreach ($set_list as $set_field => $set_value) {
 									$set_value = $db->quote($set_value);
-									$set_field = $db->nameQuote($set_field);
+									$set_field = $db->quoteName($set_field);
 									$set_array[] = "$set_field = $set_value";
 								}
 								$db->setQuery("UPDATE $table->db_table_name SET " . implode(',', $set_array) . " WHERE $table->db_primary_key = ".$db->quote($rowid));
@@ -585,36 +584,43 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$receive_debug_emails = $receive_debug_emails[$renderOrder];
 		$send_default_email = (array) $params->get('paypal_send_default_email');
 		$send_default_email = $send_default_email[$renderOrder];
-		if ($status != 'ok') {
-			foreach ($_POST as $key => $value) {
+		if ($status != 'ok')
+		{
+			foreach ($_POST as $key => $value)
+			{
 				$emailtext .= $key . " = " .$value ."\n\n";
 			}
 
-			if ($receive_debug_emails == '1') {
-				$subject = $config->getValue('sitename').": Error with PayPal IPN from Fabrik";
+			if ($receive_debug_emails == '1')
+			{
+				$subject = $config->get('sitename').": Error with PayPal IPN from Fabrik";
 				JUtility::sendMail( $email_from, $email_from, $admin_email, $subject, $emailtext, false);
 			}
 			$log->message_type = $status;
 			$log->message = $emailtext ."\n//////////////\n" . $res ."\n//////////////\n". $req .  "\n//////////////\n".$err_msg;
-			if ($send_default_email == '1') {
+			if ($send_default_email == '1')
+			{
 				$payer_emailtext = "There was an error processing your PayPal payment.  The administrator of this site has been informed.";
 				JUtility::sendMail( $email_from, $email_from, $payer_email, $subject, $payer_emailtext, false);
 			}
 		}
 		else {
-			foreach ($_POST as $key => $value) {
+			foreach ($_POST as $key => $value)
+			{
 				$emailtext .= $key . " = " .$value ."\n\n";
 			}
 
-			if ($receive_debug_emails == '1') {
-				$subject = $config->getValue('sitename').": IPN $payment_status";
+			if ($receive_debug_emails == '1')
+			{
+				$subject = $config->get('sitename') . ': IPN ' . $payment_status;
 				JUtility::sendMail( $email_from, $email_from, $admin_email, $subject, $emailtext, false);
 			}
-			$log->message_type = 'form.paypal.ipn.'.$payment_status;
+			$log->message_type = 'form.paypal.ipn.' . $payment_status;
 			$query = $db->getQuery();
 			$log->message = $emailtext ."\n//////////////\n" . $res ."\n//////////////\n". $req .  "\n//////////////\n".$query;
 
-			if ($send_default_email == '1') {
+			if ($send_default_email == '1')
+			{
 				$payer_subject = "PayPal success";
 				$payer_emailtext = "Your PayPal payment was succesfully processed.  The PayPal transaction id was $txn_id";
 				JUtility::sendMail( $email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
@@ -628,9 +634,9 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 	/**
 	 * get the custom IPN class
-	 * @param object $params
-	 * @param int params $renderOrder
-	 * @return mixed false or class instance
+	 * @param	object	$params
+	 * @param	int		params $renderOrder
+	 * @return	mixed	false or class instance
 	 */
 
 	protected function getIPNHandler($params, $renderOrder = 0)
@@ -638,12 +644,15 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$php_file = (array) $params->get('paypal_run_php_file');
 		$php_file = JFilterInput::clean($php_file[$renderOrder], 'CMD');
 		$php_file = empty($php_file) ? '' : 'plugins/fabrik_form/paypal/scripts/' . $php_file;
-		if (!empty($php_file) && file_exists($php_file)) {
+		if (!empty($php_file) && file_exists($php_file))
+		{
 			$request = $_REQUEST;
 			require_once($php_file);
 			$ipn = new fabrikPayPalIPN();
 			return $ipn;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}

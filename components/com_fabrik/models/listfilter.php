@@ -614,7 +614,7 @@ class FabrikFEModelListfilter extends FabModel {
 			// which we'll need in the case of $elid not being in $elements for search forms
 			$elements = $this->listModel->getElements('id');
 			$filter_elements = $this->listModel->getElements('filtername');
-			$tablename = $db->nameQuote($this->listModel->getTable()->db_table_name);
+			$tablename = $db->quoteName($this->listModel->getTable()->db_table_name);
 			$searchfilters = $app->getUserState('com_fabrik.searchform.form'.$fromFormId.'.filters');
 			for ($i = 0; $i < count($searchfilters['key']); $i++)
 			{
@@ -646,7 +646,7 @@ class FabrikFEModelListfilter extends FabModel {
 						$joins = $this->listModel->getJoins();
 						foreach ($joins as $join)
 						{
-							$key = $db->nameQuote($join->table_join) .'.'. array_pop(explode('.', $key));
+							$key = $db->quoteName($join->table_join) . '.' . array_pop(explode('.', $key));
 							if (array_key_exists($key, $filter_elements))
 							{
 								$found = true;
@@ -1265,7 +1265,7 @@ class FabrikFEModelListfilter extends FabModel {
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('onGetFilterKey', $this->listModel, 'list');
-		return $pluginManager->_data;
+		return $pluginManager->data;
 	}
 
 }

@@ -56,11 +56,13 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		if (is_null($this->defaults)) {
+		if (is_null($this->defaults))
+		{
 			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults)) {
-			$groupModel = $this->_group;
+		if (!array_key_exists($repeatCounter, $this->defaults))
+		{
+			$groupModel = $this->getGroupModel();
 			$group = $groupModel->getGroup();
 			$joinid	= $group->join_id;
 			$formModel = $this->getForm();
@@ -68,48 +70,65 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$params = $this->getParams();
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
+			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
+			{
 				$default = '';
-			} else {
+			}
+			else
+			{
 				$default = $this->getDefaultValue($data);
 			}
-
 			$name = $this->getFullName(false, true, false);
-
-			if ($groupModel->isJoin()) {
-				if ($groupModel->canRepeat()) {
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) &&  array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+			if ($groupModel->isJoin())
+			{
+				if ($groupModel->canRepeat())
+				{
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) &&  array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+					{
 						$default = $data['join'][$joinid][$name][$repeatCounter];
 					}
-				} else {
+				}
+				else
+				{
 					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid])) {
 						$default = $data['join'][$joinid][$name];
 					}
 				}
-			} else {
-				if ($groupModel->canRepeat()) {
+			}
+			else
+			{
+				if ($groupModel->canRepeat())
+				{
 					//repeat group NO join
-					if (array_key_exists($name, $data)) {
-						if (is_array($data[$name])) {
+					if (array_key_exists($name, $data))
+					{
+						if (is_array($data[$name]))
+						{
 							//occurs on form submission for fields at least
 							$a = $data[$name];
-						} else {
+						}
+						else
+						{
 							//occurs when getting from the db
 							$a = json_decode($data[$name], true);
 						}
 						$default = JArrayHelper::getValue($a, $repeatCounter, $default);
 					}
 
-				} else {
+				}
+				else
+				{
 					$default = JArrayHelper::getValue($data, $name, $default);
 				}
 			}
-			if ($default === '') { //query string for joined data
+			if ($default === '')
+			{ //query string for joined data
 				$default = JArrayHelper::getValue($data, $name);
 			}
 			$element->default = $default;
 			//stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
+			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			if (is_array($element->default)) {
@@ -270,7 +289,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
 
 		$rootFolder = str_replace('/', DS, $rootFolder);
-		if ($canSelect && $this->_editable) {
+		if ($canSelect && $this->editable) {
 			$str[] = '<img src="' . $defaultImage . '" alt="'. $value .'" '.$float.' class="imagedisplayor"/>';
 			if (array_key_exists($name, $data)) {
 				if (trim($value) == '') {
@@ -294,7 +313,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				$images[] = JHTML::_('select.option', $n, $n);
 			}
 			// $$$rob not sure about his name since we are adding $repeatCounter to getHTMLName();
-			$imageName = $this->_group->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]" : $id . '_image';
+			$imageName = $this->getGroupModel()->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]" : $id . '_image';
 			$image = array_pop( explode('/', $value));
 			// $$$ hugh - append $rootFolder to JPATH_SITE, otherwise we're showing folders
 			// they aren't supposed to be able to see.

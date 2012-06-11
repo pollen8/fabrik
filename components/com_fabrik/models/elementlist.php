@@ -15,9 +15,9 @@ jimport('joomla.filesystem.file');
 
 class plgFabrik_ElementList extends plgFabrik_Element{
 
-	var $hasSubElements = true;
+	public $hasSubElements = true;
 
-	var $defaults = null;
+	public $defaults = null;
 
 	protected $fieldDesc = 'TEXT';
 
@@ -95,18 +95,18 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	{
 		$params = $this->getParams();
 		$opts = $params->get('sub_options');
-		if (!isset($this->_default))
+		if (!isset($this->default))
 		{
 			if (isset($opts->sub_initial_selection))
 			{
-				$this->_default = $this->getSubInitialSelection();
+				$this->default = $this->getSubInitialSelection();
 			}
 			else
 			{
-				$this->_default = parent::getDefaultValue($data);
+				$this->default = parent::getDefaultValue($data);
 			}
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	/**
@@ -214,7 +214,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	 * @return	string	formatted value
 	 */
 	
-	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$split_str = $params->get('options_split_str', '');
@@ -268,7 +268,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	function onAutocomplete_options()
 	{
 		//needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->_id = JRequest::getInt('element_id');
+		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement(true);
 		$listModel = $this->getListModel();
 		$rows = $this->filterValueList(true);
@@ -362,7 +362,6 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		// and I'm not sure if we enforce that.  Problem being that if we just cast directly to
 		// an array, the array isn't "empty()", as it has a single, empty string entry.  So then
 		// the array_diff() we're about to do sees that as a diff.
-		// $selected = (array) $this->getValue($data, $repeatCounter);
 		$selected = $this->getValue($data, $repeatCounter);
 		if (is_string($selected))
 		{
@@ -376,7 +375,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 			$values = array_merge($values, $diff);
 			$labels = array_merge($labels, $diff);
 		}
-		if (!$this->_editable)
+		if (!$this->editable)
 		{
 			$aRoValues = array();
 			for ($i = 0; $i < count($values); $i ++)
@@ -391,9 +390,10 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		}
 
 		$optionsPerRow = (int) $this->getParams()->get('options_per_row', 4);
-		$elBeforeLabel = (bool)$this->getParams()->get('element_before_label', true);
+		$elBeforeLabel = (bool) $this->getParams()->get('element_before_label', true);
 		//element_before_label
-		if (JRequest::getVar('format') == 'raw') {
+		if (JRequest::getVar('format') == 'raw')
+		{
 			$optionsPerRow = 1;
 		}
 		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow);
@@ -444,7 +444,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		if (!array_key_exists($valueKey, $this->defaults))
 		{
 			$value = '';
-			$groupModel = $this->_group;
+			$groupModel = $this->getGroupModel();
 			$group = $groupModel->getGroup();
 			$joinid = $this->isJoin() ? $this->getJoinModel()->getJoin()->id : $group->join_id;
 			$formModel = $this->getForm();

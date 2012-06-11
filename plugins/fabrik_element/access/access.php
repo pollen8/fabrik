@@ -46,7 +46,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 			}
 		}
 		$gtree = $this->getOpts();
-		if (!$this->_editable) {
+		if (!$this->editable) {
 			return $this->renderListData($arSelected[0], null);
 		}
 		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0]);

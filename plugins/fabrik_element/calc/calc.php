@@ -22,7 +22,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default))
+		if (!isset($this->default))
 		{
 			$w = new FabrikWorker();
 			$element = $this->getElement();
@@ -32,9 +32,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				$default = @eval($default);
 				FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
 			}
-			$this->_default = $default;
+			$this->default = $default;
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	private function _getV($data, $repeatCounter)
@@ -47,7 +47,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		// $$$ hugh - if we don't do this, we get the cached default from the previous repeat
 		if ($repeatCounter > 0)
 		{
-			unset($this->_default);
+			unset($this->default);
 		}
 		// $$$ hugh - don't think we want to do this here, otherwise calc gets run regardless of calc_on_save_only,
 		// it just won't get used if 'true'
@@ -400,7 +400,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$str = array();
 		if ($this->canView())
 		{
-			if (!$this->_editable)
+			if (!$this->editable)
 			{
 				$value = $this->_replaceWithIcons($value);
 				$str[] = $value;
@@ -447,7 +447,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
 		$opts->observe = $obs;
-		$opts->id = $this->_id;
+		$opts->id = $this->id;
 		$validations = $this->getValidations();
 		$opts->validations = empty($validations) ? false : true;
 		$opts = json_encode($opts);
@@ -487,9 +487,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		{
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
-			$joinSQL = $listModel->_buildQueryJoin();
-			$whereSQL = $listModel->_buildQueryWhere();
-			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->nameQuote($table->db_table_name) . " $joinSQL $whereSQL";
+			$joinSQL = $listModel->buildQueryJoin();
+			$whereSQL = $listModel->buildQueryWhere();
+			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
@@ -512,9 +512,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		{
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
-			$joinSQL = $listModel->_buildQueryJoin();
-			$whereSQL = $listModel->_buildQueryWhere();
-			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->nameQuote($table->db_table_name) . " $joinSQL $whereSQL";
+			$joinSQL = $listModel->buildQueryJoin();
+			$whereSQL = $listModel->buildQueryWhere();
+			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
@@ -537,9 +537,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		{
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
-			$joinSQL = $listModel->_buildQueryJoin();
-			$whereSQL = $listModel->_buildQueryWhere();
-			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM " . $db->nameQuote($table->db_table_name) . " $joinSQL $whereSQL";
+			$joinSQL = $listModel->buildQueryJoin();
+			$whereSQL = $listModel->buildQueryWhere();
+			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{

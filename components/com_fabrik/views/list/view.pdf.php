@@ -135,7 +135,7 @@ class FabrikViewList extends JView{
 		$c = 0;
 
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
-		$aObjs = $pluginManager->_data;
+		$aObjs = $pluginManager->data;
 
 		$script .= "\nlist.addPlugins([\n";
 		$script .= "  " . implode(",\n  ", $aObjs);
@@ -143,7 +143,7 @@ class FabrikViewList extends JView{
 
 		//@since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
-		$this->assign('pluginBeforeList', $pluginManager->_data);
+		$this->assign('pluginBeforeList', $pluginManager->data);
 
 		$script = "
 		head.ready(function() {
@@ -320,7 +320,7 @@ class FabrikViewList extends JView{
 
 		$this->assign('isGrouped', $item->group_by);
 		$this->assign('colCount', count($this->headings));
-		$this->assignRef('grouptemplates', $model->grouptemplates);
+		$this->assignRef('grouptemplates', $model->groupTemplates);
 		$this->assignRef('params', $params);
 		$this->assignRef('groupheadings', $groupHeadings);
 		$this->_loadTemplateBottom();

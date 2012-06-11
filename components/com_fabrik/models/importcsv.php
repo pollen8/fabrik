@@ -237,19 +237,21 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	protected function getBaseDir()
 	{
-		if (!isset($this->baseDir)) {
+		if (!isset($this->baseDir))
+		{
 			$config = JFactory::getConfig();
-			$tmp_dir = $config->getValue('config.tmp_path');
+			$tmp_dir = $config->get('tmp_path');
 			$this->baseDir = JPath::clean($tmp_dir);
 		}
 		return $this->baseDir;
 	}
 	
 	/**
-	 * @snce 3.0.3.1
+	 * @since 3.0.3.1
 	 * used by import csv cron plugin to override default base dir location
-	 * @param string $dir (folder path)
+	 * @param	string	$dir (folder path)
 	 */
+	
 	public function setBaseDir($dir)
 	{
 		$this->baseDir = $dir;
@@ -423,14 +425,13 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$dropData = (int)JArrayHelper::getValue($jform, 'drop_data', 0);
 		$overWrite = (int)JArrayHelper::getValue($jform, 'overwrite', 0);
 		$model = $this->getlistModel();
-		$model->_importingCSV = true;
+		$model->importingCSV = true;
 		$item = $model->getTable();
 		$formModel = $model->getFormModel();
-
-		if ($dropData) {
+		if ($dropData)
+		{
 			$model->truncate();
 		}
-
 		$item = $model->getTable();
 		$tableParams = $model->getParams();
 		$csvFullName = $tableParams->get('csvfullname', 0);
@@ -450,21 +451,25 @@ class FabrikFEModelImportcsv extends JModelForm{
 		// $$$ rob we are no longer removing the element joins from $joins
 		// so lets see if any of $joins are table joins.
 		$tableJoinsFound = false;
-		for ($x = 0; $x < count($joins); $x++) {
-			if ((int) $joins[$x]->list_id !== 0) {
+		for ($x = 0; $x < count($joins); $x++)
+		{
+			if ((int) $joins[$x]->list_id !== 0)
+			{
 				$tableJoinsFound = true;
 			}
 		}
 		$joindata = array();
 
 		$defaultsToAdd = $this->defaultsToAdd();
-		foreach ($this->data as $data) {
+		foreach ($this->data as $data)
+		{
 			$aRow = array();
 			$pkVal = null;
 			$i = 0;
-			foreach ($this->matchedHeadings as $headingKey => $heading) {
-
-				switch ($csvFullName) {
+			foreach ($this->matchedHeadings as $headingKey => $heading)
+			{
+				switch ($csvFullName)
+				{
 					case 0:
 						break;
 					case 1:
@@ -476,16 +481,20 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 				//test _raw key and use that
 
-				if (substr($heading, strlen($heading)-4, strlen($heading)) == "_raw") {
+				if (substr($heading, strlen($heading)-4, strlen($heading)) == "_raw")
+				{
 					$pktestHeading = substr($heading, 0, strlen($heading)-4);
-				} else {
+				}
+				else
+				{
 					$pktestHeading = $heading;
 				}
 				//$$$rob isset($pkVal) because: It could be that you have two elements (short names) with the
 			 // same name (if trying to import joined data, in this case I'm
 			 //presuming that the master table's pkval is the first one you come to
 
-				if ($pktestHeading == $key && !isset($pkVal)) {
+				if ($pktestHeading == $key && !isset($pkVal))
+				{
 					$pkVal = $data[$i];
 				}
 				// $$$ hugh - removed 'else', as we need to include the PK val, in case it's not auto-inc
@@ -497,58 +506,74 @@ class FabrikFEModelImportcsv extends JModelForm{
 			}
 
 			// $$$ rob add in per row default values for missing elements
-			foreach ($defaultsToAdd as $k => $elementModel) {
+			foreach ($defaultsToAdd as $k => $elementModel)
+			{
 				$aRow[$k] = $elementModel->getDefaultValue($aRow);
 				$aRow[$k.'_raw'] = $aRow[$k];
 			}
 
 			$model->getFormGroupElementData();
 			//take any _raw values and replace their real elements with their data
-			foreach ($aRow as $k=>$val) {
-				if (substr($k, strlen($k)-4, strlen($k)) == "_raw") {
+			foreach ($aRow as $k => $val)
+			{
+				if (substr($k, strlen($k)-4, strlen($k)) == "_raw")
+				{
 					$noneraw = substr($k, 0, strlen($k)-4);
-					if (array_key_exists($noneraw, $aRow)) {
+					if (array_key_exists($noneraw, $aRow))
+					{
 						$aRow[$noneraw] = $val;
 						unset($aRow[$k]);
 					}
 				}
 			}
-			if ($overWrite && in_array($pkVal, $aExistingKeys)) {
-				$formModel->_rowId = $pkVal;
+			if ($overWrite && in_array($pkVal, $aExistingKeys))
+			{
+				$formModel->rowId = $pkVal;
 				$updatedCount ++;
-			} else {
-				$formModel->_rowId = 0;
+			}
+			else
+			{
+				$formModel->rowId = 0;
 				$this->addedCount ++;
 			}
 
 			// $$$ rob - if raw and none raw or just raw found then insert the raw data
 			// into the none raw key. Otherwise if just importing raw data no data stored
 
-			foreach ($aRow as $k=>$val) {
-				if (substr($k, strlen($k)-4, strlen($k)) == "_raw") {
-					$noneraw = substr($k, 0, strlen($k)-4);
+			foreach ($aRow as $k => $val)
+			{
+				if (substr($k, strlen($k)-4, strlen($k)) == "_raw")
+				{
+					$noneraw = substr($k, 0, strlen($k) - 4);
 					$aRow[$noneraw] = $val;
 					unset($aRow[$k]);
 				}
 			}
-			if (!$tableJoinsFound) {
+			if (!$tableJoinsFound)
+			{
 				$formModel->_formData = $aRow;
 				FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
 				$formModel->processToDB();
-			} else {
+			}
+			else
+			{
 				//merge multi line csv into one entry & defer till we've passed everything
 				$joindata = $this->_fakeJoinData($joindata, $aRow, $pkVal, $formModel);
 			}
 		}
-		if ($tableJoinsFound) {
+		if ($tableJoinsFound)
+		{
 			$this->insertJoinedData($joindata);
 		}
 		$this->removeCSVFile();
 		$elementsCreated = count($this->newHeadings);
 		$this->updatedCount = $updatedCount;
-		if ($elementsCreated == 0) {
+		if ($elementsCreated == 0)
+		{
 			$msg = JText::sprintf("%s CSV records added and %s records updated", $this->addedCount, $updatedCount);
-		} else {
+		}
+		else
+		{
 			$msg = JText::sprintf("%s new elements added, %s CSV records added and %s records updated", $elementsCreated, $this->addedCount, $updatedCount);
 		}
 		return $msg;
@@ -557,7 +582,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 	/**
 	 * once we have itterated over all of the csv file and recreated
 	 * the join data, we can finally allow the table's form to proces it
-	 * @param $joindata
+	 * @param	array	$joindata
 	 */
 
 	private function insertJoinedData($joindata)
@@ -566,10 +591,14 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$model = $this->getListModel();
 		$table = $model->getTable();
 		$dbname = $table->db_table_name;
-		foreach ($joindata as &$j) {
-			foreach($j as $k => $v) {
-				if (!is_array($v)) {
-					if (array_shift(explode('___', $k)) != $table->db_table_name) {
+		foreach ($joindata as &$j)
+		{
+			foreach($j as $k => $v)
+			{
+				if (!is_array($v))
+				{
+					if (array_shift(explode('___', $k)) != $table->db_table_name)
+					{
 						unset($j[$k]);
 					}
 				}
@@ -577,24 +606,28 @@ class FabrikFEModelImportcsv extends JModelForm{
 		}
 		$formModel = $model->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
-
 		$groupids = array();
-		foreach ($groups as $group) {
-
-			if ($group->isJoin()) {
+		foreach ($groups as $group)
+		{
+			if ($group->isJoin())
+			{
 				$groupids[$group->getGroup()->join_id] = $group->getGroup()->id;
 			}
 		}
-		foreach ($joindata as $data) {
+		foreach ($joindata as $data)
+		{
 			//reset the table's name back to the main table
 			$table->db_table_name = $dbname;
 			$fabrik_repeat_group = array();
 			$js = JArrayHelper::getValue($data, 'join', array());
-			foreach ($js as $jid => $jdata) {
+			foreach ($js as $jid => $jdata)
+			{
 				//work out max num of repeated data to insert
 				$counter = 0;
-				foreach($jdata as $v) {
-					if (count($v) > $counter) {
+				foreach($jdata as $v)
+				{
+					if (count($v) > $counter)
+					{
 						$counter = count($v);
 					}
 
@@ -618,11 +651,11 @@ class FabrikFEModelImportcsv extends JModelForm{
 	 * then insert data into the row
 	 * NOTE: will probably only work for a 1:1 join result
 	 *
-	 * @param array merged join data
-	 * @param array $aRow
-	 * @param mixed primary key value
-	 * @param object form model
-	 * @return array updated join data
+	 * @param	array	merged join data
+	 * @param	array	$aRow
+	 * @param	mixed	primary key value
+	 * @param	object	form model
+	 * @return	array	updated join data
 	 */
 
 	private function _fakeJoinData($joindata, $aRow, $pkVal, &$formModel)
@@ -631,22 +664,24 @@ class FabrikFEModelImportcsv extends JModelForm{
 		$overWrite	= JRequest::getInt('overwrite', 0, 'post');
 		$joins = $this->getJoins();
 		$groups = $formModel->getGroups();
-		if (!empty($joins)) {
-
+		if (!empty($joins))
+		{
 			//a new record that will need to be inserted
-			if (!array_key_exists($pkVal, $joindata)) {
+			if (!array_key_exists($pkVal, $joindata))
+			{
 				$joindata[$pkVal] = array();
 			}
-
-			foreach ($aRow as $k=>$v) {
-				if (!array_key_exists($k, $joindata[$pkVal])) {
+			foreach ($aRow as $k=>$v)
+			{
+				if (!array_key_exists($k, $joindata[$pkVal]))
+				{
 					$joindata[$pkVal][$k] = $v;
 				}
 			}
-			if (!array_key_exists('join', $joindata[$pkVal])) {
+			if (!array_key_exists('join', $joindata[$pkVal]))
+			{
 				$joindata[$pkVal]['join'] = array();
 			}
-
 			foreach ($joins as $join)
 			{
 				//only iterate over table joins (exclude element joins)
@@ -656,20 +691,29 @@ class FabrikFEModelImportcsv extends JModelForm{
 				}
 				$repeat = $groups[$join->group_id]->canRepeat();
 				$keys = $this->getJoinPkRecords($join);
-				if ($overWrite && in_array($pkVal, $keys)) { // not sure 2nd test is right here
+				if ($overWrite && in_array($pkVal, $keys))
+				{
+					// not sure 2nd test is right here
 					$origData[$join->table_key] = $pkVal;
 					$updatedCount ++;
-				} else {
-					$origData[$join->table_join.'___'.$join->table_key] = 0;
+				}
+				else
+				{
+					$origData[$join->table_join . '___' . $join->table_key] = 0;
 					$this->addedCount ++;
 				}
-				$origData[$join->table_join.'___'.$join->table_join_key] = $pkVal;
-				foreach ($origData as $key => $val) {
+				$origData[$join->table_join . '___' .$join->table_join_key] = $pkVal;
+				foreach ($origData as $key => $val)
+				{
 					$t = array_shift(explode('___', $key));
-					if ($t == $join->table_join) {
-						if ($repeat) {
+					if ($t == $join->table_join)
+					{
+						if ($repeat)
+						{
 							$joindata[$pkVal]['join'][$join->id][$key][] = $val;
-						} else {
+						}
+						else
+						{
 							$joindata[$pkVal]['join'][$join->id][$key] = $val;
 						}
 					}
@@ -681,18 +725,20 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	/**
 	 *
-	 * @param object $join
-	 * @return unknown_type
+	 * @param	object	$join
+	 * @return	unknown_type
 	 */
 
 	function getJoinPkRecords($join)
 	{
 		$model = $this->getlistModel();
 		$formModel = $model->getFormModel();
-		if (!isset($this->joinpkids)) {
+		if (!isset($this->joinpkids))
+		{
 			$this->joinpkids = array();
 		}
-		if (!array_key_exists($join->id, $this->joinpkids)) {
+		if (!array_key_exists($join->id, $this->joinpkids))
+		{
 			$db = $model->getDb();
 			$query = $db->getQuery(true);
 			$query->select($join->table_key)->from($join->table_join);
@@ -709,12 +755,15 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	function getJoins()
 	{
-		if (!isset($this->joins)) {
+		if (!isset($this->joins))
+		{
 			$model = $this->getlistModel();
 			//move the join table data into their own array space
-			$this->joins 	=& $model->getJoins();
-			foreach ($this->joins as $j => $join) {
-				if ($this->joins[$j]->element_id != 0) {
+			$this->joins = $model->getJoins();
+			foreach ($this->joins as $j => $join)
+			{
+				if ($this->joins[$j]->element_id != 0)
+				{
 					// $$$ rob this caused an error when importing into the joined record
 					// in tableModel::_addDefaultDataFromRO() as the query produced `table`.`` for the
 					// db joins element label
@@ -727,8 +776,9 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 	function _makeError()
 	{
-		$str =  JText::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE') ;
-		foreach ($this->newHeadings as $heading) {
+		$str =  JText::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE');
+		foreach ($this->newHeadings as $heading)
+		{
 			$str .= "$heading, ";
 		}
 		return $str;
@@ -747,14 +797,15 @@ class FabrikFEModelImportcsv extends JModelForm{
 	/**
 	 * determine if the chooselementtypes view should contain a column where 
 	 * the user selects the field to be the pk
-	 * @return bool true if column shown
+	 * @return	bool	true if column shown
 	 */
 	
 	public function getSelectKey()
 	{
 		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
 		// otherwise a blank column is added to the import data meaniing overwrite date dunna workie
-		if (JRequest::getBool('cron_csvimport')) {
+		if (JRequest::getBool('cron_csvimport'))
+		{
 			return true;
 		}
 		//$$$ rob 13/03/2012 - reimporting into exisiting list - should return true
@@ -763,11 +814,13 @@ class FabrikFEModelImportcsv extends JModelForm{
 			return true;
 		}
 		$model = $this->getlistModel();
-		if (trim($model->getTable()->db_primary_key) !== '') {
+		if (trim($model->getTable()->db_primary_key) !== '')
+		{
 			return false;
 		}
 		$post = JRequest::getVar('jform', array());
-		if (JArrayHelper::getValue($post, 'addkey', 0) == 1) {
+		if (JArrayHelper::getValue($post, 'addkey', 0) == 1)
+		{
 			return false;
 		}
 		return true;

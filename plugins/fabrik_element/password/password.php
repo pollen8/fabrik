@@ -73,7 +73,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	{
 		$element = $this->getElement();
 		$value = '';
-		if (!$this->_editable)
+		if (!$this->editable)
 		{
 			if ($element->hidden == '1')
 			{
@@ -122,7 +122,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		$element->name = $origname;
 		if ($checkvalue != $data)
 		{
-			$this->_validationErr = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
+			$this->validationError = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 			return false;
 		}
 		else
@@ -130,7 +130,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 			//$$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
 			if (JRequest::getInt('rowid') === 0 && JRequest::getInt($k, 0, 'post') === 0 && $data === '')
 			{
-				$this->_validationErr .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
+				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;
 			}
 			return true;

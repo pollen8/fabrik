@@ -720,6 +720,7 @@ var fabrikCalendar = new Class({
 	
 	addEvForm: function (o)
 	{
+		console.log('addEvForm', o);
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
 		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
 		url += '&visualizationid=' + this.options.calendarId;

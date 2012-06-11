@@ -14,27 +14,28 @@ jimport('joomla.application.component.model');
 class FabrikFEModelGroup extends FabModel{
 
 	/** @var object parameters */
-	protected $_params = null;
+	protected $params = null;
 
 	/** @var int id of group to load */
-	var $_id = null;
+	protected $id = null;
 
 	/** @var object group table */
-	var $_group = null;
+	protected $group = null;
 
 	/** @var object form model */
 	protected $_form = null;
 
-	/** @var object list model */
+	/** @var object table model */
 	var $_table = null;
 
-	var $_joinModel = null;
+	/** @var object join model */
+	protected $joinModel = null;
 
 	/** @var array of element plugins */
 	var $elements = null;
 
 	/** @var array of published element plugins */
-	var $publishedElements = null;
+	public $publishedElements = null;
 
 	/** @var array of published element plugins shown in the list */
 	protected $publishedListElements = null;
@@ -43,9 +44,9 @@ class FabrikFEModelGroup extends FabModel{
 	public $repeatTotal = null;
 
 	/** @var array of form ids that the group is in (maximum of one value)*/
-	protected $_formsIamIn = null;
+	protected $formsIamIn = null;
 
-	/** @var bol can the group be viewed (set to false if no elements are visible in the group**/
+	/** @var bool can the group be viewed (set to false if no elements are visible in the group**/
 	var $canView = null;
 
 	/**
@@ -61,13 +62,12 @@ class FabrikFEModelGroup extends FabModel{
 	 * Method to set the group id
 	 *
 	 * @access	public
-	 * @param	int	group ID number
+	 * @param	int		group ID number
 	 */
 
 	function setId($id)
 	{
 		// Set new group ID
-		$this->_id = $id;
 		$this->id = $id;
 	}
 
@@ -78,31 +78,45 @@ class FabrikFEModelGroup extends FabModel{
 
 	function &getGroup()
 	{
-		if (is_null($this->_group)) {
+		if (is_null($this->group))
+		{
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-			$this->_group = FabTable::getInstance('Group', 'FabrikTable');
-			$this->_group->load($this->getId());
+			$this->group = FabTable::getInstance('Group', 'FabrikTable');
+			$this->group->load($this->getId());
 		}
-		return $this->_group;
+		return $this->group;
+	}
+	
+	/**
+	 * @since 3.0.5
+	 * set the group row
+	 * @param	object	$group
+	 */
+	
+	function setGroup($group)
+	{
+		$this->group = $group;
 	}
 
 	/**
 	 * can you view the group
-	 * @param bol is the group in an editable view
-	 * @return bol
+	 * @return	bol
 	 */
 
 	function canView()
 	{
-		if (!is_null($this->canView)) {
+		if (!is_null($this->canView))
+		{
 			return $this->canView;
 		}
 		$elementModels = $this->getPublishedElements();
 		$this->canView = false;
-		foreach ($elementModels as $elementModel) {
+		foreach ($elementModels as $elementModel)
+		{
 			// $$$ hugh - added canUse() check, corner case, see:
 			// http://fabrikar.com/forums/showthread.php?p=111746#post111746
-			if (!$elementModel->canView() && !$elementModel->canUse()) {
+			if (!$elementModel->canView() && !$elementModel->canUse())
+			{
 				continue;
 			}
 			$this->canView = true;
@@ -113,13 +127,13 @@ class FabrikFEModelGroup extends FabModel{
 	/**
 	 * set the context in which the element occurs
 	 *
-	 * @param object form model
-	 * @param object table model
+	 * @param	object	form model
+	 * @param	object	table model
 	 */
 
 	function setContext($formModel, $listModel)
 	{
-		$this->_form 	= $formModel;
+		$this->form = $formModel;
 		$this->_table = $listModel;
 	}
 
@@ -131,16 +145,19 @@ class FabrikFEModelGroup extends FabModel{
 
 	function getFormsIamIn()
 	{
-		if (!isset($this->_formsIamIn)) {
+		if (!isset($this->formsIamIn))
+		{
 			$db = FabrikWorker::getDbo(true);
-			$sql = "SELECT form_id FROM #__{package}_formgroup WHERE group_id = ".(int) $this->getId();
-			$db->setQuery($sql);
-			$this->_formsIamIn = $db->loadColumn();
-			if (!$db->query()) {
+			$query = $db->getQuery(true);
+			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
+			$db->setQuery($query);
+			$this->formsIamIn = $db->loadColumn();
+			if (!$db->query())
+			{
 				return JError::raiseError(500, $db->getErrorMsg());
 			}
 		}
-		return $this->_formsIamIn;
+		return $this->formsIamIn;
 	}
 
 	/**
@@ -149,19 +166,22 @@ class FabrikFEModelGroup extends FabModel{
 	 * NOTE: pretty sure that ->elements will already be loaded
 	 * within $formModel->getGroupsHiarachy()
 	 *
-	 * @return array element objects (bound to element plugin)
+	 * @return	array	element objects (bound to element plugin)
 	 */
 
 	function getMyElements()
 	{
 		// elements should generally have already been loaded via the pluginmanager getFormPlugins() method
-		if (!isset($this->elements)) {
+		if (!isset($this->elements))
+		{
 			$group = $this->getGroup();
 			$this->elements = array();
 			$form = $this->getFormModel();
 			$pluginManager = FabrikWorker::getPluginManager();
-			$allGroups = $pluginManager->getFormPlugins($this->getFormModel());
-			if (empty($this->elements)) {
+			$formModel = $this->getFormModel();
+			$allGroups = $pluginManager->getFormPlugins($formModel);
+			if (empty($this->elements))
+			{
 				//horrible hack for when saving group
 				$this->elements = $allGroups[$this->getId()]->elements;
 			}
@@ -171,17 +191,18 @@ class FabrikFEModelGroup extends FabModel{
 
 	/**
 	 * randomise the element list (note the array is the pre-rendered elements)
-	 * @param $elements array form views processed/formatted list of elements
-	 * that the form template uses
-	 * @return null
+	 * @param	$elements	array	form views processed/formatted list of elements that the form template uses
+	 * @return	null
 	 */
 
 	function randomiseElements(&$elements)
 	{
-		if ($this->getParams()->get('random', false) == true) {
+		if ($this->getParams()->get('random', false) == true)
+		{
 			$keys = array_keys($elements);
 			shuffle($keys);
-			foreach ($keys as $key) {
+			foreach ($keys as $key)
+			{
 				$new[$key] = $elements[$key];
 			}
 			$elements = $new;
@@ -251,21 +272,21 @@ class FabrikFEModelGroup extends FabModel{
 
 	function getFormModel()
 	{
-		if (!isset($this->_form))
+		if (!isset($this->form))
 		{
 			$formids = $this->getFormsIamIn();
 			$formid = empty($formids) ? 0 : $formids[0];
-			$this->_form = JModel::getInstance('Form', 'FabrikFEModel');
-			$this->_form->setId($formid);
-			$this->_form->getForm();
-			$this->_form->getlistModel();
+			$this->form = JModel::getInstance('Form', 'FabrikFEModel');
+			$this->form->setId($formid);
+			$this->form->getForm();
+			$this->form->getlistModel();
 		}
-		return $this->_form;
+		return $this->form;
 	}
 
 	/**
-	 * get the groups table model
-	 * @return object table model
+	 * get the groups list model
+	 * @return	object	list model
 	 */
 	function getlistModel()
 	{
@@ -275,23 +296,28 @@ class FabrikFEModelGroup extends FabModel{
 	/**
 	 * get an array of published elements
 	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
-	 * @return array published element objects
+	 * @return	array	published element objects
 	 */
 
 	function getPublishedElements()
 	{
-		if (!isset($this->publishedElements)) {
+		if (!isset($this->publishedElements))
+		{
 			$this->publishedElements = array();
 		}
 		$ids = (array)JRequest::getVar('elementid');
 		$sig = implode('.', $ids);
-		if (!array_key_exists($sig, $this->publishedElements)) {
+		if (!array_key_exists($sig, $this->publishedElements))
+		{
 			$this->publishedElements[$sig] = array();
 			$elements = $this->getMyElements();
-			foreach ($elements as $elementModel) {
+			foreach ($elements as $elementModel)
+			{
 				$element = $elementModel->getELement();
-				if ($element->published == 1) {
-					if (empty($ids) || in_array($element->id, $ids)) {
+				if ($element->published == 1)
+				{
+					if (empty($ids) || in_array($element->id, $ids))
+					{
 						$this->publishedElements[$sig][] = $elementModel;
 					}
 				}
@@ -435,7 +461,7 @@ class FabrikFEModelGroup extends FabModel{
 	/**
 	 * is the group a join?
 	 *
-	 * @return bol
+	 * @return bool
 	 */
 
 	public function isJoin()
@@ -445,61 +471,61 @@ class FabrikFEModelGroup extends FabModel{
 
 	/**
 	 * get the group's associated join model
-	 *
 	 * @return object join model
 	 */
 
 	public function getJoinModel()
 	{
 		$group = $this->getGroup();
-		if (is_null($this->_joinModel)) {
-			$this->_joinModel = JModel::getInstance('Join', 'FabrikFEModel');
-			$this->_joinModel->setId($group->join_id);
+		if (is_null($this->joinModel))
+		{
+			$this->joinModel = JModel::getInstance('Join', 'FabrikFEModel');
+			$this->joinModel->setId($group->join_id);
 			$js = $this->getListModel()->getJoins();
 			// $$$ rob set join models data from preloaded table joins - reduced load time
-			for ($x=0; $x < count($js); $x ++) {
-				if ($js[$x]->id == $group->join_id) {
-					$this->_joinModel->setData($js[$x]);
+			for ($x = 0; $x < count($js); $x ++)
+			{
+				if ($js[$x]->id == $group->join_id)
+				{
+					$this->joinModel->setData($js[$x]);
 					break;
 				}
 			}
-
-			$this->_joinModel->getJoin();
+			$this->joinModel->getJoin();
 		}
-		return $this->_joinModel;
+		return $this->joinModel;
 	}
 
 	/**
 	 * load params
-	 *
-	 * @return object params
+	 * @return	object	params
 	 */
 
 	function &loadParams()
 	{
-		$this->_params = new JRegistry($this->_group->params);
-		return $this->_params;
+		$this->params = new JRegistry($this->group->params);
+		return $this->params;
 	}
 
 	/**
 	 * get group params
-	 *
-	 * @return object params
+	 * @return	object	params
 	 */
 
 	function &getParams()
 	{
-		if (!$this->_params) {
-			$this->_params = $this->loadParams();
+		if (!$this->params)
+		{
+			$this->params = $this->loadParams();
 		}
-		return $this->_params;
+		return $this->params;
 	}
 
 	/**
 	 * make a group object to be used in the form view. Object contains
 	 * group display properties
-	 * @param object form model
-	 * @return object group display properties
+	 * @param	object	form model
+	 * @return	object	group display properties
 	 */
 
 	function getGroupProperties(&$formModel)
@@ -508,11 +534,11 @@ class FabrikFEModelGroup extends FabModel{
 		$group = new stdClass();
 		$groupTable	= $this->getGroup();
 		$params	= $this->getParams();
-		if (!isset($this->_editable))
+		if (!isset($this->editable))
 		{
-			$this->_editable = $formModel->_editable;
+			$this->editable = $formModel->editable;
 		}
-		if ($this->_editable)
+		if ($this->editable)
 		{
 			//if all of the groups elements are not editable then set the group to uneditable
 			$elements = $this->getPublishedElements();
@@ -526,10 +552,10 @@ class FabrikFEModelGroup extends FabModel{
 			}
 			if (!$editable)
 			{
-				$this->_editable = false;
+				$this->editable = false;
 			}
 		}
-		$group->editable = $this->_editable;
+		$group->editable = $this->editable;
 		$group->canRepeat = $params->get('repeat_group_button', '0');
 		$showGroup = $params->def('repeat_group_show_first', '1');
 
@@ -548,13 +574,12 @@ class FabrikFEModelGroup extends FabModel{
 
 		if (JString::stristr($groupTable->label , "{Add/Edit}"))
 		{
-			$replace = ((int) $formModel->_rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = ((int) $formModel->rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$groupTable->label  = str_replace("{Add/Edit}", $replace, $groupTable->label);
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->_data, false);
-
 		$group->name = $groupTable->name;
-		$group->displaystate = ($group->canRepeat == 1 && $formModel->_editable) ? 1 : 0;
+		$group->displaystate = ($group->canRepeat == 1 && $formModel->editable) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		$group->canAddRepeat = $this->canAddRepeat();
@@ -564,8 +589,7 @@ class FabrikFEModelGroup extends FabModel{
 
 	/**
 	 * copies a group, form group and its elements
-	 * @return an array of new element id's keyed on original elements that have
-	 * been copied
+	 * @return	array	an array of new element id's keyed on original elements that have been copied
 	 *
 	 * (when copying a table (and hence a group) the groups join is copied in table->copyJoins)
 	 */
@@ -576,14 +600,16 @@ class FabrikFEModelGroup extends FabModel{
 		$group = $this->getGroup();
 		//newGroupNames set in table copy
 		$newNames = JRequest::getVar('newGroupNames', array());
-		if (array_key_exists($group->id, $newNames)) {
+		if (array_key_exists($group->id, $newNames))
+		{
 			$group->name = $newNames[$group->id];
 		}
 		$group->id = null;
 		$group->store();
 
 		$newElements = array();
-		foreach ($elements as $element) {
+		foreach ($elements as $element)
+		{
 			$origElementId = $element->getElement()->id;
 			$copy = $element->copyRow($origElementId, $element->getElement()->label, $group->id);
 			$newElements[$origElementId] =  $copy->id;
@@ -597,7 +623,8 @@ class FabrikFEModelGroup extends FabModel{
 		$formGroup->form_id = $formid;
 		$formGroup->group_id = $group->id;
 		$formGroup->ordering = 999999;
-		if (!$formGroup->store()) {
+		if (!$formGroup->store())
+		{
 			JError::raiseError(500, $formGroup->getError());
 		}
 		$formGroup->reorder(" form_id = '$formid'");

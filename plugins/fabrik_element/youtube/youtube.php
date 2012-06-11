@@ -16,22 +16,22 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementYoutube extends plgFabrik_Element {
 
-	var $_pluginName = 'youtube';
+	protected $pluginName = 'youtube';
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::renderListData()
 	 */
 
 	public function renderListData($data, &$thisRow)
 	{
-		$params = $this->getParams();
+		return $this->constructVideoPlayer($data, 'list');
+		/* $params = $this->getParams();
 		// ------------------ Construct embedded player
 
 		// Player size
-		if (($params->get('display_in_table') == 2) || ($params->get('display_in_table') == 1)) { // Display in table = Normal
+		if (($params->get('display_in_table') == 2) || ($params->get('display_in_table') == 1)) {
+			// Display in table = Normal
 			if ($params->get('or_width_player') != NULL) {
 				$width = $params->get('or_width_player');
 				$height = $params->get('or_height_player');
@@ -48,90 +48,94 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 				$width = '660';
 				$height = '525';
 			}
-		} else if ($params->get('display_in_table') == 0) { // Display in table = Mini
-				$width = '170';
-				$height = '142';
+		} else if ($params->get('display_in_table') == 0) {
+			// Display in table = Mini
+			$width = '170';
+			$height = '142';
 		}
 
-			// Include related videos
-			if ($params->get('include_related') == 0) {
-				$rel = '&rel=0';
-			} else {
-				$rel = '';
-			}
+		// Include related videos
+		if ($params->get('include_related') == 0) {
+			$rel = '&rel=0';
+		} else {
+			$rel = '';
+		}
 
-			// Show border
-			if (($params->get('show_border') == 1) && ($params->get('display_in_table') != 0)) { // Don't show borders if display in table = Mini
-				$border = '&border=1';
-			} else {
-				$border = '';
-			}
+		// Show border
+		if (($params->get('show_border') == 1) && ($params->get('display_in_table') != 0)) {
+			// Don't show borders if display in table = Mini
+			$border = '&border=1';
+		} else {
+			$border = '';
+		}
 
-			// Enable delayed cookies
-			if ($params->get('enable_delayed_cookies') == 1) {
-				$url = 'http://www.youtube-nocookie.com/v/';
-			} else {
-				$url = 'http://www.youtube.com/v/';
-			}
+		// Enable delayed cookies
+		if ($params->get('enable_delayed_cookies') == 1) {
+			$url = 'http://www.youtube-nocookie.com/v/';
+		} else {
+			$url = 'http://www.youtube.com/v/';
+		}
 
-			// Colors
-			$color1 = substr($params->get('color1'), -6);
-			$color2 = substr($params->get('color2'), -6);
+		// Colors
+		$color1 = substr($params->get('color1'), -6);
+		$color2 = substr($params->get('color2'), -6);
 
-			$vid = array_pop(explode("/", $data));
-                        //$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
-                        if (strstr($vid, 'watch')) {
-                            $vid = explode("=", $vid);
-                            unset($vid[0]); // That's the watch?v=
-                            $vid = implode('', $vid);
-                        }
-			if ($vid == '') {
-				//$$$ rob perhaps they just added in the code???
-				$vid = $data;
-			}
-			if ($data != NULL) {
-				if ($params->get('display_in_table') == 1) { // Display link
-					if ($params->get('display_link') == 0) {
-						$object_vid = $data;
+		$vid = array_pop(explode("/", $data));
+		//$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
+		if (strstr($vid, 'watch')) {
+			$vid = explode("=", $vid);
+			unset($vid[0]); // That's the watch?v=
+			$vid = implode('', $vid);
+		}
+		if ($vid == '') {
+			//$$$ rob perhaps they just added in the code???
+			$vid = $data;
+		}
+		if ($data != NULL) {
+			if ($params->get('display_in_table') == 1) {
+				// Display link
+				if ($params->get('display_link') == 0) {
+					$object_vid = $data;
+				} else {
+					if ($params->get('display_link') == 1) {
+						$dlink = $data;
 					} else {
-						if ($params->get('display_link') == 1) {
-							$dlink = $data;
+						if ($params->get('text_link') != NULL) {
+							$dlink = $params->get('text_link');
 						} else {
-							if ($params->get('text_link') != NULL) {
-								$dlink = $params->get('text_link');
-							} else {
-								$dlink = 'Watch Video';
-							}
-						}
-						if ($params->get('target_link') == 1) {
-							$object_vid = '<a href="'.$data.'" target="blank">'.$dlink.'</a>';
-						} else if ($params->get('target_link') == 2) {
-
-
-							$element =& $this->getElement();
-							$object_vid = "<a href='".$data."' rel='lightbox[social ".$width." ".$height."]' title='".$element->label."'>".$dlink."</a>";
-
-
-						} else {
-							$object_vid = '<a href="'.$data.'">'.$dlink.'</a>';
+							$dlink = 'Watch Video';
 						}
 					}
-				} else {
-					$object_vid = '<object width="'.$width.'" height="'.$height.'"><param name="movie" value="'.$url.$vid.'&hl=en&fs=1'.$rel.'&color1=0x'.$color1.'&color2=0x'.$color2.$border.'"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="'.$url.$vid.'&hl=en&fs=1'.$rel.'&color1=0x'.$color1.'&color2=0x'.$color2.$border.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'"></embed></object>';
+					if ($params->get('target_link') == 1)
+					{
+						$object_vid = '<a href="'.$data.'" target="blank">'.$dlink.'</a>';
+					} else if ($params->get('target_link') == 2) 
+					{
+
+
+						$element = $this->getElement();
+						$object_vid = "<a href='".$data."' rel='lightbox[social ".$width." ".$height."]' title='".$element->label."'>".$dlink."</a>";
+
+
+					} else {
+						$object_vid = '<a href="'.$data.'">'.$dlink.'</a>';
+					}
 				}
 			} else {
-				$object_vid = '';
+				$object_vid = '<object width="'.$width.'" height="'.$height.'"><param name="movie" value="'.$url.$vid.'&hl=en&fs=1'.$rel.'&color1=0x'.$color1.'&color2=0x'.$color2.$border.'"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="'.$url.$vid.'&hl=en&fs=1'.$rel.'&color1=0x'.$color1.'&color2=0x'.$color2.$border.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'"></embed></object>';
 			}
+		} else {
+			$object_vid = '';
+		}
 
-			return $object_vid;
-		//}
+		return $object_vid;
+		//} */
 	}
 
 
 	/**
-	 * do we need to include the lighbox js code
-	 *
-	 * @return bol
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::requiresLightBox()
 	 */
 
 	function requiresLightBox()
@@ -140,7 +144,8 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. fabrikfield returns true
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::isReceiptElement()
 	 */
 
 	function isReceiptElement()
@@ -149,144 +154,193 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 	}
 
 	/**
-	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::render()
 	 */
 
 	function render($data, $repeatCounter = 0)
 	{
-		if (JRequest::getVar('view') != 'details') {
-
-			$name 			= $this->getHTMLName($repeatCounter);
-			$id 				= $this->getHTMLId($repeatCounter);
-			$params 		=& $this->getParams();
-			$element 		=& $this->getElement();
-			$size 			= $params->get('width');
-			//$maxlength  = $params->get('maxlength');
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$data = $this->getFormModel()->_data;
+		$value = $this->getValue($data, $repeatCounter);
+		if (JRequest::getVar('view') != 'details')
+		{
+			$name = $this->getHTMLName($repeatCounter);
+			$id = $this->getHTMLId($repeatCounter);
+			$size = $params->get('width');
 			$maxlength = 255;
 			$bits = array();
-			$data 	=& $this->_form->_data;
-			$value 	= $this->getValue($data, $repeatCounter);
 			$type = "text";
-			if (isset($this->_elementError) && $this->_elementError != '') {
+			if ($this->elementError != '')
+			{
 				$type .= " elementErrorHighlight";
 			}
-
-			if (!$this->_editable) {
-				return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
+			if (!$this->editable)
+			{
+				return($element->hidden == '1') ? '<!-- ' . $value . ' -->' : $value;
 			}
-
-			$bits['class']		= "fabrikinput inputbox $type";
-			$bits['type']		= $type;
-			$bits['name']		= $name;
-			$bits['id']			= $id;
+			$bits['class'] = "fabrikinput inputbox $type";
+			$bits['type'] = $type;
+			$bits['name'] = $name;
+			$bits['id'] = $id;
 			//stop "'s from breaking the content out of the field.
-			$bits['value']		= htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-			$bits['size']		= $size;
-			$bits['maxlength']	= $maxlength;
-
-
+			$bits['value'] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+			$bits['size'] = $size;
+			$bits['maxlength'] = $maxlength;
 			$str = "<input ";
-			foreach ($bits as $key=>$val) {
-				$str.= "$key = \"$val\" ";
+			foreach ($bits as $key => $val)
+			{
+				$str.= $key . ' = "' . $val . '" ';
 			}
 			$str .= " />\n";
 			return $str;
-		} else {
-			$params 		=& $this->getParams();
-			$element 		=& $this->getElement();
-			$data 	=& $this->_form->_data;
-			$value 	= $this->getValue($data, $repeatCounter);
-		// ------------------ Construct embedded player
-
-		// Player size
-		if ($params->get('or_width_player') != NULL) {
-			$width = $params->get('or_width_player');
-			$height = $params->get('or_height_player');
-		} else {
-			if ($params->get('player_size') == 'small') {
-				$width = '340';
-				$height = '285';
-			} else if ($params->get('player_size') == 'medium') {
-				$width = '445';
-				$height = '364';
-			} else if ($params->get('player_size') == 'normal') {
-				$width = '500';
-				$height = '405';
-			} else {
-				$width = '660';
-				$height = '525';
-			}
 		}
-
-			// Include related videos
-			if ($params->get('include_related') == 0) {
-				$rel = '&rel=0';
-			} else {
-				$rel = '';
-			}
-
-			// Show border
-			if ($params->get('show_border') == 1) {
-				$border = '&border=1';
-			} else {
-				$border = '';
-			}
-
-			// Enable delayed cookies
-			if ($params->get('enable_delayed_cookies') == 1) {
-				$url = 'http://www.youtube-nocookie.com/v/';
-			} else {
-				$url = 'http://www.youtube.com/v/';
-			}
-
-			// Colors
-			$color1 = substr($params->get('color1'), -6);
-			$color2 = substr($params->get('color2'), -6);
-			// $$$ rob - barfed if url entered was like http://www.youtube.com/v/zD8XclVc3DQ&hl=en
-			//$vid = substr($value, 31);
-			//this seems more sturdy a method:
-			$vid = array_pop(explode("/", $value));
-			//$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
-			if (strstr($vid, 'watch')) {
-				$vid = explode("=", $vid);
-				unset($vid[0]); // That's the watch?v=
-				$vid = implode('', $vid);
-			}
-			if ($vid == '') {
-				//$$$ rob perhaps they just added in the code???
-				$vid = $value;
-			}
-			if ($value != NULL) {
-				$object_vid = '<object width="'.$width.'" height="'.$height.'"><param name="movie" value="'.$url.$vid.'&hl=en&fs=1'.$rel.'&color1=0x'.$color1.'&color2=0x'.$color2.$border.'"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="'.$url.$vid.'&hl=en&fs=1'.$rel.'&color1=0x'.$color1.'&color2=0x'.$color2.$border.'" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="'.$width.'" height="'.$height.'"></embed></object>';
-			} else {
-				$object_vid = '';
-			}
-
-			return $object_vid;
+		else
+		{
+			return $this->constructVideoPlayer($value);
 		}
 	}
-
+	
+	private function constructVideoPlayer($value, $mode = 'form')
+	{
+		$params = $this->getParams();
+		// Player size
+		
+		if (($params->get('display_in_table') == 0) && $model = 'list')
+		{
+			$width = '170';
+			$height = '142';
+		}
+		else
+		{
+			if ($params->get('or_width_player') != NULL)
+			{
+				$width = $params->get('or_width_player');
+				$height = $params->get('or_height_player');
+			}
+			else
+			{
+				if ($params->get('player_size') == 'small')
+				{
+					$width = '340';
+					$height = '285';
+				}
+				else if ($params->get('player_size') == 'medium')
+				{
+					$width = '445';
+					$height = '364';
+				}
+				else if ($params->get('player_size') == 'normal')
+				{
+					$width = '500';
+					$height = '405';
+				}
+				else
+				{
+					$width = '660';
+					$height = '525';
+				}
+			}
+		}
+		// Include related videos
+		$rel = $params->get('include_related') == 0 ? '&rel=0' : '';
+		$border = $params->get('show_border') == 1 ? '&border=1' : '';
+		
+		// Enable delayed cookies
+		$url = $params->get('enable_delayed_cookies') == 1 ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
+		
+		// Colors
+		$color1 = substr($params->get('color1'), -6);
+		$color2 = substr($params->get('color2'), -6);
+		$vid = array_pop(explode("/", $value));
+		//$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
+		if (strstr($vid, 'watch'))
+		{
+			$vid = explode("=", $vid);
+			unset($vid[0]); // That's the watch?v=
+			$vid = implode('', $vid);
+		}
+		if ($vid == '')
+		{
+			//$$$ rob perhaps they just added in the code???
+			$vid = $value;
+		}
+		if ($value != NULL)
+		{
+			if ($params->get('display_in_table') == 1 && $mode == 'list')
+			{
+				// Display link
+				if ($params->get('display_link') == 0)
+				{
+					$object_vid = $value;
+				}
+				else
+				{
+					if ($params->get('display_link') == 1)
+					{
+						$dlink = $value;
+					}
+					else
+					{
+						if ($params->get('text_link') != NULL)
+						{
+							$dlink = $params->get('text_link');
+						}
+						else
+						{
+							$dlink = 'Watch Video';
+						}
+					}
+					if ($params->get('target_link') == 1)
+					{
+						$object_vid = '<a href="' . $url . $vid . '" target="blank">' . $dlink . '</a>';
+					}
+					else if ($params->get('target_link') == 2)
+					{
+						$element = $this->getElement();
+						$object_vid = "<a href='" . $url . $vid . "' rel='lightbox[social " . $width . " " . $height . "]' title='" . $element->label . "'>" . $dlink . "</a>";
+					}
+					else
+					{
+						$object_vid = '<a href="' . $url . $vid . '">' . $dlink . '</a>';
+					}
+				}
+			}
+			else
+			{
+				$html = array();
+				$html[] = '<object width="' . $width . '" height="' . $height . '">';
+				$html[] = '<param name="movie" value="' . $url . $vid . '&hl=en&fs=1' . $rel . '&color1=0x' . $color1 . '&color2=0x' . $color2 . $border . '"></param>';
+				$html[] = '<param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param>';
+				$html[] = '<embed src="' . $url . $vid . '&hl=en&fs=1' . $rel . '&color1=0x' . $color1 . '&color2=0x' . $color2 . $border . '" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="' . $width . '" height="' . $height . '"></embed>';
+				$html[] = '</object>';
+				$object_vid = implode("\n", $html);
+			}
+		}
+		else
+		{
+			$object_vid = '';
+		}
+		return $object_vid;
+	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::elementJavascript()
 	 */
 
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts =& $this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbYouTube('$id', $opts)";
 	}
 
 	/**
-	 * load the javascript class that manages interaction with the form element
-	 * should only be called once
-	 * @return string javascript class file
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::formJavascriptClass()
 	 */
 
 	function formJavascriptClass(&$srcs, $script = '')
@@ -296,18 +350,24 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 	}
 
 	/**
-	 * defines the type of database table field that is created to store the element's data
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getFieldDescription()
 	 */
+	
 	function getFieldDescription()
 	{
-		$p =& $this->getParams();
-		if ($this->encryptMe()) {
+		$p = $this->getParams();
+		if ($this->encryptMe())
+		{
 			return 'BLOB';
 		}
-		$group =& $this->getGroup();
-		if ($group->isJoin() == 0 && $group->canRepeat()) {
+		$group = $this->getGroup();
+		if ($group->isJoin() == 0 && $group->canRepeat())
+		{
 			return "TEXT";
-		} else {
+		}
+		else
+		{
 			$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
 		}
 		return $objtype;

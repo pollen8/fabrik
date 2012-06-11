@@ -102,7 +102,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$data = $this->_form->_data;
+		$data = $this->getFormModel()->_data;
 		$v = $this->getValue($data, $repeatCounter);
 		$zoomlevel = $params->get('fb_gm_zoomlevel');
 		$o = $this->_strToCoords($v, $zoomlevel);
@@ -154,7 +154,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			}
 			else
 			{
-				$usestatic = ($params->get('fb_osm_staticmap') && !$this->_editable);
+				$usestatic = ($params->get('fb_osm_staticmap') && !$this->editable);
 			}
 		}
 		return $usestatic;
@@ -214,10 +214,12 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		{
 			$w = $params->get('fb_osm_table_mapwidth');
 		}
-		if (is_null($h)) {
+		if (is_null($h))
+		{
 			$h = $params->get('fb_osm_table_mapheight');
 		}
-		if (is_null($z)) {
+		if (is_null($z))
+		{
 			$z = $params->get('fb_osm_table_zoomlevel');
 		}
 		$k = $params->get('fb_osm_key');
@@ -228,23 +230,21 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 		$layers = new stdClass();
 		$layers->virtualEarth = $params->get('fb_osm_virtualearthlayers');
-		$layers->yahoo 				= $params->get('fb_osm_yahoolayers');
-		$layers->google 			= $params->get('fb_osm_gmlayers');
+		$layers->yahoo = $params->get('fb_osm_yahoolayers');
+		$layers->google = $params->get('fb_osm_gmlayers');
 
 		$opts = $this->getElementJSOptions($repeatCounter);
 
-		$opts->lon 				= $o->coords[0];
-		$opts->lat 				= $o->coords[1];
-		$opts->zoomlevel 		= $z;
-
+		$opts->lon = $o->coords[0];
+		$opts->lat = $o->coords[1];
+		$opts->zoomlevel = $z;
 		$opts->layers = $layers;
-
-		$opts->control 					= $params->get('fb_osm_mapcontrol');
-		$opts->scalecontrol 		= $params->get('fb_osm_scalecontrol');
-		$opts->maptypecontrol 	= $params->get('fb_osm_maptypecontrol');
-		$opts->overviewcontrol 	= $params->get('fb_osm_overviewcontrol');
-		$opts->drag = ($this->_form->_editable) ? true:false;
-		$opts->staticmap = $this->_useStaticMap() ? true: false;
+		$opts->control = $params->get('fb_osm_mapcontrol');
+		$opts->scalecontro = $params->get('fb_osm_scalecontrol');
+		$opts->maptypecontrol = $params->get('fb_osm_maptypecontrol');
+		$opts->overviewcontrol = $params->get('fb_osm_overviewcontrol');
+		$opts->drag = ($this->getFormModel()->editable) ? true : false;
+		$opts->staticmap = $this->_useStaticMap() ? true : false;
 		$opts->maptype = $params->get('fb_osm_maptype');
 		$opts->key = $params->get('fb_osm_key');
 		$opts->defaultLayer = $params->get('fb_osm_defaultlayer');
@@ -260,34 +260,42 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
-		require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'mobileuseragent'.DS.'mobileuseragent.php');
-		require_once(COM_FABRIK_FRONTEND.DS.'helpers'.DS.'string.php');
+		require_once(COM_FABRIK_FRONTEND . '/libs/mobileuseragent/mobileuseragent.php');
+		require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
 		$ua = new MobileUserAgent();
-		$id		= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
-		$groupModel = $this->_group;
+		$groupModel = $this->getGroupModel();
 		$element = $this->getElement();
 		$val = $element->default;
 
-		$params 	=& $this->getParams();
+		$params = $this->getParams();
 		$w = $params->get('fb_osm_mapwidth');
 		$h = $params->get('fb_osm_mapheight');
-		if ($this->_useStaticMap()) {
+		if ($this->_useStaticMap())
+		{
 			return $this->_staticMap( $val, null, null, null, $repeatCounter);
-		} else {
+		}
+		else
+		{
 			$val = (array_key_exists($name, $data)) ? $data[$name] : $val;
-			if ($element->hidden == '1') {
+			if ($element->hidden == '1')
+			{
 				return $this->getHiddenField($name, $data[$name], $id);
 			}
 			$str = '';
 			//if its not editable and theres no val don't show the map
-			if ((!$this->_editable && $val !='') || $this->_editable) {
+			if ((!$this->editable && $val !='') || $this->editable)
+			{
 				$str = "<div id=\"" . $id . "_map\" style=\"width:{$w}px; height:{$h}px\"></div>";
 				$str .= "<input type='hidden' name='$name' id='" . $id . "' value='$val'/>";
-			} else {
+			}
+			else
+			{
 				$str .= JText::_('No location selected');
 			}
-			if (!$this->_editable) {
+			if (!$this->editable)
+			{
 				$str .= $this->_microformat($val);
 			}
 			return $str;
@@ -306,17 +314,20 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$db = FabrikWorker::getDbo();
 		$dbtable = $this->actualTableName();
 		$listModel = $this->getlistModel();
-		$table 		=& $listModel->getTable();
-		$fullElName = JArrayHelper::getValue($opts, 'alias', "$dbtable" . "___" . $this->_element->name);
-		$str = FabrikString::safeColName($fullElName)." AS ".$db->nameQuote($fullElName);
-		if ($table->db_primary_key == $fullElName) {
+		$table = $listModel->getTable();
+		$fullElName = JArrayHelper::getValue($opts, 'alias', $dbtable . '___' . $this->element->name);
+		$str = FabrikString::safeColName($fullElName) . ' AS ' . $db->quoteName($fullElName);
+		if ($table->db_primary_key == $fullElName)
+		{
 			array_unshift($aFields, $fullElName);
 			array_unshift($aAsFields, $fullElName);
-		} else {
+		}
+		else
+		{
 			$aFields[] 	= $str;
-			$aAsFields[] =  $fullElName;
-			$aFields[]				= $db->nameQuote($dbtable).'.'.$db->nameQuote($this->_element->name).' AS '.$db->nameQuote($fullElName . '_raw');
-			$aAsFields[]			= $db->nameQuote($fullElName . '_raw');
+			$aAsFields[] = $fullElName;
+			$aFields[] = $db->quoteName($dbtable . '.' . $this->element->name) . ' AS ' . $db->quoteName($fullElName . '_raw');
+			$aAsFields[] = $db->quoteName($fullElName . '_raw');
 		}
 	}
 
@@ -327,11 +338,12 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
   function getDefaultValue($data = array())
   {
-    if (!isset($this->_default)) {
-	    $params 		=& $this->getParams();
-	    $this->_default = $params->get('fb_osm_lat') . ',' . $params->get('fb_osm_long') . ':' . $params->get('fb_osm_zoomlevel');
+    if (!isset($this->default))
+    {
+	    $params = $this->getParams();
+	    $this->default = $params->get('fb_osm_lat') . ',' . $params->get('fb_osm_long') . ':' . $params->get('fb_osm_zoomlevel');
     }
-    return $this->_default;
+    return $this->default;
   }
 
   /**
@@ -344,67 +356,89 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		if (is_null($this->defaults)) {
+		if (is_null($this->defaults))
+		{
 			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults)) {
+		if (!array_key_exists($repeatCounter, $this->defaults))
+		{
 			$name = $this->getHTMLName($repeatCounter);
-			$groupModel = $this->_group;
-			$formModel = $this->_form;
+			$groupModel = $this->getGroupModel();
+			$formModel = $this->getFormModel();
 			$element = $this->getElement();
 			$listModel = $this->getlistModel();
 			$params = $this->getParams();
 
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
+			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
+			{
 				$value = '';
-			} else {
+			}
+			else
+			{
 				$value = $this->getDefaultValue($data);
 			}
-
 			$table = $listModel->getTable();
-			if ($groupModel->canRepeat() == '1') {
+			if ($groupModel->canRepeat() == '1')
+			{
 				$fullName = $table->db_table_name . $formModel->joinTableElementStep . $element->name;
-				if (isset($data[$fullName])) {
-					if (is_array($data[$fullName])) {
+				if (isset($data[$fullName]))
+				{
+					if (is_array($data[$fullName]))
+					{
 						$value = $data[$fullName][0];
-					} else {
+					}
+					else
+					{
 						$value = $data[$fullName];
 					}
 					//$value = explode(GROUPSPLITTER, $value);
 					$value = FabrikWorker::JSONtoData($value, true);
-					if (is_array($value) && array_key_exists($repeatCounter, $value)) {
+					if (is_array($value) && array_key_exists($repeatCounter, $value))
+					{
 						$value = $value[$repeatCounter];
-						if (is_array($value)) {
+						if (is_array($value))
+						{
 							$value = implode(',', $value);
 						}
-						if ($value === '') { //query string for joined data
+						if ($value === '')
+						{
+							//query string for joined data
 							$value = JArrayHelper::getValue($data, $name);
 						}
 						return $value;
 					}
 				}
 			}
-			if ($groupModel->isJoin()) {
+			if ($groupModel->isJoin())
+			{
 				$fullName = $this->getFullName(false, true, false);
-				if (isset($data[$fullName])) {
+				if (isset($data[$fullName]))
+				{
 					$value = $data[$fullName];
-					if (is_array($value) && array_key_exists($repeatCounter, $value)) {
+					if (is_array($value) && array_key_exists($repeatCounter, $value))
+					{
 						$value = $value[$repeatCounter];
 					}
 				}
-			} else {
+			}
+			else
+			{
 				$fullName = $table->db_table_name . $formModel->joinTableElementStep . $element->name;
-				if (isset($data[$fullName])) {
+				if (isset($data[$fullName]))
+				{
 					/* drop down  */
-					if (is_array($data[$fullName])) {
-
-						if (isset($data[$fullName ][0])) {
+					if (is_array($data[$fullName]))
+					{
+						if (isset($data[$fullName ][0]))
+						{
 							/* if not its a file upload el */
 							$value = $data[$fullName ][0];
 						}
-					} else {
+					}
+					else
+					{
 						$value = $data[$fullName];
 					}
 				}
@@ -412,13 +446,17 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 			/** ensure that the data is a string **/
 			//stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
+			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
-			if (is_array($value)) {
+			if (is_array($value))
+			{
 				$value = implode(',', $value);
 			}
-			if ($value === '') { //query string for joined data
+			if ($value === '')
+			{
+				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
 			$this->defaults[$repeatCounter] = $value;

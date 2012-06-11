@@ -12,15 +12,15 @@ defined('_JEXEC') or die();
 
 class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 {
-
-	var $hasLabel = false;
-
+	
+	protected $hasLabel = false;
+	
 	protected $inputType = 'checkbox';
 
 	/**
 	 * set the element id
 	 * and maps parameter names for common ElementList options
-	 * @param int $id
+	 * @param	int	$id
 	 */
 
 	public function setId($id)
@@ -37,9 +37,9 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	/**
 	 * render raw data
 	 *
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * @param	string	data
+	 * @param	object	all the data in the tables current row
+	 * @return	string	formatted value
 	 */
 
 	function renderRawListData($data, $thisRow)
@@ -49,8 +49,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int repeat group counter
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * @param	int		repeat group counter
+	 * @return	string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -83,7 +83,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if (!array_key_exists($element->name, $data)) {
+		if (!array_key_exists($element->name, $data))
+		{
 			$data[$element->name] = $params->get('sub_default_value');
 		}
 	}
@@ -98,8 +99,10 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		$values = $this->getSubOptionValues();
 		$labels	= $this->getSubOptionLabels();
-		for ($i = 0; $i < count($labels); $i++) {
-			if (strtolower($labels[$i]) == strtolower($val)) {
+		for ($i = 0; $i < count($labels); $i++)
+		{
+			if (strtolower($labels[$i]) == strtolower($val))
+			{
 				$val = $values[$i];
 				return $val;
 			}
@@ -108,20 +111,16 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 
 	/**
-	 * build the filter query for the given element.
-	 * @param $key element name in format `tablename`.`elementname`
-	 * @param $condition =/like etc
-	 * @param $value search string - already quoted if specified in filter array options
-	 * @param $originalValue - original filter value without quotes or %'s applied
-	 * @param string filter type advanced/normal/prefilter/search/querystring/searchall
-	 * @return string sql query part e,g, "key = value"
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getFilterQuery()
 	 */
 
 	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$originalValue = trim($value, "'");
 		$this->encryptFieldName($key);
-		switch ($condition) {
+		switch ($condition)
+		{
 			case '=':
 				$db = FabrikWorker::getDbo();
 				$str = "($key $condition $value ".
@@ -140,7 +139,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	/**
 	 * if no filter condition supplied (either via querystring or in posted filter data
 	 * return the most appropriate filter option for the element.
-	 * @return string default filter condition ('=', 'REGEXP' etc)
+	 * @return	string	default filter condition ('=', 'REGEXP' etc)
 	 */
 
 	function getDefaultFilterCondition()
@@ -150,10 +149,10 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	 * this builds an array containing the filters value and condition
-	 * @param string initial $value
-	 * @param string intial $condition
-	 * @param string eval - how the value should be handled
-	 * @return array (value condition)
+	 * @param	string	initial $value
+	 * @param	string	intial $condition
+	 * @param	string	eval - how the value should be handled
+	 * @return	array	(value condition)
 	 */
 
 	function getFilterValue($value, $condition, $eval)
@@ -171,13 +170,17 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	function storeDatabaseFormat($val, $data)
 	{
-		if (is_array($val)) {
+		if (is_array($val))
+		{
 			// ensure that array is incremental numeric key -otherwise json_encode turns it into an object
 			$val = array_values($val);
 		}
-		if (is_array($val) || is_object($val)) {
+		if (is_array($val) || is_object($val))
+		{
 			return json_encode($val);
-		} else {
+		}
+		else
+		{
 			return isset($val) ? $val : '';
 		}
 	}

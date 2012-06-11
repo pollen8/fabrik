@@ -51,7 +51,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 	public function onAfterProcess($params, &$formModel)
 	{
-		$type = empty($formModel->_origRowId) ? 'form.submit.add' : 'form.submit.edit';
+		$type = empty($formModel->origRowId) ? 'form.submit.add' : 'form.submit.edit';
 		return $this->log($params, $formModel, $type);
 	}
 
@@ -59,14 +59,13 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 	{
 		$listModel = $formModel->getListModel();
 		$fabrikDb = $listModel->getDb();
-		$sql = $formModel->_buildQuery();
+		$sql = $formModel->buildQuery();
 		$fabrikDb->setQuery($sql);
 		return $fabrikDb->loadObjectList();
 	}
 
 	/**
 	 * perform log
-	 *
 	 * @param	object	$params
 	 * @param	object	form model
 	 * @param	string	message type
@@ -592,7 +591,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		{
 			jimport('joomla.mail.helper');
 			$config =& JFactory::getConfig();
-			$email_from = $config->getValue('mailfrom');
+			$email_from = $config->get('mailfrom');
 			$email_to = explode(',', $w->parseMessageForPlaceholder( $params->get('log_send_email_to', '') ));
 			$subject = strip_tags($w->parseMessageForPlaceholder( $params->get('log_send_email_subject', 'log event') ));
 			foreach ($email_to as $email)
@@ -602,9 +601,12 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				{
 					continue;
 				}
-				if (JMailHelper::isEmailAddress($email)) {
+				if (JMailHelper::isEmailAddress($email))
+				{
 					$res = JUtility::sendMail($email_from, $email_from, $email, $subject, $email_msg, true);
-				} else {
+				}
+				else
+				{
 					JError::raiseNotice(500, JText::sprintf('DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
 				}
 			}

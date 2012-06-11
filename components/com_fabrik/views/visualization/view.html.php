@@ -21,7 +21,7 @@ class FabrikViewVisualization extends JView{
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$visualization = $model->getVisualization();
-		$pluginParams = $model->getPluginParams();
+		$params = $model->getParams();
 
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
 		$plugin = $pluginManager->getPlugIn($visualization->plugin, 'visualization');
@@ -32,10 +32,9 @@ class FabrikViewVisualization extends JView{
 		}
 
 		//plugin is basically a model
-
 		$pluginTask = JRequest::getVar('plugintask', 'render', 'request');
 		// @FIXME cant set params directly like this, but I think plugin model setParams() is not right
-		$plugin->_params = $pluginParams;
+		$plugin->params = $params;
 		$tmpl = $plugin->getParams()->get('calendar_layout', $tmpl);
 		$plugin->$pluginTask($this);
 		$this->plugin = $plugin;
@@ -43,7 +42,7 @@ class FabrikViewVisualization extends JView{
 		$this->addTemplatePath($this->_basePath . '/plugins/' . $this->_name . '/' . $plugin->_name . '/tmpl/' . $tmpl);
 		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/visualization/' . $plugin->_name . '/' . $tmpl);
 
-		$ab_css_file = JPATH_SITE."/plugins/fabrik_visualization/".$plugin->_name."/tmpl/$tmpl/template.css";
+		$ab_css_file = JPATH_SITE . '/plugins/fabrik_visualization/' . $plugin->_name . '/tmpl/' . $tmpl . '/template.css';
 		if (JFile::exists($ab_css_file))
 		{
 			JHTML::stylesheet('template.css', 'plugins/fabrik_visualization/'.$plugin->_name.'/tmpl/'.$tmpl.'/', true);

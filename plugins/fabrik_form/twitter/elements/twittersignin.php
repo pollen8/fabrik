@@ -37,8 +37,6 @@ class JFormFieldTwittersignin extends JFormField
 	 */
 	var	$_name = 'Twittersignin';
 
-	var $_array_counter = null;
-
 	function getInput()
 	{
 		$iframeid = $this->id.'_iframe';

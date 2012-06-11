@@ -24,7 +24,7 @@ class FabrikControllerPlugin extends JController
 {
 
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
-	var $cacheId = 0;
+	public $cacheId = 0;
 
 	/**
 	 * ajax action called from element

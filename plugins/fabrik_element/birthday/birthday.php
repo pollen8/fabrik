@@ -47,15 +47,15 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		//but in table view when getting read only filter value from url filter this
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
-		if (is_array($this->_form->_data))
+		if (is_array($this->getFormModel()->_data))
 		{
-			$data = $this->_form->_data;
+			$data = $this->getFormModel()->_data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_date_format', 'd.m.Y');
 		$dateandage = (int) $params->get('details_dateandage', '0');
 		
-		if (!$this->_editable)
+		if (!$this->editable)
 		{
 			if (!in_array($value, $aNullDates))
 			{
@@ -185,7 +185,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			{
 				$years[] = JHTML::_('select.option', $i);
 			}
-			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
+			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 			$attribs = 'class="fabrikinput inputbox'.$errorCSS.'"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';

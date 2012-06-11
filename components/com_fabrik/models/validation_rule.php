@@ -16,13 +16,9 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/plugin.php');
 class plgFabrik_Validationrule extends FabrikPlugin
 {
 
-	var $_pluginName = null;
+	protected $pluginName = null;
 
-	var $_counter = null;
-
-	var $pluginParams = null;
-
-	var $_rule = null;
+	protected $rule = null;
 
 	/** @var string if true validation uses its own icon, if not reverts to string value */
 	protected $icon = true;
@@ -52,14 +48,15 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	function shouldValidate($data, $c)
 	{
 		$params = $this->getParams();
-		$post	= JRequest::get('post');
-		$v = (array) $params->get($this->_pluginName .'-validation_condition');
+		$post = JRequest::get('post');
+		$v = (array) $params->get($this->pluginName . '-validation_condition');
 		if (!array_key_exists($c, $v))
 		{
 			return true;
 		}
 		$condition = $v[$c];
-		if ($condition == '') {
+		if ($condition == '')
+		{
 			return true;
 		}
 		$w = new FabrikWorker();
@@ -89,32 +86,6 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		return $this->elementModel->getParams();
 	}
 
- 	function getPluginParams()
-	{
-		if (!isset($this->pluginParams))
-		{
-			$this->pluginParams = $this->_loadPluginParams();
-		}
-		return $this->pluginParams;
-	}
-
-	function _loadPluginParams()
-	{
-		return $this->elementModel->getParams();
-	}
-
-	function &getValidationRule()
-	{
-		if (!$this->_rule)
-		{
-			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-			$row = FabTable::getInstance('Validationrule', 'FabrikTable');
-			$row->load($this->_id);
-			$this->_rule = $row;
-		}
-		return $this->_rule;
-	}
-
 	/**
 	 * get the warning message
 	 * @param	int		validation rule number.
@@ -124,7 +95,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	public function getMessage($c = 0)
 	{
 		$params = $this->getParams();
-		$v = (array) $params->get($this->_pluginName . '-message');
+		$v = (array) $params->get($this->pluginName . '-message');
 		$v = JArrayHelper::getValue($v, $c, '');
 		if ($v === '')
 		{
@@ -144,24 +115,24 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
 	{
-		$name = $this->icon === true ? $this->_pluginName : $this->icon;
+		$name = $this->icon === true ? $this->pluginName : $this->icon;
 		if ($this->allowEmpty($elementModel, $c))
 		{
 			$name .= '_allowempty';
 		}
 		$label = '<span>' . $this->getLabel($elementModel, $c) . '</span>';
-		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip ' . $this->_pluginName, 'opts' => "{notice:true}",  'title' => $label));
+		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip ' . $this->pluginName, 'opts' => "{notice:true}",  'title' => $label));
 		return $str;
 	}
 	
 	public function getHoverText($elementModel, $c = 0, $tmpl = '')
 	{
-		$name = $this->icon === true ? $this->_pluginName : $this->icon;
+		$name = $this->icon === true ? $this->pluginName : $this->icon;
 		if ($this->allowEmpty($elementModel, $c))
 		{
 			$name .= '_allowempty';
 		}
-		$i = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => $this->_pluginName));
+		$i = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => $this->pluginName));
 		return $i .  $this->getLabel($elementModel, $c) ;
 	}
 
@@ -176,11 +147,11 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	{
 		if ($this->allowEmpty($elementModel, $c))
 		{
-			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->_pluginName) . '_ALLOWEMPTY_LABEL');
+			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
 		}
 		else
 		{
-			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->_pluginName) . '_LABEL');
+			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->pluginName) . '_LABEL');
 		}
 	}
 

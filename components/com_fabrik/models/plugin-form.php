@@ -147,7 +147,7 @@ class plgFabrik_Form extends FabrikPlugin
 			return $this->emailData;
 		}
 		$model = $this->formModel;
-		if (is_null($model->_formDataWithTableName))
+		if (is_null($model->formDataWithTableName))
 		{
 			return array();
 		}
@@ -159,10 +159,10 @@ class plgFabrik_Form extends FabrikPlugin
 		//Now instead the pk value is taken from the tableModel->lastInsertId and inserted at the end of this method
 		//$model->render();
 
-		$listModel = $model->_table;
+		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 
-		$model->_editable = false;
+		$model->editable = false;
 		if (is_object($listModel))
 		{
 			$joins = $listModel->getJoins();
@@ -194,14 +194,14 @@ class plgFabrik_Form extends FabrikPlugin
 						$foreignKey = $joinTable->table_join_key;
 						//need to duplicate this perhaps per the number of times
 						//that a repeat group occurs in the default data?
-						if (array_key_exists($joinTable->id, $model->_formDataWithTableName['join']))
+						if (array_key_exists($joinTable->id, $model->formDataWithTableName['join']))
 						{
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
 							//$repeatGroup = count($model->_data['join'][$joinTable->id][$smallerElHTMLName]);
-							$repeatGroup = count($model->_formDataWithTableName['join'][$joinTable->id][$smallerElHTMLName]);
+							$repeatGroup = count($model->formDataWithTableName['join'][$joinTable->id][$smallerElHTMLName]);
 						}
 						else
 						{
@@ -219,11 +219,11 @@ class plgFabrik_Form extends FabrikPlugin
 					/* $elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-						if (is_array($model->_formDataWithTableName)) {
-							if (array_key_exists($smallerElHTMLName . '_raw', $model->_formDataWithTableName)) {
-								$d = $model->_formDataWithTableName[$smallerElHTMLName . '_raw'];
+						if (is_array($model->formDataWithTableName)) {
+							if (array_key_exists($smallerElHTMLName . '_raw', $model->formDataWithTableName)) {
+								$d = $model->formDataWithTableName[$smallerElHTMLName . '_raw'];
 							} else {
-								$d = @$model->_formDataWithTableName[$smallerElHTMLName];
+								$d = @$model->formDataWithTableName[$smallerElHTMLName];
 							}
 							$d = FabrikWorker::JSONtoData($d, true);
 							$c = count($d);
@@ -250,37 +250,39 @@ class plgFabrik_Form extends FabrikPlugin
 					$key = $elementModel->getFullName(true, true, false);
 					//used for working out if the element should behave as if it was
 					//in a new form (joined grouped) even when editing a record
-					$elementModel->_inRepeatGroup = $groupModel->canRepeat();
+					$elementModel->inRepeatGroup = $groupModel->canRepeat();
 					$elementModel->_inJoin = $groupModel->isJoin();
-					$elementModel->_editable = false;
+					$elementModel->editable = false;
 
 					if ($elementModel->_inJoin)
 					{
-						if ($elementModel->_inRepeatGroup)
+						if ($elementModel->inRepeatGroup)
 						{
 							if (!array_key_exists($k . '_raw', $this->emailData))
 							{
 								$this->emailData[$k . '_raw'] = array();
 							}
-							$this->emailData[$k . '_raw'][] = JArrayHelper::getValue($model->_formDataWithTableName['join'][$group->join_id][$k], $c);
+							$this->emailData[$k . '_raw'][] = JArrayHelper::getValue($model->formDataWithTableName['join'][$group->join_id][$k], $c);
 						}
 						else
 						{
-							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$group->join_id][$k];
+							$this->emailData[$k . '_raw'] = $model->formDataWithTableName['join'][$group->join_id][$k];
 						}
-					} else {
+					}
+					else
+					{
 						//@TODO do we need to check if none -joined repeat groups have their data set out correctly?
 						if ($elementModel->isJoin())
 						{
 							$join = $elementModel->getJoinModel()->getJoin();
-							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$join->id][$k];
+							$this->emailData[$k . '_raw'] = $model->formDataWithTableName['join'][$join->id][$k];
 						}
-						else if (array_key_exists($key, $model->_formDataWithTableName))
+						else if (array_key_exists($key, $model->formDataWithTableName))
 						{
-							$rawval = JArrayHelper::getValue($model->_formDataWithTableName, $k . '_raw', '');
+							$rawval = JArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
 							if ($rawval == '')
 							{
-								$this->emailData[$k . '_raw'] = $model->_formDataWithTableName[$key];
+								$this->emailData[$k . '_raw'] = $model->formDataWithTableName[$key];
 							}
 							else
 							{
@@ -291,12 +293,12 @@ class plgFabrik_Form extends FabrikPlugin
 							}
 						}
 					}
-					// $$$ hugh - need to poke data into $elementModel->_form->_data as it is needed
+					// $$$ hugh - need to poke data into $elementModel$elementModel->getFormModel()->_data as it is needed
 					// by CDD getOptions when building the query, to constrain the WHERE clause with
 					// selected FK value.
 
 					// $$$ rob in repeat join groups this isnt really efficient as you end up reformatting the data $c times
-					$elementModel->getFormModel()->_data = $model->_formDataWithTableName;
+					$elementModel->getFormModel()->_data = $model->formDataWithTableName;
 					// $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
 					// (may only be on AJAX submit)
 					$email_value = '';
@@ -307,10 +309,10 @@ class plgFabrik_Form extends FabrikPlugin
 					{
 						$email_value = $this->emailData[$k];
 					}
-					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->_formDataWithTableName, $c);
-					if ($elementModel->_inRepeatGroup && $elementModel->_inJoin)
+					$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->formDataWithTableName, $c);
+					if ($elementModel->inRepeatGroup && $elementModel->_inJoin)
 					{
-						$this->emailData['join'][$groupModel->getGroup()->join_id][$k.'_raw'] = $this->emailData[$k.'_raw'];
+						$this->emailData['join'][$groupModel->getGroup()->join_id][$k . '_raw'] = $this->emailData[$k . '_raw'];
 						$this->emailData['join'][$groupModel->getGroup()->join_id][$k] = $this->emailData[$k];
 					}
 					if ($elementModel->isJoin())

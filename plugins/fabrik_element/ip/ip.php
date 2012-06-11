@@ -29,7 +29,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 		$rowid = JRequest::getVar('rowid', false);
 		//@TODO when editing a form with joined repeat group the rowid will be set but
 		//the record is in fact new
-		if ($params->get('ip_update_on_edit') || !$rowid || ($this->_inRepeatGroup && $this->_inJoin &&  $this->_repeatGroupTotal == $repeatCounter)) {
+		if ($params->get('ip_update_on_edit') || !$rowid || ($this->inRepeatGroup && $this->_inJoin &&  $this->_repeatGroupTotal == $repeatCounter)) {
 			$ip = $_SERVER['REMOTE_ADDR'];
 		} else {
 			if (empty($data) || empty($data[$name])) {
@@ -43,7 +43,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 
 		$str = '';
 		if ($this->canView()) {
-			if (!$this->_editable) {
+			if (!$this->editable) {
 				$str = $ip;
 			}
 			else {
@@ -63,7 +63,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	 * @param string $name
 	 * @param string $value
 	 * @param string $id
-	 * @return strin
+	 * @return string
 	 */
 	function _getHiddenField($name, $value, $id)
 	{
@@ -106,16 +106,17 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * this really does get just the default value (as defined in the element's settings)
-	 * @return unknown_type
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::getDefaultValue()
 	 */
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
-			$this->_default = $_SERVER['REMOTE_ADDR'];
+		if (!isset($this->default))
+		{
+			$this->default = $_SERVER['REMOTE_ADDR'];
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	/**
@@ -130,21 +131,21 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	function getValue($data, $repeatCounter = 0, $opts = array() )
 	{
 		//cludge for 2 scenarios
-		if (array_key_exists('rowid', $data)) {
+		if (array_key_exists('rowid', $data))
+		{
 			//when validating the data on form submission
 			$key = 'rowid';
-		} else {
+		}
+		else
+		{
 			//when rendering the element to the form
 			$key = '__pk_val';
 		}
-		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key]))) {
+		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key])))
+		{
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
-				$value = '';
-			} else {
-				$value   = $this->getDefaultValue($data);
-			}
+			$value = array_key_exists('use_default', $opts) && $opts['use_default'] == false ? '' : $this->getDefaultValue($data);
 			return $value;
 		}
 		$res = parent::getValue($data, $repeatCounter, $opts);

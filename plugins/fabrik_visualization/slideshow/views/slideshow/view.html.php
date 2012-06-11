@@ -28,10 +28,9 @@ class fabrikViewSlideshow extends JView
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
 		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
-		$this->assignRef('filters', $this->get('Filters'));
+		$this->assign('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
-		$pluginParams = $model->getPluginParams();
-		$this->assignRef('params', $model->getParams());
+		$this->assign('params', $model->getParams());
 		$tmpl = $pluginParams->get('slideshow_viz_layout', $tmpl);
 		$tmplpath = $model->pathBase.'slideshow/views/slideshow/tmpl'.DS.$tmpl;
 		$this->_setPath('template', $tmplpath);

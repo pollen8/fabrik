@@ -125,11 +125,11 @@ class FabrikControllerForm extends JController
 
 		$this->isMambot = JRequest::getVar('isMambot', 0);
 		$model->getForm();
-		$model->_rowId = JRequest::getVar('rowid', '');
+		$model->rowId = JRequest::getVar('rowid', '');
 
 		// $$$ hugh - need this in plugin manager to be able to treat a "Copy" form submission
 		// as 'new' for purposes of running plugins.  Rob's comment in model process() seems to
-		// indicate that _origRowId was for this purposes, but it doesn't work, 'cos always has a value.
+		// indicate that origRowId was for this purposes, but it doesn't work, 'cos always has a value.
 		if (JRequest::getVar('Copy', '') != '')
 		{
 			$model->copyingRow(true);
@@ -399,11 +399,11 @@ class FabrikControllerForm extends JController
 		$model	= &$this->getModel('form', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('formid', 0));
 		$model->getForm();
-		$model->_rowId = JRequest::getVar('rowid', '');
+		$model->rowId = JRequest::getVar('rowid', '');
 		$model->validate();
-		$data = array('modified' => $model->_modifiedValidationData);
+		$data = array('modified' => $model->modifiedValidationData);
 		//validating entire group when navigating form pages
-		$data['errors'] = $model->_arErrors;
+		$data['errors'] = $model->errors;
 		echo json_encode($data);
 	}
 

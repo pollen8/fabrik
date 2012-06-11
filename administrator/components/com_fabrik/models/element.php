@@ -628,7 +628,7 @@ class FabrikModelElement extends JModelAdmin
 		{
 			$origplugin = JRequest::getVar('plugin_orig');
 			$config = JFactory::getConfig();
-			$prefix = $config->getValue('dbprefix');
+			$prefix = $config->get('dbprefix');
 			$tablename = $listModel->getTable()->db_table_name;
 			$hasprefix = (strstr($tablename, $prefix) === false) ? false : true;
 			$tablename = str_replace($prefix, '#__', $tablename);
@@ -670,8 +670,8 @@ class FabrikModelElement extends JModelAdmin
 		if ($return)
 		{
 			$this->updateJavascript($data);
-			$elementModel->_id = $this->getState($this->getName() . '.id');
-			$row->id = $elementModel->_id;
+			$elementModel->setId($this->getState($this->getName() . '.id'));
+			$row->id = $elementModel->getId();
 			$data->id = $row->id;
 			$this->createRepeatElement($elementModel, $row);
 			// If new, check if the element's db table is used by other tables and if so add the element

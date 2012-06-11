@@ -66,17 +66,18 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 
 	/**
 	 * get the first last, prev and next record ids
-	 * @param object $formModel
+	 * @param	object	$formModel
 	 */
+
 	protected function getNavIds($formModel)
 	{
 		$listModel = $formModel->getListModel();
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 
-		$join = $listModel->_buildQueryJoin();
-		$where = $listModel->_buildQueryWhere();
-		$order = $listModel->_buildQueryOrder();
+		$join = $listModel->buildQueryJoin();
+		$where = $listModel->buildQueryWhere();
+		$order = $listModel->buildQueryOrder();
 
 		// @ rob as we are selecting on primary key we can select all rows - 3000 records load in 0.014 seconds
 		$query = "SELECT $table->db_primary_key FROM $table->db_table_name $join $where $order";
@@ -85,10 +86,9 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
 		$o = new stdClass();
-		$o->index = JArrayHelper::getValue($keys, $formModel->_rowId, 0);
-
+		$o->index = JArrayHelper::getValue($keys, $formModel->rowId, 0);
 		$o->first = $rows[0];
-		$o->lastKey = count($rows)-1;
+		$o->lastKey = count($rows) - 1;
 		$o->last = $rows[$o->lastKey];
 		$o->next = $o->index + 1 > $o->lastKey ? $o->lastKey : $rows[$o->index + 1];
 		$o->prev = $o->index - 1 < 0 ? 0 : $rows[$o->index - 1];
@@ -97,24 +97,24 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 
 	protected function show($params, $formModel)
 	{
-# Nobody except form model constuctor sets _editable property yet -
-# it sets in view.html.php only and after render() - too late I think
-# so no pagination output for frontend details veiw for example.
-# Let's set it here before use it
+		# Nobody except form model constuctor sets _editable property yet -
+		# it sets in view.html.php only and after render() - too late I think
+		# so no pagination output for frontend details veiw for example.
+		# Let's set it here before use it
 		$formModel->checkAccessFromListSettings();
 
-$where = $params->get('paginate_where');
-		switch($where) {
-			case 'both':
-				return true;
-				break;
-			case 'form':
-				return (int) $formModel->_editable == 1;
-				break;
-			case 'details':
-				return (int) $formModel->_editable == 0;
-				break;
-		}
+	$where = $params->get('paginate_where');
+	switch($where) {
+		case 'both':
+			return true;
+			break;
+		case 'form':
+			return (int) $formModel->editable == 1;
+			break;
+		case 'details':
+			return (int) $formModel->editable == 0;
+			break;
+	}
 	}
 
 	/**
@@ -139,35 +139,35 @@ $where = $params->get('paginate_where');
 		$opts->pkey = FabrikString::safeColNameToArrayKey($formModel->getTableModel()->getTable()->db_primary_key);
 		$opts = json_encode($opts);
 		$form =& $formModel->getForm();
-		$container = $formModel->_editable ? 'form' : 'details';
+		$container = $formModel->editable ? 'form' : 'details';
 		$container .= "_".$form->id;
-		
+
 		$scripts = array(
 		'plugins/fabrik_form/paginate/scroller.js',
 		'media/com_fabrik/js/encoder.js'
 		);
 		$code = "$container.addPlugin(new FabRecordSet($container, $opts));";
 		FabrikHelperHTML::script($scripts, $code);
-		
+
 		/* if (JRequest::getVar('tmpl') != 'component') {
 			FabrikHelperHTML::script('scroller.js', 'components/com_fabrik/plugins/form/paginate/');
-			FabrikHelperHTML::script('encoder.js', 'media/com_fabrik/js/');
-			FabrikHelperHTML::addScriptDeclaration("
-			window.addEvent('load', function() {
-			$container.addPlugin(new FabRecordSet($container, $opts));
-	 		});");
+		FabrikHelperHTML::script('encoder.js', 'media/com_fabrik/js/');
+		FabrikHelperHTML::addScriptDeclaration("
+		window.addEvent('load', function() {
+		$container.addPlugin(new FabRecordSet($container, $opts));
+		});");
 		} else {
-			// included scripts in the head don't work in mocha window
-			// read in the class and insert it into the body as an inline script
-			$class = JFile::read(JPATH_BASE."/components/com_fabrik/plugins/form/paginate/scroller.js");
-			FabrikHelperHTML::addScriptDeclaration($class);
-			$class = JFile::read(JPATH_BASE."/media/com_fabrik/js/encoder.js");
-			FabrikHelperHTML::addScriptDeclaration($class);
-			//there is no load event in a mocha window - use domready instead
-			FabrikHelperHTML::addScriptDeclaration("
-				window.addEvent('domready', function() {
-				$container.addPlugin(new FabRecordSet($container, $opts));
-	 		});");
+		// included scripts in the head don't work in mocha window
+		// read in the class and insert it into the body as an inline script
+		$class = JFile::read(JPATH_BASE."/components/com_fabrik/plugins/form/paginate/scroller.js");
+		FabrikHelperHTML::addScriptDeclaration($class);
+		$class = JFile::read(JPATH_BASE."/media/com_fabrik/js/encoder.js");
+		FabrikHelperHTML::addScriptDeclaration($class);
+		//there is no load event in a mocha window - use domready instead
+		FabrikHelperHTML::addScriptDeclaration("
+		window.addEvent('domready', function() {
+		$container.addPlugin(new FabRecordSet($container, $opts));
+		});");
 		} */
 	}
 
@@ -186,20 +186,20 @@ $where = $params->get('paginate_where');
 		$mode = JRequest::getVar('mode', 'details');
 		$model =& JModel::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formid);
-		$model->_rowId = $rowid;
+		$model->rowId = $rowid;
 		$ids = $this->getNavIds($model);
 		$url = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&format=raw&controller=plugin&g=form&task=pluginAjax&plugin=paginate&method=xRecord&formid='.$formid.'&rowid='.$rowid;
 		$url = COM_FABRIK_LIVESITE.'index.php?option=com_fabrik&c=form&view='.$mode.'&fabrik='.$formid.'&rowid='.$rowid.'&format=raw';
 		$ch = curl_init();
- 	  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL, $url);
 		$data = curl_exec($ch);
- 	  curl_close($ch);
- 	  //apend the ids to the json array
- 	  $data = json_decode($data);
- 	  //$data['ids'] = $ids;
- 	  $data->ids = $ids;
- 	  echo json_encode($data);
+		curl_close($ch);
+		//apend the ids to the json array
+		$data = json_decode($data);
+		//$data['ids'] = $ids;
+		$data->ids = $ids;
+		echo json_encode($data);
 
 	}
 

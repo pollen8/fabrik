@@ -20,7 +20,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	protected $loadRow = null;
 	
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
+	 * return the javascript to create an instance of the class defined in formJavascriptClass
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
@@ -30,7 +30,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = $this->getFormModel()->getRowId();
-		$opts->id = $this->_id;
+		$opts->id = $this->id;
 		$opts = json_encode($opts);
 		return "new FbNotes('$id', $opts)";
 	}
@@ -127,7 +127,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		return $this->components[$c];
 	}
 	
-	function _buildQueryWhere($data = array(), $incWhere = true)
+	function buildQueryWhere($data = array(), $incWhere = true)
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
@@ -142,20 +142,25 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		*/
 		$where = array();
 		// Jaanus: here we can choose whether WHERE has to have single or (if field is the same as FK then only) custom (single or multiple) criterias,
-		if ($value != '') {
-			if ($field != '' && $field !== $fk) {
-			$where[] = $db->nameQuote($field) . ' = ' . $db->quote($value);
+		if ($value != '')
+		{
+			if ($field != '' && $field !== $fk)
+			{
+				$where[] = $db->quoteName($field) . ' = ' . $db->quote($value);
 			}
-			else {
-			$where[] = $value;
+			else
+			{
+				$where[] = $value;
 			}
 		}
 		// Jaanus: when we choose WHERE field to be the same as FK then WHERE criteria is automatically FK = rowid, custom criteria(s) above may be added
-		if ($fk !== '' && $field === $fk && $rowid != '') {
-			$where[] = $db->nameQuote($fk) . ' = ' . $rowid;
+		if ($fk !== '' && $field === $fk && $rowid != '')
+		{
+			$where[] = $db->quoteName($fk) . ' = ' . $rowid;
 		}
-		if ($this->loadRow != '') {
-			$pk = $db->nameQuote($this->getJoin()->table_join_alias) . '.' .  $db->nameQuote($params->get('join_key_column')) ; 
+		if ($this->loadRow != '')
+		{
+			$pk = $db->quoteName($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column')) ; 
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
 		return 'WHERE ' . implode(" OR ", $where); //Jaanus: not sure why AND was originally here
@@ -169,7 +174,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		if ($orderBy == '') {
 			return '';
 		} else {
-			return " ORDER BY " . $db->nameQuote($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+			return " ORDER BY " . $db->quoteName($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
 		}
 	}
 	
@@ -184,11 +189,13 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$fields = '';
 		$db = $this->getDb();
 		$params = $this->getParams();
-		if ($params->get('showuser', true)) {
+		if ($params->get('showuser', true))
+		{
 			$user = $params->get('userid', '');
-			if ($user !== '') {
-				$tbl = $db->nameQuote($this->getJoin()->table_join_alias);
-				$fields .= ',' . $tbl . '.' . $db->nameQuote($user) . 'AS userid, u.name AS username';
+			if ($user !== '')
+			{
+				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
+				$fields .= ',' . $tbl . '.' . $db->quoteName($user) . 'AS userid, u.name AS username';
 			}
 		}
 		return $fields;
@@ -205,13 +212,13 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$join= '';
 		$db = $this->getDb();
 		$params = $this->getParams();
-		if ($params->get('showuser', true)) {
+		if ($params->get('showuser', true))
+		{
 			$user = $params->get('userid', '');
-			if ($user !== '') {
-				$tbl = $db->nameQuote($this->getJoin()->table_join_alias);
-				$join .= ' LEFT JOIN #__users AS u ON u.id = ' . $tbl . '.' . $db->nameQuote($user);
-			} else {
-				
+			if ($user !== '')
+			{
+				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
+				$join .= ' LEFT JOIN #__users AS u ON u.id = ' . $tbl . '.' . $db->quoteName($user);
 			}
 		}
 		return $join;
@@ -235,9 +242,9 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$params = $this->getParams();
-		$table = $db->nameQuote($params->get('join_db_name'));
+		$table = $db->quoteName($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
-		$key = $db->nameQuote($params->get('join_key_column'));
+		$key = $db->quoteName($params->get('join_key_column'));
 		$v = $db->quote(JRequest::getVar('v'));
 		$rowid = $this->getFormModel()->getRowId();
 		
@@ -249,24 +256,28 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		//Jaanus - commented the $field related code out as it doesn't seem to have sense and it generated "ajax failed" error in submission when where element was selected
 		/*$field = $params->get('notes_where_element', '');
 		if ($field !== '') {
-			$query->set($db->nameQuote($field) . ' = ' . $db->quote($params->get('notes_where_value')));
+			$query->set($db->quoteName($field) . ' = ' . $db->quote($params->get('notes_where_value')));
 		}
 		*/
 		$user = $params->get('userid', '');
-		if ($user !== '') {
-			$query->set($db->nameQuote($user) . ' = ' . (int)JFactory::getUser()->get('id'));
+		if ($user !== '')
+		{
+			$query->set($db->quoteName($user) . ' = ' . (int) JFactory::getUser()->get('id'));
 		}
 		
 		$fk = $params->get('join_fk_column', '');
-		if ($fk !== '') {
-			$query->set($db->nameQuote($fk) . ' = ' . $db->quote(JRequest::getVar('rowid')));
+		if ($fk !== '')
+		{
+			$query->set($db->quoteName($fk) . ' = ' . $db->quote(JRequest::getVar('rowid')));
 		}
-		
 		$db->setQuery($query);
 		
-		if (!$db->query()) {
+		if (!$db->query())
+		{
 			JError::raiseError(500, 'db insert failed');
-		} else {
+		}
+		else
+		{
 			$this->loadRow = $db->quote($db->insertid());
 			$opts = $this->_getOptions();
 			$row = $opts[0];

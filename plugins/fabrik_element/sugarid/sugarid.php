@@ -27,24 +27,29 @@ class plgFabrik_ElementSugarid extends plgFabrik_Element
 
 	function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
-		$element 	= $this->getElement();
-		$value 		= $this->getValue($data, $repeatCounter);
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$value = $this->getValue($data, $repeatCounter);
 		$type = "hidden";
-		if (isset($this->_elementError) && $this->_elementError != '') {
+		if ($this->elementError != '')
+		{
 			$type .= " elementErrorHighlight";
 		}
-		if (!$this->_editable) {
+		if (!$this->editable)
+		{
 			return "<!--" . stripslashes($value) . "-->";
 		}
 		$hidden = 'hidden';
 		$guid = $this->create_guid();
 		/* no need to eval here as its done before hand i think ! */
-		if ($element->eval == "1" and !isset($data[$name])) {
+		if ($element->eval == "1" and !isset($data[$name]))
+		{
 			$str = "<input class=\"inputbox $type\" type=\"$hidden\" name=\"$name\" id=\"$id\" $sizeInfo value=\"$value\" />\n";
-		} else {
+		}
+		else
+		{
 			$value = stripslashes($value);
 			$str = "<input class=\"inputbox fabrikinput $type\" type=\"$hidden\" name=\"$name\" id=\"$id\" value=\"$value\" />\n";
 		}
@@ -57,9 +62,10 @@ class plgFabrik_ElementSugarid extends plgFabrik_Element
 	 * @param array posted form data
 	 */
 
-	function storeDatabaseFormat($val, $data )
+	function storeDatabaseFormat($val, $data)
 	{
-		if (trim($val) == '') {
+		if (trim($val) == '')
+		{
 			$val = $this->create_guid();
 		}
 		return $val;
@@ -77,7 +83,7 @@ class plgFabrik_ElementSugarid extends plgFabrik_Element
 function create_guid()
 {
 	$microTime = microtime();
-	list($a_dec, $a_sec) = explode(" ", $microTime);
+	list($a_dec, $a_sec) = explode(' ', $microTime);
 
 	$dec_hex = dechex($a_dec* 1000000);
 	$sec_hex = dechex($a_sec);

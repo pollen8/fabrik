@@ -20,19 +20,18 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	protected $fieldSize = '1';
 
 	/**
-	 * this really does get just the default value (as defined in the element's settings)
-	 * @param array data to use as parsemessage for placeholder
-	 * @return unknown_type
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementList::getDefaultValue()
 	 */
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default))
+		if (!isset($this->default))
 		{
 			$params = $this->getParams();
-			$this->_default = $params->get('yesno_default', 0);
+			$this->default = $params->get('yesno_default', 0);
 		}
-		return $this->_default;
+		return $this->default;
 	}
 
 	public function renderListData($data, &$thisRow)

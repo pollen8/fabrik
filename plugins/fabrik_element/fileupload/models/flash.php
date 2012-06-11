@@ -15,10 +15,10 @@ class flashRender{
 	var $output = '';
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+	 * @param	object	element model
+	 * @param	object	element params
+	 * @param	string	row data for this element
+	 * @param	object	all row's data
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -27,14 +27,13 @@ class flashRender{
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
+	 * @param	object	element model
+	 * @param	object	element params
+	 * @param	string	row data for this element
 	 */
 
 	function render(&$model, &$params, $file)
 	{
-
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		ini_set('display_errors', true);
 		require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php');
@@ -42,10 +41,10 @@ class flashRender{
 
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
 		$config = JFactory::getConfig();
-		$host =  $config->getValue('host');
-		$database = $config->getValue('db');
-		$username = $config->getValue('user');
-		$password = $config->getValue('password');
+		$host =  $config->get('host');
+		$database = $config->get('db');
+		$username = $config->get('user');
+		$password = $config->get('password');
 		$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
 		// Analyze file and store returned data in $ThisFileInfo
 		$relPath = str_replace("\\", "/", JPATH_SITE  . $file);
@@ -54,20 +53,24 @@ class flashRender{
 		//var_dump($relPath, $thisFileInfo);
 		$w = $params->get('fu_main_max_width', 0);
 		$h = $params->get('fu_main_max_height', 0);
-		if ($thisFileInfo && array_key_exists('swf', $thisFileInfo)) {
+		if ($thisFileInfo && array_key_exists('swf', $thisFileInfo))
+		{
 			if ($thisFileInfo['swf']['header']['frame_width'] < $w
-			|| $thisFileInfo['swf']['header']['frame_height'] < $h) {
+			|| $thisFileInfo['swf']['header']['frame_height'] < $h)
+			{
 				$w = $thisFileInfo['swf']['header']['frame_width'];
 				$h = $thisFileInfo['swf']['header']['frame_height'];
 			}
 		}
-		if ($w <= 0 || $h <= 0) {
+		if ($w <= 0 || $h <= 0)
+		{
 			$w = 800;
 			$h = 600;
 		}
 		// $$$ hugh - if they've enabled thumbnails, for Flash content we'll take that to mean they don't
 		// want to play the content inline in the table, and use mediabox (if available) to open it instead.
-		if (!$model->_inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false)) {
+		if (!$model->inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false))
+		{
 			$element = $model->getElement();
 
 			// @TODO - work out how to do thumbnails
@@ -89,11 +92,13 @@ class flashRender{
 				</object>";
 				*/
 			$thumb_dir = $params->get('thumb_dir');
-			if (!empty( $thumb_dir)) {
+			if (!empty( $thumb_dir))
+			{
 				$file = str_replace("\\", "/", $file);
 				$pathinfo = pathinfo( $file);
 				// $$$ hugh - apparently filename ocnstant only added in PHP 5.2
-				if (!isset($pathinfo['filename'])) {
+				if (!isset($pathinfo['filename']))
+				{
 					$pathinfo['filename'] = explode('.',$pathinfo['basename']);
 					$pathinfo['filename'] = $pathinfo['filename'][0];
 				}
@@ -114,7 +119,8 @@ class flashRender{
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
 			$this->output .=	"<a href='$file' rel='lightbox[flash $w $h]'><img src='$thumb_file' alt='Full Size'></a>";
 		}
-		else if ($model->_inDetailedView) {
+		else if ($model->inDetailedView)
+		{
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
 			$this->output = "<object width=\"$w\" height=\"$h\">
 				<param name=\"movie\" value=\"$file\">
@@ -122,7 +128,8 @@ class flashRender{
 				</embed>
 				</object>";
 		}
-		else {
+		else
+		{
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
 			$this->output = "<object width=\"$w\" height=\"$h\">
 				<param name=\"movie\" value=\"$file\">
@@ -130,7 +137,6 @@ class flashRender{
 				</embed>
 				</object>";
 		}
-		//}
 	}
 }
 ?>

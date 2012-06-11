@@ -13,26 +13,30 @@ defined('_JEXEC') or die();
 class uploader extends JObject
 {
 
-	protected $_form = null;
+	protected $form = null;
+	
 	public $moveError = false;
 
-	function uploader(&$oForm)
+	function uploader($formModel)
 	{
-		$this->_form = $oForm;
+		$this->form = $formModel;
 	}
 
 	/**
 	 * perform upload of files
-	 * @return bol true if error occured
+	 * @return bool true if error occured
 	 */
 
 	function upload()
 	{
-		$groups = $this->_form->getGroupsHiarachy();
-		foreach ($groups as $groupModel) {
+		$groups = $this->form->getGroupsHiarachy();
+		foreach ($groups as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
-				if ($elementModel->isUpload()) {
+			foreach ($elementModels as $elementModel)
+			{
+				if ($elementModel->isUpload())
+				{
 					$elementModel->processUpload();
 				}
 			}
@@ -43,19 +47,25 @@ class uploader extends JObject
 	 * moves  a file from one location to another
 	 * @param string file to move
 	 * @param string location to move file to
-	 * @param bol do we overwrite any existing files found at pathTo?
+	 * @param bool do we overwrite any existing files found at pathTo?
 	 */
 
 	function move($pathFrom , $pathTo, $overwrite = true)
 	{
-		if (file_exists($pathTo)) {
-			if ($overwrite) {
+		if (file_exists($pathTo))
+		{
+			if ($overwrite)
+			{
 				unlink($pathTo);
 				$ok = rename($pathFrom, $pathTo);
-			} else {
+			}
+			else
+			{
 				$ok = false;
 			}
-		} else {
+		}
+		else
+		{
 			$ok = rename($pathFrom, $pathTo);
 		}
 		return $ok;
@@ -68,8 +78,10 @@ class uploader extends JObject
 
 	function _makeRecursiveFolders($folderPath, $mode = 0755)
 	{
-		if (!JFolder::exists($folderPath)) {
-			if (!JFolder::create($folderPath, $mode)) {
+		if (!JFolder::exists($folderPath))
+		{
+			if (!JFolder::create($folderPath, $mode))
+			{
 				return JError::raiseError(21, "Could not make dir $folderPath ");
 			}
 		}
@@ -77,14 +89,17 @@ class uploader extends JObject
 
 	/**
 	 * iterates through $_FILE data to see if any files have been uploaded
-	 * @return bol true if files uploaded
+	 * @return bool true if files uploaded
 	 */
 
 	function check()
 	{
-		if (isset($_FILES) and !empty($_FILES)) {
-			foreach ($_FILES as $f) {
-				if ($f['name'] != '') {
+		if (isset($_FILES) and !empty($_FILES))
+		{
+			foreach ($_FILES as $f)
+			{
+				if ($f['name'] != '')
+				{
 					return true;
 				}
 			}
@@ -102,14 +117,16 @@ class uploader extends JObject
 
 	function canUpload($file, &$err, &$params)
 	{
-		if (empty($file['name'])) {
+		if (empty($file['name']))
+		{
 			$err = 'Please input a file for upload';
 			return false;
 		}
 
-		if (!is_uploaded_file($file['tmp_name'])) {
-	    //handle potential malicous attack
-	    $err =  JText::_('File has not been uploaded');
+		if (!is_uploaded_file($file['tmp_name']))
+		{
+		    //handle potential malicous attack
+		    $err =  JText::_('File has not been uploaded');
 			return false;;
 		}
 
@@ -126,8 +143,8 @@ class uploader extends JObject
 			return false;
 		}
 
-		$maxSize = (int) $params->get('upload_maxsize', 0);
-		if ($maxSize > 0 && (int) $file['size'] > $maxSize)
+		$maxSize = (int)$params->get('upload_maxsize', 0);
+		if ($maxSize > 0 && (int)$file['size'] > $maxSize)
 		{
 			$err = 'WARNFILETOOLARGE';
 			return false;
@@ -135,14 +152,20 @@ class uploader extends JObject
 		$ignored = array();
 		$user = JFactory::getUser();
 		$imginfo = null;
-		if ($params->get('restrict_uploads',1)) {
+		if ($params->get('restrict_uploads',1))
+		{
 			$images = explode(',', $params->get('image_extensions'));
-			if (in_array($format, $images)) { // if its an image run it through getimagesize
-				if (($imginfo = getimagesize($file['tmp_name'])) === FALSE) {
+			if (in_array($format, $images))
+			{
+				// if its an image run it through getimagesize
+				if (($imginfo = getimagesize($file['tmp_name'])) === FALSE)
+				{
 					$err = 'WARNINVALIDIMG';
 					return false;
 				}
-			} else if (!in_array($format, $ignored)) {
+			}
+			else if (!in_array($format, $ignored))
+			{
 				// if its not an image...and we're not ignoring it
 				/*$allowed_mime = explode(',', $upload_mime);
 				$illegal_mime = explode(',', $upload_mime_illegal);
@@ -168,7 +191,8 @@ class uploader extends JObject
 
 		$xss_check = JFile::read($file['tmp_name'], false, 256);
 		$html_tags = array('abbr','acronym','address','applet','area','audioscope','base','basefont','bdo','bgsound','big','blackface','blink','blockquote','body','bq','br','button','caption','center','cite','code','col','colgroup','comment','custom','dd','del','dfn','dir','div','dl','dt','em','embed','fieldset','fn','font','form','frame','frameset','h1','h2','h3','h4','h5','h6','head','hr','html','iframe','ilayer','img','input','ins','isindex','keygen','kbd','label','layer','legend','li','limittext','link','listing','map','marquee','menu','meta','multicol','nobr','noembed','noframes','noscript','nosmartquotes','object','ol','optgroup','option','param','plaintext','pre','rt','ruby','s','samp','script','select','server','shadow','sidebar','small','spacer','span','strike','strong','style','sub','sup','table','tbody','td','textarea','tfoot','th','thead','title','tr','tt','ul','var','wbr','xml','xmp','!DOCTYPE', '!--');
-		foreach ($html_tags as $tag) {
+		foreach ($html_tags as $tag)
+		{
 			// A tag is '<tagname ', so we need to add < and a space or '<tagname>'
 			if (JString::stristr($xss_check, '<'.$tag.' ') || JString::stristr($xss_check, '<'.$tag.'>')) {
 				$err = 'WARNIEXSS';
@@ -189,7 +213,8 @@ class uploader extends JObject
 
 	function incrementFileName($origFileName, $newFileName, $version)
 	{
-		if (JFile::exists($newFileName)) {
+		if (JFile::exists($newFileName))
+		{
 			$bits = explode('.', $newFileName);
 			$ext = array_pop($bits);
 			$f = implode('.', $bits);

@@ -16,17 +16,15 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
 
 class plgFabrik_ElementFblikebox extends plgFabrik_Element {
 
-	var $hasLabel = false;
+	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
 
 	protected $fieldSize = '1';
 
 	/**
-	 * draws the form element
-	 * @param array data to pre-populate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::render()
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -40,13 +38,13 @@ class plgFabrik_ElementFblikebox extends plgFabrik_Element {
 		$header = $params->get('fblikebox_header', 1) == 1 ? 'true' : 'false';
 		$connections = $params->get('fblikebox_connections', 10);
 		//$str .= "<fb:like-box id=\"$pageid\" width=\"$width\" height=\"$height\" connections=\"$connections\" stream=\"$stream\" header=\"$header\" />";
-		$str .= "<fb:like-box id=\"185550966885\" width=\"292\" height=\"440\" connections=\"4\" stream=\"true\" header=\"true\" />";
+		$str .= '<fb:like-box id="185550966885" width="292" height="440" connections="4" stream="true" header="true" />';
 		return $str;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::elementJavascript()
 	 */
 
 	function elementJavascript($repeatCounter)

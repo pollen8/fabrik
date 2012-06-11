@@ -300,7 +300,7 @@ class FabrikModelForm extends FabModelAdmin
 				$item->form_id = $formid;
 				$item->connection_id = $connection->getConnection()->id;
 				$item->db_table_name = $dbTableName;
-				// store key without nameQuotes as thats db specific *which we no longer want
+				// store key without quoteNames as thats db specific *which we no longer want
 				$item->db_primary_key = $dbTableName . '.id';
 				$item->auto_inc = 1;
 				$item->published = $data['published'];

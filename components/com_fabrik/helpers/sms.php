@@ -31,8 +31,6 @@ class fabrikSMS
 		}
 		$data = curl_exec($ch);
 		curl_close($ch);
-		echo "<pre>";print_r($ch);
-		print_r($data);
 		if ($data)
 		{
 			if ($callback)

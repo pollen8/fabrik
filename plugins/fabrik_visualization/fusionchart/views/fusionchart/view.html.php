@@ -39,22 +39,13 @@ class fabrikViewFusionchart extends JView
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assignRef('filters', $this->get('Filters'));
+		$this->assign('filters', $this->get('Filters'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
-		$pluginParams = $model->getPluginParams();
-		$tmpl = $pluginParams->get('fusionchart_layout', $tmpl);
+		$tmpl = $params->get('fusionchart_layout', $tmpl);
+		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tmpl);
 
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tmpl;
-		$this->_setPath('template', $tmplpath);
-
-		$ab_css_file = $tmplpath . '/template.css';
-
-		if (JFile::exists($ab_css_file))
-		{
-			JHTML::stylesheet('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tmpl . '/template.css');
-		}
-
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tmpl . '/template.css');
 		//assign something to Fabrik.blocks to ensure we can clear filters
 		$str = "fabrikFusionChart{$this->row->id} = {};";
 		$str .= "\n" . "Fabrik.addBlock('vizualization_{$this->row->id}', fabrikFusionChart{$this->row->id});";

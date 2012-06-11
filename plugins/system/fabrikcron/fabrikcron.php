@@ -145,7 +145,7 @@ class plgSystemFabrikcron extends JPlugin
 					$total = $thisListModel->getTotalRecords();
 					$nav = $thisListModel->getPagination($total, 0, $total);
 					$data = $thisListModel->getData();
-					$log->message .= "\n" . $thisListModel->_buildQuery();
+					$log->message .= "\n" . $thisListModel->buildQuery();
 				}
 			}
 			else

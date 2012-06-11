@@ -52,20 +52,20 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *
-	 * @return bol
+	 * @return bool
 	 */
 
 	function canSelectRows()
 	{
 		$access = $this->getParams()->get('updatecol_access');
 		$name = $this->_getButtonName();
-		return in_array($access, JFactory::getUser()->authorisedLevels());
+		return in_array($access, JFactory::getUser()->getAuthorisedViewLevels());
 	}
 
 	/**
 	 * do the plugin action
-	 * @param object parameters
-	 * @param object table model
+	 * @param	object	parameters
+	 * @param	object	table model
 	 */
 
 	function process(&$params, &$model, $opts = array())
@@ -73,12 +73,11 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$db = $model->getDb();
 		$user = JFactory::getUser();
 		$update = json_decode($params->get('update_col_updates'));
-		if (!$update) {
+		if (!$update)
+		{
 			return false;
 		}
-
 		// $$$ rob moved here from bottom of func see http://fabrikar.com/forums/showthread.php?t=15920&page=7
-
 		$dateCol = $params->get('update_date_element');
 		$userCol = $params->get('update_user_element');
 
@@ -88,20 +87,21 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		JArrayHelper::toInteger($ids);
 		$this->_row_count = count($ids);
 		$ids	= implode(',', $ids);
-		$model->_pluginQueryWhere[] = $item->db_primary_key . ' IN ( '.$ids.')';
+		$model->setPluginQueryWhere('update_col', $item->db_primary_key . ' IN ( ' . $ids . ')');
 		$data = $model->getData();
 
 		//$$$servantek reordered the update process in case the email routine wants to kill the updates
 		$emailColID = $params->get('update_email_element', '');
-		if (!empty($emailColID)) {
+		if (!empty($emailColID))
+		{
 			$w = new FabrikWorker();
 			jimport('joomla.mail.helper');
 			$message = $params->get('update_email_msg');
 			$subject = $params->get('update_email_subject');
 			$eval = $params->get('eval', 0);
 			$config = JFactory::getConfig();
-			$from = $config->getValue('mailfrom');
-			$fromname = $config->getValue('fromname');
+			$from = $config->get('mailfrom');
+			$fromname = $config->get('fromname');
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
 			$emailElement = $elementModel->getElement(true);
 			$emailField = $elementModel->getFullName(false, true, false);
@@ -113,52 +113,65 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			$aids = explode(',', $ids);
 			// if using a user element, build a lookup list of emails from jos_users,
 			// so we're only doing one query to grab all involved emails.
-			if ($emailWhich == 'user') {
+			if ($emailWhich == 'user')
+			{
 				$userids_emails = array();
 				$query = 'SELECT #__users.id AS id, #__users.email AS email FROM #__users LEFT JOIN ' . $tbl . ' ON #__users.id = ' . $emailColumn . ' WHERE ' . $item->db_primary_key . ' IN ('.$ids.')';
 				$db->setQuery($query);
 				$results = $db->loadObjectList();
-				foreach ($results as $result) {
+				foreach ($results as $result)
+				{
 					$userids_emails[(int) $result->id] = $result->email;
 				}
 			}
-			foreach ($aids as $id) {
+			foreach ($aids as $id)
+			{
 				$row = $model->getRow($id);
-				if ($emailWhich == 'user') {
+				if ($emailWhich == 'user')
+				{
 					$userid = (int) $row->$emailFieldRaw;
 					$to = JArrayHelper::getValue($userids_emails, $userid);
 				}
-				else {
+				else
+				{
 					$to = $row->$emailField;
 				}
-
-				if (JMailHelper::cleanAddress($to) && JMailHelper::isEmailAddress($to)) {
+				if (JMailHelper::cleanAddress($to) && JMailHelper::isEmailAddress($to))
+				{
 					//$tofull = '"' . JMailHelper::cleanLine($toname) . '" <' . $to . '>';
 					//$$$servantek added an eval option and rearranged placeholder call
 					$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 					$thismessage = $w->parseMessageForPlaceholder($message, $row);
-					if ($eval) {
+					if ($eval)
+					{
 						$thismessage = @eval($thismessage);
 						FabrikWorker::logEval($thismessage, 'Caught exception on eval in updatecol::process() : %s');
 					}
 					$res = JUtility::sendMail($from, $fromname, $to, $thissubject, $thismessage, true);
-					if ($res) {
+					if ($res)
+					{
 						$this->_sent ++;
-					} else {
+					}
+					else
+					{
 						$$this->_notsent ++;
 					}
-				} else {
+				}
+				else
+				{
 					$this->_notsent ++;
 				}
 			}
 		}
 		//$$$servantek reordered the update process in case the email routine wants to kill the updates
-		if (!empty($dateCol)) {
+		if (!empty($dateCol))
+		{
 			$date = JFactory::getDate();
-			$this->_process($model, $dateCol, $date->toMySQL());
+			$this->_process($model, $dateCol, $date->toSql());
 		}
 
-		if (!empty($userCol)) {
+		if (!empty($userCol))
+		{
 			$this->_process($model, $userCol, (int) $user->get('id'));
 		}
 		foreach ($update->coltoupdate as $i => $col) {
@@ -166,12 +179,14 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		}
 		$this->msg = $params->get('update_message', '');
 
-		if (empty($this->msg)) {
+		if (empty($this->msg))
+		{
 			$this->msg = JText::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->_row_count, $this->_sent);
-		} else {
+		}
+		else
+		{
 			$this->msg = JText::sprintf($this->msg, $this->_row_count, $this->_sent);
 		}
-		
 		// Clean the cache.
 		$cache = JFactory::getCache(JRequest::getCmd('option'));
 		$cache->clean();
@@ -191,11 +206,9 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 	/**
 	 *
-	 * @param string table name to update
-	 * @param object $model table
-	 * @param array $joins objects
-	 * @param string $update column
-	 * @param string update val
+	 * @param	object	$model list
+	 * @param	string	$update column
+	 * @param	string	update val
 	 */
 
 	private function _process(&$model, $col, $val)
@@ -206,10 +219,10 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param object table model
-	 * @param array [0] => string table's form id to contain plugin
-	 * @return bool
+	 * @param	object	parameters
+	 * @param	object	list model
+	 * @param	array	[0] => string table's form id to contain plugin
+	 * @return	bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)
@@ -224,7 +237,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	{
 		$params = $this->getParams();
 		$col = $params->get('coltoupdate');
-		return $col.'-'.$this->renderOrder;
+		return $col . '-' . $this->renderOrder;
 	}
 
 }

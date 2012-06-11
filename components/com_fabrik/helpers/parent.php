@@ -432,7 +432,7 @@ class FabrikWorker {
 
 	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addslashes = false, $theirUser = null)
 	{
-		$this->_parseAddSlases = $addslashes;
+		$this->parseAddSlases = $addslashes;
 		if ($msg == '' || is_array($msg) || strpos($msg, '{') === false)
 		{
 			return $msg;
@@ -692,7 +692,7 @@ class FabrikWorker {
 			}
 			$match = $aPost;
 		}
-		if ($this->_parseAddSlases)
+		if ($this->parseAddSlases)
 		{
 			$match = htmlspecialchars($match, ENT_QUOTES, 'UTF-8');
 		}

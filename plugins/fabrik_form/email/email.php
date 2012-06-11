@@ -147,18 +147,18 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		}
 		if (empty($email_from_name))
 		{
-			$email_from_name = $config->getValue('fromname', $email_from);
+			$email_from_name = $config->get('fromname', $email_from);
 		}
 		$subject = $params->get('email_subject');
 		if ($subject == '')
 		{
-			$subject = $config->getValue('sitename') . " :: Email";
+			$subject = $config->get('sitename') . " :: Email";
 		}
 		$subject = preg_replace_callback('/&#([0-9a-fx]+);/mi', array($this, 'replace_num_entity'), $subject);
 
 		$attach_type = $params->get('email_attach_type', '');
 		$config = JFactory::getConfig();
-		$attach_fname = $config->getValue('config.tmp_path') . '/' . uniqid() . '.' . $attach_type;
+		$attach_fname = $config->get('tmp_path') . '/' . uniqid() . '.' . $attach_type;
 		/* Send email*/
 
 		foreach ($email_to as $email)
@@ -408,7 +408,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 				}
 			}
 		}
-		$message = JText::_('Email from') . ' ' . $config->getValue('sitename') . '<br />' . JText::_('Message') . ':'
+		$message = JText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . JText::_('Message') . ':'
 		."<br />===================================<br />".
 		"<br />" . stripslashes($message);
 		return $message;
