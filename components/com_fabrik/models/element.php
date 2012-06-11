@@ -1281,7 +1281,7 @@ class plgFabrik_Element extends FabrikPlugin
 				}
 			}
 			$date = JFactory::getDate();
-			$tz = DateTimeZone($app->getCfg('offset'));
+			$tz = new DateTimeZone($app->getCfg('offset'));
 			$date->setTimezone($tz);
 			$rule->created = $date->toSql();
 			$params = $rule->params == '' ? new stdClass() : json_decode($rule->params);

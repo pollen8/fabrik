@@ -41,7 +41,7 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 		$id	= $this->getHTMLId($repeatCounter);
 		$date = JFactory::getDate();
 		$config = JFactory::getConfig();
-		$tz = DateTimeZone($config->get('offset'));
+		$tz = new DateTimeZone($config->get('offset'));
 		$date->setTimezone($tz);
 		$params = $this->getParams();
 		$gmt_or_local = $params->get('gmt_or_local');

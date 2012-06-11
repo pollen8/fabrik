@@ -97,7 +97,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	{
 		//@TODO: deal with time options (currently can be defined in date_table_format param).
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-
 		$db = FabrikWorker::getDbo();
 		$aNullDates = $this->getNullDates();
 		$params = $this->getParams();
