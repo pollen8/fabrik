@@ -1405,9 +1405,9 @@ class plgFabrik_Element extends FabrikPlugin
 			default:
 			case 'tip':
 				$element->tipAbove = '';
-			$element->tipBelow = '';
-			$element->tipSide = '';
-			break;
+				$element->tipBelow = '';
+				$element->tipSide = '';
+				break;
 			case 'above':
 				$element->tipAbove = $tip;
 				$element->tipBelow = '';
