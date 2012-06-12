@@ -4301,9 +4301,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		if ($cond == '>') {
 			return $data > $compare;
-		} else {
+		} else if ($cond == '>=') {
+			return $data >= $compare;
+		} else if ($cond == '<') {
 			return $data < $compare;
+		} else if ($cond == '<=') {
+			return $data <= $compare;
+		} else if ($cond == '==') {
+			return $data == $compare;
 		}
+		return false;
 	}
 
 	/**
