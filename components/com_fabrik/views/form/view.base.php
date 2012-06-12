@@ -276,9 +276,16 @@ class FabrikViewFormBase extends JView
 			
 			if ($this->showPDF)
 			{
-				$this->pdfLink = '<a href="'. JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId()) . '&rowid=' . $this->rowid . '">'
-				. FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties)
-				. '</a>';
+				if (!FabrikWorker::canPdf())
+				{
+					JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
+				}
+				else
+				{
+					$this->pdfLink = '<a href="'. JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId()) . '&rowid=' . $this->rowid . '">'
+					. FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties)
+					. '</a>';
+				}
 			}
 		}
 		else
