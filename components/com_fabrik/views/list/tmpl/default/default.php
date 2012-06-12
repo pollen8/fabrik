@@ -1,4 +1,3 @@
-etest?
 <?php if ($this->tablePicker != '') { ?>
 	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 <?php } ?>

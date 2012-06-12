@@ -360,7 +360,7 @@ EOD;
 
 	public static function stylesheet($file, $attribs = array())
 	{
-		if ((JRequest::getVar('format') == 'raw' || JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1)
+		if ((JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
 		{
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
 			// $$$rob TEST!!!! - this may mess up stuff
@@ -406,7 +406,6 @@ EOD;
 		{
 			$file = $path;
 		}
-
 		if (JFile::exists(JPATH_SITE . '/' . $file))
 		{
 			FabrikHelperHTML::stylesheet($path);
