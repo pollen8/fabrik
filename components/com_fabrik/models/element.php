@@ -1405,9 +1405,9 @@ class plgFabrik_Element extends FabrikPlugin
 			default:
 			case 'tip':
 				$element->tipAbove = '';
-			$element->tipBelow = '';
-			$element->tipSide = '';
-			break;
+				$element->tipBelow = '';
+				$element->tipSide = '';
+				break;
 			case 'above':
 				$element->tipAbove = $tip;
 				$element->tipBelow = '';
@@ -4301,9 +4301,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		if ($cond == '>') {
 			return $data > $compare;
-		} else {
+		} else if ($cond == '>=') {
+			return $data >= $compare;
+		} else if ($cond == '<') {
 			return $data < $compare;
+		} else if ($cond == '<=') {
+			return $data <= $compare;
+		} else if ($cond == '==') {
+			return $data == $compare;
 		}
+		return false;
 	}
 
 	/**
