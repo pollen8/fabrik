@@ -7740,7 +7740,7 @@ class FabrikFEModelList extends JModelForm {
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getRenderContext();
-			$qs .= '&buttoncount='.$this->rowActionCount;
+			$qs .='&amp;buttoncount=' . $this->rowActionCount; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/template_css.php' . $qs);

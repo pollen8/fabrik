@@ -327,8 +327,9 @@ class plgFabrik_Element extends FabrikPlugin
 				$opts = new stdClass();
 				$opts->position = 'top';
 				$opts = json_encode($opts);
-				$data = htmlspecialchars($data, ENT_QUOTES);
+				//$data = htmlspecialchars($data, ENT_QUOTES);
 				$data = '<span>' . $data . '</span>';
+				$data = htmlspecialchars($data, ENT_QUOTES);
 				if ($params->get('icon_hovertext', true))
 				{
 					$img = '<a class="fabrikTip" href="#" opts=\'' . $opts . '\' title="' . $data. '">' . $img . '</a>';
@@ -981,8 +982,7 @@ class plgFabrik_Element extends FabrikPlugin
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
 					}
 					$validationHovers[] = '</ul></div>';
-					$validationHovers = implode('', $validationHovers);
-					$title = htmlspecialchars($validationHovers, ENT_QUOTES);
+					$title = implode('', $validationHovers);
 					$opts = new stdClass();
 					$opts->position = 'top';
 					$opts = json_encode($opts);
@@ -1051,6 +1051,8 @@ class plgFabrik_Element extends FabrikPlugin
 			// $$$ rob this might be needed - cant find a test case atm though
 			//$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 			$rollOver = '<span>' . $rollOver . '</span>';
+			// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
+			$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 			return '<span class="fabrikTip" opts="' . $opts . '" title="' . $rollOver . '">' . $txt . '</span>';
 		}
 		else

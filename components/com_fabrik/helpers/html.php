@@ -1134,6 +1134,10 @@ EOD;
 		$bits = array();
 		foreach ($properties as $key => $val)
 		{
+			if ($key === 'title')
+			{
+				$val = htmlspecialchars($val, ENT_QUOTES);
+			}
 			$bits[$key] = $val;
 		}
 		$p = '';

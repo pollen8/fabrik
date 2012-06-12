@@ -294,24 +294,22 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpl = $this->getTmpl();
 		$v = $this->_editable ? 'form' : 'details';
 		/* check for a form template file (code moved from view) */
-		if ($tmpl != '') {
-			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php?c='.$this->getId().'&view='.$v);
-			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/template_css.php?c=".$this->getId().'&view='.$v);
+		if ($tmpl != '')
+		{ 
+			$qs = '?c=' . $this->getId();
+			$qs .='&amp;view=' . $v; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
+			if (!FabrikHelperHTML::stylesheetFromPath(JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
+			{
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/template_css.php' . $qs);
 			}
 			// $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			// custom.css - for backward compat with existing 2.x custom.css
 			// custom_css.php - what we'll recommend people use for custom css moving foward.
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom.css')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom.css");
-			}
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom_css.php?c=".$this->getId().'&view='.$v);
-			}
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom.css' . $qs);
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom_css.php' . $qs);
 		}
-
-		if ($app->isAdmin() && JRequest::getVar('tmpl') === 'components') {
+		if ($app->isAdmin() && JRequest::getVar('tmpl') === 'components')
+		{
 			FabrikHelperHTML::stylesheet('administrator/templates/system/css/system.css');
 		}
 	}
