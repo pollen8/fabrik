@@ -63,9 +63,14 @@
 			</a>
 		</li>
 	<?php }
-	if ($this->showPDF) {
-		echo '<li>'.$this->pdfLink.'<li>';
-	}
+	if ($this->showPDF) {?>
+		<li class="pdfButton">
+			<a href="<?php echo $this->pdfLink;?>">
+				<?php echo $this->buttons->pdf;?>
+				<span><?php echo JText::_('COM_FABRIK_PDF');?></span>
+			</a>
+		</li>
+	<?php }
 	if ($this->emptyLink) {?>
 		<li>
 		<a href="<?php echo $this->emptyLink?>" class="doempty">

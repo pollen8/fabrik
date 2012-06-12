@@ -586,7 +586,6 @@
 				label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" 
 				description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" />
 				
-		<!-- commenting out until we have a valid pdf soluton for 3.0
 		 	<field name="pdf" 
 				type="list"
 				label="COM_FABRIK_FIELD_PDF_ICON_LABEL" 
@@ -603,7 +602,7 @@
 				hide_default="1"
 				default="admin" 
 				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL" 
-				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" /> -->
+				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" />
 			
 			<field name="show-title" 
 				type="radio" default="1" 

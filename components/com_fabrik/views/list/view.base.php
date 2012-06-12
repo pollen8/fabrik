@@ -382,6 +382,7 @@ class FabrikViewListBase extends JView{
 				$document->addHeadLink($this->rssLink, 'alternate', 'rel', $attribs);
 			}
 		}
+		$this->pdfLink = JRoute::_('index.php?option=com_fabrik&view=list&format=pdf&listid=' . $item->id);
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$this->assign('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
@@ -473,6 +474,10 @@ class FabrikViewListBase extends JView{
 		$buttonProperties['title'] = '<span>' . $params->get('addlabel', JText::_('COM_FABRIK_ADD')) . '</span>';
 		$buttonProperties['alt'] = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
+		
+		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_PDF') . '</span>';
+		$buttonProperties['alt'] = JText::_('COM_FABRIK_PDF');
+		$this->buttons->pdf = FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties);
 	}
 
 	/**
