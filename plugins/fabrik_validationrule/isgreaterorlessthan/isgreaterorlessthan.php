@@ -40,7 +40,8 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
  		$cond = $cond[$pluginc] == '1' ? '>' : '<';
  		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
  		$otherFullName = $otherElementModel->getFullName(false, true, false);
- 		$compare = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
+ 		//$compare = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
+ 		$compare = $otherElementModel->getValue($formdata, $repeatCounter);
  		if ($this->allowEmpty($elementModel, $pluginc) && ($data === '' || $compare === ''))
  		{
  			return true;
