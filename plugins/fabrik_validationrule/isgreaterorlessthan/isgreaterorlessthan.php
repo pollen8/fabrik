@@ -37,7 +37,25 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
  		$params = $this->getParams();
  		$formdata = $elementModel->getForm()->_formData;
  		$cond = $params->get('isgreaterorlessthan-greaterthan');
- 		$cond = $cond[$pluginc] == '1' ? '>' : '<';
+ 		$cond = $cond[$pluginc];
+ 		switch ($cond) {
+ 			case '0':
+ 				$cond = '<';
+ 				break;
+ 			case '1':
+ 				$cond = '>';
+ 				break;
+ 			case '2':
+ 				$cond = '<=';
+ 				break;
+ 			case '3':
+ 				$cond = '>=';
+ 				break;
+ 			case '4':
+ 			default:
+ 				$cond = '==';
+ 				break;
+ 		}
  		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
  		$otherFullName = $otherElementModel->getFullName(false, true, false);
  		//$compare = JArrayHelper::getValue($formdata, $otherFullName.'_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
