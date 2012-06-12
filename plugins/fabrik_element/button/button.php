@@ -25,7 +25,7 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$str = '<input type="button" class="fabrikinput button" id="' . $id . '" name="' . $name . '" value="' . $element->label . "' />";
+		$str = '<input type="button" class="fabrikinput button" id="' . $id . '" name="' . $name . '" value="' . $element->label . '" />';
 		return $str;
 	}
 
@@ -33,7 +33,7 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 	 * (non-PHPdoc)
 	 * @see plgFabrik_Element::getLabel()
 	 */
-	
+
 	function getLabel($repeatCounter, $tmpl = '')
 	{
 		return '';
@@ -43,7 +43,7 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 	 * (non-PHPdoc)
 	 * @see plgFabrik_Element::elementJavascript()
 	 */
-	
+
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
