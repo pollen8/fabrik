@@ -326,7 +326,12 @@ class FabrikViewListBase extends JView{
 		$this->canDelete = $model->deletePossible() ? true : false;
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
-		$this->showPDF = $params->get('pdf', 0);
+		$canPdf = FabrikWorker::canPdf();
+		$this->showPDF = $canPdf ? $params->get('pdf', 0) : false;
+		if (!$canPdf)
+		{
+			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
+		}
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
 		$this->csvImportLink = $this->showCSVImport ? JRoute::_("index.php?option=com_fabrik&view=import&filetype=csv&listid=" . $item->id) : '';
 		$this->showAdd = $model->canAdd();
