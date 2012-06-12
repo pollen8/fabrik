@@ -299,33 +299,7 @@ class FabrikViewListBase extends JView{
 			require_once(JPATH_ROOT . '/includes/application.php');
 		}
 		$app = JFactory::getApplication();
-		$menus = $app->getMenu();
-		$menu = $menus->getActive();
-		// because the application sets a default page title, we need to get it
-		// right from the menu item itself
-		//if there is a menu item available AND the form is not rendered in a content plugin or module
-		if (is_object($menu) && !$this->isMambot)
-		{
-			$menu_params = new JRegistry($menu->params);
-			$params->set('page_title', $menu_params->get('page_title', $menu->title));
-			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
-		}
-		else
-		{
-			$params->set('show_page_title', JRequest::getInt('show_page_title', 0));
-			$params->set('page_title', JRequest::getVar('title', ''));
-			$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
-		}
-
-		$title = $params->get('page_title');
-		if (empty($title))
-		{
-			$title = $app->getCfg('sitename');
-		}
-		if (!$this->isMambot)
-		{
-			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST, false));
-		}
+		$this->setTitle($w, $params, $model);
 		/** depreciated (keep incase ppl use them in old tmpls**/
 		$this->table = new stdClass();
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
@@ -353,10 +327,6 @@ class FabrikViewListBase extends JView{
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$this->showPDF = $params->get('pdf', 0);
-		if ($this->showPDF)
-		{
-			$this->pdfLink = FabrikHelperHTML::pdfIcon($model, $params);
-		}
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
 		$this->csvImportLink = $this->showCSVImport ? JRoute::_("index.php?option=com_fabrik&view=import&filetype=csv&listid=" . $item->id) : '';
 		$this->showAdd = $model->canAdd();
@@ -417,6 +387,39 @@ class FabrikViewListBase extends JView{
 		$this->assign('pluginTopButtons', $this->get('PluginTopButtons'));
 	}
 	
+	protected function setTitle($w, &$params, $model)
+	{
+		$app = JFactory::getApplication();
+		$document = JFactory::getDocument();
+		$menus = $app->getMenu();
+		$menu = $menus->getActive();
+		// because the application sets a default page title, we need to get it
+		// right from the menu item itself
+		//if there is a menu item available AND the form is not rendered in a content plugin or module
+		if (is_object($menu) && !$this->isMambot)
+		{
+			$menu_params = new JRegistry($menu->params);
+			$params->set('page_title', $menu_params->get('page_title', $menu->title));
+			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
+		}
+		else
+		{
+			$params->set('show_page_title', JRequest::getInt('show_page_title', 0));
+			$params->set('page_title', JRequest::getVar('title', ''));
+			$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
+		}
+		
+		$title = $params->get('page_title');
+		if (empty($title))
+		{
+			$title = $app->getCfg('sitename');
+		}
+		if (!$this->isMambot)
+		{
+			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST, false));
+		}
+	}
+	
 	/**
 	 * actually load the template and echo the view html
 	 * will process jplugins if required.
@@ -450,7 +453,7 @@ class FabrikViewListBase extends JView{
 		$model = $this->getModel();
 		$params = $model->getParams();
 		$this->buttons = new stdClass();
-		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>'.JText::_('COM_FABRIK_EXPORT_TO_CSV').'</span>');
+		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . JText::_('COM_FABRIK_EXPORT_TO_CSV') . '</span>');
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_EXPORT_TO_CSV');
 		$this->buttons->csvexport =  FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, $buttonProperties);
 		$buttonProperties['title'] = '<span>'.JText::_('COM_FABRIK_IMPORT_FROM_CSV').'</span>';

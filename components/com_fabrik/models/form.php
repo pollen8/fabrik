@@ -244,24 +244,32 @@ class FabrikFEModelForm extends FabModelForm
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
-		if ($app->isAdmin())
+		$document = JFactory::getDocument();
+		if ($document->getType() === 'pdf')
 		{
-			$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
+			$tmpl = $params->get('pdf_template');
 		}
-		if ($tmpl == '')
+		else
 		{
-			if ($this->_editable)
+			if ($app->isAdmin())
 			{
-				$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+				$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
 			}
-			else
+			if ($tmpl == '')
 			{
-				$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+				if ($this->_editable)
+				{
+					$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+				}
+				else
+				{
+					$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+				}
 			}
-		}
-		if (JRequest::getVar('mjmarkup') == 'iphone')
-		{
-			$tmpl = 'iwebkit';
+			if (JRequest::getVar('mjmarkup') == 'iphone')
+			{
+				$tmpl = 'iwebkit';
+			}
 		}
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 		//finally see if the options are overridden by a querystring var

@@ -527,7 +527,7 @@ EOD;
 	}
 
 	/**
-	 *
+	 * @deprecated
 	 */
 
 	function PdfIcon($model, $params, $rowId = 0, $attribs = array())
@@ -754,7 +754,7 @@ EOD;
 				return false;
 			}
 		}
-		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1);
+		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1 && JRequest::getVar('format') !== 'pdf');
 	}
 
 	/**

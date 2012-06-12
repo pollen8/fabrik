@@ -15,11 +15,9 @@ require_once('components/com_fabrik/views/list/view.base.php');
 
 class FabrikViewList extends FabrikViewListBase{
 
-
 	/**
 	 * display the template
-	 *
-	 * @param sting $tpl
+	 * @param	sting	$tpl
 	 */
 
 	function display($tpl = null)
@@ -40,7 +38,21 @@ class FabrikViewList extends FabrikViewListBase{
 	
 	protected function buttons()
 	{
+		// dont add buttons as pdf is not interactive
 		$this->buttons = new stdClass();
+	}
+	
+	/**
+	* (non-PHPdoc)
+	* @see	FabrikViewFormBase::setTitle()
+	*/
+	
+	protected function setTitle($w, &$params, $model)
+	{
+		parent:: setTitle($w, $params, $model);
+		//set the download file name based on the document title
+		$document = JFactory::getDocument();
+		$document->setName($document->getTitle());
 	}
 
 }
