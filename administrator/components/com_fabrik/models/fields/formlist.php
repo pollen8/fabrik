@@ -52,7 +52,7 @@ class JFormFieldFormList extends JFormFieldList
 		$query->order('published DESC, label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		
+
 		foreach ($rows as &$row)
 		{
 			switch ($row->published)
@@ -69,14 +69,14 @@ class JFormFieldFormList extends JFormFieldList
 		$o->value = '';
 		$o->text = '';
 		array_unshift($rows, $o);
-		
+
 		return $rows;
 	}
-	
+
 	protected function getInput()
 	{
 		$option = JRequest::getCmd('option');
-		if (!in_array($option, array('com_modules', 'com_menus')))
+		if (!in_array($option, array('com_modules', 'com_menus', 'com_advancedmodules')))
 		{
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);

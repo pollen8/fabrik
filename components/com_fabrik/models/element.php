@@ -315,6 +315,11 @@ class plgFabrik_Element extends FabrikPlugin
 			$this->iconsSet = false;
 			return $data;
 		}
+		$listModel = $this->getListModel();
+		if ($listModel->_outputForm == 'csv') {
+			$this->iconsSet = false;
+			return $data;
+		}
 		$iconfile = $params->get('icon_file', ''); //Jaanus added this and following if/else; sometimes we need permanent image (e.g logo of the website where the link always points, like Wikipedia's W)
 		$cleanData = $iconfile === '' ? FabrikString::clean($data) : $iconfile;
 		foreach ($this->_imageExtensions as $ex)
