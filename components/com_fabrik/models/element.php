@@ -316,7 +316,7 @@ class plgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 		$listModel = $this->getListModel();
-		if ($listModel->_outputForm == 'csv') {
+		if ($listModel->getOutPutFormat() == 'csv') {
 			$this->iconsSet = false;
 			return $data;
 		}
@@ -3846,7 +3846,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$element = $this->getElement();
 		$table = $listModel->getTable();
 		$elFullName = $this->getFullName(true, false, false);
-		if ($listModel->_outPutFormat == 'rss')
+		if ($listModel->getOutPutFormat() == 'rss')
 		{
 			$bAddElement = ($params->get('show_in_rss_feed') == '1');
 			/* if its the date ordering col we should add it to the list of allowed elements */
