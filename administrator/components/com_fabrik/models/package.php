@@ -491,7 +491,7 @@ class FabrikModelPackage extends FabModelAdmin
 			$sql .= 'TRUNCATE TABLE ' . $table . ";\n\n";
 		}
 		foreach ($row->blocks as $block => $ids) {
-			$key = fabrikString::rtrimword($block, 's');
+			$key = FabrikString::rtrimword($block, 's');
 		}
 
 		// create the sql to build the db tables that store the data.

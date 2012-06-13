@@ -33,7 +33,7 @@ class JFormFieldUploadsize extends JFormField
 	protected function _return_bytes($val)
 	{
 		$val = trim($val);
-		$last = strtolower(substr($val, -1));
+		$last = JString::strtolower(JString::substr($val, -1));
 
 		if($last == 'g')
 			$val = $val*1024*1024*1024;

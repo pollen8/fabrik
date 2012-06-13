@@ -148,7 +148,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		}
 		$viewURL .= "&rowid=".JRequest::getVar('rowid');
 
-		$msg = str_ireplace('{LINK}', $viewURL, $msg);
+		$msg = JString::str_ireplace('{LINK}', $viewURL, $msg);
 
 		// Post to Ping.fm
 		if (!empty($msg)) {

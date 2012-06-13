@@ -417,7 +417,7 @@ class FabrikFEModelExport {
 				$buffer = fread($file, $chunksize);
 				print($buffer);
 				flush();
-				$this->bytes_send += strlen($buffer);
+				$this->bytes_send += JString::strlen($buffer);
 				/*sleep(1); decrease download speed */
 			}
 		fclose($file);

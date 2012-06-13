@@ -92,7 +92,7 @@ if( !empty($img) ) {
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 	header('Accept-Ranges: bytes');
-	header('Content-Length: '.strlen($img));
+	header('Content-Length: '. JString::strlen($img));
 	header('Content-Type: image/jpeg');
 
 	// ... serve up the image ...

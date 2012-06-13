@@ -114,14 +114,14 @@ function create_guid_section($characters)
 
 function ensure_length(&$string, $length)
 {
-	$strlen = strlen($string);
+	$strlen = JString::strlen($string);
 	if($strlen < $length)
 	{
 		$string = str_pad($string,$length,"0");
 	}
 	else if($strlen > $length)
 	{
-		$string = substr($string, 0, $length);
+		$string = JString::substr($string, 0, $length);
 	}
 }
 }

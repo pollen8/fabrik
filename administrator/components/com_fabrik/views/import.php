@@ -51,7 +51,7 @@ class FabrikViewImport {
 			for ($i=0; $i < count($this->newHeadings);$i++) {
 				$heading = trim($this->newHeadings[$i]);
 				foreach ($this->headings as $sKey => $sVal) {
-					if(strtolower($heading) == strtolower($sVal)){
+					if(JString::strtolower($heading) == JString::strtolower($sVal)){
 						$sample = $this->data[0][$sKey];
 					}
 				}
@@ -97,7 +97,7 @@ class FabrikViewImport {
 				foreach ($this->matchedHeadings as $heading) {
 
 				foreach ($this->headings as $sKey => $sVal) {
-					if(strtolower($heading) == strtolower($sVal)){
+					if(JString::strtolower($heading) == JString::strtolower($sVal)){
 						$sample = $this->data[0][$sKey];
 					}
 				}

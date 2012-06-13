@@ -43,7 +43,7 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 			$html[] = '<ul class="fabrik_filter_view">';
 			for ($i = 0; $i < count($labels); $i ++) {
 				$base = JURI::base();
-				$base .= strpos($base, '?') ? '&' : '?';
+				$base .= JString::strpos($base, '?') ? '&' : '?';
 				$class = $links[$i] == urldecode($_SERVER['QUERY_STRING']) ? 'active' : '';
 				$links[$i] = str_replace('+', '%2B', $links[$i]);
 				$url = $base.$links[$i];

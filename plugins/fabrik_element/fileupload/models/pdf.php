@@ -32,7 +32,7 @@ class pdfRender{
 			 	$thumb_url = $model->getStorage()->_getThumb($file);
 			 	$thumb_file = $model->getStorage()->urlToPath($thumb_url);
 			 	$thumb_url_info = pathinfo($thumb_url);
-			 	if (strtolower($thumb_url_info['extension'] == 'pdf')) {
+			 	if (JString::strtolower($thumb_url_info['extension'] == 'pdf')) {
 			 		$thumb_url = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '.' . $this->pdf_thumb_type;
 					$thumb_file_info = pathinfo($thumb_file);
 					$thumb_file = $thumb_file_info['dirname'] . '/' . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
@@ -85,7 +85,7 @@ class pdfRender{
 		if (!strstr($file, 'http://') && !strstr($file, 'https://')) {
 			// $$$rob only add in livesite if we dont already have a full url (eg from amazons3)
 			// $$$ hugh trim / or \ off the start of $file
-			$file = ltrim($file, '/\\');
+			$file = JString::ltrim($file, '/\\');
 			$file = COM_FABRIK_LIVESITE . $file;
 		}
 		$file = str_replace("\\", "/", $file);

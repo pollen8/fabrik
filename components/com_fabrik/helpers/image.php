@@ -147,7 +147,7 @@ class FabimageGD extends Fabimage
 
 	function imageFromFile($file)
 	{
-		$ext = strtolower(end(explode('.', $file)));
+		$ext = JString::strtolower(end(explode('.', $file)));
 		if ($ext == 'jpg' || $ext == 'jpeg') {
 			$img = @imagecreatefromjpeg($file);
 			$header = "image/jpeg";
@@ -174,7 +174,7 @@ class FabimageGD extends Fabimage
 
 	protected function imageCreateFrom($source)
 	{
-		$ext = strtolower(JFile::getExt($source));
+		$ext = JString::strtolower(JFile::getExt($source));
 		switch ($ext) {
 			case 'jpg':
 			case 'jpeg':
@@ -198,7 +198,7 @@ class FabimageGD extends Fabimage
 
 	public function imageToFile($destCropFile, $image)
 	{
-		$ext = strtolower(JFile::getExt($destCropFile));
+		$ext = JString::strtolower(JFile::getExt($destCropFile));
 		ob_start();
 		switch ($ext) {
 			case 'jpg':
@@ -290,7 +290,7 @@ class FabimageGD extends Fabimage
 		if (JError::isError($img)){
 			return $img;
 		}
-		$ext = strtolower(end(explode('.', $origFile)));
+		$ext = JString::strtolower(end(explode('.', $origFile)));
 		/* If an image was successfully loaded, test the image for size*/
 		if ($img) {
 			/* handle image transpacency for original image */
@@ -560,7 +560,7 @@ class FabimageIM extends Fabimage
 			//false so not an image type so cant resize
 			// $$$ hugh - testing making thumbs for PDF's, so need a little tweak here
 			$originfo = pathinfo($origFile);
-			if (strtolower($originfo['extension']) != 'pdf') {
+			if (JString::strtolower($originfo['extension']) != 'pdf') {
 				return;
 			}
 		}
@@ -573,14 +573,14 @@ class FabimageIM extends Fabimage
 			// it'll just fail if no GS.
 
 			$originfo = pathinfo($origFile);
-			if (strtolower($originfo['extension']) == 'pdf') {
+			if (JString::strtolower($originfo['extension']) == 'pdf') {
 				$pdf_thumb_type = 'png'; // could use jpg or whatever
 				// OK, it's a PDF, so first we need to add the page number we want to the source filename
 				$pdf_file = $origFile . '[0]';
 				// Now check to see if the destination filename needs changing - existing code will probably
 				// just have used the sourcefile extension for the thumb file.
 				$destinfo = pathinfo($destFile);
-				if (strtolower($destinfo['extension']) == 'pdf') {
+				if (JString::strtolower($destinfo['extension']) == 'pdf') {
 					// rebuild $destFile with valid image extension
 					// NOTE - changed $destFile arg to pass by reference OOOPS can't do that!
 
