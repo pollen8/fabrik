@@ -56,9 +56,9 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 	 * run when the table loads its data(non-PHPdoc)
 	 * @see components/com_fabrik/models/FabrikModelTablePlugin#onLoadData($params, $oRequest)
 	 */
-	function onLoadData(&$params, &$oRequest)
+	function onLoadData(&$params, &$model)
 	{
-		return $this->doEvaluate($params->get('list_phpevents_onloaddata'), $oRequest);
+		return $this->doEvaluate($params->get('list_phpevents_onloaddata'), $model);
   }
 
 	/**
@@ -92,7 +92,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 	{
 		return false;
 	}
-  
+
 	function onLoadJavascriptInstance($params, $model, $args)
 	{
 		return true;
@@ -100,7 +100,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/* ---------------------------------------------------- */
 
-	protected function doEvaluate($code, &$data)
+	protected function doEvaluate($code, &$model)
 	{
 		$w = new FabrikWorker();
 		$code = $w->parseMessageForPlaceHolder($code);

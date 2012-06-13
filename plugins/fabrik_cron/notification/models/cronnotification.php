@@ -36,7 +36,7 @@ class fabrikModelCronnotification extends fabrikModelPlugin {
 			$row->url = JRoute::_('index.php?option=com_fabrik&view=details&listid='.$listid.'&formid='.$formid.'&rowid='.$rowid);
 			$row->title = $row->url;
 			foreach ($data as $key => $value) {
-				$k = strtolower(array_pop(explode('___', $key)));
+				$k = JString::strtolower(array_pop(explode('___', $key)));
 				if ($k == 'title') {
 					$row->title = $value;
 				}

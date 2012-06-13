@@ -35,7 +35,7 @@ abstract class FabrikWebService
 		{
 		
 			// Derive the class name from the driver.
-			$class = 'FabrikWebService' . ucfirst($options['driver']);
+			$class = 'FabrikWebService' . JString::ucfirst($options['driver']);
 		
 			// If the class doesn't exist, let's look for it and register it.
 			if (!class_exists($class))

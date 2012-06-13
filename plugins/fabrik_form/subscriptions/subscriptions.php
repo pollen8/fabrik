@@ -322,7 +322,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowid);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
-			if (stristr($ret_msg, '[show_all]'))
+			if (JString::stristr($ret_msg, '[show_all]'))
 			{
 				$all_data = array();
 				foreach ($_REQUEST as $key => $val)
@@ -390,7 +390,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
 		$header .= "Host: www.paypal.com:443\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
+		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
 
 		$subscriptionsurl ($_POST['test_ipn'] == 1) ? 'ssl://www.sandbox.paypal.com' : 'ssl://www.paypal.com';
 
@@ -433,7 +433,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 					// check that receiver_email is your Primary Subscriptions email
 					// check that payment_amount/payment_currency are correct
 					// process payment
-					if (strcmp ($res, "VERIFIED") == 0)
+					if (JString::strcmp ($res, "VERIFIED") == 0)
 					{
 
 						$query = $db->getQuery(true);
@@ -514,7 +514,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 							}
 						}
 					}
-					else if (strcmp ($res, "INVALID") == 0)
+					else if (JString::strcmp ($res, "INVALID") == 0)
 					{
 						$status = 'form.subscriptions.ipnfailure.invalid';
 						$err_msg = 'subscriptions postback failed with INVALID';

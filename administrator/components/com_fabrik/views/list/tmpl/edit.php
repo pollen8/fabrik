@@ -71,7 +71,7 @@ foreach ($panels as $panel) {
 				<?php foreach ($panel['fieldset'] as $fieldset) :
 					foreach ($this->form->getFieldset($fieldset) as $field) :?>
 					<li>
-					<?php if (strtolower($field->type) != 'hidden') {
+					<?php if (JString::strtolower($field->type) != 'hidden') {
 							echo $field->label;
 						} ?>
 						<?php echo $field->input; ?>

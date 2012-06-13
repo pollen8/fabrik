@@ -79,7 +79,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 					continue;
 				}
 				$location = str_replace('\\','/',$location);
-				$location = ltrim($location, '/');
+				$location = JString::ltrim($location, '/');
 				$location = COM_FABRIK_LIVESITE . $location;
 				//$location = urlencode($location);
 				$retstr .= "		<track>\n";
@@ -92,7 +92,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 					$image = $row->$imageElement;
 					if (!empty($image)) {
 						$image = str_replace('\\','/',$image);
-						$image = ltrim($image, '/');
+						$image = JString::ltrim($image, '/');
 						$image = COM_FABRIK_LIVESITE . $image;
 						$retstr .= "			<image>" . $image . "</image>\n";
 					}

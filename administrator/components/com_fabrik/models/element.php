@@ -515,7 +515,7 @@ class FabrikModelElement extends JModelAdmin
 			}
 		}
 		//strip <p> tag from label
-		$data['label'] = str_ireplace(array('<p>', '</p>'), '', $data['label']);
+		$data['label'] = JString::str_ireplace(array('<p>', '</p>'), '', $data['label']);
 
 		return count($this->getErrors()) == 0 ? $data : false;
 	}
@@ -844,7 +844,7 @@ class FabrikModelElement extends JModelAdmin
 		//update table indexes
 		$ftype = $elementModel->getFieldDescription();
 		//int elements cant have a index size attrib
-		$size = stristr($ftype, 'int') || $ftype == 'DATETIME' ? '' : '10';
+		$size = JString::stristr($ftype, 'int') || $ftype == 'DATETIME' ? '' : '10';
 		if ($elementModel->getParams()->get('can_order'))
 		{
 			$listModel->addIndex($row->name, 'order', 'INDEX', $size);

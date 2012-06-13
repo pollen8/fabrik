@@ -57,7 +57,7 @@ class FabrikControllerImport extends FabControllerForm
 			{
 				$element->id = 0;
 				$element->name = JFilterInput::clean($elname, 'CMD');
-				$element->label = strtolower($elname);
+				$element->label = JString::strtolower($elname);
 				$element->plugin = $plugins[$c];
 				$element->group_id = $groupId;
 				$element->eval = 0;

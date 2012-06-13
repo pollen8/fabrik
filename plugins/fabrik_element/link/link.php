@@ -68,7 +68,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			}
 			$_lnk = trim($data['link']);
 			$_lbl = trim($data['label']);
-			if (strtolower($_lnk) == 'http://' || strtolower($_lnk) == 'https://') {
+			if (JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://') {
 				$_lnk = ''; //threat some default values as empty
 			}
 			$target = $params->get('link_target', '');
@@ -143,7 +143,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			$_lnk = trim($value['link']);
 			$w = new FabrikWorker();
 			$_lnk = is_array($data) ? $w->parseMessageForPlaceHolder($_lnk, $data) : $w->parseMessageForPlaceHolder($_lnk);
-			if (empty($_lnk) || strtolower($_lnk) == 'http://' || strtolower($_lnk) == 'https://') {
+			if (empty($_lnk) || JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://') {
 				return ''; //don't return empty links
 			}
 			$target = $params->get('link_target', '');
@@ -494,7 +494,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 						break;
 				}
 				if ($ret['type'] == 'mediabox') {
-					$ext = strtolower(JFile::getExt($link));
+					$ext = JString::strtolower(JFile::getExt($link));
 					switch ($ext) {
 						case 'swf':
 						case 'flv':

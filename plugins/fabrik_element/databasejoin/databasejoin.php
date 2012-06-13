@@ -564,7 +564,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		if (!empty($this->_autocomplete_where))
 		{
-			$where .= stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
+			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
 		}
 		if ($where == '')
 		{

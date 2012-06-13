@@ -298,7 +298,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$db = JFactory::getDbo();
 		$db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
 		$res = $db->loadObject();
-		return strlen($s) >= $res->Value; 
+		return JString::strlen($s) >= $res->Value; 
 	}
 
 	/**
@@ -908,7 +908,7 @@ class FabrikFEModelListfilter extends FabModel {
 			// thus the filters may be keyed non-sequentially. Use $keyints rather than count($request[$key]) to ensure
 			// that $key is found
 
-			$ajaxPost = strtolower(JRequest::getVar('HTTP_X_REQUESTED_WITH', '', 'server'));
+			$ajaxPost = JString::strtolower(JRequest::getVar('HTTP_X_REQUESTED_WITH', '', 'server'));
 			$this->listModel->ajaxPost = $ajaxPost;
 			$this->listModel->postValues = $values;
 			foreach ($keyints as $i)
@@ -1023,7 +1023,7 @@ class FabrikFEModelListfilter extends FabModel {
 				// $$$ rob - search all and dropdown filter: Search first on searchall = usa, then select dropdown to usa.
 				// post filter query overwrites search all query, but uses add so = where id REGEX 'USA' AND country LIKE '%USA'
 				// this code swaps the first
-				$joinMode = strtolower($request['join'][$i]) != 'where' ? $request['join'][$i]: 'AND';
+				$joinMode = JString::strtolower($request['join'][$i]) != 'where' ? $request['join'][$i]: 'AND';
 				if (!empty($filters))
 				{
 					if ($i == 0)

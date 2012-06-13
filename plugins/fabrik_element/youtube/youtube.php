@@ -75,8 +75,8 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 			}
 
 			// Colors
-			$color1 = substr($params->get('color1'), -6);
-			$color2 = substr($params->get('color2'), -6);
+			$color1 = JString::substr($params->get('color1'), -6);
+			$color2 = JString::substr($params->get('color2'), -6);
 
 			$vid = array_pop(explode("/", $data));
                         //$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
@@ -243,10 +243,10 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 			}
 
 			// Colors
-			$color1 = substr($params->get('color1'), -6);
-			$color2 = substr($params->get('color2'), -6);
+			$color1 = JString::substr($params->get('color1'), - 6);
+			$color2 = JString::substr($params->get('color2'), - 6);
 			// $$$ rob - barfed if url entered was like http://www.youtube.com/v/zD8XclVc3DQ&hl=en
-			//$vid = substr($value, 31);
+			//$vid = JString::substr($value, 31);
 			//this seems more sturdy a method:
 			$vid = array_pop(explode("/", $value));
 			//$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player

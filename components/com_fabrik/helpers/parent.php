@@ -413,7 +413,7 @@ class FabrikWorker {
 	public static function isReserved($str)
 	{
 		$_reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size", "ul_file_types", "ul_directory", "listid", 'rowid', 'itemid', 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
-		if (in_array(strtolower($str ), $_reservedWords))
+		if (in_array(JString::strtolower($str), $_reservedWords))
 		{
 			return true;
 		}
@@ -433,7 +433,7 @@ class FabrikWorker {
 	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addslashes = false, $theirUser = null)
 	{
 		$this->_parseAddSlases = $addslashes;
-		if ($msg == '' || is_array($msg) || strpos($msg, '{') === false)
+		if ($msg == '' || is_array($msg) || JString::strpos($msg, '{') === false)
 		{
 			return $msg;
 		}
@@ -600,7 +600,7 @@ class FabrikWorker {
 		$match = $matches[0];
 		$orig = $match;
 		/* strip the {} */
-		$match = substr($match, 1, strlen($match) - 2);
+		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 		// $$$ rob test this format searchvalue||defaultsearchvalue
 		$bits = explode('||', $match);
 		if (count($bits) == 2)
@@ -620,7 +620,7 @@ class FabrikWorker {
 		}
 
 		// $$$ hugh - NOOOOOOO!!  Screws up where people actually have mixed case element names
-		//$match = strtolower($match);
+		//$match = JString::strtolower($match);
 		$match = preg_replace("/ /", "_", $match);
 		if (!strstr($match, '.'))
 		{
@@ -663,7 +663,7 @@ class FabrikWorker {
 							$newmatch .= ',' . $m;
 						}
 					}
-					$match = ltrim($newmatch, ',');
+					$match = JString::ltrim($newmatch, ',');
 				}
 			}
 			else
@@ -727,7 +727,7 @@ class FabrikWorker {
 			else if (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// leading / we don't need
-				$imageFile = substr($ff, 1);
+				$imageFile = JString::substr($ff, 1);
 				$images[$folderPath][] = $makeOptions ? JHTML::_('select.option', $imageFile, $file) : $file;
 			}
 		}
@@ -861,7 +861,7 @@ class FabrikWorker {
 
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
-			$filterType	= strtoupper($filterData->filter_type);
+			$filterType	= JString::strtoupper($filterData->filter_type);
 			if ($filterType == 'NH')
 			{
 				// Maximum HTML filtering.

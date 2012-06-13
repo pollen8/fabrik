@@ -85,14 +85,14 @@ class FabrikFEModelCSVExport {
 				}
 				if (!$incRaw) {
 					foreach ($a as $key=>$val) {
-						if (substr($key, strlen($key) - 4, strlen($key)) == "_raw") {
+						if (substr($key, JString::strlen($key) - 4, JString::strlen($key)) == "_raw") {
 							unset($a[$key]);
 						}
 					}
 				}
 				if (!$incData) {
 					foreach ($a as $key=>$val) {
-						if (substr($key, strlen($key) - 4, strlen($key)) != "_raw") {
+						if (substr($key, JString::strlen($key) - 4, JString::strlen($key)) != "_raw") {
 							unset($a[$key]);
 						}
 					}
@@ -241,7 +241,7 @@ class FabrikFEModelCSVExport {
 					$x = 0;
 
 					foreach ($a as $akey=>$aval) {
-						if ($akey == substr($key, 0, strlen($key)-4)&& $x != 0) {
+						if ($akey == JString::substr($key, 0, JString::strlen($key)-4)&& $x != 0) {
 							$found = true;
 							break;
 						}
@@ -338,7 +338,7 @@ class FabrikFEModelCSVExport {
 							$n .= "_raw";
 						}
 
-						if ($incData && substr($n, strlen($n)-4, strlen($n)) !== '_raw') {
+						if ($incData && JString::substr($n, JString::strlen($n)-4, JString::strlen($n)) !== '_raw') {
 							if (!in_array($n, $h)) { //only add heading once
 								$h[] = $n;
 							} else {
@@ -346,7 +346,7 @@ class FabrikFEModelCSVExport {
 							}
 						}
 
-						if ($incRaw && substr($n, strlen($n)-4, strlen($n)) == "_raw") {
+						if ($incRaw && JString::substr($n, JString::strlen($n)-4, JString::strlen($n)) == "_raw") {
 							if (!in_array($n, $h)) { //only add heading once
 								$h[] = $n;
 							} else {
@@ -358,7 +358,7 @@ class FabrikFEModelCSVExport {
 			}
 
 			if (!$found) {
-				if (!(substr($heading, strlen($heading)-4, strlen($heading)) == "_raw" && !$incRaw)) {
+				if (!(substr($heading, JString::strlen($heading)-4, JString::strlen($heading)) == "_raw" && !$incRaw)) {
 					//stop id getting added to tables when exported wiht fullelname key
 					if ($hformat != 1 && $heading != $shortkey) {
 						$h[] = $heading;

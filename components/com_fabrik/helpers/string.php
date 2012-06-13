@@ -24,10 +24,10 @@ class FabrikString extends JString{
 
 	public static function ltrimword($str, $word = false)
 	{
-		$pos = strpos($str, $word);
+		$pos = JString::strpos($str, $word);
 		if ($pos === 0)
 		{
-			$str = JString::substr($str, strlen($word));
+			$str = JString::substr($str, JString::strlen($word));
 		}
 		return $str;
 	}
@@ -42,11 +42,11 @@ class FabrikString extends JString{
 	
 	public static function rtrimword(&$str, $word = false)
 	{
-		$l = strlen($word);
-		$end = substr($str, -$l);
+		$l = JString::strlen($word);
+		$end = JString::substr($str, -$l);
 		if ($end === $word)
 		{
-			return substr($str, 0, strlen($str)-$l);
+			return JString::substr($str, 0, JString::strlen($str)-$l);
 		}
 		else
 		{
@@ -70,7 +70,7 @@ class FabrikString extends JString{
 		$pos = stripos($str, $word);
 		if ($pos === 0)
 		{
-			$str = JString::substr($str, strlen($word));
+			$str = JString::substr($str, JString::strlen($word));
 		}
 		return $str;
 	}
@@ -161,9 +161,9 @@ class FabrikString extends JString{
 	{
 		$label = strip_tags($label);
 		preg_replace('/<[a-z][a-z0-9]*[^<>]*>/', '', $label);
-		if (strlen($label) > 50)
+		if (JString::strlen($label) > 50)
 		{
-			$label = substr($label, 0, 47).'...';
+			$label = JString::substr($label, 0, 47).'...';
 		}
 		$label = trim($label);
 		return $label;
@@ -186,7 +186,7 @@ class FabrikString extends JString{
 	{
 		//replace umlauts
 		$out = '';
-		for ($i = 0; $i < strlen($str); $i++)
+		for ($i = 0; $i < JString::strlen($str); $i++)
 		{
 			$ch = ord($str{$i});
 			switch($ch)
@@ -225,7 +225,7 @@ class FabrikString extends JString{
 
 	public static function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
 	{
-		return strtolower(FabrikString::iclean($str, $fromEnc, $toEnc));
+		return JString::strtolower(FabrikString::iclean($str, $fromEnc, $toEnc));
 	}
 
 	/**

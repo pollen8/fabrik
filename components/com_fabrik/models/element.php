@@ -315,6 +315,11 @@ class plgFabrik_Element extends FabrikPlugin
 			$this->iconsSet = false;
 			return $data;
 		}
+		$listModel = $this->getListModel();
+		if ($listModel->getOutPutFormat() == 'csv') {
+			$this->iconsSet = false;
+			return $data;
+		}
 		$iconfile = $params->get('icon_file', ''); //Jaanus added this and following if/else; sometimes we need permanent image (e.g logo of the website where the link always points, like Wikipedia's W)
 		$cleanData = $iconfile === '' ? FabrikString::clean($data) : $iconfile;
 		foreach ($this->_imageExtensions as $ex)
@@ -1839,8 +1844,8 @@ class plgFabrik_Element extends FabrikPlugin
 			{
 				$class = 'plgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
 				$conf = array();
-				$conf['name'] = strtolower($usedPlugin);
-				$conf['type'] = strtolower('fabrik_Validationrule');
+				$conf['name'] = JString::strtolower($usedPlugin);
+				$conf['type'] = JString::strtolower('fabrik_Validationrule');
 				$plugIn = new $class($dispatcher, $conf);
 				$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 				$plugIn->elementModel = $this;
@@ -2696,8 +2701,8 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($eval == FABRKFILTER_NOQUOTES)
 			{
 				# $$$ hugh - darn, this is stripping the ' of the end of things like "select & from foo where bar = '123'"
-				$value = ltrim($value, "'");
-			$value = rtrim($value, "'");
+				$value = JString::ltrim($value, "'");
+				$value = JString::rtrim($value, "'");
 			}
 			if ($condition == '=' && $value == "'_null_'")
 			{
@@ -3839,7 +3844,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$element = $this->getElement();
 		$table = $listModel->getTable();
 		$elFullName = $this->getFullName(true, false, false);
-		if ($listModel->_outPutFormat == 'rss')
+		if ($listModel->getOutPutFormat() == 'rss')
 		{
 			$bAddElement = ($params->get('show_in_rss_feed') == '1');
 			/* if its the date ordering col we should add it to the list of allowed elements */
@@ -4281,7 +4286,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				$where = trim($this->_buildQueryWhere(array()));
 
 				if ($where != '') {
-					$where = substr($where, 5, strlen($where) - 5);
+					$where = JString::substr($where, 5, JString::strlen($where) - 5);
 					if (!in_array($where, $whereArray)) {
 						$whereArray[] = $where;
 					}

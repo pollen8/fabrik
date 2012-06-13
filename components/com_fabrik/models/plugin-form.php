@@ -159,7 +159,7 @@ class plgFabrik_Form extends FabrikPlugin
 		//Now instead the pk value is taken from the tableModel->lastInsertId and inserted at the end of this method
 		//$model->render();
 
-		$listModel = $model->_table;
+		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 
 		$model->_editable = false;

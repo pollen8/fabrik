@@ -655,7 +655,7 @@ class FabrikModelList extends FabModelAdmin
 			// $$$ rob erm ??? isnt $key the id for jos_fabrik_lists?
 			//store without quoteNames as thats db specific
 			$row->db_primary_key = $row->db_primary_key == '' ? $row->db_table_name.".".$key : $row->db_primary_key;
-			$row->auto_inc = stristr($fields[$key]->Extra, 'auto_increment') ? true : false;
+			$row->auto_inc =  JString::stristr($fields[$key]->Extra, 'auto_increment') ? true : false;
 		}
 
 		if (!$row->store())
@@ -1073,7 +1073,7 @@ class FabrikModelList extends FabModelAdmin
 			else
 			{
 				//if the field is the primary key and it's an INT type set the plugin to be the fabrik internal id
-				if ($key[0]['colname'] == $label && strtolower(substr($key[0]['type'], 0, 3)) === 'int')
+				if ($key[0]['colname'] == $label && JString::strtolower(substr($key[0]['type'], 0, 3)) === 'int')
 				{
 					$plugin = 'internalid';
 				}
@@ -1672,7 +1672,7 @@ class FabrikModelList extends FabModelAdmin
 				$feModel->set('_table', $table);
 				if ($drop)
 				{
-					if (strncasecmp($table->db_table_name, $dbconfigprefix, strlen($dbconfigprefix)) == 0)
+					if (strncasecmp($table->db_table_name, $dbconfigprefix, JString::strlen($dbconfigprefix)) == 0)
 					{
 						$app->enqueueMessage(JText::sprintf('COM_FABRIK_TABLE_NOT_DROPPED_PREFIX', $table->db_table_name, $dbconfigprefix), 'notice');
 					}
@@ -1795,7 +1795,7 @@ class FabrikModelList extends FabModelAdmin
 			}
 			else
 			{
-				switch (strtolower($type))
+				switch (JString::strtolower($type))
 				{
 					case 'integer':
 						$objtype = 'INT';
