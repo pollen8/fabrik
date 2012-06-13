@@ -1054,16 +1054,32 @@ class FabrikModelList extends FabModelAdmin
 		$pluginManager = FabrikWorker::getPluginManager();
 		$user = JFactory::getUser();
 		$elementTypes = JRequest::getVar('elementtype', array());
-		$fields = $fabrikDb->getTableFields(array($tableName));
-		$fields = $fields[$tableName];
+		/* $fields = $fabrikDb->getTableFields(array($tableName));
+		$fields = $fields[$tableName]; */
+		$fields = $fabrikDb->getTableColumns($tableName, false);
 		$createdate = JFactory::getDate()->toMySQL();
 		$key = $this->getFEModel()->getPrimaryKeyAndExtra($tableName);
 		$ordering = 0;
 		// no existing fabrik table so we take a guess at the most
 		//relavent element types to  create
 		$elementLabels = JRequest::getVar('elementlabels', array());
-		foreach ($fields as $label => $type)
+		foreach ($fields as $label => $properties)
 		{
+			$type = $properties->Type;
+			if (preg_match("/\((.*)\)/i", $type, $matches))
+			{
+				$maxLength = JArrayHelper::getValue($matches, 1, 255);
+			}
+			else
+			{
+				$maxLength = 255;
+			}
+			
+			//get the basic type
+			$type = explode(" ", $type);
+			$type = JArrayHelper::getValue($type, 0, '');
+			$type = preg_replace("/\((.*)\)/i", '', $type);
+			
 			$element = FabTable::getInstance('Element', 'FabrikTable');
 			if (array_key_exists($ordering, $elementTypes))
 			{
@@ -1126,9 +1142,15 @@ class FabrikModelList extends FabModelAdmin
 					$element->width = '30';
 				break;
 			}
+			if ($element->width > $maxLength)
+			{
+				$element->width = $maxLength;
+			}
 			$element->height = '6';
 			$element->ordering = $ordering;
-			$element->params = $elementModel->getDefaultAttribs();
+			$p = json_decode($elementModel->getDefaultAttribs());
+			$p->maxlength = $maxLength;
+			$element->params = json_encode($p); 
 			$element->label = JArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
 
 			if (!$element->store())
