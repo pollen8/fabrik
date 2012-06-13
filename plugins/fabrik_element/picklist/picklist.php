@@ -141,7 +141,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$arVals = $this->getSubOptionValues();
 		$arTxt 	= $this->getSubOptionLabels();
 		for ($i=0; $i<count($arTxt); $i++) {
-			if (strtolower($arTxt[$i]) == strtolower($val)) {
+			if (JString::strtolower($arTxt[$i]) == JString::strtolower($val)) {
 				$val =  $arVals[$i];
 				return $val;
 			}

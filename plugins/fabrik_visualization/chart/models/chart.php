@@ -93,7 +93,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 			$calcfound = $this->getCalcFound();
 			if ($calcfound) {
-				$column = substr($column, 6);
+				$column = JString::substr($column, 6);
 			}
 			$elements = $listModel->getElements('filtername');
 			$safename = FabrikString::safeColName($column);
@@ -376,7 +376,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 			$calcfound = $this->getCalcFound();
 			if($calcfound) {
-				$column = substr($column, 6);
+				$column = JString::substr($column, 6);
 			}
 
 			if ($calcfound) {

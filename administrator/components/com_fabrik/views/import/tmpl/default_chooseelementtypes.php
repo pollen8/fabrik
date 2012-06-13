@@ -25,7 +25,7 @@
 				$heading = trim($this->newHeadings[$i]);
 				$sample = '';
 				foreach ($this->headings as $sKey => $sVal) {
-					if(strtolower($heading) == strtolower($sVal)) {
+					if(JString::strtolower($heading) == JString::strtolower($sVal)) {
 						$sample = $this->sample[$sKey];
 					}
 				}
@@ -81,7 +81,7 @@
 	<?php
 			foreach ($this->matchedHeadings as $heading) {
 				foreach ($this->headings as $sKey => $sVal) {
-					if(strtolower($heading) == strtolower($sVal)) {
+					if(JString::strtolower($heading) == JString::strtolower($sVal)) {
 						$sample = $this->data[0][$sKey];
 					}
 				}

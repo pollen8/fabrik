@@ -12,7 +12,7 @@ $db = JFactory::getDbo();
 //get the package id from #__fabrik_packages for this opton
 $query = $db->getQuery(true);
 $option = JRequest::getCmd('option');
-$shortName = substr($option, 4);
+$shortName = JString::substr($option, 4);
 $query->select('id')->from('#__fabrik_packages')->where('(component_name = ' . $db->quote($option) . ' OR component_name = ' . $db->quote($shortName) . ') AND external_ref <> ""')->order('version DESC');
 $db->setQuery($query, 0, 1);
 $id = $db->loadResult();

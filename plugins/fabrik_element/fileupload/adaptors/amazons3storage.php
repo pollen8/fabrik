@@ -73,7 +73,7 @@ class amazons3storage extends storageAdaptor{
 
 	private function removePrependedURL($filepath)
 	{
-		if (substr($filepath, 0, strlen(COM_FABRIK_BASE)) == COM_FABRIK_BASE)
+		if (substr($filepath, 0, JString::strlen(COM_FABRIK_BASE)) == COM_FABRIK_BASE)
 		{
 			$filepath = Fabrikstring::ltrimword($filepath, COM_FABRIK_BASE);
 		}
@@ -105,7 +105,7 @@ class amazons3storage extends storageAdaptor{
 			$this->s3->putBucket($bucket, $acl, $this->getLocation());
 		}
 		// $$$ rob avoid urls like http://bucket.s3.amazonaws.com//home/users/path/to/file/Chrysanthemum.jpg
-		$filepath = ltrim($filepath, '/');
+		$filepath = JString::ltrim($filepath, '/');
 		//move the file
 		if ($this->s3->putObjectFile($tmpFile, $bucket, $filepath, $acl))
 		{
@@ -228,7 +228,7 @@ class amazons3storage extends storageAdaptor{
 			$i = 0;
 			while ($i < $length)
 			{
-				$char = substr($possible, mt_rand(0, strlen($possible) - 1), 1);
+				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 				$key .= $char;
 				$i++;
 			}

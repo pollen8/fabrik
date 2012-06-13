@@ -204,7 +204,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 			$str .= "name=\"$name\" id=\"". $id. "\" cols=\"$cols\" rows=\"$rows\">".$value."</textarea>\n";
 		}
 		if ($params->get('textarea-showmax')) {
-			$charsLeft = $params->get('textarea-maxlength') - strlen($value);
+			$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
 			$str .= "<div class=\"fabrik_characters_left\"><span>" . $charsLeft . "</span> " . JText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT') . "</div>";
 		}
 		return $str;

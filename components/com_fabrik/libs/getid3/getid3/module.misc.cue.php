@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // Module originally written [2009-Mar-25] by                  //
-//      Nigel Barnes <ngbarnesØhotmail*com>                    //
+//      Nigel Barnes <ngbarnesï¿½hotmail*com>                    //
 // Minor reformatting and similar small changes to integrate   //
 //   into getID3 by James Heinrich <info@getid3.org>           //
 //                                                            ///
@@ -299,7 +299,7 @@ class getid3_cue extends getid3_handler
 	function parseTrack($line, $track_on)
 	{
 		$line = substr($line, strpos($line, ' ') + 1);
-		$track = ltrim(substr($line, 0, strpos($line, ' ')), '0');
+		$track = JString::ltrim(substr($line, 0, strpos($line, ' ')), '0');
 
 		//find the data type.
 		$datatype = strtolower(substr($line, strpos($line, ' ') + 1));

@@ -63,21 +63,21 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		foreach ($fields as $f)
 		{
 			$name = $f->name;
-			foreach ( $formModel->_fullFormData as $key => $val)
+			foreach ($formModel->_fullFormData as $key => $val)
 			{
 				if (is_array($val))
 				{
 					$val = implode(';', $val);
 				}
 				$key = array_pop(explode('___', $key));
-				if (strtolower($key) == strtolower($name) && strtolower($name) != 'id')
+				if (JString::strtolower($key) == JString::strtolower($name) && JString::strtolower($name) != 'id')
 				{
 					$submission[$name] = $val;
 				}
 				else
 				{
 					// check custom fields
-					if (strtolower($key.'__c') == strtolower($name) && strtolower($name) != 'id')
+					if (JString::strtolower($key.'__c') == JString::strtolower($name) && JString::strtolower($name) != 'id')
 					{
 						$submission[$name] = $val;
 					}

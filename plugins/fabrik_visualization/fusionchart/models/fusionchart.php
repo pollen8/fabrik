@@ -482,7 +482,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 				//they get rendered as tow groups of data and on bar charts this overlays one average over the other, rather than next to it
 				$calcfound = true;
 
-				$column = substr($column, 6);
+				$column = JString::substr($column, 6);
 				$calckey = $calc_prefixmap[$pref];
 				$caldata = JArrayHelper::getValue($cals[$calckey], $column . '_obj');
 				if (is_array($caldata))

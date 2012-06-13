@@ -144,7 +144,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 			// $$$ 24/10/2011 testing removing this as data is retrieved via the session not thorugh posted data
 		 	foreach ($post as $key => $val)
 		 	{
-				$noneraw = substr($key, 0, strlen($key) - 4);
+				$noneraw = JString::substr($key, 0, JString::strlen($key) - 4);
 				if ($key == 'join' || $key == 'fabrik_vars')
 				{
 					continue;
