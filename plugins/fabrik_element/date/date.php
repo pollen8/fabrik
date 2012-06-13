@@ -1217,7 +1217,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		return implode("\n", $return);
 	}
-	
+
 	protected function getFilterHtmlId($range)
 	{
 		$counter = JRequest::getVar('counter', 0);
@@ -1666,11 +1666,14 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$compare = $this->storeDatabaseFormat($compare, null);
 		$data = JFactory::getDate($data)->toUnix();
 		$compare = JFactory::getDate($compare)->toUnix();
+		/*
 		if ($cond == '>') {
 			return $data > $compare;
 		} else {
 			return $data < $compare;
 		}
+		*/
+		return parent::greaterOrLessThan($data, $cond, $compare);
 	}
 
 	/**
@@ -1784,7 +1787,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	public function filterJS($normal, $container)
 	{
-		
+
 		$element = $this->getElement();
 		if ($normal && ($element->filter_type !== 'field' && $element->filter_type !== 'range'))
 		{
