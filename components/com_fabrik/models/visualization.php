@@ -130,7 +130,7 @@ class FabrikFEModelVisualization extends JModel
 	function getFilters()
 	{
 		$params = $this->getParams();
-		$name = strtolower(str_replace('fabrikModel', '', get_class($this)));
+		$name = JString::strtolower(str_replace('fabrikModel', '', get_class($this)));
 		$filters = array();
 		$showFilters = $params->get($name . '_show_filters', array());
 		$listModels = $this->getlistModels();

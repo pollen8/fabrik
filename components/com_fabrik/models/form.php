@@ -2945,10 +2945,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if (strstr($sql, 'WHERE') && $this->_rowId != '')
 		{
 			//do it this way as queries may contain subquerues which we want to keep the where
-			$firstword = substr($where, 0, 5);
+			$firstword = JString::substr($where, 0, 5);
 			if ($firstword == 'WHERE')
 			{
-				$where = substr_replace($where, 'AND', 0, 5);
+				$where = JString::substr_replace($where, 'AND', 0, 5);
 			}
 		}
 		//set rowId to -2 to indicate random record

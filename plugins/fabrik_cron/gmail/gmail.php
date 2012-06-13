@@ -257,8 +257,8 @@ print_r($result);exit;
 	{
 		$title = $overview->subject;
 		//remove 'RE: ' from title
-		if (strtoupper(substr($title, 0, 3)) == 'RE:') {
-			$title = substr($title, 3, strlen($title));
+		if (JString::strtoupper(substr($title, 0, 3)) == 'RE:') {
+			$title = JString::substr($title, 3, JString::strlen($title));
 		}
 		return $title;
 	}

@@ -114,9 +114,9 @@ class uploader extends JObject
 		}
 
 		jimport('joomla.filesystem.file');
-		$format = strtolower(JFile::getExt($file['name']));
+		$format = JString::strtolower(JFile::getExt($file['name']));
 
-		$allowable = explode(',', strtolower($params->get('ul_file_types')));
+		$allowable = explode(',', JString::strtolower($params->get('ul_file_types')));
 
 		$format = FabrikString::ltrimword($format, '.');
 		$format2 = ".$format";
@@ -193,7 +193,7 @@ class uploader extends JObject
 			$bits = explode('.', $newFileName);
 			$ext = array_pop($bits);
 			$f = implode('.', $bits);
-			$f = rtrim($f, $version - 1);
+			$f = JString::rtrim($f, $version - 1);
 			$newFileName = $f . $version . "." . $ext;
 			$version ++;
 			$newFileName = uploader::incrementFileName($origFileName, $newFileName, $version);

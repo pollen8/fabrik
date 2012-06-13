@@ -29,7 +29,7 @@ foreach ($docs as $d)
 		require_once(JPATH_SITE . '/administrator/components/com_fabrik/classes/' . $d . 'document.php');
 		// replace the document
 		$document = JFactory::getDocument();
-		$docClass = 'JDocument'.strtoupper($d);
+		$docClass = 'JDocument' . JString::strtoupper($d);
 		$document = new $docClass();
 	}
 }
@@ -97,7 +97,7 @@ if (JString::strpos($cName, '.') != false)
 if (strpos(JRequest::getCmd('task'), '.') !== false)
 {
 	$controller = array_shift(explode('.', JRequest::getCmd('task')));
-	$classname	= 'FabrikController' . ucfirst($controller);
+	$classname	= 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';
 	if (JFile::exists($path))
 	{
@@ -113,7 +113,7 @@ if (strpos(JRequest::getCmd('task'), '.') !== false)
 }
 else
 {
-	$classname	= 'FabrikController' . ucfirst($controller);
+	$classname	= 'FabrikController' . JString::ucfirst($controller);
 	$controller = new $classname();
 	$task = JRequest::getCmd('task');
 }

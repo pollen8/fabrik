@@ -1844,8 +1844,8 @@ class plgFabrik_Element extends FabrikPlugin
 			{
 				$class = 'plgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
 				$conf = array();
-				$conf['name'] = strtolower($usedPlugin);
-				$conf['type'] = strtolower('fabrik_Validationrule');
+				$conf['name'] = JString::strtolower($usedPlugin);
+				$conf['type'] = JString::strtolower('fabrik_Validationrule');
 				$plugIn = new $class($dispatcher, $conf);
 				$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 				$plugIn->elementModel = $this;
@@ -2701,8 +2701,8 @@ class plgFabrik_Element extends FabrikPlugin
 			if ($eval == FABRKFILTER_NOQUOTES)
 			{
 				# $$$ hugh - darn, this is stripping the ' of the end of things like "select & from foo where bar = '123'"
-				$value = ltrim($value, "'");
-			$value = rtrim($value, "'");
+				$value = JString::ltrim($value, "'");
+				$value = JString::rtrim($value, "'");
 			}
 			if ($condition == '=' && $value == "'_null_'")
 			{
@@ -4286,7 +4286,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				$where = trim($this->_buildQueryWhere(array()));
 
 				if ($where != '') {
-					$where = substr($where, 5, strlen($where) - 5);
+					$where = JString::substr($where, 5, JString::strlen($where) - 5);
 					if (!in_array($where, $whereArray)) {
 						$whereArray[] = $where;
 					}
