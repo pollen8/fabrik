@@ -1503,7 +1503,9 @@ class FabrikFEModelList extends JModelForm {
 			$ids = array();
 
 			$idRows = $db->loadObjectList();
-			while (empty($ids) && $lookupC >= 0)
+			$maxPossibleIds = count($idRows);
+			//while (empty($ids) && $lookupC >= 0)
+			while (count($ids) < $maxPossibleIds && $lookupC > 0)
 			{
 				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
 				for ($idx = count($ids) - 1; $idx >= 0; $idx --)
@@ -1517,8 +1519,9 @@ class FabrikFEModelList extends JModelForm {
 						$ids[$idx] = $db->quote($ids[$idx]);
 					}
 				}
-				$ids = array_unique($ids);
-				if (empty($ids))
+				//$ids = array_unique($ids);
+				//if (empty($ids))
+				if (count($ids) < $maxPossibleIds)
 				{
 					$lookupC --;
 				}
@@ -7612,7 +7615,7 @@ class FabrikFEModelList extends JModelForm {
 				{
 					$origKey = $key;
 					$tmpkey = FabrikString::rtrimword($key, '_raw');
-					if (isset($data[$last_i]->$key) && $can_repeats[$tmpkey])
+					if ($can_repeats[$tmpkey])
 					{
 						if ($merge == 2 && !isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i]))
 						{
@@ -7638,9 +7641,12 @@ class FabrikFEModelList extends JModelForm {
 							if ($merge == 2)
 							{
 								$pk_vals = array_count_values(array_filter($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]]));
-								if ($pk_vals[$data[$i]->$can_repeats_keys[$tmpkey]] > 1)
+								if ($data[$i]->$can_repeats_keys[$tmpkey] != '')
 								{
-									$do_merge = false;
+									if ($pk_vals[$data[$i]->$can_repeats_keys[$tmpkey]] > 1)
+									{
+										$do_merge = false;
+									}
 								}
 							}
 							if ($do_merge)
