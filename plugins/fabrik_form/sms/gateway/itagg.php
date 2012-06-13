@@ -31,7 +31,7 @@ class Itagg extends JObject{
 		foreach ($smstos as $smsto)
 		{
 			
-			if(substr($smsto, 0, 1) == '+' && substr($smsto, 1, 2) != '44')
+			if(substr($smsto, 0, 1) == '+' && JString::substr($smsto, 1, 2) != '44')
 			{
 				$route= 8; //global sms
 			}

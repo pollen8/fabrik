@@ -426,7 +426,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	function loadElement($file)
 	{
-		$ext = strtolower(JFile::getExt($file));
+		$ext = JString::strtolower(JFile::getExt($file));
 		$class = JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php';
 		if (JFile::exists($class))
 		{
@@ -741,8 +741,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			return true;
 		}
-		$curr_f_ext = strtolower(JFile::getExt($myFileName));
-		array_walk($aFileTypes, create_function('&$v', '$v = strtolower($v);'));
+		$curr_f_ext = JString::strtolower(JFile::getExt($myFileName));
+		array_walk($aFileTypes, create_function('&$v', '$v = JString::strtolower($v);'));
 		if (in_array($curr_f_ext, $aFileTypes) || in_array(".".$curr_f_ext, $aFileTypes))
 		{
 			return true;
@@ -1695,7 +1695,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				$render = $this->loadElement($value);
 
-				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || substr($value, 0, 4) == 'http'))
+				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
 				{
 					$render->render($this, $params, $value);
 				}
@@ -2156,7 +2156,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	function _return_bytes($val)
 	{
 		$val = trim($val);
-		$last = strtolower(substr($val, -1));
+		$last = JString::strtolower(substr($val, -1));
 		if ($last == 'g')
 		$val = $val*1024*1024*1024;
 		if ($last == 'm')

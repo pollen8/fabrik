@@ -789,14 +789,14 @@ EOD;
 		$src = array();
 		foreach ($file as $f)
 		{
-			if (!(stristr($f, 'http://') || stristr($f, 'https://')))
+			if (!( JString::stristr($f, 'http://') || JString:: stristr($f, 'https://')))
 			{
 				if (!JFile::exists(COM_FABRIK_BASE . '/' . $f))
 				{
 					continue;
 				}
 			}
-			if (stristr($f, 'http://') || stristr($f, 'https://'))
+			if ( JString::stristr($f, 'http://') ||  JString::stristr($f, 'https://'))
 			{
 				$f = $f;
 			}
@@ -1140,7 +1140,7 @@ EOD;
 
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file = ltrim($file, DS);
+		$file = JString::ltrim($file, DS);
 		$paths = FabrikHelperHTML::addPath('', 'image', $type, true);
 		$src = '';
 		foreach ($paths as $path)

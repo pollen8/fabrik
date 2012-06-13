@@ -341,7 +341,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 						//default icon - lets see if we need to use a letterd icon instead
 						if (JArrayHelper::getValue($letters, $c, '') != '')
 						{
-							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . strtoupper($letters[$c]) . '.png';
+							$iconImg = $uri->getScheme() . '://www.google.com/mapfiles/marker' . JString::strtoupper($letters[$c]) . '.png';
 						}
 						$icons[$v[0] . $v[1]] = array($v[0], $v[1], $html, $iconImg, $width,
 						$height, 'groupkey'=> $groupKey, 'listid' => $listid, 'title' => $title, 'groupClass' => 'type' . $gClass);

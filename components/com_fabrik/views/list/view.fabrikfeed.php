@@ -200,7 +200,7 @@ class FabrikViewList extends JView{
 						if (strstr($rsscontent, $rsstag))
 						{
 							$found = true;
-							$rsstag = substr($rsstag, 1, strlen($rsstag)-2);
+							$rsstag = JString::substr($rsstag, 1, JString::strlen($rsstag)-2);
 							if (!strstr($document->_namespace, $namespace))
 							{
 								$document->_itemTags[] = $rsstag;

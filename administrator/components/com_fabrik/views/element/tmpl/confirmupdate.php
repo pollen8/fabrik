@@ -18,7 +18,7 @@ $db = FabrikWorker::getDbo(true);
 	<?php if($db->quoteName($this->item->name) !== $this->oldName){ ?>
 		<li style="padding-left:30px"><?php echo JText::sprintf('COM_FABRIK_UPDATE_ELEMENT_NAME', $this->oldName, $db->quoteName($this->item->name)  )?></li>
 	<?php }?>
-	<?php if (strtolower($this->origDesc ) !== strtolower($this->newDesc)) {?>
+	<?php if (JString::strtolower($this->origDesc) !== JString::strtolower($this->newDesc)) {?>
   		<li style="padding-left:30px"><?php echo JText::sprintf('COM_FABRIK_UPDATE_ELEMENT_STRUCTURE', $this->origDesc, $this->newDesc )?></li>
  	<?php }?>
 	</ul>

@@ -84,7 +84,7 @@ class filesystemstorage extends storageAdaptor{
 			$i = 0;
 			while ($i < $length)
 			{
-				$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible)-1), 1);
 				$key .= $char;
 				$i++;
 			}
@@ -142,7 +142,7 @@ class filesystemstorage extends storageAdaptor{
 	{
 		$livesite = COM_FABRIK_LIVESITE;
 		$livesite = rtrim($livesite, '/\\');
-		$file = ltrim($file,'/\\');
+		$file = JString::ltrim($file, '/\\');
 		return str_replace("\\", "/", $livesite  . '/' . $file);
 	}
 
@@ -177,9 +177,9 @@ class filesystemstorage extends storageAdaptor{
 
 		//replace things like $my->id may barf on other stuff
 		$afile = str_replace(JURI::root(), '', $file);
-		$afile = ltrim($afile, "/");
-		$ulDir = ltrim($ulDir, "/");
-		$ulDir = rtrim($ulDir, "/");
+		$afile = JString::ltrim($afile, "/");
+		$ulDir = JString::ltrim($ulDir, "/");
+		$ulDir = JString::rtrim($ulDir, "/");
 		$ulDirbits = explode('/', $ulDir);
 		$filebits = explode('/', $afile);
 
@@ -230,7 +230,7 @@ class filesystemstorage extends storageAdaptor{
 
 	function urlToPath($url)
 	{
-		//$replace = substr(COM_FABRIK_BASE, -1) == DS ? COM_FABRIK_BASE : COM_FABRIK_BASE . DS;
+		//$replace = JString::substr(COM_FABRIK_BASE, -1) == DS ? COM_FABRIK_BASE : COM_FABRIK_BASE . DS;
 		return str_replace(COM_FABRIK_LIVESITE, COM_FABRIK_BASE, $url);
 	}
 

@@ -43,7 +43,7 @@ class plgFabrik_FormSMS extends plgFabrik_Form {
  	  {
  	    $params = $this->getParams();
  	    $gateway = JFilterInput::clean($params->get('sms-gateway', 'kapow.php'), 'CMD');
-		require_once(JPATH_ROOT . '/plugins/fabrik_form/sms/gateway/' . strtolower($gateway));
+		require_once(JPATH_ROOT . '/plugins/fabrik_form/sms/gateway/' . JString::strtolower($gateway));
 		$gateway = JFile::stripExt($gateway);
  	    $this->gateway = new $gateway();
  	    $this->gateway->params = $params;

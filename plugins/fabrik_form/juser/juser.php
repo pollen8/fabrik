@@ -411,14 +411,14 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		$username = $data['username'];
 		if (strlen($username) > 150)
 		{
-			$username = substr($username, 0, 150);
+			$username = JString::substr($username, 0, 150);
 			$user->set('username', $username);
 		}
 
 		// Check that password is not greater than 100 characters
 		if (strlen($data['password']) > 100)
 		{
-			$data['password'] = substr($data['password'], 0, 100);
+			$data['password'] = JString::substr($data['password'], 0, 100);
 		}
 
 		// end new
@@ -662,7 +662,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$ok = false;
 		}
 
-		if (preg_match( "#[<>\"'%;()&]#i", $post['username']) || strlen(utf8_decode($post['username'])) < 2)
+		if (preg_match( "#[<>\"'%;()&]#i", $post['username']) || JString::strlen(utf8_decode($post['username'])) < 2)
 		{
 			$this->raiseError($formModel->errors, $this->usernamefield, JText::sprintf( 'VALID_AZ09', JText::_('Username'), 2));
 			$ok = false;

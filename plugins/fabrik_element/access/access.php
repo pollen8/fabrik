@@ -89,7 +89,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 		{
 			if ($o->value == $data)
 			{
-				return ltrim($filter->clean($o->text, 'word'), '&nbsp;');
+				return JString::ltrim($filter->clean($o->text, 'word'), '&nbsp;');
 			}
 		}
 	}

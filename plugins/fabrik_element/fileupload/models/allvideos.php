@@ -41,7 +41,7 @@ class allVideosRender
 	function render(&$model, &$params, $file)
 	{
 		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
-		$ext = strtolower(JFile::getExt($file));
+		$ext = JString::strtolower(JFile::getExt($file));
 		if (!JPluginHelper::isEnabled('content', 'jw_allvideos')) {
 			$this->output = JText::_('to display this media files types you need to install the all videos plugin - http://www.joomlaworks.gr/content/view/35/41/');
 			return;

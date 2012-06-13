@@ -92,7 +92,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
 				$i = 0;
 				while ($i < $length) {
-					$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+					$char = JString::substr($possible, mt_rand(0, JString::strlen($possible)-1), 1);
 					$key .= $char;
 					$i++;
 				}
@@ -262,7 +262,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					$clabels_createdb_imp .= $klb.' '.$vlb.' NOT NULL, ';
 				}
 			}
-			$clabels_createdb = substr_replace($clabels_createdb_imp, '', -2);
+			$clabels_createdb = JString::substr_replace($clabels_createdb_imp, '', -2);
 
 			if( $params->get('compare_data') == 1)
 			{

@@ -35,7 +35,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		$i = 0;
 		while ($i < $characters)
 		{
-			$code .= substr($possible, mt_rand(0, strlen($possible)-1), 1);
+			$code .= JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 			$i++;
 		}
 		return $code;
@@ -131,7 +131,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 			$publickey = $params->get('recaptcha_publickey');
 			//$$$tom added lang & theme options
 			$theme = $params->get('recaptcha_theme', 'red');
-			$lang = strtolower($params->get('recaptcha_lang', 'en'));
+			$lang = JString::strtolower($params->get('recaptcha_lang', 'en'));
 			$error = null;
 			if ($user->id != 0 && $params->get('captcha-showloggedin', 0) == false)
 			{
@@ -291,38 +291,38 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		return "";
 	}
 
-	/**
-	 *  ****** e-kinst
-	 * @param 3- or 6-digits hex color with optional leading '#'
-	 * @param default hex color if first param invalid
-	 * @return string as 'R+G+B' where R,G,B are decimal
-	 */
-
-	private function _getRGBcolor($hexColor, $default='FF0000' )
+	/** $$$ e-kinst
+	/* @param	string	3- or 6-digits hex color with optional leading '#'
+	/* @param	string	default hex color if first param invalid
+	/* @return	string 	as 'R+G+B' where R,G,B are decimal
+	*/
+	 private function _getRGBcolor($hexColor, $default='FF0000')
 	{
 		$regex = '/^#?(([\da-f])([\da-f])([\da-f])|([\da-f]{2})([\da-f]{2})([\da-f]{2}))$/i';
 		$rgb = array();
 		if (!preg_match($regex, $hexColor, $rgb))
 		{
-			if(!preg_match($regex, $default, $rgb))
-			// in case where $default invalid also (call error)
-			$rgb = array('FF0000', 'FF0000', 'FF', '00', '00');
+			if (!preg_match($regex, $default, $rgb))
+			{
+				// in case where $default invalid also (call error)
+				$rgb = array('FF0000', 'FF0000', 'FF', '00', '00');
+			}
 		}
 		array_shift($rgb);
 		array_shift($rgb);
-
 		if (count($rgb) > 3)
 		{
 			$rgb = array_slice($rgb, 3, 3);
 		}
-		for ($i = 0; $i < 3; $i++)
+		for ($i = 0; $i < 3; $i ++)
 		{
-			if (strlen($rgb[$i]) == 1)  $rgb[$i] .= $rgb[$i];
+			if (JString::strlen($rgb[$i]) == 1)
+			{
+				$rgb[$i] .= $rgb[$i];
+			}
 			$rgb[$i] = intval($rgb[$i], 16);
 		}
-
 		return implode('+', $rgb);
 	}
-
 }
 ?>

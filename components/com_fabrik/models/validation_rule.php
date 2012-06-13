@@ -147,11 +147,11 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	{
 		if ($this->allowEmpty($elementModel, $c))
 		{
-			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
+			return JText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
 		}
 		else
 		{
-			return JText::_('PLG_VALIDATIONRULE_' . strtoupper($this->pluginName) . '_LABEL');
+			return JText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_LABEL');
 		}
 	}
 

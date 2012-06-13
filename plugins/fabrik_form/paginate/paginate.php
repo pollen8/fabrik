@@ -39,7 +39,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 		$app = JFactory::getApplication();
 
 		$formId = $formModel->getForm()->id;
-		$mode = strtolower(JRequest::getCmd('view'));
+		$mode = JString::strtolower(JRequest::getCmd('view'));
 		$this->ids = $this->getNavIds($formModel);
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';

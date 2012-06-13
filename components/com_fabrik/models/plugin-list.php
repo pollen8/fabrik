@@ -48,7 +48,7 @@ class plgFabrik_List extends FabrikPlugin
 	
 	protected function buttonLabel()
 	{
-		$s = strtoupper($this->buttonPrefix);
+		$s = JString::strtoupper($this->buttonPrefix);
 		return JText::_('PLG_LIST_' . $s . '_' . $s);
 	}
 	

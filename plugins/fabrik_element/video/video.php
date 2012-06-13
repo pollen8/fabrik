@@ -280,7 +280,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		JClientHelper::setCredentialsFromRequest('ftp');
 
 		if ($myFileName != '') {
-			$filepath = JPath::clean($folder . '/' . strtolower($myFileName));
+			$filepath = JPath::clean($folder . '/' . JString::strtolower($myFileName));
 
 			if (!uploader::canUpload($file, $err, $params)) {
 				return JError::raiseNotice(100, JText::_($err));

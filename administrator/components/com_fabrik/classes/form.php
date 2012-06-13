@@ -711,7 +711,7 @@ class JForm
 		if (!is_file($file)) {
 
 			// Not an absolute path so let's attempt to find one using JPath.
-			$file = JPath::find(self::addFormPath(), strtolower($file).'.xml');
+			$file = JPath::find(self::addFormPath(), JString::strtolower($file) . '.xml');
 
 			// If unable to find the file return false.
 			if (!$file) {
@@ -1087,7 +1087,7 @@ class JForm
 		// Process the input value based on the filter.
 		$return = null;
 
-		switch (strtoupper($filter))
+		switch (JString::strtoupper($filter))
 		{
 			// Access Control Rules.
 			case 'RULES':
@@ -1165,16 +1165,16 @@ class JForm
 				if (preg_match('/^(?:\+?1[-. ]?)?\(?([2-9][0-8][0-9])\)?[-. ]?([2-9][0-9]{2})[-. ]?([0-9]{4})$/', $value) == 1) {
 					$number = (string) preg_replace('/[^\d]/', '', $value);
 					if (substr($number, 0, 1) == 1) {
-						$number = substr($number, 1);
+						$number = JString::substr($number, 1);
 					}
 					if (substr($number, 0, 2) == '+1') {
-						$number = substr($number, 2);
+						$number = JString::substr($number, 2);
 					}
 					$result = '1.'.$number;
 				}
 				// If not, does it match ITU-T?
 				elseif (preg_match('/^\+(?:[0-9] ?){6,14}[0-9]$/', $value) == 1) {
-					$countrycode =  substr($value, 0, strpos($value, ' '));
+					$countrycode =  JString::substr($value, 0, JString::strpos($value, ' '));
 					$countrycode = (string) preg_replace('/[^\d]/', '', $countrycode);
 					$number = strstr($value, ' ');
 					$number = (string) preg_replace('/[^\d]/', '', $number);
@@ -1183,8 +1183,8 @@ class JForm
 				// If not, does it match EPP?
 				elseif (preg_match('/^\+[0-9]{1,3}\.[0-9]{4,14}(?:x.+)?$/', $value)  == 1){
 					if (strstr($value, 'x')) {
-						$xpos = strpos($value, 'x');
-						$value = substr($value, 0, $xpos);
+						$xpos = JString::strpos($value, 'x');
+						$value = JString::substr($value, 0, $xpos);
 					}
 					$result = str_replace('+', '', $value);
 
@@ -1196,8 +1196,9 @@ class JForm
 				// If not, can we make it a string of digits?
 				else {
 					$value = (string) preg_replace('/[^\d]/', '', $value);
-					if ($value != null && strlen($value) <= 15) {
-						$length = strlen($value);
+					if ($value != null && JString::strlen($value) <= 15)
+					{
+						$length = JString::strlen($value);
 						// if it is fewer than 13 digits assume it is a local number
 						if ($length <= 12) {
 							$result='.'.$value;
@@ -1205,7 +1206,7 @@ class JForm
 						} else {
 							// If it has 13 or more digits let's make a country code.
 							$cclen = $length - 12;
-							$result = substr($value, 0, $cclen).'.'.substr($value, $cclen);
+							$result = JString::substr($value, 0, $cclen).'.'.substr($value, $cclen);
 						}
 					}
 					// If not let's not save anything.
@@ -1614,7 +1615,7 @@ class JForm
 		// Add the field paths.
 		foreach ($paths as $path)
 		{
-			$path = JPATH_ROOT.'/'.ltrim($path, '/\\');
+			$path = JPATH_ROOT . '/' . JString::ltrim($path, '/\\');
 			self::addFieldPath($path);
 		}
 
@@ -1625,7 +1626,7 @@ class JForm
 		// Add the form paths.
 		foreach ($paths as $path)
 		{
-			$path = JPATH_ROOT.'/'.ltrim($path, '/\\');
+			$path = JPATH_ROOT . '/' . JString::ltrim($path, '/\\');
 			self::addFormPath($path);
 		}
 
@@ -1636,7 +1637,7 @@ class JForm
 		// Add the rule paths.
 		foreach ($paths as $path)
 		{
-			$path = JPATH_ROOT.'/'.ltrim($path, '/\\');
+			$path = JPATH_ROOT . '/' . JString::ltrim($path, '/\\');
 			self::addRulePath($path);
 		}
 

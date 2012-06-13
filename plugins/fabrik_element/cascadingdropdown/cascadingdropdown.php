@@ -506,7 +506,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		if (!empty($this->_autocomplete_where))
 		{
-			$where .= stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
+			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
 		}
 		$data = array_merge($data,$placeholders);
 		$where = $w->parseMessageForPlaceHolder($where, $data);

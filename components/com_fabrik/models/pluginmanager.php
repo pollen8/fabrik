@@ -217,7 +217,7 @@ class FabrikFEModelPluginmanager extends JModel{
 		{
 			$group = 'list';
 		}
-		$group = strtolower($group);
+		$group = JString::strtolower($group);
 		$ok = JPluginHelper::importPlugin('fabrik_' . $group);
 		$dispatcher = JDispatcher::getInstance();
 		if ($className != '')
@@ -243,8 +243,8 @@ class FabrikFEModelPluginmanager extends JModel{
 		}
 		$class = 'plgFabrik_' . JString::ucfirst($group) . JString::ucfirst($className);
 		$conf = array();
-		$conf['name'] = strtolower($className);
-		$conf['type'] = strtolower('fabrik_'.$group);
+		$conf['name'] = JString::strtolower($className);
+		$conf['type'] = JString::strtolower('fabrik_'.$group);
 		$plugIn = new $class($dispatcher, $conf);
 
 		//needed for viz

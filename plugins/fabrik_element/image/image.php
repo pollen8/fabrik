@@ -34,7 +34,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
-			$rootFolder = ltrim($rootFolder,'/');
+			$rootFolder = JString::ltrim($rootFolder,'/');
 			$this->default = preg_replace("#^$rootFolder#",'',$this->default);
 			$this->default = $w->parseMessageForPlaceHolder($this->default, $data);
 			if ($element->eval == "1") {
@@ -174,8 +174,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		}
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
-		$selectImage_root_folder = ltrim($selectImage_root_folder, '/');
-		$selectImage_root_folder = rtrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
+		$selectImage_root_folder = JString::rtrim($selectImage_root_folder, '/');
 		$showImage = $params->get('show_image_in_table', 0);
 		$linkURL = $params->get('link_url', '');
 		if (empty($data) || $data[0] == '') {
@@ -187,7 +187,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			if ($showImage)
 			{
 				// $$$ rob 30/06/2011 - say if we import via csv a url to the image check that and use that rather than the relative path
-				$src = substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE.$selectImage_root_folder.'/'.$data[$i];
+				$src = JString::substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE.$selectImage_root_folder.'/'.$data[$i];
 				$data[$i] = '<img src="'.$src.'" alt="'.$data[$i].'" />';
 			}
 			if ($linkURL)
@@ -277,12 +277,12 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$rootFolder	= $params->get('selectImage_root_folder');
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
-		$rootFolder = ltrim($rootFolder, '/');
-		$rootFolder = rtrim($rootFolder, '/');
+		$rootFolder = JString::ltrim($rootFolder, '/');
+		$rootFolder = JString::rtrim($rootFolder, '/');
 		// $$$ rob - 30/062011 allow for full urls in the image. (e.g from csv import)
-		$defaultImage = substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder.'/'.$value;
+		$defaultImage = JString::substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder.'/'.$value;
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
-		$canSelect = ($params->get('image_front_end_select', '0') && substr($value, 0, 4) !== 'http');
+		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
 		$float = $params->get('image_float');
 		$float = $float != '' ? "style='float:$float;'" : '';
 		$str = array();

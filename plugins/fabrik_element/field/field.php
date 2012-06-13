@@ -31,7 +31,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		}
 		if ($params->get('password') == "1")
 		{
-			$data = str_pad('', strlen($data), '*');
+			$data = str_pad('', JString::strlen($data), '*');
 		}
 		$this->_guessLinkType($data, $thisRow, 0);
 		return parent::renderListData($data, $thisRow);
@@ -88,7 +88,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			}
 			if ($params->get('password') == "1")
 			{
-				$value = str_pad('', strlen($value), '*');
+				$value = str_pad('', JString::strlen($value), '*');
 			}
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}

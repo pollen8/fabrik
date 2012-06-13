@@ -436,7 +436,7 @@ class FusionCharts{
 	   $tempParam .= $this->ConvertParamToXMLAttribute($strParam);
 	   
 	   $colorParam="";
-	   $pos = strpos(strtolower($tempParam), " color");
+	   $pos = JString::strpos(strtolower($tempParam), " color");
 	   if ($pos === false) {
 	     $colorParam=" color='" . $this->getColor($this->datasetCounter-1) . "'";
 	   }

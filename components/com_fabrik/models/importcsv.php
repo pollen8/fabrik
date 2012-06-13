@@ -175,7 +175,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 				foreach ($arr_data as &$heading) {
 					// remove UFT8 Byte-Order-Mark if present
 					if (substr($heading, 0, 3) == pack( "CCC",0xef,0xbb,0xbf)) {
-						$heading = substr($heading, 3);
+						$heading = JString::substr($heading, 3);
 					}
 					if ($mode != 2) {
 						// $$$ rob don't bother cleaning at all as dots (.) are replaced with "_"
@@ -331,7 +331,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 							break;
 					}
 					$hkey = $elementModel->getFullName(false, false, false);
-					if (strtolower(trim($heading)) == strtolower(trim($name))) {
+					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name))) {
 						if (!array_key_exists($hkey, $this->matchedHeadings)) {
 							/** heading found in table */
 							$this->matchedHeadings[$hkey] = $element->name;
@@ -343,7 +343,7 @@ class FabrikFEModelImportcsv extends JModelForm{
 						}
 					}
 					$hkey .= "_raw";
-					if (strtolower(trim($heading)) == strtolower(trim($name)) . '_raw') {
+					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)) . '_raw') {
 						if (!array_key_exists($hkey, $this->matchedHeadings)) {
 							/** heading found in table */
 							$this->matchedHeadings[$hkey] = $element->name  . '_raw';
@@ -480,10 +480,9 @@ class FabrikFEModelImportcsv extends JModelForm{
 				}
 
 				//test _raw key and use that
-
-				if (substr($heading, strlen($heading)-4, strlen($heading)) == "_raw")
+				if (JString::substr($heading, JString::strlen($heading) - 4, JString::strlen($heading)) == "_raw")
 				{
-					$pktestHeading = substr($heading, 0, strlen($heading)-4);
+					$pktestHeading = JString::substr($heading, 0, JString::strlen($heading)-4);
 				}
 				else
 				{
@@ -516,9 +515,9 @@ class FabrikFEModelImportcsv extends JModelForm{
 			//take any _raw values and replace their real elements with their data
 			foreach ($aRow as $k => $val)
 			{
-				if (substr($k, strlen($k)-4, strlen($k)) == "_raw")
+				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
 				{
-					$noneraw = substr($k, 0, strlen($k)-4);
+					$noneraw = substr($k, 0, strlen($k) - 4);
 					if (array_key_exists($noneraw, $aRow))
 					{
 						$aRow[$noneraw] = $val;
@@ -539,12 +538,11 @@ class FabrikFEModelImportcsv extends JModelForm{
 
 			// $$$ rob - if raw and none raw or just raw found then insert the raw data
 			// into the none raw key. Otherwise if just importing raw data no data stored
-
 			foreach ($aRow as $k => $val)
 			{
-				if (substr($k, strlen($k)-4, strlen($k)) == "_raw")
+				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
 				{
-					$noneraw = substr($k, 0, strlen($k) - 4);
+					$noneraw = JString::substr($k, 0, strlen($k) - 4);
 					$aRow[$noneraw] = $val;
 					unset($aRow[$k]);
 				}

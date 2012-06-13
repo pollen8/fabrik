@@ -77,8 +77,8 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 		}
 
 		// Colors
-		$color1 = substr($params->get('color1'), -6);
-		$color2 = substr($params->get('color2'), -6);
+		$color1 = JString::substr($params->get('color1'), -6);
+		$color2 = JString::substr($params->get('color2'), -6);
 
 		$vid = array_pop(explode("/", $data));
 		//$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
@@ -251,8 +251,8 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 		$url = $params->get('enable_delayed_cookies') == 1 ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
 		
 		// Colors
-		$color1 = substr($params->get('color1'), -6);
-		$color2 = substr($params->get('color2'), -6);
+		$color1 = JString::substr($params->get('color1'), - 6);
+		$color2 = JString::substr($params->get('color2'), - 6);
 		$vid = array_pop(explode("/", $value));
 		//$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
 		if (strstr($vid, 'watch'))

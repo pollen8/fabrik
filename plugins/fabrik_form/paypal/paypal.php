@@ -354,7 +354,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowid);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
-			if (stristr($ret_msg,'[show_all]')) {
+			if (JString::stristr($ret_msg,'[show_all]')) {
 				$all_data = array();
 				foreach ($_REQUEST as $key => $val) {
 					$all_data[] = "$key: $val";
@@ -439,7 +439,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
 		$header .= "Host: www.paypal.com:443\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
+		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
 
 		if ($_POST['test_ipn'] == 1) {
 			$paypalurl = 'ssl://www.sandbox.paypal.com';
@@ -489,7 +489,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 					// check that receiver_email is your Primary PayPal email
 					// check that payment_amount/payment_currency are correct
 					// process payment
-					if (strcmp ($res, "VERIFIED") == 0) {
+					if (JString::strcmp ($res, "VERIFIED") == 0) {
 
 						//$$tom This block Paypal from updating the IPN field if the payment status evolves (e.g. from Pending to Completed)
 						// $$$ hugh - added check of status, so only barf if there is a status field, and it is Completed for this txn_id
@@ -571,7 +571,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 							}
 						}
 					}
-					else if (strcmp ($res, "INVALID") == 0) {
+					else if (JString::strcmp ($res, "INVALID") == 0) {
 						$status = 'form.paypal.ipnfailure.invalid';
 						$err_msg = 'paypal postback failed with INVALID';
 					}

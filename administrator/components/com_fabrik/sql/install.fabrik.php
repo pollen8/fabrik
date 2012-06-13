@@ -17,8 +17,9 @@ defined('_JEXEC') or die('Restricted access');
 
 $memMax =	trim(@ini_get('memory_limit'));
 if ($memMax) {
-	$last =	strtolower($memMax{strlen($memMax) - 1});
-	switch( $last) {
+	$last =	strtolower($memMax{JString::strlen($memMax) - 1});
+	switch($last)
+	{
 		case 'g':
 			$memMax	*= 1024;
 		case 'm':

@@ -39,7 +39,7 @@ class FabrikHelper
 		}
 		else
 		{
-			if (strlen(trim($strdate )) <= 10)
+			if (JString::strlen(trim($strdate)) <= 10)
 			{
 				$strdate .= ' 00:00:00';
 			}
@@ -178,7 +178,7 @@ class FabrikHelper
 	
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
-			$filterType	= strtoupper($filterData->filter_type);
+			$filterType	= JString::strtoupper($filterData->filter_type);
 			if ($filterType == 'NH')
 			{
 				// Maximum HTML filtering.

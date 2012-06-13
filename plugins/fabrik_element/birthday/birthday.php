@@ -68,7 +68,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				$lastyear = date('Y') - 1;
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue= '';
-				$year = ltrim($year, '0');
+				$year = JString::ltrim($year, '0');
 				if (FabrikWorker::isDate($value))
 				{
 					$date = JFactory::getDate($value);
@@ -408,7 +408,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				$nextyear = date('Y') + 1;
 				$lastyear = date('Y') - 1;
 				$thisyear = date('Y');
-				$year = ltrim($year, '0');
+				$year = JString::ltrim($year, '0');
 				$dmy = $day . '.' . $month . '.' . $year;
 				$mdy = $month . '/' . $day . '/' . $year;
 				$dmonthyear = $daydisp . '. ' . $monthdisp . ' ' . $year;

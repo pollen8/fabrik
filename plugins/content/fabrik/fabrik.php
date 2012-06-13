@@ -93,8 +93,8 @@ class plgContentFabrik extends JPlugin
 
 	protected function preplace($match) {
 		$match = $match[0];
-		$match = str_ireplace('<p>', '<div>', $match);
-		$match = str_ireplace('</p>', '</div>', $match);
+		$match = JString::str_ireplace('<p>', '<div>', $match);
+		$match = JString::str_ireplace('</p>', '</div>', $match);
 		return $match;
 	}
 
@@ -171,7 +171,7 @@ class plgContentFabrik extends JPlugin
 			switch ($m[0])
 			{
 				case 'view':
-					$viewName = strtolower($m[1]);
+					$viewName = JString::strtolower($m[1]);
 					break;
 				case 'id':
 					$id = $m[1];
@@ -314,7 +314,7 @@ class plgContentFabrik extends JPlugin
 			}
 			$row = $model->getRow($rowid, false, true);
 
-			if (substr($element, strlen($element) - 4, strlen($element)) !== '_raw')
+			if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
 			{
 				$element = $element . '_raw';
 			}
