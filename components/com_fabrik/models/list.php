@@ -2930,7 +2930,7 @@ class FabrikFEModelList extends JModelForm {
 			$this->_makeJoinAliases($this->_aJoins);
 			foreach ($this->_aJoins as &$join)
 			{
-				if (!isset($join->params))
+				if (is_string($join->params))
 				{
 					$join->params = new JRegistry($join->params);
 				}
