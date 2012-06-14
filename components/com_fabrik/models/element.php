@@ -981,9 +981,9 @@ class plgFabrik_Element extends FabrikPlugin
 				if (count($validations) > 0)
 				{
 					$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
-					foreach ($validations as $validation)
+					foreach ($validations as $pluginc => $validation)
 					{
-						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
+						$validationHovers[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
 					}
 					$validationHovers[] = '</ul></div>';
 					$validationHovers = implode('', $validationHovers);
