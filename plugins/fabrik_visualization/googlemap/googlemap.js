@@ -38,6 +38,7 @@ var FbGoogleMapViz = new Class({
 		
 		if (this.options.ajax_refresh) {
 			this.updater = new Request({url: '',
+				/*
 				data : {
 					'option': 'com_fabrik',
 					'format': 'raw',
@@ -46,6 +47,15 @@ var FbGoogleMapViz = new Class({
 					'method': 'ajax_getMarkers',
 					'g': 'visualization',
 					'element_id': this.options.id
+				},
+				*/
+				data : {
+					'option': 'com_fabrik',
+					'format': 'raw',
+					'task': 'ajax_getMarkers',
+					'view': 'visualization',
+					'controller': 'visualization.googlemap',
+					'visualizationid': this.options.id
 				},
 				onSuccess: function (json) {
 					this.options.icons = JSON.decode(json);
