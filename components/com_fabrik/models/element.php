@@ -4808,16 +4808,28 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			{
 				for ($i = 0; $i < count($group); $i ++)
 				{
-					$c = isset($data[$groupk][$i]->data->$rawcol) ? $data[$groupk][$i]->data->$rawcol : $data[$groupk][$i]->data->$col;
-					$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
-					$c = FabrikString::ltrim($c, '-');
-					$c = FabrikString::rtrim($c, '-');
-					// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
-					if (is_numeric($c))
+					$c = null;
+					if (isset($data[$groupk][$i]->data->$rawcol))
 					{
-						$c = $this->getElement()->name . $c;
+						$c = $data[$groupk][$i]->data->$rawcol;
 					}
-					$data[$groupk][$i]->class .= ' ' . $c;
+					else if (isset($data[$groupk][$i]->data->$col))
+					{
+						$c = $data[$groupk][$i]->data->$col;
+					}
+					if (!is_null($c))
+					{
+						$c = isset($data[$groupk][$i]->data->$rawcol) ?  : $data[$groupk][$i]->data->$col;
+						$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
+						$c = FabrikString::ltrim($c, '-');
+						$c = FabrikString::rtrim($c, '-');
+						// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
+						if (is_numeric($c))
+						{
+							$c = $this->getElement()->name . $c;
+						}
+						$data[$groupk][$i]->class .= ' ' . $c;
+					}
 				}
 			}
 		}
