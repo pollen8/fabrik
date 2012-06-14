@@ -4803,12 +4803,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if ($rowclass == 1)
 		{
 			$col = $this->getFullName(false, true, false);
-			$col .= '_raw';
+			$rawcol = $col . '_raw';
 			foreach ($data as $groupk => $group)
 			{
 				for ($i = 0; $i < count($group); $i ++)
 				{
-					$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $data[$groupk][$i]->data->$col);
+					$c = isset($data[$groupk][$i]->data->$rawcol) ? $data[$groupk][$i]->data->$rawcol : $data[$groupk][$i]->data->$col;
+					$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
 					$c = FabrikString::ltrim($c, '-');
 					$c = FabrikString::rtrim($c, '-');
 					// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
