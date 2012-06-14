@@ -4819,7 +4819,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					}
 					if ($c !== false)
 					{
-						$c = isset($data[$groupk][$i]->data->$rawcol) ?  : $data[$groupk][$i]->data->$col;
 						$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
 						$c = FabrikString::ltrim($c, '-');
 						$c = FabrikString::rtrim($c, '-');
