@@ -4808,7 +4808,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			{
 				for ($i = 0; $i < count($group); $i ++)
 				{
-					$c = null;
+					$c = false;
 					if (isset($data[$groupk][$i]->data->$rawcol))
 					{
 						$c = $data[$groupk][$i]->data->$rawcol;
@@ -4817,7 +4817,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					{
 						$c = $data[$groupk][$i]->data->$col;
 					}
-					if (!is_null($c))
+					if ($c !== false)
 					{
 						$c = isset($data[$groupk][$i]->data->$rawcol) ?  : $data[$groupk][$i]->data->$col;
 						$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
