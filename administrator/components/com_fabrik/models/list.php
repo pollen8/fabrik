@@ -1065,21 +1065,29 @@ class FabrikModelList extends FabModelAdmin
 		$elementLabels = JRequest::getVar('elementlabels', array());
 		foreach ($fields as $label => $properties)
 		{
+			$plugin = 'field';
 			$type = $properties->Type;
+			$maxLength = 255;
+			$maxLength2 = 0;
 			if (preg_match("/\((.*)\)/i", $type, $matches))
 			{
 				$maxLength = JArrayHelper::getValue($matches, 1, 255);
+				$maxLength = explode(',', $maxLength);
+				if (count($maxLength) > 1) {
+					$maxLength2 = $maxLength[1];
+					$maxLength = $maxLength[0];
+				}
+				else {
+					$maxLength = $maxLength[0];
+					$maxLength2 = 0;
+				}
 			}
-			else
-			{
-				$maxLength = 255;
-			}
-			
+
 			//get the basic type
 			$type = explode(" ", $type);
 			$type = JArrayHelper::getValue($type, 0, '');
 			$type = preg_replace("/\((.*)\)/i", '', $type);
-			
+
 			$element = FabTable::getInstance('Element', 'FabrikTable');
 			if (array_key_exists($ordering, $elementTypes))
 			{
@@ -1099,7 +1107,11 @@ class FabrikModelList extends FabModelAdmin
 					switch ($type)
 					{
 						case "int" :
+						case "decimal" :
 						case "tinyint" :
+						case "smallint" :
+						case "mediumint" :
+						case "bigint" :
 						case "varchar" :
 							$plugin = 'field';
 							break;
@@ -1149,8 +1161,26 @@ class FabrikModelList extends FabModelAdmin
 			$element->height = '6';
 			$element->ordering = $ordering;
 			$p = json_decode($elementModel->getDefaultAttribs());
-			$p->maxlength = $maxLength;
-			$element->params = json_encode($p); 
+			if (in_array($type, array('int', 'tinyint', 'smallint', 'mediumint', 'bigint')) && $plugin == 'field')
+			{
+				$p->integer_length = $maxLength;
+				$p->text_format = 'integer';
+				$p->maxlength = '255';
+				$element->width = '30';
+			}
+			else if ($type =='decimal' && $plugin == 'field')
+			{
+				$p->text_format = 'decimal';
+				$p->decimal_length = $maxLength2;
+				$p->integer_length = $maxLength - $maxLength2;
+				$p->maxlength = '255';
+				$element->width = '30';
+			}
+			else
+			{
+				$p->maxlength = $maxLength;
+			}
+			$element->params = json_encode($p);
 			$element->label = JArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
 
 			if (!$element->store())

@@ -124,8 +124,8 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip ' . $this->pluginName, 'opts' => "{notice:true}",  'title' => $label));
 		return $str;
 	}
-	
-	public function getHoverText($elementModel, $c = 0, $tmpl = '')
+
+	public function getHoverText($elementModel, $pluginc = 0, $tmpl = '')
 	{
 		$name = $this->icon === true ? $this->pluginName : $this->icon;
 		if ($this->allowEmpty($elementModel, $c))
@@ -133,19 +133,19 @@ class plgFabrik_Validationrule extends FabrikPlugin
 			$name .= '_allowempty';
 		}
 		$i = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => $this->pluginName));
-		return $i .  $this->getLabel($elementModel, $c) ;
+		return $i .  $this->getLabel($elementModel, $pluginc) ;
 	}
 
 	/**
 	 * gets the hover/alt text that appears over the validation rule icon in the form
 	 * @param	object	element model
-	 * @param	int		repeat group counter
+	 * @param	int		validation render order
 	 * @return	string	label
 	 */
 
-	protected function getLabel($elementModel, $c)
+	protected function getLabel($elementModel, $pluginc)
 	{
-		if ($this->allowEmpty($elementModel, $c))
+		if ($this->allowEmpty($elementModel, $pluginc))
 		{
 			return JText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');
 		}
@@ -159,11 +159,11 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	* does the validation allow empty value?
 	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
 	* @param	object	element model
-	* @param	int		repeat group counter
+	* @param	int		validation render order
 	* @return	bool
 	*/
 
-	protected function allowEmpty($elementModel, $c)
+	protected function allowEmpty($elementModel, $pluginc)
 	{
 		return false;
 	}

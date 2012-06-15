@@ -69,7 +69,7 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	* does the validation allow empty value?
 	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
 	* @param	object	element model
-	* @param	int		repeat group counter
+	* @param	int		validation render order
 	* @return	bool
 	*/
 

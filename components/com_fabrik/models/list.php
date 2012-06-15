@@ -3174,9 +3174,20 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 
-		$lowerobjtype= JString::strtolower(trim($objtype));
+		// $$$ hugh 2012/05/13 - tweaking things a little so we don't care about certain differences in type.
+		// Initally, just integer types and signed vs unsigned.  So if the existing column is TINYINT(3) UNSIGNED
+		// and we think it's INT(3), i.e. that's what getFieldDescription() returns, let's treat those as functionally
+		// the same, and not change anything.  Ideally we should turn this into some kind of element model method, so
+		// we would do something like $base_existingDef = $elementModel->baseFieldDescription($existingDef), and (say) the
+		// field element, if passed "TINYINT(3) UNSIGNED" would return "INT(3)".  But for now, just tweak it here.
+		$lowerobjtype = JString::strtolower(trim($objtype));
 		$lowerobjtype = str_replace(' not null', '', $lowerobjtype);
-		if ($element->name == $origColName && JString::strtolower(trim($existingDef)) == $lowerobjtype)
+		$lowerobjtype = str_replace(' unsigned', '', $lowerobjtype);
+		$base_existingDef = JString::strtolower(trim($existingDef));
+		$base_existingDef = str_replace(' unsigned', '', $base_existingDef);
+		$base_existingDef = str_replace(array('integer', 'tinyint', 'smallint', 'mediumint', 'bigint'), 'int', $base_existingDef);
+
+		if ($element->name == $origColName && trim($base_existingDef) == $lowerobjtype)
 		{
 			//no chanages to the element name or field type
 			return $return;

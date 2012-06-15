@@ -218,7 +218,11 @@ class FabrikFEModelPluginmanager extends JModel{
 			$group = 'list';
 		}
 		$group = JString::strtolower($group);
-		$ok = JPluginHelper::importPlugin('fabrik_' . $group);
+		// $$$ rob ONLY import the actual plugin you need otherwise ALL $group plugins are loaded regardless of whether they 
+		// are used or not memory changes:
+		// Application 0.322 seconds (+0.081); 22.92 MB (+3.054) - pluginmanager: form email imported
+		// Application 0.242 seconds (+0.005); 20.13 MB (+0.268) - pluginmanager: form email imported
+		$ok = JPluginHelper::importPlugin('fabrik_' . $group, $className);
 		$dispatcher = JDispatcher::getInstance();
 		if ($className != '')
 		{
@@ -293,6 +297,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			$query->where('group_id IN (' . implode(',', $groupIds) . ')');
 			$query->where('p.folder = "fabrik_element"');
 			$query->where('e.published != -2'); // ignore trashed elements
+			//$query->where('e.published != 0'); // $$$ rob 14/06/2012 testing - loading a list view why would we want to get unpublished elements?
 			$query->order("group_id, e.ordering");
 			$db->setQuery($query);
 			$elements = (array) $db->loadObjectList();

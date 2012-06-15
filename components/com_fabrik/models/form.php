@@ -2474,7 +2474,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->listModel = null;
 		@set_time_limit(300);
 		$this->rowId = $this->getRowId();
-		$res = FabrikWorker::getPluginManager()->runPlugins('onBeforeLoad', $this);
+		$pluginManager = FabrikWorker::getPluginManager();
+		$res = $pluginManager->runPlugins('onBeforeLoad', $this);
 		if (in_array(false, $res))
 		{
 			return false;
@@ -2482,7 +2483,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		JDEBUG ? $profiler->mark('formmodel render: getData start') : null;
 		$data = $this->getData();
 		JDEBUG ? $profiler->mark('formmodel render: getData end') : null;
-		$res = FabrikWorker::getPluginManager()->runPlugins('onLoad', $this);
+		$res = $pluginManager->runPlugins('onLoad', $this);
 		if (in_array(false, $res))
 		{
 			return false;
@@ -2556,6 +2557,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			return $this->_data;
 		}
 		$profiler = JProfiler::getInstance('Application');
+		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->_data = array();
 		$request = JRequest::get('request');
 		$data = array(FArrayHelper::toObject($request));
@@ -2570,7 +2572,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		else
 		{
+			JDEBUG ? $profiler->mark('formmodel getData: start get list model') : null;
 			$listModel = $this->getListModel();
+			JDEBUG ? $profiler->mark('formmodel getData: end get list model') : null;
 			$fabrikDb = $listModel->getDb();
 			JDEBUG ? $profiler->mark('formmodel getData: db created') : null;
 			$item = $listModel->getTable();

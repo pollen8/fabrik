@@ -998,9 +998,9 @@ class plgFabrik_Element extends FabrikPlugin
 				if (count($validations) > 0)
 				{
 					$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
-					foreach ($validations as $validation)
+					foreach ($validations as $pluginc => $validation)
 					{
-						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
+						$validationHovers[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
 					}
 					$validationHovers[] = '</ul></div>';
 					$validationHovers = implode('', $validationHovers);
@@ -4880,20 +4880,32 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if ($rowclass == 1)
 		{
 			$col = $this->getFullName(false, true, false);
-			$col .= '_raw';
+			$rawcol = $col . '_raw';
 			foreach ($data as $groupk => $group)
 			{
 				for ($i = 0; $i < count($group); $i ++)
 				{
-					$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $data[$groupk][$i]->data->$col);
-					$c = FabrikString::ltrim($c, '-');
-					$c = FabrikString::rtrim($c, '-');
-					// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
-					if (is_numeric($c))
+					$c = false;
+					if (isset($data[$groupk][$i]->data->$rawcol))
 					{
-						$c = $this->getElement()->name . $c;
+						$c = $data[$groupk][$i]->data->$rawcol;
 					}
-					$data[$groupk][$i]->class .= ' ' . $c;
+					else if (isset($data[$groupk][$i]->data->$col))
+					{
+						$c = $data[$groupk][$i]->data->$col;
+					}
+					if ($c !== false)
+					{
+						$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
+						$c = FabrikString::ltrim($c, '-');
+						$c = FabrikString::rtrim($c, '-');
+						// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
+						if (is_numeric($c))
+						{
+							$c = $this->getElement()->name . $c;
+						}
+						$data[$groupk][$i]->class .= ' ' . $c;
+					}
 				}
 			}
 		}
