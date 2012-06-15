@@ -11,7 +11,7 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
-require_once('components/com_fabrik/views/list/view.base.php');
+require_once(JPATH_SITE . '/components/com_fabrik/views/list/view.base.php');
 
 class FabrikViewList extends FabrikViewListBase {
 
