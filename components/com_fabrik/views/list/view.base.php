@@ -391,7 +391,7 @@ class FabrikViewListBase extends JView{
 
 		$this->assign('pluginTopButtons', $this->get('PluginTopButtons'));
 	}
-	
+
 	protected function setTitle($w, &$params, $model)
 	{
 		$app = JFactory::getApplication();
@@ -413,7 +413,7 @@ class FabrikViewListBase extends JView{
 			$params->set('page_title', JRequest::getVar('title', ''));
 			$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
 		}
-		
+
 		$title = $params->get('page_title');
 		if (empty($title))
 		{
@@ -424,14 +424,15 @@ class FabrikViewListBase extends JView{
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST, false));
 		}
 	}
-	
+
 	/**
 	 * actually load the template and echo the view html
 	 * will process jplugins if required.
 	 */
-	
+
 	protected function output()
 	{
+		$profiler = JProfiler::getInstance('Application');
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
@@ -482,7 +483,7 @@ class FabrikViewListBase extends JView{
 		$buttonProperties['title'] = '<span>' . $params->get('addlabel', JText::_('COM_FABRIK_ADD')) . '</span>';
 		$buttonProperties['alt'] = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
-		
+
 		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_PDF') . '</span>';
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_PDF');
 		$this->buttons->pdf = FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties);
