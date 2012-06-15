@@ -32,8 +32,12 @@
 			<?php echo JText::_('COM_FABRIK_SUBSCRIBE_RSS');?>
 		</a>
 	</span>
-<?php }?>
-
-<?php if ($this->showPDF) {
-echo $this->pdfLink;
-}?>
+<?php }
+	if ($this->showPDF) {?>
+		<span class="pdfButton">
+			<a href="<?php echo $this->pdfLink;?>">
+				<?php echo $this->buttons->pdf;?>
+				<span><?php echo JText::_('COM_FABRIK_PDF');?></span>
+			</a>
+		</span>
+	<?php }?>

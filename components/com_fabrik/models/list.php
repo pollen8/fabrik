@@ -1482,7 +1482,9 @@ class FabrikFEModelList extends JModelForm {
 			$ids = array();
 
 			$idRows = $db->loadObjectList();
-			while (empty($ids) && $lookupC >= 0)
+			$maxPossibleIds = count($idRows);
+			//while (empty($ids) && $lookupC >= 0)
+			while (count($ids) < $maxPossibleIds && $lookupC > 0)
 			{
 				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
 				for ($idx = count($ids) - 1; $idx >= 0; $idx --)
@@ -1496,8 +1498,9 @@ class FabrikFEModelList extends JModelForm {
 						$ids[$idx] = $db->quote($ids[$idx]);
 					}
 				}
-				$ids = array_unique($ids);
-				if (empty($ids))
+				//$ids = array_unique($ids);
+				//if (empty($ids))
+				if (count($ids) < $maxPossibleIds)
 				{
 					$lookupC --;
 				}
@@ -3083,9 +3086,20 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 
-		$lowerobjtype= JString::strtolower(trim($objtype));
+		// $$$ hugh 2012/05/13 - tweaking things a little so we don't care about certain differences in type.
+		// Initally, just integer types and signed vs unsigned.  So if the existing column is TINYINT(3) UNSIGNED
+		// and we think it's INT(3), i.e. that's what getFieldDescription() returns, let's treat those as functionally
+		// the same, and not change anything.  Ideally we should turn this into some kind of element model method, so
+		// we would do something like $base_existingDef = $elementModel->baseFieldDescription($existingDef), and (say) the
+		// field element, if passed "TINYINT(3) UNSIGNED" would return "INT(3)".  But for now, just tweak it here.
+		$lowerobjtype = JString::strtolower(trim($objtype));
 		$lowerobjtype = str_replace(' not null', '', $lowerobjtype);
-		if ($element->name == $origColName && JString::strtolower(trim($existingDef)) == $lowerobjtype)
+		$lowerobjtype = str_replace(' unsigned', '', $lowerobjtype);
+		$base_existingDef = JString::strtolower(trim($existingDef));
+		$base_existingDef = str_replace(' unsigned', '', $base_existingDef);
+		$base_existingDef = str_replace(array('integer', 'tinyint', 'smallint', 'mediumint', 'bigint'), 'int', $base_existingDef);
+
+		if ($element->name == $origColName && trim($base_existingDef) == $lowerobjtype)
 		{
 			//no chanages to the element name or field type
 			return $return;
@@ -7432,8 +7446,7 @@ class FabrikFEModelList extends JModelForm {
 				foreach ($data[$i] as $key => $val) {
 					$origKey = $key;
 					$tmpkey = FabrikString::rtrimword($key, '_raw');
-
-					if (isset($data[$last_i]->$key) && $can_repeats[$tmpkey]) {
+					if ($can_repeats[$tmpkey]) {
 						if ($merge == 2 && !isset($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i])) {
 							$can_repeats_pk_vals[$can_repeats_keys[$tmpkey]][$i] = $data[$i]->$can_repeats_keys[$tmpkey];
 						}
@@ -7455,8 +7468,11 @@ class FabrikFEModelList extends JModelForm {
 							$do_merge = true;
 							if ($merge == 2) {
 								$pk_vals = array_count_values(array_filter($can_repeats_pk_vals[$can_repeats_keys[$tmpkey]]));
-								if ($pk_vals[$data[$i]->$can_repeats_keys[$tmpkey]] > 1) {
-									$do_merge = false;
+								if ($data[$i]->$can_repeats_keys[$tmpkey] != '')
+								{
+									if ($pk_vals[$data[$i]->$can_repeats_keys[$tmpkey]] > 1) {
+										$do_merge = false;
+									}
 								}
 							}
 							if ($do_merge) {
@@ -7740,7 +7756,7 @@ class FabrikFEModelList extends JModelForm {
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getRenderContext();
-			$qs .= '&buttoncount='.$this->rowActionCount;
+			$qs .='&amp;buttoncount=' . $this->rowActionCount; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/template_css.php' . $qs);

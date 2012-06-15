@@ -59,13 +59,16 @@
 			<span><?php echo JText::_('COM_FABRIK_SUBSCRIBE_RSS');?></span>
 		</a>
 	</li>
-<?php }?>
-
-<?php if ($this->showPDF) {
-echo '<li>'.$this->pdfLink.'<li>';
-}?>
-
-<?php if ($this->emptyLink) {?>
+<?php }
+	if ($this->showPDF) {?>
+		<li class="pdfButton">
+			<a href="<?php echo $this->pdfLink;?>">
+				<?php echo $this->buttons->pdf;?>
+				<span><?php echo JText::_('COM_FABRIK_PDF');?></span>
+			</a>
+		</li>
+	<?php }
+if ($this->emptyLink) {?>
 	<li class="doempty">
 	<a href="<?php echo $this->emptyLink?>"/>
 	<?php echo $this->buttons->empty;?>

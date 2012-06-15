@@ -44,13 +44,18 @@
 			<span><?php echo JText::_('COM_FABRIK_SUBSCRIBE_RSS');?></span>
 		</a>
 	</li>
-<?php }?>
 
-<?php if ($this->showPDF) {
-echo '<li>'.$this->pdfLink.'<li>';
-}?>
+<?php }
+	if ($this->showPDF) {?>
+		<li class="pdfButton">
+			<a href="<?php echo $this->pdfLink;?>">
+				<?php echo $this->buttons->pdf;?>
+				<span><?php echo JText::_('COM_FABRIK_PDF');?></span>
+			</a>
+		</li>
+	<?php }
 
-<?php if ($this->emptyLink) {?>
+ if ($this->emptyLink) {?>
 	<li>
 	<a href="<?php echo $this->emptyLink?>" class="doempty"/>
 	<?php echo FabrikHelperHTML::image('trash.png', 'list', $this->tmpl, array('alt' => JText::_('COM_FABRIK_EMPTY')));?>

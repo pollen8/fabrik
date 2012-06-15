@@ -1571,6 +1571,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$popupform = (int) $params->get('databasejoin_popupform');
 		$popuplistid = (empty($popupform) || !isset($forms[$popupform])) ? '' : $forms[$popupform]->listid;
 		$opts->id = $this->_id;
+		$opts->fullName = $this->getFullName(false, true, false);
 		$opts->key = $table."___".$params->get('join_key_column');
 		$opts->label = $table."___".$params->get('join_val_column');
 		$opts->formid = $this->getForm()->getForm()->id;

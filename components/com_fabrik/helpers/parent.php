@@ -1284,6 +1284,12 @@ class FabrikWorker {
 		}
 		return -1;
 	}
+	
+	public static function canPdf()
+	{
+		$file = JPATH_LIBRARIES .'/dompdf/dompdf_config.inc.php';
+		return JFile::exists($file);
+	}
 }
 
 ?>

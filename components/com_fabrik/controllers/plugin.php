@@ -37,6 +37,12 @@ class FabrikControllerPlugin extends JController
 		$plugin = JRequest::getVar('plugin', '');
 		$method = JRequest::getVar('method', '');
 		$group = JRequest::getVar('g', 'element');
+		// $$$ hugh - playing around trying to fix a viz AJAX issue, figured we might need
+		// to set up the dispatcher first and pass it to importPlugin, which doesn't hurt, but
+		// didn't fix the issue.  But leaving these two lines, as I think this might be necessary
+		// at some point, to get the methods into the dispatcher?
+		//$dispatcher = JDispatcher::getInstance();
+		//if (!JPluginHelper::importPlugin('fabrik_'.$group, $plugin, true, $dispatcher))
 		if (!JPluginHelper::importPlugin('fabrik_'.$group, $plugin))
 		{
 			$o = new stdClass();
@@ -44,11 +50,11 @@ class FabrikControllerPlugin extends JController
 			echo json_encode($o);
 			return;
 		}
-		$dispatcher = JDispatcher::getInstance();
 		if (substr($method, 0, 2) !== 'on')
 		{
 			$method = 'on' . JString::ucfirst($method);
 		}
+		$dispatcher = JDispatcher::getInstance();
 		$dispatcher->trigger($method);
 		return;
 	}

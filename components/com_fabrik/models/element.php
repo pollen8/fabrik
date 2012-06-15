@@ -332,8 +332,9 @@ class plgFabrik_Element extends FabrikPlugin
 				$opts = new stdClass();
 				$opts->position = 'top';
 				$opts = json_encode($opts);
-				$data = htmlspecialchars($data, ENT_QUOTES);
+				//$data = htmlspecialchars($data, ENT_QUOTES);
 				$data = '<span>' . $data . '</span>';
+				$data = htmlspecialchars($data, ENT_QUOTES);
 				if ($params->get('icon_hovertext', true))
 				{
 					$img = '<a class="fabrikTip" href="#" opts=\'' . $opts . '\' title="' . $data. '">' . $img . '</a>';
@@ -981,13 +982,12 @@ class plgFabrik_Element extends FabrikPlugin
 				if (count($validations) > 0)
 				{
 					$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
-					foreach ($validations as $validation)
+					foreach ($validations as $pluginc => $validation)
 					{
-						$validationHovers[] = '<li>' . $validation->getHoverText($this, $repeatCounter, $tmpl) . '</li>';
+						$validationHovers[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
 					}
 					$validationHovers[] = '</ul></div>';
-					$validationHovers = implode('', $validationHovers);
-					$title = htmlspecialchars($validationHovers, ENT_QUOTES);
+					$title = implode('', $validationHovers);
 					$opts = new stdClass();
 					$opts->position = 'top';
 					$opts = json_encode($opts);
@@ -1056,6 +1056,8 @@ class plgFabrik_Element extends FabrikPlugin
 			// $$$ rob this might be needed - cant find a test case atm though
 			//$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 			$rollOver = '<span>' . $rollOver . '</span>';
+			// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
+			$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 			return '<span class="fabrikTip" opts="' . $opts . '" title="' . $rollOver . '">' . $txt . '</span>';
 		}
 		else
@@ -4803,20 +4805,32 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if ($rowclass == 1)
 		{
 			$col = $this->getFullName(false, true, false);
-			$col .= '_raw';
+			$rawcol = $col . '_raw';
 			foreach ($data as $groupk => $group)
 			{
 				for ($i = 0; $i < count($group); $i ++)
 				{
-					$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $data[$groupk][$i]->data->$col);
-					$c = FabrikString::ltrim($c, '-');
-					$c = FabrikString::rtrim($c, '-');
-					// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
-					if (is_numeric($c))
+					$c = false;
+					if (isset($data[$groupk][$i]->data->$rawcol))
 					{
-						$c = $this->getElement()->name . $c;
+						$c = $data[$groupk][$i]->data->$rawcol;
 					}
-					$data[$groupk][$i]->class .= ' ' . $c;
+					else if (isset($data[$groupk][$i]->data->$col))
+					{
+						$c = $data[$groupk][$i]->data->$col;
+					}
+					if ($c !== false)
+					{
+						$c = preg_replace('/[^A-Z|a-z|0-9]/', '-', $c);
+						$c = FabrikString::ltrim($c, '-');
+						$c = FabrikString::rtrim($c, '-');
+						// $$$ rob 24/02/2011 can't have numeric class names so prefix with element name
+						if (is_numeric($c))
+						{
+							$c = $this->getElement()->name . $c;
+						}
+						$data[$groupk][$i]->class .= ' ' . $c;
+					}
 				}
 			}
 		}
