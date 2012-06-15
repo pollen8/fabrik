@@ -161,7 +161,6 @@ class FabrikViewFormBase extends JView
 			JRequest::setVar('option', $opt);
 		}
 		
-		JDEBUG ? $profiler->mark('form view display end') : null;
 		// allows you to use {placeholders} in form template.
 		$text = $w->parseMessageForPlaceHolder($text, $model->_data);
 		echo $text;
