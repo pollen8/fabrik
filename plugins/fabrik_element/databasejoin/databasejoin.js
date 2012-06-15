@@ -89,7 +89,7 @@ var FbDatabasejoin = new Class({
 			document.id(this.element.id).adopt(opt);
 			break;
 		case 'auto-complete':
-			labelfield = this.element.getParent('.fabrikElement').getElement('input[name=' + this.element.id + '-auto-complete]');
+			labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
 			this.element.value = v;
 			labelfield.value = l;
 			break;
@@ -142,6 +142,8 @@ var FbDatabasejoin = new Class({
 			};
 		if (v) {
 			data[this.strElement + '_raw'] = v;
+			//joined elements strElement isnt right so use fullName as well
+			data[this.options.fullName + '_raw'] = v;
 		}
 		new Request.JSON({url: '',
 			method: 'post', 
@@ -334,35 +336,10 @@ var FbDatabasejoin = new Class({
 			}
 		}
 		if (!found) {
-			if (this.element.get('tag') === 'input') {
+			//if (this.element.get('tag') === 'input') {
+			if (this.options.display_type === 'auto-complete') {
 				this.element.value = val;
-				if (this.options.display_type === 'auto-complete') {
-					//update the field label as well (do ajax as we dont know what the label should be (may included concat etc))
-					/*
-					var myajax = new Request.JSON({
-						'options': {
-							'evalScripts': true
-						},
-						data: {
-							'option': 'com_fabrik',
-							'view': 'form', 
-							'format': 'raw',
-							'formid': this.form.id,
-							'rowid': val
-						},
-						onComplete : function (json, txt) {
-							var v = json.data[this.options.key];
-							var l = json.data[this.options.label];
-							if (typeOf(l) !== 'null') {
-								labelfield = this.element.getParent('.fabrikElement').getElement('.autocomplete-trigger');
-								this.element.value = v;
-								labelfield.value = l;
-							}
-						}.bind(this)
-					}).send();
-					*/
-					this.updateFromServer(val);
-				}
+				this.updateFromServer(val);
 			} else {
 				if (this.options.displayType === 'dropdown') {
 					if (this.options.show_please_select) {
