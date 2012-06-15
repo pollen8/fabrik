@@ -244,24 +244,32 @@ class FabrikFEModelForm extends FabModelForm
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
-		if ($app->isAdmin())
+		$document = JFactory::getDocument();
+		if ($document->getType() === 'pdf')
 		{
-			$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
+			$tmpl = $params->get('pdf_template');
 		}
-		if ($tmpl == '')
+		else
 		{
-			if ($this->_editable)
+			if ($app->isAdmin())
 			{
-				$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+				$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
 			}
-			else
+			if ($tmpl == '')
 			{
-				$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+				if ($this->_editable)
+				{
+					$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+				}
+				else
+				{
+					$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+				}
 			}
-		}
-		if (JRequest::getVar('mjmarkup') == 'iphone')
-		{
-			$tmpl = 'iwebkit';
+			if (JRequest::getVar('mjmarkup') == 'iphone')
+			{
+				$tmpl = 'iwebkit';
+			}
 		}
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 		//finally see if the options are overridden by a querystring var
@@ -286,24 +294,22 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpl = $this->getTmpl();
 		$v = $this->_editable ? 'form' : 'details';
 		/* check for a form template file (code moved from view) */
-		if ($tmpl != '') {
-			if (JFile::exists(JPATH_THEMES.'/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE.'templates/'.$app->getTemplate().'/html/com_fabrik/form/'.$tmpl.'/template_css.php?c='.$this->getId().'&view='.$v);
-			} else {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/template_css.php?c=".$this->getId().'&view='.$v);
+		if ($tmpl != '')
+		{ 
+			$qs = '?c=' . $this->getId();
+			$qs .='&amp;view=' . $v; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
+			if (!FabrikHelperHTML::stylesheetFromPath(JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
+			{
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/template_css.php' . $qs);
 			}
 			// $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			// custom.css - for backward compat with existing 2.x custom.css
 			// custom_css.php - what we'll recommend people use for custom css moving foward.
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom.css')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom.css");
-			}
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom_css.php')) {
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom_css.php?c=".$this->getId().'&view='.$v);
-			}
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom.css' . $qs);
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom_css.php' . $qs);
 		}
-
-		if ($app->isAdmin() && JRequest::getVar('tmpl') === 'components') {
+		if ($app->isAdmin() && JRequest::getVar('tmpl') === 'components')
+		{
 			FabrikHelperHTML::stylesheet('administrator/templates/system/css/system.css');
 		}
 	}

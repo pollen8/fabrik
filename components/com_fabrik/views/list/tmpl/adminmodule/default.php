@@ -59,16 +59,14 @@ if ($this->showFilters) {
 				}
 				?>
 				</tr>
-		</tbody>
-<?php }
-$gCounter++;
-	}?>
+			
+			<?php }?>
+			</tbody>
+			<?php $gCounter++;
+			}?>
 		</table>
-			<?php
-
-	print_r($this->hiddenFields);
-?>
-		</div>
+		<?php print_r($this->hiddenFields);?>
+	</div>
 </div>
 <?php echo $this->loadTemplate('buttons');?>
 </form>

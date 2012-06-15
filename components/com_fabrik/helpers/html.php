@@ -360,7 +360,7 @@ EOD;
 
 	public static function stylesheet($file, $attribs = array())
 	{
-		if ((JRequest::getVar('format') == 'raw' || JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1)
+		if ((JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
 		{
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
 			// $$$rob TEST!!!! - this may mess up stuff
@@ -406,7 +406,6 @@ EOD;
 		{
 			$file = $path;
 		}
-
 		if (JFile::exists(JPATH_SITE . '/' . $file))
 		{
 			FabrikHelperHTML::stylesheet($path);
@@ -525,54 +524,6 @@ EOD;
 		}
 		$html .= "\n";
 		return $html;
-	}
-
-	/**
-	 *
-	 */
-
-	function PdfIcon($model, $params, $rowId = 0, $attribs = array())
-	{
-		$app = JFactory::getApplication();
-		$url = '';
-		$text	= '';
-		// $$$ rob changed from looks at the view as if rendering the table as a module when rendering a form
-		// view was form, but $Model is a table
-		$modelClass = get_class($model);
-		$task = JRequest::getVar('task');
-		if ($task == 'form' || $modelClass == 'FabrikModelForm')
-		{
-			$form = $model->getForm();
-			$table = $model->getTable();
-			$user = JFactory::getUser();
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=details&amp;format=pdf&amp;formid=". $form->id . "&amp;listid=" . $table->id . "&amp;rowid=" . $rowId;
-		}
-		else
-		{
-			$table = $model->getTable();
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;format=pdf&amp;listid=" . $table->id;
-		}
-		if (JRequest::getVar('usekey') !== null)
-		{
-			$url .= "&amp;usekey=" . JRequest::getVar('usekey');
-		}
-		$status = 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
-
-		// checks template image directory for image, if non found default are loaded
-		if ($app->isAdmin())
-		{
-			$text = "<img src=\"" . COM_FABRIK_LIVESITE . "images/pdf_button.png\" alt=\"" . JText::_('PDF') . "\" />\n";
-		}
-		else
-		{
-			$text = JHTML::_('image.site', 'pdf_button.png', '/images/', NULL, NULL, JText::_('PDF'));
-		}
-		$attribs['title'] = JText::_('PDF');
-		$attribs['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
-		$attribs['rel'] = 'nofollow';
-		$url = JRoute::_($url);
-		$output = JHTML::_('link', $url, $text, $attribs) . "\n";
-		return $output;
 	}
 
 	/**
@@ -755,7 +706,7 @@ EOD;
 				return false;
 			}
 		}
-		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1);
+		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1 && JRequest::getVar('format') !== 'pdf');
 	}
 
 	/**
@@ -1183,6 +1134,10 @@ EOD;
 		$bits = array();
 		foreach ($properties as $key => $val)
 		{
+			if ($key === 'title')
+			{
+				$val = htmlspecialchars($val, ENT_QUOTES);
+			}
 			$bits[$key] = $val;
 		}
 		$p = '';

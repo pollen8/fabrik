@@ -501,6 +501,12 @@
 			</fileset>
 		</copy>
 		
+		<mkdir dir="${cfg.destdir}/site/pdf" />
+		<copy todir="${cfg.destdir}/site/pdf">
+			<fileset dir="${basedir}/libraries/joomla/document/pdf">
+			</fileset>
+		</copy>
+		
 		<!-- copy over the database drivers -->
 		<mkdir dir="${cfg.destdir}/site/dbdriver" />
 		<copy file="${basedir}/libraries/joomla/database/database/mysql_fab.php" todir="${cfg.destdir}/site/dbdriver" />
