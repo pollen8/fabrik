@@ -119,7 +119,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 				JError::raiseError(500, JText::_('No google map element present in this list'));
 				continue;
 			}
-			
+
 			$coordColumn = $mapsElements[0]->getFullName(false, false, false);
 			$table = $listModel->getTable();
 			$where = $listModel->_buildQueryWhere();
@@ -183,7 +183,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$aLastIcons = (array) $params->get('fb_gm_last_iconimage');
 		$titleElements = (array) $params->get('fb_gm_title_element');
 		$groupClass = (array) $params->get('fb_gm_group_class');
-		
+
 		$c = 0;
 		$this->recordCount = 0;
 
@@ -292,7 +292,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 					//just for moosehunt!
 					$radomize = ($_SERVER['HTTP_HOST'] == 'moosehunt.mobi') ? true :false;
 					$groupKey = strip_tags($groupKey);
-					
+
 					$gClass = JArrayHelper::getValue($groupClass, 0, '');
 					if (!empty($gClass))
 					{
@@ -374,7 +374,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		return $this->markerSizes[$iconImg];
 	}
 
-	function ajax_getMarkers()
+	function onAjax_getMarkers()
 	{
 		echo json_encode($this->getJSIcons());
 	}
