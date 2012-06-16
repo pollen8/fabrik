@@ -17,8 +17,10 @@ class fabrikViewForm extends FabrikViewFormBase {
 
 	function display($tpl = null)
 	{
-		parent::display($tpl);
-		$this->output();
+		if (parent::display($tpl) !== false)
+		{
+			$this->output();
+		}
 	}
 }
 ?>

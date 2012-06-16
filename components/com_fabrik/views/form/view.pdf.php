@@ -23,16 +23,17 @@ class fabrikViewForm extends FabrikViewFormBase
 
 	function display($tpl = null)
 	{
-		
-		parent::display($tpl);
-		$this->output();
+		if (parent::display($tpl) !== false)
+		{
+			$this->output();
+		}
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see	FabrikViewFormBase::setTitle()
 	 */
-	
+
 	protected function setTitle($w, &$params, $model)
 	{
 		parent:: setTitle($w, $params, $model);

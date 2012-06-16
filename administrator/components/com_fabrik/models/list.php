@@ -1425,8 +1425,11 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$size = 10;
 			$els =& $feModel->getElements();
+			// $$$ FIXME hugh - joined els are missing tablename
 			foreach ($els as $el)
 			{
+				// $$$ FIXME hugh - need to make sure we pick up the element from the main table,
+				// not any similarly named elements from joined tables (like 'id')
 				if( $el->getElement()->name == $join->table_key) {
 					$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
 				}
