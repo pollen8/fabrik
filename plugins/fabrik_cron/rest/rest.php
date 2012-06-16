@@ -66,7 +66,7 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		$db = FabrikWorker::getDbo();
 		//see if we have a list that already points to the table
 		$query = $db->getQuery(true);
-		$query->select('id')->from('jos_{package}_lists')->where('db_table_name = ' . $db->nameQuote($table));
+		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $db->nameQuote($table));
 		$db->setQuery($query);
 		$res = (int) $db->loadResult();
 

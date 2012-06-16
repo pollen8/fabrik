@@ -19,7 +19,7 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/** @var string html to return from plugin rendering */
 	protected $html = '';
-	
+
 	/**
 	 * run from table model when deleting rows
 	 *
@@ -321,9 +321,12 @@ class plgFabrik_Form extends FabrikPlugin
 				}
 			}
 		}
-		$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
-		$this->emailData[$pk] = $listModel->lastInsertId;
-		$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
+		if (is_object($listModel))
+		{
+			$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
+			$this->emailData[$pk] = $listModel->lastInsertId;
+			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
+		}
 		return $this->emailData;
 	}
 

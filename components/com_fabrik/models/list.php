@@ -1484,7 +1484,26 @@ class FabrikFEModelList extends JModelForm {
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
 			//while (empty($ids) && $lookupC >= 0)
-			while (count($ids) < $maxPossibleIds && $lookupC > 0)
+			/* $$$ hugh - EXPLAIN ME!
+			 * I don't get what this code is doing.  AFAICT, what i think it is supposed to do is create
+			 * $ids[] which is a superset of all the joined table's PK values.  However, because we're
+			 * re-setting $ids[] on each time round the loop with the __pk_val's for each set of joined data,
+			 * all we end up with is the PK's used by the first join (it's the first join 'cos we're decrementing
+			 * through the $lookupC counter).
+			 *
+			 * I think what you may have intended is to merge $ids with the getColumn(), rather than just re-assign it?
+			 *
+			 * Also, because we're not including __pk_val0, we're back to excluding any main rows that don't have
+			 * any existing related rows in the joined data.  So, for now, I've set the main loop to >= 0, instead of
+			 * > 0, which means we don't exclude those rows.
+			 *
+			 * So for two reasons, this is currently broken.  First is my >= fix, which means this loop doesn't really
+			 * do anything, because we just end up with the __pk_val0 set, which is really just every main PK in $idRows.
+			 * But without that "fix", a) we are excluding main rows with no related rows, and b) we're only including
+			 * rows which have related data in the first join, not a superset of all joins.
+			 */
+			//while (count($ids) < $maxPossibleIds && $lookupC > 0)
+			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
 				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
 				for ($idx = count($ids) - 1; $idx >= 0; $idx --)
