@@ -528,7 +528,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return '';
 	}
 
-	function _buildQueryWhere($data = array(), $incWhere = true)
+	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null)
 	{
 		$where = '';
 		$listModel = $this->getlistModel();
@@ -544,11 +544,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$where = '';
 		}
 		$join = $this->getJoin();
-
+		$thisTableAlias = is_null($thisTableAlias) ? $join->table_join_alias : $thisTableAlias;
 		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of _buildQuery()
 		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches))
 		{
-			//$this->orderBy = $matches[0];
 			$this->orderBy = str_replace("{thistable}", $join->table_join_alias, $matches[0]);
 			$where = str_replace($this->orderBy, '', $where);
 		}
@@ -560,8 +559,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			return $where;
 		}
-
-		$where = str_replace("{thistable}", $join->table_join_alias, $where);
+		$where = str_replace("{thistable}", $thisTableAlias, $where);
 		$w = new FabrikWorker();
 		$data = is_array($data) ? $data : array();
 		$where = $w->parseMessageForPlaceHolder($where, $data, false);
@@ -1906,14 +1904,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$item = $this->getListModel()->getTable();
-
-		// $$$ rob gave error when using concat label as join_val_column empty.
-		//$jkey = $params->get('join_db_name').'.'.$params->get('join_val_column');
 		$jkey = $this->_getValColumn();
+		$where = $this->_buildQueryWhere(array(), true, $params->get('join_db_name'));
+		$where = JString::stristr($where, 'order by') ? $where : '';
 		$jkey = !strstr($jkey, 'CONCAT') ? $params->get('join_db_name') . '.' . $jkey : $jkey;
 
 		$fullElName = $this->getFullName(false, true, false);
-		$sql = "(SELECT GROUP_CONCAT(".$jkey." SEPARATOR '".GROUPSPLITTER."') FROM $jointable
+		$sql = "(SELECT GROUP_CONCAT(" . $jkey . " " . $where . " SEPARATOR '".GROUPSPLITTER."') FROM $jointable
 		LEFT JOIN " . $params->get('join_db_name') . " ON "
 		. $params->get('join_db_name') . "." . $params->get('join_key_column')." = $jointable." . $this->_element->name . " WHERE parent_id = ".$item->db_primary_key.")";
 		if ($addAs)
