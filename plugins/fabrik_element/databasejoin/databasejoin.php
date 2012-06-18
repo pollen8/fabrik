@@ -22,7 +22,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	var $_join = null;
 
 	/** @var string for simple join query*/
-	var $_sql = null;
+	var $_sql = array();
 
 	/** @var array option values **/
 	var $_optionVals = array();

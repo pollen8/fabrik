@@ -302,28 +302,28 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			$this->_optionVals = array();
 		}
-		if (array_key_exists($repeatCounter, $this->_optionVals))
-		{
-			return $this->_optionVals[$repeatCounter];
-		}
 		$db = $this->getDb();
-		$sql = $this->_buildQuery($data, $repeatCounter);
+		$sql = $this->_buildQuery($data, $incWhere, $repeatCounter);
 		$db->setQuery($sql);
+		if (array_key_exists($sql, $this->_optionVals))
+		{
+			return $this->_optionVals[$sql];
+		}
 		if (JDEBUG && JRequest::getVar('format') == 'raw')
 		{
 			//echo "/* ".$db->getQuery()." */\n";
 		}
 		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
-		$this->_optionVals[$repeatCounter] = $db->loadObjectList();
+		$this->_optionVals[$sql] = $db->loadObjectList();
 		if ($db->getErrorNum())
 		{
 			JError::raiseError(501, $db->getErrorMsg());
 		}
 		if ($this->showPleaseSelect())
 		{
-			array_unshift($this->_optionVals[$repeatCounter], JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
+			array_unshift($this->_optionVals[$sql], JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
 		}
-		return $this->_optionVals[$repeatCounter];
+		return $this->_optionVals[$sql];
 	}
 
 	/**
@@ -372,21 +372,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * create the sql query used to get the join data
-	 * @param array
-	 * @return string
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementDatabasejoin::_buildQuery()
 	 */
 
-	function _buildQuery($data = array(), $repeatCounter = 0)
+	function _buildQuery($data = array(), $incWhere = true, $repeatCounter = 0)
 	{
+		$sig = isset($this->_autocomplete_where) ? $this->_autocomplete_where . '.' . $incWhere : $incWhere;
 		$db = FabrikWorker::getDbo();
-		if (!isset($this->_sql))
+		if (isset($this->_sql[$sig]))
 		{
-			$this->_sql = array();
-		}
-		if (array_key_exists($repeatCounter, $this->_sql))
-		{
-			return $this->_sql[$repeatCounter];
+			return $this->_sql[$sig];
 		}
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -562,13 +558,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$sql .= ', ' . FabrikString::safeColName($desc) . ' AS description';
 		}
 		$sql .= ' FROM ' . $db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias) . ' ' . $where;
-		$this->_sql[$repeatCounter] = $sql;
+		$this->_sql[$sig] = $sql;
 		if (!JString::stristr($where, 'order by'))
 		{
-			$this->_sql[$repeatCounter] .= " ORDER BY $orderby ASC ";
+			$this->_sql[$sig] .= " ORDER BY $orderby ASC ";
 		}
-		FabrikHelperHTML::debug($this->_sql[$repeatCounter]);
-		return $this->_sql[$repeatCounter];
+		FabrikHelperHTML::debug($this->_sql[$sig]);
+		return $this->_sql[$sig];
 	}
 
 	/**
