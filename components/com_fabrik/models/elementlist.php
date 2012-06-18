@@ -273,7 +273,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$listModel = $this->getListModel();
 		$rows = $this->filterValueList(true);
 		$v = addslashes(JRequest::getVar('value'));
-		for ($i = count($rows) - 1; $i >= 0; $i--)
+		$start = count($rows) - 1;
+		for ($i = $start; $i >= 0; $i--)
 		{
 			if (!preg_match("/$v(.*)/i", $rows[$i]->text))
 			{
