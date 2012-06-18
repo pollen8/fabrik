@@ -33,12 +33,22 @@ var FbListInlineEdit = new Class({
 			var formData = table.form.toQueryString().toObject();
 			formData.format = 'raw';
 			formData.listref = this.options.ref;
-			var myFormRequest = new Request({'url': '',
+			var myFormRequest = new Request.JSON({'url': '',
 				data: formData,
+				onComplete: function () {
+					console.log('complete');
+				},
 				onSuccess: function (json) {
+					console.log('success');
 					json = Json.evaluate(json.stripScripts());
 					table.options.data = json.data;
-				}.bind(this)
+				}.bind(this),
+				'onFailure': function (xhr) {
+					console.log('ajax inline edit failure', xhr);
+				},
+				'onException': function (headerName, value) {
+					console.log('ajax inline edit exception', headerName, value);
+				}
 			}).send(); 
 		}.bind(this));
 		
@@ -349,7 +359,7 @@ var FbListInlineEdit = new Class({
 			Fabrik.loader.start(td.getParent());
 			var inline = this.options.showSave ? 1 : 0;
 			
-			new Request({
+			var editRequest = new Request({
 				'evalScripts': function (script, text) {
 						this.javascript = script;
 					}.bind(this),
@@ -370,7 +380,7 @@ var FbListInlineEdit = new Class({
 					'format': 'raw'
 				},
 
-				'onComplete': function (r) {
+				'onSuccess': function (r) {
 					// need to load on parent otherwise in table td size gets monged
 					Fabrik.loader.stop(td.getParent());
 					
@@ -389,8 +399,22 @@ var FbListInlineEdit = new Class({
 					this.editors[opts.elid] = r;
 					this.watchControls(td);
 					this.setFocus(td);
-					
+				}.bind(this),
+				
+				'onFailure': function (xhr) {
+					this.saving = false;
+					this.inedit = false;
+					Fabrik.loader.stop(td.getParent());
+					alert(editRequest.getHeader('Status'));
+				}.bind(this),
+				
+				'onException': function (headerName, value) {
+					this.saving = false;
+					this.inedit = false;
+					Fabrik.loader.stop(td.getParent());
+					alert('ajax inline edit exception ' + headerName + ':' + value);
 				}.bind(this)
+				
 			}).send();
 		} else {
 			//testing trying to re-use old form
