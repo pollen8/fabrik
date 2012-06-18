@@ -222,39 +222,36 @@ EOD;
 		$config	= JFactory::getConfig();
 		$form = $formModel->getForm();
 		$table = $formModel->getTable();
-		if ($params->get('print'))
+		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
+		$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&tmpl=component&view=details&formid=". $form->id . "&listid=" . $table->id . "&rowid=" . $rowid.'&iframe=1&print=1';
+		// $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
+		// to the correct (PK based) rowid.  but how to tell if original rowid was -1???
+		if (JRequest::getVar('usekey') !== null)
 		{
-			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&tmpl=component&view=details&formid=". $form->id . "&listid=" . $table->id . "&rowid=" . $rowid.'&iframe=1&print=1';
-			// $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
-			// to the correct (PK based) rowid.  but how to tell if original rowid was -1???
-			if (JRequest::getVar('usekey') !== null)
-			{
-				$url .= "&usekey=" . JRequest::getVar('usekey');
-			}
-			$link = JRoute::_($url);
-			$link = str_replace('&', '&amp;', $link); // $$$ rob for some reason JRoute wasnt doing this ???
-			if ($params->get('icons', true))
-			{
-				$image = JHtml::_('image','system/printButton.png', JText::_('COM_FABRIK_PRINT'), NULL, true);
-			}
-			else
-			{
-				$image = '&nbsp;' . JText::_('JGLOBAL_PRINT');
-			}
-			if ($params->get('popup', 1))
-			{
-				$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="' . JText::_('COM_FABRIK_PRINT') . '">';
-			}
-			else
-			{
-				$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('COM_FABRIK_PRINT') . "\">";
-			}
-			$return = $ahref .
-			$image .
-			"</a>";
-			return $return;
+			$url .= "&usekey=" . JRequest::getVar('usekey');
 		}
+		$link = JRoute::_($url);
+		$link = str_replace('&', '&amp;', $link); // $$$ rob for some reason JRoute wasnt doing this ???
+		if ($params->get('icons', true))
+		{
+			$image = JHtml::_('image','system/printButton.png', JText::_('COM_FABRIK_PRINT'), NULL, true);
+		}
+		else
+		{
+			$image = '&nbsp;' . JText::_('JGLOBAL_PRINT');
+		}
+		if ($params->get('popup', 1))
+		{
+			$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="' . JText::_('COM_FABRIK_PRINT') . '">';
+		}
+		else
+		{
+			$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('COM_FABRIK_PRINT') . "\">";
+		}
+		$return = $ahref .
+		$image .
+		"</a>";
+		return $return;
 	}
 
 	/**
@@ -269,7 +266,7 @@ EOD;
 		$app = JFactory::getApplication();
 		$config	= JFactory::getConfig();
 		$popup = $params->get('popup', 1);
-		if ($params->get('email') && !$popup)
+		if (!$popup)
 		{
 			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
 			if ($app->isAdmin())
@@ -298,9 +295,7 @@ EOD;
 			{
 				$image = '&nbsp;'. JText::_('JGLOBAL_EMAIL');
 			}
-			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('JGLOBAL_EMAIL') . "\">
-			$image
-			</a>\n";
+			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('JGLOBAL_EMAIL') . "\">$image</a>\n";
 		}
 	}
 

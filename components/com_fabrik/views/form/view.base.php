@@ -247,13 +247,14 @@ class FabrikViewFormBase extends JView
 
 	protected function _addButtons()
 	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
 		$params	= $model->getParams();
-		$this->showEmail = $params->get('email', 0);
+		$this->showEmail = $params->get('email', $fbConfig->get('form_email', 0));
 		$this->emailLink = '';
 		$this->printLink = '';
 		$this->pdfLink = '';
-		$this->showPrint = $params->get('print', 0);
+		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 		if ($this->showPrint)
 		{
 			$text = JHTML::_('image.site',  'printButton.png', '/images/', NULL, NULL, JText::_('Print'));
@@ -269,7 +270,7 @@ class FabrikViewFormBase extends JView
 			{
 				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->_rowId);
 			}
-			$this->showPDF = $params->get('pdf', 0);
+			$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
 			
 			$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . JText::_('COM_FABRIK_PDF') . '</span>', 'alt' => JText::_('COM_FABRIK_PDF'));
 			
