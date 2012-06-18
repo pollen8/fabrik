@@ -1455,13 +1455,8 @@ class FabrikFEModelList extends JModelForm {
 				// so they won't get included in the query ... so will blow up if we reference them with __pk_calX selection
 				if ($join->_params->get('type') !== 'element' && $join->_params->get('type') !== 'repeatElement')
 				{
-					// $$$ hugh - shurely shome mishtake?  New code was using $join->table_key here, I'm assuming
-					// this MUST need to be $join->table_join_key?
 					// $$$ hugh - need to be $lookupC + 1, otherwise we end up with two 0's, 'cos we added main table above
 
-					// $$$ rob NOOOO no mistake!!!!!! We are getting the primary keys for each joined table. Not the foreign keys
-					// This could explain why you dont get any of the code I've added here. Here's an example of what we are fixing here:
-					
 					/**
 					 * [non-merged data]
 					 * 
@@ -1493,8 +1488,9 @@ class FabrikFEModelList extends JModelForm {
 					 * france	la rochelle
 					 * 
 					 */
-					$lookUps[] = $join->table_join . '.' .  $join->table_key . ' AS __pk_val' . ($lookupC + 1);
-					$lookUpNames[] = $join->table_join . '.' .  $join->table_key;
+					$pk = $join->_params->get('pk');
+					$lookUps[] = $pk . ' AS __pk_val' . ($lookupC + 1);
+					$lookUpNames[] = $pk;
 					$lookupC ++;
 				}
 			}
@@ -2893,15 +2889,16 @@ class FabrikFEModelList extends JModelForm {
 			$ids = $form->getElementIds();
 			$db = FabrikWorker::getDbo(true);
 			$id = (int) $this->getId();
-			$sql = "SELECT * FROM #__{package}_joins WHERE list_id = ".$id;
+			$query = $db->getQuery(true);
+			$query->select('*')->from('#__{package}_joins')->where('list_id = ' . $id, 'OR');
 			if (!empty($ids))
 			{
-				$sql .= " OR element_id IN ( ".implode(", ", $ids).")";
+				$query->where('element_id IN ( ' . implode(', ', $ids) . ')');
 			}
 			//maybe we will have to order by element_id asc to ensure that table joins are loaded
 			//before element joins (if an element join is in a table join then its 'join_from_table' key needs to be updated
-			$sql .= " ORDER BY id";
-			$db->setQuery($sql);
+			$query->order('id');
+			$db->setQuery($query);
 			$this->_aJoins = $db->loadObjectList();
 			if ($db->getErrorNum())
 			{
@@ -2913,12 +2910,40 @@ class FabrikFEModelList extends JModelForm {
 				if (!isset($join->_params))
 				{
 					$join->_params = new JRegistry($join->params);
+					$this->setJoinPk($join);
 				}
 			}
 		}
 		return $this->_aJoins;
 	}
 
+	/**
+	 * merged data queries need to know the joined tables primary key value
+	 * @since	3.0.6
+	 * @param	object	join
+	 */
+	
+	protected function setJoinPk(&$join)
+	{
+		$pk = $join->_params->get('pk');
+		if (!isset($pk))
+		{
+			$fabrikDb = $this->getDb();
+			$db = FabrikWorker::getDbo(true);
+			$query = $db->getQuery(true);
+			$pk = $this->getPrimaryKeyAndExtra($join->table_join);
+		
+			$pks = $join->table_join;
+			$pks .= '.' . $pk[0]['colname'];
+			$join->_params->set('pk', $fabrikDb->quoteName($pks));
+			$query->update('#__{package}_joins')->set('params = ' . $db->quote((string) $join->_params))
+			->where('id = ' . (int) $join->id);
+			$db->setQuery($query);
+			$db->query();
+			$join->_params = new JRegistry($join->params);
+		}
+	}
+	
 	function _makeJoinAliases(&$joins)
 	{
 		$app = JFactory::getApplication();
