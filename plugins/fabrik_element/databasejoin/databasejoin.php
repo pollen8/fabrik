@@ -254,7 +254,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_join;
 			}
 		}
-		JError::raiseError(500, 'unable to process db join element id:'. $element->id);
+		if (JRequest::getVar('task') !== 'form.inlineedit')
+		{
+			//suppress error for inlineedit, something not quiet right as groupModel::getPublishedElements() is limited by the elementid request va
+			// but the list model is calling getAsFields() and loading up the db join element.
+			// so test case would be an inline edit list with a database join element and editing anything but the db join element
+			JError::raiseError(500, 'unable to process db join element id:'. $element->id);
+		}
 		return false;
 	}
 
