@@ -78,15 +78,17 @@ var FbDropdown = new Class({
 	
 	reset: function ()
 	{
-		//var v = this.options.defaultVal.join(this.options.splitter);
 		var v = this.options.defaultVal;
 		this.update(v);
 	},
 	
 	update: function (val) {
+		var opts = [];
 		if (typeOf(val) === 'string') {
-			//val = val.split(this.options.splitter);
 			val = JSON.decode(val);
+			if (typeOf(val) === 'number') {
+				val = [val.toString()];
+			}
 		}
 		if (typeOf(val) === 'null') {
 			val = [];
@@ -104,11 +106,12 @@ var FbDropdown = new Class({
 			}.bind(this));
 			return;
 		}
-		for (var i = 0; i < this.element.options.length; i++) {
-			if (val.indexOf(this.element.options[i].value) !== -1) {
-				this.element.options[i].selected = true;
+		opts = this.element.getElements('option');
+		for (var i = 0; i < opts.length; i++) {
+			if (val.indexOf(opts[i].value) !== -1) {
+				opts[i].selected = true;
 			} else {
-				this.element.options[i].selected = false;
+				opts[i].selected = false;
 			}
 		}
 		this.watchAdd();
