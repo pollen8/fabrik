@@ -1430,6 +1430,7 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $profiler->mark('_buildQuery: start') : null;
 		$query = array();
 		$this->mergeQuery = '';
+		$table = $this->getTable();
 		if ($this->mergeJoinedData())
 		{
 			// $$$ rob - get a list of the main table's ids limited on the navigation
@@ -1441,7 +1442,7 @@ class FabrikFEModelList extends JModelForm {
 			// $$$ rob 23/05/2012 if the search data is in the joined records we want to get the id's for the joined records and not the master record
 			// see http://fabrikar.com/forums/showthread.php?t=26400. This is a partial hack as I can't see how we know which joined record is really last
 			// $$$ rob 25/05/2012 - slight change so that we work our way up the pk/fk list until we find some ids.
-			// $$$ hugh, later in the day 25/05/2012 - big OOOOPS, see comment below about table_key vs table_join_key!
+			// $$$ hugh, later in the day 25/05/2012 - big OOOOPS, see comment below about table_key vs table_join_key! erm no not a mistake!?! reverted as no example of what was wrong with original code
 			$joins = $this->getJoins();
 			//default to the primary key as before this fix
 			$lookupC = 0;
@@ -1457,52 +1458,94 @@ class FabrikFEModelList extends JModelForm {
 					// $$$ hugh - shurely shome mishtake?  New code was using $join->table_key here, I'm assuming
 					// this MUST need to be $join->table_join_key?
 					// $$$ hugh - need to be $lookupC + 1, otherwise we end up with two 0's, 'cos we added main table above
-					$lookUps[] = $join->table_join . '.' .  $join->table_join_key . ' AS __pk_val' . ($lookupC + 1);
-					$lookUpNames[] = $join->table_join . '.' .  $join->table_join_key;
+
+					// $$$ rob NOOOO no mistake!!!!!! We are getting the primary keys for each joined table. Not the foreign keys
+					// This could explain why you dont get any of the code I've added here. Here's an example of what we are fixing here:
+					
+					/**
+					 * [non-merged data]
+					 * 
+					 * country	towm
+					 * ------------------------------
+					 * france	la rochelle
+					 * france	paris
+					 * france	bordeaux
+					 * 
+					 * [merged data]
+					 * 
+					 * country	town
+					 * -------------------------------
+					 * france	la rochelle
+					 * 			paris
+					 * 			bordeaux
+					 * 
+					 * [now search on town = 'la rochelle']
+					 * 
+					 * If we dont use this new code then the search results show all three towns.
+					 * By getting the lowest set of complete primary keys (in this example the town ids) we set our query to be:
+					 * 
+					 * where town_id IN (1)
+					 * 
+					 * which gives a search result of
+					 * 
+					 * country	town
+					 * -------------------------------
+					 * france	la rochelle
+					 * 
+					 */
+					$lookUps[] = $join->table_join . '.' .  $join->table_key . ' AS __pk_val' . ($lookupC + 1);
+					$lookUpNames[] = $join->table_join . '.' .  $join->table_key;
 					$lookupC ++;
 				}
 			}
 
+			// $$$ rob if no ordering applied i had results where main record (e.g. UK) was shown in 2 lines not next to each other
+			// causing them not to be merged and a 6 rows shown when limit set to 5. So below, if no order by set then order by main pk asc
+			$by = trim($table->order_by) === '' ? array() : (array) json_decode($table->order_by);
+			if (empty($by)) 
+			{
+				$dir = (array) json_decode($table->order_dir);
+				array_unshift($dir, 'ASC');
+				$table->order_dir = json_encode($dir);
+				
+				$by = (array) json_decode($table->order_by);
+				array_unshift($by, $table->db_primary_key);
+				$table->order_by = json_encode($by);
+			}
+			
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->_buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
-			$this->selectedOrderFields = array_merge($this->selectedOrderFields, $lookUps);
+			$this->selectedOrderFields = array_merge($lookUps, $this->selectedOrderFields);
 			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
 
 			$query['join'] = $this->_buildQueryJoin();
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
 			$query['groupby'] = $this->_buildQueryGroupBy();
 			$query['order'] = $order;
-
 			//check that the order by fields are in the select statement
 			$squery = implode(' ', $query);
-			$db->setQuery($squery, $this->limitStart, $this->limitLength);
+			// can't limit the query here as this gives incorrect _data array.
+			//$db->setQuery($squery, $this->limitStart, $this->limitLength);
+			$db->setQuery($squery);
 			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
-			//while (empty($ids) && $lookupC >= 0)
-			/* $$$ hugh - EXPLAIN ME!
-			 * I don't get what this code is doing.  AFAICT, what i think it is supposed to do is create
-			 * $ids[] which is a superset of all the joined table's PK values.  However, because we're
-			 * re-setting $ids[] on each time round the loop with the __pk_val's for each set of joined data,
-			 * all we end up with is the PK's used by the first join (it's the first join 'cos we're decrementing
-			 * through the $lookupC counter).
-			 *
-			 * I think what you may have intended is to merge $ids with the getColumn(), rather than just re-assign it?
-			 *
-			 * Also, because we're not including __pk_val0, we're back to excluding any main rows that don't have
-			 * any existing related rows in the joined data.  So, for now, I've set the main loop to >= 0, instead of
-			 * > 0, which means we don't exclude those rows.
-			 *
-			 * So for two reasons, this is currently broken.  First is my >= fix, which means this loop doesn't really
-			 * do anything, because we just end up with the __pk_val0 set, which is really just every main PK in $idRows.
-			 * But without that "fix", a) we are excluding main rows with no related rows, and b) we're only including
-			 * rows which have related data in the first join, not a superset of all joins.
+			$mainKeys = array(); // an array of the lists pk values
+			foreach ($idRows as $r)
+			{
+				$mainKeys[] = $db->quote($r->__pk_val0);
+			}
+			//chop up main keys for list limitstart, length to cull the data down to the correct length as defined by the page nav/ list settings
+			$mainKeys = array_slice(array_unique($mainKeys), $this->limitStart, $this->limitLength);
+			/**
+			 * $$$ rob get an array containing the PRIMARY key values for each joined tables data.
+			 * Stop as soon as we have a set of ids totaling the sum of records contained in $this->mergeQuery / $idRows
 			 */
-			//while (count($ids) < $maxPossibleIds && $lookupC > 0)
+			
 			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
 				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
@@ -1517,14 +1560,15 @@ class FabrikFEModelList extends JModelForm {
 						$ids[$idx] = $db->quote($ids[$idx]);
 					}
 				}
-				//$ids = array_unique($ids);
-				//if (empty($ids))
 				if (count($ids) < $maxPossibleIds)
 				{
 					$lookupC --;
 				}
 			}
 		}
+		
+		// now lets actually construct the query that will get the required records:
+		
 		$query = array();
 		$query['select'] = $this->_buildQuerySelect();
 		JDEBUG ? $profiler->mark('queryselect: got') : null;
@@ -1539,7 +1583,13 @@ class FabrikFEModelList extends JModelForm {
 			// data. If no ids found then do where 1 = -1 to return no records
 			if (!empty($ids))
 			{
-				$query['where'] = ' WHERE ' . $lookUpNames[$lookupC] . ' IN (' . implode($ids, ',') . ')';
+				$query['where'] = ' WHERE ' . $lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')';
+				
+				if (!empty($mainKeys))
+				{
+					// limit to the current page
+					$query['where'] .= ' AND ' .  $table->db_primary_key . ' IN (' . implode($mainKeys, ',') . ')';
+				}
 			}
 			else
 			{
@@ -5634,7 +5684,6 @@ class FabrikFEModelList extends JModelForm {
 				$update = false;
 				if ($params->get('sum_on', 0) == 1)
 				{
-					echo "sum element $element->name <br>";
 					$aSumCals = $elementModel->sum($this);
 					$params->set('sum_value_serialized', serialize($aSumCals[1]));
 					$params->set('sum_value', $aSumCals[0]);
@@ -7455,11 +7504,9 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 
-
 		for ($i = 0; $i < $count; $i++) {
 
 			// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
-			//$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->id;
 			$next_pk = isset($data[$i]->__pk_val) ? $data[$i]->__pk_val : $data[$i]->$dbprimaryKey;
 			if (!empty($last_pk) && ($last_pk == $next_pk)) {
 				foreach ($data[$i] as $key => $val) {

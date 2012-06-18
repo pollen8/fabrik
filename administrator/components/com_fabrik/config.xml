@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <config>
 
-	<fieldset label="COM_FABRIK_LISTS" name="tables">
+	<fieldset label="COM_FABRIK_LISTS" name="lists">
 
 		<field default="1" description="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_DESC" label="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_LABEL" menu="hide" name="fbConf_alter_existing_db_cols" type="radio">
 			<option value="0">JNO</option>
@@ -25,6 +25,16 @@
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
+		
+		<field name="list_pdf" 
+			default="0"
+			description="COM_FABRIK_FIELD_LIST_PDF_ICON_DESC"
+			label="COM_FABRIK_FIELD_LIST_PDF_ICON_LABEL"
+			menu="hide"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
 
 	</fieldset>
 
@@ -38,6 +48,36 @@
 		<field default="0" description="" label="COM_FABRIK_WYSIWYG_FOR_ELEMENT_LABELS" menu="hide" name="fbConf_wysiwyg_label" type="radio">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
+		</field>
+		
+		<field name="form_print" 
+			default="0"
+			description="COM_FABRIK_FIELD_FORM_PRINT_ICON_DESC"
+			label="COM_FABRIK_FIELD_FORM_PRINT_ICON_LABEL"
+			menu="hide"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+		
+		<field name="form_email" 
+			default="0"
+			description="COM_FABRIK_FIELD_FORM_EMAIL_ICON_DESC"
+			label="COM_FABRIK_FIELD_FORM_EMAIL_ICON_LABEL"
+			menu="hide"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+		
+		<field name="form_pdf" 
+			default="0"
+			description="COM_FABRIK_FIELD_FORM_PDF_ICON_DESC"
+			label="COM_FABRIK_FIELD_FORM_PDF_ICON_LABEL"
+			menu="hide"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 
 	</fieldset>

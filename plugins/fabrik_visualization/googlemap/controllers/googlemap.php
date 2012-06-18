@@ -26,7 +26,7 @@ class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualizati
 	{
 		$viewName = 'googlemap';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model = &$this->getModel($viewName);
+		$model = $this->getModel($viewName);
 		$id = JRequest::getInt('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)), 'get');
 		$model->setId($id);
 		$model->setListIds();

@@ -405,8 +405,10 @@ var FbListInlineEdit = new Class({
 			///triggered from element model
 			Fabrik.addEvent('fabrik.list.inlineedit.setData', function () {
 				$H(opts.plugins).each(function (fieldid) {
-					Fabrik['inlineedit_' + opts.elid].elements[fieldid].update(data[fieldid]);
-					Fabrik['inlineedit_' + opts.elid].elements[fieldid].select();
+					var e = Fabrik['inlineedit_' + opts.elid].elements[fieldid];
+					delete e.element;
+					e.update(data[fieldid]);
+					e.select();
 				});
 				this.watchControls(td);
 				this.setFocus(td);	
