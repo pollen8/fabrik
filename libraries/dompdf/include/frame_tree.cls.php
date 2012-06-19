@@ -1,43 +1,11 @@
 <?php
 /**
- * DOMPDF - PHP5 HTML to PDF renderer
- *
- * File: $RCSfile: frame_tree.cls.php,v $
- * Created on: 2004-06-02
- *
- * Copyright (c) 2004 - Benj Carson <benjcarson@digitaljunkies.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library in the file LICENSE.LGPL; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
- *
- * Alternatively, you may distribute this software under the terms of the
- * PHP License, version 3.0 or later.  A copy of this license should have
- * been distributed with this file in the file LICENSE.PHP .  If this is not
- * the case, you can obtain a copy at http://www.php.net/license/3_0.txt.
- *
- * The latest version of DOMPDF might be available at:
- * http://www.digitaljunkies.ca/dompdf
- *
- * @link http://www.digitaljunkies.ca/dompdf
- * @copyright 2004 Benj Carson
- * @author Benj Carson <benjcarson@digitaljunkies.ca>
  * @package dompdf
- * @version 0.5.1
+ * @link    http://www.dompdf.com/
+ * @author  Benj Carson <benjcarson@digitaljunkies.ca>
+ * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id: frame_tree.cls.php 464 2012-01-30 20:44:53Z fabien.menager $
  */
-
-/* $Id: frame_tree.cls.php,v 1.10 2006/07/07 21:31:03 benjcarson Exp $ */
 
 /**
  * Represents an entire document as a tree of frames
@@ -76,6 +44,13 @@ class Frame_Tree {
   protected $_root;
 
   /**
+   * Subtrees of absolutely positioned elements
+   *
+   * @var array of Frames
+   */
+  protected $_absolute_frames;
+
+  /**
    * A mapping of {@link Frame} objects to DomNode objects
    *
    * @var array
@@ -93,6 +68,10 @@ class Frame_Tree {
     $this->_root = null;
     $this->_registry = array();
   }
+  
+  function __destruct() {
+    clear_object($this);
+  }
 
   /**
    * Returns the DomDocument object representing the curent html document
@@ -103,8 +82,8 @@ class Frame_Tree {
 
   /**
    * Returns the root frame of the tree
-   *
-   * @return Frame
+   * 
+   * @return Page_Frame_Decorator
    */
   function get_root() { return $this->_root; }
 
@@ -134,8 +113,32 @@ class Frame_Tree {
     if ( is_null($html) )
       throw new DOMPDF_Exception("Requested HTML document contains no data.");
 
+    $this->fix_tables();
+    
     $this->_root = $this->_build_tree_r($html);
 
+  }
+  
+  /**
+   * Adds missing TBODYs around TR
+   */
+  protected function fix_tables(){
+    $xp = new DOMXPath($this->_dom);
+    
+    // Move table caption before the table
+    // FIXME find a better way to deal with it...
+    $captions = $xp->query("//table/caption");
+    foreach($captions as $caption) {
+      $table = $caption->parentNode;
+      $table->parentNode->insertBefore($caption, $table);
+    }
+    
+    $rows = $xp->query("//table/tr");
+    foreach($rows as $row) {
+      $tbody = $this->_dom->createElement("tbody");
+      $tbody = $row->parentNode->insertBefore($tbody, $row);
+      $tbody->appendChild($row);
+    }
   }
 
   /**
@@ -169,48 +172,53 @@ class Frame_Tree {
       $children[] = $node->childNodes->item($i);
 
     foreach ($children as $child) {
+      $node_name = mb_strtolower($child->nodeName);
+      
       // Skip non-displaying nodes
-      if ( in_array( mb_strtolower($child->nodeName), self::$_HIDDEN_TAGS) )  {
-        if ( mb_strtolower($child->nodeName) != "head" &&
-             mb_strtolower($child->nodeName) != "style" ) 
+      if ( in_array($node_name, self::$_HIDDEN_TAGS) )  {
+        if ( $node_name !== "head" &&
+             $node_name !== "style" ) 
           $child->parentNode->removeChild($child);
         continue;
       }
 
       // Skip empty text nodes
-      if ( $child->nodeName == "#text" && $child->nodeValue == "" ) {
+      if ( $node_name === "#text" && $child->nodeValue == "" ) {
+        $child->parentNode->removeChild($child);
+        continue;
+      }
+
+      // Skip empty image nodes
+      if ( $node_name === "img" && $child->getAttribute("src") == "" ) {
         $child->parentNode->removeChild($child);
         continue;
       }
       
-      // Add a container frame for images
-      if ( $child->nodeName == "img" ) {
-        $img_node = $child->ownerDocument->createElement("img_inner");
-     
-        // Move attributes to inner node        
-        foreach ( $child->attributes as $attr => $attr_node ) {
-          // Skip style, but move all other attributes
-          if ( $attr == "style" )
-            continue;
-       
-          $img_node->setAttribute($attr, $attr_node->value);
-        }
-
-        foreach ( $child->attributes as $attr => $node ) {
-          if ( $attr == "style" )
-            continue;
-          $child->removeAttribute($attr);
-        }
-
-        $child->appendChild($img_node);
-      }
-   
       $frame->append_child($this->_build_tree_r($child), false);
-
     }
     
     return $frame;
   }
+  
+  public function insert_node(DOMNode $node, DOMNode $new_node, $pos) {
+    if ($pos === "after" || !$node->firstChild)
+      $node->appendChild($new_node);
+    else 
+      $node->insertBefore($new_node, $node->firstChild);
+    
+    $this->_build_tree_r($new_node);
+    
+    $frame_id = $new_node->getAttribute("frame_id");
+    $frame = $this->get_frame($frame_id);
+    
+    $parent_id = $node->getAttribute("frame_id");
+    $parent = $this->get_frame($parent_id);
+    
+    if ($pos === "before")
+      $parent->prepend_child($frame, false);
+    else 
+      $parent->append_child($frame, false);
+      
+    return $frame_id;
+  }
 }
-
-?>

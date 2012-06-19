@@ -1,31 +1,29 @@
 <?php
+
 require_once("../dompdf_config.inc.php");
-if ( isset( $_POST["html"] ) ) {
-
-  if ( get_magic_quotes_gpc() )
-    $_POST["html"] = stripslashes($_POST["html"]);
-  
-  $old_limit = ini_set("memory_limit", "16M");
-  
-  $dompdf = new DOMPDF();
-  $dompdf->load_html($_POST["html"]);
-  $dompdf->set_paper($_POST["paper"], $_POST["orientation"]);
-  $dompdf->render();
-
-  $dompdf->stream("dompdf_out.pdf");
-
-  exit(0);
-}
 
 ?>
 <?php include("head.inc"); ?>
-<div id="toc">
-<h2>On this page:</h2>
-<ul>
-<?php echo li_arrow() ?><a href="#samples">Samples</a></li>
-<?php echo li_arrow() ?><a href="#demo">Demo</a></li>
-</ul>
-</div>
+
+<script type="text/javascript">
+function resizePreview(){
+  var preview = $("#preview");
+  preview.height($(window).height() - preview.offset().top - 2);
+}
+
+$(function(){
+  var preview = $("#preview");
+  resizePreview();
+
+  $(window).scroll(function() {
+    var scrollTop = Math.min($(this).scrollTop(), preview.height()+preview.parent().offset().top) - 2;
+    preview.css("margin-top", scrollTop + "px");
+  });
+
+  $(window).resize(resizePreview);
+});
+</script>
+<iframe id="preview" name="preview" src="about:blank" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 
 <a name="samples"> </a>
 <h2>Samples</h2>
@@ -34,66 +32,65 @@ if ( isset( $_POST["html"] ) ) {
 these files is included in the test/ directory of the distribution
 package.)</p>
 
-<ul class="samples">
 <?php
-$test_files = glob(dirname(__FILE__) . "/test/*.{html,php}", GLOB_BRACE);
-$dompdf = dirname(dirname($_SERVER["PHP_SELF"])) . "/dompdf.php?base_path=" . rawurlencode("www/test/");
+
+$extensions = array("html");
+if ( DOMPDF_ENABLE_PHP ) {
+  $extensions[] = "php";
+}
+
+$test_files = glob("test/*.{".implode(",", $extensions)."}", GLOB_BRACE);
+$sections = array(
+  "css"      => array(), 
+  "dom"      => array(), 
+  "image"    => array(), 
+  "page"     => array(),
+  "encoding" => array(), 
+  "script"   => array(), 
+  "quirks"   => array(), 
+  "other"    => array(), 
+);
+
+//if dompdf.php runs in virtual server root, dirname does not return empty folder but '/' or '\' (windows).
+//This leads to a duplicate separator in unix etc. and an error in Windows. Therefore strip off.
+
+$dompdf = dirname(dirname($_SERVER["PHP_SELF"]));
+if ( $dompdf == '/' || $dompdf == '\\') {
+  $dompdf = '';
+}
+
+$dompdf .= "/dompdf.php?base_path=" . rawurlencode("www/test/");
+
+
 foreach ( $test_files as $file ) {
-  $file = basename($file);
-  $arrow = "images/arrow_0" . rand(1, 6) . ".gif";  
-  echo "<li style=\"list-style-image: url('$arrow');\">\n";
-  echo $file;
-  echo " [<a class=\"button\" target=\"blank\" href=\"test/$file\">HTML</a>] [<a class=\"button\" href=\"$dompdf&input_file=" . rawurlencode($file) .  "\">PDF</a>]\n";
-  echo "</li>\n";
+  preg_match("@[\\/](([^_]+)_?(.*))\.(".implode("|", $extensions).")$@i", $file, $matches);
+  $prefix = $matches[2];
+
+  if ( array_key_exists($prefix, $sections) ) {
+    $sections[$prefix][] = array($file, $matches[3]);
+  }
+  else {
+    $sections["other"][] = array($file, $matches[1]);
+  }
+}
+
+foreach ( $sections as $section => $files ) {
+  echo "<h3>$section</h3>";
+  
+  echo "<ul class=\"samples\">";
+  foreach ( $files as $file ) {
+    $filename = basename($file[0]);
+    $title = $file[1];
+    $arrow = "images/arrow_0" . rand(1, 6) . ".gif";  
+    echo "<li style=\"list-style-image: url('$arrow');\">\n";
+    echo " 
+  [<a class=\"button\" target=\"preview\" href=\"test/$filename\">HTML</a>] 
+  [<a class=\"button\" target=\"preview\" href=\"$dompdf&amp;options[Attachment]=0&amp;input_file=" . rawurlencode($filename) . "#toolbar=0&amp;view=FitH&amp;statusbar=0&amp;messages=0&amp;navpanes=0\">PDF</a>] ";
+    echo $title;
+    echo "</li>\n";
+  }
+  echo "</ul>";
 }
 ?>
-</ul>
-
-<a name="demo"> </a>
-<h2>Demo</h2>
-<p>Enter your html snippet in the text box below to see it rendered as a
-PDF: (Note by default, remote stylesheets, images &amp; are disabled.)</p>
-
-<form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">
-<div>
-<p>Paper size and orientaion:
-<select name="paper">
-<?php
-foreach ( array_keys(CPDF_Adapter::$PAPER_SIZES) as $size )
-  echo "<option ". ($size == "letter" ? "selected " : "" ) . "value=\"$size\">$size</option>\n";
-?>
-</select>
-<select name="orientation">
-  <option value="portrait">portrait</option>
-  <option value="landscape">landscape</option>
-</select>
-</p>
-
-<textarea name="html" cols="60" rows="20">
-&lt;html&gt;
-&lt;head&gt;
-&lt;style&gt;
-
-/* Type some style rules here */
-
-&lt;/style&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;!-- Type some HTML here --&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-</textarea>
-
-<div style="text-align: center; margin-top: 1em;">
-<input type="submit" name="submit" value="submit"/>
-</div>
-</div>
-</form>
-<p style="font-size: 0.65em; text-align: center;">(Note: if you use a KHTML
-based browser and are having difficulties loading the sample output, try
-saving it to a file first.)</p>
 
 <?php include("foot.inc"); ?>

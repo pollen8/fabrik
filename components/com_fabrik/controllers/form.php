@@ -143,10 +143,29 @@ class FabrikControllerForm extends JController
 
 		if (!$model->validate())
 		{
-			//if its in a module with ajax or in a package
+			//if its in a module with ajax or in a package or inline edit
 			if (JRequest::getCmd('fabrik_ajax'))
 			{
-				echo $model->getJsonErrors();
+				if (JRequest::getInt('elid') !== 0)
+				{
+					//inline edit
+					$eMsgs = array();
+					$errs = $model->getErrors();
+					foreach ($errs as $e)
+					{
+						if (count($e[0]) > 0)
+						{
+							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
+						}
+					}
+					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
+					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+				}
+				else
+				{
+					//package / model
+					echo $model->getJsonErrors();
+				}
 				return;
 			}
 			$this->savepage();

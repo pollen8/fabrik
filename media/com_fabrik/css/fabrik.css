@@ -442,3 +442,11 @@ fieldset.adminform input,fieldset.adminform textarea,fieldset.adminform select,f
 	right: 0;
 	margin-right: -9px;
 }
+
+/** inline edit error message **/
+.inlineedit .fabrikError{
+	color: #c00;
+	background: #EFE7B8;
+	padding: 5px;
+	font-weight: bold;
+}
