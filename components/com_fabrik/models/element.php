@@ -2761,10 +2761,12 @@ class plgFabrik_Element extends FabrikPlugin
 		switch ($condition)
 		{
 			case 'earlierthisyear':
-				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
+				//$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
+				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(now()) ';
 				break;
 			case 'laterthisyear':
-				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
+				//$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
+				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(now()) ';
 				break;
 			default:
 				if ($this->isJoin())
