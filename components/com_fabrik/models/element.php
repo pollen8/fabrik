@@ -3234,7 +3234,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
-		$res = $this->formatCalcs($results, $calcLabel, $split, false);
+		$res = $this->formatCalcs($results, $calcLabel, $split, false, false);
 		return array($res, $results);
 	}
 
