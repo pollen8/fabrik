@@ -1,44 +1,26 @@
 <?php
 /**
- * DOMPDF - PHP5 HTML to PDF renderer
- *
- * File: $RCSfile: functions.inc.php,v $
- * Created on: 2004-08-04
- *
- * Copyright (c) 2004 - Benj Carson <benjcarson@digitaljunkies.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library in the file LICENSE.LGPL; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- * 02111-1307 USA
- *
- * Alternatively, you may distribute this software under the terms of the
- * PHP License, version 3.0 or later.  A copy of this license should have
- * been distributed with this file in the file LICENSE.PHP .  If this is not
- * the case, you can obtain a copy at http://www.php.net/license/3_0.txt.
- *
- * The latest version of DOMPDF might be available at:
- * http://www.digitaljunkies.ca/dompdf
- *
- * @link http://www.digitaljunkies.ca/dompdf
- * @copyright 2004 Benj Carson
- * @author Benj Carson <benjcarson@digitaljunkies.ca>
  * @package dompdf
- * @version 0.5.1
+ * @link    http://www.dompdf.com/
+ * @author  Benj Carson <benjcarson@digitaljunkies.ca>
+ * @author  Helmut Tischer <htischer@weihenstephan.org>
+ * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id: functions.inc.php 448 2011-11-13 13:00:03Z fabien.menager $
  */
 
-/* $Id: functions.inc.php,v 1.11 2006/07/07 21:31:03 benjcarson Exp $ */
+if ( !defined('PHP_VERSION_ID') ) {
+  $version = explode('.', PHP_VERSION);
+  define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+}
 
+function def($name, $value = true) {
+  if (!defined($name)) {
+    define($name, $value);
+  }
+}
+
+if ( !function_exists("pre_r") ) {
 /**
  * print_r wrapper for html/cli output
  *
@@ -50,16 +32,15 @@
  * @param bool $return
  *
  */
-if ( !function_exists("pre_r") ) {
 function pre_r($mixed, $return = false) {
   if ($return)
     return "<pre>" . print_r($mixed, true) . "</pre>";
 
-  if ( php_sapi_name() != "cli")
+  if ( php_sapi_name() !== "cli")
     echo ("<pre>");
   print_r($mixed);
 
-  if ( php_sapi_name() != "cli")
+  if ( php_sapi_name() !== "cli")
     echo("</pre>");
   else
     echo ("\n");
@@ -68,6 +49,7 @@ function pre_r($mixed, $return = false) {
 }
 }
 
+if ( !function_exists("pre_var_dump") ) {
 /**
  * var_dump wrapper for html/cli output
  *
@@ -76,12 +58,40 @@ function pre_r($mixed, $return = false) {
  *
  * @param mixed $mixed variable or expression to display.
  */
-if ( !function_exists("pre_var_dump") ) {
 function pre_var_dump($mixed) {
-  if ( php_sapi_name() != "cli")
+  if ( php_sapi_name() !== "cli")
     echo("<pre>");
+    
   var_dump($mixed);
-  if ( php_sapi_name() != "cli")
+  
+  if ( php_sapi_name() !== "cli")
+    echo("</pre>");
+}
+}
+
+if ( !function_exists("d") ) {
+/**
+ * generic debug function
+ *
+ * Takes everything and does its best to give a good debug output
+ *
+ * @param mixed $mixed variable or expression to display.
+ */
+function d($mixed) {
+  if ( php_sapi_name() !== "cli")
+    echo("<pre>");
+    
+  // line
+  if ($mixed instanceof Line_Box) {
+    echo $mixed;
+  }
+  
+  // other
+  else {
+    var_export($mixed);
+  }
+  
+  if ( php_sapi_name() !== "cli")
     echo("</pre>");
 }
 }
@@ -94,32 +104,48 @@ function pre_var_dump($mixed) {
  * @param string $base_path
  * @param string $url
  * @return string
+ *
+ * Initially the trailing slash of $base_path was optional, and conditionally appended.
+ * However on dynamically created sites, where the page is given as url parameter,
+ * the base path might not end with an url.
+ * Therefore do not append a slash, and **require** the $base_url to ending in a slash
+ * when needed.
+ * Vice versa, on using the local file system path of a file, make sure that the slash
+ * is appended (o.k. also for Windows)
  */
 function build_url($protocol, $host, $base_path, $url) {
-  if ( mb_strlen($url) == 0 )
-    return $protocol . $host . rtrim($base_path, "/\\") . "/";
+  if ( strlen($url) == 0 ) {
+    //return $protocol . $host . rtrim($base_path, "/\\") . "/";
+    return $protocol . $host . $base_path;
+  }
 
-  // Is the url already fully qualified?
-  if ( mb_strpos($url, "://") !== false )
+  // Is the url already fully qualified or a Data URI?
+  if ( mb_strpos($url, "://") !== false || mb_strpos($url, "data:") === 0 )
     return $url;
 
   $ret = $protocol;
 
-  if ( !in_array(mb_strtolower($protocol), array("http://", "https://",
-                                                 "ftp://", "ftps://")) ) {
-    // We ignore the host for local file access, and run the path through
-    // realpath()
-    $host = "";
-    $base_path = realpath($base_path);
+  if (!in_array(mb_strtolower($protocol), array("http://", "https://", "ftp://", "ftps://"))) {
+    //On Windows local file, an abs path can begin also with a '\' or a drive letter and colon
+    //drive: followed by a relative path would be a drive specific default folder.
+    //not known in php app code, treat as abs path
+    //($url[1] !== ':' || ($url[2]!=='\\' && $url[2]!=='/'))
+    if ($url[0] !== '/' && (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || ($url[0] !== '\\' && $url[1] !== ':'))) {
+      // For rel path and local acess we ignore the host, and run the path through realpath()
+      $ret .= realpath($base_path).'/';
+    }
+    $ret .= $url;
+    $ret = preg_replace("/\?(.*)$/", "", $ret);
+    return $ret;
   }
-  
-  if ( $url{0} === "/" )
+
+  //remote urls with backslash in html/css are not really correct, but lets be genereous
+  if ( $url[0] === '/' || $url[0] === '\\' ) {
     // Absolute path
     $ret .= $host . $url;
-  else {
+  } else {
     // Relative path
-
-    $base_path = $base_path !== "" ? rtrim($base_path, "/\\") . "/" : "";
+    //$base_path = $base_path !== "" ? rtrim($base_path, "/\\") . "/" : "";
     $ret .= $host . $base_path . $url;
   }
 
@@ -143,8 +169,8 @@ function explode_url($url) {
   $arr = parse_url($url);
 
   if ( isset($arr["scheme"]) &&
-       $arr["scheme"] != "file" &&
-       mb_strlen($arr["scheme"]) > 1 ) // Exclude windows drive letters...
+       $arr["scheme"] !== "file" &&
+       strlen($arr["scheme"]) > 1 ) // Exclude windows drive letters...
     {
     $protocol = $arr["scheme"] . "://";
 
@@ -165,11 +191,11 @@ function explode_url($url) {
 
     if ( isset($arr["path"]) && $arr["path"] !== "" ) {
       // Do we have a trailing slash?
-      if ( $arr["path"]{ mb_strlen($arr["path"]) - 1 } == "/" ) {
+      if ( $arr["path"][ mb_strlen($arr["path"]) - 1 ] === "/" ) {
         $path = $arr["path"];
         $file = "";
       } else {
-        $path = dirname($arr["path"]) . "/";
+        $path = rtrim(dirname($arr["path"]), '/\\') . "/";
         $file = basename($arr["path"]);
       }
     }
@@ -200,11 +226,11 @@ function explode_url($url) {
 
     } else {
       // generate a url to access the file if no real path found.
-      $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+      $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
 
       $host = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : php_uname("n");
 
-      if ( substr($arr["path"], 0, 1) == '/' ) {
+      if ( substr($arr["path"], 0, 1) === '/' ) {
         $path = dirname($arr["path"]);
       } else {
         $path = '/' . rtrim(dirname($_SERVER["SCRIPT_NAME"]), '/') . '/' . $arr["path"];
@@ -246,21 +272,11 @@ function dec2roman($num) {
 
   $ret = "";
   switch (mb_strlen($num)) {
-
-  case 4:
-    $ret .= $thou[$num{3}];
-
-  case 3:
-    $ret .= $hund[$num{2}];
-
-  case 2:
-    $ret .= $tens[$num{1}];
-
-  case 1:
-    $ret .= $ones[$num{0}];
-
-  default:
-    break;
+    case 4: $ret .= $thou[$num[3]];
+    case 3: $ret .= $hund[$num[2]];
+    case 2: $ret .= $tens[$num[1]];
+    case 1: $ret .= $ones[$num[0]];
+    default: break;
   }
   return $ret;
 
@@ -275,54 +291,458 @@ function dec2roman($num) {
 function is_percent($value) { return false !== mb_strpos($value, "%"); }
 
 /**
- * mb_string compatibility
+ * Parses a data URI scheme
+ * http://en.wikipedia.org/wiki/Data_URI_scheme
+ * @param string $data_uri The data URI to parse
+ * @return array The result with charset, mime type and decoded data
  */
-
-if ( !function_exists("mb_strlen") ) {
-  function mb_strlen($str) {
-    return strlen($str);
+function parse_data_uri($data_uri) {
+  if (!preg_match('/^data:(?P<mime>[a-z0-9\/+-.]+)(;charset=(?P<charset>[a-z0-9-])+)?(?P<base64>;base64)?\,(?P<data>.*)?/i', $data_uri, $match)) {
+    return false;
   }
+  
+  $match['data'] = rawurldecode($match['data']);
+  $result = array(
+    'charset' => $match['charset'] ? $match['charset'] : 'US-ASCII',
+    'mime'    => $match['mime'] ? $match['mime'] : 'text/plain',
+    'data'    => $match['base64'] ? base64_decode($match['data']) : $match['data'],
+  );
+  
+  return $result;
 }
 
-if ( !function_exists("mb_strpos") ) {
+/**
+ * mb_string compatibility
+ */
+if ( !function_exists("mb_strlen") ) {
+  
+  define('MB_OVERLOAD_MAIL', 1);
+  define('MB_OVERLOAD_STRING', 2);
+  define('MB_OVERLOAD_REGEX', 4);
+  define('MB_CASE_UPPER', 0);
+  define('MB_CASE_LOWER', 1);
+  define('MB_CASE_TITLE', 2);
+
+  function mb_convert_encoding($data, $to_encoding, $from_encoding = 'UTF-8') {
+    if (str_replace('-', '', strtolower($to_encoding)) === 'utf8') {
+      return utf8_encode($data);
+    } else {
+      return utf8_decode($data);
+    }
+  }
+  
+  function mb_detect_encoding($data, $encoding_list = array('iso-8859-1'), $strict = false) {
+    return 'iso-8859-1';
+  }
+  
+  function mb_detect_order($encoding_list = array('iso-8859-1')) {
+    return 'iso-8859-1';
+  }
+  
+  function mb_internal_encoding($encoding = null) {
+    if (isset($encoding)) {
+      return true;
+    } else {
+      return 'iso-8859-1';
+    }
+  }
+
+  function mb_strlen($str, $encoding = 'iso-8859-1') {
+    switch (str_replace('-', '', strtolower($encoding))) {
+      case "utf8": return strlen(utf8_encode($str));
+      case "8bit": return strlen($str);
+      default:     return strlen(utf8_decode($str));
+    }
+  }
+  
   function mb_strpos($haystack, $needle, $offset = 0) {
     return strpos($haystack, $needle, $offset);
   }
-}
-
-if ( !function_exists("mb_strrpos") ) {
+  
   function mb_strrpos($haystack, $needle, $offset = 0) {
     return strrpos($haystack, $needle, $offset);
   }
-}
-
-if ( !function_exists("mb_substr") ) {
-  function mb_substr($str, $start, $length = null) {
-    if ( is_null($length) )
-      return substr($str, $start);
-    else
-      return substr($str, $start, $length);
-  }
-}
-
-if ( !function_exists("mb_strtolower") ) {
-  function mb_strtolower($str) {
+  
+  function mb_strtolower( $str ) {
     return strtolower($str);
   }
-}
-
-if ( !function_exists("mb_strtoupper") ) {
-  function mb_strtoupper($str) {
+  
+  function mb_strtoupper( $str ) {
     return strtoupper($str);
   }
-}
-
-if ( !function_exists("mb_substr_count") ) {
-  function mb_substr_count($haystack, $needle) {
+  
+  function mb_substr($string, $start, $length = null, $encoding = 'iso-8859-1') {
+    if ( is_null($length) )
+      return substr($string, $start);
+    else
+      return substr($string, $start, $length);
+  }
+  
+  function mb_substr_count($haystack, $needle, $encoding = 'iso-8859-1') {
     return substr_count($haystack, $needle);
+  }
+  
+  function mb_encode_numericentity($str, $convmap, $encoding) {
+    return htmlspecialchars($str);
+  }
+  
+  function mb_convert_case($str, $mode = MB_CASE_UPPER, $encoding = array()) {
+    switch($mode) {
+      case MB_CASE_UPPER: return mb_strtoupper($str);
+      case MB_CASE_LOWER: return mb_strtolower($str);
+      case MB_CASE_TITLE: return ucwords(mb_strtolower($str));
+      default: return $str;
+    }
+  }
+  
+  function mb_list_encodings() {
+    return array(
+      "ISO-8859-1",
+      "UTF-8",
+      "8bit",
+    );
   }
 }
 
+/** 
+ * Decoder for RLE8 compression in windows bitmaps
+ * http://msdn.microsoft.com/library/default.asp?url=/library/en-us/gdi/bitmaps_6x0u.asp
+ */
+function rle8_decode ($str, $width){
+  $lineWidth = $width + (3 - ($width-1) % 4);
+  $out = '';
+  $cnt = strlen($str);
+  
+  for ($i = 0; $i <$cnt; $i++) {
+    $o = ord($str[$i]);
+    switch ($o){
+      case 0: # ESCAPE
+        $i++;
+        switch (ord($str[$i])){
+          case 0: # NEW LINE
+            $padCnt = $lineWidth - strlen($out)%$lineWidth;
+            if ($padCnt<$lineWidth) $out .= str_repeat(chr(0), $padCnt); # pad line
+            break;
+          case 1: # END OF FILE
+            $padCnt = $lineWidth - strlen($out)%$lineWidth;
+            if ($padCnt<$lineWidth) $out .= str_repeat(chr(0), $padCnt); # pad line
+            break 3;
+          case 2: # DELTA
+            $i += 2;
+            break;
+          default: # ABSOLUTE MODE
+            $num = ord($str[$i]);
+            for ($j = 0; $j < $num; $j++)
+              $out .= $str[++$i];
+            if ($num % 2) $i++;
+        }
+      break;
+      default:
+      $out .= str_repeat($str[++$i], $o);
+    }
+  }
+  return $out;
+}
+
+/** 
+ * Decoder for RLE4 compression in windows bitmaps
+ * see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/gdi/bitmaps_6x0u.asp
+ */
+function rle4_decode ($str, $width) {
+  $w = floor($width/2) + ($width % 2);
+  $lineWidth = $w + (3 - ( ($width-1) / 2) % 4);    
+  $pixels = array();
+  $cnt = strlen($str);
+  
+  for ($i = 0; $i < $cnt; $i++) {
+    $o = ord($str[$i]);
+    switch ($o) {
+      case 0: # ESCAPE
+        $i++;
+        switch (ord($str[$i])){
+          case 0: # NEW LINE
+            while (count($pixels)%$lineWidth!=0)
+              $pixels[]=0;
+            break;
+          case 1: # END OF FILE
+            while (count($pixels)%$lineWidth!=0)
+              $pixels[]=0;
+            break 3;
+          case 2: # DELTA
+            $i += 2;
+            break;
+          default: # ABSOLUTE MODE
+            $num = ord($str[$i]);
+            for ($j = 0; $j < $num; $j++){
+              if ($j%2 == 0){
+                $c = ord($str[++$i]);
+                $pixels[] = ($c & 240)>>4;
+              } else
+                $pixels[] = $c & 15;
+            }
+            if ($num % 2 == 0) $i++;
+       }
+       break;
+      default:
+        $c = ord($str[++$i]);
+        for ($j = 0; $j < $o; $j++)
+          $pixels[] = ($j%2==0 ? ($c & 240)>>4 : $c & 15);
+    }
+  }
+  
+  $out = '';
+  if (count($pixels)%2) $pixels[]=0;
+  $cnt = count($pixels)/2;
+  
+  for ($i = 0; $i < $cnt; $i++)
+    $out .= chr(16*$pixels[2*$i] + $pixels[2*$i+1]);
+    
+  return $out;
+} 
+
+if ( !function_exists("imagecreatefrombmp") ) {
+
+/**
+ * Credit goes to mgutt 
+ * http://www.programmierer-forum.de/function-imagecreatefrombmp-welche-variante-laeuft-t143137.htm
+ * Modified by Fabien Menager to support RGB555 BMP format
+ */
+function imagecreatefrombmp($filename) {
+  try {
+  // version 1.00
+  if (!($fh = fopen($filename, 'rb'))) {
+    trigger_error('imagecreatefrombmp: Can not open ' . $filename, E_USER_WARNING);
+    return false;
+  }
+  
+  $bytes_read = 0;
+  
+  // read file header
+  $meta = unpack('vtype/Vfilesize/Vreserved/Voffset', fread($fh, 14));
+  
+  // check for bitmap
+  if ($meta['type'] != 19778) {
+    trigger_error('imagecreatefrombmp: ' . $filename . ' is not a bitmap!', E_USER_WARNING);
+    return false;
+  }
+  
+  // read image header
+  $meta += unpack('Vheadersize/Vwidth/Vheight/vplanes/vbits/Vcompression/Vimagesize/Vxres/Vyres/Vcolors/Vimportant', fread($fh, 40));
+  $bytes_read += 40;
+  
+  // read additional bitfield header
+  if ($meta['compression'] == 3) {
+    $meta += unpack('VrMask/VgMask/VbMask', fread($fh, 12));
+    $bytes_read += 12;
+  }
+  
+  // set bytes and padding
+  $meta['bytes'] = $meta['bits'] / 8;
+  $meta['decal'] = 4 - (4 * (($meta['width'] * $meta['bytes'] / 4)- floor($meta['width'] * $meta['bytes'] / 4)));
+  if ($meta['decal'] == 4) {
+    $meta['decal'] = 0;
+  }
+  
+  // obtain imagesize
+  if ($meta['imagesize'] < 1) {
+    $meta['imagesize'] = $meta['filesize'] - $meta['offset'];
+    // in rare cases filesize is equal to offset so we need to read physical size
+    if ($meta['imagesize'] < 1) {
+      $meta['imagesize'] = @filesize($filename) - $meta['offset'];
+      if ($meta['imagesize'] < 1) {
+        trigger_error('imagecreatefrombmp: Can not obtain filesize of ' . $filename . '!', E_USER_WARNING);
+        return false;
+      }
+    }
+  }
+  
+  // calculate colors
+  $meta['colors'] = !$meta['colors'] ? pow(2, $meta['bits']) : $meta['colors'];
+  
+  // read color palette
+  $palette = array();
+  if ($meta['bits'] < 16) {
+    $palette = unpack('l' . $meta['colors'], fread($fh, $meta['colors'] * 4));
+    // in rare cases the color value is signed
+    if ($palette[1] < 0) {
+      foreach ($palette as $i => $color) {
+        $palette[$i] = $color + 16777216;
+      }
+    }
+  }
+  
+  // ignore extra bitmap headers
+  if ($meta['headersize'] > $bytes_read) {
+    fread($fh, $meta['headersize'] - $bytes_read);
+  }
+  
+  // create gd image
+  $im = imagecreatetruecolor($meta['width'], $meta['height']);
+  $data = fread($fh, $meta['imagesize']);
+  
+  // uncompress data
+  switch ($meta['compression']) {
+    case 1: $data = rle8_decode($data, $meta['width']); break;
+    case 2: $data = rle4_decode($data, $meta['width']); break;
+  }
+
+  $p = 0;
+  $vide = chr(0);
+  $y = $meta['height'] - 1;
+  $error = 'imagecreatefrombmp: ' . $filename . ' has not enough data!';
+
+  // loop through the image data beginning with the lower left corner
+  while ($y >= 0) {
+    $x = 0;
+    while ($x < $meta['width']) {
+      switch ($meta['bits']) {
+        case 32:
+        case 24:
+          if (!($part = substr($data, $p, 3 /*$meta['bytes']*/))) {
+            trigger_error($error, E_USER_WARNING);
+            return $im;
+          }
+          $color = unpack('V', $part . $vide);
+          break;
+        case 16:
+          if (!($part = substr($data, $p, 2 /*$meta['bytes']*/))) {
+            trigger_error($error, E_USER_WARNING);
+            return $im;
+          }
+          $color = unpack('v', $part);
+
+          if (empty($meta['rMask']) || $meta['rMask'] != 0xf800)
+            $color[1] = (($color[1] & 0x7c00) >> 7) * 65536 + (($color[1] & 0x03e0) >> 2) * 256 + (($color[1] & 0x001f) << 3); // 555
+          else 
+            $color[1] = (($color[1] & 0xf800) >> 8) * 65536 + (($color[1] & 0x07e0) >> 3) * 256 + (($color[1] & 0x001f) << 3); // 565
+          break;
+        case 8:
+          $color = unpack('n', $vide . substr($data, $p, 1));
+          $color[1] = $palette[ $color[1] + 1 ];
+          break;
+        case 4:
+          $color = unpack('n', $vide . substr($data, floor($p), 1));
+          $color[1] = ($p * 2) % 2 == 0 ? $color[1] >> 4 : $color[1] & 0x0F;
+          $color[1] = $palette[ $color[1] + 1 ];
+          break;
+        case 1:
+          $color = unpack('n', $vide . substr($data, floor($p), 1));
+          switch (($p * 8) % 8) {
+            case 0: $color[1] =  $color[1] >> 7; break;
+            case 1: $color[1] = ($color[1] & 0x40) >> 6; break;
+            case 2: $color[1] = ($color[1] & 0x20) >> 5; break;
+            case 3: $color[1] = ($color[1] & 0x10) >> 4; break;
+            case 4: $color[1] = ($color[1] & 0x8 ) >> 3; break;
+            case 5: $color[1] = ($color[1] & 0x4 ) >> 2; break;
+            case 6: $color[1] = ($color[1] & 0x2 ) >> 1; break;
+            case 7: $color[1] = ($color[1] & 0x1 );      break;
+          }
+          $color[1] = $palette[ $color[1] + 1 ];
+          break;
+        default:
+          trigger_error('imagecreatefrombmp: ' . $filename . ' has ' . $meta['bits'] . ' bits and this is not supported!', E_USER_WARNING);
+          return false;
+      }
+      imagesetpixel($im, $x, $y, $color[1]);
+      $x++;
+      $p += $meta['bytes'];
+    }
+    $y--;
+    $p += $meta['decal'];
+  }
+  fclose($fh);
+  return $im;
+  } catch (Exception $e) {var_dump($e);}
+}
+}
+
+/**
+ * getimagesize doesn't give a good size for 32bit BMP image v5
+ * 
+ * @param string $filename
+ * @return array The same format as getimagesize($filename)
+ */
+function dompdf_getimagesize($filename) {
+  static $cache = array();
+  
+  if ( isset($cache[$filename]) ) {
+    return $cache[$filename];
+  }
+  
+  list($width, $height, $type) = getimagesize($filename);
+  
+  if ( $width == null || $height == null ) {
+    $data = file_get_contents($filename, null, null, 0, 26);
+    
+    if ( substr($data, 0, 2) === "BM" ) {
+      $meta = unpack('vtype/Vfilesize/Vreserved/Voffset/Vheadersize/Vwidth/Vheight', $data);
+      $width  = (int)$meta['width'];
+      $height = (int)$meta['height'];
+      $type   = IMAGETYPE_BMP;
+    }
+  }
+  
+  return $cache[$filename] = array($width, $height, $type);
+}
+
+/**
+ * Converts a CMYK color to RGB
+ * 
+ * @param int $c
+ * @param int $m
+ * @param int $y
+ * @param int $k
+ * @return object
+ */
+function cmyk_to_rgb($c, $m = null, $y = null, $k = null) {
+  if (is_array($c)) {
+    list($c, $m, $y, $k) = $c;
+  }
+  
+  $c *= 255;
+  $m *= 255;
+  $y *= 255;
+  $k *= 255;
+  
+  $r = (1 - round(2.55 * ($c+$k))) ;
+  $g = (1 - round(2.55 * ($m+$k))) ;
+  $b = (1 - round(2.55 * ($y+$k))) ;
+    
+  if($r<0) $r = 0;
+  if($g<0) $g = 0;
+  if($b<0) $b = 0;
+    
+  return array(
+    $r, $g, $b,
+    "r" => $r, "g" => $g, "b" => $b
+  );
+}
+
+function unichr($c) {
+  if ($c <= 0x7F) {
+    return chr($c);
+  } else if ($c <= 0x7FF) {
+    return chr(0xC0 | $c >>  6) . chr(0x80 | $c & 0x3F);
+  } else if ($c <= 0xFFFF) {
+    return chr(0xE0 | $c >> 12) . chr(0x80 | $c >> 6 & 0x3F)
+                                . chr(0x80 | $c & 0x3F);
+  } else if ($c <= 0x10FFFF) {
+    return chr(0xF0 | $c >> 18) . chr(0x80 | $c >> 12 & 0x3F)
+                                . chr(0x80 | $c >> 6 & 0x3F)
+                                . chr(0x80 | $c & 0x3F);
+  }
+  return false;
+}
+
+if ( !function_exists("date_default_timezone_get") ) {
+  function date_default_timezone_get() {
+    return "";
+  }
+  
+  function date_default_timezone_set($timezone_identifier) {
+    return true;
+  }
+}
 
 /**
  * Stores warnings in an array for display later
@@ -354,6 +774,52 @@ function record_warnings($errno, $errstr, $errfile, $errline) {
 }
 
 /**
+ * Print a useful backtrace
+ */
+function bt() {
+  if ( php_sapi_name() !== "cli")
+    echo("<pre>");
+    
+  $bt = debug_backtrace();
+
+  array_shift($bt); // remove actual bt() call
+  echo "\n";
+
+  $i = 0;
+  foreach ($bt as $call) {
+    $file = basename($call["file"]) . " (" . $call["line"] . ")";
+    if ( isset($call["class"]) ) {
+      $func = $call["class"] . "->" . $call["function"] . "()";
+    } else {
+      $func = $call["function"] . "()";
+    }
+
+    echo "#" . str_pad($i, 2, " ", STR_PAD_RIGHT) . ": " . str_pad($file.":", 42) . " $func\n";
+    $i++;
+  }
+  echo "\n";
+  
+  if ( php_sapi_name() !== "cli")
+    echo("</pre>");
+}
+
+/**
+ * Print debug messages
+ *
+ * @param string $type  The type of debug messages to print
+ */
+function dompdf_debug($type, $msg) {
+  global $_DOMPDF_DEBUG_TYPES, $_dompdf_show_warnings, $_dompdf_debug;
+  if ( isset($_DOMPDF_DEBUG_TYPES[$type]) && ($_dompdf_show_warnings || $_dompdf_debug) ) {
+    $arr = debug_backtrace();
+
+    echo basename($arr[0]["file"]) . " (" . $arr[0]["line"] ."): " . $arr[1]["function"] . ": ";
+    pre_r($msg);
+  }
+}
+
+if ( !function_exists("print_memusage") ) {
+/**
  * Dump memory usage
  */
 function print_memusage() {
@@ -372,7 +838,9 @@ function print_memusage() {
 
   echo ("\n" . str_pad("Total:", 40) . memory_get_usage()) . "\n";
 }
+}
 
+if ( !function_exists("enable_mem_profile") ) {
 /**
  * Initialize memory profiling code
  */
@@ -380,8 +848,10 @@ function enable_mem_profile() {
     global $memusage;
     $memusage = array("Startup" => memory_get_usage());
     register_shutdown_function("print_memusage");
-  }
+}
+}
 
+if ( !function_exists("mark_memusage") ) {
 /**
  * Record the current memory usage
  *
@@ -392,6 +862,86 @@ function mark_memusage($location) {
   if ( isset($memusage) )
     $memusage[$location] = memory_get_usage();
 }
+}
 
+if ( !function_exists('sys_get_temp_dir')) {
+/**
+ * Find the current system temporary directory
+ *
+ * @link http://us.php.net/manual/en/function.sys-get-temp-dir.php#85261
+ */
+function sys_get_temp_dir() {
+  if (!empty($_ENV['TMP'])) { return realpath($_ENV['TMP']); }
+  if (!empty($_ENV['TMPDIR'])) { return realpath( $_ENV['TMPDIR']); }
+  if (!empty($_ENV['TEMP'])) { return realpath( $_ENV['TEMP']); }
+  $tempfile=tempnam(uniqid(rand(),TRUE),'');
+  if (file_exists($tempfile)) {
+  unlink($tempfile);
+  return realpath(dirname($tempfile));
+  }
+}
+}
 
-?>
+if ( function_exists("memory_get_peak_usage") ) {
+  function DOMPDF_memory_usage(){
+    return memory_get_peak_usage(true);
+  }
+}
+else if ( function_exists("memory_get_usage") ) {
+  function DOMPDF_memory_usage(){
+    return memory_get_usage(true);
+  }
+}
+else {
+  function DOMPDF_memory_usage(){
+    return "N/A";
+  }
+}
+
+if ( function_exists("curl_init") ) {
+  function DOMPDF_fetch_url($url, &$headers = null) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+    
+    $data = curl_exec($ch);
+    $raw_headers = substr($data, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+    $headers = preg_split("/[\n\r]+/", trim($raw_headers));
+    $data = substr($data, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+    curl_close($ch);
+    
+    return $data;
+  }
+}
+else {
+  function DOMPDF_fetch_url($url, &$headers = null) {
+    $data = file_get_contents($url);
+    $headers = $http_response_header;
+    
+    return $data;
+  }
+}
+
+/**
+ * Affect null to the unused objects
+ * @param mixed $object
+ */
+if ( PHP_VERSION_ID < 50300 ) {
+  function clear_object(&$object) {
+    if ( is_object($object) ) {
+      foreach ($object as &$value) {
+        clear_object($value);
+      }
+    }
+    
+    $object = null;
+    unset($object);
+  }
+}
+else {
+  function clear_object(&$object) {
+    // void
+  } 
+}
