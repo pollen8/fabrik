@@ -556,6 +556,15 @@ var FbListInlineEdit = new Class({
 	},
 	
 	save: function (e, td) {
+		var saveRequest,
+		element = this.getElementName(td),
+		opts = this.options.elements[element],
+		row = this.editing.getParent('.fabrik_row'),
+		rowid = this.getRowId(row),
+		currentRow = {},
+		eObj = {},
+		data = {};
+		
 		if (!this.editing) {
 			return;
 		}
@@ -564,23 +573,18 @@ var FbListInlineEdit = new Class({
 		if (e) {
 			e.stop();
 		}
-		var element = this.getElementName(td);
-		var opts = this.options.elements[element];
 		
-		// need to load on parent otherwise in table td size gets monged
-		Fabrik.loader.start(td.getParent());
-		
-		var row = this.editing.getParent('.fabrik_row');
-		var rowid = this.getRowId(row);
-		td.removeClass(this.options.focusClass);
-		var eObj = Fabrik['inlineedit_' + opts.elid];
+		eObj = Fabrik['inlineedit_' + opts.elid];
 		if (typeOf(eObj) === 'null') {
 			fconsole('issue saving from inline edit: eObj not defined');
 			this.cancel(e);
 			return false;
 		}
+		
+		// need to load on parent otherwise in table td size gets monged
+		Fabrik.loader.start(td.getParent());
 		//set package id to return js string
-		var data = {
+		data = {
 			'option': 'com_fabrik',
 			'task': 'form.process',
 			'format': 'raw',
@@ -595,6 +599,7 @@ var FbListInlineEdit = new Class({
 			'formid': this.options.formid,
 			'fabrik_ignorevalidation': 1
 		};
+		data.fabrik_ignorevalidation = 0;
 		data.join = {};
 		$H(eObj.elements).each(function (el) {
 			el.getElement();
@@ -611,24 +616,50 @@ var FbListInlineEdit = new Class({
 			}
 			
 		}.bind(this));
+		
+		$H(this.currentRow.data).each(function (v, k) {
+			if (k.substr(k.length - 4, 4) === '_raw') {
+				currentRow[k.substr(0, k.length - 4)] = v;
+			}
+		});
 		//post all the rows data to form.process
-		data = Object.append(this.currentRow.data, data);
+		data = Object.append(currentRow, data);
+		//data = Object.append(this.currentRow.data, data);
 		data[eObj.token] = 1;
 
-		td.empty();
-		new Request({url: '',
+		saveRequest = new Request({url: '',
 			'data': data,
 			'evalScripts': true,
-			'onComplete': function (r) {
+			'onSuccess': function (r) {
+				td.removeClass(this.options.focusClass);
+				td.empty();
 				td.empty().set('html', r);
 				// need to load on parent otherwise in table td size gets monged
 				Fabrik.loader.stop(td.getParent());
 				Fabrik.fireEvent('fabrik.list.updaterows');
+				this.stopEditing();
 				this.saving = false;
+			}.bind(this),
+			
+			'onFailure': function (xhr) {
+				//inject error message from header (created by JError::raiseError()...)
+				var err = td.getElement('.inlineedit .fabrikMainError');
+				if (typeOf(err) === 'null') {
+					err = new Element('div.fabrikMainError.fabrikError');
+					err.inject(td.getElement('.inlineedit'), 'top');
+				}
+				err.set('html', saveRequest.getHeader('Status').substring(4));
+				this.saving = false;
+				Fabrik.loader.stop(td.getParent());
+			}.bind(this),
+			
+			'onException': function (headerName, value) {
+				Fabrik.loader.stop(td.getParent());
+				this.saving = false;
+				alert('ajax inline edit exception ' + headerName + ':' + value);
 			}.bind(this)
+			
 		}).send();
-		//this.editing = null;
-		this.stopEditing();
 	},
 	
 	stopEditing: function (e) {
