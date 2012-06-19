@@ -1459,34 +1459,34 @@ class FabrikFEModelList extends JModelForm {
 
 					/**
 					 * [non-merged data]
-					 * 
+					 *
 					 * country	towm
 					 * ------------------------------
 					 * france	la rochelle
 					 * france	paris
 					 * france	bordeaux
-					 * 
+					 *
 					 * [merged data]
-					 * 
+					 *
 					 * country	town
 					 * -------------------------------
 					 * france	la rochelle
 					 * 			paris
 					 * 			bordeaux
-					 * 
+					 *
 					 * [now search on town = 'la rochelle']
-					 * 
+					 *
 					 * If we dont use this new code then the search results show all three towns.
 					 * By getting the lowest set of complete primary keys (in this example the town ids) we set our query to be:
-					 * 
+					 *
 					 * where town_id IN (1)
-					 * 
+					 *
 					 * which gives a search result of
-					 * 
+					 *
 					 * country	town
 					 * -------------------------------
 					 * france	la rochelle
-					 * 
+					 *
 					 */
 					$pk = $join->_params->get('pk');
 					$lookUps[] = $pk . ' AS __pk_val' . ($lookupC + 1);
@@ -1498,17 +1498,17 @@ class FabrikFEModelList extends JModelForm {
 			// $$$ rob if no ordering applied i had results where main record (e.g. UK) was shown in 2 lines not next to each other
 			// causing them not to be merged and a 6 rows shown when limit set to 5. So below, if no order by set then order by main pk asc
 			$by = trim($table->order_by) === '' ? array() : (array) json_decode($table->order_by);
-			if (empty($by)) 
+			if (empty($by))
 			{
 				$dir = (array) json_decode($table->order_dir);
 				array_unshift($dir, 'ASC');
 				$table->order_dir = json_encode($dir);
-				
+
 				$by = (array) json_decode($table->order_by);
 				array_unshift($by, $table->db_primary_key);
 				$table->order_by = json_encode($by);
 			}
-			
+
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->_buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
@@ -1541,7 +1541,7 @@ class FabrikFEModelList extends JModelForm {
 			 * $$$ rob get an array containing the PRIMARY key values for each joined tables data.
 			 * Stop as soon as we have a set of ids totaling the sum of records contained in $this->mergeQuery / $idRows
 			 */
-			
+
 			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
 				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
@@ -1562,9 +1562,9 @@ class FabrikFEModelList extends JModelForm {
 				}
 			}
 		}
-		
+
 		// now lets actually construct the query that will get the required records:
-		
+
 		$query = array();
 		$query['select'] = $this->_buildQuerySelect();
 		JDEBUG ? $profiler->mark('queryselect: got') : null;
@@ -1580,7 +1580,7 @@ class FabrikFEModelList extends JModelForm {
 			if (!empty($ids))
 			{
 				$query['where'] = ' WHERE ' . $lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')';
-				
+
 				if (!empty($mainKeys))
 				{
 					// limit to the current page
@@ -2922,7 +2922,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @since	3.0.6
 	 * @param	object	join
 	 */
-	
+
 	protected function setJoinPk(&$join)
 	{
 		$pk = $join->_params->get('pk');
@@ -2932,7 +2932,7 @@ class FabrikFEModelList extends JModelForm {
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
 			$pk = $this->getPrimaryKeyAndExtra($join->table_join);
-		
+
 			$pks = $join->table_join;
 			$pks .= '.' . $pk[0]['colname'];
 			$join->_params->set('pk', $fabrikDb->quoteName($pks));
@@ -2943,7 +2943,7 @@ class FabrikFEModelList extends JModelForm {
 			$join->_params = new JRegistry($join->params);
 		}
 	}
-	
+
 	function _makeJoinAliases(&$joins)
 	{
 		$app = JFactory::getApplication();
@@ -5856,6 +5856,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$origColNames = $this->getDBFields($table);
 		$keys = array();
+		$origColNamesByName = array();
 		if (is_array($origColNames))
 		{
 			foreach ($origColNames as $origColName) {
@@ -5867,6 +5868,32 @@ class FabrikFEModelList extends JModelForm {
 				{
 					$keys[] = array("key" => $key, "extra" => $extra, "type" => $type, "colname" => $colName);
 				}
+				else {
+					// $$$ hugh - if we never find a PRI, it may be a view, and we'll need this
+					// info in the Hail Mary.
+					$origColnamesByName[$colName] = $origColName;
+				}
+			}
+		}
+		if (empty($keys)) {
+			// $$$ hugh - might be a view, so Hail Mary attempt to find it in our lists
+			// $$$ So ... see if we know about it, and if so, fake out the PK details
+			$db = FabrikWorker::getDbo(true);
+			$query = $db->getQuery(true);
+			$query->select('db_primary_key')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($table));
+			$db->setQuery($query);
+			$join_pk = $db->loadResult();
+			if (!empty($join_pk)) {
+				$shortColName = FabrikString::shortColName($join_pk);
+				$key = $origColName->Key;
+				$extra = $origColName->Extra;
+				$type = $origColName->Type;
+				$keys[] = array(
+					'colname' => $shortColName,
+					'type' => $type,
+					'extra' => $extra,
+					'key' => $key
+				);
 			}
 		}
 		return empty($keys) ? false : $keys;
