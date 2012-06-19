@@ -46,6 +46,15 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		return json_encode($data);
 	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementList::isMultiple()
+	 */
+	protected function isMultiple()
+	{
+		return true;
+	}
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass

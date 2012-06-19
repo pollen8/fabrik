@@ -224,6 +224,7 @@ class FabrikViewListBase extends JView{
 			$this->advancedSearch($tpl);
 			return;
 		}
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 		//force front end templates
@@ -327,8 +328,9 @@ class FabrikViewListBase extends JView{
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$canPdf = FabrikWorker::canPdf();
-		$this->showPDF = $canPdf ? $params->get('pdf', 0) : false;
-		if (!$canPdf)
+		$this->showPDF = $params->get('pdf', $fbConfig->get('list_pdf', false));
+		
+		if (!$canPdf && $this->showPDF)
 		{
 			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
 		}

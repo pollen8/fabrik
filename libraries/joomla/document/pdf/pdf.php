@@ -53,7 +53,7 @@ class JDocumentpdf extends JDocumentHTML
 
 	protected function iniDomPdf()
 	{
-		$file = JPATH_LIBRARIES .'/dompdf/dompdf_config.inc.php';
+		$file = JPATH_LIBRARIES . '/dompdf/dompdf_config.inc.php';
 		if (!JFile::exists($file))
 		{
 			return false;
@@ -61,6 +61,11 @@ class JDocumentpdf extends JDocumentHTML
 		if (!defined('DOMPDF_ENABLE_REMOTE'))
 		{
 			define('DOMPDF_ENABLE_REMOTE', true);
+		}
+		$config = JFactory::getConfig();
+		if (!defined('DOMPDF_FONT_CACHE'))
+		{
+			define('DOMPDF_FONT_CACHE', $config->get('tmp_path'));
 		}
 		require_once($file);
 		// Default settings are a portrait layout with an A4 configuration using millimeters as units

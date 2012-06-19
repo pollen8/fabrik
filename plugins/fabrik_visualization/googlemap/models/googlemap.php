@@ -59,7 +59,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 			$opts->zoomlevel = JRequest::getVar('zoom', '') == '' ? $opts->zoomlevel : JRequest::getVar('zoom');
 		}
 		$opts->ajax_refresh = (bool)$params->get('fb_gm_ajax_refresh', false);
-		$opts->ajax_refresh_center = $params->get('fb_gm_ajax_refresh_center', 1);
+		$opts->ajax_refresh_center = (bool) $params->get('fb_gm_ajax_refresh_center', true);
 		$opts->maptype = $params->get('fb_gm_maptype');
 		$opts->clustering = (bool)$params->get('fb_gm_clustering', '0') == '1';
 		$opts->cluster_splits = $params->get('fb_gm_cluster_splits');

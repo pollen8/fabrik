@@ -273,7 +273,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$listModel = $this->getListModel();
 		$rows = $this->filterValueList(true);
 		$v = addslashes(JRequest::getVar('value'));
-		for ($i = count($rows) - 1; $i >= 0; $i--)
+		$start = count($rows) - 1;
+		for ($i = $start; $i >= 0; $i--)
 		{
 			if (!preg_match("/$v(.*)/i", $rows[$i]->text))
 			{
@@ -282,6 +283,18 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		}
 		$rows = array_values($rows);
 		echo json_encode($rows);
+	}
+	
+	/**
+	 * will the element allow for multiple selections
+	 * @since	3.0.6
+	 * @return	bool
+	 */
+	
+	protected function isMultiple()
+	{
+		$params = $this->getParams();
+		return $params->get('multiple', 0) || $this->isJoin();
 	}
 
 	/**
@@ -296,7 +309,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
-		$multiple = $params->get('multiple', 0) || $this->isJoin();
+		$multiple = $this->isMultiple();
 		$mergeGroupRepeat = ($this->getGroup()->canRepeat() && $this->getListModel()->mergeJoinedData());
 		$sLabels = array();
 		//repeat group data
@@ -387,9 +400,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 				}
 			}
 			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
-			return implode($splitter, $aRoValues);
+			return ($this->isMultiple() && $this->renderWithHTML) ? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
 		}
-
 		$optionsPerRow = (int) $this->getParams()->get('options_per_row', 4);
 		$elBeforeLabel = (bool)$this->getParams()->get('element_before_label', true);
 		//element_before_label
