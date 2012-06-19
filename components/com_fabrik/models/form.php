@@ -2526,7 +2526,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		return $errorsFound;
 	}
-
+	
 	/**
 	 * main method to get the data to insert into the form
 	 * @return	array	form's data
@@ -3942,6 +3942,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		return 'com_fabrik.form.' . $this->getId() . '.redirect.';
 
+	}
+	
+	public function unsetData()
+	{
+		unset($this->_data);
+		unset($this->query);
 	}
 }
 
