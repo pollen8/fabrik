@@ -8159,16 +8159,45 @@ class FabrikFEModelList extends JModelForm {
 	* Get / set formatAll, which forces formatData() to ignore 'show in table'
 	* and just format everything, needed by things like the table email plugin.
 	* If called without an arg, just returns current setting.
-	*
-	* @param bool optional arg to set format
-	* @return bool
+	* @param	bool	optional arg to set format
+	* @return	bool
 	*/
+	
 	public function formatAll($format_all = null)
 	{
-		if (isset($format_all)) {
+		if (isset($format_all))
+		{
 			$this->_format_all = $format_all;
 		}
 		return $this->_format_all;
+	}
+	
+	/**
+	 * copy rows
+	 * @since	3.0.6
+	 * @param	mixed	array or string of row ids to copy
+	 * @return	bool	all rows copied (true) or false if a row copy fails.
+	 */
+	
+	public function copyRows($ids)
+	{
+		$ids = (array) $ids;
+		$formModel = $this->getFormModel();
+		$formModel->copyingRow(true);
+		$state = true;
+		foreach ($ids as $id)
+		{
+			$formModel->_rowId = $id;
+			$formModel->unsetData();
+			$row = $formModel->getData();
+			$row['Copy'] = '1';
+			$formModel->_formData = $row;
+			if (!$formModel->process())
+			{
+				$state = false;
+			}
+		}
+		return $state;
 	}
 
 }
