@@ -1734,7 +1734,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						if ($elementModel->getFullName(false, true, false) == $key)
 						{
 							// 	$$$ rob - dont test for !canUse() as confirmation plugin dynamically sets this
-							if ($elementModel->canView())
+							//if ($elementModel->canView())
+							// $$$ hugh - testing adding non-viewable, non-editable elements to encrypted vars
+							if (true)
 							{
 								//if (!$elementModel->canUse() && $elementModel->canView()) {
 								if (is_array($encrypted))
@@ -3782,16 +3784,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 
 					//fabrik3.0 : if the element cant be seen or used then dont add it?
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					/*
 					if (!$elementModel->canUse() && !$elementModel->canView()) {
 						continue;
 					}
+					*/
 
 					$elementModel->_foreignKey = $foreignKey;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 
 					$element = $elementModel->preRender($c, $elCount, $tmpl);
 
-					if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					//if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+					if (!$element || !$elementModel->canUse())
 					{
 						// $$$ hugh - $this->data doesn't seem to always have what we need in it, but $data does.
 						// can't remember exact details, was chasing a nasty issue with encrypted 'user' elements.
