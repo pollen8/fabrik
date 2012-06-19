@@ -295,7 +295,7 @@ class FabrikFEModelForm extends FabModelForm
 		$v = $this->_editable ? 'form' : 'details';
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '')
-		{ 
+		{
 			$qs = '?c=' . $this->getId();
 			$qs .='&amp;view=' . $v; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
 			if (!FabrikHelperHTML::stylesheetFromPath(JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
@@ -623,7 +623,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * get an list of elements that aren't shown in the table view
 	 * @return	array	of element table objects
 	 */
-	
+
 	function getElementsNotInTable()
 	{
 		if (!isset($this->_elementsNotInTable))
@@ -3876,9 +3876,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		return $this->_linkedFabrikLists[$table];
 	}
 
-	function updatedByPlugin($fullname = '') {
+	function updatedByPlugin($fullname = '', $value = null) {
 		// used to see if something legitimate in the submission process, like a form plugin,
 		// has modified an RO element value and wants to override the RO/origdata.
+		// If $value is set, add it.
+		if (isset($value))
+		{
+			$this->_pluginUpdatedElements[$fullname] = $value;
+		}
 		return array_key_exists($fullname, $this->_pluginUpdatedElements);
 	}
 

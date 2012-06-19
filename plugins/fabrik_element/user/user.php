@@ -311,6 +311,13 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					$user = JFactory::getUser();
 					$data[$element->name] = $user->get('id');
 					$data[$element->name . '_raw'] = $data[$element->name];
+					// $$$ hugh - need to add to updatedByPlugin() in order to override write access settings.
+					// This allows us to still 'update on edit' when element is write access controlled.
+					if (!$this->canUse())
+					{
+						$this_fullname = $this->getFullName(false, true, false);
+						$this->getFormModel()->updatedByPlugin($this_fullname, $user->get('id'));
+					}
 				}
 			}
 		}
