@@ -5544,6 +5544,10 @@ class FabrikFEModelList extends JModelForm {
 		$table = $this->getTable();
 		if (is_null($this->_origData))
 		{
+			// $$$ hugh FIXME - doesn't work for rowid=-1 / usekey submissions,
+			// ends up querying "WHERE foo.userid = '<rowid>'" instead of <userid>
+			// OK for now, as we should catch RO data from the encrypted vars check
+			// later in this method.
 			if (empty($rowid))
 			{
 				$this->_origData = $origdata = array();
@@ -5565,62 +5569,69 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$form = $formModel->getForm();
 		$groups = $formModel->getGroupsHiarachy();
-		$gcounter = 0;
-		$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
-		foreach  ($groups as $groupModel)
-		{
-			if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
+
+		// $$$ hugh - seems like there's no point in doing this chunk if there is no
+		// $origdata to work with?  Not sure if there's ever a valid reason for doing so,
+		// but it certainly breaks things like onCopyRow(), where (for instance) user
+		// elements will get reset to 0 by this code.
+		if (!empty($origdata)) {
+			$gcounter = 0;
+			$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
+			foreach  ($groups as $groupModel)
 			{
-				$elementModels = $groupModel->getPublishedElements();
-				foreach ($elementModels as $elementModel)
+				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
 				{
-					// $$$ rob 25/02/2011 unviewable elements are now also being encrypted
-					//if (!$elementModel->canUse() && $elementModel->canView()) {
-					if (!$elementModel->canUse())
+					$elementModels = $groupModel->getPublishedElements();
+					foreach ($elementModels as $elementModel)
 					{
-						$element = $elementModel->getElement();
-						$fullkey = $elementModel->getFullName(false, true, false);
-						// $$$ rob 24/01/2012 if a previous joined data set had a ro element then if we werent checkign that group is the
-						// same as the join group then the insert failed as data from other joins added into the current join
-						if ($isJoin && ($groupModel->getId() != $joinGroupTable->id)) {
-							continue;
-						}
-						$key = $element->name;
-						// $$$ hugh - allow submission plugins to override RO data
-						// TODO - test this for joined data
-						if ($formModel->updatedByPlugin($fullkey))
+						// $$$ rob 25/02/2011 unviewable elements are now also being encrypted
+						//if (!$elementModel->canUse() && $elementModel->canView()) {
+						if (!$elementModel->canUse())
 						{
-							continue;
-						}
-						//force a reload of the default value with $origdata
-						unset($elementModel->defaults);
-						$default = array();
-						$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
-						for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++)
-						{
-							$def = $elementModel->getValue($origdata, $repeatCount);
-							// $$$ rob 26/04/2011 encodeing done at the end
-							//if its a dropdown radio etc
-							/*if (is_array($def)) {
-							$def = json_encode($def);
-							}*/
-							if (is_array($def))
-							{
-								// radio buttons getValue() returns an array already so don't array the array.
-								$default = $def;
+							$element = $elementModel->getElement();
+							$fullkey = $elementModel->getFullName(false, true, false);
+							// $$$ rob 24/01/2012 if a previous joined data set had a ro element then if we werent checkign that group is the
+							// same as the join group then the insert failed as data from other joins added into the current join
+							if ($isJoin && ($groupModel->getId() != $joinGroupTable->id)) {
+								continue;
 							}
-							else
+							$key = $element->name;
+							// $$$ hugh - allow submission plugins to override RO data
+							// TODO - test this for joined data
+							if ($formModel->updatedByPlugin($fullkey))
 							{
-								$default[] = $def;
+								continue;
 							}
+							//force a reload of the default value with $origdata
+							unset($elementModel->defaults);
+							$default = array();
+							$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
+							for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++)
+							{
+								$def = $elementModel->getValue($origdata, $repeatCount);
+								// $$$ rob 26/04/2011 encodeing done at the end
+								//if its a dropdown radio etc
+								/*if (is_array($def)) {
+								$def = json_encode($def);
+								}*/
+								if (is_array($def))
+								{
+									// radio buttons getValue() returns an array already so don't array the array.
+									$default = $def;
+								}
+								else
+								{
+									$default[] = $def;
+								}
+							}
+							$default = count($default) == 1 ? $default[0] : json_encode($default);
+							$data[$key] = $default;
+							$oRecord->$key = $default;
 						}
-						$default = count($default) == 1 ? $default[0] : json_encode($default);
-						$data[$key] = $default;
-						$oRecord->$key = $default;
 					}
 				}
+				$gcounter ++;
 			}
-			$gcounter ++;
 		}
 		$copy = JRequest::getBool('Copy');
 
@@ -5672,6 +5683,12 @@ class FabrikFEModelList extends JModelForm {
 									$encrypted = urldecode($encrypted);
 									$v = !empty($encrypted) ? $crypt->decrypt($encrypted) : '';
 								}
+
+								// $$$ hugh - also gets called in storeRow(), not sure if we really need to
+								// call it here?  And if we do, then we should probably be calling onStoreRow
+								// as well, if $data['fabrik_copy_from_table'] is set?  Can't remember why,
+								// but we differentiate between the two, with onCopyRow being when a row is copied
+								// using the list plugin, and onSaveAsCopy when the form plugin is used.
 								if ($copy)
 								{
 									$v = $elementModel->onSaveAsCopy($v);
@@ -5679,10 +5696,7 @@ class FabrikFEModelList extends JModelForm {
 								$data[$key] = $v;
 								$oRecord->$key = $v;
 							}
-
-							// $$$ hugh FIXME - is there some reason we don't break out back to the
-							// main querystring foreach at this point, rather than looping through
-							// all remaining elements and groups?
+							break 2;
 						}
 					}
 				}
@@ -8162,7 +8176,7 @@ class FabrikFEModelList extends JModelForm {
 	* @param	bool	optional arg to set format
 	* @return	bool
 	*/
-	
+
 	public function formatAll($format_all = null)
 	{
 		if (isset($format_all))
@@ -8171,14 +8185,14 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $this->_format_all;
 	}
-	
+
 	/**
 	 * copy rows
 	 * @since	3.0.6
 	 * @param	mixed	array or string of row ids to copy
 	 * @return	bool	all rows copied (true) or false if a row copy fails.
 	 */
-	
+
 	public function copyRows($ids)
 	{
 		$ids = (array) $ids;
@@ -8191,6 +8205,7 @@ class FabrikFEModelList extends JModelForm {
 			$formModel->unsetData();
 			$row = $formModel->getData();
 			$row['Copy'] = '1';
+			$row['fabrik_copy_from_table'] = '1';
 			$formModel->_formData = $row;
 			if (!$formModel->process())
 			{
