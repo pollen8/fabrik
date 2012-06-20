@@ -17,6 +17,7 @@ images/*
 includes/*
 language/*
 libraries/*
+!libraries/dompdf/
 modules/*
 !modules/fabrik_form/*
 !modules/fabrik_list/*

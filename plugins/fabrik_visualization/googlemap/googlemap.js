@@ -194,6 +194,7 @@ var FbGoogleMapViz = new Class({
 	
 	addIcons: function () {
 		this.markers = [];
+		this.clusterMarkers = [];
 		this.options.icons.each(function (i) {
 			this.bounds.extend(new google.maps.LatLng(i[0], i[1]));
 			this.markers.push(this.addIcon(i[0], i[1], i[2], i[3], i[4], i[5], i.groupkey, i.title));
@@ -209,7 +210,7 @@ var FbGoogleMapViz = new Class({
 			var i = 0;
 			for (i = 1; i <= 5; ++i) {
 				styles.push({
-					'url': Fabrik.liveSite + "/components/com_fabrik/libs/googlemaps/markerclusterer/images/m" + i + ".png",
+					'url': Fabrik.liveSite + "/components/com_fabrik/libs/googlemaps/markerclustererplus/images/m" + i + ".png",
 					'height': sizes[i - 1],
 					'width': sizes[i - 1]
 				});
