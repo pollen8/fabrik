@@ -61,7 +61,7 @@ class fabrikViewGooglemap extends JView
 				}
 				else
 				{
-					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer-packed.js';
+					$srcs[] = 'components/com_fabrik/libs/googlemaps/markerclustererplus/src/markerclusterer_packed.js';
 				}
 			}
 			else
