@@ -85,9 +85,12 @@ var FbDropdown = new Class({
 	update: function (val) {
 		var opts = [];
 		if (typeOf(val) === 'string') {
-			val = JSON.decode(val);
+			var t = val;
+			try {
+				val = JSON.decode(val);
+			} catch(e) {}
 			if (typeOf(val) === 'number') {
-				val = [val.toString()];
+				val = t;
 			}
 		}
 		if (typeOf(val) === 'null') {
