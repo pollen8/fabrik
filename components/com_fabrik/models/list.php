@@ -1400,21 +1400,30 @@ class FabrikFEModelList extends JModelForm {
 				// $$$ hugh - not everything is JSON, some stuff is just plain strings.
 				// So we need to see if JSON encoding failed, and only use result if it didn't.
 				// $v = json_decode($v, true);
-			if (is_array($v))
-			{
-				$v = JArrayHelper::getValue($v, $repeatCounter);
-			}
-			else
-			{
-				$v2 = json_decode($v, true);
-				if ($v2 !== null) {
-				$v = $v2;
+				if (is_array($v))
+				{
+					$v = JArrayHelper::getValue($v, $repeatCounter);
+				}
+				else
+				{
+					$v2 = json_decode($v, true);
+					if ($v2 !== null)
+					{
+						if (is_array($v2))
+						{
+							$v = JArrayHelper::getValue($v2, $repeatCounter);
+						}
+						else
+						{
+							$v = $v2;
+						}
+
+					}
 				}
 			}
-		}
-		$array['rowid'] = $this->getSlug($row);
-		$array['listid'] = $table->id;
-		$link = JRoute::_($this->parseMessageForRowHolder($customLink, $array));
+			$array['rowid'] = $this->getSlug($row);
+			$array['listid'] = $table->id;
+			$link = JRoute::_($this->parseMessageForRowHolder($customLink, $array));
 		}
 		return $link;
 	}
@@ -7612,10 +7621,16 @@ class FabrikFEModelList extends JModelForm {
 								// with it currently
 								$data[$last_i]->$key = (array) $data[$last_i]->$key;
 								array_push($data[$last_i]->$key, $val);
+								$rawkey = $key . '_raw';
+								$rawval = $data[$i]->$rawkey;
+								$data[$last_i]->$rawkey = (array) $data[$last_i]->$rawkey;
+								array_push($data[$last_i]->$rawkey, $rawval);
 							}
 						} else {
-							$json= $val;
-							$data[$last_i]->$origKey = json_encode($json);
+							if (!is_array($data[$last_i]->$origKey)) {
+								$json= $val;
+								$data[$last_i]->$origKey = json_encode($json);
+							}
 						}
 					}
 
