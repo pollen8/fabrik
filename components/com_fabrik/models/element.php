@@ -925,6 +925,35 @@ class plgFabrik_Element extends FabrikPlugin
 	protected function modHTMLId(&$id){
 
 	}
+	
+	/**
+	 * should the element be tipped?
+	 * @since	3.0.6
+	 * @param	string	$mode form/list render context
+	 * @return	bool
+	 */
+	
+	private function isTipped($mode = 'form')
+	{
+		$formModel = $this->getFormModel();
+		if ($formModel->getParams()->get('tiplocation', 'tip') !== 'tip' && $mode === 'form')
+		{
+			return false;
+		}
+		$params = $this->getParams();
+		if ($params->get('rollover', '') === '')
+		{
+			return false;
+		}
+		if ($mode == 'form' && (!$formModel->_editable && $params->get('labelindetails', true) == false)) {
+			return false;
+		}
+		if ($mode === 'list' && $params->get('labelinlist', false) == false)
+		{
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * can be overwritten in the plugin class
@@ -953,7 +982,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str = '';
 		if ($this->canView() || $this->canUse())
 		{
-			$rollOver = $params->get('rollover', '') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
+			$rollOver = $this->isTipped();
 			$labelClass = 'fabrikLabel ';
 			if (empty($element->label))
 			{
@@ -1042,10 +1071,10 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
-		$params = $this->getParams();
-		$formModel = $this->getFormModel();
-		if ($formModel->getParams()->get('tiplocation', 'tip') == 'tip' && (($mode == 'form' && ($formModel->_editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false)))
+		if ($this->isTipped($mode))
 		{
+			$params = $this->getParams();
+			$formModel = $this->getFormModel();
 			$rollOver = $this->getTip($data);
 			$pos = $params->get('tiplocation', 'top');
 			$opts = "{position:'$pos', notice:true}";
@@ -1085,7 +1114,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$tip = @eval($tip);
 			FabrikWorker::logEval($tip, 'Caught exception on eval of ' . $this->getElement()->name . ' tip: %s');
 		}
-		$tip = trim(JText::_($tip));#
+		$tip = trim(JText::_($tip));
 		$tip = JText::_($tip);
 		$tip = htmlspecialchars($tip, ENT_QUOTES);
 		return $tip;
@@ -1401,7 +1430,7 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$element->containerClass .= ' fabrikDataEmpty';
 		}
-		//tips (if nto rendered as hovers)
+		//tips (if not rendered as hovers)
 		$tip = $this->getTip();
 		if ($tip !== '')
 		{
@@ -2732,10 +2761,12 @@ class plgFabrik_Element extends FabrikPlugin
 		switch ($condition)
 		{
 			case 'earlierthisyear':
-				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
+				//$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
+				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(now()) ';
 				break;
 			case 'laterthisyear':
-				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
+				//$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
+				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(now()) ';
 				break;
 			default:
 				if ($this->isJoin())
@@ -3234,7 +3265,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
-		$res = $this->formatCalcs($results, $calcLabel, $split, false);
+		$res = $this->formatCalcs($results, $calcLabel, $split, false, false);
 		return array($res, $results);
 	}
 

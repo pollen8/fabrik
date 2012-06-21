@@ -319,7 +319,7 @@ EOD;
 	 * @param	string	$sel
 	 * @return	mixed	html select list or error
 	 */
-	
+
 	public static function tableList($sel = '')
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -705,12 +705,20 @@ EOD;
 	}
 
 	/**
-	 * Returns true is either J! or Fabrik debug is enabled
+	 * Returns true if either J! or Fabrik debug is enabled
+	 * Use this for things like choosing whether to include compressed or uncompressed JS, etc.
+	 * Do NOT use for actual debug output.
 	 *
+	 * @param bool enabled set to true if Fabrik debug global option must be set to true
 	 * @return bool
 	 */
-	public static function isDebug()
+	public static function isDebug($enabled = false)
 	{
+		$config = JComponentHelper::getParams('com_fabrik');
+		if ($enabled && $config->get('use_fabrikdebug') == 0)
+		{
+			return false;
+		}
 		$config = JFactory::getConfig();
 		$debug = (int) $config->get('debug');
 		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) === 1;

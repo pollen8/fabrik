@@ -100,7 +100,8 @@ class imageRender{
 				$file = $model->getStorage()->_getThumb($file);
 			}
 		}
-
+		$file = $model->storage->preRenderPath($file);
+		$fullSize = $model->storage->preRenderPath($fullSize);
 		if ($model->isJoin()) {
 			$this->output .= '<div class="fabrikGalleryImage" style="width:'.$width.'px;height:'.$height.'px; vertical-align: middle;text-align: center;">';
 		}

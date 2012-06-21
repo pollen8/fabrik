@@ -98,7 +98,7 @@ class fabrikViewCalendar extends JView
 		$options->monthday->width = (int) $params->get('calendar-monthday-width', 90);
 		$options->monthday->height = (int) $params->get('calendar-monthday-height', 90);
 		$options->greyscaledweekend = $params->get('greyscaled-week-end', 0);
-		$options->viewType = $params->get('calendar_default_view', 'month');
+		$options->viewType = $params->get('calendar_default_view', 'monthView');
 		$json = json_encode($options);
 
 		JText::script('PLG_VISUALIZATION_CALENDAR_NEXT');
@@ -122,7 +122,7 @@ class fabrikViewCalendar extends JView
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = 'plugins/fabrik_visualization/calendar/calendar.js';
 		FabrikHelperHTML::script($srcs, $str);
-		
+
 		$viewName = $this->getName();
 
 		$pluginParams = $model->getPluginParams();

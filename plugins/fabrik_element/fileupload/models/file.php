@@ -31,13 +31,21 @@ class fileRender{
 	 * @param string row data for this element
 	 */
 
-	function render(&$element, &$params, $file)
+	function render(&$model, &$params, $file)
 	{
 		jimport('joomla.filesystem.file');
 		$filename = basename($file);
 		$filename = strip_tags($filename);
 		$ext = JFile::getExt($filename);
-		$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
+		//$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
+		if (!strstr($file, 'http://') && !strstr($file, 'https://')) {
+			// $$$rob only add in livesite if we dont already have a full url (eg from amazons3)
+			// $$$ hugh trim / or \ off the start of $file
+			$file = JString::ltrim($file, '/\\');
+			$file = COM_FABRIK_LIVESITE . $file;
+		}
+		$file = str_replace("\\", "/", $file);
+		$file = $model->storage->preRenderPath($file);
 		$thumb_path = COM_FABRIK_BASE . 'media/com_fabrik/images/' . $ext . '.png';
 		// $$$ hugh - using 'make_thumbnail' to mean 'use default $ext.png as an icon
 		// instead of just putting the filename.

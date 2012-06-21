@@ -111,13 +111,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$aAsFields[] = $db->quoteName($fullElName);
 		}
 	}
-	
+
 	/**
 	* @since 3.0.6
 	* get the field name to use in the list's slug url
 	* @param	bool	$raw
 	*/
-	
+
 	public function getSlugName($raw = false)
 	{
 		return $raw ? parent::getSlugName($raw) : $this->getJoinLabelColumn();
@@ -127,7 +127,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * (non-PHPdoc)
 	 * @see plgFabrik_Element::getRawColumn()
 	 */
-	
+
 	public function getRawColumn($useStep = true)
 	{
 		$join = $this->getJoin();
@@ -254,7 +254,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_join;
 			}
 		}
-		JError::raiseError(500, 'unable to process db join element id:'. $element->id);
+		if (JRequest::getVar('task') !== 'form.inlineedit')
+		{
+			//suppress error for inlineedit, something not quiet right as groupModel::getPublishedElements() is limited by the elementid request va
+			// but the list model is calling getAsFields() and loading up the db join element.
+			// so test case would be an inline edit list with a database join element and editing anything but the db join element
+			JError::raiseError(500, 'unable to process db join element id:'. $element->id);
+		}
 		return false;
 	}
 
@@ -317,7 +323,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 
 		// $$$ rob 18/06/2012 cache the option vals on a per query basis (was previously incwhere but this was not ok
-		// for auto-completes in repeating groups 
+		// for auto-completes in repeating groups
 		$sql = $this->_buildQuery($data, $incWhere);
  		if (isset($this->_optionVals[$sql]))
 		{
@@ -353,7 +359,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param	string	object label
 	 * @return	null
 	 */
-	
+
 	private function addSpaceToEmptyLabels(&$rows, $txt = 'text')
 	{
 		foreach ($rows as &$t)
@@ -458,7 +464,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	function _buildQuery($data = array(), $incWhere = true)
 	{
 		$sig = isset($this->_autocomplete_where) ? $this->_autocomplete_where . '.' . $incWhere : $incWhere;
-		
+
 		$db = FabrikWorker::getDbo();
 		if (isset($this->_sql[$sig]))
 		{
@@ -1383,7 +1389,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$where = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_key_column'));
 					}
 
-					$rows = $this->checkboxRows('parent_id', $condition, $value, $where);
+					$rows = $this->checkboxRows($db->quoteName($params->get('join_db_name')) . '.parent_id', $condition, $value, $where);
 					$joinIds = array_keys($rows);
 					if (!empty($rows))
 					{
@@ -1425,7 +1431,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$key = $db->quoteName($to . '.' . $params->get('join_key_column'));
 		$label = $db->quoteName($to . '.' . $params->get('join_val_column'));
 		$v = $jointable . '.' . $shortName;
-		$query->select('parent_id, ' . $v . ' AS value, ' . $label . ' AS text')
+		$query->select($jointable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')
 		->from($jointable)
 		->join('LEFT', $to . ' ON ' . $key . ' = ' . $jointable . '.' . $shortName);
 		if (!is_null($condition) && !is_null($value))
@@ -1802,7 +1808,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * is the dropdowns cnn the same as the main Joomla db
 	 * @return	bool
 	 */
-	
+
 	protected function inJDb()
 	{
 		$config = JFactory::getConfig();
@@ -1912,7 +1918,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(" . $jkey . " " . $where . " SEPARATOR '".GROUPSPLITTER."') FROM $jointable
 		LEFT JOIN " . $params->get('join_db_name') . " ON "
-		. $params->get('join_db_name') . "." . $params->get('join_key_column')." = $jointable." . $this->_element->name . " WHERE parent_id = ".$item->db_primary_key.")";
+		. $params->get('join_db_name') . "." . $params->get('join_key_column')." = $jointable." . $this->_element->name . " WHERE " . $jointable . ".parent_id = ".$item->db_primary_key.")";
 		if ($addAs)
 		{
 			$sql .= ' AS ' . $fullElName;
@@ -1928,7 +1934,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
 		$fullElName = $this->getFullName(false, true, false)."_id";
-		$str .= ", (SELECT GROUP_CONCAT(" . $this->_element->name . " SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE parent_id = " . $table->db_primary_key . ") AS $fullElName";
+		$str .= ", (SELECT GROUP_CONCAT(" . $this->_element->name . " SEPARATOR '".GROUPSPLITTER."') FROM $jointable WHERE " . $jointable . ".parent_id = " . $table->db_primary_key . ") AS $fullElName";
 		return $str;
 	}
 

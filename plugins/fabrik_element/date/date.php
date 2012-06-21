@@ -1567,10 +1567,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$this->encryptFieldName($key);
 		switch ($condition) {
 			case 'earlierthisyear':
-				$query = " DAYOFYEAR($key) <= DAYOFYEAR($value) ";
+				$query = " DAYOFYEAR($key) <= DAYOFYEAR(now()) ";
 				break;
 			case 'laterthisyear':
-				$query = " DAYOFYEAR($key) >= DAYOFYEAR($value) ";
+				$query = " DAYOFYEAR($key) >= DAYOFYEAR(now()) ";
 				break;
 			case 'today':
 				$query = " ($key >= CURDATE() and $key < CURDATE() + INTERVAL 1 DAY) ";
@@ -1581,6 +1581,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			case 'tomorrow':
 				$query = " ($key >= CURDATE() + INTERVAL 1 DAY  and $key < CURDATE() + INTERVAL 2 DAY ) ";
 				break;
+			case 'thismonth':
+				$query = " ($key >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  and $key <= LAST_DAY(NOW()) ) ";
+				break;
+			case 'lastmonth':
+				$query = " ($key >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  and $key <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ";
+				break;
+			case 'nextmonth':
+				$query = " ($key >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  and $key <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ";
+				break;
+			
 			default:
 				$params = $this->getParams();
 			$format = $params->get('date_table_format');

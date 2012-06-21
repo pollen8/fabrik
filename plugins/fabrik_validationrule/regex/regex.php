@@ -42,7 +42,9 @@ class plgFabrik_ValidationruleRegex extends plgFabrik_Validationrule
 		{
 			$matches = array();
 			$v = (array) $params->get('regex-expression');
-			$found = preg_match(JArrayHelper::getValue($v, $pluginc), $data, $matches);
+			$v = JArrayHelper::getValue($v, $pluginc);
+			$v = trim($v);
+			$found = empty($v) ? true : preg_match($v, $data, $matches);
 			return $found;
 		}
 		return true;
@@ -56,8 +58,10 @@ class plgFabrik_ValidationruleRegex extends plgFabrik_Validationrule
 		if (!$domatch)
 		{
 	 		$v = (array) $params->get($this->_pluginName .'-expression');
+	 		$v = JArrayHelper::getValue($v, $pluginc);
+	 		$v = trim($v);
 			$replace = (array) $params->get('regex-replacestring');
-			$return = preg_replace(JArrayHelper::getValue($v, $pluginc), JArrayHelper::getValue($replace, $pluginc), $data);
+			$return = empty($v) ? $data : preg_replace($v, JArrayHelper::getValue($replace, $pluginc), $data);
 			return $return;
 		}
 		return $data;

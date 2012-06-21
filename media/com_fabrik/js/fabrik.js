@@ -209,12 +209,20 @@ var Loader = new Class({
 				l = Fabrik.blocks[ref];
 			} else {
 				// checkAll
-				ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
-				l = Fabrik.blocks[ref];
-				if (l.options.actionMethod !== '') { // should only check all for floating tips
-					l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-						c.checked = true;
-					});
+				ref = e.target.getParent('.fabrikList');
+				if (typeOf(ref) !== 'null') {
+					//embedded in list
+					ref = ref.id;
+					l = Fabrik.blocks[ref];
+				} else {
+					//floating
+					ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
+					l = Fabrik.blocks[ref];
+					if (l.options.actionMethod !== '') { // should only check all for floating tips
+						l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
+							c.checked = true;
+						});
+					}
 				}
 			}
 			//get correct list block

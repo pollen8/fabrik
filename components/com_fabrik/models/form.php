@@ -295,7 +295,7 @@ class FabrikFEModelForm extends FabModelForm
 		$v = $this->_editable ? 'form' : 'details';
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '')
-		{ 
+		{
 			$qs = '?c=' . $this->getId();
 			$qs .='&amp;view=' . $v; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
 			if (!FabrikHelperHTML::stylesheetFromPath(JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
@@ -623,7 +623,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * get an list of elements that aren't shown in the table view
 	 * @return	array	of element table objects
 	 */
-	
+
 	function getElementsNotInTable()
 	{
 		if (!isset($this->_elementsNotInTable))
@@ -1734,7 +1734,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						if ($elementModel->getFullName(false, true, false) == $key)
 						{
 							// 	$$$ rob - dont test for !canUse() as confirmation plugin dynamically sets this
-							if ($elementModel->canView())
+							//if ($elementModel->canView())
+							// $$$ hugh - testing adding non-viewable, non-editable elements to encrypted vars
+							if (true)
 							{
 								//if (!$elementModel->canUse() && $elementModel->canView()) {
 								if (is_array($encrypted))
@@ -2526,7 +2528,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		return $errorsFound;
 	}
-
+	
 	/**
 	 * main method to get the data to insert into the form
 	 * @return	array	form's data
@@ -3782,16 +3784,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 
 					//fabrik3.0 : if the element cant be seen or used then dont add it?
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					/*
 					if (!$elementModel->canUse() && !$elementModel->canView()) {
 						continue;
 					}
+					*/
 
 					$elementModel->_foreignKey = $foreignKey;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 
 					$element = $elementModel->preRender($c, $elCount, $tmpl);
 
-					if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					//if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+					if (!$element || !$elementModel->canUse())
 					{
 						// $$$ hugh - $this->data doesn't seem to always have what we need in it, but $data does.
 						// can't remember exact details, was chasing a nasty issue with encrypted 'user' elements.
@@ -3876,9 +3883,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		return $this->_linkedFabrikLists[$table];
 	}
 
-	function updatedByPlugin($fullname = '') {
+	function updatedByPlugin($fullname = '', $value = null) {
 		// used to see if something legitimate in the submission process, like a form plugin,
 		// has modified an RO element value and wants to override the RO/origdata.
+		// If $value is set, add it.
+		if (isset($value))
+		{
+			$this->_pluginUpdatedElements[$fullname] = $value;
+		}
 		return array_key_exists($fullname, $this->_pluginUpdatedElements);
 	}
 
@@ -3937,6 +3949,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		return 'com_fabrik.form.' . $this->getId() . '.redirect.';
 
+	}
+	
+	public function unsetData()
+	{
+		unset($this->_data);
+		unset($this->query);
 	}
 }
 
