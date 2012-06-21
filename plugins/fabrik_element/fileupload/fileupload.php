@@ -21,7 +21,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 {
 
 	/**@var object storage method adaptor object (filesystem/amazon s3) */
-	protected $storage = null;
+	/* needs to be public as models have to see it */
+	public $storage = null;
 
 	protected $_is_upload = true;
 

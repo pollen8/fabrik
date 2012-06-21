@@ -45,6 +45,7 @@ class fileRender{
 			$file = COM_FABRIK_LIVESITE . $file;
 		}
 		$file = str_replace("\\", "/", $file);
+		$file = $model->storage->preRenderPath($file);
 		$thumb_path = COM_FABRIK_BASE . 'media/com_fabrik/images/' . $ext . '.png';
 		// $$$ hugh - using 'make_thumbnail' to mean 'use default $ext.png as an icon
 		// instead of just putting the filename.

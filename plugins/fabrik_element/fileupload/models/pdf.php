@@ -14,7 +14,9 @@ class pdfRender{
 
 	var $output = '';
 
-	var $pdf_thumb_type = 'png';
+	private $pdf_thumb_type = 'png';
+
+	private $inTableView = false;
 
 	/**
 	 * when in form or detailed view, do we want to show the full image or thumbnail/link?
@@ -89,6 +91,7 @@ class pdfRender{
 			$file = COM_FABRIK_LIVESITE . $file;
 		}
 		$file = str_replace("\\", "/", $file);
+		$file = $model->storage->preRenderPath($file);
 		$this->output = "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$filename\" href=\"$file\">";
 		if ($thumb_file = $this->getThumbnail($model, $params, $file)) {
 			$filename = "<img src=\"$thumb_file\" alt=\"$filename\" />";
