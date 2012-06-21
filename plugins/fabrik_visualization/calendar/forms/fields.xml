@@ -34,7 +34,13 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
+			<field default="monthView" description="PLG_VISUALIZATION_CALENDAR_DEFAULT_VIEW_DESC" label="PLG_VISUALIZATION_CALENDAR_DEFAULT_VIEW_LABEL" name="calendar_default_view" type="list">
+					<option value="dayView">PLG_VISUALIZATION_CALENDAR_DAY</option>
+					<option value="weekView">PLG_VISUALIZATION_CALENDAR_WEEK</option>
+					<option value="monthView">PLG_VISUALIZATION_CALENDAR_MONTH</option>
+			</field>
+						
 			<field default="0" description="PLG_VISUALIZATION_CALENDAR_Y_OFFSET_DESC" label="PLG_VISUALIZATION_CALENDAR_Y_OFFSET_LABEL" name="yoffset" size="3" type="text"/>
 				
 			<field default="0" description="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_DESC" label="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_LABEL" name="first_week_day" size="1" type="text"/>
