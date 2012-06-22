@@ -3256,7 +3256,8 @@ class FabrikFEModelList extends JModelForm {
 					$dropKey = true;
 				}
 				$q = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $origColName . ' ' . FabrikString::safeColName($element->name) . ' ' . $objtype . ' ';
-				if ($primaryKey == $fabrikDb->quoteName($tableName) . '.' . FabrikString::safeColName($element->name) && $table->auto_inc) {
+				$testColName = $tableName . '.' . FabrikString::safeColName($element->name);
+				if (FabrikString::safeColName($primaryKey) == $tableName . '.' . FabrikString::safeColName($element->name) && $table->auto_inc) {
 					if (!strstr($q, 'NOT NULL AUTO_INCREMENT'))
 					{
 						$q .= ' NOT NULL AUTO_INCREMENT ';

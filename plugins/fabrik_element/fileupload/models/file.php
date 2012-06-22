@@ -31,7 +31,7 @@ class fileRender{
 	 * @param string row data for this element
 	 */
 
-	function render(&$element, &$params, $file)
+	function render(&$model, &$params, $file)
 	{
 		jimport('joomla.filesystem.file');
 		$filename = basename($file);
