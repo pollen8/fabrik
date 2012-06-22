@@ -938,7 +938,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 *  potentially drop fields then remove element record
-	 * @param	array	$cids to delete
+	 * @param	array	$pks to delete
 	 */
 
 	public function delete(&$pks)
@@ -946,7 +946,7 @@ class FabrikModelElement extends JModelAdmin
 		// Initialize variables
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$drops = (array)JRequest::getVar('drop');
-		foreach ($cids as $id)
+		foreach ($pks as $id)
 		{
 			$drop = array_key_exists($id, $drops) && $drops[$id][0] == '1';
 			if ((int) $id === 0)
@@ -980,7 +980,7 @@ class FabrikModelElement extends JModelAdmin
 				}
 			}
 		}
-		return parent::delete($cids);
+		return parent::delete($pks);
 	}
 
 	/**
