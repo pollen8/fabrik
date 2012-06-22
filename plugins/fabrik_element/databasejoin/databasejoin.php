@@ -254,7 +254,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				return $this->_join;
 			}
 		}
-		if (JRequest::getVar('task') !== 'form.inlineedit')
+		if (!in_array(JRequest::getVar('task'), array('inlineedit', 'form.inlineedit')))
 		{
 			//suppress error for inlineedit, something not quiet right as groupModel::getPublishedElements() is limited by the elementid request va
 			// but the list model is calling getAsFields() and loading up the db join element.
