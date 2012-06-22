@@ -364,15 +364,17 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$params = $this->getParams();
 		$worker = new FabrikWorker();
 		$fc_version = $params->get('fusionchart_version', 'free_old');
-		if ($fc_version == 'free_22')
+		$free22 = $this->pathBase . 'fusionchart/lib/FusionChartsFree/Code/PHPClass/Includes/FusionCharts_Gen.php';
+		$pro30 = $this->pathBase . 'fusionchart/lib/FusionCharts/Code/PHPClass/Includes/FusionCharts_Gen.php';
+		if ($fc_version == 'free_22' && JFile::exists($free22))
 		{
-			require_once($this->pathBase.'fusionchart/lib/FusionChartsFree/Code/PHPClass/Includes/FusionCharts_Gen.php');
+			require_once($free22);
 			$document->addScript($this->srcBase."fusionchart/lib/FusionChartsFree/JSClass/FusionCharts.js");
 			$fc_swf_path = COM_FABRIK_LIVESITE.$this->srcBase."fusionchart/lib/FusionChartsFree/Charts/";
 		}
-		else if ($fc_version == 'pro_30')
+		else if ($fc_version == 'pro_30' && JFile::exists($pro30))
 		{
-			require_once($this->pathBase.'fusionchart/lib/FusionCharts/Code/PHPClass/Includes/FusionCharts_Gen.php');
+			require_once($pro30);
 			$document->addScript($this->srcBase."fusionchart/lib/FusionCharts/Charts/FusionCharts.js");
 			$fc_swf_path = COM_FABRIK_LIVESITE.$this->srcBase."fusionchart/lib/FusionCharts/Charts/";
 		}
