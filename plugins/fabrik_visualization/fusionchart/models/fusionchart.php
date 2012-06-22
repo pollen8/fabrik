@@ -17,23 +17,9 @@ require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
 class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 
-	function _getMinMax(&$totals)
+	protected function _getMinMax(&$totals)
 	{
-		// $this->min will only go lower if data is negative!
-		$this->max = 0;
-		$this->min = 0;
-		foreach ($totals as $tots) {
-			
-			if (max($totals) > $this->max)
-			{
-				$this->max = max($totals);
-			}
-			if (min($totals) < $this->min)
-			{
-				$this->min = min($totals);
-			}
-		}
-		return array('min' => $this->min, 'max' => $this->max);
+		return array('min' => min($totals), 'max' => max($totals));
 	}
 
 	protected function getChartParams()
@@ -42,7 +28,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$w = new FabrikWorker();
 		$caption = $w->parseMessageForPlaceHolder($params->get('fusionchart_caption', ''));
 		$strParam = 'caption=' . $caption;
-		
+
 		// Graph attributes
 		$strParam .= ';palette=' . $params->get('fusionchart_chart_palette', 1);
 		if ($params->get('fusionchart_bgcolor'))
@@ -345,7 +331,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		}
 		return $msg;
 	}
-	
+
 	protected function setAxisLabels()
 	{
 		$worker = new FabrikWorker();
@@ -407,8 +393,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$chartElements = (array) $params->get('fusionchart_elementList');
 		$chartColours = (array) $params->get('fusionchart_colours');
 		$listid = (array) $params->get('fusionchart_table');
+		$chartCumulatives = (array)$params->get('fusionchart_cumulative');
+		$elTypes = (array) $params->get('fusionchart_element_type');
 		$this->setAxisLabels();
-		
+
 		$dual_y_parents = $params->get('fusionchart_dual_y_parent');
 		$chartWheres = (array) $params->get('fusionchart_where');
 		$this->c = 0;
@@ -443,7 +431,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			$form = $listModel->getForm();
 
 			// $$$ hugh - adding plugin query, 2012-02-08
-			if (array_key_exists($this->c, $chartWheres) && !empty($this->chartWheres[$this->c]))
+			if (array_key_exists($this->c, $chartWheres) && !empty($chartWheres[$this->c]))
 			{
 				$chartWhere = $this->_replaceRequest($chartWheres[$this->c]);
 				$listModel->setPluginQueryWhere('fusionchart', $chartWhere);
@@ -535,6 +523,13 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					$glabels[$this->c] = implode('|', $tmpglabels);
 					// $$$ hugh - playing around with pie charts
 					$gsums[$this->c] = array_sum($tmpgdata);
+					// $$$ hugh - playing with 'cumulative' option
+					$this->gcumulatives[$this->c] = array();
+					while (!empty($tmpgdata)) {
+						$this->gcumulatives[$this->c][] = array_sum($tmpgdata);
+						array_pop($tmpgdata);
+					}
+					$this->gcumulatives[$this->c] = array_reverse($this->gcumulatives[$this->c]);
 				}
 			}
 			$this->c ++;
@@ -600,7 +595,8 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 				{
 					// single table/elements, so use the row data
 					$labels = explode('|', $glabels[0]);
-					$gsums = explode(',', $gdata[0]);
+					//$gsums = !array_key_exists(0, $chartCumulatives) || $chartCumulatives[0] == '0' ? explode(',', $gdata[0]) : explode(',', $gcumulatives[0]);
+					$gsums = JArrayHelper::getValue($chartCumulatives, 0, '0') == '0' ? explode(',', $gdata[0]) : $this->gcumulatives[0];
 					// scale to percentages
 					$tot_sum = array_sum($gsums);
 					$arrData = array();
@@ -616,6 +612,15 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					// $$$ hugh - can't use array_combine, as empty labels end up dropping values
 					//$arrComb = array_combine($labels, $gsums);
 					//foreach ($arrComb as $key => $value) {
+					if ($elTypes[0] == 'trendonly') {
+						$str_params = '';
+						$min = min($gsums);
+						$max = max($gsums);
+						list($min, $max) = $this->getTrendMinMax($min, $max, 0);
+						$this->FC->addChartData($min, $str_params);
+						$this->FC->addChartData($max, $str_params);
+					}
+					else {
 					$data_count = 0;
 					foreach ($gsums as $key => $value)
 					{
@@ -634,6 +639,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 							}
 						}
 						$this->FC->addChartData($value, $str_params);
+					}
 					}
 
 				}
@@ -769,12 +775,14 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 	 * add a trend line to the chart - not all chart types support rendering trendlines
 	 * @param	array	$gdata
 	 */
-	
+
 	protected function trendLine(&$gdata = null)
 	{
 		$params = $this->getParams();
 		$chartType = $params->get('fusionchart_type');
 		$eltype = $params->get('fusionchart_element_type', 'dataset');
+		$trendtypes = (array)$params->get('fusionchart_trend_type');
+		$cumulatives = (array)$params->get('fusionchart_cumulative');
 		$found = false;
 		$trendstart = $params->get('fusionchart_trendstartvalue', '');
 		$trendend = $params->get('fusionchart_trendendvalue', '');
@@ -782,26 +790,54 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		{
 			if ($eltype[$nbe] != 'dataset')
 			{
-				$found = true; 
 				// Trendline Start & End values
-				
+
 				if ($trendstart)
 				{
+					$found = true;
 					$startval = $trendstart;
 					$endval = $trendend;
 				}
 				else if ($eltype[$nbe] == 'trendline')
 				{
+					$found = true;
+					$min = $this->min[$nbe];
+					$max = $this->max[$nbe];
+					$cumulative = JArrayHelper::getValue($cumulatives, $nbe, '0');
+					if ($cumulative == '1') {
+						// using cumulative values, so need to reset minmax to use those
+						$min = min($this->gcumulatives[$nbe]);
+						$max = max($this->gcumulatives[$nbe]);
+					}
 					// If Start & End values are not specifically defined, use the element's min & max values
-					$startval = $this->min[$nbe];
-					$endval = $this->max[$nbe];
+					$trendtype = JArrayHelper::getValue($trendtypes, $nbe, 'minmax');
+					switch ($trendtype) {
+						case 'zeromax' :
+							$startval = 0;
+							$endval = $max;
+							break;
+						case 'maxzero' :
+							$startval = $max;
+							$endval = 0;
+							break;
+						case 'maxmin' :
+							$startval = $max;
+							$endval = $min;
+							break;
+						case 'minmax' :
+						default:
+							$startval = $min;
+							$endval = $max;
+							break;
+					}
 				}
-				$this->buildTrendLine($startval, $endval, $nbe);
-				
-				if (is_array($gdata))
-				{
-					unset($this->axisLabels[$nbe]);
-					unset($gdata[$nbe]);
+				if ($found) {
+					$this->buildTrendLine($startval, $endval, $nbe);
+					if (is_array($gdata))
+					{
+						unset($this->axisLabels[$nbe]);
+						unset($gdata[$nbe]);
+					}
 				}
 			}
 		}
@@ -810,7 +846,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			$this->buildTrendLine($trendstart, $trendend);
 		}
 	}
-	
+
 	protected function buildTrendLine($startval, $endval, $nbe = null)
 	{
 		$params = $this->getParams();
@@ -838,6 +874,33 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			$params = $this->getParams();
 			$this->listids = (array) $params->get('fusionchart_table');
 		}
+	}
+
+	function getTrendMinMax($min, $max, $nbe)
+	{
+		$params = $this->getParams();
+		$trendtypes = (array)$params->get('fusionchart_trend_type');
+		$trendtype = JArrayHelper::getValue($trendtypes, $nbe, 'minmax');
+		switch ($trendtype) {
+			case 'zeromax' :
+				$startval = 0;
+				$endval = $max;
+				break;
+			case 'maxzero' :
+				$startval = $max;
+				$endval = 0;
+				break;
+			case 'maxmin' :
+				$startval = $max;
+				$endval = $min;
+				break;
+			case 'minmax' :
+			default:
+				$startval = $min;
+				$endval = $max;
+				break;
+		}
+		return array($startval, $endval);
 	}
 
 }

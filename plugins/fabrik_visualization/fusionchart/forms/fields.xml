@@ -15,8 +15,22 @@
 			<field default="dataset" description="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_LABEL" name="fusionchart_element_type" type="list">
 					<option value="dataset">Data Set</option>
 					<option value="trendline">Trend Line</option>
+					<option value="trendonly">Trend Line Only</option>
+			</field>
+
+			<field default="0" description="PLG_VISUALIZATION_FUSIONCHART_CUMULATIVE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CUMULATIVE_LABEL" name="fusionchart_cumulative" type="radio">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
 			</field>
 			
+			<field default="minmax" description="PLG_VISUALIZATION_FUSIONCHART_TREND_TYPE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_TREND_TYPE_LABEL" name="fusionchart_trend_type" type="list">
+					<option value="minmax">Min -> Max</option>
+					<option value="maxmin">Max -> Min</option>
+					<option value="zeromax">Zero -> Max</option>
+					<option value="maxzero">Max -> Zero</option>
+
+			</field>
+						
 			<field description="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_LABEL" name="fusionchart_elcolour" size="7" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_LABEL" name="fusionchart_elalpha" size="3" type="text"/>
