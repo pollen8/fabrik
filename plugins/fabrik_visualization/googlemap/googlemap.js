@@ -37,18 +37,7 @@ var FbGoogleMapViz = new Class({
 		this.setOptions(options);
 		
 		if (this.options.ajax_refresh) {
-			this.updater = new Request({url: '',
-				/*
-				data : {
-					'option': 'com_fabrik',
-					'format': 'raw',
-					'task': 'plugin.pluginAjax',
-					'plugin': 'googlemap',
-					'method': 'ajax_getMarkers',
-					'g': 'visualization',
-					'element_id': this.options.id
-				},
-				*/
+			this.updater = new Request.JSON({url: '',
 				data : {
 					'option': 'com_fabrik',
 					'format': 'raw',
@@ -58,8 +47,11 @@ var FbGoogleMapViz = new Class({
 					'visualizationid': this.options.id
 				},
 				onSuccess: function (json) {
-					this.options.icons = JSON.decode(json);
+					this.clearIcons();
+					this.clearPolyLines();
+					this.options.icons = json;
 					this.addIcons();
+					this.setPolyLines();
 					if (this.options.ajax_refresh_center) {
 						this.center();
 					}
@@ -158,26 +150,43 @@ var FbGoogleMapViz = new Class({
 				}
 			}
 
-			this.options.polyline.each(function (points, c) {
-				var glatlng = [];
-				points.each(function (p) {
-					glatlng.push(new google.maps.LatLng(p[0], p[1]));
-				});
-				var width = this.options.polylinewidth[c];
-				var colour = this.options.polylinecolour[c];
-				var opacity = this.options.polygonopacity[c];
-				var fillColor = this.options.polygonfillcolour[c];
-				
-				if (!this.options.use_polygon) {
-					var polyline = new google.maps.Polyline({path: glatlng, 'strokeColor': colour, 'strokeWeight': width});
-					polyline.setMap(this.map);
-				}
-				else {
-					var polygon = new google.maps.Polygon({paths: glatlng, 'strokeColor': colour, 'strokeWeight': width, strokeOpacity: opacity, fillColor: fillColor});
-					polygon.setMap(this.map);
-				}
-			}.bind(this));
+			this.setPolyLines();
 		}.bind(this));
+	},
+	
+	setPolyLines: function () {
+		this.polylines = [];
+		this.polygons = [];
+		this.options.polyline.each(function (points, c) {
+			var glatlng = [];
+			points.each(function (p) {
+				glatlng.push(new google.maps.LatLng(p[0], p[1]));
+			});
+			var width = this.options.polylinewidth[c];
+			var colour = this.options.polylinecolour[c];
+			var opacity = this.options.polygonopacity[c];
+			var fillColor = this.options.polygonfillcolour[c];
+			
+			if (!this.options.use_polygon) {
+				var polyline = new google.maps.Polyline({path: glatlng, 'strokeColor': colour, 'strokeWeight': width});
+				polyline.setMap(this.map);
+				this.polylines.push(polyline);
+			}
+			else {
+				var polygon = new google.maps.Polygon({paths: glatlng, 'strokeColor': colour, 'strokeWeight': width, strokeOpacity: opacity, fillColor: fillColor});
+				polygon.setMap(this.map);
+				this.polygons.push(polygon);
+			}
+		}.bind(this));
+	},
+	
+	clearPolyLines: function () {
+		this.polylines.each(function (polyline) {
+			polyline.setMap(null);
+		});
+		this.polygons.each(function (polygon) {
+			polygon.setMap(null);
+		});
 	},
 	
 	setCookies: function () {
@@ -190,6 +199,12 @@ var FbGoogleMapViz = new Class({
 	
 	update: function () {
 		this.updater.send();
+	},
+	
+	clearIcons: function () {
+		this.markers.each(function (marker) {
+			marker.setMap(null);
+		});
 	},
 	
 	addIcons: function () {
