@@ -473,12 +473,12 @@ class FabrikModelElement extends JModelAdmin
 		$elementModel = $this->getElementPluginModel($data);
 		$elementModel->getElement()->bind($data);
 		$listModel = $elementModel->getListModel();
-		
+
 		if ($data['id'] === 0)
 		{
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
-			
+
 			if ($listModel->canAddFields() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
@@ -629,12 +629,15 @@ class FabrikModelElement extends JModelAdmin
 			$data['created_by_alias'] = $user->get('username');
 		}
 		$data['params'] = json_encode($params);
+		$row->params = $data['params'];
 		$cond = 'group_id = ' . (int) $row->group_id;
 		if ($new)
 		{
 			$data['ordering'] = $row->getNextOrder($cond);
 		}
 		$row->reorder($cond);
+		// $$$ hugh - shouldn't updateChildIds() happen AFTER we save the main row?
+		// Same place we do updateJavascript()?
 		$this->updateChildIds($row);
 		$elementModel->getElement()->bind($data);
 		$origName = JRequest::getVar('name_orig', '', 'post', 'cmd');
@@ -795,16 +798,19 @@ class FabrikModelElement extends JModelAdmin
 			//new element so don't update child ids
 			return;
 		}
+		/*
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where("parent_id = ".(int) $row->id);
 		$db->setQuery($query);
 		$objs = $db->loadObjectList();
+		*/
+		$ids = $this->getElementDescendents($row->id);
 		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		foreach ($objs as $obj)
+		foreach ($ids as $id)
 		{
-			$plugin = $pluginManager->getElementPlugin($obj->id);
+			$plugin = $pluginManager->getElementPlugin($id);
 			$leave = $plugin->getFixedChildParameters();
 			$item = $plugin->getElement();
 			foreach ($row as $key => $val)
