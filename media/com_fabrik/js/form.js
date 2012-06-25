@@ -451,7 +451,7 @@ var FbForm = new Class({
 	 */
 	hideOtherPages : function () {
 		this.options.pages.each(function (gids, i) {
-			if (i.toInt() !== this.currentPage) {
+			if (i.toInt() !== this.currentPage.toInt()) {
 				document.id('page_' + i).setStyle('display', 'none');
 			}
 		}.bind(this));
