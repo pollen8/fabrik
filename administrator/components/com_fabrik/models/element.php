@@ -472,10 +472,24 @@ class FabrikModelElement extends JModelAdmin
 		}
 		$elementModel = $this->getElementPluginModel($data);
 		$elementModel->getElement()->bind($data);
+		$listModel = $elementModel->getListModel();
+		
 		if ($data['id'] === 0)
 		{
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
+			
+			if ($listModel->canAddFields() === false)
+			{
+				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
+			}
+		}
+		else
+		{
+			if ($listModel->canAlterFields() === false)
+			{
+				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
+			}
 		}
 		$listModel = $elementModel->getListModel();
 		//test for duplicate names

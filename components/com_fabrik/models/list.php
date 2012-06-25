@@ -3108,7 +3108,6 @@ class FabrikFEModelList extends JModelForm {
 		//$$$ rob - replaced this with getting the table from the group as if we moved the element
 		//from one group to another $this->getTable gives you the old group's table, where as we want
 		// the new group's table
-		//$table 			=& $this->getTable();
 		$table = $group->getlistModel()->getTable();
 
 		// $$$ hugh - if this is a table-less form ... not much point going any
@@ -3137,7 +3136,7 @@ class FabrikFEModelList extends JModelForm {
 		$basePlugIn->_group = $elementModel->_group;
 		$objtype = $elementModel->getFieldDescription(); //the element type AFTER saving
 		$dbdescriptions = $this->getDBFields($tableName, 'Field');
-		if (!$this->canAlterFields())
+		if (!$this->canAlterFields() && !$this->canAddFields())
 		{
 			$objtype = $dbdescriptions[$origColName]->Type;
 		}
@@ -3154,12 +3153,15 @@ class FabrikFEModelList extends JModelForm {
 		{
 			if ($origColName == '')
 			{
-				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN ".FabrikString::safeColName($element->name)." $objtype AFTER $lastfield");
-				if (!$fabrikDb->query())
+				if ($this->canAddFields())
 				{
-					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN ".FabrikString::safeColName($element->name)." $objtype AFTER $lastfield");
+					if (!$fabrikDb->query())
+					{
+						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					}
+					$altered = true;
 				}
-				$altered = true;
 			}
 			// commented out as it stops the update when changing an element name
 			//return $return;
@@ -3216,7 +3218,6 @@ class FabrikFEModelList extends JModelForm {
 
 		// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
 		//if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields)) {
-
 
 		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
 		//if (empty($element->name) || !in_array($element->name, $existingfields)) {
@@ -3364,15 +3365,38 @@ class FabrikFEModelList extends JModelForm {
 		{
 			return false;
 		}
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$state = $this->alterExisting();
+		return $state == 1;
+	}
+	
+	/**
+	 * get the alter fields setting
+	 * @since	3.0.6
+	 * @return	string	alter fields setting
+	 */
+	
+	private function alterExisting()
+	{
 		$params = $this->getParams();
-		$alter = $params->get('alter_existing_db_cols', 'notset');
-		if ($alter == 'notset')
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$alter = $params->get('alter_existing_db_cols', 'default');
+		if ($alter === 'default')
 		{
-			//fall back to old global settting
 			$alter = $fbConfig->get('fbConf_alter_existing_db_cols', true);
 		}
 		return $alter;
+	}
+	
+	/**
+	 * can we add fields to the list?
+	 * @since	3.0.6
+	 * @return	bool
+	 */
+	
+	public function canAddFields()
+	{
+		$state = $this->alterExisting();
+		return ($state == 1 || $state == 'addonly');
 	}
 
 	/**

@@ -3,27 +3,48 @@
 
 	<fieldset label="COM_FABRIK_LISTS" name="lists">
 
-		<field default="1" description="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_DESC" label="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_LABEL" menu="hide" name="fbConf_alter_existing_db_cols" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="fbConf_alter_existing_db_cols"
+			default="1"
+			description="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_DESC"
+			label="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_LABEL"
+			menu="hide"
+			type="list">
+				<option value="1">JYES</option>
+				<option value="addonly">COM_FABRIK_ALTER_EXISTING_FIELD_ADD_NEW_FIELDS_ONLY</option>
+				<option value="0">JNO</option>
 		</field>
 
-		<field default="1" description="COM_FABRIK_FILTER_BUILD_METHOD_DESC" label="COM_FABRIK_FILTER_BUILD_METHOD_LABEL" name="filter_build_method" type="list">
-			<option value="1">COM_FABRIK_SHOW_DATA_RECORDED_IN_TABLE</option>
-			<option value="2">COM_FABRIK_SHOW_ALL_OPTIONS</option>
+		<field name="filter_build_method"
+			default="1"
+			description="COM_FABRIK_FILTER_BUILD_METHOD_DESC"
+			label="COM_FABRIK_FILTER_BUILD_METHOD_LABEL"
+			type="list">
+				<option value="1">COM_FABRIK_SHOW_DATA_RECORDED_IN_TABLE</option>
+				<option value="2">COM_FABRIK_SHOW_ALL_OPTIONS</option>
 		</field>
 		
-		<field default="100" description="COM_FABRIK_FILTER_LIST_MAX_DESC" label="COM_FABRIK_FILTER_LIST_MAX_LABEL" name="filter_list_max" type="text"/>
+		<field name="filter_list_max"
+			default="100"
+			description="COM_FABRIK_FILTER_LIST_MAX_DESC"
+			label="COM_FABRIK_FILTER_LIST_MAX_LABEL"
+			type="text"/>
 		
-
-		<field default="0" description="COM_FABRIK_ENABLE_SINGLE_ORDERING_DESC" label="COM_FABRIK_ENABLE_SINGLE_ORDERING_LABEL" name="enable_single_sorting" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="enable_single_sorting"
+			default="0"
+			description="COM_FABRIK_ENABLE_SINGLE_ORDERING_DESC"
+			label="COM_FABRIK_ENABLE_SINGLE_ORDERING_LABEL"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 
-		<field default="0" description="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_DESC" label="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_LABEL" name="user_elements_as_related_data" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="user_elements_as_related_data"
+			default="0"
+			description="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_DESC"
+			label="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_LABEL"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 		
 		<field name="list_pdf" 
@@ -40,17 +61,26 @@
 
 	<fieldset label="COM_FABRIK_FORMS" name="forms">
 
-		<field default="1" description="COM_FABRIK_SPOOF_CHECK_DESC" label="COM_FABRIK_SPOOF_CHECK_LABEL" name="spoofcheck_on_formsubmission" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="spoofcheck_on_formsubmission"
+			default="1"
+			description="COM_FABRIK_SPOOF_CHECK_DESC"
+			label="COM_FABRIK_SPOOF_CHECK_LABEL"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 
-		<field default="0" description="" label="COM_FABRIK_WYSIWYG_FOR_ELEMENT_LABELS" menu="hide" name="fbConf_wysiwyg_label" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="fbConf_wysiwyg_label"
+			default="0"
+			description=""
+			label="COM_FABRIK_WYSIWYG_FOR_ELEMENT_LABELS"
+			menu="hide"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 		
-		<field name="form_print" 
+		<field name="form_print"
 			default="0"
 			description="COM_FABRIK_FIELD_FORM_PRINT_ICON_DESC"
 			label="COM_FABRIK_FIELD_FORM_PRINT_ICON_LABEL"
@@ -60,7 +90,7 @@
 				<option value="1">JYES</option>
 		</field>
 		
-		<field name="form_email" 
+		<field name="form_email"
 			default="0"
 			description="COM_FABRIK_FIELD_FORM_EMAIL_ICON_DESC"
 			label="COM_FABRIK_FIELD_FORM_EMAIL_ICON_LABEL"
@@ -70,7 +100,7 @@
 				<option value="1">JYES</option>
 		</field>
 		
-		<field name="form_pdf" 
+		<field name="form_pdf"
 			default="0"
 			description="COM_FABRIK_FIELD_FORM_PDF_ICON_DESC"
 			label="COM_FABRIK_FIELD_FORM_PDF_ICON_LABEL"
@@ -84,14 +114,21 @@
 
 	<fieldset label="COM_FABRIK_JAVASCRIPT" name="javascript">
 
-		<field default="0" description="COM_FABRIK_MEDIA_BOX_DESC" label="COM_FABRIK_MEDIA_BOX_LABEL" name="use_mediabox" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="use_mediabox"
+			default="0"
+			description="COM_FABRIK_MEDIA_BOX_DESC"
+			label="COM_FABRIK_MEDIA_BOX_LABEL"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 
-		<field default="1" label="COM_FABRIK_LIGHTBOX_JS_LABEL" name="include_lightbox_js" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="include_lightbox_js"
+			default="1"
+			label="COM_FABRIK_LIGHTBOX_JS_LABEL"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 		
 		<field name="tipfx"
@@ -105,8 +142,8 @@
 				<option value="Quart">Quart</option>
 				<option value="Quint">Quint</option>
 				<option value="Expo">Expo</option>
-				<option value="Circ">Circ</option>	
-				<option value="Sine">Sine</option>	
+				<option value="Circ">Circ</option>
+				<option value="Sine">Sine</option>
 				<option value="Back">Back</option>
 				<option value="Bounce">Bounce</option>
 				<option value="Elastic">Elastic</option>
@@ -119,7 +156,7 @@
 			type="list">
 				<option value="easeIn">In</option>
 				<option value="easeOut">Out</option>
-				<option value="easeInOut">InOut</option>	
+				<option value="easeInOut">InOut</option>
 		</field>
 		
 		<field name="tipfx_duration"
@@ -146,9 +183,13 @@
 
 	<fieldset label="COM_FABRIK_DEBUGGING" name="debug">
 
-		<field default="0" description="COM_FABRIK_FABRIK_DEBUG_DESC" label="COM_FABRIK_FABRIK_DEBUG_LABEL" name="use_fabrikdebug" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+		<field name="use_fabrikdebug"
+			default="0"
+			description="COM_FABRIK_FABRIK_DEBUG_DESC"
+			label="COM_FABRIK_FABRIK_DEBUG_LABEL"
+			type="radio">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 
 	</fieldset>
@@ -194,6 +235,13 @@
 	
 	<fieldset description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL" name="permissions">
 
-		<field class="inputbox" component="com_fabrik" filter="rules" label="JCONFIG_PERMISSIONS_LABEL" name="rules" section="component" type="rules" validate="rules"/>
+		<field name="rules"
+			class="inputbox"
+			component="com_fabrik"
+			filter="rules"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			section="component"
+			type="rules"
+			validate="rules"/>
 	</fieldset>
 </config>
