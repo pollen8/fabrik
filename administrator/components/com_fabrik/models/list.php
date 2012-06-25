@@ -566,7 +566,6 @@ class FabrikModelList extends FabModelAdmin
 		$row = $this->getTable();
 		$id = $data['id'];
 		$row->load($id);
-
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->form_id);
 		$feModel = $this->getFEModel();
