@@ -46,6 +46,7 @@
 		<folder>views</folder>
 		<folder>fabrikfeed</folder>
 		<folder>dbdriver</folder>
+		<folder>pdf</folder>
 		<file>controller.php</file>
 		<file>fabrik.php</file>
 		<file>router.php</file>
