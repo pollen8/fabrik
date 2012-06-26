@@ -155,10 +155,12 @@ class FabrikControllerForm extends JController
 					{
 						if (count($e[0]) > 0)
 						{
+							array_walk_recursive($e, array('FabrikString', 'forHtml'));
 							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
 						}
 					}
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
+					//print_r($eMsgs);exit;
 					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 				}
 				else
