@@ -1165,6 +1165,10 @@ class FabrikWorker {
 
 	public function isJSON($data)
 	{
+		if (!is_string($data))
+		{
+			return false;
+		}
 		return json_decode($data) !== null;
 	}
 
