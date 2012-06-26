@@ -344,5 +344,18 @@ class FabrikString extends JString{
 		}
 		return $url;
 	}
+	
+	/**
+	 * prepare a string for presentation in html.
+	 * @param	string	&$string
+	 */
+
+	public static function forHtml(&$string)
+	{
+		// special chars such as <>
+		$string = htmlspecialchars($string, ENT_QUOTES);
+		//show umlauts correctly in ajax error messages.
+		$string = mb_convert_encoding($string, 'HTML-ENTITIES', "UTF-8");
+	}
 }
 ?>
