@@ -1097,9 +1097,19 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		else
 		{
-			$labeldata[] = $data;
+			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
+			if (!FabrikWorker::isJSON($data)) {
+				$labeldata[] = $data;
+			}
+			else {
+				// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
+				// should really refactor so encoding goes in this if/else structure!
+				$labeldata = json_decode($data);
+			}
 		}
+
 		$data = json_encode($labeldata);
+
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow);
 	}

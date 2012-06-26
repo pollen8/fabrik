@@ -3368,13 +3368,13 @@ class FabrikFEModelList extends JModelForm {
 		$state = $this->alterExisting();
 		return $state == 1;
 	}
-	
+
 	/**
 	 * get the alter fields setting
 	 * @since	3.0.6
 	 * @return	string	alter fields setting
 	 */
-	
+
 	private function alterExisting()
 	{
 		$params = $this->getParams();
@@ -3386,13 +3386,13 @@ class FabrikFEModelList extends JModelForm {
 		}
 		return $alter;
 	}
-	
+
 	/**
 	 * can we add fields to the list?
 	 * @since	3.0.6
 	 * @return	bool
 	 */
-	
+
 	public function canAddFields()
 	{
 		$state = $this->alterExisting();
@@ -7644,6 +7644,8 @@ class FabrikFEModelList extends JModelForm {
 							if ($do_merge) {
 								// The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
 								// with it currently
+								// $$$ hugh - added processing of raw data, needed for _raw placeholders
+								// in things like custom links
 								$data[$last_i]->$key = (array) $data[$last_i]->$key;
 								array_push($data[$last_i]->$key, $val);
 								$rawkey = $key . '_raw';
@@ -7652,10 +7654,13 @@ class FabrikFEModelList extends JModelForm {
 								array_push($data[$last_i]->$rawkey, $rawval);
 							}
 						} else {
+							// $$$ hugh - don't think we need this, now we're processing _raw data?
+							/*
 							if (!is_array($data[$last_i]->$origKey)) {
 								$json= $val;
 								$data[$last_i]->$origKey = json_encode($json);
 							}
+							*/
 						}
 					}
 
