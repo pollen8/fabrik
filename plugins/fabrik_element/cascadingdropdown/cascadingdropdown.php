@@ -112,7 +112,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			if ($show_please)
 			{
-				$tmp[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
+				$tmp[] = JHTML::_('select.option', '', $this->_getSelectLabel());
 			}
 		}
 		$this->loadingImg = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
@@ -321,7 +321,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 		if ($this->showPleaseSelect())
 		{
-			array_unshift($this->_optionVals[$sql], JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
+			array_unshift($this->_optionVals[$sql], JHTML::_('select.option', '', $this->_getSelectLabel()));
 		}
 		return $this->_optionVals[$sql];
 	}
@@ -952,6 +952,16 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$this->encryptFieldName($key);
 		$str = "$key $condition $value";
 		return $str;
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementDatabasejoin::_getSelectLabel()
+	 * @since	3.0.6
+	 */
+	protected function _getSelectLabel()
+	{
+		return $this->getParams()->get('cascadingdropdown_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
 	}
 
 }
