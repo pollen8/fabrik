@@ -2528,7 +2528,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		return $errorsFound;
 	}
-	
+
 	/**
 	 * main method to get the data to insert into the form
 	 * @return	array	form's data
@@ -3950,11 +3950,46 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		return 'com_fabrik.form.' . $this->getId() . '.redirect.';
 
 	}
-	
-	public function unsetData()
+
+	/**
+	 *
+	 * Resets cached form data.
+	 *
+	 * @param bool $unset_groups also reset group and element model cached data
+	 */
+	public function unsetData($unset_groups = false)
 	{
 		unset($this->_data);
 		unset($this->query);
+		if ($unset_groups)
+		{
+			// $$$ hugh - unset group published elements list, and clear each
+			// element's default data.  Needed from content plugin, otherwise if
+			// we render the same form more than once with different rowid's, we end up
+			// rendering the first copy's element data X times.
+			// Not sure if we need to actually unset the group published elements list,
+			// but for the moment I'm just using a Big Hammer to get the content plugin working!
+			$groups = $this->getGroupsHiarachy();
+			foreach ($groups as $groupModel)
+			{
+				$groupModel->resetPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
+				foreach ($elementModels as $elementModel)
+				{
+					$elementModel->reset();
+				}
+			}
+		}
+	}
+
+	/**
+	 *
+	 * Reset form's cached data, i.e. from content plugin, where we may be rendering the same
+	 * form twice, with different row data.
+	 */
+	public function reset()
+	{
+		$this->unsetData(true);
 	}
 }
 

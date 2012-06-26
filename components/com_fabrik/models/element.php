@@ -925,14 +925,14 @@ class plgFabrik_Element extends FabrikPlugin
 	protected function modHTMLId(&$id){
 
 	}
-	
+
 	/**
 	 * should the element be tipped?
 	 * @since	3.0.6
 	 * @param	string	$mode form/list render context
 	 * @return	bool
 	 */
-	
+
 	private function isTipped($mode = 'form')
 	{
 		$formModel = $this->getFormModel();
@@ -4866,5 +4866,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			}
 		}
 	}
+
+	/**
+	 *
+	 * Forces reset of defaults, etc.
+	 */
+
+	public function reset()
+	{
+		$this->defaults = null;
+	}
+
 }
 ?>
