@@ -184,7 +184,7 @@ class FabrikViewListBase extends JView{
 		$c = 0;
 
 		$pluginManager->runPlugins('onLoadJavascriptInstance', $model, 'list');
-		$aObjs = $pluginManager->_data;
+		$aObjs = $pluginManager->data;
 
 		if (!empty($aObjs))
 		{
@@ -194,7 +194,7 @@ class FabrikViewListBase extends JView{
 		}
 		//@since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
-		$this->assign('pluginBeforeList', $pluginManager->_data);
+		$this->assign('pluginBeforeList', $pluginManager->data);
 
 		$script[] = $model->filterJs;
 		$script[] = "});";

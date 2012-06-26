@@ -128,7 +128,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	public function getHoverText($elementModel, $pluginc = 0, $tmpl = '')
 	{
 		$name = $this->icon === true ? $this->pluginName : $this->icon;
-		if ($this->allowEmpty($elementModel, $c))
+		if ($this->allowEmpty($elementModel, $pluginc))
 		{
 			$name .= '_allowempty';
 		}

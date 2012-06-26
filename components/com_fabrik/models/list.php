@@ -3019,7 +3019,7 @@ class FabrikFEModelList extends JModelForm {
 
 	protected function setJoinPk(&$join)
 	{
-		$pk = $join->_params->get('pk');
+		$pk = $join->params->get('pk');
 		if (!isset($pk))
 		{
 			$fabrikDb = $this->getDb();

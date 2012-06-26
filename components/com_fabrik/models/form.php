@@ -250,11 +250,11 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($app->isAdmin())
 			{
-				$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
+				$tmpl = $this->editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
 			}
 			if ($tmpl == '')
 			{
-				if ($this->_editable)
+				if ($this->editable)
 				{
 					$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
 				}
