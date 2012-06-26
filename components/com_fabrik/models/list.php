@@ -1420,7 +1420,14 @@ class FabrikFEModelList extends JModelForm {
 					$v2 = json_decode($v, true);
 					if ($v2 !== null)
 					{
-						$v = $v2;
+						if (is_array($v2))
+						{
+							$v = JArrayHelper::getValue($v2, $repeatCounter);
+						}
+						else
+						{
+							$v = $v2;
+						}
 					}
 				}
 			}
@@ -1451,6 +1458,7 @@ class FabrikFEModelList extends JModelForm {
 		JDEBUG ? $profiler->mark('buildQuery: start') : null;
 		$query = array();
 		$this->mergeQuery = '';
+		$table = $this->getTable();
 		if ($this->mergeJoinedData())
 		{
 			// $$$ rob - get a list of the main table's ids limited on the navigation
@@ -1462,7 +1470,7 @@ class FabrikFEModelList extends JModelForm {
 			// $$$ rob 23/05/2012 if the search data is in the joined records we want to get the id's for the joined records and not the master record
 			// see http://fabrikar.com/forums/showthread.php?t=26400. This is a partial hack as I can't see how we know which joined record is really last
 			// $$$ rob 25/05/2012 - slight change so that we work our way up the pk/fk list until we find some ids.
-			// $$$ hugh, later in the day 25/05/2012 - big OOOOPS, see comment below about table_key vs table_join_key!
+			// $$$ hugh, later in the day 25/05/2012 - big OOOOPS, see comment below about table_key vs table_join_key! erm no not a mistake!?! reverted as no example of what was wrong with original code
 			$joins = $this->getJoins();
 			//default to the primary key as before this fix
 			$lookupC = 0;
@@ -1475,37 +1483,94 @@ class FabrikFEModelList extends JModelForm {
 				// so they won't get included in the query ... so will blow up if we reference them with __pk_calX selection
 				if ($join->params->get('type') !== 'element' && $join->params->get('type') !== 'repeatElement')
 				{
-					// $$$ hugh - shurely shome mishtake?  New code was using $join->table_key here, I'm assuming
-					// this MUST need to be $join->table_join_key?
 					// $$$ hugh - need to be $lookupC + 1, otherwise we end up with two 0's, 'cos we added main table above
-					$lookUps[] = $join->table_join . '.' .  $join->table_join_key . ' AS __pk_val' . ($lookupC + 1);
-					$lookUpNames[] = $join->table_join . '.' .  $join->table_join_key;
+
+					/**
+					 * [non-merged data]
+					 *
+					 * country	towm
+					 * ------------------------------
+					 * france	la rochelle
+					 * france	paris
+					 * france	bordeaux
+					 *
+					 * [merged data]
+					 *
+					 * country	town
+					 * -------------------------------
+					 * france	la rochelle
+					 * 			paris
+					 * 			bordeaux
+					 *
+					 * [now search on town = 'la rochelle']
+					 *
+					 * If we dont use this new code then the search results show all three towns.
+					 * By getting the lowest set of complete primary keys (in this example the town ids) we set our query to be:
+					 *
+					 * where town_id IN (1)
+					 *
+					 * which gives a search result of
+					 *
+					 * country	town
+					 * -------------------------------
+					 * france	la rochelle
+					 *
+					 */
+					$pk = $join->_params->get('pk');
+					$lookUps[] = $pk . ' AS __pk_val' . ($lookupC + 1);
+					$lookUpNames[] = $pk;
 					$lookupC ++;
 				}
+			}
+
+			// $$$ rob if no ordering applied i had results where main record (e.g. UK) was shown in 2 lines not next to each other
+			// causing them not to be merged and a 6 rows shown when limit set to 5. So below, if no order by set then order by main pk asc
+			$by = trim($table->order_by) === '' ? array() : (array) json_decode($table->order_by);
+			if (empty($by))
+			{
+				$dir = (array) json_decode($table->order_dir);
+				array_unshift($dir, 'ASC');
+				$table->order_dir = json_encode($dir);
+
+				$by = (array) json_decode($table->order_by);
+				array_unshift($by, $table->db_primary_key);
+				$table->order_by = json_encode($by);
 			}
 
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
-			$this->selectedOrderFields = array_merge($this->selectedOrderFields, $lookUps);
+			$this->selectedOrderFields = array_merge($lookUps, $this->selectedOrderFields);
 			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
 
 			$query['join'] = $this->buildQueryJoin();
 			$query['where'] = $this->buildQueryWhere(JRequest::getVar('incfilters', 1));
 			$query['groupby'] = $this->buildQueryGroupBy();
 			$query['order'] = $order;
-
 			//check that the order by fields are in the select statement
 			$squery = implode(' ', $query);
-			$db->setQuery($squery, $this->limitStart, $this->limitLength);
+			// can't limit the query here as this gives incorrect _data array.
+			//$db->setQuery($squery, $this->limitStart, $this->limitLength);
+			$db->setQuery($squery);
 			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
-			//while (empty($ids) && $lookupC >= 0)
-			while (count($ids) < $maxPossibleIds && $lookupC > 0)
+			$mainKeys = array(); // an array of the lists pk values
+			foreach ($idRows as $r)
+			{
+				$mainKeys[] = $db->quote($r->__pk_val0);
+			}
+			//chop up main keys for list limitstart, length to cull the data down to the correct length as defined by the page nav/ list settings
+			$mainKeys = array_slice(array_unique($mainKeys), $this->limitStart, $this->limitLength);
+			/**
+			 * $$$ rob get an array containing the PRIMARY key values for each joined tables data.
+			 * Stop as soon as we have a set of ids totaling the sum of records contained in $this->mergeQuery / $idRows
+			 */
+
+			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
 			{
 				$ids = JArrayHelper::getColumn($idRows, '__pk_val' . $lookupC);
 				for ($idx = count($ids) - 1; $idx >= 0; $idx --)
@@ -1519,14 +1584,15 @@ class FabrikFEModelList extends JModelForm {
 						$ids[$idx] = $db->quote($ids[$idx]);
 					}
 				}
-				//$ids = array_unique($ids);
-				//if (empty($ids))
 				if (count($ids) < $maxPossibleIds)
 				{
 					$lookupC --;
 				}
 			}
 		}
+
+		// now lets actually construct the query that will get the required records:
+
 		$query = array();
 		$query['select'] = $this->buildQuerySelect();
 		JDEBUG ? $profiler->mark('queryselect: got') : null;
@@ -1541,7 +1607,13 @@ class FabrikFEModelList extends JModelForm {
 			// data. If no ids found then do where 1 = -1 to return no records
 			if (!empty($ids))
 			{
-				$query['where'] = ' WHERE ' . $lookUpNames[$lookupC] . ' IN (' . implode($ids, ',') . ')';
+				$query['where'] = ' WHERE ' . $lookUpNames[$lookupC] . ' IN (' . implode(array_unique($ids), ',') . ')';
+
+				if (!empty($mainKeys))
+				{
+					// limit to the current page
+					$query['where'] .= ' AND ' .  $table->db_primary_key . ' IN (' . implode($mainKeys, ',') . ')';
+				}
 			}
 			else
 			{
@@ -2913,10 +2985,9 @@ class FabrikFEModelList extends JModelForm {
 			$id = (int) $this->getId();
 			$query = $db->getQuery(true);
 			$query->select('*')->from('#__{package}_joins')->where('list_id = ' . $id, 'OR');
-			$sql = "SELECT * FROM #__{package}_joins WHERE list_id = ".$id;
 			if (!empty($ids))
 			{
-				$query->where('element_id IN (' . implode(', ', $ids) . ')');
+				$query->where('element_id IN ( ' . implode(', ', $ids) . ')');
 			}
 			//maybe we will have to order by element_id asc to ensure that table joins are loaded
 			//before element joins (if an element join is in a table join then its 'join_from_table' key needs to be updated
@@ -2933,10 +3004,38 @@ class FabrikFEModelList extends JModelForm {
 				if (is_string($join->params))
 				{
 					$join->params = new JRegistry($join->params);
+					$this->setJoinPk($join);
 				}
 			}
 		}
 		return $this->_aJoins;
+	}
+
+	/**
+	 * merged data queries need to know the joined tables primary key value
+	 * @since	3.0.6
+	 * @param	object	join
+	 */
+
+	protected function setJoinPk(&$join)
+	{
+		$pk = $join->_params->get('pk');
+		if (!isset($pk))
+		{
+			$fabrikDb = $this->getDb();
+			$db = FabrikWorker::getDbo(true);
+			$query = $db->getQuery(true);
+			$pk = $this->getPrimaryKeyAndExtra($join->table_join);
+
+			$pks = $join->table_join;
+			$pks .= '.' . $pk[0]['colname'];
+			$join->_params->set('pk', $fabrikDb->quoteName($pks));
+			$query->update('#__{package}_joins')->set('params = ' . $db->quote((string) $join->_params))
+			->where('id = ' . (int) $join->id);
+			$db->setQuery($query);
+			$db->query();
+			$join->_params = new JRegistry($join->params);
+		}
 	}
 
 	function _makeJoinAliases(&$joins)
@@ -3122,7 +3221,7 @@ class FabrikFEModelList extends JModelForm {
 		$basePlugIn->setGroupModel($elementModel->getGroupModel());
 		$objtype = $elementModel->getFieldDescription(); //the element type AFTER saving
 		$dbdescriptions = $this->getDBFields($tableName, 'Field');
-		if (!$this->canAlterFields())
+		if (!$this->canAlterFields() && !$this->canAddFields())
 		{
 			$objtype = $dbdescriptions[$origColName]->Type;
 		}
@@ -3139,12 +3238,15 @@ class FabrikFEModelList extends JModelForm {
 		{
 			if ($origColName == '')
 			{
-				$fabrikDb->setQuery('ALTER TABLE ' . $tableName . ' ADD COLUMN ' . FabrikString::safeColName($element->name) . ' ' . $objtype . ' AFTER ' . $lastfield);
-				if (!$fabrikDb->query())
+				if ($this->canAddFields())
 				{
-					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
+					if (!$fabrikDb->query())
+					{
+						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					}
+					$altered = true;
 				}
-				$altered = true;
 			}
 			// commented out as it stops the update when changing an element name
 			//return $return;
@@ -3202,7 +3304,6 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
 		//if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields)) {
 
-
 		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
 		//if (empty($element->name) || !in_array($element->name, $existingfields)) {
 		if (empty($origColName) || !in_array($origColName, $existingfields))
@@ -3234,7 +3335,8 @@ class FabrikFEModelList extends JModelForm {
 					$dropKey = true;
 				}
 				$q = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $origColName . ' ' . FabrikString::safeColName($element->name) . ' ' . $objtype . ' ';
-				if ($primaryKey == $fabrikDb->quoteName($tableName) . '.' . FabrikString::safeColName($element->name) && $table->auto_inc) {
+				$testColName = $tableName . '.' . FabrikString::safeColName($element->name);
+				if (FabrikString::safeColName($primaryKey) == $tableName . '.' . FabrikString::safeColName($element->name) && $table->auto_inc) {
 					if (!strstr($q, 'NOT NULL AUTO_INCREMENT'))
 					{
 						$q .= ' NOT NULL AUTO_INCREMENT ';
@@ -3341,15 +3443,38 @@ class FabrikFEModelList extends JModelForm {
 		{
 			return false;
 		}
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$state = $this->alterExisting();
+		return $state == 1;
+	}
+
+	/**
+	 * get the alter fields setting
+	 * @since	3.0.6
+	 * @return	string	alter fields setting
+	 */
+
+	private function alterExisting()
+	{
 		$params = $this->getParams();
-		$alter = $params->get('alter_existing_db_cols', 'notset');
-		if ($alter == 'notset')
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$alter = $params->get('alter_existing_db_cols', 'default');
+		if ($alter === 'default')
 		{
-			//fall back to old global settting
 			$alter = $fbConfig->get('fbConf_alter_existing_db_cols', true);
 		}
 		return $alter;
+	}
+
+	/**
+	 * can we add fields to the list?
+	 * @since	3.0.6
+	 * @return	bool
+	 */
+
+	public function canAddFields()
+	{
+		$state = $this->alterExisting();
+		return ($state == 1 || $state == 'addonly');
 	}
 
 	/**
@@ -5549,6 +5674,10 @@ class FabrikFEModelList extends JModelForm {
 		$table = $this->getTable();
 		if (is_null($this->origData))
 		{
+			// $$$ hugh FIXME - doesn't work for rowid=-1 / usekey submissions,
+			// ends up querying "WHERE foo.userid = '<rowid>'" instead of <userid>
+			// OK for now, as we should catch RO data from the encrypted vars check
+			// later in this method.
 			if (empty($rowid))
 			{
 				$this->origData = $origdata = array();
@@ -5570,63 +5699,69 @@ class FabrikFEModelList extends JModelForm {
 		}
 		$form = $formModel->getForm();
 		$groups = $formModel->getGroupsHiarachy();
-		$gcounter = 0;
-		$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
-		foreach  ($groups as $groupModel)
-		{
-			if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
+
+		// $$$ hugh - seems like there's no point in doing this chunk if there is no
+		// $origdata to work with?  Not sure if there's ever a valid reason for doing so,
+		// but it certainly breaks things like onCopyRow(), where (for instance) user
+		// elements will get reset to 0 by this code.
+		if (!empty($origdata)) {
+			$gcounter = 0;
+			$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
+			foreach  ($groups as $groupModel)
 			{
-				$elementModels = $groupModel->getPublishedElements();
-				foreach ($elementModels as $elementModel)
+				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
 				{
-					// $$$ rob 25/02/2011 unviewable elements are now also being encrypted
-					//if (!$elementModel->canUse() && $elementModel->canView()) {
-					if (!$elementModel->canUse())
+					$elementModels = $groupModel->getPublishedElements();
+					foreach ($elementModels as $elementModel)
 					{
-						$element = $elementModel->getElement();
-						$fullkey = $elementModel->getFullName(false, true, false);
-						// $$$ rob 24/01/2012 if a previous joined data set had a ro element then if we werent checkign that group is the
-						// same as the join group then the insert failed as data from other joins added into the current join
-						if ($isJoin && ($groupModel->getId() != $joinGroupTable->id))
+						// $$$ rob 25/02/2011 unviewable elements are now also being encrypted
+						//if (!$elementModel->canUse() && $elementModel->canView()) {
+						if (!$elementModel->canUse())
 						{
-							continue;
-						}
-						$key = $element->name;
-						// $$$ hugh - allow submission plugins to override RO data
-						// TODO - test this for joined data
-						if ($formModel->updatedByPlugin($fullkey))
-						{
-							continue;
-						}
-						//force a reload of the default value with $origdata
-						unset($elementModel->defaults);
-						$default = array();
-						$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
-						for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++)
-						{
-							$def = $elementModel->getValue($origdata, $repeatCount);
-							// $$$ rob 26/04/2011 encodeing done at the end
-							//if its a dropdown radio etc
-							/*if (is_array($def)) {
-							$def = json_encode($def);
-							}*/
-							if (is_array($def))
-							{
-								// radio buttons getValue() returns an array already so don't array the array.
-								$default = $def;
+							$element = $elementModel->getElement();
+							$fullkey = $elementModel->getFullName(false, true, false);
+							// $$$ rob 24/01/2012 if a previous joined data set had a ro element then if we werent checkign that group is the
+							// same as the join group then the insert failed as data from other joins added into the current join
+							if ($isJoin && ($groupModel->getId() != $joinGroupTable->id)) {
+								continue;
 							}
-							else
+							$key = $element->name;
+							// $$$ hugh - allow submission plugins to override RO data
+							// TODO - test this for joined data
+							if ($formModel->updatedByPlugin($fullkey))
 							{
-								$default[] = $def;
+								continue;
 							}
+							//force a reload of the default value with $origdata
+							unset($elementModel->defaults);
+							$default = array();
+							$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
+							for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount ++)
+							{
+								$def = $elementModel->getValue($origdata, $repeatCount);
+								// $$$ rob 26/04/2011 encodeing done at the end
+								//if its a dropdown radio etc
+								/*if (is_array($def)) {
+								$def = json_encode($def);
+								}*/
+								if (is_array($def))
+								{
+									// radio buttons getValue() returns an array already so don't array the array.
+									$default = $def;
+								}
+								else
+								{
+									$default[] = $def;
+								}
+							}
+							$default = count($default) == 1 ? $default[0] : json_encode($default);
+							$data[$key] = $default;
+							$oRecord->$key = $default;
 						}
-						$default = count($default) == 1 ? $default[0] : json_encode($default);
-						$data[$key] = $default;
-						$oRecord->$key = $default;
 					}
 				}
+				$gcounter ++;
 			}
-			$gcounter ++;
 		}
 		$copy = JRequest::getBool('Copy');
 
@@ -5678,6 +5813,12 @@ class FabrikFEModelList extends JModelForm {
 									$encrypted = urldecode($encrypted);
 									$v = !empty($encrypted) ? $crypt->decrypt($encrypted) : '';
 								}
+
+								// $$$ hugh - also gets called in storeRow(), not sure if we really need to
+								// call it here?  And if we do, then we should probably be calling onStoreRow
+								// as well, if $data['fabrik_copy_from_table'] is set?  Can't remember why,
+								// but we differentiate between the two, with onCopyRow being when a row is copied
+								// using the list plugin, and onSaveAsCopy when the form plugin is used.
 								if ($copy)
 								{
 									$v = $elementModel->onSaveAsCopy($v);
@@ -5685,10 +5826,7 @@ class FabrikFEModelList extends JModelForm {
 								$data[$key] = $v;
 								$oRecord->$key = $v;
 							}
-
-							// $$$ hugh FIXME - is there some reason we don't break out back to the
-							// main querystring foreach at this point, rather than looping through
-							// all remaining elements and groups?
+							break 2;
 						}
 					}
 				}
@@ -5862,6 +6000,7 @@ class FabrikFEModelList extends JModelForm {
 	{
 		$origColNames = $this->getDBFields($table);
 		$keys = array();
+		$origColNamesByName = array();
 		if (is_array($origColNames))
 		{
 			foreach ($origColNames as $origColName)
@@ -5874,6 +6013,32 @@ class FabrikFEModelList extends JModelForm {
 				{
 					$keys[] = array("key" => $key, "extra" => $extra, "type" => $type, "colname" => $colName);
 				}
+				else {
+					// $$$ hugh - if we never find a PRI, it may be a view, and we'll need this
+					// info in the Hail Mary.
+					$origColnamesByName[$colName] = $origColName;
+				}
+			}
+		}
+		if (empty($keys)) {
+			// $$$ hugh - might be a view, so Hail Mary attempt to find it in our lists
+			// $$$ So ... see if we know about it, and if so, fake out the PK details
+			$db = FabrikWorker::getDbo(true);
+			$query = $db->getQuery(true);
+			$query->select('db_primary_key')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($table));
+			$db->setQuery($query);
+			$join_pk = $db->loadResult();
+			if (!empty($join_pk)) {
+				$shortColName = FabrikString::shortColName($join_pk);
+				$key = $origColName->Key;
+				$extra = $origColName->Extra;
+				$type = $origColName->Type;
+				$keys[] = array(
+					'colname' => $shortColName,
+					'type' => $type,
+					'extra' => $extra,
+					'key' => $key
+				);
 			}
 		}
 		return empty($keys) ? false : $keys;
@@ -7614,11 +7779,9 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 
-
 		for ($i = 0; $i < $count; $i++)
 		{
 			// $$$rob if rendering J article in PDF format __pk_val not in pdf table view
-			//$next_pk = isset($data[$groupk][$i]->__pk_val) ? $data[$groupk][$i]->__pk_val : $data[$groupk][$i]->id;
 			$next_pk = isset($data[$i]->__pk_val) ? $data[$i]->__pk_val : $data[$i]->$dbprimaryKey;
 			if (!empty($last_pk) && ($last_pk == $next_pk))
 			{
@@ -7664,14 +7827,25 @@ class FabrikFEModelList extends JModelForm {
 							{
 								// The raw data is not altererd at the moment - not sure that that seems correct but can't see any issues
 								// with it currently
+								// $$$ hugh - added processing of raw data, needed for _raw placeholders
+								// in things like custom links
 								$data[$last_i]->$key = (array) $data[$last_i]->$key;
 								array_push($data[$last_i]->$key, $val);
+								$rawkey = $key . '_raw';
+								$rawval = $data[$i]->$rawkey;
+								$data[$last_i]->$rawkey = (array) $data[$last_i]->$rawkey;
+								array_push($data[$last_i]->$rawkey, $rawval);
 							}
 						}
 						else
 						{
-							$json= $val;
-							$data[$last_i]->$origKey = json_encode($json);
+							// $$$ hugh - don't think we need this, now we're processing _raw data?
+							/*
+							if (!is_array($data[$last_i]->$origKey)) {
+								$json= $val;
+								$data[$last_i]->$origKey = json_encode($json);
+							}
+							*/
 						}
 					}
 
@@ -7984,7 +8158,7 @@ class FabrikFEModelList extends JModelForm {
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getRenderContext();
-			$qs .= '&buttoncount=' . $this->rowActionCount;
+			$qs .= '&amp;buttoncount=' . $this->rowActionCount; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/template_css.php' . $qs);
@@ -8274,14 +8448,43 @@ class FabrikFEModelList extends JModelForm {
 	* @param	bool	optional arg to set format
 	* @return	bool
 	*/
-	
+
 	public function formatAll($format_all = null)
 	{
-		if (isset($format_all)) {
-			
+		if (isset($format_all))
+		{
 			$this->_format_all = $format_all;
 		}
 		return $this->_format_all;
+	}
+
+	/**
+	 * copy rows
+	 * @since	3.0.6
+	 * @param	mixed	array or string of row ids to copy
+	 * @return	bool	all rows copied (true) or false if a row copy fails.
+	 */
+
+	public function copyRows($ids)
+	{
+		$ids = (array) $ids;
+		$formModel = $this->getFormModel();
+		$formModel->copyingRow(true);
+		$state = true;
+		foreach ($ids as $id)
+		{
+			$formModel->_rowId = $id;
+			$formModel->unsetData();
+			$row = $formModel->getData();
+			$row['Copy'] = '1';
+			$row['fabrik_copy_from_table'] = '1';
+			$formModel->_formData = $row;
+			if (!$formModel->process())
+			{
+				$state = false;
+			}
+		}
+		return $state;
 	}
 
 }

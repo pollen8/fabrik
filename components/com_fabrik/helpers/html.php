@@ -222,39 +222,36 @@ EOD;
 		$config	= JFactory::getConfig();
 		$form = $formModel->getForm();
 		$table = $formModel->getTable();
-		if ($params->get('print'))
+		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
+		$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&tmpl=component&view=details&formid=". $form->id . "&listid=" . $table->id . "&rowid=" . $rowid.'&iframe=1&print=1';
+		// $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
+		// to the correct (PK based) rowid.  but how to tell if original rowid was -1???
+		if (JRequest::getVar('usekey') !== null)
 		{
-			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&tmpl=component&view=details&formid=". $form->id . "&listid=" . $table->id . "&rowid=" . $rowid.'&iframe=1&print=1';
-			// $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
-			// to the correct (PK based) rowid.  but how to tell if original rowid was -1???
-			if (JRequest::getVar('usekey') !== null)
-			{
-				$url .= "&usekey=" . JRequest::getVar('usekey');
-			}
-			$link = JRoute::_($url);
-			$link = str_replace('&', '&amp;', $link); // $$$ rob for some reason JRoute wasnt doing this ???
-			if ($params->get('icons', true))
-			{
-				$image = JHtml::_('image','system/printButton.png', JText::_('COM_FABRIK_PRINT'), NULL, true);
-			}
-			else
-			{
-				$image = '&nbsp;' . JText::_('JGLOBAL_PRINT');
-			}
-			if ($params->get('popup', 1))
-			{
-				$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="' . JText::_('COM_FABRIK_PRINT') . '">';
-			}
-			else
-			{
-				$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('COM_FABRIK_PRINT') . "\">";
-			}
-			$return = $ahref .
-			$image .
-			"</a>";
-			return $return;
+			$url .= "&usekey=" . JRequest::getVar('usekey');
 		}
+		$link = JRoute::_($url);
+		$link = str_replace('&', '&amp;', $link); // $$$ rob for some reason JRoute wasnt doing this ???
+		if ($params->get('icons', true))
+		{
+			$image = JHtml::_('image','system/printButton.png', JText::_('COM_FABRIK_PRINT'), NULL, true);
+		}
+		else
+		{
+			$image = '&nbsp;' . JText::_('JGLOBAL_PRINT');
+		}
+		if ($params->get('popup', 1))
+		{
+			$ahref = '<a class=\"printlink\" href="javascript:void(0)" onclick="javascript:window.print(); return false" title="' . JText::_('COM_FABRIK_PRINT') . '">';
+		}
+		else
+		{
+			$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('COM_FABRIK_PRINT') . "\">";
+		}
+		$return = $ahref .
+		$image .
+		"</a>";
+		return $return;
 	}
 
 	/**
@@ -269,7 +266,7 @@ EOD;
 		$app = JFactory::getApplication();
 		$config	= JFactory::getConfig();
 		$popup = $params->get('popup', 1);
-		if ($params->get('email') && !$popup)
+		if (!$popup)
 		{
 			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
 			if ($app->isAdmin())
@@ -298,9 +295,7 @@ EOD;
 			{
 				$image = '&nbsp;'. JText::_('JGLOBAL_EMAIL');
 			}
-			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('JGLOBAL_EMAIL') . "\">
-			$image
-			</a>\n";
+			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" .  JText::_('JGLOBAL_EMAIL') . "\">$image</a>\n";
 		}
 	}
 
@@ -324,7 +319,7 @@ EOD;
 	 * @param	string	$sel
 	 * @return	mixed	html select list or error
 	 */
-	
+
 	public static function tableList($sel = '')
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -360,7 +355,7 @@ EOD;
 
 	public static function stylesheet($file, $attribs = array())
 	{
-		if ((JRequest::getVar('format') == 'raw' || JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1)
+		if ((JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
 		{
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
 			// $$$rob TEST!!!! - this may mess up stuff
@@ -406,7 +401,6 @@ EOD;
 		{
 			$file = $path;
 		}
-
 		if (JFile::exists(JPATH_SITE . '/' . $file))
 		{
 			FabrikHelperHTML::stylesheet($path);
@@ -525,54 +519,6 @@ EOD;
 		}
 		$html .= "\n";
 		return $html;
-	}
-
-	/**
-	 *
-	 */
-
-	function PdfIcon($model, $params, $rowId = 0, $attribs = array())
-	{
-		$app = JFactory::getApplication();
-		$url = '';
-		$text	= '';
-		// $$$ rob changed from looks at the view as if rendering the table as a module when rendering a form
-		// view was form, but $Model is a table
-		$modelClass = get_class($model);
-		$task = JRequest::getVar('task');
-		if ($task == 'form' || $modelClass == 'FabrikModelForm')
-		{
-			$form = $model->getForm();
-			$table = $model->getTable();
-			$user = JFactory::getUser();
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=details&amp;format=pdf&amp;formid=". $form->id . "&amp;listid=" . $table->id . "&amp;rowid=" . $rowId;
-		}
-		else
-		{
-			$table = $model->getTable();
-			$url = COM_FABRIK_LIVESITE."index.php?option=com_fabrik&amp;view=list&amp;format=pdf&amp;listid=" . $table->id;
-		}
-		if (JRequest::getVar('usekey') !== null)
-		{
-			$url .= "&amp;usekey=" . JRequest::getVar('usekey');
-		}
-		$status = 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
-
-		// checks template image directory for image, if non found default are loaded
-		if ($app->isAdmin())
-		{
-			$text = "<img src=\"" . COM_FABRIK_LIVESITE . "images/pdf_button.png\" alt=\"" . JText::_('PDF') . "\" />\n";
-		}
-		else
-		{
-			$text = JHTML::_('image.site', 'pdf_button.png', '/images/', NULL, NULL, JText::_('PDF'));
-		}
-		$attribs['title'] = JText::_('PDF');
-		$attribs['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
-		$attribs['rel'] = 'nofollow';
-		$url = JRoute::_($url);
-		$output = JHTML::_('link', $url, $text, $attribs) . "\n";
-		return $output;
 	}
 
 	/**
@@ -755,16 +701,24 @@ EOD;
 				return false;
 			}
 		}
-		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1);
+		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1 && JRequest::getVar('format') !== 'pdf');
 	}
 
 	/**
-	 * Returns true is either J! or Fabrik debug is enabled
+	 * Returns true if either J! or Fabrik debug is enabled
+	 * Use this for things like choosing whether to include compressed or uncompressed JS, etc.
+	 * Do NOT use for actual debug output.
 	 *
+	 * @param bool enabled set to true if Fabrik debug global option must be set to true
 	 * @return bool
 	 */
-	public static function isDebug()
+	public static function isDebug($enabled = false)
 	{
+		$config = JComponentHelper::getParams('com_fabrik');
+		if ($enabled && $config->get('use_fabrikdebug') == 0)
+		{
+			return false;
+		}
 		$config = JFactory::getConfig();
 		$debug = (int) $config->get('debug');
 		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) === 1;
@@ -1183,6 +1137,10 @@ EOD;
 		$bits = array();
 		foreach ($properties as $key => $val)
 		{
+			if ($key === 'title')
+			{
+				$val = htmlspecialchars($val, ENT_QUOTES);
+			}
 			$bits[$key] = $val;
 		}
 		$p = '';

@@ -225,6 +225,14 @@ class FabrikModelList extends FabModelAdmin
 				$aConditions[] = JHTML::_('select.option', 'not_in', 'NOT IN');
 				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', JText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
 				$aConditions[] = JHTML::_('select.option', 'laterthisyear', JText::_('COM_FABRIK_LATER_THIS_YEAR'));
+				
+				$aConditions[] = JHTML::_('select.option', 'yesterday', JText::_('COM_FABRIK_YESTERDAY'));
+				$aConditions[] = JHTML::_('select.option', 'today', JText::_('COM_FABRIK_TODAY'));
+				$aConditions[] = JHTML::_('select.option', 'tomorrow', JText::_('COM_FABRIK_TOMORROW'));
+				$aConditions[] = JHTML::_('select.option', 'thismonth', JText::_('COM_FABRIK_THIS_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'lastmonth', JText::_('COM_FABRIK_LAST_MONTH'));
+				$aConditions[] = JHTML::_('select.option', 'nextmonth', JText::_('COM_FABRIK_NEXT_MONTH'));
+				
 				break;
 		}
 		$dd = str_replace("\n", "", JHTML::_('select.genericlist',  $aConditions, $name, "class=\"inputbox\"  size=\"1\" ", 'value', 'text', ''));
@@ -558,7 +566,6 @@ class FabrikModelList extends FabModelAdmin
 		$row = $this->getTable();
 		$id = $data['id'];
 		$row->load($id);
-
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->form_id);
 		$feModel = $this->getFEModel();
@@ -1425,8 +1432,11 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$size = 10;
 			$els =& $feModel->getElements();
+			// $$$ FIXME hugh - joined els are missing tablename
 			foreach ($els as $el)
 			{
+				// $$$ FIXME hugh - need to make sure we pick up the element from the main table,
+				// not any similarly named elements from joined tables (like 'id')
 				if( $el->getElement()->name == $join->table_key) {
 					$size = JString::stristr($el->getFieldDescription(), 'int') ? '' : '10';
 				}

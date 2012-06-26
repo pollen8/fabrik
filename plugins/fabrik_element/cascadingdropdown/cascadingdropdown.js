@@ -85,15 +85,20 @@ var FbCascadingdropdown = new Class({
 		this.myAjax = new Request({url: '',
 		method: 'post', 
 		'data': data,
-		onComplete: function (json) {
-			var origvalue = this.options.def;
+		onSuccess: function (json) {
+			var origvalue = this.options.def,
+			opts = {},
+			c;
 			this.element.getParent().getElement('.loader').hide();
 			json = JSON.decode(json);
-			this.element.empty();
-			var opts;
+			if (this.options.editable) {
+				this.element.empty();
+			} else {
+				this.element.getElements('div').destroy();
+			}
 			
 			if (this.options.showDesc === true) {
-				var c = this.getContainer().getElement('.dbjoin-description');
+				c = this.getContainer().getElement('.dbjoin-description');
 				c.empty();
 			}
 			
@@ -102,7 +107,12 @@ var FbCascadingdropdown = new Class({
 				json.each(function (item) {
 					// $$$ rob if loading edit form, at page load, u may have a previously selected value 
 					opts = item.value === origvalue ? {'value': item.value, 'selected': 'selected'} : {'value': item.value};
-					new Element('option', opts).set('text', item.text).inject(this.element);
+					if (this.options.editable === false) {
+						new Element('div').set('html', item.text).inject(this.element);
+					} else {
+						new Element('option', opts).set('text', item.text).inject(this.element);
+					}
+					
 					if (this.options.showDesc === true && item.description) {
 						var classname = this.options.showPleaseSelect ? 'notice description-' + (k) : 'notice description-' + (k - 1);
 						new Element('div', {styles: {display: 'none'}, 'class': classname}).set('html', item.description).injectInside(c);
@@ -111,19 +121,25 @@ var FbCascadingdropdown = new Class({
 			} else {
 				if (this.options.showPleaseSelect && json.length > 0) {
 					var item = json.shift(); 
-					new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
+					if (this.options.editable === false) {
+						new Element('div').set('text', item.text).inject(this.element);
+					} else {
+						new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
+					}
 				}
 			}
 			this.ignoreAjax = false;
 			// $$$ hugh - need to remove/add 'readonly' class ???  Probably need to add/remove the readonly="readonly" attribute as well
 			//this.element.disabled = (this.element.options.length === 1 ? true : false);
-			if (this.element.options.length === 1) {
-				this.element.readonly = true;
-				this.element.addClass('readonly');
-			}
-			else {
-				this.element.readonly = false;
-				this.element.removeClass('readonly');
+			if (this.options.editable) {
+				if (this.element.options.length === 1) {
+					this.element.readonly = true;
+					this.element.addClass('readonly');
+				}
+				else {
+					this.element.readonly = false;
+					this.element.removeClass('readonly');
+				}
 			}
 			// $$$ hugh - need to fire this CDD's 'change' event in case we have another CDD
 			// daisy chained on us.  We just don't need to do it if 'ignoreAjax' is true, because
@@ -137,7 +153,11 @@ var FbCascadingdropdown = new Class({
 			}
 			this.ignoreAjax = false;
 			Fabrik.fireEvent('fabrik.cdd.update', this);
-		}.bind(this)}).send();
+		}.bind(this),
+		'onFailure': function (xhr) {
+			console.log(this.myAjax.getHeader('Status'));
+		}.bind(this)
+		}).send();
 	},
 	
 	cloned: function (c) {

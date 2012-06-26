@@ -19,7 +19,7 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/** @var string html to return from plugin rendering */
 	protected $html = '';
-	
+
 	/**
 	 * run from table model when deleting rows
 	 *
@@ -96,7 +96,7 @@ class plgFabrik_Form extends FabrikPlugin
 
 	public function getBottomContent($params, $formModel)
 	{
-
+		$this->html = '';
 	}
 
 	/**
@@ -117,15 +117,36 @@ class plgFabrik_Form extends FabrikPlugin
 
 	function getTopContent($params, $formModel)
 	{
-
+		$this->html = '';
 	}
 
 	/**
-	 * get any html that needs to be written into the top of the form
+	 * get any html that needs to be written at the top of the form
 	 * @return	string	html
 	 */
 
 	public function getTopContent_result()
+	{
+		return $this->html;
+	}
+
+	/**
+	* sets up any end html (after form close tag)
+	* @param	object	params
+	* @param	object	form model
+	*/
+
+	function getEndContent($params, $formModel)
+	{
+		$this->html = '';
+	}
+
+	/**
+	 * get any html that needs to be written after the form close tag
+	 * @return	string	html
+	 */
+
+	public function getEndContent_result()
 	{
 		return $this->html;
 	}
@@ -323,9 +344,12 @@ class plgFabrik_Form extends FabrikPlugin
 				}
 			}
 		}
-		$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
-		$this->emailData[$pk] = $listModel->lastInsertId;
-		$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
+		if (is_object($listModel))
+		{
+			$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
+			$this->emailData[$pk] = $listModel->lastInsertId;
+			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
+		}
 		return $this->emailData;
 	}
 

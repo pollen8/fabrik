@@ -45,7 +45,12 @@ class FabrikControllerDetails extends JController
 		$viewName = 'form';
 		$modelName = 'form';
 
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
+		if ($viewType == 'pdf')
+		{
+			// in PDF view only shown the main component content.
+			JRequest::setVar('tmpl', 'component');
+		}
 
 		// Set the default view name from the Request
 		$view = &$this->getView($viewName, $viewType);

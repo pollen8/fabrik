@@ -6,10 +6,10 @@ var FbField = new Class({
 	},
 	
 	select: function () {
-		this.element.select();
+		this.getElement().select();
 	},
 	
 	focus: function () {
-		this.element.focus();
+		this.getElement().focus();
 	}
 });

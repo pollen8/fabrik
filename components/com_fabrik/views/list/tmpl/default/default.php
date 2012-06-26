@@ -101,9 +101,10 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 				}
 				?>
 				</tr>
+			
+			<?php }?>
 			</tbody>
-			<?php }
-			$gCounter++;
+			<?php $gCounter++;
 			}?>
 		</table>
 		<?php print_r($this->hiddenFields);?>

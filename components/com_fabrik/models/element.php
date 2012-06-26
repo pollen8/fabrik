@@ -342,7 +342,8 @@ class plgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 		$iconfile = $params->get('icon_file', ''); //Jaanus added this and following if/else; sometimes we need permanent image (e.g logo of the website where the link always points, like Wikipedia's W)
-		$cleanData = $iconfile === '' ? FabrikString::clean($data) : $iconfile;
+		
+		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
 		foreach ($this->imageExtensions as $ex)
 		{
 			$f = JPath::clean($cleanData . '.' . $ex);
@@ -353,8 +354,9 @@ class plgFabrik_Element extends FabrikPlugin
 				$opts = new stdClass();
 				$opts->position = 'top';
 				$opts = json_encode($opts);
-				$data = htmlspecialchars($data, ENT_QUOTES);
+				//$data = htmlspecialchars($data, ENT_QUOTES);
 				$data = '<span>' . $data . '</span>';
+				$data = htmlspecialchars($data, ENT_QUOTES);
 				if ($params->get('icon_hovertext', true))
 				{
 					$img = '<a class="fabrikTip" href="#" opts=\'' . $opts . '\' title="' . $data. '">' . $img . '</a>';
@@ -943,6 +945,35 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * should the element be tipped?
+	 * @since	3.0.6
+	 * @param	string	$mode form/list render context
+	 * @return	bool
+	 */
+
+	private function isTipped($mode = 'form')
+	{
+		$formModel = $this->getFormModel();
+		if ($formModel->getParams()->get('tiplocation', 'tip') !== 'tip' && $mode === 'form')
+		{
+			return false;
+		}
+		$params = $this->getParams();
+		if ($params->get('rollover', '') === '')
+		{
+			return false;
+		}
+		if ($mode == 'form' && (!$formModel->_editable && $params->get('labelindetails', true) == false)) {
+			return false;
+		}
+		if ($mode === 'list' && $params->get('labelinlist', false) == false)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * can be overwritten in the plugin class
 	 * @param	int		repeat counter
 	 * @param	string	template
@@ -969,7 +1000,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$str = '';
 		if ($this->canView() || $this->canUse())
 		{
-			$rollOver = $params->get('rollover', '') !== '' && $this->getFormModel()->getParams()->get('tiplocation', 'tip') == 'tip';
+			$rollOver = $this->isTipped();
 			$labelClass = 'fabrikLabel ';
 			if (empty($element->label))
 			{
@@ -1003,8 +1034,7 @@ class plgFabrik_Element extends FabrikPlugin
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
 					}
 					$validationHovers[] = '</ul></div>';
-					$validationHovers = implode('', $validationHovers);
-					$title = htmlspecialchars($validationHovers, ENT_QUOTES);
+					$title = implode('', $validationHovers);
 					$opts = new stdClass();
 					$opts->position = 'top';
 					$opts = json_encode($opts);
@@ -1061,10 +1091,10 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
-		$params = $this->getParams();
-		$formModel = $this->getFormModel();
-		if ($formModel->getParams()->get('tiplocation', 'tip') == 'tip' && (($mode == 'form' && ($formModel->editable || $params->get('labelindetails', true))) || $params->get('labelinlist', false)))
+		if ($this->isTipped($mode))
 		{
+			$params = $this->getParams();
+			$formModel = $this->getFormModel();
 			$rollOver = $this->getTip($data);
 			$pos = $params->get('tiplocation', 'top');
 			$opts = "{position:'$pos', notice:true}";
@@ -1075,6 +1105,8 @@ class plgFabrik_Element extends FabrikPlugin
 			// $$$ rob this might be needed - cant find a test case atm though
 			//$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 			$rollOver = '<span>' . $rollOver . '</span>';
+			// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
+			$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 			return '<span class="fabrikTip" opts="' . $opts . '" title="' . $rollOver . '">' . $txt . '</span>';
 		}
 		else
@@ -1412,7 +1444,7 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$element->containerClass .= ' fabrikDataEmpty';
 		}
-		//tips (if nto rendered as hovers)
+		//tips (if not rendered as hovers)
 		$tip = $this->getTip();
 		if ($tip !== '')
 		{
@@ -2724,10 +2756,12 @@ class plgFabrik_Element extends FabrikPlugin
 		switch ($condition)
 		{
 			case 'earlierthisyear':
-				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
+				//$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
+				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(now()) ';
 				break;
 			case 'laterthisyear':
-				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
+				//$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
+				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(now()) ';
 				break;
 			default:
 				if ($this->isJoin())
@@ -3250,7 +3284,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
-		$res = $this->formatCalcs($results, $calcLabel, $split, false);
+		$res = $this->formatCalcs($results, $calcLabel, $split, false, false);
 		return array($res, $results);
 	}
 
@@ -4919,5 +4953,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		unset($this->access);
 	}
+
+	/**
+	 *
+	 * Forces reset of defaults, etc.
+	 */
+
+	public function reset()
+	{
+		$this->defaults = null;
+	}
+
 }
 ?>

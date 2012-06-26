@@ -241,24 +241,32 @@ class FabrikFEModelForm extends FabModelForm
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
-		if ($app->isAdmin())
+		$document = JFactory::getDocument();
+		if ($document->getType() === 'pdf')
 		{
-			$tmpl = $this->editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
+			$tmpl = $params->get('pdf_template');
 		}
-		if ($tmpl == '')
+		else
 		{
-			if ($this->editable)
+			if ($app->isAdmin())
 			{
-				$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+				$tmpl = $this->_editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
 			}
-			else
+			if ($tmpl == '')
 			{
-				$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+				if ($this->_editable)
+				{
+					$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+				}
+				else
+				{
+					$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+				}
 			}
-		}
-		if (JRequest::getVar('mjmarkup') == 'iphone')
-		{
-			$tmpl = 'iwebkit';
+			if (JRequest::getVar('mjmarkup') == 'iphone')
+			{
+				$tmpl = 'iwebkit';
+			}
 		}
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 		//finally see if the options are overridden by a querystring var
@@ -285,27 +293,18 @@ class FabrikFEModelForm extends FabModelForm
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '')
 		{
-			if (JFile::exists(JPATH_THEMES .'/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php'))
+			$qs = '?c=' . $this->getId();
+			$qs .='&amp;view=' . $v; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
+			if (!FabrikHelperHTML::stylesheetFromPath(JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
 			{
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php?c=' . $this->getId() . '&view=' . $v);
-			}
-			else
-			{
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'components/com_fabrik/views/form/tmpl/' . $tmpl . '/template_css.php?c=' . $this->getId() . '&view=' . $v);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/template_css.php' . $qs);
 			}
 			// $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			// custom.css - for backward compat with existing 2.x custom.css
 			// custom_css.php - what we'll recommend people use for custom css moving foward.
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom.css'))
-			{
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/" . $tmpl . "/custom_css.php?c=" . $this->getId() . '&view=' . $v);
-			}
-			if (JFile::exists(COM_FABRIK_BASE.'/components/com_fabrik/views/form/tmpl/'.$tmpl.'/custom_css.php'))
-			{
-				FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE."components/com_fabrik/views/form/tmpl/".$tmpl."/custom_css.php?c=".$this->getId().'&view='.$v);
-			}
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom.css' . $qs);
+			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom_css.php' . $qs);
 		}
-
 		if ($app->isAdmin() && JRequest::getVar('tmpl') === 'components')
 		{
 			FabrikHelperHTML::stylesheet('administrator/templates/system/css/system.css');
@@ -1749,7 +1748,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						if ($elementModel->getFullName(false, true, false) == $key)
 						{
 							// 	$$$ rob - dont test for !canUse() as confirmation plugin dynamically sets this
-							if ($elementModel->canView())
+							//if ($elementModel->canView())
+							// $$$ hugh - testing adding non-viewable, non-editable elements to encrypted vars
+							if (true)
 							{
 								if (is_array($encrypted))
 								{
@@ -3856,14 +3857,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						continue;
 					}
 					//fabrik3.0 : if the element cant be seen or used then dont add it?
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					/*
 					if (!$elementModel->canUse() && !$elementModel->canView())
 					{
 						continue;
 					}
+					*/
+
 					$elementModel->_foreignKey = $foreignKey;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 					$element = $elementModel->preRender($c, $elCount, $tmpl);
-					if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					//if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+					if (!$element || !$elementModel->canUse())
 					{
 						// $$$ hugh - $this->data doesn't seem to always have what we need in it, but $data does.
 						// can't remember exact details, was chasing a nasty issue with encrypted 'user' elements.
@@ -3957,10 +3965,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		return $this->linkedFabrikLists[$table];
 	}
 
-	function updatedByPlugin($fullname = '')
+	function updatedByPlugin($fullname = '', $value = null)
 	{
 		// used to see if something legitimate in the submission process, like a form plugin,
 		// has modified an RO element value and wants to override the RO/origdata.
+		// If $value is set, add it.
+		if (isset($value))
+		{
+			$this->pluginUpdatedElements[$fullname] = $value;
+		}
 		return array_key_exists($fullname, $this->pluginUpdatedElements);
 	}
 
@@ -4023,6 +4036,47 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function getRedirectContext()
 	{
 		return 'com_fabrik.form.' . $this->getId() . '.redirect.';
+	}
+
+	/**
+	 *
+	 * Resets cached form data.
+	 *
+	 * @param bool $unset_groups also reset group and element model cached data
+	 */
+	public function unsetData($unset_groups = false)
+	{
+		unset($this->_data);
+		unset($this->query);
+		if ($unset_groups)
+		{
+			// $$$ hugh - unset group published elements list, and clear each
+			// element's default data.  Needed from content plugin, otherwise if
+			// we render the same form more than once with different rowid's, we end up
+			// rendering the first copy's element data X times.
+			// Not sure if we need to actually unset the group published elements list,
+			// but for the moment I'm just using a Big Hammer to get the content plugin working!
+			$groups = $this->getGroupsHiarachy();
+			foreach ($groups as $groupModel)
+			{
+				$groupModel->resetPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
+				foreach ($elementModels as $elementModel)
+				{
+					$elementModel->reset();
+				}
+			}
+		}
+	}
+
+	/**
+	 *
+	 * Reset form's cached data, i.e. from content plugin, where we may be rendering the same
+	 * form twice, with different row data.
+	 */
+	public function reset()
+	{
+		$this->unsetData(true);
 	}
 }
 

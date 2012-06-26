@@ -12,7 +12,7 @@ var FbDropdown = new Class({
 	watchAddToggle : function () {
 		var c = this.getContainer();
 		var d = c.getElement('div.addoption');
-
+	
 		var a = c.getElement('.toggle-addoption');
 		if (this.mySlider) {
 			//copied in repeating group so need to remove old slider html first
@@ -78,14 +78,13 @@ var FbDropdown = new Class({
 	
 	reset: function ()
 	{
-		//var v = this.options.defaultVal.join(this.options.splitter);
 		var v = this.options.defaultVal;
 		this.update(v);
 	},
 	
 	update: function (val) {
-		if (typeOf(val) === 'string') {
-			//val = val.split(this.options.splitter);
+		var opts = [];
+		if  ((typeOf(val) === 'string') && (JSON.validate(val))) {
 			val = JSON.decode(val);
 		}
 		if (typeOf(val) === 'null') {
@@ -104,11 +103,12 @@ var FbDropdown = new Class({
 			}.bind(this));
 			return;
 		}
-		for (var i = 0; i < this.element.options.length; i++) {
-			if (val.indexOf(this.element.options[i].value) !== -1) {
-				this.element.options[i].selected = true;
+		opts = this.element.getElements('option');
+		for (var i = 0; i < opts.length; i++) {
+			if (val.indexOf(opts[i].value) !== -1) {
+				opts[i].selected = true;
 			} else {
-				this.element.options[i].selected = false;
+				opts[i].selected = false;
 			}
 		}
 		this.watchAdd();

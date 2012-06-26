@@ -1163,6 +1163,15 @@ class FabrikWorker {
 		return true;
 	}
 
+	public function isJSON($data)
+	{
+		if (!is_string($data))
+		{
+			return false;
+		}
+		return json_decode($data) !== null;
+	}
+
 	/**
 	 * @since 3.0.4
 	 * is the email really an email (more strict than JMailHelper::isEmailAddress())
@@ -1283,6 +1292,12 @@ class FabrikWorker {
 			}
 		}
 		return -1;
+	}
+
+	public static function canPdf()
+	{
+		$file = JPATH_LIBRARIES .'/dompdf/dompdf_config.inc.php';
+		return JFile::exists($file);
 	}
 }
 

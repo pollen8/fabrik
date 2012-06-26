@@ -14,35 +14,35 @@
 
 	<fieldset name="access">
 
-			<field name="access" 
-				type="accesslevel" 
-				default="1" 
-				label="COM_FABRIK_FIELD_VIEW_LIST_LABEL" 
+			<field name="access"
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_FIELD_VIEW_LIST_LABEL"
 				description="COM_FABRIK_FIELD_VIEW_LIST_DESC" />
 	
 		</fieldset>
 	
 	<fieldset name="main" addfieldpath="/administrator/components/com_fabrik/models/fields">
 				
-		<field name="id" 
-			type="text" 
-			default="0" 
+		<field name="id"
+			type="text"
+			default="0"
 			required="true"
 			readonly="true" class="readonly"
-			label="JGLOBAL_FIELD_ID_LABEL" 	
+			label="JGLOBAL_FIELD_ID_LABEL"
 			description ="JGLOBAL_FIELD_ID_DESC" />
 		
-		<field name="label" 
+		<field name="label"
 			type="text"
-			size="40" 
+			size="40"
 			label="COM_FABRIK_FIELD_LABEL_LABEL"
-			description="COM_FABRIK_FIELD_LABEL_DESC" 
+			description="COM_FABRIK_FIELD_LABEL_DESC"
 			required="true" />
 
-		<field name="introduction" 
+		<field name="introduction"
 			type="editor"
 			filter="FabrikHelper::filterText"
-			rows="3" cols="30" 
+			rows="3" cols="30"
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
 	
@@ -52,8 +52,8 @@
 	
 	<fieldset name="main_nav">
 		
-		<field name="rows_per_page" 
-			type="text" 
+		<field name="rows_per_page"
+			type="text"
 			size="3"
 			default="10"
 			label="COM_FABRIK_FIELD_ROWS_PER_PAGE_LABEL"
@@ -63,7 +63,7 @@
 	
 	<fieldset name="main_template">
 		
-		<field name="template" 
+		<field name="template"
 			type="folderlist"
 			directory="/components/com_fabrik/views/list/tmpl/"
 			label="COM_FABRIK_FIELD_TEMPLATE_LABEL"
@@ -73,48 +73,48 @@
 	
 	<fieldset name="grouping" addfieldpath="/administrator/components/com_fabrik/models/fields">
 		
-		<field name="group_by" 
-			type="listfields" 
-			valueformat="tableelement" 
-			label="COM_FABRIK_FIELD_GROUP_BY_LABEL" 
+		<field name="group_by"
+			type="listfields"
+			valueformat="tableelement"
+			label="COM_FABRIK_FIELD_GROUP_BY_LABEL"
 			description="COM_FABRIK_FIELD_GROUP_BY_DESC" />
 			
 		</fieldset>
 	
 	<fieldset name="main_data">
 		
-		<field name="connection_id" 
+		<field name="connection_id"
 			type="connections"
 			required="true"
 			readonlyonedit="true"
 			label="COM_FABRIK_FIELD_CONNECTION_LABEL"
 			description="COM_FABRIK_FIELD_CONNECTION_DESC" />
 		
-		<field name="_database_name" 
-			type="text" 
-			size="20" 
+		<field name="_database_name"
+			type="text"
+			size="20"
 			label="COM_FABRIK_FIELD_DATABASE_NAME_LABEL"
 			description="COM_FABRIK_FIELD_DATABASE_NAME_DESC" />
 		
-		<field name="or" 
-			type="spacer" 
-			size="20" 
+		<field name="or"
+			type="spacer"
+			size="20"
 			label="Or"/>
 		 
-		 <field name="db_table_name" 
+		 <field name="db_table_name"
 		 	type="tables"
 		 	readonlyonedit="true"
 		 	observe="connection_id"
 			label="COM_FABRIK_FIELD_LINK_TO_TABLE_LABEL"
 			description="COM_FABRIK_FIELD_LINK_TO_TABLE_DESC" />
 			
-		<field name="db_primary_key" 
-					type="listfields" 
-					valueformat="tableelement" 
-					label="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL" 
+		<field name="db_primary_key"
+					type="listfields"
+					valueformat="tableelement"
+					label="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL"
 					description="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL" />
 					
-		<field name="auto_inc" 
+		<field name="auto_inc"
 			type="radio"
 			label="COM_FABRIK_FIELD_AUTO_INC_LABEL"
 			description="COM_FABRIK_FIELD_AUTO_INC_DESC"
@@ -135,20 +135,20 @@
 			<option value="-2">JTRASHED</option>
 		</field>
 		
-		<field name="created_by" 
-			type="user" 
-			label="COM_FABRIK_FIELD_AUTHOR_LABEL" 
+		<field name="created_by"
+			type="user"
+			label="COM_FABRIK_FIELD_AUTHOR_LABEL"
 			description="COM_FABRIK_FIELD_AUTHOR_DESC" />
 			
-		<field name="created" 
+		<field name="created"
 			type="calendar"
 			label="COM_FABRIK_FIELD_CREATE_DATE_LABEL"  />
 			
-		<field name="publish_up" 
+		<field name="publish_up"
 			type="calendar"
 			label="COM_FABRIK_FIELD_START_PUBLISHING_LABEL" />
 			
-		<field name="publish_down" 
+		<field name="publish_down"
 			type="calendar"
 			label="COM_FABRIK_FIELD_FINISH_PUBLSHING_LABEL"  />
 			
@@ -179,84 +179,84 @@
 		</fieldset>
 		<fieldset name="grouping2" addfieldpath="/administrator/components/com_fabrik/models/fields">
 				
-				<field name="group_by_access" 
-					type="accesslevel" 
-					default="1" 
-					label="COM_FABRIK_FIELD_GROUP_BY_ACCESS_LABEL" 
+				<field name="group_by_access"
+					type="accesslevel"
+					default="1"
+					label="COM_FABRIK_FIELD_GROUP_BY_ACCESS_LABEL"
 					description="COM_FABRIK_FIELD_GROUP_BY_ACCESS_DESC" />
 					
-				<field name="group_by_order" 
-					type="listfields" 
-					valueformat="tableelement" 
-					label="COM_FABRIK_FIELD_ORDER_BY_LABEL" 
+				<field name="group_by_order"
+					type="listfields"
+					valueformat="tableelement"
+					label="COM_FABRIK_FIELD_ORDER_BY_LABEL"
 					description="COM_FABRIK_FIELD_GROUP_BY_ORDER_BY_LABEL" />
 					
-				<field name="group_by_template" 
-					type="textarea" 
-					label="COM_FABRIK_FIELD_TEMPLATE_LABEL" 
-					cols="30" 
-					rows="4" 
+				<field name="group_by_template"
+					type="textarea"
+					label="COM_FABRIK_FIELD_TEMPLATE_LABEL"
+					cols="30"
+					rows="4"
 					description="COM_FABRIK_FIELD_GROUP_BY_TEMPLATE_DESC" />
 					
-				<field name="group_by_order_dir" 
+				<field name="group_by_order_dir"
 					type="ascendingdescending"
-					label="COM_FABRIK_FIELD_ORDER_DIRECTION_LABEL" 
+					label="COM_FABRIK_FIELD_ORDER_DIRECTION_LABEL"
 					description="COM_FABRIK_FIELD_ORDER_DIRECTION_DESC" />
 					
 			</fieldset>
 	
 		<fieldset name="access2">
 	
-			<field name="allow_view_details" 
-				type="accesslevel" 
-				default="1" 
-				label="COM_FABRIK_FIELD_VIEW_RECORDS_LABEL" 
+			<field name="allow_view_details"
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_FIELD_VIEW_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_VIEW_RECORDS_DESC" />
 				
-			<field name="allow_edit_details" 
-				type="accesslevel" 
+			<field name="allow_edit_details"
+				type="accesslevel"
 				default="1"
-				label="COM_FABRIK_FIELD_EDIT_RECORDS_LABEL" 
+				label="COM_FABRIK_FIELD_EDIT_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_EDIT_RECORDS_DESC" />
 				
-			<field name="allow_edit_details2" 
-				type="listfields" 
-				valueformat="tableelement" 
-				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL" 
+			<field name="allow_edit_details2"
+				type="listfields"
+				valueformat="tableelement"
+				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_OR_USE_FIELD_DESC" />
 				
-			<field name="allow_add" 
-				type="accesslevel" 
-				default="1" 
-				label="COM_FABRIK_FIELD_ADD_RECORDS_LABEL" 
+			<field name="allow_add"
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_FIELD_ADD_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_ADD_RECORDS_DESC" />
 				
-			<field name="allow_delete" 
-				type="accesslevel" 
-				default="2" 
+			<field name="allow_delete"
+				type="accesslevel"
+				default="2"
 				label="COM_FABRIK_FIELD_DELETE_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_DELETE_RECORDS_DESC" />
 				
-			<field name="allow_delete2" 
-				type="listfields" 
-				valueformat="tableelement" 
-				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL" 
+			<field name="allow_delete2"
+				type="listfields"
+				valueformat="tableelement"
+				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_OR_USE_FIELD_DELETE_LABEL" />
 			
-			<field name="allow_drop" 
-				type="accesslevel" 
-				default="3" 
-				label="COM_FABRIK_FIELD_DROP_RECORDS_LABEL" 
+			<field name="allow_drop"
+				type="accesslevel"
+				default="3"
+				label="COM_FABRIK_FIELD_DROP_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_DROP_RECORDS_DESC" />
 				
 		</fieldset>
 	
 		<fieldset name="filters">
 		
-			<field name="show-table-filters" 
-				type="list" 
-				default="1" 
-				label="COM_FABRIK_FIELD_SHOW_TABLE_FILTERS_LABEL" 
+			<field name="show-table-filters"
+				type="list"
+				default="1"
+				label="COM_FABRIK_FIELD_SHOW_TABLE_FILTERS_LABEL"
 				description="COM_FABRIK_FIELD_SHOW_TABLE_FILTERS_DESC">
 					<option value="0">JNO</option>
 					<option value="1">COM_FABRIK_FILTER_ABOVE</option>
@@ -265,10 +265,10 @@
 					<option value="4">COM_FABRIK_FILTER_UNDER_HEADINGS_TOGGLE</option>
 			</field>
 			
-			<field name="advanced-filter" 
-				type="radio" 
-				default="0" 
-				label="COM_FABRIK_FIELD_ADVANCED_SEARCH_LABEL" 
+			<field name="advanced-filter"
+				type="radio"
+				default="0"
+				label="COM_FABRIK_FIELD_ADVANCED_SEARCH_LABEL"
 				description="COM_FABRIK_FIELD_ADVANCED_SEARCH_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
@@ -283,35 +283,35 @@
 					<option value="OR">JYES</option>
 			</field>
 			
-			<field name="search-mode-advanced" 
-				type="radio" 
-				default="0" 
-				label="COM_FABRIK_FIELD_ADVANCED_SEARCH_ALL_MODE_LABEL" 
+			<field name="search-mode-advanced"
+				type="radio"
+				default="0"
+				label="COM_FABRIK_FIELD_ADVANCED_SEARCH_ALL_MODE_LABEL"
 				description="COM_FABRIK_FIELD_ADVANCED_SEARCH_ALL_MODE_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-	 		<field name="search-all-label" 
-	 			type="text" 
-	 			size="20" 
-	 			default="All" 
-	 			label="COM_FABRIK_FIELD_SEARCH_ALL_LABEL_LABEL" 
+	 		<field name="search-all-label"
+	 			type="text"
+	 			size="20"
+	 			default="All"
+	 			label="COM_FABRIK_FIELD_SEARCH_ALL_LABEL_LABEL"
 	 			description="COM_FABRIK_FIELD_SEARCH_ALL_LABEL_DESC" />
 		
-			<field name="require-filter" 
-				type="radio" 
-				default="0" 
-				label="COM_FABRIK_FIELD_REQUIRE_FILTER_LABEL" 
+			<field name="require-filter"
+				type="radio"
+				default="0"
+				label="COM_FABRIK_FIELD_REQUIRE_FILTER_LABEL"
 				description="COM_FABRIK_FIELD_REQUIRE_FILTER_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="filter-dropdown-method" 
-				type="list" 
-				default="0" 
-				label="COM_FABRIK_FIELD_FILTER_BUILD_METHOD_LABEL" 
+			<field name="filter-dropdown-method"
+				type="list"
+				default="0"
+				label="COM_FABRIK_FIELD_FILTER_BUILD_METHOD_LABEL"
 				description="COM_FABRIK_FIELD_FILTER_BUILD_METHOD_DESC">
 					<option value="0">COM_FABRIK_FIELD_DEFAULT</option>
 					<option value="1">COM_FABRIK_FIELD_SHOW_DATA_RECORDED_IN_LIST</option>
@@ -322,19 +322,19 @@
 		
 		<fieldset name="navigation">
 
-			<field name="show-table-add" 
-				type="radio" 
+			<field name="show-table-add"
+				type="radio"
 				default="1"
-				label="COM_FABRIK_FIELD_SHOW_LIST_ADD_LABEL" 
+				label="COM_FABRIK_FIELD_SHOW_LIST_ADD_LABEL"
 				description="COM_FABRIK_FIELD_SHOW_LIST_ADD_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="show-table-nav" 
-				type="radio" 
-				default="1" 
-				label="COM_FABRIK_FIELD_SHOW_LIST_NAV_LABEL" 
+			<field name="show-table-nav"
+				type="radio"
+				default="1"
+				label="COM_FABRIK_FIELD_SHOW_LIST_NAV_LABEL"
 				description="COM_FABRIK_FIELD_SHOW_LIST_NAV_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
@@ -344,100 +344,100 @@
 			label="COM_FABRIK_FIELD_SHOW_DISPLAY_NUM_LABEL"
 			description="COM_FABRIK_FIELD_SHOW_DISPLAY_NUM_DESC">
 				<option value="0">JNO</option>
-				<option value="1">JYES</option>	
+				<option value="1">JYES</option>
 			</field>
 			
-			<field name="showall-records" 
-				type="radio" 
-				default="0" 
-				label="COM_FABRIK_FIELD_SHOW_ALL_OPTION_LABEL" 
+			<field name="showall-records"
+				type="radio"
+				default="0"
+				label="COM_FABRIK_FIELD_SHOW_ALL_OPTION_LABEL"
 				description="COM_FABRIK_FIELD_SHOW_ALL_OPTION_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="show-total" 
-				type="radio" 
-				default="0" 
-				label="COM_FABRIK_FIELD_SHOW_TOTAL_LABEL" 
+			<field name="show-total"
+				type="radio"
+				default="0"
+				label="COM_FABRIK_FIELD_SHOW_TOTAL_LABEL"
 				description="COM_FABRIK_FIELD_SHOW_TOTAL_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="sef-slug" 
-				type="listfields" 
+			<field name="sef-slug"
+				type="listfields"
 				valueformat="tableelement"
-				raw="1" 
-				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL" 
+				raw="1"
+				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL"
 				description="COM_FABRIK_FIELD_SEF_SLUG_DESC" />
 				
 		</fieldset>
 		
 		<fieldset name="rss">
 			
-			<field name="rss" 
-				type="radio" 
-				default="0" 
+			<field name="rss"
+				type="radio"
+				default="0"
 				label="COM_FABRIK_FIELD_RSS_FEED_LABEL" 
 				description="COM_FABRIK_FIELD_RSS_FEED_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="feed_title" 
-				type="listfields" 
+			<field name="feed_title"
+				type="listfields"
 				label="COM_FABRIK_FIELD_FEED_TITLE_LABEL" />
 				
-			<field name="feed_date" 
+			<field name="feed_date"
 				type="listfields"
 				label="COM_FABRIK_FIELD_FEED_DATE_LABEL" />
 				
-			<field name="rsslimit" 
-				type="text" 
-				size="5" 
-				default="150" 
-				label="COM_FABRIK_FIELD_RSS_LIMIT_LABEL" 
+			<field name="rsslimit"
+				type="text"
+				size="5"
+				default="150"
+				label="COM_FABRIK_FIELD_RSS_LIMIT_LABEL"
 				description="COM_FABRIK_FIELD_RSS_LIMIT_DESC" />
 				
-			<field name="rsslimitmax" 
-				type="text" 
-				size="6" 
-				default="2500" 
-				label="COM_FABRIK_FIELD_RSS_LIMIT_MAX_LABEL" 
+			<field name="rsslimitmax"
+				type="text"
+				size="6"
+				default="2500"
+				label="COM_FABRIK_FIELD_RSS_LIMIT_MAX_LABEL"
 				description="COM_FABRIK_FIELD_RSS_LIMIT_MAX_DESC" />
 				
 		</fieldset>
 		
 		<fieldset name="csv">
 			
-			<field name="csv_import_frontend" 
-				type="accesslevel" 
-				default="3" 
-				label="COM_FABRIK_FIELD_CSV_IMPORT_LABEL" 
+			<field name="csv_import_frontend"
+				type="accesslevel"
+				default="3"
+				label="COM_FABRIK_FIELD_CSV_IMPORT_LABEL"
 				description="COM_FABRIK_FIELD_CSV_IMPORT_DESC" />
 				
-			<field name="csv_export_frontend" 
-				type="accesslevel" 
-				default="2" 
-				label="COM_FABRIK_FIELD_CSV_EXPORT_LABEL" 
+			<field name="csv_export_frontend"
+				type="accesslevel"
+				default="2"
+				label="COM_FABRIK_FIELD_CSV_EXPORT_LABEL"
 				description="COM_FABRIK_FIELD_CSV_EXPORT_DESC" />
 	
-			<field name="csvfullname" 
-				type="list" 
-				default="0" 
-				label="COM_FABRIK_FIELD_CSV_KEY_LABEL" 
+			<field name="csvfullname"
+				type="list"
+				default="0"
+				label="COM_FABRIK_FIELD_CSV_KEY_LABEL"
 				description="COM_FABRIK_FIELD_CSV_KEY_DESC">
 					<option value="0">COM_FABRIK_SHORT_NAME</option>
 					<option value="1">COM_FABRIK_ELEMENT_FULL_NAME</option>
 					<option value="2">COM_FABRIK_ELEMENT_LABEL</option>
 			</field>
 			
-			<field name="csv_export_step" 
-				type="text" 
-				default="100" 
-				size="3" 
-				label="COM_FABRIK_FIELD_CSV_EXPORT_STEP_LABEL" 
+			<field name="csv_export_step"
+				type="text"
+				default="100"
+				size="3"
+				label="COM_FABRIK_FIELD_CSV_EXPORT_STEP_LABEL"
 				description="COM_FABRIK_FIELD_CSV_EXPORT_STEP_DESC" />
 	
 			<field name="newline_csv_export"
@@ -449,17 +449,17 @@
 					<option value="remove">COM_FABRIK_REMOVE</option>
 				</field>
 				
-			<field name="csv_custom_qs" 
-				type="text" 
-				default="" 
-				size="20" 
-				label="COM_FABRIK_FIELD_CSV_CUSTOM_QS_LABEL" 
+			<field name="csv_custom_qs"
+				type="text"
+				default=""
+				size="20"
+				label="COM_FABRIK_FIELD_CSV_CUSTOM_QS_LABEL"
 				description="COM_FABRIK_FIELD_CSV_CUSTOM_QS_DESC" />
 		</fieldset>
 		
 		<fieldset name="csvauto">
 		
-			<field name="csv_frontend_selection" 
+			<field name="csv_frontend_selection"
 				type="radio" 
 				default="0" 
 				description="COM_FABRIK_FIELD_CSV_FRONTEND_SELECTION_DESC"
@@ -586,7 +586,6 @@
 				label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" 
 				description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" />
 				
-		<!-- commenting out until we have a valid pdf soluton for 3.0
 		 	<field name="pdf" 
 				type="list"
 				label="COM_FABRIK_FIELD_PDF_ICON_LABEL" 
@@ -603,7 +602,7 @@
 				hide_default="1"
 				default="admin" 
 				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL" 
-				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" /> -->
+				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" />
 			
 			<field name="show-title" 
 				type="radio" default="1" 
@@ -764,12 +763,15 @@
 		<fieldset name="advanced">
 			
 			<field name="alter_existing_db_cols" 
-				type="radio" 
-				default="1" 
+				type="list" 
+				default="default" 
 				label="COM_FABRIK_FIELD_ALTER_EXISTING_FIELD_TYPES_LABEL" 
 				description="COM_FABRIK_FIELD_ALTER_EXISTING_FIELD_TYPES_DESC">
-					<option value="0">JNO</option>
 					<option value="1">JYES</option>
+					<option value="addonly">COM_FABRIK_ALTER_EXISTING_FIELD_ADD_NEW_FIELDS_ONLY</option>
+					<option value="0">JNO</option>
+					<option value="default">JGLOBAL_USE_GLOBAL</option>
+					
 			</field>
 			
 			<field name="process-jplugins" 

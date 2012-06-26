@@ -47,36 +47,16 @@ class plgFabrik_ListCopy extends plgFabrik_List {
 
 	/**
 	 * do the plugin action
-	 * @param object parameters
-	 * @param object table model
-	 * @return string message
+	 * @param	object	parameters
+	 * @param	object	table model
+	 * @return	string	message
 	 */
 
 	function process(&$params, &$model)
 	{
 		$ids = JRequest::getVar('ids', array(), 'method', 'array');
-		$item = $model->getTable();
 		$formModel = $model->getFormModel();
-		$origPost = JRequest::get('post', 2);
-		JRequest::set(array(), 'post');
-		foreach ($ids as $id)
-		{
-			$formModel->rowId = $id;
-			$row = $formModel->getData();
-			$row['Copy'] = '1';
-			$row['fabrik_copy_from_table'] = 1;
-			foreach ($row as $key => $val)
-			{
-				JRequest::setVar($key, $val, 'post');
-			}
-			$formModel->setFormData();
-			$formModel->formDataWithTableName = $formModel->_formData;
-			$formModel->processToDB();
-		}
-
-		JRequest::set(array(), 'post');
-		JRequest::set($origPost, 'post', true);
-		return true;
+		return $model->copyRows($ids);
 	}
 
 	function process_result()
