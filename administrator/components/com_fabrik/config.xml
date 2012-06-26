@@ -191,6 +191,15 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
+		
+		<field name="pdf_debug"
+			type="radio"
+			default="0"
+			description="COM_FABRIK_PDF_DEBUG_DESC"
+			label="COM_FABRIK_PDF_DEBUG_LABEL">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
+		</field>
 
 	</fieldset>
 
