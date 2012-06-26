@@ -608,5 +608,16 @@ class FabrikFEModelGroup extends FabModel{
 		return $newElements;
 	}
 
+	/**
+	 *
+	 * Resets published element cache
+	 */
+
+	public function resetPublishedElements()
+	{
+		$this->publishedElements = null;
+		$this->publishedListElements = null;
+	}
+
 }
 ?>
