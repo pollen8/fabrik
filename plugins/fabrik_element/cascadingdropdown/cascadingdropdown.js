@@ -108,7 +108,7 @@ var FbCascadingdropdown = new Class({
 					// $$$ rob if loading edit form, at page load, u may have a previously selected value 
 					opts = item.value === origvalue ? {'value': item.value, 'selected': 'selected'} : {'value': item.value};
 					if (this.options.editable === false) {
-						new Element('div').set('text', item.text).inject(this.element);
+						new Element('div').set('html', item.text).inject(this.element);
 					} else {
 						new Element('option', opts).set('text', item.text).inject(this.element);
 					}
