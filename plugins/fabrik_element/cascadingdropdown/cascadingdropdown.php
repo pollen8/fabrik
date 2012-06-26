@@ -953,6 +953,16 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$str = "$key $condition $value";
 		return $str;
 	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementDatabasejoin::_getSelectLabel()
+	 * @since	3.0.6
+	 */
+	protected function _getSelectLabel()
+	{
+		return $this->getParams()->get('cascadingdropdown_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
+	}
 
 }
 ?>
