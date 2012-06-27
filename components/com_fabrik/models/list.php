@@ -7707,7 +7707,7 @@ class FabrikFEModelList extends JModelForm {
 	function noTable()
 	{
 		$id = $this->getId();
-		return empty($id);
+		return (bool) empty($id);
 	}
 
 	/**
