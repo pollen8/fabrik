@@ -479,14 +479,14 @@ class FabrikModelElement extends JModelAdmin
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 
-			if ($listModel->canAddFields() === false)
+			if ($listModel->canAddFields() === false && $listModel->noTable() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
 		}
 		else
 		{
-			if ($listModel->canAlterFields() === false)
+			if ($listModel->canAlterFields() === false && $listModel->noTable() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
 			}
@@ -593,7 +593,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		//only update the element name if we can alter existing columns, otherwise the name and
 		//field name become out of sync
-		$data['name'] = ($listModel->canAlterFields() || $new) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
+		$data['name'] = ($listModel->canAlterFields() || $new || $listModel->noTable()) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
 
 		$ar = array('published', 'use_in_page_title', 'show_in_list_summary', 'link_to_detail', 'can_order', 'filter_exact_match');
 		foreach ($ar as $a)
