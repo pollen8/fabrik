@@ -671,6 +671,7 @@ class FabrikModelElement extends JModelAdmin
 
 			$app->setUserState('com_fabrik.origplugin', $origplugin);
 			$app->setUserState('com_fabrik.oldname', $oldName);
+			$app->setUserState('com_fabrik.newname', $data['name']);
 			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');

@@ -4517,6 +4517,38 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		return $this->_joinModel;
 	}
+	
+	/**
+	 * when saving an element pk we need to update any join which has the same params->pk
+	 * @since	3.0.6
+	 * @param	string	$oldName (prevoius element name)
+	 * @param	string	$newName (new element name)
+	 */
+	
+	public function updateJoinedPks($oldName, $newName)
+	{
+		// update join pk parameter
+		$db = $this->getListModel()->getDb();
+		$item = $this->getListModel()->getTable();
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__{package}_joins')->where('table_join = ' . $db->quote($item->db_table_name));
+		$db->setQuery($query);
+		$ids = $db->loadColumn();
+		$teskPk =  $db->nameQuote($item->db_table_name . '.' . $oldName);
+		$newPk = $db->nameQuote($item->db_table_name . '.' . $newName);
+		foreach ($ids as $id)
+		{
+			$join = FabTable::getInstance('Join', 'FabrikTable');
+			$join->load($id);
+			$params = new JRegistry($join->params);
+			if ($params->get('pk') === $teskPk)
+			{
+				$params->set('pk', $newPk);
+				$join->params = (string) $params;
+				$join->store();
+			}
+		}
+	}
 
 
 	public function isJoin()
