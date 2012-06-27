@@ -1748,6 +1748,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 										//$$$ rob urldecode when posting from ajax form
 										$e = urldecode($e);
 										$e = empty($e) ? '' : $crypt->decrypt($e);
+										$e = FabrikWorker::JSONtoData($e);
 										$v[] = $w->parseMessageForPlaceHolder($e, $post);
 									}
 								}
@@ -1756,6 +1757,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 									// $$$ rob urldecode when posting from ajax form
 									$encrypted = urldecode($encrypted);
 									$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
+									// $$$ hugh - things like elementlist elements (radios, etc) seem to use
+									// their JSON data for encrypted read only vals, need to decode.
+									$v = FabrikWorker::JSONtoData($v);
 									$v = $w->parseMessageForPlaceHolder($v, $post);
 								}
 								$elementModel->_group = $groupModel;
@@ -1863,12 +1867,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// $$$ hugh - FIXME - wait ... what ... hang on ... we assign $this->_formData in $this->setFormData(),
 		// which we assigned to $post a few ines up there ^^.  Why are we now assigning $post back to $this->_formData??
 		$this->_formData =& $post;
-		$this->callElementPreprocess();
 
 		// $$$ hugh - add in any encrypted stuff, in case we fail validation ...
 		// otherwise it won't be in $data when we rebuild the page.
 		// Need to do it here, so _raw fields get added in the next chunk 'o' code.
 		$this->addEncrytedVarsToArray($post);
+
+		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
+		// available to things like calc's running in preProcess phase.
+		$this->callElementPreprocess();
 
 		//add in raw fields - the data is already in raw format so just copy the values
 		$this->copyToRaw($post);
