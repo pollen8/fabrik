@@ -4527,10 +4527,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	
 	public function updateJoinedPks($oldName, $newName)
 	{
-		// update join pk parameter
 		$db = $this->getListModel()->getDb();
 		$item = $this->getListModel()->getTable();
 		$query = $db->getQuery(true);
+		
+		//update linked lists id.
+		$query->update('#__{package}_joins')
+		->set('table_key = ' . $db->quote($newName))
+		->where('join_from_table = ' . $db->quote($item->db_table_name))
+		->where('table_key = ' . $db->quote($oldName));
+		$db->setQuery($query);
+		$db->query();
+		
+		// update join pk parameter
+		$query->clear();
 		$query->select('id')->from('#__{package}_joins')->where('table_join = ' . $db->quote($item->db_table_name));
 		$db->setQuery($query);
 		$ids = $db->loadColumn();
@@ -4549,7 +4559,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			}
 		}
 	}
-
 
 	public function isJoin()
 	{
