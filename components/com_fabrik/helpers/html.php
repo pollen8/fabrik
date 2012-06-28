@@ -440,10 +440,10 @@ EOD;
 	 * @returns	string	HTML for the select list
 	 */
 
-	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0, $editable=true)
+	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected = null, $key = 'value', $text = 'text', $options_per_row = 0, $editable = true)
 	{
 		reset($arr);
-		if ($options_per_row > 0)
+		if ($options_per_row > 1)
 		{
 			$percentageWidth = floor(floatval(100) / $options_per_row) - 2;
 			$div = "<div class=\"fabrik_subelement\" style=\"float:left;width:" . $percentageWidth . "%\">\n";
