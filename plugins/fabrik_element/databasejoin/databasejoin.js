@@ -11,6 +11,7 @@ var FbDatabasejoin = new Class({
 		'displayType': 'dropdown',
 		'popupform': 0,
 		'listid': 0,
+		'listRef': '',
 		'joinId': 0,
 		'isJoin': false
 	},
@@ -275,6 +276,7 @@ var FbDatabasejoin = new Class({
 		var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=dbjoinselect&ajax=1&listid=" + this.options.listid;
 		url += "&triggerElement=" + this.element.id;
 		url += "&resetfilters=1";
+		url += '&c=' + this.options.listRef;
 		this.windowopts = {
 			'id': id,
 			'title': Joomla.JText._('PLG_ELEMENT_DBJOIN_SELECT'),

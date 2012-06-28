@@ -1588,6 +1588,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->label = $table."___".$params->get('join_val_column');
 		$opts->formid = $this->getForm()->getForm()->id;
 		$opts->listid = $popuplistid;
+		$opts->listRef = '_com_fabrik_' . $opts->listid;
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->popupform = $popupform;
