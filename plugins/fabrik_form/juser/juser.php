@@ -571,7 +571,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		} */
 		if (!empty($this->useridfield))
 		{
-			$formModel->updateFormData($this->useridfield, $user->get('id'), true);
+			$formModel->updateFormData($this->useridfield, $user->get('id'), true, true);
 		}
 		if ($ftable == $jos_users)
 		{
