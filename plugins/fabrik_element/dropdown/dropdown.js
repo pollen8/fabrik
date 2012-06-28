@@ -90,6 +90,7 @@ var FbDropdown = new Class({
 		if (typeOf(val) === 'null') {
 			val = [];
 		}
+		
 		this.getElement();
 		if (typeOf(this.element) === 'null') {
 			return;
@@ -104,6 +105,10 @@ var FbDropdown = new Class({
 			return;
 		}
 		opts = this.element.getElements('option');
+		if (typeOf(val) === 'number') {
+			//numbers dont have indexOf() methods so ensure they are strings
+			val = val.toString(); 
+		}
 		for (var i = 0; i < opts.length; i++) {
 			if (val.indexOf(opts[i].value) !== -1) {
 				opts[i].selected = true;

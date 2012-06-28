@@ -180,7 +180,8 @@ var FbElement =  new Class({
 	//below functions can override in plugin element classes
 	
 	update: function (val) {
-		if (this.element) {
+		//have to call getElement() - otherwise inline editor doesn't work when editing 2nd row of data.
+		if (this.getElement()) {
 			if (this.options.editable) {
 				this.element.value = val;
 			} else {

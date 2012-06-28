@@ -116,6 +116,7 @@ var FbTextarea = new Class({
 	},
 	
 	update: function (val) {
+		this.getElement();
 		this.getTextContainer();
 		if (!this.options.editable) {
 			this.element.set('html', val);

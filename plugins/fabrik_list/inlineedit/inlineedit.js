@@ -418,7 +418,7 @@ var FbListInlineEdit = new Class({
 			}).send();
 		} else {
 			//testing trying to re-use old form
-			this.javascript;
+			//this.javascript;
 			var html = this.editors[opts.elid].stripScripts(function (script) {
 				this.javascript = script;
 			}.bind(this));

@@ -368,6 +368,7 @@ var FbDateTime = new Class({
 	 * takes a date object or string
 	 */
 	update: function (val) {
+		this.getElement();
 		if (val === 'invalid date') {
 			fconsole(this.element.id + ': date not updated as not valid');
 			return;
