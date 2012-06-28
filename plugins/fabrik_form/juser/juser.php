@@ -670,7 +670,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$ok = false;
 		}
 
-		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress( $post['email']))
+		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress($post['email']))
 		{
 			$this->raiseError($formModel->_arErrors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;

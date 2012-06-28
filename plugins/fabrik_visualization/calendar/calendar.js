@@ -877,9 +877,7 @@ var fabrikCalendar = new Class({
 	renderWeekView: function () {
 		var i, d, tr, tbody, we;
 		this.popWin.setStyle('opacity', 0);
-		
-		( this.options.showweekends == 0 ) ? we = 6 : we = 8;
-		
+		we = this.options.showweekends === 0 ? 6 : 8;
 		this.options.viewType = 'weekView';
 		if (!this.weekView) {
 			tbody = new Element('tbody');
@@ -891,7 +889,7 @@ var fabrikCalendar = new Class({
 					tr.adopt(new Element('th', {'class': 'dayHeading',
 					'styles': {
 						'width': this.options.weekday.width + 'px',
-						'height': ( this.options.weekday.height - 10 ) + 'px',
+						'height': (this.options.weekday.height - 10) + 'px',
 						'text-align': 'center',
 						'color': this.options.headingColor,
 						'background-color': this.options.colors.headingBg
@@ -917,8 +915,8 @@ var fabrikCalendar = new Class({
 			}
 			tbody.appendChild(tr);
 			
-			(this.options.open < 0 ) ? this.options.open = 0 : this.options.open = this.options.open;
-			(this.options.close > 24 || this.options.close < this.options.open ) ? this.options.close = 24 : this.options.close;
+			this.options.open = this.options.open < 0 ?  0 : this.options.open;
+			(this.options.close > 24 || this.options.close < this.options.open) ? this.options.close = 24 : this.options.close;
 		
 			for (i = this.options.open; i < (this.options.close + 1); i++) {
 				tr = new Element('tr');

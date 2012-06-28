@@ -40,7 +40,7 @@ class FabrikControllerForm extends JControllerForm
 	{
 		$document = JFactory::getDocument();
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
@@ -85,6 +85,7 @@ class FabrikControllerForm extends JControllerForm
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType = $document->getType();
+		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$view = $this->getView($viewName, $viewType);
 		if (!JError::isError($model))
 		{
@@ -117,7 +118,14 @@ class FabrikControllerForm extends JControllerForm
 			}
 			else
 			{
-				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=' . $model->getId() . '&rowid=' . $model->_rowId, '');
+				// $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
+				// couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
+				// if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
+				if (JRequest::getCmd('usekey') !== '')
+				{
+					JRequest::setVar('rowid', -1);
+				}
+				$view->display();
 			}
 			return;
 		}
