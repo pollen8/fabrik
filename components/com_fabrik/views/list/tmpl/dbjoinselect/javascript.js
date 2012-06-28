@@ -15,33 +15,28 @@ var TableRowSelect = new Class({
 		document.getElements('.fabrikList').each(function(tbl) {
 			if (!tbl.hasClass('filtertable')) {
 				this.listid = tbl.id.replace('list_', '');
-				tbl.getElements('.fabrik_row').each(function(r) {
-
-					$(r).addEvent('mouseover', function(e) {
-						if (r.hasClass('oddRow0') || r.hasClass('oddRow1')) {
-							r.addClass('fabrikHover');
-						}
-					}, r);
-
-					$(r).addEvent('mouseout', function(e) {
-						r.removeClass('fabrikHover');
-					}, r);
+				
+				tbl.addEvent('mouseover:relay(.fabrik_row)', function (e, r) {
+					if (r.hasClass('oddRow0') || r.hasClass('oddRow1')) {
+						r.addClass('fabrikHover');
+					}
+				});
+				
+				tbl.addEvent('mouseout:relay(.fabrik_row)', function (e, r) {
+					r.removeClass('fabrikHover');
 				});
 			
-			
-				tbl.getElements('.fabrik_row').each(function(r) {
-					$(r).addEvent('click', function(e) {
-						var d = $A(r.id.split('_'));
-						var data = {};
-						data[this.triggerEl] = d.getLast();
-						var json = {
-								'errors' : {},
-								'data' : data,
-								'rowid':d.getLast(),
-								formid:this.formid
-							};
-						Fabrik.fireEvent('fabrik.list.row.selected', json);
-					}.bind(this));
+				tbl.addEvent('click:relay(.fabrik_row)', function (e, r) {
+					var d = $A(r.id.split('_'));
+					var data = {};
+					data[this.triggerEl] = d.getLast();
+					var json = {
+							'errors' : {},
+							'data' : data,
+							'rowid': d.getLast(),
+							formid:this.formid
+						};
+					Fabrik.fireEvent('fabrik.list.row.selected', json);
 				}.bind(this));
 			}
 		}.bind(this));
