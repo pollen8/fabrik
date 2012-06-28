@@ -203,7 +203,9 @@ div.calendar{
 }
 
 #listform_$c .fabrikHover {
-	background-color: #ffffff;
+	background-color: #ffffcc;
+	cursor: pointer;
+	color: #000;
 }
 
 /** highlight the last row that was clicked */
