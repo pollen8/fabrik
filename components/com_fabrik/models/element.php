@@ -2761,30 +2761,46 @@ class plgFabrik_Element extends FabrikPlugin
 		switch ($condition)
 		{
 			case 'earlierthisyear':
-				//$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
 				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(now()) ';
 				break;
 			case 'laterthisyear':
-				//$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
 				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(now()) ';
+				break;
+			case 'today':
+				$query = ' (' . $key . ' >= CURDATE() AND ' . $key . ' < CURDATE() + INTERVAL 1 DAY) ';
+				break;
+			case 'yesterday':
+				$query = ' (' . $key . ' >= CURDATE() - INTERVAL 1 DAY AND ' . $key . ' < CURDATE()) ';
+				break;
+			case 'tomorrow':
+				$query = ' (' . $key . ' >= CURDATE() + INTERVAL 1 DAY  AND ' . $key . ' < CURDATE() + INTERVAL 2 DAY ) ';
+				break;
+			case 'thismonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(NOW()) ) ';
+				break;
+			case 'lastmonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
+				break;
+			case 'nextmonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key . ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
 				break;
 			default:
 				if ($this->isJoin())
-			{
-				// query the joined table concatanating into one field
-				$jointable = $this->getJoinModel()->getJoin()->table_join;
-				$pk = $this->getListModel()->getTable()->db_primary_key;
-				$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
-				$value = str_replace("'", '', $value);
-				$query = "($key = '$value' OR $key LIKE '$value" . GROUPSPLITTER . "%' OR
-				$key LIKE '" . GROUPSPLITTER . "$value" . GROUPSPLITTER . "%' OR
-				$key LIKE '%" . GROUPSPLITTER . "$value')";
-			}
-			else
-			{
-				$query = " $key $condition $value ";
-			}
-			break;
+				{
+					// query the joined table concatanating into one field
+					$jointable = $this->getJoinModel()->getJoin()->table_join;
+					$pk = $this->getListModel()->getTable()->db_primary_key;
+					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
+					$value = str_replace("'", '', $value);
+					$query = "($key = '$value' OR $key LIKE '$value" . GROUPSPLITTER . "%' OR
+					$key LIKE '" . GROUPSPLITTER . "$value" . GROUPSPLITTER . "%' OR
+					$key LIKE '%" . GROUPSPLITTER . "$value')";
+				}
+				else
+				{
+					$query = " $key $condition $value ";
+				}
+				break;
 		}
 		return $query;
 	}
