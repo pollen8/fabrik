@@ -18,6 +18,7 @@ var FbDatabasejoin = new Class({
 	
 	initialize: function (element, options) {
 		this.activePopUp = false;
+		this.activeSelect = false;
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
 		this.changeEvents = []; // workaround for change events getting zapped on clone
@@ -261,7 +262,7 @@ var FbDatabasejoin = new Class({
 			if (typeOf(sel) !== 'null') {
 				sel.addEvent('click', this.selectRecord.bindWithEvent(this));
 				Fabrik.addEvent('fabrik.list.row.selected', function (json) {
-					if (this.options.popupform === json.formid) {
+					if (this.options.popupform === json.formid && this.activeSelect) {
 						this.update(json.rowid);
 						var winid = this.element.id + '-popupwin-select';
 						if (Fabrik.Windows[winid]) {
@@ -270,11 +271,20 @@ var FbDatabasejoin = new Class({
 						this.updateFromServer(json.rowid);
 					}
 				}.bind(this));
+				
+				//used for auto-completes in repeating groups to stop all fields updating when a record
+				// is selcted
+				window.addEvent('fabrik.dbjoin.unactivate', function () {
+					this.activeSelect = false;
+				}.bind(this));
+				
 			}
 		}
 	},
 	
 	selectRecord: function (e) {
+		window.fireEvent('fabrik.dbjoin.unactivate');
+		this.activeSelect = true;
 		e.stop();
 		var id = this.element.id + '-popupwin-select';
 		var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=dbjoinselect&ajax=1&listid=" + this.options.listid;
