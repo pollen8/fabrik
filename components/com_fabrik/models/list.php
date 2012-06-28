@@ -6832,7 +6832,11 @@ class FabrikFEModelList extends JModelForm {
 
 				$row = array($row);
 				$this->formatData($row);
-				$this->rows[$sig] = $row[0][0];
+				// $$$ hugh - if table is grouped, formatData will have turned $row into an
+				// assoc array, so can't assume 0 is first key.
+				//$this->rows[$sig] = $row[0][0];
+				$row = JArrayHelper::getValue($row, FArrayHelper::firstKey($row), array());
+				$this->rows[$sig] = JArrayHelper::getValue($row, 0, new stdClass());
 			} else {
 				$this->rows[$sig] = $fabrikDb->loadObject();
 			}
@@ -6847,8 +6851,16 @@ class FabrikFEModelList extends JModelForm {
 			$formModel->setJoinData($rows);
 			if ($format == true) {
 				$this->formatData($rows);
+				// $$$ hugh - if list is grouped, formatData will have re-index as assoc array,
+				// so can't assume 0 is first key.
+				$this->rows[$sig] = JArrayHelper::getValue($rows, FArrayHelper::firstKey($rows), array());
 			}
-			$this->rows[$sig] = JArrayHelper::getValue($rows, 0, new stdClass());
+			else
+			{
+				// $$$ hugh - think default needs to be empty array, not object?
+				//$this->rows[$sig] = JArrayHelper::getValue($rows, 0, new stdClass());
+				$this->rows[$sig] = JArrayHelper::getValue($rows, 0, array());
+			}
 		}
 		return $this->rows[$sig];
 	}
