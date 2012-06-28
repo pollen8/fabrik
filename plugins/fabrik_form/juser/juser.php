@@ -678,7 +678,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		if (empty($post['password']))
 		{
 			//$$$tom added a new/edit test
-			if (empty($post['id']))
+			if ((int)$post['id'] === 0)
 			{
 				$this->raiseError($formModel->_arErrors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;
