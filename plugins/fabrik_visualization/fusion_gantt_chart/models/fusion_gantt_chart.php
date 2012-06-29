@@ -35,7 +35,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 		$this->fc = new FusionCharts("GANTT","$w","$h");
 
 		// Define path to FC's SWF
-		$this->fc->setSWFPath($this->srcBase."fusion_gantt_chart/lib/FCCharts/");
+		$this->fc->setSWFPath(COM_FABRIK_LIVESITE . $this->srcBase . 'fusion_gantt_chart/lib/FCCharts/');
 
 
 		$this->fc->setChartParam('dateFormat', 'yyyy-mm-dd');
@@ -116,8 +116,8 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization {
 				$strParam .= "id={$d->__pk_val};color=99cc00;alpha=60;topPadding=19;hoverText={$hovertext};";
 				$strParam .="link={$d->fabrik_view_url};";
 				
-				if (isset($d->label)) {
-				$l = $this->prepData($d->$label);
+				if (isset($d->$label)) {
+					$l = $this->prepData($d->$label);
 				} else {
 					$l = '';
 				}

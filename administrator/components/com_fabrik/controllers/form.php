@@ -29,6 +29,9 @@ class FabrikControllerForm extends JControllerForm
 
 	public $isMambot = false;
 
+	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	protected $cacheId = 0;
+	
 	/**
 	 * show the form in the admin
 	 */
@@ -37,7 +40,7 @@ class FabrikControllerForm extends JControllerForm
 	{
 		$document = JFactory::getDocument();
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
@@ -48,7 +51,27 @@ class FabrikControllerForm extends JControllerForm
 
 		//todo check for cached version
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
-		$view->display();
+		
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf')))
+		{
+			$view->display();
+		}
+		else
+		{
+			$user = JFactory::getUser();
+			$post = JRequest::get('post');
+			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cache = JFactory::getCache('com_fabrik', 'view');
+			ob_start();
+			$cache->get($view, 'display', $cacheid);
+			$contents = ob_get_contents();
+			ob_end_clean();
+			$token = JUtility::getToken();
+			$search = '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
+			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
+			echo preg_replace($search, $replacement, $contents);
+		}
+		
 		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
@@ -62,6 +85,7 @@ class FabrikControllerForm extends JControllerForm
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType = $document->getType();
+		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$view = $this->getView($viewName, $viewType);
 		if (!JError::isError($model))
 		{
@@ -94,7 +118,14 @@ class FabrikControllerForm extends JControllerForm
 			}
 			else
 			{
-				$this->setRedirect('index.php?option=com_fabrik&task=form.view&formid=' . $model->getId() . '&rowid=' . $model->_rowId, '');
+				// $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
+				// couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
+				// if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
+				if (JRequest::getCmd('usekey') !== '')
+				{
+					JRequest::setVar('rowid', -1);
+				}
+				$view->display();
 			}
 			return;
 		}

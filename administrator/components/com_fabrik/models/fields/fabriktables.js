@@ -65,9 +65,8 @@ var fabriktablesElement = new Class({
 			this.loader.show();
 		}
 
-		var url = 'index.php';
 		var myAjax = new Request({
-			url : url,
+			url : 'index.php',
 			data: {
 				'option': 'com_fabrik',
 				'format': 'raw',
@@ -78,7 +77,7 @@ var fabriktablesElement = new Class({
 				'showf': '1',
 				'cid': cid.toInt()
 			},
-			onComplete : function (r) {
+			onSuccess : function (r) {
 				var opts = JSON.decode(r);
 				if (typeOf(opts) !== 'null') {
 					if (opts.err) {
@@ -100,8 +99,24 @@ var fabriktablesElement = new Class({
 						this.updateElements();
 					}
 				}
+			}.bind(this),
+			'onFailure': function (xhr) {
+				console.log('fabriktables request failure', xhr.getResponseHeader('Status'));
+			}.bind(this),
+			'onException': function (headerName, value) {
+				console.log('fabriktables request exception', headerName, value);
 			}.bind(this)
-		}).send();
+		});
+		
+		// $$$ rob tmp fix (at least until https://github.com/joomla/joomla-platform/pull/1209/files is 
+		// contained in the CMS. Issue in J2.5.6 at least. Once resolved uncomment:
+		// myAjax.send()
+		//
+		// and remove:
+		// Fabrik.requestQueue.add(myAjax);
+		
+		//myAjax.send();
+		Fabrik.requestQueue.add(myAjax);
 	},
 
 	updateElements : function () {

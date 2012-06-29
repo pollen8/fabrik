@@ -1734,7 +1734,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						if ($elementModel->getFullName(false, true, false) == $key)
 						{
 							// 	$$$ rob - dont test for !canUse() as confirmation plugin dynamically sets this
-							if ($elementModel->canView())
+							//if ($elementModel->canView())
+							// $$$ hugh - testing adding non-viewable, non-editable elements to encrypted vars
+							if (true)
 							{
 								//if (!$elementModel->canUse() && $elementModel->canView()) {
 								if (is_array($encrypted))
@@ -1746,6 +1748,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 										//$$$ rob urldecode when posting from ajax form
 										$e = urldecode($e);
 										$e = empty($e) ? '' : $crypt->decrypt($e);
+										$e = FabrikWorker::JSONtoData($e);
 										$v[] = $w->parseMessageForPlaceHolder($e, $post);
 									}
 								}
@@ -1754,6 +1757,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 									// $$$ rob urldecode when posting from ajax form
 									$encrypted = urldecode($encrypted);
 									$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
+									// $$$ hugh - things like elementlist elements (radios, etc) seem to use
+									// their JSON data for encrypted read only vals, need to decode.
+									$v = FabrikWorker::JSONtoData($v);
 									$v = $w->parseMessageForPlaceHolder($v, $post);
 								}
 								$elementModel->_group = $groupModel;
@@ -1861,12 +1867,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// $$$ hugh - FIXME - wait ... what ... hang on ... we assign $this->_formData in $this->setFormData(),
 		// which we assigned to $post a few ines up there ^^.  Why are we now assigning $post back to $this->_formData??
 		$this->_formData =& $post;
-		$this->callElementPreprocess();
 
 		// $$$ hugh - add in any encrypted stuff, in case we fail validation ...
 		// otherwise it won't be in $data when we rebuild the page.
 		// Need to do it here, so _raw fields get added in the next chunk 'o' code.
 		$this->addEncrytedVarsToArray($post);
+
+		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
+		// available to things like calc's running in preProcess phase.
+		$this->callElementPreprocess();
 
 		//add in raw fields - the data is already in raw format so just copy the values
 		$this->copyToRaw($post);
@@ -3782,16 +3791,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 
 					//fabrik3.0 : if the element cant be seen or used then dont add it?
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					/*
 					if (!$elementModel->canUse() && !$elementModel->canView()) {
 						continue;
 					}
+					*/
 
 					$elementModel->_foreignKey = $foreignKey;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 
 					$element = $elementModel->preRender($c, $elCount, $tmpl);
 
-					if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+					// $$$ hugh - experimenting with adding non-viewable, non-editable to encrypted vars
+					//if (!$element || ($elementModel->canView() && !$elementModel->canUse()))
+					if (!$element || !$elementModel->canUse())
 					{
 						// $$$ hugh - $this->data doesn't seem to always have what we need in it, but $data does.
 						// can't remember exact details, was chasing a nasty issue with encrypted 'user' elements.
@@ -3942,6 +3956,47 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		return 'com_fabrik.form.' . $this->getId() . '.redirect.';
 
+	}
+
+	/**
+	 *
+	 * Resets cached form data.
+	 *
+	 * @param bool $unset_groups also reset group and element model cached data
+	 */
+	public function unsetData($unset_groups = false)
+	{
+		unset($this->_data);
+		unset($this->query);
+		if ($unset_groups)
+		{
+			// $$$ hugh - unset group published elements list, and clear each
+			// element's default data.  Needed from content plugin, otherwise if
+			// we render the same form more than once with different rowid's, we end up
+			// rendering the first copy's element data X times.
+			// Not sure if we need to actually unset the group published elements list,
+			// but for the moment I'm just using a Big Hammer to get the content plugin working!
+			$groups = $this->getGroupsHiarachy();
+			foreach ($groups as $groupModel)
+			{
+				$groupModel->resetPublishedElements();
+				$elementModels = $groupModel->getPublishedElements();
+				foreach ($elementModels as $elementModel)
+				{
+					$elementModel->reset();
+				}
+			}
+		}
+	}
+
+	/**
+	 *
+	 * Reset form's cached data, i.e. from content plugin, where we may be rendering the same
+	 * form twice, with different row data.
+	 */
+	public function reset()
+	{
+		$this->unsetData(true);
 	}
 }
 

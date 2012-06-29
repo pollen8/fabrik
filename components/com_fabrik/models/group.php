@@ -300,13 +300,13 @@ class FabrikFEModelGroup extends FabModel{
 		}
 		return $this->publishedElements[$sig];
 	}
-	
+
 	/**
 	 * get a list of all elements which are set to show in list or are set to include in list query
 	 * @since	3.0.6
 	 * @return	areray	list of element models
 	 */
-	
+
 	public function getListQueryElements()
 	{
 		if (!isset($this->listQueryElements))
@@ -324,9 +324,12 @@ class FabrikFEModelGroup extends FabModel{
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
-				
+
 				$params = $elementModel->getParams();
-				if ($element->published == 1 && $elementModel->canView())
+				// $$$ hugh - experimenting adding non-viewable data to encrypted vars on forms,
+				// also we need them in _addDefaultDataFromRO()
+				//if ($element->published == 1 && $elementModel->canView())
+				if ($element->published == 1)
 				{
 					if (empty($showInList))
 					{
@@ -603,6 +606,17 @@ class FabrikFEModelGroup extends FabModel{
 		}
 		$formGroup->reorder(" form_id = '$formid'");
 		return $newElements;
+	}
+
+	/**
+	 *
+	 * Resets published element cache
+	 */
+
+	public function resetPublishedElements()
+	{
+		$this->publishedElements = null;
+		$this->publishedListElements = null;
 	}
 
 }

@@ -265,7 +265,13 @@ var FbCddAutocomplete = new Class({
 						fabrik_cascade_ajax_update: 1,
 						v: document.id(this.options.observerid).get('value')
 					},
-					onComplete: this.completeAjax.bindWithEvent(this, [key])
+					onSuccess: this.completeAjax.bindWithEvent(this, [key]),
+					onError: function (text, error) {
+						console.log(text, error);
+					},
+					onFailure: function (xhr) {
+						console.log(xhr);
+					}
 				}).send();
 			}
 		}

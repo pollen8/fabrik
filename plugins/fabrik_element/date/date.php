@@ -1567,52 +1567,65 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$this->encryptFieldName($key);
 		switch ($condition) {
 			case 'earlierthisyear':
-				$query = " DAYOFYEAR($key) <= DAYOFYEAR($value) ";
+				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(now()) ';
 				break;
 			case 'laterthisyear':
-				$query = " DAYOFYEAR($key) >= DAYOFYEAR($value) ";
+				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(now()) ';
 				break;
 			case 'today':
-				$query = " ($key >= CURDATE() and $key < CURDATE() + INTERVAL 1 DAY) ";
+				$query = ' (' . $key . ' >= CURDATE() AND ' . $key . ' < CURDATE() + INTERVAL 1 DAY) ';
 				break;
 			case 'yesterday':
-				$query = " ($key >= CURDATE() - INTERVAL 1 DAY and $key < CURDATE()) ";
+				$query = ' (' . $key . ' >= CURDATE() - INTERVAL 1 DAY AND ' . $key . ' < CURDATE()) ';
 				break;
 			case 'tomorrow':
-				$query = " ($key >= CURDATE() + INTERVAL 1 DAY  and $key < CURDATE() + INTERVAL 2 DAY ) ";
+				$query = ' (' . $key . ' >= CURDATE() + INTERVAL 1 DAY  AND ' . $key . ' < CURDATE() + INTERVAL 2 DAY ) ';
 				break;
+			case 'thismonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(NOW()) ) ';
+				break;
+			case 'lastmonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
+				break;
+			case 'nextmonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key . ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
+				break;
+			
 			default:
 				$params = $this->getParams();
-			$format = $params->get('date_table_format');
-			if ($format == '%a' || $format == '%A') {
-				//special cases where we want to search on a given day of the week
-				//note it wont work with ranged searches
-				$this->strftimeTFormatToMySQL($format);
-				$key = "DATE_FORMAT( $key , '$format')";
-			}
-			else if ($format == '%Y %B') {
-				// $$$ hugh - testing horrible hack for different languages, initially for andorapro's site
-				// Problem is, he has multiple language versions of the site, and needs to filter tables by "%Y %B" dropdown (i.e. "2010 November") in multiple languages.
-				// FabDate automagically uses the selected language when we render the date
-				// but when we get to this point, month names are still localized, i.e. in French or German
-				// which MySQL won't grok (until 5.1.12)
-				// So we need to translate them back again, *sigh*
-				// FIXME - need to make all this more generic, so we can handle any date format which uses
-				// month or day names.
-				$matches = array();
-				if (preg_match('#\d\d\d\d\s+(\S+)\b#', $value, $matches)) {
-					$this_month = $matches[1];
-					$en_month = $this->_monthToEnglish($this_month);
-					$value = str_replace($this_month, $en_month, $value);
+				$format = $params->get('date_table_format');
+				if ($format == '%a' || $format == '%A')
+				{
+					//special cases where we want to search on a given day of the week
+					//note it wont work with ranged searches
 					$this->strftimeTFormatToMySQL($format);
 					$key = "DATE_FORMAT( $key , '$format')";
 				}
-			}
-			if ($type == 'querystring' && JString::strtolower($value) == 'now') {
-				$value = 'NOW()';
-			}
-			$query = " $key $condition $value ";
-			break;
+				else if ($format == '%Y %B')
+				{
+					// $$$ hugh - testing horrible hack for different languages, initially for andorapro's site
+					// Problem is, he has multiple language versions of the site, and needs to filter tables by "%Y %B" dropdown (i.e. "2010 November") in multiple languages.
+					// FabDate automagically uses the selected language when we render the date
+					// but when we get to this point, month names are still localized, i.e. in French or German
+					// which MySQL won't grok (until 5.1.12)
+					// So we need to translate them back again, *sigh*
+					// FIXME - need to make all this more generic, so we can handle any date format which uses
+					// month or day names.
+					$matches = array();
+					if (preg_match('#\d\d\d\d\s+(\S+)\b#', $value, $matches))
+					{
+						$this_month = $matches[1];
+						$en_month = $this->_monthToEnglish($this_month);
+						$value = str_replace($this_month, $en_month, $value);
+						$this->strftimeTFormatToMySQL($format);
+						$key = "DATE_FORMAT( $key , '$format')";
+					}
+				}
+				if ($type == 'querystring' && JString::strtolower($value) == 'now') {
+					$value = 'NOW()';
+				}
+				$query = " $key $condition $value ";
+				break;
 		}
 		return $query;
 	}

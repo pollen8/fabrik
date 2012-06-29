@@ -11,12 +11,14 @@ var FbDatabasejoin = new Class({
 		'displayType': 'dropdown',
 		'popupform': 0,
 		'listid': 0,
+		'listRef': '',
 		'joinId': 0,
 		'isJoin': false
 	},
 	
 	initialize: function (element, options) {
 		this.activePopUp = false;
+		this.activeSelect = false;
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
 		this.changeEvents = []; // workaround for change events getting zapped on clone
@@ -100,12 +102,16 @@ var FbDatabasejoin = new Class({
 			newchx.getElement('input').set('value', v);
 			var last = chxs.length === 0 ? this.element : chxs.getLast();
 			newchx.inject(last, 'after');
+			newchx.getElement('input').checked = true;
+			
 			var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
 			var newid = ids.getLast().clone();
 			newid.getElement('span').set('text', l);
 			newid.getElement('input').set('value', 0); // to add a new join record set to 0
 			last = ids.length === 0 ? this.element.getElements('.fabrikHide') : ids.getLast();
 			newid.inject(last, 'after');
+			newid.getElement('input').checked = true;
+			
 			break;
 		case 'radio':
 		/* falls through */
@@ -148,7 +154,7 @@ var FbDatabasejoin = new Class({
 		new Request.JSON({url: '',
 			method: 'post', 
 			'data': data,
-			onComplete: function (json) {
+			onSuccess: function (json) {
 				var existingValues = this.getOptionValues();
 				json.each(function (o) {
 					if (!existingValues.contains(o.value)) {
@@ -180,7 +186,7 @@ var FbDatabasejoin = new Class({
 		case 'radio':
 		/* falls through */
 		default:
-			o = this.element.getElements('.fabrik_subelement type=[radio]');
+			o = this.element.getElements('.fabrik_subelement input[type=radio]');
 			break;
 		}
 		o.each(function (o) {
@@ -256,7 +262,7 @@ var FbDatabasejoin = new Class({
 			if (typeOf(sel) !== 'null') {
 				sel.addEvent('click', this.selectRecord.bindWithEvent(this));
 				Fabrik.addEvent('fabrik.list.row.selected', function (json) {
-					if (this.options.popupform === json.formid) {
+					if (this.options.popupform === json.formid && this.activeSelect) {
 						this.update(json.rowid);
 						var winid = this.element.id + '-popupwin-select';
 						if (Fabrik.Windows[winid]) {
@@ -265,16 +271,26 @@ var FbDatabasejoin = new Class({
 						this.updateFromServer(json.rowid);
 					}
 				}.bind(this));
+				
+				//used for auto-completes in repeating groups to stop all fields updating when a record
+				// is selcted
+				window.addEvent('fabrik.dbjoin.unactivate', function () {
+					this.activeSelect = false;
+				}.bind(this));
+				
 			}
 		}
 	},
 	
 	selectRecord: function (e) {
+		window.fireEvent('fabrik.dbjoin.unactivate');
+		this.activeSelect = true;
 		e.stop();
 		var id = this.element.id + '-popupwin-select';
 		var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=dbjoinselect&ajax=1&listid=" + this.options.listid;
 		url += "&triggerElement=" + this.element.id;
 		url += "&resetfilters=1";
+		url += '&c=' + this.options.listRef;
 		this.windowopts = {
 			'id': id,
 			'title': Joomla.JText._('PLG_ELEMENT_DBJOIN_SELECT'),
@@ -460,7 +476,22 @@ var FbDatabasejoin = new Class({
 				//fired when form submitted - enables element to update itself with any new submitted data
 				if (this.options.popupform === form.id) {
 					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
-					this.updateFromServer();
+					if (this.options.display_type === 'auto-complete') {
+						//need to get v if autocomplete and updating from posted popup form as we only want to get ONE 
+						// option back inside updateFromServer;
+						var myajax = new Request.JSON({
+							'url': Fabrik.liveSite + 'index.php?option=com_fabrik&view=form&format=raw',
+							'data': {
+								'formid': this.options.popupform,
+								'rowid': json.rowid
+							},
+							'onSuccess': function (json) {
+								this.updateFromServer(json.data[this.options.key]);
+							}.bind(this)
+						}).send();
+					} else {
+						this.updateFromServer();
+					}
 				}
 			}.bind(this));
 		}

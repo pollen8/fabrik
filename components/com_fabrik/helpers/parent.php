@@ -1164,6 +1164,22 @@ class FabrikWorker {
 	}
 
 	/**
+	 * @since	3.0.6
+	 *
+	 * See if data is JSON or not.
+	 * @param mixed $data
+	 * @return bool
+	 */
+	public function isJSON($data)
+	{
+		if (!is_string($data))
+		{
+			return false;
+		}
+		return json_decode($data) !== null;
+	}
+
+	/**
 	 * @since 3.0.4
 	 * is the email really an email (more strict than JMailHelper::isEmailAddress())
 	 * @param string $email
@@ -1284,7 +1300,7 @@ class FabrikWorker {
 		}
 		return -1;
 	}
-	
+
 	public static function canPdf()
 	{
 		$file = JPATH_LIBRARIES .'/dompdf/dompdf_config.inc.php';

@@ -56,6 +56,7 @@ var FbVideo = new Class({
 	},
 	
 	update: function (val) {
+		this.getElement();
 		if (!this.options.editable) {
 			this.element.set('html', val);
 			return;

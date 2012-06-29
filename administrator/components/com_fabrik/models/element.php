@@ -455,7 +455,7 @@ class FabrikModelElement extends JModelAdmin
 	 * (non-PHPdoc)
 	 * @see JModelForm::validate()
 	 */
-	
+
 	public function validate($form, $data, $group = null)
 	{
 		$ok = parent::validate($form, $data);
@@ -472,10 +472,24 @@ class FabrikModelElement extends JModelAdmin
 		}
 		$elementModel = $this->getElementPluginModel($data);
 		$elementModel->getElement()->bind($data);
+		$listModel = $elementModel->getListModel();
+
 		if ($data['id'] === 0)
 		{
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
+
+			if ($listModel->canAddFields() === false && $listModel->noTable() === false)
+			{
+				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
+			}
+		}
+		else
+		{
+			if ($listModel->canAlterFields() === false && $listModel->noTable() === false)
+			{
+				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
+			}
 		}
 		$listModel = $elementModel->getListModel();
 		//test for duplicate names
@@ -557,6 +571,8 @@ class FabrikModelElement extends JModelAdmin
 		$item = $listModel->getTable();
 
 		//are we updating the name of the primary key element?
+		// $$$ hugh - shouldn't we do this AFTER we check canAlterFields()?  If we can't,
+		// then we won't be changing the name, so the list will get out of sync?
 		if ($row->name === FabrikString::shortColName($item->db_primary_key))
 		{
 			if ($name !== $row->name)
@@ -577,7 +593,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		//only update the element name if we can alter existing columns, otherwise the name and
 		//field name become out of sync
-		$data['name'] = ($listModel->canAlterFields() || $new) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
+		$data['name'] = ($listModel->canAlterFields() || $new || $listModel->noTable()) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
 
 		$ar = array('published', 'use_in_page_title', 'show_in_list_summary', 'link_to_detail', 'can_order', 'filter_exact_match');
 		foreach ($ar as $a)
@@ -613,12 +629,15 @@ class FabrikModelElement extends JModelAdmin
 			$data['created_by_alias'] = $user->get('username');
 		}
 		$data['params'] = json_encode($params);
+		$row->params = $data['params'];
 		$cond = 'group_id = ' . (int) $row->group_id;
 		if ($new)
 		{
 			$data['ordering'] = $row->getNextOrder($cond);
 		}
 		$row->reorder($cond);
+		// $$$ hugh - shouldn't updateChildIds() happen AFTER we save the main row?
+		// Same place we do updateJavascript()?
 		$this->updateChildIds($row);
 		$elementModel->getElement()->bind($data);
 		$origName = JRequest::getVar('name_orig', '', 'post', 'cmd');
@@ -652,6 +671,7 @@ class FabrikModelElement extends JModelAdmin
 
 			$app->setUserState('com_fabrik.origplugin', $origplugin);
 			$app->setUserState('com_fabrik.oldname', $oldName);
+			$app->setUserState('com_fabrik.newname', $data['name']);
 			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');
@@ -779,16 +799,19 @@ class FabrikModelElement extends JModelAdmin
 			//new element so don't update child ids
 			return;
 		}
+		/*
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where("parent_id = ".(int) $row->id);
 		$db->setQuery($query);
 		$objs = $db->loadObjectList();
+		*/
+		$ids = $this->getElementDescendents($row->id);
 		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		foreach ($objs as $obj)
+		foreach ($ids as $id)
 		{
-			$plugin = $pluginManager->getElementPlugin($obj->id);
+			$plugin = $pluginManager->getElementPlugin($id);
 			$leave = $plugin->getFixedChildParameters();
 			$item = $plugin->getElement();
 			foreach ($row as $key => $val)
@@ -936,7 +959,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 *  potentially drop fields then remove element record
-	 * @param	array	$cids to delete
+	 * @param	array	$pks to delete
 	 */
 
 	public function delete(&$pks)
@@ -944,7 +967,7 @@ class FabrikModelElement extends JModelAdmin
 		// Initialize variables
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$drops = (array)JRequest::getVar('drop');
-		foreach ($cids as $id)
+		foreach ($pks as $id)
 		{
 			$drop = array_key_exists($id, $drops) && $drops[$id][0] == '1';
 			if ((int) $id === 0)
@@ -978,7 +1001,7 @@ class FabrikModelElement extends JModelAdmin
 				}
 			}
 		}
-		return parent::delete($cids);
+		return parent::delete($pks);
 	}
 
 	/**

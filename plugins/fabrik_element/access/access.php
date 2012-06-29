@@ -47,7 +47,8 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 		}
 		$gtree = $this->getOpts();
 		if (!$this->_editable) {
-			return $this->renderListData($arSelected[0], null);
+			$row = new stdClass();
+			return $this->renderListData($arSelected[0], $row);
 		}
 		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0]);
 	}
@@ -84,7 +85,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	public function renderListData($data, &$thisRow)
 	{
 		$gtree = $this->getOpts();
-		$filter = & JFilterInput::getInstance(null, null, 1, 1);
+		$filter = JFilterInput::getInstance(null, null, 1, 1);
 		foreach ($gtree as $o)
 		{
 			if ($o->value == $data)

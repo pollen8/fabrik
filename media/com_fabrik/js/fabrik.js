@@ -1,6 +1,54 @@
 /*jshint mootools: true */
 /*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true,FloatingTips:true,head:true,IconGenerator:true */
 
+/**
+ *  this class is temporarily requied until this patch:
+ *  https://github.com/joomla/joomla-platform/pull/1209/files
+ *  makes it into the CMS code. Its purpose is to queue ajax requests so they are not
+ *  all fired at the same time - which result in db session errors.
+ *   
+ *  Currently this is called from:
+ *  fabriktables.js
+ *  
+ */
+RequestQueue = new Class({
+	
+	queue: {}, // object of xhr objects
+	
+	initialize: function () {
+		this.periodical = this.processQueue.periodical(500, this);
+	},
+	
+	add: function (xhr) {
+		var k = xhr.options.url + Object.toQueryString(xhr.options.data) + Math.random();
+		if (!this.queue[k]) {
+			this.queue[k] = xhr;
+		}
+	},
+	
+	processQueue: function () {
+		if (this.queue.length === 0) {
+			return;
+		}
+		var xhr = {},
+		running = false;
+		//remove successfuly completed xhr
+		$H(this.queue).each(function (xhr, k) {
+			if (xhr.isSuccess()) {
+				delete(this.queue[k]);
+				running = false;
+			}
+		}.bind(this));
+		//find first xhr not run and completed to run
+		$H(this.queue).each(function (xhr, k) {
+			if (!xhr.isRunning() && !xhr.isSuccess() && !running) {
+				xhr.send();
+				running = true;
+			}
+		});
+	}
+});
+
 Request.HTML = new Class({
 
 	Extends: Request,
@@ -191,6 +239,8 @@ var Loader = new Class({
 			return this;
 		};
 		
+		Fabrik.requestQueue = new RequestQueue();
+		
 		/** globally observe delete links **/
 		
 		Fabrik.watchDelete = function (e, target) {
@@ -209,12 +259,20 @@ var Loader = new Class({
 				l = Fabrik.blocks[ref];
 			} else {
 				// checkAll
-				ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
-				l = Fabrik.blocks[ref];
-				if (l.options.actionMethod !== '') { // should only check all for floating tips
-					l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
-						c.checked = true;
-					});
+				ref = e.target.getParent('.fabrikList');
+				if (typeOf(ref) !== 'null') {
+					//embedded in list
+					ref = ref.id;
+					l = Fabrik.blocks[ref];
+				} else {
+					//floating
+					ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
+					l = Fabrik.blocks[ref];
+					if (l.options.actionMethod !== '') { // should only check all for floating tips
+						l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
+							c.checked = true;
+						});
+					}
 				}
 			}
 			//get correct list block
@@ -222,6 +280,7 @@ var Loader = new Class({
 				e.stop();
 			}
 		};
+		
 		
 		window.fireEvent('fabrik.loaded');
 	}
