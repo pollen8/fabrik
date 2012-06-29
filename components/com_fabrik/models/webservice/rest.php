@@ -14,16 +14,16 @@ jimport('joomla.application.component.model');
 class FabrikWebServiceRest extends FabrikWebService
 {
 
-	function __construct($options)
+	public function __construct($options)
 	{
 		$this->options = $options;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see FabrikWebService::get()
 	 */
-	
+
 	public function get($method, $filters = array(), $startPoint = null, $result = null)
 	{
 		$url = $this->options['endpoint'];
@@ -36,23 +36,23 @@ class FabrikWebServiceRest extends FabrikWebService
 			$url .= '&' . $k . '=' . $v;
 		}
 		$session = curl_init($url);
-	    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-	    $json = curl_exec($session);
+		curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+		$json = curl_exec($session);
 		$phpObj = json_decode($json);
-		
-	    if (!is_null($phpObj))
-	    {
-	    	$startPoints = explode('.', $startPoint);
-	    	foreach ($startPoints as $p)
-	    	{
-	    		$phpObj =& $phpObj->$p;
-	    	}
-	    	return $phpObj;
-	    }
-	    else
-	    {
-	    	return array();
-	    }
+
+		if (!is_null($phpObj))
+		{
+			$startPoints = explode('.', $startPoint);
+			foreach ($startPoints as $p)
+			{
+				$phpObj =& $phpObj->$p;
+			}
+			return $phpObj;
+		}
+		else
+		{
+			return array();
+		}
 	}
 
 }

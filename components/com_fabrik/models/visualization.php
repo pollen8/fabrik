@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/plugin.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
 
 class FabrikFEModelVisualization extends JModel
 {
@@ -137,7 +137,7 @@ class FabrikFEModelVisualization extends JModel
 		$i = 0;
 		foreach ($listModels as $listModel)
 		{
-			$show = (bool)JArrayHelper::getValue($showFilters, $i, true);
+			$show = (bool) JArrayHelper::getValue($showFilters, $i, true);
 			if ($show)
 			{
 				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'vizualization', $this->getVisualization()->id);
@@ -166,8 +166,8 @@ class FabrikFEModelVisualization extends JModel
 
 		$uri = clone(JURI::getInstance());
 		// $$$ rob force these to be 0 once the menu item has been loaded for the first time
-		//subsequent loads of the link should have this set to 0. When the menu item is re-clicked
-		//rest filters is set to 1 again
+		// subsequent loads of the link should have this set to 0. When the menu item is re-clicked
+		// rest filters is set to 1 again
 		$router->setVar('resetfilters', 0);
 		if ($option !== 'com_fabrik')
 		{
@@ -189,7 +189,7 @@ class FabrikFEModelVisualization extends JModel
 		return $this->getFilterFormURL;
 	}
 
-	function getRequireFilterMsg()
+	protected function getRequireFilterMsg()
 	{
 		$listModels = $this->getlistModels();
 		foreach ($listModels as $model)
@@ -206,7 +206,7 @@ class FabrikFEModelVisualization extends JModel
 	 * @abstract
 	 */
 
-	function getRequiredFiltersFound()
+	protected function getRequiredFiltersFound()
 	{
 		$listModels = $this->getListModels();
 		$filters = array();
@@ -227,7 +227,7 @@ class FabrikFEModelVisualization extends JModel
 	 * @return	array	js file paths
 	 */
 
-	function getPluginJsClasses(&$srcs = array())
+	public function getPluginJsClasses(&$srcs = array())
 	{
 		$listModels = $this->getListModels();
 		foreach ($listModels as $model)
