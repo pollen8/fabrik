@@ -829,8 +829,9 @@ class FabrikViewFormBase extends JView
 				for ($c = 0; $c < count($input); $c ++)
 				{
 					$i = $input[$c];
-					$fields[$key] = '<input type="hidden" name="fabrik_vars[querystring][' . $key . '][' . $c . ']" value="' . $i . '" />';
+					$fields[] = '<input type="hidden" name="fabrik_vars[querystring][' . $key . '][' . $c . ']" value="' . $i . '" />';
 				}
+				unset($fields[$key]);
 			}
 			else
 			{

@@ -751,9 +751,11 @@ class plgFabrik_Element extends FabrikPlugin
 		$group = $this->getGroup();
 		if ($group->isJoin())
 		{
-			$key = 'join.' . $group->getGroup()->join_id . '.' . $key;
-			FArrayHelper::setValue($post, $key, $data);
-			FArrayHelper::setValue($_REQUEST, $key, $data);
+			$jkey = 'join.' . $group->getGroup()->join_id . '.' . $key;
+			FArrayHelper::setValue($post, $jkey, $data);
+			FArrayHelper::setValue($_REQUEST, $jkey, $data);
+			//seems the only way to add it into $post? FArrayHelper bug I guess but too scared to alter that at the moement
+			$post['join'][$group->getGroup()->join_id][$key] = $data;
 		}
 		else
 		{
@@ -770,6 +772,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @param	$data
 	 * @param	$repeatCounter
 	 */
+
 	function getROValue($data, $repeatCounter = 0)
 	{
 		return $this->getValue($data, $repeatCounter);
