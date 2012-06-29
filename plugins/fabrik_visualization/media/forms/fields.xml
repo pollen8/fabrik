@@ -7,6 +7,15 @@
 
 		<fieldset name="options" repeat="0" repeatcontrols="0">
 			
+			<field name="media_which_player"
+				type="list"
+				default="jw"
+				label="PLG_VISUALIZATION_MEDIA_WHICH_PLAYER_LABEL"
+				description="PLG_VISUALIZATION_MEDIA_WHICH_PLAYER_DESC">
+				<option value="jw">JW</option>
+				<option value="xspf">XSPF</option>
+			</field>
+			
 			<field name="media_table"
 				connection_in_repeat="false"
 				label="PLG_VISUALIZATION_MEDIA_TABLE_LABEL"
@@ -50,6 +59,32 @@
 				table="params_media_table"
 				type="element"/>
 				
+			<field name="media_note_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_NOTE_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_NOTE_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>			
+				
+			<field name="media_published_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_PUBLISHED_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_PUBLISHED_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>
+			
+			<field name="media_jw_skin"
+				description="PLG_VISUALIZATION_MEDIA_JW_SKIN_DESC"
+				directory="plugins/fabrik_visualization/media/libs/jw/skins/"
+				hide_default="1"
+				default="snel.zip"
+				label="PLG_VISUALIZATION_MEDIA_JW_SKIN_LABEL"
+				type="filelist"/>
+			
 		</fieldset>
 
 		<fieldset name="rest">
