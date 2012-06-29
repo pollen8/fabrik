@@ -297,8 +297,9 @@ class FabrikFEModelForm extends FabModelForm
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getId();
-			$qs .='&amp;view=' . $v; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
-			if (!FabrikHelperHTML::stylesheetFromPath(JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
+			// $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails (if ajax loaded then dont do &amp;
+			$qs .= JRequest::getVar('ajax') == 1  ? '&view=' . $v : '&amp;view=' . $v;
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/template_css.php' . $qs);
 			}
@@ -1872,7 +1873,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// otherwise it won't be in $data when we rebuild the page.
 		// Need to do it here, so _raw fields get added in the next chunk 'o' code.
 		$this->addEncrytedVarsToArray($post);
-
+echo "<pre>";print_r($post);exit;
 		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
 		// available to things like calc's running in preProcess phase.
 		$this->callElementPreprocess();

@@ -1,43 +1,35 @@
-var fabrikGraph = new Class({
+var FbMediaViz = new Class({
 	
 	Implements: [Options],
 	
 	options: {
-		legend: false,
-		label: '',
-		aChartKeys: {},
-		axis_label: '',
-		json: {}, 
-		chartType: 'barChart',
-		xticks: []
+		which_player: 'jw',
+		width: 600,
+		height: 450
 	},
 	
-	initialize: function (el, d, options) {
-		//todo doesnt seem to work with 1 record of data
+	initialize: function (el, options) {
 		this.el = el;
 		this.setOptions(options);
-		this.json = d;
-		head.ready(function () {
-			this.render();
-		}.bind(this));
+		this.render();
 	},
 	
 	render: function () {
-		switch (this.options.chartType) {
-		case 'BarChart':
-			this.graph = new Plotr.BarChart(this.el, this.options);
-			break;
-		case 'PieChart':
-			this.graph = new Plotr.PieChart(this.el, this.options);
-			break;
-		case 'LineChart':
-			this.graph = new Plotr.LineChart(this.el, this.options);
-			break;
+		if (this.options.which_player === 'jw') {
+			jwplayer("jw_player").setup({
+				//'flashplayer': this.options.jw_swf_url,
+			    'width': this.options.width,
+			    'height': this.options.height,
+			    'playlistfile': this.options.jw_playlist_url,
+			    'playlist.position': 'right',
+			    //'playlist.size': this.options.height,
+			    'skin': this.options.jw_skin,
+			    'modes': [
+			              {type: 'flash', src: this.options.jw_swf_url},
+			              {type: 'html5'},
+			              {type: 'download'}
+			              ]
+			});			
 		}
-		this.graph.addDataset(this.json);
-		this.graph.render();
-		if (this.options.legend === '1') {
-			this.graph.addLegend(this.el);
-		} 
 	}
 });

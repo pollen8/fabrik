@@ -706,7 +706,7 @@ class FabrikViewListBase extends JView{
 		$action = JRequest::getVar('HTTP_REFERER', 'index.php?option=com_fabrik', 'server');
 		$this->assign('action', $action);
 		$this->assign('listid', $id);
-		parent::display($tpl);
+		//parent::display($tpl);
 	}
 }
 ?>
