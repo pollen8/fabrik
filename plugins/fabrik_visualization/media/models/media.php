@@ -30,7 +30,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization {
 		$return = '';
 		$which_player = "Extended";
 		$player_url = COM_FABRIK_LIVESITE.$this->srcBase."media/libs/xspf/$which_player/xspf_player.swf";
-		$playlist_url = 'index.php?option=com_fabrik&controller=visualization.media&view=visualization&task=getPlaylist&format=raw&Itemid='. $Itemid. '&id='.$this->get('id');
+		$playlist_url = 'index.php?option=com_fabrik&controller=visualization.media&view=visualization&task=getPlaylist&format=raw&Itemid='. $Itemid. '&visualizationid='.$this->getId();
 		$playlist_url = urlencode($playlist_url);
 		$return = '<object type="application/x-shockwave-flash" width="400" height="170" data="' . $player_url . '?playlist_url=' . $playlist_url . '">';
 		$return .= '<param name="movie" value="xspf_player.swf?playlist_url=' . $playlist_url . '" />';
@@ -57,7 +57,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization {
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
-		$form = $listModel->getForm();
+		$form = $listModel->getFormModel();
 		//remove filters?
 		// $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
 		// session state/defaults when it calls getPagination, which is then returned as a cached
