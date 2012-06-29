@@ -3096,6 +3096,7 @@ class FabrikFEModelList extends JModelForm {
 
 	public function shouldUpdateElement(&$elementModel, $origColName = null)
 	{
+		
 		$db = FabrikWorker::getDbo();
 		$return = array(false, '', '', '', '', false);
 		$element = $elementModel->getElement();
@@ -3135,7 +3136,9 @@ class FabrikFEModelList extends JModelForm {
 		// $$$ rob base plugin needs to know group info for date fields in non-join repeat groups
 		$basePlugIn->_group = $elementModel->_group;
 		$objtype = $elementModel->getFieldDescription(); //the element type AFTER saving
+		$newObjectType = strtolower($objtype);
 		$dbdescriptions = $this->getDBFields($tableName, 'Field');
+		
 		if (!$this->canAlterFields() && !$this->canAddFields())
 		{
 			$objtype = $dbdescriptions[$origColName]->Type;
@@ -3182,6 +3185,7 @@ class FabrikFEModelList extends JModelForm {
 				$existingDef .= ' ' . $thisFieldDesc->Extra;
 			}
 		}
+		
 		//if its the primary 3.0
 		for ($k = 0; $k < count($keydata); $k++)
 		{
@@ -3190,7 +3194,6 @@ class FabrikFEModelList extends JModelForm {
 				$existingDef .= ' ' . $keydata[$k]['extra'];
 			}
 		}
-
 		// $$$ hugh 2012/05/13 - tweaking things a little so we don't care about certain differences in type.
 		// Initally, just integer types and signed vs unsigned.  So if the existing column is TINYINT(3) UNSIGNED
 		// and we think it's INT(3), i.e. that's what getFieldDescription() returns, let's treat those as functionally
@@ -3207,8 +3210,15 @@ class FabrikFEModelList extends JModelForm {
 		if ($element->name == $origColName && trim($base_existingDef) == $lowerobjtype)
 		{
 			//no chanages to the element name or field type
+			// give a notice if the user cant alter the field type but selections he has made would normally do so:
+			if ($this->canAlterFields() === false && trim($base_existingDef) !== $newObjectType)
+			{
+				JError::raiseNotice(301, JText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'));
+			}
+			
 			return $return;
 		}
+		
 		$return[4] = $existingDef;
 		$existingfields = array_keys($dbdescriptions);
 
@@ -3510,7 +3520,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		// registry not available in admin - seems clunky anyway
-		/* echo "<pre>";print_r($reg);echO "</pre>";
+		/* 
 		if (isset($reg['com_fabrik']) && array_key_exists($tid, $reg['com_fabrik']['data'])) {
 		FabrikHelperHTML::debug($reg['com_fabrik']['data']->$tid, 'session filters saved as:');
 		}
@@ -6832,7 +6842,11 @@ class FabrikFEModelList extends JModelForm {
 
 				$row = array($row);
 				$this->formatData($row);
-				$this->rows[$sig] = $row[0][0];
+				// $$$ hugh - if table is grouped, formatData will have turned $row into an
+				// assoc array, so can't assume 0 is first key.
+				//$this->rows[$sig] = $row[0][0];
+				$row = JArrayHelper::getValue($row, FArrayHelper::firstKey($row), array());
+				$this->rows[$sig] = JArrayHelper::getValue($row, 0, new stdClass());
 			} else {
 				$this->rows[$sig] = $fabrikDb->loadObject();
 			}
@@ -6847,8 +6861,16 @@ class FabrikFEModelList extends JModelForm {
 			$formModel->setJoinData($rows);
 			if ($format == true) {
 				$this->formatData($rows);
+				// $$$ hugh - if list is grouped, formatData will have re-index as assoc array,
+				// so can't assume 0 is first key.
+				$this->rows[$sig] = JArrayHelper::getValue($rows, FArrayHelper::firstKey($rows), array());
 			}
-			$this->rows[$sig] = JArrayHelper::getValue($rows, 0, new stdClass());
+			else
+			{
+				// $$$ hugh - think default needs to be empty array, not object?
+				//$this->rows[$sig] = JArrayHelper::getValue($rows, 0, new stdClass());
+				$this->rows[$sig] = JArrayHelper::getValue($rows, 0, array());
+			}
 		}
 		return $this->rows[$sig];
 	}
@@ -7707,7 +7729,7 @@ class FabrikFEModelList extends JModelForm {
 	function noTable()
 	{
 		$id = $this->getId();
-		return empty($id);
+		return (bool) empty($id);
 	}
 
 	/**

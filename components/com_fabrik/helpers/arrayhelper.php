@@ -133,4 +133,19 @@ class FArrayHelper extends JArrayHelper
 		return $return;
 	}
 
+	/**
+	 * @since	3.0.6
+	 *
+	 * Returns first key in an array, used if we aren't sure if array is assoc or
+	 * not, and just want the first row.
+	 *
+	 * @param array $array
+	 */
+
+	function firstKey($array)
+	{
+		reset($array);
+		return key($array);
+	}
+
 }

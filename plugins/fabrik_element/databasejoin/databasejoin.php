@@ -311,7 +311,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($displayType === 'auto-complete' && empty($this->_autocomplete_where))
 		{
 			$value = (array) $this->getValue($data, $repeatCounter);
-			if (!empty($value))
+			if (!empty($value) && $value[0] !== '')
 			{
 				$quoteV = array();
 				foreach ($value as $v)
@@ -321,7 +321,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$this->_autocomplete_where = $this->getJoinValueColumn() . ' IN (' . implode(', ', $quoteV) . ')';
 			}
 		}
-
 		// $$$ rob 18/06/2012 cache the option vals on a per query basis (was previously incwhere but this was not ok
 		// for auto-completes in repeating groups
 		$sql = $this->_buildQuery($data, $incWhere);
@@ -398,7 +397,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$tmp = array_merge($tmp, $aDdObjs);
 		}
 		$this->addSpaceToEmptyLabels($tmp);
-		$displayType = $params->get('database_join_display_type', 'dropdown');
 		if ($this->showPleaseSelect())
 		{
 			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue') , $this->_getSelectLabel()));
@@ -1588,6 +1586,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->label = $table."___".$params->get('join_val_column');
 		$opts->formid = $this->getForm()->getForm()->id;
 		$opts->listid = $popuplistid;
+		$opts->listRef = '_com_fabrik_' . $opts->listid;
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->popupform = $popupform;

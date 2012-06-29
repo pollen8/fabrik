@@ -1163,6 +1163,13 @@ class FabrikWorker {
 		return true;
 	}
 
+	/**
+	 * @since	3.0.6
+	 *
+	 * See if data is JSON or not.
+	 * @param mixed $data
+	 * @return bool
+	 */
 	public function isJSON($data)
 	{
 		if (!is_string($data))

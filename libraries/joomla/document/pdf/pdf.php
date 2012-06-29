@@ -39,12 +39,20 @@ class JDocumentpdf extends JDocumentHTML
 	{
 		parent::__construct($options);
 
-		//set mime type
-		$this->_mime = 'application/pdf';
-
-		//set document type
-		$this->_type = 'pdf';
-
+		$config = JComponentHelper::getParams('com_fabrik');
+		if ($config->get('pdf_debug', true))
+		{
+			$this->setMimeEncoding('text/html');
+			$this->_type = 'html';
+		}
+		else
+		{
+			//set mime type
+			$this->_mime = 'application/pdf';
+			
+			//set document type
+			$this->_type = 'pdf';
+		}
 		if (!$this->iniDomPdf())
 		{
 			JError::raiseError(JText::_('COM_FABRIK_ERR_NO_PDF_LIB_FOUND'));
@@ -107,10 +115,17 @@ class JDocumentpdf extends JDocumentHTML
 		$pdf = $this->engine;
 		$data = parent::render();
  		$this->fullPaths($data);
-		//echo $data;exit;
 		$pdf->load_html($data);
-		$pdf->render();
-		$pdf->stream($this->getName() . '.pdf');
+		$config = JComponentHelper::getParams('com_fabrik');
+		if ($config->get('pdf_debug', true))
+		{
+			return $pdf->output_html();
+		}
+		else
+		{
+			$pdf->render();
+			$pdf->stream($this->getName() . '.pdf');
+		}
 		return '';
 	}
 
@@ -179,10 +194,12 @@ class JDocumentpdf extends JDocumentHTML
 			}
 		} catch (Exception $err)
 		{
-			//oho malformed html - if we are debugging the site then show the errors
+			// oho malformed html - if we are debugging the site then show the errors
 			// otherwise continue, but it may mean that images/css/links are incorrect
 			$errors = libxml_get_errors();
-			if (JDEBUG)
+			$config = JComponentHelper::getParams('com_fabrik');
+			// don't show the errors if we want to debug the actual pdf html
+			if (JDEBUG && !$config->get('pdf_debug', true))
 			{
 				echo "<pre>";print_r($errors);echo "</pre>";
 				exit;

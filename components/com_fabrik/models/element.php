@@ -321,7 +321,7 @@ class plgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 		$iconfile = $params->get('icon_file', ''); //Jaanus added this and following if/else; sometimes we need permanent image (e.g logo of the website where the link always points, like Wikipedia's W)
-		$cleanData = $iconfile === '' ? FabrikString::clean($data) : $iconfile;
+		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
 		foreach ($this->_imageExtensions as $ex)
 		{
 			$f = JPath::clean($cleanData . '.' . $ex);
@@ -751,9 +751,11 @@ class plgFabrik_Element extends FabrikPlugin
 		$group = $this->getGroup();
 		if ($group->isJoin())
 		{
-			$key = 'join.' . $group->getGroup()->join_id . '.' . $key;
-			FArrayHelper::setValue($post, $key, $data);
-			FArrayHelper::setValue($_REQUEST, $key, $data);
+			$jkey = 'join.' . $group->getGroup()->join_id . '.' . $key;
+			FArrayHelper::setValue($post, $jkey, $data);
+			FArrayHelper::setValue($_REQUEST, $jkey, $data);
+			//seems the only way to add it into $post? FArrayHelper bug I guess but too scared to alter that at the moement
+			$post['join'][$group->getGroup()->join_id][$key] = $data;
 		}
 		else
 		{
@@ -770,6 +772,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @param	$data
 	 * @param	$repeatCounter
 	 */
+
 	function getROValue($data, $repeatCounter = 0)
 	{
 		return $this->getValue($data, $repeatCounter);
@@ -2761,30 +2764,46 @@ class plgFabrik_Element extends FabrikPlugin
 		switch ($condition)
 		{
 			case 'earlierthisyear':
-				//$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(' . $value . ') ';
 				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(now()) ';
 				break;
 			case 'laterthisyear':
-				//$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(' . $value . ') ';
 				$query = ' DAYOFYEAR(' . $key . ') >= DAYOFYEAR(now()) ';
+				break;
+			case 'today':
+				$query = ' (' . $key . ' >= CURDATE() AND ' . $key . ' < CURDATE() + INTERVAL 1 DAY) ';
+				break;
+			case 'yesterday':
+				$query = ' (' . $key . ' >= CURDATE() - INTERVAL 1 DAY AND ' . $key . ' < CURDATE()) ';
+				break;
+			case 'tomorrow':
+				$query = ' (' . $key . ' >= CURDATE() + INTERVAL 1 DAY  AND ' . $key . ' < CURDATE() + INTERVAL 2 DAY ) ';
+				break;
+			case 'thismonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(NOW()) ) ';
+				break;
+			case 'lastmonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
+				break;
+			case 'nextmonth':
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key . ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
 				break;
 			default:
 				if ($this->isJoin())
-			{
-				// query the joined table concatanating into one field
-				$jointable = $this->getJoinModel()->getJoin()->table_join;
-				$pk = $this->getListModel()->getTable()->db_primary_key;
-				$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
-				$value = str_replace("'", '', $value);
-				$query = "($key = '$value' OR $key LIKE '$value" . GROUPSPLITTER . "%' OR
-				$key LIKE '" . GROUPSPLITTER . "$value" . GROUPSPLITTER . "%' OR
-				$key LIKE '%" . GROUPSPLITTER . "$value')";
-			}
-			else
-			{
-				$query = " $key $condition $value ";
-			}
-			break;
+				{
+					// query the joined table concatanating into one field
+					$jointable = $this->getJoinModel()->getJoin()->table_join;
+					$pk = $this->getListModel()->getTable()->db_primary_key;
+					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
+					$value = str_replace("'", '', $value);
+					$query = "($key = '$value' OR $key LIKE '$value" . GROUPSPLITTER . "%' OR
+					$key LIKE '" . GROUPSPLITTER . "$value" . GROUPSPLITTER . "%' OR
+					$key LIKE '%" . GROUPSPLITTER . "$value')";
+				}
+				else
+				{
+					$query = " $key $condition $value ";
+				}
+				break;
 		}
 		return $query;
 	}
@@ -4517,7 +4536,48 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		return $this->_joinModel;
 	}
-
+	
+	/**
+	 * when saving an element pk we need to update any join which has the same params->pk
+	 * @since	3.0.6
+	 * @param	string	$oldName (prevoius element name)
+	 * @param	string	$newName (new element name)
+	 */
+	
+	public function updateJoinedPks($oldName, $newName)
+	{
+		$db = $this->getListModel()->getDb();
+		$item = $this->getListModel()->getTable();
+		$query = $db->getQuery(true);
+		
+		//update linked lists id.
+		$query->update('#__{package}_joins')
+		->set('table_key = ' . $db->quote($newName))
+		->where('join_from_table = ' . $db->quote($item->db_table_name))
+		->where('table_key = ' . $db->quote($oldName));
+		$db->setQuery($query);
+		$db->query();
+		
+		// update join pk parameter
+		$query->clear();
+		$query->select('id')->from('#__{package}_joins')->where('table_join = ' . $db->quote($item->db_table_name));
+		$db->setQuery($query);
+		$ids = $db->loadColumn();
+		$teskPk =  $db->nameQuote($item->db_table_name . '.' . $oldName);
+		$newPk = $db->nameQuote($item->db_table_name . '.' . $newName);
+		foreach ($ids as $id)
+		{
+			$join = FabTable::getInstance('Join', 'FabrikTable');
+			$join->load($id);
+			$params = new JRegistry($join->params);
+			if ($params->get('pk') === $teskPk)
+			{
+				$params->set('pk', $newPk);
+				$join->params = (string) $params;
+				$join->store();
+			}
+		}
+	}
 
 	public function isJoin()
 	{

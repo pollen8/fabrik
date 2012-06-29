@@ -571,7 +571,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		} */
 		if (!empty($this->useridfield))
 		{
-			$formModel->updateFormData($this->useridfield, $user->get('id'), true);
+			$formModel->updateFormData($this->useridfield, $user->get('id'), true, true);
 		}
 		if ($ftable == $jos_users)
 		{
@@ -670,7 +670,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$ok = false;
 		}
 
-		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress( $post['email']))
+		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress($post['email']))
 		{
 			$this->raiseError($formModel->_arErrors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;
@@ -678,7 +678,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		if (empty($post['password']))
 		{
 			//$$$tom added a new/edit test
-			if (empty($post['id']))
+			if ((int)$post['id'] === 0)
 			{
 				$this->raiseError($formModel->_arErrors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;

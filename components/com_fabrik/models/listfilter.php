@@ -473,7 +473,10 @@ class FabrikFEModelListfilter extends FabModel {
 			
 			$key = array_key_exists('key', $filters) ? array_search($k, $filters['key']) : false;
 			
-			$eval = array_key_exists('eval', $filters) ? array_search($k, $filters['eval']) : FABRIKFILTER_TEXT;
+			// $$$ rob 28/06/2011 see http://fabrikar.com/forums/showthread.php?t=26006 this line was setting eval to 1 as array_search returns the key, think we want the value
+			//$eval = array_key_exists('eval', $filters) ? array_search($k, $filters['eval']) : FABRIKFILTER_TEXT;
+			$eval = array_key_exists('eval', $filters) ? JArrayHelper::getValue($filters['eval'], $key, FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
+			
 			if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin'))
 			{
 				$fieldDesc = $elementModel->getFieldDescription();

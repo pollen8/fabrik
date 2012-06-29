@@ -116,6 +116,7 @@ var DateFilter = new Class({
 	},
 	
 	update: function (calendar, date) {
+		this.getElement();
 		if (date) {
 			if (typeOf(date) === 'string') {
 				date = Date.parse(date);

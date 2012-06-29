@@ -8,6 +8,7 @@ var FbLink = new Class({
 	},
 
 	update: function (val) {
+		this.getElement();
 		var subs = this.element.getElements('.fabrikinput');
 		if (typeOf(val) === 'object') {
 			subs[0].value = val.label;

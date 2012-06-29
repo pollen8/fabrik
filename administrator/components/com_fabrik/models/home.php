@@ -182,7 +182,7 @@ class FabrikModelHome extends JModelAdmin
 		$listModel = JModel::getInstance('List', 'FabrikModel');
 		$list = $this->getTable('List');
 		$list->label = "Contact Us Data";
-		$list->introduction = "This table stores the data submitted in the contact us for";
+		$list->introduction = "This table stores the data submitted in the contact us form";
 		$list->form_id = $formId;
 		$list->connection_id = $cnn->getConnection()->id;
 		$list->db_table_name = $dbTableName;

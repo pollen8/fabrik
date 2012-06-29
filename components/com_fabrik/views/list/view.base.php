@@ -65,7 +65,7 @@ class FabrikViewListBase extends JView{
 		$opts->ajax = (int) $model->isAjax();
 		$opts->ajax_links = (bool) $params->get('list_ajax_links', $opts->ajax);
 
-		$opts->links = array('detail' => $params->get('detailurl'), 'edit' => $params->get('editurl'), 'add' => $params->get('addurl'));
+		$opts->links = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listref;
 		$this->listref = $listref;
@@ -706,7 +706,7 @@ class FabrikViewListBase extends JView{
 		$action = JRequest::getVar('HTTP_REFERER', 'index.php?option=com_fabrik', 'server');
 		$this->assign('action', $action);
 		$this->assign('listid', $id);
-		parent::display($tpl);
+		//parent::display($tpl);
 	}
 }
 ?>

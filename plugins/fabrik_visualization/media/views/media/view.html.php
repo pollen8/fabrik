@@ -15,17 +15,25 @@ class fabrikViewMedia extends JView
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
 		$this->row = $model->getVisualization();
 		$model->setListIds();
+		$params = $model->getParams();
+
+		$js = $model->getJs();
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/list.js';
-		FabrikHelperHTML::script($srcs);
+		//FabrikHelperHTML::addScriptDeclaration($js);
+		$srcs[] = 'plugins/fabrik_visualization/media/media.js';
+		if ($params->get('media_which_player', 'jw') == 'jw')
+		{
+			$srcs[] = 'plugins/fabrik_visualization/media/libs/jw/jwplayer.js';
+		}
+		FabrikHelperHTML::script($srcs, $js);
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$calendar = $model->_row;
+		$media = $model->_row;
 		$this->media = $model->getMedia();
-		$params = $model->getParams();
+
 		$this->assign('params', $params);
 		$viewName = $this->getName();
 		$pluginManager = FabrikWorker::getPluginManager();

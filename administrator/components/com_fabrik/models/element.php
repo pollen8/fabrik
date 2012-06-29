@@ -471,6 +471,7 @@ class FabrikModelElement extends JModelAdmin
 			$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
 		}
 		$elementModel = $this->getElementPluginModel($data);
+		$nameChanged = $data['name'] !== $elementModel->getElement()->name;
 		$elementModel->getElement()->bind($data);
 		$listModel = $elementModel->getListModel();
 
@@ -479,14 +480,14 @@ class FabrikModelElement extends JModelAdmin
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 
-			if ($listModel->canAddFields() === false)
+			if ($listModel->canAddFields() === false && $listModel->noTable() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
 		}
 		else
 		{
-			if ($listModel->canAlterFields() === false)
+			if ($listModel->canAlterFields() === false && $nameChanged && $listModel->noTable() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
 			}
@@ -545,7 +546,9 @@ class FabrikModelElement extends JModelAdmin
 		$id	= $data['id'];
 		$elementModel = $pluginManager->getPlugIn($data['plugin'], 'element');
 		// $$$ rob f3 - need to bind the data in here otherwise validate fails on dup name test (as no group_id set)
-		$elementModel->getElement()->bind($data);
+		// $$$ rob 29/06/2011 removed as you can't then test name changes in validate() so now bind should be done after
+		// getElementPluginModel is called.
+		//$elementModel->getElement()->bind($data);
 		$elementModel->setId($id);
 		return $elementModel;
 	}
@@ -561,6 +564,7 @@ class FabrikModelElement extends JModelAdmin
 		$name = $data['name'];
 		$params['validations'] = JArrayHelper::getValue($data, 'validationrule', array());
 		$elementModel = $this->getElementPluginModel($data);
+		$elementModel->getElement()->bind($data);
 		$row = $elementModel->getElement();
 		if ($new)
 		{
@@ -593,7 +597,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		//only update the element name if we can alter existing columns, otherwise the name and
 		//field name become out of sync
-		$data['name'] = ($listModel->canAlterFields() || $new) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
+		$data['name'] = ($listModel->canAlterFields() || $new || $listModel->noTable()) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
 
 		$ar = array('published', 'use_in_page_title', 'show_in_list_summary', 'link_to_detail', 'can_order', 'filter_exact_match');
 		foreach ($ar as $a)
@@ -671,6 +675,7 @@ class FabrikModelElement extends JModelAdmin
 
 			$app->setUserState('com_fabrik.origplugin', $origplugin);
 			$app->setUserState('com_fabrik.oldname', $oldName);
+			$app->setUserState('com_fabrik.newname', $data['name']);
 			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');
@@ -1020,9 +1025,13 @@ class FabrikModelElement extends JModelAdmin
 			if ($rule->load((int) $id))
 			{
 				$name = JArrayHelper::getValue($names, $id, $rule->name);
-				$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($rule));
+				$data = JArrayHelper::fromObject($rule);
+				$elementModel = $this->getElementPluginModel($data);
+				$elementModel->getElement()->bind($data);
 				$newrule = $elementModel->copyRow($id, $rule->label, $groupid, $name);
-				$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($newrule));
+				$data = JArrayHelper::fromObject($newrule);
+				$elementModel = $this->getElementPluginModel($data);
+				$elementModel->getElement()->bind($data);
 				$listModel = $elementModel->getListModel();
 				$res = $listModel->shouldUpdateElement($elementModel);
 				$this->addElementToOtherDbTables($elementModel, $rule);

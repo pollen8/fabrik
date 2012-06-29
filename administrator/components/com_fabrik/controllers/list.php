@@ -27,6 +27,9 @@ class FabrikControllerList extends FabControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
+	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	protected $cacheId = 0;
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see JControllerForm::edit()
@@ -106,7 +109,21 @@ class FabrikControllerList extends FabControllerForm
 		// Set the layout
 		$view->setLayout($viewLayout);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');
-		$view->display();
+		
+		$post = JRequest::get('post');
+		//build unique cache id on url, post and user id
+		$user = JFactory::getUser();
+		$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+		$cache = JFactory::getCache('com_fabrik', 'view');
+		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
+		{
+			$view->display();
+		}
+		else
+		{
+			$cache->get($view, 'display', $cacheid);
+		}
+		
 		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
