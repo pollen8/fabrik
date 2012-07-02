@@ -3,8 +3,8 @@
 /**
 * @package Joomla
 * @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is included in Joomla!
@@ -164,7 +164,7 @@ class uploader extends JObject
 					return false;
 				}
 			}
-			else if (!in_array($format, $ignored))
+			elseif (!in_array($format, $ignored))
 			{
 				// if its not an image...and we're not ignoring it
 				/*$allowed_mime = explode(',', $upload_mime);
@@ -178,7 +178,7 @@ class uploader extends JObject
 						return false;
 					}
 					finfo_close($finfo);
-				} else if (function_exists('mime_content_type') && $params->get('check_mime',1)) {
+				} elseif (function_exists('mime_content_type') && $params->get('check_mime',1)) {
 					// we have mime magic
 					$type = mime_content_type($file['tmp_name']);
 					if (strlen($type) && !in_array($type, $allowed_mime) && in_array($type, $illegal_mime)) {

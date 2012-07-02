@@ -2,12 +2,12 @@
 /**
 * @package Joomla
 * @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 class FabrikViewVisualization {
@@ -74,7 +74,7 @@ class FabrikViewVisualization {
 			// do field validation
 			if (\$('plugin').getValue() == '') {
 				alert('".JText::_('YOU MUST SELECT A PLUGIN.', true)."');
-			} else if (\$('label').getValue()  == '') {
+			} elseif (\$('label').getValue()  == '') {
 				alert('". JText::_('PLEASE ENTER A LABEL', true)."');
 			} else {
 				submitform( pressbutton);

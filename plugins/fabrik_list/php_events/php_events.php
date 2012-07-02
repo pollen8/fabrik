@@ -1,8 +1,8 @@
 <?php
 /**
  * Execute PHP Code on any list event
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Mauro H. Leggieri
  * @copyright (C) Mauro H. Leggieri
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -119,7 +119,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	protected function doEvaluate($code, &$model)
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$code = $w->parseMessageForPlaceHolder($code);
 		if ($code != '')
 		{

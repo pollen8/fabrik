@@ -2,8 +2,8 @@
 /**
 * @package Joomla
 * @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // No direct access
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of visualizations.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.6
  */
 class FabrikViewVisualizations extends JView
@@ -74,7 +74,7 @@ class FabrikViewVisualizations extends JView
 		}
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'visualizations.delete','JTOOLBAR_EMPTY_TRASH');
-		} else if ($canDo->get('core.edit.state')) {
+		} elseif ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('visualizations.trash','JTOOLBAR_TRASH');
 		}
 		if ($canDo->get('core.admin')) {

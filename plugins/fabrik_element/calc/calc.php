@@ -24,7 +24,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	{
 		if (!isset($this->default))
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->default, $data, true, true);
 			if ($element->eval == '1')
@@ -39,7 +39,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	private function _getV($data, $repeatCounter)
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$groupModel = $this->getGroup();
 		$joinid = $groupModel->getGroup()->join_id;
 		$name = $this->getFullName(false, true, false);
@@ -224,7 +224,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	public function preProcess($c)
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$form = $this->getForm();
 		$d = $form->_formData;
 		$joindata = JArrayHelper::getValue($d, 'join', array());
@@ -459,7 +459,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$d = JRequest::get('request');
 		$this->getFormModel()->_data = $d;
 		$this->swapValuesForLabels($d);

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -183,7 +183,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		if (!empty($chma_override)) {
 			$qs .= '&amp;chma=' . $chma_override;
 		}
-		else if ($fillGraphs) {
+		elseif ($fillGraphs) {
 			$qs .=  '&amp;chm=' . implode('|', $fills);
 		}
 		if ($legends) {
@@ -192,7 +192,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		if (!empty($chg_override)) {
 			$qs .= '&amp;chg=' . $chg_override;
 		}
-		else if ($fillGraphs) {
+		elseif ($fillGraphs) {
 			$qs .=  '&amp;chm=' . implode('|', $fills);
 		}
 		$qs .= '&amp;'.$params->get('chart_custom');

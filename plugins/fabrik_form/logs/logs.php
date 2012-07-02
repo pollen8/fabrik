@@ -1,8 +1,8 @@
 <?php
 /**
  * Form email plugin
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author peamak
  * @copyright (C) fabrikar.com
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -103,7 +103,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$random_filename = '';
 		}
 
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$logs_path = $w->parseMessageForPlaceHolder($params->get('logs_path'));
 		if (strpos($logs_path, '/') !== 0)
 		{
@@ -120,7 +120,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		$ext = $params->get('logs_file_format');
 		$sep = $params->get('logs_separator');
 		// Making complete path + filename + extension
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$logs_file = $logs_path.DS.$w->parseMessageForPlaceHolder($params->get('logs_file')).$random_filename.'.'.$ext;
 		$logs_mode = $params->get('logs_append_or_overwrite');
 		$date_element = $params->get('logs_date_field');
@@ -135,12 +135,12 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				$sep_compare = '';
 				$sep_2compare = '/ ';
 			}
-			else if ($ext == 'txt')
+			elseif ($ext == 'txt')
 			{
 				$sep_compare = "\n";
 				$sep_2compare = "\n";
 			}
-			else if ($ext == 'htm')
+			elseif ($ext == 'htm')
 			{
 				$sep_compare = '<br/>';
 				$sep_2compare = '<br/>';
@@ -231,7 +231,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$ctypes = preg_replace('/[a-zA-Z0-9_-]*[={2}]/', '', $split_clabels);
 			$labtyp = array_combine($clabels, $ctypes);
 
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$custom_msg = $w->parseMessageForPlaceHolder($custom_msg);
 			$excl_cdata = preg_replace('/((?!("[^"]*))([ |\w|+|.])+(?=[^"]*"\b)|(?!\b"[^"]*)( +)+(?=([^"]*)$)|(?=\b"[^"]*)( +)+(?=[^"]*"\b))/', '', $custom_msg);
 			$cdata = preg_split('/["]{1,}/', $excl_cdata);
@@ -253,11 +253,11 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				{
 					$clabels_createdb_imp .= $klb.' '.$vlb.'(255) NOT NULL, ';
 				}
-				else if ($vlb == 'int')
+				elseif ($vlb == 'int')
 				{
 					$clabels_createdb_imp .= $klb.' '.$vlb.'(11) NOT NULL, ';
 				}
-				else if ($vlb == 'datetime')
+				elseif ($vlb == 'datetime')
 				{
 					$clabels_createdb_imp .= $klb.' '.$vlb.' NOT NULL, ';
 				}
@@ -435,7 +435,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					}
 				}
 				// Making the TXT file
-				else if ($ext == 'txt')
+				elseif ($ext == 'txt')
 				{
 					$txtMsg = "Date: " . $date . "\n";
 					$txtMsg .= "Form ID: " . $formModel->getId() . "\n";
@@ -616,7 +616,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 	protected function makeStandardMessage($params, $result_compare)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		
 		$message = '';
 		if ($params->get('logs_record_ip') == 1)

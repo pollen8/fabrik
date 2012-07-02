@@ -2,11 +2,11 @@
 /*
  * Package Model
  *
- * @package Joomla.Administrator
- * @subpackage Fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access.
@@ -102,7 +102,7 @@ class FabrikModelPackage extends FabModelAdmin
 	{
 		$canvas = $data['params']['canvas'];
 		$canvas = json_decode($canvas);
-		$o = new stdClass();
+		$o = new stdClass;
 		if (is_null($canvas)) {
 			JError::raiseError(E_ERROR, 'malformed json package object');
 		}
@@ -557,7 +557,7 @@ class FabrikModelPackage extends FabModelAdmin
 				foreach ($elements as $element) {
 					$item = $element->getElement();
 					$id = 'element_' . $item->plugin;
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->id = $id;
 					$o->name = $item->plugin;
 					$o->group = 'fabrik_element';
@@ -568,7 +568,7 @@ class FabrikModelPackage extends FabModelAdmin
 				$fplugins = $formModel->getParams()->get('plugins');
 				foreach ($fplugins as $fplugin) {
 					$id = 'form_' . $fplugin;
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->id = $id;
 					$o->name = $fplugin;
 					$o->group = 'fabrik_form';
@@ -582,7 +582,7 @@ class FabrikModelPackage extends FabModelAdmin
 			$tplugins = $listModel->getParams()->get('plugins');
 			foreach ($tplugins as $tplugin) {
 				$id = 'list_' . $tplugin;
-				$o = new stdClass();
+				$o = new stdClass;
 				$o->id = $id;
 				$o->name = $tplugin;
 				$o->group = 'fabrik_list';

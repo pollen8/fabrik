@@ -263,7 +263,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function _strToCoords($v, $zoomlevel = 0)
 	{
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->coords = array('', '');
 		$o->zoomlevel = (int) $zoomlevel;
 		if (strstr($v, ",")) {
@@ -287,7 +287,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	function _strToDMS($v)
 	{
-		$dms = new stdClass();
+		$dms = new stdClass;
 		$dms->coords = array('', '');
 		if (strstr($v, ",")) {
 			$ar = explode(":", $v);

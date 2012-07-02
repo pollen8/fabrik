@@ -1,34 +1,35 @@
 <?php
-
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
-
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 /**
  * Content Component HTML Helper
  *
- * @static
- * @package		Joomla
- * @subpackage	Content
- * @since 1.5
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class FabrikHelperAdminHTML
 {
 
 	/**
 	 * get a list of directories
-	 * @param	string	path to read from
-	 * @param	bool	return full paths or not
+	 * 
+	 * @param   string  $path      to read from
+	 * @param   bool    $fullpath  return full paths or not
+	 * 
+	 * @return  null
 	 */
 
-	function fabrikListDirs($path, $fullpath = false)
+	public function fabrikListDirs($path, $fullpath = false)
 	{
 		$arr = array();
 		if (!@is_dir($path))
@@ -38,7 +39,7 @@ class FabrikHelperAdminHTML
 		$handle = opendir($path);
 		while ($file = readdir($handle))
 		{
-			$dir =  JPath::clean($path.'/'.$file);
+			$dir = JPath::clean($path . '/' . $file);
 			$isDir = is_dir($dir);
 			if (($file != ".") && ($file != "..") && ($file != ".svn"))
 			{
@@ -46,7 +47,7 @@ class FabrikHelperAdminHTML
 				{
 					if ($fullpath)
 					{
-						$arr[] = trim( JPath::clean($path . '/' . $file));
+						$arr[] = trim(JPath::clean($path . '/' . $file));
 					}
 					else
 					{
@@ -61,4 +62,3 @@ class FabrikHelperAdminHTML
 	}
 
 }
-?>

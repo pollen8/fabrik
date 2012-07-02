@@ -3,7 +3,7 @@
 // any of these defines can be overwritten by copying this file to
 // components/com_fabrik/user_defines.php
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 // could be that the sys plugin is installed but fabrik not

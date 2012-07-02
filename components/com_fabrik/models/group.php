@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -534,8 +534,8 @@ class FabrikFEModelGroup extends FabModel{
 
 	function getGroupProperties(&$formModel)
 	{
-		$w = new FabrikWorker();
-		$group = new stdClass();
+		$w = new FabrikWorker;
+		$group = new stdClass;
 		$groupTable	= $this->getGroup();
 		$params	= $this->getParams();
 		if (!isset($this->editable))

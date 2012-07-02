@@ -75,7 +75,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		if (empty($download_fk) && empty($download_file) && empty($download_table)) {
 			return;
 		}
-		else if (empty($download_fk) && empty($download_table) && !empty($download_file)) {
+		elseif (empty($download_fk) && empty($download_table) && !empty($download_file)) {
 			foreach ($ids AS $id) {
 				$row = $model->getRow($id);
 				if (isset($row->$download_file)) {
@@ -118,7 +118,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 				$tmp_files = array();
 				foreach ($filelist AS $this_file) {
 					$this_basename = basename($this_file);
-					if ($download_resize && $oImage->GetImgType($this_file)) {
+					if ($download_resize && $oImage->getImgType($this_file)) {
 						$tmp_file = '/tmp/' . $this_basename;
 						$oImage->resize($download_width, $download_height, $this_file, $tmp_file);
 						$this_file = $tmp_file;

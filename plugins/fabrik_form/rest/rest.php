@@ -1,8 +1,8 @@
 <?php
 /**
  * Submit or update data to a REST service
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -18,7 +18,7 @@ class plgFabrik_FormRest extends plgFabrik_Form {
 
 	public function onAfterProcess($params, &$formModel)
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$config_userpass = $params->get('username').':'.$params->get('password');
 		$endpoint = $params->get('endpoint');
 

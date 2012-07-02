@@ -1,12 +1,12 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @copyright Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.filesystem.file');
 if (!defined('COM_FABRIK_FRONTEND')) {
@@ -18,9 +18,9 @@ require_once(COM_FABRIK_FRONTEND . '/helpers/parent.php');//leave in as for some
  * Fabrik Component HTML Helper
  *
  * @static
- * @package		Joomla
- * @subpackage	Fabrik
- * @since 1.5
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       1.5
  */
 class FabrikHelperHTML
 {
@@ -92,7 +92,7 @@ class FabrikHelperHTML
 		// Attach modal behavior to document
 		//set default values which can be overwritten in <a>'s rel attribute
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->id = 'fabwin';
 		$opts->title = JText::_('COM_FABRIK_ADVANCED_SEARCH');
 		$opts->loadMethod = 'xhr';
@@ -440,10 +440,10 @@ EOD;
 	 * @returns	string	HTML for the select list
 	 */
 
-	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0, $editable=true)
+	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected = null, $key = 'value', $text = 'text', $options_per_row = 0, $editable = true)
 	{
 		reset($arr);
-		if ($options_per_row > 0)
+		if ($options_per_row > 1)
 		{
 			$percentageWidth = floor(floatval(100) / $options_per_row) - 2;
 			$div = "<div class=\"fabrik_subelement\" style=\"float:left;width:" . $percentageWidth . "%\">\n";
@@ -633,7 +633,7 @@ EOD;
 	public static function tipOpts()
 	{
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->tipfx = 'Fx.Transitions.' . $usersConfig->get('tipfx', 'Linear');
 		if ($usersConfig->get('tipfx', 'Linear') !== 'Linear')
 		{
@@ -977,7 +977,7 @@ EOD;
 
 	public static function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
-		$json = new stdClass();
+		$json = new stdClass;
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid . '&plugin=' . $plugin . '&method=autocomplete_options';
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')

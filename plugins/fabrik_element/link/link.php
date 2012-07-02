@@ -90,7 +90,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			} else {
 				$link = $_lnk;
 			}
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($oAllRowsData));
 			return $link;
 		}
@@ -141,7 +141,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		{
 			$_lbl = trim($value['label']);
 			$_lnk = trim($value['link']);
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$_lnk = is_array($data) ? $w->parseMessageForPlaceHolder($_lnk, $data) : $w->parseMessageForPlaceHolder($_lnk);
 			if (empty($_lnk) || JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://') {
 				return ''; //don't return empty links
@@ -195,7 +195,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		}
 		if (is_array($value))
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$link 	= $w->parseMessageForPlaceHolder($value['link']);
 			$value = '<a href="' . $link . '" >' . $value['label'] . '</a>';
 		}
@@ -328,7 +328,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	{
 		if (!isset($this->default))
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$params = $this->getParams();
 			$link = $params->get('link_default_url');
 			// $$$ hugh - no idea what this was here for, but it was causing some BIZARRE bugs!

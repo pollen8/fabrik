@@ -1,8 +1,8 @@
 <?php
 /**
  * Send an SMS via the kapow sms gateway
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -67,7 +67,7 @@ class Itagg extends JObject{
 						echo "sent ok";
 					}
 			exit;
-			$res = fabrikSMS::doRequest('POST', $url, $vars);
+			$res = FabrikSMS::doRequest('POST', $url, $vars);
 			echo "<pre>res = ";print_r($res);
 			exit;
 		}

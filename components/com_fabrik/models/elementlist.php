@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -515,7 +515,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 						$a = is_array($data[$name]) ? $a = $data[$name] : FabrikWorker::JSONtoData($data[$name], true);
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
 					}
-					else if (array_key_exists($rawname, $data))
+					elseif (array_key_exists($rawname, $data))
 					{
 						//occurs on form submission for fields at least : occurs when getting from the db
 						$a = is_array($data[$rawname]) ? $a = $data[$rawname] : FabrikWorker::JSONtoData($data[$rawname], true);
@@ -528,7 +528,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 					{
 						$value = $data[$name]; //put this back in for radio button after failed validation not picking up previously selected option
 					}
-					else if (array_key_exists($rawname, $data))
+					elseif (array_key_exists($rawname, $data))
 					{
 						$value = $data[$rawname];
 					}

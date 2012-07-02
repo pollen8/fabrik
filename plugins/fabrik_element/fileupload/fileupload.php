@@ -206,7 +206,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			$imgParams = explode(GROUPSPLITTER, $imgParams);
 		}
-		$oFiles = new stdClass();
+		$oFiles = new stdClass;
 		$iCounter = 0;
 		for ($x = 0; $x < count($value); $x++)
 		{
@@ -219,7 +219,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						//from failed validation
 						foreach ($value[$x]['id'] as $tkey => $parts)
 						{
-							$o = new stdClass();
+							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $iCounter;//$rawvalues[$x];
 							$o->name = array_pop(explode(DS, $tkey));
 							$o->path = $tkey;
@@ -242,7 +242,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						{
 							//single crop image (not sure about the 0 settings in here)
 							$parts = explode(DS, $value[$x]->file);
-							$o = new stdClass();
+							$o = new stdClass;
 							$o->id = 'alreadyuploaded_'.$element->id.'_0';
 							$o->name = array_pop($parts);
 							$o->path = $value[$x]->file;
@@ -261,7 +261,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						else
 						{
 							$parts = explode(DS, $value[$x]);
-							$o = new stdClass();
+							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $rawvalues[$x];
 							$o->name = array_pop($parts);
 							$o->path = $value[$x];
@@ -433,7 +433,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			require($class);
 		}
-		else if (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php'))
+		elseif (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php'))
 		{
 			require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php');
 		}
@@ -911,7 +911,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				//@todo allow uploading into front end designated folders?
 				$myFileDir = '';
 				$cropPath = $storage->clean(JPATH_SITE . '/' . $params->get('fileupload_crop_dir'). '/' . $myFileDir . '/', false);
-				$w = new FabrikWorker();
+				$w = new FabrikWorker;
 				$cropPath = $w->parseMessageForPlaceHolder($cropPath);
 				$cropWidth = $params->get('fileupload_crop_width', 125);
 				$cropHeight = $params->get('fileupload_crop_height', 125);
@@ -979,7 +979,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$store = array();
 				for ($i = 0; $i < count($files); $i++)
 				{
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->file = $files[$i];
 					$o->params = $saveParams[$i];
 					$store[] = $o;
@@ -1515,7 +1515,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if ($make_thumbnail)
 		{
 			$thumbPath = $storage->clean(JPATH_SITE . '/' . $params->get('thumb_dir') . '/' . $myFileDir . '/', false);
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$thumbPath = $w->parseMessageForPlaceHolder($thumbPath);
 			$thumbPrefix = $params->get('thumb_prefix');
 			$maxWidth = $params->get('thumb_max_width', 125);
@@ -1618,7 +1618,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$folder = $params->get('ul_directory');
 		$folder  = $folder . '/' . $myFileDir;
 		$folder = JPath::clean(JPATH_SITE . '/' . $folder);
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$folder = $w->parseMessageForPlaceHolder($folder);
 
 		JPath::check($folder);
@@ -1676,7 +1676,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 			return implode("\n", $links);
 		}
-		$render = new stdClass();
+		$render = new stdClass;
 		$render->output = '';
 		$allRenders = '';
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->editable)
@@ -1949,7 +1949,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		// $$$ hugh - reinstated this workaround, as I started getting those utf8 warnings as well.
 		error_reporting(E_ERROR | E_PARSE);
 
-		$o = new stdClass();
+		$o = new stdClass;
 		$this->id = JRequest::getInt('element_id');
 		$groupModel = $this->getGroup();
 
@@ -2072,11 +2072,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$ulDir = str_replace("\\", "\\\\", $ulDir);
 			$thumbDir = $params->get('thumb_dir');
 			$thumbDir = JPath::clean($params->get('thumb_dir')) . '/';
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir = str_replace("\\", "\\\\", $thumbDir);
 
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir .= $params->get('thumb_prefix');
 
@@ -2345,7 +2345,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$log = JTable::getInstance('log', 'Table');
 			$log->message_type = 'fabrik.fileupload.download';
 			$user = JFactory::getUser();
-			$msg = new stdClass();
+			$msg = new stdClass;
 			$msg->file = $filepath;
 			$msg->userid = $user->get('id');
 			$msg->username = $user->get('username');

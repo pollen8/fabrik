@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -98,11 +98,11 @@ class FabrikWorker {
 		{
 			return self::$_video_mime_types[$path_parts['extension']];
 		}
-		else if (array_key_exists($path_parts['extension'], self::$_audio_mime_types))
+		elseif (array_key_exists($path_parts['extension'], self::$_audio_mime_types))
 		{
 			return self::$_audio_mime_types[$path_parts['extension']];
 		}
-		else if (array_key_exists($path_parts['extension'], self::$_doc_mime_types))
+		elseif (array_key_exists($path_parts['extension'], self::$_doc_mime_types))
 		{
 			return self::$_doc_mime_types[$path_parts['extension']];
 		}
@@ -724,7 +724,7 @@ class FabrikWorker {
 					FabrikWorker::readImages($i_f, $ff_, $folders, $images, $aFolderFilter);
 				}
 			}
-			else if (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
+			elseif (preg_match('/bmp|gif|jpg|png/i', $file) && is_file($i_f))
 			{
 				// leading / we don't need
 				$imageFile = JString::substr($ff, 1);
@@ -867,7 +867,7 @@ class FabrikWorker {
 				// Maximum HTML filtering.
 				$noHtml = true;
 			}
-			else if ($filterType == 'NONE')
+			elseif ($filterType == 'NONE')
 			{
 				// No HTML filtering.
 				$unfiltered = true;
@@ -906,7 +906,7 @@ class FabrikWorker {
 					$blackListTags = array_merge($blackListTags, $tempTags);
 					$blackListAttributes = array_merge($blackListAttributes, $tempAttributes);
 				}
-				else if ($filterType == 'WL')
+				elseif ($filterType == 'WL')
 				{
 					$whiteList = true;
 					$whiteListTags = array_merge($whiteListTags, $tempTags);
@@ -942,7 +942,7 @@ class FabrikWorker {
 				);
 			}
 			// White lists take third precedence.
-			else if ($whiteList)
+			elseif ($whiteList)
 			{
 				$filter	= JFilterInput::getInstance($whiteListTags, $whiteListAttributes, 0, 0, 0);  // turn off xss auto clean
 			}
@@ -1163,6 +1163,13 @@ class FabrikWorker {
 		return true;
 	}
 
+	/**
+	 * @since	3.0.6
+	 *
+	 * See if data is JSON or not.
+	 * @param mixed $data
+	 * @return bool
+	 */
 	public function isJSON($data)
 	{
 		if (!is_string($data))

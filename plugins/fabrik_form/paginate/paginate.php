@@ -1,8 +1,8 @@
 <?php
 /**
  * Form record next/prev scroll plugin
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -85,7 +85,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 		$db->setQuery($query);
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->index = JArrayHelper::getValue($keys, $formModel->rowId, 0);
 		$o->first = $rows[0];
 		$o->lastKey = count($rows) - 1;
@@ -132,7 +132,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 		if ($params->get('paginate_ajax') == 0) {
 			return;
 		}
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->liveSite = COM_FABRIK_LIVESITE;
 		$opts->view = JRequest::getCmd('view');
 		$opts->ids = $this->ids;

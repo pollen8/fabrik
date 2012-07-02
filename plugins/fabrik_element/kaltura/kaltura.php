@@ -169,7 +169,7 @@ return '<div id="'.$id.'"></div>';
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->id = $element->id;
 
-		$uploader = new stdClass();
+		$uploader = new stdClass;
 		$uploader->allowScriptAccess = "always";
 		$uploader->allowNetworking = "all";
 		$uploader->wmode = "opaque";

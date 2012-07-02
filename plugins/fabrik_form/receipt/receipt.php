@@ -1,8 +1,8 @@
 <?php
 /**
  * Send a receipt
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -64,7 +64,7 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 			}
 		}
 		$config = JFactory::getConfig();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$this->formModel = $formModel;
 		$form = $formModel->getForm();

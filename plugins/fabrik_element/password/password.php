@@ -150,7 +150,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		$formparams = $this->getForm()->getParams();
 		$opts->ajax_validation =  $formparams->get('ajax_validations') === '1';
 		$opts = json_encode($opts);
-		$lang = new stdClass();
+		$lang = new stdClass;
 
 		JText::script('PLG_ELEMENT_PASSWORD_STRONG');
 		JText::script('PLG_ELEMENT_PASSWORD_MEDIUM');

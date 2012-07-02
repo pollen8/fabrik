@@ -2,8 +2,8 @@
 /**
 * @package Joomla
 * @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 defined('JPATH_BASE') or die;
@@ -16,8 +16,8 @@ JFormHelper::loadFieldClass('list');
 /**
  * Plugin List Field class for Fabrik.
  *
- * @package		Joomla.Framework
- * @subpackage	com_fabrik
+ * @package     Joomla.Framework
+ * @subpackage  Fabrik
  * @since		1.6
  */
 class JFormFieldPluginList extends JFormFieldList

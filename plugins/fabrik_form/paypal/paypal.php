@@ -2,8 +2,8 @@
 
 /**
  * redirects the browser to paypal to perform payment
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -35,7 +35,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		}
 		$this->formModel = $formModel;
 		$emailData = $this->getEmailData();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$user = JFactory::getUser();
 		$userid = $user->get('id');
@@ -276,7 +276,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 				$opts['return'] .= $paypal_test_site_qs;
 			}
 		}
-		else if (!empty($paypal_return_url)) {
+		elseif (!empty($paypal_return_url)) {
 			if (preg_match('#^http:\/\/#', $paypal_return_url)) {
 				$opts['return'] = $paypal_return_url;
 			}
@@ -328,7 +328,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		$log = FabTable::getInstance('log', 'FabrikTable');
 		$log->message_type = 'fabrik.paypal.onAfterProcess';
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->opt = $opts;
 		$msg->data = $data;
 		$log->message = json_encode($msg);
@@ -350,7 +350,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$ret_msg = (array) $params->get('paypal_return_msg', array());
 		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
 		if ($ret_msg) {
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowid);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
@@ -419,7 +419,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$ipn_address_field = FabrikString::shortColName($ipn_address_field[$renderOrder]);
 
 
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$ipn_value = str_replace('[','{',$ipn_value);
 		$ipn_value = str_replace(']','}',$ipn_value);
 		$ipn_value = $w->parseMessageForPlaceHolder($ipn_value, $_POST);
@@ -503,7 +503,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 										$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
 									}
 								}
-								else if ($txn_result == 'Reversed') {
+								elseif ($txn_result == 'Reversed') {
 									if ($payment_status != 'Canceled_Reversal') {
 										$status = 'form.paypal.ipnfailure.txn_seen';
 										$err_msg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
@@ -571,7 +571,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 							}
 						}
 					}
-					else if (JString::strcmp ($res, "INVALID") == 0) {
+					elseif (JString::strcmp ($res, "INVALID") == 0) {
 						$status = 'form.paypal.ipnfailure.invalid';
 						$err_msg = 'paypal postback failed with INVALID';
 					}

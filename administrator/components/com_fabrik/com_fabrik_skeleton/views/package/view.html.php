@@ -1,7 +1,10 @@
 <?php
 /**
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // No direct access
@@ -12,18 +15,28 @@ jimport('joomla.application.component.view');
 /**
  * Dummy skeleton view
  *
- * @package		Joomla.Site
- * @subpackage	com_fabrik_skeleton
- * @since		1.6
+ * @package     Fabrik
+ * @subpackage  Fabrik_skeleton
+ * @since       3.0
  */
 class SkeletonViewPackage extends JView
 {
 
+	/**
+	 * display
+	 * 
+	 * @param   string  $tpl  template
+	 * 
+	 * @return  null
+	 */
+
 	public function display($tpl = null)
 	{
-		// dummy file which is not used
-		// but required to allow the component to be selected from the Joomla
-		// admin menu options.
+		/**
+		 * dummy file which is not used
+		 * but required to allow the component to be selected from the Joomla
+		 * admin menu options.
+		 */ 
 	}
 
 }

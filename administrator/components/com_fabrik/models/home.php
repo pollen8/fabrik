@@ -2,11 +2,11 @@
 /*
  * Cron Model
  *
- * @package Joomla.Administrator
- * @subpackage Fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access.
@@ -182,7 +182,7 @@ class FabrikModelHome extends JModelAdmin
 		$listModel = JModel::getInstance('List', 'FabrikModel');
 		$list = $this->getTable('List');
 		$list->label = "Contact Us Data";
-		$list->introduction = "This table stores the data submitted in the contact us for";
+		$list->introduction = "This table stores the data submitted in the contact us form";
 		$list->form_id = $formId;
 		$list->connection_id = $cnn->getConnection()->id;
 		$list->db_table_name = $dbTableName;

@@ -3,13 +3,13 @@
 * @package Joomla
 * @subpackage Fabrik
 * @copyright Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a radio list which will toggle visibility of a specified group
@@ -34,7 +34,7 @@ class JFormFieldToggleoptionsradio extends JFormFieldRadio
 	* @access	protected
 	* @var		string
 	*/
-	var	$_name = 'ToggleOptionsRadio';
+	protected $name = 'ToggleOptionsRadio';
 
 	/**
 	 * Method to get the field input markup.

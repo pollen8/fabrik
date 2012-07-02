@@ -1,10 +1,10 @@
 <?php
 /**
- * @package Joomla.Administrator
- * @subpackage Fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 defined('_JEXEC') or die;
@@ -88,7 +88,7 @@ class FabrikModelGroups extends FabModelList
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
 			$query->where('g.published = '.(int) $published);
-		} else if ($published === '') {
+		} elseif ($published === '') {
 			$query->where('(g.published IN (0, 1))');
 		}
 

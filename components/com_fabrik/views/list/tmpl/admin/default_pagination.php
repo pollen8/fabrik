@@ -1,13 +1,13 @@
 <?php
 /**
  * @version		$Id: pagination.php 21097 2011-04-07 15:38:03Z dextercowley $
- * @package		Joomla.Administrator
+ * @package     Joomla.Administrator
  * @subpackage	Templates.bluestork
  * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die;
 
 /**

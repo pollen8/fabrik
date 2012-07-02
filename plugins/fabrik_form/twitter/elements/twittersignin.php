@@ -4,10 +4,10 @@ defined('_JEXEC') or die('Restricted access');
 
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  *
  * NOTE - as we can only have one addpath file specified for the params group, this file has to be located
  * in the main ./administrator/components/com_fabrik/models/fields folder.  So until we work out how to do the install
@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
  * If you edit the copy in the plugin folder, please be sure to also modify the copy in the admin folder.
  */
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();

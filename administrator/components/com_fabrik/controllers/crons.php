@@ -1,21 +1,25 @@
 <?php
 /**
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
+* @package     Joomla.Administrator
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @since       1.6
+*/
 
 // No direct access.
 defined('_JEXEC') or die;
 
-require_once('fabcontrolleradmin.php');
+require_once 'fabcontrolleradmin.php';
 
 /**
  * Cron list controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
+
 class FabrikControllerCrons extends FabControllerAdmin
 {
 	/**
@@ -29,7 +33,11 @@ class FabrikControllerCrons extends FabControllerAdmin
 
 	/**
 	 * Proxy for getModel.
-	 * @since	1.6
+	 * 
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 * 
+	 * @return  J model
 	 */
 
 	public function &getModel($name = 'Cron', $prefix = 'FabrikModel')
@@ -37,6 +45,12 @@ class FabrikControllerCrons extends FabControllerAdmin
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
 	}
+
+	/**
+	 * run a cron task
+	 * 
+	 * @return  null
+	 */
 
 	public function run()
 	{
@@ -55,7 +69,7 @@ class FabrikControllerCrons extends FabControllerAdmin
 		$log = FabTable::getInstance('Log', 'FabrikTable');
 		foreach ($rows as $row)
 		{
-			//load in the plugin
+			// Load in the plugin
 			$rowParams = json_decode($row->params);
 			$log->message = '';
 			$log->id = null;
@@ -72,7 +86,7 @@ class FabrikControllerCrons extends FabControllerAdmin
 			if ($tid !== 0)
 			{
 				$thisListModel->setId($tid);
-				$log->message .= "\n\n$row->plugin\n listid = ".$thisListModel->getId();//. var_export($table);
+				$log->message .= "\n\n$row->plugin\n listid = " . $thisListModel->getId();
 				if ($plugin->requiresTableData())
 				{
 					$table = $listModel->getTable();

@@ -1,19 +1,20 @@
 <?php
 /**
-* @version
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controlleradmin');
 
 /**
- * @package		Joomla
- * @subpackage	Fabrik
+ * Main Fabrik Admin page controller
+ * 
+ * @package  Fabrik
+ * @since    3.0
  */
 
 class FabrikControllerHome extends JControllerAdmin
@@ -21,6 +22,8 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * Constructor
+	 * 
+	 * @param   array  $config  state
 	 */
 
 	public function __construct($config = array())
@@ -30,17 +33,11 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * delete all data from fabrik
+	 * 
+	 * @return null
 	 */
 
-	function reset()
-	{
-		$model = $this->getModel('Home');
-		$model->dropData();
-		$model->reset();
-		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_FABRIK_RESET'));
-	}
-	
-	function dropData()
+	public function reset()
 	{
 		$model = $this->getModel('Home');
 		$model->dropData();
@@ -49,10 +46,26 @@ class FabrikControllerHome extends JControllerAdmin
 	}
 
 	/**
- * install sample form
- */
+	 * reset fabrik !!!
+	 * 
+	 * @return  null
+	 */
 
-	function installSampleData()
+	public function dropData()
+	{
+		$model = $this->getModel('Home');
+		$model->dropData();
+		$model->reset();
+		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_FABRIK_RESET'));
+	}
+
+	/**
+	 * install sample form
+	 * 
+	 * @return null
+	 */
+
+	public function installSampleData()
 	{
 		$model = $this->getModel('Home');
 		$model->installSampleData();
@@ -62,11 +75,16 @@ class FabrikControllerHome extends JControllerAdmin
 	/**
 	 * ajax function to update any drop down that contains records relating to the selected table
 	 * called each time the selected table is changed
+	 * 
+	 * @deprecated 
+	 * 
+	 * @return null
 	 */
 
-	function ajax_updateColumDropDowns()
+	public function ajax_updateColumDropDowns()
 	{
-		$cnnId = JRequest::getInt('cid', 1);
+		JError::raiseNotice(500, 'ajax_updateColumDropDowns deprecated');
+		/* $cnnId = JRequest::getInt('cid', 1);
 		$tbl = JRequest::getVar('table', '');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$fieldDropDown 	= $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'order_by');
@@ -78,10 +96,15 @@ class FabrikControllerHome extends JControllerAdmin
 		}";
 		echo "if($('groupByOrderTd')){
 			$('groupByOrderTd').innerHTML = '$fieldDropDown3';
-		}";
+		}"; */
 	}
 
-	function getRSSFeed()
+	/**
+	 * get RSS feed
+	 * 
+	 * @return  string  html table of Fabrik news items
+	 */
+	public function getRSSFeed()
 	{
 		//  get RSS parsed object
 		$options = array();
@@ -94,7 +117,7 @@ class FabrikControllerHome extends JControllerAdmin
 		}
 		else
 		{
-			// channel header and link
+			// Channel header and link
 			$title = $rssDoc->get_title();
 			$link = $rssDoc->get_link();
 			$output = '<table class="adminlist">';
@@ -113,11 +136,11 @@ class FabrikControllerHome extends JControllerAdmin
 					$item = $items[$j];
 					$output .= '<tr><td class="row' . $k . '">';
 					$output .= '<a href="' . $item->get_link() . '" target="_blank">' . $item->get_title() . '</a>';
-					$output .= '<br />'.$item->get_date('Y-m-d') ;
-					if($item->get_description())
+					$output .= '<br />' . $item->get_date('Y-m-d');
+					if ($item->get_description())
 					{
 						$description = $this->_truncateText($item->get_description(), 50);
-						$output .= '<br />' .$description;
+						$output .= '<br />' . $description;
 					}
 					$output .= '</td></tr>';
 				}
@@ -129,4 +152,3 @@ class FabrikControllerHome extends JControllerAdmin
 	}
 
 }
-?>

@@ -104,7 +104,7 @@ class FabrikModelUpgrade extends JModel
 							$p->median_access = isset($p->median_access) ? $this->mapACL($p->median_access) : 1;
 							$p->count_access = isset($p->count_access) ? $this->mapACL($p->count_access) : 1;
 			
-							$subOpts = new stdClass();
+							$subOpts = new stdClass;
 		
 							$subOts->sub_values = explode('|', $row->sub_values);
 							$subOts->sub_labels = explode('|', $row->sub_labels);
@@ -185,7 +185,7 @@ class FabrikModelUpgrade extends JModel
 	 */
 
 	protected function fromAttribsToObject($str) {
-		$o = new stdClass();
+		$o = new stdClass;
 		$a = explode("\n", $str);
 		foreach ($a as $line) {
 			if (strstr($line, '=')) { 
@@ -237,7 +237,7 @@ class FabrikModelUpgrade extends JModel
 		$rows = $db->loadResultArray();
 		foreach ($rows as $row) {
 			if (strstr($row, '_fabrik_') && !strstr($row, 'bkup_')) {
-				$o = new stdClass();
+				$o = new stdClass;
 				$o->db_table_name = $row;
 				$o->connection_id = 1;
 				$r[] = $o;

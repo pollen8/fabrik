@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -29,7 +29,7 @@ class FabrikViewFormBase extends JView
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
@@ -130,7 +130,7 @@ class FabrikViewFormBase extends JView
 		}
 		$this->assignRef('form', $form);
 		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
-		$list = new stdClass();
+		$list = new stdClass;
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
 		$this->assignRef('list', $list);
 		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
@@ -146,7 +146,7 @@ class FabrikViewFormBase extends JView
 	
 	public function output()
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
@@ -385,7 +385,7 @@ class FabrikViewFormBase extends JView
 			$start_page = JRequest::getInt('currentPage', 0);
 		}
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = $model->isAjax();
@@ -403,7 +403,7 @@ class FabrikViewFormBase extends JView
 		//3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
-		$imgs = new stdClass();
+		$imgs = new stdClass;
 		$imgs->alert = FabrikHelperHTML::image('alert.png', 'form', $this->tmpl, '', true);
 		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
@@ -829,8 +829,9 @@ class FabrikViewFormBase extends JView
 				for ($c = 0; $c < count($input); $c ++)
 				{
 					$i = $input[$c];
-					$fields[$key] = '<input type="hidden" name="fabrik_vars[querystring][' . $key . '][' . $c . ']" value="' . $i . '" />';
+					$fields[] = '<input type="hidden" name="fabrik_vars[querystring][' . $key . '][' . $c . ']" value="' . $i . '" />';
 				}
+				unset($fields[$key]);
 			}
 			else
 			{
@@ -854,7 +855,7 @@ class FabrikViewFormBase extends JView
 			$row = $model->getForm();
 			JHTML::script('admincck.js', 'administrator/components/com_fabrik/views/', true);
 			$document = JFactory::getDocument();
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->livesite = JURI::base();
 			$opts->ename = JRequest::getVar('e_name');
 			$opts->catid = JRequest::getInt('catid');

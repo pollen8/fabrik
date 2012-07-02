@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package		Joomla
+ * @package     Joomla
  * @subpackage	Fabik
  * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
  * @license		GNU/GPL
@@ -55,17 +55,17 @@ class FabrikViewListBase extends JView{
 
 		$tmpItemid = !isset($Itemid) ?  0 : $Itemid;
 
-		$this->_row = new stdClass();
+		$this->_row = new stdClass;
 		$script = array();
 		$script[] = "head.ready(function() {";
 
 		$params = $model->getParams();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();
 		$opts->ajax = (int) $model->isAjax();
 		$opts->ajax_links = (bool) $params->get('list_ajax_links', $opts->ajax);
 
-		$opts->links = array('detail' => $params->get('detailurl'), 'edit' => $params->get('editurl'), 'add' => $params->get('addurl'));
+		$opts->links = array('detail' => $params->get('detailurl', ''), 'edit' => $params->get('editurl', ''), 'add' => $params->get('addurl', ''));
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listref;
 		$this->listref = $listref;
@@ -114,7 +114,7 @@ class FabrikViewListBase extends JView{
 		$opts->popup_add_label = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
-		$csvOpts = new stdClass();
+		$csvOpts = new stdClass;
 		$csvOpts->excel = (int) $params->get('csv_format');
 		$csvOpts->inctabledata = (int) $params->get('csv_include_data');
 		$csvOpts->incraw = (int) $params->get('csv_include_raw_data');
@@ -128,7 +128,7 @@ class FabrikViewListBase extends JView{
 		//if table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 		ob_start();
-		$this->_row = new stdClass();
+		$this->_row = new stdClass;
 		$this->_row->id = '';
 		$this->_row->class = 'fabrik_row';
 		echo $this->loadTemplate('row');
@@ -239,7 +239,7 @@ class FabrikViewListBase extends JView{
 		$document = JFactory::getDocument();
 		$item = $model->getTable();
 		$data = $model->render();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		//add in some styling short cuts
 		$c = 0;
@@ -252,7 +252,7 @@ class FabrikViewListBase extends JView{
 			$num_rows = 1;
 			foreach (array_keys($group) as $i)
 			{
-				$o = new stdClass();
+				$o = new stdClass;
 				// $$$ rob moved merge wip code to FabrikModelTable::formatForJoins() - should contain fix for pagination
 				$o->data = $data[$groupk][$i];
 				$o->cursor = $num_rows + $nav->limitstart;
@@ -302,7 +302,7 @@ class FabrikViewListBase extends JView{
 		$app = JFactory::getApplication();
 		$this->setTitle($w, $params, $model);
 		/** depreciated (keep incase ppl use them in old tmpls**/
-		$this->table = new stdClass();
+		$this->table = new stdClass;
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
 		$this->table->intro = $w->parseMessageForPlaceHolder($item->introduction);
 		$this->table->id = $item->id;
@@ -311,7 +311,7 @@ class FabrikViewListBase extends JView{
 		/** end **/
 		$this->assign('list', $this->table);
 		$this->group_by	= $item->group_by;
-		$this->form = new stdClass();
+		$this->form = new stdClass;
 		$this->form->id = $item->id;
 		$this->assign('renderContext', $this->get('RenderContext'));
 		$this->formid = 'listform_' . $this->renderContext;
@@ -460,7 +460,7 @@ class FabrikViewListBase extends JView{
 	{
 		$model = $this->getModel();
 		$params = $model->getParams();
-		$this->buttons = new stdClass();
+		$this->buttons = new stdClass;
 		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => '<span>' . JText::_('COM_FABRIK_EXPORT_TO_CSV') . '</span>');
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_EXPORT_TO_CSV');
 		$this->buttons->csvexport =  FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl, $buttonProperties);
@@ -509,7 +509,7 @@ class FabrikViewListBase extends JView{
 			}
 			$calc = '';
 			$res = '';
-			$oCalcs = new stdClass();
+			$oCalcs = new stdClass;
 			$oCalcs->grouped = array();
 
 			if (array_key_exists($key, $modelCals['sums']))
@@ -706,7 +706,7 @@ class FabrikViewListBase extends JView{
 		$action = JRequest::getVar('HTTP_REFERER', 'index.php?option=com_fabrik', 'server');
 		$this->assign('action', $action);
 		$this->assign('listid', $id);
-		parent::display($tpl);
+		//parent::display($tpl);
 	}
 }
 ?>

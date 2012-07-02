@@ -107,7 +107,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$zoomlevel = $params->get('fb_gm_zoomlevel');
 		$o = $this->_strToCoords($v, $zoomlevel);
 
-		$layers = new stdClass();
+		$layers = new stdClass;
 		$layers->virtualEarth = $params->get('fb_osm_virtualearthlayers');
 		$layers->yahoo = $params->get('fb_osm_yahoolayers');
 		$layers->google = $params->get('fb_osm_gmlayers');
@@ -169,7 +169,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	function _strToCoords($v, $zoomlevel = 0)
 	{
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->coords = array('','');
 		$o->zoomlevel = (int) $zoomlevel;
 		if (strstr($v, ","))
@@ -228,7 +228,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$str =  "<div id=\"{$id}\" style=\"width:{$w}px;height:{$h}px\" class=\"gmStaticMap\">";
 		$str .= "<div id=\"{$id}_map\" style=\"width:{$w}px;height:{$h}px\"></div></div>";
 
-		$layers = new stdClass();
+		$layers = new stdClass;
 		$layers->virtualEarth = $params->get('fb_osm_virtualearthlayers');
 		$layers->yahoo = $params->get('fb_osm_yahoolayers');
 		$layers->google = $params->get('fb_osm_gmlayers');

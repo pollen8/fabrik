@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		Joomla
+ * @package     Joomla
  * @subpackage fabrik
  * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
  * @license		GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die( 'Restricted access');
 
 jimport('joomla.plugin.plugin');
@@ -16,7 +16,7 @@ jimport('joomla.filesystem.file');
  * Joomla! Fabrik system
  *
  * @author		Rob Clayburn <rob@pollen-8.co.uk>
- * @package		Joomla
+ * @package     Joomla
  * @subpackage	fabrik
  */
 
@@ -208,7 +208,7 @@ class plgSystemFabrik extends JPlugin
 					if (!in_array($href, $urls)) {
 						$limit --;
 						$urls[] = $href;
-						$o = new stdClass();
+						$o = new stdClass;
 						if (isset($oData->$title)) {
 							$o->title = $table->label .' : '. $oData->$title;
 						} else {

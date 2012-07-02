@@ -1,8 +1,8 @@
 <?php
 /**
  * Add a user to a mailchimp mailing list
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -87,7 +87,7 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 		$opts['FNAME'] = $fname;
 
 
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
 		if (!empty($groupOpts)) {

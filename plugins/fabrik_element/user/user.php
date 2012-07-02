@@ -728,7 +728,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		{
 			$userid = $data[$rawkey];
 		}
-		else if (array_key_exists($key, $data))
+		elseif (array_key_exists($key, $data))
 		{
 			$userid = $data[$key];
 		}

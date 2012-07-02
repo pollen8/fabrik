@@ -98,7 +98,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron {
 					if ($geocode_when == '1') {
 						$do_geocode = empty($row->$geocode_map_element) || $row->$geocode_map_element == $geocode_is_empty;
 					}
-					else if ($geocode_when == '2') {
+					elseif ($geocode_when == '2') {
 						$do_geocode = empty($row->$geocode_map_element);
 					}
 					if ($do_geocode) {

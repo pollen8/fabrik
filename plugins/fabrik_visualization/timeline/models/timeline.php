@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -26,7 +26,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization {
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$document = JFactory::getDocument();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		//$document->addScript( "http://simile.mit.edu/timeline/api/timeline-api.js");
 		$document->addScript('http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true');
@@ -99,7 +99,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization {
 					{
 						foreach ($group as $row)
 						{
-							$event = new stdClass();
+							$event = new stdClass;
 							$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row));
 							$event->description = $html;
 							//$event->start = (array_key_exists($startdate. '_raw', $row) && $tblStartFormat) ? $row->{$startdate. '_raw'} : $row->$startdate;

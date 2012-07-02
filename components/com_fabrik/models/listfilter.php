@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -398,7 +398,7 @@ class FabrikFEModelListfilter extends FabModel {
 		{
 			return;
 		}
-		$reg = $registry->get($context, new stdClass());
+		$reg = $registry->get($context, new stdClass);
 
 		// $$$ rob jpluginfilters search_types are those which have been set inside the
 		// Joomla content plugin e.g. {fabrik view=list id=1 tablename___elementname=foo}
@@ -416,7 +416,7 @@ class FabrikFEModelListfilter extends FabModel {
 		$reg = JArrayHelper::toObject($reg);
 
 		$registry->set($context, $reg);
-		$reg = $registry->get($context, new stdClass());
+		$reg = $registry->get($context, new stdClass);
 		//reset plugin filter
 		if (isset($registry->_registry['com_fabrik']['data']->$tid->plugins))
 		{
@@ -473,7 +473,10 @@ class FabrikFEModelListfilter extends FabModel {
 			
 			$key = array_key_exists('key', $filters) ? array_search($k, $filters['key']) : false;
 			
-			$eval = array_key_exists('eval', $filters) ? array_search($k, $filters['eval']) : FABRIKFILTER_TEXT;
+			// $$$ rob 28/06/2011 see http://fabrikar.com/forums/showthread.php?t=26006 this line was setting eval to 1 as array_search returns the key, think we want the value
+			//$eval = array_key_exists('eval', $filters) ? array_search($k, $filters['eval']) : FABRIKFILTER_TEXT;
+			$eval = array_key_exists('eval', $filters) ? JArrayHelper::getValue($filters['eval'], $key, FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
+			
 			if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin'))
 			{
 				$fieldDesc = $elementModel->getFieldDescription();

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of elements.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.6
  */
 class FabrikViewElements extends JView
@@ -91,7 +91,7 @@ class FabrikViewElements extends JView
 		}
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'elements.delete','JTOOLBAR_EMPTY_TRASH');
-		} else if ($canDo->get('core.edit.state')) {
+		} elseif ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('elements.trash','JTOOLBAR_TRASH');
 		}
 		if ($canDo->get('core.admin')) {

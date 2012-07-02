@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a list.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.5
  */
 class FabrikViewList extends JView
@@ -43,7 +43,7 @@ class FabrikViewList extends JView
 		$c = 0;
 		foreach ($data as $groupk => $group) {
 			foreach ($group as $i => $x) {
-				$o = new stdClass();
+				$o = new stdClass;
 				if (is_object($data[$groupk])) {
 					$o->data = JArrayHelper::fromObject($data[$groupk]);
 				} else {

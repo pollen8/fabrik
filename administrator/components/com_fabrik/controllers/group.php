@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -15,10 +15,10 @@ jimport('joomla.application.component.controllerform');
 /**
  * Group controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class FabrikControllerGroup extends JControllerForm
 {
 	/**

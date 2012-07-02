@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a package.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.5
  */
 
@@ -55,7 +55,7 @@ class FabrikViewPackage extends JView
 
 		$this->addToolbar();
 		$canvas = JArrayHelper::getValue($this->item->params, 'canvas', array());
-		$blocks = new stdClass();
+		$blocks = new stdClass;
 		$b = JArrayHelper::getValue($canvas, 'blocks', array());
 		$blocks->form = JArrayHelper::getValue($b, 'form', array());
 		$blocks->list = JArrayHelper::getValue($b, 'list', array());
@@ -64,11 +64,11 @@ class FabrikViewPackage extends JView
 		$opts = JArrayHelper::getvalue($canvas, 'options', array());
 		$tabs = JArrayHelper::getValue($canvas, 'tabs', array('Page 1'));
 		$tabs = $tabs;
-		$d = new stdClass();
+		$d = new stdClass;
 		$layout = JArrayHelper::getValue($canvas, 'layout', $d);
 		$document = JFactory::getDocument();
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 
 		$opts->tabs = $tabs;
 		$opts->blocks = $blocks;

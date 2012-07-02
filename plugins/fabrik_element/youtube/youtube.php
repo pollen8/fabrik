@@ -35,20 +35,20 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 			if ($params->get('or_width_player') != NULL) {
 				$width = $params->get('or_width_player');
 				$height = $params->get('or_height_player');
-			} else if ($params->get('player_size') == 'small') {
+			} elseif ($params->get('player_size') == 'small') {
 				$width = '340';
 				$height = '285';
-			} else if ($params->get('player_size') == 'medium') {
+			} elseif ($params->get('player_size') == 'medium') {
 				$width = '445';
 				$height = '364';
-			} else if ($params->get('player_size') == 'normal') {
+			} elseif ($params->get('player_size') == 'normal') {
 				$width = '500';
 				$height = '405';
-			} else if ($params->get('player_size') == 'big') {
+			} elseif ($params->get('player_size') == 'big') {
 				$width = '660';
 				$height = '525';
 			}
-		} else if ($params->get('display_in_table') == 0) {
+		} elseif ($params->get('display_in_table') == 0) {
 			// Display in table = Mini
 			$width = '170';
 			$height = '142';
@@ -109,7 +109,7 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 					if ($params->get('target_link') == 1)
 					{
 						$object_vid = '<a href="'.$data.'" target="blank">'.$dlink.'</a>';
-					} else if ($params->get('target_link') == 2) 
+					} elseif ($params->get('target_link') == 2) 
 					{
 
 
@@ -226,12 +226,12 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 					$width = '340';
 					$height = '285';
 				}
-				else if ($params->get('player_size') == 'medium')
+				elseif ($params->get('player_size') == 'medium')
 				{
 					$width = '445';
 					$height = '364';
 				}
-				else if ($params->get('player_size') == 'normal')
+				elseif ($params->get('player_size') == 'normal')
 				{
 					$width = '500';
 					$height = '405';
@@ -296,7 +296,7 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element {
 					{
 						$object_vid = '<a href="' . $url . $vid . '" target="blank">' . $dlink . '</a>';
 					}
-					else if ($params->get('target_link') == 2)
+					elseif ($params->get('target_link') == 2)
 					{
 						$element = $this->getElement();
 						$object_vid = "<a href='" . $url . $vid . "' rel='lightbox[social " . $width . " " . $height . "]' title='" . $element->label . "'>" . $dlink . "</a>";

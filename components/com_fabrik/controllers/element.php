@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,33 +14,36 @@ jimport('joomla.application.component.controller');
 /**
  * Fabrik From Controller
  *
- * @static
- * @package		Joomla
- * @subpackage	Fabrik
- * @since 1.5
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       1.5
  */
+
 class FabrikControllerElement extends JController
 {
 
-	var $isMambot = false;
+	public $isMambot = false;
 
-	var $mode = false;
+	public $mode = false;
 
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
-	var $cacheId = 0;
+	public $cacheId = 0;
 
 	/**
 	 * Display the view
+	 * 
+	 * @return	null
 	 */
 
-	function display()
+	public function display()
 	{
 		$document = JFactory::getDocument();
 
-		$viewName	= JRequest::getVar('view', 'element', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'element', 'default', 'cmd');
 		$modelName = $viewName;
 
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
+
 		// Set the default view name from the Request
 		$view = &$this->getView($viewName, $viewType);
 
@@ -57,9 +60,11 @@ class FabrikControllerElement extends JController
 	/**
 	 * save an individual element value to the fabrik db
 	 * used in inline edit table plguin
+	 * 
+	 * @return	null
 	 */
 
-	function save()
+	public function save()
 	{
 		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('listid'));
@@ -73,4 +78,3 @@ class FabrikControllerElement extends JController
 	}
 
 }
-?>

@@ -2,8 +2,8 @@
 /**
  * Firefox contacts - enables http://mozillalabs.com/conceptseries/identity/contacts/
  * for your site - currently works only on element's named 'email'
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL

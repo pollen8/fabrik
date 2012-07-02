@@ -7,22 +7,98 @@
 
 		<fieldset name="options" repeat="0" repeatcontrols="0">
 			
-			<field connection_in_repeat="false" label="PLG_VISUALIZATION_MEDIA_TABLE_LABEL" name="media_table" observe="params_media_connection" repeat="0" type="fabriktables"/>
+			<field name="media_which_player"
+				type="list"
+				default="jw"
+				label="PLG_VISUALIZATION_MEDIA_WHICH_PLAYER_LABEL"
+				description="PLG_VISUALIZATION_MEDIA_WHICH_PLAYER_DESC">
+				<option value="jw">JW</option>
+				<option value="xspf">XSPF</option>
+			</field>
+			
+			<field name="media_table"
+				connection_in_repeat="false"
+				label="PLG_VISUALIZATION_MEDIA_TABLE_LABEL"
+				observe="params_media_connection"
+				repeat="0"
+				type="fabriktables"/>
 				
-			<field connection="media_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_MEDIA_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_MEDIA_ELEMENT_LABEL" name="media_media_elementList" table="params_media_table" type="element"/>
+			<field name="media_media_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>
 				
-			<field connection="params_media_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_MEDIA_TITLE_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_MEDIA_TITLE_ELEMENT_LABEL" name="media_title_elementList" table="params_media_table" type="element"/>
+			<field name="media_title_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_TITLE_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_TITLE_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>
 				
-			<field connection="params_media_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_MEDIA_IMAGE_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_MEDIA_IMAGE_ELEMENT_LABEL" name="media_image_elementList" table="params_media_table" type="element"/>
+			<field name="media_image_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_IMAGE_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_IMAGE_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>
 				
-			<field connection="params_media_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_MEDIA_URL_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_MEDIA_URL_ELEMENT_LABEL" name="media_info_elementList" table="params_media_table" type="element"/>
+			<field name="media_info_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_URL_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_URL_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>
 				
+			<field name="media_note_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_NOTE_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_NOTE_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>			
+				
+			<field name="media_published_elementList"
+				connection="params_media_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_MEDIA_PUBLISHED_ELEMENT_DESC"
+				include_calculations="1"
+				label="PLG_VISUALIZATION_MEDIA_PUBLISHED_ELEMENT_LABEL"
+				table="params_media_table"
+				type="element"/>
+			
+			<field name="media_jw_skin"
+				description="PLG_VISUALIZATION_MEDIA_JW_SKIN_DESC"
+				directory="plugins/fabrik_visualization/media/libs/jw/skins/"
+				hide_default="1"
+				default="snel.zip"
+				label="PLG_VISUALIZATION_MEDIA_JW_SKIN_LABEL"
+				type="filelist"/>
+			
 		</fieldset>
 
 		<fieldset name="rest">
-			<field description="PLG_VISUALIZATION_MEDIA_WIDTH_DESC" label="PLG_VISUALIZATION_MEDIA_WIDTH_LABEL" name="media_width" size="5" type="text"/>
+			<field name="media_width"
+				description="PLG_VISUALIZATION_MEDIA_WIDTH_DESC"
+				label="PLG_VISUALIZATION_MEDIA_WIDTH_LABEL"
+				size="5"
+				type="text"/>
 				
-			<field description="PLG_VISUALIZATION_MEDIA_HEIGHT_DESC" label="PLG_VISUALIZATION_MEDIA_HEIGHT_LABEL" name="media_height" size="5" type="text"/>
+			<field name="media_height"
+				description="PLG_VISUALIZATION_MEDIA_HEIGHT_DESC"
+				label="PLG_VISUALIZATION_MEDIA_HEIGHT_LABEL"
+				size="5"
+				type="text"/>
 
 		</fieldset>
 	</fields>

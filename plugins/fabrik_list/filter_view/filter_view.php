@@ -2,8 +2,8 @@
 
 /**
  * Adds a sidebar containing a list of filters to filter the list
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Pollen 8 Design Ltd
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL

@@ -32,7 +32,12 @@ class fabrikViewCalendar extends JView
 		$calendar = $this->row;
 		$this->calName = $model->getCalName();
 
-		$canAdd = $this->get('CanAdd');
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		JHTML::stylesheet('media/com_fabrik/css/list.css');
+		$params = $model->getParams();
+		
+		($params->get('calendar-read-only', 0 ) == 1 ) ? $canAdd = 0 : $canAdd = $this->get('CanAdd');
+
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
 		if ($canAdd && $this->requiredFiltersFound)
 		{
@@ -53,9 +58,9 @@ class fabrikViewCalendar extends JView
 		unset($urlfilters['format']);
 		if (empty($urlfilters))
 		{
-			$urlfilters = new stdClass();
+			$urlfilters = new stdClass;
 		}
-		$urls = new stdClass();
+		$urls = new stdClass;
 		//dont JRoute as its wont load with sef?
 		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid=' . $Itemid . '&id=' . $id;
@@ -63,7 +68,7 @@ class fabrikViewCalendar extends JView
 		$legend = $params->get('show_calendar_legend', 0 ) ? $model->getLegend() : '';
 		$tmpl = $params->get('calendar_layout', 'default');
 		//$pluginManager->loadJS();
-		$options = new stdClass();
+		$options = new stdClass;
 		$options->url = $urls;
 		$options->deleteables = $this->get('DeleteAccess');
 		$options->eventLists = $this->get('eventLists');
@@ -94,11 +99,20 @@ class fabrikViewCalendar extends JView
 		$options->shortMonths = array(JText::_('JANUARY_SHORT'), JText::_('FEBRUARY_SHORT'), JText::_('MARCH_SHORT'), JText::_('APRIL_SHORT'), JText::_('MAY_SHORT'), JText::_('JUNE_SHORT'), JText::_('JULY_SHORT'), JText::_('AUGUST_SHORT'), JText::_('SEPTEMBER_SHORT'), JText::_('OCTOBER_SHORT'), JText::_('NOVEMBER_SHORT'), JText::_('DECEMBER_SHORT'));
 		$options->first_week_day = (int) $params->get('first_week_day', 0);
 
-		$options->monthday = new stdClass();
+		$options->monthday = new stdClass;
 		$options->monthday->width = (int) $params->get('calendar-monthday-width', 90);
-		$options->monthday->height = (int) $params->get('calendar-monthday-height', 90);
+		$options->monthday->height = (int) $params->get('calendar-monthday-height', 80);
 		$options->greyscaledweekend = $params->get('greyscaled-week-end', 0);
 		$options->viewType = $params->get('calendar_default_view', 'monthView');
+		
+		$options->weekday = new stdClass;
+		$options->weekday->width = (int) $params->get('calendar-weekday-width', 90);
+		$options->weekday->height = (int) $params->get('calendar-weekday-height', 10);
+		$options->open = (int)$params->get('open-hour', 0);
+		$options->close = (int)$params->get('close-hour', 24);
+		$options->showweekends = $params->get('calendar-show-weekends', 1);
+		$options->readonly = $params->get('calendar-read-only', 0);
+		
 		$json = json_encode($options);
 
 		JText::script('PLG_VISUALIZATION_CALENDAR_NEXT');

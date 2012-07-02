@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -28,7 +28,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
  		$params = $this->getParams();
  		$config	= JFactory::getConfig();
 		$document = JFactory::getDocument();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
  		$document->addScript("http://api.simile-widgets.org/runway/1.0/runway-api.js");
 		$c = 0;
@@ -63,7 +63,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization { //JModel
 					{
 					foreach ($group as $row)
 					{
-						$event = new stdClass();
+						$event = new stdClass;
 						if (!method_exists($imageElement, 'getStorage'))
 						{
 							//JError::raiseError(500, 'Looks like you selected a element other than a fileupload element for the coverflows image element');

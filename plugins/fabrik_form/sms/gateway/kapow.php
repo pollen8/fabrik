@@ -1,8 +1,8 @@
 <?php
 /**
  * Send an SMS via the kapow sms gateway
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -25,7 +25,7 @@ class Kapow extends JObject{
 		foreach ($smstos as $smsto)
 		{
 			$url = sprintf($this->_url, $username, $password, $smsto, $message);
-			fabrikSMS::doRequest('GET', $url, '');
+			FabrikSMS::doRequest('GET', $url, '');
 		}
 	}
 

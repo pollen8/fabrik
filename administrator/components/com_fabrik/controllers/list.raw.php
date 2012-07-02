@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -15,10 +15,10 @@ jimport('joomla.application.component.controllerform');
 /**
  * List controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class FabrikControllerList extends JControllerForm
 {
 	/**
@@ -29,6 +29,8 @@ class FabrikControllerList extends JControllerForm
 
 	/**
 	 * ajax load drop down of all columns in a given table
+	 * 
+	 * @return  null
 	 */
 
 	public function ajax_loadTableDropDown()
@@ -58,8 +60,14 @@ class FabrikControllerList extends JControllerForm
 		$fieldDropDown = JHTML::_('select.genericlist', $fieldNames, $name, "class=\"inputbox\"  size=\"1\" ", 'value', 'text', '');
 		echo $fieldDropDown;
 	}
-	
-	function delete()
+
+	/**
+	 * delete list items
+	 * 
+	 * @return  null
+	 */
+
+	public function delete()
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
@@ -68,7 +76,7 @@ class FabrikControllerList extends JControllerForm
 		$listid = JRequest::getInt('listid');
 		$model->setId($listid);
 		$ids = JRequest::getVar('ids', array(), 'request', 'array');
-		$limitstart = JRequest::getVar('limitstart'. $listid);
+		$limitstart = JRequest::getVar('limitstart' . $listid);
 		$length = JRequest::getVar('limit' . $listid);
 		$oldtotal = $model->getTotalRecords();
 		$model->deleteRows($ids);
@@ -85,13 +93,17 @@ class FabrikControllerList extends JControllerForm
 		}
 		JRequest::setVar('view', 'list');
 		$this->view();
-		
+
 	}
-	
+
+	/**
+	 * filter list items
+	 * 
+	 * @return  null
+	 */
+
 	public function filter()
 	{
-		// Check for request forgeries
-		//JRequest::checkToken() or die('Invalid Token');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
 		$model->setId($id);
@@ -100,28 +112,33 @@ class FabrikControllerList extends JControllerForm
 		$model->storeRequestData($request);
 		$this->view();
 	}
-	
+
 	/**
-	* show the lists data in the admin
-	*/
-	
+	 * show the lists data in the admin
+	 * 
+	 * @return  null
+	 */
+
 	public function view()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if(is_array($cid))
+		if (is_array($cid))
 		{
 			$cid = $cid[0];
 		}
 		$cid = JRequest::getInt('listid', $cid);
-		// grab the model and set its id
+
+		// Grab the model and set its id
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);
-		$viewType	= JFactory::getDocument()->getType();
-		//use the front end renderer to show the table
+		$viewType = JFactory::getDocument()->getType();
+
+		// Use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$viewLayout = JRequest::getCmd('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
+
 		// Set the layout
 		$view->setLayout($viewLayout);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');

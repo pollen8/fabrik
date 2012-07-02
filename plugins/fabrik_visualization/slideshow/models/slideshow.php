@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -136,7 +136,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 		$slideshow_viz_caption = $params->get('slideshow_viz_caption', '');
 
 		$js_opts = array();
-		$js_opts = new stdClass();
+		$js_opts = new stdClass;
 		$c = 0;
 		foreach ($alldata as $data) {
 			foreach ($data as $pic) {
@@ -182,7 +182,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 
 		$use_thumbs = $params->get('slideshow_viz_thumbnails', 0);
 		$use_captions = $params->get('slideshow_viz_caption', '') == '' ? false : true;
-	    $opts = new stdClass();
+	    $opts = new stdClass;
 		$opts->slideshow_data = $slideshow_data = $this->getImageJSData();
 		$opts->id = $viz->id;
 		$opts->html_id = 'slideshow_viz';

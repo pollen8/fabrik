@@ -1,20 +1,21 @@
 <?php
 /**
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+*/
 
 // No direct access.
 defined('_JEXEC') or die;
 
-require_once('fabcontrolleradmin.php');
+require_once 'fabcontrolleradmin.php';
 
 /**
  * Forms list controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
 class FabrikControllerForms extends FabControllerAdmin
 {
@@ -30,7 +31,8 @@ class FabrikControllerForms extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-	 * @param	array An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 * 
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -42,7 +44,13 @@ class FabrikControllerForms extends FabControllerAdmin
 
 	/**
 	 * Proxy for getModel.
+	 * 
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 * 
 	 * @since	1.6
+	 * 
+	 * @return  model
 	 */
 
 	public function &getModel($name = 'Form', $prefix = 'FabrikModel')
@@ -50,6 +58,12 @@ class FabrikControllerForms extends FabControllerAdmin
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
 	}
+
+	/**
+	 * attempt to alter teh db structure to match the form's current status
+	 * 
+	 * @return  null
+	 */
 
 	public function updateDatabase()
 	{
@@ -59,11 +73,17 @@ class FabrikControllerForms extends FabControllerAdmin
 		$this->getModel()->updateDatabase();
 		$this->setMessage(JText::_('COM_FABRIK_DATABASE_UPDATED'));
 	}
-	
+
+	/**
+	 * View the list data
+	 * 
+	 * @return  null
+	 */
+
 	public function listview()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if(is_array($cid))
+		if (is_array($cid))
 		{
 			$cid = $cid[0];
 		}

@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 - 2010 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -15,10 +15,10 @@ jimport('joomla.application.component.controllerform');
 /**
  * Element controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class FabrikControllerVisualization extends JControllerForm
 {
 	/**
@@ -29,6 +29,8 @@ class FabrikControllerVisualization extends JControllerForm
 
 	/**
 	 * called via ajax to perform viz ajax task (defined by plugintask method)
+	 * 
+	 * @return  null
 	 */
 
 	public function display()
@@ -46,6 +48,12 @@ class FabrikControllerVisualization extends JControllerForm
 			echo $model->$pluginTask();
 		}
 	}
+
+	/**
+	 * get html for viz plugin
+	 * 
+	 * @return  null
+	 */
 
 	public function getPluginHTML()
 	{

@@ -2,11 +2,11 @@
 /*
  * Form Model
  *
- * @package Joomla.Administrator
- * @subpackage Fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access.
@@ -59,7 +59,7 @@ abstract class FabModelAdmin extends JModelAdmin
 				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
 				$location = $this->getPluginLocation($x);
 				$event = $this->getPluginEvent($x);
-				$opts = new stdClass();
+				$opts = new stdClass;
 				$opts->state = (bool) (trim(JArrayHelper::getValue($state, $x)));
 				$return[] = array('plugin' => $plugin, 'html' => $str, 'location' => $location, 'event' => $event, 'opts' => $opts);
 			}

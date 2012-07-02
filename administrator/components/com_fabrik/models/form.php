@@ -2,11 +2,11 @@
 /*
  * Admin Form Model
  *
- * @package Joomla.Administrator
- * @subpackage Fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since	1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access.
@@ -157,7 +157,7 @@ class FabrikModelForm extends FabModelAdmin
 		$js .= "controller = new fabrikAdminForm(aPlugins);\n";
 		foreach ($plugins as $plugin)
 		{
-			$opts = array_key_exists('opts', $plugin) ? $plugin['opts'] : new stdClass();
+			$opts = array_key_exists('opts', $plugin) ? $plugin['opts'] : new stdClass;
 			$opts->location = @$plugin['location'];
 			$opts->event = @$plugin['event'];
 			$opts = json_encode($opts);

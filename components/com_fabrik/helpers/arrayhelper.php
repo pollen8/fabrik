@@ -1,4 +1,21 @@
 <?php
+/**
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+*/
+
+// Check to ensure this file is included in Joomla!
+defined('_JEXEC') or die();
+
+/**
+ * Array helper class
+ * 
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FArrayHelper extends JArrayHelper
 {
@@ -6,27 +23,36 @@ class FArrayHelper extends JArrayHelper
 	/**
 	 * update the data that gets posted via the form and stored by the form
 	 * model. Used in elements to modify posted data see fabrikfileupload
-	 * @param string $key (in key.dot.format to set a recursive array
-	 * @param string $val
-	 * @return null
+	 * 
+	 * @param   array   &$array  array to set value for
+	 * @param   string  $key     (in key.dot.format) to set a recursive array
+	 * @param   string  $val     value to set key to
+	 * 
+	 * @return  null
 	 */
-	function setValue(&$array, $key, $val)
+
+	public function setValue(&$array, $key, $val)
 	{
 
-		if (strstr($key, '.')) {
+		if (strstr($key, '.'))
+		{
 
 			$nodes = explode('.', $key);
 			$count = count($nodes);
 			$pathNodes = $count - 1;
-			if ($pathNodes < 0) {
+			if ($pathNodes < 0)
+			{
 				$pathNodes = 0;
 			}
 			$ns = $array;
-			for ($i = 0; $i <= $pathNodes; $i ++)
+			for ($i = 0; $i <= $pathNodes; $i++)
 			{
-				// If any node along the registry path does not exist, create it
-				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-				if (!isset($ns[$nodes[$i]])) {
+				/**
+				 * If any node along the registry path does not exist, create it
+				 * if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data 
+				 */
+				if (!isset($ns[$nodes[$i]]))
+				{
 					$ns[$nodes[$i]] = array();
 				}
 				$ns = $ns[$nodes[$i]];
@@ -34,17 +60,22 @@ class FArrayHelper extends JArrayHelper
 			$ns = $val;
 
 			$ns = $array;
-			for ($i = 0; $i <= $pathNodes; $i ++)
+			for ($i = 0; $i <= $pathNodes; $i++)
 			{
-				// If any node along the registry path does not exist, create it
-				//if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-				if (!isset($ns[$nodes[$i]])) {
+				/**
+				 * If any node along the registry path does not exist, create it
+				 * if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
+				 */
+				if (!isset($ns[$nodes[$i]]))
+				{
 					$ns[$nodes[$i]] = array();
 				}
 				$ns = $ns[$nodes[$i]];
 			}
 			$ns = $val;
-		} else {
+		}
+		else
+		{
 			$array[$key] = $val;
 		}
 	}
@@ -52,24 +83,29 @@ class FArrayHelper extends JArrayHelper
 	/**
 	 * Utility function to map an array to a stdClass object.
 	 *
-	 * @static
-	 * @param	array	$array		The array to map.
-	 * @param	string	$calss 		Name of the class to create
-	 * @param bol recurse into each value and set any arrays to objects
-	 * @return	object	The object mapped from the given array
+	 * @param   array   &$array   The array to map.
+	 * @param   string  $class    Name of the class to create
+	 * @param   bool    $recurse  into each value and set any arrays to objects
+	 * 
+	 * @return  object	The object mapped from the given array
+	 * 
 	 * @since	1.5
 	 */
-	static function toObject(&$array, $class = 'stdClass', $recurse = true)
+
+	public static function toObject(&$array, $class = 'stdClass', $recurse = true)
 	{
 		$obj = null;
 		if (is_array($array))
 		{
-			$obj = new $class();
+			$obj = new $class;
 			foreach ($array as $k => $v)
 			{
-				if (is_array($v) && $recurse) {
+				if (is_array($v) && $recurse)
+				{
 					$obj->$k = JArrayHelper::toObject($v, $class);
-				} else {
+				}
+				else
+				{
 					$obj->$k = $v;
 				}
 			}
@@ -77,30 +113,53 @@ class FArrayHelper extends JArrayHelper
 		return $obj;
 	}
 
-	function array_key_diff($ar1, $ar2) {  // , $ar3, $ar4, ...
-		// returns copy of array $ar1 with those entries removed
-		// whose keys appear as keys in any of the other function args
-		$aSubtrahends = array_slice(func_get_args(),1);
+	/**
+	 * returns copy of array $ar1 with those entries removed
+	 * whose keys appear as keys in any of the other function args
+	 * 
+	 * @param   array  $ar1  first array
+	 * @param   array  $ar2  second array
+	 * 
+	 * @return  array
+	 */
+
+	public function array_key_diff($ar1, $ar2)
+	{
+		/**
+		 *  , $ar3, $ar4, ...
+		 *  
+		 */
+		$aSubtrahends = array_slice(func_get_args(), 1);
 		foreach ($ar1 as $key => $val)
-		foreach ($aSubtrahends as $aSubtrahend)
-		if (array_key_exists($key, $aSubtrahend))
-		unset ($ar1[$key]);
+		{
+			foreach ($aSubtrahends as $aSubtrahend)
+			{
+				if (array_key_exists($key, $aSubtrahend))
+				{
+					unset($ar1[$key]);
+				}
+			}
+		}
 		return $ar1;
 	}
 
 	/**
 	 * filters array of objects removing those when key does not match
 	 * the value
-	 * @param array of objects - passed by ref
-	 * @param string key to search on
-	 * @param string value of key to keep from array
+	 * 
+	 * @param   array   &$array  of objects - passed by ref
+	 * @param   string  $key     to search on
+	 * @param   string  $value   of key to keep from array
+	 * 
 	 * @return unknown_type
 	 */
-	function filter(&$array, $key, $value)
+
+	public function filter(&$array, $key, $value)
 	{
-		for ($i = count($array) -1; $i >= 0; $i --)
+		for ($i = count($array) - 1; $i >= 0; $i--)
 		{
-			if ($array[$i]->$key !== $value) {
+			if ($array[$i]->$key !== $value)
+			{
 				unset($array[$i]);
 			}
 		}
@@ -108,29 +167,60 @@ class FArrayHelper extends JArrayHelper
 
 	/**
 	 * get the first object in an array whose key = value
-	 * @param array of objects
-	 * @param string $key to search on
-	 * @param string $value to search on
+	 * 
+	 * @param   array   $array  of objects
+	 * @param   string  $key    to search on
+	 * @param   string  $value  to search on
+	 * 
+	 * @return	mixed  value or false
 	 */
 
-	function get($array, $key, $value)
+	public function get($array, $key, $value)
 	{
-		for ($i = count($array) -1; $i >= 0; $i --)
+		for ($i = count($array) - 1; $i >= 0; $i--)
 		{
-			if ($array[$i]->$key == $value) {
+			if ($array[$i]->$key == $value)
+			{
 				return $array[$i];
 			}
 		}
 		return false;
 	}
 
-	function extract($array, $key)
+	/**
+	 * Extract an array of single property values from an array of objects
+	 * 
+	 * @param   array   $array  the array of objects to search
+	 * @param   string  $key    the key to extract the values on.
+	 * 
+	 * @return	array of single key values
+	 */
+
+	public function extract($array, $key)
 	{
 		$return = array();
-		foreach ($array as $object) {
+		foreach ($array as $object)
+		{
 			$return[] = $object->$key;
 		}
 		return $return;
+	}
+
+	/**
+	 * Returns first key in an array, used if we aren't sure if array is assoc or
+	 * not, and just want the first row.
+	 *
+	 * @param   array  $array  the array to get the first key for
+	 * 
+	 * @return  string  the first array key.
+	 * 
+	 * @since	3.0.6
+	 */
+
+	public function firstKey($array)
+	{
+		reset($array);
+		return key($array);
 	}
 
 }

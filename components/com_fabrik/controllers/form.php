@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,22 +15,25 @@ jimport('joomla.application.component.controller');
  * Fabrik From Controller
  *
  * @static
- * @package		Joomla
- * @subpackage	Fabrik
- * @since 1.5
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       1.5
  */
 
 class FabrikControllerForm extends JController
 {
 
-	var $isMambot = false;
+	public $isMambot = false;
 
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
-	var $cacheId = 0;
+	public $cacheId = 0;
 
 	/**
-	 * @since 3.0b
 	 * inline edit control
+	 * 
+	 * @return  null
+	 *  
+	 * @since   3.0b
 	 */
 
 	public function inlineedit()
@@ -38,20 +41,24 @@ class FabrikControllerForm extends JController
 		$document = JFactory::getDocument();
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
-		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$viewLayout = JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
+
 		// Set the layout
 		$view->setLayout($viewLayout);
-		//todo check for cached version
+
+		// @TODO check for cached version
 		$view->inlineEdit();
 	}
 
 	/**
 	 * Display the view
+	 * 
+	 * @return  null
 	 */
 
-	function display()
+	public function display()
 	{
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
@@ -62,7 +69,7 @@ class FabrikControllerForm extends JController
 			$modelName = 'form';
 		}
 
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
@@ -70,13 +77,15 @@ class FabrikControllerForm extends JController
 		// Push a model into the view (may have been set in content plugin already
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
 
-		//test for failed validation then page refresh
+		// Test for failed validation then page refresh
 		$model->getErrors();
-		if (!JError::isError($model) && is_object($model)) {
-			
+		if (!JError::isError($model) && is_object($model))
+		{
+
 			$view->setModel($model, true);
 		}
 		$view->isMambot = $this->isMambot;
+
 		// Display the view
 		$view->assign('error', $this->getError());
 
@@ -105,13 +114,15 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * process the form
+	 * 
+	 * @return  null
 	 */
 
-	function process()
+	public function process()
 	{
 		if (JRequest::getCmd('format', '') == 'raw')
 		{
-			error_reporting( error_reporting() ^ (E_WARNING | E_NOTICE) );
+			error_reporting(error_reporting() ^ (E_WARNING | E_NOTICE));
 		}
 		$model = $this->getModel('form', 'FabrikFEModel');
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
@@ -127,9 +138,11 @@ class FabrikControllerForm extends JController
 		$model->getForm();
 		$model->rowId = JRequest::getVar('rowid', '');
 
-		// $$$ hugh - need this in plugin manager to be able to treat a "Copy" form submission
-		// as 'new' for purposes of running plugins.  Rob's comment in model process() seems to
-		// indicate that origRowId was for this purposes, but it doesn't work, 'cos always has a value.
+		/**
+		 * $$$ hugh - need this in plugin manager to be able to treat a "Copy" form submission
+		 * as 'new' for purposes of running plugins.  Rob's comment in model process() seems to
+		 * indicate that origRowId was for this purposes, but it doesn't work, 'cos always has a value.
+		 */
 		if (JRequest::getVar('Copy', '') != '')
 		{
 			$model->copyingRow(true);
@@ -143,12 +156,12 @@ class FabrikControllerForm extends JController
 
 		if (!$model->validate())
 		{
-			//if its in a module with ajax or in a package or inline edit
+			// If its in a module with ajax or in a package or inline edit
 			if (JRequest::getCmd('fabrik_ajax'))
 			{
 				if (JRequest::getInt('elid') !== 0)
 				{
-					//inline edit
+					// Inline edit
 					$eMsgs = array();
 					$errs = $model->getErrors();
 					foreach ($errs as $e)
@@ -160,12 +173,11 @@ class FabrikControllerForm extends JController
 						}
 					}
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-					//print_r($eMsgs);exit;
 					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 				}
 				else
 				{
-					//package / model
+					// Package / model
 					echo $model->getJsonErrors();
 				}
 				return;
@@ -177,9 +189,11 @@ class FabrikControllerForm extends JController
 			}
 			else
 			{
-				// $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
-				// couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
-				// if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
+				/**
+				 * $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
+				 * couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
+				 * if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
+				 */
 				if (JRequest::getCmd('usekey') !== '')
 				{
 					JRequest::setVar('rowid', -1);
@@ -189,25 +203,25 @@ class FabrikControllerForm extends JController
 			return;
 		}
 
-		//reset errors as validate() now returns ok validations as empty arrays
+		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
 
 		$model->process();
 		if (JRequest::getInt('elid') !== 0)
 		{
-			//inline edit show the edited element - ignores validations for now
+			// Inline edit show the edited element - ignores validations for now
 			echo $model->inLineEditResult();
 			return;
 		}
 
-		//check if any plugin has created a new validation error
+		// Check if any plugin has created a new validation error
 		if ($model->hasErrors())
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}
-		
+
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
 
@@ -219,13 +233,9 @@ class FabrikControllerForm extends JController
 		{
 			// $$$ hugh - adding some options for what to do with redirect when in content plugin
 			// Should probably do this elsewhere, but for now ...
-			$redirect_opts = array(
-				'msg' => $msg,
-				'url' => $url,
-				'baseRedirect' => $this->baseRedirect,
-				'rowid' => JRequest::getVar('rowid')
-			);
-			if (!$this->baseRedirect && $this->isMambot) {
+			$redirect_opts = array('msg' => $msg, 'url' => $url, 'baseRedirect' => $this->baseRedirect, 'rowid' => JRequest::getVar('rowid'));
+			if (!$this->baseRedirect && $this->isMambot)
+			{
 				$session = JFactory::getSession();
 				$context = $model->getRedirectContext();
 				$redirect_opts['redirect_how'] = $session->get($context . 'redirect_content_how', 'popup');
@@ -236,7 +246,7 @@ class FabrikControllerForm extends JController
 				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
-			else if ($this->isMambot)
+			elseif ($this->isMambot)
 			{
 				// $$$ hugh - special case to allow custom code to specify that
 				// the form should not be cleared after a failed AJAX submit
@@ -244,7 +254,7 @@ class FabrikControllerForm extends JController
 				$context = 'com_fabrik.form.' . $model->get('id') . '.redirect.';
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
-			//let form.js handle the redirect logic (will also send out a
+			// Let form.js handle the redirect logic (will also send out a
 			echo json_encode($redirect_opts);
 			return;
 		}
@@ -262,9 +272,13 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * @since 3.0
-	 * Enter description here ...
-	 * @param object $model
+	 * Get redirect message
+	 * 
+	 * @param   object  $model  form model
+	 * 
+	 * @return  string  redirect message
+	 * 
+	 * @since   3.0
 	 */
 
 	protected function getRedirectMessage($model)
@@ -272,16 +286,17 @@ class FabrikControllerForm extends JController
 		$session = JFactory::getSession();
 		$registry = $session->get('registry');
 		$formdata = $session->get('com_fabrik.form.data');
-		//$$$ rob 30/03/2011 if using as a search form don't show record added message
+
+		// $$$ rob 30/03/2011 if using as a search form don't show record added message
 		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id'))
 		{
-			$msg = $model->getParams()->get('suppress_msgs', '0') == '0' ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+			$msg = $model->getParams()->get('suppress_msgs', '0') == '0'
+				? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 		}
 		else
 		{
 			$msg = '';
 		}
-		//$context = 'com_fabrik.form.'.$formdata['formid'].'.redirect.';
 		$context = $model->getRedirectContext();
 		$smsg = $session->get($context . 'msg', array($msg));
 		if (!is_array($smsg))
@@ -292,9 +307,11 @@ class FabrikControllerForm extends JController
 		{
 			$smsg[] = $msg;
 		}
-		// $$$ rob Was using array_shift to set $msg, not to really remove it from $smsg
-		// without the array_shift the custom message is never attached to the redirect page.
-		// use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
+		/**
+		 * $$$ rob Was using array_shift to set $msg, not to really remove it from $smsg
+		 * without the array_shift the custom message is never attached to the redirect page.
+		 * use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
+		 */
 		$custommsg = JArrayHelper::getValue($smsg, array_shift(array_keys($smsg)));
 		if ($custommsg != '')
 		{
@@ -305,10 +322,10 @@ class FabrikControllerForm extends JController
 		$found = false;
 		foreach ($q as $m)
 		{
-			//custom message already queued - unset default msg
+			// Custom message already queued - unset default msg
 			if ($m['type'] == 'message' && trim($m['message']) !== '')
 			{
-				$found= true;
+				$found = true;
 				break;
 			}
 		}
@@ -316,16 +333,21 @@ class FabrikControllerForm extends JController
 		{
 			$msg = null;
 		}
-		$session->set($context.'msg', $smsg);
-		$showmsg = array_shift($session->get($context.'showsystemmsg', array(true)));
+		$session->set($context . 'msg', $smsg);
+		$showmsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
 		$msg = $showmsg == 1 ? $msg : null;
 		return $msg;
 	}
 
 	/**
+	 * Get redirect URL
+	 * 
+	 * @param   object  $model       form model
+	 * @param   bool    $incSession  set url in session?
+	 * 
+	 * @return   string  redirect url
+	 * 
 	 * @since 3.0
-	 * Enter description here ...
-	 * @param object $model
 	 */
 
 	protected function getRedirectURL($model, $incSession = true)
@@ -335,7 +357,8 @@ class FabrikControllerForm extends JController
 		{
 			if (array_key_exists('apply', $model->_formData))
 			{
-				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid') . '&rowid=' . JRequest::getInt('rowid');
+				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
+					. '&rowid=' . JRequest::getInt('rowid');
 			}
 			else
 			{
@@ -346,21 +369,22 @@ class FabrikControllerForm extends JController
 		{
 			if (array_key_exists('apply', $model->_formData))
 			{
-				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid') . '&listid=' . JRequest::getInt('listid');
+				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid')
+					. '&listid=' . JRequest::getInt('listid');
 			}
 			else
 			{
 				if ($this->isMambot)
 				{
-					//return to the same page
+					// Return to the same page
 					$url = JArrayHelper::getvalue($_SERVER, 'HTTP_REFERER', 'index.php');
 				}
 				else
 				{
-					//return to the page that called the form
+					// Return to the page that called the form
 					$url = urldecode(JRequest::getVar('fabrik_referrer', 'index.php', 'post'));
 				}
-				$Itemid	= (int) @$app->getMenu('site')->getActive()->id;
+				$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 				if ($url == '')
 				{
 					if ($Itemid !== 0)
@@ -369,18 +393,18 @@ class FabrikControllerForm extends JController
 					}
 					else
 					{
-						//no menu link so redirect back to list view
+						// No menu link so redirect back to list view
 						$url = 'index.php?option=com_fabrik&view=list&listid=' . JRequest::getInt('listid');
 					}
 				}
 			}
-			$config	= JFactory::getConfig();
+			$config = JFactory::getConfig();
 			if ($config->get('sef'))
 			{
 				$url = JRoute::_($url);
 			}
 		}
-		//3.0 need to distinguish between the default redirect and redirect plugin
+		// 3.0 need to distinguish between the default redirect and redirect plugin
 		$this->baseRedirect = true;
 		if (!$incSession)
 		{
@@ -389,8 +413,8 @@ class FabrikControllerForm extends JController
 		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
 		$context = $model->getRedirectContext();
-		//if the redirect plug-in has set a url use that in preference to the default url
-		//$surl = $session->get($context.'url', array($url));
+
+		// If the redirect plug-in has set a url use that in preference to the default url
 		$surl = $session->get($context . 'url', array());
 		if (!empty($surl))
 		{
@@ -413,26 +437,30 @@ class FabrikControllerForm extends JController
 	/**
 	 * validate via ajax
 	 *
+	 * @return  null
 	 */
 
-	function ajax_validate()
+	public function ajax_validate()
 	{
-		$model	= &$this->getModel('form', 'FabrikFEModel');
+		$model = &$this->getModel('form', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('formid', 0));
 		$model->getForm();
 		$model->rowId = JRequest::getVar('rowid', '');
 		$model->validate();
 		$data = array('modified' => $model->modifiedValidationData);
-		//validating entire group when navigating form pages
+
+		// Validating entire group when navigating form pages
 		$data['errors'] = $model->errors;
 		echo json_encode($data);
 	}
 
 	/**
 	 * save a form's page to the session table
+	 * 
+	 * @return  null
 	 */
 
-	function savepage()
+	public function savepage()
 	{
 		$model = $this->getModel('Formsession', 'FabrikFEModel');
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
@@ -443,9 +471,11 @@ class FabrikControllerForm extends JController
 	/**
 	 * clear down any temp db records or cookies
 	 * containing partially filled in form data
+	 * 
+	 * @return  null
 	 */
 
-	function removeSession()
+	public function removeSession()
 	{
 		$sessionModel = $this->getModel('formsession', 'FabrikFEModel');
 		$sessionModel->setFormId(JRequest::getInt('formid', 0));
@@ -456,8 +486,11 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * called via ajax to page through form records
+	 * 
+	 * @return  null
 	 */
-	function paginate()
+
+	public function paginate()
 	{
 		$model = $this->getModel('Form', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('formid'));
@@ -467,9 +500,11 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * delete a record from a form
+	 * 
+	 * @return  null
 	 */
 
-	function delete()
+	public function delete()
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
@@ -478,7 +513,7 @@ class FabrikControllerForm extends JController
 		$ids = array(JRequest::getVar('rowid', 0));
 
 		$listid = JRequest::getInt('listid');
-		$limitstart = JRequest::getVar('limitstart'. $listid);
+		$limitstart = JRequest::getVar('limitstart' . $listid);
 		$length = JRequest::getVar('limit' . $listid);
 
 		$oldtotal = $model->getTotalRecords();
@@ -488,24 +523,28 @@ class FabrikControllerForm extends JController
 		$total = $oldtotal - count($ids);
 
 		$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=table&listid=$listid", 'post');
-		if ($total >= $limitstart) {
+		if ($total >= $limitstart)
+		{
 			$newlimitstart = $limitstart - $length;
-			if ($newlimitstart < 0) {
+			if ($newlimitstart < 0)
+			{
 				$newlimitstart = 0;
 			}
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
-			$context = 'com_fabrik.list.'.$model->getRenderContext().'.';
-			$app->setUserState($context.'limitstart', $newlimitstart);
+			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
+			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
-		if (JRequest::getVar('format') == 'raw') {
+		if (JRequest::getVar('format') == 'raw')
+		{
 			JRequest::setVar('view', 'list');
 
 			$this->display();
-		} else {
-			//@TODO: test this
+		}
+		else
+		{
+			// @TODO: test this
 			$app->redirect($ref, count($ids) . " " . JText::_('COM_FABRIK_RECORDS_DELETED'));
 		}
 	}
 }
-?>

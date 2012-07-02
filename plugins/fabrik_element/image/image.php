@@ -28,7 +28,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		if (!isset($this->default)) {
 			$params = $this->getParams();
 			$element = $this->getElement();
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			//$this->default = $params->get('imagefile');
 			$this->default = $params->get('imagepath');
 			// $$$ hugh - this gets us the default image, with the root folder prepended.

@@ -1,10 +1,10 @@
 <?php
 /**
  * @version		$Id: atom.php 11687 2009-03-11 17:49:23Z ian $
- * @package		Joomla.Framework
- * @subpackage	Fabrik Documents
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla.Framework
+ * @subpackage  Fabrik Documents
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * Joomla! is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or

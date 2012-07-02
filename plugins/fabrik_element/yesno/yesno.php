@@ -240,7 +240,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true )
 	{
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->value = '';
 		$o->text = $this->filterSelectLabel();
 		$opt = array($o);

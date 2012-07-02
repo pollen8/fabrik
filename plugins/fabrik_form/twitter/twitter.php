@@ -1,8 +1,8 @@
 <?php
 /**
  * Form email plugin
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -284,7 +284,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 		}
 		else
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$msg = $w->parseMessageForPlaceHolder($params->get('twitter_msg_tmpl'), $data);
 		}
 		$msg = $this->bitlifyMessage($msg);

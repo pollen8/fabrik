@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit an element (inline list plugin when editing in admin).
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		3.0
  */
 class FabrikViewElement extends JView

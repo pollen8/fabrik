@@ -166,9 +166,9 @@ class JElement extends JObject
 	 */
 	function getRepeatCounter()
 	{
-		if (isset($this->_parent->_counter_override) && $this->_parent->_counter_override != -1)
+		if (isset($this->_parent->counter_override) && $this->_parent->counter_override != -1)
 		{
-			return $this->_parent->_counter_override;
+			return $this->_parent->counter_override;
 		}
 		else
 		{

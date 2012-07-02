@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -41,7 +41,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 		$str = "head.ready(function() {";
 		$viz = $this->getVisualization();
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->lat = 0;
 		$opts->lon = 0;
 		$opts->icons = $this->getJSIcons();
@@ -179,7 +179,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 	function getJSIcons()
 	{
 		$icons = array();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$uri = JURI::getInstance();
 		$params = $this->getParams();
 		$templates = (array) $params->get('fb_gm_detailtemplate');

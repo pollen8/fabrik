@@ -238,7 +238,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	public function onAjax_addNote()
 	{
 		$this->loadMeForAjax();
-		$return = new stdClass();
+		$return = new stdClass;
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$params = $this->getParams();

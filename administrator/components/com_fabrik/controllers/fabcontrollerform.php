@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -15,15 +15,17 @@ jimport('joomla.application.component.controllerform');
 /**
  * List controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class FabControllerForm extends JControllerForm
 {
 
 	/**
 	 * copy items
+	 * 
+	 * @return  null
 	 */
 
 	public function copy()
@@ -38,8 +40,8 @@ class FabControllerForm extends JControllerForm
 		{
 			if ($model->copy())
 			{
-				 $ntext = $this->text_prefix . '_N_ITEMS_COPIED';
-				 $this->setMessage(JText::plural($ntext, count($cid)));
+				$ntext = $this->text_prefix . '_N_ITEMS_COPIED';
+				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 		}
 		$extension = JRequest::getCmd('extension');
@@ -47,5 +49,3 @@ class FabControllerForm extends JControllerForm
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
 	}
 }
-
-?>

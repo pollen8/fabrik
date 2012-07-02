@@ -142,7 +142,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$disabled = '';
 		}
 
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		foreach ($default as &$d)
 		{
 			$d = $w->parseMessageForPlaceHolder($d);
@@ -487,7 +487,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$where .= ($where == '') ? ' WHERE ' : ' AND ';
 			$where .= $filter;
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		// $$$ hugh - add some useful stuff to search data
 		if (!is_null($whereval))
 		{
@@ -754,7 +754,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			FabrikHelperHTML::autoCompleteScript();
 			$htmlid	= $this->getHTMLId() . 'value';
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->observerid = $observerid;
 			$opts->url = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $element->id . '&plugin=cascadingdropdown&method=autocomplete_options';
 			$opts = json_encode($opts);
@@ -771,7 +771,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			//$listModel = $this->getlistModel();
 			$formModel = $this->getForm();
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->formid = $formModel->get('id');
 			$opts->filterid = $filterid;
 			$opts->elid = $this->id;
@@ -842,7 +842,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$join->table_key = str_replace('`', '', $element->name);
 		$join->table_join_key = $table_join_key;
 		$join->join_from_table = '';
-		$o = new stdClass();
+		$o = new stdClass;
 		$l = 'join-label';
 		$o->$l = $join_label;
 		$o->type = 'element';

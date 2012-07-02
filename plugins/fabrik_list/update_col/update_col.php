@@ -2,8 +2,8 @@
 
 /**
  * Add an action button to the table to update selected columns to a given value
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -94,7 +94,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$emailColID = $params->get('update_email_element', '');
 		if (!empty($emailColID))
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			jimport('joomla.mail.helper');
 			$message = $params->get('update_email_msg');
 			$subject = $params->get('update_email_subject');

@@ -424,7 +424,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 			list($value, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
 		}
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$ext = $params->get('rating-pngorgif', '.png');
 		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
 		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
@@ -455,7 +455,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 		$id = $this->getHTMLId();
 		$list = $this->getlistModel()->getTable();
 		$ext = $params->get('rating-pngorgif', '.png');
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->listid = $list->id;
 		$imagepath = JUri::root().'/plugins/fabrik_element/rating/images/';
 		$opts->imagepath = $imagepath;

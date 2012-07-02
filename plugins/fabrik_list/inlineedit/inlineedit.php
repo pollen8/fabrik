@@ -64,7 +64,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		if (!is_object($use))
 		{
 			$aEls = trim($pels) == '' ? array() : explode(",", $pels);
-			$use = new stdClass();
+			$use = new stdClass;
 			foreach ($aEls as $e)
 			{
 				$use->$e = array($e);
@@ -78,7 +78,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 			foreach ($use as $key => $fields)
 			{
 				$trigger = $elements[$key];
-				$els[$key] = new stdClass();
+				$els[$key] = new stdClass;
 				$els[$key]->elid = $trigger->getId();
 				$els[$key]->plugins = array();
 				foreach ($fields as $field)
@@ -98,7 +98,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 			foreach ($elements as $key => $val)
 			{
 				$key = FabrikString::safeColNameToArrayKey($key);
-				$els[$key] = new stdClass();
+				$els[$key] = new stdClass;
 				$els[$key]->elid = $val->getId();
 				$els[$key]->plugins = array();
 				$els[$key]->plugins[$key] = $val->getElement()->id;

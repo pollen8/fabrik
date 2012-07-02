@@ -2,8 +2,8 @@
 /**
 * @package Joomla
 * @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is within the rest of the framework
@@ -13,7 +13,7 @@ jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a recursive filelist element
@@ -32,7 +32,7 @@ class JFormFieldRecursivefolderlist extends JFormFieldList
 	* @access	protected
 	* @var		string
 	*/
-	var	$_name = 'Recursivefolderlist';
+	protected $name = 'Recursivefolderlist';
 
 	function getOptions()
 	{

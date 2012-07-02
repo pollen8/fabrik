@@ -1,19 +1,22 @@
 <?php
 /**
-* @version
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
-// no direct access
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
+
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controlleradmin');
 
 /**
- * @package		Joomla
- * @subpackage	Fabrik
+ * Upgrade controller
+ * 
+ * @package  Fabrik
+ * @since    3.0
  */
 
 class FabrikControllerUpgrade extends JControllerAdmin
@@ -21,6 +24,8 @@ class FabrikControllerUpgrade extends JControllerAdmin
 
 	/**
 	 * Constructor
+	 * 
+	 * @param   array  $config  options
 	 */
 
 	public function __construct($config = array())
@@ -30,13 +35,13 @@ class FabrikControllerUpgrade extends JControllerAdmin
 
 	/**
 	 * delete all data from fabrik
+	 * 
+	 * @return  null
 	 */
 
-	function check()
+	public function check()
 	{
 		$model = $this->getModel('Upgrade');
 	}
 
-
 }
-?>

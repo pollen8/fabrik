@@ -187,7 +187,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (($params->get('join_val_column_concat') != '') && JRequest::getVar('overide_join_val_column_concat') != 1)
 		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('join_val_column_concat'));
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 			return 'CONCAT(' . $val . ')';
 		}
@@ -315,7 +315,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if ($displayType === 'auto-complete' && empty($this->_autocomplete_where))
 		{
 			$value = (array) $this->getValue($data, $repeatCounter);
-			if (!empty($value))
+			if (!empty($value) && $value[0] !== '')
 			{
 				$quoteV = array();
 				foreach ($value as $v)
@@ -325,7 +325,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$this->_autocomplete_where = $this->getJoinValueColumn() . ' IN (' . implode(', ', $quoteV) . ')';
 			}
 		}
-
 		// $$$ rob 18/06/2012 cache the option vals on a per query basis (was previously incwhere but this was not ok
 		// for auto-completes in repeating groups
 		$sql = $this->buildQuery($data, $incWhere);
@@ -402,7 +401,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$tmp = array_merge($tmp, $aDdObjs);
 		}
 		$this->addSpaceToEmptyLabels($tmp);
-		$displayType = $params->get('database_join_display_type', 'dropdown');
 		if ($this->showPleaseSelect())
 		{
 			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue') , $this->_getSelectLabel()));
@@ -451,7 +449,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			return false;
 		}
-		else if (!$isnew && $wherewhen == '1')
+		elseif (!$isnew && $wherewhen == '1')
 		{
 			return false;
 		}
@@ -579,7 +577,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			return $where;
 		}
 		$where = str_replace("{thistable}", $thisTableAlias, $where);
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$data = is_array($data) ? $data : array();
 		$where = $w->parseMessageForPlaceHolder($where, $data, false);
 		return $where;
@@ -603,7 +601,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		else
 		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('join_val_column_concat'));
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 			return 'CONCAT(' . $val . ')';
 		}
@@ -712,7 +710,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$default = (array) $this->getValue($data, $repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter);
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		foreach ($default as &$d)
 		{
 			$d = $w->parseMessageForPlaceHolder($d);
@@ -802,7 +800,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 							$tmpids = array();
 							foreach ($tmp as $obj)
 							{
-								$o = new stdClass();
+								$o = new stdClass;
 								$o->text = $obj->text;
 								if (in_array($obj->value, $defaults))
 								{
@@ -863,7 +861,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 
 				$html[] = ($displayType == 'radio') ? '</div>' : '';
-			} else if ($this->canView())
+			} elseif ($this->canView())
 			{
 				$html[] = $this->renderListData($default, JArrayHelper::toObject($data));
 			}
@@ -1030,7 +1028,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					}
 				}
 			}
-			$val = $this->renderListData($value, new stdClass());;
+			$val = $this->renderListData($value, new stdClass);;
 		}
 		else
 		{
@@ -1046,7 +1044,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 							break;
 						}
 					}
-					$v2 = $this->renderListData($v2, new stdClass());
+					$v2 = $this->renderListData($v2, new stdClass);
 				}
 				$val = $value;
 			}
@@ -1059,7 +1057,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$value = $v->text;
 					}
 				}
-				$val = $this->renderListData($value, new stdClass());
+				$val = $this->renderListData($value, new stdClass);
 			}
 		}
 		return $val;
@@ -1595,6 +1593,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->label = $table . '___' . $params->get('join_val_column');
 		$opts->formid = $this->getForm()->getForm()->id;
 		$opts->listid = $popuplistid;
+		$opts->listRef = '_com_fabrik_' . $opts->listid;
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->popupform = $popupform;
@@ -1749,7 +1748,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$join->table_key = str_replace('`', '', $element->name);
 		$join->table_join_key = $keyCol;
 		$join->join_from_table = '';
-		$o = new stdClass();
+		$o = new stdClass;
 		$l = 'join-label';
 		$o->$l = $label;
 		$o->type = 'element';

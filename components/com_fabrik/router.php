@@ -1,42 +1,51 @@
 <?php
 
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * if using file extensions sef and htaccess :
+ * you need to edit yout .htaccess file to:
+ *
+ * RewriteCond %{REQUEST_URI} (/|\.csv|\.php|\.html|\.htm|\.feed|\.pdf|\.raw|/[^.]*)$  [NC]
+ *
+ * otherwise the csv exporter will give you a 404 error
+ *
+ */
 
-	/**
-	 * if using file extensions sef and htaccess :
-	 * you need to edit yout .htaccess file to:
-	 *
-	 * RewriteCond %{REQUEST_URI} (/|\.csv|\.php|\.html|\.htm|\.feed|\.pdf|\.raw|/[^.]*)$  [NC]
-	 *
-	 * otherwise the csv exporter will give you a 404 error
-	 *
-	 */
 
-function fabrikBuildRoute(&$query) {
+/**
+ * build route
+ * 
+ * @param   object  &$query  uri?
+ * 
+ * @return  array url
+ */
+
+function fabrikBuildRoute(&$query)
+{
 	$segments = array();
 	$app = JFactory::getApplication();
 	$menu = $app->getMenu();
 	$menuItem = $menu->getItem(@$query['Itemid']);
 	if (isset($query['c']))
 	{
-		//$segments[] = $query['c'];//remove from sef url
+		// $segments[] = $query['c'];//remove from sef url
 		unset($query['c']);
-	};
+	}
 
 	if (isset($query['task']))
 	{
 		$segments[] = $query['task'];
 		unset($query['task']);
-	};
+	}
 
 	if (isset($query['view']))
 	{
@@ -53,57 +62,63 @@ function fabrikBuildRoute(&$query) {
 	{
 		$segments[] = $query['id'];
 		unset($query['id']);
-	};
+	}
 
 	if (isset($query['layout']))
 	{
 		$segments[] = $query['layout'];
 		unset($query['layout']);
-	};
+	}
 
 	if (isset($query['formid']))
 	{
 		$segments[] = $query['formid'];
 		unset($query['formid']);
-	};
+	}
 
 	// $$$ hugh - looks like we still have some links using 'fabrik' instead of 'formid'
-	if (isset($query['fabrik'])) {
+	if (isset($query['fabrik']))
+	{
 		$segments[] = $query['fabrik'];
 		unset($query['fabrik']);
-	};
+	}
 
 	if (isset($query['listid']))
 	{
-		if ($view != 'form' && $view != 'details') {
+		if ($view != 'form' && $view != 'details')
+		{
 			$segments[] = $query['listid'];
 		}
 		unset($query['listid']);
-	};
+	}
 
 	if (isset($query['rowid']))
 	{
 		$segments[] = $query['rowid'];
 		unset($query['rowid']);
-	};
+	}
 
 	if (isset($query['calculations']))
 	{
 		$segments[] = $query['calculations'];
 		unset($query['calculations']);
-	};
+	}
 
 	if (isset($query['filetype']))
 	{
 		$segments[] = $query['filetype'];
 		unset($query['filetype']);
 	}
-	if (isset($query['format'] ))
+	if (isset($query['format']))
 	{
 		$segments[] = $query['format'];
-		//don't unset as with sef urls and extensions on - if we unset it
-		//the url's prefix is set to .html
-		//unset($query['format']);
+
+		/**
+		 * Don't unset as with sef urls and extensions on - if we unset it
+		 * the url's prefix is set to .html
+		 * 
+		 *  unset($query['format']);
+		 */
 	}
 
 	if (isset($query['type']))
@@ -112,21 +127,30 @@ function fabrikBuildRoute(&$query) {
 		unset($query['type']);
 	}
 
-		//test
+	// Test
 	if (isset($query['fabriklayout']))
 	{
 		$segments[] = $query['fabriklayout'];
 		unset($query['fabriklayout']);
-	};
+	}
 
 	return $segments;
 }
 
+/**
+ * parse route
+ * 
+ * @param   array  $segments  url
+ * 
+ * @return  array vars
+ */
+
 function fabrikParseRoute($segments)
 {
-	//vars are what Joomla then uses for its $_REQUEST array
+	// $vars are what Joomla then uses for its $_REQUEST array
 	$vars = array();
-	//Get the active menu item
+
+	// Get the active menu item
 	$app = JFactory::getApplication();
 	$menu = $app->getMenu();
 	$item = $menu->getActive();
@@ -136,14 +160,16 @@ function fabrikParseRoute($segments)
 		$view = array_shift(explode('.', $view));
 	}
 	switch ($view)
-	{ //view (controller not passed into segments)
+	{
+		// View (controller not passed into segments)
 		case 'form':
 		case 'details':
 			// 3.0 task no longer user
-			//$vars['task'] = 'view';
+			// $vars['task'] = 'view';
 			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
+
 			// $$$ rob no longer passing in listid - no need and makes sef urls tidier
-			//$vars['listid'] = JArrayHelper::getValue($segments, 2, 0);
+			// $vars['listid'] = JArrayHelper::getValue($segments, 2, 0);
 			$vars['rowid'] = JArrayHelper::getValue($segments, 2, 0);
 			$vars['view'] = $segments[0];
 			break;
@@ -151,8 +177,9 @@ function fabrikParseRoute($segments)
 		case 'list':
 			$vars['view'] = JArrayHelper::getValue($segments, 0, '');
 			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
-			//$vars['format'] = $segments[2]; - //test may not be when filtering on tbl, sef, modrewrite and file extension on
-			//$vars['type'] = $segments[3];
+
+			// $vars['format'] = $segments[2]; - //test may not be when filtering on tbl, sef, modrewrite and file extension on
+			// $vars['type'] = $segments[3];
 			break;
 		case 'import':
 			$vars['view'] = 'import';
@@ -160,12 +187,11 @@ function fabrikParseRoute($segments)
 			$vars['filetype'] = JArrayHelper::getValue($segments, 2, 0);
 			break;
 		case 'visualization':
-			$vars['id'] = JArrayHelper::getValue($segments, 1, 0);;
+			$vars['id'] = JArrayHelper::getValue($segments, 1, 0);
 			$vars['format'] = JArrayHelper::getValue($segments, 2, 'html');
 			break;
 		default:
-			//echo "router: ahk no view! for $view";
+			break;
 	}
 	return $vars;
 }
-?>

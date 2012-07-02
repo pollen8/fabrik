@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -111,7 +111,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Constructor
 	 *
-	 * @since 1.5
+	 * @since       1.5
 	 */
 
 	function __construct()
@@ -207,7 +207,7 @@ class FabrikFEModelForm extends FabModelForm
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			else if ($pRowid == '-1' && $listModel->canEdit($this->_data))
+			elseif ($pRowid == '-1' && $listModel->canEdit($this->_data))
 			{
 				$ret = 2;
 			}
@@ -294,8 +294,9 @@ class FabrikFEModelForm extends FabModelForm
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getId();
-			$qs .='&amp;view=' . $v; // $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
-			if (!FabrikHelperHTML::stylesheetFromPath(JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
+			// $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails (if ajax loaded then dont do &amp;
+			$qs .= JRequest::getVar('ajax') == 1  ? '&view=' . $v : '&amp;view=' . $v;
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
 			{
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/template_css.php' . $qs);
 			}
@@ -324,7 +325,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$srcs[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
 		}
-		else if (JFile::exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
+		elseif (JFile::exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/form_' . $this->getId() . '.js';
 		}
@@ -735,7 +736,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (JRequest::getInt('rowid') == 0)
 		{
-			$this->_origData = array(new stdClass());
+			$this->_origData = array(new stdClass);
 		}
 		else
 		{
@@ -1735,7 +1736,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$gkeys = array_keys($groups);
 			jimport('joomla.utilities.simplecrypt');
 			$crypt = new JSimpleCrypt();
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			foreach ($gkeys as $g)
 			{
 				$groupModel = $groups[$g];
@@ -1761,6 +1762,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 										//$$$ rob urldecode when posting from ajax form
 										$e = urldecode($e);
 										$e = empty($e) ? '' : $crypt->decrypt($e);
+										$e = FabrikWorker::JSONtoData($e);
 										$v[] = $w->parseMessageForPlaceHolder($e, $post);
 									}
 								}
@@ -1769,6 +1771,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 									// $$$ rob urldecode when posting from ajax form
 									$encrypted = urldecode($encrypted);
 									$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
+									// $$$ hugh - things like elementlist elements (radios, etc) seem to use
+									// their JSON data for encrypted read only vals, need to decode.
+									$v = FabrikWorker::JSONtoData($v);
 									$v = $w->parseMessageForPlaceHolder($v, $post);
 								}
 								$elementModel->setGroupModel($groupModel);
@@ -1858,7 +1863,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$post = $this->setFormData();
 		//contains any data modified by the validations
 		$this->modifiedValidationData = array();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		//$joindata = array();
 		$ok = true;
 
@@ -1877,12 +1882,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// $$$ hugh - FIXME - wait ... what ... hang on ... we assign $this->_formData in $this->setFormData(),
 		// which we assigned to $post a few ines up there ^^.  Why are we now assigning $post back to $this->_formData??
 		$this->_formData =& $post;
-		$this->callElementPreprocess();
 
 		// $$$ hugh - add in any encrypted stuff, in case we fail validation ...
 		// otherwise it won't be in $data when we rebuild the page.
 		// Need to do it here, so _raw fields get added in the next chunk 'o' code.
 		$this->addEncrytedVarsToArray($post);
+echo "<pre>";print_r($post);exit;
+		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
+		// available to things like calc's running in preProcess phase.
+		$this->callElementPreprocess();
 
 		//add in raw fields - the data is already in raw format so just copy the values
 		$this->copyToRaw($post);
@@ -2730,7 +2738,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$this->listModel = $listModel;
 		}
 		//Test to allow {$my->id}'s to be evald from query strings
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$data = $w->parseMessageForPlaceHolder($data);
 		$this->_data = $data;
 		FabrikHelperHTML::debug($data, 'form:data');
@@ -2830,7 +2838,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 								unset($row->$name);
 							}
 							/* $$$ hugh - seem to have a different format if just failed validation! */
-							else if (array_key_exists($fv_name, $row))
+							elseif (array_key_exists($fv_name, $row))
 							{
 								$v = $row->$fv_name;
 								if (is_object($v))
@@ -2849,7 +2857,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 								unset($row->$rawname);
 							}
 							/* $$$ hugh - seem to have a different format if just failed validation! */
-							else if (array_key_exists($fv_rawname, $row))
+							elseif (array_key_exists($fv_rawname, $row))
 							{
 								$v = $row->$fv_rawname;
 								if (is_object($v))
@@ -2977,7 +2985,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			{
 				$sql .= ' WHERE ' . $viewpk . ' ';
 			}
-			else if ($random)
+			elseif ($random)
 			{
 				// $$$ rob Should this not go after prefilters have been applied ?
 				$sql .= ' ORDER BY RAND() LIMIT 1 ';
@@ -3130,7 +3138,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			return $this->pages;
 		}
-		$this->pages = new stdClass();
+		$this->pages = new stdClass;
 		$pageCounter = 0;
 		$groups = $this->getGroupsHiarachy();
 		$c = 0;
@@ -3341,7 +3349,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$intro = preg_replace($remove, '', $intro);
 		$intro = str_replace('[','{', $intro);
 		$intro = str_replace(']','}', $intro);
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$intro = $w->parseMessageForPlaceHolder($intro, $this->_data, true);
 		// $$$ rob 26/01/2011 - this was stopping content plugins from rendering.
 		//$intro = str_replace('{','[', $intro);
@@ -3635,7 +3643,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$listModel = $this->getListModel();
 		$joinId = $this->aJoinGroupIds[$groupTable->id];
-		$element = new stdClass();
+		$element = new stdClass;
 		//add in row id for join data
 		$element->label = '';
 		$element->error = '';

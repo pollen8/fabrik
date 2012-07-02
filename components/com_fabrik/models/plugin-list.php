@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -69,7 +69,7 @@ class plgFabrik_List extends FabrikPlugin
 	
 	public function getElementJSOptions($model)
 	{
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->ref = $model->getRenderContext();
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
@@ -124,7 +124,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	function _getLang()
 	{
-		$lang = new stdClass();
+		$lang = new stdClass;
 		return $lang;
 	}
 

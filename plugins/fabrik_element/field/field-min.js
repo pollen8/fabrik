@@ -1,1 +1,1 @@
-var FbField=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikfield";this.parent(b,a)},select:function(){this.getElement().select()},focus:function(){this.getElement().focus()}});
+var FbField=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikfield";this.parent(b,a)},select:function(){var a=this.getElement();if(a){this.getElement().select()}},focus:function(){var a=this.getElement();if(a){this.getElement().focus()}}});

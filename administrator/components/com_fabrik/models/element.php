@@ -5,8 +5,8 @@
 * @package Joomla.Administrator
 * @subpackage Fabrik
 * @since		1.6
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // No direct access.
@@ -169,14 +169,14 @@ class FabrikModelElement extends JModelAdmin
 			foreach ($groups as $groupModel)
 			{
 				$group = $groupModel->getGroup();
-				$o = new stdClass();
+				$o = new stdClass;
 				$o->label = $group->name;
 				$o->value = 'fabrik_trigger_group_group' . $group->id;
 				$aGroups[] = $o;
 				$elementModels = $groupModel->getMyElements();
 				foreach ($elementModels as $elementModel)
 				{
-					$o = new stdClass();
+					$o = new stdClass;
 					$element = $elementModel->getElement();
 					$o->label = FabrikString::getShortDdLabel($element->label);
 					$o->value = 'fabrik_trigger_element_' . $elementModel->getFullName(false, true, false);
@@ -369,7 +369,7 @@ class FabrikModelElement extends JModelAdmin
 		$item = $this->getItem();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->plugin = $item->plugin;
 		$opts->parentid = (int) $item->parent_id;
 		$opts->jsevents = $this->getJsEvents();
@@ -394,7 +394,7 @@ class FabrikModelElement extends JModelAdmin
 		$js .= "\tcontroller = new fabrikAdminElement(aPlugins, opts);\n";
 		foreach ($plugins as $plugin)
 		{
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->location = @$plugin['location'];
 			$opts->event = @$plugin['event'];
 			$opts = json_encode($opts);
@@ -471,6 +471,7 @@ class FabrikModelElement extends JModelAdmin
 			$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
 		}
 		$elementModel = $this->getElementPluginModel($data);
+		$nameChanged = $data['name'] !== $elementModel->getElement()->name;
 		$elementModel->getElement()->bind($data);
 		$listModel = $elementModel->getListModel();
 
@@ -479,14 +480,14 @@ class FabrikModelElement extends JModelAdmin
 			//have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 
-			if ($listModel->canAddFields() === false)
+			if ($listModel->canAddFields() === false && $listModel->noTable() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
 		}
 		else
 		{
-			if ($listModel->canAlterFields() === false)
+			if ($listModel->canAlterFields() === false && $nameChanged && $listModel->noTable() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
 			}
@@ -545,7 +546,9 @@ class FabrikModelElement extends JModelAdmin
 		$id	= $data['id'];
 		$elementModel = $pluginManager->getPlugIn($data['plugin'], 'element');
 		// $$$ rob f3 - need to bind the data in here otherwise validate fails on dup name test (as no group_id set)
-		$elementModel->getElement()->bind($data);
+		// $$$ rob 29/06/2011 removed as you can't then test name changes in validate() so now bind should be done after
+		// getElementPluginModel is called.
+		//$elementModel->getElement()->bind($data);
 		$elementModel->setId($id);
 		return $elementModel;
 	}
@@ -561,6 +564,7 @@ class FabrikModelElement extends JModelAdmin
 		$name = $data['name'];
 		$params['validations'] = JArrayHelper::getValue($data, 'validationrule', array());
 		$elementModel = $this->getElementPluginModel($data);
+		$elementModel->getElement()->bind($data);
 		$row = $elementModel->getElement();
 		if ($new)
 		{
@@ -593,7 +597,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		//only update the element name if we can alter existing columns, otherwise the name and
 		//field name become out of sync
-		$data['name'] = ($listModel->canAlterFields() || $new) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
+		$data['name'] = ($listModel->canAlterFields() || $new || $listModel->noTable()) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
 
 		$ar = array('published', 'use_in_page_title', 'show_in_list_summary', 'link_to_detail', 'can_order', 'filter_exact_match');
 		foreach ($ar as $a)
@@ -909,7 +913,7 @@ class FabrikModelElement extends JModelAdmin
 			for ($c = 0; $c < count($post['jform']['js_action']); $c ++)
 			{
 				$jsAction = $post['jform']['js_action'][$c];
-				$params = new stdClass();
+				$params = new stdClass;
 				$params->js_e_event = $post['js_e_event'][$c];
 				$params->js_e_trigger = $post['js_e_trigger'][$c];
 				$params->js_e_condition = $post['js_e_condition'][$c];
@@ -1021,9 +1025,13 @@ class FabrikModelElement extends JModelAdmin
 			if ($rule->load((int) $id))
 			{
 				$name = JArrayHelper::getValue($names, $id, $rule->name);
-				$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($rule));
+				$data = JArrayHelper::fromObject($rule);
+				$elementModel = $this->getElementPluginModel($data);
+				$elementModel->getElement()->bind($data);
 				$newrule = $elementModel->copyRow($id, $rule->label, $groupid, $name);
-				$elementModel = $this->getElementPluginModel(JArrayHelper::fromObject($newrule));
+				$data = JArrayHelper::fromObject($newrule);
+				$elementModel = $this->getElementPluginModel($data);
+				$elementModel->getElement()->bind($data);
 				$listModel = $elementModel->getListModel();
 				$res = $listModel->shouldUpdateElement($elementModel);
 				$this->addElementToOtherDbTables($elementModel, $rule);
@@ -1082,7 +1090,7 @@ class FabrikModelElement extends JModelAdmin
 		);
 		$join = $this->getTable('join');
 		$join->load(array('element_id' => $data['element_id']));
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->type = 'repeatElement';
 		$data['params'] = json_encode($opts);
 		$join->bind($data);

@@ -1,21 +1,24 @@
 <?php
 /**
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
+* @package     Joomla.Administrator
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @since       1.6
+*/
 
 // No direct access.
 defined('_JEXEC') or die;
 
-require_once('fabcontrolleradmin.php');
+require_once 'fabcontrolleradmin.php';
 
 /**
  * Connections list controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class FabrikControllerConnections extends FabControllerAdmin
 {
 	/**
@@ -29,10 +32,13 @@ class FabrikControllerConnections extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-	 * @param	array An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 * 
 	 * @see		JController
+	 * 
 	 * @since	1.6
 	 */
+
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
@@ -41,8 +47,15 @@ class FabrikControllerConnections extends FabControllerAdmin
 
 	/**
 	 * Proxy for getModel.
+	 * 
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 * 
 	 * @since	1.6
+	 * 
+	 * @return  J model
 	 */
+
 	public function &getModel($name = 'Connection', $prefix = 'FabrikModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
@@ -53,8 +66,11 @@ class FabrikControllerConnections extends FabControllerAdmin
 	 * Method to set the home property for a list of items
 	 *
 	 * @since	1.6
+	 * 
+	 * @return null
 	 */
-	function setDefault()
+
+	public function setDefault()
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
@@ -77,8 +93,10 @@ class FabrikControllerConnections extends FabControllerAdmin
 			if ($value != 0)
 			{
 				$cid = $cid[0];
+
 				// Get the model.
 				$model = $this->getModel();
+
 				// Publish the items.
 				if (!$model->setDefault($cid, $value))
 				{
@@ -92,5 +110,4 @@ class FabrikControllerConnections extends FabControllerAdmin
 		}
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
-
 }

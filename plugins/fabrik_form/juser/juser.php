@@ -2,8 +2,8 @@
 
 /**
  * Create a Joomla user from the forms data
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -484,7 +484,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 					$data['password_clear']
 				);
 			}
-			else if ($useractivation == 1 && !$bypassActivation)
+			elseif ($useractivation == 1 && !$bypassActivation)
 			{
 				// Set the link to activate the user account.
 				$data['activate'] = $base.JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
@@ -569,7 +569,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		} */
 		if (!empty($this->useridfield))
 		{
-			$formModel->updateFormData($this->useridfield, $user->get('id'), true);
+			$formModel->updateFormData($this->useridfield, $user->get('id'), true, true);
 		}
 		if ($ftable == $jos_users)
 		{
@@ -623,7 +623,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 
 			$session = JFactory::getSession();
 			$context = 'com_fabrik.form.'.$formModel->getId().'.juser.';
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			if (!JError::isError($error))
 			{
 				$session->set($context.'created', true);
@@ -668,7 +668,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 			$ok = false;
 		}
 
-		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress( $post['email']))
+		if ((trim($post['email']) == "") || ! JMailHelper::isEmailAddress($post['email']))
 		{
 			$this->raiseError($formModel->errors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;
@@ -676,7 +676,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form {
 		if (empty($post['password']))
 		{
 			//$$$tom added a new/edit test
-			if (empty($post['id']))
+			if ((int)$post['id'] === 0)
 			{
 				$this->raiseError($formModel->errors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;

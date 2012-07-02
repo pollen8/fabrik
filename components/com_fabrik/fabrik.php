@@ -1,48 +1,54 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.helper');
 jimport('joomla.filesystem.file');
 
-if (!defined('COM_FABRIK_FRONTEND')) {
+if (!defined('COM_FABRIK_FRONTEND'))
+{
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
 
-require_once(JPATH_COMPONENT . '/controller.php');
+require_once JPATH_COMPONENT . '/controller.php';
 
-//test for YQL & XML document type
-// use the format request value to check for document type
+/**
+ * Test for YQL & XML document type
+ * use the format request value to check for document type
+ */
 $docs = array("yql", "xml");
 foreach ($docs as $d)
 {
 	if (JRequest::getCmd("type") == $d)
 	{
-		// get the class
-		require_once(JPATH_SITE . '/administrator/components/com_fabrik/classes/' . $d . 'document.php');
-		// replace the document
+		// Get the class
+		require_once JPATH_SITE . '/administrator/components/com_fabrik/classes/' . $d . 'document.php';
+
+		// Replace the document
 		$document = JFactory::getDocument();
 		$docClass = 'JDocument' . JString::strtoupper($d);
-		$document = new $docClass();
+		$document = new $docClass;
 	}
 }
 
 JModel::addIncludePath(JPATH_COMPONENT . '/models');
-//$$$ rob if you want to you can override any fabrik model by copying it from
+
+// $$$ rob if you want to you can override any fabrik model by copying it from
 // models/ to models/adaptors the copied file will overwrite (NOT extend) the original
 JModel::addIncludePath(JPATH_COMPONENT . '/models/adaptors');
 
 $controllerName = JRequest::getCmd('view');
-//check for a plugin controller
 
-//call a plugin controller via the url :
+// Check for a plugin controller
+
+// Call a plugin controller via the url :
 // &c=visualization.calendar
 
 $isplugin = false;
@@ -52,32 +58,39 @@ if (JString::strpos($cName, '.') != false)
 	list($type, $name) = explode('.', $cName);
 	if ($type == 'visualization')
 	{
-		require_once(JPATH_COMPONENT . '/controllers/visualization.php');
+		require_once JPATH_COMPONENT . '/controllers/visualization.php';
 	}
-	$path = JPATH_SITE . '/plugins/fabrik_'.$type . '/' . $name . '/controllers/' . $name . '.php';
+	$path = JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/controllers/' . $name . '.php';
 	if (JFile::exists($path))
 	{
 		require_once $path;
 		$isplugin = true;
-		$controller = $type.$name;
+		$controller = $type . $name;
 	}
 	else
 	{
 		$controller = '';
 	}
 
-} else {
-	// its not a plugin
+}
+else
+{
+	// Its not a plugin
 	// map controller to view - load if exists
 
-	//$$$ROB was a simple $controller = view, which was giving an error when trying to save a popup
-	//form to the calendar viz
-	//May simply be the best idea to remove main contoller and have different controllers for each view
+	/**
+	 * $$$ rob was a simple $controller = view, which was giving an error when trying to save a popup
+	 * form to the calendar viz
+	 * May simply be the best idea to remove main contoller and have different controllers for each view
+	 */
 
-	//hack for package
-	if (JRequest::getCmd('view') == 'package' || JRequest::getCmd('view') == 'list') {
+	// Hack for package
+	if (JRequest::getCmd('view') == 'package' || JRequest::getCmd('view') == 'list')
+	{
 		$controller = JRequest::getCmd('view');
-	} else {
+	}
+	else
+	{
 		$controller = $controllerName;
 	}
 
@@ -91,20 +104,24 @@ if (JString::strpos($cName, '.') != false)
 		$controller = '';
 	}
 }
-// Create the controller if the task is in the form view.task then get
-// the specific controller for that class - otherwse use $controller to load
-// required controller class
+/**
+ * Create the controller if the task is in the form view.task then get
+ * the specific controller for that class - otherwse use $controller to load
+ * required controller class 
+ */
 if (strpos(JRequest::getCmd('task'), '.') !== false)
 {
 	$controller = array_shift(explode('.', JRequest::getCmd('task')));
-	$classname	= 'FabrikController' . JString::ucfirst($controller);
+	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';
 	if (JFile::exists($path))
 	{
 		require_once $path;
-		JRequest::setVar('view', $controller); //needed to process J content plugin (form)
+
+		// Needed to process J content plugin (form)
+		JRequest::setVar('view', $controller);
 		$task = array_pop(explode('.', JRequest::getCmd('task')));
-		$controller = new $classname();
+		$controller = new $classname;
 	}
 	else
 	{
@@ -113,34 +130,32 @@ if (strpos(JRequest::getCmd('task'), '.') !== false)
 }
 else
 {
-	$classname	= 'FabrikController' . JString::ucfirst($controller);
-	$controller = new $classname();
+	$classname = 'FabrikController' . JString::ucfirst($controller);
+	$controller = new $classname;
 	$task = JRequest::getCmd('task');
 }
 
 if ($isplugin)
 {
-	//add in plugin view
+	// Add in plugin view
 	$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/views');
-	//add the model path
+
+	// Add the model path
 	$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/models');
 }
 $app = JFactory::getApplication();
 $package = JRequest::getVar('package', 'fabrik');
 $app->setUserState('com_fabrik.package', $package);
 
-/// web service testing ///
+// Web service testing
 JLoader::import('webservice', JPATH_SITE . '/components/com_fabrik/models/');
-if (JRequest::getVar('soap') == 1) 
+if (JRequest::getVar('soap') == 1)
 {
-	$opts = array(
-	'driver' => 'soap',
-	'endpoint' => 'http://webservices.activetickets.com/members/ActiveTicketsMembersServices.asmx?WSDL',
-	'credentials' => array('Clientname' => "SPLFenix", 'LanguageCode' => "nl")
-	);
-	
+	$opts = array('driver' => 'soap', 'endpoint' => 'http://webservices.activetickets.com/members/ActiveTicketsMembersServices.asmx?WSDL',
+		'credentials' => array('Clientname' => "SPLFenix", 'LanguageCode' => "nl"));
+
 	$service = FabrikWebService::getInstance($opts);
-	
+
 	$params = $opts['credentials'];
 	$params['From'] = JFactory::getDate()->toISO8601();
 	$params['To'] = JFactory::getDate('next year')->toISO8601();
@@ -148,29 +163,24 @@ if (JRequest::getVar('soap') == 1)
 	$params['MemberId'] = 14;
 	$method = JRequest::getVar($method, 'GetProgramList');
 	$program = $service->get($method, $params, '//ProgramList/Program', null);
-	
+
 	$listModel = JModel::getInstance('List', 'FabrikFEModel');
 	$listModel->setId(7);
 	$service->storeLocally($listModel, $program);
-	
+
 }
 
 if (JRequest::getVar('yql') == 1)
 {
-	$opts = array(
-		'driver' => 'yql',
-		'endpoint' => 'https://query.yahooapis.com/v1/public/yql'
-	);
-	
+	$opts = array('driver' => 'yql', 'endpoint' => 'https://query.yahooapis.com/v1/public/yql');
+
 	$service = FabrikWebService::getInstance($opts);
 	$query = "select * from upcoming.events where location='London'";
 	$program = $service->get($query, array(), 'event', null);
 }
-//end web service testing ///
+// End web service testing
 
 $controller->execute($task);
 
 // Redirect if set by the controller
 $controller->redirect();
-
-?>

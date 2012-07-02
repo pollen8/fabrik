@@ -131,7 +131,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 				$guessed = true;
 			}
 			// Changes JF Questiaux
-			else if (JString::stristr($value, 'http'))
+			elseif (JString::stristr($value, 'http'))
 			{
 				$value = '<a href="' . $value . '"' . $target . '>' . $value . '</a>';
 				$guessed = true;

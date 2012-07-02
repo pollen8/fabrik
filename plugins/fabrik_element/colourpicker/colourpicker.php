@@ -66,7 +66,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		$vars = explode(",", $value);
 		$vars = array_pad( $vars, 3, 0);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$c = new stdClass();
+		$c = new stdClass;
 		// 14/06/2011 changed over to color param object from ind colour settings
 		$c->red = (int) $vars[0];
 		$c->green = (int) $vars[1];

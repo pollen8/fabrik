@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		Joomla
+ * @package     Joomla
  * @subpackage fabrik
  * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
  * @license		GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die( 'Restricted access');
 
 jimport('joomla.plugin.plugin');
@@ -16,7 +16,7 @@ jimport('joomla.filesystem.file');
  * Joomla! Fabrik cron job plugin
  *
  * @author		Rob Clayburn <rob@pollen-8.co.uk>
- * @package		Joomla
+ * @package     Joomla
  * @subpackage	fabrik
  */
 class plgSystemFabrikcron extends JPlugin

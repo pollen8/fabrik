@@ -1,5 +1,5 @@
 <?php
-// no direct access
+// No direct access
 defined('_JEXEC') or die;
 ?>
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">

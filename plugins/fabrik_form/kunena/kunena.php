@@ -2,8 +2,8 @@
 
 /**
  * Creates a thread in kunena forum
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -58,7 +58,7 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 		else {
 			$postfile = KUNENA_PATH_TEMPLATE_DEFAULT . '/post.php';
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		
 		//$fbSession = CKunenaSession::getInstance();
 		//dont need this, session is loaded in CKunenaPost

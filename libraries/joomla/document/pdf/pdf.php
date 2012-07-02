@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id: pdf.php 14401 2010-01-26 14:10:00Z louis $
- * @package		Joomla.Framework
+ * @package     Joomla.Framework
  * @subpackage	Document
  * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
  * @license		GNU/GPL, see LICENSE.php
@@ -20,7 +20,7 @@ require_once(JPATH_LIBRARIES .'/joomla/document/html/html.php');
 /**
  * DocumentPDF class, provides an easy interface to parse and display a pdf document
  *
- * @package		Joomla.Framework
+ * @package     Joomla.Framework
  * @subpackage	Document
  * @since		1.5
  */

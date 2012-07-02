@@ -1,47 +1,52 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
-// needed for when you make a menu item link to a form.
-require_once(JPATH_SITE . '/components/com_fabrik/helpers/parent.php');
-require_once(JPATH_SITE . '/components/com_fabrik/helpers/string.php');
-/**
- * Renders a repeating drop down list of forms
- *
- * @author 		Rob Clayburn
- * @package 	Joomla
- * @subpackage		Fabrik
- * @since		1.5
- */
+// Needed for when you make a menu item link to a form.
+require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
+require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
-class JFormFieldFormList extends JFormFieldList
+/**
+ * Renders a repeating drop down list of forms
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
+class JFormFieldFormList extends JFormFieldList
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
-	var	$_name = 'Formlist';
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
+	protected $name = 'Formlist';
 
-	function getOptions()
+	/**
+	 * Method to get the field options.
+	 *
+	 * @return	array	The field option objects.
+	 */
+
+	protected function getOptions()
 	{
-		$db	= FabrikWorker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label AS ' . $db->quote('text') . ', published');
 		$query->from('#__{package}_forms');
@@ -65,13 +70,19 @@ class JFormFieldFormList extends JFormFieldList
 					break;
 			}
 		}
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->value = '';
 		$o->text = '';
 		array_unshift($rows, $o);
 
 		return $rows;
 	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @return	string	The field input markup.
+	 */
 
 	protected function getInput()
 	{
@@ -80,9 +91,7 @@ class JFormFieldFormList extends JFormFieldList
 		{
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
-			$query->select('form_id')
-			->from('#__{package}_formgroup')
-			->where('group_id = ' . (int) $this->form->getValue('id'));
+			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->form->getValue('id'));
 			$db->setQuery($query);
 			$this->value = $db->loadResult();
 			$this->form->setValue('form', null, $this->value);

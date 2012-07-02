@@ -3,8 +3,8 @@
 /**
  * Allows users to subscribe to updates to a given row and receive emails
  * of those updates. Used in conjunction with the cron notification plug-in
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -44,7 +44,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 			$this->html = JText::_('PLG_CRON_NOTIFICATION_SIGN_IN_TO_RECEIVE_NOTIFICATIONS');
 			return;
 		}
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->listid = $formModel->getListModel()->getId();
 		$opts->fabrik = $formModel->getId();
 		$opts->rowid = $formModel->rowId;

@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		Joomla
+ * @package     Joomla
  * @subpackage	Fabik
  * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
  * @license		GNU/GPL
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 class plgSearchFabrik extends JPlugin

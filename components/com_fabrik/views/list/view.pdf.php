@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package		Joomla
+ * @package     Joomla
  * @subpackage	Fabik
  * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
  * @license		GNU/GPL
@@ -40,7 +40,7 @@ class FabrikViewList extends FabrikViewListBase{
 	protected function buttons()
 	{
 		// dont add buttons as pdf is not interactive
-		$this->buttons = new stdClass();
+		$this->buttons = new stdClass;
 	}
 	
 	/**

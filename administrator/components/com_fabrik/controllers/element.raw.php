@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -15,10 +15,10 @@ jimport('joomla.application.component.controllerform');
 /**
  * Element controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class FabrikControllerElement extends JControllerForm
 {
 	/**
@@ -31,6 +31,8 @@ class FabrikControllerElement extends JControllerForm
 
 	/**
 	 * called via ajax to load in a given plugin's HTML settings
+	 * 
+	 * @return  null
 	 */
 
 	public function getPluginHTML()
@@ -41,10 +43,14 @@ class FabrikControllerElement extends JControllerForm
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
 	}
-	
+
 	/**
-	 * (non-PHPdoc)
-	 * @see JControllerForm::save()
+	 * Method to save a record.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  boolean  True if successful, false otherwise.
 	 */
 
 	public function save($key = null, $urlVar = null)

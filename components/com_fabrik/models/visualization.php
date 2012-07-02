@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/plugin.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
 
 class FabrikFEModelVisualization extends JModel
 {
@@ -148,8 +148,8 @@ class FabrikFEModelVisualization extends JModel
 
 		$uri = clone(JURI::getInstance());
 		// $$$ rob force these to be 0 once the menu item has been loaded for the first time
-		//subsequent loads of the link should have this set to 0. When the menu item is re-clicked
-		//rest filters is set to 1 again
+		// subsequent loads of the link should have this set to 0. When the menu item is re-clicked
+		// rest filters is set to 1 again
 		$router->setVar('resetfilters', 0);
 		if ($option !== 'com_fabrik')
 		{
@@ -171,7 +171,7 @@ class FabrikFEModelVisualization extends JModel
 		return $this->getFilterFormURL;
 	}
 
-	function getRequireFilterMsg()
+	protected function getRequireFilterMsg()
 	{
 		$listModels = $this->getlistModels();
 		foreach ($listModels as $model)
@@ -188,7 +188,7 @@ class FabrikFEModelVisualization extends JModel
 	 * @return	bool
 	 */
 
-	function getRequiredFiltersFound()
+	protected function getRequiredFiltersFound()
 	{
 		$listModels = $this->getListModels();
 		$filters = array();
@@ -209,7 +209,7 @@ class FabrikFEModelVisualization extends JModel
 	 * @return	array	js file paths
 	 */
 
-	function getPluginJsClasses(&$srcs = array())
+	public function getPluginJsClasses(&$srcs = array())
 	{
 		$listModels = $this->getListModels();
 		foreach ($listModels as $model)

@@ -3,13 +3,13 @@
 /**
  * DEPRECIATED - USE com_fabrik.mainfest.class.php INSTEAD
  *
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 // Try extending time, as unziping/ftping took already quite some... :
@@ -114,7 +114,7 @@ function com_install() {
 		/*//test to ensure that the main component params have a default setup
 		$db->setQuery("SELECT id, params FROM #__extension WHERE name = 'fabrik' and type = 'component'");
 		$row = $db->loadObject();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->fbConf_wysiwyg_label = 0;
 		$opts->fbConf_alter_existing_db_cols = 0;
 		$opts->spoofcheck_on_formsubmission = 0;

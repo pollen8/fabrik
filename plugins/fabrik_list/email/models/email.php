@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -203,7 +203,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 			return false;
 		}
 		$listModel->setId(JRequest::getInt('id', 0));
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$params = $this->getParams();
 		$to = JRequest::getVar('order_by');

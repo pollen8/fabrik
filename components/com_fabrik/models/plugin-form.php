@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -298,7 +298,7 @@ class plgFabrik_Form extends FabrikPlugin
 							$join = $elementModel->getJoinModel()->getJoin();
 							$this->emailData[$k . '_raw'] = $model->formDataWithTableName['join'][$join->id][$k];
 						}
-						else if (array_key_exists($key, $model->formDataWithTableName))
+						elseif (array_key_exists($key, $model->formDataWithTableName))
 						{
 							$rawval = JArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
 							if ($rawval == '')
@@ -326,7 +326,7 @@ class plgFabrik_Form extends FabrikPlugin
 					if (array_key_exists($k . '_raw', $this->emailData)) {
 						$email_value = $this->emailData[$k . '_raw'];
 					}
-					else if (array_key_exists($k, $this->emailData))
+					elseif (array_key_exists($k, $this->emailData))
 					{
 						$email_value = $this->emailData[$k];
 					}

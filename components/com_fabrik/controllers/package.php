@@ -2,10 +2,10 @@
 /**
  * Fabrik Package Controller
  *
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is included in Joomla!
@@ -13,15 +13,25 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
+/**
+ * Fabrik package controller
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
 class FabrikControllerPackage extends JController
 {
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
-	var $cacheId = 0;
+	public $cacheId = 0;
 
 	/**
 	 * Display the view
+	 * 
+	 * @return  null
 	 */
-	function display()
+
+	public function display()
 	{
 		$document = JFactory::getDocument();
 
@@ -32,7 +42,7 @@ class FabrikControllerPackage extends JController
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
-		//if the view is a package create and assign the table and form views
+		// If the view is a package create and assign the table and form views
 		$tableView = $this->getView('list', $viewType);
 		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$tableView->setModel($listModel, true);
@@ -47,7 +57,8 @@ class FabrikControllerPackage extends JController
 		$model = $this->getModel($viewName, 'FabrikFEModel');
 		$model->setDbo(FabrikWorker::getDbo());
 
-		if (!JError::isError($model)) {
+		if (!JError::isError($model))
+		{
 			$view->setModel($model, true);
 		}
 		// Display the view
@@ -55,4 +66,3 @@ class FabrikControllerPackage extends JController
 		$view->display();
 	}
 }
-?>

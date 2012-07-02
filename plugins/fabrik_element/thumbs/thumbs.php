@@ -40,7 +40,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 				$imagefileup = 'thumb_up_in.gif';
 				$imagefiledown = 'thumb_down_out.gif';
 			}
-			else if ($myThumb == 'down') {
+			elseif ($myThumb == 'down') {
 				$imagefileup = 'thumb_up_out.gif';
 				$imagefiledown = 'thumb_down_in.gif';
 			}
@@ -145,7 +145,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
 		if (!isset($thisRow)) {
-			$thisRow = new stdClass();
+			$thisRow = new stdClass;
 			$thisRow->__pk_val = $row_id;
 		}
 		$myThumb = $this->_getMyThumb($listid, $formid, $row_id);
@@ -155,7 +155,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 			$imagefileup = 'thumb_up_in.gif';
 			$imagefiledown = 'thumb_down_out.gif';
 		}
-		else if ($myThumb == 'down') {
+		elseif ($myThumb == 'down') {
 			$imagefileup = 'thumb_up_out.gif';
 			$imagefiledown = 'thumb_down_in.gif';
 		}
@@ -265,7 +265,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 			ON DUPLICATE KEY UPDATE date_created = $strDate, thumb = ".$db->quote($thumb));
 		$db->query();
 		if ($db->getErrorNum()) {
-			$err = new stdClass();
+			$err = new stdClass;
 			$err->error = $db->getErrorMsg();
 			echo json_encode($err);exit;
 		}
@@ -283,7 +283,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
                         LIMIT 1");
 		$db->query();
 		if ($db->getErrorNum()) {
-			$err = new stdClass();
+			$err = new stdClass;
 			$err->error = $db->getErrorMsg();
 			echo json_encode($err);exit;
 		}
@@ -312,7 +312,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
 		$value = $this->getValue($data, $repeatCounter);
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->row_id = JRequest::getInt('rowid');
 		$opts->myThumb = $this->_getMyThumb($listid, $formid, $row_id);
 		$opts->elid = $this->getElement()->id;
@@ -321,7 +321,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$opts->view = JRequest::getCmd('view');
 		$opts->listid = $listid;
 		$opts = json_encode($opts);
-		$lang = new stdClass();
+		$lang = new stdClass;
 		$lang->norating = JText::_('NO RATING');
 		$lang = json_encode($lang);
 		$str = "new FbThumbs('$id', $opts, '$value', $lang)";
@@ -360,7 +360,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		else {
 			$userid = $user->get('id');
 		}
-		$opts = new stdClass();
+		$opts = new stdClass;
 
 		$opts->listid      = $list->id;
 		$opts->imagepath    = COM_FABRIK_LIVESITE.'/plugins/fabrik_element/thumbs/images/';

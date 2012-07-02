@@ -2,8 +2,8 @@
 /**
 * @package Joomla
 * @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is included in Joomla!
@@ -110,7 +110,7 @@ class filesystemstorage extends storageAdaptor{
 	 * @param string $src The name of the php (temporary) uploaded file
 	 * @param string $dest The path (including filename) to move the uploaded file to
 	 * @return boolean True on success
-	 * @since 1.5
+	 * @since       1.5
 	 */
 
 	function upload($tmpFile, $filepath)
@@ -169,7 +169,7 @@ class filesystemstorage extends storageAdaptor{
 	{
 
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		//$$$ rob wasnt working when getting thumb path on upload
 		$ulDir = JPath::clean($params->get('ul_directory'));

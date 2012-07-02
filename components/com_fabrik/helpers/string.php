@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -259,7 +259,7 @@ class FabrikString extends JString{
 			}
 			$tip = htmlspecialchars('<div class="truncate_text">'.$title.$orig.'</div>');
 			//$tip = $title.$orig;
-			$jOpts = new stdClass();
+			$jOpts = new stdClass;
 			$jOpts->notice = true;
 			$jOpts->position = JArrayHelper::getValue($opts, 'position', 'top');
 			$jOpts = json_encode($jOpts);

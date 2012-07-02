@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id: hidden.php 18809 2010-09-08 09:08:20Z eddieajau $
- * @package		Joomla.Framework
+ * @package     Joomla.Framework
  * @subpackage	Form
  * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
@@ -14,7 +14,7 @@ jimport('joomla.form.formfield');
 /**
  * Form Field class for the Joomla Framework.
  *
- * @package		Joomla.Framework
+ * @package     Joomla.Framework
  * @subpackage	Form
  * @since		1.6
  */

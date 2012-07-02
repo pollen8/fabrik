@@ -15,7 +15,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 //missing class lead to error: Class 'JFormFieldList' not found
 JFormHelper::loadFieldClass('list');
@@ -39,7 +39,7 @@ class JFormFieldSQL2 extends JFormFieldList
 	* @access	protected
 	* @var		string
 	*/
-	var	$_name = 'SQL';
+	protected $name = 'SQL';
 
 	function getOptions()
 	{

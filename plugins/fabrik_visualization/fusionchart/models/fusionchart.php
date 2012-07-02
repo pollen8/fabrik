@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -25,7 +25,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 	protected function getChartParams()
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$caption = $w->parseMessageForPlaceHolder($params->get('fusionchart_caption', ''));
 		$strParam = 'caption=' . $caption;
 
@@ -334,7 +334,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 	protected function setAxisLabels()
 	{
-		$worker = new FabrikWorker();
+		$worker = new FabrikWorker;
 		$params = $this->getParams();
 		$this->axisLabels = (array) $params->get('fusionchart_axis_labels');
 		foreach ($this->axisLabels as $axis_key => $axis_val)
@@ -348,7 +348,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		$this->cantTrendLine = array();
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
-		$worker = new FabrikWorker();
+		$worker = new FabrikWorker;
 		$fc_version = $params->get('fusionchart_version', 'free_old');
 		$free22 = $this->pathBase . 'fusionchart/lib/FusionChartsFree/Code/PHPClass/Includes/FusionCharts_Gen.php';
 		$pro30 = $this->pathBase . 'fusionchart/lib/FusionCharts/Code/PHPClass/Includes/FusionCharts_Gen.php';
@@ -358,7 +358,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 			$document->addScript($this->srcBase."fusionchart/lib/FusionChartsFree/JSClass/FusionCharts.js");
 			$fc_swf_path = COM_FABRIK_LIVESITE.$this->srcBase."fusionchart/lib/FusionChartsFree/Charts/";
 		}
-		else if ($fc_version == 'pro_30' && JFile::exists($pro30))
+		elseif ($fc_version == 'pro_30' && JFile::exists($pro30))
 		{
 			require_once($pro30);
 			$document->addScript($this->srcBase."fusionchart/lib/FusionCharts/Charts/FusionCharts.js");
@@ -800,7 +800,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 					$startval = $trendstart;
 					$endval = $trendend;
 				}
-				else if ($eltype[$nbe] == 'trendline')
+				elseif ($eltype[$nbe] == 'trendline')
 				{
 					$found = true;
 					$min = $this->min[$nbe];

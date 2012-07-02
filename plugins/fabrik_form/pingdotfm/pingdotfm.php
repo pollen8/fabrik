@@ -1,8 +1,8 @@
 <?php
 /**
  * Form submission plugin: Update Ping.fm
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -45,7 +45,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 		$app = JFactory::getApplication();
 		$this->formModel =$formModel;
 		jimport('joomla.filesystem.file');
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$data = $this->getEmailData();
 		if (!$this->shouldProcess('ping_condition', $data)) {
 			return;

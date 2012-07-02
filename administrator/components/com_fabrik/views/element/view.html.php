@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit an element.
  *
- * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @since		1.5
  */
 class FabrikViewElement extends JView
@@ -99,8 +99,8 @@ class FabrikViewElement extends JView
 	{
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_ELEMENT_EDIT'), 'element.png');
 		JRequest::setVar('hidemainmenu', true);
-		JToolBarHelper::save('element.updatestructure', 'JTOOLBAR_SAVE');
-		JToolBarHelper::cancel('element.cancelUpdatestructure','JTOOLBAR_CANCEL');
+		JToolBarHelper::save('element.updateStructure', 'JTOOLBAR_SAVE');
+		JToolBarHelper::cancel('element.cancelUpdateStructure','JTOOLBAR_CANCEL');
 	}
 
 	/**
