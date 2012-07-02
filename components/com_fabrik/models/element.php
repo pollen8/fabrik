@@ -334,10 +334,25 @@ class plgFabrik_Element extends FabrikPlugin
 				$opts = json_encode($opts);
 				//$data = htmlspecialchars($data, ENT_QUOTES);
 				$data = '<span>' . $data . '</span>';
-				$data = htmlspecialchars($data, ENT_QUOTES);
 				if ($params->get('icon_hovertext', true))
 				{
+					$data = htmlspecialchars($data, ENT_QUOTES);
 					$img = '<a class="fabrikTip" href="#" opts=\'' . $opts . '\' title="' . $data. '">' . $img . '</a>';
+				}
+				else if (!empty($iconfile)) {
+					// $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
+					// we'll need to replace the text in the link with the image
+					// After ages dicking around with a regex to do this, decided to use DOMDocument instead!
+					$html = new DOMDocument();
+					$html->loadXML($data);
+					$as = $html->getElementsBytagName('a');
+					if ($as->length) {
+				        $img = $html->createElement('img');
+				        $img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
+				        $as->item(0)->nodeValue = '';
+				        $as->item(0)->appendChild($img);
+				        return $html->saveHTML();
+					}
 				}
 				return $img;
 			}
@@ -4536,20 +4551,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		return $this->_joinModel;
 	}
-	
+
 	/**
 	 * when saving an element pk we need to update any join which has the same params->pk
 	 * @since	3.0.6
 	 * @param	string	$oldName (prevoius element name)
 	 * @param	string	$newName (new element name)
 	 */
-	
+
 	public function updateJoinedPks($oldName, $newName)
 	{
 		$db = $this->getListModel()->getDb();
 		$item = $this->getListModel()->getTable();
 		$query = $db->getQuery(true);
-		
+
 		//update linked lists id.
 		$query->update('#__{package}_joins')
 		->set('table_key = ' . $db->quote($newName))
@@ -4557,7 +4572,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		->where('table_key = ' . $db->quote($oldName));
 		$db->setQuery($query);
 		$db->query();
-		
+
 		// update join pk parameter
 		$query->clear();
 		$query->select('id')->from('#__{package}_joins')->where('table_join = ' . $db->quote($item->db_table_name));
