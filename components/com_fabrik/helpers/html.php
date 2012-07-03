@@ -366,7 +366,7 @@ EOD;
 				// $$$ rob added COM_FABRIK_LIVESITE to make full path name other wise style sheets gave 404 error
 				// when loading from site with sef urls.
 
-				echo "<script type=\"text/javascript\">var v = new Asset.css('{$file}', {});</script>\n";
+				echo "<script type=\"text/javascript\">var v = new Asset.css('" . COM_FABRIK_LIVESITE . $file . "', {});</script>\n";
 				self::$ajaxCssFiles[] = $file;
 			}
 		}
