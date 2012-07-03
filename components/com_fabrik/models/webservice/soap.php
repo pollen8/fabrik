@@ -14,22 +14,22 @@ jimport('joomla.application.component.model');
 class FabrikWebServiceSoap extends FabrikWebService
 {
 
-	function __construct($options)
+	public function __construct($options)
 	{
 		ini_set("soap.wsdl_cache_enabled", 0);
 		$this->client = new SoapClient($options['endpoint']);
 	}
-	
+
 	public function getFunctions()
 	{
 		$functions = $this->client->__getFunctions();
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see FabrikWebService::get()
 	 */
-	
+
 	public function get($method, $filters = array(), $startPoint = null, $result = null)
 	{
 		if (is_null($result))

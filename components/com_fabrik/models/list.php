@@ -3096,7 +3096,7 @@ class FabrikFEModelList extends JModelForm {
 
 	public function shouldUpdateElement(&$elementModel, $origColName = null)
 	{
-		
+
 		$db = FabrikWorker::getDbo();
 		$return = array(false, '', '', '', '', false);
 		$element = $elementModel->getElement();
@@ -3138,7 +3138,7 @@ class FabrikFEModelList extends JModelForm {
 		$objtype = $elementModel->getFieldDescription(); //the element type AFTER saving
 		$newObjectType = strtolower($objtype);
 		$dbdescriptions = $this->getDBFields($tableName, 'Field');
-		
+
 		if (!$this->canAlterFields() && !$this->canAddFields())
 		{
 			$objtype = $dbdescriptions[$origColName]->Type;
@@ -3185,7 +3185,7 @@ class FabrikFEModelList extends JModelForm {
 				$existingDef .= ' ' . $thisFieldDesc->Extra;
 			}
 		}
-		
+
 		//if its the primary 3.0
 		for ($k = 0; $k < count($keydata); $k++)
 		{
@@ -3215,10 +3215,10 @@ class FabrikFEModelList extends JModelForm {
 			{
 				JError::raiseNotice(301, JText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'));
 			}
-			
+
 			return $return;
 		}
-		
+
 		$return[4] = $existingDef;
 		$existingfields = array_keys($dbdescriptions);
 
@@ -3520,7 +3520,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 		// registry not available in admin - seems clunky anyway
-		/* 
+		/*
 		if (isset($reg['com_fabrik']) && array_key_exists($tid, $reg['com_fabrik']['data'])) {
 		FabrikHelperHTML::debug($reg['com_fabrik']['data']->$tid, 'session filters saved as:');
 		}
@@ -8215,22 +8215,25 @@ class FabrikFEModelList extends JModelForm {
 		$params = $this->getParams();
 		$p = json_decode($params->get('list_search_elements'));
 		$elementId = $elementModel->getId();
-		if ($add)
+		if (is_object($p) && is_array($p->search_elements))
 		{
-			if (!in_array($elementId, $p->search_elements))
+			if ($add)
 			{
-				$p->search_elements[] = (string) $elementId;
+				if (!in_array($elementId, $p->search_elements))
+				{
+					$p->search_elements[] = (string) $elementId;
+				}
 			}
-		}
-		else
-		{
-			$k = array_search($elementId, $p->search_elements);
-			if ($k !== false)
+			else
 			{
-				unset($p->search_elements[$k]);
+				$k = array_search($elementId, $p->search_elements);
+				if ($k !== false)
+				{
+					unset($p->search_elements[$k]);
+				}
 			}
+			$params->set('list_search_elements',  json_encode($p));
 		}
-		$params->set('list_search_elements',  json_encode($p));
 		$item = $this->getTable();
 		$item->params = (string) $params;
 		$item->store();

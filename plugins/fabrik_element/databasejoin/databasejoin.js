@@ -156,6 +156,10 @@ var FbDatabasejoin = new Class({
 			'data': data,
 			onSuccess: function (json) {
 				var existingValues = this.getOptionValues();
+				//if duplicating an element in a repeat group when its auto-complete we dont want to update its value
+				if (this.options.display_type === 'auto-complete' && v === '' && existingValues.length === 0) {
+					return;
+				}
 				json.each(function (o) {
 					if (!existingValues.contains(o.value)) {
 						if (this.activePopUp) {

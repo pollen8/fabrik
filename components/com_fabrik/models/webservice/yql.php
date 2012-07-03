@@ -14,17 +14,17 @@ jimport('joomla.application.component.model');
 class FabrikWebServiceYql extends FabrikWebService
 {
 
-	function __construct($options)
+	public function __construct($options)
 	{
 		$this->options = $options;
 		ini_set("soap.wsdl_cache_enabled", 0);
 	}
-	
+
 	public function getFunctions()
 	{
 		return false;
 	}
-	
+
 	public function get($method, $filters = array(), $startPoint = null, $result = null)
 	{
 		if (!strstr($method, 'where'))
@@ -35,26 +35,27 @@ class FabrikWebServiceYql extends FabrikWebService
 		{
 			$method .= $k . '=\'' . $v . '\'';
 		}
-		$url = $this->options['endpoint'] . '?q=' . urlencode($method). '&format=json';
+		$url = $this->options['endpoint'] . '?q=' . urlencode($method) . '&format=json';
+
 		// Make call with cURL
-	    $session = curl_init($url);
-	    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-	    $json = curl_exec($session);
-	    $phpObj = json_decode($json);
-	    if (!is_null($phpObj->query->results))
-	    {
-	    	$res = $phpObj->query->results;
-	    	$startPoints = explode('.', $startPoint);
-	    	foreach ($startPoints as $p)
-	    	{
-	    		$res =& $res->$p;
-	    	}
-	    	return $res;
-	    }
-	    else
-	    {
-	    	return array();
-	    }
+		$session = curl_init($url);
+		curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+		$json = curl_exec($session);
+		$phpObj = json_decode($json);
+		if (!is_null($phpObj->query->results))
+		{
+			$res = $phpObj->query->results;
+			$startPoints = explode('.', $startPoint);
+			foreach ($startPoints as $p)
+			{
+				$res =& $res->$p;
+			}
+			return $res;
+		}
+		else
+		{
+			return array();
+		}
 	}
 
 }

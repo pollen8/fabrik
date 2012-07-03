@@ -391,9 +391,10 @@ class FabrikFEModelCSVExport {
 		return $newN;
 	}
 
-	/*
+	/**
 	 * Remove the __pk_val from data
 	 */
+	
 	function removePkVal()
 	{
 		$data = $this->model->getData();
@@ -404,3 +405,4 @@ class FabrikFEModelCSVExport {
 		}
 	}
 }
+?>

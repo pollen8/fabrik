@@ -415,5 +415,4 @@ class FabrikFEModelConnection extends JModel {
 		return $this->_defaultConnection;
 	}
 }
-
 ?>

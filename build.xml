@@ -12,7 +12,15 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
+<target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
+  <exec executable="phpcs">
+   <arg line="--report=checkstyle --report-file=${basedir}/build/logs/checkstyle.xml --standard=Joomla ${basedir}/components/com_fabrik/" />
+  </exec>
+ </target>
+ 
 	<target name="fabrik.all">
+	
+		<antcall target="phpcs" />
 		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
 		
 		<if>

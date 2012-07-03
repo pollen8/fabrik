@@ -367,7 +367,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 			return;
 		}
 		$mapfullkey = $mapelement->getFullName(false, true, false);
-		FabrikHelperHTML::autoComplete("radius_search_place{$this->_counter}", $el->getElement()->id, $el->_pluginName, $opts);
+		FabrikHelperHTML::autoComplete("radius_search_place{$this->_counter}", $el->getElement()->id, $el->getElement()->plugin, $opts);
 		FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 		parent::loadJavascriptClass();
 	}
