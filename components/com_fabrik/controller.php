@@ -38,10 +38,10 @@ class FabrikController extends JController
 	/**
 	 * Display the view
 	 * 
-	 * @param   bool   $cachable   If true, the view output will be cached
-	 * @param   array  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+* @param   bool   $cachable   If true, the view output will be cached
+* @param   array  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function display($cachable = false, $urlparams = false)

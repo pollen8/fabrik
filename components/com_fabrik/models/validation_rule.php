@@ -25,11 +25,11 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @param	int		repeat group counter
-	 * @return	bool	true if validation passes, false if fails
+* @param   string	data to check
+* @param   object	element
+* @param   int		plugin sequence ref
+* @param   int		repeat group counter
+	 * @return  bool	true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
@@ -40,9 +40,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * looks at the validation condition & evaulates it
 	 * if evaulation is true then the validation rule is applied
-	 * @param	string	elements data
-	 * @param	int		repeat group counter
-	 * @return	bool	apply validation
+* @param   string	elements data
+* @param   int		repeat group counter
+	 * @return  bool	apply validation
 	 */
 
 	function shouldValidate($data, $c)
@@ -88,8 +88,8 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * get the warning message
-	 * @param	int		validation rule number.
-	 * @return	string
+* @param   int		validation rule number.
+	 * @return  string
 	 */
 
 	public function getMessage($c = 0)
@@ -108,9 +108,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	 * @deprecated @since 3.0.5
 	 * now show only on validation icon next to the element name and put icons and text inside hover text
 	 * gets the validation rule icon
-	 * @param	object	element model
-	 * @param	int		$c repeat group counter
-	 * @param	string	$tmpl =
+* @param   object	element model
+* @param   int		$c repeat group counter
+* @param   string	$tmpl =
 	 */
 
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
@@ -138,9 +138,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * gets the hover/alt text that appears over the validation rule icon in the form
-	 * @param	object	element model
-	 * @param	int		validation render order
-	 * @return	string	label
+* @param   object	element model
+* @param   int		validation render order
+	 * @return  string	label
 	 */
 
 	protected function getLabel($elementModel, $pluginc)
@@ -158,9 +158,9 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	/**
 	* does the validation allow empty value?
 	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
-	* @param	object	element model
-	* @param	int		validation render order
-	* @return	bool
+* @param   object	element model
+* @param   int		validation render order
+	* @return  bool
 	*/
 
 	protected function allowEmpty($elementModel, $pluginc)

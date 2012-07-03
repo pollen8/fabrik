@@ -274,7 +274,7 @@ class FabrikControllerForm extends JController
 	/**
 	 * Get redirect message
 	 * 
-	 * @param   object  $model  form model
+* @param   object  $model  form model
 	 * 
 	 * @return  string  redirect message
 	 * 
@@ -342,8 +342,8 @@ class FabrikControllerForm extends JController
 	/**
 	 * Get redirect URL
 	 * 
-	 * @param   object  $model       form model
-	 * @param   bool    $incSession  set url in session?
+* @param   object  $model       form model
+* @param   bool    $incSession  set url in session?
 	 * 
 	 * @return   string  redirect url
 	 * 

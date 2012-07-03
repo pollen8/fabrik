@@ -31,8 +31,8 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 
 	/**
 	 * draws a field element
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -62,7 +62,7 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 	}
 	/**
 	 * defines the type of database table field that is created to store the element's data
-	 * @return	string	db field description
+	 * @return  string	db field description
 	 */
 
 	function getFieldDescription()

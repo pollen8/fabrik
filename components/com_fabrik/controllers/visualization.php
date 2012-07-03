@@ -99,10 +99,10 @@ class FabrikControllerVisualization extends JController
 	 *
 	 * Method to get a reference to the current view and load it if necessary.
 	 *
-	 * @param   string  $name    The view name. Optional, defaults to the controller name.
-	 * @param   string  $type    The view type. Optional.
-	 * @param   string  $prefix  The class prefix. Optional.
-	 * @param   array   $config  Configuration array for view. Optional.
+* @param   string  $name    The view name. Optional, defaults to the controller name.
+* @param   string  $type    The view type. Optional.
+* @param   string  $prefix  The class prefix. Optional.
+* @param   array   $config  Configuration array for view. Optional.
 	 *
 	 * @return  object  Reference to the view or an error.
 	 */

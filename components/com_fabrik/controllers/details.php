@@ -32,7 +32,7 @@ class FabrikControllerDetails extends JController
 	/**
 	 * Display the view
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function display()
@@ -95,7 +95,7 @@ class FabrikControllerDetails extends JController
 	/**
 	 * process the form
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function process()
@@ -214,11 +214,11 @@ class FabrikControllerDetails extends JController
 	/**
 	 * set the redirect url
 	 * 
-	 * @param   string  $url   default url
-	 * @param   string  $msg   optional message to apply on redirect
-	 * @param   string  $type  optional message type
+* @param   string  $url   default url
+* @param   string  $msg   optional message to apply on redirect
+* @param   string  $type  optional message type
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	private function setRedirect($url, $msg = null, $type = 'message')
@@ -275,10 +275,10 @@ class FabrikControllerDetails extends JController
 	/**
 	 * generic function to redirect
 	 * 
-	 * @param   object  &$model  form model
-	 * @param   string  $msg     redirection message to show
+* @param   object  &$model  form model
+* @param   string  $msg     redirection message to show
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	protected function makeRedirect(&$model, $msg = null)
@@ -338,7 +338,7 @@ class FabrikControllerDetails extends JController
 	/**
 	 * validate via ajax
 	 *
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function ajax_validate()
@@ -358,7 +358,7 @@ class FabrikControllerDetails extends JController
 	/**
 	 * save a form's page to the session table
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function savepage()
@@ -373,7 +373,7 @@ class FabrikControllerDetails extends JController
 	 * clear down any temp db records or cookies
 	 * containing partially filled in form data
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function removeSession()
@@ -388,7 +388,7 @@ class FabrikControllerDetails extends JController
 	/**
 	 * called via ajax to page through form records
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function paginate()
@@ -402,7 +402,7 @@ class FabrikControllerDetails extends JController
 	/**
 	 * delete a record from a form
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function delete()

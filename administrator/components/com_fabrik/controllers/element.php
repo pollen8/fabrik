@@ -30,9 +30,9 @@ class FabrikControllerElement extends FabControllerForm
 	/**
 	 * Set a URL for browser redirection.
 	 *
-	 * @param   string  $url   URL to redirect to.
-	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
-	 * @param   string  $type  Message type. Optional, defaults to 'message'.
+* @param   string  $url   URL to redirect to.
+* @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+* @param   string  $type  Message type. Optional, defaults to 'message'.
 	 * 
 	 * @return  JController	This object to support chaining.
 	 */
@@ -62,8 +62,8 @@ class FabrikControllerElement extends FabControllerForm
 	/**
 	 * Gets the URL arguments to append to a list redirect.
 	 * 
-	 * @param   int     $recordId  record id
-	 * @param   string  $urlVar    url var
+* @param   int     $recordId  record id
+* @param   string  $urlVar    url var
 	 * 
 	 * @return  string  The arguments to append to the redirect URL.
 	 *

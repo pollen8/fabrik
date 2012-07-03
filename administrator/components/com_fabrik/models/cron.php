@@ -1,12 +1,10 @@
 <?php
-/*
- * Cron Model
- *
- * @package     Joomla.Administrator
+/**
+ * @package     Joomla
  * @subpackage  Fabrik
- * @since		1.6
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // No direct access.
@@ -14,6 +12,12 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 
+/**
+ * Cron Model
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabrikModelCron extends JModelAdmin
 {
@@ -23,14 +27,15 @@ class FabrikModelCron extends JModelAdmin
 	 */
 	protected $text_prefix = 'COM_FABRIK_CRON';
 
-
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param	type	The table type to instantiate
-	 * @param	string	A prefix for the table class name. Optional.
-	 * @param	array	Configuration array for model. Optional.
-	 * @return	JTable	A database object
+* @param   string  $type    The table type to instantiate
+* @param   string  $prefix  A prefix for the table class name. Optional.
+* @param   array   $config  Configuration array for model. Optional.
+	 * 
+	 * @return  JTable  A database object
+	 * 
 	 * @since	1.6
 	 */
 
@@ -43,9 +48,11 @@ class FabrikModelCron extends JModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param	array	$data		Data for the form.
-	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
-	 * @return	mixed	A JForm object on success, false on failure
+* @param   array  $data      Data for the form.
+* @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * 
+	 * @return  mixed  A JForm object on success, false on failure
+	 * 
 	 * @since	1.6
 	 */
 
@@ -53,7 +60,8 @@ class FabrikModelCron extends JModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.cron', 'cron', array('control' => 'jform', 'load_data' => $loadData));
-		if (empty($form)) {
+		if (empty($form))
+		{
 			return false;
 		}
 		return $form;
@@ -62,7 +70,8 @@ class FabrikModelCron extends JModelAdmin
 	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return	mixed	The data for the form.
+	 * @return  mixed  The data for the form.
+	 * 
 	 * @since	1.6
 	 */
 
@@ -80,11 +89,13 @@ class FabrikModelCron extends JModelAdmin
 	/**
 	 * get html form fields for a plugin (filled with
 	 * current element's plugin data
-	 * @param	string	$plugin
-	 * @return	string	html form fields
+	 * 
+* @param   string  $plugin  plugin name
+	 * 
+	 * @return  string	html form fields
 	 */
 
-	function getPluginHTML($plugin = null)
+	public function getPluginHTML($plugin = null)
 	{
 		$item = $this->getItem();
 		if (is_null($plugin))
@@ -106,34 +117,43 @@ class FabrikModelCron extends JModelAdmin
 	}
 
 	/**
-	 * save the cron job - merging plugin parameters
-	 * (non-PHPdoc)
-	 * @see JModelAdmin::save()
+	 * Save the cron job - merging plugin parameters
+	 *
+* @param   array  $data  The form data.
+	 *
+	 * @return  boolean  True on success, False on error.
 	 */
 
 	public function save($data)
 	{
 		$data['params'] = json_encode($data['params']);
-		return  parent::save($data);
+		return parent::save($data);
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see JModelForm::validate()
+	 * Method to validate the form data.
+	 *
+* @param   JForm   $form   The form to validate against.
+* @param   array   $data   The data to validate.
+* @param   string  $group  The name of the field group to validate.
+	 *
+	 * @return  mixed  Array of filtered data if valid, false otherwise.
+	 *
+	 * @see     JFormRule
+	 * @see     JFilterInput
 	 */
-	
+
 	public function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
 		$ok = parent::validate($form, $data);
-		//standard jform validation failed so we shouldn't test further as we can't
-		//be sure of the data
+
+		// Standard jform validation failed so we shouldn't test further as we can't be sure of the data
 		if (!$ok)
 		{
 			return false;
 		}
-		//hack - must be able to add the plugin xml fields file to $form to include in validation
-		// but cant see how at the moment
+		// Hack - must be able to add the plugin xml fields file to $form to include in validation but cant see how at the moment
 		$data['params'] = $params;
 		return $data;
 	}

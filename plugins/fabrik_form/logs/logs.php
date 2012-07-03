@@ -44,8 +44,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
 	 * @returns	bool
 	 */
 
@@ -66,9 +66,9 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 	/**
 	 * perform log
-	 * @param	object	$params
-	 * @param	object	form model
-	 * @param	string	message type
+* @param   object	$params
+* @param   object	form model
+* @param   string	message type
 	 * @returns	bool
 	 */
 

@@ -20,7 +20,7 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 

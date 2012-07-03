@@ -36,8 +36,8 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
 	 * @returns	bol
 	 */
 
@@ -104,8 +104,8 @@ class plgFabrik_FormTwitter extends plgFabrik_Form {
 	 *
 	 * Actually send the tweet and deals with any redirection
 	 * set in the session
-	 * @param object $params
-	 * @param object $connection
+* @param object $params
+* @param object $connection
 	 */
 
 	function sendTweet($params, $connection)

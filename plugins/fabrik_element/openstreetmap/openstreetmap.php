@@ -34,8 +34,8 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * format the data as a microformat
-	 * @param	string	$data
-	 * @return	string	micro formatted data
+* @param   string	$data
+	 * @return  string	micro formatted data
 	 */
 	
 	function _microformat($data)
@@ -93,7 +93,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
@@ -137,7 +137,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * determine if we use a google static ma
 	 * Option has to be turned on and element un-editable
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 
 	function _useStaticMap()
@@ -162,8 +162,8 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * util function to turn the saved string into coordinate array
-	 *@param string coordinates
-	 * @param int default zoom level
+* @param string coordinates
+* @param   int default zoom level
 	 * @return object coords array and zoomlevel int
 	 */
 
@@ -191,11 +191,11 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * @access private
 	 * get a static map
 	 *
-	 * @param string coordinates
-	 * @param int width
-	 * @param int height
-	 * @param int zoom level
-	 * @param int $repeatCounter
+* @param string coordinates
+* @param   int width
+* @param   int height
+* @param   int zoom level
+* @param   int $repeatCounter
 	 * @return string static map html
 	 */
 
@@ -254,7 +254,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	}
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -304,9 +304,9 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * can be overwritten in the plugin class - see database join element for example
-	 * @param array
-	 * @param array
-	 * @param array options
+* @param array
+* @param array
+* @param array options
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
@@ -348,9 +348,9 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
   /**
    * determines the value for the element in the form view
-   * @param array data
-   * @param int when repeating joinded groups we need to know what part of the array to access
-   * @param array options
+* @param array data
+* @param   int when repeating joinded groups we need to know what part of the array to access
+* @param array options
    * @return string value
    */
 

@@ -11,9 +11,9 @@ defined('_JEXEC') or die();
 
 /**
  * makes the table navigation html to traverse the table data
- * @param int the total number of records in the table
- * @param int number of records to show per page
- * @param int which record number to start at
+* @param   int the total number of records in the table
+* @param   int number of records to show per page
+* @param   int which record number to start at
  */
 
 jimport('joomla.html.pagination');
@@ -48,7 +48,7 @@ class FPagination extends JPagination
 	/**
 	 * set pagination id
 	 * 
-	 * @param   int  $id  list id
+* @param   int  $id  list id
 	 * 
 	 * @return  null
 	 */
@@ -61,10 +61,10 @@ class FPagination extends JPagination
 	/**
 	 * Return the pagination footer
 	 *
-	 * @param   string  $listRef  list reference
-	 * @param   string  $tmpl     tmpl
+* @param   string  $listRef  list reference
+* @param   string  $tmpl     tmpl
 	 * 
-	 * @return	string	Pagination footer
+	 * @return  string	Pagination footer
 	 * 
 	 * @since	1.0
 	 */
@@ -102,7 +102,7 @@ class FPagination extends JPagination
 	/**
 	 * Creates a dropdown box for selecting how many records to show per page
 	 *
-	 * @return	string	The html for the limit # input box
+	 * @return  string	The html for the limit # input box
 	 * 
 	 * @since	1.0
 	 */
@@ -144,7 +144,7 @@ class FPagination extends JPagination
 	/**
 	 * Method to create an active pagination link to the item
 	 *
-	 * @param   JPaginationObject  &$item  The object with which to make an active link.
+* @param   JPaginationObject  &$item  The object with which to make an active link.
 	 *
 	 * @return   string  HTML link
 	 */
@@ -165,8 +165,8 @@ class FPagination extends JPagination
 	/**
 	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x.
 	 * 
-	 * @param   string  $listRef  lists unique identifier
-	 * @param   string  $tmpl     template name
+* @param   string  $listRef  lists unique identifier
+* @param   string  $tmpl     template name
 	 * 
 	 * @return  string  Pagination page list string.
 	 */
@@ -283,7 +283,7 @@ class FPagination extends JPagination
 	/**
 	 * Create the html for a list footer
 	 *
-	 * @param   array  $list  Pagination list data structure.
+* @param   array  $list  Pagination list data structure.
 	 *
 	 * @return  string  HTML for a list start, previous, next,end
 	 *
@@ -317,7 +317,7 @@ class FPagination extends JPagination
 	 *
 	 * Create and return the pagination data object
 	 *
-	 * @return	object	Pagination data object
+	 * @return  object	Pagination data object
 	 */
 
 	protected function _buildDataObject()
@@ -405,7 +405,7 @@ class FPagination extends JPagination
 	/**
 	* Create the HTML for a list footer
 	*
-	* @param   array  $list  Pagination list data structure.
+* @param   array  $list  Pagination list data structure.
 	*
 	* @return  string  HTML for a list footer
 	*/

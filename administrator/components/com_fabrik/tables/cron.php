@@ -40,9 +40,9 @@ class FabrikTableCron extends FabTable
 	/**
 	 * Overloaded bind function
 	 *
-	 * @param	array		$hash named array
+* @param   array		$hash named array
 	 *
-	 * @return	null|string	null is operation was satisfactory, otherwise returns an error
+	 * @return  null|string	null is operation was satisfactory, otherwise returns an error
 	 * @see		JTable:bind
 	 * @since	1.5
 	 */

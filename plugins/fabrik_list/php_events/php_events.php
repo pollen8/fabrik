@@ -18,8 +18,8 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 {
 	/**
 	 * called when the active table filter array is loaded
-	 * @param	object	params
-	 * @param	object	model
+* @param   object	params
+* @param   object	model
 	 */
 	
 	function onFiltersGot(&$params, &$model)
@@ -29,8 +29,8 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * called when the table HTML filters are loaded
-	 * @param	object	params
-	 * @param	object	model
+* @param   object	params
+* @param   object	model
 	 */
 	
 	function onMakeFilters(&$params, &$model)
@@ -40,7 +40,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * do the plugin action
-	 * @param object table model
+* @param object table model
 	 * @return string message
 	 */
 	
@@ -51,9 +51,9 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * run before the table loads its data
-	 * @param	object	parmas
-	 * @param	object	$model
-	 * @return	bool
+* @param   object	parmas
+* @param   object	$model
+	 * @return  bool
 	 */
 	
 	function onPreLoadData(&$params, &$model)
@@ -63,8 +63,8 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * run when the list loads its data(non-PHPdoc)
-	 * @param	object	params
-	 * @param	object	model
+* @param   object	params
+* @param   object	model
 	 */
 	
 	function onLoadData(&$params, &$model)
@@ -74,8 +74,8 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * called when the model deletes rows
-	 * @param	object	list $model
-	 * @return	false	if fail
+* @param   object	list $model
+	 * @return  false	if fail
 	 */
 
 	function onDeleteRows(&$params, &$model)
@@ -112,9 +112,9 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * evaluate supplied PHP
-	 * @param	string	$code
-	 * @param	object	$model
-	 * @return boolean
+* @param   string	$code
+* @param   object	$model
+	 * @return  boolean
 	 */
 
 	protected function doEvaluate($code, &$model)

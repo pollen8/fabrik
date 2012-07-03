@@ -1,46 +1,50 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
-/**
- * Renders a repeating drop down list of packages
- *
- * @author 		Rob Clayburn
- * @package 	Joomla
- * @subpackage		Fabrik
- * @since		1.5
- */
-
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
-class JFormFieldPackageList extends JFormFieldList
+/**
+ * Renders a repeating drop down list of packages
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
+class JFormFieldPackageList extends JFormFieldList
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
 	protected $name = 'Packagelist';
 
-	function getOptions()
+	/**
+	 * Method to get the field options.
+	 *
+	 * @return  array  The field option objects.
+	 */
+
+	protected function getOptions()
 	{
-		$db	= FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
-		$query->select("id AS value, CONCAT(label, '(', version , ')') AS " . FabrikString::safeColName(text));
+		$query->select("id AS value, CONCAT(label, '(', version , ')') AS " . FabrikString::safeColName('text'));
 		$query->from('#__{package}_packages');
 		$query->order('value DESC');
 		$db->setQuery($query);
@@ -55,15 +59,14 @@ class JFormFieldPackageList extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return	string	The field input markup.
-	 * @since	1.6
+	 * @return  string	The field input markup.
 	 */
 
 	protected function getInput()
 	{
 		if ($this->element['active'] == 1)
 		{
-			 $this->element['readonly'] = '';
+			$this->element['readonly'] = '';
 		}
 		else
 		{

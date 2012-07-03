@@ -51,8 +51,8 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	}
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns field element
 	 */
 

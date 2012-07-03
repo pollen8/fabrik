@@ -14,8 +14,8 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * run when the component is installed
-	 * @param object $parent installer object
-	 * @return bool
+* @param object $parent installer object
+	 * @return  bool
 	 */
 
 	function install($parent)
@@ -26,7 +26,7 @@ class Com_FabrikInstallerScript
 	/**
 	 * Check if there is a connection already installed if not create one
 	 * by copying over the site's default connection
-	 * @return bool
+	 * @return  bool
 	 */
 
 	protected function setConnection()
@@ -47,7 +47,7 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * test to ensure that the main component params have a default setup
-	 * @return bool
+	 * @return  bool
 	 */
 
 	protected function setDefaultProperties()
@@ -76,9 +76,9 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Move over files into Joomla libraries folder
-	 * @param	object	installer
-	 * @param	bool	upgrade
-	 * @return	bool
+* @param   object	installer
+* @param   bool	upgrade
+	 * @return  bool
 	 */
 
 	protected function moveFiles(&$installer, $upgrade = false)
@@ -116,7 +116,7 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Run when the component is unistalled.
-	 * @param	object	$parent installer object
+* @param   object	$parent installer object
 	 */
 
 	function uninstall($parent)
@@ -160,7 +160,7 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Run when the component is updated
-	 * @param	object	$parent installer object
+* @param   object	$parent installer object
 	 */
 
 	function update($parent)
@@ -175,10 +175,10 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Run before installation or upgrade run
-	 * @param string $type discover_install (Install unregistered extensions that have been discovered.)
+* @param string $type discover_install (Install unregistered extensions that have been discovered.)
 	 *  or install (standard install)
 	 *  or update (update)
-	 * @param object $parent installer object
+* @param object $parent installer object
 	 */
 
 	function preflight($type, $parent)
@@ -188,10 +188,10 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Run after installation or upgrade run
-	 * @param string $type discover_install (Install unregistered extensions that have been discovered.)
+* @param string $type discover_install (Install unregistered extensions that have been discovered.)
 	 *  or install (standard install)
 	 *  or update (update)
-	 * @param object $parent installer object
+* @param object $parent installer object
 	 */
 
 	function postflight($type, $parent)

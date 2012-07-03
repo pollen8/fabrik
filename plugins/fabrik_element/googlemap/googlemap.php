@@ -20,8 +20,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
+* @param string data
+* @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -71,7 +71,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	/**
 	 * format the data as a georss
 	 *
-	 * @param string $data
+* @param string $data
 	 * @return string html microformat markup
 	 */
 
@@ -92,7 +92,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	/**
 	 * format the data as a microformat
 	 *
-	 * @param string $data
+* @param string $data
 	 * @return string html microformat markup
 	 */
 
@@ -113,7 +113,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	 * $$$tom format the data as DMS
 	 * [N,S,E,O] Degrees, Minutes, Seconds
 	 *
-	 * @param string $data
+* @param string $data
 	 * @return string html DMS markup
 	 */
 
@@ -152,7 +152,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
@@ -236,7 +236,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	 * determine if we use a google static map
 	 * Option has to be turned on and element un-editable
 	 *
-	 * @return bol
+	 * @return  bool
 	 */
 
 	function _useStaticMap()
@@ -256,8 +256,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * util function to turn the saved string into coordinate array
-	 *@param string coordinates
-	 * @param int default zoom level
+* @param string coordinates
+* @param   int default zoom level
 	 * @return object coords array and zoomlevel int
 	 */
 
@@ -280,8 +280,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * $$$tom : util function to turn the saved string into DMS coordinate array
-	 * @param string coordinates
-	 * @param int default zoom level
+* @param string coordinates
+* @param   int default zoom level
 	 * @return object coords array and zoomlevel int
 	 */
 
@@ -366,12 +366,12 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 	 * @access private
 	 * get a static map
 	 *
-	 * @param string coordinates
-	 * @param int width
-	 * @param int height
-	 * @param int zoom level
-	 * @param int $repeatCounter
-	 * @param bool is the static map in the table view
+* @param string coordinates
+* @param   int width
+* @param   int height
+* @param   int zoom level
+* @param   int $repeatCounter
+* @param bool is the static map in the table view
 	 * @return string static map html
 	 */
 
@@ -425,8 +425,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param	int	repeat group counter
-	 * @return	string	returns element html
+* @param   int	repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -507,9 +507,9 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element {
 
 	/**
 	 * can be overwritten in the plugin class - see database join element for example
-	 * @param	array
-	 * @param	array
-	 * @param	array	options
+* @param   array
+* @param   array
+* @param   array	options
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())

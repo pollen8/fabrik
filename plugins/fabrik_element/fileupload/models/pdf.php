@@ -20,8 +20,8 @@ class pdfRender{
 
 	/**
 	 * when in form or detailed view, do we want to show the full image or thumbnail/link?
-	 * @param object $params
-	 * @return bool
+* @param object $params
+	 * @return  bool
 	 */
 
 	private function getThumbnail(&$model, &$params, $file)
@@ -59,10 +59,10 @@ class pdfRender{
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+* @param object element model
+* @param object element params
+* @param string row data for this element
+* @param object all row's data
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -72,9 +72,9 @@ class pdfRender{
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
+* @param object element model
+* @param object element params
+* @param string row data for this element
 	 */
 
 	function render(&$model, &$params, $file)

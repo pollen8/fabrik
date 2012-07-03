@@ -21,8 +21,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -121,9 +121,9 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 	/**
 	 * can be overwritten by plugin class
 	 * determines the value for the element in the form view
-	 * @param array data
-	 * @param int when repeating joinded groups we need to know what part of the array to access
-	 * @param array options
+* @param array data
+* @param   int when repeating joinded groups we need to know what part of the array to access
+* @param array options
 	 * @return string value
 	 */
 
@@ -194,8 +194,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param mixed the elements posted form data
-	 * @param array posted form data
+* @param mixed the elements posted form data
+* @param array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -206,8 +206,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 	/**
 	 * get the value to store the value in the db
 	 *
-	 * @param	mixed	$val (array normally but string on csv import)
-	 * @return	string	yyyy-mm-dd
+* @param   mixed	$val (array normally but string on csv import)
+	 * @return  string	yyyy-mm-dd
 	 */
 
 	private function _indStoreDBFormat($val)
@@ -220,8 +220,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 	/**
 	 * used in isempty validation rule
 	 *
-	 * @param array $data
-	 * @return bol
+* @param array $data
+	 * @return  bool
 	 */
 
 	function dataConsideredEmpty($data, $repeatCounter)

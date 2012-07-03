@@ -43,8 +43,8 @@ class FabrikViewConenction {
 
 	/**
 	 * show a list of all the connections
-	 * @param array of connection objects
-	 * @param object page navigation
+* @param array of connection objects
+* @param object page navigation
 	 */
 
 	function show( $rows, $pageNav) {
@@ -141,7 +141,7 @@ class FabrikViewConenction {
 
 	/**
 	 * edits a database connection
-	 * @param object connection
+* @param object connection
 	 */
 
 	function edit($row)

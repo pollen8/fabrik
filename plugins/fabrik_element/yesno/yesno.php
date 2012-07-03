@@ -51,8 +51,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	/**
 	 * shows the data formatted for the table view with format = pdf
 	 * note pdf lib doesnt support transparent pngs hence this func
-	 * @param string data
-	 * @param object all the data in the tables current row
+* @param string data
+* @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -71,8 +71,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 * shows the data formatted for CSV export
-	 * @param string data
-	 * @param object all the data in the tables current row
+* @param string data
+* @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -107,7 +107,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	
 	/**
 	* run after unmergeFilterSplits to ensure filter dropdown labels are correct
-	* @param array filter options
+* @param array filter options
 	* @return null
 	*/
 	
@@ -131,7 +131,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	}
 	
 	/**
-	* @param array of scripts previously loaded (load order is important as we are loading via head.js
+* @param array of scripts previously loaded (load order is important as we are loading via head.js
 	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	* current file
 	*
@@ -158,8 +158,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 * format the read only output for the page
-	 * @param string $value
-	 * @param string label
+* @param string $value
+* @param string label
 	 * @return string value
 	 */
 
@@ -172,7 +172,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -256,11 +256,11 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 *
-	 * @param unknown_type $normal
-	 * @param unknown_type $tableName
-	 * @param unknown_type $label
-	 * @param unknown_type $id
-	 * @param unknown_type $incjoin
+* @param unknown_type $normal
+* @param unknown_type $tableName
+* @param unknown_type $label
+* @param unknown_type $id
+* @param unknown_type $incjoin
 	 */
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true )

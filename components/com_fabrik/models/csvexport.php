@@ -41,7 +41,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * write the file
 	 * 
-	 * @param   int  $total  total # of records
+* @param   int  $total  total # of records
 	 * 
 	 * @return  null
 	 */
@@ -171,7 +171,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * report a error writing the file
 	 * 
-	 * @param   string  $filepath  file path we were trying to write to
+* @param   string  $filepath  file path we were trying to write to
 	 * 
 	 * @return  null
 	 */
@@ -186,7 +186,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * fix carriage returns
 	 * 
-	 * @param   object  &$row  csv line of data to fix
+* @param   object  &$row  csv line of data to fix
 	 * 
 	 * @return  null
 	 */
@@ -302,8 +302,8 @@ class FabrikFEModelCSVExport
 	/**
 	 * add calculations
 	 *
-	 * @param   array   $a     of field elements $a
-	 * @param   string  &$str  to out put as csv file $str
+* @param   array   $a     of field elements $a
+* @param   string  &$str  to out put as csv file $str
 	 * 
 	 * @return  null
 	 */
@@ -363,7 +363,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * quote a string
 	 * 
-	 * @param   string  $n  string to quote
+* @param   string  $n  string to quote
 	 * 
 	 * @return  string
 	 */
@@ -394,7 +394,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * get the headings for the csv file
 	 * 
-	 * @return	array	heading labels
+	 * @return  array	heading labels
 	 */
 
 	public function getHeadings()
@@ -513,8 +513,8 @@ class FabrikFEModelCSVExport
 	/**
 	 * get unqiue heading
 	 * 
-	 * @param   string  $n  key
-	 * @param   array   $h  search
+* @param   string  $n  key
+* @param   array   $h  search
 	 * 
 	 * @return  string
 	 */

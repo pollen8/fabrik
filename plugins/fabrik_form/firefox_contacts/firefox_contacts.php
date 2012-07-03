@@ -20,8 +20,8 @@ class plgFabrik_FormFirefox_contacts extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is loaded
 	 *
-	 * @param object $params
-	 * @param object form model
+* @param object $params
+* @param object form model
 	 * @returns bol
 	 */
 

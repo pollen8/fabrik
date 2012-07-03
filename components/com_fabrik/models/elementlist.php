@@ -30,10 +30,10 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	 * can be overwritten by plugin class
 	 * determines the label used for the browser title
 	 * in the form/detail views
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
-	 * @return	string	default value
+* @param   array	data
+* @param   int		when repeating joinded groups we need to know what part of the array to access
+* @param   array	options
+	 * @return  string	default value
 	 */
 
 	public function getTitlePart($data, $repeatCounter = 0, $opts = array())
@@ -69,8 +69,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	/**
 	* used in isempty validation rule
 	*
-	* @param	array	$data
-	* @return	bool
+* @param   array	$data
+	* @return  bool
 	*/
 
 	function dataConsideredEmpty($data, $repeatCounter)
@@ -111,10 +111,10 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * Get the table filter for the element
-	 * @param	int		filter order
-	 * @param	bool	do we render as a normal filter or as an advanced search filter
+* @param   int		filter order
+* @param   bool	do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * @return	string	filter html
+	 * @return  string	filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -192,8 +192,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	* Examples of where this would be overwritten include timedate element with time field enabled
-	* @param	int		repeat group counter
-	* @return	array	html ids to watch for validation
+* @param   int		repeat group counter
+	* @return  array	html ids to watch for validation
 	*/
 
 	function getValidationWatchElements($repeatCounter)
@@ -208,10 +208,10 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param	mixed	element's data
-	 * @param	array	form records data
-	 * @param	int		repeat group counter
-	 * @return	string	formatted value
+* @param   mixed	element's data
+* @param   array	form records data
+* @param   int		repeat group counter
+	 * @return  string	formatted value
 	 */
 	
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -288,7 +288,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	/**
 	 * will the element allow for multiple selections
 	 * @since	3.0.6
-	 * @return	bool
+	 * @return  bool
 	 */
 	
 	protected function isMultiple()
@@ -299,9 +299,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param	string	data
-	 * @param	object	all the data in the tables current row
-	 * @return	string	formatted value
+* @param   string	data
+* @param   object	all the data in the tables current row
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -429,8 +429,8 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	/**
 	 * called from within function getValue
 	 * needed so we can append _raw to the name for elements such as db joins
-	 * @param	array	$opts
-	 * @return	string	element name inside data array
+* @param   array	$opts
+	 * @return  string	element name inside data array
 	 */
 
 	protected function getValueFullName($opts)
@@ -440,9 +440,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * determines the value for the element in the form view
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
+* @param   array	data
+* @param   int		when repeating joinded groups we need to know what part of the array to access
+* @param   array	options
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
@@ -566,7 +566,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * is the dropdowns cnn the same as the main Joomla db
-	 * @return bool
+	 * @return  bool
 	 */
 	protected function inJDb()
 	{
@@ -575,9 +575,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 
 	/**
 	 * format the read only output for the page
-	 * @param	string	$value
-	 * @param	string	label
-	 * @return	string	value
+* @param   string	$value
+* @param   string	label
+	 * @return  string	value
 	 */
 
 	protected function getReadOnlyOutput($value, $label)
@@ -597,7 +597,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	/**
 	 * trigger called when a row is stored
 	 * check if new options have been added and if so store them in the element for future use
-	 * @param	array	data to store
+* @param   array	data to store
 	 */
 
 	function onStoreRow(&$data)
@@ -637,7 +637,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	}
 
 	/**
-	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+* @param array of scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
 	 *

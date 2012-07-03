@@ -21,7 +21,7 @@ class plgFabrik_ElementSugarid extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -58,8 +58,8 @@ class plgFabrik_ElementSugarid extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+* @param mixed thie elements posted form data
+* @param array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)

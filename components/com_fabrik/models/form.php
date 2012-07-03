@@ -126,7 +126,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * Method to set the form id
 	 * @since fabrk 3 - DEPRECIATE - SHOULD USE POPULATE STATE
 	 * @access	public
-	 * @param	int	table ID number
+* @param   int	table ID number
 	 */
 
 	function setId($id)
@@ -162,7 +162,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * checks if the params object has been created and if not creates and returns it
-	 * @return	object	params
+	 * @return  object	params
 	 */
 
 	function getParams()
@@ -314,7 +314,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * load the JS files into the document
-	 * @param	array	reference: js script srcs to load in the head
+* @param   array	reference: js script srcs to load in the head
 	 * @return null
 	 */
 
@@ -333,7 +333,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * set the page title for form
-	 * @return	string	page title
+	 * @return  string	page title
 	 */
 
 	function getPageTitle($title = '')
@@ -375,8 +375,8 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * compares the forms table with its groups to see if any of the groups are in fact table joins
-	 * @param	array	tables joins
-	 * @return	array	array(group_id =>join_id)
+* @param   array	tables joins
+	 * @return  array	array(group_id =>join_id)
 	 */
 
 	function getJoinGroupIds($joins)
@@ -399,7 +399,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * gets the javascript actions the forms elements
-	 * @return	array	javascript actions
+	 * @return  array	javascript actions
 	 */
 
 	function getJsActions()
@@ -578,8 +578,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * gets each element in the form along with its group info
-	 * @param	bool	included unpublished elements in the result
-	 * @return	array	element objects
+* @param   bool	included unpublished elements in the result
+	 * @return  array	element objects
 	 */
 
 	function getFormGroups($excludeUnpublished = true)
@@ -623,7 +623,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * -------->element
 	 * --->group
 	 * if run before then existing data returned
-	 * @return	array	element objects
+	 * @return  array	element objects
 	 */
 
 	function getGroupsHiarachy()
@@ -638,7 +638,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get an list of elements that aren't shown in the table view
-	 * @return	array	of element table objects
+	 * @return  array	of element table objects
 	 */
 	
 	public function getElementsNotInTable()
@@ -670,7 +670,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * this checks to see if the form has a file upload element
 	 * and returns the correct encoding type for the form
-	 * @return	string	form encoding type
+	 * @return  string	form encoding type
 	 */
 
 	function getFormEncType()
@@ -693,8 +693,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * run a method on all the element plugins in the form
 	 *
-	 * @param	string	method to call
-	 * @param	array	posted form data
+* @param   string	method to call
+* @param   array	posted form data
 	 */
 
 	function runElementPlugins($method, $data)
@@ -729,7 +729,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * when the form is submitted we want to get the orginal record it
 	 * is updating - this is used in things like the fileupload element
 	 * to check for changes in uploaded files and process the difference
-	 * @return	object
+	 * @return  object
 	 */
 
 	function setOrigData()
@@ -760,8 +760,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Are we copying a row?  Usually set in controller process().
 	 *
-	 * @param	bool	if true, set _copyingRow to true
-	 * @return	bool
+* @param   bool	if true, set _copyingRow to true
+	 * @return  bool
 	 */
 
 	function copyingRow($set = false) {
@@ -774,7 +774,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * processes the form data and decides what action to take
-	 * @return bool false if one of the plugins reuturns an error otherwise true
+	 * @return  bool false if one of the plugins reuturns an error otherwise true
 	 */
 
 	function process()
@@ -880,11 +880,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * update the data that gets posted via the form and stored by the form
 	 * model. Used in elements to modify posted data see fabrikfileupload
-	 * @param	string	$key (in key.dot.format to set a recursive array
-	 * @param	string	$val value to set to
-	 * @param	bool	$update_raw automatically update _raw key as well
-	 * @param	bool	$override_ro update data even if element is RO
-	 * @return	null
+* @param   string	$key (in key.dot.format to set a recursive array
+* @param   string	$val value to set to
+* @param   bool	$update_raw automatically update _raw key as well
+* @param   bool	$override_ro update data even if element is RO
+	 * @return  null
 	 */
 
 	function updateFormData($key, $val, $update_raw = false, $override_ro = false)
@@ -1040,8 +1040,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * called from setFormData to clean up posted data from either ajax or posted form
 	 * used in array_walk_recursive() method
-	 * @param	mixed	$item (string or array)
-	 * @param	string	$key
+* @param   mixed	$item (string or array)
+* @param   string	$key
 	 */
 
 	protected function _clean(&$item, $key)
@@ -1096,7 +1096,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * without this the first groups repeat data was always being saved (as it was posted but hidden
 	 * on the form.
-	 * @param	array	$data (ref)
+* @param   array	$data (ref)
 	 */
 	
 	protected function removeEmptyNoneJoinedGroupData(&$data)
@@ -1561,7 +1561,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * removes any element which s set to ignore
-	 * @param	array	form data
+* @param   array	form data
 	 */
 
 	function _removeIgnoredData(&$data)
@@ -1594,8 +1594,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * saves the form data to the database
-	 * @param	int		rowid - if 0 then insert a new row - otherwise update this row id
-	 * @return	mixed	insert id (or rowid if updating existing row) if ok , else string error message
+* @param   int		rowid - if 0 then insert a new row - otherwise update this row id
+	 * @return  mixed	insert id (or rowid if updating existing row) if ok , else string error message
 	 */
 
 	function submitToDatabase($rowId = '0')
@@ -1684,7 +1684,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * get the form's table model
 	 * (was getTable but that clashed with J1.5 func)
-	 * @return	object	fabrik list model
+	 * @return  object	fabrik list model
 	 */
 
 	function getListModel()
@@ -1702,7 +1702,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * get the class names for each of the validation rules
 	 * @deprecated (was only used in element label)
-	 * @return	array	(validaionruleid => classname )
+	 * @return  array	(validaionruleid => classname )
 	 */
 
 	function loadValidationRuleClasses()
@@ -1724,8 +1724,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * 	$$$ hugh - add in any encrypted stuff, in case we fail validation ...
 	 * otherwise it won't be in $data when we rebuild the page.
 	 * Need to do it here, so _raw fields get added in the next chunk 'o' code.
-	 * @param	array	posted form data passed by reference
-	 * @return	null
+* @param   array	posted form data passed by reference
+	 * @return  null
 	 */
 
 	function addEncrytedVarsToArray(&$post)
@@ -1791,8 +1791,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * when submitting data copy values to _raw equivalent
-	 * @param	array	$post data (passed by ref)
-	 * @return	null
+* @param   array	$post data (passed by ref)
+	 * @return  null
 	 */
 
 	function copyToRaw(&$post)
@@ -1846,7 +1846,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * validate the form
 	 * modifies post data to include validation replace data
-	 * @return	bool	true if form validated ok
+	 * @return  bool	true if form validated ok
 	 */
 
 	public function validate()
@@ -2065,7 +2065,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * get form validation errors - if empty test session for errors
-	 * @return	array	errors
+	 * @return  array	errors
 	 */
 
 	public function getErrors()
@@ -2108,7 +2108,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * set form validation errors in session
-	 * @param array errors
+* @param array errors
 	 */
 
 	public function setErrors($errors)
@@ -2127,7 +2127,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * should the form do a spoof check
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	public function spoofCheck()
@@ -2139,7 +2139,7 @@ echo "<pre>";print_r($post);exit;
 	/**
 	 * get an instance of the uploader object
 	 *
-	 * @return	object	uploader
+	 * @return  object	uploader
 	 */
 
 	function &getUploader()
@@ -2153,7 +2153,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * get the forms table name
-	 * @return	string	table name
+	 * @return  string	table name
 	 */
 
 	function getTableName()
@@ -2207,9 +2207,9 @@ echo "<pre>";print_r($post);exit;
 	/**
 	 * sets the variable of each of the form's group's elements to the value
 	 * specified
-	 * @param	string	variable name
-	 * @param	string	variable value
-	 * @return	bool	false if update error occurs
+* @param   string	variable name
+* @param   string	variable value
+	 * @return  bool	false if update error occurs
 	 */
 
 
@@ -2234,7 +2234,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * determines if the form can be published
-	 * @return	bool	true if publish dates are ok
+	 * @return  bool	true if publish dates are ok
 	 */
 
 	function canPublish()
@@ -2260,12 +2260,12 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * create a drop down list of all the elements in the form
-	 * @param	string	drop down name
-	 * @param	string	current value
-	 * @param	bool	add elements that are unpublished
-	 * @param	bool	concat table name and el name with '___' (true) or "." (false)
-	 * @param	bool	include raw labels default = true
-	 * @return	string	html list
+* @param   string	drop down name
+* @param   string	current value
+* @param   bool	add elements that are unpublished
+* @param   bool	concat table name and el name with '___' (true) or "." (false)
+* @param   bool	include raw labels default = true
+	 * @return  string	html list
 	 */
 
 	function getElementList($name = 'order_by', $default = '', $excludeUnpublished = false, $useStep = false, $incRaw = true )
@@ -2279,8 +2279,8 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * get an array of the form's element's ids
-	 * @param	array	classNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * @return	array	ints ids
+* @param   array	classNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @return  array	ints ids
 	 */
 
 	function getElementIds($ignore = array())
@@ -2305,12 +2305,12 @@ echo "<pre>";print_r($post);exit;
 	/**
 	 * creates options array to be then used by getElementList to create a drop down of elements in the form
 	 * seperated as elements need to collate this options from muliple forms
-	 * @param	bool	concat table name and el name with '___' (true) or "." (false)
-	 * @param	string	name of key to use (default "name")
-	 * @param	bool	only show those elements shown in table summary
-	 * @param	bool	include raw labels in list (default = false) Only works if $key = name
-	 * @param	array	list of plugin names that should be included in the list - if empty include all plugin types
-	 * @return	array	html options
+* @param   bool	concat table name and el name with '___' (true) or "." (false)
+* @param   string	name of key to use (default "name")
+* @param   bool	only show those elements shown in table summary
+* @param   bool	include raw labels in list (default = false) Only works if $key = name
+* @param   array	list of plugin names that should be included in the list - if empty include all plugin types
+	 * @return  array	html options
 	 */
 
 	function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array())
@@ -2370,8 +2370,8 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * called via ajax nav
-	 * @param	int		$dir (1 - move foward, 0 move back)
-	 * @return	bool	new row id loaded.
+* @param   int		$dir (1 - move foward, 0 move back)
+	 * @return  bool	new row id loaded.
 	 */
 
 	public function paginateRowId($dir)
@@ -2418,7 +2418,7 @@ echo "<pre>";print_r($post);exit;
 	 *
 	 *  setting a rowid of -2 will load in the last created record
 	 *
-	 * @return	string	rowid
+	 * @return  string	rowid
 	 */
 
 	function getRowId()
@@ -2472,7 +2472,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * collates data to write out the form
-	 * @return	mixed . bool
+	 * @return  mixed . bool
 	 */
 
 	function render()
@@ -2505,7 +2505,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * get the max row id - used when requesting rowid=-2 to return the last recorded detailed view
-	 * @return	int		max row id
+	 * @return  int		max row id
 	 */
 
 	protected function getMaxRowId()
@@ -2525,7 +2525,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * Does the form contain user errors
-	 * @return	bool
+	 * @return  bool
 	 */
 	
 	public function hasErrors()
@@ -2554,7 +2554,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * main method to get the data to insert into the form
-	 * @return	array	form's data
+	 * @return  array	form's data
 	 */
 
 	function getData()
@@ -2749,7 +2749,7 @@ echo "<pre>";print_r($post);exit;
 	/**
 	 * checks if user is logged in and form multipage settings to determine
 	 * if the form saves to the session table on multipage navigation
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	public function saveMultiPage()
@@ -2780,7 +2780,7 @@ echo "<pre>";print_r($post);exit;
 	 *
 	 * We need to take this structure and convert it to the same format as when the form
 	 * is submitted
-	 * @param	array	data
+* @param   array	data
 	 */
 
 	function setJoinData(&$data)
@@ -2877,7 +2877,7 @@ echo "<pre>";print_r($post);exit;
 	/**
 	 * get the forms session data (used when using multipage forms)
 	 *
-	 * @return	object	session data
+	 * @return  object	session data
 	 */
 
 	function getSessionData()
@@ -2898,7 +2898,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	* @deprecated	use buildQuery() instead
-	* @return	string	sql query to get row
+	* @return  string	sql query to get row
 	*/
 	
 	public function _buildQuery()
@@ -2908,7 +2908,7 @@ echo "<pre>";print_r($post);exit;
 	
 	/**
 	 * create the sql query to get the rows data for insertion into the form
-	 * @return	string	sql query to get row
+	 * @return  string	sql query to get row
 	 */
 
 	public function buildQuery()
@@ -3027,10 +3027,10 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * attempts to determine if the form contains the element
-	 * @param	string	element name to search for
-	 * @param	bool	check search name against element id
-	 * @param	bool	check short element name
-	 * @return	bool	true if found, false if not found
+* @param   string	element name to search for
+* @param   bool	check search name against element id
+* @param   bool	check short element name
+	 * @return  bool	true if found, false if not found
 	 */
 
 	function hasElement($searchName, $checkInt = false, $checkShort = true)
@@ -3086,10 +3086,10 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * get an element
-	 * @param	string	$searchName
-	 * @param	bool	check search name against element id
-	 * @param	bool	check short element name
-	 * @return	mixed	ok: element model not ok: false
+* @param   string	$searchName
+* @param   bool	check search name against element id
+* @param   bool	check short element name
+	 * @return  mixed	ok: element model not ok: false
 	 */
 
 	function getElement($searchName, $checkInt = false, $checkShort = true)
@@ -3098,7 +3098,7 @@ echo "<pre>";print_r($post);exit;
 	}
 
 	/**
-	 * @param	object	$listModel
+* @param   object	$listModel
 	 */
 
 	public function setListModel(&$listModel)
@@ -3108,7 +3108,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * is the page a multipage form?
-	 * @return	bool
+	 * @return  bool
 	 *
 	 */
 
@@ -3164,7 +3164,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * should the form submit via ajax or not?
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	function isAjax()
@@ -3212,7 +3212,7 @@ echo "<pre>";print_r($post);exit;
 	 * 1        1	          2
 	 * 1        2           2
 	 *
-	 * @param unknown_type $data
+* @param unknown_type $data
 	 */
 
 	function _reduceDataForXRepeatedJoins()
@@ -3360,7 +3360,7 @@ echo "<pre>";print_r($post);exit;
 	/**
 	 * used from getIntro as preg_replace_callback function to strip
 	 * undeisred text from form label intro
-	 * @param array $match
+* @param array $match
 	 * @return string intro text
 	 */
 
@@ -3373,7 +3373,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 *
-	 * @return	string	label
+	 * @return  string	label
 	 */
 
 	function getLabel()
@@ -3557,7 +3557,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * get the url to use as the form's action property
-	 * @return	string	url
+	 * @return  string	url
 	 */
 	function getAction()
 	{
@@ -3635,8 +3635,8 @@ echo "<pre>";print_r($post);exit;
 	/**
 	 * if the group is a joined group we want to ensure that its id field is contained with in the group's elements
 	 *
-	 * @param	object	$groupTable
-	 * @return	string	html hidden field
+* @param   object	$groupTable
+	 * @return  string	html hidden field
 	 */
 
 	function _makeJoinIdElement(&$groupTable)
@@ -3709,7 +3709,7 @@ echo "<pre>";print_r($post);exit;
 
 	/**
 	 * prepare the elements for rendering
-	 * @param string $tmpl @since 3.0
+* @param string $tmpl @since 3.0
 	 */
 	
 	public function getGroupView($tmpl = '')
@@ -4038,7 +4038,7 @@ echo "<pre>";print_r($post);exit;
 	 * helper method to get the session redirect key. Redirect plugin stores this
 	 * other form plugins such as twitter or paypal may need to query the session to perform the final redirect
 	 * once the user has returned from those sites.
-	 * @return	string	the session key to store redirect information (note: ends in '.')
+	 * @return  string	the session key to store redirect information (note: ends in '.')
 	 */
 	
 	public function getRedirectContext()
@@ -4050,7 +4050,7 @@ echo "<pre>";print_r($post);exit;
 	 *
 	 * Resets cached form data.
 	 *
-	 * @param bool $unset_groups also reset group and element model cached data
+* @param bool $unset_groups also reset group and element model cached data
 	 */
 	public function unsetData($unset_groups = false)
 	{

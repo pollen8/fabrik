@@ -29,10 +29,10 @@ class FabrikControllerList extends JController
 	/**
 	 * Display the view
 	 * 
-	 * @param   object  $model      list model
-	 * @param   array   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+* @param   object  $model      list model
+* @param   array   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *   
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function display($model = false, $urlparams = false)
@@ -84,7 +84,7 @@ class FabrikControllerList extends JController
 	/**
 	 * reorder the data in the list
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function order()
@@ -103,7 +103,7 @@ class FabrikControllerList extends JController
 	/**
 	 * clear filters
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function clearfilter()
@@ -147,7 +147,7 @@ class FabrikControllerList extends JController
 	/**
 	 * delete rows from list
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function delete()
@@ -200,7 +200,7 @@ class FabrikControllerList extends JController
 	/**
 	 * empty a table of records and reset its key to 0
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function doempty()
@@ -213,7 +213,7 @@ class FabrikControllerList extends JController
 	/**
 	 * run a list plugin
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function doPlugin()
@@ -272,7 +272,7 @@ class FabrikControllerList extends JController
 	/**
 	 * called via ajax when element selected in advanced search popup window
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function elementFilter()

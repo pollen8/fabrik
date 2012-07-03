@@ -15,7 +15,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -60,9 +60,9 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	 * get element's hidden field
 	 *
 	 * @access private
-	 * @param string $name
-	 * @param string $value
-	 * @param string $id
+* @param string $name
+* @param string $value
+* @param string $id
 	 * @return string
 	 */
 	function _getHiddenField($name, $value, $id)
@@ -74,7 +74,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	 * if we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
 	 *
-	 * @param unknown_type $data
+* @param unknown_type $data
 	 */
 
 	function onStoreRow(&$data)
@@ -122,9 +122,9 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	/**
 	 * get the value
 	 *
-	 * @param array $data
-	 * @param int $repeatCounter
-	 * @param array options
+* @param array $data
+* @param   int $repeatCounter
+* @param array options
 	 * @return unknown
 	 */
 

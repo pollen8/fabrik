@@ -32,7 +32,7 @@ class FabrikControllerElement extends JController
 	/**
 	 * Display the view
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function display()
@@ -61,7 +61,7 @@ class FabrikControllerElement extends JController
 	 * save an individual element value to the fabrik db
 	 * used in inline edit table plguin
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function save()

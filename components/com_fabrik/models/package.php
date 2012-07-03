@@ -59,7 +59,7 @@ class FabrikFEModelPackage extends FabModel
 	 * Method to set the  id
 	 *
 	 * @access	public
-	 * @param	int	ID number
+* @param   int	ID number
 	 */
 
 	function setId($id)
@@ -100,9 +100,9 @@ class FabrikFEModelPackage extends FabModel
 	/**
 	 * Method to get package data.
 	 * Packages are all stored in jos_fabrik_packages - so dont use {package} in the query to load them
-	 * @param	integer	The id of the package.
+* @param   integer	The id of the package.
 	 *
-	 * @return	mixed	Menu item data object on success, false on failure.
+	 * @return  mixed	Menu item data object on success, false on failure.
 	 */
 	public function &getItem($pk = null)
 	{
@@ -174,7 +174,7 @@ class FabrikFEModelPackage extends FabModel
 	/**
 	 * get a package table object
 	 *
-	 * @return	object connection tables
+	 * @return  object connection tables
 	 */
 
 	function &getPackage()
@@ -272,7 +272,7 @@ class fabrikPackageMenu extends JModel{
 	 * Method to set the  id
 	 *
 	 * @access	public
-	 * @param	int	ID number
+* @param   int	ID number
 	 */
 
 	function setId($id)

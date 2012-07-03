@@ -105,7 +105,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 
 	/**
 	 * get the coordinates for a place
-	 * @param string $place value selected in widget
+* @param string $place value selected in widget
 	 */
 
 	private function placeCoordinates($place)
@@ -143,9 +143,9 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 	 * this is used to put the radius search data into the listfilter model
 	 * called from its getPostFilters() method. The data is then sent to tableModel->_request
 	 * which is then stored in the session for future use
-	 * @param object plug-in $params
-	 * @param object table $model
-	 * @param array filters created from listfilter::getPostFilters();
+* @param object plug-in $params
+* @param object table $model
+* @param array filters created from listfilter::getPostFilters();
 	 */
 
 	function onGetPostFilter(&$params, &$model, &$args)
@@ -194,7 +194,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 	/**
 	 *
 	 * build the sql query to filter the data
-	 * @param object $params
+* @param object $params
 	 * return string query's where statement
 	 */
 	protected function getQuery($params)
@@ -231,8 +231,8 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 	/**
 	 * when the search form is posted we need to append the radius
 	 * search to the filter query
-	 * @param object plug-in $params
-	 * @param object table $model
+* @param object plug-in $params
+* @param object table $model
 	 */
 
 	function onFiltersGot(&$params, &$model)
@@ -300,7 +300,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 
 	function canSelectRows()
@@ -375,10 +375,10 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param object table model
-	 * @param array [0] => string table's form id to contain plugin
-	 * @return bool
+* @param object parameters
+* @param object table model
+* @param array [0] => string table's form id to contain plugin
+	 * @return  bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)

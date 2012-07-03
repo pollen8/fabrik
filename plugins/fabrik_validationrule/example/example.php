@@ -78,10 +78,10 @@ class plgFabrik_ValidationruleExample extends plgFabrik_Validationrule
 
 	/**
 	 * replace the elements data with something else!
-	 * @param	string	data to check
-	 * @param	object	element model
-	 * @param	int		plugin sequence ref
-	 * @return	string	replaced data
+* @param   string	data to check
+* @param   object	element model
+* @param   int		plugin sequence ref
+	 * @return  string	replaced data
 	 */
 	
  	function replace($data, &$element, $c)

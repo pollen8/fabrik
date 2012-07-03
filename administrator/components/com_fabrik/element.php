@@ -122,8 +122,8 @@ class JElement extends JObject
 	
 	/**
 	 * get the elements html name
-	 * @param string $control_name
-	 * @param string $name
+* @param string $control_name
+* @param string $name
 	 * @return string html name
 	 */
 	function getFullName($control_name, $name )
@@ -139,8 +139,8 @@ class JElement extends JObject
 	
 	/**
 	 * get the elements id
-	 * @param string $control_name
-	 * @param string $name
+* @param string $control_name
+* @param string $name
 	 * @return string element id
 	 */
 	
@@ -192,7 +192,7 @@ class JElement extends JObject
 	
 	/**
 	 * is the current element in a repeat group
-	 * @return bool
+	 * @return  bool
 	 */
 	function getRepeat()
 	{

@@ -203,7 +203,7 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * maps the fabrik2 user gid to a roughly corresponding J1.7 acl group
-	 * @param int $v gid
+* @param   int $v gid
 	 * @return int group id
 	 */
 
@@ -247,7 +247,7 @@ class FabrikModelUpgrade extends JModel
 	}
 	/**
 	 * check for an existence of _fabrik_tables table if there is then we should upgrade
-	 * @return bool
+	 * @return  bool
 	 */
 
 	protected function shouldUpgrade()

@@ -49,9 +49,9 @@ class S3 {
 	/**
 	* Constructor - if you're not using the class statically
 	*
-	* @param string $accessKey Access key
-	* @param string $secretKey Secret key
-	* @param boolean $useSSL Enable SSL
+* @param string $accessKey Access key
+* @param string $secretKey Secret key
+* @param boolean $useSSL Enable SSL
 	* @return void
 	*/
 	public function __construct($accessKey = null, $secretKey = null, $useSSL = true) {
@@ -64,8 +64,8 @@ class S3 {
 	/**
 	* Set AWS access key and secret key
 	*
-	* @param string $accessKey Access key
-	* @param string $secretKey Secret key
+* @param string $accessKey Access key
+* @param string $secretKey Secret key
 	* @return void
 	*/
 	public static function setAuth($accessKey, $secretKey) {
@@ -77,7 +77,7 @@ class S3 {
 	/**
 	* Get a list of buckets
 	*
-	* @param boolean $detailed Returns detailed bucket list when true
+* @param boolean $detailed Returns detailed bucket list when true
 	* @return array | false
 	*/
 	public static function listBuckets($detailed = false) {
@@ -114,12 +114,12 @@ class S3 {
 	*
 	* If maxKeys is null this method will loop through truncated result sets
 	*
-	* @param string $bucket Bucket name
-	* @param string $prefix Prefix
-	* @param string $marker Marker (last file listed)
-	* @param string $maxKeys Max keys (maximum number of keys to return)
-	* @param string $delimiter Delimiter
-	* @param boolean $returnCommonPrefixes Set to true to return CommonPrefixes
+* @param string $bucket Bucket name
+* @param string $prefix Prefix
+* @param string $marker Marker (last file listed)
+* @param string $maxKeys Max keys (maximum number of keys to return)
+* @param string $delimiter Delimiter
+* @param boolean $returnCommonPrefixes Set to true to return CommonPrefixes
 	* @return array | false
 	*/
 	public static function getBucket($bucket, $prefix = null, $marker = null, $maxKeys = null, $delimiter = null, $returnCommonPrefixes = false) {
@@ -197,9 +197,9 @@ class S3 {
 	/**
 	* Put a bucket
 	*
-	* @param string $bucket Bucket name
-	* @param constant $acl ACL flag
-	* @param string $location Set as "EU" to create buckets hosted in Europe
+* @param string $bucket Bucket name
+* @param constant $acl ACL flag
+* @param string $location Set as "EU" to create buckets hosted in Europe
 	* @return boolean
 	*/
 	public static function putBucket($bucket, $acl = self::ACL_PRIVATE, $location = false) {
@@ -232,7 +232,7 @@ class S3 {
 	/**
 	* Delete an empty bucket
 	*
-	* @param string $bucket Bucket name
+* @param string $bucket Bucket name
 	* @return boolean
 	*/
 	public static function deleteBucket($bucket) {
@@ -252,8 +252,8 @@ class S3 {
 	/**
 	* Create input info array for putObject()
 	*
-	* @param string $file Input file
-	* @param mixed $md5sum Use MD5 hash (supply a string if you want to use your own)
+* @param string $file Input file
+* @param mixed $md5sum Use MD5 hash (supply a string if you want to use your own)
 	* @return array | false
 	*/
 	public static function inputFile($file, $md5sum = true) {
@@ -270,9 +270,9 @@ class S3 {
 	/**
 	* Create input array info for putObject() with a resource
 	*
-	* @param string $resource Input resource to read from
-	* @param integer $bufferSize Input byte size
-	* @param string $md5sum MD5 hash to send (optional)
+* @param string $resource Input resource to read from
+* @param   integer $bufferSize Input byte size
+* @param string $md5sum MD5 hash to send (optional)
 	* @return array | false
 	*/
 	public static function inputResource(&$resource, $bufferSize, $md5sum = '') {
@@ -289,12 +289,12 @@ class S3 {
 	/**
 	* Put an object
 	*
-	* @param mixed $input Input data
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
-	* @param constant $acl ACL constant
-	* @param array $metaHeaders Array of x-amz-meta-* headers
-	* @param array $requestHeaders Array of request headers or content type as a string
+* @param mixed $input Input data
+* @param string $bucket Bucket name
+* @param string $uri Object URI
+* @param constant $acl ACL constant
+* @param array $metaHeaders Array of x-amz-meta-* headers
+* @param array $requestHeaders Array of request headers or content type as a string
 	* @return boolean
 	*/
 	public static function putObject($input, $bucket, $uri, $acl = self::ACL_PRIVATE, $metaHeaders = array(), $requestHeaders = array()) {
@@ -364,12 +364,12 @@ class S3 {
 	/**
 	* Put an object from a file (legacy function)
 	*
-	* @param string $file Input file path
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
-	* @param constant $acl ACL constant
-	* @param array $metaHeaders Array of x-amz-meta-* headers
-	* @param string $contentType Content type
+* @param string $file Input file path
+* @param string $bucket Bucket name
+* @param string $uri Object URI
+* @param constant $acl ACL constant
+* @param array $metaHeaders Array of x-amz-meta-* headers
+* @param string $contentType Content type
 	* @return boolean
 	*/
 	public static function putObjectFile($file, $bucket, $uri, $acl = self::ACL_PRIVATE, $metaHeaders = array(), $contentType = null) {
@@ -380,12 +380,12 @@ class S3 {
 	/**
 	* Put an object from a string (legacy function)
 	*
-	* @param string $string Input data
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
-	* @param constant $acl ACL constant
-	* @param array $metaHeaders Array of x-amz-meta-* headers
-	* @param string $contentType Content type
+* @param string $string Input data
+* @param string $bucket Bucket name
+* @param string $uri Object URI
+* @param constant $acl ACL constant
+* @param array $metaHeaders Array of x-amz-meta-* headers
+* @param string $contentType Content type
 	* @return boolean
 	*/
 	public static function putObjectString($string, $bucket, $uri, $acl = self::ACL_PRIVATE, $metaHeaders = array(), $contentType = 'text/plain') {
@@ -396,9 +396,9 @@ class S3 {
 	/**
 	* Get an object
 	*
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
-	* @param mixed $saveTo Filename or resource to write to
+* @param string $bucket Bucket name
+* @param string $uri Object URI
+* @param mixed $saveTo Filename or resource to write to
 	* @return mixed
 	*/
 	public static function getObject($bucket, $uri, $saveTo = false) {
@@ -430,9 +430,9 @@ class S3 {
 	/**
 	* Get object information
 	*
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
-	* @param boolean $returnInfo Return response information
+* @param string $bucket Bucket name
+* @param string $uri Object URI
+* @param boolean $returnInfo Return response information
 	* @return mixed | false
 	*/
 	public static function getObjectInfo($bucket, $uri, $returnInfo = true) {
@@ -452,11 +452,11 @@ class S3 {
 	/**
 	* Copy an object
 	*
-	* @param string $bucket Source bucket name
-	* @param string $uri Source object URI
-	* @param string $bucket Destination bucket name
-	* @param string $uri Destination object URI
-	* @param constant $acl ACL constant
+* @param string $bucket Source bucket name
+* @param string $uri Source object URI
+* @param string $bucket Destination bucket name
+* @param string $uri Destination object URI
+* @param constant $acl ACL constant
 	* @return mixed | false
 	*/
 	public static function copyObject($srcBucket, $srcUri, $bucket, $uri, $acl = self::ACL_PRIVATE) {
@@ -482,9 +482,9 @@ class S3 {
 	/**
 	* Set logging for a bucket
 	*
-	* @param string $bucket Bucket name
-	* @param string $targetBucket Target bucket (where logs are stored)
-	* @param string $targetPrefix Log prefix (e,g; domain.com-)
+* @param string $bucket Bucket name
+* @param string $targetBucket Target bucket (where logs are stored)
+* @param string $targetPrefix Log prefix (e,g; domain.com-)
 	* @return boolean
 	*/
 	public static function setBucketLogging($bucket, $targetBucket, $targetPrefix = null) {
@@ -543,7 +543,7 @@ class S3 {
 	* This will return false if logging is not enabled.
 	* Note: To enable logging, you also need to grant write access to the log group
 	*
-	* @param string $bucket Bucket name
+* @param string $bucket Bucket name
 	* @return array | false
 	*/
 	public static function getBucketLogging($bucket) {
@@ -568,7 +568,7 @@ class S3 {
 	/**
 	* Disable bucket logging
 	*
-	* @param string $bucket Bucket name
+* @param string $bucket Bucket name
 	* @return boolean
 	*/
 	public static function disableBucketLogging($bucket) {
@@ -579,7 +579,7 @@ class S3 {
 	/**
 	* Get a bucket's location
 	*
-	* @param string $bucket Bucket name
+* @param string $bucket Bucket name
 	* @return string | false
 	*/
 	public static function getBucketLocation($bucket) {
@@ -600,9 +600,9 @@ class S3 {
 	/**
 	* Set object or bucket Access Control Policy
 	*
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
-	* @param array $acp Access Control Policy Data (same as the data returned from getAccessControlPolicy)
+* @param string $bucket Bucket name
+* @param string $uri Object URI
+* @param array $acp Access Control Policy Data (same as the data returned from getAccessControlPolicy)
 	* @return boolean
 	*/
 	public static function setAccessControlPolicy($bucket, $uri = '', $acp = array()) {
@@ -659,8 +659,8 @@ class S3 {
 	/**
 	* Get object or bucket Access Control Policy
 	*
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
+* @param string $bucket Bucket name
+* @param string $uri Object URI
 	* @return mixed | false
 	*/
 	public static function getAccessControlPolicy($bucket, $uri = '') {
@@ -715,8 +715,8 @@ class S3 {
 	/**
 	* Delete an object
 	*
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
+* @param string $bucket Bucket name
+* @param string $uri Object URI
 	* @return boolean
 	*/
 	public static function deleteObject($bucket, $uri) {
@@ -736,11 +736,11 @@ class S3 {
 	/**
 	* Get a query string authenticated URL
 	*
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
-	* @param integer $lifetime Lifetime in seconds
-	* @param boolean $hostBucket Use the bucket name as the hostname
-	* @param boolean $https Use HTTPS ($hostBucket should be false for SSL verification)
+* @param string $bucket Bucket name
+* @param string $uri Object URI
+* @param   integer $lifetime Lifetime in seconds
+* @param boolean $hostBucket Use the bucket name as the hostname
+* @param boolean $https Use HTTPS ($hostBucket should be false for SSL verification)
 	* @return string
 	*/
 	public static function getAuthenticatedURL($bucket, $uri, $lifetime, $hostBucket = false, $https = false) {
@@ -755,10 +755,10 @@ class S3 {
 	/**
 	* Create a CloudFront distribution
 	*
-	* @param string $bucket Bucket name
-	* @param boolean $enabled Enabled (true/false)
-	* @param array $cnames Array containing CNAME aliases
-	* @param string $comment Use the bucket name as the hostname
+* @param string $bucket Bucket name
+* @param boolean $enabled Enabled (true/false)
+* @param array $cnames Array containing CNAME aliases
+* @param string $comment Use the bucket name as the hostname
 	* @return array | false
 	*/
 	public static function createDistribution($bucket, $enabled = true, $cnames = array(), $comment = '') {
@@ -784,7 +784,7 @@ class S3 {
 	/**
 	* Get CloudFront distribution info
 	*
-	* @param string $distributionId Distribution ID from listDistributions()
+* @param string $distributionId Distribution ID from listDistributions()
 	* @return array | false
 	*/
 	public static function getDistribution($distributionId) {
@@ -810,7 +810,7 @@ class S3 {
 	/**
 	* Update a CloudFront distribution
 	*
-	* @param array $dist Distribution array info identical to output of getDistribution()
+* @param array $dist Distribution array info identical to output of getDistribution()
 	* @return array | false
 	*/
 	public static function updateDistribution($dist) {
@@ -839,7 +839,7 @@ class S3 {
 	/**
 	* Delete a CloudFront distribution
 	*
-	* @param array $dist Distribution array info identical to output of getDistribution()
+* @param array $dist Distribution array info identical to output of getDistribution()
 	* @return boolean
 	*/
 	public static function deleteDistribution($dist) {
@@ -895,11 +895,11 @@ class S3 {
 	* Get a DistributionConfig DOMDocument
 	*
 	* @internal Used to create XML in createDistribution() and updateDistribution()
-	* @param string $bucket Origin bucket
-	* @param boolean $enabled Enabled (true/false)
-	* @param string $comment Comment to append
-	* @param string $callerReference Caller reference
-	* @param array $cnames Array of CNAME aliases
+* @param string $bucket Origin bucket
+* @param boolean $enabled Enabled (true/false)
+* @param string $comment Comment to append
+* @param string $callerReference Caller reference
+* @param array $cnames Array of CNAME aliases
 	* @return string
 	*/
 	private static function __getCloudFrontDistributionConfigXML($bucket, $enabled, $comment, $callerReference = '0', $cnames = array()) {
@@ -922,7 +922,7 @@ class S3 {
 	* Parse a CloudFront distribution config
 	*
 	* @internal Used to parse the CloudFront DistributionConfig node to an array
-	* @param object &$node DOMNode
+* @param object &$node DOMNode
 	* @return array
 	*/
 	private static function __parseCloudFrontDistributionConfig(&$node) {
@@ -955,7 +955,7 @@ class S3 {
 	* Grab CloudFront response
 	*
 	* @internal Used to parse the CloudFront S3Request::getResponse() output
-	* @param object &$rest S3Request instance
+* @param object &$rest S3Request instance
 	* @return object
 	*/
 	private static function __getCloudFrontResponse(&$rest) {
@@ -981,7 +981,7 @@ class S3 {
 	* Get MIME type for file
 	*
 	* @internal Used to get mime types
-	* @param string &$file File path
+* @param string &$file File path
 	* @return string
 	*/
 	public static function __getMimeType(&$file) {
@@ -1029,7 +1029,7 @@ class S3 {
 	* Generate the auth string: "AWS AccessKey:Signature"
 	*
 	* @internal Used by S3Request::getResponse()
-	* @param string $string String to sign
+* @param string $string String to sign
 	* @return string
 	*/
 	public static function __getSignature($string) {
@@ -1043,7 +1043,7 @@ class S3 {
 	* This uses the hash extension if loaded
 	*
 	* @internal Used by __getSignature()
-	* @param string $string String to sign
+* @param string $string String to sign
 	* @return string
 	*/
 	private static function __getHash($string) {
@@ -1067,9 +1067,9 @@ final class S3Request {
 	/**
 	* Constructor
 	*
-	* @param string $verb Verb
-	* @param string $bucket Bucket name
-	* @param string $uri Object URI
+* @param string $verb Verb
+* @param string $bucket Bucket name
+* @param string $uri Object URI
 	* @return mixed
 	*/
 	function __construct($verb, $bucket = '', $uri = '', $defaultHost = 's3.amazonaws.com') {
@@ -1095,8 +1095,8 @@ final class S3Request {
 	/**
 	* Set request parameter
 	*
-	* @param string $key Key
-	* @param string $value Value
+* @param string $key Key
+* @param string $value Value
 	* @return void
 	*/
 	public function setParameter($key, $value) {
@@ -1107,8 +1107,8 @@ final class S3Request {
 	/**
 	* Set request header
 	*
-	* @param string $key Key
-	* @param string $value Value
+* @param string $key Key
+* @param string $value Value
 	* @return void
 	*/
 	public function setHeader($key, $value) {
@@ -1119,8 +1119,8 @@ final class S3Request {
 	/**
 	* Set x-amz-meta-* header
 	*
-	* @param string $key Key
-	* @param string $value Value
+* @param string $key Key
+* @param string $value Value
 	* @return void
 	*/
 	public function setAmzHeader($key, $value) {
@@ -1263,8 +1263,8 @@ final class S3Request {
 	/**
 	* CURL write callback
 	*
-	* @param resource &$curl CURL resource
-	* @param string &$data Data
+* @param resource &$curl CURL resource
+* @param string &$data Data
 	* @return integer
 	*/
 	private function __responseWriteCallback(&$curl, &$data) {
@@ -1279,8 +1279,8 @@ final class S3Request {
 	/**
 	* CURL header callback
 	*
-	* @param resource &$curl CURL resource
-	* @param string &$data Data
+* @param resource &$curl CURL resource
+* @param string &$data Data
 	* @return integer
 	*/
 	private function __responseHeaderCallback(&$curl, &$data) {

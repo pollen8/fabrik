@@ -25,8 +25,8 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	/**
 	 * get the buisiness email either based on the accountemail field or the value
 	 * found in the selected accoutnemail_element
-	 * @param	object	$params
-	 * @return	string	email
+* @param   object	$params
+	 * @return  string	email
 	 */
 
 	protected function getBusinessEmail($params)
@@ -40,8 +40,8 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	/**
 	 * get transaction amount based on the cost field or the value
 	 * found in the selected cost_element
-	 * @param	object	$params
-	 * @return	string	cost
+* @param   object	$params
+	 * @return  string	cost
 	 */
 
 	protected function getAmount($params)
@@ -52,7 +52,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	/**
 	 * get the select billing cycles row
-	 * @return	object	row
+	 * @return  object	row
 	 */
 
 	protected function getBillingCycle()
@@ -73,7 +73,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	/**
 	 * get the selected gateway (paypal single payment / subscription)
-	 * @return	object	row
+	 * @return  object	row
 	 */
 
 	protected function getGateway()
@@ -95,7 +95,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	/**
 	 * get transaction item name based on the item field or the value
 	 * found in the selected item_element
-	 * @return	array	item name
+	 * @return  array	item name
 	 */
 
 	protected function getItemName()
@@ -107,7 +107,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	/**
 	 * append additional paypal values to the data to send to paypal
-	 * @param	array	$opts
+* @param   array	$opts
 	 */
 
 	protected function setSubscriptionValues(&$opts)
@@ -168,8 +168,8 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	/**
 	 * process the plugin, called at end of form submission
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -249,7 +249,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	/**
 	 * create the custom string value you can pass to Paypal
-	 * @return	string
+	 * @return  string
 	 */
 
 	protected function getCustom()
@@ -259,7 +259,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	/**
 	 * get the url that payment notifications (IPN) are sent to
-	 * @return	string	url
+	 * @return  string	url
 	 */
 
 	protected function getNotifyUrl()
@@ -279,7 +279,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	/**
 	 * make the return url, this is the page you return to after paypal has component the transaction.
-	 * @return	string	url.
+	 * @return  string	url.
 	 */
 
 	protected function getReturnUrl()
@@ -579,7 +579,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 
 	/**
 	 * get the custom IPN class
-	 * @return	object	ipn handler class
+	 * @return  object	ipn handler class
 	 */
 
 	protected function getIPNHandler()

@@ -22,7 +22,7 @@ class FabrikViewFormBase extends JView
 
 	/**
 	 * main setup routine for displaying the form/detail view
-	 * @param string template
+* @param string template
 	 */
 
 	function display($tpl = null)
@@ -194,9 +194,9 @@ class FabrikViewFormBase extends JView
 
 	/**
 	 * set the page title
-	 * @param	object	parent worker
-	 * @param	object	parameters
-	 * @param	object	form model
+* @param   object	parent worker
+* @param   object	parameters
+* @param   object	form model
 	 */
 
 	protected function setTitle($w, &$params, $model)
@@ -296,7 +296,7 @@ class FabrikViewFormBase extends JView
 
 	/**
 	 * append the form javascript into the document head
-	 * @param	int	table id
+* @param   int	table id
 	 */
 
 	protected function _addJavascript($tableId)
@@ -573,7 +573,7 @@ class FabrikViewFormBase extends JView
 
 	/**
 	 * Enter description here ...
-	 * @param unknown_type $form
+* @param unknown_type $form
 	 */
 
 	protected function _loadTmplBottom(&$form)

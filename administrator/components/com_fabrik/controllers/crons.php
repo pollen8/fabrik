@@ -34,8 +34,8 @@ class FabrikControllerCrons extends FabControllerAdmin
 	/**
 	 * Proxy for getModel.
 	 * 
-	 * @param   string  $name    model name
-	 * @param   string  $prefix  model prefix
+* @param   string  $name    model name
+* @param   string  $prefix  model prefix
 	 * 
 	 * @return  J model
 	 */

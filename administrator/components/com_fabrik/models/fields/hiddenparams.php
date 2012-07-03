@@ -1,10 +1,10 @@
 <?php
 /**
- * @version		$Id: hidden.php 18809 2010-09-08 09:08:20Z eddieajau $
- * @package     Joomla.Framework
- * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 defined('JPATH_BASE') or die;
@@ -12,12 +12,12 @@ defined('JPATH_BASE') or die;
 jimport('joomla.form.formfield');
 
 /**
- * Form Field class for the Joomla Framework.
+ * Hidden params
  *
- * @package     Joomla.Framework
- * @subpackage	Form
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class JFormFieldHiddenparams extends JFormField
 {
 	/**
@@ -31,10 +31,11 @@ class JFormFieldHiddenparams extends JFormField
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return	string	The field input markup.
+	 * @return  string	The field input markup.
+	 * 
 	 * @since	1.6
 	 */
-	
+
 	protected function getInput()
 	{
 		// Initialize some field attributes.

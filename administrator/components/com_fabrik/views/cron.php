@@ -43,10 +43,10 @@ class FabrikViewCron {
 
 	/**
 	* Display the form to add or edit a cronjob
-	* @param object cronjob
-	* @param object parameters from attributes
-	* @param array lists
-	* @param object pluginmanager
+* @param object cronjob
+* @param object parameters from attributes
+* @param array lists
+* @param object pluginmanager
 	*/
 
 	function edit($row, $params, $lists, &$pluginManager )
@@ -156,9 +156,9 @@ class FabrikViewCron {
 
 	/**
 	* Display all available cron tasks
-	* @param array array of cron objects
-	* @param object page navigation
-	* @param array lists
+* @param array array of cron objects
+* @param object page navigation
+* @param array lists
 	*/
 
 	function show( $rows, $pageNav, $lists) {

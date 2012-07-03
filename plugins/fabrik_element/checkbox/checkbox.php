@@ -20,7 +20,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	/**
 	 * set the element id
 	 * and maps parameter names for common ElementList options
-	 * @param	int	$id
+* @param   int	$id
 	 */
 
 	public function setId($id)
@@ -37,9 +37,9 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	/**
 	 * render raw data
 	 *
-	 * @param	string	data
-	 * @param	object	all the data in the tables current row
-	 * @return	string	formatted value
+* @param   string	data
+* @param   object	all the data in the tables current row
+	 * @return  string	formatted value
 	 */
 
 	function renderRawListData($data, $thisRow)
@@ -58,8 +58,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	int		repeat group counter
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+* @param   int		repeat group counter
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -84,7 +84,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	 * OPTIONAL
 	 * If your element risks not to post anything in the form (e.g. check boxes with none checked)
 	 * the this function will insert a default value into the database
-	 * @param array form data
+* @param array form data
 	 * @return array form data
 	 */
 
@@ -100,7 +100,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	 * Get the sql for filtering the table data and the array of filter settings
-	 * @param string filter value
+* @param string filter value
 	 * @return string filter value
 	 */
 
@@ -148,7 +148,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	/**
 	 * if no filter condition supplied (either via querystring or in posted filter data
 	 * return the most appropriate filter option for the element.
-	 * @return	string	default filter condition ('=', 'REGEXP' etc)
+	 * @return  string	default filter condition ('=', 'REGEXP' etc)
 	 */
 
 	function getDefaultFilterCondition()
@@ -158,10 +158,10 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	 * this builds an array containing the filters value and condition
-	 * @param	string	initial $value
-	 * @param	string	intial $condition
-	 * @param	string	eval - how the value should be handled
-	 * @return	array	(value condition)
+* @param   string	initial $value
+* @param   string	intial $condition
+* @param   string	eval - how the value should be handled
+	 * @return  array	(value condition)
 	 */
 
 	function getFilterValue($value, $condition, $eval)
@@ -172,8 +172,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	* can be overwritten in add on classes
-	* @param mixed thie elements posted form data
-	* @param array posted form data
+* @param mixed thie elements posted form data
+* @param array posted form data
 	* @return string
 	*/
 

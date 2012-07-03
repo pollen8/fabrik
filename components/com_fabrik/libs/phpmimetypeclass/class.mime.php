@@ -718,7 +718,7 @@ class MIMETypes {
 
   /**
   * @desc Initiate variables and include mime types
-  * @param String $MIMEFile The MIME File location, if not changed, mime.types.php
+* @param String $MIMEFile The MIME File location, if not changed, mime.types.php
   * @return Nothing
   */
   public function __construct($MIMEFile = "mime.types.php") {
@@ -729,7 +729,7 @@ class MIMETypes {
 
   /**
   * @desc Free up some memory
-  * @param None
+* @param None
   * @returns Nothing
   */
   public function __destruct() {
@@ -738,7 +738,7 @@ class MIMETypes {
 
   /**
   * @desc Retrieve the corresponding MIME type, if one exists
-  * @param String $file File Name (relative location such as "image_test.jpg" or full "http://site.com/path/to/image_test.jpg")
+* @param String $file File Name (relative location such as "image_test.jpg" or full "http://site.com/path/to/image_test.jpg")
   * @return String $MIMEType - The type of the file passed in the argument
   */
   public function getMimeType($file = NULL) {
@@ -772,7 +772,7 @@ class MIMETypes {
 
   /**
   * @desc Gets the file extention from a string
-  * @param String $file The full file name
+* @param String $file The full file name
   * @return String $ext The file extension
   */
   private function getExtension($file = NULL) {

@@ -16,10 +16,10 @@ class imageRender{
 
 	var $inTableView = false;
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+* @param object element model
+* @param object element params
+* @param string row data for this element
+* @param object all row's data
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -29,10 +29,10 @@ class imageRender{
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+* @param object element model
+* @param object element params
+* @param string row data for this element
+* @param object all row's data
 	 */
 
 	function render(&$model, &$params, $file, $thisRow = null)
@@ -141,8 +141,8 @@ class imageRender{
 
 	/**
 	 * when in form or detailed view, do we want to show the full image or thumbnail/link?
-	 * @param object $params
-	 * @return bool
+* @param object $params
+	 * @return  bool
 	 */
 
 	private function fullImageInRecord(&$params)

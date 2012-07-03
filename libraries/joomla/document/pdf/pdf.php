@@ -32,7 +32,7 @@ class JDocumentpdf extends JDocumentHTML
 
 	/**
 	 * Class constructore
-	 * @param	array	$options Associative array of options
+* @param   array	$options Associative array of options
 	 */
 
 	function __construct($options = array())
@@ -83,7 +83,7 @@ class JDocumentpdf extends JDocumentHTML
 
 	/**
 	 * Sets the document name
-	 * @param   string   $name	Document name
+* @param   string   $name	Document name
 	 * @return  void
 	 */
 
@@ -94,7 +94,7 @@ class JDocumentpdf extends JDocumentHTML
 
 	/**
 	 * Returns the document name
-	 * @return	string
+	 * @return  string
 	 */
 
 	public function getName()
@@ -105,9 +105,9 @@ class JDocumentpdf extends JDocumentHTML
 	/**
 	 * Render the document.
 	 * @access public
-	 * @param boolean 	$cache		If true, cache the output
-	 * @param array		$params		Associative array of attributes
-	 * @return	string
+* @param boolean 	$cache		If true, cache the output
+* @param array		$params		Associative array of attributes
+	 * @return  string
 	 */
 
 	function render($cache = false, $params = array())
@@ -149,7 +149,7 @@ class JDocumentpdf extends JDocumentHTML
 
 	/**
 	 * parse relative images a hrefs and style sheets to full paths
-	 * @param	string	&$data
+* @param   string	&$data
 	 */
 
 	private function fullPaths(&$data)

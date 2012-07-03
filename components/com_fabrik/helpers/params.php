@@ -33,8 +33,8 @@ class FabrikParams extends JParameter
 	/**
 	 * constructor
 	 * 
-	 * @param   array   $data  data
-	 * @param   string  $path  path
+* @param   array   $data  data
+* @param   string  $path  path
 	 */
 
 	public function __construct($data, $path = '')
@@ -68,11 +68,11 @@ class FabrikParams extends JParameter
 	/**
 	 * overwrite core get function so we can force setting to array if needed
 	 * 
-	 * @param   string  $key           key
-	 * @param   string  $default       default
-	 * @param   string  $group         group
-	 * @param   string  $outputFormat  (string or array)
-	 * @param   int     $counter       not used i think
+* @param   string  $key           key
+* @param   string  $default       default
+* @param   string  $group         group
+* @param   string  $outputFormat  (string or array)
+* @param   int     $counter       not used i think
 	 * 
 	 * @return mixed - string or array
 	 */
@@ -90,10 +90,10 @@ class FabrikParams extends JParameter
 	/**
 	 * get a groups parameters
 	 * 
-	 * @param   string  $name         name
-	 * @param   string  $group        name
-	 * @param   string  $ouputformat  output format 
-	 * @param   int     $counter      repeat counter
+* @param   string  $name         name
+* @param   string  $group        name
+* @param   string  $ouputformat  output format 
+* @param   int     $counter      repeat counter
 	 * 
 	 * @return string|multitype:
 	 */
@@ -115,8 +115,8 @@ class FabrikParams extends JParameter
 	/**
 	 * get a groups parameters names
 	 * 
-	 * @param   string  $name   name
-	 * @param   string  $group  name
+* @param   string  $name   name
+* @param   string  $group  name
 	 * 
 	 * @return string|multitype:
 	 */
@@ -138,13 +138,13 @@ class FabrikParams extends JParameter
 	/**
 	 * Render a parameter type
 	 *
-	 * @param   object  &$node         A param tag node
-	 * @param   string  $control_name  The control name
-	 * @param   string  $group         parameter group
-	 * @param   string  $outPutFormat  output format
-	 * @param   mixed   $counter       repeat group counter??? /how about repeating plugins is this the same??
+* @param   object  &$node         A param tag node
+* @param   string  $control_name  The control name
+* @param   string  $group         parameter group
+* @param   string  $outPutFormat  output format
+* @param   mixed   $counter       repeat group counter??? /how about repeating plugins is this the same??
 	 * 
-	 * @return	array Any array of the label, the form element and the tooltip
+	 * @return  array Any array of the label, the form element and the tooltip
 	 */
 
 	public function getParam(&$node, $control_name = 'params', $group = '_default', $outPutFormat = 'string', $counter = null)
@@ -215,13 +215,13 @@ class FabrikParams extends JParameter
 	/**
 	 * Render (NOTE when rendering admin settings I *think* the repeat group is set with $this->counter_override)
 	 *
-	 * @param   string  $name             The name of the control, or the default text area if a setup file is not found
-	 * @param   string  $group            group
-	 * @param   bool    $write            write out or return
-	 * @param   int     $repeatSingleVal  if set and group is repeat only return int row from rendered params
+* @param   string  $name             The name of the control, or the default text area if a setup file is not found
+* @param   string  $group            group
+* @param   bool    $write            write out or return
+* @param   int     $repeatSingleVal  if set and group is repeat only return int row from rendered params
 	 * used for form plugin admin pages.
 	 * 
-	 * @return	string	HTML
+	 * @return  string	HTML
 	 *
 	 * @since	1.5
 	 */
@@ -365,9 +365,9 @@ class FabrikParams extends JParameter
 	/**
 	 * get the child nodes
 	 * 
-	 * @param   string  $namespace  namespace
+* @param   string  $namespace  namespace
 	 * 
-	 * @return	xml nodes
+	 * @return  xml nodes
 	 * 
 	 * @since 3.0
 	 */

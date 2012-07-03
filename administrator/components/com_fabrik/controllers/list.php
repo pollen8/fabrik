@@ -33,8 +33,8 @@ class FabrikControllerList extends FabControllerForm
 	/**
 	 * Method to edit an existing record.
 	 *
-	 * @param   string  $key     The name of the primary key of the URL variable.
-	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
+* @param   string  $key     The name of the primary key of the URL variable.
+* @param   string  $urlVar  The name of the URL variable if different from the primary key
 	 * (sometimes required to avoid router collisions).
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
@@ -94,7 +94,7 @@ class FabrikControllerList extends FabControllerForm
 	/**
 	 * show the lists data in the admin
 	 * 
-	 * @param   object  $model  list model
+* @param   object  $model  list model
 	 * 
 	 * @return  null
 	 */

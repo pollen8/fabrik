@@ -18,7 +18,7 @@ class FabrikViewList extends FabrikViewListBase{
 
 	/**
 	 * display the template
-	 * @param	sting	$tpl
+* @param   sting	$tpl
 	 */
 
 	function display($tpl = null)

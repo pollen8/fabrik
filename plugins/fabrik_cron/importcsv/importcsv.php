@@ -34,7 +34,7 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 
 	/*
 	 * @author Kyle
-	 * @param string $tableName   The name of the file to be loaded.  Should only be file name--not a path.
+* @param string $tableName   The name of the file to be loaded.  Should only be file name--not a path.
 	 * @return int tableid      The id frabrik gives the list that hold information about files named $tablename
 	 * returns an empty() type if no table exists with the same name as $tablename.
 	 */

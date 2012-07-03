@@ -23,8 +23,8 @@ abstract class JHtmlBehavior
 	 *
 	 * If debugging mode is on an uncompressed version of MooTools is included for easier debugging.
 	 *
-	 * @param   string   $extras  MooTools file to load
-	 * @param   boolean  $debug   Is debugging mode on? [optional]
+* @param   string   $extras  MooTools file to load
+* @param   bool  $debug   Is debugging mode on? [optional]
 	 *
 	 * @return  void
 	 *
@@ -71,7 +71,7 @@ abstract class JHtmlBehavior
 	/**
 	 * Deprecated. Use JHtmlBehavior::framework() instead.
 	 *
-	 * @param   boolean  $debug	Is debugging mode on? [optional]
+* @param   bool  $debug	Is debugging mode on? [optional]
 	 *
 	 * @return  void
 	 *
@@ -210,8 +210,8 @@ abstract class JHtmlBehavior
 	 *
 	 * Uses the core Tips class in MooTools.
 	 *
-	 * @param   string   $selector  The class selector for the tooltip.
-	 * @param   array    $params    An array of options for the tooltip.
+* @param   string   $selector  The class selector for the tooltip.
+* @param   array    $params    An array of options for the tooltip.
 	 *                              Options for the tooltip can be:
 	 *                              - maxTitleChars  integer   The maximum number of characters in the tooltip title (defaults to 50).
 	 *                              - offsets        object    The distance of your tooltip from the mouse (defaults to {'x': 16, 'y': 16}).
@@ -283,8 +283,8 @@ abstract class JHtmlBehavior
 	/**
 	 * Add unobtrusive javascript support for modal links.
 	 *
-	 * @param   string  $selector  The class selector for which a modal behaviour is to be applied.
-	 * @param   array   $params    An array of parameters for the modal behaviour.
+* @param   string  $selector  The class selector for which a modal behaviour is to be applied.
+* @param   array   $params    An array of parameters for the modal behaviour.
 	 *                             Options for the modal behaviour can be:
 	 *                            - ajaxOptions
 	 *                            - size
@@ -385,9 +385,9 @@ abstract class JHtmlBehavior
 	/**
 	 * Add unobtrusive javascript support for the advanced uploader.
 	 *
-	 * @param   string  $id
-	 * @param   array   $params  An array of options for the uploader.
-	 * @param   string  $upload_queue
+* @param   string  $id
+* @param   array   $params  An array of options for the uploader.
+* @param   string  $upload_queue
 	 *
 	 * @return  void
 	 *
@@ -544,9 +544,9 @@ abstract class JHtmlBehavior
 	/**
 	 * Add unobtrusive javascript support for a collapsible tree.
 	 *
-	 * @param   $id      string
-	 * @param   $params  array   An array of options.
-	 * @param   $root    array
+* @param   $id      string
+* @param   $params  array   An array of options.
+* @param   $root    array
 	 *
 	 * @return  void
 	 *
@@ -720,7 +720,7 @@ abstract class JHtmlBehavior
 	/**
 	 * Internal method to get a JavaScript object notation string from an array
 	 *
-	 * @param   array  $array	The array to convert to JavaScript object notation
+* @param   array  $array	The array to convert to JavaScript object notation
 	 *
 	 * @return  string  JavaScript object notation representation of the array
 	 *

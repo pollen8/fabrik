@@ -66,7 +66,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 
 	/**
 	 * get the first last, prev and next record ids
-	 * @param	object	$formModel
+* @param   object	$formModel
 	 */
 
 	protected function getNavIds($formModel)
@@ -120,8 +120,8 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form
+* @param object $params
+* @param object form
 	 */
 
 	function onAfterJSLoad(&$params, &$formModel)

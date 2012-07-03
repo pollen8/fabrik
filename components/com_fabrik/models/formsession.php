@@ -56,7 +56,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * save the form data to #__{package}_form_sesson
-	 * @param	object	form $formModel
+* @param   object	form $formModel
 	 */
 
 	function savePage(&$formModel)
@@ -100,7 +100,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * set the form session cookie
-	 * @param	string	$hash the actual key that is stored in the db table's hash field
+* @param   string	$hash the actual key that is stored in the db table's hash field
 	 */
 
 	function setCookie($hash)
@@ -149,7 +149,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * load in the saved session
-	 * @return	object	session table row
+	 * @return  object	session table row
 	 */
 
 	function load()
@@ -210,7 +210,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * @since	2.0.4
 	 * if a plug has set a session var com_fabrik.form.X.session.on then we should be
 	 * using the session cookie, see form confirmation plugin for this in use
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	public function canUseCookie()
@@ -274,7 +274,7 @@ class FabrikFEModelFormsession extends FabModel {
 	/**
 	 * get the hash identifier
 	 * format userid:formid:rowid
-	 * @return	string	hash
+	 * @return  string	hash
 	 */
 
 	function getHash()
@@ -289,7 +289,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * get a the user id
-	 * @return	mixed	user id if logged in, unique id if not
+	 * @return  mixed	user id if logged in, unique id if not
 	 */
 	
 	function getUserId()
@@ -304,7 +304,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * set the form id whose record is being edited
-	 * @param	int	$id
+* @param   int	$id
 	 */
 	
 	function setFormId($id)
@@ -314,7 +314,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * set the row id that is being edited or saved
-	 * @param	int	$id
+* @param   int	$id
 	 */
 	
 	function setRowId($id)
@@ -324,7 +324,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * gets the row id - if not set uses request 'rowid' var
-	 * @return	int
+	 * @return  int
 	 */
 
 	function getRowId()
@@ -338,7 +338,7 @@ class FabrikFEModelFormsession extends FabModel {
 
 	/**
 	 * gets the form id - if not set uses request 'formid' var
-	 * @return	int
+	 * @return  int
 	 */
 
 	function getFormId()

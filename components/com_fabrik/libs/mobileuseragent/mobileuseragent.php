@@ -88,7 +88,7 @@ class MobileUserAgent {
   /**
    * Constructor.
    *
-   * @param string $useragent Optional useragent string. If null, environment variable HTTP_USER_AGENT is used.
+* @param string $useragent Optional useragent string. If null, environment variable HTTP_USER_AGENT is used.
    */
   function __construct($useragent = null) {
     if (!(isset($useragent) && strlen($useragent))) {
@@ -131,7 +131,7 @@ class MobileUserAgent {
    *  SEC-SGHE710/1.0
    * </pre>
    *
-   * @param string $useragent User agent string.
+* @param string $useragent User agent string.
    * @return mixed
    */
   protected function _parseUserAgentStandard($useragent) {
@@ -225,7 +225,7 @@ class MobileUserAgent {
    *  DoCoMo/2.0 modelname(cache;individual_identification_information)
    * </pre>
    *
-   * @param string $useragent User agent string.
+* @param string $useragent User agent string.
    * @return mixed
    */
   protected function _parseUserAgentImode($useragent) {
@@ -306,7 +306,7 @@ class MobileUserAgent {
    *  Mozilla/SMB3(Z105)/Samsung UP.Link/5.1.1.5
    * </pre>
    *
-   * @param string $useragent User agent string.
+* @param string $useragent User agent string.
    * @return mixed
    */
   protected function _parseUserAgentMozilla($useragent) {
@@ -391,7 +391,7 @@ class MobileUserAgent {
    * </pre>
    * Notice how often one certain brand of these user-agents is handled by this function. I say no more.
    *
-   * @param string $useragent User agent string.
+* @param string $useragent User agent string.
    * @return mixed
    */
   protected function _parseUserAgentRubbish($useragent) {
@@ -464,7 +464,7 @@ class MobileUserAgent {
    * keys "vendor" and "model", and the optional keys "version", "imode_cache",
    * and "screendims".
    *
-   * @param string $useragent User agent string.
+* @param string $useragent User agent string.
    * @return mixed
    */
   protected function _parseUserAgent($useragent) {

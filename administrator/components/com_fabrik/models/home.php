@@ -1,12 +1,10 @@
 <?php
-/*
- * Cron Model
- *
- * @package     Joomla.Administrator
+/**
+ * @package     Joomla
  * @subpackage  Fabrik
- * @since		1.6
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // No direct access.
@@ -14,6 +12,12 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 
+/**
+* Fabrik Admin Home Model
+*
+* @package  Fabrik
+* @since    3.0
+*/
 
 class FabrikModelHome extends JModelAdmin
 {
@@ -26,10 +30,12 @@ class FabrikModelHome extends JModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param	type	The table type to instantiate
-	 * @param	string	A prefix for the table class name. Optional.
-	 * @param	array	Configuration array for model. Optional.
-	 * @return	JTable	A database object
+* @param   string  $type    The table type to instantiate
+* @param   string  $prefix  A prefix for the table class name. Optional.
+* @param   array   $config  Configuration array for model. Optional.
+	 * 
+	 * @return  JTable	A database object
+	 * 
 	 * @since	1.6
 	 */
 
@@ -42,9 +48,11 @@ class FabrikModelHome extends JModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param	array	$data		Data for the form.
-	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
-	 * @return	mixed	A JForm object on success, false on failure
+* @param   array  $data      Data for the form.
+* @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * 
+	 * @return  mixed	A JForm object on success, false on failure
+	 * 
 	 * @since	1.6
 	 */
 
@@ -55,41 +63,50 @@ class FabrikModelHome extends JModelAdmin
 
 	/**
 	 * get fabrikar.com rss feed
+	 * 
 	 * @return string
 	 */
 
-	function getRSSFeed()
+	public function getRSSFeed()
 	{
 		//  get RSS parsed object
 		$options = array();
-		$options['rssUrl']		= 'http://feeds.feedburner.com/fabrik';
-		$options['cache_time']	= 86400;
+		$options['rssUrl'] = 'http://feeds.feedburner.com/fabrik';
+		$options['cache_time'] = 86400;
 
-		$rssDoc =& JFactory::getXMLparser('RSS', $options);
-		if ($rssDoc == false) {
+		$rssDoc = &JFactory::getXMLparser('RSS', $options);
+		if ($rssDoc == false)
+		{
 			$output = JText::_('Error: Feed not retrieved');
-		} else {
-			// channel header and link
-			$title 	= $rssDoc->get_title();
-			$link	= $rssDoc->get_link();
+		}
+		else
+		{
+			// Channel header and link
+			$title = $rssDoc->get_title();
+			$link = $rssDoc->get_link();
 
 			$output = '<table class="adminlist">';
-			$output .= '<tr><th colspan="3"><a href="'.$link.'" target="_blank">'.JText::_($title) .'</th></tr>';
+			$output .= '<tr><th colspan="3"><a href="' . $link . '" target="_blank">' . JText::_($title) . '</th></tr>';
 
 			$items = array_slice($rssDoc->get_items(), 0, 3);
 			$numItems = count($items);
-			if ($numItems == 0) {
-				$output .= '<tr><th>' .JText::_('No news items found'). '</th></tr>';
-			} else {
+			if ($numItems == 0)
+			{
+				$output .= '<tr><th>' . JText::_('No news items found') . '</th></tr>';
+			}
+			else
+			{
 				$k = 0;
-				for ($j = 0; $j < $numItems; $j++) {
+				for ($j = 0; $j < $numItems; $j++)
+				{
 					$item = $items[$j];
-					$output .= '<tr><td class="row' .$k. '">';
-					$output .= '<a href="' .$item->get_link(). '" target="_blank">' .$item->get_title(). '</a>';
-					$output .= '<br />'.$item->get_date('Y-m-d') ;
-					if($item->get_description()) {
-						$description = FabrikString::truncate($item->get_description(), array('wordcount'=>50));
-						$output .= '<br />' .$description;
+					$output .= '<tr><td class="row' . $k . '">';
+					$output .= '<a href="' . $item->get_link() . '" target="_blank">' . $item->get_title() . '</a>';
+					$output .= '<br />' . $item->get_date('Y-m-d');
+					if ($item->get_description())
+					{
+						$description = FabrikString::truncate($item->get_description(), array('wordcount' => 50));
+						$output .= '<br />' . $description;
 					}
 					$output .= '</td></tr>';
 				}
@@ -103,6 +120,8 @@ class FabrikModelHome extends JModelAdmin
 
 	/**
 	 * install sample data
+	 * 
+	 * @return  void
 	 */
 
 	public function installSampleData()
@@ -114,13 +133,13 @@ class FabrikModelHome extends JModelAdmin
 		$config = JFactory::getConfig();
 
 		$dbTableName = $config->get('dbprefix') . "fb_contact_sample";
-		echo "<div style='text-align:left;border:1px dotted #cccccc;padding:10px;'>" .
-		"<h3>Installing data...</h3><ol>";
+		echo "<div style='text-align:left;border:1px dotted #cccccc;padding:10px;'>" . "<h3>Installing data...</h3><ol>";
 
 		$group->name = "Contact Details";
 		$group->label = "Contact Details";
 		$group->published = 1;
-		if (!$group->store()) {
+		if (!$group->store())
+		{
 			return JError::raiseWarning(500, $group->getError());
 		}
 		$groupId = $db->insertid();
@@ -137,13 +156,13 @@ class FabrikModelHome extends JModelAdmin
 		$group->label = "Your Enquiry";
 		$group->published = 1;
 
-		if (!$group->store()) {
+		if (!$group->store())
+		{
 			return JError::raiseWarning(500, $group->getError());
 		}
 		$group2Id = $db->insertid();
 		echo "<li>Group 'Your Enquiry' created</li>";
 
-	
 		echo "<li>Element 'Message' added to group 'Your Enquiry'</li>";
 
 		$form = $this->getTable('Form');
@@ -157,24 +176,27 @@ class FabrikModelHome extends JModelAdmin
 		$form->form_template = "default";
 		$form->view_only_template = "default";
 
-		if (!$form->store()) {
+		if (!$form->store())
+		{
 			return JError::raiseWarning(500, $form->getError());
 		}
 		echo "<li>Form 'Contact Us' created</li>";
 		$formId = $db->insertid();
 
 		$query = $db->getQuery(true);
-		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int) $formId, 'group_id='.(int) $groupId, 'ordering=0'));
+		$query->insert('#__{package}_formgroup')->set(array('form_id=' . (int) $formId, 'group_id=' . (int) $groupId, 'ordering=0'));
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->query())
+		{
 			echo $db->getErrorMsg();
 			exit;
 		}
 
 		$query = $db->getQuery(true);
-		$query->insert('#__{package}_formgroup')->set(array('form_id='.(int) $formId, 'group_id='.(int) $group2Id, 'ordering=1'));
+		$query->insert('#__{package}_formgroup')->set(array('form_id=' . (int) $formId, 'group_id=' . (int) $group2Id, 'ordering=1'));
 		$db->setQuery($query);
-		if (!$db->query()) {
+		if (!$db->query())
+		{
 			echo $db->getErrorMsg();
 			exit;
 		}
@@ -186,19 +208,22 @@ class FabrikModelHome extends JModelAdmin
 		$list->form_id = $formId;
 		$list->connection_id = $cnn->getConnection()->id;
 		$list->db_table_name = $dbTableName;
-		// store without name quotes as that's db specific
-		$list->db_primary_key = $dbTableName.'.id';
+
+		// Store without name quotes as that's db specific
+		$list->db_primary_key = $dbTableName . '.id';
 		$list->auto_inc = 1;
 		$list->published = 1;
 		$list->rows_per_page = 10;
 		$list->params = $listModel->getDefaultParams();
 		$list->template = 'default';
 
-		if (!$list->store()) {
+		if (!$list->store())
+		{
 			JError::raiseWarning(500, $list->getError());
 		}
 		echo "<li>Table for 'Contact Us' created</li></div>";
-		if (!$form->store()) {
+		if (!$form->store())
+		{
 			JError::raiseError(500, $form->getError());
 		}
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
@@ -207,34 +232,34 @@ class FabrikModelHome extends JModelAdmin
 
 		$listModel->setState('list.id', $list->id);
 		$listModel->getItem();
-		
-		$elements = array(
-			'id' => array('plugin' => 'internalid', 'label' => 'id', 'group_id' => $groupId),
+
+		$elements = array('id' => array('plugin' => 'internalid', 'label' => 'id', 'group_id' => $groupId),
 			'first_name' => array('plugin' => 'field', 'label' => 'First Name', 'group_id' => $groupId),
 			'last_name' => array('plugin' => 'field', 'label' => 'Last Name', 'group_id' => $groupId),
 			'email' => array('plugin' => 'field', 'label' => 'Email', 'group_id' => $groupId),
-			'message' => array('plugin' => 'textarea', 'group_id' => $group2Id)
-		);
-		
+			'message' => array('plugin' => 'textarea', 'group_id' => $group2Id));
+
 		return $listModel->createDBTable($list->db_table_name, $elements);
 	}
 
 	/**
 	 * empty all fabrik db tables of their data
+	 * 
+	 * @return  void or JError
 	 */
 
 	public function reset()
 	{
 		$db = FabrikWorker::getDbo(true);
 		$prefix = '#__{package}_';
-		$tables = array('cron', 'elements',
-		'formgroup', 'forms', 'form_sessions', 'groups', 'joins',
-		'jsactions', 'packages', 'lists', 'validations',
-		'visualizations');
+		$tables = array('cron', 'elements', 'formgroup', 'forms', 'form_sessions', 'groups', 'joins', 'jsactions', 'packages', 'lists',
+			'validations', 'visualizations');
 
-		foreach ($tables as $table) {
-			$db->setQuery("TRUNCATE TABLE " . $prefix.$table);
-			if (!$db->query()) {
+		foreach ($tables as $table)
+		{
+			$db->setQuery("TRUNCATE TABLE " . $prefix . $table);
+			if (!$db->query())
+			{
 				return JError::raiseError(500, $db->getErrorMsg() . ": " . $db->getQuery());
 			}
 		}
@@ -242,6 +267,8 @@ class FabrikModelHome extends JModelAdmin
 
 	/**
 	 * drop all the lists db tables
+	 * 
+	 * @return  void
 	 */
 
 	public function dropData()
@@ -253,13 +280,17 @@ class FabrikModelHome extends JModelAdmin
 		$query->select("connection_id, db_table_name")->from('#__{package}_lists');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		foreach ($rows as $row) {
+		foreach ($rows as $row)
+		{
 			$connModel->setId($row->connection_id);
 			$c = $connModel->getConnection($row->connection_id);
 			$fabrikDb = $connModel->getDb();
-			if (!JError::isError($fabrikDb)) {
+			if (!JError::isError($fabrikDb))
+			{
 				$fabrikDb->setQuery("DROP $row->db_table_name");
-			} else {
+			}
+			else
+			{
 				jexit("error with getting connection id " . $row->connection_id . " for " . $row->db_table_name);
 			}
 			$fabrikDb->query();

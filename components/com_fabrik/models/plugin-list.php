@@ -21,7 +21,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	/**
 	 * get the parameter name that defines the plugins acl access
-	 * @return	string
+	 * @return  string
 	 */
 
 	function getAclParam()
@@ -78,10 +78,10 @@ class plgFabrik_List extends FabrikPlugin
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	object	parameters
-	 * @param	object list model
-	 * @param	array	[0] => string table's form id to contain plugin
-	 * @return	bool
+* @param   object	parameters
+* @param   object list model
+* @param   array	[0] => string table's form id to contain plugin
+	 * @return  bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)
@@ -93,8 +93,8 @@ class plgFabrik_List extends FabrikPlugin
 	/**
 	 * onGetData method
 	 *
-	 * @param object calling the plugin table/form
-	 * @return bol currently ignored
+* @param object calling the plugin table/form
+	 * @return  bool currently ignored
 	 */
 
 	function onLoadData(&$params, &$oRequest)
@@ -105,8 +105,8 @@ class plgFabrik_List extends FabrikPlugin
 	/**
 	 * onFiltersGot method - run after the table has created filters
 	 *
-	 * @param object calling the plugin table/form
-	 * @return bol currently ignored
+* @param object calling the plugin table/form
+	 * @return  bool currently ignored
 	 */
 
 	function onFiltersGot(&$params, &$oRequest)
@@ -130,7 +130,7 @@ class plgFabrik_List extends FabrikPlugin
 
  	/**
  	 * get the html name for the button
- 	 * @return	string
+ 	 * @return  string
  	 */
 
 	function _getButtonName()
@@ -140,9 +140,9 @@ class plgFabrik_List extends FabrikPlugin
 
 	/**
 	 * prefilght check to ensure that the list plugin should process
-	 * @param	object	$params
-	 * @param	object	$model
-	 * @return	string|boolean
+* @param   object	$params
+* @param   object	$model
+	 * @return  string|boolean
 	 */
 
 	function process_preflightCheck(&$params, &$model)
@@ -159,7 +159,7 @@ class plgFabrik_List extends FabrikPlugin
 	 * get a key name specific to the plugin class to use as the reference
 	 * for the plugins filter data
 	 * (Normal filter data is filtered on the element id, but here we use the plugin name)
-	 * @return	string	key
+	 * @return  string	key
 	 */
 
 	public function onGetFilterKey()
@@ -190,7 +190,7 @@ class plgFabrik_List extends FabrikPlugin
 	/**
 	 * used to assign the js code created in onLoadJavascriptInstance()
 	 * to the table view.
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function onLoadJavascriptInstance_result()
@@ -200,9 +200,9 @@ class plgFabrik_List extends FabrikPlugin
 
 	/**
 	 * allows to to alter the table's select query
-	 * @param	object	$params
-	 * @param	object	table model
-	 * @param	array	arguements - first value is an object with a query
+* @param   object	$params
+* @param   object	table model
+* @param   array	arguements - first value is an object with a query
 	 * property which contains the current query:
 	 * $args[0]->query
 	 */
@@ -215,7 +215,7 @@ class plgFabrik_List extends FabrikPlugin
 	/**
 	 * load the javascript class that manages plugin interaction
 	 * should only be called once
-	 * @return	string	javascript class file
+	 * @return  string	javascript class file
 	 */
 
 	public function loadJavascriptClass()

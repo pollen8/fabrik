@@ -23,8 +23,8 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+* @param mixed thie elements posted form data
+* @param array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -62,8 +62,8 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 		/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -127,8 +127,8 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	/**
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param	array	$data to sum
-	 * @return	string	sum result
+* @param   array	$data to sum
+	 * @return  string	sum result
 	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
@@ -143,9 +143,9 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 	/**
 	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param	model	$listModel
-	 * @param	string	$label the label to apply to each avg
-	 * @return	string	sql statement
+* @param   model	$listModel
+* @param   string	$label the label to apply to each avg
+	 * @return  string	sql statement
 	 */
 
 	protected function getAvgQuery(&$listModel, $label = "'calc'" )
@@ -159,9 +159,9 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 	/**
 	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param	model	$listModel
-	 * @param	string	$label the label to apply to each avg
-	 * @return	string	sql statement
+* @param   model	$listModel
+* @param   string	$label the label to apply to each avg
+	 * @return  string	sql statement
 	 */
 
 	protected function getMedianQuery(&$listModel, $label = "'calc'" )
@@ -176,8 +176,8 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	/**
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param	array	$data to sum
-	 * @return	string	sum result
+* @param   array	$data to sum
+	 * @return  string	sum result
 	 */
 
 	public function simpleSum($data)
@@ -198,8 +198,8 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	 * get the value to use for graph calculations
 	 * can be overwritten in plugin
 	 * see fabriktimer which converts the value into seconds
-	 * @param	string	$v
-	 * @return	mixed
+* @param   string	$v
+	 * @return  mixed
 	 */
 
 	public function getCalculationValue($v)

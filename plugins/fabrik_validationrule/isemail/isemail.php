@@ -87,8 +87,8 @@ class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
 	/**
 	* does the validation allow empty value?
 	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
-	* @param object element model
-	* @param int repeat group counter
+* @param object element model
+* @param   int repeat group counter
 	* @return bool
 	*/
 

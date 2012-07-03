@@ -50,8 +50,8 @@ class AkismetObject {
 	/**
 	 * Add a new error to the errors array in the object
 	 *
-	 * @param	String	$name	A name (array key) for the error
-	 * @param	String	$string	The error message
+* @param   String	$name	A name (array key) for the error
+* @param   String	$string	The error message
 	 * @return void
 	 */ 
 	// Set an error in the object
@@ -63,7 +63,7 @@ class AkismetObject {
 	/**
 	 * Return a specific error message from the errors array
 	 *
-	 * @param	String	$name	The name of the error you want
+* @param   String	$name	The name of the error you want
 	 * @return mixed	Returns a String if the error exists, a false boolean if it does not exist
 	 */
 	function getError($name) {
@@ -88,8 +88,8 @@ class AkismetObject {
 	/**
 	 * Check if a certain error exists
 	 *
-	 * @param	String	$name	The name of the error you want
-	 * @return boolean
+* @param   String	$name	The name of the error you want
+	 * @return  boolean
 	 */ 
 	function isError($name) {
 		return isset($this->errors[$name]);
@@ -99,7 +99,7 @@ class AkismetObject {
 	/**
 	 * Check if any errors exist
 	 *
-	 * @return boolean
+	 * @return  boolean
 	 */
 	function errorsExist() {
 		return (count($this->errors) > 0);
@@ -218,10 +218,10 @@ class Akismet extends AkismetObject {
 	 * 
 	 * Set instance variables, connect to Akismet, and check API key
 	 * 
-	 * @param	String	$blogUrl	The URL to your own blog
-	 * @param 	String	$apiKey		Your wordpress API key
-	 * @param 	String[]	$comment	A formatted comment array to be examined by the Akismet service
-	 * @return	Akismet
+* @param   String	$blogUrl	The URL to your own blog
+* @param 	String	$apiKey		Your wordpress API key
+* @param 	String[]	$comment	A formatted comment array to be examined by the Akismet service
+	 * @return  Akismet
 	 */
 	function Akismet($blogUrl, $apiKey, $comment = array()) {
 		$this->blogUrl = $blogUrl;
@@ -244,7 +244,7 @@ class Akismet extends AkismetObject {
 	/**
 	 * Query the Akismet and determine if the comment is spam or not
 	 * 
-	 * @return	boolean
+	 * @return  boolean
 	 */
 	function isSpam() {
 		$response = $this->http->getResponse($this->_getQueryString(), 'comment-check');
@@ -256,7 +256,7 @@ class Akismet extends AkismetObject {
 	/**
 	 * Submit this comment as an unchecked spam to the Akismet server
 	 * 
-	 * @return	void
+	 * @return  void
 	 */
 	function submitSpam() {
 		$this->http->getResponse($this->_getQueryString(), 'submit-spam');
@@ -266,7 +266,7 @@ class Akismet extends AkismetObject {
 	/**
 	 * Submit a false-positive comment as "ham" to the Akismet server
 	 *
-	 * @return	void
+	 * @return  void
 	 */
 	function submitHam() {
 		$this->http->getResponse($this->_getQueryString(), 'submit-ham');
@@ -276,8 +276,8 @@ class Akismet extends AkismetObject {
 	/**
 	 * Manually set the comment value of the instantiated object.
 	 *
-	 * @param	Array	$comment
-	 * @return	void
+* @param   Array	$comment
+	 * @return  void
 	 */
 	function setComment($comment) {
 		$this->comment = $comment;
@@ -291,7 +291,7 @@ class Akismet extends AkismetObject {
 	/**
 	 * Returns the current value of the object's comment array.
 	 *
-	 * @return	Array
+	 * @return  Array
 	 */
 	function getComment() {
 		return $this->comment;
@@ -302,8 +302,8 @@ class Akismet extends AkismetObject {
 	 * Check with the Akismet server to determine if the API key is valid
 	 *
 	 * @access	Protected
-	 * @param	String	$key	The Wordpress API key passed from the constructor argument
-	 * @return	boolean
+* @param   String	$key	The Wordpress API key passed from the constructor argument
+	 * @return  boolean
 	 */
 	function _isValidApiKey($key) {
 		$keyCheck = $this->http->getResponse("key=".$this->apiKey."&blog=".$this->blogUrl, 'verify-key');
@@ -316,7 +316,7 @@ class Akismet extends AkismetObject {
 	 * Format the comment array in accordance to the Akismet API
 	 *
 	 * @access	Protected
-	 * @return	void
+	 * @return  void
 	 */
 	function _formatCommentArray() {
 		$format = array(
@@ -339,7 +339,7 @@ class Akismet extends AkismetObject {
 	/**
 	 * Fill any values not provided by the developer with available values.
 	 *
-	 * @return	void
+	 * @return  void
 	 */
 	function _fillCommentValues() {
 		if(!isset($this->comment['user_ip'])) {
@@ -361,7 +361,7 @@ class Akismet extends AkismetObject {
 	 * Build a query string for use with HTTP requests
 	 *
 	 * @access	Protected
-	 * @return	String
+	 * @return  String
 	 */
 	function _getQueryString() {
 		foreach($_SERVER as $key => $value) {

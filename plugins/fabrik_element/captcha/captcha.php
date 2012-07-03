@@ -73,7 +73,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	 * check user can view the read only element & view in list view
 	 * If user logged in return false
 	 * $$$ rob 14/03/2012 always returns false now - cant see a need to show it in the details / list view
-	 * @return bool can view or not
+	 * @return  bool can view or not
 	 */
 
 	function canView()
@@ -102,8 +102,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -202,9 +202,9 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	 * can be overwritten in adddon class
 	 *
 	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-	 * @param string elements data
-	 * @param int repeat group counter
-	 * @return bool true if passes / false if falise validation
+* @param string elements data
+* @param   int repeat group counter
+	 * @return  bool true if passes / false if falise validation
 	 */
 
 	function validate($data, $repeatCounter = 0)
@@ -262,7 +262,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	/**
 	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object element
+* @param object element
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
@@ -280,9 +280,9 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param mixed element's data
-	 * @param array form records data
-	 * @param int repeat group counter
+* @param mixed element's data
+* @param array form records data
+* @param   int repeat group counter
 	 * @return string formatted value
 	 */
 
@@ -292,9 +292,9 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	}
 
 	/** $$$ e-kinst
-	/* @param	string	3- or 6-digits hex color with optional leading '#'
-	/* @param	string	default hex color if first param invalid
-	/* @return	string 	as 'R+G+B' where R,G,B are decimal
+* @param   string	3- or 6-digits hex color with optional leading '#'
+* @param   string	default hex color if first param invalid
+	/* @return  string 	as 'R+G+B' where R,G,B are decimal
 	*/
 	 private function _getRGBcolor($hexColor, $default='FF0000')
 	{

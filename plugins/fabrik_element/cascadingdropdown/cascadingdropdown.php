@@ -45,8 +45,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * get the field name to use as the column that contains the join's label data
-	 * @param	bool	use step in element name
-	 * @return	string join label column either returns concat statement or quotes `tablename`.`elementname`
+* @param   bool	use step in element name
+	 * @return  string join label column either returns concat statement or quotes `tablename`.`elementname`
 	 */
 
 	function getJoinLabelColumn($useStep = false)
@@ -215,8 +215,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * get a list of the HTML options used in the database join drop down / radio buttons
-	 * @param	object	data from current record (when editing form?)
-	 * @return	array	option objects
+* @param   object	data from current record (when editing form?)
+	 * @return  array	option objects
 	 */
 
 	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
@@ -247,7 +247,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * //test for db join element - if so update option labels with related join labels
-	 * @param array standard options
+* @param array standard options
 	 */
 
 	function _replaceAjaxOptsWithDbJoinOpts(&$opts)
@@ -291,9 +291,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * get array of option values
 	 *
-	 * @param	array	$data
-	 * @param	int		repeat group counter
-	 * @return	array
+* @param   array	$data
+* @param   int		repeat group counter
+	 * @return  array
 	 */
 
 	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
@@ -329,7 +329,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * @since 3.0b
 	 * do you add a please select option to the cdd list
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	protected function showPleaseSelect()
@@ -577,7 +577,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * get the element name or concat statement used to build the dropdown labels or
 	 * table data field
 	 *
-	 * @return	string
+	 * @return  string
 	 */
 
 	protected function getValColumn()
@@ -606,7 +606,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * load connection object
-	 * @return	object	connection table
+	 * @return  object	connection table
 	 */
 
 	protected function loadConnection()
@@ -740,8 +740,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * if used as a filter add in some JS code to watch observed filter element's changes
 	 * when it changes update the contents of this elements dd filter's options
-	 * @param	bool	is the filter a normal (true) or advanced filter
-	 * @param	string	container
+* @param   bool	is the filter a normal (true) or advanced filter
+* @param   string	container
 	 */
 
 	public function filterJS($normal, $container)
@@ -813,7 +813,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * called when the element is saved
-	 * @return bool save ok or not
+	 * @return  bool save ok or not
 	 */
 
 	function onSave($data)
@@ -860,7 +860,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return array html ids to watch for validation
 	 */
 
@@ -879,7 +879,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * once a copy of all elements has been made run them through this method
 	 * to ensure that things like watched element id's are updated
 	 *
-	 * @param array copied element ids (keyed on original element id)
+* @param array copied element ids (keyed on original element id)
 	 */
 
 	function finalCopyCheck($elementMap)
@@ -914,11 +914,11 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * build the filter query for the given element.
-	 * @param $key element name in format `tablename`.`elementname`
-	 * @param $condition =/like etc
-	 * @param $value search string - already quoted if specified in filter array options
-	 * @param $originalValue - original filter value without quotes or %'s applied
-	 * @param string filter type advanced/normal/prefilter/search/querystring/searchall
+* @param $key element name in format `tablename`.`elementname`
+* @param $condition =/like etc
+* @param $value search string - already quoted if specified in filter array options
+* @param $originalValue - original filter value without quotes or %'s applied
+* @param string filter type advanced/normal/prefilter/search/querystring/searchall
 	 * @return string sql query part e,g, "key = value"
 	 */
 

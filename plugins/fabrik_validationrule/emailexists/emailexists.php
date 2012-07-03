@@ -110,9 +110,9 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 
 	/**
 	* gets the hover/alt text that appears over the validation rule icon in the form
-	* @param	object	element model
-	* @param	int		repeat group counter
-	* @return	string	label
+* @param   object	element model
+* @param   int		repeat group counter
+	* @return  string	label
 	*/
 
 	protected function getLabel($elementModel, $pluginc)

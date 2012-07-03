@@ -58,8 +58,8 @@ class AssignmentRuleHeader {
 	/**
 	 * Constructor.  Only one param can be set.
 	 *
-	 * @param int $id  AssignmentRuleId
-	 * @param boolean $flag  UseDefaultRule flag
+* @param   int $id  AssignmentRuleId
+* @param boolean $flag  UseDefaultRule flag
 	 */
 	public function __construct($id = NULL, $flag = NULL) {
 		if ($id != NULL) {
@@ -113,7 +113,7 @@ class QueryOptions {
 	/**
 	 * Constructor
 	 *
-	 * @param int $limit  Batch size
+* @param   int $limit  Batch size
 	 */
 	public function __construct($limit) {
 		$this->batchSize = $limit;

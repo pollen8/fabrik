@@ -49,8 +49,8 @@ class FabrikWorker {
 
 	/**
 	 * returns true if $file has an image extension type
-	 * @param	string	filename
-	 * @return	bool
+* @param   string	filename
+	 * @return  bool
 	 */
 
 	function isImageExtension($file)
@@ -61,8 +61,8 @@ class FabrikWorker {
 
 	/**
 	 * returns true if $file has an image extension type
-	 * @param	string	filename
-	 * @return	bool
+* @param   string	filename
+	 * @return  bool
 	 */
 
 	function isAudioExtension($file)
@@ -115,9 +115,9 @@ class FabrikWorker {
 	 * http://fr.php.net/strftime
 	 * (use as strptime)
 	 *
-	 * @param	string	$date
-	 * @param	string	$format
-	 * @return	array	date info
+* @param   string	$date
+* @param   string	$format
+	 * @return  array	date info
 	 */
 
 	public static function strToDateTime($date, $format)
@@ -208,8 +208,8 @@ class FabrikWorker {
 	/**
 	 *
 	 * check for, and convert, any 'special' formats for strtotime, like 'yesterday', etc
-	 * @param	string  $date
-	 * @return	string	date
+* @param   string  $date
+	 * @return  string	date
 	 */
 
 	function specialStrToMySQL($date, $gmt = true)
@@ -237,9 +237,9 @@ class FabrikWorker {
 	}
 
 	/**
-	 * @param	string	date representation
-	 * @param	string	format that the date should be in
-	 * @return	array	date bits keyed on date representations e.g.  m/d/Y
+* @param   string	date representation
+* @param   string	format that the date should be in
+	 * @return  array	date bits keyed on date representations e.g.  m/d/Y
 	 */
 
 	public static function str2Time($date, $format)
@@ -345,9 +345,9 @@ class FabrikWorker {
 	/**
 	 * removed day of week name from string
 	 *
-	 * @param	string	$day The string date
-	 * @param	bool	abbreviated day?
-	 * @return	string	date
+* @param   string	$day The string date
+* @param   bool	abbreviated day?
+	 * @return  string	date
 	 */
 
 	public static function stripDay($date, $abrv = false)
@@ -423,11 +423,11 @@ class FabrikWorker {
 	/**
 	 * iterates through string to replace every
 	 * {placeholder} with posted data
-	 * @param string text to parse
-	 * @param array data to search for placeholders (default $_REQUEST)
-	 * @param bool if no data found for the place holder do we keep the {...} string in the message
-	 * @param bool add slashed to the text?
-	 * @param object user to use in replaceWithUserData (defaults to logged in user)
+* @param string text to parse
+* @param array data to search for placeholders (default $_REQUEST)
+* @param bool if no data found for the place holder do we keep the {...} string in the message
+* @param bool add slashed to the text?
+* @param object user to use in replaceWithUserData (defaults to logged in user)
 	 */
 
 	public function parseMessageForPlaceHolder($msg, $searchData = null, $keepPlaceholders = true, $addslashes = false, $theirUser = null)
@@ -473,7 +473,7 @@ class FabrikWorker {
 
 	/**
 	 * replace {varname} with request data (called from J content plugin
-	 * @param	$msg	string to parse
+* @param   $msg	string to parse
 	 */
 
 	public function replaceRequest(&$msg)
@@ -496,10 +496,10 @@ class FabrikWorker {
 	 * AND
 	 * {$their->var->email} placeholderse
 	 *
-	 * @param	string	message to parse
-	 * @param	object	user
-	 * @param	string	key - search string to look for e.g. 'my' to look for {$my->id}
-	 * @return	string	parsed message
+* @param   string	message to parse
+* @param   object	user
+* @param   string	key - search string to look for e.g. 'my' to look for {$my->id}
+	 * @return  string	parsed message
 	 */
 
 	public static function replaceWithUserData($msg, $user = null, $prefix = 'my')
@@ -547,8 +547,8 @@ class FabrikWorker {
 	/**
 	 * called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with global data
-	 * @param	string	message to parse
-	 * @return	string	parsed message
+* @param   string	message to parse
+	 * @return  string	parsed message
 	 */
 
 	public static function replaceWithGlobals($msg)
@@ -581,8 +581,8 @@ class FabrikWorker {
 	/**
 	 * called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with posted data
-	 * @param	string	placeholder e.g. {placeholder}
-	 * @return	string	posted data that corresponds with placeholder
+* @param   string	placeholder e.g. {placeholder}
+	 * @return  string	posted data that corresponds with placeholder
 	 */
 
 	protected function replaceWithFormData($matches)
@@ -701,11 +701,11 @@ class FabrikWorker {
 
 	/**
 	 * Internal function to recursive scan directories
-	 * @param	string	Path to scan
-	 * @param	string	root path of this folder
-	 * @param	array	Value array of all existing folders
-	 * @param	array	Value array of all existing images
-	 * @param	bool	make options out for the results
+* @param   string	Path to scan
+* @param   string	root path of this folder
+* @param   array	Value array of all existing folders
+* @param   array	Value array of all existing images
+* @param   bool	make options out for the results
 	 */
 
 	public static function readImages($imagePath, $folderPath, &$folders, &$images, $aFolderFilter, $makeOptions = true)
@@ -735,13 +735,13 @@ class FabrikWorker {
 
 	/**
 	 * Utility function to read the files in a directory
-	 * @param	string	The file system path
-	 * @param	string	A filter for the names
-	 * @param	bool	Recurse search into sub-directories
-	 * @param	bool	True if to prepend the full path to the file name
-	 * @param	array	folder names not to recurse into
-	 * @param	bool	return a list of folders only (true)
-	 * @return	array	of file/folder names
+* @param   string	The file system path
+* @param   string	A filter for the names
+* @param   bool	Recurse search into sub-directories
+* @param   bool	True if to prepend the full path to the file name
+* @param   array	folder names not to recurse into
+* @param   bool	return a list of folders only (true)
+	 * @return  array	of file/folder names
 	 */
 
 	public static function fabrikReadDirectory($path, $filter='.', $recurse=false, $fullpath=false, $aFolderFilter=array(), $foldersOnly = false)
@@ -801,7 +801,7 @@ class FabrikWorker {
 	 * it seems to load the geographical location language rather than the selected lang
 	 * so for ajax calls that need to use jf translated text we need to get the current lang and
 	 * send it to the js code which will then append the lang=XX to the ajax querystring
-	 * @return	string	first two letters of lang code - e.g. nl from 'nl-NL'
+	 * @return  string	first two letters of lang code - e.g. nl from 'nl-NL'
 	 */
 
 	public static function getJoomfishLang()
@@ -813,7 +813,7 @@ class FabrikWorker {
 	/**
 	 * get the contetn filter used both in form and admin pages for content filter
 	 * takes values from J content filtering options
-	 * @return	array	(bool should the filter be used, object the filter to use)
+	 * @return  array	(bool should the filter be used, object the filter to use)
 	 */
 
 	public static function getContentFilter()
@@ -957,8 +957,8 @@ class FabrikWorker {
 
 	/**
 	 * raise a J Error notice if the eval'd result is false and there is a error
-	 * @param	mixed	$val evaluated result
-	 * @param	string	$msg error message, should contain %s as we spintf in the error_get_last()'s message property
+* @param   mixed	$val evaluated result
+* @param   string	$msg error message, should contain %s as we spintf in the error_get_last()'s message property
 	 */
 
 	public static function logEval($val, $msg)
@@ -974,9 +974,9 @@ class FabrikWorker {
 
 	/**
 	 * log  to table jos_fabrik_logs
-	 * @param	string	$type e.g. 'fabrik.fileupload.download'
-	 * @param	mixed	$msg array/object/string
-	 * @param	bool	$jsonEncode
+* @param   string	$type e.g. 'fabrik.fileupload.download'
+* @param   mixed	$msg array/object/string
+* @param   bool	$jsonEncode
 	 */
 
 	public static function log($type, $msg, $jsonEncode = true)
@@ -997,10 +997,10 @@ class FabrikWorker {
 	 * Returns the global {@link JDatabase} object, only creating it
 	 * if it doesn't already exist.
 	 *
-	 * @param bool force (if true) the loading of the main J database,
+* @param bool force (if true) the loading of the main J database,
 	 * needed in admin to connect to J db whilst still using fab db drivers "{package}" replacement text
 	 *
-	 * @param mixed, if null then loads the fabrik default connection, if an int then loads the specified connection by its id
+* @param mixed, if null then loads the fabrik default connection, if an int then loads the specified connection by its id
 	 *
 	 * @return JDatabase object
 	 */
@@ -1053,7 +1053,7 @@ class FabrikWorker {
 	/**
 	 * @since 3.0b
 	 * helper function get get a connection
-	 * @param mixed - a list table or connection id
+* @param mixed - a list table or connection id
 	 */
 
 	public static function getConnection($item = null)
@@ -1092,7 +1092,7 @@ class FabrikWorker {
 	/**
 	 * get the plugin manager
 	 * @since	3.0b
-	 * @return	object	plugin manager
+	 * @return  object	plugin manager
 	 */
 
 	public static function getPluginManager()
@@ -1107,8 +1107,8 @@ class FabrikWorker {
 	/**
 	 * takes a string which may or may not be json and returns either string/array/object
 	 * will also turn valGROUPSPLITTERval2 to array
-	 * @param	string	$data
-	 * @param	bool	force data to be an array
+* @param   string	$data
+* @param   bool	force data to be an array
 	 */
 
 	public static function JSONtoData($data, $toArray = false)
@@ -1146,8 +1146,8 @@ class FabrikWorker {
 
 	/**
 	 * test if a string is a compatible date
-	 * @param	string	$d
-	 * @return	bool
+* @param   string	$d
+	 * @return  bool
 	 */
 
 	public static function isDate($d)
@@ -1167,8 +1167,8 @@ class FabrikWorker {
 	 * @since	3.0.6
 	 *
 	 * See if data is JSON or not.
-	 * @param mixed $data
-	 * @return bool
+* @param mixed $data
+	 * @return  bool
 	 */
 	public function isJSON($data)
 	{
@@ -1182,8 +1182,8 @@ class FabrikWorker {
 	/**
 	 * @since 3.0.4
 	 * is the email really an email (more strict than JMailHelper::isEmailAddress())
-	 * @param string $email
-	 * @return bool
+* @param string $email
+	 * @return  bool
 	 */
 
 	public function isEmail($email)
@@ -1215,10 +1215,10 @@ class FabrikWorker {
 
 	/**
 	 * attempt to get a variable first from the menu params (if they exists) if not from request
-	 * @param	string param name$name
-	 * @param	mixed	default $val
-	 * @param	bool	$mambot (if set to true menu params ignored)
-	 * @param	string	$priority - defaults that menu priorities override request - set to 'request' to inverse this priority
+* @param   string param name$name
+* @param   mixed	default $val
+* @param   bool	$mambot (if set to true menu params ignored)
+* @param   string	$priority - defaults that menu priorities override request - set to 'request' to inverse this priority
 	 */
 
 	public static function getMenuOrRequestVar($name, $val = '', $mambot = false, $priority = 'menu')
@@ -1260,9 +1260,9 @@ class FabrikWorker {
 	/**
 	* access control function for determining if the user can perform
 	* a designated function on a specific row
-	* @param	object	$row data
-	* @param	string	$col access control setting to compare against
-	* @return	mixed	- if ACL setting defined here return blo, otherwise return -1 to contiune with default acl setting
+* @param   object	$row data
+* @param   string	$col access control setting to compare against
+	* @return  mixed	- if ACL setting defined here return blo, otherwise return -1 to contiune with default acl setting
 	*/
 
 	public static function canUserDo($params, $row, $col)

@@ -30,7 +30,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * $$$ rob activelistid set in content plugin only clear filters on active list (otherwise with n tables in article all qs filters are removed)
-	 * @return bol - is the list currently being rendered the list that initially triggered the filter
+	 * @return  bool - is the list currently being rendered the list that initially triggered the filter
 	 */
 
 	protected function activeTable()
@@ -128,7 +128,7 @@ class FabrikFEModelListfilter extends FabModel {
 	 * with prefilter and search all - 2nd time you use the search all the array keys 
 	 * seem incorrect - resulting in an incorrect query.
 	 * Use this to force each $filter['property'] array to start at 0 and increment
-	 * @param	array	&$filters
+* @param   array	&$filters
 	 */
 	
 	private function normalizeKeys(&$filters)
@@ -164,8 +164,8 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * get the search all posted (or session) value
-	 * @param	string	model html (performs htmlspecialchars on value) OR 'query' (adds slashes and url decodes)
-	 * @return	string
+* @param   string	model html (performs htmlspecialchars on value) OR 'query' (adds slashes and url decodes)
+	 * @return  string
 	 */
 	
 	public function getSearchAllValue($mode = 'html')
@@ -210,7 +210,7 @@ class FabrikFEModelListfilter extends FabModel {
 	 *
 	 * If another filter has posted some data then don't add in a 'search all' record for that filter
 	 *
-	 * @param array $filters
+* @param array $filters
 	 */
 
 	private function getSearchAllFilters(&$filters)
@@ -267,8 +267,8 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * clear specific filter data all from filters
-	 * @param array $filters
-	 * @param int index
+* @param array $filters
+* @param   int index
 	 */
 
 	public function clearAFilter(&$filters, $id)
@@ -289,8 +289,8 @@ class FabrikFEModelListfilter extends FabModel {
 	/**
 	 * for advanced search all test if the search string is long enough
 	 * @since 3.0.6
-	 * @param	string	search string
-	 * @return	bool	search string long enough?
+* @param   string	search string
+	 * @return  bool	search string long enough?
 	 */
 	
 	protected function testBooleanSearchLength($s)
@@ -303,8 +303,8 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * do a boolean search
-	 * @param	array	$filters
-	 * @param	string	$search term
+* @param   array	$filters
+* @param   string	$search term
 	 */
 
 	private function doBooleanSearch(&$filters, $search)
@@ -444,8 +444,8 @@ class FabrikFEModelListfilter extends FabModel {
 	}
 	/**
 	 *
-	 * @param	array	&$filters
-	 * @param	string	$search
+* @param   array	&$filters
+* @param   string	$search
 	 * @return null
 	 */
 
@@ -597,7 +597,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 *
-	 * @param $filters
+* @param $filters
 	 */
 
 	private function getSearchFormFilters(&$filters)
@@ -721,7 +721,7 @@ class FabrikFEModelListfilter extends FabModel {
 	 * or if you want more control you can do
 	 *
 	 * tablename___elementname[value]=value&tablename_elementname[condition]=OR etc
-	 * @param array $filters
+* @param array $filters
 	 */
 
 	private function getQuerystringFilters(&$filters)
@@ -825,15 +825,15 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * insert individual querystring filter into filter array
-	 * @param	object	$elementModel
-	 * @param	array	&$filters
-	 * @param	mixed	$value
-	 * @param	string	$condition
-	 * @param	string	$join
-	 * @param	bool	$grouped
-	 * @param	boll	$eval
-	 * @param	string	$key
-	 * @param	string	$raw is the filter a raw filter (tablename___elementname_raw=foo)
+* @param   object	$elementModel
+* @param   array	&$filters
+* @param   mixed	$value
+* @param   string	$condition
+* @param   string	$join
+* @param   bool	$grouped
+* @param   boll	$eval
+* @param   string	$key
+* @param   string	$raw is the filter a raw filter (tablename___elementname_raw=foo)
 	 */
 
 	private function indQueryString($elementModel, &$filters, $value, $condition, $join, $grouped, $eval, $key, $raw = false)
@@ -891,7 +891,7 @@ class FabrikFEModelListfilter extends FabModel {
 	}
 	/**
 	 * overwrite session and serach all filters with posted data
-	 * @param $filters
+* @param $filters
 	 */
 
 	private function getPostFilters(&$filters)
@@ -1071,7 +1071,7 @@ class FabrikFEModelListfilter extends FabModel {
 
 	/**
 	 * load up filters stored in the session from previous searches
-	 * @param	array	&$filters
+* @param   array	&$filters
 	 */
 
 	private function getSessionFilters(&$filters)

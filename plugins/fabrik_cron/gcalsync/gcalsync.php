@@ -35,8 +35,8 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron {
 
 	/**
 	 * do the plugin action
-	 * @param array data
-	 * @param object list model
+* @param array data
+* @param object list model
 	 * @return number of records updated
 	 *
 	 */

@@ -51,7 +51,7 @@ class FabrikHelperHTML
 	 * load up window code - should be run in ajax loaded pages as well
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 * @deprecated use windows() instead
-	 * @param string element select to auto create windows for  - was default = a.modal
+* @param string element select to auto create windows for  - was default = a.modal
 	 */
 
 	public static function mocha($selector='', $params = array())
@@ -130,8 +130,8 @@ EOD;
 
 	/**
 	 * show form to allow users to email form to a friend
-	 * @param	object	form model
-	 * @param	string	template
+* @param   object	form model
+* @param   string	template
 	 */
 
 	public static function emailForm($formModel, $template = '')
@@ -210,10 +210,10 @@ EOD;
 
 	/**
 	 * writes a print icon
-	 * @param	object	form model
-	 * @param	object	parameters
-	 * @param	int		row id
-	 * @return	string	print html icon/link
+* @param   object	form model
+* @param   object	parameters
+* @param   int		row id
+	 * @return  string	print html icon/link
 	 */
 
 	public static function printIcon($formModel, $params, $rowid = '')
@@ -256,9 +256,9 @@ EOD;
 
 	/**
 	 * Writes Email icon
-	 * @param	object	form model
-	 * @param	object	parameters
-	 * @return	string	email icon/link html
+* @param   object	form model
+* @param   object	parameters
+	 * @return  string	email icon/link html
 	 */
 
 	public static function emailIcon($formModel, $params)
@@ -301,9 +301,9 @@ EOD;
 
 	/**
 	 * get a list of condition options - used in advanced search
-	 * @param	string	list ref
-	 * @param	string	selected value
-	 * @return	string	html select list
+* @param   string	list ref
+* @param   string	selected value
+	 * @return  string	html select list
 	 */
 
 	public static function conditonList($listid, $sel = '')
@@ -316,8 +316,8 @@ EOD;
 
 	/**
 	 * get a select list of fabrik lists
-	 * @param	string	$sel
-	 * @return	mixed	html select list or error
+* @param   string	$sel
+	 * @return  mixed	html select list or error
 	 */
 
 	public static function tableList($sel = '')
@@ -348,9 +348,9 @@ EOD;
 	 * takes into account if you are viewing the page in raw format
 	 * if so sends js code back to webpage to inject css file into document head
 	 * If not raw format then apply standard J stylesheet
-	 * @param	string	$filename
-	 * @param	array	$attribs
-	 * @return	null
+* @param   string	$filename
+* @param   array	$attribs
+	 * @return  null
 	 */
 
 	public static function stylesheet($file, $attribs = array())
@@ -386,8 +386,8 @@ EOD;
 
 	/**
 	 * check for a custom css file and include it if it exists
-	 * @param	string	$path NOT including JPATH_SITE (so relative too root dir) may include querystring
-	 * @return	bool	if loaded or not
+* @param   string	$path NOT including JPATH_SITE (so relative too root dir) may include querystring
+	 * @return  bool	if loaded or not
 	 */
 
 	public static function stylesheetFromPath($path)
@@ -411,14 +411,14 @@ EOD;
 
 	/**
 	 * Generates an HTML radio list
-	 * @param	array	An array of objects
-	 * @param	string	The value of the HTML name attribute
-	 * @param	string	Additional HTML attributes for the <select> tag
-	 * @param	mixed	The key that is selected
-	 * @param	string	The name of the object variable for the option value
-	 * @param	string	The name of the object variable for the option text
-	 * @param	int		number of options to show per row @since 2.0.5
-	 * @return	string	HTML for the select list
+* @param   array	An array of objects
+* @param   string	The value of the HTML name attribute
+* @param   string	Additional HTML attributes for the <select> tag
+* @param   mixed	The key that is selected
+* @param   string	The name of the object variable for the option value
+* @param   string	The name of the object variable for the option text
+* @param   int		number of options to show per row @since 2.0.5
+	 * @return  string	HTML for the select list
 	 */
 
 	public static function radioList(&$arr, $tag_name, $tag_attribs, $selected=null, $key='value', $text='text', $options_per_row = 0)
@@ -428,15 +428,15 @@ EOD;
 
 	/**
 	 * Generates an HTML radio OR checkbox list
-	 * @param	string	type - radio or checkbox
-	 * @param	array	An array of objects
-	 * @param	string	The value of the HTML name attribute
-	 * @param	string	Additional HTML attributes for the <select> tag
-	 * @param	mixed	The key that is selected
-	 * @param	string	The name of the object variable for the option value
-	 * @param	string	The name of the object variable for the option text
-	 * @param	int		number of options to show per row @since 2.0.5
-	 * @param	bool	is the list editable or not @since 2.1.1
+* @param   string	type - radio or checkbox
+* @param   array	An array of objects
+* @param   string	The value of the HTML name attribute
+* @param   string	Additional HTML attributes for the <select> tag
+* @param   mixed	The key that is selected
+* @param   string	The name of the object variable for the option value
+* @param   string	The name of the object variable for the option text
+* @param   int		number of options to show per row @since 2.0.5
+* @param   bool	is the list editable or not @since 2.1.1
 	 * @returns	string	HTML for the select list
 	 */
 
@@ -646,8 +646,8 @@ EOD;
 	}
 
 	/**
-	 * @param	string	js $script
-	 * @return	null
+* @param   string	js $script
+	 * @return  null
 	 */
 
 	public static function addScriptDeclaration($script)
@@ -709,8 +709,8 @@ EOD;
 	 * Use this for things like choosing whether to include compressed or uncompressed JS, etc.
 	 * Do NOT use for actual debug output.
 	 *
-	 * @param bool enabled set to true if Fabrik debug global option must be set to true
-	 * @return bool
+* @param bool enabled set to true if Fabrik debug global option must be set to true
+	 * @return  bool
 	 */
 	public static function isDebug($enabled = false)
 	{
@@ -726,8 +726,8 @@ EOD;
 
 	/**
 	 * wrapper for JHTML::Script()
-	 * @param	mixed	string or array of files to load
-	 * @param	string	optional js to run if format=raw (as we first load the $file via Asset.Javascript()
+* @param   mixed	string or array of files to load
+* @param   string	optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 */
 
 	public static function script($file, $onLoad = '')
@@ -818,9 +818,9 @@ EOD;
 	}
 
 	/**
-	 * @param	string	$selector string class name of tips
-	 * @param	array	$params array paramters
-	 * @param	string	$selectorPrefix limit the tips selection to those contained within an id
+* @param   string	$selector string class name of tips
+* @param   array	$params array paramters
+* @param   string	$selectorPrefix limit the tips selection to those contained within an id
 	 */
 
 	public static function tips($selector='.hasTip', $params = array(), $selectorPrefix = 'document')
@@ -855,8 +855,8 @@ EOD;
 
 	/**
 	 * add a debug out put section
-	 * @param	mixed	string/object $content
-	 * @param	string	$title
+* @param   mixed	string/object $content
+* @param   string	$title
 	 */
 
 	public static function debug($content, $title = 'output:')
@@ -908,9 +908,9 @@ EOD;
 
 	/**
 	 * create html for ajax folder browser (used by fileupload and image elements)
-	 * @param	array	folders
-	 * @param	string	start path
-	 * @return	string	html snippet
+* @param   array	folders
+* @param   string	start path
+	 * @return  string	html snippet
 	 */
 
 	function folderAjaxSelect($folders, $path = '')
@@ -950,10 +950,10 @@ EOD;
 
 	/**
 	 * Add autocomplete JS code to head
-	 * @param	string	$htmlid of element to turn into autocomplete
-	 * @param	int		$elementid
-	 * @param	string	$plugin
-	 * @param	array	$opts (currently only takes 'onSelection')
+* @param   string	$htmlid of element to turn into autocomplete
+* @param   int		$elementid
+* @param   string	$plugin
+* @param   array	$opts (currently only takes 'onSelection')
 	 */
 
 	public static function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
@@ -968,11 +968,11 @@ EOD;
 
 	/**
 	 * Gets auto complete js options (needed separate from autoComplete as db js class needs these values for repeat group duplication)
-	 * @param	string	$htmlid of element to turn into autocomplete
-	 * @param	int		$elementid
-	 * @param	string	$plugin
-	 * @param	array	$opts (currently only takes 'onSelection')
-	 * @return	array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
+* @param   string	$htmlid of element to turn into autocomplete
+* @param   int		$elementid
+* @param   string	$plugin
+* @param   array	$opts (currently only takes 'onSelection')
+	 * @return  array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
 	public static function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
@@ -1047,10 +1047,10 @@ EOD;
 	/**
 	 * add path for image() function
 	 * @since 3.0
-	 * @param	string	$path to add to list of folders to search
-	 * @param	string	$type of path set to load (currently only image is used)
-	 * @param	string	$view are we looking at loading form or list images?
-	 * @param	bool	$highPriority should the added $path take precedence over previously added paths (default true)
+* @param   string	$path to add to list of folders to search
+* @param   string	$type of path set to load (currently only image is used)
+* @param   string	$view are we looking at loading form or list images?
+* @param   bool	$highPriority should the added $path take precedence over previously added paths (default true)
 	 */
 
 	public static function addPath($path = '', $type = 'image', $view = 'form', $highPriority = true)
@@ -1086,10 +1086,10 @@ EOD;
 
 	/**
 	 * Search various folder locations for an image
-	 * @param	string	file name
-	 * @param	string	type e.g. form/list/element
-	 * @param	string	template folder name
-	 * @return	string	full path name if found, original filename if not found
+* @param   string	file name
+* @param   string	type e.g. form/list/element
+* @param   string	template folder name
+	 * @return  string	full path name if found, original filename if not found
 	 */
 
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
@@ -1112,11 +1112,11 @@ EOD;
 	/**
 	 * Search various folder locations for a template image
 	 * @since 3.0
-	 * @param	string	file name
-	 * @param	string	type e.g. form/list/element
-	 * @param	string	template folder name
-	 * @param	array	assoc list of properties or string (if you just want to set the image alt tag)
-	 * @param	bool	src only (default false)
+* @param   string	file name
+* @param   string	type e.g. form/list/element
+* @param   string	template folder name
+* @param   array	assoc list of properties or string (if you just want to set the image alt tag)
+* @param   bool	src only (default false)
 	 */
 
 	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
@@ -1154,13 +1154,13 @@ EOD;
 
 	/**
 	 * make a grid of items
-	 * @param	array	$values
-	 * @param	array	$labels
-	 * @param	array	$selected
-	 * @param	string	$name
-	 * @param	string	$type *checkbox/radio etc
-	 * @param	bool	$elementBeforeLabel
-	 * @param	int		$optionsPerRow
+* @param   array	$values
+* @param   array	$labels
+* @param   array	$selected
+* @param   string	$name
+* @param   string	$type *checkbox/radio etc
+* @param   bool	$elementBeforeLabel
+* @param   int		$optionsPerRow
 	 */
 
 	public static function grid($values, $labels, $selected, $name, $type="checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)

@@ -18,7 +18,7 @@ class Textopoly extends JObject{
 	/**
 	 * send SMS
 	 * 
-	 * @param   string  $message sms messagg to send
+* @param   string  $message sms messagg to send
 	 * 
 	 * @return  null
 	 */

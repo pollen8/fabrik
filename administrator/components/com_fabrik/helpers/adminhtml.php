@@ -23,8 +23,8 @@ class FabrikHelperAdminHTML
 	/**
 	 * get a list of directories
 	 * 
-	 * @param   string  $path      to read from
-	 * @param   bool    $fullpath  return full paths or not
+* @param   string  $path      to read from
+* @param   bool    $fullpath  return full paths or not
 	 * 
 	 * @return  null
 	 */

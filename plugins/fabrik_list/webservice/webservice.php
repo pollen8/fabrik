@@ -23,7 +23,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 
 	/**
 	 * does the plugin render a button at the top of the list?
-	 * @return	bool
+	 * @return  bool
 	 */
 	public function topButton()
 	{
@@ -32,7 +32,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	
 	/**
 	 * create the HTML for rendering a button in the top button list
-	 * @return	string	<a> link
+	 * @return  string	<a> link
 	 */
 	public function topButton_result()
 	{
@@ -47,7 +47,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	
 	/**
 	 * row button set up code
-	 * @return	string
+	 * @return  string
 	 */
 	function button()
 	{
@@ -80,7 +80,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 
 	/**
 	 * determine if the list plugin is a button and can be activated only when rows are selected
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	function canSelectRows()
@@ -90,9 +90,9 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 
 	/**
 	 * do the plug-in action
-	 * @param	object	parameters
-	 * @param	object	table model
-	 * @param	array	custom options
+* @param   object	parameters
+* @param   object	table model
+* @param   array	custom options
 	 */
 
 	function process(&$params, &$model, $opts = array())
@@ -133,8 +133,8 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	
 	/**
 	 * get the data map to transform web service data into list data
-	 * @param	object	$formModel
-	 * @return	array	data map
+* @param   object	$formModel
+	 * @return  array	data map
 	 */
 	protected function getMap($formModel)
 	{
@@ -157,8 +157,8 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	
 	/**
 	 * get an array of key/value filters to send to the web serive
-	 * @param	object	$service
-	 * @return	array	key/val pairs
+* @param   object	$service
+	 * @return  array	key/val pairs
 	 */
 	
 	protected function getServiceFilters($service)
@@ -179,7 +179,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	
 	/**
 	 * get sign in credentials to the service
-	 * @return	array	login credentials
+	 * @return  array	login credentials
 	 */
 	
 	protected function getCredentials()
@@ -204,10 +204,10 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	object	parameters
-	 * @param	object	table model
-	 * @param	array	[0] => string table's form id to contain plugin
-	 * @return	bool
+* @param   object	parameters
+* @param   object	table model
+* @param   array	[0] => string table's form id to contain plugin
+	 * @return  bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)

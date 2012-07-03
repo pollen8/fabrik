@@ -25,8 +25,8 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param	object	$params
-	 * @param	object	form
+* @param   object	$params
+* @param   object	form
 	 */
 
 	public function onAfterProcess($params, &$formModel)

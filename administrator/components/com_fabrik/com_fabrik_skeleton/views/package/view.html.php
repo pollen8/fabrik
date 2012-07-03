@@ -25,7 +25,7 @@ class SkeletonViewPackage extends JView
 	/**
 	 * display
 	 * 
-	 * @param   string  $tpl  template
+* @param   string  $tpl  template
 	 * 
 	 * @return  null
 	 */

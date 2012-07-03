@@ -1,16 +1,22 @@
 <?php
 /**
-* @package Joomla.Administrator
-* @subpackage Fabrik
-* @since		1.6
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modellist');
 
+/**
+ * Fabrik Connections Model
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabrikModelConnections extends JModelList
 {
@@ -18,18 +24,14 @@ class FabrikModelConnections extends JModelList
 	/**
 	 * Constructor.
 	 *
-	 * @param	array	An optional associative array of configuration settings.
-	 * @see		JController
-	 * @since	1.6
+* @param   array  $config  An optional associative array of configuration settings.
 	 */
 
 	public function __construct($config = array())
 	{
 		if (empty($config['filter_fields']))
 		{
-			$config['filter_fields'] = array(
-				'c.id'
-				);
+			$config['filter_fields'] = array('c.id');
 		}
 		parent::__construct($config);
 	}
@@ -37,23 +39,19 @@ class FabrikModelConnections extends JModelList
 	/**
 	 * Build an SQL query to load the list data.
 	 *
-	 * @return	JDatabaseQuery
+	 * @return  JDatabaseQuery
+	 * 
 	 * @since	1.6
 	 */
-	
+
 	protected function getListQuery()
 	{
 		// Initialise variables.
-		$db	= $this->getDbo();
+		$db = $this->getDbo();
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
-		$query->select(
-			$this->getState(
-				'list.select',
-				'c.*'
-			)
-		);
+		$query->select($this->getState('list.select', 'c.*'));
 		$query->from('#__fabrik_connections AS c');
 
 		$published = $this->getState('filter.published');
@@ -66,7 +64,7 @@ class FabrikModelConnections extends JModelList
 			$query->where('(c.published IN (0, 1))');
 		}
 
-		//Filter by search in title
+		// Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
@@ -74,14 +72,13 @@ class FabrikModelConnections extends JModelList
 			$query->where('(c.host LIKE ' . $search . ' OR c.database OR c.description LIKE ' . $search . ')');
 		}
 
-
 		// Join over the users for the checked out user.
 		$query->select('u.name AS editor');
 		$query->join('LEFT', '#__users AS u ON checked_out = u.id');
 
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering');
-		$orderDirn	= $this->state->get('list.direction');
+		$orderCol = $this->state->get('list.ordering');
+		$orderDirn = $this->state->get('list.direction');
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
@@ -93,13 +90,15 @@ class FabrikModelConnections extends JModelList
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param	type	The table type to instantiate
-	 * @param	string	A prefix for the table class name. Optional.
-	 * @param	array	Configuration array for model. Optional.
-	 * @return	JTable	A database object
+* @param   string  $type    The table type to instantiate
+* @param   string  $prefix  A prefix for the table class name. Optional.
+* @param   array   $config  Configuration array for model. Optional.
+	 * 
+	 * @return  JTable  A database object
+	 * 
 	 * @since	1.6
 	 */
-	
+
 	public function getTable($type = 'Connection', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabriKWorker::getDbo();
@@ -110,15 +109,20 @@ class FabrikModelConnections extends JModelList
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
-	 * @param   string  $ordering   An optional ordering field.
-	 * @param   string  $direction  An optional direction (asc|desc).
+	 * 
+* @param   string  $ordering   An optional ordering field.
+* @param   string  $direction  An optional direction (asc|desc).
+	 * 
 	 * @since	1.6
+	 * 
+	 * @return  void
 	 */
-	
+
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
+
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_fabrik');
 		$this->setState('params', $params);
@@ -126,9 +130,16 @@ class FabrikModelConnections extends JModelList
 		$this->setState('filter.published', $published);
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
+
 		// List state information.
 		parent::populateState('name', 'asc');
 	}
+
+	/**
+	 * Get list of active connections
+	 * 
+	 * @return  array connection items
+	 */
 
 	public function activeConnections()
 	{

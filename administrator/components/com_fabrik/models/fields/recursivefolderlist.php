@@ -1,10 +1,11 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
@@ -18,25 +19,29 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 /**
  * Renders a recursive filelist element
  *
- * @author 		Andrew Eddie
- * @package 	Joomla.Framework
- * @subpackage		Parameter
- * @since		1.5
+ * @package  Fabrik
+ * @since    3.0
  */
 
 class JFormFieldRecursivefolderlist extends JFormFieldList
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
 	protected $name = 'Recursivefolderlist';
 
-	function getOptions()
+	/**
+	 * Method to get the field options.
+	 *
+	 * @return  array  The field option objects.
+	 */
+
+	protected function getOptions()
 	{
-	// Initialize variables.
+		// Initialize variables.
 		$options = array();
 
 		// Initialize some field attributes.
@@ -74,7 +79,7 @@ class JFormFieldRecursivefolderlist extends JFormFieldList
 				// Check to see if the file is in the exclude mask.
 				if ($exclude)
 				{
-					if (preg_match(chr(1).$exclude.chr(1), $folder))
+					if (preg_match(chr(1) . $exclude . chr(1), $folder))
 					{
 						continue;
 					}

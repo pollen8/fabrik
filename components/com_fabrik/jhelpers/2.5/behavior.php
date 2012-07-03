@@ -28,8 +28,8 @@ abstract class JHtmlBehavior
 	 *
 	 * If debugging mode is on an uncompressed version of MooTools is included for easier debugging.
 	 *
-	 * @param   string   $extras  MooTools file to load
-	 * @param   boolean  $debug   Is debugging mode on? [optional]
+* @param   string   $extras  MooTools file to load
+* @param   bool  $debug   Is debugging mode on? [optional]
 	 *
 	 * @return  void
 	 *
@@ -73,7 +73,7 @@ abstract class JHtmlBehavior
 	/**
 	 * Deprecated. Use JHtmlBehavior::framework() instead.
 	 *
-	 * @param   boolean  $debug  Is debugging mode on? [optional]
+* @param   bool  $debug  Is debugging mode on? [optional]
 	 *
 	 * @return  void
 	 *
@@ -92,7 +92,7 @@ abstract class JHtmlBehavior
 	/**
 	 * Add unobtrusive javascript support for image captions.
 	 *
-	 * @param   string  $selector  The selector for which a caption behaviour is to be applied.
+* @param   string  $selector  The selector for which a caption behaviour is to be applied.
 	 *
 	 * @return  void
 	 *
@@ -216,8 +216,8 @@ abstract class JHtmlBehavior
 	 *
 	 * Uses the core Tips class in MooTools.
 	 *
-	 * @param   string  $selector  The class selector for the tooltip.
-	 * @param   array   $params    An array of options for the tooltip.
+* @param   string  $selector  The class selector for the tooltip.
+* @param   array   $params    An array of options for the tooltip.
 	 *                             Options for the tooltip can be:
 	 *                             - maxTitleChars  integer   The maximum number of characters in the tooltip title (defaults to 50).
 	 *                             - offsets        object    The distance of your tooltip from the mouse (defaults to {'x': 16, 'y': 16}).
@@ -287,8 +287,8 @@ abstract class JHtmlBehavior
 	/**
 	 * Add unobtrusive javascript support for modal links.
 	 *
-	 * @param   string  $selector  The selector for which a modal behaviour is to be applied.
-	 * @param   array   $params    An array of parameters for the modal behaviour.
+* @param   string  $selector  The selector for which a modal behaviour is to be applied.
+* @param   array   $params    An array of parameters for the modal behaviour.
 	 *                             Options for the modal behaviour can be:
 	 *                            - ajaxOptions
 	 *                            - size
@@ -370,7 +370,7 @@ abstract class JHtmlBehavior
 	/**
 	 * JavaScript behavior to allow shift select in grids
 	 *
-	 * @param   string  $id  The id of the form for which a multiselect behaviour is to be applied.
+* @param   string  $id  The id of the form for which a multiselect behaviour is to be applied.
 	 *
 	 * @return  void
 	 *
@@ -404,9 +404,9 @@ abstract class JHtmlBehavior
 	/**
 	 * Add unobtrusive javascript support for the advanced uploader.
 	 *
-	 * @param   string  $id            An index.
-	 * @param   array   $params        An array of options for the uploader.
-	 * @param   string  $upload_queue  The HTML id of the upload queue element (??).
+* @param   string  $id            An index.
+* @param   array   $params        An array of options for the uploader.
+* @param   string  $upload_queue  The HTML id of the upload queue element (??).
 	 *
 	 * @return  void
 	 *
@@ -565,9 +565,9 @@ abstract class JHtmlBehavior
 	/**
 	 * Add unobtrusive javascript support for a collapsible tree.
 	 *
-	 * @param   string  $id      An index
-	 * @param   array   $params  An array of options.
-	 * @param   array   $root    The root node
+* @param   string  $id      An index
+* @param   array   $params  An array of options.
+* @param   array   $root    The root node
 	 *
 	 * @return  void
 	 *
@@ -754,13 +754,13 @@ abstract class JHtmlBehavior
 	/**
 	 * Highlight some words via Javascript.
 	 *
-	 * @param   array   $terms      Array of words that should be highlighted.
-	 * @param   string  $start      ID of the element that marks the begin of the section in which words
+* @param   array   $terms      Array of words that should be highlighted.
+* @param   string  $start      ID of the element that marks the begin of the section in which words
 	 *                              should be highlighted. Note this element will be removed from the DOM.
-	 * @param   string  $end        ID of the element that end this section.
+* @param   string  $end        ID of the element that end this section.
 	 *                              Note this element will be removed from the DOM.
-	 * @param   string  $className  Class name of the element highlights are wrapped in.
-	 * @param   string  $tag        Tag that will be used to wrap the highlighted words.
+* @param   string  $className  Class name of the element highlights are wrapped in.
+* @param   string  $tag        Tag that will be used to wrap the highlighted words.
 	 *
 	 * @return  void
 	 *
@@ -806,7 +806,7 @@ abstract class JHtmlBehavior
 	/**
 	 * Break us out of any containing iframes
 	 *
-	 * @param   string  $location  Location to display in
+* @param   string  $location  Location to display in
 	 *
 	 * @return  void
 	 *
@@ -837,7 +837,7 @@ abstract class JHtmlBehavior
 	/**
 	 * Internal method to get a JavaScript object notation string from an array
 	 *
-	 * @param   array  $array  The array to convert to JavaScript object notation
+* @param   array  $array  The array to convert to JavaScript object notation
 	 *
 	 * @return  string  JavaScript object notation representation of the array
 	 *

@@ -41,7 +41,7 @@ class JDocumentRendererrss extends JDocumentRenderer
 	 * Render the feed
 	 *
 	 * @access public
-	 * @return	string
+	 * @return  string
 	 */
 	function render()
 	{
@@ -170,7 +170,7 @@ class JDocumentRendererrss extends JDocumentRenderer
 	 * Convert links in a text from relative to absolute
 	 *
 	 * @access public
-	 * @return	string
+	 * @return  string
 	 */
 	function _relToAbs($text)
 	{

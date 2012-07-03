@@ -23,8 +23,8 @@ class plgFabrik_Cron extends FabrikPlugin
 	
 	/**
 	 * get the db row 
-	 * @param	bool	$force
-	 * @return	object
+* @param   bool	$force
+	 * @return  object
 	 */
 	
 	public function &getTable($force = false)
@@ -41,7 +41,7 @@ class plgFabrik_Cron extends FabrikPlugin
 	
 	/**
 	* whether cron should automagically load table data
-	* @return	bool
+	* @return  bool
 	*/
 	
 	public function requiresTableData()
@@ -64,7 +64,7 @@ class plgFabrik_Cron extends FabrikPlugin
 	* the methods here for now
 	* deterimes if the cron plug-in should be run - if require_qs is true
 	* then fabrik_cron=1 needs to be in the querystring
-	* @return	bool
+	* @return  bool
 	*/
 	
 	public function queryStringActivated()

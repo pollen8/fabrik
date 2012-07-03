@@ -36,7 +36,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	 * @since 2.0.4
 	 * remove session flags which state that the form should be loaded
 	 * from the session
-	 * @param int form id
+* @param   int form id
 	 */
 
 	protected function clearSession($id)
@@ -49,9 +49,9 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	/**
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
-	 * @param object $params
-	 * @param object $formModel
-	 * @return bool
+* @param object $params
+* @param object $formModel
+	 * @return  bool
 	 */
 
 	function onBeforeStore(&$params, &$formModel)
@@ -127,9 +127,9 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	/**
 	 * set up the html to be injected into the bottom of the form
 	 *
-	 * @param	object	$params (no repeat counter stuff needed here as the plugin manager
+* @param   object	$params (no repeat counter stuff needed here as the plugin manager
 	 * which calls this function has already done the work for you
-	 * @param	object	form model
+* @param   object	form model
 	 */
 
 	public function getBottomContent($params, $formModel)
@@ -210,7 +210,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form {
 	/**
 	 * inject custom html into the bottom of the form
 	 *
-	 * @param int plugin counter
+* @param   int plugin counter
 	 * @return string html
 	 */
 

@@ -35,7 +35,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 
 		/**
 	 * do the plugin action
-	 * @param object table model
+* @param object table model
 	 * @return string message
 	 */
 	function process(&$model)
@@ -43,7 +43,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 
 	/**
 	 * run before the table loads its data
-	 * @param $model
+* @param $model
 	 * @return unknown_type
 	 */
 	function onPreLoadData(&$model)
@@ -59,7 +59,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 
 	/**
 	 * called when the model deletes rows
-	 * @param object table $model
+* @param object table $model
 	 * @return false if fail
 	 */
 	function onDeleteRows(&$model)
@@ -82,7 +82,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *
-	 * @return bol
+	 * @return  bool
 	 */
 
 	function canSelectRows()
@@ -92,10 +92,10 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param list table model
-	 * @param array [0] => string table's form id to contain plugin
-	 * @return bool
+* @param object parameters
+* @param list table model
+* @param array [0] => string table's form id to contain plugin
+	 * @return  bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)

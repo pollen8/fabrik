@@ -74,8 +74,8 @@ class plgFabrik_FormExif extends plgFabrik_Form {
  	/**
  	 * process the plugin, called when form is submitted
  	 *
- 	 * @param object $params
- 	 * @param object form
+* @param object $params
+* @param object form
  	 */
 
  	function onBeforeStore(&$params, &$formModel)

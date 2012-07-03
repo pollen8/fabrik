@@ -25,9 +25,9 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 	/**
 	 * write out the label for the form element
-	 * @param	object	form
-	 * @param	bool	encase label in <label> tag
-	 * @param	string	id of element related to the label
+* @param   object	form
+* @param   bool	encase label in <label> tag
+* @param   string	id of element related to the label
 	 */
 
 	function getLabel($repeatCounter = 0, $tmpl = '')
@@ -55,9 +55,9 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param	array	data
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   array	data
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -70,10 +70,10 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 
 	/**
 	 * gets the value or default value 
-	 * @param	array	data
-	 * @param	int		repeat group counter
-	 * @param	array	options
-	 * @return	string	default value
+* @param   array	data
+* @param   int		repeat group counter
+* @param   array	options
+	 * @return  string	default value
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())

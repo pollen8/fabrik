@@ -31,8 +31,8 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 
 	/**
 	 * take the recorded twitter screen name and parse it through the template
-	 * @param	string $screenName
-	 * @return	string|unknown
+* @param   string $screenName
+	 * @return  string|unknown
 	 */
 	protected function format($screenName)
 	{
@@ -73,8 +73,8 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 

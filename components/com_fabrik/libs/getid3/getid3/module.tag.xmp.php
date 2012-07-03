@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // Module originally written [2009-Mar-26] by                  //
-//      Nigel Barnes <ngbarnesØhotmail*com>                    //
+//      Nigel Barnes <ngbarnesï¿½hotmail*com>                    //
 // Bundled into getID3 with permission                         //
 //   called by getID3 in module.graphic.jpg.php                //
 //                                                            ///
@@ -79,7 +79,7 @@ class Image_XMP
 	/**
 	* Reads all the JPEG header segments from an JPEG image file into an array
 	*
-	* @param string $filename - the filename of the JPEG file to read
+* @param string $filename - the filename of the JPEG file to read
 	* @return array $headerdata - Array of JPEG header segments
 	* @return boolean FALSE - if headers could not be read
 	*/
@@ -189,7 +189,7 @@ class Image_XMP
 	/**
 	* Retrieves XMP information from an APP1 JPEG segment and returns the raw XML text as a string.
 	*
-	* @param string $filename - the filename of the JPEG file to read
+* @param string $filename - the filename of the JPEG file to read
 	* @return string $xmp_data - the string of raw XML text
 	* @return boolean FALSE - if an APP 1 XMP segment could not be found, or if an error occured
 	*/
@@ -222,7 +222,7 @@ class Image_XMP
 	* Parses a string containing XMP data (XML), and returns an array
 	* which contains all the XMP (XML) information.
 	*
-	* @param string $xml_text - a string containing the XMP data (XML) to be parsed
+* @param string $xml_text - a string containing the XMP data (XML) to be parsed
 	* @return array $xmp_array - an array containing all xmp details retrieved.
 	* @return boolean FALSE - couldn't parse the XMP data
 	*/
@@ -394,7 +394,7 @@ class Image_XMP
 	/**
 	* Constructor
 	*
-	* @param string - Name of the image file to access and extract XMP information from.
+* @param string - Name of the image file to access and extract XMP information from.
 	*/
 	function Image_XMP($sFilename)
 	{

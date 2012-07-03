@@ -46,8 +46,8 @@ class translationFabrikGroupFilter extends translationFilter
 	/**
  * Creates section filter
  *
- * @param unknown_type $filtertype
- * @param unknown_type $contentElement
+* @param unknown_type $filtertype
+* @param unknown_type $contentElement
  * @return unknown
  */
 	function _createfilterHTML(){

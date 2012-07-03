@@ -17,7 +17,7 @@ class fabrikViewForm extends FabrikViewFormBase
 
   	/**
 	 * display the template
-	 * @param	string	$tpl
+* @param   string	$tpl
 	 */
 
 	function display($tpl = null)

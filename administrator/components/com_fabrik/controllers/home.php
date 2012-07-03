@@ -23,7 +23,7 @@ class FabrikControllerHome extends JControllerAdmin
 	/**
 	 * Constructor
 	 * 
-	 * @param   array  $config  state
+* @param   array  $config  state
 	 */
 
 	public function __construct($config = array())

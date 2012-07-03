@@ -1,53 +1,54 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
-
-/**
- * Renders a list releated forms that a db join element can be populated from
- *
- * @author 		Rob Clayburn
- * @package 	Joomla
- * @subpackage		Fabrik
- * @since		1.5
- */
-
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
+/**
+ * Renders a list releated forms that a db join element can be populated from
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
+
 class JFormFieldPopupforms extends JFormFieldList
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
 	protected $name = 'Connections';
 
+	/**
+	 * Method to get the field options.
+	 *
+	 * @return  array  The field option objects.
+	 */
 
-	function getOptions()
+	protected function getOptions()
 	{
 		// Initialize variables.
 		$options = array();
 
-		$db	= FabrikWorker::getDbo(true);
-		$query	= $db->getQuery(true);
-		$query->select('f.id AS value, f.label AS text, l.id AS listid')
-		->from('#__{package}_forms AS f')
-		->join('LEFT', '#__{package}_lists As l ON f.id = l.form_id')
-		->where('f.published = 1 AND l.db_table_name = ' . $db->quote($this->form->getValue('params.join_db_name')))
-		->order('f.label');
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select('f.id AS value, f.label AS text, l.id AS listid')->from('#__{package}_forms AS f')
+			->join('LEFT', '#__{package}_lists As l ON f.id = l.form_id')
+			->where('f.published = 1 AND l.db_table_name = ' . $db->quote($this->form->getValue('params.join_db_name')))->order('f.label');
 
 		// Get the options.
 		$db->setQuery($query);

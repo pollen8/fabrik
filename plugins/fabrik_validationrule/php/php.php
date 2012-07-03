@@ -49,10 +49,10 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
  	/**
  	 * checks if the validation should replace the submitted element data
  	 * if so then the replaced data is returned otherwise original data returned
- 	 * @param	string	original data
- 	 * @param	model	$element
- 	 * @param	int		$c validation plugin counter
- 	 * @return	string	original or replaced data
+* @param   string	original data
+* @param   model	$element
+* @param   int		$c validation plugin counter
+ 	 * @return  string	original or replaced data
  	 */
 
  	function replace($data, &$element, $pluginc, $repeatCounter)

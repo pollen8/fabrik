@@ -15,9 +15,9 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 
 	/**
 	 * draws a button
-	 * @param	string	data
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   string	data
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -55,8 +55,8 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 
 	/**
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param	int		repeat group counter
-	 * @return	array	html ids to watch for validation
+* @param   int		repeat group counter
+	 * @return  array	html ids to watch for validation
 	 */
 
 	function getValidationWatchElements($repeatCounter)

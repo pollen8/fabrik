@@ -24,8 +24,8 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 	/**
 	 * need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
-	 * @param	object	$params
-	 * @param	object	$formModel
+* @param   object	$params
+* @param   object	$formModel
 	 */
 
 	function onAfterJSLoad(&$params, &$formModel)
@@ -53,7 +53,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 
 	/**
 	 * called via ajax to get the first match record
-	 * @return	string	json object of record data
+	 * @return  string	json object of record data
 	 */
 
 	function onajax_getAutoFill()

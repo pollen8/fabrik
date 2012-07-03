@@ -21,8 +21,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -201,9 +201,9 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	/**
 	 * can be overwritten by plugin class
 	 * determines the value for the element in the form view
-	 * @param array data
-	 * @param int when repeating joinded groups we need to know what part of the array to access
-	 * @param array options
+* @param array data
+* @param   int when repeating joinded groups we need to know what part of the array to access
+* @param array options
 	 * @return string value
 	 */
 
@@ -292,8 +292,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param mixed the elements posted form data
-	 * @param array posted form data
+* @param mixed the elements posted form data
+* @param array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -318,8 +318,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	/**
 	 * get the value to store the value in the db
 	 *
-	 * @param	mixed	$val (array normally but string on csv import)
-	 * @return	string	yyyy-mm-dd
+* @param   mixed	$val (array normally but string on csv import)
+	 * @return  string	yyyy-mm-dd
 	 */
 		//Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well) empty data is always NULL otherwise nulldate is displayed in its views. 
 		//TODO: if NULL value is the first in repeated group then in list view whole group is empty. Could anyone find a solution? I give up :-(
@@ -340,8 +340,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	/**
 	 * used in isempty validation rule
 	 *
-	 * @param array $data
-	 * @return bol
+* @param array $data
+	 * @return  bool
 	 */
 
 	function dataConsideredEmpty($data, $repeatCounter)

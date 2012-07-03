@@ -60,7 +60,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -83,7 +83,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 	
 	/**
 	 * load a new set of default properites and params for the element
-	 * @return	object	element (id = 0)
+	 * @return  object	element (id = 0)
 	 */
 	
 	public function getDefaultProperties()

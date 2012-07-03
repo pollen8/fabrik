@@ -17,10 +17,10 @@ class FabTable extends JTable
 	 * the table include paths.  To add include paths for searching for JTable
 	 * classes @see JTable::addIncludePath().
 	 *
-	 * @param	string	The type (name) of the JTable class to get an instance of.
-	 * @param	string	An optional prefix for the table class name.
-	 * @param	array	An optional array of configuration values for the JTable object.
-	 * @return	mixed	A JTable object if found or boolean false if one could not be found.
+* @param   string	The type (name) of the JTable class to get an instance of.
+* @param   string	An optional prefix for the table class name.
+* @param   array	An optional array of configuration values for the JTable object.
+	 * @return  mixed	A JTable object if found or boolean false if one could not be found.
 	 * @since	1.5
 	 * @link	http://docs.joomla.org/JTable/getInstance
 	 */

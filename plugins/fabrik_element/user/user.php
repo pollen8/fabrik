@@ -43,8 +43,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * draws the form element
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -154,9 +154,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	 * get element's hidden field
 	 *
 	 * @access private
-	 * @param string $name
-	 * @param string $value
-	 * @param string $id
+* @param string $name
+* @param string $value
+* @param string $id
 	 * @return strin
 	 */
 	function _getHiddenField($name, $value, $id )
@@ -168,7 +168,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	 * if the table db isnt the same as the joomla db the element
 	 * will be rendered as a hidden field so return true from isHidden()
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 
 	function isHidden()
@@ -186,7 +186,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	/**
 	* run on formModel::setFormData()
 	* set before form is validated
-	* @param int repeat group counter
+* @param   int repeat group counter
 	* @return null
 	*/
 
@@ -251,7 +251,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	 * if we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
 	 *
-	 * @param unknown_type $data
+* @param unknown_type $data
 	 */
 
 	function onStoreRow(&$data)
@@ -347,7 +347,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	/**
 	 * get js ini code
 	 * overwritten in plugin classes
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -376,9 +376,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * can be overwritten in the plugin class - see database join element for example
-	 * @param array containing field sql
-	 * @param array containing field aliases
-	 * @param array options
+* @param array containing field sql
+* @param array containing field aliases
+* @param array options
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
@@ -466,9 +466,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	/**
 	 * get the value
 	 *
-	 * @param array $data
-	 * @param int $repeatCounter
-	 * @param array options
+* @param array $data
+* @param   int $repeatCounter
+* @param array options
 	 * @return unknown
 	 */
 
@@ -520,7 +520,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * Get the table filter for the element
-	 * @param bool do we render as a normal filter or as an advanced searc filter
+* @param bool do we render as a normal filter or as an advanced searc filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 * @return string filter html
 	 */
@@ -713,9 +713,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param mixed element's data
-	 * @param array form records data
-	 * @param int repeat group counter
+* @param mixed element's data
+* @param array form records data
+* @param   int repeat group counter
 	 * @return string formatted value
 	 */
 
@@ -744,8 +744,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	/**
 	 * @since	3.0b
 	 * get the user's property to show, if gid raise warning and revert to username (no gid in J1.7)
-	 * @param	object	$user
-	 * @return	string	
+* @param   object	$user
+	 * @return  string	
 	 */
 
 	protected function getUserDisplayProperty($user)
@@ -779,7 +779,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * called when copy row table plugin called
-	 * @param mixed value to copy into new record
+* @param mixed value to copy into new record
 	 * @return mixed value to copy into new record
 	 */
 
@@ -796,8 +796,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * called when save as copy form button clicked
-	 * @param	mixed	value to copy into new record
-	 * @return	mixed	value to copy into new record
+* @param   mixed	value to copy into new record
+	 * @return  mixed	value to copy into new record
 	 */
 
 	public function onSaveAsCopy($val)
@@ -814,7 +814,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	/**
 	 * get the element name or concat statement used to build the dropdown labels or
 	 * table data field
-	 * @return	string
+	 * @return  string
 	 */
 
 	protected function getValColumn()

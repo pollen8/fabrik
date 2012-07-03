@@ -16,10 +16,10 @@ class audioRender
 	var $output = '';
 	
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+* @param object element model
+* @param object element params
+* @param string row data for this element
+* @param object all row's data
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -28,9 +28,9 @@ class audioRender
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
+* @param object element model
+* @param object element params
+* @param string row data for this element
 	 */
 
 	function render(&$model, &$params, $file)

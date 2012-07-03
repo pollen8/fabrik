@@ -176,7 +176,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * Class constructor
 	 *
 	 * @access protected
-	 * @param	array	$options Associative array of options
+* @param   array	$options Associative array of options
 	 */
 	function __construct($options = array())
 	{
@@ -190,8 +190,8 @@ class JDocumentFabrikfeed extends JDocument
 	 * Render the document
 	 *
 	 * @access public
-	 * @param boolean 	$cache		If true, cache the output
-	 * @param array		$params		Associative array of attributes
+* @param boolean 	$cache		If true, cache the output
+* @param array		$params		Associative array of attributes
 	 * @return 	The rendered data
 	 */
 	function render( $cache = false, $params = array())
@@ -240,7 +240,7 @@ class JDocumentFabrikfeed extends JDocument
 	/**
 	 * Adds an JFabrikfeedItem to the feed.
 	 *
-	 * @param object JFabrikfeedItem $item The feeditem to add to the feed.
+* @param object JFabrikfeedItem $item The feeditem to add to the feed.
 	 * @access public
 	 */
 	function addItem( &$item )
@@ -386,7 +386,7 @@ class JFabrikFeedItem extends JObject
 	 * Set the JFabrikfeedEnclosure for this item
 	 *
 	 * @access public
-	 * @param object $enclosure The JFabrikfeedItem to add to the feed.
+* @param object $enclosure The JFabrikfeedItem to add to the feed.
 	 */
 	 function setEnclosure($enclosure)	{
 		// $$$ hugh - fixing enclosures ... $enclosure arg is an array,

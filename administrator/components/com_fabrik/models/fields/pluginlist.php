@@ -1,10 +1,11 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 defined('JPATH_BASE') or die;
 
@@ -16,10 +17,10 @@ JFormHelper::loadFieldClass('list');
 /**
  * Plugin List Field class for Fabrik.
  *
- * @package     Joomla.Framework
- * @subpackage  Fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class JFormFieldPluginList extends JFormFieldList
 {
 	/**
@@ -33,14 +34,15 @@ class JFormFieldPluginList extends JFormFieldList
 	/**
 	 * Method to get the field options.
 	 *
-	 * @return	array	The field option objects.
-	 * @since	1.6
+	 * @return  array  The field option objects.
 	 */
-	public function getOptions()
+
+	protected function getOptions()
 	{
 		$group = (string) $this->element['plugin'];
 		$key = $this->element['key'];
 		$key = ($key == 'visualization.plugin') ? "CONCAT('visualization.',element) " : 'element';
+
 		// Initialize variables.
 		$options = array();
 
@@ -57,6 +59,7 @@ class JFormFieldPluginList extends JFormFieldList
 		// Get the options.
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
+
 		// Check for a database error.
 		if ($db->getErrorNum())
 		{
@@ -66,4 +69,3 @@ class JFormFieldPluginList extends JFormFieldList
 		return $options;
 	}
 }
-?>

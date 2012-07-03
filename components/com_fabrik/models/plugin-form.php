@@ -23,7 +23,7 @@ class plgFabrik_Form extends FabrikPlugin
 	/**
 	 * run from table model when deleting rows
 	 *
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	public function onDeleteRowsForm($params, &$formModel, &$groups)
@@ -33,7 +33,7 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * run right at the beginning of the form processing
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	public function onBeforeProcess($params, &$formModel)
@@ -43,7 +43,7 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * run if form validation fails
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	public function onError($params, &$formModel)
@@ -53,9 +53,9 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * run before table calculations are applied
-	 * @param	object	params
-	 * @param	object	form model
-	 * @return	bool
+* @param   object	params
+* @param   object	form model
+	 * @return  bool
 	 */
 
 	function onBeforeCalculations($params, $formModel)
@@ -66,9 +66,9 @@ class plgFabrik_Form extends FabrikPlugin
 	/**
 	 * run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
-	 * @param	object	$params
-	 * @param	object	form model
-	 * @return	bool
+* @param   object	$params
+* @param   object	form model
+	 * @return  bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -79,8 +79,8 @@ class plgFabrik_Form extends FabrikPlugin
 	/**
 	 * alter the returned plugin manager's result
 	 *
-	 * @param string $method
-	 * @return bool
+* @param string $method
+	 * @return  bool
 	 */
 
 	public function customProcessResult($method, &$formModel)
@@ -90,8 +90,8 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * sets up any bottom html
-	 * @param	object params
-	 * @param	object form model
+* @param   object params
+* @param   object form model
 	 */
 
 	public function getBottomContent($params, $formModel)
@@ -111,8 +111,8 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * sets up any top html
-	 * @param	object	params
-	 * @param	object	form model
+* @param   object	params
+* @param   object	form model
 	 */
 
 	function getTopContent($params, $formModel)
@@ -122,7 +122,7 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * get any html that needs to be written at the top of the form
-	 * @return	string	html
+	 * @return  string	html
 	 */
 
 	public function getTopContent_result()
@@ -132,8 +132,8 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	* sets up any end html (after form close tag)
-	* @param	object	params
-	* @param	object	form model
+* @param   object	params
+* @param   object	form model
 	*/
 
 	function getEndContent($params, $formModel)
@@ -143,7 +143,7 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * get any html that needs to be written after the form close tag
-	 * @return	string	html
+	 * @return  string	html
 	 */
 
 	public function getEndContent_result()

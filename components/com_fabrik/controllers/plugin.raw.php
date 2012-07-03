@@ -73,7 +73,7 @@ class FabrikControllerPlugin extends JController
 	/**
 	 * do Cron task
 	 * 
-	 * @param   object  &$pluginManager  pluginmanager
+* @param   object  &$pluginManager  pluginmanager
 	 * 
 	 * @return  null
 	 */

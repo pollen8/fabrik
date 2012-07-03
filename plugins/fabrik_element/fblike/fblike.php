@@ -48,9 +48,9 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param	array	data to pre-populate element with
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   array	data to pre-populate element with
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -149,7 +149,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)

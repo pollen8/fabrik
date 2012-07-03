@@ -17,8 +17,8 @@ class FabrikString extends JString{
 	 *
 	 * @static
 	 * @access public
-	 * @param string the string to be trimmed
-	 * @param string the word to trim
+* @param string the string to be trimmed
+* @param string the word to trim
 	 * @return string the trimmed string
 	 */
 
@@ -35,8 +35,8 @@ class FabrikString extends JString{
 	/**
 	 * Right trim a word from a string
 	 *
-	 * @param string the string to be trimmed
-	 * @param string the word to trim
+* @param string the string to be trimmed
+* @param string the word to trim
 	 * @return string the trimmed string
 	 */
 	
@@ -60,8 +60,8 @@ class FabrikString extends JString{
 	 *
 	 * @static
 	 * @access public
-	 * @param string the string to be trimmed
-	 * @param string the word to trim
+* @param string the string to be trimmed
+* @param string the word to trim
 	 * @return string the trimmed string
 	 */
 
@@ -80,8 +80,8 @@ class FabrikString extends JString{
 	 * table.field is returned as `table`.field`
 	 * table is return as `table`
 	 *
-	 * @param string col name to format
-	 * @param string in table`.field` format
+* @param string col name to format
+* @param string in table`.field` format
 	 */
 
 	public static function safeColName($col)
@@ -116,7 +116,7 @@ class FabrikString extends JString{
 	/**
 	 * inverse of safeColName takes `table`.`field`
 	 * and returns table___field
-	 * @param string string in `table`.`field` format
+* @param string string in `table`.`field` format
 	 * @return string in table___field format
 	 */
 
@@ -130,7 +130,7 @@ class FabrikString extends JString{
 	/**
 	 * takes tablename.element or tablename___elementname
 	 * (with or without quotes) and returns elementname
-	 * @param string column name to shorten
+* @param string column name to shorten
 	 * @return string element name
 	 */
 
@@ -153,7 +153,7 @@ class FabrikString extends JString{
 	/**
 	 * get a shortened version of the element label - so that the admin pages
 	 * don't get too stretched when we populate dropdowns with the label
-	 * @param string complete element label
+* @param string complete element label
 	 * @return string shortened element label
 	 */
 
@@ -176,8 +176,8 @@ class FabrikString extends JString{
 	 * 28/06/2011 replaces umlauts with eu
 	 * 22/11/2011 added IGNORE to default enc otherwise iconv chops everything after first unconvertable char
 	 * 05/02/2012 changed name to iclean, removed strtolower() and added clean() as wrapper that does strtolower
-	 * @param $str to clean
-	 * @param str from encoding
+* @param $str to clean
+* @param str from encoding
 	 * @paran str to encoding
 	 * @return string cleaned
 	 */
@@ -217,8 +217,8 @@ class FabrikString extends JString{
 	/**
 	 * Wrapper for iclean(), that does strtolower on output of clean()
 	 *
-	 * @param $str to clean
-	 * @param str from encoding
+* @param $str to clean
+* @param str from encoding
 	 * @paran str to encoding
 	 * @return string cleaned
 	 */
@@ -230,8 +230,8 @@ class FabrikString extends JString{
 
 	/**
 	 * truncate text possibly setting a tip to show all of the text
-	 * @param string $text
-	 * @param array $opts
+* @param string $text
+* @param array $opts
 	 * @return string
 	 */
 
@@ -270,8 +270,8 @@ class FabrikString extends JString{
 
 	/**
 	 * removes a querystring key from a url/queyrstring
-	 * @param string $url or querystring
-	 * @param string $key to remove
+* @param string $url or querystring
+* @param string $key to remove
 	 * @return string url/querystring
 	 */
 
@@ -311,7 +311,7 @@ class FabrikString extends JString{
 
 	/*
 	* Takes a complete URL, and urlencodes any query string args
-	* @param url to encode
+* @param url to encode
 	* @return encoded url
 	*/
 
@@ -347,7 +347,7 @@ class FabrikString extends JString{
 	
 	/**
 	 * prepare a string for presentation in html.
-	 * @param	string	&$string
+* @param   string	&$string
 	 */
 
 	public static function forHtml(&$string)

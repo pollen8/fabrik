@@ -31,8 +31,8 @@ class plgSystemFabrik extends JPlugin
 	 * This causes problems with cross-referencing necessary for the observer design pattern.
 	 *
 	 * @access	protected
-	 * @param	object $subject The object to observe
-	 * @param 	array  $config  An array that holds the plugin configuration
+* @param   object $subject The object to observe
+* @param 	array  $config  An array that holds the plugin configuration
 	 * @since	1.0
 	 */
 
@@ -62,10 +62,10 @@ class plgSystemFabrik extends JPlugin
 	 * The sql must return the following fields that are
 	 * used in a common display routine: href, title, section, created, text,
 	 * browsernav
-	 * @param string Target search string
-	 * @param string mathcing option, exact|any|all
-	 * @param string ordering option, newest|oldest|popular|alpha|category
-	 * @param mixed An array if restricted to areas, null if search all
+* @param string Target search string
+* @param string mathcing option, exact|any|all
+* @param string ordering option, newest|oldest|popular|alpha|category
+* @param mixed An array if restricted to areas, null if search all
 	 */
 
 	function onDoContentSearch($text, $phrase='', $ordering='', $areas=null)

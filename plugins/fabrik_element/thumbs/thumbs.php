@@ -76,9 +76,9 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	/**
 	 *
-	 * @param $listid int table id
-	 * @param $formid int form id
-	 * @param $row_id int row id
+* @param $listid int table id
+* @param $formid int form id
+* @param $row_id int row id
 	 * @return count thumbs-up, count thumbs-down
 	 */
 
@@ -117,8 +117,8 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -233,10 +233,10 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	/**
 	 * main method to store a rating
-	 * @param $listid
-	 * @param $formid
-	 * @param $row_id
-	 * @param $thumb
+* @param $listid
+* @param $formid
+* @param $row_id
+* @param $thumb
 	 */
 
 	private function doThumb($listid, $formid, $row_id, $thumb)
@@ -293,7 +293,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 

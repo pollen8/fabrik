@@ -135,7 +135,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization {
 			}
 			$c ++;
 		}
-		$json = new StdClass();
+		$json = new StdClass;
 		$json->dateTimeFormat = 'ISO8601';
 		$json->events = $eventdata;
 		$json = json_encode($json);

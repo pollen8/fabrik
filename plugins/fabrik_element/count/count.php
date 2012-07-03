@@ -30,9 +30,9 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	}
 
 	/**
-	 * @param array
-	 * @param array
-	 * @param string table name (depreciated)
+* @param array
+* @param array
+* @param string table name (depreciated)
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
@@ -72,8 +72,8 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 

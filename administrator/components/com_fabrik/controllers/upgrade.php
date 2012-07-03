@@ -25,7 +25,7 @@ class FabrikControllerUpgrade extends JControllerAdmin
 	/**
 	 * Constructor
 	 * 
-	 * @param   array  $config  options
+* @param   array  $config  options
 	 */
 
 	public function __construct($config = array())

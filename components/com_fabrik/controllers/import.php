@@ -24,7 +24,7 @@ class FabrikControllerImport extends JController
 	/**
 	 * Display the view
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function display()

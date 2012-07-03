@@ -60,8 +60,8 @@ class FabrikPlugin extends JPlugin
 	 * Constructor
 	 *
 	 * @access      protected
-	 * @param       object  $subject The object to observe
-	 * @param       array   $config  An array that holds the plugin configuration
+* @param       object  $subject The object to observe
+* @param       array   $config  An array that holds the plugin configuration
 	 * @since       1.5
 	 */
 	
@@ -95,9 +95,9 @@ class FabrikPlugin extends JPlugin
 
 	/**
 	 * render the element admin settings
-	 * @param	array	data
-	 * @param	int		repeat plugin counter
-	 * @return	string	admin html
+* @param   array	data
+* @param   int		repeat plugin counter
+	 * @return  string	admin html
 	 */
 
 	function onRenderAdminSettings($data = array(), $repeatCounter = null)
@@ -212,8 +212,8 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * used in plugin manager runPlugins to set the correct repeat set of
 	 * data for the plugin
-	 * @param	object	original params $params
-	 * @param	int		plugin $repeatCounter
+* @param   object	original params $params
+* @param   int		plugin $repeatCounter
 	 */
 
 	function setParams(&$params, $repeatCounter)
@@ -288,10 +288,10 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * determine if we use the plugin or not
 	 * both location and event criteria have to be match
-	 * @param	object	calling the plugin table/form
-	 * @param	string	location to trigger plugin on
-	 * @param	string	event to trigger plugin on
-	 * @return	bool	true if we should run the plugin otherwise false
+* @param   object	calling the plugin table/form
+* @param   string	location to trigger plugin on
+* @param   string	event to trigger plugin on
+	 * @return  bool	true if we should run the plugin otherwise false
 	 */
 
 	public function canUse(&$model = null, $location = null, $event = null)
@@ -570,8 +570,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * if true then the plugin is stating that any subsequent plugin in the same group
 	 * should not be run.
-	 * @param	string	current plug-in call method e.g. onBeforeStore
-	 * @return	bool
+* @param   string	current plug-in call method e.g. onBeforeStore
+	 * @return  bool
 	 */
 
 	public function runAway($method)
@@ -582,8 +582,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param	string	param name which contains the PHP code to eval
-	 * @param	array	data
+* @param   string	param name which contains the PHP code to eval
+* @param   array	data
 	 */
 
 	function shouldProcess($paramName, $data = null)

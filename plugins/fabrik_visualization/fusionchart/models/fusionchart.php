@@ -775,7 +775,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 
 	/**
 	 * add a trend line to the chart - not all chart types support rendering trendlines
-	 * @param	array	$gdata
+* @param   array	$gdata
 	 */
 
 	protected function trendLine(&$gdata = null)

@@ -61,7 +61,7 @@ class SforceMetadataClient {
   /**
    * Set the endpoint.
    *
-   * @param string $location   Location
+* @param string $location   Location
    */
   public function setEndpoint($location) {
     $this->location = $location;
@@ -71,7 +71,7 @@ class SforceMetadataClient {
   /**
    * Set the Session ID
    *
-   * @param string $sessionId   Session ID
+* @param string $sessionId   Session ID
    */
   public function setSessionHeader($sessionId) {
     $this->sforce->__setSoapHeaders(NULL);

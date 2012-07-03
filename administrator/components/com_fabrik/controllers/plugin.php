@@ -76,7 +76,7 @@ class FabrikControllerPlugin extends JController
 	/**
 	 * doCron plugin
 	 * 
-	 * @param   object  &$pluginManager  plugin manager
+* @param   object  &$pluginManager  plugin manager
 	 * 
 	 * @return  null
 	 */

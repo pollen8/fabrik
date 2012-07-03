@@ -31,11 +31,11 @@ abstract class FabrikWebService
 	/**
 	 * Create an instance of the clas
 	 * 
-	 * @param   array  $options  instance options
+* @param   array  $options  instance options
 	 * 
 	 * @throws	Exception
 	 * 
-	 * @return	object
+	 * @return  object
 	 */
 
 	public static function getInstance($options = array())
@@ -135,9 +135,9 @@ abstract class FabrikWebService
 	/**
 	 * set map
 	 * 
-	 * @param   array  $map  data to
+* @param   array  $map  data to
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function setMap($map)
@@ -164,10 +164,10 @@ abstract class FabrikWebService
 	/**
 	 * Map web service data to Fabrik data
 	 * 
-	 * @param   array   $datas  data array
-	 * @param   string  $fk     foreign key
+* @param   array   $datas  data array
+* @param   string  $fk     foreign key
 	 * 
-	 * @return	array
+	 * @return  array
 	 */
 
 	public function map($datas, $fk)
@@ -213,13 +213,13 @@ abstract class FabrikWebService
 	/**
 	 * Query the web service to get the data
 	 * 
-	 * @param   string  $method      to call at web service (soap only)
-	 * @param   array   $options     key value filters to send to web service to filter the data
-	 * @param   string  $startPoint  of actual data, if soap this is an xpath expression, 
+* @param   string  $method      to call at web service (soap only)
+* @param   array   $options     key value filters to send to web service to filter the data
+* @param   string  $startPoint  of actual data, if soap this is an xpath expression, 
 	 * otherwise its a key.key2.key3 string to traverse the returned data to arrive at the data to map to the fabrik list
-	 * @param   string  $result      method name - soap only, if not set then "$method . 'Result' will be used
+* @param   string  $result      method name - soap only, if not set then "$method . 'Result' will be used
 	 * 
-	 * @return	array	series of objects which can then be bound to the list using storeLocally()
+	 * @return  array	series of objects which can then be bound to the list using storeLocally()
 	 */
 
 	public abstract function get($method, $options = array(), $startPoint = null, $result = null);
@@ -227,12 +227,12 @@ abstract class FabrikWebService
 	/**
 	 * store the data obtained from get() in a list
 	 * 
-	 * @param   object  $listModel  to store the data in
-	 * @param   array   $data       obtained from get()
-	 * @param   string  $fk         foreign key to map records in $data to the list models data.
-	 * @param   bool    $update     should existing matched rows be updated or not?
+* @param   object  $listModel  to store the data in
+* @param   array   $data       obtained from get()
+* @param   string  $fk         foreign key to map records in $data to the list models data.
+* @param   bool    $update     should existing matched rows be updated or not?
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function storeLocally($listModel, $data, $fk, $update)
@@ -280,8 +280,8 @@ abstract class FabrikWebService
 	/**
 	 * parse the filter values into driver type
 	 * 
-	 * @param   string  $val   value
-	 * @param   string  $type  type
+* @param   string  $val   value
+* @param   string  $type  type
 	 * 
 	 * @return  string  value
 	 */

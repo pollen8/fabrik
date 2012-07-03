@@ -53,7 +53,7 @@ return '<div id="'.$id.'"></div>';
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 

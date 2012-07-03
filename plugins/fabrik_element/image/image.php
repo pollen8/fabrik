@@ -48,9 +48,9 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	/**
 	 * get default value
 	 *
-	 * @param array $data
-	 * @param int $repeatCounter
-	 * @param array options
+* @param array $data
+* @param   int $repeatCounter
+* @param array options
 	 * @return string
 	 */
 
@@ -201,8 +201,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+* @param mixed thie elements posted form data
+* @param array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -251,8 +251,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for RSS export
-	 * @param string data
-	 * @param object all the data in the tables current row
+* @param string data
+* @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -265,7 +265,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -471,9 +471,9 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param string
-	 * @param array form records data
-	 * @param int repeat group counter
+* @param string
+* @param array form records data
+* @param   int repeat group counter
 	 * @return string formatted value
 	 */
 

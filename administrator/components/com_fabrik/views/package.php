@@ -125,9 +125,9 @@ class FabrikViewPackage {
 
 	/**
 	* Display the form to add or edit a package
-	* @param object package
-	* @param object parameters from attributes
-	* @param array lists
+* @param object package
+* @param object parameters from attributes
+* @param array lists
 	*/
 
 	function edit($row, $tables, $lists)
@@ -205,8 +205,8 @@ class FabrikViewPackage {
 
 	/**
 	* Display all available packages
-	* @param array array of package_rule objects
-	* @param object page navigation
+* @param array array of package_rule objects
+* @param object page navigation
 	*/
 
 	function show( $packages, $pageNav) {

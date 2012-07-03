@@ -2,8 +2,9 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // Check to ensure this file is included in Joomla!
@@ -18,9 +19,8 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 /**
  * Renders a list of elements found in a fabrik table
  *
- * @package 	Joomla
- * @subpackage  Fabrik
- * @since		1.6
+ * @package  Fabrik
+ * @since    3.0
  */
 
 class JFormFieldListfields extends JFormFieldList
@@ -35,8 +35,13 @@ class JFormFieldListfields extends JFormFieldList
 	/** @var array objects resulting from this elements queries - keyed on idetifying hash */
 	protected $results = null;
 
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @return  string	The field input markup.
+	 */
 
-	function getInput()
+	protected function getInput()
 	{
 		if (is_null($this->results))
 		{
@@ -48,20 +53,23 @@ class JFormFieldListfields extends JFormFieldList
 		$bits = array();
 		$c = ElementHelper::getRepeatCounter($this);
 		$connection = $this->element['connection'];
-		// 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
-		//else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
+		/*
+		 * 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
+		 * else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
+		 */
 		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
 		switch ($controller)
 		{
 			case 'element':
-				//@TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
-				$connectionDd = ($c === false) ? $connection :  $connection . '-' . $c;
+			// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
+				$connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
 				if ($connection == '')
 				{
 					$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
-					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0) : $this->form->getValue('group_id');
+					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0)
+						: $this->form->getValue('group_id');
 					$groupModel->setId($groupId);
 					$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
 					$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, $showRaw, $pluginFilters);
@@ -72,7 +80,7 @@ class JFormFieldListfields extends JFormFieldList
 					}
 					else
 					{
-						$this->results[$hash] =& $res;
+						$this->results[$hash] = &$res;
 					}
 				}
 				else
@@ -80,7 +88,7 @@ class JFormFieldListfields extends JFormFieldList
 					$repeat = ElementHelper::getRepeat($this);
 					$tableDd = $this->element['table'];
 					$opts = new stdClass;
-					$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' .$c : 'jform_' . $tableDd;
+					$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
 					$opts->conn = 'jform_' . $connectionDd;
 					$opts->value = $this->value;
 					$opts->repeat = $this->value;
@@ -99,7 +107,8 @@ class JFormFieldListfields extends JFormFieldList
 			case 'listform':
 			case 'list':
 			case 'module':
-			case 'item': //menu item
+			case 'item':
+			// Menu item
 				if ($controller === 'item')
 				{
 					$id = $this->form->getValue('request.listid');
@@ -112,8 +121,8 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					if (!in_array($controller, array('item', 'module')))
 					{
-						//seems to work anyway in the admin module page - so lets not raise notice
-						JError::raiseNotice(500, 'Model not set in listfields field '. $this->id);
+						// Seems to work anyway in the admin module page - so lets not raise notice
+						JError::raiseNotice(500, 'Model not set in listfields field ' . $this->id);
 					}
 					return;
 				}
@@ -159,10 +168,11 @@ class JFormFieldListfields extends JFormFieldList
 				foreach ($res as $o)
 				{
 					$s = new stdClass;
-					//element already contains correct key
+
+					// Element already contains correct key
 					if ($controller != 'element')
 					{
-						$s->value= $valueformat == 'tableelement' ? $o->table_name . '.' . $o->text : $o->value;
+						$s->value = $valueformat == 'tableelement' ? $o->table_name . '.' . $o->text : $o->value;
 					}
 					else
 					{
@@ -181,10 +191,12 @@ class JFormFieldListfields extends JFormFieldList
 				$aEls = $res;
 			}
 			$aEls[] = JHTML::_('select.option', '', '-');
-			// for pk fields - we are no longer storing the key with '`' as thats mySQL specific
+
+			// For pk fields - we are no longer storing the key with '`' as thats mySQL specific
 			$this->value = str_replace('`', '', $this->value);
 			$return = JHTML::_('select.genericlist', $aEls, $this->name, 'class="inputbox" size="1" ', 'value', 'text', $this->value, $this->id);
-			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id . '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING') . '" />';
+			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
+				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING') . '" />';
 		}
 		return $return;
 	}

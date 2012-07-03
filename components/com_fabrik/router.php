@@ -24,7 +24,7 @@ defined('_JEXEC') or die();
 /**
  * build route
  * 
- * @param   object  &$query  uri?
+* @param   object  &$query  uri?
  * 
  * @return  array url
  */
@@ -140,7 +140,7 @@ function fabrikBuildRoute(&$query)
 /**
  * parse route
  * 
- * @param   array  $segments  url
+* @param   array  $segments  url
  * 
  * @return  array vars
  */

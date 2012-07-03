@@ -43,7 +43,7 @@ class JFormFieldElement extends JFormFieldList
 	/**
 	 * Method to get the field options.
 	 *
-	 * @return	array	The field option objects.
+	 * @return  array	The field option objects.
 	 */
 
 	protected function getOptions()
@@ -55,7 +55,7 @@ class JFormFieldElement extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return	string	The field input markup.
+	 * @return  string	The field input markup.
 	 */
 
 	protected function getInput()

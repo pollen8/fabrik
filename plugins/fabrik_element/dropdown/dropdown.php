@@ -30,8 +30,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	/**
 	 * draws the form element
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -184,8 +184,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	/**
 	 * repalce a value with its label
-	 * @param	string	value
-	 * @return	string	label
+* @param   string	value
+	 * @return  string	label
 	 */
 	
 	protected function replaceLabelWithValue($selected)

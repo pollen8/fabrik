@@ -22,8 +22,8 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	/**
 	 * process the plugin, called afer form is submitted
 	 *
-	 * @param	object	$params (with the current active plugin values in them)
-	 * @param	object	form model
+* @param   object	$params (with the current active plugin values in them)
+* @param   object	form model
 	 */
 
 	function onLastProcess($params, &$formModel)
@@ -112,8 +112,8 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	/**
 	 * once the form has been sucessfully completed, and if no jump page is
 	 * specified then show the thanks message
-	 * @param string thanks message title @depreicated - set in session in onLastProcess
-	 * @param string thanks message string @depreicated - set in session in onLastProcess
+* @param string thanks message title @depreicated - set in session in onLastProcess
+* @param string thanks message string @depreicated - set in session in onLastProcess
 	 */
 
 	function displayThanks($title = '', $message = '')
@@ -145,9 +145,9 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	/**
 	 * alter the returned plugin manager's result
 	 *
-	 * @param string $method
-	 * @param object form model
-	 * @return bol
+* @param string $method
+* @param object form model
+	 * @return  bool
 	 */
 
 	function customProcessResult($method, &$formModel)
@@ -180,7 +180,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 
 	/**
 	 * takes the forms data and merges it with the jump page
-	 * @param object form
+* @param object form
 	 * @return new jump page
 	 */
 
@@ -248,7 +248,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	 * (they are however stored in the session so behave like normal filters afterwards)
 	 * If the listfilter does find the com_fabrik.searchform.fromForm var it won't use any session filters
 	 *
-	 * @param $formModel
+* @param $formModel
 	 * @return unknown_type
 	 */
 	function _storeInSession(&$formModel)
@@ -341,8 +341,8 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 	/**
 	 * determines if a condition has been set and decides if condition is matched
 	 *
-	 * @param object $params
-	 * @return bol true if you should redirect, false ignores redirect
+* @param object $params
+	 * @return  bool true if you should redirect, false ignores redirect
 	 */
 
 	function shouldRedirect(&$params)

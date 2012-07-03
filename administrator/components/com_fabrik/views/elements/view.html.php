@@ -105,7 +105,7 @@ class FabrikViewElements extends JView
 	/**
 	 * show a screen asking if the user wants to delete the lists forms/groups/elements
 	 * and if they want to drop the underlying database table
-	 * @param string $tpl
+* @param string $tpl
 	 */
 
 	protected function confirmdelete($tpl = null)

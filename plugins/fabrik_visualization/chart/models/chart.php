@@ -257,9 +257,9 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 	/**
 	 * get some data for the default chart types
-	 * @param $c int total data sets
-	 * @param $gdata array data
-	 * @param $gsums array cals
+* @param $c int total data sets
+* @param $gdata array data
+* @param $gsums array cals
 	 * @return array
 	 */
 

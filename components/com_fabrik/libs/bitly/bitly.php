@@ -29,8 +29,8 @@ class bitly {
 	/**
 	* Contruct the Bitly Class
 	*
-    * @param string, your Bitly account key
-    * @param string, your Bitly account login
+* @param string, your Bitly account key
+* @param string, your Bitly account login
 	*/
 	public function __construct($login, $appkey, $version='v3') {
 		$this->login = $login;
@@ -64,7 +64,7 @@ class bitly {
 	/**
 	* Retrieve a shortened URL
 	*
-    * @param string, url to shorten
+* @param string, url to shorten
 	*/
 	public function shorten($url) {
 		//create the URL

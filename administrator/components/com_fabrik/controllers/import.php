@@ -27,10 +27,10 @@ class FabrikControllerImport extends FabControllerForm
 	 * if new elements found in the CSV file and user decided to
 	 * add them to the table then do it here
 	 * 
-	 * @param   object  $model     import model
-	 * @param   array   $headings  existing headings
+* @param   object  $model     import model
+* @param   array   $headings  existing headings
 	 * 
-	 * @return	unknown_type
+	 * @return  unknown_type
 	 */
 
 	protected function addElements($model, $headings)
@@ -110,7 +110,7 @@ class FabrikControllerImport extends FabControllerForm
 	/**
 	 * cancel import
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function cancel()
@@ -121,7 +121,7 @@ class FabrikControllerImport extends FabControllerForm
 	/**
 	 * make or update the table from the CSV file
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function makeTableFromCSV()
@@ -179,7 +179,7 @@ class FabrikControllerImport extends FabControllerForm
 	/**
 	 * display the import CSV file form
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function display()
@@ -201,7 +201,7 @@ class FabrikControllerImport extends FabControllerForm
 	 * Unlike front end import if there are unmatched heading we take the user to
 	 * a form asking if they want to import those new headings (creating new elements for them)
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function doimport()

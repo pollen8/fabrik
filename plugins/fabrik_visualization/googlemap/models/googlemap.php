@@ -18,7 +18,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	var $txt = null;
 
-	/** @param array of arrays (width, height) keyed on image icon*/
+* @param array of arrays (width, height) keyed on image icon*/
 	var $markerSizes = array();
 
 	var $recordCount = 0;
@@ -378,8 +378,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization {
 
 	/**
 	 * get the width and height for an icon image -
-	 * @param	string	icon image path
-	 * @return	array	(width, height)
+* @param   string	icon image path
+	 * @return  array	(width, height)
 	 */
 
 	private function markerSize($iconImg)

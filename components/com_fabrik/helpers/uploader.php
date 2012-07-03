@@ -24,7 +24,7 @@ class uploader extends JObject
 
 	/**
 	 * perform upload of files
-	 * @return bool true if error occured
+	 * @return  bool true if error occured
 	 */
 
 	function upload()
@@ -45,9 +45,9 @@ class uploader extends JObject
 
 	/**
 	 * moves  a file from one location to another
-	 * @param string file to move
-	 * @param string location to move file to
-	 * @param bool do we overwrite any existing files found at pathTo?
+* @param string file to move
+* @param string location to move file to
+* @param bool do we overwrite any existing files found at pathTo?
 	 */
 
 	function move($pathFrom , $pathTo, $overwrite = true)
@@ -73,7 +73,7 @@ class uploader extends JObject
 
 	/**
 	 * @access private
-	 * @param string path to folder - eg /images/stories
+* @param string path to folder - eg /images/stories
 	 */
 
 	function _makeRecursiveFolders($folderPath, $mode = 0755)
@@ -89,7 +89,7 @@ class uploader extends JObject
 
 	/**
 	 * iterates through $_FILE data to see if any files have been uploaded
-	 * @return bool true if files uploaded
+	 * @return  bool true if files uploaded
 	 */
 
 	function check()
@@ -110,9 +110,9 @@ class uploader extends JObject
 	/**
 	 * Checks if the file can be uploaded
 	 *
-	 * @param array File information
-	 * @param string An error message to be returned
-	 * @return boolean
+* @param array File information
+* @param string An error message to be returned
+	 * @return  boolean
 	 */
 
 	function canUpload($file, &$err, &$params)
@@ -205,9 +205,9 @@ class uploader extends JObject
 	/**
 	 * recursive file name incrementation untill no file with exsiting name
 	 * exists
-	 * @param string intial file name
-	 * @param string this recursions file name
-	 * @param int file version
+* @param string intial file name
+* @param string this recursions file name
+* @param   int file version
 	 * @return string new file name
 	 */
 

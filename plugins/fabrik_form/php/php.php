@@ -86,8 +86,8 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 
 	/**
 	 *
-	 * @param	object	$params
-	 * @param	object	$formModel
+* @param   object	$params
+* @param   object	$formModel
 	 */
 
  	public function onBeforeProcess($params, &$formModel)
@@ -146,9 +146,9 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	/**
  	 * run when the form is loaded - after its data has been created
  	 * data found in $formModel->_data
- 	 * @param	object	$params
- 	 * @param	object	$formModel
- 	 * @return	unknown_type
+* @param   object	$params
+* @param   object	$formModel
+ 	 * @return  unknown_type
  	 */
 
  	function onLoad( &$params, &$formModel)
@@ -163,9 +163,9 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
  	/**
  	* run when the form is loaded - before its data has been created
  	* data found in $formModel->_data
- 	* @param	object	$params
- 	* @param	object	$formModel
- 	* @return	bool
+* @param   object	$params
+* @param   object	$formModel
+ 	* @return  bool
  	*/
 
  	function onBeforeLoad(&$params, &$formModel)
@@ -179,8 +179,8 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 
  	/**
  	 * process the plugin, called when form is submitted
- 	 * @param	object	$params
- 	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
  	 */
 
  	public function onError($params, &$formModel)
@@ -195,9 +195,9 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 	/**
 	 * @private
 	 * run plugins php code/script
-	 * @param object $params
-	 * @param object $formModel
-	 * @return bool false if error running php code
+* @param object $params
+* @param object $formModel
+	 * @return  bool false if error running php code
 	 */
 
 	private function _runPHP(&$params, &$formModel)

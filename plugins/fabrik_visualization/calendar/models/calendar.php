@@ -96,7 +96,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 	/**
 	 * Save the calendar
-	 * @return boolean false if not saved, otherwise id of saved calendar
+	 * @return  boolean false if not saved, otherwise id of saved calendar
 	 */
 
 	function save()
@@ -239,7 +239,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 	/**
 	 * can the user add a record into the calendar
-	 * @return bool
+	 * @return  bool
 	 */
 	
 	function getCanAdd()
@@ -265,7 +265,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	
 	/**
 	 * get an arry of list ids for which the current user has delete records rights
-	 * @return	array	list ids.
+	 * @return  array	list ids.
 	 */
 	
 	public function getDeleteAccess()
@@ -287,7 +287,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 
 	/**
 	 * query all tables linked to the calendar and return them
-	 * @return	string	javascript array containg json objects
+	 * @return  string	javascript array containg json objects
 	 */
 
 	function getEvents()

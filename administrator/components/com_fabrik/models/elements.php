@@ -1,15 +1,22 @@
 <?php
 /**
-* @package     Joomla.Administrator
-* @subpackage  Fabrik
-* @since       1.6
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 defined('_JEXEC') or die;
 
 require_once 'fabmodellist.php';
+
+/**
+ * Fabrik Admin Elements Model
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabrikModelElements extends FabModelList
 {
@@ -17,7 +24,7 @@ class FabrikModelElements extends FabModelList
 	/**
 	 * Constructor.
 	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
+* @param   array  $config  An optional associative array of configuration settings.
 	 * 
 	 * @see		JController
 	 * 
@@ -28,10 +35,8 @@ class FabrikModelElements extends FabModelList
 	{
 		if (empty($config['filter_fields']))
 		{
-			$config['filter_fields'] = array(
-				'e.id', 'e.name', 'e.label', 'e.show_in_list_summary', 'e.published',
-			'e.ordering', 'g.label', 'e.plugin'
-			);
+			$config['filter_fields'] = array('e.id', 'e.name', 'e.label', 'e.show_in_list_summary', 'e.published', 'e.ordering', 'g.label',
+				'e.plugin');
 		}
 		parent::__construct($config);
 	}
@@ -39,24 +44,18 @@ class FabrikModelElements extends FabModelList
 	/**
 	 * Build an SQL query to load the list data.
 	 *
-	 * @return	JDatabaseQuery
+	 * @return  JDatabaseQuery
 	 * 
 	 * @since	1.6
 	 */
 	protected function getListQuery()
 	{
 		// Initialise variables.
-		$db		= $this->getDbo();
-		$query	= $db->getQuery(true);
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
-		$query->select(
-			$this->getState(
-				'list.select',
-				'e.*,
-				e.ordering AS ordering'
-			)
-		);
+		$query->select($this->getState('list.select', 'e.*, e.ordering AS ordering'));
 		$query->from('#__{package}_elements AS e');
 
 		// Filter by published state
@@ -135,8 +134,8 @@ class FabrikModelElements extends FabModelList
 		$query->join('LEFT', '#__{package}_lists AS l ON l.form_id = fg.form_id');
 
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering', 'ordering');
-		$orderDirn	= $this->state->get('list.direction');
+		$orderCol = $this->state->get('list.ordering', 'ordering');
+		$orderDirn = $this->state->get('list.direction');
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'ordering';
@@ -158,7 +157,7 @@ class FabrikModelElements extends FabModelList
 	{
 		$items = parent::getItems();
 
-		//	Get the join elemnent name of those elements not in a joined group
+		// Get the join elemnent name of those elements not in a joined group
 		foreach ($items as &$item)
 		{
 			if ($item->full_element_name == '')
@@ -172,9 +171,9 @@ class FabrikModelElements extends FabModelList
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   string  $type    The table type to instantiate
-	 * @param   string  $prefix  A prefix for the table class name. Optional.
-	 * @param   array   $config  Configuration array for model. Optional.
+* @param   string  $type    The table type to instantiate
+* @param   string  $prefix  A prefix for the table class name. Optional.
+* @param   array   $config  Configuration array for model. Optional.
 	 * 
 	 * @return  JTable	A database object
 	 * 
@@ -192,8 +191,8 @@ class FabrikModelElements extends FabModelList
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 * 
-	 * @param   string  $ordering   An optional ordering field.
-	 * @param   string  $direction  An optional direction (asc|desc).
+* @param   string  $ordering   An optional ordering field.
+* @param   string  $direction  An optional direction (asc|desc).
 	 * 
 	 * @since	1.6
 	 * 
@@ -235,13 +234,15 @@ class FabrikModelElements extends FabModelList
 		parent::populateState($ordering, $direction);
 	}
 
+	/**
+	 * get show in list options
+	 * 
+	 * @return  array  of Jhtml select.options
+	 */
 
 	public function getShowInListOptions()
 	{
-		return array(
-			JHtml::_('select.option', 0, JText::_('JNO')),
-			JHtml::_('select.option', 1, JText::_('JYES'))
-		);
+		return array(JHtml::_('select.option', 0, JText::_('JNO')), JHtml::_('select.option', 1, JText::_('JYES')));
 	}
 
 	/**
@@ -256,14 +257,8 @@ class FabrikModelElements extends FabModelList
 		$user = JFactory::getUser();
 		$levels = implode(',', $user->getAuthorisedViewLevels());
 		$query = $db->getQuery(true);
-		$query->select('element AS value, element AS text')
-		->from('#__extensions')
-		->where('enabled >= 1')
-		->where('type =' . $db->quote('plugin'))
-		->where('state >= 0')
-		->where('access IN (' . $levels . ')')
-		->where('folder = ' . $db->quote('fabrik_element'))
-		->order('text');
+		$query->select('element AS value, element AS text')->from('#__extensions')->where('enabled >= 1')->where('type =' . $db->quote('plugin'))
+			->where('state >= 0')->where('access IN (' . $levels . ')')->where('folder = ' . $db->quote('fabrik_element'))->order('text');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		return $rows;

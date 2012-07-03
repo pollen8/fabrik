@@ -29,8 +29,8 @@ class plgContentFabrik extends JPlugin
 	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
 	 * This causes problems with cross-referencing necessary for the observer design pattern.
 	 *
-	 * @param object $subject The object to observe
-	 * @param object $params  The object that holds the plugin parameters
+* @param object $subject The object to observe
+* @param object $params  The object that holds the plugin parameters
 	 * @since       1.5
 	 */
 
@@ -44,10 +44,10 @@ class plgContentFabrik extends JPlugin
 	 *
 	 * Method is called by the view
 	 *
-	 * @param	string	The context of the content being passed to the plugin.
-	 * @param 	object		The article object.  Note $article->text is also available
-	 * @param 	object		The article params
-	 * @param 	int			The 'page' number
+* @param   string	The context of the content being passed to the plugin.
+* @param 	object		The article object.  Note $article->text is also available
+* @param 	object		The article params
+* @param 	int			The 'page' number
 	 */
 
 	public function onContentPrepare($context, &$row, &$params, $page = 0)
@@ -131,8 +131,8 @@ class plgContentFabrik extends JPlugin
 	/**
 	 * the function called from the preg_replace_callback - replace the {} with the correct HTML
 	 *
-	 * @param	string	plug-in match
-	 * @return	unknown
+* @param   string	plug-in match
+	 * @return  unknown
 	 */
 
 	protected function replace($match)
@@ -519,10 +519,10 @@ class plgContentFabrik extends JPlugin
 
 	/**
 	 * get the model
-	 * @param	object	controller
-	 * @param	string	$viewName
-	 * @param	int		id
-	 * @return	mixed	model or false
+* @param   object	controller
+* @param   string	$viewName
+* @param   int		id
+	 * @return  mixed	model or false
 	 */
 
 	protected function getModel(&$controller, $viewName, $id)
@@ -558,9 +558,9 @@ class plgContentFabrik extends JPlugin
 
 	/**
 	 * get a view
-	 * @param	object	controller
-	 * @param	string	$viewName
-	 * @param	int		id
+* @param   object	controller
+* @param   string	$viewName
+* @param   int		id
 	 */
 
 	protected function getView(&$controller, $viewName, $id)
@@ -577,8 +577,8 @@ class plgContentFabrik extends JPlugin
 	/**
 	 * get the viz plugin name
 	 *
-	 * @param	int		$id
-	 * @return	string	viz plugin name
+* @param   int		$id
+	 * @return  string	viz plugin name
 	 */
 
 	protected function getPluginVizName($id)
@@ -601,9 +601,9 @@ class plgContentFabrik extends JPlugin
 	/**
 	 * get the controller
 	 *
-	 * @param	string	$viewName
-	 * @param	int		$id
-	 * @return	object	controller
+* @param   string	$viewName
+* @param   int		$id
+	 * @return  object	controller
 	 */
 
 	protected function getController($viewName, $id)
@@ -652,7 +652,7 @@ class plgContentFabrik extends JPlugin
 
 	/**
 	 * load the required fabrik files
-	 * @param	string	$view
+* @param   string	$view
 	 */
 
 	protected function generalIncludes($view)

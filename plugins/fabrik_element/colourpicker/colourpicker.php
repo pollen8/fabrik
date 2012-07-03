@@ -19,8 +19,8 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
+* @param string data
+* @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -36,8 +36,8 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+* @param mixed thie elements posted form data
+* @param array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -48,7 +48,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int group repeat counter
+* @param   int group repeat counter
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
@@ -86,8 +86,8 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param array row data
-	 * @param int repeat group counter
+* @param array row data
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 

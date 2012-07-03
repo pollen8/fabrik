@@ -31,7 +31,7 @@ class FabrikControllerPlugin extends JController
 	 * 11/07/2011 - ive updated things so that any plugin ajax call uses 'view=plugin' rather than controller=plugin
 	 * this means that the controller used is now plugin.php and not plugin.raw.php
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function pluginAjax()
@@ -66,7 +66,7 @@ class FabrikControllerPlugin extends JController
 	/**
 	 * custom user ajax class handling as per F1.0.x
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function userAjax()
@@ -84,9 +84,9 @@ class FabrikControllerPlugin extends JController
 	/**
 	 * Run the cron job
 	 * 
-	 * @param   object  &$pluginManager  Fabrik plugin manager
+* @param   object  &$pluginManager  Fabrik plugin manager
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function doCron(&$pluginManager)

@@ -45,8 +45,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * determine if you can add new comments
-	 * @param	object	$params
-	 * @param	object	$formModel
+* @param   object	$params
+* @param   object	$formModel
 	 */
 
 	function commentsLocked(&$params, &$formModel)
@@ -120,8 +120,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * prepare local comment system
-	 * @param	object	$params
-	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
 	 */
 
 	protected function _internal(&$params, &$formModel)
@@ -224,10 +224,10 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	/**
 	 * 
 	 * build the html for the internal comment form
-	 * @param	object	$params
-	 * @param	int		$reply_to
-	 * @param	bool	$master
-	 * @return	string
+* @param   object	$params
+* @param   int		$reply_to
+* @param   bool	$master
+	 * @return  string
 	 */
 	
 	private function getAddCommentForm($params, $reply_to = 0, $master = false)
@@ -321,9 +321,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	 * TODO replace parentid with left/right markers
 	 * see http://dev.mysql.com/tech-resources/articles/hierarchical-data.html
 	 * get the comments from the db
-	 * @param	int		$formid
-	 * @param	int		$rowid
-	 * @return	array	replies
+* @param   int		$formid
+* @param   int		$rowid
+	 * @return  array	replies
 	 */
 	 
 	function getComments($formid, $rowid)
@@ -379,10 +379,10 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * append the replies to the comments
-	 * @param	object current comment
-	 * @param	array	$replies
-	 * @param	array	&$return
-	 * @param	int		$depth
+* @param   object current comment
+* @param   array	$replies
+* @param   array	&$return
+* @param   int		$depth
 	 */
 	
 	private function getReplies($v, $replies, &$return, $depth)
@@ -401,9 +401,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * generate the html for the comments
-	 * @param	object	form $params
-	 * @param	array	$comments
-	 * @return	string
+* @param   object	form $params
+* @param   array	$comments
+	 * @return  string
 	 */
 	
 	private function writeComments(&$params, &$comments)
@@ -431,9 +431,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * write a single comment
-	 * @param	object	$params
-	 * @param	object	$comment
-	 * @return	string
+* @param   object	$params
+* @param   object	$comment
+	 * @return  string
 	 */
 	
 	private function writeComment(&$params, $comment)
@@ -506,7 +506,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * get digg element
-	 * @return	object	digg element
+	 * @return  object	digg element
 	 */
 
 	protected function getDigg()
@@ -550,7 +550,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * set the form model
-	 * @return	object form model
+	 * @return  object form model
 	 */
 	
 	private function setFormModel()
@@ -628,8 +628,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * add notification event
-	 * @param	object	$row
-	 * @param	object	$formModel
+* @param   object	$row
+* @param   object	$formModel
 	 */
 	function addNotificationEvent($row, $formModel)
 	{
@@ -649,9 +649,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	 * once we've ensured that the notification plugin is installed
 	 * subscribe the user to the notification
 	 * If comment-notify-admins is on then also subscribe admins to the notification
-	 * @param	object	$row
-	 * @param	array	comments objects
-	 * @param	object	form model
+* @param   object	$row
+* @param   array	comments objects
+* @param   object	form model
 	 */
 
 	function saveNotificationToPlugin($row, $comments, $formModel)
@@ -683,8 +683,8 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * test if the notification plugin is installed
-	 * @param	$formModel
-	 * @return	unknown_type
+* @param   $formModel
+	 * @return  unknown_type
 	 */
 
 	function notificationPluginInstalled($formModel)
@@ -700,9 +700,9 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * default send notifcations code (sends to all people who have commented PLUS all admins)
-	 * @param	object	$row
-	 * @param	array	comments objects
-	 * @param	object	form model
+* @param   object	$row
+* @param   array	comments objects
+* @param   object	form model
 	 */
 
 	function sentNotifications($row, $comments, $formModel)
@@ -764,7 +764,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * prepare jskit comment system - doesn't require a jskit acount
-	 * @param unknown_type $params
+* @param unknown_type $params
 	 */
 	
 	function _jskit(&$params)
@@ -776,7 +776,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 	/**
 	 * prepate intense debate comment system
-	 * @param unknown_type $params
+* @param unknown_type $params
 	 */
 	
 	function _intensedebate(&$params)
@@ -793,7 +793,7 @@ var idcomments_post_url;");
 	/**
 	 * prepate diqus comment system
 	 *
-	 * @param object $params
+* @param object $params
 	 */
 
 	protected function _disqus($params)
@@ -823,8 +823,8 @@ var idcomments_post_url;");
 	/**
 	 * prepare JComment system
 	 *
-	 * @param object $params
-	 * @param object $formModel
+* @param object $params
+* @param object $formModel
 	 */
 	
 	function _jcomment(&$params, $formModel)

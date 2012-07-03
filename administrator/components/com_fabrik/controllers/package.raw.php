@@ -30,7 +30,7 @@ class FabrikControllerPackage extends JControllerForm
 	/**
 	 * Constructor
 	 * 
-	 * @param   array  $config  options
+* @param   array  $config  options
 	 */
 
 	public function __construct($config = array())

@@ -48,9 +48,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param	array	data to preopulate element with
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   array	data to preopulate element with
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -112,9 +112,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	/**
 	 * format guess link type
 	 *
-	 * @param	string	$value
-	 * @param	array	data
-	 * @param	int		repeat counter
+* @param   string	$value
+* @param   array	data
+* @param   int		repeat counter
 	 */
 
 	function _guessLinkType(&$value, $data, $repeatCounter = 0)
@@ -153,7 +153,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	/**
 	 * get the guess type link target property
-	 * @return	string
+	 * @return  string
 	 */
 
 	protected function guessLinkTarget()
@@ -178,7 +178,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -224,7 +224,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
-	 * @return	array	key=>value options
+	 * @return  array	key=>value options
 	 */
 
 	function getJoomfishOptions()
@@ -259,8 +259,8 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	/**
 	 *  can be overwritten in add on classes
-	 * @param	mixed	thie elements posted form data
-	 * @param	array	posted form data
+* @param   mixed	thie elements posted form data
+* @param   array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -288,7 +288,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	/**
 	* @since 3.0.4
 	* get the element's cell class
-	* @return	string	css classes
+	* @return  string	css classes
 	*/
 
 	public function getCellClass()

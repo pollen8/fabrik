@@ -1,10 +1,11 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -18,10 +19,10 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 /**
  * Renders a list of elements found in the current group
  *
- * @package 	Joomla
- * @subpackage	Articles
- * @since		1.5
+ * @package  Fabrik
+ * @since    3.0
  */
+
 class JFormFieldSpecificordering extends JFormFieldList
 {
 	/**
@@ -31,23 +32,34 @@ class JFormFieldSpecificordering extends JFormFieldList
 	 */
 	protected $name = 'Specificordering';
 
-	function getOptions()
+	/**
+	 * Method to get the field options.
+	 *
+	 * @return  array  The field option objects.
+	 */
+
+	protected function getOptions()
 	{
-		//ONLY WORKS INSIDE ELEMENT :(
+		// ONLY WORKS INSIDE ELEMENT :(
 		$db = FabrikWorker::getDbo();
 		$group_id = $this->form->getValue('group_id');
-			$query = "SELECT ordering AS value, name AS text".
-			"\n FROM #__{package}_elements ".
-			"\n WHERE group_id = " . (int) $group_id.
-			"\n AND published >= 0"."\n ORDER BY ordering";
-		// $$$ rob - rather than trying to override the JHTML class lets 
-		// just swap {package} for the current package.	
+		$query = "SELECT ordering AS value, name AS text" . "\n FROM #__{package}_elements " . "\n WHERE group_id = " . (int) $group_id
+			. "\n AND published >= 0" . "\n ORDER BY ordering";
+		/**
+		 * $$$ rob - rather than trying to override the JHTML class lets
+		 * just swap {package} for the current package.	
+		 */
 		$query = FabrikWorker::getDbo(true)->replacePrefix($query);
-		return JHTML::_('list.genericordering',  $query);
-
+		return JHTML::_('list.genericordering', $query);
 	}
 
-	function getInput()
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @return  string	The field input markup.
+	 */
+
+	protected function getInput()
 	{
 		$id = $this->form->getValue('id');
 		if ($id)
@@ -59,7 +71,8 @@ class JFormFieldSpecificordering extends JFormFieldList
 		else
 		{
 			$text = JText::_('COM_FABRIK_NEW_ITEMS_LAST');
-			$ordering = '<input type="text" size="40" readonly="readonly" class="readonly" name="' . $this->name . '" value="'. $this->value . $text . '" />' ;
+			$ordering = '<input type="text" size="40" readonly="readonly" class="readonly" name="' . $this->name . '" value="' . $this->value . $text
+				. '" />';
 		}
 		return $ordering;
 	}

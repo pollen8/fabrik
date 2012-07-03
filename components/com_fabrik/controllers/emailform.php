@@ -26,7 +26,7 @@ class FabrikControllerEmailform extends JController
 	/**
 	 * Display the view
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function display()

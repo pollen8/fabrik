@@ -16,8 +16,8 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -72,8 +72,8 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	int		repeat group counter
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+* @param   int		repeat group counter
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)

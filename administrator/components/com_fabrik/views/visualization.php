@@ -40,12 +40,12 @@ class FabrikViewVisualization {
 
 	/**
 	* Display the form to add or edit a Visualization
-	* @param object Visualization
-	* @param object parameters from attributes
-	* @param array lists
-	* @param object menus
-	* @param object pluginmanager
-	* @param object form - used to render xml form cdoe
+* @param object Visualization
+* @param object parameters from attributes
+* @param array lists
+* @param object menus
+* @param object pluginmanager
+* @param object form - used to render xml form cdoe
 	*/
 
 	function edit(&$row, &$params, &$lists, &$menus, &$pluginManager, &$form )
@@ -157,9 +157,9 @@ class FabrikViewVisualization {
 
 	/**
 	* Display all available Visualizations
-	* @param array array of objects
-	* @param object page navigation
-	* @param array lists
+* @param array array of objects
+* @param object page navigation
+* @param array lists
 	*/
 
 	function show( $visualizations, $pageNav, $lists )

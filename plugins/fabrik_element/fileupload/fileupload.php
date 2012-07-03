@@ -28,7 +28,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * does the element store its data in a join table (1:n)
-	 * @return bool
+	 * @return  bool
 	 */
 
 	public function isJoin()
@@ -39,8 +39,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * decide whether to ingore data when updating a record
-	 * @param	string	$val
-	 * @return	bool	true if you shouldnt update the data
+* @param   string	$val
+	 * @return  bool	true if you shouldnt update the data
 	 */
 
 	public function ignoreOnUpdate($val = null)
@@ -97,7 +97,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+* @param array of scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
 	 *
@@ -319,9 +319,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param	string	data
-	 * @param	object	all the data in the tables current row
-	 * @return	string	formatted value
+* @param   string	data
+* @param   object	all the data in the tables current row
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -347,10 +347,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the CSV export view
-	 * @param	string	data
-	 * @param	string	element name
-	 * @param	object	all the data in the tables current row
-	 * @return	string	formatted value
+* @param   string	data
+* @param   string	element name
+* @param   object	all the data in the tables current row
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData_csv($data, &$thisRow)
@@ -367,10 +367,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the JSON export view
-	 * @param	string	data
-	 * @param	string	element name
-	 * @param	object	all the data in the tables current row
-	 * @return	string	formatted value
+* @param   string	data
+* @param   string	element name
+* @param   object	all the data in the tables current row
+	 * @return  string	formatted value
 	 */
 
 	function renderListData_json($data, $rows)
@@ -387,9 +387,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * encodes the file
-	 * @param	string	$file relative file path
-	 * @param	mixed	format to encode the file full|url|base64|raw|relative
-	 * @return	string	encoded file for export
+* @param   string	$file relative file path
+* @param   mixed	format to encode the file full|url|base64|raw|relative
+	 * @return  string	encoded file for export
 	 */
 
 	protected function encodeFile($file, $format = 'relative')
@@ -422,7 +422,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * examine the file being displayed and load in the corresponding
 	 * class that deals with its display
-	 * @param	string	file
+* @param   string	file
 	 */
 
 	function loadElement($file)
@@ -455,10 +455,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * Display the file in the table
 	 *
-	 * @param	string	$data
-	 * @param	array	$thisRow
-	 * @param	int		repeat group count
-	 * @return	string
+* @param   string	$data
+* @param   array	$thisRow
+* @param   int		repeat group count
+	 * @return  string
 	 */
 
 	function _renderListData($data, $thisRow, $i = 0)
@@ -585,7 +585,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * do we need to include the lighbox js code
 	 *
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	function requiresLightBox()
@@ -600,8 +600,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param	mixed thie elements posted form data
-	 * @param	array posted form data
+* @param   mixed thie elements posted form data
+* @param   array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -612,9 +612,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-	 * @param	string	elements data
-	 * @param	int		repeat group counter
-	 * @return	bool	true if passes / false if falise validation
+* @param   string	elements data
+* @param   int		repeat group counter
+	 * @return  bool	true if passes / false if falise validation
 	 */
 
 	function validate($data = array(), $repeatCounter = 0)
@@ -731,8 +731,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * This checks the uploaded file type against the csv specified in the upload
 	 * element
 	 * @access PRIVATE
-	 * @param	string	filename
-	 * @return	bool	true if upload file type ok
+* @param   string	filename
+	 * @return  bool	true if upload file type ok
 	 */
 
 	function _fileUploadFileTypeOK($myFileName)
@@ -755,8 +755,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * This checks that thte fileupload size is not greater than that specified in
 	 * the upload element
 	 * @access PRIVATE
-	 * @param	string	file size
-	 * @return	bool	true if upload file type ok
+* @param   string	file size
+	 * @return  bool	true if upload file type ok
 	 */
 
 	function _fileUploadSizeOK($myFileSize)
@@ -772,8 +772,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * if we are using plupload but not with crop
-	 * @param	string	element $name
-	 * @return	bool	if processed or not
+* @param   string	element $name
+	 * @return  bool	if processed or not
 	 */
 
 	function processAjaxUploads($name)
@@ -856,8 +856,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 *
 	 * If an image has been uploaded with ajax upload then we may need to crop it
-	 * @param	string	element $name
-	 * @return	bool	if processed or not
+* @param   string	element $name
+	 * @return  bool	if processed or not
 	 */
 
 	function crop($name)
@@ -1000,10 +1000,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 *
 	 * crop image
-	 * @param unknown_type $oImage
-	 * @param unknown_type $filepath
-	 * @param unknown_type $destCropFile
-	 * @param unknown_type $coords
+* @param unknown_type $oImage
+* @param unknown_type $filepath
+* @param unknown_type $destCropFile
+* @param unknown_type $coords
 	 */
 
 	private function cropForSmaller($oImage, $filepath, $destCropFile, $coords)
@@ -1075,10 +1075,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * Enter description here ...
-	 * @param unknown_type $oImage
-	 * @param unknown_type $filepath
-	 * @param unknown_type $destCropFile
-	 * @param unknown_type $coords
+* @param unknown_type $oImage
+* @param unknown_type $filepath
+* @param unknown_type $destCropFile
+* @param unknown_type $coords
 	 */
 
 	private function cropForLarger($oImage, $filepath, $destCropFile, $coords)
@@ -1310,7 +1310,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * delete the file
-	 * @param	$filename	string file name (not including JPATH)
+* @param   $filename	string file name (not including JPATH)
 	 */
 
 	function deleteFile($filename)
@@ -1422,10 +1422,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * process the upload (can be called via ajax from pluploader
 	 * @access private
 	 *
-	 * @param	array	$file info
-	 * @param	string	user selected upload folder
-	 * @param	int		repeat group counter
-	 * @return	string	location of uploaded file
+* @param   array	$file info
+* @param   string	user selected upload folder
+* @param   int		repeat group counter
+	 * @return  string	location of uploaded file
 	 */
 
 	protected function _processIndUpload(&$file, $myFileDir = '', $repeatGroupCounter = 0)
@@ -1555,8 +1555,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * get the full server file path for the upload, including the file name i
-	 * @param	int		repeat group counter
-	 * @return	string	path
+* @param   int		repeat group counter
+	 * @return  string	path
 	 */
 
 	function _getFilePath($repeatCounter = 0)
@@ -1630,9 +1630,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param	array	data
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   array	data
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -1767,9 +1767,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * make download link
-	 * @param	string	$value
-	 * @param	array	row $data
-	 * @return	string	download link
+* @param   string	$value
+* @param   array	row $data
+	 * @return  string	download link
 	 */
 
 	protected function downloadLink($value, $data)
@@ -1828,7 +1828,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * @depreciated
 	 * load the required plupload runtime engines
-	 * @param string $runtimes
+* @param string $runtimes
 	 */
 
 	protected function pluploadLRuntimes($runtimes)
@@ -1838,10 +1838,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * Create the html plupload widget plus css
-	 * @param	array	current html output
-	 * @param	int		repeat group counter
-	 * @param	array	existing files
-	 * @return	array	modified fileupload html
+* @param   array	current html output
+* @param   int		repeat group counter
+* @param   array	existing files
+	 * @return  array	modified fileupload html
 	 */
 
 	protected function plupload($str, $repeatCounter, $values)
@@ -2018,8 +2018,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * attach documents to the email
-	 * @param	string	data
-	 * @return	string	formatted value
+* @param   string	data
+	 * @return  string	formatted value
 	 */
 
 	function addEmailAttachement($data)
@@ -2052,8 +2052,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * E.g. if the database join element points to a file upload element then you can replace
 	 * the file path that is the standard $val with the html to create the image
 	 *
-	 * @param string $val
-	 * @param string view form or table
+* @param string $val
+* @param string view form or table
 	 * @return string modified val
 	 * @TODO: base the returned string completely on the params specified for the element
 	 * e.g. thumbnail, show image, link etc
@@ -2096,7 +2096,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * trigger called when a row is deleted
-	 * @param	array	grouped data of rows to delete
+* @param   array	grouped data of rows to delete
 	 */
 
 	function onDeleteRows($groups)
@@ -2183,8 +2183,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param	string
-	 * @return	string	formatted value
+* @param   string
+	 * @return  string	formatted value
 	 */
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -2332,8 +2332,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * log the download
 	 * @since 2.0.5
-	 * @param	object	row
-	 * @param	string	$filepath
+* @param   object	row
+* @param   string	$filepath
 	 */
 
 	function downloadLog($row, $filepath)
@@ -2358,8 +2358,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * called when save as copy form button clicked
-	 * @param	mixed	value to copy into new record
-	 * @return	mixed	value to copy into new record
+* @param   mixed	value to copy into new record
+	 * @return  mixed	value to copy into new record
 	 */
 
 	public function onSaveAsCopy($val)
@@ -2385,7 +2385,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * is the element a repeating element
-	 * @return bool
+	 * @return  bool
 	 */
 
 	public function isRepeatElement()
@@ -2420,10 +2420,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * can be overwritten by plugin class
 	 * determines the value for the element in the form view
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
-	 * @return	string	value
+* @param   array	data
+* @param   int		when repeating joinded groups we need to know what part of the array to access
+* @param   array	options
+	 * @return  string	value
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())

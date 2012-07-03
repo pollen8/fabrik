@@ -21,9 +21,9 @@ class JDocumentRendererHead extends JDocumentRenderer
 	/**
 	 * Renders the document head and returns the results as a string
 	 *
-	 * @param   string  $head     (unused)
-	 * @param   array   $params   Associative array of values
-	 * @param   string  $content  The script
+* @param   string  $head     (unused)
+* @param   array   $params   Associative array of values
+* @param   string  $content  The script
 	 *
 	 * @return  string  The output of the script
 	 *
@@ -44,7 +44,7 @@ class JDocumentRendererHead extends JDocumentRenderer
 	/**
 	 * Generates the head HTML and return the results as a string
 	 *
-	 * @param   JDocument  &$document  The document for which the head will be created
+* @param   JDocument  &$document  The document for which the head will be created
 	 *
 	 * @return  string  The head hTML
 	 *

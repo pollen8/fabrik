@@ -41,9 +41,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * testing to see that if the aFields are passed by reference do they update the table object?
-	 * @param array containing field sql
-	 * @param array containing field aliases
-	 * @param array options
+* @param array containing field sql
+* @param array containing field aliases
+* @param array options
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
@@ -115,7 +115,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	* @since 3.0.6
 	* get the field name to use in the list's slug url
-	* @param	bool	$raw
+* @param   bool	$raw
 	*/
 
 	public function getSlugName($raw = false)
@@ -144,12 +144,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	* create an array of label/values which will be used to populate the elements filter dropdown
 	* returns only data found in the table you are filtering on
-	* @param	unknown_type $normal
-	* @param	string	$tableName
-	* @param	string	$label
-	* @param	mixed	$id
-	* @param	bool	$incjoin
-	* @return	array	filter value and labels
+* @param   unknown_type $normal
+* @param   string	$tableName
+* @param   string	$label
+* @param   mixed	$id
+* @param   bool	$incjoin
+	* @return  array	filter value and labels
 	*/
 
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
@@ -167,8 +167,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * get the field name to use as the column that contains the join's label data
-	 * @param	bool	use step in element name
-	 * @return	string	join label column either returns concat statement or quotes `tablename`.`elementname`
+* @param   bool	use step in element name
+	 * @return  string	join label column either returns concat statement or quotes `tablename`.`elementname`
 	 */
 
 	function getJoinLabelColumn($useStep = false)
@@ -217,9 +217,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * can be overwritten in the plugin class - see database join element for example
 	 * testing to see that if the aFields are passed by reference do they update the table object?
 	 *
-	 * @param	array	containing field sql
-	 * @param	array	containing field aliases
-	 * @param	string	table name (depreciated)
+* @param   array	containing field sql
+* @param   array	containing field aliases
+* @param   string	table name (depreciated)
 	 */
 
 	function getAsField_csv(&$aFields, &$aAsFields, $table = '')
@@ -228,7 +228,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * @return	object	join table
+	 * @return  object	join table
 	 */
 
 	function getJoin()
@@ -300,10 +300,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * get array of option values
 	 *
-	 * @param	array	$data
-	 * @param	int		repeat group counter
-	 * @param	bool	do we add custom where statement into sql
-	 * @return	array	option values
+* @param   array	$data
+* @param   int		repeat group counter
+* @param   bool	do we add custom where statement into sql
+	 * @return  array	option values
 	 */
 
 	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
@@ -358,9 +358,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * fix html validation warning on empty options labels
-	 * @param	array	option objects $rows
-	 * @param	string	object label
-	 * @return	null
+* @param   array	option objects $rows
+* @param   string	object label
+	 * @return  null
 	 */
 
 	private function addSpaceToEmptyLabels(&$rows, $txt = 'text')
@@ -376,10 +376,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * get a list of the HTML options used in the database join drop down / radio buttons
-	 * @param	array	data from current record (when editing form?)
-	 * @param	array	int repeat group counter
-	 * @param	bool	do we include custom where in query
-	 * @return	array	option objects
+* @param   array	data from current record (when editing form?)
+* @param   array	int repeat group counter
+* @param   bool	do we include custom where in query
+	 * @return  array	option objects
 	 */
 
 	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
@@ -416,7 +416,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	* @since 3.0b
 	* do you add a please select option to the list
-	* @return	bool
+	* @return  bool
 	*/
 
 	protected function showPleaseSelect()
@@ -433,9 +433,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * check to see if prefilter should be applied
 	 * Kind of an inverse access lookup
-	 * @param	int		group id to check against
-	 * @param	string	ref for filter
-	 * @return	bool	must apply filter - true, ignore filter (user has enough access rights) false;
+* @param   int		group id to check against
+* @param   string	ref for filter
+	 * @return  bool	must apply filter - true, ignore filter (user has enough access rights) false;
 	 */
 
 	function mustApplyWhere($gid, $ref)
@@ -458,9 +458,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * create the sql query used to get the join data
-	 * @param	array	data
-	 * @param	bool	$incWhere
-	 * @return	mixed	string or false if query can't be built
+* @param   array	data
+* @param   bool	$incWhere
+	 * @return  mixed	string or false if query can't be built
 	 */
 
 	function buildQuery($data = array(), $incWhere = true)
@@ -587,7 +587,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * get the element name or concat statement used to build the dropdown labels or
 	 * table data field
 	 *
-	 * @return	string
+	 * @return  string
 	 */
 
 	protected function getValColumn()
@@ -610,7 +610,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * get the database object
 	 *
-	 * @return	object	database
+	 * @return  object	database
 	 */
 
 	function getDb()
@@ -626,7 +626,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * get connection
 	 *
-	 * @return	object	connection
+	 * @return  object	connection
 	 */
 
 	function &getConnection()
@@ -645,7 +645,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * load connection object
-	 * @return	object	connection table
+	 * @return  object	connection table
 	 */
 
 	protected function loadConnection()
@@ -673,9 +673,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * draws the form element
-	 * @param	array	data to preopulate element with
-	 * @param	int		repeat group counter
-	 * @return	string	returns field element
+* @param   array	data to preopulate element with
+* @param   int		repeat group counter
+	 * @return  string	returns field element
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -902,10 +902,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * determines the label used for the browser title
 	 * in the form/detail views
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
-	 * @return	string	default value
+* @param   array	data
+* @param   int		when repeating joinded groups we need to know what part of the array to access
+* @param   array	options
+	 * @return  string	default value
 	 */
 
 	function getTitlePart($data, $repeatCounter = 0, $opts = array())
@@ -1004,10 +1004,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * should handle this ok
 	 *
 	 * used to format the data when shown in the form's email
-	 * @param	mixed	element's data
-	 * @param	array	form records data
-	 * @param	int		repeat group counter
-	 * @return	string	formatted value
+* @param   mixed	element's data
+* @param   array	form records data
+* @param   int		repeat group counter
+	 * @return  string	formatted value
 	 */
 
 	function getEmailValue($value, $data, $c)
@@ -1070,9 +1070,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * to perform rendering that is applicable to all plugins
 	 *
 	 * shows the data formatted for the list view
-	 * @param	string	data
-	 * @param	object	all the data in the tables current row
-	 * @return	string	formatted value
+* @param   string	data
+* @param   object	all the data in the tables current row
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -1324,7 +1324,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * get the column name used for the value part of the db join element
-	 * @return	string
+	 * @return  string
 	 */
 
 	function getJoinValueColumn()
@@ -1423,11 +1423,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * helper function to get an array of data from the checkbox joined db table.
 	 * Used for working out the filter sql and filter dropdown contents
-	 * @param	string	$groupBy - field name to key the results on - avoids duplicates
-	 * @param	string	$condition - if supplied then filters the list (must then supply $where and $value)
-	 * @param	string	$value - if supplied then filters the list (must then supply $where and $condtion)
-	 * @param	string	$where - if supplied then filters the list (must then supply $value and $condtion)
-	 * @return	array	rows
+* @param   string	$groupBy - field name to key the results on - avoids duplicates
+* @param   string	$condition - if supplied then filters the list (must then supply $where and $value)
+* @param   string	$value - if supplied then filters the list (must then supply $where and $condtion)
+* @param   string	$where - if supplied then filters the list (must then supply $value and $condtion)
+	 * @return  array	rows
 	 */
 
 	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null)
@@ -1466,7 +1466,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * used for the name of the filter fields
 	 * Over written here as we need to get the label field for field searches
 	 *
-	 * @return	string	element filter name
+	 * @return  string	element filter name
 	 */
 
 	function getFilterFullName()
@@ -1523,8 +1523,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * Examples of where this would be overwritten include drop downs whos "please select" value might be "-1"
-	 * @param mixed data posted from form to check
-	 * @return bool if data is considered empty then returns true
+* @param mixed data posted from form to check
+	 * @return  bool if data is considered empty then returns true
 	 */
 
 	function dataConsideredEmpty($data, $repeatCounter)
@@ -1543,7 +1543,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * create an instance of the elements js class
-	 * @param int group repeat counter
+* @param   int group repeat counter
 	 * @return string js call
 	 */
 
@@ -1635,8 +1635,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * called when the element is saved
-	 * @param	array	posted element save data
-	 * @return	bool	save ok or not
+* @param   array	posted element save data
+	 * @return  bool	save ok or not
 	 */
 
 	function onSave($data)
@@ -1651,7 +1651,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * get the join to database name
-	 * @return	string	database name
+	 * @return  string	database name
 	 */
 
 	protected function getDbName()
@@ -1685,10 +1685,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * @since 3.0b
 	 * on save of element, update its jos_fabrik_joins record and any decendants join record
-	 * @param	array	$data
-	 * @param	string	$tableJoin
-	 * @param	string	$keyCol
-	 * @param	string	$label
+* @param   array	$data
+* @param   string	$tableJoin
+* @param   string	$keyCol
+* @param   string	$label
 	 */
 
 	protected function updateFabrikJoins($data, $tableJoin, $keyCol, $label)
@@ -1708,11 +1708,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	* @since 3.0b
 	* update an elements jos_fabrik_joins record
-	* @param	array	$data
-	* @param	int		element id
-	* @param	string	$tableJoin
-	* @param	string	$keyCol
-	* @param	string	$label
+* @param   array	$data
+* @param   int		element id
+* @param   string	$tableJoin
+* @param   string	$keyCol
+* @param   string	$label
 	*/
 
 	protected function updateFabrikJoin($data, $elementId, $tableJoin, $keyCol, $label)
@@ -1759,7 +1759,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * called before the element is saved
 	 * @ $$$ rob: moved up to element model level
-	 * @param	object	row that is going to be updated
+* @param   object	row that is going to be updated
 	 */
 
 /* 	function beforeSave(&$row)
@@ -1774,7 +1774,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return array html ids to watch for validation
 	 */
 
@@ -1793,10 +1793,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * used by elements with suboptions
 	 *
-	 * @param	string	value
-	 * @param	string	default label
-	 * @param	int		repeat group counter
-	 * @return	string	label
+* @param   string	value
+* @param   string	default label
+* @param   int		repeat group counter
+	 * @return  string	label
 	 */
 
 	public function getLabelForValue($v, $defaultLabel = null, $repeatCounter = 0)
@@ -1818,7 +1818,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * if no filter condition supplied (either via querystring or in posted filter data
 	 * return the most appropriate filter option for the element.
-	 * @return	string	default filter condition ('=', 'REGEXP' etc)
+	 * @return  string	default filter condition ('=', 'REGEXP' etc)
 	 */
 
 	function getDefaultFilterCondition()
@@ -1828,7 +1828,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * is the dropdowns cnn the same as the main Joomla db
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	protected function inJDb()
@@ -1865,7 +1865,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * get the name of the field to order the table data by
-	 * @return	string	column to order by tablename.elementname
+	 * @return  string	column to order by tablename.elementname
 	 */
 
 	function getOrderByName()
@@ -1908,7 +1908,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	/**
 	 * does the element store its data in a join table (1:n)
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	public function isJoin()
@@ -1986,8 +1986,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	* @since 3.0rc1
 	* when the element is a repeatble join (e.g. db join checkbox) then figure out how many
 	* records have been selected
-	* @param	array
-	* @return	int		number of records selected
+* @param   array
+	* @return  int		number of records selected
 	*/
 
 	public function getJoinRepeatCount($data, $oJoin)

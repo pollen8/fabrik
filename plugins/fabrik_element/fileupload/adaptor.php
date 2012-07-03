@@ -31,7 +31,7 @@ class storageAdaptor{
 
 	/**
 	 * does a file exist
-	 * @param $filepath
+* @param $filepath
 	 * @return unknown_type
 	 */
 
@@ -42,7 +42,7 @@ class storageAdaptor{
 
 	/**
 	 * does a folder exist
-	 * @param $folder
+* @param $folder
 	 * @return unknown_type
 	 */
 
@@ -53,7 +53,7 @@ class storageAdaptor{
 
 	/**
 	 * create a folder
-	 * @param $path
+* @param $path
 	 * @return unknown_type
 	 */
 
@@ -105,7 +105,7 @@ class storageAdaptor{
 	/**
 	 * @abstract
 	 * do a final transform on the path name
-	 * @param $path
+* @param $path
 	 */
 	function finalFilePathParse(&$path)
 	{
@@ -125,7 +125,7 @@ class storageAdaptor{
 
 	/**
 	 * @access public
-	 * @param string path to folder - eg /images/stories
+* @param string path to folder - eg /images/stories
 	 */
 
 	function makeRecursiveFolders( $folderPath, $mode = 0755)
@@ -146,7 +146,7 @@ class storageAdaptor{
 	 * if using Amazon S3 with 'Authenticated URL' option.
 	 * 
 	 * @access public
-	 * @param string path to file
+* @param string path to file
 	 * @return string
 	 */
 	

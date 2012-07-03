@@ -83,7 +83,7 @@ class FabrikViewList extends JView
 
 	/**
 	 * show the list's linked forms etc
-	 * @param $tpl
+* @param $tpl
 	 */
 	
 	public function showLinkedElements($tpl = null)
@@ -97,7 +97,7 @@ class FabrikViewList extends JView
 
 	/**
 	 * see if the user wants to rename the list/form/groups
-	 * @param string $tpl
+* @param string $tpl
 	 */
 
 	public function confirmCopy($tpl = null)

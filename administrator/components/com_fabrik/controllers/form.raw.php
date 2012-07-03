@@ -158,8 +158,8 @@ class FabrikControllerForm extends JControllerForm
 	/**
 	 * generic function to redirect
 	 * 
-	 * @param   object  $model  J model
-	 * @param   string  $msg    Optional redirect message
+* @param   object  $model  J model
+* @param   string  $msg    Optional redirect message
 	 * 
 	 * @return  null
 	 */

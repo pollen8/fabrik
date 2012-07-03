@@ -119,10 +119,10 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param object table model
-	 * @param array [0] => string table's form id to contain plugin
-	 * @return bool
+* @param object parameters
+* @param object table model
+* @param array [0] => string table's form id to contain plugin
+	 * @return  bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)

@@ -25,7 +25,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -132,7 +132,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 	/**
 	 * Get the sql for filtering the table data and the array of filter settings
-	 * @param string filter value
+* @param string filter value
 	 * @return string filter value
 	 */
 
@@ -151,9 +151,9 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 	/**
 	 * this builds an array containing the filters value and condition
-	 * @param string initial $value
-	 * @param string intial $condition
-	 * @param string eval - how the value should be handled
+* @param string initial $value
+* @param string intial $condition
+* @param string eval - how the value should be handled
 	 * @return array (value condition)
 	 */
 
@@ -166,11 +166,11 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 	/**
 	 * build the filter query for the given element.
-	 * @param $key element name in format `tablename`.`elementname`
-	 * @param $condition =/like etc
-	 * @param $value search string - already quoted if specified in filter array options
-	 * @param $originalValue - original filter value without quotes or %'s applied
-	 * @param string filter type advanced/normal/prefilter/search/querystring/searchall
+* @param $key element name in format `tablename`.`elementname`
+* @param $condition =/like etc
+* @param $value search string - already quoted if specified in filter array options
+* @param $originalValue - original filter value without quotes or %'s applied
+* @param string filter type advanced/normal/prefilter/search/querystring/searchall
 	 * @return string sql query part e,g, "key = value"
 	 */
 

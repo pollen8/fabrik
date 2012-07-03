@@ -112,11 +112,11 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 	}
 
 	/**
-	 * @param	$data	string/int
-	 * @param	$listid	int table id
-	 * @param	$formid	int form id
-	 * @param	$row_id	int row id
-	 * @param	$ids	array all row ids
+* @param   $data	string/int
+* @param   $listid	int table id
+* @param   $formid	int form id
+* @param   $row_id	int row id
+* @param   $ids	array all row ids
 	 * @return array(int average rating, int total)
 	 */
 
@@ -147,10 +147,10 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * Enter description here ...
-	 * @param	int		$listid
-	 * @param	int		$formid
-	 * @param	int		$row_id
-	 * @param	array	$ids
+* @param   int		$listid
+* @param   int		$formid
+* @param   int		$row_id
+* @param   array	$ids
 	 */
 
 	protected function getCreatorId($listid, $formid, $row_id, $ids = array())
@@ -189,9 +189,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * can we rate this row
-	 * @param int $row_id
-	 * @param array $ids
-	 * @return bool
+* @param   int $row_id
+* @param array $ids
+	 * @return  bool
 	 */
 
 	protected function canRate($row_id = null, $ids = array())
@@ -217,9 +217,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param	array	data to preopulate element with
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   array	data to preopulate element with
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -361,10 +361,10 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * main method to store a rating
-	 * @param $listid
-	 * @param $formid
-	 * @param $row_id
-	 * @param $rating
+* @param $listid
+* @param $formid
+* @param $row_id
+* @param $rating
 	 */
 
 	private function doRating($listid, $formid, $row_id, $rating)
@@ -401,7 +401,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 

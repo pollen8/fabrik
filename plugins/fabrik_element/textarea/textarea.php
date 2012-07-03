@@ -17,8 +17,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * tagify a string
-	 * @param	string	to tagify
-	 * @return	string	tagified string
+* @param   string	to tagify
+	 * @return  string	tagified string
 	 */
 
 	protected function tagify($data)
@@ -127,7 +127,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * state if the element uses a wysiwyg editor
-	 * @return	bool	use editor
+	 * @return  bool	use editor
 	 */
 
 	function useEditor()
@@ -155,8 +155,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param	array	data
-	 * @param	int		repeat group counter
+* @param   array	data
+* @param   int		repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -242,10 +242,10 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param	mixed	element's data
-	 * @param	array	form records data
-	 * @param	int		repeat group counter
-	 * @return	string	formatted value
+* @param   mixed	element's data
+* @param   array	form records data
+* @param   int		repeat group counter
+	 * @return  string	formatted value
 	 */
 
 	function getEmailValue($value, $data, $c)
@@ -260,8 +260,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	int		repeat group counter
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+* @param   int		repeat group counter
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -292,9 +292,9 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	 * can be overwritten in adddon class
 	 *
 	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-	 * @param	string	elements data
-	 * @param	int		repeat group counter
-	 * @return	bool	true if passes / false if falise validation
+* @param   string	elements data
+* @param   int		repeat group counter
+	 * @return  bool	true if passes / false if falise validation
 	 */
 
 	function validate($data, $repeatCounter = 0)
@@ -325,7 +325,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	}
 
 	/**
-	 * @return	string	joomfish translation type e.g. text/textarea/referenceid/titletext
+	 * @return  string	joomfish translation type e.g. text/textarea/referenceid/titletext
 	 */
 
 	function getJoomfishTranslationType()
@@ -334,7 +334,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	}
 
 	/**
-	 * @return	array	key=>value options
+	 * @return  array	key=>value options
 	 */
 
 	function getJoomfishOptions()

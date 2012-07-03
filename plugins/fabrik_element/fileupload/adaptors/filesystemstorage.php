@@ -15,7 +15,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * does a file exist
-	 * @param $filepath
+* @param $filepath
 	 * @return unknown_type
 	 */
 	function exists($filepath)
@@ -25,7 +25,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * does a folder exist
-	 * @param $folder
+* @param $folder
 	 * @return unknown_type
 	 */
 	function folderExists($path)
@@ -35,7 +35,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/*
 	* create empty index.html for security
-	* @param $path path to folder
+* @param $path path to folder
 	* @return bool success
 	*/
 	
@@ -52,7 +52,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * create a folder
-	 * @param $path
+* @param $path
 	 * @return unknown_type
 	 */
 	
@@ -107,9 +107,9 @@ class filesystemstorage extends storageAdaptor{
 	/**
 	 * Moves an uploaded file to a destination folder
 	 *
-	 * @param string $src The name of the php (temporary) uploaded file
-	 * @param string $dest The path (including filename) to move the uploaded file to
-	 * @return boolean True on success
+* @param string $src The name of the php (temporary) uploaded file
+* @param string $dest The path (including filename) to move the uploaded file to
+	 * @return  boolean True on success
 	 * @since       1.5
 	 */
 
@@ -149,7 +149,7 @@ class filesystemstorage extends storageAdaptor{
 	/**
 	 * get the thumbnail URL for the file given
 	 *
-	 * @param string $file url
+* @param string $file url
 	 * @return string thumbnail url
 	 */
 
@@ -161,8 +161,8 @@ class filesystemstorage extends storageAdaptor{
 	/**
 	 *
 	 * get the path (relative to site root?) to the smaller file
-	 * @param string large file path
-	 * @param string type (thumb or crop)
+* @param string large file path
+* @param string type (thumb or crop)
 	 */
 
 	function _getSmallerFile($file, $type)
@@ -236,7 +236,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * do a final transform on the path name
-	 * @param $path
+* @param $path
 	 */
 
 	function finalFilePathParse(&$filepath)
@@ -250,7 +250,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * Get file info using getid3
-	 * @param $filepath
+* @param $filepath
 	 * return array
 	 */
 	function getFileInfo($filepath)

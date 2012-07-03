@@ -19,8 +19,8 @@ class plgFabrik_Crongmail extends plgFabrik_Cron {
 
 	/**
 	 * do the plugin action
-	 * @param array data
-	 * @param object list model
+* @param array data
+* @param object list model
 	 * @return number of records updated
 	 */
 
@@ -221,7 +221,7 @@ print_r($result);exit;
 
 	/**
 	 * try to remove reply text from emails
-	 * @param string content
+* @param string content
 	 * @return string content
 	 */
 
@@ -249,7 +249,7 @@ print_r($result);exit;
 
 	/**
 	 * get subject of email
-	 * @param $overview
+* @param $overview
 	 * @return string email subject
 	 */
 

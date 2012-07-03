@@ -89,7 +89,7 @@ class SforceBaseClient {
 	/**
 	 * Connect method to www.salesforce.com
 	 *
-	 * @param string $wsdl   Salesforce.com Partner WSDL
+* @param string $wsdl   Salesforce.com Partner WSDL
 	 */
 	public function createConnection($wsdl, $proxy=null) {
 		$_SERVER['HTTP_USER_AGENT'] = 'Salesforce/PHPToolkit/1.0';
@@ -136,8 +136,8 @@ class SforceBaseClient {
 	/**
 	 * Login to Salesforce.com and starts a client session.
 	 *
-	 * @param string $username   Username
-	 * @param string $password   Password
+* @param string $username   Username
+* @param string $password   Password
 	 *
 	 * @return LoginResult
 	 */
@@ -195,7 +195,7 @@ class SforceBaseClient {
 	/**
 	 * Set the endpoint.
 	 *
-	 * @param string $location   Location
+* @param string $location   Location
 	 */
 	public function setEndpoint($location) {
 		$this->location = $location;
@@ -457,7 +457,7 @@ class SforceBaseClient {
 	/**
 	 * Converts a Lead into an Account, Contact, or (optionally) an Opportunity.
 	 *
-	 * @param array $leadConverts    Array of LeadConvert
+* @param array $leadConverts    Array of LeadConvert
 	 *
 	 * @return LeadConvertResult
 	 */
@@ -471,7 +471,7 @@ class SforceBaseClient {
 	/**
 	 * Deletes one or more new individual objects to your organization's data.
 	 *
-	 * @param array $ids    Array of fields
+* @param array $ids    Array of fields
 	 * @return DeleteResult
 	 */
 	public function delete($ids) {
@@ -484,7 +484,7 @@ class SforceBaseClient {
 	/**
 	 * Deletes one or more new individual objects to your organization's data.
 	 *
-	 * @param array $ids    Array of fields
+* @param array $ids    Array of fields
 	 * @return DeleteResult
 	 */
 	public function undelete($ids) {
@@ -497,7 +497,7 @@ class SforceBaseClient {
 	/**
 	 * Deletes one or more new individual objects to your organization's data.
 	 *
-	 * @param array $ids    Array of fields
+* @param array $ids    Array of fields
 	 * @return DeleteResult
 	 */
 	public function emptyRecycleBin($ids) {
@@ -510,7 +510,7 @@ class SforceBaseClient {
 	/**
 	 * Process Submit Request for Approval
 	 *
-	 * @param array $processRequestArray
+* @param array $processRequestArray
 	 * @return ProcessResult
 	 */
 	public function processSubmitRequest($processRequestArray) {
@@ -529,7 +529,7 @@ class SforceBaseClient {
 	/**
 	 * Process Work Item Request for Approval
 	 *
-	 * @param array $processRequestArray
+* @param array $processRequestArray
 	 * @return ProcessResult
 	 */
 	public function processWorkitemRequest($processRequestArray) {
@@ -562,7 +562,7 @@ class SforceBaseClient {
 	 * display-only views and record type mappings. Note that field-level security
 	 * and layout editability affects which fields appear in a layout.
 	 *
-	 * @param string Type   Object Type
+* @param string Type   Object Type
 	 * @return DescribeLayoutResult
 	 */
 	public function describeLayout($type) {
@@ -576,7 +576,7 @@ class SforceBaseClient {
 	 * Describes metadata (field list and object properties) for the specified
 	 * object.
 	 *
-	 * @param string $type    Object type
+* @param string $type    Object type
 	 * @return DescribsSObjectResult
 	 */
 	public function describeSObject($type) {
@@ -590,7 +590,7 @@ class SforceBaseClient {
 	 * An array-based version of describeSObject; describes metadata (field list
 	 * and object properties) for the specified object or array of objects.
 	 *
-	 * @param array $arrayOfTypes    Array of object types.
+* @param array $arrayOfTypes    Array of object types.
 	 * @return DescribsSObjectResult
 	 */
 	public function describeSObjects($arrayOfTypes) {
@@ -614,9 +614,9 @@ class SforceBaseClient {
 	 * Retrieves the list of individual objects that have been deleted within the
 	 * given timespan for the specified object.
 	 *
-	 * @param string $type    Ojbect type
-	 * @param date $startDate  Start date
-	 * @param date $endDate   End Date
+* @param string $type    Ojbect type
+* @param date $startDate  Start date
+* @param date $endDate   End Date
 	 * @return GetDeletedResult
 	 */
 	public function getDeleted($type, $startDate, $endDate) {
@@ -632,9 +632,9 @@ class SforceBaseClient {
 	 * Retrieves the list of individual objects that have been updated (added or
 	 * changed) within the given timespan for the specified object.
 	 *
-	 * @param string $type    Ojbect type
-	 * @param date $startDate  Start date
-	 * @param date $endDate   End Date
+* @param string $type    Ojbect type
+* @param date $startDate  Start date
+* @param date $endDate   End Date
 	 * @return GetUpdatedResult
 	 */
 	public function getUpdated($type, $startDate, $endDate) {
@@ -650,8 +650,8 @@ class SforceBaseClient {
 	 * Executes a query against the specified object and returns data that matches
 	 * the specified criteria.
 	 *
-	 * @param String $query Query String
-	 * @param QueryOptions $queryOptions  Batch size limit.  OPTIONAL
+* @param String $query Query String
+* @param QueryOptions $queryOptions  Batch size limit.  OPTIONAL
 	 * @return QueryResult
 	 */
 	public function query($query) {
@@ -666,8 +666,8 @@ class SforceBaseClient {
 	/**
 	 * Retrieves the next batch of objects from a query.
 	 *
-	 * @param QueryLocator $queryLocator Represents the server-side cursor that tracks the current processing location in the query result set.
-	 * @param QueryOptions $queryOptions  Batch size limit.  OPTIONAL
+* @param QueryLocator $queryLocator Represents the server-side cursor that tracks the current processing location in the query result set.
+* @param QueryOptions $queryOptions  Batch size limit.  OPTIONAL
 	 * @return QueryResult
 	 */
 	public function queryMore($queryLocator) {
@@ -682,8 +682,8 @@ class SforceBaseClient {
 	/**
 	 * Retrieves data from specified objects, whether or not they have been deleted.
 	 *
-	 * @param String $query Query String
-	 * @param QueryOptions $queryOptions  Batch size limit.  OPTIONAL
+* @param String $query Query String
+* @param QueryOptions $queryOptions  Batch size limit.  OPTIONAL
 	 * @return QueryResult
 	 */
 	public function queryAll($query, $queryOptions = NULL) {
@@ -712,9 +712,9 @@ class SforceBaseClient {
 	/**
 	 * Retrieves one or more objects based on the specified object IDs.
 	 *
-	 * @param string $fieldList      One or more fields separated by commas.
-	 * @param string $sObjectType    Object from which to retrieve data.
-	 * @param array $ids            Array of one or more IDs of the objects to retrieve.
+* @param string $fieldList      One or more fields separated by commas.
+* @param string $sObjectType    Object from which to retrieve data.
+* @param array $ids            Array of one or more IDs of the objects to retrieve.
 	 * @return sObject[]
 	 */
 	public function retrieve($fieldList, $sObjectType, $ids) {
@@ -729,7 +729,7 @@ class SforceBaseClient {
 	/**
 	 * Executes a text search in your organization's data.
 	 *
-	 * @param string $searchString   Search string that specifies the text expression to search for.
+* @param string $searchString   Search string that specifies the text expression to search for.
 	 * @return SearchResult
 	 */
 	public function search($searchString) {
@@ -757,8 +757,8 @@ class SforceBaseClient {
 	/**
 	 * Sets the specified user's password to the specified value.
 	 *
-	 * @param string $userId    ID of the User.
-	 * @param string $password  New password
+* @param string $userId    ID of the User.
+* @param string $password  New password
 	 */
 	public function setPassword($userId, $password) {
 		$this->setHeaders("setPassword");
@@ -771,7 +771,7 @@ class SforceBaseClient {
 	/**
 	 * Changes a user's password to a system-generated value.
 	 *
-	 * @param string $userId    Id of the User
+* @param string $userId    Id of the User
 	 * @return password
 	 */
 	public function resetPassword($userId) {

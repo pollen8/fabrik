@@ -42,8 +42,8 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 
 		/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 

@@ -29,10 +29,10 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	*
-	* @param $listModel
-	* @param $request
-	* @param $set_list
-	* @param $err_msg
+* @param $listModel
+* @param $request
+* @param $set_list
+* @param $err_msg
 	* @return unknown_type
 	*/
 	
@@ -77,10 +77,10 @@ class fabrikSubscriptionsIPN {
 	}
 	
 	/**
-	* @param $listModel
-	* @param $request
-	* @param $set_list
-	* @param $err_msg
+* @param $listModel
+* @param $request
+* @param $set_list
+* @param $err_msg
 	* @return unknown_type
 	*/
 	function payment_status_Refunded($listModel, $request, &$set_list, &$err_msg)
@@ -112,10 +112,10 @@ class fabrikSubscriptionsIPN {
 	* occurs when someone first signs up for a subscription,
 	 * you should get a subscr_payment about 3 seconds afterwards.
 	 * So again i dont think we need to do anything here
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
+* @param $listModel
+* @param $request
+* @param $set_list
+* @param $err_msg
 	 * @return unknown_type
 	 */
 	
@@ -127,10 +127,10 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	* the user has cancelled a subscription in Paypal,
-	* @param $listModel
-	* @param $request
-	* @param $set_list
-	* @param $err_msg
+* @param $listModel
+* @param $request
+* @param $set_list
+* @param $err_msg
 	* @return unknown_type
 	*/
 	
@@ -161,10 +161,10 @@ class fabrikSubscriptionsIPN {
 	/**
 	* this occurs when a user upgrades their account in Paypal
 	* We don't allow this in fabrik so nothing should need to be done here
-	* @param $listModel
-	* @param $request
-	* @param $set_list
-	* @param $err_msg
+* @param $listModel
+* @param $request
+* @param $set_list
+* @param $err_msg
 	* @return unknown_type
 	*/
 	
@@ -176,10 +176,10 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	*  a subscription payment has been successfully made
-	* @param $listModel
-	* @param $request
-	* @param $set_list
-	* @param $err_msg
+* @param $listModel
+* @param $request
+* @param $set_list
+* @param $err_msg
 	* @return unknown_type
 	*/
 	
@@ -261,10 +261,10 @@ class fabrikSubscriptionsIPN {
 	* re-send the charge 3 days after the initial failed request.
 	* Once the max number of failures has occurred Paypal sends out a thx_type_subscr_cancel call
 	* Its there that we need to do somehthing
-	* @param $listModel
-	* @param $request
-	* @param $set_list
-	* @param $err_msg
+* @param $listModel
+* @param $request
+* @param $set_list
+* @param $err_msg
 	* @return unknown_type
 	*/
 	
@@ -276,11 +276,11 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	*
-	* @param	$listModel
-	* @param	$request
-	* @param	$set_list
-	* @param	$err_msg
-	* @return	unknown_type
+* @param   $listModel
+* @param   $request
+* @param   $set_list
+* @param   $err_msg
+	* @return  unknown_type
 	*
 	* seems to get called when you do a silver paypal payment (not sub)
 	* but as it occurs before anything else (eg. form.paypal.ipn.Completed the expired invoice doesnt
@@ -309,7 +309,7 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	* get subscription row from a given invoice number
-	* @param string invoice number
+* @param string invoice number
 	* @return J table object
 	*/
 	
@@ -332,7 +332,7 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	* get an invoice JTable object from its invoice number
-	* @param unknown_type $inv
+* @param unknown_type $inv
 	* @return unknown_type
 	*/
 	
@@ -345,9 +345,9 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	*
-	* @param string $msg
-	* @param string $to
-	* @param array data to log
+* @param string $msg
+* @param string $to
+* @param array data to log
 	* @return unknown_type
 	*/
 	
@@ -374,8 +374,8 @@ class fabrikSubscriptionsIPN {
 	
 	/**
 	 * ensures that an invoice num was found in the request data.
-	 * @param	array	$request
-	 * @return	mixed	false if not found, otherwise returns invoice num
+* @param   array	$request
+	 * @return  mixed	false if not found, otherwise returns invoice num
 	 */
 	
 	private function checkInvoice(array $request)
@@ -395,7 +395,7 @@ class fabrikSubscriptionsIPN {
 	* if the plan has a fall back plan -
 	* e.g. original subscription was broze, updates to silver and silver expires - should fall back to bronze
 	* we want to change the user type
-	* @param unknown_type $sub
+* @param unknown_type $sub
 	* @return unknown_type
 	*/
 	

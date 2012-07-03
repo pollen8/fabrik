@@ -30,9 +30,9 @@ class FabrikTableList extends FabTable
 	/**
 	 * Overloaded bind function
 	 *
-	 * @param	array		$hash named array
+* @param   array		$hash named array
 	 *
-	 * @return	null|string	null is operation was satisfactory, otherwise returns an error
+	 * @return  null|string	null is operation was satisfactory, otherwise returns an error
 	 * @see		JTable:bind
 	 * @since	1.5
 	 */
@@ -59,7 +59,7 @@ class FabrikTableList extends FabTable
 	 * The default name is in the form table_name.id
 	 * where id is the value of the primary key of the table.
 	 *
-	 * @return	string
+	 * @return  string
 	 * @since	1.6
 	 */
 	protected function _getAssetName()
@@ -71,7 +71,7 @@ class FabrikTableList extends FabTable
 	/**
 	 * Method to return the title to use for the asset table.
 	 *
-	 * @return	string
+	 * @return  string
 	 * @since	1.6
 	 */
 	protected function _getAssetTitle()
@@ -83,10 +83,10 @@ class FabrikTableList extends FabTable
 	 * Method to load a row from the database by primary key and bind the fields
 	 * to the JTable instance properties.
 	 *
-	 * @param	mixed	An optional primary key value to load the row by, or an array of fields to match.  If not
+* @param   mixed	An optional primary key value to load the row by, or an array of fields to match.  If not
 	 *					set the instance property value is used.
-	 * @param	boolean	True to reset the default values before loading the new row.
-	 * @return	boolean	True if successful. False if row not found or on error (internal error state set in that case).
+* @param   bool	True to reset the default values before loading the new row.
+	 * @return  boolean	True if successful. False if row not found or on error (internal error state set in that case).
 	 * @since	1.0
 	 * @link	http://docs.joomla.org/JTable/load
 	 */

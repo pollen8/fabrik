@@ -24,7 +24,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	/**
 	 * determine if the list plugin is a button and can be activated only when rows are selected
-	 * @return	bool
+	 * @return  bool
 	 */
 	
 	function canSelectRows()
@@ -49,10 +49,10 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	object	parameters
-	 * @param	object	table model
-	 * @param	array	[0] => string table's form id to contain plugin
-	 * @return	bool
+* @param   object	parameters
+* @param   object	table model
+* @param   array	[0] => string table's form id to contain plugin
+	 * @return  bool
 	 */
 
 	function onLoadJavascriptInstance($params, $model, $args)
@@ -110,9 +110,9 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 
 	/**
 	 * get the selected records
-	 * @param	string	$key
-	 * @param	bool	$allData
-	 * @return	array	rows:
+* @param   string	$key
+* @param   bool	$allData
+	 * @return  array	rows:
 	 */
 
 	public function getRecords($key = 'ids', $allData = false)
@@ -157,7 +157,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	 * upload the attachments to the server
 	 * @access private
 	 *
-	 * @return bol success/fail
+	 * @return  bool success/fail
 	 */
 
 	function _upload()

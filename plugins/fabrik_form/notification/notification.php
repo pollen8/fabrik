@@ -21,7 +21,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 
 	/**
 	 * inject custom html into the bottom of the form
-	 * @param int plugin counter
+* @param   int plugin counter
 	 * @return string html
 	 */
 
@@ -33,7 +33,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form {
 	/**
 	 * set up the html to be injected into the bottom of the form
 	 *
-	 * @param object $params (no repeat counter stuff needed here as the plugin manager
+* @param object $params (no repeat counter stuff needed here as the plugin manager
 	 * which calls this function has already done the work for you
 	 */
 

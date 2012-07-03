@@ -23,9 +23,9 @@ class ElementHelper
 	/**
 	 * get html id
 	 * 
-	 * @param   object  $element       field
-	 * @param   string  $control_name  control name
-	 * @param   string  $name          name
+* @param   object  $element       field
+* @param   string  $control_name  control name
+* @param   string  $name          name
 	 * 
 	 * @return string
 	 */
@@ -46,9 +46,9 @@ class ElementHelper
 	/**
 	* get full name
 	*
-	* @param   object  $element       field
-	* @param   string  $control_name  control name
-	* @param   string  $name          name
+* @param   object  $element       field
+* @param   string  $control_name  control name
+* @param   string  $name          name
 	*
 	* @return string
 	*/
@@ -69,7 +69,7 @@ class ElementHelper
 	/**
 	 * get repeat counter
 	 * 
-	 * @param   object  $element  Jhtml field
+* @param   object  $element  Jhtml field
 	 * 
 	 * @return mixed 
 	 */
@@ -90,7 +90,7 @@ class ElementHelper
 	/**
 	* get repeat
 	*
-	* @param   object  $element  Jhtml field
+* @param   object  $element  Jhtml field
 	* 
 	* @return mixed
 	*/

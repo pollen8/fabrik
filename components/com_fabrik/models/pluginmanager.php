@@ -39,10 +39,10 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * get a html drop down list of the elment types with this objs element type selected as default
-	 * @param	string	default selected option
-	 * @param	string	html name for drop down
-	 * @param	string	extra info for drop down
-	 * @return	string	html element type list
+* @param   string	default selected option
+* @param   string	html name for drop down
+* @param   string	extra info for drop down
+	 * @return  string	html element type list
 	 */
 
 	function getElementTypeDd($default, $name='plugin', $extra='class="inputbox elementtype"  size="1"', $defaultlabel='')
@@ -69,8 +69,8 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * get an unordered list of plugins
-	 * @param	string	plugin group
-	 * @param	string	ul id
+* @param   string	plugin group
+* @param   string	ul id
 	 */
 
 	function getList($group, $id)
@@ -88,7 +88,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	/**
 	 * get a list of plugin ids/names for usin in a drop down list
 	 * if no group set defaults to element list
-	 * @return	array	plugin list
+	 * @return  array	plugin list
 	 */
 
 	protected function _getList($query = null, $limitstart = 0, $limit = 0)
@@ -108,8 +108,8 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * get a certain group of plugins
-	 * @param	string	plugin group to load
-	 * @return	array	plugins
+* @param   string	plugin group to load
+	 * @return  array	plugins
 	 */
 
 	function &getPlugInGroup($group)
@@ -149,7 +149,7 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 *@param	string	plugin type - element/form/table/validationrule supported
+* @param   string	plugin type - element/form/table/validationrule supported
 	 *loads ABSTRACT version of a plugin group
 	 */
 
@@ -168,9 +168,9 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * @param	string	plugin name e.g. fabrikfield
-	 * @param	string	plugin type element/ form or list
-	 * @return	object	plugin
+* @param   string	plugin name e.g. fabrikfield
+* @param   string	plugin type element/ form or list
+	 * @return  object	plugin
 	 */
 
 	function getPlugIn($className = '', $group)
@@ -190,8 +190,8 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * load in the actual plugin objects for a given group
-	 * @param	string	$group
-	 * @return	array	plugins
+* @param   string	$group
+	 * @return  array	plugins
 	 */
 
 	public function getPlugInGroupPlugins($group)
@@ -206,9 +206,9 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * @param	string	plugin name e.g. fabrikfield
-	 * @param	string	plugin type element/ form or list
-	 * @return	mixed	false if not loaded - otherwise plugin object
+* @param   string	plugin name e.g. fabrikfield
+* @param   string	plugin type element/ form or list
+	 * @return  mixed	false if not loaded - otherwise plugin object
 	 */
 
 	public function loadPlugIn($className = '', $group)
@@ -264,8 +264,8 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * load all the forms element plugins
-	 * @param	object	form model
-	 * @return	array	of group objects with plugin objects loaded in group->elements
+* @param   object	form model
+	 * @return  array	of group objects with plugin objects loaded in group->elements
 	 */
 
 	public function getFormPlugins(&$form)
@@ -308,7 +308,7 @@ class FabrikFEModelPluginmanager extends JModel{
 
 			//dont assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
 			//$dispatcher = JDispatcher::getInstance();
-			$dispatcher = new JDispatcher();
+			$dispatcher = new JDispatcher;
 			$groupModels = $form->getGroups();
 			$group = 'element';
 			foreach ($elements as $element)
@@ -367,9 +367,9 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * @param	string	name of plugin group to load
-	 * @param	array	list of default element lists
-	 * @param	array	list of default and plugin element lists
+* @param   string	name of plugin group to load
+* @param   array	list of default element lists
+* @param   array	list of default and plugin element lists
 	 */
 
 	function loadLists($group, $lists, &$elementModel)
@@ -390,10 +390,10 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * run form & element plugins - yeah!
-	 * @param	string	method to check and call - corresponds to stage of form processing
-	 * @param	object	model calling the plugin form/table
-	 * @param	string	plugin type to call form/table
-	 * @return	array	of bools: false if error found and processed, otherwise true
+* @param   string	method to check and call - corresponds to stage of form processing
+* @param   object	model calling the plugin form/table
+* @param   string	plugin type to call form/table
+	 * @return  array	of bools: false if error found and processed, otherwise true
 	 */
 
 	public function runPlugins($method, &$oRequest, $type = 'form')
@@ -510,9 +510,9 @@ class FabrikFEModelPluginmanager extends JModel{
 
 	/**
 	 * test if a plugin is installed
-	 * @param	$group
-	 * @param	$plugin
-	 * @return	bool
+* @param   $group
+* @param   $plugin
+	 * @return  bool
 	 */
 
 	function pluginExists($group, $plugin)

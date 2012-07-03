@@ -15,9 +15,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * this really does get just the default value (as defined in the element's settings)
-	 * @param	array	data
-	 * @param	int		repeat counter
-	 * @return	string
+* @param   array	data
+* @param   int		repeat counter
+	 * @return  string
 	 */
 
 	function getDefaultValue($data = array())
@@ -178,10 +178,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	
 	/**
 	 * determines the value for the element in the form view
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
-	 * @return	string	value
+* @param   array	data
+* @param   int		when repeating joinded groups we need to know what part of the array to access
+* @param   array	options
+	 * @return  string	value
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
@@ -217,8 +217,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	/**
 	 * run on formModel::setFormData()
 	 * set before form is validated
-	 * @param	int		repeat group counter
-	 * @return	null
+* @param   int		repeat group counter
+	 * @return  null
 	 */
 
 	public function preProcess($c)
@@ -379,9 +379,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param	array	data
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+* @param   array	data
+* @param   int		repeat group counter
+	 * @return  string	returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -424,7 +424,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -474,9 +474,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * find the sum from a set of data
-	 * @param	object	list model
-	 * @param	string	$label
-	 * @return	string	sum result
+* @param   object	list model
+* @param   string	$label
+	 * @return  string	sum result
 	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
@@ -499,9 +499,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * build the query for the avg caclculation
-	 * @param	model	$listModel
-	 * @param	string	$label the label to apply to each avg
-	 * @return	string	sql statement
+* @param   model	$listModel
+* @param   string	$label the label to apply to each avg
+	 * @return  string	sql statement
 	 */
 
 	protected function getAvgQuery(&$listModel, $label = "'calc'")
@@ -524,9 +524,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * build the query for the avg caclculation
-	 * @param	model	$listModel
-	 * @param	string	$label the label to apply to each avg
-	 * @return	string	sql statement
+* @param   model	$listModel
+* @param   string	$label the label to apply to each avg
+	 * @return  string	sql statement
 	 */
 
 	protected function getMedianQuery(&$listModel, $label = "'calc'")
@@ -550,7 +550,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	/**
 	 * @since 3.0.4
 	 * get the sprintf format string
-	 * @return	string
+	 * @return  string
 	 */
 
 	public function getFormatString()

@@ -19,8 +19,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
+* @param string data
+* @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -50,8 +50,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 * @param string data
-	 * @param object all the data in the tables current row
+* @param string data
+* @param object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -99,8 +99,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param array form data
-	 * @param int repeat group counter
+* @param array form data
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -181,8 +181,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param	mixed	element's data
-	 * @return	string	formatted value
+* @param   mixed	element's data
+	 * @return  string	formatted value
 	 */
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -204,8 +204,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * manupulates posted form data for insertion into database
-	 * @param	mixed	thie elements posted form data
-	 * @param	array	posted form data
+* @param   mixed	thie elements posted form data
+* @param   array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -270,7 +270,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * @return  string	javascript to create instance. Instance name must be 'el'
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -291,9 +291,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 *
-	 * @param array $value, previously encrypted values
-	 * @param array data
-	 * @param int repeat group counter
+* @param array $value, previously encrypted values
+* @param array data
+* @param   int repeat group counter
 	 * @return null
 	 */
 
@@ -354,10 +354,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	/**
 	 * can be overwritten by plugin class
 	 * determines the value for the element in the form view
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
-	 * @return	string	default value
+* @param   array	data
+* @param   int		when repeating joinded groups we need to know what part of the array to access
+* @param   array	options
+	 * @return  string	default value
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
@@ -439,7 +439,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 * @param string url
+* @param string url
 	 * @return string url
 	 */
 
@@ -543,9 +543,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Examples of where this would be overwritten include drop downs whos "please select" value might be "-1"
-	 * @param string data posted from form to check
-	 * @param int repeat group counter
-	 * @return bol if data is considered empty then returns true
+* @param string data posted from form to check
+* @param   int repeat group counter
+	 * @return  bool if data is considered empty then returns true
 	 */
 
 	function dataConsideredEmpty($data, $repeatCounter)
@@ -558,7 +558,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	* @param array of scripts previously loaded (load order is important as we are loading via head.js
+* @param array of scripts previously loaded (load order is important as we are loading via head.js
 	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	* current file
 	*

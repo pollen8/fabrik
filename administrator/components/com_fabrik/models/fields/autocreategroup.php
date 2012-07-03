@@ -33,7 +33,7 @@ class JFormFieldAutoCreateGroup extends JFormFieldRadio
 	 * @return  string  The field input markup.
 	 */
 
-	public function getInput()
+	protected function getInput()
 	{
 		$this->value = $this->form->getValue('id') == 0 ? 1 : 0;
 		return parent::getInput();

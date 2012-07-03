@@ -42,9 +42,9 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 
 	/**
 	 * shows the data formatted for the table view
-	 * @param	string	data
-	 * @param	object	all the data in the tables current row
-	 * @return	string	formatted value
+* @param   string	data
+* @param   object	all the data in the tables current row
+	 * @return  string	formatted value
 	 */
 
 	function _renderListData($data, $thisRow)
@@ -120,7 +120,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 

@@ -26,9 +26,9 @@ class FabrikFEModel extends JModel
 	/**
 	 * required for compatibility with mambo 4.5.4
 	 * 
-	 * @param   mixed  $value  value to set all properties to default null
+* @param   mixed  $value  value to set all properties to default null
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function reset($value = null)

@@ -89,8 +89,8 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * get a list model
-	 * @param	int		$id
-	 * @return	object	fabrik list model
+* @param   int		$id
+	 * @return  object	fabrik list model
 	 */
 
 	protected function &getlistModel($id)
@@ -132,7 +132,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * set the url for the filter form's action
-	 * @return	string	action url
+	 * @return  string	action url
 	 */
 
 	public function getFilterFormURL()
@@ -185,7 +185,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * should be overwritten in plugin viz model
-	 * @return	bool
+	 * @return  bool
 	 */
 
 	protected function getRequiredFiltersFound()
@@ -205,8 +205,8 @@ class FabrikFEModelVisualization extends JModel
 	/**
 	 * load in any table plugin classes
 	 * needed for radius search filter
-	 * @param	array	existing src file
-	 * @return	array	js file paths
+* @param   array	existing src file
+	 * @return  array	js file paths
 	 */
 
 	public function getPluginJsClasses(&$srcs = array())
@@ -243,7 +243,7 @@ class FabrikFEModelVisualization extends JModel
 	 * Method to set the table id
 	 *
 	 * @access	public
-	 * @param	int	table ID number
+* @param   int	table ID number
 	 */
 
 	function setId($id)

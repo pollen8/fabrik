@@ -11,9 +11,9 @@ if ($version->RELEASE == '1.6') {
 		/**
 		 * Method to load and return a model object.
 		 *
-		 * @param	string	The name of the view
-		 * @param	string  The class prefix. Optional.
-		 * @return	mixed	Model object or boolean false if failed
+* @param   string	The name of the view
+* @param   string  The class prefix. Optional.
+		 * @return  mixed	Model object or boolean false if failed
 		 */
 		
 		private function _createTable($name, $prefix = 'Table', $config = array())
@@ -33,10 +33,10 @@ if ($version->RELEASE == '1.6') {
 		/**
 		 * Method to get a table object, load it if necessary.
 		 *
-		 * @param	string The table name. Optional.
-		 * @param	string The class prefix. Optional.
-		 * @param	array	Configuration array for model. Optional.
-		 * @return	object	The table
+* @param   string The table name. Optional.
+* @param   string The class prefix. Optional.
+* @param   array	Configuration array for model. Optional.
+		 * @return  object	The table
 		 */
 		
 		public function getTable($name='', $prefix='Table', $options = array())
@@ -61,9 +61,9 @@ if ($version->RELEASE == '1.6') {
 		/**
 		 * Method to load and return a model object.
 		 *
-		 * @param	string	The name of the view
-		 * @param	string  The class prefix. Optional.
-		 * @return	mixed	Model object or boolean false if failed
+* @param   string	The name of the view
+* @param   string  The class prefix. Optional.
+		 * @return  mixed	Model object or boolean false if failed
 		 */
 		
 		protected function _createTable($name, $prefix = 'Table', $config = array())
@@ -83,10 +83,10 @@ if ($version->RELEASE == '1.6') {
 		/**
 		 * Method to get a table object, load it if necessary.
 		 *
-		 * @param	string The table name. Optional.
-		 * @param	string The class prefix. Optional.
-		 * @param	array	Configuration array for model. Optional.
-		 * @return	object	The table
+* @param   string The table name. Optional.
+* @param   string The class prefix. Optional.
+* @param   array	Configuration array for model. Optional.
+		 * @return  object	The table
 		 */
 		
 		public function getTable($name='', $prefix='Table', $options = array())

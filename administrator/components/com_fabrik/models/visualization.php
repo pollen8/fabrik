@@ -27,10 +27,10 @@ class FabrikModelVisualization extends JModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param	type	The table type to instantiate
-	 * @param	string	A prefix for the table class name. Optional.
-	 * @param	array	Configuration array for model. Optional.
-	 * @return	JTable	A database object
+* @param   type	The table type to instantiate
+* @param   string	A prefix for the table class name. Optional.
+* @param   array	Configuration array for model. Optional.
+	 * @return  JTable	A database object
 	 * @since	1.6
 	 */
 	
@@ -43,9 +43,9 @@ class FabrikModelVisualization extends JModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param	array	$data		Data for the form.
-	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
-	 * @return	mixed	A JForm object on success, false on failure
+* @param   array	$data		Data for the form.
+* @param   bool	$loadData	True if the form is to load its own data (default case), false if not.
+	 * @return  mixed	A JForm object on success, false on failure
 	 * @since	1.6
 	 */
 
@@ -64,7 +64,7 @@ class FabrikModelVisualization extends JModelAdmin
 	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return	mixed	The data for the form.
+	 * @return  mixed	The data for the form.
 	 * @since	1.6
 	 */
 	protected function loadFormData()
@@ -81,8 +81,8 @@ class FabrikModelVisualization extends JModelAdmin
 	/**
 	 * get html form fields for a plugin (filled with
 	 * current element's plugin data
-	 * @param	string	$plugin
-	 * @return	string	html form fields
+* @param   string	$plugin
+	 * @return  string	html form fields
 	 */
 
 	function getPluginHTML($plugin = null)
@@ -120,7 +120,7 @@ class FabrikModelVisualization extends JModelAdmin
 
 	/**
 	 * save the form
-	 * @param array $data (the jform part of the request data)
+* @param array $data (the jform part of the request data)
 	 */
 
 	function save($data)

@@ -16,8 +16,8 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	/**
 	 * states if the elemnt contains data which is recorded in the database
 	 * some elements (eg buttons) dont
-	 * @param	array	posted data
-	 * @return	bool	should record in db
+* @param   array	posted data
+	 * @return  bool	should record in db
 	 */
 
 	public function recordInDatabase($data = null)
@@ -40,8 +40,8 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-	 * @param	mixed	thie elements posted form data
-	 * @param	array	posted form data
+* @param   mixed	thie elements posted form data
+* @param   array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -65,7 +65,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	/**
 	 * draws the form element
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -104,9 +104,9 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	/**
 	 * validate the passwords
-	 * @param	string	elements data
-	 * @param	int		repeat group counter
-	 * @return	bool	true if passes / false if falise validation
+* @param   string	elements data
+* @param   int		repeat group counter
+	 * @return  bool	true if passes / false if falise validation
 	 */
 
 	function validate($data, $repeatCounter = 0)
@@ -139,7 +139,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object element
+* @param object element
 	 * @return string javascript to create instance. Instance name must be 'el'
 	 */
 
@@ -163,7 +163,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	/**
 	 *
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
+* @param   int repeat group counter
 	 * @return array html ids to watch for validation
 	 */
 

@@ -30,8 +30,8 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
 	 * @returns	bool
 	 */
 

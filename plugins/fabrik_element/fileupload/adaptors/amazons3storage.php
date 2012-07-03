@@ -40,7 +40,7 @@ class amazons3storage extends storageAdaptor{
 
 	/**
 	 * does a file exist
-	 * @param $filepath
+* @param $filepath
 	 * @return unknown_type
 	 */
 
@@ -177,7 +177,7 @@ class amazons3storage extends storageAdaptor{
 
 	/**
 	 * does a folder exist
-	 * @param	$folder
+* @param   $folder
 	 * @return unknown_type
 	 */
 
@@ -188,8 +188,8 @@ class amazons3storage extends storageAdaptor{
 
 	/**
 	 * create a folder
-	 * @param	$path
-	 * @return	unknown_type
+* @param   $path
+	 * @return  unknown_type
 	 */
 
 	function createFolder($path)
@@ -260,8 +260,8 @@ class amazons3storage extends storageAdaptor{
 
 	/**
 	 * get the thumbnail file for the file given
-	 * @param	string	$file
-	 * @return	string	thumbnail
+* @param   string	$file
+	 * @return  string	thumbnail
 	 */
 
 	function _getThumb($file)
@@ -293,7 +293,7 @@ class amazons3storage extends storageAdaptor{
 	/**
 	 * get the cropped file for the file given
 	 *
-	 * @param string $file
+* @param string $file
 	 * @return string cropped image
 	 */
 
@@ -329,7 +329,7 @@ class amazons3storage extends storageAdaptor{
 
 	/**
 	 * @access public
-	 * @param	string	path to folder - eg /images/stories
+* @param   string	path to folder - eg /images/stories
 	 */
 
 	function makeRecursiveFolders($folderPath, $mode = 0755)
@@ -340,7 +340,7 @@ class amazons3storage extends storageAdaptor{
 	
 	/**
 	 * Get file info in getid3 format
-	 * @param	$filepath
+* @param   $filepath
 	 * return	array
 	 */
 	

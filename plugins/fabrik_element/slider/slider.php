@@ -33,8 +33,8 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 
 	/**
 	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
+* @param array data to preopulate element with
+* @param   int repeat group counter
 	 * @return string returns element html
 	 */
 
@@ -95,7 +95,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	int		repeat counter
+* @param   int		repeat counter
 	 * @return string 	javascript to create instance
 	 */
 

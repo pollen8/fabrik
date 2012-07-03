@@ -25,7 +25,7 @@ class FabrikViewElement extends JView{
 	/**
 	 * display the template
 	 *
-	 * @param sting $tpl
+* @param sting $tpl
 	 */
 
 	function display($tpl = null)

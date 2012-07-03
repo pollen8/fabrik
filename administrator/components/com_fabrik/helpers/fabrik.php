@@ -25,7 +25,7 @@ class FabrikHelper
 	 * prepare the date for saving
 	 * DATES SHOULD BE SAVED AS UTC
 	 * 
-	 * @param   string  &$strdate  publish down date
+* @param   string  &$strdate  publish down date
 	 * 
 	 * @return  null
 	 */
@@ -55,9 +55,9 @@ class FabrikHelper
 	/**
 	 * Gets a list of the actions that can be performed.
 	 *
-	 * @param   int  $categoryId  The category ID.
+* @param   int  $categoryId  The category ID.
 	 *
-	 * @return	JObject
+	 * @return  JObject
 	 * 
 	 * @since	1.6
 	 */
@@ -85,9 +85,9 @@ class FabrikHelper
 	/**
 	 * Configure the Linkbar.
 	 *
-	 * @param   string  $vName  The name of the active view.
+* @param   string  $vName  The name of the active view.
 	 *
-	 * @return	void
+	 * @return  void
 	 * 
 	 * @since	1.6
 	 */
@@ -116,7 +116,7 @@ class FabrikHelper
 	/**
 	 * Applies the content tag filters to arbitrary text as per settings for current user group
 	 * 
-	 * @param   string  $text  The string to filter
+* @param   string  $text  The string to filter
 	 * 
 	 * @return  string	The filtered string
 	 */

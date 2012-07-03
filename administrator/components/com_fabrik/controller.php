@@ -23,8 +23,8 @@ class FabrikController extends JController
 {
 	/**
 	 * Display the view
-	 * @param   boolean  $cachable   If true, the view output will be cached
-	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+* @param   bool  $cachable   If true, the view output will be cached
+* @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
@@ -38,10 +38,10 @@ class FabrikController extends JController
 	/**
 	 * Method to load and return a model object.
 	 *
-	 * @param	string  The name of the model.
-	 * @param	string	Optional model prefix.
-	 * @param	array	Configuration array for the model. Optional.
-	 * @return	mixed	Model object on success; otherwise null failure.
+* @param   string  The name of the model.
+* @param   string	Optional model prefix.
+* @param   array	Configuration array for the model. Optional.
+	 * @return  mixed	Model object on success; otherwise null failure.
 	 * @since	1.6		Replaces _createModel.
 	 */
 

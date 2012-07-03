@@ -24,8 +24,8 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	 * MOVED TO PLUGIN.PHP SHOULDPROCESS()
 	 * determines if a condition has been set and decides if condition is matched
 	 *
-	 * @param object $params
-	 * @return bol true if you sould send the email, false stops sending of eaml
+* @param object $params
+	 * @return  bool true if you sould send the email, false stops sending of eaml
 	 */
 
 	/*function shouldSend(&$params)
@@ -35,8 +35,8 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
 	 * @returns	bool
 	 */
 
@@ -212,8 +212,8 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	/**
 	 * use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
-	 * @param bol if file uploads have been found
-	 * @param string path to template
+* @param bol if file uploads have been found
+* @param string path to template
 	 * @return string email message
 	 */
 
@@ -295,7 +295,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 	/**
 	 * get an array of keys we dont want to email to the user
 	 *
-	 * @return	array
+	 * @return  array
 	 */
 
 	function getDontEmailKeys()
@@ -313,8 +313,8 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 	/**
 	 * template email handling routine, called if email template specified
-	 * @param	string	path to template
-	 * @return	string	email message
+* @param   string	path to template
+	 * @return  string	email message
 	 */
 
 	protected function _getTemplateEmail($emailTemplate)
@@ -325,8 +325,8 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 	/**
 	 * get content item template
-	 * @param	int		$contentTemplate
-	 * @return	string	content item html (translated with Joomfish if installed)
+* @param   int		$contentTemplate
+	 * @return  string	content item html (translated with Joomfish if installed)
 	 */
 
 	protected function _getConentTemplate($contentTemplate)

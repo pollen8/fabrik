@@ -33,7 +33,7 @@ class FabrikControllerGroups extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
+* @param   array  $config  An optional associative array of configuration settings.
 	 * 
 	 * @see		JController
 	 * @since	1.6
@@ -47,8 +47,8 @@ class FabrikControllerGroups extends FabControllerAdmin
 	/**
 	 * Proxy for getModel.
 	 * 
-	 * @param   string  $name    model name
-	 * @param   string  $prefix  model prefix
+* @param   string  $name    model name
+* @param   string  $prefix  model prefix
 	 * 
 	 * @return  J model
 	 */

@@ -75,7 +75,7 @@ class FabrikFEModelJoin extends FabModel{
 	/**
 	 * load the model from the element id
 	 * $param string $key
-	 * @param int $id
+* @param   int $id
 	 */
 
 	function getJoinFromKey($key, $id)
@@ -104,7 +104,7 @@ class FabrikFEModelJoin extends FabModel{
 	/**
 	 * deletes the loaded join and then
 	 * removes all elements, groups & form group record
-	 * @param int the group id that the join is linked to
+* @param   int the group id that the join is linked to
 	 */
 
 	function deleteAll($groupId)
@@ -138,7 +138,7 @@ class FabrikFEModelJoin extends FabModel{
 
 	/**
 	 * saves the table join data
-	 * @param array data to save
+* @param array data to save
 	 */
 
 	function save($source)

@@ -73,7 +73,7 @@ class GMaps
     /**
      * Construct
      *
-     * @param string $key
+* @param string $key
      */
     function __construct ($key='')
     {
@@ -83,9 +83,9 @@ class GMaps
     /**
      * getInfoLocation
      *
-     * @param string $address
-     * @param string $city
-     * @param string $state
+* @param string $address
+* @param string $city
+* @param string $state
      * @return boolean
      */
     public function getInfoLocation ($address) {
@@ -97,7 +97,7 @@ class GMaps
     /**
      * connect to Google Maps
      *
-     * @param string $param
+* @param string $param
      * @return boolean
      */
     private function _connect($param) {

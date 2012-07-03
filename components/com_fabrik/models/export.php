@@ -29,7 +29,7 @@ class FabrikFEModelExport {
 	/**
 	 * load a package for export
 	 *
-	 * @param int $id
+* @param   int $id
 	 */
 	function load($id)
 	{
@@ -47,10 +47,10 @@ class FabrikFEModelExport {
 
 	 /**
 	 * export table data
-	 * @param string export format xml/csv
-	 * @param bool export the table actual records
-	 * @param bool export the msoform records associated with the table (group.elements, forms etc)
-	 * @param bool save the exported file as a zip
+* @param string export format xml/csv
+* @param bool export the table actual records
+* @param bool export the msoform records associated with the table (group.elements, forms etc)
+* @param bool save the exported file as a zip
 	 */
 
 	function export() {

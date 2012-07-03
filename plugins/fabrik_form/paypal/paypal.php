@@ -21,8 +21,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 	/**
 	 * process the plugin, called at end of form submission
-	 * @param	object	$params
-	 * @param	object	form model
+* @param   object	$params
+* @param   object	form model
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -634,9 +634,9 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 
 	/**
 	 * get the custom IPN class
-	 * @param	object	$params
-	 * @param	int		params $renderOrder
-	 * @return	mixed	false or class instance
+* @param   object	$params
+* @param   int		params $renderOrder
+	 * @return  mixed	false or class instance
 	 */
 
 	protected function getIPNHandler($params, $renderOrder = 0)

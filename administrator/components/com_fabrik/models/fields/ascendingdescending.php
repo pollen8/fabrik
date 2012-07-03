@@ -30,7 +30,7 @@ class JFormFieldAscendingdescending extends JFormFieldList
 	/**
 	 * Method to get the field options.
 	 * 
-	 * @return	array	The field option objects.
+	 * @return  array	The field option objects.
 	 */
 
 	protected function getOptions()

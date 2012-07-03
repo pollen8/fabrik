@@ -51,7 +51,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * import the csv file
 	 *
-	 * @return boolean
+	 * @return  boolean
 	 */
 	public function import()
 	{
@@ -87,10 +87,10 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * loads the Joomla form for importing the csv file
 	 *
-	 * @param	array	$data
-	 * @param	bool	$loadData
+* @param   array	$data
+* @param   bool	$loadData
 	 * 
-	 * @return	object	form
+	 * @return  object	form
 	 */
 
 	public function getForm($data = array(), $loadData = true)
@@ -153,7 +153,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * get the field delimiter from post
 	 * and set in session 'com_fabrik.csv.fielddelimiter' for later use
 	 *
-	 * @return	string	delimiter character
+	 * @return  string	delimiter character
 	 */
 
 	protected function getFieldDelimiter()
@@ -176,7 +176,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * get form data
 	 * 
-	 * @return	array
+	 * @return  array
 	 */
 	protected function getFormData()
 	{
@@ -186,7 +186,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * read the CSV file, store results in $this->headings and $this->data
 	 *
-	 * @param	string
+* @param   string
 	 * 
 	 * @return null
 	 */
@@ -278,7 +278,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * return the first line of the imported data
 	 *
-	 * @return	array
+	 * @return  array
 	 */
 	public function getSample()
 	{
@@ -300,7 +300,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * get the directory to which the csv file is imported
 	 *
-	 * @return	string	path
+	 * @return  string	path
 	 */
 
 	protected function getBaseDir()
@@ -318,7 +318,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * @since	3.0.3.1
 	 * used by import csv cron plugin to override default base dir location
 	 *
-	 * @param	string	$dir (folder path)
+* @param   string	$dir (folder path)
 	 * 
 	 * @return null
 	 */
@@ -331,7 +331,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * deletes the csv file and optionally removes its path from the session
 	 *
-	 * @param   bool	$clearSession  should we clear the session
+* @param   bool	$clearSession  should we clear the session
 	 * 
 	 * @return null
 	 */
@@ -381,7 +381,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * Determine if the imported data has exisiting correlating elements
 	 * 
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function findExistingElements()
@@ -693,7 +693,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * once we have itterated over all of the csv file and recreated
 	 * the join data, we can finally allow the table's form to proces it
 	 *
-	 * @param	array	$joindata
+* @param   array	$joindata
 	 */
 
 	private function insertJoinedData($joindata)
@@ -761,11 +761,11 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * then insert data into the row
 	 * NOTE: will probably only work for a 1:1 join result
 	 *
-	 * @param	array	merged join data
-	 * @param	array	$aRow
-	 * @param	mixed	primary key value
-	 * @param	object	form model
-	 * @return	array	updated join data
+* @param   array	merged join data
+* @param   array	$aRow
+* @param   mixed	primary key value
+* @param   object	form model
+	 * @return  array	updated join data
 	 */
 
 	private function _fakeJoinData($joindata, $aRow, $pkVal, &$formModel)
@@ -836,9 +836,9 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 *
-	 * @param	object	$join
+* @param   object	$join
 	 *
-	 * @return	unknown_type
+	 * @return  unknown_type
 	 */
 
 	private function getJoinPkRecords($join)
@@ -863,7 +863,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * Get list model joins
 	 * 
-	 * @return	array	joins
+	 * @return  array	joins
 	 */
 
 	public function getJoins()
@@ -881,7 +881,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * Create an error message
 	 *
-	 * @return	string
+	 * @return  string
 	 */
 
 	public function makeError()
@@ -909,7 +909,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * determine if the chooselementtypes view should contain a column where
 	 * the user selects the field to be the pk
 	 *
-	 * @return	bool	true if column shown
+	 * @return  bool	true if column shown
 	 */
 
 	public function getSelectKey()
@@ -941,7 +941,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * get the csv files headings
 	 * 
-	 * @return	array
+	 * @return  array
 	 */
 
 	public function getHeadings()
@@ -1102,10 +1102,10 @@ class csv_bv
 	 *
 	 * Only used to initialise variables.
 	 *
-	 * @param str $file - file path
-	 * @param str $seperator - Only one character is allowed (optional)
-	 * @param str $enclose - Only one character is allowed (optional)
-	 * @param str $escape - Only one character is allowed (optional)
+* @param str $file - file path
+* @param str $seperator - Only one character is allowed (optional)
+* @param str $enclose - Only one character is allowed (optional)
+* @param str $escape - Only one character is allowed (optional)
 	 * @access public
 	 */
 	Function csv_bv($file, $seperator = ',', $enclose = '"', $escape = '')
@@ -1303,7 +1303,7 @@ class csv_bv
 	/**
 	 * csv::SkipEmptyRows, sets whether empty rows should be skipped or not
 	 *
-	 * @param bool $bool
+* @param bool $bool
 	 * @return void
 	 */
 
@@ -1315,9 +1315,9 @@ class csv_bv
 	/**
 	 * csv::TrimFields, sets whether fields should have their \s and \t removed.
 	 *
-	 * @param	bool  $bool	set trim fields state
+* @param   bool  $bool	set trim fields state
 	 *
-	 * @return	null
+	 * @return  null
 	 */
 
 	public function TrimFields($bool = true)

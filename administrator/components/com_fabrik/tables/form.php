@@ -30,9 +30,9 @@ class FabrikTableForm extends FabTable
 	/**
 	 * Overloaded bind function
 	 *
-	 * @param	array		$hash named array
+* @param   array		$hash named array
 	 *
-	 * @return	null|string	null is operation was satisfactory, otherwise returns an error
+	 * @return  null|string	null is operation was satisfactory, otherwise returns an error
 	 * @see		JTable:bind
 	 * @since	1.5
 	 */
@@ -67,10 +67,10 @@ class FabrikTableForm extends FabTable
 	 * Method to load a row from the database by primary key and bind the fields
 	 * to the JTable instance properties.
 	 *
-	 * @param	mixed	An optional primary key value to load the row by, or an array of fields to match.  If not
+* @param   mixed	An optional primary key value to load the row by, or an array of fields to match.  If not
 	 *					set the instance property value is used.
-	 * @param	boolean	True to reset the default values before loading the new row.
-	 * @return	boolean	True if successful. False if row not found or on error (internal error state set in that case).
+* @param   bool	True to reset the default values before loading the new row.
+	 * @return  boolean	True if successful. False if row not found or on error (internal error state set in that case).
 	 * @since	1.0
 	 * @link	http://docs.joomla.org/JTable/load
 	 */

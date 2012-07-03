@@ -55,14 +55,14 @@ class PHPingFM {
   /**
    * Initializes the API key, User's APP key, and cURL handler.
    *
-   * @param $api_key
+* @param $api_key
    *   The developer API key. If you don't have one, it can be obtained
    *   from http://ping.fm/developers/.
-   * @param $user_app_key
+* @param $user_app_key
    *   (Optional).  The user's app key.  If not entered now, it can be
    *   entered with setUserAppKey, however it must be entered before any
    *   requests can take place.
-   * @param $debug
+* @param $debug
    *   (optional) Whether to have debugging enabled
    * @see setUserAppKey
    */
@@ -102,10 +102,10 @@ class PHPingFM {
   /**
    * Call a method on the ping.fm server.
    *
-   * @param $service
+* @param $service
    *   The end of the URL to fetch.  For example user.services will
    *   become http://api.ping.fm/v1/user.services when requesting from the server.
-   * @param $fields
+* @param $fields
    *   The fields to pass in over POST.  The user's app key and the API key are
    *   automatically added.
    * @return
@@ -133,7 +133,7 @@ class PHPingFM {
   /**
    * Parse a message from the XML <message> format.
    *
-   * @param $message
+* @param $message
    *   A SimpleXML-ified message.
    * @return
    *   An array of message attributes.
@@ -233,9 +233,9 @@ class PHPingFM {
    * Public API function: user.latest: gets the last 25 messages a
    * user has posted through Ping.fm.
    *
-   * @param $limit
+* @param $limit
    *   Limit the results returned.  Default is 25.
-   * @param $order
+* @param $order
    *   Which direction to order the returned results by
    *   date.  Default is DESC (Descending).
    * @return
@@ -258,14 +258,14 @@ class PHPingFM {
   /**
    * Public API function: user.post: posts a message to the user‚Äôs Ping.fm services.
    *
-   * @param $post_method
+* @param $post_method
    *   Posting method.  Either "blog", "microblog" or "status."
-   * @param $body
+* @param $body
    *   Message body.
-   * @param $title
+* @param $title
    *   Title of the posted message.  This will only appear if the specified
    *   service supports a title field.  Otherwise, it will be discarded.
-   * @param $services
+* @param $services
    *   A single service or array of services to post to.
    *   Default is all services set up for specified method.  If the posted
    *   method is not supported by service, the request will return an error.
@@ -286,11 +286,11 @@ class PHPingFM {
    * Public API function: user.tpost: posts a message to the user‚Äôs Ping.fm
    * services using one of their custom triggers.
    *
-   * @param $trigger
+* @param $trigger
    *   Custom trigger the user has defined from the Ping.fm website.
-   * @param $body
+* @param $body
    *   Message body.
-   * @param $title
+* @param $title
    *   Title of the posted message.  This will only appear if the specified
    *   service supports a title field.  Otherwise, it will be discarded.
    */
