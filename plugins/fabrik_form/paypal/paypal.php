@@ -90,6 +90,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 		$opts['shipping'] = "$shipping_amount";
 
 		$item = $params->get('paypal_item');
+		$item = $w->parseMessageForPlaceHolder($item, $emailData);
 		if ($params->get('paypal_item_eval', 0) == 1) {
 			$item = @eval($item);
 			$item_raw = $item;
@@ -102,7 +103,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form {
 			}
 		}
 
-		$opts['item_name'] = "$item";
+		// $$$ hugh - strip any HTML tags from the item name, as PayPal doesn't like them.
+		$opts['item_name'] = strip_tags($item);
 
 		//$$$ rob add in subscription variables
 		if ($opts['cmd'] === '_xclick-subscriptions') {
