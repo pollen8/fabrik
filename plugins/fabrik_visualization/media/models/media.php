@@ -49,6 +49,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 
 	function getPlaylist()
 	{
+		$app = JFactory::getApplication();
 		$params = $this->getParams();
 
 		$mediaElement = $params->get('media_media_elementList');
@@ -74,9 +75,24 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		// session state/defaults when it calls getPagination, which is then returned as a cached
 		// object if we call getPagination after render().  So call it first, then render() will
 		// get our cached pagination, rather than vice versa.
+		// Changes in f3 seem to mean that we'll have to poke around in the user state,
+		// rather than just call getPagination().  So we need to remember previous state of
+		// limitstart and limitlength, set them to 0, render the list, then reset to original
+		// values (so we don't mess with any instances of the list user may load).  This code
+		// seems to kinda work.  Once I've tested it further, will probably move it into to
+		// a generic viz model method, so all viz's can call it.
+		$context = 'com_fabrik.list' . $listModel->getRenderContext() . '.';
+		$item = $listModel->getTable();
+		$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
+		$orig_limitstart = $app->getUserState('limitstart', 0);
+		$orig_limitlength = $app->getUserState('limitlength', $rowsPerPage);
+		$app->setUserState($context . 'limitstart', 0);
+		$app->setUserState($context . 'limitlength', 0);
 		$nav = $listModel->getPagination(0, 0, 0);
 		$listModel->render();
 		$alldata = $listModel->getData();
+		$app->setUserState($context . 'limitstart', $orig_limitstart);
+		$app->setUserState($context . 'limitlength', $orig_limitlength);
 		$document = JFactory::getDocument();
 
 		if ($params->get('media_which_player', 'jw') == 'xspf')

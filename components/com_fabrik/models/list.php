@@ -11,8 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.modelform');
 
-require_once(COM_FABRIK_FRONTEND . '/helpers/pagination.php');
-require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
+require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 class FabrikFEModelList extends JModelForm
 {
@@ -8482,22 +8482,25 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		$p = json_decode($params->get('list_search_elements'));
 		$elementId = $elementModel->getId();
-		if ($add)
+		if (is_object($p) && is_array($p->search_elements))
 		{
-			if (!in_array($elementId, $p->search_elements))
+			if ($add)
 			{
-				$p->search_elements[] = (string) $elementId;
+				if (!in_array($elementId, $p->search_elements))
+				{
+					$p->search_elements[] = (string) $elementId;
+				}
 			}
-		}
-		else
-		{
-			$k = array_search($elementId, $p->search_elements);
-			if ($k !== false)
+			else
 			{
-				unset($p->search_elements[$k]);
+				$k = array_search($elementId, $p->search_elements);
+				if ($k !== false)
+				{
+					unset($p->search_elements[$k]);
+				}
 			}
+			$params->set('list_search_elements',  json_encode($p));
 		}
-		$params->set('list_search_elements', json_encode($p));
 		$item = $this->getTable();
 		$item->params = (string) $params;
 		$item->store();
