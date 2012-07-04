@@ -17,9 +17,9 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementCount extends plgFabrik_Element {
+class PlgFabrik_ElementCount extends PlgFabrik_Element {
 
 	/**
 	 */
@@ -62,7 +62,7 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	/**
 	 * this element s only used for table displays so always return false
 	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#canUse()
+	 * @see components/com_fabrik/models/PlgFabrik_Element#canUse()
 	 */
 
 	public function canUse(&$model = null, $location = null, $event = null)
@@ -71,13 +71,15 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	}
 
 	/**
-	 * draws the form element
-* @param array data to preopulate element with
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		return '';
 		/*$name 			= $this->getHTMLName($repeatCounter);
@@ -91,8 +93,8 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 		 //but in table view when getting read only filter value from url filter this
 		 // _form_data was not set to no readonly value was returned
 		 // added little test to see if the data was actually an array before using it
-		 if (is_array($this->getFormModel()->_data)) {
-			$data 	=& $this->getFormModel()->_data;
+		 if (is_array($this->getFormModel()->data)) {
+			$data 	=& $this->getFormModel()->data;
 			}
 			$value 	= $this->getValue($data, $repeatCounter);
 			$type = "text";
@@ -143,11 +145,14 @@ class plgFabrik_ElementCount extends plgFabrik_Element {
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

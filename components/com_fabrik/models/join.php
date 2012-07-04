@@ -1,17 +1,25 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-class FabrikFEModelJoin extends FabModel{
+/**
+ * Fabrik Join Model
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
+class FabrikFEModelJoin extends FabModel
+{
 
 	/**
 	 * constructor
@@ -24,38 +32,71 @@ class FabrikFEModelJoin extends FabModel{
 	protected $id = null;
 
 	/** @var array join data to bind to Join table */
-	var $_data = null;
+	protected $data = null;
 
-	function __construct()
+	/**
+	 * Enter description here ...
+	 */
+
+	public function __construct()
 	{
 		parent::__construct();
 	}
 
-	function setId($id)
+	/**
+	 * Set the join id
+	 * 
+	 * @param   int  $id  join id
+	 * 
+	 * @return  void
+	 */
+
+	public function setId($id)
 	{
 		$this->id = $id;
 	}
-	
-	function getId()
+
+	/**
+	 * Get the join id
+	 * 
+	 * @return  int  join id
+	 */
+
+	public function getId()
 	{
 		return $this->id;
 	}
 
-	function setData($d)
+	/**
+	 * Set data
+	 * 
+	 * @param   array  $data  to set to
+	 * 
+	 * @return  void
+	 */
+
+	public function setData($data)
 	{
-		$this->_data = $d;
+		$this->data = $data;
 	}
 
-	function getJoin()
+	/**
+	 * Get Join
+	 * 
+	 * @return  FabTable
+	 */
+
+	public function getJoin()
 	{
 		if (!isset($this->join))
 		{
 			$this->join = FabTable::getInstance('join', 'FabrikTable');
-			if (isset($this->_data))
+			if (isset($this->data))
 			{
-				$this->join->bind($this->_data);
+				$this->join->bind($this->data);
 			}
-			else {
+			else
+			{
 				$this->join->load($this->_id);
 			}
 			if (is_string($this->join->params))
@@ -66,19 +107,28 @@ class FabrikFEModelJoin extends FabModel{
 		}
 		return $this->join;
 	}
-	
-	function clearJoin()
+
+	/**
+	 * Clear the join
+	 * 
+	 * @return  void
+	 */
+
+	public function clearJoin()
 	{
 		unset($this->join);
 	}
 
 	/**
-	 * load the model from the element id
-	 * $param string $key
-* @param   int $id
+	 * Load the model from the element id
+	 * 
+	 * @param   string  $key  db table key
+	 * @param   int     $id   key value
+	 * 
+	 * @return  FabTable  join
 	 */
 
-	function getJoinFromKey($key, $id)
+	public function getJoinFromKey($key, $id)
 	{
 		if (!isset($this->join))
 		{
@@ -89,25 +139,44 @@ class FabrikFEModelJoin extends FabModel{
 		return $this->join;
 	}
 
-	function getPrimaryKey($splitter = '___')
+	/**
+	 * Get join table's primary key
+	 * 
+	 * @param   string  $glue  between table and field name
+	 * 
+	 * @return  string
+	 */
+
+	public function getPrimaryKey($glue = '___')
 	{
 		$join = $this->getJoin();
-		$pk = $join->table_join . $splitter . $join->table_join_key;
+		$pk = $join->table_join . $glue . $join->table_join_key;
 		return $pk;
 	}
-	
+
+	/**
+	 * Set the join element ID
+	 * 
+	 * @param   int  $id  element id
+	 * 
+	 * @return  void
+	 */
+
 	public function setElementId($id)
 	{
 		$this->join->element_id = $id;
 	}
-	
+
 	/**
 	 * deletes the loaded join and then
 	 * removes all elements, groups & form group record
-* @param   int the group id that the join is linked to
+	 * 
+	 * @param   int  $groupId  the group id that the join is linked to
+	 * 
+	 * @return void/JError
 	 */
 
-	function deleteAll($groupId)
+	public function deleteAll($groupId)
 	{
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
@@ -138,10 +207,13 @@ class FabrikFEModelJoin extends FabModel{
 
 	/**
 	 * saves the table join data
-* @param array data to save
+	 * 
+	 * @param   array  $source  data to save
+	 * 
+	 * @return  bool
 	 */
 
-	function save($source)
+	public function save($source)
 	{
 		if (!$this->bind($source))
 		{
@@ -158,6 +230,5 @@ class FabrikFEModelJoin extends FabModel{
 		$this->_error = '';
 		return true;
 	}
-	
+
 }
-?>

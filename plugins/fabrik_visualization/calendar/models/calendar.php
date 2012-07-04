@@ -298,7 +298,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$tzoffset = $config->get('offset');
 		$tz = new DateTimeZone($tzoffset);
 		$this->setupEvents();
-		$calendar = $this->_row;
+		$calendar = $this->getRow();
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();
 		foreach ($this->_events as $listid	=> $record)
@@ -395,7 +395,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 		$this->setupEvents();
 		$tables = (array) $params->get('calendar_table');
 		$colour = (array) $params->get('colour');
-		$calendar = $this->_row;
+		$calendar = $this->getRow();
 		$aLegend = "$this->calName.addLegend([";
 		$jsevents = array();
 		foreach ($this->_events as $listid => $record)
@@ -418,7 +418,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization {
 	{
 		if (is_null($this->calName))
 		{
-			$calendar = $this->_row;
+			$calendar = $this->getRow();
 			$this->calName = 'oCalendar' . $calendar->id;
 		}
 		return $this->calName;

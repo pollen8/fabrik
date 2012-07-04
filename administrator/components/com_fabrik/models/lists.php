@@ -12,11 +12,11 @@ defined('_JEXEC') or die;
 require_once 'fabmodellist.php';
 
 /**
-* Fabrik Admin Lists Model
-*
-* @package  Fabrik
-* @since    3.0
-*/
+ * Fabrik Admin Lists Model
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabrikModelLists extends FabModelList
 {

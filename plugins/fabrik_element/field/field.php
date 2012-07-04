@@ -12,12 +12,16 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-class plgFabrik_ElementField extends plgFabrik_Element
+class PlgFabrik_ElementField extends PlgFabrik_Element
 {
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -25,7 +29,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		$params = $this->getParams();
 		$data = $this->numberFormat($data);
 		$format = $params->get('text_format_string');
-		if ($format  != '')
+		if ($format != '')
 		{
 			$data = sprintf($format, $data);
 		}
@@ -47,13 +51,15 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-* @param   array	data to preopulate element with
-* @param   int		repeat group counter
-	 * @return  string	returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -62,20 +68,21 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		//but in table view when getting read only filter value from url filter this
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
-		if (is_array($this->getFormModel()->_data))
+		if (is_array($this->getFormModel()->data))
 		{
-			$data = $this->getFormModel()->_data;
+			$data = $this->getFormModel()->data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 
 		// $$$ hugh - if the form just failed validation, number formatted fields will already
 		// be formatted, so we need to un-format them before formatting them!
 		// $$$ rob - well better actually check if we are coming from a failed validation then :)
-		if (JRequest::getCmd('task') == 'form.process') {
+		if (JRequest::getCmd('task') == 'form.process')
+		{
 			$value = $this->unNumberFormat($value);
 		}
 		$value = $this->numberFormat($value);
-		if (!$this->editable) 
+		if (!$this->editable)
 		{
 			$this->_guessLinkType($value, $data, $repeatCounter);
 			//$value = $this->numberFormat($value);
@@ -90,14 +97,14 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			{
 				$value = str_pad('', JString::strlen($value), '*');
 			}
-			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
+			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
 		//stop "'s from breaking the content out of the field.
 		// $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
 		//so add false flag to ensure its encoded once only
 		// $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
-		if (version_compare( phpversion(), '5.2.3', '<'))
+		if (version_compare(phpversion(), '5.2.3', '<'))
 		{
 			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 		}
@@ -112,9 +119,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	/**
 	 * format guess link type
 	 *
-* @param   string	$value
-* @param   array	data
-* @param   int		repeat counter
+	 * @param   string	$value
+	 * @param   array	data
+	 * @param   int		repeat counter
 	 */
 
 	function _guessLinkType(&$value, $data, $repeatCounter = 0)
@@ -146,9 +153,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		/*
 		if (!$guessed)
 		{
-			$this->addCustomLink($value, $data, $repeatCounter);
+		    $this->addCustomLink($value, $data, $repeatCounter);
 		}
-		*/
+		 */
 	}
 
 	/**
@@ -168,8 +175,8 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			case 'default':
 				$str = '';
 				break;
-		 	case 'lightbox':
-		 		FabrikHelperHTML::slimbox();
+			case 'lightbox':
+				FabrikHelperHTML::slimbox();
 				$str = ' rel="lightbox[]"';
 				break;
 		}
@@ -177,11 +184,14 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return  string	javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -190,10 +200,12 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
-	 * defines the type of database table field that is created to store the element's data
+	 * Get database field description
+	 * 
+	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
 		if ($this->encryptMe())
@@ -209,7 +221,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		{
 			case 'text':
 			default:
-				//$objtype = "VARCHAR(255)";
+			//$objtype = "VARCHAR(255)";
 				$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
 				break;
 			case 'integer':
@@ -230,13 +242,13 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	function getJoomfishOptions()
 	{
 		$params = $this->getParams();
-		$return  = array();
-		$size = (int)$this->getElement()->width;
+		$return = array();
+		$size = (int) $this->getElement()->width;
 		if ($size !== 0)
 		{
 			$return['length'] = $size;
 		}
-		$maxlength  = (int) $params->get('maxlength');
+		$maxlength = (int) $params->get('maxlength');
 		if ($maxlength === 0)
 		{
 			$maxlength = $size;
@@ -259,8 +271,8 @@ class plgFabrik_ElementField extends plgFabrik_Element
 
 	/**
 	 *  can be overwritten in add on classes
-* @param   mixed	thie elements posted form data
-* @param   array	posted form data
+	 * @param   mixed	thie elements posted form data
+	 * @param   array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -286,10 +298,10 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
-	* @since 3.0.4
-	* get the element's cell class
-	* @return  string	css classes
-	*/
+	 * @since 3.0.4
+	 * get the element's cell class
+	 * @return  string	css classes
+	 */
 
 	public function getCellClass()
 	{
@@ -300,7 +312,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		{
 			$classes .= ' ' . $format;
 		}
-		 return $classes;
+		return $classes;
 	}
 }
 ?>

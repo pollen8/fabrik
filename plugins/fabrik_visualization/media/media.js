@@ -25,10 +25,10 @@ var FbMediaViz = new Class({
 			    //'playlist.size': this.options.height,
 			    'skin': this.options.jw_skin,
 			    'modes': [
-			              {type: 'flash', src: this.options.jw_swf_url},
-			              {type: 'html5'},
-			              {type: 'download'}
-			              ]
+			        {type: 'flash', src: this.options.jw_swf_url},
+			        {type: 'html5'},
+			        {type: 'download'}
+			    ]
 			});			
 		}
 	}

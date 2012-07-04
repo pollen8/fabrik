@@ -13,10 +13,10 @@
 defined('_JEXEC') or die();
 
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormKunena extends plgFabrik_Form {
+class PlgFabrik_FormKunena extends PlgFabrik_Form {
 
 	var $vb_forum_field = '';
 	var $vb_path = '';

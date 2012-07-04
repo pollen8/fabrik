@@ -1,21 +1,22 @@
 <?php
 /**
-* Slightly modified fabriktimestamp element (see lines 49-52)
-* By Nathan Cook 4/22/2010
-*
-* Plugin element to render fields
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * Slightly modified fabriktimestamp element (see lines 49-52)
+ * By Nathan Cook 4/22/2010
+ *
+ * Plugin element to render fields
+ * @package fabrikar
+ * @author Rob Clayburn
+ * @copyright (C) Rob Clayburn
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementTimestamp extends plgFabrik_Element {
+class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
+{
 
 	protected $recordInDatabase = false;
 
@@ -30,15 +31,18 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 	}
 
 	/**
-	 * draws a field element
-* @param   int		repeat group counter
-	 * @return  string	returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
-		$id	= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$date = JFactory::getDate();
 		$config = JFactory::getConfig();
 		$tz = new DateTimeZone($config->get('offset'));
@@ -50,22 +54,28 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
-	
+
 	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$data = JHTML::_('date', $data, JText::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')));
 		return parent::renderListData($data, $thisRow);
 	}
+
 	/**
-	 * defines the type of database table field that is created to store the element's data
-	 * @return  string	db field description
+	 * Get database field description
+	 * 
+	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		$params = $this->getParams();
 		if ($params->get('encrypt', false))
@@ -81,7 +91,7 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 			return "TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP";
 		}
 	}
-	
+
 	function isHidden()
 	{
 		return true;

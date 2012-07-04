@@ -1,21 +1,43 @@
 <?php
 
+/**
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @since       1.6
+*/
+
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 
+/**
+* Fabrik Admin Upgrade Model
+*
+* @package  Fabrik
+* @since    3.0
+*/
 
 class FabrikModelUpgrade extends JModel
 {
 
+	/**
+	 * Construct
+	 * 
+	 * @param   array  $config  options
+	 */
+
 	public function __construct($config = array())
 	{
 		$this->fundleMenus();
-		if (!$this->shouldUpgrade()) {
+		if (!$this->shouldUpgrade())
+		{
 			JFactory::getApplication()->enqueueMessage('Already updated');
 			return parent::__construct($config);
 		}
-		if ($this->backUp()) {
+		if ($this->backUp())
+		{
 			$this->upgrade();
 		}
 		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
@@ -24,6 +46,8 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * back up the fabrik db tables and make copies of the data tables they use
+	 * 
+	 * @return  bool
 	 */
 
 	protected function backUp()
@@ -36,33 +60,42 @@ class FabrikModelUpgrade extends JModel
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$connModel = JModel::getInstance('Connection', 'FabrikFEModel');
 		$cnnTables = array();
-		foreach ($tables as $dbName => $item) {
+		foreach ($tables as $dbName => $item)
+		{
 			$connModel->setId($item->connection_id);
 			$connModel->getConnection($item->connection_id);
 			$cDb = $connModel->getDb();
-			if (!array_key_exists($item->connection_id, $cnnTables)) {
+			if (!array_key_exists($item->connection_id, $cnnTables))
+			{
 				$cnnTables[$item->connection_id] = $cDb->getTableList();
 			}
 			$listModel->set('connection', $connModel);
-			//drop the bkup table
-			$cDb->setQuery("DROP TABLE IF EXISTS ".$cDb->quoteName('bkup_'.$item->db_table_name));
-			if (!$cDb->query()) {
+			$qTable = $cDb->quoteName('bkup_' . $item->db_table_name);
+			$qItemTable = $cDb->quoteName($item->db_table_name);
+
+			// Drop the bkup table
+			$cDb->setQuery("DROP TABLE IF EXISTS " . $qTable);
+			if (!$cDb->query())
+			{
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
 			}
-			//test table exists
-			if (!in_array($item->db_table_name, $cnnTables[$item->connection_id])) {
+			// Test table exists
+			if (!in_array($item->db_table_name, $cnnTables[$item->connection_id]))
+			{
 				JError::raiseNotice(500, 'backup: table not found: ' . $item->db_table_name);
 				continue;
 			}
-			//create the bkup table (this method will also correctly copy table indexes
-			$cDb->setQuery("CREATE TABLE IF NOT EXISTS ".$cDb->quoteName('bkup_'.$item->db_table_name)." like ".$cDb->quoteName($item->db_table_name));
-			if (!$cDb->query()) {
+			// Create the bkup table (this method will also correctly copy table indexes
+			$cDb->setQuery("CREATE TABLE IF NOT EXISTS " . $qTable . " LIKE " . $qItemTable);
+			if (!$cDb->query())
+			{
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
 			}
-			$cDb->setQuery("INSERT INTO ".$cDb->quoteName('bkup_'.$item->db_table_name)." select * from ".$cDb->quoteName($item->db_table_name));
-			if (!$cDb->query()) {
+			$cDb->setQuery("INSERT INTO " . $qTable . " SELECT * FROM " . $qItemTable);
+			if (!$cDb->query())
+			{
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
 			}
@@ -72,40 +105,50 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * upgrade the database to fabrik3's structure.
+	 * 
+	 * @return  void
 	 */
 
-	protected function upgrade(){
+	protected function upgrade()
+	{
 		$db = JFactory::getDbo(true);
-		$updates = array('#__fabrik_elements', '#__fabrik_cron', '#__fabrik_forms', '#__fabrik_groups', '#__fabrik_joins', '#__fabrik_jsactions', '#__fabrik_tables', '#__fabrik_visualizations');
-		foreach ($updates as $update) {
+		$updates = array('#__fabrik_elements', '#__fabrik_cron', '#__fabrik_forms', '#__fabrik_groups', '#__fabrik_joins', '#__fabrik_jsactions',
+			'#__fabrik_tables', '#__fabrik_visualizations');
+		foreach ($updates as $update)
+		{
 			$db->setQuery("SELECT * FROM $update");
 			$rows = $db->loadObjectList();
-			if ($db->getErrorNum()) {
+			if ($db->getErrorNum())
+			{
 				JError::raiseError(500, $db->getErrorMsg());
 			}
-			foreach ($rows as $row) {
+			foreach ($rows as $row)
+			{
 				$json = json_decode($row->attribs);
-				if ($json == false) {
-					//only do this if the attribs are not already in json format
+				if ($json == false)
+				{
+					// Only do this if the attribs are not already in json format
 					$p = $this->fromAttribsToObject($row->attribs);
-					switch ($update) {
+					switch ($update)
+					{
 						case '#__fabrik_elements':
-							//elements had some fields moved into the attribs/params json object
-							if ($row->state == 0) {
+						// Elements had some fields moved into the attribs/params json object
+							if ($row->state == 0)
+							{
 								$row->state = -2;
 							}
-							$p->can_order = $row->can_order; 
+							$p->can_order = $row->can_order;
 							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;
 							$p->view_access = isset($p->view_access) ? $this->mapACL($p->view_access) : 1;
 							$p->filter_access = isset($p->filter_access) ? $this->mapACL($p->filter_access) : 1;
-										
+
 							$p->sum_access = isset($p->sum_access) ? $this->mapACL($p->sum_access) : 1;
 							$p->avg_access = isset($p->avg_access) ? $this->mapACL($p->avg_access) : 1;
 							$p->median_access = isset($p->median_access) ? $this->mapACL($p->median_access) : 1;
 							$p->count_access = isset($p->count_access) ? $this->mapACL($p->count_access) : 1;
-			
+
 							$subOpts = new stdClass;
-		
+
 							$subOts->sub_values = explode('|', $row->sub_values);
 							$subOts->sub_labels = explode('|', $row->sub_labels);
 							$subOts->sub_initial_selection = explode('|', $row->sub_intial_selection);
@@ -118,9 +161,9 @@ class FabrikModelUpgrade extends JModel
 							$p->allow_add = isset($p->allow_add) ? $this->mapACL($p->allow_add) : 1;
 							$p->allow_drop = isset($p->allow_drop) ? $this->mapACL($p->allow_drop) : 1;
 							break;
-							
+
 						case '#__fabrik_visualizations':
-							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;					
+							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;
 							break;
 					}
 					$row->attribs = json_encode($p);
@@ -128,72 +171,90 @@ class FabrikModelUpgrade extends JModel
 				}
 			}
 		}
-		//get the upgrade script
-		$sql = JFile::read(JPATH_SITE.'/administrator/components/com_fabrik/sql/updates/mysql/2.x-3.0.sql');
+		// Get the upgrade script
+		$sql = JFile::read(JPATH_SITE . '/administrator/components/com_fabrik/sql/updates/mysql/2.x-3.0.sql');
 		$prefix = JFactory::getApplication()->getCfg('dbprefix');
 		$sql = str_replace('#__', $prefix, $sql);
 		$sql = explode("\n", $sql);
-		foreach ($sql as $q) {
+		foreach ($sql as $q)
+		{
 			$db->setQuery($q);
-			if (trim($q) !== '') {
-				if (!$db->query()){
+			if (trim($q) !== '')
+			{
+				if (!$db->query())
+				{
 					JError::raiseNotice(500, $db->getErrorMsg());
 				}
 			}
 		}
-		
-		//run fabrik ratings outside mysql script as it may not exist and error
-		$db = JFactory::getDBO();
-		// Check if #__fabrik_ratings table exists
-		$fabrate = "SHOW TABLES LIKE '".$prefix."fabrik_ratings'";
-		$db->setQuery($fabrate);
-		$rateresult = $db->loadObjectList(); 
-		if (!count($rateresult)) {
-			}
-			else 
-			{
-		$db->setQuery ("ALTER TABLE ".$prefix."fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL"); 
-		$db->query();
 
+		// Run fabrik ratings outside mysql script as it may not exist and error
+		$db = JFactory::getDBO();
+
+		// Check if #__fabrik_ratings table exists
+		$fabrate = "SHOW TABLES LIKE '" . $prefix . "fabrik_ratings'";
+		$db->setQuery($fabrate);
+		$rateresult = $db->loadObjectList();
+		if (!count($rateresult))
+		{
 		}
-		
+		else
+		{
+			$db->setQuery("ALTER TABLE " . $prefix . "fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL");
+			$db->query();
+		}
 	}
-	
+
+	/**
+	 * Hack #__menu table to update them for Fabrik3 url structure
+	 * 
+	 * @return  void
+	 */
+
 	protected function fundleMenus()
 	{
 		$db = JFactory::getDbo();
 		$db->setQuery('select extension_id FROM 	#__extensions WHERE type = "component" and element = "com_fabrik"');
 		$cid = (int) $db->loadResult();
-		$db->setQuery('UPDATE #__menu SET component_id = '.$cid .' WHERE link LIKE \'%com_fabrik%\'');
+		$db->setQuery('UPDATE #__menu SET component_id = ' . $cid . ' WHERE link LIKE \'%com_fabrik%\'');
 		$db->query();
-		
-		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'view=table', 'view=list') WHERE component_id = ".$cid);
+
+		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'view=table', 'view=list') WHERE component_id = " . $cid);
 		echo $db->getQuery() . "<br>";
 		$db->query();
-		
-		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'tableid=', 'listid=') WHERE component_id = ".$cid);
+
+		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'tableid=', 'listid=') WHERE component_id = " . $cid);
 		echo $db->getQuery() . "<br>";
 		$db->query();
-		
-		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'fabrik=', 'formid=') WHERE component_id = ".$cid);
+
+		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'fabrik=', 'formid=') WHERE component_id = " . $cid);
 		echo $db->getQuery() . "<br>";
 		$db->query();
 	}
 
 	/**
 	 * convert old skool J1.5 attribs into json object
+	 * 
+	 * @param   string  $str  f2 parameters string
+	 * 
+	 * @return  object
 	 */
 
-	protected function fromAttribsToObject($str) {
+	protected function fromAttribsToObject($str)
+	{
 		$o = new stdClass;
 		$a = explode("\n", $str);
-		foreach ($a as $line) {
-			if (strstr($line, '=')) { 
+		foreach ($a as $line)
+		{
+			if (strstr($line, '='))
+			{
 				list($key, $val) = explode("=", $line, 2);
-				if (strstr($val, '//..*..//')) {
+				if (strstr($val, '//..*..//'))
+				{
 					$val = explode('//..*..//', $val);
 				}
-				if ($key) {
+				if ($key)
+				{
 					$o->$key = $val;
 				}
 			}
@@ -203,13 +264,16 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * maps the fabrik2 user gid to a roughly corresponding J1.7 acl group
-* @param   int $v gid
+	 * 
+	 * @param   int  $v  gid
+	 * 
 	 * @return int group id
 	 */
 
 	protected function mapACL($v)
 	{
-		switch ($v) {
+		switch ($v)
+		{
 			case 0:
 			case 29:
 				$group = 1;
@@ -226,6 +290,7 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * get all the db tables which have _fabrik_ as part of their names
+	 * 
 	 * @return array of objects each with db_table_name and connection_id property
 	 */
 
@@ -234,9 +299,11 @@ class FabrikModelUpgrade extends JModel
 		$db = JFactory::getDbo(true);
 		$r = array();
 		$db->setQuery("SHOW TABLES");
-		$rows = $db->loadResultArray();
-		foreach ($rows as $row) {
-			if (strstr($row, '_fabrik_') && !strstr($row, 'bkup_')) {
+		$rows = $db->loadColumn();
+		foreach ($rows as $row)
+		{
+			if (strstr($row, '_fabrik_') && !strstr($row, 'bkup_'))
+			{
 				$o = new stdClass;
 				$o->db_table_name = $row;
 				$o->connection_id = 1;
@@ -247,6 +314,7 @@ class FabrikModelUpgrade extends JModel
 	}
 	/**
 	 * check for an existence of _fabrik_tables table if there is then we should upgrade
+	 * 
 	 * @return  bool
 	 */
 
@@ -254,9 +322,11 @@ class FabrikModelUpgrade extends JModel
 	{
 		$db = JFactory::getDbo(true);
 		$db->setQuery("SHOW TABLES");
-		$rows = $db->loadResultArray();
-		foreach ($rows as $row) {
-			if (strstr($row, '_fabrik_tables') && !strstr($row, 'bkup_')) {
+		$rows = $db->loadColumn();
+		foreach ($rows as $row)
+		{
+			if (strstr($row, '_fabrik_tables') && !strstr($row, 'bkup_'))
+			{
 				return true;
 			}
 		}

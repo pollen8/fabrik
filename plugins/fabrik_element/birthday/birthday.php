@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 //jimport('joomla.application.component.model');
 
-class plgFabrik_ElementBirthday extends plgFabrik_Element
+class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 {
 
 	public $hasSubElements = true;
@@ -20,41 +20,45 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	protected $fieldDesc = 'DATE';
 
 	/**
-	 * draws the form element
-* @param array data to preopulate element with
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		//Jaanus: needed also here to not to show 0000-00-00 in detail view;
 		//see also 58, added && !in_array($value, $aNullDates) (same reason).
 		$db = JFactory::getDbo();
-		$aNullDates = array('0000-00-000000-00-00','0000-00-00 00:00:00','0000-00-00','', $db->getNullDate());
+		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'), JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'), JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
-		$monthnumbers = array('01','02','03','04','05','06','07','08','09','10','11','12');
-		$daysys = array('01','02','03','04','05','06','07','08','09');
-		$daysimple = array('1','2','3','4','5','6','7','8','9');
+		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
+			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
+		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
+			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
+		$monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
+		$daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
+		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
 
 		$bits = array();
 		// $$$ rob - not sure why we are setting $data to the form's data
 		//but in table view when getting read only filter value from url filter this
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
-		if (is_array($this->getFormModel()->_data))
+		if (is_array($this->getFormModel()->data))
 		{
-			$data = $this->getFormModel()->_data;
+			$data = $this->getFormModel()->data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_date_format', 'd.m.Y');
 		$dateandage = (int) $params->get('details_dateandage', '0');
-		
+
 		if (!$this->editable)
 		{
 			if (!in_array($value, $aNullDates))
@@ -67,35 +71,38 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				$nextyear = date('Y') + 1;
 				$lastyear = date('Y') - 1;
 				// $$$ rob - all this below is nice but ... you still need to set a default
-				$detailvalue= '';
+				$detailvalue = '';
 				$year = JString::ltrim($year, '0');
 				if (FabrikWorker::isDate($value))
 				{
 					$date = JFactory::getDate($value);
 					$detailvalue = $date->toFormat($fd);
 				}
-				if (date('m-d') < $month.'-'.$day) {
+				if (date('m-d') < $month . '-' . $day)
+				{
 					$ageyear = $lastyear;
 				}
 				else
 				{
 					$ageyear = $thisyear;
 				}
-				if ($fd == 'd.m.Y') {
+				if ($fd == 'd.m.Y')
+				{
 					$detailvalue = $day . '.' . $month . '.' . $year;
 				}
 				else
 				{
-					if ($fd == 'm.d.Y') {
+					if ($fd == 'm.d.Y')
+					{
 						$detailvalue = $month . '/' . $day . '/' . $year;
 					}
 					if ($fd == 'D. month YYYY')
 					{
-						$detailvalue = $daydisp.'. '.$monthdisp.' '.$year;
+						$detailvalue = $daydisp . '. ' . $monthdisp . ' ' . $year;
 					}
 					if ($fd == 'Month d, YYYY')
 					{
-						$detailvalue = $monthdisp.' '.$daydisp.', '.$year;
+						$detailvalue = $monthdisp . ' ' . $daydisp . ', ' . $year;
 					}
 					if ($fd == '{age}')
 					{
@@ -103,16 +110,16 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 					}
 					if ($fd == '{age} d.m')
 					{
-						$mdvalue = $daydisp.'. '.$monthdisp;
+						$mdvalue = $daydisp . '. ' . $monthdisp;
 					}
 					if ($fd == '{age} m.d')
 					{
-						$mdvalue = $monthdisp.' '.$daydisp;
+						$mdvalue = $monthdisp . ' ' . $daydisp;
 					}
 					if ($fd == '{age} d.m' || $fd == '{age} m.d')
 					{
 						$detailvalue = $ageyear - $year; // always actual age
-						if (date('m-d') == $month.'-'.$day)
+						if (date('m-d') == $month . '-' . $day)
 						{
 							$detailvalue .= '<font color = "#CC0000"><b> ' . JText::_('TODAY') . '!</b></font>';
 							if (date('m') == '12')
@@ -125,13 +132,14 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 							$detailvalue .= ' (' . $mdvalue;
 							if (date('m-d') < $month . '-' . $day)
 							{
-								$detailvalue .= ': '.($thisyear - $year);
+								$detailvalue .= ': ' . ($thisyear - $year);
 							}
 							else
 							{
 								$detailvalue .= '';
 							}
-							if (date('m') == '12') {
+							if (date('m') == '12')
+							{
 								$detailvalue .= ' / ' . $nextyear . ': ' . ($nextyear - $year);
 							}
 							else
@@ -141,15 +149,16 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 							$detailvalue .= ')';
 						}
 					}
-					else {
+					else
+					{
 						if ($fd != '{age}' && $dateandage == 1)
 						{
-							$detailvalue .= ' ('. ($ageyear - $year) . ')';
+							$detailvalue .= ' (' . ($ageyear - $year) . ')';
 						}
 					}
 				}
 				$value = $this->_replaceWithIcons($detailvalue);
-				return($element->hidden == '1') ? "<!-- " . $detailvalue . " -->" : $detailvalue;
+				return ($element->hidden == '1') ? "<!-- " . $detailvalue . " -->" : $detailvalue;
 			}
 			else
 			{
@@ -171,7 +180,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 			}
 			$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', JText::_('MONTH'))));
 			//siin oli enne $monthlabels, viisin ülespoole
-			for ($i = 0; $i<count($monthlabels); $i++)
+			for ($i = 0; $i < count($monthlabels); $i++)
 			{
 				$months[] = JHTML::_('select.option', $i + 1, $monthlabels[$i]);
 			}
@@ -186,34 +195,39 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				$years[] = JHTML::_('select.option', $i);
 			}
 			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-			$attribs = 'class="fabrikinput inputbox'.$errorCSS.'"';
+			$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
-			$str[] = '<div class="fabrikSubElementContainer" id="'.$id.'">';
+			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 			//$name already suffixed with [] as element hasSubElements = true
-			$str[] = JHTML::_('select.genericlist', $days, preg_replace('#(\[\])$#','[0]',$name), $attribs, 'value', 'text', $dayvalue);
-			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' ' .JHTML::_('select.genericlist', $months, preg_replace('#(\[\])$#','[1]',$name), $attribs, 'value', 'text', $monthvalue);
-			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' ' .JHTML::_('select.genericlist', $years, preg_replace('#(\[\])$#','[2]',$name), $attribs, 'value', 'text', $yearvalue);
+			$str[] = JHTML::_('select.genericlist', $days, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $dayvalue);
+			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' '
+				. JHTML::_('select.genericlist', $months, preg_replace('#(\[\])$#', '[1]', $name), $attribs, 'value', 'text', $monthvalue);
+			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' '
+				. JHTML::_('select.genericlist', $years, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $yearvalue);
 			$str[] = '</div>';
 			return implode("\n", $str);
 		}
 	}
 
 	/**
-	 * can be overwritten by plugin class
-	 * determines the value for the element in the form view
-* @param array data
-* @param   int when repeating joinded groups we need to know what part of the array to access
-* @param array options
-	 * @return string value
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
+	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		//@TODO rename $this->defaults to $this->values
-		if (!isset($this->defaults)) {
+		// @TODO rename $this->defaults to $this->values
+		if (!isset($this->defaults))
+		{
 			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults)) {
+		if (!array_key_exists($repeatCounter, $this->defaults))
+		{
 			$groupModel = $this->getGroup();
 			$joinid = $groupModel->getGroup()->join_id;
 			$formModel = $this->getForm();
@@ -224,65 +238,92 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . "_raw";
-			if ($groupModel->isJoin()) {
-				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])) {
-					if ($groupModel->canRepeat()) {
+			if ($groupModel->isJoin())
+			{
+				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]))
+				{
+					if ($groupModel->canRepeat())
+					{
 
-						if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname])) {
+						if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname]))
+						{
 							$value = $data['join'][$joinid][$rawname][$repeatCounter];
-						} else {
-							if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+						}
+						else
+						{
+							if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+							{
 								$value = $data['join'][$joinid][$name][$repeatCounter];
 							}
 						}
-					} else {
-						$value = JArrayHelper::getValue($data['join'][$joinid], $rawname, JArrayHelper::getValue($data['join'][$joinid], $name, $value));
+					}
+					else
+					{
+						$value = JArrayHelper::getValue($data['join'][$joinid], $rawname,
+							JArrayHelper::getValue($data['join'][$joinid], $name, $value));
 
 						// $$$ rob if you have 2 tbl joins, one repeating and one not
 						// the none repeating one's values will be an array of duplicate values
 						// but we only want the first value
-						if (is_array($value)) {
+						if (is_array($value))
+						{
 							$value = array_shift($value);
 						}
 					}
 				}
-			} else {
-				if ($groupModel->canRepeat()) {
+			}
+			else
+			{
+				if ($groupModel->canRepeat())
+				{
 					//repeat group NO join
 					$thisname = $rawname;
-					if (!array_key_exists($name, $data)) {
+					if (!array_key_exists($name, $data))
+					{
 						$thisname = $name;
 					}
-					if (array_key_exists($thisname, $data)) {
-						if (is_array($data[$thisname])) {
+					if (array_key_exists($thisname, $data))
+					{
+						if (is_array($data[$thisname]))
+						{
 							//occurs on form submission for fields at least
 							$a = $data[$thisname];
-						} else {
+						}
+						else
+						{
 							//occurs when getting from the db
 							$a = FabrikWorker::JSONtoData($data[$thisname], true); //json_decode($data[$thisname]);
 						}
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
 					}
 
-				} else {
-					if (!is_array($data)) {
+				}
+				else
+				{
+					if (!is_array($data))
+					{
 						$value = $data;
-					} else {
+					}
+					else
+					{
 						$value = JArrayHelper::getValue($data, $name, JArrayHelper::getValue($data, $rawname, $value));
 					}
 				}
 			}
 
-			if (is_array($value)) {
+			if (is_array($value))
+			{
 				$value = implode(',', $value);
 			}
-			if ($value === '') {
+			if ($value === '')
+			{
 				//query string for joined data
 				$value = JArrayHelper::getValue($data, $name, $value);
 			}
 			//@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
 			//stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
+			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			$this->defaults[$repeatCounter] = $value;
@@ -292,8 +333,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-* @param mixed the elements posted form data
-* @param array posted form data
+	 * @param mixed the elements posted form data
+	 * @param   array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -303,55 +344,61 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		/*
 		$groupModel = $this->getGroup();
 		if ($groupModel->canRepeat()) {
-			if (is_array($val)) {
-				$res = array();
-				foreach ($val as $v) {
-					$res[] = $this->_indStoreDBFormat($v);
-				}
-				return json_encode($res);
-			}
+		    if (is_array($val)) {
+		        $res = array();
+		        foreach ($val as $v) {
+		            $res[] = $this->_indStoreDBFormat($v);
+		        }
+		        return json_encode($res);
+		    }
 		}
-		*/
+		 */
 		return $this->_indStoreDBFormat($val);
 	}
 
 	/**
 	 * get the value to store the value in the db
 	 *
-* @param   mixed	$val (array normally but string on csv import)
+	 * @param   mixed	$val (array normally but string on csv import)
 	 * @return  string	yyyy-mm-dd
 	 */
-		//Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well) empty data is always NULL otherwise nulldate is displayed in its views. 
-		//TODO: if NULL value is the first in repeated group then in list view whole group is empty. Could anyone find a solution? I give up :-(
+	//Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well) empty data is always NULL otherwise nulldate is displayed in its views. 
+	//TODO: if NULL value is the first in repeated group then in list view whole group is empty. Could anyone find a solution? I give up :-(
 
 	private function _indStoreDBFormat($val)
 	{
 		$params = $this->getParams();
-		if ($params->get('empty_is_null') == 1) {
-			if (is_array($val) && !in_array('',$val)) {
-			return $val[2].'-'.$val[1].'-'.$val[0];
+		if ($params->get('empty_is_null') == 1)
+		{
+			if (is_array($val) && !in_array('', $val))
+			{
+				return $val[2] . '-' . $val[1] . '-' . $val[0];
 			}
 		}
-		else {
-		return is_array($val) ? $val[2].'-'.$val[1].'-'.$val[0] : '';
+		else
+		{
+			return is_array($val) ? $val[2] . '-' . $val[1] . '-' . $val[0] : '';
 		}
 	}
 
 	/**
 	 * used in isempty validation rule
 	 *
-* @param array $data
+	 * @param   array $data
 	 * @return  bool
 	 */
 
-	function dataConsideredEmpty($data, $repeatCounter)
+	public function dataConsideredEmpty($data, $repeatCounter)
 	{
-		if (strstr($data, ',')) {
+		if (strstr($data, ','))
+		{
 			$data = explode(',', $data);
 		}
 		$data = (array) $data;
-		foreach ($data as $d) {
-			if (trim($d) == '') {
+		foreach ($data as $d)
+		{
+			if (trim($d) == '')
+			{
 				return true;
 			}
 		}
@@ -359,11 +406,14 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -371,16 +421,26 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		return "new FbBirthday('$id', $opts)";
 	}
 
+	/**
+	* Shows the data formatted for the list view
+	*
+	* @param   string  $data      elements data
+	* @param   object  &$thisRow  all the data in the lists current row
+	*
+	* @return  string	formatted value
+	*/
+
 	public function renderListData($data, &$thisRow)
 	{
 		$db = FabrikWorker::getDbo();
-		$aNullDates = array('0000-00-000000-00-00','0000-00-00 00:00:00','0000-00-00','', $db->getNullDate());
+		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 		$params = $this->getParams();
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'), JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
-		$monthnumbers = array('01','02','03','04','05','06','07','08','09','10','11','12');
-		$daysys = array('01','02','03','04','05','06','07','08','09');
-		$daysimple = array('1','2','3','4','5','6','7','8','9');
-		$jubileum = array('0','25','75');
+		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
+			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
+		$monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
+		$daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
+		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
+		$jubileum = array('0', '25', '75');
 		$groupModel = $this->getGroup();
 		//Jaanus: json_decode replaced with FabrikWorker::JSONtoData that made visible also single data in repeated group
 		//Jaanus: removed condition canrepeat() from renderListData: weird result such as 05",null,"1940.07.["1940 (2011) when not repeating but still join and merged. Using isJoin() instead
@@ -391,10 +451,8 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		$fta = $params->get('list_age_format', 'no');
 		$format = array();
 
-
-
-
-		foreach ($data as $d) {
+		foreach ($data as $d)
+		{
 			if (!in_array($d, $aNullDates))
 			{
 				// $$$ rob default to a format date
@@ -438,11 +496,11 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 				}
 				else
 				{
-					if (date('m-d') == $month.'-'.$day)
+					if (date('m-d') == $month . '-' . $day)
 					{
 						if ($fta == '{age}')
 						{
-							$format[] = '<font color ="#DD0000"><b>' . ($thisyear - $year)."</b></font>";
+							$format[] = '<font color ="#DD0000"><b>' . ($thisyear - $year) . "</b></font>";
 						}
 						else
 						{
@@ -490,24 +548,24 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 							{
 								if ($fta == '{age} this')
 								{
-									if (in_array(substr(($thisyear - $year),-1), $jubileum) || in_array(substr(($thisyear - $year), -2), $jubileum))
+									if (in_array(substr(($thisyear - $year), -1), $jubileum) || in_array(substr(($thisyear - $year), -2), $jubileum))
 									{
-										$format[] = '<b>'.($thisyear - $year).' ('.$datedisp.')</b>';
+										$format[] = '<b>' . ($thisyear - $year) . ' (' . $datedisp . ')</b>';
 									}
 									else
 									{
-										$format[] = ($thisyear - $year).' ('.$datedisp.')';
+										$format[] = ($thisyear - $year) . ' (' . $datedisp . ')';
 									}
 								}
 								if ($fta == '{age} next')
 								{
-									if (in_array(substr(($nextyear - $year), -1), $jubileum) || in_array(substr(($nextyear - $year),-2),$jubileum))
+									if (in_array(substr(($nextyear - $year), -1), $jubileum) || in_array(substr(($nextyear - $year), -2), $jubileum))
 									{
 										$format[] = '<b>' . ($nextyear - $year) . ' (' . $datedisp . ')</b>';
 									}
 									else
 									{
-										$format[] = ($nextyear - $year).' ('.$datedisp.')';
+										$format[] = ($nextyear - $year) . ' (' . $datedisp . ')';
 									}
 								}
 							}

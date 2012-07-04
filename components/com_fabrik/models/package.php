@@ -15,7 +15,7 @@ class FabrikFEModelPackage extends FabModel
 {
 
 	/** @var array of table objects */
-	var $_tables = array();
+	protected $tables = array();
 
 	/** @var object importer */
 	var $_importer = null;
@@ -232,12 +232,12 @@ class FabrikFEModelPackage extends FabModel
 			{
 				$viewModel = JModel::getInstance('view', 'FabrikFEModel');
 				$viewModel->setId($id);
-				$this->_tables[] = $viewModel->getTable();
+				$this->tables[] = $viewModel->getTable();
 				$formModel = $viewModel->getFormModel();
-				$this->_forms[] = $formModel->getForm();
+				$this->forms[] = $formModel->getForm();
 			}
 		}
-		return $this->_tables;
+		return $this->tables;
 	}
 
 	/**
@@ -246,11 +246,11 @@ class FabrikFEModelPackage extends FabModel
 
 	function publish($state)
 	{
-		foreach ($this->_tables as $oTable)
+		foreach ($this->tables as $oTable)
 		{
 			$oTable->publish($oTable->id, $state);
 		}
-		parent::publish( $this->id, $state);
+		parent::publish($this->id, $state);
 	}
 
 }

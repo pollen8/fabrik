@@ -1,21 +1,22 @@
 <?php
 /**
-* Plugin element to render a timestamp field
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * Plugin element to render a timestamp field
+ * @package fabrikar
+ * @author Rob Clayburn
+ * @copyright (C) Rob Clayburn
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 require_once(JPATH_SITE . '/plugins/fabrik_element/date/date.php');
 
-class plgFabrik_ElementTimer extends plgFabrik_Element {
+class PlgFabrik_ElementTimer extends PlgFabrik_Element
+{
 
 	var $hasSubElements = false;
 
@@ -23,29 +24,34 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 	/**
 	 * formats the posted data for insertion into the database
-* @param mixed thie elements posted form data
-* @param array posted form data
+	 * @param mixed thie elements posted form data
+	 * @param   array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
 	{
-		$return =  "0000-00-00 " . $val;
+		$return = "0000-00-00 " . $val;
 		$format = '%Y-%m-%d %H:%i:%s';
-		$timebits = FabrikWorker::strToDateTime( $return, $format);
-		$return = date( 'Y-m-d H:i:s', $timebits['timestamp']);
+		$timebits = FabrikWorker::strToDateTime($return, $format);
+		$return = date('Y-m-d H:i:s', $timebits['timestamp']);
 		return $return;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
 	{
-		if ($data != '') {
+		if ($data != '')
+		{
 			$format = '%Y-%m-%d %H:%i:%s';
-			$timebits = FabrikWorker::strToDateTime( $data, $format);
+			$timebits = FabrikWorker::strToDateTime($data, $format);
 			$data = date('H:i:s', $timebits['timestamp']);
 		}
 		return $data;
@@ -60,26 +66,31 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 		return true;
 	}
 
-		/**
-	 * draws the form element
-* @param array data to preopulate element with
-* @param   int repeat group counter
-	 * @return string returns element html
+	/**
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
-		$element 	= $this->getElement();
-		$size 		= $params->get('timer_width', 9);
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = &$this->getParams();
+		$element = $this->getElement();
+		$size = $params->get('timer_width', 9);
 
 		//$value = $element->default;
-		$value 	= $this->getValue($data, $repeatCounter);
-		if ($value == '') {
+		$value = $this->getValue($data, $repeatCounter);
+		if ($value == '')
+		{
 			$value = '00:00:00';
-		} else {
+		}
+		else
+		{
 			$value = explode(" ", $value);
 			$value = array_pop($value);
 		}
@@ -88,20 +99,24 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 		{
 			$type .= " elementErrorHighlight";
 		}
-		if ($element->hidden == '1') {
+		if ($element->hidden == '1')
+		{
 			$type = "hidden";
 		}
-		$sizeInfo =  " size=\"$size\" ";
-		if ($params->get('timer_readonly')) {
+		$sizeInfo = " size=\"$size\" ";
+		if ($params->get('timer_readonly'))
+		{
 			$sizeInfo .= " readonly=\"readonly\" ";
 			$type .= " readonly";
 		}
-		if (!$this->editable) {
-			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
+		if (!$this->editable)
+		{
+			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
 		$str = "<input class=\"fabrikinput inputbox $type\" type=\"$type\" name=\"$name\" id=\"$id\" $sizeInfo value=\"$value\" />\n";
-		if (!$params->get('timer_readonly')) {
+		if (!$params->get('timer_readonly'))
+		{
 			$str .= "<input type=\"button\" id=\"{$id}_button\" value=\"" . JText::_('PLG_ELEMENT_TIMER_START') . "\" />";
 		}
 		return $str;
@@ -127,7 +142,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	/**
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
-* @param   array	$data to sum
+	 * @param   array	$data to sum
 	 * @return  string	sum result
 	 */
 
@@ -143,12 +158,12 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 	/**
 	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-* @param   model	$listModel
-* @param   string	$label the label to apply to each avg
+	 * @param   model	$listModel
+	 * @param   string	$label the label to apply to each avg
 	 * @return  string	sql statement
 	 */
 
-	protected function getAvgQuery(&$listModel, $label = "'calc'" )
+	protected function getAvgQuery(&$listModel, $label = "'calc'")
 	{
 		$table = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
@@ -159,12 +174,12 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 
 	/**
 	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-* @param   model	$listModel
-* @param   string	$label the label to apply to each avg
+	 * @param   model	$listModel
+	 * @param   string	$label the label to apply to each avg
 	 * @return  string	sql statement
 	 */
 
-	protected function getMedianQuery(&$listModel, $label = "'calc'" )
+	protected function getMedianQuery(&$listModel, $label = "'calc'")
 	{
 		$table = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
@@ -176,7 +191,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	/**
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
-* @param   array	$data to sum
+	 * @param   array	$data to sum
 	 * @return  string	sum result
 	 */
 
@@ -198,7 +213,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	 * get the value to use for graph calculations
 	 * can be overwritten in plugin
 	 * see fabriktimer which converts the value into seconds
-* @param   string	$v
+	 * @param   string	$v
 	 * @return  mixed
 	 */
 

@@ -11,7 +11,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
+// Require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
@@ -51,7 +51,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 		if (!empty($user_field))
 		{
 			// $$$ the array thing needs fixing, for now just grab 0
-			$formdata = $elementModel->getForm()->_formData;
+			$formdata = $elementModel->getForm()->formData;
 			$user_id = JArrayHelper::getValue($formdata, $user_fullName . '_raw', JArrayHelper::getValue($formdata, $user_fullName, ''));
 			if (is_array($user_id))
 			{

@@ -1,32 +1,36 @@
 <?php
 /**
-* Plugin element to js periodical
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * Plugin element to js periodical
+ * @package fabrikar
+ * @author Rob Clayburn
+ * @copyright (C) Rob Clayburn
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
+class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 {
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
 		$format = $params->get('text_format_string');
-		if ($format  != '')
+		if ($format != '')
 		{
-			 $str = sprintf($format, $data);
-			 $data = eval($str);
+			$str = sprintf($format, $data);
+			$data = eval($str);
 		}
 		return parent::renderListData($data, $thisRow);
 	}
@@ -40,22 +44,25 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 		return true;
 	}
 
-		/**
-	 * draws the form element
-* @param array data to preopulate element with
-* @param   int repeat group counter
-	 * @return string returns element html
+	/**
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
-		$name 			= $this->getHTMLName($repeatCounter);
-		$id 				= $this->getHTMLId($repeatCounter);
-		$params 		=& $this->getParams();
-		$element 		= $this->getElement();
-		$size 			= $element->width;
-		$maxlength  = $params->get('maxlength', 0);
-		if ((int) $maxlength === 0) {
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$size = $element->width;
+		$maxlength = $params->get('maxlength', 0);
+		if ((int) $maxlength === 0)
+		{
 			$maxlength = $size;
 		}
 
@@ -65,20 +72,24 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 		{
 			$type .= " elementErrorHighlight";
 		}
-		if ($element->hidden == '1') {
+		if ($element->hidden == '1')
+		{
 			$type = "hidden";
 		}
-		$sizeInfo =  " size=\"$size\" maxlength=\"$maxlength\"";
+		$sizeInfo = " size=\"$size\" maxlength=\"$maxlength\"";
 		if (!$this->editable)
 		{
 			$format = $params->get('text_format_string');
-			if ($format  != '')
+			if ($format != '')
 			{
-				 $value =  eval(sprintf($format,$value));
+				$value = eval(sprintf($format, $value));
 			}
-			if ($element->hidden == '1') {
+			if ($element->hidden == '1')
+			{
 				return "<!--" . $value . "-->";
-			} else {
+			}
+			else
+			{
 				return $value;
 			}
 		}
@@ -88,11 +99,14 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
@@ -104,16 +118,20 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 	}
 
 	/**
-	 * defines the type of database table field that is created to store the element's data
+	 * Get database field description
+	 * 
+	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
-		if ($this->encryptMe()) {
+		if ($this->encryptMe())
+		{
 			return 'BLOB';
 		}
-		switch ( $p->get('text_format')) {
+		switch ($p->get('text_format'))
+		{
 			case 'text':
 			default:
 				$objtype = "VARCHAR(255)";

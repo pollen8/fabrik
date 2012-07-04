@@ -10,17 +10,18 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementCalc extends plgFabrik_Element
+class PlgFabrik_ElementCalc extends PlgFabrik_Element
 {
 
 	/**
-	 * this really does get just the default value (as defined in the element's settings)
-* @param   array	data
-* @param   int		repeat counter
-	 * @return  string
+	 * This really does get just the default value (as defined in the element's settings)
+	 * 
+	 * @param   array  $data  form data
+	 * 
+	 * @return mixed 
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->default))
 		{
@@ -95,13 +96,15 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		{
 			if ($groupModel->canRepeat())
 			{
-				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
+					&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
 				{
 					$default = $data['join'][$joinid][$name][$repeatCounter];
 				}
 				else
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
+						&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
 					{
 						$default = $data['join'][$joinid][$name][$repeatCounter];
 					}
@@ -109,13 +112,15 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			}
 			else
 			{
-				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]))
+				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
+					&& array_key_exists($name, $data['join'][$joinid]))
 				{
 					$default = $data['join'][$joinid][$name];
 				}
 				else
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($rawname, $data['join'][$joinid]))
+					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
+						&& array_key_exists($rawname, $data['join'][$joinid]))
 					{
 						$default = $data['join'][$joinid][$rawname];
 					}
@@ -175,16 +180,18 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		return $default;
 	}
-	
+
 	/**
-	 * determines the value for the element in the form view
-* @param   array	data
-* @param   int		when repeating joinded groups we need to know what part of the array to access
-* @param   array	options
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
 	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		if (!isset($this->defaults) || is_null($this->defaults))
 		{
@@ -196,8 +203,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$element->default = $this->_getV($data, $repeatCounter);
 			if ($element->default === '')
 			{ //query string for joined data
-				// $$$ rob commented out as $name not defined and not sure what t should be
-				//$element->default = JArrayHelper::getValue($data, $name);
+			// $$$ rob commented out as $name not defined and not sure what t should be
+			//$element->default = JArrayHelper::getValue($data, $name);
 			}
 			$formModel = $this->getForm();
 			//stops this getting called from form validation code as it messes up repeated/join group validations
@@ -217,7 +224,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	/**
 	 * run on formModel::setFormData()
 	 * set before form is validated
-* @param   int		repeat group counter
+	 * @param   int		repeat group counter
 	 * @return  null
 	 */
 
@@ -226,7 +233,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$form = $this->getForm();
-		$d = $form->_formData;
+		$d = $form->formData;
 		$joindata = JArrayHelper::getValue($d, 'join', array());
 		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
@@ -259,7 +266,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			if ($group->isJoin())
 			{
 				$key = str_replace("][", '.', $key);
-				$key = str_replace(array('[',']'), '.', $key) . $c;
+				$key = str_replace(array('[', ']'), '.', $key) . $c;
 				$rawkey = str_replace($shortkey, $shortkey . '_raw', $key);
 			}
 			else
@@ -270,7 +277,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		else
 		{
-			if ($group->isJoin()) {
+			if ($group->isJoin())
+			{
 				$key = str_replace('][', '.', $key);
 				$key = str_replace(array('[', ']'), '.', $key);
 				$key = rtrim($key, '.');
@@ -318,7 +326,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::preFormatFormJoins()
+	 * @see PlgFabrik_Element::preFormatFormJoins()
 	 */
 
 	public function preFormatFormJoins($element_data, $row)
@@ -349,7 +357,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$d = $data;
 			$res = $listModel->parseMessageForRowHolder($cal, $data, true);
 			$res = @eval($res);
-			FabrikWorker::logEval($res, 'Caught exception on eval in '.$element->name.'::renderListData() : %s');
+			FabrikWorker::logEval($res, 'Caught exception on eval in ' . $element->name . '::renderListData() : %s');
 			if ($format != '')
 			{
 				$res = sprintf($format, $res);
@@ -363,9 +371,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * fudge the CSV export so that we get the calculated result regardless of whether
-	 * the value has been stored in the database base (mimics what the user would see in the table view)
-	 * @see components/com_fabrik/models/plgFabrik_Element#renderListData($data, $thisRow)
+	 * Prepares the element data for CSV export
+	 * 
+	 * @param   string  $data      element data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData_csv($data, &$thisRow)
@@ -378,17 +389,19 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-* @param   array	data
-* @param   int		repeat group counter
-	 * @return  string	returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$value = $this->getValue($data, $repeatCounter);
 		$format = $params->get('calc_format_string');
 		if ($format != '')
@@ -409,7 +422,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			{
 				/*
 				$str[] = '<input class="fabrikinput inputbox" disabled="disabled" name="'.$name.'" id="'.$id.'" value="'.$value.'" size="'.$element->width.'" />';
-				*/
+				 */
 				$str[] = '<span class="fabrikinput" name="' . $name . '" id="' . $id . '">' . $value . '</span>';
 			}
 		}
@@ -418,16 +431,20 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			/* make a hidden field instead*/
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
-		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
+		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl,
+			array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
 		return implode("\n", $str);
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return  string	javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -461,7 +478,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$d = JRequest::get('request');
-		$this->getFormModel()->_data = $d;
+		$this->getFormModel()->data = $d;
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
@@ -474,8 +491,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * find the sum from a set of data
-* @param   object	list model
-* @param   string	$label
+	 * @param   object	list model
+	 * @param   string	$label
 	 * @return  string	sum result
 	 */
 
@@ -489,7 +506,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
-			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
+			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
+				. " $joinSQL $whereSQL";
 		}
 		else
 		{
@@ -499,8 +517,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * build the query for the avg caclculation
-* @param   model	$listModel
-* @param   string	$label the label to apply to each avg
+	 * @param   model	$listModel
+	 * @param   string	$label the label to apply to each avg
 	 * @return  string	sql statement
 	 */
 
@@ -514,7 +532,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
-			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
+			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
+				. " $joinSQL $whereSQL";
 		}
 		else
 		{
@@ -524,8 +543,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * build the query for the avg caclculation
-* @param   model	$listModel
-* @param   string	$label the label to apply to each avg
+	 * @param   model	$listModel
+	 * @param   string	$label the label to apply to each avg
 	 * @return  string	sql statement
 	 */
 
@@ -539,7 +558,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
-			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name) . " $joinSQL $whereSQL";
+			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
+				. " $joinSQL $whereSQL";
 		}
 		else
 		{

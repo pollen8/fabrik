@@ -290,20 +290,20 @@ class FabrikControllerDetails extends JController
 		}
 		if ($app->isAdmin())
 		{
-			if (array_key_exists('apply', $model->_formData))
+			if (array_key_exists('apply', $model->formData))
 			{
 				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
 					. '&rowid=' . JRequest::getInt('rowid');
 			}
 			else
 			{
-				$url = "index.php?option=com_fabrik&c=table&task=viewTable&cid[]=" . $model->_table->id;
+				$url = "index.php?option=com_fabrik&c=table&task=viewTable&cid[]=" . $model->getTable()->id;
 			}
 			$this->setRedirect($url, $msg);
 		}
 		else
 		{
-			if (array_key_exists('apply', $model->_formData))
+			if (array_key_exists('apply', $model->formData))
 			{
 				$url = "index.php?option=com_fabrik&c=form&view=form&formid=" . JRequest::getInt('formid') . "&rowid=" . JRequest::getInt('rowid')
 					. "&listid=" . JRequest::getInt('listid');

@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,11 +14,10 @@ jimport('joomla.application.component.view');
 class fabrikViewEmailform extends JView
 {
 
-	var $_template 	= null;
-	var $_errors 	= null;
-	var $_data 		= null;
-	var $rowId 	= null;
-	var $params 	= null;
+	var $_template = null;
+	var $_errors = null;
+	var $rowId = null;
+	var $params = null;
 	var $isMambot = null;
 
 	var $id = null;
@@ -35,7 +34,7 @@ class fabrikViewEmailform extends JView
 		else
 		{
 			$to = $template = '';
-			$this->sendMail( $to);
+			$this->sendMail($to);
 			FabrikHelperHTML::emailSent($to);
 		}
 	}
@@ -60,13 +59,7 @@ class fabrikViewEmailform extends JView
 		}
 
 		// Attempt to defend against header injections:
-		$badStrings = array(
-		'Content-Type:',
-		'MIME-Version:',
-		'Content-Transfer-Encoding:',
-		'bcc:',
-		'cc:'
-		);
+		$badStrings = array('Content-Type:', 'MIME-Version:', 'Content-Transfer-Encoding:', 'bcc:', 'cc:');
 
 		// Loop through each POST'ed value and test if it contains
 		// one of the $badStrings:
@@ -74,7 +67,7 @@ class fabrikViewEmailform extends JView
 		{
 			foreach ($badStrings as $v2)
 			{
-				if (JString::strpos($v, $v2 ) !== false)
+				if (JString::strpos($v, $v2) !== false)
 				{
 					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
 				}
@@ -86,11 +79,11 @@ class fabrikViewEmailform extends JView
 		$email = JRequest::getVar('email', '');
 		$yourname = JRequest::getVar('yourname', '');
 		$youremail = JRequest::getVar('youremail', '');
-		$subject_default = JText::sprintf( 'Email from', $yourname);
+		$subject_default = JText::sprintf('Email from', $yourname);
 		$subject = JRequest::getVar('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
-		if (!$email || !$youremail || ( JMailHelper::isEmailAddress($email) == false) || (JMailHelper::isEmailAddress($youremail) == false))
+		if (!$email || !$youremail || (JMailHelper::isEmailAddress($email) == false) || (JMailHelper::isEmailAddress($youremail) == false))
 		{
 			JError::raiseError(500, JText::_('EMAIL_ERR_NOINFO'));
 		}
@@ -101,11 +94,10 @@ class fabrikViewEmailform extends JView
 
 		$link = JRequest::getVar('referrer');
 		// message text
-		$msg =JText::sprintf( 'COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
+		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
 
 		// mail function
 		JUTility::sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
 
 }
-?>

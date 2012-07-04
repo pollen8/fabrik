@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
+class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 {
 
 	protected $hasLabel = false;
@@ -25,10 +25,10 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$params->set('allowadd-onlylabel', (bool) $params->get('rad-allowadd-onlylabel', true));
 		$params->set('savenewadditions', (bool) $params->get('rad-savenewadditions', false));
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::getIndEmailValue()
+	 * @see PlgFabrik_ElementList::getIndEmailValue()
 	 */
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -45,19 +45,22 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::elementJavascript()
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->value  = $this->getValue($data, $repeatCounter);
+		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
@@ -68,7 +71,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::prepareFilterVal()
+	 * @see PlgFabrik_Element::prepareFilterVal()
 	 */
 
 	function prepareFilterVal($val)
@@ -88,7 +91,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getEmptyDataValue()
+	 * @see PlgFabrik_Element::getEmptyDataValue()
 	 */
 
 	function getEmptyDataValue(&$data)
@@ -105,11 +108,16 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getFilterValue()
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
+	 * @return  string	value
 	 */
 
-	function getFilterValue($value, $condition, $eval)
+	public function getFilterValue($value, $condition, $eval)
 	{
 		$value = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
@@ -120,10 +128,10 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	{
 		return count($this->getSubOptionValues()) < 3 ? true : false;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::getValue()
+	 * @see PlgFabrik_ElementList::getValue()
 	 */
 
 	function getValue($data, $repeatCounter = 0, $opts = array())

@@ -11,15 +11,15 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 if (!class_exists('TwitterOAuth'))
 {
 	require_once(COM_FABRIK_FRONTEND . '/libs/abraham-twitteroauth/twitteroauth/twitteroauth.php');
 }
 
-class plgFabrik_FormTwitter extends plgFabrik_Form {
+class PlgFabrik_FormTwitter extends PlgFabrik_Form {
 
 	/**
 	 * @var max length of message

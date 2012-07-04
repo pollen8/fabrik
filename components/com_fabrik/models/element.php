@@ -13,7 +13,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
-class plgFabrik_Element extends FabrikPlugin
+class PlgFabrik_Element extends FabrikPlugin
 {
 	/** @var int element id */
 	protected $id = null;
@@ -105,8 +105,8 @@ class plgFabrik_Element extends FabrikPlugin
 	 * Constructor
 	 *
 	 * @access      protected
-* @param       object  $subject The object to observe
-* @param       array   $config  An array that holds the plugin configuration
+	 * @param       object  $subject The object to observe
+	 * @param       array   $config  An array that holds the plugin configuration
 	 * @since       1.5
 	 */
 	public function __construct(&$subject, $config = array())
@@ -119,7 +119,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * Method to set the element id
 	 *
 	 * @access	public
-* @param   int	element ID number
+	 * @param   int	element ID number
 	 */
 
 	public function setId($id)
@@ -141,7 +141,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the element table object
 	 *
-* @param   bool	default false - force load the element
+	 * @param   bool	default false - force load the element
 	 * @return  object	element table
 	 */
 
@@ -181,7 +181,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * and bind each record to that plugins _element. This is instead of using getElement() which
 	 * reloads in the element increasing the number of queries run
 	 *
-* @param   mixed	$row (object or assoc array)
+	 * @param   mixed	$row (object or assoc array)
 	 * @return  object	element table
 	 */
 
@@ -203,14 +203,14 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * set the context in which the element occurs
 	 *
-* @param   object	group table
-* @param   object	form model
-* @param   object	table model
+	 * @param   object	group table
+	 * @param   object	form model
+	 * @param   object	list model
 	 */
 
 	function setContext(&$groupModel, &$formModel, &$listModel)
 	{
-		//dont assign these with &= as they already are when passed into the func
+		// Dont assign these with &= as they already are when passed into the func
 		$this->group = $groupModel;
 		$this->form = $formModel;
 		$this->list = $listModel;
@@ -235,7 +235,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * load in the group model
 	 *
-* @param   int		group id
+	 * @param   int		group id
 	 * @return  object	group model
 	 */
 
@@ -259,7 +259,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the elements group model
 	 * 
-* @param   int  $group_id  If not set uses elements default group id
+	 * @param   int  $group_id  If not set uses elements default group id
 	 * 
 	 * @return  object  group model
 	 */
@@ -271,7 +271,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * set the group model
-* @param   object	$group  group model
+	 * @param   object	$group  group model
 	 * 
 	 * @since 3.0.6
 	 * 
@@ -322,8 +322,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * shows the RAW list data - can be overwritten in plugin class
-* @param   string	data
-* @param   object	all the data in the tables current row
+	 * @param   string  data
+	 * @param   object	all the data in the tables current row
 	 * @return  string	formatted value
 	 */
 
@@ -334,10 +334,13 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * replace labels shown in table view with icons (if found)
+	 * 
+	 * @param   string  $data  data
+	 * @param   string  $view  list/details
+	 * @param   string  $tmpl  template
+	 * 
 	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
-* @param   string	data
-* @param   string	view list/details
-* @param   string	tmpl
+	 * 
 	 * @return  string	data
 	 */
 
@@ -360,7 +363,9 @@ class plgFabrik_Element extends FabrikPlugin
 			$this->iconsSet = false;
 			return $data;
 		}
-		$iconfile = $params->get('icon_file', ''); //Jaanus added this and following if/else; sometimes we need permanent image (e.g logo of the website where the link always points, like Wikipedia's W)
+
+		//Jaanus added this and following if/else; sometimes we need permanent image (e.g logo of the website where the link always points, like Wikipedia's W)
+		$iconfile = $params->get('icon_file', '');
 
 		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
 		foreach ($this->imageExtensions as $ex)
@@ -373,12 +378,30 @@ class plgFabrik_Element extends FabrikPlugin
 				$opts = new stdClass;
 				$opts->position = 'top';
 				$opts = json_encode($opts);
-				//$data = htmlspecialchars($data, ENT_QUOTES);
 				$data = '<span>' . $data . '</span>';
-				$data = htmlspecialchars($data, ENT_QUOTES);
 				if ($params->get('icon_hovertext', true))
 				{
+					$data = htmlspecialchars($data, ENT_QUOTES);
 					$img = '<a class="fabrikTip" href="#" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
+				}
+				else if (!empty($iconfile))
+				{
+					/**
+					 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
+					 * we'll need to replace the text in the link with the image
+					 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
+					 */
+					$html = new DOMDocument;
+					$html->loadXML($data);
+					$as = $html->getElementsBytagName('a');
+					if ($as->length)
+					{
+						$img = $html->createElement('img');
+						$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
+						$as->item(0)->nodeValue = '';
+						$as->item(0)->appendChild($img);
+						return $html->saveHTML();
+					}
 				}
 				return $img;
 			}
@@ -391,7 +414,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @since 2.1.1
 	 * build the sub query which is used when merging in in repeat element records from their joined table into the one field.
 	 * Overwritten in database join element to allow for building the join to the table containing the stored values required labels
-* @param   string	$jkey
+	 * @param   string  $jkey
 	 * @return  string	sub query
 	 */
 
@@ -416,7 +439,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @since 2.1.1
 	 * build the sub query which is used when merging in in repeat element records from their joined table into the one field.
 	 * Overwritten in database join element to allow for building the join to the talbe containing the stored values required ids
-* @param   string	$jkey
+	 * @param   string  $jkey
 	 * @return  string	sub query
 	 */
 
@@ -450,9 +473,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * can be overwritten in the plugin class - see database join element for example
-* @param   array
-* @param   array
-* @param   array options
+	 * @param   array
+	 * @param   array
+	 * @param   array options
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
@@ -548,9 +571,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * check user can use the active element
-* @param   object	calling the plugin table/form
-* @param   string	location to trigger plugin on
-* @param   string	event to trigger plugin on
+	 * @param   object	calling the plugin table/form
+	 * @param   string  location to trigger plugin on
+	 * @param   string  event to trigger plugin on
 	 * @return  bool	can use or not
 	 */
 
@@ -605,15 +628,16 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * can be overwritten by plugin class
+	 * Does the element conside the data to be empty
+	 * Used in isempty validation rule
 	 *
-	 * Examples of where this would be overwritten include drop downs whos "please select" value might be "-1"
-* @param   string	data posted from form to check
-* @param   int		repeat group counter
-	 * @return  bool	if data is considered empty then returns true
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 * 
+	 * @return  bool
 	 */
 
-	function dataConsideredEmpty($data, $repeatCounter)
+	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		return ($data == '') ? true : false;
 	}
@@ -622,7 +646,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * can be overwritten by plugin class
 	 *
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-* @param   int		repeat group counter
+	 * @param   int		repeat group counter
 	 * @return  array	html ids to watch for validation
 	 */
 
@@ -635,8 +659,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * can be overwritten in add on classes
-* @param   mixed	thie elements posted form data
-* @param   array	posted form data
+	 * @param   mixed	thie elements posted form data
+	 * @param   array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -657,9 +681,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * can be overwritten in add on classes
-* @param   array	data
-* @param   string	table column heading
-* @param   bool	data is raw
+	 * @param   array	data
+	 * @param   string  table column heading
+	 * @param   bool	data is raw
 	 * @return  array	data
 	 */
 
@@ -671,7 +695,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * can be overwritten in plugin class
 	 * determines if the data in the form element is used when updating a record
-* @param   mixed	element forrm data
+	 * @param   mixed	element forrm data
 	 * @return  bool	true if ignored on update, default = false
 	 */
 
@@ -695,10 +719,10 @@ class plgFabrik_Element extends FabrikPlugin
 	 * can be overwritten in adddon class
 	 *
 	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-* @param   array	existing errors
-* @param   object	group model
-* @param   object	form model
-* @param   array	posted data
+	 * @param   array	existing errors
+	 * @param   object	group model
+	 * @param   object	form model
+	 * @param   array	posted data
 	 * @return  array	updated errors
 	 */
 
@@ -711,9 +735,9 @@ class plgFabrik_Element extends FabrikPlugin
 	 * can be overwritten by plugin class
 	 * determines the label used for the browser title
 	 * in the form/detail views
-* @param   array	data
-* @param   int		when repeating joinded groups we need to know what part of the array to access
-* @param   array	options
+	 * @param   array	data
+	 * @param   int		when repeating joinded groups we need to know what part of the array to access
+	 * @param   array	options
 	 * @return  string	default value
 	 */
 
@@ -723,12 +747,14 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * this really does get just the default value (as defined in the element's settings)
-* @param   array	data to use as parsemessage for placeholder
-	 * @return  mixed
+	 * This really does get just the default value (as defined in the element's settings)
+	 * 
+	 * @param   array  $data  form data
+	 * 
+	 * @return mixed 
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->default))
 		{
@@ -748,9 +774,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * can be overwritten in plug-in class (see link element)
-* @param   array	$value, previously encrypted values
-* @param   array	data
-* @param   int		repeat group counter
+	 * @param   array	$value, previously encrypted values
+	 * @param   array	data
+	 * @param   int		repeat group counter
 	 * @return  null
 	 */
 
@@ -774,9 +800,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * element plugin specific method for setting unecrypted values baack into post data
-* @param   aray	$post data passed by ref
-* @param   string	$key
-* @param   string	$data elements unencrypted data
+	 * @param   aray	$post data passed by ref
+	 * @param   string  $key
+	 * @param   string  $data elements unencrypted data
 	 * @return  null
 	 */
 
@@ -802,28 +828,33 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * used in json when in detaile view currently overwritten in db join element
-* @param   $data
-* @param   $repeatCounter
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
+	 * @return  string	value
 	 */
 
-	function getROValue($data, $repeatCounter = 0)
+	public function getROValue($data, $repeatCounter = 0)
 	{
 		return $this->getValue($data, $repeatCounter);
 	}
 
 	/**
-	 * can be overwritten by plugin class
-	 * determines the value for the element in the form view
-* @param   array	data
-* @param   int		when repeating joinded groups we need to know what part of the array to access
-* @param   array	options
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
 	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		//@TODO rename $this->defaults to $this->values
+		// @TODO rename $this->defaults to $this->values
 		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
@@ -835,10 +866,11 @@ class plgFabrik_Element extends FabrikPlugin
 			$joinid = $this->isJoin() ? $this->getJoinModel()->getJoin()->id : $group->join_id;
 			$formModel = $this->getFormModel();
 			$element = $this->getElement();
-
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
-			//otherwise get the default value so if we don't find the element's value in $data we fall back on this value
+			/**
+			 * $$$rob - if no search form data submitted for the search element then the default
+			 * selection was being applied instead
+			 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
+			 */
 			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 
 			$name = $this->getFullName(false, true, false);
@@ -961,7 +993,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @abstract
 	 * used in things like date when its id is suffixed with _cal
 	 * called from getLabel();
-* @param   initial id
+	 * @param   initial id
 	 */
 	protected function modHTMLId(&$id)
 	{
@@ -970,7 +1002,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * should the element be tipped?
 	 * @since	3.0.6
-* @param   string	$mode form/list render context
+	 * @param   string  $mode form/list render context
 	 * @return  bool
 	 */
 
@@ -999,8 +1031,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * can be overwritten in the plugin class
-* @param   int		repeat counter
-* @param   string	template
+	 * @param   int		repeat counter
+	 * @param   string  template
 	 */
 
 	function getLabel($repeatCounter, $tmpl = '')
@@ -1066,7 +1098,7 @@ class plgFabrik_Element extends FabrikPlugin
 				}
 			}
 			$model = $this->getFormModel();
-			$str .= $this->rollover($l, $model->_data);
+			$str .= $this->rollover($l, $model->data);
 			if ($bLabel && !$this->isHidden())
 			{
 				$str .= '</label>';
@@ -1081,8 +1113,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * set fabrikErrorMessage div with potential error messages
-* @param   int		$repeatCounter
-* @param   string	$tmpl
+	 * @param   int		$repeatCounter
+	 * @param   string  $tmpl
 	 * @return  string
 	 */
 
@@ -1103,8 +1135,8 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * add tips on element labels
 	 * does ACL check on element's label in details setting
-* @param   string	label
-* @param   array	row data
+	 * @param   string  label
+	 * @param   array	row data
 	 * @return  string	label with tip
 	 */
 
@@ -1140,14 +1172,14 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * get the element tip html
-* @param   array	$data to use in parse holders - defaults to form's data
+	 * @param   array	$data to use in parse holders - defaults to form's data
 	 */
 
 	protected function getTip($data = null)
 	{
 		if (is_null($data))
 		{
-			$data = $this->getFormModel()->_data;
+			$data = $this->getFormModel()->data;
 		}
 		$params = $this->getParams();
 		$w = new FabrikWorker;
@@ -1178,7 +1210,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * @since 3.0.6
 	 * get the field name to use in the list's slug url
-* @param   bool	$raw
+	 * @param   bool	$raw
 	 */
 
 	public function getSlugName($raw = false)
@@ -1189,9 +1221,9 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * refractored from group class - can be overwritten by plugins
 	 * If already run then stored value returned
-* @param   bool	add join[joinid][] to element name (default true)
-* @param   bool	concat name with form's step element (true) or with '.' (false) default true
-* @param   bool	include '[]' at the end of the name (used for repeat group elements) default true
+	 * @param   bool	add join[joinid][] to element name (default true)
+	 * @param   bool	concat name with form's step element (true) or with '.' (false) default true
+	 * @param   bool	include '[]' at the end of the name (used for repeat group elements) default true
 	 */
 
 	function getFullName($includeJoinString = true, $useStep = true, $incRepeatGroup = true)
@@ -1254,8 +1286,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * - can be overwritten by plugins
-* @param   bool	add join[joinid][] to element name (default true)
-* @param   bool	concat name with form's step element (true) or with '.' (false) default true
+	 * @param   bool	add join[joinid][] to element name (default true)
+	 * @param   bool	concat name with form's step element (true) or with '.' (false) default true
 	 *
 	 */
 
@@ -1266,10 +1298,10 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * helper function to draw hidden field, used by any plugin that requires to draw a hidden field
-* @param   string  $name   hidden field name
-* @param   string  $value  hidden field value
-* @param   string  $id     hidden field id
-* @param   string  $class  class name
+	 * @param   string  $name   hidden field name
+	 * @param   string  $value  hidden field value
+	 * @param   string  $id     hidden field id
+	 * @param   string  $class  class name
 	 * 
 	 * @return  string	hidden field
 	 */
@@ -1298,7 +1330,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * once a copy of all elements has been made run them through this method
 	 * to ensure that things like watched element id's are updated
 	 *
-* @param   array	copied element ids (keyed on original element id)
+	 * @param   array	copied element ids (keyed on original element id)
 	 * 
 	 * @return  null
 	 */
@@ -1311,10 +1343,10 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * copy an element table row
 	 *
-* @param   int     $id       element id to copy
-* @param   string  $copytxt  feedback msg
-* @param   int     $groupid  group model id
-* @param   string  $name     new element name
+	 * @param   int     $id       element id to copy
+	 * @param   string  $copytxt  feedback msg
+	 * @param   int     $groupid  group model id
+	 * @param   string  $name     new element name
 	 * 
 	 * @return  mixed	error or new row
 	 */
@@ -1366,7 +1398,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 		// I thought we did this in an overridden element model method, like onCopy?
 		//if its a database join then add in a new join record
-		if (is_a($this, 'plgFabrik_ElementDatabasejoin'))
+		if (is_a($this, 'PlgFabrik_ElementDatabasejoin'))
 		{
 			$join = FabTable::getInstance('Join', 'FabrikTable');
 			$join->load(array('element_id' => $id));
@@ -1396,9 +1428,9 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * this was in the views display and _getElement code but seeing as its used
 	 * by multiple views its safer to have it here
-* @param   int		repeat group counter
-* @param   int		order in which the element is shown in the form
-* @param   string	template
+	 * @param   int		repeat group counter
+	 * @param   int		order in which the element is shown in the form
+	 * @param   string  template
 	 * @return  mixed	- false if you shouldnt continue to render the element
 	 */
 
@@ -1444,10 +1476,10 @@ class plgFabrik_Element extends FabrikPlugin
 		$element->id = $this->getHTMLId($c);
 		$element->className = 'fb_el_' . $element->id;
 		$element->containerClass = $this->containerClass($element);
-		$element->element = $this->_getElement($model->_data, $c, $groupModel);
+		$element->element = $this->_getElement($model->data, $c, $groupModel);
 		if ($params->get('tipsoverelement', false))
 		{
-			$element->element = $this->rollover($element->element, $model->_data);
+			$element->element = $this->rollover($element->element, $model->data);
 		}
 		$element->label_raw = $this->element->label;
 		//getLabel needs to know if the element is editable
@@ -1455,19 +1487,19 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$l = $this->getLabel($c, $tmpl);
 			$w = new FabrikWorker;
-			$element->label = $w->parseMessageForPlaceHolder($l, $model->_data);
+			$element->label = $w->parseMessageForPlaceHolder($l, $model->data);
 		}
 		$element->errorTag = $this->addErrorHTML($c, $tmpl);
-		$element->element_ro = $this->_getROElement($model->_data, $c);
-		$element->value = $this->getValue($model->_data, $c);
+		$element->element_ro = $this->_getROElement($model->data, $c);
+		$element->value = $this->getValue($model->data, $c);
 
-		if (array_key_exists($elHTMLName . '_raw', $model->_data))
+		if (array_key_exists($elHTMLName . '_raw', $model->data))
 		{
-			$element->element_raw = $model->_data[$elHTMLName . '_raw'];
+			$element->element_raw = $model->data[$elHTMLName . '_raw'];
 		}
 		else
 		{
-			$element->element_raw = array_key_exists($elHTMLName, $model->_data) ? $model->_data[$elHTMLName] : $element->value;
+			$element->element_raw = array_key_exists($elHTMLName, $model->data) ? $model->data[$elHTMLName] : $element->value;
 		}
 		if ($this->dataConsideredEmpty($element->element_ro, $c))
 		{
@@ -1529,10 +1561,10 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * merge the rendered element into the views element storage arrays
-* @param   object	element to merget
-* @param   array	$aElements
-* @param   array	$namedData
-* @param   array	$aSubGroupElements
+	 * @param   object	element to merget
+	 * @param   array	$aElements
+	 * @param   array	$namedData
+	 * @param   array	$aSubGroupElements
 	 */
 
 	function stockResults($element, &$aElements, &$namedData, &$aSubGroupElements)
@@ -1548,9 +1580,9 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-* @param   array	data
-* @param   int		repeat group counter
-* @param   object	group model
+	 * @param   array	data
+	 * @param   int		repeat group counter
+	 * @param   object	group model
 	 */
 
 	function _getElement($data, $repeatCounter = 0, &$groupModel)
@@ -1579,8 +1611,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * @access private
-* @param   array	data
-* @param   int		repeat group counter
+	 * @param   array	data
+	 * @param   int		repeat group counter
 	 */
 
 	function _getROElement($data, $repeatCounter = 0)
@@ -1599,9 +1631,9 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 *
 	 * add custom link to element - must be uneditable for link to be added
-* @param   string	value
-* @param   array	row data
-* @param   int		repeat counter
+	 * @param   string  value
+	 * @param   array	row data
+	 * @param   int		repeat counter
 	 */
 
 	protected function addCustomLink(&$v, $data, $repeatCounter = 0)
@@ -1644,7 +1676,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * get any html error messages
-* @param   int		repeat count
+	 * @param   int		repeat count
 	 * @return  string	error messages
 	 */
 
@@ -1672,21 +1704,23 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * draws out the html form element - overwritten in plugin
-* @param   array	data to preopulate element with
-* @param   int		repeat group counter
-	 * @return  string	returns field element
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		return 'need to overwrite in element plugin class';
 	}
 
 	/**
 	 * helper method to build an input field
-* @param   string	$node
-* @param   array	$bits property => value
+	 * @param   string  $node
+	 * @param   array	$bits property => value
 	 */
 
 	protected function buildInput($node = 'input', $bits = array())
@@ -1702,8 +1736,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * helper function to build the property array used in buildInput()
-* @param   int		$repeatCounter
-* @param   mixed	null/string $type property (if null then password/text applied as default)
+	 * @param   int		$repeatCounter
+	 * @param   mixed	null/string $type property (if null then password/text applied as default)
 	 */
 
 	protected function inputProperties($repeatCounter, $type = null)
@@ -1766,7 +1800,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the id used in the html element
 	 * 
-* @param   int  $repeatCounter  group counter
+	 * @param   int  $repeatCounter  group counter
 	 * 
 	 * @return  string
 	 */
@@ -1812,7 +1846,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the element html name
 	 * 
-* @param   int  $repeatCounter  group counter
+	 * @param   int  $repeatCounter  group counter
 	 * 
 	 * @return  string
 	 */
@@ -1960,8 +1994,8 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 *create the js code to observe the elements js actions
 	 * 
-* @param   string	$jsControllerKey  either form_ or _details
-* @param   int		$repeatCount      counter
+	 * @param   string  $jsControllerKey  either form_ or _details
+	 * @param   int		$repeatCount      counter
 	 * 
 	 * @return  string	js events
 	 */
@@ -2031,8 +2065,8 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the default value for the list filter
 	 * 
-* @param   bool  $normal   is the filter a normal or advanced filter
-* @param   int   $counter  filter order
+	 * @param   bool  $normal   is the filter a normal or advanced filter
+	 * @param   int   $counter  filter order
 	 * 
 	 * @return  string
 	 */
@@ -2144,7 +2178,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
 	 * 
-* @param   string  $value  filterVal
+	 * @param   string  $value  filterVal
 	 * 
 	 * @return  string
 	 */
@@ -2157,8 +2191,8 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the filter name
 	 * 
-* @param   int   $counter  filter order
-* @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * 
 	 * @return  string
 	 */
@@ -2175,8 +2209,8 @@ class plgFabrik_Element extends FabrikPlugin
 	 * can be overwritten by plugin class
 	 * Get the table filter for the element
 	 * 
-* @param   int   $counter  filter order
-* @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 * 
 	 * @return  string	filter html
@@ -2274,7 +2308,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * checks if filter option values are in json format
 	 * if so explode those values into new options
 	 * 
-* @param   array  &$rows  filter options
+	 * @param   array  &$rows  filter options
 	 * 
 	 * @return null
 	 */
@@ -2344,7 +2378,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * run after unmergeFilterSplits to ensure filter dropdown labels are correct
 	 * 
-* @param   array  &$rows  filter options
+	 * @param   array  &$rows  filter options
 	 * 
 	 * @return  null
 	 */
@@ -2419,11 +2453,11 @@ class plgFabrik_Element extends FabrikPlugin
 	 * used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
 	 * 
-* @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-* @param   string  $tableName  table name to use - defaults to element's current table
-* @param   string  $label      field to use, defaults to element name
-* @param   string  $id         field to use, defaults to element name
-* @param   bool    $incjoin    include join
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
 	 * 
 	 * @return  array  text/value objects
 	 */
@@ -2464,11 +2498,11 @@ class plgFabrik_Element extends FabrikPlugin
 	 * create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns only data found in the table you are filtering on
 	 * 
-* @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-* @param   string  $tableName  table name to use - defaults to element's current table
-* @param   string  $label      field to use, defaults to element name
-* @param   string  $id         field to use, defaults to element name
-* @param   bool    $incjoin    include join
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
 	 * 
 	 * @return  array	filter value and labels
 	 */
@@ -2513,7 +2547,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$groupBy = 'GROUP BY ' . $params->get('filter_groupby', 'text') . ' ASC';
 		foreach ($listModel->getJoins() as $aJoin)
 		{
-			// not sure why the group id key wasnt found - but put here to remove error
+			// Not sure why the group id key wasnt found - but put here to remove error
 			if (array_key_exists('group_id', $aJoin))
 			{
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
@@ -2574,11 +2608,11 @@ class plgFabrik_Element extends FabrikPlugin
 	 * create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns all possible options
 	 *
-* @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-* @param   string  $tableName  table name to use - defaults to element's current table
-* @param   string  $label      field to use, defaults to element name
-* @param   string  $id         field to use, defaults to element name
-* @param   bool    $incjoin    include join
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
 	 *
 	 * @return  array	filter value and labels
 	 */
@@ -2599,9 +2633,9 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * get the hidden fields for a normal filter
 	 * 
-* @param   int     $counter  filter counter
-* @param   string  $elName  full element name will be converted to tablename.elementname format
-* @param   bool    $hidden  has the filter been added due to a search form value with no corresponding filter set up in the table
+	 * @param   int     $counter  filter counter
+	 * @param   string  $elName  full element name will be converted to tablename.elementname format
+	 * @param   bool    $hidden  has the filter been added due to a search form value with no corresponding filter set up in the table
 	 * if it has we need to know so that when we do a search from a 'fabrik_list_filter_all' field that search term takes prescidence
 	 * 
 	 * @return  string	html hidden fields
@@ -2703,7 +2737,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * this builds an array containing the filters value and condition
 	 * when using a ranged search
 	 * 
-* @param   string  initial $value
+	 * @param   string  initial $value
 	 * 
 	 * @return  array  (value condition)
 	 */
@@ -2726,8 +2760,8 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * esacepes the a query search string
 	 * 
-* @param   string  $condition  filter condition
-* @param   value	&$value     value to esacpe
+	 * @param   string  $condition  filter condition
+	 * @param   value   &$value     value to esacpe
 	 * 
 	 * @return  null
 	 */
@@ -2778,9 +2812,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * this builds an array containing the filters value and condition
-* @param   string	initial $value
-* @param   string	intial $condition
-* @param   string	eval - how the value should be handled
+	 * @param   string  initial $value
+	 * @param   string  intial $condition
+	 * @param   string  eval - how the value should be handled
 	 * @return  array	(value condition)
 	 */
 
@@ -2892,15 +2926,17 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
-* @param   string	$key element name in format `tablename`.`elementname`
-* @param   string	$condition =/like etc
-* @param   string	$value search string - already quoted if specified in filter array options
-* @param   string	$originalValue - original filter value without quotes or %'s applied
-* @param   string	filter type advanced/normal/prefilter/search/querystring/searchall
+	 * 
+	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $condition      =/like etc
+	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  original filter value without quotes or %'s applied
+	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 * 
 	 * @return  string	sql query part e,g, "key = value"
 	 */
 
-	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$this->encryptFieldName($key);
 		switch ($condition)
@@ -2953,7 +2989,15 @@ class plgFabrik_Element extends FabrikPlugin
 		return $query;
 	}
 
-	function encryptFieldName(&$key)
+	/**
+	 * get the AES decrypt sql segment for the element
+	 * 
+	 * @param   string  &$key  field name
+	 * 
+	 * @return  void
+	 */
+
+	public function encryptFieldName(&$key)
 	{
 		if ($this->encryptMe())
 		{
@@ -2987,7 +3031,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * when adding a new element this will ensure its added to all tables that the
 	 * elements group is associated with
 	 * 
-* @param   string  $origColName  original column name leave null to ignore
+	 * @param   string  $origColName  original column name leave null to ignore
 	 * 
 	 * @TODO Fabrik 3 - loadFromFormId() might need to pass in a package id
 	 * 
@@ -3004,7 +3048,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * called from admin element controller when element saved
 	 * 
-* @param   array  $data  posted element save data
+	 * @param   array  $data  posted element save data
 	 * 
 	 * @return  bool  save ok or not
 	 */
@@ -3024,7 +3068,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * called from admin element controller when element is removed
 	 * 
-* @param   bool  $drop  has the user elected to drop column?
+	 * @param   bool  $drop  has the user elected to drop column?
 	 * 
 	 * @return  bool  save ok or not
 	 */
@@ -3049,7 +3093,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 * states if the element contains data which is recorded in the database
 	 * some elements (eg buttons) dont
 	 * 
-* @param   array  $data  posted data
+	 * @param   array  $data  posted data
 	 * 
 	 * @return  bool
 	 */
@@ -3062,31 +3106,37 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * used by elements with suboptions
 	 *
-* @param   string	value
-* @param   string	default label
+	 * @param   string  value
+	 * @param   string  default label
 	 * @return  string	label
 	 */
 
 	public function getLabelForValue($v, $defaultLabel = '')
 	{
-		// $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
-		// which we should now be doing ... and getParent() causes an extra table lookup for every child
-		// element on the form.
-		//$element = $this->getParent();
+		/**
+		 * $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
+		 * which we should now be doing ... and getParent() causes an extra table lookup for every child
+		 * element on the form.
+		 * $element = $this->getParent();
+		 */
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$key = array_search($v, $values);
-		// $$$ rob if we allow adding to the dropdown but not recording
-		// then there will be no $key set to revert to the $val instead
+		/**
+		 * $$$ rob if we allow adding to the dropdown but not recording
+		 * then there will be no $key set to revert to the $val instead
+		 */
 		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
 	}
 
 	/**
 	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-* @param   model	$listModel
-* @param   string	$label the label to apply to each avg
+	 * 
+	 * @param   model   $listModel  list model
+	 * @param   string  $label      the label to apply to each avg
+	 * 
 	 * @return  string	sql statement
 	 */
 
@@ -3100,19 +3150,28 @@ class plgFabrik_Element extends FabrikPlugin
 		$roundTo = (int) $this->getParams()->get('avg_round');
 		if ($groupModel->isJoin())
 		{
-			//element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
+			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 			return "SELECT ROUND(AVG($name), $roundTo) AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
 		else
 		{
-			// need to do first query to get distinct records as if we are doing left joins the sum is too large
+			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
 FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
 
 		}
 	}
+
+	/**
+	 * Get sum query
+	 * 
+	 * @param   object  &$listModel  list model
+	 * @param   string  $label       label
+	 * 
+	 * @return string
+	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
@@ -3123,12 +3182,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin())
 		{
-			//element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
+			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 			return "SELECT SUM($name) AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
-			// need to do first query to get distinct records as if we are doing left joins the sum is too large
+			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			return "SELECT SUM(value) AS value, label
 	FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
@@ -3138,8 +3197,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * get a query for our custom query
 	 *
-* @param   object  &$listModel  list
-* @param   string  $label       label
+	 * @param   object  &$listModel  list
+	 * @param   string  $label       label
 	 * 
 	 * @return  string
 	 */
@@ -3171,8 +3230,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * get a query for our media query
 	 *
-* @param   object  &$listModel  list
-* @param   string  $label       label
+	 * @param   object  &$listModel  list
+	 * @param   string  $label       label
 	 * 
 	 * @return string
 	 */
@@ -3189,8 +3248,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * get a query for our count method
 	 * 
-* @param   object  &$listModel  list
-* @param   string  $label       label
+	 * @param   object  &$listModel  list
+	 * @param   string  $label       label
 	 * 
 	 * @return string
 	 */
@@ -3237,7 +3296,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * calculation: sum
 	 * can be overridden in element class
 	 * 
-* @param   object  &$listModel  list model
+	 * @param   object  &$listModel  list model
 	 * 
 	 * @return  array
 	 */
@@ -3288,7 +3347,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * calculation: avarage
 	 * can be overridden in element class
 	 * 
-* @param   object  &$listModel  list model
+	 * @param   object  &$listModel  list model
 	 * 
 	 * @return  string	result
 	 */
@@ -3354,7 +3413,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * calculation: median
 	 * can be overridden in element class
 	 * 
-* @param   object  &$listModel  list model
+	 * @param   object  &$listModel  list model
 	 * 
 	 * @return  string 	result
 	 */
@@ -3411,7 +3470,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * calculation: count
 	 * can be overridden in element class
 	 * 
-* @param   object  &$listModel  list model
+	 * @param   object  &$listModel  list model
 	 * 
 	 * @return  string	result
 	 */
@@ -3472,7 +3531,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * calculation: custom_calc
 	 * can be overridden in element class
 	 * 
-* @param   object  &$listModel  list model
+	 * @param   object  &$listModel  list model
 	 * 
 	 * @return  array
 	 */
@@ -3512,9 +3571,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * Format the labels for calculations when they are split
 	 * 
-* @param   array   &$results2  calculation results
-* @param   object  &$plugin    element that the data is SPLIT on
-* @param   string  $type       of calculation
+	 * @param   array   &$results2  calculation results
+	 * @param   object  &$plugin    element that the data is SPLIT on
+	 * @param   string  $type       of calculation
 	 * 
 	 * @return  unknown_type
 	 */
@@ -3603,7 +3662,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * find an average from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
 	 * 
-* @param   array  $data  to average
+	 * @param   array  $data  to average
 	 * 
 	 * @return  string  average result
 	 */
@@ -3617,7 +3676,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
 	 * 
-* @param   array  $data  to sum
+	 * @param   array  $data  to sum
 	 * 
 	 * @return  string  sum result
 	 */
@@ -3630,11 +3689,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * take the results form a calc and create the string that can be used to summarize them
 	 * 
-* @param   array   &$results       calculation results
-* @param   string  $calcLabel      calc label
-* @param   bool    $split          is the data split
-* @param   bool    $numberFormat   should we applpy any number formatting
-* @param   bool    $sprintFFormat  should we apply the text_format_string ?
+	 * @param   array   &$results       calculation results
+	 * @param   string  $calcLabel      calc label
+	 * @param   bool    $split          is the data split
+	 * @param   bool    $numberFormat   should we applpy any number formatting
+	 * @param   bool    $sprintFFormat  should we apply the text_format_string ?
 	 * 
 	 * @return  string
 	 */
@@ -3679,13 +3738,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * @access private
-	 *
-* @param   array	$results
+	 * Get median
+	 * 
+	 * @param   array  $results  set of results to get median from
+	 * 
 	 * @return  string	median value
 	 */
 
-	function _median($results)
+	private function _median($results)
 	{
 		$results = (array) $results;
 		sort($results);
@@ -3704,14 +3764,23 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * overwritten in plugin classes
-	 * @abstract
-* @param   int		repeat group counter
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 	}
+
+	/**
+	 * Get JS code for ini element list js
+	 * Overwritten in plugin classes
+	 * 
+	 * @return string
+	 */
 
 	function elementListJavascript()
 	{
@@ -3719,16 +3788,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * create a class for the elements default javascript options
-* @param   int		repeat group counter
+	 * Create a class for the elements default javascript options
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
 	 * @return  object	options
 	 */
 
-	function getElementJSOptions($repeatCounter)
+	public function getElementJSOptions($repeatCounter)
 	{
 		$element = $this->getElement();
 		$opts = new stdClass;
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$opts->repeatCounter = $repeatCounter;
 		$opts->editable = ($this->canView() && !$this->canUse()) ? false : $this->editable;
 		$opts->value = $this->getValue($data, $repeatCounter);
@@ -3764,6 +3835,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * overwritten in plugin classes
+	 * 
 	 * @return  bool	use wysiwyg editor
 	 */
 
@@ -3775,6 +3847,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * overwritten in plugin classes
 	 * processes uploaded data
+	 * 
+	 * @return  void
 	 */
 
 	function processUpload()
@@ -3782,24 +3856,27 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-* @param array of scripts previously loaded (load order is important as we are loading via head.js
-	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	 * current file
-	 *
 	 * get the class to manage the form element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
+	 * 
+	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 * @param   string  $script  script to load once class has loaded
+	 *
+	 * @return void
 	 */
 
-	function formJavascriptClass(&$srcs, $script = '')
+	public function formJavascriptClass(&$srcs, $script = '')
 	{
 		static $elementclasses;
 		if (!isset($elementclasses))
 		{
 			$elementclasses = array();
 		}
-		//load up the default scipt
+		// Load up the default scipt
 		if ($script == '')
 		{
 			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . '.js';
@@ -3828,7 +3905,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * eg if changing from db join to field we need to remove the join
 	 * entry from the #__{package}_joins table
 	 * 
-* @param   object  &$row  that is going to be updated
+	 * @param   object  &$row  that is going to be updated
 	 * 
 	 * @return null
 	 */
@@ -3838,7 +3915,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$maskbits = 4;
 		$post = JRequest::get('post', $maskbits);
 		$post = $post['jform'];
-		$dbjoinEl = (is_subclass_of($this, 'plgFabrik_ElementDatabasejoin') || get_class($this) == 'plgFabrik_ElementDatabasejoin');
+		$dbjoinEl = (is_subclass_of($this, 'PlgFabrik_ElementDatabasejoin') || get_class($this) == 'PlgFabrik_ElementDatabasejoin');
 		/**
 		 * $$$ hugh - added test for empty id, i.e. new element, otherwise we try and delete a crapload of join table rows
 		 * we shouldn't be deleting!  Also adding defensive code to deleteJoins() to test for empty ID.
@@ -3852,7 +3929,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * delete joins
 	 * 
-* @param   int  $id  element id
+	 * @param   int  $id  element id
 	 * 
 	 * @return  null
 	 */
@@ -3889,8 +3966,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * OPTIONAL
 	 * If your element risks not to post anything in the form (e.g. check boxes with none checked)
 	 * the this function will insert a default value into the database
-* @param object params
-* @param array form data
+	 * @param   object params
+	 * @param   array form data
 	 * @return array form data
 	 */
 
@@ -3900,9 +3977,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * used to format the data when shown in the form's email
-* @param   mixed	element's data
-* @param   array	form records data
-* @param   int		repeat group counter
+	 * @param   mixed	element's data
+	 * @param   array	form records data
+	 * @param   int		repeat group counter
 	 * @return  string	formatted value
 	 */
 
@@ -3940,8 +4017,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * E.g. if the database join element points to a file upload element then you can replace
 	 * the file path that is the standard $val with the html to create the image
 	 *
-* @param   string	$val
-* @param   string	view form or table
+	 * @param   string  $val
+	 * @param   string  view form or table
 	 * @return  string	modified val
 	 */
 
@@ -3974,11 +4051,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * should no longer normally BE OVERWRITTEN IN PLUGIN CLASS
-	 * get db field type
+	 * Get database field description
+	 * 
+	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		$plugin = JPluginHelper::getPlugin('fabrik_element', 'dropdown');
 		$fparams = new JRegistry($plugin->params);
@@ -4004,7 +4082,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * CAN BE OVERWRITTEN IN PLUGIN CLASS
 	 * trigger called when a row is deleted, can be used to delete images previously uploaded
-* @param   array	grouped data of rows to delete
+	 * @param   array	grouped data of rows to delete
 	 */
 
 	function onDeleteRows($groups)
@@ -4013,26 +4091,24 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * CAN BE OVERWRITTEN IN PLUGIN CLASS
-	 * trigger called when a row is stored
-* @param array data to store
+	 * Trigger called when a row is stored.
+	 * Check if new options have been added and if so store them in the element for future use.
+	 * 
+	 * @param   array  &$data  to store
+	 * 
+	 * @return  void
 	 */
 
-	function onStoreRow(&$data)
+	public function onStoreRow(&$data)
 	{
-
 	}
 
 	/**
-	 * CAN BE OVERWRITTEN IN PLUGIN CLASS
-	 *
-	 * child classes can then call this function with
-	 * return parent::renderListData($data, $thisRow);
-	 * to perform rendering that is applicable to all plugins
-	 *
-	 * shows the data formatted for the table view
-* @param   string	data
-* @param   object	all the data in the tables current row
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
 	 * @return  string	formatted value
 	 */
 
@@ -4057,7 +4133,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * final prepare data function called from renderListData(), converts data to string and if needed
 	 * encases in <ul> (for repeating data)
-* @param   array	list cell data
+	 * @param   array	list cell data
 	 * @return  string	cell data
 	 */
 
@@ -4104,9 +4180,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * shows the data formatted for the csv data
-* @param   string	data
-* @param   object	all the data in the tables current row
+	 * Prepares the element data for CSV export
+	 * 
+	 * @param   string  $data      element data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
 	 * @return  string	formatted value
 	 */
 
@@ -4117,7 +4195,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * determines if the element should be shown in the list view
-* @param object $listModel
+	 * 
+	 * @param   object  &$listModel  list model
+	 * 
 	 * @return  bool
 	 */
 
@@ -4151,9 +4231,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * builds some html to allow certain elements to display the option to add in new options
 	 * e.g. pciklists, dropdowns radiobuttons
 	 *
-* @param   bool	if true show one field which is used for both the value and label, otherwise show
+	 * @param   bool	if true show one field which is used for both the value and label, otherwise show
 	 * separate value and label fields
-* @param   int		repeat group counter
+	 * @param   int		repeat group counter
 	 */
 
 	function getAddOptionFields($repeatCounter)
@@ -4207,7 +4287,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * Ensures submitted form data is converted back into the format
 	 * that the form would expect to get it in, if the data had been
 	 * draw from the database record
-* @param   string	submitted form value
+	 * @param   string  submitted form value
 	 * @return  string	formated value
 	 */
 
@@ -4424,8 +4504,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * if used as a filter add in some JS code to watch observed filter element's changes
 	 * when it changes update the contents of this elements dd filter's options
 	 * @abstract
-* @param   bool	is the filter a normal (true) or advanced filter
-* @param   string	container
+	 * @param   bool	is the filter a normal (true) or advanced filter
+	 * @param   string  container
 	 */
 
 	public function filterJS($normal, $container)
@@ -4435,7 +4515,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * should the element's data be returned in the search all?
-* @param   bool	is the elements' list is advanced search all mode?
+	 * @param   bool	is the elements' list is advanced search all mode?
 	 * @return  bool	true
 	 */
 
@@ -4452,7 +4532,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * get the value to use for graph calculations
 	 * can be overwritten in plugin
 	 * see fabriktimer which converts the value into seconds
-* @param   string	$v
+	 * @param   string  $v
 	 * @return  mixed
 	 */
 
@@ -4463,7 +4543,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * run on formModel::setFormData()
-* @param   int repeat group counter
+	 * @param   int repeat group counter
 	 * @return null
 	 */
 	public function preProcess($c)
@@ -4474,7 +4554,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @abstract
 	 * overwritten in plugin
 	 * called when copy row table plugin called
-* @param mixed value to copy into new record
+	 * @param mixed value to copy into new record
 	 * @return mixed value to copy into new record
 	 */
 
@@ -4487,7 +4567,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @abstract
 	 * overwritten in plugin
 	 * called when save as copy form button clicked
-* @param mixed value to copy into new record
+	 * @param mixed value to copy into new record
 	 * @return mixed value to copy into new record
 	 */
 
@@ -4497,18 +4577,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * from ajax call to get auto complete options
-	 * @returns string json encoded optiosn
+	 * Ajax call to get auto complete options
+	 * 
+	 * @return  string  json encoded options
 	 */
 
 	public function onAutocomplete_options()
 	{
-		//needed for ajax update (since we are calling this method via dispatcher element is not set
+		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->id = JRequest::getInt('element_id');
 		$this->getElement(true);
 		$listModel = $this->getListModel();
 		$db = $listModel->getDb();
 		$name = $this->getFullName(false, false, false);
+
 		// $$$ rob - previous method to make query did not take into account prefilters on main table
 		$tableName = $listModel->getTable()->db_table_name;
 		$this->encryptFieldName($name);
@@ -4552,7 +4634,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * takes a raw value and returns its label equivalent
-* @param string $v
+	 * @param   stringing $v
 	 */
 
 	protected function toLabel(&$v)
@@ -4592,9 +4674,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * used by validations
-* @param   string	this elements data
-* @param   string	what condiion to apply
-* @param   string	data to compare element's data to
+	 * @param   string  this elements data
+	 * @param   string  what condiion to apply
+	 * @param   string  data to compare element's data to
 	 */
 
 	public function greaterOrLessThan($data, $cond, $compare)
@@ -4645,7 +4727,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * format a number value
-* @param   mixed	(double/int) $data
+	 * @param   mixed	(double/int) $data
 	 * @return  string	formatted number
 	 */
 
@@ -4669,7 +4751,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * strip number format from a number value
-* @param   mixed	(double/int) $data
+	 * @param   mixed	(double/int) $data
 	 * @return  string	formatted number
 	 */
 	function unNumberFormat($val)
@@ -4692,7 +4774,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 *
 	 * Recursively get all linked children of an element
-* @param   $id	element id
+	 * @param   $id	element id
 	 */
 
 	function getElementDescendents($id = 0)
@@ -4741,7 +4823,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * when creating crud query in tableModel::storeRow() each element has the chance
 	 * to alter the row id - used by sugarid plugin to fudge rowid
-* @param   string	$rowId
+	 * @param   string  $rowId
 	 */
 
 	public function updateRowId(&$rowId)
@@ -4798,8 +4880,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * when saving an element pk we need to update any join which has the same params->pk
 	 * @since	3.0.6
-* @param   string	$oldName (prevoius element name)
-* @param   string	$newName (new element name)
+	 * @param   string  $oldName (prevoius element name)
+	 * @param   string  $newName (new element name)
 	 */
 
 	public function updateJoinedPks($oldName, $newName)
@@ -5086,8 +5168,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * when the element is a repeatble join (e.g. db join checkbox) then figure out how many
 	 * records have been selected
 	 * 
-* @param   $data   array   data
-* @param   $oJoin  object  join current join
+	 * @param   $data   array   data
+	 * @param   $oJoin  object  join current join
 	 * 
 	 * @since 3.0rc1
 	 * 
@@ -5163,7 +5245,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * convert XML format data into fabrik data (used by web services)
 	 * 
-* @param   mixed  $v  data
+	 * @param   mixed  $v  data
 	 * 
 	 * @return  mixed  data
 	 */
@@ -5177,8 +5259,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * allows the element to pre-process a rows data before and join mergeing of rows
 	 * occurs. Used in calc element to do cals on actual row rather than merged row
 	 * 
-* @param   string  $data  elements data for the current row
-* @param   object  $row   current row's data
+	 * @param   string  $data  elements data for the current row
+	 * @param   object  $row   current row's data
 	 * 
 	 * @since	3.0.5
 	 *  
@@ -5207,7 +5289,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * Set row class
 	 * 
-* @param   array  &$data  row data to set class for
+	 * @param   array  &$data  row data to set class for
 	 * 
 	 * @return  null
 	 */

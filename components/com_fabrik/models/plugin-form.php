@@ -3,8 +3,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-class plgFabrik_Form extends FabrikPlugin
+class PlgFabrik_Form extends FabrikPlugin
 {
 	/**@var array formatted email data */
 	var $emailData = null;
@@ -53,8 +53,8 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * run before table calculations are applied
-* @param   object	params
-* @param   object	form model
+	 * @param   object	params
+	 * @param   object	form model
 	 * @return  bool
 	 */
 
@@ -66,8 +66,8 @@ class plgFabrik_Form extends FabrikPlugin
 	/**
 	 * run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
-* @param   object	$params
-* @param   object	form model
+	 * @param   object	$params
+	 * @param   object	form model
 	 * @return  bool
 	 */
 
@@ -79,7 +79,7 @@ class plgFabrik_Form extends FabrikPlugin
 	/**
 	 * alter the returned plugin manager's result
 	 *
-* @param string $method
+	 * @param string $method
 	 * @return  bool
 	 */
 
@@ -89,9 +89,12 @@ class plgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * sets up any bottom html
-* @param   object params
-* @param   object form model
+	 * Sets up HTML to be injected into the form's bottom
+	 * 
+	 * @param   object  $params     params
+	 * @param   object  $formModel  form model
+	 * 
+	 * @return void
 	 */
 
 	public function getBottomContent($params, $formModel)
@@ -100,7 +103,10 @@ class plgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * get any html that needs to be written into the bottom of the form
+	 * Inject custom html into the bottom of the form
+	 * 
+	 * @param   int  $c  plugin counter
+	 * 
 	 * @return string html
 	 */
 
@@ -111,8 +117,8 @@ class plgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * sets up any top html
-* @param   object	params
-* @param   object	form model
+	 * @param   object	params
+	 * @param   object	form model
 	 */
 
 	function getTopContent($params, $formModel)
@@ -131,10 +137,10 @@ class plgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	* sets up any end html (after form close tag)
-* @param   object	params
-* @param   object	form model
-	*/
+	 * sets up any end html (after form close tag)
+	 * @param   object	params
+	 * @param   object	form model
+	 */
 
 	function getEndContent($params, $formModel)
 	{
@@ -150,7 +156,6 @@ class plgFabrik_Form extends FabrikPlugin
 	{
 		return $this->html;
 	}
-
 
 	/**
 	 * convert the posted form data to the data to be shown in the email
@@ -209,7 +214,7 @@ class plgFabrik_Form extends FabrikPlugin
 				{
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-					$foreignKey  = '';
+					$foreignKey = '';
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
@@ -221,7 +226,7 @@ class plgFabrik_Form extends FabrikPlugin
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-							//$repeatGroup = count($model->_data['join'][$joinTable->id][$smallerElHTMLName]);
+							//$repeatGroup = count($model->data['join'][$joinTable->id][$smallerElHTMLName]);
 							$repeatGroup = count($model->formDataWithTableName['join'][$joinTable->id][$smallerElHTMLName]);
 						}
 						else
@@ -239,17 +244,17 @@ class plgFabrik_Form extends FabrikPlugin
 					// repeat groups which arent joins
 					/* $elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
-						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-						if (is_array($model->formDataWithTableName)) {
-							if (array_key_exists($smallerElHTMLName . '_raw', $model->formDataWithTableName)) {
-								$d = $model->formDataWithTableName[$smallerElHTMLName . '_raw'];
-							} else {
-								$d = @$model->formDataWithTableName[$smallerElHTMLName];
-							}
-							$d = FabrikWorker::JSONtoData($d, true);
-							$c = count($d);
-							if ($c > $repeatGroup) { $repeatGroup = $c;}
-						}
+					    $smallerElHTMLName = $tmpElement->getFullName(false, true, false);
+					    if (is_array($model->formDataWithTableName)) {
+					        if (array_key_exists($smallerElHTMLName . '_raw', $model->formDataWithTableName)) {
+					            $d = $model->formDataWithTableName[$smallerElHTMLName . '_raw'];
+					        } else {
+					            $d = @$model->formDataWithTableName[$smallerElHTMLName];
+					        }
+					        $d = FabrikWorker::JSONtoData($d, true);
+					        $c = count($d);
+					        if ($c > $repeatGroup) { $repeatGroup = $c;}
+					    }
 					} */
 				}
 			}
@@ -314,16 +319,17 @@ class plgFabrik_Form extends FabrikPlugin
 							}
 						}
 					}
-					// $$$ hugh - need to poke data into $elementModel$elementModel->getFormModel()->_data as it is needed
+					// $$$ hugh - need to poke data into $elementModel$elementModel->getFormModel()->data as it is needed
 					// by CDD getOptions when building the query, to constrain the WHERE clause with
 					// selected FK value.
 
 					// $$$ rob in repeat join groups this isnt really efficient as you end up reformatting the data $c times
-					$elementModel->getFormModel()->_data = $model->formDataWithTableName;
+					$elementModel->getFormModel()->data = $model->formDataWithTableName;
 					// $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
 					// (may only be on AJAX submit)
 					$email_value = '';
-					if (array_key_exists($k . '_raw', $this->emailData)) {
+					if (array_key_exists($k . '_raw', $this->emailData))
+					{
 						$email_value = $this->emailData[$k . '_raw'];
 					}
 					elseif (array_key_exists($k, $this->emailData))
@@ -362,9 +368,7 @@ class plgFabrik_Form extends FabrikPlugin
 	{
 		$db = JFactory::getDBO(true);
 		$query = $db->getQuery();
-		$query->select(' id, name, email, sendEmail')
-		->from('#__users')
-		->where('WHERE sendEmail = "1"');
+		$query->select(' id, name, email, sendEmail')->from('#__users')->where('WHERE sendEmail = "1"');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		return $rows;

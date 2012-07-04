@@ -11,10 +11,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormEmail extends plgFabrik_Form {
+class PlgFabrik_FormEmail extends PlgFabrik_Form {
 
 	var $_aAttachments = array();
 
@@ -52,10 +52,10 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 		//$this->data = $this->getEmailData();
 		//getEmailData returns correctly formatted {tablename___elementname} keyed results
-		//_formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms
-		// $$$ rob swapped order 21/11/2010 so that getEmailData takes preference over _formData
-		//$this->data 		= array_merge($this->getEmailData(), $formModel->_formData);
-		$this->data = array_merge($formModel->_formData, $this->getEmailData());
+		//formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms
+		// $$$ rob swapped order 21/11/2010 so that getEmailData takes preference over formData
+		//$this->data 		= array_merge($this->getEmailData(), $formModel->formData);
+		$this->data = array_merge($formModel->formData, $this->getEmailData());
 		// $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		//check if condition exists and is met
 		if (!$this->shouldProcess('email_conditon'))

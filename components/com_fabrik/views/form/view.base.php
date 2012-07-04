@@ -98,7 +98,7 @@ class FabrikViewFormBase extends JView
 		$this->groups = $model->getGroupView($tmpl);
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
 		$this->assignRef('data', $model->data);
-		$this->assignRef('modeldata', $model->_data);
+		$this->assignRef('modeldata', $model->data);
 		$this->assignRef('params', $params);
 		$this->assign('tipLocation', $params->get('tiplocation'));
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
@@ -162,7 +162,7 @@ class FabrikViewFormBase extends JView
 		}
 		
 		// allows you to use {placeholders} in form template.
-		$text = $w->parseMessageForPlaceHolder($text, $model->_data);
+		$text = $w->parseMessageForPlaceHolder($text, $model->data);
 		echo $text;
 	}
 
@@ -223,7 +223,7 @@ class FabrikViewFormBase extends JView
 			}
 			if (!$this->isMambot)
 			{
-				$titleData = array_merge($_REQUEST, $model->_data);
+				$titleData = array_merge($_REQUEST, $model->data);
 				$title = $w->parseMessageForPlaceHolder($params->get('page_title'), $titleData, false);
 				$params->set('page_title', $title);
 			}
@@ -583,7 +583,7 @@ class FabrikViewFormBase extends JView
 		$Itemid	= $menuItem ? $menuItem->id : 0;
 		$model = $this->getModel();
 		$listModel = $model->getListModel();
-		$canDelete = $listModel->canDelete($model->_data);
+		$canDelete = $listModel->canDelete($model->data);
 		$params = $model->getParams();
 		$task = 'form.process';
 		$reffer = JRequest::getVar('HTTP_REFERER', '', 'server');
@@ -612,7 +612,7 @@ class FabrikViewFormBase extends JView
 			// see http://fabrikar.com/forums/showthread.php?t=10297&page=5
 
 			$fields[] = '<input type="hidden" name="usekey" value="' . $usekey . '" />';
-			$pk_val = JArrayHelper::getValue($model->_data, FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key));
+			$pk_val = JArrayHelper::getValue($model->data, FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key));
 			if (empty($pk_val))
 			{
 				$fields[] = '<input type="hidden" name="usekey_newrecord" value="1" />';

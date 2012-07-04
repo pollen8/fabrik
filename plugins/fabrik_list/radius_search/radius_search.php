@@ -12,7 +12,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
+// Require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListRadius_search extends plgFabrik_List {
@@ -141,7 +141,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 
 	/**
 	 * this is used to put the radius search data into the listfilter model
-	 * called from its getPostFilters() method. The data is then sent to tableModel->_request
+	 * called from its getPostFilters() method. The data is then sent to tableModel->request
 	 * which is then stored in the session for future use
 * @param object plug-in $params
 * @param object table $model

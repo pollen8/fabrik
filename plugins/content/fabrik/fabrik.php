@@ -324,7 +324,7 @@ class plgContentFabrik extends JPlugin
 			$defaultdata = get_object_vars($row);
 			// $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
 			// not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
-			$activeEl->getFormModel()->_data = $defaultdata;
+			$activeEl->getFormModel()->data = $defaultdata;
 			$activeEl->editable = false;
 			//set row id for things like user element
 			$origRowid = JRequest::getVar('rowid');

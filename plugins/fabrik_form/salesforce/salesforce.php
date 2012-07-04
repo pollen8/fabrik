@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Submit or update data to Salesforce.com
  * @package     Joomla
@@ -13,35 +12,53 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormSalesforce extends plgFabrik_Form {
+class PlgFabrik_FormSalesforce extends PlgFabrik_Form
+{
 
-	var $_data = null;
+	protected $data = null;
+
+	/**
+	 * Get SalesForce client
+	 * 
+	 * @return SforcePartnerClient
+	 */
 
 	private function client()
 	{
-		//Get the path to the Toolkit, set in the options on install.
+		// Get the path to the Toolkit, set in the options on install.
 		$toolkit_path = JPATH_SITE . '/components/com_fabrik/libs/salesforce';
 
-		//Ok, now use SOAP to send the information to SalesForce
-		require_once($toolkit_path .'/soapclient/SforcePartnerClient.php');
-		require_once($toolkit_path.'/soapclient/SforceHeaderOptions.php');
+		// Ok, now use SOAP to send the information to SalesForce
+		require_once $toolkit_path . '/soapclient/SforcePartnerClient.php';
+		require_once $toolkit_path . '/soapclient/SforceHeaderOptions.php';
 
 		// Salesforce Login information
 		$wsdl = $toolkit_path . '/soapclient/partner.wsdl.xml';
+
 		// Process of logging on and getting a salesforce.com session
-		$client = new SforcePartnerClient();
+		$client = new SforcePartnerClient;
 		$client->createConnection($wsdl);
 		return $client;
 	}
+
+	/**
+	 * Sets up HTML to be injected into the form's bottom
+	 *
+	 * @param   object  $parmas     params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return void
+	 */
 
 	public function getBottomContent($params, $formModel)
 	{
 		if (!class_exists('SoapClient'))
 		{
-			JError::raiseWarning(E_WARNING, "Salesforce Plug-in: PHP has not been compiled with the SOAP extension. We will be unable to send this data to Salesforce.com");
+			JError::raiseWarning(E_WARNING,
+				"Salesforce Plug-in: PHP has not been compiled with the SOAP extension. We will be unable to send this data to Salesforce.com");
 		}
 	}
 
@@ -54,12 +71,13 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		$password = $params->get('salesforce_password');
 		$token = $params->get('salesforce_token');
 		$updateObject = $params->get('salesforce_updateobject', 'Lead');
-		$loginResult = $client->login($userName, $password.$token);
+		$loginResult = $client->login($userName, $password . $token);
 
 		$givenObject = array($updateObject);
 		$fields = $client->describeSObjects($givenObject)->fields;
 		$submission = array();
-		//map the posted data into acceptable fields
+
+		// Map the posted data into acceptable fields
 		foreach ($fields as $f)
 		{
 			$name = $f->name;
@@ -76,8 +94,8 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 				}
 				else
 				{
-					// check custom fields
-					if (JString::strtolower($key.'__c') == JString::strtolower($name) && JString::strtolower($name) != 'id')
+					// Check custom fields
+					if (JString::strtolower($key . '__c') == JString::strtolower($name) && JString::strtolower($name) != 'id')
 					{
 						$submission[$name] = $val;
 					}
@@ -86,14 +104,16 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		}
 
 		$key = FabrikString::safeColNameToArrayKey($formModel->getlistModel()->getTable()->db_primary_key);
-		$customkey =$params->get('salesforce_customid') . '__c';
+		$customkey = $params->get('salesforce_customid') . '__c';
 		if ($params->get('salesforce_allowupsert', 0))
 		{
 			$submission[$customkey] = $formModel->_fullFormData[$key];
 		}
 		$sObjects = array();
-		$sObject = new sObject();
-		$sObject->type = $updateObject; // Salesforce Table or object that you will perform the upsert on
+		$sObject = new sObject;
+
+		// Salesforce Table or object that you will perform the upsert on
+		$sObject->type = $updateObject;
 		$sObject->fields = $submission;
 		array_push($sObjects, $sObject);
 		$app = JFactory::getApplication();
@@ -124,12 +144,12 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 				{
 					foreach ($result->errors as $error)
 					{
-						JError::raiseWarning(500, JText::_('SALESFORCE_ERR').$errors->message);
+						JError::raiseWarning(500, JText::_('SALESFORCE_ERR') . $errors->message);
 					}
 				}
 				else
 				{
-					JError::raiseWarning(500, JText::_('SALESFORCE_ERR'). $result->errors->message);
+					JError::raiseWarning(500, JText::_('SALESFORCE_ERR') . $result->errors->message);
 				}
 			}
 			else
@@ -139,7 +159,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		}
 	}
 
-	function upsert($client, $sObjects, $key)
+	public function upsert($client, $sObjects, $key)
 	{
 		try
 		{
@@ -149,14 +169,16 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		}
 		catch (exception $e)
 		{
-			// This is reached if there is a major problem in the data or with
-			// the salesforce.com connection. Normal data errors are caught by
-			// salesforce.com
+			/**
+			 * This is reached if there is a major problem in the data or with
+			 * the salesforce.com connection. Normal data errors are caught by
+			 * salesforce.com
+			 */
 			return $e;
 		}
 	}
 
-	function insert($client, $sObjects)
+	public function insert($client, $sObjects)
 	{
 		try
 		{
@@ -166,9 +188,11 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		}
 		catch (exception $e)
 		{
-			// This is reached if there is a major problem in the data or with
-			// the salesforce.com connection. Normal data errors are caught by
-			// salesforce.com
+			/**
+			 * This is reached if there is a major problem in the data or with
+			 * the salesforce.com connection. Normal data errors are caught by
+			 * salesforce.com
+			 */
 			return $e;
 		}
 	}

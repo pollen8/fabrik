@@ -13,7 +13,7 @@ class fabrikViewChart extends JView
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/list.js';
 		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
-		require_once(COM_FABRIK_FRONTEND . '/helpers/html.php');
+		require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
@@ -24,7 +24,7 @@ class fabrikViewChart extends JView
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$calendar = $model->_row;
+		$calendar = $model->getRow();
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
 		if ($this->requiredFiltersFound)
 		{

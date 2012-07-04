@@ -1,25 +1,30 @@
 <?php
 
 /**
-* Run some php when the form is submitted
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * Run some php when the form is submitted
+ * @package Joomla
+ * @subpackage Fabrik
+ * @author Rob Clayburn
+ * @copyright (C) Rob Clayburn
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormPHP extends plgFabrik_Form {
+class PlgFabrik_FormPHP extends PlgFabrik_Form
+{
 
 	/**
-	 * store the html to insert at the bottom of the form(non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getBottomContent()
+	 * Sets up HTML to be injected into the form's bottom
+	 * 
+	 * @param   object  $params     params
+	 * @param   object  $formModel  form model
+	 * 
+	 * @return void
 	 */
 
 	public function getBottomContent($params, $formModel)
@@ -28,11 +33,11 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 		if ($params->get('only_process_curl') == 'getBottomContent')
 		{
 			$this->html = $this->_runPHP($params, $formModel);
- 			if ($this->html === false)
- 			{
+			if ($this->html === false)
+			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
- 		}
+		}
 		return true;
 	}
 
@@ -47,11 +52,11 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 		if ($params->get('only_process_curl') == 'getTopContent')
 		{
 			$this->html = $this->_runPHP($params, $formModel);
- 			if ($this->html === false)
- 			{
+			if ($this->html === false)
+			{
 				return false;
 			}
- 		}
+		}
 		return true;
 	}
 
@@ -76,127 +81,136 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 		if ($params->get('only_process_curl') == 'getEndContent')
 		{
 			$this->html = $this->_runPHP($params, $formModel);
- 			if ($this->html === false)
- 			{
+			if ($this->html === false)
+			{
 				return false;
 			}
- 		}
+		}
 		return true;
 	}
 
 	/**
 	 *
-* @param   object	$params
-* @param   object	$formModel
+	 * @param   object	$params
+	 * @param   object	$formModel
 	 */
 
- 	public function onBeforeProcess($params, &$formModel)
- 	{
- 		if ($params->get('only_process_curl') == 'onBeforeProcess')
- 		{
- 			if ($this->_runPHP($params, $formModel) === false)
- 			{
+	public function onBeforeProcess($params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeProcess')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return false;
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	function onBeforeStore($params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onBeforeStore')
- 	 	{
- 			if ($this->_runPHP($params, $formModel) === false)
- 			{
+	/**
+	 * Run before the form is processed
+	 * 
+	 * @param   object  &$params     params
+	 * @param   object  &$formModel  form model
+	 * 
+	 * @return  bool  should the form model continue to save
+	 */
+
+	public function onBeforeStore(&$params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeStore')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return false;
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	/**
- 	 * (non-PHPdoc)
- 	 * @see plgFabrik_Form::onBeforeCalculations()
- 	 */
- 	
- 	function onBeforeCalculations($params, $formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onBeforeCalculations')
- 	 	{
- 	 		if ($this->_runPHP($params, $formModel) === false)
- 	 		{
+	/**
+	 * (non-PHPdoc)
+	 * @see PlgFabrik_Form::onBeforeCalculations()
+	 */
+
+	function onBeforeCalculations($params, $formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeCalculations')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	public function onAfterProcess($params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onAfterProcess')
- 	 	{
- 			if ($this->_runPHP($params, $formModel) === false)
- 			{
+	public function onAfterProcess($params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onAfterProcess')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return false;
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	/**
- 	 * run when the form is loaded - after its data has been created
- 	 * data found in $formModel->_data
-* @param   object	$params
-* @param   object	$formModel
- 	 * @return  unknown_type
- 	 */
+	/**
+	 * run when the form is loaded - after its data has been created
+	 * data found in $formModel->data
+	 * @param   object	$params
+	 * @param   object	$formModel
+	 * @return  unknown_type
+	 */
 
- 	function onLoad( &$params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onLoad')
- 	 	{
- 			return $this->_runPHP($params, $formModel);
- 		}
- 		return true;
- 	}
+	function onLoad(&$params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onLoad')
+		{
+			return $this->_runPHP($params, $formModel);
+		}
+		return true;
+	}
 
- 	/**
- 	* run when the form is loaded - before its data has been created
- 	* data found in $formModel->_data
-* @param   object	$params
-* @param   object	$formModel
- 	* @return  bool
- 	*/
+	/**
+	 * run when the form is loaded - before its data has been created
+	 * data found in $formModel->data
+	 * @param   object	$params
+	 * @param   object	$formModel
+	 * @return  bool
+	 */
 
- 	function onBeforeLoad(&$params, &$formModel)
- 	{
- 		if ($params->get('only_process_curl') == 'onBeforeLoad')
- 		{
- 			return $this->_runPHP($params, $formModel);
- 		}
- 		return true;
- 	}
+	function onBeforeLoad(&$params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeLoad')
+		{
+			return $this->_runPHP($params, $formModel);
+		}
+		return true;
+	}
 
- 	/**
- 	 * process the plugin, called when form is submitted
-* @param   object	$params
-* @param   object	form model
- 	 */
+	/**
+	 * process the plugin, called when form is submitted
+	 * @param   object	$params
+	 * @param   object	form model
+	 */
 
- 	public function onError($params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onError')
- 	 	{
- 			$this->_runPHP($params, $formModel);
- 		}
- 		return true;
+	public function onError($params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onError')
+		{
+			$this->_runPHP($params, $formModel);
+		}
+		return true;
 	}
 
 	/**
 	 * @private
 	 * run plugins php code/script
-* @param object $params
-* @param object $formModel
+	 * @param   object  $params
+	 * @param   object  $formModel
 	 * @return  bool false if error running php code
 	 */
 
@@ -207,16 +221,16 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 		 * $formModel->updateFormData('tablename___elementname', $newvalue);
 		 */
 
-		// $$$ rob this is poor when submitting the form the data is stored in _formData, when editing its stored in _data -
+		// $$$ rob this is poor when submitting the form the data is stored in formData, when editing its stored in _data -
 		// as this method can run on render or on submit we have to do a little check to see which one we should use.
 		// really we should use the same form property to store the data regardless of form state
-		if (!empty($formModel->_formData))
+		if (!empty($formModel->formData))
 		{
-			$this->html = $formModel->_formData;
+			$this->html = $formModel->formData;
 		}
 		else
 		{
-			$this->html = $formModel->_data;
+			$this->html = $formModel->data;
 		}
 		if ($params->get('form_php_file') == -1)
 		{
@@ -232,9 +246,9 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 			// for some reason, = wasn't working??
 			$fabrikFormData = $this->html;
 			// $$$ hugh - doesn't exist for tableless forms
-			if (isset($formModel->_formDataWithtableName))
+			if (isset($formModel->formDataWithtableName))
 			{
-				$fabrikFormDataWithTableName = $formModel->_formDataWithtableName;
+				$fabrikFormDataWithTableName = $formModel->formDataWithtableName;
 			}
 			$php_file = JFilterInput::getInstance()->clean($params->get('form_php_file'), 'CMD');
 			$php_file = JPATH_ROOT . '/plugins/fabrik_form/php/scripts/' . $php_file;

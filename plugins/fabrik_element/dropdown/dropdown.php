@@ -10,31 +10,35 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementDropdown extends plgFabrik_ElementList
+class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::setId()
+	 * @see PlgFabrik_Element::setId()
 	 */
-	
+
 	public function setId($id)
 	{
 		parent::setId($id);
 		$params = $this->getParams();
-		//set elementlist params from dropdown params
+
+		// Set elementlist params from dropdown params
 		$params->set('allow_frontend_addto', (bool) $params->get('allow_frontend_addtodropdown', false));
 		$params->set('allowadd-onlylabel', (bool) $params->get('dd-allowadd-onlylabel', true));
 		$params->set('savenewadditions', (bool) $params->get('dd-savenewadditions', false));
 	}
 
 	/**
-	 * draws the form element
-* @param   int		repeat group counter
-	 * @return  string	returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -48,14 +52,14 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$multisize = $params->get('dropdown_multisize', 3);
 		$selected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-		$attribs 	= 'class="fabrikinput inputbox' . $errorCSS . '"';
+		$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
 
 		if ($multiple == "1")
 		{
 			$attribs .= ' multiple="multiple" size="' . $multisize . '" ';
 		}
 		$i = 0;
-		$aRoValues 	= array();
+		$aRoValues = array();
 		$opts = array();
 		foreach ($values as $tmpval)
 		{
@@ -66,7 +70,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			{
 				$aRoValues[] = $this->getReadOnlyOutput($tmpval, $tmpLabel);
 			}
-			$i ++;
+			$i++;
 		}
 		//if we have added an option that hasnt been saved to the database. Note you cant have
 		// it not saved to the database and asking the user to select a value and label
@@ -82,7 +86,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			}
 		}
 		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
-		if (!$this->editable) {
+		if (!$this->editable)
+		{
 			return implode(', ', $aRoValues);
 		}
 		$str .= $this->getAddOptionFields($repeatCounter);
@@ -90,15 +95,18 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::elementJavascript()
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$arSelected = $this->getValue($data, $repeatCounter);
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
@@ -116,11 +124,14 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::getDefaultValue()
+	 * This really does get just the default value (as defined in the element's settings)
+	 * 
+	 * @param   array  $data  form data
+	 * 
+	 * @return mixed 
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		$params = $this->getParams();
 		if (!isset($this->default))
@@ -159,11 +170,16 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::dataConsideredEmpty()
+	 * Does the element conside the data to be empty
+	 * Used in isempty validation rule
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 * 
+	 * @return  bool
 	 */
 
-	function dataConsideredEmpty($data, $repeatCounter)
+	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		// $$$ hugh - $data seems to be an array now?
 		if (is_array($data))
@@ -175,7 +191,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		}
 		else
 		{
-			if ($data == '' || $data == '-1') {
+			if ($data == '' || $data == '-1')
+			{
 				return true;
 			}
 		}
@@ -184,10 +201,10 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	/**
 	 * repalce a value with its label
-* @param   string	value
+	 * @param   string	value
 	 * @return  string	label
 	 */
-	
+
 	protected function replaceLabelWithValue($selected)
 	{
 		$selected = (array) $selected;
@@ -199,7 +216,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$return = array();
-		$aRoValues	= array();
+		$aRoValues = array();
 		$opts = array();
 		$i = 0;
 		foreach ($labels as $label)
@@ -215,7 +232,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getFilterQuery()
+	 * @see PlgFabrik_Element::getFilterQuery()
 	 */
 
 	public function getFilterQuery($key, $condition, $label, $originalValue, $type = 'normal')
@@ -225,7 +242,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		{
 			// $$$ hugh - (sometimes?) $label is already quoted, which is causing havoc ...
 			$db = JFactory::getDbo();
-			$values = $this->replaceLabelWithValue(trim($label,"'"));
+			$values = $this->replaceLabelWithValue(trim($label, "'"));
 			if (empty($values))
 			{
 				$value = '';
@@ -234,7 +251,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			{
 				$value = $values[0];
 			}
-			if ($value == '') {
+			if ($value == '')
+			{
 				$value = $label;
 			}
 			if (!preg_match('#^\'.*\'$#', $value))
@@ -251,10 +269,8 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			$where2 = ('%,"' . $originalValue . '",%');
 			$where3 = ('%,"' . $originalValue . '"]');
 
-			return ' (' . $key . ' ' . $condition . ' ' . $value .' OR ' . $key . ' LIKE \'' . $where1 .
-							'\' OR ' . $key . ' LIKE \'' . $where2 .
-							'\' OR ' . $key . ' LIKE \'' . $where3 .
-							'\' )';
+			return ' (' . $key . ' ' . $condition . ' ' . $value . ' OR ' . $key . ' LIKE \'' . $where1 . '\' OR ' . $key . ' LIKE \'' . $where2
+				. '\' OR ' . $key . ' LIKE \'' . $where3 . '\' )';
 		}
 		else
 		{
@@ -264,16 +280,13 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::getValidationWatchElements()
+	 * @see PlgFabrik_ElementList::getValidationWatchElements()
 	 */
 
 	function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$ar = array(
-			'id' => $id,
-			'triggerEvent' => 'change'
-		);
+		$ar = array('id' => $id, 'triggerEvent' => 'change');
 		return array($ar);
 	}
 

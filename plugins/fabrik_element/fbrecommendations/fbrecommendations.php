@@ -12,9 +12,9 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
+class PlgFabrik_ElementFbrecommendations extends PlgFabrik_Element {
 
 	protected $hasLabel = false;
 
@@ -23,14 +23,18 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 	protected $fieldSize = '1';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::render()
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$str = FabrikHelperHTML::facebookGraphAPI( $params->get('opengraph_applicationid'));
+		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
 		$domain = $params->get('fbrecommendations_domain');
 		$width = $params->get('fbrecommendations_width', 300);
 		$height = $params->get('fbrecommendations_height', 300);
@@ -43,11 +47,14 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element {
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::elementJavascript()
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

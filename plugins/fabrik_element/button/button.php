@@ -10,17 +10,19 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementButton extends plgFabrik_Element
+class PlgFabrik_ElementButton extends PlgFabrik_Element
 {
 
 	/**
-	 * draws a button
-* @param   string	data
-* @param   int		repeat group counter
-	 * @return  string	returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -31,7 +33,7 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getLabel()
+	 * @see PlgFabrik_Element::getLabel()
 	 */
 
 	function getLabel($repeatCounter, $tmpl = '')
@@ -40,11 +42,14 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::elementJavascript()
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

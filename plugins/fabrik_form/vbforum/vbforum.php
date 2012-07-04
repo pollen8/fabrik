@@ -13,23 +13,25 @@
 defined('_JEXEC') or die();
 
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormVbForum extends plgFabrik_Form {
+class PlgFabrik_FormVbForum extends PlgFabrik_Form {
 
 	var $vb_forum_field = '';
 	var $vb_path = '';
 	var $vb_globals = '';
 
 	/**
-	 * process the plugin, called when form is submitted
-	 *
-* @param object $params
-* @param object form
+	 * Run before the form is processed
+	 * 
+	 * @param   object  &$params     params
+	 * @param   object  &$formModel  form model
+	 * 
+	 * @return  bool  should the form model continue to save
 	 */
 
-	function onBeforeStore(&$params, &$formModel)
+	public function onBeforeStore(&$params, &$formModel)
 	{
 		global $vbulletin;
 		define(VB_AREA, 'fabrik');
@@ -38,7 +40,7 @@ class plgFabrik_FormVbForum extends plgFabrik_Form {
 		// Initialize some variables
 		$db	= FabrikWorker::getDbo();
 
-		$data = $formModel->_formData;
+		$data = $formModel->formData;
 
 		// Check for request forgeries
 		JRequest::checkToken() or jexit('Invalid Token');

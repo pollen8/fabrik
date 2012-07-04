@@ -16,10 +16,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormAutofill extends plgFabrik_Form {
+class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 
 	/**
 	 * need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired

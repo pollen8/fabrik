@@ -25,7 +25,7 @@ class FabrikViewVisualization extends JView{
 
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
 		$plugin = $pluginManager->getPlugIn($visualization->plugin, 'visualization');
-		$plugin->_row = $visualization;
+		$plugin->setRow($visualization);
 		if ($visualization->published == 0)
 		{
 			return JError::raiseWarning(500, JText::_('COM_FABRIK_SORRY_THIS_VISUALIZATION_IS_UNPUBLISHED'));

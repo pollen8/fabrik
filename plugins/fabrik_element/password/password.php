@@ -10,13 +10,13 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementPassword extends plgFabrik_Element
+class PlgFabrik_ElementPassword extends PlgFabrik_Element
 {
 
 	/**
 	 * states if the elemnt contains data which is recorded in the database
 	 * some elements (eg buttons) dont
-* @param   array	posted data
+	 * @param   array	posted data
 	 * @return  bool	should record in db
 	 */
 
@@ -40,8 +40,8 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	/**
 	 * formats the posted data for insertion into the database
-* @param   mixed	thie elements posted form data
-* @param   array	posted form data
+	 * @param   mixed	thie elements posted form data
+	 * @param   array	posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -50,7 +50,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		jimport('joomla.user.helper');
 		$salt = JUserHelper::genRandomPassword(32);
 		$crypt = JUserHelper::getCryptedPassword($val, $salt);
-		$val = $crypt.':'.$salt;
+		$val = $crypt . ':' . $salt;
 		return $val;
 	}
 
@@ -64,12 +64,15 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$element = $this->getElement();
 		$value = '';
@@ -104,8 +107,8 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	/**
 	 * validate the passwords
-* @param   string	elements data
-* @param   int		repeat group counter
+	 * @param   string	elements data
+	 * @param   int		repeat group counter
 	 * @return  bool	true if passes / false if falise validation
 	 */
 
@@ -138,17 +141,19 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param object element
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$formparams = $this->getForm()->getParams();
-		$opts->ajax_validation =  $formparams->get('ajax_validations') === '1';
+		$opts->ajax_validation = $formparams->get('ajax_validations') === '1';
 		$opts = json_encode($opts);
 		$lang = new stdClass;
 
@@ -163,17 +168,14 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	/**
 	 *
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-* @param   int repeat group counter
+	 * @param   int repeat group counter
 	 * @return array html ids to watch for validation
 	 */
 
 	function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter) . '_check';
-		$ar = array(
-			'id' => $id,
-			'triggerEvent' => 'blur'
-			);
+		$ar = array('id' => $id, 'triggerEvent' => 'blur');
 		return array($ar);
 	}
 }

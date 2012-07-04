@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementColourpicker extends plgFabrik_Element
+class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 {
 
 	protected $fieldDesc = 'CHAR(%s)';
@@ -18,26 +18,29 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 	protected $fieldSize = '10';
 
 	/**
-	 * shows the data formatted for the table view
-* @param string data
-* @param object all the data in the tables current row
-	 * @return string formatted value
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$str = '';
-		foreach ($data as $d) {
-			$str .= '<div style="width:15px;height:15px;background-color:rgb('.$d.')"></div>';
+		foreach ($data as $d)
+		{
+			$str .= '<div style="width:15px;height:15px;background-color:rgb(' . $d . ')"></div>';
 		}
 		return $str;
 	}
 
 	/**
 	 * formats the posted data for insertion into the database
-* @param mixed thie elements posted form data
-* @param array posted form data
+	 * @param mixed thie elements posted form data
+	 * @param   array posted form data
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -47,24 +50,27 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param   int group repeat counter
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
-		if (!$this->editable) {
+		if (!$this->editable)
+		{
 			return;
 		}
 		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$value = $this->getValue($data, $repeatCounter);
 		$vars = explode(",", $value);
-		$vars = array_pad( $vars, 3, 0);
+		$vars = array_pad($vars, 3, 0);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$c = new stdClass;
 		// 14/06/2011 changed over to color param object from ind colour settings
@@ -75,31 +81,36 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		$swatch = $params->get('colourpicker-swatch', 'default.js');
 		$swatchFile = JPATH_SITE . '/plugins/fabrik_element/colourpicker/swatches/' . $swatch;
 		$opts->swatch = json_decode(JFile::read($swatchFile));
-		
+
 		$opts->closeImage = FabrikHelperHTML::image("close.gif", 'form', @$this->tmpl, array(), true);
 		$opts->handleImage = FabrikHelperHTML::image("handle.gif", 'form', @$this->tmpl, array(), true);
 		$opts->trackImage = FabrikHelperHTML::image("track.gif", 'form', @$this->tmpl, array(), true);
-		
+
 		$opts = json_encode($opts);
 		return "new ColourPicker('$id', $opts)";
 	}
 
 	/**
-	 * draws the form element
-* @param array row data
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$value = $this->getValue($data, $repeatCounter);
 		$str = array();
-		$str[]	= '<div class="fabrikSubElementContainer">';
-		$str[] = '<input type="hidden" name="'.$name.'" id="'.$id.'" /><div class="colourpicker_bgoutput" style="float:left;width:20px;height:20px;border:1px solid #333333;background-color:rgb('.$value.')"></div>';
-		if ($this->editable) {
+		$str[] = '<div class="fabrikSubElementContainer">';
+		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id
+			. '" /><div class="colourpicker_bgoutput" style="float:left;width:20px;height:20px;border:1px solid #333333;background-color:rgb('
+			. $value . ')"></div>';
+		if ($this->editable)
+		{
 			$str[] = '<div class="colourPickerBackground colourpicker-widget" style="color:#000;z-index:99999;left:200px;background-color:#EEEEEE;border:1px solid #333333;width:390px;padding:0 0 5px 0;"></div>';
 		}
 		$str[] = '</div>';
@@ -112,7 +123,8 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 	function getFieldDescription()
 	{
 		$p = $this->getParams();
-		if ($this->encryptMe()) {
+		if ($this->encryptMe())
+		{
 			return 'BLOB';
 		}
 		return "VARCHAR(30)";

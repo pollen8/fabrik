@@ -11,21 +11,19 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormRest extends plgFabrik_Form {
+class PlgFabrik_FormRest extends PlgFabrik_Form
+{
 
 	public function onAfterProcess($params, &$formModel)
 	{
 		$w = new FabrikWorker;
-		$config_userpass = $params->get('username').':'.$params->get('password');
+		$config_userpass = $params->get('username') . ':' . $params->get('password');
 		$endpoint = $params->get('endpoint');
 
-		$headers = array(
-			'Content-Type: application/xml',
-			'Accept: application/xml'
-		);
+		$headers = array('Content-Type: application/xml', 'Accept: application/xml');
 		$endpoint = $params->get('endpoint');
 		$endpoint = $w->parseMessageForPlaceholder($endpoint);
 
@@ -38,15 +36,15 @@ class plgFabrik_FormRest extends plgFabrik_Form {
 		{
 			$ingore[] = 'id';
 		}
-		/*foreach($formModel->_formData as $key => $val){
-			if ($formModel->hasElement($key) && !in_array($key, $ignore)) {
-				if (is_array($val)) {
-					$val = implode(',', $val);
-				}
-				$ticket->addChild($key, $val);
-			}
+		/*foreach($formModel->formData as $key => $val){
+		    if ($formModel->hasElement($key) && !in_array($key, $ignore)) {
+		        if (is_array($val)) {
+		            $val = implode(',', $val);
+		        }
+		        $ticket->addChild($key, $val);
+		    }
 		}
-*/
+		 */
 		/*
 		 * $ticket = new SimpleXMLElement("<ticket></ticket>");
 		//$ticket->addChild('assignee-id',  $this->config['default_assignee']);
@@ -60,24 +58,17 @@ class plgFabrik_FormRest extends plgFabrik_Form {
 		 */
 
 		$include = array('milestone-id', 'status', 'summary');
-		foreach ($include as $i) {
-			echo "$i = " . $formModel->_formData[$i] . "<br>";
-			$ticket->addChild($i, $formModel->_formData[$i]);
+		foreach ($include as $i)
+		{
+			echo "$i = " . $formModel->formData[$i] . "<br>";
+			$ticket->addChild($i, $formModel->formData[$i]);
 		}
 
 		$output = $ticket->asXML();
 
-		$curl_options = array(
-		CURLOPT_URL            => $endpoint,
-		CURLOPT_RETURNTRANSFER => 1,
-		CURLOPT_HTTPHEADER     => $headers,
-		CURLOPT_POST           => 1,
-		CURLOPT_POSTFIELDS     => $output,
-		CURLOPT_SSL_VERIFYHOST => 0,
-		CURLOPT_SSL_VERIFYPEER => 0,
-		CURLOPT_USERPWD        => $config_userpass,
-		CURLOPT_CUSTOMREQUEST => 'POST'
-		);
+		$curl_options = array(CURLOPT_URL => $endpoint, CURLOPT_RETURNTRANSFER => 1, CURLOPT_HTTPHEADER => $headers, CURLOPT_POST => 1,
+			CURLOPT_POSTFIELDS => $output, CURLOPT_SSL_VERIFYHOST => 0, CURLOPT_SSL_VERIFYPEER => 0, CURLOPT_USERPWD => $config_userpass,
+			CURLOPT_CUSTOMREQUEST => 'POST');
 
 		foreach ($curl_options as $key => $value)
 		{
@@ -87,7 +78,8 @@ class plgFabrik_FormRest extends plgFabrik_Form {
 
 		$httpCode = curl_getinfo($chandle, CURLINFO_HTTP_CODE);
 		echo $httpCode . " : ";
-		switch ($httpCode) {
+		switch ($httpCode)
+		{
 			case '400':
 				echo "Bad Request";
 				break;
@@ -110,12 +102,12 @@ class plgFabrik_FormRest extends plgFabrik_Form {
 				echo "Internal Server Error";
 				break;
 		}
-	if (curl_errno($chandle))
+		if (curl_errno($chandle))
 		{
 			die("ERROR: " . curl_error($chandle));
 		}
 		curl_close($chandle);
-exit;
+		exit;
 	}
 
 }

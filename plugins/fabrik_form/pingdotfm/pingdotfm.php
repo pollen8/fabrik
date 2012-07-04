@@ -17,10 +17,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormPingdotfm extends plgFabrik_Form {
+class PlgFabrik_FormPingdotfm extends PlgFabrik_Form {
 
 	/**
 	 * @var max length of message

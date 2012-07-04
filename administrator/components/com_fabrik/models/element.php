@@ -13,11 +13,11 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
-* Admin Element Model
-*
-* @package  Fabrik
-* @since    3.0
-*/
+ * Admin Element Model
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabrikModelElement extends JModelAdmin
 {
@@ -29,62 +29,20 @@ class FabrikModelElement extends JModelAdmin
 
 	protected $abstractPlugins = null;
 
-	protected $core = array(
-		'#__assets',
-		'#__banner_clients',
-		'#__banner_tracks',
-		'#__banners',
-		'#__categories',
-		'#__contact_details',
-		'#__content',
-		'#__content_frontpage',
-		'#__content_rating',
-		'#__core_log_searches',
-		'#__extensions',
-		'#__fabrik_connections',
-		'#__{package}_cron',
-		'#__{package}_elements',
-		'#__{package}_form_sessions',
-		'#__{package}_formgroup',
-		'#__{package}_forms',
-		'#__{package}_groups',
-		'#__{package}_joins',
-		'#__{package}_jsactions',
-		'#__{package}_lists',
-		'#__{package}_log',
-		'#__{package}_packages',
-		'#__{package}_validations',
-		'#__{package}_visualizations',
-		'#__fb_contact_sample',
-		'#__languages',
-		'#__menu',
-		'#__menu_types',
-		'#__messages',
-		'#__messages_cfg',
-		'#__modules',
-		'#__modules_menu',
-		'#__newsfeeds',
-		'#__redirect_links',
-		'#__schemas',
-		'#__session',
-		'#__template_styles',
-		'#__update_categories',
-		'#__update_sites',
-		'#__update_sites_extensions',
-		'#__updates',
-		'#__user_profiles',
-		'#__user_usergroup_map',
-		'#__usergroups',
-		'#__users',
-		'#__viewlevels',
-		'#__weblinks'
-	);
+	protected $core = array('#__assets', '#__banner_clients', '#__banner_tracks', '#__banners', '#__categories', '#__contact_details', '#__content',
+		'#__content_frontpage', '#__content_rating', '#__core_log_searches', '#__extensions', '#__fabrik_connections', '#__{package}_cron',
+		'#__{package}_elements', '#__{package}_form_sessions', '#__{package}_formgroup', '#__{package}_forms', '#__{package}_groups',
+		'#__{package}_joins', '#__{package}_jsactions', '#__{package}_lists', '#__{package}_log', '#__{package}_packages',
+		'#__{package}_validations', '#__{package}_visualizations', '#__fb_contact_sample', '#__languages', '#__menu', '#__menu_types', '#__messages',
+		'#__messages_cfg', '#__modules', '#__modules_menu', '#__newsfeeds', '#__redirect_links', '#__schemas', '#__session', '#__template_styles',
+		'#__update_categories', '#__update_sites', '#__update_sites_extensions', '#__updates', '#__user_profiles', '#__user_usergroup_map',
+		'#__usergroups', '#__users', '#__viewlevels', '#__weblinks');
 
 	/**
 	 * Constructor.
 	 * Ensure that we use the fabrik db model for the dbo
 	 * 
-* @param   array  $config  An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 */
 
 	public function __construct($config = array())
@@ -96,9 +54,9 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-* @param   string  $type    The table type to instantiate
-* @param   string  $prefix  A prefix for the table class name. Optional.
-* @param   array   $config  Configuration array for model. Optional.
+	 * @param   string  $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
 	 * 
 	 * @return  JTable  A database object
 	 */
@@ -112,8 +70,8 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-* @param   array  $data      Data for the form.
-* @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array  $data      Data for the form.
+	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
 	 * 
 	 * @return  mixed  A JForm object on success, false on failure
 	 */
@@ -207,8 +165,8 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * toggle adding / removing the elment from the list view
 	 * 
-* @param   array  &$pks   primary keys
-* @param   var    $value  add (1) or remove (0) from list view
+	 * @param   array  &$pks   primary keys
+	 * @param   var    $value  add (1) or remove (0) from list view
 	 * 
 	 * @return  bool
 	 */
@@ -427,7 +385,7 @@ class FabrikModelElement extends JModelAdmin
 	 * get html form fields for a plugin (filled with
 	 * current element's plugin data
 	 * 
-* @param   string  $plugin  plugin name
+	 * @param   string  $plugin  plugin name
 	 * 
 	 * @return  string	html form fields
 	 */
@@ -467,7 +425,7 @@ class FabrikModelElement extends JModelAdmin
 	 * here we are hacking various repeat data into the params
 	 * data stored as a json object
 	 * 
-* @param   object  &$item  element item
+	 * @param   object  &$item  element item
 	 * 
 	 * @return  void
 	 */
@@ -479,9 +437,9 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * Method to validate the form data.
 	 *
-* @param   JForm   $form   The form to validate against.
-* @param   array   $data   The data to validate.
-* @param   string  $group  The name of the field group to validate.
+	 * @param   JForm   $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
 	 *
 	 * @return  mixed  Array of filtered data if valid, false otherwise.
 	 *
@@ -574,7 +532,7 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * load the element plugin / model for the posted data
 	 * 
-* @param   array  $data  posted data
+	 * @param   array  $data  posted data
 	 * 
 	 * @return  object  element model
 	 */
@@ -595,12 +553,12 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	* Method to save the form data.
-	*
-* @param   array  $data  The form data.
-	*
-	* @return  boolean  True on success, False on error.
-	*/
+	 * Method to save the form data.
+	 *
+	 * @param   array  $data  The form data.
+	 *
+	 * @return  boolean  True on success, False on error.
+	 */
 
 	public function save($data)
 	{
@@ -728,8 +686,8 @@ class FabrikModelElement extends JModelAdmin
 			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = JRequest::getCmd('task');
-			$url = 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id=' . (int) $row->id
-			. '&origplugin=' . $origplugin . '&origtask=' . $task . '&plugin=' . $row->plugin;
+			$url = 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id=' . (int) $row->id . '&origplugin=' . $origplugin . '&origtask='
+				. $task . '&plugin=' . $row->plugin;
 			$app->setUserState('com_fabrik.redirect', $url);
 		}
 		else
@@ -773,8 +731,8 @@ class FabrikModelElement extends JModelAdmin
 	 * When saving an element, it may need to be added to other Fabrik lists
 	 * If those lists point to the same database table.
 	 * 
-* @param   object  $elementModel  element
-* @param   object  $row           item
+	 * @param   object  $elementModel  element
+	 * @param   object  $row           item
 	 * 
 	 * @return  void
 	 */
@@ -857,7 +815,7 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * update child elements
 	 * 
-* @param   object  &$row  element
+	 * @param   object  &$row  element
 	 * 
 	 * @return  mixed
 	 */
@@ -923,9 +881,9 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * update table indexes based on element settings
 	 * 
-* @param   object  &$elementModel  element model
-* @param   object  &$listModel     list model
-* @param   object  &$row           element item
+	 * @param   object  &$elementModel  element model
+	 * @param   object  &$listModel     list model
+	 * @param   object  &$row           element item
 	 * 
 	 * @return  void
 	 */
@@ -963,7 +921,7 @@ class FabrikModelElement extends JModelAdmin
 	 * Delete old javascript actions for the element
 	 * & add new javascript actions
 	 * 
-* @param   array  $data  to save
+	 * @param   array  $data  to save
 	 * 
 	 * @return void
 	 */
@@ -1018,7 +976,7 @@ class FabrikModelElement extends JModelAdmin
 	 * Take an array of group ids and return the corresponding element
 	 * used in list publish code
 	 * 
-* @param   array  $ids  group ids
+	 * @param   array  $ids  group ids
 	 * 
 	 * @return  array  element ids
 	 */
@@ -1040,7 +998,7 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 *  potentially drop fields then remove element record
 	 *  
-* @param   array  &$pks  to delete
+	 * @param   array  &$pks  to delete
 	 * 
 	 * @return  boolean  True if successful, false if an error occurs.
 	 */
@@ -1127,8 +1085,8 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * if repeated element we need to make a joined db table to store repeated data in
 	 * 
-* @param   object  $elementModel  element model
-* @param   object  $row           element item
+	 * @param   object  $elementModel  element model
+	 * @param   object  $row           element item
 	 * 
 	 * @return  void
 	 */
@@ -1181,8 +1139,8 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * get the name of the repeated elements table
 	 * 
-* @param   object  $elementModel  element model
-* @param   object  $row           element item
+	 * @param   object  $elementModel  element model
+	 * @param   object  $row           element item
 	 * 
 	 * @return  string	table name
 	 */
@@ -1232,7 +1190,7 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * A protected method to get a set of ordering conditions.
 	 *
-* @param   object  $table  A JTable object.
+	 * @param   object  $table  A JTable object.
 	 *
 	 * @return  array  An array of conditions to add to ordering queries.
 	 * 
@@ -1247,7 +1205,7 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * Recursively get all linked children of an element
 	 * 
-* @param   int  $id  element id
+	 * @param   int  $id  element id
 	 * 
 	 * @return  array
 	 */

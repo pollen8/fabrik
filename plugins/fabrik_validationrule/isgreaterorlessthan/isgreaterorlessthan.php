@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin classes
+// Require the abstract plugin classes
 require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
 
 class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationrule {
@@ -32,7 +32,7 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 			$data = implode('', $data);
 		}
  		$params = $this->getParams();
- 		$formdata = $elementModel->getForm()->_formData;
+ 		$formdata = $elementModel->getForm()->formData;
  		$cond = $params->get('isgreaterorlessthan-greaterthan');
  		$cond = $cond[$pluginc];
  		switch ($cond) {

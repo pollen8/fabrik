@@ -11,10 +11,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormLogs extends plgFabrik_Form {
+class PlgFabrik_FormLogs extends PlgFabrik_Form {
 
 	function onLoad(&$params, &$formModel)
 	{

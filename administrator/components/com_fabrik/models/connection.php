@@ -30,9 +30,9 @@ class FabrikModelConnection extends JModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-* @param   string  $type    The table type to instantiate
-* @param   string  $prefix  A prefix for the table class name. Optional.
-* @param   array   $config  Configuration array for model. Optional.
+	 * @param   string  $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
 	 * 
 	 * @return  JTable  A database object
 	 * 
@@ -54,8 +54,8 @@ class FabrikModelConnection extends JModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-* @param   array  $data      Data for the form.
-* @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array  $data      Data for the form.
+	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
 	 * 
 	 * @return  mixed	A JForm object on success, false on failure
 	 * 
@@ -95,7 +95,7 @@ class FabrikModelConnection extends JModelAdmin
 	/**
 	 * Method to set the default item
 	 *
-* @param   int  $id  of connection to set as default
+	 * @param   int  $id  of connection to set as default
 	 * 
 	 * @return  boolean	 True on success.
 	 * 
@@ -119,7 +119,7 @@ class FabrikModelConnection extends JModelAdmin
 	/**
 	 * check if connection is the default and if so reset its values to those of the J db connection
 	 * 
-* @param   object  &$item  connection item
+	 * @param   object  &$item  connection item
 	 * 
 	 * @return null
 	 */
@@ -146,7 +146,7 @@ class FabrikModelConnection extends JModelAdmin
 	/**
 	 * do the item details match the J db connection details
 	 * 
-* @param   object  $item  connection item
+	 * @param   object  $item  connection item
 	 * 
 	 * @return  bool  matches or not
 	 */
@@ -162,7 +162,7 @@ class FabrikModelConnection extends JModelAdmin
 	 * save the connection- test first if its vald
 	 * if it is remove the session instance of the connection then call parent save
 	 * 
-* @param   array  $data  connection data
+	 * @param   array  $data  connection data
 	 * 
 	 * @return  boolean  True on success, False on error.
 	 */
@@ -191,9 +191,9 @@ class FabrikModelConnection extends JModelAdmin
 	/**
 	 * Method to validate the form data.
 	 *
-* @param   JForm   $form   The form to validate against.
-* @param   array   $data   The data to validate.
-* @param   string  $group  The name of the field group to validate.
+	 * @param   JForm   $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
 	 *
 	 * @return  mixed  Array of filtered data if valid, false otherwise.
 	 *

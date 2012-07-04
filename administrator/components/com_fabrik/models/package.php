@@ -216,6 +216,15 @@ class FabrikModelPackage extends FabModelAdmin
 		}
 	}
 
+	/**
+	 * Start the zip download
+	 * 
+	 * @param   string  $filename  saved zip name
+	 * @param   stirng  $filepath  server path for zip
+	 * 
+	 * @return  void
+	 */
+
 	protected function triggerDownload($filename, $filepath)
 	{
 		$document = JFactory::getDocument();
@@ -223,26 +232,25 @@ class FabrikModelPackage extends FabModelAdmin
 
 		$document->setMimeEncoding('application/zip');
 		$str = JFile::read($filepath);
+
 		// Set the response to indicate a file download
 		JResponse::setHeader('Content-Type', 'application/force-download');
-		//JResponse::setHeader('Content-Type', 'application/zip');
+
+		// JResponse::setHeader('Content-Type', 'application/zip');
 		JResponse::setHeader('Content-Length', $size);
 		JResponse::setHeader('Content-Disposition', 'attachment; filename="' . basename($filepath) . '"');
 		JResponse::setHeader('Content-Transfer-Encoding', 'binary');
 
-		/*
-		 * $size = filesize($filepath);
-		header('Content-Type: application/force-download');
-		header('Content-Disposition: attachment; filename="'.basename($getfile).'"');
-		header('Content-Transfer-Encoding: binary');
-		 */
 		JResponse::setBody($str);
 		echo JResponse::toString(false);
 	}
 
 	/**
 	 * remove unwanted tmp files
-	 * @param string $pkgName the package zip name (the file we dont want to delete)
+	 * 
+	 * @param   string  $pkgName  the package zip name (the file we dont want to delete)
+	 * 
+	 * @return  void
 	 */
 
 	protected function cleanUp($pkgName)
@@ -263,7 +271,9 @@ class FabrikModelPackage extends FabModelAdmin
 	/**
 	 * create the component.manifest.class.php file which will populate the components
 	 * forms/lists/elements etc
-	 * @param   object	$row package
+	 * 
+	 * @param   object  $row  package
+	 * 
 	 * @return  string	path name to created file
 	 */
 
@@ -281,7 +291,8 @@ class FabrikModelPackage extends FabModelAdmin
 		$return[] = "\t\t\$m = \$parent->getParent()->manifest;";
 		$return[] = "\t\t\$db = JFactory::getDbo();";
 		$return[] = "\t\t\$query = \$db->getQuery(true);";
-		$return[] = "\t\t\$query->delete('#__fabrik_packages')->where('external_ref <> \"\" AND component_name = ' . \$db->quote(\$m->name) . ' AND version = ' . \$db->quote(\$m->version));";
+		$return[] = "\t\t\$query->delete('#__fabrik_packages')->where('external_ref <> \"\" AND component_name = ' .
+		\$db->quote(\$m->name) . ' AND version = ' . \$db->quote(\$m->version));";
 		$return[] = "\t\t\$db->setQuery(\$query);";
 		$return[] = "\t\t\$db->query();";
 		$return[] = "\t\t\$app = JFactory::getApplication('administrator');";
@@ -314,14 +325,14 @@ class FabrikModelPackage extends FabModelAdmin
 			$list = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_lists', $list, $return);
 
-			//form
+			// Form
 			$query->clear();
 			$query->select('*')->from('#__{package}_forms')->where('id = ' . (int) $list[0]->form_id);
 			$db->setQuery($query);
 			$forms = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_forms', $forms, $return);
 
-			//form groups
+			// Form groups
 			$query->clear();
 			$query->select('*')->from('#__{package}_formgroup')->where('form_id = ' . (int) $list[0]->form_id);
 			$db->setQuery($query);
@@ -333,14 +344,14 @@ class FabrikModelPackage extends FabModelAdmin
 			{
 				$groupids[] = $formgroup->group_id;
 			}
-			//groups
+			// Groups
 			$query->clear();
 			$query->select('*')->from('#__{package}_groups')->where('id IN (' . implode(',', $groupids) . ')');
 			$db->setQuery($query);
 			$groups = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_groups', $groups, $return);
 
-			//elements
+			// Elements
 			$query->clear();
 			$query->select('*')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $groupids) . ')');
 			$db->setQuery($query);
@@ -352,7 +363,7 @@ class FabrikModelPackage extends FabModelAdmin
 			}
 			$this->rowsToInsert('#__' . $row->component_name . '_elements', $elements, $return);
 
-			//joins
+			// Joins
 			$query->clear();
 			$query->select('*')->from('#__{package}_joins')
 				->where('list_id IN (' . implode(',', $lists) . ') OR element_id IN (' . implode(',', $elementids) . ')');
@@ -360,14 +371,14 @@ class FabrikModelPackage extends FabModelAdmin
 			$joins = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_joins', $joins, $return);
 
-			//js actions
+			// JS actions
 			$query->clear();
 			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $elementids) . ')');
 			$db->setQuery($query);
 			$jsactions = $db->loadObjectList();
 			$this->rowsToInsert('#__' . $row->component_name . '_jsactions', $jsactions, $return);
 
-			//js actions
+			// JS actions
 			$query->clear();
 			$query->select('*')->from('#__{package}_validations')->where('element_id IN (' . implode(',', $elementids) . ')');
 			$db->setQuery($query);
@@ -375,8 +386,10 @@ class FabrikModelPackage extends FabModelAdmin
 			$this->rowsToInsert('#__' . $row->component_name . '_validations', $validations, $return);
 
 		}
-		//ok write the code to update components/componentname/componentname.php
-		//have to do this in the installer as we don't know what package id the component will be installed as
+		/**
+		 * ok write the code to update components/componentname/componentname.php
+		 * have to do this in the installer as we don't know what package id the component will be installed as
+		 */
 		$xmlname = str_replace('com_', '', $row->component_name);
 		$return[] = "\t\t\$path = JPATH_ROOT . '/components/com_" . "$row->component_name/$xmlname.php';";
 		$return[] = "\t\t\$buffer = JFile::read(\$path);";
@@ -395,10 +408,13 @@ class FabrikModelPackage extends FabModelAdmin
 	}
 
 	/**
+	 * Build the SQL for inserting rows
 	 * 
-	 * @param   string	db table name
-	 * @param   array	rows to insert
-	 * @param 	array	sql statements parsed by ref
+	 * @param   string  $table    db table name
+	 * @param   array   $rows     to insert
+	 * @param   array   &$return  sql statements parsed by ref
+	 * 
+	 * @return  void
 	 */
 
 	protected function rowsToInsert($table, $rows, &$return)
@@ -413,21 +429,13 @@ class FabrikModelPackage extends FabModelAdmin
 			$updates = array();
 			foreach (get_object_vars($row) as $k => $v)
 			{
-				if (is_array($v) or is_object($v) or $v === NULL)
+				if (is_array($v) or is_object($v) or $v === null)
 				{
 					continue;
 				}
-				/* dont think this is needed as we are inserting into a custom set of tables
-				 ///clear the id value so that the rows be inserted rather than updating any row with the same id
-				 if ($k == 'id') {
-				    $v = '';
-				    }
-				    //set $package_id var placeholder so that we can replace that with the installed package id
-				    if ($k == 'package_id') {
-				    $v = '$package_id';
-				    }*/
 				if ($k[0] == '_')
-				{ // internal field
+				{
+					// Internal field
 					continue;
 				}
 
@@ -445,8 +453,12 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * recurisive function to add files and folders into the zip
-	 * @param array list of file names to add $filenames
-	 * @param array list of already added files files
+	 * 
+	 * @param   array   $filenames  list of file names to add $filenames
+	 * @param   array   &$files     list of already added files files
+	 * @param   string  $root       root path
+	 * 
+	 * @return  array  files
 	 */
 
 	protected function addFiles($filenames, &$files, $root = '')
@@ -474,6 +486,14 @@ class FabrikModelPackage extends FabModelAdmin
 		return $files;
 	}
 
+	/**
+	 * Get component name
+	 * 
+	 * @param   object  $row  package
+	 * 
+	 * @return string
+	 */
+
 	protected function getComponentName($row)
 	{
 		return $row->component_name . '_' . $row->version;
@@ -481,8 +501,10 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * get the lists, forms etc that have been assigned in the package admin edit screen
-	 * @param object package $row
-	 * @return array items
+	 * 
+	 * @param   object  $row  package
+	 * 
+	 * @return  array  items
 	 */
 
 	protected function getInstallItems($row)
@@ -497,7 +519,10 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * create the SQL install file
-	 * @param object package $row
+	 * 
+	 * @param   object  $row  package
+	 * 
+	 * @return  string  path
 	 */
 
 	protected function makeInstallSQL($row)
@@ -505,7 +530,8 @@ class FabrikModelPackage extends FabModelAdmin
 		$sql = '';
 		$config = JFactory::getConfig();
 		$db = FabrikWorker::getDbo(true);
-		//create the sql for the cloned fabrik meta data tables
+
+		// Create the sql for the cloned fabrik meta data tables
 		foreach ($this->tables as $table)
 		{
 			$db->setQuery('SHOW CREATE TABLE ' . $table);
@@ -523,8 +549,7 @@ class FabrikModelPackage extends FabModelAdmin
 			$key = FabrikString::rtrimword($block, 's');
 		}
 
-		// create the sql to build the db tables that store the data.
-
+		// Create the sql to build the db tables that store the data.
 		$formModel = JModel::getInstance('form', 'FabrikFEModel');
 
 		$lookups = $this->getInstallItems($row);
@@ -545,7 +570,7 @@ class FabrikModelPackage extends FabModelAdmin
 			{
 				$lookups->list[] = $fid;
 			}
-			//@FIXME get sql to create tables for dbjoin/cdd elements (need to do if not exists)
+			// @FIXME get sql to create tables for dbjoin/cdd elements (need to do if not exists)
 			$dbs = $formModel->getElementOptions(false, 'name', true, true, array());
 		}
 		$sql .= "\n\n";
@@ -560,7 +585,8 @@ class FabrikModelPackage extends FabModelAdmin
 			foreach ($listModels as $lmodel)
 			{
 				$sql .= $lmodel->getCreateTableSQL(true);
-				//add the table ids to the $lookups->list
+
+				// Add the table ids to the $lookups->list
 				if (!in_array($lmodel->getId(), $lookups->list))
 				{
 					$lookups->list[] = $lmodel->getId();
@@ -574,9 +600,12 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * get a list of plugins that the package uses
-	 * @param object package $row
+	 * 
+	 * @param   object  $row  package
+	 * 
 	 * @return array plugins
 	 */
+
 	protected function findPlugins($row)
 	{
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
@@ -601,7 +630,7 @@ class FabrikModelPackage extends FabModelAdmin
 					$o->file = 'plg_fabrik_' . $id . '.zip';
 					$plugins[$id] = $o;
 				}
-				//form plugins
+				// Form plugins
 				$fplugins = $formModel->getParams()->get('plugins');
 				foreach ($fplugins as $fplugin)
 				{
@@ -635,7 +664,10 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Create the SQL unistall file
-	 * @param object package $row
+	 * 
+	 * @param   object  $row  package
+	 * 
+	 * @return  string  path
 	 */
 
 	protected function makeUnistallSQL($row)
@@ -643,15 +675,16 @@ class FabrikModelPackage extends FabModelAdmin
 		$sql = array();
 		$db = JFactory::getDbo();
 
-		// dont do this as the db table may be used by the main fabrik component
-		// perhaps later on we can add some php to the manifest class to inteligently remove orphaned db tables.
+		/**
+		 * dont do this as the db table may be used by the main fabrik component
+		 * perhaps later on we can add some php to the manifest class to inteligently remove orphaned db tables.
+		 */
 
 		/*
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$lookups = $this->getInstallItems($row);
 		$tids = $lookups->list;
 		JArrayHelper::toInteger($tids);
-		
 		foreach ($tids as $tid) {
 		    $listModel->setId($tid);
 		    $table = $listModel->getTable()->db_table_name;
@@ -659,11 +692,13 @@ class FabrikModelPackage extends FabModelAdmin
 		    $sql[] = "DROP TABLE ". $db->quoteName($table).";";
 		} */
 
-		//drop the meta tables as well (currently we don't have a method for
-		//upgrading a package. So unistall should remove these meta tables
+		/**
+		 * drop the meta tables as well (currently we don't have a method for
+		 * upgrading a package. So unistall should remove these meta tables
+		 */
 		foreach ($this->tables as $table)
 		{
-			//as we share the connection table we don't want to remove it on package unistall
+			// As we share the connection table we don't want to remove it on package unistall
 			if ($table == '#__fabrik_connections')
 			{
 				continue;
@@ -680,7 +715,11 @@ class FabrikModelPackage extends FabModelAdmin
 	/**
 	 * copy the files from the skeleton component into the tmp folder
 	 * ready to be zipped up
-	 * @param object package $row
+	 * 
+	 * @param   object  $row         package
+	 * @param   array   &$filenames  files to copy
+	 * 
+	 * @return  void
 	 */
 
 	protected function copySkeleton($row, &$filenames)
@@ -702,7 +741,7 @@ class FabrikModelPackage extends FabModelAdmin
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
-		//admin holding page
+		// Admin holding page
 		$from = $skeltonFolder . 'admin.php';
 		$to = $this->outputPath . 'admin/' . $name . '.php';
 		if (JFile::exists($to))
@@ -746,15 +785,21 @@ class FabrikModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 *
 	 * rather than just installing the component we want to create a package
 	 * containing the component PLUS any Fabrik plugins that component might use
-	 * @param unknown_type $row
+	 * 
+	 * @param   object  $row      package
+	 * @param   array   $plugins  plugins to include in the package
+	 * 
+	 * @return  string  filename
 	 */
+
 	protected function makePackageXML($row, $plugins)
 	{
-		// @TODO add update url e.g:
-		//<update>http://fabrikar.com/update/packages/free</update>
+		/**
+		 * @TODO add update url e.g:
+		 * <update>http://fabrikar.com/update/packages/free</update>
+		 */
 		$version = new JVersion;
 		$date = JFactory::getDate();
 		$xmlname = 'pkg_' . str_replace('com_', '', $row->component_name);
@@ -785,12 +830,13 @@ class FabrikModelPackage extends FabModelAdmin
 </install>';
 		JFile::write($this->outputPath . $xmlname . '.xml', $str);
 		return $this->outputPath . $xmlname . '.xml';
-		;
 	}
 
 	/**
 	 * get the file name of the file containing the class that is run on install.
-	 * @param   object	$row package
+	 * 
+	 * @param   object  $row  package
+	 * 
 	 * @return  string	filename
 	 */
 
@@ -801,9 +847,12 @@ class FabrikModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * zip up the plugins used by the package
-	 * @param object $row
-	 * @param array $plugins
+	 * Zip up the plugins used by the package
+	 * 
+	 * @param   object  $row       package
+	 * @param   array   &$plugins  plugins to zip
+	 * 
+	 * @return  void
 	 */
 
 	protected function zipPlugins($row, &$plugins)
@@ -829,9 +878,11 @@ class FabrikModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * create the component installation xml file
-	 * @param object package $table
-	 * @return string path to where tmp xml file is saved
+	 * Create the component installation xml file
+	 * 
+	 * @param   object  $row  package
+	 * 
+	 * @return  string  path to where tmp xml file is saved
 	 */
 
 	protected function makeXML($row)
@@ -900,6 +951,15 @@ class FabrikModelPackage extends FabModelAdmin
 		JFile::write($path, $str);
 		return $path;
 	}
+
+	/**
+	 * Get the J Form
+	 * 
+	 * @param   array  $data      form data
+	 * @param   bool   $loadData  load the data yes/no
+	 * 
+	 * @return boolean|JForm
+	 */
 
 	public function getPackageListForm($data = array(), $loadData = true)
 	{

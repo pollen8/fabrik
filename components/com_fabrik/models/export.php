@@ -161,8 +161,8 @@ class FabrikFEModelExport {
 
 		$aTableObjs = array();
 
-		$tables = $this->packageModel->_tables;
-		$forms = $this->packageModel->_forms;
+		$tables = $this->packageModel->tables;
+		$forms = $this->packageModel->forms;
 		if ($this->fabrikData)
 		{
 			$strXML .= "<tables>\n";

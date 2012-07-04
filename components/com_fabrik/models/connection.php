@@ -45,7 +45,7 @@ class FabrikFEModelConnection extends JModel
 	/**
 	 * Method to set the element id
 	 *
-* @param   int  $id  element ID number
+	 * @param   int  $id  element ID number
 	 * 
 	 * @return  null
 	 */
@@ -72,10 +72,10 @@ class FabrikFEModelConnection extends JModel
 	/**
 	 * creates a html dropdown box for the current connection
 	 * 
-* @param   string  $javascript  to add to select box
-* @param   string  $name        of dropdown box
-* @param   string  $selected    the selected element in the list
-* @param   string  $class       input class name
+	 * @param   string  $javascript  to add to select box
+	 * @param   string  $name        of dropdown box
+	 * @param   string  $selected    the selected element in the list
+	 * @param   string  $class       input class name
 	 * 
 	 * @deprecated - don't think its used
 	 * 
@@ -113,15 +113,14 @@ class FabrikFEModelConnection extends JModel
 		{
 			$tableOptions[] = JHTML::_('select.option', 'host not set');
 		}
-		return JHTML::_('select.genericlist', $tableOptions, $name, 'class="' . $class . '" size="1" id="' . $name . '" ' . $javascript, 'value',
-			'text', $selected
-		);
+		$options = 'class="' . $class . '" size="1" id="' . $name . '" ' . $javascript;
+		return JHTML::_('select.genericlist', $tableOptions, $name, $options, 'value', 'text', $selected);
 	}
 
 	/**
 	 * get a connection table object
 	 * 
-* @param   int  $id  connection id
+	 * @param   int  $id  connection id
 	 * 
 	 * @return  object  connection tables
 	 */
@@ -262,8 +261,8 @@ class FabrikFEModelConnection extends JModel
 	/**
 	 * compare two arrays of connection details. Ignore prefix as this may be set to '' if using koowna
 	 * 
-* @param   array  $opts1  first compare
-* @param   array  $opts2  second compare
+	 * @param   array  $opts1  first compare
+	 * @param   array  $opts2  second compare
 	 * 
 	 * @return  bool
 	 */
@@ -277,7 +276,7 @@ class FabrikFEModelConnection extends JModel
 	/**
 	 * get the options to connect to a db
 	 *
-* @param   object  &$cn  connection table
+	 * @param   object  &$cn  connection table
 	 * 
 	 * @return  array  connection options
 	 */
@@ -325,12 +324,12 @@ class FabrikFEModelConnection extends JModel
 	/**
 	 * gets dropdown list of published connections
 	 * 
-* @param   object  $connections  connections stored in database
-* @param   string  $javascript   to run on change
-* @param   int     $selected     default value
-* @param   string  $id           element id
-* @param   string  $name         of connection drop down
-* @param   string  $attribs      dropdown properties
+	 * @param   object  $connections  connections stored in database
+	 * @param   string  $javascript   to run on change
+	 * @param   int     $selected     default value
+	 * @param   string  $id           element id
+	 * @param   string  $name         of connection drop down
+	 * @param   string  $attribs      dropdown properties
 	 * 
 	 * @deprecated - can't see that its used
 	 * 
@@ -355,7 +354,7 @@ class FabrikFEModelConnection extends JModel
 	 * WARNING: this is likely to
 	 * exceed php script execution time if querying a larger remote database
 	 *
-* @param   object  $connections  all available connections
+	 * @param   object  $connections  all available connections
 	 * 
 	 * @return  array
 	 */
@@ -399,7 +398,7 @@ class FabrikFEModelConnection extends JModel
 	 * queries all published connections and returns an multidimensional array
 	 * of tables for each connection
 	 * 
-* @param   $connections  array  all available connections
+	 * @param   array  $connections  all available connections
 	 * 
 	 * @return  array
 	 */
@@ -449,7 +448,7 @@ class FabrikFEModelConnection extends JModel
 	/**
 	 * get the tables names in the loaded connection
 	 * 
-* @param   bool  $addBlank  add an empty record to the beginning of the list
+	 * @param   bool  $addBlank  add an empty record to the beginning of the list
 	 * 
 	 * @return array tables
 	 */

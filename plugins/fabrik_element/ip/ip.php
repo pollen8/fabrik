@@ -10,46 +10,59 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_elementIp extends plgFabrik_Element
+class plgFabrik_elementIp extends PlgFabrik_Element
 {
 
 	/**
-	 * draws the form element
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
-		$element	= $this->getElement();
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
+		$element = $this->getElement();
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = &$this->getParams();
 
 		$rowid = JRequest::getVar('rowid', false);
 		//@TODO when editing a form with joined repeat group the rowid will be set but
 		//the record is in fact new
-		if ($params->get('ip_update_on_edit') || !$rowid || ($this->inRepeatGroup && $this->_inJoin &&  $this->_repeatGroupTotal == $repeatCounter)) {
+		if ($params->get('ip_update_on_edit') || !$rowid || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
+		{
 			$ip = $_SERVER['REMOTE_ADDR'];
-		} else {
-			if (empty($data) || empty($data[$name])) {
+		}
+		else
+		{
+			if (empty($data) || empty($data[$name]))
+			{
 				// if $data is empty, we must (?) be a new row, so just grab the IP
 				$ip = $_SERVER['REMOTE_ADDR'];
 			}
-			else {
+			else
+			{
 				$ip = $this->getValue($data, $repeatCounter);
 			}
 		}
 
 		$str = '';
-		if ($this->canView()) {
-			if (!$this->editable) {
+		if ($this->canView())
+		{
+			if (!$this->editable)
+			{
 				$str = $ip;
 			}
-			else {
+			else
+			{
 				$str = "<input class=\"fabrikinput inputbox\" readonly=\"readonly\" name=\"$name\" id=\"$id\" value=\"$ip\" />\n";
 			}
-		} else {
+		}
+		else
+		{
 			/* make a hidden field instead*/
 			$str = "<input type=\"hidden\" class=\"fabrikinput\" name=\"$name\" id=\"$id\" value=\"$ip\" />";
 		}
@@ -60,9 +73,9 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	 * get element's hidden field
 	 *
 	 * @access private
-* @param string $name
-* @param string $value
-* @param string $id
+	 * @param   stringing $name
+	 * @param   stringing $value
+	 * @param   stringing $id
 	 * @return string
 	 */
 	function _getHiddenField($name, $value, $id)
@@ -70,14 +83,17 @@ class plgFabrik_elementIp extends plgFabrik_Element
 		return "<input class=\"fabrikinput inputbox\" type=\"hidden\" name=\"$name\" value=\"$value\" id=\"$id\" />\n";
 	}
 
-	/**
-	 * if we are creating a new record, and the element was set to readonly
+	 /**
+	 * Trigger called when a row is stored.
+	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
-	 *
-* @param unknown_type $data
+	 * 
+	 * @param   array  &$data  to store
+	 * 
+	 * @return  void
 	 */
 
-	function onStoreRow(&$data)
+	public function onStoreRow(&$data)
 	{
 		$element = $this->getElement();
 		if (JArrayHelper::getValue($data, 'rowid', 0) == 0 && !in_array($element->name, $data))
@@ -96,8 +112,12 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -106,11 +126,14 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getDefaultValue()
+	 * This really does get just the default value (as defined in the element's settings)
+	 * 
+	 * @param   array  $data  form data
+	 * 
+	 * @return mixed 
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->default))
 		{
@@ -120,15 +143,16 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * get the value
-	 *
-* @param array $data
-* @param   int $repeatCounter
-* @param array options
-	 * @return unknown
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
+	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array() )
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		//cludge for 2 scenarios
 		if (array_key_exists('rowid', $data))

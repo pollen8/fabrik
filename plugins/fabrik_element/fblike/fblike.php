@@ -12,9 +12,10 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementFblike extends plgFabrik_Element {
+class PlgFabrik_ElementFblike extends PlgFabrik_Element
+{
 
 	protected $hasLabel = false;
 
@@ -23,8 +24,12 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 	protected $fieldSize = '1';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -47,33 +52,25 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 	}
 
 	/**
-	 * draws the form element
-* @param   array	data to pre-populate element with
-* @param   int		repeat group counter
-	 * @return  string	returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$meta = array();
 		$formModel = $this->getForm();
 		$config = JFactory::getConfig();
 		$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
-		$map = array(
-			'og:title' => 'fblike_title',
-			'og:type' => 'fblike_type',
-			'og:image' => 'fblike_image',
-			'og:description' => 'fblike_description',
-			'og:street-address' => 'fblike_street_address',
-			'og:locality' => 'fblike_locality',
-			'og:region' => 'fblike_region',
-			'og:postal-code' => 'fblike_postal_code',
-			'og:country-name' => 'fblike_country',
-			'og:email' => 'fblike_email',
-			'og:phone_number' => 'fblike_phone_number',
-			'og:fax_number' => 'fblike_fax_number'
-		);
+		$map = array('og:title' => 'fblike_title', 'og:type' => 'fblike_type', 'og:image' => 'fblike_image',
+			'og:description' => 'fblike_description', 'og:street-address' => 'fblike_street_address', 'og:locality' => 'fblike_locality',
+			'og:region' => 'fblike_region', 'og:postal-code' => 'fblike_postal_code', 'og:country-name' => 'fblike_country',
+			'og:email' => 'fblike_email', 'og:phone_number' => 'fblike_phone_number', 'og:fax_number' => 'fblike_fax_number');
 
 		foreach ($map as $k => $v)
 		{
@@ -108,7 +105,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 				$meta['og:longitude'] = $loc[1];
 			}
 		}
-		$meta['og:url'] = $ex.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 		$meta['og:site_name'] = $config->get('sitename');
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
@@ -116,7 +113,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 		//$$$tom placeholder option for URL params
 		$w = new FabrikWorker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
-		return $str.$this->_render($url);
+		return $str . $this->_render($url);
 	}
 
 	protected function _render($url)
@@ -137,22 +134,26 @@ class plgFabrik_ElementFblike extends plgFabrik_Element {
 		{
 			$href = '';
 		}
-		$layout= $params->get('fblike_layout', 'standard');
+		$layout = $params->get('fblike_layout', 'standard');
 		$showfaces = $params->get('fblike_showfaces', 0) == 1 ? 'true' : 'false';
 		$width = $params->get('fblike_width', 300);
 		$action = $params->get('fblike_action', 'like');
 		$font = $params->get('fblike_font', 'arial');
 		$colorscheme = $params->get('fblike_colorscheme', 'light');
-		$str = '<fb:like ' . $href . 'layout="' . $layout . '" show_faces="' . $showfaces . '" width="' . $width . '" action="' . $action . '" font="' . $font . '" colorscheme="' . $colorscheme . '" />';
+		$str = '<fb:like ' . $href . 'layout="' . $layout . '" show_faces="' . $showfaces . '" width="' . $width . '" action="' . $action
+			. '" font="' . $font . '" colorscheme="' . $colorscheme . '" />';
 		return $str;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return  string	javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

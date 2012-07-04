@@ -49,7 +49,7 @@ class FArrayHelper extends JArrayHelper
 			{
 				/**
 				 * If any node along the registry path does not exist, create it
-				 * if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data 
+				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data 
 				 */
 				if (!isset($ns[$nodes[$i]]))
 				{
@@ -64,7 +64,7 @@ class FArrayHelper extends JArrayHelper
 			{
 				/**
 				 * If any node along the registry path does not exist, create it
-				 * if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
+				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data
 				 */
 				if (!isset($ns[$nodes[$i]]))
 				{

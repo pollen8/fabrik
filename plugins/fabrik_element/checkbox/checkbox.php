@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
+class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 {
 	
 	protected $hasLabel = false;
@@ -49,7 +49,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::isMultiple()
+	 * @see PlgFabrik_ElementList::isMultiple()
 	 */
 	protected function isMultiple()
 	{
@@ -57,19 +57,21 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param   int		repeat group counter
-	 * @return  string	javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$values = (array) $this->getSubOptionValues();
 		$labels = (array) $this->getSubOptionLabels();
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
@@ -121,7 +123,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getFilterQuery()
+	 * @see PlgFabrik_Element::getFilterQuery()
 	 */
 
 	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')

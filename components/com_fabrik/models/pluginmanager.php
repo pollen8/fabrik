@@ -286,7 +286,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			$groupIds = $form->getGroupIds();
 			if (empty($groupIds))
 			{
-				//new form
+				// New form
 				return array();
 			}
 			$db = FabrikWorker::getDbo(true);
@@ -296,8 +296,8 @@ class FabrikFEModelPluginmanager extends JModel{
 			$query->join('INNER', '#__extensions AS p ON p.element = e.plugin');
 			$query->where('group_id IN (' . implode(',', $groupIds) . ')');
 			$query->where('p.folder = "fabrik_element"');
-			$query->where('e.published != -2'); // ignore trashed elements
-			//$query->where('e.published != 0'); // $$$ rob 14/06/2012 testing - loading a list view why would we want to get unpublished elements?
+			// Ignore trashed elements
+			$query->where('e.published != -2');
 			$query->order("group_id, e.ordering");
 			$db->setQuery($query);
 			$elements = (array) $db->loadObjectList();
@@ -306,16 +306,15 @@ class FabrikFEModelPluginmanager extends JModel{
 				JError::raiseError(500, $db->getErrorMsg());
 			}
 
-			//dont assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
-			//$dispatcher = JDispatcher::getInstance();
+			// Don't assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
 			$dispatcher = new JDispatcher;
 			$groupModels = $form->getGroups();
 			$group = 'element';
 			foreach ($elements as $element)
 			{
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
-				require_once(JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php');
-				$class = 'plgFabrik_Element' . $element->plugin;
+				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
+				$class = 'PlgFabrik_Element' . $element->plugin;
 				$pluginModel = new $class($dispatcher, array());
 				if (!is_object($pluginModel))
 				{
@@ -331,7 +330,7 @@ class FabrikFEModelPluginmanager extends JModel{
 				$lang->load($langFile, $langPath, null, false, false)
 				||	$lang->load($langFile, $langPath, $lang->getDefault(), false, false);
 
-				$pluginModel->setContext($groupModel, $form, $form->_table);
+				$pluginModel->setContext($groupModel, $form, $form->getListModel());
 				$pluginModel->bindToElement($element);
 				$groupModel->elements[$pluginModel->getId()] = $pluginModel;
 			}

@@ -12,19 +12,21 @@ defined('_JEXEC') or die();
 
 require_once(JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php');
 
-class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
+class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 {
-
 
 	/** @var int last row id to be inserted via ajax call */
 	protected $loadRow = null;
-	
+
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
@@ -36,8 +38,12 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementDatabasejoin::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -49,14 +55,17 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	{
 		$db = $this->getDb();
 	}
+
 	/**
-	 * draws the form element
-* @param array data to preopulate element with
-* @param   int repeat group counter
-	 * @return string returns field element
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$str = array();
 		$params = $this->getParams();
@@ -64,10 +73,11 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$name = $this->getHTMLName($repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter, true);
 		$rowid = $this->getFormModel()->getRowId();
-		$str[] = '<div id="'.$id.'">';
+		$str[] = '<div id="' . $id . '">';
 		$str[] = '<div style="overflow:auto;height:150px;" class=""><ul>';
 		$i = 0;
-		foreach ($tmp as $row) {
+		foreach ($tmp as $row)
+		{
 			$txt = $this->getDisplayLabel($row);
 			$str[] = '<li class="oddRow' . $i . '">' . $txt . '</li>';
 			$i = 1 - $i;
@@ -75,48 +85,60 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$str[] = '</ul></div>';
 		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
 		//Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
-		if ($rowid > 0) {
-		if ($params->get('fieldType', 'textarea') == 'field') {
-			$str[] = '<input class="fabrikinput inputbox text" name="'.$name.'"  />';
-		} else {
-			$str[] = '<textarea class="fabrikinput inputbox text" name="'.$name.'" cols="50" rows="3" /></textarea>';
+		if ($rowid > 0)
+		{
+			if ($params->get('fieldType', 'textarea') == 'field')
+			{
+				$str[] = '<input class="fabrikinput inputbox text" name="' . $name . '"  />';
+			}
+			else
+			{
+				$str[] = '<textarea class="fabrikinput inputbox text" name="' . $name . '" cols="50" rows="3" /></textarea>';
+			}
+			$str[] = '<input type="button" class="button" value="' . JText::_('PLG_ELEMENT_NOTES_ADD') . '"></input>';
 		}
-		$str[] = '<input type="button" class="button" value="' . JText::_('PLG_ELEMENT_NOTES_ADD') . '"></input>';
-		}
-		else {
-		$str[] = JText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
+		else
+		{
+			$str[] = JText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
 	}
-	
+
 	protected function getDisplayLabel($row)
 	{
 		$params = $this->getParams();
-		if ($params->get('showuser', true)) {
-			$txt = $this->getUserNameLinked($row) . ' '  .$row->text;
-		} else {
+		if ($params->get('showuser', true))
+		{
+			$txt = $this->getUserNameLinked($row) . ' ' . $row->text;
+		}
+		else
+		{
 			$txt = $row->text;
 		}
 		return $txt;
 	}
-	
+
 	protected function getUserNameLinked($row)
 	{
-		if ($this->hasComponent('com_uddeim')) {
-			if (isset($row->username)) {
- 			return '<a href="index.php?option=com_uddeim&task=new&recip=' . $row->userid . '">' . $row->username . '</a> ';
+		if ($this->hasComponent('com_uddeim'))
+		{
+			if (isset($row->username))
+			{
+				return '<a href="index.php?option=com_uddeim&task=new&recip=' . $row->userid . '">' . $row->username . '</a> ';
 			}
 		}
 		return '';
 	}
-	
+
 	protected function hasComponent($c)
 	{
-		if (!isset($this->components)) {
+		if (!isset($this->components))
+		{
 			$this->components = array();
 		}
-		if (!array_key_exists($c, $this->components)) {
+		if (!array_key_exists($c, $this->components))
+		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('COUNT(id)')->from('#__extensions')->where('name = ' . $db->quote($c));
@@ -126,7 +148,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		}
 		return $this->components[$c];
 	}
-	
+
 	function buildQueryWhere($data = array(), $incWhere = true)
 	{
 		$params = $this->getParams();
@@ -137,9 +159,9 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$rowid = $this->getFormModel()->getRowId();
 		// Jaanus - commented out as unnecessary, some variables moved above 
 		/*if ($field == '') {
-			return '';
+		    return '';
 		}
-		*/
+		 */
 		$where = array();
 		// Jaanus: here we can choose whether WHERE has to have single or (if field is the same as FK then only) custom (single or multiple) criterias,
 		if ($value != '')
@@ -160,30 +182,33 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		}
 		if ($this->loadRow != '')
 		{
-			$pk = $db->quoteName($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column')) ; 
+			$pk = $db->quoteName($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column'));
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
 		return 'WHERE ' . implode(" OR ", $where); //Jaanus: not sure why AND was originally here
 	}
-	
+
 	protected function getOrderBy()
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
 		$orderBy = $params->get('notes_order_element');
-		if ($orderBy == '') {
+		if ($orderBy == '')
+		{
 			return '';
-		} else {
+		}
+		else
+		{
 			return " ORDER BY " . $db->quoteName($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
 		}
 	}
-	
+
 	/**
-	* @since 3.0rc1
-	* if _buildQuery needs additional fields then set them here, used in notes plugin
-	* @return string fields to add e.g return ',name, username AS other'
-	*/
-	
+	 * @since 3.0rc1
+	 * if _buildQuery needs additional fields then set them here, used in notes plugin
+	 * @return string fields to add e.g return ',name, username AS other'
+	 */
+
 	protected function getAdditionalQueryFields()
 	{
 		$fields = '';
@@ -200,16 +225,16 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		}
 		return $fields;
 	}
-	
+
 	/**
-	* @since 3.0rc1
-	* if _buildQuery needs additional joins then set them here, used in notes plugin
-	* @return string join statement to add
-	*/
-	
+	 * @since 3.0rc1
+	 * if _buildQuery needs additional joins then set them here, used in notes plugin
+	 * @return string join statement to add
+	 */
+
 	protected function buildQueryJoin()
 	{
-		$join= '';
+		$join = '';
 		$db = $this->getDb();
 		$params = $this->getParams();
 		if ($params->get('showuser', true))
@@ -223,18 +248,18 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		}
 		return $join;
 	}
-	
+
 	/**
-	* @since 3.0b
-	* do you add a please select option to the cdd list
-	* @return boolean
-	*/
-	
+	 * @since 3.0b
+	 * do you add a please select option to the cdd list
+	 * @return boolean
+	 */
+
 	protected function showPleaseSelect()
 	{
 		return false;
 	}
-	
+
 	public function onAjax_addNote()
 	{
 		$this->loadMeForAjax();
@@ -247,54 +272,53 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$key = $db->quoteName($params->get('join_key_column'));
 		$v = $db->quote(JRequest::getVar('v'));
 		$rowid = $this->getFormModel()->getRowId();
-		
+
 		//Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == 0)
-		if ($rowid > 0) {
-		$query->insert($table)
-		->set($col . ' = ' . $v);
-		
-		//Jaanus - commented the $field related code out as it doesn't seem to have sense and it generated "ajax failed" error in submission when where element was selected
-		/*$field = $params->get('notes_where_element', '');
-		if ($field !== '') {
-			$query->set($db->quoteName($field) . ' = ' . $db->quote($params->get('notes_where_value')));
-		}
-		*/
-		$user = $params->get('userid', '');
-		if ($user !== '')
+		if ($rowid > 0)
 		{
-			$query->set($db->quoteName($user) . ' = ' . (int) JFactory::getUser()->get('id'));
-		}
-		
-		$fk = $params->get('join_fk_column', '');
-		if ($fk !== '')
-		{
-			$query->set($db->quoteName($fk) . ' = ' . $db->quote(JRequest::getVar('rowid')));
-		}
-		$db->setQuery($query);
-		
-		if (!$db->query())
-		{
-			JError::raiseError(500, 'db insert failed');
-		}
-		else
-		{
-			$this->loadRow = $db->quote($db->insertid());
-			$opts = $this->_getOptions();
-			$row = $opts[0];
-		/* 	$query->clear();
-			$query->select('*')->from($table)->where($key . ' = ' . $inertId);
+			$query->insert($table)->set($col . ' = ' . $v);
+
+			//Jaanus - commented the $field related code out as it doesn't seem to have sense and it generated "ajax failed" error in submission when where element was selected
+			/*$field = $params->get('notes_where_element', '');
+			if ($field !== '') {
+			    $query->set($db->quoteName($field) . ' = ' . $db->quote($params->get('notes_where_value')));
+			}
+			 */
+			$user = $params->get('userid', '');
+			if ($user !== '')
+			{
+				$query->set($db->quoteName($user) . ' = ' . (int) JFactory::getUser()->get('id'));
+			}
+
+			$fk = $params->get('join_fk_column', '');
+			if ($fk !== '')
+			{
+				$query->set($db->quoteName($fk) . ' = ' . $db->quote(JRequest::getVar('rowid')));
+			}
 			$db->setQuery($query);
-			$row = $db->loadObject();*/
-			
-			$return->msg = 'note added';
-			$return->data = $row;
-			$return->label = $this->getDisplayLabel($row);
-			echo json_encode($return);
+
+			if (!$db->query())
+			{
+				JError::raiseError(500, 'db insert failed');
+			}
+			else
+			{
+				$this->loadRow = $db->quote($db->insertid());
+				$opts = $this->_getOptions();
+				$row = $opts[0];
+				/* 	$query->clear();
+				    $query->select('*')->from($table)->where($key . ' = ' . $inertId);
+				    $db->setQuery($query);
+				    $row = $db->loadObject();*/
+
+				$return->msg = 'note added';
+				$return->data = $row;
+				$return->label = $this->getDisplayLabel($row);
+				echo json_encode($return);
+			}
 		}
+
 	}
-		
-	}
-	
 
 }
 ?>

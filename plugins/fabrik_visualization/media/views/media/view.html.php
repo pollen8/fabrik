@@ -19,7 +19,6 @@ class fabrikViewMedia extends JView
 
 		$js = $model->getJs();
 		$srcs = FabrikHelperHTML::framework();
-		//FabrikHelperHTML::addScriptDeclaration($js);
 		$srcs[] = 'plugins/fabrik_visualization/media/media.js';
 		if ($params->get('media_which_player', 'jw') == 'jw')
 		{
@@ -31,7 +30,7 @@ class fabrikViewMedia extends JView
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$media = $model->_row;
+		$media = $model->getRow();
 		$this->media = $model->getMedia();
 
 		$this->assign('params', $params);

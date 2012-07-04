@@ -111,7 +111,7 @@ class fabrikViewForm extends JView
 		$form = $model->getForm();
 		$model->render();
 
-		$listModel = $model->_table;
+		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 		if (!$model->canPublish()) {
 			if (!$app->isAdmin()) {
@@ -171,13 +171,13 @@ class fabrikViewForm extends JView
 						$foreignKey = $joinTable->table_join_key;
 						//need to duplicate this perhaps per the number of times
 						//that a repeat group occurs in the default data?
-						if (isset($model->_data['join']) && array_key_exists($joinTable->id, $model->_data['join']))
+						if (isset($model->data['join']) && array_key_exists($joinTable->id, $model->data['join']))
 						{
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-							$repeatGroup = count($model->_data['join'][$joinTable->id][$smallerElHTMLName]);
+							$repeatGroup = count($model->data['join'][$joinTable->id][$smallerElHTMLName]);
 						}
 						else
 						{
@@ -196,13 +196,13 @@ class fabrikViewForm extends JView
 					foreach ($elementModels as $tmpElement)
 					{
 						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-						if (array_key_exists($smallerElHTMLName . '_raw', $model->_data))
+						if (array_key_exists($smallerElHTMLName . '_raw', $model->data))
 						{
-							$d = $model->_data[$smallerElHTMLName . '_raw'];
+							$d = $model->data[$smallerElHTMLName . '_raw'];
 						}
 						else
 						{
-							$d = @$model->_data[$smallerElHTMLName];
+							$d = @$model->data[$smallerElHTMLName];
 						}
 						$d = json_decode($d, true);
 						$c = count($d);
@@ -233,11 +233,11 @@ class fabrikViewForm extends JView
 					$elementHTMLId = $elementModel->getHTMLId($c);
 					if (!$model->editable)
 					{
-						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->_data, $c);
+						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->data, $c);
 					}
 					else
 					{
-						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->_data, $c);
+						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->data, $c);
 					}
 					//test for paginate plugin
 					if (!$model->editable)
@@ -245,7 +245,7 @@ class fabrikViewForm extends JView
 						$elementModel->HTMLids = null;
 						$elementModel->inDetailedView = true;
 					}
-					$JSONHtml[$elementHTMLId] = htmlentities($elementModel->render($model->_data, $c), ENT_QUOTES, 'UTF-8');
+					$JSONHtml[$elementHTMLId] = htmlentities($elementModel->render($model->data, $c), ENT_QUOTES, 'UTF-8');
 				}
 			}
 		}

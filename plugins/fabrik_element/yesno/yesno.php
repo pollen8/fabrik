@@ -10,21 +10,25 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 require_once(JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php');
 
-class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
+class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
+{
 
 	protected $fieldDesc = 'TINYINT(%s)';
 
 	protected $fieldSize = '1';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::getDefaultValue()
+	 * This really does get just the default value (as defined in the element's settings)
+	 * 
+	 * @param   array  $data  form data
+	 * 
+	 * @return mixed 
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->default))
 		{
@@ -33,6 +37,15 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		}
 		return $this->default;
 	}
+
+	/**
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
+	 */
 
 	public function renderListData($data, &$thisRow)
 	{
@@ -51,8 +64,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	/**
 	 * shows the data formatted for the table view with format = pdf
 	 * note pdf lib doesnt support transparent pngs hence this func
-* @param string data
-* @param object all the data in the tables current row
+	 * @param   stringing data
+	 * @param   object all the data in the tables current row
 	 * @return string formatted value
 	 */
 
@@ -70,17 +83,22 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	}
 
 	/**
-	 * shows the data formatted for CSV export
-* @param string data
-* @param object all the data in the tables current row
-	 * @return string formatted value
+	 * Prepares the element data for CSV export
+	 * 
+	 * @param   string  $data      element data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
-	function renderListData_csv($data, &$thisRow)
+	public function renderListData_csv($data, &$thisRow)
 	{
-		if ($data == '1') {
+		if ($data == '1')
+		{
 			return JText::_('JYES');
-		} else {
+		}
+		else
+		{
 			return JText::_('JNO');
 		}
 	}
@@ -104,13 +122,13 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	{
 		return array(JText::_('JNO'), JText::_('JYES'));
 	}
-	
+
 	/**
-	* run after unmergeFilterSplits to ensure filter dropdown labels are correct
-* @param array filter options
-	* @return null
-	*/
-	
+	 * run after unmergeFilterSplits to ensure filter dropdown labels are correct
+	 * @param   array filter options
+	 * @return null
+	 */
+
 	protected function reapplyFilterLabels(&$rows)
 	{
 		$element = $this->getElement();
@@ -129,19 +147,22 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		}
 		$rows = array_values($rows);
 	}
-	
+
 	/**
-* @param array of scripts previously loaded (load order is important as we are loading via head.js
-	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	* current file
-	*
-	* get the class to manage the form element
-	* if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	* call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
-	* to ensure that the file is loaded only once
-	*/
-	
-	function formJavascriptClass(&$srcs, $script = '')
+	 * get the class to manage the form element
+	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * to ensure that the file is loaded only once
+	 * 
+	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 * @param   string  $script  script to load once class has loaded
+	 *
+	 * @return void
+	 */
+
+	public function formJavascriptClass(&$srcs, $script = '')
 	{
 		$elementList = 'media/com_fabrik/js/elementlist.js';
 		if (!in_array($elementList, $srcs))
@@ -158,8 +179,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 * format the read only output for the page
-* @param string $value
-* @param string label
+	 * @param   stringing $value
+	 * @param   stringing label
 	 * @return string value
 	 */
 
@@ -171,12 +192,15 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	}
 
 	/**
-	 * draws the form element
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$params->set('options_per_row', 4);
@@ -184,11 +208,14 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -198,7 +225,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::getFilter()
+	 * @see PlgFabrik_ElementList::getFilter()
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -206,10 +233,10 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
 		$elName = $this->getFullName(false, true, false);
-		$htmlid	= $this->getHTMLId() . 'value';
+		$htmlid = $this->getHTMLId() . 'value';
 		$elName = FabrikString::safeColName($elName);
 		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
-		$v .= ($normal) ? '['.$counter.']' : '[]';
+		$v .= ($normal) ? '[' . $counter . ']' : '[]';
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$rows = $this->filterValueList($normal);
 		$return = array();
@@ -235,10 +262,10 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#filterValueList_Exact($normal, $tableName, $label, $id, $incjoin)
+	 * @see components/com_fabrik/models/PlgFabrik_Element#filterValueList_Exact($normal, $tableName, $label, $id, $incjoin)
 	 */
 
-	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true )
+	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$o = new stdClass;
 		$o->value = '';
@@ -247,8 +274,14 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
 		foreach ($rows as &$row)
 		{
-			if ($row->value == 1) { $row->text = JText::_('JYES'); }
-			if ($row->value == 0) { $row->text = JText::_('JNO'); }
+			if ($row->value == 1)
+			{
+				$row->text = JText::_('JYES');
+			}
+			if ($row->value == 0)
+			{
+				$row->text = JText::_('JNO');
+			}
 		}
 		$rows = array_merge($opt, $rows);
 		return $rows;
@@ -256,26 +289,23 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
 	/**
 	 *
-* @param unknown_type $normal
-* @param unknown_type $tableName
-* @param unknown_type $label
-* @param unknown_type $id
-* @param unknown_type $incjoin
+	 * @param unknown_type $normal
+	 * @param unknown_type $tableName
+	 * @param unknown_type $label
+	 * @param unknown_type $id
+	 * @param unknown_type $incjoin
 	 */
 
-	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true )
+	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$rows = array(
-		JHTML::_('select.option', '', $this->filterSelectLabel()),
-		JHTML::_('select.option', '0', JText::_('JNO')),
-		JHTML::_('select.option', '1', JText::_('JYES') )
-		);
+		$rows = array(JHTML::_('select.option', '', $this->filterSelectLabel()), JHTML::_('select.option', '0', JText::_('JNO')),
+			JHTML::_('select.option', '1', JText::_('JYES')));
 		return $rows;
 	}
 
 	/**
 	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#getFilterCondition()
+	 * @see components/com_fabrik/models/PlgFabrik_Element#getFilterCondition()
 	 */
 	protected function getFilterCondition()
 	{

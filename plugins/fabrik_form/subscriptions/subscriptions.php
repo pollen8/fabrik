@@ -12,11 +12,11 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 
-class plgFabrik_FormSubscriptions extends plgFabrik_Form {
+class PlgFabrik_FormSubscriptions extends PlgFabrik_Form {
 
 
 	protected $gateway = null;

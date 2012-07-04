@@ -15,8 +15,8 @@ jimport('joomla.application.component.modelform');
 /**
  * Import CSV class
  *
- * @package     Fabrik
- * @since       3.0
+ * @package  Fabrik
+ * @since    3.0
  */
 
 class FabrikFEModelImportcsv extends JModelForm
@@ -87,8 +87,8 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * loads the Joomla form for importing the csv file
 	 *
-* @param   array	$data
-* @param   bool	$loadData
+	 * @param   array  $data      form data
+	 * @param   bool   $loadData  load form data
 	 * 
 	 * @return  object	form
 	 */
@@ -116,8 +116,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		if (!(bool) ini_get('file_uploads'))
 		{
-			JError::raiseWarning(500,
-				JText::_("The installer can't continue before file uploads are enabled. Please use the install from directory method."));
+			JError::raiseWarning(500, JText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
 			return false;
 		}
 		$userfile = JRequest::getVar('jform', null, 'files');
@@ -186,12 +185,12 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * read the CSV file, store results in $this->headings and $this->data
 	 *
-* @param   string
+	 * @param   string  $file  to read
 	 * 
 	 * @return null
 	 */
 
-	public function readCSV($userfile_name)
+	public function readCSV($file)
 	{
 		$baseDir = $this->getBaseDir();
 		$this->headings = array();
@@ -199,7 +198,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$data = $this->getFormData();
 		$field_delimiter = $this->getFieldDelimiter();
 		$text_delimiter = stripslashes(JArrayHelper::getValue($data, 'text_delimiter', '"'));
-		$csv = new csv_bv($baseDir . '/' . $userfile_name, $field_delimiter, $text_delimiter, '\\');
+		$csv = new Csv_Bv($baseDir . '/' . $file, $field_delimiter, $text_delimiter, '\\');
 		$csv->inPutFormat = JArrayHelper::getValue($data, 'inPutFormat', 'csv');
 
 		// Will skip empty rows. TRUE by default. (Shown here for example only).
@@ -247,8 +246,10 @@ class FabrikFEModelImportcsv extends JModelForm
 				{
 					foreach ($arr_data as &$d)
 					{
-						//strip any none uft-8 characters from the import data
-						//if we don't do this then the site's session is destroyed and you are logged out
+						/**
+						 * strip any none uft-8 characters from the import data
+						 * if we don't do this then the site's session is destroyed and you are logged out
+						 */
 						$d = iconv("utf-8", "utf-8//IGNORE", $d);
 					}
 				}
@@ -258,7 +259,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 				if (count($arr_data) == 1 && $arr_data[0] == '')
 				{
-					//csv import from excel saved as unicode has blank record @ end
+					// CSV import from excel saved as unicode has blank record @ end
 				}
 				else
 				{
@@ -280,14 +281,18 @@ class FabrikFEModelImportcsv extends JModelForm
 	 *
 	 * @return  array
 	 */
+
 	public function getSample()
 	{
 		return $this->data[0];
 	}
 
 	/**
-	 * @deprecated
 	 * possibly setting large data in the session is a bad idea
+	 * 
+	 * @deprecated
+	 * 
+	 * @return  void
 	 */
 
 	public function setSession()
@@ -315,12 +320,13 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * @since	3.0.3.1
-	 * used by import csv cron plugin to override default base dir location
+	 * Used by import csv cron plugin to override default base dir location
 	 *
-* @param   string	$dir (folder path)
+	 * @param   string  $dir  (folder path)
 	 * 
-	 * @return null
+	 * @since	3.0.3.1
+	 * 
+	 * @return  void
 	 */
 
 	public function setBaseDir($dir)
@@ -331,9 +337,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * deletes the csv file and optionally removes its path from the session
 	 *
-* @param   bool	$clearSession  should we clear the session
+	 * @param   bool  $clearSession  should we clear the session
 	 * 
-	 * @return null
+	 * @return void
 	 */
 
 	public function removeCSVFile($clearSession = true)
@@ -353,8 +359,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	/**
 	 * Clear session
 	 * 
-	 * @return null
+	 * @return void
 	 */
+
 	public function clearSession()
 	{
 		$session = JFactory::getSession();
@@ -660,13 +667,13 @@ class FabrikFEModelImportcsv extends JModelForm
 			}
 			if (!$tableJoinsFound)
 			{
-				$formModel->_formData = $aRow;
+				$formModel->formData = $aRow;
 				FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
 				$formModel->processToDB();
 			}
 			else
 			{
-				//merge multi line csv into one entry & defer till we've passed everything
+				// Merge multi line csv into one entry & defer till we've passed everything
 				$joindata = $this->_fakeJoinData($joindata, $aRow, $pkVal, $formModel);
 			}
 		}
@@ -679,21 +686,22 @@ class FabrikFEModelImportcsv extends JModelForm
 		$this->updatedCount = $updatedCount;
 		if ($elementsCreated == 0)
 		{
-			$msg = JText::sprintf("%s CSV records added and %s records updated", $this->addedCount, $updatedCount);
+			$msg = JText::sprintf('COM_FABRIK_CSV_ADDED_AND_UPDATED', $this->addedCount, $updatedCount);
 		}
 		else
 		{
-			$msg = JText::sprintf("%s new elements added, %s CSV records added and %s records updated", $elementsCreated, $this->addedCount,
-				$updatedCount);
+			$msg = JText::sprintf('COM_FABRIK_CSV_ADD_ELEMENTS_AND_RECORDS_AND_UPDATED', $elementsCreated, $this->addedCount, $updatedCount);
 		}
 		return $msg;
 	}
 
 	/**
-	 * once we have itterated over all of the csv file and recreated
-	 * the join data, we can finally allow the table's form to proces it
+	 * Once we have itterated over all of the csv file and recreated
+	 * the join data, we can finally allow the lists form to proces it
 	 *
-* @param   array	$joindata
+	 * @param   array  $joindata  data
+	 * 
+	 * @return  void
 	 */
 
 	private function insertJoinedData($joindata)
@@ -748,7 +756,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			}
 			// $$$ rob here we're setting up fabrik_repeat_group to allow the form to 'know' how many repeated records to insert.
 			JRequest::setVar('fabrik_repeat_group', $fabrik_repeat_group);
-			$formModel->_formData = $data;
+			$formModel->formData = $data;
 			FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
 			$formModel->processToDB();
 		}
@@ -761,10 +769,11 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * then insert data into the row
 	 * NOTE: will probably only work for a 1:1 join result
 	 *
-* @param   array	merged join data
-* @param   array	$aRow
-* @param   mixed	primary key value
-* @param   object	form model
+	 * @param   array   $joindata    merged join data
+	 * @param   array   $aRow        row
+	 * @param   mixed   $pkVal       primary key value
+	 * @param   object  &$formModel  form model
+	 * 
 	 * @return  array	updated join data
 	 */
 
@@ -835,10 +844,11 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
+	 * get Join Primary Key values
+	 * 
+	 * @param   object  $join  join row
 	 *
-* @param   object	$join
-	 *
-	 * @return  unknown_type
+	 * @return  array
 	 */
 
 	private function getJoinPkRecords($join)
@@ -889,7 +899,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$str = JText::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE');
 		foreach ($this->newHeadings as $heading)
 		{
-			$str .= "$heading, ";
+			$str .= $heading . ', ';
 		}
 		return $str;
 	}
@@ -950,8 +960,6 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 }
 
-/********************** */
-
 /**
  * This class will parse a csv file in either standard or MS Excel format.
  * Two methods are provided to either process a line at a time or return the whole csv file as an array.
@@ -968,11 +976,7 @@ class FabrikFEModelImportcsv extends JModelForm
  * NOTICE:
  * - Quote character can be escaped by itself or by using an escape character, within a quoted field (i.e. "" or \" will work)
  *
- * USAGE:
- *
- * include_once 'class.csv_bv.php';
- *
- * $csv = & new csv_bv('test.csv', ';', '"' , '\\');
+ * $csv = & new Csv_Bv('test.csv', ';', '"' , '\\');
  * $csv->SkipEmptyRows(TRUE); // Will skip empty rows. TRUE by default. (Shown here for example only).
  * $csv->TrimFields(TRUE); // Remove leading and trailing \s and \t. TRUE by default.
  *
@@ -990,9 +994,7 @@ class FabrikFEModelImportcsv extends JModelForm
  * OR using the csv2array function.
  * ----
  *
- * include_once 'class.csv_bv.php';
- *
- * $csv = & new csv_bv('test.csv', ';', '"' , '\\');
+ * $csv = & new Csv_Bv('test.csv', ';', '"' , '\\');
  * $csv->SkipEmptyRows(TRUE); // Will skip empty rows. TRUE by default. (Shown here for example only).
  * $csv->TrimFields(TRUE); // Remove leading and trailing \s and \t. TRUE by default.
  *
@@ -1014,109 +1016,103 @@ class FabrikFEModelImportcsv extends JModelForm
  * CHANGELOG:
  *
  * - Fixed skipping of last row if the last row did not have a new line. Thanks to Florian Bruch and Henry Flurry. (2006_05_15)
- * - Changed the class name to csv_bv for consistency. (2006_05_15)
+ * - Changed the class name to Csv_Bv for consistency. (2006_05_15)
  * - Fixed small problem where line breaks at the end of file returned a warning (2005_10_28)
- *
- * @author Ben Vautier <classes@vhd.com.au>
- * @copyright (c) 2006
- * @license BSD
- * @version 1.2 (2006_05_15)
+ * 
+ * @version    Release: 1.2
+ * @category   Joomla
+ * @package    Fabrik
+ * @author     Ben Vautier <classes@vhd.com.au>
+ * @copyright  2006 Ben Vautier
+ * @since      3.0
+ * 
  */
 
-class csv_bv
+class Csv_Bv
 {
 	/**
 	 * Seperator character
 	 * @var char
-	 * @access private
 	 */
-	var $mFldSeperator;
+	protected $mFldSeperator;
 
 	/**
 	 * Enclose character
 	 * @var char
-	 * @access private
 	 */
-	var $mFldEnclosure;
+	protected $mFldEnclosure;
 
 	/**
 	 * Escape character
 	 * @var char
-	 * @access private
 	 */
-	var $mFldEscapor;
+	protected $mFldEscapor;
 
 	/**
 	 * Length of the largest row in bytes.Default is 4096
 	 * @var int
-	 * @access private
 	 */
-	var $mRowSize;
+	protected $mRowSize;
 
 	/**
 	 * Holds the file pointer
 	 * @var resource
-	 * @access private
 	 */
-	var $mHandle;
+	protected $mHandle;
 
 	/**
 	 * Counts the number of rows that have been returned
 	 * @var int
-	 * @access private
 	 */
-	var $mRowCount;
+	protected $mRowCount;
 
 	/**
 	 * Counts the number of empty rows that have been skipped
 	 * @var int
-	 * @access private
 	 */
-	var $mSkippedRowCount;
+	protected $mSkippedRowCount;
 
 	/**
 	 * Determines whether empty rows should be skipped or not.
 	 * By default empty rows are returned.
 	 * @var boolean
-	 * @access private
 	 */
-	var $mSkipEmptyRows;
+	protected $mSkipEmptyRows;
 
 	/**
 	 * Specifies whether the fields leading and trailing \s and \t should be removed
 	 * By default it is TRUE.
 	 * @var boolean
-	 * @access private
 	 */
-	var $mTrimFields;
+	protected $mTrimFields;
 
 	/**
 	 * $$$ rob 15/07/2011
 	 *  'excel' or 'csv', if excel then convert 'UTF-16LE' to 'UTF-8' with iconv when reading in lines
 	 * @var string
 	 */
-	var $inPutFormat = 'csv';
+	public $inPutFormat = 'csv';
 
 	/**
 	 * Constructor
 	 *
 	 * Only used to initialise variables.
 	 *
-* @param str $file - file path
-* @param str $seperator - Only one character is allowed (optional)
-* @param str $enclose - Only one character is allowed (optional)
-* @param str $escape - Only one character is allowed (optional)
-	 * @access public
+	 * @param   string  $file       file path
+	 * @param   string  $seperator  Only one character is allowed (optional)
+	 * @param   string  $enclose    Only one character is allowed (optional)
+	 * @param   string  $escape     Only one character is allowed (optional)
 	 */
-	Function csv_bv($file, $seperator = ',', $enclose = '"', $escape = '')
+
+	public function Csv_Bv($file, $seperator = ',', $enclose = '"', $escape = '')
 	{
 
 		$this->mFldSeperator = $seperator;
 		$this->mFldEnclosure = $enclose;
 		$this->mFldEscapor = $escape;
 
-		$this->mSkipEmptyRows = TRUE;
-		$this->mTrimFields = TRUE;
+		$this->mSkipEmptyRows = true;
+		$this->mTrimFields = true;
 		$this->htmlentity = true;
 		$this->mRowCount = 0;
 		$this->mSkippedRowCount = 0;
@@ -1127,18 +1123,28 @@ class csv_bv
 		$this->mHandle = @fopen($file, "r") or trigger_error('Unable to open csv file', E_USER_ERROR);
 	}
 
-	function charset_decode_utf_8($string)
+	/**
+	 * uft 8 decode
+	 * 
+	 * @param   string  $string  decode strong
+	 * 
+	 * @return unknown|mixed
+	 */
+
+	protected function charset_decode_utf_8($string)
 	{
 		/* Only do the slow convert if there are 8-bit characters */
 		/* avoid using 0xA0 (\240) in ereg ranges. RH73 does not like that */
 		if (!preg_match("/[\200-\237]/", $string) and !preg_match("/[\241-\377]/", $string))
+		{
 			return $string;
+		}
 
-		// decode three byte unicode characters
-		$string = preg_replace("/([\340-\357])([\200-\277])([\200-\277])/e",
-			"'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'", $string);
+		// Decode three byte unicode characters
+		$pattern = "/([\340-\357])([\200-\277])([\200-\277])/e";
+		$string = preg_replace($pattern, "'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'", $string);
 
-		// decode two byte unicode characters
+		// Decode two byte unicode characters
 		$string = preg_replace("/([\300-\337])([\200-\277])/e", "'&#'.((ord('\\1')-192)*64+(ord('\\2')-128)).';'", $string);
 
 		return $string;
@@ -1152,21 +1158,21 @@ class csv_bv
 	 * Empty rows can be skipped
 	 * Leading and trailing \s and \t can be removed from each field
 	 *
-	 * @access public
-	 * @return array of fields
+	 * @return  array  of fields
 	 */
-	Function NextLine()
+
+	public function NextLine()
 	{
 
 		if (feof($this->mHandle))
 		{
-			return False;
+			return false;
 		}
 
 		$arr_row = fgetcsv($this->mHandle, $this->mRowSize, $this->mFldSeperator, $this->mFldEnclosure);
 
 		$this->mRowCount++;
-		//-------------------------
+
 		// Skip empty rows if asked to
 		if ($this->mSkipEmptyRows)
 		{
@@ -1181,7 +1187,7 @@ class csv_bv
 				if (!is_array($arr_row))
 				{
 					// This will only happen if we are at the end of a file.
-					return FALSE;
+					return false;
 				}
 			}
 		}
@@ -1190,9 +1196,6 @@ class csv_bv
 			if ($this->inPutFormat == 'excel' || $this->inPutFormat == 'fabrikexcel')
 			{
 				$encFrom = $this->inPutFormat == 'fabrikexcel' ? 'UTF-16LE' : 'Windows-1252';
-				//	$encFrom = $this->inPutFormat == 'fabrikexcel' ? 'UTF-16LE' : 'UTF-16LE';
-				//works IF the csv file was exported from excel otherwise mongs the heading
-				//$heading = iconv('UCS-2', 'UTF-8', $heading) ;
 
 				foreach ($arr_row as $k => $v)
 				{
@@ -1206,28 +1209,26 @@ class csv_bv
 				}
 			}
 		}
-		//-------------------------
 		// Remove leading and trailing spaces \s and \t
 		if ($this->mTrimFields && is_array($arr_row))
 		{
 			array_walk($arr_row, array($this, 'ArrayTrim'));
 		}
 
-		//-------------------------
-		// Remove escape character if it is not empty and different from the enclose character
-		// otherwise fgetcsv removes it automatically and we don't have to worry about it.
+		/**
+		 * Remove escape character if it is not empty and different from the enclose character
+		 * otherwise fgetcsv removes it automatically and we don't have to worry about it.
+		 */
 		if ($this->mFldEscapor !== '' && $this->mFldEscapor !== $this->mFldEnclosure && is_array($arr_row))
 		{
 			array_walk($arr_row, array($this, 'ArrayRemoveEscapor'));
 		}
 
-		//-------------------------
 		// Remove leading and trailing spaces \s and \t
 		if ($this->htmlentity && is_array($arr_row))
 		{
 
 			array_walk($arr_row, array($this, 'charset_decode_utf_8'));
-			//array_walk($arr_row, array($this, 'htmlentity'));
 		}
 
 		return $arr_row;
@@ -1235,19 +1236,17 @@ class csv_bv
 
 	/**
 	 * csv::Csv2Array will return the whole csv file as 2D array
-	 *
-	 * @access public
+	 * 
+	 * @return  array
 	 */
-	Function Csv2Array()
+
+	public function Csv2Array()
 	{
-
 		$arr_csv = array();
-
 		while ($arr_row = $this->NextLine())
 		{
 			$arr_csv[] = $arr_row;
 		}
-
 		return $arr_csv;
 	}
 
@@ -1255,25 +1254,44 @@ class csv_bv
 	 * csv::ArrayTrim will remove \s and \t from an array
 	 *
 	 * It is called from array_walk.
-	 * @access private
+	 * 
+	 * @param   string  &$item  string to trim
+	 * @param   string  $key    not used
+	 * 
+	 * @return  void
 	 */
-	Function ArrayTrim(&$item, $key)
+
+	protected Function ArrayTrim(&$item, $key)
 	{
-		$item = trim($item, " \t"); // space and tab
+		// Space and tab
+		$item = trim($item, " \t");
 	}
 
 	/**
 	 * csv::ArrayRemoveEscapor will escape the enclose character
-	 *
 	 * It is called from array_walk.
-	 * @access private
+	 * 
+	 * @param   string  &$item  string to trim
+	 * @param   string  $key    not used
+	 * 
+	 * @return  void
 	 */
-	Function ArrayRemoveEscapor(&$item, $key)
+
+	protected function ArrayRemoveEscapor(&$item, $key)
 	{
 		$item = str_replace($this->mFldEscapor . $this->mFldEnclosure, $this->mFldEnclosure, $item);
 	}
 
-	function htmlentity(&$item, $key)
+	/**
+	 * Htmlenties a string
+	 * 
+	 * @param   string  &$item  string to trim
+	 * @param   string  $key    not used
+	 * 
+	 * @return  void
+	 */
+
+	protected function htmlentity(&$item, $key)
 	{
 		$item = htmlentities($item);
 	}
@@ -1292,9 +1310,9 @@ class csv_bv
 	/**
 	 * csv::RowCount return the current skipped row count
 	 *
-	 * @access public
 	 * @return int
 	 */
+
 	public function SkippedRowCount()
 	{
 		return $this->mSkippedRowCount;
@@ -1303,7 +1321,8 @@ class csv_bv
 	/**
 	 * csv::SkipEmptyRows, sets whether empty rows should be skipped or not
 	 *
-* @param bool $bool
+	 * @param   bool  $bool  skip empty rows
+	 * 
 	 * @return void
 	 */
 
@@ -1315,7 +1334,7 @@ class csv_bv
 	/**
 	 * csv::TrimFields, sets whether fields should have their \s and \t removed.
 	 *
-* @param   bool  $bool	set trim fields state
+	 * @param   bool  $bool  set trim fields state
 	 *
 	 * @return  null
 	 */
@@ -1326,5 +1345,3 @@ class csv_bv
 	}
 
 }
-
-?>

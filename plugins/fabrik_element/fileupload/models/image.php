@@ -63,21 +63,21 @@ class imageRender{
 		{
 			if (is_object($formModel))
 			{
-				if (is_array($formModel->_data))
+				if (is_array($formModel->data))
 				{
 					$group = $model->getGroup();
 					if ($group->isJoin())
 					{
 						$join_id = $group->getGroup()->join_id;
-						if (isset($formModel->_data['join']))
+						if (isset($formModel->data['join']))
 						{
-							if (array_key_exists($join_id, $formModel->_data['join']))
+							if (array_key_exists($join_id, $formModel->data['join']))
 							{
-								if (array_key_exists($title_name, $formModel->_data['join'][$join_id]))
+								if (array_key_exists($title_name, $formModel->data['join'][$join_id]))
 								{
-									if (array_key_exists($model->_repeatGroupCounter, $formModel->_data['join'][$join_id][$title_name]))
+									if (array_key_exists($model->_repeatGroupCounter, $formModel->data['join'][$join_id][$title_name]))
 									{
-										$title = $formModel->_data['join'][$join_id][$title_name][$model->_repeatGroupCounter];
+										$title = $formModel->data['join'][$join_id][$title_name][$model->_repeatGroupCounter];
 									}
 								}
 							}
@@ -85,9 +85,9 @@ class imageRender{
 					}
 					else
 					{
-						if (array_key_exists($title_name, $formModel->_data))
+						if (array_key_exists($title_name, $formModel->data))
 						{
-							$title = $formModel->_data[$title_name];
+							$title = $formModel->data[$title_name];
 						}
 					}
 				}

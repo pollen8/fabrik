@@ -12,13 +12,18 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementThumbs extends plgFabrik_Element {
+class PlgFabrik_ElementThumbs extends PlgFabrik_Element
+{
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -31,16 +36,19 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$formid = $this->getlistModel()->getTable()->form_id;
 		$row_id = $thisRow->__pk_val;
 		$str = '';
-		for ($i=0; $i <count($data); $i++) {
+		for ($i = 0; $i < count($data); $i++)
+		{
 			JRequest::setVar('rowid', $row_id);
 			$myThumb = $this->_getMyThumb($listid, $formid, $row_id);
 			$imagefileup = 'thumb_up_out.gif';
 			$imagefiledown = 'thumb_down_out.gif';
-			if ($myThumb == 'up') {
+			if ($myThumb == 'up')
+			{
 				$imagefileup = 'thumb_up_in.gif';
 				$imagefiledown = 'thumb_down_out.gif';
 			}
-			elseif ($myThumb == 'down') {
+			elseif ($myThumb == 'down')
+			{
 				$imagefileup = 'thumb_up_out.gif';
 				$imagefiledown = 'thumb_down_in.gif';
 			}
@@ -50,8 +58,10 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 			$countUp = $count[0];
 			$countDown = $count[1];
 			$countDiff = $countUp - $countDown;
-			$str .= "<span style='color:#32d723;' id='count_thumbup$row_id'>$countUp</span><img src='$imagepath"."$imagefileup' style='padding:0px 5px 0 1px;' alt='UP' class='thumbup' id='thumbup$row_id'/>";
-			$str .= "<span style='color:#f82516;' id='count_thumbdown$row_id'>$countDown</span><img src='$imagepath"."$imagefiledown' style='padding:0px 5px 0 1px;' alt='DOWN' class='thumbdown' id='thumbdown$row_id'/>";
+			$str .= "<span style='color:#32d723;' id='count_thumbup$row_id'>$countUp</span><img src='$imagepath"
+				. "$imagefileup' style='padding:0px 5px 0 1px;' alt='UP' class='thumbup' id='thumbup$row_id'/>";
+			$str .= "<span style='color:#f82516;' id='count_thumbdown$row_id'>$countDown</span><img src='$imagepath"
+				. "$imagefiledown' style='padding:0px 5px 0 1px;' alt='DOWN' class='thumbdown' id='thumbdown$row_id'/>";
 			//$str .= "</div>";
 			$data[$i] = $str;
 		}
@@ -76,23 +86,29 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	/**
 	 *
-* @param $listid int table id
-* @param $formid int form id
-* @param $row_id int row id
+	 * @param $listid int table id
+	 * @param $formid int form id
+	 * @param $row_id int row id
 	 * @return count thumbs-up, count thumbs-down
 	 */
 
 	function getThumbsCount($data, $listid, $formid, $row_id)
 	{
 		/*if ($data != '') {
-			return $data;
-			}*/
+		    return $data;
+		    }*/
 		$db = FabrikWorker::getDbo();
 		$elementid = $this->getElement()->id;
 
-		$db->setQuery("SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = ".(int) $listid." AND formid = ".(int) $formid." AND row_id = ".(int) $row_id." AND element_id = ".(int) $elementid." AND thumb = 'up'");
+		$db
+			->setQuery(
+				"SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = " . (int) $formid . " AND row_id = "
+					. (int) $row_id . " AND element_id = " . (int) $elementid . " AND thumb = 'up'");
 		$resup = $db->loadResult();
-		$db->setQuery("SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = ".(int) $listid." AND formid = ".(int) $formid." AND row_id = ".(int) $row_id." AND element_id = ".(int) $elementid." AND thumb = 'down'");
+		$db
+			->setQuery(
+				"SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = " . (int) $formid . " AND row_id = "
+					. (int) $row_id . " AND element_id = " . (int) $elementid . " AND thumb = 'down'");
 		$resdown = $db->loadResult();
 		return json_encode(array($resup, $resdown));
 	}
@@ -116,46 +132,52 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 	}
 
 	/**
-	 * draws the form element
-* @param array data to preopulate element with
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		if (JRequest::getVar('view') == 'form') {
+		if (JRequest::getVar('view') == 'form')
+		{
 			return '';//JText::_('PLG_ELEMENT_THUMBS_ONLY_ACCESSIBLE_IN_DETALS_VIEW');
 		}
 		$element = $this->getElement();
 
 		$value = $this->getValue($data, $repeatCounter);
-		$type = ($params->get('password') == "1" ) ? "password" : "text";
+		$type = ($params->get('password') == "1") ? "password" : "text";
 		if ($this->elementError != '')
 		{
 			$type .= " elementErrorHighlight";
 		}
-		$imagepath = COM_FABRIK_LIVESITE.'/plugins/fabrik_element/thumbs/images/';
+		$imagepath = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/thumbs/images/';
 
-		$str = "<div id=\"$id"."_div\" class=\"fabrikSubElementContainer\">";
+		$str = "<div id=\"$id" . "_div\" class=\"fabrikSubElementContainer\">";
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
-		if (!isset($thisRow)) {
+		if (!isset($thisRow))
+		{
 			$thisRow = new stdClass;
 			$thisRow->__pk_val = $row_id;
 		}
 		$myThumb = $this->_getMyThumb($listid, $formid, $row_id);
 		$imagefileup = 'thumb_up_out.gif';
 		$imagefiledown = 'thumb_down_out.gif';
-		if ($myThumb == 'up') {
+		if ($myThumb == 'up')
+		{
 			$imagefileup = 'thumb_up_in.gif';
 			$imagefiledown = 'thumb_down_out.gif';
 		}
-		elseif ($myThumb == 'down') {
+		elseif ($myThumb == 'down')
+		{
 			$imagefileup = 'thumb_up_out.gif';
 			$imagefiledown = 'thumb_down_in.gif';
 		}
@@ -165,8 +187,10 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$countUp = $count[0];
 		$countDown = $count[1];
 		$countDiff = $countUp - $countDown;
-		$str .= "<span style='color:#32d723;' id='count_thumbup'>$countUp</span><img src='$imagepath"."$imagefileup' style='padding:0px 5px 0 1px;' alt='UP' id='thumbup'/>";
-		$str .= "<span style='color:#f82516;' id='count_thumbdown'>$countDown</span><img src='$imagepath"."$imagefiledown' style='padding:0px 5px 0 1px;' alt='DOWN' id='thumbdown'/>";
+		$str .= "<span style='color:#32d723;' id='count_thumbup'>$countUp</span><img src='$imagepath"
+			. "$imagefileup' style='padding:0px 5px 0 1px;' alt='UP' id='thumbup'/>";
+		$str .= "<span style='color:#f82516;' id='count_thumbdown'>$countDown</span><img src='$imagepath"
+			. "$imagefiledown' style='padding:0px 5px 0 1px;' alt='DOWN' id='thumbdown'/>";
 		$str .= "<input type=\"hidden\" name=\"$name\" id=\"$id\" value=\"$countDiff\" class=\"$id\" />\n";
 		$str .= "</div>";
 		return $str;
@@ -174,7 +198,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#storeDatabaseFormat($val, $data)
+	 * @see components/com_fabrik/models/PlgFabrik_Element#storeDatabaseFormat($val, $data)
 	 */
 
 	function storeDatabaseFormat($val, $data)
@@ -196,10 +220,14 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$elementid = $this->getElement()->id;
 		$user = JFactory::getUser();
 		$user_id = $user->get('id');
-		if ($user_id == 0) {
+		if ($user_id == 0)
+		{
 			$user_id = $this->getCookieName($listid, $row_id);
 		}
-		$db->setQuery("SELECT thumb FROM #__{package}_thumbs WHERE listid = ".(int) $listid." AND formid = ".(int) $formid." AND row_id = ".(int) $row_id." AND element_id = ".(int) $elementid." AND user_id = '$user_id' LIMIT 1");
+		$db
+			->setQuery(
+				"SELECT thumb FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = " . (int) $formid . " AND row_id = "
+					. (int) $row_id . " AND element_id = " . (int) $elementid . " AND user_id = '$user_id' LIMIT 1");
 		$ret = $db->loadResult();
 
 		return $ret;
@@ -214,7 +242,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 	function onAjax_rate()
 	{
 		$listid = JRequest::getInt('listid');
-		$list =  JModel::getInstance('list', 'FabrikFEModel');
+		$list = JModel::getInstance('list', 'FabrikFEModel');
 		$list->setId($listid);
 		$this->setId(JRequest::getInt('element_id'));
 		$formid = $list->getFormModel()->getId();
@@ -226,17 +254,17 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	private function getCookieName($listid, $row_id)
 	{
-		$cookieName =  "thumb-table_{$listid}_row_{$row_id}_ip_{$_SERVER['REMOTE_ADDR']}";
+		$cookieName = "thumb-table_{$listid}_row_{$row_id}_ip_{$_SERVER['REMOTE_ADDR']}";
 		jimport('joomla.utilities.utility');
 		return JUtility::getHash($cookieName);
 	}
 
 	/**
 	 * main method to store a rating
-* @param $listid
-* @param $formid
-* @param $row_id
-* @param $thumb
+	 * @param $listid
+	 * @param $formid
+	 * @param $row_id
+	 * @param $thumb
 	 */
 
 	private function doThumb($listid, $formid, $row_id, $thumb)
@@ -250,24 +278,30 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$user = JFactory::getUser();
 		$userid = (int) $user->get('id');
 
-		if ($userid == 0) {
+		if ($userid == 0)
+		{
 
 			$hash = $this->getCookieName($listid, $row_id);
 
 			//set cookie
-			$lifetime = time() + 365*24*60*60;
-			setcookie( $hash, '1', $lifetime, '/');
+			$lifetime = time() + 365 * 24 * 60 * 60;
+			setcookie($hash, '1', $lifetime, '/');
 			$userid = $db->quote($hash);
 		}
 		$elementid = $this->getElement()->id;
-		$db->setQuery("INSERT INTO #__{package}_thumbs (user_id, listid, formid, row_id, thumb, date_created, element_id)
-		values ($userid, $listid, $formid, $row_id, ".$db->quote($thumb).", $strDate, $elementid)
-			ON DUPLICATE KEY UPDATE date_created = $strDate, thumb = ".$db->quote($thumb));
+		$db
+			->setQuery(
+				"INSERT INTO #__{package}_thumbs (user_id, listid, formid, row_id, thumb, date_created, element_id)
+		values ($userid, $listid, $formid, $row_id, " . $db->quote($thumb)
+					. ", $strDate, $elementid)
+			ON DUPLICATE KEY UPDATE date_created = $strDate, thumb = " . $db->quote($thumb));
 		$db->query();
-		if ($db->getErrorNum()) {
+		if ($db->getErrorNum())
+		{
 			$err = new stdClass;
 			$err->error = $db->getErrorMsg();
-			echo json_encode($err);exit;
+			echo json_encode($err);
+			exit;
 		}
 		$this->updateDB($listid, $formid, $row_id, $elementid);
 
@@ -277,27 +311,36 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 	{
 		$db = FabrikWorker::getDbo();
 
-		$db->setQuery("UPDATE ".$this->getlistModel()->getTable()->db_table_name."
-                    SET ".$this->getElement()->name." = ((SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = ".(int) $listid." AND formid = ".(int) $formid." AND row_id = ".(int) $row_id." AND element_id = ".(int) $elementid." AND thumb = 'up') - (SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = ".(int) $listid." AND formid = ".(int) $formid." AND row_id = ".(int) $row_id." AND element_id = ".(int) $elementid." AND thumb = 'down'))
-                    WHERE ".$this->getlistModel()->getTable()->db_primary_key." = ".(int) $row_id."
+		$db
+			->setQuery(
+				"UPDATE " . $this->getlistModel()->getTable()->db_table_name . "
+                    SET " . $this->getElement()->name . " = ((SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid
+					. " AND formid = " . (int) $formid . " AND row_id = " . (int) $row_id . " AND element_id = " . (int) $elementid
+					. " AND thumb = 'up') - (SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = "
+					. (int) $formid . " AND row_id = " . (int) $row_id . " AND element_id = " . (int) $elementid
+					. " AND thumb = 'down'))
+                    WHERE " . $this->getlistModel()->getTable()->db_primary_key . " = " . (int) $row_id . "
                         LIMIT 1");
 		$db->query();
-		if ($db->getErrorNum()) {
+		if ($db->getErrorNum())
+		{
 			$err = new stdClass;
 			$err->error = $db->getErrorMsg();
-			echo json_encode($err);exit;
+			echo json_encode($err);
+			exit;
 		}
 		return true;
 	}
 
-
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param   int repeat group counter
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -307,7 +350,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		}
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = JRequest::getInt('formid');
 		$row_id = JRequest::getInt('rowid');
@@ -330,7 +373,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 
 	/**
 	 * get js to ini js object that manages the behaviour of the thumbs element (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#elementListJavascript()
+	 * @see components/com_fabrik/models/PlgFabrik_Element#elementListJavascript()
 	 */
 
 	function elementListJavascript()
@@ -346,28 +389,33 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		$idFromCookie = NULL;
 		$data = $this->getListModel()->getData();
 		$groupKeys = array_keys($data);
-		foreach ($groupKeys as $gKey) {
-			foreach ($data[$gKey] as $rowkey) {
-				if (!$idFromCookie && $user->get('id') == 0) {
+		foreach ($groupKeys as $gKey)
+		{
+			foreach ($data[$gKey] as $rowkey)
+			{
+				if (!$idFromCookie && $user->get('id') == 0)
+				{
 					$idFromCookie = $this->getCookieName($list->id, $rowkey->__pk_val);
 				}
 				$listMyThumbs[$rowkey->__pk_val] = $this->_getMyThumb($list->id, $formid, $rowkey->__pk_val);
 			}
 		}
-		if ($user->get('id') == 0) {
+		if ($user->get('id') == 0)
+		{
 			$userid = $idFromCookie;
 		}
-		else {
+		else
+		{
 			$userid = $user->get('id');
 		}
 		$opts = new stdClass;
 
-		$opts->listid      = $list->id;
-		$opts->imagepath    = COM_FABRIK_LIVESITE.'/plugins/fabrik_element/thumbs/images/';
-		$opts->elid         = $this->getElement()->id;
-		$opts->myThumbs     = $listMyThumbs;
-		$opts->userid       = "$userid";
-		$opts               = json_encode($opts);
+		$opts->listid = $list->id;
+		$opts->imagepath = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/thumbs/images/';
+		$opts->elid = $this->getElement()->id;
+		$opts->myThumbs = $listMyThumbs;
+		$opts->userid = "$userid";
+		$opts = json_encode($opts);
 		return "new FbThumbsList('$id', $opts);\n";
 	}
 
@@ -376,28 +424,33 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 		return false;
 	}
 
-	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true )
+	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
 		$filter_build = $params->get('filter_build_method', 0);
-		if ($filter_build == 0) {
+		if ($filter_build == 0)
+		{
 			$filter_build = $usersConfig->get('filter_build_method');
 		}
-		if ($filter_build == 2) {
-			return $this->filterValueList_All( $normal, $tableName, $label, $id, $incjoin);
-		} else {
-			return $this->filterValueList_Exact( $normal, $tableName, $label, $id, $incjoin);
+		if ($filter_build == 2)
+		{
+			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
+		}
+		else
+		{
+			return $this->filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
 		}
 	}
 
 	/**
 	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#filterValueList_All($normal, $tableName, $label, $id, $incjoin)
+	 * @see components/com_fabrik/models/PlgFabrik_Element#filterValueList_All($normal, $tableName, $label, $id, $incjoin)
 	 */
-	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true )
+	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		for ($i=0; $i<6; $i++) {
+		for ($i = 0; $i < 6; $i++)
+		{
 			$return[] = JHTML::_('select.option', $i);
 		}
 		return $return;
@@ -412,7 +465,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element {
 	public function install()
 	{
 		$db = FabrikWorker::getDbo();
-		$query ="CREATE TABLE IF NOT EXISTS  `#__{package}_thumbs` (
+		$query = "CREATE TABLE IF NOT EXISTS  `#__{package}_thumbs` (
 	`user_id` VARCHAR( 255 ) NOT NULL ,
 	`listid` INT( 6 ) NOT NULL ,
 	`formid` INT( 6 ) NOT NULL ,

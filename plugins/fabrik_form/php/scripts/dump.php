@@ -1,2 +1,2 @@
 <?php
-echo "<pre>";print_r($this->_data);exit;echo "</pre>";
+echo "<pre>";print_r($this->data);exit;echo "</pre>";

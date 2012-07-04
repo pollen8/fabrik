@@ -12,15 +12,18 @@ defined('_JEXEC') or die();
 
 require_once(JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php');
 
-class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
+class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 {
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
@@ -80,11 +83,15 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementDatabasejoin::render()
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$db = $this->getDb();
 		$params = $this->getParams();
@@ -238,7 +245,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			$params->set('cascadingdropdown_showpleaseselect', true);
 		}
-		$this->_table = $this->getFormModel()->getlistModel();
+		// $$$ rob testing commenting this out?
+		// $this->table = $this->getFormModel()->getlistModel();
 		$data = JRequest::get('post');
 		$opts = $this->_getOptionVals($data);
 		$this->_replaceAjaxOptsWithDbJoinOpts($opts);
@@ -377,7 +385,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementDatabasejoin::_buildQuery()
+	 * @see PlgFabrik_ElementDatabasejoin::_buildQuery()
 	 */
 
 	function _buildQuery($data = array(), $incWhere = true, $repeatCounter = 0)
@@ -411,15 +419,15 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 					}
 					else
 					{
-						if (isset($formModel->_data) || isset($formModel->_formData))
+						if (isset($formModel->data) || isset($formModel->formData))
 						{
-							if (isset($formModel->_data))
+							if (isset($formModel->data))
 							{
-								$whereval = $elementModel->getValue($formModel->_data, $repeatCounter);
+								$whereval = $elementModel->getValue($formModel->data, $repeatCounter);
 							}
 							else
 							{
-								$whereval = $elementModel->getValue($formModel->_formData, $repeatCounter);
+								$whereval = $elementModel->getValue($formModel->formData, $repeatCounter);
 							}
 							// $$$ hugh - temporary bandaid to fix 'array' issue in view=details
 							// @TODO fix underlying cause in database join getValue
@@ -653,7 +661,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementDatabasejoin::getFilter()
+	 * @see PlgFabrik_ElementDatabasejoin::getFilter()
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -904,7 +912,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getFixedChildParameters()
+	 * @see PlgFabrik_Element::getFixedChildParameters()
 	 */
 	
 	public function getFixedChildParameters()
@@ -959,7 +967,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementDatabasejoin::_getSelectLabel()
+	 * @see PlgFabrik_ElementDatabasejoin::_getSelectLabel()
 	 * @since	3.0.6
 	 */
 	protected function _getSelectLabel()

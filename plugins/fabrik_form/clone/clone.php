@@ -11,10 +11,10 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormClone extends plgFabrik_Form {
+class PlgFabrik_FormClone extends PlgFabrik_Form {
 
 	/**
 	 * process the plugin, called when form is submitted
@@ -41,21 +41,21 @@ class plgFabrik_FormClone extends plgFabrik_Form {
 			{
 				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_batchid_field_id);
 				$id_element = $id_elementModel->getElement(true);
-				$formModel->_formData[$id_element->name] = $formModel->_fullFormData['rowid'];
-				$formModel->_formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
+				$formModel->formData[$id_element->name] = $formModel->_fullFormData['rowid'];
+				$formModel->formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
 				$listModel = $formModel->getlistModel();
 				$listModel->setFormModel($formModel);
 				$primaryKey = FabrikString::shortColName($listModel->getTable()->db_primary_key);
-				$formModel->_formData[$primaryKey] = $formModel->_fullFormData['rowid'];
-				$formModel->_formData[$primaryKey . '_raw'] = $formModel->_fullFormData['rowid'];
-				$listModel->storeRow( $formModel->_formData, $formModel->_fullFormData['rowid']);
+				$formModel->formData[$primaryKey] = $formModel->_fullFormData['rowid'];
+				$formModel->formData[$primaryKey . '_raw'] = $formModel->_fullFormData['rowid'];
+				$listModel->storeRow( $formModel->formData, $formModel->_fullFormData['rowid']);
 			}
 			//$clone_times_field = $elementModel->getFullName(false, true, false);
-			$clone_times = $formModel->_formData[$element->name];
+			$clone_times = $formModel->formData[$element->name];
 			if (is_numeric($clone_times))
 			{
 				$clone_times = (int) $clone_times;
-				$formModel->_formData['Copy'] = 1;
+				$formModel->formData['Copy'] = 1;
 				for ($x = 1; $x < $clone_times; $x++)
 				{
 					$formModel->processToDB();

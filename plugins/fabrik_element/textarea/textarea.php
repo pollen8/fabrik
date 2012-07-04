@@ -10,14 +10,14 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementTextarea extends plgFabrik_Element
+class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 {
 
 	protected $fieldDesc = 'TEXT';
 
 	/**
 	 * tagify a string
-* @param   string	to tagify
+	 * @param   string	to tagify
 	 * @return  string	tagified string
 	 */
 
@@ -45,7 +45,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 					$key = FabrikString::ltrimword(FabrikString::safeColNameToArrayKey($parts[0]), '&');
 					if ($key == $this->getFullName(false, true, false))
 					{
-						$url = str_replace($key.'='.$parts[1], '', $url);
+						$url = str_replace($key . '=' . $parts[1], '', $url);
 					}
 				}
 			}
@@ -67,7 +67,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 					}
 					else
 					{
-						$thisurl = strstr($url, '?') ? "$url&$name=".urlencode($d) : "$url?$name=".urlencode($d);
+						$thisurl = strstr($url, '?') ? "$url&$name=" . urlencode($d) : "$url?$name=" . urlencode($d);
 					}
 				}
 				else
@@ -81,8 +81,12 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -92,7 +96,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 		if ($params->get('textarea-tagify') == true)
 		{
-			$data = $this->tagify( $data);
+			$data = $this->tagify($data);
 		}
 		//$$$rob dont strip slashes here - this is done when saving to db now
 
@@ -100,7 +104,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		{
 			if (is_array($data))
 			{
-				for ($i = 0; $i<count($data); $i++)
+				for ($i = 0; $i < count($data); $i++)
 				{
 					$data[$i] = nl2br($data[$i]);
 				}
@@ -154,13 +158,15 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-* @param   array	data
-* @param   int		repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -205,7 +211,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 				{
 					$str .= $key . '="' . $val . '" ';
 				}
-				$str .= 'name="' . $name . '" id="' . $id. '" cols="' . $cols . '" rows="' . $rows . '">' . $value . '</textarea>';
+				$str .= 'name="' . $name . '" id="' . $id . '" cols="' . $cols . '" rows="' . $rows . '">' . $value . '</textarea>';
 			}
 			else
 			{
@@ -230,21 +236,22 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 			{
 				$str .= $key . '="' . $val . '" ';
 			}
-			$str .= "name=\"$name\" id=\"". $id. "\" cols=\"$cols\" rows=\"$rows\">".$value."</textarea>\n";
+			$str .= "name=\"$name\" id=\"" . $id . "\" cols=\"$cols\" rows=\"$rows\">" . $value . "</textarea>\n";
 		}
 		if ($params->get('textarea-showmax'))
 		{
 			$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
-			$str .= "<div class=\"fabrik_characters_left\"><span>" . $charsLeft . "</span> " . JText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT') . "</div>";
+			$str .= "<div class=\"fabrik_characters_left\"><span>" . $charsLeft . "</span> " . JText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT')
+				. "</div>";
 		}
 		return $str;
 	}
-	
+
 	/**
 	 * used to format the data when shown in the form's email
-* @param   mixed	element's data
-* @param   array	form records data
-* @param   int		repeat group counter
+	 * @param   mixed	element's data
+	 * @param   array	form records data
+	 * @param   int		repeat group counter
 	 * @return  string	formatted value
 	 */
 
@@ -259,18 +266,20 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param   int		repeat group counter
-	 * @return  string	javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		if ($params->get('use_wysiwyg'))
 		{
 			// $$$ rob need to use the NAME as the ID when wysiwyg end in joined group
-			$id	= $this->getHTMLName($repeatCounter);
+			$id = $this->getHTMLName($repeatCounter);
 			if ($this->inDetailedView)
 			{
 				$id .= '_ro';
@@ -282,7 +291,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->max = $params->get('textarea-maxlength');
-		$opts->wysiwyg = ($params->get('use_wysiwyg') && JRequest::getInt('ajax') != 1) ? true: false;
+		$opts->wysiwyg = ($params->get('use_wysiwyg') && JRequest::getInt('ajax') != 1) ? true : false;
 		$opts->deleteOverflow = $params->get('delete_overflow', true) ? true : false;
 		$opts = json_encode($opts);
 		return "new FbTextarea('$id', $opts)";
@@ -292,8 +301,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	 * can be overwritten in adddon class
 	 *
 	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-* @param   string	elements data
-* @param   int		repeat group counter
+	 * @param   string	elements data
+	 * @param   int		repeat group counter
 	 * @return  bool	true if passes / false if falise validation
 	 */
 
@@ -340,7 +349,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	function getJoomfishOptions()
 	{
 		$params = $this->getParams();
-		$return  = array();
+		$return = array();
 		if ($params->get('textarea-showmax'))
 		{
 			$return['maxlength'] = $params->get('textarea-maxlength');

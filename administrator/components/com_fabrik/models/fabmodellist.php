@@ -12,11 +12,11 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modellist');
 
 /**
-* Fabrik Admin List Model
-*
-* @package  Fabrik
-* @since    3.0
-*/
+ * Fabrik Admin List Model
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabModelList extends JModelList
 {
@@ -24,7 +24,7 @@ class FabModelList extends JModelList
 	 * Constructor.
 	 * Ensure that we use the fabrik db model for the dbo
 	 * 
-* @param   array  $config  An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 */
 
 	public function __construct($config = array())
@@ -114,8 +114,8 @@ class FabModelList extends JModelList
 	/**
 	 * build the part of the list query that deals with filtering by form
 	 * 
-* @param   JDatabaseQuery  &$query  partial query
-* @param   string          $table   db table
+	 * @param   JDatabaseQuery  &$query  partial query
+	 * @param   string          $table   db table
 	 * 
 	 * @return  void
 	 */
@@ -133,8 +133,8 @@ class FabModelList extends JModelList
 	 * Method to auto-populate the model state.
 	 * Note. Calling getState in this method will result in recursion.
 	 * 
-* @param   string  $ordering   An optional ordering field.
-* @param   string  $direction  An optional direction (asc|desc).
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
 	 * 
 	 * @since	1.6
 	 * 

@@ -24,7 +24,7 @@ class FabrikModelElements extends FabModelList
 	/**
 	 * Constructor.
 	 *
-* @param   array  $config  An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 * 
 	 * @see		JController
 	 * 
@@ -171,9 +171,9 @@ class FabrikModelElements extends FabModelList
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-* @param   string  $type    The table type to instantiate
-* @param   string  $prefix  A prefix for the table class name. Optional.
-* @param   array   $config  Configuration array for model. Optional.
+	 * @param   string  $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
 	 * 
 	 * @return  JTable	A database object
 	 * 
@@ -191,8 +191,8 @@ class FabrikModelElements extends FabModelList
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 * 
-* @param   string  $ordering   An optional ordering field.
-* @param   string  $direction  An optional direction (asc|desc).
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
 	 * 
 	 * @since	1.6
 	 * 

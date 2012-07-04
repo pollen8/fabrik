@@ -206,7 +206,7 @@ class FabrikControllerForm extends JControllerForm
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
-		if (array_key_exists('apply', $model->_formData))
+		if (array_key_exists('apply', $model->formData))
 		{
 			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
 				. '&rowid=' . JRequest::getInt('rowid');

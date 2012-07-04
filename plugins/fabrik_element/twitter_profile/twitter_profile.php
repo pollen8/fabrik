@@ -12,14 +12,18 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
+class PlgFabrik_ElementTwitter_profile extends PlgFabrik_Element
 {
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -31,7 +35,7 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 
 	/**
 	 * take the recorded twitter screen name and parse it through the template
-* @param   string $screenName
+	 * @param   string $screenName
 	 * @return  string|unknown
 	 */
 	protected function format($screenName)
@@ -48,37 +52,46 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 		$tmpl = $params->get('twitter_profile_template');
 		$tmpl = str_replace('{screen_name}', $screenName, $tmpl);
 
-		if (!$twitter->twitterAvailable()) {
-			if(!isset($error)) {
+		if (!$twitter->twitterAvailable())
+		{
+			if (!isset($error))
+			{
 				$error = true;
 				JError::raiseNotice(500, 'Looks like twitters down');
 			}
-			$tmpl = preg_replace( "/{[^}\s]+}/i", '', $tmpl);
+			$tmpl = preg_replace("/{[^}\s]+}/i", '', $tmpl);
 			return $tmpl;
 		}
 		$user = $twitter->showUser($screenName);
 
-		foreach($user as $k => $v) {
-			if (is_object($v)) {
-				foreach($v as $k2 => $v2) {
-					$tmpl = str_replace('{'.$k.'.'.$k2.'}', $v2, $tmpl);
+		foreach ($user as $k => $v)
+		{
+			if (is_object($v))
+			{
+				foreach ($v as $k2 => $v2)
+				{
+					$tmpl = str_replace('{' . $k . '.' . $k2 . '}', $v2, $tmpl);
 				}
-			} else {
-				$tmpl = str_replace('{'.$k.'}', $v, $tmpl);
+			}
+			else
+			{
+				$tmpl = str_replace('{' . $k . '}', $v, $tmpl);
 			}
 		}
-		$tmpl = preg_replace( "/{[^}\s]+}/i", '', $tmpl);
+		$tmpl = preg_replace("/{[^}\s]+}/i", '', $tmpl);
 		return $tmpl;
 	}
 
 	/**
-	 * draws the form element
-* @param array data to preopulate element with
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -96,11 +109,11 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 		// _form_data was not set to no readonly value was returned
 		// added little test to see if the data was actually an array before using it
 		$formModel = $this->getFormModel();
-		if (is_array($formModel->_data))
+		if (is_array($formModel->data))
 		{
-			$data = $formModel->_data;
+			$data = $formModel->data;
 		}
-		$value 	= $this->getValue($data, $repeatCounter);
+		$value = $this->getValue($data, $repeatCounter);
 		$type = "text";
 		if ($this->elementError != '')
 		{
@@ -113,39 +126,45 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 		if (!$this->editable)
 		{
 			$value = $this->format($value);
-			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
+			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
-		$bits['class']		= "fabrikinput inputbox $type";
-		$bits['type']		= $type;
-		$bits['name']		= $name;
-		$bits['id']			= $id;
+		$bits['class'] = "fabrikinput inputbox $type";
+		$bits['type'] = $type;
+		$bits['name'] = $name;
+		$bits['id'] = $id;
 		//stop "'s from breaking the content out of the field.
 		// $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
 		//so add false flag to ensure its encoded once only
 		// $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
-		if (version_compare( phpversion(), '5.2.3', '<')) {
-			$bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+		if (version_compare(phpversion(), '5.2.3', '<'))
+		{
+			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 		}
-		else {
-			$bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
+		else
+		{
+			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
 		}
-		$bits['size']		= $size;
-		$bits['maxlength']	= $maxlength;
+		$bits['size'] = $size;
+		$bits['maxlength'] = $maxlength;
 
 		$str = "<input ";
-		foreach ($bits as $key=>$val) {
-			$str.= "$key = \"$val\" ";
+		foreach ($bits as $key => $val)
+		{
+			$str .= "$key = \"$val\" ";
 		}
 		$str .= " />\n";
 		return $str;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

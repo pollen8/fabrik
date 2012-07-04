@@ -10,11 +10,16 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
+class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
+{
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -34,14 +39,14 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * format the data as a microformat
-* @param   string	$data
+	 * @param   string	$data
 	 * @return  string	micro formatted data
 	 */
-	
+
 	function _microformat($data)
 	{
 		$o = $this->_strToCoords($data, 0);
-		if($data != '')
+		if ($data != '')
 		{
 			$data = "<div class=\"geo\">
 			<span class=\"latitude\">{$o->coords[0]}</span>,
@@ -53,12 +58,20 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	}
 
 	/**
-	 * load the javascript class that manages interaction with the form element
-	 * should only be called once
-	 * @return string javascript class file
+	 * get the class to manage the form element
+	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * to ensure that the file is loaded only once
+	 * 
+	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 * @param   string  $script  script to load once class has loaded
+	 *
+	 * @return void
 	 */
 
-	function formJavascriptClass(&$srcs, $script = '')
+	public function formJavascriptClass(&$srcs, $script = '')
 	{
 		static $jsloaded;
 		if (!isset($jsloaded))
@@ -84,7 +97,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			if ($params->get('fb_osm_yahoolayers'))
 			{
 				$yahooid = $params->get('fb_yahoo_key');
-				$document->addScript('http://api.maps.yahoo.com/ajaxymap?v=3.8&appid='.$yahooid);
+				$document->addScript('http://api.maps.yahoo.com/ajaxymap?v=3.8&appid=' . $yahooid);
 			}
 			$document->addScript('http://www.openstreetmap.org/openlayers/OpenStreetMap.js');
 			$jsloaded = true;
@@ -92,17 +105,19 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param   int repeat group counter
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$data = $this->getFormModel()->_data;
+		$data = $this->getFormModel()->data;
 		$v = $this->getValue($data, $repeatCounter);
 		$zoomlevel = $params->get('fb_gm_zoomlevel');
 		$o = $this->_strToCoords($v, $zoomlevel);
@@ -123,9 +138,9 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$opts->control = $params->get('fb_osm_mapcontrol');
 		$opts->scalecontrol = $params->get('fb_osm_scalecontrol');
 		$opts->maptypecontrol = $params->get('fb_osm_maptypecontrol');
-		$opts->overviewcontrol 	= $params->get('fb_osm_overviewcontrol');
+		$opts->overviewcontrol = $params->get('fb_osm_overviewcontrol');
 		$opts->drag = ($this->getFormModel()->editable) ? true : false;
-		$opts->staticmap = $this->_useStaticMap() ? true: false;
+		$opts->staticmap = $this->_useStaticMap() ? true : false;
 		$opts->maptype = $params->get('fb_osm_maptype');
 		$opts->key = $params->get('fb_osm_key');
 		$opts->defaultLayer = $params->get('fb_osm_defaultlayer');
@@ -162,27 +177,27 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * util function to turn the saved string into coordinate array
-* @param string coordinates
-* @param   int default zoom level
+	 * @param   stringing coordinates
+	 * @param   int default zoom level
 	 * @return object coords array and zoomlevel int
 	 */
 
 	function _strToCoords($v, $zoomlevel = 0)
 	{
 		$o = new stdClass;
-		$o->coords = array('','');
+		$o->coords = array('', '');
 		$o->zoomlevel = (int) $zoomlevel;
 		if (strstr($v, ","))
 		{
 			$ar = explode(":", $v);
-			$o->zoomlevel = count($ar) == 2 ? array_pop( $ar ) : 4;
+			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : 4;
 			$v = FabrikString::ltrimword($ar[0], "(");
 			$v = rtrim($v, ")");
 			$o->coords = explode(",", $v);
 		}
 		else
 		{
-			$o->coords = array(0,0);
+			$o->coords = array(0, 0);
 		}
 		return $o;
 	}
@@ -191,11 +206,11 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 	 * @access private
 	 * get a static map
 	 *
-* @param string coordinates
-* @param   int width
-* @param   int height
-* @param   int zoom level
-* @param   int $repeatCounter
+	 * @param   stringing coordinates
+	 * @param   int width
+	 * @param   int height
+	 * @param   int zoom level
+	 * @param   int $repeatCounter
 	 * @return string static map html
 	 */
 
@@ -208,7 +223,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			FabrikHelperHTML::script('media/com_fabrik/js/element.js');
 		}
 		$this->formJavascriptClass();
-		$id = $this->getHTMLId($repeatCounter).uniqid();
+		$id = $this->getHTMLId($repeatCounter) . uniqid();
 		$params = $this->getParams();
 		if (is_null($w))
 		{
@@ -225,7 +240,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$k = $params->get('fb_osm_key');
 
 		$o = $this->_strToCoords($v, $z);
-		$str =  "<div id=\"{$id}\" style=\"width:{$w}px;height:{$h}px\" class=\"gmStaticMap\">";
+		$str = "<div id=\"{$id}\" style=\"width:{$w}px;height:{$h}px\" class=\"gmStaticMap\">";
 		$str .= "<div id=\"{$id}_map\" style=\"width:{$w}px;height:{$h}px\"></div></div>";
 
 		$layers = new stdClass;
@@ -252,13 +267,17 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		FabrikHelperHTML::addScriptDeclaration("head.ready(function() {new FbOpenStreetMap('$id', $opts);});");
 		return $str;
 	}
+
 	/**
-	 * draws the form element
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		require_once(COM_FABRIK_FRONTEND . '/libs/mobileuseragent/mobileuseragent.php');
 		require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
@@ -274,7 +293,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		$h = $params->get('fb_osm_mapheight');
 		if ($this->_useStaticMap())
 		{
-			return $this->_staticMap( $val, null, null, null, $repeatCounter);
+			return $this->_staticMap($val, null, null, null, $repeatCounter);
 		}
 		else
 		{
@@ -285,7 +304,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 			}
 			$str = '';
 			//if its not editable and theres no val don't show the map
-			if ((!$this->editable && $val !='') || $this->editable)
+			if ((!$this->editable && $val != '') || $this->editable)
 			{
 				$str = "<div id=\"" . $id . "_map\" style=\"width:{$w}px; height:{$h}px\"></div>";
 				$str .= "<input type='hidden' name='$name' id='" . $id . "' value='$val'/>";
@@ -304,9 +323,9 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 
 	/**
 	 * can be overwritten in the plugin class - see database join element for example
-* @param array
-* @param array
-* @param array options
+	 * @param   array
+	 * @param   array
+	 * @param   array options
 	 */
 
 	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
@@ -324,37 +343,42 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 		}
 		else
 		{
-			$aFields[] 	= $str;
+			$aFields[] = $str;
 			$aAsFields[] = $fullElName;
 			$aFields[] = $db->quoteName($dbtable . '.' . $this->element->name) . ' AS ' . $db->quoteName($fullElName . '_raw');
 			$aAsFields[] = $db->quoteName($fullElName . '_raw');
 		}
 	}
 
-  /**
-   * this really does get just the default value (as defined in the element's settings)
-   * @return unknown_type
-   */
+	/**
+	 * This really does get just the default value (as defined in the element's settings)
+	 * 
+	 * @param   array  $data  form data
+	 * 
+	 * @return mixed 
+	 */
 
-  function getDefaultValue($data = array())
-  {
-    if (!isset($this->default))
-    {
-	    $params = $this->getParams();
-	    $this->default = $params->get('fb_osm_lat') . ',' . $params->get('fb_osm_long') . ':' . $params->get('fb_osm_zoomlevel');
-    }
-    return $this->default;
-  }
+	public function getDefaultValue($data = array())
+	{
+		if (!isset($this->default))
+		{
+			$params = $this->getParams();
+			$this->default = $params->get('fb_osm_lat') . ',' . $params->get('fb_osm_long') . ':' . $params->get('fb_osm_zoomlevel');
+		}
+		return $this->default;
+	}
 
-  /**
-   * determines the value for the element in the form view
-* @param array data
-* @param   int when repeating joinded groups we need to know what part of the array to access
-* @param array options
-   * @return string value
-   */
+	/**
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
+	 * @return  string	value
+	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		if (is_null($this->defaults))
 		{
@@ -431,10 +455,10 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element {
 					/* drop down  */
 					if (is_array($data[$fullName]))
 					{
-						if (isset($data[$fullName ][0]))
+						if (isset($data[$fullName][0]))
 						{
 							/* if not its a file upload el */
-							$value = $data[$fullName ][0];
+							$value = $data[$fullName][0];
 						}
 					}
 					else

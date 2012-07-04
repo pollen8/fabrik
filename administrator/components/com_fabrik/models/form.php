@@ -34,9 +34,9 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-* @param   string  $type    The table type to instantiate
-* @param   string  $prefix  A prefix for the table class name. Optional.
-* @param   array   $config  Configuration array for model. Optional.
+	 * @param   string  $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
 	 * 
 	 * @return  JTable	A database object
 	 * 
@@ -52,8 +52,8 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-* @param   array  $data      Data for the form.
-* @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   array  $data      Data for the form.
+	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
 	 * 
 	 * @return  mixed  A JForm object on success, false on failure
 	 * 
@@ -190,7 +190,7 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Get plugin location (both/front end/back end)
 	 * 
-* @param   int  $repeatCounter  plugin repeat counter
+	 * @param   int  $repeatCounter  plugin repeat counter
 	 * 
 	 * @return  string
 	 */
@@ -204,7 +204,7 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Get plugin event
 	 * 
-* @param   int  $repeatCounter  plugin repeat counter
+	 * @param   int  $repeatCounter  plugin repeat counter
 	 * 
 	 * @return  string
 	 */
@@ -218,7 +218,7 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Save the form
 	 * 
-* @param   array  $data  posted jform data
+	 * @param   array  $data  posted jform data
 	 * 
 	 * @return  bool
 	 */
@@ -257,7 +257,7 @@ class FabrikModelForm extends FabModelAdmin
 	 * 3) Recreate the form group records
 	 * 4) Make a table view if needed
 	 * 
-* @param   array  $data  jform data
+	 * @param   array  $data  jform data
 	 * 
 	 * @return  bool  True if you should display the form list, False if you're
 	 * redirected elsewhere
@@ -371,8 +371,8 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * reinsert the groups ids into formgroup rows
 	 * 
-* @param   array  $data           jform post data
-* @param   array  $currentGroups  group ids
+	 * @param   array  $data           jform post data
+	 * @param   array  $currentGroups  group ids
 	 * 
 	 * @return  void
 	 */
@@ -405,7 +405,7 @@ class FabrikModelForm extends FabModelAdmin
 				{
 					JError::raiseError(500, $db->stderr());
 				}
-				$orderid ++;
+				$orderid++;
 			}
 		}
 	}
@@ -414,7 +414,7 @@ class FabrikModelForm extends FabModelAdmin
 	 * take an array of list ids and return the corresponding form_id's
 	 * used in list publish code
 	 * 
-* @param   array  $ids  list ids
+	 * @param   array  $ids  list ids
 	 * 
 	 * @return array form ids
 	 */
@@ -468,9 +468,9 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Method to validate the form data.
 	 *
-* @param   object  $form   The form to validate against.
-* @param   array   $data   The data to validate.
-* @param   string  $group  The name of the field group to validate.
+	 * @param   object  $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
 	 * 
 	 * @return  mixed	Array of filtered data if valid, false otherwise.
 	 * 
@@ -496,7 +496,7 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * Delete form and form groups
 	 * 
-* @param   array  &$cids  to delete
+	 * @param   array  &$cids  to delete
 	 * 
 	 * @return  bool
 	 */

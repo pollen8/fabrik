@@ -1075,7 +1075,7 @@ class FabrikModelList extends FabModelAdmin
 		$db->setQuery($query);
 		$id = $db->loadResult();
 		$dispatcher = JDispatcher::getInstance();
-		$elementModel = new plgFabrik_Element($dispatcher);
+		$elementModel = new PlgFabrik_Element($dispatcher);
 
 		if ($id)
 		{
@@ -1141,7 +1141,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$fabrikDb = $this->getFEModel()->getDb();
 		$dispatcher = JDispatcher::getInstance();
-		$elementModel = new plgFabrik_Element($dispatcher);
+		$elementModel = new PlgFabrik_Element($dispatcher);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$user = JFactory::getUser();
 		$elementTypes = JRequest::getVar('elementtype', array());
@@ -1291,7 +1291,7 @@ class FabrikModelList extends FabModelAdmin
 			$details = array('group_id' => $element->group_id);
 			JRequest::setVar('details', $details);
 			$elementModel->onSave();
-			$ordering ++;
+			$ordering++;
 		}
 	}
 
@@ -1913,19 +1913,19 @@ class FabrikModelList extends FabModelAdmin
 				{
 					case 0:
 					default:
-						// List only
+					// List only
 						break;
 					case 1:
-						// List and form
+					// List and form
 						$form = $this->deleteAssociatedForm($table);
 						break;
 					case 2:
-						// List form and groups
+					// List form and groups
 						$form = $this->deleteAssociatedForm($table);
 						$this->deleteAssociatedGroups($form, false);
 						break;
 					case 3:
-						// List form groups and elements
+					// List form groups and elements
 						$form = $this->deleteAssociatedForm($table);
 						$this->deleteAssociatedGroups($form, true);
 						break;
@@ -2100,7 +2100,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$item = $this->getTable();
 		$item->load(array('form_id' => $formId));
-		$this->_table = $item;
+		$this->table = $item;
 		$this->setState('list.id', $item->id);
 		return $item;
 	}
@@ -2295,7 +2295,7 @@ class FabrikModelList extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$user = JFactory::getUser();
-		$table = $this->_table;
+		$table = $this->table;
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$ammend = false;
 		$tableName = $table->db_table_name;

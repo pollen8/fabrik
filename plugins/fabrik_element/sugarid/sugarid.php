@@ -10,9 +10,9 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementSugarid extends plgFabrik_Element
+class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 {
 
 	protected $fieldDesc = 'CHAR(%s)';
@@ -20,12 +20,15 @@ class plgFabrik_ElementSugarid extends plgFabrik_Element
 	protected $fieldSize = '36';
 
 	/**
-	 * draws the form element
-* @param   int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);

@@ -11,46 +11,54 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormReceipt extends plgFabrik_Form {
+class PlgFabrik_FormReceipt extends PlgFabrik_Form
+{
 
 	var $html = null;
 
 	/**
-	 * set up the html to be injected into the bottom of the form
-	 *
-* @param object $params (no repeat counter stuff needed here as the plugin manager
-	 * which calls this function has already done the work for you
+	 * Sets up HTML to be injected into the form's bottom
+	 * 
+	 * @param   object  $params     params
+	 * @param   object  $formModel  form model
+	 * 
+	 * @return void
 	 */
 
 	public function getBottomContent($params, $formModel)
 	{
-		if($params->get('ask-receipt')) {
+		if ($params->get('ask-receipt'))
+		{
 			$this->html = "
 			<label><input type=\"checkbox\" name=\"fabrik_email_copy\" class=\"contact_email_copy\" value=\"1\"  />
-			 ".JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY') . "</label>";
-		}else{
+			 " . JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY') . "</label>";
+		}
+		else
+		{
 			$this->html = '';
 		}
 	}
 
 	/**
-	 * inject custom html into the bottom of the form
-* @param   int plugin counter
+	 * Inject custom html into the bottom of the form
+	 * 
+	 * @param   int  $c  plugin counter
+	 * 
 	 * @return string html
 	 */
 
-	function getBottomContent_result($c)
+	public function getBottomContent_result($c)
 	{
 		return $this->html;
 	}
 
 	/**
 	 * process the plugin, called when form is submitted
-* @param   object	$params
-* @param   object	form model
+	 * @param   object	$params
+	 * @param   object	form model
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -70,12 +78,14 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 		$form = $formModel->getForm();
 
 		//getEmailData returns correctly formatted {tablename___elementname} keyed results
-		//_formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms
-		$aData = array_merge($this->getEmailData(), $formModel->_formData);
+		//formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms
+		$aData = array_merge($this->getEmailData(), $formModel->formData);
 
 		$message = $params->get('receipt_message');
-		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
+		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+			. JRequest::getVar('rowid');
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+			. JRequest::getVar('rowid');
 		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
 		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
@@ -86,7 +96,8 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 		$message = $w->parseMessageForPlaceHolder($message, $aData, false);
 
 		$to = $w->parseMessageForPlaceHolder($params->get('receipt_to'), $aData, false);
-		if (empty($to)) {
+		if (empty($to))
+		{
 			// $$$ hugh - not much point trying to send if we don't have a To address
 			// (happens frequently if folk don't properly validate their form inputs and are using placeholders)
 			// @TODO - might want to add some feedback about email not being sent
@@ -98,20 +109,19 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 		// it sets $email, which is then never referenced?
 		$receipt_email = $params->get('receipt_to');
 		if (!$form->record_in_database) {
-			foreach ($aData as $key=>$val) {
-				$aBits = explode('___', $key);
-				$newKey = array_pop( $aBits);
-				if ($newKey == $receipt_email) {
-					$email = $val;
-				}
-			}
+		    foreach ($aData as $key=>$val) {
+		        $aBits = explode('___', $key);
+		        $newKey = array_pop( $aBits);
+		        if ($newKey == $receipt_email) {
+		            $email = $val;
+		        }
+		    }
 		}
-		*/
-		
+		 */
 
-		$subject =  html_entity_decode($params->get('receipt_subject', ''));
+		$subject = html_entity_decode($params->get('receipt_subject', ''));
 		$subject = $w->parseMessageForPlaceHolder($subject, null, false);
-		$from 		= $config->get('mailfrom');
+		$from = $config->get('mailfrom');
 		$fromname = $config->get('fromname');
 		//darn silly hack for poor joomfish settings where lang parameters are set to overide joomla global config but not mail translations entered
 		$rawconfig = new JConfig();
@@ -121,9 +131,9 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 		}
 		if ($fromname === '')
 		{
-			$fromname= $rawconfig->fromname;
+			$fromname = $rawconfig->fromname;
 		}
-		$res = JUTility::sendMail( $from, $fromname, $to, $subject, $message, true);
+		$res = JUTility::sendMail($from, $fromname, $to, $subject, $message, true);
 	}
 }
 ?>
