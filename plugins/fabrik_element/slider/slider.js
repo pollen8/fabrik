@@ -15,23 +15,25 @@ var FbSlider = new Class({
 			}
 			var output = this.element.getElement('.fabrikinput');
 			var output2 = this.element.getElement('.slider_output');
-			this.mySlide = new Slider(this.element
-					.getElement('.fabrikslider-line'), this.element
-					.getElement('.knob'), {
-				onChange : function (pos) {
-					output.value = pos;
-					this.options.value = pos;
-					
-					output2.set('text', pos);
-					this.callChange();
-				}.bind(this),
-				onComplete: function (pos) {
-					//fire for validations
-					output.fireEvent('blur', new Event.Mock(output, 'change'));
-				},
-				steps : this.options.steps
-			}).set(v);
-
+			this.mySlide = new Slider(
+				this.element.getElement('.fabrikslider-line'),
+				this.element.getElement('.knob'), 
+				{
+					onChange : function (pos) {
+						output.value = pos;
+						this.options.value = pos;
+						output2.set('text', pos);
+						output.fireEvent('blur', new Event.Mock(output, 'blur'));
+						this.callChange();
+					}.bind(this),
+					onComplete: function (pos) {
+						//fire for validations
+						output.fireEvent('blur', new Event.Mock(output, 'change'));
+						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
+					}.bind(this),
+					steps : this.options.steps
+				}
+			).set(v);
 			this.mySlide.set(this.options.value);
 			output.value = this.options.value;
 			output2.set('text', this.options.value);
