@@ -223,9 +223,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * run on formModel::setFormData()
-	 * set before form is validated
-	 * @param   int		repeat group counter
-	 * @return  null
+	 * 
+	 * @param   int  $c  repeat group counter
+	 * 
+	 * @return void
 	 */
 
 	public function preProcess($c)
@@ -415,7 +416,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		{
 			if (!$this->editable)
 			{
-				$value = $this->_replaceWithIcons($value);
+				$value = $this->replaceWithIcons($value);
 				$str[] = $value;
 			}
 			else
@@ -490,10 +491,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
-	 * find the sum from a set of data
-	 * @param   object	list model
-	 * @param   string	$label
-	 * @return  string	sum result
+	 * Get sum query
+	 * 
+	 * @param   object  &$listModel  list model
+	 * @param   string  $label       label
+	 * 
+	 * @return string
 	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
@@ -516,9 +519,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
-	 * build the query for the avg caclculation
-	 * @param   model	$listModel
-	 * @param   string	$label the label to apply to each avg
+	 * Build the query for the avg calculation 
+	 * 
+	 * @param   model   &$listModel  list model
+	 * @param   string  $label       the label to apply to each avg
+	 * 
 	 * @return  string	sql statement
 	 */
 

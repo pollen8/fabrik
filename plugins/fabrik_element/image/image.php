@@ -214,12 +214,15 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param   array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$groupModel = $this->getGroup();
 		$params = $this->getParams();
@@ -240,7 +243,6 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			}
 			if (!array_key_exists($key . '_folder', $data))
 			{
-				//$retval = implode(GROUPSPLITTER , $data[$key]);
 				$retval = json_encode($data[$key]);
 			}
 			else
@@ -418,7 +420,9 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
+	 *get admin lists
 	 *
+	 *@deprecated
 	 */
 
 	function getAdminLists(&$lists)
@@ -448,14 +452,13 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	 *
+	 * @deprecated
 	 */
 
 	function renderAdminSettings(&$lists)
 	{
 		return;
 		$params = $this->getParams();
-		$pluginParams = $this->getPluginParams();
 		$this->getAdminLists($lists);
 ?>
 <script language="javascript" type="text/javascript">

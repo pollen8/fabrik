@@ -165,10 +165,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * used in things like date when its id is suffixed with _cal
+	 * Used in things like date when its id is suffixed with _cal
 	 * called from getLabel();
-	 * @param   string	initial	id
-	 * @return  string	modified id
+	 * 
+	 * @param   string  &$id  initial id
+	 * 
+	 * @return  void
 	 */
 
 	protected function modHTMLId(&$id)
@@ -358,12 +360,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param   array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		if (!is_array($val))
 		{
@@ -440,21 +445,23 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * $$$ hugh - added 9/13/2009
-	 * determines the label used for the browser title
+	 * Determines the label used for the browser title
 	 * in the form/detail views
-	 * @param   array	data
-	 * @param   int		when repeating joinded groups we need to know what part of the array to access
-	 * @param   array	options
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
 	 * @return  string	default value
 	 */
 
-	function getTitlePart($data, $repeatCounter = 0, $opts = array())
+	public function getTitlePart($data, $repeatCounter = 0, $opts = array())
 	{
 		$gmt_date = $this->getValue($data, $repeatCounter, $opts);
-		// OK, now we've got the GMT date, convert it
-		// ripped the following off from renderListData ... SURELY we must have a func
-		// somewhere that does this?
+		/* OK, now we've got the GMT date, convert it
+		* ripped the following off from renderListData ... SURELY we must have a func
+		* somewhere that does this?
+		*/
 		$params = $this->getParams();
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
@@ -485,8 +492,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * takes a raw value and returns its label equivalent
-	 * @param   string	value
+	 * Converts a raw value into its label equivalent
+	 * 
+	 * @param   string &$v  raw value
+	 * 
+	 * @return  void
 	 */
 
 	protected function toLabel(&$v)
@@ -500,9 +510,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		if (!in_array($v, $aNullDates))
 		{
 			$date = JFactory::getDate($v);
-			//$$$ rob - if not time selector then the date gets stored as 2009-11-13 00:00:00
-			//if we have a -1 timezone then date gets set to 2009-11-12 23:00:00
-			//then shown as 2009-11-12 which is wrong
+			/**
+			 * $$$ rob - if not time selector then the date gets stored as 2009-11-13 00:00:00
+			 * if we have a -1 timezone then date gets set to 2009-11-12 23:00:00
+			 * then shown as 2009-11-12 which is wrong
+			 */
 			if ($params->get('date_showtime'))
 			{
 				$date->setTimeZone($timeZone);
@@ -658,13 +670,16 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 *
+	 * Get an array of element html ids and their corresponding 
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param   int repeat group counter
-	 * @return array html ids to watch for validation
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  array  html ids to watch for validation
 	 */
 
-	function getValidationWatchElements($repeatCounter)
+	public function getValidationWatchElements($repeatCounter)
 	{
 		$params = $this->getParams();
 		$return = array();
@@ -705,7 +720,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			}
 			else
 			{
-				// deafult date should always be entered as gmt date e.g. eval'd default of:
+				// Deafult date should always be entered as gmt date e.g. eval'd default of:
 				$default = $element->default;
 				if ($element->eval == "1")
 				{
@@ -735,7 +750,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		//@TODO: allow {now} and {today} to be replaced with current datetime
+		// @TODO: allow {now} and {today} to be replaced with current datetime
 		if (!isset($this->defaults) || is_null($this->defaults))
 		{
 			$this->defaults = array();
@@ -750,7 +765,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
 			if ($params->get('date_alwaystoday', false))
 			{
-				//$value = JFactory::getDate()->toMySQL(false);
+				// $value = JFactory::getDate()->toMySQL(false);
 				// $$$ rob fix for http://fabrik.unfuddle.com/projects/17220/tickets/by_number/700?cycle=true
 				if ($store_as_local)
 				{
@@ -777,7 +792,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				}
 				// $$$ hugh - as we now run removeTableNameFromSaveData(), I think we just need the short name?
 				$name = $this->getFullName(false, true, false);
-				//$name = $element->name;
 				if ($groupModel->isJoin())
 				{
 					if ($groupModel->canRepeat())
@@ -801,18 +815,18 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				{
 					if ($groupModel->canRepeat())
 					{
-						//repeat group NO join
+						// Repeat group NO join
 						if (array_key_exists($name, $data))
 						{
 							if (is_array($data[$name]))
 							{
-								//occurs on form submission for fields at least
+								// Occurs on form submission for fields at least
 								$a = $data[$name];
 
 							}
 							else
 							{
-								//occurs when getting from the db
+								// Occurs when getting from the db
 								$a = FabrikWorker::JSONtoData($data[$name], true);
 							}
 							if (array_key_exists($repeatCounter, $a))
@@ -846,12 +860,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					} */
 				}
 				$formModel = $this->getForm();
-				//stops this getting called from form validation code as it messes up repeated/join group validations
+				// Stops this getting called from form validation code as it messes up repeated/join group validations
 				if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 				{
 					FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 				}
-				//for validations (empty time and date element gives ' ')
+				// For validations (empty time and date element gives ' ')
 				if ($value == ' ')
 				{
 					$value = '';
@@ -863,18 +877,25 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * called on failed form validation.
+	 * Called on failed form validation.
 	 * Ensures submitted form data is converted back into the format
 	 * that the form would expect to get it in, if the data had been
 	 * draw from the database record
-	 * @param   string	submitted form value
+	 * 
+	 * @param   string  $str  submitted form value
+	 * 
 	 * @return  string	formated value
 	 */
 
 	public function toDbVal($str)
 	{
-		//only format if not empty otherwise search forms will filter
-		//for todays date even when no date entered
+		return $str;
+	}
+	{
+		/**
+		 * Only format if not empty otherwise search forms will filter
+		 * for todays date even when no date entered
+		 */
 		$this->_resetToGMT = false;
 		if ($str != '')
 		{
@@ -904,24 +925,25 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * this builds an array containing the filters value and condition
-	 * If no date time option, then we change the filter into a ranged filter to search
-	 * the whole day for records.
-	 * @param   string	initial $value all filters should submit as sql format EXCEPT for special string in search all (e.g. 'last week');
-	 * @param   string	intial $condition
-	 * @param   string	eval - how the value should be handled
-	 * @return  array	(value condition) values in sql format
+	 * Builds an array containing the filters value and condition
+	 * 
+	 * @param   string  $value      initial value
+	 * @param   string  $condition  intial $condition
+	 * @param   string  $eval       how the value should be handled
+	 * 
+	 * @return  array	(value condition)
 	 */
 
-	function getFilterValue($value, $condition, $eval)
+	public function getFilterValue($value, $condition, $eval)
 	{
-		// if its a search all value it may not be a date - so use parent method.
-		// see http://fabrikar.com/forums/showthread.php?t=25255
+		/* if its a search all value it may not be a date - so use parent method.
+		* see http://fabrikar.com/forums/showthread.php?t=25255
+		*/
 		if (!FabrikWorker::isDate($value))
 		{
 			if (($this->rangeFilterSet))
 			{
-				// its alreay been set as a range expression - so split that into an array
+				// Its alreay been set as a range expression - so split that into an array
 				$condition = 'between';
 				$value = explode(' AND ', $value);
 				foreach ($value as &$v)
@@ -939,18 +961,21 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		}
 
 		$exactTime = $this->formatContainsTime($params->get('date_table_format'));
+
 		// $$$ rob if filtering in querystring and ranged value set then force filter type to range
 		$filterType = is_array($value) ? 'range' : $this->getElement()->filter_type;
 		switch ($filterType)
 		{
 			case 'range':
-			// ranged dates should be sent in sql format
+
+				// Ranged dates should be sent in sql format
 				break;
 			case 'field':
 			case 'dropdown':
 			case 'auto-complete':
 			default:
-			//odity when filtering from qs
+
+				// Odity when filtering from qs
 				$value = str_replace("'", '', $value);
 
 				// parse through JDate, to allow for special filters such as 'now' 'tomorrow' etc
@@ -959,7 +984,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				// so we have to use this specific format string to get now and next
 				if (is_numeric($value) && JString::strlen($value) == 4)
 				{
-					// will only work on php 5.3.6
+					// Will only work on php 5.3.6
 					$value = JFactory::getDate('first day of January ' . $value)->toSql();
 					$next = JFactory::getDate('first day of January ' . ($value + 1));
 				}
@@ -1114,11 +1139,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * Get the list filter for the element
-	 * @param   int filter order
-	 * @param bol do we render as a normal filter or as an advanced search filter
+	 * Get the table filter for the element
+	 * 
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * @return string filter html
+	 * 
+	 * @return  string	filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -1134,17 +1161,19 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 		$ids = $listModel->getColumnData($elName2);
 		$v = $this->filterName($counter, $normal);
-		//corect default got
+
+		// Corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$format = $params->get('date_table_format', '%Y-%m-%d');
 
 		$fromTable = $origTable;
 		$joinStr = '';
+
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
 		foreach ($joins as $aJoin)
 		{
-			// not sure why the group id key wasnt found - but put here to remove error
+			// Not sure why the group id key wasnt found - but put here to remove error
 			if (array_key_exists('group_id', $aJoin))
 			{
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
@@ -1342,33 +1371,36 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * when importing csv data you can run this function on all the data to
+	 * When importing csv data you can run this function on all the data to
 	 * format it into the format that the form would have submitted the date
-	 *
-	 * @param   array	data
-	 * @param   string	table column heading
-	 * @param   bool	data is raw
+	 * 
+	 * @param   array   &$data  to prepare
+	 * @param   string  $key    list column heading
+	 * @param   bool    $isRaw  data is raw
+	 * 
+	 * @return  array  data
 	 */
 
-	function prepareCSVData(&$data, $key, $is_raw = false)
+	public function prepareCSVData(&$data, $key, $isRaw = false)
 	{
-		if ($is_raw)
+		if ($isRaw)
 		{
 			return;
 		}
 		$params = $this->getParams();
 		$format = $params->get('date_form_format', '%Y-%m-%d %H:%S:%I');
-		//go through data and turn any dates into unix timestamps
+		// Go through data and turn any dates into unix timestamps
 		for ($j = 0; $j < count($data); $j++)
 		{
 			$orig_data = $data[$j][$key];
 			$date = JFactory::getDate($data[$j][$key]);
 			$data[$j][$key] = $date->toFormat($format, true);
-			// $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
-			// which we then change to 1999 using a tablecsv import script (don't ask!). But of course FabDate doesn't
-			// like dates outside of UNIX timestamp range, so the previous line was zapping them. So I'm just restoring
-			// the date as found in the CSV file. This could have side effects if someone else tries to import invalid dates,
-			// but ... ah well.
+			/* $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
+			 * which we then change to 1999 using a tablecsv import script (don't ask!). But of course FabDate doesn't
+			 * like dates outside of UNIX timestamp range, so the previous line was zapping them. So I'm just restoring
+			 * the date as found in the CSV file. This could have side effects if someone else tries to import invalid dates,
+			 * but ... ah well.
+			 * */
 			if (empty($data[$j][$key]) && !empty($orig_data))
 			{
 				$data[$j][$key] = $orig_data;
@@ -1557,9 +1589,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * build the query for the avg caclculation
-	 * @param   model	$listModel
-	 * @param   string	$label the label to apply to each avg
+	 * Build the query for the avg calculation 
+	 * 
+	 * @param   model   &$listModel  list model
+	 * @param   string  $label       the label to apply to each avg
+	 * 
 	 * @return  string	sql statement
 	 */
 
@@ -1573,6 +1607,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		return 'SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM '
 			. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
+
+	/**
+	 * Get sum query
+	 * 
+	 * @param   object  &$listModel  list model
+	 * @param   string  $label       label
+	 * 
+	 * @return string
+	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
@@ -1651,15 +1694,17 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
-	 * @param $key element name in format `tablename`.`elementname`
-	 * @param $condition =/like etc
-	 * @param $value search string - already quoted if specified in filter array options
-	 * @param $originalValue - original filter value without quotes or %'s applied
-	 * @param   stringing filter type advanced/normal/prefilter/search/querystring/searchall
-	 * @return string sql query part e,g, "key = value"
+	 * 
+	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $condition      =/like etc
+	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  original filter value without quotes or %'s applied
+	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 * 
+	 * @return  string	sql query part e,g, "key = value"
 	 */
 
-	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$this->encryptFieldName($key);
 		switch ($condition)
@@ -1733,8 +1778,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * called when copy row table plugin called
-	 * @param mixed value to copy into new record
+	 * Called when copy row list plugin called
+	 * 
+	 * @param   mixed  $val  value to copy into new record
+	 * 
 	 * @return mixed value to copy into new record
 	 */
 
@@ -1914,10 +1961,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * if used as a filter add in some JS code to watch observed filter element's changes
+	 * If used as a filter add in some JS code to watch observed filter element's changes
 	 * when it changes update the contents of this elements dd filter's options
-	 * @param bol is the filter a normal (true) or advanced filter
-	 * @param   stringing container
+	 * 
+	 * @param   bool    $normal     is the filter a normal (true) or advanced filter
+	 * @param   string  $container  container
+	 * 
+	 * @return  void
 	 */
 
 	public function filterJS($normal, $container)
@@ -1999,7 +2049,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		}
 		parent::formJavascriptClass($srcs);
 
-		// return false, as we need to be called on per-element (not per-plugin) basis
+		// Return false, as we need to be called on per-element (not per-plugin) basis
 		return false;
 	}
 
@@ -2085,4 +2135,3 @@ class FabDate extends JDate
 	}
 
 }
-?>

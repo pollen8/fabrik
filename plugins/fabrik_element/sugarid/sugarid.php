@@ -1,16 +1,22 @@
 <?php
 /**
-* Plugin element to Sugar CRM id
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+
+/**
+ * Plugin element to Sugar CRM id
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 {
@@ -60,12 +66,15 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-* @param mixed thie elements posted form data
-* @param array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		if (trim($val) == '')
 		{
@@ -74,64 +83,79 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 		return $val;
 	}
 
+	/**
+	 * A temporary method of generating GUIDs of the correct format for our DB.
+	 *
+	 * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
+	 * All Rights Reserved.
+	 * Contributor(s): ______________________________________..
+	 * 
+	 * @return String contianing a GUID in the format: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+	 */
 
-/**
- * A temporary method of generating GUIDs of the correct format for our DB.
- * @return String contianing a GUID in the format: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
- *
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
- * All Rights Reserved.
- * Contributor(s): ______________________________________..
- */
-function create_guid()
-{
-	$microTime = microtime();
-	list($a_dec, $a_sec) = explode(' ', $microTime);
-
-	$dec_hex = dechex($a_dec* 1000000);
-	$sec_hex = dechex($a_sec);
-
-	$this->ensure_length($dec_hex, 5);
-	$this->ensure_length($sec_hex, 6);
-
-	$guid = "";
-	$guid .= $dec_hex;
-	$guid .= $this->create_guid_section(3);
-	$guid .= '-';
-	$guid .= $this->create_guid_section(4);
-	$guid .= '-';
-	$guid .= $this->create_guid_section(4);
-	$guid .= '-';
-	$guid .= $this->create_guid_section(4);
-	$guid .= '-';
-	$guid .= $sec_hex;
-	$guid .= $this->create_guid_section(6);
-
-	return $guid;
-
-}
-
-function create_guid_section($characters)
-{
-	$return = "";
-	for($i=0; $i<$characters; $i++)
+	protected function create_guid()
 	{
-		$return .= dechex(mt_rand(0,15));
-	}
-	return $return;
-}
+		$microTime = microtime();
+		list($a_dec, $a_sec) = explode(' ', $microTime);
 
-function ensure_length(&$string, $length)
-{
-	$strlen = JString::strlen($string);
-	if($strlen < $length)
-	{
-		$string = str_pad($string,$length,"0");
+		$dec_hex = dechex($a_dec * 1000000);
+		$sec_hex = dechex($a_sec);
+
+		$this->ensure_length($dec_hex, 5);
+		$this->ensure_length($sec_hex, 6);
+
+		$guid = "";
+		$guid .= $dec_hex;
+		$guid .= $this->create_guid_section(3);
+		$guid .= '-';
+		$guid .= $this->create_guid_section(4);
+		$guid .= '-';
+		$guid .= $this->create_guid_section(4);
+		$guid .= '-';
+		$guid .= $this->create_guid_section(4);
+		$guid .= '-';
+		$guid .= $sec_hex;
+		$guid .= $this->create_guid_section(6);
+		return $guid;
 	}
-	else if($strlen > $length)
+
+	/**
+	 * Create guid section
+	 * 
+	 * @param   string  $characters  string
+	 * 
+	 * @return  string  guid section
+	 */
+
+	protected function create_guid_section($characters)
 	{
-		$string = JString::substr($string, 0, $length);
+		$return = "";
+		for ($i = 0; $i < $characters; $i++)
+		{
+			$return .= dechex(mt_rand(0, 15));
+		}
+		return $return;
+	}
+
+	/**
+	 * pad/substr string to specified length
+	 * 
+	 * @param   string  &$string  string
+	 * @param   int     $length   size
+	 * 
+	 * @return  void
+	 */
+
+	protected function ensure_length(&$string, $length)
+	{
+		$strlen = JString::strlen($string);
+		if ($strlen < $length)
+		{
+			$string = str_pad($string, $length, "0");
+		}
+		elseif ($strlen > $length)
+		{
+			$string = JString::substr($string, 0, $length);
+		}
 	}
 }
-}
-?>

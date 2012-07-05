@@ -10,9 +10,9 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin classes
-require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
+require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
-class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationrule {
+class plgFabrik_validationruleIsgreaterorlessthan extends PlgFabrik_Validationrule {
 
 	protected $pluginName = 'isgreaterorlessthan';
 
@@ -21,7 +21,7 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Validationrule::validate()
+	 * @see PlgFabrik_Validationrule::validate()
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)

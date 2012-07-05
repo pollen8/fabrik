@@ -1,19 +1,25 @@
 <?php
 /**
- * Plugin element to render two fields to capture a link (url/label)
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to render two fields to capture a link (url/label)
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
 class PlgFabrik_ElementLink extends PlgFabrik_Element
 {
 
-	var $hasSubElements = true;
+	public $hasSubElements = true;
 
 	protected $fieldDesc = 'TEXT';
 
@@ -26,7 +32,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	 * @return  string	formatted value
 	 */
 
-	function renderListData($data, $oAllRowsData)
+	public function renderListData($data, &$thisRow)
 	{
 		$listModel = $this->getlistModel();
 		$params = $this->getParams();
@@ -42,28 +48,32 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		{
 			if (array_key_exists('label', $data))
 			{
-				$data = (array) $this->_renderListData($data, $oAllRowsData);
+				$data = (array) $this->_renderListData($data, $thisRow);
 			}
 			else
 			{
 				for ($i = 0; $i < count($data); $i++)
 				{
 					$data[$i] = JArrayHelper::fromObject($data[$i]);
-					$data[$i] = $this->_renderListData($data[$i], $oAllRowsData);
+					$data[$i] = $this->_renderListData($data[$i], $thisRow);
 				}
 			}
 		}
 		$data = json_encode($data);
-		return parent::renderListData($data, $oAllRowsData);
+		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
-	 * @param   stringing data
-	 * @param   object  all the data in the tables current row
-	 * @return string formatted value
+	 * Redinder Individual parts of the cell data.
+	 * Called from renderListData();
+	 * 
+	 * @param   string  $data     cell data
+	 * @param   object  $thisRow  the data in the lists current row
+	 * 
+	 * @return  string  formatted value
 	 */
 
-	protected function _renderListData($data, $oAllRowsData)
+	protected function _renderListData($data, $thisRow)
 	{
 		if (is_string($data))
 		{
@@ -81,7 +91,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$_lbl = trim($data['label']);
 			if (JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')
 			{
-				$_lnk = ''; //threat some default values as empty
+				// Treat some default values as empty
+				$_lnk = '';
 			}
 			$target = $params->get('link_target', '');
 			if ($listModel->getOutPutFormat() != 'rss')
@@ -89,14 +100,15 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$link = '';
 				if (empty($_lbl))
 				{
-					$_lbl = $_lnk; //if label is empty, set as a copy of the link
+					// If label is empty, set as a copy of the link
+					$_lbl = $_lnk;
 				}
 				if ((!empty($_lbl)) && (!empty($_lnk)))
 				{
 					$smart_link = $params->get('link_smart_link', false);
 					if ($smart_link || $target == 'mediabox')
 					{
-						$smarts = $this->_getSmartLinkType($_lnk);
+						$smarts = $this->getSmartLinkType($_lnk);
 						$link = '<a href="' . $_lnk . '" rel="lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">'
 							. $_lbl . '</a>';
 					}
@@ -111,7 +123,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$link = $_lnk;
 			}
 			$w = new FabrikWorker;
-			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($oAllRowsData));
+			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($thisRow));
 			return $link;
 		}
 		return $data;
@@ -154,7 +166,6 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		//if (JRequest::getVar('rowid') == 0)
 		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0)
 		{
 			$value['link'] = $params->get('link_default_url');
@@ -167,17 +178,19 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$_lnk = is_array($data) ? $w->parseMessageForPlaceHolder($_lnk, $data) : $w->parseMessageForPlaceHolder($_lnk);
 			if (empty($_lnk) || JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')
 			{
-				return ''; //don't return empty links
+				// Don't return empty links
+				return '';
 			}
 			$target = $params->get('link_target', '');
 			$smart_link = $params->get('link_smart_link', false);
 			if (empty($_lbl))
 			{
-				$_lbl = $_lnk; //if label is empty, set as a copy of the link
+				// If label is empty, set as a copy of the link
+				$_lbl = $_lnk;
 			}
 			if ($smart_link || $target == 'mediabox')
 			{
-				$smarts = $this->_getSmartLinkType($_lnk);
+				$smarts = $this->getSmartLinkType($_lnk);
 				return '<a href="' . $_lnk . '" rel="lightbox[' . $smarts['type'] . ' ' . $smarts['width'] . ' ' . $smarts['height'] . ']">' . $_lbl
 					. '</a>';
 			}
@@ -205,9 +218,13 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param   mixed	element's data
-	 * @return  string	formatted value
+	 * Turn form value into email formatted value
+	 * 
+	 * @param   mixed  $value          element value
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  group repeat counter
+	 * 
+	 * @return  string  email formatted value
 	 */
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -228,23 +245,27 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
-	 * manupulates posted form data for insertion into database
-	 * @param   mixed	thie elements posted form data
-	 * @param   array	posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
-		// $$$ hugh - added 'normalization' of links, to add http:// if no :// in the link.
-		// not sure if we really want to do it here, or only when rendering?
-		// $$$ hugh - quit normalizing links.
+		/* $$$ hugh - added 'normalization' of links, to add http:// if no :// in the link.
+		* not sure if we really want to do it here, or only when rendering?
+		* $$$ hugh - quit normalizing links.
+		*/
 		$return = '';
 		$params = $this->getParams();
 		if (is_array($val))
 		{
 			if ($params->get('use_bitly'))
 			{
-				require_once(JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php');
+				require_once JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php';
 				$login = $params->get('bitly_login');
 				$key = $params->get('bitly_apikey');
 				$bitly = new bitly($login, $key);
@@ -255,8 +276,9 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				{
 					if ($params->get('use_bitly'))
 					{
-						// bitly will return an error if you try and shorten a shortened link,
-						// and the class file we are using doesn't check for this
+						/* bitly will return an error if you try and shorten a shortened link,
+						* and the class file we are using doesn't check for this
+						*/
 						if (!strstr($v['link'], 'bit.ly/') && $v['link'] !== '')
 						{
 							$v['link'] = $bitly->shorten($v['link']);
@@ -271,7 +293,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 					{
 						$v = FabrikString::encodeurl($v);
 					}
-					// not in repeat group
+					// Not in repeat group
 					if ($key == 'link' && $params->get('use_bitly'))
 					{
 						if (!strstr($v, 'bit.ly/') && $v !== '')
@@ -319,14 +341,16 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
-	 *
-	 * @param   array $value, previously encrypted values
-	 * @param   array data
-	 * @param   int repeat group counter
-	 * @return null
+	 * Called by form model to build an array of values to encrypt
+	 * 
+	 * @param   array  &$values  previously encrypted values
+	 * @param   array  $data     form data
+	 * @param   int    $c        repeat group counter
+	 * 
+	 * @return  void
 	 */
 
-	function getValuesToEncrypt(&$values, $data, $c)
+	public function getValuesToEncrypt(&$values, $data, $c)
 	{
 		$data = (array) json_decode($this->getValue($data, $c, true));
 		$name = $this->getFullName(false, true, false);
@@ -364,11 +388,12 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$w = new FabrikWorker;
 			$params = $this->getParams();
 			$link = $params->get('link_default_url');
-			// $$$ hugh - no idea what this was here for, but it was causing some BIZARRE bugs!
-			//$formdata = $this->getForm()->getData();
-			// $$$ rob only parse for place holder if we can use the element
-			// otherwise for encrypted values store raw, and they are parsed when the
-			// form in processsed in form::addEncrytedVarsToArray();
+			/* $$$ hugh - no idea what this was here for, but it was causing some BIZARRE bugs!
+			*$formdata = $this->getForm()->getData();
+			* $$$ rob only parse for place holder if we can use the element
+			* otherwise for encrypted values store raw, and they are parsed when the
+			* form in processsed in form::addEncrytedVarsToArray();
+			*/
 			if ($this->canUse())
 			{
 				$link = $w->parseMessageForPlaceHolder($link, $data);
@@ -407,8 +432,10 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$joinid = $group->join_id;
 			$formModel = $this->getFormModel();
 			$element = $this->getElement();
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
+			/*
+			 * $$$rob - if no search form data submitted for the search element then the default
+			 * selection was being applied instead
+			 */
 			$default = array_key_exists('use_default', $opts) && $opts['use_default'] == false ? '' : $this->getDefaultValue($data);
 			$name = $this->getFullName(false, true, false);
 			if ($groupModel->isJoin())
@@ -434,17 +461,17 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			{
 				if ($groupModel->canRepeat())
 				{
-					//repeat group NO join
+					// Repeat group NO join
 					if (array_key_exists($name, $data))
 					{
 						if (is_array($data[$name]))
 						{
-							//occurs on form submission for fields at least
+							// Occurs on form submission for fields at least
 							$a = $data[$name];
 						}
 						else
 						{
-							//occurs when getting from the db
+							// Occurs when getting from the db
 							$a = json_decode($data[$name]);
 						}
 						$default = JArrayHelper::getValue($a, $repeatCounter, $default);
@@ -460,18 +487,19 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				}
 			}
 			if ($default === '')
-			{ //query string for joined data
+			{
+				// Query string for joined data
 				$default = JArrayHelper::getValue($data, $name);
 			}
 			$element->default = $default;
-			//stops this getting called from form validation code as it messes up repeated/join group validations
+
+			// Stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
 			if (is_array($element->default))
 			{
-				//$element->default = implode(GROUPSPLITTER2, $element->default);
 				$element->default = json_encode($element->default);
 			}
 			$this->defaults[$repeatCounter] = $element->default;
@@ -481,11 +509,14 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
-	 * @param   stringing url
-	 * @return string url
+	 * Get an array containing info about the media link
+	 * 
+	 * @param   string  $link  to examine
+	 * 
+	 * @return  array width, height, type of link
 	 */
 
-	protected function _getSmartLinkType($link)
+	protected function getSmartLinkType($link)
 	{
 		/* $$$ hugh - not really sure how much of this is necessary, like setting different widths
 		 * and heights for different social video sites. I copied the numbers from the examples page
@@ -495,9 +526,11 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		if (preg_match('#^http://([\w\.]+)/#', $link, $matches))
 		{
 			$site = $matches[1];
-			// @TODO should probably make this a little more intelligent, like optional www,
-			// and check for site specific spoor in the URL (like '/videoplay' for google,
-			// '/photos' for flicker, etc).
+			/*
+			 * @TODO should probably make this a little more intelligent, like optional www,
+			 * and check for site specific spoor in the URL (like '/videoplay' for google,
+			 * '/photos' for flicker, etc).
+			 */
 			switch ($site)
 			{
 				case 'www.flickr.com':

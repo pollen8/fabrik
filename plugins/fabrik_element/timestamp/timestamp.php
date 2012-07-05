@@ -1,13 +1,9 @@
 <?php
 /**
- * Slightly modified fabriktimestamp element (see lines 49-52)
- * By Nathan Cook 4/22/2010
- *
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,17 +11,44 @@ defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
+/**
+ * Plugin element to render timestamp field
+ * 
+ * Slightly modified fabriktimestamp element (see lines 49-52)
+ * By Nathan Cook 4/22/2010
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
 class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 {
 
 	protected $recordInDatabase = false;
 
-	function getLabel($repeatCounter, $tmpl = '')
+	/**
+	 * Get the element's HTML label
+	 *  
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 * 
+	 * @return  string  label
+	 */
+
+	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		return '';
 	}
 
-	function setIsRecordedInDatabase()
+	/**
+	 * Set/get if element should record its data in the dabase
+	 * 
+	 * @deprecated - not used
+	 * 
+	 * @return bool
+	 */
+
+	public function setIsRecordedInDatabase()
 	{
 		$this->recordInDatabase = false;
 	}
@@ -92,10 +115,15 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 		}
 	}
 
-	function isHidden()
+	/**
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
+	 */
+
+	protected function isHidden()
 	{
 		return true;
 	}
 
 }
-?>

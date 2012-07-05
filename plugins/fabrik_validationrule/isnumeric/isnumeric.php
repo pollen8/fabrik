@@ -1,18 +1,18 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 // Require the abstract plugin classes
-require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
+require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
-class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
+class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 {
 
 	protected $pluginName = 'isnumeric';
@@ -22,7 +22,7 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Validationrule::validate()
+	 * @see PlgFabrik_Validationrule::validate()
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
@@ -32,27 +32,27 @@ class plgFabrik_ValidationruleIsNumeric extends plgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
- 		$params = $this->getParams();
+		$params = $this->getParams();
 		$allow_empty = $params->get('isnumeric-allow_empty');
 		$allow_empty = $allow_empty[$pluginc];
-		if ($allow_empty == '1' and empty( $data))
+		if ($allow_empty == '1' and empty($data))
 		{
 			return true;
 		}
-		return is_numeric( $elementModel->unNumberFormat($data) );
+		return is_numeric($elementModel->unNumberFormat($data));
 	}
 
 	/**
-	* does the validation allow empty value?
-	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
-* @param object element model
-* @param   int repeat group counter
-	* @return bool
-	*/
+	 * does the validation allow empty value?
+	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	 * @param object element model
+	 * @param   int repeat group counter
+	 * @return bool
+	 */
 
 	protected function allowEmpty($elementModel, $pluginc)
 	{
- 		$params = $this->getParams();
+		$params = $this->getParams();
 		$allow_empty = $params->get('isnumeric-allow_empty');
 		$allow_empty = $allow_empty[$pluginc];
 		return $allow_empty == '1';

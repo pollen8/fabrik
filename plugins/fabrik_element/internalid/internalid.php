@@ -80,7 +80,13 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 		return "new FbInternalId('$id', $opts)";
 	}
 
-	function isHidden()
+	/**
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
+	 */
+
+	protected function isHidden()
 	{
 		return true;
 	}

@@ -1,14 +1,20 @@
 <?php
 /**
-* Plugin element to render button
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render button
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class PlgFabrik_ElementButton extends PlgFabrik_Element
 {
@@ -32,11 +38,15 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::getLabel()
+	 * Get the element's HTML label
+	 *  
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 * 
+	 * @return  string  label
 	 */
 
-	function getLabel($repeatCounter, $tmpl = '')
+	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		return '';
 	}
@@ -59,19 +69,19 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	}
 
 	/**
+	 * Get an array of element html ids and their corresponding 
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-* @param   int		repeat group counter
-	 * @return  array	html ids to watch for validation
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  array  html ids to watch for validation
 	 */
 
-	function getValidationWatchElements($repeatCounter)
+	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$ar = array(
-			'id' => $id,
-			'triggerEvent' => 'click'
-		);
+		$ar = array('id' => $id, 'triggerEvent' => 'click');
 		return array($ar);
 	}
 }
-?>

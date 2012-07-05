@@ -38,12 +38,15 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param   array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$val = parent::storeDatabaseFormat($val, $data);
 		return $val;
@@ -118,9 +121,12 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	}
 
 	/**
-	 * defines the type of database table field that is created to store the element's data
+	 * Get database field description
+	 * 
+	 * @return  string  db field type
 	 */
-	function getFieldDescription()
+
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
 		if ($this->encryptMe())

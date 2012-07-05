@@ -2139,7 +2139,11 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Build where query
+	 * 
 	 * @deprecated	use buildQueryWhere() instead
+	 * 
+	 * @return string
 	 */
 
 	public function _buildQueryWhere($incFilters = true, $query = false)
@@ -3782,25 +3786,26 @@ class FabrikFEModelList extends JModelForm
 				$tmpName = $elementModel->getFullName(false, true, false);
 				$tmpData = array($tmpName => $originalValue, $tmpName . '_raw' => $originalValue);
 
-				//set defaults to null to ensure we get correct value for 2nd dropdown search value (mutli dropdown from search form)
+				// Set defaults to null to ensure we get correct value for 2nd dropdown search value (mutli dropdown from search form)
 				$elementModel->defaults = null;
 				if (array_key_exists($key, $readOnlyValues))
 				{
-					$readOnlyValues[$key][] = $elementModel->_getROElement($tmpData);
+					$readOnlyValues[$key][] = $elementModel->getROElement($tmpData);
 				}
 				else
 				{
-					$readOnlyValues[$key] = array($elementModel->_getROElement($tmpData));
+					$readOnlyValues[$key] = array($elementModel->getROElement($tmpData));
 				}
-				//set it back to null again so that in form view we dont return this value.
+				// Set it back to null again so that in form view we dont return this value.
 				$elementModel->defaults = null;
-				// filter value assinged in readOnlyValues foreach loop towards end of this function
+				// Filter value assinged in readOnlyValues foreach loop towards end of this function
 				$this->filters['filter'][$i] = '';
 			}
 			else
 			{
-				//$$$rob not sure $value is the right var to put in here - or if its acutally used
-				// but without this line you get warnings about missing variable in the filter array
+				/*$$$rob not sure $value is the right var to put in here - or if its acutally used
+				* but without this line you get warnings about missing variable in the filter array
+				*/
 				$this->filters['filter'][$i] = $value;
 			}
 		}

@@ -1,29 +1,38 @@
 <?php
 /**
- * Plugin element to render 2 fields to capture and confirm a password
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to render 2 fields to capture and confirm a password
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
 class PlgFabrik_ElementPassword extends PlgFabrik_Element
 {
 
 	/**
-	 * states if the elemnt contains data which is recorded in the database
+	 * States if the element contains data which is recorded in the database
 	 * some elements (eg buttons) dont
-	 * @param   array	posted data
-	 * @return  bool	should record in db
+	 * 
+	 * @param   array  $data  posted data
+	 * 
+	 * @return  bool
 	 */
 
 	public function recordInDatabase($data = null)
 	{
 		$element = $this->getElement();
-		//if storing from inline edit then key may not exist
+
+		// If storing from inline edit then key may not exist
 		if (!array_key_exists($element->name, $data))
 		{
 			return false;
@@ -39,14 +48,16 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param   mixed	thie elements posted form data
-	 * @param   array	posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
-		//$val = md5(trim($val));
 		jimport('joomla.user.helper');
 		$salt = JUserHelper::genRandomPassword(32);
 		$crypt = JUserHelper::getCryptedPassword($val, $salt);
@@ -55,10 +66,13 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -106,13 +120,15 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 * validate the passwords
-	 * @param   string	elements data
-	 * @param   int		repeat group counter
-	 * @return  bool	true if passes / false if falise validation
+	 * Internal element validation
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  repeeat group counter
+	 * 
+	 * @return bool
 	 */
 
-	function validate($data, $repeatCounter = 0)
+	public function validate($data, $repeatCounter = 0)
 	{
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
@@ -130,7 +146,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		}
 		else
 		{
-			//$$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
+			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
 			if (JRequest::getInt('rowid') === 0 && JRequest::getInt($k, 0, 'post') === 0 && $data === '')
 			{
 				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
@@ -166,17 +182,19 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 *
+	 * Get an array of element html ids and their corresponding 
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param   int repeat group counter
-	 * @return array html ids to watch for validation
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  array  html ids to watch for validation
 	 */
 
-	function getValidationWatchElements($repeatCounter)
+	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter) . '_check';
 		$ar = array('id' => $id, 'triggerEvent' => 'blur');
 		return array($ar);
 	}
 }
-?>

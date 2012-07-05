@@ -1,17 +1,23 @@
 <?php
 /**
- * Plugin element to yes/no radio options - render as tick/cross in list view
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
-require_once(JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php');
+require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
+
+/**
+ * Plugin element to yes/no radio options - render as tick/cross in list view
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 {
@@ -50,7 +56,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	public function renderListData($data, &$thisRow)
 	{
 		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
-		//check if the data is in csv format, if so then the element is a multi drop down
+
+		// Check if the data is in csv format, if so then the element is a multi drop down
 		if ($data == '1')
 		{
 			return FabrikHelperHTML::image("1.png", 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
@@ -64,12 +71,14 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * shows the data formatted for the table view with format = pdf
 	 * note pdf lib doesnt support transparent pngs hence this func
-	 * @param   stringing data
-	 * @param   object all the data in the tables current row
+	 * 
+	 * @param   string  $data     data
+	 * @param   object  $thisRow  all the data in the tables current row
+	 * 
 	 * @return string formatted value
 	 */
 
-	function renderListData_pdf($data, $thisRow)
+	public function renderListData_pdf($data, $thisRow)
 	{
 		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		if ($data == '1')
@@ -104,8 +113,9 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * get the radio buttons possible values
-	 * @return array of radio button values
+	 * Get sub option values
+	 * 
+	 * @return  array
 	 */
 
 	protected function getSubOptionValues()
@@ -114,8 +124,9 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * get the radio buttons possible labels
-	 * @return array of radio button labels
+	 * Get sub option labels
+	 * 
+	 * @return  array
 	 */
 
 	protected function getSubOptionLabels()
@@ -124,9 +135,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * run after unmergeFilterSplits to ensure filter dropdown labels are correct
-	 * @param   array filter options
-	 * @return null
+	 * Run after unmergeFilterSplits to ensure filter dropdown labels are correct
+	 * 
+	 * @param   array  &$rows  filter options
+	 * 
+	 * @return  null
 	 */
 
 	protected function reapplyFilterLabels(&$rows)
@@ -179,9 +192,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * format the read only output for the page
-	 * @param   stringing $value
-	 * @param   stringing label
-	 * @return string value
+	 * 
+	 * @param   string  $value  initial value
+	 * @param   string  $label  label
+	 * 
+	 * @return  string  read only value
 	 */
 
 	protected function getReadOnlyOutput($value, $label)
@@ -224,8 +239,13 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_ElementList::getFilter()
+	 * Get the table filter for the element
+	 * 
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
+	 * 
+	 * @return  string	filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -288,12 +308,16 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
+	 * create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
 	 *
-	 * @param unknown_type $normal
-	 * @param unknown_type $tableName
-	 * @param unknown_type $label
-	 * @param unknown_type $id
-	 * @param unknown_type $incjoin
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
 	 */
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)

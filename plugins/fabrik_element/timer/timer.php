@@ -13,22 +13,25 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
-require_once(JPATH_SITE . '/plugins/fabrik_element/date/date.php');
+require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
 
-	var $hasSubElements = false;
+	protected $hasSubElements = false;
 
 	protected $fieldDesc = 'DATETIME';
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param   array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$return = "0000-00-00 " . $val;
 		$format = '%Y-%m-%d %H:%i:%s';
@@ -58,10 +61,13 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -140,10 +146,12 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	}
 
 	/**
-	 * find the sum from a set of data
-	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param   array	$data to sum
-	 * @return  string	sum result
+	 * Get sum query
+	 * 
+	 * @param   object  &$listModel  list model
+	 * @param   string  $label       label
+	 * 
+	 * @return string
 	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
@@ -157,9 +165,11 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	}
 
 	/**
-	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param   model	$listModel
-	 * @param   string	$label the label to apply to each avg
+	 * Build the query for the avg calculation 
+	 * 
+	 * @param   model   &$listModel  list model
+	 * @param   string  $label       the label to apply to each avg
+	 * 
 	 * @return  string	sql statement
 	 */
 
@@ -189,9 +199,10 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	}
 
 	/**
-	 * find the sum from a set of data
-	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param   array	$data to sum
+	 * Find the sum from a set of data
+	 * 
+	 * @param   array  $data  to sum
+	 * 
 	 * @return  string	sum result
 	 */
 
@@ -210,11 +221,12 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	}
 
 	/**
-	 * get the value to use for graph calculations
-	 * can be overwritten in plugin
-	 * see fabriktimer which converts the value into seconds
-	 * @param   string	$v
-	 * @return  mixed
+	 * Get the value to use for graph calculations
+	 * Timer converts the value into seconds
+	 * 
+	 * @param   string  $v  standard value
+	 * 
+	 * @return  mixed calculation value
 	 */
 
 	public function getCalculationValue($v)
@@ -227,4 +239,3 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		return $this->toSeconds($date);
 	}
 }
-?>

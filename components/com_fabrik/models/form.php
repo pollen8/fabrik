@@ -853,7 +853,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			return false;
 		}
 		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is tryign to update formData which is not yet set
-		* this->setFormData();
+		 * this->setFormData();
 		 */
 
 		if (in_array(false, $pluginManager->runPlugins('onBeforeStore', $this)))
@@ -1919,19 +1919,19 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->copyToRaw($post);
 
 		/* $$$ rob for PHP 5.2.1 (and potential up to before 5.2.6) $post is not fully associated with formData -
-		* so the above copToRaw does not update $this->formData.
-		* $$$ hugh - had to add the &, otherwise replace validations weren't work, as modifying
-		* $post wasn't modifying $this->formData.  Which is weird, as I thought all array assignments
-		* were by reference?
-		* $$$ hugh - FIXME - wait ... what ... hang on ... we assign $this->formData in $this->setFormData(),
-		* which we assigned to $post a few ines up there ^^.  Why are we now assigning $post back to $this->formData??
-		*/
+		 * so the above copToRaw does not update $this->formData.
+		 * $$$ hugh - had to add the &, otherwise replace validations weren't work, as modifying
+		 * $post wasn't modifying $this->formData.  Which is weird, as I thought all array assignments
+		 * were by reference?
+		 * $$$ hugh - FIXME - wait ... what ... hang on ... we assign $this->formData in $this->setFormData(),
+		 * which we assigned to $post a few ines up there ^^.  Why are we now assigning $post back to $this->formData??
+		 */
 		$this->formData = &$post;
 
 		/* $$$ hugh - add in any encrypted stuff, in case we fail validation ...
-		* otherwise it won't be in $data when we rebuild the page.
-		* Need to do it here, so _raw fields get added in the next chunk 'o' code.
-		*/
+		 * otherwise it won't be in $data when we rebuild the page.
+		 * Need to do it here, so _raw fields get added in the next chunk 'o' code.
+		 */
 		$this->addEncrytedVarsToArray($post);
 
 		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
@@ -2152,9 +2152,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->errors = array();
 		$session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
-		* and a field is validated, then we dont submit the form, and go back to add the form, the previously validated
-		* values are shown in the form.
-		*/
+		 * and a field is validated, then we dont submit the form, and go back to add the form, the previously validated
+		 * values are shown in the form.
+		 */
 		$session->set($context . 'session.on', false);
 	}
 
@@ -2432,9 +2432,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 					if ($incRaw && is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 					{
-						// FIXME - next line had been commented out, causing undefined warning for $rawval
-						// on following line.  Not sure if getrawColumn is right thing to use here tho,
-						// like, it adds filed quotes, not sure if we need them.
+						/* FIXME - next line had been commented out, causing undefined warning for $rawval
+						* on following line.  Not sure if getrawColumn is right thing to use here tho,
+						* like, it adds filed quotes, not sure if we need them.
+						*/
 						if ($elementModel->getElement()->published != 0)
 						{
 							$rawval = $elementModel->getRawColumn($useStep);
@@ -3254,7 +3255,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if (is_null($this->ajax))
 		{
 			$this->ajax = JRequest::getBool('ajax', false);
-			$groups = $this->getGroupsHiarachy();
+			// $$$ rob - no element requires AJAX submission!
+			/* $groups = $this->getGroupsHiarachy();
 			foreach ($groups as $groupModel)
 			{
 				$elementModels = $groupModel->getPublishedElements();
@@ -3265,7 +3267,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$this->ajax = true;
 					}
 				}
-			}
+			} */
 		}
 		return (bool) $this->ajax;
 	}
@@ -3818,6 +3820,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		$this->groupView = array();
 		$this->readOnlyVals = array();
+
 		// $$$ hugh - temp foreach fix
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $gkey => $groupModel)
@@ -3827,7 +3830,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
 			$aElements = array();
-			//check if group is acutally a table join
+
+			// Check if group is acutally a table join
 			if (array_key_exists($groupTable->id, $this->aJoinGroupIds))
 			{
 				$aElements[] = $this->_makeJoinIdElement($groupTable);
@@ -3844,18 +3848,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (is_object($joinTable))
 					{
 						$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;
-						//need to duplicate this perhaps per the number of times
-						//that a repeat group occurs in the default data?
-
-						// $$$ rob added check that the join data is not empty which seems to occur on a new form, without it the warning about no
-						// published fk is raised incorrectly
-						// $$$ hugh - we have some code that relias on $model->data being empty for new forms
-						//if (!isset($this->data['join'])) {
-						//$this->data['join'] = array();
-						//}
-						//if (!isset($this->data['join'])) {
-						//$this->data['join'] = array();
-						//}
 						if (is_array($origData) && array_key_exists('join', $origData) && array_key_exists($joinTable->id, $origData['join'])
 							&& !empty($origData['join'][$joinTable->id]))
 						{
@@ -3871,7 +3863,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							}
 							else
 							{
-								// show empty groups if we are validating a posted form
+								// Show empty groups if we are validating a posted form
 								if (JRequest::getCmd('task') !== 'process')
 								{
 									$this->getSessionData();
@@ -3901,7 +3893,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 				else
 				{
-					// repeat groups which aren't joins
+					// Repeat groups which aren't joins
 					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement)
 					{
@@ -3932,13 +3924,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel)
 				{
-					// $$$ rob ensure that the element is associated with the correct form (could occur if n plugins rendering form
-					// and detailed views of the same form.
+					/* $$$ rob ensure that the element is associated with the correct form (could occur if n plugins rendering form
+					 * and detailed views of the same form.
+					 */
 					$elementModel->setFormModel($this);
 					$elementModel->tmpl = $tmpl;
-					//$$$rob test don't include the element in the form is we can't use and edit it
-					//test for captcha element when user logged in
-
+					/* $$$rob test don't include the element in the form is we can't use and edit it
+					 * test for captcha element when user logged in
+					 */
 					if (!$this->editable)
 					{
 						$elementModel->inDetailedView = true;
@@ -3968,7 +3961,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// can't remember exact details, was chasing a nasty issue with encrypted 'user' elements.
 
 						// $$$ rob HTMLName seems not to work for joined data in confirmation plugin
-						//$this->readOnlyVals[$elementModel->getHTMLName($c )] = $elementModel->getValue($this->data);
 						$elementModel->getValuesToEncrypt($this->readOnlyVals, $data, $c);
 						$this->readOnlyVals[$elementModel->getFullName(false, true, false)]['repeatgroup'] = $groupModel->canRepeat();
 						$this->readOnlyVals[$elementModel->getFullName(false, true, false)]['join'] = $groupModel->isJoin();
@@ -4166,5 +4158,3 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->unsetData(true);
 	}
 }
-
-?>

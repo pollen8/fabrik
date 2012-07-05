@@ -18,11 +18,13 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	var $_font = 'monofont.ttf';
 
 	/**
-	 * can be overwritten in plugin class
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -41,7 +43,16 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		return $code;
 	}
 
-	function getLabel($repeatCounter, $tmpl = '')
+	/**
+	 * Get the element's HTML label
+	 *  
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 * 
+	 * @return  string  label
+	 */
+
+	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -55,7 +66,13 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
 
-	function isHidden()
+	/**
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
+	 */
+
+	protected function isHidden()
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -73,6 +90,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	 * check user can view the read only element & view in list view
 	 * If user logged in return false
 	 * $$$ rob 14/03/2012 always returns false now - cant see a need to show it in the details / list view
+	 * 
 	 * @return  bool can view or not
 	 */
 
@@ -132,7 +150,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		if ($params->get('captcha-method') == 'recaptcha')
 		{
 			$publickey = $params->get('recaptcha_publickey');
-			//$$$tom added lang & theme options
+			// $$$tom added lang & theme options
 			$theme = $params->get('recaptcha_theme', 'red');
 			$lang = JString::strtolower($params->get('recaptcha_lang', 'en'));
 			$error = null;
@@ -167,14 +185,13 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$bg_color = $params->get('captcha-bg', 'FFFFFF');
 			$bg_color = $this->_getRGBcolor($bg_color, 'FFFFFF');
 
-			//	let's keep all params in relatively safe place not only captcha value
+			// Let's keep all params in relatively safe place not only captcha value
 			$session->set('com_fabrik.element.captach.height', $height);
 			$session->set('com_fabrik.element.captach.width', $width);
 			$session->set('com_fabrik.element.captach.noise_color', $noise_color);
 			$session->set('com_fabrik.element.captach.text_color', $text_color);
 			$session->set('com_fabrik.element.captach.bg_color', $bg_color);
 			$session->set('com_fabrik.element.captach.font', $this->_font);
-			// * /e-kinst
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
 
@@ -203,15 +220,15 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	}
 
 	/**
-	 * can be overwritten in adddon class
-	 *
-	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-	 * @param   stringing elements data
-	 * @param   int repeat group counter
-	 * @return  bool true if passes / false if falise validation
+	 * Internal element validation
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  repeeat group counter
+	 * 
+	 * @return bool
 	 */
 
-	function validate($data, $repeatCounter = 0)
+	public function validate($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		if (!$this->canUse())
@@ -244,15 +261,23 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	}
 
 	/**
-	 * @return string error message raised from failed validation
+	 * Get validation error - run through JText
+	 * 
+	 * @return  string
 	 */
 
-	function getValidationErr()
+	public function getValidationErr()
 	{
 		return JText::_('PLG_ELEMENT_CAPTCHA_FAILED');
 	}
 
-	function mustValidate()
+	/**
+	 * Determine if the element should run its validation plugins on form submission
+	 * 
+	 * @return  bool	default true
+	 */
+
+	public function mustValidate()
 	{
 		$params = $this->getParams();
 		if (!$this->canUse() && !$this->canView())
@@ -284,7 +309,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * used to format the data when shown in the form's email
-	 * @param mixed element's data
+	 * @param   mixed element's data
 	 * @param   array form records data
 	 * @param   int repeat group counter
 	 * @return string formatted value

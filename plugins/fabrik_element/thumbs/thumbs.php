@@ -114,19 +114,24 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
 
 	/**
-	 * @since 3.0 - no point showing label if you cant edit the thing
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
 	 */
 
-	function isHidden()
+	protected function isHidden()
 	{
 		return JRequest::getVar('view') == 'form' ? true : false;
 	}
@@ -197,11 +202,15 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#storeDatabaseFormat($val, $data)
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$params = $this->getParams();
 		$listid = JRequest::getInt('listid');
@@ -419,7 +428,15 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		return "new FbThumbsList('$id', $opts);\n";
 	}
 
-	function includeInSearchAll($advancedMode = false)
+	/**
+	 * Should the element's data be returned in the search all?
+	 * 
+	 * @param   bool  $advancedMode  is the elements' list is advanced search all mode?
+	 * 
+	 * @return  bool	true
+	 */
+
+	public function includeInSearchAll($advancedMode = false)
 	{
 		return false;
 	}
@@ -444,9 +461,18 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#filterValueList_All($normal, $tableName, $label, $id, $incjoin)
+	 * create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
 	 */
+
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		for ($i = 0; $i < 6; $i++)

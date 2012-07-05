@@ -15,8 +15,16 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	protected $fieldDesc = 'TEXT';
 
-	/** @var bol override default value as we don't want to record this in database*/
+	/** @var bool override default value as we don't want to record this in database*/
 	protected $recordInDatabase = false;
+
+	/**
+	 * Set/get if element should record its data in the dabase
+	 * 
+	 * @deprecated - not used
+	 * 
+	 * @return bool
+	 */
 
 	function setIsRecordedInDatabase()
 	{
@@ -24,13 +32,15 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	}
 
 	/**
-	 * write out the label for the form element
-	 * @param   object	form
-	 * @param   bool	encase label in <label> tag
-	 * @param   string	id of element related to the label
+	 * Get the element's HTML label
+	 *  
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 * 
+	 * @return  string  label
 	 */
 
-	function getLabel($repeatCounter = 0, $tmpl = '')
+	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();

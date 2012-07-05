@@ -1,16 +1,22 @@
 <?php
 /**
- * Plugin element to store IP
- * @package fabrikar
- * @author Hugh Messenger
- * @copyright (C) Hugh Messenger
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class plgFabrik_elementIp extends PlgFabrik_Element
+/**
+ * Plugin element to store IP
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
+class PlgFabrik_ElementIp extends PlgFabrik_Element
 {
 
 	/**
@@ -30,8 +36,11 @@ class plgFabrik_elementIp extends PlgFabrik_Element
 		$params = &$this->getParams();
 
 		$rowid = JRequest::getVar('rowid', false);
-		//@TODO when editing a form with joined repeat group the rowid will be set but
-		//the record is in fact new
+		/**
+		 * @TODO when editing a form with joined repeat group the rowid will be set but
+		 * the record is in fact new
+		 */
+		//
 		if ($params->get('ip_update_on_edit') || !$rowid || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
 			$ip = $_SERVER['REMOTE_ADDR'];
@@ -40,7 +49,7 @@ class plgFabrik_elementIp extends PlgFabrik_Element
 		{
 			if (empty($data) || empty($data[$name]))
 			{
-				// if $data is empty, we must (?) be a new row, so just grab the IP
+				// If $data is empty, we must (?) be a new row, so just grab the IP
 				$ip = $_SERVER['REMOTE_ADDR'];
 			}
 			else
@@ -70,20 +79,6 @@ class plgFabrik_elementIp extends PlgFabrik_Element
 	}
 
 	/**
-	 * get element's hidden field
-	 *
-	 * @access private
-	 * @param   stringing $name
-	 * @param   stringing $value
-	 * @param   stringing $id
-	 * @return string
-	 */
-	function _getHiddenField($name, $value, $id)
-	{
-		return "<input class=\"fabrikinput inputbox\" type=\"hidden\" name=\"$name\" value=\"$value\" id=\"$id\" />\n";
-	}
-
-	 /**
 	 * Trigger called when a row is stored.
 	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
@@ -154,15 +149,15 @@ class plgFabrik_elementIp extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		//cludge for 2 scenarios
+		// Cludge for 2 scenarios
 		if (array_key_exists('rowid', $data))
 		{
-			//when validating the data on form submission
+			// When validating the data on form submission
 			$key = 'rowid';
 		}
 		else
 		{
-			//when rendering the element to the form
+			// When rendering the element to the form
 			$key = '__pk_val';
 		}
 		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key])))
@@ -177,4 +172,3 @@ class plgFabrik_elementIp extends PlgFabrik_Element
 	}
 
 }
-?>

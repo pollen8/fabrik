@@ -25,37 +25,37 @@ class FabrikViewElement extends JView
 	/**
 	 * display the template
 	 *
-* @param sting $tpl
+	 * @param sting $tpl
 	 */
 
 	function display($tpl = null)
 	{
-		echo "display";exit;
-	/* 	FabrikHelperHTML::framework();
-		$element = JRequest::getVar('element');
-		$elementid = JRequest::getVar('elid');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className = JRequest::getVar('plugin');
-		print_r($className);exit;
-		$plugin = $pluginManager->getPlugIn($className, 'element');
-		if (JError::isError($plugin)) {
-			JError::handleMessage($plugin);
-			return;
-		}
-		$plugin->setId($elementid);
-		$data = array();
-		$repeatCounter = 0;
-		$groupModel = $plugin->getGroup();
-		$srcs = array();
-		$plugin->formJavascriptClass($srcs);
-		echo "srcs = ";print_r($srcs);
-		FabrikHelperHTML::script($srcs);
-		$html = '<script>';
-		$html .= $plugin->elementJavascript($repeatCounter);
-		$html .= '</script>';
-		$html .= $plugin->_getElement($data, $repeatCounter, $groupModel);
-		echo $html; */
+		echo "display";
+		exit;
+		/* 	FabrikHelperHTML::framework();
+		    $element = JRequest::getVar('element');
+		    $elementid = JRequest::getVar('elid');
+		    $pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		    $className = JRequest::getVar('plugin');
+		    print_r($className);exit;
+		    $plugin = $pluginManager->getPlugIn($className, 'element');
+		    if (JError::isError($plugin)) {
+		        JError::handleMessage($plugin);
+		        return;
+		    }
+		    $plugin->setId($elementid);
+		    $data = array();
+		    $repeatCounter = 0;
+		    $groupModel = $plugin->getGroup();
+		    $srcs = array();
+		    $plugin->formJavascriptClass($srcs);
+		    echo "srcs = ";print_r($srcs);
+		    FabrikHelperHTML::script($srcs);
+		    $html = '<script>';
+		    $html .= $plugin->elementJavascript($repeatCounter);
+		    $html .= '</script>';
+		    $html .= $plugin->preRenderElement($data, $repeatCounter, $groupModel);
+		    echo $html; */
 	}
 
 }
-?>

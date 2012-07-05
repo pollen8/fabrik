@@ -1,7 +1,7 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -9,19 +9,29 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Access element
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
 class PlgFabrik_ElementAccess extends PlgFabrik_Element
 {
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param   array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		// $$$ hugh - nope!
-		//return $val[0];
+		// return $val[0];
 		return $val;
 	}
 
@@ -60,6 +70,14 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 		}
 		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0]);
 	}
+
+	/**
+	 * Get list dropdown options
+	 * 
+	 * @param   bool  $allowAll  add an show all option
+	 * 
+	 * @return  array
+	 */
 
 	private function getOpts($allowAll = true)
 	{
@@ -113,9 +131,12 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	}
 
 	/**
-	 * defines the type of database table field that is created to store the element's data
+	 * Get database field description
+	 * 
+	 * @return  string  db field type
 	 */
-	function getFieldDescription()
+
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
 		if ($this->encryptMe())
@@ -142,4 +163,3 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 	}
 
 }
-?>

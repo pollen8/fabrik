@@ -12,9 +12,9 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
+require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
-class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
+class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 {
 
 	protected $pluginName = 'emailexists';
@@ -24,7 +24,7 @@ class plgFabrik_ValidationruleEmailExists extends plgFabrik_Validationrule
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Validationrule::validate()
+	 * @see PlgFabrik_Validationrule::validate()
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)

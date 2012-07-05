@@ -19,7 +19,8 @@ jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class PlgFabrik_ElementCount extends PlgFabrik_Element {
+class PlgFabrik_ElementCount extends PlgFabrik_Element
+{
 
 	/**
 	 */
@@ -30,12 +31,16 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element {
 	}
 
 	/**
-* @param array
-* @param array
-* @param string table name (depreciated)
+	 * Create the SQL select 'name AS alias' segment for list/form queries
+	 * 
+	 * @param   array  &$aFields    array of element names
+	 * @param   array  &$aAsFields  array of 'name AS alias' fields
+	 * @param   array  $opts        options
+	 * 
+	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
@@ -44,17 +49,20 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element {
 			$params = $this->getParams();
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->element->name));
 			$r = 'COUNT(' . $params->get('count_field', '*') . ')';
-			$aFields[] 	= $r . ' AS ' . $fullElName;
-			$aAsFields[] =  $fullElName;
-			$aAsFields[] =  $db->quoteName($dbtable . '___' . $this->getElement()->name . '_raw');
+			$aFields[] = $r . ' AS ' . $fullElName;
+			$aAsFields[] = $fullElName;
+			$aAsFields[] = $db->quoteName($dbtable . '___' . $this->getElement()->name . '_raw');
 		}
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return false;
 	}
@@ -87,61 +95,61 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element {
 		 $params 		=& $this->getParams();
 		 $element 		= $this->getElement();
 		 $size 			= $element->width;
-
+		
 		 $bits = array();
 		 // $$$ rob - not sure why we are setting $data to the form's data
 		 //but in table view when getting read only filter value from url filter this
 		 // _form_data was not set to no readonly value was returned
 		 // added little test to see if the data was actually an array before using it
 		 if (is_array($this->getFormModel()->data)) {
-			$data 	=& $this->getFormModel()->data;
-			}
-			$value 	= $this->getValue($data, $repeatCounter);
-			$type = "text";
-			if ($this->elementError != '') {
-			$type .= " elementErrorHighlight";
-			}
-			if ($element->hidden == '1') {
-			$type = "hidden";
-			}
-			if (!$this->editable) {
-			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
-			}
-
-			$bits['class']		= "fabrikinput inputbox $type";
-			$bits['type']		= $type;
-			$bits['name']		= $name;
-			$bits['id']			= $id;
-
-			//stop "'s from breaking the content out of the field.
-			// $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
-			//so add false flag to ensure its encoded once only
-			// $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
-			if (version_compare( phpversion(), '5.2.3', '<')) {
-			$bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-			}
-			else {
-			$bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
-			}
-			$bits['size']		= $size;
-
-			//cant be used with hidden element types
-			if ($element->hidden != '1') {
-			if ($params->get('readonly')) {
-			$bits['readonly'] = "readonly";
-			$bits['class'] .= " readonly";
-			}
-			if ($params->get('disable')) {
-			$bits['class'] .= " disabled";
-			$bits['disabled'] = 'disabled';
-			}
-			}
-			$str = "<input ";
-			foreach ($bits as $key=>$val) {
-			$str.= "$key = \"$val\" ";
-			}
-			$str .= " />\n";
-			return $str;*/
+		    $data 	=& $this->getFormModel()->data;
+		    }
+		    $value 	= $this->getValue($data, $repeatCounter);
+		    $type = "text";
+		    if ($this->elementError != '') {
+		    $type .= " elementErrorHighlight";
+		    }
+		    if ($element->hidden == '1') {
+		    $type = "hidden";
+		    }
+		    if (!$this->editable) {
+		    return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
+		    }
+		
+		    $bits['class']		= "fabrikinput inputbox $type";
+		    $bits['type']		= $type;
+		    $bits['name']		= $name;
+		    $bits['id']			= $id;
+		
+		    //stop "'s from breaking the content out of the field.
+		    // $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
+		    //so add false flag to ensure its encoded once only
+		    // $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
+		    if (version_compare( phpversion(), '5.2.3', '<')) {
+		    $bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+		    }
+		    else {
+		    $bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
+		    }
+		    $bits['size']		= $size;
+		
+		    //cant be used with hidden element types
+		    if ($element->hidden != '1') {
+		    if ($params->get('readonly')) {
+		    $bits['readonly'] = "readonly";
+		    $bits['class'] .= " readonly";
+		    }
+		    if ($params->get('disable')) {
+		    $bits['class'] .= " disabled";
+		    $bits['disabled'] = 'disabled';
+		    }
+		    }
+		    $str = "<input ";
+		    foreach ($bits as $key=>$val) {
+		    $str.= "$key = \"$val\" ";
+		    }
+		    $str .= " />\n";
+		    return $str;*/
 	}
 
 	/**

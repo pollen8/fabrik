@@ -1,13 +1,13 @@
 <?php
 
 /**
-* Add an action button to the table to copy rows
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * Add an action button to the table to copy rows
+ * @package Joomla
+ * @subpackage Fabrik
+ * @author Rob Clayburn
+ * @copyright (C) Rob Clayburn
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -15,13 +15,15 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
-class plgFabrik_ListList_Example extends plgFabrik_List {
+class plgFabrik_ListList_Example extends plgFabrik_List
+{
 
 	/**
 	 * called when the active table filter array is loaded
 	 */
 
-	function onFiltersGot(&$params, &$model) {
+	function onFiltersGot(&$params, &$model)
+	{
 
 	}
 
@@ -30,36 +32,39 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	 *
 	 */
 
-	function onMakeFilters(&$params, &$model) {
+	function onMakeFilters(&$params, &$model)
+	{
 	}
 
-		/**
+	/**
 	 * do the plugin action
-* @param object table model
+	 * @param object table model
 	 * @return string message
 	 */
 	function process(&$model)
-	{}
+	{
+	}
 
 	/**
 	 * run before the table loads its data
-* @param $model
+	 * @param $model
 	 * @return unknown_type
 	 */
 	function onPreLoadData(&$model)
-	{}
+	{
+	}
 
 	/**
 	 * run when the table loads its data(non-PHPdoc)
 	 * @see components/com_fabrik/models/FabrikModelTablePlugin#onLoadData($params, $oRequest)
 	 */
 	function onLoadData(&$params, &$oRequest)
-	{}
-
+	{
+	}
 
 	/**
 	 * called when the model deletes rows
-* @param object table $model
+	 * @param object table $model
 	 * @return false if fail
 	 */
 	function onDeleteRows(&$model)
@@ -67,12 +72,10 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 
 	}
 
-
 	function button()
 	{
 		return "copy records";
 	}
-
 
 	function canUse(&$model = null, $location = null, $event = null)
 	{
@@ -92,9 +95,9 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param object parameters
-* @param list table model
-* @param array [0] => string table's form id to contain plugin
+	 * @param object parameters
+	 * @param list table model
+	 * @param array [0] => string table's form id to contain plugin
 	 * @return  bool
 	 */
 

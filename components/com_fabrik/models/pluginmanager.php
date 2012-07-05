@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,15 +12,23 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
-class FabrikFEModelPluginmanager extends JModel{
+/**
+ * Fabrik Plugin Manager Class
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
+
+class FabrikFEModelPluginmanager extends JModel
+{
 
 	/** @var array plugins */
-	private $plugIns = array();
+	protected $plugIns = array();
 
-	private $group = null;
-	
+	protected $group = null;
+
 	/** @var int # of plugins run */
-	private $runPlugins = 0;
+	protected $runPlugins = 0;
 
 	/** @var array element lists */
 	protected $elementLists = array();
@@ -29,23 +37,28 @@ class FabrikFEModelPluginmanager extends JModel{
 	public $data = array();
 
 	/**
-	 * constructor
+	 * Constructor
+	 *
+	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
 	 */
 
-	function __construct()
+	public function __construct($config = array())
 	{
-		parent::__construct();
+		parent::__construct($config);
 	}
 
 	/**
-	 * get a html drop down list of the elment types with this objs element type selected as default
-* @param   string	default selected option
-* @param   string	html name for drop down
-* @param   string	extra info for drop down
-	 * @return  string	html element type list
+	 * Get a html drop down list of the elment types with this objs element type selected as default
+	 * 
+	 * @param   string  $default       selected option
+	 * @param   string  $name          html name for drop down
+	 * @param   string  $extra         extra info for drop down
+	 * @param   string  $defaultlabel  html element type list
+	 * 
+	 * @return  string
 	 */
 
-	function getElementTypeDd($default, $name='plugin', $extra='class="inputbox elementtype"  size="1"', $defaultlabel='')
+	public function getElementTypeDd($default, $name = 'plugin', $extra = 'class="inputbox elementtype"  size="1"', $defaultlabel = '')
 	{
 		$hash = $default . $name . $extra . $defaultlabel;
 		if (!array_key_exists($hash, $this->elementLists))
@@ -57,10 +70,18 @@ class FabrikFEModelPluginmanager extends JModel{
 			$a = array(JHTML::_('select.option', '', $defaultlabel));
 			$elementstypes = $this->_getList();
 			$elementstypes = array_merge($a, $elementstypes);
-			$this->elementLists[$hash] = JHTML::_('select.genericlist', $elementstypes, $name, $extra , 'value', 'text', $default);
+			$this->elementLists[$hash] = JHTML::_('select.genericlist', $elementstypes, $name, $extra, 'value', 'text', $default);
 		}
 		return $this->elementLists[$hash];
 	}
+
+	/**
+	 * Can the pluginmanager be used
+	 * 
+	 * @deprecated
+	 * 
+	 * @return  true
+	 */
 
 	public function canUse()
 	{
@@ -68,12 +89,15 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * get an unordered list of plugins
-* @param   string	plugin group
-* @param   string	ul id
+	 * Get an unordered list (<ul>) of plugins
+	 * 
+	 * @param   string  $group  plugin group
+	 * @param   string  $id     ul id
+	 * 
+	 * @return  string  <ul>
 	 */
 
-	function getList($group, $id)
+	public function getList($group, $id)
 	{
 		$str = '<ul id="' . $id . '">';
 		$elementstypes = $this->_getList();
@@ -86,8 +110,13 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * get a list of plugin ids/names for usin in a drop down list
+	 * Get a list of plugin ids/names for usin in a drop down list
 	 * if no group set defaults to element list
+	 * 
+	 * @param   object  $query       query
+	 * @param   int     $limitstart  limit start
+	 * @param   int     $limit       # of records to retunr
+	 * 
 	 * @return  array	plugin list
 	 */
 
@@ -107,12 +136,14 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * get a certain group of plugins
-* @param   string	plugin group to load
+	 * Get a certain group of plugins
+	 * 
+	 * @param   string  $group  plugin group to load
+	 * 
 	 * @return  array	plugins
 	 */
 
-	function &getPlugInGroup($group)
+	public function &getPlugInGroup($group)
 	{
 		if (array_key_exists($group, $this->plugIns))
 		{
@@ -125,35 +156,40 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * add to the document head all element js files
+	 * Add to the document head all element js files
 	 * used in calendar to ensure all element js files are loaded from unserialized form
+	 * 
+	 * @return void
 	 */
 
-	function loadJS()
+	public function loadJS()
 	{
 		JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
 		$plugins = JFolder::folders(JPATH_SITE . '/plugins/fabrik_element', '.', false, false);
 		$files = array();
 		foreach ($plugins as $plugin)
 		{
-			$files[] =  JPATH_SITE . '/plugins/fabrik_element/' . $plugin . '/' . $plugin . '.js';
+			$files[] = JPATH_SITE . '/plugins/fabrik_element/' . $plugin . '/' . $plugin . '.js';
 		}
 		foreach ($files as $f)
 		{
 			$f = str_replace("\\", "/", str_replace(JPATH_SITE, '', $f));
 			$file = basename($f);
 			$folder = dirname($f);
-			$folder = FabrikString::ltrimword($folder, '/') .'/';
+			$folder = FabrikString::ltrimword($folder, '/') . '/';
 			FabrikHelperHTML::script($folder . $file);
 		}
 	}
 
 	/**
-* @param   string	plugin type - element/form/table/validationrule supported
-	 *loads ABSTRACT version of a plugin group
+	 * Loads ABSTRACT version of a plugin group
+	 * 
+	 * @param   string  $group  plugin type - element/form/list/cron/validationrule supported
+	 *
+	 * @return  array
 	 */
 
-	function &loadPlugInGroup($group)
+	protected function &loadPlugInGroup($group)
 	{
 		// $$$ rob 16/12/2011 - this was setting $this->plugIns, but if you had 2 lists as admin modules
 		// and the first list had plugins, then the second list would remove that plugin when this method was run
@@ -168,12 +204,15 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-* @param   string	plugin name e.g. fabrikfield
-* @param   string	plugin type element/ form or list
+	 * Load an indivdual plugin
+	 * 
+	 * @param   string  $className  plugin name e.g. fabrikfield
+	 * @param   string  $group      plugin type element/ form or list
+	 * 
 	 * @return  object	plugin
 	 */
 
-	function getPlugIn($className = '', $group)
+	public function getPlugIn($className = '', $group = '')
 	{
 		if ($className != '' && (array_key_exists($group, $this->plugIns) && array_key_exists($className, $this->plugIns[$group])))
 		{
@@ -182,15 +221,17 @@ class FabrikFEModelPluginmanager extends JModel{
 		else
 		{
 			// $$$ rob 04/06/2011 hmm this was never caching the plugin so we were always loading it
-			//return $this->loadPlugIn($className, $group);
+			// return $this->loadPlugIn($className, $group);
 			$this->plugIns[$group][$className] = $this->loadPlugIn($className, $group);
 			return $this->plugIns[$group][$className];
 		}
 	}
 
 	/**
-	 * load in the actual plugin objects for a given group
-* @param   string	$group
+	 * Load in the actual plugin objects for a given group
+	 * 
+	 * @param   string  $group  plugin group
+	 * 
 	 * @return  array	plugins
 	 */
 
@@ -206,22 +247,26 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-* @param   string	plugin name e.g. fabrikfield
-* @param   string	plugin type element/ form or list
+	 * Load plugin
+	 * 
+	 * @param   string  $className  plugin name e.g. fabrikfield
+	 * @param   string  $group      plugin type element/ form or list
+	 * 
 	 * @return  mixed	false if not loaded - otherwise plugin object
 	 */
 
-	public function loadPlugIn($className = '', $group)
+	public function loadPlugIn($className = '', $group = '')
 	{
 		if ($group == 'table')
 		{
 			$group = 'list';
 		}
 		$group = JString::strtolower($group);
-		// $$$ rob ONLY import the actual plugin you need otherwise ALL $group plugins are loaded regardless of whether they 
-		// are used or not memory changes:
-		// Application 0.322 seconds (+0.081); 22.92 MB (+3.054) - pluginmanager: form email imported
-		// Application 0.242 seconds (+0.005); 20.13 MB (+0.268) - pluginmanager: form email imported
+		/* $$$ rob ONLY import the actual plugin you need otherwise ALL $group plugins are loaded regardless of whether they
+		* are used or not memory changes:
+		* Application 0.322 seconds (+0.081); 22.92 MB (+3.054) - pluginmanager: form email imported
+		* Application 0.242 seconds (+0.005); 20.13 MB (+0.268) - pluginmanager: form email imported
+		*/
 		$ok = JPluginHelper::importPlugin('fabrik_' . $group, $className);
 		$dispatcher = JDispatcher::getInstance();
 		if ($className != '')
@@ -229,14 +274,14 @@ class FabrikFEModelPluginmanager extends JModel{
 			$file = JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/' . $className . '.php';
 			if (JFile::exists($file))
 			{
-				require_once($file);
+				require_once $file;
 			}
 			else
 			{
 				$file = JPATH_PLUGINS . '/fabrik_' . $group . '/' . $className . '/models/' . $className . '.php';
 				if (JFile::exists($file))
 				{
-					require_once($file);
+					require_once $file;
 				}
 				else
 				{
@@ -248,23 +293,24 @@ class FabrikFEModelPluginmanager extends JModel{
 		$class = 'plgFabrik_' . JString::ucfirst($group) . JString::ucfirst($className);
 		$conf = array();
 		$conf['name'] = JString::strtolower($className);
-		$conf['type'] = JString::strtolower('fabrik_'.$group);
+		$conf['type'] = JString::strtolower('fabrik_' . $group);
 		$plugIn = new $class($dispatcher, $conf);
 
-		//needed for viz
-		$client	= JApplicationHelper::getClientInfo(0);
+		// Needed for viz
+		$client = JApplicationHelper::getClientInfo(0);
 		$lang = JFactory::getLanguage();
 		$folder = 'fabrik_' . $group;
 		$langFile = 'plg_' . $folder . '_' . $className;
 		$langPath = $client->path . '/plugins/' . $folder . '/' . $className;
-		$lang->load($langFile, $langPath, null, false, false)
-				 ||	$lang->load($langFile, $langPath, $lang->getDefault(), false, false);
+		$lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
 		return $plugIn;
 	}
 
 	/**
-	 * load all the forms element plugins
-* @param   object	form model
+	 * Load all the forms element plugins
+	 * 
+	 * @param   object  &$form  form model
+	 * 
 	 * @return  array	of group objects with plugin objects loaded in group->elements
 	 */
 
@@ -282,7 +328,7 @@ class FabrikFEModelPluginmanager extends JModel{
 			$this->formPlugins[$sig] = array();
 			$lang = JFactory::getLanguage();
 			$folder = 'fabrik_element';
-			$client	= JApplicationHelper::getClientInfo(0);
+			$client = JApplicationHelper::getClientInfo(0);
 			$groupIds = $form->getGroupIds();
 			if (empty($groupIds))
 			{
@@ -291,11 +337,14 @@ class FabrikFEModelPluginmanager extends JModel{
 			}
 			$db = FabrikWorker::getDbo(true);
 			$query = $db->getQuery(true);
-			$query->select('*, e.name AS name, e.id AS id, e.published AS published, e.label AS label, e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering');
+			$select = '*, e.name AS name, e.id AS id, e.published AS published, e.label AS label,'
+			. 'e.plugin, e.params AS params, e.access AS access, e.ordering AS ordering';
+			$query->select($select);
 			$query->from('#__{package}_elements AS e');
 			$query->join('INNER', '#__extensions AS p ON p.element = e.plugin');
 			$query->where('group_id IN (' . implode(',', $groupIds) . ')');
 			$query->where('p.folder = "fabrik_element"');
+
 			// Ignore trashed elements
 			$query->where('e.published != -2');
 			$query->order("group_id, e.ordering");
@@ -327,8 +376,7 @@ class FabrikFEModelPluginmanager extends JModel{
 
 				$langFile = 'plg_' . $folder . '_' . $element->plugin;
 				$langPath = $client->path . '/plugins/' . $folder . '/' . $element->plugin;
-				$lang->load($langFile, $langPath, null, false, false)
-				||	$lang->load($langFile, $langPath, $lang->getDefault(), false, false);
+				$lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
 
 				$pluginModel->setContext($groupModel, $form, $form->getListModel());
 				$pluginModel->bindToElement($element);
@@ -342,10 +390,27 @@ class FabrikFEModelPluginmanager extends JModel{
 		return $this->formPlugins[$sig];
 	}
 
-	function getElementPlugin($id)
+	/**
+	 * Short cut to get an element plugin
+	 * 
+	 * @param   int  $id  element id
+	 * 
+	 * @return object  element plugin
+	 */
+
+	public function getElementPlugin($id)
 	{
 		return $this->getPluginFromId($id);
 	}
+
+	/**
+	 * Get a plugin based on its id
+	 * 
+	 * @param   int     $id    plugin id
+	 * @param   string  $type  plugin type
+	 * 
+	 * @return object  plugin
+	 */
 
 	public function getPluginFromId($id, $type = 'Element')
 	{
@@ -366,45 +431,43 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-* @param   string	name of plugin group to load
-* @param   array	list of default element lists
-* @param   array	list of default and plugin element lists
+	 * not used 
+	 * 
+	 * @param   string  $group          name of plugin group to load
+	 * @param   array   $lists          list of default element lists
+	 * @param   array   &$elementModel  list of default and plugin element lists
+	 * 
+	 * @deprecated
+	 * 
+	 * @return  void
 	 */
 
-	function loadLists($group, $lists, &$elementModel)
+	protected function loadLists($group, $lists, &$elementModel)
 	{
-		if (empty($this->plugIns))
-		{
-			$this->loadPlugInGroup($group);
-		}
-		foreach ($this->plugIns[$group] as $plugIn)
-		{
-			if (method_exists($plugIn->object, 'getAdminLists'))
-			{
-				$lists = $plugIn->object->getAdminLists($lists, $elementModel, $plugIn->params);
-			}
-		}
-		return $lists;
 	}
 
 	/**
-	 * run form & element plugins - yeah!
-* @param   string	method to check and call - corresponds to stage of form processing
-* @param   object	model calling the plugin form/table
-* @param   string	plugin type to call form/table
+	 * Run form & element plugins - yeah!
+	 * 
+	 * @param   string  $method        to check and call - corresponds to stage of form processing
+	 * @param   object  &$parentModel  model calling the plugin form/list
+	 * @param   string  $type          plugin type to call form/list
+	 * 
 	 * @return  array	of bools: false if error found and processed, otherwise true
 	 */
 
-	public function runPlugins($method, &$oRequest, $type = 'form')
+	public function runPlugins($method, &$parentModel, $type = 'form')
 	{
 		if ($type == 'form')
 		{
-			// $$$ rob allow for table plugins to hook into form plugin calls - methods are mapped as:
-			//form method = 'onLoad' => table method => 'onFormLoad'
+			/**
+			 * $$$ rob allow for table plugins to hook into form plugin calls - methods are mapped as:
+			 * form method = 'onLoad' => table method => 'onFormLoad'
+			 */
 			$tmethod = 'onForm' . FabrikString::ltrimword($method, 'on');
-			$this->runPlugins($tmethod, $oRequest->getListModel(), 'list');
+			$this->runPlugins($tmethod, $parentModel->getListModel(), 'list');
 		}
-		$params = $oRequest->getParams();
+		$params = $parentModel->getParams();
 		$return = array();
 		$usedPlugins = (array) $params->get('plugins');
 		$usedLocations = (array) $params->get('plugin_locations');
@@ -413,9 +476,9 @@ class FabrikFEModelPluginmanager extends JModel{
 		$this->data = array();
 		if ($type != 'list')
 		{
-			if (method_exists($oRequest, 'getGroupsHiarachy'))
+			if (method_exists($parentModel, 'getGroupsHiarachy'))
 			{
-				$groups = $oRequest->getGroupsHiarachy();
+				$groups = $parentModel->getGroupsHiarachy();
 				foreach ($groups as $groupModel)
 				{
 					$elementModels = $groupModel->getPublishedElements();
@@ -423,7 +486,7 @@ class FabrikFEModelPluginmanager extends JModel{
 					{
 						if (method_exists($elementModel, $method))
 						{
-							$elementModel->$method($oRequest);
+							$elementModel->$method($parentModel);
 						}
 					}
 				}
@@ -431,8 +494,10 @@ class FabrikFEModelPluginmanager extends JModel{
 		}
 		$c = 0;
 		$runPlugins = 0;
-		// if true then a plugin has returned true from runAway() which means that any other plugin in the same group
-		// should not be run.
+		/**
+		 * if true then a plugin has returned true from runAway() 
+		 * which means that any other plugin in the same group should not be run.
+		 */
 		$runningAway = false;
 		foreach ($usedPlugins as $usedPlugin)
 		{
@@ -444,22 +509,22 @@ class FabrikFEModelPluginmanager extends JModel{
 			$state = JArrayHelper::getValue($states, $c, 1);
 			if ($state == false)
 			{
-				$c ++;
+				$c++;
 				continue;
 			}
 			if ($usedPlugin != '')
 			{
 				$plugin = $this->getPlugIn($usedPlugin, $type);
-				//testing this if statement as onLoad was being called on form email plugin when no method availbale
 
+				// Testing this if statement as onLoad was being called on form email plugin when no method availbale
 				if (method_exists($plugin, $method))
 				{
 					$plugin->renderOrder = $c;
-					$modelTable = $oRequest->getTable();
+					$modelTable = $parentModel->getTable();
 					$pluginParams = $plugin->setParams($params, $c);
 					$location = JArrayHelper::getValue($usedLocations, $c);
 					$event = JArrayHelper::getValue($usedEvents, $c);
-					if ($plugin->canUse($oRequest, $location, $event))
+					if ($plugin->canUse($parentModel, $location, $event))
 					{
 						$pluginArgs = array();
 						if (func_num_args() > 3)
@@ -468,17 +533,18 @@ class FabrikFEModelPluginmanager extends JModel{
 							$pluginArgs = array_splice($t, 3);
 						}
 						$preflightMethod = $method . '_preflightCheck';
-						$preflightCheck = method_exists($plugin, $preflightMethod) ? $plugin->$preflightMethod($pluginParams, $oRequest, $pluginArgs) : true;
+						$preflightCheck = method_exists($plugin, $preflightMethod) ? $plugin->$preflightMethod($pluginParams, $parentModel, $pluginArgs)
+							: true;
 						if ($preflightCheck)
 						{
-							$ok = $plugin->$method($pluginParams, $oRequest, $pluginArgs);
+							$ok = $plugin->$method($pluginParams, $parentModel, $pluginArgs);
 							if ($ok === false)
 							{
 								$return[] = false;
 							}
 							else
 							{
-								$thisreturn = $plugin->customProcessResult($method, $oRequest);
+								$thisreturn = $plugin->customProcessResult($method, $parentModel);
 								$return[] = $thisreturn;
 								$m = $method . '_result';
 								if (method_exists($plugin, $m))
@@ -486,7 +552,7 @@ class FabrikFEModelPluginmanager extends JModel{
 									$this->data[] = $plugin->$m($c);
 								}
 							}
-							$runPlugins ++;
+							$runPlugins++;
 							if ($plugin->runAway($method))
 							{
 								$runningAway = true;
@@ -494,13 +560,13 @@ class FabrikFEModelPluginmanager extends JModel{
 							$mainData = $this->data;
 							if ($type == 'list' && $method !== 'observe')
 							{
-								$this->runPlugins('observe', $oRequest, 'list', $plugin, $method);
+								$this->runPlugins('observe', $parentModel, 'list', $plugin, $method);
 							}
 							$this->data = $mainData;
 						}
 					}
 				}
-				$c ++;
+				$c++;
 			}
 		}
 		$this->runPlugins = $runPlugins;
@@ -508,13 +574,15 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 	/**
-	 * test if a plugin is installed
-* @param   $group
-* @param   $plugin
+	 * Test if a plugin is installed
+	 * 
+	 * @param   string  $group   plugin group
+	 * @param   string  $plugin  plguin name
+	 * 
 	 * @return  bool
 	 */
 
-	function pluginExists($group, $plugin)
+	public function pluginExists($group, $plugin)
 	{
 		$plugins = $this->loadPlugInGroup($group);
 		if (in_array($plugin, array_keys($plugins)))
@@ -525,4 +593,3 @@ class FabrikFEModelPluginmanager extends JModel{
 	}
 
 }
-?>

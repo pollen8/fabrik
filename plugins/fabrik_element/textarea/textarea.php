@@ -98,8 +98,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			$data = $this->tagify($data);
 		}
-		//$$$rob dont strip slashes here - this is done when saving to db now
-
+		// $$$rob dont strip slashes here - this is done when saving to db now
 		if ($params->get('use_wysiwyg', 0) == 0)
 		{
 			if (is_array($data))
@@ -130,11 +129,12 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * state if the element uses a wysiwyg editor
-	 * @return  bool	use editor
+	 * Does the element use the WYSWYG editor
+	 * 
+	 * @return  bool	use wysiwyg editor
 	 */
 
-	function useEditor()
+	public function useEditor()
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -149,10 +149,13 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -205,7 +208,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			if (JRequest::getVar('ajax') == 1)
 			{
-				//$bits['class'] .= " mce_editable";
+				// $bits['class'] .= " mce_editable";
 				$str = "<textarea ";
 				foreach ($bits as $key => $val)
 				{
@@ -298,15 +301,15 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * can be overwritten in adddon class
-	 *
-	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-	 * @param   string	elements data
-	 * @param   int		repeat group counter
-	 * @return  bool	true if passes / false if falise validation
+	 * Internal element validation
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  repeeat group counter
+	 * 
+	 * @return bool
 	 */
 
-	function validate($data, $repeatCounter = 0)
+	public function validate($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		if (!$params->get('textarea-showmax', false))
@@ -325,10 +328,12 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * @return string error message raised from failed validation
+	 * Get validation error - run through JText
+	 * 
+	 * @return  string
 	 */
 
-	function getValidationErr()
+	public function getValidationErr()
 	{
 		return JText::_('PLG_ELEMENT_TEXTAREA_CONTENT_TOO_LONG');
 	}
@@ -358,7 +363,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * can the element's data be encrypted
+	 * Can the element plugin encrypt data
+	 * 
+	 * @return  bool
 	 */
 
 	public function canEncrypt()

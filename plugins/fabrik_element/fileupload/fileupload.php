@@ -619,25 +619,30 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param   mixed thie elements posted form data
-	 * @param   array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
-		//val already contains group splitter from processUpload() code
+		// $val already contains group splitter from processUpload() code
 		return $val;
 	}
 
 	/**
-	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-	 * @param   string	elements data
-	 * @param   int		repeat group counter
-	 * @return  bool	true if passes / false if falise validation
+	 * Internal element validation
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  repeeat group counter
+	 * 
+	 * @return bool
 	 */
 
-	function validate($data = array(), $repeatCounter = 0)
+	public function validate($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
@@ -645,15 +650,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$this->validationError = '';
 		$errors = array();
 		$elName = $this->getFullName();
-		$elName = str_replace('[]', '', $elName); //remove any repeat group labels
+
+		// Remove any repeat group labels
+		$elName = str_replace('[]', '', $elName);
 		if ($groupModel->isJoin())
 		{
-			// $$$ hugh - kinda screws things up if 'join' is used in the element name!
-			/*
-			 $elTempName = str_replace('join', '', $elName);
-			$elTempName = str_replace('[', '', $elTempName);
-			$joinArray = explode(']', $elTempName);
-			 */
 			$joinArray = array();
 			if (!preg_match('#join\[(\d+)\]\[(\S+)\]#', $elName, $joinArray))
 			{
@@ -1161,12 +1162,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * OPTIONAL
+	 * Processes uploaded data
+	 * 
+	 * @return  void
 	 */
 
-	function processUpload()
+	public function processUpload()
 	{
-		//@TODO: test in joins
+		// @TODO: test in joins
 		$params = $this->getParams();
 		$request = JRequest::get('request');
 		$groupModel = $this->getGroup();
@@ -1184,14 +1187,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		if ($this->processAjaxUploads($name))
 		{
-			//stops form data being updated with blank data.
+			// Stops form data being updated with blank data.
 			return;
 		}
-		// if we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
-		// otherwise no standard image processed
+		/**
+		 * if we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
+		 * otherwise no standard image processed
+		 */
 		if ($this->crop($name) && $params->get('ajax_upload'))
 		{
-			//stops form data being updated with blank data.
+			// Stops form data being updated with blank data.
 			return;
 		}
 		$files = array();
@@ -2091,14 +2096,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * E.g. if the database join element points to a file upload element then you can replace
 	 * the file path that is the standard $val with the html to create the image
 	 *
-	 * @param   stringing $val
-	 * @param   stringing view form or table
-	 * @return string modified val
+	 * @param   string  $val   value
+	 * @param   string  $view  form or list
+	 * 
 	 * @TODO: base the returned string completely on the params specified for the element
 	 * e.g. thumbnail, show image, link etc
+	 * 
+	 * @deprecated - doesn't seem to be used
+	 * 
+	 * @return  string	modified val
 	 */
 
-	function modifyJoinQuery($val, $view = 'form')
+	protected function modifyJoinQuery($val, $view = 'form')
 	{
 		$params = $this->getParams();
 		if (!$params->get('fu_show_image', 0) && $view == 'form')
@@ -2119,9 +2128,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir .= $params->get('thumb_prefix');
 
-			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" . //replace the main image dir with thumb dir
-				", '\\\', '/')" . //replace the backslashes with forward slashes
-				", '\" alt=\"database join image\" />')";
+			/*
+			 * replace the backslashes with forward slashes
+			 * replace the main image dir with thumb dir
+			 */
+			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')"
+				. ", '\\\', '/')"
+				. ", '\" alt=\"database join image\" />')";
 
 		}
 		else
@@ -2132,13 +2145,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * trigger called when a row is deleted
-	 * @param   array	grouped data of rows to delete
+	 * Trigger called when a row is deleted, can be used to delete images previously uploaded
+	 * 
+	 * @param   array  $groups  grouped data of rows to delete
+	 * 
+	 * @return  void
 	 */
 
-	function onDeleteRows($groups)
+	public function onDeleteRows($groups)
 	{
-		//cant delete files from unpublished elements
+		// Can't delete files from unpublished elements
 		if (!$this->canUse())
 		{
 			return;
@@ -2221,9 +2237,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param   string
-	 * @return  string	formatted value
+	 * Turn form value into email formatted value
+	 * 
+	 * @param   mixed  $value          element value
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  group repeat counter
+	 * 
+	 * @return  string  email formatted value
 	 */
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -2396,9 +2416,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * called when save as copy form button clicked
-	 * @param   mixed	value to copy into new record
-	 * @return  mixed	value to copy into new record
+	 * Called when save as copy form button clicked
+	 * 
+	 * @param   mixed  $val  value to copy into new record
+	 * 
+	 * @return  mixed  value to copy into new record
 	 */
 
 	public function onSaveAsCopy($val)

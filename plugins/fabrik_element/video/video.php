@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 
 jimport('joomla.application.component.model');
 
@@ -37,7 +37,6 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 	{
 		$str = '';
 		$data = FabrikWorker::JSONtoData($data, true);
-		//$data = explode(GROUPSPLITTER, $data);
 		foreach ($data as $d)
 		{
 			$str .= $this->_renderListData($d, $thisRow);
@@ -64,8 +63,6 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 				$data = COM_FABRIK_LIVESITE . str_replace("\\", "/", $data);
 				$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=plugin&task=pluginAjax&plugin=" . $this->_name
 					. "&method=renderPopup&element_id=" . $this->id . "&data=$data";
-				//@TODO replace with Fabrik.Window()
-				//FabrikHelperHTML::modal('a.popupwin');
 				$w = $params->get('fbVideoWidth', 300) + 20;
 				$h = $params->get('fbVideoHeight', '300') + 50;
 				$src = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/' . $this->_name . '/icon.gif';
@@ -80,12 +77,13 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 	{
 		$document = JFactory::getDocument();
 		$format = JRequest::getVar('format', '');
-		//when loaded via ajax adding scripts into the doc head wont load them
+
+		// When loaded via ajax adding scripts into the doc head wont load them
 		echo "<script type='text/javascript'>";
-		require(COM_FABRIK_FRONTEND . '/media/com_fabrik/js/element.js');
+		require COM_FABRIK_FRONTEND . '/media/com_fabrik/js/element.js';
 		echo "</script>";
 		echo "<script type='text/javascript'>";
-		require(JPATH_ROOT . '/plugins/fabrik_element/video/video.js');
+		require JPATH_ROOT . '/plugins/fabrik_element/video/video.js';
 		echo "</script>";
 
 		$params = $this->getParams();
@@ -118,10 +116,13 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return false;
 	}
@@ -214,11 +215,12 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 	}
 
 	/**
-	 * OPTIONAL
-	 *
+	 * Processes uploaded data
+	 * 
+	 * @return  void
 	 */
 
-	function processUpload()
+	public function processUpload()
 	{
 		$aData = JRequest::get('post');
 		$elName = $this->getFullName(true, true, false);
@@ -330,8 +332,8 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 			{
 				jimport('joomla.filesystem.path');
 				JPath::setPermissions($destFile);
-				//resize main image
 
+				// Resize main image
 				$oImage = FabimageHelper::loadLib($params->get('image_library'));
 				$mainWidth = $params->get('fu_main_max_width');
 				$mainHeight = $params->get('fu_main_max_height');
@@ -361,5 +363,3 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 
 	}
 }
-
-									  ?>

@@ -45,7 +45,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			if ($params->get('icon_folder') == '1')
 			{
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
-				$d = $this->_replaceWithIcons($d, 'list', $listModel->getTmpl());
+				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
 			}
 			else
 			{
@@ -546,13 +546,16 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	}
 
 	/**
-	 * can be overwritten in the plugin class - see database join element for example
-	 * @param   array
-	 * @param   array
-	 * @param   array	options
+	 * Create the SQL select 'name AS alias' segment for list/form queries
+	 * 
+	 * @param   array  &$aFields    array of element names
+	 * @param   array  &$aAsFields  array of 'name AS alias' fields
+	 * @param   array  $opts        options
+	 * 
+	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();

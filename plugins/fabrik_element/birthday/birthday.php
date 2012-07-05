@@ -1,16 +1,20 @@
 <?php
 /**
- * Plugin element to render day/month/year dropdowns
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//jimport('joomla.application.component.model');
+/**
+ * Plugin element to render day/month/year dropdowns
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 {
@@ -30,8 +34,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		//Jaanus: needed also here to not to show 0000-00-00 in detail view;
-		//see also 58, added && !in_array($value, $aNullDates) (same reason).
+		/**
+		 * Jaanus: needed also here to not to show 0000-00-00 in detail view;
+		 * see also 58, added && !in_array($value, $aNullDates) (same reason).
+		 */
 		$db = JFactory::getDbo();
 		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 		$name = $this->getHTMLName($repeatCounter);
@@ -47,10 +53,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
 
 		$bits = array();
-		// $$$ rob - not sure why we are setting $data to the form's data
-		//but in table view when getting read only filter value from url filter this
-		// _form_data was not set to no readonly value was returned
-		// added little test to see if the data was actually an array before using it
+		/**
+		 * $$$ rob - not sure why we are setting $data to the form's data
+		 * but in table view when getting read only filter value from url filter this
+		 * _form_data was not set to no readonly value was returned
+		 * added little test to see if the data was actually an array before using it
+		 */
 		if (is_array($this->getFormModel()->data))
 		{
 			$data = $this->getFormModel()->data;
@@ -63,13 +71,14 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			if (!in_array($value, $aNullDates))
 			{
-				//avoid 0000-00-00
+				// Avoid 0000-00-00
 				list($year, $month, $day) = strstr($value, '-') ? explode('-', $value) : explode(',', $value);
 				$daydisp = str_replace($daysys, $daysimple, $day);
 				$monthdisp = str_replace($monthnumbers, $monthlabels, $month);
 				$thisyear = date('Y');
 				$nextyear = date('Y') + 1;
 				$lastyear = date('Y') - 1;
+
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
 				$year = JString::ltrim($year, '0');
@@ -118,7 +127,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					}
 					if ($fd == '{age} d.m' || $fd == '{age} m.d')
 					{
-						$detailvalue = $ageyear - $year; // always actual age
+						// Always actual age
+						$detailvalue = $ageyear - $year;
 						if (date('m-d') == $month . '-' . $day)
 						{
 							$detailvalue .= '<font color = "#CC0000"><b> ' . JText::_('TODAY') . '!</b></font>';
@@ -157,7 +167,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 						}
 					}
 				}
-				$value = $this->_replaceWithIcons($detailvalue);
+				$value = $this->replaceWithIcons($detailvalue);
 				return ($element->hidden == '1') ? "<!-- " . $detailvalue . " -->" : $detailvalue;
 			}
 			else
@@ -167,7 +177,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		}
 		else
 		{
-			//wierdness for failed validaion
+			// Wierdness for failed validaion
 			$value = strstr($value, ',') ? array_reverse(explode(',', $value)) : explode('-', $value);
 			$yearvalue = JArrayHelper::getValue($value, 0);
 			$monthvalue = JArrayHelper::getValue($value, 1);
@@ -179,13 +189,15 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$days[] = JHTML::_('select.option', $i);
 			}
 			$months = array(JHTML::_('select.option', '', $params->get('birthday_monthlabel', JText::_('MONTH'))));
-			//siin oli enne $monthlabels, viisin ülespoole
+
+			// Siin oli enne $monthlabels, viisin ülespoole
 			for ($i = 0; $i < count($monthlabels); $i++)
 			{
 				$months[] = JHTML::_('select.option', $i + 1, $monthlabels[$i]);
 			}
 			$years = array(JHTML::_('select.option', '', $params->get('birthday_yearlabel', JText::_('YEAR'))));
-			//Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
+
+			// Jaanus: now we can choose one exact year A.C to begin the dropdown AND would the latest year be current year or some years earlier/later.
 			$date = date('Y') + (int) $params->get('birthday_forward', 0);
 			$yearopt = $params->get('birthday_yearopt');
 			$yearstart = (int) $params->get('birthday_yearstart');
@@ -198,7 +210,8 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-			//$name already suffixed with [] as element hasSubElements = true
+
+			// $name already suffixed with [] as element hasSubElements = true
 			$str[] = JHTML::_('select.genericlist', $days, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $dayvalue);
 			$str[] = $params->get('birthday_separatorlabel', JText::_('/')) . ' '
 				. JHTML::_('select.genericlist', $months, preg_replace('#(\[\])$#', '[1]', $name), $attribs, 'value', 'text', $monthvalue);
@@ -259,12 +272,13 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					}
 					else
 					{
-						$value = JArrayHelper::getValue($data['join'][$joinid], $rawname,
-							JArrayHelper::getValue($data['join'][$joinid], $name, $value));
-
-						// $$$ rob if you have 2 tbl joins, one repeating and one not
-						// the none repeating one's values will be an array of duplicate values
-						// but we only want the first value
+						$joinDefault = JArrayHelper::getValue($data['join'][$joinid], $name, $value);
+						$value = JArrayHelper::getValue($data['join'][$joinid], $rawname, $joinDefault);
+						/**
+						 * $$$ rob if you have 2 tbl joins, one repeating and one not
+						 * the none repeating one's values will be an array of duplicate values
+						 * but we only want the first value
+						 */
 						if (is_array($value))
 						{
 							$value = array_shift($value);
@@ -276,7 +290,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			{
 				if ($groupModel->canRepeat())
 				{
-					//repeat group NO join
+					// Repeat group NO join
 					$thisname = $rawname;
 					if (!array_key_exists($name, $data))
 					{
@@ -286,13 +300,13 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 					{
 						if (is_array($data[$thisname]))
 						{
-							//occurs on form submission for fields at least
+							// Occurs on form submission for fields at least
 							$a = $data[$thisname];
 						}
 						else
 						{
-							//occurs when getting from the db
-							$a = FabrikWorker::JSONtoData($data[$thisname], true); //json_decode($data[$thisname]);
+							// Occurs when getting from the db
+							$a = FabrikWorker::JSONtoData($data[$thisname], true);
 						}
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
 					}
@@ -317,11 +331,13 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 			if ($value === '')
 			{
-				//query string for joined data
+				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $name, $value);
 			}
-			//@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
-			//stops this getting called from form validation code as it messes up repeated/join group validations
+			/**
+			 * @TODO perhaps we should change this to $element->value and store $element->default as the actual default value
+			 * stops this getting called from form validation code as it messes up repeated/join group validations
+			 */
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -332,15 +348,20 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed the elements posted form data
-	 * @param   array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
-		// $$$ hugh - No need for this in 3.x, all repeated groups are now joins,
-		// so we get called once per instance of repeat
+		/**
+		 *  $$$ hugh - No need for this in 3.x, all repeated groups are now joins,
+		 *  so we get called once per instance of repeat
+		 */
 		/*
 		$groupModel = $this->getGroup();
 		if ($groupModel->canRepeat()) {
@@ -358,12 +379,18 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * get the value to store the value in the db
-	 *
-	 * @param   mixed	$val (array normally but string on csv import)
+	 * Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores 
+	 * (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working 
+	 * with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well)
+	 * empty data is always NULL otherwise nulldate is displayed in its views.
+	 * 
+	 * @param   mixed  $val  (array normally but string on csv import)
+	 * 
+	 * @TODO: if NULL value is the first in repeated group then in list view whole group is empty.
+	 * Could anyone find a solution? I give up :-(
+	 * 
 	 * @return  string	yyyy-mm-dd
 	 */
-	//Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well) empty data is always NULL otherwise nulldate is displayed in its views. 
-	//TODO: if NULL value is the first in repeated group then in list view whole group is empty. Could anyone find a solution? I give up :-(
 
 	private function _indStoreDBFormat($val)
 	{
@@ -382,9 +409,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
-	 * used in isempty validation rule
+	 * Does the element conside the data to be empty
+	 * Used in isempty validation rule
 	 *
-	 * @param   array $data
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 * 
 	 * @return  bool
 	 */
 
@@ -422,13 +452,13 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
-	* Shows the data formatted for the list view
-	*
-	* @param   string  $data      elements data
-	* @param   object  &$thisRow  all the data in the lists current row
-	*
-	* @return  string	formatted value
-	*/
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
+	 */
 
 	public function renderListData($data, &$thisRow)
 	{
@@ -442,12 +472,17 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
 		$jubileum = array('0', '25', '75');
 		$groupModel = $this->getGroup();
-		//Jaanus: json_decode replaced with FabrikWorker::JSONtoData that made visible also single data in repeated group
-		//Jaanus: removed condition canrepeat() from renderListData: weird result such as 05",null,"1940.07.["1940 (2011) when not repeating but still join and merged. Using isJoin() instead
+		/**
+		 * Jaanus: json_decode replaced with FabrikWorker::JSONtoData that made visible also single data in repeated group
+		 *
+		 * Jaanus: removed condition canrepeat() from renderListData: weird result such as 05",null,
+		 * "1940.07.["1940 (2011) when not repeating but still join and merged. Using isJoin() instead
+		 */
 		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
 		$ft = $params->get('list_date_format', 'd.m.Y');
-		//$ft = $params->get('birthday_format', 'd.m.Y'); //$ft = $params->get('birthday_format', '%Y-%m-%d');
+
+		// $ft = $params->get('birthday_format', 'd.m.Y'); //$ft = $params->get('birthday_format', '%Y-%m-%d');
 		$fta = $params->get('list_age_format', 'no');
 		$format = array();
 
@@ -455,10 +490,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		{
 			if (!in_array($d, $aNullDates))
 			{
-				// $$$ rob default to a format date
-				//$date = JFactory::getDate($d);
-				//$datedisp = $date->toFormat($ft);
-				// Jaanus: sorry, but in this manner the element doesn't work with dates earlier than 1901
+				/**
+				 * $$$ rob default to a format date
+				 * $date = JFactory::getDate($d);
+				 * $datedisp = $date->toFormat($ft);
+				 * Jaanus: sorry, but in this manner the element doesn't work with dates earlier than 1901
+				 */
 
 				list($year, $month, $day) = explode('-', $d);
 				$daydisp = str_replace($daysys, $daysimple, $day);
@@ -583,4 +620,3 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 }
-?>

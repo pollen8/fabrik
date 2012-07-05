@@ -27,9 +27,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/** @var array option values **/
 	var $_optionVals = array();
 
-	/** @var bol is a join element */
-	var $_isJoin = true;
-
 	/** @var array linked form data */
 	var $_linkedForms = null;
 
@@ -40,13 +37,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected $dbname = null;
 
 	/**
-	 * testing to see that if the aFields are passed by reference do they update the table object?
-	 * @param   array containing field sql
-	 * @param   array containing field aliases
-	 * @param   array options
+	 * Create the SQL select 'name AS alias' segment for list/form queries
+	 * 
+	 * @param   array  &$aFields    array of element names
+	 * @param   array  &$aAsFields  array of 'name AS alias' fields
+	 * @param   array  $opts        options
+	 * 
+	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		if ($this->isJoin())
 		{
@@ -124,8 +124,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::getRawColumn()
+	 * Get raw column name
+	 * 
+	 * @param   bool  $useStep  use step in name
+	 * 
+	 * @return string
 	 */
 
 	public function getRawColumn($useStep = true)
@@ -228,10 +231,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * @return  object	join table
+	 * Get join row
+	 * 
+	 * @return  object	join table or false if not loaded
 	 */
 
-	function getJoin()
+	protected function getJoin()
 	{
 		if (isset($this->join))
 		{
@@ -260,9 +265,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		if (!in_array(JRequest::getVar('task'), array('inlineedit', 'form.inlineedit')))
 		{
-			//suppress error for inlineedit, something not quiet right as groupModel::getPublishedElements() is limited by the elementid request va
-			// but the list model is calling getAsFields() and loading up the db join element.
-			// so test case would be an inline edit list with a database join element and editing anything but the db join element
+			/*
+			 * suppress error for inlineedit, something not quiet right as groupModel::getPublishedElements() is limited by the elementid request va
+			 * but the list model is calling getAsFields() and loading up the db join element.
+			 * so test case would be an inline edit list with a database join element and editing anything but the db join element
+			 */
 			JError::raiseError(500, 'unable to process db join element id:' . $element->id);
 		}
 		return false;
@@ -926,17 +933,19 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * determines the label used for the browser title
+	 * Determines the label used for the browser title
 	 * in the form/detail views
-	 * @param   array	data
-	 * @param   int		when repeating joinded groups we need to know what part of the array to access
-	 * @param   array	options
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
 	 * @return  string	default value
 	 */
 
-	function getTitlePart($data, $repeatCounter = 0, $opts = array())
+	public function getTitlePart($data, $repeatCounter = 0, $opts = array())
 	{
-		//$$$ rob set ths to label otherwise we get the value/key and not label
+		// $$$ rob set ths to label otherwise we get the value/key and not label
 		$opts['valueFormat'] = 'label';
 		return $this->getValue($data, $repeatCounter, $opts);
 	}
@@ -947,7 +956,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$db = FabrikWorker::getDbo(true);
 			$params = $this->getParams();
-			//forms for potential add record pop up form
+
+			// Forms for potential add record pop up form
 			$query = $db->getQuery(true);
 			$query->select('f.id AS value, f.label AS text, l.id AS listid')->from('#__{package}_forms AS f')
 				->join('LEFT', '#__{package}_lists As l ON f.id = l.form_id')
@@ -955,6 +965,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$db->setQuery($query);
 
 			$this->_linkedForms = $db->loadObjectList('value');
+
 			// Check for a database error.
 			if ($db->getErrorNum())
 			{
@@ -978,17 +989,19 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			return 'BLOB';
 		}
 		$db = $this->getDb();
-		//lets see if we can get the field type of the field we are joining to
+
+		// Lets see if we can get the field type of the field we are joining to
 		$join = FabTable::getInstance('Join', 'FabrikTable');
 		if ((int) $this->id !== 0)
 		{
 			$join->load(array('element_id' => $this->id));
 			if ($join->table_join == '')
 			{
-				// $$$ hugh - this almost certainly means we are changing element type to a join,
-				// and the join row hasn't been created yet.  So let's grab the params, instead of
-				// defaulting to VARCHAR
-				//return "VARCHAR(255)";
+				/* $$$ hugh - this almost certainly means we are changing element type to a join,
+				* and the join row hasn't been created yet.  So let's grab the params, instead of
+				* defaulting to VARCHAR
+				* return "VARCHAR(255)";
+				*/
 				$dbName = $params->get('join_db_name');
 				$joinKey = $params->get('join_key_column');
 			}
@@ -1020,7 +1033,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 		}
-		//nope? oh well default to this:
+
+		// Nope? oh well default to this:
 		return "VARCHAR(255)";
 	}
 
@@ -1054,7 +1068,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 			$val = $this->renderListData($value, new stdClass);
-			;
 		}
 		else
 		{
@@ -1107,6 +1120,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$opts = $this->_getOptionVals();
 			$name = $this->getFullName(false, true, false) . '_raw';
+
 			// If coming from fabrikemail plugin oAllRowsdata is empty
 			if (isset($thisRow->$name))
 			{
@@ -1150,8 +1164,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_ElementList::getFilter()
+	 * Get the table filter for the element
+	 * 
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
+	 * 
+	 * @return  string	filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -1253,8 +1272,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element::buildFilterJoin()
+	 * If filterValueList_Exact incjoin value = false, then this method is called
+	 * to ensure that the query produced in filterValueList_Exact contains at least the database join element's
+	 * join
+	 * 
+	 * @return  string  required join text to ensure exact filter list code produces a valid query.
 	 */
 
 	protected function buildFilterJoin()
@@ -1269,8 +1291,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element::filterValueList_All()
+	 * create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
 	 */
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
@@ -1371,11 +1401,19 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::getFilterQuery()
+	 * build the filter query for the given element.
+	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
+	 * 
+	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $condition      =/like etc
+	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  original filter value without quotes or %'s applied
+	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 * 
+	 * @return  string	sql query part e,g, "key = value"
 	 */
 
-	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		/* $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
 		 used in prefilter dropdown in admin to allow users to prefilter on raw db join value */
@@ -1528,7 +1566,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		return FabrikString::safeColName($elName);
 	}
 
-	function getFilterLabel($rawval)
+	/**
+	 * Not used
+	 * 
+	 * @param   string  $rawval  raw value
+	 * 
+	 * @deprecated - not used
+	 * 
+	 * @return string
+	 */
+
+	public function getFilterLabel($rawval)
 	{
 		$db = $this->getDb();
 		$params = $this->getParams();
@@ -1807,12 +1855,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Get an array of element html ids and their corresponding 
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param   int repeat group counter
-	 * @return array html ids to watch for validation
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  array  html ids to watch for validation
 	 */
 
-	function getValidationWatchElements($repeatCounter)
+	public function getValidationWatchElements($repeatCounter)
 	{
 		$params = $this->getParams();
 		$trigger = $params->get('database_join_display_type') == 'dropdown' ? 'change' : 'click';
@@ -1847,12 +1899,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * if no filter condition supplied (either via querystring or in posted filter data
+	 * If no filter condition supplied (either via querystring or in posted filter data
 	 * return the most appropriate filter option for the element.
+	 * 
 	 * @return  string	default filter condition ('=', 'REGEXP' etc)
 	 */
 
-	function getDefaultFilterCondition()
+	public function getDefaultFilterCondition()
 	{
 		return '=';
 	}
@@ -1897,11 +1950,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * get the name of the field to order the table data by
-	 * @return  string	column to order by tablename.elementname
+	 * Get the name of the field to order the table data by
+	 * can be overwritten in plugin class - but not currently done so
+	 * 
+	 * @return string column to order by tablename___elementname and yes you can use aliases in the order by clause
 	 */
 
-	function getOrderByName()
+	public function getOrderByName()
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();

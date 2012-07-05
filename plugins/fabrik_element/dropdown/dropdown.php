@@ -13,9 +13,12 @@ defined('_JEXEC') or die();
 class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 {
 
-	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::setId()
+/**
+	 * Method to set the element id
+	 *
+	 * @param   int  $id  element ID number
+	 * 
+	 * @return  void
 	 */
 
 	public function setId($id)
@@ -200,8 +203,10 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * repalce a value with its label
-	 * @param   string	value
+	 * Repalce a value with its label
+	 * 
+	 * @param   string	$selected  value
+	 * 
 	 * @return  string	label
 	 */
 
@@ -231,11 +236,19 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::getFilterQuery()
+	 * build the filter query for the given element.
+	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
+	 * 
+	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $condition      =/like etc
+	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  original filter value without quotes or %'s applied
+	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 * 
+	 * @return  string	sql query part e,g, "key = value"
 	 */
 
-	public function getFilterQuery($key, $condition, $label, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$value = $label;
 		if ($type == 'searchall')
@@ -279,11 +292,16 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_ElementList::getValidationWatchElements()
+	 * Get an array of element html ids and their corresponding 
+	 * js events which trigger a validation.
+	 * Examples of where this would be overwritten include timedate element with time field enabled
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  array  html ids to watch for validation
 	 */
 
-	function getValidationWatchElements($repeatCounter)
+	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array('id' => $id, 'triggerEvent' => 'change');

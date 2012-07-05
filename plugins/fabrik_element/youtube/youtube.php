@@ -148,11 +148,13 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::isReceiptElement()
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}

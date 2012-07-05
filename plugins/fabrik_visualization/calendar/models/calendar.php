@@ -318,8 +318,9 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 				$qlabel = FabrikString::safeColName($label);
 				if (array_key_exists($qlabel, $els))
 				{
-					// if db join selected for the label we need to get the label element and not the value
+					// If db join selected for the label we need to get the label element and not the value
 					$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
+
 					// $$$ hugh @TODO doesn't seem to work for join elements, so adding hack till I can talk
 					// to rob about this one.
 					if (method_exists($els[$qlabel], 'getJoinLabelColumn'))
@@ -334,6 +335,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 				$pk = $listModel->getTable()->db_primary_key;
 				$where = $listModel->buildQueryWhere();
 				$join = $listModel->buildQueryJoin();
+
 				// @TODO JQuery this
 				$sql = "SELECT $pk AS id, $startdate AS startdate, $enddate AS enddate, '' AS link, $label AS 'label', '{$data['colour']}' AS colour, 0 AS formid FROM $table->db_table_name $join $where ORDER BY $startdate ASC";
 

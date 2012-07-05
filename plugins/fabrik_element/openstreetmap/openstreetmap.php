@@ -322,13 +322,16 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 	}
 
 	/**
-	 * can be overwritten in the plugin class - see database join element for example
-	 * @param   array
-	 * @param   array
-	 * @param   array options
+	 * Create the SQL select 'name AS alias' segment for list/form queries
+	 * 
+	 * @param   array  &$aFields    array of element names
+	 * @param   array  &$aAsFields  array of 'name AS alias' fields
+	 * @param   array  $opts        options
+	 * 
+	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$db = FabrikWorker::getDbo();
 		$dbtable = $this->actualTableName();

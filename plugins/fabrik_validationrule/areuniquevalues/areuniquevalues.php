@@ -11,9 +11,9 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/validation_rule.php');
+require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
-class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
+class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 {
 
 	protected $pluginName = 'areuniquevalues';
@@ -23,12 +23,12 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 
 	/**
 	 * (non-PHPdoc)
-	 * @see plgFabrik_Validationrule::validate()
+	 * @see PlgFabrik_Validationrule::validate()
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
-		//could be a dropdown with multivalues
+		// Could be a dropdown with multivalues
 		if (is_array($data))
 		{
 			$data = implode('', $data);
@@ -47,7 +47,7 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		}
 		else
 		{
-			//old fabrik 2.x params stored element name as a string
+			// Old fabrik 2.x params stored element name as a string
 			$otherFullName = $table->db_table_name . '___' . $otherfield;
 		}
 
@@ -56,9 +56,7 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		$data = $db->quote($data);
 
 		$query = $db->getQuery(true);
-		$query->select('COUNT(*)')
-		->from($lookuptable)
-		->where($elementModel->getFullName(false, false, false) . ' = ' . $data);
+		$query->select('COUNT(*)')->from($lookuptable)->where($elementModel->getFullName(false, false, false) . ' = ' . $data);
 
 		$listModel->buildQueryJoin($query);
 
@@ -74,9 +72,11 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 			$query->where($otherfield . ' = ' . $db->quote($v));
 		}
 
-		// $$$ hugh - need to check to see if we're editing a record, otherwise
-		// will fail 'cos it finds the original record (assuming this element hasn't changed)
-		// @TODO - is there a better way getting the rowid?  What if this is form a joined table?
+		/**
+		 * $$$ hugh - need to check to see if we're editing a record, otherwise
+		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
+		 * @TODO - is there a better way getting the rowid?  What if this is form a joined table?
+		 */
 		$rowid = JRequest::getVar('rowid');
 		if (!empty($rowid))
 		{
@@ -96,11 +96,13 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 	}
 
 	/**
-	* gets the hover/alt text that appears over the validation rule icon in the form
-* @param   object	element model
-* @param   int		repeat group counter
-	* @return  string	label
-	*/
+	 * Gets the hover/alt text that appears over the validation rule icon in the form
+	 * 
+	 * @param   object  $elementModel  element model
+	 * @param   int     $pluginc       plugin render order
+	 * 
+	 * @return  string	label
+	 */
 
 	protected function getLabel($elementModel, $pluginc)
 	{
@@ -118,4 +120,3 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		}
 	}
 }
-?>

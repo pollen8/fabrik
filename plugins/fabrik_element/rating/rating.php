@@ -140,7 +140,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			JArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
-			// do this  query so that table view only needs one query to load up all ratings
+
+			// Do this  query so that table view only needs one query to load up all ratings
 			$query = "SELECT row_id, AVG(rating) AS r, COUNT(rating) AS total FROM #__{package}_ratings WHERE rating <> -1 AND listid = "
 				. (int) $listid . " AND formid = " . (int) $formid . " AND element_id = " . (int) $elementid;
 			$query .= " AND row_id IN (" . implode(',', $ids) . ") GROUP BY row_id";
@@ -190,18 +191,23 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. fabrikfield returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
 
 	/**
-	 * can we rate this row
-	 * @param   int $row_id
-	 * @param   array $ids
+	 * Can we rate this row
+	 * 
+	 * @param   int    $row_id  row id
+	 * @param   array  $ids  ids
+	 *  
 	 * @return  bool
 	 */
 
@@ -297,11 +303,15 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#storeDatabaseFormat($val, $data)
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$params = $this->getParams();
 		$listid = JRequest::getInt('listid');
@@ -488,6 +498,14 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		return "new FbRatingList('$id', $opts);\n";
 	}
 
+	/**
+	 * Should the element's data be returned in the search all?
+	 * 
+	 * @param   bool  $advancedMode  is the elements' list is advanced search all mode?
+	 * 
+	 * @return  bool	true
+	 */
+
 	public function includeInSearchAll($advancedMode = false)
 	{
 		return false;
@@ -513,8 +531,16 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#filterValueList_All($normal, $tableName, $label, $id, $incjoin)
+	 * create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
 	 */
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)

@@ -42,10 +42,13 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -64,19 +67,20 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$bits = $this->inputProperties($repeatCounter);
-		// $$$ rob - not sure why we are setting $data to the form's data
-		//but in table view when getting read only filter value from url filter this
-		// _form_data was not set to no readonly value was returned
-		// added little test to see if the data was actually an array before using it
+		/* $$$ rob - not sure why we are setting $data to the form's data
+		 * but in table view when getting read only filter value from url filter this
+		 * _form_data was not set to no readonly value was returned
+		 * added little test to see if the data was actually an array before using it
 		if (is_array($this->getFormModel()->data))
 		{
 			$data = $this->getFormModel()->data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 
-		// $$$ hugh - if the form just failed validation, number formatted fields will already
-		// be formatted, so we need to un-format them before formatting them!
-		// $$$ rob - well better actually check if we are coming from a failed validation then :)
+		/* $$$ hugh - if the form just failed validation, number formatted fields will already
+		 * be formatted, so we need to un-format them before formatting them!
+		 * $$$ rob - well better actually check if we are coming from a failed validation then :)
+		 */
 		if (JRequest::getCmd('task') == 'form.process')
 		{
 			$value = $this->unNumberFormat($value);
@@ -85,12 +89,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		if (!$this->editable)
 		{
 			$this->_guessLinkType($value, $data, $repeatCounter);
-			//$value = $this->numberFormat($value);
 			$format = $params->get('text_format_string');
 			if ($format != '')
 			{
-				//$value =  eval(sprintf($format,$value));
-				//not sure why this was being evald??
 				$value = sprintf($format, $value);
 			}
 			if ($params->get('password') == "1")
@@ -100,10 +101,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		//stop "'s from breaking the content out of the field.
-		// $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
-		//so add false flag to ensure its encoded once only
-		// $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
+		/*
+		 * stop "'s from breaking the content out of the field.
+		 * $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
+		 * so add false flag to ensure its encoded once only
+		 * $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
+		 */
 		if (version_compare(phpversion(), '5.2.3', '<'))
 		{
 			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
@@ -261,7 +264,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 * can the element's data be encrypted
+	 * Can the element plugin encrypt data
+	 * 
+	 * @return  bool
 	 */
 
 	public function canEncrypt()
@@ -270,12 +275,15 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 *  can be overwritten in add on classes
-	 * @param   mixed	thie elements posted form data
-	 * @param   array	posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		if (is_array($val))
 		{
