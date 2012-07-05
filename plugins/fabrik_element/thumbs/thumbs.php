@@ -30,7 +30,6 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$imagepath = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/thumbs/images/';
-		//$data = explode(GROUPSPLITTER, $data);
 		$data = FabrikWorker::JSONtoData($data, true);
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $this->getlistModel()->getTable()->form_id;

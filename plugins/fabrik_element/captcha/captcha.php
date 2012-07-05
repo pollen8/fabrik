@@ -1,21 +1,27 @@
 <?php
 /**
- * Plugin element to captcha
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha1.10/recaptchalib.php');
+require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha1.10/recaptchalib.php';
+
+/**
+ * Captcha element plugin
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 {
 
-	var $_font = 'monofont.ttf';
+	protected $font = 'monofont.ttf';
 
 	/**
 	 * Determines if the element can contain data used in sending receipts,
@@ -28,6 +34,14 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	{
 		return true;
 	}
+
+	/**
+	 * Generate captcha text
+	 * 
+	 * @param   int  $characters  number of characters to generate
+	 * 
+	 * @return  string captcha text
+	 */
 
 	protected function _generateCode($characters)
 	{
@@ -87,21 +101,25 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	}
 
 	/**
-	 * check user can view the read only element & view in list view
-	 * If user logged in return false
+	 * Check user can view the read only element & view in list view
 	 * $$$ rob 14/03/2012 always returns false now - cant see a need to show it in the details / list view
 	 * 
-	 * @return  bool can view or not
+	 * @return  bool  can view or not
 	 */
 
-	function canView()
+	public function canView()
 	{
 		return false;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::canUse()
+	 * Check if the user can use the active element
+	 * 
+	 * @param   object  &$model    calling the plugin list/form
+	 * @param   string  $location  to trigger plugin on
+	 * @param   string  $event     to trigger plugin on
+	 * 
+	 * @return  bool can use or not
 	 */
 
 	public function canUse(&$model = null, $location = null, $event = null)
@@ -150,6 +168,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		if ($params->get('captcha-method') == 'recaptcha')
 		{
 			$publickey = $params->get('recaptcha_publickey');
+
 			// $$$tom added lang & theme options
 			$theme = $params->get('recaptcha_theme', 'red');
 			$lang = JString::strtolower($params->get('recaptcha_lang', 'en'));
@@ -176,8 +195,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$session->set('com_fabrik.element.captach.security_code', $code);
 
 			// ***** e-kinst
-			//	additional plugin params with validation
+
+			// Additional plugin params with validation
 			$noise_color = $params->get('captcha-noise-color', '0000FF');
+
 			// '0000FF' again if we have param value but it's invalid
 			$noise_color = $this->_getRGBcolor($noise_color, '0000FF');
 			$text_color = $params->get('captcha-text-color', '0000FF');
@@ -191,17 +212,17 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$session->set('com_fabrik.element.captach.noise_color', $noise_color);
 			$session->set('com_fabrik.element.captach.text_color', $text_color);
 			$session->set('com_fabrik.element.captach.bg_color', $bg_color);
-			$session->set('com_fabrik.element.captach.font', $this->_font);
+			$session->set('com_fabrik.element.captach.font', $this->font);
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
 
-			//***** e-kinst
-			//	It seems too dangerous to set all parameters here,
-			//	because everybody can enlarge image size and set noise color to
-			//	background color to OCR captcha values without problems
+			/* e-kinst
+			 *	It seems too dangerous to set all parameters here,
+			 *	because everybody can enlarge image size and set noise color to
+			 *	background color to OCR captcha values without problems
 			$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand() . '" alt="'
-				. JText::_('security image') . '" />';
-			// *  /e-kinst
+			    . JText::_('security image') . '" />';
+			 */
 			$str[] = '<br />';
 
 			$type = ($params->get('password') == "1") ? "password" : "text";
@@ -240,8 +261,9 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$privatekey = $params->get('recaptcha_privatekey');
 			if (JRequest::getVar('recaptcha_response_field'))
 			{
-				$resp = recaptcha_check_answer($privatekey, $_SERVER["REMOTE_ADDR"], JRequest::getVar('recaptcha_challenge_field'),
-					JRequest::getVar('recaptcha_response_field'));
+				$challenge = JRequest::getVar('recaptcha_challenge_field');
+				$response = JRequest::getVar('recaptcha_response_field');
+				$resp = recaptcha_check_answer($privatekey, $_SERVER["REMOTE_ADDR"], $challenge, $response);
 				return ($resp->is_valid) ? true : false;
 			}
 
@@ -308,23 +330,29 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	}
 
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param   mixed element's data
-	 * @param   array form records data
-	 * @param   int repeat group counter
-	 * @return string formatted value
+	 * Used to format the data when shown in the form's email
+	 * 
+	 * @param   mixed  $value          element's data
+	 * @param   array  $data           form records data
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	formatted value
 	 */
 
-	function getEmailValue($value, $data, $c)
+	public function getEmailValue($value, $data, $repeatCounter)
 	{
 		return "";
 	}
 
-	/** $$$ e-kinst
-	 * @param   string	3- or 6-digits hex color with optional leading '#'
-	 * @param   string	default hex color if first param invalid
-	/* @return  string 	as 'R+G+B' where R,G,B are decimal
+	/**
+	 * $$$ e-kinst Convert a hext colour to RGB
+	 * 
+	 * @param   string  $hexColor  3- or 6-digits hex color with optional leading '#'
+	 * @param   string  $default   default hex color if first param invalid
+	 * 
+	 * @return  string 	as 'R+G+B' where R,G,B are decimal
 	 */
+
 	private function _getRGBcolor($hexColor, $default = 'FF0000')
 	{
 		$regex = '/^#?(([\da-f])([\da-f])([\da-f])|([\da-f]{2})([\da-f]{2})([\da-f]{2}))$/i';
@@ -333,7 +361,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		{
 			if (!preg_match($regex, $default, $rgb))
 			{
-				// in case where $default invalid also (call error)
+				// In case where $default invalid also (call error)
 				$rgb = array('FF0000', 'FF0000', 'FF', '00', '00');
 			}
 		}
@@ -354,4 +382,3 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		return implode('+', $rgb);
 	}
 }
-?>

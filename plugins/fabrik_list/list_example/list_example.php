@@ -77,7 +77,17 @@ class plgFabrik_ListList_Example extends plgFabrik_List
 		return "copy records";
 	}
 
-	function canUse(&$model = null, $location = null, $event = null)
+	/**
+	 * Check if the user can use the plugin
+	 * 
+	 * @param   object  &$model    calling the plugin list/form
+	 * @param   string  $location  to trigger plugin on
+	 * @param   string  $event     to trigger plugin on
+	 * 
+	 * @return  bool can use or not
+	 */
+
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		return true;
 	}

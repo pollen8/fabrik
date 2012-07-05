@@ -603,7 +603,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * check user can view the read only element & view in list view
+	 * Check user can view the read only element & view in list view
 	 * 
 	 * @return  bool  can view or not
 	 */
@@ -2854,7 +2854,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * this builds an array containing the filters value and condition
+	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 * 
 	 * @param   string  $value  initial value
@@ -2878,7 +2878,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * esacepes the a query search string
+	 * Esacepes the a query search string
 	 * 
 	 * @param   string  $condition  filter condition
 	 * @param   value   &$value     value to esacpe

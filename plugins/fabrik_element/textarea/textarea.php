@@ -251,19 +251,21 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param   mixed	element's data
-	 * @param   array	form records data
-	 * @param   int		repeat group counter
+	 * Used to format the data when shown in the form's email
+	 * 
+	 * @param   mixed  $value          element's data
+	 * @param   array  $data           form records data
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
 	 * @return  string	formatted value
 	 */
 
-	function getEmailValue($value, $data, $c)
+	public function getEmailValue($value, $data, $repeatCounter)
 	{
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin() && $groupModel->canRepeat())
 		{
-			$value = $value[$c];
+			$value = $value[$repeatCounter];
 		}
 		return $this->renderListData($value, new stdClass);
 	}

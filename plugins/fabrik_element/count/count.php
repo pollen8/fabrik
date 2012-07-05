@@ -68,9 +68,13 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	}
 
 	/**
-	 * this element s only used for table displays so always return false
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#canUse()
+	 * Check if the user can use the active element
+	 * 
+	 * @param   object  &$model    calling the plugin list/form
+	 * @param   string  $location  to trigger plugin on
+	 * @param   string  $event     to trigger plugin on
+	 * 
+	 * @return  bool can use or not
 	 */
 
 	public function canUse(&$model = null, $location = null, $event = null)

@@ -353,16 +353,22 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * when processing the form, we always want to store the current userid
+	 * Check user can view the read only element & view in list view
+	 * 
+	 * When processing the form, we always want to store the current userid
 	 * (subject to save-on-edit, but that's done elsewhere), regardless of
 	 * element access settings, see:
+	 * 
 	 * http://fabrikar.com/forums/showthread.php?p=70554#post70554
+	 * 
 	 * So overriding the element model canView and returning true in that
 	 * case allows _addDefaultDataFromRO to do that, whilst still enforcing
-	 * Read Access settings for detail/table view
+	 * Read Access settings for detail/list view
+	 * 
+	 * @return  bool  can view or not
 	 */
 
-	function canView()
+	public function canView()
 	{
 		if (JRequest::getVar('task', '') == 'processForm')
 		{
@@ -774,14 +780,16 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param   mixed element's data
-	 * @param   array form records data
-	 * @param   int repeat group counter
-	 * @return string formatted value
+	 * Used to format the data when shown in the form's email
+	 * 
+	 * @param   mixed  $value          element's data
+	 * @param   array  $data           form records data
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	formatted value
 	 */
 
-	function getEmailValue($value, $data, $c)
+	public function getEmailValue($value, $data, $repeatCounter)
 	{
 		$key = $this->getFullName(false, true, false);
 		$rawkey = $key . '_raw';

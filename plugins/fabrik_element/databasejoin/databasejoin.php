@@ -1039,19 +1039,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * $$$ rob not tested but i think elementlist getIndEmailValue()
-	 * should handle this ok
-	 *
-	 * used to format the data when shown in the form's email
-	 * @param   mixed	element's data
-	 * @param   array	form records data
-	 * @param   int		repeat group counter
+	 * Used to format the data when shown in the form's email
+	 * 
+	 * @param   mixed  $value          element's data
+	 * @param   array  $data           form records data
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
 	 * @return  string	formatted value
 	 */
 
-	function getEmailValue($value, $data, $c)
+	public function getEmailValue($value, $data, $repeatCounter)
 	{
-		$tmp = $this->_getOptions($data, $c);
+		$tmp = $this->_getOptions($data, $repeatCounter);
 		if ($this->isJoin())
 		{
 			// $$$ hugh - if it's a repeat element, we need to render it as

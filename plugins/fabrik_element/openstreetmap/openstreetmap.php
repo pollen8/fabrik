@@ -38,12 +38,14 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 	}
 
 	/**
-	 * format the data as a microformat
-	 * @param   string	$data
+	 * Format the data as a microformat
+	 * 
+	 * @param   string	$data  data
+	 * 
 	 * @return  string	micro formatted data
 	 */
 
-	function _microformat($data)
+	protected function _microformat($data)
 	{
 		$o = $this->_strToCoords($data, 0);
 		if ($data != '')
