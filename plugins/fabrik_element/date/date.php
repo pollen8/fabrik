@@ -1617,7 +1617,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 * Add hours to a date
 	 * 
 	 * @param   mixed    $date  The initial time for the FabDate object
-	 * @param   integer	 $add   number of days to add (negtive to remove days)
+	 * @param   integer  $add   number of days to add (negtive to remove days)
 	 * 
 	 * @depreacted  - not used
 	 * 
@@ -1825,14 +1825,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				elseif ($format == '%Y %B')
 				{
 					/* $$$ hugh - testing horrible hack for different languages, initially for andorapro's site
-					 * Problem is, he has multiple language versions of the site, and needs to filter tables by "%Y %B" dropdown (i.e. "2010 November") in multiple languages.
+					 * Problem is, he has multiple language versions of the site, and needs to filter tables
+					 * by "%Y %B" dropdown (i.e. "2010 November") in multiple languages.
 					 * FabDate automagically uses the selected language when we render the date
 					 * but when we get to this point, month names are still localized, i.e. in French or German
 					 * which MySQL won't grok (until 5.1.12)
 					 * So we need to translate them back again, *sigh*
 					 * FIXME - need to make all this more generic, so we can handle any date format which uses
 					 * month or day names.
-					 */ 
+					 */
 					$matches = array();
 					if (preg_match('#\d\d\d\d\s+(\S+)\b#', $value, $matches))
 					{
@@ -2025,7 +2026,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * load a new set of default properites and params for the element
+	 * Load a new set of default properites and params for the element
+	 * 
 	 * @return object element (id = 0)
 	 */
 
@@ -2035,6 +2037,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$item->hidden = 1;
 		return $item;
 	}
+
+	/**
+	 * convert XML format data into fabrik data (used by web services)
+	 * 
+	 * @param   mixed  $v  data
+	 * 
+	 * @return  mixed  data
+	 */
 
 	public function fromXMLFormat($v)
 	{
@@ -2083,6 +2093,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			FabrikHelperHTML::script('plugins/fabrik_element/date/filter.js', $script);
 		}
 	}
+
+	/**
+	 * Get calendar filter widget options
+	 * 
+	 * @return array  options
+	 */
 
 	protected function filterCalendarOpts()
 	{
@@ -2250,5 +2266,4 @@ class FabDate extends JDate
 		}
 		return $str;
 	}
-
 }

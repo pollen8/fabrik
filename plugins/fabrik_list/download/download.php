@@ -103,7 +103,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		if (!empty($filelist)) {
 			if ($download_resize) {
 				ini_set('max_execution_time', 300);
-				require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
+				require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 				$storage = $this->getStorage();
 				$download_image_library = $params->get('download_image_library');
 				$oImage = FabimageHelper::loadLib($download_image_library);

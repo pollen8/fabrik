@@ -34,11 +34,12 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Element::requiresLightBox()
+	 * Do we need to include the lighbox js code
+	 *
+	 * @return  bool
 	 */
 
-	function requiresLightBox()
+	public function requiresLightBox()
 	{
 		return true;
 	}
