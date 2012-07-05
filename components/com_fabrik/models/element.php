@@ -1399,31 +1399,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Helper function to draw hidden field, used by any plugin that requires to draw a hidden field
-	 * 
-	 * @param   string  $name   hidden field name
-	 * @param   string  $value  hidden field value
-	 * @param   string  $id     hidden field id
-	 * @param   string  $class  class name
-	 * 
-	 * @return  string	hidden field
-	 */
-
-	protected function getHiddenField($name, $value, $id = '', $class = '')
-	{
-		if ($id != '')
-		{
-			$id = 'id="' . $id . '"';
-		}
-		if ($class !== '')
-		{
-			$class = 'class="' . $class . '"';
-		}
-		$str = '<input type="hidden" name="' . $name . '" ' . $id . ' value="' . $value . '" ' . $class . ' />' . "\n";
-		return $str;
-	}
-
-	/**
 	 * When copying elements from an existing table
 	 * once a copy of all elements has been made run them through this method
 	 * to ensure that things like watched element id's are updated
@@ -1854,11 +1829,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	* @param   string  $name   element name
 	* @param   string  $value  elemenet value
 	* @param   string  $id     element id
+	* @param   string  $class  class name
 	* 
 	* @return string
 	*/
 
-	protected function getHiddenField($name, $value, $id)
+	protected function getHiddenField($name, $value, $id = '', $class = '')
 	{
 		$opts = array(
 			'class' => 'fabrikinput inputbox',
@@ -3376,7 +3352,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * get a query for our media query
+	 * Get a query for our media query
 	 *
 	 * @param   object  &$listModel  list
 	 * @param   string  $label       label
@@ -3394,7 +3370,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * get a query for our count method
+	 * Get a query for our count method
 	 * 
 	 * @param   object  &$listModel  list
 	 * @param   string  $label       label
@@ -3544,7 +3520,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * get the sprintf format string
+	 * Get the sprintf format string
 	 * 
 	 * @since 3.0.4
 	 * 
@@ -5535,7 +5511,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * allows the element to pre-process a rows data before and join mergeing of rows
+	 * Allows the element to pre-process a rows data before and join mergeing of rows
 	 * occurs. Used in calc element to do cals on actual row rather than merged row
 	 * 
 	 * @param   string  $data  elements data for the current row

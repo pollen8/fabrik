@@ -183,10 +183,12 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	}
 
 	/**
-	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param   model	$listModel
-	 * @param   string	$label the label to apply to each avg
-	 * @return  string	sql statement
+	 * Get a query for our media query
+	 *
+	 * @param   object  &$listModel  list
+	 * @param   string  $label       label
+	 * 
+	 * @return string
 	 */
 
 	protected function getMedianQuery(&$listModel, $label = "'calc'")
