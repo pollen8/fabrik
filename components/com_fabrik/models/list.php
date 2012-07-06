@@ -1455,9 +1455,7 @@ class FabrikFEModelList extends JModelForm {
 			$joins = $this->getJoins();
 			//default to the primary key as before this fix
 			$lookupC = 0;
-			$lookUps = array('DISTINCT ' . $table->db_primary_key . ' AS __pk_val' . $lookupC);
-			$lookUpNames = array($table->db_primary_key);
-
+			
 			foreach ($joins as $join)
 			{
 				// $$$ hugh - added repeatElement, as _makeJoinAliases() is going to set canUse to false for those,
@@ -1498,12 +1496,41 @@ class FabrikFEModelList extends JModelForm {
 					 *
 					 */
 					$pk = $join->_params->get('pk');
+					if (!is_array($tmpPks[$pk]))
+					{
+						$tmpPks[$pk] = array($pk);
+					}
+					else
+					{
+						if (count($tmpPks[$pk]) == 1)
+						{
+							$v = str_replace('`', '', $tmpPks[$pk][0]);
+							$v = explode('.', $v);
+							$v[0] = $v[0] . '_0';
+							$tmpPks[$pk][0] = $db->quoteName($v[0] . '.' . $v[1]);
+						}
+						$v = str_replace('`', '', $pk);
+						$v = explode('.', $v);
+						$v[0] = $v[0] . '_' . count($tmpPks[$pk]);
+						$tmpPks[$pk][] = $db->quoteName($v[0] . '.' . $v[1]);
+					}
+				}
+			}
+			// Check for duplicate pks if so we can presume that they are aliased with _X in from query
+			$lookupC = 0;
+			$lookUps = array('DISTINCT ' . $table->db_primary_key . ' AS __pk_val' . $lookupC);
+			$lookUpNames = array($table->db_primary_key);
+			
+			foreach ($tmpPks as $pks)
+			{
+				foreach ($pks as $pk)
+				{
 					$lookUps[] = $pk . ' AS __pk_val' . ($lookupC + 1);
 					$lookUpNames[] = $pk;
 					$lookupC ++;
 				}
 			}
-
+			
 			// $$$ rob if no ordering applied i had results where main record (e.g. UK) was shown in 2 lines not next to each other
 			// causing them not to be merged and a 6 rows shown when limit set to 5. So below, if no order by set then order by main pk asc
 			$by = trim($table->order_by) === '' ? array() : (array) json_decode($table->order_by);
@@ -1528,23 +1555,25 @@ class FabrikFEModelList extends JModelForm {
 			$query['where'] = $this->_buildQueryWhere(JRequest::getVar('incfilters', 1));
 			$query['groupby'] = $this->_buildQueryGroupBy();
 			$query['order'] = $order;
-			//check that the order by fields are in the select statement
+
+			// Check that the order by fields are in the select statement
 			$squery = implode(' ', $query);
-			// can't limit the query here as this gives incorrect _data array.
-			//$db->setQuery($squery, $this->limitStart, $this->limitLength);
+
+			// Can't limit the query here as this gives incorrect _data array.
+			// $db->setQuery($squery, $this->limitStart, $this->limitLength);
 			$db->setQuery($squery);
 			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
-
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
-			$mainKeys = array(); // an array of the lists pk values
+			// An array of the lists pk values
+			$mainKeys = array();
 			foreach ($idRows as $r)
 			{
 				$mainKeys[] = $db->quote($r->__pk_val0);
 			}
-			//chop up main keys for list limitstart, length to cull the data down to the correct length as defined by the page nav/ list settings
+			// Chop up main keys for list limitstart, length to cull the data down to the correct length as defined by the page nav/ list settings
 			$mainKeys = array_slice(array_unique($mainKeys), $this->limitStart, $this->limitLength);
 			/**
 			 * $$$ rob get an array containing the PRIMARY key values for each joined tables data.
@@ -1572,8 +1601,7 @@ class FabrikFEModelList extends JModelForm {
 			}
 		}
 
-		// now lets actually construct the query that will get the required records:
-
+		// Now lets actually construct the query that will get the required records:
 		$query = array();
 		$query['select'] = $this->_buildQuerySelect();
 		JDEBUG ? $profiler->mark('queryselect: got') : null;
