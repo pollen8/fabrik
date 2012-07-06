@@ -203,10 +203,11 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * should be overwritten in plugin viz model
+	 * $$$ hugh - needs to be public, as it gets called from view via JView
 	 * @abstract
 	 */
 
-	protected function getRequiredFiltersFound()
+	public function getRequiredFiltersFound()
 	{
 		$listModels = $this->getListModels();
 		$filters = array();
