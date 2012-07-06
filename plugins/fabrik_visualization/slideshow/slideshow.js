@@ -19,23 +19,23 @@ var FbSlideshowViz = new Class({
 				captions: this.options.slideshow_captions
 			};
 			switch (this.options.slideshow_type) {
-				case 1:
-					opts = Object.append(opts, {fast: true});
-					this.slideshow = new Slideshow(this.options.html_id, this.options.slideshow_data, opts);
-					break;
-				case 2:
-					opts = Object.append(opts, {
-						zoom : parseInt(this.options.slideshow_zoom, 10),
-						pan : parseInt(this.options.slideshow_pan, 10)
-					});
-					this.slideshow = new Slideshow.KenBurns(this.options.html_id, this.options.slideshow_data, opts);
-					break;
-				case 3:
-					this.slideshow = new Slideshow.Push(this.options.html_id, this.options.slideshow_data, opts);
-					break;
-				case 4:
-					this.slideshow = new Slideshow.Fold(this.options.html_id, this.options.slideshow_data, opts);
-					break;
+			case 1:
+				opts = Object.append(opts, {fast: true});
+				this.slideshow = new Slideshow(this.options.html_id, this.options.slideshow_data, opts);
+				break;
+			case 2:
+				opts = Object.append(opts, {
+					zoom : parseInt(this.options.slideshow_zoom, 10),
+					pan : parseInt(this.options.slideshow_pan, 10)
+				});
+				this.slideshow = new Slideshow.KenBurns(this.options.html_id, this.options.slideshow_data, opts);
+				break;
+			case 3:
+				this.slideshow = new Slideshow.Push(this.options.html_id, this.options.slideshow_data, opts);
+				break;
+			case 4:
+				this.slideshow = new Slideshow.Fold(this.options.html_id, this.options.slideshow_data, opts);
+				break;
 			}
 		}.bind(this));
 	}
