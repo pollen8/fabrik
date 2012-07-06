@@ -241,7 +241,7 @@ class FabrikFEModelVisualization extends JModel
 	 * @return  bool
 	 */
 
-	protected function getRequiredFiltersFound()
+	public function getRequiredFiltersFound()
 	{
 		$listModels = $this->getListModels();
 		$filters = array();

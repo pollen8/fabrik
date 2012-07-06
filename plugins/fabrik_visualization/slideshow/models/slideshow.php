@@ -186,7 +186,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 		$opts->slideshow_data = $slideshow_data = $this->getImageJSData();
 		$opts->id = $viz->id;
 		$opts->html_id = 'slideshow_viz';
-		$opts->slideshow_type = $params->get('slideshow_viz_type', 1);
+		$opts->slideshow_type = (int) $params->get('slideshow_viz_type', 1);
 		$opts->slideshow_width = (int) $params->get('slideshow_viz_width', 400);
 		$opts->slideshow_height = (int) $params->get('slideshow_viz_height', 300);
 		$opts->slideshow_delay = (int) $params->get('slideshow_viz_delay', 5000);
@@ -196,6 +196,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization {
 		$opts->slideshow_thumbnails = $use_thumbs ? true : false;
 		$opts->slideshow_captions = $use_captions ? true : false;
 		$opts->container = "slideshow_viz_".$this->getVisualization()->id;
+		$opts->liveSite = COM_FABRIK_LIVESITE;
 		$opts = json_encode($opts);
 		$str .= "fabrikSlideshowViz = new FbSlideshowViz('slideshow_viz', $opts)\n";
 	    $str .= "});\n";
