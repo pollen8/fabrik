@@ -15,27 +15,92 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field label="PLG_VISUALIZATION_SLIDESHOW_CONNECTION_LABEL" name="slideshow_viz_connection" type="connections"/>
+			<field
+				label="PLG_VISUALIZATION_SLIDESHOW_CONNECTION_LABEL"
+				name="slideshow_viz_connection"
+				type="connections"/>
 				
-			<field description="PLG_VISUALIZATION_SLIDESHOW_TABLE_DESC" label="PLG_VISUALIZATION_SLIDESHOW_TABLE_LABEL" name="slideshow_viz_table" observe="params_slideshow_viz_connection" type="fabriktables"/>
+			<field
+				description="PLG_VISUALIZATION_SLIDESHOW_TABLE_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_TABLE_LABEL"
+				name="slideshow_viz_table"
+				observe="params_slideshow_viz_connection"
+				type="fabriktables"
+				connection_in_repeat="false"
+				repeat="0"/>
 				
-			<field connection="slideshow_viz_connection" description="PLG_VISUALIZATION_SLIDESHOW_FILE_DESC" label="PLG_VISUALIZATION_SLIDESHOW_FILE_LABEL" name="slideshow_viz_file" table="params_slideshow_viz_table" type="element"/>
+			<field
+				connection="params_slideshow_viz_connection"
+				description="PLG_VISUALIZATION_SLIDESHOW_FILE_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_FILE_LABEL"
+				name="slideshow_viz_file"
+				table="params_slideshow_viz_table"
+				connection_in_repeat="false"
+				type="element"/>
 				
-			<field description="PLG_VISUALIZATION_SLIDESHOW_FILE_FORMAT_DESC" label="PLG_VISUALIZATION_SLIDESHOW_FILE_FORMAT_LABEL" name="slideshow_viz_file_format" size="30" type="text"/>
+			<field
+				description="PLG_VISUALIZATION_SLIDESHOW_FILE_FORMAT_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_FILE_FORMAT_LABEL"
+				name="slideshow_viz_file_format"
+				size="30"
+				type="text"/>
 				
-			<field connection="slideshow_viz_connection" description="PLG_VISUALIZATION_SLIDESHOW_CAPTION_DESC" label="PLG_VISUALIZATION_SLIDESHOW_CAPTION_LABEL" name="slideshow_viz_caption" table="params_slideshow_viz_table" type="element"/>
+			<field
+				connection="params_slideshow_viz_connection"
+				description="PLG_VISUALIZATION_SLIDESHOW_CAPTION_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_CAPTION_LABEL"
+				name="slideshow_viz_caption"
+				table="params_slideshow_viz_table"
+				connection_in_repeat="false"
+				type="element"/>
 				
-			<field default="400" description="PLG_VISUALIZATION_SLIDESHOW_WIDTH_DESC" label="PLG_VISUALIZATION_SLIDESHOW_WIDTH_LABEL" name="slideshow_viz_width" size="4" type="text"/>
+			<field
+				default="400"
+				description="PLG_VISUALIZATION_SLIDESHOW_WIDTH_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_WIDTH_LABEL"
+				name="slideshow_viz_width"
+				size="4"
+				type="text"/>
 				
-			<field default="300" description="PLG_VISUALIZATION_SLIDESHOW_HEIGHT_DESC" label="PLG_VISUALIZATION_SLIDESHOW_HEIGHT_LABEL" name="slideshow_viz_height" size="4" type="text"/>
+			<field
+				default="300"
+				description="PLG_VISUALIZATION_SLIDESHOW_HEIGHT_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_HEIGHT_LABEL"
+				name="slideshow_viz_height"
+				size="4"
+				type="text"/>
 				
-			<field default="5000" description="PLG_VISUALIZATION_SLIDESHOW_DELAY_DESC" label="PLG_VISUALIZATION_SLIDESHOW_DELAY_LABEL" name="slideshow_viz_delay" size="6" type="text"/>
+			<field
+				default="5000"
+				description="PLG_VISUALIZATION_SLIDESHOW_DELAY_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_DELAY_LABEL"
+				name="slideshow_viz_delay"
+				size="6"
+				type="text"/>
 				
-			<field default="2000" description="PLG_VISUALIZATION_SLIDESHOW_DURATION_DESC" label="PLG_VISUALIZATION_SLIDESHOW_DURATION_LABEL" name="slideshow_viz_duration" size="6" type="text"/>
+			<field
+				default="2000"
+				description="PLG_VISUALIZATION_SLIDESHOW_DURATION_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_DURATION_LABEL"
+				name="slideshow_viz_duration"
+				size="6"
+				type="text"/>
 				
-			<field default="50" description="PLG_VISUALIZATION_SLIDESHOW_ZOOM_DESC" label="PLG_VISUALIZATION_SLIDESHOW_ZOOM_LABEL" name="slideshow_viz_zoom" size="6" type="text"/>
+			<field
+				default="50"
+				description="PLG_VISUALIZATION_SLIDESHOW_ZOOM_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_ZOOM_LABEL"
+				name="slideshow_viz_zoom"
+				size="6"
+				type="text"/>
 				
-			<field default="20" description="PLG_VISUALIZATION_SLIDESHOW_PAN_DESC" label="PLG_VISUALIZATION_SLIDESHOW_PAN_LABEL" name="slideshow_viz_pan" size="6" type="text"/>
+			<field
+				default="20"
+				description="PLG_VISUALIZATION_SLIDESHOW_PAN_DESC"
+				label="PLG_VISUALIZATION_SLIDESHOW_PAN_LABEL"
+				name="slideshow_viz_pan"
+				size="6"
+				type="text"/>
 				
 		</fieldset>
 	</fields>
