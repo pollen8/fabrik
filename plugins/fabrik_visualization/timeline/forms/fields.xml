@@ -4,30 +4,159 @@
 		
 		<fieldset name="plg-visualization-timeline" repeat="1" repeatcontrols="1">
 			
-			<field label="PLG_VIZ_TIMELINE_CONNECTION_LABEL" name="timeline_connection" type="connections"/>
+			<field name="timeline_connection"
+				label="PLG_VIZ_TIMELINE_CONNECTION_LABEL"
+				type="connections"/>
 				
-			<field connection_in_repeat="false" label="PLG_VIZ_TIMELINE_LIST_LABEL" name="timeline_table" observe="params_timeline_connection" type="fabriktables"/>
+			<field name="timeline_table"
+				connection_in_repeat="false"
+				label="PLG_VIZ_TIMELINE_LIST_LABEL"
+				observe="params_timeline_connection"
+				type="fabriktables"/>
 				
-			<field connection="params_timeline_connection" connection_in_repeat="false" description="PLG_VIZ_TIMELINE_START_DATE_DESC" label="PLG_VIZ_TIMELINE_START_DATE_LABEL" name="timeline_startdate" published="true" showintable="true" table="params_timeline_table" type="element"/>
+			<field name="timeline_startdate"
+				connection="params_timeline_connection"
+				connection_in_repeat="false"
+				description="PLG_VIZ_TIMELINE_START_DATE_DESC"
+				label="PLG_VIZ_TIMELINE_START_DATE_LABEL"
+				published="true"
+				showintable="true"
+				table="params_timeline_table"
+				type="element"/>
 				
-			<field connection="params_timeline_connection" connection_in_repeat="false" description="PLG_VIZ_TIMELINE_END_DATE_DESC" label="PLG_VIZ_TIMELINE_END_DATE_LABEL" name="timeline_enddate" published="true" showintable="true" table="params_timeline_table" type="element"/>
+			<field name="timeline_enddate"
+				connection="params_timeline_connection"
+				connection_in_repeat="false"
+				description="PLG_VIZ_TIMELINE_END_DATE_DESC"
+				label="PLG_VIZ_TIMELINE_END_DATE_LABEL" 
+				published="true"
+				showintable="true"
+				table="params_timeline_table"
+				type="element"/>
 				
-			<field connection="params_timeline_connection" connection_in_repeat="false" description="PLG_VIZ_TIMELINE_LABEL_DESC" label="PLG_VIZ_TIMELINE_LABEL_LABEL" name="timeline_label" published="true" showintable="true" table="params_timeline_table" type="element"/>
+			<field name="timeline_label"
+				connection="params_timeline_connection"
+				connection_in_repeat="false"
+				description="PLG_VIZ_TIMELINE_LABEL_DESC"
+				label="PLG_VIZ_TIMELINE_LABEL_LABEL" published="true"
+				showintable="true"
+				table="params_timeline_table"
+				type="element"/>
 				
-			<field cols="40" description="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_DESC" label="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_LABEL" name="timeline_detailtemplate" rows="8" type="textarea"/>
+			<field name="timeline_detailtemplate"
+				cols="40"
+				description="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_DESC"
+				label="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_LABEL"
+				rows="8"
+				type="textarea"/>
 				
-			<field default="#58A0DC" description="PLG_VIZ_TIMELINE_COLOUR_DESC" label="PLG_VIZ_TIMELINE_COLOUR_LABEL" name="timeline_colour" size="8" type="text"/>
+			<field name="timeline_colour"
+				default="#58A0DC"
+				description="PLG_VIZ_TIMELINE_COLOUR_DESC"
+				label="PLG_VIZ_TIMELINE_COLOUR_LABEL"
+				size="8"
+				type="text"/>
 				
-			<field default="#58A0DC" description="PLG_VIZ_TIMELINE_TEXT_COLOUR_DESC" label="PLG_VIZ_TIMELINE_TEXT_COLOUR_LABEL" name="timeline_text_color" size="8" type="text"/>
-				
-			<field connection="params_timeline_connection" connection_in_repeat="false" description="PLG_VIZ_TIMELINE_CLASS_DESC" label="PLG_VIZ_TIMELINE_CLASS_LABEL" name="timeline_class" published="true" showintable="true" table="params_timeline_table" type="element"/>
+			<field name="timeline_text_color"
+				default="#58A0DC"
+				description="PLG_VIZ_TIMELINE_TEXT_COLOUR_DESC"
+				label="PLG_VIZ_TIMELINE_TEXT_COLOUR_LABEL"
+				size="8"
+				type="text"/>
+			
+			<field name="timeline_class"
+				connection="params_timeline_connection"
+				connection_in_repeat="false"
+				description="PLG_VIZ_TIMELINE_CLASS_DESC"
+				label="PLG_VIZ_TIMELINE_CLASS_LABEL"
+				published="true" showintable="true"
+				table="params_timeline_table"
+				type="element"/>
 			
 		</fieldset>
 		
 		<fieldset name="plg-visualization-layout">
 			
-			<field directory="/plugins/fabrik_visualization/timeline/views/timeline/tmpl/" label="PLG_VIZ_TIMELINE_TEMPLATE_LABEL" name="timeline_layout" type="folderlist"/>
+			<field name="timeline_bands" 
+				type="fabrikmodalrepeat" 
+				label="PLG_VIZ_TIMELINE_BANDS_LABEL"
+				description="PLG_VIZ_TIMELINE_BANDS_DESC">
+			
+				<fields name="params">
+					<fieldset name="timeline_bands_modal" repeat="true">
+						<field name="timelne_band_interval_unit" 
+							type="list"
+							label="PLG_VIZ_TIMELINE_BAND_INTERVAL_UNIT_LABEL">
+								<option value="1">PLG_VIZ_TIMELINE_SECOND</option>
+								<option value="2">PLG_VIZ_TIMELINE_MINUTE</option>
+								<option value="3">PLG_VIZ_TIMELINE_HOUR</option>
+								<option value="4">PLG_VIZ_TIMELINE_DAY</option>
+								<option value="5">PLG_VIZ_TIMELINE_WEEK</option>
+								<option value="6">PLG_VIZ_TIMELINE_MONTH</option>
+								<option value="7">PLG_VIZ_TIMELINE_YEAR</option>
+								<option value="8">PLG_VIZ_TIMELINE_DECADE</option>
+								<option value="9">PLG_VIZ_TIMELINE_CENTUARY</option>
+								<option value="-1">PLG_VIZ_TIMELINE_EPOC</option>
+						</field>
+						
+						<field name="timeline_band_background_colour" 
+							type="field"
+							size="6"
+							description="PLG_VIZ_TIMELINE_BAND_BACKGROUND_DESC"
+							label="PLG_VIZ_TIMELINE_BAND_BACKGROUND_LABEL" />
+					
+						<field name="timeline_band_width" 
+							type="field"
+							size="3"
+							description="PLG_VIZ_TIMELINE_BAND_WIDTH_DESC"
+							label="PLG_VIZ_TIMELINE_BAND_WIDTH_LABEL" />
+							
+						<field name="timeline_band_as_overview"
+							type="list"
+							default="0"
+							description="PLG_VIZ_TIMELINE_BAND_AS_OVERVIEW_DESC"
+							label="PLG_VIZ_TIMELINE_BAND_AS_OVERVIEW_LABEL" >
+								<option value="0">JNO</option>
+								<option value="1">JYES</option>	
+						</field>
+					</fieldset>
+				</fields>
+			</field>
+			
+			<field name="timeline_layout"
+				type="folderlist"
+				directory="/plugins/fabrik_visualization/timeline/views/timeline/tmpl/"
+				label="PLG_VIZ_TIMELINE_TEMPLATE_LABEL" />
+			
+			<field name="timeline_date_format"
+				type="field"
+				default="%c"
+				description="PLG_VIZ_TIMELINE_DATE_FORMAT_DESC"
+				label="PLG_VIZ_TIMELINE_DATE_FORMAT_LABEL" />
 				
+			<field name="timeline_orientation"
+				type="list"
+				default="0"
+				description="PLG_VIZ_TIMELINE_ORIENTATION_DESC"
+				label="PLG_VIZ_TIMELINE_ORIENTATION_LABEL">
+					<option value="1">PLG_VIZ_TIMELINE_VERTICAL</option>
+					<option value="0">PLG_VIZ_TIMELINE_HORIZONTAL</option>
+			</field>
+			
+			<field name="timeline_height"
+				type="field"
+				size="5"
+				default="300"
+				description="PLG_VIS_TIMELINE_HEIGHT_DESC"
+				label="PLG_VIS_TIMELINE_HEIGHT_LABEL" />
+			
+			<field name="timeline_width"
+				type="field"
+				size="5"
+				default="700"
+				description="PLG_VIS_TIMELINE_WIDTH_DESC"
+				label="PLG_VIS_TIMELINE_WIDTH_LABEL" />	
 		</fieldset>
+		
 	</fields>
 </form>
