@@ -15,7 +15,7 @@ var FbVisTimeline = new Class({
 		this.tl = null;
 		var dateFormat = this.options.dateFormat;
 
-		Timeline.GregorianDateLabeller.prototype.labelPrecise = function(date)
+		Timeline.GregorianDateLabeller.prototype.labelPrecise = function (date)
 		{
 			// Crazy hackery to reset the label time to the correct one.
 			// means the Z time format will not give you the correct tz
@@ -42,8 +42,7 @@ var FbVisTimeline = new Class({
 				width : "70%",
 				intervalUnit : Timeline.DateTime.DAY,
 				intervalPixels : 50
-			}
-		
+			};
 		
 		var bandTracks = [];
 		
@@ -58,7 +57,7 @@ var FbVisTimeline = new Class({
 		}
 		
 		// Sync the bands to scroll together
-		for (var b = 1; b < json.bands.length; b ++) {
+		for (b = 1; b < json.bands.length; b ++) {
 			bandTracks[b].syncWith = 0;
 			bandTracks[b].highlight = true;
 		}
@@ -140,7 +139,6 @@ var FbVisTimeline = new Class({
 		}.bind(this));
 		
 		dateEl.addEvent('keyup', function (e) {
-			console.log(e);
 			if (e.key === 'enter') {
 				this.updateFromField();
 			}
