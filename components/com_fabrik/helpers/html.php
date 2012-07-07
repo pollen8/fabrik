@@ -355,6 +355,12 @@ EOD;
 
 	public static function stylesheet($file, $attribs = array())
 	{
+		// $$$ hugh - moved this to top of function, as we now apply livesite
+		// in either usage cases below.
+		if (!strstr($file, COM_FABRIK_LIVESITE))
+		{
+			$file = COM_FABRIK_LIVESITE . '/' . $file;
+		}
 		if ((JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
 		{
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
@@ -363,21 +369,13 @@ EOD;
 			// note your ajax call must have 'evalScripts':true set in its properties
 			if (!in_array($file, self::$ajaxCssFiles))
 			{
-				// $$$ rob added COM_FABRIK_LIVESITE to make full path name other wise style sheets gave 404 error
-				// when loading from site with sef urls.
-
-				echo "<script type=\"text/javascript\">var v = new Asset.css('" . COM_FABRIK_LIVESITE . $file . "', {});</script>\n";
+				echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});</script>\n";
 				self::$ajaxCssFiles[] = $file;
 			}
 		}
 		else
 		{
-			// $$$ rob 29/05/2011 ensure file is appended with live site, stops issues when loading css from admin pages.
 			$document = JFactory::getDocument();
-			if (!strstr($file, COM_FABRIK_LIVESITE))
-			{
-				$file = COM_FABRIK_LIVESITE . '/' . $file;
-			}
 			// $$$ rob 27/04/2011 changed from JHTML::styleSheet as that doesn't work loading
 			// php style sheets with querystrings in them
 			$document->addStylesheet($file);
