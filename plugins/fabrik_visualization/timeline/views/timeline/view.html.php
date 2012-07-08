@@ -13,6 +13,11 @@ class fabrikViewTimeline extends JView
 		$srcs = FabrikHelperHTML::framework();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
+		
+		// Needed to load the language file!
+		$pluginManager = FabrikWorker::getPluginManager();
+		$plugin = $pluginManager->getPlugIn('timeline', 'visualization');
+		
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);
 		$row = $model->getVisualization();
@@ -29,15 +34,19 @@ class fabrikViewTimeline extends JView
 		$this->width = $params->get('timeline_width', '700');
 		$this->height = $params->get('timeline_height', '300');
 		$tmpl = $params->get('timeline_layout', $tmpl);
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/timeline/views/timeline/tmpl/' . $tmpl;
-		$this->_setPath('template', $tmplpath);
+		$tmplpath = '/plugins/fabrik_visualization/timeline/views/timeline/tmpl/' . $tmpl;
+		$this->_setPath('template', JPATH_ROOT . $tmplpath);
 
-		// Ensure we don't have an incorrect version of mootools loaded
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
+		
+		FabrikHelperHTML::stylesheetFromPath($tmplpath . '/template.css');
 		$srcs[] = 'media/com_fabrik/js/list.js';
 		$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
 		FabrikHelperHTML::script($srcs, $js);
 
+		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => 'timelineDatePicker_cal_img'));
+		$this->datePicker = '<input type="text" name="timelineDatePicker" id="timelineDatePicker" value="" />' . $img;
+		
 		// Check and add a general fabrik custom css file overrides template css and generic table css
 		FabrikHelperHTML::stylesheetFromPath('media/com_fabrik/css/custom.css');
 

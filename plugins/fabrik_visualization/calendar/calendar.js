@@ -122,7 +122,7 @@ var fabrikCalendar = new Class({
 		});
 		eventCont.addEvent('mouseenter', this.doPopupEvent.bindWithEvent(this, [entry, label]));		
 		
-		if (entry.link !== '' && this.options.readonly == 0) {
+		if (entry.link !== '' && this.options.readonly === false) {
 			x = new Element('a', {'href': entry.link, 'class': 'fabrikEditEvent', 
 				'events': {
 				'click': function (e) {
@@ -463,7 +463,7 @@ var fabrikCalendar = new Class({
 		var entry = new CloneObject(opts.entry, true, ['enddate', 'startdate']);//for day view to avoid dups when scrolling through days //dont clone the date objs for ie
 		var trs = this.el.getElements(opts.divclass + ' tr');
 		var hour = (entry.startdate.isSameDay(counterDate)) ? entry.startdate.getHours() - this.options.open : 0;
-		( hour < 0 ) ? hour = 0 : hour = hour;
+		hour = hour < 0 ?  0 : hour;
 		var i = opts.tdOffset;
 		
 		entry.label = entry.label ? entry.label : '';
@@ -485,13 +485,13 @@ var fabrikCalendar = new Class({
 		}
 		
 		if (entry.startdate.getDay() !== entry.enddate.getDay()) {
-			duration = ( this.options.open != 0 || this.options.close != 24 ) ? this.options.close - this.options.open + 1 : 24;
+			duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24;
 			if (entry.startdate.isSameDay(counterDate)) {
-				duration = ( this.options.open != 0 || this.options.close != 24 ) ? this.options.close - this.options.open + 1 : 24 - entry.startdate.getHours();
+				duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open + 1 : 24 - entry.startdate.getHours();
 			} else {
 				entry.startdate.setHours(0);
 				if (entry.enddate.isSameDay(counterDate)) {
-					duration = ( this.options.open != 0 || this.options.close != 24 ) ? this.options.close - this.options.open : entry.enddate.getHours();
+					duration = this.options.open !== 0 || this.options.close !== 24 ? this.options.close - this.options.open : entry.enddate.getHours();
 				}
 			}
 		}
@@ -882,8 +882,10 @@ var fabrikCalendar = new Class({
 	renderWeekView: function () {
 		var i, d, tr, tbody, we;
 		this.popWin.setStyle('opacity', 0);
-		// For some reason, using '===' does not work, so une '==' instead
-		we = this.options.showweekends == 0 ? 6 : 8;
+		// For some reason, using '===' does not work, so une '==' instead ! 
+		// $$$ rob : Javascript MUST be strongly typed to pass JSLint in our build scripts
+		// As show weekends is a boolean I have specically cased it to such in the php code 
+		we = this.options.showweekends === false ? 6 : 8;
 		this.options.viewType = 'weekView';
 		if (!this.weekView) {
 			tbody = new Element('tbody');

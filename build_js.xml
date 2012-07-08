@@ -71,6 +71,7 @@
 				<include name="**/*.js" />
 				<exclude name="**/lib/" />
 				<exclude name="**/*-min.js" />
+				<exclude name="**/libs/" />
 			</fileset>
 			<arg line="-jar ${js.jar} ${jshint-rhino.js}" />
 			<srcfile />

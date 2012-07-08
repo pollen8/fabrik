@@ -110,8 +110,8 @@ class fabrikViewCalendar extends JView
 		$options->weekday->height = (int) $params->get('calendar-weekday-height', 10);
 		$options->open = (int)$params->get('open-hour', 0);
 		$options->close = (int)$params->get('close-hour', 24);
-		$options->showweekends = $params->get('calendar-show-weekends', 1);
-		$options->readonly = $params->get('calendar-read-only', 0);
+		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
+		$options->readonly = (bool) $params->get('calendar-read-only', false);
 		
 		$json = json_encode($options);
 
