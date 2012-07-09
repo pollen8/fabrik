@@ -48,7 +48,6 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$textColours = (array) $params->get('timeline_text_color', array());
 		$classNames = (array) $params->get('timeline_class', array());
 
-		// $$$ rob - dates are already formatted with timezone offset i think
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
 		$lists = $params->get('timeline_table', array());
@@ -92,15 +91,6 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 				$endParams = $endElement->getParams();
 				$startParams = $startElement->getParams();
 
-				/**
-				 *  timeline always shows dates in GMT so lets take a guess if the table view should show the times or not
-				 *  if they don't its a bit of a hack as the timeline will still say its GMT but at least its GMT for a time of 00:00:00
-				 */
-				$tblEndFormat = $endParams->get('date_table_format');
-				$endTimeFormat = (strstr($tblEndFormat, '%H') || strstr($tblEndFormat, '%M')) ? true : false;
-				$tblStartFormat = $startParams->get('date_table_format');
-				$startTimeFormat = (strstr($tblStartFormat, '%H') || strstr($tblStartFormat, '%M')) ? true : false;
-
 				$action = $app->isAdmin() ? "task" : "view";
 				$nextview = $listModel->canEdit() ? "form" : "details";
 
@@ -113,23 +103,25 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 							$event = new stdClass;
 							$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row));
 							$event->description = $html;
-							$event->start = (array_key_exists($startdate . '_raw', $row) && $startTimeFormat) ? $row->{$startdate . '_raw'}
-								: $row->$startdate;
+							$event->start = array_key_exists($startdate . '_raw', $row) ? $row->{$startdate . '_raw'} : $row->$startdate;
 							$event->end = $event->start;
 							if (trim($enddate) !== '')
 							{
-								$end = (array_key_exists($enddate . '_raw', $row) && $endTimeFormat) ? $row->{$enddate . '_raw'} : @$row->$enddate;
+								$end = array_key_exists($enddate . '_raw', $row) ? $row->{$enddate . '_raw'} : @$row->$enddate;
 								$event->end = ($end >= $event->start) ? $end : '';
 
-								// If we are showing the times we need to re-offset the date as its already been offset in the tbl model
-								$endD = !(array_key_exists($enddate . '_raw', $row) && $endTimeFormat) ? JFactory::getDate($event->end, $timeZone)
-									: JFactory::getDate($event->end);
-								$event->end = $endD->toISO8601();
+								$sDate = JFactory::getDate($event->end);
+								$sDate->setTimezone($timeZone);
+								$event->end = $sDate->toISO8601(true);
 							}
+							
+							$sDate = JFactory::getDate($event->start);
+							$sDate->setTimezone($timeZone);
+							$event->start = $sDate->toISO8601(true);
+							
+							$bits = explode('+', $event->start);
+							$event->start = $bits[0] . '+00:00';
 
-							$sDate = !(array_key_exists($startdate . '_raw', $row) && $startTimeFormat) ? JFactory::getDate($event->start, $timeZone)
-								: JFactory::getDate($event->start);
-							$event->start = $sDate->toISO8601();
 							$event->title = strip_tags(@$row->$title);
 							$url = 'index.php?option=com_fabrik&view=' . $nextview . '&formid=' . $table->form_id . '&rowid=' . $row->__pk_val
 								. '&listid=' . $listid;

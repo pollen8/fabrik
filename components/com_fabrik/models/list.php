@@ -1455,7 +1455,8 @@ class FabrikFEModelList extends JModelForm {
 			$joins = $this->getJoins();
 			//default to the primary key as before this fix
 			$lookupC = 0;
-			
+			$tmpPks = array();
+
 			foreach ($joins as $join)
 			{
 				// $$$ hugh - added repeatElement, as _makeJoinAliases() is going to set canUse to false for those,
@@ -1496,7 +1497,7 @@ class FabrikFEModelList extends JModelForm {
 					 *
 					 */
 					$pk = $join->_params->get('pk');
-					if (!is_array($tmpPks[$pk]))
+					if (!array_key_exists($pk, $tmpPks) || !is_array($tmpPks[$pk]))
 					{
 						$tmpPks[$pk] = array($pk);
 					}
@@ -1520,7 +1521,7 @@ class FabrikFEModelList extends JModelForm {
 			$lookupC = 0;
 			$lookUps = array('DISTINCT ' . $table->db_primary_key . ' AS __pk_val' . $lookupC);
 			$lookUpNames = array($table->db_primary_key);
-			
+
 			foreach ($tmpPks as $pks)
 			{
 				foreach ($pks as $pk)
@@ -1530,7 +1531,7 @@ class FabrikFEModelList extends JModelForm {
 					$lookupC ++;
 				}
 			}
-			
+
 			// $$$ rob if no ordering applied i had results where main record (e.g. UK) was shown in 2 lines not next to each other
 			// causing them not to be merged and a 6 rows shown when limit set to 5. So below, if no order by set then order by main pk asc
 			$by = trim($table->order_by) === '' ? array() : (array) json_decode($table->order_by);

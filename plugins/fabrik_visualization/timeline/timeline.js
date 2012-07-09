@@ -1,7 +1,3 @@
-//move time line to given date:
-//timeline.tl.getBand(1).setCenterVisibleDate(new Date('2009', '9', '12'))
-//timeline.tl.getBand(1).scrollToCenter(new Date('2009', '9', '12'))
-
 var FbVisTimeline = new Class({
 	
 	Implements: [Options],
@@ -19,12 +15,16 @@ var FbVisTimeline = new Class({
 		this.tl = null;
 		var dateFormat = this.options.dateFormat;
 
-		Timeline.GregorianDateLabeller.prototype.labelPrecise = function(date)
+		Timeline.GregorianDateLabeller.prototype.labelPrecise = function (date)
 		{
-			return date.format(dateFormat);
+			// Crazy hackery to reset the label time to the correct one.
+			// means the Z time format will not give you the correct tz
+			var newdate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+			return newdate.format(dateFormat);
 		}; 
 		
 		var eventSource = new Timeline.DefaultEventSource();
+
 		// TODO: theme the viz in admin
 		var theme = Timeline.ClassicTheme.create();
 		theme.event.bubble.width = 320;
@@ -42,8 +42,7 @@ var FbVisTimeline = new Class({
 				width : "70%",
 				intervalUnit : Timeline.DateTime.DAY,
 				intervalPixels : 50
-			}
-		
+			};
 		
 		var bandTracks = [];
 		
@@ -56,57 +55,14 @@ var FbVisTimeline = new Class({
 			bandClone.theme = theme;
 			bandTracks.push(Timeline.createBandInfo(bandClone));
 		}
-		//var bandInfos = bandTracks;
 		
-		for (var b = 1; b < json.bands.length; b ++) {
-			bandTracks[b].syncWith = 0;//json.bands[b].syncWith;
-			bandTracks[b].highlight = true;//json.bands[b].highlight;
+		// Sync the bands to scroll together
+		for (b = 1; b < json.bands.length; b ++) {
+			bandTracks[b].syncWith = 0;
+			bandTracks[b].highlight = true;
 		}
-		console.log(bandTracks);
+	
 		this.tl = Timeline.create(document.id("my-timeline"), bandTracks, this.options.orientation);
-//*****************************///		
-		// create the timeline
-		var bandInfos = [ Timeline.createBandInfo({
-			trackGap : 0.2,
-			width : "30%",
-			intervalUnit : Timeline.DateTime.DAY,
-			intervalPixels : 50,
-			eventSource : eventSource,
-			overview : true,
-			theme : theme
-
-		}), Timeline.createBandInfo({
-			showEventText : false,
-			overview : false,
-			trackHeight : 0.5,
-			trackGap : 0.2,
-			width : "40%",
-			intervalUnit : Timeline.DateTime.MONTH,
-			intervalPixels : 150,
-			eventSource : eventSource,
-			theme : theme
-
-		}),
-		
-		 Timeline.createBandInfo({
-				trackGap : 0.2,
-				width : "30%",
-				intervalUnit : Timeline.DateTime.YEAR,
-				intervalPixels : 50,
-				eventSource : eventSource,
-				theme : theme
-
-			})
-			];
-		bandInfos[1].syncWith = 0;
-		bandInfos[1].highlight = true;
-		
-		bandInfos[2].syncWith = 0;
-		bandInfos[2].highlight = true;
-		
-		console.log(bandInfos);
-		//this.tl = Timeline.create(document.id("my-timeline"), bandInfos, this.options.orientation);
-		//*****************************///
 		
 		eventSource.loadJSON(this.json, '');
 
@@ -118,5 +74,85 @@ var FbVisTimeline = new Class({
 				}.bind(this), 500);
 			}
 		}.bind(this));
+		
+		this.watchDatePicker();
+	},
+	
+	watchDatePicker: function () {
+		var dateEl = document.id('timelineDatePicker');
+		if (typeOf(dateEl) === 'null') {
+			return;
+		}
+		var params = {'eventName': 'click',
+				'ifFormat': this.options.dateFormat,
+				'daFormat': this.options.dateFormat,
+				'singleClick': true,
+				'align': "Br",
+				'range': [1900, 2999],
+				'showsTime': false,
+				'timeFormat': '24',
+				'electric': true,
+				'step': 2,
+				'cache': false,
+				'showOthers': false,
+				'advanced': false };
+		var dateFmt = this.options.dateFormat;
+		params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
+		params.onClose = function (cal) {
+			cal.hide();
+		};
+		params.onSelect = function () {
+			if (this.cal.dateClicked) {
+				this.cal.callCloseHandler();
+				dateEl.value = this.cal.date.format(dateFmt);
+				this.tl.getBand(0).setCenterVisibleDate(this.cal.date);
+			}
+		}.bind(this);
+		
+		params.inputField = dateEl;
+		params.button = document.id('timelineDatePicker_cal_img');
+		params.align = "Tl";
+		params.singleClick = true;
+		
+		this.cal = new Calendar(0,
+				params.date,
+				params.onSelect,
+				params.onClose);
+		
+		this.cal.showsOtherMonths = params.showOthers;
+		this.cal.yearStep = params.step;
+		this.cal.setRange(params.range[0], params.range[1]);
+		this.cal.params = params;
+		
+		this.cal.setDateFormat(dateFmt);
+		this.cal.create();
+		this.cal.refresh();
+		this.cal.hide();
+		
+		params.button.addEvent('click', function (e) {
+			this.cal.showAtElement(params.button);
+			this.cal.show();
+		}.bind(this));
+		
+		dateEl.addEvent('blur', function (e) {
+			this.updateFromField();
+		}.bind(this));
+		
+		dateEl.addEvent('keyup', function (e) {
+			if (e.key === 'enter') {
+				this.updateFromField();
+			}
+		}.bind(this));
+	
+	},
+	
+	updateFromField: function () {
+		var dateStr = document.id('timelineDatePicker').value;
+		d = Date.parseDate(dateStr, this.options.dateFormat);
+		this.cal.date = d;
+		var newdate = new Date(this.cal.date.getTime() - (this.cal.date.getTimezoneOffset() * 60000));
+		//this.tl.getBand(0).setCenterVisibleDate(newdate);
+		this.tl.getBand(0).scrollToCenter(newdate);
+		
 	}
 });

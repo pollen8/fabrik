@@ -69,7 +69,7 @@ FabrikHelperHTML::script($srcs);
 		</fieldset>
 		
 		<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_PAGINATION');?></legend>
+			<legend><?php echo JText::_('COM_FABRIK_GROUP_MULTIPAGE');?></legend>
 			<ul class="adminformlist">
 				<?php foreach ($this->form->getFieldset('pagination') as $field) :?>
 				<li>

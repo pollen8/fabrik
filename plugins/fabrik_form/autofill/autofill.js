@@ -115,6 +115,7 @@ var Autofill = new Class({
 		var observe = this.options.observe;
 		
 		var myAjax = new Request.JSON({ 
+			'evalScripts': true,
 			'data': {
 				'option': 'com_fabrik',
 				'format': 'raw',
@@ -133,6 +134,10 @@ var Autofill = new Class({
 				Fabrik.loader.stop('form_' + this.options.formid);
 			}.bind(this),
 			
+			onFailure: function (xhr) {
+				Fabrik.loader.stop('form_' + this.options.formid);
+				alert(this.getHeader('Status'));
+			},
 			onError: function (text, error) {
 				Fabrik.loader.stop('form_' + this.options.formid);
 				fconsole(text + ' ' + error);
@@ -144,13 +149,14 @@ var Autofill = new Class({
 		}).send();
 	},
 	
-	//update the form from the ajax request returned data
+	// Update the form from the ajax request returned data
 	updateForm: function (json) {
 		var repeatNum = this.element.getRepeatNum();
 		json = $H(json);
 		if (json.length === 0) {
 			alert(Joomla.JText._('PLG_FORM_AUTOFILL_NORECORDS_FOUND'));
 		}
+		
 		json.each(function (val, key) {
 			var k2 = key.substr(key.length - 4, 4);
 			if (k2 === '_raw') {
@@ -158,7 +164,12 @@ var Autofill = new Class({
 				if (!this.tryUpdate(key, val)) {
 					if (repeatNum) {
 						key += '_' + repeatNum;
-						this.tryUpdate(key, val);
+						if (!this.tryUpdate(key, val)) {
+							// See if the user has used simply the full element name rather than the full element name with
+							// the join string
+							key = 'join___' + this.element.options.joinid + '___' + key;
+							this.tryUpdate(key, val);
+						}
 					}
 				}
 			}
