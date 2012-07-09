@@ -39,7 +39,7 @@ var FbDateTime = new Class({
 	},
 	
 	setUp: function () {
-		if (this.options.editable) {
+		if (this.options.editable && !this.options.hidden) {
 			this.watchButtons();
 			if (this.options.typing === false) {
 				this.disableTyping();

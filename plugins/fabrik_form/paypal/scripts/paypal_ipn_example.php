@@ -48,6 +48,16 @@
 
 class fabrikPayPalIPN {
 
+	/*
+	* Called at end of submission handling, just before the form plugin sets up the redirect to PayPal
+	* Allows you to check / add / remove / modify any of the query string options being sent to PayPal
+	* Also gives you a last chance to bail out and not do the redirect to PayPal, by returning false
+	* (and probably using one of the J! API's to put up a notification of why!)
+	*/
+	function checkOpts(&$opts, $formModel) {
+		return true;
+	}
+
 	function payment_status_Completed($listModel, $request, &$set_list, &$err_msg) {
             return 'ok';
 	}
