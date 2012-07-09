@@ -47,7 +47,7 @@
 	</fieldset>
 	</fields>
 	<fields name="params">
-		<fieldset name="pagination">
+		<fieldset name="pagination" legend="test">
 			
 			<field name="split_page" 
 				type="radio" default="0" 
