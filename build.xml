@@ -13,22 +13,41 @@
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
 
- 
-<target name="phpcs">
-    <exec executable="cmd">
-        <arg line="/c c:\xampp\php\phpcs
-            --report=checkstyle
-            --report-file='${basedir}/fabrik_build/logs/checkstyle.xml'
-            --standard=Joomla
-            --ignore=*\\administrator\\components\\*
-            -p
-            ${basedir}/components/com_fabrik/" />
-    </exec>
-</target>
-
+	<target name="phpcs" description="Ensure Code Style Rules">
+	    <exec executable="cmd">
+	        <arg line="/c ${phpcs.path}
+	            --report=checkstyle
+	            --report-file='${basedir}/fabrik_build/logs/checkstyle.xml'
+	            --standard=Joomla
+	            --ignore=*\\administrator\\components\\*
+	            -p
+	            ${basedir}/components/com_fabrik/" />
+	    </exec>
+	</target>
+	
+	<target name="phpdoc" description="Generate API documentation">
+	    <exec executable="cmd">
+	        <arg line="/c ${phpdoc.path}
+	            -d ${basedir}/components/com_fabrik,${basedir}/plugins/fabrik_element,${basedir}/plugins/fabrik_cron,${basedir}/plugins/fabrik_list,${basedir}/plugins/fabrik_form,${basedir}/plugins/fabrik_validationrule,${basedir}/plugins/fabrik_visualization,${basedir}/plugins/content/fabrik,${basedir}/plugins/system/fabrik,${basedir}/plugins/system/fabrikcron,${basedir}/administrator/components/com_fabrik
+	            -i ${basedir}/components/com_fabrik/libs/
+	            -t ${basedir}/fabrik_build/docs" />
+	    </exec>
+	    <ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.docdir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
+			<fileset dir="${phpdoc.localdir}">
+				<include name="**/**" />
+			</fileset>
+		</ftp> 
+	</target>
 
  
 	<target name="fabrik.all">
+	<input message="PHP Doc?" addproperty="phpdoc" validargs="y,n" defaultvalue="n" />
+		<if>
+ 			<equals arg1="${phpdoc}" arg2="y" />
+			<then>
+			<antcall target="phpdoc" />
+			</then>
+		</if>
 		<input message="PHPCS?" addproperty="phpcs" validargs="y,n" defaultvalue="n" />
 		<if>
  			<equals arg1="${phpcs}" arg2="y" />

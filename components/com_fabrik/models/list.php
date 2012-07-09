@@ -1562,6 +1562,7 @@ class FabrikFEModelList extends JModelForm
 
 			// Default to the primary key as before this fix
 			$lookupC = 0;
+			$tmpPks = array();
 
 			foreach ($joins as $join)
 			{
@@ -1603,7 +1604,7 @@ class FabrikFEModelList extends JModelForm
 					 *
 					 */
 					$pk = $join->_params->get('pk');
-					if (!is_array($tmpPks[$pk]))
+					if (!array_key_exists($pk, $tmpPks) || !is_array($tmpPks[$pk]))
 					{
 						$tmpPks[$pk] = array($pk);
 					}
