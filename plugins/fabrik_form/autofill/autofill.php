@@ -103,19 +103,16 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 					$fromraw = $from . '_raw';
 					if (is_array($to))
 					{
-						print_r($to);
 						foreach ($to as $to2)
 						{
 							$to2_raw = $to2 . '_raw';
 							if (!array_key_exists($from, $data))
 							{
-								exit;
 								JError::raiseError(500, 'autofill map json not correctly set?');
 							}
 							$newdata->$to2 = isset($data->$from) ? $data->$from : '';
 							if (!array_key_exists($fromraw, $data))
 							{
-								exit;
 								JError::raiseError(500, 'autofill toraw map json not correctly set?');
 							}
 							$newdata->$to2_raw = isset($data->$fromraw) ? $data->$fromraw : '';
@@ -123,16 +120,13 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 					}
 					else
 					{
-						//echo "<pre>";print_r($data);echo "$from";
 						// $$$ hugh - key may exist, but be null
-						//if (!isset($data->$from)) {
 						if (!array_key_exists($from, $data))
 						{
 							exit;
 							JError::raiseError(500, 'Couln\'t find from value in record data, is the element published?');
 						}
 						$newdata->$to = isset($data->$from) ? $data->$from : '';
-						//if (!isset($data->$fromraw)) {
 						if (!array_key_exists($fromraw, $data))
 						{
 							JError::raiseError(500, 'autofill toraw map json not correctly set?');
