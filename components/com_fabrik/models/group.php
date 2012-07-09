@@ -398,7 +398,7 @@ class FabrikFEModelGroup extends FabModel
 				$params = $elementModel->getParams();
 				/**
 				 * $$$ hugh - experimenting adding non-viewable data to encrypted vars on forms,
-				 * also we need them in _addDefaultDataFromRO()
+				 * also we need them in addDefaultDataFromRO()
 				 * if ($element->published == 1 && $elementModel->canView())
 				 */
 				if ($element->published == 1)

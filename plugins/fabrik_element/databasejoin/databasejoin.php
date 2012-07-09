@@ -365,9 +365,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * fix html validation warning on empty options labels
-	 * @param   array	option objects $rows
-	 * @param   string	object label
+	 * Fix html validation warning on empty options labels
+	 * 
+	 * @param   array   &$rows  option objects $rows
+	 * @param   string  $txt    object label
+	 * 
 	 * @return  null
 	 */
 
@@ -383,10 +385,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * get a list of the HTML options used in the database join drop down / radio buttons
-	 * @param   array	data from current record (when editing form?)
-	 * @param   array	int repeat group counter
-	 * @param   bool	do we include custom where in query
+	 * Get a list of the HTML options used in the database join drop down / radio buttons
+	 * 
+	 * @param   array  $data           from current record (when editing form?)
+	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   bool   $incWhere       do we include custom where in query
+	 * 
 	 * @return  array	option objects
 	 */
 
@@ -401,7 +405,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere);
 		foreach ($aDdObjs as &$o)
 		{
-			$o->text = htmlspecialchars($o->text, ENT_NOQUOTES); //for values like '1"'
+			// For values like '1"'
+			$o->text = htmlspecialchars($o->text, ENT_NOQUOTES);
 		}
 		$table = $this->getlistModel()->getTable()->db_table_name;
 		if (is_array($aDdObjs))
@@ -416,14 +421,22 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		return $tmp;
 	}
 
+	/**
+	 * Get select option label
+	 * 
+	 * @return  string
+	 */
+
 	protected function _getSelectLabel()
 	{
 		return $this->getParams()->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
 	}
 
 	/**
+	 * Do you add a please select option to the list
+	 * 
 	 * @since 3.0b
-	 * do you add a please select option to the list
+	 * 
 	 * @return  bool
 	 */
 
@@ -439,10 +452,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * check to see if prefilter should be applied
+	 * Check to see if prefilter should be applied
 	 * Kind of an inverse access lookup
-	 * @param   int		group id to check against
-	 * @param   string	ref for filter
+	 * 
+	 * @param   int     $gid  group id to check against
+	 * @param   string  $ref  for filter
+	 * 
 	 * @return  bool	must apply filter - true, ignore filter (user has enough access rights) false;
 	 */
 
@@ -466,8 +481,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	/**
 	 * create the sql query used to get the join data
-	 * @param   array	data
-	 * @param   bool	$incWhere
+	 * 
+	 * @param   array  $data      data
+	 * @param   bool   $incWhere  include where
+	 * 
 	 * @return  mixed	string or false if query can't be built
 	 */
 
@@ -484,7 +501,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$element = $this->getElement();
 		$formModel = $this->getForm();
 		$where = $this->buildQueryWhere($data, $incWhere);
-		//$$$rob not sure these should be used anyway?
+
+		// $$$rob not sure these should be used anyway?
 		$table = $params->get('join_db_name');
 		$key = $this->getJoinValueColumn();
 		$val = $this->getValColumn();
@@ -542,15 +560,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function buildQueryJoin()
 	{
 		return '';
-	}
-
-	/**
-	 * @deprecated	use buildQueryWhere() instead
-	 */
-
-	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null)
-	{
-		return $this->buildQueryWhere($data, $incWhere, $thisTableAlias);
 	}
 
 	function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null)
@@ -690,7 +699,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	public function render($data, $repeatCounter = 0)
 	{
-		// for repetaing groups we need to unset this where each time the element is rendered
+		// For repetaing groups we need to unset this where each time the element is rendered
 		unset($this->_autocomplete_where);
 		if ($this->isJoin())
 		{
@@ -2020,7 +2029,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db = JFactory::getDbo();
 		$item = $this->getListModel()->getTable();
 		$jkey = $this->getValColumn();
-		$where = $this->_buildQueryWhere(array(), true, $params->get('join_db_name'));
+		$where = $this->buildQueryWhere(array(), true, $params->get('join_db_name'));
 		$where = JString::stristr($where, 'order by') ? $where : '';
 		$jkey = !strstr($jkey, 'CONCAT') ? $params->get('join_db_name') . '.' . $jkey : $jkey;
 

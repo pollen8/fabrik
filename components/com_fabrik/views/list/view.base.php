@@ -69,7 +69,7 @@ class FabrikViewListBase extends JView{
 		$opts->filterMethod = $this->filter_action;
 		$opts->form = 'listform_' . $listref;
 		$this->listref = $listref;
-		$opts->headings = $model->_jsonHeadings();
+		$opts->headings = $model->jsonHeadings();
 		$labels = $this->headings;
 		foreach ($labels as &$l)
 		{

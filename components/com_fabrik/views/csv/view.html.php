@@ -44,7 +44,7 @@ class fabrikViewCsv extends JView
 		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();
 		$opts->form = 'listform_' . $listid;
-		$opts->headings = $model->_jsonHeadings();
+		$opts->headings = $model->jsonHeadings();
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$labels = $this->headings;
 		foreach ($labels as &$l)

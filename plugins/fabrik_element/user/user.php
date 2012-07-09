@@ -362,7 +362,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * http://fabrikar.com/forums/showthread.php?p=70554#post70554
 	 * 
 	 * So overriding the element model canView and returning true in that
-	 * case allows _addDefaultDataFromRO to do that, whilst still enforcing
+	 * case allows addDefaultDataFromRO to do that, whilst still enforcing
 	 * Read Access settings for detail/list view
 	 * 
 	 * @return  bool  can view or not

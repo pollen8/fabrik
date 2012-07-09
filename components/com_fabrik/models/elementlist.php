@@ -437,7 +437,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		 * the array_diff() we're about to do sees that as a diff.
 		 */
 		$selected = $this->getValue($data, $repeatCounter);
-		if (is_string($selected))
+		if (is_string($selected) || is_null($selected))
 		{
 			$selected = empty($selected) ? array() : array($selected);
 		}
@@ -546,37 +546,22 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$rawname = JString::substr($name, -4) === '_raw' ? JString::substr($name, 0, -4) : $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
+				$nameKey = 'join.' . $joinid . '.' . $name;
+				$rawNameKey = 'join.' . $joinid . '.' . $rawname;
 				if ($groupModel->canRepeat())
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+					$value = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+					if (is_null($value))
 					{
-						$value = $data['join'][$joinid][$name][$repeatCounter];
-					}
-					else
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($rawname, $data['join'][$joinid])
-							&& array_key_exists($repeatCounter, $data['join'][$joinid][$rawname]))
-						{
-							$value = $data['join'][$joinid][$rawname][$repeatCounter];
-						}
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, array());
 					}
 				}
 				else
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]))
+					$value = FArrayHelper::getNestedValue($data, $nameKey, null);
+					if (is_null($value))
 					{
-						$value = $data['join'][$joinid][$name];
-					}
-					else
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($rawname, $data['join'][$joinid]))
-						{
-							$value = $data['join'][$joinid][$rawname];
-						}
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey, array());
 					}
 					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0])))
 					{

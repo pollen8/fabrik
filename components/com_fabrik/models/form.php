@@ -993,7 +993,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			{
 				$this->formData[$key] = $val;
 			}
-			// check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
+			// Check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
 			if (isset($this->_fullFormData))
 			{
 				$this->_fullFormData[$key] = $val;
@@ -1004,7 +1004,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			 * but turns out this is a major pain in the butt (see _cryptViewOnlyElements() in the
 			 * form view for details!).  Main problem is we need to know if it's a join and/or repeat group,
 			 * which means loading up the element model.  So for now, just going to add the element name to a
-			 * class array, $this->pluginUpdatedElements[], which we'll check in _addDefaultDataFromRO()
+			 * class array, $this->pluginUpdatedElements[], which we'll check in addDefaultDataFromRO()
 			 * in the table model, or wherever else we need it.
 			 */
 			/*
@@ -2320,7 +2320,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$db = FabrikWorker::getDbo();
 		$form = $this->getForm();
-		$nullDate = (method_exists($db, 'getNullDate')) ? $db->getNullDate() : $this->getNullDate();
+		$nullDate = $db->getNullDate();
 		$publishup = JFactory::getDate($form->publish_up)->toUnix();
 		$publishdown = JFactory::getDate($form->publish_down)->toUnix();
 		$now = JFactory::getDate()->toUnix();
@@ -3524,16 +3524,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->setId($form->id);
 		$this->newElements = $newElements;
 		return $form;
-	}
-
-	/**
-	 * if you have koowa installed their db obj doesnt have a getNullDate function
-	 * @return unknown_type
-	 */
-
-	function getNullDate()
-	{
-		return '0000-00-00 00:00:00';
 	}
 
 	public function getRelatedTables()

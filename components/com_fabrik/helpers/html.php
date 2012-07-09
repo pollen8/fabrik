@@ -362,39 +362,38 @@ EOD;
 
 	public static function stylesheet($file, $attribs = array())
 	{
-		if ((JRequest::getVar('format') == 'raw'
-			|| (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
+		// $$$ hugh - moved this to top of function, as we now apply livesite in either usage cases below.
+		if (!strstr($file, COM_FABRIK_LIVESITE))
+		{
+			$file = COM_FABRIK_LIVESITE . '/' . $file;
+		}
+		if ((JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
 		{
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
-			// $$$rob TEST!!!! - this may mess up stuff
-			//send an inline script back which will inject the css file into the doc head
-			// note your ajax call must have 'evalScripts':true set in its properties
+
+			// Send an inline script back which will inject the css file into the doc head
+			// Note your ajax call must have 'evalScripts':true set in its properties
 			if (!in_array($file, self::$ajaxCssFiles))
 			{
-				// $$$ rob added COM_FABRIK_LIVESITE to make full path name other wise style sheets gave 404 error
-				// when loading from site with sef urls.
-
-				echo "<script type=\"text/javascript\">var v = new Asset.css('" . COM_FABRIK_LIVESITE . $file . "', {});</script>\n";
+				echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});</script>\n";
 				self::$ajaxCssFiles[] = $file;
 			}
 		}
 		else
 		{
-			// $$$ rob 29/05/2011 ensure file is appended with live site, stops issues when loading css from admin pages.
 			$document = JFactory::getDocument();
-			if (!strstr($file, COM_FABRIK_LIVESITE))
-			{
-				$file = COM_FABRIK_LIVESITE . '/' . $file;
-			}
-			// $$$ rob 27/04/2011 changed from JHTML::styleSheet as that doesn't work loading
-			// php style sheets with querystrings in them
+			/* $$$ rob 27/04/2011 changed from JHTML::styleSheet as that doesn't work loading
+			 * php style sheets with querystrings in them
+			 */
 			$document->addStylesheet($file);
 		}
 	}
 
 	/**
-	 * check for a custom css file and include it if it exists
-	 * @param   string  $path NOT including JPATH_SITE (so relative too root dir) may include querystring
+	 * Check for a custom css file and include it if it exists
+	 * 
+	 * @param   string  $path  NOT including JPATH_SITE (so relative too root dir) may include querystring
+	 * 
 	 * @return  bool	if loaded or not
 	 */
 
@@ -436,6 +435,7 @@ EOD;
 
 	/**
 	 * Generates an HTML radio OR checkbox list
+	 * 
 	 * @param   string  type - radio or checkbox
 	 * @param   array	An array of objects
 	 * @param   string  The value of the HTML name attribute
@@ -497,7 +497,7 @@ EOD;
 					{
 						if ($k == $obj)
 						{
-							//checkbox from db join
+							// Checkbox from db join
 							$extra .= $selectText;
 							$found = true;
 							break;

@@ -12,15 +12,30 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
-<target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-  <exec executable="phpcs">
-   <arg line="--report=checkstyle --report-file=${basedir}/build/logs/checkstyle.xml --standard=Joomla ${basedir}/components/com_fabrik/" />
-  </exec>
- </target>
+
+ 
+<target name="phpcs">
+    <exec executable="cmd">
+        <arg line="/c c:\xampp\php\phpcs
+            --report=checkstyle
+            --report-file='${basedir}/fabrik_build/logs/checkstyle.xml'
+            --standard=Joomla
+            --ignore=*\\administrator\\components\\*
+            -p
+            ${basedir}/components/com_fabrik/" />
+    </exec>
+</target>
+
+
  
 	<target name="fabrik.all">
-	
-		<antcall target="phpcs" />
+		<input message="PHPCS?" addproperty="phpcs" validargs="y,n" defaultvalue="n" />
+		<if>
+ 			<equals arg1="${phpcs}" arg2="y" />
+			<then>
+			<antcall target="phpcs" />
+			</then>
+		</if>
 		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
 		
 		<if>

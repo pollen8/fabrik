@@ -969,39 +969,25 @@ class PlgFabrik_Element extends FabrikPlugin
 			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
-				/* $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
-				*if ($groupModel->canRepeat() || !$this->isJoin()) {
-				*/
+				$nameKey = 'join.' . $joinid . '.' . $name;
+				$rawNameKey = 'join.' . $joinid . '.' . $rawname;
+
+				// $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
+				// if ($groupModel->canRepeat() || !$this->isJoin()) {
 				if ($groupModel->canRepeat())
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+					$value = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+					if (is_null($value))
 					{
-						$value = $data['join'][$joinid][$name][$repeatCounter];
-					}
-					else
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
-						{
-							$value = $data['join'][$joinid][$name][$repeatCounter];
-						}
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, array());
 					}
 				}
 				else
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]))
+					$value = FArrayHelper::getNestedValue($data, $nameKey, null);
+					if (is_null($value))
 					{
-						$value = $data['join'][$joinid][$name];
-					}
-					else
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($rawname, $data['join'][$joinid]))
-						{
-							$value = $data['join'][$joinid][$rawname];
-						}
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey, array());
 					}
 					/* $$$ rob if you have 2 tbl joins, one repeating and one not
 					 * the none repeating one's values will be an array of duplicate values
@@ -4877,7 +4863,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$where = '';
 		if ($params->get('append_table_where', false))
 		{
-			if (method_exists($this, '_buildQueryWhere'))
+			if (method_exists($this, 'buildQueryWhere'))
 			{
 				$where = trim($this->buildQueryWhere(array()));
 				if ($where != '')
