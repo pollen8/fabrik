@@ -717,21 +717,38 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 						}
 						$this->FC->addCategory($catLabel, $catParams);
 					}
+
 					foreach ($gdata as $key => $chartdata)
 					{
-						$cdata = explode(',', $chartdata);
+						$cdata = JArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? explode(',', $gdata[$key]) : $this->gcumulatives[$key];
+						//$cdata = explode(',', $chartdata);
 						$dataset = $this->axisLabels[$key];
 						$extras = 'parentYAxis=' . $dual_y_parents[$key];
 						$this->FC->addDataset($dataset, $extras);
-						$data_count = 0;
-						foreach ($cdata as $key => $value)
-						{
-							$data_count ++;
-							if ($value == '-1')
-							{
-								$value = null;
+						if ($elTypes[$key] == 'trendonly') {
+							$str_params = '';
+							$strParam .= ';connectNullData=1';
+							$min = min($cdata);
+							$max = max($cdata);
+							list($min, $max) = $this->getTrendMinMax($min, $max, $key);
+							$max_datapoints = $this->getMaxDatapoints($gdata);
+							$this->FC->addChartData($min, $str_params);
+							for ($x = 0; $x < $max_datapoints - 2; $x++) {
+								$this->FC->addChartData('', $str_params);
 							}
-							$this->FC->addChartData($value);
+							$this->FC->addChartData($max, $str_params);
+						}
+						else {
+							$data_count = 0;
+							foreach ($cdata as $value)
+							{
+								$data_count ++;
+								if ($value == '-1')
+								{
+									$value = null;
+								}
+								$this->FC->addChartData($value);
+							}
 						}
 					}
 				}
@@ -905,5 +922,26 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization {
 		return array($startval, $endval);
 	}
 
+	/**
+	 *
+	 * Returns maximum datapoints used by any dataset.
+	 * Used by 'trendonly' graphs, to work out how many null
+	 * data points to insert between min and max.
+	 *
+	 * @since	3.0.6
+	 * @param array $data
+	 * @return number
+	 */
+	function getMaxDatapoints($data)
+	{
+		$max_datapoints = 0;
+		foreach ($data as $d) {
+			$datapoints = count(explode(',', $d));
+			if ($datapoints > $max_datapoints) {
+				$max_datapoints = $datapoints;
+			}
+		}
+		return $max_datapoints;
+	}
 }
 ?>
