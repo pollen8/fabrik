@@ -1,9 +1,9 @@
 <?php
 /**
- * Default Timeline Viz layout
- * 
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.timeline
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!

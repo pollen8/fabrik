@@ -4365,21 +4365,25 @@ class FabrikFEModelList extends JModelForm {
 	 *
 	 * @param string $container
 	 * @param string $type
+	 * @param   string   $ref  js ref used when filters set for visualizations
+	 * 
 	 * @return array filters
 	 */
 
-	function getFilters($container = 'listform_1', $type = 'list', $id = '')
+	function getFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
 	{
-		if (!isset($this->viewfilters)) {
+		if (!isset($this->viewfilters))
+		{
 			$profiler = JProfiler::getInstance('Application');
 			$params = $this->getParams();
 			$this->viewfilters = array();
 
 			JDEBUG ? $profiler->mark('fabrik makeFilters start') : null;
-			$modelFilters = $this->makeFilters($container, $type, $id);
+			$modelFilters = $this->makeFilters($container, $type, $id, $ref);
 			JDEBUG ? $profiler->mark('fabrik makeFilters end') : null;
-			foreach ($modelFilters as $name => $filter) {
-				$f = new stdClass();
+			foreach ($modelFilters as $name => $filter)
+			{
+				$f = new stdClass;
 				$f->label = $filter->label;
 				$f->element = $filter->filter;
 				$f->required = array_key_exists('required', $filter) ? $filter->required : '';
@@ -4396,18 +4400,19 @@ class FabrikFEModelList extends JModelForm {
 	 * @param	string	$container
 	 * @param 	string	$type
 	 * @param	int		$id
+	 * @param   string  $ref  js filter ref, used when rendering filters for visualizations
 	 * @return	array	of html code for each filter
 	 */
 
-	function &makeFilters($container = 'listform_1', $type = 'list', $id = '')
+	function &makeFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
 	{
 		$aFilters = array();
 		$table = $this->getTable();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->container = $container;
 		$opts->type = $type;
-		$opts->id = $type === 'list' ? $this->getId() : $id; //only used in tables
-		$opts->ref = $this->getRenderContext();
+		$opts->id = $type === 'list' ? $this->getId() : $id;
+		$opts->ref = $type === 'list' ? $this->getRenderContext() : $ref;
 		$opts->advancedSearch = $this->getAdvancedSearchOpts();
 		$opts = json_encode($opts);
 		$fscript = "

@@ -1,22 +1,22 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /* MOS Intruder Alerts */
 defined('_JEXEC') or die();
 
 /**
- *	image manipulation class
- * @author Rob Clayburn <rob@pollen-8.co.uk>
- * @version $Revision: 1.0 $
+ * Image manipulation class
+ * 
+ * @package		Joomla
+ * @subpackage	Fabrik.helpers
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since 1.0
- * @package pollen8
- * @access public
- * @copyright Pollen 8 design Ltd
  */
 
 class FabimageHelper

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -13,6 +13,13 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
+
+/**
+ * Fabrik Visualization Model
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabrikFEModelVisualization extends JModel
 {
@@ -29,11 +36,22 @@ class FabrikFEModelVisualization extends JModel
 	public $srcBase = "plugins/fabrik_visualization/";
 
 	public $pathBase = null;
+	
+	/** @var string js code to ini list filters */
+	protected $filterJs = null;
 
-	function __construct()
+	/**
+	 * Constructor
+	 *
+	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
+	 *
+	 * @since   11.1
+	 */
+
+	public function __construct($config = array())
 	{
 		$this->pathBase = JPATH_SITE . '/plugins/fabrik_visualization/';
-		parent::__construct();
+		parent::__construct($config);
 	}
 
 	function getPluginParams()
@@ -59,7 +77,13 @@ class FabrikFEModelVisualization extends JModel
 		return $pluginParams;
 	}
 
-	function getVisualization()
+	/**
+	 * get the item
+	 * 
+	 * @return  FabrikTableVisualization
+	 */
+
+	public function getVisualization()
 	{
 		if (!isset($this->_row))
 		{
@@ -69,18 +93,24 @@ class FabrikFEModelVisualization extends JModel
 		return $this->_row;
 	}
 
-	function render()
+	/**
+	 * Render the visualization
+	 * 
+	 * @return  void
+	 */
+
+	public function render()
 	{
-		//overwrite in plugin
+		// Overwrite in plugin
 	}
 
 	/**
-	 * get the vizualizations table models
+	 * get the visualizations list models
 	 *
 	 * @return array table objects
 	 */
 
-	function getlistModels()
+	public function getlistModels()
 	{
 		if (!isset($this->tables))
 		{
@@ -101,8 +131,10 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * get a list model
-	 * @param	int		$id
-	 * @return	object	fabrik list model
+	 * 
+	 * @param   int  $id  list model id
+	 * 
+	 * @return  object	fabrik list model
 	 */
 
 	protected function &getlistModel($id)
@@ -117,35 +149,86 @@ class FabrikFEModelVisualization extends JModel
 		return $params->get('gallery_category_table');
 	}
 
-	function getContainerId()
+	public function getContainerId()
 	{
 		$viz = $this->getVisualization();
 		return $viz->plugin . '_' . $viz->id;
 	}
 	/**
-	 * get all table models filters
+	 * get all list model's filters
+	 * 
 	 * @return array table filters
 	 */
 
-	function getFilters()
+	public function getFilters()
 	{
 		$params = $this->getParams();
 		$name = JString::strtolower(str_replace('fabrikModel', '', get_class($this)));
 		$filters = array();
 		$showFilters = $params->get($name . '_show_filters', array());
 		$listModels = $this->getlistModels();
+		$js = array();
 		$i = 0;
 		foreach ($listModels as $listModel)
 		{
 			$show = (bool) JArrayHelper::getValue($showFilters, $i, true);
 			if ($show)
 			{
-				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'vizualization', $this->getVisualization()->id);
+				$ref = $this->getRenderContext();
+				$id = $this->getId();
+				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'visualization', $id, $ref);
+				$js[] = $listModel->filterJs;
 			}
-			$i ++;
+			$i++;
 		}
+		$this->filterJs = implode("\n", $js);
 		$this->getRequireFilterMsg();
 		return $filters;
+	}
+	
+	/**
+	 * Get the JS code to ini the list filters
+	 * 
+	 * @since   3.0.6
+	 * 
+	 * @return  string  js code
+	 */
+
+	public function getFilterJs()
+	{
+		if (is_null($this->filterJs))
+		{
+			$this->getFilters();
+		}
+		return $this->filterJs;
+	}
+
+	/**
+	 * Get Viz render contenxt
+	 * 
+	 * @since   3.0.6
+	 * 
+	 * @return  string  render context
+	 */
+
+	public function getRenderContext()
+	{
+		$app = JFactory::getApplication();
+		$id = $this->getId();
+		return $id . '_' . JFactory::getApplication()->scope . '_' . $id;
+	}
+	
+	/**
+	 * Get the JS unique name that is assigned to the viz JS object
+	 * 
+	 * @since   3.0.6
+	 * 
+	 * @return  string  js viz id
+	 */
+
+	public function getJSRenderContext()
+	{
+		return 'visualization_' . $this->getRenderContext();
 	}
 
 	/**
@@ -160,14 +243,17 @@ class FabrikFEModelVisualization extends JModel
 			return $this->getFilterFormURL;
 		}
 		$option = JRequest::getCmd('option');
+
 		// Get the router
 		$app = JFactory::getApplication();
 		$router = $app->getRouter();
 
-		$uri = clone(JURI::getInstance());
-		// $$$ rob force these to be 0 once the menu item has been loaded for the first time
-		// subsequent loads of the link should have this set to 0. When the menu item is re-clicked
-		// rest filters is set to 1 again
+		$uri = clone (JURI::getInstance());
+		/**
+		 * $$$ rob force these to be 0 once the menu item has been loaded for the first time
+		 * subsequent loads of the link should have this set to 0. When the menu item is re-clicked
+		 * rest filters is set to 1 again
+		 */
 		$router->setVar('resetfilters', 0);
 		if ($option !== 'com_fabrik')
 		{
@@ -182,12 +268,19 @@ class FabrikFEModelVisualization extends JModel
 			$qs[] = $k . '=' . $v;
 		}
 		$action = $page . implode("&amp;", $qs);
-		//limitstart gets added in the pageination model
+
+		// Limitstart gets added in the pageination model
 		$action = preg_replace("/limitstart" . $this->getState('id') . "}=(.*)?(&|)/", '', $action);
 		$action = FabrikString::rtrimword($action, "&");
-		$this->getFilterFormURL	= JRoute::_($action);
+		$this->getFilterFormURL = JRoute::_($action);
 		return $this->getFilterFormURL;
 	}
+
+	/**
+	 * Get List Model's Required Filter message
+	 * 
+	 * @return  void
+	 */
 
 	protected function getRequireFilterMsg()
 	{
@@ -203,8 +296,8 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * should be overwritten in plugin viz model
-	 * $$$ hugh - needs to be public, as it gets called from view via JView
-	 * @abstract
+	 * 
+	 * @return  bool
 	 */
 
 	public function getRequiredFiltersFound()
@@ -224,8 +317,10 @@ class FabrikFEModelVisualization extends JModel
 	/**
 	 * load in any table plugin classes
 	 * needed for radius search filter
-	 * @param	array	existing src file
-	 * @return	array	js file paths
+	 * 
+	 * @param   array  &$srcs  existing src file
+	 * 
+	 * @return  array	js file paths
 	 */
 
 	public function getPluginJsClasses(&$srcs = array())
@@ -241,9 +336,11 @@ class FabrikFEModelVisualization extends JModel
 	/**
 	 * get the js code to create instances of js table plugin classes
 	 * needed for radius search filter
+	 * 
+	 * @return  string
 	 */
 
-	function getPluginJsObjects()
+	public function getPluginJsObjects()
 	{
 		$str = array();
 		$listModels = $this->getListModels();
@@ -261,19 +358,26 @@ class FabrikFEModelVisualization extends JModel
 	/**
 	 * Method to set the table id
 	 *
-	 * @access	public
-	 * @param	int	table ID number
+	 * @param   int  $id  viz id
+	 * 
+	 * @return  void
 	 */
 
 	function setId($id)
 	{
 		$this->setState('id', $id);
-		// $$$ rob not sure why but we need this getState() here
-		// when assinging id from admin view
+
+		// $$$ rob not sure why but we need this getState() here when assinging id from admin view
 		$this->getState();
 	}
 
-	function getParams()
+	/**
+	 * Get viz params
+	 * 
+	 * @return  object  params
+	 */
+
+	public function getParams()
 	{
 		if (is_null($this->_params))
 		{
@@ -284,10 +388,15 @@ class FabrikFEModelVisualization extends JModel
 		return $this->_params;
 	}
 
-	function getId()
+	/**
+	 * Get viz id
+	 * 
+	 * @return  int  id
+	 */
+
+	public function getId()
 	{
 		return $this->getState('id');
 	}
 
 }
-?>

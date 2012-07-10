@@ -1,17 +1,38 @@
 <?php
+/**
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.visualization.chart
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+* Fabrik Calendar HTML View
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.visualization.chart
+*/
+
 class fabrikViewChart extends JView
 {
 
-	function display($tmpl = 'default')
+	/**
+	* Execute and display a template script.
+	*
+	* @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	*
+	* @return  mixed  A string if successful, otherwise a JError object.
+	*/
+	
+	function display($tpl = 'default')
 	{
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/list.js';
+		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
 		require_once(COM_FABRIK_FRONTEND . '/helpers/html.php');
 		$model = $this->getModel();
@@ -45,21 +66,22 @@ class fabrikViewChart extends JView
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$pluginParams = $model->getPluginParams();
-		$tmpl = $pluginParams->get('chart_layout', $tmpl);
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tmpl;
+		$tpl = $pluginParams->get('chart_layout', $tpl);
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 
 		$ab_css_file = $tmplpath . '/template.css';
 		if (JFile::exists($ab_css_file))
 		{
-			JHTML::stylesheet('plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tmpl . '/template.css', true);
+			JHTML::stylesheet('plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tpl . '/template.css', true);
 		}
 
-		//assign something to Fabrik.blocks to ensure we can clear filters
-		$str = "fabrikChart{$this->row->id} = {};";
-		$str .= "\n" . "Fabrik.addBlock('vizualization_{$this->row->id}', fabrikChart{$this->row->id});";
-		
-		FabrikHelperHTML::addScriptDeclaration($srcs, $str);
+		// Assign something to Fabrik.blocks to ensure we can clear filters
+		$ref = $model->getJSRenderContext();
+		$js = "$ref = {};";
+		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
+		$js .= $model->getFilterJs();
+		FabrikHelperHTML::addScriptDeclaration($srcs, $js);
 		echo parent::display();
 	}
 

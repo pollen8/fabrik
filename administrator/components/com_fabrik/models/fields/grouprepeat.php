@@ -1,15 +1,15 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Form
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 
 JFormHelper::loadFieldClass('radio');
@@ -18,10 +18,11 @@ JFormHelper::loadFieldClass('radio');
  * Renders a radio group but only if the fabrik group is assigned to a form
  * see: https://github.com/Fabrik/fabrik/issues/95
  *
- * @package 	Joomla
- * @subpackage	fabrik
- * @since		1.7
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
+
 class JFormFieldGrouprepeat extends JFormFieldRadio
 {
 	/**
