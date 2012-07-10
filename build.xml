@@ -671,6 +671,17 @@
 					
 					<xmltask todir="${basedir}">
 						<fileset dir="${basedir}">
+							<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
+						</fileset>
+						<replace path="/:extension/:version/text()" withText="${version}"/> 
+						<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
+						<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<attr path="/:extension" attr="version" value="${update.target_platform_version}" />
+					</xmltask>
+					
+					
+					<xmltask todir="${basedir}">
+						<fileset dir="${basedir}">
 							<include name="**/plugins/fabrik**/**/*.xml"/>
 							<exclude name="**/FusionCharts/**" />
 							<exclude name="**/FusionChartsFree/**" />
