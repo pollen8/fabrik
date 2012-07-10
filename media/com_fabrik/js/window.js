@@ -134,11 +134,11 @@ Fabrik.Window = new Class({
 					Fabrik.fireEvent('fabrik.window.moved', this.window);
 					this.drawWindow();
 				}.bind(this);
-			dragOpts.container = this.options.container ?	$(this.options.container) : null;
+			dragOpts.container = this.options.container ? document.id(this.options.container) : null;
 			this.window.makeDraggable(dragOpts);
 		}
 
-		$(document.body).adopt(this.window);
+		document.id(document.body).adopt(this.window);
 		this.loadContent();
 		//bad idea - means opening windows are hidden if other code calls another window to hide
 		/*Fabrik.addEvent('fabrik.overlay.hide', function () {

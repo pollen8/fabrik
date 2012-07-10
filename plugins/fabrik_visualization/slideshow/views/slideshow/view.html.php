@@ -1,4 +1,10 @@
 <?php
+/**
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.visualization.slideshow
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -8,10 +14,18 @@ jimport('joomla.application.component.view');
 class fabrikViewSlideshow extends JView
 {
 
-	function display($tmpl = 'default')
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
+
+	function display($tpl = 'default')
 	{
 		$srcs = FabrikHelperHTML::framework();
-		$model= $this->getModel();
+		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
@@ -27,15 +41,15 @@ class fabrikViewSlideshow extends JView
 		$this->assign('params', $params);
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$pluginParams = $model->getPluginParams();
 		$this->assignRef('params', $model->getParams());
-		$tmpl = $pluginParams->get('slideshow_viz_layout', $tmpl);
-		$tmplpath = $model->pathBase.'slideshow/views/slideshow/tmpl'.DS.$tmpl;
+		$tpl = $pluginParams->get('slideshow_viz_layout', $tpl);
+		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		$srcs[] = 'media/com_fabrik/js/list.js';
+		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		if ($this->get('RequiredFiltersFound'))
 		{
 			$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
@@ -62,11 +76,10 @@ class fabrikViewSlideshow extends JView
 		}
 		FabrikHelperHTML::script($srcs, $this->js);
 
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tmpl;
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tmpl . '/template.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
 		echo parent::display();
 	}
 
 }
-?>

@@ -33,11 +33,12 @@ class FabrikViewListBase extends JView{
 		}
 		$frameworkJsFiles = FabrikHelperHTML::framework();
 		$src = $model->getPluginJsClasses($frameworkJsFiles);
+		array_unshift($src, 'media/com_fabrik/js/listfilter.js');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
 
 		$model->getCustomJsAction($src);
-
+		$src[] = 'media/com_fabrik/js/encoder.js';
 		FabrikHelperHTML::script($src);
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);

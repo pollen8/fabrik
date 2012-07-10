@@ -1,22 +1,43 @@
 <?php
+/**
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.fusionchart
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * Fabrik Fuson Chart HTML View
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.fusionchart
+ */
+
 class fabrikViewFusionchart extends JView
 {
 
-	function display($tmpl = 'default')
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
+
+	function display($tpl = 'default')
 	{
 		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/list.js';
+		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
 		require_once(COM_FABRIK_FRONTEND . '/helpers/html.php');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
+		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		$model->setListIds();
 		if ($this->row->published == 0)
@@ -40,27 +61,28 @@ class fabrikViewFusionchart extends JView
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$pluginParams = $model->getPluginParams();
-		$tmpl = $pluginParams->get('fusionchart_layout', $tmpl);
+		$tpl = $pluginParams->get('fusionchart_layout', $tpl);
 
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tmpl;
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 
 		$ab_css_file = $tmplpath . '/template.css';
 
 		if (JFile::exists($ab_css_file))
 		{
-			JHTML::stylesheet('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tmpl . '/template.css');
+			JHTML::stylesheet('plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl . '/template.css');
 		}
 
-		//assign something to Fabrik.blocks to ensure we can clear filters
-		$str = "fabrikFusionChart{$this->row->id} = {};";
-		$str .= "\n" . "Fabrik.addBlock('vizualization_{$this->row->id}', fabrikFusionChart{$this->row->id});";
-		FabrikHelperHTML::addScriptDeclaration($srcs, $str);
+		// Assign something to Fabrik.blocks to ensure we can clear filters
+		$ref = $model->getJSRenderContext();
+		$js = "$ref = {};";
+		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
+		$js .= $model->getFilterJs();
+		FabrikHelperHTML::script($srcs, $js);
 		echo parent::display();
 	}
 
 }
-?>

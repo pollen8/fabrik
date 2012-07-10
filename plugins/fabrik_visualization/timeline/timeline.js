@@ -129,11 +129,12 @@ var FbVisTimeline = new Class({
 		this.cal.refresh();
 		this.cal.hide();
 		
-		params.button.addEvent('click', function (e) {
-			this.cal.showAtElement(params.button);
-			this.cal.show();
-		}.bind(this));
-		
+		if (typeOf(params.button) !== 'null') {
+			params.button.addEvent('click', function (e) {
+				this.cal.showAtElement(params.button);
+				this.cal.show();
+			}.bind(this));
+		}
 		dateEl.addEvent('blur', function (e) {
 			this.updateFromField();
 		}.bind(this));
