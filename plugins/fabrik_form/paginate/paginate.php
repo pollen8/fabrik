@@ -1,18 +1,23 @@
 <?php
 /**
- * Form record next/prev scroll plugin
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
- */
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.form.paginate
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+
+/**
+* Form record next/prev scroll plugin
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.form.paginate
+*/
 
 class plgFabrik_FormPaginate extends plgFabrik_Form {
 

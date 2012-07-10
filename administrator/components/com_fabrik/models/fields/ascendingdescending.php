@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Form
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -15,7 +15,7 @@ require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php')
  * Renders a list of ascending / decending options
  *
  * @package 	Joomla
- * @subpackage	fabrik
+ * @subpackage	Form
  * @since		1.6
  */
 class JFormFieldAscendingdescending extends JFormFieldList

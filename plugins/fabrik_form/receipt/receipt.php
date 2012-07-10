@@ -1,20 +1,26 @@
 <?php
 /**
- * Send a receipt
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.receipt
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormReceipt extends plgFabrik_Form {
+/**
+ * Send a receipt
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.receipt
+ */
+
+class plgFabrik_FormReceipt extends plgFabrik_Form
+{
 
 	var $html = null;
 
@@ -27,11 +33,14 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 
 	public function getBottomContent($params, $formModel)
 	{
-		if($params->get('ask-receipt')) {
+		if ($params->get('ask-receipt'))
+		{
 			$this->html = "
 			<label><input type=\"checkbox\" name=\"fabrik_email_copy\" class=\"contact_email_copy\" value=\"1\"  />
-			 ".JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY') . "</label>";
-		}else{
+			 " . JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY') . "</label>";
+		}
+		else
+		{
 			$this->html = '';
 		}
 	}
@@ -74,8 +83,10 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 		$aData = array_merge($this->getEmailData(), $formModel->_formData);
 
 		$message = $params->get('receipt_message');
-		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
+		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+			. JRequest::getVar('rowid');
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+			. JRequest::getVar('rowid');
 		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
 		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
@@ -86,7 +97,8 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 		$message = $w->parseMessageForPlaceHolder($message, $aData, false);
 
 		$to = $w->parseMessageForPlaceHolder($params->get('receipt_to'), $aData, false);
-		if (empty($to)) {
+		if (empty($to))
+		{
 			// $$$ hugh - not much point trying to send if we don't have a To address
 			// (happens frequently if folk don't properly validate their form inputs and are using placeholders)
 			// @TODO - might want to add some feedback about email not being sent
@@ -98,30 +110,31 @@ class plgFabrik_FormReceipt extends plgFabrik_Form {
 		// it sets $email, which is then never referenced?
 		$receipt_email = $params->get('receipt_to');
 		if (!$form->record_in_database) {
-			foreach ($aData as $key=>$val) {
-				$aBits = explode('___', $key);
-				$newKey = array_pop( $aBits);
-				if ($newKey == $receipt_email) {
-					$email = $val;
-				}
-			}
+		    foreach ($aData as $key=>$val) {
+		        $aBits = explode('___', $key);
+		        $newKey = array_pop( $aBits);
+		        if ($newKey == $receipt_email) {
+		            $email = $val;
+		        }
+		    }
 		}
-		*/
-		
+		 */
 
-		$subject =  html_entity_decode($params->get('receipt_subject', ''));
+		$subject = html_entity_decode($params->get('receipt_subject', ''));
 		$subject = $w->parseMessageForPlaceHolder($subject, null, false);
-		$from 		= $config->getValue('mailfrom');
+		$from = $config->getValue('mailfrom');
 		$fromname = $config->getValue('fromname');
 		//darn silly hack for poor joomfish settings where lang parameters are set to overide joomla global config but not mail translations entered
 		$rawconfig = new JConfig();
-		if ($from === '') {
+		if ($from === '')
+		{
 			$from = $rawconfig->mailfrom;
 		}
-		if ($fromname === '') {
-			$fromname= $rawconfig->fromname;
+		if ($fromname === '')
+		{
+			$fromname = $rawconfig->fromname;
 		}
-		$res = JUTility::sendMail( $from, $fromname, $to, $subject, $message, true);
+		$res = JUTility::sendMail($from, $fromname, $to, $subject, $message, true);
 	}
 }
 ?>

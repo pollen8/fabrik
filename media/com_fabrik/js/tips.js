@@ -46,6 +46,7 @@ var FloatingTips = new Class({
 				var tipContent = new Element('div.floating-tip.tip' + opts.position);
 				var tip = new Element('div.floating-tip-wrapper');
 				if (typeOf(content) === 'string') {
+					content = Encoder.htmlDecode(content);
 					tipContent.set('html', content);
 				} else {
 					tipContent.adopt(content);

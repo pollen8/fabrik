@@ -118,7 +118,7 @@ var Autofill = new Class({
 			'evalScripts': true,
 			'data': {
 				'option': 'com_fabrik',
-				'format': 'raw',
+				'format': 'json',
 				'task': 'plugin.pluginAjax',
 				'plugin': 'autofill',
 				'method': 'ajax_getAutoFill',

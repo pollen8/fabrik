@@ -1,30 +1,51 @@
 <?php
+/**
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.googlemap
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * Fabrik Google Map Viz HTML View
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.googlemap
+ */
+
 class fabrikViewGooglemap extends JView
 {
 
-	function display($tmpl = 'default')
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
+
+	public function display($tpl = 'default')
 	{
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::slimbox();
 		$document = JFactory::getDocument();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) )));
+		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		$model->setListIds();
 		$js = $model->getJs();
 		$this->txt = $model->getText();
 		$params = $model->getParams();
 		$this->assign('params', $params);
-		$tmpl = $params->get('fb_gm_layout', $tmpl);
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tmpl;
-		$srcs[] = 'media/com_fabrik/js/list.js';
+		$tpl = $params->get('fb_gm_layout', $tpl);
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl;
+		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 
 		$uri = JURI::getInstance();
 		if ($params->get('fb_gm_center') == 'userslocation')
@@ -36,9 +57,10 @@ class fabrikViewGooglemap extends JView
 		$model->getPluginJsClasses($srcs);
 		global $ispda;
 		if ($ispda == 1)
-		{ //pdabot
-		  $template = 'static';
-		  $this->assign('staticmap', $this->get('StaticMap'));
+		{
+			// Pdabot
+			$template = 'static';
+			$this->assign('staticmap', $this->get('StaticMap'));
 		}
 		else
 		{
@@ -66,21 +88,25 @@ class fabrikViewGooglemap extends JView
 			}
 			else
 			{
-				//doesnt work in v3
-				//FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
+				// Doesn't work in v3
+				// FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
 			}
 
 			FabrikHelperHTML::addScriptDeclaration($js);
 			$template = null;
 		}
-		FabrikHelperHTML::script($srcs, $this->get('PluginJsObjects'));
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tmpl . '/template.css');
-		//check and add a general fabrik custom css file overrides template css and generic table css
+		$js = $this->get('PluginJsObjects');
+		$js .= $model->getFilterJs();
+		FabrikHelperHTML::script($srcs, $js);
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
+
+		// Check and add a general fabrik custom css file overrides template css and generic table css
 		FabrikHelperHTML::stylesheetFromPath('media/com_fabrik/css/custom.css');
-		//check and add a specific viz template css file overrides template css generic table css and generic custom css
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tmpl . '/custom.css');
+
+		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$this->assign('sidebarPosition', $params->get('fb_gm_use_overlays_sidebar'));
 		if ($this->get('ShowSideBar'))
@@ -100,4 +126,3 @@ class fabrikViewGooglemap extends JView
 	}
 
 }
-?>

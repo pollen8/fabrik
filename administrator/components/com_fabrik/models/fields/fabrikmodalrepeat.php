@@ -1,5 +1,12 @@
 <?php
 /**
+* @package     Joomla
+* @subpackage  Form
+* @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
+
+/**
  * display a json loaded window with a repeatble set of sub fields
  */
 
@@ -10,7 +17,7 @@ jimport('joomla.form.formfield');
 /**
  * Form Field class for the Joomla Framework.
  *
- * @package		Joomla.Framework
+ * @package		Joomla
  * @subpackage	Form
  * @since		1.6
  */

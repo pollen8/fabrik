@@ -1,22 +1,22 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Form
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a upload size field
  *
- * @package 	Joomla.Framework
- * @subpackage		Parameter
- * @since		1.5
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldUploadsize extends JFormField

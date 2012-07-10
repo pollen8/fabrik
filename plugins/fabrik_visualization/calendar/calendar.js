@@ -1083,27 +1083,8 @@ var fabrikCalendar = new Class({
 		}
 		this.el.getElement('.centerOnToday').addEvent('click', this.centerOnToday.bindWithEvent(this));
 		this.showMonth();
-		this.watchFilters();
-		//clear filter list
 		
 		this.ajax.updateEvents.send();
-	},
-	
-	watchFilters: function () {
-		var c = this.el.getElement('.clearFilters');
-		if (c) {
-			c.addEvent('click', function (e) {
-				e.stop();
-				c.findUp('form').getElements('.fabrik_filter').each(function (f) {
-					if (f.get('tag') === 'select') {
-						f.selectedIndex = 0;
-					} else {
-						f.value = '';
-					}
-				});
-				c.findUp('form').submit();
-			}.bind(this));
-		}
 	},
 	
 	showMessage: function (m) {

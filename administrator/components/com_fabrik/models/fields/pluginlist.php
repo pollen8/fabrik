@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Form
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_BASE') or die;
 
@@ -16,10 +16,11 @@ JFormHelper::loadFieldClass('list');
 /**
  * Plugin List Field class for Fabrik.
  *
- * @package		Joomla.Framework
- * @subpackage	com_fabrik
- * @since		1.6
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
+
 class JFormFieldPluginList extends JFormFieldList
 {
 	/**

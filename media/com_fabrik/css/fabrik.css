@@ -452,3 +452,39 @@ fieldset.adminform input,fieldset.adminform textarea,fieldset.adminform select,f
 	padding: 5px;
 	font-weight: bold;
 }
+
+/*********************************************************/
+/****** Basis table styling (used for filters in viz) ****/
+/*********************************************************/
+
+table.fabrikList {
+	clear:right;
+	border-collapse: collapse;
+	margin-top: 10px;
+	color: #444444;
+}
+
+table.fabrikList td,
+table.fabrikList th{
+	padding: 5px;
+	border: 1px solid #cccccc;
+}
+
+table.fabrikList th{
+	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
+		to(#D7D7D7) );
+}
+
+table.fabrikList .oddRow0 {
+	background-color: #FAFAFA;
+}
+
+table.fabrikList .oddRow1 {
+	background-color: #Efefef;
+}
+
+/*********************************************************/
+/************  End basic table styling *******************/
+/*********************************************************/
