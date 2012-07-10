@@ -9,6 +9,5 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-require_once(JPATH_SITE . '/plugins/fabrik_element/fileupload/models/video.php');
-$render = new videoRender();
-?>
+require_once JPATH_SITE . '/plugins/fabrik_element/fileupload/models/video.php';
+$render = new videoRender;

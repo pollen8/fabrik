@@ -1,12 +1,11 @@
 <?php
 
 /**
- * @package     Joomla
- * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @since       1.6
- */
+* @package     Joomla
+* @subpackage  Form
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 defined('JPATH_BASE') or die;
 
@@ -15,8 +14,9 @@ jimport('joomla.form.formfield');
 /**
  * Display a json loaded window with a repeatble set of sub fields
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla
+ * @subpackage	Form
+ * @since		1.6
  */
 
 class JFormFieldFabrikModalrepeat extends JFormField

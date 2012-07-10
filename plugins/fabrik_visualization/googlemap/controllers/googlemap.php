@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.googlemap
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -12,12 +12,10 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Contact Component Controller
+ * Fabrik Google Map Viz Controller
  *
- * @static
- * @package     Joomla
- * @subpackage  Fabrik
- * @since       1.5
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.googlemap
  */
 
 class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualization
@@ -27,11 +25,9 @@ class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualizati
 		$viewName = 'googlemap';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel($viewName);
-		//$id = JRequest::getInt('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)), 'get');
 		$id = JRequest::getInt('visualizationid', 0);
 		$model->setId($id);
 		$model->setListIds();
 		$model->onAjax_getMarkers();
 	}
 }
-?>

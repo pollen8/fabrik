@@ -11,8 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND . '/helpers/params.php');
-require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
+require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 /**
  * Email table plug-in Controller

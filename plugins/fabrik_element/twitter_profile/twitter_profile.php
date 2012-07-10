@@ -45,7 +45,7 @@ class PlgFabrik_ElementTwitter_profile extends PlgFabrik_Element
 			return '';
 		}
 
-		require_once(COM_FABRIK_FRONTEND . '/libs/twitter/class.twitter.php');
+		require_once COM_FABRIK_FRONTEND . '/libs/twitter/class.twitter.php';
 		$twitter = new twitter();
 		$params = $this->getParams();
 		static $error;

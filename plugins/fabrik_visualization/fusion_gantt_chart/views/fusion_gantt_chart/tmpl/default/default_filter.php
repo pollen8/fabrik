@@ -1,4 +1,11 @@
-<?php if ($this->showFilters) {?>
+<?php
+/**
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.fusionganntchart
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
+if ($this->showFilters) {?>
 <form method="post" name="filter">
 <?php
 foreach ($this->filters as $table => $filters) {
@@ -29,4 +36,4 @@ foreach ($this->filters as $table => $filters) {
 ?>
 
 </form>
-<?php }?>
+<?php }

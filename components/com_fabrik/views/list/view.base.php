@@ -33,6 +33,7 @@ class FabrikViewListBase extends JView{
 		}
 		$frameworkJsFiles = FabrikHelperHTML::framework();
 		$src = $model->getPluginJsClasses($frameworkJsFiles);
+		array_unshift($src, 'media/com_fabrik/js/listfilter.js');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
 
@@ -227,13 +228,13 @@ class FabrikViewListBase extends JView{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
-		//force front end templates
+		// Force front end templates
 		$tmpl = $this->get('tmpl');
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
 		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
 
-		require_once(COM_FABRIK_FRONTEND . '/views/modifiers.php');
+		require_once COM_FABRIK_FRONTEND . '/views/modifiers.php';
 		$user = JFactory::getUser();
 		$model = $this->getModel();
 		$document = JFactory::getDocument();
@@ -241,7 +242,7 @@ class FabrikViewListBase extends JView{
 		$data = $model->render();
 		$w = new FabrikWorker;
 
-		//add in some styling short cuts
+		// Add in some styling short cuts
 		$c = 0;
 		$form = $model->getFormModel();
 		$nav = $this->get('Pagination');
@@ -253,6 +254,7 @@ class FabrikViewListBase extends JView{
 			foreach (array_keys($group) as $i)
 			{
 				$o = new stdClass;
+
 				// $$$ rob moved merge wip code to FabrikModelTable::formatForJoins() - should contain fix for pagination
 				$o->data = $data[$groupk][$i];
 				$o->cursor = $num_rows + $nav->limitstart;
@@ -297,7 +299,7 @@ class FabrikViewListBase extends JView{
 
 		if (!class_exists('JSite'))
 		{
-			require_once(JPATH_ROOT . '/includes/application.php');
+			require_once JPATH_ROOT . '/includes/application.php';
 		}
 		$app = JFactory::getApplication();
 		$this->setTitle($w, $params, $model);

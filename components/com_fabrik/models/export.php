@@ -10,7 +10,7 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
-require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 
 class FabrikFEModelExport {
@@ -335,7 +335,7 @@ class FabrikFEModelExport {
 	{
 
 		$archiveName =  'fabrik_package-' . $this->label;
-		require_once(JPATH_SITE . '/includes/Archive/Tar.php');
+		require_once JPATH_SITE . '/includes/Archive/Tar.php';
 
 		$archivePath = JPATH_SITE. '/components/com_fabrik/' . $archiveName . '.tgz';
 		if (JFile::exists($archivePath))

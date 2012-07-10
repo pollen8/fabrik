@@ -584,8 +584,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form {
 
 	protected function getIPNHandler()
 	{
-		require_once('plugins/fabrik_form/subscriptions/scripts/ipn.php');
-		return new fabrikSubscriptionsIPN();
+		require_once 'plugins/fabrik_form/subscriptions/scripts/ipn.php';
+		return new fabrikSubscriptionsIPN;
 	}
 }
 

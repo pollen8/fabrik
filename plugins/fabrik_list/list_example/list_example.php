@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class plgFabrik_ListList_Example extends plgFabrik_List
 {
@@ -38,7 +38,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List
 
 	/**
 	 * do the plugin action
-	 * @param object table model
+	 * @param   object table model
 	 * @return string message
 	 */
 	function process(&$model)
@@ -64,7 +64,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List
 
 	/**
 	 * called when the model deletes rows
-	 * @param object table $model
+	 * @param   object table $model
 	 * @return false if fail
 	 */
 	function onDeleteRows(&$model)
@@ -105,7 +105,7 @@ class plgFabrik_ListList_Example extends plgFabrik_List
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
+	 * @param   object parameters
 	 * @param list table model
 	 * @param array [0] => string table's form id to contain plugin
 	 * @return  bool

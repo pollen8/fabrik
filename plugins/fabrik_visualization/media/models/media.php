@@ -1,10 +1,9 @@
 <?php
-
 /**
- * @package     Joomla
- * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.media
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,7 +11,14 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components' . DS . 'com_fabrik' . DS . 'models' . DS . 'visualization.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
+
+/**
+ * Fabrik Media Plug-in Model
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.media
+ */
 
 class fabrikModelMedia extends FabrikFEModelVisualization
 {
@@ -248,10 +254,12 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * build js string to create the map js object
+	 * Build js string to create the map js object
+	 * 
 	 * @return string
 	 */
-	function getJs()
+
+	public function getJs()
 	{
 		$params = $this->getParams();
 		$str = "head.ready(function() {";
@@ -269,11 +277,11 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		$opts->width = (int) $params->get('media_width', '350');
 		$opts->height = (int) $params->get('media_height', '250');
 		$opts = json_encode($opts);
-		$str .= "fabrikMedia{$viz->id} = new FbMediaViz('media_div', $opts)";
-		$str .= "\n" . "Fabrik.addBlock('vizualization_{$viz->id}', fabrikMedia{$viz->id});";
+		$ref = $this->getJSRenderContext();
+		$str .= "$ref = new FbMediaViz('media_div', $opts)";
+		$str .= "\n" . "Fabrik.addBlock('$ref', $ref);";
+		$str .= $this->getFilterJs();
 		$str .= "});\n";
 		return $str;
 	}
 }
-
-?>

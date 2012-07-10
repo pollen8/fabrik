@@ -2,22 +2,22 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
-require_once('components/com_fabrik/views/form/view.base.php');
+require_once 'components/com_fabrik/views/form/view.base.php';
 
 class fabrikViewForm extends FabrikViewFormBase
 {
 
-  	/**
+	/**
 	 * display the template
-* @param   string	$tpl
+	 * @param   string	$tpl
 	 */
 
 	function display($tpl = null)
@@ -35,10 +35,10 @@ class fabrikViewForm extends FabrikViewFormBase
 
 	protected function setTitle($w, &$params, $model)
 	{
-		parent:: setTitle($w, $params, $model);
+		parent::setTitle($w, $params, $model);
 		//set the download file name based on the document title
 		$document = JFactory::getDocument();
-		$document->setName($document->getTitle() . '-' .  $model->getRowId());
+		$document->setName($document->getTitle() . '-' . $model->getRowId());
 	}
 
 }

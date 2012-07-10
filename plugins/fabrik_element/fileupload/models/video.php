@@ -10,18 +10,16 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-
-
 class videoRender
 {
 
 	var $output = '';
-	
+
 	/**
-* @param   object	element model
-* @param   object	element params
-* @param   string	row data for this element
-* @param   object	all row's data
+	 * @param   object	element model
+	 * @param   object	element params
+	 * @param   string	row data for this element
+	 * @param   object	all row's data
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -30,18 +28,18 @@ class videoRender
 	}
 
 	/**
-* @param   object	element model
-* @param   object	element params
-* @param   string	row data for this element
+	 * @param   object	element model
+	 * @param   object	element params
+	 * @param   string	row data for this element
 	 */
 
 	function render(&$model, &$params, $file)
 	{
-		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
+		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 		ini_set('display_errors', true);
-		require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php');
-		require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php');
-			
+		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php';
+		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
+
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
 		$config = JFactory::getConfig();
 		$host = $config->get('host');
@@ -64,7 +62,7 @@ class videoRender
 				$w = $thisFileInfo['video']['streams']['2']['resolution_x']; //for wmv files
 				$h = $thisFileInfo['video']['streams']['2']['resolution_y'];
 			}
-			
+
 			switch ($thisFileInfo['fileformat'])
 			{
 				//add in space for controller
@@ -76,22 +74,21 @@ class videoRender
 			}
 		}
 		$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
-		
+
 		switch ($thisFileInfo['fileformat'])
 		{
 			case 'asf':
-				
-				$this->output = '<object id="MediaPlayer" width='.$w.' height='.$h.' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components�" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
+				$this->output = '<object id="MediaPlayer" width=' . $w . ' height=' . $h
+					. ' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components�" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
 
 <param name="filename" value="http://yourdomain/yourmovie.wmv">
 <param name="Showcontrols" value="true">
 <param name="autoStart" value="false">
 
-<embed type="application/x-mplayer2" src="'.$src.'" name="MediaPlayer" width='.$w.' height='.$h.'></embed>
+<embed type="application/x-mplayer2" src="' . $src . '" name="MediaPlayer" width=' . $w . ' height=' . $h . '></embed>
 
 </object>
-				'
-;			
+				';
 				break;
 			default:
 				$this->output = "<object width=\"$w\" height=\"$h\"
@@ -108,7 +105,7 @@ class videoRender
 			</object>";
 				break;
 		}
-		
+
 	}
 }
 

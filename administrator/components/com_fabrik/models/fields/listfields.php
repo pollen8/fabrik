@@ -19,8 +19,9 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 /**
  * Renders a list of elements found in a fabrik table
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldListfields extends JFormFieldList

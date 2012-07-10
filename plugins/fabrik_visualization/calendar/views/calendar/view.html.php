@@ -1,19 +1,41 @@
 <?php
+/**
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.calendar
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * Fabrik Calendar HTML View
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.calendar
+ */
+
 class fabrikViewCalendar extends JView
 {
 
-	function display($tmpl = 'default')
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
+
+	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
-		$Itemid	= (int)@$app->getMenu('site')->getActive()->id;
+		$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 		$pluginManager = FabrikWorker::getPluginManager();
-		//needed to load the language file!
+
+		// Needed to load the language file!
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -25,18 +47,17 @@ class fabrikViewCalendar extends JView
 		$this->assign('params', $params);
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('showTitle', JRequest::getInt('show-title', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$calendar = $this->row;
-		$this->calName = $model->getCalName();
 
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 		$params = $model->getParams();
-		
-		($params->get('calendar-read-only', 0 ) == 1 ) ? $canAdd = 0 : $canAdd = $this->get('CanAdd');
+
+		$canAdd = $params->get('calendar-read-only', 0) == 1 ? 0 : $this->get('CanAdd');
 
 		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
 		if ($canAdd && $this->requiredFiltersFound)
@@ -48,7 +69,7 @@ class fabrikViewCalendar extends JView
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 
-		//Get the active menu item
+		// Get the active menu item
 		$urlfilters = JRequest::get('get');
 		unset($urlfilters['option']);
 		unset($urlfilters['view']);
@@ -61,13 +82,13 @@ class fabrikViewCalendar extends JView
 			$urlfilters = new stdClass;
 		}
 		$urls = new stdClass;
-		//dont JRoute as its wont load with sef?
-		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid . '&id=' . $id;
+		// Don't JRoute as its wont load with sef?
+		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
+			. '&id=' . $id;
 		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
-		$legend = $params->get('show_calendar_legend', 0 ) ? $model->getLegend() : '';
-		$tmpl = $params->get('calendar_layout', 'default');
-		//$pluginManager->loadJS();
+		$legend = $params->get('show_calendar_legend', 0) ? $model->getLegend() : '';
+		$tpl = $params->get('calendar_layout', 'default');
 		$options = new stdClass;
 		$options->url = $urls;
 		$options->deleteables = $this->get('DeleteAccess');
@@ -77,7 +98,7 @@ class fabrikViewCalendar extends JView
 		$options->urlfilters = $urlfilters;
 		$options->canAdd = $canAdd;
 
-		$options->tmpl = $tmpl;
+		$options->tmpl = $tpl;
 
 		$o = $model->getAddStandardEventFormInfo();
 
@@ -86,17 +107,23 @@ class fabrikViewCalendar extends JView
 			$options->listid = $o->id;
 		}
 
-		//$$$rob @TODO not sure this is need - it isnt in the timeline viz
+		// $$$rob @TODO not sure this is need - it isnt in the timeline viz
 		$model->setRequestFilters();
 		$options->filters = $model->filters;
-		// end not sure
+
+		// End not sure
 		$options->Itemid = $Itemid;
 		$options->show_day = (bool) $params->get('show_day', true);
 		$options->show_week = (bool) $params->get('show_week', true);
-		$options->days = array(JText::_('SUNDAY'), JText::_('MONDAY'), JText::_('TUESDAY'), JText::_('WEDNESDAY'), JText::_('THURSDAY'), JText::_('FRIDAY'), JText::_('SATURDAY'));
-		$options->shortDays = array(JText::_('SUN'), JText::_('MON'), JText::_('TUE'), JText::_('WED'), JText::_('THU'), JText::_('FRI'), JText::_('SAT'));
-		$options->months = array(JText::_('JANUARY'), JText::_('FEBRUARY'), JText::_('MARCH'), JText::_('APRIL'), JText::_('MAY'), JText::_('JUNE'), JText::_('JULY'), JText::_('AUGUST'), JText::_('SEPTEMBER'), JText::_('OCTOBER'), JText::_('NOVEMBER'), JText::_('DECEMBER'));
-		$options->shortMonths = array(JText::_('JANUARY_SHORT'), JText::_('FEBRUARY_SHORT'), JText::_('MARCH_SHORT'), JText::_('APRIL_SHORT'), JText::_('MAY_SHORT'), JText::_('JUNE_SHORT'), JText::_('JULY_SHORT'), JText::_('AUGUST_SHORT'), JText::_('SEPTEMBER_SHORT'), JText::_('OCTOBER_SHORT'), JText::_('NOVEMBER_SHORT'), JText::_('DECEMBER_SHORT'));
+		$options->days = array(JText::_('SUNDAY'), JText::_('MONDAY'), JText::_('TUESDAY'), JText::_('WEDNESDAY'), JText::_('THURSDAY'),
+			JText::_('FRIDAY'), JText::_('SATURDAY'));
+		$options->shortDays = array(JText::_('SUN'), JText::_('MON'), JText::_('TUE'), JText::_('WED'), JText::_('THU'), JText::_('FRI'),
+			JText::_('SAT'));
+		$options->months = array(JText::_('JANUARY'), JText::_('FEBRUARY'), JText::_('MARCH'), JText::_('APRIL'), JText::_('MAY'), JText::_('JUNE'),
+			JText::_('JULY'), JText::_('AUGUST'), JText::_('SEPTEMBER'), JText::_('OCTOBER'), JText::_('NOVEMBER'), JText::_('DECEMBER'));
+		$options->shortMonths = array(JText::_('JANUARY_SHORT'), JText::_('FEBRUARY_SHORT'), JText::_('MARCH_SHORT'), JText::_('APRIL_SHORT'),
+			JText::_('MAY_SHORT'), JText::_('JUNE_SHORT'), JText::_('JULY_SHORT'), JText::_('AUGUST_SHORT'), JText::_('SEPTEMBER_SHORT'),
+			JText::_('OCTOBER_SHORT'), JText::_('NOVEMBER_SHORT'), JText::_('DECEMBER_SHORT'));
 		$options->first_week_day = (int) $params->get('first_week_day', 0);
 
 		$options->monthday = new stdClass;
@@ -104,15 +131,15 @@ class fabrikViewCalendar extends JView
 		$options->monthday->height = (int) $params->get('calendar-monthday-height', 80);
 		$options->greyscaledweekend = $params->get('greyscaled-week-end', 0);
 		$options->viewType = $params->get('calendar_default_view', 'monthView');
-		
+
 		$options->weekday = new stdClass;
 		$options->weekday->width = (int) $params->get('calendar-weekday-width', 90);
 		$options->weekday->height = (int) $params->get('calendar-weekday-height', 10);
-		$options->open = (int)$params->get('open-hour', 0);
-		$options->close = (int)$params->get('close-hour', 24);
+		$options->open = (int) $params->get('open-hour', 0);
+		$options->close = (int) $params->get('close-hour', 24);
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
-		
+
 		$json = json_encode($options);
 
 		JText::script('PLG_VISUALIZATION_CALENDAR_NEXT');
@@ -128,21 +155,25 @@ class fabrikViewCalendar extends JView
 		JText::script('PLG_VISUALIZATION_CALENDAR_EDIT');
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 
-		$str = " $this->calName = new fabrikCalendar('calendar_$calendar->id');\n".
-		"  $this->calName.render($json);\n".
-		"  Fabrik.addBlock('calendar_" . $calendar->id . "', $this->calName);\n";
-		$str .= $legend . "\n";
+		$ref = $model->getJSRenderContext();
+		$js = " $ref = new fabrikCalendar('calendar_$calendar->id');\n";
+		$js .= " $ref.render($json);\n";
+		$js .= "  Fabrik.addBlock('" . $ref . "', $ref);\n";
+		$js .= $legend . "\n";
+		$js .= $model->getFilterJs();
 
 		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/calendar/calendar.js';
-		FabrikHelperHTML::script($srcs, $str);
+		FabrikHelperHTML::script($srcs, $js);
 
 		$viewName = $this->getName();
 		$this->assignRef('params', $model->getParams());
-		$tmpl = $params->get('calendar_layout', $tmpl);
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tmpl;
+		$tpl = $params->get('calendar_layout', $tpl);
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tmpl . '/template.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
+
 		return parent::display();
 	}
 
@@ -169,9 +200,10 @@ class fabrikViewCalendar extends JView
 		$prefix = $config->get('dbprefix');
 		$this->_eventTypeDd = JHTML::_('select.genericlist', array_merge($options, $rows), 'event_type', 'class="inputbox" size="1" ', 'value', 'text', '', 'fabrik_event_type');
 
-		//tried loading in iframe and as an ajax request directly - however
-		//in the end decided to set a call back to the main calendar object (via the package manager)
-		//to load up the new add event form
+		/*tried loading in iframe and as an ajax request directly - however
+		 *in the end decided to set a call back to the main calendar object (via the package manager)
+		 * to load up the new add event form
+		 */
 		$script = array();
 		$script[] = "head.ready(function() {";
 		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
@@ -202,4 +234,3 @@ class fabrikViewCalendar extends JView
 		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 	}
 }
-?>

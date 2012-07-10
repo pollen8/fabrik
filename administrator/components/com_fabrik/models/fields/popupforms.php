@@ -11,6 +11,7 @@
 defined('JPATH_BASE') or die();
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
@@ -19,8 +20,9 @@ JFormHelper::loadFieldClass('list');
 /**
  * Renders a list releated forms that a db join element can be populated from
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldPopupforms extends JFormFieldList

@@ -3,7 +3,7 @@
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,9 +11,12 @@ defined('_JEXEC') or die();
 
 /**
  * Image manipulation class
- *
- * @package  Fabrik
- * @since    3.0
+ * 
+ * @package		Joomla
+ * @subpackage	Fabrik.helpers
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @since       1.0
  */
 
 class FabimageHelper

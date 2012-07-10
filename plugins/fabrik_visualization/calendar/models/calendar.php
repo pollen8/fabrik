@@ -1,10 +1,9 @@
 <?php
-
 /**
- * @package     Joomla
- * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.calendar
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,11 +11,17 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/visualization.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
+
+/**
+ * Fabrik Calendar Plug-in Model
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.calendar
+ */
 
 class fabrikModelCalendar extends FabrikFEModelVisualization
 {
-
 	protected $eventLists = null;
 
 	/** js name for calendar **/
@@ -217,6 +222,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$this->setupEvents();
 		$request = JRequest::get('request');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+
 		foreach ($this->_events as $listid => $record)
 		{
 			$listModel->setId($listid);
@@ -318,7 +324,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 				$qlabel = FabrikString::safeColName($label);
 				if (array_key_exists($qlabel, $els))
 				{
-					// If db join selected for the label we need to get the label element and not the value
+					// if db join selected for the label we need to get the label element and not the value
 					$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
 
 					// $$$ hugh @TODO doesn't seem to work for join elements, so adding hack till I can talk
@@ -387,7 +393,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		return $addEvent;
 	}
 
-	//@TODO: json encode the returned value and move the $this->calName.addLegend to the view
+	/**
+	 * Get the js code to create the legend
+	 * 
+	 * @return  string
+	 */
+
 	function getLegend()
 	{
 		$db = FabrikWorker::getDbo();
@@ -396,8 +407,11 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$tables = (array) $params->get('calendar_table');
 		$colour = (array) $params->get('colour');
 		$legend = (array) $params->get('legendtext');
+		$ref = $this->getJSRenderContext();
+
+		// @TODO: json encode the returned value and move to the view
 		$calendar = $this->getRow();
-		$aLegend = "$this->calName.addLegend([";
+		$aLegend = "$ref.addLegend([";
 		$jsevents = array();
 		foreach ($this->_events as $listid => $record)
 		{
@@ -417,6 +431,13 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		return $aLegend;
 	}
 
+	/**
+	 * Get calendar js name
+	 * 
+	 * @deprecated  use getJSRenderContext() instead
+	 * 
+	 * @return NULL
+	 */
 	function getCalName()
 	{
 		if (is_null($this->calName))
@@ -457,4 +478,3 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 
 }
 
-?>

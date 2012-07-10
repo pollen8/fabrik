@@ -557,7 +557,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form {
 							 if (!empty($php_file) && file_exists($php_file)) {*/
 							if ($ipn !== false) {
 								$request = $_REQUEST;
-								//require_once($php_file);
+								//require_once $php_file;
 								//$ipn = new fabrikPayPalIPN();
 								$ipn_function = 'payment_status_' . $payment_status;
 								if (method_exists($ipn, $ipn_function)) {
@@ -666,7 +666,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form {
 		if (!empty($php_file) && file_exists($php_file))
 		{
 			$request = $_REQUEST;
-			require_once($php_file);
+			require_once $php_file;
 			$ipn = new fabrikPayPalIPN();
 			return $ipn;
 		}

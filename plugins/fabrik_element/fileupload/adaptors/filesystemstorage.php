@@ -1,21 +1,22 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php');
+require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
-class filesystemstorage extends storageAdaptor{
+class filesystemstorage extends storageAdaptor
+{
 
 	/**
 	 * does a file exist
-* @param $filepath
+	 * @param $filepath
 	 * @return unknown_type
 	 */
 	function exists($filepath)
@@ -25,7 +26,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * does a folder exist
-* @param $folder
+	 * @param $folder
 	 * @return unknown_type
 	 */
 	function folderExists($path)
@@ -34,11 +35,11 @@ class filesystemstorage extends storageAdaptor{
 	}
 
 	/*
-	* create empty index.html for security
-* @param $path path to folder
-	* @return bool success
-	*/
-	
+	 * create empty index.html for security
+	 * @param $path path to folder
+	 * @return bool success
+	 */
+
 	function createIndexFile($path)
 	{
 		$index_file = $path . '/index.html';
@@ -52,10 +53,10 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * create a folder
-* @param $path
+	 * @param $path
 	 * @return unknown_type
 	 */
-	
+
 	function createFolder($path)
 	{
 		if (JFolder::create($path))
@@ -73,7 +74,7 @@ class filesystemstorage extends storageAdaptor{
 	function cleanName($filename, $repeatCounter)
 	{
 		// replace any non-alnum chars (except _ and - and .) with _
-		$filename_o = preg_replace( '#[^a-zA-Z0-9_\-\.]#', '_', $filename);
+		$filename_o = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $filename);
 		// $$$peamak: add random filename
 		$params = $this->getParams();
 		if ($params->get('random_filename') == 1)
@@ -84,7 +85,7 @@ class filesystemstorage extends storageAdaptor{
 			$i = 0;
 			while ($i < $length)
 			{
-				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible)-1), 1);
+				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 				$key .= $char;
 				$i++;
 			}
@@ -107,8 +108,8 @@ class filesystemstorage extends storageAdaptor{
 	/**
 	 * Moves an uploaded file to a destination folder
 	 *
-* @param string $src The name of the php (temporary) uploaded file
-* @param string $dest The path (including filename) to move the uploaded file to
+	 * @param string $src The name of the php (temporary) uploaded file
+	 * @param string $dest The path (including filename) to move the uploaded file to
 	 * @return  boolean True on success
 	 * @since       1.5
 	 */
@@ -143,13 +144,13 @@ class filesystemstorage extends storageAdaptor{
 		$livesite = COM_FABRIK_LIVESITE;
 		$livesite = rtrim($livesite, '/\\');
 		$file = JString::ltrim($file, '/\\');
-		return str_replace("\\", "/", $livesite  . '/' . $file);
+		return str_replace("\\", "/", $livesite . '/' . $file);
 	}
 
 	/**
 	 * get the thumbnail URL for the file given
 	 *
-* @param string $file url
+	 * @param string $file url
 	 * @return string thumbnail url
 	 */
 
@@ -161,8 +162,8 @@ class filesystemstorage extends storageAdaptor{
 	/**
 	 *
 	 * get the path (relative to site root?) to the smaller file
-* @param string large file path
-* @param string type (thumb or crop)
+	 * @param string large file path
+	 * @param string type (thumb or crop)
 	 */
 
 	function _getSmallerFile($file, $type)
@@ -206,10 +207,10 @@ class filesystemstorage extends storageAdaptor{
 		$f = basename($file);
 		$dir = dirname($file);
 		$ext = JFile::getExt($f);
-		$fclean = str_replace('.'.$ext, '', $f); //remove extension
+		$fclean = str_replace('.' . $ext, '', $f); //remove extension
 		if ($type == 'thumb')
 		{
-			$file = $dir . '/' . $params->get('thumb_prefix') .  $fclean . $params->get('thumb_suffix') .'.'. $ext; //$f replaced by $fclean, $ext
+			$file = $dir . '/' . $params->get('thumb_prefix') . $fclean . $params->get('thumb_suffix') . '.' . $ext; //$f replaced by $fclean, $ext
 		}
 		else
 		{
@@ -236,7 +237,7 @@ class filesystemstorage extends storageAdaptor{
 
 	/**
 	 * do a final transform on the path name
-* @param $path
+	 * @param $path
 	 */
 
 	function finalFilePathParse(&$filepath)
@@ -245,12 +246,12 @@ class filesystemstorage extends storageAdaptor{
 		// which happens on some shared hosts which are chrooted (jailed)
 		// 'cos then we just strip out all the /'s in gthe path!
 		//$filepath = str_replace(JPATH_SITE, '', $filepath);
-		$filepath = preg_replace('#^'.preg_quote(JPATH_SITE, '#').'#', '', $filepath);
+		$filepath = preg_replace('#^' . preg_quote(JPATH_SITE, '#') . '#', '', $filepath);
 	}
 
 	/**
 	 * Get file info using getid3
-* @param $filepath
+	 * @param $filepath
 	 * return array
 	 */
 	function getFileInfo($filepath)
@@ -266,24 +267,9 @@ class filesystemstorage extends storageAdaptor{
 			if (version_compare(PHP_VERSION, '5.3.0') >= 0)
 			{
 				$current_level = error_reporting();
-	    		error_reporting($current_level & ~E_DEPRECATED);
+				error_reporting($current_level & ~E_DEPRECATED);
 			}
-	    	/*
-			require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php');
-			require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php');
-
-			getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
-			$config =& JFactory::getConfig();
-			$host =  $config->get('host');
-			$database = $config->get('db');
-			$username = $config->get('user');
-			$password = $config->get('password');
-			$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
-			$getID3->encoding = 'UTF-8';
-			// Analyze file and store returned data in $ThisFileInfo
-			$thisFileInfo = $getID3->analyze($filepath);
-			*/
-			require_once(COM_FABRIK_FRONTEND . '/libs/phpmimetypeclass/class.mime.php');
+			require_once COM_FABRIK_FRONTEND . '/libs/phpmimetypeclass/class.mime.php';
 			$mime = new MIMETypes();
 			$thisFileInfo['filesize'] = filesize($filepath);
 			$thisFileInfo['filename'] = basename($filepath);

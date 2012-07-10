@@ -1,9 +1,9 @@
 <?php
 /**
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  * @since       1.6
  */
 
@@ -16,8 +16,9 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
 /**
  * Renders a list of created visualizations
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldVisaulizationlist extends JFormFieldList

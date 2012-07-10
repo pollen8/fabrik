@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class plgFabrik_ListDownload extends plgFabrik_List {
 
@@ -201,9 +201,8 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		if (!isset($this->storage))
 		{
 			$params = $this->getParams();
-			//$storageType = $params->get('fileupload_storage_type', 'filesystemstorage');
 			$storageType = 'filesystemstorage';
-			require_once(JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php');
+			require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php';
 			$this->storage = new $storageType($params);
 		}
 		return $this->storage;

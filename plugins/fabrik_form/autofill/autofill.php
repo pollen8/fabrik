@@ -65,7 +65,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		JRequest::setVar('resetfilters', 1);
 		if ($cnn === 0 || $cnn == -1)
 		{
-			//no connection selected so query current forms' table data
+			// No connection selected so query current forms' table data
 			$formid = JRequest::getInt('formid');
 			JRequest::setVar($element, $value, 'get');
 			$model = JModel::getInstance('form', 'FabrikFEModel');
@@ -79,7 +79,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		}
 		if ($value !== '')
 		{
-			// dont get the row if its empty
+			// Don't get the row if its empty
 			$data = $listModel->getRow($value, true, true);
 			if (!is_null($data))
 			{
@@ -121,13 +121,12 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 					else
 					{
 						// $$$ hugh - key may exist, but be null
-						//if (!isset($data->$from)) {
 						if (!array_key_exists($from, $data))
 						{
-							JError::raiseError(500, 'autofill map json not correctly set?');
+							exit;
+							JError::raiseError(500, 'Couln\'t find from value in record data, is the element published?');
 						}
 						$newdata->$to = isset($data->$from) ? $data->$from : '';
-						//if (!isset($data->$fromraw)) {
 						if (!array_key_exists($fromraw, $data))
 						{
 							JError::raiseError(500, 'autofill toraw map json not correctly set?');

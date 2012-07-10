@@ -1,9 +1,9 @@
 <?php
 /**
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,9 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 /**
  * Renders a author element
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldSwapList extends JFormFieldList

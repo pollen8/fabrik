@@ -1627,7 +1627,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$params = $this->getParams();
 			$storageType = JFilterInput::getInstance()->clean($params->get('fileupload_storage_type', 'filesystemstorage'), 'CMD');
-			require_once(JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php');
+			require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php';
 			$this->storage = new $storageType($params);
 		}
 		return $this->storage;

@@ -16,7 +16,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 if (!class_exists('TwitterOAuth'))
 {
-	require_once(COM_FABRIK_FRONTEND . '/libs/abraham-twitteroauth/twitteroauth/twitteroauth.php');
+	require_once COM_FABRIK_FRONTEND . '/libs/abraham-twitteroauth/twitteroauth/twitteroauth.php';
 }
 
 class PlgFabrik_FormTwitter extends PlgFabrik_Form {
@@ -257,7 +257,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form {
 			$bitly_key = $params->get('twitter_bitly_api_key', '');
 			if (!empty($bitly_login) && !empty($bitly_key))
 			{
-				require_once(JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php');
+				require_once JPATH_SITE . '/components/com_fabrik/libs/bitly/bitly.php';
 				$this->bitly = $bitly = new bitly( $bitly_login, $bitly_key);
 			}
 			else

@@ -34,7 +34,7 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 		{
 			$username = $user->get('username') != '' ? $user->get('username') : $this->_randomSring();
 			$email = $user->get('email') != '' ? $user->get('email') : $this->_randomSring()  .'@' . $this->_randomSring() . 'com';
-			require_once(JPATH_COMPONENT . '/plugins/validationrule/akismet/akismet.class.php');
+			require_once JPATH_COMPONENT . '/plugins/validationrule/akismet/akismet.class.php';
 			$akismet_comment = array (
 				'author' => $username,
 				'email' => $user->get('email'),

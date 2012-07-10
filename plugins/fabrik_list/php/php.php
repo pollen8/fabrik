@@ -1,23 +1,22 @@
 <?php
 
 /**
-* Add an action button to run PHP
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Pollen 8 Design Ltd
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * Add an action button to run PHP
+ * @package Joomla
+ * @subpackage Fabrik
+ * @author Rob Clayburn
+ * @copyright (C) Pollen 8 Design Ltd
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
-class plgFabrik_ListPhp extends plgFabrik_List {
-
+class plgFabrik_ListPhp extends plgFabrik_List
+{
 
 	protected $buttonPrefix = 'php';
 
@@ -30,7 +29,6 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 	{
 		return $this->getParams()->get('table_php_button_label', parent::buttonLabel());
 	}
-
 
 	/**
 	 * (non-PHPdoc)
@@ -54,19 +52,22 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 
 	/**
 	 * do the plug-in action
-* @param object parameters
-* @param object table model
-* @param array custom options
+	 * @param object parameters
+	 * @param object table model
+	 * @param array custom options
 	 */
 
 	function process(&$params, &$model, $opts = array())
 	{
 		$file = JFilterInput::clean($params->get('table_php_file'), 'CMD');
-		if ($file == -1 || $file == '') {
+		if ($file == -1 || $file == '')
+		{
 			$code = $params->get('table_php_code');
 			@eval($code);
-		} else {
-			require_once(JPATH_ROOT . '/plugins/fabrik_list/php/scripts/' . $file);
+		}
+		else
+		{
+			require_once JPATH_ROOT . '/plugins/fabrik_list/php/scripts/' . $file;
 		}
 		return true;
 	}
@@ -80,9 +81,9 @@ class plgFabrik_ListPhp extends plgFabrik_List {
 
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param object parameters
-* @param object table model
-* @param array [0] => string table's form id to contain plugin
+	 * @param object parameters
+	 * @param object table model
+	 * @param array [0] => string table's form id to contain plugin
 	 * @return  bool
 	 */
 

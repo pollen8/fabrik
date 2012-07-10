@@ -281,8 +281,8 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-		require_once(COM_FABRIK_FRONTEND . '/libs/mobileuseragent/mobileuseragent.php');
-		require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+		require_once COM_FABRIK_FRONTEND . '/libs/mobileuseragent/mobileuseragent.php';
+		require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 		$ua = new MobileUserAgent();
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);

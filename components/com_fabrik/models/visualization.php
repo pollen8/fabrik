@@ -37,6 +37,9 @@ class FabrikFEModelVisualization extends JModel
 	public $srcBase = "plugins/fabrik_visualization/";
 
 	public $pathBase = null;
+	
+	/** @var string js code to ini list filters */
+	protected $filterJs = null;
 
 	/**
 	 * Constructor
@@ -93,7 +96,7 @@ class FabrikFEModelVisualization extends JModel
 	}
 
 	/**
-	 * get the vizualizations table models
+	 * get the visualizations list models
 	 *
 	 * @return array table objects
 	 */
@@ -137,7 +140,7 @@ class FabrikFEModelVisualization extends JModel
 	 * @return string
 	 */
 
-	protected function getContainerId()
+	public function getContainerId()
 	{
 		$viz = $this->getVisualization();
 		return $viz->plugin . '_' . $viz->id;
@@ -156,19 +159,68 @@ class FabrikFEModelVisualization extends JModel
 		$filters = array();
 		$showFilters = $params->get($name . '_show_filters', array());
 		$listModels = $this->getlistModels();
+		$js = array();
 		$i = 0;
 		foreach ($listModels as $listModel)
 		{
 			$show = (bool) JArrayHelper::getValue($showFilters, $i, true);
 			if ($show)
 			{
-				$f = $listModel->getFilters($this->getContainerId(), 'vizualization', $this->getVisualization()->id);
-				$filters[$listModel->getTable()->label] = $f;
+				$ref = $this->getRenderContext();
+				$id = $this->getId();
+				$filters[$listModel->getTable()->label] = $listModel->getFilters($this->getContainerId(), 'visualization', $id, $ref);
+				$js[] = $listModel->filterJs;
 			}
 			$i++;
 		}
+		$this->filterJs = implode("\n", $js);
 		$this->getRequireFilterMsg();
 		return $filters;
+	}
+	
+	/**
+	 * Get the JS code to ini the list filters
+	 * 
+	 * @since   3.0.6
+	 * 
+	 * @return  string  js code
+	 */
+
+	public function getFilterJs()
+	{
+		if (is_null($this->filterJs))
+		{
+			$this->getFilters();
+		}
+		return $this->filterJs;
+	}
+
+	/**
+	 * Get Viz render contenxt
+	 * 
+	 * @since   3.0.6
+	 * 
+	 * @return  string  render context
+	 */
+
+	public function getRenderContext()
+	{
+		$app = JFactory::getApplication();
+		$id = $this->getId();
+		return $id . '_' . JFactory::getApplication()->scope . '_' . $id;
+	}
+	
+	/**
+	 * Get the JS unique name that is assigned to the viz JS object
+	 * 
+	 * @since   3.0.6
+	 * 
+	 * @return  string  js viz id
+	 */
+
+	public function getJSRenderContext()
+	{
+		return 'visualization_' . $this->getRenderContext();
 	}
 
 	/**

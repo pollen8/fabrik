@@ -4,7 +4,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 define('THIS_SCRIPT', 'mkforum');
 
-require('./global.php');
+require './global.php';
 
 /*if (!is_member_of($vbulletin->userinfo, 5, 6, 7, 10))
 {
@@ -14,10 +14,9 @@ require('./global.php');
 $forum_name = $vbulletin->input->clean_gpc('p', 'forum_name', TYPE_NOHTML);
 $forum_parent = $vbulletin->input->clean_gpc('p', 'forum_parent', TYPE_UINT);
 
-################################################################################
 if ($forum_name && $forum_parent)
 {
-	require_once(DIR . '/includes/functions_bigthree.php');
+	require_once DIR . '/includes/functions_bigthree.php';
 	$dataman = datamanager_init('Forum', $vbulletin, ERRTYPE_ARRAY);
 	$dataman->set('title', $forum_name);
 	$dataman->set('title_clean', $forum_name);

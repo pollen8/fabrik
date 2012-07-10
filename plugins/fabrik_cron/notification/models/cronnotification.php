@@ -11,7 +11,7 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
-require_once(COM_FABRIK_FRONTEND . '/models/plugin.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
 
 class fabrikModelCronnotification extends fabrikModelPlugin {
 

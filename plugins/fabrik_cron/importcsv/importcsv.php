@@ -13,10 +13,10 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/importcsv.php');
+require_once COM_FABRIK_FRONTEND . '/models/importcsv.php';
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 {
@@ -40,7 +40,7 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 
 	function requiresTableData()
 	{
-		/* we don't need cron to load $data for us */
+		/* We don't need cron to load $data for us */
 		return false;
 	}
 
@@ -53,7 +53,7 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 
 	protected function getListIdFromFileName($tableName)
 	{
-		//get site's database
+		// Get site's database
 		if (!isset($this->db))
 		{
 			$this->db = FabrikWorker::getDbo(true);
@@ -76,7 +76,7 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 
-		//Get plugin settings and save state of request array vars we might change
+		// Get plugin settings and save state of request array vars we might change
 		$maxFiles = (int) $params->get('cron_importcsv_maxfiles', 1);
 		$deleteFile = $params->get('cron_importcsv_deletefile', true);
 		$cronDir = $params->get('cron_importcsv_directory');
@@ -95,7 +95,7 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 		JRequest::setVar('jform', $jform);
 		$orig_listid = JRequest::getInt('listid', -1);
 
-		//Fabrik use this as the base directory, so we need a new directory under 'media'
+		// Fabrik use this as the base directory, so we need a new directory under 'media'
 		define("FABRIK_CSV_IMPORT_ROOT", JPATH_ROOT . '/media');
 		$d = FABRIK_CSV_IMPORT_ROOT . '/' . $cronDir;
 

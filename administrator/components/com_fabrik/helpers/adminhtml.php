@@ -1,7 +1,7 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @since       1.6
@@ -13,8 +13,9 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Content Component HTML Helper
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @since       3.0
  */
 
 class FabrikHelperAdminHTML
@@ -23,8 +24,8 @@ class FabrikHelperAdminHTML
 	/**
 	 * get a list of directories
 	 * 
-* @param   string  $path      to read from
-* @param   bool    $fullpath  return full paths or not
+	 * @param   string  $path      to read from
+	 * @param   bool    $fullpath  return full paths or not
 	 * 
 	 * @return  null
 	 */

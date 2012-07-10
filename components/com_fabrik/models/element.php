@@ -386,7 +386,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 		$listModel = $this->getListModel();
-		if ($listModel->getOutPutFormat() == 'csv')
+		if (in_array($listModel->getOutPutFormat(), array('csv', 'rss')))
 		{
 			$this->iconsSet = false;
 			return $data;

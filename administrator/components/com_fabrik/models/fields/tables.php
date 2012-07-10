@@ -1,10 +1,9 @@
 <?php
 /**
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @since       1.6
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is within the rest of the framework
@@ -20,8 +19,9 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 /**
  * Renders a list of tables, either fabrik lists, or db tables
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldTables extends JFormFieldList

@@ -12,7 +12,7 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class plgFabrik_ListPhp_Events extends plgFabrik_List
 {

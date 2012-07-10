@@ -10,15 +10,16 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class flashRender{
+class flashRender
+{
 
 	var $output = '';
 
 	/**
-* @param   object	element model
-* @param   object	element params
-* @param   string	row data for this element
-* @param   object	all row's data
+	 * @param   object	element model
+	 * @param   object	element params
+	 * @param   string	row data for this element
+	 * @param   object	all row's data
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -27,27 +28,27 @@ class flashRender{
 	}
 
 	/**
-* @param   object	element model
-* @param   object	element params
-* @param   string	row data for this element
+	 * @param   object	element model
+	 * @param   object	element params
+	 * @param   string	row data for this element
 	 */
 
 	function render(&$model, &$params, $file)
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		ini_set('display_errors', true);
-		require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php');
-		require_once(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php');
+		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.php';
+		require_once COM_FABRIK_FRONTEND . '/libs/getid3/getid3/getid3.lib.php';
 
 		getid3_lib::IncludeDependency(COM_FABRIK_FRONTEND . '/libs/getid3/getid3/extension.cache.mysql.php', __FILE__, true);
 		$config = JFactory::getConfig();
-		$host =  $config->get('host');
+		$host = $config->get('host');
 		$database = $config->get('db');
 		$username = $config->get('user');
 		$password = $config->get('password');
 		$getID3 = new getID3_cached_mysql($host, $database, $username, $password);
 		// Analyze file and store returned data in $ThisFileInfo
-		$relPath = str_replace("\\", "/", JPATH_SITE  . $file);
+		$relPath = str_replace("\\", "/", JPATH_SITE . $file);
 		$thisFileInfo = $getID3->analyze($relPath);
 
 		//var_dump($relPath, $thisFileInfo);
@@ -55,8 +56,7 @@ class flashRender{
 		$h = $params->get('fu_main_max_height', 0);
 		if ($thisFileInfo && array_key_exists('swf', $thisFileInfo))
 		{
-			if ($thisFileInfo['swf']['header']['frame_width'] < $w
-			|| $thisFileInfo['swf']['header']['frame_height'] < $h)
+			if ($thisFileInfo['swf']['header']['frame_width'] < $w || $thisFileInfo['swf']['header']['frame_height'] < $h)
 			{
 				$w = $thisFileInfo['swf']['header']['frame_width'];
 				$h = $thisFileInfo['swf']['header']['frame_height'];
@@ -82,24 +82,24 @@ class flashRender{
 			// element, so if it isn't an image type, you can point at another element on the form,
 			// (either and Upload or an Image) and use that as the thumb for this content.
 			/*
-				$thumb_w = $params->get('thumb_max_width');
-				$thumb_h = $params->get('thumb_max_height');
-				$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
-				$this->output = "<object width=\"$w\" height=\"$h\">
-				<param name=\"movie\" value=\"$file\">
-				<embed src=\"$file\" width=\"$thumb_w\" height=\"$thumb_h\">
-				</embed>
-				</object>";
-				*/
+			    $thumb_w = $params->get('thumb_max_width');
+			    $thumb_h = $params->get('thumb_max_height');
+			    $file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
+			    $this->output = "<object width=\"$w\" height=\"$h\">
+			    <param name=\"movie\" value=\"$file\">
+			    <embed src=\"$file\" width=\"$thumb_w\" height=\"$thumb_h\">
+			    </embed>
+			    </object>";
+			 */
 			$thumb_dir = $params->get('thumb_dir');
-			if (!empty( $thumb_dir))
+			if (!empty($thumb_dir))
 			{
 				$file = str_replace("\\", "/", $file);
-				$pathinfo = pathinfo( $file);
+				$pathinfo = pathinfo($file);
 				// $$$ hugh - apparently filename ocnstant only added in PHP 5.2
 				if (!isset($pathinfo['filename']))
 				{
-					$pathinfo['filename'] = explode('.',$pathinfo['basename']);
+					$pathinfo['filename'] = explode('.', $pathinfo['basename']);
 					$pathinfo['filename'] = $pathinfo['filename'][0];
 				}
 				$thumb_path = COM_FABRIK_BASE . $thumb_dir . '/' . $pathinfo['filename'] . '.png';
@@ -116,12 +116,12 @@ class flashRender{
 			{
 				$thumb_file = COM_FABRIK_LIVESITE . "media/com_fabrik/images/flash.jpg";
 			}
-			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
-			$this->output .=	"<a href='$file' rel='lightbox[flash $w $h]'><img src='$thumb_file' alt='Full Size'></a>";
+			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
+			$this->output .= "<a href='$file' rel='lightbox[flash $w $h]'><img src='$thumb_file' alt='Full Size'></a>";
 		}
 		elseif ($model->inDetailedView)
 		{
-			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
+			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 			$this->output = "<object width=\"$w\" height=\"$h\">
 				<param name=\"movie\" value=\"$file\">
 				<embed src=\"$file\" width=\"$w\" height=\"$h\">
@@ -130,7 +130,7 @@ class flashRender{
 		}
 		else
 		{
-			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
+			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 			$this->output = "<object width=\"$w\" height=\"$h\">
 				<param name=\"movie\" value=\"$file\">
 				<embed src=\"$file\" width=\"$w\" height=\"$h\">

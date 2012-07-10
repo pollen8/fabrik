@@ -10,11 +10,10 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class (this is here to allow for the create of the plugin
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'plugin.php');
-require_once(COM_FABRIK_FRONTEND.DS.'models'.DS.'visualization.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
+require_once COM_FABRIK_FRONTEND . '/models/visualization.php';
 
 class plgFabrik_VisualizationFusion_gantt_chart extends FabrikPlugin
 {
 
 }
-?>

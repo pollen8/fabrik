@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class plgFabrik_Crongmail extends plgFabrik_Cron {
 
@@ -38,8 +38,6 @@ class plgFabrik_Crongmail extends plgFabrik_Cron {
 		$inboxes = explode(',', $params->get('plugin-options.inboxes', 'INBOX'));
 
 		$deleteMail = false;
-		//$storageType = 'filesystemstorage';
-		//require_once(JPATH_BASE.DS.'components/com_fabrik/plugins/element/fabrikfileupload/adaptors'.DS.$storageType.'.php');
 		$p = new stdClass;
 
 		$fromField = $params->get('plugin-options.from');

@@ -10,7 +10,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class plgFabrik_ListEmail extends plgFabrik_List {
 

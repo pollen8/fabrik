@@ -845,7 +845,7 @@ var idcomments_post_url;");
 		$jcomments = JPATH_SITE . '/components/com_jcomments/jcomments.php';
 		if (JFile::exists($jcomments))
 		{
-			require_once($jcomments);
+			require_once $jcomments;
 			$this->data = '<div id="jcomments" style="clear: both;">
                     ' . JComments::show(JRequest::getVar('rowid'), "com_fabrik_{$formModel->getId()}") . '
                     </div>';

@@ -11,7 +11,9 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
-require_once(COM_FABRIK_FRONTEND . '/models/parent.php'); //required for fabble
+
+// Required for fabble
+require_once COM_FABRIK_FRONTEND . '/models/parent.php';
 
 class FabrikPlugin extends JPlugin
 {

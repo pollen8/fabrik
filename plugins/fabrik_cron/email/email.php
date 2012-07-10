@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class plgFabrik_Cronemail extends plgFabrik_Cron {
 

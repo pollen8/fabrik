@@ -11,14 +11,14 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
-require_once('components/com_fabrik/views/list/view.base.php');
+require_once 'components/com_fabrik/views/list/view.base.php';
 
-
-class FabrikViewList extends FabrikViewListBase{
+class FabrikViewList extends FabrikViewListBase
+{
 
 	/**
 	 * display the template
-* @param   sting	$tpl
+	 * @param   sting	$tpl
 	 */
 
 	function display($tpl = null)
@@ -36,25 +36,25 @@ class FabrikViewList extends FabrikViewListBase{
 	/**
 	 * build an object with the button icons based on the current tmpl
 	 */
-	
+
 	protected function buttons()
 	{
-		// dont add buttons as pdf is not interactive
+		// Don't add buttons as pdf is not interactive
 		$this->buttons = new stdClass;
 	}
-	
+
 	/**
-	* (non-PHPdoc)
-	* @see	FabrikViewFormBase::setTitle()
-	*/
-	
+	 * (non-PHPdoc)
+	 * @see	FabrikViewFormBase::setTitle()
+	 */
+
 	protected function setTitle($w, &$params, $model)
 	{
-		parent:: setTitle($w, $params, $model);
-		//set the download file name based on the document title
+		parent::setTitle($w, $params, $model);
+
+		// Set the download file name based on the document title
 		$document = JFactory::getDocument();
 		$document->setName($document->getTitle());
 	}
 
 }
-?>
