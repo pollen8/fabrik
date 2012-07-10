@@ -120,9 +120,16 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 							$event->start = $bits[0] . '+00:00';
 
 							$event->title = strip_tags(@$row->$title);
+							if ($app->isAdmin())
+							{
+								$url = 'index.php?option=com_fabrik&task=' . $nextview . '.view&formid=' . $table->form_id . '&rowid=' . $row->__pk_val;
+							}
+							else
+							{
 							$url = 'index.php?option=com_fabrik&view=' . $nextview . '&formid=' . $table->form_id . '&rowid=' . $row->__pk_val
 								. '&listid=' . $listid;
-							$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : JRoute::_($url);
+							}
+							$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : $url;//JRoute::_($url);
 							$event->image = '';
 							$event->color = $colour;
 							$event->textColor = $textColour;
