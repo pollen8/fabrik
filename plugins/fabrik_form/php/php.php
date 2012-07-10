@@ -1,21 +1,26 @@
 <?php
-
 /**
-* Run some php when the form is submitted
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.php
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormPHP extends plgFabrik_Form {
+/**
+ * Run some php when the form is submitted
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.php
+ */
+
+class plgFabrik_FormPHP extends plgFabrik_Form
+{
 
 	/**
 	 * store the html to insert at the bottom of the form(non-PHPdoc)
@@ -28,11 +33,11 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 		if ($params->get('only_process_curl') == 'getBottomContent')
 		{
 			$this->html = $this->_runPHP($params, $formModel);
- 			if ($this->html === false)
- 			{
+			if ($this->html === false)
+			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
- 		}
+		}
 		return true;
 	}
 
@@ -47,11 +52,11 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 		if ($params->get('only_process_curl') == 'getTopContent')
 		{
 			$this->html = $this->_runPHP($params, $formModel);
- 			if ($this->html === false)
- 			{
+			if ($this->html === false)
+			{
 				return false;
 			}
- 		}
+		}
 		return true;
 	}
 
@@ -76,11 +81,11 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 		if ($params->get('only_process_curl') == 'getEndContent')
 		{
 			$this->html = $this->_runPHP($params, $formModel);
- 			if ($this->html === false)
- 			{
+			if ($this->html === false)
+			{
 				return false;
 			}
- 		}
+		}
 		return true;
 	}
 
@@ -90,106 +95,106 @@ class plgFabrik_FormPHP extends plgFabrik_Form {
 	 * @param	object	$formModel
 	 */
 
- 	public function onBeforeProcess($params, &$formModel)
- 	{
- 		if ($params->get('only_process_curl') == 'onBeforeProcess')
- 		{
- 			if ($this->_runPHP($params, $formModel) === false)
- 			{
+	public function onBeforeProcess($params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeProcess')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return false;
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	function onBeforeStore($params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onBeforeStore')
- 	 	{
- 			if ($this->_runPHP($params, $formModel) === false)
- 			{
+	function onBeforeStore($params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeStore')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return false;
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	/**
- 	 * (non-PHPdoc)
- 	 * @see plgFabrik_Form::onBeforeCalculations()
- 	 */
- 	
- 	function onBeforeCalculations($params, $formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onBeforeCalculations')
- 	 	{
- 	 		if ($this->_runPHP($params, $formModel) === false)
- 	 		{
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Form::onBeforeCalculations()
+	 */
+
+	function onBeforeCalculations($params, $formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeCalculations')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	public function onAfterProcess($params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onAfterProcess')
- 	 	{
- 			if ($this->_runPHP($params, $formModel) === false)
- 			{
+	public function onAfterProcess($params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onAfterProcess')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
 				return false;
 			}
- 		}
- 		return true;
- 	}
+		}
+		return true;
+	}
 
- 	/**
- 	 * run when the form is loaded - after its data has been created
- 	 * data found in $formModel->_data
- 	 * @param	object	$params
- 	 * @param	object	$formModel
- 	 * @return	unknown_type
- 	 */
+	/**
+	 * run when the form is loaded - after its data has been created
+	 * data found in $formModel->_data
+	 * @param	object	$params
+	 * @param	object	$formModel
+	 * @return	unknown_type
+	 */
 
- 	function onLoad( &$params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onLoad')
- 	 	{
- 			return $this->_runPHP($params, $formModel);
- 		}
- 		return true;
- 	}
+	function onLoad(&$params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onLoad')
+		{
+			return $this->_runPHP($params, $formModel);
+		}
+		return true;
+	}
 
- 	/**
- 	* run when the form is loaded - before its data has been created
- 	* data found in $formModel->_data
- 	* @param	object	$params
- 	* @param	object	$formModel
- 	* @return	bool
- 	*/
+	/**
+	 * run when the form is loaded - before its data has been created
+	 * data found in $formModel->_data
+	 * @param	object	$params
+	 * @param	object	$formModel
+	 * @return	bool
+	 */
 
- 	function onBeforeLoad(&$params, &$formModel)
- 	{
- 		if ($params->get('only_process_curl') == 'onBeforeLoad')
- 		{
- 			return $this->_runPHP($params, $formModel);
- 		}
- 		return true;
- 	}
+	function onBeforeLoad(&$params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onBeforeLoad')
+		{
+			return $this->_runPHP($params, $formModel);
+		}
+		return true;
+	}
 
- 	/**
- 	 * process the plugin, called when form is submitted
- 	 * @param	object	$params
- 	 * @param	object	form model
- 	 */
+	/**
+	 * process the plugin, called when form is submitted
+	 * @param	object	$params
+	 * @param	object	form model
+	 */
 
- 	public function onError($params, &$formModel)
- 	{
- 	 	if ($params->get('only_process_curl') == 'onError')
- 	 	{
- 			$this->_runPHP($params, $formModel);
- 		}
- 		return true;
+	public function onError($params, &$formModel)
+	{
+		if ($params->get('only_process_curl') == 'onError')
+		{
+			$this->_runPHP($params, $formModel);
+		}
+		return true;
 	}
 
 	/**

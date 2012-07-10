@@ -1,20 +1,25 @@
 <?php
-
 /**
- * redirects the browser to subscriptions to perform payment
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
- */
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.form.subscriptions
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
+
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
+
+/**
+* Redirects the browser to subscriptions to perform payment
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.form.subscriptions
+*/
 
 class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 

@@ -1,22 +1,26 @@
 <?php
-
-
 /**
- * Submit or update data to Salesforce.com
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.salesforce
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormSalesforce extends plgFabrik_Form {
+/**
+ * Submit or update data to Salesforce.com
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.salesforce
+ */
+
+class plgFabrik_FormSalesforce extends plgFabrik_Form
+{
 
 	var $_data = null;
 
@@ -26,8 +30,8 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		$toolkit_path = JPATH_SITE . '/components/com_fabrik/libs/salesforce';
 
 		//Ok, now use SOAP to send the information to SalesForce
-		require_once($toolkit_path .'/soapclient/SforcePartnerClient.php');
-		require_once($toolkit_path.'/soapclient/SforceHeaderOptions.php');
+		require_once($toolkit_path . '/soapclient/SforcePartnerClient.php');
+		require_once($toolkit_path . '/soapclient/SforceHeaderOptions.php');
 
 		// Salesforce Login information
 		$wsdl = $toolkit_path . '/soapclient/partner.wsdl.xml';
@@ -41,7 +45,8 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 	{
 		if (!class_exists('SoapClient'))
 		{
-			JError::raiseWarning(E_WARNING, "Salesforce Plug-in: PHP has not been compiled with the SOAP extension. We will be unable to send this data to Salesforce.com");
+			JError::raiseWarning(E_WARNING,
+				"Salesforce Plug-in: PHP has not been compiled with the SOAP extension. We will be unable to send this data to Salesforce.com");
 		}
 	}
 
@@ -54,7 +59,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		$password = $params->get('salesforce_password');
 		$token = $params->get('salesforce_token');
 		$updateObject = $params->get('salesforce_updateobject', 'Lead');
-		$loginResult = $client->login($userName, $password.$token);
+		$loginResult = $client->login($userName, $password . $token);
 
 		$givenObject = array($updateObject);
 		$fields = $client->describeSObjects($givenObject)->fields;
@@ -77,7 +82,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 				else
 				{
 					// check custom fields
-					if (JString::strtolower($key.'__c') == JString::strtolower($name) && JString::strtolower($name) != 'id')
+					if (JString::strtolower($key . '__c') == JString::strtolower($name) && JString::strtolower($name) != 'id')
 					{
 						$submission[$name] = $val;
 					}
@@ -86,7 +91,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 		}
 
 		$key = FabrikString::safeColNameToArrayKey($formModel->getlistModel()->getTable()->db_primary_key);
-		$customkey =$params->get('salesforce_customid') . '__c';
+		$customkey = $params->get('salesforce_customid') . '__c';
 		if ($params->get('salesforce_allowupsert', 0))
 		{
 			$submission[$customkey] = $formModel->_fullFormData[$key];
@@ -124,12 +129,12 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form {
 				{
 					foreach ($result->errors as $error)
 					{
-						JError::raiseWarning(500, JText::_('SALESFORCE_ERR').$errors->message);
+						JError::raiseWarning(500, JText::_('SALESFORCE_ERR') . $errors->message);
 					}
 				}
 				else
 				{
-					JError::raiseWarning(500, JText::_('SALESFORCE_ERR'). $result->errors->message);
+					JError::raiseWarning(500, JText::_('SALESFORCE_ERR') . $result->errors->message);
 				}
 			}
 			else
