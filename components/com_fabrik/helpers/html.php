@@ -48,7 +48,7 @@ class FabrikHelperHTML
 	protected static $modal = null;
 
 	/**
-	 * load up window code - should be run in ajax loaded pages as well
+	 * load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 * @deprecated use windows() instead
 	 * @param string element select to auto create windows for  - was default = a.modal
@@ -62,7 +62,10 @@ class FabrikHelperHTML
 	public static function windows($selector='', $params = array())
 	{
 		$script = '';
-
+		if (JRequest::getVar('format') == 'json')
+		{
+			return;
+		}
 		$document = JFactory::getDocument();
 
 		$sig = md5(serialize(array($selector,$params)));

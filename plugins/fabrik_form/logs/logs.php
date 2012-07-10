@@ -1,20 +1,26 @@
 <?php
 /**
- * Form email plugin
- * @package Joomla
- * @subpackage Fabrik
- * @author peamak
- * @copyright (C) fabrikar.com
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.logs
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-form.php');
+// Require the abstract plugin class
+require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class plgFabrik_FormLogs extends plgFabrik_Form {
+/**
+ * Log form submissions
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.logs
+ */
+
+class plgFabrik_FormLogs extends plgFabrik_Form
+{
 
 	function onLoad(&$params, &$formModel)
 	{
@@ -31,12 +37,16 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 	protected function getMessageType($rowid)
 	{
-		if (JRequest::getVar('view') == 'details') {
+		if (JRequest::getVar('view') == 'details')
+		{
 			return 'form.details';
 		}
-		if (($rowid == "=") || ($rowid == '&') || ($rowid == '') || $rowid == 0) {
+		if (($rowid == "=") || ($rowid == '&') || ($rowid == '') || $rowid == 0)
+		{
 			return 'form.add';
-		} else {
+		}
+		else
+		{
 			return 'form.edit';
 		}
 
@@ -80,27 +90,32 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		$db = FabrikWorker::getDBO();
 		$query = $db->getQuery(true);
 		$rowid = JRequest::getVar('rowid', '');
-		$loading = strstr($messageType, 'form.load' );
+		$loading = strstr($messageType, 'form.load');
 		$http_referrer = JRequest::getVar('HTTP_REFERER', 'no HTTP_REFERER', 'SERVER');
 		$user = JFactory::getUser();
 		$userid = $user->get('id');
 		$username = $user->get('username');
 
 		// Generate random filename
-		if ($params->get('logs_random_filename') == 1) {
-			function generate_filename($length) {
+		if ($params->get('logs_random_filename') == 1)
+		{
+			function generate_filename($length)
+			{
 				$key = "";
 				$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
 				$i = 0;
-				while ($i < $length) {
-					$char = JString::substr($possible, mt_rand(0, JString::strlen($possible)-1), 1);
+				while ($i < $length)
+				{
+					$char = JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 					$key .= $char;
 					$i++;
 				}
 				return $key;
 			}
-			$random_filename = '_'.generate_filename($params->get('logs_random_filename_length'));
-		} else {
+			$random_filename = '_' . generate_filename($params->get('logs_random_filename_length'));
+		}
+		else
+		{
 			$random_filename = '';
 		}
 
@@ -122,7 +137,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		$sep = $params->get('logs_separator');
 		// Making complete path + filename + extension
 		$w = new FabrikWorker();
-		$logs_file = $logs_path.DS.$w->parseMessageForPlaceHolder($params->get('logs_file')).$random_filename.'.'.$ext;
+		$logs_file = $logs_path . DS . $w->parseMessageForPlaceHolder($params->get('logs_file')) . $random_filename . '.' . $ext;
 		$logs_mode = $params->get('logs_append_or_overwrite');
 		$date_element = $params->get('logs_date_field');
 		$date_now = $params->get('logs_date_now');
@@ -157,7 +172,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				if (!empty($data))
 				{
 					$post = JRequest::get('post');
-					$elementModel = JModel::getInstance('element','FabrikModel');
+					$elementModel = JModel::getInstance('element', 'FabrikModel');
 					$element = $elementModel->getElement(true);
 					$tableModel = $formModel->getTable();
 
@@ -166,7 +181,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					{
 						$c = 0;
 						$origData = $formModel->_origData;
-					
+
 						$log_elements = explode(',', str_replace(' ', '', $params->get('logs_element_list', '')));
 						$groups = $formModel->getGroupsHiarachy();
 						foreach ($groups as $groupModel)
@@ -181,7 +196,9 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 								{
 									if ($newData[$c]->$fullName != $origData[$c]->$fullName)
 									{
-										$result_compare .= JText::_('COMPARE_DATA_CHANGE_ON').' '.$element->label.' '.$sep_compare.JText::_('COMPARE_DATA_FROM').' '.$origData[0]->$fullName.' '.$sep_compare.JText::_('COMPARE_DATA_TO').' '.$newData[$c]->$fullName.' '.$sep_2compare;
+										$result_compare .= JText::_('COMPARE_DATA_CHANGE_ON') . ' ' . $element->label . ' ' . $sep_compare
+											. JText::_('COMPARE_DATA_FROM') . ' ' . $origData[0]->$fullName . ' ' . $sep_compare
+											. JText::_('COMPARE_DATA_TO') . ' ' . $newData[$c]->$fullName . ' ' . $sep_2compare;
 									}
 								}
 							}
@@ -193,11 +210,12 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					}
 					else
 					{
-						$result_compare .= "New record:".$sep_2compare;
+						$result_compare .= "New record:" . $sep_2compare;
 						foreach ($data as $key => $val)
 						{
-							if (isset($val) && (substr($key, -4, 4) != '_raw')) {
-								$result_compare .= "$key : $val".$sep_2compare;
+							if (isset($val) && (substr($key, -4, 4) != '_raw'))
+							{
+								$result_compare .= "$key : $val" . $sep_2compare;
 							}
 						}
 					}
@@ -222,7 +240,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		// Custom Message
 		if ($params->get('custom_msg') != '')
 		{
-			$rep_add_edit = $messageType == 'form.add' ? JText::_('REP_ADD') : ($messageType == 'form.edit' ? JText::_('REP_EDIT') : JText::_('DETAILS'));
+			$rep_add_edit = $messageType == 'form.add' ? JText::_('REP_ADD')
+				: ($messageType == 'form.edit' ? JText::_('REP_EDIT') : JText::_('DETAILS'));
 			$custom_msg = $params->get('custom_msg');
 			$custom_msg = preg_replace('/{Add\/Edit}/', $rep_add_edit, $custom_msg);
 			$custom_msg = preg_replace('/{DATE}/', $date, $custom_msg);
@@ -234,17 +253,18 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 
 			$w = new FabrikWorker();
 			$custom_msg = $w->parseMessageForPlaceHolder($custom_msg);
-			$excl_cdata = preg_replace('/((?!("[^"]*))([ |\w|+|.])+(?=[^"]*"\b)|(?!\b"[^"]*)( +)+(?=([^"]*)$)|(?=\b"[^"]*)( +)+(?=[^"]*"\b))/', '', $custom_msg);
+			$excl_cdata = preg_replace('/((?!("[^"]*))([ |\w|+|.])+(?=[^"]*"\b)|(?!\b"[^"]*)( +)+(?=([^"]*)$)|(?=\b"[^"]*)( +)+(?=[^"]*"\b))/', '',
+				$custom_msg);
 			$cdata = preg_split('/["]{1,}/', $excl_cdata);
 			// Labels for CSV & for DB
 			$clabels_csv_imp = implode("\",\"", $clabels);
 			$clabels_csv_p1 = preg_replace('/^(",)/', '', $clabels_csv_imp);
 			$clabels_csv = '';
-		
+
 			$clabels_csv .= preg_replace('/(,")$/', '', $clabels_csv_p1);
-			if( $params->get('compare_data') == 1)
+			if ($params->get('compare_data') == 1)
 			{
-				$clabels_csv .= ', "'.JText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_CSV').'"';
+				$clabels_csv .= ', "' . JText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_CSV') . '"';
 			}
 			$clabels_createdb_imp = '';
 			foreach ($labtyp as $klb => $vlb)
@@ -252,22 +272,22 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				$klb = $db->quoteName($klb);
 				if ($vlb == 'varchar')
 				{
-					$clabels_createdb_imp .= $klb.' '.$vlb.'(255) NOT NULL, ';
+					$clabels_createdb_imp .= $klb . ' ' . $vlb . '(255) NOT NULL, ';
 				}
 				else if ($vlb == 'int')
 				{
-					$clabels_createdb_imp .= $klb.' '.$vlb.'(11) NOT NULL, ';
+					$clabels_createdb_imp .= $klb . ' ' . $vlb . '(11) NOT NULL, ';
 				}
 				else if ($vlb == 'datetime')
 				{
-					$clabels_createdb_imp .= $klb.' '.$vlb.' NOT NULL, ';
+					$clabels_createdb_imp .= $klb . ' ' . $vlb . ' NOT NULL, ';
 				}
 			}
 			$clabels_createdb = JString::substr_replace($clabels_createdb_imp, '', -2);
 
-			if( $params->get('compare_data') == 1)
+			if ($params->get('compare_data') == 1)
 			{
-				$clabels_createdb .= ', '.$db->quoteName(JText::_('COMPARE_DATA_LABEL_DB')).' text NOT NULL';
+				$clabels_createdb .= ', ' . $db->quoteName(JText::_('COMPARE_DATA_LABEL_DB')) . ' text NOT NULL';
 			}
 
 			// @todo - what if we use differnt db driver which doesnt name quote with `??
@@ -275,7 +295,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$clabels_db_p1 = preg_replace('/^(`,)/', '', $clabels_db_imp);
 			$clabels_db = preg_replace('/(,`)$/', '', $clabels_db_p1);
 
-			if( $params->get('compare_data') == 1)
+			if ($params->get('compare_data') == 1)
 			{
 				$clabels_db .= ', ' . $db->quoteName(JText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_DB'));
 			}
@@ -286,9 +306,9 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$cdata_csv = preg_replace('/={1,}",/', '', $cdata_csv);
 			$cdata_csv = preg_replace('/""/', '"', $cdata_csv);
 
-			if( $params->get('compare_data') == 1)
+			if ($params->get('compare_data') == 1)
 			{
-				$cdata_csv .= ', "'.$result_compare.'"';
+				$cdata_csv .= ', "' . $result_compare . '"';
 			}
 			$cdata_db_imp = implode("','", $cdata);
 			$cdata_db_p1 = preg_replace("/^(',)/", '', $cdata_db_imp);
@@ -296,19 +316,19 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$cdata_db = preg_replace("/={1,}',/", '', $cdata_db);
 			$cdata_db = preg_replace("/''/", "'", $cdata_db);
 
-			if( $params->get('compare_data') == 1 && !$loading)
+			if ($params->get('compare_data') == 1 && !$loading)
 			{
 				$result_compare = preg_replace('/<br\/>/', '- ', $result_compare);
 				$result_compare = preg_replace('/\\n/', '- ', $result_compare);
-				$cdata_db .= ", '".$result_compare."'";
+				$cdata_db .= ", '" . $result_compare . "'";
 			}
 			$custom_msg = preg_replace('/([++][0-9a-zA-Z.:_]*)/', '', $custom_msg);
 			$custom_msg = preg_replace('/^[ ]/', '', $custom_msg);
 			$custom_msg = preg_replace('/  /', ' ', $custom_msg);
 			$custom_msg = preg_replace('/"/', '', $custom_msg);
-			if( $params->get('compare_data') == 1 && !$loading)
+			if ($params->get('compare_data') == 1 && !$loading)
 			{
-				$custom_msg .= '<br />'.$result_compare;
+				$custom_msg .= '<br />' . $result_compare;
 			}
 
 		}
@@ -318,41 +338,41 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			$clabelsDb = array();
 			$cdataDb = array();
 
-			$clabelsCreateDb[] = $db->quoteName('date')." datetime NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('date') . " datetime NOT NULL";
 			$clabelsDb[] = $db->quoteName('date');
 			$cdataDb[] = "NOW()";
 
-			$clabelsCreateDb[] = $db->quoteName('ip')." varchar(32) NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('ip') . " varchar(32) NOT NULL";
 			$clabelsDb[] = $db->quoteName('ip');
 			$cdataDb[] = $params->get('logs_record_ip') == '1' ? $db->quote($_SERVER['REMOTE_ADDR']) : $db->quote('');
 
-			$clabelsCreateDb[] = $db->quoteName('referer')." varchar(255) NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('referer') . " varchar(255) NOT NULL";
 			$clabelsDb[] = $db->quoteName('referer');
 			$cdataDb[] = $params->get('logs_record_referer') == '1' ? $db->quote($http_referrer) : $db->quote('');
 
-			$clabelsCreateDb[] = $db->quoteName('user_agent')." varchar(255) NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('user_agent') . " varchar(255) NOT NULL";
 			$clabelsDb[] = $db->quoteName('user_agent');
 			$cdataDb[] = $params->get('logs_record_useragent') == '1' ? $db->quote($_SERVER['HTTP_USER_AGENT']) : $db->quote('');
 
-			$clabelsCreateDb[] =$db->quoteName( 'data_comparison' )." TEXT NOT NULL";
-			$clabelsDb[] = $db->quoteName( 'data_comparison' );
+			$clabelsCreateDb[] = $db->quoteName('data_comparison') . " TEXT NOT NULL";
+			$clabelsDb[] = $db->quoteName('data_comparison');
 			$cdataDb[] = $params->get('compare_data') == '1' ? $db->quote($result_compare) : $db->quote('');
 
-			$clabelsCreateDb[] =$db->quoteName('rowid')." INT(11) NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('rowid') . " INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('rowid');
 			$cdataDb[] = $db->quote((int) $rowid);
 
-			$clabelsCreateDb[] =$db->quoteName('userid')." INT(11) NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('userid') . " INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('userid');
 			$cdataDb[] = $db->quote((int) $userid);
 
-			$clabelsCreateDb[] =$db->quoteName('tableid')." INT(11) NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('tableid') . " INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('tableid');
-			$cdataDb[] = $db->quote( $formModel->getTableModel()->getId() );
+			$cdataDb[] = $db->quote($formModel->getTableModel()->getId());
 
-			$clabelsCreateDb[] =$db->quoteName('formid')." INT(11) NOT NULL";
+			$clabelsCreateDb[] = $db->quoteName('formid') . " INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('formid');
-			$cdataDb[] = $db->quote( $formModel->getId() );
+			$cdataDb[] = $db->quote($formModel->getId());
 
 			$clabels_createdb = implode(", ", $clabelsCreateDb);
 			$clabels_db = implode(", ", $clabelsDb);
@@ -387,7 +407,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					$custMsg = $buffer;
 					if ($ext != 'csv')
 					{
-						JFile::write($logs_file, $buffer.$custom_msg."\n".$sep."\n");
+						JFile::write($logs_file, $buffer . $custom_msg . "\n" . $sep . "\n");
 					}
 					else
 					{
@@ -415,13 +435,13 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					}
 					if ($params->get('logs_record_referer') == 1)
 					{
-						$htmlMsg .= "<b>Referer:</b> ". $http_referrer . "<br/>";
+						$htmlMsg .= "<b>Referer:</b> " . $http_referrer . "<br/>";
 					}
 					if ($params->get('logs_record_useragent') == 1)
 					{
-						$htmlMsg .= "<b>UserAgent: </b>". $_SERVER['HTTP_USER_AGENT']. "<br/>";
+						$htmlMsg .= "<b>UserAgent: </b>" . $_SERVER['HTTP_USER_AGENT'] . "<br/>";
 					}
-					$htmlMsg .= $result_compare.$sep."<br/>";
+					$htmlMsg .= $result_compare . $sep . "<br/>";
 					if ($send_email)
 					{
 						$email_msg = $htmlMsg;
@@ -430,7 +450,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					{
 						$htmlMsg = $buffer . $htmlMsg;
 						$res = JFile::write($logs_file, $htmlMsg);
-						if (!$res) {
+						if (!$res)
+						{
 							JError::raiseNotice(E_NOTICE, "error writing html to log file: " . $logs_file);
 						}
 					}
@@ -449,13 +470,13 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					}
 					if ($params->get('logs_record_referer') == 1)
 					{
-						$txtMsg .= "Referer: ". $http_referrer . "\n";
+						$txtMsg .= "Referer: " . $http_referrer . "\n";
 					}
 					if ($params->get('logs_record_useragent') == 1)
 					{
-						$txtMsg .= "UserAgent: ". $_SERVER['HTTP_USER_AGENT']. "\n";
+						$txtMsg .= "UserAgent: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
 					}
-					$txtMsg .= $result_compare.$sep."\n";
+					$txtMsg .= $result_compare . $sep . "\n";
 					if ($send_email)
 					{
 						$email_msg = $txtMsg;
@@ -465,7 +486,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 						$txtMsg = $buffer . $txtMsg;
 						JFile::write($logs_file, $txtMsg);
 					}
-				} else // Making the CSV file
+				}
+				else // Making the CSV file
 				if ($ext == 'csv')
 				{
 					$csvMsg = array();
@@ -473,7 +495,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 					if ($labels == 1)
 					{
 						$csvMsg[] = "Date";
-						if ($params->get('logs_record_ip') == 1) {
+						if ($params->get('logs_record_ip') == 1)
+						{
 							// Putting some "" around the label to avoid two different fields
 							$csvMsg[] = "\"IP Address\"";
 						}
@@ -487,27 +510,28 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 						}
 						if ($params->get('compare_data') == 1)
 						{
-							$csvMsg[] = "\"".JText::_('COMPARE_DATA_LABEL_CSV')."\"";
+							$csvMsg[] = "\"" . JText::_('COMPARE_DATA_LABEL_CSV') . "\"";
 						}
 					}
 					// Inserting data in CSV with actual line break as row separator
-					$csvMsg[] = "\n\"".$date."\"";
+					$csvMsg[] = "\n\"" . $date . "\"";
 
 					if ($params->get('logs_record_ip') == 1)
 					{
-						$csvMsg[] = "\"".$_SERVER['REMOTE_ADDR'] . "\"";
+						$csvMsg[] = "\"" . $_SERVER['REMOTE_ADDR'] . "\"";
 					}
-					if ($params->get('logs_record_referer') == 1) {
-						
-						$csvMsg[] = "\"".$http_referrer . "\"";
+					if ($params->get('logs_record_referer') == 1)
+					{
+
+						$csvMsg[] = "\"" . $http_referrer . "\"";
 					}
 					if ($params->get('logs_record_useragent') == 1)
 					{
-						$csvMsg[] = "\"".$_SERVER['HTTP_USER_AGENT']. "\"";
+						$csvMsg[] = "\"" . $_SERVER['HTTP_USER_AGENT'] . "\"";
 					}
 					if ($params->get('compare_data') == 1)
 					{
-						$csvMsg[] = "\"".$result_compare. "\"";
+						$csvMsg[] = "\"" . $result_compare . "\"";
 					}
 					$csvMsg = implode(",", $csvMsg);
 					if ($send_email)
@@ -533,14 +557,18 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			{
 				$rdb = '#__fabrik_log';
 			}
-			else {
-				
+			else
+			{
+
 				$db_suff = $params->get('record_in');
 				$form = $formModel->getForm();
 				$fid = $form->id;
-				$db->setQuery("SELECT ".$db->quoteName('db_table_name')." FROM ".$db->quoteName('#__fabrik_lists')." WHERE ".$db->quoteName('form_id')." = ". (int) $fid);
+				$db
+					->setQuery(
+						"SELECT " . $db->quoteName('db_table_name') . " FROM " . $db->quoteName('#__fabrik_lists') . " WHERE "
+							. $db->quoteName('form_id') . " = " . (int) $fid);
 				$tname = $db->loadResult();
-				$rdb = $db->quoteName($tname.$db_suff);
+				$rdb = $db->quoteName($tname . $db_suff);
 			}
 
 			// Making the message to record
@@ -558,13 +586,16 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 			// regardless.
 			if ($params->get('record_in') == '')
 			{
-				$in_db = "INSERT INTO $rdb (".$db->quoteName('referring_url').", ".$db->quoteName('message_type').", ".$db->quoteName('message').") VALUES (".$db->quote($http_referrer).", ".$db->quote($messageType).", ".$db->quote($message).");";
+				$in_db = "INSERT INTO $rdb (" . $db->quoteName('referring_url') . ", " . $db->quoteName('message_type') . ", "
+					. $db->quoteName('message') . ") VALUES (" . $db->quote($http_referrer) . ", " . $db->quote($messageType) . ", "
+					. $db->quote($message) . ");";
 				$db->setQuery($in_db);
 				$db->query();
 			}
 			else
 			{
-				$create_custom_table = "CREATE TABLE IF NOT EXISTS $rdb (".$db->quoteName('id')." int(11) NOT NULL auto_increment PRIMARY KEY, $clabels_createdb);";
+				$create_custom_table = "CREATE TABLE IF NOT EXISTS $rdb (" . $db->quoteName('id')
+					. " int(11) NOT NULL auto_increment PRIMARY KEY, $clabels_createdb);";
 				$db->setQuery($create_custom_table);
 				$db->query();
 
@@ -591,10 +622,10 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 		if ($send_email)
 		{
 			jimport('joomla.mail.helper');
-			$config =& JFactory::getConfig();
+			$config = &JFactory::getConfig();
 			$email_from = $config->getValue('mailfrom');
-			$email_to = explode(',', $w->parseMessageForPlaceholder( $params->get('log_send_email_to', '') ));
-			$subject = strip_tags($w->parseMessageForPlaceholder( $params->get('log_send_email_subject', 'log event') ));
+			$email_to = explode(',', $w->parseMessageForPlaceholder($params->get('log_send_email_to', '')));
+			$subject = strip_tags($w->parseMessageForPlaceholder($params->get('log_send_email_subject', 'log event')));
 			foreach ($email_to as $email)
 			{
 				$email = trim($email);
@@ -602,9 +633,12 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 				{
 					continue;
 				}
-				if (JMailHelper::isEmailAddress($email)) {
+				if (JMailHelper::isEmailAddress($email))
+				{
 					$res = JUtility::sendMail($email_from, $email_from, $email, $subject, $email_msg, true);
-				} else {
+				}
+				else
+				{
 					JError::raiseNotice(500, JText::sprintf('DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
 				}
 			}
@@ -615,7 +649,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form {
 	protected function makeStandardMessage($params, $result_compare)
 	{
 		$msg = new stdClass();
-		
+
 		$message = '';
 		if ($params->get('logs_record_ip') == 1)
 		{

@@ -225,14 +225,14 @@ class FabrikModelList extends FabModelAdmin
 				$aConditions[] = JHTML::_('select.option', 'not_in', 'NOT IN');
 				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', JText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
 				$aConditions[] = JHTML::_('select.option', 'laterthisyear', JText::_('COM_FABRIK_LATER_THIS_YEAR'));
-				
+
 				$aConditions[] = JHTML::_('select.option', 'yesterday', JText::_('COM_FABRIK_YESTERDAY'));
 				$aConditions[] = JHTML::_('select.option', 'today', JText::_('COM_FABRIK_TODAY'));
 				$aConditions[] = JHTML::_('select.option', 'tomorrow', JText::_('COM_FABRIK_TOMORROW'));
 				$aConditions[] = JHTML::_('select.option', 'thismonth', JText::_('COM_FABRIK_THIS_MONTH'));
 				$aConditions[] = JHTML::_('select.option', 'lastmonth', JText::_('COM_FABRIK_LAST_MONTH'));
 				$aConditions[] = JHTML::_('select.option', 'nextmonth', JText::_('COM_FABRIK_NEXT_MONTH'));
-				
+
 				break;
 		}
 		$dd = str_replace("\n", "", JHTML::_('select.genericlist',  $aConditions, $name, "class=\"inputbox\"  size=\"1\" ", 'value', 'text', ''));
@@ -1012,7 +1012,13 @@ class FabrikModelList extends FabModelAdmin
 				// if we are saving a new table and the previously found tables group is a join
 				// then don't add its elements to the table as they don't exist in the database table
 				// we are linking to
-				if ($groupModel->isJoin() && JRequest::getCmd('task') == 'save' && JRequest::getInt('id') == 0)
+				// $$$ hugh - why the test for task and new table?  When creating elements for a copy of a table,
+				// surely we NEVER want to include elements which were joined to the original,
+				// regardless of whether this is a new List?  Bearing in mind that this routine gets called from
+				// the makeNewJoin() method, when adding a join to an existing list, to build the "Foo - [bar]" join
+				// group, as well as from save() when creating a new List.
+				//if ($groupModel->isJoin() && JRequest::getCmd('task') == 'save' && JRequest::getInt('id') == 0)
+				if ($groupModel->isJoin())
 				{
 					continue;
 				}
