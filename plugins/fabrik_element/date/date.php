@@ -962,6 +962,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 						$this->rangeFilterSet = true;
 					}
 				}
+				else if ($condition == 'is null')
+				{
+					$value = "";
+				}
 				break;
 		}
 		$this->_resetToGMT = true;
@@ -1590,7 +1594,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			case 'nextmonth':
 				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key . ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
 				break;
-			
+
 			default:
 				$params = $this->getParams();
 				$format = $params->get('date_table_format');
