@@ -50,7 +50,7 @@
 				rows="8"
 				type="textarea"/>
 				
-			<field anme="timeline_customlink"
+			<field name="timeline_customlink"
 				type="text"
 				size="70"
 				description="PLG_VIZ_TIMELINE_CUSTOM_LINK_DESC"
