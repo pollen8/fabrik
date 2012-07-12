@@ -1,14 +1,20 @@
 <?php
 /**
- * Plugin element to render series of checkboxes
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.checkbox
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render series of checkboxes
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.checkbox
+ */
 
 class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 {
@@ -29,9 +35,9 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$params = $this->getParams();
 		//set elementlist params from checkbox params
 		$params->set('options_per_row', $params->get('ck_options_per_row'));
-		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtocheckbox', false));
-		$params->set('allowadd-onlylabel', (bool)$params->get('chk-allowadd-onlylabel', true));
-		$params->set('savenewadditions', (bool)$params->get('chk-savenewadditions', false));
+		$params->set('allow_frontend_addto', (bool) $params->get('allow_frontend_addtocheckbox', false));
+		$params->set('allowadd-onlylabel', (bool) $params->get('chk-allowadd-onlylabel', true));
+		$params->set('savenewadditions', (bool) $params->get('chk-savenewadditions', false));
 	}
 
 	/**
@@ -46,7 +52,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		return json_encode($data);
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_ElementList::isMultiple()
@@ -73,8 +79,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
-		$opts->data	= (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
-		$opts->allowadd = (bool)$params->get('allow_frontend_addtocheckbox', false);
+		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
+		$opts->allowadd = (bool) $params->get('allow_frontend_addtocheckbox', false);
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL');
 		return "new FbCheckBox('$id', $opts)";
@@ -92,7 +98,8 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if (!array_key_exists($element->name, $data)) {
+		if (!array_key_exists($element->name, $data))
+		{
 			$data[$element->name] = $params->get('sub_default_value');
 		}
 	}
@@ -106,9 +113,11 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	function prepareFilterVal($val)
 	{
 		$values = $this->getSubOptionValues();
-		$labels	= $this->getSubOptionLabels();
-		for ($i = 0; $i < count($labels); $i++) {
-			if (JString::strtolower($labels[$i]) == JString::strtolower($val)) {
+		$labels = $this->getSubOptionLabels();
+		for ($i = 0; $i < count($labels); $i++)
+		{
+			if (JString::strtolower($labels[$i]) == JString::strtolower($val))
+			{
 				$val = $values[$i];
 				return $val;
 			}
@@ -130,13 +139,12 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		$originalValue = trim($value, "'");
 		$this->encryptFieldName($key);
-		switch ($condition) {
+		switch ($condition)
+		{
 			case '=':
 				$db = FabrikWorker::getDbo();
-				$str = "($key $condition $value ".
-				" OR $key LIKE " . $db->quote('["'.$originalValue.'"%') .
-				" OR $key LIKE " . $db->quote('%"'.$originalValue.'"%') .
-				" OR $key LIKE " . $db->quote('%"'.$originalValue.'"]') .")";
+				$str = "($key $condition $value " . " OR $key LIKE " . $db->quote('["' . $originalValue . '"%') . " OR $key LIKE "
+					. $db->quote('%"' . $originalValue . '"%') . " OR $key LIKE " . $db->quote('%"' . $originalValue . '"]') . ")";
 
 				break;
 			default:
@@ -172,21 +180,25 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 
 	/**
-	* can be overwritten in add on classes
-	* @param mixed thie elements posted form data
-	* @param array posted form data
-	* @return string
-	*/
+	 * can be overwritten in add on classes
+	 * @param mixed thie elements posted form data
+	 * @param array posted form data
+	 * @return string
+	 */
 
 	function storeDatabaseFormat($val, $data)
 	{
-		if (is_array($val)) {
+		if (is_array($val))
+		{
 			// ensure that array is incremental numeric key -otherwise json_encode turns it into an object
 			$val = array_values($val);
 		}
-		if (is_array($val) || is_object($val)) {
+		if (is_array($val) || is_object($val))
+		{
 			return json_encode($val);
-		} else {
+		}
+		else
+		{
 			return isset($val) ? $val : '';
 		}
 	}

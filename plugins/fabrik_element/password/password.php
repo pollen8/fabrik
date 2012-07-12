@@ -1,29 +1,38 @@
 <?php
 /**
- * Plugin element to render 2 fields to capture and confirm a password
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.password
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to render 2 fields to capture and confirm a password
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.password
+ */
+
 class plgFabrik_ElementPassword extends plgFabrik_Element
 {
 
 	/**
-	 * states if the elemnt contains data which is recorded in the database
+	 * States if the element contains data which is recorded in the database
 	 * some elements (eg buttons) dont
-	 * @param	array	posted data
-	 * @return	bool	should record in db
+	 *
+	 * @param   array  $data  posted data
+	 *
+	 * @return  bool
 	 */
 
 	public function recordInDatabase($data = null)
 	{
 		$element = $this->getElement();
-		//if storing from inline edit then key may not exist
+
+		// If storing from inline edit then key may not exist
 		if (!array_key_exists($element->name, $data))
 		{
 			return false;
@@ -39,23 +48,28 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param	mixed	thie elements posted form data
-	 * @param	array	posted form data
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
 	function storeDatabaseFormat($val, $data)
 	{
-		//$val = md5(trim($val));
 		jimport('joomla.user.helper');
 		$salt = JUserHelper::genRandomPassword(32);
 		$crypt = JUserHelper::getCryptedPassword($val, $salt);
-		$val = $crypt.':'.$salt;
+		$val = $crypt . ':' . $salt;
 		return $val;
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 *
+	 * @return  bool
 	 */
 
 	function isReceiptElement()
@@ -64,12 +78,15 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$element = $this->getElement();
 		$value = '';
@@ -103,10 +120,12 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 * validate the passwords
-	 * @param	string	elements data
-	 * @param	int		repeat group counter
-	 * @return	bool	true if passes / false if falise validation
+	 * Internal element validation
+	 *
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  repeeat group counter
+	 *
+	 * @return bool
 	 */
 
 	function validate($data, $repeatCounter = 0)
@@ -127,7 +146,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		}
 		else
 		{
-			//$$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
+			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
 			if (JRequest::getInt('rowid') === 0 && JRequest::getInt($k, 0, 'post') === 0 && $data === '')
 			{
 				$this->_validationErr .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
@@ -138,19 +157,21 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object element
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$formparams = $this->getForm()->getParams();
-		$opts->ajax_validation =  $formparams->get('ajax_validations') === '1';
+		$opts->ajax_validation = $formparams->get('ajax_validations') === '1';
 		$opts = json_encode($opts);
-		$lang = new stdClass();
+		$lang = new stdClass;
 
 		JText::script('PLG_ELEMENT_PASSWORD_STRONG');
 		JText::script('PLG_ELEMENT_PASSWORD_MEDIUM');
@@ -161,20 +182,19 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	}
 
 	/**
-	 *
+	 * Get an array of element html ids and their corresponding
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
-	 * @return array html ids to watch for validation
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  array  html ids to watch for validation
 	 */
 
-	function getValidationWatchElements($repeatCounter)
+	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter) . '_check';
-		$ar = array(
-			'id' => $id,
-			'triggerEvent' => 'blur'
-			);
+		$ar = array('id' => $id, 'triggerEvent' => 'blur');
 		return array($ar);
 	}
 }
-?>

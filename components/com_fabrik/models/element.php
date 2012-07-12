@@ -916,12 +916,12 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * is the element hidden or not - if not set then return false
+	 * Is the element hidden or not - if not set then return false
 	 *
-	 * @return	bool
+	 * @return  bool
 	 */
 
-	function isHidden()
+	protected function isHidden()
 	{
 		$element = $this->getElement();
 		return ($element->hidden == true) ? true : false;
@@ -938,10 +938,13 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * should the element be tipped?
+	 * Should the element be tipped?
+	 * 
+	 * @param   string  $mode  form/list render context
+	 * 
 	 * @since	3.0.6
-	 * @param	string	$mode form/list render context
-	 * @return	bool
+	 * 
+	 * @return  bool
 	 */
 
 	private function isTipped($mode = 'form')
@@ -2094,14 +2097,25 @@ class plgFabrik_Element extends FabrikPlugin
 	 * if the search value isnt what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
-	 * @param	string	$filterVal
-	 * @return	string
+	 * 
+	 * @param   string  $value  filterVal
+	 * 
+	 * @return  string
 	 */
 
-	function prepareFilterVal($value)
+	protected function prepareFilterVal($value)
 	{
 		return $value;
 	}
+
+	/**
+	 * get the filter name
+	 * 
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * 
+	 * @return  string
+	 */
 
 	protected function filterName($counter = 0, $normal = true)
 	{
@@ -2112,12 +2126,13 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * can be overwritten by plugin class
 	 * Get the table filter for the element
-	 * @param	int		filter order
-	 * @param	bool	do we render as a normal filter or as an advanced search filter
+	 * 
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * @return	string	filter html
+	 * 
+	 * @return  string	filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)

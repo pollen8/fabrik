@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 {

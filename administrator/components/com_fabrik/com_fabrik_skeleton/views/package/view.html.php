@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
@@ -13,7 +13,7 @@ jimport('joomla.application.component.view');
  * Dummy skeleton view
  *
  * @package		Joomla.Site
- * @subpackage	com_fabrik_skeleton
+ * @subpackage	Fabrik_skeleton
  * @since		1.6
  */
 class SkeletonViewPackage extends JView

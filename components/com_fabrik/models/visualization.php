@@ -16,7 +16,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
 
 /**
  * Fabrik Visualization Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -36,7 +36,7 @@ class FabrikFEModelVisualization extends JModel
 	public $srcBase = "plugins/fabrik_visualization/";
 
 	public $pathBase = null;
-	
+
 	/** @var string js code to ini list filters */
 	protected $filterJs = null;
 
@@ -52,6 +52,20 @@ class FabrikFEModelVisualization extends JModel
 	{
 		$this->pathBase = JPATH_SITE . '/plugins/fabrik_visualization/';
 		parent::__construct($config);
+	}
+
+	/**
+	 * Set an array of list id's whose data is used inside the visualaziation
+	 *
+	 * @return  void
+	 */
+
+	protected function setListIds()
+	{
+		if (!isset($this->listids))
+		{
+			$this->listids = array();
+		}
 	}
 
 	function getPluginParams()
@@ -73,13 +87,13 @@ class FabrikFEModelVisualization extends JModel
 	function _loadPluginParams()
 	{
 		$this->getVisualization();
-		$pluginParams = new JRegistry($this->_row->params);
+		$pluginParams = new JRegistry($this->getVisualization()->params);
 		return $pluginParams;
 	}
 
 	/**
 	 * get the item
-	 * 
+	 *
 	 * @return  FabrikTableVisualization
 	 */
 
@@ -89,13 +103,14 @@ class FabrikFEModelVisualization extends JModel
 		{
 			$this->_row = FabTable::getInstance('Visualization', 'FabrikTable');
 			$this->_row->load($this->getState('id'));
+			$this->setListIds();
 		}
 		return $this->_row;
 	}
 
 	/**
 	 * Render the visualization
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -131,9 +146,9 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * get a list model
-	 * 
+	 *
 	 * @param   int  $id  list model id
-	 * 
+	 *
 	 * @return  object	fabrik list model
 	 */
 
@@ -151,12 +166,12 @@ class FabrikFEModelVisualization extends JModel
 
 	public function getContainerId()
 	{
-		$viz = $this->getVisualization();
-		return $viz->plugin . '_' . $viz->id;
+		return $this->getJSRenderContext();
 	}
+
 	/**
 	 * get all list model's filters
-	 * 
+	 *
 	 * @return array table filters
 	 */
 
@@ -185,12 +200,12 @@ class FabrikFEModelVisualization extends JModel
 		$this->getRequireFilterMsg();
 		return $filters;
 	}
-	
+
 	/**
 	 * Get the JS code to ini the list filters
-	 * 
+	 *
 	 * @since   3.0.6
-	 * 
+	 *
 	 * @return  string  js code
 	 */
 
@@ -205,9 +220,9 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * Get Viz render contenxt
-	 * 
+	 *
 	 * @since   3.0.6
-	 * 
+	 *
 	 * @return  string  render context
 	 */
 
@@ -217,12 +232,12 @@ class FabrikFEModelVisualization extends JModel
 		$id = $this->getId();
 		return $id . '_' . JFactory::getApplication()->scope . '_' . $id;
 	}
-	
+
 	/**
 	 * Get the JS unique name that is assigned to the viz JS object
-	 * 
+	 *
 	 * @since   3.0.6
-	 * 
+	 *
 	 * @return  string  js viz id
 	 */
 
@@ -278,7 +293,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * Get List Model's Required Filter message
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -296,7 +311,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * should be overwritten in plugin viz model
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -317,9 +332,9 @@ class FabrikFEModelVisualization extends JModel
 	/**
 	 * load in any table plugin classes
 	 * needed for radius search filter
-	 * 
+	 *
 	 * @param   array  &$srcs  existing src file
-	 * 
+	 *
 	 * @return  array	js file paths
 	 */
 
@@ -336,7 +351,7 @@ class FabrikFEModelVisualization extends JModel
 	/**
 	 * get the js code to create instances of js table plugin classes
 	 * needed for radius search filter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -359,7 +374,7 @@ class FabrikFEModelVisualization extends JModel
 	 * Method to set the table id
 	 *
 	 * @param   int  $id  viz id
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -373,7 +388,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * Get viz params
-	 * 
+	 *
 	 * @return  object  params
 	 */
 
@@ -390,7 +405,7 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * Get viz id
-	 * 
+	 *
 	 * @return  int  id
 	 */
 

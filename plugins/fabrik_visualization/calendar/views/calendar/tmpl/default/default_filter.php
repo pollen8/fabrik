@@ -1,11 +1,11 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.calendar
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.calendar
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
- 
+
  if ($this->showFilters)
 { ?>
 <form method="post" name="filter" action="">
@@ -41,7 +41,7 @@
 		}
 	}
 ?>
+<input type="hidden" name="resetfilters" value="0" />
 </form>
 <?php
  }
- 

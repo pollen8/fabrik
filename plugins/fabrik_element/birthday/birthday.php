@@ -1,16 +1,20 @@
 <?php
 /**
- * Plugin element to render day/month/year dropdowns
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
- */
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.birthday
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//jimport('joomla.application.component.model');
+/**
+ * Plugin element to render day/month/year dropdowns
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.birthday
+ */
 
 class plgFabrik_ElementBirthday extends plgFabrik_Element
 {
@@ -54,7 +58,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_date_format', 'd.m.Y');
 		$dateandage = (int) $params->get('details_dateandage', '0');
-		
+
 		if (!$this->_editable)
 		{
 			if (!in_array($value, $aNullDates))
@@ -321,7 +325,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	 * @param	mixed	$val (array normally but string on csv import)
 	 * @return	string	yyyy-mm-dd
 	 */
-		//Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well) empty data is always NULL otherwise nulldate is displayed in its views. 
+		//Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well) empty data is always NULL otherwise nulldate is displayed in its views.
 		//TODO: if NULL value is the first in repeated group then in list view whole group is empty. Could anyone find a solution? I give up :-(
 
 	private function _indStoreDBFormat($val)

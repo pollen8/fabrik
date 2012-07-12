@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.logs
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.logs
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,8 +15,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
  * Log form submissions
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.logs
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.logs
  */
 
 class plgFabrik_FormLogs extends plgFabrik_Form

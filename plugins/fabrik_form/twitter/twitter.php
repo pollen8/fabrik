@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.twiter
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.twiter
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -20,8 +20,8 @@ if (!class_exists('TwitterOAuth'))
 /**
  * Post content to twitter
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.twitter
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.twitter
  */
 
 class plgFabrik_FormTwitter extends plgFabrik_Form

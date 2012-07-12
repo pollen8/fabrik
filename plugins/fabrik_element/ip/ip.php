@@ -1,55 +1,74 @@
 <?php
 /**
- * Plugin element to store IP
- * @package fabrikar
- * @author Hugh Messenger
- * @copyright (C) Hugh Messenger
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.ip
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to store the user's IP address
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.ip
+ */
+
 class plgFabrik_elementIp extends plgFabrik_Element
 {
 
 	/**
-	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
 	function render($data, $repeatCounter = 0)
 	{
-		$element	= $this->getElement();
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id 			= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
+		$element = $this->getElement();
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = &$this->getParams();
 
 		$rowid = JRequest::getVar('rowid', false);
 		//@TODO when editing a form with joined repeat group the rowid will be set but
 		//the record is in fact new
-		if ($params->get('ip_update_on_edit') || !$rowid || ($this->_inRepeatGroup && $this->_inJoin &&  $this->_repeatGroupTotal == $repeatCounter)) {
+		if ($params->get('ip_update_on_edit') || !$rowid || ($this->_inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
+		{
 			$ip = $_SERVER['REMOTE_ADDR'];
-		} else {
-			if (empty($data) || empty($data[$name])) {
-				// if $data is empty, we must (?) be a new row, so just grab the IP
+		}
+		else
+		{
+			if (empty($data) || empty($data[$name]))
+			{
+				// If $data is empty, we must (?) be a new row, so just grab the IP
 				$ip = $_SERVER['REMOTE_ADDR'];
 			}
-			else {
+			else
+			{
 				$ip = $this->getValue($data, $repeatCounter);
 			}
 		}
 
 		$str = '';
-		if ($this->canView()) {
-			if (!$this->_editable) {
+		if ($this->canView())
+		{
+			if (!$this->_editable)
+			{
 				$str = $ip;
 			}
-			else {
+			else
+			{
 				$str = "<input class=\"fabrikinput inputbox\" readonly=\"readonly\" name=\"$name\" id=\"$id\" value=\"$ip\" />\n";
 			}
-		} else {
+		}
+		else
+		{
 			/* make a hidden field instead*/
 			$str = "<input type=\"hidden\" class=\"fabrikinput\" name=\"$name\" id=\"$id\" value=\"$ip\" />";
 		}
@@ -57,27 +76,16 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * get element's hidden field
-	 *
-	 * @access private
-	 * @param string $name
-	 * @param string $value
-	 * @param string $id
-	 * @return strin
-	 */
-	function _getHiddenField($name, $value, $id)
-	{
-		return "<input class=\"fabrikinput inputbox\" type=\"hidden\" name=\"$name\" value=\"$value\" id=\"$id\" />\n";
-	}
-
-	/**
-	 * if we are creating a new record, and the element was set to readonly
+	 * Trigger called when a row is stored.
+	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
-	 *
-	 * @param unknown_type $data
+	 * 
+	 * @param   array  &$data  to store
+	 * 
+	 * @return  void
 	 */
 
-	function onStoreRow(&$data)
+	public function onStoreRow(&$data)
 	{
 		$element = $this->getElement();
 		if (JArrayHelper::getValue($data, 'rowid', 0) == 0 && !in_array($element->name, $data))
@@ -96,8 +104,12 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -106,44 +118,56 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 	/**
-	 * this really does get just the default value (as defined in the element's settings)
-	 * @return unknown_type
+	 * This really does get just the default value (as defined in the element's settings)
+	 * 
+	 * @param   array  $data  form data
+	 * 
+	 * @return mixed 
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->_default))
+		{
 			$this->_default = $_SERVER['REMOTE_ADDR'];
 		}
 		return $this->_default;
 	}
 
 	/**
-	 * get the value
-	 *
-	 * @param array $data
-	 * @param int $repeatCounter
-	 * @param array options
-	 * @return unknown
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
+	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array() )
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		//cludge for 2 scenarios
-		if (array_key_exists('rowid', $data)) {
-			//when validating the data on form submission
+		// Cludge for 2 scenarios
+		if (array_key_exists('rowid', $data))
+		{
+			// When validating the data on form submission
 			$key = 'rowid';
-		} else {
-			//when rendering the element to the form
+		}
+		else
+		{
+			// When rendering the element to the form
 			$key = '__pk_val';
 		}
-		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key]))) {
+		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key])))
+		{
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
+			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
+			{
 				$value = '';
-			} else {
-				$value   = $this->getDefaultValue($data);
+			}
+			else
+			{
+				$value = $this->getDefaultValue($data);
 			}
 			return $value;
 		}
@@ -152,4 +176,3 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	}
 
 }
-?>

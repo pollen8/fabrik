@@ -16,7 +16,7 @@ jimport('joomla.application.component.controllerform');
  * Form controller class.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.6
  */
 class FabrikControllerForm extends JControllerForm
@@ -38,9 +38,10 @@ class FabrikControllerForm extends JControllerForm
 		$viewLayout	= JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
+
 		// Set the layout
 		$view->setLayout($viewLayout);
-		//todo check for cached version
+		// @Todo check for cached version
 		$view->inlineEdit();
 	}
 

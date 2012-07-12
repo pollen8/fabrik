@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.kaltura
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.kaltura
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -19,8 +19,8 @@ jimport('kaltura.kaltura_client');
 /**
  * Fabrik Kaltura Plug-in Model
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.kaltura
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.kaltura
  */
 
 class fabrikModelKaltura extends FabrikFEModelVisualization

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.sms
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.sms
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,8 +16,8 @@ require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
 /**
  * Send an SMS
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.sms
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.sms
  */
 
 class plgFabrik_FormSMS extends plgFabrik_Form

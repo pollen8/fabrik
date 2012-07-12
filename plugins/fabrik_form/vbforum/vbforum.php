@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.vbulletin
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.vbulletin
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,8 +15,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
  * Post content to a VBulletin forum
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.vbulletin
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.vbulletin
  */
 
 class plgFabrik_FormVbForum extends plgFabrik_Form

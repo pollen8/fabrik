@@ -1,105 +1,111 @@
 <?php
 /**
- * Plugin element to two lists - one to select from the other to select into
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.picklist
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+
+/**
+ * Plugin element to two lists - one to select from the other to select into
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.picklist
+ */
 
 class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 {
+
+	/**
+	* Method to set the element id
+	*
+	* @param   int  $id  element ID number
+	*
+	* @return  void
+	*/
 
 	public function setId($id)
 	{
 		parent::setId($id);
 		$params = $this->getParams();
-		//set elementlist params from picklist params
-		$params->set('allow_frontend_addto', (bool)$params->get('allowadd', false));
+
+		// Set elementlist params from picklist params
+		$params->set('allow_frontend_addto', (bool) $params->get('allowadd', false));
 	}
 
 	/**
-	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
 	function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
-		$id	= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
 		$arSelected = (array) $this->getValue($data, $repeatCounter);
-		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ?  " elementErrorHighlight" : '';
-		$attribs = 'class="picklistcontainer'.$errorCSS."\"";
-		$style = ".frompicklist, .topicklist{\n"
-		."background-color:#efefef;\n"
-		."padding:5px !important;\n"
-		."}\n"
-		."\n"
-		."div.picklistcontainer{\n"
-		."width:40%;\n"
-		."margin-right:10px;\n"
-		."margin-bottom:10px;\n"
-		."float:left;\n"
-		."}\n"
-		."\n"
-		.".frompicklist li, .topicklist li, li.picklist{\n"
-		."background-color:#FFFFFF;\n"
-		."margin:3px;\n"
-		."padding:5px !important;\n"
-		."cursor:move;\n"
-		."}\n"
-		."\n"
-		."li.emptyplicklist{\n"
-		."background-color:transparent;\n"
-		."cursor:pointer;\n"
-		."}";
+		$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
+		$attribs = 'class="picklistcontainer' . $errorCSS . "\"";
+		$style = ".frompicklist, .topicklist{\n" . "background-color:#efefef;\n" . "padding:5px !important;\n" . "}\n" . "\n"
+			. "div.picklistcontainer{\n" . "width:40%;\n" . "margin-right:10px;\n" . "margin-bottom:10px;\n" . "float:left;\n" . "}\n" . "\n"
+			. ".frompicklist li, .topicklist li, li.picklist{\n" . "background-color:#FFFFFF;\n" . "margin:3px;\n" . "padding:5px !important;\n"
+			. "cursor:move;\n" . "}\n" . "\n" . "li.emptyplicklist{\n" . "background-color:transparent;\n" . "cursor:pointer;\n" . "}";
 		FabrikHelperHTML::addStyleDeclaration($style);
 		$i = 0;
 		$aRoValues = array();
 		$fromlist = "from:<ul id=\"$id" . "_fromlist\" class=\"frompicklist\">\n";
 		$tolist = "to:<ul id=\"$id" . "_tolist\" class=\"topicklist\">\n";
-		foreach ($arVals as $v) {
+		foreach ($arVals as $v)
+		{
 			//$tmptxt = addslashes(htmlspecialchars($arTxt[$i]));
-			if (!in_array($v, $arSelected)) {
-				$fromlist .= "<li id=\"{$id}_value_$v\" class=\"picklist\">". $arTxt[$i] . "</li>\n";
+			if (!in_array($v, $arSelected))
+			{
+				$fromlist .= "<li id=\"{$id}_value_$v\" class=\"picklist\">" . $arTxt[$i] . "</li>\n";
 			}
-			$i ++;
+			$i++;
 		}
 		$i = 0;
 		$lookup = array_flip($arVals);
-		foreach ($arSelected as $v) {
-			if ($v == '' || $v == '-') {
+		foreach ($arSelected as $v)
+		{
+			if ($v == '' || $v == '-')
+			{
 				continue;
 			}
 			$k = JArrayHelper::getValue($lookup, $v);
 			$tmptxt = addslashes(htmlspecialchars(JArrayHelper::getValue($arTxt, $k)));
-			$tolist .= "<li id=\"{$id}_value_$v\" class=\"$v\">". $tmptxt . "</li>\n";
+			$tolist .= "<li id=\"{$id}_value_$v\" class=\"$v\">" . $tmptxt . "</li>\n";
 			$aRoValues[] = $tmptxt;
-			$i ++;
+			$i++;
 		}
-		if (empty($arSelected)) {
-			$fromlist .= "<li class=\"emptyplicklist\">". JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . "</li>\n";
+		if (empty($arSelected))
+		{
+			$fromlist .= "<li class=\"emptyplicklist\">" . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . "</li>\n";
 		}
-		if (empty($aRoValues)) {
-			$tolist .= "<li class=\"emptyplicklist\">". JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . "</li>\n";
+		if (empty($aRoValues))
+		{
+			$tolist .= "<li class=\"emptyplicklist\">" . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . "</li>\n";
 		}
 
 		$fromlist .= "</ul>\n";
 		$tolist .= "</ul>\n";
 
 		$str = "<div $attribs>$fromlist</div><div class='picklistcontainer'>$tolist</div>";
-		$str .=  $this->getHiddenField($name, json_encode($arSelected), $id);
-		if (!$this->_editable) {
+		$str .= $this->getHiddenField($name, json_encode($arSelected), $id);
+		if (!$this->_editable)
+		{
 			return implode(', ', $aRoValues);
 		}
 		$str .= $this->getAddOptionFields($repeatCounter);
@@ -107,8 +113,11 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
 	function elementJavascript($repeatCounter)
@@ -120,8 +129,9 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$arTxt = $this->getSubOptionLabels();
 		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->allowadd = (bool)$params->get('allowadd', false);
-		$opts->defaultVal = $this->getValue($data, $repeatCounter);;
+		$opts->allowadd = (bool) $params->get('allowadd', false);
+		$opts->defaultVal = $this->getValue($data, $repeatCounter);
+		;
 		//$opts->data = array_combine($arVals, $arTxt);;
 		$opts->hovercolour = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
@@ -131,18 +141,24 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	}
 
 	/**
-	 * Get the sql for filtering the table data and the array of filter settings
-	 * @param string filter value
-	 * @return string filter value
+	 * if the search value isnt what is stored in the database, but rather what the user
+	 * sees then switch from the search string to the db value here
+	 * overwritten in things like checkbox and radio plugins
+	 *
+	 * @param   string  $value  filterVal
+	 *
+	 * @return  string
 	 */
 
 	function prepareFilterVal($val)
 	{
 		$arVals = $this->getSubOptionValues();
-		$arTxt 	= $this->getSubOptionLabels();
-		for ($i=0; $i<count($arTxt); $i++) {
-			if (JString::strtolower($arTxt[$i]) == JString::strtolower($val)) {
-				$val =  $arVals[$i];
+		$arTxt = $this->getSubOptionLabels();
+		for ($i = 0; $i < count($arTxt); $i++)
+		{
+			if (JString::strtolower($arTxt[$i]) == JString::strtolower($val))
+			{
+				$val = $arVals[$i];
 				return $val;
 			}
 		}
@@ -150,14 +166,16 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	}
 
 	/**
-	 * this builds an array containing the filters value and condition
-	 * @param string initial $value
-	 * @param string intial $condition
-	 * @param string eval - how the value should be handled
-	 * @return array (value condition)
+	 * Builds an array containing the filters value and condition
+	 *
+	 * @param   string  $value      initial value
+	 * @param   string  $condition  intial $condition
+	 * @param   string  $eval       how the value should be handled
+	 *
+	 * @return  array	(value condition)
 	 */
 
-	function getFilterValue($value, $condition, $eval )
+	public function getFilterValue($value, $condition, $eval)
 	{
 		$value = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
@@ -166,29 +184,23 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 	/**
 	 * build the filter query for the given element.
-	 * @param $key element name in format `tablename`.`elementname`
-	 * @param $condition =/like etc
-	 * @param $value search string - already quoted if specified in filter array options
-	 * @param $originalValue - original filter value without quotes or %'s applied
-	 * @param string filter type advanced/normal/prefilter/search/querystring/searchall
-	 * @return string sql query part e,g, "key = value"
+	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
+	 *
+	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $condition      =/like etc
+	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  original filter value without quotes or %'s applied
+	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 *
+	 * @return  string	sql query part e,g, "key = value"
 	 */
 
-	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$originalValue = trim($value, "'");
 		$this->encryptFieldName($key);
-		$str = ' ('.$key.' '.$condition.' '.$value.' OR '.$key.' LIKE \'%"'.$originalValue.'"%\')';
-		/*	switch ($condition) {
-			case '=':
-		$str = ' ('.$key.' '.$condition.' '.$value.' OR '.$key.' LIKE \'%"'.$originalValue.'"%\')';
-		break;
-		default:
-		$str = " $key $condition $value ";
-		break;
-		}*/
+		$str = ' (' . $key . ' ' . $condition . ' ' . $value . ' OR ' . $key . ' LIKE \'%"' . $originalValue . '"%\')';
 		return $str;
 	}
 
 }
-?>

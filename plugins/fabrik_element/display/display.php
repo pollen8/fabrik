@@ -1,22 +1,36 @@
 <?php
 /**
- * Plugin element to render plain text
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.display
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to render plain text/HTML
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.display
+ */
+
 class plgFabrik_ElementDisplay extends plgFabrik_Element
 {
 
-	protected  $fieldDesc = 'TEXT';
+	protected $fieldDesc = 'TEXT';
 
-	/** @var bol override default value as we don't want to record this in database*/
+	/** @var bool override default value as we don't want to record this in database*/
 	var $_recordInDatabase = false;
+
+	/**
+	 * Set/get if element should record its data in the dabase
+	 *
+	 * @deprecated - not used
+	 *
+	 * @return bool
+	 */
 
 	function setIsRecordedInDatabase()
 	{
@@ -24,27 +38,34 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	}
 
 	/**
-	 * write out the label for the form element
-	 * @param object form
-	 * @param bol encase label in <label> tag
-	 * @param string id of element related to the label
+	 * Get the element's HTML label
+	 *
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 *
+	 * @return  string  label
 	 */
 
 	function getLabel($repeatCounter = 0, $tmpl = '')
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if (!$params->get('display_showlabel', true)) {
+		if (!$params->get('display_showlabel', true))
+		{
 			$element->label = $this->getValue(array());
 		}
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
 	 */
-	
+
 	public function renderListData($data, &$thisRow)
 	{
 		unset($this->_default);
@@ -53,42 +74,48 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-	 * @param array data
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$value =  $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
-		return '<div class="fabrikSubElementContainer" id="'.$id.'">'.$value.'</div>';
+		$value = $params->get('display_showlabel', true) ? $this->getValue($data, $repeatCounter) : '';
+		return '<div class="fabrikSubElementContainer" id="' . $id . '">' . $value . '</div>';
 	}
 
 	/**
-	 * gets the value or default value
-	 * @param array data
-	 * @param int repeat group counter
-	 * @param array options
-	 * @return string default value
+	 * Determines the value for the element in the form view
+	 *
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 *
+	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$element = $this->getElement();
 		$params = $this->getParams();
 		// $$$rob - if no search form data submitted for the search element then the default
 		// selection was being applied instead
 		$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
-		if ($value === '') {
+		if ($value === '')
+		{
 			//query string for joined data
 			$value = JArrayHelper::getValue($data, $value);
 		}
 		$formModel = $this->getFormModel();
 		//stops this getting called from form validation code as it messes up repeated/join group validations
-		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
+		if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+		{
 			FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 		}
 		return $value;

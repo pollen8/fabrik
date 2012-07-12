@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.rest
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.rest
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,8 +15,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
  * Submit or update data to a REST service
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.rest
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.rest
  */
 
 class plgFabrik_FormRest extends plgFabrik_Form

@@ -55,7 +55,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 			$userEl = $formModel->getElement($users[$x]);
 			$userEl->getAsField_html($asfields, $fields, array('alias'=>'user'));
 			//$asfields[] = str_replace('___', '.', $users[$x]) . ' AS user';
-			
+
 			if (JArrayHelper::getValue($contents, $x, '') !== '') {
 				$contentEl = $formModel->getElement($contents[$x]);
 				$contentEl->getAsField_html($asfields, $fields, array('alias'=>'content'));
@@ -115,6 +115,18 @@ class fabrikModelApprovals extends FabrikFEModelVisualization {
 						JError::raiseError(500, $e->getMessage());
 				}
 			}
+		}
+	}
+
+	/**
+	 * Set list ids
+	 */
+	protected function setListIds()
+	{
+		if (!isset($this->listids))
+		{
+			$params = $this->getParams();
+			$this->listids = (array) $params->get('approvals_table');
 		}
 	}
 }

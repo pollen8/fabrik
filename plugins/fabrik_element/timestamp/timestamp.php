@@ -1,21 +1,25 @@
 <?php
 /**
-* Slightly modified fabriktimestamp element (see lines 49-52)
-* By Nathan Cook 4/22/2010
-*
-* Plugin element to render fields
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timestamp
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementTimestamp extends plgFabrik_Element {
+/**
+ * Plugin element to render a timestamp
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timestamp
+ */
+
+class plgFabrik_ElementTimestamp extends plgFabrik_Element
+{
 
 	var $_recordInDatabase = false;
 
@@ -24,7 +28,8 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 		return '';
 	}
 
-	function setIsRecordedInDatabase() {
+	function setIsRecordedInDatabase()
+	{
 		$this->_recordInDatabase = false;
 	}
 
@@ -37,7 +42,7 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 	function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
-		$id	= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$oDate = JFactory::getDate();
 		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
@@ -45,14 +50,14 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 		$params = $this->getParams();
 		$gmt_or_local = $params->get('gmt_or_local');
 		$gmt_or_local += 0;
-		return '<input name="'.$name.'" id="'.$id.'" type="hidden" value="' . $oDate->toMySQL($gmt_or_local) .'" />';
+		return '<input name="' . $name . '" id="' . $id . '" type="hidden" value="' . $oDate->toMySQL($gmt_or_local) . '" />';
 	}
 
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_Element::renderListData()
 	 */
-	
+
 	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
@@ -80,7 +85,7 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element {
 			return "TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP";
 		}
 	}
-	
+
 	function isHidden()
 	{
 		return true;

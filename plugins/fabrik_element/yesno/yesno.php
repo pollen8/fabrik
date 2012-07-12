@@ -1,17 +1,23 @@
 <?php
 /**
- * Plugin element to yes/no radio options - render as tick/cross in list view
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
- */
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.yesno
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
-require_once(JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
+
+/**
+* Plugin element to yes/no radio options - render as tick/cross in list view
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.yesno
+*/
 
 class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 
@@ -105,13 +111,13 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	{
 		return array(JText::_('JNO'), JText::_('JYES'));
 	}
-	
+
 	/**
 	* run after unmergeFilterSplits to ensure filter dropdown labels are correct
 	* @param array filter options
 	* @return null
 	*/
-	
+
 	protected function reapplyFilterLabels(&$rows)
 	{
 		$element = $this->getElement();
@@ -130,7 +136,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 		}
 		$rows = array_values($rows);
 	}
-	
+
 	/**
 	* @param array of scripts previously loaded (load order is important as we are loading via head.js
 	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
@@ -141,7 +147,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton {
 	* call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	* to ensure that the file is loaded only once
 	*/
-	
+
 	function formJavascriptClass(&$srcs, $script = '')
 	{
 		$elementList = 'media/com_fabrik/js/elementlist.js';

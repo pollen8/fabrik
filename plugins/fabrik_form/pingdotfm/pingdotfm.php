@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.pingdotfm
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.pingdotfm
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /*******************************************************************************
@@ -21,8 +21,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
  * Form submission plugin: Update Ping.fm
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.pingdotfm
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.pingdotfm
  */
 
 class plgFabrik_FormPingdotfm extends plgFabrik_Form

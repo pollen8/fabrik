@@ -37,7 +37,6 @@ class fabrikViewCoverflow extends JView
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);
 		$row = $model->getVisualization();
-		$model->setListIds();
 		if ($this->get('RequiredFiltersFound'))
 		{
 			$model->render();

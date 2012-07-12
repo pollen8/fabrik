@@ -3,7 +3,7 @@
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /* MOS Intruder Alerts */
@@ -13,9 +13,9 @@ defined('_JEXEC') or die();
  * Image manipulation class
  * 
  * @package		Joomla
- * @subpackage	Fabrik.helpers
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @subpackage  Fabrik.helpers
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  * @since 1.0
  */
 

@@ -13,6 +13,7 @@ jimport('joomla.application.component.modelform');
 
 require_once(COM_FABRIK_FRONTEND . '/helpers/pagination.php');
 require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 
 class FabrikFEModelList extends JModelForm {
 
@@ -1054,25 +1055,25 @@ class FabrikFEModelList extends JModelForm {
 		//ensure that the facte table's require filters option is set to false
 		$fparams->set('require-filter', false);
 
-		//ignore facted tables session filters
+		// Ignore facted tables session filters
 		$origIncSesssionFilters = JRequest::getVar('fabrik_incsessionfilters', true);
 		JRequest::setVar('fabrik_incsessionfilters', false);
 		$where = $listModel->_buildQueryWhere(JRequest::getVar('incfilters', 0));
 		if (!empty($pks))
 		{
-			//only load the current record sets record counts
+			// Only load the current record sets record counts
 			$where .= trim($where) == '' ? ' WHERE ' : ' AND ';
 			$where .= "$linkKey IN (" . implode(',', $pks) . ")";
 		}
 		$listModel->set('_joinsSQL', null); //force reload of join sql
 		$listModel->set('includeCddInJoin', false); //trigger load of joins without cdd elements - seems to mess up count otherwise
 		//see http://fabrikar.com/forums/showthread.php?t=12860
-		//$totalSql  = "SELECT $linkKey AS id, COUNT($linkKey) AS total FROM " . $element->db_table_name . " " . $tableModel->_buildQueryJoin();
+		// $totalSql  = "SELECT $linkKey AS id, COUNT($linkKey) AS total FROM " . $element->db_table_name . " " . $tableModel->_buildQueryJoin();
 
 		$k2 = $db->quote(FabrikString::safeColNameToArrayKey($key));
-		//$totalSql  = "SELECT $k2 AS linkKey, $linkKey AS id, COUNT($linkKey) AS total FROM " . $listModel->getTable()->db_table_name . " " . $listModel->_buildQueryJoin();
+		// $totalSql  = "SELECT $k2 AS linkKey, $linkKey AS id, COUNT($linkKey) AS total FROM " . $listModel->getTable()->db_table_name . " " . $listModel->_buildQueryJoin();
 
-		//$$$ Jannus - see http://fabrikar.com/forums/showthread.php?t=20751
+		// $$$ Jannus - see http://fabrikar.com/forums/showthread.php?t=20751
 		$distinct = $listModel->mergeJoinedData() ? 'DISTINCT ' : '';
 		$totalSql = "SELECT $k2 AS linkKey, $linkKey AS id, COUNT($distinct ".$listModel->getTable()->db_primary_key.") AS total FROM " . $listModel->getTable()->db_table_name . " " . $listModel->_buildQueryJoin();
 
@@ -3590,7 +3591,7 @@ class FabrikFEModelList extends JModelForm {
 		// WHERE ( prefilter1 = y OR prefilter2 = x) AND normal filter = x
 		$this->getPrefilterArray($this->filters);
 
-		// these are filters created from a search form or normal search
+		// These are filters created from a search form or normal search
 		$keys = array_keys($request);
 		$indexStep = count(JArrayHelper::getValue($this->filters, 'key', array()));
 		FabrikHelperHTML::debug($keys, 'filter:request keys');
@@ -3618,12 +3619,11 @@ class FabrikFEModelList extends JModelForm {
 			return $this->filters;
 		}
 
-		//get a list of plugins
+		// Get a list of plugins
 		$pluginKeys = $filterModel->getPluginFilterKeys();
 		$elementids = JArrayHelper::getValue($this->filters, 'elementid', array());
 		$sqlCond = JArrayHelper::getValue($this->filters, 'sqlCond', array());
 		$raws = JArrayHelper::getValue($this->filters, 'raw', array());
-		//for ($i=0; $i < count($this->filters['key']); $i++) {
 		foreach ($this->filters['key'] as $i => $keyval) {
 			$value = $this->filters['value'][$i];
 			$condition = JString::strtolower($this->filters['condition'][$i]);
@@ -4366,7 +4366,7 @@ class FabrikFEModelList extends JModelForm {
 	 * @param string $container
 	 * @param string $type
 	 * @param   string   $ref  js ref used when filters set for visualizations
-	 * 
+	 *
 	 * @return array filters
 	 */
 

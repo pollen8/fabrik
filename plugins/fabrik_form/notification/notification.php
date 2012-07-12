@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.notification
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.notification
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,8 +16,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * Allows users to subscribe to updates to a given row and receive emails
  * of those updates. Used in conjunction with the cron notification plug-in
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.notification
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.notification
  */
 
 class plgFabrik_FormNotification extends plgFabrik_Form

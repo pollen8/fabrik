@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.timeline
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.timeline
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,9 @@ jimport('joomla.application.component.view');
 /**
  * Fabrik Timeline Viz HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.timeline
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.timeline
+ * @since       3.0
  */
 
 class fabrikViewTimeline extends JView
@@ -42,7 +43,6 @@ class fabrikViewTimeline extends JView
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);
 		$row = $model->getVisualization();
-		$model->setListIds();
 
 		$js = $model->render();
 		$this->assign('containerId', $this->get('ContainerId'));
