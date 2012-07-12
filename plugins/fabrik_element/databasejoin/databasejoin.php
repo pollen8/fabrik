@@ -1473,8 +1473,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					{
 						$where = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_key_column'));
 					}
-
-					$rows = $this->checkboxRows($db->quoteName($params->get('join_db_name')) . '.parent_id', $condition, $value, $where);
+					$groupBy = $db->quoteName($params->get('join_db_name') . '.parent_id');
+					$rows = $this->checkboxRows($groupBy, $condition, $value, $where);
 					$joinIds = array_keys($rows);
 					if (!empty($rows))
 					{
@@ -1527,6 +1527,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$query->where($where . ' ' . $condition . ' ' . $value);
 		}
 		$db->setQuery($query);
+		$groupBy = FabrikString::shortColName($groupBy);
 		$rows = $db->loadObjectList($groupBy);
 		return $rows;
 	}
