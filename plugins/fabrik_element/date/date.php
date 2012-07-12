@@ -1021,6 +1021,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 						$this->rangeFilterSet = true;
 					}
 				}
+				else if ($condition == 'is null')
+				{
+					$value = "";
+				}
 				break;
 		}
 		$this->_resetToGMT = true;

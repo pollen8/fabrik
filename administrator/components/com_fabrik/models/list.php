@@ -959,6 +959,8 @@ class FabrikModelList extends FabModelAdmin
 		{
 			return JError::raiseWarning(500, $join->getError());
 		}
+		// $$$ hugh @TODO - create new 'pk' param
+		// $this->getFEModel()->setJoinPK($join);
 		$_POST['jform']['db_table_name'] = $joinTable;
 		$this->createLinkedElements($groupId);
 		$_POST['jform']['db_table_name'] = $origTable;
