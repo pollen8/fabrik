@@ -18,7 +18,6 @@ var FbSlideshowViz = new Class({
 				thumbnails: this.options.slideshow_thumbnails,
 				captions: this.options.slideshow_captions
 			};
-			console.log( this.options.slideshow_data, opts);
 			switch (this.options.slideshow_type) {
 			case 1:
 				opts = Object.append(opts, {fast: true});
