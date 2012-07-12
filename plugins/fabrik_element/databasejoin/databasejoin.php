@@ -871,7 +871,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						}
 						$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 						$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName
-							. '" id="' . $id . '-auto-complete" value="' . $label[0] . '" class="fabrikinput inputbox autocomplete-trigger"/>';
+							. '" id="' . $id . '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '" class="fabrikinput inputbox autocomplete-trigger"/>';
 						//$$$ rob - class property required when cloning repeat groups - don't remove
 						$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="'
 							. JArrayHelper::getValue($default, 0, '') . '"/>';
@@ -954,7 +954,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function getTitlePart($data, $repeatCounter = 0, $opts = array())
 	{
-		//$$$ rob set ths to label otherwise we get the value/key and not label
+		// $$$ rob set ths to label otherwise we get the value/key and not label
 		$opts['valueFormat'] = 'label';
 		return $this->getValue($data, $repeatCounter, $opts);
 	}
@@ -965,7 +965,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			$db = FabrikWorker::getDbo(true);
 			$params = $this->getParams();
-			//forms for potential add record pop up form
+			// Forms for potential add record pop up form
 
 			$query = $db->getQuery(true);
 			$query->select('f.id AS value, f.label AS text, l.id AS listid')->from('#__{package}_forms AS f')
@@ -998,7 +998,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			return 'BLOB';
 		}
 		$db = $this->getDb();
-		//lets see if we can get the field type of the field we are joining to
+
+		// Lets see if we can get the field type of the field we are joining to
 		$join = FabTable::getInstance('Join', 'FabrikTable');
 		if ((int) $this->_id !== 0)
 		{
@@ -1040,7 +1041,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 			}
 		}
-		//nope? oh well default to this:
+		// Nope? oh well default to this:
 		return "VARCHAR(255)";
 	}
 
@@ -1073,7 +1074,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 			}
 			$val = $this->renderListData($value, new stdClass());
-			;
 		}
 		else
 		{
