@@ -117,9 +117,17 @@ class FabrikHelperHTML
       if (opts.id === 'fabwin') {
       	opts.id += i;
       }
+      var t = typeOf(opts.onContentLoaded);
+      if (t !== 'null') {
       opts.onContentLoaded = function() {
-  			Fabrik.Windows[opts.id].fitToContent()
+  			Fabrik.Windows[opts.id].fitToContent();
 			};
+
+		} else {
+			opts.onContentLoaded = function() {
+	  			document.id(opts.id).position();
+			};
+		}
       Fabrik.getWindow(opts);
     });
   });
@@ -364,16 +372,21 @@ EOD;
 		{
 			$file = COM_FABRIK_LIVESITE . '/' . $file;
 		}
-		if ((JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
+		if (self::cssAsAsset())
 		{
+
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
-			// $$$rob TEST!!!! - this may mess up stuff
-			//send an inline script back which will inject the css file into the doc head
-			// note your ajax call must have 'evalScripts':true set in its properties
+
+			// Send an inline script back which will inject the css file into the doc head
+			// Note your ajax call must have 'evalScripts':true set in its properties
 			if (!in_array($file, self::$ajaxCssFiles))
 			{
-				echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});</script>\n";
+				if (!strstr($file, 'fabrik.css')) {
+				echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});
+				</script>\n";
+
 				self::$ajaxCssFiles[] = $file;
+				}
 			}
 		}
 		else
@@ -383,6 +396,19 @@ EOD;
 			// php style sheets with querystrings in them
 			$document->addStylesheet($file);
 		}
+	}
+
+	/**
+	 * Will the CSS be loaded js Assest.css()
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  bool
+	 */
+
+	public static function cssAsAsset()
+	{
+		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf';
 	}
 
 	/**

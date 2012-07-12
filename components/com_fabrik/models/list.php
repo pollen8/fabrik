@@ -1461,7 +1461,8 @@ class FabrikFEModelList extends JModelForm
 			// $$$ rob 25/05/2012 - slight change so that we work our way up the pk/fk list until we find some ids.
 			// $$$ hugh, later in the day 25/05/2012 - big OOOOPS, see comment below about table_key vs table_join_key! erm no not a mistake!?! reverted as no example of what was wrong with original code
 			$joins = $this->getJoins();
-			//default to the primary key as before this fix
+
+			// Default to the primary key as before this fix
 			$lookupC = 0;
 			$tmpPks = array();
 
@@ -1576,6 +1577,7 @@ class FabrikFEModelList extends JModelForm
 			$ids = array();
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
+
 			// An array of the lists pk values
 			$mainKeys = array();
 			foreach ($idRows as $r)
@@ -2470,7 +2472,8 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 		JDEBUG ? $profiler->mark('getAsFields: end of view test') : null;
-		//for raw data in packages
+
+		// For raw data in packages
 		if ($this->_outPutFormat == 'raw')
 		{
 			$str = FabrikString::safeColName($table->db_primary_key) . ' AS __pk_val';
@@ -2478,8 +2481,8 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$this->_group_by_added = false;
-		//if the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
 
+		// If the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
 		$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
 		if (!in_array($longGroupBy, $this->fields) && trim($table->group_by) != '')
 		{
