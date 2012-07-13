@@ -79,9 +79,9 @@ class fabrikViewCalendar extends JView
 		unset($urlfilters['format']);
 		if (empty($urlfilters))
 		{
-			$urlfilters = new stdClass();
+			$urlfilters = new stdClass;
 		}
-		$urls = new stdClass();
+		$urls = new stdClass;
 
 		// Don't JRoute as its wont load with sef?
 		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid

@@ -148,7 +148,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$disabled = '';
 		}
 
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		foreach ($default as &$d)
 		{
 			$d = $w->parseMessageForPlaceHolder($d);
@@ -220,22 +220,33 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * get a list of the HTML options used in the database join drop down / radio buttons
-	 * @param object data from current record (when editing form?)
-	 * @return array option objects
+	 * Get a list of the HTML options used in the database join drop down / radio buttons
+	 *
+	 * @param   array  $data           from current record (when editing form?)
+	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   bool   $incWhere       do we include custom where in query
+	 *
+	 * @return  array	option objects
 	 */
 
-	function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
 	{
 		$this->_joinDb = $this->getDb();
 		$tmp = $this->_getOptionVals($data, $repeatCounter);
 		return $tmp;
 	}
 
-	function onAjax_getOptions()
+	/**
+	 * Gets the options for the drop down - used in package when forms update
+	 *
+	 * @return  void
+	 */
+
+	public function onAjax_getOptions()
 	{
 		$this->loadMeForAjax();
 		$params = $this->getParams();
+
 		// $$$ rob commented out for http://fabrikar.com/forums/showthread.php?t=11224
 		// must have been a reason why it was there though?
 
@@ -302,7 +313,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @return	array
 	 */
 
-	function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
 	{
 		if (!isset($this->_optionVals))
 		{
@@ -491,7 +502,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$where .= ($where == '') ? ' WHERE ' : ' AND ';
 			$where .= $filter;
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		// $$$ hugh - add some useful stuff to search data
 		if (!is_null($whereval))
 		{
@@ -757,7 +768,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			FabrikHelperHTML::autoCompleteScript();
 			$htmlid	= $this->getHTMLId().'value';
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->observerid = $observerid;
 			$opts->url = COM_FABRIK_LIVESITE.'/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id='.$element->id.'&plugin=cascadingdropdown&method=autocomplete_options';
 			$opts = json_encode($opts);
@@ -774,7 +785,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			//$listModel = $this->getlistModel();
 			$formModel = $this->getForm();
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->formid = $formModel->get('id');
 			$opts->filterid = $filterid;
 			$opts->elid = $this->_id;
@@ -845,7 +856,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$join->table_key = str_replace('`', '', $element->name);
 		$join->table_join_key = $table_join_key;
 		$join->join_from_table = '';
-		$o = new stdClass();
+		$o = new stdClass;
 		$l = 'join-label';
 		$o->$l = $join_label;
 		$o->type = 'element';

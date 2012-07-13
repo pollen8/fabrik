@@ -21,7 +21,7 @@ $srcs = FabrikHelperHTML::framework();
 $srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
 $srcs[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
 
-$opts = new stdClass();
+$opts = new stdClass;
 $opts->plugin = $this->item->plugin;
 
 $js = "

@@ -83,7 +83,7 @@ class JFormFieldTables extends JFormFieldList
 		if ($connectionDd != '')
 		{
 			$connectionDd = ($c === false) ?  $connectionDd : $connectionDd . '-' . $c;
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->livesite = COM_FABRIK_LIVESITE;
 			$opts->conn = 'jform_' . $connectionDd;
 			$opts->value = $this->value;

@@ -210,7 +210,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		{
 			$qs .= '&amp;chma=' . $chma_override;
 		}
-		else if ($fillGraphs)
+		elseif ($fillGraphs)
 		{
 			$qs .= '&amp;chm=' . implode('|', $fills);
 		}
@@ -222,7 +222,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		{
 			$qs .= '&amp;chg=' . $chg_override;
 		}
-		else if ($fillGraphs)
+		elseif ($fillGraphs)
 		{
 			$qs .= '&amp;chm=' . implode('|', $fills);
 		}

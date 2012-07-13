@@ -24,11 +24,15 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	var $_font = 'monofont.ttf';
 
 	/**
-	 * can be overwritten in plugin class
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 *
+	 * @deprecated - not used
+	 *
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -61,7 +65,13 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
 
-	function isHidden()
+	/**
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
+	 */
+
+	protected function isHidden()
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();

@@ -104,7 +104,7 @@ class plgContentFabrik extends JPlugin
 		// $$$ hugh - see if we can remove formatting added by WYSIWYG editors
 		$match = strip_tags($match);
 		require_once(COM_FABRIK_FRONTEND . '/helpers/parent.php');
-		$w =new FabrikWorker();
+		$w =new FabrikWorker;
 		$match = preg_replace('/\s+/', ' ', $match);
 		// $$$ hugh - only replace []'s in value, not key, so we handle
 		// ranged filters and 'complex' filters

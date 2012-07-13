@@ -41,7 +41,7 @@ class fabrikViewCsv extends JView
 		$model = $this->getModel();
 		$listid = $model->getId();
 		$script = array();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();
 		$opts->form = 'listform_' . $listid;
 		$opts->headings = $model->_jsonHeadings();
@@ -54,7 +54,7 @@ class fabrikViewCsv extends JView
 		$listParams = $model->getParams();
 		$opts->labels = $labels;
 		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
-		$csvOpts = new stdClass();
+		$csvOpts = new stdClass;
 		$csvOpts->excel = (int) $listParams->get('csv_format');
 		$csvOpts->inctabledata = (int) $listParams->get('csv_include_data');
 		$csvOpts->incraw = (int) $listParams->get('csv_include_raw_data');

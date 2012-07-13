@@ -33,7 +33,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List {
 		$app = JFactory::getApplication();
 		$baseContext = $this->getSessionContext();
 		$this->model = $model;
-		$f 					= new stdClass();
+		$f 					= new stdClass;
 		$f->label 	= $params->get('radius_label', 'Radius search');
 		$class = "class=\"inputbox fabrik_filter autocomplete-trigger\"";
 		$type = $app->getUserStateFromRequest($baseContext.'radius_search_type', 'radius_search_type', array('mylocation'));

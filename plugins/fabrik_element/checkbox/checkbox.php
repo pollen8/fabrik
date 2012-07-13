@@ -105,12 +105,16 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 
 	/**
-	 * Get the sql for filtering the table data and the array of filter settings
-	 * @param string filter value
-	 * @return string filter value
+	 * if the search value isnt what is stored in the database, but rather what the user
+	 * sees then switch from the search string to the db value here
+	 * overwritten in things like checkbox and radio plugins
+	 *
+	 * @param   string  $value  filterVal
+	 *
+	 * @return  string
 	 */
 
-	function prepareFilterVal($val)
+	protected function prepareFilterVal($value)
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
@@ -180,13 +184,15 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 
 	/**
-	 * can be overwritten in add on classes
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
-	 * @return string
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		if (is_array($val))
 		{

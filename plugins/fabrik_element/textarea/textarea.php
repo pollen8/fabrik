@@ -272,7 +272,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		{
 			$value = $value[$c];
 		}
-		return $this->renderListData($value, new stdClass());
+		return $this->renderListData($value, new stdClass);
 	}
 
 	/**

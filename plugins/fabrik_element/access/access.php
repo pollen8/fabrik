@@ -20,12 +20,15 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 {
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		// $$$ hugh - nope!
 		//return $val[0];
@@ -54,7 +57,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 		}
 		$gtree = $this->getOpts();
 		if (!$this->_editable) {
-			$row = new stdClass();
+			$row = new stdClass;
 			return $this->renderListData($arSelected[0], $row);
 		}
 		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0]);
@@ -103,9 +106,12 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	}
 
 	/**
-	 * defines the type of database table field that is created to store the element's data
+	 * Get database field description
+	 *
+	 * @return  string  db field type
 	 */
-	function getFieldDescription()
+
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
 		if ($this->encryptMe()) {

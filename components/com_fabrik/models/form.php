@@ -210,7 +210,7 @@ class FabrikFEModelForm extends FabModelForm
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			else if ($pRowid == '-1' && $listModel->canEdit($this->_data))
+			elseif ($pRowid == '-1' && $listModel->canEdit($this->_data))
 			{
 				$ret = 2;
 			}
@@ -333,7 +333,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$srcs[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
 		}
-		else if (JFile::exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
+		elseif (JFile::exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/form_' . $this->getId() . '.js';
 		}
@@ -741,7 +741,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (JRequest::getInt('rowid') == 0)
 		{
-			$this->_origData = array(new stdClass());
+			$this->_origData = array(new stdClass);
 		}
 		else
 		{
@@ -1346,7 +1346,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					{
 						$oJoinPk .= $col->Field;
 					}
-					else if ($col->Field == 'params')
+					elseif ($col->Field == 'params')
 					{
 						$hasParams = true;
 					}
@@ -1768,7 +1768,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$gkeys = array_keys($groups);
 			jimport('joomla.utilities.simplecrypt');
 			$crypt = new JSimpleCrypt();
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			foreach ($gkeys as $g)
 			{
 				$groupModel = $groups[$g];
@@ -1895,7 +1895,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$post = $this->setFormData();
 		//contains any data modified by the validations
 		$this->_modifiedValidationData = array();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		//$joindata = array();
 		$ok = true;
 
@@ -2766,7 +2766,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$this->_listModel = $listModel;
 		}
 		//Test to allow {$my->id}'s to be evald from query strings
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$data = $w->parseMessageForPlaceHolder($data);
 		$this->_data = $data;
 		FabrikHelperHTML::debug($data, 'form:data');
@@ -2865,7 +2865,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 								$data[0]->join[$group->join_id][$name][] = $v;
 								unset($row->$name);
 							} /* $$$ hugh - seem to have a different format if just failed validation! */
-							else if (array_key_exists($fv_name, $row))
+							elseif (array_key_exists($fv_name, $row))
 							{
 								$v = $row->$fv_name;
 								if (is_object($v))
@@ -2883,7 +2883,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 								$data[0]->join[$group->join_id][$rawname][] = $v;
 								unset($row->$rawname);
 							} /* $$$ hugh - seem to have a different format if just failed validation! */
-							else if (array_key_exists($fv_rawname, $row))
+							elseif (array_key_exists($fv_rawname, $row))
 							{
 								$v = $row->$fv_rawname;
 								if (is_object($v))
@@ -3001,7 +3001,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			{
 				$sql .= ' WHERE ' . $viewpk . ' ';
 			}
-			else if ($random)
+			elseif ($random)
 			{
 				// $$$ rob Should this not go after prefilters have been applied ?
 				$sql .= ' ORDER BY RAND() LIMIT 1 ';
@@ -3154,7 +3154,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			return $this->pages;
 		}
-		$this->pages = new stdClass();
+		$this->pages = new stdClass;
 		$pageCounter = 0;
 		$groups = $this->getGroupsHiarachy();
 		$c = 0;
@@ -3367,7 +3367,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$intro = preg_replace($remove, '', $intro);
 		$intro = str_replace('[', '{', $intro);
 		$intro = str_replace(']', '}', $intro);
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$intro = $w->parseMessageForPlaceHolder($intro, $this->_data, true);
 		// $$$ rob 26/01/2011 - this was stopping content plugins from rendering.
 		//$intro = str_replace('{','[', $intro);
@@ -3660,7 +3660,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$listModel = $this->getListModel();
 		$joinId = $this->_aJoinGroupIds[$groupTable->id];
-		$element = new stdClass();
+		$element = new stdClass;
 		//add in row id for join data
 		$element->label = '';
 		$element->error = '';

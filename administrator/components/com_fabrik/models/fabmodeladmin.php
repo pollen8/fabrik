@@ -59,7 +59,7 @@ abstract class FabModelAdmin extends JModelAdmin
 				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
 				$location = $this->getPluginLocation($x);
 				$event = $this->getPluginEvent($x);
-				$opts = new stdClass();
+				$opts = new stdClass;
 				$opts->state = (bool) (trim(JArrayHelper::getValue($state, $x)));
 				$return[] = array('plugin' => $plugin, 'html' => $str, 'location' => $location, 'event' => $event, 'opts' => $opts);
 			}

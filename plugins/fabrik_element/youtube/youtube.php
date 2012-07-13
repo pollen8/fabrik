@@ -18,6 +18,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.youtube
+ * @since       3.0
  */
 
 class plgFabrik_ElementYoutube extends plgFabrik_Element
@@ -26,10 +27,12 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 	var $_pluginName = 'youtube';
 
 	/**
-	 * shows the data formatted for the table view
-	 * @param string data
-	 * @param object all the data in the tables current row
-	 * @return string formatted value
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -45,28 +48,28 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 				$width = $params->get('or_width_player');
 				$height = $params->get('or_height_player');
 			}
-			else if ($params->get('player_size') == 'small')
+			elseif ($params->get('player_size') == 'small')
 			{
 				$width = '340';
 				$height = '285';
 			}
-			else if ($params->get('player_size') == 'medium')
+			elseif ($params->get('player_size') == 'medium')
 			{
 				$width = '445';
 				$height = '364';
 			}
-			else if ($params->get('player_size') == 'normal')
+			elseif ($params->get('player_size') == 'normal')
 			{
 				$width = '500';
 				$height = '405';
 			}
-			else if ($params->get('player_size') == 'big')
+			elseif ($params->get('player_size') == 'big')
 			{
 				$width = '660';
 				$height = '525';
 			}
 		}
-		else if ($params->get('display_in_table') == 0)
+		elseif ($params->get('display_in_table') == 0)
 		{ // Display in table = Mini
 			$width = '170';
 			$height = '142';
@@ -148,7 +151,7 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 					{
 						$object_vid = '<a href="' . $data . '" target="blank">' . $dlink . '</a>';
 					}
-					else if ($params->get('target_link') == 2)
+					elseif ($params->get('target_link') == 2)
 					{
 
 						$element = &$this->getElement();
@@ -182,47 +185,50 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 	}
 
 	/**
-	 * do we need to include the lighbox js code
+	 * Do we need to include the lighbox js code
 	 *
-	 * @return bol
+	 * @return  bool
 	 */
 
-	function requiresLightBox()
+	public function requiresLightBox()
 	{
 		return true;
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. fabrikfield returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 *
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
 
 	/**
-	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$data = $this->getFormModel()->_data;
+		$value = $this->getValue($data, $repeatCounter);
 		if (JRequest::getVar('view') != 'details')
 		{
-
 			$name = $this->getHTMLName($repeatCounter);
 			$id = $this->getHTMLId($repeatCounter);
-			$params = &$this->getParams();
-			$element = &$this->getElement();
 			$size = $params->get('width');
-			//$maxlength  = $params->get('maxlength');
 			$maxlength = 255;
 			$bits = array();
-			$data = &$this->_form->_data;
-			$value = $this->getValue($data, $repeatCounter);
 			$type = "text";
 			if (isset($this->_elementError) && $this->_elementError != '')
 			{
@@ -231,9 +237,8 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 
 			if (!$this->_editable)
 			{
-				return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
+				return ($element->hidden == '1') ? '<!-- ' . $value . ' -->' : $value;
 			}
-
 			$bits['class'] = "fabrikinput inputbox $type";
 			$bits['type'] = $type;
 			$bits['name'] = $name;
@@ -246,7 +251,7 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 			$str = "<input ";
 			foreach ($bits as $key => $val)
 			{
-				$str .= "$key = \"$val\" ";
+				$str .= $key . ' = "' . $val . '" ';
 			}
 			$str .= " />\n";
 			return $str;
@@ -272,12 +277,12 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 					$width = '340';
 					$height = '285';
 				}
-				else if ($params->get('player_size') == 'medium')
+				elseif ($params->get('player_size') == 'medium')
 				{
 					$width = '445';
 					$height = '364';
 				}
-				else if ($params->get('player_size') == 'normal')
+				elseif ($params->get('player_size') == 'normal')
 				{
 					$width = '500';
 					$height = '405';
@@ -357,22 +362,33 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
 	function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$opts = &$this->getElementJSOptions($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbYouTube('$id', $opts)";
 	}
 
 	/**
-	 * load the javascript class that manages interaction with the form element
-	 * should only be called once
-	 * @return string javascript class file
+	 * get the class to manage the form element
+	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * to ensure that the file is loaded only once
+	 *
+	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 * @param   string  $script  script to load once class has loaded
+	 *
+	 * @return void
 	 */
 
 	function formJavascriptClass(&$srcs, $script = '')
@@ -382,16 +398,19 @@ class plgFabrik_ElementYoutube extends plgFabrik_Element
 	}
 
 	/**
-	 * defines the type of database table field that is created to store the element's data
+	 * Get database field description
+	 *
+	 * @return  string  db field type
 	 */
-	function getFieldDescription()
+
+	public function getFieldDescription()
 	{
-		$p = &$this->getParams();
+		$p = $this->getParams();
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
-		$group = &$this->getGroup();
+		$group = $this->getGroup();
 		if ($group->isJoin() == 0 && $group->canRepeat())
 		{
 			return "TEXT";

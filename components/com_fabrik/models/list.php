@@ -187,7 +187,7 @@ class FabrikFEModelList extends JModelForm
 		$id = JRequest::getInt('listid', $usersConfig->get('listid'));
 		$this->packageId = (int) JRequest::getInt('packageid', $usersConfig->get('packageid'));
 		$this->setId($id);
-		$this->_access = new stdClass();
+		$this->_access = new stdClass;
 	}
 
 	/**
@@ -660,7 +660,7 @@ class FabrikFEModelList extends JModelForm
 		$groupBy = $this->getGroupBy();
 		if ($groupBy != '' && $this->_outPutFormat != 'csv')
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			// 3.0 if not group by template spec'd byt group by assigned in qs then use that as the group by tmpl
 			$requestGroupBy = JRequest::getCmd('group_by');
 			if ($requestGroupBy == '')
@@ -1184,7 +1184,7 @@ class FabrikFEModelList extends JModelForm
 		if ($popUp)
 		{
 			FabrikHelperHTML::mocha('a.popupwin');
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->maximizable = 1;
 			$opts->title = JText::_('COM_FABRIK_ADD');
 			$opts->evalScripts = 1;
@@ -1316,7 +1316,7 @@ class FabrikFEModelList extends JModelForm
 		if ($popUp)
 		{
 			FabrikHelperHTML::mocha('a.popupwin');
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->maximizable = 1;
 			$opts->title = JText::_('COM_FABRIK_VIEW');
 			$opts->evalScripts = 1;
@@ -1400,7 +1400,7 @@ class FabrikFEModelList extends JModelForm
 				$this->_aLinkElements[] = $element->name;
 				$link = $this->editLink($row);
 			}
-			else if ($this->canViewDetails($row))
+			elseif ($this->canViewDetails($row))
 			{
 				$this->_aLinkElements[] = $element->name;
 				$link = $this->viewDetailsLink($row);
@@ -1669,7 +1669,7 @@ class FabrikFEModelList extends JModelForm
 	public function pluginQuery($query)
 	{
 		//pass the query as an object property so it can be updated via reference
-		$args = new stdClass();
+		$args = new stdClass;
 		$args->query = $query;
 		FabrikWorker::getPluginManager()->runPlugins('onQueryBuilt', $this, 'list', $args);
 		$query = $args->query;
@@ -3218,7 +3218,7 @@ class FabrikFEModelList extends JModelForm
 			// commented out as it stops the update when changing an element name
 			//return $return;
 		}
-		$thisFieldDesc = JArrayHelper::getValue($dbdescriptions, $origColName, new stdClass());
+		$thisFieldDesc = JArrayHelper::getValue($dbdescriptions, $origColName, new stdClass);
 
 		// $$$ rob the Default property for timestamps when they are set to CURRENT_TIMESTAMP
 		// doesn't show up from getDBFields()  - so presuming a timestamp field will always default
@@ -3638,7 +3638,7 @@ class FabrikFEModelList extends JModelForm
 
 		$readOnlyValues = array();
 
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$noFiltersSetup = JArrayHelper::getValue($this->filters, 'no-filter-setup', array());
 
@@ -3722,12 +3722,12 @@ class FabrikFEModelList extends JModelForm
 				// $$$ 30/06/2011 rob dont escape the search as it may contain \\\ from preg_escape (e.g. search all on 'c+b)
 				$value = $db->quote($value, false);
 			}
-			else if ($condition == 'like')
+			elseif ($condition == 'like')
 			{
 				$condition = 'LIKE';
 				$value = $db->quote($value);
 			}
-			else if ($condition == 'laterthisyear' || $condition == 'earlierthisyear')
+			elseif ($condition == 'laterthisyear' || $condition == 'earlierthisyear')
 			{
 				$value = $db->quote($value);
 			}
@@ -3887,7 +3887,7 @@ class FabrikFEModelList extends JModelForm
 			$afilterEval = (array) $params->get('filter-eval');
 			$afilterGrouped = (array) $params->get('filter-grouped');
 			$join = 'WHERE';
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			for ($i = 0; $i < count($afilterFields); $i++)
 			{
 				if (!array_key_exists(0, $afilterJoins) || $afilterJoins[0] == '')
@@ -4261,7 +4261,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		$params = $this->getParams();
 		$this->aJoinsToThisKey = array();
-		$facted = $params->get('factedlinks', new stdClass());
+		$facted = $params->get('factedlinks', new stdClass);
 		if (!isset($facted->linkedform))
 		{
 			return $this->aJoinsToThisKey;
@@ -4521,7 +4521,7 @@ class FabrikFEModelList extends JModelForm
 			// One field to search them all (and in the darkness bind them)
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
 			$v = $this->getFilterModel()->getSearchAllValue('html');
-			$o = new stdClass();
+			$o = new stdClass;
 			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v
 				. '" class="fabrik_filter" name="' . $requestKey . '" />';
 			if ($params->get('search-mode-advanced') == 1)
@@ -4567,7 +4567,7 @@ class FabrikFEModelList extends JModelForm
 						}
 						//force the correct group model into the element model to ensure no wierdness in getting the element name
 						$elementModel->_group = $groupModel;
-						$o = new stdClass();
+						$o = new stdClass;
 						$o->name = $elementModel->getFullName(false, true, false);
 						$o->filter = $elementModel->getFilter($counter, true);
 						$fscript .= $elementModel->filterJS(true, $container);
@@ -4590,7 +4590,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			if ($filters['no-filter-setup'][$i] == '1' && !in_array($filters['search_type'][$i], array('searchall', 'advanced', 'jpluginfilters')))
 			{
-				$o = new stdClass();
+				$o = new stdClass;
 				// $$$ rob - we are now setting read only filters 'filter' var to the elements read only
 				// label for the passed in filter value
 				//$o->filter = $value;
@@ -4643,7 +4643,7 @@ class FabrikFEModelList extends JModelForm
 	function getAdvancedSearchOpts()
 	{
 		$list = $this->getTable();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$listRef = $this->getRenderContext();
 		$opts->conditionList = FabrikHelperHTML::conditonList($listRef, '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
@@ -4906,7 +4906,7 @@ class FabrikFEModelList extends JModelForm
 		$cellClass = array();
 		$params = $this->getParams();
 
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$session = JFactory::getSession();
 		$formModel = $this->getFormModel();
 		$linksToForms = $this->getLinksToThisKey();
@@ -5484,7 +5484,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$this->getFormGroupElementData();
 		}
-		$oRecord = new stdClass();
+		$oRecord = new stdClass;
 		$aBindData = array();
 		$noRepeatFields = array();
 		$c = 0;
@@ -6131,7 +6131,7 @@ class FabrikFEModelList extends JModelForm
 		if (trim($preSQL) != '')
 		{
 			$db = FabrikWorker::getDbo();
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$w->replaceRequest($preSQL);
 			$preSQL = $w->parseMessageForPlaceHolder($preSQL);
 			$db->setQuery($preSQL);
@@ -6841,7 +6841,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$str = ($mode == 'edit') ? $params->get('editurl_attribs') : $params->get('detailurl_attribs');
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		return $w->parseMessageForPlaceHolder($str);
 	}
 
@@ -7066,7 +7066,7 @@ class FabrikFEModelList extends JModelForm
 				// assoc array, so can't assume 0 is first key.
 				//$this->rows[$sig] = $row[0][0];
 				$row = JArrayHelper::getValue($row, FArrayHelper::firstKey($row), array());
-				$this->rows[$sig] = JArrayHelper::getValue($row, 0, new stdClass());
+				$this->rows[$sig] = JArrayHelper::getValue($row, 0, new stdClass);
 			}
 			else
 			{
@@ -7095,7 +7095,7 @@ class FabrikFEModelList extends JModelForm
 			else
 			{
 				// $$$ hugh - think default needs to be empty array, not object?
-				//$this->rows[$sig] = JArrayHelper::getValue($rows, 0, new stdClass());
+				//$this->rows[$sig] = JArrayHelper::getValue($rows, 0, new stdClass);
 				$this->rows[$sig] = JArrayHelper::getValue($rows, 0, array());
 			}
 		}
@@ -7458,7 +7458,7 @@ class FabrikFEModelList extends JModelForm
 	function getAddRecordLink()
 	{
 		$qs = array();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$app = JFactory::getApplication();
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;

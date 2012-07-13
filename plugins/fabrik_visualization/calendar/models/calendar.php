@@ -247,7 +247,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 			{
 				if ($formModel->hasElement($key))
 				{
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->key = $key;
 					$o->val = $val;
 					$this->filters[] = $o;

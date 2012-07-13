@@ -141,7 +141,7 @@ class FabrikString extends JString
 			$bits = explode('.', $col);
 			$col = array_pop($bits);
 		}
-		else if (strstr($col, '___'))
+		elseif (strstr($col, '___'))
 		{
 			$bits = explode('___', $col);
 			$col = array_pop($bits);
@@ -276,7 +276,7 @@ class FabrikString extends JString
 			}
 			$tip = htmlspecialchars('<div class="truncate_text">' . $title . $orig . '</div>');
 			//$tip = $title.$orig;
-			$jOpts = new stdClass();
+			$jOpts = new stdClass;
 			$jOpts->notice = true;
 			$jOpts->position = JArrayHelper::getValue($opts, 'position', 'top');
 			$jOpts = json_encode($jOpts);

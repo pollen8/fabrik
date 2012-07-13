@@ -62,7 +62,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		if ($condition == '') {
 			return true;
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		// $$$ rob merge join data into main array so we can access them in parseMessageForPlaceHolder()
 		$joindata = JArrayHelper::getValue($post, 'join', array());
 		foreach ($joindata as $joinid => $joind)

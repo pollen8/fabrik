@@ -89,7 +89,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 
 		$cc = null;
 		$bcc = null;
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
 
@@ -284,7 +284,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form {
 		}
 		// $$$ hugh - added an optional eval for adding attachments.
 		// Eval'ed code should just return an array of file paths which we merge with $this->_aAttachments[]
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$email_attach_eval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
 		if (!empty($email_attach_eval))
 		{

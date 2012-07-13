@@ -42,7 +42,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 
 	function onAfterJSLoad(&$params, &$formModel)
 	{
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
 		$opts->trigger = str_replace('.', '___', $params->get('autofill_trigger'));
 		$opts->formid = $formModel->getId();
@@ -108,7 +108,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 			$map = json_decode($map);
 			if (!empty($map))
 			{
-				$newdata = new stdClass();
+				$newdata = new stdClass;
 				foreach($map as $from => $to)
 				{
 					$toraw = $to . '_raw';

@@ -35,7 +35,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$config = JFactory::getConfig();
 		$document = JFactory::getDocument();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$document->addScript("http://api.simile-widgets.org/runway/1.0/runway-api.js");
 		$c = 0;
@@ -70,7 +70,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization
 					{
 						foreach ($group as $row)
 						{
-							$event = new stdClass();
+							$event = new stdClass;
 							if (!method_exists($imageElement, 'getStorage'))
 							{
 								//JError::raiseError(500, 'Looks like you selected a element other than a fileupload element for the coverflows image element');

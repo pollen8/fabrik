@@ -39,7 +39,7 @@ class FabrikViewList extends FabrikViewListBase{
 	protected function buttons()
 	{
 		// dont add buttons as pdf is not interactive
-		$this->buttons = new stdClass();
+		$this->buttons = new stdClass;
 	}
 	
 	/**

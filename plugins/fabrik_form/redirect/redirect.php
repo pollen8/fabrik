@@ -42,8 +42,8 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 
 		$app = JFactory::getApplication();
 		$this->formModel = $formModel;
-		$w = new FabrikWorker();
-		$this->_data = new stdClass();
+		$w = new FabrikWorker;
+		$this->_data = new stdClass;
 
 		$this->_data->append_jump_url = $params->get('append_jump_url');
 		$this->_data->save_in_session = $params->get('save_insession');
@@ -130,7 +130,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form {
 		$message = $session->get($context.'msg', $message);
 		if (JRequest::getVar('fabrik_ajax')) {
 			//3.0 - standardize on msg/title options.
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->title = $title;
 			$opts->msg = $message;
 			echo json_encode($opts);

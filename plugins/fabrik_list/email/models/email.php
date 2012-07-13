@@ -205,7 +205,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 			return false;
 		}
 		$listModel->setId(JRequest::getInt('id', 0));
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$params = $this->getParams();
 		$to = JRequest::getVar('order_by');

@@ -49,7 +49,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 				$imagefileup = 'thumb_up_in.gif';
 				$imagefiledown = 'thumb_down_out.gif';
 			}
-			else if ($myThumb == 'down')
+			elseif ($myThumb == 'down')
 			{
 				$imagefileup = 'thumb_up_out.gif';
 				$imagefiledown = 'thumb_down_in.gif';
@@ -116,19 +116,26 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 *
+	 * @deprecated - not used
+	 *
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
 
 	/**
-	 * @since 3.0 - no point showing label if you cant edit the thing
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
 	 */
 
-	function isHidden()
+	protected function isHidden()
 	{
 		return JRequest::getVar('view') == 'form' ? true : false;
 	}
@@ -165,7 +172,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$row_id = JRequest::getInt('rowid');
 		if (!isset($thisRow))
 		{
-			$thisRow = new stdClass();
+			$thisRow = new stdClass;
 			$thisRow->__pk_val = $row_id;
 		}
 		$myThumb = $this->_getMyThumb($listid, $formid, $row_id);
@@ -176,7 +183,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 			$imagefileup = 'thumb_up_in.gif';
 			$imagefiledown = 'thumb_down_out.gif';
 		}
-		else if ($myThumb == 'down')
+		elseif ($myThumb == 'down')
 		{
 			$imagefileup = 'thumb_up_out.gif';
 			$imagefiledown = 'thumb_down_in.gif';
@@ -197,11 +204,15 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#storeDatabaseFormat($val, $data)
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$params = $this->getParams();
 		$listid = JRequest::getInt('listid');
@@ -298,7 +309,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$db->query();
 		if ($db->getErrorNum())
 		{
-			$err = new stdClass();
+			$err = new stdClass;
 			$err->error = $db->getErrorMsg();
 			echo json_encode($err);
 			exit;
@@ -324,7 +335,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$db->query();
 		if ($db->getErrorNum())
 		{
-			$err = new stdClass();
+			$err = new stdClass;
 			$err->error = $db->getErrorMsg();
 			echo json_encode($err);
 			exit;
@@ -354,7 +365,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$row_id = JRequest::getInt('rowid');
 		$value = $this->getValue($data, $repeatCounter);
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->row_id = JRequest::getInt('rowid');
 		$opts->myThumb = $this->_getMyThumb($listid, $formid, $row_id);
 		$opts->elid = $this->getElement()->id;
@@ -364,7 +375,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$opts->listid = $listid;
 		$opts = json_encode($opts);
 
-		$lang = new stdClass();
+		$lang = new stdClass;
 		$lang->norating = JText::_('NO RATING');
 		$lang = json_encode($lang);
 		$str = "new FbThumbs('$id', $opts, '$value', $lang)";
@@ -408,7 +419,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		{
 			$userid = $user->get('id');
 		}
-		$opts = new stdClass();
+		$opts = new stdClass;
 
 		$opts->listid = $list->id;
 		$opts->imagepath = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/thumbs/images/';
@@ -444,9 +455,18 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#filterValueList_All($normal, $tableName, $label, $id, $incjoin)
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
 	 */
+
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		for ($i = 0; $i < 6; $i++)

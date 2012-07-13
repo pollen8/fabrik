@@ -94,7 +94,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		//$$$servantek reordered the update process in case the email routine wants to kill the updates
 		$emailColID = $params->get('update_email_element', '');
 		if (!empty($emailColID)) {
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			jimport('joomla.mail.helper');
 			$message = $params->get('update_email_msg');
 			$subject = $params->get('update_email_subject');

@@ -108,7 +108,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 	protected function loadDiggJsOpts()
 	{
 		FabrikHelperHTML::script('plugins/fabrik_element/digg/table-fabrikdigg.js');
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$digg = $this->getDigg();
 		$opts->livesite = COM_FABRIK_LIVESITE;
 		$opts->row_id = JRequest::getInt('rowid');
@@ -194,7 +194,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 
 		$data[] = '</div>';
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->formid = $formModel->get('id');
 		$opts->rowid = JRequest::getVar('rowid');
 		$opts->admin = $user->authorise('core.delete', 'com_fabrik');
@@ -602,7 +602,7 @@ class plgFabrik_FormComment extends plgFabrik_Form {
 			echo $row->getError();
 			exit;
 		}
-		$obj = new stdClass();
+		$obj = new stdClass;
 		//do this to get the depth of the comment
 		$comments = $this->getComments($row->formid, $row->row_id);
 		$row = $comments[$row->id];

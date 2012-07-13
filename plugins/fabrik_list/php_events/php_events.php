@@ -119,7 +119,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	protected function doEvaluate($code, &$model)
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$code = $w->parseMessageForPlaceHolder($code);
 		if ($code != '')
 		{

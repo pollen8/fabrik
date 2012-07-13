@@ -53,7 +53,7 @@ class FabrikViewElement extends JView
 		$html = '<script>';
 		$html .= $plugin->elementJavascript($repeatCounter);
 		$html .= '</script>';
-		$html .= $plugin->_getElement($data, $repeatCounter, $groupModel);
+		$html .= $plugin->_getElement($data, $repeatCounter);
 		echo $html; */
 	}
 

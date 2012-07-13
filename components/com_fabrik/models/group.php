@@ -508,8 +508,8 @@ class FabrikFEModelGroup extends FabModel{
 
 	function getGroupProperties(&$formModel)
 	{
-		$w = new FabrikWorker();
-		$group = new stdClass();
+		$w = new FabrikWorker;
+		$group = new stdClass;
 		$groupTable	= $this->getGroup();
 		$params	= $this->getParams();
 		if (!isset($this->_editable))

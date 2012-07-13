@@ -114,7 +114,7 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 		$email = $formModel->_formDataWithTableName[$emailKey];
 		
 		
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
 		if (!empty($groupOpts))

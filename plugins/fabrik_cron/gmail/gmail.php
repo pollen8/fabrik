@@ -40,7 +40,7 @@ class plgFabrik_Crongmail extends plgFabrik_Cron {
 		$deleteMail = false;
 		//$storageType = 'filesystemstorage';
 		//require_once(JPATH_BASE.DS.'components/com_fabrik/plugins/element/fabrikfileupload/adaptors'.DS.$storageType.'.php');
-		$p = new stdClass();
+		$p = new stdClass;
 
 		$fromField = $params->get('plugin-options.from');
 		$titleField = $params->get('plugin-options.title');

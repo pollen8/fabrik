@@ -49,7 +49,7 @@ class plgFabrik_ListCaneditrow extends plgFabrik_List {
 		// If they provided some PHP to eval, we ignore the other settings and just run their code
 		$caneditrow_eval = $params->get('caneditrow_eval', '');
 		if (!empty($caneditrow_eval)) {
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$data = JArrayHelper::fromObject($data);
 			$caneditrow_eval = $w->parseMessageForPlaceHolder($caneditrow_eval, $data);
 			$caneditrow_eval = @eval($caneditrow_eval);

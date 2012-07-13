@@ -295,7 +295,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 		}
 		else
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$msg = $w->parseMessageForPlaceHolder($params->get('twitter_msg_tmpl'), $data);
 		}
 		$msg = $this->bitlifyMessage($msg);

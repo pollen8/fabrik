@@ -60,7 +60,7 @@ class plgFabrik_FormKunena extends plgFabrik_Form {
 		else {
 			$postfile = KUNENA_PATH_TEMPLATE_DEFAULT . '/post.php';
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		
 		//$fbSession = CKunenaSession::getInstance();
 		//dont need this, session is loaded in CKunenaPost

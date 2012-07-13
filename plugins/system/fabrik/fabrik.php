@@ -219,7 +219,7 @@ class plgSystemFabrik extends JPlugin
 					{
 						$limit--;
 						$urls[] = $href;
-						$o = new stdClass();
+						$o = new stdClass;
 						if (isset($oData->$title))
 						{
 							$o->title = $table->label . ' : ' . $oData->$title;

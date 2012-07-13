@@ -225,7 +225,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		}
 		if ($params->get('form_php_file') == -1)
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
 			return eval($code);
 		}

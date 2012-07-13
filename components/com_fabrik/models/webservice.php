@@ -135,7 +135,7 @@ abstract class FabrikWebService
 	public function map($datas, $fk)
 	{
 		$return = array();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		foreach ($datas as $data)
 		{
 			$row = array();

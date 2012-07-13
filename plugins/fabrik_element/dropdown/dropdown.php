@@ -159,7 +159,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 				}
 				else
 				{
-					$w = new FabrikWorker();
+					$w = new FabrikWorker;
 					$default = $w->parseMessageForPlaceHolder($default, $data);
 					$v = $params->get('eval', '0') == '1' ? eval($default) : $default;
 				}

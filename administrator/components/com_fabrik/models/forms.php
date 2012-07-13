@@ -58,7 +58,7 @@ class FabrikModelForms extends FabModelList
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
 			$query->where('f.published = '.(int) $published);
-		} else if ($published === '') {
+		} elseif ($published === '') {
 			$query->where('(f.published IN (0, 1))');
 		}
 

@@ -51,10 +51,12 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
 	 *
+	 * @deprecated - not used
+	 *
 	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -147,7 +149,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 				$guessed = true;
 			}
 			// Changes JF Questiaux
-			else if (JString::stristr($value, 'http'))
+			elseif (JString::stristr($value, 'http'))
 			{
 				$value = '<a href="' . $value . '"' . $target . '>' . $value . '</a>';
 				$guessed = true;
@@ -216,7 +218,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
 		if ($this->encryptMe())
@@ -291,7 +293,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		if (is_array($val))
 		{
@@ -314,8 +316,10 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
-	 * @since 3.0.4
 	 * get the element's cell class
+	 *
+	 * @since 3.0.4
+	 *
 	 * @return  string	css classes
 	 */
 

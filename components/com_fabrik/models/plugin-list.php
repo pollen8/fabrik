@@ -71,7 +71,7 @@ class plgFabrik_List extends FabrikPlugin
 	
 	public function getElementJSOptions($model)
 	{
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->ref = $model->getRenderContext();
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
@@ -126,7 +126,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	function _getLang()
 	{
-		$lang = new stdClass();
+		$lang = new stdClass;
 		return $lang;
 	}
 

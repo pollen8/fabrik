@@ -60,7 +60,7 @@ class FabrikTableGroup extends FabTable
 			}
 			$keys = array($keyName => $keyValue);
 		}
-		else if (!is_array($keys))
+		elseif (!is_array($keys))
 		{
 			// Load by primary key.
 			$keys = array($this->_tbl_key => $keys);

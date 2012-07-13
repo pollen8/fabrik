@@ -75,7 +75,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		if (empty($download_fk) && empty($download_file) && empty($download_table)) {
 			return;
 		}
-		else if (empty($download_fk) && empty($download_table) && !empty($download_file)) {
+		elseif (empty($download_fk) && empty($download_table) && !empty($download_file)) {
 			foreach ($ids AS $id) {
 				$row = $model->getRow($id);
 				if (isset($row->$download_file)) {

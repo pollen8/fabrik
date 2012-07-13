@@ -64,12 +64,15 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element
 		$data = JHTML::_('date', $data, JText::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')));
 		return parent::renderListData($data, $thisRow);
 	}
+
 	/**
-	 * defines the type of database table field that is created to store the element's data
-	 * @return	string	db field description
+	 * Get database field description
+	 *
+	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
+	{
 	{
 		$params = $this->getParams();
 		if ($params->get('encrypt', false))
@@ -86,10 +89,15 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element
 		}
 	}
 
-	function isHidden()
+	/**
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
+	 */
+
+	protected function isHidden()
 	{
 		return true;
 	}
 
 }
-?>

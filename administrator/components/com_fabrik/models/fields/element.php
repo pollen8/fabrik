@@ -65,7 +65,7 @@ class JFormFieldElement extends JFormFieldList
 		// $$$ hugh - don't know what's going on here, except that this method is getting called twice for every element
 		// but first time round, $this->value is not set, so if we cache it, setting loses it's value.
 		//if (!array_key_exists($this->id, $fabrikelements)) {
-			$opts = new stdClass();
+			$opts = new stdClass;
 			if ($this->form->repeat)
 			{
 				//in repeat fieldset/group

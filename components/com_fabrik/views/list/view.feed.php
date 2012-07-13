@@ -82,7 +82,7 @@ class FabrikViewList extends JView{
 		}
 
 		$dateCol = $params->get('feed_date', '');
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$rows = $model->getData();
 		$document->title = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
 		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));

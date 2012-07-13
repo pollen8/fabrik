@@ -64,7 +64,7 @@ class JFormFieldFormList extends JFormFieldList
 					break;
 			}
 		}
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->value = '';
 		$o->text = '';
 		array_unshift($rows, $o);

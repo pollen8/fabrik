@@ -311,7 +311,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		{
 			return $val;
 		}
-		else if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
+		elseif ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
 		{
 			return $this->toMySQLGMT(JFactory::getDate($val));
 		}
@@ -358,12 +358,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		if (!is_array($val))
 		{
@@ -434,9 +437,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$value = $d->toSql();
 		}
 		// $$$ hugh - need to convert to database format so we GMT-ified date
-		return $this->renderListData($value, new stdClass());
+		return $this->renderListData($value, new stdClass);
 		// $$$ rob - no need to covert to db format now as its posted as db format already.
-		//return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass());
+		//return $this->renderListData($this->storeDatabaseFormat($value, $data), new stdClass);
 	}
 
 	/**
@@ -485,8 +488,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	 * takes a raw value and returns its label equivalent
-	 * @param	string	value
+	 * Converts a raw value into its label equivalent
+	 *
+	 * @param   string  &$v  raw value
+	 *
+	 * @return  void
 	 */
 
 	protected function toLabel(&$v)
@@ -585,7 +591,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	protected function _CalendarJSOpts($id)
 	{
 		$params = $this->getParams();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->inputField = $id;
 		$opts->ifFormat = $params->get('date_form_format');
 		$opts->button = $id . "_cal_img";
@@ -630,12 +636,12 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	 * get the type of field to store the data in
+	 * Get the type of field to store the data in
 	 *
-	 * @return string field description
+	 * @return  strin g field description
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
 		if ($this->encryptMe())
@@ -656,6 +662,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 *
 	 * Examples of where this would be overwritten include timedate element with time field enabled
+	 *
 	 * @param int repeat group counter
 	 * @return array html ids to watch for validation
 	 */
@@ -1021,7 +1028,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 						$this->rangeFilterSet = true;
 					}
 				}
-				else if ($condition == 'is null')
+				elseif ($condition == 'is null')
 				{
 					$value = "";
 				}
@@ -1378,11 +1385,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	 * format the filter date range into a mySQL format
-	 * @see components/com_fabrik/models/plgFabrik_Element#getRangedFilterValue($value)
+	 * This builds an array containing the filters value and condition
+	 * when using a ranged search
+	 *
+	 * @param   string  $value  initial value
+	 *
+	 * @return  array  (value condition)
 	 */
 
-	function getRangedFilterValue($value)
+	protected function getRangedFilterValue($value)
 	{
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
@@ -1527,7 +1538,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$thePHPDate['hours'] = 0;
 			$thePHPDate['mday']++;
 		}
-		else if ($thePHPDate['hours'] + $add < 0)
+		elseif ($thePHPDate['hours'] + $add < 0)
 		{
 			$thePHPDate['hours'] = 0;
 			$thePHPDate['mday']--;
@@ -1543,10 +1554,12 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	 * build the query for the avg caclculation
-	 * @param	model	$listModel
-	 * @param	string	$label the label to apply to each avg
-	 * @return	string	sql statement
+	 * Build the query for the avg calculation
+	 *
+	 * @param   model   &$listModel  list model
+	 * @param   string  $label       the label to apply to each avg
+	 *
+	 * @return  string	sql statement
 	 */
 
 	protected function getAvgQuery(&$listModel, $label = "'calc'")
@@ -1559,6 +1572,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		return 'SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM '
 			. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
+
+	/**
+	 * Get sum query
+	 *
+	 * @param   object  &$listModel  list model
+	 * @param   string  $label       label
+	 *
+	 * @return string
+	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
@@ -1688,7 +1710,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					$this->strftimeTFormatToMySQL($format);
 					$key = "DATE_FORMAT( $key , '$format')";
 				}
-				else if ($format == '%Y %B')
+				elseif ($format == '%Y %B')
 				{
 					// $$$ hugh - testing horrible hack for different languages, initially for andorapro's site
 					// Problem is, he has multiple language versions of the site, and needs to filter tables by "%Y %B" dropdown (i.e. "2010 November") in multiple languages.

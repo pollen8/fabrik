@@ -106,7 +106,7 @@ class FabrikFEModelCSVExport {
 				$str .= "\n";
 			}
 		}
-		$res = new stdClass();
+		$res = new stdClass;
 		$res->total = $total;
 		$res->count = $start + $this->_getStep();
 		$res->file= $filepath;
@@ -127,7 +127,7 @@ class FabrikFEModelCSVExport {
 
 	protected function reportWriteError($filepath)
 	{
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->err = 'cant write file ' . $filepath;
 		echo json_encode($o);
 	}
@@ -284,7 +284,7 @@ class FabrikFEModelCSVExport {
 
 	function getHeadings()
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$table = $this->model->getTable();
 		$params = $this->model->getParams();
 		$hformat = $params->get('csvfullname');
@@ -300,7 +300,7 @@ class FabrikFEModelCSVExport {
 		$groups = $formModel->getGroupsHiarachy();
 		$h = array();
 		if (!is_object($r)) {
-			return new stdClass();
+			return new stdClass;
 		}
 		$incRaw = JRequest::getVar('incraw', true);
 		$incData = JRequest::getVar('inctabledata', true);

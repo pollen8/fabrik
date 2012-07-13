@@ -169,7 +169,7 @@ class filesystemstorage extends storageAdaptor{
 	{
 
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		//$$$ rob wasnt working when getting thumb path on upload
 		$ulDir = JPath::clean($params->get('ul_directory'));

@@ -33,7 +33,7 @@ class Com_FabrikInstallerScript
 	{
 		$db = JFactory::getDbo();
 		$app = JFactory::getApplication();
-		$row = new stdClass();
+		$row = new stdClass;
 		$row->host = $app->getCfg('host');
 		$row->user = $app->getCfg('user');
 		$row->password = $app->getCfg('password');
@@ -57,7 +57,7 @@ class Com_FabrikInstallerScript
 		$query->select('extension_id, params')->from('#__extensions')->where('name = '.$db->quote('fabrik'))->where('type = '.$db->quote('component'));
 		$db->setQuery($query);
 		$row = $db->loadObject();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->fbConf_wysiwyg_label = 0;
 		$opts->fbConf_alter_existing_db_cols = 0;
 		$opts->spoofcheck_on_formsubmission = 0;

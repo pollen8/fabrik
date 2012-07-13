@@ -296,7 +296,7 @@ class plgFabrik_Form extends FabrikPlugin
 							$join = $elementModel->getJoinModel()->getJoin();
 							$this->emailData[$k . '_raw'] = $model->_formDataWithTableName['join'][$join->id][$k];
 						}
-						else if (array_key_exists($key, $model->_formDataWithTableName))
+						elseif (array_key_exists($key, $model->_formDataWithTableName))
 						{
 							$rawval = JArrayHelper::getValue($model->_formDataWithTableName, $k . '_raw', '');
 							if ($rawval == '')
@@ -324,7 +324,7 @@ class plgFabrik_Form extends FabrikPlugin
 					if (array_key_exists($k . '_raw', $this->emailData)) {
 						$email_value = $this->emailData[$k . '_raw'];
 					}
-					else if (array_key_exists($k, $this->emailData))
+					elseif (array_key_exists($k, $this->emailData))
 					{
 						$email_value = $this->emailData[$k];
 					}

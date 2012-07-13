@@ -481,7 +481,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
 					$data['username'], $data['password_clear']);
 			}
-			else if ($useractivation == 1 && !$bypassActivation)
+			elseif ($useractivation == 1 && !$bypassActivation)
 			{
 				// Set the link to activate the user account.
 				$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
@@ -616,7 +616,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 			$session = JFactory::getSession();
 			$context = 'com_fabrik.form.' . $formModel->getId() . '.juser.';
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			if (!JError::isError($error))
 			{
 				$session->set($context . 'created', true);

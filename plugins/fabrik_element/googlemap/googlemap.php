@@ -27,10 +27,10 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -167,9 +167,9 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -285,7 +285,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 
 	function _strToCoords($v, $zoomlevel = 0)
 	{
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->coords = array('', '');
 		$o->zoomlevel = (int) $zoomlevel;
 		if (strstr($v, ","))
@@ -312,7 +312,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 
 	function _strToDMS($v)
 	{
-		$dms = new stdClass();
+		$dms = new stdClass;
 		$dms->coords = array('', '');
 		if (strstr($v, ","))
 		{
@@ -468,10 +468,10 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -553,15 +553,15 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 
 	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
-	 * 
+	 *
 	 * @param   array  &$aFields    array of element names
 	 * @param   array  &$aAsFields  array of 'name AS alias' fields
 	 * @param   array  $opts        options
-	 * 
+	 *
 	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
@@ -603,11 +603,11 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 

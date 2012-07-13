@@ -45,7 +45,7 @@ class JFormFieldPackageList extends JFormFieldList
 		$query->order('value DESC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->value = 0;
 		$o->text = JText::_('COM_FABRIK_NO_PACKAGE');
 		array_unshift($rows, $o);

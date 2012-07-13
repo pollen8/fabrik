@@ -179,7 +179,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	 * @return bool
 	 */
 
-	function isHidden()
+	protected function isHidden()
 	{
 		if ($this->inJDb())
 		{
@@ -398,13 +398,16 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * can be overwritten in the plugin class - see database join element for example
-	 * @param array containing field sql
-	 * @param array containing field aliases
-	 * @param array options
+	 * Create the SQL select 'name AS alias' segment for list/form queries
+	 *
+	 * @param   array  &$aFields    array of element names
+	 * @param   array  &$aAsFields  array of 'name AS alias' fields
+	 * @param   array  $opts        options
+	 *
+	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$table = $this->actualTableName();
 		$element = $this->getElement();
@@ -637,8 +640,11 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element::_buildFilterJoin()
+	 * If filterValueList_Exact incjoin value = false, then this method is called
+	 * to ensure that the query produced in filterValueList_Exact contains at least the database join element's
+	 * join
+	 *
+	 * @return  string  required join text to ensure exact filter list code produces a valid query.
 	 */
 
 	protected function _buildFilterJoin()
@@ -752,7 +758,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		{
 			$userid = $data[$rawkey];
 		}
-		else if (array_key_exists($key, $data))
+		elseif (array_key_exists($key, $data))
 		{
 			$userid = $data[$key];
 		}

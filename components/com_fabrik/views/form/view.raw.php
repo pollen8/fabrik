@@ -102,7 +102,7 @@ class fabrikViewForm extends JView
 	function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
@@ -155,7 +155,7 @@ class fabrikViewForm extends JView
 		{
 			$groupModel = $groups[$gkeys[$i]];
 			$groupTable = $groupModel->getGroup();
-			$group = new stdClass();
+			$group = new stdClass;
 			$groupParams = $groupModel->getParams();
 			$aElements = array();
 			//check if group is acutally a table join

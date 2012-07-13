@@ -89,7 +89,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form {
 		$db->setQuery($query);
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->index = JArrayHelper::getValue($keys, $formModel->_rowId, 0);
 
 		$o->first = $rows[0];
@@ -137,7 +137,7 @@ $where = $params->get('paginate_where');
 		if ($params->get('paginate_ajax') == 0) {
 			return;
 		}
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->liveSite = COM_FABRIK_LIVESITE;
 		$opts->view = JRequest::getCmd('view');
 		$opts->ids = $this->ids;

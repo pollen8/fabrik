@@ -24,7 +24,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 
 	public function onAfterProcess($params, &$formModel)
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$config_userpass = $params->get('username') . ':' . $params->get('password');
 		$endpoint = $params->get('endpoint');
 

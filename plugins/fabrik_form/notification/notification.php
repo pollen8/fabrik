@@ -49,7 +49,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 			$this->html = JText::_('PLG_CRON_NOTIFICATION_SIGN_IN_TO_RECEIVE_NOTIFICATIONS');
 			return;
 		}
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->listid = $formModel->getListModel()->getId();
 		$opts->fabrik = $formModel->getId();
 		$opts->rowid = $formModel->_rowId;

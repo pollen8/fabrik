@@ -151,11 +151,11 @@ class FabimageGD extends Fabimage
 		if ($ext == 'jpg' || $ext == 'jpeg') {
 			$img = @imagecreatefromjpeg($file);
 			$header = "image/jpeg";
-		} else if ($ext == 'png') {
+		} elseif ($ext == 'png') {
 			$img = @imagecreatefrompng($file);
 			$header = "image/png";
 			/* Only if your version of GD includes GIF support*/
-		} else if ($ext == 'gif') {
+		} elseif ($ext == 'gif') {
 			if (function_exists( imagecreatefromgif )) {
 				$img = @imagecreatefromgif( $file );
 				$header = "image/gif";
@@ -459,11 +459,11 @@ class FabimageGD2 extends FabimageGD
 		if ($ext == 'jpg' || $ext == 'jpeg') {
 			$img = imagecreatefromjpeg($origFile);
 			$header = "image/jpeg";
-		} else if ($ext == 'png') {
+		} elseif ($ext == 'png') {
 			$img = imagecreatefrompng($origFile);
 			$header = "image/png";
 			/* Only if your version of GD includes GIF support*/
-		} else if ($ext == 'gif') {
+		} elseif ($ext == 'gif') {
 			if (function_exists(imagecreatefromgif)) {
 				$img = imagecreatefromgif($origFile);
 				$header = "image/gif";

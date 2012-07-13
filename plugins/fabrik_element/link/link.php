@@ -25,10 +25,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -66,10 +66,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	/**
 	 * Redinder Individual parts of the cell data.
 	 * Called from renderListData();
-	 * 
+	 *
 	 * @param   string  $data     cell data
 	 * @param   object  $thisRow  the data in the lists current row
-	 * 
+	 *
 	 * @return  string  formatted value
 	 */
 
@@ -131,10 +131,10 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -219,11 +219,11 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Turn form value into email formatted value
-	 * 
+	 *
 	 * @param   mixed  $value          element value
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  group repeat counter
-	 * 
+	 *
 	 * @return  string  email formatted value
 	 */
 
@@ -246,14 +246,14 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		/* $$$ hugh - added 'normalization' of links, to add http:// if no :// in the link.
 		* not sure if we really want to do it here, or only when rendering?
@@ -319,9 +319,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -343,11 +343,11 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Called by form model to build an array of values to encrypt
-	 * 
+	 *
 	 * @param   array  &$values  previously encrypted values
 	 * @param   array  $data     form data
 	 * @param   int    $c        repeat group counter
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -376,17 +376,17 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default))
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$params = $this->getParams();
 			$link = $params->get('link_default_url');
 			/* $$$ hugh - no idea what this was here for, but it was causing some BIZARRE bugs!
@@ -412,11 +412,11 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -518,9 +518,9 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	/**
 	 * Get an array containing info about the media link
-	 * 
+	 *
 	 * @param   string  $link  to examine
-	 * 
+	 *
 	 * @return  array width, height, type of link
 	 */
 
@@ -631,7 +631,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	 *
 	 * @param   array  $data           data to test against
 	 * @param   int    $repeatCounter  repeat group #
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -650,7 +650,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 * 
+	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file

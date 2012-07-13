@@ -5,7 +5,7 @@ FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
 
 
 $filter = JFilterInput::getInstance(array('p'), array(), 1);
-$opts = new stdClass();
+$opts = new stdClass;
 $opts->listref = 'listform_' . $this->listref;
 $opts = json_encode($opts);
 $script = "

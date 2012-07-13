@@ -45,7 +45,7 @@ class FabrikControllerPlugin extends JController
 		//if (!JPluginHelper::importPlugin('fabrik_'.$group, $plugin, true, $dispatcher))
 		if (!JPluginHelper::importPlugin('fabrik_'.$group, $plugin))
 		{
-			$o = new stdClass();
+			$o = new stdClass;
 			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
 			echo json_encode($o);
 			return;

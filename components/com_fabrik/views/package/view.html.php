@@ -31,7 +31,7 @@ class fabrikViewPackage extends JView
 		$opts = JArrayHelper::getvalue($canvas, 'options', array());
 		$tabs = JArrayHelper::getValue($canvas, 'tabs', array('Page 1'));
 		$tabs = json_encode($tabs);
-		$d = new stdClass();
+		$d = new stdClass;
 		$layout = JArrayHelper::getValue($canvas, 'layout', $d);
 
 		$layout = json_encode(JArrayHelper::getValue($canvas, 'layout', $d));

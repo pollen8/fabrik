@@ -77,7 +77,7 @@ class FabrikViewGroups extends JView
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'groups.delete','JTOOLBAR_EMPTY_TRASH');
-		} else if ($canDo->get('core.edit.state')) {
+		} elseif ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('groups.trash','JTOOLBAR_TRASH');
 		}
 		if ($canDo->get('core.admin')) {

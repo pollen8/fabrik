@@ -73,7 +73,7 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 			}
 		}
 		$config = JFactory::getConfig();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$this->formModel = $formModel;
 		$form = $formModel->getForm();

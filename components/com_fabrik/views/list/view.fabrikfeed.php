@@ -108,7 +108,7 @@ class FabrikViewList extends JView{
 				}
 			}
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$rows = $model->getData();
 
 		$document->title = htmlentities($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
@@ -160,10 +160,10 @@ class FabrikViewList extends JView{
 								$enclosure_file = $enclosure_url;
 								$remote_file = true;
 							}
-							else if (strstr($enclosure_url, COM_FABRIK_LIVESITE)) {
+							elseif (strstr($enclosure_url, COM_FABRIK_LIVESITE)) {
 								$enclosure_file = str_replace(COM_FABRIK_LIVESITE, COM_FABRIK_BASE, $enclosure_url);
 							}
-							else if (preg_match('#^'. COM_FABRIK_BASE . "#", $enclosure_url)) {
+							elseif (preg_match('#^'. COM_FABRIK_BASE . "#", $enclosure_url)) {
 								$enclosure_file = $enclosure_url;
 								$enclosure_url = str_replace(COM_FABRIK_BASE, '', $enclosure_url);
 							}

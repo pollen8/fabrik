@@ -295,12 +295,15 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed the elements posted form data
-	 * @param array posted form data
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		// $$$ hugh - No need for this in 3.x, all repeated groups are now joins,
 		// so we get called once per instance of repeat

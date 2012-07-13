@@ -140,7 +140,7 @@ class FabrikPlugin extends JPlugin
 			$repeatDataMax = 1;
 			if ($repeat)
 			{
-				$opts = new stdClass();
+				$opts = new stdClass;
 				$opts->repeatmin = (isset($fieldset->repeatmin)) ? $fieldset->repeatmin : 1;
 				$repeatScript[] = "new FbRepeatGroup('$fieldset->name', " . json_encode($opts) . ');';
 				$repeatData = array();
@@ -442,7 +442,7 @@ class FabrikPlugin extends JPlugin
 				{
 					foreach ($rows as $r)
 					{
-						$c = new stdClass();
+						$c = new stdClass;
 						$c->value = $r->Field;
 						$c->label = $r->Field;
 						$arr[$r->Field] = $c;
@@ -500,7 +500,7 @@ class FabrikPlugin extends JPlugin
 						// as a temp hack
 						$v = $eVal->getFullName(false);
 					}
-					$c = new stdClass();
+					$c = new stdClass;
 					$c->value = $v;
 					$label = FabrikString::getShortDdLabel( $element->label);
 					if ($groupModel->isJoin())
@@ -514,35 +514,35 @@ class FabrikPlugin extends JPlugin
 						$params = $eVal->getParams();
 						if ($params->get('sum_on', 0))
 						{
-							$c = new stdClass();
+							$c = new stdClass;
 							$c->value = 'sum___' . $v;
 							$c->label = JText::_('COM_FABRIK_SUM') . ': ' .$label;
 							$arr[] = $c;
 						}
 						if ($params->get('avg_on', 0))
 						{
-							$c = new stdClass();
+							$c = new stdClass;
 							$c->value = 'avg___' . $v;
 							$c->label = JText::_('COM_FABRIK_AVERAGE') . ': ' .$label;
 							$arr[] = $c;
 						}
 						if ($params->get('median_on', 0))
 						{
-							$c = new stdClass();
+							$c = new stdClass;
 							$c->value = 'med___' . $v;
 							$c->label = JText::_('COM_FABRIK_MEDIAN') . ': ' .$label;
 							$arr[] = $c;
 						}
 						if ($params->get('count_on', 0))
 						{
-							$c = new stdClass();
+							$c = new stdClass;
 							$c->value = 'cnt___' . $v;
 							$c->label = JText::_('COM_FABRIK_COUNT') . ': ' .$label;
 							$arr[] = $c;
 						}
 						if ($params->get('custom_calc_on', 0))
 						{
-							$c = new stdClass();
+							$c = new stdClass;
 							$c->value = 'cnt___' . $v;
 							$c->label = JText::_('COM_FABRIK_CUSTOM') . ': ' .$label;
 							$arr[] = $c;
@@ -565,7 +565,7 @@ class FabrikPlugin extends JPlugin
 
 	protected function getAdminJsOpts($html)
 	{
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->livesite = COM_FABRIK_LIVESITE;
 		$opts->html = $html;
 		return $opts;
@@ -602,7 +602,7 @@ class FabrikPlugin extends JPlugin
 		{
 			return true;
 		}
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $data));
 		$res = @eval($condition);
 		if (is_null($res))

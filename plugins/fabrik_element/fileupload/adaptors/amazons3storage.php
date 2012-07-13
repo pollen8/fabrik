@@ -28,7 +28,7 @@ class amazons3storage extends storageAdaptor{
 	function getBucketName()
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		return $w->parseMessageForPlaceHolder( $params->get('fileupload_aws_bucketname', 'robclayburnsfabrik') );
 	}
 
@@ -267,7 +267,7 @@ class amazons3storage extends storageAdaptor{
 	function _getThumb($file)
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$ulDir = COM_FABRIK_BASE . $params->get('ul_directory');
 		$ulDir = $this->clean($ulDir);
@@ -300,7 +300,7 @@ class amazons3storage extends storageAdaptor{
 	function _getCropped($file)
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 
 		$ulDir = COM_FABRIK_BASE . $params->get('ul_directory');
 		$ulDir = $this->clean($ulDir);

@@ -165,7 +165,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 	{
 		if (!isset($this->w))
 		{
-			$this->w = new FabrikWorker();
+			$this->w = new FabrikWorker;
 		}
 		return $this->w;
 	}
@@ -229,7 +229,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 		/// log the info
 		/* $log = FabTable::getInstance('log', 'FabrikTable');
 		$log->message_type = 'fabrik.subscriptions.onAfterProcess';
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->opt = $opts;
 		$msg->data = $data;
 		$log->message = json_encode($msg);
@@ -456,7 +456,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 									$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
 								}
 							}
-							else if ($txn_result == 'Reversed')
+							elseif ($txn_result == 'Reversed')
 							{
 								if ($payment_status != 'Canceled_Reversal')
 								{
@@ -519,7 +519,7 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form {
 							}
 						}
 					}
-					else if (JString::strcmp ($res, "INVALID") == 0)
+					elseif (JString::strcmp ($res, "INVALID") == 0)
 					{
 						$status = 'form.subscriptions.ipnfailure.invalid';
 						$err_msg = 'subscriptions postback failed with INVALID';
