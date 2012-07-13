@@ -81,6 +81,7 @@ class fabrikViewCalendar extends JView
 			$urlfilters = new stdClass;
 		}
 		$urls = new stdClass;
+
 		// Don't JRoute as its wont load with sef?
 		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
 			. '&id=' . $id;
@@ -212,7 +213,7 @@ class fabrikViewCalendar extends JView
 		$script[] = "o.datefield = '{$prefix}fabrik_calendar_events___start_date';";
 		$script[] = "o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';";
 		$script[] = "o.labelfield = '{$prefix}fabrik_calendar_events___label';";
-		
+
 		foreach ($model->_events as $tid=>$arr)
 		{
 			foreach ($arr as $ar)
@@ -228,7 +229,7 @@ class fabrikViewCalendar extends JView
 		$script[] = "Fabrik.Windows.chooseeventwin.close();";
 		$script[] = "});";
 		$script[] = "});";
-		
+
 		echo '<h2>' . JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
 		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));

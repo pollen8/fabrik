@@ -31,7 +31,7 @@ class plgContentFabrik extends JPlugin
 	 *
 	 * @param   object  &$subject  The object to observe
 	 * @param   object  $params    The object that holds the plugin parameters
-	 * 
+	 *
 	 * @since       1.5
 	 */
 
@@ -49,7 +49,7 @@ class plgContentFabrik extends JPlugin
 	 * @param   object  &$row     The article object.  Note $article->text is also available
 	 * @param   object  &$params  The article params
 	 * @param   int     $page     The 'page' number
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -99,10 +99,10 @@ class plgContentFabrik extends JPlugin
 
 	/**
 	 * Unwrap placeholder text from possible <p> tags
-	 * 
+	 *
 	 * @param   array  $match  preg matched {fabrik} tag
-	 * 
-	 * @return  string  
+	 *
+	 * @return  string
 	 */
 
 	protected function preplace($match)
@@ -115,9 +115,9 @@ class plgContentFabrik extends JPlugin
 
 	/**
 	 * Parse the {fabrik} tag
-	 * 
+	 *
 	 * @param   array  $match  {fabrik} preg match
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -161,7 +161,7 @@ class plgContentFabrik extends JPlugin
 	 * the function called from the preg_replace_callback - replace the {} with the correct HTML
 	 *
 	 * @param   string  $match  plug-in match
-	 * 
+	 *
 	 * @return  void
 	 */
 

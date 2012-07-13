@@ -282,8 +282,16 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#filterValueList_Exact($normal, $tableName, $label, $id, $incjoin)
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns only data found in the table you are filtering on
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
 	 */
 
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
@@ -309,7 +317,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * create an array of label/values which will be used to populate the elements filter dropdown
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns all possible options
 	 *
 	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
@@ -329,13 +337,14 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#getFilterCondition()
+	 * Get the condition statement to use in the filters hidden field
+	 *
+	 * @return  string	=, begins or contains
 	 */
+
 	protected function getFilterCondition()
 	{
 		return '=';
 	}
 
 }
-?>

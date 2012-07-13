@@ -25,7 +25,7 @@ class FabrikModelCrons extends FabModelList
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
-	 * 
+	 *
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -96,7 +96,7 @@ class FabrikModelCrons extends FabModelList
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable  A database object
 	 */
 
@@ -110,10 +110,10 @@ class FabrikModelCrons extends FabModelList
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
-	 * 
+	 *
 	 * @param   string  $ordering   An optional ordering field.
 	 * @param   string  $direction  An optional direction (asc|desc).
-	 * 
+	 *
 	 * @return  void
 	 */
 

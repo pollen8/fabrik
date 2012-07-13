@@ -15,7 +15,7 @@ jimport('joomla.filesystem.file');
 
 /**
  * Fabrik Element List Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -35,14 +35,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public $renderWithHTML = true;
 
 	/**
-	 * can be overwritten by plugin class
-	 * determines the label used for the browser title
+	 * Determines the label used for the browser title
 	 * in the form/detail views
-	 * 
-	 * @param   array  $data           data
+	 *
+	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	default value
 	 */
 
@@ -70,7 +69,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Get sub elements initial selection
-	 * 
+	 *
 	 * @return  array  initially selected values
 	 */
 
@@ -88,7 +87,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 *
 	 * @param   array  $data           data to test against
 	 * @param   int    $repeatCounter  repeat group #
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -107,10 +106,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -133,11 +132,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Get the table filter for the element
-	 * 
+	 *
 	 * @param   int   $counter  filter order
 	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * 
+	 *
 	 * @return  string	filter html
 	 */
 
@@ -219,12 +218,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * Get an array of element html ids and their corresponding 
+	 * Get an array of element html ids and their corresponding
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  array  html ids to watch for validation
 	 */
 
@@ -237,11 +236,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Turn form value into email formatted value
-	 * 
+	 *
 	 * @param   mixed  $value          element value
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  group repeat counter
-	 * 
+	 *
 	 * @return  string  email formatted value
 	 */
 
@@ -286,13 +285,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
-	 * 
+	 *
 	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
 	 * @param   string  $tableName  table name to use - defaults to element's current table
 	 * @param   string  $label      field to use, defaults to element name
 	 * @param   string  $id         field to use, defaults to element name
 	 * @param   bool    $incjoin    include join
-	 * 
+	 *
 	 * @return  array  text/value objects
 	 */
 
@@ -306,7 +305,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Ajax call to get auto complete options
-	 * 
+	 *
 	 * @return  string  json encoded options
 	 */
 
@@ -332,9 +331,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * will the element allow for multiple selections
-	 * 
+	 *
 	 * @since	3.0.6
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -346,10 +345,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -397,10 +396,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Prepares the element data for CSV export
-	 * 
+	 *
 	 * @param   string  $data      element data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -414,10 +413,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -486,7 +485,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Should the sub label appear before or after the sub element?
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -498,9 +497,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * called from within function getValue
 	 * needed so we can append _raw to the name for elements such as db joins
-	 * 
+	 *
 	 * @param   array  $opts  options
-	 * 
+	 *
 	 * @return  string  element name inside data array
 	 */
 
@@ -511,11 +510,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -636,7 +635,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * Is the dropdowns cnn the same as the main Joomla db
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -647,10 +646,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	 * format the read only output for the page
-	 * 
+	 *
 	 * @param   string  $value  initial value
 	 * @param   string  $label  label
-	 * 
+	 *
 	 * @return  string  read only value
 	 */
 
@@ -671,9 +670,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Trigger called when a row is stored.
 	 * Check if new options have been added and if so store them in the element for future use.
-	 * 
+	 *
 	 * @param   array  &$data  to store
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -719,7 +718,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 * 
+	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file

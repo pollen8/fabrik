@@ -21,7 +21,7 @@ jimport('joomla.html.pagination');
 /**
  * extension to the normal pagenav functions
  * $total, $limitstart, $limit
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -47,9 +47,9 @@ class FPagination extends JPagination
 
 	/**
 	 * set pagination id
-	 * 
+	 *
 * @param   int  $id  list id
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -63,9 +63,9 @@ class FPagination extends JPagination
 	 *
 * @param   string  $listRef  list reference
 * @param   string  $tmpl     tmpl
-	 * 
+	 *
 	 * @return  string	Pagination footer
-	 * 
+	 *
 	 * @since	1.0
 	 */
 
@@ -103,7 +103,7 @@ class FPagination extends JPagination
 	 * Creates a dropdown box for selecting how many records to show per page
 	 *
 	 * @return  string	The html for the limit # input box
-	 * 
+	 *
 	 * @since	1.0
 	 */
 
@@ -164,10 +164,10 @@ class FPagination extends JPagination
 
 	/**
 	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x.
-	 * 
+	 *
 * @param   string  $listRef  lists unique identifier
 * @param   string  $tmpl     template name
-	 * 
+	 *
 	 * @return  string  Pagination page list string.
 	 */
 

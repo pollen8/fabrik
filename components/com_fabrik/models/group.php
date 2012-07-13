@@ -13,7 +13,7 @@ jimport('joomla.application.component.model');
 
 /**
  * Fabrik Group Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -72,7 +72,7 @@ class FabrikFEModelGroup extends FabModel
 	 * Method to set the group id
 	 *
 	 * @param   int  $id  group ID number
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -84,7 +84,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Get group id
-	 * 
+	 *
 	 * @return int
 	 */
 
@@ -95,7 +95,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Get group table
-	 * 
+	 *
 	 * @return  FabrikTableGroup
 	 */
 
@@ -112,11 +112,11 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Set the group row
-	 * 
+	 *
 	 * @param   FabTableGroup  $group  fabrik table
-	 * 
+	 *
 	 * @since   3.0.5
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -127,7 +127,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Can the user view the group
-	 * 
+	 *
 	 * @return   bool
 	 */
 
@@ -157,7 +157,7 @@ class FabrikFEModelGroup extends FabModel
 	 *
 	 * @param   object  $formModel  form model
 	 * @param   object  $listModel  list model
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -170,7 +170,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * get an array of forms that the group is in
 	 * NOTE: now a group can only belong to one form
-	 * 
+	 *
 	 * @return  array  form ids
 	 */
 
@@ -222,9 +222,9 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * randomise the element list (note the array is the pre-rendered elements)
-	 * 
+	 *
 	 * @param   array  &$elements  form views processed/formatted list of elements that the form template uses
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -244,12 +244,12 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * set the element column css allows for group colum settings to be applied
-	 * 
+	 *
 	 * @param   object  &$element  prerender element properties
 	 * @param   int     $elCount   current key when looping over elements.
-	 * 
+	 *
 	 * @since 	Fabrik 3.0.5.2
-	 * 
+	 *
 	 * @return  int  the next column count
 	 */
 
@@ -293,9 +293,9 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Alias to getFormModel()
-	 * 
+	 *
 	 * @deprecated
-	 *  
+	 *
 	 * @return object form model
 	 */
 
@@ -326,7 +326,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * get the groups list model
-	 * 
+	 *
 	 * @return  object	list model
 	 */
 
@@ -337,9 +337,9 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * get an array of published elements
-	 * 
+	 *
 	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
-	 * 
+	 *
 	 * @return  array	published element objects
 	 */
 
@@ -372,9 +372,9 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * get a list of all elements which are set to show in list or are set to include in list query
-	 * 
+	 *
 	 * @since   3.0.6
-	 * 
+	 *
 	 * @return  array  list of element models
 	 */
 
@@ -425,7 +425,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Get published elements to show in list
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -482,9 +482,9 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Can the user add a repeat group
-	 * 
+	 *
 	 * @since   3.0.1
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -504,9 +504,9 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Can the user delete a repeat group
-	 * 
+	 *
 	 * @since   3.0.1
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -541,7 +541,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * get the group's associated join model
-	 * 
+	 *
 	 * @return  object  join model
 	 */
 
@@ -570,7 +570,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Get group params
-	 * 
+	 *
 	 * @return  object	params
 	 */
 
@@ -586,9 +586,9 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Make a group object to be used in the form view. Object contains
 	 * group display properties
-	 * 
+	 *
 	 * @param   object  &$formModel  form model
-	 * 
+	 *
 	 * @return  object	group display properties
 	 */
 
@@ -656,7 +656,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Copies a group, form group and its elements
 	 * (when copying a table (and hence a group) the groups join is copied in table->copyJoins)
-	 * 
+	 *
 	 * @return  array	an array of new element id's keyed on original elements that have been copied
 	 */
 
@@ -700,7 +700,7 @@ class FabrikFEModelGroup extends FabModel
 
 	/**
 	 * Resets published element cache
-	 * 
+	 *
 	 * @return  void
 	 */
 

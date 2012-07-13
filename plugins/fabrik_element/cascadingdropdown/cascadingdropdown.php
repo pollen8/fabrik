@@ -228,8 +228,12 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * get a list of the HTML options used in the database join drop down / radio buttons
-	 * @param   object	data from current record (when editing form?)
+	 * Get a list of the HTML options used in the database join drop down / radio buttons
+	 *
+	 * @param   array  $data           from current record (when editing form?)
+	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   bool   $incWhere       do we include custom where in query
+	 *
 	 * @return  array	option objects
 	 */
 
@@ -240,10 +244,17 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		return $tmp;
 	}
 
-	function onAjax_getOptions()
+	/**
+	 * Gets the options for the drop down - used in package when forms update
+	 *
+	 * @return  void
+	 */
+
+	public function onAjax_getOptions()
 	{
 		$this->loadMeForAjax();
 		$params = $this->getParams();
+
 		// $$$ rob commented out for http://fabrikar.com/forums/showthread.php?t=11224
 		// must have been a reason why it was there though?
 

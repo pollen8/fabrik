@@ -447,7 +447,7 @@ class FabrikModelList extends FabModelAdmin
 		$c = count($joins);
 		for ($i = 0; $i < $c; $i++)
 		{
-			$join = &$joins[$i];
+			$join =& $joins[$i];
 			$jparams = $join->jparams == '' ? new stdClass : json_decode($join->jparams);
 			if (isset($jparams->type) && ($jparams->type == 'element' || $jparams->type == 'repeatElement'))
 			{

@@ -254,7 +254,6 @@ class FabrikViewListBase extends JView{
 			foreach (array_keys($group) as $i)
 			{
 				$o = new stdClass;
-
 				// $$$ rob moved merge wip code to FabrikModelTable::formatForJoins() - should contain fix for pagination
 				$o->data = $data[$groupk][$i];
 				$o->cursor = $num_rows + $nav->limitstart;
@@ -331,7 +330,7 @@ class FabrikViewListBase extends JView{
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$canPdf = FabrikWorker::canPdf();
 		$this->showPDF = $params->get('pdf', $fbConfig->get('list_pdf', false));
-		
+
 		if (!$canPdf && $this->showPDF)
 		{
 			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));

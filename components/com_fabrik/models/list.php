@@ -1537,7 +1537,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  string	sql
 	 */
 
-	public  function buildQuery()
+	public function buildQuery()
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('buildQuery: start') : null;
@@ -1893,7 +1893,7 @@ class FabrikFEModelList extends JModelForm
 
 		/* $$$rob - when table reordered the controller runs order() and
 		 * stores the order settings in the session by calling setOrderByAndDir()
- 		 * it then redirects to the table view and here all we need to do it get
+		 * it then redirects to the table view and here all we need to do it get
 		 * those order settings from the session_cache_expire()
 		 */
 
@@ -2006,7 +2006,7 @@ class FabrikFEModelList extends JModelForm
 		/* apply group ordering
 		 * @TODO - explain something to hugh!  Why is this "group ordering"?  AFAICT, it's just a secondary
 		 * order by, isn't specific to the Group By feature in any way?  So why not just put this option in
-		*/
+		 */
 		$groupOrderBy = $params->get('group_by_order');
 		if ($groupOrderBy != '')
 		{
@@ -2465,7 +2465,7 @@ class FabrikFEModelList extends JModelForm
 						if ($ingroup)
 						{
 							$gend = ')';
-							$groupedCount --;
+							$groupedCount--;
 							$ingroup = false;
 						}
 					}
@@ -2629,7 +2629,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		/*temporaraily add in the db key so that the edit links work, must remove it before final return
 		 of getData();
-		*/
+		 */
 		JDEBUG ? $profiler->mark('getAsFields: starting to test if a view') : null;
 		if (!$this->isView())
 		{
@@ -2872,7 +2872,7 @@ class FabrikFEModelList extends JModelForm
 		 * so it isn't the same!
 		 * Hmmm - I just noticed canDelete() already has a !== here.
 		 * if ($canUserDo != -1) {
-		*/
+		 */
 		if ($canUserDo !== -1)
 		{
 			return $canUserDo;
@@ -3222,7 +3222,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					/* $$$ hugh - changed this to pitch an error and bang out, otherwise if we just set canUse to false, our getData query
 					 * is just going to blow up, with no useful warning msg.
-				     * This is basically a bandaid for corner case where user has (say) host name in J!'s config, and IP address in
+					 * This is basically a bandaid for corner case where user has (say) host name in J!'s config, and IP address in
 					 * our connection details, or vice versa, which is not uncommon for 'locahost' setups,
 					 * so at least I'll know what the problem is when they post in the forums!
 					 */
@@ -4287,14 +4287,13 @@ class FabrikFEModelList extends JModelForm
 		 * added + 1 as with 4 records to show 3 4th was not shown
 		 */
 		$query = $db->getQuery(true);
-		$query->select('FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset'))
-		->from($db->quoteName($table->db_table_name));
+		$query->select('FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset'))->from($db->quoteName($table->db_table_name));
 		$query = $this->buildQueryWhere($query);
 		$db->setQuery($query);
 		/* $db
-			->setQuery(
-				'SELECT FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset') . ' FROM ' . $db->quoteName($table->db_table_name) . ' '
-					. $this->buildQueryWhere()); */
+		    ->setQuery(
+		        'SELECT FLOOR(RAND() * COUNT(*) + 1) AS ' . $db->quoteName('offset') . ' FROM ' . $db->quoteName($table->db_table_name) . ' '
+		            . $this->buildQueryWhere()); */
 		$limitstart = $db->loadResult();
 		/*$$$ rob 11/01/2011 cant do this as we dont know what the total is yet
 		$$$ rob ensure that the limitstart + limit isn't greater than the total
@@ -4826,7 +4825,7 @@ class FabrikFEModelList extends JModelForm
 				/* $$$ rob - we are now setting read only filters 'filter' var to the elements read only
 				 * label for the passed in filter value
 				 *$o->filter = $value;
-				*/
+				 */
 				$elementModel = $this->getFormModel()->getElement(str_replace('`', '', $key));
 				$o->filter = $filters['filter'][$i];
 				if ($elementModel)
@@ -7244,7 +7243,8 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
-				$url = 'index.php?option=com_fabrik&view=form&Itemid=' . $Itemid . '&formid=' . $table->form_id . $keyIdentifier . '&listid=' . $this->getId();
+				$url = 'index.php?option=com_fabrik&view=form&Itemid=' . $Itemid . '&formid=' . $table->form_id . $keyIdentifier . '&listid='
+					. $this->getId();
 			}
 			if ($this->packageId !== 0)
 			{
@@ -7439,9 +7439,9 @@ class FabrikFEModelList extends JModelForm
 				$row = array($row);
 				$this->formatData($row);
 				/* $$$ hugh - if table is grouped, formatData will have turned $row into an
-				* assoc array, so can't assume 0 is first key.
-				* $this->rows[$sig] = $row[0][0];
-				*/
+				 * assoc array, so can't assume 0 is first key.
+				 * $this->rows[$sig] = $row[0][0];
+				 */
 				$row = JArrayHelper::getValue($row, FArrayHelper::firstKey($row), array());
 				$this->rows[$sig] = JArrayHelper::getValue($row, 0, new stdClass);
 			}
@@ -7749,10 +7749,10 @@ class FabrikFEModelList extends JModelForm
 					switch ($key)
 					{
 						case 'safecolname':
-						// Deprecated (except for querystring filters and inline edit)
+							// Deprecated (except for querystring filters and inline edit)
 						case 'filtername':
-							// $$$ rob hack to ensure that querystring filters dont use the concat string when getting the
-							// Dbkey for the element, otherwise related data doesn't work
+						// $$$ rob hack to ensure that querystring filters dont use the concat string when getting the
+						// Dbkey for the element, otherwise related data doesn't work
 							$origconcat = $elementModel->getParams()->get('join_val_column_concat');
 							$elementModel->getParams()->set('join_val_column_concat', '');
 
@@ -7895,13 +7895,13 @@ class FabrikFEModelList extends JModelForm
 			 * link normaly we can right click and open the page as a standard J view
 			 * if ($this->isAjaxLinks())
 			{
-				$qs['ajax'] = '1';
+			    $qs['ajax'] = '1';
 			} */
 			$formModel = $this->getFormModel();
 			$formid = $formModel->getForm()->id;
 			/* if ($this->packageId !== 0 || $this->isAjaxLinks())
 			{
-				$qs['tmpl'] = 'component';
+			    $qs['tmpl'] = 'component';
 			} */
 
 			$qs['option'] = 'com_fabrik';
@@ -7917,9 +7917,9 @@ class FabrikFEModelList extends JModelForm
 			$qs['rowid'] = '0';
 
 			/* $$$ hugh - testing social profile session hash, which may get set by things like
-			* the CB or JomSocial plugin.  Needed so things like the 'user' element can derive the
-			* user ID of the profile being viewed, to which a record is being added.
-			*/
+			 * the CB or JomSocial plugin.  Needed so things like the 'user' element can derive the
+			 * user ID of the profile being viewed, to which a record is being added.
+			 */
 			if (JRequest::getVar('fabrik_social_profile_hash', '') != '')
 			{
 				$qs['fabrik_social_profile_hash'] = JRequest::getCmd('fabrik_social_profile_hash', '');
@@ -7989,9 +7989,9 @@ class FabrikFEModelList extends JModelForm
 
 		$uri = clone (JURI::getInstance());
 		/* $$$ rob force these to be 0 once the menu item has been loaded for the first time
-		* subsequent loads of the link should have this set to 0. When the menu item is re-clicked
-		* rest filters is set to 1 again
-		*/
+		 * subsequent loads of the link should have this set to 0. When the menu item is re-clicked
+		 * rest filters is set to 1 again
+		 */
 		$router->setVar('resetfilters', 0);
 		if ($option !== 'com_fabrik')
 		{
@@ -8068,8 +8068,8 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
- 	 * Allow plugins to add arbitrary WHERE clauses.  Gets checked in buildQueryWhere().
- 	 *
+	 * Allow plugins to add arbitrary WHERE clauses.  Gets checked in buildQueryWhere().
+	 *
 	 * @param   string  $pluginName   plugin name
 	 * @param   string  $whereClause  where clause (WITHOUT prepended where/and etc)
 	 *
@@ -8759,8 +8759,8 @@ class FabrikFEModelList extends JModelForm
 			}
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			 * custom.css - for backward compat with existing 2.x custom.css
-		 	 * custom_css.php - what we'll recommend people use for custom css moving foward.
-		 	 */
+			 * custom_css.php - what we'll recommend people use for custom css moving foward.
+			 */
 			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom.css');
 			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom_css.php' . $qs);
 		}

@@ -122,6 +122,8 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
 	 *
+	 * @deprecated - not used
+	 *
 	 * @return  bool
 	 */
 
@@ -378,6 +380,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$opts->view = JRequest::getCmd('view');
 		$opts->listid = $listid;
 		$opts = json_encode($opts);
+
 		$lang = new stdClass;
 		$lang->norating = JText::_('NO RATING');
 		$lang = json_encode($lang);
@@ -466,7 +469,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	}
 
 	/**
-	 * create an array of label/values which will be used to populate the elements filter dropdown
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns all possible options
 	 *
 	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter

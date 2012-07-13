@@ -14,7 +14,7 @@ class uploader extends JObject
 {
 
 	protected $form = null;
-	
+
 	public $moveError = false;
 
 	function uploader($formModel)

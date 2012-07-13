@@ -673,8 +673,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element::buildFilterJoin()
+	 * If filterValueList_Exact incjoin value = false, then this method is called
+	 * to ensure that the query produced in filterValueList_Exact contains at least the database join element's
+	 * join
+	 *
+	 * @return  string  required join text to ensure exact filter list code produces a valid query.
 	 */
 
 	protected function buildFilterJoin()

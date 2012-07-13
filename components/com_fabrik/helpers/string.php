@@ -141,7 +141,7 @@ class FabrikString extends JString
 			$bits = explode('.', $col);
 			$col = array_pop($bits);
 		}
-		else if (strstr($col, '___'))
+		elseif (strstr($col, '___'))
 		{
 			$bits = explode('___', $col);
 			$col = array_pop($bits);

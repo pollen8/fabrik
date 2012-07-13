@@ -25,7 +25,7 @@ class FabrikModelVisualizations extends FabModelList
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
-	 * 
+	 *
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -43,7 +43,7 @@ class FabrikModelVisualizations extends FabModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -113,12 +113,12 @@ class FabrikModelVisualizations extends FabModelList
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
-	 * 
+	 *
 	 * @param   string  $ordering   An optional ordering field.
 	 * @param   string  $direction  An optional direction (asc|desc).
-	 * 
+	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return  void
 	 */
 

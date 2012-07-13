@@ -200,6 +200,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
 	 *
+	 * @deprecated - not used
+	 *
 	 * @return  bool
 	 */
 
@@ -537,7 +539,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	}
 
 	/**
-	 * create an array of label/values which will be used to populate the elements filter dropdown
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns all possible options
 	 *
 	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter

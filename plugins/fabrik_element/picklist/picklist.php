@@ -131,7 +131,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->allowadd = (bool) $params->get('allowadd', false);
 		$opts->defaultVal = $this->getValue($data, $repeatCounter);
-		;
+
 		//$opts->data = array_combine($arVals, $arTxt);;
 		$opts->hovercolour = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');

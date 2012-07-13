@@ -51,6 +51,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
 	 *
+	 * @deprecated - not used
+	 *
 	 * @return  bool
 	 */
 
@@ -312,8 +314,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 * @since 3.0.4
 	 * get the element's cell class
+	 *
+	 * @since 3.0.4
+	 *
 	 * @return  string	css classes
 	 */
 

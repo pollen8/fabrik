@@ -380,7 +380,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				{
 					/// Log the info
 					$log->message_type = 'fabrik.paypal.onAfterProcess';
-					$msg = new stdClass();
+					$msg = new stdClass;
 					$msg->opt = $opts;
 					$msg->data = $data;
 					$msg->msg = "Submission cancelled by checkOpts!";

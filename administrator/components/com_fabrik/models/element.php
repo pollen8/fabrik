@@ -41,7 +41,7 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * Constructor.
 	 * Ensure that we use the fabrik db model for the dbo
-	 * 
+	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 */
 
@@ -57,7 +57,7 @@ class FabrikModelElement extends JModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable  A database object
 	 */
 
@@ -72,7 +72,7 @@ class FabrikModelElement extends JModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed  A JForm object on success, false on failure
 	 */
 
@@ -92,7 +92,7 @@ class FabrikModelElement extends JModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed   The data for the form.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -109,7 +109,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * Get elements
-	 * 
+	 *
 	 * @return StdClass
 	 */
 
@@ -156,7 +156,7 @@ class FabrikModelElement extends JModelAdmin
 			}
 		}
 		asort($aEls);
-		$o = new StdClass;
+		$o = new stdClass;
 		$o->groups = $aGroups;
 		$o->elements = array_values($aEls);
 		return $o;
@@ -164,10 +164,10 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * toggle adding / removing the elment from the list view
-	 * 
+	 *
 	 * @param   array  &$pks   primary keys
 	 * @param   var    $value  add (1) or remove (0) from list view
-	 * 
+	 *
 	 * @return  bool
 	 */
 	public function addToListView(&$pks, $value = 1)
@@ -216,7 +216,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * get the js events that are used by the element
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -237,7 +237,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * get plugins that could potentially be used
-	 * 
+	 *
 	 * @return  array	plugins
 	 */
 
@@ -283,7 +283,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * load the actual validation plugins that the element uses
-	 * 
+	 *
 	 * @return  array  plugins
 	 */
 
@@ -336,7 +336,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * get the js code to build the plugins etc
-	 * 
+	 *
 	 * @return  string  js code
 	 */
 
@@ -384,9 +384,9 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * get html form fields for a plugin (filled with
 	 * current element's plugin data
-	 * 
+	 *
 	 * @param   string  $plugin  plugin name
-	 * 
+	 *
 	 * @return  string	html form fields
 	 */
 
@@ -424,9 +424,9 @@ class FabrikModelElement extends JModelAdmin
 	 * called when the table is saved
 	 * here we are hacking various repeat data into the params
 	 * data stored as a json object
-	 * 
+	 *
 	 * @param   object  &$item  element item
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -531,9 +531,9 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * load the element plugin / model for the posted data
-	 * 
+	 *
 	 * @param   array  $data  posted data
-	 * 
+	 *
 	 * @return  object  element model
 	 */
 
@@ -730,10 +730,10 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * When saving an element, it may need to be added to other Fabrik lists
 	 * If those lists point to the same database table.
-	 * 
+	 *
 	 * @param   object  $elementModel  element
 	 * @param   object  $row           item
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -814,9 +814,9 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * update child elements
-	 * 
+	 *
 	 * @param   object  &$row  element
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -880,11 +880,11 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * update table indexes based on element settings
-	 * 
+	 *
 	 * @param   object  &$elementModel  element model
 	 * @param   object  &$listModel     list model
 	 * @param   object  &$row           element item
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -920,9 +920,9 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * Delete old javascript actions for the element
 	 * & add new javascript actions
-	 * 
+	 *
 	 * @param   array  $data  to save
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -975,9 +975,9 @@ class FabrikModelElement extends JModelAdmin
 	/**
 	 * Take an array of group ids and return the corresponding element
 	 * used in list publish code
-	 * 
+	 *
 	 * @param   array  $ids  group ids
-	 * 
+	 *
 	 * @return  array  element ids
 	 */
 
@@ -997,9 +997,9 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 *  potentially drop fields then remove element record
-	 *  
+	 *
 	 * @param   array  &$pks  to delete
-	 * 
+	 *
 	 * @return  boolean  True if successful, false if an error occurs.
 	 */
 
@@ -1048,7 +1048,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * copy an element
-	 * 
+	 *
 	 * @return  mixed  true or warning
 	 */
 
@@ -1084,10 +1084,10 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * if repeated element we need to make a joined db table to store repeated data in
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
 	 * @param   object  $row           element item
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1138,10 +1138,10 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * get the name of the repeated elements table
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
 	 * @param   object  $row           element item
-	 * 
+	 *
 	 * @return  string	table name
 	 */
 
@@ -1158,7 +1158,7 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * gets the elemetns parent element
-	 * 
+	 *
 	 * @return  mixed	0 if no parent, object if exists.
 	 */
 
@@ -1193,7 +1193,7 @@ class FabrikModelElement extends JModelAdmin
 	 * @param   object  $table  A JTable object.
 	 *
 	 * @return  array  An array of conditions to add to ordering queries.
-	 * 
+	 *
 	 * @since   Fabrik 3.0b
 	 */
 
@@ -1204,9 +1204,9 @@ class FabrikModelElement extends JModelAdmin
 
 	/**
 	 * Recursively get all linked children of an element
-	 * 
+	 *
 	 * @param   int  $id  element id
-	 * 
+	 *
 	 * @return  array
 	 */
 

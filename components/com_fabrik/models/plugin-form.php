@@ -90,10 +90,10 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * Sets up HTML to be injected into the form's bottom
-	 * 
+	 *
 	 * @param   object  $params     params
 	 * @param   object  $formModel  form model
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -104,9 +104,9 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	/**
 	 * Inject custom html into the bottom of the form
-	 * 
+	 *
 	 * @param   int  $c  plugin counter
-	 * 
+	 *
 	 * @return string html
 	 */
 

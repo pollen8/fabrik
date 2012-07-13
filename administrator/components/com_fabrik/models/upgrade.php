@@ -24,7 +24,7 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * Construct
-	 * 
+	 *
 	 * @param   array  $config  options
 	 */
 
@@ -46,7 +46,7 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * back up the fabrik db tables and make copies of the data tables they use
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -105,7 +105,7 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * upgrade the database to fabrik3's structure.
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -207,7 +207,7 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * Hack #__menu table to update them for Fabrik3 url structure
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -234,9 +234,9 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * convert old skool J1.5 attribs into json object
-	 * 
+	 *
 	 * @param   string  $str  f2 parameters string
-	 * 
+	 *
 	 * @return  object
 	 */
 
@@ -264,9 +264,9 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * maps the fabrik2 user gid to a roughly corresponding J1.7 acl group
-	 * 
+	 *
 	 * @param   int  $v  gid
-	 * 
+	 *
 	 * @return int group id
 	 */
 
@@ -290,7 +290,7 @@ class FabrikModelUpgrade extends JModel
 
 	/**
 	 * get all the db tables which have _fabrik_ as part of their names
-	 * 
+	 *
 	 * @return array of objects each with db_table_name and connection_id property
 	 */
 
@@ -314,7 +314,7 @@ class FabrikModelUpgrade extends JModel
 	}
 	/**
 	 * check for an existence of _fabrik_tables table if there is then we should upgrade
-	 * 
+	 *
 	 * @return  bool
 	 */
 

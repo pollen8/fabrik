@@ -1080,7 +1080,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 						$this->rangeFilterSet = true;
 					}
 				}
-				else if ($condition == 'is null')
+				elseif ($condition == 'is null')
 				{
 					$value = "";
 				}

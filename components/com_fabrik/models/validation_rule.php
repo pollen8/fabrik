@@ -15,7 +15,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
 
 /**
  * Fabrik Validation Rule Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -32,12 +32,12 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * Validate the elements data against the rule
-	 * 
+	 *
 	 * @param   string  $data           to check
 	 * @param   object  &$elementModel  element Model
 	 * @param   int     $pluginc        plugin sequence ref
 	 * @param   int     $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
@@ -49,10 +49,10 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Looks at the validation condition & evaulates it
 	 * if evaulation is true then the validation rule is applied
-	 * 
+	 *
 	 * @param   string  $data  elements data
 	 * @param   int     $c     repeat group counter
-	 * 
+	 *
 	 * @return  bool	apply validation
 	 */
 
@@ -95,7 +95,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * Get element model params
-	 * 
+	 *
 	 * @return  object  params
 	 */
 
@@ -106,9 +106,9 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * Get the warning message
-	 * 
+	 *
 	 * @param   int  $c  validation rule number.
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -127,13 +127,13 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Now show only on validation icon next to the element name and put icons and text inside hover text
 	 * gets the validation rule icon
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
 	 * @param   int     $c             repeat group counter
 	 * @param   string  $tmpl          template folder name
-	 * 
+	 *
 	 * @return  string
-	 * 
+	 *
 	 * @deprecated @since 3.0.5
 	 */
 
@@ -173,10 +173,10 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	/**
 	 * Gets the hover/alt text that appears over the validation rule icon in the form
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
 	 * @param   int     $pluginc       validation render order
-	 * 
+	 *
 	 * @return  string	label
 	 */
 
@@ -195,10 +195,10 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Does the validation allow empty value?
 	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
 	 * @param   int     $pluginc       validation render order
-	 * 
+	 *
 	 * @return  bool
 	 */
 

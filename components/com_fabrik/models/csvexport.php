@@ -14,7 +14,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 /**
  * CSV Export Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -29,7 +29,7 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * get csv export step
-	 * 
+	 *
 	 * @return  string  export step
 	 */
 
@@ -40,9 +40,9 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * write the file
-	 * 
+	 *
 * @param   int  $total  total # of records
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -170,9 +170,9 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * report a error writing the file
-	 * 
+	 *
 * @param   string  $filepath  file path we were trying to write to
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -185,9 +185,9 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * fix carriage returns
-	 * 
+	 *
 * @param   object  &$row  csv line of data to fix
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -232,7 +232,7 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * get the file name to save the csv data to
-	 * 
+	 *
 	 * @return  string  filename
 	 */
 
@@ -246,7 +246,7 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * get the tmp folder to store the csv file in
-	 * 
+	 *
 	 * @return  string  path
 	 */
 
@@ -258,7 +258,7 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * start the download of the completed csv file
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -304,7 +304,7 @@ class FabrikFEModelCSVExport
 	 *
 * @param   array   $a     of field elements $a
 * @param   string  &$str  to out put as csv file $str
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -362,9 +362,9 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * quote a string
-	 * 
+	 *
 * @param   string  $n  string to quote
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -393,7 +393,7 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * get the headings for the csv file
-	 * 
+	 *
 	 * @return  array	heading labels
 	 */
 
@@ -512,10 +512,10 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * get unqiue heading
-	 * 
+	 *
 * @param   string  $n  key
 * @param   array   $h  search
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -533,7 +533,7 @@ class FabrikFEModelCSVExport
 
 	/**
 	 * Remove the __pk_val from data
-	 * 
+	 *
 	 * @return  null
 	 */
 

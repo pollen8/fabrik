@@ -302,8 +302,8 @@ class FabrikFEModelForm extends FabModelForm
 			$qs = '?c=' . $this->getId();
 
 			/* $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
-			* If FabrikHelperHTML::styleSheetajax loaded then dont do &amp;
-			*/
+			 * If FabrikHelperHTML::styleSheetajax loaded then dont do &amp;
+			 */
 			$qs .= FabrikHelperHTML::cssAsAsset() ? '&view=' . $v : '&amp;view=' . $v;
 
 			if (!FabrikHelperHTML::stylesheetFromPath(
@@ -1368,7 +1368,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					{
 						$oJoinPk .= $col->Field;
 					}
-					else if ($col->Field == 'params')
+					elseif ($col->Field == 'params')
 					{
 						$hasParams = true;
 					}
@@ -1920,6 +1920,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$validationRules = $pluginManager->getPlugInGroup('validationrule');
 
 		$post = $this->setFormData();
+
 		// Contains any data modified by the validations
 		$this->modifiedValidationData = array();
 		$w = new FabrikWorker;
@@ -2449,9 +2450,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if ($incRaw && is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 					{
 						/* FIXME - next line had been commented out, causing undefined warning for $rawval
-						* on following line.  Not sure if getrawColumn is right thing to use here tho,
-						* like, it adds filed quotes, not sure if we need them.
-						*/
+						 * on following line.  Not sure if getrawColumn is right thing to use here tho,
+						 * like, it adds filed quotes, not sure if we need them.
+						 */
 						if ($elementModel->getElement()->published != 0)
 						{
 							$rawval = $elementModel->getRawColumn($useStep);
@@ -3275,14 +3276,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			/* $groups = $this->getGroupsHiarachy();
 			foreach ($groups as $groupModel)
 			{
-				$elementModels = $groupModel->getPublishedElements();
-				foreach ($elementModels as $elementModel)
-				{
-					if ($elementModel->requiresAJAXSubmit())
-					{
-						$this->ajax = true;
-					}
-				}
+			    $elementModels = $groupModel->getPublishedElements();
+			    foreach ($elementModels as $elementModel)
+			    {
+			        if ($elementModel->requiresAJAXSubmit())
+			        {
+			            $this->ajax = true;
+			        }
+			    }
 			} */
 		}
 		return (bool) $this->ajax;

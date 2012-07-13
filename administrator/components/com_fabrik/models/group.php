@@ -35,9 +35,9 @@ class FabrikModelGroup extends FabModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -52,9 +52,9 @@ class FabrikModelGroup extends FabModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed	A JForm object on success, false on failure
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -73,7 +73,7 @@ class FabrikModelGroup extends FabModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed	The data for the form.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -92,9 +92,9 @@ class FabrikModelGroup extends FabModelAdmin
 	/**
 	 * take an array of forms ids and return the corresponding group ids
 	 * used in list publish code
-	 * 
+	 *
 	 * @param   array  $ids  form ids
-	 * 
+	 *
 	 * @return array group ids
 	 */
 
@@ -115,9 +115,9 @@ class FabrikModelGroup extends FabModelAdmin
 
 	/**
 	 * Does the group have a primary key element
-	 * 
+	 *
 	 * @param   array  $data  jform posted data
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -207,9 +207,9 @@ class FabrikModelGroup extends FabModelAdmin
 
 	/**
 	 * Check if a group id has an associated join already created
-	 * 
+	 *
 	 * @param   int  $id  group id
-	 * 
+	 *
 	 * @return  boolean
 	 */
 
@@ -222,9 +222,9 @@ class FabrikModelGroup extends FabModelAdmin
 
 	/**
 	 * Clears old form group entries if found and adds new ones
-	 * 
+	 *
 	 * @param   array  $data  jform data
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -259,7 +259,7 @@ class FabrikModelGroup extends FabModelAdmin
 	 * Create a new db table for the groups elements ( + check if its not already there)
 	 *
 	 * @param   array  &$data  jform data
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -356,7 +356,6 @@ class FabrikModelGroup extends FabModelAdmin
 		// Load the matching join if found.
 		$join = $this->getTable('join');
 		$join->load($jdata);
-
 		$opts = new stdClass;
 		$opts->type = 'group';
 		$jdata['params'] = json_encode($opts);
@@ -402,9 +401,9 @@ class FabrikModelGroup extends FabModelAdmin
 
 	/**
 	 * Delete group elements
-	 * 
+	 *
 	 * @param   array  $pks  group ids to delete elements from
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -422,9 +421,9 @@ class FabrikModelGroup extends FabModelAdmin
 
 	/**
 	 * Delete formgroups
-	 * 
+	 *
 	 * @param   array  $pks  group ids
-	 * 
+	 *
 	 * @return  bool
 	 */
 

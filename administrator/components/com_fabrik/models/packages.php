@@ -25,7 +25,7 @@ class FabrikModelPackages extends JModelList
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
-	 * 
+	 *
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -43,7 +43,7 @@ class FabrikModelPackages extends JModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
-	 * 
+	 *
 	 * @since	1.6
 	 */
 	protected function getListQuery()
@@ -98,9 +98,9 @@ class FabrikModelPackages extends JModelList
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 	public function getTable($type = 'Package', $prefix = 'FabrikTable', $config = array())
@@ -113,12 +113,12 @@ class FabrikModelPackages extends JModelList
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
-	 * 
+	 *
 	 * @param   string  $ordering   An optional ordering field.
 	 * @param   string  $direction  An optional direction (asc|desc).
-	 * 
+	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return  void
 	 */
 

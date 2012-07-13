@@ -14,7 +14,7 @@ jimport('joomla.application.component.controller');
 /**
  * Fabrik Plugin Controller
  * DEPRECIATED SEE NOTE FROM 11/07/2011
- * 
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       1.5
@@ -28,7 +28,7 @@ class FabrikControllerPlugin extends JController
 	 *
 	 * 11/07/2011 - ive updated things so that any plugin ajax call uses 'view=plugin' rather than controller=plugin
 	 * this means that the controller used is now plugin.php and not plugin.raw.php
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -54,7 +54,7 @@ class FabrikControllerPlugin extends JController
 
 	/**
 	 * custom user ajax class handling as per F1.0.x
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -72,9 +72,9 @@ class FabrikControllerPlugin extends JController
 
 	/**
 	 * do Cron task
-	 * 
+	 *
 * @param   object  &$pluginManager  pluginmanager
-	 * 
+	 *
 	 * @return  null
 	 */
 
