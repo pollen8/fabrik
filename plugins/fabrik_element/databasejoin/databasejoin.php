@@ -214,6 +214,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	protected function getJoinLabel()
 	{
 		$join = $this->getJoin();
+		if (!$join) {
+			return false;
+		}
 		$label = FabrikString::shortColName($join->_params->get('join-label'));
 		if ($label == '')
 		{

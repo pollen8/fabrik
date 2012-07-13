@@ -1339,18 +1339,26 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$joinDb->setQuery('DESCRIBE ' . $oJoin->table_join);
 				$oJoinPk = $oJoin->table_join . '___';
 				$cols = $joinDb->loadObjectList();
+				$hasParams = false;
 				foreach ($cols as $col)
 				{
 					if ($col->Key == 'PRI')
 					{
 						$oJoinPk .= $col->Field;
-						break;
+					}
+					else if ($col->Field == 'params')
+					{
+						$hasParams = true;
 					}
 				}
 				$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
 
-				$paramKey = $listModel->getTable()->db_table_name . '___params';
-				$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
+				$repeatParams = array();
+				if ($hasParams)
+				{
+					$paramKey = $listModel->getTable()->db_table_name . '___params';
+					$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
+				}
 
 				if ($joinGroup->canRepeat())
 				{
@@ -1380,7 +1388,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$repData[$element->name . '_raw'] = $v_raw;
 
 							//store any params set in the individual plug-in (see fabrikfileupload::processUpload()->crop()
-							if ($elementModel->isJoin())
+							if ($hasParams && $elementModel->isJoin())
 							{
 								$repData['params'] = JArrayHelper::getValue($repeatParams, $c);
 							}
