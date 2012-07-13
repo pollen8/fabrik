@@ -1,33 +1,32 @@
 <?php
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**
  * Send sms's
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
 
-class FabrikSMS
+class fabrikSMS
 {
-
 	/**
 	 * Send sms
-	 * 
-* @param   string  $method    post/get
-* @param   string  $url       url to request
-* @param   string  $vars      querystring vars to post   
-* @param   string  $auth      auth
-* @param   string  $callback  method
-	 * 
+	 *
+	 * @param   string  $method    post/get
+	 * @param   string  $url       url to request
+	 * @param   string  $vars      querystring vars to post
+	 * @param   string  $auth      auth
+	 * @param   string  $callback  method
+	 *
 	 * @return  mixed data or curl error
 	 */
 

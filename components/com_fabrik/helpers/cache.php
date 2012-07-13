@@ -10,3 +10,20 @@
 defined('JPATH_BASE') or die();
 
 // Depreciated?
+
+/*// Import library dependencies
+jimport('joomla.application.component.helper');
+
+class FabrikCacheHelper
+{
+
+	function tableSelect($listModel)
+	{
+		$query = $listModel->_buildQuerySelect();
+		$query .= $listModel->_buildQueryJoin();
+		$db = FabrikWorker::getDbo();
+		$query = $db->replacePrefix($query, '#__');
+		return $query;
+	}
+
+}*/

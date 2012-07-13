@@ -1056,13 +1056,14 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @since 3.0
 	 *
-	 * @return  string	delete button wrapped in <li>
+	 * @return	string	delete button wrapped in <li>
 	 */
 
-	protected function deleteButton()
+	protected function deleteButton($tpl = '')
 	{
+		$tpl = $this->getTmpl();
 		return '<li class="fabrik_delete"><a href="#" class="delete" title="' . JText::_('COM_FABRIK_DELETE') . '">'
-			. FabrikHelperHTML::image('delete.png', 'list', '', array('alt' => JText::_('COM_FABRIK_DELETE'))) . '<span>'
+			. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => JText::_('COM_FABRIK_DELETE'))) . '<span>'
 			. JText::_('COM_FABRIK_DELETE') . '</span></a></li>';
 	}
 
