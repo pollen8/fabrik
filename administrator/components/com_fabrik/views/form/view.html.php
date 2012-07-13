@@ -15,7 +15,7 @@ jimport('joomla.application.component.view');
  * View to edit a form.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewForm extends JView

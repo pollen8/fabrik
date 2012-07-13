@@ -13,7 +13,7 @@ require_once('fabcontrolleradmin.php');
  * Elements list controller class.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.6
  */
 

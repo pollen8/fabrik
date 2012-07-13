@@ -1,23 +1,33 @@
 <?php
 /**
- * Plugin element to render folder list
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.folder
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementFolder extends plgFabrik_Element {
+/**
+ * Plugin element to render folder list
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.folder
+ */
+
+class plgFabrik_ElementFolder extends plgFabrik_Element
+{
 
 	/**
-	 * draws the form element
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -28,8 +38,8 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 		$params = $this->getParams();
 		$allowAdd = $params->get('allow_frontend_addtodropdown', false);
 		$selected = $this->getValue($data, $repeatCounter);
-		$errorCSS = (isset($this->_elementError) &&  $this->_elementError != '') ? " elementErrorHighlight" : '';
-		$attribs = 'class="fabrikinput inputbox'.$errorCSS."\"";
+		$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
+		$attribs = 'class="fabrikinput inputbox' . $errorCSS . "\"";
 		$aRoValues = array();
 		$path = JPATH_ROOT . '/' . $params->get('fbfolder_path');
 		$opts = array();
@@ -71,9 +81,11 @@ class plgFabrik_ElementFolder extends plgFabrik_Element {
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	int		repeat group counter
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
 	function elementJavascript($repeatCounter)

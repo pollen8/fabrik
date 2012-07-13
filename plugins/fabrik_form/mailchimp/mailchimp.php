@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.mailchimp
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.mailchimp
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,8 +16,8 @@ require_once 'MCAPI.class.php';
 /**
  * Add a user to a mailchimp mailing list
  * 
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.mailchimp
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.mailchimp
  */
 
 class plgFabrik_FormMailchimp extends plgFabrik_Form

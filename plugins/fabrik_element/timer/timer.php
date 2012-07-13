@@ -1,106 +1,134 @@
 <?php
 /**
-* Plugin element to render a timestamp field
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timer
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
-require_once(JPATH_SITE . '/plugins/fabrik_element/date/date.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 
-class plgFabrik_ElementTimer extends plgFabrik_Element {
+/**
+ * Plugin element to render a user controllable stopwatch timer
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timer
+ */
+
+class plgFabrik_ElementTimer extends plgFabrik_Element
+{
 
 	var $hasSubElements = false;
 
 	protected $fieldDesc = 'DATETIME';
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param mixed thie elements posted form data
-	 * @param array posted form data
+	 * Manupulates posted form data for insertion into database
+	 * 
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 * 
+	 * @return  mixed
 	 */
 
 	function storeDatabaseFormat($val, $data)
 	{
-		$return =  "0000-00-00 " . $val;
+		$return = "0000-00-00 " . $val;
 		$format = '%Y-%m-%d %H:%i:%s';
-		$timebits = FabrikWorker::strToDateTime( $return, $format);
-		$return = date( 'Y-m-d H:i:s', $timebits['timestamp']);
+		$timebits = FabrikWorker::strToDateTime($return, $format);
+		$return = date('Y-m-d H:i:s', $timebits['timestamp']);
 		return $return;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 * 
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 * 
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
 	{
-		if ($data != '') {
+		if ($data != '')
+		{
 			$format = '%Y-%m-%d %H:%i:%s';
-			$timebits = FabrikWorker::strToDateTime( $data, $format);
+			$timebits = FabrikWorker::strToDateTime($data, $format);
 			$data = date('H:i:s', $timebits['timestamp']);
 		}
 		return $data;
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 * 
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
 
-		/**
-	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	/**
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
-		$element 	= $this->getElement();
-		$size 		= $params->get('timer_width', 9);
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = &$this->getParams();
+		$element = $this->getElement();
+		$size = $params->get('timer_width', 9);
 
 		//$value = $element->default;
-		$value 	= $this->getValue($data, $repeatCounter);
-		if ($value == '') {
+		$value = $this->getValue($data, $repeatCounter);
+		if ($value == '')
+		{
 			$value = '00:00:00';
-		} else {
+		}
+		else
+		{
 			$value = explode(" ", $value);
 			$value = array_pop($value);
 		}
 		$type = "text";
-		if (isset($this->_elementError) && $this->_elementError != '') {
+		if (isset($this->_elementError) && $this->_elementError != '')
+		{
 			$type .= " elementErrorHighlight";
 		}
-		if ($element->hidden == '1') {
+		if ($element->hidden == '1')
+		{
 			$type = "hidden";
 		}
-		$sizeInfo =  " size=\"$size\" ";
-		if ($params->get('timer_readonly')) {
+		$sizeInfo = " size=\"$size\" ";
+		if ($params->get('timer_readonly'))
+		{
 			$sizeInfo .= " readonly=\"readonly\" ";
 			$type .= " readonly";
 		}
-		if (!$this->_editable) {
-			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
+		if (!$this->_editable)
+		{
+			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
 		$str = "<input class=\"fabrikinput inputbox $type\" type=\"$type\" name=\"$name\" id=\"$id\" $sizeInfo value=\"$value\" />\n";
-		if (!$params->get('timer_readonly')) {
+		if (!$params->get('timer_readonly'))
+		{
 			$str .= "<input type=\"button\" id=\"{$id}_button\" value=\"" . JText::_('PLG_ELEMENT_TIMER_START') . "\" />";
 		}
 		return $str;
@@ -124,66 +152,75 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	}
 
 	/**
-	 * find the sum from a set of data
-	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param array $data to sum
-	 * @return string sum result
+	 * Get sum query
+	 * 
+	 * @param   object  &$listModel  list model
+	 * @param   string  $label       label
+	 * 
+	 * @return string
 	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
+		$table = $listModel->getTable();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
 		//$$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
-	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param model $listModel
-	 * @param string $label the label to apply to each avg
-	 * @return string sql statement
+	 * Build the query for the avg calculation 
+	 * 
+	 * @param   model   &$listModel  list model
+	 * @param   string  $label       the label to apply to each avg
+	 * 
+	 * @return  string	sql statement
 	 */
 
-	protected function getAvgQuery(&$listModel, $label = "'calc'" )
+	protected function getAvgQuery(&$listModel, $label = "'calc'")
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
+		$table = &$listModel->getTable();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
-	 * build the query for the avg caclculation - can be overwritten in plugin class (see date element for eg)
-	 * @param model $listModel
-	 * @param string $label the label to apply to each avg
-	 * @return string sql statement
+	 * Get a query for our media query
+	 *
+	 * @param   object  &$listModel  list
+	 * @param   string  $label       label
+	 * 
+	 * @return string
 	 */
 
-	protected function getMedianQuery(&$listModel, $label = "'calc'" )
+	protected function getMedianQuery(&$listModel, $label = "'calc'")
 	{
-		$table 			=& $listModel->getTable();
-		$joinSQL 		= $listModel->_buildQueryJoin();
-		$whereSQL 	= $listModel->_buildQueryWhere();
-		$name 			= $this->getFullName(false, false, false);
+		$table = $listModel->getTable();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
-	 * find the sum from a set of data
-	 * can be overwritten in plugin - see date for example of averaging dates
-	 * @param array $data to sum
-	 * @return string sum result
+	 * Find the sum from a set of data
+	 * 
+	 * @param   array  $data  to sum
+	 * 
+	 * @return  string	sum result
 	 */
 
 	public function simpleSum($data)
 	{
 		$sum = 0;
-		foreach ($data as $d) {
-			if ($d != '') {
+		foreach ($data as $d)
+		{
+			if ($d != '')
+			{
 				$date = JFactory::getDate($d);
 				$sum += $this->toSeconds($date);
 			}
@@ -192,20 +229,21 @@ class plgFabrik_ElementTimer extends plgFabrik_Element {
 	}
 
 	/**
-	 * get the value to use for graph calculations
-	 * can be overwritten in plugin
-	 * see fabriktimer which converts the value into seconds
-	 * @param string $v
-	 * @return mixed
+	 * Get the value to use for graph calculations
+	 * Timer converts the value into seconds
+	 * 
+	 * @param   string  $v  standard value
+	 * 
+	 * @return  mixed calculation value
 	 */
 
 	public function getCalculationValue($v)
 	{
-		if ($v == '') {
+		if ($v == '')
+		{
 			return 0;
 		}
 		$date = JFactory::getDate($v);
 		return $this->toSeconds($date);
 	}
 }
-?>

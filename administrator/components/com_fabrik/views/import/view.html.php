@@ -15,7 +15,7 @@ jimport('joomla.application.component.view');
  * View class for importing csv file.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.6
  */
 

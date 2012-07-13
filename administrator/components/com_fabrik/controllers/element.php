@@ -16,7 +16,7 @@ require_once('fabcontrollerform.php');
  * Element controller class.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.6
  */
 class FabrikControllerElement extends FabControllerForm

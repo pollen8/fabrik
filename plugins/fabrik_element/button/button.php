@@ -1,14 +1,20 @@
 <?php
 /**
-* Plugin element to render button
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.button
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+* Plugin element to render button
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.button
+*/
 
 class plgFabrik_ElementButton extends plgFabrik_Element
 {

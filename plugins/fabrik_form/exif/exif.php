@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.exif
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.exif
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,8 +15,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
  * Process exif info from images, allowing you to insert the exif data into selected fields
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.exif
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.exif
  */
 
 class plgFabrik_FormExif extends plgFabrik_Form

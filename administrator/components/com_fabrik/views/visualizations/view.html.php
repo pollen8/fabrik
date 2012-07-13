@@ -15,7 +15,7 @@ jimport('joomla.application.component.view');
  * View class for a list of visualizations.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.6
  */
 class FabrikViewVisualizations extends JView

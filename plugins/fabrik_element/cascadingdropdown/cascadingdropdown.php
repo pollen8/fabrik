@@ -1,16 +1,22 @@
 <?php
 /**
- * Plugin element to render cascading dropdown
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
- */
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.cascadingdropdown
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php');
+require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
+
+/**
+* Plugin element to render cascading dropdown
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.cascadingdropdown
+*/
 
 class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 {
@@ -709,12 +715,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" size="'.$size.'" id="'.$htmlid.'" />';
 				break;
-				
+
 			case 'hidden':
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
 				break;
-				
+
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
 				$default = htmlspecialchars($default);
@@ -898,12 +904,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			return JError::raiseWarning(500, $element->getError());
 		}
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_Element::getFixedChildParameters()
 	 */
-	
+
 	public function getFixedChildParameters()
 	{
 		return array('cascadingdropdown_observe');
@@ -953,7 +959,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$str = "$key $condition $value";
 		return $str;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_ElementDatabasejoin::_getSelectLabel()

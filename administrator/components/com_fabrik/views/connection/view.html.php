@@ -15,7 +15,7 @@ jimport('joomla.application.component.view');
  * View to edit a connection.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewConnection extends JView

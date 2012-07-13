@@ -18,7 +18,7 @@ jimport('joomla.application.component.controlleradmin');
  * List controller class.
  *
  * @package		Joomla.Administrator
- * @subpackage	com_fabrik
+ * @subpackage	Fabrik
  * @since		1.6
  */
 

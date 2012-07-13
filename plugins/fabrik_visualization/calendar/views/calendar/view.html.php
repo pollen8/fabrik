@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.calendar
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.calendar
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * Fabrik Calendar HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.calendar
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.calendar
  */
 
 class fabrikViewCalendar extends JView
@@ -42,10 +42,9 @@ class fabrikViewCalendar extends JView
 		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
 		$model->setId($id);
 		$this->row = $model->getVisualization();
-		$model->setListIds();
 		$params = $model->getParams();
 		$this->assign('params', $params);
-		$this->assign('containerId', $this->get('ContainerId'));
+		$this->assign('containerId', $model->getJSRenderContext());
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('showTitle', JRequest::getInt('show-title', 1));
@@ -87,7 +86,7 @@ class fabrikViewCalendar extends JView
 		// Don't JRoute as its wont load with sef?
 		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
 			. '&id=' . $id;
-		$urls->add = 'index.php?option=com_fabrik&view=visualization&controller=visualization.calendar&format=raw&Itemid=' . $Itemid . '&id=' . $id;
+		$urls->add = 'index.php?option=com_fabrik&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0) ? $model->getLegend() : '';
 		$tpl = $params->get('calendar_layout', 'default');
@@ -100,6 +99,7 @@ class fabrikViewCalendar extends JView
 		$options->urlfilters = $urlfilters;
 		$options->canAdd = $canAdd;
 
+		$options->restFilterStart = FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$options->tmpl = $tpl;
 
 		$o = $model->getAddStandardEventFormInfo();
@@ -158,7 +158,7 @@ class fabrikViewCalendar extends JView
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 
 		$ref = $model->getJSRenderContext();
-		$js = " $ref = new fabrikCalendar('calendar_$calendar->id');\n";
+		$js = " $ref = new fabrikCalendar('$ref');\n";
 		$js .= " $ref.render($json);\n";
 		$js .= "  Fabrik.addBlock('" . $ref . "', $ref);\n";
 		$js .= $legend . "\n";

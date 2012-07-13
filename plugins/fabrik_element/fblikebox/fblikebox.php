@@ -1,10 +1,9 @@
 <?php
 /**
- * Plugin element to render facebook open graph activity feed widget
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.facebooklikebox
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,9 +11,17 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementFblikebox extends plgFabrik_Element {
+/**
+ * Plugin element to render facebook likebox widget
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.facebooklikebox
+ */
+
+class plgFabrik_ElementFblikebox extends plgFabrik_Element
+{
 
 	var $hasLabel = false;
 
@@ -23,33 +30,39 @@ class plgFabrik_ElementFblikebox extends plgFabrik_Element {
 	protected $fieldSize = '1';
 
 	/**
-	 * draws the form element
-	 * @param array data to pre-populate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 * 
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 * 
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$str = FabrikHelperHTML::facebookGraphAPI( $params->get('opengraph_applicationid'));
+		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
 		$pageid = $params->get('fblikebox_pageid', 0);
 		$stream = $params->get('fblikebox_stream', 1) == 1 ? 'true' : 'false';
 		$width = $params->get('fblikebox_width', 300);
 		$height = $params->get('fblikebox_height', 300);
 		$header = $params->get('fblikebox_header', 1) == 1 ? 'true' : 'false';
 		$connections = $params->get('fblikebox_connections', 10);
-		//$str .= "<fb:like-box id=\"$pageid\" width=\"$width\" height=\"$height\" connections=\"$connections\" stream=\"$stream\" header=\"$header\" />";
-		$str .= "<fb:like-box id=\"185550966885\" width=\"292\" height=\"440\" connections=\"4\" stream=\"true\" header=\"true\" />";
+
+		// $str .= "<fb:like-box id=\"$pageid\" width=\"$width\" height=\"$height\" connections=\"$connections\" stream=\"$stream\" header=\"$header\" />";
+		$str .= '<fb:like-box id="185550966885" width="292" height="440" connections="4" stream="true" header="true" />';
 		return $str;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

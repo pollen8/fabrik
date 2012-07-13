@@ -28,7 +28,7 @@ class fabrikViewChart extends JView
 	*
 	* @return  mixed  A string if successful, otherwise a JError object.
 	*/
-	
+
 	function display($tpl = 'default')
 	{
 		$srcs = FabrikHelperHTML::framework();
@@ -39,7 +39,6 @@ class fabrikViewChart extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
-		$model->setListIds();
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));

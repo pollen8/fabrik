@@ -1,10 +1,9 @@
 <?php
 /**
- * Plugin element to render facebook open graph activity feed widget
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.facebookactivityfeed
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,9 +11,17 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-class plgFabrik_ElementFbactivityfeed extends plgFabrik_Element {
+/**
+ * Plugin element to render facebook open graph activity feed widget
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.facebookactivityfeed
+ */
+
+class plgFabrik_ElementFbactivityfeed extends plgFabrik_Element
+{
 
 	var $hasLabel = false;
 
@@ -32,7 +39,7 @@ class plgFabrik_ElementFbactivityfeed extends plgFabrik_Element {
 	function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$str = FabrikHelperHTML::facebookGraphAPI( $params->get('opengraph_applicationid'));
+		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
 		$domain = $params->get('fbactivityfeed_domain');
 		$width = $params->get('fbactivityfeed_width', 300);
 		$height = $params->get('fbactivityfeed_height', 300);
@@ -58,4 +65,3 @@ class plgFabrik_ElementFbactivityfeed extends plgFabrik_Element {
 	}
 
 }
-?>

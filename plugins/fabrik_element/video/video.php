@@ -1,22 +1,29 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.video
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/element.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
-require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 
 jimport('joomla.application.component.model');
 
-class plgFabrik_ElementVideo extends plgFabrik_Element {
+/**
+ * Plugin element to render video
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.video
+ */
+
+class plgFabrik_ElementVideo extends plgFabrik_Element
+{
 
 	/** @var array allowed file extensions*/
 	var $_aDefaultFileTypes = array('.mov', '.qtif', '.mp4');
@@ -52,16 +59,20 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$str = $data;
-		if($params->get('fbVideoShowVideoInTable') == true) {
-			if($data != '') {
-				$data = COM_FABRIK_LIVESITE .  str_replace("\\", "/", $data);
-				$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=plugin&task=pluginAjax&plugin=" . $this->_name . "&method=renderPopup&element_id=". $this->_id ."&data=$data";
+		if ($params->get('fbVideoShowVideoInTable') == true)
+		{
+			if ($data != '')
+			{
+				$data = COM_FABRIK_LIVESITE . str_replace("\\", "/", $data);
+				$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=plugin&task=pluginAjax&plugin=" . $this->_name
+					. "&method=renderPopup&element_id=" . $this->_id . "&data=$data";
 				//@TODO replace with Fabrik.Window()
 				//FabrikHelperHTML::modal('a.popupwin');
-				$w = $params->get('fbVideoWidth', 300)+20;
-				$h = $params->get('fbVideoHeight', '300')+50;
-				$src = COM_FABRIK_LIVESITE.'plugins/fabrik_element/' . $this->_name . '/icon.gif';
-				$data = '<a rel="{\'moveable\':true,useOverlay:false,handler: \'iframe\', size: {x: '.$w.', y: '.$h.'}}" href="'. $url.'" class="popupwin"><img src="'. $src . '"alt="' . JText::_('View') .'" /></a>';
+				$w = $params->get('fbVideoWidth', 300) + 20;
+				$h = $params->get('fbVideoHeight', '300') + 50;
+				$src = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/' . $this->_name . '/icon.gif';
+				$data = '<a rel="{\'moveable\':true,useOverlay:false,handler: \'iframe\', size: {x: ' . $w . ', y: ' . $h . '}}" href="' . $url
+					. '" class="popupwin"><img src="' . $src . '"alt="' . JText::_('View') . '" /></a>';
 			}
 		}
 		return $data;
@@ -70,39 +81,40 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	function renderPopup()
 	{
 		$document = JFactory::getDocument();
-		$format 	= JRequest::getVar('format', '');
+		$format = JRequest::getVar('format', '');
 		//when loaded via ajax adding scripts into the doc head wont load them
 		echo "<script type='text/javascript'>";
-		require( COM_FABRIK_FRONTEND . '/media/com_fabrik/js/element.js');
+		require(COM_FABRIK_FRONTEND . '/media/com_fabrik/js/element.js');
 		echo "</script>";
 		echo "<script type='text/javascript'>";
-		require( JPATH_ROOT . '/plugins/fabrik_element/video/video.js');
+		require(JPATH_ROOT . '/plugins/fabrik_element/video/video.js');
 		echo "</script>";
 
 		$params = $this->getParams();
 		$value = JRequest::getVar('data');
-		$loop 					= ($params->get('fbVideoLoop', 0) == 1) ? 'true' : 'false';
-		$autoplay 			= ($params->get('fbVideoAutoPlay', 0) == 1) ? 'true' : 'false';
-		$controller 		= ($params->get('fbVideoController', 0) == 1) ? 'true' : 'false';
-		$enablejs 			= ($params->get('fbVideoEnableJS', 0) == 1) ? 'true' : 'false';
-		$playallframes 	= ($params->get('fbVideoPlayEveryFrame', 0) == 1) ? 'true' : 'false';
+		$loop = ($params->get('fbVideoLoop', 0) == 1) ? 'true' : 'false';
+		$autoplay = ($params->get('fbVideoAutoPlay', 0) == 1) ? 'true' : 'false';
+		$controller = ($params->get('fbVideoController', 0) == 1) ? 'true' : 'false';
+		$enablejs = ($params->get('fbVideoEnableJS', 0) == 1) ? 'true' : 'false';
+		$playallframes = ($params->get('fbVideoPlayEveryFrame', 0) == 1) ? 'true' : 'false';
 		$f = str_replace("\\", "/", $element->default);
 		$str = "head.ready(function() {\n";
 		$str .= "var el = new fabrikvideo('video', " . "{'file':'$value'
-		, 'width':". $params->get('fbVideoWidth', 300).", 'height':".$params->get('fbVideoHeight', '300')."
+		, 'width':" . $params->get('fbVideoWidth', 300) . ", 'height':" . $params->get('fbVideoHeight', '300')
+			. "
 		, 'enablejs':true
 		, 'controller':" . $controller . "
-		, 'autoplay':" . $autoplay. "
+		, 'autoplay':" . $autoplay . "
 		, 'loop':" . $loop . "
 		, 'livesite':'" . COM_FABRIK_LIVESITE . "'
 		, 'ENABLEJAVASCRIPT':" . $enablejs . "
 		, 'PLAYEVERYFRAME':" . $playallframes . "
 
-		}" .");\n";
-		$str .="el.insertMovie();\n";
+		}" . ");\n";
+		$str .= "el.insertMovie();\n";
 		$str .= "})";
 		echo "<script type='text/javascript'>$str</script>";
-		?>
+?>
 <div id="video_placeholder">vide</div>
 		<?php
 	}
@@ -124,40 +136,48 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 
 	function render($data, $repeatCounter = 0)
 	{
-		$element	= $this->getElement();
-		$value 		= $element->default;
-		$name 		= $this->getHTMLName($repeatCounter);
-		$id				= $this->getHTMLId($repeatCounter);
-		$params 	=& $this->getParams();
+		$element = $this->getElement();
+		$value = $element->default;
+		$name = $this->getHTMLName($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
+		$params = &$this->getParams();
 
-		$maxlength  = $params->get('maxlength');
-		if ((int) $maxlength === 0) {
+		$maxlength = $params->get('maxlength');
+		if ((int) $maxlength === 0)
+		{
 			$maxlength = $element->width;
 		}
 
-		$type = ($params->get('password') == "1" ) ?"password" : "text";
+		$type = ($params->get('password') == "1") ? "password" : "text";
 
-		if( isset($this->_elementError) && $this->_elementError != '') {
+		if (isset($this->_elementError) && $this->_elementError != '')
+		{
 			$type .= " elementErrorHighlight";
 		}
-		if ($element->hidden == '1') {
+		if ($element->hidden == '1')
+		{
 			$type = "hidden";
 		}
-		$sizeInfo =  " size=\"$element->width\" maxlength=\"$maxlength\"";
-		if (!$this->_editable) {
+		$sizeInfo = " size=\"$element->width\" maxlength=\"$maxlength\"";
+		if (!$this->_editable)
+		{
 			$format = $params->get('text_format_string');
-			if ($format  != '') {
-				$value =  eval(sprintf($format,$value));
+			if ($format != '')
+			{
+				$value = eval(sprintf($format, $value));
 			}
-			if ($element->hidden == '1') {
+			if ($element->hidden == '1')
+			{
 				return "<!--" . $value . "-->";
-			} else {
-				return  "<div id='". $this->getHTMLId($repeatCounter) ."_placeholder'>$value</div>";
+			}
+			else
+			{
+				return "<div id='" . $this->getHTMLId($repeatCounter) . "_placeholder'>$value</div>";
 			}
 		}
 
-		$str = '<input class="fabrikinput" name="'.$name.'" type="file" id="'.$id.'" />'."\n";
-		$str .= "<div id='". $id ."_placeholder'>$value</div>";
+		$str = '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '" />' . "\n";
+		$str .= "<div id='" . $id . "_placeholder'>$value</div>";
 		return $str;
 	}
 
@@ -168,20 +188,20 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 
 	function elementJavascript($repeatCounter)
 	{
-		$id 			= $this->getHTMLId($repeatCounter);
-		$element	= $this->getElement();
-		$params 	=& $this->getParams();
-		$f 				= str_replace("\\", "/", $element->default);
-		$value 		= ($element->default != '') ? COM_FABRIK_LIVESITE . $f : '';
+		$id = $this->getHTMLId($repeatCounter);
+		$element = $this->getElement();
+		$params = &$this->getParams();
+		$f = str_replace("\\", "/", $element->default);
+		$value = ($element->default != '') ? COM_FABRIK_LIVESITE . $f : '';
 
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->file = $value;
 		$opts->width = $params->get('fbVideoWidth', 300);
-		$opts->height= $params->get('fbVideoHeight', 300);
+		$opts->height = $params->get('fbVideoHeight', 300);
 		$opts->enablejs = true;
 		$opts->controller = ($params->get('fbVideoController', 0) == 1) ? true : false;
 		$opts->autoplay = ($params->get('fbVideoAutoPlay', 0) == 1) ? true : false;
-		$opts->loop =  ( $params->get('fbVideoLoop', 0) == 1 ) ? true : false;
+		$opts->loop = ($params->get('fbVideoLoop', 0) == 1) ? true : false;
 		$opts->livesite = COM_FABRIK_LIVESITE;
 		$opts->ENABLEJAVASCRIPT = ($params->get('fbVideoEnableJS', 0) == 1) ? true : false;
 		$opts->PLAYEVERYFRAME = ($params->get('fbVideoPlayEveryFrame', 0) == 1) ? true : false;
@@ -197,47 +217,60 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	function processUpload()
 	{
 		$aData = JRequest::get('post');
-		$elName = $this->getFullName( true,  true, false);
-		if (strstr($elName, 'join')) {
+		$elName = $this->getFullName(true, true, false);
+		if (strstr($elName, 'join'))
+		{
 			$elTempName = str_replace('join', '', $elName);
 			$elTempName = str_replace('[', '', $elTempName);
 			$joinArray = explode(']', $elTempName);
 			$elName = $joinArray[1];
-			$aFile 	=  $_FILES['join'];
-			$aFile 		= JRequest::getVar('join', '', 'files', 'array');
+			$aFile = $_FILES['join'];
+			$aFile = JRequest::getVar('join', '', 'files', 'array');
 			$myFileName = $aFile['name'][$joinArray[0]][$joinArray[1]];
 			$myTempFileName = $aFile['tmp_name'][$joinArray[0]][$joinArray[1]];
 			$aData['join'][$joinArray[0]][$joinArray[1]] = '';
-		} else {
-			$aFile 		= JRequest::getVar($elName, '', 'files', 'array');
+		}
+		else
+		{
+			$aFile = JRequest::getVar($elName, '', 'files', 'array');
 			$myFileName = $aFile['name'];
 			$myTempFileName = $aFile['tmp_name'];
 		}
 		$_POST[$elName] = '';
 		$oUploader = new uploader($this);
 		$files = array();
-		if (is_array($myFileName)) {
-			for($i=0; $i<count($myFileName); $i++) {
-				$fileName 	= $myFileName[$i];
-				$tmpFile	= $myTempFileName[$i];
-				if (is_array($joinArray)) {
-					$myFileDir = $_POST['join'][$joinArray[0]][$joinArray[1]][$i+1]['ul_end_dir'];
+		if (is_array($myFileName))
+		{
+			for ($i = 0; $i < count($myFileName); $i++)
+			{
+				$fileName = $myFileName[$i];
+				$tmpFile = $myTempFileName[$i];
+				if (is_array($joinArray))
+				{
+					$myFileDir = $_POST['join'][$joinArray[0]][$joinArray[1]][$i + 1]['ul_end_dir'];
 					$file = $this->_processIndUpload($oUploader, $fileName, $tmpFile, $i, $myFileDir, $aFile);
 					$aData['join'][$joinArray[0]][$joinArray[1]][$i][$this->name] = $file;
-				} else {
+				}
+				else
+				{
 					$myFileDir = $aData[$elName]['ul_end_dir'];
 					$files[] = $this->_processIndUpload($oUploader, $fileName, $tmpFile, $i, $myFileDir, $aFile);
 				}
 			}
-		} else {
+		}
+		else
+		{
 			$tmpFile = $myTempFileName;
 			$myFileDir = $aData[$elName]['ul_end_dir'];
-			$files[] = $this->_processIndUpload($oUploader , $myFileName, $tmpFile, '' , $myFileDir, $aFile);
+			$files[] = $this->_processIndUpload($oUploader, $myFileName, $tmpFile, '', $myFileDir, $aFile);
 		}
 		$group = $this->_group->getGroup();
-		if (!$group->is_join) {
+		if (!$group->is_join)
+		{
 			$aData[$elName] = implode("|", $files);
-		} else {
+		}
+		else
+		{
 			$aData['join'][$group->join_id][$elName] = implode("|", $files);
 		}
 		return $aData;
@@ -247,64 +280,78 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	 *
 	 */
 
-	function _processIndUpload(&$oUploader, $myFileName, $tmpFile, $arrayInc, $myFileDir ='', $file ) {
+	function _processIndUpload(&$oUploader, $myFileName, $tmpFile, $arrayInc, $myFileDir = '', $file)
+	{
 		$params = $this->getParams();
-		if($params->get('ul_file_types') == '') {
+		if ($params->get('ul_file_types') == '')
+		{
 			$params->set('ul_file_types', implode(',', $this->_aDefaultFileTypes));
 		}
 		$folder = $params->get('ul_directory');
-		if($myFileDir != '') {
+		if ($myFileDir != '')
+		{
 			$folder .= JPath::clean(JPATH_SITE . '/' . $myFileDir);
 		}
 		$oUploader->_makeRecursiveFolders($folder);
 
-		$folder 	= JPath::clean(JPATH_SITE . '/' . $folder);
+		$folder = JPath::clean(JPATH_SITE . '/' . $folder);
 
-		$err		= null;
+		$err = null;
 
 		// Set FTP credentials, if given
 		jimport('joomla.client.helper');
 		JClientHelper::setCredentialsFromRequest('ftp');
 
-		if ($myFileName != '') {
+		if ($myFileName != '')
+		{
 			$filepath = JPath::clean($folder . '/' . JString::strtolower($myFileName));
 
-			if (!uploader::canUpload($file, $err, $params)) {
+			if (!uploader::canUpload($file, $err, $params))
+			{
 				return JError::raiseNotice(100, JText::_($err));
 			}
-			if (JFile::exists($filepath)) {
-				if( $params->get('ul_file_increment', 0)) {
+			if (JFile::exists($filepath))
+			{
+				if ($params->get('ul_file_increment', 0))
+				{
 					$filepath = uploader::incrementFileName($filepath, $filepath, 1);
-				} else{
+				}
+				else
+				{
 					return JError::raiseNotice(100, JText::_('A file of that name already exists'));
 				}
 			}
-			if (!JFile::upload($tmpFile, $filepath)) {
+			if (!JFile::upload($tmpFile, $filepath))
+			{
 				$oUploader->moveError = true;
 				JError::raiseWarning(100, JText::_("Error. Unable to upload file (from $tmpFile to $destFile)"));
-			} else {
+			}
+			else
+			{
 				jimport('joomla.filesystem.path');
 				JPath::setPermissions($destFile);
 				//resize main image
 
-
-				$oImage = FabimageHelper::loadLib( $params->get('image_library'));
-				$mainWidth 		= $params->get('fu_main_max_width');
-				$mainHeight 	= $params->get('fu_main_max_height');
-				if($params->get('make_thumbnail') == '1') {
-					$thumbPath 		=  JPath::clean($params->get('thumb_dir') . '/' . $myFileDir . '/');
-					$thumbPrefix 	= $params->get('thumb_prefix');
-					$maxWidth 		= $params->get('thumb_max_width');
-					$maxHeight 		= $params->get('thumb_max_height');
-					if( $thumbPath != '') {
+				$oImage = FabimageHelper::loadLib($params->get('image_library'));
+				$mainWidth = $params->get('fu_main_max_width');
+				$mainHeight = $params->get('fu_main_max_height');
+				if ($params->get('make_thumbnail') == '1')
+				{
+					$thumbPath = JPath::clean($params->get('thumb_dir') . '/' . $myFileDir . '/');
+					$thumbPrefix = $params->get('thumb_prefix');
+					$maxWidth = $params->get('thumb_max_width');
+					$maxHeight = $params->get('thumb_max_height');
+					if ($thumbPath != '')
+					{
 						$oUploader->_makeRecursiveFolders($thumbPath);
 					}
-					$destThumbFile =  JPath::clean((JPATH_SITE) . '/' . $thumbPath . '/' . $thumbPrefix . basename($filepath));
-					$msg = $oImage->resize( $maxWidth, $maxHeight, $filepath, $destThumbFile);
+					$destThumbFile = JPath::clean((JPATH_SITE) . '/' . $thumbPath . '/' . $thumbPrefix . basename($filepath));
+					$msg = $oImage->resize($maxWidth, $maxHeight, $filepath, $destThumbFile);
 				}
 
-				if($mainWidth != '' || $mainHeight != '') {
-					$msg = $oImage->resize( $mainWidth, $mainHeight, $filepath, $filepath);
+				if ($mainWidth != '' || $mainHeight != '')
+				{
+					$msg = $oImage->resize($mainWidth, $mainHeight, $filepath, $filepath);
 				}
 
 				$res = str_replace(JPATH_SITE, '', $filepath);
@@ -315,4 +362,4 @@ class plgFabrik_ElementVideo extends plgFabrik_Element {
 	}
 }
 
-?>
+									  ?>

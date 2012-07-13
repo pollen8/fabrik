@@ -101,7 +101,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 				}
 				?>
 				</tr>
-			
+
 			<?php }?>
 			</tbody>
 			<?php $gCounter++;

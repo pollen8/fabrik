@@ -1,34 +1,52 @@
 <?php
 /**
- * Plugin element to a series of radio buttons
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.radiolist
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to a series of radio buttons
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.radiolist
+ */
+
 class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 {
 
 	var $hasLabel = false;
-
+	/**
+	* Method to set the element id
+	*
+	* @param   int  $id  element ID number
+	*
+	* @return  void
+	*/
 	public function setId($id)
 	{
 		parent::setId($id);
 		$params = $this->getParams();
-		//set elementlist params from radio params
-		$params->set('element_before_label', (bool)$params->get('radio_element_before_label', true));
-		$params->set('allow_frontend_addto', (bool)$params->get('allow_frontend_addtoradio', false));
-		$params->set('allowadd-onlylabel', (bool)$params->get('rad-allowadd-onlylabel', true));
-		$params->set('savenewadditions', (bool)$params->get('rad-savenewadditions', false));
+
+		// Set elementlist params from radio params
+		$params->set('element_before_label', (bool) $params->get('radio_element_before_label', true));
+		$params->set('allow_frontend_addto', (bool) $params->get('allow_frontend_addtoradio', false));
+		$params->set('allowadd-onlylabel', (bool) $params->get('rad-allowadd-onlylabel', true));
+		$params->set('savenewadditions', (bool) $params->get('rad-savenewadditions', false));
 	}
-	
+
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementList::_getEmailValue()
+	 * Turn form value into email formatted value
+	 * 
+	 * @param   mixed  $value          element value
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  group repeat counter
+	 * 
+	 * @return  string  email formatted value
 	 */
 
 	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -45,11 +63,14 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 * 
+	 * @param   int  $repeatCounter  repeat group counter
+	 * 
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
@@ -57,7 +78,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->value  = $this->getValue($data, $repeatCounter);
+		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
@@ -67,17 +88,23 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * Get the sql for filtering the table data and the array of filter settings
-	 * @param string filter value
-	 * @return string filter value
+	 * if the search value isnt what is stored in the database, but rather what the user
+	 * sees then switch from the search string to the db value here
+	 * overwritten in things like checkbox and radio plugins
+	 * 
+	 * @param   string  $value  filterVal
+	 * 
+	 * @return  string
 	 */
 
-	function prepareFilterVal($val)
+	protected function prepareFilterVal($value)
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
-		for ($i=0; $i<count($labels); $i++) {
-			if (JString::strtolower($labels[$i]) == JString::strtolower($val)) {
+		for ($i = 0; $i < count($labels); $i++)
+		{
+			if (JString::strtolower($labels[$i]) == JString::strtolower($val))
+			{
 				$val = $values[$i];
 				return $val;
 			}
@@ -86,18 +113,20 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * OPTIONAL
 	 * If your element risks not to post anything in the form (e.g. check boxes with none checked)
 	 * the this function will insert a default value into the database
-	 * @param array form data
-	 * @return array form data
+	 * 
+	 * @param   array  &$data  form data
+	 * 
+	 * @return  array  form data
 	 */
 
-	function getEmptyDataValue(&$data)
+	public function getEmptyDataValue(&$data)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if (!array_key_exists($element->name, $data)) {
+		if (!array_key_exists($element->name, $data))
+		{
 			$sel = $this->getSubInitialSelection();
 			$sel = JArrayHelper::getValue($sel, 0, '');
 			$arVals = $this->getSubOptionValues();
@@ -106,35 +135,52 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	 * this builds an array containing the filters value and condition
-	 * @param string initial $value
-	 * @param string intial $condition
-	 * @param string eval - how the value should be handled
-	 * @return array (value condition)
+	 * Builds an array containing the filters value and condition
+	 * 
+	 * @param   string  $value      initial value
+	 * @param   string  $condition  intial $condition
+	 * @param   string  $eval       how the value should be handled
+	 * 
+	 * @return  array	(value condition)
 	 */
 
-	function getFilterValue($value, $condition, $eval)
+	public function getFilterValue($value, $condition, $eval)
 	{
 		$value = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
 		return $return;
 	}
-
+	
+	/**
+	* Used by inline edit table plugin
+	* If returns yes then it means that there are only two possible options for the
+	* ajax edit, so we should simply toggle to the alternative value and show the
+	* element rendered with that new value (used for yes/no element)
+	*
+	* @deprecated - only called in a deprecated element method
+	*
+	* @return  bool
+	*/
+	
 	public function canToggleValue()
 	{
 		return count($this->getSubOptionValues()) < 3 ? true : false;
 	}
-	
+
 	/**
-	 * determines the value for the element in the form view
-	 * @param array data
-	 * @param int when repeating joinded groups we need to know what part of the array to access
-	 * @param array options
+	 * Determines the value for the element in the form view
+	 * 
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 * 
+	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$v = parent::getValue($data, $repeatCounter, $opts);
+
 		// $$$ rob see http://fabrikar.com/forums/showthread.php?t=25965
 		if (is_array($v) && count($v) == 1)
 		{
@@ -143,4 +189,3 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		return $v;
 	}
 }
-?>

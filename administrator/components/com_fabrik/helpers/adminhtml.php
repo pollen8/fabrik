@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @static
  * @package		Joomla
- * @subpackage	Fabrik.helpers
+ * @subpackage  Fabrik.helpers
  * @since 1.5
  */
 class FabrikHelperAdminHTML

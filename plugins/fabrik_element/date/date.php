@@ -1,14 +1,20 @@
 <?php
 /**
- * Plugin element to render date picker
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.date
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render date picker
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.date
+ */
 
 class plgFabrik_ElementDate extends plgFabrik_Element
 {
@@ -30,7 +36,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	private function getNullDates()
 	{
 		$db = FabrikWorker::getDbo();
-		return array('0000-00-000000-00-00','0000-00-00 00:00:00','0000-00-00','', $db->getNullDate());
+		return array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 	}
 
 	/**
@@ -187,19 +193,19 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$aNullDates = $this->getNullDates();
 		FabrikHelperHTML::loadcalendar();
 		$name = $this->getHTMLName($repeatCounter);
-		$id	= $this->getHTMLId($repeatCounter);
+		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$format = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$timeformat = $params->get('date_time_format');
 		//value is in mySQL format
 		$value = $this->getValue($data, $repeatCounter);
-		$store_as_local = (bool)$params->get('date_store_as_local', 0);
+		$store_as_local = (bool) $params->get('date_store_as_local', 0);
 
 		if ($params->get('date_showtime', 0) && !$element->hidden)
 		{
 			//cant have names as simply [] as json only picks up the last one
-			$timeElName = $name."[time]";
+			$timeElName = $name . "[time]";
 			$name .= '[date]';
 		}
 
@@ -231,8 +237,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$this->offsetDate = $oDate->toSql(true);
 			if (!$this->_editable)
 			{
-				$time = ($params->get('date_showtime', 0)) ? ' ' .$oDate->toFormat($timeformat, true) : '';
-				return $date.$time;
+				$time = ($params->get('date_showtime', 0)) ? ' ' . $oDate->toFormat($timeformat, true) : '';
+				return $date . $time;
 			}
 
 			//get the formatted time
@@ -259,9 +265,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		if ($params->get('date_showtime', 0) && !$element->hidden)
 		{
 			$timelength = JString::strlen($timeformat);
-			FabrikHelperHTML::addPath(COM_FABRIK_BASE.'plugins/fabrik_element/date/images/', 'image', 'form', false);
-			$str[] = '<input class="inputbox fabrikinput timeField" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="' . $timeElName . '" />';
-			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton'));
+			FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
+			$str[] = '<input class="inputbox fabrikinput timeField" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+				. $timeElName . '" />';
+			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl,
+				array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton'));
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
@@ -294,15 +302,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		jimport('joomla.utilities.date');
 		$params = $this->getParams();
-		$store_as_local = (bool)$params->get('date_store_as_local', false);
+		$store_as_local = (bool) $params->get('date_store_as_local', false);
 
 		$listModel = $this->getListModel();
 		// $$$ hugh - offset_tz of 1 means 'in MySQL format, GMT'
 		// $$$ hugh - offset_tz of 2 means 'in MySQL format, Local TZ'
-		if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '1') {
+		if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '1')
+		{
 			return $val;
 		}
-		else if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '2') {
+		else if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
+		{
 			return $this->toMySQLGMT(JFactory::getDate($val));
 		}
 
@@ -334,7 +344,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			// 5.3 only
 			if (class_exists('DateInterval'))
 			{
-				$dateInterval = new DateInterval('PT'.$hours.'H');
+				$dateInterval = new DateInterval('PT' . $hours . 'H');
 				$dateInterval->invert = $invert;
 				$date->sub($dateInterval);
 			}
@@ -355,7 +365,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function storeDatabaseFormat($val, $data)
 	{
-		if (!is_array($val)) {
+		if (!is_array($val))
+		{
 			// $$$ hugh - we really need to work out why some AJAX data is not getting urldecoded.
 			// but for now ... a bandaid.
 			$val = urldecode($val);
@@ -369,13 +380,18 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$val['time'] = $this->_fixTime(urldecode($val['time']));
 			}
 			$val = implode(" ", $val);
-			*/
+			 */
 			$val = JArrayHelper::getValue($val, 'date', '');
-		} else {
-			if ($groupModel->canRepeat()) {
-				if (is_array($val)) {
+		}
+		else
+		{
+			if ($groupModel->canRepeat())
+			{
+				if (is_array($val))
+				{
 					$res = array();
-					foreach ($val as $v) {
+					foreach ($val as $v)
+					{
 						$res[] = $this->_indStoreDBFormat($v);
 
 					}
@@ -518,7 +534,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		//if its 5:00 rather than 05:00
 		if (!preg_match("/^[0-9]{2}/", $time))
 		{
-			$time = "0".$time;
+			$time = "0" . $time;
 		}
 		//if no seconds
 		if (preg_match("/[0-9]{2}:[0-9]{2}/", $time) && JString::strlen($time) <= 5)
@@ -554,8 +570,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$attribs = JArrayHelper::toString($attribs);
 		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
-		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img'));
-		return '<input type="text" name="' . $name . '" id="' . $id . '" value="'.htmlspecialchars($value, ENT_COMPAT, 'UTF-8').'" ' . $attribs . ' />' . $img;
+		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl,
+			array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img'));
+		return '<input type="text" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '" ' . $attribs
+			. ' />' . $img;
 	}
 
 	/**
@@ -570,7 +588,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts = new stdClass();
 		$opts->inputField = $id;
 		$opts->ifFormat = $params->get('date_form_format');
-		$opts->button = $id."_cal_img";
+		$opts->button = $id . "_cal_img";
 		$opts->align = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay = intval($params->get('date_firstday'));
@@ -595,7 +613,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->hidden = (bool)$this->getElement()->hidden;
+		$opts->hidden = (bool) $this->getElement()->hidden;
 		$opts->defaultVal = $this->offsetDate;
 		$opts->showtime = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
 		$opts->timelabel = JText::_('time');
@@ -620,13 +638,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	function getFieldDescription()
 	{
 		$p = $this->getParams();
-		if ($this->encryptMe()) {
+		if ($this->encryptMe())
+		{
 			return 'BLOB';
 		}
 		$groupModel = $this->getGroup();
-		if (is_object($groupModel) && !$groupModel->isJoin() && $groupModel->canRepeat()) {
+		if (is_object($groupModel) && !$groupModel->isJoin() && $groupModel->canRepeat())
+		{
 			return "VARCHAR(255)";
-		} else {
+		}
+		else
+		{
 			return "DATETIME";
 		}
 	}
@@ -641,13 +663,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	function getValidationWatchElements($repeatCounter)
 	{
 		$params = $this->getParams();
-		$return	= array();
+		$return = array();
 		$elName = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$return[] = array(
-			'id' => $id,
-			'triggerEvent' => 'blur'
-		);
+		$return[] = array('id' => $id, 'triggerEvent' => 'blur');
 		return $return;
 	}
 
@@ -658,29 +677,36 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	function getDefaultValue($data = array())
 	{
-		if (!isset($this->_default)) {
+		if (!isset($this->_default))
+		{
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
-			if ($params->get('date_defaulttotoday', 0)) {
-				if ($store_as_local) {
+			if ($params->get('date_defaulttotoday', 0))
+			{
+				if ($store_as_local)
+				{
 					$localDate = date('Y-m-d H:i:s');
 					$oTmpDate = JFactory::getDate(strtotime($localDate));
 				}
-				else {
+				else
+				{
 					$oTmpDate = JFactory::getDate();
 				}
 				$default = $oTmpDate->toMySQL();
 			}
-			else {
+			else
+			{
 				// deafult date should always be entered as gmt date e.g. eval'd default of:
 				$default = $element->default;
-				if ($element->eval == "1") {
+				if ($element->eval == "1")
+				{
 					$default = @eval(stripslashes($default));
-					FabrikWorker::logEval($default, 'Caught exception on eval in '.$element->name.'::getDefaultValue() : %s');
+					FabrikWorker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 				}
-				if (trim($default) != '') {
+				if (trim($default) != '')
+				{
 					$oTmpDate = JFactory::getDate($default);
 					$default = $oTmpDate->toMySQL();
 				}
@@ -701,71 +727,100 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		//@TODO: allow {now} and {today} to be replaced with current datetime
-		if (!isset($this->defaults) || is_null($this->defaults)) {
+		if (!isset($this->defaults) || is_null($this->defaults))
+		{
 			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults)) {
+		if (!array_key_exists($repeatCounter, $this->defaults))
+		{
 			$groupModel = $this->getGroup();
 			$group = $groupModel->getGroup();
-			$joinid	= $group->join_id;
+			$joinid = $group->join_id;
 			$element = $this->getElement();
-			$params	= $this->getParams();
+			$params = $this->getParams();
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
-			if ($params->get('date_alwaystoday', false)) {
+			if ($params->get('date_alwaystoday', false))
+			{
 				//$value = JFactory::getDate()->toMySQL(false);
 				// $$$ rob fix for http://fabrik.unfuddle.com/projects/17220/tickets/by_number/700?cycle=true
-				if ($store_as_local) {
+				if ($store_as_local)
+				{
 					$localDate = date('Y-m-d H:i:s');
 					$date = JFactory::getDate(strtotime($localDate));
 				}
-				else {
+				else
+				{
 					$date = JFactory::getDate();
 				}
 				$value = $date->toMySQL();
-			} else {
+			}
+			else
+			{
 				// $$$rob - if no search form data submitted for the search element then the default
 				// selecton was being applied instead
-				if (array_key_exists('use_default', $opts) && $opts['use_default'] == false) {
+				if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
+				{
 					$value = '';
-				} else {
+				}
+				else
+				{
 					$value = $this->getDefaultValue($data);
 				}
 				// $$$ hugh - as we now run removeTableNameFromSaveData(), I think we just need the short name?
 				$name = $this->getFullName(false, true, false);
 				//$name = $element->name;
-				if ($groupModel->isJoin()) {
-					if ($groupModel->canRepeat()) {
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name])) {
+				if ($groupModel->isJoin())
+				{
+					if ($groupModel->canRepeat())
+					{
+						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
+							&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+						{
 							$value = $data['join'][$joinid][$name][$repeatCounter];
 						}
-					} else {
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]) && array_key_exists($name, $data['join'][$joinid])) {
+					}
+					else
+					{
+						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
+							&& array_key_exists($name, $data['join'][$joinid]))
+						{
 							$value = $data['join'][$joinid][$name];
 						}
 					}
-				} else {
-					if ($groupModel->canRepeat()) {
+				}
+				else
+				{
+					if ($groupModel->canRepeat())
+					{
 						//repeat group NO join
-						if (array_key_exists($name, $data)) {
-							if (is_array($data[$name])) {
+						if (array_key_exists($name, $data))
+						{
+							if (is_array($data[$name]))
+							{
 								//occurs on form submission for fields at least
 								$a = $data[$name];
 
-							} else {
+							}
+							else
+							{
 								//occurs when getting from the db
 								$a = FabrikWorker::JSONtoData($data[$name], true);
 							}
-							if (array_key_exists($repeatCounter, $a)) {
+							if (array_key_exists($repeatCounter, $a))
+							{
 								$value = $a[$repeatCounter];
 							}
 						}
 
-					} else {
+					}
+					else
+					{
 						$value = JArrayHelper::getValue($data, $name, $value);
 					}
 				}
 
-				if (is_array($value)) {
+				if (is_array($value))
+				{
 					//'date' should now contain the time, as we include in on js onsubmit() method
 					$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
 					/*
@@ -783,11 +838,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 				$formModel = $this->getForm();
 				//stops this getting called from form validation code as it messes up repeated/join group validations
-				if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1) {
+				if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+				{
 					FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 				}
 				//for validations (empty time and date element gives ' ')
-				if ($value == ' ') {
+				if ($value == ' ')
+				{
 					$value = '';
 				}
 			}
@@ -826,9 +883,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	protected function formatContainsTime($format)
 	{
-		$times = array('%H','%I','%l','%M','%p','%P','%r','%R','%S','%T','%X','%z','%Z');
-		foreach ($times as $t) {
-			if (strpos($format, $t)) {
+		$times = array('%H', '%I', '%l', '%M', '%p', '%P', '%r', '%R', '%S', '%T', '%X', '%z', '%Z');
+		foreach ($times as $t)
+		{
+			if (strpos($format, $t))
+			{
 				return true;
 			}
 		}
@@ -876,13 +935,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		switch ($filterType)
 		{
 			case 'range':
-				// ranged dates should be sent in sql format
+			// ranged dates should be sent in sql format
 				break;
 			case 'field':
 			case 'dropdown':
 			case 'auto-complete':
 			default:
-				//odity when filtering from qs
+			//odity when filtering from qs
 				$value = str_replace("'", '', $value);
 
 				// parse through JDate, to allow for special filters such as 'now' 'tomorrow' etc
@@ -980,11 +1039,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 */
 	protected function isMonth($test)
 	{
-		$months = array(JText::_('JANUARY_SHORT'), JText::_('JANUARY'), JText::_('FEBRUARY_SHORT'), JText::_('FEBRUARY'),
-		JText::_('MARCH_SHORT'), JText::_('MARCH'), JText::_('APRIL'), JText::_('APRIL_SHORT'), JText::_('MAY_SHORT'), JText::_('MAY'),
-		JText::_('JUNE_SHORT'), JText::_('JUNE'), JText::_('JULY_SHORT'), JText::_('JULY'), JText::_('AUGUST_SHORT'), JText::_('AUGUST'),
-		JText::_('SEPTEMBER_SHORT'), JText::_('SEPTEMBER'), JText::_('OCTOBER_SHORT'), JText::_('OCTOBER'), JText::_('NOVEMBER_SHORT'),
-		JText::_('NOVEMBER'), JText::_('DECEMBER_SHORT'), JText::_('DECEMBER'));
+		$months = array(JText::_('JANUARY_SHORT'), JText::_('JANUARY'), JText::_('FEBRUARY_SHORT'), JText::_('FEBRUARY'), JText::_('MARCH_SHORT'),
+			JText::_('MARCH'), JText::_('APRIL'), JText::_('APRIL_SHORT'), JText::_('MAY_SHORT'), JText::_('MAY'), JText::_('JUNE_SHORT'),
+			JText::_('JUNE'), JText::_('JULY_SHORT'), JText::_('JULY'), JText::_('AUGUST_SHORT'), JText::_('AUGUST'), JText::_('SEPTEMBER_SHORT'),
+			JText::_('SEPTEMBER'), JText::_('OCTOBER_SHORT'), JText::_('OCTOBER'), JText::_('NOVEMBER_SHORT'), JText::_('NOVEMBER'),
+			JText::_('DECEMBER_SHORT'), JText::_('DECEMBER'));
 		return in_array($test, $months);
 	}
 
@@ -1086,8 +1145,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
 				{
 					$fromTable = $aJoin->table_join;
-					$joinStr = " LEFT JOIN $fromTable ON ".$aJoin->table_join.".".$aJoin->table_join_key." = ".$aJoin->join_from_table.".".$aJoin->table_key;
-					$elName = str_replace($origTable.'.', $fromTable.'.', $elName);
+					$joinStr = " LEFT JOIN $fromTable ON " . $aJoin->table_join . "." . $aJoin->table_join_key . " = " . $aJoin->join_from_table
+						. "." . $aJoin->table_key;
+					$elName = str_replace($origTable . '.', $fromTable . '.', $elName);
 				}
 			}
 		}
@@ -1095,10 +1155,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$elName = FabrikString::safeColName($elName);
 
 		//dont format here as the format string is different between mysql and php's calendar strftime
-		$sql = "SELECT DISTINCT($elName) AS text, $elName AS value FROM `$origTable` $joinStr"
-		. "\n WHERE $elName IN ('".implode("','", $ids)."')"
-		. "\n AND TRIM($elName) <> '' $where GROUP BY text ASC";
-		$requestName = $elName."___filter";
+		$sql = "SELECT DISTINCT($elName) AS text, $elName AS value FROM `$origTable` $joinStr" . "\n WHERE $elName IN ('" . implode("','", $ids)
+			. "')" . "\n AND TRIM($elName) <> '' $where GROUP BY text ASC";
+		$requestName = $elName . "___filter";
 		if (array_key_exists($elName, $_REQUEST))
 		{
 			if (is_array($_REQUEST[$elName]) && array_key_exists('value', $_REQUEST[$elName]))
@@ -1129,16 +1188,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 				// add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
-				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN') .
-				$this->calendar($default[0], $v . '[0]', $this->getFilterHtmlId(0), $format, $calOpts);
-				$return[] = '<br />'.JText::_('COM_FABRIK_DATE_RANGE_AND') .
-				$this->calendar($default[1], $v . '[1]', $this-> getFilterHtmlId(1), $format, $calOpts);
+				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN')
+					. $this->calendar($default[0], $v . '[0]', $this->getFilterHtmlId(0), $format, $calOpts);
+				$return[] = '<br />' . JText::_('COM_FABRIK_DATE_RANGE_AND')
+					. $this->calendar($default[1], $v . '[1]', $this->getFilterHtmlId(1), $format, $calOpts);
 				$return[] = '</div>';
 				break;
 
 			case "dropdown":
-				// cant do the format in the MySQL query as its not the same formatting
-				// e.g. M in mysql is month and J's date code its minute
+			// cant do the format in the MySQL query as its not the same formatting
+			// e.g. M in mysql is month and J's date code its minute
 				jimport('joomla.utilities.date');
 				$ddData = array();
 				foreach ($rows as $k => $o)
@@ -1161,7 +1220,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text', $default, $htmlid . '0');
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text',
+					$default, $htmlid . '0');
 				break;
 			default:
 			case "field":
@@ -1181,34 +1241,42 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				break;
 
 			case 'hidden':
-				if (is_array($default)) {
+				if (is_array($default))
+				{
 					$default = array_shift($default);
 				}
-				if (get_magic_quotes_gpc()) {
+				if (get_magic_quotes_gpc())
+				{
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case 'auto-complete':
-				if (get_magic_quotes_gpc()) {
+				if (get_magic_quotes_gpc())
+				{
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-				$return[] = '<input type="text" name="'.$v.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'.$default.'" id="'.$htmlid.'-auto-complete" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'
+					. $default . '" id="' . $htmlid . '-auto-complete" />';
 
 				$autoId = '#' . $htmlid . '-auto-complete';
-				if (!$normal) {
+				if (!$normal)
+				{
 					$autoId = '.advanced-search-list .autocomplete-trigger';
 				}
 				FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, 'date');
 				break;
 		}
-		if ($normal) {
+		if ($normal)
+		{
 			$return[] = $this->getFilterHiddenFields($counter, $elName);
-		} else {
+		}
+		else
+		{
 			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
 		return implode("\n", $return);
@@ -1226,10 +1294,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * @param object FabDate
 	 */
 
-	protected function toLocalTime(&$d){
+	protected function toLocalTime(&$d)
+	{
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$hours = $timeZone->getOffset($d) / (60 * 60);
-		$dateInterval = new DateInterval('PT'.$hours.'H');
+		$dateInterval = new DateInterval('PT' . $hours . 'H');
 		$d->add($dateInterval);
 
 	}
@@ -1243,12 +1312,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$name = $this->getFullName(false, false, false);
-		$db->setQuery("SELECT DISTINCT($name) AS value, $name AS text FROM $table->db_table_name WHERE $name LIKE ".$db->quote('%'.addslashes(JRequest::getVar('value').'%')));
+		$db
+			->setQuery(
+				"SELECT DISTINCT($name) AS value, $name AS text FROM $table->db_table_name WHERE $name LIKE "
+					. $db->quote('%' . addslashes(JRequest::getVar('value') . '%')));
 		$tmp = $db->loadObjectList();
 		$ddData = array();
-		foreach ($tmp as &$t) {
+		foreach ($tmp as &$t)
+		{
 			$this->toLabel($t->text);
-			if (!array_key_exists($t->text, $ddData)) {
+			if (!array_key_exists($t->text, $ddData))
+			{
 				$ddData[$t->text] = $t;
 			}
 		}
@@ -1400,16 +1474,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$thePHPDate['hours'] = 0;
 		$thePHPDate['minutes'] = 0;
 		$thePHPDate['seconds'] = 0;
-		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'], $thePHPDate['year']);
+		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'],
+			$thePHPDate['year']);
 		$date = JFactory::getDate($v);
 		return $date->toMySQL($v);
 	}
 
 	/**
-	* simple minded method to set a MySQL formatted date's time to 00:00:00
-	* @param	string	$date in MySQL format
-	* @return	string	mysql formatted date with time set to 0
-	*/
+	 * simple minded method to set a MySQL formatted date's time to 00:00:00
+	 * @param	string	$date in MySQL format
+	 * @return	string	mysql formatted date with time set to 0
+	 */
 
 	function setMySQLTimeToZero($date)
 	{
@@ -1429,8 +1504,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	{
 		$date = JFactory::getDate($date);
 		$thePHPDate = getdate($date->toUnix());
-		$thePHPDate['mday'] = $thePHPDate['mday']+$add;
-		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'], $thePHPDate['year']);
+		$thePHPDate['mday'] = $thePHPDate['mday'] + $add;
+		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'],
+			$thePHPDate['year']);
 		$date = JFactory::getDate($v);
 		return $date->toSql($v);
 	}
@@ -1449,18 +1525,19 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		if ($thePHPDate['hours'] + $add >= 24)
 		{
 			$thePHPDate['hours'] = 0;
-			$thePHPDate['mday'] ++;
+			$thePHPDate['mday']++;
 		}
 		else if ($thePHPDate['hours'] + $add < 0)
 		{
 			$thePHPDate['hours'] = 0;
-			$thePHPDate['mday'] --;
+			$thePHPDate['mday']--;
 		}
 		else
 		{
 			$thePHPDate['hours'] = $thePHPDate['hours'] + $add;
 		}
-		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'], $thePHPDate['year']);
+		$v = mktime($thePHPDate['hours'], $thePHPDate['minutes'], $thePHPDate['seconds'], $thePHPDate['mon'], $thePHPDate['mday'],
+			$thePHPDate['year']);
 		$date = JFactory::getDate($v);
 		return $date->toMySQL($v);
 	}
@@ -1479,7 +1556,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
-		return 'SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM ' . $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
+		return 'SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM '
+			. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
@@ -1488,9 +1566,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$db = $listModel->getDb();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
-		$name 	= $this->getFullName(false, false, false);
+		$name = $this->getFullName(false, false, false);
 		//$$$rob not actaully likely to work due to the query easily exceeding mySQL's TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM ' . $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
+		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM '
+			. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 
 	public function simpleAvg($data)
@@ -1525,7 +1604,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	protected function toSeconds($date)
 	{
-		return (int)($date->toFormat('%H') * 60 * 60) + (int) ($date->toFormat('%M') * 60) + (int) $date->toFormat('%S');
+		return (int) ($date->toFormat('%H') * 60 * 60) + (int) ($date->toFormat('%M') * 60) + (int) $date->toFormat('%S');
 	}
 
 	/**
@@ -1543,13 +1622,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// So ... do %x to ^@y (hopefully nobody will ever use ^@ in their format string!),
 		// then replace all ^@'s with %'s.
 
-		$search = array('%e', '%j', '%u', '%V', '%W', '%h', '%B', '%C', '%g',
-'%G', '%M', '%P', '%r', '%R', '%T', '%X', '%z', '%Z', '%D', '%F', '%s', '%x', '%A');
+		$search = array('%e', '%j', '%u', '%V', '%W', '%h', '%B', '%C', '%g', '%G', '%M', '%P', '%r', '%R', '%T', '%X', '%z', '%Z', '%D', '%F', '%s',
+			'%x', '%A');
 
 		//$replace = array('%c', '%j', '%w', '%U', '%U', '%b', '%M', '', '%y',
 		//'%Y', '%i', '%p', '%I:%i:%S %p', '%H:%i', '%H:%i:%S', '', '', '%H:%i:%S', '%m/%c/%y', '%Y-%m-%c', '', '%Y-%m-%c', '%W');
-		$replace = array('^@e', '^@j', '^@w', '^@U', '^@U', '^@b', '^@M', '', '^@y',
-'^@Y', '^@i', '^@p', '^@I:^@i:^@S ^@p', '^@H:^@i', '^@H:^@i:^@S', '', '', '^@H:^@i:^@S', '^@m/^@c/^@y', '^@Y-^@m-^@c', '', '^@Y-^@m-^@c', '^@W');
+		$replace = array('^@e', '^@j', '^@w', '^@U', '^@U', '^@b', '^@M', '', '^@y', '^@Y', '^@i', '^@p', '^@I:^@i:^@S ^@p', '^@H:^@i',
+			'^@H:^@i:^@S', '', '', '^@H:^@i:^@S', '^@m/^@c/^@y', '^@Y-^@m-^@c', '', '^@Y-^@m-^@c', '^@W');
 
 		$format = str_replace($search, $replace, $format);
 		$format = str_replace('^@', '%', $format);
@@ -1569,7 +1648,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$this->encryptFieldName($key);
-		switch ($condition) {
+		switch ($condition)
+		{
 			case 'earlierthisyear':
 				$query = ' DAYOFYEAR(' . $key . ') <= DAYOFYEAR(now()) ';
 				break;
@@ -1586,13 +1666,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$query = ' (' . $key . ' >= CURDATE() + INTERVAL 1 DAY  AND ' . $key . ' < CURDATE() + INTERVAL 2 DAY ) ';
 				break;
 			case 'thismonth':
-				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(NOW()) ) ';
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $key
+					. ' <= LAST_DAY(NOW()) ) ';
 				break;
 			case 'lastmonth':
-				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $key . ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $key
+					. ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
 				break;
 			case 'nextmonth':
-				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key . ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
+				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key
+					. ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
 				break;
 
 			default:
@@ -1625,7 +1708,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 						$key = "DATE_FORMAT( $key , '$format')";
 					}
 				}
-				if ($type == 'querystring' && JString::strtolower($value) == 'now') {
+				if ($type == 'querystring' && JString::strtolower($value) == 'now')
+				{
 					$value = 'NOW()';
 				}
 				$query = " $key $condition $value ";
@@ -1643,13 +1727,16 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	public function onCopyRow($val)
 	{
 		$aNullDates = $this->getNullDates();
-		if (empty($val) || in_array($val, $aNullDates)) {
+		if (empty($val) || in_array($val, $aNullDates))
+		{
 			return $val;
 		}
 		$params = $this->getParams();
-		if ($params->get('date_showtime', 0)) {
+		if ($params->get('date_showtime', 0))
+		{
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
-			if (!$store_as_local) {
+			if (!$store_as_local)
+			{
 				$date = JFactory::getDate($val);
 				$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 				$date->setTimeZone($timeZone);
@@ -1675,11 +1762,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$compare = JFactory::getDate($compare)->toUnix();
 		/*
 		if ($cond == '>') {
-			return $data > $compare;
+		    return $data > $compare;
 		} else {
-			return $data < $compare;
+		    return $data < $compare;
 		}
-		*/
+		 */
 		return parent::greaterOrLessThan($data, $cond, $compare);
 	}
 
@@ -1687,81 +1774,108 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	 * Part of horrible hack for translating non-English words back
 	 * to something MySQL will understand.
 	 */
-	private function _monthToEnglish($month, $abbr = false) {
+	private function _monthToEnglish($month, $abbr = false)
+	{
 		//$lang = JFactory::getLanguage();
-		if ($abbr) {
-			if (JString::strcmp($month, JText::_('JANUARY_SHORT')) === 0) {
+		if ($abbr)
+		{
+			if (JString::strcmp($month, JText::_('JANUARY_SHORT')) === 0)
+			{
 				return 'Jan';
 			}
-			if (JString::strcmp($month, JText::_('FEBRUARY_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('FEBRUARY_SHORT')) === 0)
+			{
 				return 'Feb';
 			}
-			if (JString::strcmp($month, JText::_('MARCH_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('MARCH_SHORT')) === 0)
+			{
 				return 'Mar';
 			}
-			if (JString::strcmp($month, JText::_('APRIL_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('APRIL_SHORT')) === 0)
+			{
 				return 'Apr';
 			}
-			if (JString::strcmp($month, JText::_('MAY_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('MAY_SHORT')) === 0)
+			{
 				return 'May';
 			}
-			if (JString::strcmp($month, JText::_('JUNE_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('JUNE_SHORT')) === 0)
+			{
 				return 'Jun';
 			}
-			if (JString::strcmp($month, JText::_('JULY_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('JULY_SHORT')) === 0)
+			{
 				return 'Jul';
 			}
-			if (JString::strcmp($month, JText::_('AUGUST_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('AUGUST_SHORT')) === 0)
+			{
 				return 'Aug';
 			}
-			if (JString::strcmp($month, JText::_('SEPTEMBER_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('SEPTEMBER_SHORT')) === 0)
+			{
 				return 'Sep';
 			}
-			if (JString::strcmp($month, JText::_('OCTOBER_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('OCTOBER_SHORT')) === 0)
+			{
 				return 'Oct';
 			}
-			if (JString::strcmp($month, JText::_('NOVEMBER_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('NOVEMBER_SHORT')) === 0)
+			{
 				return 'Nov';
 			}
-			if (JString::strcmp($month, JText::_('DECEMBER_SHORT')) === 0) {
+			if (JString::strcmp($month, JText::_('DECEMBER_SHORT')) === 0)
+			{
 				return 'Dec';
 			}
 		}
-		else {
-			if (JString::strcmp($month, JText::_('JANUARY')) === 0) {
+		else
+		{
+			if (JString::strcmp($month, JText::_('JANUARY')) === 0)
+			{
 				return 'January';
 			}
-			if (JString::strcmp($month, JText::_('FEBRUARY')) === 0) {
+			if (JString::strcmp($month, JText::_('FEBRUARY')) === 0)
+			{
 				return 'February';
 			}
-			if (JString::strcmp($month, JText::_('MARCH')) === 0) {
+			if (JString::strcmp($month, JText::_('MARCH')) === 0)
+			{
 				return 'March';
 			}
-			if (JString::strcmp($month, JText::_('APRIL')) === 0) {
+			if (JString::strcmp($month, JText::_('APRIL')) === 0)
+			{
 				return 'April';
 			}
-			if (JString::strcmp($month, JText::_('MAY')) === 0) {
+			if (JString::strcmp($month, JText::_('MAY')) === 0)
+			{
 				return 'May';
 			}
-			if (JString::strcmp($month, JText::_('JUNE')) === 0) {
+			if (JString::strcmp($month, JText::_('JUNE')) === 0)
+			{
 				return 'June';
 			}
-			if (JString::strcmp($month, JText::_('JULY')) === 0) {
+			if (JString::strcmp($month, JText::_('JULY')) === 0)
+			{
 				return 'July';
 			}
-			if (JString::strcmp($month, JText::_('AUGUST')) === 0) {
+			if (JString::strcmp($month, JText::_('AUGUST')) === 0)
+			{
 				return 'August';
 			}
-			if (JString::strcmp($month, JText::_('SEPTEMBER')) === 0) {
+			if (JString::strcmp($month, JText::_('SEPTEMBER')) === 0)
+			{
 				return 'September';
 			}
-			if (JString::strcmp($month, JText::_('OCTOBER')) === 0) {
+			if (JString::strcmp($month, JText::_('OCTOBER')) === 0)
+			{
 				return 'October';
 			}
-			if (JString::strcmp($month, JText::_('NOVEMBER')) === 0) {
+			if (JString::strcmp($month, JText::_('NOVEMBER')) === 0)
+			{
 				return 'November';
 			}
-			if (JString::strcmp($month, JText::_('DECEMBER')) === 0) {
+			if (JString::strcmp($month, JText::_('DECEMBER')) === 0)
+			{
 				return 'December';
 			}
 		}
@@ -1803,7 +1917,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$htmlid = $this->getHTMLId();
 		$params = $this->getParams();
 		$id = $this->getFilterHtmlId(0);
-		$id2 =$this->getFilterHtmlId(1);
+		$id2 = $this->getFilterHtmlId(1);
 
 		$opts = $this->_CalendarJSOpts($id);
 
@@ -1837,15 +1951,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	* @param array of scripts previously loaded (load order is important as we are loading via head.js
-	* and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	* current file
-	*
-	* get the class to manage the form element
-	* if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	* call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
-	* to ensure that the file is loaded only once
-	*/
+	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 *
+	 * get the class to manage the form element
+	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * to ensure that the file is loaded only once
+	 */
 
 	function formJavascriptClass(&$srcs, $script = '')
 	{
@@ -1877,7 +1991,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
  * very samll override to JDate to stop 500 errors occuring (when Jdebug is on) if $date is not a valid date string
  */
 
-class FabDate extends JDate{
+class FabDate extends JDate
+{
 
 	protected static $gmt;
 	protected static $stz;
@@ -1889,17 +2004,20 @@ class FabDate extends JDate{
 		//not sure if this one needed?
 		//	$date = $this->monthToInt($date);
 		$date = $this->removeDashes($date);
-		try {
+		try
+		{
 			$dt = new DateTime($date);
 		}
-		catch(Exception $e) {
+		catch (Exception $e)
+		{
 			JError::raiseNotice(500, 'date format unknown for ' . $orig . ' replacing with todays date');
 			$date = 'now';
 			// catches 'Failed to parse time string (ublingah!) at position 0 (u)' exception.
 			// don't use this object
 		}
 		// Create the base GMT and server time zone objects.
-		if (empty(self::$gmt) || empty(self::$stz)) {
+		if (empty(self::$gmt) || empty(self::$stz))
+		{
 			self::$gmt = new DateTimeZone('GMT');
 			self::$stz = new DateTimeZone(@date_default_timezone_get());
 		}
@@ -1915,11 +2033,14 @@ class FabDate extends JDate{
 	protected function monthToInt($str)
 	{
 		$abbrs = array(true, false);
-		for ($a = 0; $a < count($abbrs); $a ++ ) {
-			for ($i = 0; $i < 13; $i ++) {
+		for ($a = 0; $a < count($abbrs); $a++)
+		{
+			for ($i = 0; $i < 13; $i++)
+			{
 				$month = $this->monthToString($i, $abbrs[$a]);
-				if (JString::stristr($str, $month)) {
-					$monthNum = JString::strlen($i) === 1 ? '0'.$i : $i;
+				if (JString::stristr($str, $month))
+				{
+					$monthNum = JString::strlen($i) === 1 ? '0' . $i : $i;
 					$str = JString::str_ireplace($month, $monthNum, $str);
 				}
 			}
@@ -1930,11 +2051,14 @@ class FabDate extends JDate{
 	protected function stripDays($str)
 	{
 		$abbrs = array(true, false);
-		for ($a = 0; $a < count($abbrs); $a ++ ) {
-			for ($i = 0; $i < 7; $i ++) {
+		for ($a = 0; $a < count($abbrs); $a++)
+		{
+			for ($i = 0; $i < 7; $i++)
+			{
 				$day = $this->dayToString($i, $abbrs[$a]);
 				//echo "day = $day <br>";
-				if (JString::stristr($str, $day)) {
+				if (JString::stristr($str, $day))
+				{
 					$str = JString::str_ireplace($day, '', $str);
 				}
 			}

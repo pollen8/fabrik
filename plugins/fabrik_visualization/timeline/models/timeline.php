@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.timeline
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.timeline
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,10 +16,11 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 /**
  * Renders timeline visualization
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.timeline
- *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.timeline
+ * @since       3.0
  */
+
 class fabrikModelTimeline extends FabrikFEModelVisualization
 {
 
@@ -91,8 +92,8 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 				$startParams = $startElement->getParams();
 
 				$action = $app->isAdmin() ? "task" : "view";
-				//$nextview = $listModel->canEdit() ? "form" : "details";
 
+				// $nextview = $listModel->canEdit() ? "form" : "details";
 				foreach ($data as $group)
 				{
 					if (is_array($group))
@@ -130,7 +131,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 								. '&listid=' . $listid;
 							} */
 							$url = $this->getLinkURL($listModel, $row, $c);
-							$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : $url;//JRoute::_($url);
+							$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : $url;
 							$event->image = '';
 							$event->color = $colour;
 							$event->textColor = $textColour;
@@ -170,9 +171,9 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	/**
 	 * Build the item link
 	 *
-	 * @param   object  $listModel list model
-	 * @param   object  $row       current row
-	 * @param   int     $c         which data set are we in (needed for getting correct params data)
+	 * @param   object  $listModel  list model
+	 * @param   object  $row        current row
+	 * @param   int     $c          which data set are we in (needed for getting correct params data)
 	 *
 	 *  @return  string  url
 	 */
@@ -200,7 +201,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 			else
 			{
 				$url = 'index.php?option=com_fabrik&view=' . $nextview . '&formid=' . $table->form_id . '&rowid=' . $row->__pk_val
-				. '&listid=' . $listid;
+				. '&listid=' . $listModel->getId();
 			}
 		}
 		return $url;

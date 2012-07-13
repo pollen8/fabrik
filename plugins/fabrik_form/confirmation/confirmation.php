@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.confirmation
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.confirmation
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,8 +15,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
  * After submission, shows a page where the user can confirm the data they are posting
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.confirmation
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.confirmation
  */
 
 class plgFabrik_FormConfirmation extends plgFabrik_Form

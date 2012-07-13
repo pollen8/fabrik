@@ -38,8 +38,8 @@
 				descrption="The table template to use" />
 				
 			<field name="resetfilters" type="radio" default="0" 
-				label="Reset filters" 
-				description="Reset any applied filters when clicking on the link">
+				label="COM_FABRIK_FIELD_RESET_FILTERS_LABEL" 
+				description="COM_FABRIK_FIELD_RESET_FILTERS_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
