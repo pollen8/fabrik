@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
  *
  * @static
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Fabrik.helpers
  * @since       1.5
  */
 class FabrikHelperHTML
