@@ -58,7 +58,7 @@ var FbListPlugin = new Class({
 		if (typeOf(this.options.name) === 'null') {
 			return;
 		}
-		//might need to be this.listform and not document
+		// might need to be this.listform and not document
 		document.addEvent('click:relay(.' + this.options.name + ')', function (e) {
 			e.stop();
 			var row, chx;
@@ -79,16 +79,6 @@ var FbListPlugin = new Class({
 					ok = true;
 				}
 			});
-			// heading button pressed so check all checkboxes
-			row = e.target.getParent('.fabrik___heading');
-			if (row && ok === false) {
-				this.listform.getElements('input[name^=ids]').set('checked', true);
-				var all = this.listform.getElement('input[name=checkAll]');
-				if (typeOf(all) !== 'null') {
-					all.set('checked', true);
-				}
-				ok = true;
-			}
 			if (!ok && this.options.requireChecked) {
 				alert(Joomla.JText._('COM_FABRIK_PLEASE_SELECT_A_ROW'));
 				return;
