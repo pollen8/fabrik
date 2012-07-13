@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.captcha
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,10 +12,10 @@ defined('_JEXEC') or die();
 require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha1.10/recaptchalib.php';
 
 /**
- * Captcha element plugin
- * 
- * @package  Fabrik
- * @since    3.0
+ * Plugin element to captcha
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.captcha
  */
 
 class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
@@ -26,7 +26,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -37,9 +37,9 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Generate captcha text
-	 * 
+	 *
 	 * @param   int  $characters  number of characters to generate
-	 * 
+	 *
 	 * @return  string captcha text
 	 */
 
@@ -59,10 +59,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Get the element's HTML label
-	 *  
+	 *
 	 * @param   int     $repeatCounter  group repeat counter
 	 * @param   string  $tmpl           form template
-	 * 
+	 *
 	 * @return  string  label
 	 */
 
@@ -103,7 +103,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	/**
 	 * Check user can view the read only element & view in list view
 	 * $$$ rob 14/03/2012 always returns false now - cant see a need to show it in the details / list view
-	 * 
+	 *
 	 * @return  bool  can view or not
 	 */
 
@@ -114,11 +114,11 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Check if the user can use the active element
-	 * 
+	 *
 	 * @param   object  &$model    calling the plugin list/form
 	 * @param   string  $location  to trigger plugin on
 	 * @param   string  $event     to trigger plugin on
-	 * 
+	 *
 	 * @return  bool can use or not
 	 */
 
@@ -138,10 +138,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -242,10 +242,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Internal element validation
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  repeeat group counter
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -284,7 +284,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Get validation error - run through JText
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -295,7 +295,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Determine if the element should run its validation plugins on form submission
-	 * 
+	 *
 	 * @return  bool	default true
 	 */
 
@@ -311,9 +311,9 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -331,11 +331,11 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * Used to format the data when shown in the form's email
-	 * 
+	 *
 	 * @param   mixed  $value          element's data
 	 * @param   array  $data           form records data
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -346,10 +346,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	/**
 	 * $$$ e-kinst Convert a hext colour to RGB
-	 * 
+	 *
 	 * @param   string  $hexColor  3- or 6-digits hex color with optional leading '#'
 	 * @param   string  $default   default hex color if first param invalid
-	 * 
+	 *
 	 * @return  string 	as 'R+G+B' where R,G,B are decimal
 	 */
 

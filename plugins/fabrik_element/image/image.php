@@ -1,14 +1,20 @@
 <?php
 /**
- * Plugin element to render image
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.image
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render an image already located on the server
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.image
+ */
 
 class PlgFabrik_ElementImage extends PlgFabrik_Element
 {
@@ -19,10 +25,10 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -51,11 +57,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -151,10 +157,10 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -215,10 +221,10 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -291,10 +297,10 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -397,9 +403,9 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -523,11 +529,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 	/**
 	 * Used to format the data when shown in the form's email
-	 * 
+	 *
 	 * @param   mixed  $value          element's data
 	 * @param   array  $data           form records data
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 

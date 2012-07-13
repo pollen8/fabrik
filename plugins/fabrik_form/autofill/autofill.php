@@ -1,7 +1,11 @@
 <?php
-
 /**
- * Allows you to observe an element, and when it its blurred asks if you want to lookup
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.form.autofill
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
+/**
  * other records in the table to auto fill in the rest of the form with that records data
  *
  * Does not alter the record you search for but creates a new record
@@ -18,6 +22,14 @@ defined('_JEXEC') or die();
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+
+/**
+* Allows you to observe an element, and when it its blurred asks if you want to lookup related data to fill
+* into additional fields
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.form.autofill
+*/
 
 class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 

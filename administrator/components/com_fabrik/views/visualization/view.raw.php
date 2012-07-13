@@ -14,9 +14,9 @@ jimport('joomla.application.component.view');
 /**
  *
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
- * @since		1.5
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 class FabrikViewVisualization extends JView
 {

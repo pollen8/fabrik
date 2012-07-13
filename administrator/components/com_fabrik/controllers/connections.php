@@ -1,11 +1,11 @@
 <?php
 /**
-* @package     Joomla.Administrator
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-* @since       1.6
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access.
 defined('_JEXEC') or die;
@@ -15,8 +15,9 @@ require_once 'fabcontrolleradmin.php';
 /**
  * Connections list controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		1.6
  */
 
 class FabrikControllerConnections extends FabControllerAdmin
@@ -32,27 +33,27 @@ class FabrikControllerConnections extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-* @param   array  $config  An optional associative array of configuration settings.
-	 * 
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @see		JController
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		$this->registerTask('unsetDefault',	'setDefault');
+		$this->registerTask('unsetDefault', 'setDefault');
 	}
 
 	/**
 	 * Proxy for getModel.
-	 * 
-* @param   string  $name    model name
-* @param   string  $prefix  model prefix
-	 * 
+	 *
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return  J model
 	 */
 
@@ -66,7 +67,7 @@ class FabrikControllerConnections extends FabControllerAdmin
 	 * Method to set the home property for a list of items
 	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return null
 	 */
 

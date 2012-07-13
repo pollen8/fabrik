@@ -1,24 +1,30 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.openstreetmap
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render openstreet map
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.openstreetmap
+ */
 
 class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 {
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -39,9 +45,9 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 
 	/**
 	 * Format the data as a microformat
-	 * 
+	 *
 	 * @param   string	$data  data
-	 * 
+	 *
 	 * @return  string	micro formatted data
 	 */
 
@@ -64,7 +70,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 * 
+	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
@@ -108,9 +114,9 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -272,10 +278,10 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -325,11 +331,11 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 
 	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
-	 * 
+	 *
 	 * @param   array  &$aFields    array of element names
 	 * @param   array  &$aAsFields  array of 'name AS alias' fields
 	 * @param   array  $opts        options
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -357,10 +363,10 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -375,11 +381,11 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -422,7 +428,6 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 					{
 						$value = $data[$fullName];
 					}
-					//$value = explode(GROUPSPLITTER, $value);
 					$value = FabrikWorker::JSONtoData($value, true);
 					if (is_array($value) && array_key_exists($repeatCounter, $value))
 					{
@@ -433,7 +438,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 						}
 						if ($value === '')
 						{
-							//query string for joined data
+							// Query string for joined data
 							$value = JArrayHelper::getValue($data, $name);
 						}
 						return $value;
@@ -474,7 +479,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 			}
 
 			/** ensure that the data is a string **/
-			//stops this getting called from form validation code as it messes up repeated/join group validations
+			// Stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -485,7 +490,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 			}
 			if ($value === '')
 			{
-				//query string for joined data
+				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
 			}
 			$this->defaults[$repeatCounter] = $value;

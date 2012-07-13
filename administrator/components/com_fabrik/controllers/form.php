@@ -15,8 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Form controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerForm extends JControllerForm
@@ -34,7 +35,7 @@ class FabrikControllerForm extends JControllerForm
 
 	/**
 	 * show the form in the admin
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -79,7 +80,7 @@ class FabrikControllerForm extends JControllerForm
 
 	/**
 	 * handle saving posted form data from the admin pages
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -179,7 +180,7 @@ class FabrikControllerForm extends JControllerForm
 
 	/**
 	 * save a form's page to the session table
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -193,10 +194,10 @@ class FabrikControllerForm extends JControllerForm
 
 	/**
 	 * generic function to redirect
-	 * 
+	 *
 * @param   object  &$model  form model
 * @param   string  $msg     optional redirect message
-	 * 
+	 *
 	 * @return  null
 	 */
 

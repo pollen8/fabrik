@@ -20,11 +20,11 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 
 	/**
 	 * Check if the user can use the active element
-	 * 
+	 *
 	 * @param   object  &$model    calling the plugin list/form
 	 * @param   string  $location  to trigger plugin on
 	 * @param   string  $event     to trigger plugin on
-	 * 
+	 *
 	 * @return  bool can use or not
 	 */
 

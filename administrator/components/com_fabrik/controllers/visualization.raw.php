@@ -15,8 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Element controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerVisualization extends JControllerForm
@@ -29,7 +30,7 @@ class FabrikControllerVisualization extends JControllerForm
 
 	/**
 	 * called via ajax to perform viz ajax task (defined by plugintask method)
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -51,7 +52,7 @@ class FabrikControllerVisualization extends JControllerForm
 
 	/**
 	 * get html for viz plugin
-	 * 
+	 *
 	 * @return  null
 	 */
 

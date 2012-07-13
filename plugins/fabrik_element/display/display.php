@@ -1,14 +1,20 @@
 <?php
 /**
- * Plugin element to render plain text
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.display
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render plain text/HTML
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.display
+ */
 
 class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 {
@@ -20,9 +26,9 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	/**
 	 * Set/get if element should record its data in the dabase
-	 * 
+	 *
 	 * @deprecated - not used
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -33,10 +39,10 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	/**
 	 * Get the element's HTML label
-	 *  
+	 *
 	 * @param   int     $repeatCounter  group repeat counter
 	 * @param   string  $tmpl           form template
-	 * 
+	 *
 	 * @return  string  label
 	 */
 
@@ -53,10 +59,10 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -69,10 +75,10 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -86,11 +92,11 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 

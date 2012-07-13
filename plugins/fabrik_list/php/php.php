@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
-class plgFabrik_ListPhp extends plgFabrik_List
+class PlgFabrik_ListPhp extends plgFabrik_List
 {
 
 	protected $buttonPrefix = 'php';

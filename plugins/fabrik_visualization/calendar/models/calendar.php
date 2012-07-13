@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.calendar
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.calendar
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,8 +16,8 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 /**
  * Fabrik Calendar Plug-in Model
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.calendar
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.calendar
  */
 
 class fabrikModelCalendar extends FabrikFEModelVisualization
@@ -35,7 +35,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	/** @var bool can add to tables **/
 	var $canAdd = null;
 
-	function setListIds()
+	protected function setListIds()
 	{
 		if (!isset($this->listids))
 		{
@@ -324,7 +324,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 				$qlabel = FabrikString::safeColName($label);
 				if (array_key_exists($qlabel, $els))
 				{
-					// if db join selected for the label we need to get the label element and not the value
+					// If db join selected for the label we need to get the label element and not the value
 					$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
 
 					// $$$ hugh @TODO doesn't seem to work for join elements, so adding hack till I can talk
@@ -344,7 +344,6 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 
 				// @TODO JQuery this
 				$sql = "SELECT $pk AS id, $startdate AS startdate, $enddate AS enddate, '' AS link, $label AS 'label', '{$data['colour']}' AS colour, 0 AS formid FROM $table->db_table_name $join $where ORDER BY $startdate ASC";
-
 				$db->setQuery($sql);
 				$formdata = $db->loadObjectList();
 				if (is_array($formdata))
@@ -395,7 +394,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 
 	/**
 	 * Get the js code to create the legend
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -433,9 +432,9 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 
 	/**
 	 * Get calendar js name
-	 * 
+	 *
 	 * @deprecated  use getJSRenderContext() instead
-	 * 
+	 *
 	 * @return NULL
 	 */
 	function getCalName()

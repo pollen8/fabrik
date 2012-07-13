@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 
 /**
  * Image manipulation class
- * 
+ *
  * @package		Joomla
  * @subpackage	Fabrik.helpers
  * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
@@ -24,7 +24,7 @@ class FabimageHelper
 
 	/**
 	 * get an array of available graphics libraries
-	 * 
+	 *
 	 * @return  array	libs
 	 */
 
@@ -48,7 +48,7 @@ class FabimageHelper
 	 * load in the correct image library
 	 *
 * @param   string  $lib  image lib to load
-	 * 
+	 *
 	 * @return object image lib
 	 */
 
@@ -67,7 +67,7 @@ class FabimageHelper
 
 	/**
 	 * test if GD library is available
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -106,7 +106,7 @@ class FabimageHelper
 
 	/**
 	 * test if image magick library is available
-	 * 
+	 *
 	 * @return mixed  false or array
 	 */
 
@@ -138,7 +138,7 @@ class FabimageHelper
 
 /**
  * base image lib class
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -152,9 +152,9 @@ class Fabimage
 
 	/**
 	 * set the filesystem storage manager
-	 * 
+	 *
 * @param   object  &$storage  storage object
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -165,9 +165,9 @@ class Fabimage
 
 	/**
 	 * get the image type
-	 * 
+	 *
 * @param   string  $filename  filepath
-	 * 
+	 *
 	 * @return  string	image ext
 	 */
 
@@ -209,7 +209,7 @@ class Fabimage
 
 /**
  * GD Image lib class
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -219,9 +219,9 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * Create an image object from a file
-	 * 
+	 *
 * @param   string  $file  file path
-	 * 
+	 *
 	 * @return  array  image object and header string
 	 */
 
@@ -256,9 +256,9 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * create a gd image from a fle
-	 * 
+	 *
 * @param   string  $source  path
-	 * 
+	 *
 	 * @return  image.
 	 */
 
@@ -283,10 +283,10 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * convert an image object into a file
-	 * 
+	 *
 * @param   string  $destCropFile  file path
 * @param   image  	$image         image object
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -314,11 +314,11 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * Rotate an image
-	 * 
+	 *
 * @param   string  $source   filepath
 * @param   string  $dest     destination filepath
 * @param   double  $degrees  number of degrees to rotate
-	 * 
+	 *
 	 * @return  array(image object, rotated images width, rotated images height)
 	 */
 
@@ -342,13 +342,13 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * scale an image
-	 * 
+	 *
 * @param   string  $file        filepath to scale
 * @param   string  $dest        filepath destination
 * @param   int     $percentage  percentage to scale the image by
 * @param   int     $destX       x loc to scale from
 * @param   int     $destY       y loc to scale from
-	 * 
+	 *
 	 * @return  object	image
 	 */
 
@@ -374,12 +374,12 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * resize an image to a specific width/height using standard php gd graphics lib
-	 * 
+	 *
 * @param   int     $maxWidth   maximum image Width (px)
 * @param   int     $maxHeight  maximum image Height (px)
 * @param   string  $origFile   current images folder pathe (must have trailing end slash)
 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -442,7 +442,7 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * Crop an image to specific dimensions
-	 * 
+	 *
 * @param   string  $origFile  path to image to crop from
 * @param   string  $destFile  path to cropped file
 * @param   int     $srcX      x coord on $origFile to start crop from
@@ -452,7 +452,7 @@ class FabimageGD extends Fabimage
 * @param   int     $dstX      destination x coord of destination point
 * @param   int     $dstY      destination y coord of destination point
 * @param   string  $bg        hex background colour
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -498,11 +498,11 @@ class FabimageGD extends Fabimage
 
 	/**
 	 * write an image to the server
-	 * 
+	 *
 * @param   object  $img       image object
 * @param   string  $destFile  filepath to store the image
 * @param   string  $header    image type
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -548,7 +548,7 @@ class FabimageGD extends Fabimage
 
 /**
  * GD2 image lib
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -558,12 +558,12 @@ class FabimageGD2 extends FabimageGD
 
 	/**
 	 * resize an image to a specific width/height using standard php gd graphics lib
-	 * 
+	 *
 * @param   int     $maxWidth   maximum image Width (px)
 * @param   int     $maxHeight  maximum image Height (px)
 * @param   string  $origFile   current images file
 * @param   string  $destFile   destination file path for resized image
-	 * 
+	 *
 	 * @return  object? image
 	 */
 
@@ -687,7 +687,7 @@ class FabimageGD2 extends FabimageGD
 
 /**
  * Image magic class
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -699,12 +699,12 @@ class FabimageIM extends Fabimage
 
 	/**
 	 * resize an image to a specific width/height using imagemagick graphics lib
-	 * 
+	 *
 * @param   int     $maxWidth   maximum image Width (px)
 * @param   int     $maxHeight  maximum image Height (px)
 * @param   string  $origFile   current images folder pathe (must have trailing end slash)
 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	 * 
+	 *
 	 * @return  null
 	 */
 

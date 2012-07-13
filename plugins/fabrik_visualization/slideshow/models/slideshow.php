@@ -1,10 +1,10 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.slideshow
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.slideshow
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -14,22 +14,23 @@ jimport('joomla.application.component.model');
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 /**
-* Slideshow viz Model
-*
-* @static
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.slideshow
-* @since 1.5
-*/
+ * Slideshow viz Model
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.slideshow
+ * @since       3.0
+ */
 
 class fabrikModelSlideshow extends FabrikFEModelVisualization
 {
 
-	/** @var string google charts api url **/
+	/**
+	 * Get slideshow HTML container markup
+	 *
+	 * @return string
+	 */
 
-	var $_url = '';
-
-	function getSlideshow()
+	public function getSlideshow()
 	{
 		$id = 'foo_for_now_fix_this';
 		$return = "
@@ -46,7 +47,13 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 		return $return;
 	}
 
-	function getPlaylist()
+	/**
+	 * Get playlist
+	 *
+	 * @return string
+	 */
+
+	public function getPlaylist()
 	{
 		$params = $this->getParams();
 
@@ -67,12 +74,13 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
 		$form = $listModel->getFormModel();
-		//remove filters?
-		// $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
-		// session state/defaults when it calls getPagination, which is then returned as a cached
-		// object if we call getPagination after render().  So call it first, then render() will
-		// get our cached pagination, rather than vice versa.
-		$nav = &$listModel->getPagination(0, 0, 0);
+		/* remove filters?
+		 * $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
+		 * session state/defaults when it calls getPagination, which is then returned as a cached
+		 * object if we call getPagination after render().  So call it first, then render() will
+		 * get our cached pagination, rather than vice versa.
+		 */
+		$nav = $listModel->getPagination(0, 0, 0);
 		$listModel->render();
 		$alldata = $listModel->getData();
 		$document = JFactory::getDocument();
@@ -96,7 +104,6 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 				$location = str_replace('\\', '/', $location);
 				$location = JString::ltrim($location, '/');
 				$location = COM_FABRIK_LIVESITE . $location;
-				//$location = urlencode($location);
 				$retstr .= "		<track>\n";
 				$retstr .= "			<location>" . $location . "</location>\n";
 				if (!empty($titleElement))
@@ -138,27 +145,27 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 		return $retstr;
 	}
 
-	function getImageJSData()
+	/**
+	 * Get image js data
+	 *
+	 * @return stdClass
+	 */
+
+	public function getImageJSData()
 	{
 		$params = $this->getParams();
-		$listid = $params->get('slideshow_viz_table');
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
-		$listModel->setId($listid);
+		$listModel = $this->getSlideListModel();
 		$table = $listModel->getTable();
-		$form = $listModel->getFormModel();
-		$nav = &$listModel->getPagination(0, 0, 0);
+		$nav = $listModel->getPagination(0, 0, 0);
 		$listModel->render();
 		$alldata = $listModel->getData();
 
-		$slideshow_viz_thumbnails = $params->get('slideshow_viz_thumbnails', false);
-		$slideElement = $form->getElement($params->get('slideshow_viz_file', ''));
+		$slideElement = $this->getSlideElement();
 
 		$slideshow_viz_file = $params->get('slideshow_viz_file', '') . '_raw';
 		$slideshow_viz_caption = $params->get('slideshow_viz_caption', '');
 
-		$js_opts = array();
 		$js_opts = new stdClass;
-		$c = 0;
 		foreach ($alldata as $data)
 		{
 			foreach ($data as $pic)
@@ -172,38 +179,115 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 				$pic_opts = array();
 				if (isset($pic->$slideshow_viz_caption))
 				{
-					$pic_opts['caption'] = $pic->$slideshow_viz_caption . ' '; //force it to a string for json_encode
+					// Force it to a string for json_encode
+					$pic_opts['caption'] = $pic->$slideshow_viz_caption . ' ';
 				}
-
-				$tmp = json_decode($pic->$slideshow_viz_file);
-				if ($tmp == false)
+				if ($slideElement->isJoin())
 				{
-					$k = $pic->$slideshow_viz_file;
+					/*
+					 * For ajax multi uplads we need to get the src from the image html itself
+					 * and add all the images to the js options class
+					 */
+					$el = $params->get('slideshow_viz_file', '');
+					$ok = new SimpleXMLElement($pic->$el);
+					$imgs = $ok->xpath('//img');
+					$as = $ok->xpath('//a');
+					for ($i = 0; $i < count($as); $i++)
+					{
+						if ($params->get('slideshow_viz_thumbnails', false))
+						{
+							$small = (string) $imgs[$i]['src'];
+							$small = str_replace(COM_FABRIK_LIVESITE, '', $small);
+							$pic_opts['thumbnail'] = $small;
+						}
+						$large = (string) $as[$i]['href'];
+						$large = str_replace(COM_FABRIK_LIVESITE, '', $large);
+						$pic_opts['href'] = $large;
+
+						$js_opts->$large = $pic_opts;
+					}
+
 				}
 				else
 				{
-					$k = $tmp[0];
+					$tmp = json_decode($pic->$slideshow_viz_file);
+					$k = $tmp == false ? $pic->$slideshow_viz_file : $k = $tmp[0];
+					$pic_opts['href'] = $slideElement->getStorage()->getFileUrl($k, 0);
+					$this->addThumbOpts($pic_opts);
+					$js_opts->$k = $pic_opts;
 				}
-				$pic_opts['href'] = $slideElement->getStorage()->getFileUrl($k, 0);
-
-				if ($slideshow_viz_thumbnails)
-				{
-					//$mythumb = dirname($pic->$slideshow_viz_file) . '/thumbs/' . basename($pic->$slideshow_viz_file);
-					/*$render = $slideElement->loadElement(basename($pic->$slideshow_viz_file));
-					$render->inTableView = true;
-					$slideElement->inTableView  = true;
-					
-					$pic_opts['thumbnail'] = $mythumb;*/
-
-					$pic_opts['thumbnail'] = $slideElement->getStorage()->_getThumb($pic_opts['href']);
-				}
-				$js_opts->$k = $pic_opts;
 			}
 		}
 		return $js_opts;
 	}
 
-	function getJS()
+	/**
+	 * Get the slide list model
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  object  list model
+	 */
+
+	protected function getSlideListModel()
+	{
+		if (!isset($this->listModel))
+		{
+			$params = $this->getParams();
+			$listid = $params->get('slideshow_viz_table');
+			$this->listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$this->listModel->setId($listid);
+		}
+		return $this->listModel;
+	}
+
+	/**
+	 * Get the slide fileupload element
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  object  element model
+	 */
+
+	protected function getSlideElement()
+	{
+		if (!isset($this->slideElement))
+		{
+			$params = $this->getParams();
+			$listModel = $this->getSlideListModel();
+			$form = $listModel->getFormModel();
+			$this->slideElement = $form->getElement($params->get('slideshow_viz_file', ''));
+		}
+		return $this->slideElement;
+	}
+
+	/**
+	 * Add in the thumb src
+	 *
+	 * @param   array  &$pic_opts  picture options
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  void
+	 */
+
+	protected function addThumbOpts(&$pic_opts)
+	{
+		$params = $this->getParams();
+		if ($params->get('slideshow_viz_thumbnails', false))
+		{
+			$slideElement = $this->getSlideElement();
+			$pic_opts['thumbnail'] = $slideElement->getStorage()->_getThumb($pic_opts['href']);
+		}
+	}
+
+	/**
+	 * Get JS
+	 *
+	 * @return string
+	 */
+
+	public function getJS()
 	{
 		$params = $this->getParams();
 		$str = "head.ready(function() {\n";
@@ -236,25 +320,12 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Get all table models filters
-	 * 
-	 * @return  array  table filters
+	 * Set an array of list id's whose data is used inside the visualaziation
+	 *
+	 * @return  void
 	 */
 
-	function getFilters()
-	{
-		$params = $this->getParams();
-		$listids = (array) $params->get('slideshow_viz_table');
-		$listModels = $this->getlistModels($listids);
-		$filters = array();
-		foreach ($listModels as $listModel)
-		{
-			$filters[$listModel->getTable()->label] = $listModel->getFilters();
-		}
-		return $filters;
-	}
-
-	function setListIds()
+	protected function setListIds()
 	{
 		if (!isset($this->listids))
 		{

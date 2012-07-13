@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.password
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,9 +11,9 @@ defined('_JEXEC') or die();
 
 /**
  * Plugin element to render 2 fields to capture and confirm a password
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.password
  */
 
 class PlgFabrik_ElementPassword extends PlgFabrik_Element
@@ -22,9 +22,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * States if the element contains data which is recorded in the database
 	 * some elements (eg buttons) dont
-	 * 
+	 *
 	 * @param   array  $data  posted data
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -49,10 +49,10 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -68,7 +68,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -79,10 +79,10 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -121,10 +121,10 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 	/**
 	 * Internal element validation
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  repeeat group counter
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -158,9 +158,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -182,12 +182,12 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	}
 
 	/**
-	 * Get an array of element html ids and their corresponding 
+	 * Get an array of element html ids and their corresponding
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  array  html ids to watch for validation
 	 */
 

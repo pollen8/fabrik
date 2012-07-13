@@ -1,10 +1,9 @@
 <?php
 /**
- * Plugin element to js periodical
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.jsperiodical
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,14 +11,21 @@ defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
+/**
+ * Plugin element: js periodical will fire a JavaScript function at a definable interval
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.jsperiodical
+ */
+
 class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 {
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -38,7 +44,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -49,10 +55,10 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -103,9 +109,9 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -122,7 +128,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 
 	/**
 	 * Get database field description
-	 * 
+	 *
 	 * @return  string  db field type
 	 */
 

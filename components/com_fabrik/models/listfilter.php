@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 
 /**
  * List filter model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -23,9 +23,9 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * Set the list model
-	 * 
+	 *
 	 * @param   object  $model  list model
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -36,11 +36,11 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * get the table from the listModel
-	 * 
+	 *
 	 * @param   string  $name     table name
 	 * @param   string  $prefix   prefix name
 	 * @param   array   $options  config
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -51,7 +51,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * $$$ rob activelistid set in content plugin only clear filters on active list (otherwise with n tables in article all qs filters are removed)
-	 * 
+	 *
 	 * @return  bool - is the list currently being rendered the list that initially triggered the filter
 	 */
 
@@ -62,7 +62,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * unset request
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -158,14 +158,14 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * With prefilter and search all - 2nd time you use the search all the array keys 
+	 * With prefilter and search all - 2nd time you use the search all the array keys
 	 * seem incorrect - resulting in an incorrect query.
 	 * Use this to force each $filter['property'] array to start at 0 and increment
-	 * 
+	 *
 	 * @param   array  &$filters  list filters
-	 * 
+	 *
 	 * @since   3.0.6
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -184,9 +184,9 @@ class FabrikFEModelListfilter extends FabModel
 	 * from the filter forms field. Can be used in conjunction with a list filter plugin to override a normal fiters option with the
 	 * plugins option, e.g. load all univertisties courses OR [plugin option] load remote courses run by selected university
 	 * e.g http://www.epics-ve.eu/index.php?option=com_fabrik&view=list&listid=5
-	 * 
+	 *
 	 * @param   array  &$filters  list filters
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -206,9 +206,9 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * get the search all posted (or session) value
-	 * 
+	 *
 	 * @param   string  $mode  html (performs htmlspecialchars on value) OR 'query' (adds slashes and url decodes)
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -237,7 +237,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * small method just to return the inout name for the lists search all field
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -257,7 +257,7 @@ class FabrikFEModelListfilter extends FabModel
 	 * If another filter has posted some data then don't add in a 'search all' record for that filter
 	 *
 	 * @param   array  &$filters  filter array
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -317,10 +317,10 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * clear specific filter data all from filters
-	 * 
+	 *
 	 * @param   array  &$filters  array filters
 	 * @param   int    $id        index
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -343,11 +343,11 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * for advanced search all test if the search string is long enough
-	 * 
+	 *
 	 * @param   string  $s  search string
-	 * 
+	 *
 	 * @since 3.0.6
-	 * 
+	 *
 	 * @return  bool	search string long enough?
 	 */
 
@@ -361,10 +361,10 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * do a boolean search
-	 * 
+	 *
 	 * @param   array   &$filters  filter array
 	 * @param   string  $search    term
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -409,7 +409,7 @@ class FabrikFEModelListfilter extends FabModel
 		if ($mode == 'none')
 		{
 			/**
-			 * Have to do it like this as the -operator removes records matched from 
+			 * Have to do it like this as the -operator removes records matched from
 			 * previous +operators (so if you just have -operatos)
 			 * no records are returned
 			 */
@@ -446,7 +446,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * removes any search or filters from the list
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -498,12 +498,11 @@ class FabrikFEModelListfilter extends FabModel
 		{
 			$app->setUserState('com_fabrik.searchform.form' . $fromFormId . '.searchall', '');
 		}
-
 	}
 
 	/**
 	 * get users default access level
-	 * 
+	 *
 	 * @return  int  access level
 	 */
 
@@ -514,10 +513,10 @@ class FabrikFEModelListfilter extends FabModel
 	}
 	/**
 	 * Insert search all string into filters
-	 * 
+	 *
 	 * @param   array   &$filters  list filters
 	 * @param   string  $search    search string
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -599,9 +598,9 @@ class FabrikFEModelListfilter extends FabModel
 				$filters['required'][$key] = 0;
 				$filters['access'][$key] = $access;
 				/**
-				 * $$$ rob 16/06/2011 - changed this. If search all and search on post then change post filter. 
+				 * $$$ rob 16/06/2011 - changed this. If search all and search on post then change post filter.
 				 * The grouped_to_previous was being set from 1 to 0 - giving
-				 * incorrect query. ASAICT grouped_to_previous should always be 1 for search_all. 
+				 * incorrect query. ASAICT grouped_to_previous should always be 1 for search_all.
 				 * And testing if the element name = 0 seems v wrong :)
 				 */
 				// $filters['grouped_to_previous'][$key] = $k == 0 ? 0 : 1;
@@ -631,9 +630,9 @@ class FabrikFEModelListfilter extends FabModel
 				// $filters['grouped_to_previous'][] = 0;//1;
 
 				/**
-				 * $$$ rob 16/06/2011 - Yeah but no! - if you have search all AND a post filter - 
+				 * $$$ rob 16/06/2011 - Yeah but no! - if you have search all AND a post filter -
 				 * the post filter should filter a subset of the search
-				 * all data, so setting grouped_to_previous to 1 gives you a query of: 
+				 * all data, so setting grouped_to_previous to 1 gives you a query of:
 				 * where (el = 'searchall' OR el = 'searchall') AND el = 'post value'
 				 */
 				$filters['grouped_to_previous'][] = 1;
@@ -651,9 +650,9 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * Insert search form's search all filters
-	 * 
+	 *
 	 * @param   array  &$filters  list filters
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -677,7 +676,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * Get search form id
-	 * 
+	 *
 	 * @return  int  search form id
 	 */
 
@@ -690,9 +689,9 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * Set search form id
-	 * 
+	 *
 	 * @param   int  $id  form id
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -705,9 +704,9 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * Get search form filters
-	 * 
+	 *
 	 * @param   array  &$filters  list filters
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -831,9 +830,9 @@ class FabrikFEModelListfilter extends FabModel
 	 * or if you want more control you can do
 	 *
 	 * tablename___elementname[value]=value&tablename_elementname[condition]=OR etc
-	 * 
+	 *
 	 * @param   array  &$filters  list filters
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -936,7 +935,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * insert individual querystring filter into filter array
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
 	 * @param   array   &$filters      filter array
 	 * @param   mixed   $value         value
@@ -946,7 +945,7 @@ class FabrikFEModelListfilter extends FabModel
 	 * @param   bool    $eval          is eval
 	 * @param   string  $key           element key
 	 * @param   string  $raw           is the filter a raw filter (tablename___elementname_raw=foo)
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -987,7 +986,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * Get post filters
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -1016,9 +1015,9 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * Overwrite session and serach all filters with posted data
-	 * 
+	 *
 	 * @param   array  &$filters  filter array
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1071,7 +1070,6 @@ class FabrikFEModelListfilter extends FabModel
 				}
 				if ($index !== false)
 				{
-
 					$usedMerges[] = $elid;
 				}
 
@@ -1206,9 +1204,9 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * load up filters stored in the session from previous searches
-	 * 
+	 *
 	 * @param   array  &$filters  list filters
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1267,7 +1265,7 @@ class FabrikFEModelListfilter extends FabModel
 						 * &element_test___user[value][0]=aaassss&element_test___user[value][1]=X Administrator&element_test___user[join][1]=OR
 						 * converted to:
 						 * WHERE `jos_users`.`name` REGEXP 'aaassss' OR `jos_users`.`name` REGEXP ' X Administrator'
-						 * 
+						 *
 						 * unset($filters[$fkey][$index]);
 						 */
 
@@ -1408,7 +1406,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	/**
 	 * get an array of the lists's plugin filter keys
-	 * 
+	 *
 	 * @return  array  key names
 	 */
 
@@ -1420,4 +1418,3 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 }
-?>

@@ -20,7 +20,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
 	protected $icon = 'notempty';
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see PlgFabrik_Validationrule::validate()
@@ -41,7 +41,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 		$lookuptable = $db->NameQuote($table->db_table_name);
 		$data = $db->quote($data);
 		$query = $db->getQuery(true);
-		$cond = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '='; 
+		$cond = $params->get('isuniquevalue-caseinsensitive') == 1 ? 'LIKE' : '=';
 		$query->select('COUNT(*)')
 		->from($lookuptable)
 		->where($element->name.' '.$cond.' '.$data);

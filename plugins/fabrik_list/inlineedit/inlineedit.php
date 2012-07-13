@@ -43,7 +43,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List {
 		$src = parent::loadJavascriptClass_result();
 		return array($src, 'media/com_fabrik/js/element.js');
 	}
-	
+
 	/**
 	 * return the javascript to create an instance of the class defined in formJavascriptClass
 * @param   object	parameters

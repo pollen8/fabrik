@@ -1,6 +1,6 @@
 <?php
 /**
- * @package		Joomla.Plugin
+ * @package     Joomla.Plugin
  * @subpackage	Content
  * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
  * @license		GNU/GPL
@@ -14,7 +14,7 @@ jimport('joomla.plugin.plugin');
 /**
  * Fabrik content plugin - renders forms and tables
  *
- * @package		Joomla.Plugin
+ * @package     Joomla.Plugin
  * @subpackage	Content
  * @since 		1.5
  */

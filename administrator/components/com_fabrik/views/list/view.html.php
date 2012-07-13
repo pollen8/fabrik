@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a list.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewList extends JView
@@ -28,7 +28,7 @@ class FabrikViewList extends JView
 	/**
 	 * Display the list
 	 */
-	
+
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
@@ -85,7 +85,7 @@ class FabrikViewList extends JView
 	 * show the list's linked forms etc
 * @param $tpl
 	 */
-	
+
 	public function showLinkedElements($tpl = null)
 	{
 		$model = $this->getModel('Form');

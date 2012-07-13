@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.user
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -13,9 +13,10 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
 
 /**
  * Plugin element to render dropdown list to select user
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.user
+ * @since       3.0
  */
 
 class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
@@ -48,10 +49,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -187,9 +188,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * run on formModel::setFormData()
-	 * 
+	 *
 	 * @param   int  $c  repeat group counter
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -261,9 +262,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * Trigger called when a row is stored.
 	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
-	 * 
+	 *
 	 * @param   array  &$data  to store
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -354,17 +355,17 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Check user can view the read only element & view in list view
-	 * 
+	 *
 	 * When processing the form, we always want to store the current userid
 	 * (subject to save-on-edit, but that's done elsewhere), regardless of
 	 * element access settings, see:
-	 * 
+	 *
 	 * http://fabrikar.com/forums/showthread.php?p=70554#post70554
-	 * 
+	 *
 	 * So overriding the element model canView and returning true in that
 	 * case allows addDefaultDataFromRO to do that, whilst still enforcing
 	 * Read Access settings for detail/list view
-	 * 
+	 *
 	 * @return  bool  can view or not
 	 */
 
@@ -379,9 +380,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -397,7 +398,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 * 
+	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
@@ -419,11 +420,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
-	 * 
+	 *
 	 * @param   array  &$aFields    array of element names
 	 * @param   array  &$aAsFields  array of 'name AS alias' fields
 	 * @param   array  $opts        options
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -499,10 +500,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -517,11 +518,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -574,11 +575,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Get the table filter for the element
-	 * 
+	 *
 	 * @param   int   $counter  filter order
 	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * 
+	 *
 	 * @return  string	filter html
 	 */
 
@@ -690,13 +691,13 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
-	 * 
+	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`
 	 * @param   string  $condition      =/like etc
 	 * @param   string  $value          search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  original filter value without quotes or %'s applied
 	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
-	 * 
+	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
 
@@ -781,11 +782,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Used to format the data when shown in the form's email
-	 * 
+	 *
 	 * @param   mixed  $value          element's data
 	 * @param   array  $data           form records data
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -815,7 +816,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * @since	3.0b
 	 * get the user's property to show, if gid raise warning and revert to username (no gid in J1.7)
 	 * @param   object	$user
-	 * @return  string	
+	 * @return  string
 	 */
 
 	protected function getUserDisplayProperty($user)
@@ -849,9 +850,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Called when copy row list plugin called
-	 * 
+	 *
 	 * @param   mixed  $val  value to copy into new record
-	 * 
+	 *
 	 * @return mixed value to copy into new record
 	 */
 
@@ -868,9 +869,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Called when save as copy form button clicked
-	 * 
+	 *
 	 * @param   mixed  $val  value to copy into new record
-	 * 
+	 *
 	 * @return  mixed  value to copy into new record
 	 */
 

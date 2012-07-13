@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.media
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.media
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * Fabrik Media Viz HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.media
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.media
  */
 
 class fabrikViewMedia extends JView
@@ -35,7 +35,6 @@ class fabrikViewMedia extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
-		$model->setListIds();
 		$params = $model->getParams();
 
 		$js = $model->getJs();

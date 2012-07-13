@@ -1,10 +1,10 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.slideshow
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.slideshow
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -29,7 +29,6 @@ class fabrikViewSlideshow extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
-		$model->setListIds();
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
@@ -41,12 +40,13 @@ class fabrikViewSlideshow extends JView
 		$this->assign('params', $params);
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
+		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$this->assign('params', $model->getParams());
+		$this->assign('containerId', $this->get('ContainerId'));
 		$tpl = $pluginParams->get('slideshow_viz_layout', $tpl);
-		$tmplpath = $model->pathBase.'slideshow/views/slideshow/tmpl/' . $tpl;
+		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		if ($this->get('RequiredFiltersFound'))

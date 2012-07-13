@@ -14,8 +14,9 @@ require_once 'fabcontrolleradmin.php';
 /**
  * Forms list controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 class FabrikControllerForms extends FabControllerAdmin
 {
@@ -32,7 +33,7 @@ class FabrikControllerForms extends FabControllerAdmin
 	 * Constructor.
 	 *
 * @param   array  $config  An optional associative array of configuration settings.
-	 * 
+	 *
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -44,12 +45,12 @@ class FabrikControllerForms extends FabControllerAdmin
 
 	/**
 	 * Proxy for getModel.
-	 * 
+	 *
 * @param   string  $name    model name
 * @param   string  $prefix  model prefix
-	 * 
+	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return  model
 	 */
 
@@ -61,7 +62,7 @@ class FabrikControllerForms extends FabControllerAdmin
 
 	/**
 	 * attempt to alter teh db structure to match the form's current status
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -76,7 +77,7 @@ class FabrikControllerForms extends FabControllerAdmin
 
 	/**
 	 * View the list data
-	 * 
+	 *
 	 * @return  null
 	 */
 

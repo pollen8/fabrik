@@ -50,6 +50,12 @@
 				rows="8"
 				type="textarea"/>
 				
+			<field name="timeline_customlink"
+				type="text"
+				size="70"
+				description="PLG_VIZ_TIMELINE_CUSTOM_LINK_DESC"
+				label="PLG_VIZ_TIMELINE_CUSTOM_LINK_LABEL" />
+				
 			<field name="timeline_colour"
 				default="#58A0DC"
 				description="PLG_VIZ_TIMELINE_COLOUR_DESC"

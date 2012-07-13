@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit an element (inline list plugin when editing in admin).
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		3.0
  */
 class FabrikViewElement extends JView

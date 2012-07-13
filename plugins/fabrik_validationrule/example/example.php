@@ -83,7 +83,7 @@ class PlgFabrik_ValidationruleExample extends PlgFabrik_Validationrule
 * @param   int		plugin sequence ref
 	 * @return  string	replaced data
 	 */
-	
+
  	function replace($data, &$element, $c)
  	{
  		return $data;

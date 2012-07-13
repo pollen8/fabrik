@@ -1,10 +1,9 @@
 <?php
-
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.confirmation
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,14 +13,14 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
- * Confirmation form plugin
  * After submission, shows a page where the user can confirm the data they are posting
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.confirmation
+ * @since       3.0
  */
 
-class PlgFabrik_FormConfirmation extends PlgFabrik_Form
+class PlgFabrik_FormConfirmation extends plgFabrik_Form
 {
 
 	protected $runAway = false;
@@ -29,9 +28,9 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	/**
 	 * If true then the plugin is stating that any subsequent plugin in the same group
 	 * should not be run.
-	 * 
+	 *
 	 * @param   string  $method  current plug-in call method e.g. onBeforeStore
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -47,11 +46,11 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	/**
 	 * Remove session flags which state that the form should be loaded
 	 * from the session
-	 * 
+	 *
 	 * @param   int  $id  form id
-	 * 
+	 *
 	 * @since   2.0.4
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -65,10 +64,10 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	/**
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
-	 * 
+	 *
 	 * @param   object  &$params     params
 	 * @param   object  &$formModel  form model
-	 * 
+	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
@@ -149,10 +148,10 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 
 	/**
 	 * Sets up HTML to be injected into the form's bottom
-	 * 
+	 *
 	 * @param   object  $params     params
 	 * @param   object  $formModel  form model
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -225,17 +224,17 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 
 			// Unset the task otherwise we will submit the form to be processed.
 			FabrikHelperHTML::addScriptDeclaration(
-				"head.ready(function() {" . "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n"
-			. "  this.form.task.value = '';\n" . "  this.form.submit.click();\n" . "	});\n" . "});");
+				"head.ready(function() {" . "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n" . "  this.form.task.value = '';\n"
+					. "  this.form.submit.click();\n" . "	});\n" . "});");
 			$this->html = implode("\n", $fields);
 		}
 	}
 
 	/**
 	 * Inject custom html into the bottom of the form
-	 * 
+	 *
 	 * @param   int  $c  plugin counter
-	 * 
+	 *
 	 * @return string html
 	 */
 

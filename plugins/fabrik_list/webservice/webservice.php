@@ -29,7 +29,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	{
 		return true;
 	}
-	
+
 	/**
 	 * create the HTML for rendering a button in the top button list
 	 * @return  string	<a> link
@@ -44,7 +44,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 			return '<a href="#" class="'.$name.' listplugin" title="'.$label.'">'.$img.'<span>'.$label.'</span></a>';
 		}
 	}
-	
+
 	/**
 	 * row button set up code
 	 * @return  string
@@ -53,7 +53,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	{
 		return "run webservice";
 	}
-	
+
 	/**
 	 * @see plgFabrik_List::button_result()
 	 */
@@ -62,7 +62,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	{
 		return '';
 	}
-	
+
 	protected function buttonLabel()
 	{
 		return $this->getParams()->get('webservice_button_label', parent::buttonLabel());
@@ -119,18 +119,18 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$filters = $this->getServiceFilters($service);
 		$service->setMap($this->getMap($formModel));
 		$filters = array_merge($opts['credentials'], $filters);
-				
+
 		$method = $params->get('webservice_get_method');
 		$startPoint = $params->get('webservice_start_point');
-		
+
 		$serviceData = $service->get($method, $filters, $startPoint, null);
-		
+
 		$update = (bool)$params->get('webservice_update_existing', false);
 		$service->storeLocally($model, $serviceData, $fk, $update);
 		$this->msg = JText::sprintf($params->get('webservice_msg'), $service->addedCount, $service->updateCount);
 		return true;
 	}
-	
+
 	/**
 	 * get the data map to transform web service data into list data
 * @param   object	$formModel
@@ -154,13 +154,13 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * get an array of key/value filters to send to the web serive
 * @param   object	$service
 	 * @return  array	key/val pairs
 	 */
-	
+
 	protected function getServiceFilters($service)
 	{
 		$params = $this->getParams();
@@ -176,19 +176,19 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * get sign in credentials to the service
 	 * @return  array	login credentials
 	 */
-	
+
 	protected function getCredentials()
 	{
 		$params = $this->getParams();
 		$credentials = json_decode($params->get('webservice_credentials'));
 		$return = array();
 		$keys = isset($credentials->webservice_credentials_key) ? $credentials->webservice_credentials_key : array();
-		$vals = isset($credentials->webservice_credentials_value) ? $credentials->webservice_credentials_value : array(); 
+		$vals = isset($credentials->webservice_credentials_value) ? $credentials->webservice_credentials_value : array();
 		$n = count($keys);
 		for ($i = 0; $i < $n; $i ++)
 		{

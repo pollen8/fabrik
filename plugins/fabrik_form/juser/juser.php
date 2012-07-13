@@ -1,12 +1,9 @@
 <?php
-
 /**
- * Create a Joomla user from the forms data
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.juser
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,7 +12,14 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class PlgFabrik_FormJUser extends PlgFabrik_Form
+/**
+ * Create a Joomla user from the forms data
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.juser
+ */
+
+class plgFabrik_FormJUser extends plgFabrik_Form
 {
 
 	var $namefield = '';
@@ -224,10 +228,10 @@ class PlgFabrik_FormJUser extends PlgFabrik_Form
 
 	/**
 	 * Run before the form is processed
-	 * 
+	 *
 	 * @param   object  &$params     params
 	 * @param   object  &$formModel  form model
-	 * 
+	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
@@ -540,20 +544,20 @@ class PlgFabrik_FormJUser extends PlgFabrik_Form
 		{
 		    // Get an ACL object
 		    $acl = &JFactory::getACL();
-		
+
 		    // Get the user group from the ACL
 		    $grp = $acl->getAroGroup($user->get('id'));
-		
+
 		    // Mark the user as logged in
 		    $user->set('guest', 0);
 		    $user->set('aid', 1);
-		
+
 		    // Fudge Authors, Editors, Publishers and Super Administrators into the special access group
 		    if ($acl->is_group_child_of($grp->name, 'Registered')      ||
 		    $acl->is_group_child_of($grp->name, 'Public Backend'))    {
 		        $user->set('aid', 2);
 		    }
-		
+
 		    // Set the usertype based on the ACL group name
 		    $user->set('usertype', $grp->name);
 		    $session->set('user', $user);
@@ -724,4 +728,3 @@ class PlgFabrik_FormJUser extends PlgFabrik_Form
 		}
 	}
 }
-?>

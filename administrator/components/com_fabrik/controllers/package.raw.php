@@ -15,8 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Package controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerPackage extends JControllerForm
@@ -29,7 +30,7 @@ class FabrikControllerPackage extends JControllerForm
 
 	/**
 	 * Constructor
-	 * 
+	 *
 * @param   array  $config  options
 	 */
 
@@ -40,7 +41,7 @@ class FabrikControllerPackage extends JControllerForm
 
 	/**
 	 * list of items
-	 * 
+	 *
 	 * @return  null
 	 */
 

@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a form.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewForm extends JView
@@ -60,7 +60,7 @@ class FabrikViewForm extends JView
 	 * Add the page title and toolbar.
 	 * @since	1.6
 	 */
-	
+
 	protected function addToolbar()
 	{
 		JRequest::setVar('hidemainmenu', true);

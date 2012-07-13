@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.yesno
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,9 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
 
 /**
  * Plugin element to yes/no radio options - render as tick/cross in list view
- * 
- * @package  Fabrik
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.yesno
  * @since    3.0
  */
 
@@ -28,10 +29,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -71,10 +72,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * shows the data formatted for the table view with format = pdf
 	 * note pdf lib doesnt support transparent pngs hence this func
-	 * 
+	 *
 	 * @param   string  $data     data
 	 * @param   object  $thisRow  all the data in the tables current row
-	 * 
+	 *
 	 * @return string formatted value
 	 */
 
@@ -93,10 +94,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Prepares the element data for CSV export
-	 * 
+	 *
 	 * @param   string  $data      element data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -114,7 +115,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Get sub option values
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -125,7 +126,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Get sub option labels
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -136,9 +137,9 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Run after unmergeFilterSplits to ensure filter dropdown labels are correct
-	 * 
+	 *
 	 * @param   array  &$rows  filter options
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -166,7 +167,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 * 
+	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
@@ -192,10 +193,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * format the read only output for the page
-	 * 
+	 *
 	 * @param   string  $value  initial value
 	 * @param   string  $label  label
-	 * 
+	 *
 	 * @return  string  read only value
 	 */
 
@@ -208,10 +209,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -224,9 +225,9 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -240,11 +241,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	/**
 	 * Get the table filter for the element
-	 * 
+	 *
 	 * @param   int   $counter  filter order
 	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * 
+	 *
 	 * @return  string	filter html
 	 */
 

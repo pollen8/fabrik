@@ -15,8 +15,9 @@ require_once 'fabcontrollerform.php';
 /**
  * List controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerList extends FabControllerForm
@@ -33,8 +34,8 @@ class FabrikControllerList extends FabControllerForm
 	/**
 	 * Method to edit an existing record.
 	 *
-* @param   string  $key     The name of the primary key of the URL variable.
-* @param   string  $urlVar  The name of the URL variable if different from the primary key
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
 	 * (sometimes required to avoid router collisions).
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
@@ -53,7 +54,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * set up a confirmation screen asking about renaming the list you want to copy
-	 * 
+	 *
 	 * @return mixed notice or null
 	 */
 
@@ -76,7 +77,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * actually copy the list
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -93,9 +94,9 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * show the lists data in the admin
-	 * 
-* @param   object  $model  list model
-	 * 
+	 *
+	 * @param   object  $model  list model
+	 *
 	 * @return  null
 	 */
 
@@ -146,7 +147,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * show the linked elements
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -180,7 +181,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * Order the lists
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -202,7 +203,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * clear filters
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -215,7 +216,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * filter the list data
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -236,7 +237,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * delete rows from table
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -280,7 +281,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * empty a table of records and reset its key to 0
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -295,7 +296,7 @@ class FabrikControllerList extends FabControllerForm
 
 	/**
 	 * run a list plugin
-	 * 
+	 *
 	 * @return  null
 	 */
 

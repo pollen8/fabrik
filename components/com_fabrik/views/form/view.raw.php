@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -15,12 +15,12 @@ class fabrikViewForm extends JView
 {
 
 	public $access = null;
-	
+
 	public function inlineEdit()
 	{
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
-		
+
 		$form = $model->getForm();
 		if ($model->render() === false)
 		{
@@ -28,7 +28,7 @@ class fabrikViewForm extends JView
 		}
 		$this->groups = $this->get('GroupView');
 		$elementid = JRequest::getInt('elid'); //main trigger element's id
-		
+
 		$html = array();
 		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
 		$html[] = '<div class="floating-tip" >';
@@ -37,14 +37,14 @@ class fabrikViewForm extends JView
 		{
 			foreach ($group->elements as $element)
 			{
-				$html[] = '<li class="'.$element->id.'">' . $element->label . '</li>';
+				$html[] = '<li class="' . $element->id . '">' . $element->label . '</li>';
 				$html[] = '<li class="fabrikElement">';
 				$html[] = $element->element;
 				$html[] = '</li>';
 			}
 		}
 		$html[] = '</ul>';
-			
+
 		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel'))
 		{
 			//$html[] = '<ul class="fabrik_buttons">';
@@ -57,7 +57,7 @@ class fabrikViewForm extends JView
 				$html[] = '<span>' . JText::_('COM_FABRIK_CANCEL') . '</span></a>';
 				$html[] = '</li>';
 			}
-		
+
 			if (JRequest::getBool('inlinesave') == true)
 			{
 				$html[] = '<li class="ajax-controls inline-save">';
@@ -71,10 +71,10 @@ class fabrikViewForm extends JView
 		$html[] = '</div>';
 		$html[] = '</div>';
 		echo implode("\n", $html);
-		
+
 		$srcs = array();
-		$repeatCounter= 0;
-		$elementids = (array)JRequest::getVar('elementid');
+		$repeatCounter = 0;
+		$elementids = (array) JRequest::getVar('elementid');
 		$eCounter = 0;
 		$onLoad = array();
 		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
@@ -85,24 +85,24 @@ class fabrikViewForm extends JView
 			$elementModel->getElement();
 			$elementModel->editable = true;
 			$elementModel->formJavascriptClass($srcs);
-			$onLoad[] = "var o = ".$elementModel->elementJavascript($repeatCounter).";";
+			$onLoad[] = "var o = " . $elementModel->elementJavascript($repeatCounter) . ";";
 			if ($eCounter === 0)
 			{
 				$onLoad[] = "o.select();";
 				$onLoad[] = "o.focus();";
-				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '".JUtility::getToken()."';";
+				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JUtility::getToken() . "';";
 			}
-			$eCounter ++;
+			$eCounter++;
 			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
 		}
 		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
 	}
-	
+
 	function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$w = new FabrikWorker;
-		$config	= JFactory::getConfig();
+		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
 
@@ -113,8 +113,10 @@ class fabrikViewForm extends JView
 
 		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
-		if (!$model->canPublish()) {
-			if (!$app->isAdmin()) {
+		if (!$model->canPublish())
+		{
+			if (!$app->isAdmin())
+			{
 				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
 				return false;
 			}
@@ -147,7 +149,7 @@ class fabrikViewForm extends JView
 		$JSONarray = array();
 		$JSONHtml = array();
 
-		for ($i = 0; $i < count($gkeys); $i ++)
+		for ($i = 0; $i < count($gkeys); $i++)
 		{
 			$groupModel = $groups[$gkeys[$i]];
 			$groupTable = $groupModel->getGroup();
@@ -165,7 +167,7 @@ class fabrikViewForm extends JView
 				{
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-					$foreignKey  = '';
+					$foreignKey = '';
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
@@ -206,7 +208,10 @@ class fabrikViewForm extends JView
 						}
 						$d = json_decode($d, true);
 						$c = count($d);
-						if ($c > $repeatGroup) { $repeatGroup = $c;}
+						if ($c > $repeatGroup)
+						{
+							$repeatGroup = $c;
+						}
 					}
 				}
 			}
@@ -221,14 +226,15 @@ class fabrikViewForm extends JView
 				{
 					if (!$model->editable)
 					{
-						// $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
-						// db join add append data doesn't work if for example the popup form is set to allow adding,
-						// but not editing records
-						//$elementModel->inDetailedView = true;
+						/* $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
+						 * db join add append data doesn't work if for example the popup form is set to allow adding,
+						 * but not editing records
+						 * $elementModel->inDetailedView = true;
+						*/
 						$elementModel->editable = false;
 					}
 
-					//force reload?
+					// Force reload?
 					$elementModel->HTMLids = null;
 					$elementHTMLId = $elementModel->getHTMLId($c);
 					if (!$model->editable)
@@ -239,7 +245,7 @@ class fabrikViewForm extends JView
 					{
 						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->data, $c);
 					}
-					//test for paginate plugin
+					// Test for paginate plugin
 					if (!$model->editable)
 					{
 						$elementModel->HTMLids = null;
@@ -249,9 +255,9 @@ class fabrikViewForm extends JView
 				}
 			}
 		}
-		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JSONarray, 'html' => $JSONHtml, 'post' => $_REQUEST);
+		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JSONarray, 'html' => $JSONHtml,
+			'post' => $_REQUEST);
 		echo json_encode($data);
 	}
 
 }
-?>

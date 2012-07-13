@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to make ajax json object reporting csv file creation progress.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewList extends JView
@@ -27,7 +27,8 @@ class FabrikViewList extends JView
 	public function display($tpl = null)
 	{
 		$session = JFactory::getSession();
-		//JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
+
+		// JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$exporter = JModel::getInstance('Csvexport', 'FabrikFEModel');
 		$model = JModel::getInstance('list', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
@@ -35,7 +36,8 @@ class FabrikViewList extends JView
 		$exporter->model =& $model;
 		JRequest::setVar('limitstart'.$model->getId(), JRequest::getInt('start', 0));
 		JRequest::setVar('limit'.$model->getId(), $exporter->getStep());
-		//$model->limitLength = $exporter->getStep();
+
+		// $model->limitLength = $exporter->getStep();
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
 		// the table total

@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a connection.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewConnection extends JView
@@ -27,7 +27,7 @@ class FabrikViewConnection extends JView
 	/**
 	 * Display the view
 	 */
-	
+
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
@@ -52,7 +52,7 @@ class FabrikViewConnection extends JView
 	 * Add the page title and toolbar.
 	 * @since	1.6
 	 */
-	
+
 	protected function addToolbar()
 	{
 		JRequest::setVar('hidemainmenu', true);

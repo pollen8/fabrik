@@ -1,11 +1,9 @@
 <?php
 /**
- * Form submission plugin: Update Ping.fm
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.pingdotfm
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /*******************************************************************************
@@ -20,7 +18,15 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class PlgFabrik_FormPingdotfm extends PlgFabrik_Form {
+/**
+ * Form submission plugin: Update Ping.fm
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.pingdotfm
+ */
+
+class PlgFabrik_FormPingdotfm extends plgFabrik_Form
+{
 
 	/**
 	 * @var max length of message
@@ -30,8 +36,8 @@ class PlgFabrik_FormPingdotfm extends PlgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-* @param   object	$params
-* @param   object	form model
+	 * @param   object	$params
+	 * @param   object	form model
 	 * @returns	bool
 	 */
 
@@ -43,11 +49,12 @@ class PlgFabrik_FormPingdotfm extends PlgFabrik_Form {
 	private function _process(&$params, &$formModel)
 	{
 		$app = JFactory::getApplication();
-		$this->formModel =$formModel;
+		$this->formModel = $formModel;
 		jimport('joomla.filesystem.file');
 		$w = new FabrikWorker;
 		$data = $this->getEmailData();
-		if (!$this->shouldProcess('ping_condition', $data)) {
+		if (!$this->shouldProcess('ping_condition', $data))
+		{
 			return;
 		}
 		$apiKeys = $this->_getKeys($params);
@@ -55,24 +62,28 @@ class PlgFabrik_FormPingdotfm extends PlgFabrik_Form {
 		$ping = new PHPingFM($apiKeys['dev'], $apiKeys['user']);
 		// Validate Keys
 
-		if ($ping->validate() === false) {
-			JError::raiseNotice(500, JText::_('Ping.fm Error'). ": Invalid Key");
+		if ($ping->validate() === false)
+		{
+			JError::raiseNotice(500, JText::_('Ping.fm Error') . ": Invalid Key");
 			return;
 		}
 
 		// Use Method field?
 		$pingMethodFieldId = $params->get('ping_method_field', '');
-		if ($pingMethodFieldId != '') {
+		if ($pingMethodFieldId != '')
+		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingMethodFieldId);
 			$element = $elementModel->getElement(true);
 			$pingMethodField = $elementModel->getFullName(false, true, false);
 			$method = $data[$pingMethodField];
 
-			if (!in_array($method, array('status', 'blog', 'microblog'))) {
+			if (!in_array($method, array('status', 'blog', 'microblog')))
+			{
 				$method = $params->get('ping_method', 'status');
 			}
 		}
-		else {
+		else
+		{
 			$method = $params->get('ping_method', 'status');
 		}
 		// Title & Msg fields
@@ -80,86 +91,107 @@ class PlgFabrik_FormPingdotfm extends PlgFabrik_Form {
 		$pingMsgFieldId = $params->get('ping_msg_field', '');
 
 		// Title (optional)
-		if ($pingTitleFieldId != '') { // Use field
+		if ($pingTitleFieldId != '')
+		{ // Use field
 
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingTitleFieldId);
 			$pingTitleField = $elementModel->getFullName(false, true, false);
 
 			$title = $data[$pingTitleField];
-		} else { // Use template
+		}
+		else
+		{ // Use template
 			$title = $w->parseMessageForPlaceHolder($params->get('ping_title_tmpl'), $data);
 		}
 		// 'blog' method requires a title
-		if ($method == 'blog' && trim($title) == '') {
-			JError::raiseNotice(500, JText::_('Ping.fm Error'). ". The 'blog' posting method requires a title.");
+		if ($method == 'blog' && trim($title) == '')
+		{
+			JError::raiseNotice(500, JText::_('Ping.fm Error') . ". The 'blog' posting method requires a title.");
 			return;
 		}
 
 		// Check Services enabled in Ping.fm
 		$myServices = $ping->services();
 		$okServices = false;
-		if (empty($myServices)) { // No service enabled
-			JError::raiseNotice(500, JText::_('Ping.fm Error'). " You must enable at least one service in your Ping.fm account");
+		if (empty($myServices))
+		{ // No service enabled
+			JError::raiseNotice(500, JText::_('Ping.fm Error') . " You must enable at least one service in your Ping.fm account");
 			return;
 		}
-		else { // Verify at least one service accepts the selected method
-			foreach ($myServices as $myService) {
-				if (in_array($method, $myService['methods'])) {
+		else
+		{ // Verify at least one service accepts the selected method
+			foreach ($myServices as $myService)
+			{
+				if (in_array($method, $myService['methods']))
+				{
 					$okServices = true;
 				}
 			}
 		}
 
-		if ($okServices === false) {
-			JError::raiseNotice(JText::_('Ping.fm Error'), "The chosen method is not supported by any of the services configured in your Ping.fm account");
+		if ($okServices === false)
+		{
+			JError::raiseNotice(JText::_('Ping.fm Error'),
+				"The chosen method is not supported by any of the services configured in your Ping.fm account");
 			return;
 		}
 
 		// Body
-		if ($pingMsgFieldId != '') { // Use field
+		if ($pingMsgFieldId != '')
+		{ // Use field
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingMsgFieldId);
 			$element = $elementModel->getElement(true);
 
 			$pingMsgField = $elementModel->getFullName(false, true, false);
 
 			$msg = $data[$pingMsgField];
-		} else { // Use template
+		}
+		else
+		{ // Use template
 			$msg = $w->parseMessageForPlaceHolder($params->get('ping_msg_tmpl'), $data);
 		}
 
 		// If file paths in body then add the site URL so Ping.fm makes
 		// his things (shortening the URLs with length > 20 chars)
 		preg_match_all('/(\/.[^ ]*\/[^\/| ]+)/', $msg, $matches);
-		if (!empty($matches)) {
+		if (!empty($matches))
+		{
 			$i = 0;
-			foreach ($matches as $match) {
-				if ($i > 0) { // Do not replace 2 times
+			foreach ($matches as $match)
+			{
+				if ($i > 0)
+				{ // Do not replace 2 times
 					break;
 				}
-				$msg = str_replace($match[0], JURI::base().$match[0], $msg);
+				$msg = str_replace($match[0], JURI::base() . $match[0], $msg);
 				$i++;
 			}
 		}
 
 		// Add link to record
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&view=details&fabrik=".$formModel->getId();
-		if (JRequest::getVar('usekey')) {
-			$viewURL .= "&usekey=".JRequest::getVar('usekey');
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&view=details&fabrik=" . $formModel->getId();
+		if (JRequest::getVar('usekey'))
+		{
+			$viewURL .= "&usekey=" . JRequest::getVar('usekey');
 		}
-		$viewURL .= "&rowid=".JRequest::getVar('rowid');
+		$viewURL .= "&rowid=" . JRequest::getVar('rowid');
 
 		$msg = JString::str_ireplace('{LINK}', $viewURL, $msg);
 
 		// Post to Ping.fm
-		if (!empty($msg)) {
+		if (!empty($msg))
+		{
 
-			if ($ping->post($method, $msg, $title)) {
-				if ($params->get('ping_show_success_msg') == true) {
+			if ($ping->post($method, $msg, $title))
+			{
+				if ($params->get('ping_show_success_msg') == true)
+				{
 					$app->enqueueMessage(JText::_('Successfully posted to Ping.fm'), 'message');
 				}
 			}
-			else {
-				JError::raiseNotice(500, JText::_('Ping.fm Error'). " Failed updating Ping.fm");
+			else
+			{
+				JError::raiseNotice(500, JText::_('Ping.fm Error') . " Failed updating Ping.fm");
 			}
 		}
 		return true;

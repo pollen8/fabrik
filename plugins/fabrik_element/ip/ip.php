@@ -1,30 +1,31 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.ip
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**
- * Plugin element to store IP
- * 
- * @package  Fabrik
+ * Plugin element to store the user's IP address
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.ip
  * @since    3.0
  */
 
-class PlgFabrik_ElementIp extends PlgFabrik_Element
+class plgFabrik_elementIp extends PlgFabrik_Element
 {
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -82,9 +83,9 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	 * Trigger called when a row is stored.
 	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
-	 * 
+	 *
 	 * @param   array  &$data  to store
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -108,10 +109,10 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -122,10 +123,10 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -139,11 +140,11 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 

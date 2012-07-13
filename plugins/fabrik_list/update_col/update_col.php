@@ -38,7 +38,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	{
 		return $this->getParams()->get('button_label', parent::buttonLabel());
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see FabrikModelTablePlugin::getAclParam()
@@ -190,7 +190,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		// Clean the cache.
 		$cache = JFactory::getCache(JRequest::getCmd('option'));
 		$cache->clean();
-		
+
 		return true;
 	}
 

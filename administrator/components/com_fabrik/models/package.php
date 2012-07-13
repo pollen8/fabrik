@@ -38,9 +38,9 @@ class FabrikModelPackage extends FabModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -55,9 +55,9 @@ class FabrikModelPackage extends FabModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed	A JForm object on success, false on failure
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -76,7 +76,7 @@ class FabrikModelPackage extends FabModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed  The data for the form.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -95,9 +95,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Save the pacakge
-	 * 
+	 *
 	 * @param   array  $data  jform data
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -145,9 +145,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Export the package
-	 * 
+	 *
 	 * @param   array  $ids  package ids to export
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -194,6 +194,7 @@ class FabrikModelPackage extends FabModelAdmin
 			$ok = JFile::copy($componentZipPath, $this->outputPath . 'com_' . $this->getComponentName($row) . '.zip');
 
 			// Now lets create the Joomla install package
+
 			$plugins = $this->findPlugins($row);
 			$this->zipPlugins($row, $plugins);
 			$filenames = FArrayHelper::extract($plugins, 'fullfile');
@@ -218,10 +219,10 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Start the zip download
-	 * 
+	 *
 	 * @param   string  $filename  saved zip name
 	 * @param   stirng  $filepath  server path for zip
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -247,9 +248,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * remove unwanted tmp files
-	 * 
+	 *
 	 * @param   string  $pkgName  the package zip name (the file we dont want to delete)
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -271,9 +272,9 @@ class FabrikModelPackage extends FabModelAdmin
 	/**
 	 * create the component.manifest.class.php file which will populate the components
 	 * forms/lists/elements etc
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return  string	path name to created file
 	 */
 
@@ -409,11 +410,11 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Build the SQL for inserting rows
-	 * 
+	 *
 	 * @param   string  $table    db table name
 	 * @param   array   $rows     to insert
 	 * @param   array   &$return  sql statements parsed by ref
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -453,11 +454,11 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * recurisive function to add files and folders into the zip
-	 * 
+	 *
 	 * @param   array   $filenames  list of file names to add $filenames
 	 * @param   array   &$files     list of already added files files
 	 * @param   string  $root       root path
-	 * 
+	 *
 	 * @return  array  files
 	 */
 
@@ -488,9 +489,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Get component name
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -501,9 +502,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * get the lists, forms etc that have been assigned in the package admin edit screen
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return  array  items
 	 */
 
@@ -519,9 +520,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * create the SQL install file
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return  string  path
 	 */
 
@@ -580,7 +581,6 @@ class FabrikModelPackage extends FabModelAdmin
 			$vrow->load($vid);
 			$visModel = JModel::getInstance($vrow->plugin, 'fabrikModel');
 			$visModel->setId($vid);
-			$visModel->setListIds();
 			$listModels = $visModel->getlistModels();
 			foreach ($listModels as $lmodel)
 			{
@@ -600,9 +600,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * get a list of plugins that the package uses
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return array plugins
 	 */
 
@@ -664,9 +664,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Create the SQL unistall file
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return  string  path
 	 */
 
@@ -715,10 +715,10 @@ class FabrikModelPackage extends FabModelAdmin
 	/**
 	 * copy the files from the skeleton component into the tmp folder
 	 * ready to be zipped up
-	 * 
+	 *
 	 * @param   object  $row         package
 	 * @param   array   &$filenames  files to copy
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -787,10 +787,10 @@ class FabrikModelPackage extends FabModelAdmin
 	/**
 	 * rather than just installing the component we want to create a package
 	 * containing the component PLUS any Fabrik plugins that component might use
-	 * 
+	 *
 	 * @param   object  $row      package
 	 * @param   array   $plugins  plugins to include in the package
-	 * 
+	 *
 	 * @return  string  filename
 	 */
 
@@ -834,9 +834,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * get the file name of the file containing the class that is run on install.
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return  string	filename
 	 */
 
@@ -848,10 +848,10 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Zip up the plugins used by the package
-	 * 
+	 *
 	 * @param   object  $row       package
 	 * @param   array   &$plugins  plugins to zip
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -879,9 +879,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Create the component installation xml file
-	 * 
+	 *
 	 * @param   object  $row  package
-	 * 
+	 *
 	 * @return  string  path to where tmp xml file is saved
 	 */
 
@@ -954,10 +954,10 @@ class FabrikModelPackage extends FabModelAdmin
 
 	/**
 	 * Get the J Form
-	 * 
+	 *
 	 * @param   array  $data      form data
 	 * @param   bool   $loadData  load the data yes/no
-	 * 
+	 *
 	 * @return boolean|JForm
 	 */
 

@@ -1,19 +1,19 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.birthday
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**
  * Plugin element to render day/month/year dropdowns
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.birthday
  */
 
 class PlgFabrik_ElementBirthday extends PlgFabrik_Element
@@ -25,10 +25,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -224,11 +224,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -349,10 +349,10 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -378,17 +378,17 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
-	 * get the value to store the value in the db
-	 * Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores 
-	 * (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working 
+	 * Get the value to store the value in the db
+	 * Jaanus: stores the value if all its parts (day, month, year) are selected in form, otherwise stores
+	 * (or updates data to) null value. NULL is useful in many cases, e.g when using Fabrik for working
 	 * with data of such components as EventList, where in #___eventlist_events.enddates (times and endtimes as well)
 	 * empty data is always NULL otherwise nulldate is displayed in its views.
-	 * 
+	 *
 	 * @param   mixed  $val  (array normally but string on csv import)
-	 * 
+	 *
 	 * @TODO: if NULL value is the first in repeated group then in list view whole group is empty.
 	 * Could anyone find a solution? I give up :-(
-	 * 
+	 *
 	 * @return  string	yyyy-mm-dd
 	 */
 
@@ -414,7 +414,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 *
 	 * @param   array  $data           data to test against
 	 * @param   int    $repeatCounter  repeat group #
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -437,9 +437,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 

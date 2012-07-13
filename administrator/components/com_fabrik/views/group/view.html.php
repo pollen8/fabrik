@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a group.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewGroup extends JView
@@ -27,7 +27,7 @@ class FabrikViewGroup extends JView
 	/**
 	 * Display the view
 	 */
-	
+
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
@@ -49,7 +49,7 @@ class FabrikViewGroup extends JView
 	 * Add the page title and toolbar.
 	 * @since	1.6
 	 */
-	
+
 	protected function addToolbar()
 	{
 		JRequest::setVar('hidemainmenu', true);

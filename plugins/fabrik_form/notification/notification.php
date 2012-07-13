@@ -1,13 +1,9 @@
 <?php
-
 /**
- * Allows users to subscribe to updates to a given row and receive emails
- * of those updates. Used in conjunction with the cron notification plug-in
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.notification
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,14 +12,22 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class PlgFabrik_FormNotification extends PlgFabrik_Form
+/**
+ * Allows users to subscribe to updates to a given row and receive emails
+ * of those updates. Used in conjunction with the cron notification plug-in
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.notification
+ */
+
+class plgFabrik_FormNotification extends plgFabrik_Form
 {
 
 	/**
 	 * Inject custom html into the bottom of the form
-	 * 
+	 *
 	 * @param   int  $c  plugin counter
-	 * 
+	 *
 	 * @return string html
 	 */
 
@@ -34,10 +38,10 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 	/**
 	 * Sets up HTML to be injected into the form's bottom
-	 * 
+	 *
 	 * @param   object  $params     params
 	 * @param   object  $formModel  form model
-	 * 
+	 *
 	 * @return void
 	 */
 

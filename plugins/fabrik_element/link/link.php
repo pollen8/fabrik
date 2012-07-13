@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.link
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,8 +11,9 @@ defined('_JEXEC') or die();
 
 /**
  * Plugin element to render two fields to capture a link (url/label)
- * 
- * @package  Fabrik
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.link
  * @since    3.0
  */
 
@@ -25,10 +26,10 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -66,10 +67,10 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	/**
 	 * Redinder Individual parts of the cell data.
 	 * Called from renderListData();
-	 * 
+	 *
 	 * @param   string  $data     cell data
 	 * @param   object  $thisRow  the data in the lists current row
-	 * 
+	 *
 	 * @return  string  formatted value
 	 */
 
@@ -131,10 +132,10 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -219,11 +220,11 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Turn form value into email formatted value
-	 * 
+	 *
 	 * @param   mixed  $value          element value
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  group repeat counter
-	 * 
+	 *
 	 * @return  string  email formatted value
 	 */
 
@@ -246,10 +247,10 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -318,9 +319,9 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -342,11 +343,11 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Called by form model to build an array of values to encrypt
-	 * 
+	 *
 	 * @param   array  &$values  previously encrypted values
 	 * @param   array  $data     form data
 	 * @param   int    $c        repeat group counter
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -375,10 +376,10 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -411,11 +412,11 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -510,9 +511,9 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	/**
 	 * Get an array containing info about the media link
-	 * 
+	 *
 	 * @param   string  $link  to examine
-	 * 
+	 *
 	 * @return  array width, height, type of link
 	 */
 
@@ -623,7 +624,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	 *
 	 * @param   array  $data           data to test against
 	 * @param   int    $repeatCounter  repeat group #
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -642,7 +643,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 * 
+	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file

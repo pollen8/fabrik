@@ -24,4 +24,3 @@ class FabrikViewList extends FabrikViewListBase {
 		}
 	}
 }
-?>

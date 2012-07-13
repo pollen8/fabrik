@@ -1,11 +1,9 @@
 <?php
 /**
- * Form limit submissions plugin
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.limit
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,12 +12,20 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class PlgFabrik_FormLimit extends PlgFabrik_Form {
+/**
+ * Form limit submissions plugin
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.limit
+ */
+
+class PlgFabrik_FormLimit extends PlgFabrik_Form
+{
 
 	/**
 	 * process the plugin, called when form is loaded
-* @param   object	$params
-* @param   object	form model
+	 * @param   object	$params
+	 * @param   object	form model
 	 * @returns	bool
 	 */
 
@@ -54,7 +60,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form {
 			$listModel->setId($listid);
 			$max = $db->quoteName(FabrikString::shortColName($params->get('limit_max')));
 			$userfield = $db->quoteName(FabrikString::shortColName($params->get('limit_user')));
-			$query->select($max)->from($listModel->getTable()->db_table_name)->where($userfield  . ' = ' . (int) $user->get('id'));
+			$query->select($max)->from($listModel->getTable()->db_table_name)->where($userfield . ' = ' . (int) $user->get('id'));
 			$db->setQuery($query);
 			$limit = (int) $db->loadResult();
 

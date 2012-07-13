@@ -15,8 +15,9 @@ require_once 'fabcontrollerform.php';
 /**
  * Element controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerElement extends FabControllerForm
@@ -30,10 +31,10 @@ class FabrikControllerElement extends FabControllerForm
 	/**
 	 * Set a URL for browser redirection.
 	 *
-* @param   string  $url   URL to redirect to.
-* @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
-* @param   string  $type  Message type. Optional, defaults to 'message'.
-	 * 
+	 * @param   string  $url   URL to redirect to.
+	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+	 * @param   string  $type  Message type. Optional, defaults to 'message'.
+	 *
 	 * @return  JController	This object to support chaining.
 	 */
 
@@ -61,10 +62,10 @@ class FabrikControllerElement extends FabControllerForm
 
 	/**
 	 * Gets the URL arguments to append to a list redirect.
-	 * 
-* @param   int     $recordId  record id
-* @param   string  $urlVar    url var
-	 * 
+	 *
+	 * @param   int     $recordId  record id
+	 * @param   string  $urlVar    url var
+	 *
 	 * @return  string  The arguments to append to the redirect URL.
 	 *
 	 * @since   11.1
@@ -83,7 +84,7 @@ class FabrikControllerElement extends FabControllerForm
 
 	/**
 	 * ask if the user really wants to update element field name/type
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -124,7 +125,7 @@ class FabrikControllerElement extends FabControllerForm
 
 	/**
 	 * user decided to cancel update
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -152,7 +153,7 @@ class FabrikControllerElement extends FabControllerForm
 	 * Method to save a record.
 	 *
 	 * @return  bool
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -170,9 +171,9 @@ class FabrikControllerElement extends FabControllerForm
 
 	/**
 	 * when you go from a child to parent element, check in child before redirect
-	 * 
+	 *
 	 * @deprecated - dont think its used?
-	 * 
+	 *
 	 * @return  null
 	 */
 

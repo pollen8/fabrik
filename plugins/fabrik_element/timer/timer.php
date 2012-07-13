@@ -1,10 +1,9 @@
 <?php
 /**
- * Plugin element to render a timestamp field
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timer
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,6 +14,13 @@ jimport('joomla.application.component.model');
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 
+/**
+ * Plugin element to render a user controllable stopwatch timer
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timer
+ */
+
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
 
@@ -24,10 +30,10 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -42,10 +48,10 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -63,7 +69,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -74,10 +80,10 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -147,10 +153,10 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 
 	/**
 	 * Get sum query
-	 * 
+	 *
 	 * @param   object  &$listModel  list model
 	 * @param   string  $label       label
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -160,16 +166,17 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
-		//$$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
+
+		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
-	 * Build the query for the avg calculation 
-	 * 
+	 * Build the query for the avg calculation
+	 *
 	 * @param   model   &$listModel  list model
 	 * @param   string  $label       the label to apply to each avg
-	 * 
+	 *
 	 * @return  string	sql statement
 	 */
 
@@ -187,7 +194,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	 *
 	 * @param   object  &$listModel  list
 	 * @param   string  $label       label
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -202,9 +209,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 
 	/**
 	 * Find the sum from a set of data
-	 * 
+	 *
 	 * @param   array  $data  to sum
-	 * 
+	 *
 	 * @return  string	sum result
 	 */
 
@@ -225,9 +232,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Get the value to use for graph calculations
 	 * Timer converts the value into seconds
-	 * 
+	 *
 	 * @param   string  $v  standard value
-	 * 
+	 *
 	 * @return  mixed calculation value
 	 */
 

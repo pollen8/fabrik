@@ -1,10 +1,9 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author peamak
- * @copyright (C) fabrikar.com
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.youtube
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,6 +13,14 @@ jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
+/**
+ * Render an embedded youtube video play
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.youtube
+ * @since       3.0
+ */
+
 class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 {
 
@@ -21,10 +28,10 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -47,7 +54,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -58,10 +65,10 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -238,9 +245,9 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -257,7 +264,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 * 
+	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
@@ -274,7 +281,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 
 	/**
 	 * Get database field description
-	 * 
+	 *
 	 * @return  string  db field type
 	 */
 
@@ -298,4 +305,3 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	}
 
 }
-?>

@@ -97,10 +97,10 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 
 	/**
 	 * Gets the hover/alt text that appears over the validation rule icon in the form
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
 	 * @param   int     $pluginc       plugin render order
-	 * 
+	 *
 	 * @return  string	label
 	 */
 

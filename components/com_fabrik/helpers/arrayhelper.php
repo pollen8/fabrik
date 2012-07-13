@@ -1,19 +1,19 @@
 <?php
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**
  * Array helper class
- * 
+ *
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Fabrik.helpers
  * @since       3.0
  */
 
@@ -22,11 +22,11 @@ class FArrayHelper extends JArrayHelper
 
 	/**
 	 * Get a value from a nested array
-	 * 
+	 *
 	 * @param   array   $array    to search
 	 * @param   string  $key      search key, use key.dot.format to get nested value
 	 * @param   string  $default  default value if key not found
-	 * 
+	 *
 	 *  @return  mixed
 	 */
 
@@ -50,15 +50,15 @@ class FArrayHelper extends JArrayHelper
 		}
 		return $array;
 	}
-	
+
 	/**
 	 * update the data that gets posted via the form and stored by the form
 	 * model. Used in elements to modify posted data see fabrikfileupload
-	 * 
-* @param   array   &$array  array to set value for
-* @param   string  $key     (in key.dot.format) to set a recursive array
-* @param   string  $val     value to set key to
-	 * 
+	 *
+	 * @param   array   &$array  array to set value for
+	 * @param   string  $key     (in key.dot.format) to set a recursive array
+	 * @param   string  $val     value to set key to
+	 *
 	 * @return  null
 	 */
 
@@ -80,7 +80,7 @@ class FArrayHelper extends JArrayHelper
 			{
 				/**
 				 * If any node along the registry path does not exist, create it
-				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data 
+				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data
 				 */
 				if (!isset($ns[$nodes[$i]]))
 				{
@@ -114,12 +114,12 @@ class FArrayHelper extends JArrayHelper
 	/**
 	 * Utility function to map an array to a stdClass object.
 	 *
-* @param   array   &$array   The array to map.
-* @param   string  $class    Name of the class to create
-* @param   bool    $recurse  into each value and set any arrays to objects
-	 * 
+	 * @param   array   &$array   The array to map.
+	 * @param   string  $class    Name of the class to create
+	 * @param   bool    $recurse  into each value and set any arrays to objects
+	 *
 	 * @return  object	The object mapped from the given array
-	 * 
+	 *
 	 * @since	1.5
 	 */
 
@@ -147,10 +147,10 @@ class FArrayHelper extends JArrayHelper
 	/**
 	 * returns copy of array $ar1 with those entries removed
 	 * whose keys appear as keys in any of the other function args
-	 * 
-* @param   array  $ar1  first array
-* @param   array  $ar2  second array
-	 * 
+	 *
+	 * @param   array  $ar1  first array
+	 * @param   array  $ar2  second array
+	 *
 	 * @return  array
 	 */
 
@@ -158,7 +158,7 @@ class FArrayHelper extends JArrayHelper
 	{
 		/**
 		 *  , $ar3, $ar4, ...
-		 *  
+		 *
 		 */
 		$aSubtrahends = array_slice(func_get_args(), 1);
 		foreach ($ar1 as $key => $val)
@@ -177,11 +177,11 @@ class FArrayHelper extends JArrayHelper
 	/**
 	 * filters array of objects removing those when key does not match
 	 * the value
-	 * 
-* @param   array   &$array  of objects - passed by ref
-* @param   string  $key     to search on
-* @param   string  $value   of key to keep from array
-	 * 
+	 *
+	 * @param   array   &$array  of objects - passed by ref
+	 * @param   string  $key     to search on
+	 * @param   string  $value   of key to keep from array
+	 *
 	 * @return unknown_type
 	 */
 
@@ -198,11 +198,11 @@ class FArrayHelper extends JArrayHelper
 
 	/**
 	 * get the first object in an array whose key = value
-	 * 
-* @param   array   $array  of objects
-* @param   string  $key    to search on
-* @param   string  $value  to search on
-	 * 
+	 *
+	 * @param   array   $array  of objects
+	 * @param   string  $key    to search on
+	 * @param   string  $value  to search on
+	 *
 	 * @return  mixed  value or false
 	 */
 
@@ -220,10 +220,10 @@ class FArrayHelper extends JArrayHelper
 
 	/**
 	 * Extract an array of single property values from an array of objects
-	 * 
-* @param   array   $array  the array of objects to search
-* @param   string  $key    the key to extract the values on.
-	 * 
+	 *
+	 * @param   array   $array  the array of objects to search
+	 * @param   string  $key    the key to extract the values on.
+	 *
 	 * @return  array of single key values
 	 */
 
@@ -241,10 +241,10 @@ class FArrayHelper extends JArrayHelper
 	 * Returns first key in an array, used if we aren't sure if array is assoc or
 	 * not, and just want the first row.
 	 *
-* @param   array  $array  the array to get the first key for
-	 * 
+	 * @param   array  $array  the array to get the first key for
+	 *
 	 * @return  string  the first array key.
-	 * 
+	 *
 	 * @since	3.0.6
 	 */
 

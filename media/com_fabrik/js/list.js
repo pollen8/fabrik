@@ -1049,6 +1049,9 @@ var FbList = new Class({
 		if (typeOf(addRecord) !== 'null' && (this.options.ajax_links)) {
 			addRecord.removeEvents();
 			var loadMethod = (this.options.links.add === '' || addRecord.href.contains(Fabrik.liveSite)) ? 'xhr' : 'iframe';
+			var url = addRecord.href;
+			url += url.contains('?') ? '&' : '?';
+			url += 'tmpl=component&ajax=1';
 			addRecord.addEvent('click', function (e) {
 				e.stop();
 				// top.Fabrik.fireEvent('fabrik.list.add', this);//for packages?
@@ -1056,7 +1059,7 @@ var FbList = new Class({
 					'id': 'add.' + this.id,
 					'title': this.options.popup_add_label,
 					'loadMethod': loadMethod,
-					'contentURL': addRecord.href,
+					'contentURL': url,
 					'width': this.options.popup_width,
 					'height': this.options.popup_height
 				};
@@ -1168,7 +1171,7 @@ var FbListKeys = new Class({
 
 var FbGroupedToggler = new Class({
 	initialize: function (container) {
-		container.addEvent('mouseup:relay(.fabrik_groupheading a.toggle)', function (e) {
+		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
 			e.stop();
 			e.preventDefault(); //should work according to http://mootools.net/blog/2011/09/10/mootools-1-4-0/
 			var h = e.target.getParent('.fabrik_groupheading');

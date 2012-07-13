@@ -1,11 +1,11 @@
 <?php
 /**
-* @package     Joomla.Administrator
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-* @since       1.6
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access.
 defined('_JEXEC') or die;
@@ -33,10 +33,10 @@ class FabrikControllerCrons extends FabControllerAdmin
 
 	/**
 	 * Proxy for getModel.
-	 * 
-* @param   string  $name    model name
-* @param   string  $prefix  model prefix
-	 * 
+	 *
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 *
 	 * @return  J model
 	 */
 
@@ -48,7 +48,7 @@ class FabrikControllerCrons extends FabControllerAdmin
 
 	/**
 	 * run a cron task
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -80,8 +80,8 @@ class FabrikControllerCrons extends FabControllerAdmin
 			$table->load($row->id);
 			$plugin->setRow($table);
 			$params = $plugin->getParams();
-			$thisListModel = clone($listModel);
-			$thisAdminListModel = clone($adminListModel);
+			$thisListModel = clone ($listModel);
+			$thisAdminListModel = clone ($adminListModel);
 			$tid = (int) $rowParams->table;
 			if ($tid !== 0)
 			{

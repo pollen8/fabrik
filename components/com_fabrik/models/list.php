@@ -16,7 +16,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 /**
  * Fabrik Connection Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -188,12 +188,12 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Load form
-	 * 
+	 *
 	 * @param   array  $data      form data
 	 * @param   bool   $loadData  load in the data
-	 * 
+	 *
 	 * @since       1.5
-	 * 
+	 *
 	 * @return  mixed  false or form.
 	 */
 
@@ -224,7 +224,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Process the lists plug-ins
-	 * 
+	 *
 	 * @return  array	of list plug-in result messages
 	 */
 
@@ -237,7 +237,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Code to enable plugins to add a button to the top of the list
-	 * 
+	 *
 	 * @return  array	button html
 	 */
 
@@ -266,9 +266,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get an array of plugin js classes to load
-	 * 
+	 *
 	 * @param   array  &$r  previously loaded classes
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -294,9 +294,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get plugin js objects
-	 * 
+	 *
 	 * @param   string  $container  list container HTML id
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -314,7 +314,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Main query to build table
-	 * 
+	 *
 	 * @return  array  list data
 	 */
 
@@ -359,7 +359,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Set the navigation limit and limitstart
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -416,7 +416,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * This merges session data for the fromForm with any request data
 	 * allowing us to filter data results from both search forms and filters
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -431,7 +431,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the table's filter model
-	 * 
+	 *
 	 * @return  model	filter model
 	 */
 
@@ -449,9 +449,9 @@ class FabrikFEModelList extends JModelForm
 	 * Once we have a few table joins, our select statements are
 	 * getting big enough to hit default select length max in MySQL.  Added per-table
 	 * setting to enable_big_selects.
-	 * 
+	 *
 	 * @since   3/16/2010
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -555,11 +555,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Translate data
-	 * 
+	 *
 	 * @param   array  &$data  data
-	 * 
+	 *
 	 * @deprecated Joomfish not available in J1.7
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -642,7 +642,7 @@ class FabrikFEModelList extends JModelForm
 	 * Run the list data through element filters
 	 *
 	 * @param   array  &$data  list data
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -799,9 +799,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Add the select box and various links into the data array
-	 * 
+	 *
 	 * @param   array  &$data  list's row objects
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1053,9 +1053,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get delete button
-	 * 
+	 *
 	 * @since 3.0
-	 * 
+	 *
 	 * @return  string	delete button wrapped in <li>
 	 */
 
@@ -1069,9 +1069,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get a list of possible menus
 	 * USED TO BUILD RELTED TABLE LNKS WITH CORRECT iTEMD AND TEMPLATE
-	 * 
+	 *
 	 * @since   2.0.4
-	 * 
+	 *
 	 * @return  array  linked table menu items
 	 */
 
@@ -1105,10 +1105,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * For releated table links get the record count for each of the table's rows
-	 * 
+	 *
 	 * @param   object  &$element  element
 	 * @param   array   $pks       primary keys to count on
-	 * 
+	 *
 	 * @return  array  counts key'd on element primary key
 	 */
 
@@ -1178,7 +1178,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $val      value
 	 * @param   bool    $usekey   use the key
 	 * @param   int     $f        repeat value 27/11/2011
-	 * 
+	 *
 	 * @return  string	<a> html part
 	 */
 
@@ -1275,7 +1275,7 @@ class FabrikFEModelList extends JModelForm
 	 *(used in tables that link to this lists links)
 	 *
 	 * @param   int  $id  list id
-	 * 
+	 *
 	 * @return  object	table
 	 */
 
@@ -1303,7 +1303,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $val      value
 	 * @param   int     $count    number of related records
 	 * @param   int     $f        ref to related data admin info 27/16/2011
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -1414,11 +1414,11 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Add a normal/custom link to the element data
 	 *
-	 * @param   string  $data           element data 
+	 * @param   string  $data           element data
 	 * @param   object  &$elementModel  element model
 	 * @param   object  $row            of all row data
 	 * @param   int     $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	element data with link added if specified
 	 */
 
@@ -1462,13 +1462,13 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the href for the edit/details link
-	 * 
+	 *
 	 * @param   object  $elementModel   element model
 	 * @param   array   $row            lists current row data
 	 * @param   int     $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @since   2.0.4
-	 *  
+	 *
 	 * @return  string	link href
 	 */
 
@@ -1532,7 +1532,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * get query to make records
-	 * 
+	 *
 	 * @return  string	sql
 	 */
 
@@ -1755,9 +1755,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Pass an sql query through the table plug-ins
-	 * 
+	 *
 	 * @param   string  $query  sql query
-	 * 
+	 *
 	 * @return  string	altered query.
 	 */
 
@@ -1773,11 +1773,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Add the slug field to the select fields, called from buildQuerySelect()
-	 * 
+	 *
 	 * @param   array  &$fields  fields
-	 * 
+	 *
 	 * @since 3.0.6
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1816,7 +1816,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the select part of the query
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -1853,9 +1853,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the part of the sql statement that orders the table data
-	 * 
+	 *
 	 * @param   mixed  $query  false or a query object
-	 * 
+	 *
 	 * @return  string	ordering part of sql statement
 	 */
 
@@ -2029,7 +2029,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Called when the table column order by is clicked
 	 * store order options in session
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -2050,9 +2050,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the part of the sql query that creates the joins
 	 * used when building the table's data
-	 * 
+	 *
 	 * @param   mixed  $query  JQuery object or false
-	 * 
+	 *
 	 * @return  string	join sql
 	 */
 
@@ -2160,9 +2160,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Build query prefilter where part
-	 * 
+	 *
 	 * @param   object  $element  model
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -2193,11 +2193,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Build group by query
-	 * 
+	 *
 	 * @param   mixed  $query  false to return a mySQL string, JQuery object to append group statement to.
-	 * 
+	 *
 	 * @deprecated	use buildQueryGroupBy();
-	 * 
+	 *
 	 * @return  mixed  string if $query false, else JQuery object
 	 */
 
@@ -2209,9 +2209,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the part of the main query that provides a group by statement
 	 * only added by 'count' element plug-in at the moment
-	 * 
+	 *
 	 * @param   mixed  $query  false to return a mySQL string, JQuery object to append group statement to.
-	 * 
+	 *
 	 * @return  mixed  string if $query false, else JQuery object
 	 */
 
@@ -2251,7 +2251,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   bool  $incFilters  if true the SQL contains
 	 * any filters if false only contains prefilter sql
 	 * @param   bool  $query       start the statement with 'where' (true is for j1.5 way of making queries, false for j1.6+)
-	 * 
+	 *
 	 * @return  mixed	string if $query false, else JQuery object
 	 */
 
@@ -2334,10 +2334,10 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Used by _buildWhereQuery and buildQueryPrefilterWhere
 	 * takes a filter array and returns the SQL
-	 * 
+	 *
 	 * @param   array  &$filters        filters
 	 * @param   bool   $startWithWhere  start the statement with 'where' (true is for j1.5 way of making queries, false for j1.6+)
-	 * 
+	 *
 	 * @return  array	nofilter, filter sql
 	 */
 
@@ -2381,10 +2381,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Parse the filter array and return an array of words that will make up part of the filter query
-	 * 
+	 *
 	 * @param   array   &$filters  filters
 	 * @param   string  $type      * = filters, 'prefilter' = get prefilter only
-	 * 
+	 *
 	 * @return  array	words making up sql query.
 	 */
 
@@ -2501,9 +2501,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get a list of the tables columns' order by field names
-	 * 
+	 *
 	 * @deprecated - dont think its used
-	 * 
+	 *
 	 * @return  array	order by names
 	 */
 
@@ -2528,7 +2528,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the elements that are included in the search all query
-	 * 
+	 *
 	 * @return  array  search all fields
 	 */
 
@@ -2661,7 +2661,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks if the params object has been created and if not creates and returns it
-	 * 
+	 *
 	 * @return  object	params
 	 */
 
@@ -2679,7 +2679,7 @@ class FabrikFEModelList extends JModelForm
 	 * Method to set the list id
 	 *
 	 * @param   int  $id  list ID
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -2695,7 +2695,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the list id
-	 * 
+	 *
 	 * @return  int  list id
 	 */
 
@@ -2739,9 +2739,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Set the table object
-	 * 
+	 *
 	 * @param   object  $table  db row
-	 * 
+	 *
 	 * @return   void
 	 */
 
@@ -2752,7 +2752,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * unset the table object
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -2763,7 +2763,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Load the database object associated with the list
-	 * 
+	 *
 	 * @return  object	database
 	 */
 
@@ -2775,9 +2775,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the lists connection object
 	 * sets $this->connection to the lists connection
-	 * 
+	 *
 	 * @deprecated since 3.0b use FabrikWorker::getConnection() instead
-	 * 
+	 *
 	 * @return  object	connection
 	 */
 
@@ -2790,7 +2790,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 *Is the table published
 	 * Dates are stored as UTC so we can compare them against a date with no offset applied
-	 * 
+	 *
 	 * @return  bool	published state
 	 */
 
@@ -2821,7 +2821,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Access control to determine if the current user has rights to drop data
 	 * from the table
-	 * 
+	 *
 	 * @return  bool	yes/no
 	 */
 
@@ -2855,9 +2855,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks user access for editing records
-	 * 
+	 *
 	 * @param   object  $row  of data currently active
-	 * 
+	 *
 	 * @return  bool	access allowed
 	 */
 
@@ -2897,7 +2897,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks if any one row is editalbe = used to get the correct headings
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -2920,10 +2920,10 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Access control function for determining if the user can perform
 	 * a designated function on a specific row
-	 * 
+	 *
 	 * @param   object  $row  data
 	 * @param   string  $col  access control setting to compare against
-	 * 
+	 *
 	 * @return  mixed	- if ACL setting defined here return blo, otherwise return -1 to contiune with default acl setting
 	 */
 
@@ -2935,9 +2935,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks user access for deleting records
-	 * 
+	 *
 	 * @param   object  $row  of data currently active
-	 * 
+	 *
 	 * @return  bool	access allowed
 	 */
 
@@ -2963,7 +2963,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Determin if any record can be deleted - used to see if we include the
 	 * delete button in the list view
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -2978,7 +2978,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks user access for importing csv
-	 * 
+	 *
 	 * @return  bool  access allowed
 	 */
 
@@ -2994,7 +2994,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks user access for exporting csv
-	 * 
+	 *
 	 * @return  bool  access allowed
 	 */
 
@@ -3010,7 +3010,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks user access for front end group by
-	 * 
+	 *
 	 * @return  bool  access allowed
 	 */
 
@@ -3026,7 +3026,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks user access for adding records
-	 * 
+	 *
 	 * @return  bool  access allowed
 	 */
 
@@ -3043,7 +3043,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Check use can view the list
-	 * 
+	 *
 	 * @return  bool  can view or not
 	 */
 
@@ -3059,9 +3059,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Load the table from the form_id value
-	 * 
+	 *
 	 * @param   int  $formId  (jos_fabrik_forms.id)
-	 * 
+	 *
 	 * @return  object	table row
 	 */
 
@@ -3083,7 +3083,7 @@ class FabrikFEModelList extends JModelForm
 	 * and fired if this is done:
 	 * $listModel->set('includeCddInJoin', false);
 	 * as in tableModel::getRecordCounts()
-	 * 
+	 *
 	 * @return array join objects (table rows - not table objects or models)
 	 */
 
@@ -3120,7 +3120,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get joins
-	 * 
+	 *
 	 * @return array join objects (table rows - not table objects or models)
 	 */
 
@@ -3164,11 +3164,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Merged data queries need to know the joined tables primary key value
-	 * 
+	 *
 	 * @param   object  &$join  join
-	 * 
+	 *
 	 * @since	3.0.6
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -3195,9 +3195,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * As you may be joining to multiple versions of the same db table we need
 	 * to set the various database name alaises that our SQL query will use
-	 * 
+	 *
 	 * @param   array  &$joins  joins
-	 * 
+	 *
 	 * @return  void
 	 */
 	protected function _makeJoinAliases(&$joins)
@@ -3301,10 +3301,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Gets the field names for the given table
-	 * 
+	 *
 	 * @param   string  $tbl  table name
 	 * @param   string  $key  field to key return array on
-	 * 
+	 *
 	 * @return  array	table fields
 	 */
 
@@ -3340,10 +3340,10 @@ class FabrikFEModelList extends JModelForm
 	 * Called at the end of saving an element
 	 * if a new element it will run the sql to add to field,
 	 * if existing element and name changed will create query to be used later
-	 * 
+	 *
 	 * @param   object  &$elementModel  element model
 	 * @param   string  $origColName    original column name
-	 * 
+	 *
 	 * @return  array($update, $q, $oldName, $newdesc, $origDesc, $dropKey)
 	 */
 
@@ -3544,10 +3544,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Add or update a database column via sql
-	 * 
+	 *
 	 * @param   object  &$elementModel  element plugin
 	 * @param   string  $origColName    origional field name
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -3621,7 +3621,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Can we alter this tables fields structure?
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -3638,9 +3638,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the alter fields setting
-	 * 
+	 *
 	 * @since	3.0.6
-	 * 
+	 *
 	 * @return  string	alter fields setting
 	 */
 
@@ -3658,9 +3658,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Can we add fields to the list?
-	 * 
+	 *
 	 * @since	3.0.6
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -3673,7 +3673,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * If not loaded this loads in the table's form model
 	 * also binds a reference of the table to the form.
-	 * 
+	 *
 	 * @return  object	form model with form table loaded
 	 */
 
@@ -3692,9 +3692,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Set the form model
-	 * 
+	 *
 	 * @param   object  $model  form model
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -3705,7 +3705,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Tests if the table is in fact a view
-	 * 
+	 *
 	 * @return  bool	true if table is a view
 	 */
 
@@ -3757,9 +3757,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Store filters in the registry
-	 * 
+	 *
 	 * @param   array  $request  filters to store
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -3798,7 +3798,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * creates filter array (return existing if exists)
-	 * 
+	 *
 	 * @return  array	filters
 	 */
 
@@ -4028,9 +4028,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Creates array of prefilters
-	 * 
+	 *
 	 * @param   array  &$filters  filters
-	 * 
+	 *
 	 * @return  array	prefilters combinde with filters
 	 */
 
@@ -4171,7 +4171,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the total number of records in the table
-	 * 
+	 *
 	 * @return  int		total number of records
 	 */
 
@@ -4203,7 +4203,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Modified version of getTotalRecords() for use when the table join data
 	 * is to be merged on the main table's primary key
-	 * 
+	 *
 	 * @return int total records
 	 */
 
@@ -4225,7 +4225,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Load in the elements for the table's form
 	 * If no form loaded for the list object then one is loaded
-	 * 
+	 *
 	 * @return  array	element objects
 	 */
 
@@ -4236,11 +4236,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Require the correct pagenav class based on template
-	 * 
+	 *
 	 * @param   int  $total       total
 	 * @param   int  $limitstart  start
 	 * @param   int  $limit       length of records to return
-	 * 
+	 *
 	 * @return  object	pageNav
 	 */
 
@@ -4270,7 +4270,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the random lmit start val
-	 * 
+	 *
 	 * @return  int	 limit start
 	 */
 
@@ -4356,9 +4356,9 @@ class FabrikFEModelList extends JModelForm
 	 * Gets the part of a url to describe the key that the link links to
 	 * if a table this is rowid=x
 	 * if a view this is view_primary_key={where statement}
-	 * 
+	 *
 	 * @param   object  $data  current list row
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -4369,9 +4369,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Format the row id slug
-	 * 
+	 *
 	 * @param   object  $row  current list row data
-	 * 
+	 *
 	 * @return  string	formatted slug
 	 */
 
@@ -4388,7 +4388,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get other lists who have joins to the list db tables pk
-	 * 
+	 *
 	 * @return array of element objects that are database joins and that
 	 * use this table's key as their foregin key
 	 */
@@ -4456,7 +4456,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get an array of elements that point to a form where their data will be filtered
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -4493,7 +4493,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get empty data message
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -4509,7 +4509,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the message telling the user that all required filters must be selected
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -4524,7 +4524,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Do we have all required filters, by both list level and element level settings.
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -4545,7 +4545,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Does a filter have to be appled before we show any list data
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -4575,7 +4575,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * have all the required filters been met?
-	 * 
+	 *
 	 * @return  bool  true if they have if false we shouldnt show the table data
 	 */
 
@@ -4610,7 +4610,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Do we have any filters that aren't pre-filters
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -4630,7 +4630,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Have all the required filters been met?
-	 * 
+	 *
 	 * @return  bool  true if they have if false we shouldnt show the table data
 	 */
 
@@ -4681,13 +4681,13 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get list filters
-	 * 
+	 *
 	 * @param   string  $container  list container
 	 * @param   string  $type       type
 	 * @param   string  $id         html id, only used if called from viz plugin
 	 * @param   string   $ref  js ref used when filters set for visualizations
-	 * 
-	 * @return  array  filters
+	 *
+	 * @return array filters
 	 */
 
 	public function getFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
@@ -4716,12 +4716,12 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Creates an array of html code for each filter
 	 * Also adds in JS code to manage filters
-	 * 
+	 *
 	 * @param   string  $container  container
 	 * @param   string  $type       type listviz
 	 * @param   int     $id         html id, only used if called from viz plugin
 	 * @param   string  $ref  js filter ref, used when rendering filters for visualizations
-	 * 
+	 *
 	 * @return  array	of html code for each filter
 	 */
 
@@ -4843,7 +4843,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Build the advanced search link
-	 * 
+	 *
 	 * @return  string  <a href...> link
 	 */
 
@@ -4870,7 +4870,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Called from index.php?option=com_fabrik&view=list&layout=_advancedsearch&tmpl=component&listid=4
 	 * advanced serach popup view
-	 * 
+	 *
 	 * @return  object	advanced search options
 	 */
 
@@ -4903,7 +4903,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get a list of elements that are included in the advacned search dropdown list
-	 * 
+	 *
 	 * @return  array  list of fields names and which is the first filter
 	 */
 
@@ -4933,7 +4933,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get a list of advanced search options
-	 * 
+	 *
 	 * @return array of JHTML options
 	 */
 
@@ -4952,7 +4952,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get a list of submitted advanced filters
-	 * 
+	 *
 	 * @return array advanced filter values
 	 */
 
@@ -4984,7 +4984,7 @@ class FabrikFEModelList extends JModelForm
 	}
 	/**
 	 * Build an array of html data that gets inserted into the advanced search popup view
-	 * 
+	 *
 	 * @return  array	html lists/fields
 	 */
 
@@ -5092,9 +5092,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Fet the headings that should be shown in the csv export file
-	 * 
+	 *
 	 * @param   array  $headings  to use (key is element name value must be 1 for it to be added)
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -5140,7 +5140,7 @@ class FabrikFEModelList extends JModelForm
 	 * returns the table headings, seperated from writetable function as
 	 * when group_by is selected mutliple tables are written
 	 * 09/07/2011 moved headingClass into arry rather than string
-	 * 
+	 *
 	 * @return  array  (table headings, array columns, $aLinkElements)
 	 */
 
@@ -5353,11 +5353,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * put the actions in the headings array - separated to here to enable it to be added at the end or beginning
-	 * 
+	 *
 	 * @param   array  &$aTableHeadings  table headings
 	 * @param   array  &$headingClass    heading classes
 	 * @param   array  &$cellClass       cell classes
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -5389,11 +5389,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Put the checkbox in the headings array - separated to here to enable it to be added at the end or beginning
-	 * 
+	 *
 	 * @param   array  &$aTableHeadings  table headings
 	 * @param   array  &$headingClass    heading classes
 	 * @param   array  &$cellClass       cell classes
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -5409,9 +5409,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Enter description here ...
-	 * 
+	 *
 	 * @param   array  $arr  array
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -5442,9 +5442,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Can the user select the specified row
-	 * 
+	 *
 	 * @param   object  $row  row of list data
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -5485,7 +5485,7 @@ class FabrikFEModelList extends JModelForm
 	 * If you can delete then true returned, if not then check
 	 * available table plugins to see if they allow for row selection
 	 * if so a checkbox column appears in the table
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -5529,7 +5529,7 @@ class FabrikFEModelList extends JModelForm
 	}
 	/**
 	 * return mathematical column calculations (run at doCalculations() on for submission)
-	 * 
+	 *
 	 * @return  array  calculations
 	 */
 
@@ -5626,7 +5626,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get list headings to pass into list js oject
-	 * 
+	 *
 	 * @return  string	headings tablename___name
 	 */
 
@@ -5708,10 +5708,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Strip the table names from the front of the key
-	 * 
+	 *
 	 * @param   array   $data   data to strip
 	 * @param   string  $split  string splitter ___ or .
-	 * 
+	 *
 	 * @return  array stripped data
 	 */
 
@@ -5737,12 +5737,12 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Saves posted form data into a table
 	 * data should be keyed on short name
-	 * 
+	 *
 	 * @param   array   $data            to save
 	 * @param   int     $rowId           row id to edit/updated
 	 * @param   bool    $isJoin          is the data being saved into a join table
 	 * @param   object  $joinGroupTable  joined group table
-	 * 
+	 *
 	 * @return  bool	true if saved ok
 	 */
 
@@ -5910,9 +5910,9 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   string  $table        table name
 	 * @param   object  &$object      update object
-	 * @param   string  $keyName      name of pk field 
+	 * @param   string  $keyName      name of pk field
 	 * @param   bool    $updateNulls  update null values
-	 * 
+	 *
 	 * @return  mixed  query result
 	 */
 
@@ -5967,7 +5967,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $table    The name of the table
 	 * @param   object  &$object  An object whose properties match table fields
 	 * @param   string  $keyName  The name of the primary key. If provided the object property is updated.
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -6013,15 +6013,15 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * If an element is set to readonly, and has a default value selected then insert this
 	 * data into the array that is to be bound to the table record
-	 * 
+	 *
 	 * @param   array   &$data           list data
 	 * @param   object  &$oRecord        to bind to table row
 	 * @param   int     $isJoin          is record join record
 	 * @param   int     $rowid           row id
 	 * @param   object  $joinGroupTable  join group table
-	 * 
+	 *
 	 * @since	1.0.6
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -6201,7 +6201,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Called when the form is submitted to perform calculations
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -6263,9 +6263,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Check to see if prefilter should be applied
-	 * 
+	 *
 	 * @param   int  $gid  group id to check against
-	 * 
+	 *
 	 * @return  bool	must apply filter
 	 */
 
@@ -6276,9 +6276,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Set the connection id - used when creating a new table
-	 * 
+	 *
 	 * @param   int  $id  connection id
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -6289,7 +6289,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get group by (can be set via qs group_by var)
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -6302,7 +6302,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Test if the main J user can create mySQL tables
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -6313,11 +6313,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Make id element
-	 * 
+	 *
 	 * @param   int  $groupId  element group id
-	 * 
+	 *
 	 * @since Fabrik 3.0
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -6338,11 +6338,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Make foreign key element
-	 * 
+	 *
 	 * @param   int  $groupId  element group id
-	 * 
+	 *
 	 * @since   Fabrik 3.0
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -6364,11 +6364,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Updates the table record to point to the newly created form
-	 * 
+	 *
 	 * @param   int  $formId  form id
 	 *
 	 * @deprecated - not used
-	 * 
+	 *
 	 * @return  mixed  null/error
 	 */
 
@@ -6384,9 +6384,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the tables primary key and if the primary key is auto increment
-	 * 
+	 *
 	 * @param   string  $table  optional table name (used when getting pk to joined tables
-	 * 
+	 *
 	 * @return  mixed	if ok returns array(key, extra, type, name) otherwise
 	 */
 
@@ -6440,7 +6440,7 @@ class FabrikFEModelList extends JModelForm
 	 * Run the prefilter sql and replace any placeholders in the subsequent prefilter
 	 *
 	 * @param   mixed  $selValue  string/array prefilter value
-	 * 
+	 *
 	 * @return  mixed  string/array prefilter value
 	 */
 
@@ -6518,7 +6518,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the lists db table's indexes
-	 * 
+	 *
 	 * @return array  list indexes
 	 */
 
@@ -6535,13 +6535,13 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Add an index to the table
-	 * 
+	 *
 	 * @param   string  $field   field name
 	 * @param   string  $prefix  index name prefix (allows you to differentiate between indexes created in
 	 * different parts of fabrik)
 	 * @param   string  $type    index type
 	 * @param   int     $size    index length
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -6590,13 +6590,13 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Drop an index
-	 * 
+	 *
 	 * @param   string  $field   field name
 	 * @param   stirng  $prefix  index name prefix (allows you to differentiate between indexes created in
 	 * different parts of fabrik)
 	 * @param   string  $type    table name @since 29/03/2011
 	 * @param   string  $table   db table name
-	 * 
+	 *
 	 * @return  string  index type
 	 */
 
@@ -6628,10 +6628,10 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Drop all indexes for a give element name
 	 * required when encrypting text fileds whcih have a key on them , as blobs cant have keys
-	 * 
+	 *
 	 * @param   string  $field  field name to drop
 	 * @param   string  $table  table to drop from
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -6655,9 +6655,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Delete joined records when deleting the main row
-	 * 
+	 *
 	 * @param   string  $val  quoted primary key values from the main table's rows that are to be deleted
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -6684,10 +6684,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Deletes records from a table
-	 * 
+	 *
 	 * @param   string  &$ids  key value to delete
 	 * @param   string  $key   key to use (leave empty to default to the table's key)
-	 * 
+	 *
 	 * @return  string	error message
 	 */
 
@@ -6825,8 +6825,8 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Remove all records from the table
-	 * 
-	 * @return  mixed 
+	 *
+	 * @return  mixed
 	 */
 
 	public function dropData()
@@ -6845,7 +6845,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Drop the table containing the fabriktables data and drop any internal joins db tables.
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -6883,7 +6883,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get an array of join models relating to the groups which were set to be repeating and thus thier data
 	 * stored in a separate db table
-	 * 
+	 *
 	 * @return  array  join models.
 	 */
 
@@ -6911,7 +6911,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Truncate the main db table and any internal joined groups
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -6939,7 +6939,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   string  $field   field to test
 	 * @param   array   $ignore  id's to ignore
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -6969,7 +6969,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Build a dropdown list of fileds
-	 * 
+	 *
 	 * @param   int     $cnnId           connection id to use
 	 * @param   string  $tbl             table to load fields for
 	 * @param   string  $incSelect       show "please select" top option
@@ -6977,7 +6977,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $selectListName  name of drop down
 	 * @param   string  $selected        selected option
 	 * @param   string  $className       class name
-	 * 
+	 *
 	 * @return  string	html to be added to DOM
 	 */
 
@@ -7012,7 +7012,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Create the RSS href link to go in the table template
-	 * 
+	 *
 	 * @return  string	RSS link
 	 */
 
@@ -7038,11 +7038,11 @@ class FabrikFEModelList extends JModelForm
 	 * {placeholder} with row data
 	 * (added by hugh, does the same thing as parseMessageForPlaceHolder in parent
 	 * class, but for rows instead of forms)
-	 * 
+	 *
 	 * @param   string  $msg         text to parse
 	 * @param   array   &$row        of row data
 	 * @param   bool    $addslashes  add slashes to the replaced data (default = false) set to true in fabrikcalc element
-	 * 
+	 *
 	 * @return  string  parsed message
 	 */
 
@@ -7070,9 +7070,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Called from parseMessageForRowHolder to iterate through string to replace
 	 * {placeholder} with row data
-	 * 
+	 *
 	 * @param   array  $matches  found in parseMessageForRowHolder
-	 * 
+	 *
 	 * @return  string	posted data that corresponds with placeholder
 	 */
 
@@ -7111,14 +7111,14 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * This is just way too confuins - view details link now always returns a view details link and not an edit link ?!!!
 	 * get the link to view the records details
-	 * 
+	 *
 	 * @param   object  &$row  active list row
 	 * @param   string  $view  3.0 depreciated
-	 * 
+	 *
 	 * @return  string	url of view details link
-	 * 
+	 *
 	 * @since  3.0
-	 * 
+	 *
 	 * @retun  string  link
 	 */
 
@@ -7167,10 +7167,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Create a custom edit/view details link
-	 * 
+	 *
 	 * @param   string  $link  link
 	 * @param   object  $row   row's data
-	 * 
+	 *
 	 * @return  string  custom link
 	 */
 
@@ -7197,10 +7197,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get a custome link
-	 * 
+	 *
 	 * @param   string  $type  link type
 	 * @param   string  $mode  edit/details link
-	 * 
+	 *
 	 * @return  string  link
 	 */
 
@@ -7221,9 +7221,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the link to edit the records details
-	 * 
+	 *
 	 * @param   object  &$row  active table row
-	 * 
+	 *
 	 * @return  string  url of view details link
 	 */
 
@@ -7260,7 +7260,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Make the drop sql statement for the table
-	 * 
+	 *
 	 * @return  string  drop table sql
 	 */
 
@@ -7274,7 +7274,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Convert a prefix__tablename to #__tablename
-	 * 
+	 *
 	 * @return  string  table name
 	 */
 
@@ -7287,10 +7287,10 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Make the create sql statement for the table
-	 * 
+	 *
 	 * @param   bool    $addIfNotExists  add 'if not exists' to query
 	 * @param   string  $table           table to get sql for(leave out to use models table)
-	 * 
+	 *
 	 * @return  string	sql to drop & or create table
 	 */
 
@@ -7346,9 +7346,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Make the create sql statement for inserting the table data
 	 * used in package export
-	 * 
+	 *
 	 * @param   object  $oExporter  exporter
-	 * 
+	 *
 	 * @return  string	sql to drop & or create table
 	 */
 
@@ -7409,7 +7409,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   int   $id        id
 	 * @param   bool  $format    the data
 	 * @param   bool  $loadJoin  load the rows joined data @since 2.0.5 (used in J Content plugin)
-	 * 
+	 *
 	 * @return  object	row
 	 */
 
@@ -7479,11 +7479,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Find a row in the table that matches " key LIKE '%val' "
-	 * 
+	 *
 	 * @param   string  $key     key
 	 * @param   string  $val     value
 	 * @param   bool    $format  format the row
-	 * 
+	 *
 	 * @return  object	row
 	 */
 
@@ -7501,9 +7501,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Ajax get record specified by row id
-	 * 
+	 *
 	 * @param   string  $mode  mode
-	 * 
+	 *
 	 * @return  string  json encoded row
 	 */
 
@@ -7541,7 +7541,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Ajax get next record
-	 * 
+	 *
 	 * @return  string  json object representing record/row
 	 */
 
@@ -7557,7 +7557,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Ajax get previous record
-	 * 
+	 *
 	 * @return  string json  object representing record/row
 	 */
 
@@ -7573,7 +7573,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Ajax get first record
-	 * 
+	 *
 	 * @return  string  json object representing record/row
 	 */
 
@@ -7589,7 +7589,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Ajax get last record
-	 * 
+	 *
 	 * @return  string  json object representing record/row
 	 */
 
@@ -7605,9 +7605,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * gFet a single column of data from the table, test for element filters
-	 * 
+	 *
 	 * @param   string  $col  column to get
-	 * 
+	 *
 	 * @return  array  values for the column - empty array if no results found
 	 */
 
@@ -7649,7 +7649,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Determine how the model does filtering and navigation
-	 * 
+	 *
 	 * @return  bool  ajax true /post false; default post
 	 */
 
@@ -7673,7 +7673,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Model edit/add links can be set separately to the ajax option
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -7688,7 +7688,7 @@ class FabrikFEModelList extends JModelForm
 	 * Get an array of the table's elements that match a certain plugin type
 	 *
 	 * @param   string  $plugin  name
-	 * 
+	 *
 	 * @return  array	matched element models
 	 */
 
@@ -7713,11 +7713,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get all the elements in the list
-	 * 
+	 *
 	 * @param   string  $key            key to key returned array on, currently accepts null, '', 'id', or 'filtername'
 	 * @param   bool    $showInTable    show in table default true
 	 * @param   bool    $onlyPublished  return only published elements
-	 * 
+	 *
 	 * @return  array	table element models
 	 */
 
@@ -7779,7 +7779,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Does the list need to include the slimbox js code
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -7805,9 +7805,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Fet pluginmanager (get reference to form's plugin manager
-	 * 
+	 *
 	 * @deprecated - use FabrikWorker::getPluginManager() instead since 3.0b
-	 * 
+	 *
 	 * @return  object  plugin manager model
 	 */
 
@@ -7818,7 +7818,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Called via advanced search to load in a given element filter
-	 * 
+	 *
 	 * @return string html for filter
 	 */
 
@@ -7841,7 +7841,7 @@ class FabrikFEModelList extends JModelForm
 	 * Build the table's add record link
 	 * if a querystring filter has been passed in to the table then apply this to the link
 	 * this means that table->faceted table->add will auto select the data you browsed on
-	 * 
+	 *
 	 * @return string  url
 	 */
 
@@ -7890,16 +7890,18 @@ class FabrikFEModelList extends JModelForm
 		}
 		if (empty($addurl_url))
 		{
-			if ($this->isAjaxLinks())
+			/*  $$$ rob set this options in the js - so if we want to open a
+			 * link normaly we can right click and open the page as a standard J view
+			 * if ($this->isAjaxLinks())
 			{
 				$qs['ajax'] = '1';
-			}
+			} */
 			$formModel = $this->getFormModel();
 			$formid = $formModel->getForm()->id;
-			if ($this->packageId !== 0 || $this->isAjaxLinks())
+			/* if ($this->packageId !== 0 || $this->isAjaxLinks())
 			{
 				$qs['tmpl'] = 'component';
-			}
+			} */
 
 			$qs['option'] = 'com_fabrik';
 			if ($app->isAdmin())
@@ -7935,7 +7937,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Insert into the head a series of JS to load element list JS
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -7968,7 +7970,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Return the url for the list form - this url is used when submitting searches, and ordering
-	 * 
+	 *
 	 * @return  string  action url
 	 */
 
@@ -8064,12 +8066,12 @@ class FabrikFEModelList extends JModelForm
 		return $this->tableAction;
 	}
 
-	/** 
+	/**
  	 * Allow plugins to add arbitrary WHERE clauses.  Gets checked in buildQueryWhere().
- 	 * 
+ 	 *
 	 * @param   string  $pluginName   plugin name
 	 * @param   string  $whereClause  where clause (WITHOUT prepended where/and etc)
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -8095,9 +8097,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Plugins sometimes need to clear their where clauses
-	 * 
+	 *
 	 * @param   string  $pluginName  plugin name
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -8113,7 +8115,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * If all filters are set to read only then don't return a clear button
 	 * otherwised do
-	 * 
+	 *
 	 * @return  string	clear filter button link
 	 */
 
@@ -8138,7 +8140,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the join display mode - merge, normal or reduce
-	 * 
+	 *
 	 * @return  string	1 if merge, 2 if reduce, 0 if no merge or reduce
 	 */
 
@@ -8163,9 +8165,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Ask each element to preFormatFormJoins() for $data
-	 * 
+	 *
 	 * @param   array  &$data  to preformat
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8218,9 +8220,9 @@ class FabrikFEModelList extends JModelForm
 	 * Otherwise if the group is repeating we append each repeated record's data into the first row's data
 	 * All rows execpt the first row for each group are then unset (as unique subsequent row's data will be contained within
 	 * the first row)
-	 * 
+	 *
 	 * @param   array  &$data  list data
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8436,7 +8438,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Does the list model have an associated table (can occur when form model
 	 * which does not store in db, gets its list model)
-	 * 
+	 *
 	 * @return boolean
 	 */
 
@@ -8448,11 +8450,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Save an individual element value to the fabrik db
-	 * 
+	 *
 	 * @param   string  $rowId  row id
 	 * @param   string  $key    key
 	 * @param   string  $value  value
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8464,11 +8466,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Increment a value in a cell
-	 * 
+	 *
 	 * @param   string  $rowId  row's id
 	 * @param   string  $key    field to increment
 	 * @param   string  $dir    -1/1 etc
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -8483,7 +8485,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Set model sate
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8510,7 +8512,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the output format
-	 * 
+	 *
 	 * @return  string	outputformat
 	 */
 
@@ -8521,9 +8523,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Set the list output format
-	 * 
+	 *
 	 * @param   string  $f  format html/pdf/raw/csv
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8534,11 +8536,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Update a series of rows with a key = val , works across joined tables
-	 * 
+	 *
 	 * @param   array   $ids  pk values to update
 	 * @param   string  $col  key to update
 	 * @param   string  $val  val to set to
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8615,7 +8617,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * unset a series of model properties
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8643,9 +8645,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the table template
-	 * 
+	 *
 	 * @since 3.0
-	 * 
+	 *
 	 * @return string template name
 	 */
 
@@ -8687,7 +8689,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Set the lists elements' tempate to that of the list's
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8716,7 +8718,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Is the list's db table in the main Joomla database
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -8732,9 +8734,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Checks : J template html override css file then fabrik list tmpl template css file. Including them if found
-	 * 
+	 *
 	 * @since 3.0 loads lists's css files
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8765,7 +8767,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get a unique list identifier (enables the same list to be rendered in component and module at same time)
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -8781,9 +8783,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * lists can be rendered in articles, as components and in modules
 	 * we need to set a unique reference for them to avoid conflicts
-	 * 
+	 *
 	 * @param   int  $id  module/component list id
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -8818,7 +8820,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * When dealing with ajax requests filtering etc we want to take the listref from the
 	 * request array
-	 * 
+	 *
 	 * @return  string	listref
 	 */
 
@@ -8840,7 +8842,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get lists group by headings
-	 * 
+	 *
 	 * @return   array  heading names
 	 */
 
@@ -8877,9 +8879,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get a list of elements to export in the csv file.
-	 * 
+	 *
 	 * @since 3.0b
-	 * 
+	 *
 	 * @return array full element names.
 	 */
 
@@ -8913,7 +8915,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Helper function for view to determine if filters should be shown
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -8927,7 +8929,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the number of buttons that are rendered for the list
-	 * 
+	 *
 	 * @return  number
 	 */
 
@@ -8939,7 +8941,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Helper view function to determine if any buttons are shown
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -8959,12 +8961,12 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Compacts the ordering sequence of the selected records
-	 * 
+	 *
 	 * @param   string  $colid  column name to order on
 	 * @param   string  $where  additional where query to limit ordering to a particular subset of records
-	 * 
+	 *
 	 * @since   3.0.5
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -9014,9 +9016,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Load the JS files into the document
-	 * 
+	 *
 	 * @param   array  &$srcs  reference: js script srcs to load in the head
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -9034,11 +9036,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * When saving an element it can effect the list parameters, update them here.
-	 * 
+	 *
 	 * @param   object  $elementModel  element model
-	 * 
+	 *
 	 * @since 3.0.6
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -9077,9 +9079,9 @@ class FabrikFEModelList extends JModelForm
 	 * Get / set formatAll, which forces formatData() to ignore 'show in table'
 	 * and just format everything, needed by things like the table email plugin.
 	 * If called without an arg, just returns current setting.
-	 * 
+	 *
 	 * @param   bool  $format_all  optional arg to set format
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -9094,11 +9096,11 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Copy rows
-	 * 
+	 *
 	 * @param   mixed  $ids  array or string of row ids to copy
-	 * 
+	 *
 	 * @since	3.0.6
-	 * 
+	 *
 	 * @return  bool	all rows copied (true) or false if a row copy fails.
 	 */
 

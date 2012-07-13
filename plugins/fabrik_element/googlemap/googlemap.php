@@ -1,16 +1,22 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.googlemap
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+
+/**
+ * Plugin element to render a Google map
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.googlemap
+ */
 
 class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 {
@@ -21,10 +27,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -161,9 +167,9 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -462,10 +468,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -547,11 +553,11 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
-	 * 
+	 *
 	 * @param   array  &$aFields    array of element names
 	 * @param   array  &$aAsFields  array of 'name AS alias' fields
 	 * @param   array  $opts        options
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -581,10 +587,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -600,11 +606,11 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 

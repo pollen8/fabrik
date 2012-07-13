@@ -128,4 +128,16 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 			}
 		}
 	}
+
+	/**
+	 * Set list ids
+	 */
+	protected function setListIds()
+	{
+		if (!isset($this->listids))
+		{
+			$params = $this->getParams();
+			$this->listids = (array) $params->get('approvals_table');
+		}
+	}
 }

@@ -15,8 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * List controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerList extends JControllerForm
@@ -29,7 +30,7 @@ class FabrikControllerList extends JControllerForm
 
 	/**
 	 * ajax load drop down of all columns in a given table
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -63,7 +64,7 @@ class FabrikControllerList extends JControllerForm
 
 	/**
 	 * delete list items
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -98,7 +99,7 @@ class FabrikControllerList extends JControllerForm
 
 	/**
 	 * filter list items
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -115,7 +116,7 @@ class FabrikControllerList extends JControllerForm
 
 	/**
 	 * show the lists data in the admin
-	 * 
+	 *
 	 * @return  null
 	 */
 

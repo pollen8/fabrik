@@ -31,7 +31,7 @@ class FabrikControllerVisualization extends JController
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -79,8 +79,8 @@ class FabrikControllerVisualization extends JController
 	}
 
 	/**
-	 * if loading via id then we want to get the view name and add the plugin view and model paths
-	 * 
+	 * If loading via id then we want to get the view name and add the plugin view and model paths
+	 *
 	 * @return   string  view name
 	 */
 
@@ -99,10 +99,10 @@ class FabrikControllerVisualization extends JController
 	 *
 	 * Method to get a reference to the current view and load it if necessary.
 	 *
-* @param   string  $name    The view name. Optional, defaults to the controller name.
-* @param   string  $type    The view type. Optional.
-* @param   string  $prefix  The class prefix. Optional.
-* @param   array   $config  Configuration array for view. Optional.
+	 * @param   string  $name    The view name. Optional, defaults to the controller name.
+	 * @param   string  $type    The view type. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for view. Optional.
 	 *
 	 * @return  object  Reference to the view or an error.
 	 */
@@ -115,4 +115,3 @@ class FabrikControllerVisualization extends JController
 	}
 
 }
-?>

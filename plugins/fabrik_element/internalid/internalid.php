@@ -1,24 +1,30 @@
 <?php
 /**
-* Plugin element to render internal id
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.internalid
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render internal id
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.internalid
+ */
 
 class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 {
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -55,7 +61,7 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 
 	/**
 	 * Get database field description
-	 * 
+	 *
 	 * @return  string  db field type
 	 */
 
@@ -66,9 +72,9 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -95,19 +101,19 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 	{
 
 	}
-	
+
 	/**
 	 * load a new set of default properites and params for the element
 	 * @return  object	element (id = 0)
 	 */
-	
+
 	public function getDefaultProperties()
 	{
 		$item = parent::getDefaultProperties();
 		$item->primary_key = true;
 		$item->width = 3;
 		$item->hidden = 1;
-		$item->auto_increment	= 1;
+		$item->auto_increment = 1;
 		return $item;
 	}
 }

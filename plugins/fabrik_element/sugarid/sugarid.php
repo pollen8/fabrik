@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.sugarid
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -13,9 +13,10 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
  * Plugin element to Sugar CRM id
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.sugarid
+ * @since       3.0
  */
 
 class PlgFabrik_ElementSugarid extends PlgFabrik_Element
@@ -27,10 +28,10 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -67,10 +68,10 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
@@ -89,7 +90,7 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 	 * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
 	 * All Rights Reserved.
 	 * Contributor(s): ______________________________________..
-	 * 
+	 *
 	 * @return String contianing a GUID in the format: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
 	 */
 
@@ -121,9 +122,9 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 
 	/**
 	 * Create guid section
-	 * 
+	 *
 	 * @param   string  $characters  string
-	 * 
+	 *
 	 * @return  string  guid section
 	 */
 
@@ -139,10 +140,10 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 
 	/**
 	 * pad/substr string to specified length
-	 * 
+	 *
 	 * @param   string  &$string  string
 	 * @param   int     $length   size
-	 * 
+	 *
 	 * @return  void
 	 */
 

@@ -14,7 +14,7 @@ require_once 'fabrikmodelform.php';
 
 /**
  * Fabrik Form Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -130,7 +130,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Method to set the form id
-	 * 
+	 *
 	 * @since fabrk 3 - DEPRECIATE - SHOULD USE POPULATE STATE
 	 * @param   int	table ID number
 	 */
@@ -300,8 +300,12 @@ class FabrikFEModelForm extends FabModelForm
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getId();
-			// $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails (if ajax loaded then dont do &amp;
-			$qs .= JRequest::getVar('ajax') == 1 ? '&view=' . $v : '&amp;view=' . $v;
+
+			/* $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
+			* If FabrikHelperHTML::styleSheetajax loaded then dont do &amp;
+			*/
+			$qs .= FabrikHelperHTML::cssAsAsset() ? '&view=' . $v : '&amp;view=' . $v;
+
 			if (!FabrikHelperHTML::stylesheetFromPath(
 				'templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs))
 			{
@@ -534,7 +538,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$query->select('g.id, j.id AS joinid')->from('#__{package}_joins AS j')
 					->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('list_id = ' . $listid . ' AND g.published = 1');
 				$db->setQuery($query);
-				//$db->setQuery("SELECT g.id, j.id AS joinid FROM #__{package}_joins AS j INNER JOIN #__{package}_groups AS g ON g.id = j.group_id WHERE list_id = '$listid' AND g.published = 1 ");
+				// $db->setQuery("SELECT g.id, j.id AS joinid FROM #__{package}_joins AS j INNER JOIN #__{package}_groups AS g ON g.id = j.group_id WHERE list_id = '$listid' AND g.published = 1 ");
+
 				$joinGroups = $db->loadObjectList('id');
 				foreach ($joinGroups as $k => $o)
 				{
@@ -583,9 +588,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Gets each element in the form along with its group info
-	 * 
+	 *
 	 * @param   bool  $excludeUnpublished  included unpublished elements in the result
-	 * 
+	 *
 	 * @return  array	element objects
 	 */
 
@@ -630,7 +635,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * -------->element
 	 * --->group
 	 * if run before then existing data returned
-	 * 
+	 *
 	 * @return  array	element objects
 	 */
 
@@ -646,7 +651,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get an list of elements that aren't shown in the list view
-	 * 
+	 *
 	 * @return  array	of element table objects
 	 */
 
@@ -679,7 +684,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * this checks to see if the form has a file upload element
 	 * and returns the correct encoding type for the form
-	 * 
+	 *
 	 * @return  string	form encoding type
 	 */
 
@@ -705,7 +710,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 *
 	 * @param   string  $method  method to call
 	 * @param   array   $data    posted form data
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -728,9 +733,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Get the plugin manager
-	 * 
+	 *
 	 * @deprecated use return FabrikWorker::getPluginManager(); instead since 3.0b
-	 * 
+	 *
 	 * @return object plugin manager
 	 */
 
@@ -743,7 +748,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * when the form is submitted we want to get the orginal record it
 	 * is updating - this is used in things like the fileupload element
 	 * to check for changes in uploaded files and process the difference
-	 * 
+	 *
 	 * @return  object
 	 */
 
@@ -765,7 +770,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Get form's original data
-	 * 
+	 *
 	 * @return   array
 	 */
 
@@ -782,7 +787,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * Are we copying a row?  Usually set in controller process().
 	 *
 	 * @param   bool  $set  if true, set copyingRow to true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -797,7 +802,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * processes the form data and decides what action to take
-	 * 
+	 *
 	 * @return  bool false if one of the plugins reuturns an error otherwise true
 	 */
 
@@ -812,7 +817,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			 * breaks AJAX calls in a way that cannot be debugged, as the error message goes nowhere.
 			 * What we might want to consider instead is removing notices and warnings from the reporting level?
 			 * ini_set('display_errors', 0);
-			 * 
+			 *
 			 * $$$ rob - the ajax call should really trap those notices and observe the header Status to report back the issue
 			 */
 			error_reporting(error_reporting() ^ (E_WARNING | E_NOTICE));
@@ -1356,18 +1361,26 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$joinDb->setQuery('DESCRIBE ' . $oJoin->table_join);
 				$oJoinPk = $oJoin->table_join . '___';
 				$cols = $joinDb->loadObjectList();
+				$hasParams = false;
 				foreach ($cols as $col)
 				{
 					if ($col->Key == 'PRI')
 					{
 						$oJoinPk .= $col->Field;
-						break;
+					}
+					else if ($col->Field == 'params')
+					{
+						$hasParams = true;
 					}
 				}
 				$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
 
-				$paramKey = $listModel->getTable()->db_table_name . '___params';
-				$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
+				$repeatParams = array();
+				if ($hasParams)
+				{
+					$paramKey = $listModel->getTable()->db_table_name . '___params';
+					$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
+				}
 
 				if ($joinGroup->canRepeat())
 				{
@@ -1397,7 +1410,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$repData[$element->name . '_raw'] = $v_raw;
 
 							//store any params set in the individual plug-in (see fabrikfileupload::processUpload()->crop()
-							if ($elementModel->isJoin())
+							if ($hasParams && $elementModel->isJoin())
 							{
 								$repData['params'] = JArrayHelper::getValue($repeatParams, $c);
 							}
@@ -1547,6 +1560,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$this->_fullFormData['join'][$oJoin->id][$oJoinPk] = $joinRowId;
 						$this->formData['join'][$oJoin->id][$oJoinPk . '_raw'] = $joinRowId;
 						$this->formDataWithTableName['join'][$oJoin->id][$oJoinPk . '_raw'] = $joinRowId;
+
 					}
 
 					//$$$rob if the fk was the same as the pk then go back to the main table and
@@ -1564,6 +1578,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 						//reset the table's values to the main table
 						// $$$ rob same issues as above with $item not being a reference to $listModel->table
+
 						//$item->db_table_name = $origTableName;
 						//$item->db_primary_key = $origTableKey;
 						$listModel->getTable()->db_table_name = $origTableName;
@@ -1889,7 +1904,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * validate the form
 	 * modifies post data to include validation replace data
-	 * 
+	 *
 	 * @return  bool  true if form validated ok
 	 */
 
@@ -1932,6 +1947,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		 * otherwise it won't be in $data when we rebuild the page.
 		 * Need to do it here, so _raw fields get added in the next chunk 'o' code.
 		 */
+
 		$this->addEncrytedVarsToArray($post);
 
 		// $$$ hugh - moved this to after addEncryptedVarsToArray(), so read only data is
@@ -2112,7 +2128,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get form validation errors - if empty test session for errors
-	 * 
+	 *
 	 * @return  array	errors
 	 */
 
@@ -2141,7 +2157,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * clear form validation errors
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -2160,9 +2176,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * set form validation errors in session
-	 * 
+	 *
 	 * @param   array  $errors  error messages
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -2176,7 +2192,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Get JSON Errors
-	 * 
+	 *
 	 * @return  string  json encoded object keyed on 'modified' and 'errors'
 	 */
 
@@ -2188,7 +2204,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Should the form do a spoof check
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -2215,9 +2231,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get the forms table name
-	 * 
+	 *
 	 * @deprecated
-	 * 
+	 *
 	 * @return  string	database table name
 	 */
 
@@ -2229,7 +2245,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * get the form row
-	 * 
+	 *
 	 * @return object form row
 	 */
 
@@ -2250,7 +2266,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Ingore
 	 * @depreicated
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function createFormGroup($groupId)
@@ -2261,7 +2277,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Ingore
 	 * @depreicated
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _getFromGroupsStr()
@@ -2271,7 +2287,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Ingore
 	 * @depreicated
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -2282,12 +2298,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Sets the variable of each of the form's group's elements to the value
 	 * specified
-	 * 
+	 *
 	 * @param   string  $varName  variable name
 	 * @param   string  $varVal   variable value
 	 *
 	 * @deprecated
-	 * 
+	 *
 	 * @return  bool  false if update error occurs
 	 */
 
@@ -2312,7 +2328,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Determines if the form can be published
-	 * 
+	 *
 	 * @return  bool  true if publish dates are ok
 	 */
 
@@ -2339,13 +2355,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Create a drop down list of all the elements in the form
-	 * 
+	 *
 	 * @param   string  $name                drop down name
 	 * @param   string  $default              current value
 	 * @param   bool    $excludeUnpublished  add elements that are unpublished
 	 * @param   bool    $useStep             concat table name and el name with '___' (true) or "." (false)
 	 * @param   bool    $incRaw              include raw labels default = true
-	 * 
+	 *
 	 * @return  string	html list
 	 */
 
@@ -2360,9 +2376,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Get an array of the form's element's ids
-	 * 
+	 *
 	 * @param   array  $ignore  classNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * 
+	 *
 	 * @return  array  ints ids
 	 */
 
@@ -2388,13 +2404,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Creates options array to be then used by getElementList to create a drop down of elements in the form
 	 * seperated as elements need to collate this options from muliple forms
-	 * 
+	 *
 	 * @param   bool    $useStep               concat table name and el name with '___' (true) or "." (false)
 	 * @param   string  $key                   name of key to use (default "name")
 	 * @param   bool    $show_in_list_summary  only show those elements shown in table summary
 	 * @param   bool    $incRaw                include raw labels in list (default = false) Only works if $key = name
 	 * @param   array   $filter                list of plugin names that should be included in the list - if empty include all plugin types
-	 * 
+	 *
 	 * @return  array	html options
 	 */
 
@@ -3328,6 +3344,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$db = $listModel->getDb();
 				// @TODO JQuery this
 				$db->setQuery("DESCRIBE " . $db->quoteName($tblJoin->table_join));
+
 				$fields = $db->loadObjectList();
 				foreach ($fields as $f)
 				{
@@ -3356,7 +3373,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 				}
 				$keystokeep = array_keys($usedkeys);
-				///remove unneeded data from array
+
+				// Remove unneeded data from array
 				foreach ($jdata as $key => $value)
 				{
 					foreach ($value as $key2 => $v)
@@ -3482,13 +3500,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	function copy()
 	{
-		//array key = old id value new id
+		// Array key = old id value new id
 		$this->groupidmap = array();
 		$groupModels = $this->getGroups();
 		$this->form = null;
 		$form = $this->getTable();
 		$form->id = false;
-		// rob newFormLabel set in table copy
+
+		// $$$ rob newFormLabel set in table copy
 		if (JRequest::getVar('newFormLabel', '') !== '')
 		{
 			$form->label = JRequest::getVar('newFormLabel');
@@ -3844,8 +3863,16 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
-							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-							$repeatGroup = count($origData['join'][$joinTable->id][$smallerElHTMLName]);
+							if (!empty($elementModels))
+							{
+								$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
+								$repeatGroup = count($origData['join'][$joinTable->id][$smallerElHTMLName]);
+							}
+							else
+							{
+								// No published elements - not sure if setting repeatGroup to 0 is right though
+								$repeatGroup = 0;
+							}
 							if (!array_key_exists($fullFk, $this->data['join'][$joinTable->id]))
 							{
 								JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
@@ -3967,7 +3994,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				//if its a repeatable group put in subgroup
 				if ($groupModel->canRepeat())
 				{
-					//style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
+					// Style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
 					$ix = 1;
 					foreach ($aSubGroupElements as $elKey => $element)
 					{
@@ -3977,7 +4004,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 			}
 			$groupModel->randomiseElements($aElements);
-			//style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
+
+			// Style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
 			$ix = 1;
 			foreach ($aElements as $elKey => $element)
 			{

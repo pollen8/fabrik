@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.calendar
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.calendar
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -17,8 +17,8 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 /**
  * Fabrik Calendar Plug-in Controller
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.calendar
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.calendar
  */
 
 class FabrikControllerVisualizationcalendar extends FabrikControllerVisualization
@@ -32,9 +32,9 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$document = JFactory::getDocument();
 		$viewName = 'calendar';
 
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 
 		//create a form view as well to render the add event form.
 		//$view$elementModel->getFormModel()View = &$this->getView('Form', $viewType);
@@ -67,14 +67,14 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$document = JFactory::getDocument();
 		$viewName = 'calendar';
 
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 		// Set the default view name from the Request
 		$view = &$this->getView($viewName, $viewType);
 
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$view->setModel($formModel);
 		// Push a model into the view
-		$model	= &$this->getModel($viewName);
+		$model = &$this->getModel($viewName);
 
 		$view->setModel($model, true);
 		$view->chooseaddevent();
@@ -107,11 +107,12 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		JRequest::setVar('formid', $table->form_id);
 		JRequest::setVar('tmpl', 'component');
 		JRequest::setVar('ajax', '1');
-		$link = 'index.php?option=com_fabrik&view=form&formid='.$table->form_id.'&rowid='.$rowid.'&tmpl=component&ajax=1';
+		$link = 'index.php?option=com_fabrik&view=form&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
 		$link .= '&jos_fabrik_calendar_events___visualization_id=' . JRequest::getInt('jos_fabrik_calendar_events___visualization_id');
 		$start_date = JRequest::getVar('start_date', '');
-		if (!empty($start_date)) {
-			$link .= "&$datefield=".$start_date;
+		if (!empty($start_date))
+		{
+			$link .= "&$datefield=" . $start_date;
 		}
 		// $$$ rob have to add this to stop the calendar filtering itself after adding an new event?
 		$link .= '&clearfilters=1';

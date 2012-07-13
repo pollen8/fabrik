@@ -37,18 +37,18 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 	{
 		return false;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_List::loadJavascriptClass_result()
 	 */
-	
+
 	public function loadJavascriptClass_result()
 	{
 		$src = parent::loadJavascriptClass_result();
 		return array($src, 'media/com_fabrik/js/element.js');
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plgFabrik_List::onLoadJavascriptInstance()
@@ -60,7 +60,7 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 		{
 			return;
 		}
-		
+
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
 		$form_id = $model->getFormModel()->getId();
 		$opts = $this->getElementJSOptions($model);

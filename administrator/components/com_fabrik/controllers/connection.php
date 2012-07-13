@@ -1,11 +1,11 @@
 <?php
 /**
-* @package     Joomla.Administrator
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-* @since       1.6
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -15,8 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Connection controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		1.6
  */
 
 class FabrikControllerConnection extends JControllerForm
@@ -29,7 +30,7 @@ class FabrikControllerConnection extends JControllerForm
 
 	/**
 	 * trys to connection to the database
-	 * 
+	 *
 	 * @return  string  connection message
 	 */
 
@@ -45,7 +46,7 @@ class FabrikControllerConnection extends JControllerForm
 			$model->setId($id);
 			if ($model->testConnection() == false)
 			{
-				JError::raiseWarning(500,  JText::_('COM_FABRIK_UNABLE_TO_CONNECT'));
+				JError::raiseWarning(500, JText::_('COM_FABRIK_UNABLE_TO_CONNECT'));
 				$this->setRedirect($link);
 				return;
 			}

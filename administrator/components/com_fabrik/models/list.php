@@ -46,9 +46,9 @@ class FabrikModelList extends FabModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -68,9 +68,9 @@ class FabrikModelList extends FabModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed	A JForm object on success, false on failure
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -91,9 +91,9 @@ class FabrikModelList extends FabModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed  A JForm object on success, false on failure
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -112,7 +112,7 @@ class FabrikModelList extends FabModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed	The data for the form.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -132,9 +132,9 @@ class FabrikModelList extends FabModelAdmin
 	 *
 	 * @param   array  &$pks   A list of the primary keys to change.
 	 * @param   int    $value  The value of the published state.
-	 * 
+	 *
 	 * @return  boolean	True on success.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -183,10 +183,10 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Build and/or dropdown list
-	 * 
+	 *
 	 * @param   bool    $addSlashes  to reutrn data
 	 * @param   string  $name        input name
-	 * 
+	 *
 	 * @return string dropdown
 	 */
 
@@ -205,11 +205,11 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Build prefilter dropdown
-	 * 
+	 *
 	 * @param   bool    $addSlashes  add slashes to reutrn data
 	 * @param   string  $name        name of the drop down
 	 * @param   int     $mode        states what values get put into drop down
-	 * 
+	 *
 	 * @return string dropdown
 	 */
 
@@ -264,7 +264,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Get connection model
-	 * 
+	 *
 	 * @return  object  connect model
 	 */
 
@@ -279,7 +279,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Create the js that manages the edit list view page
-	 * 
+	 *
 	 * @return  string  js
 	 */
 
@@ -426,7 +426,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Get the list's join objects
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -464,7 +464,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Get the possible list plug-ins that can be selected for use
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -505,9 +505,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Not required in list model
-	 * 
+	 *
 	 * @param   int  $repeatCounter  plugin counter
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -518,9 +518,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Not required in list model
-	 * 
+	 *
 	 * @param   int  $repeatCounter  plugin counter
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -531,7 +531,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * load up a front end form model - used in saving the list
-	 * 
+	 *
 	 * @return  object  front end form model
 	 */
 
@@ -548,7 +548,7 @@ class FabrikModelList extends FabModelAdmin
 			 * $$$ rob commenting out as this loads up an empty form when saving a new list
 			 * $item = $this->getItem();
 			 * $this->formModel->setId($this->getState('list.form_id', $item->id));
-			 * $this->formModel->getForm();   
+			 * $this->formModel->getForm();
 			 */
 
 			/**
@@ -561,9 +561,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Set the form model
-	 * 
+	 *
 	 * @param   object  $model  form model
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -574,7 +574,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Load up the front end list model so we can use some of its methods
-	 * 
+	 *
 	 * @return  object  front end list model
 	 */
 
@@ -590,11 +590,11 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Validate the form
-	 * 
+	 *
 	 * @param   object  $form   The form to validate against.
 	 * @param   array   $data   The data to validate.
 	 * @param   string  $group  The name of the field group to validate.
-	 * 
+	 *
 	 * @return mixed  false or data
 	 */
 
@@ -618,9 +618,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * save the form
-	 * 
+	 *
 	 * @param   array  $data  the jform part of the request data
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -796,7 +796,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$feModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
 		}
-		$afilterFields = $params->get('filter-fields', '', '_default', 'array');
+		$afilterFields = (array) $params->get('filter-fields', array());
 		foreach ($afilterFields as $field)
 		{
 			if (array_key_exists($field, $map))
@@ -827,9 +827,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * the list view now enables us to alter en-mass some element properties
-	 * 
+	 *
 	 * @param   object  $row  list item
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -856,9 +856,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * check to see if a table exists
-	 * 
+	 *
 	 * @param   string  $tableName  name of table (ovewrites form_id val to test)
-	 * 
+	 *
 	 * @return  bool	false if no table found true if table found
 	 */
 
@@ -883,9 +883,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * deals with ensuring joins are managed correctly when table is saved
-	 * 
+	 *
 	 * @param   array  $data  jform data
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -922,7 +922,7 @@ class FabrikModelList extends FabModelAdmin
 			if ($oldJoin->params !== '')
 			{
 				$oldParams = json_decode($oldJoin->params);
-				if ($oldParams->type == 'repeatElement')
+				if (isset($oldParams->type) && $oldParams->type == 'repeatElement')
 				{
 					$aOldJoinsToKeep[] = $oldJoin->id;
 				}
@@ -1007,14 +1007,14 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * new join make the group, group elements and formgroup entries for the join data
-	 * 
+	 *
 	 * @param   string  $tableKey       table key
 	 * @param   string  $joinTableKey   join to table key
 	 * @param   string  $joinType       join type
 	 * @param   string  $joinTable      join to table
 	 * @param   string  $joinTableFrom  join table
 	 * @param   bool    $isRepeat       is the group a repeat
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1038,6 +1038,8 @@ class FabrikModelList extends FabModelAdmin
 		{
 			return JError::raiseWarning(500, $join->getError());
 		}
+		// $$$ hugh @TODO - create new 'pk' param
+		// $this->getFEModel()->setJoinPK($join);
 		$_POST['jform']['db_table_name'] = $joinTable;
 		$this->createLinkedElements($groupId);
 		$_POST['jform']['db_table_name'] = $origTable;
@@ -1049,7 +1051,7 @@ class FabrikModelList extends FabModelAdmin
 	 * column type
 	 *
 	 * @param   int  $groupId  group id
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1092,8 +1094,14 @@ class FabrikModelList extends FabModelAdmin
 				 * If we are saving a new table and the previously found tables group is a join
 				 * then don't add its elements to the table as they don't exist in the database table
 				 * we are linking to
+				 * $$$ hugh - why the test for task and new table?  When creating elements for a copy of a table,
+				 * surely we NEVER want to include elements which were joined to the original,
+				 * regardless of whether this is a new List?  Bearing in mind that this routine gets called from
+				 * the makeNewJoin() method, when adding a join to an existing list, to build the "Foo - [bar]" join
+				 * group, as well as from save() when creating a new List.
 				 */
-				if ($groupModel->isJoin() && JRequest::getCmd('task') == 'save' && JRequest::getInt('id') == 0)
+				// if ($groupModel->isJoin() && JRequest::getCmd('task') == 'save' && JRequest::getInt('id') == 0)
+				if ($groupModel->isJoin())
 				{
 					continue;
 				}
@@ -1130,10 +1138,10 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * take a table name and make elements for all of its fields
-	 * 
+	 *
 	 * @param   int     $groupId    group id
 	 * @param   string  $tableName  table name
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1299,9 +1307,9 @@ class FabrikModelList extends FabModelAdmin
 	 * when saving a list that links to a database for the first time we
 	 * automatically create a form to allow the update/creation of that tables
 	 * records
-	 * 
+	 *
 	 * @param   int  $formid  to copy from. If = 0 then create a default form. If not 0 then copy the form id passed in
-	 * 
+	 *
 	 * @return  object  form model
 	 */
 
@@ -1315,7 +1323,7 @@ class FabrikModelList extends FabModelAdmin
 			/**
 			 * $$$ rob required otherwise the JTable is loaed with db_table_name as a property
 			 * which then generates an error - not sure why its loaded like that though?
-			 * 18/08/2011 - could be due to the Form table class having it in its bind method 
+			 * 18/08/2011 - could be due to the Form table class having it in its bind method
 			 * - (have now overridden form table store() to remove thoes two params)
 			 */
 			$this->formModel->getForm();
@@ -1365,7 +1373,7 @@ class FabrikModelList extends FabModelAdmin
 	 * @param   array  $data      group data
 	 * @param   bool   $isJoin    is the group a join default false
 	 * @param   bool   $isRepeat  is the group repeating
-	 * 
+	 *
 	 * @return  int  group id
 	 */
 
@@ -1407,7 +1415,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * test if the main J user can create mySQL tables
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -1436,7 +1444,7 @@ class FabrikModelList extends FabModelAdmin
 	 * Method to copy one or more records.
 	 *
 	 * @return  boolean	True if successful, false if an error occurs.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -1505,11 +1513,11 @@ class FabrikModelList extends FabModelAdmin
 	/**
 	 * when copying a table we need to copy its joins as well
 	 * note that the group and elements already exists - just the join needs to be saved
-	 * 
+	 *
 	 * @param   int    $fromid      table id to copy from
 	 * @param   int    $toid        table id to copy to
 	 * @param   array  $groupidmap  saying which groups got copied to which new group id (key = old id, value = new id)
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -1552,9 +1560,9 @@ class FabrikModelList extends FabModelAdmin
 	/**
 	 * replaces the table column names with a safer name - ie removes white
 	 * space and none alpha numeric characters
-	 * 
+	 *
 	 * @depreciated fabrik3.0
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1566,11 +1574,11 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * adds a primary key to the database table
-	 * 
+	 *
 	 * @param   string  $fieldName      the column name to make into the primary key
 	 * @param   bool    $autoIncrement  is the column an auto incrementing number
 	 * @param   string  $type           column type definition (eg varchar(255))
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1622,11 +1630,11 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * internal function: add a key to the table
-	 * 
+	 *
 	 * @param   string  $fieldName      primary key column name
 	 * @param   bool    $autoIncrement  is the column auto incrementing
 	 * @param   string  $type           the primary keys column type (if autoincrement true then int(6) is always used as the type)
-	 * 
+	 *
 	 * @return  mixed  false / JError
 	 */
 
@@ -1666,9 +1674,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * internal function: drop the table's key
-	 * 
+	 *
 	 * @param   array  $aPriKey  existing key data
-	 * 
+	 *
 	 * @return  bool true if key droped
 	 */
 
@@ -1699,11 +1707,11 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * internal function: update an exisitng key in the table
-	 * 
+	 *
 	 * @param   string  $fieldName      primary key column name
 	 * @param   bool    $autoIncrement  is the column auto incrementing
 	 * @param   string  $type           the primary keys column type
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1739,7 +1747,7 @@ class FabrikModelList extends FabModelAdmin
 	/**
 	 * translation has been turned off for the table so delete the content
 	 * element xml file
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1754,7 +1762,7 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * write out the Joomfish contentelement xml file for the tables elements
-	 * 
+	 *
 	 * @return  bool  true if written out ok
 	 */
 
@@ -1832,7 +1840,7 @@ class FabrikModelList extends FabModelAdmin
 	 * @param   array  &$pks  An array of record primary keys.
 	 *
 	 * @return  boolean	True if successful, false if an error occurs.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -1943,9 +1951,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Remove the associated form
-	 * 
+	 *
 	 * @param   object  &$item  list item
-	 * 
+	 *
 	 * @return boolean|form object
 	 */
 
@@ -1967,10 +1975,10 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Delete associated fabrik groups
-	 * 
+	 *
 	 * @param   object  &$form           item
 	 * @param   bool    $deleteElements  delete group items as well
-	 * 
+	 *
 	 * @return boolean|form id
 	 */
 
@@ -1996,11 +2004,11 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Make a database table from  XML definition
-	 * 
+	 *
 	 * @param   string  $key   primary key
 	 * @param   strng   $name  table name
 	 * @param   string  $xml   xml table definition
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -2090,9 +2098,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Load list from form id
-	 * 
+	 *
 	 * @param   int  $formId  form id
-	 * 
+	 *
 	 * @return  object  JTable
 	 */
 
@@ -2107,9 +2115,9 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * load the database object associated with the list
-	 * 
+	 *
 	 * @since 3.0b
-	 * 
+	 *
 	 * @return object database
 	 */
 
@@ -2120,10 +2128,10 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * Create a table to store the forms' data depending upon what groups are assigned to the form
-	 * 
+	 *
 	 * @param   string  $dbTableName  taken from the table oject linked to the form
 	 * @param   array   $fields       list of default elements to add. (key = element name, value = plugin
-	 * 
+	 *
 	 * @return mixed false if fail otherwise array of primary keys
 	 */
 
@@ -2225,10 +2233,10 @@ class FabrikModelList extends FabModelAdmin
 
 	/**
 	 * create an element
-	 * 
+	 *
 	 * @param   string  $name  element name
 	 * @param   array   $data  properties
-	 * 
+	 *
 	 * @return mixed false if failed, otherwise element plugin
 	 */
 
@@ -2286,7 +2294,7 @@ class FabrikModelList extends FabModelAdmin
 	/**
 	 * Alter the forms' data collection table when the forms' groups and/or
 	 * elements are altered
-	 * 
+	 *
 	 * @return void|JError
 	 */
 

@@ -1,11 +1,9 @@
 <?php
 /**
- * Form email plugin
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.email
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,7 +12,16 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class PlgFabrik_FormEmail extends PlgFabrik_Form {
+/**
+ * Send email upon form submission
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.email
+ * @since       3.0
+ */
+
+class PlgFabrik_FormEmail extends PlgFabrik_Form
+{
 
 	var $_aAttachments = array();
 
@@ -24,7 +31,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 	 * MOVED TO PLUGIN.PHP SHOULDPROCESS()
 	 * determines if a condition has been set and decides if condition is matched
 	 *
-* @param object $params
+	 * @param object $params
 	 * @return  bool true if you sould send the email, false stops sending of eaml
 	 */
 
@@ -35,8 +42,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-* @param   object	$params
-* @param   object	form model
+	 * @param   object	$params
+	 * @param   object	form model
 	 * @returns	bool
 	 */
 
@@ -68,7 +75,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 
 		if (JFile::exists($emailTemplate))
 		{
-			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate) : $this->_getTemplateEmail($emailTemplate);
+			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate) : $this
+				->_getTemplateEmail($emailTemplate);
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
 			if ($message === false)
 			{
@@ -88,8 +96,10 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
 
-		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid=' . JRequest::getVar('rowid');
-		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid=' . JRequest::getVar('rowid');
+		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
+			. JRequest::getVar('rowid');
+		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
+			. JRequest::getVar('rowid');
 		$editlink = '<a href="' . $editURL . '">' . JText::_('EDIT') . '</a>';
 		$viewlink = '<a href="' . $viewURL . '">' . JText::_('VIEW') . '</a>';
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
@@ -107,7 +117,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 			foreach ($emailkey as &$key)
 			{
 				// $$$ rob added strstr test as no point trying to add raw suffix if not placeholder in $emailkey
-				if (!JMailHelper::isEmailAddress($key) && trim($key) !== '' && strstr($key, '}')) {
+				if (!JMailHelper::isEmailAddress($key) && trim($key) !== '' && strstr($key, '}'))
+				{
 					$key = explode('}', $key);
 					if (substr($key[0], -4) !== '_raw')
 					{
@@ -212,8 +223,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 	/**
 	 * use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
-* @param bol if file uploads have been found
-* @param string path to template
+	 * @param bol if file uploads have been found
+	 * @param string path to template
 	 * @return string email message
 	 */
 
@@ -252,7 +263,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 				{
 					if (method_exists($elementModel, 'addEmailAttachement'))
 					{
-						if (array_key_exists($elName . '_raw',$data))
+						if (array_key_exists($elName . '_raw', $data))
 						{
 							$val = $data[$elName . '_raw'];
 						}
@@ -313,7 +324,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 
 	/**
 	 * template email handling routine, called if email template specified
-* @param   string	path to template
+	 * @param   string	path to template
 	 * @return  string	email message
 	 */
 
@@ -325,7 +336,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 
 	/**
 	 * get content item template
-* @param   int		$contentTemplate
+	 * @param   int		$contentTemplate
 	 * @return  string	content item html (translated with Joomfish if installed)
 	 */
 
@@ -336,8 +347,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')
-			->where('id = ' . (int) $contentTemplate);
+			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
 			$db->setQuery($query);
 			$res = $db->loadObject();
 		}
@@ -361,7 +371,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
 		$message = "";
-		$pluginManager =FabrikWorker::getPluginManager();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$groupModels = $this->formModel->getGroupsHiarachy();
 		foreach ($groupModels as &$groupModel)
 		{
@@ -371,7 +381,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 				$element = $elementModel->getElement();
 				// @TODO - how about adding a 'renderEmail()' method to element model, so specific element types
 				// can render themselves?
-				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(false, true, false ) : $element->name;
+				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(false, true, false) : $element->name;
 				if (!in_array($key, $ignore))
 				{
 					$val = '';
@@ -384,23 +394,23 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 							{
 								$val = implode(", ", $v);
 							}
-							$val .= count($data[$key]) == 1 ? ": $v<br />" : $k++ .": $v<br />";
+							$val .= count($data[$key]) == 1 ? ": $v<br />" : $k++ . ": $v<br />";
 						}
 					}
 					else
 					{
 						$val = $data[$key];
 					}
-					$val = FabrikString::rtrimword( $val, "<br />");
+					$val = FabrikString::rtrimword($val, "<br />");
 					$val = stripslashes($val);
 
 					// set $val to default value if empty
-					if($val == '')
-					$val = " - ";
+					if ($val == '')
+						$val = " - ";
 					// don't add a second ":"
 					$label = trim(strip_tags($element->label));
 					$message .= $label;
-					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label)-1) === false)
+					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label) - 1) === false)
 					{
 						$message .= ':';
 					}
@@ -409,8 +419,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form {
 			}
 		}
 		$message = JText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . JText::_('Message') . ':'
-		."<br />===================================<br />".
-		"<br />" . stripslashes($message);
+			. "<br />===================================<br />" . "<br />" . stripslashes($message);
 		return $message;
 	}
 

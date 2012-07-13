@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timestamp
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,13 +12,10 @@ defined('_JEXEC') or die();
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 /**
- * Plugin element to render timestamp field
- * 
- * Slightly modified fabriktimestamp element (see lines 49-52)
- * By Nathan Cook 4/22/2010
- * 
- * @package  Fabrik
- * @since    3.0
+ * Plugin element to render a timestamp
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.timestamp
  */
 
 class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
@@ -28,10 +25,10 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 
 	/**
 	 * Get the element's HTML label
-	 *  
+	 *
 	 * @param   int     $repeatCounter  group repeat counter
 	 * @param   string  $tmpl           form template
-	 * 
+	 *
 	 * @return  string  label
 	 */
 
@@ -42,9 +39,9 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 
 	/**
 	 * Set/get if element should record its data in the dabase
-	 * 
+	 *
 	 * @deprecated - not used
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -55,10 +52,10 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -78,10 +75,10 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -94,7 +91,7 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 
 	/**
 	 * Get database field description
-	 * 
+	 *
 	 * @return  string  db field type
 	 */
 

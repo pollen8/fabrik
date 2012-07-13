@@ -18,10 +18,10 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 {
 	/**
 	 * called when the active table filter array is loaded
-* @param   object	params
-* @param   object	model
+	 * @param   object	params
+	 * @param   object	model
 	 */
-	
+
 	function onFiltersGot(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onfiltersgot'), $model);
@@ -29,10 +29,10 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * called when the table HTML filters are loaded
-* @param   object	params
-* @param   object	model
+	 * @param   object	params
+	 * @param   object	model
 	 */
-	
+
 	function onMakeFilters(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onmakefilters'), $model);
@@ -40,10 +40,10 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * do the plugin action
-* @param object table model
+	 * @param object table model
 	 * @return string message
 	 */
-	
+
 	function process(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_process'), $model);
@@ -51,11 +51,11 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * run before the table loads its data
-* @param   object	parmas
-* @param   object	$model
+	 * @param   object	parmas
+	 * @param   object	$model
 	 * @return  bool
 	 */
-	
+
 	function onPreLoadData(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onpreloaddata'), $model);
@@ -63,10 +63,10 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * run when the list loads its data(non-PHPdoc)
-* @param   object	params
-* @param   object	model
+	 * @param   object	params
+	 * @param   object	model
 	 */
-	
+
 	function onLoadData(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onloaddata'), $model);
@@ -74,7 +74,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * called when the model deletes rows
-* @param   object	list $model
+	 * @param   object	list $model
 	 * @return  false	if fail
 	 */
 
@@ -112,8 +112,8 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 
 	/**
 	 * evaluate supplied PHP
-* @param   string	$code
-* @param   object	$model
+	 * @param   string	$code
+	 * @param   object	$model
 	 * @return  boolean
 	 */
 

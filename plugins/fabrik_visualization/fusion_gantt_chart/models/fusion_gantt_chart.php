@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionganntchart
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.fusionganntchart
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,8 +16,8 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 /**
  * Fabrik Coverflow Plug-in Model
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionganntchart
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.fusionganntchart
  */
 
 class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
@@ -227,7 +227,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 		return $d;
 	}
 
-	function setListIds()
+	protected function setListIds()
 	{
 		if (!isset($this->listids))
 		{

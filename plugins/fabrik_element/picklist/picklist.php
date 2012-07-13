@@ -1,10 +1,9 @@
 <?php
 /**
- * Plugin element to two lists - one to select from the other to select into
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.picklist
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,14 +11,21 @@ defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
+/**
+ * Plugin element to two lists - one to select from the other to select into
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.picklist
+ */
+
 class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 {
 
-/**
+	/**
 	 * Method to set the element id
 	 *
 	 * @param   int  $id  element ID number
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -34,10 +40,10 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -108,9 +114,9 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -138,9 +144,9 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	 * if the search value isnt what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
-	 * 
+	 *
 	 * @param   string  $value  filterVal
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -161,11 +167,11 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 	/**
 	 * Builds an array containing the filters value and condition
-	 * 
+	 *
 	 * @param   string  $value      initial value
 	 * @param   string  $condition  intial $condition
 	 * @param   string  $eval       how the value should be handled
-	 * 
+	 *
 	 * @return  array	(value condition)
 	 */
 
@@ -179,13 +185,13 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	/**
 	 * build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
-	 * 
+	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`
 	 * @param   string  $condition      =/like etc
 	 * @param   string  $value          search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  original filter value without quotes or %'s applied
 	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
-	 * 
+	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
 

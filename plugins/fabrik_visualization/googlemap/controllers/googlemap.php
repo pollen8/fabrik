@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.googlemap
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.googlemap
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,8 @@ jimport('joomla.application.component.controller');
 /**
  * Fabrik Google Map Viz Controller
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.googlemap
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.googlemap
  */
 
 class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualization
@@ -27,7 +27,6 @@ class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualizati
 		$model = $this->getModel($viewName);
 		$id = JRequest::getInt('visualizationid', 0);
 		$model->setId($id);
-		$model->setListIds();
 		$model->onAjax_getMarkers();
 	}
 }

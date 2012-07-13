@@ -1,14 +1,20 @@
 <?php
 /**
- * Plugin element to render text area
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.textarea
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Plugin element to render text area or wysiwyg editor
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.textarea
+ */
 
 class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 {
@@ -82,10 +88,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -130,7 +136,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Does the element use the WYSWYG editor
-	 * 
+	 *
 	 * @return  bool	use wysiwyg editor
 	 */
 
@@ -151,7 +157,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -162,10 +168,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -252,11 +258,11 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Used to format the data when shown in the form's email
-	 * 
+	 *
 	 * @param   mixed  $value          element's data
 	 * @param   array  $data           form records data
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -272,9 +278,9 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -304,10 +310,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Internal element validation
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  repeeat group counter
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -331,7 +337,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Get validation error - run through JText
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -366,7 +372,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 
 	/**
 	 * Can the element plugin encrypt data
-	 * 
+	 *
 	 * @return  bool
 	 */
 

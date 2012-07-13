@@ -30,9 +30,9 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * inline edit control
-	 * 
+	 *
 	 * @return  null
-	 *  
+	 *
 	 * @since   3.0b
 	 */
 
@@ -54,7 +54,7 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -81,7 +81,6 @@ class FabrikControllerForm extends JController
 		$model->getErrors();
 		if (!JError::isError($model) && is_object($model))
 		{
-
 			$view->setModel($model, true);
 		}
 		$view->isMambot = $this->isMambot;
@@ -114,7 +113,7 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * process the form
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -273,11 +272,11 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * Get redirect message
-	 * 
+	 *
 * @param   object  $model  form model
-	 * 
+	 *
 	 * @return  string  redirect message
-	 * 
+	 *
 	 * @since   3.0
 	 */
 
@@ -341,12 +340,12 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * Get redirect URL
-	 * 
+	 *
 * @param   object  $model       form model
 * @param   bool    $incSession  set url in session?
-	 * 
+	 *
 	 * @return   string  redirect url
-	 * 
+	 *
 	 * @since 3.0
 	 */
 
@@ -456,7 +455,7 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * save a form's page to the session table
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -471,7 +470,7 @@ class FabrikControllerForm extends JController
 	/**
 	 * clear down any temp db records or cookies
 	 * containing partially filled in form data
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -486,7 +485,7 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * called via ajax to page through form records
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -500,7 +499,7 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * delete a record from a form
-	 * 
+	 *
 	 * @return  null
 	 */
 

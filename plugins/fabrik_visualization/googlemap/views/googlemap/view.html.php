@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.googlemap
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.googlemap
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * Fabrik Google Map Viz HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.googlemap
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.googlemap
  */
 
 class fabrikViewGooglemap extends JView
@@ -38,7 +38,6 @@ class fabrikViewGooglemap extends JView
 		$model = $this->getModel();
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
-		$model->setListIds();
 		$js = $model->getJs();
 		$this->txt = $model->getText();
 		$params = $model->getParams();

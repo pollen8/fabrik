@@ -1,20 +1,20 @@
 <?php
 
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.calc
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**
  * Plugin element to render field with PHP calculated value
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.calc
  */
 
 class PlgFabrik_ElementCalc extends PlgFabrik_Element
@@ -22,10 +22,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -47,11 +47,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Get value
-	 * 
+	 *
 	 * @param   string  $data           value
 	 * @param   int     $repeatCounter  repeat group counter
-	 * 
-	 * @return  string 
+	 *
+	 * @return  string
 	 */
 
 	private function _getV($data, $repeatCounter)
@@ -205,11 +205,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
@@ -241,9 +241,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * run on formModel::setFormData()
-	 * 
+	 *
 	 * @param   int  $c  repeat group counter
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -317,9 +317,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Swap values for labels
-	 * 
+	 *
 	 * @param   array  &$d  data
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -355,12 +355,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Allows the element to pre-process a rows data before and join mergeing of rows
 	 * occurs. Used in calc element to do cals on actual row rather than merged row
-	 * 
+	 *
 	 * @param   string  $data  elements data for the current row
 	 * @param   object  $row   current row's data
-	 * 
+	 *
 	 * @since	3.0.5
-	 *  
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -370,7 +370,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$format = trim($params->get('calc_format_string'));
 		/**
 		 * $$$ hugh - the 'calculated value' bit is for legacy data that was created
-		 * before we started storing a value when row is saved 
+		 * before we started storing a value when row is saved
 		 */
 		if ($params->get('calc_on_save_only', 0))
 		{
@@ -411,10 +411,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Prepares the element data for CSV export
-	 * 
+	 *
 	 * @param   string  $data      element data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -429,10 +429,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -477,9 +477,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -513,7 +513,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Perform calculation from ajax request
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -538,10 +538,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Get sum query
-	 * 
+	 *
 	 * @param   object  &$listModel  list model
 	 * @param   string  $label       label
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -565,11 +565,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
-	 * Build the query for the avg calculation 
-	 * 
+	 * Build the query for the avg calculation
+	 *
 	 * @param   model   &$listModel  list model
 	 * @param   string  $label       the label to apply to each avg
-	 * 
+	 *
 	 * @return  string	sql statement
 	 */
 
@@ -597,7 +597,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	 *
 	 * @param   object  &$listModel  list
 	 * @param   string  $label       label
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -622,9 +622,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * Get the sprintf format string
-	 * 
+	 *
 	 * @since 3.0.4
-	 * 
+	 *
 	 * @return string
 	 */
 

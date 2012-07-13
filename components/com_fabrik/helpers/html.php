@@ -51,7 +51,7 @@ class FabrikHelperHTML
 	protected static $modal = null;
 
 	/**
-	 * load up window code - should be run in ajax loaded pages as well
+	 * load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 * @deprecated use windows() instead
 	 * @param   stringing element select to auto create windows for  - was default = a.modal
@@ -65,7 +65,10 @@ class FabrikHelperHTML
 	public static function windows($selector = '', $params = array())
 	{
 		$script = '';
-
+		if (JRequest::getVar('format') == 'json')
+		{
+			return;
+		}
 		$document = JFactory::getDocument();
 
 		$sig = md5(serialize(array($selector, $params)));
@@ -117,9 +120,17 @@ class FabrikHelperHTML
       if (opts.id === 'fabwin') {
       	opts.id += i;
       }
+      var t = typeOf(opts.onContentLoaded);
+      if (t !== 'null') {
       opts.onContentLoaded = function() {
-  			Fabrik.Windows[opts.id].fitToContent()
+  			Fabrik.Windows[opts.id].fitToContent();
 			};
+
+		} else {
+			opts.onContentLoaded = function() {
+	  			document.id(opts.id).position();
+			};
+		}
       Fabrik.getWindow(opts);
     });
   });
@@ -367,16 +378,21 @@ EOD;
 		{
 			$file = COM_FABRIK_LIVESITE . '/' . $file;
 		}
-		if ((JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf'))
+		if (self::cssAsAsset())
 		{
+
 			$attribs = json_encode(JArrayHelper::toObject($attribs));
 
 			// Send an inline script back which will inject the css file into the doc head
 			// Note your ajax call must have 'evalScripts':true set in its properties
 			if (!in_array($file, self::$ajaxCssFiles))
 			{
-				echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});</script>\n";
+				if (!strstr($file, 'fabrik.css')) {
+				echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});
+				</script>\n";
+
 				self::$ajaxCssFiles[] = $file;
+				}
 			}
 		}
 		else
@@ -390,11 +406,23 @@ EOD;
 	}
 
 	/**
+	 * Will the CSS be loaded js Assest.css()
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  bool
+	 */
+
+	public static function cssAsAsset()
+	{
+		return JRequest::getVar('format') == 'raw' || (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf';
+	}
+
+	/**
 	 * Check for a custom css file and include it if it exists
-	 * 
-	 * @param   string  $path  NOT including JPATH_SITE (so relative too root dir) may include querystring
-	 * 
-	 * @return  bool	if loaded or not
+	 *
+	 * @param	string	$path  NOT including JPATH_SITE (so relative too root dir) may include querystring
+	 * @return	bool	if loaded or not
 	 */
 
 	public static function stylesheetFromPath($path)
@@ -435,7 +463,7 @@ EOD;
 
 	/**
 	 * Generates an HTML radio OR checkbox list
-	 * 
+	 *
 	 * @param   string  type - radio or checkbox
 	 * @param   array	An array of objects
 	 * @param   string  The value of the HTML name attribute

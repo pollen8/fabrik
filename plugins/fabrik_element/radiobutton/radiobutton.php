@@ -1,27 +1,33 @@
 <?php
 /**
- * Plugin element to a series of radio buttons
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.radiolist
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to a series of radio buttons
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.radiolist
+ * @since       3.0
+ */
+
 class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 {
 
 	protected $hasLabel = false;
-
-/**
-	 * Method to set the element id
-	 *
-	 * @param   int  $id  element ID number
-	 * 
-	 * @return  void
-	 */
+	/**
+	* Method to set the element id
+	*
+	* @param   int  $id  element ID number
+	*
+	* @return  void
+	*/
 
 	public function setId($id)
 	{
@@ -37,11 +43,11 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 
 	/**
 	 * Turn form value into email formatted value
-	 * 
+	 *
 	 * @param   mixed  $value          element value
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  group repeat counter
-	 * 
+	 *
 	 * @return  string  email formatted value
 	 */
 
@@ -60,9 +66,9 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -87,9 +93,9 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	 * if the search value isnt what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
-	 * 
+	 *
 	 * @param   string  $value  filterVal
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -111,9 +117,9 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	/**
 	 * If your element risks not to post anything in the form (e.g. check boxes with none checked)
 	 * the this function will insert a default value into the database
-	 * 
+	 *
 	 * @param   array  &$data  form data
-	 * 
+	 *
 	 * @return  array  form data
 	 */
 
@@ -132,11 +138,11 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 
 	/**
 	 * Builds an array containing the filters value and condition
-	 * 
+	 *
 	 * @param   string  $value      initial value
 	 * @param   string  $condition  intial $condition
 	 * @param   string  $eval       how the value should be handled
-	 * 
+	 *
 	 * @return  array	(value condition)
 	 */
 
@@ -148,28 +154,28 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Used by inline edit table plugin
-	 * If returns yes then it means that there are only two possible options for the
-	 * ajax edit, so we should simply toggle to the alternative value and show the
-	 * element rendered with that new value (used for yes/no element)
-	 * 
-	 * @deprecated - only called in a deprecated element method
-	 * 
-	 * @return  bool
-	 */
+	* Used by inline edit table plugin
+	* If returns yes then it means that there are only two possible options for the
+	* ajax edit, so we should simply toggle to the alternative value and show the
+	* element rendered with that new value (used for yes/no element)
+	*
+	* @deprecated - only called in a deprecated element method
+	*
+	* @return  bool
+	*/
 
-	protected function canToggleValue()
+	public function canToggleValue()
 	{
 		return count($this->getSubOptionValues()) < 3 ? true : false;
 	}
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 

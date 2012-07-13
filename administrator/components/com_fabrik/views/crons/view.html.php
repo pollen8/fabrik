@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of crons.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		1.6
  */
 class FabrikViewCrons extends JView

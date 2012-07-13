@@ -14,13 +14,13 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a list.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
  * @since		1.5
  */
 class FabrikViewList extends JView
 {
-	
+
 
 	/**
 	 * display a json object representing the table data.
@@ -74,7 +74,7 @@ class FabrikViewList extends JView
 		if (!empty($msg)) {
 			$d['msg'] = $msg[0]['message'];
 		}
-		
+
 		echo json_encode($d);
 	}
 

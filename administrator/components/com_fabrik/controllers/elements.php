@@ -15,8 +15,9 @@ require_once 'fabcontrolleradmin.php';
 /**
  * Elements list controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerElements extends FabControllerAdmin
@@ -33,8 +34,8 @@ class FabrikControllerElements extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-* @param   array  $config  An optional associative array of configuration settings.
-	 * 
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -48,10 +49,10 @@ class FabrikControllerElements extends FabControllerAdmin
 
 	/**
 	 * Proxy for getModel.
-	 * 
-* @param   string  $name    model name
-* @param   string  $prefix  model prefix
-	 * 
+	 *
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 *
 	 * @return  J model
 	 */
 
@@ -65,7 +66,7 @@ class FabrikControllerElements extends FabControllerAdmin
 
 	/**
 	 * Set selected elements to be shown/not shown in list
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -116,7 +117,7 @@ class FabrikControllerElements extends FabControllerAdmin
 	 * Set up page asking about what to delete
 	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -138,7 +139,7 @@ class FabrikControllerElements extends FabControllerAdmin
 
 	/**
 	 * cancel delete element
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -149,7 +150,7 @@ class FabrikControllerElements extends FabControllerAdmin
 
 	/**
 	 * Set up the page to ask for which group to copy the element to
-	 * 
+	 *
 	 * @return  null
 	 */
 

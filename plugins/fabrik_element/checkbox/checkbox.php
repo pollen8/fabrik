@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.checkbox
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,9 +11,9 @@ defined('_JEXEC') or die();
 
 /**
  * Plugin element to render series of checkboxes
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.checkbox
  */
 
 class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
@@ -27,7 +27,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 * Method to set the element id
 	 *
 	 * @param   int  $id  element ID number
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -45,10 +45,10 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 
 	/**
 	 * Shows the RAW list data - can be overwritten in plugin class
-	 * 
+	 *
 	 * @param   string  $data     element data
 	 * @param   object  $thisRow  all the data in the tables current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -59,9 +59,9 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 
 	/**
 	 * will the element allow for multiple selections
-	 * 
+	 *
 	 * @since	3.0.6
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -72,9 +72,9 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -99,9 +99,9 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	/**
 	 * If your element risks not to post anything in the form (e.g. check boxes with none checked)
 	 * the this function will insert a default value into the database
-	 * 
+	 *
 	 * @param   array  &$data  form data
-	 * 
+	 *
 	 * @return  array  form data
 	 */
 
@@ -119,9 +119,9 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	 * if the search value isnt what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
-	 * 
+	 *
 	 * @param   string  $value  filterVal
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -143,13 +143,13 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	/**
 	 * build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
-	 * 
+	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`
 	 * @param   string  $condition      =/like etc
 	 * @param   string  $value          search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  original filter value without quotes or %'s applied
 	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
-	 * 
+	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
 
@@ -175,7 +175,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	/**
 	 * If no filter condition supplied (either via querystring or in posted filter data
 	 * return the most appropriate filter option for the element.
-	 * 
+	 *
 	 * @return  string	default filter condition ('=', 'REGEXP' etc)
 	 */
 
@@ -186,11 +186,11 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 
 	/**
 	 * Builds an array containing the filters value and condition
-	 * 
+	 *
 	 * @param   string  $value      initial value
 	 * @param   string  $condition  intial $condition
 	 * @param   string  $eval       how the value should be handled
-	 * 
+	 *
 	 * @return  array	(value condition)
 	 */
 
@@ -202,10 +202,10 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 

@@ -15,8 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Visualization controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikControllerVisualization extends JControllerForm

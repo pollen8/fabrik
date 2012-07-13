@@ -1,15 +1,9 @@
 <?php
 /**
- * Plugin element to:
- * Counts records in a row - so adds "COUNT(x) .... GROUP BY (y)" to the main db query
- *
- * Note implementing this element will mean that only the first row of data is returned in
- * the joined group
- *
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.count
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -19,10 +13,24 @@ jimport('joomla.application.component.model');
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
+/**
+ * Plugin element to:
+ * Counts records in a row - so adds "COUNT(x) .... GROUP BY (y)" to the main db query
+ *
+ * Note implementing this element will mean that only the first row of data is returned in
+ * the joined group
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.count
+ * @since       3.0
+ */
+
 class PlgFabrik_ElementCount extends PlgFabrik_Element
 {
 
 	/**
+	 * Get group by query
+	 * @see PlgFabrik_Element::getGroupByQuery()
 	 */
 	public function getGroupByQuery()
 	{
@@ -32,11 +40,11 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 
 	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
-	 * 
+	 *
 	 * @param   array  &$aFields    array of element names
 	 * @param   array  &$aAsFields  array of 'name AS alias' fields
 	 * @param   array  $opts        options
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -58,7 +66,7 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -69,11 +77,11 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 
 	/**
 	 * Check if the user can use the active element
-	 * 
+	 *
 	 * @param   object  &$model    calling the plugin list/form
 	 * @param   string  $location  to trigger plugin on
 	 * @param   string  $event     to trigger plugin on
-	 * 
+	 *
 	 * @return  bool can use or not
 	 */
 
@@ -84,10 +92,10 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -99,7 +107,7 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 		 $params 		=& $this->getParams();
 		 $element 		= $this->getElement();
 		 $size 			= $element->width;
-		
+
 		 $bits = array();
 		 // $$$ rob - not sure why we are setting $data to the form's data
 		 //but in table view when getting read only filter value from url filter this
@@ -119,12 +127,12 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 		    if (!$this->editable) {
 		    return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		    }
-		
+
 		    $bits['class']		= "fabrikinput inputbox $type";
 		    $bits['type']		= $type;
 		    $bits['name']		= $name;
 		    $bits['id']			= $id;
-		
+
 		    //stop "'s from breaking the content out of the field.
 		    // $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
 		    //so add false flag to ensure its encoded once only
@@ -136,7 +144,8 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 		    $bits['value']		= htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
 		    }
 		    $bits['size']		= $size;
-		
+
+
 		    //cant be used with hidden element types
 		    if ($element->hidden != '1') {
 		    if ($params->get('readonly')) {
@@ -158,9 +167,9 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -173,4 +182,3 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	}
 
 }
-?>

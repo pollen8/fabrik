@@ -18,7 +18,7 @@ class PlgFabrik_ValidationruleIsalphanumeric extends PlgFabrik_Validationrule
 
 	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
 	protected $icon = 'notempty';
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see PlgFabrik_Validationrule::validate()

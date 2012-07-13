@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.button
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,9 +11,9 @@ defined('_JEXEC') or die();
 
 /**
  * Plugin element to render button
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.button
  */
 
 class PlgFabrik_ElementButton extends PlgFabrik_Element
@@ -21,10 +21,10 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -39,10 +39,10 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 
 	/**
 	 * Get the element's HTML label
-	 *  
+	 *
 	 * @param   int     $repeatCounter  group repeat counter
 	 * @param   string  $tmpl           form template
-	 * 
+	 *
 	 * @return  string  label
 	 */
 
@@ -53,9 +53,9 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -69,12 +69,12 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	}
 
 	/**
-	 * Get an array of element html ids and their corresponding 
+	 * Get an array of element html ids and their corresponding
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  array  html ids to watch for validation
 	 */
 

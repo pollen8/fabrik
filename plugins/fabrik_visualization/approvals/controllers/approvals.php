@@ -15,8 +15,8 @@ jimport('joomla.application.component.controller');
  * Approvals viz Controller
  *
  * @static
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.approvals
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.approvals
  * @since 1.5
  */
 class FabrikControllerVisualizationapprovals extends FabrikControllerVisualization

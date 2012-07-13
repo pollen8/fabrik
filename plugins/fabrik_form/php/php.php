@@ -1,12 +1,9 @@
 <?php
-
 /**
- * Run some php when the form is submitted
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,15 +12,22 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class PlgFabrik_FormPHP extends PlgFabrik_Form
+/**
+ * Run some php when the form is submitted
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.php
+ */
+
+class PlgFabrik_FormPHP extends plgFabrik_Form
 {
 
 	/**
 	 * Sets up HTML to be injected into the form's bottom
-	 * 
+	 *
 	 * @param   object  $params     params
 	 * @param   object  $formModel  form model
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -109,10 +113,10 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 	/**
 	 * Run before the form is processed
-	 * 
+	 *
 	 * @param   object  &$params     params
 	 * @param   object  &$formModel  form model
-	 * 
+	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
@@ -130,7 +134,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 	/**
 	 * (non-PHPdoc)
-	 * @see PlgFabrik_Form::onBeforeCalculations()
+	 * @see plgFabrik_Form::onBeforeCalculations()
 	 */
 
 	function onBeforeCalculations($params, $formModel)
@@ -158,11 +162,13 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 	/**
-	 * run when the form is loaded - after its data has been created
+	 * Run when the form is loaded - after its data has been created
 	 * data found in $formModel->data
-	 * @param   object	$params
-	 * @param   object	$formModel
-	 * @return  unknown_type
+	 *
+	 * @param	object	&$params     plugin params
+	 * @param	object	&$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	function onLoad(&$params, &$formModel)
@@ -175,11 +181,13 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 	/**
-	 * run when the form is loaded - before its data has been created
+	 * Run when the form is loaded - before its data has been created
 	 * data found in $formModel->data
-	 * @param   object	$params
-	 * @param   object	$formModel
-	 * @return  bool
+	 *
+	 * @param	object	&$params     plugin params
+	 * @param	object	&$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	function onBeforeLoad(&$params, &$formModel)
@@ -192,9 +200,10 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 	/**
-	 * process the plugin, called when form is submitted
-	 * @param   object	$params
-	 * @param   object	form model
+	 * Process the plugin, called when form is submitted
+	 *
+	 * @param	object	&$params     plugin params
+	 * @param	object	&$formModel  form model
 	 */
 
 	public function onError($params, &$formModel)
@@ -282,4 +291,3 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 }
-?>

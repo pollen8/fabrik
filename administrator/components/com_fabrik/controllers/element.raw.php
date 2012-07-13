@@ -15,8 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Element controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabrikControllerElement extends JControllerForm
@@ -31,7 +32,7 @@ class FabrikControllerElement extends JControllerForm
 
 	/**
 	 * called via ajax to load in a given plugin's HTML settings
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -47,8 +48,8 @@ class FabrikControllerElement extends JControllerForm
 	/**
 	 * Method to save a record.
 	 *
-* @param   string  $key     The name of the primary key of the URL variable.
-* @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
 	 *
 	 * @return  boolean  True if successful, false otherwise.
 	 */

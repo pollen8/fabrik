@@ -24,9 +24,9 @@ class SkeletonViewPackage extends JView
 
 	/**
 	 * display
-	 * 
-* @param   string  $tpl  template
-	 * 
+	 *
+	 * @param   string  $tpl  template
+	 *
 	 * @return  null
 	 */
 
@@ -36,7 +36,7 @@ class SkeletonViewPackage extends JView
 		 * dummy file which is not used
 		 * but required to allow the component to be selected from the Joomla
 		 * admin menu options.
-		 */ 
+		 */
 	}
 
 }

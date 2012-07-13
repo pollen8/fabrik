@@ -1,12 +1,9 @@
 <?php
-
 /**
- * Create a Joomla user from the forms data
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.comment
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,9 +13,17 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * Insert a comment plugin into the bottom of the form
+ * Various different plugin systems supported
+ *  * Internal
+ *  * disqus
+ *  * Intensedebate
+ *  * JComments
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.form.comment
  */
+
 class FabrikTableComment extends FabTable
 {
 
@@ -223,7 +228,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * 
+	 *
 	 * build the html for the internal comment form
 	 * @param   object	$params
 	 * @param   int		$reply_to

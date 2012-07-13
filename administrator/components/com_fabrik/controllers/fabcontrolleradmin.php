@@ -17,15 +17,16 @@ jimport('joomla.application.component.controlleradmin');
 /**
  * List controller class.
  *
- * @package  Fabrik
- * @since    3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 
 class FabControllerAdmin extends JControllerAdmin
 {
 	/**
 	 * actally delete the requested items forms etc
-	 * 
+	 *
 	 * @return null
 	 */
 

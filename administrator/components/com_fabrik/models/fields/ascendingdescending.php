@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Form
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -29,7 +29,7 @@ class JFormFieldAscendingdescending extends JFormFieldList
 
 	/**
 	 * Method to get the field options.
-	 * 
+	 *
 	 * @return  array	The field option objects.
 	 */
 

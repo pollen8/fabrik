@@ -1,25 +1,31 @@
 <?php
 /**
- * Plugin element to render cascading dropdown
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
- */
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.cascadingdropdown
+* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+* @license		GNU General Public License version 2 or later; see LICENSE.txt
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
+/**
+* Plugin element to render cascading dropdown
+*
+* @package		Joomla.Plugin
+* @subpackage	Fabrik.element.cascadingdropdown
+*/
+
 class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 {
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -84,10 +90,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -605,7 +611,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get the name of the field to order the table data by
 	 * can be overwritten in plugin class - but not currently done so
-	 * 
+	 *
 	 * @return string column to order by tablename___elementname and yes you can use aliases in the order by clause
 	 */
 
@@ -665,11 +671,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Get the table filter for the element
-	 * 
+	 *
 	 * @param   int   $counter  filter order
 	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 * 
+	 *
 	 * @return  string	filter html
 	 */
 
@@ -739,10 +745,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * If used as a filter add in some JS code to watch observed filter element's changes
 	 * when it changes update the contents of this elements dd filter's options
-	 * 
+	 *
 	 * @param   bool    $normal     is the filter a normal (true) or advanced filter
 	 * @param   string  $container  container
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -859,12 +865,12 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Get an array of element html ids and their corresponding 
+	 * Get an array of element html ids and their corresponding
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  array  html ids to watch for validation
 	 */
 
@@ -916,13 +922,13 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
-	 * 
+	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`
 	 * @param   string  $condition      =/like etc
 	 * @param   string  $value          search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  original filter value without quotes or %'s applied
 	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
-	 * 
+	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
 

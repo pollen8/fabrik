@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionchart
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.fusionchart
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,8 +14,8 @@ jimport('joomla.application.component.view');
 /**
  * Fabrik Fuson Chart HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionchart
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.fusionchart
  */
 
 class fabrikViewFusionchart extends JView
@@ -39,7 +39,6 @@ class fabrikViewFusionchart extends JView
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
-		$model->setListIds();
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));

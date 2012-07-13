@@ -1,11 +1,9 @@
 <?php
 /**
- * Form email plugin
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.clone
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,13 +12,21 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
-class PlgFabrik_FormClone extends PlgFabrik_Form {
+/**
+ * Copy a series of form records
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.clone
+ */
+
+class plgFabrik_FormClone extends plgFabrik_Form
+{
 
 	/**
 	 * process the plugin, called when form is submitted
 	 *
-* @param   object	$params
-* @param   object	form model
+	 * @param   object	$params
+	 * @param   object	form model
 	 * @returns	bool
 	 */
 
@@ -48,7 +54,7 @@ class PlgFabrik_FormClone extends PlgFabrik_Form {
 				$primaryKey = FabrikString::shortColName($listModel->getTable()->db_primary_key);
 				$formModel->formData[$primaryKey] = $formModel->_fullFormData['rowid'];
 				$formModel->formData[$primaryKey . '_raw'] = $formModel->_fullFormData['rowid'];
-				$listModel->storeRow( $formModel->formData, $formModel->_fullFormData['rowid']);
+				$listModel->storeRow($formModel->formData, $formModel->_fullFormData['rowid']);
 			}
 			//$clone_times_field = $elementModel->getFullName(false, true, false);
 			$clone_times = $formModel->formData[$element->name];
@@ -68,4 +74,3 @@ class PlgFabrik_FormClone extends PlgFabrik_Form {
 	}
 
 }
-?>

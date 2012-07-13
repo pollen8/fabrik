@@ -19,11 +19,11 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron {
 
 	/**
 	 * Check if the user can use the plugin
-	 * 
+	 *
 	 * @param   object  &$model    calling the plugin list/form
 	 * @param   string  $location  to trigger plugin on
 	 * @param   string  $event     to trigger plugin on
-	 * 
+	 *
 	 * @return  bool can use or not
 	 */
 
@@ -194,7 +194,7 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron {
 
 			// if upload syncing (from us to gcal) is enabled ...
 			if ($gcal_sync_upload == 'both' || $gcal_sync_upload == 'to') {
-				
+
 				// Grab the tzOffset.  Note that gcal want +/-XX (like -06)
 				// but J! gives us +/-X (like -6) so we sprintf it to the right format
 				$config = JFactory::getConfig();

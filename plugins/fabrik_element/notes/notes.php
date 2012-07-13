@@ -1,16 +1,22 @@
 <?php
 /**
- * Plugin element to render cascading dropdown
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.notes
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
+
+/**
+ * Plugin element to enable users to make notes on a give record
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.notes
+ */
 
 class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 {
@@ -20,9 +26,9 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -39,10 +45,10 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -58,10 +64,10 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -157,7 +163,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$value = $params->get('notes_where_value');
 		$fk = $params->get('join_fk_column', '');
 		$rowid = $this->getFormModel()->getRowId();
-		// Jaanus - commented out as unnecessary, some variables moved above 
+		// Jaanus - commented out as unnecessary, some variables moved above
 		/*if ($field == '') {
 		    return '';
 		}
