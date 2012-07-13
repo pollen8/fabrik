@@ -754,13 +754,9 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 								$data_count++;
 								if ($value == '-1')
 								{
-									$data_count ++;
-									if ($value == '-1')
-									{
-										$value = null;
-									}
-									$this->FC->addChartData($value);
+									$value = null;
 								}
+								$this->FC->addChartData($value);
 							}
 						}
 					}
