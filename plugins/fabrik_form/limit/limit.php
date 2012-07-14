@@ -1,9 +1,9 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.limit
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.form.limit
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 
 // Check to ensure this file is included in Joomla!
@@ -15,25 +15,36 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
 * Form limit submissions plugin
 *
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.limit
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.form.limit
+* @since       3.0
 */
 
 class plgFabrik_FormLimit extends plgFabrik_Form {
 
 	/**
-	 * process the plugin, called when form is loaded
-	 * @param	object	$params
-	 * @param	object	form model
-	 * @returns	bool
+	 * Process the plugin, called when form is loaded
+	 *
+	 * @param   object  $params      plugin parameters
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function onLoad($params, &$formModel)
+	public function onLoad($params, &$formModel)
 	{
 		return $this->_process($params, $formModel);
 	}
 
-	private function _process(&$params, &$formModel)
+	/**
+	 * Process the plugin
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  bool
+	 */
+	private function _process($params, &$formModel)
 	{
 		$user = JFactory::getUser();
 		$db = FabrikWorker::getDbo();
@@ -49,12 +60,12 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 		$listid = (int) $params->get('limit_table');
 		if ($listid === 0)
 		{
-			//use the limit setting supplied in the admin params
+			// Use the limit setting supplied in the admin params
 			$limit = (int) $params->get('limit_length');
 		}
 		else
 		{
-			//look up the limit from the table spec'd in the admin params
+			// Look up the limit from the table spec'd in the admin params
 			$listModel = JModel::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$max = $db->quoteName(FabrikString::shortColName($params->get('limit_max')));
@@ -88,4 +99,3 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 	}
 
 }
-?>

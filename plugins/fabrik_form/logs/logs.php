@@ -17,12 +17,22 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.logs
+ * @since       3.0
  */
 
 class plgFabrik_FormLogs extends plgFabrik_Form
 {
 
-	function onLoad(&$params, &$formModel)
+	/**
+	 * Run when the form loads
+	 *
+	 * @param   object  $params      plugin parameters
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  void
+	 */
+
+	public function onLoad($params, &$formModel)
 	{
 		if ((!$formModel->isEditable()) && ($params->get('log_details') != '0'))
 		{
@@ -34,6 +44,14 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		}
 		return true;
 	}
+
+	/**
+	 * Get message type
+	 *
+	 * @param   string  $rowid  row reference
+	 *
+	 * @return  string
+	 */
 
 	protected function getMessageType($rowid)
 	{
@@ -51,12 +69,15 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		}
 
 	}
+
 	/**
-	 * process the plugin, called when form is submitted
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
-	 * @returns	bool
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -65,7 +86,15 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		return $this->log($params, $formModel, $type);
 	}
 
-	function getNewData($formModel)
+	/**
+	 * Get new data
+	 *
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  array
+	 */
+
+	protected function getNewData($formModel)
 	{
 		$listModel = $formModel->getListModel();
 		$fabrikDb = $listModel->getDb();
@@ -75,12 +104,13 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 	}
 
 	/**
-	 * perform log
+	 * Perform log
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
-	 * @param	string	message type
-	 * @returns	bool
+	 * @param   object  $params       plugin params
+	 * @param   object  $formModel    form model
+	 * @param   string  $messageType  message type
+	 *
+	 * @return	bool
 	 */
 
 	protected function log($params, $formModel, $messageType)
@@ -135,6 +165,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		}
 		$ext = $params->get('logs_file_format');
 		$sep = $params->get('logs_separator');
+
 		// Making complete path + filename + extension
 		$w = new FabrikWorker;
 		$logs_file = $logs_path . DS . $w->parseMessageForPlaceHolder($params->get('logs_file')) . $random_filename . '.' . $ext;
@@ -253,9 +284,10 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 
 			$w = new FabrikWorker;
 			$custom_msg = $w->parseMessageForPlaceHolder($custom_msg);
-			$excl_cdata = preg_replace('/((?!("[^"]*))([ |\w|+|.])+(?=[^"]*"\b)|(?!\b"[^"]*)( +)+(?=([^"]*)$)|(?=\b"[^"]*)( +)+(?=[^"]*"\b))/', '',
-				$custom_msg);
+			$regex = '/((?!("[^"]*))([ |\w|+|.])+(?=[^"]*"\b)|(?!\b"[^"]*)( +)+(?=([^"]*)$)|(?=\b"[^"]*)( +)+(?=[^"]*"\b))/';
+			$excl_cdata = preg_replace($regex, '', $custom_msg);
 			$cdata = preg_split('/["]{1,}/', $excl_cdata);
+
 			// Labels for CSV & for DB
 			$clabels_csv_imp = implode("\",\"", $clabels);
 			$clabels_csv_p1 = preg_replace('/^(",)/', '', $clabels_csv_imp);
@@ -299,7 +331,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 			{
 				$clabels_db .= ', ' . $db->quoteName(JText::_('PLG_FORM_LOG_COMPARE_DATA_LABEL_DB'));
 			}
-			// data for CSV & for DB
+			// Data for CSV & for DB
 			$cdata_csv_imp = implode("\",\"", $cdata);
 			$cdata_csv_p1 = preg_replace('/^(",)/', '', $cdata_csv_imp);
 			$cdata_csv = preg_replace('/(,")$/', '', $cdata_csv_p1);
@@ -392,7 +424,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 			$ext = 'txt';
 		}
 		$email_msg = '';
-		//@TODO redo all this with JFile API and only writing a string once - needless overhead doing fwrite all the time
+
+		// @TODO redo all this with JFile API and only writing a string once - needless overhead doing fwrite all the time
 		if ($make_file || $send_email)
 		{
 			// Opening or creating the file
@@ -487,10 +520,11 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 						JFile::write($logs_file, $txtMsg);
 					}
 				}
-				else // Making the CSV file
-				if ($ext == 'csv')
+				elseif ($ext == 'csv')
 				{
+					// Making the CSV file
 					$csvMsg = array();
+
 					// If the file already exists, do not add the 'label line'
 					if ($labels == 1)
 					{
@@ -566,7 +600,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 				$db
 					->setQuery(
 						"SELECT " . $db->quoteName('db_table_name') . " FROM " . $db->quoteName('#__fabrik_lists') . " WHERE "
-							. $db->quoteName('form_id') . " = " . (int) $fid);
+							. $db->quoteName('form_id') . " = " . (int) $fid
+				);
 				$tname = $db->loadResult();
 				$rdb = $db->quoteName($tname . $db_suff);
 			}
@@ -581,9 +616,10 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 				$message = $this->makeStandardMessage($params, $result_compare);
 			}
 
-			// $$$ hugh - FIXME - not sure about the option driven $create_custom_table stuff, as this won't work
-			// if they add an option to an existing log table.  We should probably just create all the optional columns
-			// regardless.
+			/* $$$ hugh - FIXME - not sure about the option driven $create_custom_table stuff, as this won't work
+			 * if they add an option to an existing log table.  We should probably just create all the optional columns
+			 * regardless.
+			 */
 			if ($params->get('record_in') == '')
 			{
 				$in_db = "INSERT INTO $rdb (" . $db->quoteName('referring_url') . ", " . $db->quoteName('message_type') . ", "
@@ -603,9 +639,10 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 				$db->setQuery($in_db);
 				if (!$db->query())
 				{
-					// $$$ changed to always use db fields even if not selected
-					// so logs already created may need optional fields added.
-					// try adding every field we should have, don't care if query fails.
+					/* $$$ changed to always use db fields even if not selected
+					 * so logs already created may need optional fields added.
+					 * try adding every field we should have, don't care if query fails.
+					 */
 					foreach ($clabelsCreateDb as $insert)
 					{
 						$db->setQuery("ALTER TABLE ADD $insert AFTER `id`");
@@ -646,6 +683,15 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		return true;
 	}
 
+	/**
+	 * Make a standard log message
+	 *
+	 * @param   object  $params          plugin params
+	 * @param   string  $result_compare  not sure?!
+	 *
+	 * @return  string  json encoded objects
+	 */
+
 	protected function makeStandardMessage($params, $result_compare)
 	{
 		$msg = new stdClass;
@@ -668,4 +714,3 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 	}
 
 }
-?>

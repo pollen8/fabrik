@@ -1,17 +1,17 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.autofill
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.autofill
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 /**
  * other records in the table to auto fill in the rest of the form with that records data
  *
  * Does not alter the record you search for but creates a new record
  *
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -24,23 +24,28 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
-* Allows you to observe an element, and when it its blurred asks if you want to lookup related data to fill
-* into additional fields
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.autofill
-*/
+ * Allows you to observe an element, and when it its blurred asks if you want to lookup related data to fill
+ * into additional fields
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.autofill
+ * @since       3.0
+ */
 
-class plgFabrik_FormAutofill extends plgFabrik_Form {
+class plgFabrik_FormAutofill extends plgFabrik_Form
+{
 
 	/**
-	 * need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
+	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
-	 * @param	object	$params
-	 * @param	object	$formModel
+	 *
+	 * @param   object  &$params     plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function onAfterJSLoad(&$params, &$formModel)
+	public function onAfterJSLoad(&$params, &$formModel)
 	{
 		$opts = new stdClass;
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
@@ -64,11 +69,12 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 	}
 
 	/**
-	 * called via ajax to get the first match record
+	 * Called via ajax to get the first match record
+	 *
 	 * @return	string	json object of record data
 	 */
 
-	function onajax_getAutoFill()
+	public function onajax_getAutoFill()
 	{
 		$params = $this->getParams();
 		$cnn = (int) JRequest::getInt('cnn');
@@ -100,7 +106,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 		}
 		if (empty($data))
 		{
-			echo  "{}";
+			echo "{}";
 		}
 		else
 		{
@@ -109,7 +115,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 			if (!empty($map))
 			{
 				$newdata = new stdClass;
-				foreach($map as $from => $to)
+				foreach ($map as $from => $to)
 				{
 					$toraw = $to . '_raw';
 					$fromraw = $from . '_raw';
@@ -156,4 +162,3 @@ class plgFabrik_FormAutofill extends plgFabrik_Form {
 	}
 
 }
-?>

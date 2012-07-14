@@ -33,10 +33,12 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	var $_elementModel = null;
 
 	/**
-	 * get the element full name for the element id
-	 * @param	plugin	params
-	 * @param	int		element id
-	 * @param	bool	short (true) or full (false) element name, default false/full
+	 * Get an element name
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   string  $pname   params property name to look up
+	 * @param   bool    $short   short (true) or full (false) element name, default false/full
+	 *
 	 * @return	string	element full name
 	 */
 
@@ -52,9 +54,12 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 	/**
 	 * Get the fields value regardless of whether its in joined data or no
-	 * @param	object	$params
-	 * @param	string	$pname
-	 * @param	array	posted form $data
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   string  $pname   params property name to get the value for
+	 * @param   array   $data    posted form data
+	 *
+	 * @return  mixed  value
 	 */
 
 	private function getFieldValue($params, $pname, $data)
@@ -71,11 +76,14 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 	/**
 	 * Synchronize J! users with F! table if empty
-	 * @param	object	plugin parameters
-	 * @param	object	form model
+	 *
+	 * @param   object  $params      plugin parameters
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function onLoad(&$params, &$formModel)
+	public function onLoad($params, &$formModel)
 	{
 		if ($params->get('synchro_users') == 1)
 		{
@@ -85,6 +93,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 			$query = $fabrikDb->getQuery(true);
 			$query->select('COUNT(*)')->from($tableName);
+
 			// Is there already any record in our F! table Users
 			$fabrikDb->setQuery($query);
 			$count = (int) $fabrikDb->loadResult();
@@ -98,6 +107,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 				$origUsers = $fabrikDb->loadObjectList();
 				$count = 0;
 				$import = true;
+
 				// @TODO really should batch this stuff up, maybe 100 at a time, rather than an insert for every user!
 				foreach ($origUsers as $o_user)
 				{
@@ -122,10 +132,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 						JError::raiseNotice(400, $fabrikDb->getErrorMsg());
 						$import = false;
 					}
-					//$import = $fabrikDb->query();
-					$count = $count + 1;
+					// $import = $fabrikDb->query();
+					$count++;
 				}
-				//@TODO - $$$rob - the $import test below only checks if the LAST query ran ok - should check ALL
+				// @TODO - $$$rob - the $import test below only checks if the LAST query ran ok - should check ALL
 				// Display synchonization result
 				$app = JFactory::getApplication();
 				if ($import)
@@ -139,12 +149,13 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			}
 		}
 
-		// if we are editing a user, we need to make sure the password field is cleared
+		// If we are editing a user, we need to make sure the password field is cleared
 		if (FabrikWorker::getMenuOrRequestVar('rowid'))
 		{
 			$this->passwordfield = $this->getFieldName($params, 'juser_field_password');
 			$formModel->_data[$this->passwordfield] = '';
 			$formModel->_data[$this->passwordfield . '_raw'] = '';
+
 			// $$$$ hugh - testing 'sync on edit'
 			if ($params->get('juser_sync_on_edit', 0) == 1)
 			{
@@ -167,7 +178,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 						$formModel->_data[$this->emailfield] = $user->get('email');
 						$formModel->_data[$this->emailfield . '_raw'] = $user->get('email');
 
-						//@FIXME this is out of date for J1.7 - no gid field
+						// @FIXME this is out of date for J1.7 - no gid field
 						if ($params->get('juser_field_usertype') != '')
 						{
 							$gid = $user->get('gid');
@@ -188,10 +199,12 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	}
 
 	/**
-	 * run from table model when deleting rows
-	 * @param	object	plugin parameters
-	 * @param	object	form model
-	 * @param	array	form groups
+	 * Run from list model when deleting rows
+	 *
+	 * @param   object  $params      plugin parameters
+	 * @param   object  &$formModel  form model
+	 * @param   array   &$groups     list data for deletion
+	 *
 	 * @return	bool
 	 */
 
@@ -212,6 +225,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 							if (!empty($row->$useridfield))
 							{
 								$user = new JUser((int) $row->$useridfield);
+
 								// Bail out now and return false, or just carry on?
 								if (!$user->delete())
 								{
@@ -227,24 +241,28 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	}
 
 	/**
-	 * process the plugin, called when form is submitted
+	 * Before the record is stored, this plugin will see if it should process
+	 * and if so store the form data in the session.
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
+	 * @param   object  $params      params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  bool  should the form model continue to save
 	 */
 
-	function onBeforeStore(&$params, &$formModel)
+	public function onBeforeStore($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
 		$config = JFactory::getConfig();
 		$lang = JFactory::getLanguage();
-		//load up com_users lang - used in email text
+
+		// Load up com_users lang - used in email text
 		$lang->load('com_users');
-
-		//if the fabrik table is set to be jos_users and the this plugin is used
-		//we need to alter the form model to tell it not to store the main row
-		// but to still store any joined rows
-
+		/*
+		 * if the fabrik table is set to be jos_users and the this plugin is used
+		 * we need to alter the form model to tell it not to store the main row
+		 * but to still store any joined rows
+		 */
 		$ftable = str_replace('#__', $app->getCfg('dbprefix'), $formModel->getlistModel()->getTable()->db_table_name);
 		$jos_users = $app->getCfg('dbprefix') . 'users';
 
@@ -254,17 +272,16 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		$usersConfig = JComponentHelper::getParams('com_users');
+
 		// Initialize some variables
 		$me = JFactory::getUser();
 		$acl = JFactory::getACL();
-		//$mailFrom = $app->getCfg('mailfrom');
-		//$FromName = $app->getCfg('fromname');
-		//$SiteName = $app->getCfg('sitename');
+
 		$siteURL = JURI::base();
 		$bypassActivation = $params->get('juser_bypass_activation', false);
 		$bypassRegistration = $params->get('juser_bypass_registration', true);
 
-		// load in the com_user language file
+		// Load in the com_user language file
 		$lang = JFactory::getLanguage();
 		$lang->load('com_user');
 
@@ -343,8 +360,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			}
 			else
 			{
-				// if editing an existing user and no gid field being used,
-				// use default group id
+				// If editing an existing user and no gid field being used,  use default group id
 				$data['gid'] = $defaultGroup;
 			}
 		}
@@ -364,7 +380,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$blocked = JArrayHelper::getValue($formModel->_formData, $this->blockfield, '');
 			if (is_array($blocked))
 			{
-				// probably a dropdown
+				// Probably a dropdown
 				$data['block'] = (int) $blocked[0];
 			}
 			else
@@ -377,7 +393,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$data['block'] = 0;
 		}
 
-		//$$$tom get password field to use in $origdata object if editing user and not changing password
+		// $$$tom get password field to use in $origdata object if editing user and not changing password
 		$origdata = $formModel->_origData;
 		$pwfield = $this->passwordfield;
 
@@ -428,7 +444,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$data['password'] = JString::substr($data['password'], 0, 100);
 		}
 
-		// end new
+		// End new
 		if (!$user->bind($data))
 		{
 			$app->enqueueMessage(JText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
@@ -479,7 +495,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY', $data['name'], $data['sitename'],
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']);
+					$data['username'], $data['password_clear']
+				);
 			}
 			elseif ($useractivation == 1 && !$bypassActivation)
 			{
@@ -490,7 +507,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY', $data['name'], $data['sitename'],
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']);
+					$data['username'], $data['password_clear']
+				);
 			}
 			elseif ($params->get('juser_bypass_accountdetails') != 1)
 			{
@@ -507,6 +525,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 				if ($return !== true)
 				{
 					$this->setError(JText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
+
 					// Send a system message to administrators receiving system mails
 					$db = JFactory::getDBO();
 					$q = "SELECT id
@@ -517,7 +536,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 					$sendEmail = $db->loadColumn();
 					if (count($sendEmail) > 0)
 					{
-						$jdate = new JDate();
+						$jdate = new JDate;
+
 						// Build the query to add the messages
 						$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
 									VALUES ";
@@ -537,26 +557,22 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// If updating self, load the new user object into the session
-		// FIXME - doesnt work in J1.7??
-		/* if ($user->get('id') == $me->get('id'))
+
+		/* @FIXME - doesnt work in J1.7??
+		if ($user->get('id') == $me->get('id'))
 		{
-		    // Get an ACL object
 		    $acl = &JFactory::getACL();
-		
-		    // Get the user group from the ACL
+
 		    $grp = $acl->getAroGroup($user->get('id'));
-		
-		    // Mark the user as logged in
+
 		    $user->set('guest', 0);
 		    $user->set('aid', 1);
-		
-		    // Fudge Authors, Editors, Publishers and Super Administrators into the special access group
+
 		    if ($acl->is_group_child_of($grp->name, 'Registered')      ||
 		    $acl->is_group_child_of($grp->name, 'Public Backend'))    {
 		        $user->set('aid', 2);
 		    }
-		
-		    // Set the usertype based on the ACL group name
+
 		    $user->set('usertype', $grp->name);
 		    $session->set('user', $user);
 		} */
@@ -571,11 +587,13 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	}
 
 	/**
-	 * once the user has been created and then the fabrik record stored
-	 * the LAST thing we need to do is see if we want to auto log in the user
-	 * @param	object	$params
-	 * @param	object	$fornModel
-	 * @return	null
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -589,12 +607,13 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$app = JFactory::getApplication();
 
-			// $$$ rob 04/02/2011 no longer used - instead a session var is set
-			// com_fabrik.form.X.juser.created with values true/false.
-			// these values can be used in the redirect plugin to route accordingly
+			/* $$$ rob 04/02/2011 no longer used - instead a session var is set
+			 * com_fabrik.form.X.juser.created with values true/false.
+			 * these values can be used in the redirect plugin to route accordingly
 
-			/*$success_page	= $params->get('juser_success_page', '');
-			 $failure_page	= $params->get('juser_failure_page', '');*/
+			 $success_page	= $params->get('juser_success_page', '');
+			 $failure_page	= $params->get('juser_failure_page', '');
+			 */
 
 			// $$$ rob - commented this block out as we have already got the values in
 			// $this->usernamevalue and $this->passwordvalue
@@ -610,8 +629,9 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$credentials = array();
 			$credentials['username'] = $username;
 			$credentials['password'] = $password;
-			//@FIXME not working - gives error JERROR_LOGIN_DENIED
-			//preform the login action
+
+			// @FIXME not working - gives error JERROR_LOGIN_DENIED
+			// Preform the login action
 			$error = $app->login($credentials, $options);
 
 			$session = JFactory::getSession();
@@ -629,14 +649,16 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	}
 
 	/**
-	 * check if the submitted details are ok
-	 * @param	array	$post
-	 * @param	object	$formModel
-	 * @param	object	$params
+	 * Check if the submitted details are ok
+	 *
+	 * @param   array   $post        posted data
+	 * @param   object  &$formModel  form model
+	 * @param   object  $params      plugin params
+	 *
 	 * @return	bool
 	 */
 
-	function check($post, &$formModel, $params)
+	protected function check($post, &$formModel, $params)
 	{
 		$db = FabrikWorker::getDbo(true);
 		$ok = true;
@@ -668,7 +690,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 		if (empty($post['password']))
 		{
-			//$$$tom added a new/edit test
+			// $$$tom added a new/edit test
 			if ((int) $post['id'] === 0)
 			{
 				$this->raiseError($formModel->_arErrors, $this->passwordfield, JText::_('Please enter a password'));
@@ -684,9 +706,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			}
 		}
 
-		// check for existing username
+		// Check for existing username
 		$query = 'SELECT id' . ' FROM #__users ' . ' WHERE username = ' . $db->quote($post['username']) . ' AND id != ' . (int) $post['id'];
-		;
 		$db->setQuery($query);
 		$xid = intval($db->loadResult());
 		if ($xid && $xid != intval($post['id']))
@@ -695,7 +716,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$ok = false;
 		}
 
-		// check for existing email
+		// Check for existing email
 		$query = 'SELECT id' . ' FROM #__users ' . ' WHERE email = ' . $db->quote($post['email']) . ' AND id != ' . (int) $post['id'];
 		$db->setQuery($query);
 		$xid = intval($db->loadResult());
@@ -708,10 +729,13 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	}
 
 	/**
-	 * raise an error - depends on whether ur in admin or not as to what to do
-	 * @param	array	form models error array
-	 * @param	string	$field name
-	 * @param	string	$msg
+	 * Raise an error - depends on whether ur in admin or not as to what to do
+	 *
+	 * @param   array   &$err   form models error array
+	 * @param   string  $field  name
+	 * @param   string  $msg    message
+	 *
+	 * @return  void
 	 */
 
 	protected function raiseError(&$err, $field, $msg)

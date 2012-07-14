@@ -17,14 +17,19 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.php
+ * @since       3.0
  */
 
 class plgFabrik_FormPHP extends plgFabrik_Form
 {
 
 	/**
-	 * store the html to insert at the bottom of the form(non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getBottomContent()
+	 * Sets up HTML to be injected into the form's bottom
+	 *
+	 * @param   object  $params     params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return void
 	 */
 
 	public function getBottomContent($params, $formModel)
@@ -42,11 +47,15 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
-	 * store the html to insert at the top of the form(non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getTopContent()
+	 * Store the html to insert at the top of the form
+	 *
+	 * @param   object  $params     params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  bool
 	 */
 
-	function getTopContent($params, $formModel)
+	public function getTopContent($params, $formModel)
 	{
 		$this->html = '';
 		if ($params->get('only_process_curl') == 'getTopContent')
@@ -61,21 +70,26 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
-	 * get the html to insert after the end of the form(non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getEndContent_result()
+	 * Get any html that needs to be written after the form close tag
+	 *
+	 * @return	string	html
 	 */
 
-	function getEndContent_result($c)
+	public function getEndContent_result()
 	{
 		return $this->html;
 	}
 
 	/**
-	 * store the html to insert after the end of the form(non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelFormPlugin#getEndContent()
+	 * Sets up any end html (after form close tag)
+	 *
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function getEndContent(&$params, &$formModel)
+	public function getEndContent($params, $formModel)
 	{
 		$this->html = '';
 		if ($params->get('only_process_curl') == 'getEndContent')
@@ -90,9 +104,12 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
+	 * Run right at the beginning of the form processing
 	 *
-	 * @param	object	$params
-	 * @param	object	$formModel
+	 * @param   object  $params      plpugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onBeforeProcess($params, &$formModel)
@@ -107,7 +124,17 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		return true;
 	}
 
-	function onBeforeStore($params, &$formModel)
+	/**
+	 * Before the record is stored, this plugin will see if it should process
+	 * and if so store the form data in the session.
+	 *
+	 * @param   object  $params      params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  bool  should the form model continue to save
+	 */
+
+	public function onBeforeStore($params, &$formModel)
 	{
 		if ($params->get('only_process_curl') == 'onBeforeStore')
 		{
@@ -120,11 +147,15 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Form::onBeforeCalculations()
+	 * Run before table calculations are applied
+	 *
+	 * @param   object  $params      plpugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
-	function onBeforeCalculations($params, $formModel)
+	public function onBeforeCalculations($params, &$formModel)
 	{
 		if ($params->get('only_process_curl') == 'onBeforeCalculations')
 		{
@@ -135,6 +166,16 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		}
 		return true;
 	}
+
+	/**
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
+	 */
 
 	public function onAfterProcess($params, &$formModel)
 	{
@@ -149,14 +190,16 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
-	 * run when the form is loaded - after its data has been created
+	 * Run when the form is loaded - after its data has been created
 	 * data found in $formModel->_data
-	 * @param	object	$params
-	 * @param	object	$formModel
-	 * @return	unknown_type
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
-	function onLoad(&$params, &$formModel)
+	public function onLoad($params, &$formModel)
 	{
 		if ($params->get('only_process_curl') == 'onLoad')
 		{
@@ -166,14 +209,16 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
-	 * run when the form is loaded - before its data has been created
+	 * Run when the form is loaded - before its data has been created
 	 * data found in $formModel->_data
-	 * @param	object	$params
-	 * @param	object	$formModel
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
 	 * @return	bool
 	 */
 
-	function onBeforeLoad(&$params, &$formModel)
+	public function onBeforeLoad($params, &$formModel)
 	{
 		if ($params->get('only_process_curl') == 'onBeforeLoad')
 		{
@@ -183,9 +228,12 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
-	 * process the plugin, called when form is submitted
-	 * @param	object	$params
-	 * @param	object	form model
+	 * Process the plugin, called when form is submitted
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  bool
 	 */
 
 	public function onError($params, &$formModel)
@@ -198,23 +246,26 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
-	 * @private
-	 * run plugins php code/script
-	 * @param object $params
-	 * @param object $formModel
+	 * Run plugins php code/script
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
 	 * @return bool false if error running php code
 	 */
 
-	private function _runPHP(&$params, &$formModel)
+	private function _runPHP($params, &$formModel)
 	{
 		/**
 		 * if you want to modify the submitted form data
 		 * $formModel->updateFormData('tablename___elementname', $newvalue);
 		 */
 
-		// $$$ rob this is poor when submitting the form the data is stored in _formData, when editing its stored in _data -
-		// as this method can run on render or on submit we have to do a little check to see which one we should use.
-		// really we should use the same form property to store the data regardless of form state
+		/*
+		 *  $$$ rob this is poor when submitting the form the data is stored in _formData, when editing its stored in _data -
+		 *  as this method can run on render or on submit we have to do a little check to see which one we should use.
+		 *  really we should use the same form property to store the data regardless of form state
+		 */
 		if (!empty($formModel->_formData))
 		{
 			$this->html = $formModel->_formData;
@@ -234,8 +285,10 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 			// $$$ hugh - give them some way of getting at form data
 			// (I'm never sure if $_REQUEST is 'safe', i.e. if it has post-validation data)
 			global $fabrikFormData, $fabrikFormDataWithTableName;
-			// for some reason, = wasn't working??
+
+			// For some reason, = wasn't working??
 			$fabrikFormData = $this->html;
+
 			// $$$ hugh - doesn't exist for tableless forms
 			if (isset($formModel->_formDataWithtableName))
 			{
@@ -252,17 +305,17 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 			$method = $params->get('only_process_curl');
 			if ($method == 'getBottomContent' || $method == 'getTopContent' || $method == 'getEndContent')
 			{
-				//for these types of scripts any out put you want to inject into the form should be echo'd out
+				// For these types of scripts any out put you want to inject into the form should be echo'd out
 				// @TODO - shouldn't we apply this logic above as well (direct eval)?
 				ob_start();
-				require($php_file);
+				require $php_file;
 				$output = ob_get_contents();
 				ob_end_clean();
 				return $output;
 			}
 			else
 			{
-				$php_result = require($php_file);
+				$php_result = require $php_file;
 			}
 			if ($php_result === false)
 			{
@@ -273,4 +326,3 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 }
-?>

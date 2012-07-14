@@ -620,7 +620,7 @@ class FabrikModelElement extends JModelAdmin
 			$data['parent_id'] = 0;
 		}
 
-		$datenow = new JDate();
+		$datenow = new JDate;
 		if ($row->id != 0)
 		{
 			$data['modified'] = $datenow->toSql();

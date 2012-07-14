@@ -17,38 +17,62 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.salesforce
+ * @since       3.0
  */
 
 class plgFabrik_FormSalesforce extends plgFabrik_Form
 {
 
-	var $_data = null;
+	/**
+	 * Build the Salesforce.com API client
+	 *
+	 * @return  SforcePartnerClient
+	 */
 
 	private function client()
 	{
-		//Get the path to the Toolkit, set in the options on install.
+		// Get the path to the Toolkit, set in the options on install.
 		$toolkit_path = JPATH_SITE . '/components/com_fabrik/libs/salesforce';
 
-		//Ok, now use SOAP to send the information to SalesForce
-		require_once($toolkit_path . '/soapclient/SforcePartnerClient.php');
-		require_once($toolkit_path . '/soapclient/SforceHeaderOptions.php');
+		// Ok, now use SOAP to send the information to SalesForce
+		require_once $toolkit_path . '/soapclient/SforcePartnerClient.php';
+		require_once $toolkit_path . '/soapclient/SforceHeaderOptions.php';
 
 		// Salesforce Login information
 		$wsdl = $toolkit_path . '/soapclient/partner.wsdl.xml';
+
 		// Process of logging on and getting a salesforce.com session
-		$client = new SforcePartnerClient();
+		$client = new SforcePartnerClient;
 		$client->createConnection($wsdl);
 		return $client;
 	}
+
+	/**
+	 * Sets up HTML to be injected into the form's bottom
+	 *
+	 * @param   object  $params     params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return void
+	 */
 
 	public function getBottomContent($params, $formModel)
 	{
 		if (!class_exists('SoapClient'))
 		{
-			JError::raiseWarning(E_WARNING,
-				"Salesforce Plug-in: PHP has not been compiled with the SOAP extension. We will be unable to send this data to Salesforce.com");
+			JError::raiseWarning(E_WARNING, Jtext::_('PLG_FORM_SALESFORCE_ERR_SOAP_NOT_INSTALLED'));
 		}
 	}
+
+	/**
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
+	 */
 
 	public function onAfterProcess($params, &$formModel)
 	{
@@ -64,7 +88,8 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 		$givenObject = array($updateObject);
 		$fields = $client->describeSObjects($givenObject)->fields;
 		$submission = array();
-		//map the posted data into acceptable fields
+
+		// Map the posted data into acceptable fields
 		foreach ($fields as $f)
 		{
 			$name = $f->name;
@@ -81,7 +106,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 				}
 				else
 				{
-					// check custom fields
+					// Check custom fields
 					if (JString::strtolower($key . '__c') == JString::strtolower($name) && JString::strtolower($name) != 'id')
 					{
 						$submission[$name] = $val;
@@ -97,8 +122,10 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 			$submission[$customkey] = $formModel->_fullFormData[$key];
 		}
 		$sObjects = array();
-		$sObject = new sObject();
-		$sObject->type = $updateObject; // Salesforce Table or object that you will perform the upsert on
+		$sObject = new sObject;
+
+		// Salesforce Table or object that you will perform the upsert on
+		$sObject->type = $updateObject;
 		$sObject->fields = $submission;
 		array_push($sObjects, $sObject);
 		$app = JFactory::getApplication();
@@ -144,7 +171,17 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 		}
 	}
 
-	function upsert($client, $sObjects, $key)
+	/**
+	 * Update or insert an object
+	 *
+	 * @param   object  $client    Salesforce cleint
+	 * @param   array   $sObjects  array of sObjects
+	 * @param   string  $key       External Id
+	 *
+	 * @return  mixed  UpsertResult or error
+	 */
+
+	protected function upsert($client, $sObjects, $key)
 	{
 		try
 		{
@@ -154,29 +191,39 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 		}
 		catch (exception $e)
 		{
-			// This is reached if there is a major problem in the data or with
-			// the salesforce.com connection. Normal data errors are caught by
-			// salesforce.com
+			/* This is reached if there is a major problem in the data or with
+			 * the salesforce.com connection. Normal data errors are caught by
+			 * salesforce.com
+			 */
 			return $e;
 		}
 	}
 
-	function insert($client, $sObjects)
+	/**
+	* Insert an object
+	*
+	* @param   object  $client    Salesforce cleint
+	* @param   array   $sObjects  array of sObjects
+	*
+	* @return  mixed  UpsertResult or error
+	*/
+
+	protected function insert($client, $sObjects)
 	{
 		try
 		{
-			// The upsert process
+			// The create process
 			$results = $client->create($sObjects);
 			return $results;
 		}
 		catch (exception $e)
 		{
-			// This is reached if there is a major problem in the data or with
-			// the salesforce.com connection. Normal data errors are caught by
-			// salesforce.com
+			/* This is reached if there is a major problem in the data or with
+			 * the salesforce.com connection. Normal data errors are caught by
+			 * salesforce.com
+			 */
 			return $e;
 		}
 	}
 
 }
-?>
