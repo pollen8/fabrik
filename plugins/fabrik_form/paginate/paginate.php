@@ -1,10 +1,10 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.paginate
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.paginate
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -13,11 +13,12 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
-* Form record next/prev scroll plugin
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.paginate
-*/
+ * Form record next/prev scroll plugin
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.paginate
+ * @since       3.0
+ */
 
 class PlgFabrik_FormPaginate extends PlgFabrik_Form
 {
@@ -27,7 +28,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	 *
 	 * @param   int  $c  plugin counter
 	 *
-	 * @return string html
+	 * @return  string  html
 	 */
 
 	public function getBottomContent_result($c)
@@ -90,8 +91,11 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	}
 
 	/**
-	 * get the first last, prev and next record ids
-	 * @param   object	$formModel
+	 * Get the first last, prev and next record ids
+	 *
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  object
 	 */
 
 	protected function getNavIds($formModel)
@@ -120,12 +124,22 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		return $o;
 	}
 
+	/**
+	 * Show we show the pagination
+	 *
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  bool
+	 */
+
 	protected function show($params, $formModel)
 	{
-		# Nobody except form model constuctor sets _editable property yet -
-		# it sets in view.html.php only and after render() - too late I think
-		# so no pagination output for frontend details veiw for example.
-		# Let's set it here before use it
+		/* Nobody except form model constuctor sets _editable property yet -
+		 * it sets in view.html.php only and after render() - too late I think
+		 * so no pagination output for frontend details veiw for example.
+		 * Let's set it here before use it
+		 */
 		$formModel->checkAccessFromListSettings();
 
 		$where = $params->get('paginate_where');
@@ -135,22 +149,25 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 				return true;
 				break;
 			case 'form':
-				return (int) $formModel->editable == 1;
+				return (bool) $formModel->_editable == 1;
 				break;
 			case 'details':
-				return (int) $formModel->editable == 0;
+				return (bool) $formModel->_editable == 0;
 				break;
 		}
 	}
 
 	/**
-	 * process the plugin, called when form is submitted
+	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
+	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
 	 *
-	 * @param   object  $params
-	 * @param   object  form
+	 * @param   object  &$params     plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function onAfterJSLoad(&$params, &$formModel)
+	public function onAfterJSLoad(&$params, &$formModel)
 	{
 		if (!$this->show($params, $formModel))
 		{
@@ -166,45 +183,22 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$opts->ids = $this->ids;
 		$opts->pkey = FabrikString::safeColNameToArrayKey($formModel->getTableModel()->getTable()->db_primary_key);
 		$opts = json_encode($opts);
-		$form = &$formModel->getForm();
+		$form = $formModel->getForm();
 		$container = $formModel->editable ? 'form' : 'details';
 		$container .= "_" . $form->id;
 
 		$scripts = array('plugins/fabrik_form/paginate/scroller.js', 'media/com_fabrik/js/encoder.js');
 		$code = "$container.addPlugin(new FabRecordSet($container, $opts));";
 		FabrikHelperHTML::script($scripts, $code);
-
-		/* if (JRequest::getVar('tmpl') != 'component') {
-		    FabrikHelperHTML::script('scroller.js', 'components/com_fabrik/plugins/form/paginate/');
-		FabrikHelperHTML::script('encoder.js', 'media/com_fabrik/js/');
-		FabrikHelperHTML::addScriptDeclaration("
-		window.addEvent('load', function() {
-		$container.addPlugin(new FabRecordSet($container, $opts));
-		});");
-		} else {
-		// included scripts in the head don't work in mocha window
-		// read in the class and insert it into the body as an inline script
-		$class = JFile::read(JPATH_BASE."/components/com_fabrik/plugins/form/paginate/scroller.js");
-		FabrikHelperHTML::addScriptDeclaration($class);
-		$class = JFile::read(JPATH_BASE."/media/com_fabrik/js/encoder.js");
-		FabrikHelperHTML::addScriptDeclaration($class);
-		//there is no load event in a mocha window - use domready instead
-		FabrikHelperHTML::addScriptDeclaration("
-		window.addEvent('domready', function() {
-		$container.addPlugin(new FabRecordSet($container, $opts));
-		});");
-		} */
 	}
 
-	function onXRecord()
-	{
-		$this->xRecord();
-	}
 	/**
-	 * called from plugins ajax call
-	 */
+	* Called from plugins ajax call
+	*
+	* @return  void
+	*/
 
-	function xRecord()
+	public function onXRecord()
 	{
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getVar('rowid');
@@ -222,13 +216,12 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		curl_setopt($ch, CURLOPT_URL, $url);
 		$data = curl_exec($ch);
 		curl_close($ch);
-		//apend the ids to the json array
+
+		// Apend the ids to the json array
 		$data = json_decode($data);
-		//$data['ids'] = $ids;
 		$data->ids = $ids;
 		echo json_encode($data);
 
 	}
 
 }
-?>

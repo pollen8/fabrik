@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.subscriptions
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.subscriptions
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,21 +16,25 @@ JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 /**
  * Redirects the browser to subscriptions to perform payment
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.subscriptions
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.subscriptions
+ * @since       3.0
  */
 
-class PlgFabrik_FormSubscriptions extends plgFabrik_Form
+class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 {
 
 	protected $gateway = null;
 
 	protected $billingCycle = null;
+
 	/**
-	 * get the buisiness email either based on the accountemail field or the value
+	 * Get the buisiness email either based on the accountemail field or the value
 	 * found in the selected accoutnemail_element
-	 * @param   object	$params
-	 * @return  string	email
+	 *
+	 * @param   object  $params  plugin params
+	 *
+	 * @return  string  email
 	 */
 
 	protected function getBusinessEmail($params)
@@ -42,10 +46,12 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * get transaction amount based on the cost field or the value
+	 * Get transaction amount based on the cost field or the value
 	 * found in the selected cost_element
-	 * @param   object	$params
-	 * @return  string	cost
+	 *
+	 * @param   object  $params  plugin params
+	 *
+	 * @return  string  cost
 	 */
 
 	protected function getAmount($params)
@@ -55,8 +61,9 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * get the select billing cycles row
-	 * @return  object	row
+	 * Get the select billing cycles row
+	 *
+	 * @return  object  row
 	 */
 
 	protected function getBillingCycle()
@@ -75,8 +82,9 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * get the selected gateway (paypal single payment / subscription)
-	 * @return  object	row
+	 * Get the selected gateway (paypal single payment / subscription)
+	 *
+	 * @return  object  row
 	 */
 
 	protected function getGateway()
@@ -95,21 +103,26 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * get transaction item name based on the item field or the value
+	 * Get transaction item name based on the item field or the value
 	 * found in the selected item_element
-	 * @return  array	item name
+	 *
+	 * @return  array  item name
 	 */
 
 	protected function getItemName()
 	{
 		$data = $this->getEmailData();
+
 		// @TODO replace with look up of plan name and billing cycle
 		return array($data['jos_fabrik_subs_users___plan_id_raw'], $data['jos_fabrik_subs_users___plan_id'][0]);
 	}
 
 	/**
-	 * append additional paypal values to the data to send to paypal
-	 * @param   array	$opts
+	 * Append additional paypal values to the data to send to paypal
+	 *
+	 * @param   array  &$opts  paypal options
+	 *
+	 * @return  void
 	 */
 
 	protected function setSubscriptionValues(&$opts)
@@ -134,7 +147,9 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 		// @TODO test replace various placeholders
 		$name = $config->get('sitename') . ' {plan_name}  User: {jos_fabrik_subs_users___name} ({jos_fabrik_subs_users___username})';
 		$tmp = array_merge(JRequest::get('data'), JArrayHelper::fromObject($sub));
-		$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);//'http://fabrikar.com/ '.$sub->item_name. ' - User: subtest26012010 (subtest26012010)';
+
+		// 'http://fabrikar.com/ '.$sub->item_name. ' - User: subtest26012010 (subtest26012010)';
+		$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);
 		$opts['invoice'] = uniqid('', true);
 
 		if ($gateWay->subscription == 1)
@@ -144,7 +159,6 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 				$opts['p3'] = $sub->p3;
 				$opts['t3'] = $sub->t3;
 				$opts['a3'] = $sub->cost;
-				//$opts['src'] = 1;
 				$opts['no_note'] = 1;
 				$opts['custom'] = '';
 				$opts['src'] = 1;
@@ -157,6 +171,12 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 		}
 	}
 
+	/**
+	 * Get FabrkWorker
+	 *
+	 * @return FabrikWorker
+	 */
+
 	protected function getWorker()
 	{
 		if (!isset($this->w))
@@ -167,10 +187,13 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * process the plugin, called at end of form submission
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object	$params
-	 * @param   object	form model
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -209,36 +232,26 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 			$qs[] = $k . '=' . $v;
 		}
 		$url .= implode('&', $qs);
+
 		// $$$ rob 04/02/2011 no longer doing redirect from ANY plugin EXCEPT the redirect plugin
 		// - instead a session var is set as the preferred redirect url
 
 		$session = JFactory::getSession();
 		$context = $formModel->getRedirectContext();
 
-		// $$$ hugh - fixing issue with new redirect, which now needs to be an array.
-		// Not sure if we need to preserve existing session data, or just create a new surl array,
-		// to force ONLY recirect to Subscriptions?
 		$surl = (array) $session->get($context . 'url', array());
 		$surl[$this->renderOrder] = $url;
 		$session->set($context . 'url', $surl);
 
-		/// log the info
-		/* $log = FabTable::getInstance('log', 'FabrikTable');
-		$log->message_type = 'fabrik.subscriptions.onAfterProcess';
-		$msg = new stdClass;
-		$msg->opt = $opts;
-		$msg->data = $data;
-		$log->message = json_encode($msg);
-		$log->store(); */
-
 		// @TODO use JLog instead of fabrik log
-		//JLog::add($subject . ', ' . $body, JLog::NOTICE, 'com_fabrik');
+		// JLog::add($subject . ', ' . $body, JLog::NOTICE, 'com_fabrik');
 		return true;
 	}
 
 	/**
-	 * get the currency code for the transaction e.g. USD
-	 * return	string	currency code
+	 * Get the currency code for the transaction e.g. USD
+	 *
+	 * @return  string  currency code
 	 */
 
 	protected function getCurrencyCode()
@@ -249,7 +262,8 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * create the custom string value you can pass to Paypal
+	 * Create the custom string value you can pass to Paypal
+	 *
 	 * @return  string
 	 */
 
@@ -259,8 +273,9 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * get the url that payment notifications (IPN) are sent to
-	 * @return  string	url
+	 * Get the url that payment notifications (IPN) are sent to
+	 *
+	 * @return  string  url
 	 */
 
 	protected function getNotifyUrl()
@@ -280,8 +295,9 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * make the return url, this is the page you return to after paypal has component the transaction.
-	 * @return  string	url.
+	 * Make the return url, this is the page you return to after paypal has component the transaction.
+	 *
+	 * @return  string  url.
 	 */
 
 	protected function getReturnUrl()
@@ -309,7 +325,13 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 		return urlencode($url);
 	}
 
-	function onThanks()
+	/**
+	 * Thanks message
+	 *
+	 * @return  void
+	 */
+
+	public function onThanks()
 	{
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getInt('rowid');
@@ -346,10 +368,12 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * called from subscriptions at the end of the transaction
+	 * Called from subscriptions at the end of the transaction
+	 *
+	 * @return  void
 	 */
 
-	function onIpn()
+	public function onIpn()
 	{
 		$config = JFactory::getConfig();
 		$log = FabTable::getInstance('log', 'FabrikTable');
@@ -358,11 +382,11 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 		$log->message = json_encode($_REQUEST);
 		$log->store();
 
-		//lets try to load in the custom returned value so we can load up the form and its parameters
+		// Lets try to load in the custom returned value so we can load up the form and its parameters
 		$custom = JRequest::getVar('custom');
 		list($formid, $rowid) = explode(":", $custom);
 
-		//pretty sure they are added but double add
+		// Pretty sure they are added but double add
 		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
@@ -380,7 +404,8 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 		$w = $this->getWorker();
 
 		$email_from = $admin_email = $config->get('mailfrom');
-		// read the post from Subscriptions system and add 'cmd'
+
+		// Read the post from Subscriptions system and add 'cmd'
 		$req = 'cmd=_notify-validate';
 		foreach ($_POST as $key => $value)
 		{
@@ -388,7 +413,7 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 			$req .= '&' . $key . '=' . $value;
 		}
 
-		// post back to Subscriptions system to validate
+		// Post back to Subscriptions system to validate
 		$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
 		$header .= "Host: www.paypal.com:443\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
@@ -396,7 +421,7 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 
 		$subscriptionsurl($_POST['test_ipn'] == 1) ? 'ssl://www.sandbox.paypal.com' : 'ssl://www.paypal.com';
 
-		// assign posted variables to local variables
+		// Assign posted variables to local variables
 		$item_name = JRequest::getVar('item_name');
 		$item_number = JRequest::getVar('item_number');
 		$payment_status = JRequest::getVar('payment_status');
@@ -416,7 +441,7 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 		}
 		else
 		{
-			//@TODO implement a curl alternative as fsockopen is not always available
+			// @TODO implement a curl alternative as fsockopen is not always available
 			$fp = fsockopen($subscriptionsurl, 443, $errno, $errstr, 30);
 			if (!$fp)
 			{
@@ -429,12 +454,13 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 				while (!feof($fp))
 				{
 					$res = fgets($fp, 1024);
-					// subscriptions steps (from their docs):
-					// check the payment_status is Completed
-					// check that txn_id has not been previously processed
-					// check that receiver_email is your Primary Subscriptions email
-					// check that payment_amount/payment_currency are correct
-					// process payment
+					/*subscriptions steps (from their docs):
+					 * check the payment_status is Completed
+					 * check that txn_id has not been previously processed
+					 * check that receiver_email is your Primary Subscriptions email
+					 * check that payment_amount/payment_currency are correct
+					 * process payment
+					 */
 					if (JString::strcmp($res, "VERIFIED") == 0)
 					{
 
@@ -579,8 +605,9 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 	}
 
 	/**
-	 * get the custom IPN class
-	 * @return  object	ipn handler class
+	 * Get the custom IPN class
+	 *
+	 * @return	object	ipn handler class
 	 */
 
 	protected function getIPNHandler()
@@ -589,5 +616,3 @@ class PlgFabrik_FormSubscriptions extends plgFabrik_Form
 		return new fabrikSubscriptionsIPN;
 	}
 }
-
-?>

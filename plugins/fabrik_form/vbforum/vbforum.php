@@ -17,25 +17,29 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.vbulletin
+ * @since       3.0
  */
 
 class plgFabrik_FormVbForum extends plgFabrik_Form
 {
 
-	var $vb_forum_field = '';
-	var $vb_path = '';
-	var $vb_globals = '';
+	protected  $vb_forum_field = '';
+
+	protected $vb_path = '';
+
+	protected $vb_globals = '';
 
 	/**
-	 * Run before the form is processed
+	 * Before the record is stored, this plugin will see if it should process
+	 * and if so store the form data in the session.
 	 *
-	 * @param   object  &$params     params
+	 * @param   object  $params      params
 	 * @param   object  &$formModel  form model
 	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
-	public function onBeforeStore(&$params, &$formModel)
+	public function onBeforeStore($params, &$formModel)
 	{
 		global $vbulletin;
 		define(VB_AREA, 'fabrik');
@@ -63,6 +67,16 @@ class plgFabrik_FormVbForum extends plgFabrik_Form
 		$vars['forum_parent'] = $this->vb_parent_forum;
 		$res = $this->doRequest($method, $url, $vars);
 	}
+
+	/**
+	 * Perform curl post ot forum
+	 *
+	 * @param   string  $method  post/get
+	 * @param   url     $url     url to post to
+	 * @param   array   $vars    variables to post
+	 *
+	 * @return curl result or curl error
+	 */
 
 	private function doRequest($method, $url, $vars)
 	{
@@ -92,4 +106,3 @@ class plgFabrik_FormVbForum extends plgFabrik_Form
 	}
 
 }
-?>

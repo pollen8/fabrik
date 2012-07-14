@@ -29,8 +29,7 @@ class PlgFabrik_FormMailchimp extends plgFabrik_Form
 	/**
 	 * Set up the html to be injected into the bottom of the form
 	 *
-	 * @param   object  $params     (no repeat counter stuff needed here as the plugin manager
-	 * which calls this function has already done the work for you
+	 * @param   object  $params     plugin params
 	 * @param   object  $formModel  form model
 	 *
 	 * @return  void
@@ -64,12 +63,13 @@ class PlgFabrik_FormMailchimp extends plgFabrik_Form
 	}
 
 	/**
-	 * Process the plugin, called when form is submitted
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
 	 *
 	 * @param   object  $params      plugin params
 	 * @param   object  &$formModel  form model
 	 *
-	 * @return  bool
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)

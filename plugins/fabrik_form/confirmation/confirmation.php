@@ -65,13 +65,13 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
 	 *
-	 * @param   object  &$params     params
+	 * @param   object  $params      params
 	 * @param   object  &$formModel  form model
 	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
-	public function onBeforeStore(&$params, &$formModel)
+	public function onBeforeStore($params, &$formModel)
 	{
 		if (JRequest::getInt('fabrik_ignorevalidation') === 1 || JRequest::getInt('fabrik_ajax') === 1)
 		{
@@ -235,7 +235,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 	 *
 	 * @param   int  $c  plugin counter
 	 *
-	 * @return string html
+	 * @return  string  html
 	 */
 
 	public function getBottomContent_result($c)

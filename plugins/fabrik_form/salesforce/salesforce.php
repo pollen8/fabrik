@@ -17,15 +17,16 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.salesforce
+ * @since       3.0
  */
 
 class plgFabrik_FormSalesforce extends plgFabrik_Form
 {
 
 	/**
-	 * Get SalesForce client
+	 * Build the Salesforce.com API client
 	 *
-	 * @return SforcePartnerClient
+	 * @return  SforcePartnerClient
 	 */
 
 	private function client()
@@ -49,7 +50,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $parmas     params
+	 * @param   object  $params     params
 	 * @param   object  $formModel  form model
 	 *
 	 * @return void
@@ -59,10 +60,19 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 	{
 		if (!class_exists('SoapClient'))
 		{
-			JError::raiseWarning(E_WARNING,
-				"Salesforce Plug-in: PHP has not been compiled with the SOAP extension. We will be unable to send this data to Salesforce.com");
+			JError::raiseWarning(E_WARNING, Jtext::_('PLG_FORM_SALESFORCE_ERR_SOAP_NOT_INSTALLED'));
 		}
 	}
+
+	/**
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
+	 */
 
 	public function onAfterProcess($params, &$formModel)
 	{
@@ -161,7 +171,17 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 		}
 	}
 
-	public function upsert($client, $sObjects, $key)
+	/**
+	 * Update or insert an object
+	 *
+	 * @param   object  $client    Salesforce cleint
+	 * @param   array   $sObjects  array of sObjects
+	 * @param   string  $key       External Id
+	 *
+	 * @return  mixed  UpsertResult or error
+	 */
+
+	protected function upsert($client, $sObjects, $key)
 	{
 		try
 		{
@@ -171,8 +191,7 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 		}
 		catch (exception $e)
 		{
-			/**
-			 * This is reached if there is a major problem in the data or with
+			/* This is reached if there is a major problem in the data or with
 			 * the salesforce.com connection. Normal data errors are caught by
 			 * salesforce.com
 			 */
@@ -180,18 +199,26 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 		}
 	}
 
-	public function insert($client, $sObjects)
+	/**
+	* Insert an object
+	*
+	* @param   object  $client    Salesforce cleint
+	* @param   array   $sObjects  array of sObjects
+	*
+	* @return  mixed  UpsertResult or error
+	*/
+
+	protected function insert($client, $sObjects)
 	{
 		try
 		{
-			// The upsert process
+			// The create process
 			$results = $client->create($sObjects);
 			return $results;
 		}
 		catch (exception $e)
 		{
-			/**
-			 * This is reached if there is a major problem in the data or with
+			/* This is reached if there is a major problem in the data or with
 			 * the salesforce.com connection. Normal data errors are caught by
 			 * salesforce.com
 			 */
@@ -200,4 +227,3 @@ class plgFabrik_FormSalesforce extends plgFabrik_Form
 	}
 
 }
-?>

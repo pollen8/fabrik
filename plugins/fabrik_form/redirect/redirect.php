@@ -1,10 +1,10 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.redirect
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.redirect
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -13,29 +13,31 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 /**
-* Redirect the user when the form is submitted
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.form.redirect
-*/
+ * Redirect the user when the form is submitted
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.redirect
+ * @since       3.0
+ */
 
 class PlgFabrik_FormRedirect extends PlgFabrik_Form
 {
 
-	var $_result = true;
-
 	/**
 	 * process the plugin, called afer form is submitted
 	 *
-	 * @param   object	$params (with the current active plugin values in them)
-	 * @param   object	form model
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  bool
 	 */
 
-	function onLastProcess($params, &$formModel)
+	public function onLastProcess($params, &$formModel)
 	{
 		$session = JFactory::getSession();
 		$context = $formModel->getRedirectContext();
-		//get existing session params
+
+		// Get existing session params
 		$surl = (array) $session->get($context . 'url', array());
 		$stitle = (array) $session->get($context . 'title', array());
 		$smsg = (array) $session->get($context . 'msg', array());
@@ -50,16 +52,17 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$this->data->save_in_session = $params->get('save_insession');
 		$form = $formModel->getForm();
 
-		// $$$ hugh - think we need to switcheroonie the order, otherwise formData takes
-		// precedence over getEmailData(), which I think kind of defeats the object of
-		// the exercisee?
+		/* $$$ hugh - think we need to switcheroonie the order, otherwise _formData takes
+		 * precedence over getEmailData(), which I think kind of defeats the object of
+		 * the exercisee?
+		 */
 		$this->data = array_merge($this->getEmailData(), $formModel->formData);
 		$this->data = array_merge($formModel->formData, $this->getEmailData());
 		$this->data->jump_page = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
 		$this->data->thanks_message = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
 		if (!$this->shouldRedirect($params))
 		{
-			//clear any sessoin redirects
+			// Clear any sessoin redirects
 			unset($surl[$this->renderOrder]);
 			unset($stitle[$this->renderOrder]);
 			unset($smsg[$this->renderOrder]);
@@ -77,7 +80,8 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		if ($this->data->jump_page != '')
 		{
 			$this->data->jump_page = $this->buildJumpPage($formModel);
-			//3.0 ajax/module redirect logic handled in form controller not in plugin
+
+			// 3.0 ajax/module redirect logic handled in form controller not in plugin
 			$surl[$this->renderOrder] = $this->data->jump_page;
 			$session->set($context . 'url', $surl);
 			$session->set($context . 'redirect_content_how', $params->get('redirect_content_how', 'popup'));
@@ -106,7 +110,10 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * since 3.0 - called via ajax
+	 * Called via ajax
+	 * displays thanks mesasge
+	 *
+	 * @return  void
 	 */
 
 	public function onDisplayThanks()
@@ -115,13 +122,16 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * once the form has been sucessfully completed, and if no jump page is
+	 * Once the form has been sucessfully completed, and if no jump page is
 	 * specified then show the thanks message
-	 * @param string thanks message title @depreicated - set in session in onLastProcess
-	 * @param string thanks message string @depreicated - set in session in onLastProcess
+	 *
+	 * @param   string  $title    thanks message title @depreicated - set in session in onLastProcess
+	 * @param   string  $message  thanks message string @depreicated - set in session in onLastProcess
+	 *
+	 * @return  void
 	 */
 
-	function displayThanks($title = '', $message = '')
+	protected function displayThanks($title = '', $message = '')
 	{
 		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
@@ -131,7 +141,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$message = $session->get($context . 'msg', $message);
 		if (JRequest::getVar('fabrik_ajax'))
 		{
-			//3.0 - standardize on msg/title options.
+			// 3.0 - standardize on msg/title options.
 			$opts = new stdClass;
 			$opts->title = $title;
 			$opts->msg = $message;
@@ -152,14 +162,15 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * alter the returned plugin manager's result
+	 * Alter the returned plugin manager's result
 	 *
-	 * @param string $method
-	 * @param   object  form model
-	 * @return  bool
+	 * @param   string  $method      plugin method
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return bol
 	 */
 
-	function customProcessResult($method, &$formModel)
+	public function customProcessResult($method, &$formModel)
 	{
 		// If we are applying the form don't run redirect
 		if (is_array($formModel->formData) && array_key_exists('apply', $formModel->formData))
@@ -198,18 +209,21 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * takes the forms data and merges it with the jump page
-	 * @param   object  form
+	 * Takes the forms data and merges it with the jump page
+	 *
+	 * @param   object  &$formModel  form model
+	 *
 	 * @return new jump page
 	 */
 
 	protected function buildJumpPage(&$formModel)
 	{
-		///$$$rob - I've tested the issue reported in rev 1268
-		//where Hugh added a force call to getTable() in elementModel->getFullName() to stop the wrong table name
-		//being appended to the element name. But I can't reproduce the issue (Testing locally php 5.2.6 on my Gigs table)
-		// if there is still an issue it would make a lot more sense to manually set the element's table model rather than calling
-		//force in the getFullName() code - as doing so increases the table query count by a magnitude of 2
+		/* $$$rob - I've tested the issue reported in rev 1268
+		 * where Hugh added a force call to getTable() in elementModel->getFullName() to stop the wrong table name
+		 * being appended to the element name. But I can't reproduce the issue (Testing locally php 5.2.6 on my Gigs table)
+		 *  if there is still an issue it would make a lot more sense to manually set the element's table model rather than calling
+		 * force in the getFullName() code - as doing so increases the table query count by a magnitude of 2
+		 */
 		$jumpPage = $this->data->jump_page;
 		$reserved = array('format', 'view', 'layout', 'task');
 		$queryvars = array();
@@ -247,8 +261,6 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			}
 		}
 
-		// $$$ rob removed url comparison as this stopped form js vars being appeneded to none J site urls (e.g. http://google.com)
-		//if ((!strstr($jumpPage, COM_FABRIK_LIVESITE) && strstr($jumpPage, 'http')) || empty($queryvars)) {
 		if (empty($queryvars))
 		{
 			return $jumpPage;
@@ -258,7 +270,17 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		return $jumpPage;
 	}
 
-	function _appendQS(&$queryvars, $key, $val)
+	/**
+	 * Apped data to query string array
+	 *
+	 * @param   array   &$queryvars  previously added querystring variables
+	 * @param   string  $key         key
+	 * @param   mixed   $val         value string or array
+	 *
+	 * @return  void
+	 */
+
+	protected function _appendQS(&$queryvars, $key, $val)
 	{
 		if (is_array($val))
 		{
@@ -270,40 +292,29 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		else
 		{
 			$val = urlencode(stripslashes($val));
-			$queryvars[] = "$key=$val";
+			$queryvars[] = $key . '=' . $val;
 		}
 	}
 
 	/**
-	 * date is stored in session com_fabrik.searchform.form'.$formModel->get('id').'.filters
+	 * Date is stored in session com_fabrik.searchform.form'.$formModel->get('id').'.filters
 	 * listfilters looks up the com_fabrik.searchform.fromForm session var to then be able to pick up
 	 * the search form data
 	 * once its got it it unsets com_fabrik.searchform.fromForm so that the search values are not reused
 	 * (they are however stored in the session so behave like normal filters afterwards)
 	 * If the listfilter does find the com_fabrik.searchform.fromForm var it won't use any session filters
 	 *
-	 * @param $formModel
+	 * @param   object  &$formModel  form model
+	 *
 	 * @return unknown_type
 	 */
-	function _storeInSession(&$formModel)
+
+	protected function _storeInSession(&$formModel)
 	{
 		$app = JFactory::getApplication();
 		$store = array();
 		if ($this->data->save_in_session == '1')
 		{
-			//@TODO - rob, you need to look at this, I really only put this in as a band-aid.
-			// $$$ hugh - we need to guesstimate the 'type', otherwise when the session data is processed
-			// on table load as filters, everything will default to 'field', which borks up if (say) it's
-			// really a dropdown
-			/*
-			 foreach ($formModel->formData as $key => $value) {
-			    if ($formModel->hasElement($key)) {
-			    //$value = urlencode( stripslashes($value));
-			    $store[$formModel->get('id')]["$key"] = array('type'=>'', 'value'=>$value, 'match'=>false);
-			    }
-			    }
-			 */
-
 			$groups = $formModel->getGroupsHiarachy();
 			foreach ($groups as $group)
 			{
@@ -370,11 +381,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				}
 			}
 
-			//clear registry search form entries
+			// Clear registry search form entries
 			$key = 'com_fabrik.searchform';
 
 			$listModel = $formModel->getlistModel();
-			//check for special fabrik_list_filter_all element!
+
+			// Check for special fabrik_list_filter_all element!
 			$searchAll = JRequest::getVar($listModel->getTable()->db_table_name . '___fabrik_list_filter_all');
 
 			$app->setUserState('com_fabrik.searchform.form' . $formModel->get('id') . '.searchall', $searchAll);
@@ -389,13 +401,14 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	/**
 	 * determines if a condition has been set and decides if condition is matched
 	 *
-	 * @param   object  $params
-	 * @return  bool true if you should redirect, false ignores redirect
+	 * @param   object  $params  plugin params
+	 *
+	 * @return bol true if you should redirect, false ignores redirect
 	 */
 
-	function shouldRedirect(&$params)
+	protected function shouldRedirect($params)
 	{
-		// if we are applying the form dont run redirect
+		// If we are applying the form dont run redirect
 		if (array_key_exists('apply', $this->formModel->formData))
 		{
 			return false;
@@ -403,4 +416,3 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		return $this->shouldProcess('redirect_conditon');
 	}
 }
-							 ?>

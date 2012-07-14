@@ -21,7 +21,11 @@ class PlgFabrik_Form extends FabrikPlugin
 	protected $html = '';
 
 	/**
-	 * run from table model when deleting rows
+	 * Run from list model when deleting rows
+	 *
+	 * @param   object  $params      plugin parameters
+	 * @param   object  &$formModel  form model
+	 * @param   array   &$groups     list data for deletion
 	 *
 	 * @return  bool
 	 */
@@ -32,8 +36,12 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * run right at the beginning of the form processing
-	 * @return  bool
+	 * Run right at the beginning of the form processing
+	 *
+	 * @param   object  $params      plpugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onBeforeProcess($params, &$formModel)
@@ -52,23 +60,27 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * run before table calculations are applied
-	 * @param   object	params
-	 * @param   object	form model
-	 * @return  bool
+	 * Run before table calculations are applied
+	 *
+	 * @param   object  $params      plpugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
-	function onBeforeCalculations($params, $formModel)
+	public function onBeforeCalculations($params, &$formModel)
 	{
 		return true;
 	}
 
 	/**
-	 * run right at the end of the form processing
+	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
-	 * @param   object	$params
-	 * @param   object	form model
-	 * @return  bool
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -77,10 +89,12 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * alter the returned plugin manager's result
+	 * Alter the returned plugin manager's result
 	 *
-	 * @param string $method
-	 * @return  bool
+	 * @param   string  $method      method
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return bool
 	 */
 
 	public function customProcessResult($method, &$formModel)
@@ -107,7 +121,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	 *
 	 * @param   int  $c  plugin counter
 	 *
-	 * @return string html
+	 * @return  string  html
 	 */
 
 	public function getBottomContent_result($c)
@@ -116,12 +130,15 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * sets up any top html
-	 * @param   object	params
-	 * @param   object	form model
+	 * Store the html to insert at the top of the form
+	 *
+	 * @param   object  $params     params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  bool
 	 */
 
-	function getTopContent($params, $formModel)
+	public function getTopContent($params, $formModel)
 	{
 		$this->html = '';
 	}
@@ -137,19 +154,23 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * sets up any end html (after form close tag)
-	 * @param   object	params
-	 * @param   object	form model
+	 * Sets up any end html (after form close tag)
+	 *
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function getEndContent($params, $formModel)
+	public function getEndContent($params, $formModel)
 	{
 		$this->html = '';
 	}
 
 	/**
-	 * get any html that needs to be written after the form close tag
-	 * @return  string	html
+	 * Get any html that needs to be written after the form close tag
+	 *
+	 * @return	string	html
 	 */
 
 	public function getEndContent_result()
@@ -158,15 +179,13 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * convert the posted form data to the data to be shown in the email
+	 * Convert the posted form data to the data to be shown in the email
 	 * e.g. radio buttons swap their values for the value's label
-	 *
-	 * HACKED from the form view
 	 *
 	 * @return array email data
 	 */
 
-	function getEmailData()
+	public function getEmailData()
 	{
 		if (isset($this->emailData))
 		{

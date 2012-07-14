@@ -25,7 +25,7 @@ class plgFabrik_FormExif extends plgFabrik_Form
 	var $map_field = '';
 	var $upload_field = '';
 
-	function exifToNumber($value, $format)
+	protected function exifToNumber($value, $format)
 	{
 		$spos = JString::strpos($value, '/');
 		if ($spos === false)
@@ -35,19 +35,13 @@ class plgFabrik_FormExif extends plgFabrik_Form
 		else
 		{
 			list($base, $divider) = split("/", $value, 2);
-			if ($divider == 0)
-				return sprintf($format, 0);
-			else
-				return sprintf($format, ($base / $divider));
+			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
 		}
 	}
 
-	function exifToCoordinate($reference, $coordinate)
+	protected function exifToCoordinate($reference, $coordinate)
 	{
-		if ($reference == 'S' || $reference == 'W')
-			$prefix = '-';
-		else
-			$prefix = '';
+		$prefix = ($reference == 'S' || $reference == 'W') ? '-' : '';
 
 		return $prefix
 			. sprintf('%.6F',
@@ -55,7 +49,7 @@ class plgFabrik_FormExif extends plgFabrik_Form
 					+ ((($this->exifToNumber($coordinate[1], '%.6F') * 60) + ($this->exifToNumber($coordinate[2], '%.6F'))) / 3600));
 	}
 
-	function getCoordinates($filename)
+	protected function getCoordinates($filename)
 	{
 		if (extension_loaded('exif'))
 		{
@@ -81,15 +75,16 @@ class plgFabrik_FormExif extends plgFabrik_Form
 	}
 
 	/**
-	 * Run before the form is processed
+	 * Before the record is stored, this plugin will see if it should process
+	 * and if so store the form data in the session.
 	 *
-	 * @param   object  &$params     params
+	 * @param   object  $params      params
 	 * @param   object  &$formModel  form model
 	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
-	public function onBeforeStore(&$params, &$formModel)
+	public function onBeforeStore($params, &$formModel)
 	{
 		// Initialize some variables
 		$db = FabrikWorker::getDbo();
@@ -118,4 +113,3 @@ class plgFabrik_FormExif extends plgFabrik_Form
 	}
 
 }
-?>

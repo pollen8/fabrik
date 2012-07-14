@@ -44,18 +44,27 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 	protected $data = array();
 
-	function getEndContent_result($c)
+	/**
+	 * Get any html that needs to be written after the form close tag
+	 *
+	 * @return	string	html
+	 */
+
+	public function getEndContent_result()
 	{
 		return $this->data;
 	}
 
 	/**
-	 * determine if you can add new comments
-	 * @param   object	$params
-	 * @param   object	$formModel
+	 * Determine if you can add new comments
+	 *
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  bool
 	 */
 
-	function commentsLocked(&$params, &$formModel)
+	protected function commentsLocked($params, $formModel)
 	{
 		if (is_null($this->commentsLocked))
 		{
@@ -75,7 +84,16 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		return $this->commentsLocked;
 	}
 
-	function getEndContent(&$params, &$formModel)
+	/**
+	 * Sets up any end html (after form close tag)
+	 *
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
+	 */
+
+	public function getEndContent($params, $formModel)
 	{
 		$rowid = $formModel->getRowId();
 		if ($rowid == 0 || $rowid == '')
@@ -106,6 +124,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		return true;
 	}
 
+	/**
+	 * Get the js options for the digg element
+	 *
+	 * @return  string  json option string
+	 */
+
 	protected function loadDiggJsOpts()
 	{
 		FabrikHelperHTML::script('plugins/fabrik_element/digg/table-fabrikdigg.js');
@@ -125,12 +149,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * prepare local comment system
-	 * @param   object	$params
-	 * @param   object	form model
+	 * Prepare local comment system
+	 *
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	protected function _internal(&$params, &$formModel)
+	protected function _internal($params, $formModel)
 	{
 		$data = array();
 		$document = JFactory::getDocument();
@@ -191,8 +218,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			}
 			$data[] = $this->getAddCommentForm($params, 0, true);
 		}
-		//form
 
+		// Form
 		$data[] = '</div>';
 
 		$opts = new stdClass;
@@ -228,11 +255,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
+	 * Build the html for the internal comment form
 	 *
-	 * build the html for the internal comment form
-	 * @param   object	$params
-	 * @param   int		$reply_to
-	 * @param   bool	$master
+	 * @param   object  $params    plugin params
+	 * @param   int     $reply_to  comment id that we are replying to
+	 * @param   bool    $master    is it the master comment
+	 *
 	 * @return  string
 	 */
 
@@ -330,13 +358,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * TODO replace parentid with left/right markers
 	 * see http://dev.mysql.com/tech-resources/articles/hierarchical-data.html
-	 * get the comments from the db
-	 * @param   int		$formid
-	 * @param   int		$rowid
+	 * Get the comments from the db
+	 *
+	 * @param   int  $formid  form id
+	 * @param   int  $rowid   row id
+	 *
 	 * @return  array	replies
 	 */
 
-	function getComments($formid, $rowid)
+	protected function getComments($formid, $rowid)
 	{
 		$rowid = (int) $rowid;
 		$formid = (int) $formid;
@@ -387,11 +417,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * append the replies to the comments
-	 * @param   object current comment
-	 * @param   array	$replies
-	 * @param   array	&$return
-	 * @param   int		$depth
+	 * Recursive method to append the replies to the comments
+	 *
+	 * @param   object  $v        current comment
+	 * @param   array   $replies  replies
+	 * @param   array   &$return  return data
+	 * @param   int     $depth    current depth
+	 *
+	 * @return void
 	 */
 
 	private function getReplies($v, $replies, &$return, $depth)
@@ -409,13 +442,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * generate the html for the comments
-	 * @param   object	form $params
-	 * @param   array	$comments
+	 * Generate the html for the comments
+	 *
+	 * @param   object  $params    plugin params
+	 * @param   array   $comments  comments to write out
+	 *
 	 * @return  string
 	 */
 
-	private function writeComments(&$params, &$comments)
+	private function writeComments($params, $comments)
 	{
 		$data = array();
 		$data[] = '<ul id="fabrik-comment-list">';
@@ -428,6 +463,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			foreach ($comments as $comment)
 			{
 				$depth = (int) $comment->depth * 20;
+
 				// @TODO need to add class per user group
 				$data[] = '<li class="usergroup-x" id="comment_' . $comment->id . '" style="margin-left:' . $depth . 'px">';
 				$data[] = $this->writeComment($params, $comment);
@@ -439,13 +475,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * write a single comment
-	 * @param   object	$params
-	 * @param   object	$comment
+	 * Write a single comment
+	 *
+	 * @param   object  $params   plugin params
+	 * @param   object  $comment  comment to write
+	 *
 	 * @return  string
 	 */
 
-	private function writeComment(&$params, $comment)
+	private function writeComment($params, $comment)
 	{
 		$user = JFactory::getUser();
 		$name = (int) $comment->annonymous == 0 ? $comment->name : JText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
@@ -505,7 +543,9 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * get list id
+	 * Get list id
+	 *
+	 * @return  int  list id
 	 */
 
 	protected function getListId()
@@ -514,7 +554,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * get digg element
+	 * Get digg element
+	 *
 	 * @return  object	digg element
 	 */
 
@@ -528,10 +569,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * delete a comment called from ajax request
+	 * Delete a comment called from ajax request
+	 *
+	 * @return  void
 	 */
 
-	function onDeleteComment()
+	public function onDeleteComment()
 	{
 		$db = FabrikWorker::getDbo();
 		$id = JRequest::getInt('comment_id');
@@ -543,10 +586,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * update a comment called from ajax request by admin
+	 * Update a comment called from ajax request by admin
+	 *
+	 * @return  void
 	 */
 
-	function onUpdateComment()
+	public function onUpdateComment()
 	{
 		$db = FabrikWorker::getDbo();
 		$id = JRequest::getInt('comment_id');
@@ -558,7 +603,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * set the form model
+	 * Set the form model
+	 *
 	 * @return  object form model
 	 */
 
@@ -569,20 +615,24 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$this->formModel = $formModel;
 		return $this->formModel;
 	}
+
 	/**
-	 * add a comment called from ajax request
+	 * Add a comment called from ajax request
+	 *
+	 * @return  void
 	 */
 
-	function onAddComment()
+	public function onAddComment()
 	{
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
-		$row = FabTable::getInstance('comment', 'FabrikTable');// new TableComment($db);
+		$row = FabTable::getInstance('comment', 'FabrikTable');
 		$row->bind(JRequest::get('request'));
 		$row->ipaddress = $_SERVER['REMOTE_ADDR'];
 		$row->user_id = $user->get('id');
 		$row->approved = 1;
-		//@TODO this isnt set?
+
+		// @TODO this isnt set?
 		$row->url = JRequest::getVar('HTTP_REFERER', '', 'server');
 		$rowid = JRequest::getVar('rowid');
 		$row->formid = JRequest::getVar('formid');
@@ -592,13 +642,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$row->name = $user->get('name');
 			$row->email = $user->get('email');
 		}
-		//load up the correct params for the plugin -
-		//first load all form params
+		// Load up the correct params for the plugin -
+		// First load all form params
 		$formModel = $this->setFormModel();
 		$params = $formModel->getParams();
 		$tmp = array();
 		$this->renderOrder = JRequest::getVar('renderOrder', 2);
-		//then map that data (for correct render order) onto this plugins params
+
+		// Then map that data (for correct render order) onto this plugins params
 		$params = $this->setParams($params, $this->renderOrder);
 		$res = $row->store();
 		if ($res === false)
@@ -607,7 +658,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			exit;
 		}
 		$obj = new stdClass;
-		//do this to get the depth of the comment
+
+		// Do this to get the depth of the comment
 		$comments = $this->getComments($row->formid, $row->row_id);
 		$row = $comments[$row->id];
 		$obj->content = $this->writeComment($params, $row);
@@ -620,7 +672,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$this->addNotificationEvent($row, $formModel);
 		}
 		$comment_plugin_notify = JRequest::getVar('comment-plugin-notify');
-		//do we notify everyone?
+
+		// Do we notify everyone?
 		if ($params->get('comment-internal-notify') == 1)
 		{
 			if ($notificationPlugin)
@@ -636,11 +689,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * add notification event
-	 * @param   object	$row
-	 * @param   object	$formModel
+	 * Add notification event
+	 *
+	 * @param   object  $row        row?
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
 	 */
-	function addNotificationEvent($row, $formModel)
+
+	protected function addNotificationEvent($row, $formModel)
 	{
 		$db = FabrikWorker::getDbo();
 		$event = $db->quote('COMMENT_ADDED');
@@ -656,15 +713,18 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * once we've ensured that the notification plugin is installed
+	 * Once we've ensured that the notification plugin is installed
 	 * subscribe the user to the notification
 	 * If comment-notify-admins is on then also subscribe admins to the notification
-	 * @param   object	$row
-	 * @param   array	comments objects
-	 * @param   object	form model
+	 *
+	 * @param   object  $row        row (not used?)
+	 * @param   array   $comments   objects
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function saveNotificationToPlugin($row, $comments, $formModel)
+	protected function saveNotificationToPlugin($row, $comments, $formModel)
 	{
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
@@ -684,10 +744,9 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			{
 				if ($row->id != $user_id)
 				{
-					$query->insert('#__{package}_notification')
-						->set(
-							array('reason = ' . $db->quote('admin observing a comment'), 'user_id = ' . $row->id, 'reference = ' . $ref,
-								'label = ' . $label));
+					$fields = array('reason = ' . $db->quote('admin observing a comment'), 'user_id = ' . $row->id, 'reference = ' . $ref,
+						'label = ' . $label);
+					$query->insert('#__{package}_notification')->set($fields);
 					$db->setQuery($query);
 					$db->query();
 				}
@@ -696,15 +755,23 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * test if the notification plugin is installed
-	 * @param   $formModel
+	 * Test if the notification plugin is installed
+	 *
+	 * @param   object  $formModel  form model
+	 *
 	 * @return  unknown_type
 	 */
 
-	function notificationPluginInstalled($formModel)
+	protected function notificationPluginInstalled($formModel)
 	{
 		return FabrikWorker::getPluginManager()->pluginExists('cron', 'notification');
 	}
+
+	/**
+	 * Digg the comment
+	 *
+	 * @return boolean
+	 */
 
 	private function doDigg()
 	{
@@ -713,13 +780,16 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * default send notifcations code (sends to all people who have commented PLUS all admins)
-	 * @param   object	$row
-	 * @param   array	comments objects
-	 * @param   object	form model
+	 * Default send notifcations code (sends to all people who have commented PLUS all admins)
+	 *
+	 * @param   object  $row        notification
+	 * @param   array   $comments   objects
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function sentNotifications($row, $comments, $formModel)
+	protected function sentNotifications($row, $comments, $formModel)
 	{
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
@@ -733,7 +803,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		{
 			if ($comment->id == $row->id)
 			{
-				//dont sent notification to user who just posted
+				// Don't sent notification to user who just posted
 				continue;
 			}
 			if (!in_array($comment->email, $sentto))
@@ -742,7 +812,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 				$sentto[] = $comment->email;
 			}
 		}
-		//notify original poster (hack for ideenbus
+		// Notify original poster (hack for ideenbus)
 		$listModel = $formModel->getlistModel();
 		$rowdata = $listModel->getRow($row->row_id);
 		if (!in_array($rowdata->ide_idea___email_raw, $sentto))
@@ -753,8 +823,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 		if ($params->get('comment-notify-admins') == 1)
 		{
-			//notify admins
-			//get all super administrator
+			// Notify admins
+			// Get all super administrator
 			$rows = $this->getAdminInfo();
 			foreach ($rows as $row)
 			{
@@ -768,21 +838,31 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		}
 	}
 
+	/**
+	 * Get email
+	 *
+	 * @return  void
+	 */
+
 	public function onGetEmail()
 	{
 		$commentid = JRequest::getInt('commentid');
-		//TableComment
+
+		// TableComment
 		$c = FabTable::getInstance('Comment', 'FabrikTable');
 		$c->load($commentid);
 		echo "<a href=\"mailto:$c->email\">$c->email</a>";
 	}
 
 	/**
-	 * prepare jskit comment system - doesn't require a jskit acount
-	 * @param unknown_type $params
+	 * Prepare jskit comment system - doesn't require a jskit acount
+	 *
+	 * @param   object  $params  plugin params
+	 *
+	 * @return  void
 	 */
 
-	function _jskit(&$params)
+	protected function _jskit($params)
 	{
 		$this->data = '
  		<div class="js-kit-comments" permalink=""></div>
@@ -790,11 +870,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * prepate intense debate comment system
-	 * @param unknown_type $params
+	 * Prepate intense debate comment system
+	 *
+	 * @param   objec  $params  plugin params
+	 *
+	 * @return  void
 	 */
 
-	function _intensedebate(&$params)
+	protected function _intensedebate($params)
 	{
 		FabrikHelperHTML::addScriptDeclaration(
 			"
@@ -807,9 +890,11 @@ var idcomments_post_url;");
 	}
 
 	/**
-	 * prepate diqus comment system
+	 * Prepate diqus comment system
 	 *
-	 * @param   object  $params
+	 * @param   object  $params  plugin params
+	 *
+	 * @return  void
 	 */
 
 	protected function _disqus($params)
@@ -833,19 +918,21 @@ var idcomments_post_url;");
 	})();
 ");
 		$this->data = '<div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/'
-			. $params->get('comment-disqus-subdomain')
-			. '/embed.js"></script><noscript><a href="http://rotterdamvooruit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>';
-		;
+			. $params->get('comment-disqus-subdomain') . '/embed.js"></script><noscript>'
+			. '<a href="http://rotterdamvooruit.disqus.com/?url=ref">View the discussion thread.</a>'
+			. '</noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>';
 	}
 
 	/**
 	 * prepare JComment system
 	 *
-	 * @param   object  $params
-	 * @param   object  $formModel
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  void
 	 */
 
-	function _jcomment(&$params, $formModel)
+	protected function _jcomment($params, $formModel)
 	{
 		$jcomments = JPATH_SITE . '/components/com_jcomments/jcomments.php';
 		if (JFile::exists($jcomments))
@@ -862,5 +949,3 @@ var idcomments_post_url;");
 	}
 
 }
-
-?>

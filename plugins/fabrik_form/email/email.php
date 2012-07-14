@@ -15,17 +15,17 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 /**
  * Send email upon form submission
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.form.email
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.email
  * @since       3.0
  */
 
 class PlgFabrik_FormEmail extends PlgFabrik_Form
 {
 
-	var $_aAttachments = array();
+	protected $attachments = array();
 
-	var $_dontEmailKeys = null;
+	protected $dontEmailKeys = null;
 
 	/**
 	 * MOVED TO PLUGIN.PHP SHOULDPROCESS()
@@ -40,11 +40,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}*/
 
 	/**
-	 * process the plugin, called when form is submitted
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object	$params
-	 * @param   object	form model
-	 * @returns	bool
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -57,26 +59,26 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
 
-		//$this->data = $this->getEmailData();
-		//getEmailData returns correctly formatted {tablename___elementname} keyed results
-		//formData is there for legacy and may allow you to use {elementname} only placeholders for simple forms
-		// $$$ rob swapped order 21/11/2010 so that getEmailData takes preference over formData
-		//$this->data 		= array_merge($this->getEmailData(), $formModel->formData);
 		$this->data = array_merge($formModel->formData, $this->getEmailData());
-		// $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
-		//check if condition exists and is met
+
+		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
+		 * check if condition exists and is met
+		 */
 		if (!$this->shouldProcess('email_conditon'))
 		{
 			return;
 		}
 		$contentTemplate = $params->get('email_template_content');
 		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
-		$htmlEmail = true; //always send as html as even text email can contain html from wysiwg editors
+
+		// Always send as html as even text email can contain html from wysiwg editors
+		$htmlEmail = true;
 
 		if (JFile::exists($emailTemplate))
 		{
 			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate) : $this
 				->_getTemplateEmail($emailTemplate);
+
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
 			if ($message === false)
 			{
@@ -93,6 +95,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$cc = null;
 		$bcc = null;
 		$w = new FabrikWorker;
+
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
 
@@ -112,7 +115,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		foreach ($email_to as &$emailkey)
 		{
 			$emailkey = $w->parseMessageForPlaceholder($emailkey, $this->data, false);
-			//can be in repeat group in which case returns "email1,email2"
+
+			// Can be in repeat group in which case returns "email1,email2"
 			$emailkey = explode(',', $emailkey);
 			foreach ($emailkey as &$key)
 			{
@@ -132,7 +136,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				}
 			}
 		}
-		//reduce back down to single dimension array
+
+		// Reduce back down to single dimension array
 		foreach ($email_to as $i => $a)
 		{
 			foreach ($a as $v)
@@ -181,11 +186,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 			if (FabrikWorker::isEmail($email))
 			{
-				$thisAttachments = $this->_aAttachments;
+				$thisAttachments = $this->attachments;
 				$this->data['emailto'] = $email;
-				//see if we can load a user for the email
+
+				// See if we can load a user for the email
 				$query = $db->getQuery(true);
-				//todo move htis out of foreach loop - to reduce queries
+
+				// @TODO move htis out of foreach loop - to reduce queries
 				$query->select('id')->from('#__users')->where('email = ' . $db->quote($email));
 				$db->setQuery($query);
 				$userid = $db->loadResult();
@@ -221,19 +228,20 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 	/**
-	 * use a php template for advanced email templates, partularly for forms with repeat group data
+	 * Use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
-	 * @param bol if file uploads have been found
-	 * @param string path to template
+	 * @param   string  $tmpl  path to template
+	 *
 	 * @return string email message
 	 */
 
 	protected function _getPHPTemplateEmail($tmpl)
 	{
 		$emailData = $this->data;
-		// start capturing output into a buffer
+
+		// Start capturing output into a buffer
 		ob_start();
-		$result = require($tmpl);
+		$result = require $tmpl;
 		$message = ob_get_contents();
 		ob_end_clean();
 		if ($result === false)
@@ -244,12 +252,15 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 	/**
-	 * add attachments to the email
+	 * Add attachments to the email
+	 *
+	 * @param   object  $params  plugin params
+	 *
+	 * @return  void
 	 */
 
-	function addAttachments($params)
+	protected function addAttachments($params)
 	{
-		//get attachments
 		$pluginManager = FabrikWorker::getPluginManager();
 		$data = $this->getEmailData();
 		$groups = $this->formModel->getGroupsHiarachy();
@@ -281,7 +292,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 							$file = $elementModel->addEmailAttachement($v);
 							if ($file !== false)
 							{
-								$this->_aAttachments[] = $file;
+								$this->attachments[] = $file;
 							}
 						}
 					}
@@ -289,7 +300,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 		}
 		// $$$ hugh - added an optional eval for adding attachments.
-		// Eval'ed code should just return an array of file paths which we merge with $this->_aAttachments[]
+		// Eval'ed code should just return an array of file paths which we merge with $this->attachments[]
 		$w = new FabrikWorker;
 		$email_attach_eval = $w->parseMessageForPlaceholder($params->get('email_attach_eval', ''), $this->data, false);
 		if (!empty($email_attach_eval))
@@ -298,33 +309,35 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			FabrikWorker::logEval($email_attach_array, 'Caught exception on eval in email email_attach_eval : %s');
 			if (!empty($email_attach_array))
 			{
-				$this->_aAttachments = array_merge($this->_aAttachments, $email_attach_array);
+				$this->attachments = array_merge($this->attachments, $email_attach_array);
 			}
 		}
 	}
 
 	/**
-	 * get an array of keys we dont want to email to the user
+	 * Get an array of keys we dont want to email to the user
 	 *
 	 * @return  array
 	 */
 
-	function getDontEmailKeys()
+	protected function getDontEmailKeys()
 	{
-		if (is_null($this->_dontEmailKeys))
+		if (is_null($this->dontEmailKeys))
 		{
-			$this->_dontEmailKeys = array();
+			$this->dontEmailKeys = array();
 			foreach ($_FILES as $key => $file)
 			{
-				$this->_dontEmailKeys[] = $key;
+				$this->dontEmailKeys[] = $key;
 			}
 		}
-		return $this->_dontEmailKeys;
+		return $this->dontEmailKeys;
 	}
 
 	/**
-	 * template email handling routine, called if email template specified
-	 * @param   string	path to template
+	 * Template email handling routine, called if email template specified
+	 *
+	 * @param   string  $emailTemplate  path to template
+	 *
 	 * @return  string	email message
 	 */
 
@@ -335,9 +348,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 	/**
-	 * get content item template
-	 * @param   int		$contentTemplate
-	 * @return  string	content item html (translated with Joomfish if installed)
+	 * Get content item template
+	 *
+	 * @param   int  $contentTemplate  Joomla article ID to load
+	 *
+	 * @return  string  content item html (translated with Joomfish if installed)
 	 */
 
 	protected function _getConentTemplate($contentTemplate)
@@ -361,8 +376,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 	/**
-	 * default email handling routine, called if no email template specified
-	 * @return string email message
+	 * Default email handling routine, called if no email template specified
+	 *
+	 * @return  string  email message
 	 */
 
 	protected function _getTextEmail()
@@ -379,22 +395,22 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			foreach ($elementModels as &$elementModel)
 			{
 				$element = $elementModel->getElement();
-				// @TODO - how about adding a 'renderEmail()' method to element model, so specific element types
-				// can render themselves?
+
+				// @TODO - how about adding a 'renderEmail()' method to element model, so specific element types  can render themselves?
 				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(false, true, false) : $element->name;
 				if (!in_array($key, $ignore))
 				{
 					$val = '';
 					if (is_array($data[$key]))
 					{
-						//repeat group data
+						// Repeat group data
 						foreach ($data[$key] as $k => $v)
 						{
 							if (is_array($v))
 							{
 								$val = implode(", ", $v);
 							}
-							$val .= count($data[$key]) == 1 ? ": $v<br />" : $k++ . ": $v<br />";
+							$val .= count($data[$key]) == 1 ? ": $v<br />" : ($k++) . ": $v<br />";
 						}
 					}
 					else
@@ -404,10 +420,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					$val = FabrikString::rtrimword($val, "<br />");
 					$val = stripslashes($val);
 
-					// set $val to default value if empty
+					// Set $val to default value if empty
 					if ($val == '')
+					{
 						$val = " - ";
-					// don't add a second ":"
+					}
+					// Don't add a second ":"
 					$label = trim(strip_tags($element->label));
 					$message .= $label;
 					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label) - 1) === false)
@@ -424,4 +442,3 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	}
 
 }
-?>
