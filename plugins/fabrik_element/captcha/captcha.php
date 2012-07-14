@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha1.10/recaptchalib.php';
+require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha-php-1.11/recaptchalib.php';
 
 /**
  * Plugin element to captcha
@@ -146,7 +146,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 			}
 			else
 			{
-				return recaptcha_get_html($id, $publickey, $theme, $lang, $error);
+				return fabrik_recaptcha_get_html($id, $publickey, $theme, $lang, $error);
 			}
 		}
 		else
@@ -179,7 +179,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 			$session->set('com_fabrik.element.captach.fontsize', $fontsize);
 			$session->set('com_fabrik.element.captach.angle', $angle);
 			$session->set('com_fabrik.element.captach.padding', $padding);
-			
+
 			// Felixkat - Remove
 			//$session->set('com_fabrik.element.captach.height', $height);
 			//$session->set('com_fabrik.element.captach.width', $width);
