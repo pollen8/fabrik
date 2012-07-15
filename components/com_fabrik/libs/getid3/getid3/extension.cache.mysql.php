@@ -100,11 +100,25 @@ class getID3_cached_mysql extends getID3
 		$this->create_table();
 
 		// Check version number and clear cache if changed
-		$version = '';
+
+		// $$$ hugh - fix for $this::VERSION, as per main getid3.php fixes.
+		// can't use $this::VERSION syntax, even conditionally, since it registers as a parse error before PHP v5.3.0
+		// wrapping the new syntax in an eval call should work without causing parse errors in old PHP
+		/*
 		if ($this->cursor = mysql_query("SELECT `value` FROM `getid3_cache` WHERE (`filename` = '".mysql_real_escape_string($this::VERSION)."') AND (`filesize` = '-1') AND (`filetime` = '-1') AND (`analyzetime` = '-1')", $this->connection)) {
 			list($version) = mysql_fetch_array($this->cursor);
 		}
 		if ($version != $this::VERSION) {
+			$this->clear_cache();
+		}
+		*/
+		$version = '';
+		$this_version = '';
+		eval('$this_version = $this::VERSION;');
+		if ($this->cursor = mysql_query("SELECT `value` FROM `getid3_cache` WHERE (`filename` = '".mysql_real_escape_string($this_version)."') AND (`filesize` = '-1') AND (`filetime` = '-1') AND (`analyzetime` = '-1')", $this->connection)) {
+			list($version) = mysql_fetch_array($this->cursor);
+		}
+		if ($version != $this_version) {
 			$this->clear_cache();
 		}
 
@@ -116,8 +130,12 @@ class getID3_cached_mysql extends getID3
 	// public: clear cache
 	function clear_cache() {
 
+		// $$$ hugh - fix for $this::VERSION syntax, which will fail with parse error prior to 5.3.0.
+		$this_version = '';
+		eval('$this_version = $this::VERSION;');
 		$this->cursor = mysql_query("DELETE FROM `getid3_cache`", $this->connection);
-		$this->cursor = mysql_query("INSERT INTO `getid3_cache` VALUES ('".$this::VERSION."', -1, -1, -1, '".$this::VERSION."')", $this->connection);
+		//$this->cursor = mysql_query("INSERT INTO `getid3_cache` VALUES ('".$this::VERSION."', -1, -1, -1, '".$this::VERSION."')", $this->connection);
+		$this->cursor = mysql_query("INSERT INTO `getid3_cache` VALUES ('".$this_version."', -1, -1, -1, '".$this_version."')", $this->connection);
 	}
 
 
