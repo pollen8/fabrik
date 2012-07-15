@@ -984,24 +984,30 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Get delete button
+	 *
 	 * @since 3.0
-	 * get delete button
+	 *
 	 * @return	string	delete button wrapped in <li>
 	 */
 
-	protected function deleteButton()
+	protected function deleteButton($tpl = '')
 	{
+		$tpl = $this->getTmpl();
 		return '<li class="fabrik_delete"><a href="#" class="delete" title="' . JText::_('COM_FABRIK_DELETE') . '">'
-			. FabrikHelperHTML::image('delete.png', 'list', '', array('alt' => JText::_('COM_FABRIK_DELETE'))) . '<span>'
+			. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => JText::_('COM_FABRIK_DELETE'))) . '<span>'
 			. JText::_('COM_FABRIK_DELETE') . '</span></a></li>';
 	}
 
 	/**
 	 *
-	 * get a list of possible menus
+	 * Get a list of possible menus
 	 * USED TO BUILD RELTED TABLE LNKS WITH CORRECT iTEMD AND TEMPLATE
-	 * @return array linked table menu items
-	 * @since 2.0.4
+	 *
+	 * @since   2.0.4
+	 *
+	 * @return  array  linked table menu items
+	 *
 	 */
 
 	protected function getTableLinks()

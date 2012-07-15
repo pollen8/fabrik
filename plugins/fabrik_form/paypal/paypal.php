@@ -92,7 +92,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		}
 		$opts['amount'] = "$amount";
 
-		//$$$tom added Shipping Cost params
+		// $$$tom added Shipping Cost params
 		$shipping_amount = $params->get('paypal_shipping_cost');
 		if ($params->get('paypal_shipping_cost_eval', 0) == 1)
 		{
@@ -128,7 +128,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		// $$$ hugh - strip any HTML tags from the item name, as PayPal doesn't like them.
 		$opts['item_name'] = strip_tags($item);
 
-		//$$$ rob add in subscription variables
+		// $$$ rob add in subscription variables
 		if ($opts['cmd'] === '_xclick-subscriptions')
 		{
 			$subTable = JModel::getInstance('List', 'FabrikFEModel');
@@ -187,10 +187,11 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 			$isSub = @eval($subSwitch);
 			if (!$isSub)
 			{
-				//reset the amount which was unset during subscription code
+				// Reset the amount which was unset during subscription code
 				$opts['amount'] = $amount;
 				$opts['cmd'] = '_xclick';
-				//unset any subscription options we may have set
+
+				// Unset any subscription options we may have set
 				unset($opts['p3']);
 				unset($opts['t3']);
 				unset($opts['a3']);
@@ -211,7 +212,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 			$shipping_select = array();
 
 			$db = FabrikWorker::getDbo();
-			//$$$tom Surely there's a better Fabrik way of getting the table name...
+			// $$$tom Surely there's a better Fabrik way of getting the table name...
 			$db
 				->setQuery(
 					"SELECT db_table_name
@@ -377,7 +378,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 			{
 				if ($ipn->checkOpts($opts, $formModel) === false)
 				{
-					/// log the info
+					/// Log the info
 					$log->message_type = 'fabrik.paypal.onAfterProcess';
 					$msg = new stdClass();
 					$msg->opt = $opts;
@@ -412,7 +413,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		$surl[$this->renderOrder] = $url;
 		$session->set($context . 'url', $surl);
 
-		/// log the info
+		/// Log the info
 		$log->message_type = 'fabrik.paypal.onAfterProcess';
 		$msg = new stdClass();
 		$msg->opt = $opts;

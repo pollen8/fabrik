@@ -707,7 +707,7 @@ class FabrikModelList extends FabModelAdmin
 				$map[$element->getElement()->id] = $size;
 			}
 		}
-		//update indexes (added array_key_exists check as these may be during after CSV import)
+		// Update indexes (added array_key_exists check as these may be during after CSV import)
 		if (!empty($aOrderBy) && array_key_exists($row->order_by, $map))
 		{
 			foreach ($aOrderBy as $orderBy)
@@ -726,7 +726,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$feModel->addIndex($params->get('group_by_order'), 'groupbyorder', 'INDEX', $map[$params->get('group_by_order')]);
 		}
-		$afilterFields = $params->get('filter-fields', '', '_default', 'array');
+		$afilterFields = (array) $params->get('filter-fields', array());
 		foreach ($afilterFields as $field)
 		{
 			if (array_key_exists($field, $map))
@@ -842,7 +842,7 @@ class FabrikModelList extends FabModelAdmin
 			if ($oldJoin->params !== '')
 			{
 				$oldParams = json_decode($oldJoin->params);
-				if ($oldParams->type == 'repeatElement')
+				if (isset($oldParams->type) && $oldParams->type == 'repeatElement')
 				{
 					$aOldJoinsToKeep[] = $oldJoin->id;
 				}

@@ -1,16 +1,16 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-
-class FabrikString extends JString{
+class FabrikString extends JString
+{
 
 	/**
 	 * UTF-8 aware - replace the first word
@@ -39,14 +39,14 @@ class FabrikString extends JString{
 	 * @param string the word to trim
 	 * @return string the trimmed string
 	 */
-	
+
 	public static function rtrimword(&$str, $word = false)
 	{
 		$l = JString::strlen($word);
 		$end = JString::substr($str, -$l);
 		if ($end === $word)
 		{
-			return JString::substr($str, 0, JString::strlen($str)-$l);
+			return JString::substr($str, 0, JString::strlen($str) - $l);
 		}
 		else
 		{
@@ -122,7 +122,7 @@ class FabrikString extends JString{
 
 	public static function safeColNameToArrayKey($col)
 	{
-		$col = str_replace(array("`.`", "." ) , '___', $col);
+		$col = str_replace(array("`.`", "."), '___', $col);
 		$col = str_replace("`", "", $col);
 		return $col;
 	}
@@ -141,7 +141,7 @@ class FabrikString extends JString{
 			$bits = explode('.', $col);
 			$col = array_pop($bits);
 		}
-		else	if (strstr($col, '___'))
+		else if (strstr($col, '___'))
 		{
 			$bits = explode('___', $col);
 			$col = array_pop($bits);
@@ -163,7 +163,7 @@ class FabrikString extends JString{
 		preg_replace('/<[a-z][a-z0-9]*[^<>]*>/', '', $label);
 		if (JString::strlen($label) > 50)
 		{
-			$label = JString::substr($label, 0, 47).'...';
+			$label = JString::substr($label, 0, 47) . '...';
 		}
 		$label = trim($label);
 		return $label;
@@ -189,18 +189,35 @@ class FabrikString extends JString{
 		for ($i = 0; $i < JString::strlen($str); $i++)
 		{
 			$ch = ord($str{$i});
-			switch($ch)
+			switch ($ch)
 			{
-				case 195: $out .= "";break;
-				case 164: $out .= "ae"; break;
-				case 188: $out .= "ue"; break;
-				case 182: $out .= "oe"; break;
-				case 132: $out .= "Ae"; break;
-				case 156: $out .= "Ue"; break;
-				case 150: $out .= "Oe"; break;
+				case 195:
+					$out .= "";
+					break;
+				case 164:
+					$out .= "ae";
+					break;
+				case 188:
+					$out .= "ue";
+					break;
+				case 182:
+					$out .= "oe";
+					break;
+				case 132:
+					$out .= "Ae";
+					break;
+				case 156:
+					$out .= "Ue";
+					break;
+				case 150:
+					$out .= "Oe";
+					break;
 				//fix for cleaning value of 1
-				case 0: $out = '1';break;
-				default : $out .= chr($ch);
+				case 0:
+					$out = '1';
+					break;
+				default:
+					$out .= chr($ch);
 			}
 		}
 		$str = $out;
@@ -257,13 +274,13 @@ class FabrikString extends JString{
 			{
 				$title .= "::";
 			}
-			$tip = htmlspecialchars('<div class="truncate_text">'.$title.$orig.'</div>');
+			$tip = htmlspecialchars('<div class="truncate_text">' . $title . $orig . '</div>');
 			//$tip = $title.$orig;
 			$jOpts = new stdClass();
 			$jOpts->notice = true;
 			$jOpts->position = JArrayHelper::getValue($opts, 'position', 'top');
 			$jOpts = json_encode($jOpts);
-			$summary = '<span class="fabrikTip" opts=\''.$jOpts.'\' title="'.$tip.'">'.$summary.'</span>';
+			$summary = '<span class="fabrikTip" opts=\'' . $jOpts . '\' title="' . $tip . '">' . $summary . '</span>';
 		}
 		return $summary;
 	}
@@ -306,14 +323,14 @@ class FabrikString extends JString{
 		{
 			$url .= '?' . implode($glue, $a);
 		}
-	  return $url;
+		return $url;
 	}
 
 	/*
-	* Takes a complete URL, and urlencodes any query string args
-	* @param url to encode
-	* @return encoded url
-	*/
+	 * Takes a complete URL, and urlencodes any query string args
+	 * @param url to encode
+	 * @return encoded url
+	 */
 
 	public static function encodeurl($url)
 	{
@@ -331,11 +348,13 @@ class FabrikString extends JString{
 				$url = $site . "?" . implode("&", $new_qs);
 			}
 		}
-		if (strstr($url, '{')) {
+		if (strstr($url, '{'))
+		{
 			// $$$ hugh special case for some Google URL's that use encoded JSON objects in the path part of the URL
 			// so we need to re-encode {, }, " and :.  Except of course for the : in http(s):.
 			list($http, $rest) = explode(':', $url, 2);
-			if (!empty($rest)) {
+			if (!empty($rest))
+			{
 				$patterns = array('#\{#', '#\}#', '#"#', '#\\\\#', '#:#');
 				$replacements = array('%7B', '%7D', '%22', '%5C', '%3A');
 				$rest = preg_replace($patterns, $replacements, $rest);
@@ -344,7 +363,7 @@ class FabrikString extends JString{
 		}
 		return $url;
 	}
-	
+
 	/**
 	 * prepare a string for presentation in html.
 	 * @param	string	&$string
