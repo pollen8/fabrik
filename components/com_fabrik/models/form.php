@@ -1447,26 +1447,18 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$joinDb->setQuery('DESCRIBE ' . $oJoin->table_join);
 				$oJoinPk = $oJoin->table_join . '___';
 				$cols = $joinDb->loadObjectList();
-				$hasParams = false;
 				foreach ($cols as $col)
 				{
 					if ($col->Key == 'PRI')
 					{
 						$oJoinPk .= $col->Field;
 					}
-					elseif ($col->Field == 'params')
-					{
-						$hasParams = true;
-					}
 				}
 				$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
 
 				$repeatParams = array();
-				if ($hasParams)
-				{
-					$paramKey = $listModel->getTable()->db_table_name . '___params';
-					$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
-				}
+				$paramKey = $listModel->getTable()->db_table_name . '___params';
+				$repeatParams = JArrayHelper::getValue($data, $paramKey, array());
 
 				if ($joinGroup->canRepeat())
 				{
@@ -1497,9 +1489,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$repData[$element->name . '_raw'] = $v_raw;
 
 							// Store any params set in the individual plug-in (see fabrikfileupload::processUpload()->crop()
-							if ($hasParams && $elementModel->isJoin())
+							$thisRepeatParams = JArrayHelper::getValue($repeatParams, $c);
+							if (!is_null($thisRepeatParams) && $elementModel->isJoin())
 							{
-								$repData['params'] = JArrayHelper::getValue($repeatParams, $c);
+								$repData['params'] =$thisRepeatParams ;
 							}
 						}
 						// $$$ rob didn't work for 2nd joined data set
@@ -1524,7 +1517,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$item->db_primary_key = $aKey['colname'];
 						$joinRowId = $repData[$item->db_primary_key];
 
-						$aDeleteRecordId = $joinDb->quote($repData[$oJoin->table_join_key]);
+						$aDeleteRecordId = $joinDb->Quote($repData[$oJoin->table_join_key]);
 						/* $$$ hugh - need to give it the table name!!
 						 * $$$ rob no no no this is not the issue, on SOME setups $item is NOT a reference to $listModel->_table - this is where the issue is
 						 * not passing in the correct table name - see notes line 720 for explaination
