@@ -281,12 +281,14 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
-	 * determine if we use the plugin or not
-	 * both location and event criteria have to be match
-	 * @param	object	calling the plugin table/form
-	 * @param	string	location to trigger plugin on
-	 * @param	string	event to trigger plugin on
-	 * @return	bool	true if we should run the plugin otherwise false
+	 * Determine if we use the plugin or not
+	 * both location and event criteria have to be match when form plug-in
+	 *
+	 * @param   object  &$model    calling the plugin table/form
+	 * @param   string  $location  location to trigger plugin on
+	 * @param   string  $event     event to trigger plugin on
+	 *
+	 * @return  bool  true if we should run the plugin otherwise false
 	 */
 
 	public function canUse(&$model = null, $location = null, $event = null)

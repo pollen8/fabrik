@@ -14,8 +14,6 @@ require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
 class plgFabrik_ListEmail extends plgFabrik_List {
 
-	var $useMocha = true;
-
 	protected $buttonPrefix = 'email';
 
 	var $name = "plgFabrik_ListEmail";

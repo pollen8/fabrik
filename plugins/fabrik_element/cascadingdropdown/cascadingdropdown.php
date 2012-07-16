@@ -552,7 +552,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$formModel->getGroupsHiarachy();
 
 				$orderby = $val;
-				//see if any of the tables elements match the db joins val/text
+
+				// See if any of the tables elements match the db joins val/text
 				foreach ($groups as $groupModel)
 				{
 					$elementModels = $groupModel->getPublishedElements();

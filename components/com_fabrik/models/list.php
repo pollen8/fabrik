@@ -18,8 +18,9 @@ require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 /**
  * Fabrik Connection Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikFEModelList extends JModelForm

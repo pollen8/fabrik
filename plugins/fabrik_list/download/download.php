@@ -1,13 +1,13 @@
 <?php
 
 /**
-* Add an action button to the table to copy rows
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Pollen 8 Design Ltd
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * Add an action button to the table to copy rows
+ * @package Joomla
+ * @subpackage Fabrik
+ * @author Rob Clayburn
+ * @copyright (C) Pollen 8 Design Ltd
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -15,7 +15,8 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 
-class plgFabrik_ListDownload extends plgFabrik_List {
+class plgFabrik_ListDownload extends plgFabrik_List
+{
 
 	protected $buttonPrefix = 'download';
 
@@ -30,7 +31,6 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 	{
 		return $this->getParams()->get('download_button_label', parent::buttonLabel());
 	}
-
 
 	/**
 	 * (non-PHPdoc)
@@ -60,7 +60,7 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 	 */
 	function process(&$params, &$model)
 	{
-		$ids	= JRequest::getVar('ids', array(), 'method', 'array');
+		$ids = JRequest::getVar('ids', array(), 'method', 'array');
 		//$params = $model->getParams();
 		$download_table = $params->get('download_table');
 		$download_fk = $params->get('download_fk');
@@ -72,13 +72,17 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 		$filelist = array();
 		$zip_err = '';
 
-		if (empty($download_fk) && empty($download_file) && empty($download_table)) {
+		if (empty($download_fk) && empty($download_file) && empty($download_table))
+		{
 			return;
 		}
-		elseif (empty($download_fk) && empty($download_table) && !empty($download_file)) {
-			foreach ($ids AS $id) {
+		elseif (empty($download_fk) && empty($download_table) && !empty($download_file))
+		{
+			foreach ($ids AS $id)
+			{
 				$row = $model->getRow($id);
-				if (isset($row->$download_file)) {
+				if (isset($row->$download_file))
+				{
 					$this_file = JPATH_SITE . '/' . $row->$download_file;
 					if (is_file($this_file))
 					{
@@ -87,21 +91,26 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 				}
 			}
 		}
-		else {
+		else
+		{
 			$db = FabrikWorker::getDbo();
-			$ids_string = implode(',',$ids);
+			$ids_string = implode(',', $ids);
 			$query = "SELECT $download_file FROM $download_table WHERE $download_fk IN ($ids_string)";
 			$db->setQuery($query);
 			$results = $db->loadObjectList();
-			foreach ($results AS $result) {
-				$this_file = JPATH_SITE.DS.$result->$download_file;
-				if (is_file($this_file)) {
+			foreach ($results AS $result)
+			{
+				$this_file = JPATH_SITE . DS . $result->$download_file;
+				if (is_file($this_file))
+				{
 					$filelist[] = $this_file;
 				}
 			}
 		}
-		if (!empty($filelist)) {
-			if ($download_resize) {
+		if (!empty($filelist))
+		{
+			if ($download_resize)
+			{
 				ini_set('max_execution_time', 300);
 				require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
 				$storage = $this->getStorage();
@@ -113,38 +122,48 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 			$zipfile_basename = basename($zipfile);
 			$zip = new ZipArchive;
 			$zipres = $zip->open($zipfile, ZipArchive::OVERWRITE);
-			if ($zipres === true) {
+			if ($zipres === true)
+			{
 				$ziptot = 0;
 				$tmp_files = array();
-				foreach ($filelist AS $this_file) {
+				foreach ($filelist AS $this_file)
+				{
 					$this_basename = basename($this_file);
-					if ($download_resize && $oImage->GetImgType($this_file)) {
+					if ($download_resize && $oImage->getImgType($this_file))
+					{
 						$tmp_file = '/tmp/' . $this_basename;
 						$oImage->resize($download_width, $download_height, $this_file, $tmp_file);
 						$this_file = $tmp_file;
 						$tmp_files[] = $tmp_file;
 					}
 					$zipadd = $zip->addFile($this_file, $this_basename);
-					if ($zipadd === true) {
+					if ($zipadd === true)
+					{
 						$ziptot++;
 					}
-					else {
+					else
+					{
 						$zip_err .= JText::_('ZipArchive add error: ' . $zipadd);
 					}
 				}
-				if (!$zip->close()) {
+				if (!$zip->close())
+				{
 					$zip_err = JText::_('ZipArchive close error') . ($zip->status);
 				}
 
-				if ($download_resize) {
-					foreach ($tmp_files as $tmp_file) {
+				if ($download_resize)
+				{
+					foreach ($tmp_files as $tmp_file)
+					{
 						$storage->delete($tmp_file);
 					}
 				}
-				if ($ziptot > 0) {
+				if ($ziptot > 0)
+				{
 					// Stream the file to the client
 					$filesize = filesize($zipfile);
-					if ($filesize > 0) {
+					if ($filesize > 0)
+					{
 						header("Content-Type: application/zip");
 						header("Content-Length: " . filesize($zipfile));
 						header("Content-Disposition: attachment; filename=\"$zipfile_basename.zip\"");
@@ -152,23 +171,28 @@ class plgFabrik_ListDownload extends plgFabrik_List {
 						JFile::delete($zipfile);
 						exit;
 					}
-					else {
+					else
+					{
 						$zip_err .= JText::_('ZIP is empty');
 					}
 				}
 			}
-			else {
+			else
+			{
 				$zip_err = JText::_('ZipArchive open error: ' . $zipres);
 			}
 
 		}
-		else {
+		else
+		{
 			$zip_err = "No files to ZIP!";
 		}
-		if (empty($zip_err)) {
+		if (empty($zip_err))
+		{
 			return true;
 		}
-		else {
+		else
+		{
 			$this->msg = $zip_err;
 			return false;
 		}

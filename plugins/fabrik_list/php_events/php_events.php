@@ -12,17 +12,20 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class plgFabrik_ListPhp_Events extends plgFabrik_List
 {
 	/**
-	 * called when the active table filter array is loaded
-	 * @param	object	params
-	 * @param	object	model
+	 * onFiltersGot method - run after the list has created filters
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list
+	 *
+	 * @return bol currently ignored
 	 */
-	
-	function onFiltersGot(&$params, &$model)
+
+	public function onFiltersGot($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onfiltersgot'), $model);
 	}
@@ -32,7 +35,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 	 * @param	object	params
 	 * @param	object	model
 	 */
-	
+
 	function onMakeFilters(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onmakefilters'), $model);
@@ -43,7 +46,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 	 * @param object table model
 	 * @return string message
 	 */
-	
+
 	function process(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_process'), $model);
@@ -55,19 +58,22 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 	 * @param	object	$model
 	 * @return	bool
 	 */
-	
+
 	function onPreLoadData(&$params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onpreloaddata'), $model);
 	}
 
 	/**
-	 * run when the list loads its data(non-PHPdoc)
-	 * @param	object	params
-	 * @param	object	model
+	 * onGetData method
+	 *
+	 * @param   object  $params  calling the plugin table/form
+	 * @param   object  &$model  list model
+	 *
+	 * @return bol currently ignored
 	 */
-	
-	function onLoadData(&$params, &$model)
+
+	public function onLoadData($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onloaddata'), $model);
 	}

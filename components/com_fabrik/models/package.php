@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -15,13 +15,13 @@ class FabrikFEModelPackage extends FabModel
 {
 
 	/** @var array of table objects */
-	var $_tables 			= array();
+	var $_tables = array();
 
 	/** @var object importer */
-	var $_importer			= null;
+	var $_importer = null;
 
 	/** @var string the last action that was performed server side */
-	var $_lastTask 			= null;
+	var $_lastTask = null;
 
 	/** @var string reference to block that called the server e.g. list_1 or form_27 */
 	var $_senderBlock = null;
@@ -36,15 +36,13 @@ class FabrikFEModelPackage extends FabModel
 	var $_format = 'html';
 
 	/** @var array blocks to update */
-	var $_updateBlocks		= null;
+	var $_updateBlocks = null;
 
 	/** @var object table package */
 	var $_package = null;
 
 	/** @var int id */
 	var $_id = null;
-
-
 
 	/**
 	 * Constructor
@@ -67,7 +65,7 @@ class FabrikFEModelPackage extends FabModel
 	function setId($id)
 	{
 		// Set new package ID
-		$this->_id		= $id;
+		$this->_id = $id;
 	}
 
 	/**
@@ -81,7 +79,7 @@ class FabrikFEModelPackage extends FabModel
 	{
 		$app = JFactory::getApplication('site');
 
-				// Load the parameters.
+		// Load the parameters.
 		$params = $app->getParams();
 
 		// Load state from the request.
@@ -91,8 +89,9 @@ class FabrikFEModelPackage extends FabModel
 		$this->setState('params', $params);
 
 		// TODO: Tune these values based on other permissions.
-		$user		= JFactory::getUser();
-		if ((!$user->authorise('core.edit.state', 'com_fabrik')) &&  (!$user->authorise('core.edit', 'com_fabrik'))){
+		$user = JFactory::getUser();
+		if ((!$user->authorise('core.edit.state', 'com_fabrik')) && (!$user->authorise('core.edit', 'com_fabrik')))
+		{
 			$this->setState('filter.published', 1);
 			$this->setState('filter.archived', 2);
 		}
@@ -109,13 +108,16 @@ class FabrikFEModelPackage extends FabModel
 	{
 		// Initialise variables.
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('package.id');
-		if (!isset($this->_item)) {
+		if (!isset($this->_item))
+		{
 			$this->_item = array();
 		}
 
-		if (!isset($this->_item[$pk])) {
+		if (!isset($this->_item[$pk]))
+		{
 
-			try {
+			try
+			{
 				$db = FabrikWorker::getDbo();
 				$query = $db->getQuery(true);
 
@@ -129,17 +131,20 @@ class FabrikFEModelPackage extends FabModel
 				$published = $this->getState('filter.published');
 				$archived = $this->getState('filter.archived');
 
-				if (is_numeric($published)) {
+				if (is_numeric($published))
+				{
 					$query->where('(published = ' . (int) $published . ' OR published =' . (int) $archived . ')');
 				}
 
 				$db->setQuery($query);
 				$data = $db->loadObject();
-				if ($error = $db->getErrorMsg()) {
+				if ($error = $db->getErrorMsg())
+				{
 					throw new Exception($error);
 				}
 
-				if (empty($data)) {
+				if (empty($data))
+				{
 					throw new JException(JText::_('COM_FABRIK_ERROR_PACKAGE_NOT_FOUND'), 404);
 				}
 
@@ -167,7 +172,6 @@ class FabrikFEModelPackage extends FabModel
 		return $this->_item[$pk];
 	}
 
-
 	/**
 	 * get a package table object
 	 *
@@ -176,7 +180,8 @@ class FabrikFEModelPackage extends FabModel
 
 	function &getPackage()
 	{
-		if (!isset($this->_package)) {
+		if (!isset($this->_package))
+		{
 			$this->_package = FabTable::getInstance('Package', 'FabrikTable');
 			$this->_package->load($this->_id);
 			//forms can currently only be set from form module
@@ -192,8 +197,8 @@ class FabrikFEModelPackage extends FabModel
 	function render()
 	{
 		$db = FabrikWorker::getDbo();
-		$config		= JFactory::getConfig();
-	 	$document = JFactory::getDocument();
+		$config = JFactory::getConfig();
+		$document = JFactory::getDocument();
 		//test stuff needs to be assigned in admin
 		$this->_blocks = array();
 		return;
@@ -221,9 +226,11 @@ class FabrikFEModelPackage extends FabModel
 	function loadTables()
 	{
 		$db = FabrikWorker::getDbo();
-		if ($this->_package->tables != '') {
-			$aIds 	= explode(',', $this->_package->tables);
-			foreach ($aIds as $id) {
+		if ($this->_package->tables != '')
+		{
+			$aIds = explode(',', $this->_package->tables);
+			foreach ($aIds as $id)
+			{
 				$viewModel = &JModel::getInstance('view', 'FabrikFEModel');
 				$viewModel->setId($id);
 				$this->_tables[] = $viewModel->getTable();
@@ -238,17 +245,19 @@ class FabrikFEModelPackage extends FabModel
 	 * (un)publish the package & all its tables
 	 */
 
-	function publish( $state )
+	function publish($state)
 	{
-		foreach ($this->_tables as $oTable) {
+		foreach ($this->_tables as $oTable)
+		{
 			$oTable->publish($oTable->id, $state);
 		}
-		parent::publish( $this->id, $state);
+		parent::publish($this->id, $state);
 	}
 
 }
 
-class fabrikPackageMenu extends JModel{
+class fabrikPackageMenu extends JModel
+{
 
 	/**
 	 * Constructor
@@ -271,10 +280,11 @@ class fabrikPackageMenu extends JModel{
 	function setId($id)
 	{
 		// Set new form ID
-		$this->_id		= $id;
+		$this->_id = $id;
 	}
 
-	function render() {
+	function render()
+	{
 		return "menu items to go here";
 	}
 }

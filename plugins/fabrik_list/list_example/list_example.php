@@ -18,10 +18,15 @@ require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
 class plgFabrik_ListList_Example extends plgFabrik_List {
 
 	/**
-	 * called when the active table filter array is loaded
+	 * onFiltersGot method - run after the list has created filters
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list
+	 *
+	 * @return bol currently ignored
 	 */
 
-	function onFiltersGot(&$params, &$model) {
+	public function onFiltersGot($params, &$model)
 
 	}
 
@@ -50,10 +55,15 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	{}
 
 	/**
-	 * run when the table loads its data(non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelTablePlugin#onLoadData($params, $oRequest)
+	 * onGetData method
+	 *
+	 * @param   object  $params  calling the plugin table/form
+	 * @param   object  &$model  list model
+	 *
+	 * @return bol currently ignored
 	 */
-	function onLoadData(&$params, &$oRequest)
+
+	public function onLoadData($params, &$model)
 	{}
 
 
