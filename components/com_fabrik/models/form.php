@@ -1397,7 +1397,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					{
 						$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
+					echo "<pre>";print_r($repeatTotals);exit;
 				}
+
 				else
 				{
 					// "Not a repeat element (el id = $oJoin->element_id)<br>";
@@ -1444,9 +1446,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data))
 			{
 				// $$$rob get the join tables ful primary key
-				$joinDb->setQuery('DESCRIBE ' . $oJoin->table_join);
+				$cols = $joinDb->getTableColumns($oJoin->table_join, false);
 				$oJoinPk = $oJoin->table_join . '___';
-				$cols = $joinDb->loadObjectList();
 				foreach ($cols as $col)
 				{
 					if ($col->Key == 'PRI')
@@ -3457,8 +3458,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 				$jdata = &$this->_data['join'][$tblJoin->id];
 				$db = $listModel->getDb();
-				$db->setQuery("DESCRIBE " . $db->nameQuote($tblJoin->table_join));
-				$fields = $db->loadObjectList();
+				$fields = $db->getTableColumns($tblJoin->table_join, false);
 				foreach ($fields as $f)
 				{
 					if ($f->Key == 'PRI')
