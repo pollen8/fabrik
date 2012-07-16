@@ -77,7 +77,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 				$a2 = "</a>";
 			}
 			$str = array();
-			$str[] = '<div style="width:100px">';
+			$str[] = '<div style="width:101px">';
 			for ($s = 0; $s < $avg; $s++)
 			{
 				$r = $s + 1;
