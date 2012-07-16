@@ -14,9 +14,9 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of groups.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
 
 class FabrikViewGroups extends JView
@@ -57,7 +57,10 @@ class FabrikViewGroups extends JView
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
+	 *
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';

@@ -10,11 +10,11 @@
 defined('_JEXEC') or die();
 
 /**
-* Access element
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.element.access
-*/
+ * Access element
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.access
+ */
 
 class plgFabrik_ElementAccess extends plgFabrik_Element
 {
@@ -31,14 +31,17 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	public function storeDatabaseFormat($val, $data)
 	{
 		// $$$ hugh - nope!
-		//return $val[0];
+		// return $val[0];
 		return $val;
 	}
 
 	/**
-	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -47,50 +50,72 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 
 		$arSelected = array('');
 
-		if (isset($data[$name])) {
+		if (isset($data[$name]))
+		{
 
-			if (!is_array($data[$name])) {
+			if (!is_array($data[$name]))
+			{
 				$arSelected = explode(',', $data[$name]);
-			} else {
+			}
+			else
+			{
 				$arSelected = $data[$name];
 			}
 		}
 		$gtree = $this->getOpts();
-		if (!$this->_editable) {
+		if (!$this->_editable)
+		{
 			$row = new stdClass;
 			return $this->renderListData($arSelected[0], $row);
 		}
 		return JHTML::_('select.genericlist', $gtree, $name, 'class="inputbox" size="6"', 'value', 'text', $arSelected[0]);
 	}
 
+	/**
+	 * Get list dropdown options
+	 *
+	 * @param   bool  $allowAll  add an show all option
+	 *
+	 * @return  array
+	 */
+
 	private function getOpts($allowAll = true)
 	{
 		$db = JFactory::getDbo();
-		$db->setQuery(
-			'SELECT a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level' .
-			' FROM #__usergroups AS a' .
-			' LEFT JOIN `#__usergroups` AS b ON a.lft > b.lft AND a.rgt < b.rgt' .
-			' GROUP BY a.id' .
-			' ORDER BY a.lft ASC'
-		);
+		$db
+			->setQuery(
+				'SELECT a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level' . ' FROM #__usergroups AS a'
+					. ' LEFT JOIN `#__usergroups` AS b ON a.lft > b.lft AND a.rgt < b.rgt' . ' GROUP BY a.id' . ' ORDER BY a.lft ASC');
 		$options = $db->loadObjectList();
 
 		// Check for a database error.
-		if ($db->getErrorNum()) {
+		if ($db->getErrorNum())
+		{
 			JError::raiseNotice(500, $db->getErrorMsg());
 			return null;
 		}
 
-		for ($i=0,$n=count($options); $i < $n; $i++) {
-			$options[$i]->text = str_repeat('- ',$options[$i]->level).$options[$i]->text;
+		for ($i = 0, $n = count($options); $i < $n; $i++)
+		{
+			$options[$i]->text = str_repeat('- ', $options[$i]->level) . $options[$i]->text;
 		}
 
 		// If all usergroups is allowed, push it into the array.
-		if ($allowAll) {
+		if ($allowAll)
+		{
 			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_GROUPS')));
 		}
 		return $options;
 	}
+
+	/**
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
+	 */
 
 	public function renderListData($data, &$thisRow)
 	{
@@ -114,18 +139,22 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
-		if ($this->encryptMe()) {
+		if ($this->encryptMe())
+		{
 			return 'BLOB';
 		}
 		return "INT(3)";
 	}
 
 	/**
- 	* return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -134,4 +163,3 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	}
 
 }
-?>

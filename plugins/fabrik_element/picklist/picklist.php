@@ -120,7 +120,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();

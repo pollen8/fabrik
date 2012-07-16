@@ -66,7 +66,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		if (!$this->_editable)
 		{

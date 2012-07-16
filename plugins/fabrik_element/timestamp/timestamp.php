@@ -23,39 +23,63 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element
 
 	var $_recordInDatabase = false;
 
-	function getLabel($repeatCounter, $tmpl = '')
+	/**
+	 * Get the element's HTML label
+	 *
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 *
+	 * @return  string  label
+	 */
+
+	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		return '';
 	}
 
-	function setIsRecordedInDatabase()
+	/**
+	 * Set/get if element should record its data in the dabase
+	 *
+	 * @deprecated - not used
+	 *
+	 * @return bool
+	 */
+
+	public function setIsRecordedInDatabase()
 	{
 		$this->_recordInDatabase = false;
 	}
 
 	/**
-	 * draws a field element
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
 	function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$oDate = JFactory::getDate();
+		$date = JFactory::getDate();
 		$config = JFactory::getConfig();
-		$tzoffset = $config->getValue('config.offset');
-		$oDate->setOffset($tzoffset);
+		$tz = new DateTimeZone($config->get('offset'));
+		$date->setTimezone($tz);
 		$params = $this->getParams();
 		$gmt_or_local = $params->get('gmt_or_local');
 		$gmt_or_local += 0;
-		return '<input name="' . $name . '" id="' . $id . '" type="hidden" value="' . $oDate->toMySQL($gmt_or_local) . '" />';
+		return '<input name="' . $name . '" id="' . $id . '" type="hidden" value="' . $date->toSql($gmt_or_local) . '" />';
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -72,7 +96,6 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element
 	 */
 
 	public function getFieldDescription()
-	{
 	{
 		$params = $this->getParams();
 		if ($params->get('encrypt', false))

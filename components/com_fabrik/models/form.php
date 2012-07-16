@@ -1524,7 +1524,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$item->db_primary_key = $aKey['colname'];
 						$joinRowId = $repData[$item->db_primary_key];
 
-						$aDeleteRecordId = $joinDb->Quote($repData[$oJoin->table_join_key]);
+						$aDeleteRecordId = $joinDb->quote($repData[$oJoin->table_join_key]);
 						/* $$$ hugh - need to give it the table name!!
 						 * $$$ rob no no no this is not the issue, on SOME setups $item is NOT a reference to $listModel->_table - this is where the issue is
 						 * not passing in the correct table name - see notes line 720 for explaination

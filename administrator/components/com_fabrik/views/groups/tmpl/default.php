@@ -1,47 +1,54 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-JHTML::_('script','system/multiselect.js',false,true);
-$user	= JFactory::getUser();
-$userId	= $user->get('id');
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+JHTML::_('script', 'system/multiselect.js', false, true);
+$user = JFactory::getUser();
+$userId = $user->get('id');
+$listOrder = $this->state->get('list.ordering');
+$listDirn = $this->state->get('list.direction');
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=groups'); ?>" method="post" name="adminForm" id="adminForm">
 	<fieldset id="filter-bar">
 		<div class="filter-search fltlft">
 			<label class="filter-search-lbl" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?>:</label>
-			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" title="<?php echo JText::_('COM_FABRIK_SEARCH_IN_TITLE'); ?>" />
+			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" title="<?php echo JText::_(
+	'COM_FABRIK_SEARCH_IN_TITLE');
+																																		?>" />
 			<button type="submit"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
 			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 		</div>
 		<div class="filter-select fltrt">
-			
-			<?php if (!empty($this->packageOptions)) {?>
+
+			<?php if (!empty($this->packageOptions))
+{
+										 ?>
 			<select name="package" class="inputbox" onchange="this.form.submit()">
-				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
-				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
+				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE'); ?></option>
+				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true); ?>
 			</select>
-			<?php }?>
-			
+			<?php } ?>
+
 			<select name="filter_form" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('COM_FABRIK_SELECT_FORM');?></option>
-				<?php echo JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true);?>
+				<option value=""><?php echo JText::_('COM_FABRIK_SELECT_FORM'); ?></option>
+				<?php echo JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true); ?>
 			</select>
 
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>
+				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED'); ?></option>
+				<?php
+				$published = $this->state->get('filter.published');
+				echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived' => false)), 'value', 'text', $published, true);
+				?>
 			</select>
 		</div>
 	</fieldset>
@@ -51,22 +58,22 @@ $listDirn	= $this->state->get('list.direction');
 		<thead>
 			<tr>
 				<th width="2%">
-					<?php echo JHTML::_( 'grid.sort', 'JGRID_HEADING_ID', 'g.id', $listDirn, $listOrder); ?>
+					<?php echo JHTML::_('grid.sort', 'JGRID_HEADING_ID', 'g.id', $listDirn, $listOrder); ?>
 				</th>
 				<th width="1%">
 					<input type="checkbox" name="toggle" value="" onclick="checkAll(this);" />
 				</th>
 				<th width="30%" >
-					<?php echo JHTML::_( 'grid.sort', 'COM_FABRIK_NAME', 'g.name', $listDirn, $listOrder); ?>
+					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_NAME', 'g.name', $listDirn, $listOrder); ?>
 				</th>
 				<th width="30%" >
-					<?php echo JHTML::_( 'grid.sort', 'COM_FABRIK_LABEL', 'g.label', $listDirn, $listOrder); ?>
+					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_LABEL', 'g.label', $listDirn, $listOrder); ?>
 				</th>
 				<th width="30%">
-					<?php echo JHTML::_( 'grid.sort', 'COM_FABRIK_FORM', 'f.label', $listDirn, $listOrder); ?>
+					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_FORM', 'f.label', $listDirn, $listOrder); ?>
 				</th>
 				<th width="31%">
-					<?php echo JText::_('COM_FABRIK_ELEMENTS');?>
+					<?php echo JText::_('COM_FABRIK_ELEMENTS'); ?>
 				</th>
 				<th width="5%">
 				<?php echo JHTML::_('grid.sort', 'JPUBLISHED', 'g.published', $listDirn, $listOrder); ?>
@@ -82,13 +89,13 @@ $listDirn	= $this->state->get('list.direction');
 		</tfoot>
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
-			$ordering	= ($listOrder == 'ordering');
-			$link = JRoute::_('index.php?option=com_fabrik&task=group.edit&id='.(int) $item->id);
-			$canCreate	= $user->authorise('core.create',		'com_fabrik.group.'.$item->form_id);
-			$canEdit	= $user->authorise('core.edit',			'com_fabrik.group.'.$item->form_id);
-			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
-			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.group.'.$item->form_id) && $canCheckin;
-			?>
+	$ordering = ($listOrder == 'ordering');
+	$link = JRoute::_('index.php?option=com_fabrik&task=group.edit&id=' . (int) $item->id);
+	$canCreate = $user->authorise('core.create', 'com_fabrik.group.' . $item->form_id);
+	$canEdit = $user->authorise('core.edit', 'com_fabrik.group.' . $item->form_id);
+	$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->get('id') || $item->checked_out == 0;
+	$canChange = $user->authorise('core.edit.state', 'com_fabrik.group.' . $item->form_id) && $canCheckin;
+			   ?>
 
 			<tr class="row<?php echo $i % 2; ?>">
 					<td>
@@ -99,9 +106,12 @@ $listDirn	= $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php
-						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {
-							echo  $item->name;
-						} else {
+	if ($item->checked_out && ($item->checked_out != $user->get('id')))
+	{
+		echo $item->name;
+	}
+	else
+	{
 						?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->name; ?>
@@ -116,10 +126,12 @@ $listDirn	= $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php echo $item->_elementCount; ?>
-						<a href="index.php?option=com_fabrik&view=element&layout=edit&filter_groupId=<?php echo $item->id?>"><?php echo JText::_('COM_FABRIK_ADD')?></a>
+						<a href="index.php?option=com_fabrik&view=element&layout=edit&filter_groupId=<?php echo $item->id ?>">
+						<?php echo JText::_('COM_FABRIK_ADD')?>
+						</a>
 					</td>
 					<td>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'groups.', $canChange);?>
+						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'groups.', $canChange); ?>
 					</td>
 				</tr>
 

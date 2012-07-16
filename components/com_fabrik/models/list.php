@@ -5654,7 +5654,7 @@ class FabrikFEModelList extends JModelForm
 	 * this is run to see if there is any table join data,
 	 * if there is it stores it in $this->_joinsToProcess
 	 *
-	 * @return  array	[joinid] = array(join, group array);
+	 * @return  array	[joinid] = array(join => $join, 'groups' => array, 'elements' => array element models)
 	 */
 
 	public function preProcessJoin()

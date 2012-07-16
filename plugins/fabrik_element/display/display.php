@@ -46,7 +46,7 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	 * @return  string  label
 	 */
 
-	function getLabel($repeatCounter = 0, $tmpl = '')
+	public function getLabel($repeatCounter = 0, $tmpl = '')
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();

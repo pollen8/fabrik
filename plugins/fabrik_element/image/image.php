@@ -412,7 +412,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
