@@ -213,7 +213,7 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 	 * @param	int		repeat group counter
 	 * @return	string	formatted value
 	 */
-	
+
 	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
@@ -284,13 +284,13 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$rows = array_values($rows);
 		echo json_encode($rows);
 	}
-	
+
 	/**
 	 * will the element allow for multiple selections
 	 * @since	3.0.6
 	 * @return	bool
 	 */
-	
+
 	protected function isMultiple()
 	{
 		$params = $this->getParams();
@@ -379,7 +379,9 @@ class plgFabrik_ElementList extends plgFabrik_Element{
 		$selected = $this->getValue($data, $repeatCounter);
 		if (is_string($selected) || is_null($selected))
 		{
-			$selected = empty($selected) ?  array() : array($selected);  
+			// $$$ hugh - ooops, '0' will count as empty.
+			//$selected = empty($selected) ?  array() : array($selected);
+			$selected = $selected === '' ?  array() : array($selected);
 		}
 		//$$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.

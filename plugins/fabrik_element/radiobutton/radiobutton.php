@@ -41,11 +41,11 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	/**
 	 * Turn form value into email formatted value
-	 * 
+	 *
 	 * @param   mixed  $value          element value
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  group repeat counter
-	 * 
+	 *
 	 * @return  string  email formatted value
 	 */
 
@@ -64,9 +64,9 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -91,9 +91,9 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	 * if the search value isnt what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
-	 * 
+	 *
 	 * @param   string  $value  filterVal
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -103,21 +103,21 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$labels = $this->getSubOptionLabels();
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($val))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
 				$val = $values[$i];
 				return $val;
 			}
 		}
-		return $val;
+		return $value;
 	}
 
 	/**
 	 * If your element risks not to post anything in the form (e.g. check boxes with none checked)
 	 * the this function will insert a default value into the database
-	 * 
+	 *
 	 * @param   array  &$data  form data
-	 * 
+	 *
 	 * @return  array  form data
 	 */
 
@@ -136,11 +136,11 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	/**
 	 * Builds an array containing the filters value and condition
-	 * 
+	 *
 	 * @param   string  $value      initial value
 	 * @param   string  $condition  intial $condition
 	 * @param   string  $eval       how the value should be handled
-	 * 
+	 *
 	 * @return  array	(value condition)
 	 */
 
@@ -150,7 +150,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 		$return = parent::getFilterValue($value, $condition, $eval);
 		return $return;
 	}
-	
+
 	/**
 	* Used by inline edit table plugin
 	* If returns yes then it means that there are only two possible options for the
@@ -161,7 +161,7 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	*
 	* @return  bool
 	*/
-	
+
 	public function canToggleValue()
 	{
 		return count($this->getSubOptionValues()) < 3 ? true : false;
@@ -169,11 +169,11 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
