@@ -758,7 +758,7 @@ class FabrikFEModelList extends JModelForm
 			// $$$ rob commenting this out as if you group on a date then the group by value doesnt correspond
 			// to the keys found in the calculation array
 
-			//see if we can use a raw value instead
+			// See if we can use a raw value instead
 			/*if (!empty($data) && array_key_exists($groupBy . "_raw", $data[0])) {
 			$groupBy = $groupBy . "_raw";
 			}*/
@@ -770,18 +770,19 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (isset($data[$i]->$groupBy))
 				{
-					if (!in_array($data[$i]->$groupBy, $aGroupTitles))
+					$sdata = strip_tags($data[$i]->$groupBy);
+					if (!in_array($sdata, $aGroupTitles))
 					{
-						$aGroupTitles[] = $data[$i]->$groupBy;
-						$grouptemplate = $w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i]));
-						$this->grouptemplates[$data[$i]->$groupBy] = nl2br($grouptemplate);
-						$groupedData[$data[$i]->$groupBy] = array();
+						$aGroupTitles[] = $sdata;
+						$grouptemplate = strip_tags($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+						$this->grouptemplates[$sdata] = nl2br($grouptemplate);
+						$groupedData[$sdata] = array();
 					}
-					$data[$i]->_groupId = $data[$i]->$groupBy;
-					$gKey = $data[$i]->$groupBy;
+					$data[$i]->_groupId = $sdata;
+					$gKey = $sdata;
 
 					// If the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
-										if ($this->_group_by_added)
+					if ($this->_group_by_added)
 					{
 						unset($data[$i]->$groupBy);
 					}
@@ -2220,7 +2221,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  mixed  string if $query false, else JQuery object
 	 */
 
-	function _buildQueryGroupBy()
+	function _buildQueryGroupBy($query = false)
 	{
 		$groups = $this->getFormModel()->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
@@ -3415,8 +3416,9 @@ class FabrikFEModelList extends JModelForm
 			{
 				if ($this->canAddFields())
 				{
-					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name)
-							. " $objtype AFTER $lastfield");
+					$fabrikDb
+						->setQuery(
+							"ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
 					if (!$fabrikDb->query())
 					{
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
@@ -5701,7 +5703,8 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		echo "joins to process keys = ";print_r(array_keys($this->_joinsToProcess));
+		echo "joins to process keys = ";
+		print_r(array_keys($this->_joinsToProcess));
 		return $this->_joinsToProcess;
 	}
 
