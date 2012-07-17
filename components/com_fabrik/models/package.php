@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -90,7 +90,7 @@ class FabrikFEModelPackage extends FabModel
 
 		// TODO: Tune these values based on other permissions.
 		$user = JFactory::getUser();
-		if ((!$user->authorise('core.edit.state', 'com_fabrik')) &&  (!$user->authorise('core.edit', 'com_fabrik')))
+		if ((!$user->authorise('core.edit.state', 'com_fabrik')) && (!$user->authorise('core.edit', 'com_fabrik')))
 		{
 			$this->setState('filter.published', 1);
 			$this->setState('filter.archived', 2);
@@ -115,7 +115,8 @@ class FabrikFEModelPackage extends FabModel
 		if (!isset($this->_item[$pk]))
 		{
 
-			try {
+			try
+			{
 				$db = FabrikWorker::getDbo();
 				$query = $db->getQuery(true);
 
@@ -169,7 +170,6 @@ class FabrikFEModelPackage extends FabModel
 
 		return $this->_item[$pk];
 	}
-
 
 	/**
 	 * get a package table object
@@ -255,7 +255,8 @@ class FabrikFEModelPackage extends FabModel
 
 }
 
-class fabrikPackageMenu extends JModel{
+class fabrikPackageMenu extends JModel
+{
 
 	/**
 	 * Constructor
@@ -281,7 +282,8 @@ class fabrikPackageMenu extends JModel{
 		$this->id = $id;
 	}
 
-	function render() {
+	function render()
+	{
 		return "menu items to go here";
 	}
 }

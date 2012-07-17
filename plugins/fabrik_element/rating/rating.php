@@ -56,7 +56,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$url = COM_FABRIK_LIVESITE
 			. 'index.php?option=com_fabrik&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='
 			. $this->getElement()->id;
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/rating/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
 
@@ -81,7 +81,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 				$a2 = "</a>";
 			}
 			$str = array();
-			$str[] = '<div style="width:100px">';
+			$str[] = '<div style="width:101px">';
 			for ($s = 0; $s < $avg; $s++)
 			{
 				$r = $s + 1;
@@ -265,7 +265,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
 
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/rating/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
 		$clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);

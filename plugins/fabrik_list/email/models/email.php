@@ -1,46 +1,82 @@
 <?php
-
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.list.email
 * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
 * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
-class plgFabrik_ListEmail extends plgFabrik_List {
+/**
+* Email list plugin model
+*
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.list.email
+* @since       3.0
+*/
+
+class PlgFabrik_ListEmail extends PlgFabrik_List
+{
 
 	protected $buttonPrefix = 'email';
 
 	var $name = "plgFabrik_ListEmail";
 
-	function onPopupwin(){
+	/**
+	 * pop up window
+	 *
+	 * @depreacted - not used
+	 *
+	 * @return  void
+	 */
+
+	public function onPopupwin()
+	{
 		echo ' hre lklfsd k popupwin';
 	}
 
 	/**
-	 * determine if the list plugin is a button and can be activated only when rows are selected
+	 * Can the plug-in select list rows
+	 *
 	 * @return  bool
 	 */
-	
-	function canSelectRows()
+
+	public function canSelectRows()
 	{
 		return $this->canUse();
 	}
 
-	function getAclParam()
+	/**
+	 * Get the parameter name that defines the plugins acl access
+	 *
+	 * @return  string
+	 */
+
+	protected function getAclParam()
 	{
 		return 'emailtable_access';
 	}
 
-	function button()
+	/**
+	 * Needed to render plugin buttons
+	 *
+	 * @return  bool
+	 */
+
+	public function button()
 	{
-		return "email records";
+		return true;
 	}
+
+	/**
+	 * Get the button label
+	 *
+	 * @return  string
+	 */
 
 	protected function buttonLabel()
 	{
@@ -48,14 +84,16 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param   object	parameters
-* @param   object	table model
-* @param   array	[0] => string table's form id to contain plugin
-	 * @return  bool
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
+	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
@@ -109,15 +147,17 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	}
 
 	/**
-	 * get the selected records
-* @param   string	$key
-* @param   bool	$allData
-	 * @return  array	rows:
+	 * Get the selected records
+	 *
+	 * @param   string  $key     key
+	 * @param   bool   $allData  data
+	 *
+	 * @return	array	rows
 	 */
 
 	public function getRecords($key = 'ids', $allData = false)
 	{
-		$ids = (array)JRequest::getVar($key, array());
+		$ids = (array) JRequest::getVar($key, array());
 		JArrayHelper::toInteger($ids);
 		if (empty($ids))
 		{
@@ -128,8 +168,8 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		$params = $this->getParams();
 		$model = $this->listModel;
 		$pk = $model->getTable()->db_primary_key;
-		$pk2 = FabrikString::safeColNameToArrayKey($pk).'_raw';
-		$whereClause = "($pk IN (" . implode(",", $ids). "))";
+		$pk2 = FabrikString::safeColNameToArrayKey($pk) . '_raw';
+		$whereClause = "($pk IN (" . implode(",", $ids) . "))";
 		$cond = $params->get('emailtable_condition');
 		$cond = JArrayHelper::getValue($cond, $renderOrder);
 		if (trim($cond) !== '')
@@ -145,7 +185,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		$return = array();
 		foreach ($data as $gdata)
 		{
-			foreach($gdata as $row)
+			foreach ($gdata as $row)
 			{
 				$return[] = $row->$pk2;
 			}
@@ -154,7 +194,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	}
 
 	/**
-	 * upload the attachments to the server
+	 * Upload the attachments to the server
 	 * @access private
 	 *
 	 * @return  bool success/fail
@@ -187,7 +227,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 				{
 					$this->filepath[] = $path;
 				}
-				$c ++;
+				$c++;
 			}
 		}
 		return true;
@@ -237,7 +277,8 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 		$updated = array();
 		foreach ($data as $group)
 		{
-			foreach ($group as $row) {
+			foreach ($group as $row)
+			{
 				if ($toType == 'list')
 				{
 					$process = isset($row->$to);
@@ -261,16 +302,16 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 							$res = JUtility::sendMail($email_from, $email_from, $mailto, $thissubject, $thismessage, 1, $cc, $bcc, $this->filepath);
 							if ($res)
 							{
-								$sent ++;
+								$sent++;
 							}
 							else
 							{
-								$notsent ++;
+								$notsent++;
 							}
 						}
 						else
 						{
-							$notsent ++;
+							$notsent++;
 						}
 					}
 					if ($res)
@@ -280,7 +321,7 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 				}
 				else
 				{
-					$notsent ++;
+					$notsent++;
 				}
 			}
 		}
@@ -298,4 +339,3 @@ class plgFabrik_ListEmail extends plgFabrik_List {
 	}
 
 }
-?>

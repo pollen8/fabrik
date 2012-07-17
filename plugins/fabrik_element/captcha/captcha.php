@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha1.10/recaptchalib.php';
+require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha-php-1.11/recaptchalib.php';
 
 /**
  * Plugin element to captcha
@@ -181,15 +181,18 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			}
 			else
 			{
-				return recaptcha_get_html($id, $publickey, $theme, $lang, $error);
+				return fabrik_recaptcha_get_html($id, $publickey, $theme, $lang, $error);
 			}
 		}
 		else
 		{
 			$str = array();
 			$size = $element->width;
-			$height = $params->get('captcha-height', 40);
-			$width = $params->get('captcha-width', 40);
+			//$height = $params->get('captcha-height', 40);
+			//$width = $params->get('captcha-width', 40);
+			$fontsize = $params->get('captcha-font-size', 22);
+			$angle = $params->get('captcha-angle', 0);
+			$padding = $params->get('captcha-padding', 10);
 			$characters = $params->get('captcha-chars', 6);
 			$code = $this->_generateCode($characters);
 
@@ -209,8 +212,15 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$bg_color = $this->_getRGBcolor($bg_color, 'FFFFFF');
 
 			// Let's keep all params in relatively safe place not only captcha value
-			$session->set('com_fabrik.element.captach.height', $height);
-			$session->set('com_fabrik.element.captach.width', $width);
+			// Felixkat - Add
+			$session->set('com_fabrik.element.captach.fontsize', $fontsize);
+			$session->set('com_fabrik.element.captach.angle', $angle);
+			$session->set('com_fabrik.element.captach.padding', $padding);
+
+			// Felixkat - Remove
+			//$session->set('com_fabrik.element.captach.height', $height);
+			//$session->set('com_fabrik.element.captach.width', $width);
+			// Felixkat - End
 			$session->set('com_fabrik.element.captach.noise_color', $noise_color);
 			$session->set('com_fabrik.element.captach.text_color', $text_color);
 			$session->set('com_fabrik.element.captach.bg_color', $bg_color);

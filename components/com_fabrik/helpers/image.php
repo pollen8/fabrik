@@ -28,6 +28,12 @@ class FabimageHelper
 	 * @return  array	libs
 	 */
 
+	/**
+	 * Get an array of avaialble graphics libraries
+	 *
+	 * @return  array
+	 */
+
 	public static function getLibs()
 	{
 		$libs = array();
@@ -47,9 +53,9 @@ class FabimageHelper
 	/**
 	 * load in the correct image library
 	 *
-* @param   string  $lib  image lib to load
+	 * @param   string  $lib  image lib to load
 	 *
-	 * @return object image lib
+	 * @return  object  image lib
 	 */
 
 	public function loadLib($lib)
@@ -66,9 +72,9 @@ class FabimageHelper
 	}
 
 	/**
-	 * test if GD library is available
+	 * Test if the GD library is available
 	 *
-	 * @return  null
+	 * @return  array
 	 */
 
 	protected static function testGD()
@@ -105,14 +111,14 @@ class FabimageHelper
 	}
 
 	/**
-	 * test if image magick library is available
+	 * Test if Imagemagic is installed on the server
 	 *
-	 * @return mixed  false or array
+	 * @return  array
 	 */
 
 	protected static function testImagemagick()
 	{
-		$im = false;
+
 		if (function_exists("NewMagickWand"))
 		{
 			$im["IM"] = "Magick wand";
@@ -151,11 +157,11 @@ class Fabimage
 	public $storage = null;
 
 	/**
-	 * set the filesystem storage manager
+	 * Set the filesystem storage manager
 	 *
-* @param   object  &$storage  storage object
+	 * @param   object  &$storage  storage object
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function setStorage(&$storage)
@@ -164,11 +170,11 @@ class Fabimage
 	}
 
 	/**
-	 * get the image type
+	 * Get the image type git/jpg/png
 	 *
-* @param   string  $filename  filepath
+	 * @param   string  $filename  image file path
 	 *
-	 * @return  string	image ext
+	 * @return  string
 	 */
 
 	public function getImgType($filename)
@@ -191,14 +197,14 @@ class Fabimage
 	}
 
 	/**
-	* resize an image to a specific width/height using standard php gd graphics lib
+	* Resize an image to a specific width/height
 	*
-* @param   int     $maxWidth   maximum image Width (px)
-* @param   int     $maxHeight  maximum image Height (px)
-* @param   string  $origFile   current images folder pathe (must have trailing end slash)
-* @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
+	* @param   int     $maxWidth   maximum image Width (px)
+	* @param   int     $maxHeight  maximum image Height (px)
+	* @param   string  $origFile   current images folder pathe (must have trailing end slash)
+	* @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
 	*
-	* @return  null
+	* @return  object  image
 	*/
 
 	public abstract function resize($maxWidth, $maxHeight, $origFile, $destFile)
@@ -208,21 +214,24 @@ class Fabimage
 }
 
 /**
- * GD Image lib class
+ * GD image manipulation class
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @since       1.0
  */
 
 class FabimageGD extends Fabimage
 {
 
 	/**
-	 * Create an image object from a file
+	 * Create an image object from a file path
 	 *
-* @param   string  $file  file path
+	 * @param   string  $file  file to create image from
 	 *
-	 * @return  array  image object and header string
+	 * @return  array  (image, header string)
 	 */
 
 	public function imageFromFile($file)
@@ -255,11 +264,11 @@ class FabimageGD extends Fabimage
 	}
 
 	/**
-	 * create a gd image from a fle
+	 * Create a gd image from a file
 	 *
-* @param   string  $source  path
+	 * @param   string  $source  path to file
 	 *
-	 * @return  image.
+	 * @return image
 	 */
 
 	protected function imageCreateFrom($source)
@@ -282,12 +291,12 @@ class FabimageGD extends Fabimage
 	}
 
 	/**
-	 * convert an image object into a file
+	 * Convert an image object into a file
 	 *
-* @param   string  $destCropFile  file path
-* @param   image  	$image         image object
+	 * @param   string  $destCropFile  file path
+	 * @param   object  $image         image object to save
 	 *
-	 * @return  null
+	 * @return  bool  True on success
 	 */
 
 	public function imageToFile($destCropFile, $image)
@@ -309,17 +318,17 @@ class FabimageGD extends Fabimage
 		}
 		$image_p = ob_get_contents();
 		ob_end_clean();
-		JFile::write($destCropFile, $image_p);
+		return JFile::write($destCropFile, $image_p);
 	}
 
 	/**
 	 * Rotate an image
 	 *
-* @param   string  $source   filepath
-* @param   string  $dest     destination filepath
-* @param   double  $degrees  number of degrees to rotate
+	 * @param   string  $source   filepath
+	 * @param   string  $dest     output path
+	 * @param   double  $degrees  number of degrees to rotate
 	 *
-	 * @return  array(image object, rotated images width, rotated images height)
+	 * @return  array  (image object, rotated images width, rotated images height)
 	 */
 
 	public function rotate($source, $dest = '', $degrees = 0)
@@ -341,15 +350,15 @@ class FabimageGD extends Fabimage
 	}
 
 	/**
-	 * scale an image
+	 * Scale an image
 	 *
-* @param   string  $file        filepath to scale
-* @param   string  $dest        filepath destination
-* @param   int     $percentage  percentage to scale the image by
-* @param   int     $destX       x loc to scale from
-* @param   int     $destY       y loc to scale from
+	 * @param   string  $file        file to scale
+	 * @param   string  $dest        save location
+	 * @param   int     $percentage  scale percentage
+	 * @param   int     $destX       start scale from x coord
+	 * @param   int     $destY       start scale from y coord
 	 *
-	 * @return  object	image
+	 * @return  object  image
 	 */
 
 	public function scale($file, $dest = '', $percentage = 100, $destX = 0, $destY = 0)
@@ -373,14 +382,14 @@ class FabimageGD extends Fabimage
 	}
 
 	/**
-	 * resize an image to a specific width/height using standard php gd graphics lib
+	 * Resize an image to a specific width/height
 	 *
-* @param   int     $maxWidth   maximum image Width (px)
-* @param   int     $maxHeight  maximum image Height (px)
-* @param   string  $origFile   current images folder pathe (must have trailing end slash)
-* @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
+	 * @param   int     $maxWidth   maximum image Width (px)
+	 * @param   int     $maxHeight  maximum image Height (px)
+	 * @param   string  $origFile   current images folder pathe (must have trailing end slash)
+	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
 	 *
-	 * @return  null
+	 * @return  object  image
 	 */
 
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
@@ -443,17 +452,17 @@ class FabimageGD extends Fabimage
 	/**
 	 * Crop an image to specific dimensions
 	 *
-* @param   string  $origFile  path to image to crop from
-* @param   string  $destFile  path to cropped file
-* @param   int     $srcX      x coord on $origFile to start crop from
-* @param   int     $srcY      y coord on $origFile to start crop from
-* @param   int     $dstW      cropped image width
-* @param   int     $dstH      cropped image height
-* @param   int     $dstX      destination x coord of destination point
-* @param   int     $dstY      destination y coord of destination point
-* @param   string  $bg        hex background colour
+	 * @param   string  $origFile  path to image to crop from
+	 * @param   string  $destFile  path to cropped file
+	 * @param   int     $srcX      x coord on $origFile to start crop from
+	 * @param   int     $srcY      y coord on $origFile to start crop from
+	 * @param   int     $dstW      cropped image width
+	 * @param   int     $dstH      cropped image height
+	 * @param   int     $dstX      destination x coord of destination point
+	 * @param   int     $dstY      destination y coord of destination point
+	 * @param   string  $bg        hex background colour
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function crop($origFile, $destFile, $srcX, $srcY, $dstW, $dstH, $dstX = 0, $dstY = 0, $bg = '#FFFFFF')
@@ -497,13 +506,13 @@ class FabimageGD extends Fabimage
 	}
 
 	/**
-	 * write an image to the server
+	 * Write an image to the server
 	 *
-* @param   object  $img       image object
-* @param   string  $destFile  filepath to store the image
-* @param   string  $header    image type
+	 * @param   object  $img       image object
+	 * @param   string  $destFile  file path to save to
+	 * @param   string  $header    image type
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function writeImg($img, $destFile, $header)
@@ -547,24 +556,27 @@ class FabimageGD extends Fabimage
 }
 
 /**
- * GD2 image lib
+ * GD2 image manipulation class
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @since       1.0
  */
 
 class FabimageGD2 extends FabimageGD
 {
 
 	/**
-	 * resize an image to a specific width/height using standard php gd graphics lib
+	 * Resize an image to a specific width/height
 	 *
-* @param   int     $maxWidth   maximum image Width (px)
-* @param   int     $maxHeight  maximum image Height (px)
-* @param   string  $origFile   current images file
-* @param   string  $destFile   destination file path for resized image
+	 * @param   int     $maxWidth   maximum image Width (px)
+	 * @param   int     $maxHeight  maximum image Height (px)
+	 * @param   string  $origFile   current images folder pathe (must have trailing end slash)
+	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
 	 *
-	 * @return  object? image
+	 * @return  object  image
 	 */
 
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
@@ -686,26 +698,27 @@ class FabimageGD2 extends FabimageGD
 }
 
 /**
- * Image magic class
+ * Image magic image manipulation class
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @since       1.0
  */
 
 class FabimageIM extends Fabimage
 {
 
-	protected $imageMagickDir = '/usr/local/bin/';
-
 	/**
-	 * resize an image to a specific width/height using imagemagick graphics lib
+	 * Resize an image to a specific width/height
 	 *
-* @param   int     $maxWidth   maximum image Width (px)
-* @param   int     $maxHeight  maximum image Height (px)
-* @param   string  $origFile   current images folder pathe (must have trailing end slash)
-* @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
+	 * @param   int     $maxWidth   maximum image Width (px)
+	 * @param   int     $maxHeight  maximum image Height (px)
+	 * @param   string  $origFile   current images folder pathe (must have trailing end slash)
+	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
 	 *
-	 * @return  null
+	 * @return  object  image
 	 */
 
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
@@ -727,8 +740,7 @@ class FabimageIM extends Fabimage
 		if (class_exists('Imagick'))
 		{
 
-			/**
-			 * $$$ hugh - having a go at handling PDF thumbnails, which should work as long as the server
+			/* $$$ hugh - having a go at handling PDF thumbnails, which should work as long as the server
 			 * has ghostscript (GS) installed.  Don't have a generic test for GS being available, so
 			 * it'll just fail if no GS.
 			 */

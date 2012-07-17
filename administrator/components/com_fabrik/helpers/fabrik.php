@@ -1,11 +1,11 @@
 <?php
 /**
-* @package     Joomla.Administrator
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-* @since       1.6
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
@@ -13,7 +13,6 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Fabrik Component Helper
  *
- * @static
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       1.5
@@ -24,9 +23,9 @@ class FabrikHelper
 	/**
 	 * prepare the date for saving
 	 * DATES SHOULD BE SAVED AS UTC
-	 * 
-* @param   string  &$strdate  publish down date
-	 * 
+	 *
+	 * @param   string  &$strdate  publish down date
+	 *
 	 * @return  null
 	 */
 
@@ -55,11 +54,11 @@ class FabrikHelper
 	/**
 	 * Gets a list of the actions that can be performed.
 	 *
-* @param   int  $categoryId  The category ID.
+	 * @param   int  $categoryId  The category ID.
 	 *
-	 * @return  JObject
-	 * 
 	 * @since	1.6
+	 *
+	 * @return	JObject
 	 */
 
 	public static function getActions($categoryId = 0)
@@ -85,11 +84,11 @@ class FabrikHelper
 	/**
 	 * Configure the Linkbar.
 	 *
-* @param   string  $vName  The name of the active view.
+	 * @param   string  $vName  The name of the active view.
 	 *
-	 * @return  void
-	 * 
 	 * @since	1.6
+	 *
+	 * @return	void
 	 */
 
 	public static function addSubmenu($vName)
@@ -101,9 +100,8 @@ class FabrikHelper
 
 		JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_ELEMENTS'), 'index.php?option=com_fabrik&view=elements', $vName == 'elements');
 
-		JSubMenuHelper::addEntry(
-		JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations', $vName == 'visualizations'
-		);
+		JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations',
+			$vName == 'visualizations');
 
 		JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_PACKAGES'), 'index.php?option=com_fabrik&view=packages', $vName == 'packages');
 
@@ -115,10 +113,10 @@ class FabrikHelper
 
 	/**
 	 * Applies the content tag filters to arbitrary text as per settings for current user group
-	 * 
-* @param   string  $text  The string to filter
-	 * 
-	 * @return  string	The filtered string
+	 *
+	 * @param   string  $text  The string to filter
+	 *
+	 * @return  string  The filtered string
 	 */
 
 	public static function filterText($text)
@@ -225,10 +223,8 @@ class FabrikHelper
 			if ($blackList)
 			{
 				// Remove the white-listed attributes from the black-list.
-				$filter = JFilterInput::getInstance(
-					array_diff($blackListTags, $whiteListTags),
-					array_diff($blackListAttributes, $whiteListAttributes), 1, 1
-				);
+				$filter = JFilterInput::getInstance(array_diff($blackListTags, $whiteListTags),
+					array_diff($blackListAttributes, $whiteListAttributes), 1, 1);
 			}
 			// White lists take third precedence.
 			elseif ($whiteList)

@@ -1,8 +1,8 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
 * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
@@ -16,12 +16,13 @@ class FabrikTableJoin extends FabTable
 
  	/*
  	 * Construct
+ 	 *
+ 	 * @param   &$db  object  database
  	 */
 
-	function __construct(&$_db)
+	public function __construct(&$db)
 	{
-		parent::__construct('#__{package}_joins', 'id', $_db);
+		parent::__construct('#__{package}_joins', 'id', $db);
 	}
 
 }
-?>

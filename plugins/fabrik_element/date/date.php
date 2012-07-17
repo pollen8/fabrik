@@ -19,8 +19,10 @@ defined('_JEXEC') or die();
 
 class PlgFabrik_ElementDate extends PlgFabrik_Element
 {
-
-	/** @var bool toggle to determine if storedatabaseformat resets the date to GMT*/
+	/**
+	 * Toggle to determine if storedatabaseformat resets the date to GMT
+	 * @var bool
+	 */
 	protected $resetToGMT = true;
 
 	protected $rangeFilterSet = false;
@@ -437,7 +439,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 * @return  string	formatted value
 	 */
 
-	public function getEmailValue($value, $data, $repeatCounter)
+	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		if ((is_array($value) && empty($value)) || (!is_array($value) && trim($value) == ''))
 		{
@@ -1581,7 +1583,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$PHPDate['seconds'] = 0;
 		$v = mktime($PHPDate['hours'], $PHPDate['minutes'], $PHPDate['seconds'], $PHPDate['mon'], $PHPDate['mday'], $PHPDate['year']);
 		$date = JFactory::getDate($v);
-		return $date->toMySQL($v);
+		return $date->toSql($v);
 	}
 
 	/**
@@ -1649,7 +1651,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		}
 		$v = mktime($PHPDate['hours'], $PHPDate['minutes'], $PHPDate['seconds'], $PHPDate['mon'], $PHPDate['mday'], $PHPDate['year']);
 		$date = JFactory::getDate($v);
-		return $date->toMySQL($v);
+		return $date->toSql($v);
 	}
 
 	/**

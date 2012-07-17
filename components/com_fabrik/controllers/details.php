@@ -31,7 +31,7 @@ class FabrikControllerDetails extends JController
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -94,7 +94,7 @@ class FabrikControllerDetails extends JController
 
 	/**
 	 * process the form
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -212,16 +212,16 @@ class FabrikControllerDetails extends JController
 	}
 
 	/**
-	 * set the redirect url
-	 * 
-* @param   string  $url   default url
-* @param   string  $msg   optional message to apply on redirect
-* @param   string  $type  optional message type
-	 * 
+	 * Set the redirect url
+	 *
+	 * @param   string  $url   default url
+	 * @param   string  $msg   optional message to apply on redirect
+	 * @param   string  $type  optional message type
+	 *
 	 * @return  null
 	 */
 
-	private function setRedirect($url, $msg = null, $type = 'message')
+	public function setRedirect($url, $msg = null, $type = 'message')
 	{
 		$session = JFactory::getSession();
 		$formdata = $session->get('com_fabrik.form.data');
@@ -274,10 +274,10 @@ class FabrikControllerDetails extends JController
 
 	/**
 	 * generic function to redirect
-	 * 
-* @param   object  &$model  form model
-* @param   string  $msg     redirection message to show
-	 * 
+	 *
+	 * @param   object  &$model  form model
+	 * @param   string  $msg     redirection message to show
+	 *
 	 * @return  null
 	 */
 
@@ -357,7 +357,7 @@ class FabrikControllerDetails extends JController
 
 	/**
 	 * save a form's page to the session table
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -372,7 +372,7 @@ class FabrikControllerDetails extends JController
 	/**
 	 * clear down any temp db records or cookies
 	 * containing partially filled in form data
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -387,7 +387,7 @@ class FabrikControllerDetails extends JController
 
 	/**
 	 * called via ajax to page through form records
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -401,7 +401,7 @@ class FabrikControllerDetails extends JController
 
 	/**
 	 * delete a record from a form
-	 * 
+	 *
 	 * @return  null
 	 */
 

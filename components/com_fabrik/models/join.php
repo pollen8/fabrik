@@ -13,17 +13,14 @@ jimport('joomla.application.component.model');
 
 /**
  * Fabrik Join Model
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikFEModelJoin extends FabModel
 {
-
-	/**
-	 * constructor
-	 */
 
 	/** @var object join table */
 	protected $join = null;
@@ -38,16 +35,24 @@ class FabrikFEModelJoin extends FabModel
 	 * Enter description here ...
 	 */
 
-	public function __construct()
+	/**
+	 * Constructor
+	 *
+	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
+	 *
+	 * @since       1.5
+	 */
+
+	public function __construct($config = array())
 	{
-		parent::__construct();
+		parent::__construct($config);
 	}
 
 	/**
 	 * Set the join id
-	 * 
+	 *
 	 * @param   int  $id  join id
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -58,7 +63,7 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * Get the join id
-	 * 
+	 *
 	 * @return  int  join id
 	 */
 
@@ -69,9 +74,9 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * Set data
-	 * 
+	 *
 	 * @param   array  $data  to set to
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -82,7 +87,7 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * Get Join
-	 * 
+	 *
 	 * @return  FabTable
 	 */
 
@@ -110,7 +115,7 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * Clear the join
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -121,10 +126,10 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * Load the model from the element id
-	 * 
+	 *
 	 * @param   string  $key  db table key
 	 * @param   int     $id   key value
-	 * 
+	 *
 	 * @return  FabTable  join
 	 */
 
@@ -141,9 +146,9 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * Get join table's primary key
-	 * 
+	 *
 	 * @param   string  $glue  between table and field name
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -156,9 +161,9 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * Set the join element ID
-	 * 
+	 *
 	 * @param   int  $id  element id
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -170,9 +175,9 @@ class FabrikFEModelJoin extends FabModel
 	/**
 	 * deletes the loaded join and then
 	 * removes all elements, groups & form group record
-	 * 
+	 *
 	 * @param   int  $groupId  the group id that the join is linked to
-	 * 
+	 *
 	 * @return void/JError
 	 */
 
@@ -207,9 +212,9 @@ class FabrikFEModelJoin extends FabModel
 
 	/**
 	 * saves the table join data
-	 * 
+	 *
 	 * @param   array  $source  data to save
-	 * 
+	 *
 	 * @return  bool
 	 */
 

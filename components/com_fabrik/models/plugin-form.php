@@ -1,9 +1,8 @@
 <?php
-
 /**
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
@@ -12,10 +11,18 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
+/**
+ * Fabrik Plugin From Model
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class PlgFabrik_Form extends FabrikPlugin
 {
 	/**@var array formatted email data */
-	var $emailData = null;
+	protected $emailData = null;
 
 	/** @var string html to return from plugin rendering */
 	protected $html = '';
@@ -50,8 +57,12 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * run if form validation fails
-	 * @return  bool
+	 * Run if form validation fails
+	 *
+	 * @param   object  $params      plpugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onError($params, &$formModel)
@@ -144,8 +155,9 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * get any html that needs to be written at the top of the form
-	 * @return  string	html
+	 * Get any html that needs to be written at the top of the form
+	 *
+	 * @return  string  html
 	 */
 
 	public function getTopContent_result()
@@ -197,12 +209,13 @@ class PlgFabrik_Form extends FabrikPlugin
 			return array();
 		}
 		$model->isAjax();
-		//$$$rob don't render the form - there's no need and it gives a warning about an unfound rowid
-		// $$$ rob also it sets teh fromModels rowid to an + int even if we are submitting a new form
-		// which means that form plug-ins set to run on new only don't get triggered if they appear after
-		// fabrikemail/fabrikreceipt
-		//Now instead the pk value is taken from the tableModel->lastInsertId and inserted at the end of this method
-		//$model->render();
+		/* $$$rob don't render the form - there's no need and it gives a warning about an unfound rowid
+		 * $$$ rob also it sets teh fromModels rowid to an + int even if we are submitting a new form
+		 * which means that form plug-ins set to run on new only don't get triggered if they appear after
+		 * fabrikemail/fabrikreceipt
+		 * Now instead the pk value is taken from the tableModel->lastInsertId and inserted at the end of this method
+		 *$model->render();
+		 */
 
 		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
@@ -224,7 +237,8 @@ class PlgFabrik_Form extends FabrikPlugin
 		foreach ($groups as $gkey => $groupModel)
 		{
 			$groupParams = $groupModel->getParams();
-			//check if group is acutally a table join
+
+			// Check if group is acutally a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
 			if ($groupModel->canRepeat())
@@ -237,15 +251,15 @@ class PlgFabrik_Form extends FabrikPlugin
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
-						//need to duplicate this perhaps per the number of times
-						//that a repeat group occurs in the default data?
+
+						// Need to duplicate this perhaps per the number of times
+						// that a repeat group occurs in the default data?
 						if (array_key_exists($joinTable->id, $model->formDataWithTableName['join']))
 						{
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
 							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
-							//$repeatGroup = count($model->data['join'][$joinTable->id][$smallerElHTMLName]);
 							$repeatGroup = count($model->formDataWithTableName['join'][$joinTable->id][$smallerElHTMLName]);
 						}
 						else
@@ -259,9 +273,9 @@ class PlgFabrik_Form extends FabrikPlugin
 				}
 				else
 				{
-					// $$$ rob 19/03/2012 - deprecated?
-					// repeat groups which arent joins
-					/* $elementModels = $groupModel->getPublishedElements();
+					/* $$$ rob 19/03/2012 - deprecated?
+					 * repeat groups which arent joins
+					 * $elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
 					    $smallerElHTMLName = $tmpElement->getFullName(false, true, false);
 					    if (is_array($model->formDataWithTableName)) {
@@ -286,15 +300,16 @@ class PlgFabrik_Form extends FabrikPlugin
 				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel)
 				{
-					//force reload?
+					// Force reload?
 					$elementModel->defaults = null;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 					$element = $elementModel->getElement();
 
 					$k = $elementModel->getFullName(false, true, false);
 					$key = $elementModel->getFullName(true, true, false);
-					//used for working out if the element should behave as if it was
-					//in a new form (joined grouped) even when editing a record
+
+					// Used for working out if the element should behave as if it was
+					// in a new form (joined grouped) even when editing a record
 					$elementModel->inRepeatGroup = $groupModel->canRepeat();
 					$elementModel->_inJoin = $groupModel->isJoin();
 					$elementModel->editable = false;
@@ -316,7 +331,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 					else
 					{
-						//@TODO do we need to check if none -joined repeat groups have their data set out correctly?
+						// @TODO do we need to check if none -joined repeat groups have their data set out correctly?
 						if ($elementModel->isJoin())
 						{
 							$join = $elementModel->getJoinModel()->getJoin();
@@ -331,16 +346,18 @@ class PlgFabrik_Form extends FabrikPlugin
 							}
 							else
 							{
-								// things like the user element only have their raw value filled in at this point
-								// so don't overwrite that with the blank none-raw value
-								// the none-raw value is add in getEmailValue()
+								/* things like the user element only have their raw value filled in at this point
+								 * so don't overwrite that with the blank none-raw value
+								 * the none-raw value is add in getEmailValue()
+								 */
 								$this->emailData[$k . '_raw'] = $rawval;
 							}
 						}
 					}
-					// $$$ hugh - need to poke data into $elementModel$elementModel->getFormModel()->data as it is needed
-					// by CDD getOptions when building the query, to constrain the WHERE clause with
-					// selected FK value.
+					/* $$$ hugh - need to poke data into $elementModel->_form->_data as it is needed
+					 * by CDD getOptions when building the query, to constrain the WHERE clause with
+					 * selected FK value.
+					 */
 
 					// $$$ rob in repeat join groups this isnt really efficient as you end up reformatting the data $c times
 					$elementModel->getFormModel()->data = $model->formDataWithTableName;
@@ -379,8 +396,9 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
-	 * get a list of admins which should receive emails
-	 * @return array admin user objects
+	 * Get a list of admins which should receive emails
+	 *
+	 * @return  array  admin user objects
 	 */
 
 	protected function getAdminInfo()
@@ -394,4 +412,3 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 }
-?>

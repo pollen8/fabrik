@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla
  * @subpackage  Fabrik
@@ -16,19 +15,12 @@ jimport('joomla.application.component.controller');
  * Fabrik Component Controller
  *
  * @static
- * @package     Joomla
- * @subpackage	Contact
- * @since       1.5
+ * @package		Joomla
+ * @subpackage	Fabrik
+ * @since 1.5
  */
 
-// $$$rob DEPRECIATED - should always get directed to specific controller
-
-/**
- * Default Fabrik controllers
- * 
- * @package  Fabrik
- * @since    3.0
- */
+//$$$rob DEPRECIATED - should always get directed to specific controller
 
 class FabrikController extends JController
 {
@@ -37,10 +29,10 @@ class FabrikController extends JController
 
 	/**
 	 * Display the view
-	 * 
+	 *
 * @param   bool   $cachable   If true, the view output will be cached
 * @param   array  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
-	 * 
+	 *
 	 * @return  null
 	 */
 

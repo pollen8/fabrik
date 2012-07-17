@@ -13,12 +13,14 @@ jimport('joomla.application.component.modelform');
 
 require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
+require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 
 /**
  * Fabrik Connection Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikFEModelList extends JModelForm
@@ -752,18 +754,19 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (isset($data[$i]->$groupBy))
 				{
-					if (!in_array($data[$i]->$groupBy, $aGroupTitles))
+					$sdata = strip_tags($data[$i]->$groupBy);
+					if (!in_array($sdata, $aGroupTitles))
 					{
-						$aGroupTitles[] = $data[$i]->$groupBy;
-						$grouptemplate = $w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i]));
-						$this->groupTemplates[$data[$i]->$groupBy] = nl2br($grouptemplate);
-						$groupedData[$data[$i]->$groupBy] = array();
+						$aGroupTitles[] = $sdata;
+						$grouptemplate = strip_tags($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+						$this->grouptemplates[$sdata] = nl2br($grouptemplate);
+						$groupedData[$sdata] = array();
 					}
-					$data[$i]->_groupId = $data[$i]->$groupBy;
-					$gKey = $data[$i]->$groupBy;
+					$data[$i]->_groupId = $sdata;
+					$gKey = $sdata;
 
 					// If the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
-					if ($this->group_by_added)
+					if ($this->_group_by_added)
 					{
 						unset($data[$i]->$groupBy);
 					}
@@ -850,7 +853,7 @@ class FabrikFEModelList extends JModelForm
 				$row = $data[$groupKey][$i];
 				$viewLinkAdded = false;
 
-				// Sone each row as its result can change
+				// Done each row as its result can change
 				$canEdit = $this->canEdit($row);
 				$canView = $this->canView($row);
 				$canDelete = $this->canDelete($row);
@@ -1053,6 +1056,8 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get delete button
+	 *
+	 * @param   string  $tpl  template
 	 *
 	 * @since 3.0
 	 *
@@ -2193,21 +2198,6 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Build group by query
-	 *
-	 * @param   mixed  $query  false to return a mySQL string, JQuery object to append group statement to.
-	 *
-	 * @deprecated	use buildQueryGroupBy();
-	 *
-	 * @return  mixed  string if $query false, else JQuery object
-	 */
-
-	public function _buildQueryGroupBy($query = false)
-	{
-		return $this->buildQueryGroupBy($query);
-	}
-
-	/**
 	 * Get the part of the main query that provides a group by statement
 	 * only added by 'count' element plug-in at the moment
 	 *
@@ -2799,7 +2789,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$item = $this->getTable();
 		$db = FabrikWorker::getDbo();
-		$nullDate = $this->getNullDate();
+		$nullDate = $db->getNullDate();
 		$publishup = JFactory::getDate($item->publish_up);
 		$publishup = $publishup->toUnix();
 		$publishdown = JFactory::getDate($item->publish_down);
@@ -3417,7 +3407,8 @@ class FabrikFEModelList extends JModelForm
 				if ($this->canAddFields())
 				{
 					$fabrikDb
-						->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
+						->setQuery(
+							"ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
 					if (!$fabrikDb->query())
 					{
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
@@ -5176,6 +5167,9 @@ class FabrikFEModelList extends JModelForm
 		// Set it for use by groupModel->getPublishedListElements()
 		JRequest::setVar('fabrik_show_in_list', $showInList);
 
+		// Set it for use by groupModel->getPublishedListElements()
+		JRequest::setVar('fabrik_show_in_list', $showInList);
+
 		if (!in_array($this->outPutFormat, array('pdf', 'csv')))
 		{
 			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') !== 'end')
@@ -5656,7 +5650,7 @@ class FabrikFEModelList extends JModelForm
 	 * this is run to see if there is any table join data,
 	 * if there is it stores it in $this->_joinsToProcess
 	 *
-	 * @return  array	[joinid] = array(join, group array);
+	 * @return  array	[joinid] = array(join => $join, 'groups' => array, 'elements' => array element models)
 	 */
 
 	public function preProcessJoin()
@@ -5703,6 +5697,8 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+		echo "joins to process keys = ";
+		print_r(array_keys($this->_joinsToProcess));
 		return $this->_joinsToProcess;
 	}
 
@@ -7805,7 +7801,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Fet pluginmanager (get reference to form's plugin manager
+	 * Get pluginmanager (get reference to form's plugin manager
 	 *
 	 * @deprecated - use FabrikWorker::getPluginManager() instead since 3.0b
 	 *
@@ -8659,6 +8655,7 @@ class FabrikFEModelList extends JModelForm
 			$app = JFactory::getApplication();
 			$item = $this->getTable();
 			$params = $this->getParams();
+			$document = JFactory::getDocument();
 			if ($app->isAdmin())
 			{
 				$this->tmpl = JRequest::getVar('layout', $params->get('admin_template'));
@@ -8683,6 +8680,10 @@ class FabrikFEModelList extends JModelForm
 			if (JRequest::getVar('mjmarkup') == 'iphone')
 			{
 				$this->tmpl = 'iwebkit';
+			}
+			if ($document->getType() === 'pdf')
+			{
+				$this->tmpl = $params->get('pdf_template', $this->tmpl);
 			}
 		}
 		return $this->tmpl;
@@ -8761,8 +8762,14 @@ class FabrikFEModelList extends JModelForm
 			 * custom.css - for backward compat with existing 2.x custom.css
 			 * custom_css.php - what we'll recommend people use for custom css moving foward.
 			 */
-			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom.css');
-			FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom_css.php' . $qs);
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom.css' . $qs))
+			{
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom.css');
+			}
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom_css.php' . $qs))
+			{
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom_css.php' . $qs);
+			}
 		}
 	}
 

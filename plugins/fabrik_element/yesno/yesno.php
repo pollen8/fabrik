@@ -56,7 +56,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	public function renderListData($data, &$thisRow)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
 		if ($data == '1')
@@ -81,7 +81,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	public function renderListData_pdf($data, $thisRow)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		if ($data == '1')
 		{
 			return FabrikHelperHTML::image("1_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JYES')));
@@ -202,7 +202,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	protected function getReadOnlyOutput($value, $label)
 	{
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/yesno/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
 		$img = $value == '1' ? "1.png" : "0.png";
 		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
 	}

@@ -1,12 +1,9 @@
 <?php
-
 /**
-* Add an action button to run PHP
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Pollen 8 Design Ltd
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.list.webservice
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is included in Joomla!
@@ -15,6 +12,14 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
+/**
+* Add an action button to run webg service
+*
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.list.webservice
+* @since       3.0
+*/
+
 class plgFabrik_ListWebservice extends plgFabrik_List
 {
 
@@ -22,36 +27,43 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	protected $buttonPrefix = 'update_col';
 
 	/**
-	 * does the plugin render a button at the top of the list?
-	 * @return  bool
+	 * Does the plugin render a button at the top of the list?
+	 *
+	 * @return	bool
 	 */
+
 	public function topButton()
 	{
 		return true;
 	}
 
 	/**
-	 * create the HTML for rendering a button in the top button list
-	 * @return  string	<a> link
+	 * Create the HTML for rendering a button in the top button list
+	 *
+	 * @return	string	<a> link
 	 */
+
 	public function topButton_result()
 	{
-		if ($this->canUse()) {
+		if ($this->canUse())
+		{
 			$name = $this->_getButtonName();
 			$label = $this->buttonLabel();
 			$imageName = $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
-			$img = FabrikHelperHTML::image($imageName, 'list', '',  $label);
-			return '<a href="#" class="'.$name.' listplugin" title="'.$label.'">'.$img.'<span>'.$label.'</span></a>';
+			$img = FabrikHelperHTML::image($imageName, 'list', '', $label);
+			return '<a href="#" class="' . $name . ' listplugin" title="' . $label . '">' . $img . '<span>' . $label . '</span></a>';
 		}
 	}
 
 	/**
-	 * row button set up code
-	 * @return  string
+	 * Needed to render plugin buttons
+	 *
+	 * @return  bool
 	 */
-	function button()
+
+	public function button()
 	{
-		return "run webservice";
+		return true;
 	}
 
 	/**
@@ -63,39 +75,50 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		return '';
 	}
 
+	/**
+	 * Get the button label
+	 *
+	 * @return  string
+	 */
+
 	protected function buttonLabel()
 	{
 		return $this->getParams()->get('webservice_button_label', parent::buttonLabel());
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see FabrikModelTablePlugin::getAclParam()
+	 * Get the parameter name that defines the plugins acl access
+	 *
+	 * @return  string
 	 */
 
-	function getAclParam()
+	protected function getAclParam()
 	{
 		return 'webservice_access';
 	}
 
 	/**
-	 * determine if the list plugin is a button and can be activated only when rows are selected
+	 * Can the plug-in select list rows
+	 *
 	 * @return  bool
 	 */
 
-	function canSelectRows()
+	public function canSelectRows()
 	{
 		return false;
 	}
 
 	/**
-	 * do the plug-in action
-* @param   object	parameters
-* @param   object	table model
-* @param   array	custom options
+	 * Do the plug-in action
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  &$model  list model
+	 * @param   array   $opts    custom options
+	 *
+	 * @return  bool
 	 */
 
-	function process(&$params, &$model, $opts = array())
+	public function process($params, &$model, $opts = array())
 	{
 		JLoader::import('webservice', JPATH_SITE . '/components/com_fabrik/models/');
 		$params = $this->getParams();
@@ -105,13 +128,10 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$credentials = $this->getCredentials();
 
 		$driver = $params->get('webservice_driver');
-		$opts = array(
-			'driver' => $driver,
-			'endpoint' => $params->get('webservice_url'),
-			'credentials' => $credentials
-		);
+		$opts = array('driver' => $driver, 'endpoint' => $params->get('webservice_url'), 'credentials' => $credentials);
 		$service = FabrikWebService::getInstance($opts);
-		if (JError::isError($service)) {
+		if (JError::isError($service))
+		{
 			echo $service->getMessage();
 			JError::raiseError(500, $service->getMessage());
 			jexit();
@@ -125,16 +145,18 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 
 		$serviceData = $service->get($method, $filters, $startPoint, null);
 
-		$update = (bool)$params->get('webservice_update_existing', false);
+		$update = (bool) $params->get('webservice_update_existing', false);
 		$service->storeLocally($model, $serviceData, $fk, $update);
 		$this->msg = JText::sprintf($params->get('webservice_msg'), $service->addedCount, $service->updateCount);
 		return true;
 	}
 
 	/**
-	 * get the data map to transform web service data into list data
-* @param   object	$formModel
-	 * @return  array	data map
+	 * Get the data map to transform web service data into list data
+	 *
+	 * @param   object  $formModel  form model
+	 *
+	 * @return  array  data map
 	 */
 	protected function getMap($formModel)
 	{
@@ -147,18 +169,20 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$value = $map->map_value;
 		$eval = $map->map_eval;
 		$n = count($from);
-		for ($i = 0; $i < $n; $i ++)
+		for ($i = 0; $i < $n; $i++)
 		{
 			$tid = $formModel->getElement($to[$i], true)->getElement()->name;
-			$return[] = array('from' => $from[$i], 'to' => $tid, 'value' => $value[$i], 'match' => $match[$i], 'eval' => (bool)$eval[$i]);
+			$return[] = array('from' => $from[$i], 'to' => $tid, 'value' => $value[$i], 'match' => $match[$i], 'eval' => (bool) $eval[$i]);
 		}
 		return $return;
 	}
 
 	/**
-	 * get an array of key/value filters to send to the web serive
-* @param   object	$service
-	 * @return  array	key/val pairs
+	 * Get an array of key/value filters to send to the web serive
+	 *
+	 * @param   FabrikWebService  $service  the current web service being used
+	 *
+	 * @return  array  key/val pairs
 	 */
 
 	protected function getServiceFilters($service)
@@ -170,7 +194,7 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$vals = $filters->webservice_filters_value;
 		$types = $filters->webservice_filters_type;
 		$n = count($keys);
-		for ($i = 0; $i < $n; $i ++)
+		for ($i = 0; $i < $n; $i++)
 		{
 			$return[$keys[$i]] = $service->getFilterValue($vals[$i], $types[$i]);
 		}
@@ -178,8 +202,9 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	}
 
 	/**
-	 * get sign in credentials to the service
-	 * @return  array	login credentials
+	 * Get sign in credentials to the service
+	 *
+	 * @return  array  login credentials
 	 */
 
 	protected function getCredentials()
@@ -190,27 +215,37 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 		$keys = isset($credentials->webservice_credentials_key) ? $credentials->webservice_credentials_key : array();
 		$vals = isset($credentials->webservice_credentials_value) ? $credentials->webservice_credentials_value : array();
 		$n = count($keys);
-		for ($i = 0; $i < $n; $i ++)
+		for ($i = 0; $i < $n; $i++)
 		{
 			$return[$keys[$i]] = $vals[$i];
 		}
 		return $return;
 	}
 
-	function process_result()
+	/**
+	 * Get the message generated in process()
+	 *
+	 * @param   int  $c  plugin render order
+	 *
+	 * @return  string
+	 */
+
+	public function process_result($c)
 	{
 		return $this->msg;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param   object	parameters
-* @param   object	table model
-* @param   array	[0] => string table's form id to contain plugin
-	 * @return  bool
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
+	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
@@ -221,4 +256,3 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	}
 
 }
-?>

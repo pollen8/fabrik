@@ -336,7 +336,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * get an array of published elements
+	 * Get an array of published elements
 	 *
 	 * @since 120/10/2011 - can override with elementid request data (used in inline edit to limit which elements are shown)
 	 *

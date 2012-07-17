@@ -438,7 +438,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$selected = $this->getValue($data, $repeatCounter);
 		if (is_string($selected) || is_null($selected))
 		{
-			$selected = empty($selected) ? array() : array($selected);
+
+			// $$$ hugh - ooops, '0' will count as empty.
+			// $selected = empty($selected) ?  array() : array($selected);
+			$selected = $selected === '' ?  array() : array($selected);
 		}
 		// $$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.

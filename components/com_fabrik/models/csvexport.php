@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,8 +15,9 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 /**
  * CSV Export Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikFEModelCSVExport
@@ -41,7 +42,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * write the file
 	 *
-* @param   int  $total  total # of records
+	 * @param   int  $total  total # of records
 	 *
 	 * @return  null
 	 */
@@ -171,7 +172,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * report a error writing the file
 	 *
-* @param   string  $filepath  file path we were trying to write to
+	 * @param   string  $filepath  file path we were trying to write to
 	 *
 	 * @return  null
 	 */
@@ -186,7 +187,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * fix carriage returns
 	 *
-* @param   object  &$row  csv line of data to fix
+	 * @param   object  &$row  csv line of data to fix
 	 *
 	 * @return  null
 	 */
@@ -209,7 +210,7 @@ class FabrikFEModelCSVExport
 				else
 				{
 					$row = nl2br($row);
-					$row = str_replace(array("\n", "\r", "\n\r", "\r\n"), '',  $row);
+					$row = str_replace(array("\n", "\r", "\n\r", "\r\n"), '', $row);
 				}
 				break;
 			case 'nl':
@@ -302,8 +303,8 @@ class FabrikFEModelCSVExport
 	/**
 	 * add calculations
 	 *
-* @param   array   $a     of field elements $a
-* @param   string  &$str  to out put as csv file $str
+	 * @param   array   $a     of field elements $a
+	 * @param   string  &$str  to out put as csv file $str
 	 *
 	 * @return  null
 	 */
@@ -330,7 +331,7 @@ class FabrikFEModelCSVExport
 						{
 							$default = $calcs[$calkey][$akey];
 						}
-						$x ++;
+						$x++;
 					}
 					$x = 0;
 					foreach ($a as $akey => $aval)
@@ -340,7 +341,7 @@ class FabrikFEModelCSVExport
 							$found = true;
 							break;
 						}
-						$x ++;
+						$x++;
 					}
 					if ($found)
 					{
@@ -363,7 +364,7 @@ class FabrikFEModelCSVExport
 	/**
 	 * quote a string
 	 *
-* @param   string  $n  string to quote
+	 * @param   string  $n  string to quote
 	 *
 	 * @return  string
 	 */
@@ -513,8 +514,8 @@ class FabrikFEModelCSVExport
 	/**
 	 * get unqiue heading
 	 *
-* @param   string  $n  key
-* @param   array   $h  search
+	 * @param   string  $n  key
+	 * @param   array   $h  search
 	 *
 	 * @return  string
 	 */

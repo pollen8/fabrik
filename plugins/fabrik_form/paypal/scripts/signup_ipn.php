@@ -1,10 +1,11 @@
 <?php
 /**
  * Optional script for extending the Fabrik PayPal form plugin
- * @package fabrikar
- * @author Hugh Messenger
- * @copyright (C) Hugh Messenger
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.paypal
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /*
@@ -46,7 +47,8 @@
  * IMPORTANT NOTE - during development of your script, you REALLY MUST use the PayPal developer sandbox!!
  */
 
-class fabrikPayPalIPN {
+class fabrikPayPalIPN
+{
 
 	/**
 	 *
@@ -68,7 +70,8 @@ class fabrikPayPalIPN {
 	 * @param unknown_type $err_msg
 	 * @return string
 	 */
-	function payment_status_Completed($listModel, $request, &$set_list, &$err_msg) {
+	function payment_status_Completed($listModel, $request, &$set_list, &$err_msg)
+	{
 		// Get the 'custom' values from the IPN call, which we provide by default
 		// when redirecting the original form submission to PayPal.
 		$custom = $request['custom'];
@@ -80,7 +83,8 @@ class fabrikPayPalIPN {
 		// the newly created userid in to it during the original form submission.
 		$db->setQuery("SELECT `userid` FROM `registration_individual` WHERE `id` = " . $db->Quote($rowid));
 		$userid = $db->loadResult();
-		if (!empty($userid) && (int)$userid > 42) {
+		if (!empty($userid) && (int) $userid > 42)
+		{
 			// If we found the userid, and it is in the normal user range, set the 'block' field in J!'s
 			// user table to 0.
 			$db->setQuery("UPDATE `#__users` SET `block` = '0' WHERE `id` = " . $db->Quote($userid));
@@ -102,28 +106,29 @@ class fabrikPayPalIPN {
 	 * @param unknown_type $err_msg
 	 * @return string
 	 */
-	function payment_status_Pending($listModel, $request, &$set_list, &$err_msg) {
+	function payment_status_Pending($listModel, $request, &$set_list, &$err_msg)
+	{
 		global $mainframe;
-        $MailFrom = $mainframe->getCfg('mailfrom');
-        $FromName = $mainframe->getCfg('fromname');
-        $SiteName = $mainframe->getCfg('sitename');
+		$MailFrom = $mainframe->getCfg('mailfrom');
+		$FromName = $mainframe->getCfg('fromname');
+		$SiteName = $mainframe->getCfg('sitename');
 
 		$payer_email = $request['payer_email'];
 		$receiver_email = $request['receiver_email'];
 
-        $subject = "%s - Payment Pending";
-        $subject = sprintf($subject, $SiteName);
-        $subject = html_entity_decode($subject, ENT_QUOTES);
+		$subject = "%s - Payment Pending";
+		$subject = sprintf($subject, $SiteName);
+		$subject = html_entity_decode($subject, ENT_QUOTES);
 
-        $msgbuyer = 'Your payment on %s is pending. (Paypal transaction ID: %s)<br /><br />%s';
-        $msgbuyer = sprintf($msgbuyer, $SiteName, $txn_id, $SiteName);
-        $msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
-        JUtility::sendMail( $MailFrom, $FromName, $payer_email, $subject, $msgbuyer, true);
+		$msgbuyer = 'Your payment on %s is pending. (Paypal transaction ID: %s)<br /><br />%s';
+		$msgbuyer = sprintf($msgbuyer, $SiteName, $txn_id, $SiteName);
+		$msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
+		JUtility::sendMail($MailFrom, $FromName, $payer_email, $subject, $msgbuyer, true);
 
-        $msgseller = 'Payment pending on %s. (Paypal transaction ID: %s)<br /><br />%s';
-        $msgseller = sprintf($msgseller, $SiteName, $txn_id, $SiteName);
-        $msgseller = html_entity_decode($msgseller, ENT_QUOTES);
-        JUtility::sendMail( $MailFrom, $FromName, $receiver_email, $subject, $msgseller, true);
+		$msgseller = 'Payment pending on %s. (Paypal transaction ID: %s)<br /><br />%s';
+		$msgseller = sprintf($msgseller, $SiteName, $txn_id, $SiteName);
+		$msgseller = html_entity_decode($msgseller, ENT_QUOTES);
+		JUtility::sendMail($MailFrom, $FromName, $receiver_email, $subject, $msgseller, true);
 		return 'ok';
 	}
 
@@ -137,13 +142,15 @@ class fabrikPayPalIPN {
 	 * @param unknown_type $err_msg
 	 * @return string
 	 */
-	function payment_status_Reversed($listModel, $request, &$set_list, &$err_msg) {
+	function payment_status_Reversed($listModel, $request, &$set_list, &$err_msg)
+	{
 		$custom = $request['custom'];
 		list($formid, $rowid, $ipn_value) = explode(":", $custom);
 		$db = $listModel->getDb();
 		$db->setQuery("SELECT `userid` FROM `registration_individual` WHERE `id` = " . $db->Quote($rowid));
 		$userid = $db->loadResult();
-		if (!empty($userid) && (int)$userid > 42) {
+		if (!empty($userid) && (int) $userid > 42)
+		{
 			$db->setQuery("UPDATE `#__users` SET `block` = '1' WHERE `id` = " . $db->Quote($userid));
 			$db->query();
 			$db->setQuery("UPDATE `registration_individual` SET `block` = '1' WHERE `id` = " . $db->Quote($rowid));
@@ -152,42 +159,49 @@ class fabrikPayPalIPN {
 		return 'ok';
 	}
 
-	function payment_status_Cancelled_Reversal($listModel, $request, &$set_list, &$err_msg) {
+	function payment_status_Cancelled_Reversal($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function payment_status_Refunded($listModel, $request, &$set_list, &$err_msg) {
+	function payment_status_Refunded($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function txn_type_web_accept($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_web_accept($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function txn_type_subscr_signup($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_subscr_signup($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function txn_type_subscr_cancel($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_subscr_cancel($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function txn_type_subscr_modify($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_subscr_modify($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function txn_type_subscr_payment($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_subscr_payment($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
-	function txn_type_subscr_eot($listModel, $request, &$set_list, &$err_msg) {
+	function txn_type_subscr_eot($listModel, $request, &$set_list, &$err_msg)
+	{
 		return 'ok';
 	}
 
 }
-
-?>

@@ -319,7 +319,7 @@ class FabrikWorker
 			}
 		}
 		// @TODO: some of these arent right for strftime
-		$self::$finalformat = $format;
+		self::$finalformat = $format;
 		$search = array('%d', '%e', '%D', '%j',
 		'%m', '%b',
 		'%Y', '%y',
@@ -344,7 +344,7 @@ class FabrikWorker
 			}
 			array_pop($format);
 			$format = trim(implode('%', $format));
-			$self::$finalformat = $format;
+			self::$finalformat = $format;
 			return self::str2Time($date, $format);
 		}
 		$dp = $matches;
@@ -375,7 +375,7 @@ class FabrikWorker
 
 	public static function getFinalDateFormat()
 	{
-		return $self::$finalformat;
+		return self::$finalformat;
 	}
 
 	/**

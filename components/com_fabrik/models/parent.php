@@ -15,9 +15,10 @@ jimport('joomla.application.component.model');
 
 /**
  * Extend JModel with Fabrik specific methods
- * 
- * @package  Fabrik
- * @since    3.0
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikFEModel extends JModel
@@ -25,9 +26,9 @@ class FabrikFEModel extends JModel
 
 	/**
 	 * required for compatibility with mambo 4.5.4
-	 * 
-* @param   mixed  $value  value to set all properties to default null
-	 * 
+	 *
+	 * @param   mixed  $value  value to set all properties to default null
+	 *
 	 * @return  null
 	 */
 

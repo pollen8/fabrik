@@ -1,8 +1,8 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
@@ -14,10 +14,11 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of groups.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
+
 class FabrikViewGroups extends JView
 {
 	protected $items;
@@ -26,7 +27,12 @@ class FabrikViewGroups extends JView
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
+
 	public function display($tpl = null)
 	{
 		// Initialise variables.
@@ -44,7 +50,6 @@ class FabrikViewGroups extends JView
 		}
 
 		$this->addToolbar();
-		//require_once JPATH_COMPONENT .'/models/fields/bannerclient.php';
 		parent::display($tpl);
 	}
 
@@ -52,7 +57,10 @@ class FabrikViewGroups extends JView
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
+	 *
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';

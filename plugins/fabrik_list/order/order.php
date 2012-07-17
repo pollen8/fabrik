@@ -1,12 +1,9 @@
 <?php
-
 /**
- * Allows drag and drop reordering of rows
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.order
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,32 +12,43 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
-class plgFabrik_ListOrder extends plgFabrik_List {
+/**
+ * Allows drag and drop reordering of rows
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.order
+ * @since       3.0
+ */
+
+class plgFabrik_ListOrder extends plgFabrik_List
+{
 
 	/**
-	 * (non-PHPdoc)
-	 * @see FabrikModelTablePlugin::getAclParam()
+	 * Get the parameter name that defines the plugins acl access
+	 *
+	 * @return  string
 	 */
 
-	function getAclParam()
+	protected function getAclParam()
 	{
 		return 'order_access';
 	}
 
 	/**
-	 * determine if the table plugin is a button and can be activated only when rows are selected
+	 * Can the plug-in select list rows
 	 *
 	 * @return  bool
 	 */
 
-	function canSelectRows()
+	public function canSelectRows()
 	{
 		return false;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_List::loadJavascriptClass_result()
+	 * Get the src(s) for the list plugin js class
+	 *
+	 * @return  mixed  string or array
 	 */
 
 	public function loadJavascriptClass_result()
@@ -50,11 +58,16 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_List::onLoadJavascriptInstance()
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
+	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		if (!$this->canUse())
 		{
@@ -64,7 +77,9 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
 		$form_id = $model->getFormModel()->getId();
 		$opts = $this->getElementJSOptions($model);
-		$opts->enabled = (count($model->orderEls) === 1 && FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true : false;
+		$opts->enabled = (count($model->orderEls) === 1
+			&& FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
+			: false;
 		$opts->listid = $model->getId();
 		$opts->orderElementId = $params->get('order_element');
 		$opts->handle = $params->get('order_element_as_handle', 1) == 1 ? '.' . $orderEl->getOrderByName() : false;
@@ -81,12 +96,14 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 	}
 
 	/**
-	 * called via ajax when dragged row is dropped. Reorders records
+	 * Called via ajax when dragged row is dropped. Reorders records
+	 *
+	 * @return  void
 	 */
 
 	public function onAjaxReorder()
 	{
-		//get table model
+		// Get list model
 		$model = JModel::getInstance('list', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$db = $model->getDb();
@@ -95,33 +112,33 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 		$orderEl = $model->getFormModel()->getElement(JRequest::getInt('orderelid'), true);
 		$table = $model->getTable();
 		$origOrder = JRequest::getVar('origorder');
-		$orderBy =$db->quoteName($orderEl->getElement()->name);
+		$orderBy = $db->quoteName($orderEl->getElement()->name);
 		$order = JRequest::getVar('order');
 		$dragged = JRequest::getVar('dragged');
 
-		//are we dragging up or down?
+		// Are we dragging up or down?
 		$origPos = array_search($dragged, $origOrder);
 		$newPos = array_search($dragged, $order);
 		$dragDirection = $newPos > $origPos ? 'down' : 'up';
 
-		//get the rows whose order has been altered
+		// Get the rows whose order has been altered
 		$result = array_diff_assoc($order, $origOrder);
 		$result = array_flip($result);
-		//remove the dragged row from the list of altered rows
+
+		// Remove the dragged row from the list of altered rows
 		unset($result[$dragged]);
 
 		$result = array_flip($result);
 
 		if (empty($result))
 		{
-			//no order change
+			// No order change
 			return;
 		}
-		//get the order for the last record in $result
+		// Get the order for the last record in $result
 		$splitId = $dragDirection == 'up' ? array_shift($result) : array_pop($result);
 		$db->setQuery("SELECT " . $orderBy . " FROM " . $table->db_table_name . " WHERE " . $table->db_primary_key . " = " . $splitId);
 		$o = (int) $db->loadResult();
-
 
 		if ($direction == 'desc')
 		{
@@ -131,17 +148,17 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 		{
 			$compare = $dragDirection == 'down' ? '<=' : '<';
 		}
-		//shift down the ordered records which have an order less than or equal the newly moved record
+		// Shift down the ordered records which have an order less than or equal the newly moved record
 		$query = "UPDATE " . $table->db_table_name . " SET " . $orderBy . ' = COALESCE(' . $orderBy . ', 1) - 1 ';
-		$query .= " WHERE " . $orderBy . ' ' . $compare . ' ' . $o . ' AND ' . $table->db_primary_key . ' <> '. $dragged;
+		$query .= " WHERE " . $orderBy . ' ' . $compare . ' ' . $o . ' AND ' . $table->db_primary_key . ' <> ' . $dragged;
 		$db->setQuery($query);
-		if(!$db->query())
+		if (!$db->query())
 		{
 			echo $db->getErrorMsg();
 		}
 		else
 		{
-			//shift up the ordered records which have an order greater than the newly moved record
+			// Shift up the ordered records which have an order greater than the newly moved record
 			if ($direction == 'desc')
 			{
 				$compare = $dragDirection == 'down' ? '>=' : '>';
@@ -156,13 +173,13 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 
 			$db->setQuery($query);
 
-			if(!$db->query())
+			if (!$db->query())
 			{
 				echo $db->getErrorMsg();
 			}
 			else
 			{
-				//change the order of the moved record
+				// Change the order of the moved record
 				$query = "UPDATE " . $table->db_table_name . " SET " . $orderBy . ' = ' . $o;
 				$query .= " WHERE " . $table->db_primary_key . ' = ' . $dragged;
 				$db->setQuery($query);
@@ -173,4 +190,3 @@ class plgFabrik_ListOrder extends plgFabrik_List {
 	}
 
 }
-?>

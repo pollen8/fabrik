@@ -288,13 +288,14 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
-	 * Check if the user can use the plugin
-	 * 
-	 * @param   object  &$model    calling the plugin list/form
-	 * @param   string  $location  to trigger plugin on
-	 * @param   string  $event     to trigger plugin on
-	 * 
-	 * @return  bool can use or not
+	 * Determine if we use the plugin or not
+	 * both location and event criteria have to be match when form plug-in
+	 *
+	 * @param   object  &$model    calling the plugin table/form
+	 * @param   string  $location  location to trigger plugin on
+	 * @param   string  $event     event to trigger plugin on
+	 *
+	 * @return  bool  true if we should run the plugin otherwise false
 	 */
 
 	public function canUse(&$model = null, $location = null, $event = null)
@@ -571,9 +572,9 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * If true then the plugin is stating that any subsequent plugin in the same group
 	 * should not be run.
-	 * 
+	 *
 	 * @param   string  $method  current plug-in call method e.g. onBeforeStore
-	 * 
+	 *
 	 * @return  bool
 	 */
 

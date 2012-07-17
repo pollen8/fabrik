@@ -105,13 +105,13 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		$labels = $this->getSubOptionLabels();
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($val))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
 				$val = $values[$i];
 				return $val;
 			}
 		}
-		return $val;
+		return $value;
 	}
 
 	/**

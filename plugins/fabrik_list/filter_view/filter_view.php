@@ -1,12 +1,9 @@
 <?php
-
 /**
- * Adds a sidebar containing a list of filters to filter the list
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Pollen 8 Design Ltd
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.filterview
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,16 +12,26 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
-class plgFabrik_ListFilter_view extends plgFabrik_List {
+/**
+ * Adds a sidebar containing a list of filters to filter the list
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.filterview
+ * @since       3.0
+ */
+
+class plgFabrik_ListFilter_view extends plgFabrik_List
+{
 
 	protected $buttonPrefix = 'filter_view';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see FabrikModelTablePlugin::getAclParam()
+	 * Get the parameter name that defines the plugins acl access
+	 *
+	 * @return  string
 	 */
 
-	function getAclParam()
+	protected function getAclParam()
 	{
 		return 'filter_view_access';
 	}
@@ -35,7 +42,7 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 		$labels = $opts ? $opts->label : array();
 		$db = $model->getDb();
 		$item = $model->getTable();
-		$href = 'index.php?option=com_fabrik&view=list&listid='.$model->getId();
+		$href = 'index.php?option=com_fabrik&view=list&listid=' . $model->getId();
 		$html = array();
 		$html[] = '<div class="filter_view" style="width:200px">';
 		if (!empty($labels))
@@ -48,10 +55,12 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 				$base .= JString::strpos($base, '?') ? '&' : '?';
 				$class = $links[$i] == urldecode($_SERVER['QUERY_STRING']) ? 'active' : '';
 				$links[$i] = str_replace('+', '%2B', $links[$i]);
-				$url = $base.$links[$i];
+				$url = $base . $links[$i];
+
 				$subhtml = array();
 				if (strstr($links[$i], 'group_by'))
 				{
+
 					$pairs = explode('&', $links[$i]);
 					$subSel = false;
 					foreach ($pairs as $pair)
@@ -64,7 +73,7 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 							$element = $model->getFormModel()->getElement($val);
 							if (!$element)
 							{
-								JError::raiseNotice(500, 'could not load group by element '.$val);
+								JError::raiseNotice(500, 'could not load group by element ' . $val);
 								continue;
 							}
 							$aFields = array();
@@ -79,8 +88,9 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 							$rows = $db->loadObjectList();
 
 							$subhtml[] = '<ul class="floating-tip">';
-							$vraw = $val.'_raw';
-							foreach ($rows as $row) {
+							$vraw = $val . '_raw';
+							foreach ($rows as $row)
+							{
 								//$qs = $val.'_raw='.$row->$vraw;
 								$qs = str_replace($key . '=' . $val, $val . '_raw=' . $row->$vraw, $links[$i]);
 								if ($qs == $_SERVER['QUERY_STRING'])
@@ -92,12 +102,14 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 								{
 									$subclass = '';
 								}
-								$subhtml[] = '<li class="' . $subclass . '"><a style="display:block" href="' . $base . $qs . '">' . $row->$val . '</a></li>';
+								$subhtml[] = '<li class="' . $subclass . '"><a style="display:block" href="' . $base . $qs . '">' . $row->$val
+									. '</a></li>';
 							}
 							$subhtml[] = '</ul>';
 						}
 					}
-					if ($class == '' && $subSel)  {
+					if ($class == '' && $subSel)
+					{
 						$class = 'active';
 					}
 					$class .= " hasSubOptions";
@@ -118,14 +130,16 @@ class plgFabrik_ListFilter_view extends plgFabrik_List {
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-* @param object parameters
-* @param object table model
-* @param array [0] => string table's form id to contain plugin
-	 * @return  bool
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
+	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
