@@ -1319,8 +1319,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			$this->_formData['join'] = array();
 		}
-		foreach ($aPreProcessedJoins as $aPreProcessedJoin)
+		foreach ($aPreProcessedJoins as $tmpJKey => $aPreProcessedJoin)
 		{
+			echo "<hr />preprocess join $tmpJKey<br>";
 			if (!array_key_exists('join', $aPreProcessedJoin))
 			{
 				continue;
@@ -1341,13 +1342,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 			$groups = $this->getGroupsHiarachy();
 			$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
-
+echo "<pre>repeat totals = ";print_r($repeatTotals);
 			// 3.0 test on repeatElement param type
 			if (is_string($oJoin->params))
 			{
 				$oJoin->params = json_decode($oJoin->params);
 			}
 			$joinType = isset($oJoin->params->type) ? $oJoin->params->type : '';
+			echo "join type = $joinType <br>";
 			if ((int) $oJoin->group_id !== 0 && $joinType !== 'repeatElement')
 			{
 				$joinGroup = $groups[$oJoin->group_id];
@@ -1357,6 +1359,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 			else
 			{
+				echo "repeta element join<br>";//exit;
 				// Repeat element join
 				$elementModel = $this->getElement($oJoin->element_id, true);
 				/* $$$ hugh - covers case where repeat element is read only,
@@ -1388,16 +1391,18 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// Repeat element in a repeat group :S
 						$groupJoin = $elementModel->getGroup()->getJoinModel();
 						$dataPks = JArrayHelper::getValue($data, $oJoin->table_join . '___id', array());
-						for ($r = 0; $r < count($dataPks); $r++)
+						 for ($r = 0; $r < count($dataPks); $r++)
 						{
-							$repeatTotals['el' . $elementModel->getId()][$r] = count($dataPks[$r]);
+							//$repeatTotals['el' . $elementModel->getId()][$r] = count($dataPks[$r]);
+							$repeatTotals[$aPreProcessedJoin['join']->id][$r] = count($dataPks[$r]);
 						}
+						//$repeatTotals['el' . $elementModel->getId()] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
 					else
 					{
 						$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
-					echo "<pre>";print_r($repeatTotals);exit;
+					echo "repeat totals = ";print_r($repeatTotals);
 				}
 
 				else
@@ -1445,7 +1450,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			// Back on track
 			if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data))
 			{
-				// $$$rob get the join tables ful primary key
+				// $$$rob get the join tables full primary key
 				$cols = $joinDb->getTableColumns($oJoin->table_join, false);
 				$oJoinPk = $oJoin->table_join . '___';
 				foreach ($cols as $col)
@@ -1472,6 +1477,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$joinCnn = $listModel->getConnection();
 					$joinDb = $joinCnn->getDb();
 
+					echo "<pre>rpeat group count = ";print_r($repeatedGroupCount);
 					for ($c = 0; $c < $repeatedGroupCount; $c++)
 					{
 						// Get the data for each group and record it seperately
@@ -1493,7 +1499,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							$thisRepeatParams = JArrayHelper::getValue($repeatParams, $c);
 							if (!is_null($thisRepeatParams) && $elementModel->isJoin())
 							{
-								$repData['params'] =$thisRepeatParams ;
+								$repData['params'] = $thisRepeatParams;
 							}
 						}
 						// $$$ rob didn't work for 2nd joined data set
@@ -1524,6 +1530,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						 * not passing in the correct table name - see notes line 720 for explaination
 						 * $listModel->storeRow($repData, $joinRowId, true, $item->db_table_name);
 						 */
+						echo "<pre>store data : ";print_r($repData);//exit;
 						$listModel->storeRow($repData, $joinRowId, true, $joinGroupTable);
 						if ((int) $joinRowId === 0)
 						{
@@ -1697,6 +1704,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 			}
 		}
+		exit;
 		// Testing for saving pages
 		JRequest::setVar('rowid', $insertId);
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this)))

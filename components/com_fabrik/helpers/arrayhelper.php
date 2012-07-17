@@ -80,7 +80,7 @@ class FArrayHelper extends JArrayHelper
 			{
 				/**
 				 * If any node along the registry path does not exist, create it
-				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data 
+				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data
 				 */
 				if (!isset($ns[$nodes[$i]]))
 				{
@@ -122,7 +122,7 @@ class FArrayHelper extends JArrayHelper
 	 *
 	 * @since	1.5
 	 */
-	
+
 	public static function toObject(&$array, $class = 'stdClass', $recurse = true)
 	{
 		$obj = null;
@@ -158,7 +158,7 @@ class FArrayHelper extends JArrayHelper
 	{
 		/**
 		 *  , $ar3, $ar4, ...
-		 *  
+		 *
 		 */
 		$aSubtrahends = array_slice(func_get_args(), 1);
 		foreach ($ar1 as $key => $val)

@@ -792,7 +792,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$defaultLabel = $this->renderListData($default, JArrayHelper::toObject($data));
 			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
-				$defaultLabel = '';//no point showing 'please select' for read only
+				// No point showing 'please select' for read only
+				$defaultLabel = '';
 			}
 			if ($params->get('databasejoin_readonly_link') == 1)
 			{
@@ -815,13 +816,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			if ($this->canUse())
 			{
 				$idname = $this->getFullName(false, true, false) . '_id';
+				$attribs = 'class="fabrikinput inputbox" size="1"';
 				/*if user can access the drop down*/
 				switch ($displayType)
 				{
 					case 'dropdown':
 					default:
-						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, 'class="fabrikinput inputbox" size="1"', 'value', 'text',
-							$default, $id);
+						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
 					// $$$ rob 24/05/2011 - always set one value as selected for radio button if none already set
@@ -832,23 +833,28 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						// $$$ rob 24/05/2011 - add options per row
 						$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="' . $id . '"',
-							$defaultValue, 'value', 'text', $options_per_row);
+						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs .' id="' . $id . '"', $defaultValue, 'value', 'text', $options_per_row);
 						break;
 					case 'checkbox':
 						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-						// $joinids = $default == '' ? array() : explode(GROUPSPLITTER, $default);
-						// $$$ hugh - I think this needs to be the raw values ...
-						// $joinids = $default;
 						$rawname = $this->getFullName(false, true, false) . '_raw';
-						$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
-						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, 'class="fabrikinput inputbox" size="1" id="' . $id . '"',
-							$defaults, 'value', 'text', $options_per_row, $this->_editable);
+
+						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
 						if ($this->isJoin() && $this->_editable)
 						{
 							$join = $this->getJoin();
-							$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id][]';
+							$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
+							if ($groupModel->canRepeat())
+							{
+								$joinidsName .= '[' . $repeatCounter . '][]';
+								$joinids = FArrayHelper::getNestedValue($data, 'join.' . $joinId . '.' . $rawname . '.' . $repeatCounter, 'not found');
+							}
+							else
+							{
+								$joinidsName .= '[]';
+								$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
+							}
 							$tmpids = array();
 							foreach ($tmp as $obj)
 							{
@@ -865,10 +871,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 								}
 								$tmpids[] = $o;
 							}
+							echo "<pre>join ids = ";print_r($joinids);
+							echo "tmp ids = ";print_r($tmpids); echo "</pre>";
 							$html[] = '<div class="fabrikHide">';
-							$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName,
-								'class="fabrikinput inputbox" size="1" id="' . $id . '"', $joinids, 'value', 'text', $options_per_row,
-								$this->_editable);
+							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
+							$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', $options_per_row, $this->_editable);
 							$html[] = '</div>';
 						}
 						$defaultLabel = implode("\n", $html);
@@ -877,15 +884,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 						if ($this->_editable)
 						{
-							$html[] = JHTML::_('select.genericlist', $tmp, $thisElName,
-								'class="fabrikinput inputbox" size="' . (int) $params->get('dbjoin_multilist_size', 6) . '" multiple="true"',
-								'value', 'text', $defaults, $id);
+							$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
+							$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
+							$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $defaults, $id);
 						}
 						else
 						{
-							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName,
-								'class="fabrikinput inputbox" size="1" id="' . $id . '"', $defaults, 'value', 'text', $options_per_row,
-								$this->_editable);
+							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
+							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs, $defaults, 'value', 'text', $options_per_row, $this->_editable);
 						}
 						$defaultLabel = implode("\n", $html);
 						break;

@@ -5701,6 +5701,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+		echo "joins to process keys = ";print_r(array_keys($this->_joinsToProcess));
 		return $this->_joinsToProcess;
 	}
 
