@@ -156,7 +156,7 @@ function fabrik_recaptcha_get_html ($id, $pubkey, $theme = "red", $lang = "en", 
 	}
 
 	//$str = '<script type="text/javascript" src="' . $server . '/js/recaptcha_ajax.js"></script> ';
-	$str .= '  <div id="'.$id.'"></div> ';
+	$str = '  <div id="'.$id.'"></div> ';
 	$document = JFactory::getDocument();
 	$document->addScript($server . '/js/recaptcha_ajax.js');
 	FabrikHelperHTML::addScriptDeclaration(
