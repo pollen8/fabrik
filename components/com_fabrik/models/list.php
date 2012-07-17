@@ -8660,6 +8660,7 @@ class FabrikFEModelList extends JModelForm
 			$app = JFactory::getApplication();
 			$item = $this->getTable();
 			$params = $this->getParams();
+			$document = JFactory::getDocument();
 			if ($app->isAdmin())
 			{
 				$this->tmpl = JRequest::getVar('layout', $params->get('admin_template'));
@@ -8684,6 +8685,10 @@ class FabrikFEModelList extends JModelForm
 			if (JRequest::getVar('mjmarkup') == 'iphone')
 			{
 				$this->tmpl = 'iwebkit';
+			}
+			if ($document->getType() === 'pdf')
+			{
+				$this->tmpl = $params->get('pdf_template', $this->tmpl);
 			}
 		}
 		return $this->tmpl;

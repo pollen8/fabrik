@@ -307,27 +307,23 @@ class FabrikViewFormBase extends JView
 			{
 				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->_rowId);
 			}
-			$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
-
-			$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}",
-				'title' => '<span>' . JText::_('COM_FABRIK_PDF') . '</span>', 'alt' => JText::_('COM_FABRIK_PDF'));
-
-			if ($this->showPDF)
-			{
-				if (!FabrikWorker::canPdf())
-				{
-					JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
-				}
-				else
-				{
-					$this->pdfLink = '<a href="' . JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId())
-						. '&rowid=' . $this->rowid . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
-				}
-			}
 		}
-		else
+		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
+
+		$buttonProperties = array('class' => 'fabrikTip', 'opts' => "{notice:true}",
+						'title' => '<span>' . JText::_('COM_FABRIK_PDF') . '</span>', 'alt' => JText::_('COM_FABRIK_PDF'));
+
+		if ($this->showPDF)
 		{
-			$this->showPDF = false;
+			if (!FabrikWorker::canPdf())
+			{
+				JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
+			}
+			else
+			{
+				$this->pdfLink = '<a href="' . JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId())
+				. '&rowid=' . $this->rowid . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
+			}
 		}
 	}
 
