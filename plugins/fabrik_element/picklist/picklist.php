@@ -120,7 +120,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
@@ -131,7 +131,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->allowadd = (bool) $params->get('allowadd', false);
 		$opts->defaultVal = $this->getValue($data, $repeatCounter);
-		;
+
 		//$opts->data = array_combine($arVals, $arTxt);;
 		$opts->hovercolour = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
@@ -150,7 +150,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	 * @return  string
 	 */
 
-	function prepareFilterVal($val)
+	protected function prepareFilterVal($value)
 	{
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();

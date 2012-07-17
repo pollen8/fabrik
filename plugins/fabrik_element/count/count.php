@@ -48,7 +48,7 @@ class plgFabrik_ElementCount extends plgFabrik_Element
 	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
 		$db = FabrikWorker::getDbo();
@@ -67,10 +67,12 @@ class plgFabrik_ElementCount extends plgFabrik_Element
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
 	 *
+	 * @deprecated - not used
+	 *
 	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return false;
 	}
@@ -172,7 +174,7 @@ class plgFabrik_ElementCount extends plgFabrik_Element
 	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

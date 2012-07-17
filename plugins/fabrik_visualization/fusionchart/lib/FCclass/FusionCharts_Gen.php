@@ -758,7 +758,7 @@ class FusionCharts{
 			# calling getStylesXML function for Styles element
 			$this->strXML .= $this->getStylesXML();
 		
-		}else if($this->seriesType == 5) {
+		}elseif($this->seriesType == 5) {
 			$this->strXML .= $this->getGanttCategoriesXML();
 			$this->strXML .= $this->getProcessesXML();
 			$this->strXML .= $this->getGanttDatatableXML();

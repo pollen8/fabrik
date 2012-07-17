@@ -68,7 +68,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element
 		$str = array();
 		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
 
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/slider/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/slider/images/', 'image', 'form', false);
 		$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 		if ($params->get('slider-shownone'))
 		{
@@ -114,12 +114,14 @@ class plgFabrik_ElementSlider extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param	int		repeat counter
-	 * @return string 	javascript to create instance
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);

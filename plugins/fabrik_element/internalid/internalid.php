@@ -66,7 +66,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		return "INT(6) NOT NULL AUTO_INCREMENT";
 	}
@@ -79,7 +79,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

@@ -20,7 +20,7 @@ $srcs = FabrikHelperHTML::framework();
 $srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
 $srcs[] = 'administrator/components/com_fabrik/views/cron/admincron.js';
 
-$opts = new stdClass();
+$opts = new stdClass;
 $opts->plugin = $this->item->plugin;
 
 $js = "\tvar options = ".json_encode($opts).";\n";

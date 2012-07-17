@@ -1,32 +1,34 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.element.button
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.button
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**
-* Plugin element to render button
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.element.button
-*/
+ * Plugin element to render button
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.button
+ */
 
 class plgFabrik_ElementButton extends plgFabrik_Element
 {
 
 	/**
-	 * draws a button
-	 * @param	string	data
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -36,21 +38,28 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::getLabel()
+	 * Get the element's HTML label
+	 *
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 *
+	 * @return  string  label
 	 */
 
-	function getLabel($repeatCounter, $tmpl = '')
+	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		return '';
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::elementJavascript()
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -60,19 +69,19 @@ class plgFabrik_ElementButton extends plgFabrik_Element
 	}
 
 	/**
+	 * Get an array of element html ids and their corresponding
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param	int		repeat group counter
-	 * @return	array	html ids to watch for validation
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  array  html ids to watch for validation
 	 */
 
-	function getValidationWatchElements($repeatCounter)
+	public function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$ar = array(
-			'id' => $id,
-			'triggerEvent' => 'click'
-		);
+		$ar = array('id' => $id, 'triggerEvent' => 'click');
 		return array($ar);
 	}
 }
-?>

@@ -152,17 +152,17 @@ class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 	}
 
 	/**
-	* Used by inline edit table plugin
-	* If returns yes then it means that there are only two possible options for the
-	* ajax edit, so we should simply toggle to the alternative value and show the
-	* element rendered with that new value (used for yes/no element)
-	*
-	* @deprecated - only called in a deprecated element method
-	*
-	* @return  bool
-	*/
+	 * Used by inline edit table plugin
+	 * If returns yes then it means that there are only two possible options for the
+	 * ajax edit, so we should simply toggle to the alternative value and show the
+	 * element rendered with that new value (used for yes/no element)
+	 *
+	 * @deprecated - only called in a deprecated element method
+	 *
+	 * @return  bool
+	 */
 
-	public function canToggleValue()
+	protected function canToggleValue()
 	{
 		return count($this->getSubOptionValues()) < 3 ? true : false;
 	}

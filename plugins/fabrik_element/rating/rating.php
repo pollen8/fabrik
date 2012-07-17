@@ -52,7 +52,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		$url = COM_FABRIK_LIVESITE
 			. 'index.php?option=com_fabrik&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='
 			. $this->getElement()->id;
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/rating/images/', 'image', 'list', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
 
@@ -77,7 +77,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 				$a2 = "</a>";
 			}
 			$str = array();
-			$str[] = '<div style="width:100px">';
+			$str[] = '<div style="width:101px">';
 			for ($s = 0; $s < $avg; $s++)
 			{
 				$r = $s + 1;
@@ -192,10 +192,15 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * determines if the element can contain data used in sending receipts, e.g. fabrikfield returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 *
+	 * @deprecated - not used
+	 *
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -251,7 +256,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
 
-		FabrikHelperHTML::addPath(JPATH_SITE . '/plugins/fabrik_element/rating/images/', 'image', 'form', false);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
 		$outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
 		$clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
@@ -297,11 +302,15 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#storeDatabaseFormat($val, $data)
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$params = $this->getParams();
 		$listid = JRequest::getInt('listid');
@@ -417,12 +426,14 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int repeat group counter
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -442,7 +453,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 			list($value, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
 		}
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$ext = $params->get('rating-pngorgif', '.png');
 		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
 		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
@@ -475,7 +486,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		$list = $this->getlistModel()->getTable();
 		$ext = $params->get('rating-pngorgif', '.png');
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->listid = $list->id;
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
 		$opts->imagepath = $imagepath;
@@ -514,8 +525,16 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#filterValueList_All($normal, $tableName, $label, $id, $incjoin)
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array	filter value and labels
 	 */
 
 	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)

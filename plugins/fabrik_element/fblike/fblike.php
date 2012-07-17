@@ -118,7 +118,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
 		//$$$tom placeholder option for URL params
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
 		return $str . $this->_render($url);
 	}
@@ -160,7 +160,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);

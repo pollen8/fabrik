@@ -307,13 +307,13 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$activetableOpts = array_unique($activetableOpts);
 		$activetableOpts = array_values($activetableOpts);
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->joinOpts = $joinTypeOpts;
 		$opts->tableOpts = $connModel->getThisTables(true);
 		$opts->activetableOpts = $activetableOpts;
 		$opts = json_encode($opts);
 
-		$filterOpts = new stdClass();
+		$filterOpts = new stdClass;
 		$filterOpts->filterJoinDd = $this->getFilterJoinDd(false, 'jform[params][filter-join][]');
 		$filterOpts->filterCondDd = $this->getFilterConditionDd(false, 'jform[params][filter-conditions][]', 2);
 		$filterOpts->filterAccess 	= JHtml::_('access.level', 'jform[params][filter-access][]', $item->access);
@@ -347,7 +347,7 @@ class FabrikModelList extends FabModelAdmin
 		$js .= "controller = new ListPluginManager(aPlugins);\n";
 		foreach ($plugins as $plugin)
 		{
-			$opts = array_key_exists('opts', $plugin) ? $plugin['opts'] : new stdClass();
+			$opts = array_key_exists('opts', $plugin) ? $plugin['opts'] : new stdClass;
 			$opts->location = @$plugin['location'];
 			$opts->event = @$plugin['event'];
 			$opts = json_encode($opts);
@@ -418,7 +418,7 @@ class FabrikModelList extends FabModelAdmin
 		for ($i = 0; $i < $c; $i++)
 		{
 			$join =& $joins[$i];
-			$jparams = $join->jparams == '' ? new stdClass() : json_decode($join->jparams);
+			$jparams = $join->jparams == '' ? new stdClass : json_decode($join->jparams);
 			if (isset($jparams->type) && ($jparams->type == 'element' || $jparams->type == 'repeatElement'))
 			{
 				unset($joins[$i]);
@@ -695,7 +695,7 @@ class FabrikModelList extends FabModelAdmin
 				{
 					$size = '';
 				}
-				else if (JString::stristr($coltype, 'datetime'))
+				elseif (JString::stristr($coltype, 'datetime'))
 				{
 					$size = '';
 				}
@@ -1183,7 +1183,7 @@ class FabrikModelList extends FabModelAdmin
 				$p->maxlength = '255';
 				$element->width = '30';
 			}
-			else if ($type =='decimal' && $plugin == 'field')
+			elseif ($type =='decimal' && $plugin == 'field')
 			{
 				$p->text_format = 'decimal';
 				$p->decimal_length = $maxLength2;
@@ -1297,7 +1297,7 @@ class FabrikModelList extends FabModelAdmin
 		$group->created_by = $user->get('id');
 		$group->created_by_alias = $user->get('username');
 		$group->published = 1;
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->repeat_group_button =  $isRepeat ? 1 : 0;
 		$opts->repeat_group_show_first = 1;
 		$group->params = json_encode($opts);
@@ -1391,7 +1391,7 @@ class FabrikModelList extends FabModelAdmin
 				{
 					$new[] =  $elementMap[$elementId];
 				}
-				$c = new stdClass();
+				$c = new stdClass;
 				$c->$key2 = $new;
 				$params->$key = json_encode($c);
 			}
@@ -1908,7 +1908,7 @@ class FabrikModelList extends FabModelAdmin
 		//build the row object to insert/update
 		foreach ($xml as $row)
 		{
-			$o = new stdClass();
+			$o = new stdClass;
 			foreach ($row->children() as $child)
 			{
 				$k = $child->getName();

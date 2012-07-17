@@ -187,11 +187,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
@@ -222,7 +225,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			$imgParams = explode(GROUPSPLITTER, $imgParams);
 		}
-		$oFiles = new stdClass();
+		$oFiles = new stdClass;
 		$iCounter = 0;
 		for ($x = 0; $x < count($value); $x++)
 		{
@@ -235,7 +238,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						//from failed validation
 						foreach ($value[$x]['id'] as $tkey => $parts)
 						{
-							$o = new stdClass();
+							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $iCounter;//$rawvalues[$x];
 							$o->name = array_pop(explode(DS, $tkey));
 							$o->path = $tkey;
@@ -260,7 +263,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						{
 							//single crop image (not sure about the 0 settings in here)
 							$parts = explode(DS, $value[$x]->file);
-							$o = new stdClass();
+							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_0';
 							$o->name = array_pop($parts);
 							$o->path = $value[$x]->file;
@@ -281,7 +284,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						else
 						{
 							$parts = explode(DS, $value[$x]);
-							$o = new stdClass();
+							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $rawvalues[$x];
 							$o->name = array_pop($parts);
 							$o->path = $value[$x];
@@ -454,7 +457,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php');
 		}
-		else if (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php'))
+		elseif (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php'))
 		{
 			require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php');
 		}
@@ -625,12 +628,15 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * formats the posted data for insertion into the database
-	 * @param	mixed thie elements posted form data
-	 * @param	array posted form data
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   this elements posted form data
+	 * @param   array  $data  posted form data
+	 *
+	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		//val already contains group splitter from processUpload() code
 		return $val;
@@ -936,7 +942,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				//@todo allow uploading into front end designated folders?
 				$myFileDir = '';
 				$cropPath = $storage->clean(JPATH_SITE . '/' . $params->get('fileupload_crop_dir') . '/' . $myFileDir . '/', false);
-				$w = new FabrikWorker();
+				$w = new FabrikWorker;
 				$cropPath = $w->parseMessageForPlaceHolder($cropPath);
 				$cropWidth = $params->get('fileupload_crop_width', 125);
 				$cropHeight = $params->get('fileupload_crop_height', 125);
@@ -1004,7 +1010,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$store = array();
 				for ($i = 0; $i < count($files); $i++)
 				{
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->file = $files[$i];
 					$o->params = $saveParams[$i];
 					$store[] = $o;
@@ -1570,7 +1576,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if ($make_thumbnail)
 		{
 			$thumbPath = $storage->clean(JPATH_SITE . '/' . $params->get('thumb_dir') . '/' . $myFileDir . '/', false);
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$thumbPath = $w->parseMessageForPlaceHolder($thumbPath);
 			$thumbPrefix = $params->get('thumb_prefix');
 			$maxWidth = $params->get('thumb_max_width', 125);
@@ -1675,7 +1681,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$folder = $params->get('ul_directory');
 		$folder = $folder . '/' . $myFileDir;
 		$folder = JPath::clean(JPATH_SITE . '/' . $folder);
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$folder = $w->parseMessageForPlaceHolder($folder);
 
 		JPath::check($folder);
@@ -1737,7 +1743,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			return implode("\n", $links);
 		}
 
-		$render = new stdClass();
+		$render = new stdClass;
 		$render->output = '';
 		$allRenders = '';
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->_editable)
@@ -2016,7 +2022,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		// $$$ hugh - reinstated this workaround, as I started getting those utf8 warnings as well.
 		error_reporting(E_ERROR | E_PARSE);
 
-		$o = new stdClass();
+		$o = new stdClass;
 		$this->_id = JRequest::getInt('element_id');
 		$groupModel = $this->getGroup();
 
@@ -2071,11 +2077,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelElement::getFieldDescription()
+	 * Get database field description
+	 *
+	 * @return  string  db field type
 	 */
 
-	function getFieldDescription()
+	public function getFieldDescription()
 	{
 		$p = $this->getParams();
 		if ($this->encryptMe())
@@ -2121,14 +2128,15 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * E.g. if the database join element points to a file upload element then you can replace
 	 * the file path that is the standard $val with the html to create the image
 	 *
-	 * @param string $val
-	 * @param string view form or table
-	 * @return string modified val
-	 * @TODO: base the returned string completely on the params specified for the element
-	 * e.g. thumbnail, show image, link etc
+	 * @param   string  $val   value
+	 * @param   string  $view  form or list
+	 *
+	 * @deprecated - doesn't seem to be used
+	 *
+	 * @return  string	modified val
 	 */
 
-	function modifyJoinQuery($val, $view = 'form')
+	protected function modifyJoinQuery($val, $view = 'form')
 	{
 		$params = $this->getParams();
 		if (!$params->get('fu_show_image', 0) && $view == 'form')
@@ -2141,11 +2149,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$ulDir = str_replace("\\", "\\\\", $ulDir);
 			$thumbDir = $params->get('thumb_dir');
 			$thumbDir = JPath::clean($params->get('thumb_dir')) . '/';
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir = str_replace("\\", "\\\\", $thumbDir);
 
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir .= $params->get('thumb_prefix');
 
@@ -2251,9 +2259,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * used to format the data when shown in the form's email
-	 * @param	string
-	 * @return	string	formatted value
+	 * Turn form value into email formatted value
+	 *
+	 * @param   mixed  $value          element value
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  group repeat counter
+	 *
+	 * @return  string  email formatted value
 	 */
 
 	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -2282,7 +2294,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 	}
 
-	function getROValue($data, $repeatCounter = 0)
+	/**
+	 * Determines the value for the element in the form view
+	 *
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 *
+	 * @return  string	value
+	 */
+
+	public function getROValue($data, $repeatCounter = 0)
 	{
 		$v = $this->getValue($data, $repeatCounter);
 		$storage = $this->getStorage();
@@ -2414,7 +2435,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$log = JTable::getInstance('log', 'Table');
 			$log->message_type = 'fabrik.fileupload.download';
 			$user = JFactory::getUser();
-			$msg = new stdClass();
+			$msg = new stdClass;
 			$msg->file = $filepath;
 			$msg->userid = $user->get('id');
 			$msg->username = $user->get('username');

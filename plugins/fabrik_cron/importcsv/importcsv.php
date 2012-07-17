@@ -134,12 +134,12 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 			{
 				JFile::delete($full_csvfile);
 			}
-			else if ($deleteFile == '2')
+			elseif ($deleteFile == '2')
 			{
 				$new_csvfile = $full_csvfile . '.' . time();
 				JFile::move($full_csvfile, $new_csvfile);
 			}
-			else if ($deleteFile == '3')
+			elseif ($deleteFile == '3')
 			{
 				$done_folder = dirname($full_csvfile) . '/done';
 				if (JFolder::exists($done_folder))

@@ -56,7 +56,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		jimport('joomla.user.helper');
 		$salt = JUserHelper::genRandomPassword(32);
@@ -69,10 +69,12 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
 	 *
+	 * @deprecated - not used
+	 *
 	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}

@@ -1,12 +1,23 @@
 <?php
+
+/**
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+*/
+
+// Check to ensure this file is included in Joomla!
+defined('_JEXEC') or die();
+
 /**
  * Installer manifest class
  *
- * @package com_fabrik
- * @author Rob Clayburn
- * @license GNU/GPL http://www.gnu.org/licenses/gpl.html
- * @copyright 2009 Developer Name
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
+
 class Com_FabrikInstallerScript
 {
 
@@ -33,7 +44,7 @@ class Com_FabrikInstallerScript
 	{
 		$db = JFactory::getDbo();
 		$app = JFactory::getApplication();
-		$row = new stdClass();
+		$row = new stdClass;
 		$row->host = $app->getCfg('host');
 		$row->user = $app->getCfg('user');
 		$row->password = $app->getCfg('password');
@@ -57,7 +68,7 @@ class Com_FabrikInstallerScript
 		$query->select('extension_id, params')->from('#__extensions')->where('name = '.$db->quote('fabrik'))->where('type = '.$db->quote('component'));
 		$db->setQuery($query);
 		$row = $db->loadObject();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->fbConf_wysiwyg_label = 0;
 		$opts->fbConf_alter_existing_db_cols = 0;
 		$opts->spoofcheck_on_formsubmission = 0;
@@ -102,7 +113,7 @@ class Com_FabrikInstallerScript
 				return false;
 			}
 		}
-		
+
 		$dest = 'libraries/joomla/database/database';
 		$driverInstallLoc = $componentFrontend . '/dbdriver/';
 		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
@@ -142,10 +153,10 @@ class Com_FabrikInstallerScript
 	}
 
 	/**
-	* god knows why but install component, uninstall component and install 
+	* god knows why but install component, uninstall component and install
 	* again and component_id is set to 0 for the menu items grrrrr
 	*/
-	
+
 	protected function fixmMenuComponentId()
 	{
 		$db = JFactory::getDbo();

@@ -79,7 +79,7 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$repeat = ElementHelper::getRepeat($this);
 					$tableDd = $this->element['table'];
-					$opts = new stdClass();
+					$opts = new stdClass;
 					$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' .$c : 'jform_' . $tableDd;
 					$opts->conn = 'jform_' . $connectionDd;
 					$opts->value = $this->value;
@@ -88,7 +88,7 @@ class JFormFieldListfields extends JFormFieldList
 					$script = "new ListFieldsElement('$this->id', $opts);\n";
 					FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/listfields.js', $script);
 					$rows = array(JHTML::_('select.option', '', JText::_('SELECT A CONNECTION FIRST')), 'value', 'text');
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->table_name = '';
 					$o->name = '';
 					$o->value = '';
@@ -158,7 +158,7 @@ class JFormFieldListfields extends JFormFieldList
 			{
 				foreach ($res as $o)
 				{
-					$s = new stdClass();
+					$s = new stdClass;
 					//element already contains correct key
 					if ($controller != 'element')
 					{

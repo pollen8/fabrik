@@ -89,7 +89,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			{
 				$connectionDd = ($c === false || $this->element['connection_in_repeat'] == 'false') ?  $connectionDd :  $connectionDd . '-' . $c;
 			}
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->livesite = COM_FABRIK_LIVESITE;
 			$opts->conn = 'jform_' . $connectionDd;
 			$opts->value = $this->value;

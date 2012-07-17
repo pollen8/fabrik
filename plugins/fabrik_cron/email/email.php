@@ -34,7 +34,7 @@ class plgFabrik_Cronemail extends plgFabrik_Cron {
 		$params = $this->getParams();
 		$msg = $params->get('message');
 		$to = $params->get('to');
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$MailFrom = $app->getCfg('mailfrom');
 		$FromName = $app->getCfg('fromname');
 		$subject = $params->get('subject', 'Fabrik cron job');

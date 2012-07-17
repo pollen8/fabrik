@@ -30,14 +30,14 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 
 	/**
 	 * Manupulates posted form data for insertion into database
-	 * 
+	 *
 	 * @param   mixed  $val   this elements posted form data
 	 * @param   array  $data  posted form data
-	 * 
+	 *
 	 * @return  mixed
 	 */
 
-	function storeDatabaseFormat($val, $data)
+	public function storeDatabaseFormat($val, $data)
 	{
 		$return = "0000-00-00 " . $val;
 		$format = '%Y-%m-%d %H:%i:%s';
@@ -48,10 +48,10 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -69,7 +69,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -80,10 +80,10 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -135,11 +135,14 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
@@ -153,10 +156,10 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 
 	/**
 	 * Get sum query
-	 * 
+	 *
 	 * @param   object  &$listModel  list model
 	 * @param   string  $label       label
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -171,11 +174,11 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	}
 
 	/**
-	 * Build the query for the avg calculation 
-	 * 
+	 * Build the query for the avg calculation
+	 *
 	 * @param   model   &$listModel  list model
 	 * @param   string  $label       the label to apply to each avg
-	 * 
+	 *
 	 * @return  string	sql statement
 	 */
 
@@ -193,7 +196,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	 *
 	 * @param   object  &$listModel  list
 	 * @param   string  $label       label
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -208,9 +211,9 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 
 	/**
 	 * Find the sum from a set of data
-	 * 
+	 *
 	 * @param   array  $data  to sum
-	 * 
+	 *
 	 * @return  string	sum result
 	 */
 
@@ -231,9 +234,9 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	/**
 	 * Get the value to use for graph calculations
 	 * Timer converts the value into seconds
-	 * 
+	 *
 	 * @param   string  $v  standard value
-	 * 
+	 *
 	 * @return  mixed calculation value
 	 */
 

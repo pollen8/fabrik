@@ -560,7 +560,7 @@ EOD;
 					if (is_object($obj))
 					{
 						$k2 = $obj->$key;
-						if ($k == $k2)
+						if ($k === $k2)
 						{
 							$found = true;
 							$extra .= $selected;
@@ -569,7 +569,7 @@ EOD;
 					}
 					else
 					{
-						if ($k == $obj)
+						if ($k === $obj)
 						{
 							// Checkbox from db join
 							$extra .= $selectText;
@@ -581,7 +581,7 @@ EOD;
 			}
 			else
 			{
-				$extra .= $k == $selected ? ' checked="checked"' : '';
+				$extra .= $k === $selected ? ' checked="checked"' : '';
 			}
 			$html .= $div;
 

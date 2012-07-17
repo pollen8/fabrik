@@ -30,7 +30,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	{
 		if (!isset($this->_default))
 		{
-			$w = new FabrikWorker();
+			$w = new FabrikWorker;
 			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->default, $data, true, true);
 			if ($element->eval == '1')
@@ -45,7 +45,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	private function _getV($data, $repeatCounter)
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$groupModel = $this->getGroup();
 		$joinid = $groupModel->getGroup()->join_id;
 		$name = $this->getFullName(false, true, false);
@@ -234,7 +234,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	public function preProcess($c)
 	{
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$form = $this->getForm();
 		$d = $form->_formData;
 		$joindata = JArrayHelper::getValue($d, 'join', array());
@@ -435,11 +435,14 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @return	string	javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
@@ -471,7 +474,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();
 		$params = $this->getParams();
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$d = JRequest::get('request');
 		$this->getFormModel()->_data = $d;
 		$this->swapValuesForLabels($d);
@@ -485,10 +488,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * find the sum from a set of data
-	 * @param	object	list model
-	 * @param	string	$label
-	 * @return	string	sum result
+	 * Get sum query
+	 *
+	 * @param   object  &$listModel  list model
+	 * @param   string  $label       label
+	 *
+	 * @return string
 	 */
 
 	protected function getSumQuery(&$listModel, $label = "'calc'")
@@ -511,10 +516,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * build the query for the avg caclculation
-	 * @param	model	$listModel
-	 * @param	string	$label the label to apply to each avg
-	 * @return	string	sql statement
+	 * Build the query for the avg calculation
+	 *
+	 * @param   model   &$listModel  list model
+	 * @param   string  $label       the label to apply to each avg
+	 *
+	 * @return  string	sql statement
 	 */
 
 	protected function getAvgQuery(&$listModel, $label = "'calc'")
@@ -537,10 +544,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * build the query for the avg caclculation
-	 * @param	model	$listModel
-	 * @param	string	$label the label to apply to each avg
-	 * @return	string	sql statement
+	 * Get a query for our media query
+	 *
+	 * @param   object  &$listModel  list
+	 * @param   string  $label       label
+	 *
+	 * @return string
 	 */
 
 	protected function getMedianQuery(&$listModel, $label = "'calc'")

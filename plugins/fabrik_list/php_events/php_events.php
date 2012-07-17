@@ -1,125 +1,188 @@
 <?php
 /**
- * Execute PHP Code on any list event
- * @package Joomla
- * @subpackage Fabrik
- * @author Mauro H. Leggieri
- * @copyright (C) Mauro H. Leggieri
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.phpevents
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
+
+/**
+ * Execute PHP Code on any list event
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.phpevents
+ * @since       3.0
+ */
 
 class plgFabrik_ListPhp_Events extends plgFabrik_List
 {
 	/**
-	 * called when the active table filter array is loaded
-	 * @param	object	params
-	 * @param	object	model
+	 * onFiltersGot method - run after the list has created filters
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list
+	 *
+	 * @return bol currently ignored
 	 */
-	
-	function onFiltersGot(&$params, &$model)
+
+	public function onFiltersGot($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onfiltersgot'), $model);
 	}
 
 	/**
-	 * called when the table HTML filters are loaded
-	 * @param	object	params
-	 * @param	object	model
+	 * Called when the list HTML filters are loaded
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  void
 	 */
-	
-	function onMakeFilters(&$params, &$model)
+
+	public function onMakeFilters($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onmakefilters'), $model);
 	}
 
 	/**
-	 * do the plugin action
-	 * @param object table model
-	 * @return string message
+	 * Do the plug-in action
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  &$model  list model
+	 * @param   array   $opts    custom options
+	 *
+	 * @return  bool
 	 */
-	
-	function process(&$params, &$model)
+
+	public function process($params, &$model, $opts = array())
 	{
 		return $this->doEvaluate($params->get('list_phpevents_process'), $model);
 	}
 
 	/**
-	 * run before the table loads its data
-	 * @param	object	parmas
-	 * @param	object	$model
-	 * @return	bool
+	 * Run before the list loads its data
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  void
 	 */
-	
-	function onPreLoadData(&$params, &$model)
+
+	public function onPreLoadData($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onpreloaddata'), $model);
 	}
 
 	/**
-	 * run when the list loads its data(non-PHPdoc)
-	 * @param	object	params
-	 * @param	object	model
+	 * onGetData method
+	 *
+	 * @param   object  $params  calling the plugin table/form
+	 * @param   object  &$model  list model
+	 *
+	 * @return bol currently ignored
 	 */
-	
-	function onLoadData(&$params, &$model)
+
+	public function onLoadData($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_onloaddata'), $model);
 	}
 
 	/**
-	 * called when the model deletes rows
-	 * @param	object	list $model
-	 * @return	false	if fail
+	 * Called when the model deletes rows
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  bool  false if fail
 	 */
 
-	function onDeleteRows(&$params, &$model)
+	public function onPreLoadData($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'), $model);
 	}
 
-	/* ---------------------------------------------------- */
+	/**
+	 * Needed to render plugin buttons
+	 *
+	 * @return  bool
+	 */
 
-	function button()
+	public function button()
 	{
-		return "php events";
+		return true;
 	}
+
+	/**
+	 * Build the HTML for the plug-in button
+	 *
+	 * @return  string
+	 */
 
 	public function button_result()
 	{
 		return '';
 	}
 
-	function canUse(&$model = null, $location = null, $event = null)
-	{
-		return true;
-	}
+	/**
+	 * Determine if we use the plugin or not
+	 * both location and event criteria have to be match when form plug-in
+	 *
+	 * @param   object  &$model    calling the plugin table/form
+	 * @param   string  $location  location to trigger plugin on
+	 * @param   string  $event     event to trigger plugin on
+	 *
+	 * @return  bool  true if we should run the plugin otherwise false
+	 */
 
-	function canSelectRows()
-	{
-		return false;
-	}
-
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		return true;
 	}
 
 	/**
-	 * evaluate supplied PHP
-	 * @param	string	$code
-	 * @param	object	$model
-	 * @return boolean
+	 * Can the plug-in select list rows
+	 *
+	 * @return  bool
+	 */
+
+	public function canSelectRows()
+	{
+		return false;
+	}
+
+	/**
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
+	 * @return bool
+	 */
+
+	public function onLoadJavascriptInstance($params, $model, $args)
+	{
+		return true;
+	}
+
+	/**
+	 * Evaluate supplied PHP
+	 *
+	 * @param   string  $code    php code
+	 * @param   object  &$model  list model
+	 *
+	 * @return bool
 	 */
 
 	protected function doEvaluate($code, &$model)
 	{
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$code = $w->parseMessageForPlaceHolder($code);
 		if ($code != '')
 		{
@@ -131,4 +194,3 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 		return true;
 	}
 }
-?>

@@ -35,7 +35,7 @@ class FabrikViewList extends JView{
 		{
 			foreach ($group as $i => $x)
 			{
-				$o = new stdClass();
+				$o = new stdClass;
 				if (is_object($data[$groupk]))
 				{
 					$o->data = JArrayHelper::fromObject($data[$groupk]);

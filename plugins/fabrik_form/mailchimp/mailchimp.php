@@ -15,23 +15,23 @@ require_once 'MCAPI.class.php';
 
 /**
  * Add a user to a mailchimp mailing list
- * 
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.mailchimp
+ * @since       3.0
  */
 
 class plgFabrik_FormMailchimp extends plgFabrik_Form
 {
 
-	var $html = null;
+	protected $html = null;
 
 	/**
 	 * Set up the html to be injected into the bottom of the form
 	 *
-	 * @param   object  $params (no repeat counter stuff needed here as the plugin manager
-	 * which calls this function has already done the work for you
+	 * @param   object  $params     plugin params
 	 * @param   object  $formModel  form model
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -39,7 +39,7 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 	{
 		if ($params->get('mailchimp_userconfirm', true))
 		{
-		$this->html = "
+			$this->html = "
 			<label class=\"mailchimpsignup\"><input type=\"checkbox\" name=\"fabrik_mailchimp_signup\" class=\"fabrik_mailchimp_signup\" value=\"1\"  />
 			 " . $params->get('mailchimp_signuplabel') . "</label>";
 		}
@@ -51,29 +51,30 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 
 	/**
 	 * Inject custom html into the bottom of the form
-	 * 
-	 * @param   int $c  plugin counter
-	 * 
+	 *
+	 * @param   int  $c  plugin counter
+	 *
 	 * @return  string  html
 	 */
 
-	function getBottomContent_result($c)
+	public function getBottomContent_result($c)
 	{
 		return $this->html;
 	}
 
 	/**
-	 * Process the plugin, called when form is submitted
-	 * 
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
+	 *
 	 * @param   object  $params      plugin params
 	 * @param   object  &$formModel  form model
-	 * 
-	 * @return  bool
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
 	{
-		
+
 		$this->formModel = $formModel;
 		$emailData = $this->getEmailData();
 		$post = JRequest::get('post');
@@ -103,18 +104,17 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 		$fname = $formModel->_formDataWithTableName[$firstNameKey];
 		$opts['FNAME'] = $fname;
 		$opts['NAME'] = $fname;
-		
+
 		if ($params->get('mailchimp_lastname', '') !== '')
 		{
 			$lastNameKey = $formModel->getElement($params->get('mailchimp_lastname'), true)->getFullName();
 			$lname = $formModel->_formDataWithTableName[$lastNameKey];
 			$opts['LNAME'] = $lname;
-			$opts['NAME'] .= ' ' .$lname;
+			$opts['NAME'] .= ' ' . $lname;
 		}
 		$email = $formModel->_formDataWithTableName[$emailKey];
-		
-		
-		$w = new FabrikWorker();
+
+		$w = new FabrikWorker;
 
 		$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
 		if (!empty($groupOpts))
@@ -125,7 +125,7 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 				if (isset($groupOpt->groups))
 				{
 					$groupOpt->groups = $w->parseMessageForPlaceHolder($groupOpt->groups, $emailData);
-					
+
 					// An arry of additonal options: array('name'=>'Your Interests:', 'groups'=>'Bananas,Apples')
 					$groups[] = JArrayHelper::fromObject($groupOpt);
 				}
@@ -135,7 +135,7 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 					{
 						// DOn't use emailData as that contains html markup which is not shown in the list view
 						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $formModel->_formData);
-  					}
+					}
 					$opts['GROUPINGS'] = $groups;
 				}
 			}

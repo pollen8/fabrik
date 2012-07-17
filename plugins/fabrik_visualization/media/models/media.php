@@ -264,7 +264,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$str = "head.ready(function() {";
 		$viz = $this->getVisualization();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->which_player = $params->get('media_which_player', 'jw');
 		if ($params->get('media_which_player', 'jw') == 'jw')
 		{

@@ -99,12 +99,14 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param int repeat group counter
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
@@ -114,7 +116,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 		$zoomlevel = $params->get('fb_gm_zoomlevel');
 		$o = $this->_strToCoords($v, $zoomlevel);
 
-		$layers = new stdClass();
+		$layers = new stdClass;
 		$layers->virtualEarth = $params->get('fb_osm_virtualearthlayers');
 		$layers->yahoo = $params->get('fb_osm_yahoolayers');
 		$layers->google = $params->get('fb_osm_gmlayers');
@@ -176,7 +178,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 
 	function _strToCoords($v, $zoomlevel = 0)
 	{
-		$o = new stdClass();
+		$o = new stdClass;
 		$o->coords = array('', '');
 		$o->zoomlevel = (int) $zoomlevel;
 		if (strstr($v, ","))
@@ -235,7 +237,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 		$str = "<div id=\"{$id}\" style=\"width:{$w}px;height:{$h}px\" class=\"gmStaticMap\">";
 		$str .= "<div id=\"{$id}_map\" style=\"width:{$w}px;height:{$h}px\"></div></div>";
 
-		$layers = new stdClass();
+		$layers = new stdClass;
 		$layers->virtualEarth = $params->get('fb_osm_virtualearthlayers');
 		$layers->yahoo = $params->get('fb_osm_yahoolayers');
 		$layers->google = $params->get('fb_osm_gmlayers');
@@ -312,13 +314,16 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 	}
 
 	/**
-	 * can be overwritten in the plugin class - see database join element for example
-	 * @param array
-	 * @param array
-	 * @param array options
+	 * Create the SQL select 'name AS alias' segment for list/form queries
+	 *
+	 * @param   array  &$aFields    array of element names
+	 * @param   array  &$aAsFields  array of 'name AS alias' fields
+	 * @param   array  $opts        options
+	 *
+	 * @return  void
 	 */
 
-	function getAsField_html(&$aFields, &$aAsFields, $opts = array())
+	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$db = FabrikWorker::getDbo();
 		$dbtable = $this->actualTableName();

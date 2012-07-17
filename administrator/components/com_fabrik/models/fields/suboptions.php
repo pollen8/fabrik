@@ -44,7 +44,7 @@ class JFormFieldSuboptions extends JFormField
 	{
 		JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 
-		$default = new stdClass();
+		$default = new stdClass;
 		$default->sub_values = array();
 		$default->sub_labels = array();
 		$default->sub_initial_selection = array();

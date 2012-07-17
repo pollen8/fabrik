@@ -93,7 +93,7 @@ class FabrikModelPackage extends FabModelAdmin
 	{
 		$canvas = $data['params']['canvas'];
 		$canvas = json_decode($canvas);
-		$o = new stdClass();
+		$o = new stdClass;
 		if (is_null($canvas))
 		{
 			JError::raiseError(E_ERROR, 'malformed json package object');
@@ -572,7 +572,7 @@ class FabrikModelPackage extends FabModelAdmin
 				{
 					$item = $element->getElement();
 					$id = 'element_' . $item->plugin;
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->id = $id;
 					$o->name = $item->plugin;
 					$o->group = 'fabrik_element';
@@ -584,7 +584,7 @@ class FabrikModelPackage extends FabModelAdmin
 				foreach ($fplugins as $fplugin)
 				{
 					$id = 'form_' . $fplugin;
-					$o = new stdClass();
+					$o = new stdClass;
 					$o->id = $id;
 					$o->name = $fplugin;
 					$o->group = 'fabrik_form';
@@ -600,7 +600,7 @@ class FabrikModelPackage extends FabModelAdmin
 			foreach ($tplugins as $tplugin)
 			{
 				$id = 'list_' . $tplugin;
-				$o = new stdClass();
+				$o = new stdClass;
 				$o->id = $id;
 				$o->name = $tplugin;
 				$o->group = 'fabrik_list';

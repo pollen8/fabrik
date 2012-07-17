@@ -142,7 +142,7 @@ class uploader extends JObject
 					$err = 'WARNINVALIDIMG';
 					return false;
 				}
-			} else if (!in_array($format, $ignored)) {
+			} elseif (!in_array($format, $ignored)) {
 				// if its not an image...and we're not ignoring it
 				/*$allowed_mime = explode(',', $upload_mime);
 				$illegal_mime = explode(',', $upload_mime_illegal);
@@ -155,7 +155,7 @@ class uploader extends JObject
 						return false;
 					}
 					finfo_close($finfo);
-				} else if (function_exists('mime_content_type') && $params->get('check_mime',1)) {
+				} elseif (function_exists('mime_content_type') && $params->get('check_mime',1)) {
 					// we have mime magic
 					$type = mime_content_type($file['tmp_name']);
 					if (strlen($type) && !in_array($type, $allowed_mime) && in_array($type, $illegal_mime)) {

@@ -74,7 +74,7 @@ class FabrikViewVisualization {
 			// do field validation
 			if (\$('plugin').getValue() == '') {
 				alert('".JText::_('YOU MUST SELECT A PLUGIN.', true)."');
-			} else if (\$('label').getValue()  == '') {
+			} elseif (\$('label').getValue()  == '') {
 				alert('". JText::_('PLEASE ENTER A LABEL', true)."');
 			} else {
 				submitform( pressbutton);

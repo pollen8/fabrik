@@ -1,104 +1,142 @@
 <?php
-
 /**
-* Add an action button to the table to copy rows
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.example
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
-class plgFabrik_ListList_Example extends plgFabrik_List {
+/**
+ * Example plugin showing some of the main list plugin methods
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.example
+ * @since       3.0
+ */
+
+class plgFabrik_ListList_Example extends plgFabrik_List
+{
 
 	/**
-	 * called when the active table filter array is loaded
-	 */
-
-	function onFiltersGot(&$params, &$model) {
-
-	}
-
-	/**
-	 * called when the table HTML filters are loaded
+	 * onFiltersGot method - run after the list has created filters
 	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list
+	 *
+	 * @return bol currently ignored
 	 */
 
-	function onMakeFilters(&$params, &$model) {
-	}
-
-		/**
-	 * do the plugin action
-	 * @param object table model
-	 * @return string message
-	 */
-	function process(&$model)
-	{}
-
-	/**
-	 * run before the table loads its data
-	 * @param $model
-	 * @return unknown_type
-	 */
-	function onPreLoadData(&$model)
-	{}
-
-	/**
-	 * run when the table loads its data(non-PHPdoc)
-	 * @see components/com_fabrik/models/FabrikModelTablePlugin#onLoadData($params, $oRequest)
-	 */
-	function onLoadData(&$params, &$oRequest)
-	{}
-
-
-	/**
-	 * called when the model deletes rows
-	 * @param object table $model
-	 * @return false if fail
-	 */
-	function onDeleteRows(&$model)
+	public function onFiltersGot($params, &$model)
 	{
-
 	}
 
+	/**
+	 * Called when the list HTML filters are loaded
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  void
+	 */
 
-	function button()
+	public function onMakeFilters($params, &$model)
 	{
-		return "copy records";
 	}
 
+	/**
+	 * Do the plug-in action
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  &$model  list model
+	 * @param   array   $opts    custom options
+	 *
+	 * @return  bool
+	 */
 
-	function canUse(&$model = null, $location = null, $event = null)
+	public function process($params, &$model, $opts = array())
+	{
+	}
+
+	/**
+	 * Run before the list loads its data
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  void
+	 */
+
+	public function onPreLoadData($params, &$model)
+	{
+	}
+
+	/**
+	 * onGetData method
+	 *
+	 * @param   object  $params  calling the plugin table/form
+	 * @param   object  &$model  list model
+	 *
+	 * @return bol currently ignored
+	 */
+
+	public function onLoadData($params, &$model)
+	{
+	}
+
+	/**
+	 * Needed to render plugin buttons
+	 *
+	 * @return  bool
+	 */
+
+	public function button()
 	{
 		return true;
 	}
 
 	/**
-	 * determine if the table plugin is a button and can be activated only when rows are selected
+	 * Check if the user can use the plugin
 	 *
-	 * @return bol
+	 * @param   object  &$model    calling the plugin list/form
+	 * @param   string  $location  to trigger plugin on
+	 * @param   string  $event     to trigger plugin on
+	 *
+	 * @return  bool can use or not
 	 */
 
-	function canSelectRows()
+	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		return true;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param list table model
-	 * @param array [0] => string table's form id to contain plugin
+	 * Can the plug-in select list rows
+	 *
+	 * @return  bool
+	 */
+
+	public function canSelectRows()
+	{
+		return true;
+	}
+
+	/**
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
 	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
@@ -107,4 +145,3 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	}
 
 }
-?>

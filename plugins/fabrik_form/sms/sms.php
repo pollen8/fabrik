@@ -18,47 +18,68 @@ require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
+ * @since       3.0
  */
 
 class plgFabrik_FormSMS extends plgFabrik_Form
 {
 
 	/**
-	 * process the plugin, called when form is submitted
-	 * @param	object	$params
-	 * @param	object	form model
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
 	{
-		$this->process($params, $formModel);
+		return $this->process($params, $formModel);
 	}
 
-	function process($params, &$formModel)
+	/**
+	* Send SMS
+	*
+	* @param   object  $params      plugin params
+	* @param   object  &$formModel  form model
+	*
+	* @return	bool
+	*/
+
+	protected function process($params, &$formModel)
 	{
 		$this->formModel = $formModel;
 		$message = $this->getMessage();
 		$aData = $oForm->_formData;
 		$gateway = $this->getInstance();
-		$gateway->process($message);
+		return $gateway->process($message);
 	}
 
-	function getInstance()
+	/**
+	 * Get specific SMS gateway instance
+	 *
+	 * @return  object  gateway
+	 */
+
+	private function getInstance()
 	{
 		if (!isset($this->gateway))
 		{
 			$params = $this->getParams();
 			$gateway = JFilterInput::clean($params->get('sms-gateway', 'kapow.php'), 'CMD');
-			require_once(JPATH_ROOT . '/plugins/fabrik_form/sms/gateway/' . JString::strtolower($gateway));
+			require_once JPATH_ROOT . '/plugins/fabrik_form/sms/gateway/' . JString::strtolower($gateway);
 			$gateway = JFile::stripExt($gateway);
-			$this->gateway = new $gateway();
+			$this->gateway = new $gateway;
 			$this->gateway->params = $params;
 		}
 		return $this->gateway;
 	}
 
 	/**
-	 * default email handling routine, called if no email template specified
+	 * Default email handling routine, called if no email template specified
+	 *
 	 * @return	string	email message
 	 */
 
@@ -119,4 +140,3 @@ class plgFabrik_FormSMS extends plgFabrik_Form
 	}
 
 }
-?>

@@ -24,11 +24,15 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	var $_font = 'monofont.ttf';
 
 	/**
-	 * can be overwritten in plugin class
-	 * determines if the element can contain data used in sending receipts, e.g. field returns true
+	 * Determines if the element can contain data used in sending receipts,
+	 * e.g. fabrikfield returns true
+	 *
+	 * @deprecated - not used
+	 *
+	 * @return  bool
 	 */
 
-	function isReceiptElement()
+	public function isReceiptElement()
 	{
 		return true;
 	}
@@ -47,7 +51,16 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		return $code;
 	}
 
-	function getLabel($repeatCounter, $tmpl = '')
+	/**
+	 * Get the element's HTML label
+	 *
+	 * @param   int     $repeatCounter  group repeat counter
+	 * @param   string  $tmpl           form template
+	 *
+	 * @return  string  label
+	 */
+
+	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -61,7 +74,13 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
 
-	function isHidden()
+	/**
+	 * Is the element hidden or not - if not set then return false
+	 *
+	 * @return  bool
+	 */
+
+	protected function isHidden()
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -278,12 +297,14 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	}
 
 	/**
-	 * return tehe javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object element
-	 * @return string javascript to create instance. Instance name must be 'el'
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  string
 	 */
 
-	function elementJavascript($repeatCounter)
+	public function elementJavascript($repeatCounter)
 	{
 		$user = JFactory::getUser();
 		if ($user->id == 0)

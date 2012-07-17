@@ -169,14 +169,14 @@ class FabrikModelElement extends JModelAdmin
 			foreach ($groups as $groupModel)
 			{
 				$group = $groupModel->getGroup();
-				$o = new stdClass();
+				$o = new stdClass;
 				$o->label = $group->name;
 				$o->value = 'fabrik_trigger_group_group' . $group->id;
 				$aGroups[] = $o;
 				$elementModels = $groupModel->getMyElements();
 				foreach ($elementModels as $elementModel)
 				{
-					$o = new stdClass();
+					$o = new stdClass;
 					$element = $elementModel->getElement();
 					$o->label = FabrikString::getShortDdLabel($element->label);
 					$o->value = 'fabrik_trigger_element_' . $elementModel->getFullName(false, true, false);
@@ -185,7 +185,7 @@ class FabrikModelElement extends JModelAdmin
 			}
 		}
 		asort($aEls);
-		$o = new StdClass();
+		$o = new stdClass;
 		$o->groups = $aGroups;
 		$o->elements = array_values($aEls);
 		return $o;
@@ -369,7 +369,7 @@ class FabrikModelElement extends JModelAdmin
 		$item = $this->getItem();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->plugin = $item->plugin;
 		$opts->parentid = (int) $item->parent_id;
 		$opts->jsevents = $this->getJsEvents();
@@ -394,7 +394,7 @@ class FabrikModelElement extends JModelAdmin
 		$js .= "\tcontroller = new fabrikAdminElement(aPlugins, opts);\n";
 		foreach ($plugins as $plugin)
 		{
-			$opts = new stdClass();
+			$opts = new stdClass;
 			$opts->location = @$plugin['location'];
 			$opts->event = @$plugin['event'];
 			$opts = json_encode($opts);
@@ -620,7 +620,7 @@ class FabrikModelElement extends JModelAdmin
 			$data['parent_id'] = 0;
 		}
 
-		$datenow = new JDate();
+		$datenow = new JDate;
 		if ($row->id != 0)
 		{
 			$data['modified'] = $datenow->toSql();
@@ -913,7 +913,7 @@ class FabrikModelElement extends JModelAdmin
 			for ($c = 0; $c < count($post['jform']['js_action']); $c ++)
 			{
 				$jsAction = $post['jform']['js_action'][$c];
-				$params = new stdClass();
+				$params = new stdClass;
 				$params->js_e_event = $post['js_e_event'][$c];
 				$params->js_e_trigger = $post['js_e_trigger'][$c];
 				$params->js_e_condition = $post['js_e_condition'][$c];
@@ -1090,7 +1090,7 @@ class FabrikModelElement extends JModelAdmin
 		);
 		$join = $this->getTable('join');
 		$join->load(array('element_id' => $data['element_id']));
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->type = 'repeatElement';
 		$data['params'] = json_encode($opts);
 		$join->bind($data);

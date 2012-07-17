@@ -1409,7 +1409,7 @@ class JForm
 				}
 			}
 		}
-		else if ($group === false) {
+		elseif ($group === false) {
 			// Get only field elements not in a group.
 			$fields = $this->xml->xpath('descendant::fields[not(@name)]/field | descendant::fields[not(@name)]/fieldset/field ');
 		}

@@ -23,6 +23,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.pingdotfm
+ * @since       3.0
  */
 
 class plgFabrik_FormPingdotfm extends plgFabrik_Form
@@ -34,11 +35,13 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 	var $max_msg_length = 140;
 
 	/**
-	 * process the plugin, called when form is submitted
+	 * Run right at the end of the form processing
+	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param	object	$params
-	 * @param	object	form model
-	 * @returns	bool
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return	bool
 	 */
 
 	public function onAfterProcess($params, &$formModel)
@@ -46,20 +49,30 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 		return $this->_process($params, $formModel);
 	}
 
-	private function _process(&$params, &$formModel)
+	/**
+	 * Process to Ping.fm
+	 *
+	 * @param   object  $params      plugin params
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  bool
+	 */
+
+	private function _process($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
 		$this->formModel = $formModel;
 		jimport('joomla.filesystem.file');
-		$w = new FabrikWorker();
+		$w = new FabrikWorker;
 		$data = $this->getEmailData();
 		if (!$this->shouldProcess('ping_condition', $data))
 		{
 			return;
 		}
 		$apiKeys = $this->_getKeys($params);
-		include_once('PHPingFM.php');
+		include_once 'PHPingFM.php';
 		$ping = new PHPingFM($apiKeys['dev'], $apiKeys['user']);
+
 		// Validate Keys
 
 		if ($ping->validate() === false)
@@ -131,8 +144,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 
 		if ($okServices === false)
 		{
-			JError::raiseNotice(JText::_('Ping.fm Error'),
-				"The chosen method is not supported by any of the services configured in your Ping.fm account");
+			JError::raiseNotice(500, JText::_('PLG_FORM_PING_FM_METHOD_NOT_SUPPORTED'));
 			return;
 		}
 
@@ -198,7 +210,15 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 
 	}
 
-	private function _getKeys(&$params)
+	/**
+	 * Get API key
+	 *
+	 * @param   object  $params  plugin params
+	 *
+	 * @return  array
+	 */
+
+	private function _getKeys($params)
 	{
 		$apiKeys = array();
 
@@ -209,4 +229,3 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 	}
 
 }
-?>

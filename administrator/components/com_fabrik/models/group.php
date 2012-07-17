@@ -298,7 +298,7 @@ class FabrikModelGroup extends FabModelAdmin
 		$join = $this->getTable('join');
 		$join->load($jdata);
 		
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->type = 'group';
 		$jdata['params'] = json_encode($opts);
 		$join->bind($jdata);

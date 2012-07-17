@@ -238,7 +238,7 @@ class FabrikControllerForm extends JController
 				$redirect_opts['title'] = $session->get($context . 'redirect_content_popup_title', '');
 				$redirect_opts['reset_form'] = $session->get($context . 'redirect_content_reset_form', '1') == '1';
 			}
-			else if ($this->isMambot)
+			elseif ($this->isMambot)
 			{
 				// $$$ hugh - special case to allow custom code to specify that
 				// the form should not be cleared after a failed AJAX submit

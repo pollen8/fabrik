@@ -61,7 +61,7 @@ class FabrikModelConnections extends JModelList
 		{
 			$query->where('c.published = ' . (int) $published);
 		}
-		else if ($published === '')
+		elseif ($published === '')
 		{
 			$query->where('(c.published IN (0, 1))');
 		}

@@ -77,7 +77,7 @@ class FabrikViewPackages extends JView
 		}
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'packages.delete','JTOOLBAR_EMPTY_TRASH');
-		} else if ($canDo->get('core.edit.state')) {
+		} elseif ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('packages.trash','JTOOLBAR_TRASH');
 		}
 		if ($canDo->get('core.admin')) {

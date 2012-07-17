@@ -1,9 +1,9 @@
 <?php
 /**
-* @package		Joomla
-* @subpackage	Fabrik
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 
 // Check to ensure this file is included in Joomla!
@@ -12,8 +12,9 @@ defined('_JEXEC') or die();
 /**
 * List Helper class
 *
-* @package		Joomla
-* @subpackage	Fabrik.helpers
+* @package     Joomla
+* @subpackage  Fabrik.helpers
+* @since       3.0.6
 */
 
 class FabrikHelperList

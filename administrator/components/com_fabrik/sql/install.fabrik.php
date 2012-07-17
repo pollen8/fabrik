@@ -114,7 +114,7 @@ function com_install() {
 		/*//test to ensure that the main component params have a default setup
 		$db->setQuery("SELECT id, params FROM #__extension WHERE name = 'fabrik' and type = 'component'");
 		$row = $db->loadObject();
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->fbConf_wysiwyg_label = 0;
 		$opts->fbConf_alter_existing_db_cols = 0;
 		$opts->spoofcheck_on_formsubmission = 0;

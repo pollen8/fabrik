@@ -286,7 +286,7 @@ class FPagination extends JPagination{
 		$app = JFactory::getApplication();
 		$admin = $app->isAdmin();
  		// Initialize variables
-		$data = new stdClass();
+		$data = new stdClass;
 		$this->url = preg_replace("/limitstart{$this->_id}=(.*)?(&|)/", "", $this->url);
 		$this->url = FabrikString::rtrimword($this->url, "&");
 		// $$$ hugh - need to work out if we need & or ?
