@@ -295,9 +295,9 @@ class plgFabrik_List extends FabrikPlugin
 	}
 
 	/**
-	 * Get the src for the list plugin js class
+	 * Get the src(s) for the list plugin js class
 	 *
-	 * @return  string
+	 * @return  mixed  string or array
 	 */
 
 	public function loadJavascriptClass_result()
