@@ -1,21 +1,27 @@
 <?php
-
 /**
-* Add an action button to the table to copy rows
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.example
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
-class plgFabrik_ListList_Example extends plgFabrik_List {
+/**
+ * Example plugin showing some of the main list plugin methods
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.example
+ * @since       3.0
+ */
+
+class plgFabrik_ListList_Example extends plgFabrik_List
+{
 
 	/**
 	 * onFiltersGot method - run after the list has created filters
@@ -27,32 +33,48 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	 */
 
 	public function onFiltersGot($params, &$model)
-
+	{
 	}
 
 	/**
-	 * called when the table HTML filters are loaded
+	 * Called when the list HTML filters are loaded
 	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  void
 	 */
 
-	function onMakeFilters(&$params, &$model) {
+	public function onMakeFilters($params, &$model)
+	{
 	}
 
-		/**
-	 * do the plugin action
-	 * @param object table model
-	 * @return string message
+	/**
+	 * Do the plug-in action
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  &$model  list model
+	 * @param   array   $opts    custom options
+	 *
+	 * @return  bool
 	 */
-	function process(&$model)
-	{}
+
+	public function process($params, &$model, $opts = array())
+	{
+	}
 
 	/**
-	 * run before the table loads its data
-	 * @param $model
-	 * @return unknown_type
+	 * Run before the list loads its data
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  void
 	 */
-	function onPreLoadData(&$model)
-	{}
+
+	public function onPreLoadData($params, &$model)
+	{
+	}
 
 	/**
 	 * onGetData method
@@ -64,51 +86,57 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	 */
 
 	public function onLoadData($params, &$model)
-	{}
-
-
-	/**
-	 * called when the model deletes rows
-	 * @param object table $model
-	 * @return false if fail
-	 */
-	function onDeleteRows(&$model)
 	{
-
-	}
-
-
-	function button()
-	{
-		return "copy records";
-	}
-
-
-	function canUse(&$model = null, $location = null, $event = null)
-	{
-		return true;
 	}
 
 	/**
-	 * determine if the table plugin is a button and can be activated only when rows are selected
+	 * Needed to render plugin buttons
 	 *
-	 * @return bol
+	 * @return  bool
 	 */
 
-	function canSelectRows()
+	public function button()
 	{
 		return true;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param list table model
-	 * @param array [0] => string table's form id to contain plugin
+	 * Check if the user can use the plugin
+	 *
+	 * @param   object  &$model    calling the plugin list/form
+	 * @param   string  $location  to trigger plugin on
+	 * @param   string  $event     to trigger plugin on
+	 *
+	 * @return  bool can use or not
+	 */
+
+	public function canUse(&$model = null, $location = null, $event = null)
+	{
+		return true;
+	}
+
+	/**
+	 * Can the plug-in select list rows
+	 *
+	 * @return  bool
+	 */
+
+	public function canSelectRows()
+	{
+		return true;
+	}
+
+	/**
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
 	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
@@ -117,4 +145,3 @@ class plgFabrik_ListList_Example extends plgFabrik_List {
 	}
 
 }
-?>

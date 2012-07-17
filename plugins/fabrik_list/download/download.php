@@ -1,19 +1,24 @@
 <?php
-
 /**
- * Add an action button to the table to copy rows
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Pollen 8 Design Ltd
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
- */
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.list.download
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+*/
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
+
+/**
+* Download list plugin
+*
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.list.download
+* @since       3.0
+*/
 
 class plgFabrik_ListDownload extends plgFabrik_List
 {
@@ -22,10 +27,22 @@ class plgFabrik_ListDownload extends plgFabrik_List
 
 	protected $msg = null;
 
-	function button()
+	/**
+	 * Needed to render plugin buttons
+	 *
+	 * @return  bool
+	 */
+
+	public function button()
 	{
-		return "download files";
+		return true;
 	}
+
+	/**
+	 * Get the button label
+	 *
+	 * @return  string
+	 */
 
 	protected function buttonLabel()
 	{
@@ -33,35 +50,40 @@ class plgFabrik_ListDownload extends plgFabrik_List
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see FabrikModelTablePlugin::getAclParam()
+	 * Get the parameter name that defines the plugins acl access
+	 *
+	 * @return  string
 	 */
 
-	function getAclParam()
+	protected function getAclParam()
 	{
 		return 'download_access';
 	}
 
 	/**
-	 * determine if the table plugin is a button and can be activated only when rows are selected
+	 * Can the plug-in select list rows
 	 *
-	 * @return bol
+	 * @return  bool
 	 */
 
-	function canSelectRows()
+	public function canSelectRows()
 	{
 		return $this->canUse();
 	}
 
 	/**
-	 * do the plugin action
-	 * @param object parameters
-	 * @param object table model
+	 * Do the plug-in action
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  &$model  list model
+	 * @param   array   $opts    custom options
+	 *
+	 * @return  bool
 	 */
-	function process(&$params, &$model)
+
+	public function process($params, &$model, $opts = array())
 	{
 		$ids = JRequest::getVar('ids', array(), 'method', 'array');
-		//$params = $model->getParams();
 		$download_table = $params->get('download_table');
 		$download_fk = $params->get('download_fk');
 		$download_file = $params->get('download_file');
@@ -112,7 +134,7 @@ class plgFabrik_ListDownload extends plgFabrik_List
 			if ($download_resize)
 			{
 				ini_set('max_execution_time', 300);
-				require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
+				require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 				$storage = $this->getStorage();
 				$download_image_library = $params->get('download_image_library');
 				$oImage = FabimageHelper::loadLib($download_image_library);
@@ -198,20 +220,30 @@ class plgFabrik_ListDownload extends plgFabrik_List
 		}
 	}
 
-	function process_result($c)
+	/**
+	 * Get the message generated in process()
+	 *
+	 * @param   int  $c  plugin render order
+	 *
+	 * @return  string
+	 */
+
+	public function process_result($c)
 	{
 		return $this->msg;
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param object table model
-	 * @param array [0] => string table's form id to contain plugin
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
 	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
@@ -220,18 +252,22 @@ class plgFabrik_ListDownload extends plgFabrik_List
 		return true;
 	}
 
-	function getStorage()
+	/**
+	 * Get fileystem storage class
+	 *
+	 * @return  object filesystem storage
+	 */
+
+	protected function getStorage()
 	{
 		if (!isset($this->storage))
 		{
 			$params = $this->getParams();
-			//$storageType = $params->get('fileupload_storage_type', 'filesystemstorage');
 			$storageType = 'filesystemstorage';
-			require_once(JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php');
+			require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php';
 			$this->storage = new $storageType($params);
 		}
 		return $this->storage;
 	}
 
 }
-?>

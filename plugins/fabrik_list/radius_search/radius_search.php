@@ -1,19 +1,24 @@
 <?php
-
 /**
- * Add a radius search option to the list filters
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Pollen 8 Design Ltd
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.radiussearch
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-list.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
+
+/**
+ * Add a radius search option to the list filters
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.radiussearch
+ * @since       3.0
+ */
 
 class plgFabrik_ListRadius_search extends plgFabrik_List
 {
@@ -22,11 +27,15 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	var $placeCoordinates = null;
 
 	/**
-	 * called when the table filters are loaded
-	 * appends the widget html to the filters
+	 * Called when the list HTML filters are loaded
+	 *
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 *
+	 * @return  void
 	 */
 
-	function onMakeFilters(&$params, &$model)
+	public function onMakeFilters($params, &$model)
 	{
 		if (!is_object($this->getMapElement()))
 		{
@@ -117,8 +126,11 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 	/**
-	 * get the coordinates for a place
-	 * @param string $place value selected in widget
+	 * Get the coordinates for a place
+	 *
+	 * @param   string  $place  value selected in widget
+	 *
+	 * @return  array
 	 */
 
 	private function placeCoordinates($place)
@@ -142,8 +154,8 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		}
 		else
 		{
-			//hmm no exact match lets unset the query and try to find a partial match
-			//(perhaps the user didnt select anything from the dropdown?)
+			// No exact match lets unset the query and try to find a partial match
+			// (perhaps the user didnt select anything from the dropdown?)
 			unset($this->model->getForm()->query);
 			$row = $this->model->findRow($placeElement->name, $place);
 			if (is_object($row))
@@ -160,29 +172,32 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 	/**
-	 * this is used to put the radius search data into the listfilter model
+	 * This is used to put the radius search data into the listfilter model
 	 * called from its getPostFilters() method. The data is then sent to tableModel->_request
 	 * which is then stored in the session for future use
-	 * @param object plug-in $params
-	 * @param object table $model
-	 * @param array filters created from listfilter::getPostFilters();
+	 *
+	 * @param   object  $params  plug-in params
+	 * @param   object  &$model  list model
+	 * @param   array   &$args   filters created from listfilter::getPostFilters();
+	 *
+	 * @return  void
 	 */
 
-	function onGetPostFilter(&$params, &$model, &$args)
+	public function onGetPostFilter($params, &$model, &$args)
 	{
 		$this->model = $model;
 		$filters = $model->tmpFilters;
 		$v = JRequest::getVar('radius_search_distance');
 		if ($v == '')
 		{
-			//echo 'v is empty for radius search = not adding in filters n onGetPostFilter() <br><br>';
+			// V is empty for radius search = not adding in filters n onGetPostFilter() <br><br>';
 			return;
 		}
 
 		$active = JRequest::getVar('radius_search_active', array(1));
 		if ($active[0] == 0)
 		{
-			//need to clear out any session filter (occurs when you search with r filter, then deactivate the filter
+			// Need to clear out any session filter (occurs when you search with r filter, then deactivate the filter
 			$filterModel = $model->getFilterModel();
 			$index = array_key_exists('elementid', $filters) ? array_search('radius_search', (array) $filters['elementid']) : false;
 			if ($index !== false)
@@ -215,11 +230,13 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 	/**
+	 * Build the sql query to filter the data
 	 *
-	 * build the sql query to filter the data
-	 * @param object $params
-	 * return string query's where statement
+	 * @param   object  $params  plugin params
+	 *
+	 * @return  string  query's where statement
 	 */
+
 	protected function getQuery($params)
 	{
 		$app = JFactory::getApplication();
@@ -244,7 +261,8 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		}
 		$el = $this->getMapElement();
 		$el = FabrikString::safeColName($el->getFullName(false, false, false));
-		//crazy sql to get the lat/lon from google map element
+
+		// Crazy sql to get the lat/lon from google map element
 		$latfield = "SUBSTRING_INDEX(TRIM(LEADING '(' FROM $el), ',', 1)";
 		$lonfield = "SUBSTRING_INDEX(SUBSTRING_INDEX($el, ',', -1), ')', 1)";
 		$v = $this->getValue();
@@ -305,6 +323,12 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$model->filters['filter'][] = $v;
 	}
 
+	/**
+	 * Get radius search distance value
+	 *
+	 * @return number
+	 */
+
 	protected function getValue()
 	{
 		$baseContext = $this->getSessionContext();
@@ -317,8 +341,11 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$v = (int) $v;
 		return $v;
 	}
-	/*
-	 * build the html for the distance slider
+
+	/**
+	 * Build the html for the distance slider
+	 *
+	 * @return  string
 	 */
 
 	private function slider()
@@ -336,19 +363,20 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 	/**
-	 * determine if the table plugin is a button and can be activated only when rows are selected
+	 * Can the plug-in select list rows
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 
-	function canSelectRows()
+	public function canSelectRows()
 	{
 		return false;
 	}
 
 	/**
-	 * get the place element model
-	 * @return place element model
+	 * Get the place element model
+	 *
+	 * @return  object  place element model
 	 */
 
 	private function getPlaceElement()
@@ -371,8 +399,9 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 	/**
-	 * get the map element model
-	 * @return element model
+	 * Get the map element model
+	 *
+	 * @return  object  element model
 	 */
 
 	private function getMapElement()
@@ -388,12 +417,13 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 	/**
-	 * load the javascript class that manages interaction with the form element
+	 * Load the javascript class that manages plugin interaction
 	 * should only be called once
-	 * @return string javascript class file
+	 *
+	 * @return  string  javascript class file
 	 */
 
-	function loadJavascriptClass()
+	public function loadJavascriptClass()
 	{
 		$el = $this->getPlaceElement();
 		$mapelement = $this->getMapElement();
@@ -418,14 +448,16 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 	/**
-	 * return the javascript to create an instance of the class defined in formJavascriptClass
-	 * @param object parameters
-	 * @param object table model
-	 * @param array [0] => string table's form id to contain plugin
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
 	 * @return bool
 	 */
 
-	function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($params, $model, $args)
 	{
 		if (!is_object($this->getMapElement()))
 		{
@@ -441,4 +473,3 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	}
 
 }
-?>
