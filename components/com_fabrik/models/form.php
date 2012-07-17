@@ -1392,7 +1392,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// Repeat element in a repeat group :S
 						$groupJoin = $elementModel->getGroup()->getJoinModel();
 						$dataPks = JArrayHelper::getValue($data, $oJoin->table_join . '___id', array());
-						 for ($r = 0; $r < count($dataPks); $r++)
+						for ($r = 0; $r < count($dataPks); $r++)
 						{
 							$repeatTotals['el' . $elementModel->getId()][$r] = count($dataPks[$r]);
 						}
@@ -1402,7 +1402,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
 				}
-
 				else
 				{
 					// "Not a repeat element (el id = $oJoin->element_id)<br>";
@@ -1410,7 +1409,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				// Copy the repeating element into the join group
 				$idElementModel = FabrikHelperElement::makeIdElement($elementModel);
 				$parentElement = FabrikHelperElement::makeParentElement($elementModel);
-
 
 				$joinGroup->publishedElements = array();
 				$joinGroup->publishedElements[''] = array($elementModel, $idElementModel, $parentElement);
@@ -1517,7 +1515,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						 * not passing in the correct table name - see notes line 720 for explaination
 						 * $listModel->storeRow($repData, $joinRowId, true, $item->db_table_name);
 						 */
-						echo "<pre>store data : ";print_r($repData);//exit;
+
 						$listModel->storeRow($repData, $joinRowId, true, $joinGroupTable);
 						if ((int) $joinRowId === 0)
 						{
@@ -1604,6 +1602,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (($fullforeginKey != $oJoinPk)
 						&& ($fullforeginKey != $oJoin->table_join . '___' . $oJoin->table_key || $oJoin->table_key === $oJoin->table_join_key))
 					{
+
 						/* $$$ hugh - at this point we are assuming that we have a situation where the FK is on the joined table,
 						 * pointing to PK on main table.  BUT ... we may have a situation where neither of the selected keys are
 						 * a PK, i.e. two records are joined by some other field.  In which case we do not want to set the FK val!
@@ -1611,12 +1610,22 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						 * $$$ hugh - OK, I think this is the test we need to see if neither ends of the join are a PK,
 						 * and if so, don't modify any data, as we're joining on some other field that isn't the PK of either table.
 						 */
-						if ($oJoin->join_from_table . '.' . $oJoin->table_key == $origTableKey)
-						{
-							$fkVal = JArrayHelper::getValue($joinKeys, $oJoin->join_from_table . '.' . $oJoin->table_key, $insertId);
-							$data[$fullforeginKey] = $fkVal;
-							$data[$fullforeginKey . '_raw'] = $fkVal;
-						}
+
+						/* $$$ Jaanus: tested succesfully one idea to allow to write next step joins fk, eg when joined table is joined to
+						 * joined table.
+						 * Yet not tested whether it works also with 3rd, 4th etc step joins. But I can confirm it hasn't any impact to
+						 * the rather rarely used "parent.fk points to child.pk" case (that I got fully work only by using mysql trigger).
+						 * Anyway, most important is that we got data submission work with joins table1->table2->table3->table# :)
+						 * The following "if" prevented it so I commented it out.
+						 */
+
+						/*if ($oJoin->join_from_table . '.' . $oJoin->table_key == $origTableKey)
+						{*/
+						$fkVal = JArrayHelper::getValue($joinKeys, $oJoin->join_from_table . '.' . $oJoin->table_key, $insertId);
+						$data[$fullforeginKey] = $fkVal;
+						$data[$fullforeginKey . '_raw'] = $fkVal;
+
+						// }
 					}
 					if ($item->db_primary_key == '')
 					{
