@@ -2135,7 +2135,7 @@ class FabrikModelList extends FabModelAdmin
 		if (empty($arGroups))
 		{
 			/* get a list of groups used by the form */
-			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $formModel->id);
+			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $this->getFormModel()->getId());
 			$db->setQuery($query);
 			$groups = $db->loadObjectList();
 			if ($db->getErrorNum())
