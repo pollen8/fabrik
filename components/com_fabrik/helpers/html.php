@@ -553,7 +553,6 @@ EOD;
 			$extra = '';
 			$extra .= $id ? ' id="' . $arr[$i]->id . '"' : '';
 			$found = false;
-			echo "selected alist values = ";print_r($selected);
 			if (is_array($selected))
 			{
 				foreach ($selected as $obj)

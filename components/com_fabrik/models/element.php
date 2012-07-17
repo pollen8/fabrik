@@ -5498,7 +5498,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function getJoinRepeatCount($data, $oJoin)
 	{
-		echo "lement join rpeat key values = ";print_r($data);
 		return count(JArrayHelper::getValue($data, $oJoin->table_join . '___id', array()));
 	}
 

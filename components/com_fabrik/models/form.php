@@ -11,6 +11,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
+require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 
 /**
  * Fabrik Form Model
@@ -1342,7 +1343,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 			$groups = $this->getGroupsHiarachy();
 			$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
-echo "<pre>repeat totals = ";print_r($repeatTotals);
+
 			// 3.0 test on repeatElement param type
 			if (is_string($oJoin->params))
 			{
@@ -1359,7 +1360,7 @@ echo "<pre>repeat totals = ";print_r($repeatTotals);
 			}
 			else
 			{
-				echo "repeta element join<br>";//exit;
+
 				// Repeat element join
 				$elementModel = $this->getElement($oJoin->element_id, true);
 				/* $$$ hugh - covers case where repeat element is read only,
@@ -1393,16 +1394,13 @@ echo "<pre>repeat totals = ";print_r($repeatTotals);
 						$dataPks = JArrayHelper::getValue($data, $oJoin->table_join . '___id', array());
 						 for ($r = 0; $r < count($dataPks); $r++)
 						{
-							//$repeatTotals['el' . $elementModel->getId()][$r] = count($dataPks[$r]);
-							$repeatTotals[$aPreProcessedJoin['join']->id][$r] = count($dataPks[$r]);
+							$repeatTotals['el' . $elementModel->getId()][$r] = count($dataPks[$r]);
 						}
-						//$repeatTotals['el' . $elementModel->getId()] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
 					else
 					{
 						$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
-					echo "repeat totals = ";print_r($repeatTotals);
 				}
 
 				else
@@ -1410,19 +1408,9 @@ echo "<pre>repeat totals = ";print_r($repeatTotals);
 					// "Not a repeat element (el id = $oJoin->element_id)<br>";
 				}
 				// Copy the repeating element into the join group
-				$idElementModel = $pluginManager->getPlugIn('internalid', 'element');
-				$idElementModel->getElement()->name = 'id';
-				$idElementModel->getElement()->group_id = $elementModel->getGroup()->getGroup()->id;
-				$idElementModel->_group = $elementModel->getGroup();
-				$idElementModel->_group = $elementModel->_group;
-				$idElementModel->_aFullNames['id1_1__1_'] = $oJoin->table_join . '___id';
+				$idElementModel = FabrikHelperElement::makeIdElement($elementModel);
+				$parentElement = FabrikHelperElement::makeParentElement($elementModel);
 
-				$parentElement = $pluginManager->getPlugIn('field', 'element');
-				$parentElement->getElement()->name = 'parent_id';
-				$parentElement->getElement()->group_id = $elementModel->getGroup()->getGroup()->id;
-				$parentElement->_group = $elementModel->getGroup();
-				$parentElement->_group = $elementModel->_group;
-				$parentElement->_aFullNames['parent_id1_1__1_'] = $oJoin->table_join . '___parent_id';
 
 				$joinGroup->publishedElements = array();
 				$joinGroup->publishedElements[''] = array($elementModel, $idElementModel, $parentElement);
@@ -1477,7 +1465,6 @@ echo "<pre>repeat totals = ";print_r($repeatTotals);
 					$joinCnn = $listModel->getConnection();
 					$joinDb = $joinCnn->getDb();
 
-					echo "<pre>rpeat group count = ";print_r($repeatedGroupCount);
 					for ($c = 0; $c < $repeatedGroupCount; $c++)
 					{
 						// Get the data for each group and record it seperately
@@ -1704,7 +1691,7 @@ echo "<pre>repeat totals = ";print_r($repeatTotals);
 				}
 			}
 		}
-		exit;
+
 		// Testing for saving pages
 		JRequest::setVar('rowid', $insertId);
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this)))

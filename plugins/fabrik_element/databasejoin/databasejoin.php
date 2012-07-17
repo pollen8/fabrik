@@ -871,8 +871,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 								}
 								$tmpids[] = $o;
 							}
-							echo "<pre>join ids = ";print_r($joinids);
-							echo "tmp ids = ";print_r($tmpids); echo "</pre>";
 							$html[] = '<div class="fabrikHide">';
 							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
 							$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', $options_per_row, $this->_editable);
