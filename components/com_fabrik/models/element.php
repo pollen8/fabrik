@@ -64,8 +64,11 @@ class plgFabrik_Element extends FabrikPlugin
 	/** @var object JTable element object */
 	var $_element = null;
 
-	/** @var bol does the element have a label */
-	var $hasLabel = true;
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
+	protected $hasLabel = true;
 
 	/** @var bol does the element contain sub elements e.g checkboxes radiobuttons */
 	var $hasSubElements = false;

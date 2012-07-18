@@ -23,7 +23,11 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class plgFabrik_ElementFblikebox extends plgFabrik_Element
 {
 
-	var $hasLabel = false;
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
+	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
 
@@ -31,10 +35,10 @@ class plgFabrik_ElementFblikebox extends plgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -56,9 +60,9 @@ class plgFabrik_ElementFblikebox extends plgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 

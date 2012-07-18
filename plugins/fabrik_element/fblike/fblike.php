@@ -23,7 +23,11 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class plgFabrik_ElementFblike extends plgFabrik_Element
 {
 
-	var $hasLabel = false;
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
+	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
 

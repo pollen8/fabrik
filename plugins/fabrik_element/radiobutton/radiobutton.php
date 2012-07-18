@@ -14,12 +14,18 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.radiolist
+ * @since       3.0
  */
 
 class plgFabrik_ElementRadiobutton extends plgFabrik_ElementList
 {
 
-	var $hasLabel = false;
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
+	protected $hasLabel = false;
+
 	/**
 	* Method to set the element id
 	*
