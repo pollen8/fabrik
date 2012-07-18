@@ -102,7 +102,7 @@ class plgFabrik_ListPhp_Events extends plgFabrik_List
 	 * @return  bool  false if fail
 	 */
 
-	public function onPreLoadData($params, &$model)
+	public function onDeleteRows($params, &$model)
 	{
 		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'), $model);
 	}
