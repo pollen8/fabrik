@@ -1,21 +1,24 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
- * @package		Joomla
- * @subpackage	Fabrik
+ * Group Fabrik Table
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
+
 class FabrikTableGroup extends FabTable
 {
 
@@ -25,17 +28,24 @@ class FabrikTableGroup extends FabTable
 
 	var $join_id = null;
 
-	function __construct(&$_db)
-	{
-		parent::__construct('#__{package}_groups', 'id', $_db);
-	}
-
-
 	/**
-	 * overloaded check function
+	 * Constructor
+	 *
+	 * @param   object  &$db  database object
 	 */
 
-	function check()
+	public function __construct(&$db)
+	{
+		parent::__construct('#__{package}_groups', 'id', $db);
+	}
+
+	/**
+	 * Overloaded check function
+	 *
+	 * @return  bool
+	 */
+
+	public function check()
 	{
 		if (trim($this->name) == '')
 		{
@@ -73,13 +83,12 @@ class FabrikTableGroup extends FabTable
 
 		$db = $this->getDBO();
 		$query = $db->getQuery(true);
-		$query->select('#__{package}_groups.*, #__{package}_joins.id AS join_id')
-		->from($this->_tbl)
-		->join('LEFT', '#__{package}_joins ON #__{package}_groups.id = #__{package}_joins.group_id');
+		$query->select('#__{package}_groups.*, #__{package}_joins.id AS join_id')->from($this->_tbl)
+			->join('LEFT', '#__{package}_joins ON #__{package}_groups.id = #__{package}_joins.group_id');
 
 		foreach ($keys as $field => $value)
 		{
-			$query->where($db->quoteName('#__{package}_groups').'.'.$db->quoteName($field).' = '.$db->quote($value));
+			$query->where($db->quoteName('#__{package}_groups') . '.' . $db->quoteName($field) . ' = ' . $db->quote($value));
 		}
 		$query->where(" (( element_id = 0 OR is_join = 0) OR element_id IS NULL)");
 		$db->setQuery($query);
@@ -111,4 +120,3 @@ class FabrikTableGroup extends FabTable
 		return parent::store($updateNulls);
 	}
 }
-?>

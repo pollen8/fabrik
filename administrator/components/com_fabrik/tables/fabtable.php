@@ -1,13 +1,21 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
+
+/**
+ * Base Fabrik Table
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabTable extends JTable
 {
@@ -17,12 +25,11 @@ class FabTable extends JTable
 	 * the table include paths.  To add include paths for searching for JTable
 	 * classes @see JTable::addIncludePath().
 	 *
-	 * @param	string	The type (name) of the JTable class to get an instance of.
-	 * @param	string	An optional prefix for the table class name.
-	 * @param	array	An optional array of configuration values for the JTable object.
-	 * @return	mixed	A JTable object if found or boolean false if one could not be found.
-	 * @since	1.5
-	 * @link	http://docs.joomla.org/JTable/getInstance
+	 * @param   string  $type    The type (name) of the JTable class to get an instance of.
+	 * @param   string  $prefix  An optional prefix for the table class name.
+	 * @param   array   $config  An optional array of configuration values for the JTable object.
+	 *
+	 * @return  mixed	A JTable object if found or boolean false if one could not be found.
 	 */
 
 	public static function getInstance($type, $prefix = 'JTable', $config = array())
@@ -32,4 +39,3 @@ class FabTable extends JTable
 	}
 
 }
-?>
