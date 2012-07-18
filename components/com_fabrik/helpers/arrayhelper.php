@@ -238,16 +238,14 @@ class FArrayHelper extends JArrayHelper
 	}
 
 	/**
-	 * @since	3.0.6
-	 *
 	 * Returns first key in an array, used if we aren't sure if array is assoc or
 	 * not, and just want the first row.
 	 *
 	 * @param   array  $array  the array to get the first key for
 	 *
-	 * @return  string  the first array key.
-	 *
 	 * @since	3.0.6
+	 *
+	 * @return  string  the first array key.
 	 */
 
 	public function firstKey($array)

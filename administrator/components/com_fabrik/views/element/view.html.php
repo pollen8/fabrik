@@ -1,9 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -14,10 +14,11 @@ jimport('joomla.application.component.view');
 /**
  * View to edit an element.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.5
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.5
  */
+
 class FabrikViewElement extends JView
 {
 	protected $form;
@@ -30,6 +31,10 @@ class FabrikViewElement extends JView
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	public function display($tpl = null)
@@ -40,6 +45,7 @@ class FabrikViewElement extends JView
 			return;
 		}
 		require_once JPATH_COMPONENT . '/helpers/adminhtml.php';
+
 		// Initialiase variables.
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
@@ -48,7 +54,7 @@ class FabrikViewElement extends JView
 
 		$this->js = $this->get('Js');
 
-		$this->jsevents	= $this->get('JsEvents');
+		$this->jsevents = $this->get('JsEvents');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -59,7 +65,7 @@ class FabrikViewElement extends JView
 
 		$this->addToolbar();
 
-		//used for js part of form
+		// Used for js part of form
 		if ($this->item->id == 0)
 		{
 			$this->elements = array(JText::_('COM_FABRIK_AVAILABLE_AFTER_SAVE'));
@@ -73,7 +79,11 @@ class FabrikViewElement extends JView
 	}
 
 	/**
-	 * ask the user if they really want to alter the element fields structure/name
+	 * Ask the user if they really want to alter the element fields structure/name
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	protected function confirmupdate($tpl = null)
@@ -93,6 +103,8 @@ class FabrikViewElement extends JView
 
 	/**
 	 * Add the confirmation tool bar
+	 *
+	 * @return  void
 	 */
 
 	protected function addConfirmToolbar()
@@ -100,51 +112,61 @@ class FabrikViewElement extends JView
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_ELEMENT_EDIT'), 'element.png');
 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::save('element.updatestructure', 'JTOOLBAR_SAVE');
-		JToolBarHelper::cancel('element.cancelUpdatestructure','JTOOLBAR_CANCEL');
+		JToolBarHelper::cancel('element.cancelUpdatestructure', 'JTOOLBAR_CANCEL');
 	}
 
 	/**
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolbar()
 	{
 		JRequest::setVar('hidemainmenu', true);
 
-		$user	= JFactory::getUser();
-		$userId	= $user->get('id');
+		$user = JFactory::getUser();
+		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);
-		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
+		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
 
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_ELEMENT_NEW') : JText::_('COM_FABRIK_MANAGER_ELEMENT_EDIT'), 'element.png');
 
-		if ($isNew) {
+		if ($isNew)
+		{
 			// For new records, check the create permission.
-			if ($canDo->get('core.create')) {
+			if ($canDo->get('core.create'))
+			{
 				JToolBarHelper::apply('element.apply', 'JTOOLBAR_APPLY');
 				JToolBarHelper::save('element.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('element.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
 			JToolBarHelper::cancel('element.cancel', 'JTOOLBAR_CANCEL');
-		} else {
+		}
+		else
+		{
 
 			// Can't save the record if it's checked out.
-			if (!$checkedOut) {
+			if (!$checkedOut)
+			{
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
-				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId)) {
+				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId))
+				{
 					JToolBarHelper::apply('element.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('element.save', 'JTOOLBAR_SAVE');
 
 					// We can save this record, but check the create permission to see if we can return to make a new one.
-					if ($canDo->get('core.create')) {
+					if ($canDo->get('core.create'))
+					{
 						JToolBarHelper::addNew('element.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 					}
 				}
 			}
-			if ($canDo->get('core.create')) {
+			if ($canDo->get('core.create'))
+			{
 				JToolBarHelper::custom('element.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
 			JToolBarHelper::cancel('element.cancel', 'JTOOLBAR_CLOSE');

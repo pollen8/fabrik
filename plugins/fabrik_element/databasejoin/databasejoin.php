@@ -994,6 +994,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return $this->getValue($data, $repeatCounter, $opts);
 	}
 
+	/**
+	 * Get an array of potential forms that will add data to the db joins table.
+	 * Used for add in front end
+	 *
+	 *  @return  array  db objects
+	 */
+
 	protected function getLinkedForms()
 	{
 		if (!isset($this->_linkedForms))
@@ -1092,9 +1099,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return  string	formatted value
 	 */
 
-	function getEmailValue($value, $data, $c)
+	function getEmailValue($value, $data, $repeatCounter)
 	{
-		$tmp = $this->_getOptions($data, $c);
+		$tmp = $this->_getOptions($data, $repeatCounter);
 		if ($this->isJoin())
 		{
 			// $$$ hugh - if it's a repeat element, we need to render it as
@@ -1431,21 +1438,23 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * get the column name used for the value part of the db join element
+	 * Get the column name used for the value part of the db join element
+	 *
 	 * @return  string
 	 */
 
-	function getJoinValueColumn()
+	protected function getJoinValueColumn()
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
+
 		// @TODO seems to me that actually table_join_alias is incorrect when the element is rendered as a checkbox?
 		/*if ($this->isJoin()) {
 		echo "<pre>";print_r($join);print_r($this->getElement());echo "</pre>";
 		return $db->quoteName($params->get('join_db_name')).'.'.$db->quoteName($params->get('join_key_column'));
 		} else {*/
-		return $db->quoteName($join->table_join_alias) . '.' . $db->quoteName($params->get('join_key_column'));
+		return $db->quoteName($join->table_join_alias . '.' . $params->get('join_key_column'));
 		//}
 	}
 
