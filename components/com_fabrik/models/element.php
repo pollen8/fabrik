@@ -75,7 +75,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/** @var bol is the element in a detailed view? **/
 	var $_inDetailedView = false;
 
-	var $defaults = null;
+	var $defaults = array();
 
 	var $_HTMLids = null;
 

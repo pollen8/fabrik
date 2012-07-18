@@ -14,6 +14,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.image
+ * @since       3.0
  */
 
 class plgFabrik_ElementImage extends plgFabrik_Element
@@ -38,8 +39,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$w = new FabrikWorker;
-			//$this->default = $params->get('imagefile');
 			$this->default = $params->get('imagepath');
+
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
@@ -67,10 +68,11 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		if (is_null($this->defaults))
+		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
 		}
+		$this->defaults = (array) $this->defaults;
 		if (!array_key_exists($repeatCounter, $this->defaults))
 		{
 			$groupModel = $this->_group;
@@ -79,6 +81,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$formModel = $this->getForm();
 			$element = $this->getElement();
 			$params = $this->getParams();
+
 			// $$$rob - if no search form data submitted for the search element then the default
 			// selection was being applied instead
 			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
