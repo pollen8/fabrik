@@ -28,6 +28,15 @@ div.calendar table {
 	height: 16px;
 	margin-top: -3px;
 }
+
+/* Otherwise <a> can have a smaller height than the image (or other content) it contains, 
+which means the tip appears too low and is hence toggled off again, if the mouse cursor is on
+the part of the image 'above' the top of the <a>'
+*/
+a.fabrikTip {
+	display: inline-block;
+}
+
 /*** stoopid beez20 fixes */
 #main .fabrikForm  a:hover {
 	color: #000 !important;
