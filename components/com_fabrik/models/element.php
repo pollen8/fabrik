@@ -979,18 +979,18 @@ class plgFabrik_Element extends FabrikPlugin
 				// if ($groupModel->canRepeat() || !$this->isJoin()) {
 				if ($groupModel->canRepeat())
 				{
-					$value = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
-					if (is_null($value))
+					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, array());
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, $value);
 					}
 				}
 				else
 				{
-					$value = FArrayHelper::getNestedValue($data, $nameKey, null);
-					if (is_null($value))
+					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey, array());
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey, $value);
 					}
 					/* $$$ rob if you have 2 tbl joins, one repeating and one not
 					 * the none repeating one's values will be an array of duplicate values

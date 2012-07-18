@@ -552,18 +552,18 @@ class plgFabrik_ElementList extends plgFabrik_Element
 				$rawNameKey = 'join.' . $joinid . '.' . $rawname;
 				if ($groupModel->canRepeat())
 				{
-					$value = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
-					if (is_null($value))
+					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, array());
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, $value);
 					}
 				}
 				else
 				{
-					$value = FArrayHelper::getNestedValue($data, $nameKey, null);
-					if (is_null($value))
+					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey, array());
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey, $value);
 					}
 					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0])))
 					{
