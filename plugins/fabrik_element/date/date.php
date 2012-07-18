@@ -1772,7 +1772,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	}
 
 	/**
-	 * build the filter query for the given element.
+	 * Build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`

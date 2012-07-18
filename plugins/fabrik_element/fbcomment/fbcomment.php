@@ -18,6 +18,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.facebookcomment
+ * @since       3.0
  */
 
 class plgFabrik_ElementFbcomment extends plgFabrik_Element
@@ -34,22 +35,26 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element
 	protected $fieldLength = '1';
 
 	/**
-	 * draws the form element
-	 * @param array data to pre-populate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the form element
+	 *
+	 * @param   array  $data           to pre-populate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string  returns element html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
-		//$id = $params->get('fbcomment_uniqueid');
+
+		// $id = $params->get('fbcomment_uniqueid');
 		$href = $params->get('fbcomment_href');
 		$width = $params->get('fbcomment_width', 300);
 		$num = $params->get('fbcomment_number_of_comments', 10);
 		$colour = $params->get('fb_comment_scheme') == '' ? '' : ' colorscheme="dark" ';
-		//$str .= "<fb:comments xid=\"$id\" numposts=\"$num\" width=\"$width\" />";
+
+		// $str .= "<fb:comments xid=\"$id\" numposts=\"$num\" width=\"$width\" />";
 		$str .= '<div id="fb-root"><fb:comments href="' . $href . '" nmigrated="1" um_posts="' . $num . '" width="' . $width . '"' . $colour
 			. '></fb:comments>';
 
@@ -73,4 +78,3 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element
 	}
 
 }
-?>

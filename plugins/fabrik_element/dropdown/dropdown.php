@@ -244,7 +244,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	}
 
 	/**
-	 * build the filter query for the given element.
+	 * Build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`
@@ -256,7 +256,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	 * @return  string	sql query part e,g, "key = value"
 	 */
 
-	function getFilterQuery($key, $condition, $label, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$value = $label;
 		if ($type == 'searchall')
