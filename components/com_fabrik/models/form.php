@@ -105,8 +105,11 @@ class FabrikFEModelForm extends FabModelForm
 	/** @var bool should the form store the main row? Set to false in juser plugin if fabrik table is also jos_users */
 	public $storeMainRow = true;
 
-	/** @var string query used to load form record */
-	protected $query = null;
+	/**
+	 * Query used to load form record.
+	 * @var string
+	 */
+	public $query = null;
 
 	/** #var array specifies element name that have been overridden from a form plugin, so encrypted RO data should be ignored */
 	protected $pluginUpdatedElements = array();
@@ -1314,7 +1317,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		foreach ($aPreProcessedJoins as $tmpJKey => $aPreProcessedJoin)
 		{
-			echo "<hr />preprocess join $tmpJKey<br>";
 			if (!array_key_exists('join', $aPreProcessedJoin))
 			{
 				continue;
@@ -1342,7 +1344,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$oJoin->params = json_decode($oJoin->params);
 			}
 			$joinType = isset($oJoin->params->type) ? $oJoin->params->type : '';
-			echo "join type = $joinType <br>";
 			if ((int) $oJoin->group_id !== 0 && $joinType !== 'repeatElement')
 			{
 				$joinGroup = $groups[$oJoin->group_id];

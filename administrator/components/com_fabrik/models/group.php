@@ -202,6 +202,7 @@ class FabrikModelGroup extends FabModelAdmin
 				$return = parent::save($data);
 			}
 		}
+		parent::cleanCache('com_fabrik');
 		return $return;
 	}
 

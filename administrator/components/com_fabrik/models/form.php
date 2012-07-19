@@ -14,7 +14,7 @@ require_once 'fabmodeladmin.php';
 
 /**
  * Fabrik Admin Form Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -37,9 +37,9 @@ class FabrikModelForm extends FabModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -54,9 +54,9 @@ class FabrikModelForm extends FabModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed  A JForm object on success, false on failure
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -76,7 +76,7 @@ class FabrikModelForm extends FabModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed	The data for the form.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -93,7 +93,7 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * get the possible list plug-ins that can be selected for use
-	 * 
+	 *
 	 * @return array
 	 */
 
@@ -140,7 +140,7 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * get JS
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -189,9 +189,9 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * Get plugin location (both/front end/back end)
-	 * 
+	 *
 	 * @param   int  $repeatCounter  plugin repeat counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -203,9 +203,9 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * Get plugin event
-	 * 
+	 *
 	 * @param   int  $repeatCounter  plugin repeat counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -217,9 +217,9 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * Save the form
-	 * 
+	 *
 	 * @param   array  $data  posted jform data
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -247,6 +247,7 @@ class FabrikModelForm extends FabModelAdmin
 			$data['db_table_name'] = $tmpName;
 			$this->saveFormGroups($data);
 		}
+		parent::cleanCache('com_fabrik');
 		return $return;
 	}
 
@@ -256,9 +257,9 @@ class FabrikModelForm extends FabModelAdmin
 	 * 2) Delete all old form_group records
 	 * 3) Recreate the form group records
 	 * 4) Make a table view if needed
-	 * 
+	 *
 	 * @param   array  $data  jform data
-	 * 
+	 *
 	 * @return  bool  True if you should display the form list, False if you're
 	 * redirected elsewhere
 	 */
@@ -329,7 +330,7 @@ class FabrikModelForm extends FabModelAdmin
 				 * need to do some more testing on MySQL table name case sensitivity
 				 * BUT ... as we're potentially changing the table name after testing for existance
 				 * we need to test again.
-				 * $$$ rob - was replacing with '_' but if your form name was 'x - y' then this was 
+				 * $$$ rob - was replacing with '_' but if your form name was 'x - y' then this was
 				 * converted to x___y which then blows up element name code due to '___' being presumed to be the element splitter.
 				 */
 				$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '', $dbTableName);
@@ -370,10 +371,10 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * reinsert the groups ids into formgroup rows
-	 * 
+	 *
 	 * @param   array  $data           jform post data
 	 * @param   array  $currentGroups  group ids
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -413,9 +414,9 @@ class FabrikModelForm extends FabModelAdmin
 	/**
 	 * take an array of list ids and return the corresponding form_id's
 	 * used in list publish code
-	 * 
+	 *
 	 * @param   array  $ids  list ids
-	 * 
+	 *
 	 * @return array form ids
 	 */
 
@@ -434,7 +435,7 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * iterate over the form's elements and update its db table to match
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -471,9 +472,9 @@ class FabrikModelForm extends FabModelAdmin
 	 * @param   object  $form   The form to validate against.
 	 * @param   array   $data   The data to validate.
 	 * @param   string  $group  The name of the field group to validate.
-	 * 
+	 *
 	 * @return  mixed	Array of filtered data if valid, false otherwise.
-	 * 
+	 *
 	 * @since	1.1
 	 */
 
@@ -495,9 +496,9 @@ class FabrikModelForm extends FabModelAdmin
 
 	/**
 	 * Delete form and form groups
-	 * 
+	 *
 	 * @param   array  &$cids  to delete
-	 * 
+	 *
 	 * @return  bool
 	 */
 

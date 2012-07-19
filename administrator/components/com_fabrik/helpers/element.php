@@ -1,18 +1,18 @@
 <?php
 /**
-* @package     Joomla.Administrator
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-* @since       1.6
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access.
 defined('_JEXEC') or die;
 
 /**
  * JHtml element helper
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -22,15 +22,15 @@ class ElementHelper
 
 	/**
 	 * get html id
-	 * 
-* @param   object  $element       field
-* @param   string  $control_name  control name
-* @param   string  $name          name
-	 * 
+	 *
+	 * @param   object  $element       field
+	 * @param   string  $control_name  control name
+	 * @param   string  $name          name
+	 *
 	 * @return string
 	 */
 
-	public function getId($element, $control_name, $name)
+	public static function getId($element, $control_name, $name)
 	{
 		if (method_exists($element, 'getId'))
 		{
@@ -38,22 +38,22 @@ class ElementHelper
 		}
 		else
 		{
-			$id  = "$control_name.$name";
+			$id = "$control_name.$name";
 		}
 		return $id;
 	}
 
 	/**
-	* get full name
-	*
-* @param   object  $element       field
-* @param   string  $control_name  control name
-* @param   string  $name          name
-	*
-	* @return string
-	*/
+	 * get full name
+	 *
+	 * @param   object  $element       field
+	 * @param   string  $control_name  control name
+	 * @param   string  $name          name
+	 *
+	 * @return string
+	 */
 
-	public function getFullName($element, $control_name, $name)
+	public static function getFullName($element, $control_name, $name)
 	{
 		if (method_exists($element, 'getFullName'))
 		{
@@ -68,10 +68,10 @@ class ElementHelper
 
 	/**
 	 * get repeat counter
-	 * 
-* @param   object  $element  Jhtml field
-	 * 
-	 * @return mixed 
+	 *
+	 * @param   object  $element  Jhtml field
+	 *
+	 * @return mixed
 	 */
 
 	public static function getRepeatCounter($element)
@@ -88,12 +88,12 @@ class ElementHelper
 	}
 
 	/**
-	* get repeat
-	*
-* @param   object  $element  Jhtml field
-	* 
-	* @return mixed
-	*/
+	 * get repeat
+	 *
+	 * @param   object  $element  Jhtml field
+	 *
+	 * @return mixed
+	 */
 
 	public static function getRepeat($element)
 	{

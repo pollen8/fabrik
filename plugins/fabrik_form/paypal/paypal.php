@@ -418,6 +418,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		$surl = (array) $session->get($context . 'url', array());
 		$surl[$this->renderOrder] = $url;
 		$session->set($context . 'url', $surl);
+		$session->set($context . 'redirect_content_how', 'samepage');
 
 		// Log the info
 		$log->message_type = 'fabrik.paypal.onAfterProcess';

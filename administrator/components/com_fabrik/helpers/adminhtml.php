@@ -22,15 +22,15 @@ class FabrikHelperAdminHTML
 {
 
 	/**
-	 * get a list of directories
+	 * Get a list of directories
 	 *
-	 * @param   string  $path      to read from
+	 * @param   string  $path      path to read from
 	 * @param   bool    $fullpath  return full paths or not
 	 *
-	 * @return  null
+	 * @return  array
 	 */
 
-	public function fabrikListDirs($path, $fullpath = false)
+	public static function fabrikListDirs($path, $fullpath = false)
 	{
 		$arr = array();
 		if (!@is_dir($path))
@@ -60,6 +60,41 @@ class FabrikHelperAdminHTML
 		closedir($handle);
 		asort($arr);
 		return $arr;
+	}
+
+	/**
+	 * Method to create a clickable icon to change the state of an item
+	 *
+	 * @param   array    $values    Array of values to toggle between
+	 * @param   integer  $i         The index
+	 * @param   mixed    $selected  The selected value
+	 * @param   array    $tasks     Array of task to toggle over
+	 * @param   array    $imgs      Array of images to match values
+	 * @param   array    $alts      Array of alt text (will be parsed through JText)
+	 * @param   string   $prefix    An optional prefix for the task
+	 *
+	 * @return  string
+	 *
+	 * @since   3.0.6
+	 */
+
+	public static function multistate($values, $i, $selected, $tasks = array('publish', 'unpublish', 'alert'),
+		$imgs = array('publish_x.png', 'tick.png', 'alert.png'), $alts = array('JPUBLISHED', 'JUNPUBLISHED', 'NOTICE'), $prefix = '')
+	{
+		$index = array_search($selected, $values);
+		if ($index === false)
+		{
+			$index = 0;
+		}
+		$task = JArrayHelper::getValue($tasks, $index);
+		$alt = JText::_(JArrayHelper::getValue($alts, $index));
+
+		$img = JArrayHelper::getValue($imgs, $index);
+		$href = '
+			<a href="#" onclick="return listItemTask(\'cb' . $i . '\',\'' . $prefix . $task . '\')" title="' . $alt . '">'
+			. JHtml::_('image', 'admin/' . $img, $alt, null, true) . '</a>';
+
+		return $href;
 	}
 
 }

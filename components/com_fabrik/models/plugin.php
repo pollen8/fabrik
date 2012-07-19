@@ -15,6 +15,9 @@ jimport('joomla.application.component.model');
 // Required for fabble
 require_once COM_FABRIK_FRONTEND . '/models/parent.php';
 
+// Required for fabble
+require_once COM_FABRIK_FRONTEND . '/models/parent.php';
+
 class FabrikPlugin extends JPlugin
 {
 
@@ -24,7 +27,10 @@ class FabrikPlugin extends JPlugin
 	/** @var string path to xml file **/
 	var $_xmlPath = null;
 
-	/** @var object params **/
+	/**
+	 * Parameters (must be public)
+	 * @var object params
+	 */
 	public $params = null;
 
 	var $attribs = null;
@@ -102,25 +108,26 @@ class FabrikPlugin extends JPlugin
 	 * @return  string	admin html
 	 */
 
-	function onRenderAdminSettings($data = array(), $repeatCounter = null)
+	public function onRenderAdminSettings($data = array(), $repeatCounter = null)
 	{
 		$document = JFactory::getDocument();
 		$type = str_replace('fabrik_', '', $this->_type);
-		//$this->loadLanguage(); //now done in contruct
 		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
 
 		$xmlFile = JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name . '/forms/fields.xml';
 		$form = $this->getJForm();
 
 		$repeatScript = '';
+
 		// Used by fields when rendering the [x] part of their repeat name
 		// see administrator/components/com_fabrik/classes/formfield.php getName()
 		$form->repeatCounter = $repeatCounter;
+
 		// Add the plugin specific fields to the form.
 		$form->loadFile($xmlFile, false);
 
-		//copy over the data into the params array - plugin fields can have data in either
-		//jform[params][name] or jform[name]
+		// Copy over the data into the params array - plugin fields can have data in either
+		// jform[params][name] or jform[name]
 		$pluginData = array();
 		if (!array_key_exists('params', $data))
 		{
@@ -130,15 +137,17 @@ class FabrikPlugin extends JPlugin
 		{
 			$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter) : $val;
 		}
-		//bind the plugins data to the form
+		// Bind the plugins data to the form
 		$form->bind($data);
-		//$$$ rob 27/04/2011 - listfields element needs to know things like the group_id, and
+
+		// $$$ rob 27/04/2011 - listfields element needs to know things like the group_id, and
 		// as bind() onlys saves the values from $data with a corresponding xml field we set the raw data as well
 		$form->rawData = $data;
 		$str = '';
 
 		$repeatGroupCounter = 0;
-		//filer the forms fieldsets for those starting with the correct $serachName prefix
+
+		// Filer the forms fieldsets for those starting with the correct $serachName prefix
 		foreach ($form->getFieldsets() as $fieldset)
 		{
 			$class = 'adminform ' . $type . 'Settings page-' . $this->_name;
@@ -211,11 +220,13 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
-	 *
-	 * used in plugin manager runPlugins to set the correct repeat set of
+	 * Used in plugin manager runPlugins to set the correct repeat set of
 	 * data for the plugin
+	 *
 	 * @param   object	original params $params
 	 * @param   int		plugin $repeatCounter
+	 *
+	 * @param   object  params
 	 */
 
 	function setParams(&$params, $repeatCounter)
@@ -433,7 +444,6 @@ class FabrikPlugin extends JPlugin
 					$db->setQuery($query);
 					$tid = $db->loadResult();
 				}
-				// @TODO JQuery this
 				$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
 				$rows = $db->loadObjectList();
 				if (is_array($rows))

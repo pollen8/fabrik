@@ -207,9 +207,9 @@ class Fabimage
 	* @return  object  image
 	*/
 
-	public abstract function resize($maxWidth, $maxHeight, $origFile, $destFile)
+	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
 	{
-		echo "this should be overwritten in the library class";
+
 	}
 }
 

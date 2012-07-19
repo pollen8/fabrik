@@ -1,13 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-* 
-* $$$ rob - depreciated??
-* 
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
@@ -15,29 +12,26 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
+ * Group Fabrik Table
+ *
  * @package     Joomla
  * @subpackage  Fabrik
+ * @since       3.0
+ * @deprecated  not used?
  */
+
 class FabrikTableValidationrule extends FabTable
 {
 
- 	/**
- 	 *
- 	 */
-
-	function __construct(&$_db)
-	{
-		parent::__construct('#__{package}_validation_rules', 'id', $_db);
-	}
-
 	/**
-	* overloaded check function
-	*/
+	 * Constructor
+	 *
+	 * @param   object  &$db  database object
+	 */
 
-	function check()
+	public function __construct(&$db)
 	{
-		return true;
+		parent::__construct('#__{package}_validation_rules', 'id', $db);
 	}
 
 }
-?>

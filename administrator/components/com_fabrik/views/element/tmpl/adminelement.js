@@ -28,7 +28,7 @@ var fabrikAdminElement = new Class({
 		if (typeOf(document.id('addJavascript')) === false) {
 			fconsole('add js button not found');
 		} else {
-			$('addJavascript').addEvent('click', function (e) {
+			document.id('addJavascript').addEvent('click', function (e) {
 				e.stop();
 				this.addJavascript();
 			}.bind(this));
@@ -143,7 +143,7 @@ var fabrikAdminElement = new Class({
 	},
 	
 	watchPluginDd: function () {
-		$('jform_plugin').addEvent('change', function (e) {
+		document.id('jform_plugin').addEvent('change', function (e) {
 			e.stop();
 			var opt = e.target.get('value');
 			$$('.elementSettings').each(function (tab) {

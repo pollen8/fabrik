@@ -14,19 +14,25 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.checkbox
+ * @since       3.0
  */
 
 class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 {
 
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
 	protected $hasLabel = false;
 
 	protected $inputType = 'checkbox';
 
 	/**
-	 * Method to set the element id
+	 * Set the element id
+	 * and maps parameter names for common ElementList options
 	 *
-	 * @param   int  $id  element ID number
+	 * @param   int  $id  element id
 	 *
 	 * @return  void
 	 */
@@ -141,7 +147,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * build the filter query for the given element.
+	 * Build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`

@@ -30,7 +30,7 @@ class FPagination extends JPagination
 {
 
 	/** @var string action url */
-	protected $url = '';
+	public $url = '';
 
 	/** @var int list id */
 	protected $id = '';

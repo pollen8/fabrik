@@ -8,41 +8,49 @@
 
 // No direct access
 defined('_JEXEC') or die;
-
+require_once JPATH_COMPONENT . '/helpers/adminhtml.php';
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-JHTML::_('script','system/multiselect.js',false,true);
-$user	= JFactory::getUser();
-$userId	= $user->get('id');
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+JHTML::_('script', 'system/multiselect.js', false, true);
+$user = JFactory::getUser();
+$userId = $user->get('id');
+$listOrder = $this->state->get('list.ordering');
+$listDirn = $this->state->get('list.direction');
+$alts = array('JPUBLISHED', 'JUNPUBLISHED', 'COM_FABRIK_ERR_CRON_RUN_TIME');
+$imgs = array('publish_x.png', 'tick.png', 'publish_y.png');
+$tasks = array('publish', 'unpublish', 'publish');
+
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=crons'); ?>" method="post" name="adminForm" id="adminForm">
 	<fieldset id="filter-bar">
 		<div class="filter-search fltlft">
 			<label class="filter-search-lbl" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?>:</label>
-			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" title="<?php echo JText::_('COM_FABRIK_SEARCH_IN_TITLE'); ?>" />
+			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" title="<?php echo JText::_(
+	'COM_FABRIK_SEARCH_IN_TITLE'); ?>" />
 			<button type="submit"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
 			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 		</div>
 		<div class="filter-select fltrt">
-		
-			<?php if (!empty($this->packageOptions)) {?>
+
+			<?php if (!empty($this->packageOptions))
+{ ?>
 			<select name="package" class="inputbox" onchange="this.form.submit()">
-				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
-				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
+				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE'); ?></option>
+				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true); ?>
 			</select>
-			<?php }?>
-			
+			<?php } ?>
+
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>
+				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED'); ?></option>
+				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived' => false)), 'value', 'text',
+	$this->state->get('filter.published'), true); ?>
 			</select>
 		</div>
 	</fieldset>
 	<div class="clr"> </div>
 	<table class="adminlist">
 		<thead>
+			<tr>
 				<th width="2%">
 					<?php echo JHTML::_('grid.sort', 'JGRID_HEADING_ID', 'c.id', $listDirn, $listOrder); ?>
 				</th>
@@ -62,17 +70,17 @@ $listDirn	= $this->state->get('list.direction');
 		</thead>
 		<tfoot>
 			<tr>
-				<td colspan="4">
+				<td colspan="5">
 					<?php echo $this->pagination->getListFooter(); ?>
 				</td>
 			</tr>
 		</tfoot>
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
-			$ordering	= ($listOrder == 'ordering');
-			$link = JRoute::_('index.php?option=com_fabrik&task=cron.edit&id='.(int) $item->id);
-			$canChange	= true;
-			?>
+	$ordering = ($listOrder == 'ordering');
+	$link = JRoute::_('index.php?option=com_fabrik&task=cron.edit&id=' . (int) $item->id);
+	$canChange = true;
+			   ?>
 
 			<tr class="row<?php echo $i % 2; ?>">
 					<td>
@@ -83,9 +91,12 @@ $listDirn	= $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php
-						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {
-							echo $item->label;
-						} else {
+	if ($item->checked_out && ($item->checked_out != $user->get('id')))
+	{
+		echo $item->label;
+	}
+	else
+	{
 						?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->label; ?>
@@ -96,7 +107,7 @@ $listDirn	= $this->state->get('list.direction');
 						<?php echo $item->lastrun; ?>
 					</td>
 					<td>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'crons.', $canChange);?>
+						<?php echo FabrikHelperAdminHTML::multistate(array(0, 1, 2), $i, $item->published, $tasks, $imgs, $alts, 'crons.', $canChange); ?>
 					</td>
 				</tr>
 

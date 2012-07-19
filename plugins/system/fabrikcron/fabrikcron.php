@@ -2,13 +2,12 @@
 /**
  * @package     Joomla.Plugin
  * @subpackage  System
- * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license		GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
+ * @license     GNU/GPL, see LICENSE.php
  */
 
 // No direct access
-defined('_JEXEC') or die( 'Restricted access');
-
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.file');
@@ -17,7 +16,8 @@ jimport('joomla.filesystem.file');
  * Joomla! Fabrik cron job plugin
  *
  * @package     Joomla.Plugin
- * @subpackage	System
+ * @subpackage  System
+ * @since       3.0
  */
 
 class plgSystemFabrikcron extends JPlugin
@@ -30,22 +30,22 @@ class plgSystemFabrikcron extends JPlugin
 	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
 	 * This causes problems with cross-referencing necessary for the observer design pattern.
 	 *
-	 * @param	object  &$subject  The object to observe
-	 * @param 	array   $config    An array that holds the plugin configuration
-	 * 
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An array that holds the plugin configuration
+	 *
 	 * @since	1.0
-	 * 
+	 *
 	 * return  void
 	 */
 
-	function plgSystemFabrikcron(&$subject, $config)
+	public function plgSystemFabrikcron(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
 	}
 
 	/**
 	 * Run all active cron jobs
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -61,7 +61,7 @@ class plgSystemFabrikcron extends JPlugin
 		{
 			return;
 		}
-		
+
 		// Get all active tasks
 		$db = FabrikWorker::getDbo(true);
 		$now = JRequest::getVar('fabrikcron_run', false);
@@ -70,9 +70,10 @@ class plgSystemFabrikcron extends JPlugin
 
 		if (!$now)
 		{
-			// $$$ hugh - changed from using NOW() to JFactory::getDate(), to avoid time zone issues, see:
-			// http://fabrikar.com/forums/showthread.php?p=102245#post102245
-			// .. which seems reasonable, as we use getDate() to set 'lastrun' to at the end of this func
+			/* $$$ hugh - changed from using NOW() to JFactory::getDate(), to avoid time zone issues, see:
+			 * http://fabrikar.com/forums/showthread.php?p=102245#post102245
+			 * .. which seems reasonable, as we use getDate() to set 'lastrun' to at the end of this func
+			 */
 
 			$nextrun = "CASE " . "WHEN unit = 'second' THEN DATE_ADD( lastrun, INTERVAL frequency SECOND )\n"
 				. "WHEN unit = 'minute' THEN DATE_ADD( lastrun, INTERVAL frequency MINUTE )\n"
@@ -84,7 +85,7 @@ class plgSystemFabrikcron extends JPlugin
 
 			$query = "SELECT id, plugin, lastrun, unit, frequency, $nextrun AS nextrun FROM #__{package}_cron\n";
 			$query .= "WHERE published = '1' ";
-			$query .= "AND $nextrun < '" . JFactory::getDate()->toMySQL() . "'";
+			$query .= "AND $nextrun < '" . JFactory::getDate()->toSql() . "'";
 		}
 		else
 		{
@@ -110,8 +111,10 @@ class plgSystemFabrikcron extends JPlugin
 		{
 			$ids[] = (int) $row->id;
 		}
-		$db->setQuery("UPDATE #__{package}_cron SET published='2' WHERE id IN (" . implode(',', $ids) . ")");
-		//$db->query();
+		$query = $db->getQuery(true);
+		$query->update('#__{package}_cron')->set('published = 2')->where('id IN (' . implode(',', $ids) . ')');
+		$db->setQuery($query);
+		$db->query();
 
 		JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -129,7 +132,9 @@ class plgSystemFabrikcron extends JPlugin
 			if (!$plugin->queryStringActivated())
 			{
 				// $$$ hugh - don't forget to make it runnable again before continuing
-				$db->setQuery('UPDATE #__{package}_cron SET published="1" WHERE id = ' . $row->id);
+				$query->clear();
+				$query->update('#__{package}_cron')->set('published = 1')->where('id = ' . $row->id);
+				$db->setQuery($query);
 				$db->query();
 				continue;
 			}
@@ -188,7 +193,9 @@ class plgSystemFabrikcron extends JPlugin
 			// Mark them as being run
 			// $$$ hugh - and make it runnable again by setting 'state' back to 1
 			$nextrun = JFactory::getDate($tmp);
-			$db->setQuery('UPDATE #__{package}_cron SET published = "1", lastrun = "' . $nextrun->toMySQL() . '" WHERE id = ' . $row->id);
+			$query->clear();
+			$query->update('#__{package}_cron')->set('published = 1, lastrun = ' . $db->quote($nextrun->toSql()))->where('id = ' . $row->id);
+			$db->setQuery($query);
 			$db->query();
 
 			// Log if asked for
@@ -201,11 +208,11 @@ class plgSystemFabrikcron extends JPlugin
 
 	/**
 	 * Perform the actual cron after the page has rendered
-	 * 
+	 *
 	 * @return  void
 	 */
 
-	function onAfterRender()
+	public function onAfterRender()
 	{
 		$this->doCron();
 	}

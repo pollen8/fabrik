@@ -822,6 +822,8 @@ class FabrikModelList extends FabModelAdmin
 			$this->setState($this->getName() . '.id', $row->$pkName);
 		}
 		$this->setState($this->getName() . '.new', $isNew);
+
+		parent::cleanCache('com_fabrik');
 		return true;
 	}
 
@@ -1099,8 +1101,9 @@ class FabrikModelList extends FabModelAdmin
 				 * regardless of whether this is a new List?  Bearing in mind that this routine gets called from
 				 * the makeNewJoin() method, when adding a join to an existing list, to build the "Foo - [bar]" join
 				 * group, as well as from save() when creating a new List.
+				 *
+				 *  if ($groupModel->isJoin() && JRequest::getCmd('task') == 'save' && JRequest::getInt('id') == 0)
 				 */
-				// if ($groupModel->isJoin() && JRequest::getCmd('task') == 'save' && JRequest::getInt('id') == 0)
 				if ($groupModel->isJoin())
 				{
 					continue;
@@ -1558,7 +1561,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * replaces the table column names with a safer name - ie removes white
+	 * Replaces the table column names with a safer name - ie removes white
 	 * space and none alpha numeric characters
 	 *
 	 * @depreciated fabrik3.0
@@ -2320,7 +2323,7 @@ class FabrikModelList extends FabModelAdmin
 		if (empty($arGroups))
 		{
 			/* get a list of groups used by the form */
-			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $formModel->id);
+			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $this->getFormModel()->getId());
 			$db->setQuery($query);
 			$groups = $db->loadObjectList();
 			if ($db->getErrorNum())

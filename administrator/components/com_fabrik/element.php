@@ -37,7 +37,7 @@ class JElement extends JObject
 	 * @var    object
 	 */
 	protected $_parent = null;
-	
+
 	public $array_counter = null;
 
 	/**
@@ -59,7 +59,8 @@ class JElement extends JObject
 	 *
 	 * @deprecated    12.1
 	 */
-	public function getName() {
+	public function getName()
+	{
 		return $this->_name;
 	}
 
@@ -71,9 +72,9 @@ class JElement extends JObject
 	 */
 	public function render(&$xmlElement, $value, $control_name = 'params')
 	{
-		$name	= $xmlElement->attributes('name');
-		$label	= $xmlElement->attributes('label');
-		$descr	= $xmlElement->attributes('description');
+		$name = $xmlElement->attributes('name');
+		$label = $xmlElement->attributes('label');
+		$descr = $xmlElement->attributes('description');
 		//make sure we have a valid label
 		$label = $label ? $label : $name;
 		$result[0] = $this->fetchTooltip($label, $descr, $xmlElement, $control_name, $name);
@@ -92,15 +93,18 @@ class JElement extends JObject
 	 *
 	 * @deprecated    12.1
 	 */
-	public function fetchTooltip($label, $description, &$xmlElement, $control_name='', $name='')
+	public function fetchTooltip($label, $description, &$xmlElement, $control_name = '', $name = '')
 	{
-		$output = '<label id="'.$control_name.$name.'-lbl" for="'.$control_name.$name.'"';
-		if ($description) {
-			$output .= ' class="hasTip" title="'.JText::_($label).'::'.JText::_($description).'">';
-		} else {
+		$output = '<label id="' . $control_name . $name . '-lbl" for="' . $control_name . $name . '"';
+		if ($description)
+		{
+			$output .= ' class="hasTip" title="' . JText::_($label) . '::' . JText::_($description) . '">';
+		}
+		else
+		{
 			$output .= '>';
 		}
-		$output .= JText::_($label).'</label>';
+		$output .= JText::_($label) . '</label>';
 
 		return $output;
 	}
@@ -115,70 +119,71 @@ class JElement extends JObject
 	{
 
 	}
-	
+
 	//////
 	// FABRIK SPECIFIC
 	/////
-	
+
 	/**
 	 * get the elements html name
 * @param string $control_name
 * @param string $name
 	 * @return string html name
 	 */
-	function getFullName($control_name, $name )
+	function getFullName($control_name, $name)
 	{
-		if (strstr($name, "[]")) {
+		if (strstr($name, "[]"))
+		{
 			$name = trim($name, "[]");
-			$fullname = $control_name.'['.$name."][]";
-		} else {
-			$fullname = $control_name.'['.$name.']';
+			$fullname = $control_name . '[' . $name . "][]";
+		}
+		else
+		{
+			$fullname = $control_name . '[' . $name . ']';
 		}
 		return $fullname;
 	}
-	
+
 	/**
 	 * get the elements id
 * @param string $control_name
 * @param string $name
 	 * @return string element id
 	 */
-	
-	function getId($control_name, $name )
+	function getId($control_name, $name)
 	{
 		$name = str_replace('[]', '', $name);
-	
+
 		$c = $this->getRepeatCounter();
 		if ($c !== false)
 		{
-			$id = $control_name.$name . '-' . $c;
+			$id = $control_name . $name . '-' . $c;
 		}
 		else
 		{
-			$id = $control_name.$name;
+			$id = $control_name . $name;
 		}
 		return $id;
 	}
-	
+
 	/**
 	 * get repeat group counter used for things like element's id
 	 * @return int repeat group counter
 	 */
 	function getRepeatCounter()
 	{
-		if (isset($this->_parent->counter_override) && $this->_parent->counter_override != -1)
+		if (isset($this->_parent->_counter_override) && $this->_parent->_counter_override != -1)
 		{
-			return $this->_parent->counter_override;
+			return $this->_parent->_counter_override;
 		}
 		else
 		{
-			if ($this->getRepeat()) {
-				
-				if
-				(isset($this->array_counter))
+			if ($this->getRepeat())
+			{
+				if (isset($this->_array_counter))
 				{
 					//array counter might have been set when rendering viz params
-					return $this->array_counter;
+					return $this->_array_counter;
 				}
 				else
 				{
@@ -189,7 +194,7 @@ class JElement extends JObject
 			return false;
 		}
 	}
-	
+
 	/**
 	 * is the current element in a repeat group
 	 * @return  bool

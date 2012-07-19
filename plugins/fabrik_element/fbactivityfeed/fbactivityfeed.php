@@ -18,11 +18,16 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.facebookactivityfeed
+ * @since       3.0
  */
 
 class PlgFabrik_ElementFbactivityfeed extends PlgFabrik_Element
 {
 
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
 	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
@@ -30,12 +35,12 @@ class PlgFabrik_ElementFbactivityfeed extends PlgFabrik_Element
 	protected $fieldSize = '1';
 
 	/**
-	 * Draws the html form element
+	 * Draws the form element
 	 *
-	 * @param   array  $data           to preopulate element with
+	 * @param   array  $data           to pre-populate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
-	 * @return  string	elements html
+	 * @return  string  returns element html
 	 */
 
 	public function render($data, $repeatCounter = 0)

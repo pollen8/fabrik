@@ -13,11 +13,11 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
-* Fabrik Admin Visualization Model
-*
-* @package  Fabrik
-* @since    3.0
-*/
+ * Fabrik Admin Visualization Model
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class FabrikModelVisualization extends JModelAdmin
 {
@@ -33,9 +33,9 @@ class FabrikModelVisualization extends JModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -50,9 +50,9 @@ class FabrikModelVisualization extends JModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed  A JForm object on success, false on failure
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -72,7 +72,7 @@ class FabrikModelVisualization extends JModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed	The data for the form.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 	protected function loadFormData()
@@ -89,9 +89,9 @@ class FabrikModelVisualization extends JModelAdmin
 	/**
 	 * get html form fields for a plugin (filled with
 	 * current element's plugin data
-	 * 
+	 *
 	 * @param   string  $plugin  plugin name
-	 * 
+	 *
 	 * @return  string	html form fields
 	 */
 
@@ -146,6 +146,7 @@ class FabrikModelVisualization extends JModelAdmin
 
 	public function save($data)
 	{
+		parent::cleanCache('com_fabrik');
 		return parent::save($data);
 	}
 

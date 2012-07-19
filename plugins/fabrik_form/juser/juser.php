@@ -17,6 +17,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.juser
+ * @since       3.0
  */
 
 class plgFabrik_FormJUser extends plgFabrik_Form
@@ -117,7 +118,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 						$this->getFieldName($params, 'juser_field_block', true) => $o_user->block,
 						$this->getFieldName($params, 'juser_field_email', true) => $o_user->email,
 						$this->getFieldName($params, 'juser_field_password', true) => $o_user->password,
-						$this->getFieldName($params, 'juser_field_name', true) => $o_user->username,
+						$this->getFieldName($params, 'juser_field_name', true) => $o_user->name,
 						$this->getFieldName($params, 'juser_field_username', true) => $o_user->username,
 						$this->getFieldName($params, 'juser_field_usertype', true) => $o_user->group_id);
 					$query->insert($tableName);
@@ -181,7 +182,14 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 						// @FIXME this is out of date for J1.7 - no gid field
 						if ($params->get('juser_field_usertype') != '')
 						{
-							$gid = $user->get('gid');
+							$groupElement = FabrikWorker::getPluginManager()->getElementPlugin($params->get('juser_field_usertype'));
+							$groupElementClass = get_class($groupElement);
+							$gid = $user->groups;
+							if ($groupElementClass !== 'plgFabrik_ElementUsergroup')
+							{
+								$gid = array_shift($gid);
+							}
+
 							$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 							$formModel->data[$this->gidfield] = $gid;
 							$formModel->data[$this->gidfield . '_raw'] = $gid;
@@ -333,43 +341,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 		$data['id'] = $original_id;
 
-		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
-		$defaultGroup = (int) $params->get('juser_field_default_group');
-
-		$groupId = JArrayHelper::getValue($formModel->formData, $this->gidfield, $defaultGroup);
-		if (is_array($groupId))
-		{
-			$groupId = $groupId[0];
-		}
-		$groupId = (int) $groupId;
-
-		if (!$isNew)
-		{
-			if ($params->get('juser_field_usertype') != '')
-			{
-				if (in_array($groupId, $me->getAuthorisedGroups()) || $me->authorise('core.admin'))
-				{
-					$data['gid'] = $groupId;
-				}
-				else
-				{
-					JError::raiseNotice(500, "could not alter user group to $groupId as you are not assigned to that group");
-				}
-			}
-			else
-			{
-				// If editing an existing user and no gid field being used,  use default group id
-				$data['gid'] = $defaultGroup;
-			}
-		}
-		else
-		{
-			$data['gid'] = ($params->get('juser_field_usertype') != '') ? $groupId : $defaultGroup;
-		}
-		if ($data['gid'] === 0)
-		{
-			$data['gid'] = $defaultGroup;
-		}
+		$data['gid'] = $this->setGroupIds($formModel, $me);
 		$user->groups = (array) $data['gid'];
 
 		if ($params->get('juser_field_block') != '')
@@ -493,8 +465,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY', $data['name'], $data['sitename'],
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']
-				);
+					$data['username'], $data['password_clear']);
 			}
 			elseif ($useractivation == 1 && !$bypassActivation)
 			{
@@ -505,8 +476,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY', $data['name'], $data['sitename'],
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']
-				);
+					$data['username'], $data['password_clear']);
 			}
 			elseif ($params->get('juser_bypass_accountdetails') != 1)
 			{
@@ -584,6 +554,47 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 	}
 
+	protected function setGroupIds($formModel, $me)
+	{
+		$params = $this->getParams();
+		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
+		$defaultGroup = (int) $params->get('juser_field_default_group');
+
+		$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
+
+		JArrayHelper::toInteger($groupId);
+
+		$data = array();
+		if (!$isNew)
+		{
+			$authLevels = $me->getAuthorisedGroups();
+			if ($params->get('juser_field_usertype') != '')
+			{
+				foreach ($groupIds as $groupId)
+				{
+					if (in_array($groupId, $authLevels) || $me->authorise('core.admin'))
+					{
+						$data[] = $groupId;
+					}
+					else
+					{
+						JError::raiseNotice(500, "could not alter user group to $groupId as you are not assigned to that group");
+					}
+				}
+			}
+			else
+			{
+				// If editing an existing user and no gid field being used,  use default group id
+				$data[] = $defaultGroup;
+			}
+		}
+		else
+		{
+			$data[] = ($params->get('juser_field_usertype') != '') ? $groupId : $defaultGroup;
+		}
+		return $data;
+	}
+
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -603,46 +614,61 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 		if ($params->get('juser_auto_login', false))
 		{
-			$app = JFactory::getApplication();
+			$this->autoLogin($formModel);
+		}
+	}
 
-			/* $$$ rob 04/02/2011 no longer used - instead a session var is set
-			 * com_fabrik.form.X.juser.created with values true/false.
-			 * these values can be used in the redirect plugin to route accordingly
+	/**
+	 * Auto login in the user
+	 *
+	 * @param   object $formModel form model
+	 *
+	 * @return  bool
+	 */
 
-			 $success_page	= $params->get('juser_success_page', '');
-			 $failure_page	= $params->get('juser_failure_page', '');
-			 */
+	protected function autoLogin($formModel)
+	{
+		$app = JFactory::getApplication();
 
-			// $$$ rob - commented this block out as we have already got the values in
-			// $this->usernamevalue and $this->passwordvalue
+		/* $$$ rob 04/02/2011 no longer used - instead a session var is set
+		 * com_fabrik.form.X.juser.created with values true/false.
+		 * these values can be used in the redirect plugin to route accordingly
 
-			$username = $this->usernamevalue;
-			$password = $this->passwordvalue;
-			$options = array();
-			$options['remember'] = true;
-			$options['return'] = '';
-			$options['action'] = '';
-			$options['silent'] = true;
+		$success_page	= $params->get('juser_success_page', '');
+		$failure_page	= $params->get('juser_failure_page', '');
+		 */
 
-			$credentials = array();
-			$credentials['username'] = $username;
-			$credentials['password'] = $password;
+		// $$$ rob - commented this block out as we have already got the values in
+		// $this->usernamevalue and $this->passwordvalue
 
-			// @FIXME not working - gives error JERROR_LOGIN_DENIED
-			// Preform the login action
-			$error = $app->login($credentials, $options);
+		$username = $this->usernamevalue;
+		$password = $this->passwordvalue;
+		$options = array();
+		$options['remember'] = true;
+		$options['return'] = '';
+		$options['action'] = '';
+		$options['silent'] = true;
 
-			$session = JFactory::getSession();
-			$context = 'com_fabrik.form.' . $formModel->getId() . '.juser.';
-			$w = new FabrikWorker;
-			if (!JError::isError($error))
-			{
-				$session->set($context . 'created', true);
-			}
-			else
-			{
-				$session->set($context . 'created', false);
-			}
+		$credentials = array();
+		$credentials['username'] = $username;
+		$credentials['password'] = $password;
+
+		// @FIXME not working - gives error JERROR_LOGIN_DENIED
+		// Preform the login action
+		$error = $app->login($credentials, $options);
+
+		$session = JFactory::getSession();
+		$context = 'com_fabrik.form.' . $formModel->getId() . '.juser.';
+		$w = new FabrikWorker;
+		if (!JError::isError($error))
+		{
+			$session->set($context . 'created', true);
+			return true;
+		}
+		else
+		{
+			$session->set($context . 'created', false);
+			return false;
 		}
 	}
 

@@ -192,7 +192,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * returns array of elements in the group
+	 * Returns array of elements in the group
 	 *
 	 * NOTE: pretty sure that ->elements will already be loaded
 	 * within $formModel->getGroupsHiarachy()
@@ -214,7 +214,12 @@ class FabrikFEModelGroup extends FabModel
 			if (empty($this->elements))
 			{
 				// Horrible hack for when saving group
-				$this->elements = $allGroups[$this->getId()]->elements;
+
+				/*
+				 * $$$ rob Using @ for now as in inline edit in podion you get multiple notices when
+				 * saving the status element
+				 */
+				$this->elements = @$allGroups[$this->getId()]->elements;
 			}
 		}
 		return $this->elements;

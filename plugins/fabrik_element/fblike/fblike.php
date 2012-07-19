@@ -18,11 +18,16 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.facebooklike
+ * @since       3.0
  */
 
 class PlgFabrik_ElementFblike extends PlgFabrik_Element
 {
 
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
 	protected $hasLabel = false;
 
 	protected $fieldDesc = 'INT(%s)';
@@ -44,13 +49,15 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$meta = array();
 		$config = JFactory::getConfig();
 		$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
+
 		// $$$ rob no need to get other meta data as we are linking to the details which contains full meta info on what it is
 		// you are liking
 		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 		$meta['og:site_name'] = $config->get('sitename');
 		$meta['fb:admins'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
-		// in list view we link to the detailed record not the list view itself
+
+		// In list view we link to the detailed record not the list view itself
 		// means form or details view must be viewable by the user
 		$url = $this->getListModel()->linkHref($this, $thisRow);
 		return $str . $this->_render($url);
@@ -116,11 +123,20 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
-		//$$$tom placeholder option for URL params
+
+		// $$$tom placeholder option for URL params
 		$w = new FabrikWorker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
 		return $str . $this->_render($url);
 	}
+
+	/**
+	 * Render the button
+	 *
+	 * @param   string  $url  button url
+	 *
+	 * @return string
+	 */
 
 	protected function _render($url)
 	{
@@ -130,7 +146,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 			if (!strstr($url, COM_FABRIK_LIVESITE))
 			{
 				// $$$ rob doesnt work with sef urls as $url already contains site folder.
-				//$url = COM_FABRIK_LIVESITE.$url;
+				// $url = COM_FABRIK_LIVESITE.$url;
 				$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
 				$url = $ex . $_SERVER['SERVER_NAME'] . $url;
 			}

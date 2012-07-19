@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <extension group="system" method="upgrade" type="plugin" version="2.5">
-	<name>System - Fabrik Sheduled Tasks</name>
+	<name>System - Fabrik Scheduled Tasks</name>
 	<author>Pollen 8</author>
 	<creationDate>May 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>

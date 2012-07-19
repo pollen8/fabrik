@@ -79,6 +79,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		 * but in table view when getting read only filter value from url filter this
 		 * _form_data was not set to no readonly value was returned
 		 * added little test to see if the data was actually an array before using it
+		 */
 		if (is_array($this->getFormModel()->data))
 		{
 			$data = $this->getFormModel()->data;

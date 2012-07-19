@@ -61,7 +61,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	/** @var object JTable element object */
 	public $element = null;
 
-	/** @var bool does the element have a label */
+	/**
+	 * Does the element have a label
+	 * @var bool
+	 */
 	protected $hasLabel = true;
 
 	/** @var bool does the element contain sub elements e.g checkboxes radiobuttons */
@@ -73,7 +76,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/** @var bool is the element in a detailed view? **/
 	public $inDetailedView = false;
 
-	public $defaults = null;
+	public $defaults = array();
 
 	/** @var array html ids */
 	public $HTMLids = null;
@@ -331,19 +334,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->form->getForm();
 		}
 		return $this->form;
-	}
-
-	/**
-	 * Set form model
-	 *
-	 * @param   object  $model  form model
-	 *
-	 * @return  void
-	 */
-
-	public function setFormModel($model)
-	{
-		$this->form = $model;
 	}
 
 	/**
@@ -989,18 +979,18 @@ class PlgFabrik_Element extends FabrikPlugin
 				// if ($groupModel->canRepeat() || !$this->isJoin()) {
 				if ($groupModel->canRepeat())
 				{
-					$value = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
-					if (is_null($value))
+					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, array());
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, $value);
 					}
 				}
 				else
 				{
-					$value = FArrayHelper::getNestedValue($data, $nameKey, null);
-					if (is_null($value))
+					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey, array());
+						$value = FArrayHelper::getNestedValue($data, $rawNameKey, $value);
 					}
 					/* $$$ rob if you have 2 tbl joins, one repeating and one not
 					 * the none repeating one's values will be an array of duplicate values
@@ -1680,7 +1670,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function preRenderElement($data, $repeatCounter = 0)
 	{
-		$groupModel = $this->getGrouModel();
+		$groupModel = $this->getGroupModel();
 		if (!$this->canView() && !$this->canUse())
 		{
 			return '';
@@ -3975,7 +3965,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * get the class to manage the form element
+	 * Get the class to manage the form element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
