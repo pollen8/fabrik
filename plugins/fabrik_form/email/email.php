@@ -368,8 +368,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		}
 		else
 		{
-			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
-			$articleModel = JModel::getInstance('Article', 'ContentModel');
+			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
+			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
 		return $res->introtext . ' ' . $res->fulltext;

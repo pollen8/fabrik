@@ -56,7 +56,7 @@ class fabrikViewFusionchart extends JView
 		$params = $model->getParams();
 		$this->assign('params', $params);
 		$viewName = $this->getName();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assign('filters', $this->get('Filters'));

@@ -73,7 +73,7 @@ class plgSystemFabrik extends JPlugin
 			return;
 		}
 		define('COM_FABRIK_SEARCH_RUN', true);
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 		$user = JFactory::getUser();
 		$db = FabrikWorker::getDbo(true);
@@ -134,7 +134,7 @@ class plgSystemFabrik extends JPlugin
 		$usage = array();
 		$memSafety = 0;
 
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		foreach ($ids as $id)
 		{

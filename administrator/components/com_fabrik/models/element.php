@@ -131,7 +131,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		else
 		{
-			$formModel = JModel::getInstance('Form', 'FabrikFEModel');
+			$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 			$formModel->setId($formrow->form_id);
 
 			// Get available element types
@@ -257,7 +257,7 @@ class FabrikModelElement extends JModelAdmin
 		// Trigger the validation dispatcher to get the validation rules html
 		$plugins = JPluginHelper::getPlugin('fabrik_validationrule');
 
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		$item = $this->getItem();
 		foreach ($item as $key => $val)
@@ -296,7 +296,7 @@ class FabrikModelElement extends JModelAdmin
 		$validations = JArrayHelper::getValue($item->params, 'validations', array());
 		$plugins = JArrayHelper::getValue($validations, 'plugin', array());
 		$return = array();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginData = empty($item->params) ? array() : (array) $item->params;
 		$locations = JArrayHelper::getValue($item->params, 'plugin_locations');
 		$events = JArrayHelper::getValue($item->params, 'plugin_locations');
@@ -345,7 +345,7 @@ class FabrikModelElement extends JModelAdmin
 		$abstractPlugins = $this->getAbstractPlugins();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		$opts = new stdClass;
 		$opts->plugin = $item->plugin;
@@ -400,7 +400,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		JRequest::setvar('view', 'element');
 		JPluginHelper::importPlugin('fabrik_element', $plugin);
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		if ($plugin == '')
 		{
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
@@ -507,7 +507,7 @@ class FabrikModelElement extends JModelAdmin
 			}
 			else
 			{
-				$joinListModel = JModel::getInstance('list', 'FabrikFEModel');
+				$joinListModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 				$joinListModel->setId($joinTblId);
 				$joinEls = $joinListModel->getElements();
 				foreach ($joinEls as $joinEl)
@@ -539,7 +539,7 @@ class FabrikModelElement extends JModelAdmin
 
 	private function getElementPluginModel($data)
 	{
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$id = $data['id'];
 		$elementModel = $pluginManager->getPlugIn($data['plugin'], 'element');
 		/**
@@ -837,7 +837,7 @@ class FabrikModelElement extends JModelAdmin
 		 */
 		$ids = $this->getElementDescendents($row->id);
 		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		foreach ($ids as $id)
 		{
 			$plugin = $pluginManager->getElementPlugin($id);
@@ -1007,7 +1007,7 @@ class FabrikModelElement extends JModelAdmin
 	public function delete(&$pks)
 	{
 		// Initialize variables
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$drops = (array) JRequest::getVar('drop');
 		foreach ($pks as $id)
 		{

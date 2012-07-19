@@ -42,7 +42,7 @@ class FabrikControllerForm extends JControllerForm
 	public function view()
 	{
 		$document = JFactory::getDocument();
-		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout = JRequest::getCmd('layout', 'default');
@@ -86,7 +86,7 @@ class FabrikControllerForm extends JControllerForm
 
 	public function process()
 	{
-		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType = $document->getType();

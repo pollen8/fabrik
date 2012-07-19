@@ -201,7 +201,7 @@ class FabrikModelHome extends JModelAdmin
 			exit;
 		}
 		echo "<li>Groups added to 'Contact Us' form</li>";
-		$listModel = JModel::getInstance('List', 'FabrikModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikModel');
 		$list = $this->getTable('List');
 		$list->label = "Contact Us Data";
 		$list->introduction = "This table stores the data submitted in the contact us form";
@@ -226,7 +226,7 @@ class FabrikModelHome extends JModelAdmin
 		{
 			JError::raiseError(500, $form->getError());
 		}
-		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
+		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($form->id);
 		$formModel->form = $form;
 
@@ -273,7 +273,7 @@ class FabrikModelHome extends JModelAdmin
 
 	public function dropData()
 	{
-		$connModel = JModel::getInstance('Connection', 'FabrikFEModel');
+		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);

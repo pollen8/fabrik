@@ -95,7 +95,7 @@ class plgFabrik_Cronemail extends plgFabrik_Cron {
 		if (!empty( $updates) && trim($field ) != '')
 		{
 			//do any update found
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($params->get('table'));
 			$table = $listModel->getTable();
 			$connection = $params->get('connection');

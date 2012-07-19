@@ -37,7 +37,7 @@ class FabrikControllerList extends JControllerForm
 	public function ajax_loadTableDropDown()
 	{
 		$conn = JRequest::getInt('conn', 1);
-		$oCnn = JModel::getInstance('Connection', 'FabrikFEModel');
+		$oCnn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$oCnn->setId($conn);
 		$oCnn->getConnection();
 		$db = $oCnn->getDb();
@@ -73,7 +73,7 @@ class FabrikControllerList extends JControllerForm
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
 		$model->setId($listid);
 		$ids = JRequest::getVar('ids', array(), 'request', 'array');
@@ -105,7 +105,7 @@ class FabrikControllerList extends JControllerForm
 
 	public function filter()
 	{
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
 		$model->setId($id);
 		JRequest::setvar('cid', $id);
@@ -130,7 +130,7 @@ class FabrikControllerList extends JControllerForm
 		$cid = JRequest::getInt('listid', $cid);
 
 		// Grab the model and set its id
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);
 		$viewType = JFactory::getDocument()->getType();
 

@@ -72,7 +72,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 
 		$listid = $params->get('media_table');
 
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
 		$form = $listModel->getFormModel();

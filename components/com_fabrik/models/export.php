@@ -33,7 +33,7 @@ class FabrikFEModelExport {
 	 */
 	function load($id)
 	{
-		$this->packageModel = JModel::getInstance('Package', 'FabrikFEModel');
+		$this->packageModel = JModelLegacy::getInstance('Package', 'FabrikFEModel');
 		$this->packageModel->setId($id);
 		$this->packageModel->getPackage();
 		$this->packageModel->loadTables();
@@ -361,7 +361,7 @@ class FabrikFEModelExport {
 	function _csvExport() {
 		$db = FabrikWorker::getDbo();
 		initGzip();
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$id = $this->tableIds[0];
 		$listModel->setId($id);
 		$listModel->setOutPutFormat('csv');

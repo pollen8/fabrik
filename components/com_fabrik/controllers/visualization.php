@@ -90,7 +90,7 @@ class FabrikControllerVisualization extends JController
 		$viz->load(JRequest::getInt('id'));
 		$viewName = $viz->plugin;
 		$this->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/views');
-		JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/models');
+		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/models');
 		return $viewName;
 	}
 

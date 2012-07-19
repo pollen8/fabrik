@@ -28,16 +28,16 @@ class FabrikViewElement extends JView
 
 	public function display($tpl = null)
 	{
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$ids = JRequest::getVar('plugin');
 		foreach ($ids as $id) {
 			//$plugin = $pluginManager->getElementPlugin($id);
 		}
-		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
+		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId(JRequest::getInt('formid'));
 		$formModel->inLineEdit();
 		/* $elementid = JRequest::getVar('elid');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
 		$plugin =& $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);

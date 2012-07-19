@@ -23,7 +23,7 @@ class FabrikViewVisualization extends JView{
 		$visualization = $model->getVisualization();
 		$params = $model->getParams();
 
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikModel');
 		$plugin = $pluginManager->getPlugIn($visualization->plugin, 'visualization');
 		$plugin->setRow($visualization);
 		if ($visualization->published == 0)

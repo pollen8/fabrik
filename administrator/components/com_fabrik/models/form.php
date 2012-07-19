@@ -112,8 +112,8 @@ class FabrikModelForm extends FabModelAdmin
 
 		// Trigger the validation dispatcher to get hte validation rules html
 		$plugins = JPluginHelper::getPlugin('fabrik_form');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$feFormModel = JModel::getInstance('form', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
+		$feFormModel = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$feFormModel->setId($this->getState('form.id'));
 		foreach ($plugins as $x => $plugin)
 		{
@@ -304,7 +304,7 @@ class FabrikModelForm extends FabModelAdmin
 		$this->_makeFormGroups($data, $currentGroups);
 		if ($record_in_database == '1')
 		{
-			$listModel = JModel::getInstance('List', 'FabrikModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikModel');
 			$item = $listModel->loadFromFormId($formid);
 			if ($isnew)
 			{
@@ -443,7 +443,7 @@ class FabrikModelForm extends FabModelAdmin
 	{
 		$cid = JRequest::getVar('cid', null, 'post', 'array');
 		$formId = $cid[0];
-		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formId);
 		$form = $model->getForm();
 
@@ -451,7 +451,7 @@ class FabrikModelForm extends FabModelAdmin
 		if ($form->record_in_database == 1)
 		{
 			// There is a table view linked to the form so lets load it
-			$listModel = JModel::getInstance('List', 'FabrikModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikModel');
 			$listModel->loadFromFormId($formId);
 			$listModel->setFormModel($model);
 			$dbExisits = $listModel->databaseTableExists();

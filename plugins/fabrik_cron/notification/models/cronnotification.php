@@ -22,7 +22,7 @@ class fabrikModelCronnotification extends fabrikModelPlugin {
 		$sql = "SELECT * FROM #__{package}_notification WHERE user_id = " . $user->get('id');
 		$db->setQuery($sql);
 		$rows = $db->loadObjectList();
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		foreach ($rows as &$row) {
 			/*
 			 * {observer_name, creator_name, event, record url

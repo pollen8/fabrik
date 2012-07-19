@@ -64,7 +64,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				$id = JRequest::getInt('id');
 				break;
 		}
-		$feModel = JModel::getInstance($view, 'FabrikFEModel');
+		$feModel = JModelLegacy::getInstance($view, 'FabrikFEModel');
 		$feModel->setId($id);
 		$subForm->model = $feModel;
 		/*

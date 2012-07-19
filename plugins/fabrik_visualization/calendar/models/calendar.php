@@ -152,7 +152,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 			$this->_events = array();
 			for ($i = 0; $i < count($tables); $i++)
 			{
-				$listModel = JModel::getInstance('list', 'FabrikFEModel');
+				$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 				if ($tables[$i] != 'undefined')
 				{
 					$listModel->setId($tables[$i]);
@@ -221,7 +221,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	{
 		$this->setupEvents();
 		$request = JRequest::get('request');
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 
 		foreach ($this->_events as $listid => $record)
 		{
@@ -254,7 +254,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 			$lists = (array) $params->get('calendar_table');
 			foreach ($lists as $id)
 			{
-				$listModel = JModel::getInstance('list', 'FabrikFEModel');
+				$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 				$listModel->setId($id);
 				if (!$listModel->canAdd())
 				{
@@ -279,7 +279,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$lists = (array) $params->get('calendar_table');
 		foreach ($lists as $id)
 		{
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($id);
 			if ($listModel->canDelete())
 			{
@@ -307,7 +307,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$jsevents = array();
 		foreach ($this->_events as $listid => $record)
 		{
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($listid);
 			if (!$listModel->canView())
 			{
@@ -414,7 +414,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$jsevents = array();
 		foreach ($this->_events as $listid => $record)
 		{
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$table = $listModel->getTable();
 			foreach ($record as $data)
@@ -460,7 +460,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	{
 		$id = (int) JRequest::getVar('id');
 		$listid = JRequest::getInt('listid');
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
 		$tableDb = $listModel->getDb();

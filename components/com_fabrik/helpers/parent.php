@@ -1163,7 +1163,7 @@ class FabrikWorker
 		}
 		if (!array_key_exists($connId, self::$connection))
 		{
-			$connectionModel = JModel::getInstance('connection', 'FabrikFEModel');
+			$connectionModel = JModelLegacy::getInstance('connection', 'FabrikFEModel');
 			$connectionModel->setId($connId);
 			if ($connId === -1)
 			{
@@ -1193,7 +1193,7 @@ class FabrikWorker
 	{
 		if (!self::$pluginManager)
 		{
-			self::$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+			self::$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		}
 		return self::$pluginManager;
 	}

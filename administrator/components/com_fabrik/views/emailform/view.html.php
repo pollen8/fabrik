@@ -18,7 +18,7 @@ class fabrikViewEmailform extends JView
 	{
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::script($srcs);
-		$model = JModel::getInstance('form', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$post = JRequest::get('post');
 		if (!array_key_exists('youremail', $post))
 		{

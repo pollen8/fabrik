@@ -115,7 +115,7 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 			}
 			FabrikWorker::log('plg.cron.cronimportcsv.information', "Starting import: $full_csvfile:  ");
 
-			$clsImportCSV = JModel::getInstance('Importcsv', 'FabrikFEModel');
+			$clsImportCSV = JModelLegacy::getInstance('Importcsv', 'FabrikFEModel');
 
 			if ($useTableName)
 			{

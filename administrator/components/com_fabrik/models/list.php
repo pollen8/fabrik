@@ -271,7 +271,7 @@ class FabrikModelList extends FabModelAdmin
 	protected function getCnn()
 	{
 		$item = $this->getItem();
-		$connModel = JModel::getInstance('Connection', 'FabrikFEModel');
+		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$connModel->setId($item->connection_id);
 		$connModel->getConnection($item->connection_id);
 		return $connModel;
@@ -289,7 +289,7 @@ class FabrikModelList extends FabModelAdmin
 		$connModel = $this->getCnn();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		JText::script('COM_FABRIK_ACTION');
 		JText::script('COM_FABRIK_DO');
 		JText::script('COM_FABRIK_IN');
@@ -479,8 +479,8 @@ class FabrikModelList extends FabModelAdmin
 
 		// Trigger the dispatcher to get the plug-in rules html
 		$plugins = JPluginHelper::getPlugin('fabrik_list');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$feListModel = JModel::getInstance('List', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
+		$feListModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$feListModel->setId($this->getState('list.id'));
 
 		foreach ($plugins as $x => $plugin)
@@ -541,7 +541,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$config = array();
 			$config['dbo'] = FabrikWorker::getDbo(true);
-			$this->formModel = JModel::getInstance('Form', 'FabrikFEModel', $config);
+			$this->formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel', $config);
 			$this->formModel->setDbo($config['dbo']);
 
 			/**
@@ -582,7 +582,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		if (is_null($this->feListModel))
 		{
-			$this->feListModel = JModel::getInstance('List', 'FabrikFEModel');
+			$this->feListModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$this->feListModel->setState('list.id', $this->getState('list.id'));
 		}
 		return $this->feListModel;
@@ -907,7 +907,7 @@ class FabrikModelList extends FabModelAdmin
 		$aOldJoins = $db->loadObjectList();
 		$params = $data['params'];
 		$aOldJoinsToKeep = array();
-		$joinModel = JModel::getInstance('Join', 'FabrikFEModel');
+		$joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
 		$joinIds = JArrayHelper::getValue($params, 'join_id', array());
 		$joinTypes = JArrayHelper::getValue($params, 'join_type', array());
 		$joinTableFrom = JArrayHelper::getValue($params, 'join_from_table', array());
@@ -1084,7 +1084,7 @@ class FabrikModelList extends FabModelAdmin
 		if ($id)
 		{
 			// A fabrik table already exists - so we can copy the formatting of its elements
-			$groupListModel = JModel::getInstance('list', 'FabrikFEModel');
+			$groupListModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$groupListModel->setId($id);
 			$groupListModel->getTable();
 			$groups = $groupListModel->getFormGroupElementData();
@@ -2000,7 +2000,7 @@ class FabrikModelList extends FabModelAdmin
 		$groupids = (array) $db->loadResultArray();
 
 		// Delete groups
-		$groupModel = JModel::getInstance('Group', 'FabrikModel');
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikModel');
 		$groupModel->delete($groupids, $deleteElements);
 		return $form;
 	}
@@ -2307,7 +2307,7 @@ class FabrikModelList extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$user = JFactory::getUser();
 		$table = $this->table;
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$ammend = false;
 		$tableName = $table->db_table_name;
 		$fabrikDb = $this->getDb();

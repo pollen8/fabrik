@@ -103,7 +103,7 @@ class FabrikModelCron extends JModelAdmin
 			$plugin = $item->plugin;
 		}
 		JPluginHelper::importPlugin('fabrik_cron');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		if ($plugin == '')
 		{
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');

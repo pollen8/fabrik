@@ -305,7 +305,7 @@ class FabrikModelPackage extends FabModelAdmin
 		$return[] = "\t\t" . $this->rowsToInsert('#__fabrik_packages', $rows, $return);
 		$return[] = "\t\t" . "\$package_id = \$db->insertid();";
 		$lookups = $this->getInstallItems($row);
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$lists = $lookups->list;
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
@@ -551,14 +551,14 @@ class FabrikModelPackage extends FabModelAdmin
 		}
 
 		// Create the sql to build the db tables that store the data.
-		$formModel = JModel::getInstance('form', 'FabrikFEModel');
+		$formModel = JModelLegacy::getInstance('form', 'FabrikFEModel');
 
 		$lookups = $this->getInstallItems($row);
 		$lids = $lookups->list;
 		JArrayHelper::toInteger($lids);
 		foreach ($lids as $lid)
 		{
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($lid);
 			$sql .= "\n\n" . $listModel->getCreateTableSQL(true);
 		}
@@ -579,7 +579,7 @@ class FabrikModelPackage extends FabModelAdmin
 		{
 			$vrow = FabTable::getInstance('Visualization', 'FabrikTable');
 			$vrow->load($vid);
-			$visModel = JModel::getInstance($vrow->plugin, 'fabrikModel');
+			$visModel = JModelLegacy::getInstance($vrow->plugin, 'fabrikModel');
 			$visModel->setId($vid);
 			$listModels = $visModel->getlistModels();
 			foreach ($listModels as $lmodel)
@@ -608,8 +608,8 @@ class FabrikModelPackage extends FabModelAdmin
 
 	protected function findPlugins($row)
 	{
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
-		$formModel = JModel::getInstance('form', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+		$formModel = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$lookups = $this->getInstallItems($row);
 		$plugins = array();
 		foreach ($lookups->form as $fid)
@@ -681,7 +681,7 @@ class FabrikModelPackage extends FabModelAdmin
 		 */
 
 		/*
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$lookups = $this->getInstallItems($row);
 		$tids = $lookups->list;
 		JArrayHelper::toInteger($tids);

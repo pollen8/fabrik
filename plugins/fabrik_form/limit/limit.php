@@ -67,7 +67,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		else
 		{
 			// Look up the limit from the table spec'd in the admin params
-			$listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$max = $db->quoteName(FabrikString::shortColName($params->get('limit_max')));
 			$userfield = $db->quoteName(FabrikString::shortColName($params->get('limit_user')));

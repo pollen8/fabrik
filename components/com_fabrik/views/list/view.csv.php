@@ -16,8 +16,8 @@ class FabrikViewList extends JView{
 	function display()
 	{
 		$session = JFactory::getSession();
-		$exporter = JModel::getInstance('Csvexport', 'FabrikFEModel');
-		$model = JModel::getInstance('list', 'FabrikFEModel');
+		$exporter = JModelLegacy::getInstance('Csvexport', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$model->setOutPutFormat('csv');
 		$exporter->model = $model;

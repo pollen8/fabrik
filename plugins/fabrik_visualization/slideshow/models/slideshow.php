@@ -70,7 +70,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 
 		$listid = $params->get('media_table');
 
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
 		$form = $listModel->getFormModel();
@@ -235,7 +235,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 		{
 			$params = $this->getParams();
 			$listid = $params->get('slideshow_viz_table');
-			$this->listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$this->listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$this->listModel->setId($listid);
 		}
 		return $this->listModel;

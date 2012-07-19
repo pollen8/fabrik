@@ -85,13 +85,13 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 			// No connection selected so query current forms' table data
 			$formid = JRequest::getInt('formid');
 			JRequest::setVar($element, $value, 'get');
-			$model = JModel::getInstance('form', 'FabrikFEModel');
+			$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
 			$model->setId($formid);
 			$listModel = $model->getlistModel();
 		}
 		else
 		{
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId(JRequest::getInt('table'));
 		}
 		if ($value !== '')

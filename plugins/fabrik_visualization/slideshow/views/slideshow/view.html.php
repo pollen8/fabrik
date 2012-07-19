@@ -38,7 +38,7 @@ class fabrikViewSlideshow extends JView
 		$viewName = $this->getName();
 		$params = $model->getParams();
 		$this->assign('params', $params);
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
 		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('filters', $this->get('Filters'));

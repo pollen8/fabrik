@@ -42,7 +42,7 @@ class FabrikControllerConnection extends JControllerForm
 		$link = 'index.php?option=com_fabrik&view=connections';
 		foreach ($cid as $id)
 		{
-			$model = JModel::getInstance('Connection', 'FabrikFEModel');
+			$model = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 			$model->setId($id);
 			if ($model->testConnection() == false)
 			{

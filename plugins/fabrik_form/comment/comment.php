@@ -610,7 +610,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 	private function setFormModel()
 	{
-		$formModel = JModel::getInstance('form', 'FabrikFEModel');
+		$formModel = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$formModel->setId(JRequest::getVar('formid'));
 		$this->formModel = $formModel;
 		return $this->formModel;

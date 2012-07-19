@@ -39,7 +39,7 @@ class FabrikControllerForm extends JControllerForm
 	public function inlineedit()
 	{
 		$document = JFactory::getDocument();
-		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= JRequest::getCmd('layout', 'default');
@@ -63,7 +63,7 @@ class FabrikControllerForm extends JControllerForm
 	{
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
-		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 
 		// For now lets route this to the html view.

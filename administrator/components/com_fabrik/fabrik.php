@@ -40,7 +40,7 @@ if (!defined('COM_FABRIK_FRONTEND')) {
 }
 
 // Execute the task.
-$controller	= JController::getInstance('Fabrik');
+$controller	= JControllerLegacy::getInstance('Fabrik');
 
 //test that they've published some element plugins!
 $db = JFactory::getDbo();

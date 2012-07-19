@@ -90,7 +90,7 @@ class FabrikControllerPlugin extends JController
 		}
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		$viewModel = JModel::getInstance('view', 'FabrikFEModel');
+		$viewModel = JModelLegacy::getInstance('view', 'FabrikFEModel');
 		$c = 0;
 		foreach ($rows as $row)
 		{

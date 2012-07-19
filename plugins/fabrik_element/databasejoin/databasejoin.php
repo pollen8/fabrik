@@ -698,7 +698,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			$this->cn = JModel::getInstance('Connection', 'FabrikFEModel');
+			$this->cn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 			$this->cn->setId($id);
 		}
 		return $this->cn->getConnection();

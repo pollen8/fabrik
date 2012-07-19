@@ -37,11 +37,11 @@ $app = JFactory::getApplication();
 $app->setUserState('com_fabrik.package', $option);
 
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
+JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 JRequest::setVar('task', 'package.view');
 $config = array();
 $config['base_path'] = JPATH_SITE . '/components/com_fabrik/';
 
-$controller = JController::getInstance('Fabrik', $config);
+$controller = JControllerLegacy::getInstance('Fabrik', $config);
 $controller->execute(JRequest::getCmd('task'));
 $controller->redirect();

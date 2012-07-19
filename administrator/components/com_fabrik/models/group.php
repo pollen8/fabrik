@@ -123,7 +123,7 @@ class FabrikModelGroup extends FabModelAdmin
 
 	protected function checkRepeatAndPK($data)
 	{
-		$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($data['id']);
 		$listModel = $groupModel->getListModel();
 		$pk = FabrikString::safeColName($listModel->getTable()->db_primary_key);
@@ -266,7 +266,7 @@ class FabrikModelGroup extends FabModelAdmin
 
 	public function makeJoinedGroup(&$data)
 	{
-		$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 		$groupModel->setId($data['id']);
 		$listModel = $groupModel->getListModel();
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -416,7 +416,7 @@ class FabrikModelGroup extends FabModelAdmin
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $pks) . ')');
 		$db->setQuery($query);
 		$elids = $db->loadColumn();
-		$elementModel = JModel::getInstance('Element', 'FabrikModel');
+		$elementModel = JModelLegacy::getInstance('Element', 'FabrikModel');
 		return $elementModel->delete($elids);
 	}
 

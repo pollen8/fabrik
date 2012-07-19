@@ -38,11 +38,11 @@ foreach ($docs as $d)
 	}
 }
 
-JModel::addIncludePath(JPATH_COMPONENT . '/models');
+JModelLegacy::addIncludePath(JPATH_COMPONENT . '/models');
 
 // $$$ rob if you want to you can override any fabrik model by copying it from
 // models/ to models/adaptors the copied file will overwrite (NOT extend) the original
-JModel::addIncludePath(JPATH_COMPONENT . '/models/adaptors');
+JModelLegacy::addIncludePath(JPATH_COMPONENT . '/models/adaptors');
 
 $controllerName = JRequest::getCmd('view');
 
@@ -125,7 +125,7 @@ if (strpos(JRequest::getCmd('task'), '.') !== false)
 	}
 	else
 	{
-		$controller = JController::getInstance('Fabrik');
+		$controller = JControllerLegacy::getInstance('Fabrik');
 	}
 }
 else
@@ -141,7 +141,7 @@ if ($isplugin)
 	$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/views');
 
 	// Add the model path
-	$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/models');
+	$modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/models');
 }
 $app = JFactory::getApplication();
 $package = JRequest::getVar('package', 'fabrik');
@@ -164,7 +164,7 @@ if (JRequest::getVar('soap') == 1)
 	$method = JRequest::getVar($method, 'GetProgramList');
 	$program = $service->get($method, $params, '//ProgramList/Program', null);
 
-	$listModel = JModel::getInstance('List', 'FabrikFEModel');
+	$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 	$listModel->setId(7);
 	$service->storeLocally($listModel, $program);
 

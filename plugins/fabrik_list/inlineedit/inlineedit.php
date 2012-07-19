@@ -71,7 +71,7 @@ class plgFabrik_ListInlineedit extends plgFabrik_List
 	{
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		FabrikHelperHTML::script('media/com_fabrik/js/element.js');
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId(JRequest::getVar('listid'));
 		$elements = $model->getElements('safecolname');
 

@@ -61,7 +61,7 @@ class FabrikControllerList extends FabControllerForm
 	public function copy()
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		$model = JModel::getInstance('list', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		if (count($cid) > 0)
 		{
 			$viewType = JFactory::getDocument()->getType();
@@ -112,7 +112,7 @@ class FabrikControllerList extends FabControllerForm
 			$cid = JRequest::getInt('listid', $cid);
 
 			// Grab the model and set its id
-			$model = JModel::getInstance('List', 'FabrikFEModel');
+			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$model->setState('list.id', $cid);
 		}
 		$viewType = JFactory::getDocument()->getType();
@@ -155,7 +155,7 @@ class FabrikControllerList extends FabControllerForm
 	{
 		$document = JFactory::getDocument();
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid[0]);
 		$formModel = $model->getFormModel();
 		$viewType = $document->getType();
@@ -189,7 +189,7 @@ class FabrikControllerList extends FabControllerForm
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
 		$model->setId($id);
 		JRequest::setvar('cid', $id);
@@ -224,7 +224,7 @@ class FabrikControllerList extends FabControllerForm
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$id = JRequest::getInt('listid');
 		$model->setId($id);
 		JRequest::setvar('cid', $id);
@@ -246,7 +246,7 @@ class FabrikControllerList extends FabControllerForm
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
 		$model->setId($listid);
 		$ids = JRequest::getVar('ids', array(), 'request', 'array');

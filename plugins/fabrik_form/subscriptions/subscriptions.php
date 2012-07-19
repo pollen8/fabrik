@@ -335,8 +335,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	{
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getInt('rowid');
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
-		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
 		$ret_msg = (array) $params->get('subscriptions_return_msg');
@@ -387,8 +387,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		list($formid, $rowid) = explode(":", $custom);
 
 		// Pretty sure they are added but double add
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
-		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$listModel = $formModel->getlistModel();
 		$params = $formModel->getParams();

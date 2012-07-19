@@ -86,7 +86,7 @@ class FabrikControllerHome extends JControllerAdmin
 		JError::raiseNotice(500, 'ajax_updateColumDropDowns deprecated');
 		/* $cnnId = JRequest::getInt('cid', 1);
 		$tbl = JRequest::getVar('table', '');
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$fieldDropDown 	= $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'order_by');
 		$fieldDropDown2 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'group_by');
 		$fieldDropDown3 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'params[group_by_order]');

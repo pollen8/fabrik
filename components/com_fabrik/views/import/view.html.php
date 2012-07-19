@@ -18,7 +18,7 @@ class fabrikViewImport extends JView
 	{
 		FabrikHelperHTML::framework();
 		$this->listid = JRequest::getVar('listid', 0);
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($this->listid);
 		$this->table = $listModel->getTable();
 		$this->form = $this->get('Form');

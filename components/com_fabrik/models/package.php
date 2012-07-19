@@ -230,7 +230,7 @@ class FabrikFEModelPackage extends FabModel
 			$aIds = explode(',', $this->_package->tables);
 			foreach ($aIds as $id)
 			{
-				$viewModel = JModel::getInstance('view', 'FabrikFEModel');
+				$viewModel = JModelLegacy::getInstance('view', 'FabrikFEModel');
 				$viewModel->setId($id);
 				$this->tables[] = $viewModel->getTable();
 				$formModel = $viewModel->getFormModel();

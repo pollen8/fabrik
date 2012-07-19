@@ -36,7 +36,7 @@ abstract class FabModelAdmin extends JModelAdmin
 		$dispatcher = JDispatcher::getInstance();
 		$plugins = JArrayHelper::getValue($item->params, 'plugins', array());
 		$return = array();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 
 		// @TODO prob wont work for any other model that extends this class except for the form/list model
 		switch (get_class($this))
@@ -47,7 +47,7 @@ abstract class FabModelAdmin extends JModelAdmin
 			default:
 				$class = 'form';
 		}
-		$feModel = JModel::getInstance($class, 'FabrikFEModel');
+		$feModel = JModelLegacy::getInstance($class, 'FabrikFEModel');
 		$feModel->setId($this->getState($class . '.id'));
 
 		$state = isset($item->params['plugin_state']) ? $item->params['plugin_state'] : array();

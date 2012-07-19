@@ -55,7 +55,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		foreach ($lists as $listid)
 		{
 			$template = JArrayHelper::getValue($templates, $c);
-			$listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$table = $listModel->getTable();
 			$nav = $listModel->getPagination(0, 0, 0);

@@ -29,7 +29,7 @@ class FabrikViewList extends JView
 	function display()
 	{
 		$app = JFactory::getApplication();
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$this->setModel($model, true);
 		$item = $model->getTable();

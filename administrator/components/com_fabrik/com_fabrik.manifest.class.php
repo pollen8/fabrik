@@ -286,7 +286,7 @@ here to install sample data</a></p>
 		// An example of setting a redirect to a new location after the install is completed
 		// $parent->getParent()->set('redirect_url', 'http://www.google.com');
 
-		// $upgrade = JModel::getInstance('Upgrade', 'FabrikModel');
+		// $upgrade = JModelLegacy::getInstance('Upgrade', 'FabrikModel');
 	}
 
 }

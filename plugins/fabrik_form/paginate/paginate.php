@@ -203,7 +203,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getVar('rowid');
 		$mode = JRequest::getVar('mode', 'details');
-		$model = &JModel::getInstance('Form', 'FabrikFEModel');
+		$model = &JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formid);
 		$model->rowId = $rowid;
 		$ids = $this->getNavIds($model);

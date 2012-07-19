@@ -361,7 +361,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 				if (!array_key_exists($lid, $tmodels))
 				{
 					$listModel = null;
-					$listModel = JModel::getInstance('List', 'FabrikFEModel');
+					$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 					$listModel->setId($lid);
 					$tmodels[$lid] = $listModel;
 				}

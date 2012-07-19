@@ -538,7 +538,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$key = str_replace($db->quoteName($table), $db->quoteName($join->table_join_alias), $key);
 		$orderby = 'text';
 		$tables = $this->getForm()->getLinkedFabrikLists($params->get('join_db_name'));
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$val = $params->get('cascadingdropdown_label_concat');
 		if (!empty($val))
 		{
@@ -650,7 +650,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$this->cn = JModel::getInstance('Connection', 'FabrikFEModel');
+			$this->cn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 			$this->cn->setId($id);
 		}
 		return $this->cn->getConnection();

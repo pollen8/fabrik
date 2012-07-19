@@ -104,7 +104,7 @@ class plgFabrik_ListOrder extends plgFabrik_List
 	public function onAjaxReorder()
 	{
 		// Get list model
-		$model = JModel::getInstance('list', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('listid'));
 		$db = $model->getDb();
 		$direction = JRequest::getVar('direction');

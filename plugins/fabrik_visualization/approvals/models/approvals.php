@@ -39,7 +39,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 		{
 			$asfields = array();
 			$fields = array();
-			$listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($ids[$x]);
 			$item = $listModel->getTable();
 			$formModel = $listModel->getFormModel();
@@ -108,7 +108,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 		{
 			if ($listid == JRequest::getInt('listid'))
 			{
-				$listModel = JModel::getInstance('List', 'FabrikFEModel');
+				$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 				$listModel->setId(JRequest::getInt('listid'));
 				$item = $listModel->getTable();
 				$db = $listModel->getDbo();

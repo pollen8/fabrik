@@ -170,7 +170,7 @@ class FabrikModelConnection extends JModelAdmin
 	public function save($data)
 	{
 		$session = JFactory::getSession();
-		$model = JModel::getInstance('Connection', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$model->setId($data['id']);
 		$options = $model->getConnectionOptions(JArrayHelper::toObject($data));
 		$db = JDatabase::getInstance($options);

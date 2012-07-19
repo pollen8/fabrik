@@ -31,13 +31,13 @@ class FabrikViewElement extends JView{
 	function display($tpl = null)
 	{
 		echo "form id = ".JRequest::getInt('formid');exit;
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$ids = JRequest::getVar('plugin');
 		foreach ($ids as $id) {
 			$plugin = $pluginManager->getElementPlugin($id);
 		}
 /* 		$elementid = JRequest::getVar('elid');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);

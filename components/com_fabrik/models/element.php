@@ -268,7 +268,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		if (is_null($this->group) || $this->group->getId() != $groupId)
 		{
-			$model = JModel::getInstance('Group', 'FabrikFEModel');
+			$model = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 			$model->setId($groupId);
 			$model->getGroup();
 			$this->group = $model;
@@ -329,7 +329,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$listModel = $this->getListModel();
 			$table = $listModel->getTable();
-			$this->form = JModel::getInstance('form', 'FabrikFEModel');
+			$this->form = JModelLegacy::getInstance('form', 'FabrikFEModel');
 			$this->form->setId($table->form_id);
 			$this->form->getForm();
 		}
@@ -1431,7 +1431,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$rule->name = $name;
 			}
-			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+			$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 			$groupModel->setId($groupid);
 			$groupListModel = $groupModel->getListModel();
 
@@ -4167,7 +4167,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function ajax_loadTableFields()
 	{
 		$db = FabrikWorker::getDbo();
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$this->_cnnId = JRequest::getInt('cid', 0);
 		$tbl = $db->quoteName(JRequest::getVar('table'));
 		$fieldDropDown = $listModel->getFieldsDropDown($this->_cnnId, $tbl, '-', false, 'params[join_val_column]');
@@ -5102,7 +5102,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		if (is_null($this->joinModel))
 		{
-			$this->joinModel = JModel::getInstance('Join', 'FabrikFEModel');
+			$this->joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
 
 			// $$$ rob ensure we load the join by asking for the parents id, but then ensure we set the element id back to this elements id
 			$this->joinModel->getJoinFromKey('element_id', $this->getParent()->id);
@@ -5261,7 +5261,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function inLineEdit()
 	{
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
 		$rowid = JRequest::getVar('rowid');
 		$elementid = $this->getElement()->id;
@@ -5434,7 +5434,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	protected function loadMeForAjax()
 	{
-		$this->form = JModel::getInstance('form', 'FabrikFEModel');
+		$this->form = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$this->form->setId(JRequest::getVar('formid'));
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();

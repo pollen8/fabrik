@@ -321,7 +321,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$formids = $this->getFormsIamIn();
 			$formid = empty($formids) ? 0 : $formids[0];
-			$this->form = JModel::getInstance('Form', 'FabrikFEModel');
+			$this->form = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 			$this->form->setId($formid);
 			$this->form->getForm();
 			$this->form->getlistModel();
@@ -555,7 +555,7 @@ class FabrikFEModelGroup extends FabModel
 		$group = $this->getGroup();
 		if (is_null($this->joinModel))
 		{
-			$this->joinModel = JModel::getInstance('Join', 'FabrikFEModel');
+			$this->joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
 			$this->joinModel->setId($group->join_id);
 			$js = $this->getListModel()->getJoins();
 

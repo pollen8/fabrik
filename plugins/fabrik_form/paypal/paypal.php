@@ -135,7 +135,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		// $$$ rob add in subscription variables
 		if ($opts['cmd'] === '_xclick-subscriptions')
 		{
-			$subTable = JModel::getInstance('List', 'FabrikFEModel');
+			$subTable = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$subTable->setId((int) $params->get('paypal_subs_table'));
 
 			$idEl = FabrikString::safeColName($params->get('paypal_subs_id', ''));
@@ -444,8 +444,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		 */
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getInt('rowid');
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
-		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
 		$ret_msg = (array) $params->get('paypal_return_msg', array());
@@ -497,8 +497,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		list($formid, $rowid, $ipn_value) = explode(":", $custom);
 
 		// Pretty sure they are added but double add
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
-		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$listModel = $formModel->getlistModel();
 		$params = $formModel->getParams();

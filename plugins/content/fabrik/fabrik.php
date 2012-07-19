@@ -582,7 +582,7 @@ class plgContentFabrik extends JPlugin
 		}
 		if (!isset($controller->_model))
 		{
-			$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', $prefix);
+			$modelpaths = JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', $prefix);
 			if (!$controller->_model = $controller->getModel($viewName, $prefix))
 			{
 				JError::raiseNotice(500, 'Fabrik Content Plug-in: could not create model');
@@ -701,8 +701,8 @@ class plgContentFabrik extends JPlugin
 		require_once COM_FABRIK_FRONTEND . '/controllers/visualization.php';
 		require_once COM_FABRIK_FRONTEND . '/models/parent.php';
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 		if ($view == 'details')
 		{
 			$view = 'form';

@@ -68,7 +68,7 @@ class JFormFieldListfields extends JFormFieldList
 				$connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
 				if ($connection == '')
 				{
-					$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+					$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0)
 						: $this->form->getValue('group_id');
 					$groupModel->setId($groupId);
@@ -152,7 +152,7 @@ class JFormFieldListfields extends JFormFieldList
 			case 'group':
 				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
 				$id = $this->form->getValue('id');
-				$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+				$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 				$groupModel->setId($id);
 				$formModel = $groupModel->getFormModel();
 				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters);

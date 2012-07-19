@@ -49,7 +49,7 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization
 		$eventdata = array();
 		foreach ($listids as $listid)
 		{
-			$listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$list = $listModel->getTable();
 			$nav = $listModel->getPagination(0, 0, 0);

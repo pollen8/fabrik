@@ -441,7 +441,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->filterModel))
 		{
-			$this->filterModel = JModel::getInstance('Listfilter', 'FabrikFEModel');
+			$this->filterModel = JModelLegacy::getInstance('Listfilter', 'FabrikFEModel');
 			$this->filterModel->setListModel($this);
 		}
 		return $this->filterModel;
@@ -1129,7 +1129,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->recordCounts[$k];
 		}
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($element->list_id);
 		$db = $listModel->getDb();
 		$elementModel = $listModel->getFormModel()->getElement($element->element_id, true);
@@ -1293,7 +1293,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		if (!array_key_exists($id, $this->facettables))
 		{
-			$this->facettables[$id] = JModel::getInstance('List', 'FabrikFEModel');
+			$this->facettables[$id] = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$this->facettables[$id]->setId($id);
 		}
 		return $this->facettables[$id];
@@ -3673,7 +3673,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->formModel))
 		{
-			$this->formModel = JModel::getInstance('Form', 'FabrikFEModel');
+			$this->formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 			$table = $this->getTable();
 			$this->formModel->setId($table->form_id);
 			$this->formModel->getForm();

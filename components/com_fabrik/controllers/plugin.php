@@ -106,7 +106,7 @@ class FabrikControllerPlugin extends JController
 		}
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$c = 0;
 		foreach ($rows as $row)
 		{

@@ -63,7 +63,7 @@ if ($app->isAdmin())
 	// Load in front end model path
 	if (JRequest::getVar('option') !== 'com_acymailing')
 	{
-		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
+		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 	}
 	require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/fabrik.php';
 }

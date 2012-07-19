@@ -379,7 +379,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		if (!isset($this->listModel))
 		{
-			$this->listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$this->listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$this->listModel->setId(JRequest::getInt('listid'));
 		}
 		return $this->listModel;
@@ -395,7 +395,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$model = $this->getlistModel();
 		$model->getFormGroupElementData();
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$pluginManager->getPlugInGroup('list');
 		$aUsedElements = array();
 		$formModel = $model->getFormModel();

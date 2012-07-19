@@ -398,7 +398,7 @@ class FabrikPlugin extends JPlugin
 		{
 			if ($cid !== 0)
 			{
-				$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
+				$cnn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 				$cnn->setId($cid);
 				$db = $cnn->getDb();
 				$db->setQuery("SHOW TABLES");
@@ -431,7 +431,7 @@ class FabrikPlugin extends JPlugin
 		{
 			//show all db columns
 			$cid = JRequest::getVar('cid', -1);
-			$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
+			$cnn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 			$cnn->setId($cid);
 			$db = $cnn->getDb();
 			if ($tid != '')
@@ -465,7 +465,7 @@ class FabrikPlugin extends JPlugin
 			//show fabrik elements in the table
 			//$keyType 1 = $element->id;
 			//$keyType 2 = tablename___elementname
-			$model = JModel::getInstance('List', 'FabrikFEModel');
+			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$model->setId($tid);
 			$table = $model->getTable();
 			$groups = $model->getFormGroupElementData();
@@ -695,7 +695,7 @@ class FabrikPlugin extends JPlugin
 	{
 		if (!isset($this->_pluginManager))
 		{
-			$this->_pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+			$this->_pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		}
 		return $this->_pluginManager;
 	}

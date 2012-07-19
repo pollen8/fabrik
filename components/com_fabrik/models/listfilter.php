@@ -719,7 +719,7 @@ class FabrikFEModelListfilter extends FabModel
 		$lookupkeys = JArrayHelper::getValue($filters, 'key', array());
 		if ($fromFormId != $formModel->get('id'))
 		{
-			$fromForm = JModel::getInstance('Form', 'FabrikFEModel');
+			$fromForm = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 			$fromForm->setId($fromFormId);
 			$fromFormParams = $fromForm->getParams();
 			/**

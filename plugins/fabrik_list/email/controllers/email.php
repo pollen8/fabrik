@@ -59,7 +59,7 @@ class FabrikControllerListemail extends JController
 		$formModel = $listModel->getFormModel();
 		// Push a model into the view
 		
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
 		
 		$model->formModel = $formModel;
@@ -83,7 +83,7 @@ class FabrikControllerListemail extends JController
 
 	function doemail()
 	{
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
 		$listModel = $this->getModel('List', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('id'));

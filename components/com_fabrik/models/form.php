@@ -608,7 +608,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			$this->groups = array();
 			$listModel = $this->getListModel();
-			$groupModel = JModel::getInstance('Group', 'FabrikFEModel');
+			$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 			$groupdata = $this->getPublishedGroups();
 			foreach ($groupdata as $id => $groupd)
 			{
@@ -877,7 +877,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$pluginManager = FabrikWorker::getPluginManager();
 		$params = $this->getParams();
 
-		$sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
+		$sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($this->getId());
 		$sessionModel->setRowId($this->rowId);
 		/* $$$ rob rowId can be updated by juser plugin so plugin can use check (for new/edit)
@@ -1364,7 +1364,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					continue;
 				}
-				$joinGroup = JModel::getInstance('Group', 'FabrikFEModel');
+				$joinGroup = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 
 				/* Need to set the fake group's form and id to that of the current elements form/group
 				 * $joinGroup->set('_form', $this);
@@ -1851,7 +1851,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (!isset($this->listModel))
 		{
-			$this->listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$this->listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$item = $this->getForm();
 			$this->listModel->loadFromFormId($item->id);
 			$this->listModel->setFormModel($this);
@@ -2034,7 +2034,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			return true;
 		}
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$validationRules = $pluginManager->getPlugInGroup('validationrule');
 
 		$post = $this->setFormData();
@@ -3092,7 +3092,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	protected function getSessionData()
 	{
 		$params = $this->getParams();
-		$this->sessionModel = JModel::getInstance('Formsession', 'FabrikFEModel');
+		$this->sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$this->sessionModel->setFormId($this->getId());
 		$this->sessionModel->setRowId($this->rowId);
 		$useCookie = (int) $params->get('multipage_save', 0) === 2 ? true : false;
@@ -3690,7 +3690,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			return $links;
 		}
 		$listModel = $this->getListModel();
-		$referringTable = JModel::getInstance('List', 'FabrikFEModel');
+		$referringTable = JModelLegacy::getInstance('List', 'FabrikFEModel');
 
 		// $$$ rob - not sure that referring_table is anything other than the form's table id
 		// but for now just defaulting to that if no other variable found (e.g when links in sef urls)

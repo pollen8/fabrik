@@ -19,12 +19,12 @@ jimport('joomla.application.component.controller');
  * @since    3.0
  */
 
-class FabrikControllerEmailform extends JController
+class FabrikControllerEmailform extends JControllerLegacy
 {
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -39,7 +39,7 @@ class FabrikControllerEmailform extends JController
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view (may have been set in content plugin already
-		$model = JModel::getInstance($modelName, 'FabrikFEModel');
+		$model = JModelLegacy::getInstance($modelName, 'FabrikFEModel');
 
 		// Test for failed validation then page refresh
 		$model->getErrors();
