@@ -1,10 +1,36 @@
 <?php
-// Check to ensure this file is within the rest of the framework
-defined('JPATH_BASE') or die();
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
-class ElementHelper{
+// No direct access.
+defined('_JEXEC') or die;
 
-	function getId($element, $control_name, $name)
+/**
+ * JHtml element helper
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
+
+class ElementHelper
+{
+
+	/**
+	 * get html id
+	 *
+	 * @param   object  $element       field
+	 * @param   string  $control_name  control name
+	 * @param   string  $name          name
+	 *
+	 * @return string
+	 */
+
+	public static function getId($element, $control_name, $name)
 	{
 		if (method_exists($element, 'getId'))
 		{
@@ -12,12 +38,22 @@ class ElementHelper{
 		}
 		else
 		{
-			$id  = "$control_name.$name";
+			$id = "$control_name.$name";
 		}
 		return $id;
 	}
 
-	function getFullName($element, $control_name, $name)
+	/**
+	 * get full name
+	 *
+	 * @param   object  $element       field
+	 * @param   string  $control_name  control name
+	 * @param   string  $name          name
+	 *
+	 * @return string
+	 */
+
+	public static function getFullName($element, $control_name, $name)
 	{
 		if (method_exists($element, 'getFullName'))
 		{
@@ -29,6 +65,14 @@ class ElementHelper{
 		}
 		return $fullName;
 	}
+
+	/**
+	 * get repeat counter
+	 *
+	 * @param   object  $element  Jhtml field
+	 *
+	 * @return mixed
+	 */
 
 	public static function getRepeatCounter($element)
 	{
@@ -43,6 +87,14 @@ class ElementHelper{
 		return $c;
 	}
 
+	/**
+	 * get repeat
+	 *
+	 * @param   object  $element  Jhtml field
+	 *
+	 * @return mixed
+	 */
+
 	public static function getRepeat($element)
 	{
 		if (method_exists($element, 'getRepeat'))
@@ -56,4 +108,3 @@ class ElementHelper{
 		return $c;
 	}
 }
-?>

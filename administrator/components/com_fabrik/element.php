@@ -57,7 +57,8 @@ class JElement extends JObject
 	 *
 	 * @deprecated    12.1
 	 */
-	public function getName() {
+	public function getName()
+	{
 		return $this->_name;
 	}
 
@@ -69,9 +70,9 @@ class JElement extends JObject
 	 */
 	public function render(&$xmlElement, $value, $control_name = 'params')
 	{
-		$name	= $xmlElement->attributes('name');
-		$label	= $xmlElement->attributes('label');
-		$descr	= $xmlElement->attributes('description');
+		$name = $xmlElement->attributes('name');
+		$label = $xmlElement->attributes('label');
+		$descr = $xmlElement->attributes('description');
 		//make sure we have a valid label
 		$label = $label ? $label : $name;
 		$result[0] = $this->fetchTooltip($label, $descr, $xmlElement, $control_name, $name);
@@ -90,15 +91,18 @@ class JElement extends JObject
 	 *
 	 * @deprecated    12.1
 	 */
-	public function fetchTooltip($label, $description, &$xmlElement, $control_name='', $name='')
+	public function fetchTooltip($label, $description, &$xmlElement, $control_name = '', $name = '')
 	{
-		$output = '<label id="'.$control_name.$name.'-lbl" for="'.$control_name.$name.'"';
-		if ($description) {
-			$output .= ' class="hasTip" title="'.JText::_($label).'::'.JText::_($description).'">';
-		} else {
+		$output = '<label id="' . $control_name . $name . '-lbl" for="' . $control_name . $name . '"';
+		if ($description)
+		{
+			$output .= ' class="hasTip" title="' . JText::_($label) . '::' . JText::_($description) . '">';
+		}
+		else
+		{
 			$output .= '>';
 		}
-		$output .= JText::_($label).'</label>';
+		$output .= JText::_($label) . '</label>';
 
 		return $output;
 	}
@@ -113,61 +117,74 @@ class JElement extends JObject
 	{
 
 	}
-	
+
 	//////
 	// FABRIK SPECIFIC
 	/////
-	
+
 	/**
 	 * get the elements html name
 	 * @param string $control_name
 	 * @param string $name
 	 * @return string html name
 	 */
-	function getFullName($control_name, $name )
+	function getFullName($control_name, $name)
 	{
-		if (strstr($name, "[]")) {
+		if (strstr($name, "[]"))
+		{
 			$name = trim($name, "[]");
-			$fullname = $control_name.'['.$name."][]";
-		} else {
-			$fullname = $control_name.'['.$name.']';
+			$fullname = $control_name . '[' . $name . "][]";
+		}
+		else
+		{
+			$fullname = $control_name . '[' . $name . ']';
 		}
 		return $fullname;
 	}
-	
+
 	/**
 	 * get the elements id
 	 * @param string $control_name
 	 * @param string $name
 	 * @return string element id
 	 */
-	function getId($control_name, $name )
+	function getId($control_name, $name)
 	{
 		$name = str_replace('[]', '', $name);
-	
+
 		$c = $this->getRepeatCounter();
-		if ($c !== false) {
-			$id = $control_name.$name . '-' . $c;
-		} else {
-			$id = $control_name.$name;
+		if ($c !== false)
+		{
+			$id = $control_name . $name . '-' . $c;
+		}
+		else
+		{
+			$id = $control_name . $name;
 		}
 		return $id;
 	}
-	
+
 	/**
 	 * get repeat group counter used for things like element's id
 	 * @return int repeat group counter
 	 */
 	function getRepeatCounter()
 	{
-		if (isset($this->_parent->_counter_override ) && $this->_parent->_counter_override != -1 ){
+		if (isset($this->_parent->_counter_override) && $this->_parent->_counter_override != -1)
+		{
 			return $this->_parent->_counter_override;
-		} else {
-			if ($this->getRepeat()) {
-				if(isset($this->_array_counter )){
+		}
+		else
+		{
+			if ($this->getRepeat())
+			{
+				if (isset($this->_array_counter))
+				{
 					//array counter might have been set when rendering viz params
 					return $this->_array_counter;
-				} else {
+				}
+				else
+				{
 					// element in repeat but no repeat counter override or array counter set so default to 0
 					return 0;
 				}
@@ -175,19 +192,22 @@ class JElement extends JObject
 			return false;
 		}
 	}
-	
+
 	/**
 	 * is the current element in a repeat group
 	 * @return bol
 	 */
 	function getRepeat()
 	{
-		if (isset($this->_parent->_group)) {
+		if (isset($this->_parent->_group))
+		{
 			//funky custom fabrik params (components/com_fabrik/helpers/params)
 			//  have had their _group option set
 			// in render() method
 			$group = $this->_parent->_group;
-		} else {
+		}
+		else
+		{
 			$group = $this->_parent->get('_group', '_default');
 		}
 		return $this->_parent->_xml[$group]->attributes('repeat');

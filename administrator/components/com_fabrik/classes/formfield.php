@@ -411,7 +411,7 @@ abstract class JFormField
 		// $$$ rob
 		if ($this->repeat) {
 			$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
-			$id .= "-".$repeatCounter;
+			$id .= "-".$repeatCounter . '-';
 		}
 		return $id;
 	}
