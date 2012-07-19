@@ -84,7 +84,7 @@ class JFormFieldSwapList extends JFormFieldList
 
 	/**
 	 * get a list of unused groups
-	 * 
+	 *
 	 * @return  array	list of groups, html list of groups
 	 */
 
@@ -94,7 +94,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(group_id)')->from('#__{package}_formgroup');
 		$db->setQuery($query);
-		$usedgroups = $db->loadResultArray();
+		$usedgroups = $db->loadColumn();
 		JArrayHelper::toInteger($usedgroups);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, name AS text')->from('#__{package}_groups');
@@ -114,7 +114,7 @@ class JFormFieldSwapList extends JFormFieldList
 
 	/**
 	 * get a list of groups currenly used by the form
-	 * 
+	 *
 	 * @return  array	list of groups, html list of groups
 	 */
 

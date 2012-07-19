@@ -13,7 +13,7 @@ jimport('joomla.application.component.modellist');
 
 /**
  * Fabrik Connections Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -40,7 +40,7 @@ class FabrikModelConnections extends JModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -68,7 +68,7 @@ class FabrikModelConnections extends JModelList
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
-			$search = $db->quote('%' . $db->getEscaped($search, true) . '%');
+			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('(c.host LIKE ' . $search . ' OR c.database OR c.description LIKE ' . $search . ')');
 		}
 
@@ -83,7 +83,7 @@ class FabrikModelConnections extends JModelList
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
-		$query->order($db->getEscaped($orderCol . ' ' . $orderDirn));
+		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		return $query;
 	}
 
@@ -93,9 +93,9 @@ class FabrikModelConnections extends JModelList
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable  A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -109,12 +109,12 @@ class FabrikModelConnections extends JModelList
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
-	 * 
+	 *
 	 * @param   string  $ordering   An optional ordering field.
 	 * @param   string  $direction  An optional direction (asc|desc).
-	 * 
+	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -137,7 +137,7 @@ class FabrikModelConnections extends JModelList
 
 	/**
 	 * Get list of active connections
-	 * 
+	 *
 	 * @return  array connection items
 	 */
 

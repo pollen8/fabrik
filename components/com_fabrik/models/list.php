@@ -5946,7 +5946,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
-				$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
+				$val = $db->quote($v);
 			}
 			if (in_array($k, $this->encrypt))
 			{
@@ -5988,7 +5988,7 @@ class FabrikFEModelList extends JModelForm
 				continue;
 			}
 			$fields[] = $db->quoteName($k);
-			$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
+			$val = $db->quote($v);
 			if (in_array($k, $this->encrypt))
 			{
 				$val = "AES_ENCRYPT($val, '$secret')";

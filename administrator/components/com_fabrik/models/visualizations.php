@@ -76,7 +76,7 @@ class FabrikModelVisualizations extends FabModelList
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
-			$search = $db->quote('%' . $db->getEscaped($search, true) . '%');
+			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('(v.label LIKE ' . $search . ')');
 		}
 
@@ -87,7 +87,7 @@ class FabrikModelVisualizations extends FabModelList
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
-		$query->order($db->getEscaped($orderCol . ' ' . $orderDirn));
+		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		return $query;
 	}

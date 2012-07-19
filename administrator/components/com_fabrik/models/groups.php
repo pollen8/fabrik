@@ -70,7 +70,7 @@ class FabrikModelGroups extends FabModelList
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
-		$query->order($db->getEscaped($orderCol . ' ' . $orderDirn));
+		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		$this->filterByFormQuery($query, 'fg');
 		return $query;
@@ -105,7 +105,7 @@ class FabrikModelGroups extends FabModelList
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
-			$search = $db->quote('%' . $db->getEscaped($search, true) . '%');
+			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('(g.name LIKE ' . $search . ' OR g.label LIKE ' . $search . ')');
 		}
 		$this->_db->setQuery($query, $limitstart, $limit);

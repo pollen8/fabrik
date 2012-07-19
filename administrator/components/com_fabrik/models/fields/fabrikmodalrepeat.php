@@ -71,7 +71,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		 * end
 		 */
 		$children = $this->element->children();
-		$subForm->setFields($children);
+
+		// $$$ rob 19/07/2012 not sure y but this fires a strict standard warning deep in JForm, suppress error for now
+		@$subForm->setFields($children);
 
 		$str = array();
 		$modalid = $this->id . '_modal';
@@ -132,7 +134,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				->addScriptDeclaration(
 					"window.addEvent('domready', function() {
 			" . $script . "
-			if (typeOf($('$pane')) !== 'null') { 
+			if (typeOf($('$pane')) !== 'null') {
 			  $('$pane').getParent().hide();
 			}
 			});"

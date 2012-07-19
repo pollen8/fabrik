@@ -2200,8 +2200,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						{
 							$join = $this->getJoinModel()->getJoin();
 							$query = $db->getQuery(true);
-							$query->select('*')->from($db->nameQuote($join->table_join))
-								->where($db->nameQuote('parent_id') . ' = ' . $db->quote($row->__pk_val));
+							$query->select('*')->from($db->quoteName($join->table_join))
+								->where($db->quoteName('parent_id') . ' = ' . $db->quote($row->__pk_val));
 							$db->setQuery($query);
 							$imageRows = $db->loadObjectList('id');
 							if (!empty($imageRows))
@@ -2211,8 +2211,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 									$this->deleteFile($imageRow->$name);
 								}
 								$query->clear();
-								$query->delete($db->nameQuote($join->table_join))
-									->where($db->nameQuote('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
+								$query->delete($db->quoteName($join->table_join))
+									->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
 								$db->setQuery($query);
 								$db->query();
 							}
@@ -2502,7 +2502,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$this->deleteFile($filename);
 		$db = $this->getListModel()->getDb();
 		$query = $db->getQuery(true);
-		$query->delete($db->nameQuote($join->table_join))->where($db->nameQuote('id') . ' = ' . JRequest::getInt('recordid'));
+		$query->delete($db->quoteName($join->table_join))->where($db->quoteName('id') . ' = ' . JRequest::getInt('recordid'));
 		$db->setQuery($query);
 		$db->query();
 	}

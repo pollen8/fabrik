@@ -13,7 +13,7 @@ jimport('joomla.application.component.model');
 
 /**
  * Fabrik Connection Model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -46,7 +46,7 @@ class FabrikFEModelConnection extends JModel
 	 * Method to set the element id
 	 *
 	 * @param   int  $id  element ID number
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -58,9 +58,9 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * is the conenction table the default connection
-	 * 
+	 *
 	 * @deprecated - dont think its used
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -71,14 +71,14 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * creates a html dropdown box for the current connection
-	 * 
+	 *
 	 * @param   string  $javascript  to add to select box
 	 * @param   string  $name        of dropdown box
 	 * @param   string  $selected    the selected element in the list
 	 * @param   string  $class       input class name
-	 * 
+	 *
 	 * @deprecated - don't think its used
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -119,9 +119,9 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * get a connection table object
-	 * 
+	 *
 	 * @param   int  $id  connection id
-	 * 
+	 *
 	 * @return  object  connection tables
 	 */
 
@@ -169,7 +169,7 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * load the connection associated with the table
-	 * 
+	 *
 	 * @return  object  database object using connection details false if connection error
 	 */
 
@@ -260,10 +260,10 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * compare two arrays of connection details. Ignore prefix as this may be set to '' if using koowna
-	 * 
+	 *
 	 * @param   array  $opts1  first compare
 	 * @param   array  $opts2  second compare
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -277,7 +277,7 @@ class FabrikFEModelConnection extends JModel
 	 * get the options to connect to a db
 	 *
 	 * @param   object  &$cn  connection table
-	 * 
+	 *
 	 * @return  array  connection options
 	 */
 
@@ -307,7 +307,7 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * gets object of connections
-	 * 
+	 *
 	 * @return  array  of connection tables id, description
 	 */
 
@@ -323,16 +323,16 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * gets dropdown list of published connections
-	 * 
+	 *
 	 * @param   object  $connections  connections stored in database
 	 * @param   string  $javascript   to run on change
 	 * @param   int     $selected     default value
 	 * @param   string  $id           element id
 	 * @param   string  $name         of connection drop down
 	 * @param   string  $attribs      dropdown properties
-	 * 
+	 *
 	 * @deprecated - can't see that its used
-	 * 
+	 *
 	 * @return  string  connection dropdown
 	 */
 
@@ -355,7 +355,7 @@ class FabrikFEModelConnection extends JModel
 	 * exceed php script execution time if querying a larger remote database
 	 *
 	 * @param   object  $connections  all available connections
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -381,7 +381,7 @@ class FabrikFEModelConnection extends JModel
 					if ($fabrikDb->getErrorNum() == 0)
 					{
 						$tables = $fabrikDb->getTableList();
-						$fields = $fabrikDb->getTableFields($tables);
+						$fields = $fabrikDb->getTableColumns($tables);
 						$connectionTableFields[$cn->value][$key] = $fields;
 					}
 					else
@@ -397,9 +397,9 @@ class FabrikFEModelConnection extends JModel
 	/**
 	 * queries all published connections and returns an multidimensional array
 	 * of tables for each connection
-	 * 
+	 *
 	 * @param   array  $connections  all available connections
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -447,9 +447,9 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * get the tables names in the loaded connection
-	 * 
+	 *
 	 * @param   bool  $addBlank  add an empty record to the beginning of the list
-	 * 
+	 *
 	 * @return array tables
 	 */
 
@@ -474,7 +474,7 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * tests if you can connect to the connection
-	 * 
+	 *
 	 * @return  bool  true if connection made otherwise false
 	 */
 
@@ -486,7 +486,7 @@ class FabrikFEModelConnection extends JModel
 
 	/**
 	 * load the default connection
-	 * 
+	 *
 	 * @return  object  default connection
 	 */
 

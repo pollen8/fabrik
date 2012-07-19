@@ -33,9 +33,9 @@ class FabrikModelHome extends JModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -50,9 +50,9 @@ class FabrikModelHome extends JModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed	A JForm object on success, false on failure
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -63,7 +63,7 @@ class FabrikModelHome extends JModelAdmin
 
 	/**
 	 * get fabrikar.com rss feed
-	 * 
+	 *
 	 * @return string
 	 */
 
@@ -74,7 +74,7 @@ class FabrikModelHome extends JModelAdmin
 		$options['rssUrl'] = 'http://feeds.feedburner.com/fabrik';
 		$options['cache_time'] = 86400;
 
-		$rssDoc = &JFactory::getXMLparser('RSS', $options);
+		$rssDoc = JFactory::getFeedParser('RSS', $options);
 		if ($rssDoc == false)
 		{
 			$output = JText::_('Error: Feed not retrieved');
@@ -120,7 +120,7 @@ class FabrikModelHome extends JModelAdmin
 
 	/**
 	 * install sample data
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -244,7 +244,7 @@ class FabrikModelHome extends JModelAdmin
 
 	/**
 	 * empty all fabrik db tables of their data
-	 * 
+	 *
 	 * @return  void or JError
 	 */
 
@@ -267,7 +267,7 @@ class FabrikModelHome extends JModelAdmin
 
 	/**
 	 * drop all the lists db tables
-	 * 
+	 *
 	 * @return  void
 	 */
 

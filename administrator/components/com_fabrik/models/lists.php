@@ -72,7 +72,7 @@ class FabrikModelLists extends FabModelList
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
-			$search = $db->quote('%' . $db->getEscaped($search, true) . '%');
+			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('(l.db_table_name LIKE ' . $search . ' OR l.label LIKE ' . $search . ')');
 		}
 
@@ -85,7 +85,7 @@ class FabrikModelLists extends FabModelList
 		}
 		if (trim($orderCol) !== '')
 		{
-			$query->order($db->getEscaped($orderCol . ' ' . $orderDirn));
+			$query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
 
 		return $query;
@@ -200,6 +200,6 @@ class FabrikModelLists extends FabModelList
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id IN(' . implode(',', $cid) . ')');
 		$db->setQuery($query);
-		return $db->loadResultArray();
+		return $db->loadColumn();
 	}
 }

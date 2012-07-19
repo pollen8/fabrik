@@ -441,7 +441,8 @@ class FabrikModelPackage extends FabModelAdmin
 				}
 
 				$v = str_replace($db->getPrefix(), '#__', $v);
-				$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
+				//$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
+				$val = $db->quote($v);
 				$fields[] = $db->quoteName($k);
 				$values[] = $val;
 				$updates[] = $db->quoteName($k) . ' = ' . $val;

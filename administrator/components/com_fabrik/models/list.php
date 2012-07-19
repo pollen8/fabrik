@@ -454,7 +454,7 @@ class FabrikModelList extends FabModelAdmin
 				unset($joins[$i]);
 				continue;
 			}
-			$fields = $fabrikDb->getTableFields(array($join->join_from_table, $join->table_join));
+			$fields = $fabrikDb->getTableColumns(array($join->join_from_table, $join->table_join));
 			$join->joinFormFields = array_keys($fields[$join->join_from_table]);
 			$join->joinToFields = array_keys($fields[$join->table_join]);
 		}
@@ -1156,7 +1156,7 @@ class FabrikModelList extends FabModelAdmin
 		$pluginManager = FabrikWorker::getPluginManager();
 		$user = JFactory::getUser();
 		$elementTypes = JRequest::getVar('elementtype', array());
-		/* $fields = $fabrikDb->getTableFields(array($tableName));
+		/* $fields = $fabrikDb->getTableColumns(array($tableName));
 		$fields = $fields[$tableName]; */
 		$fields = $fabrikDb->getTableColumns($tableName, false);
 		$createdate = JFactory::getDate()->toSQL();
@@ -1997,7 +1997,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $form->id);
 		$db->setQuery($query);
-		$groupids = (array) $db->loadResultArray();
+		$groupids = (array) $db->loadColumn();
 
 		// Delete groups
 		$groupModel = JModelLegacy::getInstance('Group', 'FabrikModel');
@@ -2074,7 +2074,7 @@ class FabrikModelList extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->select($key)->from($name);
 		$db->setQuery($query);
-		$existingids = $db->loadResultArray();
+		$existingids = $db->loadColumn();
 
 		// Build the row object to insert/update
 		foreach ($xml as $row)
@@ -2162,7 +2162,7 @@ class FabrikModelList extends FabModelAdmin
 			$formid = (int) $this->get('form.id', $this->getFormModel()->id);
 			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . $formid);
 			$db->setQuery($query);
-			$groupIds = $db->loadResultArray();
+			$groupIds = $db->loadColumn();
 		}
 		$i = 0;
 		foreach ($fields as $name => $plugin)

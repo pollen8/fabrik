@@ -74,7 +74,7 @@ class FabrikModelCrons extends FabModelList
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
-			$search = $db->quote('%' . $db->getEscaped($search, true) . '%');
+			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('(c.label LIKE ' . $search . ')');
 		}
 
@@ -85,7 +85,7 @@ class FabrikModelCrons extends FabModelList
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
-		$query->order($db->getEscaped($orderCol . ' ' . $orderDirn));
+		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		return $query;
 	}

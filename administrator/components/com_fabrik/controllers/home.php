@@ -12,7 +12,7 @@ jimport('joomla.application.component.controlleradmin');
 
 /**
  * Main Fabrik Admin page controller
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -22,7 +22,7 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * Constructor
-	 * 
+	 *
 * @param   array  $config  state
 	 */
 
@@ -33,7 +33,7 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * delete all data from fabrik
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -47,7 +47,7 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * reset fabrik !!!
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -61,7 +61,7 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * install sample form
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -75,9 +75,9 @@ class FabrikControllerHome extends JControllerAdmin
 	/**
 	 * ajax function to update any drop down that contains records relating to the selected table
 	 * called each time the selected table is changed
-	 * 
-	 * @deprecated 
-	 * 
+	 *
+	 * @deprecated
+	 *
 	 * @return null
 	 */
 
@@ -101,7 +101,7 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * get RSS feed
-	 * 
+	 *
 	 * @return  string  html table of Fabrik news items
 	 */
 	public function getRSSFeed()
@@ -110,7 +110,7 @@ class FabrikControllerHome extends JControllerAdmin
 		$options = array();
 		$options['rssUrl']		= 'http://feeds.feedburner.com/fabrik';
 		$options['cache_time']	= 86400;
-		$rssDoc = JFactory::getXMLparser('RSS', $options);
+		$rssDoc = JFactory::getFeedParser('RSS', $options);
 		if ($rssDoc == false)
 		{
 			$output = JText::_('Error: Feed not retrieved');

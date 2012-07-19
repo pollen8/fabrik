@@ -51,7 +51,7 @@ class JFormFieldTables extends JFormFieldList
 			$query = "SHOW TABLES";
 
 			$db->setQuery($query);
-			$items = $db->loadResultArray();
+			$items = $db->loadColumn();
 
 			// Check for a database error.
 			if ($db->getErrorNum())

@@ -54,7 +54,7 @@ class JFormFieldSQL2 extends JFormFieldList
 			$i++;
 			$tbl = $db->replacePrefix($q[$i]);
 			$db->setQuery("SHOW TABLES");
-			$rows = $db->loadResultArray();
+			$rows = $db->loadColumn();
 			$found = in_array($tbl, $rows) ? true : false;
 			if (!$found)
 			{

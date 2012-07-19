@@ -109,7 +109,7 @@ class FabrikModelGroup extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
-		$res = $db->loadResultArray();
+		$res = $db->loadColumn();
 		return $res;
 	}
 
@@ -306,7 +306,7 @@ class FabrikModelGroup extends FabModelAdmin
 		}
 		$db->setQuery("show tables");
 		$newTableName = $list->db_table_name . '_' . $data['id'] . '_repeat';
-		$existingTables = $db->loadResultArray();
+		$existingTables = $db->loadColumn();
 		if (!in_array($newTableName, $existingTables))
 		{
 			// No existing repeat group table found so lets create it

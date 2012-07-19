@@ -5139,8 +5139,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$query->select('id')->from('#__{package}_joins')->where('table_join = ' . $db->quote($item->db_table_name));
 		$db->setQuery($query);
 		$ids = $db->loadColumn();
-		$teskPk = $db->nameQuote($item->db_table_name . '.' . $oldName);
-		$newPk = $db->nameQuote($item->db_table_name . '.' . $newName);
+		$teskPk = $db->quoteName($item->db_table_name . '.' . $oldName);
+		$newPk = $db->quoteName($item->db_table_name . '.' . $newName);
 		foreach ($ids as $id)
 		{
 			$join = FabTable::getInstance('Join', 'FabrikTable');

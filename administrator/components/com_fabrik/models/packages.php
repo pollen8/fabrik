@@ -77,7 +77,7 @@ class FabrikModelPackages extends JModelList
 		$search = $this->getState('filter.search');
 		if (!empty($search))
 		{
-			$search = $db->quote('%' . $db->getEscaped($search, true) . '%');
+			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('(p.label LIKE ' . $search . ' OR p.component_name LIKE ' . $search . ')');
 		}
 		// Add the list ordering clause.
@@ -87,7 +87,7 @@ class FabrikModelPackages extends JModelList
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
-		$query->order($db->getEscaped($orderCol . ' ' . $orderDirn));
+		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		return $query;
 	}
