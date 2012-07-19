@@ -213,7 +213,7 @@ class FabrikFEModelConnection extends JModelLegacy
 			{
 				self::$dbs[$cn->id] = JDatabase::getInstance($options);
 			}
-			if (JError::isError(self::$dbs[$cn->id]) || is_a(self::$dbs[$cn->id], 'JException') || self::$dbs[$cn->id]->getErrorNum() !== 0)
+			if (is_a(self::$dbs[$cn->id], 'JException') || self::$dbs[$cn->id]->getErrorNum() !== 0)
 			{
 				/**
 				 * $$$Rob - not sure why this is happening on badmintonrochelais.com (mySQL 4.0.24) but it seems like

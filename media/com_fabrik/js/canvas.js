@@ -11,7 +11,9 @@ var Canvas = new Class({
 
 	initialize: function (opts) {
 		this.setOptions(opts);
-		Fabrik.addEvent('fabrik.page.insert', this.insertPage.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.page.insert', function (e) {
+			this.insertPage(e);
+		}.bind(this));
 		this.iconGen = new IconGenerator({scale: 0.5});
 		this.pages = new Pages(this.options.pagecontainer, this.options.editable);
 		this.tabs = new Tabs(this.options.tabelement, this.options.tabs, this.options.editable);

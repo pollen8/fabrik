@@ -4,7 +4,6 @@ var PluginManager = new Class({
 		this.plugins = plugins;
 		this.counter = 0;
 		this.opts = this.opts || {};
-		this.deletePluginClick = this.deletePlugin.bindWithEvent(this);
 		this.watchAdd();
 	},
 
@@ -100,7 +99,9 @@ var PluginManager = new Class({
 	watchDelete: function () {
 		document.id('plugins').getElements('.delete').each(function (c) {
 			c.removeEvents('click');
-			c.addEvent('click', this.deletePluginClick);
+			c.addEvent('click', function (e) {
+				this.deletePlugin(e);
+			}.bind(this));
 		}.bind(this));
 	},
 	

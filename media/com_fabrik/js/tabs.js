@@ -14,7 +14,9 @@ var Tabs = new Class({
 			var a = new Element('a', {
 				'href': '#',
 				'events': {
-					'click': this.addWindow.bindWithEvent(this)
+					'click': function (e) {
+						this.addWindow(e);
+					}.bind(this)
 				}
 			});
 			
@@ -24,7 +26,9 @@ var Tabs = new Class({
 			this.el.adopt(new Element('li', {
 				'class': 'add',
 				'events': {
-					'click': this.addWindow.bindWithEvent(this)
+					'click': function (e) {
+						this.addWindow(e);
+					}.bind(this)
 				}
 			}).adopt([new Element('span').set('text', 'add'), a]));
 		}
@@ -118,7 +122,9 @@ var Tabs = new Class({
 		var a = new Element('a', {
 			'href': '#',
 			'events': {
-				'click': this.remove.bindWithEvent(this)
+				'click': function (e) {
+					this.remove(e);
+				}.bind(this)
 			}
 		});
 		

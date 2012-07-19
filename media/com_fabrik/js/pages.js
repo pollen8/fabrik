@@ -1,16 +1,30 @@
 var Pages = new Class({
 	initialize: function (container, editable) {
 		this.editable = editable;
-		document.addEvent('mousedown', this.clearActive.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.page.add', this.makeActive.bindWithEvent(this));
+		document.addEvent('mousedown', function (e) {
+			this.clearActive(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.page.add', function (e) {
+			this.makeActive(e);
+		}.bind(this));
 		this.pages = $H({});
 		this.activePage = null;
 		this.container = document.id(container);
-		Fabrik.addEvent('fabrik.tab.add', this.add.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.tab.click', this.show.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.tab.remove', this.remove.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.keynav', this.moveItem.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.inline.save', this.updateTabKey.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.tab.add', function (e) {
+			this.add(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.tab.click', function (e) {
+			this.show(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.tab.remove', function (e) {
+			this.remove(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.keynav', function (e) {
+			this.moveItem(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.inline.save', function (e) {
+			this.updateTabKey(e);
+		}.bind(this));
 	},
 	
 	/* todo perhaps makecive and clearActive should be a mixin? */
@@ -141,8 +155,12 @@ Page = new Class({
 		this.editable = editable;
 		this.page = new Element('div', {'class': 'page', 'styles': {'display': 'none'}});
 		if (this.editable) {
-			Fabrik.addEvent('fabrik.item.resized', this.saveCoords.bindWithEvent(this));
-			Fabrik.addEvent('fabrik.item.moved', this.saveCoords.bindWithEvent(this));
+			Fabrik.addEvent('fabrik.item.resized', function (e) {
+				this.saveCoords(e);
+			}.bind(this));
+			Fabrik.addEvent('fabrik.item.moved', function (e) {
+				this.saveCoords(e);
+			}.bind(this));
 		}
 	},
 	
@@ -161,7 +179,7 @@ Page = new Class({
 	removeItem: function (e, id) {
 		e.stop();
 		if (confirm('Do you really want to delete')) {
-			$(id).destroy();
+			document.id(id).destroy();
 			Fabrik.fireEvent('fabrik.page.block.delete', [id]);
 		}
 	},

@@ -64,9 +64,10 @@ Fabrik.Window = new Class({
 		this.contentWrapperEl = this.window;
 		var art = Fabrik.iconGen.create(icon.cross);
 		
-		var del = new Element('a', {'href': '#', 'class': 'close', 'events': {
-			'click': this.close.bindWithEvent(this)
-		}});
+		var delClick = function (e) {
+			this.close(e);
+		}.bind(this);
+		var del = new Element('a', {'href': '#', 'class': 'close', 'events': {'click': delClick}});
 		art.inject(del);
 		
 		var hclass = 'handlelabel';
@@ -95,7 +96,9 @@ Fabrik.Window = new Class({
 		}});
 		if (this.options.expandable && this.modal === false) {
 			expandButton = new Element('a', {'href': '#', 'class': 'expand', 'events': {
-				'click': this.expand.bindWithEvent(this)
+				'click': function (e) {
+					this.expand(e);
+				}.bind(this)
 			}}).adopt(expandIcon);
 			handleParts.push(expandButton);
 		}

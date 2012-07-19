@@ -36,9 +36,10 @@ var ListForm = new Class({
 		var rows;
 		this.setOptions(options);
 		this.watchTableDd();
-		this.addAJoinClick = this.addAJoin.bindWithEvent(this);
 		if (document.id('addAJoin')) {
-			document.id('addAJoin').addEvent('click', this.addAJoinClick);
+			document.id('addAJoin').addEvent('click', function (e) {
+				this.addAJoin();
+			}.bind(this));
 		}
 		if (document.getElement('table.linkedLists')) {
 			rows = document.getElement('table.linkedLists').getElement('tbody');
@@ -59,8 +60,12 @@ var ListForm = new Class({
 	watchOrderButtons: function () {
 		$$('.addOrder').removeEvents('click');
 		$$('.deleteOrder').removeEvents('click');
-		$$('.addOrder').addEvent('click', this.addOrderBy.bindWithEvent(this));
-		$$('.deleteOrder').addEvent('click', this.deleteOrderBy.bindWithEvent(this));
+		$$('.addOrder').addEvent('click', function (e) {
+			this.addOrderBy();
+		}.bind(this));
+		$$('.deleteOrder').addEvent('click', function (e) {
+			this.deleteOrderBy();
+		}.bind(this));
 	},
 	
 	addOrderBy: function (e)
@@ -358,7 +363,6 @@ var adminFilters = new Class({
 		this.setOptions(options);
 		this.filters = [];
 		this.counter = 0;
-		this.onDeleteClick = this.deleteFilterOption.bindWithEvent(this);
 	},
 	
 	addHeadings: function () {
@@ -380,7 +384,9 @@ var adminFilters = new Class({
 	deleteFilterOption: function (e) {
 		e.stop();
 		var element = e.target;
-		element.removeEvent("click", this.onDeleteClick);
+		element.removeEvent("click", function (e) {
+			this.deleteFilterOption(e);
+		}.bind(this));
 		var tr = element.parentNode.parentNode;
 		var table = tr.parentNode;
 		table.removeChild(tr);
@@ -521,9 +527,13 @@ var adminFilters = new Class({
 
 		this.el.appendChild(tr);
 		
-		document.id(delId).addEvent('click', this.onDeleteClick);
+		document.id(delId).addEvent('click', function (e) {
+			this.deleteFilterOption(e);
+		}.bind(this));
 		
-		document.id(this.el.id + "-del-" + this.counter).click = this.onDeleteClick;
+		document.id(this.el.id + "-del-" + this.counter).click = function (e) {
+			this.deleteFilterOption(e);
+		}.bind(this);
 		
 		/*set default values*/ 
 		if (selJoin !== '') {

@@ -68,7 +68,9 @@ var FbListInlineEdit = new Class({
 			'wait': false
 		});
 		this.watchCells();
-		document.addEvent('keydown', this.checkKey.bindWithEvent(this));
+		document.addEvent('keydown', function (e) {
+			this.checkKey(e);
+		}.bind(this));
 	},
 
 	watchCells: function () {
@@ -86,8 +88,12 @@ var FbListInlineEdit = new Class({
 				}
 				this.setCursor(td);
 				td.removeEvents();
-				td.addEvent(this.options.editEvent, this.edit.bindWithEvent(this, [td]));
-				td.addEvent('click', this.select.bindWithEvent(this, [td]));
+				td.addEvent(this.options.editEvent, function (e) {
+					this.edit(e, td);
+				}.bind(this));
+				td.addEvent('click', function (e) {
+					this.select(e, td);
+				}.bind(this));
 			
 				td.addEvent('mouseenter', function (e) {
 					if (!this.isEditable(td)) {
@@ -548,10 +554,14 @@ var FbListInlineEdit = new Class({
 	
 	watchControls : function (td) {
 		if (typeOf(td.getElement('.inline-save')) !== 'null') {
-			td.getElement('.inline-save').removeEvents('click').addEvent('click', this.save.bindWithEvent(this, [td]));
+			td.getElement('.inline-save').removeEvents('click').addEvent('click', function (e) {
+				this.save(e, td);
+			}.bind(this));
 		}
 		if (typeOf(td.getElement('.inline-cancel')) !== 'null') {
-			td.getElement('.inline-cancel').removeEvents('click').addEvent('click', this.cancel.bindWithEvent(this, [td]));
+			td.getElement('.inline-cancel').removeEvents('click').addEvent('click', function (e) {
+				this.cancel(e, td);
+			}.bind(this));
 		}
 	},
 	

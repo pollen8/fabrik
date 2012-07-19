@@ -98,8 +98,12 @@ var FabrikGrid = new Class({
 					this.inActiveArea = true;
 					this.resizeCol.setStyle('cursor', 'col-resize');
 					this.toResize = this.resizeCol.getPrevious();
-					this.resizeCol.addEvent('mousedown', this.startResize.bindWithEvent(this));
-					document.addEvent('mouseup', this.endResize.bindWithEvent(this));
+					this.resizeCol.addEvent('mousedown', function (e) {
+						this.startResize(e);
+					}.bind(this));
+					document.addEvent('mouseup', function (e) {
+						this.endResize(e);
+					}.bind(this));
 				} else {
 					this.inActiveArea = false;
 				}
@@ -150,8 +154,12 @@ var FabrikGrid = new Class({
 			return;
 		}
 		this.container.setStyle('-moz-user-select', 'none');
-		this.container.addEvent('onselectstart', this.stopIETextSelect.bindWithEvent(this));
-		document.addEvent('mousemove', this.doResize.bindWithEvent(this));
+		this.container.addEvent('onselectstart', function (e) {
+			this.stopIETextSelect(e);
+		}.bind(this));
+		document.addEvent('mousemove', function (e) {
+			this.doResize(e);
+		}.bind(this));
 		this.startX = e.page.x;
 		this.resizing = true;
 	},
@@ -165,7 +173,9 @@ var FabrikGrid = new Class({
 		
 		this.inActiveArea = false;
 		this.container.setStyle('-moz-user-select', 'auto');
-		this.container.removeEvent('onselectstart', this.stopIETextSelect.bindWithEvent(this));
+		this.container.removeEvent('onselectstart', function (e) {
+			this.stopIETextSelect(e);
+		}.bind(this));
 		//this.container.getElement('.scroll-y').setStyle('width', this.container.getElement('li.heading').getWidth() + 'px');
 	},
 	

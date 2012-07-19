@@ -475,8 +475,12 @@ var FbFileElement = new Class({
 		
 	watchAjaxFolderLinks: function ()
 	{
-		this.folderdiv.getElements('a').addEvent('click', this.browseFolders.bindWithEvent(this));
-		this.breadcrumbs.getElements('a').addEvent('click', this.useBreadcrumbs.bindWithEvent(this));
+		this.folderdiv.getElements('a').addEvent('click', function (e) {
+			this.browseFolders(e);
+		}.bind(this));
+		this.breadcrumbs.getElements('a').addEvent('click', function (e) {
+			this.useBreadcrumbs(e);
+		}.bind(this));
 	},
 	
 		

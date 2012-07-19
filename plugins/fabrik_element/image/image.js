@@ -18,7 +18,9 @@ var FbImage = new Class({
 				if (this.imageDir.options.length !== 0) {
 					this.selectedImage = this.imageDir.get('value');
 				}
-				this.imageDir.addEvent('change', this.showImage.bindWithEvent(this));
+				this.imageDir.addEvent('change', function (e) {
+					this.showImage(e);
+				}.bind(this));
 			}
 			if (this.options.canSelect === true) {
 				this.addEvent('onBrowse', this.changeFolder);

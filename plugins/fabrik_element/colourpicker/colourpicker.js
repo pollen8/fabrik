@@ -2,12 +2,15 @@ var SliderField = new Class({
 	initialize : function (field, slider) {
 		this.field = $(field);
 		this.slider = slider;
-		this.eventChange = this.update.bindWithEvent(this);
-		this.field.addEvent("change", this.eventChange);
+		this.field.addEvent("change", function (e) {
+			this.update(e);
+		}.bind(this));
 	},
 
 	destroy : function () {
-		this.field.removeEvent("change", this.eventChange);
+		this.field.removeEvent("change", function (e) {
+			this.update(e);
+		}.bind(this));
 	},
 
 	update : function () {
@@ -87,9 +90,18 @@ var ColourPicker = new Class({
 		}.bind(this));
 		this.widget.hide();
 		// this makes the class update when someone enters a value into
-		this.redField.addEvent("change", this.updateFromField.bindWithEvent(this, ['red']));
-		this.greenField.addEvent("change", this.updateFromField.bindWithEvent(this, ['green']));
-		this.blueField.addEvent("change", this.updateFromField.bindWithEvent(this, ['blue']));
+		
+		this.redField.addEvent("change", function (e) {
+			this.updateFromField(e, 'red');
+		}.bind(this));
+		
+		this.greenField.addEvent("change", function (e) {
+			this.updateFromField(e, 'green');
+		}.bind(this));
+		
+		this.blueField.addEvent("change", function (e) {
+			this.updateFromFiel(e, 'blue');
+		}.bind(this));
 
 		if (this.showCloseButton) {
 			var closeButton = this.createCloseButton(element, 'Close');
@@ -101,7 +113,6 @@ var ColourPicker = new Class({
 
 	createColourSwatch : function (element) {
 		var j;
-		this.fUpdateFromSwatch = this.updateFromSwatch.bindWithEvent(this);
 		var swatchDiv = new Element('div', {
 			'styles': {
 				'float': 'left',
@@ -131,9 +142,15 @@ var ColourPicker = new Class({
 					},
 					'class': colname,
 					'events': {
-						'click': this.fUpdateFromSwatch,
-						'mouseenter': this.showColourName.bindWithEvent(this),
-						'mouseleave': this.clearColourName.bindWithEvent(this)
+						'click': function (e) {
+							this.updateFromSwatch(e);
+						},
+						'mouseenter': function (e) {
+							this.showColourName();
+						},
+						'mouseleave': function (e) {
+							this.clearColourName(e);
+						}
 					}
 				}));
 				j++;
@@ -207,11 +224,21 @@ var ColourPicker = new Class({
 		this.outputs = {};
 		this.outputs.backgrounds = this.getContainer().getElements('.colourpicker_bgoutput');
 		this.outputs.foregrounds = this.getContainer().getElements('.colourpicker_output');
+		
 		this.outputs.backgrounds.each(function (i) {
-			i.addEvent('click', this.toggleWidget.bindWithEvent(this));
+			
+			i.addEvent('click', function (e) {
+				this.toggleWidget(e);
+			}.bind(this));
+			
 		}.bind(this));
+		
 		this.outputs.foregrounds.each(function (i) {
-			i.addEvent('click', this.toggleWidget.bindWithEvent(this));
+			
+			i.addEvent('click', function (e) {
+				this.toggleWidget(e);
+			}.bind(this));
+			
 		}.bind(this));
 	},
 	

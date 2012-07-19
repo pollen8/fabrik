@@ -18,7 +18,9 @@ var CascadeFilter = new Class({
 					'fabrik_cascade_ajax_update': 1,
 					'filterview': 'table'
 				},
-				onComplete: this.ajaxComplete.bindWithEvent(this)
+				onComplete: function (e) {
+					this.ajaxComplete(e);
+				}.bind(this)
 			});
 
 			this.observer.addEvent('change', function () {

@@ -28,9 +28,16 @@ var FbDatabasejoin = new Class({
 	watchAdd: function () {
 		if (c = this.getContainer()) {
 			var b = c.getElement('.toggle-addoption');
-			//if duplicated remove old events
-			b.removeEvent('click', this.startEvent);
-			b.addEvent('click', this.startEvent);
+			
+			// If duplicated remove old events
+			
+			b.removeEvent('click', function (e) {
+				this.start(e);
+			}.bind(this));
+			
+			b.addEvent('click', function (e) {
+				this.start(e);
+			}.bind(this));
 		}
 	},
 	
@@ -264,7 +271,9 @@ var FbDatabasejoin = new Class({
 		if (c = this.getContainer()) {
 			var sel = c.getElement('.toggle-selectoption');
 			if (typeOf(sel) !== 'null') {
-				sel.addEvent('click', this.selectRecord.bindWithEvent(this));
+				sel.addEvent('click', function (e) {
+					this.selectRecord(e);
+				}.bind(this));
 				Fabrik.addEvent('fabrik.list.row.selected', function (json) {
 					if (this.options.popupform === json.formid && this.activeSelect) {
 						this.update(json.rowid);
@@ -474,7 +483,6 @@ var FbDatabasejoin = new Class({
 	init: function () {
 		//if users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
-			this.startEvent = this.start.bindWithEvent(this);
 			this.watchAdd();
 			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
 				//fired when form submitted - enables element to update itself with any new submitted data
@@ -503,7 +511,9 @@ var FbDatabasejoin = new Class({
 		if (this.options.editable) {
 			this.watchSelect();
 			if (this.options.showDesc === true) {
-				this.element.addEvent('change', this.showDesc.bindWithEvent(this));
+				this.element.addEvent('change', function (e) {
+					this.showDesc(e);
+				}.bind(this));
 			}
 			if (this.options.displayType === 'checkbox') {
 				// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
@@ -578,7 +588,7 @@ var FbDatabasejoin = new Class({
 	decreaseName: function (delIndex) {
 		if (this.options.displayType === 'auto-complete') {
 			var f = this.getAutoCompleteLabelField();
-			if ($type(f) !== false) {
+			if (typeOf(f) !== 'null') {
 				f.name = this._decreaseName(f.name, delIndex, '-auto-complete');
 				f.id = this._decreaseId(f.id, delIndex, '-auto-complete');
 			}

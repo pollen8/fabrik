@@ -89,9 +89,20 @@ FabRecordSet = new Class({
 		var n, form;
 		form = this.form.getForm();
 		n = form.getElement('ul.pagination');
-		n.getElement('.paginateNext').addEvent('click', this.doNav.bindWithEvent(this, [1]));
-		n.getElement('.paginatePrevious').addEvent('click', this.doNav.bindWithEvent(this, [-1]));
-		n.getElement('.paginateLast').addEvent('click', this.doNav.bindWithEvent(this, [2]));
-		n.getElement('.paginateFirst').addEvent('click', this.doNav.bindWithEvent(this, [0]));
+		n.getElement('.paginateNext').addEvent('click', function (e) {
+			this.doNav(e, 1);
+		}.bind(this));
+		
+		n.getElement('.paginatePrevious').addEvent('click', function (e) {
+			this.doNav(e, -1);
+		}.bind(this));
+		
+		n.getElement('.paginateLast').addEvent('click', function (e) {
+			this.doNav(e, 2);
+		}.bind(this));
+		
+		n.getElement('.paginateFirst').addEvent('click', function (e) {
+			this.doNav(e, 0);
+		}.bind(this));
 	}
 });

@@ -35,10 +35,12 @@ var FbTextarea = new Class({
 				this.warningFX = new Fx.Morph(element, {duration: 1000, transition: Fx.Transitions.Quart.easeOut});
 				this.origCol = element.getStyle('color');
 				if (this.options.wysiwyg) {
-					tinymce.dom.Event.add(this.container, 'keydown', this.informKeyPress.bindWithEvent(this));
+					tinymce.dom.Event.add(this.container, 'keydown', function (e) {
+						this.informKeyPress(e);
+					}.bind(this));
 				} else {
 					this.container.addEvent('keydown', function (e) {
-						this.informKeyPress();
+						this.informKeyPress(e);
 					}.bind(this));
 				}
 			}

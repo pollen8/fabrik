@@ -122,7 +122,9 @@ var fabrikCalendar = new Class({
 			'id': id,
 			'styles': style
 		});
-		eventCont.addEvent('mouseenter', this.doPopupEvent.bindWithEvent(this, [entry, label]));		
+		eventCont.addEvent('mouseenter', function (e) {
+			this.doPopupEvent(e, entry, label);		
+		}.bind(this));
 		
 		if (entry.link !== '' && this.options.readonly === false) {
 			x = new Element('a', {'href': entry.link, 'class': 'fabrikEditEvent', 
@@ -1023,7 +1025,9 @@ var fabrikCalendar = new Class({
 		});
 	
 		if (typeOf(this.el.getElement('.addEventButton')) !== 'null') {
-			this.el.getElement('.addEventButton').addEvent('click', this.openAddEvent.bindWithEvent(this));
+			this.el.getElement('.addEventButton').addEvent('click', function (e) {
+				this.openAddEvent(e);
+			}.bind(this));
 		}
 		var bs = [];
 		bs.push(new Element('li', {'class': 'centerOnToday'}).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_TODAY')));
@@ -1077,18 +1081,31 @@ var fabrikCalendar = new Class({
 		
 		this.showView();
 	
-		this.el.getElement('.nextPage').addEvent('click',  this.nextPage.bindWithEvent(this));
-		this.el.getElement('.previousPage').addEvent('click',  this.previousPage.bindWithEvent(this));
+		this.el.getElement('.nextPage').addEvent('click', function (e) {
+			this.nextPage(e);
+		}.bind(this));
+		this.el.getElement('.previousPage').addEvent('click',  function (e) {
+			this.previousPage(e);
+		}.bind(this));
+		
 		if (this.options.show_day) {
-			this.el.getElement('.dayViewLink').addEvent('click', this.renderDayView.bindWithEvent(this));
+			this.el.getElement('.dayViewLink').addEvent('click', function (e) {
+				this.renderDayView(e);
+			}.bind(this));
 		}
 		if (this.options.show_week) {
-			this.el.getElement('.weekViewLink').addEvent('click', this.renderWeekView.bindWithEvent(this));
+			this.el.getElement('.weekViewLink').addEvent('click', function (e) {
+				this.renderWeekView(e);
+			}.bind(this));
 		}
 		if (this.options.show_week || this.options.show_day) {
-			this.el.getElement('.monthViewLink').addEvent('click', this.renderMonthView.bindWithEvent(this));
+			this.el.getElement('.monthViewLink').addEvent('click', function (e) {
+				this.renderMonthView(e);
+			}.bind(this));
 		}
-		this.el.getElement('.centerOnToday').addEvent('click', this.centerOnToday.bindWithEvent(this));
+		this.el.getElement('.centerOnToday').addEvent('click', function (e) {
+			this.centerOnToday(e);
+		}.bind(this));
 		this.showMonth();
 		
 		this.ajax.updateEvents.send();

@@ -27,8 +27,10 @@ var FbAutocomplete = new Class({
 		this.cache = {};
 		this.selected = -1;
 		this.mouseinsde = false;
-		document.addEvent('keydown', this.doWatchKeys.bindWithEvent(this));
-		this.testMenuClose = this.doTestMenuClose.bindWithEvent(this);
+		document.addEvent('keydown', function (e) {
+			this.doWatchKeys(e);
+		}.bind(this));
+		
 		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
 		this.buildMenu();
 		if (!this.getInputElement()) {
@@ -36,8 +38,9 @@ var FbAutocomplete = new Class({
 			return;
 		}
 		this.getInputElement().setProperty('autocomplete', 'off');
-		this.doSearch = this.search.bindWithEvent(this);
-		this.getInputElement().addEvent('keyup', this.doSearch);
+		this.getInputElement().addEvent('keyup', function (e) {
+			this.search(e);
+		}.bind(this));
 		
 	},
 	
@@ -126,7 +129,9 @@ var FbAutocomplete = new Class({
 			var pair = data[i];
 			var li = new Element('li', {'data-value': pair.value, 'class': 'unselected ' + this.options.classes.li}).set('text', pair.text);
 			li.inject(ul);
-			li.addEvent('click', this.makeSelection.bindWithEvent(this, [li]));
+			li.addEvent('click', function (e) {
+				this.makeSelection(e);
+			}.bind(this));
 		}
 		if (data.length > this.options.max) {
 			new Element('li').set('text', '....').inject(ul);
@@ -148,7 +153,9 @@ var FbAutocomplete = new Class({
 			this.shown = false;
 			this.menu.fade('out');
 			this.selected = -1;
-			document.removeEvent('click', this.testMenuClose);
+			document.removeEvent('click', function (e) {
+				this.doTestMenuClose(e);
+			}.bind(this));
 		}
 	},
 	
@@ -156,7 +163,9 @@ var FbAutocomplete = new Class({
 		if (!this.shown) {
 			this.shown = true;
 			this.menu.setStyle('visibility', 'visible').fade('in');
-			document.addEvent('click', this.testMenuClose);
+			document.addEvent('click', function (e) {
+				this.doTestMenuClose(e);
+			}.bind(this));
 			this.selected = 0;
 			this.highlight();
 		}
@@ -265,7 +274,11 @@ var FbCddAutocomplete = new Class({
 						fabrik_cascade_ajax_update: 1,
 						v: document.id(this.options.observerid).get('value')
 					},
-					onSuccess: this.completeAjax.bindWithEvent(this, [key]),
+					
+					onSuccess: function (e) {
+						this.completeAjax(e);
+					}.bind(this),
+					
 					onError: function (text, error) {
 						console.log(text, error);
 					},

@@ -13,12 +13,15 @@ var FbCascadingdropdown = new Class({
 		this.ignoreAjax = false;
 		this.plugin = 'cascadingdropdown';
 		this.parent(element, options);
-		this.doWatchEvent = this.dowatch.bindWithEvent(this);
 		if (document.id(this.options.watch)) {
-			document.id(this.options.watch).addEvent('change', this.doWatchEvent);
+			document.id(this.options.watch).addEvent('change', function (e) {
+				this.dowatch();
+			}.bind(this));
 		}
 		if (this.options.showDesc === true) {
-			this.element.addEvent('change', this.showDesc.bindWithEvent(this));
+			this.element.addEvent('change', function (e) {
+				this.showDesc(e);
+			}.bind(this));
 		}
 	},
 	
@@ -181,10 +184,12 @@ var FbCascadingdropdown = new Class({
 				//old events removed in database join element clone() method
 				// $$$ hugh - oh no they aren't!  join element cloned() method doesn't fire for this!
 				//this.element.removeEvents('change');
-				this.element.removeEvents('change', this.doWatchEvent); 
-				this.doWatchEvent = this.dowatch.bindWithEvent(this);
-				//$(this.options.watch).addEvent('change', this.watch.bindWithEvent(this));
-				document.id(this.options.watch).addEvent('change', this.doWatchEvent);
+				this.element.removeEvents('change', function (e) {
+					this.dowatch(e);
+				}.bind(this)); 
+				document.id(this.options.watch).addEvent('change', function (e) {
+					this.dowatch(e);
+				}.bind(this));
 			}
 			
 		}

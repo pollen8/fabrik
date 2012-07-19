@@ -15,8 +15,14 @@ var Labels = new Class({
 				}
 				if (typeOf(input) !== 'null') {
 					input.value = label.innerHTML;
-					input.addEvent('click', this.toogleLabel.bindWithEvent(this, [input, label.innerHTML]));
-					input.addEvent('blur', this.toogleLabel.bindWithEvent(this, [input, label.innerHTML]));
+					
+					input.addEvent('click', function (e) {
+						this.toogleLabel(e, input, label.innerHTML);
+					}.bind(this));
+					
+					input.addEvent('blur', function (e) {
+						this.toogleLabel(e, input, label.innerHTML);
+					}.bind(this));
 					label.set('html', '');
 					c.getElement('.fabrikLabel').dispose();
 				}

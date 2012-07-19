@@ -9,14 +9,18 @@ var FbListRadiusSearch = new Class({
 				this.options.value = 0;
 			}
 			this.fx = new Fx.Slide(this.element.getElement('.radius_search_options'));
-			this.element.getElements('input[name^=radius_search_active]').addEvent('click', this.toggleActive.bindWithEvent(this));
+			this.element.getElements('input[name^=radius_search_active]').addEvent('click', function (e) {
+				this.toggleActive(e);
+			}.bind(this));
 			var a = this.element.getElements('input[name^=radius_search_active]').filter(function (f) {
 				return f.checked === true;
 			});
 			if (a[0].get('value') === '0') {
 				this.fx.slideOut();
 			}
-			this.element.getElements('input[name^=radius_search_type]').addEvent('click', this.toggleFields.bindWithEvent(this));
+			this.element.getElements('input[name^=radius_search_type]').addEvent('click', function (e) {
+				this.toggleFields(e);
+			}.bind(this));
 			this.options.value = this.options.value.toInt();
 			if (typeOf(this.element) === 'null') {
 				return;

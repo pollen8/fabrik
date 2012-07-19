@@ -49,7 +49,9 @@ var FbRatingList = new Class({
 			}.bind(this));
 
 			stars.each(function (star) {
-				star.addEvent('click', this.doAjax.bindWithEvent(this, [ star ]));
+				star.addEvent('click', function (e) {
+					this.doAjax(e, star);
+				}.bind(this));
 			}.bind(this));
 
 		}.bind(this));

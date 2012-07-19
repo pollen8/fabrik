@@ -133,13 +133,21 @@ var FbGoogleMap = new Class({
 			opts.draggable = this.options.drag;
 
 			if (this.options.latlng === true) {
-				this.element.getElement('.lat').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
-				this.element.getElement('.lng').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
+				this.element.getElement('.lat').addEvent('blur', function (e) {
+					this.updateFromLatLng(e);
+				}.bind(this));
+				this.element.getElement('.lng').addEvent('blur', function (e) {
+					this.updateFromLatLng(e);
+				}.bind(this));
 			}
 
 			if (this.options.latlng_dms === true) {
-				this.element.getElement('.latdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
-				this.element.getElement('.lngdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
+				this.element.getElement('.latdms').addEvent('blur', function (e) {
+					this.updateFromDMS(e);
+				}.bind(this));
+				this.element.getElement('.lngdms').addEvent('blur', function (e) {
+					this.updateFromDMS(e);
+				}.bind(this));
 			}
 
 			this.marker = new google.maps.Marker(opts);
@@ -387,20 +395,28 @@ var FbGoogleMap = new Class({
 			if (this.options.geocode_event !== 'button') {
 				this.options.geocode_fields.each(function (field) {
 					if (typeOf(document.id(field)) !== 'null') {
-						document.id(field).addEvent('keyup', this.geoCode.bindWithEvent(this));
+						document.id(field).addEvent('keyup', function (e) {
+							this.geoCode(e);
+						}.bind(this));
 					}
 				}.bind(this));
 			} else {
 				if (this.options.geocode_event === 'button') {
-					this.element.getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+					this.element.getElement('.geocode').addEvent('click', function (e) {
+						this.geoCode(e);
+					}.bind(this));
 				}
 			}
 		}
 		if (this.options.geocode === '1' && document.id(this.element).getElement('.geocode_input')) {
 			if (this.options.geocode_event === 'button') {
-				this.element.getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+				this.element.getElement('.geocode').addEvent('click', function (e) {
+					this.geoCode(e);
+				}.bind(this));
 			} else {
-				this.element.getElement('.geocode_input').addEvent('keyup', this.geoCode.bindWithEvent(this));
+				this.element.getElement('.geocode_input').addEvent('keyup', function (e) {
+					this.geoCode(e);
+				}.bind(this));
 			}
 		}
 	},
@@ -481,7 +497,9 @@ var FbGoogleMap = new Class({
 			var center = new google.maps.LatLng(this.options.lat, this.options.lon);
 			this.map.setCenter(center);
 			this.map.setZoom(this.map.getZoom());
-			this.options.tab_dt.removeEvent('click', this.doTabBound);
+			this.options.tab_dt.removeEvent('click', function (e) {
+				this.doTab(e);
+			}.bind(this));
 		}.bind(this)).delay(500);
 	},
     
@@ -490,8 +508,9 @@ var FbGoogleMap = new Class({
 		if (tab_dl) {
 			this.options.tab_dt = this.element.getParent('.fabrikGroup').getPrevious();
 			if (!this.options.tab_dt.hasClass('open')) {
-				this.doTabBound = this.doTab.bindWithEvent(this);
-				this.options.tab_dt.addEvent('click', this.doTabBound);
+				this.options.tab_dt.addEvent('click', function (e) {
+					this.doTab(e);
+				}.bind(this));
 			}
 		}
 	}

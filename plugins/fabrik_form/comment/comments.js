@@ -20,7 +20,6 @@ var FabrikComment = new Class({
 		this.fx = {};
 		this.fx.toggleForms = $H();
 		this.spinner = new Element('img', {'styles': {'display': 'none'},	'src': Fabrik.liveSite + 'media/com_fabrik/images/ajax-loader.gif'});
-		this.doAjaxDeleteComplete = this.deleteComplete.bindWithEvent(this);
 		this.ajax = {};
 		this.ajax.deleteComment = new Request({
 			'url': '', 
@@ -35,7 +34,9 @@ var FabrikComment = new Class({
 				'formid': this.options.formid,
 				'rowid': this.options.rowid
 			},
-			'onComplete': this.doAjaxDeleteComplete
+			'onComplete': function (e) {
+				this.deleteComplete(e);
+			}.bind(this)
 		});
 		this.ajax.updateComment = new Request({
 			'url': '', 
@@ -113,8 +114,13 @@ var FabrikComment = new Class({
 			if (!input) {
 				return;
 			}
-			f.getElement('input[type=button]').addEvent('click', this.doInput.bindWithEvent(this));
-			input.addEvent('click', this.testInput.bindWithEvent(this));
+			f.getElement('input[type=button]').addEvent('click', function (e) {
+				this.doInput(e);
+			}.bind(this));
+			
+			input.addEvent('click', function (e) {
+				this.testInput(e);
+			}.bind(this));
 
 			(this.spinner).inject(this.element.getElement('input[type=button]'), 'after');
 		}.bind(this));
