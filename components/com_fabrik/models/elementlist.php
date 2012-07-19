@@ -555,7 +555,11 @@ class plgFabrik_ElementList extends plgFabrik_Element
 					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
 					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, $value);
+						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
+					}
+					if (!is_null($v))
+					{
+						$value = $v;
 					}
 				}
 				else
@@ -563,7 +567,11 @@ class plgFabrik_ElementList extends plgFabrik_Element
 					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
 					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey, $value);
+						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
+					}
+					if (!is_null($v))
+					{
+						$value = $v;
 					}
 					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0])))
 					{
