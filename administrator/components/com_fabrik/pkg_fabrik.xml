@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<install type="package" version="2.5">
+<extension type="package" version="2.5">
 	<name>Fabrik Package</name>
 	<packagename>fabrik</packagename>
 	<version>3.0.6</version>
@@ -64,4 +64,4 @@
 		
 		<file id="com_fabrik" type="component">com_fabrik_{version}.zip</file>
 	</files>
-</install>
+</extension>
