@@ -720,6 +720,7 @@ class FabrikModelElement extends JModelAdmin
 				return false;
 			}
 		}
+		parent::cleanCache('com_fabrik');
 		return $return;
 		/**
 		 * used for prefab

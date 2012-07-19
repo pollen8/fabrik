@@ -7,13 +7,12 @@
  * @since		1.6
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ */
 
 // No direct access.
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
-
 
 class FabrikModelVisualization extends JModelAdmin
 {
@@ -22,7 +21,6 @@ class FabrikModelVisualization extends JModelAdmin
 	 * @since	1.6
 	 */
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';
-
 
 	/**
 	 * Returns a reference to the a Table object, always creating it.
@@ -33,7 +31,7 @@ class FabrikModelVisualization extends JModelAdmin
 	 * @return	JTable	A database object
 	 * @since	1.6
 	 */
-	
+
 	public function getTable($type = 'Visualization', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabriKWorker::getDbo(true);
@@ -111,7 +109,7 @@ class FabrikModelVisualization extends JModelAdmin
 	 * (non-PHPdoc)
 	 * @see JModelForm::validate()
 	 */
-	
+
 	public function validate($form, $data, $group = null)
 	{
 		parent::validate($form, $data);
@@ -125,6 +123,7 @@ class FabrikModelVisualization extends JModelAdmin
 
 	function save($data)
 	{
+		parent::cleanCache('com_fabrik');
 		return parent::save($data);
 	}
 

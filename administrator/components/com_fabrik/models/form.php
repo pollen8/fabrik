@@ -209,6 +209,7 @@ class FabrikModelForm extends FabModelAdmin
 			$data['db_table_name'] = $tmpName;
 			$this->saveFormGroups($data);
 		}
+		parent::cleanCache('com_fabrik');
 		return $return;
 	}
 
@@ -418,7 +419,7 @@ class FabrikModelForm extends FabModelAdmin
 	 * @return	mixed	Array of filtered data if valid, false otherwise.
 	 * @since	1.1
 	 */
-	
+
 	function validate($form, $data, $group = null)
 	{
 		$params = $data['params'];
@@ -439,7 +440,7 @@ class FabrikModelForm extends FabModelAdmin
 	 *  delete form and form groups
 	 * @param	array	$cids to delete
 	 */
-	
+
 	public function delete(&$cids)
 	{
 		$res = parent::delete($cids);
