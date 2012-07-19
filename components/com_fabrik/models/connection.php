@@ -18,7 +18,7 @@ jimport('joomla.application.component.model');
  * @since    3.0
  */
 
-class FabrikFEModelConnection extends JModel
+class FabrikFEModelConnection extends JModelLegacy
 {
 
 	/** @var object table **/

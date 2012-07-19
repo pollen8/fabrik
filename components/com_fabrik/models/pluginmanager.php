@@ -19,7 +19,7 @@ jimport('joomla.filesystem.file');
  * @since    3.0
  */
 
-class FabrikFEModelPluginmanager extends JModel
+class FabrikFEModelPluginmanager extends JModelLegacy
 {
 
 	/** @var array plugins */

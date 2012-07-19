@@ -11,12 +11,11 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-class FabrikFEModelFormGroup extends JModel {
+class FabrikFEModelFormGroup extends JModelLegacy
+{
 
 	function __construct()
 	{
 		parent::__construct();
 	}
 }
-
-?>

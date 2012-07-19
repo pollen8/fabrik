@@ -21,7 +21,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
  * @since    3.0
  */
 
-class FabrikFEModelVisualization extends JModel
+class FabrikFEModelVisualization extends JModelLegacy
 {
 
 	protected $pluginParams = null;

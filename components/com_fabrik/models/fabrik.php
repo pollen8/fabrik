@@ -21,7 +21,7 @@ if ($version->RELEASE == '1.6')
 	 * @since    3.0
 	 */
 
-	class FabModel extends JModel
+	class FabModel extends JModelLegacy
 	{
 		/**
 		 * Method to load and return a model object.
