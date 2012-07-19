@@ -11,7 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewlist extends JView{
+class FabrikViewlist extends JViewLegacy
+{
 
 	/**
 	 * display a json object representing the table data.

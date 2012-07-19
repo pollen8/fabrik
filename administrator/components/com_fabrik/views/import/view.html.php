@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since		1.6
  */
 
-class FabrikViewImport extends JView
+class FabrikViewImport extends JViewLegacy
 {
 
 	/**

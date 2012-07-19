@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewCsv extends JView
+class fabrikViewCsv extends JViewLegacy
 {
 
 	function display($tpl = null)
@@ -34,7 +34,7 @@ class fabrikViewCsv extends JView
 		$this->addTemplatePath(JPATH_SITE.'/components/com_fabrik/views/csv/tmpl');
 		parent::display($tpl);
 	}
-	
+
 	protected function getManagementJS($data = array())
 	{
 		$app = JFactory::getApplication();
@@ -60,17 +60,17 @@ class fabrikViewCsv extends JView
 		$csvOpts->incraw = (int) $listParams->get('csv_include_raw_data');
 		$csvOpts->inccalcs = (int) $listParams->get('csv_include_calculations');
 		$opts->csvOpts = $csvOpts;
-	
+
 		$opts->csvFields = $this->get('CsvFields');
 		$csvOpts->incfilters = 0;
-		
+
 		$opts->view = 'csv';
-		
+
 		//$$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
 		$opts->winid = JRequest::getVar('winid', '');
 		$opts = json_encode($opts);
-	
+
 		JText::script('COM_FABRIK_CSV_COMPLETE');
 		JText::script('COM_FABRIK_CSV_DOWNLOAD_HERE');
 		JText::script('COM_FABRIK_CONFIRM_DELETE');
@@ -86,10 +86,10 @@ class fabrikViewCsv extends JView
 		JText::script('JNO');
 		JText::script('JYES');
 		JText::script('COM_FABRIK_SAVING_TO');
-	
+
 		$script[] = 'var list = new FbList('.$listid.','.$opts.');';
 		$script[] = 'Fabrik.addBlock(\'list_'.$listid.'\', list);';
-	
+
 	 	FabrikHelperHTML::script('media/com_fabrik/js/list.js', implode("\n", $script));
 	}
 }

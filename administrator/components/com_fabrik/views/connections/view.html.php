@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage	Fabrik
  * @since		1.6
  */
-class FabrikViewConnections extends JView
+class FabrikViewConnections extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;

@@ -6128,7 +6128,7 @@ class FabrikFEModelList extends JModelForm
 		// Check crypted querystring vars (encrypted in form/view.html.php ) _cryptQueryString
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
 		{
-			$crypt = new JSimpleCrypt;
+			$crypt = new JCrypt;
 			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 			{
 				// $$$ hugh - allow submission plugins to override RO data

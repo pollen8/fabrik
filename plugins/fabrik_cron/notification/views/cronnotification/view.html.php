@@ -5,7 +5,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewCronnotification extends JView
+class fabrikViewCronnotification extends JViewLegacy
 {
 
 	function display( $tmpl = 'default')

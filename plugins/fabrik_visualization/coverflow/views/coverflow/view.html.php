@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
 * @subpackage	Fabrik.visualization.coverflow
 */
 
-class fabrikViewCoverflow extends JView
+class fabrikViewCoverflow extends JViewLegacy
 {
 
 	/**

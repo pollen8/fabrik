@@ -12,7 +12,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewListBase extends JView{
+class FabrikViewListBase extends JViewLegacy
+{
 
 	public $isMambot = null;
 

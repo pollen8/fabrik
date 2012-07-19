@@ -34,7 +34,7 @@ class FabrikFEModelFormsession extends FabModel {
 	protected $statusid = null;
 
 	public $row = null;
-	
+
 	/**
 	 * @var bool should the form store a cookie with
 	 * a reference to the incomplete form data
@@ -93,7 +93,7 @@ class FabrikFEModelFormsession extends FabModel {
 			echo $row->getError();
 		}
 		// $$$ hugh - if we're saving the formdata in the session, we should set 'session.on'
-		// as per The New Way we're doing redirects, etc.  
+		// as per The New Way we're doing redirects, etc.
 		$session = JFactory::getSession();
 		$session->set('com_fabrik.form.'.$this->getFormId().'.session.on', true);
 	}
@@ -137,7 +137,7 @@ class FabrikFEModelFormsession extends FabModel {
 			jimport('joomla.utilities.utility');
 			//Create the encryption key, apply extra hardening using the user agent string
 			$key = JApplication::getHash(@$_SERVER['HTTP_USER_AGENT']);
-			$this->crypt = new JSimpleCrypt($key);
+			$this->crypt = new JCrypt(null, $key);
 		}
 		return $this->crypt;
 	}
@@ -198,7 +198,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * @since	2.0.4
 	 * get the cookie name
 	 */
-	
+
 	protected function getCookieKey()
 	{
 		$user = JFactory::getUser();
@@ -291,7 +291,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * get a the user id
 	 * @return  mixed	user id if logged in, unique id if not
 	 */
-	
+
 	function getUserId()
 	{
 		$user = JFactory::getUser();
@@ -306,7 +306,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * set the form id whose record is being edited
 * @param   int	$id
 	 */
-	
+
 	function setFormId($id)
 	{
 		$this->formid = $id;
@@ -316,7 +316,7 @@ class FabrikFEModelFormsession extends FabModel {
 	 * set the row id that is being edited or saved
 * @param   int	$id
 	 */
-	
+
 	function setRowId($id)
 	{
 		$this->rowid = $id;

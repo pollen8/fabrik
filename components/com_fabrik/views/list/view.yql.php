@@ -12,7 +12,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewList extends JView{
+class FabrikViewList extends JViewLegacy
+{
 
 	function display()
 	{

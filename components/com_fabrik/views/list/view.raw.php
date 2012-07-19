@@ -11,7 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewList extends JView{
+class FabrikViewList extends JViewLegacy
+{
 
 	/**
 	 * display a json object representing the table data.
@@ -59,7 +60,7 @@ class FabrikViewList extends JView{
 				$c = 1 - $c;
 			}
 		}
-		
+
 		$groups = $form->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{

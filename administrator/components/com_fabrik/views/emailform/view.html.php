@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewEmailform extends JView
+class fabrikViewEmailform extends JViewLegacy
 {
 
 	function display()

@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewForm extends JView
+class fabrikViewForm extends JViewLegacy
 {
 
 	public $access = null;

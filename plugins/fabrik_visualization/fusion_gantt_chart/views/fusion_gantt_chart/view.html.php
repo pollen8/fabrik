@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.visualization.fusionganntchart
  */
 
-class fabrikViewFusion_gantt_chart extends JView
+class fabrikViewFusion_gantt_chart extends JViewLegacy
 {
 
 	/**

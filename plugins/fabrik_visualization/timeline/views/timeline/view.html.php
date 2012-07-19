@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewTimeline extends JView
+class fabrikViewTimeline extends JViewLegacy
 {
 
 	/**

@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.visualization.slideshow
  */
 
-class fabrikViewApprovals extends JView
+class fabrikViewApprovals extends JViewLegacy
 {
 
 	function display($tmpl = 'default')

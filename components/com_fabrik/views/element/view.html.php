@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewElement extends JView
+class FabrikViewElement extends JViewLegacy
 {
 
 	var $id = null;

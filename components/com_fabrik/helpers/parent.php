@@ -1275,7 +1275,7 @@ class FabrikWorker
 	 * @return bool
 	 */
 
-	public function isJSON($data)
+	public static function isJSON($data)
 	{
 		if (!is_string($data))
 		{
@@ -1294,7 +1294,7 @@ class FabrikWorker
 	 * @return bool
 	 */
 
-	public function isEmail($email)
+	public static function isEmail($email)
 	{
 		$conf = JFactory::getConfig();
 		$mail = JFactory::getMailer();

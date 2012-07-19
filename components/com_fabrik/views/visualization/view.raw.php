@@ -11,11 +11,12 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewVisualization extends JView{
-	
+class FabrikViewVisualization extends JViewLegacy
+{
+
 	function display( $tmpl = 'default' )
 	{
-		
-		
+
+
 	}
 }

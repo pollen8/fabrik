@@ -11,7 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewList extends JView{
+class FabrikViewList extends JViewLegacy
+{
 
 	function display()
 	{
@@ -31,7 +32,7 @@ class FabrikViewList extends JView{
 
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
-		
+
 		$total = $model->getTotalRecords();
 
 		$key = 'fabrik.list.' . $model->getId() . 'csv.total';

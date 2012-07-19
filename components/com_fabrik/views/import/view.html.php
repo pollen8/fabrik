@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewImport extends JView
+class fabrikViewImport extends JViewLegacy
 {
 
 	function display($tpl = null)

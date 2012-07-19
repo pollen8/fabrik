@@ -29,7 +29,7 @@ if ($version->RELEASE == '1.6')
 		 * @param   string  $name    The name of the view
 		 * @param   string  $prefix  The class prefix. Optional.
 		 * @param   array   $config  Options
-		 * 
+		 *
 		 * @return  mixed Model object or boolean false if failed
 		 */
 
@@ -53,7 +53,7 @@ if ($version->RELEASE == '1.6')
 		 * @param   string  $name     The table name. Optional.
 		 * @param   string  $prefix   The class prefix. Optional.
 		 * @param   array   $options  Configuration array for model. Optional.
-		 * 
+		 *
 		 * @return  object	The table
 		 */
 
@@ -77,12 +77,12 @@ else
 {
 	/**
 	 *  Joomla 1.7 onwards
-	 *  
+	 *
 	 *  @package  Fabrik
 	 * @since    3.0
 	 */
 
-	class FabModel extends JModel
+	class FabModel extends JModelLegacy
 	{
 		/**
 		 * Method to load and return a model object.
@@ -90,7 +90,7 @@ else
 		 * @param   string  $name    The name of the view
 		 * @param   string  $prefix  The class prefix. Optional.
 		 * @param   array   $config  Options
-		 * 
+		 *
 		 * @return  mixed Model object or boolean false if failed
 		 */
 
@@ -114,7 +114,7 @@ else
 		 * @param   string  $name     The table name. Optional.
 		 * @param   string  $prefix   The class prefix. Optional.
 		 * @param   array   $options  Configuration array for model. Optional.
-		 * 
+		 *
 		 * @return  object	The table
 		 */
 

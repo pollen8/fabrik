@@ -410,8 +410,8 @@
 			<foreach list="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,link,radiobutton,textarea,user" param="plugin" target="fabrik.plugin.element.zip.copy" inheritall="true" inheritrefs="true"/>
 			<foreach list="email,php,receipt,redirect" target="fabrik.plugin.form.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
 			<foreach list="copy,php" target="fabrik.plugin.list.zip.copy" inheritall="true" param="plugin" inheritrefs="true"/>
-			<foreach list="isgreaterorlessthan,notempty,php,regex" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
-			<foreach list="calendar,chart,googlemap,media,slideshow" target="fabrik.plugin.visualization.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="isgreaterorlessthan,notempty,php,regex,isemail" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="calendar,chart,googlemap,media,slideshow,timeline" target="fabrik.plugin.visualization.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
 			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 			<zip destfile="${cfg.destdir}/pkg_fabrik_${version}.zip" basedir="${cfg.destdir}/pkg_fabrik"/>
 		</target>

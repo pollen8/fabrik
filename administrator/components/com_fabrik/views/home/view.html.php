@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since       1.6
  */
 
-class FabrikViewHome extends JView
+class FabrikViewHome extends JViewLegacy
 {
 	/**
 	 * Recently logged activity

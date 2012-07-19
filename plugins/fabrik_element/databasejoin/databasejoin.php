@@ -791,7 +791,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if (!$formModel->isEditable() || !$this->editable)
 		{
 			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
-			$defaultLabel = $this->renderListData($default, JArrayHelper::toObject($data));
+			JArrayHelper::toObject($data);
+			$defaultLabel = $this->renderListData($default, $data);
 			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only

@@ -1071,7 +1071,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			 if (array_key_exists('fabrik_vars', $_REQUEST)
 			&& array_key_exists('querystring', $_REQUEST['fabrik_vars'])
 			&& array_key_exists($key, $_REQUEST['fabrik_vars']['querystring'])) {
-			$crypt = new JSimpleCrypt();
+			$crypt = new JCrypt;
 			// turns out it isn't this simple, of course!  see above
 			$_REQUEST['fabrik_vars']['querystring'][$key] = $crypt->encrypt($val);
 			}
@@ -1899,7 +1899,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$groups = $this->getGroupsHiarachy();
 			$gkeys = array_keys($groups);
 			jimport('joomla.utilities.simplecrypt');
-			$crypt = new JSimpleCrypt;
+			$crypt = new JCrypt;
 			$w = new FabrikWorker;
 			foreach ($gkeys as $g)
 			{

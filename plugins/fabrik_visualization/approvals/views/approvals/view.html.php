@@ -12,13 +12,13 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
-* Approval HTML View 
+* Approval HTML View
 *
 * @package		Joomla.Plugin
 * @subpackage	Fabrik.visualization.slideshow
 */
 
-class fabrikViewApprovals extends JView
+class fabrikViewApprovals extends JViewLegacy
 {
 
 	/**

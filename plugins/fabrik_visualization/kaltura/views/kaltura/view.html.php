@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.visualization.kaltura
  */
 
-class fabrikViewKaltura extends JView
+class fabrikViewKaltura extends JViewLegacy
 {
 
 	/**

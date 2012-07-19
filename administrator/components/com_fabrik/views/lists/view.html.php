@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage	Fabrik
  * @since		1.6
  */
-class FabrikViewLists extends JView
+class FabrikViewLists extends JViewLegacy
 {
 	protected $categories;
 	protected $items;

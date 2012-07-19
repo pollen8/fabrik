@@ -19,7 +19,7 @@ jimport('joomla.application.component.controller');
  * @since		3.0
  */
 
-class FabrikController extends JController
+class FabrikController extends JControllerLegacy
 {
 	/**
 	 * Display the view

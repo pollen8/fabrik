@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.visualization.googlemap
  */
 
-class fabrikViewGooglemap extends JView
+class fabrikViewGooglemap extends JViewLegacy
 {
 
 	/**

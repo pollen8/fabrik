@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class FabrikViewFormBase extends JView
+class FabrikViewFormBase extends JViewLegacy
 {
 
 	/**
@@ -156,7 +156,7 @@ class FabrikViewFormBase extends JView
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
 		$this->assignRef('list', $list);
 		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
-		$this->assignRef('linkedTables', $this->get('RelatedTables'));
+		$this->linkedTables = $this->get('RelatedTables');
 		JDEBUG ? $profiler->mark('form view: after getRelatedTables()') : null;
 		$this->setMessage();
 
@@ -240,7 +240,7 @@ class FabrikViewFormBase extends JView
 		$title = '';
 		if ($app->getName() !== 'administrator')
 		{
-			$menus = JSite::getMenu();
+			$menus = $app->getMenu();
 			$menu = $menus->getActive();
 
 			// If there is a menu item available AND the form is not rendered in a content plugin or module
@@ -774,7 +774,7 @@ class FabrikViewFormBase extends JView
 	{
 		jimport('joomla.utilities.simplecrypt');
 		jimport('joomla.utilities.utility');
-		$crypt = new JSimpleCrypt;
+		$crypt = new JCrypt;
 		$formModel = $this->getModel();
 		$get = JRequest::get('get');
 		foreach ($get as $key => $input)
@@ -826,7 +826,7 @@ class FabrikViewFormBase extends JView
 	{
 		jimport('joomla.utilities.simplecrypt');
 		jimport('joomla.utilities.utility');
-		$crypt = new JSimpleCrypt;
+		$crypt = new JCrypt;
 		$formModel = $this->getModel();
 		$fields = array();
 		$ro = $this->get('readOnlyVals');

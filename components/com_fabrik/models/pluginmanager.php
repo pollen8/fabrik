@@ -14,7 +14,7 @@ jimport('joomla.filesystem.file');
 
 /**
  * Fabrik Plugin Manager Class
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -49,12 +49,12 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Get a html drop down list of the elment types with this objs element type selected as default
-	 * 
+	 *
 	 * @param   string  $default       selected option
 	 * @param   string  $name          html name for drop down
 	 * @param   string  $extra         extra info for drop down
 	 * @param   string  $defaultlabel  html element type list
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -77,9 +77,9 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Can the pluginmanager be used
-	 * 
+	 *
 	 * @deprecated
-	 * 
+	 *
 	 * @return  true
 	 */
 
@@ -90,10 +90,10 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Get an unordered list (<ul>) of plugins
-	 * 
+	 *
 	 * @param   string  $group  plugin group
 	 * @param   string  $id     ul id
-	 * 
+	 *
 	 * @return  string  <ul>
 	 */
 
@@ -112,11 +112,11 @@ class FabrikFEModelPluginmanager extends JModel
 	/**
 	 * Get a list of plugin ids/names for usin in a drop down list
 	 * if no group set defaults to element list
-	 * 
+	 *
 	 * @param   object  $query       query
 	 * @param   int     $limitstart  limit start
 	 * @param   int     $limit       # of records to retunr
-	 * 
+	 *
 	 * @return  array	plugin list
 	 */
 
@@ -137,9 +137,9 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Get a certain group of plugins
-	 * 
+	 *
 	 * @param   string  $group  plugin group to load
-	 * 
+	 *
 	 * @return  array	plugins
 	 */
 
@@ -158,7 +158,7 @@ class FabrikFEModelPluginmanager extends JModel
 	/**
 	 * Add to the document head all element js files
 	 * used in calendar to ensure all element js files are loaded from unserialized form
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -183,7 +183,7 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Loads ABSTRACT version of a plugin group
-	 * 
+	 *
 	 * @param   string  $group  plugin type - element/form/list/cron/validationrule supported
 	 *
 	 * @return  array
@@ -205,10 +205,10 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Load an indivdual plugin
-	 * 
+	 *
 	 * @param   string  $className  plugin name e.g. fabrikfield
 	 * @param   string  $group      plugin type element/ form or list
-	 * 
+	 *
 	 * @return  object	plugin
 	 */
 
@@ -229,9 +229,9 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Load in the actual plugin objects for a given group
-	 * 
+	 *
 	 * @param   string  $group  plugin group
-	 * 
+	 *
 	 * @return  array	plugins
 	 */
 
@@ -248,10 +248,10 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Load plugin
-	 * 
+	 *
 	 * @param   string  $className  plugin name e.g. fabrikfield
 	 * @param   string  $group      plugin type element/ form or list
-	 * 
+	 *
 	 * @return  mixed	false if not loaded - otherwise plugin object
 	 */
 
@@ -308,9 +308,9 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Load all the forms element plugins
-	 * 
+	 *
 	 * @param   object  &$form  form model
-	 * 
+	 *
 	 * @return  array	of group objects with plugin objects loaded in group->elements
 	 */
 
@@ -378,7 +378,8 @@ class FabrikFEModelPluginmanager extends JModel
 				$langPath = $client->path . '/plugins/' . $folder . '/' . $element->plugin;
 				$lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
 
-				$pluginModel->setContext($groupModel, $form, $form->getListModel());
+				$listModel = $form->getListModel();
+				$pluginModel->setContext($groupModel, $form, $listModel);
 				$pluginModel->bindToElement($element);
 				$groupModel->elements[$pluginModel->getId()] = $pluginModel;
 			}
@@ -392,9 +393,9 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Short cut to get an element plugin
-	 * 
+	 *
 	 * @param   int  $id  element id
-	 * 
+	 *
 	 * @return object  element plugin
 	 */
 
@@ -405,10 +406,10 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Get a plugin based on its id
-	 * 
+	 *
 	 * @param   int     $id    plugin id
 	 * @param   string  $type  plugin type
-	 * 
+	 *
 	 * @return object  plugin
 	 */
 
@@ -431,14 +432,14 @@ class FabrikFEModelPluginmanager extends JModel
 	}
 
 	/**
-	 * not used 
-	 * 
+	 * not used
+	 *
 	 * @param   string  $group          name of plugin group to load
 	 * @param   array   $lists          list of default element lists
 	 * @param   array   &$elementModel  list of default and plugin element lists
-	 * 
+	 *
 	 * @deprecated
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -448,11 +449,11 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Run form & element plugins - yeah!
-	 * 
+	 *
 	 * @param   string  $method        to check and call - corresponds to stage of form processing
 	 * @param   object  &$parentModel  model calling the plugin form/list
 	 * @param   string  $type          plugin type to call form/list
-	 * 
+	 *
 	 * @return  array	of bools: false if error found and processed, otherwise true
 	 */
 
@@ -465,7 +466,8 @@ class FabrikFEModelPluginmanager extends JModel
 			 * form method = 'onLoad' => table method => 'onFormLoad'
 			 */
 			$tmethod = 'onForm' . FabrikString::ltrimword($method, 'on');
-			$this->runPlugins($tmethod, $parentModel->getListModel(), 'list');
+			$listModel = $parentModel->getListModel();
+			$this->runPlugins($tmethod, $listModel, 'list');
 		}
 		$params = $parentModel->getParams();
 		$return = array();
@@ -495,7 +497,7 @@ class FabrikFEModelPluginmanager extends JModel
 		$c = 0;
 		$runPlugins = 0;
 		/**
-		 * if true then a plugin has returned true from runAway() 
+		 * if true then a plugin has returned true from runAway()
 		 * which means that any other plugin in the same group should not be run.
 		 */
 		$runningAway = false;
@@ -575,10 +577,10 @@ class FabrikFEModelPluginmanager extends JModel
 
 	/**
 	 * Test if a plugin is installed
-	 * 
+	 *
 	 * @param   string  $group   plugin group
 	 * @param   string  $plugin  plguin name
-	 * 
+	 *
 	 * @return  bool
 	 */
 

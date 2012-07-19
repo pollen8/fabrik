@@ -5,7 +5,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewPopupwin extends JView
+class fabrikViewPopupwin extends JViewLegacy
 {
 
 	function display($tmpl = 'default')
@@ -15,7 +15,7 @@ class fabrikViewPopupwin extends JView
 
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_list/email/views/popupwin/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
-		
+
 		$this->assign('fieldList', $this->get('ToField'));
 		$records = $this->get('records');
 		if (count($records) == 0)

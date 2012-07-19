@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.visualization.fusionchart
  */
 
-class fabrikViewGooglemap extends JView
+class fabrikViewGooglemap extends JViewLegacy
 {
 
 	function display($tmpl = 'default')

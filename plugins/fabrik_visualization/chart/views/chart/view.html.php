@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
 * @subpackage	Fabrik.visualization.chart
 */
 
-class fabrikViewChart extends JView
+class fabrikViewChart extends JViewLegacy
 {
 
 	/**

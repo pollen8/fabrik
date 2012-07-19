@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik_skeleton
  * @since       3.0
  */
-class SkeletonViewPackage extends JView
+class SkeletonViewPackage extends JViewLegacy
 {
 
 	/**

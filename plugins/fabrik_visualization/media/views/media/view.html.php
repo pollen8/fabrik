@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik.visualization.media
  */
 
-class fabrikViewMedia extends JView
+class fabrikViewMedia extends JViewLegacy
 {
 
 	/**

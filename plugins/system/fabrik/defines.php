@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla
  * @subpackage  Fabrik
@@ -20,7 +19,7 @@ if (!JFolder::exists('components/com_fabrik/'))
 {
 	return;
 }
-define("COM_FABRIK_BASE", str_replace(DS . 'administrator', '', JPATH_BASE) . DS);
+define("COM_FABRIK_BASE", str_replace(DIRECTORY_SEPARATOR . 'administrator', '', JPATH_BASE) . DIRECTORY_SEPARATOR);
 define("COM_FABRIK_FRONTEND", COM_FABRIK_BASE . 'components/com_fabrik');
 define("COM_FABRIK_LIVESITE", str_replace('/administrator', '', JURI::base()));
 
