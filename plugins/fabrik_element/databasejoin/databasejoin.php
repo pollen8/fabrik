@@ -2001,14 +2001,23 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->_id = JRequest::getInt('element_id');
 		$this->getElement(true);
+		$params = $this->getParams();
 		$db = FabrikWorker::getDbo();
 		$c = $this->_getValColumn();
 		if (!strstr($c, 'CONCAT'))
 		{
 			$c = FabrikString::safeColName($c);
 		}
-		$this->_autocomplete_where = $c . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
-
+		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
+		// default to "contains" for backward compat.
+		if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
+		{
+			$this->_autocomplete_where = $c . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+		}
+		else
+		{
+			$this->_autocomplete_where = $c . ' LIKE ' . $db->quote(JRequest::getVar('value') . '%');
+		}
 		$tmp = $this->_getOptions(array(), 0, true);
 		echo json_encode($tmp);
 	}
