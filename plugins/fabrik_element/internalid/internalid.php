@@ -20,6 +20,13 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 {
 
 	/**
+	 * If the element 'Include in search all' option is set to 'default' then this states if the
+	 * element should be ignored from search all.
+	 * @var bool  True, ignore in advanced search all.
+	 */
+	protected $ignoreSearchAllDefault = true;
+
+	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           to preopulate element with
@@ -117,5 +124,5 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 		$item->auto_increment = 1;
 		return $item;
 	}
+
 }
-?>

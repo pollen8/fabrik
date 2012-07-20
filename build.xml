@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="fabrik3-package" default="fabrik.all">
+<project name="fabrik3-package" default="sqltest">
 	<property file="build_config.ini" />
 	<property file="build_config_private.ini" />
 	<import file="./build_updateserver_xml.xml"/>
@@ -11,6 +11,29 @@
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
+
+<target name="sqltest">
+ <echo message='start test' />
+<sql
+			driver="${sql.driver}"
+			url="${sql.url}"
+			userid="${sql.user}"
+			password="${sql.password}"
+			expandProperties="true"
+			autocommit="true"
+			print="yes"
+			showWarnings="true"
+		>
+		<transaction>
+		select * from ${cfg.sql_downloads_table}
+		</transaction>
+		<!-- <transaction><![CDATA[
+				INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
+	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}
+			]]></transaction> -->
+		</sql>
+	    	 <echo message='done test' />
+	  	</target>
 
 
 	<target name="phpcs" description="Ensure Code Style Rules">
@@ -381,8 +404,26 @@
 		</target>
 		
 		<target name="fabrik.plugin.cron.zip.copy">
-	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-	  </target>
+			<property name="filename" value="plg_fabrik_cron_${plugin}_${version}.zip" />
+	    	<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/${filename}" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	    	
+	    	<sql
+			driver="${sql.driver}"
+			url="${sql.url}"
+			userid="${sql.user}"
+			password="${sql.password}"
+			expandProperties="true"
+			autocommit="true"
+			print="yes"
+		>
+		<transaction><![CDATA[
+				INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
+	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}
+			]]></transaction>
+		</sql>
+	    	 <echo message='INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
+	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}"' />
+	  	</target>
 	  
 	  <target name="fabrik.plugin.element.zip.copy">
 	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
@@ -410,8 +451,8 @@
 			<foreach list="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,link,radiobutton,textarea,user" param="plugin" target="fabrik.plugin.element.zip.copy" inheritall="true" inheritrefs="true"/>
 			<foreach list="email,php,receipt,redirect" target="fabrik.plugin.form.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
 			<foreach list="copy,php" target="fabrik.plugin.list.zip.copy" inheritall="true" param="plugin" inheritrefs="true"/>
-			<foreach list="isgreaterorlessthan,notempty,php,regex" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
-			<foreach list="calendar,chart,googlemap,media,slideshow" target="fabrik.plugin.visualization.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="isgreaterorlessthan,notempty,php,regex,isemail" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<foreach list="calendar,chart,googlemap,media,slideshow,timeline" target="fabrik.plugin.visualization.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
 			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 			<zip destfile="${cfg.destdir}/pkg_fabrik_${version}.zip" basedir="${cfg.destdir}/pkg_fabrik"/>
 		</target>

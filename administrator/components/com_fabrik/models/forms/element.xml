@@ -165,12 +165,13 @@
 			</field>
 			
 			<field name="inc_in_search_all"
-				type="radio"
-				default="1"
+				type="list"
+				default="2"
 				label="COM_FABRIK_FIELD_INCLUDE_IN_SEARCH_ALL_LABEL"
 				description="COM_FABRIK_FIELD_INCLUDE_IN_SEARCH_ALL_DESC" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
+					<option value="2">JDEFAULT</option>
 			</field>
 			
 			<field name="inc_in_adv_search"

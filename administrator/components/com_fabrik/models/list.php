@@ -849,7 +849,8 @@ class FabrikModelList extends FabModelAdmin
 			// True otherwise ordering set to 0!
 			$element = $elementModel->getElement(true);
 			$elParams = $elementModel->getParams();
-			$s = (in_array($element->id, $searchElements)) ? 1 : 0;
+			$unselected = $elParams->get('inc_in_search_all') === 2 ? 2 : 0;
+			$s = (in_array($element->id, $searchElements)) ? 1 : $unselected;
 			$elParams->set('inc_in_search_all', $s);
 			$element->params = (string) $elParams;
 			$element->store();

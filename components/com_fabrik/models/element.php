@@ -65,6 +65,13 @@ class plgFabrik_Element extends FabrikPlugin
 	var $_element = null;
 
 	/**
+	* If the element 'Include in search all' option is set to 'default' then this states if the
+	* element should be ignored from search all.
+	* @var bool  True, ignore in advanced search all.
+	*/
+	protected $ignoreSearchAllDefault = false;
+
+	/**
 	 * Does the element have a label
 	 * @var bool
 	 */
@@ -4801,7 +4808,26 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			return false;
 		}
-		return $this->getParams()->get('inc_in_search_all', true);
+		$params = $this->getParams();
+		$inc = $params->get('inc_in_search_all', 1);
+
+		if ($inc == 2 && $advancedMode)
+		{
+			if ($this->ignoreSearchAllDefault)
+			{
+				$inc = false;
+			}
+			else
+			{
+				$format = $params->get('text_format');
+				if ($format == 'integer' || $format == 'decimal')
+				{
+					$inc = false;
+				}
+			}
+		}
+
+		return ($inc == 1 || $inc == 2) ? true : false;
 	}
 
 	/**
