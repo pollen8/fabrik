@@ -524,8 +524,8 @@
 				<field name="tiplocation" 
 					type="list"
 					default="top"
-					label="COM_FABRIK_FIELD_TIP_LOCATION_LABEL"
-					description="COM_FABRIK_FIELD_TIP_LOCATION_DESC">
+					label="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_LABEL"
+					description="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_DESC">
 						<option value="top">COM_FABRIK_TIP_LOCATION_TOP</option>
 						<option value="right">COM_FABRIK_TIP_LOCATION_RIGHT</option>
 						<option value="bottom">COM_FABRIK_TIP_LOCATION_BOTTOM</option>
