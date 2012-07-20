@@ -2810,7 +2810,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 		// $$$ rob this caused issues if your element was a dbjoin with a concat label, but then you save it as a field
 		// if ($params->get('join_val_column_concat') == '') {
-		if ($element->plugin != 'databasejoin')
+		//if ($element->plugin != 'databasejoin')
+		// $$$ needs to apply to CDD's as well, so just making this an overideable method.
+		if ($this->quoteLabel())
 		{
 			$elName = FabrikString::safeColName($elName);
 		}
@@ -5709,6 +5711,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function reset()
 	{
 		$this->defaults = null;
+	}
+
+	/**
+	 *
+	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
+	 * which may use a CONCAT'ed label which musn't be quoted.
+	 *
+	 * @since	3.0.6
+	 *
+	 * @return boolean
+	 */
+	protected function quoteLabel()
+	{
+		return true;
 	}
 
 }
