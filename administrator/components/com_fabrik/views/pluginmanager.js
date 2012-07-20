@@ -122,9 +122,18 @@ var PluginManager = new Class({
 			
 		}.bind(this));
 		
+		// $$$ hugh - attempt to fix booboo in this commit:
+		// https://github.com/Fabrik/fabrik/commit/3817541d15f15c7f370c570bf8a4c6a0baf13f74
+		// New code didn't rename non-radio, and also we ended up with multiple names the same, blowing away params for
+		// first instances of repeated plugins.
+		// So instead of just radios, am fixing by applying this code to all inputs, selects and textareas
+		// ROB - PLEASE SANITY CHECK!!!
+		// Also check "update params id's" down a few lines, I think it's surplus to requirements?
+		
 		// Set radio buttons ids, names and labels
 		tmp = new Element('div').set('html', str);
-		radios = tmp.getElements('input[type=radio]');
+		//radios = tmp.getElements('input[type=radio]');
+		radios = tmp.getElements('input, select, textarea');
 		radios.each(function (rad) {
 			var label, radid;
 			rad.name = rad.name.replace(/\[0\]/gi, '[' + this.counter + ']');
@@ -132,7 +141,9 @@ var PluginManager = new Class({
 			radid = rad.id.split('-');
 			radid[1] = this.counter;
 			rad.id = radid.join('-');
-			label.setAttribute('for', rad.id);
+			if (label) {
+				label.setAttribute('for', rad.id);
+			}
 		}.bind(this));
 
 		td.set('html', tmp.get('html'));
@@ -156,7 +167,11 @@ var PluginManager = new Class({
 		
 		// Update params ids
 		if (this.counter !== 0) {
-			c.getElements('input[name^=params]', 'select[name^=params]').each(function (i) {
+			// $$$ hugh - don't think this is working, 'cos syntax is wrong.
+			// I added the right syntax, but commented it out 'cos I think we now handle this above,
+			// in the 
+			c.getElements('input[name^=params], select[name^=params]').each(function (i) {
+			//c.getElements('input[name^=jform\[params\]], select[name^=jform\[params\]], textarea[name^=jform\[params\]').each(function (i) {
 				if (i.id !== '') {
 					var a = i.id.split('-');
 					a.pop();
