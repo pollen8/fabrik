@@ -288,8 +288,8 @@
 			<field name="tiplocation"
 				type="list"
 				default="tip"
-				label="COM_FABRIK_FIELD_TIP_LOCATION_LABEL"
-				description="COM_FABRIK_FIELD_TIP_LOCATION_DESC">
+				label="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_LABEL"
+				description="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_DESC">
 					<option value="tip">COM_FABRIK_TIP</option>
 					<option value="above">COM_FABRIK_TIP_ABOVE</option>
 					<option value="below">COM_FABRIK_TIP_BELOW</option>
