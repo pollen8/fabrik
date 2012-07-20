@@ -14,19 +14,21 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.calc
+ * @since       3.0
  */
 
 class plgFabrik_ElementCalc extends plgFabrik_Element
 {
 
 	/**
-	 * this really does get just the default value (as defined in the element's settings)
-	 * @param	array	data
-	 * @param	int		repeat counter
-	 * @return	string
+	 * This really does get just the default value (as defined in the element's settings)
+	 *
+	 * @param   array  $data  form data
+	 *
+	 * @return mixed
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default))
 		{
@@ -43,6 +45,15 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		return $this->_default;
 	}
 
+	/**
+	 * Get value
+	 *
+	 * @param   string  $data           value
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  string
+	 */
+
 	private function _getV($data, $repeatCounter)
 	{
 		$w = new FabrikWorker;
@@ -50,21 +61,27 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$joinid = $groupModel->getGroup()->join_id;
 		$name = $this->getFullName(false, true, false);
 		$params = $this->getParams();
+
 		// $$$ hugh - if we don't do this, we get the cached default from the previous repeat
 		if ($repeatCounter > 0)
 		{
 			unset($this->_default);
 		}
-		// $$$ hugh - don't think we want to do this here, otherwise calc gets run regardless of calc_on_save_only,
-		// it just won't get used if 'true'
-		//$default = $this->getDefaultValue($data, $repeatCounter);
+		/**
+		 *  $$$ hugh - don't think we want to do this here, otherwise calc gets run regardless of calc_on_save_only,
+		 *  it just won't get used if 'true'
+		 *  $default = $this->getDefaultValue($data, $repeatCounter);
+		 */
 		$default = '';
-		// if viewing form or details view and calc set to always run then return the $default
-		//which has had the calculation run on it.
+		/**
+		 *  if viewing form or details view and calc set to always run then return the $default
+		 *  which has had the calculation run on it.
+		 */
 		if (!$params->get('calc_on_save_only', true))
 		{
-			//$default = $this->getDefaultValue($data, $repeatCounter);
+			// $default = $this->getDefaultValue($data, $repeatCounter);
 			$this->swapValuesForLabels($data);
+
 			// $$$ hugh need to remove repeated joined data which is not part of this repeatCount
 			$groupModel = $this->getGroup();
 			if ($groupModel->isJoin())
@@ -136,7 +153,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		{
 			if ($groupModel->canRepeat())
 			{
-				//repeat group NO join
+				// Repeat group NO join
 				if (is_array($data))
 				{
 					$thisname = $name;
@@ -148,12 +165,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 					{
 						if (is_array($data[$thisname]))
 						{
-							//occurs on form submission for fields at least
+							// Occurs on form submission for fields at least
 							$a = $data[$thisname];
 						}
 						else
 						{
-							//occurs when getting from the db
+							// Occurs when getting from the db
 							$a = json_decode($data[$thisname]);
 						}
 						if (array_key_exists($repeatCounter, $a))
@@ -165,7 +182,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			}
 			else
 			{
-				// when called from getFilterArray via _getROElement, $data doesn't exist
+				// When called from getFilterArray via _getROElement, $data doesn't exist
 				// (i.e. when specified as a table___name=foo in a content plugin)
 				if (is_array($data))
 				{
@@ -187,14 +204,16 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * determines the value for the element in the form view
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
-	 * @return	string	value
+	 * Determines the value for the element in the form view
+	 *
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 *
+	 * @return  string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		if (!isset($this->defaults) || is_null($this->defaults))
 		{
@@ -204,13 +223,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		{
 			$element = $this->getElement();
 			$element->default = $this->_getV($data, $repeatCounter);
-			if ($element->default === '')
-			{ //query string for joined data
-			// $$$ rob commented out as $name not defined and not sure what t should be
-			//$element->default = JArrayHelper::getValue($data, $name);
-			}
 			$formModel = $this->getForm();
-			//stops this getting called from form validation code as it messes up repeated/join group validations
+
+			// Stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -226,9 +241,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 	/**
 	 * run on formModel::setFormData()
-	 * set before form is validated
-	 * @param	int		repeat group counter
-	 * @return	null
+	 *
+	 * @param   int  $c  repeat group counter
+	 *
+	 * @return void
 	 */
 
 	public function preProcess($c)
@@ -245,7 +261,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		{
 			foreach ($thisJoindata as $key => $val)
 			{
-				// if the joined group isn't repeated, $val will be a string
+				// If the joined group isn't repeated, $val will be a string
 				if (is_array($val))
 				{
 					$d[$key] = JArrayHelper::getValue($val, $c, JArrayHelper::getValue($val, 0, ''));
@@ -257,10 +273,11 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			}
 			unset($d['join'][$joinid]);
 		}
-		//get the key name in dot format for updateFormData method
-		// $$$ hugh - added $rawkey stuff, otherwise when we did "$key . '_raw'" in the updateFormData
-		// below on repeat data, it ended up in the wrong format, like join.XX.table___element.0_raw
-		// instead of join.XX.table___element_raw.0
+		/**
+		 * get the key name in dot format for updateFormData method
+		 * $$$ hugh - added $rawkey stuff, otherwise when we did "$key . '_raw'" in the updateFormData
+		 * below on repeat data, it ended up in the wrong format, like join.XX.table___element.0_raw
+		 */
 		$key = $this->getFullName(true, true, false);
 		$shortkey = $this->getFullName(false, true, false);
 		$rawkey = $key . '_raw';
@@ -298,7 +315,15 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$form->updateFormData($rawkey, $calc);
 	}
 
-	function swapValuesForLabels(&$d)
+	/**
+	 * Swap values for labels
+	 *
+	 * @param   array  &$d  data
+	 *
+	 * @return  void
+	 */
+
+	protected function swapValuesForLabels(&$d)
 	{
 		$groups = $this->getForm()->getGroupsHiarachy();
 		foreach (array_keys($groups) as $gkey)
@@ -328,16 +353,25 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::preFormatFormJoins()
+	 * Allows the element to pre-process a rows data before and join mergeing of rows
+	 * occurs. Used in calc element to do cals on actual row rather than merged row
+	 *
+	 * @param   string  $element_data  elements data for the current row
+	 * @param   object  $row           current row's data
+	 *
+	 * @since	3.0.5
+	 *
+	 * @return  string	formatted value
 	 */
 
 	public function preFormatFormJoins($element_data, $row)
 	{
 		$params = $this->getParams();
 		$format = trim($params->get('calc_format_string'));
-		// $$$ hugh - the 'calculated value' bit is for legacy data that was created
-		// before we started storing a value when row is saved
+		/**
+		 * $$$ hugh - the 'calculated value' bit is for legacy data that was created
+		 * before we started storing a value when row is saved
+		 */
 		if ($params->get('calc_on_save_only', 0))
 		{
 			if ($format != '')
@@ -355,8 +389,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$data = JArrayHelper::fromObject($row);
 			$data['rowid'] = $data['__pk_val'];
 			$data['fabrik'] = $formModel->getId();
-			// $$$ hugh - trying to standardize on $data so scripts know where data is,
-			// need $d here for backward compat
+			/**
+			 *  $$$ hugh - trying to standardize on $data so scripts know where data is,
+			 *  need $d here for backward compat
+			 */
 			$d = $data;
 			$res = $listModel->parseMessageForRowHolder($cal, $data, true);
 			$res = @eval($res);
@@ -374,9 +410,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * fudge the CSV export so that we get the calculated result regardless of whether
-	 * the value has been stored in the database base (mimics what the user would see in the table view)
-	 * @see components/com_fabrik/models/plgFabrik_Element#renderListData($data, $thisRow)
+	 * Prepares the element data for CSV export
+	 *
+	 * @param   string  $data      element data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData_csv($data, &$thisRow)
@@ -389,13 +428,15 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-	 * @param	array	data
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -429,8 +470,8 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			/* make a hidden field instead*/
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
-		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl,
-			array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
+		$opts = array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
+		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, $opts);
 		return implode("\n", $str);
 	}
 
@@ -457,6 +498,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		foreach ($obs as &$m)
 		{
 			$m = str_replace(array('{', '}'), '', $m);
+
 			// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID
 			$m = preg_replace('#_raw$#', '', $m);
 		}
@@ -469,7 +511,13 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		return "new FbCalc('$id', $opts)";
 	}
 
-	function onAjax_calc()
+	/**
+	 * Perform calculation from ajax request
+	 *
+	 * @return  void
+	 */
+
+	public function onAjax_calc()
 	{
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();
@@ -479,6 +527,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$this->getFormModel()->_data = $d;
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
+
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
@@ -572,9 +621,11 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	}
 
 	/**
+	 * Get the sprintf format string
+	 *
 	 * @since 3.0.4
-	 * get the sprintf format string
-	 * @return	string
+	 *
+	 * @return string
 	 */
 
 	public function getFormatString()
@@ -583,4 +634,3 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		return $params->get('calc_format_string');
 	}
 }
-?>
