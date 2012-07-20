@@ -1531,6 +1531,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			}
 
 		}
+		// $$$ rob 20/07/2012 Date is posted as local time, need to set it back to GMT. Seems needed even if dates are saved without timeselector
+		$localTimeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+
+		$date = JFactory::getDate($value[0], $localTimeZone);
+		$value[0] = $date->toSql();
+
+		$date = JFactory::getDate($value[1], $localTimeZone);
+		$value[1] = $date->toSql(true);
+
 		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		$condition = 'BETWEEN';
 		return array($value, $condition);
