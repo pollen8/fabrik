@@ -22,14 +22,11 @@ var FbListFilter = new Class({
 				e.stop();
 				var x = dims.x - this.filterContainer.getWidth();
 				var y = dims.y + b.getHeight();
-				var rx = this.filterContainer.getStyle('display') === 'none' ? this.filterContainer.show() : this.filterContainer.hide();
-				this.filterContainer.fade('toggle');
-				this.container.getElements('.filter, .listfilter').toggle();
+				this.filterContainer.toggle();
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
-				this.filterContainer.fade('hide').hide();
-				this.container.getElements('.filter, .listfilter').toggle();
+				this.filterContainer.toggle();
 			}
 		}
 
