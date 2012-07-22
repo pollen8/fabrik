@@ -2178,4 +2178,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see plgFabrik_Element::quoteLabel()
+	 */
+	protected function quoteLabel()
+	{
+		$params = $this->getParams();
+		return $params->get('join_val_column_concat', '') == '';
+	}
+
 }
