@@ -20,7 +20,7 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementUsergroup extends plgFabrik_Element
 {
 
-	protected $fieldDesc = 'INT(11)';
+	protected $fieldDesc = 'TEXT';
 
 	/**
 	 * Draws the html form element
