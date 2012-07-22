@@ -130,19 +130,25 @@ var PluginManager = new Class({
 		// ROB - PLEASE SANITY CHECK!!!
 		// Also check "update params id's" down a few lines, I think it's surplus to requirements?
 		
-		// Set radio buttons ids, names and labels
+		// Set form input ids, names and labels
 		tmp = new Element('div').set('html', str);
-		//radios = tmp.getElements('input[type=radio]');
-		radios = tmp.getElements('input, select, textarea');
-		radios.each(function (rad) {
+		inputs = tmp.getElements('input, select, textarea');
+		inputs.each(function (input) {
 			var label, radid;
-			rad.name = rad.name.replace(/\[0\]/gi, '[' + this.counter + ']');
-			label = tmp.getElement('label[for=' + rad.id + ']');
-			radid = rad.id.split('-');
-			radid[1] = this.counter;
-			rad.id = radid.join('-');
+			input.name = input.name.replace(/\[0\]/gi, '[' + this.counter + ']');
+			label = tmp.getElement('label[for=' + input.id + ']');
+			radid = input.id.split('-');
+			
+			// ids should be set as name-{repeatCounter} for things like fields
+			// for radio buttons they are name-{repeatCoutner}-{int:radiobutton order}
+			// hence grab the 
+			
+			// Additonal '-' added to radios in admnistrator/components/com_fabrik/classes/formfield.php getId()
+			radid[1] = this.counter; 
+			input.id = radid.join('-');
+			
 			if (label) {
-				label.setAttribute('for', rad.id);
+				label.setAttribute('for', input.id);
 			}
 		}.bind(this));
 
@@ -170,14 +176,16 @@ var PluginManager = new Class({
 			// $$$ hugh - don't think this is working, 'cos syntax is wrong.
 			// I added the right syntax, but commented it out 'cos I think we now handle this above,
 			// in the 
-			c.getElements('input[name^=params], select[name^=params]').each(function (i) {
-			//c.getElements('input[name^=jform\[params\]], select[name^=jform\[params\]], textarea[name^=jform\[params\]').each(function (i) {
+			//c.getElements('input[name^=params], select[name^=params]').each(function (i) {
+			/*c.getElements('input[name^=jform\[params\]], select[name^=jform\[params\]], textarea[name^=jform\[params\]').each(function (i) {
 				if (i.id !== '') {
+					debugger;
 					var a = i.id.split('-');
 					a.pop();
 					i.id = a.join('-') + '-' + this.counter;
+					console.log(i.id);
 				}
-			}.bind(this));
+			}.bind(this));*/
 			
 			c.getElements('img[src=components/com_fabrik/images/ajax-loader.gif]').each(function (i) {
 				i.id = i.id.replace('-0_loader', '-' + this.counter + '_loader');
