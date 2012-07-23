@@ -2145,6 +2145,7 @@ class FabrikModelList extends FabModelAdmin
 		$fabrikDb = $this->getDb();
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
+		$formModel = $this->getFormModel();
 		if (is_null($dbTableName))
 		{
 			$dbTableName = $this->getTable()->db_table_name;
@@ -2168,16 +2169,22 @@ class FabrikModelList extends FabModelAdmin
 		$i = 0;
 		foreach ($fields as $name => $plugin)
 		{
-			// Installation demo data sets 2 groud ids
-			if (is_string($plugin))
+			// $$$ hugh - testing corner case where we are called from form model's updateDatabase,
+			// and the underlying table has been deleted.  So elements already exist.
+			$element = $formModel->getElement($name);
+			if ($element === false)
 			{
-				$plugin = array('plugin' => $plugin, 'group_id' => $groupIds[0]);
-			}
-			$plugin['ordering'] = $i;
-			$element = $this->makeElement($name, $plugin);
-			if (!$element)
-			{
-				return false;
+				// Installation demo data sets 2 groud ids
+				if (is_string($plugin))
+				{
+					$plugin = array('plugin' => $plugin, 'group_id' => $groupIds[0]);
+				}
+				$plugin['ordering'] = $i;
+				$element = $this->makeElement($name, $plugin);
+				if (!$element)
+				{
+					return false;
+				}
 			}
 			$elementModels[] = clone ($element);
 			$i++;
