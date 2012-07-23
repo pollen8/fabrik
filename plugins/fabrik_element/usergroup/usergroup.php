@@ -186,6 +186,10 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 				}
 			}
 
+			if (!is_array($value))
+			{
+				$value = array($value);
+			}
 			/*@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
 			 *stops this getting called from form validation code as it messes up repeated/join group validations
 			*/
