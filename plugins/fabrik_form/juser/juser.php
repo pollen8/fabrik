@@ -306,7 +306,12 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
 			if (!empty($formModel->_rowId))
 			{
-				$original_id = (int) $formModel->_formData[$this->useridfield];
+				$original_id = $formModel->_formData[$this->useridfield];
+				// $$$ hugh - if it's a user element, it'll be an array
+				if (is_array($original_id))
+				{
+					$original_id = JArrayHelper::getValue($original_id, 0, 0);
+				}
 			}
 		}
 		else
@@ -564,7 +569,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 		$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
 
-		JArrayHelper::toInteger($groupId);
+		JArrayHelper::toInteger($groupIds);
 
 		$data = array();
 		if (!$isNew)
