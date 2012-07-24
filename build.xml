@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="fabrik3-package" default="sqltest">
+<project name="fabrik3-package" default="fabrik.all">
 	<property file="build_config.ini" />
 	<property file="build_config_private.ini" />
 	<import file="./build_updateserver_xml.xml"/>
