@@ -4094,6 +4094,15 @@ class FabrikFEModelList extends JModelForm
 					$params->set('filter-eval', JArrayHelper::getValue($prefilters, 'filter-eval', ''));
 					$params->set('filter-join', JArrayHelper::getValue($prefilters, 'filter-join', ''));
 				}
+				else
+				{
+					$params->set('filter-fields', array());
+					$params->set('filter-conditions', array());
+					$params->set('filter-value', array());
+					$params->set('filter-access', array());
+					$params->set('filter-eval', array());
+					$params->set('filter-join', array());
+				}
 			}
 			$elements = $this->getElements('filtername');
 			$afilterJoins = (array) $params->get('filter-join');
@@ -4720,12 +4729,12 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $container  container
 	 * @param   string  $type       type listviz
 	 * @param   int     $id         html id, only used if called from viz plugin
-	 * @param   string  $ref  js filter ref, used when rendering filters for visualizations
+	 * @param   string  $ref        js filter ref, used when rendering filters for visualizations
 	 *
 	 * @return  array	of html code for each filter
 	 */
 
-	function &makeFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
+	protected function &makeFilters($container = 'listform_1', $type = 'list', $id = '', $ref = '')
 	{
 		$aFilters = array();
 		$table = $this->getTable();
