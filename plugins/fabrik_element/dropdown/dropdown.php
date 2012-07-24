@@ -256,9 +256,9 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 	 * @return  string	sql query part e,g, "key = value"
 	 */
 
-	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	public function getFilterQuery($key, $condition, $label, $originalValue, $type = 'normal')
 	{
-		//$value = $label;
+		$value = $label;
 		if ($type == 'searchall')
 		{
 			// $$$ hugh - (sometimes?) $label is already quoted, which is causing havoc ...
