@@ -5432,11 +5432,14 @@ class FabrikFEModelList extends JModelForm
 		 */
 		foreach ($arr as $key => $val)
 		{
-			list($part1, $part2) = explode(':', $key);
-			$part1 = sprintf('%03d', $part1);
-			$newkey = $part1 . ':' . $part2;
-			$arr[$newkey] = $arr[$key];
-			unset($arr[$key]);
+			if (strstr($key, ':'))
+			{
+				list($part1, $part2) = explode(':', $key);
+				$part1 = sprintf('%03d', $part1);
+				$newkey = $part1 . ':' . $part2;
+				$arr[$newkey] = $arr[$key];
+				unset($arr[$key]);
+			}
 		}
 		ksort($arr);
 		foreach ($arr as $key => $val)
