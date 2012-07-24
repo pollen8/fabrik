@@ -1107,6 +1107,83 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	}
 
 	/**
+	 *
+	 * Intended for use by things like PHP form plugin code, PHP validations, etc.,
+	 * so folk don't have to access _formData directly.
+	 *
+	 * @since	3.0.6
+	 *
+	 * @param string $fullName full element name
+	 * @param bool $raw get raw data
+	 * @param string $repeatCount repeat count if needed
+	 * @return mixed
+	 */
+	public function getElementData($fullName, $raw = false, $default = '', $repeatCount = null)
+	{
+		$value = null;
+		if ($raw)
+		{
+			$fullName .= '_raw';
+		}
+		// Simplest case, element name exists in main group
+		if (array_key_exists($fullName, $this->_formData))
+		{
+			$value = $this->_formData[$fullName];
+		}
+		// Maybe we are being called from onAfterProcess hook, or somewhere else
+		// running after store, when non-joined data names have been reduced to short
+		// names in _formData, so peek in _fullFormData
+		else if (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
+		{
+			$value = $this->_fullFormData[$fullName];
+		}
+		// Wasn't in the form's main table data, so try joins
+		else if (array_key_exists('join', $this->_formData))
+		{
+			// We can't just loop through the ['join'] structure, as we need to
+			// know if the group is repeatable, and can't rely on key being an array,
+			// to determine that, as it might be a list element type.
+			$groups = $this->getGroupsHiarachy();
+			foreach ($groups as $groupModel)
+			{
+				$group = $groupModel->getGroup();
+				if (array_key_exists($group->join_id, $this->_formData['join']))
+				{
+					if (array_key_exists($fullName, $this->_formData['join'][$group->join_id]))
+					{
+						$value = $this->_formData['join'][$group->join_id][$fullName];
+						// if the group is repeatable, see if they want a specific index
+						if ($groupModel->canRepeat())
+						{
+							if (isset($repeatCount))
+							{
+								// if they specified an index and it exists, condense return value down to just that
+								if (array_key_exists($repeatCount, $value))
+								{
+									$value = $value[$repeatCount];
+								}
+								else {
+									// if the index they wanted doesn't exist, set to default
+									$value = $default;
+								}
+							}
+						}
+						// we found it, so break out of the foreach
+						break;
+					}
+				}
+			}
+		}
+
+		// if we didn't find it, set to default
+		if (!isset($value))
+		{
+			$value = $default;
+		}
+		return $value;
+	}
+
+	/**
 	 * This will strip the html from the form data according to the
 	 * filter settings applied from article manager->parameters
 	 * see here - http://forum.joomla.org/index.php/topic,259690.msg1182219.html#msg1182219
@@ -1784,7 +1861,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				 * $$$hugh @FIXME - at this point we've removed tablename from _formdata keys (in processTodb()),
 				 * but element getValue() methods assume full name in _formData
 				 */
-				$v = $elementModel->getValue($this->_formData);
+				//$v = $elementModel->getValue($this->_formData);
+				$v = $elementModel->getValue($this->_formDataWithTableName);
 				if ($elementModel->ignoreOnUpdate($v))
 				{
 					// Currently only field password elements return true
