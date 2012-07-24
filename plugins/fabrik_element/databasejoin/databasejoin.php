@@ -2181,10 +2181,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * @since 3.0rc1
-	 * when the element is a repeatble join (e.g. db join checkbox) then figure out how many
+	 * When the element is a repeatble join (e.g. db join checkbox) then figure out how many
 	 * records have been selected
-	 * @param   array
+	 *
+	 * @param   array  $data  data
+	 * @param   object  $oJoin  join model
+	 *
+	 * @since 3.0rc1
+	 *
 	 * @return  int		number of records selected
 	 */
 
@@ -2204,9 +2208,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::quoteLabel()
+	 *
+	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
+	 * which may use a CONCAT'ed label which musn't be quoted.
+	 *
+	 * @since	3.0.6
+	 *
+	 * @return boolean
 	 */
+
 	protected function quoteLabel()
 	{
 		$params = $this->getParams();
