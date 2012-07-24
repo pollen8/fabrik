@@ -15,6 +15,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.databasejoin
+ * @since       3.0
  */
 
 class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
@@ -79,7 +80,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 		}
 		$connection = $listModel->getConnection();
-		//make sure same connection as this table
+
+		// Make sure same connection as this table
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
 		if ($params->get('join_conn_id') == $connection->get('_id') || $element->plugin != 'databasejoin')
 		{
@@ -1459,6 +1461,29 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
+	 * Builds an array containing the filters value and condition
+	 *
+	 * @param   string  $value      initial value
+	 * @param   string  $condition  intial $condition
+	 * @param   string  $eval       how the value should be handled
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  array	(value condition)
+	 */
+
+	public function getFilterValue($value, $condition, $eval)
+	{
+		$fType = $this->getElement()->filter_type;
+		if ($fType == 'auto-complete')
+		{
+			// Searching on value so set to equals
+			$condition = '=';
+		}
+		return parent::getFilterValue($value, $condition, $eval);
+	}
+
+	/**
 	 * Build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
@@ -1500,7 +1525,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->encryptFieldName($key);
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
-			//$$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
+			// $$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
 			//$k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
 			$str = "$key $condition $value";
 		}
