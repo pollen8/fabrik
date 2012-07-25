@@ -644,9 +644,17 @@ class plgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		if (!is_object($this->_access) || !array_key_exists('use', $this->_access))
 		{
-			$user = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
-			$this->_access->use = in_array($this->getElement()->access, $groups);
+			// $$$ hugh - testing new "Option 5" for group show, "Always show read only"
+			// So if element's group show is type 5, then element is de-facto read only.
+			if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
+			{
+				$this->_access->use = false;
+			}
+			else {
+				$user = JFactory::getUser();
+				$groups = $user->getAuthorisedViewLevels();
+				$this->_access->use = in_array($this->getElement()->access, $groups);
+			}
 		}
 		return $this->_access->use;
 	}
