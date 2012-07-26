@@ -1268,7 +1268,7 @@ class FabrikFEModelListfilter extends FabModel
 						 * with the line below uncomment, the unset caused only first filter from query string to work, e..g
 						 * &element_test___user[value][0]=aaassss&element_test___user[value][1]=X Administrator&element_test___user[join][1]=OR
 						 * converted to:
-						 * WHERE `jos_users`.`name` REGEXP 'aaassss' OR `jos_users`.`name` REGEXP ' X Administrator'
+						 * WHERE `#__users`.`name` REGEXP 'aaassss' OR `#___users`.`name` REGEXP ' X Administrator'
 						 *
 						 * unset($filters[$fkey][$index]);
 						 */

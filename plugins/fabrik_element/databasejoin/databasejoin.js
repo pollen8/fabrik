@@ -55,7 +55,8 @@ var FbDatabasejoin = new Class({
 			'collapsible': true,
 			'onContentLoaded': function (win) {
 				win.fitToContent();
-			}
+			},
+			destroy: true
 		};
 		this.win = Fabrik.getWindow(this.windowopts);
 		e.stop();

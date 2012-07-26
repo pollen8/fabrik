@@ -1,15 +1,23 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
+
+/**
+ * Fabrik Raw Form View
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class fabrikViewForm extends JView
 {
@@ -27,7 +35,9 @@ class fabrikViewForm extends JView
 			return false;
 		}
 		$this->groups = $this->get('GroupView');
-		$elementid = JRequest::getInt('elid'); //main trigger element's id
+
+		// Main trigger element's id
+		$elementid = JRequest::getInt('elid');
 
 		$html = array();
 		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
@@ -43,7 +53,6 @@ class fabrikViewForm extends JView
 				$html[] = '</li>';
 			}
 		}
-
 		$html[] = '</ul>';
 
 		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel'))
@@ -128,7 +137,6 @@ class fabrikViewForm extends JView
 		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
-
 		if (is_object($listModel))
 		{
 			$joins = $listModel->getJoins();
@@ -167,10 +175,8 @@ class fabrikViewForm extends JView
 			{
 				if ($groupModel->isJoin())
 				{
-
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
-
 					$foreignKey = '';
 					if (is_object($joinTable))
 					{
@@ -224,7 +230,6 @@ class fabrikViewForm extends JView
 			}
 
 			$groupModel->repeatTotal = $repeatGroup;
-
 			$aSubGroups = array();
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
@@ -235,14 +240,15 @@ class fabrikViewForm extends JView
 				{
 					if (!$model->_editable)
 					{
-						// $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
-						// db join add append data doesn't work if for example the popup form is set to allow adding,
-						// but not editing records
-						//$elementModel->_inDetailedView = true;
+						/* $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
+						 * db join add append data doesn't work if for example the popup form is set to allow adding,
+						 * but not editing records
+						 * $elementModel->_inDetailedView = true;
+						 */
 						$elementModel->_editable = false;
 					}
 
-					//force reload?
+					// Force reload?
 					$elementModel->_HTMLids = null;
 					$elementHTMLId = $elementModel->getHTMLId($c);
 					if (!$model->_editable)
@@ -253,7 +259,7 @@ class fabrikViewForm extends JView
 					{
 						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->_data, $c);
 					}
-					//test for paginate plugin
+					// Test for paginate plugin
 					if (!$model->_editable)
 					{
 						$elementModel->_HTMLids = null;
@@ -269,4 +275,3 @@ class fabrikViewForm extends JView
 	}
 
 }
-?>

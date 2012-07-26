@@ -267,7 +267,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		// Load up com_users lang - used in email text
 		$lang->load('com_users');
 		/*
-		 * if the fabrik table is set to be jos_users and the this plugin is used
+		 * if the fabrik table is set to be #__users and the this plugin is used
 		 * we need to alter the form model to tell it not to store the main row
 		 * but to still store any joined rows
 		 */
@@ -307,6 +307,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			if (!empty($formModel->_rowId))
 			{
 				$original_id = $formModel->_formData[$this->useridfield];
+
 				// $$$ hugh - if it's a user element, it'll be an array
 				if (is_array($original_id))
 				{

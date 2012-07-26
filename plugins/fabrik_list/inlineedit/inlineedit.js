@@ -634,7 +634,7 @@ var FbListInlineEdit = new Class({
 		//data = Object.append(this.currentRow.data, data);
 		data[eObj.token] = 1;
 
-		saveRequest = new Request({url: '',
+		this.saveRequest = new Request({url: '',
 			'data': data,
 			'evalScripts': true,
 			'onSuccess': function (r) {
@@ -655,9 +655,14 @@ var FbListInlineEdit = new Class({
 					err = new Element('div.fabrikMainError.fabrikError');
 					err.inject(td.getElement('.inlineedit'), 'top');
 				}
-				err.set('html', saveRequest.getHeader('Status').substring(4));
 				this.saving = false;
 				Fabrik.loader.stop(td.getParent());
+				var headerStatus = xhr.statusText;
+				if (typeOf(headerStatus) === 'null') {
+					headerStatus = 'uncaught error';
+				}
+				err.set('html', headerStatus);
+				
 			}.bind(this),
 			
 			'onException': function (headerName, value) {

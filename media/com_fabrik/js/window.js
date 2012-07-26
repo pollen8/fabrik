@@ -41,10 +41,14 @@ Fabrik.Window = new Class({
 		offset_y: null,
 		onContentLoaded: function () {
 			this.fitToContent();
-		}
+		},
+		destroy: false
 	},
 	
 	modal: false,
+	
+	classSuffix: '',
+	
 	expanded: false,
 	
 	initialize: function (opts)
@@ -60,7 +64,7 @@ Fabrik.Window = new Class({
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
 		d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
 		d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
-		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow'}).setStyles(d);
+		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix}).setStyles(d);
 		this.contentWrapperEl = this.window;
 		var art = Fabrik.iconGen.create(icon.cross);
 		
@@ -264,8 +268,15 @@ Fabrik.Window = new Class({
 		if (e) {
 			e.stop();
 		}
-		//cant destroy as we want to be able to reuse them (see crop in fileupload element)
-		this.window.fade('hide');
+		// By default cant destroy as we want to be able to reuse them (see crop in fileupload element)
+		if (this.options.destroy) {
+	
+			// However db join add (in repeating group) has a fit if we don't remove its content 
+			this.window.destroy();
+			delete(Fabrik.Windows[this.options.id]);
+		} else {
+			this.window.fade('hide');
+		}
 	},
 	
 	open: function (e) {
@@ -279,7 +290,10 @@ Fabrik.Window = new Class({
 
 Fabrik.Modal = new Class({
 	Extends: Fabrik.Window,
+	
 	modal: true,
+	
+	classSuffix: 'fabrikWindow-modal',
 	
 	getHandle: function () {
 		return new Element('div', {'class': 'handle'});

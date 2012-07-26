@@ -136,7 +136,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			$db = JFactory::getDBO();
 			$aids = explode(',', $ids);
 
-			// If using a user element, build a lookup list of emails from jos_users,
+			// If using a user element, build a lookup list of emails from #__users,
 			// so we're only doing one query to grab all involved emails.
 			if ($emailWhich == 'user')
 			{

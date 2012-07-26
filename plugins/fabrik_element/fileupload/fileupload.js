@@ -85,9 +85,13 @@ var FbFileUpload = new Class({
 		if (this.options.editable === false) {
 			return;
 		}
-		var c = this.element.getParent('.fabrikSubElementContainer');
+		var c = this.getElement().getParent('.fabrikSubElementContainer');
 		this.container = c;
-		this.widget = new ImageWidget(c.getElement('canvas'), {
+		var canvas = c.getElement('canvas');
+		if (typeOf(canvas) === 'null') {
+			return;
+		}
+		this.widget = new ImageWidget(canvas, {
 			'cropdim' : {
 				w: this.options.cropwidth,
 				h: this.options.cropheight,

@@ -65,6 +65,7 @@ class FabrikControllerForm extends JControllerForm
 		$this->isMambot = JRequest::getVar('_isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
+
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
@@ -72,18 +73,40 @@ class FabrikControllerForm extends JControllerForm
 		}
 		if (!$model->validate())
 		{
-			//if its in a module with ajax or in a package
-			if (JRequest::getInt('_packageId') !== 0)
+		// If its in a module with ajax or in a package or inline edit
+			if (JRequest::getCmd('fabrik_ajax'))
 			{
-				$data = array('modified' => $model->_modifiedValidationData);
-				//validating entire group when navigating form pages
-				$data['errors'] = $model->_arErrors;
-				echo json_encode($data);
-				return;
+				if (JRequest::getInt('elid') !== 0)
+				{
+					// inline edit
+					$eMsgs = array();
+					$errs = $model->getErrors();
+					foreach ($errs as $e)
+					{
+						if (count($e[0]) > 0)
+						{
+							array_walk_recursive($e, array('FabrikString', 'forHtml'));
+							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
+						}
+					}
+					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
+					//header("HTTP/1.0 404 ".JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+					/* header("HTTP/1.0 404 ".JText::_('COM_FABRIK_FAILED_VALIDATION'));
+					die(); */
+
+					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+					jexit;
+				}
+				else
+				{
+					echo $model->getJsonErrors();
+					return;
+				}
 			}
 			if ($this->isMambot)
 			{
 				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
+
 				// $$$ hugh - testing way of preserving form values after validation fails with form plugin
 				// might as well use the 'savepage' mechanism, as it's already there!
 				$this->savepage();
