@@ -160,7 +160,9 @@ class FabrikViewFormBase extends JView
 		$this->setMessage();
 
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
-		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
+
+		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
+		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
 
 		JDEBUG ? $profiler->mark('form view before template load') : null;
 	}

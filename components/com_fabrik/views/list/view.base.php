@@ -261,7 +261,10 @@ class FabrikViewListBase extends JView
 		$tmpl = $this->get('tmpl');
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
-		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
+
+		$app = JFactory::getApplication();
+		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
+		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
 
 		require_once COM_FABRIK_FRONTEND . '/views/modifiers.php';
 		$user = JFactory::getUser();
