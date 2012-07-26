@@ -4074,9 +4074,20 @@ class FabrikFEModelList extends JModelForm
 					}
 				}
 			}
+
+			// List prfilter porperties
+			$elements = $this->getElements('filtername');
+			$afilterFields = (array) $params->get('filter-fields');
+			$afilterConditions = (array) $params->get('filter-conditions');
+			$afilterValues = (array) $params->get('filter-value');
+			$afilterAccess = (array) $params->get('filter-access');
+			$afilterEval = (array) $params->get('filter-eval');
+			$afilterJoins = (array) $params->get('filter-join');
+			$afilterGrouped = (array) $params->get('filter-grouped');
+
 			/* If we are rendering as a module dont pick up the menu item options (parmas already set in list module)
 			 * so first statement when rendenering a module, 2nd when posting to the component from a module.
-			 */
+			*/
 			if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0)
 			{
 				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '');
@@ -4087,31 +4098,14 @@ class FabrikFEModelList extends JModelForm
 				$conditions = (array) $prefilters['filter-conditions'];
 				if (!empty($conditions))
 				{
-					$params->set('filter-fields', JArrayHelper::getValue($prefilters, 'filter-fields'));
-					$params->set('filter-conditions', JArrayHelper::getValue($prefilters, 'filter-conditions'));
-					$params->set('filter-value', JArrayHelper::getValue($prefilters, 'filter-value'));
-					$params->set('filter-access', JArrayHelper::getValue($prefilters, 'filter-access'));
-					$params->set('filter-eval', JArrayHelper::getValue($prefilters, 'filter-eval', ''));
-					$params->set('filter-join', JArrayHelper::getValue($prefilters, 'filter-join', ''));
-				}
-				else
-				{
-					$params->set('filter-fields', array());
-					$params->set('filter-conditions', array());
-					$params->set('filter-value', array());
-					$params->set('filter-access', array());
-					$params->set('filter-eval', array());
-					$params->set('filter-join', array());
+					$afilterFields = JArrayHelper::getValue($prefilters, 'filter-fields');
+					$afilterConditions = JArrayHelper::getValue($prefilters, 'filter-conditions');
+					$afilterValues = JArrayHelper::getValue($prefilters, 'filter-value');
+					$afilterAccess = JArrayHelper::getValue($prefilters, 'filter-access');
+					$afilterEval = JArrayHelper::getValue($prefilters, 'filter-eval', '');
+					$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', '');
 				}
 			}
-			$elements = $this->getElements('filtername');
-			$afilterJoins = (array) $params->get('filter-join');
-			$afilterFields = (array) $params->get('filter-fields');
-			$afilterConditions = (array) $params->get('filter-conditions');
-			$afilterValues = (array) $params->get('filter-value');
-			$afilterAccess = (array) $params->get('filter-access');
-			$afilterEval = (array) $params->get('filter-eval');
-			$afilterGrouped = (array) $params->get('filter-grouped');
 			$join = 'WHERE';
 			$w = new FabrikWorker;
 			for ($i = 0; $i < count($afilterFields); $i++)
@@ -4690,6 +4684,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Get filters
 	 *
 	 * @param   string  $container  list container
 	 * @param   string  $type       type
