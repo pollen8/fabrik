@@ -1203,8 +1203,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$fabrikDb = $listModel->getDb();
 		$elName = $this->getFullName(false, true, false);
 		$elName2 = $this->getFullName(false, false, false);
-
-		$ids = $listModel->getColumnData($elName2);
 		$v = $this->filterName($counter, $normal);
 
 		// Corect default got
@@ -1212,7 +1210,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$format = $params->get('date_table_format', '%Y-%m-%d');
 
 		$fromTable = $origTable;
-		$joinStr = '';
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
@@ -1224,19 +1221,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
 				{
 					$fromTable = $aJoin->table_join;
-					$joinStr = " LEFT JOIN $fromTable ON " . $aJoin->table_join . "." . $aJoin->table_join_key . " = " . $aJoin->join_from_table
-						. "." . $aJoin->table_key;
 					$elName = str_replace($origTable . '.', $fromTable . '.', $elName);
 				}
 			}
 		}
 		$where = $listModel->_buildQueryPrefilterWhere($this);
 		$elName = FabrikString::safeColName($elName);
-
-		// Don't format here as the format string is different between mysql and php's calendar strftime
-		$sql = "SELECT DISTINCT($elName) AS text, $elName AS value FROM `$origTable` $joinStr" . "\n WHERE $elName IN ('" . implode("','", $ids)
-			. "')" . "\n AND TRIM($elName) <> '' $where GROUP BY text ASC";
-		$requestName = $elName . "___filter";
+		$requestName = $elName . '___filter';
 		if (array_key_exists($elName, $_REQUEST))
 		{
 			if (is_array($_REQUEST[$elName]) && array_key_exists('value', $_REQUEST[$elName]))
