@@ -90,10 +90,6 @@ class FabrikControllerForm extends JControllerForm
 						}
 					}
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-					//header("HTTP/1.0 404 ".JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
-					/* header("HTTP/1.0 404 ".JText::_('COM_FABRIK_FAILED_VALIDATION'));
-					die(); */
-
 					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 					jexit;
 				}
@@ -119,31 +115,31 @@ class FabrikControllerForm extends JControllerForm
 			return;
 		}
 
-		//reset errors as validate() now returns ok validations as empty arrays
+		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->_arErrors = array();
 
-		$defaultAction = $model->process();
+		$model->process();
 
-		//check if any plugin has created a new validation error
-		if (!empty($model->_arErrors))
+		// Check if any plugin has created a new validation error
+		if ($model->hasErrors())
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}
 
-		//one of the plugins returned false stopping the default redirect
-		// action from taking place
-		if (!$defaultAction)
-		{
-			return;
-		}
 		$listModel = $model->getListModel();
 		$tid = $listModel->getTable()->id;
-		$msg = $model->getParams()->get('suppress_msgs', '0') == '0' ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+
+		$res = $model->getRedirectURL(true, $this->isMambot);
+		$this->baseRedirect = $res['baseRedirect'];
+		$url = $res['url'];
+
+		$msg = $model->getRedirectMessage($model);
+
 		if (JRequest::getInt('elid') !== 0)
 		{
-			//inline edit show the edited element
+			// Inline edit show the edited element
 			echo $model->inLineEditResult();
 			return;
 		}
@@ -160,12 +156,18 @@ class FabrikControllerForm extends JControllerForm
 		}
 		else
 		{
-			$this->makeRedirect($msg, $model);
+			$this->setRedirect($url, $msg);
 		}
 	}
 
 	/**
-	 * generic function to redirect
+	 * Generic function to redirect
+	 *
+	 * @param   object  &$model  form model
+	 * @param   string  $msg     optional redirect message
+	 *
+	 * @deprecated - since 3.0.6 not used
+	 * @return  null
 	 */
 
 	protected function makeRedirect($msg = null, $model)

@@ -1163,7 +1163,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 								{
 									$value = $value[$repeatCount];
 								}
-								else {
+								else
+								{
 									// if the index they wanted doesn't exist, set to default
 									$value = $default;
 								}
@@ -4487,12 +4488,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			if (array_key_exists('apply', $this->_formData))
 			{
-				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
-				. '&rowid=' . JRequest::getInt('rowid');
+				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid');
 			}
 			else
 			{
-				$url = 'index.php?option=com_fabrik&c=table&task=viewTable&cid[]=' . $this->getTable()->id;
+				$url = 'index.php?option=com_fabrik&task=list.view&listid=' . $this->getTable()->id;
 			}
 		}
 		else
@@ -4500,7 +4500,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if (array_key_exists('apply', $this->_formData))
 			{
 				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid')
-				. '&listid=' . JRequest::getInt('listid');
+					. '&listid=' . JRequest::getInt('listid');
 			}
 			else
 			{
@@ -4582,7 +4582,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $this->get('id'))
 		{
 			$msg = $this->getParams()->get('suppress_msgs', '0') == '0'
-			? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+				? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 		}
 		else
 		{
