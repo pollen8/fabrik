@@ -195,6 +195,9 @@ class FabrikFEModelListfilter extends FabModel
 		$access = JArrayHelper::getValue($filters, 'access', array());
 		foreach ($access as $key => $selAccess)
 		{
+			// $$$ hugh - fix for where certain elements got created with 0 as the
+			// the default for filter_access, which isn't a legal value, should be 1
+			$selAccess = $selAccess == '0' ? '1' : $selAccess;
 			$i = $filters['key'][$key];
 			if (!in_array($selAccess, JFactory::getUser()->authorisedLevels()))
 			{
