@@ -11,22 +11,27 @@ var FbElementList =  new Class({
 		
 	initialize: function (element, options) {
 		this.parent(element, options);
+		this.addSubClickEvents();
 	},
 	
 	//get the sub element which are the checkboxes themselves
 	
 	_getSubElements: function () {
-		if (!this.element) {
+		var element = this.getElement();
+		if (!element) {
 			this.subElements = $A();
 		} else {
-			this.subElements = this.element.getElements('input');
-			this.subElements.each(function (el) {
-				el.addEvent('click', function (e) {
-					Fabrik.fireEvent('fabrik.element.click', [this, e]);
-				});
-			});
+			this.subElements = element.getElements('input');
 		}
 		return this.subElements;
+	},
+	
+	addSubClickEvents: function () {
+		this._getSubElements().each(function (el) {
+			el.addEvent('click', function (e) {
+				Fabrik.fireEvent('fabrik.element.click', [this, e]);
+			});
+		});
 	},
 	
 	addNewEvent: function (action, js) {
