@@ -1679,7 +1679,6 @@ class plgFabrik_Element extends FabrikPlugin
 		if ($element->error != '')
 		{
 			$c[] = 'fabrikError';
-			$c[] = 'error';
 		}
 		return implode(' ', $c);
 	}
@@ -5715,6 +5714,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
+	 *
 	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
 	 * which may use a CONCAT'ed label which musn't be quoted.
 	 *

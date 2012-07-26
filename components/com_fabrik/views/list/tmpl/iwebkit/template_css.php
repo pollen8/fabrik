@@ -1,6 +1,6 @@
 <?php
 header('Content-type: text/css');
-$c = $_REQUEST['c'];
+$c = (int) $_REQUEST['c'];
 echo "
 
 .fabrikList li{
@@ -11,10 +11,6 @@ echo "
 #listform_$c li.decimal,
 #listform_$c li.integer{
 	text-align:right;
-}
-
-#listform_$c li {
-	position: relative;
 }
 
 /*****************************************************/

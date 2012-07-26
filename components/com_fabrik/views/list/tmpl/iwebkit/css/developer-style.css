@@ -1,23 +1,21 @@
-/*iWebKit css 5.04 by Christopher Plieger*/
 body {
 	position: relative;
 	margin: 0;
 	-webkit-text-size-adjust: none;
 	min-height: 416px;
 	font-family: helvetica,sans-serif;
-	-webkit-background-size:0.438em 100%; 
-	background: -webkit-gradient(linear,left top,right top,from(#c5ccd4), color-stop(71%, #c5ccd4), color-stop(72%, #cbd2d8), to(#cbd2d8));
+	background: url("../images/background.png") repeat;
 	-webkit-touch-callout: none;
 }
 .center {
 	margin: auto;
 	display: block;
-	text-align: center!important;
+	text-align:center!important
 }
 img {
 	border: 0;
 }
-a:hover .arrow {
+a:hover span.arrow {
 	background-position: 0 -13px!important;
 }
 @media screen and (max-width: 320px)
@@ -79,11 +77,13 @@ a:hover .arrow {
 .searchbox input[type="text"] {
 	width: 275px;
 }
-.menu .name {
+li.menu span.name {
 	max-width: 77%;
-}.checkbox .name {
+}
+li.checkbox .name {
 	max-width: 190px;
-}.radiobutton .name {
+}
+li.radiobutton .name {
 	max-width: 190px;
 }
 #leftnav a, #rightnav a, #leftbutton a, #rightbutton a, #blueleftbutton a, #bluerightbutton a {
@@ -99,7 +99,7 @@ a:hover .arrow {
 #rightnav, #rightbutton, #bluerightbutton {
 	top: 7px;
 }
-.musiclist .name {
+body.musiclist ul li span.name {
 	max-width:55%
 }
 .textbox textarea {
@@ -119,11 +119,13 @@ a:hover .arrow {
 	height: 32px;
 	font-size: 13pt;
 }
-.menu .name {
+li.menu span.name {
 	max-width: 85%;
-}.checkbox .name {
+}
+li.checkbox .name {
 	max-width: 75%;
-}.radiobutton .name {
+}
+li.radiobutton .name {
 	max-width: 75%;
 }
 #leftnav a, #rightnav a, #leftbutton a, #rightbutton a, #blueleftbutton a, #bluerightbutton a {
@@ -140,7 +142,7 @@ a:hover .arrow {
 #rightnav, #rightbutton, #bluerightbutton {
 	top: 4px;
 }
-.musiclist .name {
+body.musiclist ul li span.name {
 	max-width:70%
 }
 .textbox textarea {
@@ -227,6 +229,7 @@ a:hover .arrow {
 	color: #FFF;
 	text-shadow: rgba(0,0,0,0.6) 0 -1px 0;
 }
+}
 #content {
 	width: 100%;
 	position: relative;
@@ -244,7 +247,7 @@ a:hover .arrow {
 	width: auto;
 	bottom: 10px;
 }
-.ipodlist #footer, .ipodlist #footer a {
+body.ipodlist #footer, body.ipodlist #footer a {
 	text-shadow: #FFF 0 -1px 0;
 }
 #footer a, #footer {
@@ -440,7 +443,7 @@ fieldset {
 .pageitem li:first-child, .pageitem li.form:first-child {
 	border-top: 0;
 }
-.menu, .checkbox, .radiobutton, .select, li.button, li.bigfield, li.smallfield {
+li.menu, li.checkbox, li.radiobutton, li.select, li.button, li.bigfield, li.smallfield {
 	position: relative;
 	list-style-type: none;
 	display: block;
@@ -449,37 +452,37 @@ fieldset {
 	border-top: 1px solid #878787;
 	width: auto;
 }
-.pageitem li:first-child:hover, .pageitem li:first-child a, .radiobutton:first-child input, .select:first-child select, li.button:first-child input, .bigfield:first-child input {
+ul.pageitem li:first-child:hover, .pageitem li:first-child a, li.radiobutton:first-child input, li.select:first-child select, li.button:first-child input, .bigfield:first-child input {
 	-webkit-border-top-left-radius: 8px;
 	-webkit-border-top-right-radius: 8px;
 }
-.pageitem li:last-child:hover, .pageitem li:last-child a, .radiobutton:last-child input, .select:last-child select, li.button:last-child input, .bigfield:last-child input {
+ul.pageitem li:last-child:hover, .pageitem li:last-child a, li.radiobutton:last-child input, li.select:last-child select, li.button:last-child input, .bigfield:last-child input {
 	-webkit-border-bottom-left-radius: 8px;
 	-webkit-border-bottom-right-radius: 8px;
 }
-.menu:hover, .store:hover, .list #content li a:hover, .list .withimage:hover, .applist li:hover:nth-child(n),.ipodlist li:hover:nth-child(n) {
+li.menu:hover, li.store:hover, body.list div#content li a:hover, body.list li.withimage:hover, body.applist li:hover:nth-child(n),body.ipodlist li:hover:nth-child(n) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#058cf5), to(#015fe6));
 }
-.ipodlist li:hover:nth-child(n) .name,.ipodlist li:hover:nth-child(n) .time{border:0}
-.menu a:hover .name, .store:hover .starcomment, .store:hover .name, .store:hover .comment, .list .withimage a:hover .comment {
+body.ipodlist li:hover:nth-child(n) .name,body.ipodlist li:hover:nth-child(n) .time{border:0}
+li.menu a:hover span.name, li.menu a:hover span.comment, li.store:hover .starcomment, li.store:hover .name, li.store:hover .comment, body.list li.withimage a:hover .comment {
 	color: #fff;
 }
-.menu a:hover .comment {
+li.menu a:hover span.comment {
 	color: #CCF;
 }
-.menu a {
+li.menu a {
 	display: block;
 	height: 43px;
 	width: auto;
 	text-decoration: none;
 }
-.menu a img {
+li.menu a img {
 	width: auto;
 	height: 32px;
 	margin: 5px 0 0 5px;
 	float: left;
 }
-.menu .name, .checkbox .name, .radiobutton .name {
+li.menu span.name, li.checkbox .name, li.radiobutton .name {
 	margin: 11px 0 0 7px;
 	width: auto;
 	color: #000;
@@ -490,7 +493,7 @@ fieldset {
 	white-space: nowrap;
 	float: left;
 }
-.menu .comment {
+li.menu span.comment {
 	margin: 11px 30px 0 0;
 	width: auto;
 	font-size: 17px;
@@ -501,7 +504,7 @@ fieldset {
 	float: right;
 	color: #324f85;
 }
-.menu .arrow, .store .arrow, .musiclist .arrow, .list .arrow {
+li.menu span.arrow, li.store span.arrow, body.musiclist span.arrow, body.list span.arrow {
 	position: absolute;
 	width: 8px!important;
 	height: 13px!important;
@@ -510,7 +513,7 @@ fieldset {
 	margin: 0!important;
 	background: url("../images/arrow.png") 0 0 no-repeat;
 }
-.applist .arrow {
+body.applist span.arrow {
 	position: absolute;
 	width: 8px!important;
 	height: 13px!important;
@@ -519,20 +522,20 @@ fieldset {
 	margin: 0!important;
 	background: url("../images/arrow.png") 0 0 no-repeat;
 }
-.store {
+li.store {
 	height: 90px;
 	border-top: #878787 solid 1px;
 	overflow: hidden;
 	position: relative;
 }
-.store a {
+li.store a {
 	width: 100%;
 	height: 90px;
 	display: block;
 	text-decoration: none;
 	position: absolute;
 }
-.store .image {
+li.store .image {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -542,7 +545,7 @@ fieldset {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eff1f5), to(#d6dce6));
 	-webkit-background-size: 90px;
 }
-.applist .image {
+body.applist .image {
 	width: 57px;
 	height: 57px;
 	display: block;
@@ -554,13 +557,13 @@ fieldset {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7c7c7c), color-stop(3%, #858585), color-stop(97%, #a4a4a4),to(#c2c2c2));
 	-webkit-background-size: 57px;
 }
-li:first-child.store .image, .store:first-child a {
+li:first-child.store .image, li.store:first-child a {
 	-webkit-border-top-left-radius: 8px 8px;
 }
-li:last-child.store .image, .store:last-child a {
+li:last-child.store .image, li.store:last-child a {
 	-webkit-border-bottom-left-radius: 8px 8px;
 }
-.store .name, .applist .name {
+li.store .name, body.applist .name {
 	font-size: 15px;
 	white-space: nowrap;
 	display: block;
@@ -570,18 +573,18 @@ li:last-child.store .image, .store:last-child a {
 	text-overflow: ellipsis;
 	font-weight: bold;
 }
-.store .name {
+li.store .name {
 	position: absolute;
 	left: 95px;
 	top: 35px;
 }
-.applist .name {
+body.applist .name {
 	position: absolute;
 	top: 27px;
 	left: 80px;
 	text-shadow: #eeeeee 0 1px 0;
 }
-.store .comment, .list .withimage .comment, .applist .comment, .applist .price {
+li.store .comment, body.list li.withimage .comment, body.applist .comment, body.applist .price {
 	font-size: 12px;
 	color: #7f7f7f;
 	display: block;
@@ -591,17 +594,17 @@ li:last-child.store .image, .store:last-child a {
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
-.store .comment, .list .withimage .comment {
+li.store .comment, body.list li.withimage .comment {
 	margin: 16px 0 0 95px;
 }
-.applist .comment {
+body.applist .comment {
 	position: absolute;
 	top: 9px;
 	left: 80px;
 	text-shadow: #eeeeee 0 1px 0;
 	color: #3b3b3b;
 }
-.applist .price {
+body.applist .price {
 	position: absolute;
 	top: 29px;
 	right: 26px;
@@ -609,10 +612,10 @@ li:last-child.store .image, .store:last-child a {
 	text-align: right;
 	color: #3b3b3b;
 }
-.store .arrow, .list .withimage .arrow {
+li.store .arrow, body.list li.withimage .arrow {
 	top: 39px!important;
 }
-.store .stars0, .store .stars1, .store .stars2, .store .stars3, .store .stars4, .store .stars5 {
+li.store .stars0, li.store .stars1, li.store .stars2, li.store .stars3, li.store .stars4, li.store .stars5 {
 	position: absolute;
 	top: 56px;
 	left: 95px;
@@ -620,25 +623,25 @@ li:last-child.store .image, .store:last-child a {
 	height: 18px;
 	display: block!important;
 }
-.store .stars0 {
+li.store .stars0 {
 	background: url('../images/0starsborder.png');
 }
-.store .stars1 {
+li.store .stars1 {
 	background: url('../images/1starsborder.png');
 }
-.store .stars2 {
+li.store .stars2 {
 	background: url('../images/2starsborder.png');
 }
-.store .stars3 {
+li.store .stars3 {
 	background: url('../images/3starsborder.png');
 }
-.store .stars4 {
+li.store .stars4 {
 	background: url('../images/4starsborder.png');
 }
-.store .stars5, .applist .stars5 {
+li.store .stars5, body.applist .stars5 {
 	background: url('../images/5stars.png');
 }
-.applist .stars0, .applist .stars1, .applist .stars2, .applist .stars3, .applist .stars4, .applist .stars5 {
+body.applist .stars0, body.applist .stars1, body.applist .stars2, body.applist .stars3, body.applist .stars4, body.applist .stars5 {
 	position: absolute;
 	top: 46px;
 	left: 79px;
@@ -646,22 +649,22 @@ li:last-child.store .image, .store:last-child a {
 	height: 18px;
 	display: block!important;
 }
-.applist .stars0 {
+body.applist .stars0 {
 	background: url('../images/0stars.png');
 }
-.applist .stars1 {
+body.applist .stars1 {
 	background: url('../images/1stars.png');
 }
-.applist .stars2 {
+body.applist .stars2 {
 	background: url('../images/2stars.png');
 }
-.applist .stars3 {
+body.applist .stars3 {
 	background: url('../images/3stars.png');
 }
-.applist .stars4 {
+body.applist .stars4 {
 	background: url('../images/4stars.png');
 }
-.applist .starcomment {
+body.applist .starcomment {
 	left: 147px;
 	top: 46px;
 	color: #3b3b3b;
@@ -674,7 +677,7 @@ li:last-child.store .image, .store:last-child a {
 	color: #7f7f7f;
 	font-weight: lighter;
 }
-.applist a:hover .name, .applist a:hover .starcomment, .applist a:hover .comment, .applist a:hover .price {
+body.applist a:hover .name, body.applist a:hover .starcomment, body.applist a:hover .comment, body.applist a:hover .price {
 	color: white;
 	text-shadow: none;
 }
@@ -696,63 +699,60 @@ li:last-child.store .image, .store:last-child a {
 	margin-bottom: 6px;
 	line-height: 14pt;
 }
-.musiclist ul, .ipodlist ul, .applist ul {
-	padding: 0;
+body.musiclist div#content, body.ipodlist div#content, body.applist div#content {
+	width: auto;
+	margin: -16px auto auto -40px;
 }
-.ipodlist ul {
-	margin: 0;
-}
-.musiclist li:nth-child(odd) {
+body.musiclist li:nth-child(odd) {
 	background: #dddee0
 }
-.applist li:nth-child(even) {
+body.applist li:nth-child(even) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#adadb0), color-stop(98%, #adadb0), to(#898a8d))
 }
-.applist li:nth-child(odd) {
+body.applist li:nth-child(odd) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#98989c), color-stop(98%, #98989c), to(#898a8d))
 
 }
-.ipodlist li:nth-child(even) {
+body.ipodlist li:nth-child(even) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#414041), color-stop(3%, rgba(45,45,45,0.2)), to(rgba(45,45,45,0.2)))
 }
-.ipodlist li:nth-child(odd) {
+body.ipodlist li:nth-child(odd) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#414041), color-stop(3%, rgba(50,50,50,0.4)), to(rgba(50,50,50,0.4)))
 }
-.musiclist #content li, .ipodlist #content li, .applist #content li {
+body.musiclist div#content ul li, body.ipodlist div#content ul li, body.applist div#content ul li {
 	list-style: none;
 	width: auto;
 	position: relative;
 }
-.musiclist #content li {
+body.musiclist div#content ul li {
 	height: 44px;
 	border-bottom: 1px solid #e6e6e6;
 }
-.applist #content li {
+body.applist div#content ul li {
 	height: 70px;
 	margin-bottom: 1px;
 }
-.ipodlist #content li {
+body.ipodlist div#content ul li {
 	height: 42px;
 }
-.ipodlist #content {
-	background: -webkit-gradient(radial, 50% -70, 0, 50% 0, 200, from(#444444), to(rgb(13, 13, 13)));
-	top: 16px;
+body.ipodlist div#content {
+	background: -webkit-gradient(radial, 50% -70, 0, 50% 0, 200, from(#444444), to(rgb(13, 13, 13))) rgb(13, 13, 13);
 }
-.musiclist #content li a, .ipodlist #content li a {
+body.musiclist div#content ul li a, body.ipodlist div#content ul li a {
 	text-decoration: none;
 	color: #000;
 	width: 100%!important;
 	height: 100%;
 	display: block;
 }
-.applist #content li a {
+body.applist div#content ul li a {
 	text-decoration: none;
 	color: #000;
 	width: 100%;
 	height: 100%;
 	display: block;
 }
-.musiclist .number, .musiclist .name, .musiclist .time {
+body.musiclist ul li .number, body.musiclist .name, body.musiclist .time {
 	display: inline-block;
 	height: 44px;
 	font-weight: bold;
@@ -761,46 +761,46 @@ li:last-child.store .image, .store:last-child a {
 	text-align: center;
 	line-height: 46px;
 }
-.musiclist .name {
+body.musiclist ul li .name {
 	margin-left: 0;
 	width: auto!important;
 	font-size: medium;
 	padding-left: 5px;
 	border-left: solid 1px #e6e6e6;
 }
-.musiclist .time {
+body.musiclist ul li .time {
 	color: #848484;
 	font-size: medium;
 	margin-left: 4px;
 	width: auto!important;
 	font-weight: normal;
 }
-.musiclist {
+body.musiclist {
 	background-image: none!important;
 	background-color: #cbcccf;
 }
-.ipodlist {
+body.ipodlist {
 	background-image: none!important;
 	background-color: black;
 }
-.applist {
+body.applist {
 	background-image: none!important;
 	background-color: #98989c;
 }
-.ipodlist span {
+body.ipodlist span {
 	color: white;
 	font-weight: bold;
 	font-size: 14px;
 }
-.musiclist .name {
+body.musiclist ul li span.name {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 }
-.musiclist a:hover .name {
+body.musiclist a:hover span.name {
 	color: #0380f2;
 }
-.ipodlist .number {
+body.ipodlist .number {
 	width: 23px;
 	display: block;
 	float: left;
@@ -809,7 +809,7 @@ li:last-child.store .image, .store:last-child a {
 	text-align: right;
 	line-height: 43px;
 }
-.ipodlist .stop, .ipodlist .auto, .ipodlist .play {
+body.ipodlist .stop, body.ipodlist .auto, body.ipodlist .play {
 	width: 18px;
 	display: block;
 	float: left;
@@ -818,14 +818,14 @@ li:last-child.store .image, .store:last-child a {
 	line-height: 43px;
 	margin-top: 16px;
 }
-.ipodlist .play {
+body.ipodlist .play {
 	background: url('../images/play.gif') no-repeat;
 }
-.ipodlist a:hover .auto, .ipodlist a:hover .play {
+body.ipodlist a:hover .auto, body.ipodlist a:hover .play {
 	background: url('../images/play.gif') no-repeat;
 	background-position: 0 -10px;
 }
-.ipodlist .time {
+body.ipodlist .time {
 	width: 48px;
 	float: right;
 	border-left: solid #414041 1px;
@@ -834,7 +834,7 @@ li:last-child.store .image, .store:last-child a {
 	text-align: center;
 	line-height: 43px;
 }
-.ipodlist .name {
+body.ipodlist .name {
 	display: block;
 	float: left;
 	width: inherit;
@@ -847,7 +847,7 @@ li:last-child.store .image, .store:last-child a {
 	max-width: 62%;
 	border-left: solid #414041 1px;
 }
-.list .title {
+body.list ul li.title {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#a5b1ba), color-stop(3%, #909faa), color-stop(97%, #b5bfc6), to(#989ea4));
 	height: 22px!important;
 	width: 100%;
@@ -859,29 +859,26 @@ li:last-child.store .image, .store:last-child a {
 	padding-left: 20px;
 	border-bottom: none!important;
 }
-.list ul {
+body.list ul {
 	background-color: #fff;
 	width: 100%;
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
 }
-.list #content li {
+body.list div#content li {
 	height: 40px;
 	border-bottom: 1px solid #e1e1e1;
 	list-style: none;
 }
-.list {
+body.list {
 	background-color: #fff;
 	background-image: none!important;
 }
-.list #footer {
+body.list div#footer {
 	margin-top: 24px!important;
 }
-.ipodlist #footer {
-	margin-top: 48px!important;
-}
-.list #content li a {
+body.list div#content li a {
 	padding: 9px 0 0 20px;
 	font-size: large;
 	font-weight: bold;
@@ -891,44 +888,41 @@ li:last-child.store .image, .store:last-child a {
 	text-decoration: none;
 	height: 32px;
 }
-.list #content li a .name {
+body.list div#content li a span.name {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	max-width: 93%;
 	white-space: nowrap;
 	display: block;
 }
-.list #content li a:hover {
+body.list div#content li a:hover {
 	color: #fff;
 }
-.list #content {
+body.list div#content {
 	margin-top: -13px!important;
 }
-.ipodlist #content, .musiclist #content, .applist #content {
-	margin-top: -29px!important;
-}
-.list ul img {
+body.list ul img {
 	width: 90px;
 	height: 90px;
 	position: absolute;
 	left: 0;
 	top: 0;
 }
-.list .withimage {
+body.list li.withimage {
 	height: 90px!important;
 }
-.list .withimage .name {
+body.list li.withimage span.name {
 	margin: 13px 0 0 90px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	max-width: 63%!important;
 	white-space: nowrap;
 }
-.list .withimage .comment {
+body.list li.withimage .comment {
 	margin: 10px auto auto 90px !important;
 	max-width: 63%!important;
 }
-.list .withimage a, .list .withimage:hover a {
+body.list li.withimage a, body.list li.withimage:hover a {
 	height: 81px!important;
 }
 #leftnav, #leftbutton, #blueleftbutton {
@@ -1020,6 +1014,39 @@ li:last-child.store .image, .store:last-child a {
 	border-width: 0 5px;
 	-webkit-border-radius: 6px;
 }
+.rssxpresschannel {
+	font-family: helvetica,sans-serif;
+	border: 0;
+}
+}
+.rssxpresschtitle {
+	text-align: center;
+}
+.rssxpresschdesc {
+	color: #000;
+	text-align: center;
+	border-bottom: 1px solid #000;
+	padding-bottom: 5px;
+}
+.rssxpressittitle {
+	display: block;
+	font-size: 12pt;
+	background: #fff;
+	margin: 5px 0 2px;
+}
+.rssxpressittitle a {
+	text-decoration: none!important;
+	font-weight: bold;
+	color: rgb(73,102,145);
+	line-height: 10pt;
+}
+.rssxpressitdesc {
+	background: #fff;
+	font-size: 10pt;
+}
+.rssxpressdivider {
+	display: none;
+}
 input[type="checkbox"] {
 	width: 94px;
 	height: 27px;
@@ -1056,16 +1083,16 @@ select {
 	width: 100%;
 	border: 0;
 }
-.select select {
+li.select select {
 	-webkit-border-radius: 0;
 	color: #000;
 	font-weight: bold;
 	font-size: 17px;
 }
-.select option {
+li.select option {
 	max-width: 90%;
 }
-.select .arrow {
+li.select .arrow {
 	background: url('../images/arrow.png');
 	width: 8px;
 	height: 13px;
@@ -1086,12 +1113,12 @@ select {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
-	background: none;
+	background:none
 }
 .textbox textarea {
 	padding: 0;
-	margin-top: 5px;
-	font-size: medium;
+	margin-top: 5px; 
+	font-size:medium
 }
 .bigfield input {
 	-webkit-appearance: none;

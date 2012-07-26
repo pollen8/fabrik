@@ -2,7 +2,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 ?>
-<form method="post" action="<?php echo $this->action?>" class="advancedSeach advancedSeach_<?php echo $this->listref?>">
+<form method="post" action="<?php echo $this->action?>" class="advancedSeach_<?php echo $this->listref?>">
 	<a class="addbutton advanced-search-add" href="#">
 		<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl);?>
 		<?php echo JText::_('COM_FABRIK_ADD')?>
@@ -41,14 +41,12 @@ defined('_JEXEC') or die();
 			</thead>
 	</table>
 	</div>
-	<div class="form-actions">
-		<input type="submit"
-			value="<?php echo JText::_('COM_FABRIK_APPLY')?>"
-			class="btn btn-primary button fabrikFilter advanced-search-apply"
-			name="applyAdvFabrikFilter"
-			type="button">
-		<input value="<?php echo JText::_('COM_FABRIK_CLEAR')?>" class="btn button advanced-search-clearall" type="button">
-	</div>
+	<input type="submit"
+		value="<?php echo JText::_('COM_FABRIK_APPLY')?>"
+		class="button fabrikFilter advanced-search-apply"
+		name="applyAdvFabrikFilter"
+		type="button">
+	<input value="<?php echo JText::_('COM_FABRIK_CLEAR')?>" class="button advanced-search-clearall" type="button">
 	<input type="hidden" name="option" value="com_fabrik" />
 	<input type="hidden" name="view" value="<?php echo JRequest::getVar('nextview', 'list')?>" />
 	<input type="hidden" name="listid" value="<?php echo $this->listid?>" />

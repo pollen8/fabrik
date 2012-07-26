@@ -284,11 +284,9 @@ var FbElement =  new Class({
 			}}).adopt(this.alertImage);
 			this.getErrorElement().empty().adopt(a);
 			Fabrik.tips.attach(a);
-			this.getContainer().addClass('error').removeClass('success');
 			break;
 		case 'fabrikSuccess':
 			this.getErrorElement().empty().adopt(this.successImage);
-			this.getContainer().removeClass('error').addClass('success');
 			break;
 		case 'fabrikValidating':
 			this.getErrorElement().empty().adopt(this.loadingImage);

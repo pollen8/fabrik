@@ -99,7 +99,7 @@ a.fabrikTip {
 .spinner {
 	position: absolute;
 	opacity: 0.9;
-	filter: alpha(opacity =       90);
+	filter: alpha(opacity =     90);
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90 );
 	z-index: 999;
 	background: #fff;
@@ -156,11 +156,10 @@ a.fabrikTip {
 	-moz-border-radius: 7px 7px 0px 0px;
 	background: #ccc;
 	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
-	filter: progid:     DXImageTransform.Microsoft.gradient(     startColorstr=
-		
+	filter: progid:    DXImageTransform.Microsoft.gradient(    startColorstr=
 		
 		 
-		'#cccccc', endColorstr=     '#666666' ); /* for IE */
+		'#cccccc', endColorstr=    '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
@@ -196,11 +195,10 @@ span.handlelabel {
 	-moz-border-radius: 0px 0px 7px 7px;
 	height: 15px;
 	background: #ccc;
-	filter: progid:     DXImageTransform.Microsoft.gradient(     startColorstr=
-		
+	filter: progid:    DXImageTransform.Microsoft.gradient(    startColorstr=
 		
 		 
-		'#cccccc', endColorstr=     '#666666' ); /* for IE */
+		'#cccccc', endColorstr=    '#666666' ); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
@@ -268,10 +266,10 @@ span.handlelabel {
 	min-width: 220px;
 	text-align: left;
 	font-size: 1.05em;
-	z-index: 999;
+	z-index:999;
 }
 
-.floating-tip ul.validation-notices {
+.floating-tip ul.validation-notices{
 	padding: 3px;
 }
 
@@ -457,7 +455,7 @@ fieldset.adminform input,fieldset.adminform textarea,fieldset.adminform select,f
 }
 
 /** inline edit error message **/
-.inlineedit .fabrikError {
+.inlineedit .fabrikError{
 	color: #c00;
 	background: #EFE7B8;
 	padding: 5px;
@@ -467,23 +465,23 @@ fieldset.adminform input,fieldset.adminform textarea,fieldset.adminform select,f
 /*********************************************************/
 /****** Basis table styling (used for filters in viz) ****/
 /*********************************************************/
+
 table.fabrikList {
-	clear: right;
+	clear:right;
 	border-collapse: collapse;
 	margin-top: 10px;
 	color: #444444;
 }
 
-table.fabrikList td,table.fabrikList th {
+table.fabrikList td,
+table.fabrikList th{
 	padding: 5px;
 	border: 1px solid #cccccc;
 }
 
-table.fabrikList th {
-	background: -moz-linear-gradient(center top, #F3F3F3, #D7D7D7) repeat
-		scroll 0 0 #E7E7E7;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7',
-		endColorstr='#F3F3F3' ); /* for IE */
+table.fabrikList th{
+	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
 }
@@ -499,18 +497,3 @@ table.fabrikList .oddRow1 {
 /*********************************************************/
 /************  End basic table styling *******************/
 /*********************************************************/
-
-/*** bootstrap form actions set to botto of advanced search window ***/
-form.advancedSeach .form-actions {
-	bottom: 0;
-	left: 0;
-	position: absolute;
-	right: 0;
-	z-index: 9;
-}
-
-/** defautl fabrik tmpls dont want to float pagination a's **/
-
-.fabrikDataContainer .pagination a{
-	float: none;
-}
