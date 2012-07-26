@@ -644,9 +644,17 @@ class plgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		if (!is_object($this->_access) || !array_key_exists('use', $this->_access))
 		{
-			$user = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
-			$this->_access->use = in_array($this->getElement()->access, $groups);
+			// $$$ hugh - testing new "Option 5" for group show, "Always show read only"
+			// So if element's group show is type 5, then element is de-facto read only.
+			if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
+			{
+				$this->_access->use = false;
+			}
+			else {
+				$user = JFactory::getUser();
+				$groups = $user->getAuthorisedViewLevels();
+				$this->_access->use = in_array($this->getElement()->access, $groups);
+			}
 		}
 		return $this->_access->use;
 	}
@@ -665,7 +673,11 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
-			$this->_access->filter = in_array($this->getParams()->get('filter_access'), $groups);
+			// $$$ hugh - fix for where certain elements got created with 0 as the
+			// the default for filter_access, which isn't a legal value, should be 1
+			$filter_access = $this->getParams()->get('filter_access');
+			$filter_access = $filter_access == '0' ? '1' : $filter_access;
+			$this->_access->filter = in_array($filter_access, $groups);
 		}
 		return $this->_access->filter;
 	}
@@ -4700,7 +4712,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$o->use_as_fake_key = 0;
 		$o->icon_folder = -1;
 		$o->use_as_row_class = 0;
-		$o->filter_access = 0;
+		$o->filter_access = 1;
 		$o->full_words_only = 0;
 		$o->inc_in_adv_search = 1;
 		$o->sum_on = 0;
